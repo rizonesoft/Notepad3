@@ -119,11 +119,13 @@ int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
 DPI_T GetCurrentPPI(HWND hwnd);
 
-inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntByDPI(int val, unsigned dpi) { return MulDiv(val, dpi, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleIntByDPI(val, dpi.x); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleIntByDPI(val, dpi.y); }
 
-inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatByDPI(float fVal, unsigned dpi) { return (int)lroundf((fVal * dpi) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.x); }
+inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.y); }
 
 // ----------------------------------------------------------------------------
 

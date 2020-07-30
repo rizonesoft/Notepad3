@@ -3987,6 +3987,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
             SET_NP3_DLG_ICON_SMALL(hwnd);
 
+            DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+
             GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
             SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
 
@@ -4009,9 +4011,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             SHFILEINFO shfi;
             ZeroMemory(&shfi, sizeof(SHFILEINFO));
+
+            UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+            
             TreeView_SetImageList(hwndTV,
-                                  (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
-                                                            SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+                                  (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
+                                                             flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                                   TVSIL_NORMAL);
 
             // findlexer
@@ -4076,17 +4081,39 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
         return !0;
 
+        case WM_DPICHANGED:
+        {
+          UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+
+          DPI_T dpi;
+          dpi.x = LOWORD(wParam);
+          dpi.y = HIWORD(wParam);
+
+          SHFILEINFO shfi;
+          ZeroMemory(&shfi, sizeof(SHFILEINFO));
+          UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+          TreeView_SetImageList(hwndTV,
+                                (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
+                                                           flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+                                TVSIL_NORMAL);
+
+          MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV);
+          MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT);
+        }
+        return !0;
+
         case WM_PAINT:
         {
             HDC const hDC = GetWindowDC(hwnd);
+            DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
             int const   iconSize  = 64;
-            int const   dpiWidth  = ScaleIntToDPI_X(hwnd, iconSize);
-            int const   dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
+            int const   dpiWidth  = ScaleIntByDPI(iconSize, dpi.x);
+            int const   dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
             HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
             if (hicon)
             {
-                DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 340), ScaleIntToDPI_Y(hwnd, 62), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+              DrawIconEx(hDC, ScaleIntByDPI(340, dpi.x), ScaleIntByDPI(62, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
             }
 
             // Set title font
@@ -4095,9 +4122,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
             int const newHeight = -MulDiv(MulDiv(lf.lfHeight,3,2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
             lf.lfWeight = FW_BOLD;
-            lf.lfHeight = ScaleIntToDPI_Y(hwnd, newHeight);
-            lf.lfWidth  = ScaleIntToDPI_X(hwnd, 8); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-            StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
+            lf.lfWidth  = ScaleIntByDPI(8, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+            lf.lfHeight = ScaleIntByDPI(newHeight, dpi.y);
+            //~StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
             hFontTitle = CreateFontIndirect(&lf);
             SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
 
@@ -4152,10 +4179,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 iCurStyleIdx  = -1;
             }
             return false;
-
-        case WM_DPICHANGED:
-            UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-            return !0;
 
         case WM_SYSCOMMAND:
             if (wParam == IDS_MUI_SAVEPOS)
@@ -4668,6 +4691,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
   static int cyClient;
 
   static HWND hwndLV;
+
   static int  iInternalDefault;
 
   switch(umsg)
@@ -4677,14 +4701,18 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
+        DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
+        UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
-            &shfi,sizeof(SHFILEINFO), SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+            &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
 
         ListView_SetImageList(hwndLV,
@@ -4729,7 +4757,21 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
 
     case WM_DPICHANGED:
+      {
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+  
+        DPI_T dpi;
+        dpi.x = LOWORD(wParam);
+        dpi.y = HIWORD(wParam);
+
+        SHFILEINFO shfi;
+        ZeroMemory(&shfi, sizeof(SHFILEINFO));
+        UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        ListView_SetImageList(hwndLV,
+          (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
+            &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+          LVSIL_SMALL);
+      }
       return !0;
 
 
