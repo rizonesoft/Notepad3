@@ -5891,8 +5891,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-        return !0; // further processing
+      {
+        DPI_T dpi;
+        dpi.x = LOWORD(wParam);
+        dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+      }
+      return !0; // further processing
 
 
   case WM_ACTIVATE:
@@ -7848,7 +7853,12 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+      {
+        DPI_T dpi;
+        dpi.x = LOWORD(wParam);
+        dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+      }
       return true;
 
 
@@ -7993,8 +8003,13 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-      return true;
+      {
+        DPI_T dpi;
+        dpi.x = LOWORD(wParam);
+        dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+      }
+       return true;
 
     case WM_DESTROY:
       DeleteObject(hFontHover);
