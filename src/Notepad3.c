@@ -1256,10 +1256,10 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if (g_IniWinInfo.max) {
     nCmdShow = SW_SHOWMAXIMIZED;
   }
+
   if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
     SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
-  //~UpdateWindowLayoutForDPI(Globals.hwndMain, NULL, NULL);
 
   SET_NP3_DLG_ICON_SMALL(Globals.hwndMain);
   SET_NP3_DLG_ICON_BIG(Globals.hwndMain);
@@ -2247,6 +2247,11 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
   DWORD dwToolbarStyle = NP3_WS_TOOLBAR;
+
+  if (Settings.ToolBarTheme < 0) { // undefined: determine High DPI screen
+    DPI_T const dpi       = Scintilla_GetWindowDPI(hwnd);
+    Settings.ToolBarTheme = (dpi.y < (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? 0 : 1;
+  }
 
   if (Globals.hwndToolbar) 
   { 

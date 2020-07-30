@@ -655,6 +655,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
     SET_NP3_DLG_ICON_SMALL(hwnd);
 
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+
     SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION L", ID='" _W(_STRG(VERSION_COMMIT_ID)) L"'");
     SetDlgItemText(hwnd, IDC_COPYRIGHT, _W(VERSION_LEGALCOPYRIGHT));
@@ -677,8 +679,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetSysColor(COLOR_3DFACE));
     
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, (LPARAM)true);
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)false);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, TRUE);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y > USER_DEFAULT_SCREEN_DPI));
 
     DWORD styleFlags = SES_EXTENDBACKCOLOR; // | SES_HYPERLINKTOOLTIPS;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLE, (WPARAM)styleFlags, (LPARAM)styleFlags);
@@ -686,51 +688,45 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
-    char pAboutRes[4096];
-    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), "");
-    GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    if (StrIsEmptyA(pAboutResource)) {
+      char pAboutRes[4096];
+      StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), "");
+      GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    }
 
-    // paint rich-edit box
-    pAboutInfo = pAboutResource;
-    EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
+    pAboutInfo              = pAboutResource;
+    EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y != USER_DEFAULT_SCREEN_DPI));
 
     CenterDlgInParent(hwnd, NULL);
-
-    // TODO: Handle initial DPI-Aware Bitmap drawing
-    //HWND const hCtrlBmp = GetDlgItem(hwnd, IDC_RIZONEBMP);
-    //if (hCtrlBmp) {
-    //  UpdateWindowLayoutForDPI(hCtrlBmp, NULL, &dpi);
-    //}
-    //PostMessage(hwnd, WM_DPICHANGED, (WPARAM)NULL, (LPARAM)NULL);
   }
   break;
 
@@ -745,8 +741,21 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       DPI_T          dpi;
       dpi.x = LOWORD(wParam);
       dpi.y = HIWORD(wParam);
+
+      // render rich-edit control text again
+      if (!StrIsEmptyA(pAboutResource)) {
+        pAboutInfo              = pAboutResource;
+        EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+      }
+
       if ((dpi.x == USER_DEFAULT_SCREEN_DPI) || (dpi.y == USER_DEFAULT_SCREEN_DPI)) {
         SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 0, 0); // rich edit problem
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, FALSE);
+      }
+      else {
+        //~  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, TRUE);
       }
     }
     break;
@@ -755,13 +764,14 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   case WM_PAINT:
     {
       HDC const hDC = GetWindowDC(hwnd);
+      DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
       int const iconSize = 128;
-      int const dpiWidth = ScaleIntToDPI_X(hwnd, iconSize);
-      int const dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
+      int const dpiWidth = ScaleIntByDPI(iconSize, dpi.x);
+      int const dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
       HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
       if (hicon) {
-        DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 22), ScaleIntToDPI_Y(hwnd, 44), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+        DrawIconEx(hDC, ScaleIntByDPI(22, dpi.x), ScaleIntByDPI(44, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
       }
 
       // --- larger bold condensed version string
@@ -770,9 +780,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
       int const newHeight = -MulDiv(MulDiv(lf.lfHeight, 3, 2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
       lf.lfWeight = FW_BOLD;
-      lf.lfHeight = ScaleIntToDPI_Y(hwnd, newHeight);
-      lf.lfWidth  = ScaleIntToDPI_X(hwnd, 8); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-      StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
+      lf.lfWidth  = ScaleIntByDPI(6, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+      lf.lfHeight = ScaleIntByDPI(newHeight, dpi.y);
+      //~StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
       hVersionFont = CreateFontIndirect(&lf);
       SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
 
