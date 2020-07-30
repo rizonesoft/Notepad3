@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "In&dítás"
         BEGIN
-            MENUITEM "Keresés &fájlokban\tCtrl+Alt+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Új ablak\tAlt+N",                   IDM_FILE_NEWWINDOW
             MENUITEM "&Üres ablak\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
             MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Keresés &fájlokban\tCtrl+Alt+F",         IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Nézet"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "&Behajtások"
         BEGIN
             MENUITEM "Kó&dblokk behajtások",                    IDM_VIEW_FOLDING
-            MENUITEM "Kódblokk &váltás\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Kódblokk &váltás\tCtrl+Alt+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Ugrás a &köv. behajtásra\tAlt+ +",        CMD_FOLDJUMPDOWN
             MENUITEM "Ugrás az &előző behajtásra\tAlt+ –",      CMD_FOLDJUMPUP

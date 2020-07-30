@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts ***               date: 2020/03/18
+*** Keyboard Shortcuts ***               date: 2020/07/29
 ---------------------------------------------------------
 
 
@@ -32,7 +32,7 @@
 
       Launch
       ------
-        Ctrl+Alt+F            Search in Files.
+        Ctrl+Shift+F          Search in Files.
         Alt+N                 Open Document in New Window.
         Alt+Shift+N           Open New Empty Window.
         Ctrl+L                Launch Document.
@@ -199,7 +199,7 @@
         Ctrl+H                Replace...
         F4                    Replace Next.
         Ctrl+G                Jump to Line...
-        Ctrl+Alt+F            Search in Files.
+        Ctrl+Shift+F          Search in Files.
 
 
   VIEW
@@ -222,7 +222,7 @@
 
       Folding
       -------
-        Ctrl+Shift+F          Toggle All Folds.
+        Ctrl+Alt+F            Toggle All Folds.
         Alt+ +                Jump Next Fold.
         Alt+ –                Jump Prev Fold.
         Alt+ ←                Collapse Fold.
