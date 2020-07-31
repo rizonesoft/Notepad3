@@ -39,6 +39,7 @@
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
+#include "Resample.h"
 
 #include "SciCall.h"
 
@@ -726,6 +727,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y != USER_DEFAULT_SCREEN_DPI));
 
+    SetBitmapControl(hwnd, IDC_RIZONEBMP, Globals.hInstance, IDR_RIZBITMAP,
+                     GetDlgCtrlWidth(hwnd, IDC_RIZONEBMP), GetDlgCtrlHeight(hwnd, IDC_RIZONEBMP));
+
     CenterDlgInParent(hwnd, NULL);
   }
   break;
@@ -757,6 +761,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         //~  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
         SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, TRUE);
       }
+
+      SetBitmapControl(hwnd, IDC_RIZONEBMP, Globals.hInstance, IDR_RIZBITMAP,
+                       GetDlgCtrlWidth(hwnd, IDC_RIZONEBMP), GetDlgCtrlHeight(hwnd, IDC_RIZONEBMP));
     }
     break;
 
@@ -1203,7 +1210,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,Globals.hInstance,IDB_OPEN);
+        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,Globals.hInstance,IDB_OPEN, -1, -1);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -1401,7 +1408,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,Globals.hInstance,IDB_OPEN);
+        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,Globals.hInstance,IDB_OPEN, -1, -1);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -2656,7 +2663,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
+        hbmp = ResizeImageBitmap(hwnd, hbmp, -1, -1);
 
         HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
         ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
@@ -2800,7 +2807,6 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
   switch(umsg)
   {
-
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
@@ -2813,7 +2819,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
         HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
+        hbmp = ResizeImageBitmap(hwnd, hbmp, -1, -1);
 
         HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
@@ -4193,16 +4199,9 @@ int ResizeDlg_GetAttr(HWND hwnd, int index) {
   return 0;
 }
 
-static inline int GetDlgCtlHeight(HWND hwndDlg, int nCtlId) {
-  RECT rc;
-  GetWindowRect(GetDlgItem(hwndDlg, nCtlId), &rc);
-  const int height = rc.bottom - rc.top;
-  return height;
-}
-
 void ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection, int nCtlId1, int nCtlId2) {
-  const int hMin1 = GetDlgCtlHeight(hwnd, nCtlId1);
-  const int hMin2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  const int hMin1 = GetDlgCtrlHeight(hwnd, nCtlId1);
+  const int hMin2 = GetDlgCtrlHeight(hwnd, nCtlId2);
   ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, iDirection);
   PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
   pm->attrs[0] = hMin1;
@@ -4225,8 +4224,8 @@ int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2) {
   int const hMinX = pm->attrs[0];
   int const hMinY = pm->attrs[1];
 #endif
-  int const h1 = GetDlgCtlHeight(hwnd, nCtlId1);
-  int const h2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  int const h1 = GetDlgCtrlHeight(hwnd, nCtlId1);
+  int const h2 = GetDlgCtrlHeight(hwnd, nCtlId2);
   // cy + h1 >= hMin1			cy >= hMin1 - h1
   // dy - cy + h2 >= hMin2	cy <= dy + h2 - hMin2
   int const cyMin = hMinX - h1;
@@ -4261,13 +4260,33 @@ void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
 
 //=============================================================================
 //
-//  MakeBitmapButton()
+//  SetBitmapControl()
+//  if width|height <= 0 : scale bitmap to current dpi
 //
-void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
+void SetBitmapControl(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height)
 {
-  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
+  HBITMAP hBmpNew  = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+  hBmpNew = ResizeImageBitmap(hwnd, hBmpNew, width, height);
+
+  HBITMAP    hBmpOld  = (HBITMAP)SendDlgItemMessage(hwnd, nCtrlId, STM_GETIMAGE, IMAGE_BITMAP, 0);
+  if (hBmpOld) {
+    //BITMAP bmp;
+    //GetObject(hBmpOld, sizeof(BITMAP), &bmp);
+    DeleteObject(hBmpOld);
+  }
+  SendDlgItemMessage(hwnd, nCtrlId, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBmpNew);
+}
+
+//=============================================================================
+//
+//  MakeBitmapButton()
+//  if width|height <= 0 : scale bitmap to current dpi
+//
+void MakeBitmapButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height)
+{
+  HWND const hwndCtrl = GetDlgItem(hwnd, nCtrlId);
   HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  hBmp = ResizeImageForCurrentDPI(hwnd, hBmp);
+  hBmp = ResizeImageBitmap(hwnd, hBmp, width, height);
   BITMAP bmp;
   GetObject(hBmp, sizeof(BITMAP), &bmp);
   BUTTON_IMAGELIST bi;
@@ -4276,18 +4295,16 @@ void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
   DeleteObject(hBmp);
   SetRect(&bi.margin, 0, 0, 0, 0);
   bi.uAlign = BUTTON_IMAGELIST_ALIGN_CENTER;
-  SendMessage(hwndCtl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
+  SendMessage(hwndCtrl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
 }
-
-
 
 //=============================================================================
 //
 //  MakeColorPickButton()
 //
-void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF crColor)
+void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF crColor)
 {
-  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwnd, nCtrlId);
   HIMAGELIST himlOld = NULL;
   COLORMAP colormap[2];
 
@@ -4339,9 +4356,9 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
 //
 //  DeleteBitmapButton()
 //
-void DeleteBitmapButton(HWND hwnd, int nCtlId)
+void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 {
-  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwnd, nCtrlId);
   BUTTON_IMAGELIST bi;
   if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)& bi)) {
     ImageList_Destroy(bi.himl);
@@ -4654,8 +4671,6 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem)
   static bool bInitialized = false;
   if (bInitialized) { return; }
 
-  //const int cx = GetSystemMetrics(SM_CYMENU) - 4;
-  //const int cy = cx;
   int const cx = GetSystemMetrics(SM_CXSMICON);
   int const cy = GetSystemMetrics(SM_CYSMICON);
 
@@ -4701,19 +4716,26 @@ void UpdateWindowLayoutForDPI(HWND hWnd, const RECT* pRC, const DPI_T* pDPI)
 
 //=============================================================================
 //
-//  ResizeImageForCurrentDPI()
+//  ResizeImageBitmap()
+//  if width|height <= 0 : scale bitmap to current dpi
 //
-HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
+HBITMAP ResizeImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
 {
   if (hbmp) {
     BITMAP bmp;
-    if (GetObject(hbmp, sizeof(BITMAP), &bmp))
-    {
-      int const width = ScaleIntToDPI_X(hwnd, bmp.bmWidth);
-      int const height = ScaleIntToDPI_Y(hwnd, bmp.bmHeight);
-      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) 
-      {
-        HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
+      if ((width <= 0) || (height <= 0)) {
+        width  = ScaleIntToDPI_X(hwnd, bmp.bmWidth);
+        height = ScaleIntToDPI_Y(hwnd, bmp.bmHeight);
+      }
+      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) {
+#if FALSE      
+        //HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
+#else
+        HDC const hdc   = GetDC(hwnd);
+        HBITMAP   hCopy = CreateResampledBitmap(hdc, hbmp, width, height, BMP_RESAMPLE_FILTER);
+        ReleaseDC(hwnd, hdc);
+#endif
         if (hCopy && (hCopy != hbmp)) {
           DeleteObject(hbmp);
           hbmp = hCopy;
@@ -4723,7 +4745,6 @@ HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
   }
   return hbmp;
 }
-
 
 //=============================================================================
 //

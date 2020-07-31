@@ -202,7 +202,6 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
-
 // --------------------------------------------------------------------------
 
 #define MRU_MAXITEMS    32

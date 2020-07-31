@@ -103,9 +103,10 @@ void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy);
 HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlags);
 
 
-void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId);
-void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF crColor);
-void DeleteBitmapButton(HWND hwnd, int nCtlId);
+void SetBitmapControl(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height);
+void MakeBitmapButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height);
+void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF crColor);
+void DeleteBitmapButton(HWND hwnd, int nCtrlId);
 
 
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
@@ -116,6 +117,18 @@ int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButt
 int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
 // ----------------------------------------------------------------------------
+
+inline int GetDlgCtrlWidth(HWND hwndDlg, int nCtrlId)
+{
+  RECT rc; GetWindowRect(GetDlgItem(hwndDlg, nCtrlId), &rc);
+  return (rc.right - rc.left);
+}
+
+inline int GetDlgCtrlHeight(HWND hwndDlg, int nCtrlId)
+{
+  RECT rc; GetWindowRect(GetDlgItem(hwndDlg, nCtrlId), &rc);
+  return (rc.bottom - rc.top);
+}
 
 DPI_T GetCurrentPPI(HWND hwnd);
 
@@ -134,7 +147,10 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hWnd, const RECT* pRC, const DPI_T* pDPI);
 //#define HandleDpiChangedMessage(hW,wP,lP) { DPI_T dpi; dpi.x = LOWORD(wP); dpi.y = HIWORD(wP); \
 //                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, &dpi); }
-HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp);
+
+#  define BMP_RESAMPLE_FILTER STOCK_FILTER_LANCZOS8
+//#define BMP_RESAMPLE_FILTER   STOCK_FILTER_QUADRATICBSPLINE
+HBITMAP ResizeImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 // ----------------------------------------------------------------------------
