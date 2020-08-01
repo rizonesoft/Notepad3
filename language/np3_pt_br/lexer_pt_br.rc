@@ -86,9 +86,9 @@ BEGIN
     IDS_LEX_BATCH           "Arquivos .bat (processamento em lote)"
     IDS_LEX_DIFF            "Arquivos Diff"
     IDS_LEX_SQL             "Query SQL"
-    IDS_LEX_PYTHON          "Python (cript)
+    IDS_LEX_PYTHON          "Python (Script)"
     IDS_LEX_APC_CFG         "Apache (Arquivos de Configuração)"
-    IDS_LEX_PWRSHELL        "PowerShell (Script)
+    IDS_LEX_PWRSHELL        "PowerShell (Script)"
     IDS_LEX_D_SRC           "D (Código Fonte)"
     IDS_LEX_GO_SRC          "Go (Código Fonte)"
 END
@@ -337,7 +337,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63264       "Hotspots de Hyperlink "
+    IDS_LEX_STR_63264       "Hotspots de Hyperlink"
     IDS_LEX_STR_63265       "Segundo Hotspots de Hyperlink"
     IDS_LEX_STR_63266       "Segundo Common Base"
     IDS_LEX_STR_63267       "Variável na String"
