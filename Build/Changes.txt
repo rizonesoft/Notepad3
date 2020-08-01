@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.729.(build_#) (2020-07-29)
+Current BETA Version 5.20.801.(build_#) (2020-08-01)
 =====================================================
 
 -----------------------------------------------------
@@ -46,6 +46,8 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- High Quality Bitmap resampling method (Rizonesoft Bitmap).
+- DPI-Aware About & Custom.Scheme dialog.
 - Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
 - Review document modified handler (dirty-flag).
 - Update grepWinNP3 (GRE) version 2.1.3.21 (2020-07-24).
@@ -61,6 +63,11 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- 
+- Ensure selection visible (scroll to current position).
+- Extend selection to next find (Ctrl+Alt+F2).
+- DPI-Awareness of About-Dlg (especially RichEdit-Ctrl).
+- Non case sensitive style attribute search (find file extensions non case sensitive).
 - Notepad3 should save (no ask) & exit on Shift+ESC Hotkey.
 - Clear selection by ESC should not populate undo/redo stack.
 - No document modified flag on forced re-decode file (recode) w/ other encoding.
