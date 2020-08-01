@@ -85,7 +85,6 @@ void  EditSortLines(HWND hwnd,int iSortFlags);
 void  EditJumpTo(DocLn iNewLine, DocPos iNewCol);
 void  EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void  EditFixPositions();
-void  EditNormalizeView(const DocLn iDocumentLine);
 void  EditEnsureSelectionVisible();
 void	EditEnsureConsistentLineEndings(HWND hwnd);
 void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);

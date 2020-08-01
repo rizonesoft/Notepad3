@@ -4978,26 +4978,6 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 
 //=============================================================================
 //
-//  EditNormalizeView() 
-//
-void EditNormalizeView(const DocLn iDocumentLine)
-{
-  SciCall_EnsureVisible(iDocumentLine);
-  Sci_ScrollToLine(iDocumentLine);
-  if (iDocumentLine == Sci_GetCurrentLineNumber()) {
-    Sci_ScrollChooseCaret();
-  }
-  DocLn const vSlop = max_ln(2, Settings2.CurrentLineVerticalSlop);
-  DocLn const iVisibleFromDocLine = SciCall_VisibleFromDocLine(iDocumentLine - vSlop);
-  //DocLn const iDocLineFromVisible = SciCall_DocLineFromVisible(iVisibleFromDocLine);
-  if (iVisibleFromDocLine >= 0) {
-    SciCall_SetFirstVisibleLine(iVisibleFromDocLine);
-  }
-}
-
-
-//=============================================================================
-//
 //  EditEnsureSelectionVisible()
 //
 void EditEnsureSelectionVisible()
@@ -5006,8 +4986,8 @@ void EditEnsureSelectionVisible()
   DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
   DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iAnchorLine); } 
-  //~EditNormalizeView(iCurrentLine);
   SciCall_EnsureVisible(iCurrentLine);
+  SciCall_ScrollCaret();
 }
 
 
