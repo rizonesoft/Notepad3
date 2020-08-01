@@ -5639,7 +5639,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       // the global static Find/Replace data structure
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       Globals.hwndDlgFindReplace = hwnd;
 
@@ -7829,7 +7829,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         WCHAR wchLineCaption[96];
         WCHAR wchColumnCaption[96];
 
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         DocLn const iCurLine = SciCall_LineFromPosition(SciCall_GetCurrentPos())+1;
         DocLn const iMaxLnNum = SciCall_GetLineCount();
@@ -7977,7 +7977,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         id_hover = 0;
         id_capture = 0;
 
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         static HFONT hFontNormal;
         if (NULL == (hFontNormal = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0))) {
@@ -8179,7 +8179,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_INITDIALOG:
       {
         piAlignMode = (int*)lParam;
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
         CheckRadioButton(hwnd,100,104,*piAlignMode+100);
         CenterDlgInParent(hwnd, NULL);
       }
@@ -8260,7 +8260,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
     case WM_INITDIALOG:
       {
         pdata = (PENCLOSESELDATA)lParam;
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,255,0);
         SetDlgItemTextW(hwnd,100,pdata->pwsz1);
         SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
@@ -8341,7 +8341,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
     case WM_INITDIALOG:
       {
         pdata = (PTAGSDATA)lParam;
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
         if (!wchOpenTagStrg[0]) { StringCchCopy(wchOpenTagStrg, COUNTOF(wchOpenTagStrg), L"<tag>"); }
         if (!wchCloseTagStrg[0]) { StringCchCopy(wchCloseTagStrg, COUNTOF(wchCloseTagStrg), L"</tag>"); }
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT, COUNTOF(wchOpenTagStrg)-1,0);
@@ -8484,7 +8484,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           *piSortFlags = SORT_ASCENDING | SORT_REMZEROLEN;
         }
 
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         if (*piSortFlags & SORT_DESCENDING) {
           CheckRadioButton(hwnd, 100, 102, 101);

@@ -3985,7 +3985,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         case WM_INITDIALOG:
         {
             SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-            SET_NP3_DLG_ICON_SMALL(hwnd);
+            SetDialogIconNP3(hwnd);
 
             DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -4012,7 +4012,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SHFILEINFO shfi;
             ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-            UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+            UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
             
             TreeView_SetImageList(hwndTV,
                                   (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
@@ -4053,8 +4053,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             SendDlgItemMessage(hwnd, IDC_STYLEEDIT, EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS) - 1, 0);
 
-            MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV);
-            MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT);
+            MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV, -1, -1);
+            MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT, -1, -1);
 
             if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
             {
@@ -4091,14 +4091,14 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
           SHFILEINFO shfi;
           ZeroMemory(&shfi, sizeof(SHFILEINFO));
-          UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+          UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
           TreeView_SetImageList(hwndTV,
                                 (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
                                                            flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                                 TVSIL_NORMAL);
 
-          MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV);
-          MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT);
+          MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV, -1, -1);
+          MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT, -1, -1);
         }
         return !0;
 
@@ -4699,7 +4699,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -4708,7 +4708,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-        UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
 
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
@@ -4766,7 +4766,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
-        UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),

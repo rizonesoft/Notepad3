@@ -118,7 +118,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
     case WM_INITDIALOG:
     {
-        SET_NP3_DLG_ICON_SMALL(hDlg);
+        SetDialogIconNP3(hDlg);
         SetDlgItemText(hDlg, IDC_PWD_EDIT1, unicodeFileKey);
         SetDlgItemText(hDlg, IDC_PWD_EDIT2, unicodeMasterKey);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), hasMasterFileKey);
@@ -242,7 +242,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
   case WM_INITDIALOG:
     {
-      SET_NP3_DLG_ICON_SMALL(hDlg);
+      SetDialogIconNP3(hDlg);
       int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
       ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
       ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);
