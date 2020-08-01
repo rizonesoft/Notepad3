@@ -961,7 +961,7 @@ void Style_SetLexerSpecificProperties(const int lexerId)
 //
 static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t keyLen)
 {
-  LPCWSTR p = StrStr(lpszStyle, key);
+  LPCWSTR p = StrStrI(lpszStyle, key);
   while (p) {
     WCHAR chPrev = (p == lpszStyle) ? L';' : p[-1];
     if (chPrev == L' ') {
@@ -978,7 +978,7 @@ static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t
         return true;
       }
     }
-    p = StrStr(p, key);
+    p = StrStrI(p, key);
   }
   return false;
 }
