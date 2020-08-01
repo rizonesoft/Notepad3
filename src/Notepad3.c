@@ -1201,6 +1201,31 @@ static void SetFindReplaceData()
 
 //=============================================================================
 //
+// SetCurrentSelAsFindReplaceData()
+//
+static bool SetCurrentSelAsFindReplaceData()
+{
+  if (SciCall_IsSelectionEmpty()) {
+    EditSelectWordAtPos(SciCall_GetCurrentPos(), true);
+  }
+
+  size_t const cchSelection = SciCall_GetSelText(NULL);
+
+  if (1 < cchSelection) {
+    char* szSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
+    if (szSelection) {
+      SciCall_GetSelText(szSelection);
+      SetFindPatternMB(szSelection);
+      SetFindReplaceData(); // s_FindReplaceData
+      FreeMem(szSelection);
+      return true;
+    }
+  }
+  return false;
+}
+
+//=============================================================================
+//
 // InitApplication()
 //
 //
@@ -1411,7 +1436,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       if (s_flagJumpTo)
         EditJumpTo(s_iInitialLine, s_iInitialColumn);
       else
-        EditNormalizeView(Sci_GetCurrentLineNumber());
+        EditEnsureSelectionVisible();
     }
   }
 
@@ -3001,7 +3026,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditNormalizeView(Sci_GetCurrentLineNumber());
+        EditEnsureSelectionVisible();
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -4863,10 +4888,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           case IDM_EDIT_SELTONEXT:
+            if (IsFindPatternEmpty()) {
+              if (!SetCurrentSelAsFindReplaceData()) {
+                break;
+              }
+            }
             EditFindNext(Globals.hwndEdit,&s_FindReplaceData,true,false);
             break;
 
           case IDM_EDIT_SELTOPREV:
+            if (IsFindPatternEmpty()) {
+              if (!SetCurrentSelAsFindReplaceData()) {
+                break;
+              }
+            }
             EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,true,false);
             break;
         }
@@ -4878,26 +4913,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_FINDPREVSEL:
     case IDM_EDIT_SAVEFIND:
     {
-      if (SciCall_IsSelectionEmpty()) {
-        EditSelectWordAtPos(SciCall_GetCurrentPos(), true);
-      }
+      if (SetCurrentSelAsFindReplaceData()) {
 
-      size_t const cchSelection = SciCall_GetSelText(NULL);
-
-      if (1 < cchSelection)
-      {
-        char* szSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
-        if (NULL == szSelection) {
-          break;
-        }
-        SciCall_GetSelText(szSelection);
-
-        SetFindPatternMB(szSelection);
         MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
 
-        SetFindReplaceData(); // s_FindReplaceData
-
-        StringCchCopyA(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind), szSelection);
         s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
         s_FindReplaceData.bTransformBS = false;
 
@@ -4914,8 +4933,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
           break;
         }
-     
-        FreeMem(szSelection);
       }
     }
     break;
@@ -5270,7 +5287,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          EditNormalizeView(Sci_GetCurrentLineNumber());
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5280,8 +5296,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          EditNormalizeView(Sci_GetCurrentLineNumber());
         }
+        EditEnsureSelectionVisible();
 
         InstallFileWatching(Globals.CurrentFile); // force
 
@@ -8557,7 +8573,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     static bool s_bMOVisible = false;
     if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount)))
     {
-      if ((Globals.iMarkOccurrencesCount >= 0) && !Settings.MarkOccurrencesMatchVisible)
+      if (Globals.iMarkOccurrencesCount >= 0)
       {
         if ((Settings2.MarkOccurrencesMaxCount < 0) || (Globals.iMarkOccurrencesCount < (DocPos)Settings2.MarkOccurrencesMaxCount))
         {
@@ -8573,6 +8589,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       }
       else {
         StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+      }
+      if (Settings.MarkOccurrencesMatchVisible) {
+        StringCchCat(tchOcc, COUNTOF(tchOcc), L"(V)");
       }
 
       StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
@@ -9702,7 +9721,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     if (bIsAtDocEnd || FileWatching.MonitoringLog) {
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditNormalizeView(Sci_GetCurrentLineNumber());
+      EditEnsureSelectionVisible();
     }
   }
 
@@ -9713,7 +9732,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditNormalizeView(Sci_GetCurrentLineNumber());
+      EditEnsureSelectionVisible();
     }
   }
 
