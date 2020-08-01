@@ -443,7 +443,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         WCHAR tch[512];
         WCHAR *p1,*p2;
 
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         UDACCEL const acc[1] = { { 0, 10 } };
         SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);

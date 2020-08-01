@@ -657,9 +657,6 @@ typedef struct _themeFiles
                                         + sizeof("://") \
                                         + INTERNET_MAX_PATH_LENGTH)
 
-#define SET_NP3_DLG_ICON_BIG(hwnd)  if(Globals.hDlgIconBig){SendMessage((hwnd),WM_SETICON,ICON_BIG,(LPARAM)Globals.hDlgIconBig);}
-#define SET_NP3_DLG_ICON_SMALL(hwnd)  if(Globals.hDlgIconSmall){SendMessage((hwnd),WM_SETICON,ICON_SMALL,(LPARAM)Globals.hDlgIconSmall);}
-
 // ----------------------------------------------------------------------------
 
 //=============================================================================

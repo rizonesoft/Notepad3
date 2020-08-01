@@ -1261,8 +1261,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
 
-  SET_NP3_DLG_ICON_SMALL(Globals.hwndMain);
-  SET_NP3_DLG_ICON_BIG(Globals.hwndMain);
+  SetDialogIconNP3(Globals.hwndMain);
 
   if (Settings.TransparentMode) {
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
@@ -2250,7 +2249,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if (Settings.ToolBarTheme < 0) { // undefined: determine High DPI screen
     DPI_T const dpi       = Scintilla_GetWindowDPI(hwnd);
-    Settings.ToolBarTheme = (dpi.y < (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? 0 : 1;
+    Settings.ToolBarTheme = (dpi.y < LargeIconDPI()) ? 0 : 1;
   }
 
   if (Globals.hwndToolbar) 

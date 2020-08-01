@@ -64,6 +64,7 @@ void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent);
+HWND GetParentOrDesktop(HWND hDlg);
 void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
@@ -140,11 +141,15 @@ inline int ScaleFloatByDPI(float fVal, unsigned dpi) { return (int)lroundf((fVal
 inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.x); }
 inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.y); }
 
+//inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2); }; // 150%
+//inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 7, 4); }; // 175%
+inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 2, 1); }; // 200%
+
 // ----------------------------------------------------------------------------
 
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(const HMENU hMenu, const UINT nItem);
-void UpdateWindowLayoutForDPI(HWND hWnd, const RECT* pRC, const DPI_T* pDPI);
+void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI);
 //#define HandleDpiChangedMessage(hW,wP,lP) { DPI_T dpi; dpi.x = LOWORD(wP); dpi.y = HIWORD(wP); \
 //                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, &dpi); }
 
@@ -165,6 +170,15 @@ inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { Message
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; ShowWindow(hctrl, (b)?SW_HIDE:SW_SHOW); }
 
 inline bool IsDialogItemEnabled(HWND hdlg, int id) { return IsWindowEnabled(GetDlgItem(hdlg, id)); }
+
+inline void SetDialogIconNP3(HWND hwnd) {
+  if (Globals.hDlgIconSmall) {
+    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
+  }
+  if (Globals.hDlgIconBig) {
+    SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
+  }
+}
 
 // --- Themed Dialogs ---------------------------------------------------------
 

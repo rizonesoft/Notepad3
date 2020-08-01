@@ -3985,7 +3985,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         case WM_INITDIALOG:
         {
             SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-            SET_NP3_DLG_ICON_SMALL(hwnd);
+            SetDialogIconNP3(hwnd);
 
             DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -4012,7 +4012,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SHFILEINFO shfi;
             ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-            UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+            UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
             
             TreeView_SetImageList(hwndTV,
                                   (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
@@ -4091,7 +4091,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
           SHFILEINFO shfi;
           ZeroMemory(&shfi, sizeof(SHFILEINFO));
-          UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+          UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
           TreeView_SetImageList(hwndTV,
                                 (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
                                                            flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
@@ -4699,7 +4699,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -4708,7 +4708,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-        UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
 
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
@@ -4766,7 +4766,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
-        UINT const flagIconSize = (dpi.y >= (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2)) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
