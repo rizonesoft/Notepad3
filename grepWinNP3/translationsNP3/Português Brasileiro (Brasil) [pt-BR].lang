@@ -256,7 +256,7 @@ msgstr "KB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Idioma:" # if this means a computer language, then the translation would be "Linguagem:"
+msgstr "Idioma:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
