@@ -643,6 +643,7 @@
     <ClCompile Include="MuiLanguage.c" />
     <ClCompile Include="Notepad3.c" />
     <ClCompile Include="Print.cpp" />
+    <ClCompile Include="Resample.c" />
     <ClCompile Include="StyleLexers\styleLexAHKL.c" />
     <ClCompile Include="StyleLexers\styleLexASM.c" />
     <ClCompile Include="StyleLexers\styleLexAU3.c" />
@@ -751,6 +752,7 @@
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="MuiLanguage.h" />
     <ClInclude Include="Notepad3.h" />
+    <ClInclude Include="Resample.h" />
     <ClInclude Include="SciCall.h" />
     <ClInclude Include="StyleLexers\EditLexer.h" />
     <ClInclude Include="StyleLexers\StyleLexers.h" />

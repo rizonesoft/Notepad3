@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Kör"
         BEGIN
-            MENUITEM "Sök i filer\tCtrl+Alt+F",                     IDM_GREP_WIN_SEARCH
+            MENUITEM "Sök i filer\tCtrl+Shift+F",                     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Nytt fönster\tAlt+N",                         IDM_FILE_NEWWINDOW
             MENUITEM "Tomt fönster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Sök i filer\tCtrl+Alt+F",                     IDM_GREP_WIN_SEARCH
+            MENUITEM "Sök i filer\tCtrl+Shift+F",                     IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "Visa"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "Vikning"
         BEGIN
             MENUITEM "Ihopvikning av kodsegment",                   IDM_VIEW_FOLDING
-            MENUITEM "Växla ihopvikning\tCtrl+Shift+F",             IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Växla ihopvikning\tCtrl+Alt+F",             IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Gå till nästa vikpunkt\tAlt+ +",              CMD_FOLDJUMPDOWN
             MENUITEM "Gå till föregående vikpunkt\tAlt+ –",         CMD_FOLDJUMPUP
@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "Avsluta Notepad3",                            IDM_VIEW_ESCEXIT
         END
         MENUITEM "Spara innan verktyg används",                     IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",                     IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "Rendering"
             BEGIN
-                MENUITEM "Standard &GDI (inga ligaturer)",          IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",                 IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                     IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                     IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (inga ligaturer)",                   IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "Dubbelriktad"
             BEGIN

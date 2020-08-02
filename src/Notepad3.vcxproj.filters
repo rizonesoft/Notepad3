@@ -396,6 +396,9 @@
     <ClCompile Include="StyleLexers\styleLexLaTex.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="Resample.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">
@@ -555,6 +558,9 @@
       <Filter>Source Files\Config</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resample.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

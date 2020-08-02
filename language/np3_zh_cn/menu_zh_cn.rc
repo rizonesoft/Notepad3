@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "启动(&L)"
         BEGIN
-            MENUITEM "在文件中查找(&S)...\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
+            MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "替换下一个(&X)\tF4",                   IDM_EDIT_REPLACENEXT
             MENUITEM "跳转到(&G)...\tCtrl+G",                IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "在文件中查找(&S)...\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "查看(&V)"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "折叠(&F)"
         BEGIN
             MENUITEM "启用折叠(&F)",                         IDM_VIEW_FOLDING
-            MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "切换折叠(&T)\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "跳转到下一折叠点(&N)\tAlt++",          CMD_FOLDJUMPDOWN
             MENUITEM "跳转到上一折叠点(&P)\tAlt+-",          CMD_FOLDJUMPUP
@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "退出 Notepad3(&X)",                     IDM_VIEW_ESCEXIT
         END
         MENUITEM "运行工具前先保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",               IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "记忆(&R)"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
-                MENUITEM "默认 GDI（无连字）(&G)",       IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "GDI（无连字）(&G)",                 IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "双向(&B)"
             BEGIN

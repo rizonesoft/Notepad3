@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Запусціць"
         BEGIN
-            MENUITEM "&Шукаць у файлах\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
+            MENUITEM "&Шукаць у файлах\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Копі&ю акна\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое акно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "За&мяніць далей\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "Пе&райсці...\tCtrl+G",                        IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Шукаць у файлах\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
+            MENUITEM "&Шукаць у файлах\tCtrl+Shift+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Выгляд"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "&Блокі коду"
         BEGIN
             MENUITEM "Згорт&ванне блокаў коду",                 IDM_VIEW_FOLDING
-            MENUITEM "Згарнуць/ра&згарнуць блок\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Згарнуць/ра&згарнуць блок\tCtrl+Alt+F", IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Перайсці да &наступнага блоку\tAlt+ +",    CMD_FOLDJUMPDOWN
             MENUITEM "Перайсці да &папярэдняга блоку\tAlt+ –",   CMD_FOLDJUMPUP
@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "&Закрыць Notepad3",             IDM_VIEW_ESCEXIT
         END
         MENUITEM "Захоўваць перад запускам прыладаў", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",       IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Гісторыя"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Адлюстраванне"
             BEGIN
-                MENUITEM "Звычайны &GDI (без лігатураў)",    IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (без лігатураў)",             IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "&Накіраванне пісьма"
             BEGIN

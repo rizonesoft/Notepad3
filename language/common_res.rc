@@ -104,7 +104,8 @@ IDS_MUI_ABOUT_LIBS  "\
 \\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
 \\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash/\\par\
 \\cf0 Carbo Kuo (Mozilla's uchardet)\\tab https://www.freedesktop.org/wiki/Software/uchardet/\\par\
-\\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr/\\par\
+\\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr\\par\
+\\cf0 Carlo Pallini (Resample BMP)\\tab https://www.codeproject.com/Articles/22271/Plain-C-Resampling-DLL\\par\
 \\cf0 \\par\
 "
 
@@ -142,7 +143,7 @@ IDS_MUI_ABOUT_ACKNOWLEDGES  "\
 "
 
 IDS_MUI_ABOUT_MORE  "\
-\\cf0 NotepadCrypt (Version Java)\\tab https://www.nayuki.io/page/notepadcrypt-format-decryptor-java/\\par\
+\\cf0 NotepadCrypt (Version Java)\\tab https://www.nayuki.io/page/notepadcrypt-format-decryptor-java\\par\
 \\cf0 Data Sharing Service\\tab https://workupload.com/\\par\
 \\cf0 \\par\
 "

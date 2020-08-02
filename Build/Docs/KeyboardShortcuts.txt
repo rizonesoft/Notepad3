@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts ***               date: 2020/03/18
+*** Keyboard Shortcuts ***               date: 2020/07/29
 ---------------------------------------------------------
 
 
@@ -32,6 +32,7 @@
 
       Launch
       ------
+        Ctrl+Shift+F          Search in Files.
         Alt+N                 Open Document in New Window.
         Alt+Shift+N           Open New Empty Window.
         Ctrl+L                Launch Document.
@@ -44,7 +45,6 @@
       --------
         Shift+F8              Select UTF-8 as Default.
         F9                    Open Select Current file Encoding...
-        Ctrl+Alt+F            Recode to Default.
         Ctrl+Shift+A          Recode to ANSI.
         Ctrl+Shift+O          Recode to OEM.
         Ctrl+Shift+F10        Recode to GB18030.
@@ -199,6 +199,7 @@
         Ctrl+H                Replace...
         F4                    Replace Next.
         Ctrl+G                Jump to Line...
+        Ctrl+Shift+F          Search in Files.
 
 
   VIEW
@@ -221,7 +222,7 @@
 
       Folding
       -------
-        Ctrl+Shift+F          Toggle All Folds.
+        Ctrl+Alt+F            Toggle All Folds.
         Alt+ +                Jump Next Fold.
         Alt+ –                Jump Prev Fold.
         Alt+ ←                Collapse Fold.

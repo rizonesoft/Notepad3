@@ -1098,4 +1098,14 @@
 
 #define RICHEDIT_CONTROL_VER            "RichEdit50W"  // RICHEDIT_CONTROL_VER
 
+#ifndef ES_EX_ZOOMABLE
+#define ES_EX_ZOOMABLE                  0x0010L
+#endif
+
+#ifndef RICHEDTCTRL_ADDSTYLE
+#define RICHEDTCTRL_ADDSTYLE            0x29c4
+#endif
+
+//#ifndef 
+
 #endif //_COMMON_RES_H_

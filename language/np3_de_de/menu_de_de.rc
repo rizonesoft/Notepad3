@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Starte"
         BEGIN
-            MENUITEM "Suche in &Dateien\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
+            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Neues Fenster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Leeres Fenster\tAlt+Shift+N",        IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "Ersetze Nächstes\tF4",                    IDM_EDIT_REPLACENEXT
             MENUITEM "&Gehe zu...\tCtrl+G",                     IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Suche in &Dateien\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
+            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Ansicht"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "Code &Faltung"
         BEGIN
             MENUITEM "&Aktiviere Faltung",                      IDM_VIEW_FOLDING
-            MENUITEM "Alle Falten &Umschalten\tCtrl+Shift+F",   IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Alle Falten &Umschalten\tCtrl+Alt+F",   IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Gehe zur &Nächsten\tAlt+ +",              CMD_FOLDJUMPDOWN
             MENUITEM "Gehe zur &Vorherigen\tAlt+ –",            CMD_FOLDJUMPUP
@@ -454,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Rendering"
             BEGIN
-                MENUITEM "Standard &GDI (keine Ligaturen)",     IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "&DirectWrite (Direct2D)",             IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                 IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (keine Ligaturen)",              IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "&Bidirektional"
             BEGIN
