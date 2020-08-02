@@ -6455,13 +6455,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           // Display help messages in the find/replace windows
           else if (pnmhdr->idFrom == IDC_BACKSLASHHELP) {
-            MessageBoxLng(hwnd, MB_ICONINFORMATION, IDS_MUI_BACKSLASHHELP);
+            MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_BACKSLASHHELP);
           }
           else if (pnmhdr->idFrom == IDC_REGEXPHELP) {
-            MessageBoxLng(hwnd, MB_ICONINFORMATION, IDS_MUI_REGEXPHELP);
+            MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_REGEXPHELP);
           }
           else if (pnmhdr->idFrom == IDC_WILDCARDHELP) {
-            MessageBoxLng(hwnd, MB_ICONINFORMATION, IDS_MUI_WILDCARDHELP);
+            MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_WILDCARDHELP);
           }
           break;
 

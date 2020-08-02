@@ -132,7 +132,7 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 // -----------------------------------------------------------------------------
 
 
-int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
+int MessageBoxLng(UINT uType, UINT uidMsg, ...)
 {
   WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
   if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) { return -1; }
@@ -152,7 +152,9 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
   uType |= MB_SETFOREGROUND;  //~ not MB_TOPMOST
 
   // center message box to focus or main
-  s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
+  HWND const focus = GetFocus();
+  HWND const hwnd  = focus ? focus : Globals.hwndMain;
+  s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
   return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
 }
@@ -190,8 +192,8 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
       GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
       StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
       // center message box to main
-      HWND focus = GetFocus();
-      HWND hwnd = focus ? focus : Globals.hwndMain;
+      HWND const focus = GetFocus();
+      HWND const hwnd = focus ? focus : Globals.hwndMain;
       s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
       MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
@@ -230,6 +232,10 @@ typedef struct _infbox {
 
 static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  static HBITMAP hIconBmp = NULL;
+  static HICON   hBoxIcon = NULL;
+  static DPI_T dpi = {USER_DEFAULT_SCREEN_DPI, USER_DEFAULT_SCREEN_DPI};
+  
   switch (umsg)
   {
   case WM_INITDIALOG:
@@ -239,27 +245,36 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)lParam;
 
+      dpi = Scintilla_GetWindowDPI(hwnd);
+
+      int const scxb = ScaleIntByDPI(GetSystemMetrics(SM_CXICON), dpi.x);
+      int const scyb = ScaleIntByDPI(GetSystemMetrics(SM_CYICON), dpi.y);
+
       switch (lpMsgBox->uType & MB_ICONMASK)
       {
       case MB_ICONQUESTION:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgQuest, 0);
+        hBoxIcon = Globals.hIconMsgQuest;
         break;
       case MB_ICONWARNING:  // = MB_ICONEXCLAMATION
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgWarn, 0);
+        hBoxIcon = Globals.hIconMsgWarn;
         break;
       case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgError, 0);
+        hBoxIcon = Globals.hIconMsgError;
         break;
       case MB_ICONSHIELD:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgShield, 0);
+        hBoxIcon = Globals.hIconMsgShield;
         break;
       case MB_USERICON:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgUser, 0);
+        hBoxIcon = Globals.hIconMsgUser;
         break;
       case MB_ICONINFORMATION:  // = MB_ICONASTERISK
       default:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgInfo, 0);
+        hBoxIcon = Globals.hIconMsgInfo;
         break;
+      }
+      hIconBmp = ResampleIconToBitmap(hwnd, hBoxIcon, scxb, scyb);
+      if (hIconBmp) { 
+        SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
       }
 
       SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
@@ -274,13 +289,28 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       FreeMem(lpMsgBox->lpstrMessage);
     }
-      return !0;
+    return !0;
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+    {
+      dpi.x = LOWORD(wParam);
+      dpi.y = HIWORD(wParam);
+      int const scxb = ScaleIntByDPI(GetSystemMetrics(SM_CXICON), dpi.x);
+      int const scyb = ScaleIntByDPI(GetSystemMetrics(SM_CYICON), dpi.y);
+      hIconBmp       = ResampleIconToBitmap(hwnd, hBoxIcon, scxb, scyb);
+      if (hIconBmp) {
+        SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
+      }
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+    }
     return !0;
 
+  case WM_DESTROY:
+    if (hIconBmp) {
+      DeleteObject(hIconBmp);
+    }
+    return !0;
 
   case WM_COMMAND:
     {
@@ -301,7 +331,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       case IDCLOSE:
       case IDCANCEL:
         EndDialog(hwnd, LOWORD(wParam));
-        return true;
+        break;
 
       case IDC_INFOBOXCHECK:
         DialogEnableControl(hwnd, IDNO, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
@@ -313,8 +343,8 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       default:
         break;
       }
-      return !0;
     }
+    return !0;
   }
   return 0;
 }
@@ -737,8 +767,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     int const width  = ScaleIntByDPI(136, dpi.x);
     int const height = ScaleIntByDPI(41, dpi.y);
-    SetBitmapControl(hwnd, IDC_RIZONEBMP, Globals.hInstance, IDR_RIZBITMAP, width, height);
-
+    HBITMAP   hBmp   = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_RIZBITMAP), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    SetBitmapControlResample(hwnd, IDC_RIZONEBMP, hBmp, width, height);
+    DeleteObject(hBmp);
   }
   break;
 
@@ -762,7 +793,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
       int const width  = ScaleIntByDPI(136, dpi.x);
       int const height = ScaleIntByDPI(41, dpi.y);
-      SetBitmapControl(hwnd, IDC_RIZONEBMP, Globals.hInstance, IDR_RIZBITMAP, width, height);
+      HBITMAP   hBmp   = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_RIZBITMAP), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+      SetBitmapControlResample(hwnd, IDC_RIZONEBMP, hBmp, width, height);
+      DeleteObject(hBmp);
 
       UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     }
@@ -784,9 +817,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       if (hVersionFont) { DeleteObject(hVersionFont); }
       hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
       LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
+      int const newWidth  = -MulDiv(MulDiv(lf.lfWidth, 3, 2), GetDeviceCaps(hDC, LOGPIXELSX), 72);
       int const newHeight = -MulDiv(MulDiv(lf.lfHeight, 3, 2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
       lf.lfWeight = FW_BOLD;
-      lf.lfWidth  = ScaleIntByDPI(6, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+      lf.lfWidth  = ScaleIntByDPI(newWidth, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
       lf.lfHeight = ScaleIntByDPI(newHeight, dpi.y);
       //~StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
       hVersionFont = CreateFontIndirect(&lf);
@@ -944,7 +978,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SetDialogIconNP3(hwnd);
-      // MakeBitmapButton(hwnd,IDC_SEARCHEXE,Globals.hInstance,IDB_OPEN);
+      // MakeBitmapButton(hwnd,IDC_SEARCHEXE,IDB_OPEN, -1, -1);
       SendDlgItemMessage(hwnd, IDC_COMMANDLINE, EM_LIMITTEXT, MAX_PATH - 1, 0);
       SetDlgItemText(hwnd, IDC_COMMANDLINE, (LPCWSTR)lParam);
       SHAutoComplete(GetDlgItem(hwnd, IDC_COMMANDLINE), SHACF_FILESYSTEM);
@@ -1129,7 +1163,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,Globals.hInstance,IDB_OPEN, -1, -1);
+        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,IDB_OPEN, -1, -1);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -1327,7 +1361,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,Globals.hInstance,IDB_OPEN, -1, -1);
+        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,IDB_OPEN, -1, -1);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -2582,7 +2616,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-        hbmp = ResizeImageBitmap(hwnd, hbmp, -1, -1);
+        hbmp = ResampleImageBitmap(hwnd, hbmp, -1, -1);
 
         HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
         ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
@@ -2738,7 +2772,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
         HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-        hbmp = ResizeImageBitmap(hwnd, hbmp, -1, -1);
+        hbmp = ResampleImageBitmap(hwnd, hbmp, -1, -1);
 
         HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
@@ -4194,51 +4228,63 @@ void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
 //=============================================================================
 //
 //  SetBitmapControl()
+//
+void SetBitmapControl(HWND hwnd, int nCtrlId, HBITMAP hBmp)
+{
+  HBITMAP hBmpOld = (HBITMAP)SendDlgItemMessage(hwnd, nCtrlId, STM_GETIMAGE, IMAGE_BITMAP, 0);
+  if (hBmpOld) {
+    DeleteObject(hBmpOld);
+  }
+  SendDlgItemMessage(hwnd, nCtrlId, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBmp);
+}
+
+
+//=============================================================================
+//
+//  SetBitmapControlResample()
 //  if width|height <= 0 : scale bitmap to current dpi
 //
-void SetBitmapControl(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height)
+void SetBitmapControlResample(HWND hwnd, int nCtrlId, HBITMAP hBmp, int width, int height)
 {
-  HBITMAP hBmp  = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   if ((width ==  0) || (height == 0))
   {
     width  = GetDlgCtrlWidth(hwnd, nCtrlId);
     height = GetDlgCtrlHeight(hwnd, nCtrlId);
   }
-  hBmp = ResizeImageBitmap(hwnd, hBmp, width, height);
+  hBmp = ResampleImageBitmap(hwnd, hBmp, width, height);
 
-  HBITMAP hBmpOld = (HBITMAP)SendDlgItemMessage(hwnd, nCtrlId, STM_GETIMAGE, IMAGE_BITMAP, 0);
-  if (hBmpOld) {
-    //BITMAP bmp;  GetObject(hBmpOld, sizeof(BITMAP), &bmp);
-    DeleteObject(hBmpOld);
-  }
-  SendDlgItemMessage(hwnd, nCtrlId, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBmp);
+  SetBitmapControl(hwnd, nCtrlId, hBmp);
 }
+
 
 //=============================================================================
 //
 //  MakeBitmapButton()
 //  if width|height <= 0 : scale bitmap to current dpi
 //
-void MakeBitmapButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height)
+void MakeBitmapButton(HWND hwnd, int nCtrlId, WORD uBmpId, int width, int height)
 {
   HWND const hwndCtrl = GetDlgItem(hwnd, nCtrlId);
-  HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   if ((width == 0) || (height == 0)) {
     width  = GetDlgCtrlWidth(hwnd, nCtrlId);
     height = GetDlgCtrlHeight(hwnd, nCtrlId);
   }
-  hBmp = ResizeImageBitmap(hwnd, hBmp, width, height);
+  HBITMAP hBmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+  hBmp         = ResampleImageBitmap(hwnd, hBmp, width, height);
 
   BITMAP bmp;
   GetObject(hBmp, sizeof(BITMAP), &bmp);
   BUTTON_IMAGELIST bi;
   bi.himl = ImageList_Create(bmp.bmWidth, bmp.bmHeight, ILC_COLOR32 | ILC_MASK, 1, 0);
   ImageList_AddMasked(bi.himl, hBmp, CLR_DEFAULT);
+  
   DeleteObject(hBmp);
+  
   SetRect(&bi.margin, 0, 0, 0, 0);
   bi.uAlign = BUTTON_IMAGELIST_ALIGN_CENTER;
   SendMessage(hwndCtrl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
 }
+
 
 //=============================================================================
 //
@@ -4441,7 +4487,7 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  int const iLogPixelsY = GetCurrentPPI(NULL).y;
+  int const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {
     LOGFONT lf;
@@ -4450,13 +4496,13 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
         lf.lfHeight = -lf.lfHeight;
       }
       *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-      if (*wSize == 0) { *wSize = 9; }
+      if (*wSize == 0) { *wSize = 10; }
       StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
       bSucceed = true;
     }
     CloseThemeData(hTheme);
   }
-  return(bSucceed);
+  return bSucceed;
 }
 
 
@@ -4580,21 +4626,63 @@ HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
 }
 
 
+//=============================================================================
+//
+//  _GetIconInfo()
+//
+static void _GetIconInfo(HICON hIcon, int* width, int* height, WORD* bitsPerPix)
+{
+  ICONINFO info = {0};
+  if (!GetIconInfo(hIcon, &info)) {
+    return;
+  }
+   if (info.hbmColor) {
+    BITMAP bmp = {0};
+    if (GetObject(info.hbmColor, sizeof(bmp), &bmp) > 0) {
+      if (width) { *width = (int)bmp.bmWidth; }
+      if (height) { *height = (int)bmp.bmHeight; }
+      if (bitsPerPix) { *bitsPerPix = bmp.bmBitsPixel; }
+    }
+  }
+  else if (info.hbmMask) {
+    // Icon has no color plane, image data stored in mask
+    BITMAP bmp = {0};
+    if (GetObject(info.hbmMask, sizeof(bmp), &bmp) > 0) {
+      if (width) { *width = (int)bmp.bmWidth; }
+      if (height) { *height = (int)(bmp.bmHeight > 1); }
+      if (bitsPerPix) { *bitsPerPix = 1; }
+    }
+  }
+  if (info.hbmColor) {
+    DeleteObject(info.hbmColor);
+  }
+  if (info.hbmMask) {
+    DeleteObject(info.hbmMask);
+  }
+}
+
 
 //=============================================================================
 //
 //  ConvertIconToBitmap()
+//  cx/cy = 0  =>  use resource width/height
 //
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
+HBITMAP ConvertIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy)
 {
-  const HDC hScreenDC = GetDC(NULL);
-  const HBITMAP hbmpTmp = CreateCompatibleBitmap(hScreenDC, cx, cy);
-  const HDC hMemDC = CreateCompatibleDC(hScreenDC);
-  const HBITMAP hOldBmp = SelectObject(hMemDC, hbmpTmp);
-  DrawIconEx(hMemDC, 0, 0, hIcon, cx, cy, 0, NULL, DI_NORMAL);
+  UNUSED(hwnd);
+  int wdc = cx;
+  int hdc = cy;
+  if ((cx == 0) || (cy == 0)) {
+    _GetIconInfo(hIcon, &wdc, &hdc, NULL);
+  }
+  HDC const hScreenDC = GetDC(NULL);
+  HBITMAP const hbmpTmp   = CreateCompatibleBitmap(hScreenDC, wdc, hdc);
+  HDC const hMemDC = CreateCompatibleDC(hScreenDC);
+  HBITMAP const hOldBmp = SelectObject(hMemDC, hbmpTmp);
+  DrawIconEx(hMemDC, 0, 0, hIcon, cx, cy, 0, NULL, DI_NORMAL /*&~DI_DEFAULTSIZE*/ );
   SelectObject(hMemDC, hOldBmp);
 
-  const HBITMAP hDibBmp = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
+  HBITMAP const hDibBmp = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
 
   DeleteObject(hbmpTmp);
   DeleteDC(hMemDC);
@@ -4603,25 +4691,36 @@ HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
   return hDibBmp;
 }
 
+//=============================================================================
+//
+//  ResampleIconToBitmap()
+//
+HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy)
+{
+  HBITMAP const hBmp = ConvertIconToBitmap(hwnd, hIcon, 0, 0);
+  return ResampleImageBitmap(hwnd, hBmp, cx, cy);
+}
 
 //=============================================================================
 //
 //  SetUACIcon()
 //
-void SetUACIcon(const HMENU hMenu, const UINT nItem)
+void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 {
   static bool bInitialized = false;
   if (bInitialized) { return; }
 
-  int const cx = GetSystemMetrics(SM_CXSMICON);
-  int const cy = GetSystemMetrics(SM_CYSMICON);
+  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+
+  int const cx = ScaleIntByDPI(GetSystemMetrics(SM_CXSMICON), dpi.x);
+  int const cy = ScaleIntByDPI(GetSystemMetrics(SM_CYSMICON), dpi.y);
 
   if (Globals.hIconMsgShieldSmall)
   {
     MENUITEMINFO mii = { 0 };
-    mii.cbSize = sizeof(mii);
+    mii.cbSize = sizeof(MENUITEMINFO);
     mii.fMask = MIIM_BITMAP;
-    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
+    mii.hbmpItem = ConvertIconToBitmap(hwnd, Globals.hIconMsgShieldSmall, cx, cy);
     SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
   }
   bInitialized = true;
@@ -4655,6 +4754,55 @@ void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI)
   SetWindowPos(hwnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight, uWndFlags);
 }
 
+//=============================================================================
+//
+//  ResampleImageBitmap()
+//  if width|height <= 0 : scale bitmap to current dpi
+//
+HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
+{
+  if (hbmp) {
+    BITMAP bmp;
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
+      if ((width <= 0) || (height <= 0)) {
+        DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+        width  = ScaleIntByDPI(bmp.bmWidth, dpi.x);
+        height = ScaleIntByDPI(bmp.bmHeight, dpi.y);
+      }
+      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) {
+#if FALSE      
+        //HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
+#else
+        HDC const hdc   = GetDC(hwnd);
+        HBITMAP   hCopy = CreateResampledBitmap(hdc, hbmp, width, height, BMP_RESAMPLE_FILTER);
+        ReleaseDC(hwnd, hdc);
+#endif
+        if (hCopy && (hCopy != hbmp)) {
+          DeleteObject(hbmp);
+          hbmp = hCopy;
+        }
+      }
+    }
+  }
+  return hbmp;
+}
+
+//=============================================================================
+//
+//  SendWMSize()
+//
+LRESULT SendWMSize(HWND hwnd, RECT* rc)
+{
+  if (rc) {
+    return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom));
+  }
+  RECT wndrc;
+  GetClientRect(hwnd, &wndrc);
+  return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
+}
+
+
+//=============================================================================
 
 #if 0
 void Handle_WM_PAINT(HWND hwnd)
@@ -4738,51 +4886,5 @@ void Handle_WM_PAINT(HWND hwnd)
 #endif
 
 //=============================================================================
-//
-//  ResizeImageBitmap()
-//  if width|height <= 0 : scale bitmap to current dpi
-//
-HBITMAP ResizeImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
-{
-  if (hbmp) {
-    BITMAP bmp;
-    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
-      if ((width <= 0) || (height <= 0)) {
-        width  = ScaleIntToDPI_X(hwnd, bmp.bmWidth);
-        height = ScaleIntToDPI_Y(hwnd, bmp.bmHeight);
-      }
-      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) {
-#if FALSE      
-        //HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
-#else
-        HDC const hdc   = GetDC(hwnd);
-        HBITMAP   hCopy = CreateResampledBitmap(hdc, hbmp, width, height, BMP_RESAMPLE_FILTER);
-        ReleaseDC(hwnd, hdc);
-#endif
-        if (hCopy && (hCopy != hbmp)) {
-          DeleteObject(hbmp);
-          hbmp = hCopy;
-        }
-      }
-    }
-  }
-  return hbmp;
-}
-
-//=============================================================================
-//
-//  SendWMSize()
-//
-LRESULT SendWMSize(HWND hwnd, RECT* rc)
-{
-  if (rc) {
-    return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom));
-  }
-  RECT wndrc;
-  GetClientRect(hwnd, &wndrc);
-  return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
-}
-
-
 
 //  End of Dialogs.c

@@ -893,7 +893,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShield));
   }
   if (!Globals.hIconMsgShieldSmall) {
-    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxs, cys, &(Globals.hIconMsgShieldSmall));
+    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShieldSmall));
   }
   //if (!Globals.hIconMsgWinLogo) {
   //  LoadIconWithScaleDown(NULL, IDI_WINLOGO, cxl, cyl, &(Globals.hIconMsgWinLogo));
@@ -3162,7 +3162,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (!hmenu) { return 0; }
 
   bool const sav = Globals.bCanSaveIniFile;
-  bool const ro = SciCall_GetReadOnly();
+  bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
+  bool const faro = s_bFileReadOnly;     // file attrib read-only
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
   bool const bPosInSel = Sci_IsPosInSelection(iCurPos);
@@ -3185,7 +3186,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, CMD_RECODEGB18030, cf);
   EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
 
-  SetUACIcon(hmenu, IDM_FILE_LAUNCH_ELEVATED);
+  SetUACIcon(hwnd, hmenu, IDM_FILE_LAUNCH_ELEVATED);
   CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsProcessElevated);
   EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsProcessElevated);
 
@@ -3200,7 +3201,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_INSERT_PATHNAME, cf);
   EnableCmd(hmenu, IDM_ENCODING_RECODE, cf);
 
-  CheckCmd(hmenu, IDM_FILE_READONLY, s_bFileReadOnly);
+  CheckCmd(hmenu, IDM_FILE_READONLY, faro);
   CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
 
   EnableCmd(hmenu, IDM_ENCODING_UNICODEREV, !ro);
@@ -3358,6 +3359,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_FINDMATCHINGBRACE, !te);
   EnableCmd(hmenu, IDM_EDIT_SELTOMATCHINGBRACE, !te);
 
+  CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
+
   EnableCmd(hmenu, BME_EDIT_BOOKMARKPREV, !te);
   EnableCmd(hmenu, BME_EDIT_BOOKMARKNEXT, !te);
   EnableCmd(hmenu, BME_EDIT_BOOKMARKTOGGLE, !te);
@@ -3480,7 +3483,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, (Settings.RenderingTechnology > 0));
 
   CheckCmd(hmenu, IDM_VIEW_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
-  CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
+  CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
+  //~EnableCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, !faro);
 
   CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
   EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, sav);
@@ -3488,10 +3492,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles && sav);
   CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
   EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, sav);
-  CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
-  CheckCmd(hmenu, IDM_VIEW_EVALTINYEXPRONSEL, Settings.EvalTinyExprOnSelection);
-  EnableCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, sav);
 
+  CheckCmd(hmenu, IDM_VIEW_EVALTINYEXPRONSEL, Settings.EvalTinyExprOnSelection);
+  
   CheckCmd(hmenu, IDM_VIEW_CHANGENOTIFY, Settings.FileWatchingMode);
 
   if (StringCchLenW(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt)))
@@ -9820,8 +9823,8 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
   const WCHAR* szCurFile = StrIsNotEmpty(Globals.CurrentFile) ? Globals.CurrentFile : L".\\Untitled.txt";
 
   WCHAR tchBase[MAX_PATH] = { L'\0' };
-  StringCchCopy(tchBase, COUNTOF(tchBase), szCurFile);
-  PathStripPath(tchBase);
+  StringCchCopy(tchBase, COUNTOF(tchBase), PathFindFileName(szCurFile));  // eq. PathStripPath(tchBase);
+
 
   if (GetTempPath(MAX_PATH, lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer, TEXT("NP3"), 0, szTempFileName))
   {
@@ -9923,14 +9926,17 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     // File or "Untitled" ...
     WCHAR tch[MAX_PATH] = { L'\0' };
     if (StrIsNotEmpty(Globals.CurrentFile)) {
-      StringCchCopy(tch, COUNTOF(tch), PathFindFileName(Globals.CurrentFile));
-      PathStripPath(tch);
+      StringCchCopy(tch, COUNTOF(tch), PathFindFileName(Globals.CurrentFile));  // eq. PathStripPath(tch);
     }
     else {
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
 
-    switch (InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch))
+    INT_PTR const answer = (Settings.MuteMessageBeep) ? 
+                           InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch) :
+                           MessageBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch);
+    switch (answer)
+    //switch ()
     {
     case IDCANCEL:
       return false;
@@ -9948,7 +9954,9 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     DWORD const dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
     s_bFileReadOnly = (dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
     if (s_bFileReadOnly) {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, PathFindFileName(Globals.CurrentFile));
+      INT_PTR const answer = (Settings.MuteMessageBeep) ? 
+                             InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, PathFindFileName(Globals.CurrentFile)) : 
+                             MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_READONLY_SAVE, Globals.CurrentFile);
       if ((IDOK == answer) || (IDYES == answer)) {
         bSaveAs = true;
       }
@@ -10051,7 +10059,9 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
     if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME));
+      INT_PTR const answer = (Settings.MuteMessageBeep) ?
+                             InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME)) : 
+                             MessageBoxLng(MB_YESNO | MB_ICONSHIELD, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile, _W(SAPPNAME));
       if ((IDOK == answer) || (IDYES == answer)) 
       {
         if (DoElevatedRelaunch(&fioStatus, true))
@@ -10060,12 +10070,22 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         }
         else {
           s_flagAppIsClosing = false;
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+          if (Settings.MuteMessageBeep) {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+          }
+          else {
+            MessageBoxLng(MB_ICONWARNING, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
+          }
         }
       }
     }
     else {
-      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+      if (Settings.MuteMessageBeep) {
+        InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+      }
+      else {
+        MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
+      }
     }
   }
   return fSuccess;

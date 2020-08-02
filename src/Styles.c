@@ -4053,8 +4053,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             SendDlgItemMessage(hwnd, IDC_STYLEEDIT, EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS) - 1, 0);
 
-            MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV, -1, -1);
-            MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT, -1, -1);
+            MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
+            MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
 
             if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
             {
@@ -4097,8 +4097,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                                                            flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                                 TVSIL_NORMAL);
 
-          MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV, -1, -1);
-          MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT, -1, -1);
+          MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
+          MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
         }
         return !0;
 
@@ -4120,9 +4120,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             if (hFontTitle) { DeleteObject(hFontTitle); }
             hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
             LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+            int const newWidth = -MulDiv(MulDiv(lf.lfWidth,3,2), GetDeviceCaps(hDC, LOGPIXELSX), 72);
             int const newHeight = -MulDiv(MulDiv(lf.lfHeight,3,2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
             lf.lfWeight = FW_BOLD;
-            lf.lfWidth  = ScaleIntByDPI(8, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+            lf.lfWidth  = ScaleIntByDPI(newWidth, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
             lf.lfHeight = ScaleIntByDPI(newHeight, dpi.y);
             //~StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
             hFontTitle = CreateFontIndirect(&lf);
