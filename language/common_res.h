@@ -653,6 +653,7 @@
 #define IDM_VIEW_SHOW_HYPLNK_CALLTIP    40472
 #define IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK 40473
 #define IDM_VIEW_EDIT_LINECOMMENT       40474
+#define IDM_VIEW_EVALTINYEXPRONSEL      40475
 
 #define IDM_SET_RENDER_TECH_DEFAULT     40500
 #define IDM_SET_RENDER_TECH_D2D         40501
@@ -1096,5 +1097,15 @@
 #define IDS_LEX_CSV_COL_9               63409
 
 #define RICHEDIT_CONTROL_VER            "RichEdit50W"  // RICHEDIT_CONTROL_VER
+
+#ifndef ES_EX_ZOOMABLE
+#define ES_EX_ZOOMABLE                  0x0010L
+#endif
+
+#ifndef RICHEDTCTRL_ADDSTYLE
+#define RICHEDTCTRL_ADDSTYLE            0x29c4
+#endif
+
+//#ifndef 
 
 #endif //_COMMON_RES_H_

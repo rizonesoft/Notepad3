@@ -321,8 +321,10 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
   bFreezeAppTitle = true;
 
   // clear markers, flags and positions
-  if (bClearUndoHistory) { UndoRedoRecordingStop(); }
   if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
+  if (bClearUndoHistory) {
+    UndoRedoRecordingStop();
+  }
   _IGNORE_NOTIFY_CHANGE_;
   SciCall_Cancel();
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
@@ -342,7 +344,6 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
   SciCall_ChooseCaretX();
 
   if (bClearUndoHistory) {
-    SciCall_SetSavePoint();
     UndoRedoRecordingStart();
   }
 
@@ -355,56 +356,55 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 //
 //  EditConvertText()
 //
-bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSetSavePoint)
+bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
 {
   if ((encSource == encDest) || (Encoding_SciCP == encDest)) {
-    if (bSetSavePoint) {
-      SciCall_SetSavePoint();
-    }
-    return true; 
+    return false;
   }
-
-  if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest))) { return false; }
+  if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest))) {
+    return false;
+  }
 
   DocPos const length = SciCall_GetTextLength();
 
-  if (length <= 0)
-  {
-    EditSetNewText(hwnd, "", 0, bSetSavePoint);
+  if (length <= 0) {
+    EditSetNewText(hwnd, "", 0, true);
+    return false;
   }
-  else {
 
-    const DocPos chBufSize = length * 5 + 2;
-    char* pchText = AllocMem(chBufSize,HEAP_ZERO_MEMORY);
+  const DocPos chBufSize = length * 5 + 2;
+  char*        pchText   = AllocMem(chBufSize, HEAP_ZERO_MEMORY);
 
-    struct Sci_TextRange tr = { { 0, -1 }, NULL };
-    tr.lpstrText = pchText;
-    DocPos const rlength = SciCall_GetTextRange(&tr);
+  struct Sci_TextRange tr = {{0, -1}, NULL};
+  tr.lpstrText            = pchText;
+  DocPos const rlength    = SciCall_GetTextRange(&tr);
 
-    const DocPos wchBufSize = rlength * 3 + 2;
-    WCHAR* pwchText = AllocMem(wchBufSize, HEAP_ZERO_MEMORY);
+  const DocPos wchBufSize = rlength * 3 + 2;
+  WCHAR*       pwchText   = AllocMem(wchBufSize, HEAP_ZERO_MEMORY);
 
-    // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
-    const UINT cpDst = Encoding_GetCodePage(encDest);
-    
-    // get text as wide char
-    ptrdiff_t cbwText = MultiByteToWideCharEx(Encoding_SciCP,0, pchText, length, pwchText, wchBufSize);
-    // convert wide char to destination multibyte
-    ptrdiff_t cbText = WideCharToMultiByteEx(cpDst, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
-    // re-code to wide char
-    cbwText = MultiByteToWideCharEx(cpDst, 0, pchText, cbText, pwchText, wchBufSize);
-    // convert to Scintilla format
-    cbText = WideCharToMultiByteEx(Encoding_SciCP, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
+  // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
+  const UINT cpDst = Encoding_GetCodePage(encDest);
 
-    pchText[cbText] = '\0';
-    pchText[cbText+1] = '\0';
+  // get text as wide char
+  ptrdiff_t cbwText = MultiByteToWideCharEx(Encoding_SciCP, 0, pchText, length, pwchText, wchBufSize);
+  // convert wide char to destination multibyte
+  ptrdiff_t cbText = WideCharToMultiByteEx(cpDst, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
+  // re-code to wide char
+  cbwText = MultiByteToWideCharEx(cpDst, 0, pchText, cbText, pwchText, wchBufSize);
+  // convert to Scintilla format
+  cbText = WideCharToMultiByteEx(Encoding_SciCP, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
 
-    FreeMem(pwchText);
+  pchText[cbText]     = '\0';
+  pchText[cbText + 1] = '\0';
 
-    EditSetNewText(hwnd, pchText, cbText, bSetSavePoint);
+  FreeMem(pwchText);
 
-    FreeMem(pchText);
-  }
+  EditSetNewText(hwnd, pchText, cbText, true);
+
+  FreeMem(pchText);
+
+  Encoding_Current(encDest);
+
   return true;
 }
 
@@ -413,41 +413,40 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 //
 //  EditSetNewEncoding()
 //
-bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI)
+bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
 {
-  cpi_enc_t iCurrentEncoding = Encoding_Current(CPI_GET);
+  cpi_enc_t iCurrentEncoding = Encoding_GetCurrent();
 
   if (iCurrentEncoding != iNewEncoding) {
 
-    // conversion between arbitrary encodings may lead to unexpected results
-    //bool bOneEncodingIsANSI = (Encoding_IsANSI(iCurrentEncoding) || Encoding_IsANSI(iNewEncoding));
-    //bool bBothEncodingsAreANSI = (Encoding_IsANSI(iCurrentEncoding) && Encoding_IsANSI(iNewEncoding));
-    //if (!bOneEncodingIsANSI || bBothEncodingsAreANSI) {
-      // ~ return true; // this would imply a successful conversion - it is not !
-      //return false; // commented out ? : allow conversion between arbitrary encodings
-    //}
-
     // suppress recoding message for certain encodings
-    if ((Encoding_GetCodePage(iCurrentEncoding) == 936) && (Encoding_GetCodePage(iNewEncoding) == 54936)) {
-      bNoUI = true;
+    UINT const currentCP = Encoding_GetCodePage(iCurrentEncoding); 
+    UINT const targetCP  = Encoding_GetCodePage(iNewEncoding);
+    if (((currentCP == 936) && (targetCP == 54936)) || ((currentCP == 54936) && (targetCP == 936))) {
+      bSupressWarning = true;
     }
-    // and vice versa ???
 
-    if (SciCall_GetTextLength() <= 0) 
+    if (Sci_IsDocEmpty()) 
     {
-      bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bNoUI) ?
+      bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bSupressWarning) ?
         (InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2) == IDYES) : true;
 
       if (doNewEncoding) {
-        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, true);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
       }
     }
     else {
 
-      bool const doNewEncoding = (!bNoUI) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
+      if (!bSupressWarning) {
+        bool const bIsCurANSI   = Encoding_IsANSI(iCurrentEncoding);
+        bool const bIsTargetUTF = Encoding_IsUTF8(iNewEncoding) || Encoding_IsUNICODE(iNewEncoding);
+        bSupressWarning         = bIsCurANSI && bIsTargetUTF;
+      }
+
+      bool const doNewEncoding = (!bSupressWarning) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
 
       if (doNewEncoding) {
-        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, true);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
       }
     }
   }
@@ -464,13 +463,13 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
   if ((pszText == NULL) || (cchLen < 1))
     return false;
 
-  UINT codepage = Encoding_GetCodePage(Encoding_Current(CPI_GET));
+  UINT codepage = Encoding_GetCodePage(Encoding_GetCurrent());
 
   if ((codepage == CP_UTF7) || (codepage == CP_UTF8))
     return false;
 
   DWORD dwFlags = WC_NO_BEST_FIT_CHARS | WC_COMPOSITECHECK | WC_DEFAULTCHAR;
-  bool useNullParams = Encoding_IsMBCS(Encoding_Current(CPI_GET)) ? true : false;
+  bool  useNullParams = Encoding_IsMBCS(Encoding_GetCurrent()) ? true : false;
 
   BOOL bDefaultCharsUsed = FALSE;
   ptrdiff_t cch = 0;
@@ -1557,7 +1556,7 @@ bool EditSaveFile(
   CloseHandle(hFile);
 
   if (bWriteSuccess && !bSaveCopy) {
-    SciCall_SetSavePoint();
+    SetSavePoint();
   }
   return bWriteSuccess;
 }
@@ -4979,26 +4978,6 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 
 //=============================================================================
 //
-//  EditNormalizeView() 
-//
-void EditNormalizeView(const DocLn iDocumentLine)
-{
-  SciCall_EnsureVisible(iDocumentLine);
-  Sci_ScrollToLine(iDocumentLine);
-  if (iDocumentLine == Sci_GetCurrentLineNumber()) {
-    Sci_ScrollChooseCaret();
-  }
-  DocLn const vSlop = max_ln(2, Settings2.CurrentLineVerticalSlop);
-  DocLn const iVisibleFromDocLine = SciCall_VisibleFromDocLine(iDocumentLine - vSlop);
-  //DocLn const iDocLineFromVisible = SciCall_DocLineFromVisible(iVisibleFromDocLine);
-  if (iVisibleFromDocLine >= 0) {
-    SciCall_SetFirstVisibleLine(iVisibleFromDocLine);
-  }
-}
-
-
-//=============================================================================
-//
 //  EditEnsureSelectionVisible()
 //
 void EditEnsureSelectionVisible()
@@ -5007,8 +4986,8 @@ void EditEnsureSelectionVisible()
   DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
   DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iAnchorLine); } 
-  //~EditNormalizeView(iCurrentLine);
   SciCall_EnsureVisible(iCurrentLine);
+  SciCall_ScrollCaret();
 }
 
 
@@ -5640,7 +5619,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       // the global static Find/Replace data structure
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       Globals.hwndDlgFindReplace = hwnd;
 
@@ -5892,8 +5871,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-        return !0; // further processing
+      {
+        DPI_T dpi;
+        dpi.x = LOWORD(wParam);
+        dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+      }
+      return !0; // further processing
 
 
   case WM_ACTIVATE:
@@ -6471,13 +6455,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           // Display help messages in the find/replace windows
           else if (pnmhdr->idFrom == IDC_BACKSLASHHELP) {
-            MessageBoxLng(hwnd, MB_ICONINFORMATION, IDS_MUI_BACKSLASHHELP);
+            MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_BACKSLASHHELP);
           }
           else if (pnmhdr->idFrom == IDC_REGEXPHELP) {
-            MessageBoxLng(hwnd, MB_ICONINFORMATION, IDS_MUI_REGEXPHELP);
+            MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_REGEXPHELP);
           }
           else if (pnmhdr->idFrom == IDC_WILDCARDHELP) {
-            MessageBoxLng(hwnd, MB_ICONINFORMATION, IDS_MUI_WILDCARDHELP);
+            MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_WILDCARDHELP);
           }
           break;
 
@@ -7825,7 +7809,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         WCHAR wchLineCaption[96];
         WCHAR wchColumnCaption[96];
 
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         DocLn const iCurLine = SciCall_LineFromPosition(SciCall_GetCurrentPos())+1;
         DocLn const iMaxLnNum = SciCall_GetLineCount();
@@ -7849,7 +7833,12 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+      {
+        DPI_T dpi;
+        dpi.x = LOWORD(wParam);
+        dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+      }
       return true;
 
 
@@ -7864,7 +7853,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
           //~BOOL fTranslated = TRUE;
           //~DocLn iNewLine = (DocLn)GetDlgItemInt(hwnd, IDC_LINENUM, &fTranslated, FALSE);
 
-          int iExprError = 0;
+          intptr_t iExprError    = 0;
           bool bLnTranslated = true;
           DocLn iNewLine = 0;
           if (SendDlgItemMessage(hwnd, IDC_LINENUM, WM_GETTEXTLENGTH, 0, 0) > 0) 
@@ -7968,7 +7957,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         id_hover = 0;
         id_capture = 0;
 
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         static HFONT hFontNormal;
         if (NULL == (hFontNormal = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0))) {
@@ -7994,8 +7983,13 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-      return true;
+      {
+        DPI_T dpi;
+        dpi.x = LOWORD(wParam);
+        dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+      }
+       return true;
 
     case WM_DESTROY:
       DeleteObject(hFontHover);
@@ -8165,7 +8159,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_INITDIALOG:
       {
         piAlignMode = (int*)lParam;
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
         CheckRadioButton(hwnd,100,104,*piAlignMode+100);
         CenterDlgInParent(hwnd, NULL);
       }
@@ -8246,7 +8240,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
     case WM_INITDIALOG:
       {
         pdata = (PENCLOSESELDATA)lParam;
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,255,0);
         SetDlgItemTextW(hwnd,100,pdata->pwsz1);
         SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
@@ -8327,7 +8321,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
     case WM_INITDIALOG:
       {
         pdata = (PTAGSDATA)lParam;
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
         if (!wchOpenTagStrg[0]) { StringCchCopy(wchOpenTagStrg, COUNTOF(wchOpenTagStrg), L"<tag>"); }
         if (!wchCloseTagStrg[0]) { StringCchCopy(wchCloseTagStrg, COUNTOF(wchCloseTagStrg), L"</tag>"); }
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT, COUNTOF(wchOpenTagStrg)-1,0);
@@ -8470,7 +8464,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           *piSortFlags = SORT_ASCENDING | SORT_REMZEROLEN;
         }
 
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         if (*piSortFlags & SORT_DESCENDING) {
           CheckRadioButton(hwnd, 100, 102, 101);

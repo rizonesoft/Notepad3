@@ -99,7 +99,7 @@ Shift+F2                Go to privious bookmark.
 Ctrl+F2                 Set/Reset bookmark.
 Alt+F2                  Clear all.
 
-Ctrl+Shift+F            Toggle all folds.
+Ctrl+Alt+F              Toggle all folds.
 
 Ctrl+Alt+F2             Expand selection to next match.
 Ctrl+Alt+Shift+F2       Expand selection to previous match.

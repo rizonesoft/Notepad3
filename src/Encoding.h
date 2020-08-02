@@ -70,11 +70,11 @@ typedef struct _np2encoding {
 
 } NP2ENCODING;
 
-cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);            // getter/setter
-cpi_enc_t  Encoding_Forced(cpi_enc_t iEncoding);             // getter/setter
-cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc);          // getter/setter
-bool       Encoding_HasChanged(cpi_enc_t iOriginalEncoding); // query/setter
-           
+cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);         // getter/setter
+cpi_enc_t  Encoding_Forced(cpi_enc_t iEncoding);          // getter/setter
+cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc);       // getter/setter
+inline cpi_enc_t const Encoding_GetCurrent() { return Encoding_Current(CPI_GET); }
+
 void       Encoding_InitDefaults();
 int        Encoding_MapIniSetting(bool, int iSetting);
 
@@ -141,7 +141,7 @@ void ChangeEncodingCodePage(const cpi_enc_t cpi, UINT newCP);
 
 inline bool Encoding_IsValidIdx(const cpi_enc_t cpi)
 {
-  return ((cpi >= 0) && (cpi < Encoding_CountOf()));
+  return ((cpi > CPI_NONE) && (cpi < Encoding_CountOf()));
 }
 
 // 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 951 Big5-hkscs, 1361 Johab

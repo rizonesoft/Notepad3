@@ -1290,6 +1290,9 @@ void LoadSettings()
     Defaults2.ZoomTooltipTimeout = 3200;
     Settings2.ZoomTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"ZoomTooltipTimeout", Defaults2.ZoomTooltipTimeout), 0, 10000);
 
+    Defaults2.LargeIconScalePrecent = 150;
+    Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
+
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
     // --------------------------------------------------------------------------
@@ -1425,7 +1428,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
-    int const zoomScale = float2int(1000.0f / GetBaseFontSize(Globals.hwndMain));
+    int const zoomScale = 100;
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
@@ -1444,7 +1447,9 @@ void LoadSettings()
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
+    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);
+    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
@@ -1538,9 +1543,6 @@ void LoadSettings()
     Defaults.ToolBarTheme = -1;
     Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
     Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
-    if (Settings.ToolBarTheme < 0) { // undefined: determine higher than Full-HD
-      Settings.ToolBarTheme = (IsFullHD(Globals.hwndMain, -1, -1) <= 0) ? 0 : 1;
-    }
 
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
     Defaults.DpiScaleToolBar = false;
@@ -1879,6 +1881,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     IniSectionDelete(IniSecSettings, L"PrintMarginBottom", false);
   }
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EvalTinyExprOnSelection);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EscFunction);

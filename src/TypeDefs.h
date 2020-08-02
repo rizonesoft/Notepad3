@@ -202,7 +202,6 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
-
 // --------------------------------------------------------------------------
 
 #define MRU_MAXITEMS    32
@@ -427,6 +426,7 @@ typedef struct _settings_t
   int PrintColorMode;
   int PrintZoom;
   bool SaveBeforeRunningTools;
+  bool EvalTinyExprOnSelection;
   FILE_WATCHING_MODE FileWatchingMode;
   bool ResetFileWatching;
   int EscFunction;
@@ -531,6 +531,7 @@ typedef struct _settings2_t
   bool   LexerSQLNumberSignAsComment;
   int    ExitOnESCSkipLevel;
   int    ZoomTooltipTimeout;
+  int    LargeIconScalePrecent;
 
   float  AnalyzeReliableConfidenceLevel;
   float  LocaleAnsiCodePageAnalysisBonus;
@@ -656,9 +657,6 @@ typedef struct _themeFiles
 #define INTERNET_MAX_URL_LENGTH         (INTERNET_MAX_SCHEME_LENGTH \
                                         + sizeof("://") \
                                         + INTERNET_MAX_PATH_LENGTH)
-
-#define SET_NP3_DLG_ICON_BIG(hwnd)  if(Globals.hDlgIconBig){SendMessage((hwnd),WM_SETICON,ICON_BIG,(LPARAM)Globals.hDlgIconBig);}
-#define SET_NP3_DLG_ICON_SMALL(hwnd)  if(Globals.hDlgIconSmall){SendMessage((hwnd),WM_SETICON,ICON_SMALL,(LPARAM)Globals.hDlgIconSmall);}
 
 // ----------------------------------------------------------------------------
 
