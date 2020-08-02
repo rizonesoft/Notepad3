@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Lan&zar"
         BEGIN
-            MENUITEM "B&uscar en archivos\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "B&uscar en archivos\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
+            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Vista"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "&Plegable"
         BEGIN
             MENUITEM "&Código plegable",                    IDM_VIEW_FOLDING
-            MENUITEM "&Alternar pliegues\tCtrl+Shift+F",    IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Alternar pliegues\tCtrl+Alt+F",    IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "&Ir al siguiente pliegue\tAlt+ +",    CMD_FOLDJUMPDOWN
             MENUITEM "I&r al pliegue anterior\tAlt+ –",     CMD_FOLDJUMPUP
@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "&Salir de Notepad3",                  IDM_VIEW_ESCEXIT
         END
         MENUITEM "&Guardar antes de ejecutar",              IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calcular Mini-E&xpresiones",              IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Recordar"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Renderizado"
             BEGIN
-                MENUITEM "Defecto &GDI (sin ligaduras)",    IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",             IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (sin ligaduras)",            IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "&Bidireccional"
             BEGIN
