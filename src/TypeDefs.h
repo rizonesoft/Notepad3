@@ -531,6 +531,7 @@ typedef struct _settings2_t
   bool   LexerSQLNumberSignAsComment;
   int    ExitOnESCSkipLevel;
   int    ZoomTooltipTimeout;
+  int    LargeIconScalePrecent;
 
   float  AnalyzeReliableConfidenceLevel;
   float  LocaleAnsiCodePageAnalysisBonus;

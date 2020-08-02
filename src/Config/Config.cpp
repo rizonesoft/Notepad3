@@ -1290,6 +1290,9 @@ void LoadSettings()
     Defaults2.ZoomTooltipTimeout = 3200;
     Settings2.ZoomTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"ZoomTooltipTimeout", Defaults2.ZoomTooltipTimeout), 0, 10000);
 
+    Defaults2.LargeIconScalePrecent = 150;
+    Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
+
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
     // --------------------------------------------------------------------------
