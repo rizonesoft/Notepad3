@@ -33,19 +33,23 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.801.(build_#) (2020-08-01)
+Current BETA Version 5.20.802.(build_#) (2020-08-02)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 - 
+- Configuration ([Settings2]LargeIconScalePrecent) percent threshold to switch to 
+    bigger file types icons (lexer style selections).
 - ARM64_Build branch (Xperimental).
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
 - 
+- Resample scaling of info-box icons on DPI change.
+- Revert System's Message box for "save confirmation" (if message beeps are allowed).
 - High Quality Bitmap resampling method (Rizonesoft Bitmap).
 - DPI-Aware About & Custom.Scheme dialog.
 - Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
@@ -58,12 +62,13 @@ CHANGES:
 ENHANCEMENT:
 -----------------------------------------------------
 - 
+- (reserved)
 
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
 - 
-- 
+- Some more DPI-Awareness issues.
 - Ensure selection visible (scroll to current position).
 - Extend selection to next find (Ctrl+Alt+F2).
 - DPI-Awareness of About-Dlg (especially RichEdit-Ctrl).
@@ -76,18 +81,18 @@ FIXES:
 REMOVED:
 -----------------------------------------------------
 - 
-- 
+- (reserved)
 
 -----------------------------------------------------
 TRANSLATIONS (MUI):
 -----------------------------------------------------
 - 
-- Chinese Traditional (zh-TW) in progress...
-- Hindi (hi-IN) in progress...
-- Indonesian (id-ID) in progress...
-- Portuguese Brazilian (pt-BR) in progress...
-- Turkish (tr-TR) in progress...
-- Vietnamese (vi-VN) in progress...
+- Chinese Traditional (zh-TW) in waiting...
+- Hindi (hi-IN) in waiting...
+- Indonesian (id-ID) in waiting...
+- Turkish (tr-TR) in waiting...
+- Vietnamese (vi-VN) in waiting...
+- Portuguese Brazilian (pt-BR).
 
 
 =====================================================
@@ -601,7 +606,7 @@ CHANGES:
 - Change Default settings to make the first experience of Notepad3
     more attractive...
 - Open Find/Replace: Use most recent search pattern instead of clipboard
-    (if selection eis empty)
+    (if selection is empty).
 - Encoding affinity: UTF-8 instead of local ANSI code-page.
 - Replace dialog: tmp disable "mark all occ" in case of multi-line selection.
 - Adaptations for MS Visual Studio 2019 Preview.
