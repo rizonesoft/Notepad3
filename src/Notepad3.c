@@ -3702,10 +3702,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         else {
           InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, PathFindFileName(Globals.CurrentFile));
         }
-        dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
 
-        s_bFileReadOnly = (dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
-        
+        s_bFileReadOnly = IsReadOnly(GetFileAttributes(Globals.CurrentFile)); // ensure setting
+
         if (Flags.bSettingsFileSoftLocked) {
           Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
           UpdateSaveSettingsCmds();
@@ -9348,9 +9347,8 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
     fSuccess = EditSaveFile(Globals.hwndEdit, pszFileName, status, bSaveCopy, bPreserveTimeStamp);
   }
 
-  DWORD const dwFileAttributes = GetFileAttributes(pszFileName);
-  s_bFileReadOnly = ((dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY));
-
+  s_bFileReadOnly = IsReadOnly(GetFileAttributes(pszFileName));
+  
   EndWaitCursor();
 
   return(fSuccess);
@@ -9951,8 +9949,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   // Read only...
   if (!bSaveAs && !bSaveCopy && StrIsNotEmpty(Globals.CurrentFile))
   {
-    DWORD const dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
-    s_bFileReadOnly = (dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+    s_bFileReadOnly = IsReadOnly(GetFileAttributes(Globals.CurrentFile));
     if (s_bFileReadOnly) {
       INT_PTR const answer = (Settings.MuteMessageBeep) ? 
                              InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, PathFindFileName(Globals.CurrentFile)) : 

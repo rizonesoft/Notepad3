@@ -152,7 +152,7 @@ inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI
 
 // ----------------------------------------------------------------------------
 
-HBITMAP ConvertIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy);
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI);

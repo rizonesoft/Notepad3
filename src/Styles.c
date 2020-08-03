@@ -4104,7 +4104,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         case WM_PAINT:
         {
-            HDC const hDC = GetWindowDC(hwnd);
+            HDC const hdc = GetWindowDC(hwnd);
+            SetMapMode(hdc, MM_TEXT);
+
             DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
             int const   iconSize  = 64;
@@ -4113,23 +4115,25 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
             if (hicon)
             {
-              DrawIconEx(hDC, ScaleIntByDPI(340, dpi.x), ScaleIntByDPI(62, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+              DrawIconEx(hdc, ScaleIntByDPI(340, dpi.x), ScaleIntByDPI(62, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
             }
 
             // Set title font
-            if (hFontTitle) { DeleteObject(hFontTitle); }
-            hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-            LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-            int const newWidth = -MulDiv(MulDiv(lf.lfWidth,3,2), GetDeviceCaps(hDC, LOGPIXELSX), 72);
-            int const newHeight = -MulDiv(MulDiv(lf.lfHeight,3,2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
-            lf.lfWeight = FW_BOLD;
-            lf.lfWidth  = ScaleIntByDPI(newWidth, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-            lf.lfHeight = ScaleIntByDPI(newHeight, dpi.y);
-            //~StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
-            hFontTitle = CreateFontIndirect(&lf);
-            SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+            NONCLIENTMETRICSW ncMetrics = {0};
+            ncMetrics.cbSize            = sizeof(NONCLIENTMETRICSW);
+            if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncMetrics, 0))
+            {
+              if (hFontTitle) {
+                DeleteObject(hFontTitle);
+              }
+              int const verFontSize            = ScaleIntByDPI(16, dpi.y);
+              ncMetrics.lfMessageFont.lfWeight = FW_BOLD;
+              ncMetrics.lfMessageFont.lfHeight = -MulDiv(verFontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+              hFontTitle                       = CreateFontIndirectW(&ncMetrics.lfMessageFont);
+              SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+            }
 
-            ReleaseDC(hwnd, hDC);
+            ReleaseDC(hwnd, hdc);
         }
         return 0;
 

@@ -106,9 +106,7 @@ bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
   // check for read-only file attribute
   if (genericAccessRights & GENERIC_WRITE) 
   {
-    DWORD const dwFileAttributes = GetFileAttributes(lpIniFilePath);
-    if ((dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY))
-    {
+    if (IsReadOnly(GetFileAttributes(lpIniFilePath))) {
       return false;
     }
   }
@@ -2146,10 +2144,10 @@ void CmdSaveSettingsNow()
   }
   if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
     InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
-    if (dwFileAttributes != 0) {
+    if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES)) {
       SetFileAttributes(Globals.IniFile, dwFileAttributes); // reset
-      Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
     }
+    Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
   }
   else {
     Globals.dwLastError = GetLastError();
