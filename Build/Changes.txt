@@ -39,60 +39,62 @@ Current BETA Version 5.20.802.(build_#) (2020-08-02)
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- 
-- Configuration ([Settings2]LargeIconScalePrecent) percent threshold to switch to 
-    bigger file types icons (lexer style selections).
-- ARM64_Build branch (Xperimental).
+[.###.#]- 
+[.802.1]- Configuration ([Settings2]LargeIconScalePrecent) percent threshold to switch to 
+            bigger file types icons (lexer style selections).
+[.727.1]- DPI-Aware treeview/listview lexer type icons.
+[.727.1]- New string "Calculate Tiny-Expressions".
+[branch]- ARM64_Build branch (Xperimental).
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
-- 
-- Resample scaling of info-box icons on DPI change.
-- Revert System's Message box for "save confirmation" (if message beeps are allowed).
-- High Quality Bitmap resampling method (Rizonesoft Bitmap).
-- DPI-Aware About & Custom.Scheme dialog.
-- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
-- Review document modified handler (dirty-flag).
-- Update grepWinNP3 (GRE) version 2.1.3.21 (2020-07-24).
-- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-05).
-- Update Scintilla Library (SCI) version 4.4.4 (2020-07-21).
+[.###.#]- 
+[.802.1]- Resample scaling of info-box icons on DPI change.
+[.802.1]- Revert System's Message box for "save confirmation" (if message beeps are allowed).
+[.802.1]- High Quality Bitmap resampling method (Rizonesoft Bitmap).
+[.729.1]- DPI-Aware About & Custom.Scheme dialog.
+[.729.1]- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
+[.723.1]- Review document modified handler (dirty-flag).
+[.724.1]- Update grepWinNP3 (GRE) version 2.1.3.21 (2020-07-24).
+[.722.2]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-05).
+[.724.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-07-21).
 
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
-- 
-- (reserved)
+[.###.#]- 
+[.###.#]- 
 
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
-- 
-- Some more DPI-Awareness issues.
-- Ensure selection visible (scroll to current position).
-- Extend selection to next find (Ctrl+Alt+F2).
-- DPI-Awareness of About-Dlg (especially RichEdit-Ctrl).
-- Non case sensitive style attribute search (find file extensions non case sensitive).
-- Notepad3 should save (no ask) & exit on Shift+ESC Hotkey.
-- Clear selection by ESC should not populate undo/redo stack.
-- No document modified flag on forced re-decode file (recode) w/ other encoding.
+[.###.#]- 
+[.802.1]- Some more DPI-Awareness issues.
+[.801.1]- Ensure selection visible (scroll to current position).
+[.801.1]- Extend selection to next find (Ctrl+Alt+F2).
+[.801.1]- DPI-Awareness of About-Dlg (especially RichEdit-Ctrl).
+[.801.1]- Non case sensitive style attribute search (find file extensions non case sensitive).
+[.724.1]- Notepad3 should save (no ask) & exit on Shift+ESC Hotkey.
+[.723.2]- Clear selection by ESC should not populate undo/redo stack.
+[.722.2]- No document modified flag on forced re-decode file (recode) w/ other encoding.
 
 -----------------------------------------------------
 REMOVED:
 -----------------------------------------------------
-- 
-- (reserved)
+[.###.#]- 
+[.###.#]- 
 
 -----------------------------------------------------
 TRANSLATIONS (MUI):
 -----------------------------------------------------
-- 
-- Chinese Traditional (zh-TW) in waiting...
-- Hindi (hi-IN) in waiting...
-- Indonesian (id-ID) in waiting...
-- Turkish (tr-TR) in waiting...
-- Vietnamese (vi-VN) in waiting...
-- Portuguese Brazilian (pt-BR).
+[.###.#]- 
+[.802.1]- Portuguese Brazilian (pt-BR).
+[.722.2]- Chinese Traditional (zh-TW) in waiting...
+[.722.2]- Hindi (hi-IN) in waiting...
+[.722.2]- Indonesian (id-ID) in waiting...
+[.722.2]- Turkish (tr-TR) in waiting...
+[.722.2]- Vietnamese (vi-VN) in waiting...
 
 
 =====================================================
