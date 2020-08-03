@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.802.(build_#) (2020-08-02)
+Current BETA Version 5.20.803.(build_#) (2020-08-03)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.803.1]- Title font change DPI-Awareness for About and Customize Schemes dialog.
 [.802.1]- Resample scaling of info-box icons on DPI change.
 [.802.1]- Revert System's Message box for "save confirmation" (if message beeps are allowed).
 [.802.1]- High Quality Bitmap resampling method (Rizonesoft Bitmap).
@@ -70,6 +71,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.803.1]- No read-only file attribute if removed externally.
 [.802.1]- Some more DPI-Awareness issues.
 [.801.1]- Ensure selection visible (scroll to current position).
 [.801.1]- Extend selection to next find (Ctrl+Alt+F2).
