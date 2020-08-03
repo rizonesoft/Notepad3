@@ -803,30 +803,33 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   case WM_PAINT:
     {
-      HDC const hDC = GetWindowDC(hwnd);
+      HDC const hdc = GetWindowDC(hwnd);
+      SetMapMode(hdc, MM_TEXT);
 
       int const iconSize = 128;
       int const dpiWidth = ScaleIntByDPI(iconSize, dpi.x);
       int const dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
       HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
       if (hicon) {
-        DrawIconEx(hDC, ScaleIntByDPI(22, dpi.x), ScaleIntByDPI(44, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+        DrawIconEx(hdc, ScaleIntByDPI(22, dpi.x), ScaleIntByDPI(44, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
       }
 
       // --- larger bold condensed version string
-      if (hVersionFont) { DeleteObject(hVersionFont); }
-      hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
-      LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
-      int const newWidth  = -MulDiv(MulDiv(lf.lfWidth, 3, 2), GetDeviceCaps(hDC, LOGPIXELSX), 72);
-      int const newHeight = -MulDiv(MulDiv(lf.lfHeight, 3, 2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
-      lf.lfWeight = FW_BOLD;
-      lf.lfWidth  = ScaleIntByDPI(newWidth, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-      lf.lfHeight = ScaleIntByDPI(newHeight, dpi.y);
-      //~StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
-      hVersionFont = CreateFontIndirect(&lf);
-      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+      NONCLIENTMETRICSW ncMetrics = {0};
+      ncMetrics.cbSize            = sizeof(NONCLIENTMETRICSW);
+      if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncMetrics, 0))
+      {
+        if (hVersionFont) {
+          DeleteObject(hVersionFont);
+        }
+        int const verFontSize = ScaleIntByDPI(14, dpi.y);
+        ncMetrics.lfMessageFont.lfWeight = FW_BOLD;
+        ncMetrics.lfMessageFont.lfHeight = -MulDiv(verFontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+        hVersionFont = CreateFontIndirectW(&ncMetrics.lfMessageFont);
+        SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+      }
 
-      ReleaseDC(hwnd, hDC);
+      ReleaseDC(hwnd, hdc);
     }
     return 0;
 
@@ -4667,27 +4670,28 @@ static void _GetIconInfo(HICON hIcon, int* width, int* height, WORD* bitsPerPix)
 //  ConvertIconToBitmap()
 //  cx/cy = 0  =>  use resource width/height
 //
-HBITMAP ConvertIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy)
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
 {
-  UNUSED(hwnd);
   int wdc = cx;
   int hdc = cy;
   if ((cx == 0) || (cy == 0)) {
     _GetIconInfo(hIcon, &wdc, &hdc, NULL);
   }
-  HDC const hScreenDC = GetDC(NULL);
+  // increase & condense size
+  wdc <<= 4;  hdc <<= 4;
+ 
+  HDC     const hScreenDC = GetDC(NULL);
   HBITMAP const hbmpTmp   = CreateCompatibleBitmap(hScreenDC, wdc, hdc);
-  HDC const hMemDC = CreateCompatibleDC(hScreenDC);
-  HBITMAP const hOldBmp = SelectObject(hMemDC, hbmpTmp);
-  DrawIconEx(hMemDC, 0, 0, hIcon, cx, cy, 0, NULL, DI_NORMAL /*&~DI_DEFAULTSIZE*/ );
+  HDC     const hMemDC    = CreateCompatibleDC(hScreenDC);
+  HBITMAP const hOldBmp   = SelectObject(hMemDC, hbmpTmp);
+  DrawIconEx(hMemDC, 0, 0, hIcon, wdc, hdc, 0, NULL, DI_NORMAL /*&~DI_DEFAULTSIZE*/);
   SelectObject(hMemDC, hOldBmp);
 
-  HBITMAP const hDibBmp = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
+  UINT    const copyFlags = LR_COPYDELETEORG | LR_COPYRETURNORG | LR_DEFAULTSIZE | LR_CREATEDIBSECTION;
+  HBITMAP const hDibBmp   = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, cx, cy, copyFlags);
 
-  DeleteObject(hbmpTmp);
   DeleteDC(hMemDC);
   ReleaseDC(NULL, hScreenDC);
-
   return hDibBmp;
 }
 
@@ -4697,7 +4701,8 @@ HBITMAP ConvertIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const in
 //
 HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy)
 {
-  HBITMAP const hBmp = ConvertIconToBitmap(hwnd, hIcon, 0, 0);
+  //~return ConvertIconToBitmap(hwnd, hIcon, cx, cy);
+  HBITMAP const hBmp = ConvertIconToBitmap(hIcon, 0, 0);
   return ResampleImageBitmap(hwnd, hBmp, cx, cy);
 }
 
@@ -4720,7 +4725,7 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
     MENUITEMINFO mii = { 0 };
     mii.cbSize = sizeof(MENUITEMINFO);
     mii.fMask = MIIM_BITMAP;
-    mii.hbmpItem = ConvertIconToBitmap(hwnd, Globals.hIconMsgShieldSmall, cx, cy);
+    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
     SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
   }
   bInitialized = true;
@@ -4731,32 +4736,37 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 //
 //  UpdateWindowLayoutForDPI()
 //
-void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI)
+inline WRCT_T _ConvWinRectW(const RECT* pRC)
+{
+  WRCT_T wrc;
+  wrc.left   = pRC->left;
+  wrc.top    = pRC->top;
+  wrc.right  = pRC->right;
+  wrc.bottom = pRC->bottom;
+  return wrc;
+}
+
+void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* prc, const DPI_T* pdpi)
 {
   UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED; //~ SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION
-  if (pRC) {
-    SetWindowPos(hwnd, NULL, pRC->left, pRC->top, (pRC->right - pRC->left), (pRC->bottom - pRC->top), uWndFlags);
+  
+  if (prc) {
+    SetWindowPos(hwnd, NULL, prc->left, prc->top, (prc->right - prc->left), (prc->bottom - prc->top), uWndFlags);
     return;
   }
  
-  DPI_T const wndDPI = pDPI ? *pDPI : Scintilla_GetWindowDPI(hwnd);
+  DPI_T const dpi = pdpi ? *pdpi : Scintilla_GetWindowDPI(hwnd);
 
-  RECT rc;
-  GetWindowRect(hwnd, &rc);
+  RECT rc;  GetWindowRect(hwnd, &rc);
   //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
-  LONG const width = rc.right - rc.left;
-  LONG const height = rc.bottom - rc.top;
-  int const  dpiScaledX      = MulDiv(rc.left, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
-  int const  dpiScaledY      = MulDiv(rc.top, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-  int const  dpiScaledWidth  = MulDiv(width, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
-  int const  dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-
-  SetWindowPos(hwnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight, uWndFlags);
+  WRCT_T wrc = _ConvWinRectW(prc);
+  Scintilla_AdjustWindowRectForDpi(&wrc, uWndFlags, 0, dpi);
+  SetWindowPos(hwnd, NULL, wrc.left, wrc.top, (wrc.right - wrc.left), (wrc.bottom - wrc.top), uWndFlags);
 }
 
 //=============================================================================
 //
-//  ResampleImageBitmap()
+//  ResampleImageBitmap()  (resample_delete_orig)
 //  if width|height <= 0 : scale bitmap to current dpi
 //
 HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
@@ -4770,12 +4780,12 @@ HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
         height = ScaleIntByDPI(bmp.bmHeight, dpi.y);
       }
       if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) {
-#if FALSE      
-        //HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
-#else
+#if TRUE      
         HDC const hdc   = GetDC(hwnd);
         HBITMAP   hCopy = CreateResampledBitmap(hdc, hbmp, width, height, BMP_RESAMPLE_FILTER);
         ReleaseDC(hwnd, hdc);
+#else
+        HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
 #endif
         if (hCopy && (hCopy != hbmp)) {
           DeleteObject(hbmp);
@@ -4804,7 +4814,7 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
 
 //=============================================================================
 
-#if 0
+#if FALSE
 void Handle_WM_PAINT(HWND hwnd)
 {
   static HFONT hVersionFont = NULL;
