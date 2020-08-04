@@ -260,6 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Час/дата (кароткая форма)\tCtrl+F5",     IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Час/&дата (доўгая форма)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Current Timestamp",                      CMD_INSERT_TIMESTAMP
             MENUITEM "&Аднавіць меткі часу\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Каментарыі (пераключыць)\tCtrl+Q",       IDM_EDIT_LINECOMMENT

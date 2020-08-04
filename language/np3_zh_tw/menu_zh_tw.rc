@@ -260,6 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "日期和時間（短格式）(&T)\tCtrl+F5",         IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "日期和時間（長格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Current Timestamp",                      CMD_INSERT_TIMESTAMP
             MENUITEM "更新時間戳(&U)\tShift+F5",                 CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "切換行註釋(&L)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
