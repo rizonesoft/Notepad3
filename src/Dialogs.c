@@ -814,6 +814,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       int const dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
       HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
       if (hicon) {
+        //RECT rc = {0};
+        //MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
         DrawIconEx(hdc, ScaleIntByDPI(22, dpi.x), ScaleIntByDPI(44, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
       }
 

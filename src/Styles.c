@@ -4083,8 +4083,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         case WM_DPICHANGED:
         {
-          UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-
           DPI_T dpi;
           dpi.x = LOWORD(wParam);
           dpi.y = HIWORD(wParam);
@@ -4099,6 +4097,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
           MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
           MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
+
+          UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
         }
         return !0;
 
@@ -4115,7 +4115,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
             if (hicon)
             {
-              DrawIconEx(hdc, ScaleIntByDPI(340, dpi.x), ScaleIntByDPI(62, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+              RECT rc = {0};
+              MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
+              DrawIconEx(hdc, rc.left + ScaleIntByDPI(20, dpi.x), rc.top + ScaleIntByDPI(50, dpi.y), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
             }
 
             // Set title font
