@@ -1265,13 +1265,21 @@ void LoadSettings()
       Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
     StrTrimW(Settings2.LineCommentPostfixStrg, L"\"'");
 
-    Defaults2.DateTimeFormat[0] = L'\0';
+    Defaults2.DateTimeFormat[0] = L'\0'; // empty to get <locale date-time format>
     IniSectionGetString(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
     StrTrim(Settings2.DateTimeFormat, L"\"'");
+
+    Defaults2.DateTimeLongFormat[0] = L'\0'; // empty to get <locale date-time format>
+    IniSectionGetString(IniSecSettings2, L"DateTimeLongFormat", Defaults2.DateTimeLongFormat, Settings2.DateTimeLongFormat, COUNTOF(Settings2.DateTimeLongFormat));
+    StrTrim(Settings2.DateTimeLongFormat, L"\"'");
 
     StringCchCopyW(Defaults2.TimeStampRegEx, COUNTOF(Defaults2.TimeStampRegEx), L"\\$Date:[^\\$]+\\$");
     IniSectionGetString(IniSecSettings2, L"TimeStampRegEx", Defaults2.TimeStampRegEx, Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
     StrTrim(Settings2.TimeStampRegEx, L"\"'");
+
+    StringCchCopyW(Defaults2.TimeStampFormat, COUNTOF(Defaults2.TimeStampFormat), L"$Date: %s $");
+    IniSectionGetString(IniSecSettings2, L"TimeStampFormat", Defaults2.TimeStampFormat, Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
+    StrTrim(Settings2.TimeStampFormat, L"\"'");
 
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));

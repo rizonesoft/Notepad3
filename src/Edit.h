@@ -54,8 +54,8 @@ void  EditHex2Char(HWND hwnd);
 void  EditFindMatchingBrace();
 void  EditSelectToMatchingBrace();
 void  EditModifyNumber(HWND hwnd, bool bIncrease);
+void  EditInsertDateTimeStrg(bool bShortFmt, bool bTimestampFmt);
 void  EditUpdateTimestamps();
-void  EditInsertTimestamps(bool bShortFmt);
 
 void  EditTabsToSpaces(int nTabWidth, bool bOnlyIndentingWS);
 void  EditSpacesToTabs(int nTabWidth, bool bOnlyIndentingWS);

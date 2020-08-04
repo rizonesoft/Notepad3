@@ -260,7 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Hora/Da&ta (abreviada)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Hora/Data (por extenso)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Act&ualizar data/hora\tShift+F5",          CMD_TIMESTAMPS
+            MENUITEM "Act&ualizar data/hora\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Linha de comentário (Alternar)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
             MENUITEM "Vária&s linhas de comentário\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT

@@ -260,7 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "日付と時刻(/)(&T)\tCtrl+F5",                IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "日付と時刻(年月日)(&L)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "日付と時刻の更新(&U)\tShift+F5",             CMD_TIMESTAMPS
+            MENUITEM "日付と時刻の更新(&U)\tShift+F5",             CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "行コメント(切替)(&L)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
             MENUITEM "ブロックコメント(&S)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
