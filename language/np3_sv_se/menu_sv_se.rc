@@ -260,6 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Tid och datum (kort)\tCtrl+F5",               IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Tid och datum (lång)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Current Timestamp",                          CMD_INSERT_TIMESTAMP
             MENUITEM "Uppdatera tidsstämplar\tShift+F5",            CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "Linjekommentar (växla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT

@@ -244,25 +244,26 @@ BEGIN
             MENUITEM "Ta&bular indentação\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
             MENUITEM "Remover tabulação da indentação\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Codificar &URL\tCtrl+Shift+E",      IDM_EDIT_URLENCODE
-            MENUITEM "&Descodificar URL\tCtrl+Shift+R",      IDM_EDIT_URLDECODE
+            MENUITEM "Codificar &URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
+            MENUITEM "&Descodificar URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
             MENUITEM "&Caractere para Hex\tCtrl+Alt+X",       IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex para Caractere\tCtrl+Alt+C",       IDM_EDIT_HEX2CHAR
         END
         POPUP "&Inserir"
         BEGIN
-            MENUITEM "&Nova linha acima\tCtrl+Enter",           CMD_INSERTNEWLINE
+            MENUITEM "&Nova linha acima\tCtrl+Enter",            CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
-            MENUITEM "Etiqueta &HTML/XML...\tAlt+X",               IDM_EDIT_INSERT_TAG
+            MENUITEM "Etiqueta &HTML/XML...\tAlt+X",             IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "Id&entificador de codificação\tCtrl+F8",         IDM_EDIT_INSERT_ENCODING
+            MENUITEM "Id&entificador de codificação\tCtrl+F8",   IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "Hora/Da&ta (abreviada)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Hora/Data (por extenso)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "Hora/Da&ta (abreviada)\tCtrl+F5",          IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Hora/Data (por extenso)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Current Timestamp",                       CMD_INSERT_TIMESTAMP
             MENUITEM "Act&ualizar data/hora\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Linha de comentário (Alternar)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
+            MENUITEM "&Linha de comentário (Alternar)\tCtrl+Q",            IDM_EDIT_LINECOMMENT
             MENUITEM "Vária&s linhas de comentário\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
         END
         POPUP "&Diversos"
