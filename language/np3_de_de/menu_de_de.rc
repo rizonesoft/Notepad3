@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Zeit/Datum (Kurzform)\tCtrl+F5",                    IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Zeit/Datum (&Langform)\tCtrl+Shift+F5",              IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Aktualisiere Zeitstempel\tShift+F5",                CMD_TIMESTAMPS
+            MENUITEM "&Aktueller Zeitstempel",                             CMD_INSERT_TIMESTAMP
+            MENUITEM "&Aktualisiere Zeitstempel\tShift+F5",                CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Einzeilenkommentar (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
             MENUITEM "&Mehrzeilenkommentar\tCtrl+Shift+Q",                 IDM_EDIT_STREAMCOMMENT

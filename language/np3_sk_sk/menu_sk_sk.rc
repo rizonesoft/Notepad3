@@ -260,7 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Čas/Dátum (&krátky)\tCtrl+F5",            IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Čas/Dátum (&dlhý)\tCtrl+Shift+F5",        IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Aktualizovať časové značky\tShift+F5",   CMD_TIMESTAMPS
+            MENUITEM "&Aktualizovať časové značky\tShift+F5",   CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Riadkový komentár (zap./vyp.)\tCtrl+Q",  IDM_EDIT_LINECOMMENT
             MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT

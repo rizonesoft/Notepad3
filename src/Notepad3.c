@@ -16,6 +16,7 @@
 
 #include "Helpers.h"
 
+#include <crtdbg.h>
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <shlobj.h>
@@ -756,13 +757,37 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 }
 
 
+
+//=============================================================================
+//
+//  InvalidParameterHandler()
+//
+void InvalidParameterHandler(const wchar_t* expression,
+                             const wchar_t* function,
+                             const wchar_t* file,
+                             unsigned int   line,
+                             uintptr_t      pReserved)
+{
+  UNUSED(expression);
+  UNUSED(pReserved);
+  WCHAR msg[256];
+  StringCchPrintf(msg, COUNTOF(msg), 
+                  L"Invalid Parameter in function '%s()' - File:'%s' Line:%i !",
+                  function, file, line);
+  DbgMsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
+}
+
+
+
 //=============================================================================
 //
 //  WinMain()
 //
-//
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
+  _set_invalid_parameter_handler(InvalidParameterHandler);
+  _CrtSetReportMode(_CRT_ASSERT, 0); // Disable the message box for assertions.
+
   _InitGlobals();
 
   // Set global variable Globals.hInstance
@@ -3370,7 +3395,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_DELETELINERIGHT, !te && !ro);
   EnableCmd(hmenu, CMD_CTRLBACK, !te && !ro);
   EnableCmd(hmenu, CMD_CTRLDEL, !te && !ro);
-  EnableCmd(hmenu, CMD_TIMESTAMPS, !te && !ro);
+  EnableCmd(hmenu, CMD_INSERT_TIMESTAMP, !ro);
+  EnableCmd(hmenu, CMD_UPDATE_TIMESTAMPS, !te && !ro);
 
   EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(Globals.hwndDlgCustomizeSchemes));
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
@@ -4490,7 +4516,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INSERT_SHORTDATE:
     case IDM_EDIT_INSERT_LONGDATE:
-      EditInsertTimestamps((iLoWParam == IDM_EDIT_INSERT_SHORTDATE));
+      EditInsertDateTimeStrg((iLoWParam == IDM_EDIT_INSERT_SHORTDATE), false);
       break;
 
 
@@ -5881,7 +5907,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  break;
 
 
-    case CMD_TIMESTAMPS:
+    case CMD_INSERT_TIMESTAMP:
+      EditInsertDateTimeStrg(true, true);
+      break;
+
+    case CMD_UPDATE_TIMESTAMPS:
       EditUpdateTimestamps();
       break;
 

@@ -209,6 +209,9 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 {
 #ifdef _DEBUG
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
   return MsgBoxLastError(lpszMessage, dwErrID);
 #else
   UNUSED(lpszMessage);

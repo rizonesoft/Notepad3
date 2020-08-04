@@ -352,7 +352,7 @@ typedef struct _globals_t
 
   FR_STATES FindReplaceMatchFoundState;
 
-  WCHAR     SelectedThemeName[128];
+  WCHAR     SelectedThemeName[SMALL_BUFFER];
   WCHAR     WorkingDirectory[MAX_PATH];
   WCHAR     IniFile[MAX_PATH];
   WCHAR     IniFileDefault[MAX_PATH];
@@ -537,25 +537,27 @@ typedef struct _settings2_t
   float  LocaleAnsiCodePageAnalysisBonus;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
-  WCHAR DefaultExtension[64];
+  WCHAR DefaultExtension[MINI_BUFFER];
   WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
   WCHAR FileBrowserPath[MAX_PATH];
   WCHAR GrepWinPath[MAX_PATH];
-  WCHAR AppUserModelID[128];
-  WCHAR AutoCompleteFillUpChars[64];
-  WCHAR LineCommentPostfixStrg[64];
+  WCHAR AppUserModelID[SMALL_BUFFER];
+  WCHAR AutoCompleteFillUpChars[MINI_BUFFER];
+  WCHAR LineCommentPostfixStrg[MINI_BUFFER];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
 
-  WCHAR DateTimeFormat[128];
-  WCHAR TimeStampRegEx[256];
+  WCHAR DateTimeFormat[SMALL_BUFFER];
+  WCHAR DateTimeLongFormat[SMALL_BUFFER];
+  WCHAR TimeStampRegEx[SMALL_BUFFER];
+  WCHAR TimeStampFormat[SMALL_BUFFER];
 
   WCHAR WebTemplate1[MAX_PATH];
   WCHAR WebTemplate2[MAX_PATH];
   WCHAR AdministrationTool[MAX_PATH];
-  WCHAR DefaultWindowPosition[64];
+  WCHAR DefaultWindowPosition[MINI_BUFFER];
 
 } SETTINGS2_T, *PSETTINGS2_T;
 
@@ -635,7 +637,7 @@ typedef struct _editfileiostatus
 typedef struct _themeFiles
 {
   UINT    rid;
-  WCHAR   szName[80];
+  WCHAR   szName[MINI_BUFFER];
   WCHAR   szFilePath[MAX_PATH];
 
 } THEMEFILES, * PTHEMEFILES;

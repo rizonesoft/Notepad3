@@ -260,7 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Dátum/Idő (rövid)\tCtrl+F5",                IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Dátum/Idő (&hosszú)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Időbélye&gek frissítése\tShift+F5",          CMD_TIMESTAMPS
+            MENUITEM "Időbélye&gek frissítése\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
             MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
