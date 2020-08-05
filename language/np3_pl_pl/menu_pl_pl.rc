@@ -325,6 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Aktywne miejsca hiperpłącza\tCtrl+Alt+W",         IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Definicja kolorów Hotspotów",                    IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Highlight Unicode-&Points",                       IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Wyróżnianie pasujących nawiasów\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Wyróżnianie bieżącego wiersza\tCtrl+Shift+I"
         BEGIN

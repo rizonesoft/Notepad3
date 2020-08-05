@@ -300,43 +300,44 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Procurar"
         BEGIN
-            MENUITEM "&Localizar...\tCtrl+F",                      IDM_EDIT_FIND
-            MENUITEM "Guardar texto localizado\tAlt+F3",                IDM_EDIT_SAVEFIND
-            MENUITEM "Localizar seg&uinte\tF3",                        IDM_EDIT_FINDNEXT
-            MENUITEM "Localizar &anterior\tShift+F3",              IDM_EDIT_FINDPREV
-            MENUITEM "Localizar selecção seguinte\tCtrl+F3",           CMD_FINDNEXTSEL
-            MENUITEM "Localizar selecção anterior\tCtrl+Shift+F3", CMD_FINDPREVSEL
-            MENUITEM "Substitui&r...\tCtrl+H",                   IDM_EDIT_REPLACE
-            MENUITEM "Substituir se&guinte\tF4",                     IDM_EDIT_REPLACENEXT
-            MENUITEM "&Ir para...\tCtrl+G",                      IDM_EDIT_GOTOLINE
+            MENUITEM "&Localizar...\tCtrl+F",                         IDM_EDIT_FIND
+            MENUITEM "Guardar texto localizado\tAlt+F3",              IDM_EDIT_SAVEFIND
+            MENUITEM "Localizar seg&uinte\tF3",                       IDM_EDIT_FINDNEXT
+            MENUITEM "Localizar &anterior\tShift+F3",                 IDM_EDIT_FINDPREV
+            MENUITEM "Localizar selecção seguinte\tCtrl+F3",          CMD_FINDNEXTSEL
+            MENUITEM "Localizar selecção anterior\tCtrl+Shift+F3",    CMD_FINDPREVSEL
+            MENUITEM "Substitui&r...\tCtrl+H",                        IDM_EDIT_REPLACE
+            MENUITEM "Substituir se&guinte\tF4",                      IDM_EDIT_REPLACENEXT
+            MENUITEM "&Ir para...\tCtrl+G",                           IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
             MENUITEM "&Procurar em ficheiros\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Ver"
     BEGIN
-        MENUITEM "Moldar texto\tCtrl+W",                   IDM_VIEW_WORDWRAP
+        MENUITEM "Moldar texto\tCtrl+W",                        IDM_VIEW_WORDWRAP
         MENUITEM "Marcador de linha &longa\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
-        MENUITEM "&Guias de indentação\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "&Guias de indentação\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Mostrar símbolos de mudança de linha\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Mostrar espaços\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
-        MENUITEM "Mostrar fins d&e linha\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
+        MENUITEM "Mostrar espaços\tCtrl+Shift+8",                          IDM_VIEW_SHOWBLANKS
+        MENUITEM "Mostrar fins d&e linha\tCtrl+Shift+9",                   IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "Realçar &hiperligações\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Definição de &cor do realce",          IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Realçar &hiperligações\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "Definição de &cor do realce",                        IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Highlight Unicode-&Points",                          IDM_VIEW_UNICODE_POINTS
         MENUITEM "Correspondência &visual das chavetas\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Realçar l&inha actual\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&Não realçar",               IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "&Cor de fundo",           IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Não realçar",                     IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Cor de fundo",                    IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Contorno do esquema",              IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Marcar &ocorrências"
         BEGIN
-            MENUITEM "&Activas\tAlt+A",              IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "&Activas\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
-            MENUITEM "Só correspodências visíveis",          IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "Só correspodências visíveis",      IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "&Correspondências sensíveis a Maiúsculas/minúsculas",       IDM_VIEW_MARKOCCUR_CASE
             POPUP "Só correspondências de palavra completa"

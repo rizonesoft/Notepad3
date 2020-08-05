@@ -325,6 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "檢測超鏈接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "檢測 #RRGGBB 顏色(&C)",                      IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Highlight Unicode-&Points",                 IDM_VIEW_UNICODE_POINTS
         MENUITEM "提示符合括號(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
         POPUP "高亮目前行(&G)\tCtrl+Shift+I"
         BEGIN

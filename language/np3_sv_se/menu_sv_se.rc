@@ -325,6 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Färgpunkter",                                     IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Highlight Unicode-&Points",                       IDM_VIEW_UNICODE_POINTS
         MENUITEM "Visuell klammermatchning\tCtrl+Shift+V",          IDM_VIEW_MATCHBRACES
         POPUP "Markera rad\tCtrl+Shift+I"
         BEGIN
