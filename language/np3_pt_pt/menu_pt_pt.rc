@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Realçar &hiperligações\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Definição de &cor do realce",                        IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Highlight Unicode-&Points",                          IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Highlight &Unicode-Points",                          IDM_VIEW_UNICODE_POINTS
         MENUITEM "Correspondência &visual das chavetas\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Realçar l&inha actual\tCtrl+Shift+I"
         BEGIN

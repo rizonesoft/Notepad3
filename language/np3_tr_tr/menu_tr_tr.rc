@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Colour Definition Hotspots",          IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Highlight Unicode-&Points",            IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Highlight &Unicode-Points",            IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "H&ighlight Current Line\tCtrl+Shift+I"
         BEGIN
