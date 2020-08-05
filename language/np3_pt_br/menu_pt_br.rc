@@ -325,6 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Hotspots de &Hyperlink\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Definiçcão de &Cores dos Hotspots",                   IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Highlight Unicode-&Points",                           IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visualizar Pares de Chaves Casados\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "D&estacar Linha Atual\tCtrl+Shift+I"
         BEGIN

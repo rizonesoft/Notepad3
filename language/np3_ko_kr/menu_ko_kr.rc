@@ -325,6 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "하이퍼 링크 핫스팟(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "색상 정의 핫스팟(&C)",                   IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Highlight Unicode-&Points",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "괄호 짝 강조(&V)\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "현재 줄 강조(&G)\tCtrl+Shift+I"
         BEGIN
