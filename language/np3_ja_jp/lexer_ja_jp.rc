@@ -467,7 +467,6 @@ BEGIN
     IDS_LEX_STR_63367       "Unicode-Point Hover"
     IDS_LEX_STR_63368       "2nd Unicode-Point Hover"
 END
-END
 
 STRINGTABLE
 BEGIN

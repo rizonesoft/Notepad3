@@ -78,7 +78,7 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 #if defined(_WIN64)
             _stprintf_s(buf, _countof(buf), L"grepWinNP3 (x64) version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
 #else
-            _stprintf_s(buf, _countof(buf), L"grepWinNP3 version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
+            _stprintf_s(buf, _countof(buf), L"grepWinNP3 (x86) version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
 #endif
             SetDlgItemText(*this, IDC_VERSIONINFO, buf);
             SetDlgItemText(*this, IDC_DATE, TEXT(GREPWIN_VERDATE));
