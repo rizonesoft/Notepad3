@@ -1960,9 +1960,6 @@ void EditUnescapeCChars(HWND hwnd) {
 //
 // EditChar2Hex()
 //
-
-#define MAX_ESCAPE_HEX_DIGIT	4
-
 void EditChar2Hex(HWND hwnd) 
 {
   UNUSED(hwnd);
@@ -1989,10 +1986,10 @@ void EditChar2Hex(HWND hwnd)
   WCHAR* wch = (WCHAR*)AllocMem(alloc * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
   SciCall_GetSelText(ch);
-  DocPos const nchars = (DocPos)MultiByteToWideCharEx(Encoding_SciCP, 0, ch, -1, wch, (int)alloc) - 1; // '\0'
+  int const nchars = (DocPos)MultiByteToWideChar(Encoding_SciCP, 0, ch, -1, wch, (int)alloc) - 1; // '\0'
   memset(ch, 0, alloc);
 
-  for (DocPos i = 0, j = 0; i < nchars; ++i) 
+  for (int i = 0, j = 0; i < nchars; ++i) 
   {
     if (wch[i] <= 0xFF) {
       StringCchPrintfA(&ch[j], (alloc - j), "\\x%02X", (wch[i] & 0xFF));  // \xhh
@@ -2026,13 +2023,11 @@ void EditChar2Hex(HWND hwnd)
 
   FreeMem(ch);
   FreeMem(wch);
-
 }
 
 //=============================================================================
 //
 // EditHex2Char()
-// by ZuFuLiu
 //
 void EditHex2Char(HWND hwnd) 
 {
@@ -2053,50 +2048,10 @@ void EditHex2Char(HWND hwnd)
 
   size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT) + 1;
   char* ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
-  WCHAR* wch = (WCHAR*)AllocMem(alloc * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  int ci = 0;
-  ptrdiff_t cch = 0;
 
   SciCall_GetSelText(ch);
 
-  char* p = ch;
-  while (*p) {
-    if (*p == '\\') {
-      p++;
-      if (*p == 'x' || *p == 'u') {
-        p++;
-        ci = 0;
-        int ucc = 0;
-        while (*p && (ucc++ < MAX_ESCAPE_HEX_DIGIT)) {
-          if (*p >= '0' && *p <= '9') {
-            ci = ci * 16 + (*p++ - '0');
-          }
-          else if (*p >= 'a' && *p <= 'f') {
-            ci = ci * 16 + (*p++ - 'a') + 10;
-          }
-          else if (*p >= 'A' && *p <= 'F') {
-            ci = ci * 16 + (*p++ - 'A') + 10;
-          }
-          else {
-            break;
-          }
-        }
-      }
-      else {
-        ci = *p++;
-      }
-    }
-    else {
-      ci = *p++;
-    }
-    wch[cch++] = (WCHAR)ci;
-    if (ci == 0) {
-      break;
-    }
-  }
-  wch[cch] = L'\0';
-
-  cch = WideCharToMultiByteEx(Encoding_SciCP, 0, wch, -1, ch, alloc, NULL, NULL) - 1; // '\0'
+  int const cch = Hex2Char(ch, (int)alloc);
 
   _BEGIN_UNDO_ACTION_;
   SciCall_ReplaceSel(ch);
@@ -2109,7 +2064,6 @@ void EditHex2Char(HWND hwnd)
   _END_UNDO_ACTION_;
 
   FreeMem(ch);
-  FreeMem(wch);
 }
 
 
@@ -7612,29 +7566,24 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
   DocPos end = endPos;
   do {
 
-    DocPos const _start = start;
-    DocPos const _end   = end;
+    DocPos const start_m = start;
+    DocPos const end_m   = end;
     DocPos const iPos = _FindInTarget(regExpr, iRegExLen, SCFIND_REGEXP, &start, &end, false, FRMOD_IGNORE);
 
     if (iPos < 0) {
       // not found
-      _ClearIndicatorInRange(indicator, indicator2nd, _start, _end);
+      _ClearIndicatorInRange(indicator, indicator2nd, start_m, end_m);
       break;
     }
     DocPos const mlen = end - start;
     if ((mlen <= 0) || (end > endPos)) {
       // wrong match
-      _ClearIndicatorInRange(indicator, indicator2nd, _start, _end);
+      _ClearIndicatorInRange(indicator, indicator2nd, start_m, end_m);
       break; // wrong match
     }
 
-    _ClearIndicatorInRange(indicator, indicator2nd, _start, end);
+    _ClearIndicatorInRange(indicator, indicator2nd, start_m, end);
 
-    //~if (indicator == INDIC_NP3_HYPERLINK) {
-    //~  SciCall_StartStyling(start);
-    //~  SciCall_SetStyling(mlen, _STYLE_GETSTYLEID(STY_URL_HOTSPOT));
-    //~}
-    //~else {
     SciCall_SetIndicatorCurrent(indicator);
     SciCall_IndicatorFillRange(start, mlen);
     if (indicator2nd >= 0) {
@@ -7643,7 +7592,7 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
     }
 
     // next occurrence
-    start = end + 1;
+    start = SciCall_PositionAfter(end);
     end = endPos;
 
   } while (start < end);
@@ -7660,7 +7609,8 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
 {
   if (bClearOnly) {
     _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
-    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
+    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, -1, startPos, endPos);
+    _ClearIndicatorInRange(INDIC_NP3_UNICODE_POINT, -1, startPos, endPos);
     return;
   }
   if (Settings.HyperlinkHotspot) 
@@ -7684,7 +7634,16 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
     _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
   }
   else {
-    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
+    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, -1, startPos, endPos);
+  }
+
+  if (Settings.HighlightUnicodePoints) 
+  {
+    static const char* pUnicodeRegEx = "(\\\\u([0-9a-fA-F]){4})+";
+    _UpdateIndicators(INDIC_NP3_UNICODE_POINT, -1, pUnicodeRegEx, startPos, endPos);
+  }
+  else {
+    _ClearIndicatorInRange(INDIC_NP3_UNICODE_POINT, -1, startPos, endPos);
   }
 
   EditDoStyling(startPos, endPos);

@@ -655,6 +655,7 @@
 #define IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK 40473
 #define IDM_VIEW_EDIT_LINECOMMENT       40474
 #define IDM_VIEW_EVALTINYEXPRONSEL      40475
+#define IDM_VIEW_UNICODE_POINTS         40476
 
 #define IDM_SET_RENDER_TECH_DEFAULT     40500
 #define IDM_SET_RENDER_TECH_D2D         40501
@@ -1085,6 +1086,8 @@
 #define IDS_LEX_STR_63364               63364
 #define IDS_LEX_STR_63365               63365
 #define IDS_LEX_STR_63366               63366
+#define IDS_LEX_STR_63367               63367
+#define IDS_LEX_STR_63368               63368
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401

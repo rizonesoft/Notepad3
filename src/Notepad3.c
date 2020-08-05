@@ -1528,6 +1528,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
+  UpdateMouseDWellTime();
 
   // print file immediately and quit
   if (Globals.CmdLnFlag_PrintFileAndLeave)
@@ -1921,19 +1922,19 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xFF));
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF, INDIC_HIDDEN); // MARKER only
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, 0x00);
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_BOX); // HOVER
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x80, 0x80, 0x80));
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
+  SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_COLOR_DEF, true);
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, 0x00); // reset on hover
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, 0xFF);
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // HOVER
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DWELL, INDIC_FULLBOX); // style on DWELLSTART
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_COLOR_DWELL, RGB(0xE0, 0xE0, 0xE0));
-  SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_COLOR_DWELL, true);
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DWELL, 0xFF);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DWELL, 0xFF);
-  //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DWELL, INDIC_FULLBOX);
-  //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DWELL, RGB(0xFF, 0xFF, 0xFF));
-
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
+  //SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_UNICODE_POINT, false);
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, 0x00);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, 0xFF);
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX); // HOVER
+  //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0));
 
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MULTI_EDIT, INDIC_ROUNDBOX);
   SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
@@ -3480,6 +3481,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_COLORDEFHOTSPOTS, Settings.ColorDefHotspot);
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
   CheckCmd(hmenu, IDM_VIEW_SHOW_HYPLNK_CALLTIP, Settings.ShowHypLnkToolTip);
+  CheckCmd(hmenu, IDM_VIEW_UNICODE_POINTS, Settings.HighlightUnicodePoints);
 
   CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, Flags.bReuseWindow);
   EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, sav);
@@ -5272,9 +5274,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       EditUpdateVisibleIndicators();
       break;
 
+    case IDM_VIEW_SHOW_HYPLNK_CALLTIP:
+      Settings.ShowHypLnkToolTip = !Settings.ShowHypLnkToolTip;
+      UpdateMouseDWellTime();
+      break;
+
     case IDM_VIEW_COLORDEFHOTSPOTS:
       Settings.ColorDefHotspot = !Settings.ColorDefHotspot;
       EditUpdateVisibleIndicators();
+      UpdateMouseDWellTime();
+      break;
+
+    case IDM_VIEW_UNICODE_POINTS:
+      Settings.HighlightUnicodePoints = !Settings.HighlightUnicodePoints;
+      EditUpdateVisibleIndicators();
+      UpdateMouseDWellTime();
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -5337,14 +5351,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SCROLLPASTEOF:
       Settings.ScrollPastEOF = !Settings.ScrollPastEOF;
       SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-      break;
-
-    case IDM_VIEW_SHOW_HYPLNK_CALLTIP:
-      Settings.ShowHypLnkToolTip = !Settings.ShowHypLnkToolTip;
-      if (Settings.ShowHypLnkToolTip || Settings.ColorDefHotspot) 
-        SciCall_SetMouseDWellTime(100);
-      else
-        Sci_DisableMouseDWellNotification();
       break;
 
     case IDM_VIEW_MENUBAR:
@@ -6444,25 +6450,6 @@ void HandlePosChange()
   DocPos const curPos = SciCall_GetCurrentPos();
   if (curPos == prevPosition) { return; }
 
-  if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, curPos) > 0)
-  {
-    DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_COLOR_DEF, curPos);
-    DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_COLOR_DEF, curPos);
-    DocPos const length = (lastPos - firstPos);
-
-    char chText[MIDSZ_BUFFER] = { '\0' };
-    StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
-    unsigned int iValue = 0;
-    if (sscanf_s(&chText[1], "%x", &iValue) == 1)
-    {
-      unsigned int r = (iValue & 0xFF0000) >> 16;
-      unsigned int g = (iValue & 0xFF00) >> 8;
-      unsigned int b = (iValue & 0xFF);
-      //bool const dark = ((r + b + g + 2) / 3) < 0x80;
-      COLORREF const rgb = RGB(r,g,b);
-      SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
-    }
-  }
   prevPosition = curPos;
 }
 
@@ -6471,9 +6458,24 @@ void HandlePosChange()
 //
 //  HandleDWellStartEnd()
 //
-typedef enum _indic_id_t { _I_NONE = 0, _I_HYPERLINK = 1, _I_COLOR_PATTERN = 2 } _INDIC_ID_T;
-
 static DocPos prevCursorPosition = -1;
+
+#if 0
+#define RGB_TOLERANCE 0xA
+#define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
+static COLORREF _CalcContrastColor(COLORREF rgb)
+{
+  if (RGB_SUB((rgb) && 0xFF, 0x80) <= RGB_TOLERANCE &&
+      RGB_SUB((rgb >> 8) && 0xFF, 0x80) <= RGB_TOLERANCE &&
+      RGB_SUB((rgb >> 16) && 0xFF, 0x80) <= RGB_TOLERANCE)
+  {
+    return (0x7F7F7F + rgb) & 0xFFFFFF;
+  }
+  else {
+    return rgb ^ 0xFFFFFF;
+  }
+}
+#endif
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
@@ -6486,17 +6488,17 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
     if (prevEndPosition < 0) { prevEndPosition = position; }
   }
 
+  int indicator_id = INDICATOR_CONTAINER;
+
   switch (uid)
   {
     case SCN_DWELLSTART:
     {
       if (position < 0) { CancelCallTip(); prevCursorPosition = -1;  return; }
         
-      _INDIC_ID_T indicator_type = _I_NONE;
-
       if (Settings.HyperlinkHotspot) {
         if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) > 0) {
-          indicator_type = _I_HYPERLINK;
+          indicator_id = INDIC_NP3_HYPERLINK;
           if (position != prevCursorPosition) {
             CancelCallTip();
           }
@@ -6504,24 +6506,33 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
       }
       if (Settings.ColorDefHotspot) {
         if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, position) > 0) {
-          indicator_type = _I_COLOR_PATTERN;
+          indicator_id = INDIC_NP3_COLOR_DEF;
+        }
+      }
+      if (Settings.HighlightUnicodePoints) {
+        if (SciCall_IndicatorValueAt(INDIC_NP3_UNICODE_POINT, position) > 0) {
+          indicator_id = INDIC_NP3_UNICODE_POINT;
         }
       }
      
-      switch (indicator_type) 
+      switch (indicator_id) 
       {
-        case _I_NONE:
-        default:
-          return; // nothing to do
-          break;
-
-        case _I_HYPERLINK:
+        case INDIC_NP3_HYPERLINK:
           if (!Settings.ShowHypLnkToolTip || SciCall_CallTipActive()) { return; }
           break;
 
-        case _I_COLOR_PATTERN:
+        case INDIC_NP3_UNICODE_POINT:
+          if (!Settings.HighlightUnicodePoints || SciCall_CallTipActive()) { return; }
+          break;
+
+        case INDIC_NP3_COLOR_DEF:
           // ok
           break;
+  
+        // nothing to do for these indicators
+        case INDICATOR_CONTAINER:
+        default:
+          return;
       }
 
       // ----------------------------------------------------------------------
@@ -6530,22 +6541,20 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
       //SciCall_SetCursor(SC_NP3_CURSORHAND);
 
-      int const indicator_id = (_I_HYPERLINK == indicator_type) ? INDIC_NP3_HYPERLINK : INDIC_NP3_COLOR_DEF;
-
       DocPos const firstPos = SciCall_IndicatorStart(indicator_id, position);
       DocPos const lastPos = SciCall_IndicatorEnd(indicator_id, position);
       DocPos const length = (lastPos - firstPos);
 
       // WebLinks and Color Refs are ASCII only - No need for UTF-8 conversion here
 
-      if (_I_HYPERLINK == indicator_type) 
+      if (INDIC_NP3_HYPERLINK == indicator_id) 
       {
         if (!s_bCallTipEscDisabled) {
           char chText[MIDSZ_BUFFER] = { '\0' };
           // No need for UTF-8 conversion here and 
           StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
           StrTrimA(chText, " \t\n\r");
-          if (StrIsEmptyA(chText)) { return; }
+          if (StrIsEmptyA(chText)) { break; }
 
           WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
           if (StrStrIA(chText, "file:") == chText) {
@@ -6566,7 +6575,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           Globals.CallTipType = CT_DWELL;
         }
       }
-      else if (_I_COLOR_PATTERN == indicator_type)
+      else if (INDIC_NP3_COLOR_DEF == indicator_id)
       {
         char chText[MICRO_BUFFER] = { '\0' };
         // Color Refs are ASCII only - No need for UTF-8 conversion here
@@ -6574,16 +6583,31 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         unsigned int iValue = 0;
         if (sscanf_s(&chText[1], "%x", &iValue) == 1) 
         {
-          SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DWELL);
-          SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-
           COLORREF const rgb = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-
+          //COLORREF const fgr = _CalcContrastColor(rgb);
+          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0xFF);
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
-          SciCall_IndicSetFore(INDIC_NP3_COLOR_DWELL, rgb);
-          SciCall_IndicatorFillRange(firstPos, length);
         }
       }
+      else if (INDIC_NP3_UNICODE_POINT == indicator_id)
+      {
+        if (!s_bCallTipEscDisabled) {
+          char chHex2Char[MIDSZ_BUFFER] = {'\0'};
+          // No need for UTF-8 conversion here and
+          StringCchCopyNA(chHex2Char, COUNTOF(chHex2Char), SciCall_GetRangePointer(firstPos, length), length);
+          //StrTrimA(chHex2Char, " \t\n\r");
+
+          Hex2Char(chHex2Char, COUNTOF(chHex2Char));
+
+          if (StrIsEmptyA(chHex2Char)) { break; }
+
+          //SciCall_CallTipSetPosition(true);
+          SciCall_CallTipShow(position, chHex2Char);
+          SciCall_CallTipSetHlt(0, (int)length);
+          Globals.CallTipType = CT_DWELL;
+        }
+      }
+
       prevCursorPosition = position;
       prevStartPosition = firstPos;
       prevEndPosition = lastPos;
@@ -6601,8 +6625,10 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
       s_bCallTipEscDisabled = false;
       prevCursorPosition = -1;
 
-      SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DWELL);
-      SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+      // clear SCN_DWELLSTART visual styles
+      SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0);
+      SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
+
       HandlePosChange();
     }
     break;
@@ -10717,6 +10743,18 @@ void SetNotifyIconTitle(HWND hwnd)
   Shell_NotifyIcon(NIM_MODIFY,&nid);
 }
 
+
+//=============================================================================
+//
+//  UpdateMouseDWellTime()
+//
+void UpdateMouseDWellTime()
+{
+  if (Settings.ShowHypLnkToolTip || Settings.ColorDefHotspot || Settings.HighlightUnicodePoints)
+    SciCall_SetMouseDWellTime(100);
+  else
+    Sci_DisableMouseDWellNotification();
+}
 
 
 //=============================================================================
