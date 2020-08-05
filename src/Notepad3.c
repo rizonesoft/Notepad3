@@ -1929,6 +1929,10 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // HOVER
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN );
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);       // HOVER
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF_T, RGB(0x00, 0x00, 0x00)); // recalc on hover
+ 
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
   //SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_UNICODE_POINT, false);
   SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, 0x00);
@@ -6460,22 +6464,16 @@ void HandlePosChange()
 //
 static DocPos prevCursorPosition = -1;
 
-#if 0
-#define RGB_TOLERANCE 0xA
+#define RGB_TOLERANCE 0xF
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
-static COLORREF _CalcContrastColor(COLORREF rgb)
+inline COLORREF _CalcContrastColor(COLORREF rgb)
 {
-  if (RGB_SUB((rgb) && 0xFF, 0x80) <= RGB_TOLERANCE &&
-      RGB_SUB((rgb >> 8) && 0xFF, 0x80) <= RGB_TOLERANCE &&
-      RGB_SUB((rgb >> 16) && 0xFF, 0x80) <= RGB_TOLERANCE)
-  {
-    return (0x7F7F7F + rgb) & 0xFFFFFF;
-  }
-  else {
-    return rgb ^ 0xFFFFFF;
-  }
+  bool const mask = RGB_SUB((rgb) && 0xFF, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB((rgb >> 8) && 0xFF, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB((rgb >> 16) && 0xFF, 0x80) <= RGB_TOLERANCE;
+  return mask ? (0x7F7F7F + rgb) & 0xFFFFFF : rgb ^ 0xFFFFFF;
 }
-#endif
+
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
@@ -6584,7 +6582,11 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         if (sscanf_s(&chText[1], "%x", &iValue) == 1) 
         {
           COLORREF const rgb = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-          //COLORREF const fgr = _CalcContrastColor(rgb);
+          COLORREF const fgr = _CalcContrastColor(rgb);
+          SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
+          SciCall_IndicatorFillRange(firstPos, length);
+          SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, fgr);
+
           SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0xFF);
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
         }
@@ -6598,7 +6600,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           //StrTrimA(chHex2Char, " \t\n\r");
 
           Hex2Char(chHex2Char, COUNTOF(chHex2Char));
-
           if (StrIsEmptyA(chHex2Char)) { break; }
 
           //SciCall_CallTipSetPosition(true);
@@ -6626,8 +6627,12 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
       prevCursorPosition = -1;
 
       // clear SCN_DWELLSTART visual styles
+      SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
+      SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+
       SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0);
       SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
+
 
       HandlePosChange();
     }

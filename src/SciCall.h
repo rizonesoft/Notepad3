@@ -489,20 +489,20 @@ DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
 //
 //  Indicators
 //
-DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicatorID, int, style)
-DeclareSciCallR1(IndicGetFore, INDICGETFORE, COLORREF, int, indicatorID)
-DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicatorID, COLORREF, colour)
-DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicatorID, bool, under)
-DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicatorID, int, style)
-DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicatorID, COLORREF, colour)
-DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicatorID, int, alpha)
-DeclareSciCallV2(IndicSetOutlineAlpha, INDICSETOUTLINEALPHA, int, indicatorID, int, alpha)
-DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicatorID)
+DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicID, int, style)
+DeclareSciCallR1(IndicGetFore, INDICGETFORE, COLORREF, int, indicID)
+DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicID, COLORREF, colour)
+DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicID, bool, under)
+DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicID, int, style)
+DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicID, COLORREF, colour)
+DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicID, int, alpha)
+DeclareSciCallV2(IndicSetOutlineAlpha, INDICSETOUTLINEALPHA, int, indicID, int, alpha)
+DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicID)
 DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length)
 DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, DocPos, length)
-DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
-DeclareSciCallR2(IndicatorStart, INDICATORSTART, int, int, indicatorID, DocPos, position)
-DeclareSciCallR2(IndicatorEnd, INDICATOREND, int, int, indicatorID, DocPos, position)
+DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicID, DocPos, position)
+DeclareSciCallR2(IndicatorStart, INDICATORSTART, int, int, indicID, DocPos, position)
+DeclareSciCallR2(IndicatorEnd, INDICATOREND, int, int, indicID, DocPos, position)
 
 //=============================================================================
 //
