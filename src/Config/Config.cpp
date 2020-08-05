@@ -1387,6 +1387,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ColorDefHotspot, true);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
     GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
+    GET_BOOL_VALUE_FROM_INISECTION(HighlightUnicodePoints, true);
 
     GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
@@ -1813,6 +1814,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ColorDefHotspot);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowHypLnkToolTip);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HighlightUnicodePoints);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoIndent);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCompleteWords);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);

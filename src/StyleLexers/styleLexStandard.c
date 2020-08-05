@@ -22,8 +22,9 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Common Base", L"", L"",
     /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#00DC00; alpha:100", L"" },
     /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"fore:#3399FF; alpha:60; alpha2:60; indic_roundbox", L"" },
     /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"fore:#0000FF; back:#0000BF; indic_plain", L"" },
-    /* 15 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63354, L"Multi Edit Indicator", L"fore:#FFA000; alpha:60; alpha2:180; indic_roundbox", L"" },
-    /* 16 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
+    /* 15 */ { {_STYLE_GETSTYLEID(STY_UNICODE_HOTSPOT)}, IDS_LEX_STR_63367, L"Unicode-Point Hover", L"fore:#00FA00; alpha:60; alpha2:180; indic_compositionthick", L""},
+    /* 16 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63354, L"Multi Edit Indicator", L"fore:#FFA000; alpha:60; alpha2:180; indic_roundbox", L"" },
+    /* 17 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
              EDITLEXER_SENTINEL } };
 
 
@@ -45,8 +46,9 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
     /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#00DC00; charset:2; case:U; alpha:100", L"" },
     /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0000FF; alpha:60; alpha2:60; indic_box", L"" },
     /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"fore:#00D000; back:#009C00; alpha:180; indic_compositionthin", L"" },
-    /* 15 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63355, L"2nd Multi Edit Indicator", L"fore:#00A5FF; indic_box", L"" },
-    /* 16 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
+    /* 15 */ {{_STYLE_GETSTYLEID(STY_UNICODE_HOTSPOT)}, IDS_LEX_STR_63368, L"2nd Unicode-Point Hover", L"fore:#0000FA; alpha:60; alpha2:180; indic_compositionthick", L""},
+    /* 16 */ {{_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63355, L"2nd Multi Edit Indicator", L"fore:#00A5FF; indic_box", L""},
+    /* 17 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
              EDITLEXER_SENTINEL } };
 
 
