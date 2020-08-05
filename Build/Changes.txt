@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.803.(build_#) (2020-08-03)
+Current BETA Version 5.20.805.(build_#) (2020-08-05)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,8 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE)
+[.805.1]- Replace "64-bit"/"BETA" by "x64"/"beta" to shorter the version name.
 [.803.1]- Title font change DPI-Awareness for About and Customize Schemes dialog.
 [.802.1]- Resample scaling of info-box icons on DPI change.
 [.802.1]- Revert System's Message box for "save confirmation" (if message beeps are allowed).
@@ -57,7 +59,7 @@ CHANGES:
 [.729.1]- DPI-Aware About & Custom.Scheme dialog.
 [.729.1]- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
 [.723.1]- Review document modified handler (dirty-flag).
-[.724.1]- Update grepWinNP3 (GRE) version 2.1.3.21 (2020-07-24).
+[.805.1]- Update grepWinNP3 (GRE) version 2.1.3.22 (2020-08-05).
 [.722.2]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-05).
 [.724.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-07-21).
 
@@ -71,6 +73,9 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.805.1]- Unicode Point detection and enhanced Color Tag contrast on hoover.
+[.805.1]- DPI-Awareness of "Customize Schemes..." dialog icon eye sugar.
+[.805.1]- DateTime and Timestamp handling.
 [.803.1]- No read-only file attribute if removed externally.
 [.802.1]- Some more DPI-Awareness issues.
 [.801.1]- Ensure selection visible (scroll to current position).
