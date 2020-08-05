@@ -2050,6 +2050,64 @@ void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
   StringCchCopyA(pszInput, FNDRPL_BUFFER, buffer);
 }
 
+
+//=============================================================================
+//
+//  Hex2Char() - zero('\0') terminated strings
+//  by Zufuliu
+//
+int Hex2Char(char* ch, int cnt)
+{
+  int cch = 0;
+  WCHAR* wch = (WCHAR*)AllocMem(cnt * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  if (wch) {
+    int ci  = 0;
+    char* p = ch;
+    while (*p) {
+      if (*p == '\\') {
+        p++;
+        if (*p == 'x' || *p == 'u') {
+          p++;
+          ci      = 0;
+          int ucc = 0;
+          while (*p && (ucc++ < MAX_ESCAPE_HEX_DIGIT)) {
+            if (*p >= '0' && *p <= '9') {
+              ci = ci * 16 + (*p++ - '0');
+            }
+            else if (*p >= 'a' && *p <= 'f') {
+              ci = ci * 16 + (*p++ - 'a') + 10;
+            }
+            else if (*p >= 'A' && *p <= 'F') {
+              ci = ci * 16 + (*p++ - 'A') + 10;
+            }
+            else {
+              break;
+            }
+          }
+        }
+        else {
+          ci = *p++;
+        }
+      }
+      else {
+        ci = *p++;
+      }
+      wch[cch++] = (WCHAR)ci;
+      if (ci == 0) {
+        break;
+      }
+    }
+    wch[cch] = L'\0';
+
+    cch = WideCharToMultiByte(Encoding_SciCP, 0, wch, -1, ch, cnt, NULL, NULL) - 1; // '\0'
+
+    FreeMem(wch);
+  }
+  return cch;
+}
+
+
+
 #ifdef WC2MB_EX
 //=============================================================================
 //

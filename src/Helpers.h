@@ -573,6 +573,9 @@ inline bool Char2IntW(LPCWSTR str, int* value) {
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
+#define MAX_ESCAPE_HEX_DIGIT 4
+int Hex2Char(char* ch, int cnt);
+
 // ----------------------------------------------------------------------------
 
 inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }

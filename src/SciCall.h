@@ -490,6 +490,7 @@ DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
 //  Indicators
 //
 DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicatorID, int, style)
+DeclareSciCallR1(IndicGetFore, INDICGETFORE, COLORREF, int, indicatorID)
 DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicatorID, COLORREF, colour)
 DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicatorID, bool, under)
 DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicatorID, int, style)

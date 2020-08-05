@@ -1193,6 +1193,29 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, iValue);
 
+  // --------------------------------------------------------------
+  // COLOR definitions (INDIC_NP3_COLOR_DEF) are not configurable 
+  // --------------------------------------------------------------
+
+  // Unicode-Point Indicator (Hover)
+  //SciCall_IndicSetFore(INDIC_NP3_UNICODE_POINT, RGB(0x00, 0x00, 0xF0));
+  SciCall_IndicSetStyle (INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN); // simple underline
+
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, FOREGROUND_LAYER, &dColor))
+    SciCall_IndicSetHoverFore(INDIC_NP3_UNICODE_POINT, dColor);
+  if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, true))
+    SciCall_IndicSetAlpha(INDIC_NP3_UNICODE_POINT, iValue);
+  if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, false))
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_UNICODE_POINT, iValue);
+  
+  iValue = -1; // need for retrieval
+  if (!Style_GetIndicatorType(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, 0, &iValue)) {
+    // got default, get string
+    StringCchCatW(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), L"; ");
+    Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
+    StringCchCatW(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
+  }
+  SciCall_IndicSetHoverStyle(INDIC_NP3_UNICODE_POINT, iValue);
 
   // Multi Edit Indicator
   if (Style_StrGetColor(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, FOREGROUND_LAYER, &dColor))
