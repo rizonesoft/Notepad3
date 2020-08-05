@@ -258,8 +258,9 @@ typedef struct _cmq
 #define INDIC_NP3_HYPERLINK        (INDICATOR_CONTAINER +  5)
 #define INDIC_NP3_HYPERLINK_U      (INDICATOR_CONTAINER +  6)
 #define INDIC_NP3_COLOR_DEF        (INDICATOR_CONTAINER +  7)
-#define INDIC_NP3_MULTI_EDIT       (INDICATOR_CONTAINER +  8)
-#define INDIC_NP3_UNICODE_POINT    (INDICATOR_CONTAINER +  9)
+#define INDIC_NP3_COLOR_DEF_T      (INDICATOR_CONTAINER +  8)
+#define INDIC_NP3_MULTI_EDIT       (INDICATOR_CONTAINER +  9)
+#define INDIC_NP3_UNICODE_POINT    (INDICATOR_CONTAINER + 10)
 
 // --------------------------------------------------------------------------
 

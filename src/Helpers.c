@@ -2066,7 +2066,8 @@ int Hex2Char(char* ch, int cnt)
     while (*p) {
       if (*p == '\\') {
         p++;
-        if (*p == 'x' || *p == 'u') {
+        if ((*p == 'x' || *p == 'u') || 
+            (*p == 'X' || *p == 'U')) {
           p++;
           ci      = 0;
           int ucc = 0;

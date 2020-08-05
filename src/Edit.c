@@ -1978,8 +1978,15 @@ void EditChar2Hex(HWND hwnd)
   if (bSelEmpty) { SciCall_SetSelection(iCurPos, iAnchorPos); }
   DocPos const count = Sci_GetSelTextLength();
 
-  //???char const uesc = (LEXER == CSHARP) ? 'x' : 'u';  // '\xn[n][n][n]' - variable length version
   char const uesc = 'u';
+  //???char const uesc = (LEXER == CSHARP) ? 'x' : 'u';  // '\xn[n][n][n]' - variable length version
+  //switch (Style_GetCurrentLexerPtr()->lexerID)
+  //{
+  //  case SCLEX_CPP: 
+  //    uesc = 'x';
+  //  default:
+  //    break;
+  //}
 
   size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT) + 1;
   char* ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
@@ -7609,11 +7616,11 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
 {
   if (bClearOnly) {
     _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
-    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, -1, startPos, endPos);
+    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DEF_T, startPos, endPos);
     _ClearIndicatorInRange(INDIC_NP3_UNICODE_POINT, -1, startPos, endPos);
     return;
   }
-  if (Settings.HyperlinkHotspot) 
+  if (Settings.HyperlinkHotspot)
   {
     // https://mathiasbynens.be/demo/url-regex : @stephenhay
     //static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
@@ -7634,12 +7641,12 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
     _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
   }
   else {
-    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, -1, startPos, endPos);
+    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DEF_T, startPos, endPos);
   }
 
   if (Settings.HighlightUnicodePoints) 
   {
-    static const char* pUnicodeRegEx = "(\\\\u([0-9a-fA-F]){4})+";
+    static const char* pUnicodeRegEx = "(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([0-9a-fA-F]){2})+";
     _UpdateIndicators(INDIC_NP3_UNICODE_POINT, -1, pUnicodeRegEx, startPos, endPos);
   }
   else {
