@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Отмечать области выбора &цвета",                  IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Highlight Unicode-&Points",                       IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Highlight &Unicode-Points",                       IDM_VIEW_UNICODE_POINTS
         MENUITEM "О&тмечать парные скобки\tCtrl+Shift+V",           IDM_VIEW_MATCHBRACES
         POPUP "Подсветка т&екущей строки\tCtrl+Shift+I"
         BEGIN

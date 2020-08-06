@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Hivatkoz&ások kiemelése\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Szín&választó területek",               IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Highlight Unicode-&Points",             IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Highlight &Unicode-Points",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zárójelpár kiemelés\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Akt&uális sor kiemelése\tCtrl+Shift+I"
         BEGIN

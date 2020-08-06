@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Indicateurs H&yperlink\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Définition couleur Hotspots ",                       IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Afficher Unicode-&Points",                            IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Afficher &Unicode-Points",                            IDM_VIEW_UNICODE_POINTS
         MENUITEM "Correspondence &visuelle des accolades\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Mise en b&rillance de la ligne actuelle\tCtrl+Shift+I"
         BEGIN

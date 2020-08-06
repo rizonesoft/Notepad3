@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",            IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Kleur Definisie Hotspots",               IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Highlight Unicode-&Points",               IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Highlight &Unicode-Points",               IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele Hakie Passing\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Merk Huidi&ge Lyn\tCtrl+Shift+I"
         BEGIN

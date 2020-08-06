@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Адзначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Адзначаць рэгі&ёны вылучэння колера",         IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Highlight Unicode-&Points",                   IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Highlight &Unicode-Points",                   IDM_VIEW_UNICODE_POINTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "Па&дсвечванне ак&тыўнага радка\tCtrl+Shift+I"
         BEGIN
