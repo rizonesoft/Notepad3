@@ -4099,8 +4099,20 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             bWarnedNoIniFile = false;
 
-            //~UpdateWindowLayoutForDPI(hwnd, NULL, NULL);
-            PostMessage(hwnd, WM_DPICHANGED, (WPARAM)NULL, (LPARAM)NULL);
+            // Set title font
+            HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
+            if (hFont) {
+              LOGFONT lf;
+              GetObject(hFont, sizeof(LOGFONT), &lf);
+              lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+              lf.lfWeight = FW_BOLD;
+              //lf.lfUnderline = true;
+              if (hFontTitle) {
+                DeleteObject(hFontTitle);
+              }
+              hFontTitle = CreateFontIndirectW(&lf);
+              SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+            }
         }
         return !0;
 
@@ -4118,6 +4130,21 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                                                            flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                                 TVSIL_NORMAL);
 
+          // Set title font
+          HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
+          if (hFont) {
+            LOGFONT lf;
+            GetObject(hFont, sizeof(LOGFONT), &lf);
+            lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+            lf.lfWeight = FW_BOLD;
+            //lf.lfUnderline = true;
+            if (hFontTitle) {
+              DeleteObject(hFontTitle);
+            }
+            hFontTitle = CreateFontIndirectW(&lf);
+            SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+          }
+
           MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
           MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
 
@@ -4127,8 +4154,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         case WM_PAINT:
         {
-            HDC const hdc = GetWindowDC(hwnd);
-            SetMapMode(hdc, MM_TEXT);
+          PAINTSTRUCT ps;
+          HDC const   hdc = GetDC(hwnd); // ClientArea
+          if (hdc) {
+            BeginPaint(hwnd, &ps);
 
             DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -4140,25 +4169,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             {
               RECT rc = {0};
               MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
-              DrawIconEx(hdc, rc.left + ScaleIntByDPI(20, dpi.x), rc.top + ScaleIntByDPI(50, dpi.y), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
-            }
-
-            // Set title font
-            NONCLIENTMETRICSW ncMetrics = {0};
-            ncMetrics.cbSize            = sizeof(NONCLIENTMETRICSW);
-            if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncMetrics, 0))
-            {
-              if (hFontTitle) {
-                DeleteObject(hFontTitle);
-              }
-              int const verFontSize            = ScaleIntByDPI(16, dpi.y);
-              ncMetrics.lfMessageFont.lfWeight = FW_BOLD;
-              ncMetrics.lfMessageFont.lfHeight = -MulDiv(verFontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-              hFontTitle                       = CreateFontIndirectW(&ncMetrics.lfMessageFont);
-              SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+              DrawIconEx(hdc, rc.left + ScaleIntByDPI(10, dpi.x), rc.top + ScaleIntByDPI(20, dpi.y), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
             }
 
             ReleaseDC(hwnd, hdc);
+            EndPaint(hwnd, &ps);
+          }
         }
         return 0;
 

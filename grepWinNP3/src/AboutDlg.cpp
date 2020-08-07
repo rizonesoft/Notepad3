@@ -42,7 +42,7 @@ static LRESULT DrawGrepWinIcon(HWND hWnd)
     if (g_hDlgIcon128)
     {
         PAINTSTRUCT ps;
-        HDC const  hDC  = GetWindowDC(hWnd);
+        HDC const  hDC  = GetDC(hWnd);
         if (hDC)
         {
             BeginPaint(hWnd, &ps);
