@@ -7913,9 +7913,8 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static unsigned id_hover = 0;
   static unsigned id_capture = 0;
 
-  static HFONT   hFontNormal = NULL;
+  //static HFONT   hFontNormal = NULL;
   static HFONT   hFontHover = NULL;
-
   static HCURSOR hCursorNormal;
   static HCURSOR hCursorHover;
 
@@ -7927,35 +7926,20 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         id_capture = 0;
 
         SetDialogIconNP3(hwnd);
-        HDC const hdc = GetWindowDC(hwnd);
 
-        hFontNormal = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
-        if (hFontNormal) {
+        HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
+        if (hFont) {
           LOGFONT lf;
-          GetObject(hFontNormal, sizeof(LOGFONT), &lf);
+          GetObject(hFont, sizeof(LOGFONT), &lf);
           lf.lfUnderline = true;
-          //lf.lfWeight   = FW_BOLD;
+          //lf.lfWeight    = FW_BOLD;
           if (hFontHover) {
             DeleteObject(hFontHover);
           }
           hFontHover = CreateFontIndirectW(&lf);
         }
-        else {
-          NONCLIENTMETRICSW ncMetrics = {0};
-          ncMetrics.cbSize            = sizeof(NONCLIENTMETRICSW);
-          if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncMetrics, 0)) {
-            int const hoverFontSize = ScaleIntToDPI_Y(hwnd, 10);
-            //ncMetrics.lfMessageFont.lfWeight = FW_BOLD;
-            ncMetrics.lfMessageFont.lfUnderline = true;
-            ncMetrics.lfMessageFont.lfHeight    = -MulDiv(hoverFontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-            if (hFontHover) {
-              DeleteObject(hFontHover);
-            }
-            hFontHover = CreateFontIndirectW(&ncMetrics.lfMessageFont);
-          }
-        }
-
-        hCursorNormal = LoadCursor(NULL,IDC_ARROW);
+        
+        hCursorNormal = LoadCursor(NULL, IDC_ARROW);
         hCursorHover = LoadCursor(NULL,IDC_HAND);
         if (!hCursorHover) {
           hCursorHover = LoadCursor(Globals.hInstance, IDC_ARROW);
@@ -7975,10 +7959,10 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
 
-        hFontNormal = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
-        if (hFontNormal) {
+        HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
+        if (hFont) {
           LOGFONT lf;
-          GetObject(hFontNormal, sizeof(LOGFONT), &lf);
+          GetObject(hFont, sizeof(LOGFONT), &lf);
           lf.lfUnderline = true;
           //lf.lfWeight    = FW_BOLD;
           if (hFontHover) {
@@ -7986,13 +7970,15 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           hFontHover = CreateFontIndirectW(&lf);
         }
+
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
       }
       return !0;
 
     case WM_DESTROY:
+      //DeleteObject(hFontNormal);
       DeleteObject(hFontHover);
-      return false;
+      return 0;
 
     case WM_NCACTIVATE:
       if (!(bool)wParam) {
@@ -8017,8 +8003,8 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           else {
             SetTextColor(hdc, RGB(0, 0, 0xFF));
           }
-          SelectObject(hdc,hFontHover);
           //SelectObject(hdc, (dwId == id_hover) ? hFontHover : hFontNormal);
+          SelectObject(hdc, hFontHover);
           return (INT_PTR)GetSysColorBrush(COLOR_BTNFACE);
         }
       }

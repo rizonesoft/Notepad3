@@ -92,28 +92,16 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
         GetWindowRect(hParentWnd, &rcParent);
 
         // set new coordinates
-        DPI_T const dpi = Scintilla_GetWindowDPI(hParentWnd);
+        RECT rcDlg;
+        rcDlg.left   = pCreateStructure->x;
+        rcDlg.top    = pCreateStructure->y;
+        rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
+        rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
 
-        if (dpi.y == USER_DEFAULT_SCREEN_DPI) {
-        
-          RECT rcDlg;
-          rcDlg.left   = pCreateStructure->x;
-          rcDlg.top    = pCreateStructure->y;
-          rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
-          rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
+        POINT const ptTL = GetCenterOfDlgInParent(&rcDlg, &rcParent);
 
-           POINT const ptTL = GetCenterOfDlgInParent(&rcDlg, &rcParent);
-
-          pCreateStructure->x = ptTL.x;
-          pCreateStructure->y = ptTL.y;
-        }
-        else {
-          // don't know how to handle DPI Awareness
-          //pCreateStructure->x = rcParent.left + 20;
-          //pCreateStructure->y = rcParent.top + 20;
-          //pCreateStructure->x = MulDiv(rcParent.left + (rcParent.right - rcParent.left)/8, USER_DEFAULT_SCREEN_DPI, dpi.x);
-          //pCreateStructure->y = MulDiv(rcParent.top + (rcParent.bottom - rcParent.top)/2, USER_DEFAULT_SCREEN_DPI, dpi.y);
-        }
+        pCreateStructure->x = ptTL.x;
+        pCreateStructure->y = ptTL.y;
       }
 
       // we are done
@@ -755,6 +743,21 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     CenterDlgInParent(hwnd, NULL);
 
+
+    HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
+    if (hFont) {
+      LOGFONT lf;
+      GetObject(hFont, sizeof(LOGFONT), &lf);
+      lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+      lf.lfWeight = FW_BOLD;
+      //lf.lfUnderline = true;
+      if (hVersionFont) {
+        DeleteObject(hVersionFont);
+      }
+      hVersionFont = CreateFontIndirectW(&lf);
+      SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+    }
+
     // render rich-edit control text again
     if (!StrIsEmptyA(pAboutResource)) {
       pAboutInfo              = pAboutResource;
@@ -800,43 +803,48 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       SetBitmapControlResample(hwnd, IDC_RIZONEBMP, hBmp, width, height);
       DeleteObject(hBmp);
 
+      HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
+      if (hFont) {
+        LOGFONT lf;
+        GetObject(hFont, sizeof(LOGFONT), &lf);
+        lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+        lf.lfWeight = FW_BOLD;
+        //lf.lfUnderline = true;
+        if (hVersionFont) {
+          DeleteObject(hVersionFont);
+        }
+        hVersionFont = CreateFontIndirectW(&lf);
+        SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+      }
+
       UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     }
     break;
 
   case WM_PAINT:
     {
-      HDC const hdc = GetWindowDC(hwnd);
-      SetMapMode(hdc, MM_TEXT);
+      PAINTSTRUCT ps;
+      HDC const hdc = GetDC(hwnd);  // ClientArea
+      if (hdc) {
+        BeginPaint(hwnd, &ps);
+        SetMapMode(hdc, MM_TEXT);
 
-      int const iconSize = 128;
-      int const dpiWidth = ScaleIntByDPI(iconSize, dpi.x);
-      int const dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
-      HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
-      if (hicon) {
-        //RECT rc = {0};
-        //MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
-        DrawIconEx(hdc, ScaleIntByDPI(22, dpi.x), ScaleIntByDPI(44, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
-      }
-
-      // --- larger bold condensed version string
-      NONCLIENTMETRICSW ncMetrics = {0};
-      ncMetrics.cbSize            = sizeof(NONCLIENTMETRICSW);
-      if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncMetrics, 0))
-      {
-        if (hVersionFont) {
-          DeleteObject(hVersionFont);
+        int const   iconSize  = 128;
+        int const   dpiWidth  = ScaleIntByDPI(iconSize, dpi.x);
+        int const   dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
+        HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
+        if (hicon) {
+          //RECT rc = {0};
+          //MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
+          DrawIconEx(hdc, ScaleIntByDPI(10, dpi.x), ScaleIntByDPI(10, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
         }
-        int const verFontSize = ScaleIntByDPI(14, dpi.y);
-        ncMetrics.lfMessageFont.lfWeight = FW_BOLD;
-        ncMetrics.lfMessageFont.lfHeight = -MulDiv(verFontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-        hVersionFont = CreateFontIndirectW(&ncMetrics.lfMessageFont);
-        SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
-      }
 
-      ReleaseDC(hwnd, hdc);
+        ReleaseDC(hwnd, hdc);
+        EndPaint(hwnd, &ps);
+      }
     }
     return 0;
+
 
   case WM_NOTIFY:
   {
@@ -4471,18 +4479,6 @@ DPI_T GetCurrentPPI(HWND hwnd) {
   return ppi;
 }
 
-/*
-if (!bSucceed) {
-  NONCLIENTMETRICS ncm;
-  ncm.cbSize = sizeof(NONCLIENTMETRICS);
-  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
-  if (ncm.lfMessageFont.lfHeight < 0)
-  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
-  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
-  if (*wSize == 0)
-    *wSize = 8;
-}*/
-
 
 /*
 
@@ -4802,6 +4798,7 @@ HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
   return hbmp;
 }
 
+
 //=============================================================================
 //
 //  SendWMSize()
@@ -4815,6 +4812,42 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
   GetClientRect(hwnd, &wndrc);
   return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
 }
+
+
+#if FALSE
+//=============================================================================
+//
+//  CreateAndSetFontDlgItemDPI()
+//
+HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold)
+{
+  NONCLIENTMETRICSW ncm = {0};
+  ncm.cbSize            = sizeof(NONCLIENTMETRICSW);
+  if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncm, 0)) {
+    HDC const hdcSys = GetDC(NULL);
+    DPI_T const dpiSys = Scintilla_GetWindowDPI(NULL);
+    DPI_T const dpiDlg = Scintilla_GetWindowDPI(hdlg);
+    if (fontSize <= 0) {
+      fontSize = (ncm.lfMessageFont.lfHeight < 0) ? -ncm.lfMessageFont.lfHeight : ncm.lfMessageFont.lfHeight;
+      if (fontSize == 0) {
+        fontSize = 8;
+      }
+    }
+    fontSize <<= 10; // precision
+    fontSize = MulDiv(fontSize, USER_DEFAULT_SCREEN_DPI, dpiSys.y); // correction
+    fontSize = ScaleIntByDPI(fontSize, dpiDlg.y);
+    ncm.lfMessageFont.lfHeight = -(MulDiv(fontSize, GetDeviceCaps(hdcSys, LOGPIXELSY), 72) >> 10); 
+    ncm.lfMessageFont.lfWeight = bold ? FW_BOLD : FW_NORMAL;
+    HFONT const hFont = CreateFontIndirectW(&ncm.lfMessageFont);
+    if (idDlgItem > 0) {
+      SendDlgItemMessageW(hdlg, idDlgItem, WM_SETFONT, (WPARAM)hFont, true);
+    }
+    ReleaseDC(hdlg, hdcSys);
+    return hFont;
+  }
+  return NULL;
+}
+#endif
 
 
 //=============================================================================
