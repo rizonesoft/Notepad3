@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.805.(build_#) (2020-08-05)
+Current BETA Version 5.20.808.(build_#) (2020-08-08)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
+[.808.1]- Configuration for "Search in Files" toolbar labe. 
 [.802.1]- Configuration ([Settings2]LargeIconScalePrecent) percent threshold to switch to 
             bigger file types icons (lexer style selections).
 [.727.1]- DPI-Aware treeview/listview lexer type icons.
@@ -73,6 +74,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.808.1]- Center system's MessageBox in parent window. 
+[.808.1]- Relative calculation of title font size for AboutBox and CS dialog. 
 [.805.1]- Unicode Point detection and enhanced Color Tag contrast on hoover.
 [.805.1]- DPI-Awareness of "Customize Schemes..." dialog icon eye sugar.
 [.805.1]- DateTime and Timestamp handling.
