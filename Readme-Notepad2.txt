@@ -21,7 +21,7 @@ Rebuilding from the Source Code
 --------------------------------------------------
   Notepad2 4.2.25 is based on Scintilla 2.24 [1].
 
-  [1] http://www.scintilla.org
+  [1] https://www.scintilla.org
 
   To be able to rebuild Notepad2, the source code of the Scintilla
   editing component has to be unzipped to the "scintilla" subdirectory

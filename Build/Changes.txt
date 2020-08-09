@@ -1631,7 +1631,7 @@ Version 1 Build 386 (08 December 2016)
 - Clean-code Solution (instead of "magic numbers").
 - Crypto Module: code cleanup
 - Crypto Module: Replaced LocalAlloc/GlobalAlloc by HeapAlloc methods.
-- Integration of DeelX RegExpr engine (http://www.regexlab.com/en/deelx/)
+- Integration of DeelX RegExpr engine (http://www.regexlab.com/en/deelx)
 - Fixed block selecting cause crash.
 
 

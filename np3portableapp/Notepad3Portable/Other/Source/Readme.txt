@@ -8,7 +8,7 @@ LICENSE
 
 This package's installer and launcher are released under the GPL. The launcher
 is the PortableApps.com Launcher, available with full source and documentation
-from http://portableapps.com/development. We request that developers using the
+from https://portableapps.com/development. We request that developers using the
 PortableApps.com Launcher please leave this directory intact and unchanged.
 
 USER CONFIGURATION
