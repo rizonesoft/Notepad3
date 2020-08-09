@@ -63,85 +63,85 @@ Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
 --------------------------------------------------------------------------------
 Development:
 ------------
-- Florian 'Flo' Balmer (Notepad2)       http://www.flos-freeware.ch/
-- RaiKoHoff                             https://github.com/RaiKoHoff/
+- Florian 'Flo' Balmer (Notepad2)       http://www.flos-freeware.ch
+- RaiKoHoff                             https://github.com/RaiKoHoff
 
 --------------------------------------------------------------------------------
 Contributors:
 -------------
-Derick Payne (© Rizonesoft)             https://www.rizonesoft.com/
-XhmikosR (Notepad2-mod)                 https://xhmikosr.github.io/notepad2-mod/
-Kai Liu (CodeFolding)                   https://code.kliu.org/misc/notepad2/
+Derick Payne (© Rizonesoft)             https://www.rizonesoft.com
+XhmikosR (Notepad2-mod)                 https://xhmikosr.github.io/notepad2-mod
+Kai Liu (CodeFolding)                   https://code.kliu.org/misc/notepad2
 RL Vision (Bookmarks)                   https://www.rlvision.com/notepad2/about.php
 Aleksandar Lekov (MarkOcc./AutoCompl.)
 Bruno Barbieri
 Matthew Ellis (MinimizeToTray)
-Igal Tabachnik (RelaunchElevated)       https://github.com/hmemcpy/
-Et alii @ GitHub                        https://github.com/XhmikosR/notepad2-mod/graphs/contributors/
-Some Icons by Pixel perfect (Flaticon)  https://www.flaticon.com/
+Igal Tabachnik (RelaunchElevated)       https://github.com/hmemcpy
+Et alii @ GitHub                        https://github.com/XhmikosR/notepad2-mod/graphs/contributors
+Some Icons by Pixel perfect (Flaticon)  https://www.flaticon.com
 
 --------------------------------------------------------------------------------
 Open Source / Libraries:
 ------------------------
-N.Hodgson (Scintilla)           https://www.scintilla.org/
-K.Kosako (Oniguruma Regex)      https://github.com/kkos/oniguruma/
-Stefan Küng (grepWin)           https://github.com/stefankueng/grepWin/
+N.Hodgson (Scintilla)           https://www.scintilla.org
+K.Kosako (Oniguruma Regex)      https://github.com/kkos/oniguruma
+Stefan Küng (grepWin)           https://github.com/stefankueng/grepWin
 D.Dyer (NotepadCrypt)           https://www.real-me.net/ddyer/notepad/NotepadCrypt.html
-T.D.Hanson (uthash)             https://troydhanson.github.io/uthash/
-Carbo Kuo (Mozilla's uchardet)  https://www.freedesktop.org/wiki/Software/uchardet/
-Lewis Van Winkle (TinyExpr)     https://github.com/codeplea/tinyexpr/
+T.D.Hanson (uthash)             https://troydhanson.github.io/uthash
+Carbo Kuo (Mozilla's uchardet)  https://www.freedesktop.org/wiki/Software/uchardet
+Lewis Van Winkle (TinyExpr)     https://github.com/codeplea/tinyexpr
 
 --------------------------------------------------------------------------------
 Acknowledgments:
 ----------------
-alexantr                https://github.com/alexantr/
-AlexIljin               https://github.com/AlexIljin/
+alexantr                https://github.com/alexantr
+AlexIljin               https://github.com/AlexIljin
 craigo-                 https://github.com/craigo-/
-Crane70                 https://github.com/Crane70/
-engelhro                https://github.com/engelhro/
-Hexaae                  https://github.com/Hexaae/
-hpwamr                  https://github.com/hpwamr/
-it4u                    https://github.com/it4u/
-jmacasd                 https://github.com/jmacasd/
-jupester                https://github.com/jupester/
-kofifus                 https://github.com/kofifus/
-Lacn0755                https://github.com/Lacn0755/
-leeoniya                https://github.com/leeoniya/
-lhmouse                 https://github.com/lhmouse/
-ltGuillaume             https://github.com/ltGuillaume/
-maboroshin              https://github.com/maboroshin/
-MadDogVachon            https://github.com/MadDogVachon/
-ohgree                  https://github.com/ohgree/
-RaffaeleBianc0          https://github.com/RaffaeleBianc0/
-rizonesoft              https://github.com/rizonesoft/
-Rudolfin                https://github.com/Rudolfin/
-ThreeLightsBeyond       https://github.com/ThreeLightsBeyond/
-xsak                    https://github.com/xsak/
-zufuliu                 https://github.com/zufuliu/
+Crane70                 https://github.com/Crane70
+engelhro                https://github.com/engelhro
+Hexaae                  https://github.com/Hexaae
+hpwamr                  https://github.com/hpwamr
+it4u                    https://github.com/it4u
+jmacasd                 https://github.com/jmacasd
+jupester                https://github.com/jupester
+kofifus                 https://github.com/kofifus
+Lacn0755                https://github.com/Lacn0755
+leeoniya                https://github.com/leeoniya
+lhmouse                 https://github.com/lhmouse
+ltGuillaume             https://github.com/ltGuillaume
+maboroshin              https://github.com/maboroshin
+MadDogVachon            https://github.com/MadDogVachon
+ohgree                  https://github.com/ohgree
+RaffaeleBianc0          https://github.com/RaffaeleBianc0
+rizonesoft              https://github.com/rizonesoft
+Rudolfin                https://github.com/Rudolfin
+ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
+xsak                    https://github.com/xsak
+zufuliu                 https://github.com/zufuliu
 
 --------------------------------------------------------------------------------
 Resources:
 ----------
-NotepadCrypt (Version Java)     https://www.nayuki.io/page/notepadcrypt-format-decryptor-java/
-Data Sharing Service            https://workupload.com/
+NotepadCrypt (Version Java)     https://www.nayuki.io/page/notepadcrypt-format-decryptor-java
+Data Sharing Service            https://workupload.com
 
 --------------------------------------------------------------------------------
 Licences:
 ---------
 Scintilla                       https://www.scintilla.org/License.txt
-Oniguruma Regex                 https://github.com/kkos/oniguruma/blob/master/COPYING/
-grepWin                         https://github.com/stefankueng/grepWin/blob/master/LICENSE/
+Oniguruma Regex                 https://github.com/kkos/oniguruma/blob/master/COPYING
+grepWin                         https://github.com/stefankueng/grepWin/blob/master/LICENSE
 uthash                          https://troydhanson.github.io/uthash/license.html
-uchardet                        https://www.freedesktop.org/wiki/Software/uchardet/#license/
-TinyExpr                        https://github.com/codeplea/tinyexpr/blob/master/LICENSE/
-Notepad3 icon by Vexels.com     https://www.vexels.com/
-  -  designed by                mailto:smanashova@gmail.com/
+uchardet                        https://www.freedesktop.org/wiki/Software/uchardet/#license
+TinyExpr                        https://github.com/codeplea/tinyexpr/blob/master/LICENSE
+Notepad3 icon by Vexels.com     https://www.vexels.com
+  -  designed by                mailto:smanashova@gmail.com
 
 --------------------------------------------------------------------------------
 Notepad3 Licence:
 -----------------
 Notepad3 and MiniPath Copyright © 2008-2020 Rizonesoft, All rights reserved.
-https://www.rizonesoft.com/
+https://www.rizonesoft.com
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
