@@ -260,7 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Tid och datum (kort)\tCtrl+F5",               IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Tid och datum (lång)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Current Timestamp",                          CMD_INSERT_TIMESTAMP
+            MENUITEM "Aktuell tidsstämpel",                         CMD_INSERT_TIMESTAMP
             MENUITEM "Uppdatera tidsstämplar\tShift+F5",            CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "Linjekommentar (växla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
@@ -325,7 +325,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Färgpunkter",                                     IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Highlight &Unicode-Points",                       IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Markera &Unicode-punkter",                        IDM_VIEW_UNICODE_POINTS
         MENUITEM "Visuell klammermatchning\tCtrl+Shift+V",          IDM_VIEW_MATCHBRACES
         POPUP "Markera rad\tCtrl+Shift+I"
         BEGIN
@@ -430,7 +430,7 @@ BEGIN
             MENUITEM "Avsluta Notepad3",                            IDM_VIEW_ESCEXIT
         END
         MENUITEM "Spara innan verktyg används",                     IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",                     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Räkna ut Tiny-E&xpressions",                     IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
         BEGIN
