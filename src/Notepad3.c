@@ -6469,13 +6469,14 @@ void HandlePosChange()
 //
 static DocPos prevCursorPosition = -1;
 
-#define RGB_TOLERANCE 0xF
+#define RGB_TOLERANCE 0x10
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
-inline COLORREF _CalcContrastColor(COLORREF rgb)
+inline COLORREF _CalcContrastColor(COLORREF rgb, BYTE alpha)
 {
-  bool const mask = RGB_SUB((rgb) && 0xFF, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB((rgb >> 8) && 0xFF, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB((rgb >> 16) && 0xFF, 0x80) <= RGB_TOLERANCE;
+  bool const mask = RGB_SUB((rgb)&0xFF, alpha) <= RGB_TOLERANCE &&
+                    RGB_SUB((rgb >> 8) & 0xFF, alpha) <= RGB_TOLERANCE &&
+                    RGB_SUB((rgb >> 16) & 0xFF, alpha) <= RGB_TOLERANCE;
+
   return mask ? (0x7F7F7F + rgb) & 0xFFFFFF : rgb ^ 0xFFFFFF;
 }
 
@@ -6586,13 +6587,15 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         unsigned int iValue = 0;
         if (sscanf_s(&chText[1], "%x", &iValue) == 1) 
         {
-          COLORREF const rgb = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-          COLORREF const fgr = _CalcContrastColor(rgb);
+          COLORREF const rgb   = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+          BYTE const     alpha = (length >= 8) ? (iValue & 0xFF000000) >> 24 : 0xFF;
+          COLORREF const fgr   = _CalcContrastColor(rgb, alpha);
+
           SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
           SciCall_IndicatorFillRange(firstPos, length);
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, fgr);
 
-          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0xFF);
+          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, alpha);
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
         }
       }

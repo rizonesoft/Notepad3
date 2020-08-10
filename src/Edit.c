@@ -7637,7 +7637,7 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
   
   if (Settings.ColorDefHotspot) 
   {
-    static const char* pColorRegEx = "#([0-9a-fA-F]){6}";
+    static const char* pColorRegEx = "#([0-9a-fA-F]){8}|#([0-9a-fA-F]){6}";
     _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
   }
   else {
