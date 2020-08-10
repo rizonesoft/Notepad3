@@ -373,7 +373,7 @@ msgstr "문자열 바꾸기"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "바꿀 문자열"
+msgstr "다음의 문자열\n포맷으로 바꿈:"
 
 #. Resource IDs: (126)
 msgid "S&top"
