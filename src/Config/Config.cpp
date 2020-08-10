@@ -1974,8 +1974,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
   switch (Globals.idxSelectedTheme) {
     case 1: 
       Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
-      // fall trough
-    case 0:
+      //~break;     
+    case 0: // fall trough
       IniSectionDelete(IniSecStyles, Constants.StylingThemeName, false);
       break;
     default:
