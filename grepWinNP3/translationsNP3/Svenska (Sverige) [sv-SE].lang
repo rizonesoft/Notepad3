@@ -100,11 +100,11 @@ msgstr "Avbryt"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Fånga sökning"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Kontrollera om det finns uppdateringar"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -196,11 +196,11 @@ msgstr "Exkludera mappar (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Exportera resultatlista"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Exportera resultat..."
 
 #. Resource IDs: (158)
 msgid "Ext"
@@ -232,7 +232,7 @@ msgstr "Inkludera gömda filer"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Inkludera sökväg"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -248,7 +248,7 @@ msgstr "Ogiltig mapp!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr ""
+msgstr "Invertera sökning (inte söksträng)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -397,7 +397,7 @@ msgstr "Sök i"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Sök i hittade filer"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -462,11 +462,11 @@ msgstr "Behandlar filer som UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Behandlar filer som binära"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
-msgstr ""
+msgstr "Besök Stefan Küngs hemsida"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -503,7 +503,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWinNP3 %s is available"
-msgstr ""
+msgstr "grepWinNP3 %s är tillgänglig"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -515,15 +515,15 @@ msgstr "håll ner shift-tangenten för att hitta filer som inte innhåller söks
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "inkludera filernas sökvägar"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "inkludera träffarnas radnummer"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "inkludera text för sökrad"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -547,7 +547,7 @@ msgstr "ingen text att testa med"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "Antal NULL-bytes per MB tillåtna för en fill skall klassas som text i stället för binär"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
@@ -588,7 +588,7 @@ msgstr "Återställ"
 
 #. Resource IDs: (3001)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+msgstr "Notepad3:s grepWin(NP3)-mod av Stefan Küngs fantastiska verktyg!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
