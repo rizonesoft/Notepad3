@@ -46,8 +46,8 @@ More information:
 * Source code and binaries:   https://github.com/XhmikosR/notepad2-mod
 * Official Notepad2 website:  http://www.flos-freeware.ch/notepad2.html
 * Code folding usage guide:   https://github.com/XhmikosR/notepad2-mod/wiki/Code-Folding-Usage
-* Kai Liu's website:          http://code.kliu.org/misc/notepad2/
-* Bookmark Edition website:   http://www.rlvision.com/notepad2/about.asp
+* Kai Liu's website:          https://code.kliu.org/misc/notepad2
+* Bookmark Edition website:   https://www.rlvision.com/notepad2/about.asp
 
 --------------------------------------------------
 Changed keyboard shortcuts compared to Notepad2:

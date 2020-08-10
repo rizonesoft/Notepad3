@@ -834,7 +834,7 @@ Command Line Switches
 Source Code
 
   Notepad2 is based on the Scintilla source code editing component:
-  http://www.scintilla.org
+  https://www.scintilla.org
 
   The full Notepad2 source code can be found at:
   http://www.flos-freeware.ch
@@ -862,7 +862,7 @@ Credits and Special Thanks
   Notepad2. Without Scintilla, the rich features found in Notepad2
   wouldn't have been possible!
 
-  [1] http://www.scintilla.org
+  [1] https://www.scintilla.org
 
   Many thanks to everybody for sending me bug reports and useful hints.
   A special thank goes to Roland Weigelt [2] for his helpful thoughts
@@ -871,10 +871,10 @@ Credits and Special Thanks
   Kai Liu [4], Moritz Kroll, Seunghun Thomas Lee [5] and Shawn
   Brenneman for sending detailed bug reports and ready-to-use patches.
 
-  [2] http://www.roland-weigelt.de
-  [3] http://www.TimoSoft-Software.de
-  [4] http://code.kliu.org/misc/notepad2/
-  [5] stlee42@gmail.com
+  [2] https://www.roland-weigelt.de
+  [3] https://www.TimoSoft-Software.de
+  [4] https://code.kliu.org/misc/notepad2
+  [5] mailto:stlee42@gmail.com
 
 
 Copyright
