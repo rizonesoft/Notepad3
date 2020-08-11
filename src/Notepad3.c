@@ -1957,7 +1957,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
 
-  if (Settings.ShowHypLnkToolTip || Settings.ColorDefHotspot) {
+  if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled()) {
     SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)100, 0);
   }
   else {
@@ -3422,6 +3422,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
   bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
+  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 18, fd);
 
   CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
 
@@ -3448,6 +3449,21 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
 
+  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
+  
+  i = IDM_VIEW_COLORDEFHOTSPOTS + Settings.ColorDefHotspot;
+  CheckMenuRadioItem(hmenu, IDM_VIEW_COLORDEFHOTSPOTS, IDM_VIEW_COLOR_BGRA, i, MF_BYCOMMAND);
+  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 9, IsColorDefHotspotEnabled());
+
+  CheckCmd(hmenu, IDM_VIEW_UNICODE_POINTS, Settings.HighlightUnicodePoints);
+  CheckCmd(hmenu, IDM_VIEW_MATCHBRACES, Settings.MatchBraces);
+  
+  i = IDM_VIEW_HILITCURLN_NONE + Settings.HighlightCurrentLine;
+  CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
+  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 12, (i != IDM_VIEW_HILITCURLN_NONE));
+
+  // --------------------------------------------------------------------------
+
   if (Settings.MarkOccurrencesMatchWholeWords) {
     i = IDM_VIEW_MARKOCCUR_WORD;
   }
@@ -3458,21 +3474,22 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_MARKOCCUR_WNONE;
   }
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
-  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 17), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
-
+  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
+  
   i = IsMarkOccurrencesEnabled();
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
-  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 17), 5, i);
+  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13), 5, i);
+  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13, i);
 
+  // --------------------------------------------------------------------------
 
   CheckCmd(hmenu, IDM_VIEW_SHOWBLANKS, Settings.ViewWhiteSpace);
   CheckCmd(hmenu, IDM_VIEW_SHOWEOLS, Settings.ViewEOLs);
   CheckCmd(hmenu, IDM_VIEW_WORDWRAPSYMBOLS, Settings.ShowWordWrapSymbols);
-  CheckCmd(hmenu, IDM_VIEW_MATCHBRACES, Settings.MatchBraces);
   CheckCmd(hmenu, IDM_VIEW_MENUBAR, Settings.ShowMenubar);
   CheckCmd(hmenu, IDM_VIEW_TOOLBAR, Settings.ShowToolbar);
   EnableCmd(hmenu, IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
@@ -3483,14 +3500,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
 
-  i = IDM_VIEW_HILITCURLN_NONE + Settings.HighlightCurrentLine;
-  CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
-
-  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
-  CheckCmd(hmenu, IDM_VIEW_COLORDEFHOTSPOTS, Settings.ColorDefHotspot);
-  CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
   CheckCmd(hmenu, IDM_VIEW_SHOW_HYPLNK_CALLTIP, Settings.ShowHypLnkToolTip);
-  CheckCmd(hmenu, IDM_VIEW_UNICODE_POINTS, Settings.HighlightUnicodePoints);
+  CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
 
   CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, Flags.bReuseWindow);
   EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, sav);
@@ -5272,7 +5283,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_HILITCURLN_BACK:
     case IDM_VIEW_HILITCURLN_FRAME:
       {
-        int set = iLoWParam - IDM_VIEW_HILITCURLN_NONE;
+        int const set = iLoWParam - IDM_VIEW_HILITCURLN_NONE;
         Settings.HighlightCurrentLine = (set >= 0) ? set : ((Settings.HighlightCurrentLine + 1) % 3);
         Style_HighlightCurrentLine(Globals.hwndEdit, Settings.HighlightCurrentLine);
       }
@@ -5289,9 +5300,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_COLORDEFHOTSPOTS:
-      Settings.ColorDefHotspot = !Settings.ColorDefHotspot;
-      EditUpdateVisibleIndicators();
-      UpdateMouseDWellTime();
+    case IDM_VIEW_COLOR_ARGB:
+    case IDM_VIEW_COLOR_RGBA:
+    case IDM_VIEW_COLOR_BGRA:
+      {
+        Settings.ColorDefHotspot = iLoWParam - IDM_VIEW_COLORDEFHOTSPOTS;
+        EditUpdateVisibleIndicators();
+        UpdateMouseDWellTime();
+      }
       break;
 
     case IDM_VIEW_UNICODE_POINTS:
@@ -6471,6 +6487,7 @@ static DocPos prevCursorPosition = -1;
 
 #define RGB_TOLERANCE 0x10
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
+
 inline COLORREF _CalcContrastColor(COLORREF rgb, BYTE alpha)
 {
   bool const mask = RGB_SUB((rgb)&0xFF, alpha) <= RGB_TOLERANCE &&
@@ -6480,6 +6497,16 @@ inline COLORREF _CalcContrastColor(COLORREF rgb, BYTE alpha)
   return mask ? (0x7F7F7F + rgb) & 0xFFFFFF : rgb ^ 0xFFFFFF;
 }
 
+// ----------------------------------------------------------------------------
+
+#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & 0xFF, ((X) >> 8) & 0xFF, (X)&0xFF))
+#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & 0xFF, ((X) >> 16) & 0xFF, ((X) >> 8) & 0xFF))
+#define BGRA_TO_COLREF(X) (RGB(((X) >> 8) & 0xFF, ((X) >> 16) & 0xFF, ((X) >> 24) & 0xFF))
+#define ARGB_GET_ALPHA(A) (((A) >> 24) & 0xFF)
+#define RGBA_GET_ALPHA(A) ((A) & 0xFF)
+#define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
+                               
+// ----------------------------------------------------------------------------
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
@@ -6508,7 +6535,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           }
         }
       }
-      if (Settings.ColorDefHotspot) {
+      if (IsColorDefHotspotEnabled()) {
         if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, position) > 0) {
           indicator_id = INDIC_NP3_COLOR_DEF;
         }
@@ -6587,9 +6614,34 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         unsigned int iValue = 0;
         if (sscanf_s(&chText[1], "%x", &iValue) == 1) 
         {
-          COLORREF const rgb   = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-          BYTE const     alpha = (length >= 8) ? (iValue & 0xFF000000) >> 24 : 0xFF;
-          COLORREF const fgr   = _CalcContrastColor(rgb, alpha);
+          COLORREF rgb = 0x000000;
+          BYTE   alpha = 0xFF;
+          if (length >= 8) // ARGB, RGBA, BGRA
+          {
+            switch (Settings.ColorDefHotspot) {
+              case 1:
+                rgb   = ARGB_TO_COLREF(iValue);
+                alpha = ARGB_GET_ALPHA(iValue);
+                break;
+              case 2:
+                rgb   = RGBA_TO_COLREF(iValue);
+                alpha = RGBA_GET_ALPHA(iValue);
+                break;
+              case 3:
+                rgb   = BGRA_TO_COLREF(iValue);
+                alpha = BGRA_GET_ALPHA(iValue);
+                break;
+              case 0:
+              default:
+                break;
+            }
+          }
+          else // RGB
+          {
+            rgb   = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
+            alpha = 0xFF;
+          }
+          COLORREF const fgr = _CalcContrastColor(rgb, alpha);
 
           SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
           SciCall_IndicatorFillRange(firstPos, length);
@@ -6640,7 +6692,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
       SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0);
       SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
-
 
       HandlePosChange();
     }
@@ -6768,7 +6819,33 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
   unsigned int iValue = 0;
   if (sscanf_s(&chText[1], "%x", &iValue) == 1)
   {
-    COLORREF const rgbCur = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+    COLORREF rgbCur = 0x000000;
+    BYTE     alpha  = 0xFF;
+    if (length >= 8) // ARGB, RGBA, BGRA
+    {
+      switch (Settings.ColorDefHotspot) {
+        case 1:
+          rgbCur = ARGB_TO_COLREF(iValue);
+          alpha  = ARGB_GET_ALPHA(iValue);
+          break;
+        case 2:
+          rgbCur = RGBA_TO_COLREF(iValue);
+          alpha  = RGBA_GET_ALPHA(iValue);
+          break;
+        case 3:
+          rgbCur = BGRA_TO_COLREF(iValue);
+          alpha  = BGRA_GET_ALPHA(iValue);
+          break;
+        case 0:
+        default:
+          break;
+      }
+    }
+    else // RGB
+    {
+      rgbCur = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
+      alpha  = 0xFF;
+    }
 
     CHOOSECOLOR cc;
     ZeroMemory(&cc, sizeof(CHOOSECOLOR));
@@ -6776,15 +6853,39 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
     cc.hwndOwner = hwnd;
     cc.rgbResult = rgbCur;
     cc.lpCustColors = g_colorCustom;
-    cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
+    //cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
+    cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR;
 
     if (!ChooseColor(&cc)) { return; }
 
     COLORREF const rgbNew = cc.rgbResult;
 
     CHAR wchColor[32] = { L'\0' };
-    StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X",
-      (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
+    if (length >= 8) {
+      switch (Settings.ColorDefHotspot) {
+        case 1:
+          StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X", (int)(alpha),
+                           (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
+          break;
+        case 2:
+          StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X",
+                           (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew),
+                           (int)(alpha));
+          break;
+        case 3:
+          StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X",
+                           (int)GetBValue(rgbNew), (int)GetGValue(rgbNew), (int)GetRValue(rgbNew),
+                           (int)(alpha));
+          break;
+        case 0:
+        default:
+          break;
+      }
+    }
+    else {
+      StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X",
+                       (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
+    }
 
     DocPos const saveTargetBeg = SciCall_GetTargetStart();
     DocPos const saveTargetEnd = SciCall_GetTargetEnd();
@@ -6793,6 +6894,8 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
     SciCall_ReplaceTarget(length, wchColor);
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+
+    EditUpdateVisibleIndicators();
   }
 }
 
@@ -10763,7 +10866,7 @@ void SetNotifyIconTitle(HWND hwnd)
 //
 void UpdateMouseDWellTime()
 {
-  if (Settings.ShowHypLnkToolTip || Settings.ColorDefHotspot || Settings.HighlightUnicodePoints)
+  if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints)
     SciCall_SetMouseDWellTime(100);
   else
     Sci_DisableMouseDWellNotification();

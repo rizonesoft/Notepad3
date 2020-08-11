@@ -1384,7 +1384,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
-    GET_BOOL_VALUE_FROM_INISECTION(ColorDefHotspot, true);
+    GET_INT_VALUE_FROM_INISECTION(ColorDefHotspot, 1, 0, 3);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
     GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
     GET_BOOL_VALUE_FROM_INISECTION(HighlightUnicodePoints, true);
@@ -1811,7 +1811,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCloseTags);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ColorDefHotspot);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, ColorDefHotspot);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowHypLnkToolTip);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HighlightUnicodePoints);

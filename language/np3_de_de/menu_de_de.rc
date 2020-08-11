@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Zeige Zeilenumbrüche\tCtrl+Shift+9",      IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Farb-Definition Indikator",              IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Farb-Definition Indikator"
+        BEGIN
+            MENUITEM "&AUS",                                IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                               IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGR+A"                               IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "&Unicode-Point Indikator",                IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zeige passende Klammer\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "A&ktuelle Zeile hervorheben\tCtrl+Shift+I"
