@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Mostra simboli di a capo\tCtrl+Shift+0",             IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "Evidenzia h&yperlink\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Hotspot definizione colore",                        IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Hotspot definizione colore"
+        BEGIN
+            MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",                          IDM_VIEW_UNICODE_POINTS
         MENUITEM "Evidenzia &parentesi corrispondente\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Evidenzia riga corrente\tCtrl+Shift+I"
@@ -342,7 +348,7 @@ BEGIN
             MENUITEM "Corrispondenza &case-sensitive",       IDM_VIEW_MARKOCCUR_CASE
             POPUP "Corrispondenza solo per parole intere"
             BEGIN
-                MENUITEM "OFF",                                    IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&OFF",                                   IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Corrispondenza parola &selezionata",     IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Corrispondenza parola &corrente",        IDM_VIEW_MARKOCCUR_CURRENT
             END

@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",               IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "色をプレビュー(&C)",                           IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "色をプレビュー(&C)"
+        BEGIN
+            MENUITEM "オフ(&O)",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "RGB+A(&R)"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "BGRA(&B)"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Unicode の符号点を強調表示(&U)",               IDM_VIEW_UNICODE_POINTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
@@ -342,7 +348,7 @@ BEGIN
             MENUITEM "大文字小文字を区別(&C)",                 IDM_VIEW_MARKOCCUR_CASE
             POPUP "単語単位で一致(&W)"
             BEGIN
-                MENUITEM "オフ",                              IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "オフ(&O)",                         IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "選択単語に一致(&S)",                IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "カーソル位置の単語(&C)",              IDM_VIEW_MARKOCCUR_CURRENT
             END

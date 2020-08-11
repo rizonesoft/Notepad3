@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Отображать &окончания строк\tCtrl+Shift+9",       IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Отмечать области выбора &цвета",                  IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "Отмечать области выбора &цвета"
+        BEGIN
+            MENUITEM "&Выключена",                       IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",                       IDM_VIEW_UNICODE_POINTS
         MENUITEM "О&тмечать парные скобки\tCtrl+Shift+V",           IDM_VIEW_MATCHBRACES
         POPUP "Подсветка т&екущей строки\tCtrl+Shift+I"

@@ -329,7 +329,7 @@ BEGIN
             MENUITEM "&AUS",                                IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
             MENUITEM "&RGB+A"                               IDM_VIEW_COLOR_RGBA
-            MENUITEM "&BGR+A"                               IDM_VIEW_COLOR_BGRA
+            MENUITEM "&BGRA"                                IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "&Unicode-Point Indikator",                IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zeige passende Klammer\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
@@ -348,7 +348,7 @@ BEGIN
             MENUITEM "Berücksichtige Groß-/Kleinschreibung", IDM_VIEW_MARKOCCUR_CASE
             POPUP "Nur ganze Wörter"
             BEGIN
-                MENUITEM "AUS",                             IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&AUS",                            IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Selektiertes Wort",               IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Aktuelles Wort",                  IDM_VIEW_MARKOCCUR_CURRENT
             END

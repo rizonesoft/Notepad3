@@ -329,7 +329,7 @@ BEGIN
             MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&BGR+A"                            IDM_VIEW_COLOR_BGRA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Highlight &Unicode-Points",            IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES

@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Паказваць &канчаткі радкоў\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Адзначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Адзначаць рэгі&ёны вылучэння колера",         IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "Адзначаць рэгі&ёны вылучэння колера"
+        BEGIN
+            MENUITEM "&Адключыць",                       IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",                   IDM_VIEW_UNICODE_POINTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "Па&дсвечванне ак&тыўнага радка\tCtrl+Shift+I"

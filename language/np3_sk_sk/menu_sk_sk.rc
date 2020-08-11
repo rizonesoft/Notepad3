@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Zobraziť &koncovky riadkov\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlinkové prepojenia\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Farba definície prepojenia",                 IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Farba definície prepojenia"
+        BEGIN
+            MENUITEM "&VYP.",                            IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",                   IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V",        IDM_VIEW_MATCHBRACES
         POPUP "Zvýrazniť &aktuálny riadok\tShift+Ctrl+I"
@@ -342,7 +348,7 @@ BEGIN
             MENUITEM "Rozlišovať malé a veľké písmo",       IDM_VIEW_MARKOCCUR_CASE
             POPUP "Priradiť iba celé slovo"
             BEGIN
-                MENUITEM "VYP.",                            IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&VYP.",                           IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Priradiť &vybrané slovo",         IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Priradiť &aktuálne slovo",        IDM_VIEW_MARKOCCUR_CURRENT
             END

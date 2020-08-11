@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Show Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Colour Definition Hotspots",          IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Color Definition Hotspots"
+        BEGIN
+            MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",            IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "H&ighlight Current Line\tCtrl+Shift+I"
@@ -342,7 +348,7 @@ BEGIN
             MENUITEM "Match &Case Sensitive",       IDM_VIEW_MARKOCCUR_CASE
             POPUP "Match &Whole Word Only"
             BEGIN
-                MENUITEM "OFF",                         IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&OFF",                        IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Match &Selected Word",        IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Match &Current Word",         IDM_VIEW_MARKOCCUR_CURRENT
             END
