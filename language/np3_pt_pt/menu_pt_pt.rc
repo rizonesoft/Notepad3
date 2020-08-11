@@ -323,8 +323,14 @@ BEGIN
         MENUITEM "Mostrar espaços\tCtrl+Shift+8",                          IDM_VIEW_SHOWBLANKS
         MENUITEM "Mostrar fins d&e linha\tCtrl+Shift+9",                   IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "Realçar &hiperligações\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Definição de &cor do realce",                        IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Realçar &hiperligações\tCtrl+Alt+W",                     IDM_VIEW_HYPERLINKHOTSPOTS
+        POPUP "Definição de &cor do realce"
+        BEGIN
+            MENUITEM "Desligado",                        IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",                          IDM_VIEW_UNICODE_POINTS
         MENUITEM "Correspondência &visual das chavetas\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Realçar l&inha actual\tCtrl+Shift+I"

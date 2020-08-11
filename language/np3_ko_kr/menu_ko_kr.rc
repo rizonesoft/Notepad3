@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "줄 끝 표시(&E)\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "하이퍼 링크 핫스팟(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "색상 정의 핫스팟(&C)",                   IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "색상 정의 핫스팟(&C)"
+        BEGIN
+            MENUITEM "사용 안함(&O)",                      IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "A+RGB(&A)"                          IDM_VIEW_COLOR_ARGB
+            MENUITEM "RGB+A(&R)"                          IDM_VIEW_COLOR_RGBA
+            MENUITEM "BGRA(&B)"                           IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "괄호 짝 강조(&V)\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "현재 줄 강조(&G)\tCtrl+Shift+I"
@@ -342,7 +348,7 @@ BEGIN
             MENUITEM "대소문자 구별(&C)",                   IDM_VIEW_MARKOCCUR_CASE
             POPUP "단어 단위 일치(&W)"
             BEGIN
-                MENUITEM "사용 안함",                      IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "사용 안함(&O)",                      IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "선택한 단어 일치(&S)",             IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "현재 단어와 일치(&R)",             IDM_VIEW_MARKOCCUR_CURRENT
             END

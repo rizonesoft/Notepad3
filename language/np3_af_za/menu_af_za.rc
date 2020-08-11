@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Wys Lyn &Einde\tCtrl+Shift+9",            IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",            IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Kleur Definisie Hotspots",               IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Kleur Definisie Hotspots",
+        BEGIN
+            MENUITEM "&AF",                              IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",               IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele Hakie Passing\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Merk Huidi&ge Lyn\tCtrl+Shift+I"
@@ -342,7 +348,7 @@ BEGIN
             MENUITEM "Pas &Geval Sensitief",                IDM_VIEW_MARKOCCUR_CASE
             POPUP "Pas &Slegs Die Hele Woord Aan"
             BEGIN
-                MENUITEM "AF",                              IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&AF",                             IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Pas &Geselekteerde Woord",        IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Pas &Huidige Woord",              IDM_VIEW_MARKOCCUR_CURRENT
             END

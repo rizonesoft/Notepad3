@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Tonen de lijn &eindes\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indicatoren\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Kleurdefinitie Hotspots",                IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Kleurdefinitie Hotspots"
+        BEGIN
+            MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Tonen &Unicode-Punten",                   IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele Brace Matching\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "Mar&keer actueel lijn\tCtrl+Shift+I"
@@ -342,7 +348,7 @@ BEGIN
             MENUITEM "Match &Hoofdlettergevoelig",          IDM_VIEW_MARKOCCUR_CASE
             POPUP "Match &alleen hele woord"
             BEGIN
-                MENUITEM "OFF",                             IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&OFF",                            IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Match &geselecteerde woord",      IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Match &huidig woord",             IDM_VIEW_MARKOCCUR_CURRENT
             END

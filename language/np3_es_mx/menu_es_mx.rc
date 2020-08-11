@@ -324,7 +324,13 @@ BEGIN
         MENUITEM "Mostrar &fin de línea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Indicar &hipervínculos\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Definición color Hotspots",                          IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Definición color Hotspots"
+        BEGIN
+            MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
         MENUITEM "Highlight &Unicode-Points",                           IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visual coincidencia de llave\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "&Resaltar la línea actual\tCtrl+Shift+I"
