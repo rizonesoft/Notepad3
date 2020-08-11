@@ -260,7 +260,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Hora/Da&ta (abreviada)\tCtrl+F5",          IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Hora/Data (por extenso)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Current Timestamp",                       CMD_INSERT_TIMESTAMP
+            MENUITEM "Data/hora a&ctual",                        CMD_INSERT_TIMESTAMP
             MENUITEM "Act&ualizar data/hora\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Linha de comentário (Alternar)\tCtrl+Q",            IDM_EDIT_LINECOMMENT
@@ -331,7 +331,7 @@ BEGIN
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Highlight &Unicode-Points",                          IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Realçar Pontos-&Unicode",                            IDM_VIEW_UNICODE_POINTS
         MENUITEM "Correspondência &visual das chavetas\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Realçar l&inha actual\tCtrl+Shift+I"
         BEGIN
@@ -436,7 +436,7 @@ BEGIN
             MENUITEM "&Sair do Notepad3",              IDM_VIEW_ESCEXIT
         END
         MENUITEM "Guardar &antes de executar ferramentas",      IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Calcular E&xpressões-muito pequenas",         IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Lemb&rar"
         BEGIN
