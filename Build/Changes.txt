@@ -33,14 +33,15 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.808.(build_#) (2020-08-08)
+Current BETA Version 5.20.811.(build_#) (2020-08-11)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
-[.808.1]- Configuration for "Search in Files" toolbar labe. 
+[.811.1]- Color-Definition Hotspots: support A+RGB, RGB+A and BGRA.
+[.808.1]- Configuration for "Search in Files" toolbar label. 
 [.802.1]- Configuration ([Settings2]LargeIconScalePrecent) percent threshold to switch to 
             bigger file types icons (lexer style selections).
 [.727.1]- DPI-Aware treeview/listview lexer type icons.
@@ -51,7 +52,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
-[.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE)
+[.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE).
 [.805.1]- Replace "64-bit"/"BETA" by "x64"/"beta" to shorter the version name.
 [.803.1]- Title font change DPI-Awareness for About and Customize Schemes dialog.
 [.802.1]- Resample scaling of info-box icons on DPI change.
@@ -74,6 +75,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.811.1]- Set preferred language to internal, in case of "don't show again" 
+            option on "not available confirmation dialog" is enabled.
 [.808.1]- Center system's MessageBox in parent window. 
 [.808.1]- Relative calculation of title font size for AboutBox and CS dialog. 
 [.805.1]- Unicode Point detection and enhanced Color Tag contrast on hoover.

@@ -286,7 +286,7 @@ See Replacing Windows Notepad for detailed explanations.
 =======================================================================
 =                                                                     =
 =                                                                     =
-=                     Notepad3's  Encryption  Decryption feature     =
+=                     Notepad3's  Encryption / Decryption feature     =
 =                                                                     =
 =                                 Prototype enduser documentation     =
 =                              taken from NotepadCrypt (Dave Dyer)    =
