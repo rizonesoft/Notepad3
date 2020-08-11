@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "In&dítás"
         BEGIN
-            MENUITEM "Keresés &fájlokban\tCtrl+Alt+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Új ablak\tAlt+N",                   IDM_FILE_NEWWINDOW
             MENUITEM "&Üres ablak\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Dátum/Idő (rövid)\tCtrl+F5",                IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Dátum/Idő (&hosszú)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Időbélye&gek frissítése\tShift+F5",          CMD_TIMESTAMPS
+            MENUITEM "&Current Timestamp",                         CMD_INSERT_TIMESTAMP
+            MENUITEM "Időbélye&gek frissítése\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
             MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
             MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Keresés &fájlokban\tCtrl+Alt+F",         IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Nézet"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "Sorvégek &megjelenítése\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Hivatkoz&ások kiemelése\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Szín&választó területek",               IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "Szín&választó területek"
+        BEGIN
+            MENUITEM "Kika&pcsolva",                     IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Highlight &Unicode-Points",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zárójelpár kiemelés\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Akt&uális sor kiemelése\tCtrl+Shift+I"
         BEGIN
@@ -352,7 +360,7 @@ BEGIN
         POPUP "&Behajtások"
         BEGIN
             MENUITEM "Kó&dblokk behajtások",                    IDM_VIEW_FOLDING
-            MENUITEM "Kódblokk &váltás\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Kódblokk &váltás\tCtrl+Alt+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Ugrás a &köv. behajtásra\tAlt+ +",        CMD_FOLDJUMPDOWN
             MENUITEM "Ugrás az &előző behajtásra\tAlt+ –",      CMD_FOLDJUMPUP
@@ -428,6 +436,7 @@ BEGIN
             MENUITEM "Kilé&pés a Notepad3-ból",      IDM_VIEW_ESCEXIT
         END
         MENUITEM "Eszközök &futtatása előtt mentés", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",      IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Emlékezés"
         BEGIN
@@ -453,10 +462,10 @@ BEGIN
         BEGIN
             POPUP "&Renderelés"
             BEGIN
-                MENUITEM "Alapértelmezett &GDI (ligatúrák nélkül)", IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",             IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                 IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (ligatúrák nélkül)",             IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "K&étirányú"
             BEGIN

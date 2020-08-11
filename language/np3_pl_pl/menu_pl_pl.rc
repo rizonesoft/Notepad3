@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Uruchom"
         BEGIN
-            MENUITEM "&Szukaj w plikach\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
+            MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nowe okno\tAlt+N",                  IDM_FILE_NEWWINDOW
             MENUITEM "&Puste okno\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Godzinę/Datę (krótki format)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Godzinę/Datę (&długi format)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Aktualizacja znacznika czasu\tShift+F5",     CMD_TIMESTAMPS
+            MENUITEM "&Current Timestamp",                          CMD_INSERT_TIMESTAMP
+            MENUITEM "&Aktualizacja znacznika czasu\tShift+F5",     CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Komentarz liniowy (Toggle)\tCtrl+Q",         IDM_EDIT_LINECOMMENT
             MENUITEM "&Komentarz strumieniowy\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "Zamień następny\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Przejdź do wiersza...\tCtrl+G",              IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Szukaj w plikach\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
+            MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Widok"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "Pokaż znaki końca wiersza\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Aktywne miejsca hiperpłącza\tCtrl+Alt+W",         IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Definicja kolorów Hotspotów",                    IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Definicja kolorów Hotspotów"
+        BEGIN
+            MENUITEM "Wyłączone",                        IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Highlight &Unicode-Points",                       IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Wyróżnianie pasujących nawiasów\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Wyróżnianie bieżącego wiersza\tCtrl+Shift+I"
         BEGIN
@@ -352,7 +360,7 @@ BEGIN
         POPUP "&Składanie"
         BEGIN
             MENUITEM "Składanie kodu",                              IDM_VIEW_FOLDING
-            MENUITEM "&Przełącz składanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Przełącz składanie kodu\tCtrl+Alt+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Przeskocz do nast.\tAlt+ +",         CMD_FOLDJUMPDOWN
             MENUITEM "Przeskocz do poprzed.\tAlt+ –",         CMD_FOLDJUMPUP
@@ -428,6 +436,7 @@ BEGIN
             MENUITEM "Zamknij Notepad3",                            IDM_VIEW_ESCEXIT
         END
         MENUITEM "Zapisz przed uruchomieniem narzędzi",             IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",                     IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Zapamiętaj"
         BEGIN
@@ -453,10 +462,10 @@ BEGIN
         BEGIN
             POPUP "&Renderowanie"
             BEGIN
-                MENUITEM "Domyślne &GDI (bez ligatury)",      IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",           IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",               IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",               IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (bez ligatury)",               IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "Dwukierunkowa"
             BEGIN

@@ -39,9 +39,9 @@
 #define VERSION_FBWEBPAGEDISPLAY     L"http://www.flos-freeware.ch"
 
 #if defined(_WIN64)
-#define VERSION_FILEVERSION_LONG  L"MiniPath (64-bit) " STRINGIFY(VERSION_MAJOR) L" Build " \
+#define VERSION_FILEVERSION_LONG  L"MiniPath (x64) " STRINGIFY(VERSION_MAJOR) L" Build " \
                                      STRINGIFY(VERSION_BUILD)
 #else
-#define VERSION_FILEVERSION_LONG  L"MiniPath " STRINGIFY(VERSION_MAJOR) L" Build " \
+#define VERSION_FILEVERSION_LONG  L"MiniPath (x86) " STRINGIFY(VERSION_MAJOR) L" Build " \
                                      STRINGIFY(VERSION_BUILD)
 #endif

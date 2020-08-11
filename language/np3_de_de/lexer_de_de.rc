@@ -464,6 +464,8 @@ BEGIN
     IDS_LEX_STR_63364       "Eigenschaften Name"
     IDS_LEX_STR_63365       "LD Keyword"
     IDS_LEX_STR_63366       "ESC Sequenz"
+    IDS_LEX_STR_63367       "Unicode-Point Hover"
+    IDS_LEX_STR_63368       "2nd Unicode-Point Hover"
 END
 
 STRINGTABLE

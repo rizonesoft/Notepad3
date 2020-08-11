@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "啟動(&L)"
         BEGIN
-            MENUITEM "在檔案中查詢(&S)...\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
+            MENUITEM "在檔案中查詢(&S)...\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "新視窗(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空視窗(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "日期和時間（短格式）(&T)\tCtrl+F5",         IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "日期和時間（長格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "更新時間戳(&U)\tShift+F5",                 CMD_TIMESTAMPS
+            MENUITEM "&Current Timestamp",                      CMD_INSERT_TIMESTAMP
+            MENUITEM "更新時間戳(&U)\tShift+F5",                 CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "切換行註釋(&L)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
             MENUITEM "新增塊註釋(&S)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "替換下一個(&X)\tF4",                   IDM_EDIT_REPLACENEXT
             MENUITEM "跳到(&G)...\tCtrl+G",                  IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "在檔案中查詢(&S)...\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "在檔案中查詢(&S)...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "檢視(&V)"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "顯示換行符號(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "檢測超鏈接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "檢測 #RRGGBB 顏色(&C)",                      IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "檢測 #RRGGBB 顏色(&C)"
+        BEGIN
+            MENUITEM "關閉(&O)",                            IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "RGB+A(&R)"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "BGRA(&B)"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Highlight &Unicode-Points",                 IDM_VIEW_UNICODE_POINTS
         MENUITEM "提示符合括號(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
         POPUP "高亮目前行(&G)\tCtrl+Shift+I"
         BEGIN
@@ -340,7 +348,7 @@ BEGIN
             MENUITEM "大小寫匹配(&C)",                        IDM_VIEW_MARKOCCUR_CASE
             POPUP "全詞匹配(&W)"
             BEGIN
-                MENUITEM "關閉(&F)",                          IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "關閉(&O)",                          IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "匹配選定單詞(&S)",                  IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "匹配目前單詞(&C)",                  IDM_VIEW_MARKOCCUR_CURRENT
             END
@@ -352,7 +360,7 @@ BEGIN
         POPUP "摺疊(&F)"
         BEGIN
             MENUITEM "啟用摺疊(&F)",                         IDM_VIEW_FOLDING
-            MENUITEM "切換摺疊(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "切換摺疊(&T)\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "跳到下一折疊點(&N)\tAlt++",            CMD_FOLDJUMPDOWN
             MENUITEM "跳到上一折疊點(&P)\tAlt+-",            CMD_FOLDJUMPUP
@@ -428,6 +436,7 @@ BEGIN
             MENUITEM "退出 Notepad3(&X)",                     IDM_VIEW_ESCEXIT
         END
         MENUITEM "執行工具前先儲存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",               IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "記憶(&R)"
         BEGIN
@@ -453,10 +462,10 @@ BEGIN
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
-                MENUITEM "預設 GDI（無連字）(&G)",             IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "GDI（無連字）(&G)",                  IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "雙向(&B)"
             BEGIN

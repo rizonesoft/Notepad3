@@ -67,13 +67,13 @@ Supported Operating Systems
 
 Contributors:
 
-  - Florian Balmer ( http://www.flos-freeware.ch )
-  - XhmikosR ( http://xhmikosr.github.io/notepad2-mod/ )
-  - Kai Liu ( http://code.kliu.org/misc/notepad2/ )
-  - RL Vision (https://www.rlvision.com/notepad2/about.php )
+  - Florian Balmer            http://www.flos-freeware.ch
+  - XhmikosR                  https://xhmikosr.github.io/notepad2-mod
+  - Kai Liu                   https://code.kliu.org/misc/notepad2
+  - RL Vision                 https://www.rlvision.com/notepad2/about.php
   - Aleksandar Lekov
   - Bruno Barbieri
-  - RaiKoHoff ( https://github.com/RaiKoHoff )
+  - RaiKoHoff                 https://github.com/RaiKoHoff
 
 
 More information:
@@ -82,8 +82,8 @@ More information:
 *                             https://github.com/XhmikosR/notepad2-mod
 * Official Notepad2 website:  http://www.flos-freeware.ch/notepad2.html
 * Code folding usage guide:   https://github.com/XhmikosR/notepad2-mod/wiki/Code-Folding-Usage
-* Kai Liu's website:          http://code.kliu.org/misc/notepad2/
-* Bookmark Edition website:   http://www.rlvision.com/notepad2/about.asp
+* Kai Liu's website:          https://code.kliu.org/misc/notepad2
+* Bookmark Edition website:   https://www.rlvision.com/notepad2/about.asp
 
 
 Changed keyboard shortcuts compared to Notepad2:
@@ -99,7 +99,7 @@ Shift+F2                Go to privious bookmark.
 Ctrl+F2                 Set/Reset bookmark.
 Alt+F2                  Clear all.
 
-Ctrl+Shift+F            Toggle all folds.
+Ctrl+Alt+F              Toggle all folds.
 
 Ctrl+Alt+F2             Expand selection to next match.
 Ctrl+Alt+Shift+F2       Expand selection to previous match.
@@ -291,7 +291,7 @@ See Replacing Windows Notepad for detailed explanations.
 =                                 Prototype enduser documentation     =
 =                              taken from NotepadCrypt (Dave Dyer)    =
 =                                                                     =
-=  http://www.andromeda.com/people/ddyer/notepad/NotepadCrypt.html    =
+=  https://www.andromeda.com/people/ddyer/notepad/NotepadCrypt.html   =
 =                                                                     =
 =                                                                     =
 =======================================================================
@@ -566,7 +566,7 @@ Rebuilding from the Source Code
 
   Notepad2 4.2.25 is based on Scintilla 2.24 [1].
 
-  [1] http://www.scintilla.org
+  [1] https://www.scintilla.org
 
   To be able to rebuild Notepad2, the source code of the Scintilla
   editing component has to be unzipped to the "scintilla" subdirectory
@@ -786,7 +786,7 @@ Keyboard Shortcuts for Notepad2
 
     Ctrl++                Zoom in.
     Ctrl+-                Zoom out.
-    Ctrl+/                Reset zoom.
+    Ctrl+                Reset zoom.
 
   Settings
 
@@ -922,7 +922,7 @@ Command Line Switches
 Source Code
 
   Notepad2 is based on the Scintilla source code editing component:
-  http://www.scintilla.org
+  https://www.scintilla.org
 
   The full Notepad2 source code can be found at:
   http://www.flos-freeware.ch
@@ -950,7 +950,7 @@ Credits and Special Thanks
   Notepad2. Without Scintilla, the rich features found in Notepad2
   wouldn't have been possible!
 
-  [1] http://www.scintilla.org
+  [1] https://www.scintilla.org
 
   Many thanks to everybody for sending me bug reports and useful hints.
   A special thank goes to Roland Weigelt [2] for his helpful thoughts
@@ -959,10 +959,10 @@ Credits and Special Thanks
   Kai Liu [4], Moritz Kroll, Seunghun Thomas Lee [5] and Shawn
   Brenneman for sending detailed bug reports and ready-to-use patches.
 
-  [2] http://www.roland-weigelt.de
-  [3] http://www.TimoSoft-Software.de
-  [4] http://code.kliu.org/misc/notepad2/
-  [5] stlee42@gmail.com
+  [2] https://www.roland-weigelt.de
+  [3] https://www.TimoSoft-Software.de
+  [4] https://code.kliu.org/misc/notepad2
+  [5] mailto:stlee42@gmail.com
 
 
 Copyright

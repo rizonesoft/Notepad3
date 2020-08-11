@@ -69,7 +69,7 @@ BEGIN
         MENUITEM "Re&nombrar...",                    IDM_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "&Lanzar",                          IDM_FILE_LAUNCH
-        MENUITEM "&Ejecutar con Args...",            IDM_FILE_RUN
+        MENUITEM "&Ejecutar con arg(s)...",            IDM_FILE_RUN
         MENUITEM SEPARATOR
         MENUITEM "&Propiedades",                     IDM_FILE_PROPERTIES
     END
@@ -84,7 +84,7 @@ BEGIN
         BEGIN
             MENUITEM "&Carpetas",                    IDM_VIEW_FOLDERS
             MENUITEM "&Archivos",                    IDM_VIEW_FILES
-            MENUITEM "Objetos &Sistema",             IDM_VIEW_HIDDEN
+            MENUITEM "Objetos de &sistema",             IDM_VIEW_HIDDEN
         END
         POPUP "&Ordenar"
         BEGIN

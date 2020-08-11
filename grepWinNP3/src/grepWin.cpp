@@ -29,10 +29,13 @@
 #pragma warning(push)
 #pragma warning(disable : 4458) // declaration of 'xxx' hides class member
 #include <gdiplus.h>
+#include "WinUser.h"
 #pragma warning(pop)
 
 // Global Variables:
 HINSTANCE g_hInst;            // current instance
+HICON     g_hDlgIcon128;
+
 bool bPortable = false;
 CSimpleIni g_iniFile;
 HANDLE     hInitProtection = nullptr;
@@ -161,11 +164,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     g_hInst = hInstance;
     ::OleInitialize(nullptr);
     ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
     // we need some of the common controls
     INITCOMMONCONTROLSEX icex;
     icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
     icex.dwICC  = ICC_LINK_CLASS | ICC_LISTVIEW_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_PROGRESS_CLASS | ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_TREEVIEW_CLASSES | ICC_UPDOWN_CLASS | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
     InitCommonControlsEx(&icex);
+
+    g_hDlgIcon128 = NULL;
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_GREPWIN), 128, 128, &g_hDlgIcon128);
 
     HMODULE hRichEdt = LoadLibrary(L"Riched20.dll");
 

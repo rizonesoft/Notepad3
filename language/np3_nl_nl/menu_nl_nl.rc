@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Lancering"
         BEGIN
-            MENUITEM "Zoek in &bestanden\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "Zoek in &bestanden\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nieuw venster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Leeg venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Tijd/Datum (Korte vorm)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Tijd/Datum (&Lange vorm)\tCtrl+Shift+F5",     IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Tijdstempels bijwerken\tShift+F5",           CMD_TIMESTAMPS
+            MENUITEM "&Huidige Timestamp",                          CMD_INSERT_TIMESTAMP
+            MENUITEM "&Tijdstempels bijwerken\tShift+F5",           CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
             MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "Vervangen volgen&de\tF4",                 IDM_EDIT_REPLACENEXT
             MENUITEM "&Ga naar...\tCtrl+G",                     IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Zoek in &bestanden\tCtrl+Alt+F",            IDM_GREP_WIN_SEARCH
+            MENUITEM "Zoek in &bestanden\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "Beel&d"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "Tonen de lijn &eindes\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indicatoren\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Kleurdefinitie Hotspots",                IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Kleurdefinitie Hotspots"
+        BEGIN
+            MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Tonen &Unicode-Punten",                   IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele Brace Matching\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "Mar&keer actueel lijn\tCtrl+Shift+I"
         BEGIN
@@ -340,7 +348,7 @@ BEGIN
             MENUITEM "Match &Hoofdlettergevoelig",          IDM_VIEW_MARKOCCUR_CASE
             POPUP "Match &alleen hele woord"
             BEGIN
-                MENUITEM "OFF",                             IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&OFF",                            IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Match &geselecteerde woord",      IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Match &huidig woord",             IDM_VIEW_MARKOCCUR_CURRENT
             END
@@ -352,7 +360,7 @@ BEGIN
         POPUP "&Vouwen"
         BEGIN
             MENUITEM "Vouw&code",                           IDM_VIEW_FOLDING
-            MENUITEM "&Toggle vouwen\tCtrl+Shift+F",        IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Toggle vouwen\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "&Spring volgende vouw\tAlt+ +",       CMD_FOLDJUMPDOWN
             MENUITEM "S&pring vorige vouw\tAlt+ –",         CMD_FOLDJUMPUP
@@ -428,6 +436,7 @@ BEGIN
             MENUITEM "A&fsluiten Notepad3",                 IDM_VIEW_ESCEXIT
         END
         MENUITEM "O&pslaan voor uitvoeren",                 IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Berekenen Tiny-E&xpressies",              IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Onthouden"
         BEGIN
@@ -453,10 +462,10 @@ BEGIN
         BEGIN
             POPUP "&Rendering"
             BEGIN
-                MENUITEM "Standaard &GDI (geen ligaturen)",   IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",           IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",               IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",               IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (geen ligaturen)",             IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "Bidirectionele"
             BEGIN

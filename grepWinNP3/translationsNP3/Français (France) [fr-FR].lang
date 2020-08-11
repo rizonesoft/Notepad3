@@ -345,7 +345,7 @@ msgstr "Test de Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Recherche Regex"
+msgstr "Modèle Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -442,7 +442,7 @@ msgstr "Texte"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Texte normal"
+msgstr "Modèle de texte"
 
 #. Resource IDs: (1002)
 msgid "Text search"

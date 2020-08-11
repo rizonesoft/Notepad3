@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "起動(&L)"
         BEGIN
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Alt+F",             IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "同じファイルを開く(&N)\tAlt+N",             IDM_FILE_NEWWINDOW
             MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -258,11 +258,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "現在の文字コード形式(&E)\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "日付と時刻(/)(&T)\tCtrl+F5",                IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "日付と時刻(年月日)(&L)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "日付と時刻の更新(&U)\tShift+F5",             CMD_TIMESTAMPS
+            MENUITEM "日時 /区切り(&T)\tCtrl+F5",                IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "日時 年月日(&L)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "日時 (下の更新に対応)(&C)",                      CMD_INSERT_TIMESTAMP
+            MENUITEM "日時の更新(&U)\tShift+F5",             CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "行コメント(切替)(&L)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
+            MENUITEM "行コメント(切替)(&L)\tCtrl+Q",                IDM_EDIT_LINECOMMENT
             MENUITEM "ブロックコメント(&S)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
         END
         POPUP "プログラム(&M)"
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "置換し次へ(&X)\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Alt+F",              IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "表示(&V)"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",               IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "色をプレビュー(&C)",                           IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "色をプレビュー(&C)"
+        BEGIN
+            MENUITEM "オフ(&O)",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "RGB+A(&R)"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "BGRA(&B)"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Unicode の符号点を強調表示(&U)",               IDM_VIEW_UNICODE_POINTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN
@@ -340,7 +348,7 @@ BEGIN
             MENUITEM "大文字小文字を区別(&C)",                 IDM_VIEW_MARKOCCUR_CASE
             POPUP "単語単位で一致(&W)"
             BEGIN
-                MENUITEM "オフ",                              IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "オフ(&O)",                         IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "選択単語に一致(&S)",                IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "カーソル位置の単語(&C)",              IDM_VIEW_MARKOCCUR_CURRENT
             END
@@ -352,7 +360,7 @@ BEGIN
         POPUP "折りたたみ(&F)"
         BEGIN
             MENUITEM "コード折りたたみを表示(&F)",                   IDM_VIEW_FOLDING
-            MENUITEM "すべて折りたたみ(&T)\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "すべて折りたたみ(&T)\tCtrl+Alt+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "次の折りたたみへ移動(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
             MENUITEM "前の折りたたみへ移動(&P)\tAlt+ –",         CMD_FOLDJUMPUP
@@ -415,7 +423,7 @@ BEGIN
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
+        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
         MENUITEM "矩形/複数選択時もコメント切替(&C)",               IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "単一インスタンスでファイルを開く(&F)",                IDM_VIEW_SINGLEFILEINSTANCE
@@ -423,11 +431,12 @@ BEGIN
         MENUITEM "メッセージの効果音をミュート(&B)",                  IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&K)"
         BEGIN
-            MENUITEM "なし(&N)",                          IDM_VIEW_NOESCFUNC
+            MENUITEM "なし(&N)",                              IDM_VIEW_NOESCFUNC
             MENUITEM "最小化(&M)",                            IDM_VIEW_ESCMINIMIZE
             MENUITEM "終了(&X)",                              IDM_VIEW_ESCEXIT
         END
         MENUITEM "ツール実行前に保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "数式を計算(TinyExpr)(&X)",               IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "履歴の保存(&R)"
         BEGIN
@@ -453,10 +462,10 @@ BEGIN
         BEGIN
             POPUP "描画方式(&R)"
             BEGIN
-                MENUITEM "標準GDI (合字未対応)(&G)",     IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D)(&D)",      IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",          IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",          IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "GDI (合字未対応)(&G)",             IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "書字方向"
             BEGIN

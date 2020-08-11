@@ -511,7 +511,7 @@ msgstr "Definições grepWinNP3"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "Mantenha pressionada a tecla shift para localizar ficheiros que NÃO contenham a cadeia a procurar"
+msgstr "mantenha pressionada a tecla shift para localizar ficheiros que NÃO contenham a cadeia a procurar"
 
 #. Resource IDs: (165)
 msgid "include file paths"
@@ -559,7 +559,7 @@ msgstr "erro de leitura"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "Regex ok"
+msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
@@ -568,7 +568,7 @@ msgstr "reutilizar instâncias do grepWinNP3"
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "A examinar o ficheiro '%s'"
+msgstr "a examinar o ficheiro '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"

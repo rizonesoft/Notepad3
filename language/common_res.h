@@ -379,44 +379,45 @@
 #define CMD_LEXDEFAULT                  20019
 #define CMD_LEXHTML                     20020
 #define CMD_LEXXML                      20021
-#define CMD_TIMESTAMPS                  20022
-#define CMD_WEBACTION1                  20023
-#define CMD_WEBACTION2                  20024
-#define CMD_FINDNEXTSEL                 20025
-#define CMD_FINDPREVSEL                 20026
-#define CMD_INCLINELIMIT                20027
-#define CMD_DECLINELIMIT                20028
-#define CMD_STRINGIFY                   20029
-#define CMD_STRINGIFY2                  20030
-#define CMD_EMBRACE                     20031
-#define CMD_EMBRACE2                    20032
-#define CMD_EMBRACE3                    20033
-#define CMD_EMBRACE4                    20034
-#define CMD_INCREASENUM                 20035
-#define CMD_DECREASENUM                 20036
-#define CMD_TOGGLETITLE                 20037
-#define CMD_JUMP2SELSTART               20038
-#define CMD_JUMP2SELEND                 20039
-#define CMD_COPYPATHNAME                20040
-#define CMD_COPYWINPOS                  20041
-#define CMD_INITIALWINPOS               20042
-#define CMD_OPENINIFILE                 20043
-#define CMD_INSERTNEWLINE               20044
-#define CMD_OPEN_HYPERLINK              20045
-#define CMD_FOLDJUMPUP                  20046
-#define CMD_FOLDJUMPDOWN                20047
-#define CMD_FOLDCOLLAPSE                20048
-#define CMD_FOLDEXPAND                  20049
-#define CMD_TAB                         20050
-#define CMD_BACKTAB                     20051
-#define CMD_VK_INSERT                   20052
-#define CMD_FULLSCRWINPOS               20053
-#define CMD_DEFAULTWINPOS               20054
-#define CMD_SAVEASDEFWINPOS             20055
-#define CMD_CLEARSAVEDWINPOS            20056
-#define CMD_CHECK_INDENTATION           20057
-#define CMD_ARROW_UP                    20058
-#define CMD_ARROW_DOWN                  20059
+#define CMD_INSERT_TIMESTAMP            20022
+#define CMD_UPDATE_TIMESTAMPS           20023
+#define CMD_WEBACTION1                  20024
+#define CMD_WEBACTION2                  20025
+#define CMD_FINDNEXTSEL                 20026
+#define CMD_FINDPREVSEL                 20027
+#define CMD_INCLINELIMIT                20028
+#define CMD_DECLINELIMIT                20029
+#define CMD_STRINGIFY                   20030
+#define CMD_STRINGIFY2                  20031
+#define CMD_EMBRACE                     20032
+#define CMD_EMBRACE2                    20033
+#define CMD_EMBRACE3                    20034
+#define CMD_EMBRACE4                    20035
+#define CMD_INCREASENUM                 20036
+#define CMD_DECREASENUM                 20037
+#define CMD_TOGGLETITLE                 20038
+#define CMD_JUMP2SELSTART               20039
+#define CMD_JUMP2SELEND                 20040
+#define CMD_COPYPATHNAME                20041
+#define CMD_COPYWINPOS                  20042
+#define CMD_INITIALWINPOS               20043
+#define CMD_OPENINIFILE                 20044
+#define CMD_INSERTNEWLINE               20045
+#define CMD_OPEN_HYPERLINK              20046
+#define CMD_FOLDJUMPUP                  20047
+#define CMD_FOLDJUMPDOWN                20048
+#define CMD_FOLDCOLLAPSE                20049
+#define CMD_FOLDEXPAND                  20050
+#define CMD_TAB                         20051
+#define CMD_BACKTAB                     20052
+#define CMD_VK_INSERT                   20053
+#define CMD_FULLSCRWINPOS               20054
+#define CMD_DEFAULTWINPOS               20055
+#define CMD_SAVEASDEFWINPOS             20056
+#define CMD_CLEARSAVEDWINPOS            20057
+#define CMD_CHECK_INDENTATION           20058
+#define CMD_ARROW_UP                    20059
+#define CMD_ARROW_DOWN                  20060
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501
@@ -644,15 +645,20 @@
 #define IDM_VIEW_NOPRESERVECARET        40463
 #define IDM_VIEW_HYPERLINKHOTSPOTS      40464
 #define IDM_VIEW_COLORDEFHOTSPOTS       40465
-#define IDM_VIEW_CURRENTSCHEME          40466
-#define IDM_VIEW_SCROLLPASTEOF          40467
-#define IDM_VIEW_TOGGLE_VIEW            40468
-#define IDM_VIEW_CHASING_DOCTAIL        40469
-#define IDM_VIEW_TOGGLETB               40470
-#define IDM_VIEW_MUTE_MESSAGEBEEP       40471
-#define IDM_VIEW_SHOW_HYPLNK_CALLTIP    40472
-#define IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK 40473
-#define IDM_VIEW_EDIT_LINECOMMENT       40474
+#define IDM_VIEW_COLOR_ARGB             40466
+#define IDM_VIEW_COLOR_RGBA             40467
+#define IDM_VIEW_COLOR_BGRA             40468
+#define IDM_VIEW_CURRENTSCHEME          40469
+#define IDM_VIEW_SCROLLPASTEOF          40470
+#define IDM_VIEW_TOGGLE_VIEW            40471
+#define IDM_VIEW_CHASING_DOCTAIL        40472
+#define IDM_VIEW_TOGGLETB               40473
+#define IDM_VIEW_MUTE_MESSAGEBEEP       40474
+#define IDM_VIEW_SHOW_HYPLNK_CALLTIP    40475
+#define IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK 40476
+#define IDM_VIEW_EDIT_LINECOMMENT       40477
+#define IDM_VIEW_EVALTINYEXPRONSEL      40478
+#define IDM_VIEW_UNICODE_POINTS         40479
 
 #define IDM_SET_RENDER_TECH_DEFAULT     40500
 #define IDM_SET_RENDER_TECH_D2D         40501
@@ -1083,6 +1089,8 @@
 #define IDS_LEX_STR_63364               63364
 #define IDS_LEX_STR_63365               63365
 #define IDS_LEX_STR_63366               63366
+#define IDS_LEX_STR_63367               63367
+#define IDS_LEX_STR_63368               63368
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401
@@ -1096,5 +1104,15 @@
 #define IDS_LEX_CSV_COL_9               63409
 
 #define RICHEDIT_CONTROL_VER            "RichEdit50W"  // RICHEDIT_CONTROL_VER
+
+#ifndef ES_EX_ZOOMABLE
+#define ES_EX_ZOOMABLE                  0x0010L
+#endif
+
+#ifndef RICHEDTCTRL_ADDSTYLE
+#define RICHEDTCTRL_ADDSTYLE            0x29c4
+#endif
+
+//#ifndef 
 
 #endif //_COMMON_RES_H_

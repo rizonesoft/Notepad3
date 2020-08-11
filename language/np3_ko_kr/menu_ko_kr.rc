@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "실행(&L)"
         BEGIN
-            MENUITEM "검색하기(&S) \tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "검색하기(&S) \tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "새 창에 열기(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "빈 창 열기(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "날짜/시간(짧은 형식)(&S)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "날짜/시간(긴 형식)(&L)\tCtrl+Shift+F5",       IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "타임 스탬프 업데이트(&T)\tShift+F5",           CMD_TIMESTAMPS
+            MENUITEM "&Current Timestamp",                         CMD_INSERT_TIMESTAMP
+            MENUITEM "타임 스탬프 업데이트(&T)\tShift+F5",           CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "줄 주석 (전환)(&T)\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
             MENUITEM "주석 기호 삽입(&C)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "다음 바꾸기(&X)\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "바로가기(&G)...\tCtrl+G",                  IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "파일에서 검색하기\tCtrl+Alt+F",            IDM_GREP_WIN_SEARCH
+            MENUITEM "파일에서 검색하기\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "보기(&V)"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "줄 끝 표시(&E)\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "하이퍼 링크 핫스팟(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "색상 정의 핫스팟(&C)",                   IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "색상 정의 핫스팟(&C)"
+        BEGIN
+            MENUITEM "사용 안함(&O)",                      IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "A+RGB(&A)"                          IDM_VIEW_COLOR_ARGB
+            MENUITEM "RGB+A(&R)"                          IDM_VIEW_COLOR_RGBA
+            MENUITEM "BGRA(&B)"                           IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Highlight &Unicode-Points",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "괄호 짝 강조(&V)\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "현재 줄 강조(&G)\tCtrl+Shift+I"
         BEGIN
@@ -340,7 +348,7 @@ BEGIN
             MENUITEM "대소문자 구별(&C)",                   IDM_VIEW_MARKOCCUR_CASE
             POPUP "단어 단위 일치(&W)"
             BEGIN
-                MENUITEM "사용 안함",                      IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "사용 안함(&O)",                      IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "선택한 단어 일치(&S)",             IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "현재 단어와 일치(&R)",             IDM_VIEW_MARKOCCUR_CURRENT
             END
@@ -352,7 +360,7 @@ BEGIN
         POPUP "접기"
         BEGIN
             MENUITEM "코드 접기(&F)",                     IDM_VIEW_FOLDING
-            MENUITEM "모든 접기 전환(&T)\tCtrl+Shift+F",    IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "모든 접기 전환(&T)\tCtrl+Alt+F",    IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "다음 접은 부분으로 가기\tAlt+ +",         CMD_FOLDJUMPDOWN
             MENUITEM "이전 접은 부분으로 가기\tAlt+ –",         CMD_FOLDJUMPUP
@@ -428,6 +436,7 @@ BEGIN
             MENUITEM "Notepad3 종료(&X)",                 IDM_VIEW_ESCEXIT
         END
         MENUITEM "도구 실행 전에 저장(&B)",                IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",           IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
         BEGIN
@@ -453,10 +462,10 @@ BEGIN
         BEGIN
             POPUP "렌더링(&R)"
             BEGIN
-                MENUITEM "GDI 기본(&G) (no ligatures)",     IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",        IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "GDI DC 직접 쓰기(&W)",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "양방향"
             BEGIN

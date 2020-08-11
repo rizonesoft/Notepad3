@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Cliquear aquí para especificar la carpeta con enlaces a sus aplicaciones favoritas.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Clic aquí para especificar la carpeta con enlaces a sus aplicaciones favoritas.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -226,7 +226,7 @@ BEGIN
     CONTROL         "Color por defecto &windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Color &personal.:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Pick Color...",IDC_COLOR_PICK1,119,80,50,14
+    PUSHBUTTON      "Seleccionar color...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Utilizar este color de texto cuando un FILTRO ESTÁ ACTIVO:",IDC_STATIC,20,105,200,8
     CONTROL         "Color por &defecto.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "C&olor personal.:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10

@@ -106,9 +106,7 @@ bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
   // check for read-only file attribute
   if (genericAccessRights & GENERIC_WRITE) 
   {
-    DWORD const dwFileAttributes = GetFileAttributes(lpIniFilePath);
-    if ((dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY))
-    {
+    if (IsReadOnly(GetFileAttributes(lpIniFilePath))) {
       return false;
     }
   }
@@ -1265,22 +1263,23 @@ void LoadSettings()
     Defaults2.LineCommentPostfixStrg[0] = L'\0';
     IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", Defaults2.LineCommentPostfixStrg,
       Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
-    StrTrimW(Settings2.LineCommentPostfixStrg, L"\"");
+    StrTrimW(Settings2.LineCommentPostfixStrg, L"\"'");
 
-    //Defaults2.DateFormatLong = 0;
-    //Settings2.DateFormatLong = clampi(IniSectionGetInt(IniSecSettings2, L"DateFormatLong", Defaults2.DateFormatLong), 0, 100);
-    //Defaults2.DateFormatShort = 0;
-    //Settings2.DateFormatShort = clampi(IniSectionGetInt(IniSecSettings2, L"DateFormatShort", Defaults2.DateFormatShort), 0, 100);
+    Defaults2.DateTimeFormat[0] = L'\0'; // empty to get <locale date-time format>
+    IniSectionGetString(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
+    StrTrim(Settings2.DateTimeFormat, L"\"'");
 
-    Defaults2.DateTimeLong[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"DateTimeLong", Defaults2.DateTimeLong, Settings2.DateTimeLong, COUNTOF(Settings2.DateTimeLong));
-    Defaults2.TimeStampRegExLong[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"TimeStampRegExLong", Defaults2.TimeStampRegExLong, Settings2.TimeStampRegExLong, COUNTOF(Settings2.TimeStampRegExLong));
+    Defaults2.DateTimeLongFormat[0] = L'\0'; // empty to get <locale date-time format>
+    IniSectionGetString(IniSecSettings2, L"DateTimeLongFormat", Defaults2.DateTimeLongFormat, Settings2.DateTimeLongFormat, COUNTOF(Settings2.DateTimeLongFormat));
+    StrTrim(Settings2.DateTimeLongFormat, L"\"'");
 
-    Defaults2.DateTimeShort[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"DateTimeShort", Defaults2.DateTimeShort, Settings2.DateTimeShort, COUNTOF(Settings2.DateTimeShort));
-    Defaults2.TimeStampRegExShort[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"TimeStampRegExShort", Defaults2.TimeStampRegExShort, Settings2.TimeStampRegExShort, COUNTOF(Settings2.TimeStampRegExShort));
+    StringCchCopyW(Defaults2.TimeStampRegEx, COUNTOF(Defaults2.TimeStampRegEx), L"\\$Date:[^\\$]+\\$");
+    IniSectionGetString(IniSecSettings2, L"TimeStampRegEx", Defaults2.TimeStampRegEx, Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
+    StrTrim(Settings2.TimeStampRegEx, L"\"'");
+
+    StringCchCopyW(Defaults2.TimeStampFormat, COUNTOF(Defaults2.TimeStampFormat), L"$Date: %s $");
+    IniSectionGetString(IniSecSettings2, L"TimeStampFormat", Defaults2.TimeStampFormat, Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
+    StrTrim(Settings2.TimeStampFormat, L"\"'");
 
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
@@ -1296,6 +1295,9 @@ void LoadSettings()
 
     Defaults2.ZoomTooltipTimeout = 3200;
     Settings2.ZoomTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"ZoomTooltipTimeout", Defaults2.ZoomTooltipTimeout), 0, 10000);
+
+    Defaults2.LargeIconScalePrecent = 150;
+    Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
 
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
@@ -1382,9 +1384,10 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
-    GET_BOOL_VALUE_FROM_INISECTION(ColorDefHotspot, true);
+    GET_INT_VALUE_FROM_INISECTION(ColorDefHotspot, 1, 0, 3);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
     GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
+    GET_BOOL_VALUE_FROM_INISECTION(HighlightUnicodePoints, true);
 
     GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
@@ -1432,7 +1435,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
-    int const zoomScale = float2int(1000.0f / GetBaseFontSize(Globals.hwndMain));
+    int const zoomScale = 100;
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
@@ -1451,7 +1454,9 @@ void LoadSettings()
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
+    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);
+    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
@@ -1545,9 +1550,6 @@ void LoadSettings()
     Defaults.ToolBarTheme = -1;
     Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
     Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
-    if (Settings.ToolBarTheme < 0) { // undefined: determine higher than Full-HD
-      Settings.ToolBarTheme = (IsFullHD(Globals.hwndMain, -1, -1) <= 0) ? 0 : 1;
-    }
 
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
     Defaults.DpiScaleToolBar = false;
@@ -1809,9 +1811,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCloseTags);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ColorDefHotspot);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, ColorDefHotspot);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowHypLnkToolTip);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HighlightUnicodePoints);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoIndent);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCompleteWords);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);
@@ -1886,6 +1889,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     IniSectionDelete(IniSecSettings, L"PrintMarginBottom", false);
   }
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EvalTinyExprOnSelection);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EscFunction);
@@ -1970,8 +1974,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
   switch (Globals.idxSelectedTheme) {
     case 1: 
       Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
-      // fall trough
-    case 0:
+      //~break;     
+    case 0: // fall trough
       IniSectionDelete(IniSecStyles, Constants.StylingThemeName, false);
       break;
     default:
@@ -2150,10 +2154,10 @@ void CmdSaveSettingsNow()
   }
   if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
     InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
-    if (dwFileAttributes != 0) {
+    if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES)) {
       SetFileAttributes(Globals.IniFile, dwFileAttributes); // reset
-      Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
     }
+    Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
   }
   else {
     Globals.dwLastError = GetLastError();

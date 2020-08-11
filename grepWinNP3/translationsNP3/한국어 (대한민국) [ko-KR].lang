@@ -100,7 +100,7 @@ msgstr "취소"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "캡쳐 검색"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -108,7 +108,7 @@ msgstr "업데이트 확인"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "에디터를 특정 줄에서 시작하기 위한 command line:"
+msgstr "에디터를 특정 줄에서 시작할 때 사용한 커맨드 라인:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -164,7 +164,7 @@ msgstr "백업 없이 덮어쓰기할 때 경고하지 않습니다"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "점은 엔터를 상징합니다"
+msgstr "점으로 줄바꿈 표현"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
@@ -188,7 +188,7 @@ msgstr "정규식의 이름을 입력하세요:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWinNP3"
-msgstr "Esc키는 grepWinNP3를 종료합니다"
+msgstr "Esc키로 grepWinNP3 종료하기"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -204,7 +204,7 @@ msgstr "결과 내보내기"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Ext"
+msgstr "확장자"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -232,7 +232,7 @@ msgstr "숨겨진 항목 포함"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "검색 경로도 포함하기"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -248,7 +248,7 @@ msgstr "잘못된 경로입니다!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr "검색 반전(NOT searchstring)"
+msgstr "반전된 검색(NOT searchstring)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -285,11 +285,11 @@ msgstr "다음보다 최신"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "줄바꿈은 '.'로 검색합니다"
+msgstr "줄바꿈을 '.'로 표현합니다"
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr "OK"
+msgstr "확인"
 
 #. Resource IDs: (1080)
 msgid "Older than"
@@ -297,7 +297,7 @@ msgstr "다음보다 이전"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "오직 하나의 인스턴스"
+msgstr "하나의 인스턴스만을 허용"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
@@ -373,7 +373,7 @@ msgstr "문자열 바꾸기"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "바꿀 문자열"
+msgstr "대치할 문자열/\n캡쳐 포맷:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -430,7 +430,7 @@ msgstr "크기"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "크기는"
+msgstr "정해진 크기"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
@@ -446,7 +446,7 @@ msgstr "텍스트 일치"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "텍스트 검사"
+msgstr "텍스트 검색"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -462,7 +462,7 @@ msgstr "파일들을 UTF-8로 취급"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "파일들을 바이너리로 취급"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -478,7 +478,7 @@ msgstr "빈 문자열"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "binary"
+msgstr "바이너리"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
@@ -511,7 +511,7 @@ msgstr "grepWinNP3 설정"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "Shift 키를 눌러 검색 문자열이 없는 파일들을 볼 수 있습니다"
+msgstr "Shift 키를 눌러 검색 문자열이 없는 파일들을 찾을 수 있습니다"
 
 #. Resource IDs: (165)
 msgid "include file paths"
@@ -547,7 +547,7 @@ msgstr "검사할 텍스트가 없습니다"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "파일이 바이너리가 아닌 텍스트로 인식되기 위해 1MB 당 허용할 NULL 바이트 수"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
@@ -559,7 +559,7 @@ msgstr "읽기 에러"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "정규식 ok"
+msgstr "정규식 정상"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."

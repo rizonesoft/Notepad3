@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Lan&zar"
         BEGIN
-            MENUITEM "B&uscar en archivos\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
@@ -217,7 +217,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Con...\tAlt+Q",                              IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicar Selección/Línea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Duplicar selección/línea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "Com&pletar columna con espacios\tAlt+B",          IDM_EDIT_PADWITHSPACES
             MENUITEM "Eliminar el &primer carácter\tAlt+Z",             IDM_EDIT_STRIP1STCHAR
@@ -244,11 +244,11 @@ BEGIN
             MENUITEM "Ta&bular la sangría\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
             MENUITEM "Destabular la &sangría\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
+            MENUITEM "&Codificar URL\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
+            MENUITEM "D&ecodificar URL\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "Char To He&x\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
+            MENUITEM "Char a he&x\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex a char\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
         END
         POPUP "&Insertar"
         BEGIN
@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Hora/Fecha (formato corto)\tCtrl+F5",            IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Hora/Fecha (&formato largo)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Actualización &Timestamps\tShift+F5",             CMD_TIMESTAMPS
+            MENUITEM "&Actual Timestamp",                               CMD_INSERT_TIMESTAMP
+            MENUITEM "Actualización &Timestamps\tShift+F5",             CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Comentario de línea (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
             MENUITEM "Comentario &multilíneas\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "B&uscar en archivos\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
+            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Vista"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "Mostrar &fin de línea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Indicar &hipervínculos\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Definición color Hotspots",                          IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "&Definición color Hotspots"
+        BEGIN
+            MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Highlight &Unicode-Points",                           IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visual coincidencia de llave\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "&Resaltar la línea actual\tCtrl+Shift+I"
         BEGIN
@@ -352,7 +360,7 @@ BEGIN
         POPUP "&Plegable"
         BEGIN
             MENUITEM "&Código plegable",                    IDM_VIEW_FOLDING
-            MENUITEM "&Alternar pliegues\tCtrl+Shift+F",    IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Alternar pliegues\tCtrl+Alt+F",    IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "&Ir al siguiente pliegue\tAlt+ +",    CMD_FOLDJUMPDOWN
             MENUITEM "I&r al pliegue anterior\tAlt+ –",     CMD_FOLDJUMPUP
@@ -428,6 +436,7 @@ BEGIN
             MENUITEM "&Salir de Notepad3",                  IDM_VIEW_ESCEXIT
         END
         MENUITEM "&Guardar antes de ejecutar",              IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",             IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Recordar"
         BEGIN
@@ -453,10 +462,10 @@ BEGIN
         BEGIN
             POPUP "&Renderizado"
             BEGIN
-                MENUITEM "Defecto &GDI (sin ligaduras)",    IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",             IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (sin ligaduras)",            IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "&Bidireccional"
             BEGIN

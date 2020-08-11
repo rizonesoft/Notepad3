@@ -259,14 +259,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 else
                     m_searchpath = std::wstring(m_regSearchPath);
             }
-            // expand a possible 'short' path
-            DWORD ret = 0;
-            ret = ::GetLongPathName(m_searchpath.c_str(), nullptr, 0);
-            if (ret)
+            else
             {
-                std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[ret+2]);
-                ret = ::GetLongPathName(m_searchpath.c_str(), pathbuf.get(), ret+1);
-                m_searchpath = std::wstring(pathbuf.get(), ret);
+                // expand a possible 'short' path
+                DWORD ret = 0;
+                ret       = ::GetLongPathName(m_searchpath.c_str(), NULL, 0);
+                if (ret)
+                {
+                    std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[ret + 2]);
+                    ret          = ::GetLongPathName(m_searchpath.c_str(), pathbuf.get(), ret + 1);
+                    m_searchpath = std::wstring(pathbuf.get(), ret);
+                }
             }
 
             if (m_patternregex.empty())
@@ -633,10 +636,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             OnOutOfScope(DestroyMenu(hSplitMenu));
                             if (pDropDown->hdr.hwndFrom == GetDlgItem(*this, IDOK))
                             {
+                                auto buf    = GetDlgItemText(IDC_SEARCHPATH);
+                                bool bIsDir = !!PathIsDirectory(buf.get());
+                                if ((!bIsDir) && _tcschr(buf.get(), '|'))
+                                    bIsDir = true; // assume directories in case of multiple paths
+
                                 auto sInverseSearch      = TranslatedString(hResource, IDS_INVERSESEARCH);
                                 auto sSearchInFoundFiles = TranslatedString(hResource, IDS_SEARCHINFOUNDFILES);
                                 auto sCaptureSearch      = TranslatedString(hResource, IDS_CAPTURESEARCH);
-                                AppendMenu(hSplitMenu, MF_STRING, IDC_INVERSESEARCH, sInverseSearch.c_str());
+                                AppendMenu(hSplitMenu, bIsDir ? MF_STRING : MF_STRING | MF_DISABLED, IDC_INVERSESEARCH, sInverseSearch.c_str());
                                 AppendMenu(hSplitMenu, m_items.empty() ? MF_STRING | MF_DISABLED : MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
                                 AppendMenu(hSplitMenu, GetDlgItemTextLength(IDC_REPLACETEXT) ? MF_STRING : MF_STRING | MF_DISABLED, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
                             }
@@ -3354,10 +3362,10 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
                             if (searchFlags.bCaptureSearch)
                             {
                                 auto out = whatc.format(replaceString, flags);
-                                sinfoPtr->matchlines.push_back(out);
+                                sinfoPtr->matchlines.push_back(std::move(out));
                             }
                             else
-                                sinfoPtr->matchlines.push_back(sLine.substr(0, 1024));
+                                sinfoPtr->matchlines.push_back(std::move(sLine));
                             sinfoPtr->matchlinesnumbers.push_back(l);
                         }
                     }

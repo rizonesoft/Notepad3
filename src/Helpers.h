@@ -236,8 +236,6 @@ bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);
 bool BitmapGrayScale(HBITMAP hbmp);
 
-//HBITMAP ScaleBitmap(HBITMAP hBmp, WORD wNewWidth, WORD wNewHeight);
-
 bool VerifyContrast(COLORREF cr1,COLORREF cr2);
 bool IsFontAvailable(LPCWSTR lpszFontName);
 
@@ -575,6 +573,9 @@ inline bool Char2IntW(LPCWSTR str, int* value) {
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
+#define MAX_ESCAPE_HEX_DIGIT 4
+int Hex2Char(char* ch, int cnt);
+
 // ----------------------------------------------------------------------------
 
 inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
@@ -586,6 +587,10 @@ inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); re
 inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
+
+inline bool IsReadOnly(const DWORD dwFileAttr) {
+  return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
+}
 
 // ----------------------------------------------------------------------------
 

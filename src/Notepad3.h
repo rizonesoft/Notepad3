@@ -124,6 +124,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
 void InstallFileWatching(LPCWSTR lpszFile);
+bool GetDocModified();
+void SetSavePoint();
 void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
@@ -137,9 +139,11 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSaveSettingsCmds();
+void UpdateMouseDWellTime();
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
+void UndoRedoReset();
 int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);

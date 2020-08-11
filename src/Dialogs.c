@@ -22,6 +22,7 @@
 #include <shlwapi.h>
 #include <uxtheme.h>
 #include <commdlg.h>
+#include <shellscalingapi.h>
 
 #include <string.h>
 
@@ -39,6 +40,7 @@
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
+#include "Resample.h"
 
 #include "SciCall.h"
 
@@ -79,8 +81,7 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
   {
     HWND const hThisWnd = (HWND)wParam;
     if (hThisWnd) {
-      // set Notepad3 dialog icon
-      SET_NP3_DLG_ICON_SMALL(hThisWnd);
+      SetDialogIconNP3(hThisWnd);
 
       // get window handles
       LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
@@ -91,28 +92,16 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
         GetWindowRect(hParentWnd, &rcParent);
 
         // set new coordinates
-        DPI_T const dpi = Scintilla_GetWindowDPI(hParentWnd);
+        RECT rcDlg;
+        rcDlg.left   = pCreateStructure->x;
+        rcDlg.top    = pCreateStructure->y;
+        rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
+        rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
 
-        if (dpi.y == USER_DEFAULT_SCREEN_DPI) {
-        
-          RECT rcDlg;
-          rcDlg.left   = pCreateStructure->x;
-          rcDlg.top    = pCreateStructure->y;
-          rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
-          rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
+        POINT const ptTL = GetCenterOfDlgInParent(&rcDlg, &rcParent);
 
-           POINT const ptTL = GetCenterOfDlgInParent(&rcDlg, &rcParent);
-
-          pCreateStructure->x = ptTL.x;
-          pCreateStructure->y = ptTL.y;
-        }
-        else {
-          // don't know how to handle DPI Awareness
-          //pCreateStructure->x = rcParent.left + 20;
-          //pCreateStructure->y = rcParent.top + 20;
-          //pCreateStructure->x = MulDiv(rcParent.left + (rcParent.right - rcParent.left)/8, USER_DEFAULT_SCREEN_DPI, dpi.x);
-          //pCreateStructure->y = MulDiv(rcParent.top + (rcParent.bottom - rcParent.top)/2, USER_DEFAULT_SCREEN_DPI, dpi.y);
-        }
+        pCreateStructure->x = ptTL.x;
+        pCreateStructure->y = ptTL.y;
       }
 
       // we are done
@@ -131,7 +120,7 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 // -----------------------------------------------------------------------------
 
 
-int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
+int MessageBoxLng(UINT uType, UINT uidMsg, ...)
 {
   WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
   if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) { return -1; }
@@ -151,7 +140,9 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
   uType |= MB_SETFOREGROUND;  //~ not MB_TOPMOST
 
   // center message box to focus or main
-  s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
+  HWND const focus = GetFocus();
+  HWND const hwnd  = focus ? focus : Globals.hwndMain;
+  s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
   return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
 }
@@ -189,8 +180,8 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
       GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
       StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
       // center message box to main
-      HWND focus = GetFocus();
-      HWND hwnd = focus ? focus : Globals.hwndMain;
+      HWND const focus = GetFocus();
+      HWND const hwnd = focus ? focus : Globals.hwndMain;
       s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
       MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
@@ -206,6 +197,9 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 {
 #ifdef _DEBUG
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
   return MsgBoxLastError(lpszMessage, dwErrID);
 #else
   UNUSED(lpszMessage);
@@ -229,36 +223,49 @@ typedef struct _infbox {
 
 static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  static HBITMAP hIconBmp = NULL;
+  static HICON   hBoxIcon = NULL;
+  static DPI_T dpi = {USER_DEFAULT_SCREEN_DPI, USER_DEFAULT_SCREEN_DPI};
+  
   switch (umsg)
   {
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)lParam;
+
+      dpi = Scintilla_GetWindowDPI(hwnd);
+
+      int const scxb = ScaleIntByDPI(GetSystemMetrics(SM_CXICON), dpi.x);
+      int const scyb = ScaleIntByDPI(GetSystemMetrics(SM_CYICON), dpi.y);
 
       switch (lpMsgBox->uType & MB_ICONMASK)
       {
       case MB_ICONQUESTION:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgQuest, 0);
+        hBoxIcon = Globals.hIconMsgQuest;
         break;
       case MB_ICONWARNING:  // = MB_ICONEXCLAMATION
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgWarn, 0);
+        hBoxIcon = Globals.hIconMsgWarn;
         break;
       case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgError, 0);
+        hBoxIcon = Globals.hIconMsgError;
         break;
       case MB_ICONSHIELD:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgShield, 0);
+        hBoxIcon = Globals.hIconMsgShield;
         break;
       case MB_USERICON:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgUser, 0);
+        hBoxIcon = Globals.hIconMsgUser;
         break;
       case MB_ICONINFORMATION:  // = MB_ICONASTERISK
       default:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgInfo, 0);
+        hBoxIcon = Globals.hIconMsgInfo;
         break;
+      }
+      hIconBmp = ResampleIconToBitmap(hwnd, hBoxIcon, scxb, scyb);
+      if (hIconBmp) { 
+        SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
       }
 
       SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
@@ -273,13 +280,28 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       FreeMem(lpMsgBox->lpstrMessage);
     }
-      return !0;
+    return !0;
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+    {
+      dpi.x = LOWORD(wParam);
+      dpi.y = HIWORD(wParam);
+      int const scxb = ScaleIntByDPI(GetSystemMetrics(SM_CXICON), dpi.x);
+      int const scyb = ScaleIntByDPI(GetSystemMetrics(SM_CYICON), dpi.y);
+      hIconBmp       = ResampleIconToBitmap(hwnd, hBoxIcon, scxb, scyb);
+      if (hIconBmp) {
+        SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
+      }
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+    }
     return !0;
 
+  case WM_DESTROY:
+    if (hIconBmp) {
+      DeleteObject(hIconBmp);
+    }
+    return !0;
 
   case WM_COMMAND:
     {
@@ -300,7 +322,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       case IDCLOSE:
       case IDCANCEL:
         EndDialog(hwnd, LOWORD(wParam));
-        return true;
+        break;
 
       case IDC_INFOBOXCHECK:
         DialogEnableControl(hwnd, IDNO, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
@@ -312,8 +334,8 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       default:
         break;
       }
-      return !0;
     }
+    return !0;
   }
   return 0;
 }
@@ -470,7 +492,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
       WCHAR szText[4096] = { L'\0' };
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
@@ -647,13 +669,16 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   static HFONT hVersionFont = NULL;
   static char pAboutResource[8192] = { '\0' };
   static char* pAboutInfo = NULL;
+  static DPI_T dpi = { 0, 0 };
 
   switch (umsg)
   {
   case WM_INITDIALOG:
   {
     SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-    SET_NP3_DLG_ICON_SMALL(hwnd);
+    SetDialogIconNP3(hwnd);
+
+    dpi = Scintilla_GetWindowDPI(hwnd);
 
     SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION L", ID='" _W(_STRG(VERSION_COMMIT_ID)) L"'");
@@ -676,9 +701,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     // --- Rich Edit Control ---
     //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetSysColor(COLOR_3DFACE));
-    
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, (LPARAM)true);
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)false);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, TRUE);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 1, 1); //, 0, 0); // OFF
 
     DWORD styleFlags = SES_EXTENDBACKCOLOR; // | SES_HYPERLINKTOOLTIPS;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLE, (WPARAM)styleFlags, (LPARAM)styleFlags);
@@ -686,42 +710,72 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
-    char pAboutRes[4096];
-    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), "");
-    GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-
-    // paint richedit box
-    pAboutInfo = pAboutResource;
-    EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    if (StrIsEmptyA(pAboutResource)) {
+      char pAboutRes[4096];
+      StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), "");
+      GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    }
 
     CenterDlgInParent(hwnd, NULL);
 
+
+    HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
+    if (hFont) {
+      LOGFONT lf;
+      GetObject(hFont, sizeof(LOGFONT), &lf);
+      lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+      lf.lfWeight = FW_BOLD;
+      //lf.lfUnderline = true;
+      if (hVersionFont) {
+        DeleteObject(hVersionFont);
+      }
+      hVersionFont = CreateFontIndirectW(&lf);
+      SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+    }
+
+    // render rich-edit control text again
+    if (!StrIsEmptyA(pAboutResource)) {
+      pAboutInfo              = pAboutResource;
+      EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    }
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y > USER_DEFAULT_SCREEN_DPI));
+
+    // RichEdit-Ctrl DPI-BUG: it initially uses the DPI setting of 
+    // the main(1) screen instead it's current parent window screen DPI
+    DPI_T const dpiPrime = Scintilla_GetWindowDPI(NULL);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)dpiPrime.y);
+
+    int const width  = ScaleIntByDPI(136, dpi.x);
+    int const height = ScaleIntByDPI(41, dpi.y);
+    HBITMAP   hBmp   = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_RIZBITMAP), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    SetBitmapControlResample(hwnd, IDC_RIZONEBMP, hBmp, width, height);
+    DeleteObject(hBmp);
   }
   break;
 
@@ -731,57 +785,63 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   case WM_DPICHANGED:
     {
-      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-
-      DPI_T dpi;
       dpi.x = LOWORD(wParam);
       dpi.y = HIWORD(wParam);
 
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
+      // render rich-edit control text again
+      if (!StrIsEmptyA(pAboutResource)) {
+        pAboutInfo              = pAboutResource;
+        EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+      }
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y > USER_DEFAULT_SCREEN_DPI));
+      //~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
 
-      //~~// get current richedit box format
-      //~~CHARFORMAT2 currentFormat;  ZeroMemory(&currentFormat, sizeof(CHARFORMAT2));  currentFormat.cbSize = sizeof(CHARFORMAT2);
-      //~~currentFormat.dwMask = CFM_ALL2; // CFM_SIZE | CFM_FACE | CFM_CHARSET | CFM_LCID;  CFM_ALL;  CFM_ALL2;
-      //~~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&currentFormat);
-      //~~      
-      //~~//CHARFORMAT dpiCharFmt;  ZeroMemory(&dpiCharFmt, sizeof(CHARFORMAT));  dpiCharFmt.cbSize = sizeof(CHARFORMAT);
-      //~~//dpiCharFmt.dwMask = CFM_ALL; CFM_SIZE; //~ | CFM_FACE;
-      //~~CHARFORMAT2 dpiCharFmt = currentFormat;
-      //~~dpiCharFmt.yHeight = (currentFormat.yHeight == 180) ? ScaleIntToDPI_Y(hwnd, 180) : currentFormat.yHeight; // keep size
-      //~~//~StringCchCopy(dpiCharFmt.szFaceName, COUNTOF(dpiCharFmt.szFaceName), L"Segoe UI");
-      //~~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&dpiCharFmt);
+      int const width  = ScaleIntByDPI(136, dpi.x);
+      int const height = ScaleIntByDPI(41, dpi.y);
+      HBITMAP   hBmp   = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_RIZBITMAP), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+      SetBitmapControlResample(hwnd, IDC_RIZONEBMP, hBmp, width, height);
+      DeleteObject(hBmp);
+
+      HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
+      if (hFont) {
+        LOGFONT lf;
+        GetObject(hFont, sizeof(LOGFONT), &lf);
+        lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+        lf.lfWeight = FW_BOLD;
+        //lf.lfUnderline = true;
+        if (hVersionFont) {
+          DeleteObject(hVersionFont);
+        }
+        hVersionFont = CreateFontIndirectW(&lf);
+        SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+      }
+
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     }
     break;
 
-
   case WM_PAINT:
     {
-      HDC const hDC = GetWindowDC(hwnd);
+      PAINTSTRUCT ps;
+      HDC const hdc = GetDC(hwnd);  // ClientArea
+      if (hdc) {
+        BeginPaint(hwnd, &ps);
+        SetMapMode(hdc, MM_TEXT);
 
-      int const iconSize = 128;
-      int const dpiWidth = ScaleIntToDPI_X(hwnd, iconSize);
-      int const dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
-      HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
-      if (hicon) {
-        DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 22), ScaleIntToDPI_Y(hwnd, 44), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+        int const   iconSize  = 128;
+        int const   dpiWidth  = ScaleIntByDPI(iconSize, dpi.x);
+        int const   dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
+        HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
+        if (hicon) {
+          //RECT rc = {0};
+          //MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
+          DrawIconEx(hdc, ScaleIntByDPI(10, dpi.x), ScaleIntByDPI(10, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+        }
+
+        ReleaseDC(hwnd, hdc);
+        EndPaint(hwnd, &ps);
       }
-
-      // --- larger bold condensed version string
-      int const height = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-      if (hVersionFont) { DeleteObject(hVersionFont); }
-      hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
-      LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
-      lf.lfWeight = FW_BOLD;
-      lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
-      lf.lfWidth = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-      //StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Segoe UI");
-      hVersionFont = CreateFontIndirect(&lf);
-      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
-
-      ReleaseDC(hwnd, hDC);
-
-      // rich edit control
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 0, 0);
     }
     return 0;
 
@@ -876,13 +936,12 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
           wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding -> '%s'", Encoding_GetLabel(Encoding_Current(CPI_GET)));
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding -> '%s'", Encoding_GetLabel(Encoding_GetCurrent()));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution -> %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        DPI_T dpi = Scintilla_GetWindowDPI(hwnd);
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI -> %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
@@ -934,8 +993,8 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
     case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
-      // MakeBitmapButton(hwnd,IDC_SEARCHEXE,Globals.hInstance,IDB_OPEN);
+      SetDialogIconNP3(hwnd);
+      // MakeBitmapButton(hwnd,IDC_SEARCHEXE,IDB_OPEN, -1, -1);
       SendDlgItemMessage(hwnd, IDC_COMMANDLINE, EM_LIMITTEXT, MAX_PATH - 1, 0);
       SetDlgItemText(hwnd, IDC_COMMANDLINE, (LPCWSTR)lParam);
       SHAutoComplete(GetDlgItem(hwnd, IDC_COMMANDLINE), SHACF_FILESYSTEM);
@@ -1106,7 +1165,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         ResizeDlg_Init(hwnd, Settings.OpenWithDlgSizeX, Settings.OpenWithDlgSizeY, IDC_RESIZEGRIP);
 
@@ -1120,7 +1179,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,Globals.hInstance,IDB_OPEN);
+        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,IDB_OPEN, -1, -1);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -1304,7 +1363,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         ResizeDlg_Init(hwnd, Settings.FavoritesDlgSizeX, Settings.FavoritesDlgSizeY, IDC_RESIZEGRIP);
 
@@ -1318,7 +1377,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,Globals.hInstance,IDB_OPEN);
+        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,IDB_OPEN, -1, -1);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -1477,7 +1536,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       ResizeDlg_InitX(hwnd, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP);
 
@@ -1685,7 +1744,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       // sync with other instances
       if (Settings.SaveRecentFiles) {
@@ -2054,7 +2113,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       CheckRadioButton(hwnd, 100, 102, 100 + Settings.FileWatchingMode);
       if (Settings.ResetFileWatching) {
@@ -2135,7 +2194,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       UINT const uiNumber = *((UINT*)lParam);
       SetDlgItemInt(hwnd, IDC_COLUMNWRAP, uiNumber, false);
@@ -2221,7 +2280,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       WCHAR tch[512];
       for (int i = 0; i < 4; i++) {
@@ -2323,7 +2382,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SET_NP3_DLG_ICON_SMALL(hwnd);
+      SetDialogIconNP3(hwnd);
 
       LPWSTR pszColumnList = (LPWSTR)lParam;
       SetDlgItemText(hwnd, IDC_MULTIEDGELINE, pszColumnList);
@@ -2451,7 +2510,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Globals.fvCurFile.iTabWidth,false);
         SendDlgItemMessage(hwnd,IDC_TAB_WIDTH,EM_LIMITTEXT,15,0);
@@ -2569,11 +2628,11 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
+        hbmp = ResampleImageBitmap(hwnd, hbmp, -1, -1);
 
         HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
         ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
@@ -2717,11 +2776,10 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
   switch(umsg)
   {
-
     case WM_INITDIALOG:
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetDialogIconNP3(hwnd);
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
@@ -2730,7 +2788,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
         HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
+        hbmp = ResampleImageBitmap(hwnd, hbmp, -1, -1);
 
         HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
@@ -2921,8 +2979,8 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
   {
     case WM_INITDIALOG:
       {
-        SetWindowLongPtr(hwnd, DWLP_USER, lParam);
-        SET_NP3_DLG_ICON_SMALL(hwnd);
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+        SetDialogIconNP3(hwnd);
 
         int const iOption = *((int*)lParam);
 
@@ -3001,8 +3059,8 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
   {
   case WM_INITDIALOG: 
   {
-    SetWindowLongPtr(hwnd, DWLP_USER, lParam);
-    SET_NP3_DLG_ICON_SMALL(hwnd);
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    SetDialogIconNP3(hwnd);
 
     const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
     int const iEOLMode = fioStatus->iEOLMode;
@@ -3079,8 +3137,8 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
   {
   case WM_INITDIALOG: 
   {
-    SetWindowLongPtr(hwnd, DWLP_USER, lParam);
-    SET_NP3_DLG_ICON_SMALL(hwnd);
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    SetDialogIconNP3(hwnd);
 
     const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
 
@@ -3842,6 +3900,18 @@ POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent)
   return ptRet;
 }
 
+
+//=============================================================================
+//
+//  GetParentOrDesktop()
+//
+HWND GetParentOrDesktop(HWND hDlg)
+{
+  HWND const hParent = GetParent(hDlg);
+  return hParent ? hParent : GetDesktopWindow();
+}
+
+
 //=============================================================================
 //
 //  CenterDlgInParent()
@@ -3862,6 +3932,8 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
     SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
     //~SnapToDefaultButton(hDlg);
   }
+  //~DPI_T const dpi = Scintilla_GetWindowDPI(hDlg);
+  //~PostMessage(hDlg, WM_DPICHANGED, MAKEWPARAM(dpi.x, dpi.y), 0);
 }
 
 
@@ -4110,16 +4182,9 @@ int ResizeDlg_GetAttr(HWND hwnd, int index) {
   return 0;
 }
 
-static inline int GetDlgCtlHeight(HWND hwndDlg, int nCtlId) {
-  RECT rc;
-  GetWindowRect(GetDlgItem(hwndDlg, nCtlId), &rc);
-  const int height = rc.bottom - rc.top;
-  return height;
-}
-
 void ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection, int nCtlId1, int nCtlId2) {
-  const int hMin1 = GetDlgCtlHeight(hwnd, nCtlId1);
-  const int hMin2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  const int hMin1 = GetDlgCtrlHeight(hwnd, nCtlId1);
+  const int hMin2 = GetDlgCtrlHeight(hwnd, nCtlId2);
   ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, iDirection);
   PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
   pm->attrs[0] = hMin1;
@@ -4142,8 +4207,8 @@ int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2) {
   int const hMinX = pm->attrs[0];
   int const hMinY = pm->attrs[1];
 #endif
-  int const h1 = GetDlgCtlHeight(hwnd, nCtlId1);
-  int const h2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  int const h1 = GetDlgCtrlHeight(hwnd, nCtlId1);
+  int const h2 = GetDlgCtrlHeight(hwnd, nCtlId2);
   // cy + h1 >= hMin1			cy >= hMin1 - h1
   // dy - cy + h2 >= hMin2	cy <= dy + h2 - hMin2
   int const cyMin = hMinX - h1;
@@ -4178,33 +4243,72 @@ void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
 
 //=============================================================================
 //
-//  MakeBitmapButton()
+//  SetBitmapControl()
 //
-void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
+void SetBitmapControl(HWND hwnd, int nCtrlId, HBITMAP hBmp)
 {
-  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
-  HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  hBmp = ResizeImageForCurrentDPI(hwnd, hBmp);
+  HBITMAP hBmpOld = (HBITMAP)SendDlgItemMessage(hwnd, nCtrlId, STM_GETIMAGE, IMAGE_BITMAP, 0);
+  if (hBmpOld) {
+    DeleteObject(hBmpOld);
+  }
+  SendDlgItemMessage(hwnd, nCtrlId, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBmp);
+}
+
+
+//=============================================================================
+//
+//  SetBitmapControlResample()
+//  if width|height <= 0 : scale bitmap to current dpi
+//
+void SetBitmapControlResample(HWND hwnd, int nCtrlId, HBITMAP hBmp, int width, int height)
+{
+  if ((width ==  0) || (height == 0))
+  {
+    width  = GetDlgCtrlWidth(hwnd, nCtrlId);
+    height = GetDlgCtrlHeight(hwnd, nCtrlId);
+  }
+  hBmp = ResampleImageBitmap(hwnd, hBmp, width, height);
+
+  SetBitmapControl(hwnd, nCtrlId, hBmp);
+}
+
+
+//=============================================================================
+//
+//  MakeBitmapButton()
+//  if width|height <= 0 : scale bitmap to current dpi
+//
+void MakeBitmapButton(HWND hwnd, int nCtrlId, WORD uBmpId, int width, int height)
+{
+  HWND const hwndCtrl = GetDlgItem(hwnd, nCtrlId);
+  if ((width == 0) || (height == 0)) {
+    width  = GetDlgCtrlWidth(hwnd, nCtrlId);
+    height = GetDlgCtrlHeight(hwnd, nCtrlId);
+  }
+  HBITMAP hBmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+  hBmp         = ResampleImageBitmap(hwnd, hBmp, width, height);
+
   BITMAP bmp;
   GetObject(hBmp, sizeof(BITMAP), &bmp);
   BUTTON_IMAGELIST bi;
   bi.himl = ImageList_Create(bmp.bmWidth, bmp.bmHeight, ILC_COLOR32 | ILC_MASK, 1, 0);
   ImageList_AddMasked(bi.himl, hBmp, CLR_DEFAULT);
+  
   DeleteObject(hBmp);
+  
   SetRect(&bi.margin, 0, 0, 0, 0);
   bi.uAlign = BUTTON_IMAGELIST_ALIGN_CENTER;
-  SendMessage(hwndCtl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
+  SendMessage(hwndCtrl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
 }
-
 
 
 //=============================================================================
 //
 //  MakeColorPickButton()
 //
-void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF crColor)
+void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF crColor)
 {
-  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwnd, nCtrlId);
   HIMAGELIST himlOld = NULL;
   COLORMAP colormap[2];
 
@@ -4256,9 +4360,9 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
 //
 //  DeleteBitmapButton()
 //
-void DeleteBitmapButton(HWND hwnd, int nCtlId)
+void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 {
-  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwnd, nCtrlId);
   BUTTON_IMAGELIST bi;
   if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)& bi)) {
     ImageList_Destroy(bi.himl);
@@ -4375,18 +4479,6 @@ DPI_T GetCurrentPPI(HWND hwnd) {
   return ppi;
 }
 
-/*
-if (!bSucceed) {
-  NONCLIENTMETRICS ncm;
-  ncm.cbSize = sizeof(NONCLIENTMETRICS);
-  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
-  if (ncm.lfMessageFont.lfHeight < 0)
-  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
-  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
-  if (*wSize == 0)
-    *wSize = 8;
-}*/
-
 
 /*
 
@@ -4399,7 +4491,7 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  int const iLogPixelsY = GetCurrentPPI(NULL).y;
+  int const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {
     LOGFONT lf;
@@ -4408,13 +4500,13 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
         lf.lfHeight = -lf.lfHeight;
       }
       *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-      if (*wSize == 0) { *wSize = 9; }
+      if (*wSize == 0) { *wSize = 10; }
       StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
       bSucceed = true;
     }
     CloseThemeData(hTheme);
   }
-  return(bSucceed);
+  return bSucceed;
 }
 
 
@@ -4504,9 +4596,9 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 
     WORD nCtrl = (bDialogEx ? ((DLGTEMPLATEEX*)pTemplate)->cDlgItems : pTemplate->cdit);
 
-    if (cbNew != cbOld && nCtrl > 0)
+    if (cbNew != cbOld && nCtrl > 0) {
       MoveMemory(pNewControls, pOldControls, (size_t)(dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
-
+    }
     *(WORD*)pb = wFontSize;
     MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
   }
@@ -4538,48 +4630,101 @@ HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
 }
 
 
-
 //=============================================================================
 //
-//  ConvertIconToBitmap()
+//  _GetIconInfo()
 //
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
+static void _GetIconInfo(HICON hIcon, int* width, int* height, WORD* bitsPerPix)
 {
-  const HDC hScreenDC = GetDC(NULL);
-  const HBITMAP hbmpTmp = CreateCompatibleBitmap(hScreenDC, cx, cy);
-  const HDC hMemDC = CreateCompatibleDC(hScreenDC);
-  const HBITMAP hOldBmp = SelectObject(hMemDC, hbmpTmp);
-  DrawIconEx(hMemDC, 0, 0, hIcon, cx, cy, 0, NULL, DI_NORMAL);
-  SelectObject(hMemDC, hOldBmp);
-
-  const HBITMAP hDibBmp = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
-
-  DeleteObject(hbmpTmp);
-  DeleteDC(hMemDC);
-  ReleaseDC(NULL, hScreenDC);
-
-  return hDibBmp;
+  ICONINFO info = {0};
+  if (!GetIconInfo(hIcon, &info)) {
+    return;
+  }
+   if (info.hbmColor) {
+    BITMAP bmp = {0};
+    if (GetObject(info.hbmColor, sizeof(bmp), &bmp) > 0) {
+      if (width) { *width = (int)bmp.bmWidth; }
+      if (height) { *height = (int)bmp.bmHeight; }
+      if (bitsPerPix) { *bitsPerPix = bmp.bmBitsPixel; }
+    }
+  }
+  else if (info.hbmMask) {
+    // Icon has no color plane, image data stored in mask
+    BITMAP bmp = {0};
+    if (GetObject(info.hbmMask, sizeof(bmp), &bmp) > 0) {
+      if (width) { *width = (int)bmp.bmWidth; }
+      if (height) { *height = (int)(bmp.bmHeight > 1); }
+      if (bitsPerPix) { *bitsPerPix = 1; }
+    }
+  }
+  if (info.hbmColor) {
+    DeleteObject(info.hbmColor);
+  }
+  if (info.hbmMask) {
+    DeleteObject(info.hbmMask);
+  }
 }
 
 
 //=============================================================================
 //
+//  ConvertIconToBitmap()
+//  cx/cy = 0  =>  use resource width/height
+//
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
+{
+  int wdc = cx;
+  int hdc = cy;
+  if ((cx == 0) || (cy == 0)) {
+    _GetIconInfo(hIcon, &wdc, &hdc, NULL);
+  }
+  // increase & condense size
+  wdc <<= 4;  hdc <<= 4;
+ 
+  HDC     const hScreenDC = GetDC(NULL);
+  HBITMAP const hbmpTmp   = CreateCompatibleBitmap(hScreenDC, wdc, hdc);
+  HDC     const hMemDC    = CreateCompatibleDC(hScreenDC);
+  HBITMAP const hOldBmp   = SelectObject(hMemDC, hbmpTmp);
+  DrawIconEx(hMemDC, 0, 0, hIcon, wdc, hdc, 0, NULL, DI_NORMAL /*&~DI_DEFAULTSIZE*/);
+  SelectObject(hMemDC, hOldBmp);
+
+  UINT    const copyFlags = LR_COPYDELETEORG | LR_COPYRETURNORG | LR_DEFAULTSIZE | LR_CREATEDIBSECTION;
+  HBITMAP const hDibBmp   = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, cx, cy, copyFlags);
+
+  DeleteDC(hMemDC);
+  ReleaseDC(NULL, hScreenDC);
+  return hDibBmp;
+}
+
+//=============================================================================
+//
+//  ResampleIconToBitmap()
+//
+HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy)
+{
+  //~return ConvertIconToBitmap(hwnd, hIcon, cx, cy);
+  HBITMAP const hBmp = ConvertIconToBitmap(hIcon, 0, 0);
+  return ResampleImageBitmap(hwnd, hBmp, cx, cy);
+}
+
+//=============================================================================
+//
 //  SetUACIcon()
 //
-void SetUACIcon(const HMENU hMenu, const UINT nItem)
+void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 {
   static bool bInitialized = false;
   if (bInitialized) { return; }
 
-  //const int cx = GetSystemMetrics(SM_CYMENU) - 4;
-  //const int cy = cx;
-  int const cx = GetSystemMetrics(SM_CXSMICON);
-  int const cy = GetSystemMetrics(SM_CYSMICON);
+  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+
+  int const cx = ScaleIntByDPI(GetSystemMetrics(SM_CXSMICON), dpi.x);
+  int const cy = ScaleIntByDPI(GetSystemMetrics(SM_CYSMICON), dpi.y);
 
   if (Globals.hIconMsgShieldSmall)
   {
     MENUITEMINFO mii = { 0 };
-    mii.cbSize = sizeof(mii);
+    mii.cbSize = sizeof(MENUITEMINFO);
     mii.fMask = MIIM_BITMAP;
     mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
     SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
@@ -4592,45 +4737,57 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem)
 //
 //  UpdateWindowLayoutForDPI()
 //
-void UpdateWindowLayoutForDPI(HWND hWnd, RECT* pRC, DPI_T* pDPI)
+inline WRCT_T _ConvWinRectW(const RECT* pRC)
+{
+  WRCT_T wrc;
+  wrc.left   = pRC->left;
+  wrc.top    = pRC->top;
+  wrc.right  = pRC->right;
+  wrc.bottom = pRC->bottom;
+  return wrc;
+}
+
+void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* prc, const DPI_T* pdpi)
 {
   UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED; //~ SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION
-  if (pRC) {
-    SetWindowPos(hWnd, NULL, pRC->left, pRC->top, (pRC->right - pRC->left), (pRC->bottom - pRC->top), uWndFlags);
+  
+  if (prc) {
+    SetWindowPos(hwnd, NULL, prc->left, prc->top, (prc->right - prc->left), (prc->bottom - prc->top), uWndFlags);
     return;
   }
  
-  DPI_T const wndDPI = pDPI ? *pDPI : Scintilla_GetWindowDPI(hWnd);
+  DPI_T const dpi = pdpi ? *pdpi : Scintilla_GetWindowDPI(hwnd);
 
-  RECT rc;
-  GetWindowRect(hWnd, &rc);
-  //MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
-  LONG const width = rc.right - rc.left;
-  LONG const height = rc.bottom - rc.top;
-  int dpiScaledX = MulDiv(rc.left, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledY = MulDiv(rc.top, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledWidth = MulDiv(width, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-
-  SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight, uWndFlags);
+  RECT rc;  GetWindowRect(hwnd, &rc);
+  //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
+  WRCT_T wrc = _ConvWinRectW(prc);
+  Scintilla_AdjustWindowRectForDpi(&wrc, uWndFlags, 0, dpi);
+  SetWindowPos(hwnd, NULL, wrc.left, wrc.top, (wrc.right - wrc.left), (wrc.bottom - wrc.top), uWndFlags);
 }
-
 
 //=============================================================================
 //
-//  ResizeImageForCurrentDPI()
+//  ResampleImageBitmap()  (resample_delete_orig)
+//  if width|height <= 0 : scale bitmap to current dpi
 //
-HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
+HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
 {
   if (hbmp) {
     BITMAP bmp;
-    if (GetObject(hbmp, sizeof(BITMAP), &bmp))
-    {
-      int const width = ScaleIntToDPI_X(hwnd, bmp.bmWidth);
-      int const height = ScaleIntToDPI_Y(hwnd, bmp.bmHeight);
-      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) 
-      {
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
+      if ((width <= 0) || (height <= 0)) {
+        DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+        width  = ScaleIntByDPI(bmp.bmWidth, dpi.x);
+        height = ScaleIntByDPI(bmp.bmHeight, dpi.y);
+      }
+      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) {
+#if TRUE      
+        HDC const hdc   = GetDC(hwnd);
+        HBITMAP   hCopy = CreateResampledBitmap(hdc, hbmp, width, height, BMP_RESAMPLE_FILTER);
+        ReleaseDC(hwnd, hdc);
+#else
         HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
+#endif
         if (hCopy && (hCopy != hbmp)) {
           DeleteObject(hbmp);
           hbmp = hCopy;
@@ -4657,5 +4814,125 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
 }
 
 
+#if FALSE
+//=============================================================================
+//
+//  CreateAndSetFontDlgItemDPI()
+//
+HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold)
+{
+  NONCLIENTMETRICSW ncm = {0};
+  ncm.cbSize            = sizeof(NONCLIENTMETRICSW);
+  if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncm, 0)) {
+    HDC const hdcSys = GetDC(NULL);
+    DPI_T const dpiSys = Scintilla_GetWindowDPI(NULL);
+    DPI_T const dpiDlg = Scintilla_GetWindowDPI(hdlg);
+    if (fontSize <= 0) {
+      fontSize = (ncm.lfMessageFont.lfHeight < 0) ? -ncm.lfMessageFont.lfHeight : ncm.lfMessageFont.lfHeight;
+      if (fontSize == 0) {
+        fontSize = 8;
+      }
+    }
+    fontSize <<= 10; // precision
+    fontSize = MulDiv(fontSize, USER_DEFAULT_SCREEN_DPI, dpiSys.y); // correction
+    fontSize = ScaleIntByDPI(fontSize, dpiDlg.y);
+    ncm.lfMessageFont.lfHeight = -(MulDiv(fontSize, GetDeviceCaps(hdcSys, LOGPIXELSY), 72) >> 10); 
+    ncm.lfMessageFont.lfWeight = bold ? FW_BOLD : FW_NORMAL;
+    HFONT const hFont = CreateFontIndirectW(&ncm.lfMessageFont);
+    if (idDlgItem > 0) {
+      SendDlgItemMessageW(hdlg, idDlgItem, WM_SETFONT, (WPARAM)hFont, true);
+    }
+    ReleaseDC(hdlg, hdcSys);
+    return hFont;
+  }
+  return NULL;
+}
+#endif
+
+
+//=============================================================================
+
+#if FALSE
+void Handle_WM_PAINT(HWND hwnd)
+{
+  static HFONT hVersionFont = NULL;
+
+  PAINTSTRUCT ps;
+
+  // Get a paint DC for current window.
+  // Paint DC contains the right scaling to match
+  // the monitor DPI where the window is located.
+  HDC hdc = BeginPaint(hwnd, &ps);
+
+  RECT rect;
+  GetClientRect(hwnd, &rect);
+
+  UINT cx = (rect.right - rect.left);
+  UINT cy = (rect.bottom - rect.top);
+
+  // Create a compatible bitmap using paint DC.
+  // Compatible bitmap will be properly scaled in size internally and
+  // transparently to the app to match current monitor DPI where
+  // the window is located.
+  HBITMAP memBitmap = CreateCompatibleBitmap(hdc, cx, cy);
+
+  // Create a compatible DC, even without a bitmap selected,
+  // compatible DC will inherit the paint DC GDI scaling
+  // matching the window monitor DPI.
+  HDC memDC = CreateCompatibleDC(hdc);
+
+  // Selecting GDI scaled compatible bitmap in the
+  // GDI scaled compatible DC.
+  HBITMAP oldBitmap = (HBITMAP)SelectObject(memDC, memBitmap);
+
+  // Setting some properties in the compatible GDI scaled DC.
+  if (hVersionFont) {
+    DeleteObject(hVersionFont);
+  }
+  hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
+
+  SetTextColor(memDC, GetSysColor(COLOR_INFOTEXT));
+  SetBkMode(memDC, TRANSPARENT);
+  SelectObject(memDC, hVersionFont);
+
+  // Drawing content on the compatible GDI scaled DC.
+  // If the monitor DPI was 150% or 200%, text internally will
+  // be draw at next integral scaling value, in current example
+  // 200%.
+  DrawText(memDC, ctx.balloonText, -1, &rect,
+           DT_NOCLIP | DT_LEFT | DT_NOPREFIX | DT_WORDBREAK);
+
+  // Copying the content back from compatible DC to paint DC.
+  // Since both compatible DC and paint DC are GDI scaled,
+  // content is copied without any stretching thus preserving
+  // the quality of the rendering.
+  BitBlt(hdc, 0, 0, cx, cy, memDC, 0, 0, 0);
+
+  // Cleanup.
+  SelectObject(memDC, oldBitmap);
+  DeleteObject(memBitmap);
+  DeleteDC(memDC);
+
+  // At this time the content is presented to the screen.
+  // DWM (Desktop Window Manager) will scale down if required the
+  // content to actual monitor DPI.
+  // If the monitor DPI is already an integral one, for example 200%,
+  // there would be no DWM down scaling.
+  // If the monitor DPI is 150%, DWM will scale down rendered content
+  // from 200% to 150%.
+  // While not a perfect solution, it's better to scale-down content
+  // instead of scaling-up since a lot of the details will be preserved
+  // during scale-down.
+  // The end result is that with GDI Scaling enabled, the content will
+  // look less blurry on screen and in case of monitors with DPI setting
+  // set to an integral value (200%, 300%) the vector based and text
+  // content will be rendered natively at the monitor DPI looking crisp
+  // on screen.
+
+  EndPaint(hwnd, &ps);
+}
+#endif
+
+//=============================================================================
 
 //  End of Dialogs.c
