@@ -371,17 +371,17 @@ typedef struct _settings_t
   bool SaveRecentFiles;
   bool PreserveCaretPos;
   bool SaveFindReplace;
-  int PathNameFormat;
+  int  PathNameFormat;
   bool WordWrap;
-  int WordWrapMode;
-  int WordWrapIndent;
-  int WordWrapSymbols;
+  int  WordWrapMode;
+  int  WordWrapIndent;
+  int  WordWrapSymbols;
   bool ShowWordWrapSymbols;
   bool MatchBraces;
   bool AutoCloseTags;
   int  HighlightCurrentLine;
   bool HyperlinkHotspot;
-  bool ColorDefHotspot;
+  int  ColorDefHotspot;
   bool ScrollPastEOF;
   bool ShowHypLnkToolTip;
   bool HighlightUnicodePoints;
@@ -394,13 +394,13 @@ typedef struct _settings_t
   bool TabsAsSpaces;
   bool TabIndents;
   bool BackspaceUnindents;
-  int TabWidth;
-  int IndentWidth;
+  int  TabWidth;
+  int  IndentWidth;
   bool WarnInconsistentIndents;
   bool AutoDetectIndentSettings;
   bool MarkLongLines;
-  int LongLinesLimit;
-  int LongLineMode;
+  int  LongLinesLimit;
+  int  LongLineMode;
   bool ShowSelectionMargin;
   bool ShowLineNumbers;
   bool ShowCodeFolding;
@@ -419,45 +419,45 @@ typedef struct _settings_t
   bool NoEncodingTags;
   bool SkipUnicodeDetection;
   bool SkipANSICodePageDetection;
-  int DefaultEOLMode;
+  int  DefaultEOLMode;
   bool WarnInconsistEOLs;
   bool FixLineEndings;
   bool FixTrailingBlanks;
-  int PrintHeader;
-  int PrintFooter;
-  int PrintColorMode;
-  int PrintZoom;
+  int  PrintHeader;
+  int  PrintFooter;
+  int  PrintColorMode;
+  int  PrintZoom;
   bool SaveBeforeRunningTools;
   bool EvalTinyExprOnSelection;
   FILE_WATCHING_MODE FileWatchingMode;
   bool ResetFileWatching;
-  int EscFunction;
+  int  EscFunction;
   bool AlwaysOnTop;
   bool MinimizeToTray;
   bool TransparentMode;
   bool FindReplaceTransparentMode;
-  int RenderingTechnology;
-  int Bidirectional;
+  int  RenderingTechnology;
+  int  Bidirectional;
   bool ShowMenubar;
   bool ShowToolbar;
   bool ShowStatusbar;
-  int ToolBarTheme;
+  int  ToolBarTheme;
   bool DpiScaleToolBar;
-  int EncodingDlgSizeX;
-  int EncodingDlgSizeY;
-  int RecodeDlgSizeX;
-  int RecodeDlgSizeY;
-  int FileMRUDlgSizeX;
-  int FileMRUDlgSizeY;
-  int OpenWithDlgSizeX;
-  int OpenWithDlgSizeY;
-  int FavoritesDlgSizeX;
-  int FavoritesDlgSizeY;
-  int AddToFavDlgSizeX;
-  int FindReplaceDlgPosX;
-  int FindReplaceDlgPosY;
-  int CustomSchemesDlgPosX;
-  int CustomSchemesDlgPosY;
+  int  EncodingDlgSizeX;
+  int  EncodingDlgSizeY;
+  int  RecodeDlgSizeX;
+  int  RecodeDlgSizeY;
+  int  FileMRUDlgSizeX;
+  int  FileMRUDlgSizeY;
+  int  OpenWithDlgSizeX;
+  int  OpenWithDlgSizeY;
+  int  FavoritesDlgSizeX;
+  int  FavoritesDlgSizeY;
+  int  AddToFavDlgSizeX;
+  int  FindReplaceDlgPosX;
+  int  FindReplaceDlgPosY;
+  int  CustomSchemesDlgPosX;
+  int  CustomSchemesDlgPosY;
   bool MuteMessageBeep;
   bool SplitUndoTypingSeqOnLnBreak;
   
@@ -475,6 +475,7 @@ extern SETTINGS_T Settings;
 
 #define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences)
 #define IsFocusedViewAllowed() (IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible)
+#define IsColorDefHotspotEnabled() (Settings.ColorDefHotspot != 0)
 
 //=============================================================================
 
