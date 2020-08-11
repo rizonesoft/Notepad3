@@ -100,7 +100,7 @@ msgstr "Cancelar"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Capture búsqueda"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -232,7 +232,7 @@ msgstr "Incluir archivos ocultos"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Incluir ruta de búsqueda"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -462,7 +462,7 @@ msgstr "Tratar archivos como UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Tratar archivos como binario"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -547,7 +547,7 @@ msgstr "no hay texto disponible para probar"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "Número de NULL bytes por MB permitidos para que un archivo se considere como texto en lugar de binario"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
