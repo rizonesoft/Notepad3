@@ -91,7 +91,7 @@ BEGIN
             MENUITEM "Web Sjabloon &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Web Sjabloon &2\tCtrl+Shift+2",       CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Maak File &Explorer Oop",             IDM_FILE_EXPLORE_DIR
+            MENUITEM "Maak &File Explorer Oop",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Enkodering"
@@ -360,7 +360,7 @@ BEGIN
         POPUP "&Vou"
         BEGIN
             MENUITEM "&Kode Vou",                           IDM_VIEW_FOLDING
-            MENUITEM "&Wissel Voue\tCtrl+Alt+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Wissel Voue\tCtrl+Alt+F",            IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Spring &Volgende Vou\tAlt+ +",        CMD_FOLDJUMPDOWN
             MENUITEM "&Spring Vorige Vou\tAlt+ –",          CMD_FOLDJUMPUP
@@ -511,8 +511,13 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Wissel Huidige Vou",                     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",                      CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",                      CMD_WEBACTION2
+        MENUITEM "Web Sjabloon &1",                         CMD_WEBACTION1
+        MENUITEM "Web Sjabloon &2",                         CMD_WEBACTION2
+        MENUITEM "Maak &File Explorer Oop",                 IDM_FILE_EXPLORE_DIR
+        MENUITEM SEPARATOR
+        MENUITEM "&Kode Vou",                               IDM_VIEW_FOLDING
+        MENUITEM "Lyn &Nommer",                             IDM_VIEW_LINENUMBERS
+        MENUITEM "Seleksie &Kantlyne",                      IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -523,7 +528,7 @@ BEGIN
         MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "Pas&maak Nutsbalk...",                    IDM_VIEW_CUSTOMIZETB
         MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Skaal Balk",                      IDM_VIEW_DPISCALETB
+        MENUITEM "&DPI Skaal Balk",                         IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
