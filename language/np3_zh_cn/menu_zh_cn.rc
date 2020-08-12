@@ -327,8 +327,8 @@ BEGIN
         POPUP "检测 #RRGGBB 颜色(&C)"
         BEGIN
             MENUITEM "关闭(&O)",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "A+RGB(&A)"                             IDM_VIEW_COLOR_ARGB
             MENUITEM "RGB+A(&R)"                             IDM_VIEW_COLOR_RGBA
+            MENUITEM "A+RGB(&A)"                             IDM_VIEW_COLOR_ARGB
             MENUITEM "BGRA(&B)"                              IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Highlight &Unicode-Points",                 IDM_VIEW_UNICODE_POINTS

@@ -327,8 +327,8 @@ BEGIN
         POPUP "&Hotspot definizione colore"
         BEGIN
             MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Highlight &Unicode-Points",                          IDM_VIEW_UNICODE_POINTS

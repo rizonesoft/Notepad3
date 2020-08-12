@@ -327,8 +327,8 @@ BEGIN
         POPUP "&Farb-Definition Indikator"
         BEGIN
             MENUITEM "&AUS",                                IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
             MENUITEM "&RGB+A"                               IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                                IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "&Unicode-Point Indikator",                IDM_VIEW_UNICODE_POINTS

@@ -327,8 +327,8 @@ BEGIN
         POPUP "色をプレビュー(&C)"
         BEGIN
             MENUITEM "オフ(&O)",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "RGB+A(&R)"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "BGRA(&B)"                             IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Unicode の符号点を強調表示(&U)",               IDM_VIEW_UNICODE_POINTS
