@@ -360,7 +360,7 @@ BEGIN
         POPUP "Vikning"
         BEGIN
             MENUITEM "Ihopvikning av kodsegment",                   IDM_VIEW_FOLDING
-            MENUITEM "Växla ihopvikning\tCtrl+Alt+F",             IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Växla ihopvikning\tCtrl+Alt+F",               IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Gå till nästa vikpunkt\tAlt+ +",              CMD_FOLDJUMPDOWN
             MENUITEM "Gå till föregående vikpunkt\tAlt+ –",         CMD_FOLDJUMPUP
@@ -513,6 +513,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Öppna webb &1",                                   CMD_WEBACTION1
         MENUITEM "Öppna webb &2",                                   CMD_WEBACTION2
+        MENUITEM "Open &File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM SEPARATOR
+        MENUITEM "&Folding",                    IDM_VIEW_FOLDING
+        MENUITEM "Line &Numbers",               IDM_VIEW_LINENUMBERS
+        MENUITEM "Selection &Margin",           IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN

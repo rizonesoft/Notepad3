@@ -360,13 +360,13 @@ BEGIN
         POPUP "&Składanie"
         BEGIN
             MENUITEM "Składanie kodu",                              IDM_VIEW_FOLDING
-            MENUITEM "&Przełącz składanie kodu\tCtrl+Alt+F",      IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Przełącz składanie kodu\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Przeskocz do nast.\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Przeskocz do poprzed.\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Przeskocz do nast.\tAlt+ +",           CMD_FOLDJUMPDOWN
+            MENUITEM "Przeskocz do poprzed.\tAlt+ –",        CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Zwiń zagięcie\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Rozwiń zagięcie\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "&Zwiń zagięcie\tAlt+ ←",               CMD_FOLDCOLLAPSE
+            MENUITEM "&Rozwiń zagięcie\tAlt+ →",             CMD_FOLDEXPAND
         END
         POPUP "&Pokaż"
         BEGIN
@@ -513,6 +513,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Otwórz Web Action &1",                      CMD_WEBACTION1
         MENUITEM "Otwórz Web Action &2",                      CMD_WEBACTION2
+        MENUITEM "Open &File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM SEPARATOR
+        MENUITEM "&Folding",                    IDM_VIEW_FOLDING
+        MENUITEM "Line &Numbers",               IDM_VIEW_LINENUMBERS
+        MENUITEM "Selection &Margin",           IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
