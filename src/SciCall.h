@@ -399,7 +399,10 @@ DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, i
 DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline)
 DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline)
 
-//=============================================================================
+DeclareSciCallV1(SetViewWS, SETVIEWWS, int, wspc)
+DeclareSciCallV1(SetViewEOL, SETVIEWEOL, bool, eols)
+
+  //=============================================================================
 //
 // Indentation Guides and Wraping
 //
@@ -556,8 +559,11 @@ DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo)
 //  SetTechnology
 //
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value)
+DeclareSciCallR0(GetTechnology, GETTECHNOLOGY, int)
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
+DeclareSciCallR0(GetBidirectional, GETBIDIRECTIONAL, int)
 DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
+
 DeclareSciCallV1(SetCharacterCategoryOptimization, SETCHARACTERCATEGORYOPTIMIZATION, int, count)
 
 //=============================================================================

@@ -465,13 +465,18 @@ BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "&GDI (no ligatures)",         IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "&GDI (no ligatures)",         IDM_SET_RENDER_TECH_GDI
+            END
+            POPUP "&RTL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "Bidirectional"
             BEGIN
-                MENUITEM "None",                        IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Left to Right",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Right to Left",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "&None",                        IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "&Left to Right",               IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "&Right to Left",               IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "&Advanced Configuration"

@@ -6392,7 +6392,7 @@ add_ctype_to_cc(CClassNode* cc, int ctype, int not, ScanEnv* env)
 }
 
 static int
-parse_posix_bracket(CClassNode* cc, UChar** src, UChar* end, ScanEnv* env)
+prs_posix_bracket(CClassNode* cc, UChar** src, UChar* end, ScanEnv* env)
 {
 #define POSIX_BRACKET_CHECK_LIMIT_LENGTH  20
 #define POSIX_BRACKET_NAME_MIN_LEN         4
@@ -6501,7 +6501,7 @@ fetch_char_property_to_ctype(UChar** src, UChar* end, ScanEnv* env)
 }
 
 static int
-parse_char_property(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
+prs_char_property(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 {
   int r, ctype;
   CClassNode* cc;
@@ -6637,7 +6637,7 @@ code_exist_check(OnigCodePoint c, UChar* from, UChar* end, int ignore_escaped,
 }
 
 static int
-parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
+prs_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 {
   int r, neg, len, fetched, and_start;
   OnigCodePoint in_code, curr_code;
@@ -6779,7 +6779,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       break;
 
     case TK_CC_POSIX_BRACKET_OPEN:
-      r = parse_posix_bracket(cc, &p, end, env);
+      r = prs_posix_bracket(cc, &p, end, env);
       if (r < 0) goto err;
       if (r == 1) {  /* is not POSIX bracket */
         CC_ESC_WARN(env, (UChar* )"[");
@@ -6889,7 +6889,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         }
         state = CS_COMPLETE;
 
-        r = parse_cc(&anode, tok, &p, end, env);
+        r = prs_cc(&anode, tok, &p, end, env);
         if (r != 0) {
           onig_node_free(anode);
           goto cc_open_err;
@@ -6987,14 +6987,14 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
   return r;
 }
 
-static int parse_alts(Node** top, PToken* tok, int term,
-                      UChar** src, UChar* end, ScanEnv* env, int group_head);
+static int prs_alts(Node** top, PToken* tok, int term,
+                    UChar** src, UChar* end, ScanEnv* env, int group_head);
 
 #ifdef USE_CALLOUT
 
 /* (?{...}[tag][+-]) (?{{...}}[tag][+-]) */
 static int
-parse_callout_of_contents(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
+prs_callout_of_contents(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
 {
   int r;
   int i;
@@ -7121,7 +7121,7 @@ parse_callout_of_contents(Node** np, int cterm, UChar** src, UChar* end, ScanEnv
 }
 
 static long
-parse_long(OnigEncoding enc, UChar* s, UChar* end, int sign_on, long max, long* rl)
+prs_long(OnigEncoding enc, UChar* s, UChar* end, int sign_on, long max, long* rl)
 {
   long v;
   long d;
@@ -7175,9 +7175,9 @@ clear_callout_args(int n, unsigned int types[], OnigValue vals[])
 }
 
 static int
-parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
-                   int max_arg_num, unsigned int types[], OnigValue vals[],
-                   ScanEnv* env)
+prs_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
+                 int max_arg_num, unsigned int types[], OnigValue vals[],
+                 ScanEnv* env)
 {
 #define MAX_CALLOUT_ARG_BYTE_LENGTH   128
 
@@ -7260,7 +7260,7 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
           int fixed = 0;
           if (cn > 0) {
             long rl;
-            r = parse_long(enc, buf, bufend, 1, LONG_MAX, &rl);
+            r = prs_long(enc, buf, bufend, 1, LONG_MAX, &rl);
             if (r == ONIG_NORMAL) {
               vals[n].l = rl;
               fixed = 1;
@@ -7340,7 +7340,7 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
 
 /* (*name[TAG]) (*name[TAG]{a,b,..}) */
 static int
-parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
+prs_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
 {
   int r;
   int i;
@@ -7405,7 +7405,7 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
 
     /* read for single check only */
     save = p;
-    arg_num = parse_callout_args(TRUE, '}', &p, end, -1, NULL, NULL, env);
+    arg_num = prs_callout_args(TRUE, '}', &p, end, -1, NULL, NULL, env);
     if (arg_num < 0) return arg_num;
 
     is_not_single = PPEEK_IS(cterm) ?  0 : 1;
@@ -7419,7 +7419,7 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
       types[i] = get_callout_arg_type_by_name_id(name_id, i);
     }
 
-    arg_num = parse_callout_args(FALSE, '}', &p, end, max_arg_num, types, vals, env);
+    arg_num = prs_callout_args(FALSE, '}', &p, end, max_arg_num, types, vals, env);
     if (arg_num < 0) return arg_num;
 
     if (PEND) {
@@ -7506,8 +7506,8 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
 #endif
 
 static int
-parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
-          ScanEnv* env)
+prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
+        ScanEnv* env)
 {
   int r, num;
   Node *target;
@@ -7534,7 +7534,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
     group:
       r = fetch_token(tok, &p, end, env);
       if (r < 0) return r;
-      r = parse_alts(np, tok, term, &p, end, env, FALSE);
+      r = prs_alts(np, tok, term, &p, end, env, FALSE);
       if (r < 0) return r;
       *src = p;
       return 1; /* group */
@@ -7631,7 +7631,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
         r = fetch_token(tok, &p, end, env);
         if (r < 0) return r;
-        r = parse_alts(&absent, tok, term, &p, end, env, TRUE);
+        r = prs_alts(&absent, tok, term, &p, end, env, TRUE);
         if (r < 0) {
           onig_node_free(absent);
           return r;
@@ -7677,7 +7677,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
       if (! IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_QMARK_BRACE_CALLOUT_CONTENTS))
         return ONIGERR_UNDEFINED_GROUP_OPTION;
 
-      r = parse_callout_of_contents(np, ')', &p, end, env);
+      r = prs_callout_of_contents(np, ')', &p, end, env);
       if (r != 0) return r;
 
       goto end;
@@ -7788,7 +7788,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
               /* condition part is callouts of contents: (?(?{...})THEN|ELSE) */
               condition_is_checker = 0;
               PFETCH(c);
-              r = parse_callout_of_contents(&condition, ')', &p, end, env);
+              r = prs_callout_of_contents(&condition, ')', &p, end, env);
               if (r != 0) return r;
               goto end_condition;
             }
@@ -7798,7 +7798,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
         else if (c == '*' &&
                  IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_ASTERISK_CALLOUT_NAME)) {
           condition_is_checker = 0;
-          r = parse_callout_of_name(&condition, ')', &p, end, env);
+          r = prs_callout_of_name(&condition, ')', &p, end, env);
           if (r != 0) return r;
           goto end_condition;
         }
@@ -7809,7 +7809,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           condition_is_checker = 0;
           r = fetch_token(tok, &p, end, env);
           if (r < 0) return r;
-          r = parse_alts(&condition, tok, term, &p, end, env, FALSE);
+          r = prs_alts(&condition, tok, term, &p, end, env, FALSE);
           if (r < 0) {
             onig_node_free(condition);
             return r;
@@ -7852,7 +7852,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
             onig_node_free(condition);
             return r;
           }
-          r = parse_alts(&target, tok, term, &p, end, env, TRUE);
+          r = prs_alts(&target, tok, term, &p, end, env, TRUE);
           if (r < 0) {
             onig_node_free(condition);
             onig_node_free(target);
@@ -8028,7 +8028,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
             env->options = option;
             r = fetch_token(tok, &p, end, env);
             if (r < 0) return r;
-            r = parse_alts(&target, tok, term, &p, end, env, FALSE);
+            r = prs_alts(&target, tok, term, &p, end, env, FALSE);
             env->options = prev;
             if (r < 0) {
               onig_node_free(target);
@@ -8055,7 +8055,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
   else if (c == '*' &&
            IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_ASTERISK_CALLOUT_NAME)) {
     PINC;
-    r = parse_callout_of_name(np, ')', &p, end, env);
+    r = prs_callout_of_name(np, ')', &p, end, env);
     if (r != 0) return r;
 
     goto end;
@@ -8075,7 +8075,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
   CHECK_NULL_RETURN_MEMERR(*np);
   r = fetch_token(tok, &p, end, env);
   if (r < 0) return r;
-  r = parse_alts(&target, tok, term, &p, end, env, FALSE);
+  r = prs_alts(&target, tok, term, &p, end, env, FALSE);
   if (r < 0) {
     onig_node_free(target);
     return r;
@@ -8085,7 +8085,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
   if (NODE_TYPE(*np) == NODE_BAG) {
     if (BAG_(*np)->type == BAG_MEMORY) {
-      /* Don't move this to previous of parse_alts() */
+      /* Don't move this to previous of prs_alts() */
       r = scan_env_set_mem_node(env, BAG_(*np)->m.regnum, *np);
       if (r != 0) return r;
     }
@@ -8364,8 +8364,8 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len, void* arg)
 }
 
 static int
-parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
-          ScanEnv* env, int group_head)
+prs_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
+        ScanEnv* env, int group_head)
 {
   int r, len, group;
   Node* qn;
@@ -8390,7 +8390,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
   break;
 
   case TK_SUBEXP_OPEN:
-    r = parse_bag(np, tok, TK_SUBEXP_CLOSE, src, end, env);
+    r = prs_bag(np, tok, TK_SUBEXP_CLOSE, src, end, env);
     if (r < 0) return r;
     if (r == 1) { /* group */
       if (group_head == 0)
@@ -8420,7 +8420,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
         env->options = BAG_(*np)->o.options;
         r = fetch_token(tok, src, end, env);
         if (r < 0) return r;
-        r = parse_alts(&target, tok, term, src, end, env, FALSE);
+        r = prs_alts(&target, tok, term, src, end, env, FALSE);
         env->options = prev;
         if (r < 0) {
           onig_node_free(target);
@@ -8558,7 +8558,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
     break;
 
   case TK_CHAR_PROPERTY:
-    r = parse_char_property(np, tok, src, end, env);
+    r = prs_char_property(np, tok, src, end, env);
     if (r != 0) return r;
     break;
 
@@ -8566,7 +8566,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
     {
       CClassNode* cc;
 
-      r = parse_cc(np, tok, src, end, env);
+      r = prs_cc(np, tok, src, end, env);
       if (r != 0) return r;
 
       cc = CCLASS_(*np);
@@ -8765,8 +8765,8 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 }
 
 static int
-parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
-             ScanEnv* env, int group_head)
+prs_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
+           ScanEnv* env, int group_head)
 {
   int r;
   Node *node, **headp;
@@ -8774,7 +8774,7 @@ parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
   *top = NULL;
   INC_PARSE_DEPTH(env->parse_depth);
 
-  r = parse_exp(&node, tok, term, src, end, env, group_head);
+  r = prs_exp(&node, tok, term, src, end, env, group_head);
   if (r < 0) {
     onig_node_free(node);
     return r;
@@ -8792,7 +8792,7 @@ parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
 
     headp = &(NODE_CDR(*top));
     while (r != TK_EOT && r != term && r != TK_ALT) {
-      r = parse_exp(&node, tok, term, src, end, env, FALSE);
+      r = prs_exp(&node, tok, term, src, end, env, FALSE);
       if (r < 0) {
         onig_node_free(node);
         return r;
@@ -8816,8 +8816,8 @@ parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
 
 /* term_tok: TK_EOT or TK_SUBEXP_CLOSE */
 static int
-parse_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
-           ScanEnv* env, int group_head)
+prs_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
+         ScanEnv* env, int group_head)
 {
   int r;
   Node *node, **headp;
@@ -8827,7 +8827,7 @@ parse_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
   INC_PARSE_DEPTH(env->parse_depth);
   save_options = env->options;
 
-  r = parse_branch(&node, tok, term, src, end, env, group_head);
+  r = prs_branch(&node, tok, term, src, end, env, group_head);
   if (r < 0) {
     onig_node_free(node);
     return r;
@@ -8847,7 +8847,7 @@ parse_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
     while (r == TK_ALT) {
       r = fetch_token(tok, src, end, env);
       if (r < 0) return r;
-      r = parse_branch(&node, tok, term, src, end, env, FALSE);
+      r = prs_branch(&node, tok, term, src, end, env, FALSE);
       if (r < 0) {
         onig_node_free(node);
         return r;
@@ -8880,7 +8880,7 @@ parse_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
 }
 
 static int
-parse_regexp(Node** top, UChar** src, UChar* end, ScanEnv* env)
+prs_regexp(Node** top, UChar** src, UChar* end, ScanEnv* env)
 {
   int r;
   PToken tok;
@@ -8888,7 +8888,7 @@ parse_regexp(Node** top, UChar** src, UChar* end, ScanEnv* env)
   ptoken_init(&tok);
   r = fetch_token(&tok, src, end, env);
   if (r < 0) return r;
-  r = parse_alts(top, &tok, TK_EOT, src, end, env, FALSE);
+  r = prs_alts(top, &tok, TK_EOT, src, end, env, FALSE);
   if (r < 0) return r;
 
   return 0;
@@ -8952,7 +8952,7 @@ onig_parse_tree(Node** root, const UChar* pattern, const UChar* end,
     return ONIGERR_INVALID_WIDE_CHAR_VALUE;
 
   p = (UChar* )pattern;
-  r = parse_regexp(root, &p, (UChar* )end, env);
+  r = prs_regexp(root, &p, (UChar* )end, env);
   if (r != 0) return r;
 
 #ifdef USE_CALL

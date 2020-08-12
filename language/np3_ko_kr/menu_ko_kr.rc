@@ -465,7 +465,7 @@ BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "GDI DC 직접 쓰기(&W)",             IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_GDI
             END
             POPUP "양방향"
             BEGIN

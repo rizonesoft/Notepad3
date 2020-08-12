@@ -72,6 +72,7 @@
 #endif
 
 /* internal config */
+#define USE_CHECK_VALIDITY_OF_STRING_IN_TREE
 #define USE_OP_PUSH_OR_JUMP_EXACT
 #define USE_QUANT_PEEK_NEXT
 #define USE_ST_LIBRARY

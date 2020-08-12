@@ -460,7 +460,9 @@ typedef struct _settings_t
   int  CustomSchemesDlgPosY;
   bool MuteMessageBeep;
   bool SplitUndoTypingSeqOnLnBreak;
-  
+  bool EditLayoutRTL;
+  bool DialogsLayoutRTL;
+
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH];

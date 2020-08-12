@@ -212,24 +212,6 @@ const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 
 const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
 //=============================================================================
-
-// some Mappings internal idx -> Scintilla values
-
-static int const s_DirectWriteTechnology[4] = {
-    SC_TECHNOLOGY_DEFAULT
-  , SC_TECHNOLOGY_DIRECTWRITE
-  , SC_TECHNOLOGY_DIRECTWRITERETAIN
-  , SC_TECHNOLOGY_DIRECTWRITEDC
-};
-
-static int const s_SciBidirectional[3] = {
-  SC_BIDIRECTIONAL_DISABLED
-  , SC_BIDIRECTIONAL_L2R
-  , SC_BIDIRECTIONAL_R2L
-};
-
-//=============================================================================
-
 // static method declarations
 
 // undo / redo  selections
@@ -519,6 +501,16 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
       pmqc->delay -= 1;  // decrease
     }
   }
+}
+
+
+//=============================================================================
+//
+// InvalidateStyleRedraw
+//
+static inline void InvalidateStyleRedraw()
+{
+  SciCall_SetViewEOL(Settings.ViewEOLs);
 }
 
 
@@ -1836,21 +1828,21 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
+  SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)Settings.RenderingTechnology, 0);
+  SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)Settings.Bidirectional, 0); // experimental
+  Settings.Bidirectional = SciCall_GetBidirectional();
+
   // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-  // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
-  //~SCI_SETBUFFEREDDRAW(true);  // default is true 
-  if (Settings.RenderingTechnology > 0) 
-  {
-    SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)s_DirectWriteTechnology[Settings.RenderingTechnology], 0);
-    SendMessage(hwndEditCtrl, SCI_SETBUFFEREDDRAW, 0, 0); // false
-    SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)s_SciBidirectional[Settings.Bidirectional], 0); // experimental
-  }
+  // There are some older platforms and unusual modes where buffering may still be useful 
+  SendMessage(hwndEditCtrl, SCI_SETBUFFEREDDRAW, (WPARAM)(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT), 0);
   //~SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_TWO, 0); // (= default)
   SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0);
   //~SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0);
   //~SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 1024, 0); // default = 1024
   SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 4096, 0);
+
+  SetWindowLayoutRTL(hwndEditCtrl, Settings.EditLayoutRTL);
 
   // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED: 
   // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER, 
@@ -3523,10 +3515,18 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
   CheckCmd(hmenu, IDM_VIEW_TRANSPARENT, Settings.TransparentMode);
 
-  i = IDM_SET_RENDER_TECH_DEFAULT + Settings.RenderingTechnology;
-  CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_DEFAULT, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
-
-  if (Settings.RenderingTechnology > 0) {
+  bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
+  //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);
+  
+  i = IDM_SET_RENDER_TECH_GDI + Settings.RenderingTechnology;
+  CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_GDI, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
+  
+  CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, Settings.EditLayoutRTL);
+  //EnableCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, gdi);
+  
+  //CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_DLG, Settings.DialogsLayoutRTL);
+  EnableCmd(hmenu, IDM_SET_RTL_LAYOUT_DLG, false);
+  if (dwr) {
     i = IDM_SET_BIDIRECTIONAL_NONE + Settings.Bidirectional;
     CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
   }
@@ -3534,9 +3534,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_SET_BIDIRECTIONAL_NONE;
     CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
   }
-  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_NONE, (Settings.RenderingTechnology > 0));
-  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_L2R, (Settings.RenderingTechnology > 0));
-  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, (Settings.RenderingTechnology > 0));
+  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_NONE, dwr);
+  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_L2R, dwr);
+  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, dwr);
+
 
   CheckCmd(hmenu, IDM_VIEW_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
   CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
@@ -5266,12 +5267,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SHOWBLANKS:
       Settings.ViewWhiteSpace = !Settings.ViewWhiteSpace;
-      SendMessage(Globals.hwndEdit,SCI_SETVIEWWS,(Settings.ViewWhiteSpace)?SCWS_VISIBLEALWAYS:SCWS_INVISIBLE,0);
+      SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
       break;
 
     case IDM_VIEW_SHOWEOLS:
       Settings.ViewEOLs = !Settings.ViewEOLs;
-      SendMessage(Globals.hwndEdit,SCI_SETVIEWEOL,Settings.ViewEOLs,0);
+      SciCall_SetViewEOL(Settings.ViewEOLs);
       break;
 
     case IDM_VIEW_MATCHBRACES:
@@ -5507,25 +5508,45 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_SET_RENDER_TECH_DEFAULT:
+    case IDM_SET_RENDER_TECH_GDI:
     case IDM_SET_RENDER_TECH_D2D:
     case IDM_SET_RENDER_TECH_D2DRETAIN:
     case IDM_SET_RENDER_TECH_D2DDC:
-      Settings.RenderingTechnology = iLoWParam - IDM_SET_RENDER_TECH_DEFAULT;
-      if (Settings.RenderingTechnology == 0) {
-        SciCall_SetBidirectional(s_SciBidirectional[0]);
+      {
+        int const prevRT = Settings.RenderingTechnology;
+        Settings.RenderingTechnology = (iLoWParam - IDM_SET_RENDER_TECH_GDI);
+        SciCall_SetTechnology(Settings.RenderingTechnology);
+        Settings.RenderingTechnology = SciCall_GetTechnology();
+        SciCall_SetBufferedDraw(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT);
+
+        int const prevBD = Settings.Bidirectional;
+        SciCall_SetBidirectional(Settings.Bidirectional);
+        Settings.Bidirectional = SciCall_GetBidirectional();
+        
+        if ((prevRT != Settings.RenderingTechnology) || (prevBD != Settings.Bidirectional)) {
+          UpdateMarginWidth();
+        }
       }
-      SciCall_SetBufferedDraw((Settings.RenderingTechnology == 0));
-      SciCall_SetTechnology(s_DirectWriteTechnology[Settings.RenderingTechnology]);
+      break;
+
+   	case IDM_SET_RTL_LAYOUT_EDIT:
+      Settings.EditLayoutRTL = !Settings.EditLayoutRTL;
+      SetWindowLayoutRTL(Globals.hwndEdit, Settings.EditLayoutRTL);
+      InvalidateStyleRedraw();
+      break;
+
+    case IDM_SET_RTL_LAYOUT_DLG:
+      Settings.DialogsLayoutRTL = !Settings.DialogsLayoutRTL;
       break;
 
     case IDM_SET_BIDIRECTIONAL_NONE:
     case IDM_SET_BIDIRECTIONAL_L2R:
     case IDM_SET_BIDIRECTIONAL_R2L:
-      Settings.Bidirectional = iLoWParam - IDM_SET_BIDIRECTIONAL_NONE;
-      SciCall_SetBidirectional(s_SciBidirectional[Settings.Bidirectional]);
+      {
+        SciCall_SetBidirectional(iLoWParam - IDM_SET_BIDIRECTIONAL_NONE);
+        Settings.Bidirectional = SciCall_GetBidirectional();
+      }
       break;
-
 
     case IDM_VIEW_MUTE_MESSAGEBEEP:
       Settings.MuteMessageBeep = !Settings.MuteMessageBeep;

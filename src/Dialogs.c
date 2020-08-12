@@ -3870,14 +3870,31 @@ void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
 //
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel)
 {
+  const DWORD exStyle = GetWindowExStyle(hwnd);
   if (bTransparentMode) {
-    SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-    // get opacity level from registry
+    SetWindowExStyle(hwnd, exStyle | WS_EX_LAYERED);
     BYTE const bAlpha = (BYTE)MulDiv(iOpacityLevel, 255, 100);
     SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
-    return;
   }
-  SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
+  else {
+    SetWindowExStyle(hwnd, exStyle & ~WS_EX_LAYERED);
+  }
+}
+
+
+//=============================================================================
+//
+//  SetWindowLayoutRTL()
+//
+void SetWindowLayoutRTL(HWND hwnd, bool bRTL)
+{
+  const DWORD exStyle = GetWindowExStyle(hwnd);
+  if (bRTL) {
+    SetWindowExStyle(hwnd, exStyle | WS_EX_LAYOUTRTL);
+  }
+  else {
+    SetWindowExStyle(hwnd, exStyle & ~WS_EX_LAYOUTRTL);
+  }
 }
 
 

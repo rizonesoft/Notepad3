@@ -162,6 +162,7 @@ inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0x
 #define PostWMCommand(hwnd, id)           PostMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), 1), 0)
 
 #define SetWindowStyle(hwnd, style)			  SetWindowLong((hwnd), GWL_STYLE, (style))
+#define SetWindowExStyle(hwnd, style)     SetWindowLong((hwnd), GWL_EXSTYLE, (style))
 
 //==== StrIs(Not)Empty() =============================================
 
@@ -308,7 +309,6 @@ void PathFixBackslashes(LPWSTR lpsz);
 
 size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
-
 
 UINT    GetDlgItemTextW2MB(HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount);
 UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);

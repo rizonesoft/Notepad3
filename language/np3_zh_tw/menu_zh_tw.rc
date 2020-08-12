@@ -465,7 +465,7 @@ BEGIN
                 MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "GDI（無連字）(&G)",                  IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "GDI（無連字）(&G)",                  IDM_SET_RENDER_TECH_GDI
             END
             POPUP "雙向(&B)"
             BEGIN
