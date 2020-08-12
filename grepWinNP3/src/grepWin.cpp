@@ -254,44 +254,40 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     {
         bool bOnlyOne = bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", L"false") : 
                                     !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", 0));
-
+        bool bCopyData = false;
         if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0)) // check if grepWin was started moments ago
         {
             SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0); // reset the timer
-
-            // grepWin was started just moments ago:
-            // add the new path to the existing search path in that grepWin instance
-            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
-                (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
-            SearchReplace(spath, L"/", L"\\");
-            spath = SanitizeSearchPaths(spath);
-            std::wstring searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
-                (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
-            COPYDATASTRUCT CopyData = {0};
-            CopyData.lpData = (LPVOID)spath.c_str();
-            CopyData.cbData = (DWORD)spath.size() * sizeof(wchar_t);
-            CopyData.lpData = (LPVOID)searchfor.c_str();
-            CopyData.cbData = (DWORD)searchfor.size() * sizeof(wchar_t);
-            SendMessage(hWnd, WM_COPYDATA, 2, (LPARAM)&CopyData);
-            SetForegroundWindow(hWnd); //set the window to front
-            bQuit = true;
+            bCopyData = true;
+            bQuit     = true;
         }
         else if (bOnlyOne)
         {
-            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
+            bCopyData = true;
+            bQuit     = true;
+        }
+        if (bCopyData) {
+            // grepWin was started just moments ago:
+            // add the new path to the existing search path in that grepWin instance
+            std::wstring searchfor = parser.HasVal(L"searchfor") ?
+                                     parser.GetVal(L"searchfor") :
+                                     (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
+
+            std::wstring spath     = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
                 (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
             SearchReplace(spath, L"/", L"\\");
             spath = SanitizeSearchPaths(spath);
-            std::wstring   searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") :
-                (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
-            COPYDATASTRUCT CopyData  = {0};
-            CopyData.lpData = (LPVOID)spath.c_str();
-            CopyData.cbData = (DWORD)spath.size() * sizeof(wchar_t);
-            CopyData.lpData = (LPVOID)searchfor.c_str();
-            CopyData.cbData = (DWORD)searchfor.size() * sizeof(wchar_t);
-            SendMessage(hWnd, WM_COPYDATA, 2, (LPARAM)&CopyData);
+
+            CopyData_t data2copy = {0};
+            StringCchCopyW(data2copy.searchFor, _countof(data2copy.searchFor), searchfor.c_str());
+            StringCchCopyW(data2copy.searchPath, _countof(data2copy.searchPath), spath.c_str());
+
+            COPYDATASTRUCT CopyData = {0};
+            CopyData.dwData         = (DWORD)GREPWINNP3_CPYDAT;
+            CopyData.lpData         = (LPVOID)&data2copy;
+            CopyData.cbData         = (DWORD)sizeof(CopyData_t);
+            SendMessage(hWnd, WM_COPYDATA, (WPARAM)(HWND)NULL, (LPARAM)&CopyData);
             SetForegroundWindow(hWnd); //set the window to front
-            bQuit = true;
         }
     }
 

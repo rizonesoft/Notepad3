@@ -66,6 +66,14 @@ typedef struct _SearchFlags_t
 
 } SearchFlags_t;
 
+#define GREPWINNP3_CPYDAT 4711
+typedef struct _CopyData_t
+{
+    wchar_t searchFor[1024];
+    wchar_t searchPath[MAX_PATH << 8];
+
+} CopyData_t;
+
 
 /**
  * search dialog.
