@@ -748,11 +748,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
   Scintilla_ReleaseResources();
 
+  OleUninitialize();
+
   if (bIsInitialized) {
     UnregisterClass(s_wchWndClass, Globals.hInstance);
   }
-
-  OleUninitialize();
 
   if (s_lpOrigFileArg) {
     FreeMem(s_lpOrigFileArg);
@@ -793,7 +793,8 @@ void InvalidParameterHandler(const wchar_t* expression,
 //
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
-  _hOldInvalidParamHandler = _set_invalid_parameter_handler(InvalidParameterHandler);
+  _invalid_parameter_handler const hNewInvalidParamHandler = InvalidParameterHandler;
+  _hOldInvalidParamHandler= _set_invalid_parameter_handler(hNewInvalidParamHandler);
   _CrtSetReportMode(_CRT_ASSERT, 0); // Disable the message box for assertions.
 
   _InitGlobals();
@@ -3819,9 +3820,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_EXPLORE_DIR:
     {
-      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
         break;
-
+      }
       PIDLIST_ABSOLUTE pidl = NULL;
       DWORD rfg = 0;
       SHILCreateFromPath(StrIsEmpty(Globals.CurrentFile) ? Globals.WorkingDirectory : Globals.CurrentFile, &pidl, &rfg);
@@ -6492,14 +6493,15 @@ void HandlePosChange()
 //
 static DocPos prevCursorPosition = -1;
 
-#define RGB_TOLERANCE 0x10
+#define RGB_TOLERANCE 0x20
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
 
 inline COLORREF _CalcContrastColor(COLORREF rgb, BYTE alpha)
 {
-  bool const mask = RGB_SUB((rgb)&0xFF, alpha) <= RGB_TOLERANCE &&
-                    RGB_SUB((rgb >> 8) & 0xFF, alpha) <= RGB_TOLERANCE &&
-                    RGB_SUB((rgb >> 16) & 0xFF, alpha) <= RGB_TOLERANCE;
+
+  bool const mask = RGB_SUB(MulDiv(rgb >>  0, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB(MulDiv(rgb >>  8, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB(MulDiv(rgb >> 16, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE;
 
   return mask ? (0x7F7F7F + rgb) & 0xFFFFFF : rgb ^ 0xFFFFFF;
 }

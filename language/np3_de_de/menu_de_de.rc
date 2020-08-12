@@ -513,6 +513,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Öffne Web-Aktion &1",         CMD_WEBACTION1
         MENUITEM "Öffne Web Aktion &2",         CMD_WEBACTION2
+        MENUITEM "Öffne Datei-&Explorer",       IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
         MENUITEM "Code &Faltung",               IDM_VIEW_FOLDING
         MENUITEM "&Zeilen Nummern",             IDM_VIEW_LINENUMBERS
