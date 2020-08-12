@@ -3489,6 +3489,10 @@ void DialogFileBrowse(HWND hwnd)
     ExtractFirstArgument(Settings2.FileBrowserPath, tchExeFile, tchParam, COUNTOF(tchExeFile));
     ExpandEnvironmentStringsEx(tchExeFile, COUNTOF(tchExeFile));
   }
+  if (StrStrI(tchExeFile, L"explorer.exe") && StrIsEmpty(tchParam)) {
+    SendWMCommand(hwnd, IDM_FILE_EXPLORE_DIR);
+    return;
+  }
   if (StrIsEmpty(tchExeFile)) {
     StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
   }
