@@ -360,7 +360,7 @@ BEGIN
         POPUP "Code &Faltung"
         BEGIN
             MENUITEM "&Aktiviere Faltung",                      IDM_VIEW_FOLDING
-            MENUITEM "Alle Falten &Umschalten\tCtrl+Alt+F",   IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Alle Falten &Umschalten\tCtrl+Alt+F",     IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Gehe zur &Nächsten\tAlt+ +",              CMD_FOLDJUMPDOWN
             MENUITEM "Gehe zur &Vorherigen\tAlt+ –",            CMD_FOLDJUMPUP
@@ -513,6 +513,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Öffne Web-Aktion &1",         CMD_WEBACTION1
         MENUITEM "Öffne Web Aktion &2",         CMD_WEBACTION2
+        MENUITEM SEPARATOR
+        MENUITEM "Code &Faltung",               IDM_VIEW_FOLDING
+        MENUITEM "&Zeilen Nummern",             IDM_VIEW_LINENUMBERS
+        MENUITEM "&Selektionsrand",             IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN

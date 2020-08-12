@@ -714,6 +714,8 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
 //
 //  _CleanUpResources()
 //
+static _invalid_parameter_handler _hOldInvalidParamHandler = NULL;
+
 static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
   if (hwnd) {
@@ -734,15 +736,17 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     UndoRedoSelectionUTArray = NULL;
   }
 
+  // -------------------------------
   // Save Settings is done elsewhere
-
-  Scintilla_ReleaseResources();
+  // -------------------------------
 
   if (Globals.hMainMenu) { 
     DestroyMenu(Globals.hMainMenu); 
   }
 
   FreeLanguageResources();
+
+  Scintilla_ReleaseResources();
 
   if (bIsInitialized) {
     UnregisterClass(s_wchWndClass, Globals.hInstance);
@@ -753,6 +757,10 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   if (s_lpOrigFileArg) {
     FreeMem(s_lpOrigFileArg);
     s_lpOrigFileArg = NULL;
+  }
+
+  if (_hOldInvalidParamHandler) {
+    _set_invalid_parameter_handler(_hOldInvalidParamHandler);
   }
 }
 
@@ -785,7 +793,7 @@ void InvalidParameterHandler(const wchar_t* expression,
 //
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
-  _set_invalid_parameter_handler(InvalidParameterHandler);
+  _hOldInvalidParamHandler = _set_invalid_parameter_handler(InvalidParameterHandler);
   _CrtSetReportMode(_CRT_ASSERT, 0); // Disable the message box for assertions.
 
   _InitGlobals();
@@ -2987,7 +2995,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
     return DefWindowProc(hwnd, umsg, wParam, lParam);
 
-  HMENU hmenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+  HMENU hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
 
   POINT pt;
@@ -3023,10 +3031,10 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     break;
   }
 
-  TrackPopupMenuEx(GetSubMenu(hmenu, imenu),
+  TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu),
                    TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
 
-  DestroyMenu(hmenu);
+  DestroyMenu(hMenuCtx);
 
   return FALSE;
 }
@@ -3096,9 +3104,8 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     case WM_RBUTTONUP:
     {
-
-      HMENU hMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
-      HMENU hMenuPopup = GetSubMenu(hMenu, 2);
+      HMENU hTrayMenu  = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+      HMENU hMenuPopup = GetSubMenu(hTrayMenu, 2);
 
       POINT pt;
       int iCmd;
@@ -3113,7 +3120,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       PostMessage(hwnd, WM_NULL, 0, 0);
 
-      DestroyMenu(hMenu);
+      DestroyMenu(hTrayMenu);
 
       if (iCmd == IDM_TRAY_RESTORE) {
         ShowNotifyIcon(hwnd, false);
@@ -5613,9 +5620,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_HELP_ABOUT:
       {
         //~HMODULE hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
-        HMODULE hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h;
-        if (hRichEdit != INVALID_HANDLE_VALUE) {
-        ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
+        HMODULE const hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h;
+        if (hRichEdit) {
+          ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
           FreeLibrary(hRichEdit);
         }
       }

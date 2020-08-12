@@ -130,6 +130,7 @@
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <ManifestFile />
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -194,6 +195,7 @@
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <ManifestFile />
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -264,6 +266,7 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ManifestFile />
       <Profile>true</Profile>
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -334,6 +337,7 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ManifestFile />
       <Profile>true</Profile>
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
     </Link>
     <PreBuildEvent>
       <Command>

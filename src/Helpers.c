@@ -158,8 +158,7 @@ static void _GetTrueWindowsVersion()
 
   // load the System-DLL
   HINSTANCE const hNTdllDll = LoadLibrary(L"ntdll.dll");
-
-  if (hNTdllDll != NULL)
+  if (hNTdllDll)
   {
     // get the function pointer to RtlGetVersion
     pRtlGetVersion = (void (WINAPI*)(PRTL_OSVERSIONINFOW)) GetProcAddress(hNTdllDll, "RtlGetVersion");
