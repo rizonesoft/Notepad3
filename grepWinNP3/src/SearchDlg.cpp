@@ -938,16 +938,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_RELATIVEPATH).c_str());
                     break;
                 }
-                std::vector<std::wstring> searchpaths;
-                stringtok(searchpaths, m_searchpath, true);
-                for (const auto& sp : searchpaths)
-                {
-                    if (!PathFileExists(sp.c_str()))
-                    {
-                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
-                        break;
-                    }
-                }
+
                 if ((id == IDC_SEARCHINFOUNDFILES) && (!m_items.empty()))
                 {
                     m_searchpath.clear();
@@ -958,6 +949,21 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         m_searchpath += item.filepath;
                     }
                 }
+
+                std::vector<std::wstring> searchpaths;
+                stringtok(searchpaths, m_searchpath, true);
+                bool ok = true;
+                for (const auto& sp : searchpaths)
+                {
+                    if (!PathFileExists(sp.c_str()))
+                    {
+                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
+                        ok = false;
+                        break;
+                    }
+                }
+                if (!ok)
+                    break;
 
                 m_searchedItems = 0;
                 m_totalitems = 0;
