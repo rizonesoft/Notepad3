@@ -465,7 +465,7 @@ BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",                 IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                     IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                     IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "&GDI (inga ligaturer)",                   IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "&GDI (inga ligaturer)",                   IDM_SET_RENDER_TECH_GDI
             END
             POPUP "Dubbelriktad"
             BEGIN
