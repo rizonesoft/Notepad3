@@ -526,14 +526,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
-        MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-        MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
+        MENUITEM "Паказаць паліцу меню",         IDM_VIEW_MENUBAR
+        MENUITEM "Паказаць паліцу прыладаў",     IDM_VIEW_TOOLBAR
+        MENUITEM "Паказаць радок стану",         IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
+        MENUITEM "Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+        MENUITEM "Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Пераключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+        MENUITEM "DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

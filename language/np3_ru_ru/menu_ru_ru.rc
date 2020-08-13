@@ -502,38 +502,38 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Открыть &гиперссылку",        CMD_OPEN_HYPERLINK
+        MENUITEM "Открыть гиперссылку",        CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "&Отмена",                     IDM_EDIT_UNDO
-        MENUITEM "&Повтор",                     IDM_EDIT_REDO
+        MENUITEM "Отмена",                     IDM_EDIT_UNDO
+        MENUITEM "Повтор",                     IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "&Вырезать",                   IDM_EDIT_CUT
-        MENUITEM "&Копировать",                 IDM_EDIT_COPY
-        MENUITEM "Вст&авить",                   IDM_EDIT_PASTE
-        MENUITEM "&Удалить",                    IDM_EDIT_CLEAR
+        MENUITEM "Вырезать",                   IDM_EDIT_CUT
+        MENUITEM "Копировать",                 IDM_EDIT_COPY
+        MENUITEM "Вставить",                   IDM_EDIT_PASTE
+        MENUITEM "Удалить",                    IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Выделить в&сё",               IDM_EDIT_SELECTALL
+        MENUITEM "Выделить всё",               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Свернуть/развернуть &блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Свернуть/развернуть блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Открыть веб-действие &1",     CMD_WEBACTION1
-        MENUITEM "Открыть веб-действие &2",     CMD_WEBACTION2
-        MENUITEM "Open &File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "Открыть веб-действие 1",     CMD_WEBACTION1
+        MENUITEM "Открыть веб-действие 2",     CMD_WEBACTION2
+        MENUITEM "Открыть Проводник",          IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
-        MENUITEM "&Folding",                    IDM_VIEW_FOLDING
-        MENUITEM "Line &Numbers",               IDM_VIEW_LINENUMBERS
-        MENUITEM "Selection &Margin",           IDM_VIEW_MARGIN
+        MENUITEM "Сворачивание блоков кода",   IDM_VIEW_FOLDING
+        MENUITEM "Номера строк",               IDM_VIEW_LINENUMBERS
+        MENUITEM "Отступ выделения",           IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
-        MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
+        MENUITEM "Показать панель меню",               IDM_VIEW_MENUBAR
+        MENUITEM "Показать панель инструментов",       IDM_VIEW_TOOLBAR
+        MENUITEM "Показать строку состояния",          IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
+        MENUITEM "Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Переключить панели инструментов",    IDM_VIEW_TOGGLETB
+        MENUITEM "DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

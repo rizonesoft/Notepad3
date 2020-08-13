@@ -467,10 +467,10 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (sin ligaduras)",            IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "R&TL Layout (GDI)"
+            POPUP "Estilo R&TL (GDI)"
             BEGIN
-                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "Área de &edición",                IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Otros diálogos",                 IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Bidireccional"
             BEGIN
@@ -502,38 +502,38 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir &Hyperlink",                            CMD_OPEN_HYPERLINK
+        MENUITEM "Abrir Hyperlink",                            CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "&Deshacer",                                   IDM_EDIT_UNDO
-        MENUITEM "&Rehacer",                                    IDM_EDIT_REDO
+        MENUITEM "Deshacer",                                   IDM_EDIT_UNDO
+        MENUITEM "Rehacer",                                    IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Cor&tar",                                     IDM_EDIT_CUT
-        MENUITEM "&Copiar",                                     IDM_EDIT_COPY
-        MENUITEM "&Pegar",                                      IDM_EDIT_PASTE
-        MENUITEM "&Eliminar",                                   IDM_EDIT_CLEAR
+        MENUITEM "Cortar",                                     IDM_EDIT_CUT
+        MENUITEM "Copiar",                                     IDM_EDIT_COPY
+        MENUITEM "Pegar",                                      IDM_EDIT_PASTE
+        MENUITEM "Eliminar",                                   IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "&Seleccionar todo",                           IDM_EDIT_SELECTALL
+        MENUITEM "Seleccionar todo",                           IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Al&ternar el pliegue actual",                 IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Alternar el pliegue actual",                 IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Abrir Web Action &1",                         CMD_WEBACTION1
-        MENUITEM "Abrir Web Action &2",                         CMD_WEBACTION2
-        MENUITEM "Abrir &Explorador de archivos",               IDM_FILE_EXPLORE_DIR
+        MENUITEM "Abrir Web Action 1",                         CMD_WEBACTION1
+        MENUITEM "Abrir Web Action 2",                         CMD_WEBACTION2
+        MENUITEM "Abrir Explorador de archivos",               IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
-        MENUITEM "&Código plegable",                            IDM_VIEW_FOLDING
-        MENUITEM "&Números de línea",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selección de&l margen",                       IDM_VIEW_MARGIN
+        MENUITEM "Código plegable",                            IDM_VIEW_FOLDING
+        MENUITEM "Números de línea",                           IDM_VIEW_LINENUMBERS
+        MENUITEM "Selección del margen",                       IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar la barra de &menú",                   IDM_VIEW_MENUBAR
-        MENUITEM "&Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
-        MENUITEM "Mostrar barra de &estado",                    IDM_VIEW_STATUSBAR
+        MENUITEM "Mostrar la barra de menú",                   IDM_VIEW_MENUBAR
+        MENUITEM "Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
+        MENUITEM "Mostrar barra de estado",                    IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "&Cargar un tema de herramientas...",          IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Al&ternar las barras de herramientas",        IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI escala la barra de herramientas",        IDM_VIEW_DPISCALETB
+        MENUITEM "Cargar un tema de herramientas...",          IDM_VIEW_LOADTHEMETB
+        MENUITEM "Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Alternar las barras de herramientas",        IDM_VIEW_TOGGLETB
+        MENUITEM "DPI escala la barra de herramientas",        IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
