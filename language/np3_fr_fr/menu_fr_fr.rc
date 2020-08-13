@@ -513,11 +513,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Ouvrir Web Action &1",                    CMD_WEBACTION1
         MENUITEM "Ouvrir Web Action &2",                    CMD_WEBACTION2
-        MENUITEM "Open &File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "Ouvrir &Explorateur de fichiers",         IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
-        MENUITEM "&Folding",                    IDM_VIEW_FOLDING
-        MENUITEM "Line &Numbers",               IDM_VIEW_LINENUMBERS
-        MENUITEM "Selection &Margin",           IDM_VIEW_MARGIN
+        MENUITEM "&Code pliage",                            IDM_VIEW_FOLDING
+        MENUITEM "&Numéros de ligne",                       IDM_VIEW_LINENUMBERS
+        MENUITEM "Sélection de la &marge",                  IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
