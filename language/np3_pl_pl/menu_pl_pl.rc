@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "Minimalizuj do zasobnika systemowego",        IDM_VIEW_MINTOTRAY
             MENUITEM "Tryb przeźroczystości\tAlt+G",                IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Technologia"
+        POPUP "Tech&nologia"
         BEGIN
             POPUP "&Renderowanie"
             BEGIN
@@ -467,7 +467,12 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",               IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (bez ligatury)",               IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Dwukierunkowa"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Dwukierunkowa"
             BEGIN
                 MENUITEM "Żadna",                             IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Z lewej do prawej",                 IDM_SET_BIDIRECTIONAL_L2R

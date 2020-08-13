@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "&Сворачивать в панель уведомлений",    IDM_VIEW_MINTOTRAY
             MENUITEM "Полупрозрачный &режим\tAlt+G",         IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Технологии"
+        POPUP "Тех&нологии"
         BEGIN
             POPUP "&Рендеринг"
             BEGIN
@@ -467,7 +467,12 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (без лигатур)",               IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Направление письма"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                       IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",                   IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Направление письма"
             BEGIN
                 MENUITEM "Нет",                              IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Слева направо",                    IDM_SET_BIDIRECTIONAL_L2R

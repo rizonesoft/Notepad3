@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "트레이로 최소화(&Z)",                  IDM_VIEW_MINTOTRAY
             MENUITEM "투명 모드(&M)\tAlt+G",                IDM_VIEW_TRANSPARENT
         END
-        POPUP "기술(&T)"
+        POPUP "기술(&N)"
         BEGIN
             POPUP "렌더링(&R)"
             BEGIN
@@ -467,7 +467,12 @@ BEGIN
                 MENUITEM "GDI DC 직접 쓰기(&W)",             IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "양방향"
+            POPUP "RTL Layout (GDI)(&T)"
+            BEGIN
+                MENUITEM "Edit Area(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "Other Dialogs(&O)",               IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "양방향(&B)"
             BEGIN
                 MENUITEM "없음(&N).",                     IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "왼쪽에서 오른쪽으로",             IDM_SET_BIDIRECTIONAL_L2R

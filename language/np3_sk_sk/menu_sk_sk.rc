@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "&Minimalizovať na panel úloh",             IDM_VIEW_MINTOTRAY
             MENUITEM "R&ežim priehľadného okna\tAlt+G",          IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Technológia"
+        POPUP "Tech&nológia"
         BEGIN
             POPUP "&Vykresľovanie"
             BEGIN
@@ -467,7 +467,12 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (bez ligatúr)",              IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Obojsmerne"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Obojsmerne"
             BEGIN
                 MENUITEM "Žiadne",                          IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Zľava doprava",                   IDM_SET_BIDIRECTIONAL_L2R

@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "Lekicsinyítés az &óra mellé",           IDM_VIEW_MINTOTRAY
             MENUITEM "&Átlátszó mód\tAlt+G",                  IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Technológia"
+        POPUP "Tech&nológia"
         BEGIN
             POPUP "&Renderelés"
             BEGIN
@@ -466,6 +466,11 @@ BEGIN
                 MENUITEM "DirectWrite &Retain",                 IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (ligatúrák nélkül)",             IDM_SET_RENDER_TECH_GDI
+            END
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                     IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",                 IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "K&étirányú"
             BEGIN

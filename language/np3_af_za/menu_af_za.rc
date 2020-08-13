@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "&Minimeer Na Die Laai",               IDM_VIEW_MINTOTRAY
             MENUITEM "&Deursigtige Modus\tAlt+G",           IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Tegnologie"
+        POPUP "Tegnnologie"
         BEGIN
             POPUP "&Lewering"
             BEGIN
@@ -467,7 +467,12 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",             	IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (Geen ligature nie)",            IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Bidirectionele"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                      IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",                  IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Bidirectionele"
             BEGIN
                 MENUITEM "Geen",                            IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Links na Regs",                   IDM_SET_BIDIRECTIONAL_L2R

@@ -458,16 +458,21 @@ BEGIN
             MENUITEM "Minimera till dolda ikoner",                  IDM_VIEW_MINTOTRAY
             MENUITEM "Genomskinlig\tAlt+G",                         IDM_VIEW_TRANSPARENT
         END
-        POPUP "Teknik"
+        POPUP "Tek&nik"
         BEGIN
-            POPUP "Rendering"
+            POPUP "&Rendering"
             BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",                 IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                     IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                     IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (inga ligaturer)",                   IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Dubbelriktad"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Dubbelriktad"
             BEGIN
                 MENUITEM "Ingen",                                   IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Vänster till höger",                      IDM_SET_BIDIRECTIONAL_L2R

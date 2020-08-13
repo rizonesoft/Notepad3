@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "Minimi&zar para a Bandeja",      IDM_VIEW_MINTOTRAY
             MENUITEM "&Modo Transparente\tAlt+G",      IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Tecnologia"
+        POPUP "Tec&nologia"
         BEGIN
             POPUP "&Renderização"
             BEGIN
@@ -467,7 +467,12 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",        IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (no ligatures)",        IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Bidirecional"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                 IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",             IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Bidirectional"
             BEGIN
                 MENUITEM "Nenhum",                     IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Esquerda para a Direita",    IDM_SET_BIDIRECTIONAL_L2R

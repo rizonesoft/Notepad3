@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "システムトレイに最小化(&Z)",                   IDM_VIEW_MINTOTRAY
             MENUITEM "ウィンドウ透化(&M)\tAlt+G",                   IDM_VIEW_TRANSPARENT
         END
-        POPUP "文字の描画(&T)"
+        POPUP "文字の描画(&N)"
         BEGIN
             POPUP "描画方式(&R)"
             BEGIN
@@ -467,7 +467,12 @@ BEGIN
                 MENUITEM "DirectWrite GDI DC(&W)",          IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI (合字未対応)(&G)",             IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "書字方向"
+            POPUP "RTL Layout (GDI)(&T)"
+            BEGIN
+                MENUITEM "Edit Area(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "Other Dialogs(&O)",               IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "書字方向(&B)"
             BEGIN
                 MENUITEM "指定なし",                          IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "左から右へ",                         IDM_SET_BIDIRECTIONAL_L2R
