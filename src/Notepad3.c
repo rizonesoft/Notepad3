@@ -3522,10 +3522,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_GDI, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
   
   CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, Settings.EditLayoutRTL);
-  //EnableCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, gdi);
-  
-  //CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_DLG, Settings.DialogsLayoutRTL);
-  EnableCmd(hmenu, IDM_SET_RTL_LAYOUT_DLG, false);
+  //~EnableCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, gdi);
+  CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_DLG, Settings.DialogsLayoutRTL);
+
   if (dwr) {
     i = IDM_SET_BIDIRECTIONAL_NONE + Settings.Bidirectional;
     CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);

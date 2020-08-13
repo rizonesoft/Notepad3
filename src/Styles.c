@@ -4035,8 +4035,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SHFILEINFO shfi;
             ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
+	          InitWindowCommon(hwndTV, true);
+            TreeView_SetExtendedStyle(hwndTV, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
+
             UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-            
             TreeView_SetImageList(hwndTV,
                                   (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
                                                              flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
@@ -4733,12 +4735,12 @@ static int _s_idefaultLexer = -1;
 
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  static int cxClient;
-  static int cyClient;
+  static int cxClient = 0;
+  static int cyClient = 0;
 
-  static HWND hwndLV;
+  static HWND hwndIL = NULL;
 
-  static int  iInternalDefault;
+  static int  iInternalDefault = 0;
 
   switch(umsg)
   {
@@ -4749,46 +4751,45 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
-        hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
+        hwndIL = GetDlgItem(hwnd,IDC_STYLELIST);
+        InitWindowCommon(hwndIL, false);
 
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-
-        ListView_SetImageList(hwndLV,
+        ListView_SetImageList(hwndIL,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
 
-        ListView_SetImageList(hwndLV,
+        ListView_SetImageList(hwndIL,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
             &shfi,sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_NORMAL);
 
-        //SetExplorerTheme(hwndLV);
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        ListView_SetExtendedListViewStyle(hwndLV,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
-        ListView_InsertColumn(hwndLV,0,&lvc);
+        ListView_SetExtendedListViewStyle(hwndIL,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
+        ListView_InsertColumn(hwndIL,0,&lvc);
 
         // Add lexers
         for (int i = 0; i < COUNTOF(g_pLexArray); i++) {
-          Style_AddLexerToListView(hwndLV, g_pLexArray[i]);
+          Style_AddLexerToListView(hwndIL, g_pLexArray[i]);
         }
-        ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
+        ListView_SetColumnWidth(hwndIL,0,LVSCW_AUTOSIZE_USEHEADER);
 
         // Select current lexer
-        int lvItems = ListView_GetItemCount(hwndLV);
+        int lvItems = ListView_GetItemCount(hwndIL);
         LVITEM lvi;
         lvi.mask = LVIF_PARAM;
         for (int i = 0; i < lvItems; i++) {
           lvi.iItem = i;
-          ListView_GetItem(hwndLV,&lvi);
+          ListView_GetItem(hwndIL,&lvi);
 
           if (((PEDITLEXER)lvi.lParam)->resID == _s_selectedLexer->resID)
           {
-            ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
-            ListView_EnsureVisible(hwndLV,i,false);
+            ListView_SetItemState(hwndIL,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
+            ListView_EnsureVisible(hwndIL,i,false);
             CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(_s_idefaultLexer == i));
             break;
           }
@@ -4813,12 +4814,16 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-        ListView_SetImageList(hwndLV,
+        ListView_SetImageList(hwndIL,
           (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
       }
       return !0;
+
+
+    case WM_DESTROY:
+        return !0;
 
 
     case WM_SIZE:
@@ -4845,7 +4850,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           case LVN_ITEMCHANGED:
           case LVN_DELETEITEM:
             {
-              int i = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+              int i = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
               CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(iInternalDefault == i));
               DialogEnableControl(hwnd, IDC_DEFAULTSCHEME, i != -1);
               DialogEnableControl(hwnd, IDOK, i != -1);
@@ -4863,7 +4868,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         {
         case IDC_DEFAULTSCHEME:
           if (IsButtonChecked(hwnd, IDC_DEFAULTSCHEME))
-            iInternalDefault = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+            iInternalDefault = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
           else
             iInternalDefault = 0;
           break;
@@ -4873,8 +4878,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           {
             LVITEM lvi;
             lvi.mask = LVIF_PARAM;
-            lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
-            if (ListView_GetItem(hwndLV, &lvi)) {
+            lvi.iItem = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+            if (ListView_GetItem(hwndIL, &lvi)) {
               _s_selectedLexer = (PEDITLEXER)lvi.lParam;
               _s_idefaultLexer = iInternalDefault;
               s_bAutoSelect = IsButtonChecked(hwnd, IDC_AUTOSELECT);

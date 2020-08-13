@@ -556,27 +556,6 @@ bool IsRunAsAdmin()
 }
 
 
-
-//=============================================================================
-//
-//  SetExplorerTheme()
-//
-//bool SetExplorerTheme(HWND hwnd)
-//{
-//  FARPROC pfnSetWindowTheme;
-//
-//  if (IsVistaOrHigher()) {
-//    if (hLocalModUxTheme) {
-//      pfnSetWindowTheme = GetProcAddress(hLocalModUxTheme,"SetWindowTheme");
-//
-//      if (pfnSetWindowTheme)
-//        return (S_OK == pfnSetWindowTheme(hwnd,L"Explorer",NULL));
-//    }
-//  }
-//  return false;
-//}
-
-
 //=============================================================================
 //
 //  BitmapMergeAlpha()

@@ -230,8 +230,6 @@ bool IsProcessElevated();
 //bool IsUserAdmin();
 bool IsUserInAdminGroup();
 bool IsRunAsAdmin();
-//bool SetExplorerTheme(HWND);
-
 
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);
