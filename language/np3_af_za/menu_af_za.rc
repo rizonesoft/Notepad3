@@ -497,27 +497,27 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Maak &Skakel Oop",                        CMD_OPEN_HYPERLINK
+        MENUITEM "Maak Skakel Oop",                         CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "&Undo",                                   IDM_EDIT_UNDO
-        MENUITEM "&Redo",                                   IDM_EDIT_REDO
+        MENUITEM "Undo",                                    IDM_EDIT_UNDO
+        MENUITEM "Redo",                                    IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Sn&y",                                    IDM_EDIT_CUT
-        MENUITEM "&Kopie",                                  IDM_EDIT_COPY
-        MENUITEM "&Plak",                                   IDM_EDIT_PASTE
-        MENUITEM "&Verwyder",                               IDM_EDIT_CLEAR
+        MENUITEM "Sny",                                     IDM_EDIT_CUT
+        MENUITEM "Kopie",                                   IDM_EDIT_COPY
+        MENUITEM "Plak",                                    IDM_EDIT_PASTE
+        MENUITEM "Verwyder",                                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "&Kies Alles",                             IDM_EDIT_SELECTALL
+        MENUITEM "Kies Alles",                              IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "&Wissel Huidige Vou",                     IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Wissel Huidige Vou",                      IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Web Sjabloon &1",                         CMD_WEBACTION1
-        MENUITEM "Web Sjabloon &2",                         CMD_WEBACTION2
-        MENUITEM "Maak &File Explorer Oop",                 IDM_FILE_EXPLORE_DIR
+        MENUITEM "Web Sjabloon 1",                          CMD_WEBACTION1
+        MENUITEM "Web Sjabloon 2",                          CMD_WEBACTION2
+        MENUITEM "Maak File Explorer Oop",                  IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
-        MENUITEM "&Kode Vou",                               IDM_VIEW_FOLDING
-        MENUITEM "Lyn &Nommer",                             IDM_VIEW_LINENUMBERS
-        MENUITEM "Seleksie &Kantlyne",                      IDM_VIEW_MARGIN
+        MENUITEM "Kode Vou",                                IDM_VIEW_FOLDING
+        MENUITEM "Lyn Nommer",                              IDM_VIEW_LINENUMBERS
+        MENUITEM "Seleksie Kantlyne",                       IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
