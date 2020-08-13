@@ -18,12 +18,15 @@
 #define _NP3_DIALOGS_H_
 
 #include <math.h>
+#include <uxtheme.h>
 #include "TypeDefs.h"
 #include "Scintilla.h"
 
 // ----------------------------------------------------------------------------
 
-#  define DIALOG_FONT_SIZE_INCR 0  // will increase default dialog font size
+#define DIALOG_FONT_SIZE_INCR 0  // will increase default dialog font size
+
+#define SetExplorerTheme(hwnd) SetWindowTheme((hwnd), L"Explorer", NULL)
 
 // ----------------------------------------------------------------------------
 
@@ -76,6 +79,11 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 //void SnapToDefaultButton(HWND);
+
+inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
+  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
+  if (Settings.DialogsLayoutRTL) { SetWindowLayoutRTL(hwnd, true); }
+}
 
 // resize dialog directions
 typedef enum { RSZ_NONE = -1, RSZ_BOTH = 0, RSZ_ONLY_X = 1, RSZ_ONLY_Y = 2 } RSZ_DLG_DIR;
