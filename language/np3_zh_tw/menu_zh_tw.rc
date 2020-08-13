@@ -458,7 +458,7 @@ BEGIN
             MENUITEM "最小化到托盤(&Z)",                       IDM_VIEW_MINTOTRAY
             MENUITEM "透明模式(&M)\tAlt+G",                    IDM_VIEW_TRANSPARENT
         END
-        POPUP "處理技術(&T)"
+        POPUP "處理技術(&N)"
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
@@ -466,6 +466,11 @@ BEGIN
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI（無連字）(&G)",                  IDM_SET_RENDER_TECH_GDI
+            END
+            POPUP "RTL Layout (GDI)(&T)"
+            BEGIN
+                MENUITEM "Edit Area(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "Other Dialogs(&O)",               IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "雙向(&B)"
             BEGIN

@@ -467,6 +467,11 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",               IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (geen ligaturen)",             IDM_SET_RENDER_TECH_GDI
             END
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                        IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",                    IDM_SET_RTL_LAYOUT_DLG
+            END
             POPUP "Bidirectionele"
             BEGIN
                 MENUITEM "Geen",                              IDM_SET_BIDIRECTIONAL_NONE
