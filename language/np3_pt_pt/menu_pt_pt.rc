@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Iniciar"
         BEGIN
-            MENUITEM "Procurar em ficheiro&s\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "&Procurar em ficheiros\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nova janela\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "Jan&ela vazia\tAlt+Shift+N",       IDM_FILE_NEWWINDOW2
@@ -502,38 +502,38 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir &hiperligação",            CMD_OPEN_HYPERLINK
+        MENUITEM "Abrir hiperligação",                         CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "An&ular",                        IDM_EDIT_UNDO
-        MENUITEM "&Refazer",                       IDM_EDIT_REDO
+        MENUITEM "Anular",                                     IDM_EDIT_UNDO
+        MENUITEM "Refazer",                                    IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Cor&tar",                        IDM_EDIT_CUT
-        MENUITEM "&Copiar",                        IDM_EDIT_COPY
-        MENUITEM "Co&lar",                         IDM_EDIT_PASTE
-        MENUITEM "&Eliminar",                      IDM_EDIT_CLEAR
+        MENUITEM "Cortar",                                     IDM_EDIT_CUT
+        MENUITEM "Copiar",                                     IDM_EDIT_COPY
+        MENUITEM "Colar",                                      IDM_EDIT_PASTE
+        MENUITEM "Eliminar",                                   IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "&Seleccionar tudo",              IDM_EDIT_SELECTALL
+        MENUITEM "Seleccionar tudo",                           IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Al&ternar dobragem actual",      IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Alternar dobragem actual",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Abrir acção Web &1",             CMD_WEBACTION1
-        MENUITEM "Abrir acção Web &2",             CMD_WEBACTION2
-        MENUITEM "Open &File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "Abrir acção Web 1",                          CMD_WEBACTION1
+        MENUITEM "Abrir acção Web 2",                          CMD_WEBACTION2
+        MENUITEM "Abrir Explorador de ficheiros",              IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
-        MENUITEM "&Folding",                    IDM_VIEW_FOLDING
-        MENUITEM "Line &Numbers",               IDM_VIEW_LINENUMBERS
-        MENUITEM "Selection &Margin",           IDM_VIEW_MARGIN
+        MENUITEM "Dobragem de código",                         IDM_VIEW_FOLDING
+        MENUITEM "Números de linha",                           IDM_VIEW_LINENUMBERS
+        MENUITEM "Selecção da margem",                         IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar barra de &menu",               IDM_VIEW_MENUBAR
-        MENUITEM "Mostrar barra de ferramen&tas",        IDM_VIEW_TOOLBAR
-        MENUITEM "Mostrar barra de e&stado",             IDM_VIEW_STATUSBAR
+        MENUITEM "Mostrar barra de menu",                      IDM_VIEW_MENUBAR
+        MENUITEM "Mostrar barra de ferramentas",               IDM_VIEW_TOOLBAR
+        MENUITEM "Mostrar barra de estado",                    IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "&Carregar tema da barra de ferramentas...",   IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Personalizar barra de ferramentas...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Alternar barras de ferramentas",              IDM_VIEW_TOGGLETB
-        MENUITEM "Escala &DPI da barra de ferramentas",         IDM_VIEW_DPISCALETB
+        MENUITEM "Carregar tema da barra de ferramentas...",   IDM_VIEW_LOADTHEMETB
+        MENUITEM "Personalizar barra de ferramentas...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Alternar barras de ferramentas",             IDM_VIEW_TOGGLETB
+        MENUITEM "Escala DPI da barra de ferramentas",         IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

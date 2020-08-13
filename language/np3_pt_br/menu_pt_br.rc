@@ -310,7 +310,7 @@ BEGIN
             MENUITEM "Substituir Pró&ximo\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir para...\tCtrl+G",                             IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Search in Files\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH
+            MENUITEM "&Localizar em Arquivos\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Vizualizar"
@@ -436,7 +436,7 @@ BEGIN
             MENUITEM "S&ai do Notepad3",     IDM_VIEW_ESCEXIT
         END
         MENUITEM "Salvar &Antes de Executar Ferramentas Externas",   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calcular Tiny-E&xpressions",                      IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Calcular Tiny-E&xpressions",                       IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Lembrar"
         BEGIN
@@ -502,38 +502,38 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir &Hyperlink",     CMD_OPEN_HYPERLINK
+        MENUITEM "Abrir Hyperlink",     CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "&Desfazer",            IDM_EDIT_UNDO
-        MENUITEM "&Refazer",             IDM_EDIT_REDO
+        MENUITEM "Desfazer",                                   IDM_EDIT_UNDO
+        MENUITEM "Refazer",                                    IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Recor&tar",            IDM_EDIT_CUT
-        MENUITEM "&Copiar",              IDM_EDIT_COPY
-        MENUITEM "&Colar",               IDM_EDIT_PASTE
-        MENUITEM "&Apagar",              IDM_EDIT_CLEAR
+        MENUITEM "Recortar",                                   IDM_EDIT_CUT
+        MENUITEM "Copiar",                                     IDM_EDIT_COPY
+        MENUITEM "Colar",                                      IDM_EDIT_PASTE
+        MENUITEM "Apagar",                                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "&Selecionar Tudo",     IDM_EDIT_SELECTALL
+        MENUITEM "Selecionar Tudo",                            IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "&Tocar Dobra Atual",   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Tocar Dobra Atual",                          IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Abrir Ação Web &1",    CMD_WEBACTION1
-        MENUITEM "Abrir Ação Web &2",    CMD_WEBACTION2
-        MENUITEM "Open &File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "Abrir Ação Web 1",                           CMD_WEBACTION1
+        MENUITEM "Abrir Ação Web 2",                           CMD_WEBACTION2
+        MENUITEM "Abri Gerenciador de Arquivos",               IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
-        MENUITEM "&Folding",                    IDM_VIEW_FOLDING
-        MENUITEM "Line &Numbers",               IDM_VIEW_LINENUMBERS
-        MENUITEM "Selection &Margin",           IDM_VIEW_MARGIN
+        MENUITEM "Agrupador de Código",                        IDM_VIEW_FOLDING
+        MENUITEM "Números das Linhas",                         IDM_VIEW_LINENUMBERS
+        MENUITEM "Margem de Seleção",                          IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar &Menu",                               IDM_VIEW_MENUBAR
-        MENUITEM "Mostrar &Barra de Ferramentas",               IDM_VIEW_TOOLBAR
-        MENUITEM "Mostrar Barra de &Status",                    IDM_VIEW_STATUSBAR
+        MENUITEM "Mostrar Menu",                               IDM_VIEW_MENUBAR
+        MENUITEM "Mostrar Barra de Ferramentas",               IDM_VIEW_TOOLBAR
+        MENUITEM "Mostrar Barra de Status",                    IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
-        MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
+        MENUITEM "Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
+        MENUITEM "Customizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Alternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
+        MENUITEM "DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

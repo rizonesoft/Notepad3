@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Kör"
         BEGIN
-            MENUITEM "Sök i filer\tCtrl+Shift+F",                     IDM_GREP_WIN_SEARCH
+            MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Nytt fönster\tAlt+N",                         IDM_FILE_NEWWINDOW
             MENUITEM "Tomt fönster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
@@ -310,7 +310,7 @@ BEGIN
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Sök i filer\tCtrl+Shift+F",                     IDM_GREP_WIN_SEARCH
+            MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "Visa"
@@ -516,13 +516,13 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Växla ihopvikning",                               IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Öppna webb &1",                                   CMD_WEBACTION1
-        MENUITEM "Öppna webb &2",                                   CMD_WEBACTION2
-        MENUITEM "Open &File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "Öppna webb 1",                                    CMD_WEBACTION1
+        MENUITEM "Öppna webb 2",                                    CMD_WEBACTION2
+        MENUITEM "Öppna filutforskaren",                            IDM_FILE_EXPLORE_DIR
         MENUITEM SEPARATOR
-        MENUITEM "&Folding",                    IDM_VIEW_FOLDING
-        MENUITEM "Line &Numbers",               IDM_VIEW_LINENUMBERS
-        MENUITEM "Selection &Margin",           IDM_VIEW_MARGIN
+        MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
+        MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
+        MENUITEM "Markeringsmarginal",                              IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
