@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Время/дата (короткая форма)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Время/&дата (длинная форма)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Обновить метки времени\tShift+F5",               CMD_TIMESTAMPS
+            MENUITEM "&Current Timestamp",                              CMD_INSERT_TIMESTAMP
+            MENUITEM "&Обновить метки времени\tShift+F5",               CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
             MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",              IDM_EDIT_STREAMCOMMENT
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "Отображать &окончания строк\tCtrl+Shift+9",       IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Отмечать области выбора &цвета",                  IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "Отмечать области выбора &цвета"
+        BEGIN
+            MENUITEM "&Выключена",                       IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Highlight &Unicode-Points",                       IDM_VIEW_UNICODE_POINTS
         MENUITEM "О&тмечать парные скобки\tCtrl+Shift+V",           IDM_VIEW_MATCHBRACES
         POPUP "Подсветка т&екущей строки\tCtrl+Shift+I"
         BEGIN
@@ -352,7 +360,7 @@ BEGIN
         POPUP "Блоки &кода"
         BEGIN
             MENUITEM "Свора&чивание блоков кода",               IDM_VIEW_FOLDING
-            MENUITEM "Свернуть/ра&звернуть блок\tCtrl+Alt+F", IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Свернуть/ра&звернуть блок\tCtrl+Alt+F",   IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Перейти к следующему &блоку\tAlt+ +",     CMD_FOLDJUMPDOWN
             MENUITEM "Перейти к &предыдущему блоку\tAlt+ –",    CMD_FOLDJUMPUP
@@ -450,16 +458,21 @@ BEGIN
             MENUITEM "&Сворачивать в панель уведомлений",    IDM_VIEW_MINTOTRAY
             MENUITEM "Полупрозрачный &режим\tAlt+G",         IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Технологии"
+        POPUP "Тех&нологии"
         BEGIN
             POPUP "&Рендеринг"
             BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "&GDI (без лигатур)",               IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "&GDI (без лигатур)",               IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Направление письма"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                       IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",                   IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Направление письма"
             BEGIN
                 MENUITEM "Нет",                              IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Слева направо",                    IDM_SET_BIDIRECTIONAL_L2R
@@ -489,33 +502,38 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Открыть &гиперссылку",        CMD_OPEN_HYPERLINK
+        MENUITEM "Открыть гиперссылку",        CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "&Отмена",                     IDM_EDIT_UNDO
-        MENUITEM "&Повтор",                     IDM_EDIT_REDO
+        MENUITEM "Отмена",                     IDM_EDIT_UNDO
+        MENUITEM "Повтор",                     IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "&Вырезать",                   IDM_EDIT_CUT
-        MENUITEM "&Копировать",                 IDM_EDIT_COPY
-        MENUITEM "Вст&авить",                   IDM_EDIT_PASTE
-        MENUITEM "&Удалить",                    IDM_EDIT_CLEAR
+        MENUITEM "Вырезать",                   IDM_EDIT_CUT
+        MENUITEM "Копировать",                 IDM_EDIT_COPY
+        MENUITEM "Вставить",                   IDM_EDIT_PASTE
+        MENUITEM "Удалить",                    IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Выделить в&сё",               IDM_EDIT_SELECTALL
+        MENUITEM "Выделить всё",               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Свернуть/развернуть &блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Свернуть/развернуть блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Открыть веб-действие &1",     CMD_WEBACTION1
-        MENUITEM "Открыть веб-действие &2",     CMD_WEBACTION2
+        MENUITEM "Открыть веб-действие 1",     CMD_WEBACTION1
+        MENUITEM "Открыть веб-действие 2",     CMD_WEBACTION2
+        MENUITEM "Открыть Проводник",          IDM_FILE_EXPLORE_DIR
+        MENUITEM SEPARATOR
+        MENUITEM "Сворачивание блоков кода",   IDM_VIEW_FOLDING
+        MENUITEM "Номера строк",               IDM_VIEW_LINENUMBERS
+        MENUITEM "Отступ выделения",           IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
-        MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
+        MENUITEM "Показать панель меню",               IDM_VIEW_MENUBAR
+        MENUITEM "Показать панель инструментов",       IDM_VIEW_TOOLBAR
+        MENUITEM "Показать строку состояния",          IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
+        MENUITEM "Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Переключить панели инструментов",    IDM_VIEW_TOGGLETB
+        MENUITEM "DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

@@ -260,16 +260,18 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 //
 static void SetMuiLocaleAll(LPCWSTR pszLocaleStr)
 {
-  const WCHAR* const pszLocaleCur = _wsetlocale(LC_ALL, pszLocaleStr);
-  if (StringCchCompareXI(pszLocaleStr, pszLocaleCur) != 0) {
-    //const _locale_t pCurLocale = _get_current_locale();
-    _wsetlocale(LC_ALL, L""); // system standard
+  if (pszLocaleStr) {
+    const WCHAR* const pszLocaleCur = _wsetlocale(LC_ALL, pszLocaleStr);
+    if (pszLocaleCur && (StringCchCompareXI(pszLocaleStr, pszLocaleCur) != 0)) {
+      //const _locale_t pCurLocale = _get_current_locale();
+      _wsetlocale(LC_ALL, L""); // system standard
 #ifdef _DEBUG
-    WCHAR msg[128];
-    StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
-      pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
-    MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
+      WCHAR msg[128];
+      StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
+                      pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
+      MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
 #endif
+    }
   }
 }
 
@@ -344,19 +346,19 @@ LANGID LoadLanguageResources()
   WCHAR tchUserLangMultiStrg[LARGE_BUFFER] = { L'\0' };
   if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, COUNTOF(tchUserLangMultiStrg)))
   {
-    MsgBoxLastError(L"Trying to load Language resource!", ERROR_MUI_INVALID_LOCALE_NAME);
+    MsgBoxLastError(L"Trying to load available Language resources!", ERROR_MUI_INVALID_LOCALE_NAME);
   }
   ULONG langCount = 0;
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
   SetProcessPreferredUILanguages(0, L"\0\0", &langCount); // clear
   if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
   {
-    MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
+    DbgMsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
   }
-  //else {
-  //  SetThreadPreferredUILanguages(0, L"\0\0", &langCount); // clear
-  //  SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount);
-  //}
+  //~else {
+  //~  SetThreadPreferredUILanguages(0, L"\0\0", &langCount); // clear
+  //~  SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount);
+  //~}
 
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx

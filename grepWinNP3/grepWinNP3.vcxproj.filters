@@ -22,6 +22,9 @@
     <Filter Include="translationsNP3">
       <UniqueIdentifier>{5fd907ec-eafb-47ec-aa1a-6c84ea9ec37e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\last">
+      <UniqueIdentifier>{d46256b6-071e-4799-ac23-8cd4ad83b774}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AboutDlg.cpp">
@@ -287,9 +290,6 @@
     <ClInclude Include="sktoolslib_mod\ThreadPool.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
-    <ClInclude Include="src\last\version.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sktoolslib_mod\PreserveChdir.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
@@ -298,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="sktoolslib_mod\OnOutOfScope.h">
       <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\last\version.h">
+      <Filter>Header Files\last</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

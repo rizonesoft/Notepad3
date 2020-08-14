@@ -18,8 +18,17 @@
 #define _NP3_DIALOGS_H_
 
 #include <math.h>
+#include <uxtheme.h>
 #include "TypeDefs.h"
 #include "Scintilla.h"
+
+// ----------------------------------------------------------------------------
+
+#define DIALOG_FONT_SIZE_INCR 0  // will increase default dialog font size
+
+#define SetExplorerTheme(hwnd) SetWindowTheme((hwnd), L"Explorer", NULL)
+
+// ----------------------------------------------------------------------------
 
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
 bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool);
@@ -52,7 +61,7 @@ void DialogFileBrowse(HWND hwnd);
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);
 
-int  MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...);
+int  MessageBoxLng(UINT uType, UINT uidMsg, ...);
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
@@ -63,12 +72,18 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
+void SetWindowLayoutRTL(HWND hwnd, bool bRTL);
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent);
 HWND GetParentOrDesktop(HWND hDlg);
 void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 //void SnapToDefaultButton(HWND);
+
+inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
+  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
+  if (Settings.DialogsLayoutRTL) { SetWindowLayoutRTL(hwnd, true); }
+}
 
 // resize dialog directions
 typedef enum { RSZ_NONE = -1, RSZ_BOTH = 0, RSZ_ONLY_X = 1, RSZ_ONLY_Y = 2 } RSZ_DLG_DIR;
@@ -104,8 +119,9 @@ void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy);
 HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlags);
 
 
-void SetBitmapControl(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height);
-void MakeBitmapButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, WORD uBmpId, int width, int height);
+void SetBitmapControl(HWND hwnd, int nCtrlId, HBITMAP hBmp);
+void SetBitmapControlResample(HWND hwnd, int nCtrlId, HBITMAP hBmp, int width, int height);
+void MakeBitmapButton(HWND hwnd, int nCtrlId, WORD uBmpId, int width, int height);
 void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF crColor);
 void DeleteBitmapButton(HWND hwnd, int nCtrlId);
 
@@ -141,22 +157,22 @@ inline int ScaleFloatByDPI(float fVal, unsigned dpi) { return (int)lroundf((fVal
 inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.x); }
 inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.y); }
 
-//inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 3, 2); }; // 150%
-//inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 7, 4); }; // 175%
-inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, 2, 1); }; // 200%
+inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, Settings2.LargeIconScalePrecent, 100); };
 
 // ----------------------------------------------------------------------------
 
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
-void SetUACIcon(const HMENU hMenu, const UINT nItem);
+HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy);
+void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI);
 //#define HandleDpiChangedMessage(hW,wP,lP) { DPI_T dpi; dpi.x = LOWORD(wP); dpi.y = HIWORD(wP); \
 //                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, &dpi); }
 
 #  define BMP_RESAMPLE_FILTER STOCK_FILTER_LANCZOS8
 //#define BMP_RESAMPLE_FILTER   STOCK_FILTER_QUADRATICBSPLINE
-HBITMAP ResizeImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height);
+HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
+//HFONT   CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold);
 
 // ----------------------------------------------------------------------------
 

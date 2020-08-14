@@ -30,9 +30,9 @@
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
 
 #if defined(_WIN64)
-#define  VERSION_FILEVERSION_LONG    APPNAME (64-bit)  _V(VERSION_FILEVERSION)  VERSION_PATCH
+#define  VERSION_FILEVERSION_LONG    APPNAME (x64)  _V(VERSION_FILEVERSION)  VERSION_PATCH
 #else
-#define  VERSION_FILEVERSION_LONG    APPNAME (32-bit) _V(VERSION_FILEVERSION)  VERSION_PATCH
+#define  VERSION_FILEVERSION_LONG    APPNAME (x86) _V(VERSION_FILEVERSION)  VERSION_PATCH
 #endif
 
 
@@ -73,7 +73,13 @@
 #undef VER_CPL
 
 #if defined(_MSC_VER)
-    #if (_MSC_VER == 1926)
+    #if (_MSC_VER == 1927)
+        #if(_MSC_FULL_VER >= 192729111)
+            #define VER_CPL     MS Visual C++ 2019 v16.7.1
+        #elif(_MSC_FULL_VER >= 192729110)
+            #define VER_CPL     MS Visual C++ 2019 v16.7.0
+        #endif
+    #elif (_MSC_VER == 1926)
         #if(_MSC_FULL_VER >= 192628806)
             #define VER_CPL     MS Visual C++ 2019 v16.6.(1-5)
         #elif(_MSC_FULL_VER >= 192628805)

@@ -373,7 +373,7 @@ msgstr "替换字符串"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "替换为："
+msgstr "替换为/捕获格式："
 
 #. Resource IDs: (126)
 msgid "S&top"

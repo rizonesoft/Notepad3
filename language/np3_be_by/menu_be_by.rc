@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Час/дата (кароткая форма)\tCtrl+F5",     IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Час/&дата (доўгая форма)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Аднавіць меткі часу\tShift+F5",          CMD_TIMESTAMPS
+            MENUITEM "&Current Timestamp",                      CMD_INSERT_TIMESTAMP
+            MENUITEM "&Аднавіць меткі часу\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Каментарыі (пераключыць)\tCtrl+Q",       IDM_EDIT_LINECOMMENT
             MENUITEM "&Блокавы каментарый\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "Паказваць &канчаткі радкоў\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Адзначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Адзначаць рэгі&ёны вылучэння колера",         IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "Адзначаць рэгі&ёны вылучэння колера"
+        BEGIN
+            MENUITEM "&Адключыць",                       IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Highlight &Unicode-Points",                   IDM_VIEW_UNICODE_POINTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "Па&дсвечванне ак&тыўнага радка\tCtrl+Shift+I"
         BEGIN
@@ -352,7 +360,7 @@ BEGIN
         POPUP "&Блокі коду"
         BEGIN
             MENUITEM "Згорт&ванне блокаў коду",                 IDM_VIEW_FOLDING
-            MENUITEM "Згарнуць/ра&згарнуць блок\tCtrl+Alt+F", IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Згарнуць/ра&згарнуць блок\tCtrl+Alt+F",   IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Перайсці да &наступнага блоку\tAlt+ +",    CMD_FOLDJUMPDOWN
             MENUITEM "Перайсці да &папярэдняга блоку\tAlt+ –",   CMD_FOLDJUMPUP
@@ -450,14 +458,19 @@ BEGIN
             MENUITEM "З&гортваць у абшар інфармаванняў",     IDM_VIEW_MINTOTRAY
             MENUITEM "Празрысты &рэжым\tAlt+G",              IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Тэхналогіі"
+        POPUP "Тэх&налогіі"
         BEGIN
             POPUP "&Адлюстраванне"
             BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "&GDI (без лігатураў)",             IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "&GDI (без лігатураў)",             IDM_SET_RENDER_TECH_GDI
+            END
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                       IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",                   IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Накіраванне пісьма"
             BEGIN
@@ -489,33 +502,38 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Адкрыць &гіперспасылку",        CMD_OPEN_HYPERLINK
+        MENUITEM "Адкрыць гіперспасылку",        CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "Ад&мена",                       IDM_EDIT_UNDO
-        MENUITEM "&Паўтор",                       IDM_EDIT_REDO
+        MENUITEM "Адмена",                       IDM_EDIT_UNDO
+        MENUITEM "Паўтор",                       IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "&Выразаць",                     IDM_EDIT_CUT
-        MENUITEM "&Капіяваць",                    IDM_EDIT_COPY
-        MENUITEM "Уст&авіць",                     IDM_EDIT_PASTE
-        MENUITEM "В&ыдаліць",                     IDM_EDIT_CLEAR
+        MENUITEM "Выразаць",                     IDM_EDIT_CUT
+        MENUITEM "Капіяваць",                    IDM_EDIT_COPY
+        MENUITEM "Уставіць",                     IDM_EDIT_PASTE
+        MENUITEM "Выдаліць",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Вылучыць у&сё",                 IDM_EDIT_SELECTALL
+        MENUITEM "Вылучыць усё",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Згарнуць/разгарнуць &блок",     IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Згарнуць/разгарнуць блок",     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Адкрыць вэб-дзеянне &1",        CMD_WEBACTION1
-        MENUITEM "Адкрыць вэб-дзеянне &2",        CMD_WEBACTION2
+        MENUITEM "Адкрыць вэб-дзеянне 1",        CMD_WEBACTION1
+        MENUITEM "Адкрыць вэб-дзеянне 2",        CMD_WEBACTION2
+        MENUITEM "Адкрыць Праваднік",            IDM_FILE_EXPLORE_DIR
+        MENUITEM SEPARATOR
+        MENUITEM "Згортванне блокаў коду",       IDM_VIEW_FOLDING
+        MENUITEM "Нумары радкоў",                IDM_VIEW_LINENUMBERS
+        MENUITEM "Водступ для вылучэння",        IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
-        MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-        MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
+        MENUITEM "Паказаць паліцу меню",         IDM_VIEW_MENUBAR
+        MENUITEM "Паказаць паліцу прыладаў",     IDM_VIEW_TOOLBAR
+        MENUITEM "Паказаць радок стану",         IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
+        MENUITEM "Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+        MENUITEM "Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Пераключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+        MENUITEM "DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

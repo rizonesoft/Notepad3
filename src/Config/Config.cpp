@@ -106,9 +106,7 @@ bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
   // check for read-only file attribute
   if (genericAccessRights & GENERIC_WRITE) 
   {
-    DWORD const dwFileAttributes = GetFileAttributes(lpIniFilePath);
-    if ((dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY))
-    {
+    if (IsReadOnly(GetFileAttributes(lpIniFilePath))) {
       return false;
     }
   }
@@ -1152,10 +1150,10 @@ void LoadSettings()
         IniSectionDelete(IniSecSettings2, L"SciDirectWriteTech", false); // old deprecated
         bDirtyFlag = true;
       }
-      Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, 0, 3);
+      Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, SC_TECHNOLOGY_DEFAULT, SC_TECHNOLOGY_DIRECTWRITEDC);
     }
     else {
-      Defaults.RenderingTechnology = 1; // new default DirectWrite (D2D)
+      Defaults.RenderingTechnology = SC_TECHNOLOGY_DIRECTWRITE; // new default DirectWrite (D2D)
     }
 
     // Settings2 deprecated
@@ -1267,13 +1265,21 @@ void LoadSettings()
       Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
     StrTrimW(Settings2.LineCommentPostfixStrg, L"\"'");
 
-    Defaults2.DateTimeFormat[0] = L'\0';
+    Defaults2.DateTimeFormat[0] = L'\0'; // empty to get <locale date-time format>
     IniSectionGetString(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
     StrTrim(Settings2.DateTimeFormat, L"\"'");
+
+    Defaults2.DateTimeLongFormat[0] = L'\0'; // empty to get <locale date-time format>
+    IniSectionGetString(IniSecSettings2, L"DateTimeLongFormat", Defaults2.DateTimeLongFormat, Settings2.DateTimeLongFormat, COUNTOF(Settings2.DateTimeLongFormat));
+    StrTrim(Settings2.DateTimeLongFormat, L"\"'");
 
     StringCchCopyW(Defaults2.TimeStampRegEx, COUNTOF(Defaults2.TimeStampRegEx), L"\\$Date:[^\\$]+\\$");
     IniSectionGetString(IniSecSettings2, L"TimeStampRegEx", Defaults2.TimeStampRegEx, Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
     StrTrim(Settings2.TimeStampRegEx, L"\"'");
+
+    StringCchCopyW(Defaults2.TimeStampFormat, COUNTOF(Defaults2.TimeStampFormat), L"$Date: %s $");
+    IniSectionGetString(IniSecSettings2, L"TimeStampFormat", Defaults2.TimeStampFormat, Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
+    StrTrim(Settings2.TimeStampFormat, L"\"'");
 
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
@@ -1289,6 +1295,9 @@ void LoadSettings()
 
     Defaults2.ZoomTooltipTimeout = 3200;
     Settings2.ZoomTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"ZoomTooltipTimeout", Defaults2.ZoomTooltipTimeout), 0, 10000);
+
+    Defaults2.LargeIconScalePrecent = 150;
+    Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
 
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
@@ -1375,9 +1384,10 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
-    GET_BOOL_VALUE_FROM_INISECTION(ColorDefHotspot, true);
+    GET_INT_VALUE_FROM_INISECTION(ColorDefHotspot, 2, 0, 3);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
     GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
+    GET_BOOL_VALUE_FROM_INISECTION(HighlightUnicodePoints, true);
 
     GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
@@ -1453,12 +1463,14 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
     GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
     GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
-    GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3); // default set before
-    Defaults.RenderingTechnology = 1; // DirectWrite (D2D) - reset, if set by deprecated SciDirectWriteTech
-    GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
+    GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, SC_TECHNOLOGY_DEFAULT, SC_TECHNOLOGY_DIRECTWRITEDC); // default set before
+    Defaults.RenderingTechnology = SC_TECHNOLOGY_DIRECTWRITE;  // DirectWrite (D2D) - reset, if set by deprecated SciDirectWriteTech
+    GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L);                // set before
     Defaults.Bidirectional = SC_BIDIRECTIONAL_DISABLED; // reset
     GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
     GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, true);
+    GET_BOOL_VALUE_FROM_INISECTION(EditLayoutRTL, false);
+    GET_BOOL_VALUE_FROM_INISECTION(DialogsLayoutRTL, false);
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
@@ -1801,9 +1813,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCloseTags);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ColorDefHotspot);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, ColorDefHotspot);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowHypLnkToolTip);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HighlightUnicodePoints);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoIndent);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCompleteWords);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);
@@ -1890,6 +1903,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, Bidirectional);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MuteMessageBeep);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SplitUndoTypingSeqOnLnBreak);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EditLayoutRTL);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, DialogsLayoutRTL);
 
   ///~IniSectionSetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction);
 
@@ -1963,8 +1978,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
   switch (Globals.idxSelectedTheme) {
     case 1: 
       Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
-      // fall trough
-    case 0:
+      //~break;     
+    case 0: // fall trough
       IniSectionDelete(IniSecStyles, Constants.StylingThemeName, false);
       break;
     default:
@@ -2143,10 +2158,10 @@ void CmdSaveSettingsNow()
   }
   if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
     InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
-    if (dwFileAttributes != 0) {
+    if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES)) {
       SetFileAttributes(Globals.IniFile, dwFileAttributes); // reset
-      Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
     }
+    Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
   }
   else {
     Globals.dwLastError = GetLastError();

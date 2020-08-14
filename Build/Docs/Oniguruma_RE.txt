@@ -91,13 +91,13 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
            [Extended Grapheme Cluster mode] (default)
              Unicode case:
-               See [Unicode Standard Annex #29: http://unicode.org/reports/tr29/]
+               See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
 
              Not Unicode case:  \X === (?>\r\n|\O)
 
            [Word mode]
              Currently, this mode is supported in Unicode only.
-             See [Unicode Standard Annex #29: http://unicode.org/reports/tr29/]
+             See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
 
 
   Character Property
@@ -182,14 +182,14 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
           [Extended Grapheme Cluster mode] (default)
             Unicode case:
-              See [Unicode Standard Annex #29: http://unicode.org/reports/tr29/]
+              See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
 
             Not Unicode:
               All positions except between \r and \n.
 
           [Word mode]
             Currently, this mode is supported in Unicode only.
-            See [Unicode Standard Annex #29: http://unicode.org/reports/tr29/]
+            See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
 
 
 

@@ -4495,7 +4495,7 @@ remove_from_list(Node* prev, Node* a)
 }
 
 static int
-reduce_string_list(Node* node)
+reduce_string_list(Node* node, OnigEncoding enc)
 {
   int r = 0;
 
@@ -4526,43 +4526,70 @@ reduce_string_list(Node* node)
           }
         }
         else {
-          prev = NULL_NODE;
+          if (IS_NOT_NULL(prev)) {
+#ifdef USE_CHECK_VALIDITY_OF_STRING_IN_TREE
+            StrNode* sn = STR_(prev);
+            if (! ONIGENC_IS_VALID_MBC_STRING(enc, sn->s, sn->end))
+              return ONIGERR_INVALID_WIDE_CHAR_VALUE;
+#endif
+            prev = NULL_NODE;
+          }
+          r = reduce_string_list(curr, enc);
+          if (r != 0) return r;
           prev_node = node;
         }
 
         node = next_node;
       } while (r == 0 && IS_NOT_NULL(node));
+
+#ifdef USE_CHECK_VALIDITY_OF_STRING_IN_TREE
+      if (IS_NOT_NULL(prev)) {
+        StrNode* sn = STR_(prev);
+        if (! ONIGENC_IS_VALID_MBC_STRING(enc, sn->s, sn->end))
+          return ONIGERR_INVALID_WIDE_CHAR_VALUE;
+      }
+#endif
     }
     break;
 
   case NODE_ALT:
     do {
-      r = reduce_string_list(NODE_CAR(node));
+      r = reduce_string_list(NODE_CAR(node), enc);
     } while (r == 0 && IS_NOT_NULL(node = NODE_CDR(node)));
     break;
+
+#ifdef USE_CHECK_VALIDITY_OF_STRING_IN_TREE
+  case NODE_STRING:
+    {
+      StrNode* sn = STR_(node);
+      if (! ONIGENC_IS_VALID_MBC_STRING(enc, sn->s, sn->end))
+        return ONIGERR_INVALID_WIDE_CHAR_VALUE;
+    }
+    break;
+#endif
 
   case NODE_ANCHOR:
     if (IS_NULL(NODE_BODY(node)))
       break;
     /* fall */
   case NODE_QUANT:
-    r = reduce_string_list(NODE_BODY(node));
+    r = reduce_string_list(NODE_BODY(node), enc);
     break;
 
   case NODE_BAG:
     {
       BagNode* en = BAG_(node);
 
-      r = reduce_string_list(NODE_BODY(node));
+      r = reduce_string_list(NODE_BODY(node), enc);
       if (r != 0) return r;
 
       if (en->type == BAG_IF_ELSE) {
         if (IS_NOT_NULL(en->te.Then)) {
-          r = reduce_string_list(en->te.Then);
+          r = reduce_string_list(en->te.Then, enc);
           if (r != 0) return r;
         }
         if (IS_NOT_NULL(en->te.Else)) {
-          r = reduce_string_list(en->te.Else);
+          r = reduce_string_list(en->te.Else, enc);
           if (r != 0) return r;
         }
       }
@@ -5092,6 +5119,7 @@ unravel_case_fold_string(Node* node, regex_t* reg, int state)
     one_len = (OnigLen )enclen(enc, p);
     if (n == 0) {
       q = p + one_len;
+      if (q > end) q = end;
       r = unravel_cf_string_add(&list, &sn, p, q, 0 /* flag */);
       if (r != 0) goto err;
     }
@@ -7253,7 +7281,7 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
   r = onig_parse_tree(&root, pattern, pattern_end, reg, &scan_env);
   if (r != 0) goto err;
 
-  r = reduce_string_list(root);
+  r = reduce_string_list(root, reg->enc);
   if (r != 0) goto err;
 
   /* mixed use named group and no-named group */
@@ -7665,45 +7693,64 @@ onig_is_code_in_cc(OnigEncoding enc, OnigCodePoint code, CClassNode* cc)
   return onig_is_code_in_cc_len(len, code, cc);
 }
 
+typedef struct {
+  int prec_read;
+  int look_behind;
+  int backref_with_level;
+  int call;
+} SlowElementCount;
+
 static int
-node_detect_can_be_very_slow(Node* node)
+node_detect_can_be_slow(Node* node, SlowElementCount* ct)
 {
   int r;
 
+  r = 0;
   switch (NODE_TYPE(node)) {
   case NODE_LIST:
   case NODE_ALT:
     do {
-      r = node_detect_can_be_very_slow(NODE_CAR(node));
+      r = node_detect_can_be_slow(NODE_CAR(node), ct);
       if (r != 0) return r;
     } while (IS_NOT_NULL(node = NODE_CDR(node)));
     break;
 
   case NODE_QUANT:
-    r = node_detect_can_be_very_slow(NODE_BODY(node));
+    r = node_detect_can_be_slow(NODE_BODY(node), ct);
     break;
 
   case NODE_ANCHOR:
-    if (IS_NOT_NULL(NODE_BODY(node)))
-      r = node_detect_can_be_very_slow(NODE_BODY(node));
-    else
-      r = 0;
+    switch (ANCHOR_(node)->type) {
+    case ANCR_PREC_READ:
+    case ANCR_PREC_READ_NOT:
+      ct->prec_read++;
+      break;
+    case ANCR_LOOK_BEHIND:
+    case ANCR_LOOK_BEHIND_NOT:
+      ct->look_behind++;
+      break;
+    default:
+      break;
+    }
+
+    if (ANCHOR_HAS_BODY(ANCHOR_(node)))
+      r = node_detect_can_be_slow(NODE_BODY(node), ct);
     break;
 
   case NODE_BAG:
     {
       BagNode* en = BAG_(node);
 
-      r = node_detect_can_be_very_slow(NODE_BODY(node));
+      r = node_detect_can_be_slow(NODE_BODY(node), ct);
       if (r != 0) return r;
 
       if (en->type == BAG_IF_ELSE) {
         if (IS_NOT_NULL(en->te.Then)) {
-          r = node_detect_can_be_very_slow(en->te.Then);
+          r = node_detect_can_be_slow(en->te.Then, ct);
           if (r != 0) return r;
         }
         if (IS_NOT_NULL(en->te.Else)) {
-          r = node_detect_can_be_very_slow(en->te.Else);
+          r = node_detect_can_be_slow(en->te.Else, ct);
           if (r != 0) return r;
         }
       }
@@ -7713,14 +7760,17 @@ node_detect_can_be_very_slow(Node* node)
 #ifdef USE_BACKREF_WITH_LEVEL
   case NODE_BACKREF:
     if (NODE_IS_NEST_LEVEL(node))
-      r = 1;
-    else
-      r = 0;
+      ct->backref_with_level++;
+    break;
+#endif
+
+#ifdef USE_CALL
+  case NODE_CALL:
+    ct->call++;
     break;
 #endif
 
   default:
-    r = 0;
     break;
   }
 
@@ -7728,7 +7778,7 @@ node_detect_can_be_very_slow(Node* node)
 }
 
 extern int
-onig_detect_can_be_very_slow_pattern(const UChar* pattern,
+onig_detect_can_be_slow_pattern(const UChar* pattern,
   const UChar* pattern_end, OnigOptionType option, OnigEncoding enc,
   OnigSyntaxType* syntax)
 {
@@ -7736,6 +7786,7 @@ onig_detect_can_be_very_slow_pattern(const UChar* pattern,
   regex_t* reg;
   Node* root;
   ScanEnv scan_env;
+  SlowElementCount count;
 
   reg = (regex_t* )xmalloc(sizeof(regex_t));
   if (IS_NULL(reg)) return ONIGERR_MEMORY;
@@ -7749,7 +7800,17 @@ onig_detect_can_be_very_slow_pattern(const UChar* pattern,
   root = 0;
   r = onig_parse_tree(&root, pattern, pattern_end, reg, &scan_env);
   if (r == 0) {
-    r = node_detect_can_be_very_slow(root);
+    count.prec_read          = 0;
+    count.look_behind        = 0;
+    count.backref_with_level = 0;
+    count.call               = 0;
+
+    r = node_detect_can_be_slow(root, &count);
+    if (r == 0) {
+      int n = count.prec_read + count.look_behind
+            + count.backref_with_level + count.call;
+      r = n;
+    }
   }
 
   if (IS_NOT_NULL(scan_env.mem_env_dynamic))

@@ -464,6 +464,8 @@ BEGIN
     IDS_LEX_STR_63364       "プロパティ名"
     IDS_LEX_STR_63365       "LD キーワード"
     IDS_LEX_STR_63366       "エスケープシーケンス"
+    IDS_LEX_STR_63367       "Unicode の符号点ホバー"
+    IDS_LEX_STR_63368       "第2 Unicode の符号点ホバー"
 END
 
 STRINGTABLE

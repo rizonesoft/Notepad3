@@ -1193,6 +1193,29 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, iValue);
 
+  // --------------------------------------------------------------
+  // COLOR definitions (INDIC_NP3_COLOR_DEF) are not configurable 
+  // --------------------------------------------------------------
+
+  // Unicode-Point Indicator (Hover)
+  //SciCall_IndicSetFore(INDIC_NP3_UNICODE_POINT, RGB(0x00, 0x00, 0xF0));
+  SciCall_IndicSetStyle (INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN); // simple underline
+
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, FOREGROUND_LAYER, &dColor))
+    SciCall_IndicSetHoverFore(INDIC_NP3_UNICODE_POINT, dColor);
+  if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, true))
+    SciCall_IndicSetAlpha(INDIC_NP3_UNICODE_POINT, iValue);
+  if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, false))
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_UNICODE_POINT, iValue);
+  
+  iValue = -1; // need for retrieval
+  if (!Style_GetIndicatorType(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, 0, &iValue)) {
+    // got default, get string
+    StringCchCatW(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), L"; ");
+    Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
+    StringCchCatW(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
+  }
+  SciCall_IndicSetHoverStyle(INDIC_NP3_UNICODE_POINT, iValue);
 
   // Multi Edit Indicator
   if (Style_StrGetColor(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, FOREGROUND_LAYER, &dColor))
@@ -4012,8 +4035,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SHFILEINFO shfi;
             ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
+	          InitWindowCommon(hwndTV, true);
+            TreeView_SetExtendedStyle(hwndTV, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
+
             UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-            
             TreeView_SetImageList(hwndTV,
                                   (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
                                                              flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
@@ -4053,8 +4078,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             SendDlgItemMessage(hwnd, IDC_STYLEEDIT, EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS) - 1, 0);
 
-            MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV, -1, -1);
-            MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT, -1, -1);
+            MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
+            MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
 
             if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
             {
@@ -4076,15 +4101,25 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             bWarnedNoIniFile = false;
 
-            //~UpdateWindowLayoutForDPI(hwnd, NULL, NULL);
-            PostMessage(hwnd, WM_DPICHANGED, (WPARAM)NULL, (LPARAM)NULL);
+            // Set title font
+            HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
+            if (hFont) {
+              LOGFONT lf;
+              GetObject(hFont, sizeof(LOGFONT), &lf);
+              lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+              lf.lfWeight = FW_BOLD;
+              //lf.lfUnderline = true;
+              if (hFontTitle) {
+                DeleteObject(hFontTitle);
+              }
+              hFontTitle = CreateFontIndirectW(&lf);
+              SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+            }
         }
         return !0;
 
         case WM_DPICHANGED:
         {
-          UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-
           DPI_T dpi;
           dpi.x = LOWORD(wParam);
           dpi.y = HIWORD(wParam);
@@ -4097,14 +4132,35 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                                                            flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                                 TVSIL_NORMAL);
 
-          MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV, -1, -1);
-          MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT, -1, -1);
+          // Set title font
+          HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
+          if (hFont) {
+            LOGFONT lf;
+            GetObject(hFont, sizeof(LOGFONT), &lf);
+            lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
+            lf.lfWeight = FW_BOLD;
+            //lf.lfUnderline = true;
+            if (hFontTitle) {
+              DeleteObject(hFontTitle);
+            }
+            hFontTitle = CreateFontIndirectW(&lf);
+            SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+          }
+
+          MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
+          MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
+
+          UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
         }
         return !0;
 
         case WM_PAINT:
         {
-            HDC const hDC = GetWindowDC(hwnd);
+          PAINTSTRUCT ps;
+          HDC const   hdc = GetDC(hwnd); // ClientArea
+          if (hdc) {
+            BeginPaint(hwnd, &ps);
+
             DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
             int const   iconSize  = 64;
@@ -4113,22 +4169,14 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
             if (hicon)
             {
-              DrawIconEx(hDC, ScaleIntByDPI(340, dpi.x), ScaleIntByDPI(62, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+              RECT rc = {0};
+              MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
+              DrawIconEx(hdc, rc.left + ScaleIntByDPI(10, dpi.x), rc.top + ScaleIntByDPI(20, dpi.y), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
             }
 
-            // Set title font
-            if (hFontTitle) { DeleteObject(hFontTitle); }
-            hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-            LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-            int const newHeight = -MulDiv(MulDiv(lf.lfHeight,3,2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
-            lf.lfWeight = FW_BOLD;
-            lf.lfWidth  = ScaleIntByDPI(8, dpi.x); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-            lf.lfHeight = ScaleIntByDPI(newHeight, dpi.y);
-            //~StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
-            hFontTitle = CreateFontIndirect(&lf);
-            SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
-
-            ReleaseDC(hwnd, hDC);
+            ReleaseDC(hwnd, hdc);
+            EndPaint(hwnd, &ps);
+          }
         }
         return 0;
 
@@ -4687,12 +4735,12 @@ static int _s_idefaultLexer = -1;
 
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  static int cxClient;
-  static int cyClient;
+  static int cxClient = 0;
+  static int cyClient = 0;
 
-  static HWND hwndLV;
+  static HWND hwndIL = NULL;
 
-  static int  iInternalDefault;
+  static int  iInternalDefault = 0;
 
   switch(umsg)
   {
@@ -4703,46 +4751,45 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
-        hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
+        hwndIL = GetDlgItem(hwnd,IDC_STYLELIST);
+        InitWindowCommon(hwndIL, false);
 
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-
-        ListView_SetImageList(hwndLV,
+        ListView_SetImageList(hwndIL,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
 
-        ListView_SetImageList(hwndLV,
+        ListView_SetImageList(hwndIL,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
             &shfi,sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_NORMAL);
 
-        //SetExplorerTheme(hwndLV);
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        ListView_SetExtendedListViewStyle(hwndLV,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
-        ListView_InsertColumn(hwndLV,0,&lvc);
+        ListView_SetExtendedListViewStyle(hwndIL,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
+        ListView_InsertColumn(hwndIL,0,&lvc);
 
         // Add lexers
         for (int i = 0; i < COUNTOF(g_pLexArray); i++) {
-          Style_AddLexerToListView(hwndLV, g_pLexArray[i]);
+          Style_AddLexerToListView(hwndIL, g_pLexArray[i]);
         }
-        ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
+        ListView_SetColumnWidth(hwndIL,0,LVSCW_AUTOSIZE_USEHEADER);
 
         // Select current lexer
-        int lvItems = ListView_GetItemCount(hwndLV);
+        int lvItems = ListView_GetItemCount(hwndIL);
         LVITEM lvi;
         lvi.mask = LVIF_PARAM;
         for (int i = 0; i < lvItems; i++) {
           lvi.iItem = i;
-          ListView_GetItem(hwndLV,&lvi);
+          ListView_GetItem(hwndIL,&lvi);
 
           if (((PEDITLEXER)lvi.lParam)->resID == _s_selectedLexer->resID)
           {
-            ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
-            ListView_EnsureVisible(hwndLV,i,false);
+            ListView_SetItemState(hwndIL,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
+            ListView_EnsureVisible(hwndIL,i,false);
             CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(_s_idefaultLexer == i));
             break;
           }
@@ -4767,12 +4814,16 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-        ListView_SetImageList(hwndLV,
+        ListView_SetImageList(hwndIL,
           (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
       }
       return !0;
+
+
+    case WM_DESTROY:
+        return !0;
 
 
     case WM_SIZE:
@@ -4799,7 +4850,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           case LVN_ITEMCHANGED:
           case LVN_DELETEITEM:
             {
-              int i = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+              int i = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
               CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(iInternalDefault == i));
               DialogEnableControl(hwnd, IDC_DEFAULTSCHEME, i != -1);
               DialogEnableControl(hwnd, IDOK, i != -1);
@@ -4817,7 +4868,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         {
         case IDC_DEFAULTSCHEME:
           if (IsButtonChecked(hwnd, IDC_DEFAULTSCHEME))
-            iInternalDefault = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+            iInternalDefault = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
           else
             iInternalDefault = 0;
           break;
@@ -4827,8 +4878,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           {
             LVITEM lvi;
             lvi.mask = LVIF_PARAM;
-            lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
-            if (ListView_GetItem(hwndLV, &lvi)) {
+            lvi.iItem = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+            if (ListView_GetItem(hwndIL, &lvi)) {
               _s_selectedLexer = (PEDITLEXER)lvi.lParam;
               _s_idefaultLexer = iInternalDefault;
               s_bAutoSelect = IsButtonChecked(hwnd, IDC_AUTOSELECT);

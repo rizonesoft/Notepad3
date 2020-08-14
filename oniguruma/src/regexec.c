@@ -2755,7 +2755,7 @@ typedef struct {
 
 #define MATCH_COUNTER_OUT(title) do {\
   int i;\
-  fprintf(DBGFP, "%s: retry limit: %8lu, subexp_call: %8lu\n", (title), retry_in_match_counter, msa->subexp_call_in_search_counter);\
+  fprintf(DBGFP, "%s (%ld): retry limit: %8lu, subexp_call: %8lu\n", (title), (sstart - str), retry_in_match_counter, msa->subexp_call_in_search_counter); \
   fprintf(DBGFP, "      ");\
   for (i = 0; i < MAX_SUBEXP_CALL_COUNTERS; i++) {\
     fprintf(DBGFP, " %6lu", subexp_call_counters[i]);\
