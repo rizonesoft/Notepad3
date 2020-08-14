@@ -3958,10 +3958,10 @@ void SetWindowLayoutRTL(HWND hwnd, bool bRTL)
 {
   DWORD const exStyle = GetWindowExStyle(hwnd);
   if (bRTL) {
-    SetWindowExStyle(hwnd, exStyle | WS_EX_LAYOUTRTL);
+    SetWindowExStyle(hwnd, exStyle | WS_EX_LAYOUTRTL | WS_EX_RTLREADING);
   }
   else {
-    SetWindowExStyle(hwnd, exStyle & ~WS_EX_LAYOUTRTL);
+    SetWindowExStyle(hwnd, exStyle & ~WS_EX_LAYOUTRTL & ~WS_EX_RTLREADING);
   }
 }
 

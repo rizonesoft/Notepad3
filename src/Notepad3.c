@@ -1318,6 +1318,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   SetDialogIconNP3(Globals.hwndMain);
+  SetWindowLayoutRTL(Globals.hwndMain, Settings.DialogsLayoutRTL);
 
   if (Settings.TransparentMode) {
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
@@ -1829,6 +1830,7 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
   SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)Settings.RenderingTechnology, 0);
+  Settings.RenderingTechnology = SciCall_GetTechnology();
   SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)Settings.Bidirectional, 0); // experimental
   Settings.Bidirectional = SciCall_GetBidirectional();
 
@@ -2331,6 +2333,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   Globals.hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
+  //~SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL); ~ no correct behavior
+
   SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
   // -------------------------
@@ -2467,10 +2471,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       s_tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
     }
   }
-  //~SendMessage(Globals.hwndToolbar, TB_SETMAXTEXTROWS, 0, 0);
 
-  SendMessage(Globals.hwndToolbar,TB_SETEXTENDEDSTYLE,0,
-    (SendMessage(Globals.hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | (TBSTYLE_EX_MIXEDBUTTONS | TBSTYLE_EX_DOUBLEBUFFER)));
+  //~SendMessage(Globals.hwndToolbar, TB_SETMAXTEXTROWS, 0, 0);
+  DWORD const tbxstyle = (DWORD)SendMessage(Globals.hwndToolbar, TB_GETEXTENDEDSTYLE, 0, 0);
+  SendMessage(Globals.hwndToolbar,TB_SETEXTENDEDSTYLE,0,(tbxstyle | (TBSTYLE_EX_MIXEDBUTTONS | TBSTYLE_EX_DOUBLEBUFFER)));
 
   SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
 
@@ -2530,7 +2534,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
-   
+
+  SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
 }
 
 
@@ -5536,6 +5541,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SET_RTL_LAYOUT_DLG:
       Settings.DialogsLayoutRTL = !Settings.DialogsLayoutRTL;
+      SetWindowLayoutRTL(Globals.hwndMain, Settings.DialogsLayoutRTL);
+      //~SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL); ~ not working correct
+      SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
       break;
 
     case IDM_SET_BIDIRECTIONAL_NONE:
