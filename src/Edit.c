@@ -7083,14 +7083,8 @@ void EditToggleView(HWND hwnd)
 
   EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
-  if (FocusedView.HideNonMatchedLines) {
-    SciCall_GotoPos(0);
-    SciCall_SetReadOnly(true);
-  }
-  else {
-    Sci_ScrollToCurrentLine();
-    SciCall_SetReadOnly(false);
-  }
+  SciCall_SetReadOnly(FocusedView.HideNonMatchedLines);
+  SciCall_ScrollCaret();
 
   EndWaitCursor();
 }

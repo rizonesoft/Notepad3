@@ -1576,10 +1576,12 @@ void LoadSettings()
       int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
         &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
       if (itok == 4 || itok == 5) { // scan successful
-        if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
-        if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
-        if (bMaxi) g_DefWinInfo.max = true;
-        if (itok == 4) g_DefWinInfo.max = false;
+        if (itok == 4) {
+          g_DefWinInfo.max = false;
+        }
+        else {
+          g_DefWinInfo.max = bMaxi ? true : false;
+        }
       }
       else {
         g_DefWinInfo = GetFactoryDefaultWndPos(2);

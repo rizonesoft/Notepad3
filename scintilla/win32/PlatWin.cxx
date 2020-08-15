@@ -255,7 +255,7 @@ static BOOL CALLBACK LoadD2DOnce(PINIT_ONCE initOnce, PVOID parameter, PVOID *lp
 bool LoadD2D() noexcept {
 	static INIT_ONCE once = INIT_ONCE_STATIC_INIT;
 	::InitOnceExecuteOnce(&once, LoadD2DOnce, nullptr, nullptr);
-	return pIDWriteFactory && pD2DFactory;
+	return (pIDWriteFactory && pD2DFactory);
 }
 #endif
 
@@ -405,15 +405,13 @@ bool GetDWriteFontProperties(const LOGFONTW &lf, std::wstring &wsFamily,
 					wsFamily.resize(length + 1);
 					names->GetString(index, wsFamily.data(), length + 1);
 
-					ReleaseUnknown(names);
 					success = wsFamily[0] != L'\0';
 				}
-
-				ReleaseUnknown(family);
+				ReleaseUnknown(names);
 			}
-
-			ReleaseUnknown(font);
+			ReleaseUnknown(family);
 		}
+		ReleaseUnknown(font);
 	}
 	return success;
 }
@@ -1489,9 +1487,8 @@ void SurfaceD2D::Polygon(const Point *pts, size_t npts, ColourDesired fore, Colo
 				D2DPenColour(fore);
 				pRenderTarget->DrawGeometry(geometry, pBrush);
 			}
-
-			ReleaseUnknown(geometry);
 		}
+		ReleaseUnknown(geometry);
 	}
 }
 
@@ -1526,14 +1523,14 @@ void SurfaceD2D::FillRectangle(PRectangle rc, Surface &surfacePattern) {
 				D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 		// Create the bitmap brush.
 		hr = pRenderTarget->CreateBitmapBrush(pBitmap, brushProperties, &pBitmapBrush);
-		ReleaseUnknown(pBitmap);
 		if (SUCCEEDED(hr) && pBitmapBrush) {
 			pRenderTarget->FillRectangle(
 				D2D1::RectF(rc.left, rc.top, rc.right, rc.bottom),
 				pBitmapBrush);
-			ReleaseUnknown(pBitmapBrush);
 		}
+		ReleaseUnknown(pBitmapBrush);
 	}
+	ReleaseUnknown(pBitmap);
 }
 
 void SurfaceD2D::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back) {
@@ -1625,7 +1622,6 @@ void SurfaceD2D::GradientRectangle(PRectangle rc, const std::vector<ColourStop> 
 		if (SUCCEEDED(hr) && pBrushLinear) {
 			const D2D1_RECT_F rectangle = D2D1::RectF(std::round(rc.left), rc.top, std::round(rc.right), rc.bottom);
 			pRenderTarget->FillRectangle(&rectangle, pBrushLinear);
-			ReleaseUnknown(pBrushLinear);
 		}
 		ReleaseUnknown(pBrushLinear);
 	}
@@ -1652,8 +1648,8 @@ void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 		if (SUCCEEDED(hr)) {
 			const D2D1_RECT_F rcDestination = RectangleFromPRectangle(rc);
 			pRenderTarget->DrawBitmap(bitmap, rcDestination);
-			ReleaseUnknown(bitmap);
 		}
+		ReleaseUnknown(bitmap);
 	}
 }
 
@@ -1688,8 +1684,8 @@ void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 		if (FAILED(hr)) {
 			//Platform::DebugPrintf("Failed Flush 0x%lx\n", hr);
 		}
-		ReleaseUnknown(pBitmap);
 	}
+	ReleaseUnknown(pBitmap);
 }
 
 class BlobInline : public IDWriteInlineObject {
@@ -2926,9 +2922,9 @@ void ListBoxX::Draw(const DRAWITEMSTRUCT *pDrawItem) {
 						surfaceItem->DrawRGBAImage(rcImage,
 							pimage->GetWidth(), pimage->GetHeight(), pimage->Pixels());
 						pDCRT->EndDraw();
-						ReleaseUnknown(pDCRT);
 					}
 				}
+				ReleaseUnknown(pDCRT);
 #endif
 			}
 		}

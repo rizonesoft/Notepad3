@@ -3443,8 +3443,7 @@ void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
 //
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
 {
-  WINDOWPLACEMENT wndpl;
-  ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
+  WINDOWPLACEMENT wndpl = {0};
   wndpl.length = sizeof(WINDOWPLACEMENT);
   wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
 
@@ -3457,12 +3456,13 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
     wndpl.showCmd = SW_RESTORE;
   }
   else {
-    RECT rc; 
-    if (hwnd)
+    RECT rc = {0}; 
+    if (hwnd) {
       GetWindowRect(hwnd, &rc);
-    else
+    }
+    else {
       GetWindowRect(GetDesktopWindow(), &rc);
-
+    }
     FitIntoMonitorGeometry(&rc, &winfo, mode);
 
     wndpl.showCmd = SW_SHOW;
@@ -3962,6 +3962,22 @@ void SetWindowLayoutRTL(HWND hwnd, bool bRTL)
   }
   else {
     SetWindowExStyle(hwnd, exStyle & ~WS_EX_LAYOUTRTL);
+  }
+}
+
+
+//=============================================================================
+//
+//  SetWindowReadingRTL()
+//
+void SetWindowReadingRTL(HWND hwnd, bool bRTL)
+{
+  DWORD const exStyle = GetWindowExStyle(hwnd);
+  if (bRTL) {
+    SetWindowExStyle(hwnd, exStyle | WS_EX_RTLREADING);
+  }
+  else {
+    SetWindowExStyle(hwnd, exStyle & ~WS_EX_RTLREADING);
   }
 }
 
