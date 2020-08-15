@@ -33,14 +33,15 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.813.(build_#) (2020-08-13)
+Current BETA Version 5.20.815.(build_#) (2020-08-15)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
-[.813.1]- Right-to-left (RTL) title/frame layout for some dialog.
+[.815.1]- Using dialog RTL option for Main window too.
+[.813.1]- Right-to-left (RTL) title/frame layout for some dialogs.
 [.813.1]- Edit Right-To-Left (RTL) mode (works only in GDI device context (DC)).
 [.812.1]- Extended context menu (margin commands, file explorer).
 [.812.1]- Context-Menu to toggle margins.
@@ -55,6 +56,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.815.1]- Focused View: scroll to current position on each toggle.
 [.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE).
 [.805.1]- Replace "64-bit"/"BETA" by "x64"/"beta" to shorter the version name.
 [.803.1]- Title font change DPI-Awareness for About and Customize Schemes dialog.
@@ -78,6 +80,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.815.1]- DPI Awarenes of window positions (default, sticky, ...).
 [.813.1]- Center dialo in parent (if parent is minimized).
 [.812.1]- Fix copy search for & path to (only one) existing instance (GRE).
 [.812.1]- "grepWinNP3": fix invalid searchPath Ballon-Tip handling (GRE).
