@@ -257,9 +257,10 @@ typedef struct _cmq
 #define INDIC_NP3_FOCUS_VIEW       (INDICATOR_CONTAINER +  4)
 #define INDIC_NP3_HYPERLINK        (INDICATOR_CONTAINER +  5)
 #define INDIC_NP3_HYPERLINK_U      (INDICATOR_CONTAINER +  6)
-#define INDIC_NP3_COLOR_DEF        (INDICATOR_CONTAINER +  7) // (HIDDEN)
-#define INDIC_NP3_COLOR_DWELL      (INDICATOR_CONTAINER +  8)
+#define INDIC_NP3_COLOR_DEF        (INDICATOR_CONTAINER +  7)
+#define INDIC_NP3_COLOR_DEF_T      (INDICATOR_CONTAINER +  8)
 #define INDIC_NP3_MULTI_EDIT       (INDICATOR_CONTAINER +  9)
+#define INDIC_NP3_UNICODE_POINT    (INDICATOR_CONTAINER + 10)
 
 // --------------------------------------------------------------------------
 
@@ -352,7 +353,7 @@ typedef struct _globals_t
 
   FR_STATES FindReplaceMatchFoundState;
 
-  WCHAR     SelectedThemeName[128];
+  WCHAR     SelectedThemeName[SMALL_BUFFER];
   WCHAR     WorkingDirectory[MAX_PATH];
   WCHAR     IniFile[MAX_PATH];
   WCHAR     IniFileDefault[MAX_PATH];
@@ -370,19 +371,20 @@ typedef struct _settings_t
   bool SaveRecentFiles;
   bool PreserveCaretPos;
   bool SaveFindReplace;
-  int PathNameFormat;
+  int  PathNameFormat;
   bool WordWrap;
-  int WordWrapMode;
-  int WordWrapIndent;
-  int WordWrapSymbols;
+  int  WordWrapMode;
+  int  WordWrapIndent;
+  int  WordWrapSymbols;
   bool ShowWordWrapSymbols;
   bool MatchBraces;
   bool AutoCloseTags;
   int  HighlightCurrentLine;
   bool HyperlinkHotspot;
-  bool ColorDefHotspot;
+  int  ColorDefHotspot;
   bool ScrollPastEOF;
   bool ShowHypLnkToolTip;
+  bool HighlightUnicodePoints;
   bool AutoIndent;
   bool AutoCompleteWords;
   bool AutoCLexerKeyWords;
@@ -392,13 +394,13 @@ typedef struct _settings_t
   bool TabsAsSpaces;
   bool TabIndents;
   bool BackspaceUnindents;
-  int TabWidth;
-  int IndentWidth;
+  int  TabWidth;
+  int  IndentWidth;
   bool WarnInconsistentIndents;
   bool AutoDetectIndentSettings;
   bool MarkLongLines;
-  int LongLinesLimit;
-  int LongLineMode;
+  int  LongLinesLimit;
+  int  LongLineMode;
   bool ShowSelectionMargin;
   bool ShowLineNumbers;
   bool ShowCodeFolding;
@@ -417,48 +419,50 @@ typedef struct _settings_t
   bool NoEncodingTags;
   bool SkipUnicodeDetection;
   bool SkipANSICodePageDetection;
-  int DefaultEOLMode;
+  int  DefaultEOLMode;
   bool WarnInconsistEOLs;
   bool FixLineEndings;
   bool FixTrailingBlanks;
-  int PrintHeader;
-  int PrintFooter;
-  int PrintColorMode;
-  int PrintZoom;
+  int  PrintHeader;
+  int  PrintFooter;
+  int  PrintColorMode;
+  int  PrintZoom;
   bool SaveBeforeRunningTools;
   bool EvalTinyExprOnSelection;
   FILE_WATCHING_MODE FileWatchingMode;
   bool ResetFileWatching;
-  int EscFunction;
+  int  EscFunction;
   bool AlwaysOnTop;
   bool MinimizeToTray;
   bool TransparentMode;
   bool FindReplaceTransparentMode;
-  int RenderingTechnology;
-  int Bidirectional;
+  int  RenderingTechnology;
+  int  Bidirectional;
   bool ShowMenubar;
   bool ShowToolbar;
   bool ShowStatusbar;
-  int ToolBarTheme;
+  int  ToolBarTheme;
   bool DpiScaleToolBar;
-  int EncodingDlgSizeX;
-  int EncodingDlgSizeY;
-  int RecodeDlgSizeX;
-  int RecodeDlgSizeY;
-  int FileMRUDlgSizeX;
-  int FileMRUDlgSizeY;
-  int OpenWithDlgSizeX;
-  int OpenWithDlgSizeY;
-  int FavoritesDlgSizeX;
-  int FavoritesDlgSizeY;
-  int AddToFavDlgSizeX;
-  int FindReplaceDlgPosX;
-  int FindReplaceDlgPosY;
-  int CustomSchemesDlgPosX;
-  int CustomSchemesDlgPosY;
+  int  EncodingDlgSizeX;
+  int  EncodingDlgSizeY;
+  int  RecodeDlgSizeX;
+  int  RecodeDlgSizeY;
+  int  FileMRUDlgSizeX;
+  int  FileMRUDlgSizeY;
+  int  OpenWithDlgSizeX;
+  int  OpenWithDlgSizeY;
+  int  FavoritesDlgSizeX;
+  int  FavoritesDlgSizeY;
+  int  AddToFavDlgSizeX;
+  int  FindReplaceDlgPosX;
+  int  FindReplaceDlgPosY;
+  int  CustomSchemesDlgPosX;
+  int  CustomSchemesDlgPosY;
   bool MuteMessageBeep;
   bool SplitUndoTypingSeqOnLnBreak;
-  
+  bool EditLayoutRTL;
+  bool DialogsLayoutRTL;
+
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH];
@@ -473,6 +477,7 @@ extern SETTINGS_T Settings;
 
 #define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences)
 #define IsFocusedViewAllowed() (IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible)
+#define IsColorDefHotspotEnabled() (Settings.ColorDefHotspot != 0)
 
 //=============================================================================
 
@@ -537,25 +542,27 @@ typedef struct _settings2_t
   float  LocaleAnsiCodePageAnalysisBonus;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
-  WCHAR DefaultExtension[64];
+  WCHAR DefaultExtension[MINI_BUFFER];
   WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
   WCHAR FileBrowserPath[MAX_PATH];
   WCHAR GrepWinPath[MAX_PATH];
-  WCHAR AppUserModelID[128];
-  WCHAR AutoCompleteFillUpChars[64];
-  WCHAR LineCommentPostfixStrg[64];
+  WCHAR AppUserModelID[SMALL_BUFFER];
+  WCHAR AutoCompleteFillUpChars[MINI_BUFFER];
+  WCHAR LineCommentPostfixStrg[MINI_BUFFER];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
 
-  WCHAR DateTimeFormat[128];
-  WCHAR TimeStampRegEx[256];
+  WCHAR DateTimeFormat[SMALL_BUFFER];
+  WCHAR DateTimeLongFormat[SMALL_BUFFER];
+  WCHAR TimeStampRegEx[SMALL_BUFFER];
+  WCHAR TimeStampFormat[SMALL_BUFFER];
 
   WCHAR WebTemplate1[MAX_PATH];
   WCHAR WebTemplate2[MAX_PATH];
   WCHAR AdministrationTool[MAX_PATH];
-  WCHAR DefaultWindowPosition[64];
+  WCHAR DefaultWindowPosition[MINI_BUFFER];
 
 } SETTINGS2_T, *PSETTINGS2_T;
 
@@ -635,7 +642,7 @@ typedef struct _editfileiostatus
 typedef struct _themeFiles
 {
   UINT    rid;
-  WCHAR   szName[80];
+  WCHAR   szName[MINI_BUFFER];
   WCHAR   szFilePath[MAX_PATH];
 
 } THEMEFILES, * PTHEMEFILES;

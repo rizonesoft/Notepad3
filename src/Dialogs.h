@@ -18,12 +18,15 @@
 #define _NP3_DIALOGS_H_
 
 #include <math.h>
+#include <uxtheme.h>
 #include "TypeDefs.h"
 #include "Scintilla.h"
 
 // ----------------------------------------------------------------------------
 
-#  define DIALOG_FONT_SIZE_INCR 0  // will increase default dialog font size
+#define DIALOG_FONT_SIZE_INCR 0  // will increase default dialog font size
+
+#define SetExplorerTheme(hwnd) SetWindowTheme((hwnd), L"Explorer", NULL)
 
 // ----------------------------------------------------------------------------
 
@@ -69,12 +72,18 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
+void SetWindowLayoutRTL(HWND hwnd, bool bRTL);
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent);
 HWND GetParentOrDesktop(HWND hDlg);
 void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 //void SnapToDefaultButton(HWND);
+
+inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
+  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
+  if (Settings.DialogsLayoutRTL) { SetWindowLayoutRTL(hwnd, true); }
+}
 
 // resize dialog directions
 typedef enum { RSZ_NONE = -1, RSZ_BOTH = 0, RSZ_ONLY_X = 1, RSZ_ONLY_Y = 2 } RSZ_DLG_DIR;
@@ -152,7 +161,7 @@ inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI
 
 // ----------------------------------------------------------------------------
 
-HBITMAP ConvertIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy);
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI);
@@ -163,6 +172,7 @@ void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI);
 //#define BMP_RESAMPLE_FILTER   STOCK_FILTER_QUADRATICBSPLINE
 HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
+//HFONT   CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold);
 
 // ----------------------------------------------------------------------------
 

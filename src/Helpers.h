@@ -157,11 +157,12 @@ inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0x
 
 // ----------------------------------------------------------------------------
 
-#define SendWMCommandEx(hwnd, id, extra)  SendMessage(hwnd, WM_COMMAND, MAKEWPARAM((id), (extra)), 0)
-#define SendWMCommand(hwnd, id)           SendWMCommandEx(hwnd, (id), 1)
-#define PostWMCommand(hwnd, id)           PostMessage(hwnd, WM_COMMAND, MAKEWPARAM((id), 1), 0)
+#define SendWMCommandEx(hwnd, id, extra)  SendMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (extra)), 0)
+#define SendWMCommand(hwnd, id)           SendWMCommandEx((hwnd), (id), 1)
+#define PostWMCommand(hwnd, id)           PostMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), 1), 0)
 
-#define SetWindowStyle(hwnd, style)			  SetWindowLong(hwnd, GWL_STYLE, (style))
+#define SetWindowStyle(hwnd, style)			  SetWindowLong((hwnd), GWL_STYLE, (style))
+#define SetWindowExStyle(hwnd, style)     SetWindowLong((hwnd), GWL_EXSTYLE, (style))
 
 //==== StrIs(Not)Empty() =============================================
 
@@ -229,8 +230,6 @@ bool IsProcessElevated();
 //bool IsUserAdmin();
 bool IsUserInAdminGroup();
 bool IsRunAsAdmin();
-//bool SetExplorerTheme(HWND);
-
 
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);
@@ -308,7 +307,6 @@ void PathFixBackslashes(LPWSTR lpsz);
 
 size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
-
 
 UINT    GetDlgItemTextW2MB(HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount);
 UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);
@@ -573,6 +571,9 @@ inline bool Char2IntW(LPCWSTR str, int* value) {
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
+#define MAX_ESCAPE_HEX_DIGIT 4
+int Hex2Char(char* ch, int cnt);
+
 // ----------------------------------------------------------------------------
 
 inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
@@ -584,6 +585,10 @@ inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); re
 inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
+
+inline bool IsReadOnly(const DWORD dwFileAttr) {
+  return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
+}
 
 // ----------------------------------------------------------------------------
 

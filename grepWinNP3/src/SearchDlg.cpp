@@ -777,32 +777,32 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (lParam)
             {
                 auto pCopyData = (PCOPYDATASTRUCT)lParam;
-                std::wstring cpydata = std::wstring((LPCTSTR)pCopyData->lpData, (pCopyData->cbData / sizeof(wchar_t)));
-                if (!cpydata.empty())
+                switch(pCopyData->dwData)
                 {
-                    auto buf     = GetDlgItemText(IDC_SEARCHPATH);
-                    m_searchpath = buf.get();
-
-                    switch ((DWORD)wParam)
+                    case GREPWINNP3_CPYDAT:
                     {
-                        case 0:
+                        const wchar_t* const searchPath = ((CopyData_t*)(pCopyData->lpData))->searchPath;
+                        if (searchPath && (searchPath[0] != L'\0'))
+                        {
                             m_searchpath.clear();
-                            m_searchpath = cpydata;
+                            m_searchpath = searchPath;
                             SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
-                            break;
+                        }
 
-                        case 1:
-                            m_searchpath += _T("|");
-                            m_searchpath += cpydata;
-                            SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
-                            break;
-
-                        case 2:
-                            m_searchString = cpydata;
+                        const wchar_t* const searchFor = ((CopyData_t*)(pCopyData->lpData))->searchFor;
+                        if (searchFor && (searchFor[0] != L'\0'))
+                        {
+                            m_searchString.clear();
+                            m_searchString = searchFor;
                             SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchString.c_str());
-                            break;
+                        }
+
+                        g_startTime = GetTickCount();
                     }
-                    g_startTime = GetTickCount();
+                    break;
+
+                    default:
+                        break;
                 }
             }
             return TRUE;
@@ -938,16 +938,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_RELATIVEPATH).c_str());
                     break;
                 }
-                std::vector<std::wstring> searchpaths;
-                stringtok(searchpaths, m_searchpath, true);
-                for (const auto& sp : searchpaths)
-                {
-                    if (!PathFileExists(sp.c_str()))
-                    {
-                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
-                        break;
-                    }
-                }
+
                 if ((id == IDC_SEARCHINFOUNDFILES) && (!m_items.empty()))
                 {
                     m_searchpath.clear();
@@ -958,6 +949,21 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         m_searchpath += item.filepath;
                     }
                 }
+
+                std::vector<std::wstring> searchpaths;
+                stringtok(searchpaths, m_searchpath, true);
+                bool ok = true;
+                for (const auto& sp : searchpaths)
+                {
+                    if (!PathFileExists(sp.c_str()))
+                    {
+                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
+                        ok = false;
+                        break;
+                    }
+                }
+                if (!ok)
+                    break;
 
                 m_searchedItems = 0;
                 m_totalitems = 0;

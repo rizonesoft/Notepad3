@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Kör"
         BEGIN
-            MENUITEM "Sök i filer\tCtrl+Shift+F",                     IDM_GREP_WIN_SEARCH
+            MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Nytt fönster\tAlt+N",                         IDM_FILE_NEWWINDOW
             MENUITEM "Tomt fönster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
@@ -260,7 +260,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Tid och datum (kort)\tCtrl+F5",               IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Tid och datum (lång)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Uppdatera tidsstämplar\tShift+F5",            CMD_TIMESTAMPS
+            MENUITEM "Aktuell tidsstämpel",                         CMD_INSERT_TIMESTAMP
+            MENUITEM "Uppdatera tidsstämplar\tShift+F5",            CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "Linjekommentar (växla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
             MENUITEM "Strömkommentar\tCtrl+Shift+Q",                IDM_EDIT_STREAMCOMMENT
@@ -309,7 +310,7 @@ BEGIN
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Sök i filer\tCtrl+Shift+F",                     IDM_GREP_WIN_SEARCH
+            MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "Visa"
@@ -323,7 +324,14 @@ BEGIN
         MENUITEM "Visa radslut\tCtrl+Shift+9",                      IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Färgpunkter",                                     IDM_VIEW_COLORDEFHOTSPOTS
+        POPUP "Färgpunkter"
+        BEGIN
+            MENUITEM "&Av",                              IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+        END
+        MENUITEM "Markera &Unicode-punkter",                        IDM_VIEW_UNICODE_POINTS
         MENUITEM "Visuell klammermatchning\tCtrl+Shift+V",          IDM_VIEW_MATCHBRACES
         POPUP "Markera rad\tCtrl+Shift+I"
         BEGIN
@@ -340,7 +348,7 @@ BEGIN
             MENUITEM "Matcha skriftslägeskänsligt",                 IDM_VIEW_MARKOCCUR_CASE
             POPUP "Matcha endast hela ord"
             BEGIN
-                MENUITEM "Av",                                      IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&Av",                                     IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Matcha valt ord",                         IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Matcha aktivt ord",                       IDM_VIEW_MARKOCCUR_CURRENT
             END
@@ -352,7 +360,7 @@ BEGIN
         POPUP "Vikning"
         BEGIN
             MENUITEM "Ihopvikning av kodsegment",                   IDM_VIEW_FOLDING
-            MENUITEM "Växla ihopvikning\tCtrl+Alt+F",             IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Växla ihopvikning\tCtrl+Alt+F",               IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Gå till nästa vikpunkt\tAlt+ +",              CMD_FOLDJUMPDOWN
             MENUITEM "Gå till föregående vikpunkt\tAlt+ –",         CMD_FOLDJUMPUP
@@ -428,7 +436,7 @@ BEGIN
             MENUITEM "Avsluta Notepad3",                            IDM_VIEW_ESCEXIT
         END
         MENUITEM "Spara innan verktyg används",                     IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",                     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Räkna ut Tiny-E&xpressions",                     IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
         BEGIN
@@ -450,16 +458,21 @@ BEGIN
             MENUITEM "Minimera till dolda ikoner",                  IDM_VIEW_MINTOTRAY
             MENUITEM "Genomskinlig\tAlt+G",                         IDM_VIEW_TRANSPARENT
         END
-        POPUP "Teknik"
+        POPUP "Tek&nik"
         BEGIN
-            POPUP "Rendering"
+            POPUP "&Rendering"
             BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",                 IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                     IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                     IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "&GDI (inga ligaturer)",                   IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "&GDI (inga ligaturer)",                   IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "Dubbelriktad"
+            POPUP "R&TL Layout (GDI)"
+            BEGIN
+                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+            END
+            POPUP "&Dubbelriktad"
             BEGIN
                 MENUITEM "Ingen",                                   IDM_SET_BIDIRECTIONAL_NONE
                 MENUITEM "Vänster till höger",                      IDM_SET_BIDIRECTIONAL_L2R
@@ -503,8 +516,13 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Växla ihopvikning",                               IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Öppna webb &1",                                   CMD_WEBACTION1
-        MENUITEM "Öppna webb &2",                                   CMD_WEBACTION2
+        MENUITEM "Öppna webb 1",                                    CMD_WEBACTION1
+        MENUITEM "Öppna webb 2",                                    CMD_WEBACTION2
+        MENUITEM "Öppna filutforskaren",                            IDM_FILE_EXPLORE_DIR
+        MENUITEM SEPARATOR
+        MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
+        MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
+        MENUITEM "Markeringsmarginal",                              IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
