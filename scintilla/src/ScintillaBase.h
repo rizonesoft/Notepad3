@@ -95,7 +95,7 @@ protected:
 	void NotifyLexerChanged(Document *doc, void *userData) override;
 
 public:
-	~ScintillaBase() override;
+	virtual ~ScintillaBase() override;
 
 	// Public so scintilla_send_message can use it
 	sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;

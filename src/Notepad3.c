@@ -6195,7 +6195,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (Globals.bCanSaveIniFile) {
           IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
         }
-        g_DefWinInfo = GetWinInfoByFlag(-1); // use current win pos as new default
+        g_DefWinInfo = wi; //GetWinInfoByFlag(-1); // use current win pos as new default
       }
       break;
 
@@ -7954,8 +7954,6 @@ void ParseCommandLine()
                 if (itok == 4 || itok == 5) { // scan successful
                   Globals.CmdLnFlag_PosParam = true;
                   Globals.CmdLnFlag_WindowPos = 0;
-                  if (wi.cx < 1) wi.cx = CW_USEDEFAULT;
-                  if (wi.cy < 1) wi.cy = CW_USEDEFAULT;
                   if (bMaximize) wi.max = true;
                   if (itok == 4) wi.max = false;
                   g_IniWinInfo = wi; // set window placement
@@ -10770,17 +10768,17 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 //  SnapToWinInfoPos()
 //  Aligns Notepad3 to the default window position on the current screen
 //
-
 void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
 {
-  static WINDOWPLACEMENT s_wndplPrev;
-  static bool s_bPrevShowMenubar = true;
-  static bool s_bPrevShowToolbar = true;
+  static bool s_bPrevShowMenubar   = true;
+  static bool s_bPrevShowToolbar   = true;
   static bool s_bPrevShowStatusbar = true;
+  static WINDOWPLACEMENT s_wndplPrev;
+  s_wndplPrev.length = sizeof(WINDOWPLACEMENT);
 
-  static UINT const fFScrFlags = SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
-  static UINT const fPrevFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
-  static DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
+  UINT const fPrevFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
+  UINT const  fFScrFlags     = SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
+  DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
 
   HWND const hWindow = hwnd ? hwnd : GetDesktopWindow();
 
@@ -10791,7 +10789,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
   { 
     SetWindowLong(hWindow, GWL_STYLE, dwStyle | dwRmvFScrStyle);
     if (s_bPrevFullScreenFlag) {
-      SetWindowPlacement(hWindow, &s_wndplPrev);
+      SetWindowPlacement(hWindow, &s_wndplPrev); // 1st set correct screen (DPI Aware)
+      SetWindowPlacement(hWindow, &s_wndplPrev); // 2nd resize position to correct DPI settings
       Settings.ShowMenubar = s_bPrevShowMenubar;
       Settings.ShowToolbar = s_bPrevShowToolbar;
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
@@ -10799,10 +10798,10 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
     else {
       WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
       if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
-      SetWindowPlacement(hWindow, &wndpl);
+      SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
+      SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
     }
-    SetWindowPos(hWindow, NULL, 0, 0, 0, 0, fPrevFlags);
-    SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, fPrevFlags);
     s_bPrevFullScreenFlag = false;
   }
   else { // full screen mode
