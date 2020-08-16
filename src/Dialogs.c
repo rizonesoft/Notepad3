@@ -4646,44 +4646,111 @@ Modify dialog templates to use current theme font
 Based on code of MFC helper class CDialogTemplate
 
 */
+static inline bool IsChineseTraditionalSubLang(LANGID subLang)
+{
+  return subLang == SUBLANG_CHINESE_TRADITIONAL || subLang == SUBLANG_CHINESE_HONGKONG || subLang == SUBLANG_CHINESE_MACAU;
+}
+
+bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
+{
+  LPCWSTR font;
+  LANGID const subLang = SUBLANGID(lang);
+  switch (PRIMARYLANGID(lang)) {
+    default:
+    case LANG_ENGLISH:
+      font   = L"Segoe UI";
+      *wSize = 9;
+      break;
+    case LANG_CHINESE:
+      font   = IsChineseTraditionalSubLang(subLang) ? L"Microsoft JhengHei UI" : L"Microsoft YaHei UI";
+      *wSize = 9;
+      break;
+    case LANG_JAPANESE:
+      font   = L"Meiryo UI";
+      *wSize = 9;
+      break;
+    case LANG_KOREAN:
+      font   = L"Malgun Gothic";
+      *wSize = 9;
+      break;
+  }
+  bool const isAvail = IsFontAvailable(font);
+  if (isAvail) {
+    StringCchCopy(lpFaceName, LF_FACESIZE, font);
+  }
+  return isAvail;
+}
+
 
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-  bool bSucceed = false;
-  int const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
-  HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
-  if (hTheme) {
-    LOGFONT lf;
-    if (S_OK == GetThemeSysFont(hTheme, TMT_MSGBOXFONT, &lf)) {
-      if (lf.lfHeight < 0) {
-        lf.lfHeight = -lf.lfHeight;
+  bool bSucceed = GetLocaleDefaultUIFont(Globals.iPrefLANGID, lpFaceName, wSize);
+
+  if (!bSucceed)
+  {
+    if (IsAppThemed()) {
+      unsigned const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
+
+      HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+      if (hTheme) {
+        LOGFONT lf;
+        if (S_OK == GetThemeSysFont(hTheme, TMT_MSGBOXFONT, &lf)) {
+          if (lf.lfHeight < 0) {
+            lf.lfHeight = -lf.lfHeight;
+          }
+          *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
+          if (*wSize < 9) {
+            *wSize = 9;
+          }
+          StringCchCopy(lpFaceName, LF_FACESIZE, lf.lfFaceName);
+          bSucceed = true;
+        }
+        CloseThemeData(hTheme);
       }
-      *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-      if (*wSize == 0) { *wSize = 10; }
-      StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
-      bSucceed = true;
     }
-    CloseThemeData(hTheme);
+
+    if (!bSucceed) {
+      unsigned const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
+
+      NONCLIENTMETRICS ncm;
+      ZeroMemory(&ncm, sizeof(ncm));
+      ncm.cbSize = sizeof(NONCLIENTMETRICS) - sizeof(ncm.iPaddedBorderWidth);
+      if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0)) {
+        if (ncm.lfMessageFont.lfHeight < 0) {
+          ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
+        }
+        *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight, 72, iLogPixelsY);
+        if (*wSize < 9) {
+          *wSize = 9;
+        }
+        StringCchCopy(lpFaceName, LF_FACESIZE, ncm.lfMessageFont.lfFaceName);
+        bSucceed = true;
+      }
+    }
   }
+
   return bSucceed;
 }
 
 
-inline bool DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
+static inline bool DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
   return ((DLGTEMPLATEEX*)pTemplate)->signature == 0xFFFF;
 }
 
-inline bool DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate) {
+static inline bool DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate)
+{
   return (DS_SETFONT &
     (DialogTemplate_IsDialogEx(pTemplate) ? ((DLGTEMPLATEEX*)pTemplate)->style : pTemplate->style));
 }
 
-inline size_t DialogTemplate_FontAttrSize(bool bDialogEx) {
+static inline size_t DialogTemplate_FontAttrSize(bool bDialogEx)
+{
   return (sizeof(WORD) * (bDialogEx ? 3 : 1));
 }
 
 
-inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
+static inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate)
+{
 
   bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
   WORD* pw;
@@ -4711,78 +4778,82 @@ inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
 
 DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance)
 {
-  DLGTEMPLATE* pTemplate = NULL;
-
   HRSRC hRsrc = FindResource(hInstance, lpDialogTemplateID, RT_DIALOG);
-  if (hRsrc == NULL) { return NULL; }
+  if (!hRsrc) { return NULL; }
 
-  HGLOBAL hRsrcMem = LoadResource(hInstance, hRsrc);
-  if (hRsrcMem) {
-    DLGTEMPLATE* pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
-    size_t dwTemplateSize = (size_t)SizeofResource(hInstance, hRsrc);
-    if ((dwTemplateSize == 0) || (pTemplate = AllocMem(dwTemplateSize + LF_FACESIZE * 2, HEAP_ZERO_MEMORY)) == NULL) {
-      UnlockResource(hRsrcMem);
-      FreeResource(hRsrcMem);
-      return NULL;
-    }
-    CopyMemory((BYTE*)pTemplate, pRsrcMem, dwTemplateSize);
+  HGLOBAL const hRsrcMem = LoadResource(hInstance, hRsrc);
+  DLGTEMPLATE* const pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
+  size_t const  dwTemplateSize = (size_t)SizeofResource(hInstance, hRsrc);
+
+  DLGTEMPLATE* const pTemplate = dwTemplateSize ? (DLGTEMPLATE*)AllocMem(dwTemplateSize + LF_FACESIZE * 2, HEAP_ZERO_MEMORY) : NULL;
+
+  if (!pTemplate) {
     UnlockResource(hRsrcMem);
     FreeResource(hRsrcMem);
-
-    WCHAR wchFaceName[LF_FACESIZE] = { L'\0' };
-    WORD wFontSize = 0;
-    if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
-      return(pTemplate);
-    }
-
-    bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
-    bool bHasFont = DialogTemplate_HasFont(pTemplate);
-    size_t cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
-
-    if (bDialogEx)
-      ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
-    else
-      pTemplate->style |= DS_SHELLFONT;
-
-    size_t cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
-    BYTE* pbNew = (BYTE*)wchFaceName;
-
-    BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
-    size_t cbOld = (bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
-
-    BYTE* pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
-    BYTE* pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
-
-    WORD nCtrl = (bDialogEx ? ((DLGTEMPLATEEX*)pTemplate)->cDlgItems : pTemplate->cdit);
-
-    if (cbNew != cbOld && nCtrl > 0) {
-      MoveMemory(pNewControls, pOldControls, (size_t)(dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
-    }
-    *(WORD*)pb = wFontSize;
-    MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
+    return NULL;
   }
+
+  CopyMemory((BYTE*)pTemplate, pRsrcMem, dwTemplateSize);
+  UnlockResource(hRsrcMem);
+  FreeResource(hRsrcMem);
+
+  WCHAR wchFaceName[LF_FACESIZE] = {L'\0'};
+  WORD  wFontSize = 0;
+  if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
+    return (pTemplate);
+  }
+
+  bool const bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
+  bool const bHasFont = DialogTemplate_HasFont(pTemplate);
+  size_t const cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
+
+  if (bDialogEx) {
+    ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
+  }
+  else {
+    pTemplate->style |= DS_SHELLFONT;
+  }
+
+  size_t const cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+  BYTE* const pbNew = (BYTE*)wchFaceName;
+
+  BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
+  size_t const cbOld = (bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
+
+  BYTE* const pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
+  BYTE* const pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
+
+  WORD const nCtrl = (bDialogEx ? ((DLGTEMPLATEEX*)pTemplate)->cDlgItems : pTemplate->cdit);
+
+  if (cbNew != cbOld && nCtrl > 0) {
+    MoveMemory(pNewControls, pOldControls, (dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
+  }
+
+  *(WORD*)pb = wFontSize;
+  MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
+
   return(pTemplate);
 }
+
 
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  INT_PTR ret = (INT_PTR)NULL;
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  DLGTEMPLATE* const pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  INT_PTR const ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
   if (pDlgTemplate) {
-    ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
   return ret;
 }
 
+
 HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  HWND hwnd = INVALID_HANDLE_VALUE;
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  DLGTEMPLATE* const pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  HWND const hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
   if (pDlgTemplate) {
-    hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
   return hwnd;
