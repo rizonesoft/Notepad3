@@ -253,6 +253,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "Standard Einstellungen"
     IDS_MUI_STATUSBAR_PREFIXES "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Alle löschen"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Suchen-Historie löschen"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Ersetzen-Historie löschen"
 END
 
 STRINGTABLE

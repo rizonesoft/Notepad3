@@ -1895,94 +1895,136 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
     case WM_NOTIFY:
     {
-      if (((LPNMHDR)(lParam))->idFrom == IDC_FILEMRU) {
-        switch (((LPNMHDR)(lParam))->code) {
-          case NM_DBLCLK:
-            SendWMCommand(hwnd, IDOK);
+      switch (wParam)
+      {
+        case IDC_REMOVE:
+          switch (((LPNMHDR)lParam)->code) {
+            case BCN_DROPDOWN:
+            {
+              const NMBCDROPDOWN* pDropDown = (NMBCDROPDOWN*)lParam;
+              // Get screen coordinates of the button.
+              POINT pt;
+              pt.x = pDropDown->rcButton.left;
+              pt.y = pDropDown->rcButton.bottom;
+              ClientToScreen(pDropDown->hdr.hwndFrom, &pt);
+              // Create a menu and add items.
+              HMENU hSplitMenu = CreatePopupMenu();
+              if (!hSplitMenu)
+                break;
+              if (pDropDown->hdr.hwndFrom == GetDlgItem(hwnd, IDC_REMOVE)) {
+                WCHAR szMenu[80] = {L'\0'};
+                GetLngString(IDS_CLEAR_ALL, szMenu, COUNTOF(szMenu));
+                AppendMenu(hSplitMenu, MF_STRING, IDC_CLEAR_LIST, szMenu);
+              }
+
+              // Display the menu.
+              TrackPopupMenu(hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, hwnd, NULL);
+              DestroyMenu(hSplitMenu);
+              return !0;
+            } 
             break;
 
-          case LVN_GETDISPINFO:
-          {
-            /*
-            LV_DISPINFO *lpdi = (LPVOID)lParam;
+            default:
+              break;
+          }
+          break;
 
-            if (lpdi->item.mask & LVIF_IMAGE) {
+        case IDC_FILEMRU:
+          if (((LPNMHDR)(lParam))->idFrom == IDC_FILEMRU) {
+            switch (((LPNMHDR)(lParam))->code) {
+              case NM_DBLCLK:
+                SendWMCommand(hwnd, IDOK);
+                break;
 
-              WCHAR tch[MAX_PATH] = { L'\0' };
-              LV_ITEM lvi;
-              SHFILEINFO shfi;
-              DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
-              DWORD dwAttr  = 0;
+              case LVN_GETDISPINFO:
+              {
+                /*
+                LV_DISPINFO *lpdi = (LPVOID)lParam;
 
-              ZeroMemory(&lvi,sizeof(LV_ITEM));
+                if (lpdi->item.mask & LVIF_IMAGE) {
 
-              lvi.mask = LVIF_TEXT;
-              lvi.pszText = tch;
-              lvi.cchTextMax = COUNTOF(tch);
-              lvi.iItem = lpdi->item.iItem;
+                  WCHAR tch[MAX_PATH] = { L'\0' };
+                  LV_ITEM lvi;
+                  SHFILEINFO shfi;
+                  DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
+                  DWORD dwAttr  = 0;
 
-              ListView_GetItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
+                  ZeroMemory(&lvi,sizeof(LV_ITEM));
 
-              if (!PathIsExistingFile(tch)) {
-                dwFlags |= SHGFI_USEFILEATTRIBUTES;
-                dwAttr = FILE_ATTRIBUTE_NORMAL;
-                shfi.dwAttributes = 0;
-                SHGetFileInfo(PathFindFileName(tch),dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                  lvi.mask = LVIF_TEXT;
+                  lvi.pszText = tch;
+                  lvi.cchTextMax = COUNTOF(tch);
+                  lvi.iItem = lpdi->item.iItem;
+
+                  ListView_GetItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
+
+                  if (!PathIsExistingFile(tch)) {
+                    dwFlags |= SHGFI_USEFILEATTRIBUTES;
+                    dwAttr = FILE_ATTRIBUTE_NORMAL;
+                    shfi.dwAttributes = 0;
+                    SHGetFileInfo(PathFindFileName(tch),dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                  }
+
+                  else {
+                    shfi.dwAttributes = SFGAO_LINK | SFGAO_SHARE;
+                    SHGetFileInfo(tch,dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                  }
+
+                  lpdi->item.iImage = shfi.iIcon;
+                  lpdi->item.mask |= LVIF_DI_SETITEM;
+
+                  lpdi->item.stateMask = 0;
+                  lpdi->item.state = 0;
+
+                  if (shfi.dwAttributes & SFGAO_LINK) {
+                    lpdi->item.mask |= LVIF_STATE;
+                    lpdi->item.stateMask |= LVIS_OVERLAYMASK;
+                    lpdi->item.state |= INDEXTOOVERLAYMASK(2);
+                  }
+
+                  if (shfi.dwAttributes & SFGAO_SHARE) {
+                    lpdi->item.mask |= LVIF_STATE;
+                    lpdi->item.stateMask |= LVIS_OVERLAYMASK;
+                    lpdi->item.state |= INDEXTOOVERLAYMASK(1);
+                  }
+
+                  dwAttr = GetFileAttributes(tch);
+
+                  if (!Flags.NoFadeHidden &&
+                      dwAttr != INVALID_FILE_ATTRIBUTES &&
+                      dwAttr & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
+                    lpdi->item.mask |= LVIF_STATE;
+                    lpdi->item.stateMask |= LVIS_CUT;
+                    lpdi->item.state |= LVIS_CUT;
+                  }
+                }
+                */
               }
+              break;
 
-              else {
-                shfi.dwAttributes = SFGAO_LINK | SFGAO_SHARE;
-                SHGetFileInfo(tch,dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+              case LVN_ITEMCHANGED:
+              case LVN_DELETEITEM:
+              {
+                UINT const cnt = ListView_GetSelectedCount(hwndIL);
+                DialogEnableControl(hwnd, IDOK, (cnt > 0));
+                // can't discard current file (myself)
+                int cur = 0;
+                if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) {
+                  cur = -1;
+                }
+                int const item = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+                DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (cur != item));
               }
-
-              lpdi->item.iImage = shfi.iIcon;
-              lpdi->item.mask |= LVIF_DI_SETITEM;
-
-              lpdi->item.stateMask = 0;
-              lpdi->item.state = 0;
-
-              if (shfi.dwAttributes & SFGAO_LINK) {
-                lpdi->item.mask |= LVIF_STATE;
-                lpdi->item.stateMask |= LVIS_OVERLAYMASK;
-                lpdi->item.state |= INDEXTOOVERLAYMASK(2);
-              }
-
-              if (shfi.dwAttributes & SFGAO_SHARE) {
-                lpdi->item.mask |= LVIF_STATE;
-                lpdi->item.stateMask |= LVIS_OVERLAYMASK;
-                lpdi->item.state |= INDEXTOOVERLAYMASK(1);
-              }
-
-              dwAttr = GetFileAttributes(tch);
-
-              if (!Flags.NoFadeHidden &&
-                  dwAttr != INVALID_FILE_ATTRIBUTES &&
-                  dwAttr & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
-                lpdi->item.mask |= LVIF_STATE;
-                lpdi->item.stateMask |= LVIS_CUT;
-                lpdi->item.state |= LVIS_CUT;
-              }
+              break;
             }
-            */
-          } break;
-
-          case LVN_ITEMCHANGED:
-          case LVN_DELETEITEM:
-          {
-            UINT const cnt = ListView_GetSelectedCount(hwndIL);
-            DialogEnableControl(hwnd, IDOK, (cnt > 0));
-            // can't discard current file (myself)
-            int cur = 0;
-            if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) {
-              cur = -1;
-            }
-            int const item = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
-            DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (cur != item));
-          } break;
-        }
+          }
+          break;
+          
+        default:
+          break;
       }
     }
-      return !0;
+    return !0;
 
     case WM_COMMAND:
 
@@ -2057,15 +2099,23 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
         case IDOK:
         case IDC_REMOVE:
+        case IDC_CLEAR_LIST:
         {
           WCHAR tchFileName[MAX_PATH] = {L'\0'};
 
-          //int  iItem;
-          //if ((iItem = SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETCURSEL,0,0)) != LB_ERR)
-
           UINT cnt = ListView_GetSelectedCount(hwndIL);
           if (cnt > 0) {
-            //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETTEXT,(WPARAM)iItem,(LPARAM)tch);
+
+            if (LOWORD(wParam) == IDC_CLEAR_LIST)
+            {
+              MRU_Empty(Globals.pFileMRU, StrIsNotEmpty(Globals.CurrentFile));
+              if (Globals.bCanSaveIniFile) {
+                MRU_Save(Globals.pFileMRU);
+              }
+              PostWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
+              break; // done here
+            }
+
             LV_ITEM lvi;
             ZeroMemory(&lvi, sizeof(LV_ITEM));
 
