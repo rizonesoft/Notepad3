@@ -216,6 +216,7 @@ typedef struct {
 #pragma pack(pop)
 #endif
 
+bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize);
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize);
 DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance);
 #define ThemedDialogBox(hInstance,lpTemplate,hWndParent,lpDialogFunc) ThemedDialogBoxParam(hInstance,lpTemplate,hWndParent,lpDialogFunc,0)
