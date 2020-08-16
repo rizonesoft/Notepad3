@@ -52,6 +52,8 @@
 #define IDACC_SELTOPREV                 311
 #define IDACC_VIEWSCHEMECONFIG          312
 #define IDACC_PREVIEW                   313
+#define IDACC_CLEAR_FIND_HISTORY        314
+#define IDACC_CLEAR_REPL_HISTORY        315
 
 #define IDC_SETCURLEXERTV               402
 

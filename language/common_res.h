@@ -63,6 +63,7 @@
 #define IDS_MUI_BACKSLASHHELP           12022
 #define IDS_MUI_REGEXPHELP              12023
 #define IDS_MUI_WILDCARDHELP            12024
+#define IDS_CLEAR_ALL                   12025
 
 #define IDS_MUI_ERR_LOADFILE            13000
 #define IDS_MUI_ERR_SAVEFILE            13001
@@ -154,6 +155,8 @@
 #define IDS_MUI_ABOUT_ACKNOWLEDGES      15039
 #define IDS_MUI_ABOUT_MORE              15040
 #define IDS_MUI_ABOUT_LICENSES          15041
+#define IDS_MUI_CLEAR_FIND_HISTORY      15042
+#define IDS_MUI_CLEAR_REPL_HISTORY      15043
 
 #define IDS_MUI_TRANSL_AUTHOR           15050
 #define IDS_MUI_ASSOCIATED_EXT          15051
@@ -356,6 +359,7 @@
 #define IDC_MULTIEDGELINE               18120
 #define IDC_SHOWEDGELINE                18121
 #define IDC_BACKGRDCOLOR                18122
+#define IDC_CLEAR_LIST                  18123
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
