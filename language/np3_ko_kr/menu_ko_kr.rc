@@ -69,7 +69,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "클립보드 경로"
+        POPUP "클립보드 경로(&T)"
         BEGIN
             MENUITEM "파일 이름만 복사\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
             MENUITEM "디렉토리 경로만 복사",               IDM_EDIT_INSERT_DIRNAME
@@ -126,11 +126,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "들여 쓰기 확인(&I)...",                     CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "페이지 설정(&T)...",                        IDM_FILE_PAGESETUP
+        MENUITEM "페이지 설정(&U)...",                        IDM_FILE_PAGESETUP
         MENUITEM "인쇄(&P)...\tCtrl+P",                      IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "속성(&I)...",                              IDM_FILE_PROPERTIES
-        MENUITEM "바탕 화면 링크 만들기(&D)",                 IDM_FILE_CREATELINK
+        MENUITEM "속성(&T)...",                              IDM_FILE_PROPERTIES
+        MENUITEM "바탕 화면 링크 만들기(&K)",                 IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "Minipath로 탐색(&B)...\tCtrl+M",           IDM_FILE_BROWSE
         POPUP "즐겨 찾기(&F)"
@@ -172,7 +172,7 @@ BEGIN
             MENUITEM "위로 옮김(&U)\tCtrl+Shift+ ↑",                IDM_EDIT_MOVELINEUP
             MENUITEM "아래로 옮김(&M)\tCtrl+Shift+ ↓",              IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "선택 항목 또는 현재 라인 잘라내기\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "선택 항목 또는 현재 라인 잘라내기\tCtrl+X",  IDM_EDIT_CUT
             MENUITEM "선택한 모든 라인 잘라내기\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
             MENUITEM "선택 항목 또는 현재 라인 복사\tCtrl+C",     IDM_EDIT_COPY
             MENUITEM "선택한 모든 라인 잘라내기\tCtrl+Shift+C",   IDM_EDIT_COPYLINE
@@ -181,8 +181,8 @@ BEGIN
             MENUITEM "윗줄과 맞바꾸기(&T)\tAlt+D",                  IDM_EDIT_LINETRANSPOSE
             MENUITEM "줄 삭제(&E)\tCtrl+Shift+D",                  IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "커서의 왼쪽부터 줄의 처음 까지 삭제\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
-            MENUITEM "커서의 오른쪽부터 줄의 끝까지 삭제\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
+            MENUITEM "커서의 왼쪽부터 줄의 처음 까지 삭제(&N)\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
+            MENUITEM "커서의 오른쪽부터 줄의 끝까지 삭제(&H)\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "컬럼 랩(&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "줄 분할(&S)\tCtrl+I",                IDM_EDIT_SPLITLINES
@@ -191,9 +191,9 @@ BEGIN
             MENUITEM "단락 결합(&P)\tCtrl+Shift+J",        IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "빈 줄 합치기(&G)\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "공백 줄 합치기\tCtrl+Alt+Y",         IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "공백 줄 합치기(&K)\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
             MENUITEM "빈 줄 제거(&R)\tAlt+R",             IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "공백 줄 제거\tCtrl+Alt+B",          IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "공백 줄 제거(&B)\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "중복된 줄 제거(&O)\tCtrl+Alt+D",    IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "선택(&N)"

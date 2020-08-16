@@ -69,7 +69,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Stel Enkripsie &Wagwoordfrase...",        IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Pad na knipbord"
+        POPUP "Pad na &knipbord"
         BEGIN
             MENUITEM "Slegs Kopieer &Lêernaam\tCtrl+F9",        IDM_EDIT_INSERT_FILENAME
             MENUITEM "Slegs Kopieër &Gids-pad",           IDM_EDIT_INSERT_DIRNAME

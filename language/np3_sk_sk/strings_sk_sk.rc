@@ -249,8 +249,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Jazyk prostredia"
     IDS_MUI_MENU_THEMES     "&Výber motívu"
-    IDM_THEMES_DEFAULT      "Predvolené nastavenia"
-    IDM_THEMES_FILE_ITEM    "Štandardné nastavenia"
+    IDM_THEMES_DEFAULT      "&Predvolené nastavenia"
+    IDM_THEMES_FILE_ITEM    "&Štandardné nastavenia"
     IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Clear All"

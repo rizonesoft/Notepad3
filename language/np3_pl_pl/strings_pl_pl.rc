@@ -249,8 +249,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Język"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
-    IDM_THEMES_DEFAULT      "Domyślne"
-    IDM_THEMES_FILE_ITEM    "Ustawienia standardowe"
+    IDM_THEMES_DEFAULT      "&Domyślne"
+    IDM_THEMES_FILE_ITEM    "&Ustawienia standardowe"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Clear All"
