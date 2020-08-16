@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.815.(build_#) (2020-08-15)
+Current BETA Version 5.20.816.(build_#) (2020-08-16)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
+[.816.1]- Controls to clear history (file and find/replace).
 [.815.1]- Using dialog RTL option for Main window too.
 [.813.1]- Right-to-left (RTL) title/frame layout for some dialogs.
 [.813.1]- Edit Right-To-Left (RTL) mode (works only in GDI device context (DC)).
@@ -56,6 +57,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.816.1]- Use optimized Asian UI fonts for dialog boxes.
 [.815.1]- Focused View: scroll to current position on each toggle.
 [.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE).
 [.805.1]- Replace "64-bit"/"BETA" by "x64"/"beta" to shorter the version name.
@@ -66,7 +68,7 @@ CHANGES:
 [.729.1]- DPI-Aware About & Custom.Scheme dialog.
 [.729.1]- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
 [.723.1]- Review document modified handler (dirty-flag).
-[.812.1]- Update grepWinNP3 (GRE) version 2.1.3.23 (2020-08-12).
+[.816.1]- Update grepWinNP3 (GRE) version 2.1.3.24 (2020-08-16).
 [.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.724.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-07-21).
 
