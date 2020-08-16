@@ -126,7 +126,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Comprobar la sangría...",                CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Configurar &página...",                   IDM_FILE_PAGESETUP
+        MENUITEM "Config&urar página...",                   IDM_FILE_PAGESETUP
         MENUITEM "&Imprimir...\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Propie&dades...",                         IDM_FILE_PROPERTIES

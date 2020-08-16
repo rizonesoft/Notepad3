@@ -4666,7 +4666,7 @@ bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
       *wSize = 9;
       break;
     case LANG_JAPANESE:
-      font   = L"Meiryo UI";
+      font   = L"Yu Gothic UI";
       *wSize = 9;
       break;
     case LANG_KOREAN:
