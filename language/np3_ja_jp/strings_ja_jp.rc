@@ -253,6 +253,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "標準設定"
     IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Clear All"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Clear Find History"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Clear Replace History"
 END
 
 STRINGTABLE
