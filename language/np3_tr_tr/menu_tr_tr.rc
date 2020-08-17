@@ -63,13 +63,13 @@ BEGIN
         MENUITEM "&Save\tCtrl+S",                                   IDM_FILE_SAVE
         MENUITEM "Save &As...\tF6",                                 IDM_FILE_SAVEAS
         MENUITEM "Save &Copy...\tCtrl+F6",                          IDM_FILE_SAVECOPY
-        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Save with Original File Date/Ti&me\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "&Read Only",                             IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Set Encr&yption Passphrase...",          IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Pa&th to Clipboard"
+        POPUP "Path to Clipboar&d"
         BEGIN
             MENUITEM "Copy &Filename only\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
             MENUITEM "Copy &Directory-Path only",          IDM_EDIT_INSERT_DIRNAME
