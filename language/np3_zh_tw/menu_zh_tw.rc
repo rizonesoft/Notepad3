@@ -63,13 +63,13 @@ BEGIN
         MENUITEM "儲存(&S)\tCtrl+S",                                IDM_FILE_SAVE
         MENUITEM "另存為(&A)...\tF6",                               IDM_FILE_SAVEAS
         MENUITEM "另存拷貝為(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
-        MENUITEM "使用原始修改時間儲存(&D)\tCtrl+Alt+F6",            IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "使用原始修改時間儲存(&M)\tCtrl+Alt+F6",            IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "檔案唯讀(&R)",                                  IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "設定加密密碼(&Y)...",                           IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "複製路徑到剪貼簿(&T)"
+        POPUP "複製路徑到剪貼簿(&D)"
         BEGIN
             MENUITEM "僅檔名(&F)\tCtrl+F9",                   IDM_EDIT_INSERT_FILENAME
             MENUITEM "檔名和資料夾(&D)",                       IDM_EDIT_INSERT_DIRNAME
@@ -103,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 帶簽名(&S)",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "更多編碼(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "重新編碼為預設(&E)",                        CMD_RECODEDEFAULT
+            MENUITEM "重新編碼為預設(&D)",                        CMD_RECODEDEFAULT
             MENUITEM "重新編碼為 ANSI(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "重新編碼為 OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "重新編碼為 GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
