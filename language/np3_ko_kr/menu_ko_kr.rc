@@ -63,16 +63,16 @@ BEGIN
         MENUITEM "저장(&S)\tCtrl+S",                           IDM_FILE_SAVE
         MENUITEM "다른 이름으로 저장(&A)...\tF6",               IDM_FILE_SAVEAS
         MENUITEM "복사본 저장(&C)...\tCtrl+F6",                 IDM_FILE_SAVECOPY
-        MENUITEM "기존의 날짜/시간 그대로 저장(&D)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "기존의 날짜/시간 그대로 저장(&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "읽기 전용(&R)",                              IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "클립보드 경로(&T)"
+        POPUP "클립보드 경로(&D)"
         BEGIN
             MENUITEM "파일 이름만 복사\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
-            MENUITEM "디렉토리 경로만 복사",               IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "디렉토리 경로만 복사(&D)",           IDM_EDIT_INSERT_DIRNAME
             MENUITEM "전체 경로 복사\tCtrl+Shift+F9",      IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "실행(&L)"
@@ -103,7 +103,7 @@ BEGIN
             MENUITEM "서명 있는 UTF-8(&S)",                  IDM_ENCODING_UTF8SIGN
             MENUITEM "기타(&M)...\tF9",                      IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "기본값으로 표시(&F)",                   CMD_RECODEDEFAULT
+            MENUITEM "기본값으로 표시(&D)",                   CMD_RECODEDEFAULT
             MENUITEM "ANSI로 표시(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "OEM으로 표시(&O)\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "GB18030으로 표시(&G)\tCtrl+Shift+F10",  CMD_RECODEGB18030
@@ -285,7 +285,7 @@ BEGIN
             MENUITEM "단어 또는 쥴 선택(&W)\tCtrl+Spc",              IDM_EDIT_SELECTWORD
             MENUITEM "모든 일치 항목 다중 선택(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "삽입한 각 행을 하나의 되돌리기로 취급",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "삽입한 각 행을 하나의 되돌리기로 취급(&T)",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"
@@ -384,7 +384,7 @@ BEGIN
             MENUITEM "도구 모음 테마 변경(&L)...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "도구 모음 사용자 지정(&U)...",        IDM_VIEW_CUSTOMIZETB
             MENUITEM "도구 모음 전환(&G)",                 IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI 비율 툴바",                     IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI 비율 툴바(&D)",                 IDM_VIEW_DPISCALETB
         END
         POPUP "확대/축소(&Z)"
         BEGIN
@@ -462,7 +462,7 @@ BEGIN
         BEGIN
             POPUP "렌더링(&R)"
             BEGIN
-                MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite (Direct2D)(&D)",     IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "GDI DC 직접 쓰기(&W)",             IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_GDI

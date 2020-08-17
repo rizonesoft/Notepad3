@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.816.(build_#) (2020-08-16)
+Current BETA Version 5.20.817.(build_#) (2020-08-17)
 =====================================================
 
 -----------------------------------------------------
@@ -57,7 +57,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
-[.816.1]- Use optimized Asian UI fonts for dialog boxes.
+[.816.1]- Use optimized Asian UI fonts for Notepad3 dialog boxes.
 [.815.1]- Focused View: scroll to current position on each toggle.
 [.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE).
 [.805.1]- Replace "64-bit"/"BETA" by "x64"/"beta" to shorter the version name.
@@ -82,6 +82,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.817.1]- Reload language resource for about-box on init (maybe language changed).
 [.815.1]- DPI Awarenes of window positions (default, sticky, ...).
 [.813.1]- Center dialo in parent (if parent is minimized).
 [.812.1]- Fix copy search for & path to (only one) existing instance (GRE).

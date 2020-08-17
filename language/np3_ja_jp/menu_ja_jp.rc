@@ -63,13 +63,13 @@ BEGIN
         MENUITEM "上書き保存(&S)\tCtrl+S",                           IDM_FILE_SAVE
         MENUITEM "名前を付けて保存(&A)...\tF6",                        IDM_FILE_SAVEAS
         MENUITEM "コピーして保存(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
-        MENUITEM "更新日時を更新しない(&D)\tCtrl+Alt+F6",       IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "更新日時を更新しない(&M)\tCtrl+Alt+F6",       IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "読み取り専用(&R)",                           IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "暗号化パスワードの設定(&Y)...",                 IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "パスをクリップボードへ(&T)"
+        POPUP "パスをクリップボードへ(&D)"
         BEGIN
             MENUITEM "コピー/ファイル名のみ(&F)\tCtrl+F9",         IDM_EDIT_INSERT_FILENAME
             MENUITEM "コピー/フォルダのパスのみ(&D)",               IDM_EDIT_INSERT_DIRNAME
