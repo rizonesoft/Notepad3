@@ -726,36 +726,36 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
-    if (StrIsEmptyA(pAboutResource)) {
-      char pAboutRes[4096];
-      StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), "");
-      GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-      GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
-      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    }
+    //~if (StrIsEmptyA(pAboutResource)) { ~ maybe language resource changed, so reload
+    char pAboutRes[4096];
+    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), "");
+    GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    //~}
 
     CenterDlgInParent(hwnd, NULL);
 
@@ -1890,94 +1890,136 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
     case WM_NOTIFY:
     {
-      if (((LPNMHDR)(lParam))->idFrom == IDC_FILEMRU) {
-        switch (((LPNMHDR)(lParam))->code) {
-          case NM_DBLCLK:
-            SendWMCommand(hwnd, IDOK);
+      switch (wParam)
+      {
+        case IDC_REMOVE:
+          switch (((LPNMHDR)lParam)->code) {
+            case BCN_DROPDOWN:
+            {
+              const NMBCDROPDOWN* pDropDown = (NMBCDROPDOWN*)lParam;
+              // Get screen coordinates of the button.
+              POINT pt;
+              pt.x = pDropDown->rcButton.left;
+              pt.y = pDropDown->rcButton.bottom;
+              ClientToScreen(pDropDown->hdr.hwndFrom, &pt);
+              // Create a menu and add items.
+              HMENU hSplitMenu = CreatePopupMenu();
+              if (!hSplitMenu)
+                break;
+              if (pDropDown->hdr.hwndFrom == GetDlgItem(hwnd, IDC_REMOVE)) {
+                WCHAR szMenu[80] = {L'\0'};
+                GetLngString(IDS_CLEAR_ALL, szMenu, COUNTOF(szMenu));
+                AppendMenu(hSplitMenu, MF_STRING, IDC_CLEAR_LIST, szMenu);
+              }
+
+              // Display the menu.
+              TrackPopupMenu(hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, hwnd, NULL);
+              DestroyMenu(hSplitMenu);
+              return !0;
+            } 
             break;
 
-          case LVN_GETDISPINFO:
-          {
-            /*
-            LV_DISPINFO *lpdi = (LPVOID)lParam;
+            default:
+              break;
+          }
+          break;
 
-            if (lpdi->item.mask & LVIF_IMAGE) {
+        case IDC_FILEMRU:
+          if (((LPNMHDR)(lParam))->idFrom == IDC_FILEMRU) {
+            switch (((LPNMHDR)(lParam))->code) {
+              case NM_DBLCLK:
+                SendWMCommand(hwnd, IDOK);
+                break;
 
-              WCHAR tch[MAX_PATH] = { L'\0' };
-              LV_ITEM lvi;
-              SHFILEINFO shfi;
-              DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
-              DWORD dwAttr  = 0;
+              case LVN_GETDISPINFO:
+              {
+                /*
+                LV_DISPINFO *lpdi = (LPVOID)lParam;
 
-              ZeroMemory(&lvi,sizeof(LV_ITEM));
+                if (lpdi->item.mask & LVIF_IMAGE) {
 
-              lvi.mask = LVIF_TEXT;
-              lvi.pszText = tch;
-              lvi.cchTextMax = COUNTOF(tch);
-              lvi.iItem = lpdi->item.iItem;
+                  WCHAR tch[MAX_PATH] = { L'\0' };
+                  LV_ITEM lvi;
+                  SHFILEINFO shfi;
+                  DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
+                  DWORD dwAttr  = 0;
 
-              ListView_GetItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
+                  ZeroMemory(&lvi,sizeof(LV_ITEM));
 
-              if (!PathIsExistingFile(tch)) {
-                dwFlags |= SHGFI_USEFILEATTRIBUTES;
-                dwAttr = FILE_ATTRIBUTE_NORMAL;
-                shfi.dwAttributes = 0;
-                SHGetFileInfo(PathFindFileName(tch),dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                  lvi.mask = LVIF_TEXT;
+                  lvi.pszText = tch;
+                  lvi.cchTextMax = COUNTOF(tch);
+                  lvi.iItem = lpdi->item.iItem;
+
+                  ListView_GetItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
+
+                  if (!PathIsExistingFile(tch)) {
+                    dwFlags |= SHGFI_USEFILEATTRIBUTES;
+                    dwAttr = FILE_ATTRIBUTE_NORMAL;
+                    shfi.dwAttributes = 0;
+                    SHGetFileInfo(PathFindFileName(tch),dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                  }
+
+                  else {
+                    shfi.dwAttributes = SFGAO_LINK | SFGAO_SHARE;
+                    SHGetFileInfo(tch,dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                  }
+
+                  lpdi->item.iImage = shfi.iIcon;
+                  lpdi->item.mask |= LVIF_DI_SETITEM;
+
+                  lpdi->item.stateMask = 0;
+                  lpdi->item.state = 0;
+
+                  if (shfi.dwAttributes & SFGAO_LINK) {
+                    lpdi->item.mask |= LVIF_STATE;
+                    lpdi->item.stateMask |= LVIS_OVERLAYMASK;
+                    lpdi->item.state |= INDEXTOOVERLAYMASK(2);
+                  }
+
+                  if (shfi.dwAttributes & SFGAO_SHARE) {
+                    lpdi->item.mask |= LVIF_STATE;
+                    lpdi->item.stateMask |= LVIS_OVERLAYMASK;
+                    lpdi->item.state |= INDEXTOOVERLAYMASK(1);
+                  }
+
+                  dwAttr = GetFileAttributes(tch);
+
+                  if (!Flags.NoFadeHidden &&
+                      dwAttr != INVALID_FILE_ATTRIBUTES &&
+                      dwAttr & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
+                    lpdi->item.mask |= LVIF_STATE;
+                    lpdi->item.stateMask |= LVIS_CUT;
+                    lpdi->item.state |= LVIS_CUT;
+                  }
+                }
+                */
               }
+              break;
 
-              else {
-                shfi.dwAttributes = SFGAO_LINK | SFGAO_SHARE;
-                SHGetFileInfo(tch,dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+              case LVN_ITEMCHANGED:
+              case LVN_DELETEITEM:
+              {
+                UINT const cnt = ListView_GetSelectedCount(hwndIL);
+                DialogEnableControl(hwnd, IDOK, (cnt > 0));
+                // can't discard current file (myself)
+                int cur = 0;
+                if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) {
+                  cur = -1;
+                }
+                int const item = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+                DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (cur != item));
               }
-
-              lpdi->item.iImage = shfi.iIcon;
-              lpdi->item.mask |= LVIF_DI_SETITEM;
-
-              lpdi->item.stateMask = 0;
-              lpdi->item.state = 0;
-
-              if (shfi.dwAttributes & SFGAO_LINK) {
-                lpdi->item.mask |= LVIF_STATE;
-                lpdi->item.stateMask |= LVIS_OVERLAYMASK;
-                lpdi->item.state |= INDEXTOOVERLAYMASK(2);
-              }
-
-              if (shfi.dwAttributes & SFGAO_SHARE) {
-                lpdi->item.mask |= LVIF_STATE;
-                lpdi->item.stateMask |= LVIS_OVERLAYMASK;
-                lpdi->item.state |= INDEXTOOVERLAYMASK(1);
-              }
-
-              dwAttr = GetFileAttributes(tch);
-
-              if (!Flags.NoFadeHidden &&
-                  dwAttr != INVALID_FILE_ATTRIBUTES &&
-                  dwAttr & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
-                lpdi->item.mask |= LVIF_STATE;
-                lpdi->item.stateMask |= LVIS_CUT;
-                lpdi->item.state |= LVIS_CUT;
-              }
+              break;
             }
-            */
-          } break;
-
-          case LVN_ITEMCHANGED:
-          case LVN_DELETEITEM:
-          {
-            UINT const cnt = ListView_GetSelectedCount(hwndIL);
-            DialogEnableControl(hwnd, IDOK, (cnt > 0));
-            // can't discard current file (myself)
-            int cur = 0;
-            if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) {
-              cur = -1;
-            }
-            int const item = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
-            DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (cur != item));
-          } break;
-        }
+          }
+          break;
+          
+        default:
+          break;
       }
     }
-      return !0;
+    return !0;
 
     case WM_COMMAND:
 
@@ -2052,15 +2094,23 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
         case IDOK:
         case IDC_REMOVE:
+        case IDC_CLEAR_LIST:
         {
           WCHAR tchFileName[MAX_PATH] = {L'\0'};
 
-          //int  iItem;
-          //if ((iItem = SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETCURSEL,0,0)) != LB_ERR)
-
           UINT cnt = ListView_GetSelectedCount(hwndIL);
           if (cnt > 0) {
-            //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETTEXT,(WPARAM)iItem,(LPARAM)tch);
+
+            if (LOWORD(wParam) == IDC_CLEAR_LIST)
+            {
+              MRU_Empty(Globals.pFileMRU, StrIsNotEmpty(Globals.CurrentFile));
+              if (Globals.bCanSaveIniFile) {
+                MRU_Save(Globals.pFileMRU);
+              }
+              PostWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
+              break; // done here
+            }
+
             LV_ITEM lvi;
             ZeroMemory(&lvi, sizeof(LV_ITEM));
 
@@ -3438,8 +3488,7 @@ void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
 //
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
 {
-  WINDOWPLACEMENT wndpl;
-  ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
+  WINDOWPLACEMENT wndpl = {0};
   wndpl.length = sizeof(WINDOWPLACEMENT);
   wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
 
@@ -3452,12 +3501,13 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
     wndpl.showCmd = SW_RESTORE;
   }
   else {
-    RECT rc; 
-    if (hwnd)
+    RECT rc = {0}; 
+    if (hwnd) {
       GetWindowRect(hwnd, &rc);
-    else
+    }
+    else {
       GetWindowRect(GetDesktopWindow(), &rc);
-
+    }
     FitIntoMonitorGeometry(&rc, &winfo, mode);
 
     wndpl.showCmd = SW_SHOW;
@@ -3957,6 +4007,22 @@ void SetWindowLayoutRTL(HWND hwnd, bool bRTL)
   }
   else {
     SetWindowExStyle(hwnd, exStyle & ~WS_EX_LAYOUTRTL);
+  }
+}
+
+
+//=============================================================================
+//
+//  SetWindowReadingRTL()
+//
+void SetWindowReadingRTL(HWND hwnd, bool bRTL)
+{
+  DWORD const exStyle = GetWindowExStyle(hwnd);
+  if (bRTL) {
+    SetWindowExStyle(hwnd, exStyle | WS_EX_RTLREADING);
+  }
+  else {
+    SetWindowExStyle(hwnd, exStyle & ~WS_EX_RTLREADING);
   }
 }
 
@@ -4575,44 +4641,111 @@ Modify dialog templates to use current theme font
 Based on code of MFC helper class CDialogTemplate
 
 */
+static inline bool IsChineseTraditionalSubLang(LANGID subLang)
+{
+  return subLang == SUBLANG_CHINESE_TRADITIONAL || subLang == SUBLANG_CHINESE_HONGKONG || subLang == SUBLANG_CHINESE_MACAU;
+}
+
+bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
+{
+  LPCWSTR font;
+  LANGID const subLang = SUBLANGID(lang);
+  switch (PRIMARYLANGID(lang)) {
+    default:
+    case LANG_ENGLISH:
+      font   = L"Segoe UI";
+      *wSize = 9;
+      break;
+    case LANG_CHINESE:
+      font   = IsChineseTraditionalSubLang(subLang) ? L"Microsoft JhengHei UI" : L"Microsoft YaHei UI";
+      *wSize = 9;
+      break;
+    case LANG_JAPANESE:
+      font   = L"Yu Gothic UI";
+      *wSize = 9;
+      break;
+    case LANG_KOREAN:
+      font   = L"Malgun Gothic";
+      *wSize = 9;
+      break;
+  }
+  bool const isAvail = IsFontAvailable(font);
+  if (isAvail) {
+    StringCchCopy(lpFaceName, LF_FACESIZE, font);
+  }
+  return isAvail;
+}
+
 
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-  bool bSucceed = false;
-  int const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
-  HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
-  if (hTheme) {
-    LOGFONT lf;
-    if (S_OK == GetThemeSysFont(hTheme, TMT_MSGBOXFONT, &lf)) {
-      if (lf.lfHeight < 0) {
-        lf.lfHeight = -lf.lfHeight;
+  bool bSucceed = GetLocaleDefaultUIFont(Globals.iPrefLANGID, lpFaceName, wSize);
+
+  if (!bSucceed)
+  {
+    if (IsAppThemed()) {
+      unsigned const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
+
+      HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+      if (hTheme) {
+        LOGFONT lf;
+        if (S_OK == GetThemeSysFont(hTheme, TMT_MSGBOXFONT, &lf)) {
+          if (lf.lfHeight < 0) {
+            lf.lfHeight = -lf.lfHeight;
+          }
+          *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
+          if (*wSize < 9) {
+            *wSize = 9;
+          }
+          StringCchCopy(lpFaceName, LF_FACESIZE, lf.lfFaceName);
+          bSucceed = true;
+        }
+        CloseThemeData(hTheme);
       }
-      *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-      if (*wSize == 0) { *wSize = 10; }
-      StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
-      bSucceed = true;
     }
-    CloseThemeData(hTheme);
+
+    if (!bSucceed) {
+      unsigned const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
+
+      NONCLIENTMETRICS ncm;
+      ZeroMemory(&ncm, sizeof(ncm));
+      ncm.cbSize = sizeof(NONCLIENTMETRICS) - sizeof(ncm.iPaddedBorderWidth);
+      if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0)) {
+        if (ncm.lfMessageFont.lfHeight < 0) {
+          ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
+        }
+        *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight, 72, iLogPixelsY);
+        if (*wSize < 9) {
+          *wSize = 9;
+        }
+        StringCchCopy(lpFaceName, LF_FACESIZE, ncm.lfMessageFont.lfFaceName);
+        bSucceed = true;
+      }
+    }
   }
+
   return bSucceed;
 }
 
 
-inline bool DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
+static inline bool DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
   return ((DLGTEMPLATEEX*)pTemplate)->signature == 0xFFFF;
 }
 
-inline bool DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate) {
+static inline bool DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate)
+{
   return (DS_SETFONT &
     (DialogTemplate_IsDialogEx(pTemplate) ? ((DLGTEMPLATEEX*)pTemplate)->style : pTemplate->style));
 }
 
-inline size_t DialogTemplate_FontAttrSize(bool bDialogEx) {
+static inline size_t DialogTemplate_FontAttrSize(bool bDialogEx)
+{
   return (sizeof(WORD) * (bDialogEx ? 3 : 1));
 }
 
 
-inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
+static inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate)
+{
 
   bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
   WORD* pw;
@@ -4640,78 +4773,82 @@ inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
 
 DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance)
 {
-  DLGTEMPLATE* pTemplate = NULL;
-
   HRSRC hRsrc = FindResource(hInstance, lpDialogTemplateID, RT_DIALOG);
-  if (hRsrc == NULL) { return NULL; }
+  if (!hRsrc) { return NULL; }
 
-  HGLOBAL hRsrcMem = LoadResource(hInstance, hRsrc);
-  if (hRsrcMem) {
-    DLGTEMPLATE* pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
-    size_t dwTemplateSize = (size_t)SizeofResource(hInstance, hRsrc);
-    if ((dwTemplateSize == 0) || (pTemplate = AllocMem(dwTemplateSize + LF_FACESIZE * 2, HEAP_ZERO_MEMORY)) == NULL) {
-      UnlockResource(hRsrcMem);
-      FreeResource(hRsrcMem);
-      return NULL;
-    }
-    CopyMemory((BYTE*)pTemplate, pRsrcMem, dwTemplateSize);
+  HGLOBAL const hRsrcMem = LoadResource(hInstance, hRsrc);
+  DLGTEMPLATE* const pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
+  size_t const  dwTemplateSize = (size_t)SizeofResource(hInstance, hRsrc);
+
+  DLGTEMPLATE* const pTemplate = dwTemplateSize ? (DLGTEMPLATE*)AllocMem(dwTemplateSize + LF_FACESIZE * 2, HEAP_ZERO_MEMORY) : NULL;
+
+  if (!pTemplate) {
     UnlockResource(hRsrcMem);
     FreeResource(hRsrcMem);
-
-    WCHAR wchFaceName[LF_FACESIZE] = { L'\0' };
-    WORD wFontSize = 0;
-    if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
-      return(pTemplate);
-    }
-
-    bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
-    bool bHasFont = DialogTemplate_HasFont(pTemplate);
-    size_t cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
-
-    if (bDialogEx)
-      ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
-    else
-      pTemplate->style |= DS_SHELLFONT;
-
-    size_t cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
-    BYTE* pbNew = (BYTE*)wchFaceName;
-
-    BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
-    size_t cbOld = (bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
-
-    BYTE* pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
-    BYTE* pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
-
-    WORD nCtrl = (bDialogEx ? ((DLGTEMPLATEEX*)pTemplate)->cDlgItems : pTemplate->cdit);
-
-    if (cbNew != cbOld && nCtrl > 0) {
-      MoveMemory(pNewControls, pOldControls, (size_t)(dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
-    }
-    *(WORD*)pb = wFontSize;
-    MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
+    return NULL;
   }
+
+  CopyMemory((BYTE*)pTemplate, pRsrcMem, dwTemplateSize);
+  UnlockResource(hRsrcMem);
+  FreeResource(hRsrcMem);
+
+  WCHAR wchFaceName[LF_FACESIZE] = {L'\0'};
+  WORD  wFontSize = 0;
+  if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
+    return (pTemplate);
+  }
+
+  bool const bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
+  bool const bHasFont = DialogTemplate_HasFont(pTemplate);
+  size_t const cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
+
+  if (bDialogEx) {
+    ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
+  }
+  else {
+    pTemplate->style |= DS_SHELLFONT;
+  }
+
+  size_t const cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+  BYTE* const pbNew = (BYTE*)wchFaceName;
+
+  BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
+  size_t const cbOld = (bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
+
+  BYTE* const pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
+  BYTE* const pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
+
+  WORD const nCtrl = (bDialogEx ? ((DLGTEMPLATEEX*)pTemplate)->cDlgItems : pTemplate->cdit);
+
+  if (cbNew != cbOld && nCtrl > 0) {
+    MoveMemory(pNewControls, pOldControls, (dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
+  }
+
+  *(WORD*)pb = wFontSize;
+  MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
+
   return(pTemplate);
 }
+
 
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  INT_PTR ret = (INT_PTR)NULL;
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  DLGTEMPLATE* const pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  INT_PTR const ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
   if (pDlgTemplate) {
-    ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
   return ret;
 }
 
+
 HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  HWND hwnd = INVALID_HANDLE_VALUE;
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  DLGTEMPLATE* const pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  HWND const hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
   if (pDlgTemplate) {
-    hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
   return hwnd;

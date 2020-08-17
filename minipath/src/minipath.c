@@ -3644,15 +3644,14 @@ void SnapToTarget(HWND hwnd)
 void SnapToDefaultPos(HWND hwnd)
 {
   WINDOWPLACEMENT wndpl;
-  HMONITOR hMonitor;
-  MONITORINFO mi;
   int x,y,cx,cy;
   RECT rcOld;
 
   GetWindowRect(hwnd,&rcOld);
 
-  hMonitor = MonitorFromRect(&rcOld,MONITOR_DEFAULTTONEAREST);
-  mi.cbSize = sizeof(mi);
+  MONITORINFO mi = {0};
+  mi.cbSize = sizeof(MONITORINFO);
+  HMONITOR const hMonitor = MonitorFromRect(&rcOld, MONITOR_DEFAULTTONEAREST);
   GetMonitorInfo(hMonitor,&mi);
 
   x = mi.rcWork.left + 16;
@@ -3680,7 +3679,8 @@ void SnapToDefaultPos(HWND hwnd)
     OffsetRect(&wndpl.rcNormalPosition,mi.rcMonitor.left - mi.rcWork.left,mi.rcMonitor.top - mi.rcWork.top);
   }
 
-  SetWindowPlacement(hwnd,&wndpl);
+  SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
+  SetWindowPlacement(hwnd, &wndpl); // 2nd resize position to correct DPI settings
 }
 
 

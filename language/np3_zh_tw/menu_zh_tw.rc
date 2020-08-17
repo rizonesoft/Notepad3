@@ -63,13 +63,13 @@ BEGIN
         MENUITEM "儲存(&S)\tCtrl+S",                                IDM_FILE_SAVE
         MENUITEM "另存為(&A)...\tF6",                               IDM_FILE_SAVEAS
         MENUITEM "另存拷貝為(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
-        MENUITEM "使用原始修改時間儲存(&D)\tCtrl+Alt+F6",            IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "使用原始修改時間儲存(&M)\tCtrl+Alt+F6",            IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "檔案唯讀(&R)",                                  IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "設定加密密碼(&Y)...",                           IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "複製路徑到剪貼簿(&P)"
+        POPUP "複製路徑到剪貼簿(&D)"
         BEGIN
             MENUITEM "僅檔名(&F)\tCtrl+F9",                   IDM_EDIT_INSERT_FILENAME
             MENUITEM "檔名和資料夾(&D)",                       IDM_EDIT_INSERT_DIRNAME
@@ -103,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 帶簽名(&S)",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "更多編碼(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "重新編碼為預設(&E)",                        CMD_RECODEDEFAULT
+            MENUITEM "重新編碼為預設(&D)",                        CMD_RECODEDEFAULT
             MENUITEM "重新編碼為 ANSI(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "重新編碼為 OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "重新編碼為 GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
@@ -126,11 +126,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "檢查縮排(&I)...",                           CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "頁面設定(&T)...",                           IDM_FILE_PAGESETUP
+        MENUITEM "頁面設定(&U)...",                           IDM_FILE_PAGESETUP
         MENUITEM "列印(&P)...\tCtrl+P",                       IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "屬性(&I)...",                               IDM_FILE_PROPERTIES
-        MENUITEM "建立桌面鏈接(&D)",                          IDM_FILE_CREATELINK
+        MENUITEM "屬性(&T)...",                               IDM_FILE_PROPERTIES
+        MENUITEM "建立桌面鏈接(&K)",                          IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "瀏覽(&B)...\tCtrl+M",                       IDM_FILE_BROWSE
         POPUP "我的最愛(&F)"
@@ -181,8 +181,8 @@ BEGIN
             MENUITEM "與上一行調換(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM "刪除行(&E)\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "向左刪除直到行首(&H)\tCtrl+Shift+Backspace",  IDM_EDIT_DELETELINELEFT
-            MENUITEM "向右刪除直到行尾(&T)\tCtrl+Shift+Delete",     IDM_EDIT_DELETELINERIGHT
+            MENUITEM "向左刪除直到行首(&N)\tCtrl+Shift+Backspace",  IDM_EDIT_DELETELINELEFT
+            MENUITEM "向右刪除直到行尾(&H)\tCtrl+Shift+Delete",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "硬換行處理(&W)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM "拆分行(&S)\tCtrl+I",                      IDM_EDIT_SPLITLINES
@@ -191,9 +191,9 @@ BEGIN
             MENUITEM "拼接行（保留段落）(&P)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "合併空行(&G)\tAlt+Y",                     IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "合併只有空白字元的行(&N)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "合併只有空白字元的行(&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
             MENUITEM "刪除空行(&R)\tAlt+R",                     IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "刪除只有空白字元的行(&M)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "刪除只有空白字元的行(&B)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "刪除重複行(&O)\tCtrl+Alt+D",              IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "選擇(&N)"

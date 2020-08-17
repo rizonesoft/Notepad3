@@ -910,18 +910,17 @@ bool PathIsLnkFile(LPCWSTR pszPath)
 //
 //  Manipulates: pszResPath
 //
-bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
+bool PathGetLnkPath(LPCWSTR pszLnkFile, LPWSTR pszResPath, int cchResPath)
 {
-
-  IShellLink       *psl;
-  WIN32_FIND_DATA  fd;
+  IShellLink*      psl = NULL;
+  WIN32_FIND_DATA  fd = {0};
   bool             bSucceeded = false;
 
   if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
                                  CLSCTX_INPROC_SERVER,
                                  &IID_IShellLink,(void**)&psl)))
   {
-    IPersistFile *ppf;
+    IPersistFile *ppf = NULL;
 
     if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,(void**)&ppf)))
     {
@@ -950,7 +949,6 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
   }
 
   return(bSucceeded);
-
 }
 
 

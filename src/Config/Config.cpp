@@ -1576,10 +1576,12 @@ void LoadSettings()
       int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
         &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
       if (itok == 4 || itok == 5) { // scan successful
-        if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
-        if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
-        if (bMaxi) g_DefWinInfo.max = true;
-        if (itok == 4) g_DefWinInfo.max = false;
+        if (itok == 4) {
+          g_DefWinInfo.max = false;
+        }
+        else {
+          g_DefWinInfo.max = bMaxi ? true : false;
+        }
       }
       else {
         g_DefWinInfo = GetFactoryDefaultWndPos(2);
@@ -2065,7 +2067,7 @@ __try {
       {
         if (!Settings.SaveRecentFiles) {
           // Cleanup unwanted MRUs
-          MRU_Empty(Globals.pFileMRU);
+          MRU_Empty(Globals.pFileMRU, false);
           MRU_Save(Globals.pFileMRU);
         }
         else {
@@ -2075,9 +2077,9 @@ __try {
 
         if (!Settings.SaveFindReplace) {
           // Cleanup unwanted MRUs
-          MRU_Empty(Globals.pMRUfind);
+          MRU_Empty(Globals.pMRUfind, false);
           MRU_Save(Globals.pMRUfind);
-          MRU_Empty(Globals.pMRUreplace);
+          MRU_Empty(Globals.pMRUreplace, false);
           MRU_Save(Globals.pMRUreplace);
         }
         else {
@@ -2354,10 +2356,11 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
 }
 
 
-bool MRU_Empty(LPMRULIST pmru)
+bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast)
 {
   if (pmru) {
-    for (int i = 0; i < pmru->iSize; ++i) {
+    int const beg = bExceptLeast ? 1 : 0;
+    for (int i = beg; i < pmru->iSize; ++i) {
       if (pmru->pszItems[i]) {
         LocalFree(pmru->pszItems[i]);  // StrDup()
         pmru->pszItems[i] = NULL;
@@ -2404,8 +2407,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
     int n = 0;
     if (IsIniFileCached()) {
 
-      MRU_Empty(pmru);
-      //if (bFileProps) { ClearDestinationsOnRecentDocs(); }
+      MRU_Empty(pmru, false);
 
       const WCHAR* const RegKey_Section = pmru->szRegKey;
 

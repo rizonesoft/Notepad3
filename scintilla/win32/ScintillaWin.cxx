@@ -483,7 +483,7 @@ class ScintillaWin :
 	ScintillaWin(ScintillaWin &&) = delete;
 	ScintillaWin &operator=(const ScintillaWin &) = delete;
 	ScintillaWin &operator=(ScintillaWin &&) = delete;
-	// ~ScintillaWin() in public section
+	// virtual ~ScintillaWin() in public section
 
 	void Init() noexcept;
 	void Finalise() noexcept override;
@@ -614,7 +614,7 @@ class ScintillaWin :
 	sptr_t SciMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 
 public:
-	~ScintillaWin() override;
+	virtual ~ScintillaWin() override;
 
 	// Public for benefit of Scintilla_DirectFunction
 	sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;
@@ -736,7 +736,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	Init();
 }
 
-ScintillaWin::~ScintillaWin() {}
+ScintillaWin::~ScintillaWin() { Finalise(); }
 
 void ScintillaWin::Init() noexcept {
 	// Initialize COM.  If the app has already done this it will have
@@ -807,6 +807,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) noexcept {
 				pRenderTarget = pDCRT;
 			} else {
 				//Platform::DebugPrintf("Failed CreateDCRenderTarget 0x%lx\n", hr);
+				ReleaseUnknown(pDCRT);
 				pRenderTarget = nullptr;
 			}
 
@@ -823,6 +824,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) noexcept {
 				pRenderTarget = pHwndRenderTarget;
 			} else {
 				//Platform::DebugPrintf("Failed CreateHwndRenderTarget 0x%lx\n", hr);
+				ReleaseUnknown(pHwndRenderTarget);
 				pRenderTarget = nullptr;
 			}
 		}
@@ -3902,10 +3904,12 @@ LRESULT CALLBACK ScintillaWin::CTWndProc(
 			if (iMessage == WM_NCDESTROY) {
 				SetWindowPointer(hWnd, nullptr);
 				return ::DefWindowProc(hWnd, iMessage, wParam, lParam);
+
 			} else if (iMessage == WM_PAINT) {
 				PAINTSTRUCT ps;
 				::BeginPaint(hWnd, &ps);
 				std::unique_ptr<Surface> surfaceWindow(Surface::Allocate(sciThis->technology));
+
 #if defined(USE_D2D)
 				ID2D1HwndRenderTarget *pCTRenderTarget = nullptr;
 #endif
@@ -3934,6 +3938,7 @@ LRESULT CALLBACK ScintillaWin::CTWndProc(
 					if (!SUCCEEDED(pD2DFactory->CreateHwndRenderTarget(drtp, dhrtp, &pCTRenderTarget))) {
 						surfaceWindow->Release();
 						::EndPaint(hWnd, &ps);
+						ReleaseUnknown(pCTRenderTarget);
 						return 0;
 					}
 					// If above SUCCEEDED, then pCTRenderTarget not nullptr
@@ -3948,11 +3953,14 @@ LRESULT CALLBACK ScintillaWin::CTWndProc(
 				//~surfaceWindow->SetDBCSMode(sciThis->ct.codePage);
 				surfaceWindow->SetBidiR2L(sciThis->BidirectionalR2L());
 				sciThis->ct.PaintCT(surfaceWindow.get());
+
 #if defined(USE_D2D)
 				if (pCTRenderTarget)
 					pCTRenderTarget->EndDraw();
 #endif
+
 				surfaceWindow->Release();
+
 #if defined(USE_D2D)
 				ReleaseUnknown(pCTRenderTarget);
 #endif
@@ -4027,8 +4035,8 @@ LRESULT CALLBACK ScintillaWin::SWndProc(
 	} else {
 		if (iMessage == WM_NCDESTROY) {
 			try {
-				sci->Finalise();
-				delete sci;
+				//sci->Finalise();
+				delete sci; // Finalise() in d'tor
 			} catch (...) {
 			}
 			SetWindowPointer(hWnd, nullptr);

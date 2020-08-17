@@ -249,10 +249,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "N&yelv"
     IDS_MUI_MENU_THEMES     "&Sablon gyűjtemény"
-    IDM_THEMES_DEFAULT      "Gyári érték"
-    IDM_THEMES_FILE_ITEM    "Standard beállítások"
+    IDM_THEMES_DEFAULT      "&Gyári érték"
+    IDM_THEMES_FILE_ITEM    "&Standard beállítások"
     IDS_MUI_STATUSBAR_PREFIXES "Sor ,Oszl ,Kij  ,Sb  ,SKij ,Tal  ,,,,,,,Ch  ,Csere ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Clear All"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Clear Find History"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Clear Replace History"
 END
 
 STRINGTABLE

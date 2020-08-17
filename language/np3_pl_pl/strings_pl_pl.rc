@@ -181,7 +181,7 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "Błąd podczas tworzenia pliku konfiguracyjnego."
     IDS_MUI_WRITEINI_FAIL   "Błąd zapisywania ustawień do pliku konfiguracyjnego."
     IDS_MUI_INIFILE_READONLY
-                            "Plik konfiguracyjny tylko do odczytu - zignorować pominąć ustawienia?"
+                            "Plik konfiguracyjny tylko do odczytu - zignorować (pominąć) ustawienia?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Nie znaleziono istniejącego pliku konfiguracyjnego.\nAby zachować zmiany stylów, zapisz ustawienia (F7) lub wróć do schematu konfiguracji (Ctrl+F12) i eksportuj style."
 END
@@ -249,10 +249,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Język"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
-    IDM_THEMES_DEFAULT      "Domyślne"
-    IDM_THEMES_FILE_ITEM    "Ustawienia standardowe"
+    IDM_THEMES_DEFAULT      "&Domyślne"
+    IDM_THEMES_FILE_ITEM    "&Ustawienia standardowe"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Clear All"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Clear Find History"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Clear Replace History"
 END
 
 STRINGTABLE

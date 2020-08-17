@@ -5742,12 +5742,20 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         CopyMemory(sg_pefrData, &s_efrSave, sizeof(EDITFINDREPLACE));
       }
 
+      WCHAR wchMenuBuf[80] = {L'\0'};
       HMENU hmenu = GetSystemMenu(hwnd, false);
-      GetLngString(IDS_MUI_SAVEPOS, s_tchBuf, COUNTOF(s_tchBuf));
-      InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, s_tchBuf);
-      GetLngString(IDS_MUI_RESETPOS, s_tchBuf, COUNTOF(s_tchBuf));
-      InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, s_tchBuf);
+
+      GetLngString(IDS_MUI_SAVEPOS, wchMenuBuf, COUNTOF(wchMenuBuf));
+      InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, wchMenuBuf);
+      GetLngString(IDS_MUI_RESETPOS, wchMenuBuf, COUNTOF(wchMenuBuf));
+      InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, wchMenuBuf);
       InsertMenu(hmenu, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+      GetLngString(IDS_MUI_CLEAR_FIND_HISTORY, wchMenuBuf, COUNTOF(wchMenuBuf));
+      InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_CLEAR_FIND_HISTORY, wchMenuBuf);
+      GetLngString(IDS_MUI_CLEAR_REPL_HISTORY, wchMenuBuf, COUNTOF(wchMenuBuf));
+      InsertMenu(hmenu, 4, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_CLEAR_REPL_HISTORY, wchMenuBuf);
+      InsertMenu(hmenu, 5, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+
 
       hBrushRed = CreateSolidBrush(rgbRedColorRef);
       hBrushGreen = CreateSolidBrush(rgbGreenColorRef);
@@ -6349,6 +6357,16 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         Settings.FindReplaceDlgPosX = Settings.FindReplaceDlgPosY = CW_USEDEFAULT;
         break;
 
+      case IDACC_CLEAR_FIND_HISTORY:
+        MRU_Empty(Globals.pMRUfind, true);
+        while ((int)SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_DELETESTRING, 0, 0) > 0) {};
+        break;
+
+      case IDACC_CLEAR_REPL_HISTORY:
+        MRU_Empty(Globals.pMRUreplace, true);
+        while ((int)SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_DELETESTRING, 0, 0) > 0) {};
+        break;
+
       case IDACC_FINDNEXT:
         PostWMCommand(hwnd, IDOK);
         break;
@@ -6397,6 +6415,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       }
       else if (wParam == IDS_MUI_RESETPOS) {
         PostWMCommand(hwnd, IDACC_RESETPOS);
+        return !0;
+      }
+      else if (wParam == IDS_MUI_CLEAR_FIND_HISTORY) {
+        PostWMCommand(hwnd, IDACC_CLEAR_FIND_HISTORY);
+        return !0;
+      }
+      else if (wParam == IDS_MUI_CLEAR_REPL_HISTORY) {
+        PostWMCommand(hwnd, IDACC_CLEAR_REPL_HISTORY);
         return !0;
       }
       break;
@@ -7083,14 +7109,8 @@ void EditToggleView(HWND hwnd)
 
   EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
-  if (FocusedView.HideNonMatchedLines) {
-    SciCall_GotoPos(0);
-    SciCall_SetReadOnly(true);
-  }
-  else {
-    Sci_ScrollToCurrentLine();
-    SciCall_SetReadOnly(false);
-  }
+  SciCall_SetReadOnly(FocusedView.HideNonMatchedLines);
+  SciCall_ScrollCaret();
 
   EndWaitCursor();
 }

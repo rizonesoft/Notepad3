@@ -33,14 +33,16 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.813.(build_#) (2020-08-13)
+Current BETA Version 5.20.817.(build_#) (2020-08-17)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
-[.813.1]- Right-to-left (RTL) title/frame layout for some dialog.
+[.816.1]- Controls to clear history (file and find/replace).
+[.815.1]- Using dialog RTL option for Main window too.
+[.813.1]- Right-to-left (RTL) title/frame layout for some dialogs.
 [.813.1]- Edit Right-To-Left (RTL) mode (works only in GDI device context (DC)).
 [.812.1]- Extended context menu (margin commands, file explorer).
 [.812.1]- Context-Menu to toggle margins.
@@ -55,6 +57,8 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.816.1]- Use optimized Asian UI fonts for Notepad3 dialog boxes.
+[.815.1]- Focused View: scroll to current position on each toggle.
 [.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE).
 [.805.1]- Replace "64-bit"/"BETA" by "x64"/"beta" to shorter the version name.
 [.803.1]- Title font change DPI-Awareness for About and Customize Schemes dialog.
@@ -64,7 +68,7 @@ CHANGES:
 [.729.1]- DPI-Aware About & Custom.Scheme dialog.
 [.729.1]- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
 [.723.1]- Review document modified handler (dirty-flag).
-[.812.1]- Update grepWinNP3 (GRE) version 2.1.3.23 (2020-08-12).
+[.816.1]- Update grepWinNP3 (GRE) version 2.1.3.24 (2020-08-16).
 [.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.724.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-07-21).
 
@@ -78,6 +82,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.817.1]- Reload language resource for about-box on init (maybe language changed).
+[.815.1]- DPI Awarenes of window positions (default, sticky, ...).
 [.813.1]- Center dialo in parent (if parent is minimized).
 [.812.1]- Fix copy search for & path to (only one) existing instance (GRE).
 [.812.1]- "grepWinNP3": fix invalid searchPath Ballon-Tip handling (GRE).

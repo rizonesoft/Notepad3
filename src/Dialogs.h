@@ -73,6 +73,7 @@ void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
 void SetWindowLayoutRTL(HWND hwnd, bool bRTL);
+void SetWindowReadingRTL(HWND hwnd, bool bRTL);
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent);
 HWND GetParentOrDesktop(HWND hDlg);
 void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
@@ -215,6 +216,7 @@ typedef struct {
 #pragma pack(pop)
 #endif
 
+bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize);
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize);
 DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance);
 #define ThemedDialogBox(hInstance,lpTemplate,hWndParent,lpDialogFunc) ThemedDialogBoxParam(hInstance,lpTemplate,hWndParent,lpDialogFunc,0)
