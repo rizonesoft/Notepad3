@@ -69,9 +69,11 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
             m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
                 [this]() {
                     CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+                    CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
                 });
             m_link.ConvertStaticToHyperlink(hwndDlg, IDC_WEBLINK, L"http://tools.stefankueng.com");
             CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+            CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
             TCHAR buf[MAX_PATH] = {0};

@@ -4699,9 +4699,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
             lf.lfHeight = -lf.lfHeight;
           }
           *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-          if (*wSize < 9) {
-            *wSize = 9;
-          }
+          if (*wSize < 9) { *wSize = 9; }
           StringCchCopy(lpFaceName, LF_FACESIZE, lf.lfFaceName);
           bSucceed = true;
         }
@@ -4720,9 +4718,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
           ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
         }
         *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight, 72, iLogPixelsY);
-        if (*wSize < 9) {
-          *wSize = 9;
-        }
+        if (*wSize < 9) { *wSize = 9; }
         StringCchCopy(lpFaceName, LF_FACESIZE, ncm.lfMessageFont.lfFaceName);
         bSucceed = true;
       }
@@ -4778,13 +4774,14 @@ static inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate
 
 DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance)
 {
-  HRSRC hRsrc = FindResource(hInstance, lpDialogTemplateID, RT_DIALOG);
+  HRSRC const hRsrc = FindResource(hInstance, lpDialogTemplateID, RT_DIALOG);
   if (!hRsrc) { return NULL; }
 
   HGLOBAL const hRsrcMem = LoadResource(hInstance, hRsrc);
-  DLGTEMPLATE* const pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
-  size_t const  dwTemplateSize = (size_t)SizeofResource(hInstance, hRsrc);
+  DLGTEMPLATE* const pRsrcMem = hRsrcMem ? (DLGTEMPLATE*) LockResource(hRsrcMem) : NULL;
+  if (!pRsrcMem) { return NULL; }
 
+  size_t const  dwTemplateSize = (size_t)SizeofResource(hInstance, hRsrc);
   DLGTEMPLATE* const pTemplate = dwTemplateSize ? (DLGTEMPLATE*)AllocMem(dwTemplateSize + LF_FACESIZE * 2, HEAP_ZERO_MEMORY) : NULL;
 
   if (!pTemplate) {
@@ -4832,7 +4829,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
   *(WORD*)pb = wFontSize;
   MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
 
-  return(pTemplate);
+  return pTemplate;
 }
 
 

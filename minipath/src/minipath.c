@@ -335,6 +335,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   {
     LANGID const langID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
     g_hLngResContainer = g_hInstance;
+    InitMUILanguage(langID);
     if (g_iPrefLANGID != langID) { bPrefLngNotAvail = TRUE; }
   }
   // ----------------------------------------------------

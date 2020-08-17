@@ -228,6 +228,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     if (bDark)
                         DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
                     CTheme::Instance().SetThemeForDialog(*this, bDark);
+                    CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
                     DarkModeHelper::Instance().AllowDarkModeForWindow(GetToolTipHWND(), bDark);
                     if (!bDark)
                         DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
@@ -236,6 +237,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (bDark)
                 DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
             CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+            CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
             DarkModeHelper::Instance().AllowDarkModeForWindow(GetToolTipHWND(), bDark);
             if (!bDark)
                 DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
@@ -1340,6 +1342,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_regBackupInFolder.read();
                 m_bCreateBackupInFolders = !!DWORD(m_regBackupInFolder);
             }
+            CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
             CLanguage::Instance().TranslateWindow(*this); // re-apply, cause update problems?
         }
         break;

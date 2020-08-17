@@ -36,6 +36,10 @@
 #include "config.h"
 #include "resource.h"
 
+#ifndef TMT_MSGBOXFONT
+#define TMT_MSGBOXFONT 805
+#endif
+
 // -----------------------------------------------------------------------------
 #pragma warning( disable : 26451 )
 // -----------------------------------------------------------------------------
@@ -1599,6 +1603,31 @@ void MRU_AddOneItem(LPCWSTR pszKey,LPCWSTR pszNewItem)
   }
 }
 
+
+//=============================================================================
+//
+//  IsFontAvailable()
+//  Test if a certain font is installed on the system
+//
+static int CALLBACK EnumFontsProc(CONST LOGFONT* plf, CONST TEXTMETRIC* ptm, DWORD FontType, LPARAM lParam)
+{
+  UNUSED(plf);
+  UNUSED(ptm);
+  UNUSED(FontType);
+  *((PBOOL)lParam) = TRUE;
+  return 0;
+}
+
+BOOL IsFontAvailable(LPCWSTR lpszFontName)
+{
+  BOOL fFound = FALSE;
+  HDC const hDC = GetDC(NULL);
+  EnumFonts(hDC, lpszFontName, EnumFontsProc, (LPARAM)&fFound);
+  ReleaseDC(NULL, hDC);
+  return fFound;
+}
+
+
 /*
 
   Themed Dialogs
@@ -1607,62 +1636,101 @@ void MRU_AddOneItem(LPCWSTR pszKey,LPCWSTR pszNewItem)
 
 */
 
+static inline BOOL IsChineseTraditionalSubLang(LANGID subLang)
+{
+  return subLang == SUBLANG_CHINESE_TRADITIONAL || subLang == SUBLANG_CHINESE_HONGKONG || subLang == SUBLANG_CHINESE_MACAU;
+}
+
+BOOL GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
+{
+  LPCWSTR font;
+  LANGID const subLang = SUBLANGID(lang);
+  switch (PRIMARYLANGID(lang)) {
+  default:
+  case LANG_ENGLISH:
+    font = L"Segoe UI";
+    *wSize = 9;
+    break;
+  case LANG_CHINESE:
+    font = IsChineseTraditionalSubLang(subLang) ? L"Microsoft JhengHei UI" : L"Microsoft YaHei UI";
+    *wSize = 9;
+    break;
+  case LANG_JAPANESE:
+    font = L"Yu Gothic UI";
+    *wSize = 9;
+    break;
+  case LANG_KOREAN:
+    font = L"Malgun Gothic";
+    *wSize = 9;
+    break;
+  }
+  BOOL const isAvail = IsFontAvailable(font);
+  if (isAvail) {
+    StringCchCopy(lpFaceName, LF_FACESIZE, font);
+  }
+  return isAvail;
+}
+
+
 BOOL GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-  BOOL bSucceed = FALSE;
+  BOOL bSucceed = GetLocaleDefaultUIFont(g_iPrefLANGID, lpFaceName, wSize);
 
   HDC hDC = GetDC(NULL);
   int const iLogPixelsY = GetDeviceCaps(hDC, LOGPIXELSY);
   ReleaseDC(NULL, hDC);
 
-  HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
-  if (hTheme) {
-    LOGFONT lf;
-    if (S_OK == GetThemeSysFont(hTheme,/*TMT_MSGBOXFONT*/805, &lf)) {
-      if (lf.lfHeight < 0) {
-        lf.lfHeight = -lf.lfHeight;
+  if (!bSucceed) {
+    HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+    if (hTheme) {
+      LOGFONT lf;
+      if (S_OK == GetThemeSysFont(hTheme, TMT_MSGBOXFONT, &lf)) {
+        if (lf.lfHeight < 0) {
+          lf.lfHeight = -lf.lfHeight;
+        }
+        *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
+        if (*wSize < 9) { *wSize = 9; }
+        StringCchCopy(lpFaceName, LF_FACESIZE, lf.lfFaceName);
+        bSucceed = TRUE;
       }
-      *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-      if (*wSize == 0) { *wSize = 8; }
-      StrCpyN(lpFaceName, lf.lfFaceName, LF_FACESIZE);
-      bSucceed = TRUE;
+      CloseThemeData(hTheme);
     }
-    CloseThemeData(hTheme);
   }
 
-  /*
   if (!bSucceed) {
-    NONCLIENTMETRICS ncm;
-    ncm.cbSize = sizeof(NONCLIENTMETRICS);
-    SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
-    if (ncm.lfMessageFont.lfHeight < 0)
+    NONCLIENTMETRICS ncm = {0};
+    ncm.cbSize = sizeof(NONCLIENTMETRICS) - sizeof(ncm.iPaddedBorderWidth);
+    SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
+    if (ncm.lfMessageFont.lfHeight < 0) {
       ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
-    *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
-    if (*wSize == 0)
-      *wSize = 8;
-    StrCpyN(lpFaceName,ncm.lfMessageFont.lfFaceName,LF_FACESIZE);
-  }*/
+    }
+    *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight, 72, iLogPixelsY);
+    if (*wSize < 9) { *wSize = 9; }
+    StringCchCopy(lpFaceName, LF_FACESIZE, ncm.lfMessageFont.lfFaceName);
+    bSucceed = TRUE;
+  }
 
-  return(bSucceed);
+  return bSucceed;
 }
 
-__inline BOOL DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
+
+static inline BOOL DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
 
   return ((DLGTEMPLATEEX*)pTemplate)->signature == 0xFFFF;
 }
 
-__inline BOOL DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate) {
+static inline BOOL DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate) {
 
   return (DS_SETFONT &
     (DialogTemplate_IsDialogEx(pTemplate) ? ((DLGTEMPLATEEX*)pTemplate)->style : pTemplate->style));
 }
 
-__inline int DialogTemplate_FontAttrSize(BOOL bDialogEx) {
+static inline int DialogTemplate_FontAttrSize(BOOL bDialogEx) {
 
   return (int)sizeof(WORD) * (bDialogEx ? 3 : 1);
 }
 
-__inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
+static inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
 
   BOOL bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
   WORD* pw;
@@ -1687,101 +1755,79 @@ __inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
   return (BYTE*)pw;
 }
 
-DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID,HINSTANCE hInstance) {
 
-  DLGTEMPLATE *pRsrcMem = NULL;
-  DLGTEMPLATE *pTemplate = NULL;
-  UINT dwTemplateSize = 0;
-  WCHAR wchFaceName[LF_FACESIZE];
-  WORD wFontSize;
-  BOOL bDialogEx;
-  BOOL bHasFont;
-  int cbFontAttr;
-  int cbNew;
-  int cbOld;
-  BYTE* pbNew;
-  BYTE* pb;
-  BYTE* pOldControls;
-  BYTE* pNewControls;
-  WORD nCtrl;
+DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance)
+{
+  HRSRC const hRsrc = FindResource(hInstance, lpDialogTemplateID, RT_DIALOG);
+  if (!hRsrc) { return(NULL); }
 
-  HRSRC hRsrc = FindResource(hInstance,lpDialogTemplateID,RT_DIALOG);
-  if (hRsrc == NULL)
-    return(NULL);
+  HGLOBAL const hRsrcMem = LoadResource(hInstance,hRsrc);
+  DLGTEMPLATE* const pRsrcMem = hRsrcMem ? (DLGTEMPLATE*)LockResource(hRsrcMem) : NULL;
+  if (!pRsrcMem) { return NULL; }
 
-  HGLOBAL hRsrcMem = LoadResource(hInstance,hRsrc);
-  if (hRsrcMem)
-    pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
-  else
+  size_t const dwTemplateSize = (size_t)SizeofResource(hInstance,hRsrc);
+  DLGTEMPLATE* const pTemplate = dwTemplateSize ? (DLGTEMPLATE*)LocalAlloc(LPTR, dwTemplateSize + LF_FACESIZE * 2) : NULL;
+
+  if (!pTemplate) {
+    UnlockResource(hRsrcMem);
+    FreeResource(hRsrcMem);
     return NULL;
-
-  dwTemplateSize = (UINT)SizeofResource(hInstance,hRsrc);
-
-  if ((dwTemplateSize == 0) ||
-      (pTemplate = LocalAlloc(LPTR,dwTemplateSize+LF_FACESIZE*2)) == NULL) {
-    if (hRsrcMem) {
-      UnlockResource(hRsrcMem);
-      FreeResource(hRsrcMem);
-    }
-    return(NULL);
   }
 
-  CopyMemory((BYTE*)pTemplate,pRsrcMem,(size_t)dwTemplateSize);
+  CopyMemory((BYTE*)pTemplate,pRsrcMem,dwTemplateSize);
   UnlockResource(hRsrcMem);
   FreeResource(hRsrcMem);
 
-  if (!GetThemedDialogFont(wchFaceName,&wFontSize))
-    return(pTemplate);
+  WCHAR wchFaceName[LF_FACESIZE] = { L'\0' };
+  WORD  wFontSize = 0;
+  if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
+    return (pTemplate);
+  }
 
-  bDialogEx  = DialogTemplate_IsDialogEx(pTemplate);
-  bHasFont   = DialogTemplate_HasFont(pTemplate);
-  cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
+  BOOL const bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
+  BOOL const bHasFont = DialogTemplate_HasFont(pTemplate);
+  size_t const cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
 
-  if (bDialogEx)
+  if (bDialogEx) {
     ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
-  else
+  }
+  else {
     pTemplate->style |= DS_SHELLFONT;
+  }
 
-  cbNew = cbFontAttr + ((lstrlen(wchFaceName) + 1) * sizeof(WCHAR));
-  pbNew = (BYTE*)wchFaceName;
+  size_t const cbNew = cbFontAttr + ((lstrlen(wchFaceName) + 1) * sizeof(WCHAR));
+  BYTE* const pbNew = (BYTE*)wchFaceName;
 
-  pb = DialogTemplate_GetFontSizeField(pTemplate);
-  cbOld = (int)(bHasFont ? cbFontAttr + 2 * (lstrlen((WCHAR*)(pb + cbFontAttr)) + 1) : 0);
+  BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
+  size_t const cbOld = (bHasFont ? cbFontAttr + 2 * (lstrlen((WCHAR*)(pb + cbFontAttr)) + 1) : 0);
 
-  pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
-  pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
+  BYTE* const pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
+  BYTE* const pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
 
-  nCtrl = bDialogEx ?
-    (WORD)((DLGTEMPLATEEX*)pTemplate)->cDlgItems :
-    (WORD)pTemplate->cdit;
+  WORD const nCtrl = (bDialogEx ? ((DLGTEMPLATEEX*)pTemplate)->cDlgItems : pTemplate->cdit);
 
-  if (cbNew != cbOld && nCtrl > 0)
-    MoveMemory(pNewControls,pOldControls,((size_t)dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
+  if (cbNew != cbOld && nCtrl > 0) {
+    MoveMemory(pNewControls, pOldControls, (dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
+  }
 
   *(WORD*)pb = wFontSize;
-  MoveMemory(pb + cbFontAttr,pbNew,(size_t)(cbNew - cbFontAttr));
+  MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
 
-  return(pTemplate);
+  return pTemplate;
 }
 
-INT_PTR ThemedDialogBoxParam(
-  HINSTANCE hInstance,
-  LPCTSTR lpTemplate,
-  HWND hWndParent,
-  DLGPROC lpDialogFunc,
-  LPARAM dwInitParam) {
 
-  INT_PTR ret = IDABORT;
-  DLGTEMPLATE *pDlgTemplate = NULL;
+INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
+                             DLGPROC lpDialogFunc, LPARAM dwInitParam)
+{
 
-  pDlgTemplate = LoadThemedDialogTemplate(lpTemplate,hInstance);
+  DLGTEMPLATE* const pDlgTemplate = LoadThemedDialogTemplate(lpTemplate,hInstance);
+  INT_PTR const ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
   if (pDlgTemplate) {
-    ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     LocalFree(pDlgTemplate);
   }
-  return(ret);
+  return ret;
 }
-
 
 /*
 

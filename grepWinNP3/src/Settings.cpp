@@ -30,6 +30,69 @@
 
 inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
 
+
+
+//=============================================================================
+//
+//  IsFontAvailable()
+//  Test if a certain font is installed on the system
+//
+static int CALLBACK EnumFontsProc(CONST LOGFONT* plf, CONST TEXTMETRIC* ptm, DWORD FontType, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(plf);
+    UNREFERENCED_PARAMETER(ptm);
+    UNREFERENCED_PARAMETER(FontType);
+    *((PBOOL)lParam) = true;
+    return 0;
+}
+
+static inline bool IsFontAvailable(LPCWSTR lpszFontName)
+{
+    BOOL      fFound = FALSE;
+    HDC const hDC    = GetDC(NULL);
+    EnumFonts(hDC, lpszFontName, EnumFontsProc, (LPARAM)&fFound);
+    ReleaseDC(NULL, hDC);
+    return fFound;
+}
+
+bool GetLocaleDefaultUIFont(std::wstring langFileName, LPWSTR lpFaceName, WORD& wSize)
+{
+    LPCWSTR font = L"Segoe UI";
+    wSize        = 9;
+
+    std::transform(langFileName.begin(), langFileName.end(), langFileName.begin(), ::towlower);
+
+    if (langFileName.find(L"[zh-cn]") != std::wstring::npos)
+    {
+        font = L"Microsoft JhengHei UI";
+        //wSize = 9;
+    }
+    else if (langFileName.find(L"[zh-tw]") != std::wstring::npos)
+    {
+        font = L"Microsoft YaHei UI";
+        //wSize = 9;
+    }
+    else if (langFileName.find(L"[ja-jp]") != std::wstring::npos)
+    {
+        font  = L"Yu Gothic UI";
+        //wSize = 9;
+    }
+    else if (langFileName.find(L"[ko-kr]") != std::wstring::npos)
+    {
+        font  = L"Malgun Gothic";
+        //wSize = 9;
+    }
+
+    bool const isAvail = IsFontAvailable(font);
+    if (isAvail)
+    {
+        StringCchCopy(lpFaceName, LF_FACESIZE, font);
+    }
+    return isAvail;
+}
+//=============================================================================
+
+
 CSettingsDlg::CSettingsDlg(HWND hParent)
     : m_hParent(hParent)
     , m_regEditorCmd(_T("Software\\grepWinNP3\\editorcmd"))
@@ -55,8 +118,10 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
                 [this]() {
                     CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+                    CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
                 });
             CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+            CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
             InitDialog(hwndDlg, IDI_GREPWIN);
             DarkModeHelper::Instance().AllowDarkModeForWindow(GetToolTipHWND(), CTheme::Instance().IsDarkTheme());
             SetWindowTheme(GetToolTipHWND(), L"Explorer", nullptr);
@@ -297,6 +362,13 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 else
                     regLang = langpath;
             }
+
+            WORD fntSize = 9;
+            WCHAR fontFaceName[LF_FACESIZE];
+            if (GetLocaleDefaultUIFont(langpath, fontFaceName, fntSize)) {
+                CTheme::Instance().SetDlgFontFaceName(fontFaceName, fntSize);
+            }
+
             CLanguage::Instance().LoadFile(langpath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
 
