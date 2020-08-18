@@ -185,8 +185,7 @@ EditView::EditView() {
 	customDrawWrapMarker = nullptr;
 }
 
-EditView::~EditView() {
-}
+EditView::~EditView() = default;
 
 bool EditView::SetTwoPhaseDraw(bool twoPhaseDraw) noexcept {
 	const PhasesDraw phasesDrawNew = twoPhaseDraw ? phasesTwo : phasesOne;
@@ -2230,7 +2229,7 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, PRectan
 			PLATFORM_ASSERT(pixmapLine->Initialised());
 		}
 		surface->SetUnicodeMode(SC_CP_UTF8 == model.pdoc->dbcsCodePage);
-		//~surface->SetDBCSMode(model.pdoc->dbcsCodePage);
+		surface->SetDBCSMode(model.pdoc->dbcsCodePage);
 		surface->SetBidiR2L(model.BidirectionalR2L());
 
 		const Point ptOrigin = model.GetVisibleOriginInMain();

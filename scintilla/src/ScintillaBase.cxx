@@ -72,8 +72,7 @@ ScintillaBase::ScintillaBase() {
 #endif
 }
 
-ScintillaBase::~ScintillaBase() {
-}
+ScintillaBase::~ScintillaBase() = default;
 
 void ScintillaBase::Finalise() {
 	Editor::Finalise();
