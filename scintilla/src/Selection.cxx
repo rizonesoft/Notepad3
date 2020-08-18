@@ -195,8 +195,7 @@ Selection::Selection() : mainRange(0), moveExtends(false), tentativeMain(false),
 	AddSelection(SelectionRange(SelectionPosition(0)));
 }
 
-Selection::~Selection() {
-}
+Selection::~Selection() = default;
 
 bool Selection::IsRectangular() const noexcept {
 	return (selType == selRectangle) || (selType == selThin);

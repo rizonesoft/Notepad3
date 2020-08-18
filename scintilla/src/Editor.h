@@ -432,7 +432,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void NotifyChange() = 0;
 	virtual void NotifyFocus(bool focus);
 	virtual void SetCtrlID(int identifier);
-	virtual int GetCtrlID() { return ctrlID; }
+	virtual int GetCtrlID() const noexcept { return ctrlID; }
 	virtual void NotifyParent(SCNotification scn) = 0;
 	virtual void NotifyStyleToNeeded(Sci::Position endStyleNeeded);
 	void NotifyChar(int ch, CharacterSource charSource);
@@ -543,8 +543,8 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void IdleWork();
 	virtual void QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo=0);
 
-	virtual bool PaintContains(PRectangle rc);
-	bool PaintContainsMargin();
+	virtual bool PaintContains(PRectangle rc) const noexcept;
+	virtual bool PaintContainsMargin() const noexcept;
 	void CheckForChangeOutsidePaint(Range r);
 	void SetBraceHighlight(Sci::Position pos0, Sci::Position pos1, int matchStyle);
 
@@ -652,7 +652,7 @@ public:
 			surf.reset(Surface::Allocate(technology != -1 ? technology : ed->technology));
 			surf->Init(ed->wMain.GetID());
 			surf->SetUnicodeMode(SC_CP_UTF8 == ed->CodePage());
-			//~surf->SetDBCSMode(ed->CodePage());
+			surf->SetDBCSMode(ed->CodePage());
 			surf->SetBidiR2L(ed->BidirectionalR2L());
 		}
 	}
@@ -661,7 +661,7 @@ public:
 			surf.reset(Surface::Allocate(technology != -1 ? technology : ed->technology));
 			surf->Init(sid, ed->wMain.GetID(), printing);
 			surf->SetUnicodeMode(SC_CP_UTF8 == ed->CodePage());
-			//~surf->SetDBCSMode(ed->CodePage());
+			surf->SetDBCSMode(ed->CodePage());
 			surf->SetBidiR2L(ed->BidirectionalR2L());
 		}
 	}

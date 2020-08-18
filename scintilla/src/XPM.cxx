@@ -86,8 +86,7 @@ XPM::XPM(const char *const *linesForm) {
 	Init(linesForm);
 }
 
-XPM::~XPM() {
-}
+XPM::~XPM() = default;
 
 void XPM::Init(const char *textForm) {
 	// Test done is two parts to avoid possibility of overstepping the memory
@@ -244,8 +243,7 @@ RGBAImage::RGBAImage(const XPM &xpm) {
 	}
 }
 
-RGBAImage::~RGBAImage() {
-}
+RGBAImage::~RGBAImage() = default;
 
 int RGBAImage::CountBytes() const noexcept {
 	return width * height * 4;
