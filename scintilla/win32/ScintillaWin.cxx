@@ -508,7 +508,7 @@ class ScintillaWin :
 	};
 
 	void DisplayCursor(Window::Cursor c) noexcept override;
-	bool SCICALL DragThreshold(Point ptStart, Point ptNow) noexcept override;
+	bool DragThreshold(Point ptStart, Point ptNow) noexcept override;
 	void StartDrag() override;
 	static int MouseModifiers(uptr_t wParam) noexcept;
 
@@ -547,7 +547,7 @@ class ScintillaWin :
 	void SetMouseCapture(bool on) noexcept override;
 	bool HaveMouseCapture() noexcept override;
 	void SetTrackMouseLeaveEvent(bool on) noexcept;
-	bool SCICALL PaintContains(PRectangle rc) const noexcept override;
+	bool PaintContains(PRectangle rc) const noexcept override;
 	void ScrollText(Sci::Line linesToMove) override;
 	void NotifyCaretMove() noexcept override;
 	void UpdateSystemCaret() override;
@@ -566,7 +566,7 @@ class ScintillaWin :
 	void Copy(bool asBinary) override;
 	bool CanPaste() noexcept override;
 	void Paste(bool asBinary) override;
-	void SCICALL CreateCallTipWindow(PRectangle rc) noexcept override;
+	void CreateCallTipWindow(PRectangle rc) noexcept override;
 #if SCI_EnablePopupMenu
 	void AddToPopUp(const char *label, int cmd = 0, bool enabled = true) noexcept override;
 #endif
