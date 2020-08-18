@@ -54,15 +54,14 @@
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
 WORDBOOKMARK_T WordBookMarks[MARKER_NP3_BOOKMARK] = {
- /*0*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
- /*1*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
- /*2*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
- /*3*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
- /*4*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
- /*5*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
- /*6*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
- /*7*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE}
-};
+  /*0*/ {false, SC_MARK_BOOKMARK, L"back:#FF0000"},
+  /*1*/ {false, SC_MARK_BOOKMARK, L"back:#0000FF"},
+  /*2*/ {false, SC_MARK_BOOKMARK, L"back:#00FF00"},
+  /*3*/ {false, SC_MARK_BOOKMARK, L"back:#FFFF00"},
+  /*4*/ {false, SC_MARK_BOOKMARK, L"back:#00E8E8"},
+  /*5*/ {false, SC_MARK_BOOKMARK, L"back:#FF00FF"},
+  /*6*/ {false, SC_MARK_BOOKMARK, L"back:#FF8F20"},
+  /*7*/ {false, SC_MARK_BOOKMARK, L"back:#950095"}};
 
 
 CONSTANTS_T const Constants = { 
@@ -4800,41 +4799,39 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     // Main Bookmark Functions
     case BME_EDIT_BOOKMARKNEXT:
     {
-        DocPos const iPos = SciCall_GetCurrentPos();
-        DocLn const iLine = SciCall_LineFromPosition(iPos);
+      DocLn const iLine = Sci_GetCurrentLineNumber();
+      int bitmask = SciCall_MarkerGet(iLine) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+      if (!bitmask) {
+        bitmask = (1 << MARKER_NP3_BOOKMARK);
+      }
 
-        int bitmask = (1 << MARKER_NP3_BOOKMARK);
-        DocLn iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERNEXT , iLine+1 , bitmask );
-        if (iNextLine == (DocLn)-1)
-        {
-            iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERNEXT , 0 , bitmask );
-        }
-
-        if (iNextLine != (DocLn)-1)
-        {
-            SciCall_GotoLine(iNextLine);
-            EditEnsureSelectionVisible();
-        }
+      DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerNext(0, bitmask);
+      }
+      if (iNextLine != (DocLn)-1) {
+        SciCall_GotoLine(iNextLine);
+        EditEnsureSelectionVisible();
+      }
     }
     break;
 
     case BME_EDIT_BOOKMARKPREV:
     {
-        DocPos const iPos = SciCall_GetCurrentPos();
-        DocLn const iLine = SciCall_LineFromPosition(iPos);
+      DocLn const iLine = Sci_GetCurrentLineNumber();
+      int bitmask = SciCall_MarkerGet(iLine) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+      if (!bitmask) {
+        bitmask = (1 << MARKER_NP3_BOOKMARK);
+      }
 
-        int bitmask = (1 << MARKER_NP3_BOOKMARK);
-        DocLn iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERPREVIOUS , iLine-1 , bitmask );
-        if (iNextLine == (DocLn)-1)
-        {
-            iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERPREVIOUS , SciCall_GetLineCount(), bitmask );
-        }
-
-        if (iNextLine != (DocLn)-1)
-        {
-            SciCall_GotoLine(iNextLine);
-            EditEnsureSelectionVisible();
-        }
+      DocLn iNextLine = SciCall_MarkerPrevious(iLine - 1, bitmask);
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask);
+      }
+      if (iNextLine != (DocLn)-1) {
+        SciCall_GotoLine(iNextLine);
+        EditEnsureSelectionVisible();
+      }
     }
     break;
 
@@ -4846,6 +4843,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case BME_EDIT_BOOKMARKCLEAR:
       SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+      for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
+        SciCall_MarkerDeleteAll(m);
+        WordBookMarks[m].in_use = false;
+      }
       break;
 
 
@@ -6960,22 +6961,25 @@ static void  _HandleAutoIndent(int const charAdded)
   int const eol_mode = SciCall_GetEOLMode();
   if (((SC_EOL_CRLF == eol_mode) && (charAdded != '\r')) || (SC_EOL_CRLF != eol_mode))
   {
-    DocPos const iCurPos = SciCall_GetCurrentPos();
-    DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
+    DocLn const iCurLine = Sci_GetCurrentLineNumber();
 
     // Move bookmark along with line if inserting lines (pressing return within indent area of line) because Scintilla does not do this for us
     if (iCurLine > 0)
     {
-      //DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
+      //~DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
       if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
       {
-        int const bitmask = SciCall_MarkerGet(iCurLine - 1);
-        if (bitmask & (1 << MARKER_NP3_BOOKMARK))
-        {
-          SciCall_MarkerDelete(iCurLine - 1, MARKER_NP3_BOOKMARK);
-          SciCall_MarkerAdd(iCurLine, MARKER_NP3_BOOKMARK);
+        int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+        if (bitmask) {
+          for (int m = 0; m <= MARKER_NP3_BOOKMARK; ++m) {
+            if (bitmask & (1 << m)) {
+              SciCall_MarkerDelete(iCurLine - 1, m);
+              SciCall_MarkerAdd(iCurLine, m);
+            }
+          }
         }
       }
+
       //~if (iLineLength <= 2)
       {
         DocLn const iPrevLine = iCurLine - 1;

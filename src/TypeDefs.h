@@ -271,9 +271,8 @@ typedef struct _wordbookmark_t
 {
   bool     in_use;
   int      sci_symbol;
-  COLORREF fg_color;
-  COLORREF bg_color;
-  BYTE     alpha;
+  LPCWSTR  color;
+
 } WORDBOOKMARK_T, *PWORDBOOKMARK_T;
 
 extern WORDBOOKMARK_T WordBookMarks[];

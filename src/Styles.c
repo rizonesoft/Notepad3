@@ -1816,7 +1816,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   COLORREF bmkFore = clrFore;
   COLORREF bmkBack = clrBack;
 
-  const WCHAR* wchBookMarkStyleStrg = GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue;
+  const WCHAR* const wchBookMarkStyleStrg = GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue;
 
   Style_StrGetColor(wchBookMarkStyleStrg, FOREGROUND_LAYER, &bmkFore);
   Style_StrGetColor(wchBookMarkStyleStrg, BACKGROUND_LAYER, &bmkBack);
@@ -1836,6 +1836,17 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
   SciCall_SetMarginSensitiveN(MARGIN_SCI_BOOKMRK, true);
   SciCall_SetMarginCursorN(MARGIN_SCI_BOOKMRK, SC_NP3_CURSORHAND);
+
+  // ---  WordBookMarks  ---
+  for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m)
+  {
+    COLORREF color;
+    Style_StrGetColor(WordBookMarks[m].color, BACKGROUND_LAYER, &color);
+    SciCall_MarkerDefine(m, WordBookMarks[m].sci_symbol);
+    SciCall_MarkerSetFore(m, color);
+    SciCall_MarkerSetBack(m, color);
+    SciCall_MarkerSetAlpha(m, alpha);
+  }
 
   // ---  Code folding  ---
 
