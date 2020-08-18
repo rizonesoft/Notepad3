@@ -59,7 +59,7 @@ ViewStyle::ViewStyle() : markers(MARKER_MAX + 1), indicators(INDICATOR_MAX + 1) 
 
 // Copy constructor only called when printing copies the screen ViewStyle so it can be
 // modified for printing styles.
-ViewStyle::ViewStyle(const ViewStyle &source) : markers(MARKER_MAX + 1), indicators(INDICATOR_MAX + 1), fonts() {
+ViewStyle::ViewStyle(const ViewStyle &source) : markers(MARKER_MAX + 1), indicators(INDICATOR_MAX + 1) {
 	Init(source.styles.size());
 	styles = source.styles;
 	for (size_t sty=0; sty<source.styles.size(); sty++) {
@@ -666,10 +666,10 @@ FontRealised *ViewStyle::Find(const FontSpecification &fs) {
 }
 
 void ViewStyle::FindMaxAscentDescent() {
-	for (FontMap::const_iterator it = fonts.cbegin(); it != fonts.cend(); ++it) {
-		if (maxAscent < it->second->ascent)
-			maxAscent = it->second->ascent;
-		if (maxDescent < it->second->descent)
-			maxDescent = it->second->descent;
+	for (const auto & font : fonts) {
+		if (maxAscent < font.second->ascent)
+			maxAscent = font.second->ascent;
+		if (maxDescent < font.second->descent)
+			maxDescent = font.second->descent;
 	}
 }

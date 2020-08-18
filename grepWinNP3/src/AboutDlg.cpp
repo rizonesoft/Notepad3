@@ -47,8 +47,8 @@ static LRESULT DrawGrepWinIcon(HWND hWnd)
         {
             BeginPaint(hWnd, &ps);
             int const    dpiSized  = CDPIAware::Instance().Scale(hWnd, 64);
-            int const    dpiLeft   = CDPIAware::Instance().Scale(hWnd, 22);
-            int const    dpiTop    = CDPIAware::Instance().Scale(hWnd, 44);
+            int const    dpiLeft   = CDPIAware::Instance().Scale(hWnd, 12);
+            int const    dpiTop    = CDPIAware::Instance().Scale(hWnd, 12);
             HBRUSH const hBrush    = (HBRUSH)GetSysColorBrush(COLOR_3DFACE);
             DrawIconEx(hDC, dpiLeft, dpiTop, g_hDlgIcon128, dpiSized, dpiSized, 0, hBrush, DI_NORMAL);
             ReleaseDC(hWnd, hDC);
@@ -69,9 +69,11 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
             m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
                 [this]() {
                     CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+                    CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
                 });
             m_link.ConvertStaticToHyperlink(hwndDlg, IDC_WEBLINK, L"http://tools.stefankueng.com");
             CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+            CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
             TCHAR buf[MAX_PATH] = {0};

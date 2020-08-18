@@ -468,7 +468,7 @@ public:
 	virtual void FlushCachedState() noexcept = 0;
 
 	virtual void SetUnicodeMode(bool unicodeMode_) noexcept = 0;
-	//~virtual void SetDBCSMode(int codePage) noexcept = 0;
+	virtual void SetDBCSMode(int codePage) noexcept = 0;
 	virtual void SetBidiR2L(bool bidiR2L_) noexcept = 0;
 };
 

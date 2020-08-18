@@ -58,6 +58,8 @@ CTheme::CTheme()
     , m_bDarkModeIsAllowed(false)
     , m_isHighContrastMode(false)
     , m_isHighContrastModeDark(false)
+    , m_DlgFontFace(L"Segoe UI")
+    , m_DlgFontSize(9)
 {
 }
 
@@ -134,6 +136,32 @@ bool CTheme::RemoveRegisteredCallback(int id)
     }
     return false;
 }
+
+
+void CTheme::SetDlgFontFaceName(LPCWSTR FontFaceName, int size)
+{
+    (void)lstrcpyn(m_DlgFontFace, FontFaceName, _countof(m_DlgFontFace));
+    m_DlgFontSize = size;
+}
+
+LPCWSTR CTheme::GetDlgFontFaceName() { return &m_DlgFontFace[0]; }
+int CTheme::GetDlgFontSize() { return m_DlgFontSize; }
+
+void CTheme::SetFontForDialog(HWND hwnd, LPCWSTR FontFaceName, int FontSize)
+{
+    LOGFONT lf = {0};
+    GetObject(GetWindowFont(hwnd), sizeof(lf), &lf);
+    lf.lfWeight = FW_REGULAR;
+    lf.lfHeight = (LONG)FontSize;
+    (void)lstrcpyn(lf.lfFaceName, FontFaceName, _countof(lf.lfFaceName));
+    HFONT const hf = CreateFontIndirect(&lf);
+    HDC const hdc = GetDC(hwnd);
+    SetBkMode(hdc, OPAQUE);
+    SendMessage(hwnd, WM_SETFONT, (WPARAM)hf, TRUE);
+    ReleaseDC(hwnd, hdc);
+}
+
+
 
 bool CTheme::SetThemeForDialog(HWND hWnd, bool bDark)
 {

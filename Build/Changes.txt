@@ -57,9 +57,10 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.817.2]- grepWinNP3 and minipath: special dialog box UI fonts for Asian languages.
 [.816.1]- Use optimized Asian UI fonts for Notepad3 dialog boxes.
 [.815.1]- Focused View: scroll to current position on each toggle.
-[.805.1]- "grepWinNP3": add OS architecture (x64) - AboutBox (GRE).
+[.805.1]- grepWinNP3: add OS architecture (x64) - AboutBox (GRE).
 [.805.1]- Replace "64-bit"/"BETA" by "x64"/"beta" to shorter the version name.
 [.803.1]- Title font change DPI-Awareness for About and Customize Schemes dialog.
 [.802.1]- Resample scaling of info-box icons on DPI change.
@@ -68,7 +69,7 @@ CHANGES:
 [.729.1]- DPI-Aware About & Custom.Scheme dialog.
 [.729.1]- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
 [.723.1]- Review document modified handler (dirty-flag).
-[.816.1]- Update grepWinNP3 (GRE) version 2.1.3.24 (2020-08-16).
+[.817.2]- Update grepWinNP3 (GRE) version 2.1.3.26 (2020-08-17).
 [.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.724.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-07-21).
 

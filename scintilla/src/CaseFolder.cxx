@@ -14,8 +14,7 @@
 
 using namespace Scintilla;
 
-CaseFolder::~CaseFolder() {
-}
+CaseFolder::~CaseFolder() = default;
 
 CaseFolderTable::CaseFolderTable() noexcept : mapping{}  {
 	for (size_t iChar=0; iChar<sizeof(mapping); iChar++) {
@@ -23,8 +22,7 @@ CaseFolderTable::CaseFolderTable() noexcept : mapping{}  {
 	}
 }
 
-CaseFolderTable::~CaseFolderTable() {
-}
+CaseFolderTable::~CaseFolderTable() = default;
 
 size_t CaseFolderTable::Fold(char *folded, size_t sizeFolded, const char *mixed, size_t lenMixed) {
 	if (lenMixed > sizeFolded) {

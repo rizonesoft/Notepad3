@@ -103,6 +103,8 @@ static void RegisterContextMenu(bool bAdd)
     }
 }
 
+
+
 BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
 {
     auto * pWnd = (HWND*)lParam;

@@ -37,8 +37,7 @@ public:
 
 	explicit Decoration(int indicator_) : indicator(indicator_) {
 	}
-	~Decoration() override {
-	}
+	~Decoration() override = default;
 
 	bool Empty() const noexcept override {
 		return (rs.Runs() == 1) && (rs.AllSameAs(0));

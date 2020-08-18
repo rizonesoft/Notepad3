@@ -78,7 +78,7 @@ public:
 	virtual bool ReleaseLineCharacterIndex(int lineCharacterIndex) = 0;
 	virtual Sci::Position IndexLineStart(Sci::Line line, int lineCharacterIndex) const noexcept = 0;
 	virtual Sci::Line LineFromPositionIndex(Sci::Position pos, int lineCharacterIndex) const noexcept = 0;
-	virtual ~ILineVector() {}
+	virtual ~ILineVector() = default;
 };
 
 }
@@ -99,8 +99,7 @@ public:
 	LineStartIndex(LineStartIndex &&) = delete;
 	void operator=(const LineStartIndex &) = delete;
 	void operator=(LineStartIndex &&) = delete;
-	virtual ~LineStartIndex() {
-	}
+	virtual ~LineStartIndex() = default;
 	bool Allocate(Sci::Line lines) {
 		refCount++;
 		Sci::Position length = starts.PositionFromPartition(starts.Partitions());
@@ -161,8 +160,7 @@ public:
 	LineVector(LineVector &&) = delete;
 	LineVector &operator=(const LineVector &) = delete;
 	LineVector &operator=(LineVector &&) = delete;
-	~LineVector() override {
-	}
+	~LineVector() override = default;
 	void Init() override {
 		starts.DeleteAll();
 		if (perLine) {
@@ -308,8 +306,7 @@ Action::Action() noexcept {
 	mayCoalesce = false;
 }
 
-Action::~Action() {
-}
+Action::~Action() = default;
 
 void Action::Create(actionType at_, Sci::Position position_, const char *data_, Sci::Position lenData_, bool mayCoalesce_) {
 	data = nullptr;
@@ -358,8 +355,7 @@ UndoHistory::UndoHistory() {
 	actions[currentAction].Create(startAction);
 }
 
-UndoHistory::~UndoHistory() {
-}
+UndoHistory::~UndoHistory() = default;
 
 void UndoHistory::EnsureUndoRoom() {
 	// Have to test that there is room for 2 more actions in the array
@@ -577,8 +573,7 @@ CellBuffer::CellBuffer(bool hasStyles_, bool largeDocument_) :
 		plv = std::make_unique<LineVector<int>>();
 }
 
-CellBuffer::~CellBuffer() {
-}
+CellBuffer::~CellBuffer() = default;
 
 char CellBuffer::CharAt(Sci::Position position) const noexcept {
 	return substance.ValueAt(position);

@@ -253,7 +253,6 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 }
 
 
-
 //=============================================================================
 //
 //  SetPreferredLanguage
@@ -272,6 +271,7 @@ static void SetMuiLocaleAll(LPCWSTR pszLocaleStr)
       MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
 #endif
     }
+
   }
 }
 
