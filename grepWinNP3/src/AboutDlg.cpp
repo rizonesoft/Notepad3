@@ -47,8 +47,8 @@ static LRESULT DrawGrepWinIcon(HWND hWnd)
         {
             BeginPaint(hWnd, &ps);
             int const    dpiSized  = CDPIAware::Instance().Scale(hWnd, 64);
-            int const    dpiLeft   = CDPIAware::Instance().Scale(hWnd, 22);
-            int const    dpiTop    = CDPIAware::Instance().Scale(hWnd, 44);
+            int const    dpiLeft   = CDPIAware::Instance().Scale(hWnd, 12);
+            int const    dpiTop    = CDPIAware::Instance().Scale(hWnd, 12);
             HBRUSH const hBrush    = (HBRUSH)GetSysColorBrush(COLOR_3DFACE);
             DrawIconEx(hDC, dpiLeft, dpiTop, g_hDlgIcon128, dpiSized, dpiSized, 0, hBrush, DI_NORMAL);
             ReleaseDC(hWnd, hDC);
