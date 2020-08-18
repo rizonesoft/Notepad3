@@ -53,6 +53,18 @@
 
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
+WORDBOOKMARK_T WordBookMarks[MARKER_NP3_BOOKMARK] = {
+ /*0*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
+ /*1*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
+ /*2*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
+ /*3*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
+ /*4*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
+ /*5*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
+ /*6*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE},
+ /*7*/ {false, SC_MARK_SMALLRECT, RGB(0xFF, 0x00, 0x00), RGB(0xFF, 0x00, 0x00), SC_ALPHA_OPAQUE}
+};
+
+
 CONSTANTS_T const Constants = { 
     2                                    // StdDefaultLexerID
   , L"minipath.exe"                      // FileBrowserMiniPath
@@ -1932,8 +1944,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
   SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_COLOR_DEF, true);
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, 0x00); // reset on hover
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, 0xFF);
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT); // reset on hover
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_OPAQUE);
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // HOVER
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
@@ -1943,8 +1955,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
  
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
   //SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_UNICODE_POINT, false);
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, 0x00);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, 0xFF);
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_TRANSPARENT);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_NOALPHA);
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX); // HOVER
   //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0));
 
@@ -6524,23 +6536,23 @@ static DocPos prevCursorPosition = -1;
 #define RGB_TOLERANCE 0x20
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
 
-inline COLORREF _CalcContrastColor(COLORREF rgb, BYTE alpha)
+inline COLORREF _CalcContrastColor(COLORREF rgb, int alpha)
 {
 
-  bool const mask = RGB_SUB(MulDiv(rgb >>  0, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB(MulDiv(rgb >>  8, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB(MulDiv(rgb >> 16, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE;
+  bool const mask = RGB_SUB(MulDiv(rgb >>  0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB(MulDiv(rgb >>  8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB(MulDiv(rgb >> 16, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE;
 
-  return mask ? (0x7F7F7F + rgb) & 0xFFFFFF : rgb ^ 0xFFFFFF;
+  return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
 }
 
 // ----------------------------------------------------------------------------
 
-#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & 0xFF, ((X) >> 8) & 0xFF, (X)&0xFF))
-#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & 0xFF, ((X) >> 16) & 0xFF, ((X) >> 8) & 0xFF))
-#define BGRA_TO_COLREF(X) (RGB(((X) >> 8) & 0xFF, ((X) >> 16) & 0xFF, ((X) >> 24) & 0xFF))
-#define ARGB_GET_ALPHA(A) (((A) >> 24) & 0xFF)
-#define RGBA_GET_ALPHA(A) ((A) & 0xFF)
+#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >>  8) & SC_ALPHA_OPAQUE, (X) & SC_ALPHA_OPAQUE))
+#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 8) & SC_ALPHA_OPAQUE))
+#define BGRA_TO_COLREF(X) (RGB(((X) >>  8) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 24) & SC_ALPHA_OPAQUE))
+#define ARGB_GET_ALPHA(A) (((A) >> 24) & SC_ALPHA_OPAQUE)
+#define RGBA_GET_ALPHA(A) ((A) & SC_ALPHA_OPAQUE)
 #define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
                                
 // ----------------------------------------------------------------------------
@@ -6652,7 +6664,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         if (sscanf_s(&chText[1], "%x", &iValue) == 1) 
         {
           COLORREF rgb = 0x000000;
-          BYTE   alpha = 0xFF;
+          int alpha = SC_ALPHA_OPAQUE;
           if (length >= 8) // ARGB, RGBA, BGRA
           {
             switch (Settings.ColorDefHotspot) {
@@ -6676,7 +6688,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           else // RGB
           {
             rgb   = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
-            alpha = 0xFF;
+            alpha = SC_ALPHA_OPAQUE;
           }
           COLORREF const fgr = _CalcContrastColor(rgb, alpha);
 
@@ -6684,7 +6696,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           SciCall_IndicatorFillRange(firstPos, length);
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, fgr);
 
-          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, alpha);
+          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, Sci_ClampAlpha(alpha));
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
         }
       }
@@ -6727,7 +6739,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
       SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
       SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
-      SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0);
+      SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
       SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
 
       HandlePosChange();
