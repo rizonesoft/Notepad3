@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.818.(build_#) (2020-08-18)
+Current BETA Version 5.20.819.(build_#) (2020-08-19)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
+[.819.1]- 1st version of Occurrences Bookmarks on Focused-View.
 [.816.1]- Controls to clear history (file and find/replace).
 [.815.1]- Using dialog RTL option for Main window too.
 [.813.1]- Right-to-left (RTL) title/frame layout for some dialogs.
