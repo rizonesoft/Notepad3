@@ -7650,14 +7650,32 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       switch(pnmh->code)
       {
-        case NM_CLICK:
+        case NM_CLICK: // single click
           {
-            LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
+            LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
-            switch (pnmm->dwItemSpec)
+            switch (s_vSBSOrder[pnmm->dwItemSpec])
             {
               case STATUS_EOLMODE:
-                EditEnsureConsistentLineEndings(Globals.hwndEdit);
+                {
+                  if (Globals.bDocHasInconsistentEOLs)
+                  {
+                    int const eol_mode = SciCall_GetEOLMode();
+                    
+                    int const  eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF : 
+                                           ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
+
+                    UINT const msgid    = (eol_mode == SC_EOL_CRLF) ? IDS_MUI_EOLMODENAME_CRLF : 
+                                           ((eol_mode == SC_EOL_CR) ? IDS_MUI_EOLMODENAME_CR : IDS_MUI_EOLMODENAME_LF); 
+                    
+                    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, msgid);
+
+                    if ((IDOK == answer) || (IDYES == answer))
+                    {
+                      PostWMCommand(hwnd, eol_cmd);
+                    }
+                  }
+                }
                 GUARD_RETURN(!0);
 
               default:
@@ -7666,9 +7684,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           break;
 
-        case NM_DBLCLK:
+        case NM_DBLCLK: // double click
           {
-            LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
+            LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
             switch (s_vSBSOrder[pnmm->dwItemSpec])
             {
@@ -7683,17 +7701,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
               case STATUS_EOLMODE:
                 {
-                  int i;
-                  int const eol_mode = SciCall_GetEOLMode();
-                  if (eol_mode == SC_EOL_CRLF)
-                    i = IDM_LINEENDINGS_CRLF;
-                  else if (eol_mode == SC_EOL_CR)
-                    i = IDM_LINEENDINGS_CR;
-                  else
-                    i = IDM_LINEENDINGS_LF;
-                  ++i;
-                  if (i > IDM_LINEENDINGS_LF) { i = IDM_LINEENDINGS_CRLF; }
-                  PostWMCommand(hwnd, i);
+                  int const eol_mode = (SciCall_GetEOLMode() + 1) % 3;
+                  int const eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF : 
+                                        ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF); 
+                  PostWMCommand(hwnd, eol_cmd);
                 }
                 GUARD_RETURN(!0);
 
@@ -7720,8 +7731,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                     StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[%i]", s_iExprError);
                     SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
                   }
-                  else
+                  else {
                     SciCall_CopyText(0, "");
+                  }
                 }
                 break;
 
