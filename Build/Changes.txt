@@ -84,6 +84,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.819.3]- Single click in status bar's EOL segment will ask for consistent line-end change.
+[.819.2]- Find any next/prev. bookmark (std or word).
 [.818.1]- Scintilla bug fixes: SCICALL attribute (SCI).
 [.817.1]- Reload language resource for about-box on init (maybe language changed).
 [.815.1]- DPI Awarenes of window positions (default, sticky, ...).
