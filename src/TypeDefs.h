@@ -44,9 +44,10 @@
 #endif
 
 #include "Sci_Position.h"
+#include "Scintilla.h"
 
 //
-// TODO(rkotten): 
+// TODO: 
 // SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
 //
 
@@ -249,18 +250,54 @@ typedef struct _cmq
 
 // --------------------------------------------------------------------------
 
-#define MARKER_NP3_BOOKMARK      1
+typedef enum
+{
+  MARKER_NP3_WORD_0 = 0,
+  MARKER_NP3_WORD_1,
+  MARKER_NP3_WORD_2,
+  MARKER_NP3_WORD_3,
+  MARKER_NP3_WORD_4,
+  MARKER_NP3_WORD_5,
+  MARKER_NP3_WORD_6,
+  MARKER_NP3_WORD_7,
+  // std bookmark -> counter is last
+  MARKER_NP3_BOOKMARK
+} MARKER_ID;
 
-#define INDIC_NP3_MARK_OCCURANCE   (INDICATOR_CONTAINER +  1)
-#define INDIC_NP3_MATCH_BRACE      (INDICATOR_CONTAINER +  2)
-#define INDIC_NP3_BAD_BRACE        (INDICATOR_CONTAINER +  3)
-#define INDIC_NP3_FOCUS_VIEW       (INDICATOR_CONTAINER +  4)
-#define INDIC_NP3_HYPERLINK        (INDICATOR_CONTAINER +  5)
-#define INDIC_NP3_HYPERLINK_U      (INDICATOR_CONTAINER +  6)
-#define INDIC_NP3_COLOR_DEF        (INDICATOR_CONTAINER +  7)
-#define INDIC_NP3_COLOR_DEF_T      (INDICATOR_CONTAINER +  8)
-#define INDIC_NP3_MULTI_EDIT       (INDICATOR_CONTAINER +  9)
-#define INDIC_NP3_UNICODE_POINT    (INDICATOR_CONTAINER + 10)
+// ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_FOLDEREND )
+
+   
+typedef struct _wordbookmark_t
+{
+  bool     in_use;
+  int      sci_symbol;
+  LPCWSTR  color;
+
+} WORDBOOKMARK_T, *PWORDBOOKMARK_T;
+
+extern WORDBOOKMARK_T WordBookMarks[];
+
+
+// --------------------------------------------------------------------------
+
+
+typedef enum
+{
+  INDIC_NP3_MARK_OCCURANCE = INDICATOR_CONTAINER,
+  INDIC_NP3_MATCH_BRACE,
+  INDIC_NP3_BAD_BRACE,
+  INDIC_NP3_FOCUS_VIEW,
+  INDIC_NP3_HYPERLINK,
+  INDIC_NP3_HYPERLINK_U,
+  INDIC_NP3_COLOR_DEF,
+  INDIC_NP3_COLOR_DEF_T,
+  INDIC_NP3_MULTI_EDIT,
+  INDIC_NP3_UNICODE_POINT,
+  // counter is last
+  INDIC_NP3_ID_CNT
+} INDIC_ID;
+
+// ASSERT( INDIC_NP3_ID_CNT < INDICATOR_IME )
 
 // --------------------------------------------------------------------------
 

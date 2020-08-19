@@ -329,6 +329,10 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
   SciCall_Cancel();
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
   SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+  for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
+    SciCall_MarkerDeleteAll(m);
+    WordBookMarks[m].in_use = false;
+  }
   EditClearAllOccurrenceMarkers(hwnd);
   SciCall_SetScrollWidth(1);
   SciCall_SetXOffset(0);
@@ -7701,6 +7705,20 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
   }
   else // =====   fold lines without marker   =====
   {
+    // get next free bookmark 
+    int marker;
+    for (marker = 0; marker < MARKER_NP3_BOOKMARK; ++marker) {
+      if (!WordBookMarks[marker].in_use) {
+        WordBookMarks[marker].in_use = true;
+        break;
+      }
+    }
+    if (marker >= MARKER_NP3_BOOKMARK) {
+      marker = 0; // wrap around usage
+      SciCall_MarkerDeleteAll(marker);
+      WordBookMarks[marker].in_use = true;
+    }
+
     // prepare hidden (folding) settings
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
@@ -7724,6 +7742,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
       {
         level = baseLevel;
         SciCall_SetFoldLevel(iLine, SC_FOLDLEVELHEADERFLAG | level++);
+        SciCall_MarkerAdd(iLine, marker);
       }
       else // hide line
       {
@@ -8687,12 +8706,13 @@ void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition)
 //
 void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
 {
+  UNUSED(hwnd);
   WCHAR tchLine[32];
   StringCchCopyW(pszBookMarks, cchLength, L"");
   int bitmask = (1 << MARKER_NP3_BOOKMARK);
   DocLn iLine = -1;
   do {
-    iLine = (DocLn)SendMessage(hwnd, SCI_MARKERNEXT, iLine + 1, bitmask);
+    iLine = SciCall_MarkerNext(iLine + 1, bitmask);
     if (iLine >= 0) {
       StringCchPrintfW(tchLine, COUNTOF(tchLine), L"%td;", (long long)iLine);
       StringCchCatW(pszBookMarks, cchLength, tchLine);
@@ -8740,14 +8760,23 @@ void  EditBookmarkClick(const DocLn ln, const int modifiers)
 {
   UNUSED(modifiers);
 
-  int const bitmask = SciCall_MarkerGet(ln);
+  int const bitmask = SciCall_MarkerGet(ln) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
 
-  if (bitmask & (1 << MARKER_NP3_BOOKMARK))
+  if (!bitmask)
+  {
+    SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
+  }
+  else if (bitmask & (1 << MARKER_NP3_BOOKMARK))
   {
     SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
   }
   else {
-    SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK);    // set
+    for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
+      if (bitmask & (1 << m)) {
+        SciCall_MarkerDeleteAll(m);
+        WordBookMarks[m].in_use = false;
+      }
+    }
   }
 
   if (modifiers & SCMOD_ALT) {
