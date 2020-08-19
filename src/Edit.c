@@ -4933,8 +4933,8 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
 //
 void EditEnsureConsistentLineEndings(HWND hwnd)
 {
-  Globals.bDocHasInconsistentEOLs = false;
   SciCall_ConvertEOLs(SciCall_GetEOLMode());
+  Globals.bDocHasInconsistentEOLs = false;
   EditFixPositions(hwnd);
 }
 
