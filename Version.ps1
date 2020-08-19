@@ -23,6 +23,7 @@ function DebugOutput($msg)
 {
 	#~return ## disabled debug output
 	if ($msg -ne $null) { 
+      	Write-Host ""
 		Write-Host "$msg"
 	}
 }
@@ -127,6 +128,7 @@ finally
 {
 	[Environment]::SetEnvironmentVariable("LASTEXITCODE", $LastExitCode, "User")
 	$host.SetShouldExit($LastExitCode)
+	Write-Host ""
 	Write-Host "VersionPatching: Done! Elapsed time: $($stopwatch.Elapsed)."
 	Exit $LastExitCode
 }
