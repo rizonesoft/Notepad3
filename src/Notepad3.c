@@ -7668,7 +7668,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                     UINT const msgid    = (eol_mode == SC_EOL_CRLF) ? IDS_MUI_EOLMODENAME_CRLF : 
                                            ((eol_mode == SC_EOL_CR) ? IDS_MUI_EOLMODENAME_CR : IDS_MUI_EOLMODENAME_LF); 
                     
-                    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, msgid);
+                    WCHAR wch[64] = {L'\0'};
+                    GetLngString(msgid, wch, COUNTOF(wch));
+                    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_WARN_NORMALIZE_EOLS, wch);
 
                     if ((IDOK == answer) || (IDYES == answer))
                     {
