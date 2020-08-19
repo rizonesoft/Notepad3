@@ -4807,7 +4807,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
       DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
       if (iNextLine == (DocLn)-1) {
-        iNextLine = SciCall_MarkerNext(0, bitmask);
+        iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
+      }
+      if (iNextLine == (DocLn)-1) {
+        bitmask = bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+        iNextLine = SciCall_MarkerNext(iLine + 1, bitmask); //find any bookmark
+      }
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
       }
       if (iNextLine != (DocLn)-1) {
         SciCall_GotoLine(iNextLine);
@@ -4824,9 +4831,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         bitmask = (1 << MARKER_NP3_BOOKMARK);
       }
 
-      DocLn iNextLine = SciCall_MarkerPrevious(iLine - 1, bitmask);
+      DocLn iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
       if (iNextLine == (DocLn)-1) {
-        iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask);
+        iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask);  // wrap around
+      }
+      if (iNextLine == (DocLn)-1) {
+        bitmask   = bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+        iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask); //find any bookmark
+      }
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
       }
       if (iNextLine != (DocLn)-1) {
         SciCall_GotoLine(iNextLine);
@@ -4837,16 +4851,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case BME_EDIT_BOOKMARKTOGGLE:
-      EditBookmarkClick(Sci_GetCurrentLineNumber(), 0);
+      EditBookmarkToggle(Sci_GetCurrentLineNumber(), 0);
       break;
 
 
     case BME_EDIT_BOOKMARKCLEAR:
-      SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
-      for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
-        SciCall_MarkerDeleteAll(m);
-        WordBookMarks[m].in_use = false;
-      }
+      EditClearAllBookMarks(Globals.hwndEdit);
       break;
 
 
@@ -7476,7 +7486,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
         break;
       case MARGIN_SCI_BOOKMRK:
-        EditBookmarkClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+        EditBookmarkToggle(SciCall_LineFromPosition(scn->position), scn->modifiers);
         break;
       case MARGIN_SCI_LINENUM:
       default:

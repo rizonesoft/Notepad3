@@ -328,11 +328,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
   _IGNORE_NOTIFY_CHANGE_;
   SciCall_Cancel();
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
-  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
-  for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
-    SciCall_MarkerDeleteAll(m);
-    WordBookMarks[m].in_use = false;
-  }
+  EditClearAllBookMarks(hwnd);
   EditClearAllOccurrenceMarkers(hwnd);
   SciCall_SetScrollWidth(1);
   SciCall_SetXOffset(0);
@@ -7103,6 +7099,22 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 
 //=============================================================================
 //
+//  EditClearAllBookMarks()
+//
+void EditClearAllBookMarks(HWND hwnd)
+{
+  UNUSED(hwnd);
+
+  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+  for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
+    SciCall_MarkerDeleteAll(m);
+    WordBookMarks[m].in_use = false;
+  }
+}
+
+
+//=============================================================================
+//
 //  EditToggleView()
 //
 void EditToggleView(HWND hwnd)
@@ -8709,7 +8721,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
   UNUSED(hwnd);
   WCHAR tchLine[32];
   StringCchCopyW(pszBookMarks, cchLength, L"");
-  int bitmask = (1 << MARKER_NP3_BOOKMARK);
+  int const bitmask = (1 << MARKER_NP3_BOOKMARK);
   DocLn iLine = -1;
   do {
     iLine = SciCall_MarkerNext(iLine + 1, bitmask);
@@ -8734,7 +8746,7 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
   const WCHAR* p1 = pszBookMarks;
   if (!p1) return;
 
-  const DocLn iLineMax = SciCall_GetLineCount() - 1;
+  DocLn const iLineMax = SciCall_GetLineCount() - 1;
 
   while (*p1) {
     const WCHAR* p2 = StrChr(p1, L';');
@@ -8754,9 +8766,9 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 
 //=============================================================================
 //
-//  EditBookmarkClick()
+//  EditBookmarkToggle()
 //
-void  EditBookmarkClick(const DocLn ln, const int modifiers)
+void  EditBookmarkToggle(const DocLn ln, const int modifiers)
 {
   UNUSED(modifiers);
 
