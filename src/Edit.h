@@ -34,7 +34,7 @@ void  EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength);
 bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
-bool  EditCopyAppend(HWND hwnd,bool);
+bool  EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
 void  EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
 bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
@@ -75,6 +75,7 @@ void  EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBla
 void  EditCompressBlanks();
 void  EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
 void  EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines);
+void  EditFocusMarkedLines(HWND hwnd, bool bCopy, bool bDelete);
 void  EditWrapToColumn(DocPosU nColumn);
 //void  EditWrapToColumnForce(HWND hwnd, DocPosU nColumn);
 

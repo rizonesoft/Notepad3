@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
-        MENUITEM "行番号の余白(&M)\tCtrl+Shift+M",            IDM_VIEW_MARGIN
+        MENUITEM "行番号の余白(&M)\tCtrl+Shift+M",            IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "折りたたみ(&F)"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "ウェブ1で開く",                             CMD_WEBACTION1
         MENUITEM "ウェブ2で開く",                             CMD_WEBACTION2
         MENUITEM "エクスプローラーを開く",                       IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "コード折りたたみを表示",                     IDM_VIEW_FOLDING
-        MENUITEM "行番号",                                IDM_VIEW_LINENUMBERS
-        MENUITEM "行番号の余白",                           IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -537,8 +533,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Notepad3 を開く(&O)",                        IDM_TRAY_RESTORE
-        MENUITEM "終了(&X)",                                  IDM_TRAY_EXIT
+        MENUITEM "コード折りたたみを表示",                     IDM_VIEW_FOLDING
+        MENUITEM "行番号",                               IDM_VIEW_LINENUMBERS
+        MENUITEM "行番号の余白",                          IDM_VIEW_BOOKMARK_MARGIN
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Notepad3 を開く(&O)",                    IDM_TRAY_RESTORE
+        MENUITEM "終了(&X)",                              IDM_TRAY_EXIT
     END
 END
 

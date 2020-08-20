@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Zeilen &Nummern\tCtrl+Shift+N",           IDM_VIEW_LINENUMBERS
-        MENUITEM "&Selektionsrand\tCtrl+Shift+M",           IDM_VIEW_MARGIN
+        MENUITEM "&Lesezeichen Rand\tCtrl+Shift+M",         IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "Code &Faltung"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Öffne Web-Aktion 1",         CMD_WEBACTION1
         MENUITEM "Öffne Web Aktion 2",         CMD_WEBACTION2
         MENUITEM "Öffne Datei-Explorer",       IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Code Faltung",               IDM_VIEW_FOLDING
-        MENUITEM "Zeilen Nummern",             IDM_VIEW_LINENUMBERS
-        MENUITEM "Selektionsrand",             IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,16 @@ BEGIN
             MENUITEM "Werkzeugleiste anpassen...",             IDM_VIEW_CUSTOMIZETB
             MENUITEM "Werkzeugleisten Umschalten",             IDM_VIEW_TOGGLETB
             MENUITEM "DPI Skalierung der Werkzeugleiste",      IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "So markierte Zeilen Ausschneiden",           IDM_EDIT_CUT_MARKED
+        MENUITEM "So markierte Zeilen Kopieren",               IDM_EDIT_COPY_MARKED
+        MENUITEM "So markierte Zeilen Löschen",                IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "Code Faltung",                               IDM_VIEW_FOLDING
+        MENUITEM "Zeilen Nummern",                             IDM_VIEW_LINENUMBERS
+        MENUITEM "Lesezeichen Rand",                           IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

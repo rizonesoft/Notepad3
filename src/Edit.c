@@ -698,13 +698,7 @@ bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText)
 //
 bool EditClearClipboard(HWND hwnd)
 {
-  if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
-    SciCall_CopyText(0, "");
-    return true;
-  }
-  if (!OpenClipboard(GetParent(hwnd))) {
-    return false;
-  }
+  if (!OpenClipboard(GetParent(hwnd))) { return false; }
   EmptyClipboard();
   CloseClipboard();
   return true;
@@ -768,34 +762,17 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
 
 //=============================================================================
 //
-//  EditCopyAppend()
+//  EditCopyRangeAppend()
 //
-bool EditCopyAppend(HWND hwnd, bool bAppend)
+bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend)
 {
-  bool res = false;
-
-  DocPos const iSelStart = SciCall_GetSelectionStart();
-  DocPos const iSelEnd = SciCall_GetSelectionEnd();
-
-  char* pszText = NULL;
-  DocPos length = 0;
-
-  if (iSelStart != iSelEnd) {
-    if (Sci_IsMultiOrRectangleSelection()) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-      return res;
-    }
-    length = (iSelEnd - iSelStart);
-    pszText = SciCall_GetRangePointer(iSelStart, length);
+  if (posBegin > posEnd) {
+    swapos(&posBegin, &posEnd);
   }
-  else {
-    length = SciCall_GetTextLength();
-    pszText = SciCall_GetRangePointer(0, length);
-  }
-  if (length <= 0) {
-    res = true;  // nothing to copy or append
-    return res;
-  }
+  DocPos const length = (posEnd - posBegin);
+  if (length == 0) { return true; }
+
+  const char* const pszText = SciCall_GetRangePointer(posBegin, length);
 
   WCHAR* pszTextW = NULL;
   ptrdiff_t cchTextW = 0;
@@ -810,15 +787,18 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
     }
   }
 
+  bool res = false;
+  HWND const hwndParent = GetParent(hwnd);
+
   if (!bAppend) {
-    res = SetClipboardTextW(GetParent(hwnd), pszTextW, cchTextW);
+    res = SetClipboardTextW(hwndParent, pszTextW, cchTextW);
     FreeMem(pszTextW);
     return res;
   }
 
   // --- Append to Clipboard ---
 
-  if (!OpenClipboard(GetParent(hwnd))) {
+  if (!OpenClipboard(hwndParent)) {
     FreeMem(pszTextW);
     return res;
   }
@@ -846,7 +826,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   // Add New
   if (pszTextW && *pszTextW && pszNewTextW) {
     StringCchCat(pszNewTextW, cchNewText+1, pszTextW);
-    res = SetClipboardTextW(GetParent(hwnd), pszNewTextW, cchNewText);
+    res = SetClipboardTextW(hwndParent, pszNewTextW, cchNewText);
   }
 
   FreeMem(pszTextW);
@@ -3614,6 +3594,7 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
   DocPos spcCount = 0;
 
   _IGNORE_NOTIFY_CHANGE_;
+
   DocPos const saveTargetBeg = SciCall_GetTargetStart();
   DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
@@ -3638,6 +3619,7 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
   }
 
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+
   _OBSERVE_NOTIFY_CHANGE_;
 
   FreeMem(pmszPadStr);
@@ -3754,8 +3736,8 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
     }
   }
   __finally {
-  if (token >= 0) { EndUndoAction(token); }
-}
+    if (token >= 0) { EndUndoAction(token); }
+  }
   _OBSERVE_NOTIFY_CHANGE_;
 }
 
@@ -3832,6 +3814,7 @@ void EditStripFirstCharacter(HWND hwnd)
       }
     }
   }
+
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
   _END_UNDO_ACTION_;
@@ -4034,6 +4017,7 @@ void EditCompressBlanks()
     }
 
     _END_UNDO_ACTION_;
+
   }
   else if (Sci_IsMultiSelection()) {
     // @@@ not implemented
@@ -4205,9 +4189,11 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
       iEndLine -= nBlanks;
     }
   }
-  SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
   _END_UNDO_ACTION_;
+
+  SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+
 }
 
 
@@ -4279,10 +4265,64 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
       }
     } // empty
   }
-
+  
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
   _END_UNDO_ACTION_;
+}
+
+
+//=============================================================================
+//
+//  EditFocusMarkedLines()
+//
+void EditFocusMarkedLines(HWND hwnd, bool bCopy, bool bDelete)
+{
+  if (!(bCopy || bDelete)) { return; } // nothing todo
+
+  DocLn const curLn = Sci_GetCurrentLineNumber();
+  int const   bitmask = SciCall_MarkerGet(curLn) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+
+  if (!bitmask) {
+    return;
+  }
+
+  if (bCopy) {
+    EditClearClipboard(hwnd);
+  }
+
+  _IGNORE_NOTIFY_CHANGE_;
+  SciCall_BeginUndoAction();
+
+  DocLn line = SciCall_MarkerNext(0, bitmask); // begin
+
+  while (line >= 0) {
+    if (bCopy) {
+      DocPos const lnBeg = SciCall_PositionFromLine(line);
+      //DocPos const lnEnd = lnBeg + SciCall_LineLength(line); // incl line-breaks
+      DocPos const lnEnd = SciCall_GetLineEndPosition(line); // w/o line-breaks
+      EditCopyRangeAppend(hwnd, lnBeg, lnEnd, true);
+    }
+    if (bDelete) {
+      SciCall_GotoLine(line);
+      SciCall_MarkerDelete(line, -1);
+      SciCall_LineDelete();
+    }
+    line = SciCall_MarkerNext(bDelete ? line : (line + 1), bitmask); // proceed
+  }
+
+  SciCall_EndUndoAction();
+  _OBSERVE_NOTIFY_CHANGE_;
+
+  if (bDelete) {
+    for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
+      if (bitmask & (1 << m)) {
+        WordBookMarks[m].in_use = false;
+      }
+    }
+  }
+
+  SciCall_GotoLine(min_ln(curLn, Sci_GetLastDocLineNumber()));
 }
 
 
@@ -7104,12 +7144,11 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 void EditClearAllBookMarks(HWND hwnd)
 {
   UNUSED(hwnd);
-
-  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
   for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
     SciCall_MarkerDeleteAll(m);
     WordBookMarks[m].in_use = false;
   }
+  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
 }
 
 
@@ -7718,19 +7757,20 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
   else // =====   fold lines without marker   =====
   {
     // get next free bookmark 
-    int marker;
-    for (marker = 0; marker < MARKER_NP3_BOOKMARK; ++marker) {
-      if (!WordBookMarks[marker].in_use) {
+    int marker = 0;
+    if (Settings2.FocusViewMarkerMode) {
+      for (marker = 0; marker < MARKER_NP3_BOOKMARK; ++marker) {
+        if (!WordBookMarks[marker].in_use) {
+          WordBookMarks[marker].in_use = true;
+          break;
+        }
+      }
+      if (marker >= MARKER_NP3_BOOKMARK) {
+        marker = 0; // wrap around usage
+        SciCall_MarkerDeleteAll(marker);
         WordBookMarks[marker].in_use = true;
-        break;
       }
     }
-    if (marker >= MARKER_NP3_BOOKMARK) {
-      marker = 0; // wrap around usage
-      SciCall_MarkerDeleteAll(marker);
-      WordBookMarks[marker].in_use = true;
-    }
-
     // prepare hidden (folding) settings
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
@@ -7754,7 +7794,9 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
       {
         level = baseLevel;
         SciCall_SetFoldLevel(iLine, SC_FOLDLEVELHEADERFLAG | level++);
-        SciCall_MarkerAdd(iLine, marker);
+        if (Settings2.FocusViewMarkerMode) {
+          SciCall_MarkerAdd(iLine, marker);
+        }
       }
       else // hide line
       {

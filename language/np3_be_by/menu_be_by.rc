@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Нумары радкоў\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "Водступ для в&ылучэння\tCtrl+Shift+M", IDM_VIEW_MARGIN
+        MENUITEM "Водступ для в&ылучэння\tCtrl+Shift+M", IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Блокі коду"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Адкрыць вэб-дзеянне 1",        CMD_WEBACTION1
         MENUITEM "Адкрыць вэб-дзеянне 2",        CMD_WEBACTION2
         MENUITEM "Адкрыць Праваднік",            IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Згортванне блокаў коду",       IDM_VIEW_FOLDING
-        MENUITEM "Нумары радкоў",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Водступ для вылучэння",        IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
         MENUITEM "Пераключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
         MENUITEM "DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Згортванне блокаў коду",       IDM_VIEW_FOLDING
+        MENUITEM "Нумары радкоў",                IDM_VIEW_LINENUMBERS
+        MENUITEM "Водступ для вылучэння",        IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Номера строк\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "Отступ в&ыделения\tCtrl+Shift+M",     IDM_VIEW_MARGIN
+        MENUITEM "Отступ в&ыделения\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "Блоки &кода"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Открыть веб-действие 1",     CMD_WEBACTION1
         MENUITEM "Открыть веб-действие 2",     CMD_WEBACTION2
         MENUITEM "Открыть Проводник",          IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Сворачивание блоков кода",   IDM_VIEW_FOLDING
-        MENUITEM "Номера строк",               IDM_VIEW_LINENUMBERS
-        MENUITEM "Отступ выделения",           IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
         MENUITEM "Переключить панели инструментов",    IDM_VIEW_TOGGLETB
         MENUITEM "DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Сворачивание блоков кода",   IDM_VIEW_FOLDING
+        MENUITEM "Номера строк",               IDM_VIEW_LINENUMBERS
+        MENUITEM "Отступ выделения",           IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

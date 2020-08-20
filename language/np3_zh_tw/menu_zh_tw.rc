@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行號(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "顯示邊界(&M)\tCtrl+Shift+M",                IDM_VIEW_MARGIN
+        MENUITEM "顯示邊界(&M)\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "摺疊(&F)"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "用超鏈接模板 1 打開",                    CMD_WEBACTION1
         MENUITEM "用超鏈接模板 2 打開",                    CMD_WEBACTION2
         MENUITEM "打開檔案總管",                          IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "啟用摺疊",                              IDM_VIEW_FOLDING
-        MENUITEM "行號",                                  IDM_VIEW_LINENUMBERS
-        MENUITEM "顯示邊界",                              IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -530,15 +526,21 @@ BEGIN
         MENUITEM "顯示工具欄",                            IDM_VIEW_TOOLBAR
         MENUITEM "顯示狀態列",                            IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "載入工具欄主題...",                     IDM_VIEW_LOADTHEMETB
+        MENUITEM "載入工具欄主題...",                      IDM_VIEW_LOADTHEMETB
         MENUITEM "自訂工具欄...",                         IDM_VIEW_CUSTOMIZETB
         MENUITEM "切換工具欄",                            IDM_VIEW_TOGGLETB
         MENUITEM "DPI 自動調整",                          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "還原 Notepad3",                             IDM_TRAY_RESTORE
-        MENUITEM "離開 Notepad3",                             IDM_TRAY_EXIT
+        MENUITEM "啟用摺疊",                              IDM_VIEW_FOLDING
+        MENUITEM "行號",                                  IDM_VIEW_LINENUMBERS
+        MENUITEM "顯示邊界",                              IDM_VIEW_BOOKMARK_MARGIN
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "還原 Notepad3",                          IDM_TRAY_RESTORE
+        MENUITEM "離開 Notepad3",                          IDM_TRAY_EXIT
     END
 END
 

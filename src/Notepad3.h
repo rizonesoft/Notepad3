@@ -94,6 +94,7 @@ typedef enum {
 #define IDC_EDITFRAME    (0xFB04)
 #define IDC_FILENAME     (0xFB05)
 #define IDC_REUSELOCK    (0xFB06)
+#define IDC_MARGIN       (0xFB07)
 
 
 

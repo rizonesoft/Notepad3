@@ -45,24 +45,24 @@
 #include "SciLexer.h"
 #include "SciXLexer.h"
 
-/******************************************************************************
-*
-* Local and global Variables for Notepad3.c
-*
-*/
-
-#define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
+// ============================================================================
+//
+//   Local and global Variables for Notepad3.c
+//
+// ============================================================================
 
 WORDBOOKMARK_T WordBookMarks[MARKER_NP3_BOOKMARK] = {
-  /*0*/ {false, SC_MARK_BOOKMARK, L"back:#FF0000"},
-  /*1*/ {false, SC_MARK_BOOKMARK, L"back:#0000FF"},
-  /*2*/ {false, SC_MARK_BOOKMARK, L"back:#00FF00"},
-  /*3*/ {false, SC_MARK_BOOKMARK, L"back:#FFFF00"},
-  /*4*/ {false, SC_MARK_BOOKMARK, L"back:#00E8E8"},
-  /*5*/ {false, SC_MARK_BOOKMARK, L"back:#FF00FF"},
-  /*6*/ {false, SC_MARK_BOOKMARK, L"back:#FF8F20"},
-  /*7*/ {false, SC_MARK_BOOKMARK, L"back:#950095"}};
+  /*0*/ {false, L"back:#FF0000"},
+  /*1*/ {false, L"back:#0000FF"},
+  /*2*/ {false, L"back:#00FF00"},
+  /*3*/ {false, L"back:#FFFF00"},
+  /*4*/ {false, L"back:#00E8E8"},
+  /*5*/ {false, L"back:#FF00FF"},
+  /*6*/ {false, L"back:#FF8F20"},
+  /*7*/ {false, L"back:#950095"}};
 
+
+#define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
 CONSTANTS_T const Constants = { 
     2                                    // StdDefaultLexerID
@@ -1650,7 +1650,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return MsgCopyData(hwnd, wParam, lParam);
 
     case WM_CONTEXTMENU:
-      return MsgContextMenu(hwnd, umsg, wParam, lParam);
+      MsgContextMenu(hwnd, umsg, wParam, lParam);
+      break;
 
     case WM_ENTERMENULOOP:
       return MsgEnterMenuLoop(hwnd, wParam);
@@ -2993,16 +2994,17 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  bool const bMargin = (SCN_MARGINRIGHTCLICK == umsg);
+  int const nID = bMargin ? IDC_MARGIN : GetDlgCtrlID((HWND)wParam);
+  if ((nID != IDC_MARGIN) && (nID != IDC_EDIT) && (nID != IDC_STATUSBAR) && (nID != IDC_REBAR) && (nID != IDC_TOOLBAR)) {
+    return DefWindowProc(hwnd, umsg, wParam, lParam);
+  }
+
   // no context menu after undo/redo history scrolling
   if (s_bUndoRedoScroll) {
     s_bUndoRedoScroll = false;
-    return FALSE;
+    return 0;
   }
-
-  int nID = GetDlgCtrlID((HWND)wParam);
-  if ((nID != IDC_EDIT) && (nID != IDC_STATUSBAR) &&
-    (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
-    return DefWindowProc(hwnd, umsg, wParam, lParam);
 
   HMENU hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
@@ -3035,8 +3037,41 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   case IDC_TOOLBAR:
   case IDC_STATUSBAR:
   case IDC_REBAR:
-    if (pt.x == -1 && pt.y == -1) { GetCursorPos(&pt); }
-    imenu = 1;
+    {
+      if ((pt.x == -1) && (pt.y == -1)) {
+        GetCursorPos(&pt);
+      }
+      imenu = 1;
+    }
+    break;
+
+  case IDC_MARGIN:
+    {
+      if ((pt.x == -1) && (pt.y == -1)) {
+        GetCursorPos(&pt);
+      }
+
+      DocLn const curLn = Sci_GetCurrentLineNumber();
+      int const bitmask = SciCall_MarkerGet(curLn) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+      EnableCmd(hMenuCtx, IDM_EDIT_CUT_MARKED, bitmask);
+      EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
+      EnableCmd(hMenuCtx, IDM_EDIT_DELETE_MARKED, bitmask);
+
+      //DocLn const curLn = Sci_GetCurrentLineNumber();
+      const SCNotification* const scn = (SCNotification*)wParam;
+      switch (scn->margin) {
+        case MARGIN_SCI_FOLDING:
+          //[[fallthrough]];
+        case MARGIN_SCI_LINENUM:
+          //[[fallthrough]];
+        case MARGIN_SCI_BOOKMRK:
+          imenu = 2;
+          break;
+        default:
+          imenu = 0;
+          break;
+      }
+    }
     break;
   }
 
@@ -3045,7 +3080,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
   DestroyMenu(hMenuCtx);
 
-  return FALSE;
+  return (bMargin ? !0 : 0);
 }
 
 //=============================================================================
@@ -3114,7 +3149,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case WM_RBUTTONUP:
     {
       HMENU hTrayMenu  = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
-      HMENU hMenuPopup = GetSubMenu(hTrayMenu, 2);
+      HMENU hMenuPopup = GetSubMenu(hTrayMenu, 3);
 
       POINT pt;
       int iCmd;
@@ -3448,7 +3483,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
   CheckCmd(hmenu, IDM_VIEW_AUTOINDENTTEXT, Settings.AutoIndent);
   CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
-  CheckCmd(hmenu, IDM_VIEW_MARGIN, Settings.ShowSelectionMargin);
+  CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, Settings.ShowBookmarkMargin);
   CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
   EnableCmd(hmenu, IDM_EDIT_COMPLETEWORD, !te && !ro);
@@ -4179,6 +4214,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         DocPos const iLineSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
         // copy incl last line-breaks
         DocPos const iSelLnEnd = SciCall_PositionFromLine(iLineSelLast) + SciCall_LineLength(iLineSelLast);
+        if (s_flagPasteBoard) {
+          s_bLastCopyFromMe = true;
+        }
         _BEGIN_UNDO_ACTION_;
         SciCall_CopyRange(iSelLnStart, iSelLnEnd);
         _END_UNDO_ACTION_;
@@ -4198,12 +4236,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COPYADD:
       {
+        if (SciCall_IsSelectionEmpty()) {
+          break;
+        }
+        if (Sci_IsMultiOrRectangleSelection()) {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+          break;
+        }
+        DocPos const posSelStart = SciCall_GetSelectionStart();
+        DocPos const posSelEnd   = SciCall_GetSelectionEnd();
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        EditCopyAppend(Globals.hwndEdit, true);
+        EditCopyRangeAppend(Globals.hwndEdit, posSelStart, posSelEnd, true);
       }
       break;
+
 
     case IDM_EDIT_PASTE:
       if (SciCall_CanPaste()) {
@@ -4216,6 +4264,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+
     case IDM_EDIT_SWAP:
       if (!SciCall_IsSelectionEmpty() && SciCall_CanPaste()) {
         if (s_flagPasteBoard) {
@@ -4226,6 +4275,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _END_UNDO_ACTION_;
       }
       break;
+
 
     case IDM_EDIT_CLEARCLIPBOARD:
       EditClearClipboard(Globals.hwndEdit);
@@ -4428,6 +4478,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_REMOVEDUPLICATELINES:
       EditRemoveDuplicateLines(Globals.hwndEdit, false);
+      break;
+
+
+    case IDM_EDIT_CUT_MARKED:
+      EditFocusMarkedLines(Globals.hwndEdit, true, true);
+      break;
+
+
+    case IDM_EDIT_COPY_MARKED:
+      EditFocusMarkedLines(Globals.hwndEdit, true, false);
+      break;
+
+
+    case IDM_EDIT_DELETE_MARKED:
+      EditFocusMarkedLines(Globals.hwndEdit, false, true);
       break;
 
 
@@ -4804,7 +4869,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!bitmask) {
         bitmask = (1 << MARKER_NP3_BOOKMARK);
       }
-
       DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
       if (iNextLine == (DocLn)-1) {
         iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
@@ -4830,7 +4894,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!bitmask) {
         bitmask = (1 << MARKER_NP3_BOOKMARK);
       }
-
       DocLn iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
       if (iNextLine == (DocLn)-1) {
         iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask);  // wrap around
@@ -5197,8 +5260,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_VIEW_MARGIN:
-      Settings.ShowSelectionMargin = !Settings.ShowSelectionMargin;
+    case IDM_VIEW_BOOKMARK_MARGIN:
+      Settings.ShowBookmarkMargin = !Settings.ShowBookmarkMargin;
       UpdateMarginWidth();
       break;
 
@@ -6981,12 +7044,8 @@ static void  _HandleAutoIndent(int const charAdded)
       {
         int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
         if (bitmask) {
-          for (int m = 0; m <= MARKER_NP3_BOOKMARK; ++m) {
-            if (bitmask & (1 << m)) {
-              SciCall_MarkerDelete(iCurLine - 1, m);
-              SciCall_MarkerAdd(iCurLine, m);
-            }
-          }
+          SciCall_MarkerDelete((iCurLine - 1), -1);
+          SciCall_MarkerAddSet(iCurLine, bitmask);
         }
       }
 
@@ -7489,13 +7548,21 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         EditBookmarkToggle(SciCall_LineFromPosition(scn->position), scn->modifiers);
         break;
       case MARGIN_SCI_LINENUM:
+        //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
+        break;
       default:
         break;
     }
     break;
 
-    //case SCN_MARGINRIGHTCLICK:
-    //  break;
+
+    case SCN_MARGINRIGHTCLICK:
+      {
+        POINT pt = {-1,-1};
+        MsgContextMenu(hwnd, SCN_MARGINRIGHTCLICK, (WPARAM)scn, MAKELPARAM(pt.x,pt.y));
+      }
+      break;
+
 
     // ~~~ Not used in Windows ~~~
     // see: CMD_ALTUP / CMD_ALTDOWN
@@ -8306,14 +8373,14 @@ void UpdateToolbar()
 
 static void  _UpdateToolbarDelayed()
 {
+  bool const bDocModified = GetDocModified();
   SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                 Settings.PathNameFormat, GetDocModified(),
-                 IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
+                 Settings.PathNameFormat, bDocModified, IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
 
   if (!Settings.ShowToolbar) { return; }
 
   EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
-  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() /*&& !bReadOnly*/);
+  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, bDocModified /*&& !bReadOnly*/);
   EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
   CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
@@ -9091,7 +9158,7 @@ void UpdateMarginWidth()
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 
-  Style_SetBookmark(Globals.hwndEdit, Settings.ShowSelectionMargin);
+  Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
   Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
