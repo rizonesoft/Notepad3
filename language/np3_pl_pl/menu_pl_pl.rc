@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Numery wierszy\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "Margines\tCtrl+Shift+M",                          IDM_VIEW_MARGIN
+        MENUITEM "Margines\tCtrl+Shift+M",                          IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Składanie"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Otwórz Web Action 1",                       CMD_WEBACTION1
         MENUITEM "Otwórz Web Action 2",                       CMD_WEBACTION2
         MENUITEM "Otwórz Eksplorator pliku",                  IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Składanie kodu",                            IDM_VIEW_FOLDING
-        MENUITEM "Numery wierszy",                            IDM_VIEW_LINENUMBERS
-        MENUITEM "Margines",                                  IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Dostosuj pasek narzędzi...",                IDM_VIEW_CUSTOMIZETB
         MENUITEM "Przełącz paski narzędzi",                   IDM_VIEW_TOGGLETB
         MENUITEM "Pasek narzędzi w skali DPI",                IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Składanie kodu",                            IDM_VIEW_FOLDING
+        MENUITEM "Numery wierszy",                            IDM_VIEW_LINENUMBERS
+        MENUITEM "Margines",                                  IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

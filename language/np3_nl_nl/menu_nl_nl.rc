@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Lijn &nummers\tCtrl+Shift+N",             IDM_VIEW_LINENUMBERS
-        MENUITEM "Selectie &marge\tCtrl+Shift+M",           IDM_VIEW_MARGIN
+        MENUITEM "Selectie &marge\tCtrl+Shift+M",           IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Vouwen"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Openen Web Action 1",                    CMD_WEBACTION1
         MENUITEM "Openen Web Action 2",                    CMD_WEBACTION2
         MENUITEM "Open bestand Verkenne",                  IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Vouwcode",                               IDM_VIEW_FOLDING
-        MENUITEM "Lijn nummers",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selectie marge",                         IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Werkbalk aanpassen...",                  IDM_VIEW_CUSTOMIZETB
         MENUITEM "Toggle werkbalken",                      IDM_VIEW_TOGGLETB
         MENUITEM "DPI schaal de werkbalk",                 IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Vouwcode",                               IDM_VIEW_FOLDING
+        MENUITEM "Lijn nummers",                           IDM_VIEW_LINENUMBERS
+        MENUITEM "Selectie marge",                         IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

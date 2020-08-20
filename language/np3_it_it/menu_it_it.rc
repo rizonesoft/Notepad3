@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Numeri di riga\tCtrl+Shift+N",                  IDM_VIEW_LINENUMBERS
-        MENUITEM "&Margine di selezione\tCtrl+Shift+M",            IDM_VIEW_MARGIN
+        MENUITEM "&Margine di selezione\tCtrl+Shift+M",            IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Folding"
         BEGIN
@@ -519,26 +519,28 @@ BEGIN
         MENUITEM "Apri Web Action 1",             CMD_WEBACTION1
         MENUITEM "Apri Web Action 2",             CMD_WEBACTION2
         MENUITEM "Apri Esplora File",             IDM_FILE_EXPLORE_DIR
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Mostra barra dei Menu",         IDM_VIEW_MENUBAR
+        MENUITEM "Mostra Toolbar",                IDM_VIEW_TOOLBAR
+        MENUITEM "Mostra Barra di Stato",         IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
+        MENUITEM "Carica Tema Toolbar...",        IDM_VIEW_LOADTHEMETB
+        MENUITEM "Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Cambia Toolbars",               IDM_VIEW_TOGGLETB
+        MENUITEM "Scala DPI Toolbar",             IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
         MENUITEM "Code Folding",                  IDM_VIEW_FOLDING
         MENUITEM "Numeri di riga",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Margine di selezione",          IDM_VIEW_MARGIN
+        MENUITEM "Margine di selezione",          IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostra barra dei Menu",        IDM_VIEW_MENUBAR
-        MENUITEM "Mostra Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "Mostra Barra di Stato",        IDM_VIEW_STATUSBAR
-        MENUITEM SEPARATOR
-        MENUITEM "Carica Tema Toolbar...",       IDM_VIEW_LOADTHEMETB
-        MENUITEM "Personalizza Toolbar...",      IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Cambia Toolbars",              IDM_VIEW_TOGGLETB
-        MENUITEM "Scala DPI Toolbar",            IDM_VIEW_DPISCALETB
-    END
-    POPUP "+"
-    BEGIN
-        MENUITEM "Apri Notepad3",                  IDM_TRAY_RESTORE
-        MENUITEM "Esci da Notepad3",               IDM_TRAY_EXIT
+        MENUITEM "Apri Notepad3",                 IDM_TRAY_RESTORE
+        MENUITEM "Esci da Notepad3",              IDM_TRAY_EXIT
     END
 END
 

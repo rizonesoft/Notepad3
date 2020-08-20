@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "줄 번호(&N)\tCtrl+Shift+N",               IDM_VIEW_LINENUMBERS
-        MENUITEM "선택 영역 여백(&M)\tCtrl+Shift+M",         IDM_VIEW_MARGIN
+        MENUITEM "선택 영역 여백(&M)\tCtrl+Shift+M",         IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "접기"
         BEGIN
@@ -502,43 +502,45 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "하이퍼 링크 열기",                    CMD_OPEN_HYPERLINK
+        MENUITEM "하이퍼 링크 열기",               CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "실행 취소",                           IDM_EDIT_UNDO
-        MENUITEM "다시 실행",                           IDM_EDIT_REDO
+        MENUITEM "실행 취소",                      IDM_EDIT_UNDO
+        MENUITEM "다시 실행",                      IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "잘라내기",                            IDM_EDIT_CUT
-        MENUITEM "복사",                                IDM_EDIT_COPY
-        MENUITEM "붙여 넣기",                           IDM_EDIT_PASTE
-        MENUITEM "삭제",                                IDM_EDIT_CLEAR
+        MENUITEM "잘라내기",                       IDM_EDIT_CUT
+        MENUITEM "복사",                          IDM_EDIT_COPY
+        MENUITEM "붙여 넣기",                      IDM_EDIT_PASTE
+        MENUITEM "삭제",                          IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "모두 선택",                           IDM_EDIT_SELECTALL
+        MENUITEM "모두 선택",                      IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "현재 접기 전환",                       IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "현재 접기 전환",                  IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "웹 작업 열기 &",                          CMD_WEBACTION1
-        MENUITEM "웹 작업 열기 &",                          CMD_WEBACTION2
-        MENUITEM "탐색기 열기",                IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "코드 접기",                  IDM_VIEW_FOLDING
-        MENUITEM "줄 번호",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "선택 영역 여백",             IDM_VIEW_MARGIN
+        MENUITEM "웹 작업 열기 &",                  CMD_WEBACTION1
+        MENUITEM "웹 작업 열기 &",                  CMD_WEBACTION2
+        MENUITEM "탐색기 열기",                     IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "메뉴바 보이기",                       IDM_VIEW_MENUBAR
-        MENUITEM "도구 모음 보이기",                     IDM_VIEW_TOOLBAR
-        MENUITEM "상태 표시 줄 보이기",                  IDM_VIEW_STATUSBAR
+        MENUITEM "메뉴바 보이기",                   IDM_VIEW_MENUBAR
+        MENUITEM "도구 모음 보이기",                IDM_VIEW_TOOLBAR
+        MENUITEM "상태 표시 줄 보이기",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "도구 모음 테마 변경...",               IDM_VIEW_LOADTHEMETB
-        MENUITEM "도구 모음 사용자 지정...",              IDM_VIEW_CUSTOMIZETB
-        MENUITEM "도구 모음 전환",                       IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI 비율 툴바",                       IDM_VIEW_DPISCALETB
+        MENUITEM "도구 모음 테마 변경...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "도구 모음 사용자 지정...",         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "도구 모음 전환",                  IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI 비율 툴바",                 IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Notepad3 열기",                      IDM_TRAY_RESTORE
-        MENUITEM "Notepad3 종료",                      IDM_TRAY_EXIT
+        MENUITEM "코드 접기",                       IDM_VIEW_FOLDING
+        MENUITEM "줄 번호",                         IDM_VIEW_LINENUMBERS
+        MENUITEM "선택 영역 여백",                   IDM_VIEW_BOOKMARK_MARGIN
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Notepad3 열기",                   IDM_TRAY_RESTORE
+        MENUITEM "Notepad3 종료",                   IDM_TRAY_EXIT
     END
 END
 
