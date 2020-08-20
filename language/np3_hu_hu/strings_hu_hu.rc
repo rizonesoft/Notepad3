@@ -159,7 +159,7 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Régi Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalize all line endings to be '%s'?"
+                            "Do you want to normalise all line endings to be '%s'?"
 END
 
 STRINGTABLE
