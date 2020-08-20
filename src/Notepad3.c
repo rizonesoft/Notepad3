@@ -4214,6 +4214,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         DocPos const iLineSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
         // copy incl last line-breaks
         DocPos const iSelLnEnd = SciCall_PositionFromLine(iLineSelLast) + SciCall_LineLength(iLineSelLast);
+        if (s_flagPasteBoard) {
+          s_bLastCopyFromMe = true;
+        }
         _BEGIN_UNDO_ACTION_;
         SciCall_CopyRange(iSelLnStart, iSelLnEnd);
         _END_UNDO_ACTION_;
@@ -4233,14 +4236,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COPYADD:
       {
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+        if (SciCall_IsSelectionEmpty()) {
+          break;
+        }
+        if (Sci_IsMultiOrRectangleSelection()) {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+          break;
         }
         DocPos const posSelStart = SciCall_GetSelectionStart();
         DocPos const posSelEnd   = SciCall_GetSelectionEnd();
+        if (s_flagPasteBoard) {
+          s_bLastCopyFromMe = true;
+        }
         EditCopyRangeAppend(Globals.hwndEdit, posSelStart, posSelEnd, true);
       }
       break;
+
 
     case IDM_EDIT_PASTE:
       if (SciCall_CanPaste()) {
@@ -4253,6 +4264,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+
     case IDM_EDIT_SWAP:
       if (!SciCall_IsSelectionEmpty() && SciCall_CanPaste()) {
         if (s_flagPasteBoard) {
@@ -4263,6 +4275,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _END_UNDO_ACTION_;
       }
       break;
+
 
     case IDM_EDIT_CLEARCLIPBOARD:
       EditClearClipboard(Globals.hwndEdit);
@@ -4856,7 +4869,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!bitmask) {
         bitmask = (1 << MARKER_NP3_BOOKMARK);
       }
-
       DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
       if (iNextLine == (DocLn)-1) {
         iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
@@ -4882,7 +4894,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!bitmask) {
         bitmask = (1 << MARKER_NP3_BOOKMARK);
       }
-
       DocLn iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
       if (iNextLine == (DocLn)-1) {
         iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask);  // wrap around
@@ -7033,12 +7044,8 @@ static void  _HandleAutoIndent(int const charAdded)
       {
         int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
         if (bitmask) {
-          for (int m = 0; m <= MARKER_NP3_BOOKMARK; ++m) {
-            if (bitmask & (1 << m)) {
-              SciCall_MarkerDelete(iCurLine - 1, m);
-              SciCall_MarkerAdd(iCurLine, m);
-            }
-          }
+          SciCall_MarkerDelete((iCurLine - 1), -1);
+          SciCall_MarkerAddSet(iCurLine, bitmask);
         }
       }
 

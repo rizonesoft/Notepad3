@@ -475,6 +475,7 @@ DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colo
 DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour)
 DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerNumber, int, alpha)
 DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber)
+DeclareSciCallV2(MarkerAddSet, MARKERADDSET, DocLn, line, int, markerMask)
 DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber)
 DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
 DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber, int, colour)

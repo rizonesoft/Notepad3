@@ -533,9 +533,9 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Ausschneiden aller markierter Zeilen",       IDM_EDIT_CUT_MARKED
-        MENUITEM "Kopieren aller markierter Zeilens",          IDM_EDIT_COPY_MARKED
-        MENUITEM "Löschen aller markierter Zeilen",            IDM_EDIT_DELETE_MARKED
+        MENUITEM "So markierte Zeilen Ausschneiden",           IDM_EDIT_CUT_MARKED
+        MENUITEM "So markierte Zeilen Kopieren",               IDM_EDIT_COPY_MARKED
+        MENUITEM "So markierte Zeilen Löschen",                IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "Code Faltung",                               IDM_VIEW_FOLDING
         MENUITEM "Zeilen Nummern",                             IDM_VIEW_LINENUMBERS

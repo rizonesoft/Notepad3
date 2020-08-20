@@ -762,31 +762,17 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
 
 //=============================================================================
 //
-//  EditCopySelectionAppend()
+//  EditCopyRangeAppend()
 //
-bool EditCopyRangeAppend(HWND hwnd, const DocPos posBegin, const DocPos posEnd, bool bAppend)
+bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend)
 {
-  bool res = false;
+  if (posBegin > posEnd) {
+    swapos(&posBegin, &posEnd);
+  }
+  DocPos const length = (posEnd - posBegin);
+  if (length == 0) { return true; }
 
-  const char* pszText = NULL;
-  DocPos length = 0;
-
-  if (posBegin != posEnd) {
-    if (Sci_IsMultiOrRectangleSelection()) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-      return res;
-    }
-    length = (posEnd - posBegin);
-    pszText = SciCall_GetRangePointer(posBegin, length);
-  }
-  else {
-    length = SciCall_GetTextLength();
-    pszText = SciCall_GetRangePointer(0, length);
-  }
-  if (length <= 0) {
-    res = true;  // nothing to copy or append
-    return res;
-  }
+  const char* const pszText = SciCall_GetRangePointer(posBegin, length);
 
   WCHAR* pszTextW = NULL;
   ptrdiff_t cchTextW = 0;
@@ -801,15 +787,18 @@ bool EditCopyRangeAppend(HWND hwnd, const DocPos posBegin, const DocPos posEnd, 
     }
   }
 
+  bool res = false;
+  HWND const hwndParent = GetParent(hwnd);
+
   if (!bAppend) {
-    res = SetClipboardTextW(GetParent(hwnd), pszTextW, cchTextW);
+    res = SetClipboardTextW(hwndParent, pszTextW, cchTextW);
     FreeMem(pszTextW);
     return res;
   }
 
   // --- Append to Clipboard ---
 
-  if (!OpenClipboard(GetParent(hwnd))) {
+  if (!OpenClipboard(hwndParent)) {
     FreeMem(pszTextW);
     return res;
   }
@@ -837,7 +826,7 @@ bool EditCopyRangeAppend(HWND hwnd, const DocPos posBegin, const DocPos posEnd, 
   // Add New
   if (pszTextW && *pszTextW && pszNewTextW) {
     StringCchCat(pszNewTextW, cchNewText+1, pszTextW);
-    res = SetClipboardTextW(GetParent(hwnd), pszNewTextW, cchNewText);
+    res = SetClipboardTextW(hwndParent, pszNewTextW, cchNewText);
   }
 
   FreeMem(pszTextW);
@@ -7155,12 +7144,11 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 void EditClearAllBookMarks(HWND hwnd)
 {
   UNUSED(hwnd);
-
-  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
   for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
     SciCall_MarkerDeleteAll(m);
     WordBookMarks[m].in_use = false;
   }
+  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
 }
 
 
