@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Lyn &Nommers\tCtrl+Shift+N",              IDM_VIEW_LINENUMBERS
-        MENUITEM "Seleksie &Kantlyne\tCtrl+Shift+M",        IDM_VIEW_MARGIN
+        MENUITEM "Seleksie &Kantlyne\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Vou"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Web Sjabloon 1",                          CMD_WEBACTION1
         MENUITEM "Web Sjabloon 2",                          CMD_WEBACTION2
         MENUITEM "Maak File Explorer Oop",                  IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Kode Vou",                                IDM_VIEW_FOLDING
-        MENUITEM "Lyn Nommer",                              IDM_VIEW_LINENUMBERS
-        MENUITEM "Seleksie Kantlyne",                       IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Pasmaak Nutsbalk...",                     IDM_VIEW_CUSTOMIZETB
         MENUITEM "Toggle Nutsbalke",                        IDM_VIEW_TOGGLETB
         MENUITEM "DPI Skaal Balk",                          IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Kode Vou",                                IDM_VIEW_FOLDING
+        MENUITEM "Lyn Nommer",                              IDM_VIEW_LINENUMBERS
+        MENUITEM "Seleksie Kantlyne",                       IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

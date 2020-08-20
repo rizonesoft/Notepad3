@@ -1333,7 +1333,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_HighlightCurrentLine(hwnd, Settings.HighlightCurrentLine);
 
   // bookmark line or marker
-  Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
+  Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
 
   // Hyperlink (URL) indicators
   Style_SetUrlHotSpot(hwnd);
@@ -1774,18 +1774,18 @@ static int  _GetMarkerMarginWidth(HWND hwnd)
 //
 //  Style_SetFolding()
 //
-void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
+void Style_SetFolding(HWND hwnd, bool bShowMargin)
 {
-  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding ? _GetMarkerMarginWidth(hwnd) : 0));
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowMargin ? _GetMarkerMarginWidth(hwnd) : 0));
 }
 
 //=============================================================================
 //
 //  Style_SetBookmark()
 //
-void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
+void Style_SetBookmark(HWND hwnd, bool bShowMargin)
 {
-  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
 }
 
 
@@ -1797,7 +1797,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 {
   if (iStyle == STYLE_LINENUMBER) {
     Style_SetStyles(hwnd, iStyle, lpszStyle, false);   // line numbers
-    //~SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, true);
+    SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); // allow selection drag
   }
 
   COLORREF clrFore = SciCall_StyleGetFore(STYLE_LINENUMBER);
@@ -1805,10 +1805,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   COLORREF clrBack = SciCall_StyleGetBack(STYLE_LINENUMBER);
   Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack);
-  
-  //SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
+  //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
-    // CallTips
+  // CallTips
   SciCall_CallTipSetFore(clrFore);
   SciCall_CallTipSetBack(clrBack);
 
@@ -1832,21 +1831,23 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_VERTICALBOOKMARK); // SC_MARK_BOOKMARK/SC_MARK_SHORTARROW
   SciCall_MarkerSetFore(MARKER_NP3_BOOKMARK, bmkFore);
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
-  SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha);
-  SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
-  SciCall_SetMarginSensitiveN(MARGIN_SCI_BOOKMRK, true);
-  SciCall_SetMarginCursorN(MARGIN_SCI_BOOKMRK, SC_NP3_CURSORHAND);
+  SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
 
   // ---  WordBookMarks  ---
   for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m)
   {
     COLORREF color;
+    SciCall_MarkerDefine(m, (Settings2.FocusViewMarkerMode == FVMM_NO_MARGIN) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
     Style_StrGetColor(WordBookMarks[m].color, BACKGROUND_LAYER, &color);
-    SciCall_MarkerDefine(m, WordBookMarks[m].sci_symbol);
     SciCall_MarkerSetFore(m, color);
     SciCall_MarkerSetBack(m, color);
-    SciCall_MarkerSetAlpha(m, alpha);
+    SciCall_MarkerSetAlpha(m, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
   }
+
+  SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
+  SciCall_SetMarginSensitiveN(MARGIN_SCI_BOOKMRK, true);
+  SciCall_SetMarginCursorN(MARGIN_SCI_BOOKMRK, SC_NP3_CURSORHAND);
+
 
   // ---  Code folding  ---
 
@@ -1856,8 +1857,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
   SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
-  SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
   SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrBack);
+  SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
 
   int fldStyleMrk = SC_CASE_LOWER;
   Style_StrGetCase(wchBookMarkStyleStrg, &fldStyleMrk);
@@ -1882,7 +1883,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
     SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
   }
 
-  static const int iMarkerIDs[7] =
+  static const int FoldMarkerID[] =
   {
     SC_MARKNUM_FOLDEROPEN,
     SC_MARKNUM_FOLDER,
@@ -1893,12 +1894,12 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
     SC_MARKNUM_FOLDERMIDTAIL
   };
 
-  for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
-    SciCall_MarkerSetFore(iMarkerIDs[i], bmkBack); // (!)
-    SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore); // (!)
-    SciCall_MarkerSetBackSelected(iMarkerIDs[i], fldHiLight);
+  for (int i = 0; i < COUNTOF(FoldMarkerID); ++i) {
+    SciCall_MarkerSetFore(FoldMarkerID[i], bmkBack); // (!)
+    SciCall_MarkerSetBack(FoldMarkerID[i], bmkFore); // (!)
+    SciCall_MarkerSetBackSelected(FoldMarkerID[i], fldHiLight);
   }
-  SciCall_MarkerEnableHighlight(true);
+  SciCall_MarkerEnableHighlight(true); // highlight folding block
 
   SciCall_SetFoldMarginColour(true, clrBack);    // background
   SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
@@ -1924,7 +1925,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   }
 
   // set width
-  Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
+  Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
   Style_SetFolding(hwnd, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
@@ -2921,7 +2922,7 @@ bool Style_StrGetCase(LPCWSTR lpszStyle, int* i)
 //  Style_GetIndicatorType()
 //
 
-static WCHAR* IndicatorTypes[22] = {
+static WCHAR* IndicatorTypes[] = {
   L"indic_plain",
   L"indic_squiggle",
   L"indic_tt",

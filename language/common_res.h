@@ -583,6 +583,9 @@
 #define IDM_EDIT_REMOVEDUPLICATELINES   40376
 #define IDM_EDIT_REMOVEEMPTYLINES       40377
 #define IDM_EDIT_MERGEEMPTYLINES        40378
+#define IDM_EDIT_CUT_MARKED             40379
+#define IDM_EDIT_COPY_MARKED            40380
+#define IDM_EDIT_DELETE_MARKED          40381
 
 #define IDM_VIEW_SCHEME                 40400
 #define IDM_VIEW_USE2NDDEFAULT          40401
@@ -600,7 +603,7 @@
 #define IDM_VIEW_HILITCURLN_BACK        40413
 #define IDM_VIEW_HILITCURLN_FRAME       40414
 #define IDM_VIEW_LINENUMBERS            40415
-#define IDM_VIEW_MARGIN                 40416
+#define IDM_VIEW_BOOKMARK_MARGIN        40416
 #define IDM_VIEW_ZOOMIN                 40417
 #define IDM_VIEW_ZOOMOUT                40418
 #define IDM_VIEW_RESETZOOM              40419

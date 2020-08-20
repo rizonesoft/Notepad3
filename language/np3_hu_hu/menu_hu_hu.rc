@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
-        MENUITEM "Kijelölési mar&gó\tCtrl+Shift+M",     IDM_VIEW_MARGIN
+        MENUITEM "Kijelölési mar&gó\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Behajtások"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Webes művelet 1",            CMD_WEBACTION1
         MENUITEM "Webes művelet 2",            CMD_WEBACTION2
         MENUITEM "Fájlböngésző megnyitása",    IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Kódblokk behajtások",        IDM_VIEW_FOLDING
-        MENUITEM "Sorok száma",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Kijelölési margó",           IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Eszköztár testreszabása...",             IDM_VIEW_CUSTOMIZETB
         MENUITEM "Váltás Eszköztárak",                     IDM_VIEW_TOGGLETB
         MENUITEM "DPI skálázás eszköztár",                 IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Kódblokk behajtások",        IDM_VIEW_FOLDING
+        MENUITEM "Sorok száma",                IDM_VIEW_LINENUMBERS
+        MENUITEM "Kijelölési margó",           IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

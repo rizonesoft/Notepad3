@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Números de línea\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "Selección de&l margen\tCtrl+Shift+M",     IDM_VIEW_MARGIN
+        MENUITEM "Selección de&l margen\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Plegable"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Abrir Web Action 1",                         CMD_WEBACTION1
         MENUITEM "Abrir Web Action 2",                         CMD_WEBACTION2
         MENUITEM "Abrir Explorador de archivos",               IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Código plegable",                            IDM_VIEW_FOLDING
-        MENUITEM "Números de línea",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selección del margen",                       IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
         MENUITEM "Alternar las barras de herramientas",        IDM_VIEW_TOGGLETB
         MENUITEM "DPI escala la barra de herramientas",        IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Código plegable",                            IDM_VIEW_FOLDING
+        MENUITEM "Números de línea",                           IDM_VIEW_LINENUMBERS
+        MENUITEM "Selección del margen",                       IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
