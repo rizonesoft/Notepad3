@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行號(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "顯示邊界(&M)\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "摺疊(&F)"
         BEGIN
@@ -533,9 +533,13 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Cut Lines of Marker-Type",             IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",            IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type",          IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
         MENUITEM "啟用摺疊",                              IDM_VIEW_FOLDING
         MENUITEM "行號",                                  IDM_VIEW_LINENUMBERS
-        MENUITEM "顯示邊界",                              IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin",                       IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

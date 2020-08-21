@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
-        MENUITEM "行番号の余白(&M)\tCtrl+Shift+M",            IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "折りたたみ(&F)"
         BEGIN
@@ -533,14 +533,18 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "コード折りたたみを表示",                     IDM_VIEW_FOLDING
+        MENUITEM "Cut Lines of Marker-Type",            IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",           IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type",         IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "コード折りたたみを表示",                    IDM_VIEW_FOLDING
         MENUITEM "行番号",                               IDM_VIEW_LINENUMBERS
-        MENUITEM "行番号の余白",                          IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin",                     IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Notepad3 を開く(&O)",                    IDM_TRAY_RESTORE
-        MENUITEM "終了(&X)",                              IDM_TRAY_EXIT
+        MENUITEM "Notepad3 を開く(&O)",                   IDM_TRAY_RESTORE
+        MENUITEM "終了(&X)",                             IDM_TRAY_EXIT
     END
 END
 

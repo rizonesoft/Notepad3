@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Numery wierszy\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "Margines\tCtrl+Shift+M",                          IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Składanie"
         BEGIN
@@ -533,9 +533,13 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Cut Lines of Marker-Type",                  IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",                 IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type",               IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
         MENUITEM "Składanie kodu",                            IDM_VIEW_FOLDING
         MENUITEM "Numery wierszy",                            IDM_VIEW_LINENUMBERS
-        MENUITEM "Margines",                                  IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin",                           IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
