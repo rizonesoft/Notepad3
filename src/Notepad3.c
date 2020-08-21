@@ -45,11 +45,22 @@
 #include "SciLexer.h"
 #include "SciXLexer.h"
 
-/******************************************************************************
-*
-* Local and global Variables for Notepad3.c
-*
-*/
+// ============================================================================
+//
+//   Local and global Variables for Notepad3.c
+//
+// ============================================================================
+
+WORDBOOKMARK_T WordBookMarks[MARKER_NP3_BOOKMARK] = {
+  /*0*/ {false, L"back:#FF0000"},
+  /*1*/ {false, L"back:#0000FF"},
+  /*2*/ {false, L"back:#00FF00"},
+  /*3*/ {false, L"back:#FFFF00"},
+  /*4*/ {false, L"back:#00E8E8"},
+  /*5*/ {false, L"back:#FF00FF"},
+  /*6*/ {false, L"back:#FF8F20"},
+  /*7*/ {false, L"back:#950095"}};
+
 
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
@@ -1639,7 +1650,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return MsgCopyData(hwnd, wParam, lParam);
 
     case WM_CONTEXTMENU:
-      return MsgContextMenu(hwnd, umsg, wParam, lParam);
+      MsgContextMenu(hwnd, umsg, wParam, lParam);
+      break;
 
     case WM_ENTERMENULOOP:
       return MsgEnterMenuLoop(hwnd, wParam);
@@ -1932,8 +1944,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
   SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_COLOR_DEF, true);
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, 0x00); // reset on hover
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, 0xFF);
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT); // reset on hover
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_OPAQUE);
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // HOVER
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
@@ -1943,8 +1955,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
  
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
   //SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_UNICODE_POINT, false);
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, 0x00);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, 0xFF);
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_TRANSPARENT);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_NOALPHA);
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX); // HOVER
   //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0));
 
@@ -2982,16 +2994,17 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  bool const bMargin = (SCN_MARGINRIGHTCLICK == umsg);
+  int const nID = bMargin ? IDC_MARGIN : GetDlgCtrlID((HWND)wParam);
+  if ((nID != IDC_MARGIN) && (nID != IDC_EDIT) && (nID != IDC_STATUSBAR) && (nID != IDC_REBAR) && (nID != IDC_TOOLBAR)) {
+    return DefWindowProc(hwnd, umsg, wParam, lParam);
+  }
+
   // no context menu after undo/redo history scrolling
   if (s_bUndoRedoScroll) {
     s_bUndoRedoScroll = false;
-    return FALSE;
+    return 0;
   }
-
-  int nID = GetDlgCtrlID((HWND)wParam);
-  if ((nID != IDC_EDIT) && (nID != IDC_STATUSBAR) &&
-    (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
-    return DefWindowProc(hwnd, umsg, wParam, lParam);
 
   HMENU hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
@@ -3024,8 +3037,41 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   case IDC_TOOLBAR:
   case IDC_STATUSBAR:
   case IDC_REBAR:
-    if (pt.x == -1 && pt.y == -1) { GetCursorPos(&pt); }
-    imenu = 1;
+    {
+      if ((pt.x == -1) && (pt.y == -1)) {
+        GetCursorPos(&pt);
+      }
+      imenu = 1;
+    }
+    break;
+
+  case IDC_MARGIN:
+    {
+      if ((pt.x == -1) && (pt.y == -1)) {
+        GetCursorPos(&pt);
+      }
+
+      DocLn const curLn = Sci_GetCurrentLineNumber();
+      int const bitmask = SciCall_MarkerGet(curLn) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+      EnableCmd(hMenuCtx, IDM_EDIT_CUT_MARKED, bitmask);
+      EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
+      EnableCmd(hMenuCtx, IDM_EDIT_DELETE_MARKED, bitmask);
+
+      //DocLn const curLn = Sci_GetCurrentLineNumber();
+      const SCNotification* const scn = (SCNotification*)wParam;
+      switch (scn->margin) {
+        case MARGIN_SCI_FOLDING:
+          //[[fallthrough]];
+        case MARGIN_SCI_LINENUM:
+          //[[fallthrough]];
+        case MARGIN_SCI_BOOKMRK:
+          imenu = 2;
+          break;
+        default:
+          imenu = 0;
+          break;
+      }
+    }
     break;
   }
 
@@ -3034,7 +3080,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
   DestroyMenu(hMenuCtx);
 
-  return FALSE;
+  return (bMargin ? !0 : 0);
 }
 
 //=============================================================================
@@ -3103,7 +3149,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case WM_RBUTTONUP:
     {
       HMENU hTrayMenu  = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
-      HMENU hMenuPopup = GetSubMenu(hTrayMenu, 2);
+      HMENU hMenuPopup = GetSubMenu(hTrayMenu, 3);
 
       POINT pt;
       int iCmd;
@@ -3437,7 +3483,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
   CheckCmd(hmenu, IDM_VIEW_AUTOINDENTTEXT, Settings.AutoIndent);
   CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
-  CheckCmd(hmenu, IDM_VIEW_MARGIN, Settings.ShowSelectionMargin);
+  CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, Settings.ShowBookmarkMargin);
   CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
   EnableCmd(hmenu, IDM_EDIT_COMPLETEWORD, !te && !ro);
@@ -4168,6 +4214,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         DocPos const iLineSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
         // copy incl last line-breaks
         DocPos const iSelLnEnd = SciCall_PositionFromLine(iLineSelLast) + SciCall_LineLength(iLineSelLast);
+        if (s_flagPasteBoard) {
+          s_bLastCopyFromMe = true;
+        }
         _BEGIN_UNDO_ACTION_;
         SciCall_CopyRange(iSelLnStart, iSelLnEnd);
         _END_UNDO_ACTION_;
@@ -4187,12 +4236,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COPYADD:
       {
+        if (SciCall_IsSelectionEmpty()) {
+          break;
+        }
+        if (Sci_IsMultiOrRectangleSelection()) {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+          break;
+        }
+        DocPos const posSelStart = SciCall_GetSelectionStart();
+        DocPos const posSelEnd   = SciCall_GetSelectionEnd();
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        EditCopyAppend(Globals.hwndEdit, true);
+        EditCopyRangeAppend(Globals.hwndEdit, posSelStart, posSelEnd, true);
       }
       break;
+
 
     case IDM_EDIT_PASTE:
       if (SciCall_CanPaste()) {
@@ -4205,6 +4264,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+
     case IDM_EDIT_SWAP:
       if (!SciCall_IsSelectionEmpty() && SciCall_CanPaste()) {
         if (s_flagPasteBoard) {
@@ -4215,6 +4275,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _END_UNDO_ACTION_;
       }
       break;
+
 
     case IDM_EDIT_CLEARCLIPBOARD:
       EditClearClipboard(Globals.hwndEdit);
@@ -4417,6 +4478,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_REMOVEDUPLICATELINES:
       EditRemoveDuplicateLines(Globals.hwndEdit, false);
+      break;
+
+
+    case IDM_EDIT_CUT_MARKED:
+      EditFocusMarkedLines(Globals.hwndEdit, true, true);
+      break;
+
+
+    case IDM_EDIT_COPY_MARKED:
+      EditFocusMarkedLines(Globals.hwndEdit, true, false);
+      break;
+
+
+    case IDM_EDIT_DELETE_MARKED:
+      EditFocusMarkedLines(Globals.hwndEdit, false, true);
       break;
 
 
@@ -4788,52 +4864,62 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     // Main Bookmark Functions
     case BME_EDIT_BOOKMARKNEXT:
     {
-        DocPos const iPos = SciCall_GetCurrentPos();
-        DocLn const iLine = SciCall_LineFromPosition(iPos);
-
-        int bitmask = (1 << MARKER_NP3_BOOKMARK);
-        DocLn iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERNEXT , iLine+1 , bitmask );
-        if (iNextLine == (DocLn)-1)
-        {
-            iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERNEXT , 0 , bitmask );
-        }
-
-        if (iNextLine != (DocLn)-1)
-        {
-            SciCall_GotoLine(iNextLine);
-            EditEnsureSelectionVisible();
-        }
+      DocLn const iLine = Sci_GetCurrentLineNumber();
+      int bitmask = SciCall_MarkerGet(iLine) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+      if (!bitmask) {
+        bitmask = (1 << MARKER_NP3_BOOKMARK);
+      }
+      DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
+      }
+      if (iNextLine == (DocLn)-1) {
+        bitmask = bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+        iNextLine = SciCall_MarkerNext(iLine + 1, bitmask); //find any bookmark
+      }
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
+      }
+      if (iNextLine != (DocLn)-1) {
+        SciCall_GotoLine(iNextLine);
+        EditEnsureSelectionVisible();
+      }
     }
     break;
 
     case BME_EDIT_BOOKMARKPREV:
     {
-        DocPos const iPos = SciCall_GetCurrentPos();
-        DocLn const iLine = SciCall_LineFromPosition(iPos);
-
-        int bitmask = (1 << MARKER_NP3_BOOKMARK);
-        DocLn iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERPREVIOUS , iLine-1 , bitmask );
-        if (iNextLine == (DocLn)-1)
-        {
-            iNextLine = (DocLn)SendMessage( Globals.hwndEdit , SCI_MARKERPREVIOUS , SciCall_GetLineCount(), bitmask );
-        }
-
-        if (iNextLine != (DocLn)-1)
-        {
-            SciCall_GotoLine(iNextLine);
-            EditEnsureSelectionVisible();
-        }
+      DocLn const iLine = Sci_GetCurrentLineNumber();
+      int bitmask = SciCall_MarkerGet(iLine) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+      if (!bitmask) {
+        bitmask = (1 << MARKER_NP3_BOOKMARK);
+      }
+      DocLn iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask);  // wrap around
+      }
+      if (iNextLine == (DocLn)-1) {
+        bitmask   = bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+        iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask); //find any bookmark
+      }
+      if (iNextLine == (DocLn)-1) {
+        iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
+      }
+      if (iNextLine != (DocLn)-1) {
+        SciCall_GotoLine(iNextLine);
+        EditEnsureSelectionVisible();
+      }
     }
     break;
 
 
     case BME_EDIT_BOOKMARKTOGGLE:
-      EditBookmarkClick(Sci_GetCurrentLineNumber(), 0);
+      EditBookmarkToggle(Sci_GetCurrentLineNumber(), 0);
       break;
 
 
     case BME_EDIT_BOOKMARKCLEAR:
-      SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+      EditClearAllBookMarks(Globals.hwndEdit);
       break;
 
 
@@ -5174,8 +5260,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_VIEW_MARGIN:
-      Settings.ShowSelectionMargin = !Settings.ShowSelectionMargin;
+    case IDM_VIEW_BOOKMARK_MARGIN:
+      Settings.ShowBookmarkMargin = !Settings.ShowBookmarkMargin;
       UpdateMarginWidth();
       break;
 
@@ -6524,23 +6610,23 @@ static DocPos prevCursorPosition = -1;
 #define RGB_TOLERANCE 0x20
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
 
-inline COLORREF _CalcContrastColor(COLORREF rgb, BYTE alpha)
+inline COLORREF _CalcContrastColor(COLORREF rgb, int alpha)
 {
 
-  bool const mask = RGB_SUB(MulDiv(rgb >>  0, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB(MulDiv(rgb >>  8, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB(MulDiv(rgb >> 16, alpha, 0xFF) & 0xFF, 0x80) <= RGB_TOLERANCE;
+  bool const mask = RGB_SUB(MulDiv(rgb >>  0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB(MulDiv(rgb >>  8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE &&
+                    RGB_SUB(MulDiv(rgb >> 16, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE;
 
-  return mask ? (0x7F7F7F + rgb) & 0xFFFFFF : rgb ^ 0xFFFFFF;
+  return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
 }
 
 // ----------------------------------------------------------------------------
 
-#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & 0xFF, ((X) >> 8) & 0xFF, (X)&0xFF))
-#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & 0xFF, ((X) >> 16) & 0xFF, ((X) >> 8) & 0xFF))
-#define BGRA_TO_COLREF(X) (RGB(((X) >> 8) & 0xFF, ((X) >> 16) & 0xFF, ((X) >> 24) & 0xFF))
-#define ARGB_GET_ALPHA(A) (((A) >> 24) & 0xFF)
-#define RGBA_GET_ALPHA(A) ((A) & 0xFF)
+#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >>  8) & SC_ALPHA_OPAQUE, (X) & SC_ALPHA_OPAQUE))
+#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 8) & SC_ALPHA_OPAQUE))
+#define BGRA_TO_COLREF(X) (RGB(((X) >>  8) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 24) & SC_ALPHA_OPAQUE))
+#define ARGB_GET_ALPHA(A) (((A) >> 24) & SC_ALPHA_OPAQUE)
+#define RGBA_GET_ALPHA(A) ((A) & SC_ALPHA_OPAQUE)
 #define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
                                
 // ----------------------------------------------------------------------------
@@ -6652,7 +6738,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         if (sscanf_s(&chText[1], "%x", &iValue) == 1) 
         {
           COLORREF rgb = 0x000000;
-          BYTE   alpha = 0xFF;
+          int alpha = SC_ALPHA_OPAQUE;
           if (length >= 8) // ARGB, RGBA, BGRA
           {
             switch (Settings.ColorDefHotspot) {
@@ -6676,7 +6762,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           else // RGB
           {
             rgb   = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
-            alpha = 0xFF;
+            alpha = SC_ALPHA_OPAQUE;
           }
           COLORREF const fgr = _CalcContrastColor(rgb, alpha);
 
@@ -6684,7 +6770,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           SciCall_IndicatorFillRange(firstPos, length);
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, fgr);
 
-          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, alpha);
+          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, Sci_ClampAlpha(alpha));
           SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
         }
       }
@@ -6727,7 +6813,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
       SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
       SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
-      SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, 0);
+      SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
       SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
 
       HandlePosChange();
@@ -6948,22 +7034,21 @@ static void  _HandleAutoIndent(int const charAdded)
   int const eol_mode = SciCall_GetEOLMode();
   if (((SC_EOL_CRLF == eol_mode) && (charAdded != '\r')) || (SC_EOL_CRLF != eol_mode))
   {
-    DocPos const iCurPos = SciCall_GetCurrentPos();
-    DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
+    DocLn const iCurLine = Sci_GetCurrentLineNumber();
 
     // Move bookmark along with line if inserting lines (pressing return within indent area of line) because Scintilla does not do this for us
     if (iCurLine > 0)
     {
-      //DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
+      //~DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
       if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
       {
-        int const bitmask = SciCall_MarkerGet(iCurLine - 1);
-        if (bitmask & (1 << MARKER_NP3_BOOKMARK))
-        {
-          SciCall_MarkerDelete(iCurLine - 1, MARKER_NP3_BOOKMARK);
-          SciCall_MarkerAdd(iCurLine, MARKER_NP3_BOOKMARK);
+        int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+        if (bitmask) {
+          SciCall_MarkerDelete((iCurLine - 1), -1);
+          SciCall_MarkerAddSet(iCurLine, bitmask);
         }
       }
+
       //~if (iLineLength <= 2)
       {
         DocLn const iPrevLine = iCurLine - 1;
@@ -7460,16 +7545,24 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
         break;
       case MARGIN_SCI_BOOKMRK:
-        EditBookmarkClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+        EditBookmarkToggle(SciCall_LineFromPosition(scn->position), scn->modifiers);
         break;
       case MARGIN_SCI_LINENUM:
+        //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
+        break;
       default:
         break;
     }
     break;
 
-    //case SCN_MARGINRIGHTCLICK:
-    //  break;
+
+    case SCN_MARGINRIGHTCLICK:
+      {
+        POINT pt = {-1,-1};
+        MsgContextMenu(hwnd, SCN_MARGINRIGHTCLICK, (WPARAM)scn, MAKELPARAM(pt.x,pt.y));
+      }
+      break;
+
 
     // ~~~ Not used in Windows ~~~
     // see: CMD_ALTUP / CMD_ALTDOWN
@@ -7624,14 +7717,34 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       switch(pnmh->code)
       {
-        case NM_CLICK:
+        case NM_CLICK: // single click
           {
-            LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
+            LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
-            switch (pnmm->dwItemSpec)
+            switch (s_vSBSOrder[pnmm->dwItemSpec])
             {
               case STATUS_EOLMODE:
-                EditEnsureConsistentLineEndings(Globals.hwndEdit);
+                {
+                  if (Globals.bDocHasInconsistentEOLs)
+                  {
+                    int const eol_mode = SciCall_GetEOLMode();
+                    
+                    int const  eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF : 
+                                           ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
+
+                    UINT const msgid    = (eol_mode == SC_EOL_CRLF) ? IDS_MUI_EOLMODENAME_CRLF : 
+                                           ((eol_mode == SC_EOL_CR) ? IDS_MUI_EOLMODENAME_CR : IDS_MUI_EOLMODENAME_LF); 
+                    
+                    WCHAR wch[64] = {L'\0'};
+                    GetLngString(msgid, wch, COUNTOF(wch));
+                    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_WARN_NORMALIZE_EOLS, wch);
+
+                    if ((IDOK == answer) || (IDYES == answer))
+                    {
+                      PostWMCommand(hwnd, eol_cmd);
+                    }
+                  }
+                }
                 GUARD_RETURN(!0);
 
               default:
@@ -7640,9 +7753,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           break;
 
-        case NM_DBLCLK:
+        case NM_DBLCLK: // double click
           {
-            LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
+            LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
             switch (s_vSBSOrder[pnmm->dwItemSpec])
             {
@@ -7657,17 +7770,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
               case STATUS_EOLMODE:
                 {
-                  int i;
-                  int const eol_mode = SciCall_GetEOLMode();
-                  if (eol_mode == SC_EOL_CRLF)
-                    i = IDM_LINEENDINGS_CRLF;
-                  else if (eol_mode == SC_EOL_CR)
-                    i = IDM_LINEENDINGS_CR;
-                  else
-                    i = IDM_LINEENDINGS_LF;
-                  ++i;
-                  if (i > IDM_LINEENDINGS_LF) { i = IDM_LINEENDINGS_CRLF; }
-                  PostWMCommand(hwnd, i);
+                  int const eol_mode = (SciCall_GetEOLMode() + 1) % 3;
+                  int const eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF : 
+                                        ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF); 
+                  PostWMCommand(hwnd, eol_cmd);
                 }
                 GUARD_RETURN(!0);
 
@@ -7694,8 +7800,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                     StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[%i]", s_iExprError);
                     SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
                   }
-                  else
+                  else {
                     SciCall_CopyText(0, "");
+                  }
                 }
                 break;
 
@@ -8266,14 +8373,14 @@ void UpdateToolbar()
 
 static void  _UpdateToolbarDelayed()
 {
+  bool const bDocModified = GetDocModified();
   SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                 Settings.PathNameFormat, GetDocModified(),
-                 IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
+                 Settings.PathNameFormat, bDocModified, IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
 
   if (!Settings.ShowToolbar) { return; }
 
   EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
-  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() /*&& !bReadOnly*/);
+  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, bDocModified /*&& !bReadOnly*/);
   EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
   CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
@@ -9051,7 +9158,7 @@ void UpdateMarginWidth()
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 
-  Style_SetBookmark(Globals.hwndEdit, Settings.ShowSelectionMargin);
+  Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
   Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 

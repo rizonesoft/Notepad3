@@ -1299,6 +1299,9 @@ void LoadSettings()
     Defaults2.LargeIconScalePrecent = 150;
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
 
+    Defaults2.FocusViewMarkerMode = FVMM_STD;
+    Settings2.FocusViewMarkerMode = clampi(IniSectionGetInt(IniSecSettings2, L"FocusViewMarkerMode", Defaults2.FocusViewMarkerMode), FVMM_OFF, FVMM_NO_MARGIN);
+
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
     // --------------------------------------------------------------------------
@@ -1398,7 +1401,8 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-    GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
+
+    GET_BOOL_VALUE_FROM_INISECTION(ShowBookmarkMargin, IniSectionGetBool(IniSecSettings, L"ShowSelectionMargin", true));
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
 
@@ -1836,7 +1840,9 @@ static bool _SaveSettings(bool bForceSaveSettings)
   else {
     IniSectionDelete(IniSecSettings, L"MultiEdgeLines", false);
   }
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowSelectionMargin);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowBookmarkMargin);
+  IniSectionDelete(IniSecSettings, L"ShowSelectionMargin", false); // old
+
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowCodeFolding);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrences);

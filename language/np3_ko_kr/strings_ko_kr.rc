@@ -158,6 +158,8 @@ BEGIN
     IDS_MUI_EOLMODENAME_CRLF    "윈도우 (CR+LF)"
     IDS_MUI_EOLMODENAME_LF      "유닉스/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR      "구형 Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "Do you want to normalise all line endings to be '%s'?"
 END
 
 STRINGTABLE

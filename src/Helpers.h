@@ -374,6 +374,13 @@ __inline ptrdiff_t MultiByteToWideCharEx(
 
 // ============================================================================
 
+inline int32_t bitmask32_n(unsigned short n)
+{
+  return ((n >= 32) ? 0 - ((int32_t)1) : (((int32_t)1) << n) - 1);
+}
+
+// ============================================================================
+
 inline int wcscmp_s(const wchar_t* s1, const wchar_t* s2)
 {
   return (s1 && s2) ? wcscmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));

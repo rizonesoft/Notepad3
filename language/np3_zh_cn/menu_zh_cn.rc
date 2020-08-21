@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "显示边界(&M)\tCtrl+Shift+M",                IDM_VIEW_MARGIN
+        MENUITEM "显示边界(&M)\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "折叠(&F)"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "用超链接模板 1 打开",                    CMD_WEBACTION1
         MENUITEM "用超链接模板 2 打开",                    CMD_WEBACTION2
         MENUITEM "打开资源管理器",                         IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "启用折叠",                              IDM_VIEW_FOLDING
-        MENUITEM "行号",                                  IDM_VIEW_LINENUMBERS
-        MENUITEM "S显示边界",                             IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -537,8 +533,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "打开 Notepad3",                             IDM_TRAY_RESTORE
-        MENUITEM "退出 Notepad3",                             IDM_TRAY_EXIT
+        MENUITEM "启用折叠",                               IDM_VIEW_FOLDING
+        MENUITEM "行号",                                   IDM_VIEW_LINENUMBERS
+        MENUITEM "S显示边界",                              IDM_VIEW_BOOKMARK_MARGIN
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "打开 Notepad3",                          IDM_TRAY_RESTORE
+        MENUITEM "退出 Notepad3",                          IDM_TRAY_EXIT
     END
 END
 

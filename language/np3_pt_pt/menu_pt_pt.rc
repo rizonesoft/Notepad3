@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Números de linha\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "Selecção da &margem\tCtrl+Shift+M",                  IDM_VIEW_MARGIN
+        MENUITEM "Selecção da &margem\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Dobragem"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Abrir acção Web 1",                          CMD_WEBACTION1
         MENUITEM "Abrir acção Web 2",                          CMD_WEBACTION2
         MENUITEM "Abrir Explorador de ficheiros",              IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Dobragem de código",                         IDM_VIEW_FOLDING
-        MENUITEM "Números de linha",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selecção da margem",                         IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Personalizar barra de ferramentas...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Alternar barras de ferramentas",             IDM_VIEW_TOGGLETB
         MENUITEM "Escala DPI da barra de ferramentas",         IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Dobragem de código",                         IDM_VIEW_FOLDING
+        MENUITEM "Números de linha",                           IDM_VIEW_LINENUMBERS
+        MENUITEM "Selecção da margem",                         IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

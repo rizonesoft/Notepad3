@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Číslovanie r&iadkov\tCtrl+Shift+N",       IDM_VIEW_LINENUMBERS
-        MENUITEM "Označiť okra&j\tCtrl+Shift+M",            IDM_VIEW_MARGIN
+        MENUITEM "Označiť okra&j\tCtrl+Shift+M",            IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Skladanie"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Webová šablóna 1",                       CMD_WEBACTION1
         MENUITEM "Webová šablóna 2",                       CMD_WEBACTION2
         MENUITEM "Otvoriť Prieskumníka",                   IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Skladacia väzba",                        IDM_VIEW_FOLDING
-        MENUITEM "Číslovanie riadkov",                     IDM_VIEW_LINENUMBERS
-        MENUITEM "Označiť okraj",                          IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Prispôsobiť panel nástrojov...",         IDM_VIEW_CUSTOMIZETB
         MENUITEM "Väčší/menší panel nástrojov",            IDM_VIEW_TOGGLETB
         MENUITEM "Mierka DPI panela nástrojov",            IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Skladacia väzba",                        IDM_VIEW_FOLDING
+        MENUITEM "Číslovanie riadkov",                     IDM_VIEW_LINENUMBERS
+        MENUITEM "Označiť okraj",                          IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Radnummer\tCtrl+Shift+N",                         IDM_VIEW_LINENUMBERS
-        MENUITEM "Markeringsmarginal\tCtrl+Shift+M",                IDM_VIEW_MARGIN
+        MENUITEM "Markeringsmarginal\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "Vikning"
         BEGIN
@@ -519,10 +519,6 @@ BEGIN
         MENUITEM "Öppna webb 1",                                    CMD_WEBACTION1
         MENUITEM "Öppna webb 2",                                    CMD_WEBACTION2
         MENUITEM "Öppna filutforskaren",                            IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
-        MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
-        MENUITEM "Markeringsmarginal",                              IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +530,12 @@ BEGIN
         MENUITEM "Anpassa verktygsfält...",                         IDM_VIEW_CUSTOMIZETB
         MENUITEM "Växla verktygsfält",                              IDM_VIEW_TOGGLETB
         MENUITEM "Skala verktygsfält enligt DPI",                   IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
+        MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
+        MENUITEM "Markeringsmarginal",                              IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
