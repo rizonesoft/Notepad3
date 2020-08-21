@@ -5727,7 +5727,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
       } else {
         EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-        Globals.iMarkOccurrencesCount = (DocPos)-1;
+        Globals.iMarkOccurrencesCount = 0;
       }
 
       if (sg_pefrData->fuFlags & SCFIND_MATCHCASE) {
@@ -5846,7 +5846,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
         else {
           EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-          Globals.iMarkOccurrencesCount = (DocPos)-1;
+          Globals.iMarkOccurrencesCount = 0;
         }
 
         if (s_InitialTopLine >= 0) {
@@ -6121,7 +6121,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
               EditToggleView(sg_pefrData->hwnd);
             }
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-            Globals.iMarkOccurrencesCount = (DocPos)-1;
+            Globals.iMarkOccurrencesCount = 0;
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
           }
         }
@@ -7284,8 +7284,7 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
 
     DocPos iPos = (DocPos)-1;
 
-    DocPos const limit = bMultiSel ? iTextEnd + 1 : (DocPos)Settings2.MarkOccurrencesMaxCount;
-    DocPos count = 0;
+    DocPosU count = 0;
     do {
 
       iPos = _FindInTarget(pszText, iFindLength, sFlags, &start, &end, (start == iPos), FRMOD_IGNORE);
@@ -7295,10 +7294,12 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
       }
 
       if (bMultiSel) {
-        if (count)
+        if (count) {
           SciCall_AddSelection(end, iPos);
-        else
+        }
+        else {
           SciCall_SetSelection(end, iPos);
+        }
       }
       else {
         // mark this match if not done before
@@ -7311,7 +7312,7 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
       end = rangeEnd;
       ++count;
 
-    } while ((count < limit) && (start < end));
+    } while (start < end);
     
     Globals.iMarkOccurrencesCount = count;
   }

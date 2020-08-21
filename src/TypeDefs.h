@@ -379,7 +379,7 @@ typedef struct _globals_t
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
-  DocPos    iMarkOccurrencesCount;
+  DocPosU   iMarkOccurrencesCount;
   bool      bUseLimitedAutoCCharSet;
   bool      bIsCJKInputCodePage;
   bool      bIniFileFromScratch;
@@ -562,7 +562,6 @@ typedef struct _settings2_t
   int    IMEInteraction;
   int    SciFontQuality;
 
-  int    MarkOccurrencesMaxCount;
   int    UpdateDelayMarkAllOccurrences;
   bool   DenyVirtualSpaceAccess;
   bool   UseOldStyleBraceMatching;
