@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
-        MENUITEM "Kijelölési mar&gó\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Behajtások"
         BEGIN
@@ -533,9 +533,13 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Kódblokk behajtások",        IDM_VIEW_FOLDING
-        MENUITEM "Sorok száma",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Kijelölési margó",           IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Cut Lines of Marker-Type",    IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",   IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type", IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "Kódblokk behajtások",         IDM_VIEW_FOLDING
+        MENUITEM "Sorok száma",                 IDM_VIEW_LINENUMBERS
+        MENUITEM "Bookmark Margin",             IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
