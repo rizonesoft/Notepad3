@@ -34,7 +34,7 @@ void  EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength);
 bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
-bool  EditCopyRangeAppend(HWND hwnd, const DocPos posBegin, const DocPos posEnd, bool bAppend);
+bool  EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
 void  EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
 bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
