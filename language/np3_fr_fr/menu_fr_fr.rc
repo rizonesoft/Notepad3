@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Numéros de Ligne\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "&Marge de Sélection\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "&Marge de Signet\tCtrl+Shift+M",          IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Pliage"
         BEGIN
@@ -533,10 +533,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Pliage de code",                         IDM_VIEW_FOLDING
-        MENUITEM "&Numéros de ligne",                       IDM_VIEW_LINENUMBERS
-        MENUITEM "&Marge de Sélection",                     IDM_VIEW_BOOKMARK_MARGIN
-    END
+        MENUITEM "Couper les lignes marquées",              IDM_EDIT_CUT_MARKED
+        MENUITEM "Copier les lignes marquées",              IDM_EDIT_COPY_MARKED
+        MENUITEM "Supprimer les lignes marquées",           IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "&Pliage de Code",                         IDM_VIEW_FOLDING
+        MENUITEM "&Numéros de Ligne",                       IDM_VIEW_LINENUMBERS
+        MENUITEM "Marge de Signet",                         IDM_VIEW_BOOKMARK_MARGIN
+    END 
     POPUP "+"
     BEGIN
         MENUITEM "Ouvrir Notepad3",                         IDM_TRAY_RESTORE
