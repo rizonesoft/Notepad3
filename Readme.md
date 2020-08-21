@@ -204,6 +204,7 @@ If you don't like it, you can configure e.g.
 We have integrated of a Powerful External Tool called **grepWinNP3**. 
 **grepWinNP3** is a simple search and replace tool which can use regular expressions to do its job. 
 This allows to do much more powerful searches and replaces in Files.
+
 **grepWinNP3** can be launched:
 - from "File --> Launch --> Search in Files"
 - or from "Edit --> Search --> Search in Files"
@@ -223,10 +224,6 @@ Specify filters for the open and save dialogs
 
 The size limit, in megabytes, to display a warning message for large files. 
 - A value of 0 disables the warning.
-
-#### `MarkOccurrencesMaxCount=2000`
-
-This parameter limits the number of occurrences counted and displayed in Status Bar in “Section 5 = Occ : Number of Marked Occurrences”  (to display more than 2000 occurrences changes this parameter in the ini file.
 
 #### `MultiFileArg=0`
 
@@ -333,6 +330,7 @@ This items are managed by Notepad3.
 Application User Model IDs (AppUserModelIDs) are used extensively by the taskbar in Windows 7 and later systems to associate processes, files, and windows with a particular application. 
 In some cases, it is sufficient to rely on the internal AppUserModelID assigned to a process by the system. 
 However, an application that owns multiple processes or an application that is running in a host process might need to explicitly identify itself so that it can group its otherwise disparate windows under a single taskbar button and control the contents of that application's Jump List.
+
 Most recently used (MRU) source lists are resident on the user's computer and contain information about source paths used in previous installations. 
 This information can be used when prompting the user for a source path. 
 Control system MRU, task-bar and jump list behavior. 
@@ -445,8 +443,6 @@ If used, this setting also defines the field ordering.
 - Section  3 = Sb : Number of bytes (Bytes in [UTF-8]) selected
 - Section  4 = SLn : Number of selected lines
 - Section  5 =  Occ : Number of Marked Occurrences 
-    (to display more than 2000 occurrences changes this parameter in the ini file 
-   `[Setting2]MarkOccurrencesMaxCount=2000`)
 - Section  6 = Size of file in [UTF-8] Mode
 - Section  7 = Encoding Mode  (double click to open `Encoding F9` )
 - Section  8 = EOL Mode (Toggle CR+LF, LF, CR)
