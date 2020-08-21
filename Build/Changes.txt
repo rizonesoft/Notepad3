@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.819.(build_#) (2020-08-19)
+Current BETA Version 5.20.821.(build_#) (2020-08-21)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
+[.821.1]- Bookmark margin context menu.
 [.819.1]- 1st version of Occurrences Bookmarks on Focused-View.
 [.816.1]- Controls to clear history (file and find/replace).
 [.815.1]- Using dialog RTL option for Main window too.
@@ -58,6 +59,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.821.1]- Convenient message box text for normalizing EOLs.
 [.817.2]- grepWinNP3 and minipath: special dialog box UI fonts for Asian languages.
 [.816.1]- Use optimized Asian UI fonts for Notepad3 dialog boxes.
 [.815.1]- Focused View: scroll to current position on each toggle.
@@ -84,6 +86,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.821.1]- Context menu procedures for Occurrences Bookmarks on Focused-View.
 [.819.3]- Single click in status bar's EOL segment will ask for consistent line-end change.
 [.819.2]- Find any next/prev. bookmark (std or word).
 [.818.1]- Scintilla bug fixes: SCICALL attribute (SCI).

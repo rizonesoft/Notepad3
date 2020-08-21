@@ -3030,7 +3030,9 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
         ClientToScreen(Globals.hwndEdit, &pt);
       }
-      imenu = 0;
+
+      int const bitmask = SciCall_MarkerGet(Sci_GetCurrentLineNumber()) & bitmask32_n(MARKER_NP3_BOOKMARK/*~+1*/);
+      imenu = (bitmask && (Settings2.FocusViewMarkerMode == 2 || !Settings.ShowBookmarkMargin)) ? 2 : 0;
     }
     break;
 

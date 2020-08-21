@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "줄 번호(&N)\tCtrl+Shift+N",               IDM_VIEW_LINENUMBERS
-        MENUITEM "선택 영역 여백(&M)\tCtrl+Shift+M",         IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin(&M)\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "접기"
         BEGIN
@@ -528,14 +528,18 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "도구 모음 테마 변경...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "도구 모음 사용자 지정...",         IDM_VIEW_CUSTOMIZETB
-        MENUITEM "도구 모음 전환",                  IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI 비율 툴바",                 IDM_VIEW_DPISCALETB
+        MENUITEM "도구 모음 전환",                   IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI 비율 툴바",                  IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "코드 접기",                       IDM_VIEW_FOLDING
-        MENUITEM "줄 번호",                         IDM_VIEW_LINENUMBERS
-        MENUITEM "선택 영역 여백",                   IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Cut Lines of Marker-Type",        IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",       IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type",     IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "코드 접기",                        IDM_VIEW_FOLDING
+        MENUITEM "줄 번호",                          IDM_VIEW_LINENUMBERS
+        MENUITEM "Bookmark Margin",                 IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

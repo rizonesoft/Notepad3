@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Lijn &nummers\tCtrl+Shift+N",             IDM_VIEW_LINENUMBERS
-        MENUITEM "Selectie &marge\tCtrl+Shift+M",           IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "&Marge de bladwijzer\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Vouwen"
         BEGIN
@@ -533,9 +533,13 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Knippen de gemarkeerde lijnen",          IDM_EDIT_CUT_MARKED
+        MENUITEM "Kopiëren de gemarkeerde lijnen",         IDM_EDIT_COPY_MARKED
+        MENUITEM "Verwijderen de gemarkeerde lijnen",      IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
         MENUITEM "Vouwcode",                               IDM_VIEW_FOLDING
         MENUITEM "Lijn nummers",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selectie marge",                         IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Marge de bladwijzer",                    IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

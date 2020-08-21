@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Нумары радкоў\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "Водступ для в&ылучэння\tCtrl+Shift+M", IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Блокі коду"
         BEGIN
@@ -533,14 +533,18 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Cut Lines of Marker-Type",     IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",    IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type",  IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
         MENUITEM "Згортванне блокаў коду",       IDM_VIEW_FOLDING
         MENUITEM "Нумары радкоў",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Водступ для вылучэння",        IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin",              IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Адкрыць Notepad3",              IDM_TRAY_RESTORE
-        MENUITEM "Закрыць Notepad3",              IDM_TRAY_EXIT
+        MENUITEM "Адкрыць Notepad3",             IDM_TRAY_RESTORE
+        MENUITEM "Закрыць Notepad3",             IDM_TRAY_EXIT
     END
 END
 
