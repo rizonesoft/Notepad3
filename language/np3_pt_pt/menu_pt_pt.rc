@@ -355,7 +355,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Números de linha\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "Selecção da &margem\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Dobragem"
         BEGIN
@@ -533,14 +533,18 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Cut Lines of Marker-Type",                   IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",                  IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type",                IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
         MENUITEM "Dobragem de código",                         IDM_VIEW_FOLDING
         MENUITEM "Números de linha",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selecção da margem",                         IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Bookmark Margin",                            IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir o Notepad3",               IDM_TRAY_RESTORE
-        MENUITEM "Sair do Notepad3",               IDM_TRAY_EXIT
+        MENUITEM "Abrir o Notepad3",                           IDM_TRAY_RESTORE
+        MENUITEM "Sair do Notepad3",                           IDM_TRAY_EXIT
     END
 END
 
