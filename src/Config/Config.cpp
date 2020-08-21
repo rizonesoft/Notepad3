@@ -1177,10 +1177,6 @@ void LoadSettings()
     Defaults2.SciFontQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
-    Defaults2.MarkOccurrencesMaxCount = 2000;
-    Settings2.MarkOccurrencesMaxCount = IniSectionGetInt(IniSecSettings2, L"MarkOccurrencesMaxCount", Defaults2.MarkOccurrencesMaxCount);
-    if (Settings2.MarkOccurrencesMaxCount <= 0) { Settings2.MarkOccurrencesMaxCount = INT_MAX; }
-
     Defaults2.UpdateDelayMarkAllOccurrences = 50;
     Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences",
       Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
@@ -1946,9 +1942,11 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
 
   // --------------------------------------------------------------------------
-  //const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
+  const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
   // --------------------------------------------------------------------------
 
+  // ---  remove deprecated  ---
+  IniSectionDelete(IniSecSettings2, L"MarkOccurrencesMaxCount", false);
 
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecWindow = Constants.Window_Section;

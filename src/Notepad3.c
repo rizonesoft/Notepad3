@@ -1541,7 +1541,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SetNotifyIconTitle(Globals.hwndMain);
   }
   Globals.iReplacedOccurrences = 0;
-  Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : (DocPos)-1;
+  Globals.iMarkOccurrencesCount = 0;
 
   UpdateToolbar();
   UpdateStatusbar(true);
@@ -5298,7 +5298,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       else {
         EditClearAllOccurrenceMarkers(Globals.hwndEdit);
-        Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : (DocPos)-1;
+        Globals.iMarkOccurrencesCount = 0;
       }
       break;
 
@@ -8887,23 +8887,14 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // number of occurrence marks found
   if (s_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace)
   {
-    static DocPos s_iMarkOccurrencesCount = (DocPos)-111;
+    static DocPosU s_iMarkOccurrencesCount = 0;
     static bool s_bMOVisible = false;
     if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount)))
     {
-      if (Globals.iMarkOccurrencesCount >= 0)
+      if (Globals.iMarkOccurrencesCount > 0)
       {
-        if ((Settings2.MarkOccurrencesMaxCount < 0) || (Globals.iMarkOccurrencesCount < (DocPos)Settings2.MarkOccurrencesMaxCount))
-        {
-          StringCchPrintf(tchOcc, COUNTOF(tchOcc), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
-          FormatNumberStr(tchOcc, COUNTOF(tchOcc), 0);
-        }
-        else {
-          static WCHAR tchTmp[32] = { L'\0' };
-          StringCchPrintf(tchTmp, COUNTOF(tchTmp), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
-          FormatNumberStr(tchTmp, COUNTOF(tchTmp), 0);
-          StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
-        }
+        StringCchPrintf(tchOcc, COUNTOF(tchOcc), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
+        FormatNumberStr(tchOcc, COUNTOF(tchOcc), 0);
       }
       else {
         StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
