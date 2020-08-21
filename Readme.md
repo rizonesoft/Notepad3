@@ -438,6 +438,12 @@ A value of zero (0) (or less than 100 ms) will disable the Tooltip display.
 
 `Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
 
+#### `FocusViewMarkerMode=1`
+
+0 = OFF
+1 = STD (the default), (if Bookmark-Margin is shown, use marker symbol - if hidden, use alpha-blend color line background)
+2 = NO_MARGIN (use alpha-blend color line background regardless if BM-Margin is shown or hidden)
+
 
 ## **`[Statusbar Settings]`**
 
