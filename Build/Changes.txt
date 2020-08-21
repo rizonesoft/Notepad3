@@ -59,6 +59,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.821.1]- Bookmark context menu on alpha-blend FocusedView marker line.
 [.821.1]- Convenient message box text for normalizing EOLs.
 [.817.2]- grepWinNP3 and minipath: special dialog box UI fonts for Asian languages.
 [.816.1]- Use optimized Asian UI fonts for Notepad3 dialog boxes.
