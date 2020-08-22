@@ -94,7 +94,7 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4, SELECT_HYPERLINK = 8 } HYPERLINK_OPS;  // Hyperlink Operations
 typedef enum { FWM_DONT_CARE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2 } FILE_WATCHING_MODE;
-typedef enum { FVMM_OFF = 0, FVMM_STD = 1, FVMM_NO_MARGIN = 2 } FOCUSVIEW_MARKER_MODE;
+typedef enum { FVMM_MARGIN = 0, FVMM_LN_BACKGR = 1, FVMM_FOLD = 2 } FOCUSVIEW_MARKER_MODE;
 
 // ----------------------------------------------------------------------------
 
@@ -253,21 +253,25 @@ typedef struct _cmq
 
 typedef enum
 {
-  MARKER_NP3_WORD_0 = 0,
-  MARKER_NP3_WORD_1,
-  MARKER_NP3_WORD_2,
-  MARKER_NP3_WORD_3,
-  MARKER_NP3_WORD_4,
-  MARKER_NP3_WORD_5,
-  MARKER_NP3_WORD_6,
-  MARKER_NP3_WORD_7,
+  MARKER_NP3_OCCURRENCE = 0, // invisible
+  MARKER_NP3_1,
+  MARKER_NP3_2,
+  MARKER_NP3_3,
+  MARKER_NP3_4,
+  MARKER_NP3_5,
+  MARKER_NP3_6,
+  MARKER_NP3_7,
+  MARKER_NP3_8,
   // std bookmark -> counter is last
   MARKER_NP3_BOOKMARK
 } MARKER_ID;
 
 // ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_FOLDEREND )
 
-   
+#define GET_LN_OCC_MARKER_BITMASK(LN) (SciCall_MarkerGet(LN) & \
+                                       bitmask32_n(MARKER_NP3_BOOKMARK + 1) & \
+                                       ~(1 << MARKER_NP3_OCCURRENCE))
+
 typedef struct _wordbookmark_t
 {
   bool     in_use;
@@ -286,7 +290,6 @@ typedef enum
   INDIC_NP3_MARK_OCCURANCE = INDICATOR_CONTAINER,
   INDIC_NP3_MATCH_BRACE,
   INDIC_NP3_BAD_BRACE,
-  INDIC_NP3_FOCUS_VIEW,
   INDIC_NP3_HYPERLINK,
   INDIC_NP3_HYPERLINK_U,
   INDIC_NP3_COLOR_DEF,
@@ -499,6 +502,7 @@ typedef struct _settings_t
   bool SplitUndoTypingSeqOnLnBreak;
   bool EditLayoutRTL;
   bool DialogsLayoutRTL;
+  int  FocusViewMarkerMode;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
@@ -573,7 +577,6 @@ typedef struct _settings2_t
   int    ExitOnESCSkipLevel;
   int    ZoomTooltipTimeout;
   int    LargeIconScalePrecent;
-  int    FocusViewMarkerMode;
 
   float  AnalyzeReliableConfidenceLevel;
   float  LocaleAnsiCodePageAnalysisBonus;

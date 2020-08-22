@@ -1295,9 +1295,6 @@ void LoadSettings()
     Defaults2.LargeIconScalePrecent = 150;
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
 
-    Defaults2.FocusViewMarkerMode = FVMM_STD;
-    Settings2.FocusViewMarkerMode = clampi(IniSectionGetInt(IniSecSettings2, L"FocusViewMarkerMode", Defaults2.FocusViewMarkerMode), FVMM_OFF, FVMM_NO_MARGIN);
-
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
     // --------------------------------------------------------------------------
@@ -1499,6 +1496,8 @@ void LoadSettings()
 
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
+
+    GET_INT_VALUE_FROM_INISECTION(FocusViewMarkerMode, (FVMM_MARGIN | FVMM_FOLD), FVMM_MARGIN, (FVMM_LN_BACKGR | FVMM_FOLD));
 
     // --------------------------------------------------------------------------
     const WCHAR* const StatusBar_Section = L"Statusbar Settings";
@@ -1940,6 +1939,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FocusViewMarkerMode);
 
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;

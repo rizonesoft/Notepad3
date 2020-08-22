@@ -1833,11 +1833,15 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
   SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
 
+  // invisible occurrence marker
+  SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, SC_MARK_BACKGROUND);
+  SciCall_MarkerSetAlpha(MARKER_NP3_OCCURRENCE, SC_ALPHA_TRANSPARENT);
+
   // ---  WordBookMarks  ---
-  for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m)
+  COLORREF color;
+  for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m)
   {
-    COLORREF color;
-    SciCall_MarkerDefine(m, (Settings2.FocusViewMarkerMode == FVMM_NO_MARGIN) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
+    SciCall_MarkerDefine(m, (Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
     Style_StrGetColor(WordBookMarks[m].color, BACKGROUND_LAYER, &color);
     SciCall_MarkerSetFore(m, color);
     SciCall_MarkerSetBack(m, color);
