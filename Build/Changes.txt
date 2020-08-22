@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.8212.(build_#) (2020-08-22)
+Current BETA Version 5.20.822.(build_#) (2020-08-22)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
+[.822.2]- FocusedView Options: Bookmarks/Line-Highlight & Folding.
 [.821.1]- Bookmark margin context menu.
 [.819.1]- 1st version of Occurrences Bookmarks on Focused-View.
 [.816.1]- Controls to clear history (file and find/replace).
@@ -50,7 +51,7 @@ NEW:
 [.812.1]- Context-Menu to toggle margins.
 [.811.1]- Color-Definition Hotspots: support RGB+A (default), A+RGB and BGRA.
 [.808.1]- Configuration for "Search in Files" toolbar label. 
-[.802.1]- Configuration ([Settings2]LargeIconScalePrecent) percent threshold to switch to bigger file types icons (lexer style selections).
+[.802.1]- Configuration ([Settings2]LargeIconScalePrecent) percent to switch to bigger file types icons.
 [.727.1]- DPI-Aware treeview/listview lexer type icons.
 [.727.1]- New string "Calculate Tiny-Expressions".
 [.722.2]- ARM64_Build branch (Xperimental).
@@ -59,7 +60,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
-[.822.1]- Remove max count limitation for Occurrences-Marker (deprecated option -> use visible only instead).
+[.822.1]- Remove max count limitation for "Mark Occurrences" feature.
 [.821.1]- Bookmark context menu on alpha-blend FocusedView marker line.
 [.821.1]- Convenient message box text for normalizing EOLs.
 [.817.2]- grepWinNP3 and minipath: special dialog box UI fonts for Asian languages.
@@ -99,7 +100,7 @@ FIXES:
 [.812.1]- "grepWinNP3": fix invalid searchPath Ballon-Tip handling (GRE).
 [.812.1]- [Settings2] filebrowser.exe=explorer.exe.
 [.812.1]- Text contrast on hover color hotspot.
-[.811.1]- Set preferred language to internal, in case of "don't show again" option on "not available confirmation dialog" is enabled.
+[.811.1]- Set preferred language to internal, on "not available confirmation dialog" is enabled.
 [.808.1]- Center system's MessageBox in parent window. 
 [.808.1]- Relative calculation of title font size for AboutBox and CS dialog. 
 [.805.1]- Unicode Point detection and enhanced Color Tag contrast on hoover.

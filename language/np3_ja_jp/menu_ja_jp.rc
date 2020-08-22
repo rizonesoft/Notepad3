@@ -371,6 +371,11 @@ BEGIN
         POPUP "表示(&D)"
         BEGIN
             MENUITEM "単語一望モード(&F)\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Mode: Bookmark",                         IDM_VIEW_FV_BOOKMARK
+            MENUITEM "Mode: Highlight",                        IDM_VIEW_FV_HIGHLIGHT
+            MENUITEM "Mode: Bookmark && Fold",                 IDM_VIEW_FV_BKMRKFOLD
+            MENUITEM "Mode: Highlight && Fold",                IDM_VIEW_FV_HIGHLGFOLD
+            MENUITEM SEPARATOR
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
             MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
