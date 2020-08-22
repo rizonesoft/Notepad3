@@ -75,7 +75,7 @@ void  EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBla
 void  EditCompressBlanks();
 void  EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
 void  EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines);
-void  EditFocusMarkedLines(HWND hwnd, bool bCopy, bool bDelete);
+void  EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete);
 void  EditWrapToColumn(DocPosU nColumn);
 //void  EditWrapToColumnForce(HWND hwnd, DocPosU nColumn);
 
@@ -126,7 +126,8 @@ void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
 void  EditBookmarkToggle(const DocLn ln, const int modifiers);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
-void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
+void  EditFoldMarkedLineRange(HWND hwnd, bool bHideLines);
+void  EditBookMarkLineRange(HWND hwnd);
 void  EditSelectionMultiSelectAll();
 void  EditSelectionMultiSelectAllEx(EDITFINDREPLACE edFndRpl);
 

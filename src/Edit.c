@@ -4274,55 +4274,62 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 
 //=============================================================================
 //
-//  EditFocusMarkedLines()
+//  EditFocusMarkedLinesCmd()
 //
-void EditFocusMarkedLines(HWND hwnd, bool bCopy, bool bDelete)
+void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
 {
-  if (!(bCopy || bDelete)) { return; } // nothing todo
+    if (!(bCopy || bDelete)) { return; } // nothing todo
 
-  DocLn const curLn = Sci_GetCurrentLineNumber();
-  int const   bitmask = SciCall_MarkerGet(curLn) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+    DocLn const curLn   = Sci_GetCurrentLineNumber();
+    int const   bitmask = GET_LN_OCC_MARKER_BITMASK(curLn);
 
-  if (!bitmask) {
-    return;
-  }
+    if (!bitmask) {
+        return;
+    }
 
-  if (bCopy) {
-    EditClearClipboard(hwnd);
-  }
-
-  _IGNORE_NOTIFY_CHANGE_;
-  SciCall_BeginUndoAction();
-
-  DocLn line = SciCall_MarkerNext(0, bitmask); // begin
-
-  while (line >= 0) {
     if (bCopy) {
-      DocPos const lnBeg = SciCall_PositionFromLine(line);
-      //DocPos const lnEnd = lnBeg + SciCall_LineLength(line); // incl line-breaks
-      DocPos const lnEnd = SciCall_GetLineEndPosition(line); // w/o line-breaks
-      EditCopyRangeAppend(hwnd, lnBeg, lnEnd, true);
+        EditClearClipboard(hwnd);
     }
+
+    _IGNORE_NOTIFY_CHANGE_;
+    SciCall_BeginUndoAction();
+
+    DocLn line = -1;
+    do {
+        line = SciCall_MarkerNext(line + 1, bitmask);
+        if (line >= 0) {
+            int const lnmask = GET_LN_OCC_MARKER_BITMASK(line);
+            if (lnmask == bitmask) { // fit all markers
+                if (bCopy) {
+                    DocPos const lnBeg = SciCall_PositionFromLine(line);
+                    //DocPos const lnEnd = lnBeg + SciCall_LineLength(line); // incl line-breaks
+                    DocPos const lnEnd = SciCall_GetLineEndPosition(line); // w/o line-breaks
+                    EditCopyRangeAppend(hwnd, lnBeg, lnEnd, true);
+                }
+                if (bDelete) {
+                    SciCall_GotoLine(line);
+                    SciCall_MarkerDelete(line, -1);
+                    SciCall_LineDelete();
+                    --line;
+                }
+            }
+        }
+    } while (line >= 0);
+
+    SciCall_EndUndoAction();
+    _OBSERVE_NOTIFY_CHANGE_;
+
     if (bDelete) {
-      SciCall_GotoLine(line);
-      SciCall_MarkerDelete(line, -1);
-      SciCall_LineDelete();
+        for (int m = MARKER_NP3_1; m <= MARKER_NP3_BOOKMARK; ++m) { // all(!)
+            if (bitmask & (1 << m)) {
+                if (SciCall_MarkerNext(0, (1 << m)) < 0) {
+                    WordBookMarks[m].in_use = false;
+                }
+            }
+        }
     }
-    line = SciCall_MarkerNext(bDelete ? line : (line + 1), bitmask); // proceed
-  }
 
-  SciCall_EndUndoAction();
-  _OBSERVE_NOTIFY_CHANGE_;
-
-  if (bDelete) {
-    for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
-      if (bitmask & (1 << m)) {
-        WordBookMarks[m].in_use = false;
-      }
-    }
-  }
-
-  SciCall_GotoLine(min_ln(curLn, Sci_GetLastDocLineNumber()));
+    SciCall_GotoLine(min_ln(curLn, Sci_GetLastDocLineNumber()));
 }
 
 
@@ -5482,44 +5489,49 @@ static DocPos  _FindInTarget(LPCSTR szFind, DocPos length, int sFlags,
 //
 typedef enum { MATCH = 0, NO_MATCH = 1, INVALID = 2 } RegExResult_t;
 
-static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, bool bMarkAll, bool bFirstMatchOnly)
+static RegExResult_t _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, bool bMarkAll, bool bFirstMatchOnly)
 {
-  char szFind[FNDRPL_BUFFER];
-  DocPos const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
-  if (slen == 0) { return NO_MATCH; }
-  int const sFlags = (int)(lpefr->fuFlags);
+    char         szFind[FNDRPL_BUFFER];
+    DocPos const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
+    if (slen == 0) { return NO_MATCH; }
+    int const sFlags = (int)(lpefr->fuFlags);
 
-  DocPos const iStart = bFirstMatchOnly ? iStartPos : 0;
-  DocPos const iTextEnd = Sci_GetDocEndPosition();
+    DocPos const iStart   = bFirstMatchOnly ? iStartPos : 0;
+    DocPos const iTextEnd = Sci_GetDocEndPosition();
 
-  DocPos start = iStart;
-  DocPos end   = iTextEnd;
-  DocPos const iPos  = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_IGNORE);
+    DocPos       start = iStart;
+    DocPos       end   = iTextEnd;
+    DocPos const iPos  = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_IGNORE);
 
-  if (bFirstMatchOnly && !Globals.bReplaceInitialized) {
-    if (IsWindow(Globals.hwndDlgFindReplace) && (GetForegroundWindow() == Globals.hwndDlgFindReplace)) {
-      if (iPos >= 0) {
-        SciCall_SetSel(start, end);
-      }
-      else {
-        SciCall_ScrollCaret();
-      }
+    if (bFirstMatchOnly && !Globals.bReplaceInitialized) {
+        if (IsWindow(Globals.hwndDlgFindReplace) && (GetForegroundWindow() == Globals.hwndDlgFindReplace)) {
+            if (iPos >= 0) {
+                SciCall_SetSel(start, end);
+            }
+            else {
+                SciCall_ScrollCaret();
+            }
+        }
     }
-  }
-  else // mark all matches
-  {
-    if (bMarkAll) {
-      EditClearAllOccurrenceMarkers(hwnd);
-      if (iPos >= 0) {
-        EditMarkAll(szFind, (int)(lpefr->fuFlags), 0, iTextEnd, false);
-        if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(lpefr->hwnd, true); }
-      }
-      else {
-        if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(lpefr->hwnd, false); }
-      }
+    else // mark all matches
+    {
+        if (bMarkAll) {
+            EditClearAllOccurrenceMarkers(hwnd);
+            if (iPos >= 0) {
+                EditMarkAll(szFind, (int)(lpefr->fuFlags), 0, iTextEnd, false);
+                if (FocusedView.HideNonMatchedLines) {
+                    EditFoldMarkedLineRange(lpefr->hwnd, true);
+                }
+                EditBookMarkLineRange(lpefr->hwnd);
+            }
+            else {
+                if (FocusedView.HideNonMatchedLines) {
+                    EditFoldMarkedLineRange(lpefr->hwnd, false);
+                }
+            }
+        }
     }
-  }
-  return ((iPos >= 0) ? MATCH : ((iPos == (DocPos)(-1)) ? NO_MATCH : INVALID));
+    return ((iPos >= 0) ? MATCH : ((iPos == (DocPos)(-1)) ? NO_MATCH : INVALID));
 }
 
 
@@ -7128,9 +7140,8 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 
   _IGNORE_NOTIFY_CHANGE_;
 
+  SciCall_MarkerDeleteAll(MARKER_NP3_OCCURRENCE);
   SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
-  SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-  SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
   SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
   _OBSERVE_NOTIFY_CHANGE_;
@@ -7143,12 +7154,12 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 //
 void EditClearAllBookMarks(HWND hwnd)
 {
-  UNUSED(hwnd);
-  for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
-    SciCall_MarkerDeleteAll(m);
-    WordBookMarks[m].in_use = false;
-  }
-  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+    UNUSED(hwnd);
+    SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK); // explicit
+    for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
+        SciCall_MarkerDeleteAll(m);
+        WordBookMarks[m].in_use = false;
+    }
 }
 
 
@@ -7158,16 +7169,28 @@ void EditClearAllBookMarks(HWND hwnd)
 //
 void EditToggleView(HWND hwnd)
 {
-  BeginWaitCursor(true,L"Toggle View...");
+    if (Settings.FocusViewMarkerMode & FVMM_FOLD)
+    {
+        BeginWaitCursor(true, L"Toggle View...");
 
-  FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
+        FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
 
-  EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
+        if (FocusedView.HideNonMatchedLines) {
+            EditFoldMarkedLineRange(hwnd, true);
+            EditBookMarkLineRange(hwnd);
+        }
+        else {
+            EditFoldMarkedLineRange(hwnd, false);
+        }
 
-  SciCall_SetReadOnly(FocusedView.HideNonMatchedLines);
-  SciCall_ScrollCaret();
+        SciCall_SetReadOnly(FocusedView.HideNonMatchedLines);
+        SciCall_ScrollCaret();
 
-  EndWaitCursor();
+        EndWaitCursor();
+    }
+    else {
+        EditBookMarkLineRange(hwnd);
+    }
 }
 
 
@@ -7305,8 +7328,7 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
         // mark this match if not done before
         SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
         SciCall_IndicatorFillRange(iPos, (end - start));
-        SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
-        SciCall_IndicatorFillRange(Sci_GetLineStartPosition(iPos), 1);
+        SciCall_MarkerAdd(SciCall_LineFromPosition(iPos), MARKER_NP3_OCCURRENCE);
       }
       start = end;
       end = rangeEnd;
@@ -7741,71 +7763,86 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
 
 //=============================================================================
 //
-//  EditHideNotMarkedLineRange()
+//  EditFoldMarkedLineRange()
 //
-void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
+void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines)
 {
-  if (!bHideLines) {
-    // reset
-    SciCall_FoldAll(EXPAND);
-    Style_SetFoldingAvailability(Style_GetCurrentLexerPtr());
-    FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
-    Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
-    Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
-    Sci_ApplyLexerStyle(0, -1);
-    EditMarkAllOccurrences(hwnd, true);
-  }
-  else // =====   fold lines without marker   =====
-  {
-    // get next free bookmark 
-    int marker = 0;
-    if (Settings2.FocusViewMarkerMode) {
-      for (marker = 0; marker < MARKER_NP3_BOOKMARK; ++marker) {
-        if (!WordBookMarks[marker].in_use) {
-          WordBookMarks[marker].in_use = true;
-          break;
-        }
-      }
-      if (marker >= MARKER_NP3_BOOKMARK) {
-        marker = 0; // wrap around usage
-        SciCall_MarkerDeleteAll(marker);
-        WordBookMarks[marker].in_use = true;
-      }
+    if (!bHideLines) {
+        // reset
+        SciCall_FoldAll(EXPAND);
+        Style_SetFoldingAvailability(Style_GetCurrentLexerPtr());
+        FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
+        Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+        Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
+        Sci_ApplyLexerStyle(0, -1);
+        EditMarkAllOccurrences(hwnd, true);
     }
-    // prepare hidden (folding) settings
-    FocusedView.CodeFoldingAvailable = true;
-    FocusedView.ShowCodeFolding = true;
-    Style_SetFoldingFocusedView();
-    Style_SetFolding(hwnd, true);
-
-    DocLn const iStartLine = 0;
-    DocLn const iEndLine = SciCall_GetLineCount() - 1;
-
-    int const baseLevel = SC_FOLDLEVELBASE;
-
-    // 1st line
-    int level = baseLevel;
-    SciCall_SetFoldLevel(iStartLine, SC_FOLDLEVELHEADERFLAG | level++); // visible in any case
-
-    for (DocLn iLine = iStartLine + 1; iLine <= iEndLine; ++iLine)
+    else // =====   fold lines without marker   =====
     {
-      DocPos const begOfLine = SciCall_PositionFromLine(iLine);
+        // prepare hidden (folding) settings
+        FocusedView.CodeFoldingAvailable = true;
+        FocusedView.ShowCodeFolding      = true;
+        Style_SetFoldingFocusedView();
+        Style_SetFolding(hwnd, true);
 
-      if (begOfLine == SciCall_IndicatorStart(INDIC_NP3_FOCUS_VIEW, begOfLine)) // visible
-      {
-        level = baseLevel;
-        SciCall_SetFoldLevel(iLine, SC_FOLDLEVELHEADERFLAG | level++);
-        if (Settings2.FocusViewMarkerMode) {
-          SciCall_MarkerAdd(iLine, marker);
+        int const baseLevel = SC_FOLDLEVELBASE;
+
+        DocLn const iStartLine = 0;
+        DocLn const iEndLine   = SciCall_GetLineCount() - 1;
+
+        // 1st line
+        int level = baseLevel;
+        SciCall_SetFoldLevel(iStartLine, SC_FOLDLEVELHEADERFLAG | level++); // visible in any case
+
+        int const bitmask = (1 << MARKER_NP3_OCCURRENCE);
+        DocLn     markerLine = SciCall_MarkerNext(iStartLine + 1, bitmask);
+        
+        for (DocLn line = iStartLine + 1; line <= iEndLine; ++line)
+        {
+            if (line == markerLine) { // visible
+                level = baseLevel;
+                SciCall_SetFoldLevel(line, SC_FOLDLEVELHEADERFLAG | level++);
+                markerLine = SciCall_MarkerNext(line + 1, bitmask); // next
+            }
+            else { // hide line
+                SciCall_SetFoldLevel(line, SC_FOLDLEVELWHITEFLAG | level);
+            }
         }
-      }
-      else // hide line
-      {
-        SciCall_SetFoldLevel(iLine, SC_FOLDLEVELWHITEFLAG | level);
-      }
+
+        SciCall_FoldAll(FOLD);
     }
-    SciCall_FoldAll(FOLD);
-  }
+}
+
+
+//=============================================================================
+//
+//  EditBookMarkLineRange()
+//
+void EditBookMarkLineRange(HWND hwnd)
+{
+    UNUSED(hwnd);
+
+    // get next free bookmark
+    int marker;
+    for (marker = MARKER_NP3_1; marker < MARKER_NP3_BOOKMARK; ++marker) {
+        if (!WordBookMarks[marker].in_use) {
+            WordBookMarks[marker].in_use = true;
+            break;
+        }
+    }
+    if (marker >= MARKER_NP3_BOOKMARK) {
+        marker = MARKER_NP3_1;
+        SciCall_MarkerDeleteAll(marker);
+    }
+
+    DocLn line = -1;
+    int const bitmask = (1 << MARKER_NP3_OCCURRENCE);
+    do {
+        line = SciCall_MarkerNext(line + 1, bitmask);
+        if (line >= 0) {
+            SciCall_MarkerAdd(line, marker);
+        }
+    } while (line >= 0);
 }
 
 
@@ -8769,7 +8806,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
   do {
     iLine = SciCall_MarkerNext(iLine + 1, bitmask);
     if (iLine >= 0) {
-      StringCchPrintfW(tchLine, COUNTOF(tchLine), L"%td;", (long long)iLine);
+      StringCchPrintfW(tchLine, COUNTOF(tchLine), DOCPOSFMTW L";", iLine);
       StringCchCatW(pszBookMarks, cchLength, tchLine);
     }
   } while (iLine >= 0);
@@ -8811,32 +8848,31 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 //
 //  EditBookmarkToggle()
 //
-void  EditBookmarkToggle(const DocLn ln, const int modifiers)
+void EditBookmarkToggle(const DocLn ln, const int modifiers)
 {
-  UNUSED(modifiers);
+    UNUSED(modifiers);
 
-  int const bitmask = SciCall_MarkerGet(ln) & bitmask32_n(MARKER_NP3_BOOKMARK + 1);
+    int const bitmask = GET_LN_OCC_MARKER_BITMASK(ln);
 
-  if (!bitmask)
-  {
-    SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
-  }
-  else if (bitmask & (1 << MARKER_NP3_BOOKMARK))
-  {
-    SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
-  }
-  else {
-    for (int m = MARKER_NP3_BOOKMARK - 1; m >= 0; --m) {
-      if (bitmask & (1 << m)) {
-        SciCall_MarkerDeleteAll(m);
-        WordBookMarks[m].in_use = false;
-      }
+    if (!bitmask) {
+        SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
     }
-  }
+    else if (bitmask & (1 << MARKER_NP3_BOOKMARK))
+    {
+        SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
+    }
+    else {
+        for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
+            if (bitmask & (1 << m)) {
+                SciCall_MarkerDeleteAll(m);
+                WordBookMarks[m].in_use = false;
+            }
+        }
+    }
 
-  if (modifiers & SCMOD_ALT) {
-    SciCall_GotoLine(ln);
-  }
+    if (modifiers & SCMOD_ALT) {
+        SciCall_GotoLine(ln);
+    }
 }
 
 
