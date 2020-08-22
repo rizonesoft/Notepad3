@@ -371,6 +371,11 @@ BEGIN
         POPUP "&Exibir"
         BEGIN
             MENUITEM "Visão Focada\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Mode: Bookmark",                              IDM_VIEW_FV_BOOKMARK
+            MENUITEM "Mode: Highlight",                             IDM_VIEW_FV_HIGHLIGHT
+            MENUITEM "Mode: Bookmark && Fold",                      IDM_VIEW_FV_BKMRKFOLD
+            MENUITEM "Mode: Highlight && Fold",                     IDM_VIEW_FV_HIGHLGFOLD
+            MENUITEM SEPARATOR
             MENUITEM "Log de &Monitoramento",                       IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Rolagem Passa do Fim do Arquivo",            IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar Dica de &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
