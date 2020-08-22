@@ -190,7 +190,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "¿Activar la configuración actual reiniciando?n\n%s"
+    IDS_MUI_RELOADSETTINGS   "¿Activar la configuración actual reiniciando?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "¡Al continuar sin reiniciar, las configuraciones guardadas no se aplican y serán anuladas por las configuraciones internas al salir del programa!"
     IDS_MUI_EXPORT_FAIL      "Error al exportar la configuración de estilo a ""%s""."
     IDS_MUI_REGEX_INVALID    "Error al evaluar la expresión regular. ¡La expresión es inválida!"
