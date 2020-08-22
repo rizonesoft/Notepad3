@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.821.(build_#) (2020-08-21)
+Current BETA Version 5.20.8212.(build_#) (2020-08-22)
 =====================================================
 
 -----------------------------------------------------
@@ -59,6 +59,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.822.1]- Remove max count limitation for Occurrences-Marker (deprecated option -> use visible only instead).
 [.821.1]- Bookmark context menu on alpha-blend FocusedView marker line.
 [.821.1]- Convenient message box text for normalizing EOLs.
 [.817.2]- grepWinNP3 and minipath: special dialog box UI fonts for Asian languages.
