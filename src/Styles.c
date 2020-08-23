@@ -1833,8 +1833,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
   SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
 
-  // invisible occurrence marker
-  SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, SC_MARK_BACKGROUND);
+  // occurrence bookmarker
+  bool const visible = Settings.MarkOccurrencesBookmark;
+  SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
   SciCall_MarkerSetAlpha(MARKER_NP3_OCCURRENCE, SC_ALPHA_TRANSPARENT);
 
   // ---  WordBookMarks  ---

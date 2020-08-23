@@ -3029,7 +3029,8 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ClientToScreen(Globals.hwndEdit, &pt);
       }
 
-      int const bitmask = GET_LN_OCC_MARKER_BITMASK(Sci_GetCurrentLineNumber()) & ~(1 << MARKER_NP3_BOOKMARK);
+      DocLn const curLn = Sci_GetCurrentLineNumber();
+      int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
       imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? 2 : 0;
     }
     break;
@@ -3052,7 +3053,8 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
 
       DocLn const curLn = Sci_GetCurrentLineNumber();
-      int const bitmask = GET_LN_OCC_MARKER_BITMASK(curLn);
+      int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
+      EnableCmd(hMenuCtx, IDM_EDIT_CLEAR_MARKER, bitmask);
       EnableCmd(hMenuCtx, IDM_EDIT_CUT_MARKED, bitmask);
       EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
       EnableCmd(hMenuCtx, IDM_EDIT_DELETE_MARKED, bitmask);
@@ -4483,6 +4485,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDM_EDIT_CLEAR_MARKER:
+      EditBookmarkToggle(Sci_GetCurrentLineNumber(), 0);
+      break;
+
+
     case IDM_EDIT_CUT_MARKED:
       EditFocusMarkedLinesCmd(Globals.hwndEdit, true, true);
       break;
@@ -4867,7 +4874,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case BME_EDIT_BOOKMARKNEXT:
     {
         DocLn const iLine   = Sci_GetCurrentLineNumber();
-        int         bitmask = GET_LN_OCC_MARKER_BITMASK(iLine);
+        int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
         if (!bitmask) {
             bitmask = (1 << MARKER_NP3_BOOKMARK);
         }
@@ -4876,7 +4883,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
         }
         if (iNextLine == (DocLn)-1) {
-            bitmask   = bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE);
+            bitmask = OCCURRENCE_MARKER_BITMASK();
             iNextLine = SciCall_MarkerNext(iLine + 1, bitmask); // find any bookmark
         }
         if (iNextLine == (DocLn)-1) {
@@ -4891,8 +4898,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case BME_EDIT_BOOKMARKPREV:
     {
-        DocLn const iLine   = Sci_GetCurrentLineNumber();
-        int         bitmask = GET_LN_OCC_MARKER_BITMASK(iLine);
+        DocLn const iLine = Sci_GetCurrentLineNumber();
+        int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
         if (!bitmask) {
             bitmask = (1 << MARKER_NP3_BOOKMARK);
         }
@@ -5300,6 +5307,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditClearAllOccurrenceMarkers(Globals.hwndEdit);
         Globals.iMarkOccurrencesCount = 0;
       }
+      break;
+
+    case IDM_VIEW_MARKOCCUR_BOOKMARKS:
+      Settings.MarkOccurrencesBookmark = !Settings.MarkOccurrencesBookmark;
+      SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, Settings.MarkOccurrencesBookmark ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
@@ -6252,6 +6264,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_AddSelection(pos, pos);
         }
       }
+      SciCall_ScrollCaret();
       SciCall_ChooseCaretX();
       break;
 
@@ -6267,6 +6280,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_AddSelection(pos, pos);
         }
       }
+      SciCall_ScrollCaret();
       SciCall_ChooseCaretX();
       break;
 
@@ -7075,8 +7089,7 @@ static void _HandleAutoIndent(int const charAdded)
         if (iCurLine > 0) {
             //~DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
             if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1)) {
-                int const bitmask = bitmask32_n(MARKER_NP3_BOOKMARK);
-                GET_LN_OCC_MARKER_BITMASK(iCurLine - 1);
+                int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1); // all bookmarks 
                 if (bitmask) {
                     SciCall_MarkerDelete((iCurLine - 1), -1);
                     SciCall_MarkerAddSet(iCurLine, bitmask);

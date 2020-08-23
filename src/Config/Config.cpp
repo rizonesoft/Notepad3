@@ -1400,6 +1400,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
 
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrences, true);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesBookmark, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchVisible, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchCase, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchWholeWords, true);
@@ -1841,6 +1842,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowCodeFolding);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrences);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesBookmark);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchVisible);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchCase);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchWholeWords);

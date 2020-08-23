@@ -16,10 +16,10 @@ trim_trailing_whitespace = false
 [**.{h,c,cpp,hpp,cxx}]
 # Set default charset
 charset = utf-8
-# 2 space indentation
+# space (w=2) indentation
 indent_style = space
-indent_size = 4
-tab_width = 4
+indent_size = 2
+tab_width = 2
 
 [**.{ini}]
 charset = utf-8-sig

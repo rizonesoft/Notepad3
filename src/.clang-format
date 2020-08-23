@@ -1,126 +1,19 @@
 ---
 # https://clang.llvm.org/docs/ClangFormatStyleOptions.html
-Language: Cpp
 BasedOnStyle: LLVM
-IndentWidth: 4
-TabWidth: 4
-UseTab: Never
+IndentWidth: 2
+TabWidth: 2
 
-AccessModifierOffset: -4
-AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-AlignConsecutiveMacros: true
-AlignEscapedNewlines: Right
-AlignOperands:   true
-AlignTrailingComments: true
-AllowAllParametersOfDeclarationOnNextLine: true
+---
+Language: Cpp
+AccessModifierOffset: -2
+AlignAfterOpenBracket: DontAlign
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: All
-AllowShortIfStatementsOnASingleLine: true
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterDefinitionReturnType: None
-AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: false
-AlwaysBreakTemplateDeclarations: false
-BinPackArguments: true
-BinPackParameters: true
-BraceWrapping:
-  AfterCaseLabel:  true
-  AfterClass:      true
-  AfterControlStatement: false
-  AfterEnum:       true
-  AfterFunction:   true
-  AfterNamespace:  false
-  AfterObjCDeclaration: true
-  AfterStruct:     true
-  AfterUnion:      true
-  BeforeCatch:     true
-  BeforeElse:      true
-  IndentBraces:    false
-  SplitEmptyFunction: true
-  SplitEmptyRecord: true
-  SplitEmptyNamespace: true
-BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
-BreakBeforeInheritanceComma: true
-BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: true
-BreakConstructorInitializers: BeforeColon
-BreakAfterJavaFieldAnnotations: false
-BreakStringLiterals: true
 ColumnLimit: 0
-CommentPragmas:  '^ IWYU pragma:'
-CompactNamespaces: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
-ConstructorInitializerIndentWidth: 4
-ContinuationIndentWidth: 4
 Cpp11BracedListStyle: false
-DerivePointerAlignment: true
-DisableFormat:   false
-ExperimentalAutoDetectBinPacking: false
 FixNamespaceComments: false
-IncludeIsMainRegex: '(Test)?$'
-IndentCaseLabels: true
-IndentPPDirectives: AfterHash
-IndentWidth: 4
-IndentWrappedFunctionNames: true
-JavaScriptQuotes: Leave
-JavaScriptWrapImports: true
-KeepEmptyLinesAtTheStartOfBlocks: false
-MacroBlockBegin: "^\
-BEGIN_MSG_MAP|\
-BEGIN_MESSAGE_MAP|\
-BEGIN_MSG_MAP_EX|\
-BEGIN_MESSAGE_MAP_EX|\
-BEGIN_SAFE_MSG_MAP_EX|\
-CR_BEGIN_MSG_MAP_EX|\
-IPC_BEGIN_MESSAGE_MAP|\
-IPC_BEGIN_MESSAGE_MAP_WITH_PARAM|\
-IPC_PROTOBUF_MESSAGE_TRAITS_BEGIN|\
-IPC_STRUCT_BEGIN|\
-IPC_STRUCT_BEGIN_WITH_PARENT|\
-IPC_STRUCT_TRAITS_BEGIN|\
-POLPARAMS_BEGIN|\
-PPAPI_BEGIN_MESSAGE_MAP$"
-MacroBlockEnd: "^\
-CR_END_MSG_MAP|\
-END_MSG_MAP|\
-END_MESSAGE_MAP|\
-IPC_END_MESSAGE_MAP|\
-IPC_PROTOBUF_MESSAGE_TRAITS_END|\
-IPC_STRUCT_END|\
-IPC_STRUCT_TRAITS_END|\
-POLPARAMS_END|\
-PPAPI_END_MESSAGE_MAP$"
-MaxEmptyLinesToKeep: 1
-NamespaceIndentation: None
-ObjCBlockIndentWidth: 4
-ObjCSpaceAfterProperty: false
-ObjCSpaceBeforeProtocolList: true
-PenaltyBreakAssignment: 4
-PenaltyBreakBeforeFirstCallParameter: 19
-PenaltyBreakComment: 300
-PenaltyBreakFirstLessLess: 120
-PenaltyBreakString: 1000
-PenaltyExcessCharacter: 1000000
-PenaltyReturnTypeOnItsOwnLine: 60
-PointerAlignment: Left
-ReflowComments:  true
-SortIncludes:    false
-SortUsingDeclarations: true
-SpaceAfterCStyleCast: false
-SpaceAfterTemplateKeyword: true
-SpaceBeforeAssignmentOperators: true
-SpaceBeforeParens: ControlStatements
-SpaceInEmptyParentheses: false
-SpacesBeforeTrailingComments: 1
-SpacesInAngles:  false
-SpacesInContainerLiterals: false
-SpacesInCStyleCastParentheses: false
-SpacesInParentheses: false
-SpacesInSquareBrackets: false
-Standard:        Cpp11
-...
+SortIncludes: false
+UseTab: Never
 
+---
