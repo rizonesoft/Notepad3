@@ -342,6 +342,7 @@ BEGIN
         POPUP "标记匹配(&K)"
         BEGIN
             MENUITEM "启用(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Use Bookmarks too(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "仅标记可见内容(&V)",                     IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -538,6 +539,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Clear Marker",                          IDM_EDIT_CLEAR_MARKER
         MENUITEM "Cut Lines of Marker-Type",              IDM_EDIT_CUT_MARKED
         MENUITEM "Copy Lines of Marker-Type",             IDM_EDIT_COPY_MARKED
         MENUITEM "Delete Lines of Marker-Type",           IDM_EDIT_DELETE_MARKED

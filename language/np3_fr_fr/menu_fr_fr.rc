@@ -342,6 +342,7 @@ BEGIN
         POPUP "Mar&quer Occurrences"
         BEGIN
             MENUITEM "&Actif\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Utiliser les &signets aussi",         IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Correspondances Visibles Seulement",  IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -538,6 +539,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Effacer le marqueur",                     IDM_EDIT_CLEAR_MARKER
         MENUITEM "Couper les lignes marquées",              IDM_EDIT_CUT_MARKED
         MENUITEM "Copier les lignes marquées",              IDM_EDIT_COPY_MARKED
         MENUITEM "Supprimer les lignes marquées",           IDM_EDIT_DELETE_MARKED
