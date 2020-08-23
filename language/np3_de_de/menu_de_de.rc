@@ -342,6 +342,7 @@ BEGIN
         POPUP "Markiere Fundstellen"
         BEGIN
             MENUITEM "&Aktivieren\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Zusätzliche Lesezeichen",             IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Nur sichtbare hervorheben",           IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -538,6 +539,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Lesezeichen entfernen",                      IDM_EDIT_CLEAR_MARKER
         MENUITEM "So markierte Zeilen Ausschneiden",           IDM_EDIT_CUT_MARKED
         MENUITEM "So markierte Zeilen Kopieren",               IDM_EDIT_COPY_MARKED
         MENUITEM "So markierte Zeilen Löschen",                IDM_EDIT_DELETE_MARKED

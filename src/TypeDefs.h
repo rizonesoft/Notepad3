@@ -268,9 +268,8 @@ typedef enum
 
 // ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_FOLDEREND )
 
-#define GET_LN_OCC_MARKER_BITMASK(LN) (SciCall_MarkerGet(LN) & \
-                                       bitmask32_n(MARKER_NP3_BOOKMARK + 1) & \
-                                       ~(1 << MARKER_NP3_OCCURRENCE))
+#define OCCURRENCE_MARKER_BITMASK() (bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE))
+
 
 typedef struct _wordbookmark_t
 {
@@ -445,6 +444,7 @@ typedef struct _settings_t
   bool ShowLineNumbers;
   bool ShowCodeFolding;
   bool MarkOccurrences;
+  bool MarkOccurrencesBookmark;
   bool MarkOccurrencesMatchVisible;
   bool MarkOccurrencesMatchCase;
   bool MarkOccurrencesMatchWholeWords;
