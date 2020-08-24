@@ -366,21 +366,26 @@ BEGIN
             MENUITEM "Перайсці да &наступнага блоку\tAlt+ +",    CMD_FOLDJUMPDOWN
             MENUITEM "Перайсці да &папярэдняга блоку\tAlt+ –",   CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "Згарнуць &блок\tAlt+ ←",              CMD_FOLDCOLLAPSE
-            MENUITEM "&Разгарнуць блок\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "Згарнуць &блок\tAlt+ ←",                   CMD_FOLDCOLLAPSE
+            MENUITEM "&Разгарнуць блок\tAlt+ →",                 CMD_FOLDEXPAND
         END
         POPUP "Пра&цоўная прастора"
         BEGIN
             MENUITEM "Факусаваны прагляд\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                            IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                           IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",                    IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",                   IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                                  IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                              IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                             IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                      IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",                     IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Назіранне за фа&йлам",                      IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Пракручваць за мяжу апошняга радка",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Паказваць &падказку для гіперспасылак",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "П&аліцы"
         BEGIN
             MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR

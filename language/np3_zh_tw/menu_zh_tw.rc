@@ -372,15 +372,20 @@ BEGIN
         POPUP "顯示(&D)"
         BEGIN
             MENUITEM "切換聚焦(&F)\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                      IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                     IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",              IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",             IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                            IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                        IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                       IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",               IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "日誌監控(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "允許滾動超過檔案尾(&S)",                IDM_VIEW_SCROLLPASTEOF
             MENUITEM "顯示超鏈接提示(&H)",                    IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "面板(&A)"
         BEGIN
             MENUITEM "顯示選單欄(&M)",                       IDM_VIEW_MENUBAR
