@@ -627,9 +627,10 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 }
 
 // respect VSlop settings 
-inline void Sci_ScrollChooseCaret()      { SciCall_ScrollCaret(); SciCall_ChooseCaretX(); }
-inline void Sci_ScrollToLine(DocLn line) { SciCall_EnsureVisible(line); SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
-inline void Sci_ScrollToCurrentLine()    { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
+inline void Sci_GotoPosChooseCaret(const DocPos pos) { SciCall_GotoPos(pos); SciCall_ChooseCaretX(); }
+inline void Sci_ScrollChooseCaret() { SciCall_ScrollCaret(); SciCall_ChooseCaretX(); }
+inline void Sci_ScrollToLine(const DocLn line) { SciCall_EnsureVisible(line); SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
+inline void Sci_ScrollToCurrentLine() { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
 
 
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
