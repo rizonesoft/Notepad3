@@ -372,15 +372,20 @@ BEGIN
         POPUP "&Tonen"
         BEGIN
             MENUITEM "Gefocust zicht\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Modus: Bladwijzer",                               IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Modus: Markeer",                                  IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Modus: Bladwijzer && Vouw",                       IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Modus: Markeer && Vouw",                          IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "Weergavemodus"
+            BEGIN
+                MENUITEM "Vouw",                                        IDM_VIEW_FV_FOLD
+                MENUITEM "Bladwijzer",                                  IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Markeer",                                     IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bladwijzer && Vouw",                          IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Markeer && Vouw",                             IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Log &Monitoren",                                  IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scrollen na einde van bes&tand",                  IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Toon &hyperlink tooltip",                         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anelen"
         BEGIN
             MENUITEM "&Menubalk tonen",                                 IDM_VIEW_MENUBAR

@@ -356,7 +356,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Números de línea\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "&Margen de marcador,\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "&Margen de marcador\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Plegable"
         BEGIN
@@ -372,15 +372,20 @@ BEGIN
         POPUP "Mos&trar"
         BEGIN
             MENUITEM "Vista enfocada\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Modo: Marcador",                                  IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Modo: Resaltar",                                  IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Modo: Marcador && Pliegue",                       IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Modo: Resaltar && Pliegue",                       IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "Modo de vista"
+            BEGIN
+                MENUITEM "Pliegue",                                     IDM_VIEW_FV_FOLD
+                MENUITEM "Marcador",                                    IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Resaltar",                                    IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Marcador && Pliegue",                         IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Resaltar && Pliegue",                         IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "&Monitoreo de Log",                               IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Desplazarse después del final de archivo",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar información de &hipervínculos",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&aneles"
         BEGIN
             MENUITEM "Mostrar la barra de &menú",                       IDM_VIEW_MENUBAR
