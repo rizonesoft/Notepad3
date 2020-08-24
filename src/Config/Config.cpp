@@ -1498,7 +1498,8 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
 
-    GET_INT_VALUE_FROM_INISECTION(FocusViewMarkerMode, (FVMM_MARGIN | FVMM_FOLD), FVMM_MARGIN, (FVMM_LN_BACKGR | FVMM_FOLD));
+    GET_INT_VALUE_FROM_INISECTION(FocusViewMarkerMode, FVMM_FOLD, FVMM_MARGIN, (FVMM_LN_BACKGR | FVMM_FOLD));
+    Settings.FocusViewMarkerMode = (Settings.FocusViewMarkerMode == (FVMM_MARGIN | FVMM_LN_BACKGR) ? FVMM_FOLD : Settings.FocusViewMarkerMode);
 
     // --------------------------------------------------------------------------
     const WCHAR* const StatusBar_Section = L"Statusbar Settings";

@@ -340,8 +340,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
   EditSetDocumentBuffer(lpstrText, lenText);
   _OBSERVE_NOTIFY_CHANGE_;
 
-  SciCall_GotoPos(0);
-  SciCall_ChooseCaretX();
+  Sci_GotoPosChooseCaret(0);
 
   if (bClearUndoHistory) {
     UndoRedoRecordingStart();
@@ -2077,8 +2076,7 @@ void EditFindMatchingBrace()
   }
   if (iMatchingBracePos != (DocPos)-1) {
     iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
-    SciCall_GotoPos(iMatchingBracePos);
-    SciCall_ChooseCaretX();
+    Sci_GotoPosChooseCaret(iMatchingBracePos);
   }
 }
 
@@ -2994,8 +2992,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     }
   }
   else {
-    SciCall_GotoPos(iInitialPos);
-    SciCall_ChooseCaretX();
+    Sci_GotoPosChooseCaret(iInitialPos);
   }
 
   _END_UNDO_ACTION_;
@@ -5025,8 +5022,7 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
   iNewCol = clampp((iNewCol - colOffset), 0, iLineEndPos);
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
-  SciCall_GotoPos(iNewPos);
-  SciCall_ChooseCaretX();
+  Sci_GotoPosChooseCaret(iNewPos);
 }
 
 
@@ -5522,7 +5518,6 @@ static RegExResult_t _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos i
                 if (FocusedView.HideNonMatchedLines) {
                     EditFoldMarkedLineRange(lpefr->hwnd, true);
                 }
-                EditBookMarkLineRange(lpefr->hwnd);
             }
             else {
                 if (FocusedView.HideNonMatchedLines) {
@@ -7177,28 +7172,29 @@ void EditClearAllBookMarks(HWND hwnd)
 //
 void EditToggleView(HWND hwnd)
 {
-    if (Settings.FocusViewMarkerMode & FVMM_FOLD)
-    {
-        BeginWaitCursor(true, L"Toggle View...");
+  if (Settings.FocusViewMarkerMode & FVMM_FOLD) {
+    BeginWaitCursor(true, L"Toggle View...");
 
-        FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
+    FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
 
-        if (FocusedView.HideNonMatchedLines) {
-            EditFoldMarkedLineRange(hwnd, true);
-            EditBookMarkLineRange(hwnd);
-        }
-        else {
-            EditFoldMarkedLineRange(hwnd, false);
-        }
-
-        SciCall_SetReadOnly(FocusedView.HideNonMatchedLines);
-        SciCall_ScrollCaret();
-
-        EndWaitCursor();
-    }
-    else {
+    if (FocusedView.HideNonMatchedLines) {
+      EditFoldMarkedLineRange(hwnd, true);
+      if (Settings.FocusViewMarkerMode & (FVMM_MARGIN | FVMM_LN_BACKGR)) {
         EditBookMarkLineRange(hwnd);
+      }
+    } else {
+      EditFoldMarkedLineRange(hwnd, false);
     }
+
+    SciCall_SetReadOnly(FocusedView.HideNonMatchedLines);
+    SciCall_ScrollCaret();
+
+    EndWaitCursor();
+  }
+  else if (Settings.FocusViewMarkerMode & (FVMM_MARGIN | FVMM_LN_BACKGR))
+  {
+    EditBookMarkLineRange(hwnd);
+  }
 }
 
 
@@ -8851,33 +8847,87 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 }
 
 
+
+//=============================================================================
+//
+//  EditBookmarkNext()
+//
+void EditBookmarkNext(HWND hwnd, const DocLn iLine)
+{
+  UNUSED(hwnd);
+  int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
+  if (!bitmask) {
+    bitmask = (1 << MARKER_NP3_BOOKMARK);
+  }
+  DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
+  if (iNextLine == (DocLn)-1) {
+    iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
+  }
+  if (iNextLine == (DocLn)-1) {
+    bitmask = OCCURRENCE_MARKER_BITMASK();
+    iNextLine = SciCall_MarkerNext(iLine + 1, bitmask); // find any bookmark
+  }
+  if (iNextLine == (DocLn)-1) {
+    iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
+  }
+
+  if (iNextLine != (DocLn)-1) {
+    SciCall_GotoLine(iNextLine);
+  }
+}
+
+//=============================================================================
+//
+//  EditBookmarkPrevious()
+//
+void EditBookmarkPrevious(HWND hwnd, const DocLn iLine)
+{
+  UNUSED(hwnd);
+  int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
+  if (!bitmask) {
+    bitmask = (1 << MARKER_NP3_BOOKMARK);
+  }
+  DocLn iPrevLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
+  if (iPrevLine == (DocLn)-1) {
+    iPrevLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
+  }
+  if (iPrevLine == (DocLn)-1) {
+    bitmask = OCCURRENCE_MARKER_BITMASK();
+    iPrevLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask); //find any bookmark
+  }
+  if (iPrevLine == (DocLn)-1) {
+    iPrevLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
+  }
+
+  if (iPrevLine != (DocLn)-1) {
+    SciCall_GotoLine(iPrevLine);
+  } 
+}
+
+
 //=============================================================================
 //
 //  EditBookmarkToggle()
 //
-void EditBookmarkToggle(const DocLn ln, const int modifiers)
-{
-    int const bitmask = SciCall_MarkerGet(ln) & OCCURRENCE_MARKER_BITMASK();
+void EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers) {
+  UNUSED(hwnd);
+  int const bitmask = SciCall_MarkerGet(ln) & OCCURRENCE_MARKER_BITMASK();
+  if (!bitmask) {
+    SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
+  } else if (bitmask & (1 << MARKER_NP3_BOOKMARK)) {
+    SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
+  } else {
+    for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
+      if (bitmask & (1 << m)) {
+        SciCall_MarkerDeleteAll(m);
+        WordBookMarks[m].in_use = false;
+      }
+    }
+  }
 
-    if (!bitmask) {
-        SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
-    }
-    else if (bitmask & (1 << MARKER_NP3_BOOKMARK))
-    {
-        SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
-    }
-    else {
-        for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
-            if (bitmask & (1 << m)) {
-                SciCall_MarkerDeleteAll(m);
-                WordBookMarks[m].in_use = false;
-            }
-        }
-    }
-
-    if (modifiers & SCMOD_ALT) {
-        SciCall_GotoLine(ln);
-    }
+  if (modifiers & SCMOD_ALT) {
+    SciCall_GotoLine(ln);
+  }
 }
 
 

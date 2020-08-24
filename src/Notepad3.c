@@ -2620,8 +2620,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   MsgThemeChanged(hwnd, wParam, lParam);
 
-  SciCall_GotoPos(pos);
-  SciCall_ChooseCaretX();
+  Sci_GotoPosChooseCaret(pos);
     
   return !0;
 }
@@ -3118,8 +3117,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         EditEnsureSelectionVisible();
       }
       else {
-        SciCall_GotoPos(iCurPos);
-        SciCall_ChooseCaretX();
+        Sci_GotoPosChooseCaret(iCurPos);
       }
     }
   }
@@ -3502,8 +3500,21 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
-  i = IDM_VIEW_FV_BOOKMARK + Settings.FocusViewMarkerMode;
-  CheckMenuRadioItem(hmenu, IDM_VIEW_FV_BOOKMARK, IDM_VIEW_FV_HIGHLGFOLD, i, MF_BYCOMMAND);
+
+  i = IDM_VIEW_FV_FOLD;
+  int const fvm_mode = Settings.FocusViewMarkerMode;
+  if (fvm_mode == FVMM_MARGIN) {
+    i = IDM_VIEW_FV_BOOKMARK;
+  } else if (fvm_mode == FVMM_LN_BACKGR) {
+    i = IDM_VIEW_FV_HIGHLIGHT;
+  } else if (fvm_mode == (FVMM_MARGIN | FVMM_FOLD)) {
+    i = IDM_VIEW_FV_BKMRKFOLD;
+  } else if (fvm_mode == (FVMM_LN_BACKGR | FVMM_FOLD)) {
+    i = IDM_VIEW_FV_HIGHLIGHT;
+  } else {
+    i = IDM_VIEW_FV_FOLD;
+  }
+  CheckMenuRadioItem(hmenu, IDM_VIEW_FV_FOLD, IDM_VIEW_FV_HIGHLGFOLD, i, MF_BYCOMMAND);
 
   CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
   
@@ -4487,7 +4498,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_CLEAR_MARKER:
-      EditBookmarkToggle(Sci_GetCurrentLineNumber(), 0);
+      EditBookmarkToggle(Globals.hwndEdit, Sci_GetCurrentLineNumber(), 0);
       break;
 
 
@@ -4873,58 +4884,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // Main Bookmark Functions
     case BME_EDIT_BOOKMARKNEXT:
-    {
-        DocLn const iLine   = Sci_GetCurrentLineNumber();
-        int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
-        if (!bitmask) {
-            bitmask = (1 << MARKER_NP3_BOOKMARK);
-        }
-        DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
-        if (iNextLine == (DocLn)-1) {
-            iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
-        }
-        if (iNextLine == (DocLn)-1) {
-            bitmask = OCCURRENCE_MARKER_BITMASK();
-            iNextLine = SciCall_MarkerNext(iLine + 1, bitmask); // find any bookmark
-        }
-        if (iNextLine == (DocLn)-1) {
-            iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
-        }
-        if (iNextLine != (DocLn)-1) {
-            SciCall_GotoLine(iNextLine);
-            EditEnsureSelectionVisible();
-        }
-    }
-    break;
+      EditBookmarkNext(Globals.hwndEdit, Sci_GetCurrentLineNumber());
+      break;
+
 
     case BME_EDIT_BOOKMARKPREV:
-    {
-        DocLn const iLine = Sci_GetCurrentLineNumber();
-        int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
-        if (!bitmask) {
-            bitmask = (1 << MARKER_NP3_BOOKMARK);
-        }
-        DocLn iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
-        if (iNextLine == (DocLn)-1) {
-            iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
-        }
-        if (iNextLine == (DocLn)-1) {
-            bitmask   = bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE);
-            iNextLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask); //find any bookmark
-        }
-        if (iNextLine == (DocLn)-1) {
-            iNextLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
-        }
-        if (iNextLine != (DocLn)-1) {
-            SciCall_GotoLine(iNextLine);
-            EditEnsureSelectionVisible();
-        }
-    }
-    break;
+      EditBookmarkPrevious(Globals.hwndEdit, Sci_GetCurrentLineNumber());
+      break;
 
 
     case BME_EDIT_BOOKMARKTOGGLE:
-      EditBookmarkToggle(Sci_GetCurrentLineNumber(), 0);
+      EditBookmarkToggle(Globals.hwndEdit, Sci_GetCurrentLineNumber(), 0);
       break;
 
 
@@ -5300,7 +5270,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!Settings.MarkOccurrences && FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
       }
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsMarkOccurrencesEnabled());
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
       if (IsMarkOccurrencesEnabled()) {
         MarkAllOccurrences(0, true);
       }
@@ -5331,6 +5301,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
       break;
 
+    case IDM_VIEW_FV_FOLD:
     case IDM_VIEW_FV_BOOKMARK:
     case IDM_VIEW_FV_HIGHLIGHT:
     case IDM_VIEW_FV_BKMRKFOLD:
@@ -5338,6 +5309,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     {
         int newSetting = Settings.FocusViewMarkerMode;
         switch (iLoWParam) {
+            case IDM_VIEW_FV_FOLD:
+                newSetting = (FVMM_FOLD);
+                break;
             case IDM_VIEW_FV_BOOKMARK:
                 newSetting = (FVMM_MARGIN);
                 break;
@@ -5831,8 +5805,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
           //~_BEGIN_UNDO_ACTION_;
-          SciCall_GotoPos(iCurPos);
-          SciCall_ChooseCaretX();
+          Sci_GotoPosChooseCaret(iCurPos);
           //~_END_UNDO_ACTION_;
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
@@ -5849,8 +5822,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           default:
-            SciCall_GotoPos(iCurPos);
-            SciCall_ChooseCaretX();
+            Sci_GotoPosChooseCaret(iCurPos);
             break;
           }
         }
@@ -6265,8 +6237,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_AddSelection(pos, pos);
         }
       }
-      SciCall_ScrollCaret();
-      SciCall_ChooseCaretX();
+      Sci_ScrollChooseCaret();
       break;
 
     case CMD_JUMP2SELEND:
@@ -6281,8 +6252,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_AddSelection(pos, pos);
         }
       }
-      SciCall_ScrollCaret();
-      SciCall_ChooseCaretX();
+      Sci_ScrollChooseCaret();
       break;
 
 
@@ -7592,7 +7562,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
         break;
       case MARGIN_SCI_BOOKMRK:
-        EditBookmarkToggle(SciCall_LineFromPosition(scn->position), scn->modifiers);
+        EditBookmarkToggle(Globals.hwndEdit, SciCall_LineFromPosition(scn->position), scn->modifiers);
         break;
       case MARGIN_SCI_LINENUM:
         //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
@@ -9892,8 +9862,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
     if (bReload && !FileWatching.MonitoringLog) 
     {
-      SciCall_GotoPos(0);
-      SciCall_ChooseCaretX();
+      Sci_GotoPosChooseCaret(0);
 
       _BEGIN_UNDO_ACTION_;
       fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false, false);
@@ -9910,8 +9879,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   {
     BeginWaitCursor(true, L"Styling...");
 
-    SciCall_GotoPos(0);
-    SciCall_ChooseCaretX();
+    Sci_GotoPosChooseCaret(0);
 
     if (!s_IsThisAnElevatedRelaunch) {
       Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
