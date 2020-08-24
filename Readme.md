@@ -92,7 +92,7 @@ Press Ctrl+F7 to open the Notepad3 ini-file. Most changes only take effect upon 
 #### `PreferredLanguageLocaleName=en-US`
 
 The default value for the already supported languages is defined by the: “OS language setting”.
-The fallback is: “en-US”.
+- The fallback is: “en-US”.
 
 ##### Available languages:
 
@@ -129,15 +129,15 @@ Chinese Traditional/Taiwan (zh-TW)
 #### `AutoReloadTimeout=2000`
 
 The timeout (in milliseconds) to wait before automatically reloading modified files. 
-The default value of 2000 ms usually prevents read/write conflicts.
+- The default value of 2000 ms usually prevents read/write conflicts.
 
 #### `DateTimeFormat=`
 
-(-> (Locale dependent short format)
+- (-> (Locale dependent short format)
 
 #### `DateTimeLongFormat=`
 
-(-> (Locale dependent long format)
+- (-> (Locale dependent long format)
 
 Specify the short/long date and time formats. This is the format parameter passed to 
 the `strftime()` function. 
@@ -146,13 +146,12 @@ Library used by Notepad3).
 
 #### `TimeStampRegEx=`
 
-(-> \$Date:[^\$]+\$) (Find-Pattern to Update Stamps)
+- (-> \$Date:[^\$]+\$) (Find-Pattern to Update Stamps)
 
 #### `TimeStampFormat=`
 
-(-> \\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $
-
-(-> $Date: %s $) (Print format should fit to TimeStampRegEx)
+- (-> \\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $
+- (-> $Date: %s $) (Print format should fit to TimeStampRegEx)
 
 This parameter is used as a regex pattern to match time-stamps which will be updated to 
 current date-time by `Shift+F5`, e.g. `$Date: 2018/04/26 00:52:39 $`
@@ -170,7 +169,7 @@ current date-time by `Shift+F5`, e.g. `$Date: 2018/04/26 00:52:39 $`
 #### `DefaultDirectory=`
 
 Specify the default directory for the open and save dialogs, used if no file is opened. 
-Path-names can be relative to the Notepad3 program directory.
+- Path-names can be relative to the Notepad3 program directory.
 
 #### `DefaultExtension=txt`
 
@@ -186,16 +185,15 @@ This items are managed by Notepad3. (`Menu->View->Position->Save as Default Posi
 
 #### `filebrowser.exe=minipath.exe`
 
-Specify the path of an external program that is launched when pressing the Browse toolbar 
-button. Defaults to `minipath.exe`, which is the file browser plugin. You can specify 
-additional command line switches, and the file currently opened in Notepad3 will be 
-appended as the last command line parameter.      
+Specify the path of an external program that is launched when pressing the Browse toolbar button. 
+Defaults to `minipath.exe`, which is the file browser plugin. 
 
-Note: Due to special treatment of quotes by the Win32 ini-file APIs, pathnames with spaces
-need to be quadruple-quoted (""path to/file.exe""), but only double-quoted if there's 
-additional command line arguments ("path to/file.exe" /arg).
+You can specify additional command line switches, and the file currently opened in Notepad3 will be appended as the last command line parameter. 
 
-On the other hand, our preferred file browser is MiniPath.exe (Menu->File->Browse... Ctrl+M) + Toolbar-Button.
+Note: Due to special treatment of quotes by the Win32 ini-file APIs, pathnames with spaces need to be quadruple-quoted (""path to/file.exe""), but only double-quoted if there's additional command line arguments ("path to/file.exe" /arg).
+
+On the other hand, our preferred file browser is `minipath.exe` (Menu->File->Browse... Ctrl+M) + Toolbar-Button.
+
 If you don't like it, you can configure e.g. 
 - [Settings2] filebrowser.exe=explorer.exe (system's file explorer), or
 - [Settings2] filebrowser.exe=Explorer++.exe (https://explorerplusplus.com/) (side-by-side Notepad3), or
@@ -204,41 +202,36 @@ If you don't like it, you can configure e.g.
 
 #### `grepWin.exe=grepWinNP3.exe`
 
-We have integred of a Powerful External Tool called "grepWinNP3"
-"grepWinNP3" is a simple search and replace tool which can use regular expressions to do its job. 
+We have integrated of a Powerful External Tool called **grepWinNP3**. 
+**grepWinNP3** is a simple search and replace tool which can use regular expressions to do its job. 
+
 This allows to do much more powerful searches and replaces in Files.
-grepWinNP3 can be launched from "File --> Launch --> Search in Files"
-or from "Edit --> Search --> Search in Files"
-or simply with "Ctrl+Shift+F"
+
+**grepWinNP3** can be launched:
+- from "File --> Launch --> Search in Files"
+- or from "Edit --> Search --> Search in Files"
+- or simply with "`Ctrl+Shift+F`"
 
 #### `FileCheckInverval=2000`
 
-The interval (in milliseconds) to check for external modification of the currently 
-opened file. Defaults to 2000 ms.
+The interval (in milliseconds) to check for external modification of the currently opened file. 
+- Defaults is 2000 ms.
 
 #### `FileDlgFilters=`
 
 Specify filters for the open and save dialogs 
-(Example: `Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*`).
+- (Example: `Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*`).
 
 #### `FileLoadWarningMB=64`
 
 The size limit, in megabytes, to display a warning message for large files. 
-A value of 0 disables the warning.
-
-#### `MarkOccurrencesMaxCount=2000`
-
-This parameter limits the number of occurrences compted and displayed in Status Bar in 
-“Section 5 = Occ : Number of Marked Occurrences”  (to display more than 2000 occurrences 
-changes this parameter in the ini file.
+- A value of 0 disables the warning.
 
 #### `MultiFileArg=0`
 
 Control if Notepad2 should allow multiple files on the command line (set to 1). 
-The default behavior is to accept only a single file, without quoted spaces, 
-like Windows Notepad (set to 0). 
-The command line switches + and - can be used to override this setting on the fly, 
-and the /z command-line switch has the same effect as the - switch.
+The default behavior is to accept only a single file, without quoted spaces, like Windows Notepad (set to 0). 
+The command line switches + and - can be used to override this setting on the fly, and the /z command-line switch has the same effect as the - switch.
 
 #### `NoCGIGuess=0`
 
@@ -258,13 +251,11 @@ Set to 1 to disable fading of hidden objects in file lists (such as Favorites, e
 
 #### `NoFileVariables=0`
 
- Set to 1 to disable file variable parsing. 
+Set to 1 to disable file variable parsing. 
 Encoding tag parsing can be disabled in the Menu ? File ? Encoding ? Default dialog box.
 
 Notepad3 can parse a few of the Emacs variables that can be used in source code files. 
-The first 512 bytes of a file (and, if nothing is found, also the last 512 bytes) are 
-checked for the following constructs (can be manually disabled in the ini-file, or 
-the File, Encoding, Default dialog box, respectively):
+The first 512 bytes of a file (and, if nothing is found, also the last 512 bytes) are checked for the following constructs (can be manually disabled in the ini-file, or the File, Encoding, Default dialog box, respectively):
 ```
 coding: utf-8;
 mode: python;
@@ -301,12 +292,10 @@ Set to 1 to disable simple HTML/XML detection for files without extensions.
 
 #### `PortableMyDocs=1`
 
-If set to 1, recent files and other path settings referring to the `My Documents` directory 
-tree are stored relative to `My Documents`. This enhances USB stick portability between 
-different versions of Windows, which are using different locations for `My Documents`. 
-This setting has no effect if Notepad3.exe itself is located inside `My Documents` 
-(or a sub-directory thereof). 
-The default is 1 (enabled) if `RelativeFileMRU` is enabled, and 0 (disabled) otherwise.
+If set to 1, recent files and other path settings referring to the `My Documents` directory tree are stored relative to `My Documents`. 
+This enhances USB stick portability between different versions of Windows, which are using different locations for `My Documents`. 
+This setting has no effect if Notepad3.exe itself is located inside `My Documents` (or a sub-directory thereof). 
+- The default is 1 (enabled) if `RelativeFileMRU` is enabled, and 0 (disabled) otherwise.
 
 #### `OpacityLevel=75`
 
@@ -318,13 +307,13 @@ Opacity level (in %) of the Find/Replace window in transparent mode.
 
 #### `RelativeFileMRU=1`
 
-Set to 0 to disable recent files on the same drive or network share as Notepad3.exe being 
-saved with relative path-names. The default is 1 (enabled).
+Set to 0 to disable recent files on the same drive or network share as Notepad3.exe being saved with relative path-names. 
+- The default is 1 (enabled).
 
 #### `ReuseWindow=0`
 
 This items are managed by Notepad3. (`Menu->Settings->Window->Reuse Window  Ctrl+Shift+L`)
-If set, another started Notepad3 instance will try to give control to the currently opened Window and quit.
+- If set, another started Notepad3 instance will try to give control to the currently opened Window and quit.
 
 #### `SciFontQuality=3`
 
@@ -340,23 +329,19 @@ This items are managed by Notepad3.
 
 #### `ShellUseSystemMRU=1`
 
-Application User Model IDs (AppUserModelIDs) are used extensively by the taskbar in Windows 7 
-and later systems to associate processes, files, and windows with a particular application. 
-In some cases, it is sufficient to rely on the internal AppUserModelID assigned to a process 
-by the system. However, an application that owns multiple processes or an application that is 
-running in a host process might need to explicitly identify itself so that it can group its 
-otherwise disparate windows under a single taskbar button and control the contents of that 
-application's Jump List.
-Most recently used (MRU) source lists are resident on the user's computer and contain 
-information about source paths used in previous installations. 
-This information can be used when prompting the user for a source path.
+Application User Model IDs (AppUserModelIDs) are used extensively by the taskbar in Windows 7 and later systems to associate processes, files, and windows with a particular application. 
+In some cases, it is sufficient to rely on the internal AppUserModelID assigned to a process by the system. 
+However, an application that owns multiple processes or an application that is running in a host process might need to explicitly identify itself so that it can group its otherwise disparate windows under a single taskbar button and control the contents of that application's Jump List.
+
+Most recently used (MRU) source lists are resident on the user's computer and contain information about source paths used in previous installations. 
+This information can be used when prompting the user for a source path. 
 Control system MRU, task-bar and jump list behavior. 
 See Replacing Windows Notepad for detailed explanations.
 
 #### `StickyWindowPosition=0`
 
-This items are managed by Notepad3. (`Menu->View->Position->Sticky Window Position`)
-(Will remember current window position on restart, instead of last closed position (save on exit))
+This items are managed by Notepad3. 
+- `Menu->View->Position->Sticky Window Position` (Will remember current window position on restart, instead of last closed position (save on exit))
 
 #### `UseOldStyleBraceMatching=0`
 
@@ -373,21 +358,21 @@ Put in here all ASCII chars which should be word delimiter in case of "Accelerat
 #### `AutoCompleteWordCharSet=`
 
 Is set automatically for CJK input languages (GetACP()). 
-If you define your own character-set in AutoCompleteWordCharSet, 
-Auto-Completion word list is limited to words composed of these chars only (case insensitive).)
+
+If you define your own character-set in AutoCompleteWordCharSet, Auto-Completion word list is limited to words composed of these chars only (case insensitive).)
 
 #### `AutoCompleteFillUpChars=`
 
 New configuration .ini-file: [Settings2] AutoCompleteFillUpChars=
 To get the "Enter" completion behavior back, define: [Settings2] AutoCompleteFillUpChars=\r\n
 I you like to allow more "fill-up" characters (accept completion item), just add them:
-e.g. [Settings2] AutoCompleteFillUpChars=\r\n[(. (will accept completion item & adds the char).
+- e.g. [Settings2] AutoCompleteFillUpChars=\r\n[(. (will accept completion item & adds the char).
 
 #### `LineCommentPostfixStrg=`
 
 It will be appended/removed to the comment tag on line comment block toggle. 
 If the string contains spaces, you have to double-quote it,
-e.g. [Settings2] LineCommentPostfixStrg=" " to add a space after the comment tag (origin and title of this feature request).
+- e.g. [Settings2] LineCommentPostfixStrg=" " to add a space after the comment tag (origin and title of this feature request).
 
 #### `UpdateDelayMarkAllOccurrences=50`
 
@@ -419,24 +404,26 @@ Bias/Bonus on top of Confidence/Reliability if current system's ANSI Code-Page i
 The # (hash) is the start of a line comment in MySQL dialect.
 But if this is confusing, it can be switched off by providing an option to Scintilla's SQL-Lexer
 (set option: lexer.sql.numbersign.comment to 0 (zero)).
+
 Unfortunately, in Notepad3, this can not be done by configuration, it can only be done hard coded.
-Ed.: The default is "OFF", it is set to "ON" explicitly in Notepad3 (hard coded) to preserve old behavior, 
+- Ed.: The default is "OFF", it is set to "ON" explicitly in Notepad3 (hard coded) to preserve old behavior, 
 
 #### `ExitOnESCSkipLevel=2`
 
 The leveling of ESC behavior (msg-boxes -> selection -> exit) leads to following implementation:
+
 New parameter "[Settings2] ExitOnESCSkipLevel = 2"
-Level 2 : ESC cancels every single state separately (the default).
-Level 1 : ESC cancels message-box and ignores Selection.
-Level 0 : ESC cancels all states and proceeds to Exit (if configured).
+- Level 2 : ESC cancels every single state separately (the default).
+- Level 1 : ESC cancels message-box and ignores Selection.
+- Level 0 : ESC cancels all states and proceeds to Exit (if configured).
 
 #### `ZoomTooltipTimeout=3200`
 
-A value of zero (0) (or less than 100 ms) will disable the Tooltip display.
+- A value of zero (0) (or less than 100 ms) will disable the Tooltip display.
 
 #### `LargeIconScalePrecent=150`
 
-`Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
+- `Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
 
 
 ## **`[Statusbar Settings]`**
@@ -455,8 +442,6 @@ If used, this setting also defines the field ordering.
 - Section  3 = Sb : Number of bytes (Bytes in [UTF-8]) selected
 - Section  4 = SLn : Number of selected lines
 - Section  5 =  Occ : Number of Marked Occurrences 
-    (to display more than 2000 occurrences changes this parameter in the ini file 
-   `[Setting2]MarkOccurrencesMaxCount=2000`)
 - Section  6 = Size of file in [UTF-8] Mode
 - Section  7 = Encoding Mode  (double click to open `Encoding F9` )
 - Section  8 = EOL Mode (Toggle CR+LF, LF, CR)
@@ -470,22 +455,22 @@ If used, this setting also defines the field ordering.
 #### `SectionPrefixes=Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,`  (internal default)
 
 This parameter is used to redefines the displayed Prefixes in the sections of the Status Bar
-A “,” (comma) is used as separator. Spaces are NOT ignored.
+- A “,” (comma) is used as separator. Spaces are **NOT** ignored.
 
 #### `SectionPostfixes=,,,,,,,,,,,,,,,`  (internal default)
 
 This parameter is used to redefines the displayed Postfixes in the sections of the Status Bar
-A “,” (comma) is used as separator. Spaces are **NOT** ignored.
+- A “,” (comma) is used as separator. Spaces are **NOT** ignored.
 
 #### `SectionWidthSpecs=30 20 20 20 20 20 0 0 0 0 0 0 20 20 20`  (internal default)
 
 This parameter is used to define the relative width of each field of the Status Bar
-0 = space optimized fit to text (dynamically adapted to width changes)
--n (neg. val) = fixed width of section [pix] , longer text is truncated
+- 0 = space optimized fit to text (dynamically adapted to width changes)
+- -n (neg. val) = fixed width of section [pix] , longer text is truncated
 
-Fine tuning: increase, decrease or modify the value of numbers, e.g.: 
-`;;;;;;;;;;;;;;;;;  0  1  2  3  4  5 6 7 8 9 10  11 12 13  14`
-`SectionWidthSpecs=50 40 42 40 36 40 0 0 0 0  0 -10 40 40 -40`
+Fine tuning: increase, decrease or modify the value of numbers,
+- e.g.: `;;;;;;;;;;;;;;;;;  0  1  2  3  4  5 6 7 8 9 10  11 12 13  14`
+- `SectionWidthSpecs=50 40 42 40 36 40 0 0 0 0  0 -10 40 40 -40`
 
 #### `ZeroBasedColumnIndex=0`
 

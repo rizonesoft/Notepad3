@@ -342,6 +342,7 @@ BEGIN
         POPUP "선택 항목 강조(&K)"
         BEGIN
             MENUITEM "활성(&A)\tAlt+A",                     IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Use Bookmarks too(&B)",               IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "보이는 항목만 일치(&V)",               IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -371,6 +372,11 @@ BEGIN
         POPUP "전시(&D)"
         BEGIN
             MENUITEM "집중(&F)\tCtrl+Alt+V",                IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Mode: Bookmark",                      IDM_VIEW_FV_BOOKMARK
+            MENUITEM "Mode: Highlight",                     IDM_VIEW_FV_HIGHLIGHT
+            MENUITEM "Mode: Bookmark && Fold",              IDM_VIEW_FV_BKMRKFOLD
+            MENUITEM "Mode: Highlight && Fold",             IDM_VIEW_FV_HIGHLGFOLD
+            MENUITEM SEPARATOR
             MENUITEM "열람(&M)",                            IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "파일 끝 스크롤(&S)",                   IDM_VIEW_SCROLLPASTEOF
             MENUITEM "하이퍼 링크 툴팁 보이기(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
@@ -533,6 +539,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Clear Marker",                    IDM_EDIT_CLEAR_MARKER
         MENUITEM "Cut Lines of Marker-Type",        IDM_EDIT_CUT_MARKED
         MENUITEM "Copy Lines of Marker-Type",       IDM_EDIT_COPY_MARKED
         MENUITEM "Delete Lines of Marker-Type",     IDM_EDIT_DELETE_MARKED

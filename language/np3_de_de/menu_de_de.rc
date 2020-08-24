@@ -342,6 +342,7 @@ BEGIN
         POPUP "Markiere Fundstellen"
         BEGIN
             MENUITEM "&Aktivieren\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Zusätzliche Lesezeichen",             IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Nur sichtbare hervorheben",           IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -371,6 +372,11 @@ BEGIN
         POPUP "&Anzeigen"
         BEGIN
             MENUITEM "Fokussierte Ansicht\tCtrl+Alt+V",         IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Modus: Lesezeichen",                      IDM_VIEW_FV_BOOKMARK
+            MENUITEM "Modus: Hervorheben",                      IDM_VIEW_FV_HIGHLIGHT
+            MENUITEM "Modus: Lesezeichen && Faltung",           IDM_VIEW_FV_BKMRKFOLD
+            MENUITEM "Modus: Hervorheben && Faltung",           IDM_VIEW_FV_HIGHLGFOLD
+            MENUITEM SEPARATOR
             MENUITEM "Logfile &Monitoring",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Erweiterte Dokument Ende Ansicht",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Zeige einen &Hyperlink Tooltip",          IDM_VIEW_SHOW_HYPLNK_CALLTIP
@@ -533,6 +539,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Lesezeichen entfernen",                      IDM_EDIT_CLEAR_MARKER
         MENUITEM "So markierte Zeilen Ausschneiden",           IDM_EDIT_CUT_MARKED
         MENUITEM "So markierte Zeilen Kopieren",               IDM_EDIT_COPY_MARKED
         MENUITEM "So markierte Zeilen Löschen",                IDM_EDIT_DELETE_MARKED
