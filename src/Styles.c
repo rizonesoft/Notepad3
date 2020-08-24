@@ -1563,6 +1563,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   _OBSERVE_NOTIFY_CHANGE_;
 
+	SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
+  SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
+
+  //~Sci_LexerStyleAll();
   SciCall_StartStyling(0);
 
   // apply lexer styles

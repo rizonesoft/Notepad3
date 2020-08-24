@@ -397,21 +397,19 @@ void EditView::LayoutLine(const EditModel &model, Sci::Line line, Surface *surfa
 			// See if chars, styles, indicators, are all the same
 			bool allSame = true;
 			// Check base line layout
-			int styleByte = 0;
-			int numCharsInLine = 0;
 			char chPrevious = 0;
-			while (numCharsInLine < lineLength) {
+			for (Sci::Position numCharsInLine = 0; numCharsInLine < lineLength; numCharsInLine++) {
 				const Sci::Position charInDoc = numCharsInLine + posLineStart;
 				const char chDoc = model.pdoc->CharAt(charInDoc);
-				styleByte = model.pdoc->StyleIndexAt(charInDoc);
+				const int styleByte = model.pdoc->StyleIndexAt(charInDoc);
 				allSame = allSame &&
 					(ll->styles[numCharsInLine] == styleByte);
 				allSame = allSame &&
 					(ll->chars[numCharsInLine] == CaseForce(vstyle.styles[styleByte].caseForce, chDoc, chPrevious));
 				chPrevious = chDoc;
-				numCharsInLine++;
 			}
-			allSame = allSame && (ll->styles[numCharsInLine] == styleByte);	// For eolFilled
+			const int styleByteLast = (posLineEnd > posLineStart) ? model.pdoc->StyleIndexAt(posLineEnd - 1) : 0;
+			allSame = allSame && (ll->styles[lineLength] == styleByteLast);	// For eolFilled
 			if (allSame) {
 				ll->validity = LineLayout::ValidLevel::positions;
 			} else {
