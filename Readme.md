@@ -129,15 +129,15 @@ Chinese Traditional/Taiwan (zh-TW)
 #### `AutoReloadTimeout=2000`
 
 The timeout (in milliseconds) to wait before automatically reloading modified files. 
-The default value of 2000 ms usually prevents read/write conflicts.
+- The default value of 2000 ms usually prevents read/write conflicts.
 
 #### `DateTimeFormat=`
 
-(-> (Locale dependent short format)
+- (-> (Locale dependent short format)
 
 #### `DateTimeLongFormat=`
 
-(-> (Locale dependent long format)
+- (-> (Locale dependent long format)
 
 Specify the short/long date and time formats. This is the format parameter passed to 
 the `strftime()` function. 
@@ -146,13 +146,12 @@ Library used by Notepad3).
 
 #### `TimeStampRegEx=`
 
-(-> \$Date:[^\$]+\$) (Find-Pattern to Update Stamps)
+- (-> \$Date:[^\$]+\$) (Find-Pattern to Update Stamps)
 
 #### `TimeStampFormat=`
 
-(-> \\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $
-
-(-> $Date: %s $) (Print format should fit to TimeStampRegEx)
+- (-> \\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $
+- (-> $Date: %s $) (Print format should fit to TimeStampRegEx)
 
 This parameter is used as a regex pattern to match time-stamps which will be updated to 
 current date-time by `Shift+F5`, e.g. `$Date: 2018/04/26 00:52:39 $`
@@ -170,7 +169,7 @@ current date-time by `Shift+F5`, e.g. `$Date: 2018/04/26 00:52:39 $`
 #### `DefaultDirectory=`
 
 Specify the default directory for the open and save dialogs, used if no file is opened. 
-Path-names can be relative to the Notepad3 program directory.
+- Path-names can be relative to the Notepad3 program directory.
 
 #### `DefaultExtension=txt`
 
@@ -188,11 +187,13 @@ This items are managed by Notepad3. (`Menu->View->Position->Save as Default Posi
 
 Specify the path of an external program that is launched when pressing the Browse toolbar button. 
 Defaults to `minipath.exe`, which is the file browser plugin. 
+
 You can specify additional command line switches, and the file currently opened in Notepad3 will be appended as the last command line parameter. 
 
 Note: Due to special treatment of quotes by the Win32 ini-file APIs, pathnames with spaces need to be quadruple-quoted (""path to/file.exe""), but only double-quoted if there's additional command line arguments ("path to/file.exe" /arg).
 
-On the other hand, our preferred file browser is MiniPath.exe (Menu->File->Browse... Ctrl+M) + Toolbar-Button.
+On the other hand, our preferred file browser is `minipath.exe` (Menu->File->Browse... Ctrl+M) + Toolbar-Button.
+
 If you don't like it, you can configure e.g. 
 - [Settings2] filebrowser.exe=explorer.exe (system's file explorer), or
 - [Settings2] filebrowser.exe=Explorer++.exe (https://explorerplusplus.com/) (side-by-side Notepad3), or
@@ -203,6 +204,7 @@ If you don't like it, you can configure e.g.
 
 We have integrated of a Powerful External Tool called **grepWinNP3**. 
 **grepWinNP3** is a simple search and replace tool which can use regular expressions to do its job. 
+
 This allows to do much more powerful searches and replaces in Files.
 
 **grepWinNP3** can be launched:
@@ -249,7 +251,7 @@ Set to 1 to disable fading of hidden objects in file lists (such as Favorites, e
 
 #### `NoFileVariables=0`
 
- Set to 1 to disable file variable parsing. 
+Set to 1 to disable file variable parsing. 
 Encoding tag parsing can be disabled in the Menu ? File ? Encoding ? Default dialog box.
 
 Notepad3 can parse a few of the Emacs variables that can be used in source code files. 
@@ -311,7 +313,7 @@ Set to 0 to disable recent files on the same drive or network share as Notepad3.
 #### `ReuseWindow=0`
 
 This items are managed by Notepad3. (`Menu->Settings->Window->Reuse Window  Ctrl+Shift+L`)
-If set, another started Notepad3 instance will try to give control to the currently opened Window and quit.
+- If set, another started Notepad3 instance will try to give control to the currently opened Window and quit.
 
 #### `SciFontQuality=3`
 
@@ -356,6 +358,7 @@ Put in here all ASCII chars which should be word delimiter in case of "Accelerat
 #### `AutoCompleteWordCharSet=`
 
 Is set automatically for CJK input languages (GetACP()). 
+
 If you define your own character-set in AutoCompleteWordCharSet, Auto-Completion word list is limited to words composed of these chars only (case insensitive).)
 
 #### `AutoCompleteFillUpChars=`
@@ -401,12 +404,14 @@ Bias/Bonus on top of Confidence/Reliability if current system's ANSI Code-Page i
 The # (hash) is the start of a line comment in MySQL dialect.
 But if this is confusing, it can be switched off by providing an option to Scintilla's SQL-Lexer
 (set option: lexer.sql.numbersign.comment to 0 (zero)).
+
 Unfortunately, in Notepad3, this can not be done by configuration, it can only be done hard coded.
 - Ed.: The default is "OFF", it is set to "ON" explicitly in Notepad3 (hard coded) to preserve old behavior, 
 
 #### `ExitOnESCSkipLevel=2`
 
 The leveling of ESC behavior (msg-boxes -> selection -> exit) leads to following implementation:
+
 New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 - Level 2 : ESC cancels every single state separately (the default).
 - Level 1 : ESC cancels message-box and ignores Selection.
@@ -414,17 +419,11 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 #### `ZoomTooltipTimeout=3200`
 
-A value of zero (0) (or less than 100 ms) will disable the Tooltip display.
+- A value of zero (0) (or less than 100 ms) will disable the Tooltip display.
 
 #### `LargeIconScalePrecent=150`
 
-`Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
-
-#### `FocusViewMarkerMode=1`
-
-- 0 = OFF
-- 1 = STD (the default), (if Bookmark-Margin is shown, use marker symbol - if hidden, use alpha-blend color line background)
-- 2 = NO_MARGIN (use alpha-blend color line background regardless if BM-Margin is shown or hidden)
+- `Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
 
 
 ## **`[Statusbar Settings]`**

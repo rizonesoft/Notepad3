@@ -342,6 +342,7 @@ BEGIN
         POPUP "Marcar &ocurrencias"
         BEGIN
             MENUITEM "&Activo\tAlt+A",                      IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Usar &marcadores también",            IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "&Coincidir sólo visible",             IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -371,6 +372,11 @@ BEGIN
         POPUP "Mos&trar"
         BEGIN
             MENUITEM "Vista enfocada\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Modo: Marcador",                                  IDM_VIEW_FV_BOOKMARK
+            MENUITEM "Modo: Resaltar",                                  IDM_VIEW_FV_HIGHLIGHT
+            MENUITEM "Modo: Marcador && Pliegue",                       IDM_VIEW_FV_BKMRKFOLD
+            MENUITEM "Modo: Resaltar && Pliegue",                       IDM_VIEW_FV_HIGHLGFOLD
+            MENUITEM SEPARATOR
             MENUITEM "&Monitoreo de Log",                               IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Desplazarse después del final de archivo",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar información de &hipervínculos",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
@@ -533,6 +539,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Borrar marcador",                            IDM_EDIT_CLEAR_MARKER
         MENUITEM "Cortar las líneas marcadas",                 IDM_EDIT_CUT_MARKED
         MENUITEM "Copiar las líneas marcadas",                 IDM_EDIT_COPY_MARKED
         MENUITEM "Eliminar las líneas marcadas",               IDM_EDIT_DELETE_MARKED

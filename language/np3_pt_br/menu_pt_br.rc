@@ -342,6 +342,7 @@ BEGIN
         POPUP "Marcar &Ocorrências"
         BEGIN
             MENUITEM "&Ativada\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Use &Bookmarks too",               IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Casar Apenas Visíveis",            IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -371,6 +372,11 @@ BEGIN
         POPUP "&Exibir"
         BEGIN
             MENUITEM "Visão Focada\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Mode: Bookmark",                              IDM_VIEW_FV_BOOKMARK
+            MENUITEM "Mode: Highlight",                             IDM_VIEW_FV_HIGHLIGHT
+            MENUITEM "Mode: Bookmark && Fold",                      IDM_VIEW_FV_BKMRKFOLD
+            MENUITEM "Mode: Highlight && Fold",                     IDM_VIEW_FV_HIGHLGFOLD
+            MENUITEM SEPARATOR
             MENUITEM "Log de &Monitoramento",                       IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Rolagem Passa do Fim do Arquivo",            IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar Dica de &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
@@ -533,6 +539,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Clear Marker",                               IDM_EDIT_CLEAR_MARKER
         MENUITEM "Cut Lines of Marker-Type",                   IDM_EDIT_CUT_MARKED
         MENUITEM "Copy Lines of Marker-Type",                  IDM_EDIT_COPY_MARKED
         MENUITEM "Delete Lines of Marker-Type",                IDM_EDIT_DELETE_MARKED
