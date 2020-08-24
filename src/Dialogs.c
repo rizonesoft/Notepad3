@@ -3755,12 +3755,12 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       }
 
       if (lngIdx >= 0) {
-        IniSectionGetString(L"global", L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
-        IniSectionSetString(L"global", L"languagefile", tchTemp);
+        IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
+        IniSectionSetString(globalSection, L"languagefile", tchTemp);
       } else {
-        IniSectionGetString(L"global", L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
+        IniSectionGetString(globalSection, L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
         if (StrIsEmpty(tchTemp)) {
-          IniSectionDelete(L"global", L"languagefile", false);
+          IniSectionDelete(globalSection, L"languagefile", false);
         }
       }
 
@@ -3768,10 +3768,22 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       IniSectionSetString(globalSection, L"editorcmd", tchTemp);
 
       // [settings]
-      bool const bEscClose = IniSectionGetBool(L"settings", L"escclose", (Settings.EscFunction == 2));
-      IniSectionSetBool(L"settings", L"escclose", bEscClose);
-      bool const bBackupInFolder = IniSectionGetBool(L"settings", L"backupinfolder", true);
-      IniSectionSetBool(L"settings", L"backupinfolder", bBackupInFolder);
+      const WCHAR *const settingsSection = L"settings";
+
+      bool const bEscClose = IniSectionGetBool(settingsSection, L"escclose", (Settings.EscFunction == 2));
+      IniSectionSetBool(settingsSection, L"escclose", bEscClose);
+      bool const bBackupInFolder = IniSectionGetBool(settingsSection, L"backupinfolder", true);
+      IniSectionSetBool(settingsSection, L"backupinfolder", bBackupInFolder);
+
+      // [export]
+      const WCHAR *const exportSection = L"export";
+      bool const bExpPaths = IniSectionGetBool(exportSection, L"paths", true);
+      IniSectionSetBool(exportSection, L"paths", bExpPaths);
+      bool const bExpLnNums = IniSectionGetBool(exportSection, L"linenumbers", true);
+      IniSectionSetBool(exportSection, L"linenumbers", bExpLnNums);
+      bool const bExpContent = IniSectionGetBool(exportSection, L"linecontent", true);
+      IniSectionSetBool(exportSection, L"linecontent", bExpContent);
+
 
       // search directory
       WCHAR tchSearchDir[MAX_PATH] = { L'\0' };
