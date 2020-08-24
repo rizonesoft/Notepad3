@@ -1177,10 +1177,6 @@ void LoadSettings()
     Defaults2.SciFontQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
-    Defaults2.MarkOccurrencesMaxCount = 2000;
-    Settings2.MarkOccurrencesMaxCount = IniSectionGetInt(IniSecSettings2, L"MarkOccurrencesMaxCount", Defaults2.MarkOccurrencesMaxCount);
-    if (Settings2.MarkOccurrencesMaxCount <= 0) { Settings2.MarkOccurrencesMaxCount = INT_MAX; }
-
     Defaults2.UpdateDelayMarkAllOccurrences = 50;
     Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences",
       Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
@@ -1299,9 +1295,6 @@ void LoadSettings()
     Defaults2.LargeIconScalePrecent = 150;
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
 
-    Defaults2.FocusViewMarkerMode = FVMM_STD;
-    Settings2.FocusViewMarkerMode = clampi(IniSectionGetInt(IniSecSettings2, L"FocusViewMarkerMode", Defaults2.FocusViewMarkerMode), FVMM_OFF, FVMM_NO_MARGIN);
-
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
     // --------------------------------------------------------------------------
@@ -1407,6 +1400,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
 
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrences, true);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesBookmark, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchVisible, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchCase, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchWholeWords, true);
@@ -1503,6 +1497,8 @@ void LoadSettings()
 
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
+
+    GET_INT_VALUE_FROM_INISECTION(FocusViewMarkerMode, (FVMM_MARGIN | FVMM_FOLD), FVMM_MARGIN, (FVMM_LN_BACKGR | FVMM_FOLD));
 
     // --------------------------------------------------------------------------
     const WCHAR* const StatusBar_Section = L"Statusbar Settings";
@@ -1846,6 +1842,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowCodeFolding);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrences);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesBookmark);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchVisible);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchCase);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchWholeWords);
@@ -1945,10 +1942,14 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
 
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FocusViewMarkerMode);
+
   // --------------------------------------------------------------------------
-  //const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
+  const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
   // --------------------------------------------------------------------------
 
+  // ---  remove deprecated  ---
+  IniSectionDelete(IniSecSettings2, L"MarkOccurrencesMaxCount", false);
 
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecWindow = Constants.Window_Section;
