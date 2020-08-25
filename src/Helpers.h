@@ -595,6 +595,10 @@ inline bool IsReadOnly(const DWORD dwFileAttr) {
   return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
 }
 
+inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
+  return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
+}
+
 // ----------------------------------------------------------------------------
 
 #endif //_NP3_HELPERS_H_
