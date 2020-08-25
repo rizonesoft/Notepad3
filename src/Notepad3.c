@@ -634,11 +634,7 @@ static void _InitGlobals()
   Globals.FindReplaceMatchFoundState = FND_NOP;
   Globals.bDocHasInconsistentEOLs = false;
   Globals.idxSelectedTheme = 1; // Default(0), Standard(1)
-  
-  HDC const hdc = GetDC(NULL);
-  //~Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
-  Globals.InitialFontSize = MulDiv(85, GetDeviceCaps(hdc, LOGPIXELSY), 720);
-  ReleaseDC(NULL, hdc);
+  Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
 
   Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
