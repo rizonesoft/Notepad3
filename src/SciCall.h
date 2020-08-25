@@ -122,6 +122,11 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 //=============================================================================
 
+// Initialize
+DeclareSciCallR0(GetLayoutCache, GETLAYOUTCACHE, int)
+DeclareSciCallV1(SetLayoutCache, SETLAYOUTCACHE, int, cache)
+DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int)
+DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache)
 
 // Document Pointer Handling
 DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t)
@@ -637,6 +642,7 @@ inline void Sci_ScrollToCurrentLine() { Sci_ScrollToLine(Sci_GetCurrentLineNumbe
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 #define Sci_ApplyLexerStyle(B, E) SciCall_Colourise((DocPos)(B), (DocPos)(E));
+#define Sci_LexerStyleAll() SciCall_Colourise(0, -1)
 
 #define Sci_DisableMouseDWellNotification()  SciCall_SetMouseDWellTime(SC_TIME_FOREVER)  
 
