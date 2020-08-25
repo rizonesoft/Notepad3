@@ -405,7 +405,7 @@ bool Style_IsCurLexerStandard()
 
 static float  _SetBaseFontSize(float fSize)
 {
-  static float fBaseFontSize = 10.0f;
+  static float fBaseFontSize = 11.0f;
 
   if (fSize >= 0.0f) {
     fBaseFontSize = Round10th(fSize);
@@ -466,8 +466,8 @@ float Style_GetCurrentFontSize()
 //
 void Style_Load()
 {
-  _SetBaseFontSize(Globals.fInitialFontSize);
-  _SetCurrentFontSize(Globals.fInitialFontSize);
+  _SetBaseFontSize((float)Globals.InitialFontSize);
+  _SetCurrentFontSize((float)Globals.InitialFontSize);
 
   for (int i = 0; i < 16; ++i) {
     g_colorCustom[i] = s_colorDefault[i];
@@ -1086,8 +1086,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
-  _SetBaseFontSize(Globals.fInitialFontSize);
-  _SetCurrentFontSize(Globals.fInitialFontSize);
+  _SetBaseFontSize((float)Globals.InitialFontSize);
+  _SetCurrentFontSize((float)Globals.InitialFontSize);
   const WCHAR* const wchStandardStyleStrg = pCurrentStandard->Styles[STY_DEFAULT].szValue;
   Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg, true);
 
@@ -3246,19 +3246,20 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // is "size:" definition relative ?
   bool const bRelFontSize = (!StrStr(lpszStyle, L"size:") || StrStr(lpszStyle, L"size:+") || StrStr(lpszStyle, L"size:-"));
 
-  float const fBaseFontSize = (bGlobalDefaultStyle ? Globals.fInitialFontSize : 
+  float const fBaseFontSize = (bGlobalDefaultStyle ? (float)Globals.InitialFontSize : 
                                                      (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
-  float fFontSize = fBaseFontSize;
-  if (!Style_StrGetSize(lpszStyle, &fFontSize)) { fFontSize = fBaseFontSize; }
+  float fFontSize;
+  if (!Style_StrGetSize(lpszStyle, &fFontSize)) {
+    fFontSize = fBaseFontSize;
+  }
   HDC const hdc = GetDC(hwnd);
-  int const iPointSize = float2int(fFontSize * 10.0f);
-  int const iFontHeight = -MulDiv(float2int(fFontSize * SC_FONT_SIZE_MULTIPLIER), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
+  int const iFontHeight = PointSizeToFontHeight(fFontSize, hdc);
   ReleaseDC(hwnd, hdc);
 
   // Font Weight
-  int  iFontWeight = FW_NORMAL;
+  int  iFontWeight;
   if (!Style_StrGetWeightValue(lpszStyle, &iFontWeight)) {
     iFontWeight = FW_NORMAL;
   }
@@ -3318,7 +3319,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   cf.hInstance = Globals.hInstance; // ChooseFontDirectWrite
   cf.rgbColors = color;
   cf.lpLogFont = &lf;
-  cf.iPointSize = (INT)iPointSize;
+  cf.iPointSize = (INT)float2int(fFontSize * 10.0f);
   cf.nFontType = SCREEN_FONTTYPE;
   cf.lpszStyle = szStyleStrg;
 

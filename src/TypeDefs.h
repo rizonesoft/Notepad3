@@ -369,7 +369,7 @@ typedef struct _globals_t
   CALLTIPTYPE CallTipType;
   FILEVARS  fvCurFile;
   int       iWrapCol;
-  float     fInitialFontSize;
+  int       InitialFontSize;
 
   bool      CmdLnFlag_PosParam;
   int       CmdLnFlag_WindowPos;
