@@ -363,24 +363,29 @@ BEGIN
             MENUITEM "コード折りたたみを表示(&F)",                   IDM_VIEW_FOLDING
             MENUITEM "すべて折りたたみ(&T)\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "次の折りたたみへ移動(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "前の折りたたみへ移動(&P)\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "次の折りたたみへ移動(&N)\tAlt+ +",          CMD_FOLDJUMPDOWN
+            MENUITEM "前の折りたたみへ移動(&P)\tAlt+ –",          CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "折りたたむ(&C)\tAlt+ ←",                  CMD_FOLDCOLLAPSE
-            MENUITEM "折りたたみを展開(&E)\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "折りたたむ(&C)\tAlt+ ←",                   CMD_FOLDCOLLAPSE
+            MENUITEM "折りたたみを展開(&E)\tAlt+ →",              CMD_FOLDEXPAND
         END
         POPUP "表示(&D)"
         BEGIN
             MENUITEM "単語一望モード(&F)\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                         IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                        IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",                 IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",                IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                                IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                            IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                           IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                    IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",                   IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
             MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "ウィンドウ構成(&A)"
         BEGIN
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR

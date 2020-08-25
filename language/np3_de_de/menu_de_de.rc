@@ -372,15 +372,20 @@ BEGIN
         POPUP "&Anzeigen"
         BEGIN
             MENUITEM "Fokussierte Ansicht\tCtrl+Alt+V",         IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Modus: Lesezeichen",                      IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Modus: Hervorheben",                      IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Modus: Lesezeichen && Faltung",           IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Modus: Hervorheben && Faltung",           IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "Ansicht Modus"
+            BEGIN
+                MENUITEM "Faltung",                             IDM_VIEW_FV_FOLD
+                MENUITEM "Lesezeichen",                         IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Hervorheben",                         IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Lesezeichen && Faltung",              IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Hervorheben && Faltung",              IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Logfile &Monitoring",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Erweiterte Dokument Ende Ansicht",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Zeige einen &Hyperlink Tooltip",          IDM_VIEW_SHOW_HYPLNK_CALLTIP
             END
+        MENUITEM SEPARATOR
         POPUP "&Leisten"
         BEGIN
             MENUITEM "Zeige &Menüleiste",                       IDM_VIEW_MENUBAR

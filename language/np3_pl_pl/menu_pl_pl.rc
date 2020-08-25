@@ -363,24 +363,29 @@ BEGIN
             MENUITEM "Składanie kodu",                              IDM_VIEW_FOLDING
             MENUITEM "&Przełącz składanie kodu\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Przeskocz do nast.\tAlt+ +",           CMD_FOLDJUMPDOWN
-            MENUITEM "Przeskocz do poprzed.\tAlt+ –",        CMD_FOLDJUMPUP
+            MENUITEM "Przeskocz do nast.\tAlt+ +",                  CMD_FOLDJUMPDOWN
+            MENUITEM "Przeskocz do poprzed.\tAlt+ –",               CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Zwiń zagięcie\tAlt+ ←",               CMD_FOLDCOLLAPSE
-            MENUITEM "&Rozwiń zagięcie\tAlt+ →",             CMD_FOLDEXPAND
+            MENUITEM "&Zwiń zagięcie\tAlt+ ←",                      CMD_FOLDCOLLAPSE
+            MENUITEM "&Rozwiń zagięcie\tAlt+ →",                    CMD_FOLDEXPAND
         END
         POPUP "&Pokaż"
         BEGIN
             MENUITEM "Widok skupiony\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                              IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                             IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",                      IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",                     IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                                    IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                                IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                               IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                        IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",                       IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Dziennik &monitorowania",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rozszerzony widok końca dokumentu",           IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Pokaż podpowiedź hiperłącza",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anele"
         BEGIN
             MENUITEM "Pokaż pasek menu",                            IDM_VIEW_MENUBAR

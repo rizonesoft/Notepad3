@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.823.(build_#) (2020-08-23)
+Current BETA Version 5.20.824.(build_#) (2020-08-24)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
+[.824.1]- Focused-View: mode Fold-Only.
 [.823.1]- Mark Occurrences: show additional Bookmark (Arrows).
 [.823.1]- Bookmark context menu: clear marker type.
 [.822.2]- FocusedView Options: Bookmarks/Line-Highlight & Folding.
@@ -62,6 +63,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.824.2]- grepWinNP3: Export search result list (NP3 enhancements).
 [.823.1]- Delete Bookmarks (Alt+F2): 1st delete occurrence markers then std. bookmarks.
 [.822.1]- Remove max count limitation for "Mark Occurrences" feature.
 [.821.1]- Bookmark context menu on alpha-blend FocusedView marker line.
@@ -78,7 +80,7 @@ CHANGES:
 [.729.1]- DPI-Aware About & Custom.Scheme dialog.
 [.729.1]- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
 [.723.1]- Review document modified handler (dirty-flag).
-[.817.2]- Update grepWinNP3 (GRE) version 2.1.3.26 (2020-08-17).
+[.824.2]- Update grepWinNP3 (GRE) version 2.1.3.27 (2020-08-24).
 [.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.818.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-08-18).
 
@@ -92,6 +94,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.824.1]- Not intended bookmarker on F/R dialog mark findings.
 [.823.1]- Bookmark Occurrences too menu checked.
 [.823.1]- Scroll to cursor for selection start/end jumps.
 [.823.1]- Not intended "violet" bookmark.

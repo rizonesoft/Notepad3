@@ -372,15 +372,20 @@ BEGIN
         POPUP "&Afficher"
         BEGIN
             MENUITEM "Vue Focalisée\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Signet",                        IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Surbrillance",                  IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Signet && Pliage",              IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Surbrillance && Pliage",        IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "Mode d'affichage"
+            BEGIN
+                MENUITEM "Pliage",                          IDM_VIEW_FV_FOLD
+                MENUITEM "Signet",                          IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Surbrillance",                    IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Signet && Pliage",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Surbrillance && Pliage",          IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Log de &Contrôle",                    IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Défiler Après la Fin du Fichier",    IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Afficher &Infobulles sur Liens",      IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anneaux"
         BEGIN
             MENUITEM "Afficher la Barre de &Menus",         IDM_VIEW_MENUBAR

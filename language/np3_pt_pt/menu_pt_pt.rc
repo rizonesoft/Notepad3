@@ -372,15 +372,20 @@ BEGIN
         POPUP "&Exibir"
         BEGIN
             MENUITEM "Vista focada\tCtrl+Alt+V",                       IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                                 IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                                IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",                         IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",                        IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                                       IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                                   IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                                  IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                           IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",                          IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Registo de &monitorização",                      IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Rolagem para além do fim do ficheiro",          IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar dica da &hiperligação",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&ainéis"
         BEGIN
             MENUITEM "Mostrar barra de &menu",                         IDM_VIEW_MENUBAR
