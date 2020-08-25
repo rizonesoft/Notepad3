@@ -1433,7 +1433,8 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
-    int const zoomScale = 100;
+    //int const zoomScale = 100;
+    int const zoomScale = float2int(1000.0f / Globals.fInitialFontSize);
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
