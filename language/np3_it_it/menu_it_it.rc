@@ -366,21 +366,26 @@ BEGIN
             MENUITEM "Salta al Prossimo Fold\tAlt+ +",             CMD_FOLDJUMPDOWN
             MENUITEM "Salta al Precedente Fold\tAlt+ –",           CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "&Collapse Fold\tAlt+ ←",                     CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",                       CMD_FOLDEXPAND
         END
         POPUP "&Display"
         BEGIN
             MENUITEM "Visualizzazione focalizzata\tCtrl+Alt+V",    IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                             IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                            IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",                     IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",                    IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                                   IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                               IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                              IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                       IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",                      IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "&Monitoraggio log",                          IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Scorri oltre la fine del file (EOF)",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostra Tooltip &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&annelli"
         BEGIN
             MENUITEM "Mostra barra dei &Menu",        IDM_VIEW_MENUBAR

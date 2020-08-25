@@ -372,15 +372,20 @@ BEGIN
         POPUP "전시(&D)"
         BEGIN
             MENUITEM "집중(&F)\tCtrl+Alt+V",                IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                      IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                     IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",              IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",             IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                            IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                        IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                       IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",               IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "열람(&M)",                            IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "파일 끝 스크롤(&S)",                   IDM_VIEW_SCROLLPASTEOF
             MENUITEM "하이퍼 링크 툴팁 보이기(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "표시(&A)"
         BEGIN
             MENUITEM "메뉴바 보이기",                      IDM_VIEW_MENUBAR

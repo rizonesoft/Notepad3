@@ -372,15 +372,20 @@ BEGIN
         POPUP "Zo&brazenie"
         BEGIN
             MENUITEM "Zamerať zobrazenie\tCtrl+Alt+V",      IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                      IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                     IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",              IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",             IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                            IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                        IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                       IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",               IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "&Monitorovať logovanie",              IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Rolovanie na koniec súboru",         IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Nápovedný &tip na prepojení",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anely"
         BEGIN
             MENUITEM "Zobraziť &textové menu",              IDM_VIEW_MENUBAR
