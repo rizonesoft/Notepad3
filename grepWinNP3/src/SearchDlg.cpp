@@ -1464,6 +1464,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             if (FailedShowMessage(hr))
                 break;
 
+            hr = pfd->SetDefaultExtension(L"txt");
+            if (FailedShowMessage(hr))
+                break;
+
             hr = pfd->SetFileName(L"gw_search_results.txt");
             if (FailedShowMessage(hr))
                 break;
