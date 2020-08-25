@@ -466,9 +466,8 @@ float Style_GetCurrentFontSize()
 //
 void Style_Load()
 {
-  float const fBFS = GetBaseFontSize(Globals.hwndMain);
-  _SetBaseFontSize(fBFS);
-  _SetCurrentFontSize(fBFS);
+  _SetBaseFontSize(Globals.fInitialFontSize);
+  _SetCurrentFontSize(Globals.fInitialFontSize);
 
   for (int i = 0; i < 16; ++i) {
     g_colorCustom[i] = s_colorDefault[i];
@@ -1087,9 +1086,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
-  float const fBFS = GetBaseFontSize(Globals.hwndMain);
-  _SetBaseFontSize(fBFS);
-  _SetCurrentFontSize(fBFS);
+  _SetBaseFontSize(Globals.fInitialFontSize);
+  _SetCurrentFontSize(Globals.fInitialFontSize);
   const WCHAR* const wchStandardStyleStrg = pCurrentStandard->Styles[STY_DEFAULT].szValue;
   Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg, true);
 
@@ -3248,8 +3246,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // is "size:" definition relative ?
   bool const bRelFontSize = (!StrStr(lpszStyle, L"size:") || StrStr(lpszStyle, L"size:+") || StrStr(lpszStyle, L"size:-"));
 
-  float const fBFS = GetBaseFontSize(Globals.hwndMain);
-  float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
+  float const fBaseFontSize = (bGlobalDefaultStyle ? Globals.fInitialFontSize : 
+                                                     (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
   float fFontSize = fBaseFontSize;

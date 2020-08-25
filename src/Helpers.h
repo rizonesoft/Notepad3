@@ -221,8 +221,6 @@ inline int IsFullHD(HWND hwnd, int resX, int resY)
   return ((resX == 1920) && (resY == 1080)) ? 0 : (((resX < 1920) || (resY < 1080)) ? -1 : +1);
 }
 
-inline float GetBaseFontSize(HWND hwnd) { return ((IsFullHD(hwnd, -1, -1) < 0) ? 10.0f : 11.0f); }
-
 // ----------------------------------------------------------------------------
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
