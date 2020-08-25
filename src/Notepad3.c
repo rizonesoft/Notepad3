@@ -3511,7 +3511,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   } else if (fvm_mode == (FVMM_MARGIN | FVMM_FOLD)) {
     i = IDM_VIEW_FV_BKMRKFOLD;
   } else if (fvm_mode == (FVMM_LN_BACKGR | FVMM_FOLD)) {
-    i = IDM_VIEW_FV_HIGHLIGHT;
+    i = IDM_VIEW_FV_HIGHLGFOLD;
   } else {
     i = IDM_VIEW_FV_FOLD;
   }
