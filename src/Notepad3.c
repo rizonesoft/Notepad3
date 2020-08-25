@@ -6871,8 +6871,9 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
 
     WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
-    ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, szTextW, COUNTOF(szTextW));
+    ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, szTextW, COUNTOF(szTextW));
     szTextW[cchTextW] = L'\0';
+    StrTrimW(szTextW, L" \r\n\t");
 
     const WCHAR* chkPreFix = L"file://";
 
@@ -6887,8 +6888,8 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
         DWORD cchEscapedW = (DWORD)(length * 3);
         LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
         if (pszEscapedW) {
-          DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
-          UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
+          //~UrlEscape(szTextW, pszEscapedW, &cchEscapedW, (URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8));
+          UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, false);
           SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
           FreeMem(pszEscapedW);
           bHandled = true;
