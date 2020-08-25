@@ -97,6 +97,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.825.2]- Wrong Focused-View Mode shown in menu.
+[.825.2]- Try to fix (hardly reproducible) "copy Hyperlink issue (#2202).
 [.825.1]- Regression: initial calculation of Print-Zoom factor.
 [.824.1]- Not intended bookmarker on F/R dialog mark findings.
 [.823.1]- Bookmark Occurrences too menu checked.
