@@ -991,13 +991,11 @@ static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 
   if (!bHasSignature && !Settings.NoEncodingTags && !bDisableFileVar) {
 
-    if (FileVars_ParseStr(buffer, "encoding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
+    if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
       lpfv->mask |= FV_ENCODING;
-    }
-    else if (FileVars_ParseStr(buffer, "charset", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
+    } else if (FileVars_ParseStr(buffer, "encoding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
       lpfv->mask |= FV_ENCODING;
-    }
-    else if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
+    } else if (FileVars_ParseStr(buffer, "charset", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
       lpfv->mask |= FV_ENCODING;
     }
   }
@@ -1136,7 +1134,7 @@ extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue) {
 //
 extern "C" bool FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue) {
 
-  char* pvStart = StrStrIA(pszData, pszName);
+  const char* pvStart = StrStrIA(pszData, pszName);
   while (pvStart) {
     char chPrev = (pvStart > pszData) ? *(pvStart - 1) : 0;
     if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
