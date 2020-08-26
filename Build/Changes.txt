@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.825.(build_#) (2020-08-25)
+Current BETA Version 5.20.826.(build_#) (2020-08-26)
 =====================================================
 
 -----------------------------------------------------
@@ -64,6 +64,8 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.826.1]- Default for file-encoding-tag parsing -> OFF.
+[.826.1]- Swap file-encoding-tag parsing priority (encoding <-> coding).
 [.825.1]- Revert Initial Font-Size based on DeviceCaps.
 [.825.1]- Initial Font Size based on DeviceCaps (=> FullHD unchanged).
 [.824.2]- grepWinNP3: Export search result list (NP3 enhancements).
