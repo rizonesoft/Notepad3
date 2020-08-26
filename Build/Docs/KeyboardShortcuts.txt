@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts ***               date: 2020/07/29
+*** Keyboard Shortcuts ***               date: 2020/08/26
 ---------------------------------------------------------
 
 
@@ -183,10 +183,10 @@
 
       Bookmarks
       ---------
-        Ctrl+F2               Toggle Bookmark.
-        F2                    Jump to Next Bookmark.
-        Shift+F2              Jump to Previous Bookmark.
-        Alt+F2                Clear All Bookmark.
+        Ctrl+F2               Toggle.
+        F2                    Goto Next.
+        Shift+F2              Goto Previous.
+        Alt+F2                Clear All.
 
       Search
       ------
@@ -194,35 +194,35 @@
         Alt+F3                Save Find Text.
         F3                    Find Next.
         Shift+F3              Find Previous.
-        Ctrl+F3               Find Next Word or Selection.
-        Ctrl+Shift+F3         Find Previous Word or Selection.
+        Ctrl+F3               Find Next Selected.
+        Ctrl+Shift+F3         Find Previous Selected.
         Ctrl+H                Replace...
         F4                    Replace Next.
-        Ctrl+G                Jump to Line...
+        Ctrl+G                Goto...
         Ctrl+Shift+F          Search in Files.
 
 
   VIEW
   ------------------------
-    Ctrl+W                    Toggle Word Wrap.
-    Ctrl+Alt+L                Show Long Line Marker.
-    Ctrl+Shift+G              Show Indentation Guides.
+    Ctrl+W                    Word Wrap.
+    Ctrl+Alt+L                Long Line Marker.
+    Ctrl+Shift+G              Indentation Guides.
     Ctrl+Shift+7              Show Wrap Symbols.
-    Ctrl+Shift+8              Show Whitespace.
+    Ctrl+Shift+8              Show Blanks.
     Ctrl+Shift+9              Show Line Endings.
-    Ctrl+Alt+W                Show Hyperlink Hotspots.
-    Ctrl+Shift+V              Toggle Visual Brace Matching.
+    Ctrl+Alt+W                Hyperlink Hotspots.
+    Ctrl+Shift+V              Visual Brace Matching.
     Ctrl+Shift+I              Highlight Current Line.
     Ctrl+Shift+N              Show Line Numbers.
-    Ctrl+Shift+M              Show Selection Margin.
+    Ctrl+Shift+M              Bookmark Margin.
 
       Mark Occurences
       ----------------
-        Alt+A                 Show All Occurences.
+        Alt+A                 Active.
 
       Folding
       -------
-        Ctrl+Alt+F            Toggle All Folds.
+        Ctrl+Alt+F            Toggle Folds.
         Alt+ +                Jump Next Fold.
         Alt+ –                Jump Prev Fold.
         Alt+ ←                Collapse Fold.
@@ -230,9 +230,9 @@
 
       Display
       -------
-        Ctrl+Alt+V            Show in Focused View.
-        Ctrl+PgUp/PgDn        Goto Previous/Next Block.
-        Ctrl+Shift+PgUp/PgDn  Select to Previous/Next Block.
+        Ctrl+Alt+V            Focused View.
+        Ctrl+PgUp/PgDn        Goto Previous/Next.
+        Ctrl+Shift+PgUp/PgDn  Select to Previous/Next.
 
       Zoom
       ----
@@ -250,19 +250,19 @@
 
   APPEARENCE
   -------------------------
-    Ctrl+F12                  Customize Syntax Schemes...
+    Ctrl+F12                  Customize Schemes...
     F12                       Select Syntax Scheme...
-    Shift+F12                 Select 2nd Common Base.
-    Alt+F12                   Select Global Default Font...
-    Ctrl+Alt+F12              Select Current Scheme's Default Font...
+    Shift+F12                 2nd Common Base.
+    Alt+F12                   Global Default Font...
+    Ctrl+Alt+F12              Current Scheme's Default Font...
 
 
   SETTINGS
   ------------------------
     Ctrl+T                    Tab Settings...
-    Ctrl+Shift+H              Toggle Auto Close HTML/XML.
-    Ctrl+Alt+A                Select Accelerated Word Navigation.
-    Alt+F5                    Select File Change Notification...
+    Ctrl+Shift+H              Auto Close HTML/XML.
+    Ctrl+Alt+A                Accelerated Word Navigation.
+    Alt+F5                    File Change Notification...
 
       Windows
       -------
@@ -283,7 +283,7 @@
   HELP
   ------------------------
     F1                        Online Documentation.
-    Shift+F1                  Display Info Version "About..."
+    Shift+F1                  About...
 
 
 
