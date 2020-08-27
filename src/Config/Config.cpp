@@ -1422,7 +1422,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
     GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
-    GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
+    GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, true);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
     GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
@@ -1433,7 +1433,10 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
-    int const zoomScale = 100;
+    //int const zoomScale = 100;
+    int const baseZoom = 100;
+    int const prtFontSize = 10;
+    int const zoomScale = MulDiv(baseZoom, prtFontSize, Globals.InitialFontSize);
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }

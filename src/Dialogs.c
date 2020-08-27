@@ -5069,7 +5069,7 @@ HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, b
     if (fontSize <= 0) {
       fontSize = (ncm.lfMessageFont.lfHeight < 0) ? -ncm.lfMessageFont.lfHeight : ncm.lfMessageFont.lfHeight;
       if (fontSize == 0) {
-        fontSize = 8;
+        fontSize = 9;
       }
     }
     fontSize <<= 10; // precision

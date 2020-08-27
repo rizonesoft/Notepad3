@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.824.(build_#) (2020-08-24)
+Current BETA Version 5.20.826.(build_#) (2020-08-26)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 [.###.#]- 
+[.825.1]- grepWinNP3: default extension on saving search result list.
 [.824.1]- Focused-View: mode Fold-Only.
 [.823.1]- Mark Occurrences: show additional Bookmark (Arrows).
 [.823.1]- Bookmark context menu: clear marker type.
@@ -63,6 +64,10 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.826.1]- Default for file-encoding-tag parsing -> OFF.
+[.826.1]- Swap file-encoding-tag parsing priority (encoding <-> coding).
+[.825.1]- Revert Initial Font-Size based on DeviceCaps.
+[.825.1]- Initial Font Size based on DeviceCaps (=> FullHD unchanged).
 [.824.2]- grepWinNP3: Export search result list (NP3 enhancements).
 [.823.1]- Delete Bookmarks (Alt+F2): 1st delete occurrence markers then std. bookmarks.
 [.822.1]- Remove max count limitation for "Mark Occurrences" feature.
@@ -80,7 +85,7 @@ CHANGES:
 [.729.1]- DPI-Aware About & Custom.Scheme dialog.
 [.729.1]- Swap Shortcuts: "Search in Files" -> "Ctrl+Shift+F" and Toggle Folds -> "Ctrl+Alt+F".
 [.723.1]- Review document modified handler (dirty-flag).
-[.824.2]- Update grepWinNP3 (GRE) version 2.1.3.27 (2020-08-24).
+[.825.1]- Update grepWinNP3 (GRE) version 2.1.3.28 (2020-08-25).
 [.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.818.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-08-18).
 
@@ -94,6 +99,9 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 [.###.#]- 
+[.825.2]- Wrong Focused-View Mode shown in menu.
+[.825.2]- Try to fix (hardly reproducible) "copy Hyperlink issue (#2202).
+[.825.1]- Regression: initial calculation of Print-Zoom factor.
 [.824.1]- Not intended bookmarker on F/R dialog mark findings.
 [.823.1]- Bookmark Occurrences too menu checked.
 [.823.1]- Scroll to cursor for selection start/end jumps.

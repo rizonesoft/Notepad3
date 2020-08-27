@@ -221,8 +221,6 @@ inline int IsFullHD(HWND hwnd, int resX, int resY)
   return ((resX == 1920) && (resY == 1080)) ? 0 : (((resX < 1920) || (resY < 1080)) ? -1 : +1);
 }
 
-inline float GetBaseFontSize(HWND hwnd) { return ((IsFullHD(hwnd, -1, -1) < 0) ? 10.0f : 11.0f); }
-
 // ----------------------------------------------------------------------------
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
@@ -595,6 +593,10 @@ inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); re
 
 inline bool IsReadOnly(const DWORD dwFileAttr) {
   return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
+}
+
+inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
+  return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
 }
 
 // ----------------------------------------------------------------------------

@@ -266,6 +266,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     SC_PRINT_SCREENCOLOURS };
 
   SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[Settings.PrintColorMode],0);
+  //SendMessage(hwnd, SCI_SETPRINTWRAPMODE, SC_WRAP_WORD, 0); // default: SC_WRAP_WORD
 
   // Set print magnification...
   SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)Settings.PrintZoom, 0);

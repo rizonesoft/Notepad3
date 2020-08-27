@@ -342,7 +342,7 @@ BEGIN
         POPUP "単語出現マーカー(&k)"
         BEGIN
             MENUITEM "オン(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use Bookmarks too(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "しおりの余白も使用(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "単語一望モードを無効に(&V)",               IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -356,7 +356,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "しおりの余白(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "折りたたみ(&F)"
         BEGIN
@@ -372,13 +372,13 @@ BEGIN
         POPUP "表示(&D)"
         BEGIN
             MENUITEM "単語一望モード(&F)\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
-            POPUP "View Mode"
+            POPUP "その表示方法"
             BEGIN
-                MENUITEM "Fold",                                IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                            IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Highlight",                           IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",                    IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Highlight && Fold",                   IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "折りたたみ",                                IDM_VIEW_FV_FOLD
+                MENUITEM "しおり",                            IDM_VIEW_FV_BOOKMARK
+                MENUITEM "強調",                           IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "しおり&& 折りたたみ",                    IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "強調 && 折りたたみ",                   IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
@@ -478,10 +478,10 @@ BEGIN
                 MENUITEM "DirectWrite GDI DC(&W)",          IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI (合字未対応)(&G)",             IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "RTL Layout (GDI)(&T)"
+            POPUP "RTLレイアウト (GDI)(&T)"
             BEGIN
-                MENUITEM "Edit Area(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "Other Dialogs(&O)",               IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "編集領域(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "ほかのダイアログ(&O)",               IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "書字方向(&B)"
             BEGIN
@@ -544,14 +544,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                        IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",            IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",           IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type",         IDM_EDIT_DELETE_MARKED
+        MENUITEM "このしおりを除去",                        IDM_EDIT_CLEAR_MARKER
+        MENUITEM "しおりがある全行/切り取り",            IDM_EDIT_CUT_MARKED
+        MENUITEM "しおりがある全行/コピー",           IDM_EDIT_COPY_MARKED
+        MENUITEM "しおりがある全行/削除",         IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "コード折りたたみを表示",                    IDM_VIEW_FOLDING
-        MENUITEM "行番号",                               IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",                     IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "表示/コード折りたたみ",                    IDM_VIEW_FOLDING
+        MENUITEM "表示/行番号",                               IDM_VIEW_LINENUMBERS
+        MENUITEM "表示/しおりの余白",                     IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
