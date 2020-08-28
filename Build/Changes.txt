@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current BETA Version 5.20.826.(build_#) (2020-08-26)
+Current BETA Version 5.20.828.(build_#) (2020-08-28)
 =====================================================
 
 -----------------------------------------------------
@@ -64,6 +64,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 [.###.#]- 
+[.828.1]- Rearange and review "File Encoding" menu to clarify behavior.
 [.826.1]- Default for file-encoding-tag parsing -> OFF.
 [.826.1]- Swap file-encoding-tag parsing priority (encoding <-> coding).
 [.825.1]- Revert Initial Font-Size based on DeviceCaps.
