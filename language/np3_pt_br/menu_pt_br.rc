@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Novo\tCtrl+N",                                           IDM_FILE_NEW
         MENUITEM "&Abrir...\tCtrl+O",                                       IDM_FILE_OPEN
-        MENUITEM "Re&verter\tF5",                                           IDM_FILE_REVERT
         MENUITEM "&Salvar\tCtrl+S",                                         IDM_FILE_SAVE
         MENUITEM "Salvar &Como...\tF6",                                     IDM_FILE_SAVEAS
         MENUITEM "Salvar &Copia...\tCtrl+F6",                               IDM_FILE_SAVECOPY
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Abri &Gerenciador de Arquivos",   IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Re&vert from File\tF5",                  IDM_FILE_REVERT
         POPUP "&Codificação"
         BEGIN
-            MENUITEM "&ANSI",                    IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                 IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",      IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",         IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 com &Assinatura",    IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Mais...\tF9",             IDM_ENCODING_SELECT
+            POPUP "&Revert from File as"
+            BEGIN
+                MENUITEM "&Default (Setting)",             CMD_RECODEDEFAULT
+                MENUITEM "A&NSI\tCtrl+Shift+A",            CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
+                MENUITEM "Force U&CHARDET Analysis",              CMD_RELOADFORCEDETECTION
+                MENUITEM "Ignorar &Tags de Codificação\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF8",         IDM_ENCODING_RECODE
+            END
+            POPUP "&Set Document as"
+            BEGIN
+                MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 com &Assinatura",          IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Recodificar para o &Padrão",                  CMD_RECODEDEFAULT
-            MENUITEM "Recodificar para &ANSI\tCtrl+Shift+A",        CMD_RECODEANSI
-            MENUITEM "Recodificar para &OEM\tCtrl+Shift+O",         CMD_RECODEOEM
-            MENUITEM "Recodificar para &GB18030\tCtrl+Shift+F10",   CMD_RECODEGB18030
-            MENUITEM "Recodificar para Análise UCHARDET",           CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
-            MENUITEM "Ignorar &Tags de Codificação\tAlt+F8",  CMD_RELOADNOFILEVARS
-            MENUITEM "&Recodificar...\tF8",                   IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Definir &Padrão...",                    IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set Encoding &Defaults...",          IDM_ENCODING_SETDEFAULT
         END
         POPUP "Fin&ais de Linha"
         BEGIN
