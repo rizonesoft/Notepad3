@@ -1,6 +1,4 @@
-﻿#pragma once
-#ifndef _DARKMODE_H_
-#define _DARKMODE_H_
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -9,8 +7,11 @@ extern "C" {
   void InitDarkMode();
   bool IsDarkModeSupported();
   bool CheckDarkModeEnabled();
-  //bool AllowDarkModeForWindow(HWND hWnd, bool allow);
+  DWORD GetWindowsBuildNumber();
+
   void AllowDarkModeForApp(bool allow);
+  bool AllowDarkModeForWindow(HWND hWnd, bool allow);
+
   bool IsHighContrast();
   void RefreshTitleBarThemeColor(HWND hWnd);
   bool IsColorSchemeChangeMessage(LPARAM lParam);
@@ -19,5 +20,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-#endif //_DARKMODE_H_

@@ -445,6 +445,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Config\Config.cpp" />
+    <ClCompile Include="DarkMode\DarkMode.cpp" />
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
@@ -563,6 +564,8 @@
     </ClInclude>
     <ClInclude Include="Config\Config.h" />
     <ClInclude Include="Config\SimpleIni.h" />
+    <ClInclude Include="DarkMode\DarkMode.h" />
+    <ClInclude Include="DarkMode\IatHook.hpp" />
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />

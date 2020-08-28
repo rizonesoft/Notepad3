@@ -143,6 +143,8 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 //
 //  GetWinVersionString()
 //
+
+#if 0
 static OSVERSIONINFOEX s_OSversion = { 0 };
 
 static void _GetTrueWindowsVersion()
@@ -179,7 +181,7 @@ static void _GetTrueWindowsVersion()
 
 }
 // ----------------------------------------------------------------------------
-
+#endif
 
 // ----------------------------------------------------------------------------
 // https://docs.microsoft.com/en-us/windows/release-information/
@@ -241,10 +243,9 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
   }
   
   if (IsWindows10OrGreater()) {
-    _GetTrueWindowsVersion();
-    DWORD const build = s_OSversion.dwBuildNumber;
     WCHAR win10ver[80] = { L'\0' };
-    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)", _Win10BuildToReleaseId(build) , build);
+    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)",
+                    _Win10BuildToReleaseId(Globals.WindowsBuildNumber), Globals.WindowsBuildNumber);
     StringCchCat(szVersionStr, cchVersionStr, win10ver);
   }
 }

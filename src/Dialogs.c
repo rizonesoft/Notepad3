@@ -39,6 +39,7 @@
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
+#include "DarkMode/DarkMode.h"
 #include "Resample.h"
 
 #include "SciCall.h"
@@ -689,6 +690,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   static char pAboutResource[8192] = { '\0' };
   static char* pAboutInfo = NULL;
   static DPI_T dpi = { 0, 0 };
+  static HBRUSH hbrBkgnd = NULL;
 
   switch (umsg)
   {
@@ -698,6 +700,16 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SetDialogIconNP3(hwnd);
 
     //~SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
+
+		if (!hbrBkgnd) {
+      hbrBkgnd = CreateSolidBrush(Globals.rgbDarkBkgColor);
+    }
+
+    if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+      SetWindowTheme(GetDlgItem(hwnd, IDOK), L"Explorer", NULL);
+      SetWindowTheme(GetDlgItem(hwnd, IDC_COPYVERSTRG), L"Explorer", NULL);
+      PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
+    }
 
     dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -783,6 +795,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     if (!StrIsEmptyA(pAboutResource)) {
       pAboutInfo              = pAboutResource;
       EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
+      if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0x80, 0x80, 0x80));
+      }
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
     }
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y > USER_DEFAULT_SCREEN_DPI));
@@ -801,7 +816,14 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   break;
 
   case WM_DESTROY:
-    if (hVersionFont) { DeleteObject(hVersionFont); }
+    if (hVersionFont) {
+      DeleteObject(hVersionFont);
+      hVersionFont = NULL;
+    }
+    if (hbrBkgnd) {
+      DeleteObject(hbrBkgnd);
+      hbrBkgnd = NULL;
+    }
     break;
 
   case WM_DPICHANGED:
@@ -813,6 +835,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       if (!StrIsEmptyA(pAboutResource)) {
         pAboutInfo              = pAboutResource;
         EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
+        if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+          SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0xA0,0xA0,0xA0));
+        }
         SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
       }
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y > USER_DEFAULT_SCREEN_DPI));
@@ -842,7 +867,49 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     }
     break;
 
-  case WM_PAINT:
+
+	  case WM_CTLCOLORDLG:
+    case WM_CTLCOLORSTATIC:
+    {
+      if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+        HDC hdc = (HDC)wParam;
+        SetTextColor(hdc, Globals.rgbDarkTextColor);
+        SetBkColor(hdc, Globals.rgbDarkBkgColor);
+        return (INT_PTR)hbrBkgnd;
+      }
+    }
+    break;
+
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessageW(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+
+	  case WM_THEMECHANGED: {
+      if (IsDarkModeSupported())
+      {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+
+        HWND const hOkBtn = GetDlgItem(hwnd, IDOK);
+        AllowDarkModeForWindow(hOkBtn, darkModeEnabled);
+        SendMessage(hOkBtn, WM_THEMECHANGED, 0, 0);
+
+        HWND const hCpyBtn = GetDlgItem(hwnd, IDC_COPYVERSTRG);
+        AllowDarkModeForWindow(hCpyBtn, darkModeEnabled);
+        SendMessage(hCpyBtn, WM_THEMECHANGED, 0, 0);
+
+        UpdateWindow(hwnd);
+      }
+    }
+    break;
+
+
+    case WM_PAINT:
     {
       PAINTSTRUCT ps;
       HDC const hdc = GetDC(hwnd);  // ClientArea
@@ -4548,7 +4615,7 @@ void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
 {
   if (lpszText) {
-    UINT const uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+    UINT const uFlags = ((nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart);
     StatusSetSimple(hwnd, (nPart == (UINT)STATUS_HELP));
     SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
   }

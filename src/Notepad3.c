@@ -41,6 +41,7 @@
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
+#include "DarkMode/DarkMode.h"
 
 #include "SciLexer.h"
 #include "SciXLexer.h"
@@ -50,6 +51,10 @@
 //   Local and global Variables for Notepad3.c
 //
 // ============================================================================
+
+static HBRUSH  s_hbrBkgnd = NULL;
+
+// ----------------------------------------------------------------------------
 
 WORDBOOKMARK_T WordBookMarks[MARKER_NP3_BOOKMARK] = {
   /*0*/ {false, L"back:#0000"}, // OCC MARKER
@@ -596,6 +601,9 @@ static void _InitGlobals()
 
   ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
   
+  InitDarkMode();
+  Globals.WindowsBuildNumber = GetWindowsBuildNumber();
+
   Globals.hDlgIcon256   = NULL;
   Globals.hDlgIcon128   = NULL;
   Globals.hDlgIconBig   = NULL;
@@ -635,6 +643,9 @@ static void _InitGlobals()
   Globals.bDocHasInconsistentEOLs = false;
   Globals.idxSelectedTheme = 1; // Default(0), Standard(1)
   Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
+
+  Globals.rgbDarkBkgColor = 0x383838;
+  Globals.rgbDarkTextColor = 0xFFFFFF;
 
   Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -1643,10 +1654,18 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
       return MsgSize(hwnd, wParam, lParam);
 
+	  case WM_SETTINGCHANGE: {
+      if (IsColorSchemeChangeMessage(lParam)) {
+        CheckDarkModeEnabled();
+        RefreshTitleBarThemeColor(hwnd);
+        SendMessage(Globals.hwndEdit, WM_THEMECHANGED, 0, 0);
+      }
+    }
+    break;
+
     case WM_DROPFILES:
-      return MsgDropFiles(hwnd, wParam, lParam);
       // see SCN_URIDROPP
-      break;
+      return MsgDropFiles(hwnd, wParam, lParam);
 
     case WM_COPYDATA:
       return MsgCopyData(hwnd, wParam, lParam);
@@ -2046,6 +2065,15 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
   UNUSED(wParam);
 
+  if (!s_hbrBkgnd) {
+    s_hbrBkgnd = CreateSolidBrush(Globals.rgbDarkBkgColor);
+  }
+
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(hwnd, true);
+    RefreshTitleBarThemeColor(hwnd);
+  }
+
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
   // Setup edit control
@@ -2344,7 +2372,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   Globals.hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
-  //~SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL); ~ no correct behavior
+  //SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL); ~ no correct behavior
 
   SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
@@ -2493,6 +2521,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
   }
 
+  // @@@ §§§
+  if (IsDarkModeSupported()) {
+    SetWindowTheme(Globals.hwndToolbar, L"Explorer", NULL);
+    //SetWindowTheme(Globals.hwndToolbar, L"DarkMode_Explorer", NULL);
+    AllowDarkModeForWindow(Globals.hwndToolbar, CheckDarkModeEnabled());
+    RefreshTitleBarThemeColor(Globals.hwndToolbar);
+    SendMessageW(Globals.hwndToolbar, WM_THEMECHANGED, 0, 0);
+  }
+
   CloseSettingsFile(bDirtyFlag, bOpendByMe);
 
   // ------------------------------
@@ -2547,6 +2584,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
 
   SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
+
+  // @@@ §§§
+  if (IsDarkModeSupported()) {
+    SetWindowTheme(Globals.hwndStatus, L"Explorer", NULL);
+    //SetWindowTheme(Globals.hwndToolbar, L"DarkMode_Explorer", NULL);
+    AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
+    RefreshTitleBarThemeColor(Globals.hwndStatus);
+    SendMessageW(Globals.hwndStatus, WM_THEMECHANGED, 0, 0);
+  }
 }
 
 
@@ -2718,8 +2764,8 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   int x = 0;
   int y = 0;
 
-  int cx = LOWORD(lParam);
-  int cy = HIWORD(lParam);
+  int cx = GET_X_LPARAM(lParam);
+  int cy = GET_Y_LPARAM(lParam);
 
   if (Settings.ShowToolbar)
   {
