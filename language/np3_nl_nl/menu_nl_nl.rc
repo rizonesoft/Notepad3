@@ -120,7 +120,7 @@ BEGIN
                 MENUITEM "&Meer Encoding...\tF9",                 IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Instellen Encoding &Standaard...",           IDM_ENCODING_SETDEFAULT
+            MENUITEM "Instellen de &Standaard Encoding...",       IDM_ENCODING_SETDEFAULT
         END
         POPUP "Lijn e&indes"
         BEGIN

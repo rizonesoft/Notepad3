@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "新建(&N)\tCtrl+N",                                IDM_FILE_NEW
         MENUITEM "打开(&O)...\tCtrl+O",                             IDM_FILE_OPEN
-        MENUITEM "还原(&V)\tF5",                                    IDM_FILE_REVERT
         MENUITEM "保存(&S)\tCtrl+S",                                IDM_FILE_SAVE
         MENUITEM "另存为(&A)...\tF6",                               IDM_FILE_SAVEAS
         MENUITEM "保存副本(&C)...\tCtrl+F6",                        IDM_FILE_SAVECOPY
@@ -71,13 +70,13 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "复制路径到剪贴板(&D)"
         BEGIN
-            MENUITEM "仅文件名(&F)\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
-            MENUITEM "文件名和文件夹(&D)",             IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "仅文件名(&F)\tCtrl+F9",                 IDM_EDIT_INSERT_FILENAME
+            MENUITEM "文件名和文件夹(&D)",                     IDM_EDIT_INSERT_DIRNAME
             MENUITEM "完整文件路径(&F)\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "启动(&L)"
         BEGIN
-            MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH
+            MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "打开资源管理器(&F)",                      IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Revert from File(&V)\tF5",                  IDM_FILE_REVERT
         POPUP "编码(&E)"
         BEGIN
-            MENUITEM "ANSI(&A)",                              IDM_ENCODING_ANSI
-            MENUITEM "Unicode(&U)",                           IDM_ENCODING_UNICODE
-            MENUITEM "Unicode BE(&B)",                        IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-8(&8)\tShift+F8",                   IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 带签名(&S)",                       IDM_ENCODING_UTF8SIGN
-            MENUITEM "更多编码(&M)...\tF9",                    IDM_ENCODING_SELECT
+            POPUP "Revert from File as(&R)"
+            BEGIN
+                MENUITEM "Default (Setting) (&D)",         CMD_RECODEDEFAULT
+                MENUITEM "ANSI(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
+                MENUITEM "OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
+                MENUITEM "GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "重载 ASCII 为 UTF-8(&F)\tCtrl+Shift+F8",   CMD_RELOADASCIIASUTF8
+                MENUITEM "Force UCHARDET Analysis(&C)",              CMD_RELOADFORCEDETECTION
+                MENUITEM "忽略编码标记(&I)\tAlt+F8",                  CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "More Encodings(&M)...\tF8",         IDM_ENCODING_RECODE
+            END
+            POPUP "Set Document as(&S)"
+            BEGIN
+                MENUITEM "ANSI(&A)",                          IDM_ENCODING_ANSI
+                MENUITEM "Unicode(&U)",                       IDM_ENCODING_UNICODE
+                MENUITEM "Unicode BE(&B)",                    IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-8(&8)\tShift+F8",               IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 带签名(&S)",                   IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "More Encodings(&M)...\tF9",         IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "重新编码为默认(&D)",                        CMD_RECODEDEFAULT
-            MENUITEM "重新编码为 ANSI(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
-            MENUITEM "重新编码为 OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
-            MENUITEM "重新编码为 GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
-            MENUITEM "重新编码为 UCHARDET 分析(&C)",              CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "重载 ASCII 为 UTF-8(&F)\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
-            MENUITEM "忽略编码标记(&I)\tAlt+F8",                  CMD_RELOADNOFILEVARS
-            MENUITEM "选择编码(&R)...\tF8",                       IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "设置默认(&T)...",                           IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set Encoding Defaults(&D)...",          IDM_ENCODING_SETDEFAULT
         END
         POPUP "换行(&G)"
         BEGIN

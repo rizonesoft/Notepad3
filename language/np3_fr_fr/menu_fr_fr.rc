@@ -117,7 +117,7 @@ BEGIN
                 MENUITEM "UTF-&8\tShift+F8",                         IDM_ENCODING_UTF8
                 MENUITEM "UTF-8 avec &Signature",                    IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-            MENUITEM "&Plus d'Encodages...\tF9",                     IDM_ENCODING_SELECT
+                MENUITEM "&Plus d'Encodages...\tF9",                 IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
             MENUITEM "Définir l'Encodage par &Défaut...",            IDM_ENCODING_SETDEFAULT

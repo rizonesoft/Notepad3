@@ -120,7 +120,7 @@ BEGIN
                 MENUITEM "&Más Codificaciones...\tF9",      IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Establecer Codificación &Defecto...", IDM_ENCODING_SETDEFAULT
+            MENUITEM "Establecer la Codificación por &Defecto...", IDM_ENCODING_SETDEFAULT
         END
         POPUP "&Finales de línea"
         BEGIN
