@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Nieuw\tCtrl+N",                                          IDM_FILE_NEW
         MENUITEM "&Openen...\tCtrl+O",                                      IDM_FILE_OPEN
-        MENUITEM "&Herladen\tF5",                                           IDM_FILE_REVERT
         MENUITEM "&Opslaan\tCtrl+S",                                        IDM_FILE_SAVE
         MENUITEM "Op&slaan als...\tF6",                                     IDM_FILE_SAVEAS
         MENUITEM "Opslaan &kopiëren...\tCtrl+F6",                           IDM_FILE_SAVECOPY
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Open bestand &Verkenner",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Herladen uit Bestand\tF5",               IDM_FILE_REVERT
         POPUP "&Encodering"
         BEGIN
-            MENUITEM "&ANSI",                                   IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                                IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                     IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                        IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 met &signatuur",                    IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Meer...\tF9",                            IDM_ENCODING_SELECT
+            POPUP "&Herladen uit Bestand als"
+            BEGIN
+                MENUITEM "&Standaard (Instelling)",               CMD_RECODEDEFAULT
+                MENUITEM "&ANSI\tCtrl+Shift+A",                   CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",              CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII als UT&F-8\tCtrl+Shift+F8",       CMD_RELOADASCIIASUTF8
+                MENUITEM "Forceer U&CHARDET-analyse",             CMD_RELOADFORCEDETECTION
+                MENUITEM "Encoderingst&ags negeren\tAlt+F8",      CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&Meer Encoding...\tF8",                 IDM_ENCODING_RECODE
+            END
+            POPUP "Docu&ment instellen als"
+            BEGIN
+                MENUITEM "&ANSI",                                 IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                              IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",                   IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                      IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 met &signatuur",                  IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&Meer Encoding...\tF9",                 IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Hercoderen naar &Standaard",                CMD_RECODEDEFAULT
-            MENUITEM "Hercoderen naar &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
-            MENUITEM "Hercoderen naar &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
-            MENUITEM "Hercoderen naar &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
-            MENUITEM "Hercoderen naar UCHARDET-analyse",          CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
-            MENUITEM "Encoderingst&ags negeren\tAlt+F8",          CMD_RELOADNOFILEVARS
-            MENUITEM "&Hercoderen...\tF8",                        IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Instellen &standaard...",                   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Instellen Encoding &Standaard...",           IDM_ENCODING_SETDEFAULT
         END
         POPUP "Lijn e&indes"
         BEGIN
