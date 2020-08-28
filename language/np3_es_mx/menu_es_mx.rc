@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Nuevo\tCtrl+N",                                            IDM_FILE_NEW
         MENUITEM "&Abrir...\tCtrl+O",                                         IDM_FILE_OPEN
-        MENUITEM "&Recargar\tF5",                                             IDM_FILE_REVERT
         MENUITEM "&Guardar\tCtrl+S",                                          IDM_FILE_SAVE
         MENUITEM "G&uardar como...\tF6",                                      IDM_FILE_SAVEAS
         MENUITEM "Guardar &copia...\tCtrl+F6",                                IDM_FILE_SAVECOPY
@@ -77,7 +76,7 @@ BEGIN
         END
         POPUP "Lan&zar"
         BEGIN
-            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Abrir &Explorador de archivos",       IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Recargar de archivo\tF5",                IDM_FILE_REVERT
         POPUP "C&odificación"
         BEGIN
-            MENUITEM "&ANSI",                               IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                            IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                 IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                    IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 con &signatura",                IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Más...\tF9",                         IDM_ENCODING_SELECT
+            POPUP "&Revertir de archivo como"
+            BEGIN
+                MENUITEM "&Defecto (Configuración)",            CMD_RECODEDEFAULT
+                MENUITEM "&ANSI\tCtrl+Shift+A",                 CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII como UT&F-8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
+                MENUITEM "Forzar a análisis U&CHARDET",         CMD_RELOADFORCEDETECTION
+                MENUITEM "&Ignorar Codificación Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&Más Codificaciones...\tF8",          IDM_ENCODING_RECODE
+            END
+            POPUP "&Establecer documento como"
+            BEGIN
+                MENUITEM "&ANSI",                           IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                        IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",             IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 con &signatura",            IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&Más Codificaciones...\tF9",      IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Recodificar a &Defecto",                  CMD_RECODEDEFAULT
-            MENUITEM "Recodificar a &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
-            MENUITEM "Recodificar a &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
-            MENUITEM "Recodificar a &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
-            MENUITEM "Recodificar a análisis UCHARDET",         CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
-            MENUITEM "Ignorar Codificación &Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
-            MENUITEM "&Recodificar...\tF8",                 IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Establecer Defecto...",               IDM_ENCODING_SETDEFAULT
+            MENUITEM "Establecer Codificación &Defecto...", IDM_ENCODING_SETDEFAULT
         END
         POPUP "&Finales de línea"
         BEGIN
@@ -331,7 +338,7 @@ BEGIN
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Highlight &Unicode-Points",                           IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Mostrar &Unicode-Puntos",                             IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visual coincidencia de llave\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "&Resaltar la línea actual\tCtrl+Shift+I"
         BEGIN
@@ -447,7 +454,7 @@ BEGIN
             MENUITEM "&Salir de Notepad3",                  IDM_VIEW_ESCEXIT
         END
         MENUITEM "&Guardar antes de ejecutar",              IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",             IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Calcular Mini-E&xpresiones",              IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Recordar"
         BEGIN
