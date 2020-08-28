@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Новы\tCtrl+N",                                   IDM_FILE_NEW
         MENUITEM "&Адкрыць...\tCtrl+O",                             IDM_FILE_OPEN
-        MENUITEM "Адкаці&ць змяненні\tF5",                          IDM_FILE_REVERT
         MENUITEM "За&хаваць\tCtrl+S",                               IDM_FILE_SAVE
         MENUITEM "Захаваць &як...\tF6",                             IDM_FILE_SAVEAS
         MENUITEM "Захаваць копі&ю...\tCtrl+F6",                     IDM_FILE_SAVECOPY
@@ -77,7 +76,7 @@ BEGIN
         END
         POPUP "&Запусціць"
         BEGIN
-            MENUITEM "&Шукаць у файлах\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH
+            MENUITEM "&Шукаць у файлах\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Копі&ю акна\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое акно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Адкрыць Права&днік",                 IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Re&vert from File\tF5",                  IDM_FILE_REVERT
         POPUP "Кадо&ўка"
         BEGIN
-            MENUITEM "&ANSI",                              IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                           IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                   IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 з BO&M",                       IDM_ENCODING_UTF8SIGN
-            MENUITEM "Я&шчэ...\tF9",                       IDM_ENCODING_SELECT
+            POPUP "&Revert from File as"
+            BEGIN
+                MENUITEM "&Default (Setting)",                  CMD_RECODEDEFAULT
+                MENUITEM "A&NSI\tCtrl+Shift+A",                 CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "Пераадкрыць у ASCII я&к UTF-8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
+                MENUITEM "Force U&CHARDET Analysis",                     CMD_RELOADFORCEDETECTION
+                MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8",             CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF8",             IDM_ENCODING_RECODE
+            END
+            POPUP "&Set Document as"
+            BEGIN
+                MENUITEM "&ANSI",                              IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                           IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",                IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                   IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 з BO&M",                       IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF9",             IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Пераадкрыць у прадвызначанай ка&доўцы",             CMD_RECODEDEFAULT
-            MENUITEM "Пераадкрыць у A&NSI\tCtrl+Shift+A",                 CMD_RECODEANSI
-            MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
-            MENUITEM "Пераадкрыць у &GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
-            MENUITEM "Пераадкрыць з UCHARDET &аналізам",                  CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "Пераадкрыць у ASCII я&к UTF-8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
-            MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8",                  CMD_RELOADNOFILEVARS
-            MENUITEM "&Пераадкрыць у...\tF8",                             IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Прадв&ызначыць кадоўку...",   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set Encoding &Defaults...",              IDM_ENCODING_SETDEFAULT
         END
         POPUP "Кан&чаткі радкоў"
         BEGIN
