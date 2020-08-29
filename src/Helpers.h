@@ -306,9 +306,10 @@ void PathFixBackslashes(LPWSTR lpsz);
 size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
 
-UINT    GetDlgItemTextW2MB(HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount);
-UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);
-LRESULT ComboBox_AddStringMB2W(HWND hwnd,LPCSTR lpString);
+UINT SetDlgItemTextEx(HWND hDlg, int nIDDlgItem, LPCWSTR lpString, bool escCtrlChar);
+UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount);
+UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString, bool escCtrlChar);
+LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString);
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -321,14 +322,13 @@ UINT CodePageFromCharSet(const UINT uCharSet);
 
 //==== UnSlash Functions ======================================================
 
-size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput);
-size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
-
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
-size_t UnSlashW(LPWSTR pchInOut);
 size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch);
 
-void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
+size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
+size_t UnSlashCtrlW(LPWSTR pchInOut);
+
+void TransformBackslashes(char *pszInput, bool, UINT cpEdit, int *iReplaceMsg);
 void TransformMetaChars(char* pszInput, bool, int iEOLMode);
 
 

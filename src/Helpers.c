@@ -1515,13 +1515,27 @@ size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth)
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 {
   WCHAR szBuf[64] = { L'\0' };
-
   StringCchPrintf(szBuf,COUNTOF(szBuf),L"%u",uValue);
   FormatNumberStr(szBuf, COUNTOF(szBuf), 0);
-
   return(SetDlgItemText(hwnd,nIdItem,szBuf));
 }
 
+
+//=============================================================================
+//
+//  Esc/UnEsc Dialog Item Text
+//
+UINT SetDlgItemTextEx(HWND hDlg, int nIDDlgItem, LPCWSTR lpString, bool escCtrlChar)
+{
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+  if (escCtrlChar) {
+    SlashCtrlW(wsz, COUNTOF(wsz), lpString);
+  } else {
+    StringCchCopy(wsz, COUNTOF(wsz), lpString);
+    UnSlashCtrlW(wsz);
+  }
+  return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
+}
 
 //=============================================================================
 //
@@ -1531,16 +1545,16 @@ UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount
 {
   WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
   UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
-  ZeroMemory(lpString,nMaxCount);
+  ZeroMemory(lpString, nMaxCount);
   WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
   return uRet;
 }
 
-UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
+UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString, bool escCtrlChar)
 { 
   WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
   MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
-  return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
+  return SetDlgItemTextEx(hDlg, nIDDlgItem, wsz, escCtrlChar);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
@@ -1678,67 +1692,6 @@ size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
 }
 
 
-size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput)
-{
-  if (!pchOutput || cchOutLen < 2 || !pchInput) { return 0; }
-
-  size_t i = 0;
-  size_t k = 0;
-  size_t const maxcnt = cchOutLen - 2;
-  while ((pchInput[k] != L'\0') && (i < maxcnt))
-  {
-    switch (pchInput[k]) {
-      case L'\\':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'\\';
-        break;
-      case L'\n':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'n';
-        break;
-      case L'\r':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'r';
-        break;
-      case L'\t':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L't';
-        break;
-      case L'\f':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'f';
-        break;
-      case L'\v':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'v';
-        break;
-      case L'\a':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'a';
-        break;
-      case L'\b':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'b';
-        break;
-      case L'\x1B':
-        pchOutput[i++] = L'\\';
-        pchOutput[i++] = L'e';
-        break;
-      default:
-        pchOutput[i++] = pchInput[k];
-        break;
-    }
-    ++k;
-  }
-  pchOutput[i] = pchInput[k];
-  // ensure string end
-  if (pchInput[k] != L'\0') {
-    pchOutput[++i] = L'\0';
-  }
-  return i;
-}
-
-
 /** ******************************************************************************
  *
  *  UnSlash functions
@@ -1837,8 +1790,67 @@ size_t UnSlashA(LPSTR pchInOut, UINT cpEdit)
   return (size_t)((ptrdiff_t)(o - sStart));
 }
 
-size_t UnSlashW(LPWSTR pchInOut)
-{
+
+//=============================================================================
+
+size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput) {
+  if (!pchOutput || cchOutLen < 2 || !pchInput) {
+    return 0;
+  }
+
+  size_t i = 0;
+  size_t k = 0;
+  size_t const maxcnt = cchOutLen - 2;
+  while ((pchInput[k] != L'\0') && (i < maxcnt)) {
+    switch (pchInput[k]) {
+    case L'\n':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L'n';
+      break;
+    case L'\r':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L'r';
+      break;
+    case L'\t':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L't';
+      break;
+    case L'\f':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L'f';
+      break;
+    case L'\v':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L'v';
+      break;
+    case L'\a':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L'a';
+      break;
+    case L'\b':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L'b';
+      break;
+    case L'\x1B':
+      pchOutput[i++] = L'\\';
+      pchOutput[i++] = L'e';
+      break;
+    default:
+      pchOutput[i++] = pchInput[k];
+      break;
+    }
+    ++k;
+  }
+  pchOutput[i] = pchInput[k];
+  // ensure string end
+  if (pchInput[k] != L'\0') {
+    pchOutput[++i] = L'\0';
+  }
+  return i;
+}
+
+
+size_t UnSlashCtrlW(LPWSTR pchInOut) {
   LPWSTR s = pchInOut;
   LPWSTR o = pchInOut;
   LPCWSTR const sStart = pchInOut;
@@ -1846,68 +1858,27 @@ size_t UnSlashW(LPWSTR pchInOut)
   while (*s) {
     if (*s == '\\') {
       ++s;
-      if (*s == L'a')
-        *o = L'\a';
-      else if (*s == L'b')
-        *o = L'\b';
-      else if (*s == L'e')
-        *o = L'\x1B';
-      else if (*s == L'f')
-        *o = L'\f';
-      else if (*s == L'n')
+      if (*s == L'n')
         *o = L'\n';
       else if (*s == L'r')
         *o = L'\r';
       else if (*s == L't')
         *o = L'\t';
+      else if (*s == L'f')
+        *o = L'\f';
       else if (*s == L'v')
         *o = L'\v';
-      else if (*s == L'"')
-        *o = L'"';
-      else if (*s == L'\\')
-        *o = L'\\';
-      else if (*s == L'x' || *s == L'u') {
-        bool bShort = (*s == L'x');
-        int hex = GetHexDigitW(*(s + 1));
-        if (hex >= 0) {
-          WCHAR val = (WCHAR)hex;
-          hex = GetHexDigitW(*(++s + 1));
-          if (hex >= 0) {
-            ++s;
-            val *= 16;
-            val += (WCHAR)hex;
-            if (!bShort) {
-              hex = GetHexDigitW(*(s + 1));
-              if (hex >= 0) {
-                val *= 16;
-                val += (WCHAR)hex;
-                hex = GetHexDigitW(*(++s + 1));
-                if (hex >= 0) {
-                  ++s;
-                  val *= 16;
-                  val += (WCHAR)hex;
-                }
-              }
-            }
-          }
-
-          if (val) {
-            *o = val;
-          }
-          else
-            --o;
-        }
-        else
-          --o;
-      }
-      else {
-        //~*o = '\\';  *++o = *s;   // revert
+      else if (*s == L'a')
+        *o = L'\a';
+      else if (*s == L'b')
+        *o = L'\b';
+      else if (*s == L'e')
+        *o = L'\x1B';
+      else
         *o = *s;   // swallow single '\'
-      }
-    }
-    else
+    } else {
       *o = *s;
-
+    }
     ++o;
     if (*s) {
       ++s;
@@ -1916,6 +1887,7 @@ size_t UnSlashW(LPWSTR pchInOut)
   *o = '\0';
   return (size_t)((ptrdiff_t)(o - sStart));
 }
+//=============================================================================
 
 
 size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch)
