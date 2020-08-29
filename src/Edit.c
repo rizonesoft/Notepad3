@@ -5966,16 +5966,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
           DocPos const cchSelection = SciCall_GetSelText(NULL);
           if ((1 < cchSelection) && (LOWORD(wParam) != IDC_REPLACETEXT)) {
-            lpszSelection = AllocMem(cchSelection + 1, HEAP_ZERO_MEMORY);
             if (sg_pefrData->bAutoEscCtrlChars) {
+              lpszSelection = AllocMem((cchSelection<<1) + 1, HEAP_ZERO_MEMORY);
               char* buf = AllocMem(cchSelection + 1, HEAP_ZERO_MEMORY);
               if (buf) {
                 SciCall_GetSelText(buf);
-                SlashA(lpszSelection, cchSelection, buf);
+                SlashA(lpszSelection, (cchSelection<<1), buf);
                 FreeMem(buf);
               }
             }
             else {
+              lpszSelection = AllocMem(cchSelection + 1, HEAP_ZERO_MEMORY);
               SciCall_GetSelText(lpszSelection);
             }
           }
@@ -5993,11 +5994,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
               if (pClip) {
                 size_t const len = StringCchLenA(pClip, 0);
                 if (len) {
-                  lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
                   if (sg_pefrData->bAutoEscCtrlChars) {
-                    SlashA(lpszSelection, len + 1, pClip);
+                    lpszSelection = AllocMem((len<<1) + 1, HEAP_ZERO_MEMORY);
+                    SlashA(lpszSelection, (len<<1) + 1, pClip);
                   }
                   else {
+                    lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
                     StringCchCopyA(lpszSelection, len + 1, pClip);
                   }
                 }
