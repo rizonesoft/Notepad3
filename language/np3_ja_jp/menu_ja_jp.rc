@@ -93,23 +93,23 @@ BEGIN
             MENUITEM "エクスプローラーを開く(&F)",                    IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Revert from File(&V)\tF5",                  IDM_FILE_REVERT
+        MENUITEM "ファイルから読み直し(&V)\tF5",                  IDM_FILE_REVERT
         POPUP "文字コード(&E)"
         BEGIN
-            POPUP "Revert from File as(&R)"
+            POPUP "文字コードを指定しファイルから読み直し(&R)"
             BEGIN
-                MENUITEM "Default (Setting) (&D)",          CMD_RECODEDEFAULT
+                MENUITEM "デフォルト (設定を使用) (&D)",          CMD_RECODEDEFAULT
                 MENUITEM "ANSI (&N)\tCtrl+Shift+A",         CMD_RECODEANSI
                 MENUITEM "OEM (&O)\tCtrl+Shift+O",          CMD_RECODEOEM
                 MENUITEM "GB18030 (&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII を UTF-8として開く(&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
-                MENUITEM "Force UCHARDET Analysis(&C)",              CMD_RELOADFORCEDETECTION
+                MENUITEM "強制的に UCHARDET で解析(&C)",              CMD_RELOADFORCEDETECTION
                 MENUITEM "文字コードを無視(&I)\tAlt+F8",                 CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
-                MENUITEM "More Encodings(&M)...\tF8",             IDM_ENCODING_RECODE
+                MENUITEM "ほかの文字コード(&M)...\tF8",             IDM_ENCODING_RECODE
             END
-            POPUP "Set Document as(&S)"
+            POPUP "文字コードを指定(&S)"
             BEGIN
                 MENUITEM "ANSI (&A)",                             IDM_ENCODING_ANSI
                 MENUITEM "Unicode (&U)",                          IDM_ENCODING_UNICODE
@@ -117,10 +117,10 @@ BEGIN
                 MENUITEM "UTF-8 (&8) \tShift+F8",                 IDM_ENCODING_UTF8
                 MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "More Encodings(&M)...\tF9",            IDM_ENCODING_SELECT
+                MENUITEM "ほかの文字コード(&M)...\tF9",            IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Set Encoding Defaults(&D)...",             IDM_ENCODING_SETDEFAULT
+            MENUITEM "デフォルトの文字コードを設定(&D)...",             IDM_ENCODING_SETDEFAULT
         END
         POPUP "改行コード(&G)"
         BEGIN
@@ -384,8 +384,8 @@ BEGIN
                 MENUITEM "折りたたみ",                                IDM_VIEW_FV_FOLD
                 MENUITEM "しおり",                            IDM_VIEW_FV_BOOKMARK
                 MENUITEM "強調",                           IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "しおり&& 折りたたみ",                    IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "強調 && 折りたたみ",                   IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "しおり&&折りたたみ",                    IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "強調&&折りたたみ",                   IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
