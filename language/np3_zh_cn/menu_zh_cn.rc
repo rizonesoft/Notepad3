@@ -109,7 +109,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "更多编码(&M)...\tF8",         IDM_ENCODING_RECODE
             END
-            POPUP "Set Document as(&S)"
+            POPUP "设置文档为(&S)"
             BEGIN
                 MENUITEM "ANSI(&A)",                          IDM_ENCODING_ANSI
                 MENUITEM "Unicode(&U)",                       IDM_ENCODING_UNICODE
