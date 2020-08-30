@@ -6378,11 +6378,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       case IDACC_CLEAR_FIND_HISTORY:
         MRU_Empty(Globals.pMRUfind, true);
+        if (Globals.bCanSaveIniFile) {
+          MRU_Save(Globals.pMRUfind);
+        }
         while ((int)SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_DELETESTRING, 0, 0) > 0) {};
         break;
 
       case IDACC_CLEAR_REPL_HISTORY:
         MRU_Empty(Globals.pMRUreplace, true);
+        if (Globals.bCanSaveIniFile) {
+          MRU_Save(Globals.pMRUreplace);
+        }
         while ((int)SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_DELETESTRING, 0, 0) > 0) {};
         break;
 
