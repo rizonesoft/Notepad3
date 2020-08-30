@@ -12,9 +12,9 @@ PowerShell.exe -NoProfile -NonInteractive -NoLogo -ExecutionPolicy Unrestricted 
 set EXITCODE=%ERRORLEVEL%
 ::ECHO ERRORLEVEL=%EXITCODE%
 
-:: Pause for 4 seconds to verify the "Notepad3 version number:" before exiting
+:: Pause for 2 seconds to verify the "Notepad3 version number:" before exiting
 :: ============================================================================
-ping -n 5 127.0.0.1>nul
+ping -n 3 127.0.0.1>nul
 
 goto :END
 

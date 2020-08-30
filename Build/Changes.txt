@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.829.(build_#) (2020-08-29)
+Current BETA/RC Version 5.20.830.(build_#) (2020-08-30)
 ========================================================
 
 --------------------------------------------------------
@@ -100,6 +100,9 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.830.1]- Remove needless function.
+[.830.1]- F/R Dialog: Auto-Esc-Chars handling.
+[.830.1]- F/R Dialog: Clear F/R History - remove entries from .ini-file too.
 [.829.1]- Buffer to small in case of auto-esc ctrl-chars in find/replace edit-control.
 [.825.2]- Wrong Focused-View Mode shown in menu.
 [.825.2]- Try to fix (hardly reproducible) "copy Hyperlink issue (#2202).
