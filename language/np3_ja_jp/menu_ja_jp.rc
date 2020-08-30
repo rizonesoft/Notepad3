@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "新規(&N)\tCtrl+N",                                IDM_FILE_NEW
         MENUITEM "開く(&O)...\tCtrl+O",                              IDM_FILE_OPEN
-        MENUITEM "再読み込み(&V)\tF5",                               IDM_FILE_REVERT
         MENUITEM "上書き保存(&S)\tCtrl+S",                           IDM_FILE_SAVE
         MENUITEM "名前を付けて保存(&A)...\tF6",                        IDM_FILE_SAVEAS
         MENUITEM "コピーして保存(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
@@ -77,12 +76,12 @@ BEGIN
         END
         POPUP "起動(&L)"
         BEGIN
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "同じファイルを開く(&N)\tAlt+N",             IDM_FILE_NEWWINDOW
+            MENUITEM "同じファイルを開く(&N)\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "管理者権限で再起動(&R)",                    IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "管理者権限で再起動(&R)",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "開いている文書を実行(&D)\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "エクスプローラーを開く(&F)",                    IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Revert from File(&V)\tF5",                  IDM_FILE_REVERT
         POPUP "文字コード(&E)"
         BEGIN
-            MENUITEM "ANSI (&A)",                             IDM_ENCODING_ANSI
-            MENUITEM "Unicode (&U)",                          IDM_ENCODING_UNICODE
-            MENUITEM "Unicode BE (&B)",                       IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-8 (&8) \tShift+F8",                 IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
-            MENUITEM "ほかの文字コード指定(&M)...\tF9",           IDM_ENCODING_SELECT
+            POPUP "Revert from File as(&R)"
+            BEGIN
+                MENUITEM "Default (Setting) (&D)",          CMD_RECODEDEFAULT
+                MENUITEM "ANSI (&N)\tCtrl+Shift+A",         CMD_RECODEANSI
+                MENUITEM "OEM (&O)\tCtrl+Shift+O",          CMD_RECODEOEM
+                MENUITEM "GB18030 (&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII を UTF-8として開く(&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
+                MENUITEM "Force UCHARDET Analysis(&C)",              CMD_RELOADFORCEDETECTION
+                MENUITEM "文字コードを無視(&I)\tAlt+F8",                 CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "More Encodings(&M)...\tF8",             IDM_ENCODING_RECODE
+            END
+            POPUP "Set Document as(&S)"
+            BEGIN
+                MENUITEM "ANSI (&A)",                             IDM_ENCODING_ANSI
+                MENUITEM "Unicode (&U)",                          IDM_ENCODING_UNICODE
+                MENUITEM "Unicode BE (&B)",                       IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-8 (&8) \tShift+F8",                 IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "More Encodings(&M)...\tF9",            IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトで読み直し(&D)",                   CMD_RECODEDEFAULT
-            MENUITEM "ANSI で読み直し(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
-            MENUITEM "OEM で読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
-            MENUITEM "GB18030 で読み直し(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
-            MENUITEM "UCHARDET 解析で検出し読み直し(&C)",          CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII を UTF-8として開く(&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
-            MENUITEM "文字コードを無視(&I)\tAlt+F8",               CMD_RELOADNOFILEVARS
-            MENUITEM "文字コードを指定して読み直し(&R)...\tF8",      IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "デフォルトを設定(&T)...",                    IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set Encoding Defaults(&D)...",             IDM_ENCODING_SETDEFAULT
         END
         POPUP "改行コード(&G)"
         BEGIN
@@ -121,7 +128,7 @@ BEGIN
             MENUITEM "Mac(&M) (CR)",                         IDM_LINEENDINGS_CR
             MENUITEM "Unix(&U) (LF)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトを設定(&D)...",               IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "デフォルトを設定(&D)...",                 IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
         MENUITEM "インデントの検査(&I)...",                      CMD_CHECK_INDENTATION
@@ -130,7 +137,7 @@ BEGIN
         MENUITEM "印刷(&P)...\tCtrl+P",                       IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "プロパティ(&T)...",                            IDM_FILE_PROPERTIES
-        MENUITEM "デスクトップにショートカット(&K)",               IDM_FILE_CREATELINK
+        MENUITEM "デスクトップにショートカット(&K)",                  IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "ファイラで開く(&B)...\tCtrl+M",               IDM_FILE_BROWSE
         POPUP "お気に入り(&F)"
