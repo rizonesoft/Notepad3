@@ -893,11 +893,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   // ----------------------------------------------------
 
   // ICON_BIG
-  int const cxb = GetSystemMetrics(SM_CXICON);
-  int const cyb = GetSystemMetrics(SM_CYICON);
+  int const cxb = GetSystemMetrics(SM_CXICON) << 2;
+  int const cyb = GetSystemMetrics(SM_CYICON) << 2;
   // ICON_SMALL
-  int const cxs = GetSystemMetrics(SM_CXSMICON);
-  int const cys = GetSystemMetrics(SM_CYSMICON);
+  int const cxs = GetSystemMetrics(SM_CXSMICON) << 1;
+  int const cys = GetSystemMetrics(SM_CYSMICON) << 1;
 
   //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
@@ -941,9 +941,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   if (!Globals.hIconMsgShield) {
     LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShield));
-  }
-  if (!Globals.hIconMsgShieldSmall) {
-    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShieldSmall));
   }
   //if (!Globals.hIconMsgWinLogo) {
   //  LoadIconWithScaleDown(NULL, IDI_WINLOGO, cxl, cyl, &(Globals.hIconMsgWinLogo));

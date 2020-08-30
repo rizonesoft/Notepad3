@@ -4977,22 +4977,21 @@ static void _GetIconInfo(HICON hIcon, int* width, int* height, WORD* bitsPerPix)
 //  ConvertIconToBitmap()
 //  cx/cy = 0  =>  use resource width/height
 //
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
+HBITMAP ConvertIconToBitmap(const HICON hIcon, int cx, int cy)
 {
   int wdc = cx;
   int hdc = cy;
-  if ((cx == 0) || (cy == 0)) {
+  if ((cx <= 0) || (cy <= 0)) {
     _GetIconInfo(hIcon, &wdc, &hdc, NULL);
+    cx = cy = 0;
   }
-  // increase & condense size
-  wdc <<= 4;  hdc <<= 4;
  
   HDC     const hScreenDC = GetDC(NULL);
   HBITMAP const hbmpTmp   = CreateCompatibleBitmap(hScreenDC, wdc, hdc);
   HDC     const hMemDC    = CreateCompatibleDC(hScreenDC);
-  HBITMAP const hOldBmp   = SelectObject(hMemDC, hbmpTmp);
+  HBITMAP const hOldBmp   = SelectObject(hMemDC, hbmpTmp); // assign
   DrawIconEx(hMemDC, 0, 0, hIcon, wdc, hdc, 0, NULL, DI_NORMAL /*&~DI_DEFAULTSIZE*/);
-  SelectObject(hMemDC, hOldBmp);
+  SelectObject(hMemDC, hOldBmp); // restore
 
   UINT    const copyFlags = LR_COPYDELETEORG | LR_COPYRETURNORG | LR_DEFAULTSIZE | LR_CREATEDIBSECTION;
   HBITMAP const hDibBmp   = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, cx, cy, copyFlags);
@@ -5027,12 +5026,12 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
   int const cx = ScaleIntByDPI(GetSystemMetrics(SM_CXSMICON), dpi.x);
   int const cy = ScaleIntByDPI(GetSystemMetrics(SM_CYSMICON), dpi.y);
 
-  if (Globals.hIconMsgShieldSmall)
+  if (Globals.hIconMsgShield)
   {
     MENUITEMINFO mii = { 0 };
     mii.cbSize = sizeof(MENUITEMINFO);
     mii.fMask = MIIM_BITMAP;
-    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
+    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, cx, cy);
     SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
   }
   bInitialized = true;

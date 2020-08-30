@@ -358,7 +358,6 @@ typedef struct _globals_t
   HICON     hIconMsgError;
   HICON     hIconMsgQuest;
   HICON     hIconMsgShield;
-  HICON     hIconMsgShieldSmall;
   //HICON     hIconMsgWinLogo;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;

@@ -5572,10 +5572,11 @@ static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam
 
           if (pefrData->bAutoEscCtrlChars) {
             WCHAR wchBuf2[FNDRPL_BUFFER] = { L'\0' };
-            SlashW(wchBuf2, COUNTOF(wchBuf2), wchBuf);
+            SlashCtrlW(wchBuf2, COUNTOF(wchBuf2), wchBuf);
             SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)wchBuf2);
           }
           else {
+            UnSlashCtrlW(wchBuf);
             SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)wchBuf);
           }
         }
@@ -5680,7 +5681,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
         if (!StrIsEmptyA(sg_pefrData->szFind)) {
-          SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
+          SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind, sg_pefrData->bAutoEscCtrlChars);
         }
       }
 
@@ -5697,7 +5698,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
 
         if (!StrIsEmptyA(sg_pefrData->szReplace)) {
-          SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
+          SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace, sg_pefrData->bAutoEscCtrlChars);
         }
       }
 
@@ -5967,17 +5968,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           DocPos const cchSelection = SciCall_GetSelText(NULL);
           if ((1 < cchSelection) && (LOWORD(wParam) != IDC_REPLACETEXT)) {
             lpszSelection = AllocMem(cchSelection + 1, HEAP_ZERO_MEMORY);
-            if (sg_pefrData->bAutoEscCtrlChars) {
-              char* buf = AllocMem(cchSelection + 1, HEAP_ZERO_MEMORY);
-              if (buf) {
-                SciCall_GetSelText(buf);
-                SlashA(lpszSelection, cchSelection, buf);
-                FreeMem(buf);
-              }
-            }
-            else {
-              SciCall_GetSelText(lpszSelection);
-            }
+            SciCall_GetSelText(lpszSelection);
           }
           else { // (cchSelection <= 1)
             // nothing is selected in the editor:
@@ -5989,17 +5980,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             }
             // no recent find pattern: copy content clipboard to find box
             if (s_tchBuf[0] == L'\0') {
-              char* const pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
+              char *const pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
               if (pClip) {
                 size_t const len = StringCchLenA(pClip, 0);
                 if (len) {
                   lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
-                  if (sg_pefrData->bAutoEscCtrlChars) {
-                    SlashA(lpszSelection, len + 1, pClip);
-                  }
-                  else {
-                    StringCchCopyA(lpszSelection, len + 1, pClip);
-                  }
+                  StringCchCopyA(lpszSelection, len + 1, pClip);
                 }
                 FreeMem(pClip);
               }
@@ -6007,7 +5993,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
 
           if (lpszSelection) {
-            SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, lpszSelection);
+            SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, lpszSelection, sg_pefrData->bAutoEscCtrlChars);
             FreeMem(lpszSelection);
             lpszSelection = NULL;
             bEditChange = true;
@@ -6019,7 +6005,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             if (s_tchBuf[0] == L'\0') {
               MRU_Enum(Globals.pMRUfind, 0, s_tchBuf, COUNTOF(s_tchBuf));
             }
-            SetDlgItemText(hwnd, IDC_FINDTEXT, s_tchBuf);
+            SetDlgItemTextEx(hwnd, IDC_FINDTEXT, s_tchBuf, sg_pefrData->bAutoEscCtrlChars);
             bEditChange = true;
           }
 
@@ -6205,24 +6191,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       case IDC_FINDAUTOESCCTRLCHR:
         {
           s_SaveAutoEscCtrlChars = IsButtonChecked(hwnd, IDC_FINDAUTOESCCTRLCHR);
-          if (s_SaveAutoEscCtrlChars) {
-            char buf[FNDRPL_BUFFER + 1];
-            SlashA(buf, COUNTOF(buf), sg_pefrData->szFind);
-            StringCchCopyA(sg_pefrData->szFind, COUNTOF(sg_pefrData->szFind), buf);
-            SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
-            if (GetDlgItem(hwnd, IDC_REPLACE)) {
-              SlashA(buf, COUNTOF(buf), sg_pefrData->szReplace);
-              StringCchCopyA(sg_pefrData->szReplace, COUNTOF(sg_pefrData->szReplace), buf);
-              SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
-            }
-          }
-          else {
-            UnSlashA(sg_pefrData->szFind, Encoding_SciCP);
-            SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
-            if (GetDlgItem(hwnd, IDC_REPLACE)) {
-              UnSlashA(sg_pefrData->szReplace, Encoding_SciCP);
-              SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
-            }
+          SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind, s_SaveAutoEscCtrlChars);
+          if (GetDlgItem(hwnd, IDC_REPLACE)) {
+            SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace, s_SaveAutoEscCtrlChars);
           }
           _SetSearchFlags(hwnd, sg_pefrData);
           _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
@@ -6308,8 +6279,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)s_tchBuf);
         }
 
-        SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
-        SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
+        SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind, sg_pefrData->bAutoEscCtrlChars);
+        SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace, sg_pefrData->bAutoEscCtrlChars);
 
         if (!s_bSwitchedFindReplace) {
           SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetFocus()), 1);
@@ -6407,11 +6378,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       case IDACC_CLEAR_FIND_HISTORY:
         MRU_Empty(Globals.pMRUfind, true);
+        if (Globals.bCanSaveIniFile) {
+          MRU_Save(Globals.pMRUfind);
+        }
         while ((int)SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_DELETESTRING, 0, 0) > 0) {};
         break;
 
       case IDACC_CLEAR_REPL_HISTORY:
         MRU_Empty(Globals.pMRUreplace, true);
+        if (Globals.bCanSaveIniFile) {
+          MRU_Save(Globals.pMRUreplace);
+        }
         while ((int)SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_DELETESTRING, 0, 0) > 0) {};
         break;
 
@@ -6434,7 +6411,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       case IDACC_SAVEFIND:
         Globals.FindReplaceMatchFoundState = FND_NOP;
         SendWMCommand(Globals.hwndMain, IDM_EDIT_SAVEFIND);
-        SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
+        SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind, sg_pefrData->bAutoEscCtrlChars);
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);

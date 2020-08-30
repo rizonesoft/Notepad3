@@ -93,23 +93,23 @@ BEGIN
             MENUITEM "打开资源管理器(&F)",                      IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Revert from File(&V)\tF5",                  IDM_FILE_REVERT
+        MENUITEM "从文件恢复(&V)\tF5",                  IDM_FILE_REVERT
         POPUP "编码(&E)"
         BEGIN
-            POPUP "Revert from File as(&R)"
+            POPUP "从文件恢复为(&R)"
             BEGIN
-                MENUITEM "Default (Setting) (&D)",         CMD_RECODEDEFAULT
+                MENUITEM "默认(&D)",         CMD_RECODEDEFAULT
                 MENUITEM "ANSI(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
                 MENUITEM "OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
                 MENUITEM "GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
                 MENUITEM SEPARATOR
                 MENUITEM "重载 ASCII 为 UTF-8(&F)\tCtrl+Shift+F8",   CMD_RELOADASCIIASUTF8
-                MENUITEM "Force UCHARDET Analysis(&C)",              CMD_RELOADFORCEDETECTION
+                MENUITEM "强制 UCHARDET 分析(&C)",              CMD_RELOADFORCEDETECTION
                 MENUITEM "忽略编码标记(&I)\tAlt+F8",                  CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
-                MENUITEM "More Encodings(&M)...\tF8",         IDM_ENCODING_RECODE
+                MENUITEM "更多编码(&M)...\tF8",         IDM_ENCODING_RECODE
             END
-            POPUP "Set Document as(&S)"
+            POPUP "设置文档为(&S)"
             BEGIN
                 MENUITEM "ANSI(&A)",                          IDM_ENCODING_ANSI
                 MENUITEM "Unicode(&U)",                       IDM_ENCODING_UNICODE
@@ -117,10 +117,10 @@ BEGIN
                 MENUITEM "UTF-8(&8)\tShift+F8",               IDM_ENCODING_UTF8
                 MENUITEM "UTF-8 带签名(&S)",                   IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "More Encodings(&M)...\tF9",         IDM_ENCODING_SELECT
+                MENUITEM "更多编码(&M)...\tF9",         IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Set Encoding Defaults(&D)...",          IDM_ENCODING_SETDEFAULT
+            MENUITEM "设置编码默认参数(&D)...",          IDM_ENCODING_SETDEFAULT
         END
         POPUP "换行(&G)"
         BEGIN
@@ -128,7 +128,7 @@ BEGIN
             MENUITEM "Mac (CR) (&M)",                         IDM_LINEENDINGS_CR
             MENUITEM "Unix (LF) (&U)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "默认(&D)...",                           IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "设置换行默认参数(&D)...",                           IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
         MENUITEM "检查缩进(&I)...",                           CMD_CHECK_INDENTATION
@@ -267,7 +267,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "日期和时间（短格式）(&S)\tCtrl+F5",         IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "日期和时间（长格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Current Timestamp(&T)",                   CMD_INSERT_TIMESTAMP
+            MENUITEM "当前时间戳(&T)",                   CMD_INSERT_TIMESTAMP
             MENUITEM "更新时间戳(&U)\tShift+F5",                 CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "切换行注释(&C)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
@@ -338,7 +338,7 @@ BEGIN
             MENUITEM "A+RGB(&A)"                             IDM_VIEW_COLOR_ARGB
             MENUITEM "BGRA(&B)"                              IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Highlight &Unicode-Points",                 IDM_VIEW_UNICODE_POINTS
+        MENUITEM "高亮 Unicode 码点(&U)",                 IDM_VIEW_UNICODE_POINTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
         POPUP "高亮当前行(&G)\tCtrl+Shift+I"
         BEGIN
@@ -349,7 +349,7 @@ BEGIN
         POPUP "标记匹配(&K)"
         BEGIN
             MENUITEM "启用(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use Bookmarks too(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "同时使用书签(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "仅标记可见内容(&V)",                     IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -363,7 +363,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "书签(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "折叠(&F)"
         BEGIN
@@ -379,13 +379,13 @@ BEGIN
         POPUP "显示(&D)"
         BEGIN
             MENUITEM "切换聚焦(&F)\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
-            POPUP "View Mode"
+            POPUP "查看模式"
             BEGIN
-                MENUITEM "Fold",                            IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                        IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Highlight",                       IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",                IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Highlight && Fold",               IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "折叠",                            IDM_VIEW_FV_FOLD
+                MENUITEM "书签",                        IDM_VIEW_FV_BOOKMARK
+                MENUITEM "高亮",                       IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "书签和折叠",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "高亮和折叠",               IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "日志监控(&M)",                         IDM_VIEW_CHASING_DOCTAIL
@@ -454,7 +454,7 @@ BEGIN
             MENUITEM "退出 Notepad3(&X)",                     IDM_VIEW_ESCEXIT
         END
         MENUITEM "运行工具前先保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",               IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "计算选定的表达式(&X)",               IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "记忆(&R)"
         BEGIN
@@ -485,10 +485,10 @@ BEGIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI（无连字）(&G)",                 IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "RTL Layout (GDI)(&T)"
+            POPUP "从右向左布局(GDI)(&T)"
             BEGIN
-                MENUITEM "Edit Area(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "Other Dialogs(&O)",               IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "编辑区(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "其它对话框(&O)",               IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "双向(&B)"
             BEGIN
@@ -551,14 +551,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                          IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",              IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",             IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type",           IDM_EDIT_DELETE_MARKED
+        MENUITEM "清除标记",                          IDM_EDIT_CLEAR_MARKER
+        MENUITEM "剪切标记的行",              IDM_EDIT_CUT_MARKED
+        MENUITEM "复制标记的行",             IDM_EDIT_COPY_MARKED
+        MENUITEM "删除标记的行",           IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "启用折叠",                               IDM_VIEW_FOLDING
         MENUITEM "行号",                                   IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",                       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "书签",                       IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
