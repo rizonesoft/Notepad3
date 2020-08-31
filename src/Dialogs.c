@@ -1854,7 +1854,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
       SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 
       // sync with other instances
-      if (Settings.SaveRecentFiles) {
+      if (Settings.SaveRecentFiles && Globals.bCanSaveIniFile) {
         if (MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs)) {
           MRU_Load(Globals.pFileMRU, true);
         }
@@ -1997,8 +1997,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
           break;
 
         case IDC_FILEMRU:
-          if (((LPNMHDR)(lParam))->idFrom == IDC_FILEMRU) {
-            switch (((LPNMHDR)(lParam))->code) {
+          if (((LPNMHDR)(lParam))->idFrom == IDC_FILEMRU)
+          {
+            switch (((LPNMHDR)(lParam))->code)
+            {
               case NM_DBLCLK:
                 SendWMCommand(hwnd, IDOK);
                 break;
@@ -2095,18 +2097,11 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
     case WM_COMMAND:
 
-      switch (LOWORD(wParam)) {
+      switch (LOWORD(wParam))
+      {
         case IDC_FILEMRU_UPDATE_VIEW:
         {
-          int        i;
-          WCHAR      tch[MAX_PATH] = {L'\0'};
-          LV_ITEM    lvi;
-          SHFILEINFO shfi;
-          ZeroMemory(&shfi, sizeof(SHFILEINFO));
-
-          DWORD            dwtid;
           LPICONTHREADINFO lpit = (LPVOID)GetProp(hwnd, L"it");
-
           SetEvent(lpit->hExitThread);
           while (WaitForSingleObject(lpit->hTerminatedThread, 0) != WAIT_OBJECT_0) {
             MSG msg;
@@ -2121,15 +2116,19 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
           ListView_DeleteAllItems(hwndIL);
 
+          LV_ITEM lvi;
           ZeroMemory(&lvi, sizeof(LV_ITEM));
           lvi.mask = LVIF_TEXT | LVIF_IMAGE;
 
+          SHFILEINFO shfi;
+          ZeroMemory(&shfi, sizeof(SHFILEINFO));
           SHGetFileInfo(L"Icon", FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO),
                         SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 
           lvi.iImage = shfi.iIcon;
 
-          for (i = 0; i < MRU_Count(Globals.pFileMRU); i++) {
+          WCHAR tch[MAX_PATH] = { L'\0' };
+          for (int i = 0; i < MRU_Count(Globals.pFileMRU); i++) {
             MRU_Enum(Globals.pFileMRU, i, tch, COUNTOF(tch));
             PathAbsoluteFromApp(tch, NULL, 0, true);
             //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_ADDSTRING,0,(LPARAM)tch); }
@@ -2139,7 +2138,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
             ListView_InsertItem(hwndIL, &lvi);
           }
 
-          UINT cnt = ListView_GetItemCount(hwndIL);
+          UINT const cnt = ListView_GetItemCount(hwndIL);
           if (cnt > 0) {
             UINT idx = ListView_GetTopIndex(hwndIL);
             ListView_SetColumnWidth(hwndIL, idx, LVSCW_AUTOSIZE_USEHEADER);
@@ -2152,8 +2151,13 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
             //}
           }
 
+          DWORD dwtid;
           lpit->hThread = CreateThread(NULL, 0, FileMRUIconThread, (LPVOID)lpit, 0, &dwtid);
-        } break;
+
+          DialogEnableControl(hwnd, IDOK, (cnt > 0));
+          DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
+        } 
+        break;
 
         case IDC_FILEMRU:
           break;
@@ -2166,30 +2170,17 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
         case IDOK:
         case IDC_REMOVE:
-        case IDC_CLEAR_LIST:
         {
           WCHAR tchFileName[MAX_PATH] = {L'\0'};
 
-          UINT cnt = ListView_GetSelectedCount(hwndIL);
-          if (cnt > 0) {
-
-            if (LOWORD(wParam) == IDC_CLEAR_LIST)
-            {
-              MRU_Empty(Globals.pFileMRU, StrIsNotEmpty(Globals.CurrentFile));
-              if (Globals.bCanSaveIniFile) {
-                MRU_Save(Globals.pFileMRU);
-              }
-              PostWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
-              break; // done here
-            }
+          if (ListView_GetSelectedCount(hwndIL)) {
 
             LV_ITEM lvi;
             ZeroMemory(&lvi, sizeof(LV_ITEM));
-
-            lvi.mask       = LVIF_TEXT;
-            lvi.pszText    = tchFileName;
+            lvi.mask = LVIF_TEXT;
+            lvi.pszText = tchFileName;
             lvi.cchTextMax = COUNTOF(tchFileName);
-            lvi.iItem      = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+            lvi.iItem = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
 
             ListView_GetItem(hwndIL, &lvi);
 
@@ -2206,32 +2197,38 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
               INT_PTR const answer = (LOWORD(wParam) == IDOK) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
                                                               : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
-              if ((IDOK == answer) || (IDYES == answer)) {
+              if ((IDOK == answer) || (IDYES == answer))
+              {
                 MRU_Delete(Globals.pFileMRU, lvi.iItem);
-
                 //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
                 //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);
-                // must use IDM_VIEW_REFRESH, index might change...
-                SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
-
                 //DialogEnableWindow(hwnd,IDOK,
                 //  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
-
-                cnt = ListView_GetSelectedCount(hwndIL);
-                DialogEnableControl(hwnd, IDOK, (cnt > 0));
-                DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
               }
-            }
-            else {
+            } 
+            else { // file to load
               StringCchCopy((LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER), MAX_PATH, tchFileName);
               EndDialog(hwnd, IDOK);
             }
+
+            // must use IDM_VIEW_REFRESH, index might change...
+            SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
           }
 
-          if (Settings.SaveRecentFiles && !StrIsEmpty(Globals.IniFile)) {
+          if (Settings.SaveRecentFiles && Globals.bCanSaveIniFile) {
             MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
           }
+
         } break;
+
+        case IDC_CLEAR_LIST:
+          ListView_DeleteAllItems(hwndIL);
+          MRU_Empty(Globals.pFileMRU, StrIsNotEmpty(Globals.CurrentFile));
+          if (Globals.bCanSaveIniFile) {
+            MRU_Save(Globals.pFileMRU);
+          }
+          SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
+          break;
 
         case IDCANCEL:
           EndDialog(hwnd, IDCANCEL);
