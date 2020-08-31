@@ -41,7 +41,9 @@
 #define SEARCH_END           (WM_APP+3)
 #define WM_GREPWIN_THREADEND (WM_APP+4)
 
-#define ID_ABOUTBOX          0x0010
+#define ID_ABOUTBOX          (0x0010)
+
+#define ALPHA_OPAQUE         (255)
 
 enum ExecuteAction
 {
@@ -203,6 +205,7 @@ private:
     bool                    m_bConfirmationOnReplace;
     bool                    m_showContent;
     bool                    m_showContentSet;
+    BYTE                    m_TranspAlphaNoFocus;
 
     std::vector<CSearchInfo> m_items;
     std::vector<std::tuple<int, int>> m_listItems;
@@ -262,4 +265,5 @@ private:
     CRegStdDWORD            m_regDate2Low;
     CRegStdDWORD            m_regDate2High;
     CRegStdDWORD            m_regShowContent;
+    CRegStdDWORD            m_regTranspAlphaNoFocus;
 };
