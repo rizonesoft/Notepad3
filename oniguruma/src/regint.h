@@ -261,11 +261,22 @@
 
 
 #ifdef _WIN32
-#if defined(_MSC_VER) && (_MSC_VER < 1300)
+#ifdef _MSC_VER
+
+#if _MSC_VER < 1300
 typedef int           intptr_t;
 typedef unsigned int  uintptr_t;
 #endif
+
+#if _MSC_VER < 1600
+typedef __int32 int32_t;
+typedef unsigned __int32 uint32_t;
+typedef __int64 int64_t;
+typedef unsigned __int64 uint64_t;
 #endif
+
+#endif
+#endif /* _WIN32 */
 
 #if SIZEOF_VOIDP == SIZEOF_LONG
 typedef unsigned long hash_data_type;
