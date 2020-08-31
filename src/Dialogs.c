@@ -3750,12 +3750,12 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       }
 
       if (lngIdx >= 0) {
-        IniSectionGetString(L"global", L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
-        IniSectionSetString(L"global", L"languagefile", tchTemp);
+        IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
+        IniSectionSetString(globalSection, L"languagefile", tchTemp);
       } else {
-        IniSectionGetString(L"global", L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
+        IniSectionGetString(globalSection, L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
         if (StrIsEmpty(tchTemp)) {
-          IniSectionDelete(L"global", L"languagefile", false);
+          IniSectionDelete(globalSection, L"languagefile", false);
         }
       }
 
@@ -3763,10 +3763,22 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       IniSectionSetString(globalSection, L"editorcmd", tchTemp);
 
       // [settings]
-      bool const bEscClose = IniSectionGetBool(L"settings", L"escclose", (Settings.EscFunction == 2));
-      IniSectionSetBool(L"settings", L"escclose", bEscClose);
-      bool const bBackupInFolder = IniSectionGetBool(L"settings", L"backupinfolder", true);
-      IniSectionSetBool(L"settings", L"backupinfolder", bBackupInFolder);
+      const WCHAR *const settingsSection = L"settings";
+
+      bool const bEscClose = IniSectionGetBool(settingsSection, L"escclose", (Settings.EscFunction == 2));
+      IniSectionSetBool(settingsSection, L"escclose", bEscClose);
+      bool const bBackupInFolder = IniSectionGetBool(settingsSection, L"backupinfolder", true);
+      IniSectionSetBool(settingsSection, L"backupinfolder", bBackupInFolder);
+
+      // [export]
+      const WCHAR *const exportSection = L"export";
+      bool const bExpPaths = IniSectionGetBool(exportSection, L"paths", true);
+      IniSectionSetBool(exportSection, L"paths", bExpPaths);
+      bool const bExpLnNums = IniSectionGetBool(exportSection, L"linenumbers", true);
+      IniSectionSetBool(exportSection, L"linenumbers", bExpLnNums);
+      bool const bExpContent = IniSectionGetBool(exportSection, L"linecontent", true);
+      IniSectionSetBool(exportSection, L"linecontent", bExpContent);
+
 
       // search directory
       WCHAR tchSearchDir[MAX_PATH] = { L'\0' };
@@ -4893,22 +4905,21 @@ static void _GetIconInfo(HICON hIcon, int* width, int* height, WORD* bitsPerPix)
 //  ConvertIconToBitmap()
 //  cx/cy = 0  =>  use resource width/height
 //
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
+HBITMAP ConvertIconToBitmap(const HICON hIcon, int cx, int cy)
 {
   int wdc = cx;
   int hdc = cy;
-  if ((cx == 0) || (cy == 0)) {
+  if ((cx <= 0) || (cy <= 0)) {
     _GetIconInfo(hIcon, &wdc, &hdc, NULL);
+    cx = cy = 0;
   }
-  // increase & condense size
-  wdc <<= 4;  hdc <<= 4;
  
   HDC     const hScreenDC = GetDC(NULL);
   HBITMAP const hbmpTmp   = CreateCompatibleBitmap(hScreenDC, wdc, hdc);
   HDC     const hMemDC    = CreateCompatibleDC(hScreenDC);
-  HBITMAP const hOldBmp   = SelectObject(hMemDC, hbmpTmp);
+  HBITMAP const hOldBmp   = SelectObject(hMemDC, hbmpTmp); // assign
   DrawIconEx(hMemDC, 0, 0, hIcon, wdc, hdc, 0, NULL, DI_NORMAL /*&~DI_DEFAULTSIZE*/);
-  SelectObject(hMemDC, hOldBmp);
+  SelectObject(hMemDC, hOldBmp); // restore
 
   UINT    const copyFlags = LR_COPYDELETEORG | LR_COPYRETURNORG | LR_DEFAULTSIZE | LR_CREATEDIBSECTION;
   HBITMAP const hDibBmp   = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, cx, cy, copyFlags);
@@ -4943,12 +4954,12 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
   int const cx = ScaleIntByDPI(GetSystemMetrics(SM_CXSMICON), dpi.x);
   int const cy = ScaleIntByDPI(GetSystemMetrics(SM_CYSMICON), dpi.y);
 
-  if (Globals.hIconMsgShieldSmall)
+  if (Globals.hIconMsgShield)
   {
     MENUITEMINFO mii = { 0 };
     mii.cbSize = sizeof(MENUITEMINFO);
     mii.fMask = MIIM_BITMAP;
-    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
+    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, cx, cy);
     SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
   }
   bInitialized = true;
@@ -5052,7 +5063,7 @@ HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, b
     if (fontSize <= 0) {
       fontSize = (ncm.lfMessageFont.lfHeight < 0) ? -ncm.lfMessageFont.lfHeight : ncm.lfMessageFont.lfHeight;
       if (fontSize == 0) {
-        fontSize = 8;
+        fontSize = 9;
       }
     }
     fontSize <<= 10; // precision

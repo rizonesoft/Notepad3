@@ -122,6 +122,11 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 //=============================================================================
 
+// Initialize
+DeclareSciCallR0(GetLayoutCache, GETLAYOUTCACHE, int)
+DeclareSciCallV1(SetLayoutCache, SETLAYOUTCACHE, int, cache)
+DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int)
+DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache)
 
 // Document Pointer Handling
 DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t)
@@ -627,15 +632,17 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 }
 
 // respect VSlop settings 
-inline void Sci_ScrollChooseCaret()      { SciCall_ScrollCaret(); SciCall_ChooseCaretX(); }
-inline void Sci_ScrollToLine(DocLn line) { SciCall_EnsureVisible(line); SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
-inline void Sci_ScrollToCurrentLine()    { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
+inline void Sci_GotoPosChooseCaret(const DocPos pos) { SciCall_GotoPos(pos); SciCall_ChooseCaretX(); }
+inline void Sci_ScrollChooseCaret() { SciCall_ScrollCaret(); SciCall_ChooseCaretX(); }
+inline void Sci_ScrollToLine(const DocLn line) { SciCall_EnsureVisible(line); SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
+inline void Sci_ScrollToCurrentLine() { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
 
 
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 #define Sci_ApplyLexerStyle(B, E) SciCall_Colourise((DocPos)(B), (DocPos)(E));
+#define Sci_LexerStyleAll() SciCall_Colourise(0, -1)
 
 #define Sci_DisableMouseDWellNotification()  SciCall_SetMouseDWellTime(SC_TIME_FOREVER)  
 

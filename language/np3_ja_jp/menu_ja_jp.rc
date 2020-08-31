@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "新規(&N)\tCtrl+N",                                IDM_FILE_NEW
         MENUITEM "開く(&O)...\tCtrl+O",                              IDM_FILE_OPEN
-        MENUITEM "再読み込み(&V)\tF5",                               IDM_FILE_REVERT
         MENUITEM "上書き保存(&S)\tCtrl+S",                           IDM_FILE_SAVE
         MENUITEM "名前を付けて保存(&A)...\tF6",                        IDM_FILE_SAVEAS
         MENUITEM "コピーして保存(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
@@ -77,12 +76,12 @@ BEGIN
         END
         POPUP "起動(&L)"
         BEGIN
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "同じファイルを開く(&N)\tAlt+N",             IDM_FILE_NEWWINDOW
+            MENUITEM "同じファイルを開く(&N)\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "管理者権限で再起動(&R)",                    IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "管理者権限で再起動(&R)",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "開いている文書を実行(&D)\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "エクスプローラーを開く(&F)",                    IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "ファイルから読み直し(&V)\tF5",                  IDM_FILE_REVERT
         POPUP "文字コード(&E)"
         BEGIN
-            MENUITEM "ANSI (&A)",                             IDM_ENCODING_ANSI
-            MENUITEM "Unicode (&U)",                          IDM_ENCODING_UNICODE
-            MENUITEM "Unicode BE (&B)",                       IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-8 (&8) \tShift+F8",                 IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
-            MENUITEM "ほかの文字コード指定(&M)...\tF9",           IDM_ENCODING_SELECT
+            POPUP "文字コードを指定しファイルから読み直し(&R)"
+            BEGIN
+                MENUITEM "デフォルト (設定を使用) (&D)",          CMD_RECODEDEFAULT
+                MENUITEM "ANSI (&N)\tCtrl+Shift+A",         CMD_RECODEANSI
+                MENUITEM "OEM (&O)\tCtrl+Shift+O",          CMD_RECODEOEM
+                MENUITEM "GB18030 (&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII を UTF-8として開く(&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
+                MENUITEM "強制的に UCHARDET で解析(&C)",              CMD_RELOADFORCEDETECTION
+                MENUITEM "文字コードを無視(&I)\tAlt+F8",                 CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "ほかの文字コード(&M)...\tF8",             IDM_ENCODING_RECODE
+            END
+            POPUP "文字コードを指定(&S)"
+            BEGIN
+                MENUITEM "ANSI (&A)",                             IDM_ENCODING_ANSI
+                MENUITEM "Unicode (&U)",                          IDM_ENCODING_UNICODE
+                MENUITEM "Unicode BE (&B)",                       IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-8 (&8) \tShift+F8",                 IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "ほかの文字コード(&M)...\tF9",            IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトで読み直し(&D)",                   CMD_RECODEDEFAULT
-            MENUITEM "ANSI で読み直し(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
-            MENUITEM "OEM で読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
-            MENUITEM "GB18030 で読み直し(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
-            MENUITEM "UCHARDET 解析で検出し読み直し(&C)",          CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII を UTF-8として開く(&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
-            MENUITEM "文字コードを無視(&I)\tAlt+F8",               CMD_RELOADNOFILEVARS
-            MENUITEM "文字コードを指定して読み直し(&R)...\tF8",      IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "デフォルトを設定(&T)...",                    IDM_ENCODING_SETDEFAULT
+            MENUITEM "デフォルトの文字コードを設定(&D)...",             IDM_ENCODING_SETDEFAULT
         END
         POPUP "改行コード(&G)"
         BEGIN
@@ -121,7 +128,7 @@ BEGIN
             MENUITEM "Mac(&M) (CR)",                         IDM_LINEENDINGS_CR
             MENUITEM "Unix(&U) (LF)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトを設定(&D)...",               IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "デフォルトを設定(&D)...",                 IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
         MENUITEM "インデントの検査(&I)...",                      CMD_CHECK_INDENTATION
@@ -130,7 +137,7 @@ BEGIN
         MENUITEM "印刷(&P)...\tCtrl+P",                       IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "プロパティ(&T)...",                            IDM_FILE_PROPERTIES
-        MENUITEM "デスクトップにショートカット(&K)",               IDM_FILE_CREATELINK
+        MENUITEM "デスクトップにショートカット(&K)",                  IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "ファイラで開く(&B)...\tCtrl+M",               IDM_FILE_BROWSE
         POPUP "お気に入り(&F)"
@@ -342,7 +349,7 @@ BEGIN
         POPUP "単語出現マーカー(&k)"
         BEGIN
             MENUITEM "オン(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use Bookmarks too(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "しおりの余白も使用(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "単語一望モードを無効に(&V)",               IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -356,31 +363,36 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "しおりの余白(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "折りたたみ(&F)"
         BEGIN
             MENUITEM "コード折りたたみを表示(&F)",                   IDM_VIEW_FOLDING
             MENUITEM "すべて折りたたみ(&T)\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "次の折りたたみへ移動(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "前の折りたたみへ移動(&P)\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "次の折りたたみへ移動(&N)\tAlt+ +",          CMD_FOLDJUMPDOWN
+            MENUITEM "前の折りたたみへ移動(&P)\tAlt+ –",          CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "折りたたむ(&C)\tAlt+ ←",                  CMD_FOLDCOLLAPSE
-            MENUITEM "折りたたみを展開(&E)\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "折りたたむ(&C)\tAlt+ ←",                   CMD_FOLDCOLLAPSE
+            MENUITEM "折りたたみを展開(&E)\tAlt+ →",              CMD_FOLDEXPAND
         END
         POPUP "表示(&D)"
         BEGIN
             MENUITEM "単語一望モード(&F)\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                         IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                        IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",                 IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",                IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "その表示方法"
+            BEGIN
+                MENUITEM "折りたたみ",                                IDM_VIEW_FV_FOLD
+                MENUITEM "しおり",                            IDM_VIEW_FV_BOOKMARK
+                MENUITEM "強調",                           IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "しおり&&折りたたみ",                    IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "強調&&折りたたみ",                   IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
             MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "ウィンドウ構成(&A)"
         BEGIN
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
@@ -473,10 +485,10 @@ BEGIN
                 MENUITEM "DirectWrite GDI DC(&W)",          IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI (合字未対応)(&G)",             IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "RTL Layout (GDI)(&T)"
+            POPUP "RTLレイアウト (GDI)(&T)"
             BEGIN
-                MENUITEM "Edit Area(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "Other Dialogs(&O)",               IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "編集領域(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "ほかのダイアログ(&O)",               IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "書字方向(&B)"
             BEGIN
@@ -539,14 +551,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                        IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",            IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",           IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type",         IDM_EDIT_DELETE_MARKED
+        MENUITEM "このしおりを除去",                        IDM_EDIT_CLEAR_MARKER
+        MENUITEM "しおりがある全行/切り取り",            IDM_EDIT_CUT_MARKED
+        MENUITEM "しおりがある全行/コピー",           IDM_EDIT_COPY_MARKED
+        MENUITEM "しおりがある全行/削除",         IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "コード折りたたみを表示",                    IDM_VIEW_FOLDING
-        MENUITEM "行番号",                               IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",                     IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "表示/コード折りたたみ",                    IDM_VIEW_FOLDING
+        MENUITEM "表示/行番号",                               IDM_VIEW_LINENUMBERS
+        MENUITEM "表示/しおりの余白",                     IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

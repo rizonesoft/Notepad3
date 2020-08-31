@@ -94,7 +94,7 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4, SELECT_HYPERLINK = 8 } HYPERLINK_OPS;  // Hyperlink Operations
 typedef enum { FWM_DONT_CARE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2 } FILE_WATCHING_MODE;
-typedef enum { FVMM_MARGIN = 0, FVMM_LN_BACKGR = 1, FVMM_FOLD = 2 } FOCUSVIEW_MARKER_MODE;
+typedef enum { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 
 // ----------------------------------------------------------------------------
 
@@ -356,7 +356,6 @@ typedef struct _globals_t
   HICON     hIconMsgError;
   HICON     hIconMsgQuest;
   HICON     hIconMsgShield;
-  HICON     hIconMsgShieldSmall;
   //HICON     hIconMsgWinLogo;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
@@ -369,6 +368,7 @@ typedef struct _globals_t
   CALLTIPTYPE CallTipType;
   FILEVARS  fvCurFile;
   int       iWrapCol;
+  int       InitialFontSize;
 
   bool      CmdLnFlag_PosParam;
   int       CmdLnFlag_WindowPos;

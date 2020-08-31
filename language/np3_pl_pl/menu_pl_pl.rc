@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Nowy\tCtrl+N",                                   IDM_FILE_NEW
         MENUITEM "&Otwórz...\tCtrl+O",                              IDM_FILE_OPEN
-        MENUITEM "Przywróć\tF5",                                    IDM_FILE_REVERT
         MENUITEM "&Zapisz\tCtrl+S",                                 IDM_FILE_SAVE
         MENUITEM "Zapisz &jako...\tF6",                             IDM_FILE_SAVEAS
         MENUITEM "Zapisz &kopię...\tCtrl+F6",                       IDM_FILE_SAVECOPY
@@ -72,12 +71,12 @@ BEGIN
         POPUP "Ścieżka do Schowka"
         BEGIN
             MENUITEM "Kopiuj tylko nazwę pliku\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Kopiuj tylko ścieżkę katalogu",          IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Kopiuj tylko ścieżkę katalogu",           IDM_EDIT_INSERT_DIRNAME
             MENUITEM "Kopiuj pełną ścieżkę\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "&Uruchom"
         BEGIN
-            MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH
+            MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nowe okno\tAlt+N",                  IDM_FILE_NEWWINDOW
             MENUITEM "&Puste okno\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Otwórz Eksplorator pliku",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Re&vert from File\tF5",                  IDM_FILE_REVERT
         POPUP "&Kodowanie"
         BEGIN
-            MENUITEM "&ANSI",                               IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                            IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                 IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                    IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 z &sygnaturą",                  IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Więcej...\tF9",                      IDM_ENCODING_SELECT
+            POPUP "&Revert from File as"
+            BEGIN
+                MENUITEM "&Default (Setting)",             CMD_RECODEDEFAULT
+                MENUITEM "&ANSI\tCtrl+Shift+A",            CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII jako UTF-&8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
+                MENUITEM "Force U&CHARDET Analysis",              CMD_RELOADFORCEDETECTION
+                MENUITEM "Ignoruj znaczniki &kodowania\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF8",         IDM_ENCODING_RECODE
+            END
+            POPUP "&Set Document as"
+            BEGIN
+                MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 z &sygnaturą",             IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Przekoduj na domyślny",                      CMD_RECODEDEFAULT
-            MENUITEM "Przekoduj na &ANSI\tCtrl+Shift+A",           CMD_RECODEANSI
-            MENUITEM "Przekoduj na &OEM\tCtrl+Shift+O",            CMD_RECODEOEM
-            MENUITEM "Przekoduj na &GB18030\tCtrl+Shift+F10",      CMD_RECODEGB18030
-            MENUITEM "Przekoduj na analizę UCHARDET",              CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII jako UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
-            MENUITEM "Ignoruj znaczniki &kodowania\tAlt+F8",       CMD_RELOADNOFILEVARS
-            MENUITEM "&Przekoduj...\tF8",                          IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Ustaw &Domyślne...",                         IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set Encoding &Defaults...",          IDM_ENCODING_SETDEFAULT
         END
         POPUP "Znak końca wiersza"
         BEGIN
@@ -363,24 +370,29 @@ BEGIN
             MENUITEM "Składanie kodu",                              IDM_VIEW_FOLDING
             MENUITEM "&Przełącz składanie kodu\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Przeskocz do nast.\tAlt+ +",           CMD_FOLDJUMPDOWN
-            MENUITEM "Przeskocz do poprzed.\tAlt+ –",        CMD_FOLDJUMPUP
+            MENUITEM "Przeskocz do nast.\tAlt+ +",                  CMD_FOLDJUMPDOWN
+            MENUITEM "Przeskocz do poprzed.\tAlt+ –",               CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Zwiń zagięcie\tAlt+ ←",               CMD_FOLDCOLLAPSE
-            MENUITEM "&Rozwiń zagięcie\tAlt+ →",             CMD_FOLDEXPAND
+            MENUITEM "&Zwiń zagięcie\tAlt+ ←",                      CMD_FOLDCOLLAPSE
+            MENUITEM "&Rozwiń zagięcie\tAlt+ →",                    CMD_FOLDEXPAND
         END
         POPUP "&Pokaż"
         BEGIN
             MENUITEM "Widok skupiony\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                              IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                             IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",                      IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",                     IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                                    IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                                IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                               IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                        IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",                       IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Dziennik &monitorowania",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rozszerzony widok końca dokumentu",           IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Pokaż podpowiedź hiperłącza",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anele"
         BEGIN
             MENUITEM "Pokaż pasek menu",                            IDM_VIEW_MENUBAR

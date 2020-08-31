@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Nouveau\tCtrl+N",                                               IDM_FILE_NEW
         MENUITEM "&Ouvrir...\tCtrl+O",                                             IDM_FILE_OPEN
-        MENUITEM "Rec&harger\tF5",                                                 IDM_FILE_REVERT
         MENUITEM "&Enregistrer\tCtrl+S",                                           IDM_FILE_SAVE
         MENUITEM "Enregistrer &Sous...\tF6",                                       IDM_FILE_SAVEAS
         MENUITEM "Enregistrer &une Copie...\tCtrl+F6",                             IDM_FILE_SAVECOPY
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Ouvrir &Explorateur de Fichiers",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Rec&harger le Fichier\tF5",                       IDM_FILE_REVERT
         POPUP "Encoda&ge"
         BEGIN
-            MENUITEM "&ANSI",                                    IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                                 IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                      IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                         IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 avec &Signature",                    IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Plus...\tF9",                             IDM_ENCODING_SELECT
+            POPUP "&Recharger le Fichier comme"
+            BEGIN
+                MENUITEM "&Défaut (Paramètres)",                     CMD_RECODEDEFAULT
+                MENUITEM "&ANSI\tCtrl+Shift+A",                      CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",                       CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",                 CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII comme UT&F-8\tCtrl+Shift+F8",        CMD_RELOADASCIIASUTF8
+                MENUITEM "Forcer l'analyse U&CHARDET",               CMD_RELOADFORCEDETECTION
+                MENUITEM "&Ignorer les Balises d'Encodage \tAlt+F8", CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&Plus d'Encodages...\tF8",                 IDM_ENCODING_RECODE
+            END
+            POPUP "&Définir le Document comme"
+            BEGIN
+                MENUITEM "&ANSI",                                    IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                                 IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",                      IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                         IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 avec &Signature",                    IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&Plus d'Encodages...\tF9",                 IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Réencoder vers &Défaut",                   CMD_RECODEDEFAULT
-            MENUITEM "Réencoder vers &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
-            MENUITEM "Réencoder vers &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
-            MENUITEM "Réencoder vers &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
-            MENUITEM "Réencoder vers Analyse UCHARDET",          CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII comme UTF-&8\tCtrl+Shift+F8",        CMD_RELOADASCIIASUTF8
-            MENUITEM "&Ignorer les Balises d'Encodage \tAlt+F8",    CMD_RELOADNOFILEVARS
-            MENUITEM "&Réencoder...\tF8",                        IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Définir par &Défaut...",                   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Définir l'Encodage par &Défaut...",            IDM_ENCODING_SETDEFAULT
         END
         POPUP "&Fins de lignes"
         BEGIN
@@ -372,15 +379,20 @@ BEGIN
         POPUP "&Afficher"
         BEGIN
             MENUITEM "Vue Focalisée\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Signet",                        IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Surbrillance",                  IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Signet && Pliage",              IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Surbrillance && Pliage",        IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "Mode d'affichage"
+            BEGIN
+                MENUITEM "Pliage",                          IDM_VIEW_FV_FOLD
+                MENUITEM "Signet",                          IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Surbrillance",                    IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Signet && Pliage",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Surbrillance && Pliage",          IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "Log de &Contrôle",                    IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Défiler Après la Fin du Fichier",    IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Afficher &Infobulles sur Liens",      IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anneaux"
         BEGIN
             MENUITEM "Afficher la Barre de &Menus",         IDM_VIEW_MENUBAR

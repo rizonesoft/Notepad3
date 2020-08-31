@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Nuwe\tCtrl+N",                                   IDM_FILE_NEW
         MENUITEM "Maak &Oop...\tCtrl+O",                            IDM_FILE_OPEN
-        MENUITEM "Ke&er Terug\tF5",                                 IDM_FILE_REVERT
         MENUITEM "S&toor\tCtrl+S",                                  IDM_FILE_SAVE
         MENUITEM "Stoor &As...\tF6",                                IDM_FILE_SAVEAS
         MENUITEM "Stoor &Kopie...\tCtrl+F6",                        IDM_FILE_SAVECOPY
@@ -72,8 +71,8 @@ BEGIN
         POPUP "Pad na &knipbord"
         BEGIN
             MENUITEM "Slegs Kopieer &Lêernaam\tCtrl+F9",        IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Slegs Kopieër &Gids-pad",           IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Kopieer &Volledige Pad\tCtrl+Shift+F9",      IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Slegs Kopieër &Gids-pad",                 IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Kopieer &Volledige Pad\tCtrl+Shift+F9",   IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "&Begin"
         BEGIN
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Maak &File Explorer Oop",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Re&vert from File\tF5",                   IDM_FILE_REVERT
         POPUP "&Enkodering"
         BEGIN
-            MENUITEM "&ANSI",                               IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                            IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                 IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                    IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 with &Signature",               IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Meer...\tF9",                        IDM_ENCODING_SELECT
+            POPUP "&Revert from File as"
+            BEGIN
+                MENUITEM "&Default (Setting)",              CMD_RECODEDEFAULT
+                MENUITEM "A&NSI\tCtrl+Shift+A",             CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",              CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",        CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII as UT&F-8\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
+                MENUITEM "Force U&CHARDET Analysis",        CMD_RELOADFORCEDETECTION
+                MENUITEM "&Ignoreer Kodering Tags\tAlt+F8", CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF8",          IDM_ENCODING_RECODE
+            END
+            POPUP "&Set Document as"
+            BEGIN
+                MENUITEM "&ANSI",                           IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                        IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",             IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 with &Signature",           IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Hercodeer na &Standaard",                CMD_RECODEDEFAULT
-            MENUITEM "Hercodeer na A&NSI\tCtrl+Shift+A",       CMD_RECODEANSI
-            MENUITEM "Hercodeer na &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
-            MENUITEM "Hercodeer na &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
-            MENUITEM "Hercodeer na U&CHARDET-analise",         CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII as UT&F-8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
-            MENUITEM "&Ignoreer Kodering Tags\tAlt+F8",     CMD_RELOADNOFILEVARS
-            MENUITEM "&Herkodeer...\tF8",                   IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Stel S&tandaard...",                  IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set Encoding &Defaults...",          IDM_ENCODING_SETDEFAULT
         END
         POPUP "L&yn Einde"
         BEGIN
@@ -326,10 +333,10 @@ BEGIN
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",            IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Kleur Definisie Hotspots",
         BEGIN
-            MENUITEM "&AF",                              IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "&AF",                                 IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A"                               IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA"                                IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Highlight &Unicode-Points",               IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele Hakie Passing\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
@@ -372,15 +379,20 @@ BEGIN
         POPUP "Ver&toning"
         BEGIN
             MENUITEM "Ge&fokusde Aansig\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Mode: Bookmark",                      IDM_VIEW_FV_BOOKMARK
-            MENUITEM "Mode: Highlight",                     IDM_VIEW_FV_HIGHLIGHT
-            MENUITEM "Mode: Bookmark && Fold",              IDM_VIEW_FV_BKMRKFOLD
-            MENUITEM "Mode: Highlight && Fold",             IDM_VIEW_FV_HIGHLGFOLD
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                            IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                        IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                       IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",               IDM_VIEW_FV_HIGHLGFOLD
+            END
             MENUITEM SEPARATOR
             MENUITEM "&Monitering Log",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Wys &Hiperskakel Nutsmiddelwenk",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anele"
         BEGIN
             MENUITEM "Wys &Menubalk",                       IDM_VIEW_MENUBAR

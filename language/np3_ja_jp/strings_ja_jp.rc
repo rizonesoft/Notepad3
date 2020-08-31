@@ -159,7 +159,7 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "すべての改行を「%s」に統一しますか?"
 END
 
 STRINGTABLE
@@ -255,11 +255,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "標準設定(&S)"
     IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "すべて削除"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "検索履歴を消去"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "置換履歴を消去"
 END
 
 STRINGTABLE

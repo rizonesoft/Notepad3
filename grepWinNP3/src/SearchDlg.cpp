@@ -1459,6 +1459,19 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             if (FailedShowMessage(hr))
                 break;
 
+            COMDLG_FILTERSPEC const aFileTypes[] = { {L"Text files", L"*.txt; *.lst"}, {L"All types", L"*.*"} }; 
+            hr = pfd->SetFileTypes(_countof(aFileTypes), aFileTypes);
+            if (FailedShowMessage(hr))
+                break;
+
+            hr = pfd->SetDefaultExtension(L"txt");
+            if (FailedShowMessage(hr))
+                break;
+
+            hr = pfd->SetFileName(L"gw_search_results.txt");
+            if (FailedShowMessage(hr))
+                break;
+
             IFileDialogCustomizePtr pfdCustomize;
             hr = pfd.QueryInterface(IID_PPV_ARGS(&pfdCustomize));
             if (SUCCEEDED(hr))
@@ -1538,14 +1551,17 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                                 bool needSeparator = false;
                                 if (includePaths)
                                 {
-                                    file << CUnicodeUtils::StdGetUTF8(item.filepath);
+                                    std::string fpath = CUnicodeUtils::StdGetUTF8(item.filepath);
+                                    std::transform(fpath.begin(), fpath.end(), fpath.begin(), [](char c) { return (c == '\\' ? '/' : c); });
+                                    file << std::string("file://");
+                                    file << fpath;
                                     needSeparator = true;
                                 }
                                 if (includeMatchLineNumbers)
                                 {
                                     if (needSeparator)
                                         file << separator;
-                                    file << CStringUtils::Format("%lld", item.matchlinesnumbers[i]);
+                                    file << CStringUtils::Format("(%lld)", item.matchlinesnumbers[i]);
                                     needSeparator = true;
                                 }
                                 if (includeMatchLineTexts)
@@ -1571,19 +1587,41 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     }
                     else
                     {
-                        auto exportpaths       = CRegStdDWORD(L"Software\\grepWin\\export_paths");
-                        auto exportlinenumbers = CRegStdDWORD(L"Software\\grepWin\\export_linenumbers");
-                        auto exportlinecontent = CRegStdDWORD(L"Software\\grepWin\\export_linecontent");
+                        auto exportpaths       = CRegStdDWORD(L"Software\\grepWinNP3\\export_paths");
+                        auto exportlinenumbers = CRegStdDWORD(L"Software\\grepWinNP3\\export_linenumbers");
+                        auto exportlinecontent = CRegStdDWORD(L"Software\\grepWinNP3\\export_linecontent");
                         exportpaths       = includePaths ? 1 : 0;
                         exportlinenumbers = includeMatchLineNumbers ? 1 : 0;
                         exportlinecontent = includeMatchLineTexts ? 1 : 0;
                     }
-                    SHELLEXECUTEINFO sei = {0};
-                    sei.cbSize           = sizeof(SHELLEXECUTEINFO);
-                    sei.lpVerb           = TEXT("open");
-                    sei.lpFile           = path.c_str();
-                    sei.nShow            = SW_SHOWNORMAL;
-                    ShellExecuteEx(&sei);
+
+                    // open file 
+                    std::wstring cmd = bPortable ? g_iniFile.GetValue(L"global", L"editorcmd", L"") :
+                                                   (std::wstring)CRegStdString(L"Software\\grepWinNP3\\editorcmd", L"");
+                    if (!cmd.empty())
+                    {
+                        SearchReplace(cmd, L"%mode%", L"mb");
+                        SearchReplace(cmd, L"%pattern%", L"");
+                        SearchReplace(cmd, L"%line%", L"0");
+                        SearchReplace(cmd, L"%path%", path.c_str());
+                        STARTUPINFO         startupInfo;
+                        PROCESS_INFORMATION processInfo;
+                        SecureZeroMemory(&startupInfo, sizeof(startupInfo));
+                        startupInfo.cb = sizeof(STARTUPINFO);
+                        SecureZeroMemory(&processInfo, sizeof(processInfo));
+                        CreateProcess(NULL, const_cast<wchar_t*>(cmd.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
+                        CloseHandle(processInfo.hThread);
+                        CloseHandle(processInfo.hProcess);
+                    }
+                    else
+                    {
+                        SHELLEXECUTEINFO sei = {0};
+                        sei.cbSize           = sizeof(SHELLEXECUTEINFO);
+                        sei.lpVerb           = TEXT("open");
+                        sei.lpFile           = path.c_str();
+                        sei.nShow            = SW_SHOWNORMAL;
+                        ShellExecuteEx(&sei);
+                    }
                 }
             }
         }
@@ -2328,10 +2366,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     if (dotPos != std::wstring::npos)
         ext = inf.filepath.substr(dotPos);
 
-    CRegStdString regEditorCmd(L"Software\\grepWinNP3\\editorcmd");
-    std::wstring cmd = regEditorCmd;
-    if (bPortable)
-        cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
+    std::wstring cmd = bPortable ? g_iniFile.GetValue(L"global", L"editorcmd", L"") :
+                                   (std::wstring)CRegStdString(L"Software\\grepWinNP3\\editorcmd", L"");
     if (!cmd.empty())
     {
         bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
@@ -3333,7 +3369,8 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
     else
     {
         ProfileTimer profile((L"file load and parse: " + sinfoPtr->filepath).c_str());
-        auto         nNullCount = bPortable ? _wtoi(g_iniFile.GetValue(L"settings", L"nullbytes", L"0")) : int(DWORD(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0)));
+        auto         nNullCount = bPortable ? int(g_iniFile.GetLongValue(L"settings", L"nullbytes", 0)) :
+                                              int(DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\nullbytes", 0)));
         if (nNullCount > 0)
         {
             constexpr __int64 oneMB = 1024 * 1024;
