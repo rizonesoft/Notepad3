@@ -59,8 +59,7 @@ As an added service for Notepad3 users; Rizonesoft uses [Telegram](https://teleg
 
 # References
 
-Review of **Notepad3** posted by the moderator [Karston](https://www.nsaneforums.com/profile/12756-karlston/) at [nsane.forums](https://www.nsaneforums.com/). 
-Seen on Nsane Forums: [Notepad3 is an advanced text editor...](https://www.nsaneforums.com/topic/382910-guidereview-notepad3-is-an-advanced-text-editor-that-supports-many-programming-languages/).
+Seen on Nsane Forums: [Notepad3 is an advanced text editor...](https://www.nsaneforums.com/topic/382910-guidereview-notepad3-is-an-advanced-text-editor-that-supports-many-programming-languages/), a review of **Notepad3** posted by the moderator [Karston](https://www.nsaneforums.com/profile/12756-karlston/) at [nsane.forums](https://www.nsaneforums.com/). 
 
 To be correct and complete, this **Notepad3's review** is written on 2020-08-11 by **[Ashwin](https://www.ghacks.net/author/ashwin/)** and posted on **[gHacks](https://www.ghacks.net/)**.
 
