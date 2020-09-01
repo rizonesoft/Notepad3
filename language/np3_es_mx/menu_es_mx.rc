@@ -459,7 +459,7 @@ BEGIN
         POPUP "&Recordar"
         BEGIN
             MENUITEM "&Recordar archivos recientes",         IDM_VIEW_NOSAVERECENT
-            MENUITEM "&Preservar la posición del cursor",    IDM_VIEW_NOPRESERVECARET
+            MENUITEM "&Preservar la posición de caret",      IDM_VIEW_NOPRESERVECARET
             MENUITEM "Recordar los &argumentos de búsqueda", IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "&Ventana"
