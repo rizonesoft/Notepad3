@@ -459,7 +459,7 @@ BEGIN
         POPUP "Se Sou&venir"
         BEGIN
             MENUITEM "Se Souvenir des F&ichiers Récents",               IDM_VIEW_NOSAVERECENT
-            MENUITEM "Conser&ver la Position du Curseur",               IDM_VIEW_NOPRESERVECARET
+            MENUITEM "Conser&ver la Position du Caret",                 IDM_VIEW_NOPRESERVECARET
             MENUITEM "Se Souvenir des Chaînes R&echerchées",            IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "F&enêtre"
