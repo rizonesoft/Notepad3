@@ -93,34 +93,34 @@ BEGIN
             MENUITEM "Otvoriť Pri&eskumníka",               IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Re&vert from File\tF5",                  IDM_FILE_REVERT
+        MENUITEM "&Vrátiť zo súboru\tF5",                   IDM_FILE_REVERT
         POPUP "&Kódovanie"
         BEGIN
-            POPUP "&Revert from File as"
+            POPUP "V&rátiť zo súboru ako"
             BEGIN
-                MENUITEM "&Default (Setting)",             CMD_RECODEDEFAULT
+                MENUITEM "&Predvolené (Nastavenie)",       CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",            CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
                 MENUITEM SEPARATOR
                 MENUITEM "AS&CII ako UTF-8\tCtrl+Shift+F8",        CMD_RELOADASCIIASUTF8
-                MENUITEM "Force U&CHARDET Analysis",               CMD_RELOADFORCEDETECTION
+                MENUITEM "&Vynútiť analýzu UCHARDET",              CMD_RELOADFORCEDETECTION
                 MENUITEM "&Ignorovať Tagy kódovania\tAlt+F8",      CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF8",         IDM_ENCODING_RECODE
+                MENUITEM "Ďalši&e kódovania...\tF8",               IDM_ENCODING_RECODE
             END
-            POPUP "&Set Document as"
+            POPUP "&Nastaviť dokument ako"
             BEGIN
-                MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
-                MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
-                MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
-                MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
-                MENUITEM "UTF-8 &Signature",               IDM_ENCODING_UTF8SIGN
+                MENUITEM "&ANSI",                           IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                        IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",             IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 &Signature",                IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+                MENUITEM "Ďalšie &kódovania...\tF9",        IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Set Encoding &Defaults...",          IDM_ENCODING_SETDEFAULT
+            MENUITEM "Nastaviť &predvolené kódovanie...",   IDM_ENCODING_SETDEFAULT
         END
         POPUP "Kon&ce riadkov"
         BEGIN
@@ -267,8 +267,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Čas/Dátum (&krátky)\tCtrl+F5",            IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Čas/Dátum (&dlhý)\tCtrl+Shift+F5",        IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Current Timestamp",                      CMD_INSERT_TIMESTAMP
-            MENUITEM "&Aktualizovať časové značky\tShift+F5",   CMD_UPDATE_TIMESTAMPS
+            MENUITEM "&Aktuálne časové razítko",                CMD_INSERT_TIMESTAMP
+            MENUITEM "&Aktualizovať časové razítka\tShift+F5",  CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Riadkový komentár (zap./vyp.)\tCtrl+Q",  IDM_EDIT_LINECOMMENT
             MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
@@ -283,8 +283,8 @@ BEGIN
             MENUITEM "Zvýšiť číslo\tCtrl+Alt+NK+",                     CMD_INCREASENUM
             MENUITEM "Znížiť číslo\tCtrl+Alt+NK-",                     CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Find Matching Brace\tCtrl+B",                   IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Select To &Matching Brace\tCtrl+Shift+B",        IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Nájsť zodpovedajúcu zátvorku\tCtrl+B",          IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "&Vybrať zodpovedajúcu zátvorku\tCtrl+Shift+B",   IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "Vy&brať ďalšie\tCtrl+Alt+F2",                    IDM_EDIT_SELTONEXT
             MENUITEM "Vyb&rať predchádzajúce\tCtrl+Alt+Shift+F2",      IDM_EDIT_SELTOPREV
@@ -338,8 +338,8 @@ BEGIN
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Highlight &Unicode-Points",                   IDM_VIEW_UNICODE_POINTS
-        MENUITEM "&Visual Brace Matching\tCtrl+Shift+V",        IDM_VIEW_MATCHBRACES
+        MENUITEM "Zvýrazniť body &Unicode",                      IDM_VIEW_UNICODE_POINTS
+        MENUITEM "&Zviditeľniť zladené zátvorky\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Zvýrazniť &aktuálny riadok\tShift+Ctrl+I"
         BEGIN
             MENUITEM "Žiadne &zvýraznenie",                 IDM_VIEW_HILITCURLN_NONE
@@ -349,7 +349,7 @@ BEGIN
         POPUP "&Označiť výskyty"
         BEGIN
             MENUITEM "&Aktívne\tAlt+A",                     IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use &Bookmarks too",                  IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "Použiť aj &záložky",                  IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Len viditeľné",                       IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -363,7 +363,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Číslovanie r&iadkov\tCtrl+Shift+N",       IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "&Okraj záložky\tCtrl+Shift+M",            IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Skladanie"
         BEGIN
@@ -379,13 +379,13 @@ BEGIN
         POPUP "Zo&brazenie"
         BEGIN
             MENUITEM "Zamerať zobrazenie\tCtrl+Alt+V",      IDM_VIEW_TOGGLE_VIEW
-            POPUP "View Mode"
+            POPUP "Režim zobrazenia"
             BEGIN
-                MENUITEM "Fold",                            IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                        IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Highlight",                       IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",                IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Highlight && Fold",               IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Zložené",                         IDM_VIEW_FV_FOLD
+                MENUITEM "Záložka",                         IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Zvýraznenie",                     IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Záložka a zložené",               IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Zvýraznenie a zložené",           IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "&Monitorovať logovanie",              IDM_VIEW_CHASING_DOCTAIL
@@ -454,7 +454,7 @@ BEGIN
             MENUITEM "&Ukončiť Notepad3",                   IDM_VIEW_ESCEXIT
         END
         MENUITEM "Uložiť pred spustením &nástrojov",        IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Výpočet drobných výrazov",                IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Pamätať si"
         BEGIN
@@ -485,10 +485,10 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (bez ligatúr)",              IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "R&TL Layout (GDI)"
+            POPUP "R&TL Rozloženie (GDI)"
             BEGIN
-                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Upraviť oblasť",                 IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "Ďalšie &dialógy",                 IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Obojsmerne"
             BEGIN
@@ -551,14 +551,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                           IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",               IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",              IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type",            IDM_EDIT_DELETE_MARKED
+        MENUITEM "Vymazať značku",                         IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Vystrihnúť riadky so značkami",          IDM_EDIT_CUT_MARKED
+        MENUITEM "Kopírovať riadky so značkami",           IDM_EDIT_COPY_MARKED
+        MENUITEM "Zmazať riadky so značkami",              IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "Skladacia väzba",                        IDM_VIEW_FOLDING
         MENUITEM "Číslovanie riadkov",                     IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",                        IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Okraj záložky",                          IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
