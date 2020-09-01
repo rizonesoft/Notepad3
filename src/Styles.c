@@ -2461,7 +2461,7 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
-  if (StringCchLenW(Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters)) == 0) {
+  if (StrIsEmpty(Settings2.FileDlgFilters)) {
     GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
   }
   else {
@@ -3679,7 +3679,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   char chFontName[80] = { '\0' };
   WCHAR wchFontName[80] = { L'\0' };
   if (Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
-    if (StringCchLenW(wchFontName, COUNTOF(wchFontName)) > 0) {
+    if (StrIsNotEmpty(wchFontName)) {
       WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
       SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
     }
