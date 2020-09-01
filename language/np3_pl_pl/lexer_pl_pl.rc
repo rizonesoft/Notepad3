@@ -455,7 +455,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63357       "Dla każdej definicji"
-    IDS_LEX_STR_63358       "While Definition"
+    IDS_LEX_STR_63358       "Cała definicja"
     IDS_LEX_STR_63359       "Matematyka"
     IDS_LEX_STR_63360       "Skalar"
     IDS_LEX_STR_63361       "Zastąpienie"
@@ -464,8 +464,8 @@ BEGIN
     IDS_LEX_STR_63364       "Nazwa własności"
     IDS_LEX_STR_63365       "Klucz LD"
     IDS_LEX_STR_63366       "Sekwencja ESC"
-    IDS_LEX_STR_63367       "Unicode-Point Hover"
-    IDS_LEX_STR_63368       "2nd Unicode-Point Hover"
+    IDS_LEX_STR_63367       "Punkt najechania Unicode"
+    IDS_LEX_STR_63368       "Drugi punkt najechania Unicode"
 END
 
 STRINGTABLE
