@@ -1606,7 +1606,7 @@ UINT CharSetFromCodePage(const UINT uCodePage) {
  * This is used to get control characters into the regular expresion engine
  * w/o interfering with group referencing ('\0').
  */
-unsigned int UnSlashLowOctal(char* s) {
+ptrdiff_t UnSlashLowOctal(char* s) {
   char* sStart = s;
   char* o = s;
   while (*s) {
@@ -1625,7 +1625,7 @@ unsigned int UnSlashLowOctal(char* s) {
       ++s;
   }
   *o = '\0';
-  return (unsigned int)(o - sStart);
+  return (ptrdiff_t)(o - sStart);
 }
 
 
