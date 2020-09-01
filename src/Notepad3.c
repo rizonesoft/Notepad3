@@ -1660,6 +1660,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
     break;
 
+    case WM_DRAWITEM:
+      return MsgDrawItem(hwnd, wParam, lParam);
+
     case WM_DROPFILES:
       // see SCN_URIDROPP
       return MsgDropFiles(hwnd, wParam, lParam);
@@ -2067,7 +2070,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
   }
 
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(hwnd, true);
+    AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
     RefreshTitleBarThemeColor(hwnd);
   }
 
@@ -2369,7 +2372,18 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   Globals.hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
-  //SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL); ~ no correct behavior
+  //~InitWindowCommon(Globals.hwndToolbar, true); ~ SetWindowLayoutRTL() no correct behavior
+  SetExplorerTheme(Globals.hwndToolbar);
+
+  // @@@ §§§
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(Globals.hwndToolbar, CheckDarkModeEnabled());
+  }
+
+  // @@@ §§§ no effect:
+  //HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
+  //SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
+  //ReleaseDC(Globals.hwndToolbar, hdcTB);
 
   SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
@@ -2518,15 +2532,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
   }
 
-  // @@@ §§§
-  if (IsDarkModeSupported()) {
-    SetWindowTheme(Globals.hwndToolbar, L"Explorer", NULL);
-    //SetWindowTheme(Globals.hwndToolbar, L"DarkMode_Explorer", NULL);
-    AllowDarkModeForWindow(Globals.hwndToolbar, CheckDarkModeEnabled());
-    RefreshTitleBarThemeColor(Globals.hwndToolbar);
-    SendMessageW(Globals.hwndToolbar, WM_THEMECHANGED, 0, 0);
-  }
-
   CloseSettingsFile(bDirtyFlag, bOpendByMe);
 
   // ------------------------------
@@ -2538,6 +2543,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   s_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
+
+  SetExplorerTheme(s_hwndReBar);
 
   REBARINFO rbi;
   rbi.cbSize = sizeof(REBARINFO);
@@ -2579,17 +2586,36 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
+  //Globals.hwndStatus = CreateWindowEx(
+  //    0,                         // no extended styles
+  //    STATUSCLASSNAME,           // name of status bar class
+  //    (PCTSTR)NULL,              // no text when first created
+  //    dwStatusbarStyle,          // creates a visible child window
+  //    0, 0, 0, 0,                // ignores size and position
+  //    hwnd,                      // handle to parent window
+  //    (HMENU)IDC_STATUSBAR,      // child window identifier
+  //    hInstance,                 // handle to application instance
+  //    NULL);                     // no window creation data
 
-  SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
+  InitWindowCommon(Globals.hwndStatus, true);
 
   // @@@ §§§
   if (IsDarkModeSupported()) {
-    SetWindowTheme(Globals.hwndStatus, L"Explorer", NULL);
-    //SetWindowTheme(Globals.hwndToolbar, L"DarkMode_Explorer", NULL);
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
-    RefreshTitleBarThemeColor(Globals.hwndStatus);
-    SendMessageW(Globals.hwndStatus, WM_THEMECHANGED, 0, 0);
   }
+
+  // @@@ §§§
+  //if (IsDarkModeSupported() && CheckDarkModeEnabled())
+  //{
+  //  RECT rcSB;
+  //  HDC const hdc = GetWindowDC(Globals.hwndStatus);
+  //  GetWindowRect(Globals.hwndStatus, &rcSB);
+  //  SetMapMode(hdc, MM_ANISOTROPIC); 
+  //  SetWindowExtEx(hdc, 100, 100, NULL);
+  //  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
+  //  FillRect(hdc, &rcSB, s_hbrBkgnd);
+  //  ReleaseDC(Globals.hwndStatus, hdc);
+  //}
 }
 
 
@@ -2809,6 +2835,58 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateMarginWidth();
 
   return 0;
+}
+
+
+//=============================================================================
+//
+//  MsgDrawItem() - Handles WM_DRAWITEM
+//
+//
+LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam) 
+{
+  UNUSED(hwnd);
+
+  if (LOWORD(wParam) == IDC_STATUSBAR) // Statusbar SB_SETTEXT caused parent's WM_DRAWITEM message
+  {
+    // https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
+
+    const DRAWITEMSTRUCT* const pDrawItem = (const DRAWITEMSTRUCT* const)lParam;
+
+    HDC const hdc = pDrawItem->hDC;
+    HWND const hWndSB = pDrawItem->hwndItem;
+    //int const partId = (int)pDrawItem->itemID;
+    //int const stateId = (int)pDrawItem->itemState;
+    LPCWSTR const text = (LPCWSTR)(pDrawItem->itemData);
+    RECT rc = pDrawItem->rcItem;
+
+    PAINTSTRUCT ps;
+    BeginPaint(hWndSB, &ps);
+
+    //HTHEME const hTheme = OpenThemeData(hWndSB, L"Button");
+    //if (hTheme) {
+
+      if (CheckDarkModeEnabled()) {
+        SetBkColor(hdc, Globals.rgbDarkBkgColor);
+        DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+        //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
+        SetTextColor(hdc, Globals.rgbDarkTextColor);
+      } else {
+        SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
+        DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+        //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
+        SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+      }
+      ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL,
+          &rc, text, lstrlen(text), NULL);
+
+    //  CloseThemeData(hTheme);
+    //}
+
+    EndPaint(hWndSB, &ps);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 
@@ -9145,7 +9223,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (bIsUpdateNeeded) {
     int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-    int cnt = 0;
+    BYTE cnt = 0;
     int totalWidth = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
       int const id = s_vSBSOrder[i];

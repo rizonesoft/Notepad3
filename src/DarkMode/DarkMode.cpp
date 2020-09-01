@@ -223,6 +223,7 @@ static void _FixDarkScrollBar()
 }
 // ============================================================================
 
+
 constexpr bool CheckBuildNumber(DWORD buildNumber) {
   return (buildNumber == 17763 || // 1809
           buildNumber == 18362 || // 1903
@@ -240,7 +241,7 @@ extern "C" void InitDarkMode()
     RtlGetNtVersionNumbers(&major, &minor, &s_dwWindowsBuildNumber);
     s_dwWindowsBuildNumber &= ~0xF0000000;
 
-    // undocumented function adresses are only valid for this WinVer build numbers
+    // undocumented function addresses are only valid for this WinVer build numbers
     if (major == 10 && minor == 0 && CheckBuildNumber(s_dwWindowsBuildNumber))
     {
       HMODULE const hUxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
@@ -258,7 +259,7 @@ extern "C" void InitDarkMode()
         else
           _SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
 
-        _FlushMenuThemes = reinterpret_cast<fnFlushMenuThemes>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(136)));
+        //_FlushMenuThemes = reinterpret_cast<fnFlushMenuThemes>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(136)));
         _IsDarkModeAllowedForWindow = reinterpret_cast<fnIsDarkModeAllowedForWindow>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(137)));
 
         _SetWindowCompositionAttribute = reinterpret_cast<fnSetWindowCompositionAttribute>(GetProcAddress(GetModuleHandleW(L"user32.dll"), "SetWindowCompositionAttribute"));
@@ -268,7 +269,7 @@ extern "C" void InitDarkMode()
           _ShouldAppsUseDarkMode &&
           _AllowDarkModeForWindow &&
           (_AllowDarkModeForApp || _SetPreferredAppMode) &&
-          _FlushMenuThemes &&
+          //_FlushMenuThemes &&
           _IsDarkModeAllowedForWindow)
         {
           s_bDarkModeSupported = true;

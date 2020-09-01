@@ -706,8 +706,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     }
 
     if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
-      SetWindowTheme(GetDlgItem(hwnd, IDOK), L"Explorer", NULL);
-      SetWindowTheme(GetDlgItem(hwnd, IDC_COPYVERSTRG), L"Explorer", NULL);
+      SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+      SetExplorerTheme(GetDlgItem(hwnd, IDC_COPYVERSTRG));
       PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
     }
 
@@ -4610,35 +4610,72 @@ void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 
 //=============================================================================
 //
-//  StatusSetText()
+//  StatusOwnerDrawText()
 //
-void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
+void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
 {
   if (lpszText) {
-    UINT const uFlags = ((nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart);
-    StatusSetSimple(hwnd, (nPart == (UINT)STATUS_HELP));
-    SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
+    SendMessage(hwnd, SB_SETTEXT, (WPARAM)(SBT_OWNERDRAW | nPart), (LPARAM)lpszText);
   }
 }
+
 
 //=============================================================================
 //
 //  StatusSetTextID()
 //
-bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
+bool StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID)
 {
-  WCHAR szText[256] = { L'\0' };
-  UINT const uFlags = (nPart == STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
-  StatusSetSimple(hwnd, (nPart == (UINT)STATUS_HELP));
-
   if (!uID) {
-    SendMessage(hwnd, SB_SETTEXT, uFlags, 0);
+    SendMessage(hwnd, SB_SETTEXT, (WPARAM)(SBT_OWNERDRAW | nPart), (LPARAM)L"");
     return true;
   }
-  if (!GetLngString(uID, szText, 256)) { return false; }
-
-  return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)szText);
+  WCHAR szText[256] = { L'\0' };
+  if (!GetLngString(uID, szText, COUNTOF(szText))) {
+    return false;
+  }
+  return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)(SBT_OWNERDRAW | nPart), (LPARAM)szText);
 }
+
+
+#if 0
+//=============================================================================
+//
+//  StatusSetText()
+//
+void StatusPartSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
+{
+  if (lpszText) {
+    BOOL const bSimpleSB = (nPart == STATUS_HELP);
+    StatusSetSimple(hwnd, bSimpleSB);
+    DWORD const wparam = (bSimpleSB ? SBT_NOBORDERS : 0) | nPart;
+    SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, (LPARAM)lpszText);
+  }
+}
+
+
+//=============================================================================
+//
+//  StatusPartSetTextID()
+//
+bool StatusPartSetTextID(HWND hwnd, BYTE nPart, UINT uID)
+{
+  BOOL const bSimpleSB = (nPart == STATUS_HELP);
+  StatusSetSimple(hwnd, bSimpleSB);
+
+  DWORD const wparam = (bSimpleSB ? SBT_NOBORDERS : 0) | nPart;
+  if (!uID) {
+    SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, 0);
+    return true;
+  }
+
+  WCHAR szText[256] = { L'\0' };
+  if (!GetLngString(uID, szText, COUNTOF(szText))) {
+    return false;
+  }
+  return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, (LPARAM)szText);
+}
+#endif
 
 
 //=============================================================================

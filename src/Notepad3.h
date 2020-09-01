@@ -187,6 +187,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
