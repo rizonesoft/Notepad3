@@ -328,8 +328,8 @@ size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch);
 size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 size_t UnSlashCtrlW(LPWSTR pchInOut);
 
-void TransformBackslashes(char *pszInput, bool, UINT cpEdit, int *iReplaceMsg);
-void TransformMetaChars(char* pszInput, bool, int iEOLMode);
+void TransformBackslashes(char *pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
+void TransformMetaChars(char *pszInput, bool bRegEx, int iEOLMode);
 
 
 //==== Large Text Conversion ==================================================
