@@ -1569,7 +1569,7 @@ void LoadSettings()
     IniSectionGetString(IniSecSettings2, L"DefaultWindowPosition", Defaults2.DefaultWindowPosition,
       Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
 
-    bool const bExplicitDefaultWinPos = (StringCchLenW(Settings2.DefaultWindowPosition, 0) != 0);
+    bool const bExplicitDefaultWinPos = StrIsNotEmpty(Settings2.DefaultWindowPosition);
 
     // 1st set default window position 
 
@@ -2495,7 +2495,7 @@ void MRU_Save(LPMRULIST pmru)
             StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
             IniSectionSetPos(RegKey_Section, tchName, pmru->iSelAnchPos[i]);
           }
-          if (pmru->pszBookMarks[i] && (StringCchLenW(pmru->pszBookMarks[i], MRU_BMRK_SIZE) > 0)) {
+          if (StrIsNotEmpty(pmru->pszBookMarks[i])) {
             StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
             IniSectionSetString(RegKey_Section, tchName, pmru->pszBookMarks[i]);
           }
