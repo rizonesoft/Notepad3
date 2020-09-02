@@ -2369,7 +2369,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
 #else
   char* outBuffer = AllocMem(*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
-  if (outBuffer == NULL) {
+  if (!outBuffer) {
     return;
   }
   DWORD const outLen = *pcchUnescaped;

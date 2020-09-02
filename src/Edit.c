@@ -558,7 +558,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     mlen = WideCharToMultiByteEx(Encoding_SciCP, 0, pwch, wlen, NULL, 0, NULL, NULL);
     pmch = (char*)AllocMem(mlen + 1, HEAP_ZERO_MEMORY);
     if (pmch && mlen != 0) {
-      ptrdiff_t const cnt = WideCharToMultiByteEx(Encoding_SciCP, 0, pwch, wlen, pmch, mlen + 1, NULL, NULL);
+      ptrdiff_t const cnt = WideCharToMultiByteEx(Encoding_SciCP, 0, pwch, wlen, pmch, SizeOfMem(pmch), NULL, NULL);
       if (cnt == 0)
         return pmch;
     }
@@ -609,7 +609,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
       FreeMem(pmch);
       pmch = AllocMem(mlen2 + 1, HEAP_ZERO_MEMORY);
       if (pmch) {
-        StringCchCopyA(pmch, mlen2 + 1, ptmp);
+        StringCchCopyA(pmch, SizeOfMem(pmch), ptmp);
         FreeMem(ptmp);
       }
     }
@@ -679,7 +679,7 @@ bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText)
   if (cchTextW > 1) {
     pszTextW = AllocMem((cchTextW + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszTextW) {
-      MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, cchText, pszTextW, cchTextW);
+      MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, cchText, pszTextW, cchTextW + 1);
       pszTextW[cchTextW] = L'\0';
     }
   }
@@ -782,7 +782,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
     if (cchTextW > 0) {
       pszTextW = AllocMem((cchTextW + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
       if (pszTextW) {
-        MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, pszTextW, cchTextW);
+        MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, pszTextW, cchTextW + 1);
         pszTextW[cchTextW] = L'\0';
       }
     }
@@ -826,7 +826,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
 
   // Add New
   if (pszTextW && *pszTextW && pszNewTextW) {
-    StringCchCat(pszNewTextW, cchNewText+1, pszTextW);
+    StringCchCat(pszNewTextW, cchNewText + 1, pszTextW);
     res = SetClipboardTextW(hwndParent, pszNewTextW, cchNewText);
   }
 
@@ -1483,11 +1483,11 @@ bool EditSaveFile(
           size_t cbDataConverted = 0ULL;
           if (Encoding_IsMBCS(status->iEncoding)) {
             cbDataConverted = (size_t)WideCharToMultiByteEx(uCodePage, 0, lpDataWide, cbDataWide,
-                                                            lpData, cbDataNew, NULL, NULL);
+                                                            lpData, SizeOfMem(lpData), NULL, NULL);
           }
           else {
             cbDataConverted = (size_t)WideCharToMultiByteEx(uCodePage, WC_NO_BEST_FIT_CHARS, lpDataWide, cbDataWide,
-                                                            lpData, cbDataNew, NULL, isUTF_7_or_8 ? NULL : &bCancelDataLoss);
+                                                            lpData, SizeOfMem(lpData), NULL, isUTF_7_or_8 ? NULL : &bCancelDataLoss);
           }
 
           FreeMem(lpDataWide);
@@ -3781,7 +3781,7 @@ void EditStripFirstCharacter(HWND hwnd)
           DocPos const nextPos = SciCall_PositionAfter(selTargetStart);
           DocPos const len = (selTargetEnd - nextPos);
           if (len > 0) {
-            StringCchCopyNA(lineBuffer, iMaxLineLen, SciCall_GetRangePointer(nextPos, len + 1), len);
+            StringCchCopyNA(lineBuffer, SizeOfMem(lineBuffer), SciCall_GetRangePointer(nextPos, len + 1), len);
             SciCall_SetTargetRange(selTargetStart, selTargetEnd);
             SciCall_ReplaceTarget(len, lineBuffer);
           }
@@ -3867,7 +3867,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
           if (bTrailingBlanksOnly) {
             len = (selTargetEnd - selTargetStart);
             if (len > 0) {
-              StringCchCopyNA(lineBuffer, iMaxLineLen, SciCall_GetRangePointer(selTargetStart, len + 1), len);
+              StringCchCopyNA(lineBuffer, SizeOfMem(lineBuffer), SciCall_GetRangePointer(selTargetStart, len + 1), len);
               DocPos end = (DocPos)StrCSpnA(lineBuffer, "\r\n");
               DocPos i = end;
               while (--i >= 0) {
@@ -4096,7 +4096,7 @@ void EditCompressBlanks()
 
         SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
-        DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, cch + 1);
+        DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, SizeOfMem(pszOut));
 
         if (iCurPos < iAnchorPos) {
           EditSetSelectionEx(iCurPos + iNewLen, iCurPos, -1, -1);
@@ -5375,7 +5375,7 @@ static void  _EscapeWildcards(char* szFind2, size_t cch, LPCEDITFINDREPLACE lpef
       ++iSource;
     }
 
-    StringCchCopyNA(szFind2, cch, szWildcardEscaped, (cch<<1));
+    StringCchCopyNA(szFind2, cch, szWildcardEscaped, SizeOfMem(szWildcardEscaped));
 
     FreeMem(szWildcardEscaped);
   }
@@ -5972,7 +5972,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 size_t const len = StringCchLenA(pClip, 0);
                 if (len) {
                   lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
-                  StringCchCopyA(lpszSelection, len + 1, pClip);
+                  StringCchCopyA(lpszSelection, SizeOfMem(lpszSelection), pClip);
                 }
                 FreeMem(pClip);
               }
@@ -6833,7 +6833,7 @@ static char* _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iReplac
     size_t const cch = StringCchLenA(lpefr->szReplace, COUNTOF(lpefr->szReplace));
     pszReplace = (char*)AllocMem(cch + 1, HEAP_ZERO_MEMORY);
     if (pszReplace) {
-      StringCchCopyA(pszReplace, cch, lpefr->szReplace);
+      StringCchCopyA(pszReplace, SizeOfMem(pszReplace), lpefr->szReplace);
       bool const bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
       if (lpefr->bTransformBS || bIsRegEx) {
         TransformBackslashes(pszReplace, bIsRegEx, Encoding_SciCP, iReplaceMsg);
@@ -7528,8 +7528,8 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
       PWLIST pWLItem = NULL;
       LL_FOREACH_SAFE(pListHead, pWLItem, pTmp) {
         if (pWLItem->word[0]) {
-          StringCchCatA(pList, iWListSize, sep);
-          StringCchCatA(pList, iWListSize, pWLItem->word);
+          StringCchCatA(pList, SizeOfMem(pList), sep);
+          StringCchCatA(pList, SizeOfMem(pList), pWLItem->word);
         }
         LL_DELETE(pListHead, pWLItem);
         FreeMem(pWLItem);
