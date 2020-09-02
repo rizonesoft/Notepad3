@@ -56,17 +56,16 @@ static HBRUSH  s_hbrBkgnd = NULL;
 
 // ----------------------------------------------------------------------------
 
-WORDBOOKMARK_T WordBookMarks[MARKER_NP3_BOOKMARK] = {
-  /*0*/ {false, L"back:#0000"}, // OCC MARKER
-  /*1*/ {false, L"back:#FF0000"},
-  /*2*/ {false, L"back:#0000FF"},
-  /*3*/ {false, L"back:#00FF00"},
-  /*4*/ {false, L"back:#FFFF00"},
-  /*5*/ {false, L"back:#00E8E8"},
-  /*6*/ {false, L"back:#FF00FF"},
-  /*7*/ {false, L"back:#FF8F20"},
-  /*8*/ {false, L"back:#950095"}};
-
+LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
+  /*0*/ L"back:#0000", // OCC MARKER
+  /*1*/ L"back:#FF0000",
+  /*2*/ L"back:#0000FF",
+  /*3*/ L"back:#00FF00",
+  /*4*/ L"back:#FFFF00",
+  /*5*/ L"back:#00E8E8",
+  /*6*/ L"back:#FF00FF",
+  /*7*/ L"back:#FF8F20",
+  /*8*/ L"back:#950095"};
 
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 

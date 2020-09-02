@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Die Speicherung mit originalem Zeitstempel wurde aktiviert.\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Es stehen keine weiteren Fundstellen Markierungen/Lesezeichen mehr zur Verfügung!"
 END
 
 STRINGTABLE

@@ -4319,16 +4319,6 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
     SciCall_EndUndoAction();
     _OBSERVE_NOTIFY_CHANGE_;
 
-    if (bDelete) {
-        for (int m = MARKER_NP3_1; m <= MARKER_NP3_BOOKMARK; ++m) { // all(!)
-            if (bitmask & (1 << m)) {
-                if (SciCall_MarkerNext(0, (1 << m)) < 0) {
-                    WordBookMarks[m].in_use = false;
-                }
-            }
-        }
-    }
-
     SciCall_GotoLine(min_ln(curLn, Sci_GetLastDocLineNumber()));
 }
 
@@ -7134,7 +7124,6 @@ void EditClearAllBookMarks(HWND hwnd)
         // 1st press: clear all occurrences marker
         for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
             SciCall_MarkerDeleteAll(m);
-            WordBookMarks[m].in_use = false;
         }
     } else {
         // if no occurrences marker found
@@ -7789,7 +7778,6 @@ void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines)
                 SciCall_SetFoldLevel(line, SC_FOLDLEVELWHITEFLAG | level);
             }
         }
-
         SciCall_FoldAll(FOLD);
     }
 }
@@ -7804,15 +7792,14 @@ void EditBookMarkLineRange(HWND hwnd)
     UNUSED(hwnd);
     // get next free bookmark
     int marker;
-    for (marker = MARKER_NP3_1; marker < MARKER_NP3_BOOKMARK; ++marker) {
-        if (!WordBookMarks[marker].in_use) {
-            WordBookMarks[marker].in_use = true;
-            break;
-        }
+    for (marker = MARKER_NP3_1; marker < MARKER_NP3_BOOKMARK; ++marker) { // all(!)
+      if (SciCall_MarkerNext(0, (1 << marker)) < 0) {
+        break; // found unused
+      }
     }
-    if (marker >= MARKER_NP3_BOOKMARK) { // wrap around
-        marker = MARKER_NP3_1;
-        SciCall_MarkerDeleteAll(marker);
+    if (marker >= MARKER_NP3_BOOKMARK) {
+      InfoBoxLng(MB_ICONWARNING, L"OutOfOccurrenceMarkers", IDS_MUI_OUT_OFF_OCCMRK);
+      return;
     }
 
     DocLn line = -1;
@@ -8897,7 +8884,6 @@ void EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers) {
     for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
       if (bitmask & (1 << m)) {
         SciCall_MarkerDeleteAll(m);
-        WordBookMarks[m].in_use = false;
       }
     }
   }
