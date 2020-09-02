@@ -273,6 +273,7 @@ typedef enum
 #define OCCURRENCE_MARKER_BITMASK() (bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE))
 
 extern LPCWSTR WordBookMarks[];
+extern HBRUSH s_hbrWndDarkBackground;
 
 // --------------------------------------------------------------------------
 

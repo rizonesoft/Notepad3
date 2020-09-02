@@ -52,7 +52,7 @@
 //
 // ============================================================================
 
-static HBRUSH  s_hbrBkgnd = NULL;
+HBRUSH  s_hbrWndDarkBackground = NULL;
 
 // ----------------------------------------------------------------------------
 
@@ -601,6 +601,8 @@ static void _InitGlobals()
   ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
   
   InitDarkMode();
+  s_hbrWndDarkBackground = CreateSolidBrush(Globals.rgbDarkBkgColor);
+
   Globals.WindowsBuildNumber = GetWindowsBuildNumber();
 
   Globals.hDlgIcon256   = NULL;
@@ -767,6 +769,10 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
   if (bIsInitialized) {
     UnregisterClass(s_wchWndClass, Globals.hInstance);
+  }
+
+  if (s_hbrWndDarkBackground) {
+    DeleteObject(s_hbrWndDarkBackground);
   }
 
   if (s_lpOrigFileArg) {
@@ -1292,7 +1298,7 @@ bool InitApplication(HINSTANCE hInstance)
   wc.hInstance = hInstance;
   wc.hIcon = Globals.hDlgIcon256;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+  wc.hbrBackground = GetSysColorBrush(COLOR_WINDOW); //(HBRUSH)(COLOR_WINDOW + 1); 
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
@@ -2064,10 +2070,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
   UNUSED(wParam);
 
-  if (!s_hbrBkgnd) {
-    s_hbrBkgnd = CreateSolidBrush(Globals.rgbDarkBkgColor);
-  }
-
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
     RefreshTitleBarThemeColor(hwnd);
@@ -2381,6 +2383,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   // @@@ §§§ no effect:
   //HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
+  ////~SelectObject(hdcTB, s_hbrWndDarkBackground);
   //SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
   //ReleaseDC(Globals.hwndToolbar, hdcTB);
 

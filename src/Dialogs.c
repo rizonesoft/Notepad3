@@ -247,6 +247,22 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       SetWindowLayoutRTL(hwnd, (lpMsgBox->uType & MB_RTLREADING));
 
+      if (IsDarkModeSupported() && CheckDarkModeEnabled())
+      {
+        for (int btn = IDOK; btn <= IDCONTINUE; ++btn) {
+          HWND const hBtn = GetDlgItem(hwnd, btn);
+          if (hBtn) {
+            SetExplorerTheme(hBtn);
+          }
+        }
+        SetExplorerTheme(hwnd);
+      }
+
+      HDC const hdc = GetDC(hwnd);
+      SetTextColor(hdc, Globals.rgbDarkTextColor);
+      SetBkColor(hdc, Globals.rgbDarkBkgColor);
+      ReleaseDC(hwnd, hdc);
+
       dpi = Scintilla_GetWindowDPI(hwnd);
 
       int const scxb = ScaleIntByDPI(GetSystemMetrics(SM_CXICON), dpi.x);
@@ -308,11 +324,65 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     }
     return !0;
 
+
   case WM_DESTROY:
     if (hIconBmp) {
       DeleteObject(hIconBmp);
     }
     return !0;
+
+
+  //case WM_ERASEBKGND:
+  //  if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+  //    HDC const hdc = (HDC)wParam;
+  //    SelectObject((HDC)wParam, s_hbrWndDarkBackground);
+  //    RECT rc;
+  //    GetClientRect(hwnd, &rc);
+  //    SetMapMode(hdc, MM_ANISOTROPIC);
+  //    SetWindowExtEx(hdc, 100, 100, NULL);
+  //    SetViewportExtEx(hdc, rc.right, rc.bottom, NULL);
+  //    FillRect(hdc, &rc, s_hbrWndDarkBackground);
+  //  }
+  //  return !0;
+
+
+  case WM_CTLCOLOR:
+  case WM_CTLCOLORDLG:
+  case WM_CTLCOLORSTATIC: {
+    if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+      HDC const hdc = (HDC)wParam;
+      SetTextColor(hdc, Globals.rgbDarkTextColor);
+      SetBkColor(hdc, Globals.rgbDarkBkgColor);
+      return (INT_PTR)s_hbrWndDarkBackground;
+    }
+  } break;
+
+
+  case WM_SETTINGCHANGE:
+    if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+      SendMessageW(hwnd, WM_THEMECHANGED, 0, 0);
+    }
+    break;
+
+  
+  case WM_THEMECHANGED:
+    if (IsDarkModeSupported())
+    {
+      bool const darkModeEnabled = CheckDarkModeEnabled();
+      AllowDarkModeForWindow(hwnd, darkModeEnabled);
+      RefreshTitleBarThemeColor(hwnd);
+
+      for (int btn = IDOK; btn <= IDCONTINUE; ++btn) {
+        HWND const hBtn = GetDlgItem(hwnd, btn);
+        if (hBtn) {
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+      }
+      UpdateWindow(hwnd);
+    }
+    break;
+
 
   case WM_COMMAND:
     {
@@ -701,14 +771,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     //~SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 
-		if (!hbrBkgnd) {
-      hbrBkgnd = CreateSolidBrush(Globals.rgbDarkBkgColor);
-    }
-
     if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
       SetExplorerTheme(GetDlgItem(hwnd, IDOK));
       SetExplorerTheme(GetDlgItem(hwnd, IDC_COPYVERSTRG));
-      PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      SetExplorerTheme(hwnd);
     }
 
     dpi = Scintilla_GetWindowDPI(hwnd);
@@ -820,10 +886,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       DeleteObject(hVersionFont);
       hVersionFont = NULL;
     }
-    if (hbrBkgnd) {
-      DeleteObject(hbrBkgnd);
-      hbrBkgnd = NULL;
-    }
     break;
 
   case WM_DPICHANGED:
@@ -868,6 +930,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     break;
 
 
+	  case WM_CTLCOLOR:
 	  case WM_CTLCOLORDLG:
     case WM_CTLCOLORSTATIC:
     {
@@ -875,7 +938,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         HDC hdc = (HDC)wParam;
         SetTextColor(hdc, Globals.rgbDarkTextColor);
         SetBkColor(hdc, Globals.rgbDarkBkgColor);
-        return (INT_PTR)hbrBkgnd;
+        return (INT_PTR)s_hbrWndDarkBackground;
       }
     }
     break;
@@ -1888,7 +1951,6 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
                                                       &shfi, sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                             LVSIL_NORMAL);
 
-      //SetExplorerTheme(GetDlgItem(hwnd,IDC_FILEMRU));
       ListView_SetExtendedListViewStyle(hwndIL, /*LVS_EX_FULLROWSELECT|*/ LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
       ListView_InsertColumn(hwndIL, 0, &lvc);
 
