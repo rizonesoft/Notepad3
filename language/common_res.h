@@ -173,6 +173,7 @@
 #define IDS_MUI_STATUSBAR_POSTFIXES     15061
 #define IDS_MUI_RELOADSETTINGS          15062
 #define IDS_MUI_RELOADCFGSEX            15063
+#define IDS_MUI_OUT_OFF_OCCMRK          15064
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWNDTB                   16001
