@@ -7204,7 +7204,7 @@ static void _HandleAutoIndent(int const charAdded)
                     }
                     if (*pLineBuf) {
                         _BEGIN_UNDO_ACTION_;
-                        SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
+                        SciCall_AddText((DocPos)StringCchLenA(pLineBuf, SizeOfMem(pLineBuf)), pLineBuf);
                         _END_UNDO_ACTION_;
                     }
                     FreeMem(pLineBuf);
@@ -8744,10 +8744,10 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
     if (!StrIsEmptyA(tmpRectSelN))
     {
       if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit) {
-        StringCchCatA(calcBuffer, calcBufSize, "+"); // default: add numbers
+        StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), "+"); // default: add numbers
       }
       bLastCharWasDigit = IsDigitA(tmpRectSelN[StringCchLenA(tmpRectSelN,COUNTOF(tmpRectSelN)) - 1]);
-      StringCchCatA(calcBuffer, calcBufSize, tmpRectSelN);
+      StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), tmpRectSelN);
     }
   }
   return te_interp(calcBuffer, piExprError);
