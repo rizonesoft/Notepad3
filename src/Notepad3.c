@@ -2374,6 +2374,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
   //~InitWindowCommon(Globals.hwndToolbar, true); ~ SetWindowLayoutRTL() no correct behavior
+  //~SetWindowTheme(Globals.hwndToolbar, L"", L""); // you cannot change a toolbar's color when a visual style is active
   SetExplorerTheme(Globals.hwndToolbar);
 
   // @@@ §§§
@@ -2383,7 +2384,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   // @@@ §§§ no effect:
   //HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
-  ////~SelectObject(hdcTB, s_hbrWndDarkBackground);
+  //SelectObject(hdcTB, s_hbrWndDarkBackground);
   //SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
   //ReleaseDC(Globals.hwndToolbar, hdcTB);
 
