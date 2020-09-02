@@ -270,16 +270,7 @@ typedef enum
 
 #define OCCURRENCE_MARKER_BITMASK() (bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE))
 
-
-typedef struct _wordbookmark_t
-{
-  bool     in_use;
-  LPCWSTR  color;
-
-} WORDBOOKMARK_T, *PWORDBOOKMARK_T;
-
-extern WORDBOOKMARK_T WordBookMarks[];
-
+extern LPCWSTR WordBookMarks[];
 
 // --------------------------------------------------------------------------
 
