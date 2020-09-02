@@ -1845,7 +1845,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m)
   {
     SciCall_MarkerDefine(m, (Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
-    Style_StrGetColor(WordBookMarks[m].color, BACKGROUND_LAYER, &color);
+    Style_StrGetColor(WordBookMarks[m], BACKGROUND_LAYER, &color);
     SciCall_MarkerSetFore(m, color);
     SciCall_MarkerSetBack(m, color);
     SciCall_MarkerSetAlpha(m, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
