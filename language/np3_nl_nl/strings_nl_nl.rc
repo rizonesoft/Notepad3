@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik om de link in de browser te openen."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Tijdstempel originele bestandswijziging behouden ingeschakeld.\nDeze optie blijft voor deze sessie!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Er zijn geen andere voorval markeringen (Bladwijzer/Markeer)!"
 END
 
 STRINGTABLE

@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.901.(build_#) (2020-09-01)
+Current BETA/RC Version 5.20.902.(build_#) (2020-09-02)
 ========================================================
 
 --------------------------------------------------------
@@ -102,7 +102,9 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
-[901.1]- Crash caused by buffer overflow.
+[.901.2]- Buffer size calculation.
+[.901.2]- Running out of occurrences bookmarks.
+[.901.1]- Crash caused by buffer overflow.
 [.831.1]- Recent File List (File History): Disable OK/Remove on empty list.
 [.831.1]- Enhanced internal icon/bitmap handling.
 [.830.1]- Remove needless function.

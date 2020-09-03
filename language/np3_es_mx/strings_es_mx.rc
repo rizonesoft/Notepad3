@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquear para abrir el enlace en navegador."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Conservar la marca de tiempo de modificación del archivo original habilitada.\n¡Esta opción permanecerá para esta sesión!"
+    IDS_MUI_OUT_OFF_OCCMRK   "No hay otros marcadores de ocurrencia (Marcador/Resaltar)!"
 END
 
 STRINGTABLE

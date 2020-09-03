@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kattintás a böngészőben való megnyitáshoz."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Az eredeti fájl módosítási idejeének megőrzése opció be van kapcsolva.\nA beállítás így marad erre a munkamenetre!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
