@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, каб адкрыць спасылку ў браўзеры."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Захоўванне зыходняй часаадзнакі змянення файла ўключана.\nГэта опцыя застанецца ўключанай для гэтай сесіі!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE

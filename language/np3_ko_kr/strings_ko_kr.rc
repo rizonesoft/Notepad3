@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click 브라우저에서 링크 열기."
     IDS_MUI_INF_PRSVFILEMODTM
                              "기존의 파일 수정 타임스탬프를 보존합니다.\n이 옵션은 이 세션에 한에서만 적용됩니다!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE

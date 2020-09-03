@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同時點選以在瀏覽器中打開鏈接。"
     IDS_MUI_INF_PRSVFILEMODTM
                              "已啟用維持檔案最後修改時間功能。\n\n本選項將在目前會話期間生效。"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
