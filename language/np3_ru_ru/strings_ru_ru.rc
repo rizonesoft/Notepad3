@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, чтобы открыть ссылку в браузере."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Сохранение исходной метки времени изменения файла включено.\nЭта опция останется включенной для текущей сессии!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE

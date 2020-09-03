@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
