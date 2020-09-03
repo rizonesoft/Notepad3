@@ -159,7 +159,7 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "Chcete normalizovať všetky zakončenia riadkov, ktoré majú byť '%s'?"
 END
 
 STRINGTABLE
@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + kliknutím otvoríte prepojenie."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené.\nTáto možnosť zostane len pre túto reláciu!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
@@ -255,11 +256,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "&Štandardné nastavenia"
     IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Vymazať všetko"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Vymazať históriu vyhľadávania"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "Vymazať históriu nahradenia"
 END
 
 STRINGTABLE

@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click per aprire il link nel browser."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Conservazione della data di ultima modifica originale abilitata.\nQuesta opzione rimarrà attiva per questa sessione!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE

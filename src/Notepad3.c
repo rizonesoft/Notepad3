@@ -51,16 +51,16 @@
 //
 // ============================================================================
 
-WORDBOOKMARK_T WordBookMarks[MARKER_NP3_BOOKMARK] = {
-  /*0*/ {false, L"back:#0000"}, // OCC MARKER
-  /*1*/ {false, L"back:#FF0000"},
-  /*2*/ {false, L"back:#0000FF"},
-  /*3*/ {false, L"back:#00FF00"},
-  /*4*/ {false, L"back:#FFFF00"},
-  /*5*/ {false, L"back:#00E8E8"},
-  /*6*/ {false, L"back:#FF00FF"},
-  /*7*/ {false, L"back:#FF8F20"},
-  /*8*/ {false, L"back:#950095"}};
+LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
+  /*0*/ L"back:#0000", // OCC MARKER
+  /*1*/ L"back:#FF0000",
+  /*2*/ L"back:#0000FF",
+  /*3*/ L"back:#00FF00",
+  /*4*/ L"back:#FFFF00",
+  /*5*/ L"back:#00E8E8",
+  /*6*/ L"back:#FF00FF",
+  /*7*/ L"back:#FF8F20",
+  /*8*/ L"back:#950095"};
 
 
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
@@ -3618,7 +3618,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   
   CheckCmd(hmenu, IDM_VIEW_CHANGENOTIFY, Settings.FileWatchingMode);
 
-  if (StringCchLenW(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt)))
+  if (StrIsNotEmpty(s_wchTitleExcerpt))
     i = IDM_VIEW_SHOWEXCERPT;
   else if (Settings.PathNameFormat == 0)
     i = IDM_VIEW_SHOWFILENAMEONLY;
@@ -3641,7 +3641,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel && !bIsHLink);
   EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel && !bIsHLink);
 
-  i = (int)StringCchLenW(Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
+  i = (int)StrIsNotEmpty(Settings2.AdministrationTool);
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
   for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
@@ -7081,7 +7081,7 @@ static void _HandleAutoIndent(int const charAdded)
                     }
                     if (*pLineBuf) {
                         _BEGIN_UNDO_ACTION_;
-                        SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
+                        SciCall_AddText((DocPos)StringCchLenA(pLineBuf, SizeOfMem(pLineBuf)), pLineBuf);
                         _END_UNDO_ACTION_;
                     }
                     FreeMem(pLineBuf);
@@ -8621,10 +8621,10 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
     if (!StrIsEmptyA(tmpRectSelN))
     {
       if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit) {
-        StringCchCatA(calcBuffer, calcBufSize, "+"); // default: add numbers
+        StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), "+"); // default: add numbers
       }
       bLastCharWasDigit = IsDigitA(tmpRectSelN[StringCchLenA(tmpRectSelN,COUNTOF(tmpRectSelN)) - 1]);
-      StringCchCatA(calcBuffer, calcBufSize, tmpRectSelN);
+      StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), tmpRectSelN);
     }
   }
   return te_interp(calcBuffer, piExprError);
@@ -10295,7 +10295,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   {
     WCHAR tchFile[MAX_PATH] = { L'\0' };
     WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-    if (bSaveCopy && StringCchLenW(s_tchLastSaveCopyDir, COUNTOF(s_tchLastSaveCopyDir))) {
+    if (bSaveCopy && StrIsNotEmpty(s_tchLastSaveCopyDir)) {
       StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), s_tchLastSaveCopyDir);
       StringCchCopy(tchFile, COUNTOF(tchFile), s_tchLastSaveCopyDir);
       PathCchAppend(tchFile, COUNTOF(tchFile), PathFindFileName(Globals.CurrentFile));
@@ -10436,7 +10436,7 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
       StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
       PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
     }
-    else if (StringCchLenW(Settings2.DefaultDirectory,COUNTOF(Settings2.DefaultDirectory))) {
+    else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
       ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
       if (PathIsRelative(tchInitialDir)) {
         WCHAR tchModule[MAX_PATH] = { L'\0' };
@@ -10458,7 +10458,7 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
               OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
               OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-  ofn.lpstrDefExt = (StringCchLenW(Settings2.DefaultExtension,COUNTOF(Settings2.DefaultExtension))) ? Settings2.DefaultExtension : NULL;
+  ofn.lpstrDefExt = StrIsNotEmpty(Settings2.DefaultExtension) ? Settings2.DefaultExtension : NULL;
 
   if (GetOpenFileName(&ofn)) {
     StringCchCopyN(lpstrFile,cchFile,szFile,COUNTOF(szFile));
@@ -10489,7 +10489,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
     PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
   }
-  else if (StringCchLenW(Settings2.DefaultDirectory,COUNTOF(Settings2.DefaultDirectory))) {
+  else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
     ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
     if (PathIsRelative(tchInitialDir)) {
       WCHAR tchModule[MAX_PATH] = { L'\0' };
@@ -10510,7 +10510,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
             /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
             OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
-  ofn.lpstrDefExt = (StringCchLenW(Settings2.DefaultExtension,COUNTOF(Settings2.DefaultExtension))) ? Settings2.DefaultExtension : NULL;
+  ofn.lpstrDefExt = StrIsNotEmpty(Settings2.DefaultExtension) ? Settings2.DefaultExtension : NULL;
 
   if (GetSaveFileName(&ofn)) {
     StringCchCopyN(lpstrFile,cchFile,szNewFile,COUNTOF(szNewFile));
@@ -10991,7 +10991,7 @@ void SetNotifyIconTitle(HWND hwnd)
   nid.uFlags = NIF_TIP;
 
   WCHAR tchTitle[256] = { L'\0' };
-  if (StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt))) {
+  if (StrIsNotEmpty(s_wchTitleExcerpt)) {
     WCHAR tchFormat[32] = { L'\0' };
     GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
     StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);

@@ -199,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Bevarande av tidsstämpel för filmodifiering är aktiverad.\nInställningen är giltig för denna session!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE

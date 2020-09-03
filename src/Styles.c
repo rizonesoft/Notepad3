@@ -1845,7 +1845,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m)
   {
     SciCall_MarkerDefine(m, (Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
-    Style_StrGetColor(WordBookMarks[m].color, BACKGROUND_LAYER, &color);
+    Style_StrGetColor(WordBookMarks[m], BACKGROUND_LAYER, &color);
     SciCall_MarkerSetFore(m, color);
     SciCall_MarkerSetBack(m, color);
     SciCall_MarkerSetAlpha(m, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
@@ -2461,7 +2461,7 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
-  if (StringCchLenW(Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters)) == 0) {
+  if (StrIsEmpty(Settings2.FileDlgFilters)) {
     GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
   }
   else {
@@ -3679,7 +3679,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   char chFontName[80] = { '\0' };
   WCHAR wchFontName[80] = { L'\0' };
   if (Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
-    if (StringCchLenW(wchFontName, COUNTOF(wchFontName)) > 0) {
+    if (StrIsNotEmpty(wchFontName)) {
       WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
       SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
     }
