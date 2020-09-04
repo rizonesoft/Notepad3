@@ -247,7 +247,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       SetWindowLayoutRTL(hwnd, (lpMsgBox->uType & MB_RTLREADING));
 
-      if (IsDarkModeSupported() && CheckDarkModeEnabled())
+      if (UseDarkMode())
       {
         for (int btn = IDOK; btn <= IDCONTINUE; ++btn) {
           HWND const hBtn = GetDlgItem(hwnd, btn);
@@ -331,9 +331,9 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     }
     return !0;
 
-
+#ifdef D_NP3_WIN10_DARK_MODE
   //case WM_ERASEBKGND:
-  //  if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+  //  if (UseDarkMode()) {
   //    HDC const hdc = (HDC)wParam;
   //    SelectObject((HDC)wParam, s_hbrWndDarkBackground);
   //    RECT rc;
@@ -349,14 +349,13 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
   case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
   case WM_CTLCOLORSTATIC: {
-    if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+    if (UseDarkMode()) {
       HDC const hdc = (HDC)wParam;
       SetTextColor(hdc, Globals.rgbDarkTextColor);
       SetBkColor(hdc, Globals.rgbDarkBkgColor);
       return (INT_PTR)s_hbrWndDarkBackground;
     }
   } break;
-
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -382,6 +381,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       UpdateWindow(hwnd);
     }
     break;
+#endif
 
 
   case WM_COMMAND:
@@ -771,11 +771,13 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     //~SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 
-    if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+#ifdef D_NP3_WIN10_DARK_MODE
+    if (UseDarkMode()) {
       SetExplorerTheme(GetDlgItem(hwnd, IDOK));
       SetExplorerTheme(GetDlgItem(hwnd, IDC_COPYVERSTRG));
       SetExplorerTheme(hwnd);
     }
+#endif
 
     dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -861,7 +863,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     if (!StrIsEmptyA(pAboutResource)) {
       pAboutInfo              = pAboutResource;
       EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
-      if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+      if (UseDarkMode()) {
         SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0x80, 0x80, 0x80));
       }
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
@@ -897,7 +899,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       if (!StrIsEmptyA(pAboutResource)) {
         pAboutInfo              = pAboutResource;
         EDITSTREAM editStreamIn = {(DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback};
-        if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+        if (UseDarkMode()) {
           SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0xA0,0xA0,0xA0));
         }
         SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
@@ -929,12 +931,13 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     }
     break;
 
+#ifdef D_NP3_WIN10_DARK_MODE
 
 	  case WM_CTLCOLOR:
 	  case WM_CTLCOLORDLG:
     case WM_CTLCOLORSTATIC:
     {
-      if (IsDarkModeSupported() && CheckDarkModeEnabled()) {
+      if (UseDarkMode()) {
         HDC hdc = (HDC)wParam;
         SetTextColor(hdc, Globals.rgbDarkTextColor);
         SetBkColor(hdc, Globals.rgbDarkBkgColor);
@@ -970,7 +973,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       }
     }
     break;
-
+#endif
 
     case WM_PAINT:
     {

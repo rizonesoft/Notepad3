@@ -1,17 +1,46 @@
+
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
+
+#ifdef D_NP3_WIN10_DARK_MODE
 #include <CommCtrl.h>
 #include <Uxtheme.h>
 #include <WindowsX.h>
 #include <Dwmapi.h>
 #include <Vssym32.h>
-
 #include <climits>
+#endif
+
 #include <cstdint>
 
 #include "DarkMode.h"
 #include "IatHook.hpp"
+
+
+// ============================================================================
+
+using fnRtlGetNtVersionNumbers = void(WINAPI *)(LPDWORD major, LPDWORD minor, LPDWORD build);
+
+extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
+{
+  static DWORD _dwWindowsBuildNumber = 0;
+  static DWORD _major, _minor;
+  if (!_dwWindowsBuildNumber) {
+    fnRtlGetNtVersionNumbers RtlGetNtVersionNumbers = reinterpret_cast<fnRtlGetNtVersionNumbers>(GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "RtlGetNtVersionNumbers"));
+    if (RtlGetNtVersionNumbers) {
+      RtlGetNtVersionNumbers(&_major, &_minor, &_dwWindowsBuildNumber);
+      _dwWindowsBuildNumber &= ~0xF0000000;
+    }
+  }
+  if (major) { *major = _major; }
+  if (minor) { *minor = _minor; }
+  return _dwWindowsBuildNumber;
+}
+// ============================================================================
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
 
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Uxtheme.lib")
@@ -74,8 +103,6 @@ struct WINDOWCOMPOSITIONATTRIBDATA {
   SIZE_T cbData;
 };
 
-
-using fnRtlGetNtVersionNumbers = void(WINAPI *)(LPDWORD major, LPDWORD minor, LPDWORD build);
 using fnSetWindowCompositionAttribute = BOOL(WINAPI *)(HWND hWnd, WINDOWCOMPOSITIONATTRIBDATA *);
 // 1809 17763
 using fnShouldAppsUseDarkMode = bool(WINAPI *)();                                            // ordinal 132
@@ -104,14 +131,6 @@ fnOpenNcThemeData _OpenNcThemeData = nullptr;
 fnShouldSystemUseDarkMode _ShouldSystemUseDarkMode = nullptr;
 fnSetPreferredAppMode _SetPreferredAppMode = nullptr;
 
-// ============================================================================
-
-static DWORD s_dwWindowsBuildNumber = 0;
-
-extern "C" DWORD GetWindowsBuildNumber()
-{
-  return s_dwWindowsBuildNumber;
-}
 // ============================================================================
 
 
@@ -156,7 +175,8 @@ extern "C" void RefreshTitleBarThemeColor(HWND hWnd)
       !IsHighContrast()) {
     dark = TRUE;
   }
-  if (s_dwWindowsBuildNumber < 18362) {
+  DWORD const buildNum = GetWindowsBuildNumber(nullptr, nullptr);
+  if (buildNum < 18362) {
     SetPropW(hWnd, L"UseImmersiveDarkModeColors", reinterpret_cast<HANDLE>(static_cast<INT_PTR>(dark)));
   }
   else if (_SetWindowCompositionAttribute) {
@@ -234,15 +254,11 @@ constexpr bool CheckBuildNumber(DWORD buildNumber) {
 
 extern "C" void InitDarkMode()
 {
-  fnRtlGetNtVersionNumbers RtlGetNtVersionNumbers = reinterpret_cast<fnRtlGetNtVersionNumbers>(GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "RtlGetNtVersionNumbers"));
-  if (RtlGetNtVersionNumbers)
-  {
-    DWORD major, minor;
-    RtlGetNtVersionNumbers(&major, &minor, &s_dwWindowsBuildNumber);
-    s_dwWindowsBuildNumber &= ~0xF0000000;
-
+  DWORD major, minor;
+  DWORD const buildNumber = GetWindowsBuildNumber(&major, &minor);
+  if (buildNumber) {
     // undocumented function addresses are only valid for this WinVer build numbers
-    if (major == 10 && minor == 0 && CheckBuildNumber(s_dwWindowsBuildNumber))
+    if (major == 10 && minor == 0 && CheckBuildNumber(buildNumber))
     {
       HMODULE const hUxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
       if (hUxtheme)
@@ -254,7 +270,7 @@ extern "C" void InitDarkMode()
         _AllowDarkModeForWindow = reinterpret_cast<fnAllowDarkModeForWindow>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(133)));
 
         auto const ord135 = GetProcAddress(hUxtheme, MAKEINTRESOURCEA(135));
-        if (s_dwWindowsBuildNumber < 18334)
+        if (buildNumber < 18334)
           _AllowDarkModeForApp = reinterpret_cast<fnAllowDarkModeForApp>(ord135);
         else
           _SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
@@ -286,5 +302,8 @@ extern "C" void InitDarkMode()
     }
   }
 }
+
+#endif
+
 // ============================================================================
 

@@ -601,11 +601,13 @@ static void _InitGlobals()
   ZeroMemory(&Flags, sizeof(FLAGS_T));
 
   ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
-  
+
+#ifdef D_NP3_WIN10_DARK_MODE
   InitDarkMode();
   s_hbrWndDarkBackground = CreateSolidBrush(Globals.rgbDarkBkgColor);
+#endif
 
-  Globals.WindowsBuildNumber = GetWindowsBuildNumber();
+  Globals.WindowsBuildNumber = GetWindowsBuildNumber(NULL, NULL);
 
   Globals.hDlgIcon256   = NULL;
   Globals.hDlgIcon128   = NULL;
@@ -1301,7 +1303,7 @@ bool InitApplication(const HINSTANCE hInstance)
   wc.hInstance = hInstance;
   wc.hIcon = Globals.hDlgIcon256;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wc.hbrBackground = s_hbrWndDarkBackground; // @@@ §§§ // GetSysColorBrush(COLOR_WINDOW); //(HBRUSH)(COLOR_WINDOW + 1); 
+  wc.hbrBackground = UseDarkMode() ? s_hbrWndDarkBackground : (HBRUSH)(COLOR_WINDOW + 1);
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
@@ -1688,6 +1690,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
       return MsgSize(hwnd, wParam, lParam);
 
+#ifdef D_NP3_WIN10_DARK_MODE
 	  case WM_SETTINGCHANGE: {
       if (IsColorSchemeChangeMessage(lParam)) {
         CheckDarkModeEnabled();
@@ -1696,6 +1699,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
     }
     break;
+#endif
 
     case WM_DRAWITEM:
       return MsgDrawItem(hwnd, wParam, lParam);
@@ -2097,15 +2101,16 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 //  MsgCreate() - Handles WM_CREATE
 //
 //
-
 LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
   UNUSED(wParam);
 
+#ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
     RefreshTitleBarThemeColor(hwnd);
   }
+#endif
 
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
@@ -2433,16 +2438,16 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   //~SetWindowTheme(Globals.hwndToolbar, L"", L""); // you cannot change a toolbar's color when a visual style is active
   SetExplorerTheme(Globals.hwndToolbar);
 
-  // @@@ §§§
+#ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndToolbar, CheckDarkModeEnabled());
   }
-
-  // @@@ §§§ no effect:
-  //HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
-  //SelectObject(hdcTB, s_hbrWndDarkBackground);
-  //SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
-  //ReleaseDC(Globals.hwndToolbar, hdcTB);
+  //~ no effect:
+  //~HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
+  //~SelectObject(hdcTB, s_hbrWndDarkBackground);
+  //~SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
+  //~ReleaseDC(Globals.hwndToolbar, hdcTB);
+#endif
 
   SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
@@ -2645,36 +2650,36 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
-  //Globals.hwndStatus = CreateWindowEx(
-  //    0,                         // no extended styles
-  //    STATUSCLASSNAME,           // name of status bar class
-  //    (PCTSTR)NULL,              // no text when first created
-  //    dwStatusbarStyle,          // creates a visible child window
-  //    0, 0, 0, 0,                // ignores size and position
-  //    hwnd,                      // handle to parent window
-  //    (HMENU)IDC_STATUSBAR,      // child window identifier
-  //    hInstance,                 // handle to application instance
-  //    NULL);                     // no window creation data
+  //~Globals.hwndStatus = CreateWindowEx(
+  //~    0,                         // no extended styles
+  //~    STATUSCLASSNAME,           // name of status bar class
+  //~    (PCTSTR)NULL,              // no text when first created
+  //~    dwStatusbarStyle,          // creates a visible child window
+  //~    0, 0, 0, 0,                // ignores size and position
+  //~    hwnd,                      // handle to parent window
+  //~    (HMENU)IDC_STATUSBAR,      // child window identifier
+  //~    hInstance,                 // handle to application instance
+  //~    NULL);                     // no window creation data
 
   InitWindowCommon(Globals.hwndStatus, true);
 
-  // @@@ §§§
+#ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
   }
 
-  // @@@ §§§
-  //if (IsDarkModeSupported() && CheckDarkModeEnabled())
-  //{
-  //  RECT rcSB;
-  //  HDC const hdc = GetWindowDC(Globals.hwndStatus);
-  //  GetWindowRect(Globals.hwndStatus, &rcSB);
-  //  SetMapMode(hdc, MM_ANISOTROPIC); 
-  //  SetWindowExtEx(hdc, 100, 100, NULL);
-  //  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
-  //  FillRect(hdc, &rcSB, s_hbrBkgnd);
-  //  ReleaseDC(Globals.hwndStatus, hdc);
-  //}
+  //~if (UseDarkMode())
+  //~{
+  //~  RECT rcSB;
+  //~  HDC const hdc = GetWindowDC(Globals.hwndStatus);
+  //~  GetWindowRect(Globals.hwndStatus, &rcSB);
+  //~  SetMapMode(hdc, MM_ANISOTROPIC); 
+  //~  SetWindowExtEx(hdc, 100, 100, NULL);
+  //~  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
+  //~  FillRect(hdc, &rcSB, s_hbrBkgnd);
+  //~  ReleaseDC(Globals.hwndStatus, hdc);
+  //~}
+#endif
 }
 
 
@@ -2927,12 +2932,12 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       if (CheckDarkModeEnabled()) {
         SetBkColor(hdc, Globals.rgbDarkBkgColor);
-        DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+        //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
         //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
         SetTextColor(hdc, Globals.rgbDarkTextColor);
       } else {
         SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
-        DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+        //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
         //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
         SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
       }
