@@ -566,6 +566,7 @@
     <ClInclude Include="Config\SimpleIni.h" />
     <ClInclude Include="DarkMode\DarkMode.h" />
     <ClInclude Include="DarkMode\IatHook.hpp" />
+    <ClInclude Include="DarkMode\ListViewUtil.hpp" />
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />

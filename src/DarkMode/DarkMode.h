@@ -5,6 +5,8 @@ extern "C" {
 #endif
 
   DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
+  
+  void InitListView(HWND hListView);
 
 #ifdef D_NP3_WIN10_DARK_MODE
 

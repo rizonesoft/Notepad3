@@ -575,6 +575,9 @@
     <ClInclude Include="DarkMode\IatHook.hpp">
       <Filter>Source Files\DarkMode</Filter>
     </ClInclude>
+    <ClInclude Include="DarkMode\ListViewUtil.hpp">
+      <Filter>Source Files\DarkMode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">

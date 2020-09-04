@@ -83,7 +83,7 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 
 inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
   if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
-  if (Settings.DialogsLayoutRTL) { SetWindowLayoutRTL(hwnd, true); }
+  SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 }
 
 // resize dialog directions

@@ -16,7 +16,7 @@
 
 #include "DarkMode.h"
 #include "IatHook.hpp"
-
+#include "ListViewUtil.hpp"
 
 // ============================================================================
 

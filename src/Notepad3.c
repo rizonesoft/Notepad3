@@ -590,6 +590,38 @@ void SetSavePoint()
 
 //==============================================================================
 
+#ifdef D_NP3_WIN10_DARK_MODE
+static inline COLORREF _GetDarkBkgColor()
+{
+  // gets old Win32 colors :-(
+  //if (IsAppThemed()) {
+  //  HTHEME const hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+  //  if (hTheme) {
+  //    COLORREF const color = GetThemeSysColor(hTheme, COLOR_WINDOW);
+  //    CloseThemeData(hTheme);
+  //    return color;
+  //  }
+  //}
+  return 0x282828;
+}
+
+
+static inline COLORREF _GetDarkTextColor()
+{
+  // gets old Win32 colors :-(
+  //if (IsAppThemed()) {
+  //  HTHEME const hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+  //  if (hTheme) {
+  //    COLORREF const color = GetThemeSysColor(hTheme, COLOR_WINDOWTEXT);
+  //    CloseThemeData(hTheme);
+  //    return color;
+  //  }
+  //}
+  return 0xEFEFEF;
+}
+
+#endif
+
 
 static void _InitGlobals()
 {
@@ -604,6 +636,8 @@ static void _InitGlobals()
 
 #ifdef D_NP3_WIN10_DARK_MODE
   InitDarkMode();
+  Globals.rgbDarkBkgColor = _GetDarkBkgColor();
+  Globals.rgbDarkTextColor = _GetDarkTextColor();
   s_hbrWndDarkBackground = CreateSolidBrush(Globals.rgbDarkBkgColor);
 #endif
 
@@ -648,9 +682,6 @@ static void _InitGlobals()
   Globals.bDocHasInconsistentEOLs = false;
   Globals.idxSelectedTheme = 1; // Default(0), Standard(1)
   Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
-
-  Globals.rgbDarkBkgColor = 0x383838;
-  Globals.rgbDarkTextColor = 0xFFFFFF;
 
   Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -1310,39 +1341,32 @@ bool InitApplication(const HINSTANCE hInstance)
   return RegisterClassEx(&wc);
 }
 
+
 #if 0
 //=============================================================================
 //
 // InitToolbarWndClass()
 //
-//
-bool InitToolbarWndClass(const HINSTANCE hInstance)
-{
-  WNDCLASSEX tbc;
-  static bool bIsIntialized = false;
-  if (bIsIntialized) {
-    UnregisterClass(s_ToolbarWndClassName, hInstance);
+bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR lpszCopyFromWC, bool bUnregisterFirst) {
+  WNDCLASSEX wcx;
+  if (bUnregisterFirst) {
+    UnregisterClass(lpszWndClassName, hInstance);
   }
-  ZeroMemory(&tbc, sizeof(WNDCLASSEX));
-  tbc.cbSize = sizeof(WNDCLASSEX);
+  ZeroMemory(&wcx, sizeof(WNDCLASSEX));
+  wcx.cbSize = sizeof(WNDCLASSEX);
 
-  GetClassInfoEx(hInstance, TOOLBARCLASSNAME, &tbc); // copy members
+  GetClassInfoEx(hInstance, lpszCopyFromWC, &wcx); // copy members
 
-  tbc.style |= TBSTYLE_TRANSPARENT;
-  //~tbc.lpfnWndProc = (WNDPROC)TBWndProc; ~ don't do that
-  //~tbc.cbClsExtra = 0;
-  //~tbc.cbWndExtra = 0;
-  // tbc.hInstance = hInstance; // done already
-  // tbc.hIcon = Globals.hDlgIcon;  // no need
-  tbc.hCursor = LoadCursor(NULL, IDC_HAND); 
-  tbc.hbrBackground = s_hbrWndDarkBackground; // @@@ §§§ // GetSysColorBrush(COLOR_WINDOW); //(HBRUSH)(COLOR_WINDOW + 1); 
-  //~tbc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_POPUPMENU);
-  tbc.lpszClassName = s_ToolbarWndClassName;
+  //wcx.lpfnWndProc = (WNDPROC)TBWndProc; ~ don't do that
+  wcx.hInstance = hInstance; // done already
+  wcx.hCursor = LoadCursor(NULL, IDC_HAND); 
+  wcx.hbrBackground = UseDarkMode() ? s_hbrWndDarkBackground : (HBRUSH)(COLOR_WINDOW + 1);
+  wcx.lpszClassName = lpszWndClassName;
 
-  bIsIntialized = true;
-  return RegisterClassEx(&tbc);
+  return RegisterClassEx(&wcx);
 }
 #endif
+
 
 //=============================================================================
 //
@@ -2649,6 +2673,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
+
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
   //~Globals.hwndStatus = CreateWindowEx(
   //~    0,                         // no extended styles
@@ -2664,22 +2689,25 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   InitWindowCommon(Globals.hwndStatus, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
+
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
   }
 
-  //~if (UseDarkMode())
-  //~{
-  //~  RECT rcSB;
-  //~  HDC const hdc = GetWindowDC(Globals.hwndStatus);
-  //~  GetWindowRect(Globals.hwndStatus, &rcSB);
-  //~  SetMapMode(hdc, MM_ANISOTROPIC); 
-  //~  SetWindowExtEx(hdc, 100, 100, NULL);
-  //~  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
-  //~  FillRect(hdc, &rcSB, s_hbrBkgnd);
-  //~  ReleaseDC(Globals.hwndStatus, hdc);
-  //~}
+  //if (UseDarkMode())
+  //{
+  //  RECT rcSB;
+  //  HDC const hdc = GetWindowDC(Globals.hwndStatus);
+  //  GetWindowRect(Globals.hwndStatus, &rcSB);
+  //  SetMapMode(hdc, MM_ANISOTROPIC); 
+  //  SetWindowExtEx(hdc, 100, 100, NULL);
+  //  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
+  //  FillRect(hdc, &rcSB, s_hbrWndDarkBackground);
+  //  ReleaseDC(Globals.hwndStatus, hdc);
+  //}
+
 #endif
+
 }
 
 
@@ -2906,7 +2934,6 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  MsgDrawItem() - Handles WM_DRAWITEM
 //
-//
 LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam) 
 {
   UNUSED(hwnd);
@@ -2927,25 +2954,22 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
     PAINTSTRUCT ps;
     BeginPaint(hWndSB, &ps);
 
-    //HTHEME const hTheme = OpenThemeData(hWndSB, L"Button");
+#ifdef D_NP3_WIN10_DARK_MODE
+    //HTHEME const hTheme = OpenThemeData(hWndSB, L"BUTTON");
     //if (hTheme) {
-
-      if (CheckDarkModeEnabled()) {
-        SetBkColor(hdc, Globals.rgbDarkBkgColor);
-        //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
-        //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
-        SetTextColor(hdc, Globals.rgbDarkTextColor);
-      } else {
-        SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
-        //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
-        //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
-        SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
-      }
-      ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL,
-          &rc, text, lstrlen(text), NULL);
-
+      SetBkColor(hdc, UseDarkMode() ? Globals.rgbDarkBkgColor : GetSysColor(COLOR_BTNFACE));
+      //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+      //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
+      SetTextColor(hdc, UseDarkMode() ? Globals.rgbDarkTextColor : GetSysColor(COLOR_BTNTEXT));
     //  CloseThemeData(hTheme);
     //}
+#else
+    SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
+    SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+#endif
+
+    ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL,
+               &rc, text, lstrlen(text), NULL);
 
     EndPaint(hWndSB, &ps);
     return TRUE;

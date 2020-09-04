@@ -1,15 +1,17 @@
 #pragma once
 
+#ifdef D_NP3_WIN10_DARK_MODE
+
 struct SubclassInfo
 {
 	COLORREF headerTextColor;
 };
 
-void InitListView(HWND hListView)
+extern "C" void InitListView(HWND hListView)
 {
 	HWND hHeader = ListView_GetHeader(hListView);
 
-	if (g_darkModeSupported)
+	if (IsDarkModeSupported())
 	{
 		SetWindowSubclass(hListView, [](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData) -> LRESULT {
 			switch (uMsg)
@@ -35,12 +37,12 @@ void InitListView(HWND hListView)
 			break;
 			case WM_THEMECHANGED:
 			{
-				if (g_darkModeSupported)
+        if (IsDarkModeSupported())
 				{
 					HWND hHeader = ListView_GetHeader(hWnd);
 
-					AllowDarkModeForWindow(hWnd, g_darkModeEnabled);
-					AllowDarkModeForWindow(hHeader, g_darkModeEnabled);
+					AllowDarkModeForWindow(hWnd, CheckDarkModeEnabled());
+          AllowDarkModeForWindow(hHeader, CheckDarkModeEnabled());
 
 					HTHEME hTheme = OpenThemeData(nullptr, L"ItemsView");
 					if (hTheme)
@@ -91,3 +93,11 @@ void InitListView(HWND hListView)
 	SetWindowTheme(hHeader, L"ItemsView", nullptr); // DarkMode
 	SetWindowTheme(hListView, L"ItemsView", nullptr); // DarkMode
 }
+
+#else
+
+extern "C" void InitListView(HWND hListView) {
+  (void)(hListView);
+}
+
+#endif
