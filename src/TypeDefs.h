@@ -30,9 +30,11 @@
 #define NOMINMAX
 #endif
 
-#define VC_EXTRALEAN 1
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
+#endif
 #include <windows.h>
+#include <CommCtrl.h>
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
@@ -143,7 +145,7 @@ typedef enum {
   STATUS_OCCURRENCE, STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF,
   STATUS_LEXER, STATUS_DOCCHAR, STATUS_OCCREPLACE, STATUS_TINYEXPR,
   STATUS_SECTOR_COUNT,
-  STATUS_HELP = 255
+  STATUS_HELP = SB_SIMPLEID // (!)
 } STATUS_SECTOR_T;
 
 #define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } 
@@ -271,6 +273,7 @@ typedef enum
 #define OCCURRENCE_MARKER_BITMASK() (bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE))
 
 extern LPCWSTR WordBookMarks[];
+extern HBRUSH s_hbrWndDarkBackground;
 
 // --------------------------------------------------------------------------
 
@@ -323,6 +326,7 @@ typedef struct _globals_t
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
   HINSTANCE hLngResContainer;
+  DWORD     WindowsBuildNumber;
   bool      bCanSaveIniFile;
   int       iAvailLngCount;
   bool      bPrefLngNotAvail;
@@ -382,6 +386,8 @@ typedef struct _globals_t
   unsigned  idxSelectedTheme;
 
   FR_STATES FindReplaceMatchFoundState;
+  COLORREF  rgbDarkBkgColor;
+  COLORREF  rgbDarkTextColor;
 
   WCHAR     SelectedThemeName[SMALL_BUFFER];
   WCHAR     WorkingDirectory[MAX_PATH];
@@ -494,6 +500,7 @@ typedef struct _settings_t
   bool EditLayoutRTL;
   bool DialogsLayoutRTL;
   int  FocusViewMarkerMode;
+  int  WinThemeDarkMode;  // 0=disabled, 1=enabled, 2=auto 
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;

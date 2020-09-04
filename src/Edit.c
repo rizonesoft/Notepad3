@@ -5589,7 +5589,7 @@ static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam
 //
 //  EditFindReplaceDlgProc()
 //
-extern int    s_flagMatchText;
+extern int    g_flagMatchText;
 
 static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -5613,7 +5613,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   case WM_INITDIALOG:
     {
       // clear cmd line stuff
-      s_flagMatchText = 0;
+      g_flagMatchText = 0;
       sg_pefrData = NULL;
 
       // the global static Find/Replace data structure

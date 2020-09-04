@@ -41,6 +41,7 @@
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
+#include "DarkMode/DarkMode.h"
 
 #include "SciLexer.h"
 #include "SciXLexer.h"
@@ -50,6 +51,10 @@
 //   Local and global Variables for Notepad3.c
 //
 // ============================================================================
+
+HBRUSH  s_hbrWndDarkBackground = NULL; // GetSysColorBrush(COLOR_WINDOW);
+
+// ----------------------------------------------------------------------------
 
 LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
   /*0*/ L"back:#0000", // OCC MARKER
@@ -61,7 +66,6 @@ LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
   /*6*/ L"back:#FF00FF",
   /*7*/ L"back:#FF8F20",
   /*8*/ L"back:#950095"};
-
 
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
@@ -97,15 +101,15 @@ COLORREF  g_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
 prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
-bool      s_iStatusbarVisible[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-int       s_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-int       s_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
+bool      g_iStatusbarVisible[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+int       g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+int       g_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
-WCHAR     s_tchToolbarBitmap[MAX_PATH] = { L'\0' };
-WCHAR     s_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
-WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
+WCHAR     g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
+WCHAR     g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
+WCHAR     g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-int       s_flagMatchText = 0;
+int       g_flagMatchText = 0;
 
 // ------------------------------------
 static bool      s_bIsProcessElevated = false;
@@ -168,6 +172,8 @@ static double    s_dExpression = 0.0;
 static te_xint_t s_iExprError  = -1;
 
 static WIN32_FIND_DATA s_fdCurFile;
+
+//~static CONST WCHAR *const s_ToolbarWndClassName = L"NP3_TOOLBAR_CLASS";
 
 static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
@@ -595,7 +601,14 @@ static void _InitGlobals()
   ZeroMemory(&Flags, sizeof(FLAGS_T));
 
   ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
-  
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  InitDarkMode();
+  s_hbrWndDarkBackground = CreateSolidBrush(Globals.rgbDarkBkgColor);
+#endif
+
+  Globals.WindowsBuildNumber = GetWindowsBuildNumber(NULL, NULL);
+
   Globals.hDlgIcon256   = NULL;
   Globals.hDlgIcon128   = NULL;
   Globals.hDlgIconBig   = NULL;
@@ -635,6 +648,9 @@ static void _InitGlobals()
   Globals.bDocHasInconsistentEOLs = false;
   Globals.idxSelectedTheme = 1; // Default(0), Standard(1)
   Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
+
+  Globals.rgbDarkBkgColor = 0x383838;
+  Globals.rgbDarkTextColor = 0xFFFFFF;
 
   Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -756,7 +772,12 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   OleUninitialize();
 
   if (bIsInitialized) {
+    //~UnregisterClass(s_ToolbarWndClassName, Globals.hInstance);
     UnregisterClass(s_wchWndClass, Globals.hInstance);
+  }
+
+  if (s_hbrWndDarkBackground) {
+    DeleteObject(s_hbrWndDarkBackground);
   }
 
   if (s_lpOrigFileArg) {
@@ -1219,18 +1240,18 @@ static void SetFindReplaceData()
     CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
   }
 
-  if (s_flagMatchText) // cmd line
+  if (g_flagMatchText) // cmd line
   {
-    if (s_flagMatchText & 4) {
+    if (g_flagMatchText & 4) {
       s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
     }
-    if (s_flagMatchText & 8) {
+    if (g_flagMatchText & 8) {
       s_FindReplaceData.fuFlags |= SCFIND_MATCHCASE;
     }
-    if (s_flagMatchText & 16) {
+    if (g_flagMatchText & 16) {
       s_FindReplaceData.fuFlags |= SCFIND_DOT_MATCH_ALL;
     }
-    if (s_flagMatchText & 32) {
+    if (g_flagMatchText & 32) {
       s_FindReplaceData.bTransformBS = true;
     }
     s_FindReplaceData.bOverlappingFind = false;
@@ -1270,7 +1291,7 @@ static bool SetCurrentSelAsFindReplaceData()
 // InitApplication()
 //
 //
-bool InitApplication(HINSTANCE hInstance)
+bool InitApplication(const HINSTANCE hInstance)
 {
   WNDCLASSEX wc;
   ZeroMemory(&wc, sizeof(WNDCLASSEX));
@@ -1282,19 +1303,52 @@ bool InitApplication(HINSTANCE hInstance)
   wc.hInstance = hInstance;
   wc.hIcon = Globals.hDlgIcon256;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+  wc.hbrBackground = UseDarkMode() ? s_hbrWndDarkBackground : (HBRUSH)(COLOR_WINDOW + 1);
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
   return RegisterClassEx(&wc);
 }
 
+#if 0
+//=============================================================================
+//
+// InitToolbarWndClass()
+//
+//
+bool InitToolbarWndClass(const HINSTANCE hInstance)
+{
+  WNDCLASSEX tbc;
+  static bool bIsIntialized = false;
+  if (bIsIntialized) {
+    UnregisterClass(s_ToolbarWndClassName, hInstance);
+  }
+  ZeroMemory(&tbc, sizeof(WNDCLASSEX));
+  tbc.cbSize = sizeof(WNDCLASSEX);
+
+  GetClassInfoEx(hInstance, TOOLBARCLASSNAME, &tbc); // copy members
+
+  tbc.style |= TBSTYLE_TRANSPARENT;
+  //~tbc.lpfnWndProc = (WNDPROC)TBWndProc; ~ don't do that
+  //~tbc.cbClsExtra = 0;
+  //~tbc.cbWndExtra = 0;
+  // tbc.hInstance = hInstance; // done already
+  // tbc.hIcon = Globals.hDlgIcon;  // no need
+  tbc.hCursor = LoadCursor(NULL, IDC_HAND); 
+  tbc.hbrBackground = s_hbrWndDarkBackground; // @@@ §§§ // GetSysColorBrush(COLOR_WINDOW); //(HBRUSH)(COLOR_WINDOW + 1); 
+  //~tbc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_POPUPMENU);
+  tbc.lpszClassName = s_ToolbarWndClassName;
+
+  bIsIntialized = true;
+  return RegisterClassEx(&tbc);
+}
+#endif
 
 //=============================================================================
 //
 //  InitInstance()
 //
-HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
+HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 {
   UNUSED(pszCmdLine);
  
@@ -1334,10 +1388,6 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
   }
   
-  if (g_IniWinInfo.zoom) {
-    SciCall_SetZoom(g_IniWinInfo.zoom);
-  }
-
   SetMenu(Globals.hwndMain, Globals.hMainMenu);
   SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
   DrawMenuBar(Globals.hwndMain);
@@ -1495,13 +1545,13 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Match Text
-  if (s_flagMatchText && !IsFindPatternEmpty()) 
+  if (g_flagMatchText && !IsFindPatternEmpty()) 
   {
     if (!Sci_IsDocEmpty()) {
 
       SetFindReplaceData(); // s_FindReplaceData
 
-      if (s_flagMatchText & 2) {
+      if (g_flagMatchText & 2) {
         if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
         EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
       }
@@ -1640,10 +1690,23 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
       return MsgSize(hwnd, wParam, lParam);
 
+#ifdef D_NP3_WIN10_DARK_MODE
+	  case WM_SETTINGCHANGE: {
+      if (IsColorSchemeChangeMessage(lParam)) {
+        CheckDarkModeEnabled();
+        RefreshTitleBarThemeColor(hwnd);
+        SendMessage(Globals.hwndEdit, WM_THEMECHANGED, 0, 0);
+      }
+    }
+    break;
+#endif
+
+    case WM_DRAWITEM:
+      return MsgDrawItem(hwnd, wParam, lParam);
+
     case WM_DROPFILES:
-      return MsgDropFiles(hwnd, wParam, lParam);
       // see SCN_URIDROPP
-      break;
+      return MsgDropFiles(hwnd, wParam, lParam);
 
     case WM_COPYDATA:
       return MsgCopyData(hwnd, wParam, lParam);
@@ -2038,10 +2101,16 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 //  MsgCreate() - Handles WM_CREATE
 //
 //
-
 LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
   UNUSED(wParam);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
+    RefreshTitleBarThemeColor(hwnd);
+  }
+#endif
 
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
@@ -2146,6 +2215,10 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   ObserveNotifyChangeEvent();
 
+  if (g_IniWinInfo.zoom) {
+    SciCall_SetZoom(g_IniWinInfo.zoom);
+  }
+
   return 0LL;
 }
 
@@ -2187,38 +2260,38 @@ bool SelectExternalToolBar(HWND hwnd)
       StringCchCat(szFile, COUNTOF(szFile), L" ");
       StringCchCat(szFile, COUNTOF(szFile), szArg2);
     }
-    PathRelativeToApp(szFile, s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), true,true, true);
+    PathRelativeToApp(szFile, g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), true,true, true);
     if (Globals.bCanSaveIniFile) {
-      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDefault", s_tchToolbarBitmap);
+      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDefault", g_tchToolbarBitmap);
     }
   }
 
-  if (StrIsNotEmpty(s_tchToolbarBitmap))
+  if (StrIsNotEmpty(g_tchToolbarBitmap))
   {
-    StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
+    StringCchCopy(szFile, COUNTOF(szFile), g_tchToolbarBitmap);
     PathRemoveExtension(szFile);
     StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
     if (Globals.bCanSaveIniFile) {
       if (PathIsExistingFile(szFile)) {
-        PathRelativeToApp(szFile, s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), true, true, true);
-        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", s_tchToolbarBitmapHot);
+        PathRelativeToApp(szFile, g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), true, true, true);
+        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", g_tchToolbarBitmapHot);
       }
       else {
-        StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+        StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
         IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapHot", false);
       }
     }
 
-    StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
+    StringCchCopy(szFile, COUNTOF(szFile), g_tchToolbarBitmap);
     PathRemoveExtension(szFile);
     StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
     if (Globals.bCanSaveIniFile) {
       if (PathIsExistingFile(szFile)) {
-        PathRelativeToApp(szFile, s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), true, true, true);
-        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", s_tchToolbarBitmapDisabled);
+        PathRelativeToApp(szFile, g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), true, true, true);
+        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", g_tchToolbarBitmapDisabled);
       }
       else {
-        StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+        StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
         IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
       }
     }
@@ -2308,6 +2381,14 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 }
 
 
+//==== Toolbar Style ==========================================================
+#define NP3_WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS |                          \
+                        TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | TBSTYLE_LIST | \
+                        CCS_NODIVIDER | CCS_NOPARENTALIGN | CCS_ADJUSTABLE)
+
+//==== ReBar Style ============================================================
+#define NP3_WS_REBAR (WS_CHILD | WS_CLIPCHILDREN | WS_BORDER | RBS_VARHEIGHT | \
+                      RBS_BANDBORDERS | CCS_NODIVIDER | CCS_NOPARENTALIGN)
 
 //=============================================================================
 //
@@ -2316,7 +2397,8 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 //
 void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
-  DWORD dwToolbarStyle = NP3_WS_TOOLBAR;
+  DWORD dwToolbarStyle = NP3_WS_TOOLBAR | TBSTYLE_TRANSPARENT;
+  DWORD dwToolbarExStyle = TBSTYLE_EX_DOUBLEBUFFER /* | TBSTYLE_EX_HIDECLIPPEDBUTTONS */;
 
   if (Settings.ToolBarTheme < 0) { // undefined: determine High DPI screen
     DPI_T const dpi       = Scintilla_GetWindowDPI(hwnd);
@@ -2338,10 +2420,34 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   OpenSettingsFile(&bOpendByMe);
   bool bDirtyFlag = false;
 
-  Globals.hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
-                               0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
+  //InitToolbarWndClass(hInstance);
+  Globals.hwndToolbar = CreateWindowEx(dwToolbarExStyle, TOOLBARCLASSNAME, NULL, dwToolbarStyle,
+                                       0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
+  //Globals.hwndToolbar = CreateWindowEx(
+  //    dwToolbarExStyle,          // no extended styles
+  //    s_ToolbarWndClassName,     // name of status bar class
+  //    (PCTSTR)NULL,              // no text when first created
+  //    dwToolbarStyle,            // creates a visible child window
+  //    0, 0, 0, 0,                // ignores size and position
+  //    hwnd,                      // handle to parent window
+  //    (HMENU)IDC_TOOLBAR,        // child window identifier
+  //    hInstance,                 // handle to application instance
+  //    NULL);                     // no window creation data
 
-  //~SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL); ~ no correct behavior
+  //~InitWindowCommon(Globals.hwndToolbar, true); ~ SetWindowLayoutRTL() no correct behavior
+  //~SetWindowTheme(Globals.hwndToolbar, L"", L""); // you cannot change a toolbar's color when a visual style is active
+  SetExplorerTheme(Globals.hwndToolbar);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(Globals.hwndToolbar, CheckDarkModeEnabled());
+  }
+  //~ no effect:
+  //~HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
+  //~SelectObject(hdcTB, s_hbrWndDarkBackground);
+  //~SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
+  //~ReleaseDC(Globals.hwndToolbar, hdcTB);
+#endif
 
   SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
@@ -2351,11 +2457,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
 
-  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmap))
   {
-    hbmp = LoadBitmapFile(s_tchToolbarBitmap);
+    hbmp = LoadBitmapFile(g_tchToolbarBitmap);
     if (!hbmp) {
-      StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
+      StringCchCopy(g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), L"");
       IniSectionDelete(L"Toolbar Images", L"BitmapDefault", false);
       bDirtyFlag = true;
     }
@@ -2380,11 +2486,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // --------------------------
   // Add a Hot Toolbar Bitmap
   // --------------------------
-  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapHot))
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmapHot))
   {
-    hbmp = LoadBitmapFile(s_tchToolbarBitmapHot);
+    hbmp = LoadBitmapFile(g_tchToolbarBitmapHot);
     if (!hbmp) {
-      StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+      StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
       IniSectionDelete(L"Toolbar Images", L"BitmapHot", false);
       bDirtyFlag = true;
     }
@@ -2410,11 +2516,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // ------------------------------
   // Add a disabled Toolbar Bitmap
   // ------------------------------
-  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapDisabled))
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmapDisabled))
   {
-    hbmp = LoadBitmapFile(s_tchToolbarBitmapDisabled);
+    hbmp = LoadBitmapFile(g_tchToolbarBitmapDisabled);
     if (!hbmp) {
-      StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"");
+      StringCchCopy(g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), L"");
       IniSectionDelete(L"Toolbar Images", L"BitmapDisabled", false);
       bDirtyFlag = true;
     }
@@ -2434,7 +2540,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
   else {  // create disabled Toolbar, no external bitmap is supplied
 
-    if ((Settings.ToolBarTheme == 2) && StrIsEmpty(s_tchToolbarBitmapDisabled))
+    if ((Settings.ToolBarTheme == 2) && StrIsEmpty(g_tchToolbarBitmapDisabled))
     {
       bool bProcessed = false;
       if (Flags.ToolbarLook == 1) {
@@ -2502,6 +2608,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   s_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
+  SetExplorerTheme(s_hwndReBar);
+
   REBARINFO rbi;
   rbi.cbSize = sizeof(REBARINFO);
   rbi.fMask  = 0;
@@ -2542,8 +2650,36 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
+  //~Globals.hwndStatus = CreateWindowEx(
+  //~    0,                         // no extended styles
+  //~    STATUSCLASSNAME,           // name of status bar class
+  //~    (PCTSTR)NULL,              // no text when first created
+  //~    dwStatusbarStyle,          // creates a visible child window
+  //~    0, 0, 0, 0,                // ignores size and position
+  //~    hwnd,                      // handle to parent window
+  //~    (HMENU)IDC_STATUSBAR,      // child window identifier
+  //~    hInstance,                 // handle to application instance
+  //~    NULL);                     // no window creation data
 
-  SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
+  InitWindowCommon(Globals.hwndStatus, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
+  }
+
+  //~if (UseDarkMode())
+  //~{
+  //~  RECT rcSB;
+  //~  HDC const hdc = GetWindowDC(Globals.hwndStatus);
+  //~  GetWindowRect(Globals.hwndStatus, &rcSB);
+  //~  SetMapMode(hdc, MM_ANISOTROPIC); 
+  //~  SetWindowExtEx(hdc, 100, 100, NULL);
+  //~  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
+  //~  FillRect(hdc, &rcSB, s_hbrBkgnd);
+  //~  ReleaseDC(Globals.hwndStatus, hdc);
+  //~}
+#endif
 }
 
 
@@ -2715,8 +2851,8 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   int x = 0;
   int y = 0;
 
-  int cx = LOWORD(lParam);
-  int cy = HIWORD(lParam);
+  int cx = GET_X_LPARAM(lParam);
+  int cy = GET_Y_LPARAM(lParam);
 
   if (Settings.ShowToolbar)
   {
@@ -2763,6 +2899,58 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateMarginWidth();
 
   return 0;
+}
+
+
+//=============================================================================
+//
+//  MsgDrawItem() - Handles WM_DRAWITEM
+//
+//
+LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam) 
+{
+  UNUSED(hwnd);
+
+  if (LOWORD(wParam) == IDC_STATUSBAR) // Statusbar SB_SETTEXT caused parent's WM_DRAWITEM message
+  {
+    // https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
+
+    const DRAWITEMSTRUCT* const pDrawItem = (const DRAWITEMSTRUCT* const)lParam;
+
+    HDC const hdc = pDrawItem->hDC;
+    HWND const hWndSB = pDrawItem->hwndItem;
+    //int const partId = (int)pDrawItem->itemID;
+    //int const stateId = (int)pDrawItem->itemState;
+    LPCWSTR const text = (LPCWSTR)(pDrawItem->itemData);
+    RECT rc = pDrawItem->rcItem;
+
+    PAINTSTRUCT ps;
+    BeginPaint(hWndSB, &ps);
+
+    //HTHEME const hTheme = OpenThemeData(hWndSB, L"Button");
+    //if (hTheme) {
+
+      if (CheckDarkModeEnabled()) {
+        SetBkColor(hdc, Globals.rgbDarkBkgColor);
+        //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+        //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
+        SetTextColor(hdc, Globals.rgbDarkTextColor);
+      } else {
+        SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
+        //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+        //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
+        SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+      }
+      ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL,
+          &rc, text, lstrlen(text), NULL);
+
+    //  CloseThemeData(hTheme);
+    //}
+
+    EndPaint(hWndSB, &ps);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 
@@ -2954,11 +3142,11 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       if (params->flagMatchText)
       {
-        s_flagMatchText = params->flagMatchText;
+        g_flagMatchText = params->flagMatchText;
         SetFindPattern(StrEnd(&params->wchData, 0) + 1);
         SetFindReplaceData(); // s_FindReplaceData
 
-        if (s_flagMatchText & 2) {
+        if (g_flagMatchText & 2) {
           if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
           EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
         }
@@ -7737,7 +7925,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           {
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
-            switch (s_vSBSOrder[pnmm->dwItemSpec])
+            switch (g_vSBSOrder[pnmm->dwItemSpec])
             {
               case STATUS_EOLMODE:
                 {
@@ -7773,7 +7961,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           {
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
-            switch (s_vSBSOrder[pnmm->dwItemSpec])
+            switch (g_vSBSOrder[pnmm->dwItemSpec])
             {
               case STATUS_DOCLINE:
               case STATUS_DOCCOLUMN:
@@ -8148,21 +8336,21 @@ void ParseCommandLine()
                 {
                   SetFindPattern(lp1);
                   
-                  s_flagMatchText = 1;
+                  g_flagMatchText = 1;
                   if (bFindUp) {
-                    s_flagMatchText |= 2;
+                    g_flagMatchText |= 2;
                   }
                   if (bRegex) {
-                    s_flagMatchText |= 4;
+                    g_flagMatchText |= 4;
                   }
                   if (bMatchCase) {
-                    s_flagMatchText |= 8;
+                    g_flagMatchText |= 8;
                   }
                   if (bDotMatchAll) {
-                    s_flagMatchText |= 16;
+                    g_flagMatchText |= 16;
                   }
                   if (bTransBS) {
-                    s_flagMatchText |= 32;
+                    g_flagMatchText |= 32;
                   }
                 }
               }
@@ -8483,12 +8671,12 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
   // count fixed and dynamic optimized pixels
   int pxCount = 0;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    if (s_iStatusbarVisible[i]) {
-      if (s_iStatusbarWidthSpec[i] == 0) { // dynamic optimized
+    if (g_iStatusbarVisible[i]) {
+      if (g_iStatusbarWidthSpec[i] == 0) { // dynamic optimized
         vSectionWidth[i] = _StatusCalcPaneWidth(Globals.hwndStatus, tchStatusBar[i]);
       }
-      else if (s_iStatusbarWidthSpec[i] < -1) { // fixed pixel count
-        vSectionWidth[i] = -(s_iStatusbarWidthSpec[i]);
+      else if (g_iStatusbarWidthSpec[i] < -1) { // fixed pixel count
+        vSectionWidth[i] = -(g_iStatusbarWidthSpec[i]);
       }
       //else { /* 0,-1 : relative counts */ }
       // accumulate
@@ -8501,8 +8689,8 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
   // init proportional section checker
   bool bIsPropSection[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    if ((s_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
-      assert(s_iStatusbarWidthSpec[i] > 0);
+    if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+      assert(g_iStatusbarWidthSpec[i] > 0);
       bIsPropSection[i] = true;
     }
   }
@@ -8532,8 +8720,8 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
     int totalCnt = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
       if (bIsPropSection[i]) {
-        vPropWidth[i] = iPropSectTotalWidth * s_iStatusbarWidthSpec[i];
-        totalCnt += s_iStatusbarWidthSpec[i];
+        vPropWidth[i] = iPropSectTotalWidth * g_iStatusbarWidthSpec[i];
+        totalCnt += g_iStatusbarWidthSpec[i];
       }
     }
     // normalize
@@ -8673,7 +8861,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_DOCLINE] || bIsWindowFindReplace)
+  if (g_iStatusbarVisible[STATUS_DOCLINE] || bIsWindowFindReplace)
   {
     static DocLn s_iLnFromPos = -1;
     static DocLn s_iLnCnt = -1;
@@ -8702,7 +8890,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   static WCHAR tchCol[32] = { L'\0' };
 
-  if (s_iStatusbarVisible[STATUS_DOCCOLUMN] || bIsWindowFindReplace)
+  if (g_iStatusbarVisible[STATUS_DOCCOLUMN] || bIsWindowFindReplace)
   {
     DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
 
@@ -8732,7 +8920,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_DOCCHAR])
+  if (g_iStatusbarVisible[STATUS_DOCCHAR])
   {
     static WCHAR tchChr[32] = { L'\0' };
     static WCHAR tchChrs[32] = { L'\0' };
@@ -8766,7 +8954,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchSel[32] = { L'\0' };
 
   // number of selected chars in statusbar
-  if (s_iStatusbarVisible[STATUS_SELECTION] || s_iStatusbarVisible[STATUS_SELCTBYTES] || bIsWindowFindReplace)
+  if (g_iStatusbarVisible[STATUS_SELECTION] || g_iStatusbarVisible[STATUS_SELCTBYTES] || bIsWindowFindReplace)
   {
     static bool s_bIsSelCountable = false;
     static bool s_bIsMultiSelection = false;
@@ -8808,7 +8996,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // number of selected lines in statusbar
-  if (s_iStatusbarVisible[STATUS_SELCTLINES])
+  if (g_iStatusbarVisible[STATUS_SELCTLINES])
   {
     static bool s_bIsSelectionEmpty = true;
     static DocLn s_iLinesSelected = -1;
@@ -8844,7 +9032,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // try calculate expression of selection
-  if (s_iStatusbarVisible[STATUS_TINYEXPR])
+  if (g_iStatusbarVisible[STATUS_TINYEXPR])
   {
     static WCHAR tchExpression[32] = { L'\0' };
     static te_xint_t s_iExErr          = -3;
@@ -8907,7 +9095,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchOcc[32] = { L'\0' };
 
   // number of occurrence marks found
-  if (s_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace)
+  if (g_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace)
   {
     static DocPosU s_iMarkOccurrencesCount = 0;
     static bool s_bMOVisible = false;
@@ -8936,7 +9124,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // number of replaced pattern
-  if (s_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace)
+  if (g_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace)
   {
     static int s_iReplacedOccurrences = -1;
 
@@ -8962,7 +9150,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // get number of bytes in current encoding
-  if (s_iStatusbarVisible[STATUS_DOCSIZE])
+  if (g_iStatusbarVisible[STATUS_DOCSIZE])
   {
     static DocPos s_iTextLength = -1;
     DocPos const iTextLength = SciCall_GetTextLength();
@@ -8980,7 +9168,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_CODEPAGE])
+  if (g_iStatusbarVisible[STATUS_CODEPAGE])
   {
     static cpi_enc_t s_iEncoding = CPI_NONE;
     cpi_enc_t const  iEncoding   = Encoding_GetCurrent();
@@ -9002,7 +9190,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   const WCHAR* const _CRLF_f  = L"%sCR+LF%s";
   const WCHAR* const _CRLFi_f = L"%sCR+LF*%s";
 
-  if (s_iStatusbarVisible[STATUS_EOLMODE]) 
+  if (g_iStatusbarVisible[STATUS_EOLMODE]) 
   {
     static int s_iEOLMode = -1;
     int const eol_mode = SciCall_GetEOLMode();
@@ -9030,7 +9218,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_OVRMODE])
+  if (g_iStatusbarVisible[STATUS_OVRMODE])
   {
     static bool s_bIsOVR = -1;
     bool const bIsOVR = (bool)SendMessage(Globals.hwndEdit, SCI_GETOVERTYPE, 0, 0);
@@ -9051,7 +9239,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_2ND_DEF])
+  if (g_iStatusbarVisible[STATUS_2ND_DEF])
   {
     static bool s_bUse2ndDefault = -1;
     bool const bUse2ndDefault = Style_GetUse2ndDefault();
@@ -9070,7 +9258,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_LEXER])
+  if (g_iStatusbarVisible[STATUS_LEXER])
   {
     static int s_iCurLexer = -1;
     int const iCurLexer = Style_GetCurrentLexerRID();
@@ -9099,10 +9287,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (bIsUpdateNeeded) {
     int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-    int cnt = 0;
+    BYTE cnt = 0;
     int totalWidth = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      int const id = s_vSBSOrder[i];
+      int const id = g_vSBSOrder[i];
       if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0))
       {
         totalWidth += g_vStatusbarSectionWidth[id];
@@ -9117,7 +9305,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     cnt = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      int const id = s_vSBSOrder[i];
+      int const id = g_vSBSOrder[i];
       if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0)) {
         StatusSetText(Globals.hwndStatus, cnt++, tchStatusBar[id]);
       }
@@ -10639,7 +10827,7 @@ bool ActivatePrevInst()
         params->flagSetEOLMode = s_flagSetEOLMode;
         params->flagTitleExcerpt = 0;
 
-        params->flagMatchText = s_flagMatchText;
+        params->flagMatchText = g_flagMatchText;
         if (!IsFindPatternEmpty()) {
           StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
         }
@@ -10732,7 +10920,7 @@ bool ActivatePrevInst()
           params->flagTitleExcerpt = 0;
         }
 
-        params->flagMatchText = s_flagMatchText;
+        params->flagMatchText = g_flagMatchText;
         if (!IsFindPatternEmpty()) {
           StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
         }

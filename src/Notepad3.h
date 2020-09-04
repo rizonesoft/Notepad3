@@ -75,17 +75,6 @@ typedef enum {
 } DoAction;
 
 
-//==== Toolbar Style ==========================================================
-#define NP3_WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | \
-                        TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | TBSTYLE_LIST | \
-                        CCS_NODIVIDER | CCS_NOPARENTALIGN | CCS_ADJUSTABLE)
-
-
-//==== ReBar Style ============================================================
-#define NP3_WS_REBAR (WS_CHILD | WS_CLIPCHILDREN | WS_BORDER | RBS_VARHEIGHT | \
-                      RBS_BANDBORDERS | CCS_NODIVIDER | CCS_NOPARENTALIGN)
-
-
 //==== Ids ====================================================================
 #define IDC_STATUSBAR    (0xFB00)
 #define IDC_TOOLBAR      (0xFB01)
@@ -113,8 +102,9 @@ typedef enum {
 
 
 //==== Function Declarations ==================================================
-bool InitApplication(HINSTANCE hInstance);
-HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
+bool InitApplication(const HINSTANCE hInstance);
+//~bool InitToolbarWndClass(const HINSTANCE hInstance);
+HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
 WININFO GetFactoryDefaultWndPos(const int flagsPos);
 WININFO GetWinInfoByFlag(const int flagsPos);
 bool ActivatePrevInst();
@@ -187,6 +177,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);

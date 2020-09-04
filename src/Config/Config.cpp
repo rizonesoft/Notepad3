@@ -52,13 +52,13 @@ extern "C" WININFO   g_DefWinInfo;
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V1;
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
 
-extern "C" bool      s_iStatusbarVisible[STATUS_SECTOR_COUNT];
-extern "C" int       s_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
-extern "C" int       s_vSBSOrder[STATUS_SECTOR_COUNT];
+extern "C" bool      g_iStatusbarVisible[STATUS_SECTOR_COUNT];
+extern "C" int       g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
+extern "C" int       g_vSBSOrder[STATUS_SECTOR_COUNT];
 
-extern "C" WCHAR     s_tchToolbarBitmap[MAX_PATH];
-extern "C" WCHAR     s_tchToolbarBitmapHot[MAX_PATH];
-extern "C" WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH];
+extern "C" WCHAR     g_tchToolbarBitmap[MAX_PATH];
+extern "C" WCHAR     g_tchToolbarBitmapHot[MAX_PATH];
+extern "C" WCHAR     g_tchToolbarBitmapDisabled[MAX_PATH];
 
 extern "C"           THEMEFILES Theme_Files[];
 
@@ -1513,19 +1513,19 @@ void LoadSettings()
     ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
 
     // cppcheck-suppress useStlAlgorithm
-    for (bool& sbv : s_iStatusbarVisible) { sbv = false; }
+    for (bool& sbv : g_iStatusbarVisible) { sbv = false; }
     int cnt = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      s_vSBSOrder[i] = -1;
+      g_vSBSOrder[i] = -1;
       int const id = s_iStatusbarSections[i];
       if (id >= 0) {
-        s_vSBSOrder[cnt++] = id;
-        s_iStatusbarVisible[id] = true;
+        g_vSBSOrder[cnt++] = id;
+        g_iStatusbarVisible[id] = true;
       }
     }
 
     IniSectionGetString(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
-    ReadVectorFromString(tchStatusBar, s_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
+    ReadVectorFromString(tchStatusBar, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
 
     Globals.bZeroBasedColumnIndex = IniSectionGetBool(StatusBar_Section, L"ZeroBasedColumnIndex", false);
     Globals.bZeroBasedCharacterCount = IniSectionGetBool(StatusBar_Section, L"ZeroBasedCharacterCount", false);
@@ -1536,11 +1536,11 @@ void LoadSettings()
     // --------------------------------------------------------------------------
 
     IniSectionGetString(ToolbarImg_Section, L"BitmapDefault", L"",
-      s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap));
+      g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap));
     IniSectionGetString(ToolbarImg_Section, L"BitmapHot", L"",
-      s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmap));
+      g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmap));
     IniSectionGetString(ToolbarImg_Section, L"BitmapDisabled", L"",
-      s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmap));
+      g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmap));
 
 
     // --------------------------------------------------------------------------
@@ -1555,7 +1555,7 @@ void LoadSettings()
 
     Defaults.ToolBarTheme = -1;
     Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
-    Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
+    Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(g_tchToolbarBitmap) ? 1 : 2);
 
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
     Defaults.DpiScaleToolBar = false;
