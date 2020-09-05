@@ -102,7 +102,7 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
-[.905.2]- Initial state of "Focus View" button in F/R-Dlg.
+[.905.1]- Initial state of "Focus View" button in F/R-Dlg.
 [.901.2]- Buffer size calculation.
 [.901.2]- Running out of occurrences bookmarks.
 [.901.1]- Crash caused by buffer overflow.
