@@ -111,6 +111,7 @@ lhmouse                 https://github.com/lhmouse
 ltGuillaume             https://github.com/ltGuillaume
 maboroshin              https://github.com/maboroshin
 MadDogVachon            https://github.com/MadDogVachon
+Mitezuss                https://github.com/Mitezuss
 ohgree                  https://github.com/ohgree
 RaffaeleBianc0          https://github.com/RaffaeleBianc0
 rizonesoft              https://github.com/rizonesoft
