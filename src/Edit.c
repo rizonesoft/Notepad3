@@ -5801,6 +5801,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       _SetSearchFlags(hwnd, sg_pefrData); // sync
       sg_pefrData->bStateChanged = true;  // force update
+
+      DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, sg_pefrData->bMarkOccurences);
     }
     return !0; // (!) further processing
 
@@ -6035,6 +6037,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
 
         _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
+
       }
       break;
 
