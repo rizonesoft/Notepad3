@@ -284,11 +284,11 @@ BEGIN
     VK_ADD,         IDM_VIEW_ZOOMIN,                  VIRTKEY, CONTROL, NOINVERT
     //~VK_ADD,      CMD_INCLINELIMIT,                 VIRTKEY, ALT, NOINVERT   /// ALT+[+] is used for universal Unicode input
     VK_ADD,         CMD_INCREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
-    //~VK_BACK,        CMD_DELETEBACK,                   VIRTKEY, NOINVERT
+    VK_BACK,        CMD_DELETEBACK,                   VIRTKEY, NOINVERT
     VK_BACK,        CMD_CTRLBACK,                     VIRTKEY, CONTROL, NOINVERT
     VK_BACK,        IDM_EDIT_UNDO,                    VIRTKEY, ALT, NOINVERT
     VK_BACK,        IDM_EDIT_DELETELINELEFT,          VIRTKEY, SHIFT, CONTROL, NOINVERT
-    //~VK_DELETE,      CMD_CLEAR,                        VIRTKEY, NOINVERT
+    VK_DELETE,      CMD_CLEAR,                        VIRTKEY, NOINVERT
     VK_DELETE,      CMD_CTRLDEL,                      VIRTKEY, CONTROL, NOINVERT
     VK_DELETE,      IDM_EDIT_CUT,                     VIRTKEY, SHIFT, NOINVERT
     VK_DELETE,      IDM_EDIT_DELETELINERIGHT,         VIRTKEY, SHIFT, CONTROL, NOINVERT

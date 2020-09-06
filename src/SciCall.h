@@ -233,6 +233,7 @@ DeclareSciCallV0(DelWordRight, DELWORDRIGHT)
 DeclareSciCallV0(DelLineLeft, DELLINELEFT)
 DeclareSciCallV0(DelLineRight, DELLINERIGHT)
 DeclareSciCallV0(LineDelete, LINEDELETE)
+DeclareSciCallV0(LineCut, LINECUT)
 DeclareSciCallV1(LinesSplit, LINESSPLIT, int, pix)
 DeclareSciCallV0(LinesJoin, LINESJOIN)
 DeclareSciCallV0(EditToggleOverType, EDITTOGGLEOVERTYPE)
@@ -248,7 +249,6 @@ DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*,
 
 // Operations
 DeclareSciCallV0(Cut, CUT)
-DeclareSciCallV0(LineCut, LINECUT)
 DeclareSciCallV0(Copy, COPY)
 DeclareSciCallV0(Paste, PASTE)
 DeclareSciCallV0(Clear, CLEAR)
@@ -593,6 +593,7 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_IsDocEmpty() (SciCall_GetTextLength() <= 0LL)
 
 #define Sci_IsThinSelection() (SciCall_GetSelectionMode() == SC_SEL_THIN)
+#define Sci_IsStreamSelection() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
 #define Sci_IsMultiSelection() ((SciCall_GetSelections() > 1) && !SciCall_IsSelectionRectangle())
 #define Sci_IsMultiOrRectangleSelection() ((SciCall_GetSelections() > 1) || SciCall_IsSelectionRectangle())
 

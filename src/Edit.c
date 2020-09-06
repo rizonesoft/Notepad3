@@ -7818,6 +7818,27 @@ void EditBookMarkLineRange(HWND hwnd)
 
 //=============================================================================
 //
+//  EditDeleteMarkerInSelection()
+//
+void EditDeleteMarkerInSelection()
+{
+  if (Sci_IsStreamSelection() && !SciCall_IsSelectionEmpty())
+  {
+    DocPos const posSelBeg = SciCall_GetSelectionStart();
+    DocPos const posSelEnd = SciCall_GetSelectionEnd();
+    DocLn const lnBeg = SciCall_LineFromPosition(posSelBeg);
+    DocLn const lnEnd = SciCall_LineFromPosition(posSelEnd);
+    DocLn const lnDelBeg = (posSelBeg <= SciCall_PositionFromLine(lnBeg)) ? lnBeg : lnBeg + 1;
+    DocLn const lnDelEnd = (posSelEnd  > SciCall_GetLineEndPosition(lnEnd)) ? lnEnd : lnEnd - 1;
+    for (DocLn ln = lnDelBeg; ln <= lnDelEnd; ++ln) {
+      SciCall_MarkerDelete(ln, -1);
+    }
+  }
+}
+
+
+//=============================================================================
+//
 //  _HighlightIfBrace()
 //
 static bool _HighlightIfBrace(const HWND hwnd, const DocPos iPos)
