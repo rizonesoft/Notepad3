@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.902.(build_#) (2020-09-02)
+Current BETA/RC Version 5.20.905.(build_#) (2020-09-05)
 ========================================================
 
 --------------------------------------------------------
@@ -102,6 +102,7 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.905.1]- Initial state of "Focus View" button in F/R-Dlg.
 [.901.2]- Buffer size calculation.
 [.901.2]- Running out of occurrences bookmarks.
 [.901.1]- Crash caused by buffer overflow.
