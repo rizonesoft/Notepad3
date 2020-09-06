@@ -4,13 +4,14 @@
 extern "C" {
 #endif
 
-  DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
-  
   void InitListView(HWND hListView);
+  //LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
+  DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
   void InitDarkMode();
+  void ReleaseDarkMode();
 
   bool IsDarkModeSupported();
   bool CheckDarkModeEnabled();
@@ -22,6 +23,16 @@ extern "C" {
   void RefreshTitleBarThemeColor(HWND hWnd);
   bool IsColorSchemeChangeMessage(LPARAM lParam);
   bool IsColorSchemeChangeMessageEx(UINT message, LPARAM lParam);
+
+  extern COLORREF g_rgbDarkBkgColor;
+  extern COLORREF g_rgbDarkTextColor;
+  extern HBRUSH   g_hbrWndDarkBkgBrush;
+
+  inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
+    SetBkColor(hdc, g_rgbDarkBkgColor);
+    SetTextColor(hdc, g_rgbDarkTextColor);
+    return (INT_PTR)g_hbrWndDarkBkgBrush;
+  }
 
 #else
   inline bool IsDarkModeSupported() { return false; }

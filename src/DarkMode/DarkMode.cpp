@@ -20,17 +20,24 @@
 
 // ============================================================================
 
+HBRUSH g_hbrWndDarkBkgBrush = nullptr; // GetSysColorBrush(COLOR_WINDOW);
+
+// ============================================================================
+
 using fnRtlGetNtVersionNumbers = void(WINAPI *)(LPDWORD major, LPDWORD minor, LPDWORD build);
 
 extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
 {
   static DWORD _dwWindowsBuildNumber = 0;
-  static DWORD _major, _minor;
+  static DWORD _major = 0, _minor = 0;
   if (!_dwWindowsBuildNumber) {
-    fnRtlGetNtVersionNumbers RtlGetNtVersionNumbers = reinterpret_cast<fnRtlGetNtVersionNumbers>(GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "RtlGetNtVersionNumbers"));
-    if (RtlGetNtVersionNumbers) {
-      RtlGetNtVersionNumbers(&_major, &_minor, &_dwWindowsBuildNumber);
-      _dwWindowsBuildNumber &= ~0xF0000000;
+    HMODULE const hNTDLL = GetModuleHandle(L"ntdll.dll");
+    if (hNTDLL) {
+      fnRtlGetNtVersionNumbers RtlGetNtVersionNumbers = reinterpret_cast<fnRtlGetNtVersionNumbers>(GetProcAddress(hNTDLL, "RtlGetNtVersionNumbers"));
+      if (RtlGetNtVersionNumbers) {
+        RtlGetNtVersionNumbers(&_major, &_minor, &_dwWindowsBuildNumber);
+        _dwWindowsBuildNumber &= ~0xF0000000;
+      }
     }
   }
   if (major) { *major = _major; }
@@ -39,8 +46,109 @@ extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
 }
 // ============================================================================
 
+#if FALSE
+//=============================================================================
+//
+//  OwnerDrawItem() - Handles WM_DRAWITEM
+//  https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
+//
+extern "C" LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+  (void)(hwnd);
+  (void)(wParam); // sender control 
+
+  const DRAWITEMSTRUCT *const pDIS = (const DRAWITEMSTRUCT *const)lParam;
+
+  //UINT const ctlId = pDIS->CtlID;
+  //int const partId = (int)pDIS->itemID;
+  //int const stateId = (int)pDIS->itemState;
+  //LPCWSTR const data = (LPCWSTR)(pDIS->itemData);
+
+  //~PAINTSTRUCT ps;
+  //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
+
+  HDC const hdc = pDIS->hDC;
 
 #ifdef D_NP3_WIN10_DARK_MODE
+  //HTHEME const hTheme = OpenThemeData(hWndSB, L"BUTTON");
+  //if (hTheme) {
+  SetBkColor(hdc, UseDarkMode() ? g_rgbDarkBkgColor : GetSysColor(COLOR_BTNFACE));
+  //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
+  //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
+  SetTextColor(hdc, UseDarkMode() ? g_rgbDarkTextColor : GetSysColor(COLOR_BTNTEXT));
+  //  CloseThemeData(hTheme);
+  //}
+#else
+  SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
+  SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+#endif
+
+  WCHAR text[256] = { L'\0' };
+  HWND const hWndItem = pDIS->hwndItem;
+  int const len = (int)SendMessage(hWndItem, WM_GETTEXT, ARRAYSIZE(text), (LPARAM)text);
+
+  RECT rc = pDIS->rcItem;
+  ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, len, NULL);
+
+  //~EndPaint(hWndItem, &ps);
+  return TRUE;
+}
+// ============================================================================
+#endif
+
+
+#if FALSE
+//=============================================================================
+//
+//  OwnerDrawItem() - Handles WM_DRAWITEM
+//  https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
+//
+extern "C" LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+  (void)(hwnd);
+  (void)(wParam); // sender control 
+
+  const DRAWITEMSTRUCT *const pDIS = (const DRAWITEMSTRUCT *const)lParam;
+
+  //UINT const ctlId = pDIS->CtlID;
+  //LPCWSTR const data = (LPCWSTR)(pDIS->itemData);
+
+  //~PAINTSTRUCT ps;
+  //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
+
+  HWND const hwndButton = pDIS->hwndItem;
+  HTHEME const hTheme = OpenThemeData(hwndButton, L"Button");
+  if (hTheme) {
+    RECT rc;
+    GetWindowRect(hwndButton, &rc);
+
+    HDC const hdc = pDIS->hDC;
+    int const partId = BS_AUTORADIOBUTTON; // (int)pDIS->partID;
+    int const stateId = BST_UNCHECKED;  // (int)pDIS->itemState;
+    HRESULT hr = DrawThemeBackground(hTheme, hdc, partId, stateId, &rc, 0);
+    RECT rcContent = { 0 };
+    if (SUCCEEDED(hr)) {
+      hr = GetThemeBackgroundContentRect(hTheme, hdc, partId, stateId, &rc, &rcContent);
+    }
+    if (SUCCEEDED(hr)) {
+      WCHAR szButtonText[255];
+      int const len = GetWindowText(hwndButton, szButtonText, ARRAYSIZE(szButtonText));
+      hr = DrawThemeText(hTheme, hdc, partId, stateId, szButtonText, len, DT_LEFT | DT_VCENTER | DT_SINGLELINE, 0, &rcContent);
+    }
+    CloseThemeData(hTheme);
+    //~EndPaint(hWndItem, &ps);
+    return SUCCEEDED(hr);
+  }
+  //~EndPaint(hWndItem, &ps);
+  return FALSE;
+}
+// ============================================================================
+#endif
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+COLORREF g_rgbDarkBkgColor = 0;
+COLORREF g_rgbDarkTextColor = 0;
 
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Uxtheme.lib")
@@ -135,7 +243,6 @@ fnSetPreferredAppMode _SetPreferredAppMode = nullptr;
 
 
 static bool s_bDarkModeSupported = false;
-
 extern "C" bool IsDarkModeSupported() {
   return s_bDarkModeSupported;
 }
@@ -143,7 +250,6 @@ extern "C" bool IsDarkModeSupported() {
 
 
 static bool s_bDarkModeEnabled = false;
-
 extern "C" bool CheckDarkModeEnabled() {
   s_bDarkModeEnabled = _ShouldAppsUseDarkMode() && !IsHighContrast();
   return s_bDarkModeEnabled;
@@ -244,6 +350,33 @@ static void _FixDarkScrollBar()
 // ============================================================================
 
 
+constexpr COLORREF GetDarkBkgColor() {
+  // gets old Win32 colors :-(
+  //if (IsAppThemed()) {
+  //  HTHEME const hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+  //  if (hTheme) {
+  //    COLORREF const color = GetThemeSysColor(hTheme, COLOR_WINDOW);
+  //    CloseThemeData(hTheme);
+  //    return color;
+  //  }
+  //}
+  return 0x282828;
+}
+
+constexpr COLORREF GetDarkTextColor() {
+  // gets old Win32 colors :-(
+  //if (IsAppThemed()) {
+  //  HTHEME const hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+  //  if (hTheme) {
+  //    COLORREF const color = GetThemeSysColor(hTheme, COLOR_WINDOWTEXT);
+  //    CloseThemeData(hTheme);
+  //    return color;
+  //  }
+  //}
+  return 0xEFEFEF;
+}
+
+
 constexpr bool CheckBuildNumber(DWORD buildNumber) {
   return (buildNumber == 17763 || // 1809
           buildNumber == 18362 || // 1903
@@ -254,6 +387,10 @@ constexpr bool CheckBuildNumber(DWORD buildNumber) {
 
 extern "C" void InitDarkMode()
 {
+  g_rgbDarkBkgColor = GetDarkBkgColor();
+  g_rgbDarkTextColor = GetDarkTextColor();
+  g_hbrWndDarkBkgBrush = CreateSolidBrush(g_rgbDarkBkgColor);
+
   DWORD major, minor;
   DWORD const buildNumber = GetWindowsBuildNumber(&major, &minor);
   if (buildNumber) {
@@ -302,7 +439,15 @@ extern "C" void InitDarkMode()
     }
   }
 }
+// ============================================================================
 
+
+extern "C" void ReleaseDarkMode()
+{
+  if (g_hbrWndDarkBkgBrush) {
+    DeleteObject(g_hbrWndDarkBkgBrush);
+  }
+}
 #endif
 
 // ============================================================================

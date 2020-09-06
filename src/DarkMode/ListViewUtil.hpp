@@ -25,12 +25,13 @@ extern "C" void InitListView(HWND hListView)
 					{
 					case CDDS_PREPAINT:
 						return CDRF_NOTIFYITEMDRAW;
+
 					case CDDS_ITEMPREPAINT:
-					{
-						auto info = reinterpret_cast<SubclassInfo*>(dwRefData);
-						SetTextColor(nmcd->hdc, info->headerTextColor);
-						return CDRF_DODEFAULT;
-					}
+            {
+              auto info = reinterpret_cast<SubclassInfo *>(dwRefData);
+              SetTextColor(nmcd->hdc, info->headerTextColor);
+            }
+					  return CDRF_DODEFAULT;
 					}
 				}
 			}
@@ -68,7 +69,7 @@ extern "C" void InitListView(HWND hListView)
 						CloseThemeData(hTheme);
 					}
 
-					SendMessageW(hHeader, WM_THEMECHANGED, wParam, lParam);
+					SendMessage(hHeader, WM_THEMECHANGED, wParam, lParam);
 
 					RedrawWindow(hWnd, nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 				}

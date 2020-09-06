@@ -274,10 +274,6 @@ typedef enum
 
 extern LPCWSTR WordBookMarks[];
 
-#ifdef D_NP3_WIN10_DARK_MODE
-extern HBRUSH s_hbrWndDarkBackground;
-#endif
-
 // --------------------------------------------------------------------------
 
 
@@ -390,11 +386,6 @@ typedef struct _globals_t
 
   FR_STATES FindReplaceMatchFoundState;
 
-#ifdef D_NP3_WIN10_DARK_MODE
-  COLORREF  rgbDarkBkgColor;
-  COLORREF  rgbDarkTextColor;
-#endif
-
   WCHAR     SelectedThemeName[SMALL_BUFFER];
   WCHAR     WorkingDirectory[MAX_PATH];
   WCHAR     IniFile[MAX_PATH];
@@ -404,15 +395,6 @@ typedef struct _globals_t
 } GLOBALS_T, *PGLOBALS_T;
 
 extern GLOBALS_T Globals;
-
-
-#ifdef D_NP3_WIN10_DARK_MODE
-inline INT_PTR SetDarkModeCtl(const HDC hdc) {
-  SetTextColor(hdc, Globals.rgbDarkTextColor);
-  SetBkColor(hdc, Globals.rgbDarkBkgColor);
-  return (INT_PTR)s_hbrWndDarkBackground;
-}
-#endif
 
 // ------------------------------------
 

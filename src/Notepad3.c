@@ -52,10 +52,6 @@
 //
 // ============================================================================
 
-HBRUSH  s_hbrWndDarkBackground = NULL; // GetSysColorBrush(COLOR_WINDOW);
-
-// ----------------------------------------------------------------------------
-
 LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
   /*0*/ L"back:#0000", // OCC MARKER
   /*1*/ L"back:#FF0000",
@@ -442,7 +438,7 @@ static int msgcmp(void* mqc1, void* mqc2)
        && (pMQC1->wparam == pMQC2->wparam) // command
        //&& (pMQC1->lparam == pMQC2->lparam)
   ){
-    return 0;
+    return FALSE;
   }
   return 1;
 }
@@ -590,38 +586,6 @@ void SetSavePoint()
 
 //==============================================================================
 
-#ifdef D_NP3_WIN10_DARK_MODE
-static inline COLORREF _GetDarkBkgColor()
-{
-  // gets old Win32 colors :-(
-  //if (IsAppThemed()) {
-  //  HTHEME const hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
-  //  if (hTheme) {
-  //    COLORREF const color = GetThemeSysColor(hTheme, COLOR_WINDOW);
-  //    CloseThemeData(hTheme);
-  //    return color;
-  //  }
-  //}
-  return 0x282828;
-}
-
-
-static inline COLORREF _GetDarkTextColor()
-{
-  // gets old Win32 colors :-(
-  //if (IsAppThemed()) {
-  //  HTHEME const hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
-  //  if (hTheme) {
-  //    COLORREF const color = GetThemeSysColor(hTheme, COLOR_WINDOWTEXT);
-  //    CloseThemeData(hTheme);
-  //    return color;
-  //  }
-  //}
-  return 0xEFEFEF;
-}
-
-#endif
-
 
 static void _InitGlobals()
 {
@@ -636,9 +600,6 @@ static void _InitGlobals()
 
 #ifdef D_NP3_WIN10_DARK_MODE
   InitDarkMode();
-  Globals.rgbDarkBkgColor = _GetDarkBkgColor();
-  Globals.rgbDarkTextColor = _GetDarkTextColor();
-  s_hbrWndDarkBackground = CreateSolidBrush(Globals.rgbDarkBkgColor);
 #endif
 
   Globals.WindowsBuildNumber = GetWindowsBuildNumber(NULL, NULL);
@@ -807,9 +768,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     UnregisterClass(s_wchWndClass, Globals.hInstance);
   }
 
-  if (s_hbrWndDarkBackground) {
-    DeleteObject(s_hbrWndDarkBackground);
-  }
+  ReleaseDarkMode();
 
   if (s_lpOrigFileArg) {
     FreeMem(s_lpOrigFileArg);
@@ -994,23 +953,23 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   // Try to Relaunch with elevated privileges
   if (RelaunchElevated(NULL)) {
-    return 0;
+    return FALSE;
   }
 
   // Try to run multiple instances
   if (RelaunchMultiInst()) {
-    return 0;
+    return FALSE;
   }
   // Try to activate another window
   if (ActivatePrevInst()) {
-    return 0;
+    return FALSE;
   }
 
   // Command Line Help Dialog
   if (s_flagDisplayHelp) {
     DisplayCmdLineHelp(NULL);
     _CleanUpResources(NULL, false);
-    return 0;
+    return FALSE;
   }
 
   s_msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
@@ -1334,7 +1293,7 @@ bool InitApplication(const HINSTANCE hInstance)
   wc.hInstance = hInstance;
   wc.hIcon = Globals.hDlgIcon256;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wc.hbrBackground = UseDarkMode() ? s_hbrWndDarkBackground : (HBRUSH)(COLOR_WINDOW + 1);
+  wc.hbrBackground = UseDarkMode() ? g_hbrWndDarkBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
@@ -1360,7 +1319,7 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
   //wcx.lpfnWndProc = (WNDPROC)TBWndProc; ~ don't do that
   wcx.hInstance = hInstance; // done already
   wcx.hCursor = LoadCursor(NULL, IDC_HAND); 
-  wcx.hbrBackground = UseDarkMode() ? s_hbrWndDarkBackground : (HBRUSH)(COLOR_WINDOW + 1);
+  wcx.hbrBackground = UseDarkMode() ? g_hbrWndDarkBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
   wcx.lpszClassName = lpszWndClassName;
 
   return RegisterClassEx(&wcx);
@@ -1406,7 +1365,8 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
   }
 
   SetDialogIconNP3(Globals.hwndMain);
-  SetWindowLayoutRTL(Globals.hwndMain, Settings.DialogsLayoutRTL);
+
+  InitWindowCommon(Globals.hwndMain, true);
 
   if (Settings.TransparentMode) {
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
@@ -1834,7 +1794,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-  return 0;
+  return FALSE;
 }
 
 
@@ -1927,6 +1887,8 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
+  InitWindowCommon(hwndEditCtrl, false);
+
   SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)Settings.RenderingTechnology, 0);
   Settings.RenderingTechnology = SciCall_GetTechnology();
   SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)Settings.Bidirectional, 0); // experimental
@@ -1941,8 +1903,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
   //~SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 1024, 0); // default = 1024
   SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 2048, 0); // default = 1024
-
-  SetWindowLayoutRTL(hwndEditCtrl, Settings.EditLayoutRTL);
 
   // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED: 
   // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER, 
@@ -2468,7 +2428,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
   //~ no effect:
   //~HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
-  //~SelectObject(hdcTB, s_hbrWndDarkBackground);
+  //~SelectObject(hdcTB, g_hbrWndDarkBgrBrush);
   //~SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
   //~ReleaseDC(Globals.hwndToolbar, hdcTB);
 #endif
@@ -2702,7 +2662,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   //  SetMapMode(hdc, MM_ANISOTROPIC); 
   //  SetWindowExtEx(hdc, 100, 100, NULL);
   //  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
-  //  FillRect(hdc, &rcSB, s_hbrWndDarkBackground);
+  //  FillRect(hdc, &rcSB, g_hbrWndDarkBgrBrush);
   //  ReleaseDC(Globals.hwndStatus, hdc);
   //}
 
@@ -2784,7 +2744,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   Sci_GotoPosChooseCaret(pos);
     
-  return !0;
+  return TRUE;
 }
 
 
@@ -2812,7 +2772,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
       s_cxEditFrame = 0;
       s_cyEditFrame = 0;
     }
-
     else {
       SetWindowPos(s_hwndEditFrame,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
       GetClientRect(s_hwndEditFrame,&rc);
@@ -2822,7 +2781,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
       s_cyEditFrame = ((rc2.bottom-rc2.top) - (rc.bottom-rc.top)) / 2;
     }
   }
-
   else {
     s_bIsAppThemed = false;
 
@@ -2860,7 +2818,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   UpdateMarginWidth();
   EditUpdateVisibleIndicators();
 
-  return 0;
+  return FALSE;
 }
 
 
@@ -2926,7 +2884,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateStatusbar(true);
   UpdateMarginWidth();
 
-  return 0;
+  return FALSE;
 }
 
 
@@ -2934,33 +2892,33 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  MsgDrawItem() - Handles WM_DRAWITEM
 //
+//  https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
+//
 LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam) 
 {
   UNUSED(hwnd);
 
   if (LOWORD(wParam) == IDC_STATUSBAR) // Statusbar SB_SETTEXT caused parent's WM_DRAWITEM message
   {
-    // https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
+    const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
 
-    const DRAWITEMSTRUCT* const pDrawItem = (const DRAWITEMSTRUCT* const)lParam;
+    //UINT const ctlId = pDIS->CtlID;
+    //int const partId = (int)pDIS->itemID;
+    //int const stateId = (int)pDIS->itemState;
 
-    HDC const hdc = pDrawItem->hDC;
-    HWND const hWndSB = pDrawItem->hwndItem;
-    //int const partId = (int)pDrawItem->itemID;
-    //int const stateId = (int)pDrawItem->itemState;
-    LPCWSTR const text = (LPCWSTR)(pDrawItem->itemData);
-    RECT rc = pDrawItem->rcItem;
+    //~PAINTSTRUCT ps;
+    //~HWND const hWndItem = pDIS->hwndItem;
+    //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
 
-    PAINTSTRUCT ps;
-    BeginPaint(hWndSB, &ps);
+    HDC const hdc = pDIS->hDC;
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    //HTHEME const hTheme = OpenThemeData(hWndSB, L"BUTTON");
+    //HTHEME const hTheme = OpenThemeData(hWndItem, L"BUTTON");
     //if (hTheme) {
-      SetBkColor(hdc, UseDarkMode() ? Globals.rgbDarkBkgColor : GetSysColor(COLOR_BTNFACE));
+      SetBkColor(hdc, UseDarkMode() ? g_rgbDarkBkgColor : GetSysColor(COLOR_BTNFACE));
       //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
       //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
-      SetTextColor(hdc, UseDarkMode() ? Globals.rgbDarkTextColor : GetSysColor(COLOR_BTNTEXT));
+      SetTextColor(hdc, UseDarkMode() ? g_rgbDarkTextColor : GetSysColor(COLOR_BTNTEXT));
     //  CloseThemeData(hTheme);
     //}
 #else
@@ -2968,10 +2926,11 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
 #endif
 
-    ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL,
-               &rc, text, lstrlen(text), NULL);
+    RECT rc = pDIS->rcItem;
+    LPCWSTR const text = (LPCWSTR)(pDIS->itemData);
+    ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
 
-    EndPaint(hWndSB, &ps);
+    //~EndPaint(hWndItem, &ps);
     return TRUE;
   }
   return FALSE;
@@ -3191,7 +3150,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateMarginWidth();
   }
 
-  return 0;
+  return FALSE;
 }
 
 //=============================================================================
@@ -3210,7 +3169,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   // no context menu after undo/redo history scrolling
   if (s_bUndoRedoScroll) {
     s_bUndoRedoScroll = false;
-    return 0;
+    return FALSE;
   }
 
   HMENU hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
@@ -3455,7 +3414,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(lParam);
 
   HMENU const hmenu = wParam ? (HMENU)wParam : GetMenu(hwnd);
-  if (!hmenu) { return 0; }
+  if (!hmenu) { return FALSE; }
 
   bool const sav = Globals.bCanSaveIniFile;
   bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
@@ -6783,7 +6742,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     default:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-  return 0;
+  return FALSE;
 }
 
 
@@ -7505,7 +7464,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_HOTSPOTCLICK:
     case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTRELEASECLICK:
-      return 0;
+      return FALSE;
 
     case SCN_AUTOCSELECTION:
     {
@@ -7742,7 +7701,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
       if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
       {
-        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return FALSE; }
       }
     }
     break;
@@ -7751,7 +7710,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_AUTOCCHARDELETED:
       if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
       {
-        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return FALSE; }
       }
       break;
 
@@ -7840,9 +7799,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     break;
 
     default:
-      return 0;
+      return FALSE;
   }
-  return !0;
+  return TRUE;
 }
 
 
@@ -7861,7 +7820,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(wParam);
 
   static bool _guard = false;
-  if (_guard) { return !0; } else { _guard = true; } // avoid recursion
+  if (_guard) { return TRUE; } else { _guard = true; } // avoid recursion
 
   #define GUARD_RETURN(res) { _guard = false; return(res); }
 
