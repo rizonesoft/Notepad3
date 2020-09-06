@@ -6565,6 +6565,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             return hBrush;
           }
         }
+        if (UseDarkMode()) {
+          return SetDarkModeCtlColors((HDC)wParam);
+        }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
@@ -7981,6 +7984,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 #ifdef D_NP3_WIN10_DARK_MODE
 
       case WM_CTLCOLORDLG:
+      case WM_CTLCOLOREDIT:
       case WM_CTLCOLORSTATIC: {
         if (UseDarkMode()) {
           return SetDarkModeCtlColors((HDC)wParam);
@@ -8204,6 +8208,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC:
       {
         DWORD const dwId = GetWindowLong((HWND)lParam, GWL_ID);
@@ -8405,6 +8410,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
 
       if (UseDarkMode()) {
@@ -8532,6 +8538,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
 
       if (UseDarkMode()) {
@@ -8664,6 +8671,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
 
       if (UseDarkMode()) {
@@ -8917,6 +8925,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
     //case WM_CTLCOLORBTN:(BS_OWNERDRAW)
 
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);

@@ -5,6 +5,8 @@ extern "C" {
 #endif
 
   void InitListView(HWND hListView);
+  void InitTreeView(HWND hTreeView);
+
   //LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
   DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
 

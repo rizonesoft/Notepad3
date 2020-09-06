@@ -34,6 +34,7 @@
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
+#include "DarkMode/DarkMode.h"
 
 #include "SciCall.h"
 
@@ -4030,6 +4031,24 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
             SetDialogIconNP3(hwnd);
 
+            InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+            if (UseDarkMode()) {
+              SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+              SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_STYLEFORE));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_STYLEBACK));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_STYLEFONT));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_PREVIEW));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_STYLEDEFAULT));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_PREVSTYLE));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_NEXTSTYLE));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_IMPORT));
+              SetExplorerTheme(GetDlgItem(hwnd, IDC_EXPORT));
+              //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+            }
+#endif
             DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
             GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
@@ -4056,6 +4075,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
 	          InitWindowCommon(hwndTV, true);
+            InitTreeView(hwndTV);
+
             TreeView_SetExtendedStyle(hwndTV, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
 
             UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
@@ -4199,6 +4220,41 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
           }
         }
         return 0;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+        case WM_CTLCOLORDLG:
+        case WM_CTLCOLOREDIT:
+        case WM_CTLCOLORSTATIC: {
+          if (UseDarkMode()) {
+            return SetDarkModeCtlColors((HDC)wParam);
+          }
+        } break;
+
+        case WM_SETTINGCHANGE:
+          if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+            SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+          }
+          break;
+
+        case WM_THEMECHANGED:
+          if (IsDarkModeSupported()) {
+            bool const darkModeEnabled = CheckDarkModeEnabled();
+            AllowDarkModeForWindow(hwnd, darkModeEnabled);
+            RefreshTitleBarThemeColor(hwnd);
+            int const buttons[] = { IDOK, IDCANCEL, IDC_STYLEFORE, IDC_STYLEBACK, IDC_STYLEFONT, IDC_PREVIEW,
+                                    IDC_STYLEDEFAULT, IDC_PREVSTYLE, IDC_NEXTSTYLE, IDC_IMPORT, IDC_EXPORT };
+            for (int id = 0; id < COUNTOF(buttons); ++id) {
+              HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+              AllowDarkModeForWindow(hBtn, darkModeEnabled);
+              SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+            }
+            SendMessage(hwndTV, WM_THEMECHANGED, 0, 0);
+
+            UpdateWindow(hwnd);
+          }
+          break;
+#endif
 
         case WM_ENABLE:
           // modal child dialog should disable main window too
@@ -4758,7 +4814,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
   static int cxClient = 0;
   static int cyClient = 0;
 
-  static HWND hwndIL = NULL;
+  static HWND hwndLV = NULL;
 
   static int  iInternalDefault = 0;
 
@@ -4769,47 +4825,58 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SetDialogIconNP3(hwnd);
 
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+          SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        }
+#endif
+
         DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
 
-        hwndIL = GetDlgItem(hwnd,IDC_STYLELIST);
-        InitWindowCommon(hwndIL, false);
+        hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
+        InitWindowCommon(hwndLV, true);
+        InitListView(hwndLV);
 
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-        ListView_SetImageList(hwndIL,
+        ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
 
-        ListView_SetImageList(hwndIL,
+        ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
             &shfi,sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_NORMAL);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        ListView_SetExtendedListViewStyle(hwndIL,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
-        ListView_InsertColumn(hwndIL,0,&lvc);
+        ListView_SetExtendedListViewStyle(hwndLV,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
+        ListView_InsertColumn(hwndLV,0,&lvc);
 
         // Add lexers
         for (int i = 0; i < COUNTOF(g_pLexArray); i++) {
-          Style_AddLexerToListView(hwndIL, g_pLexArray[i]);
+          Style_AddLexerToListView(hwndLV, g_pLexArray[i]);
         }
-        ListView_SetColumnWidth(hwndIL,0,LVSCW_AUTOSIZE_USEHEADER);
+        ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
 
         // Select current lexer
-        int lvItems = ListView_GetItemCount(hwndIL);
+        int lvItems = ListView_GetItemCount(hwndLV);
         LVITEM lvi;
         lvi.mask = LVIF_PARAM;
         for (int i = 0; i < lvItems; i++) {
           lvi.iItem = i;
-          ListView_GetItem(hwndIL,&lvi);
+          ListView_GetItem(hwndLV,&lvi);
 
           if (((PEDITLEXER)lvi.lParam)->resID == _s_selectedLexer->resID)
           {
-            ListView_SetItemState(hwndIL,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
-            ListView_EnsureVisible(hwndIL,i,false);
+            ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
+            ListView_EnsureVisible(hwndLV,i,false);
             CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(_s_idefaultLexer == i));
             break;
           }
@@ -4834,7 +4901,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-        ListView_SetImageList(hwndIL,
+        ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
             &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
@@ -4857,6 +4924,42 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       return !0;
 
 
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORSTATIC: {
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+    } break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+        int const buttons[] = { IDOK, IDCANCEL };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        SendMessage(hwndLV, WM_THEMECHANGED, 0, 0);
+
+        UpdateWindow(hwnd);
+      }
+      break;
+
+#endif
+
+
     case WM_NOTIFY: 
       {
         if (((LPNMHDR)(lParam))->idFrom == IDC_STYLELIST) {
@@ -4870,7 +4973,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           case LVN_ITEMCHANGED:
           case LVN_DELETEITEM:
             {
-              int i = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+              int i = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
               CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(iInternalDefault == i));
               DialogEnableControl(hwnd, IDC_DEFAULTSCHEME, i != -1);
               DialogEnableControl(hwnd, IDOK, i != -1);
@@ -4888,7 +4991,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         {
         case IDC_DEFAULTSCHEME:
           if (IsButtonChecked(hwnd, IDC_DEFAULTSCHEME))
-            iInternalDefault = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+            iInternalDefault = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
           else
             iInternalDefault = 0;
           break;
@@ -4898,8 +5001,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           {
             LVITEM lvi;
             lvi.mask = LVIF_PARAM;
-            lvi.iItem = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
-            if (ListView_GetItem(hwndIL, &lvi)) {
+            lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+            if (ListView_GetItem(hwndLV, &lvi)) {
               _s_selectedLexer = (PEDITLEXER)lvi.lParam;
               _s_idefaultLexer = iInternalDefault;
               s_bAutoSelect = IsButtonChecked(hwnd, IDC_AUTOSELECT);

@@ -328,8 +328,8 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -582,8 +582,8 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -969,9 +969,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     //    FillRect(hdc, &rc, g_hbrWndDarkBgrBrush);
     //  }
     //  return TRUE;
-
-	  case WM_CTLCOLOR:
+	
 	  case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -1211,9 +1211,9 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -1470,9 +1470,9 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -1719,8 +1719,8 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -1926,8 +1926,8 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -2118,7 +2118,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
 
 static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static HWND hwndIL = NULL;
+  static HWND hwndLV = NULL;
 
   switch (umsg) {
     case WM_INITDIALOG:
@@ -2143,9 +2143,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         }
       }
 
-		  hwndIL = GetDlgItem(hwnd, IDC_FILEMRU);
-      InitWindowCommon(hwndIL, true);
-      InitListView(hwndIL); // DarkMode
+		  hwndLV = GetDlgItem(hwnd, IDC_FILEMRU);
+      InitWindowCommon(hwndLV, true);
+      InitListView(hwndLV); // DarkMode
 
       SHFILEINFO shfi;
       ZeroMemory(&shfi, sizeof(SHFILEINFO));
@@ -2154,7 +2154,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
       LPICONTHREADINFO lpit = (LPICONTHREADINFO)AllocMem(sizeof(ICONTHREADINFO), HEAP_ZERO_MEMORY);
       if (lpit) {
         SetProp(hwnd, L"it", (HANDLE)lpit);
-        lpit->hwnd              = hwndIL;
+        lpit->hwnd              = hwndLV;
         lpit->hThread           = NULL;
         lpit->hExitThread       = CreateEvent(NULL, true, false, NULL);
         lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
@@ -2162,18 +2162,18 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
       ResizeDlg_Init(hwnd, Settings.FileMRUDlgSizeX, Settings.FileMRUDlgSizeY, IDC_RESIZEGRIP);
 
 
-      ListView_SetImageList(hwndIL,
+      ListView_SetImageList(hwndLV,
                             (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
                                                       &shfi, sizeof(SHFILEINFO), SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                             LVSIL_SMALL);
 
-      ListView_SetImageList(hwndIL,
+      ListView_SetImageList(hwndLV,
                             (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
                                                       &shfi, sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                             LVSIL_NORMAL);
 
-      ListView_SetExtendedListViewStyle(hwndIL, /*LVS_EX_FULLROWSELECT|*/ LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
-      ListView_InsertColumn(hwndIL, 0, &lvc);
+      ListView_SetExtendedListViewStyle(hwndLV, /*LVS_EX_FULLROWSELECT|*/ LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
+      ListView_InsertColumn(hwndLV, 0, &lvc);
 
       // Update view
       SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
@@ -2235,7 +2235,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
       hdwp      = DeferCtlPos(hdwp, hwnd, IDC_PRESERVECARET, 0, dy, SWP_NOSIZE);
       hdwp      = DeferCtlPos(hdwp, hwnd, IDC_REMEMBERSEARCHPATTERN, 0, dy, SWP_NOSIZE);
       EndDeferWindowPos(hdwp);
-      ListView_SetColumnWidth(hwndIL, 0, LVSCW_AUTOSIZE_USEHEADER);
+      ListView_SetColumnWidth(hwndLV, 0, LVSCW_AUTOSIZE_USEHEADER);
     }
     return TRUE;
 
@@ -2244,9 +2244,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
       return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -2271,7 +2271,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        SendMessage(hwndIL, WM_THEMECHANGED, 0, 0);
+        SendMessage(hwndLV, WM_THEMECHANGED, 0, 0);
 
         UpdateWindow(hwnd);
       }
@@ -2393,14 +2393,14 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
               case LVN_ITEMCHANGED:
               case LVN_DELETEITEM:
               {
-                UINT const cnt = ListView_GetSelectedCount(hwndIL);
+                UINT const cnt = ListView_GetSelectedCount(hwndLV);
                 DialogEnableControl(hwnd, IDOK, (cnt > 0));
                 // can't discard current file (myself)
                 int cur = 0;
                 if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) {
                   cur = -1;
                 }
-                int const item = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+                int const item = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
                 DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (cur != item));
               }
               break;
@@ -2433,7 +2433,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
           SetEvent(lpit->hTerminatedThread);
           lpit->hThread = NULL;
 
-          ListView_DeleteAllItems(hwndIL);
+          ListView_DeleteAllItems(hwndLV);
 
           LV_ITEM lvi;
           ZeroMemory(&lvi, sizeof(LV_ITEM));
@@ -2454,19 +2454,19 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
             //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_SETCARETINDEX,0,false);
             lvi.iItem   = i;
             lvi.pszText = tch;
-            ListView_InsertItem(hwndIL, &lvi);
+            ListView_InsertItem(hwndLV, &lvi);
           }
 
-          UINT const cnt = ListView_GetItemCount(hwndIL);
+          UINT const cnt = ListView_GetItemCount(hwndLV);
           if (cnt > 0) {
-            UINT idx = ListView_GetTopIndex(hwndIL);
-            ListView_SetColumnWidth(hwndIL, idx, LVSCW_AUTOSIZE_USEHEADER);
-            ListView_SetItemState(hwndIL, ((cnt > 1) ? idx + 1 : idx), LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+            UINT idx = ListView_GetTopIndex(hwndLV);
+            ListView_SetColumnWidth(hwndLV, idx, LVSCW_AUTOSIZE_USEHEADER);
+            ListView_SetItemState(hwndLV, ((cnt > 1) ? idx + 1 : idx), LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
             //int cur = 0;
             //if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) { cur = -1; }
-            //int const item = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+            //int const item = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
             //if ((cur == item) && (cnt > 1)) {
-            //  ListView_SetItemState(hwndIL, idx + 1, LVIS_SELECTED, LVIS_SELECTED);
+            //  ListView_SetItemState(hwndLV, idx + 1, LVIS_SELECTED, LVIS_SELECTED);
             //}
           }
 
@@ -2492,16 +2492,16 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         {
           WCHAR tchFileName[MAX_PATH] = {L'\0'};
 
-          if (ListView_GetSelectedCount(hwndIL)) {
+          if (ListView_GetSelectedCount(hwndLV)) {
 
             LV_ITEM lvi;
             ZeroMemory(&lvi, sizeof(LV_ITEM));
             lvi.mask = LVIF_TEXT;
             lvi.pszText = tchFileName;
             lvi.cchTextMax = COUNTOF(tchFileName);
-            lvi.iItem = ListView_GetNextItem(hwndIL, -1, LVNI_ALL | LVNI_SELECTED);
+            lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
 
-            ListView_GetItem(hwndIL, &lvi);
+            ListView_GetItem(hwndLV, &lvi);
 
             PathUnquoteSpaces(tchFileName);
 
@@ -2541,7 +2541,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         } break;
 
         case IDC_CLEAR_LIST:
-          ListView_DeleteAllItems(hwndIL);
+          ListView_DeleteAllItems(hwndLV);
           MRU_Empty(Globals.pFileMRU, StrIsNotEmpty(Globals.CurrentFile));
           if (Globals.bCanSaveIniFile) {
             MRU_Save(Globals.pFileMRU);
@@ -2615,9 +2615,9 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
       return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -2748,8 +2748,8 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -2896,8 +2896,8 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -3043,8 +3043,8 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -3206,9 +3206,9 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -3342,6 +3342,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         if (UseDarkMode()) {
           SetExplorerTheme(GetDlgItem(hwnd, IDOK));
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          SetExplorerTheme(GetDlgItem(hwnd, IDC_ENCODINGLIST));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
         }
 #endif
@@ -3372,7 +3373,6 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(!Settings.SkipUnicodeDetection));
         CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(!Settings.SkipANSICodePageDetection));
 
-
         CenterDlgInParent(hwnd, NULL);
       }
       return TRUE;
@@ -3384,9 +3384,10 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -3405,7 +3406,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         AllowDarkModeForWindow(hwnd, darkModeEnabled);
         RefreshTitleBarThemeColor(hwnd);
 
-        int const buttons[] = { IDOK, IDCANCEL };
+        int const buttons[] = { IDOK, IDCANCEL, IDC_ENCODINGLIST };
         for (int id = 0; id < COUNTOF(buttons); ++id) {
           HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
@@ -3607,9 +3608,9 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -3628,7 +3629,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         AllowDarkModeForWindow(hwnd, darkModeEnabled);
         RefreshTitleBarThemeColor(hwnd);
 
-        int const buttons[] = { IDOK, IDCANCEL };
+        int const buttons[] = { IDOK, IDCANCEL, IDC_RESIZEGRIP };
         for (int id = 0; id < COUNTOF(buttons); ++id) {
           HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
@@ -3816,9 +3817,9 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-    case WM_CTLCOLOR:
+  
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -3946,8 +3947,8 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
@@ -4090,8 +4091,8 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLOR:
   case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
   case WM_CTLCOLORSTATIC: {
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
