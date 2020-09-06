@@ -130,6 +130,7 @@ void  EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditFoldMarkedLineRange(HWND hwnd, bool bHideLines);
 void  EditBookMarkLineRange(HWND hwnd);
+void  EditDeleteMarkerInSelection();
 void  EditSelectionMultiSelectAll();
 void  EditSelectionMultiSelectAllEx(EDITFINDREPLACE edFndRpl);
 

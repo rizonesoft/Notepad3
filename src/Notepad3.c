@@ -4174,6 +4174,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           if (!Settings2.NoCutLineOnEmptySelection) {
             _BEGIN_UNDO_ACTION_;
+            SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
             SciCall_LineCut();
             _END_UNDO_ACTION_;
           }
@@ -4193,6 +4194,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         s_bLastCopyFromMe = true;
       }
       _BEGIN_UNDO_ACTION_;
+        SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
         SciCall_LineCut();
       _END_UNDO_ACTION_;
     }
@@ -4371,6 +4373,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINE:
       {
         _BEGIN_UNDO_ACTION_;
+        SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
         SciCall_LineDelete();
         _END_UNDO_ACTION_;
       }
@@ -4429,11 +4432,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-    //case CMD_DELETEBACK:
-    //  ///~_BEGIN_UNDO_ACTION_;
-    //  SciCall_DeleteBack();
-    //  ///~_END_UNDO_ACTION_;
-    //  break;
+    case CMD_DELETEBACK:
+      {
+        ///~_BEGIN_UNDO_ACTION_;
+        EditDeleteMarkerInSelection();
+        SciCall_DeleteBack();
+        ///~_END_UNDO_ACTION_;
+      }
+      break;
 
     case CMD_VK_INSERT:
       SciCall_EditToggleOverType();
@@ -5863,9 +5869,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case CMD_CLEAR:
     case IDM_EDIT_CLEAR:
-    //case CMD_CLEAR:
         ///~_BEGIN_UNDO_ACTION_;
+        EditDeleteMarkerInSelection();
         SciCall_Clear();
         ///~_END_UNDO_ACTION_;
       break;
@@ -5971,10 +5978,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           _END_UNDO_ACTION_;
         }
         else {
-          if (iStartPos != iEndPos)
+          if (iStartPos != iEndPos) {
             SciCall_DelWordRight();
-          else // iStartPos == iEndPos
+          } else { // iStartPos == iEndPos
+            SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
             SciCall_LineDelete();
+          }
         }
       }
       break;
@@ -7679,11 +7688,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case TBN_QUERYDELETE:
         case TBN_QUERYINSERT:
           // (!) must exist and return true 
-          GUARD_RETURN(!0);
+          GUARD_RETURN(TRUE);
 
         case TBN_BEGINADJUST:
           s_tb_reset_already = false;
-          GUARD_RETURN(0);
+          GUARD_RETURN(FALSE);
 
         case TBN_GETBUTTONINFO:
         {
@@ -7693,10 +7702,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
             StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
             CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
-            GUARD_RETURN(!0);
+            GUARD_RETURN(TRUE);
           }
         }
-        GUARD_RETURN(0);
+        GUARD_RETURN(FALSE);
 
         case TBN_RESET:
         {
@@ -7716,14 +7725,14 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           s_tb_reset_already = !s_tb_reset_already;
         }
-        GUARD_RETURN(0);
+        GUARD_RETURN(FALSE);
 
         case TBN_ENDADJUST:
           UpdateToolbar();
-          GUARD_RETURN(!0);
+          GUARD_RETURN(TRUE);
 
         default:
-          GUARD_RETURN(0);
+          GUARD_RETURN(FALSE);
       }
       break;
 
