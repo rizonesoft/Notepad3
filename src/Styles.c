@@ -1839,6 +1839,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   // occurrence bookmarker
   bool const visible = Settings.MarkOccurrencesBookmark;
   SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
+  SciCall_MarkerSetFore(MARKER_NP3_OCCURRENCE, CalcContrastColor(clrBack, 100));
   SciCall_MarkerSetAlpha(MARKER_NP3_OCCURRENCE, SC_ALPHA_TRANSPARENT);
 
   // ---  WordBookMarks  ---
@@ -4047,6 +4048,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
               SetExplorerTheme(GetDlgItem(hwnd, IDC_IMPORT));
               SetExplorerTheme(GetDlgItem(hwnd, IDC_EXPORT));
               //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+              // remove themes to colorize static controls correctly
+              SetWindowTheme(GetDlgItem(hwnd, IDC_STATIC), L"", L"");
+              SetWindowTheme(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), L"", L"");
             }
 #endif
             DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
@@ -4225,11 +4229,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         case WM_CTLCOLORDLG:
         case WM_CTLCOLOREDIT:
-        case WM_CTLCOLORSTATIC: {
+        case WM_CTLCOLORLISTBOX:
+        case WM_CTLCOLORSTATIC:
           if (UseDarkMode()) {
             return SetDarkModeCtlColors((HDC)wParam);
           }
-        } break;
+          break;
 
         case WM_SETTINGCHANGE:
           if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -4832,6 +4837,10 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           SetExplorerTheme(GetDlgItem(hwnd, IDOK));
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { IDC_DEFAULTSCHEME, IDC_AUTOSELECT, IDC_STATIC };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
         }
 #endif
 
@@ -4928,11 +4937,12 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {

@@ -2,8 +2,9 @@
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-struct SubclassInfo
-{
+extern HBRUSH g_hbrWndDarkBkgBrush;
+
+struct SubclassInfo {
 	COLORREF headerTextColor;
 };
 
@@ -40,7 +41,7 @@ extern "C" void InitListView(HWND hListView)
 			{
         if (IsDarkModeSupported())
 				{
-					HWND hHeader = ListView_GetHeader(hWnd);
+					HWND const hHeader = ListView_GetHeader(hWnd);
 
 					AllowDarkModeForWindow(hWnd, CheckDarkModeEnabled());
           AllowDarkModeForWindow(hHeader, CheckDarkModeEnabled());
@@ -129,7 +130,7 @@ extern "C" void InitTreeView(HWND hTreeView)
 				{
 					AllowDarkModeForWindow(hWnd, CheckDarkModeEnabled());
 
-					HTHEME hTheme = OpenThemeData(nullptr, L"ItemsView");
+					HTHEME const hTheme = OpenThemeData(nullptr, L"ItemsView");
 					if (hTheme)
 					{
 						COLORREF color;
@@ -172,8 +173,8 @@ extern "C" void InitListView(HWND hListView) {
   (void)(hListView);
 }
 
-extern "C" void InitTreeView(HWND hTreeView) {
-  (void)(hTreeView);
+extern "C" void InitTreeView(HWND hToolbar) {
+  (void)(hToolbar);
 }
 
 #endif

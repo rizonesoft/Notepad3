@@ -157,6 +157,19 @@ inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0x
 
 // ----------------------------------------------------------------------------
 
+#define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
+
+inline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
+
+  bool const mask = RGB_SUB(MulDiv(rgb >> 0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
+                    RGB_SUB(MulDiv(rgb >> 8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
+                    RGB_SUB(MulDiv(rgb >> 16, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20;
+
+  return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
+}
+
+// ----------------------------------------------------------------------------
+
 #define SendWMCommandEx(hwnd, id, extra)  SendMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (extra)), 0)
 #define SendWMCommand(hwnd, id)           SendWMCommandEx((hwnd), (id), 1)
 #define PostWMCommand(hwnd, id)           PostMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), 1), 0)

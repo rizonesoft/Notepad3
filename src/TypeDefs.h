@@ -334,6 +334,7 @@ typedef struct _globals_t
   HWND      hwndEdit;
   HANDLE    hndlScintilla;
   HANDLE    hwndToolbar;
+  HANDLE    hwndRebar;
   HWND      hwndStatus;
   DWORD     dwLastError;
   HMENU     hMainMenu;

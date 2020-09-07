@@ -5627,14 +5627,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 #ifdef D_NP3_WIN10_DARK_MODE
       if (UseDarkMode()) {
-        SetExplorerTheme(GetDlgItem(hwnd, IDOK));
-        SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
-        SetExplorerTheme(GetDlgItem(hwnd, IDC_FINDPREV));
-        SetExplorerTheme(GetDlgItem(hwnd, IDC_REPLACE));
-        SetExplorerTheme(GetDlgItem(hwnd, IDC_REPLACEALL));
-        SetExplorerTheme(GetDlgItem(hwnd, IDC_REPLACEINSEL));
-        SetExplorerTheme(GetDlgItem(hwnd, IDC_SWAPSTRG));
-        SetExplorerTheme(GetDlgItem(hwnd, IDC_TOGGLE_VISIBILITY));
+        int const ctlx[] = { IDOK, IDCANCEL, IDC_FINDPREV, IDC_REPLACE, IDC_REPLACEALL,
+                             IDC_REPLACEINSEL, IDC_SWAPSTRG, IDC_TOGGLE_VISIBILITY };
+        for (int i = 0; i < COUNTOF(ctlx); ++i) {
+          SetExplorerTheme(GetDlgItem(hwnd, ctlx[i]));
+        }
+        int const ctl[] = { IDC_FINDCASE, IDC_FINDWORD, IDC_FINDSTART, IDC_FINDTRANSFORMBS, IDC_FINDAUTOESCCTRLCHR,
+                            IDC_FINDREGEXP, IDC_DOT_MATCH_ALL, IDC_FIND_OVERLAPPING, IDC_NOWRAP, IDC_FINDCLOSE,
+                            IDC_ALL_OCCURRENCES, IDC_WILDCARDSEARCH, IDC_TRANSPARENT, IDC_STATIC };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
         //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
       }
 #endif
@@ -5908,41 +5911,83 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-      case WM_CTLCOLORDLG:
-      case WM_CTLCOLORSTATIC: {
-        if (UseDarkMode()) {
-          return SetDarkModeCtlColors((HDC)wParam);
+    case WM_CTLCOLORDLG:
+    //~case WM_CTLCOLOREDIT:
+    //~case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+        int const buttons[] = { IDOK, IDCANCEL, IDC_FINDPREV, IDC_REPLACE, IDC_SWAPSTRG,
+                                IDC_REPLACEALL, IDC_REPLACEINSEL, IDC_TOGGLE_VISIBILITY };
+        for (int i = 0; i < COUNTOF(buttons); ++i) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[i]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-      } break;
-
-      case WM_SETTINGCHANGE:
-        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
-          SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
-        }
-        break;
-
-      case WM_THEMECHANGED:
-        if (IsDarkModeSupported()) {
-          bool const darkModeEnabled = CheckDarkModeEnabled();
-          AllowDarkModeForWindow(hwnd, darkModeEnabled);
-          RefreshTitleBarThemeColor(hwnd);
-
-          int const buttons[] = { IDOK, IDCANCEL, IDC_FINDPREV, IDC_REPLACE, IDC_SWAPSTRG,
-                                  IDC_REPLACEALL, IDC_REPLACEINSEL, IDC_TOGGLE_VISIBILITY };
-
-          for (int id = 0; id < COUNTOF(buttons); ++id) {
-            HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
-            AllowDarkModeForWindow(hBtn, darkModeEnabled);
-            SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
-          }
-          UpdateWindow(hwnd);
-        }
-        break;
+        UpdateWindow(hwnd);
+      }
+      break;
 
 #endif
 
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
+      {
+      if (sg_pefrData->bMarkOccurences) {
+        HWND hCheck = (HWND)lParam;
+        HDC hDC = (HDC)wParam;
 
-      case WM_ACTIVATE:
+        HWND hComboBox = GetDlgItem(hwnd, IDC_FINDTEXT);
+        COMBOBOXINFO ci = { sizeof(COMBOBOXINFO) };
+        GetComboBoxInfo(hComboBox, &ci);
+
+        //if (hCheck == ci.hwndItem || hCheck == ci.hwndList)
+        if (hCheck == ci.hwndItem) {
+          SetBkMode(hDC, TRANSPARENT);
+          INT_PTR hBrush;
+          switch (s_anyMatch) {
+          case MATCH:
+            //SetTextColor(hDC, green);
+            SetBkColor(hDC, rgbGreenColorRef);
+            hBrush = (INT_PTR)hBrushGreen;
+            break;
+          case NO_MATCH:
+            //SetTextColor(hDC, blue);
+            SetBkColor(hDC, rgbBlueColorRef);
+            hBrush = (INT_PTR)hBrushBlue;
+            break;
+          case INVALID:
+          default:
+            //SetTextColor(hDC, red);
+            SetBkColor(hDC, rgbRedColorRef);
+            hBrush = (INT_PTR)hBrushRed;
+            break;
+          }
+          return hBrush;
+        }
+      }
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+    }
+    return FALSE;
+
+
+    case WM_ACTIVATE:
     {
       if (!sg_pefrData) { return false; }
 
@@ -6527,49 +6572,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
       }
       break;
-
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-      {
-        if (sg_pefrData->bMarkOccurences)
-        {
-          HWND hCheck = (HWND)lParam;
-          HDC hDC = (HDC)wParam;
-
-          HWND hComboBox = GetDlgItem(hwnd, IDC_FINDTEXT);
-          COMBOBOXINFO ci = { sizeof(COMBOBOXINFO) };
-          GetComboBoxInfo(hComboBox, &ci);
-
-          //if (hCheck == ci.hwndItem || hCheck == ci.hwndList)
-          if (hCheck == ci.hwndItem) {
-            SetBkMode(hDC, TRANSPARENT);
-            INT_PTR hBrush;
-            switch (s_anyMatch) {
-            case MATCH:
-              //SetTextColor(hDC, green);
-              SetBkColor(hDC, rgbGreenColorRef);
-              hBrush = (INT_PTR)hBrushGreen;
-              break;
-            case NO_MATCH:
-              //SetTextColor(hDC, blue);
-              SetBkColor(hDC, rgbBlueColorRef);
-              hBrush = (INT_PTR)hBrushBlue;
-              break;
-            case INVALID:
-            default:
-              //SetTextColor(hDC, red);
-              SetBkColor(hDC, rgbRedColorRef);
-              hBrush = (INT_PTR)hBrushRed;
-              break;
-            }
-            return hBrush;
-          }
-        }
-        if (UseDarkMode()) {
-          return SetDarkModeCtlColors((HDC)wParam);
-        }
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     default:
       break;
@@ -8006,11 +8008,12 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
       case WM_CTLCOLORDLG:
       case WM_CTLCOLOREDIT:
-      case WM_CTLCOLORSTATIC: {
+      case WM_CTLCOLORLISTBOX:
+      case WM_CTLCOLORSTATIC:
         if (UseDarkMode()) {
           return SetDarkModeCtlColors((HDC)wParam);
         }
-      } break;
+        break;
 
       case WM_SETTINGCHANGE:
         if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -8230,6 +8233,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
     case WM_CTLCOLORSTATIC:
       {
         DWORD const dwId = GetWindowLong((HWND)lParam, GWL_ID);
@@ -8417,6 +8421,10 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           SetExplorerTheme(GetDlgItem(hwnd, IDOK));
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { 100, 101, 102, 103, 104, -1 };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
         }
 #endif
         CheckRadioButton(hwnd,100,104,*piAlignMode+100);
@@ -8432,12 +8440,12 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
-
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -8560,12 +8568,12 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
 
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
-
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -8693,12 +8701,12 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
 
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
-
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -8855,13 +8863,11 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         if (UseDarkMode()) {
           SetExplorerTheme(GetDlgItem(hwnd, IDOK));
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
-          //~SetExplorerTheme(GetDlgItem(hwnd, 100));
-          //~SetExplorerTheme(GetDlgItem(hwnd, 101));
-          //~SetExplorerTheme(GetDlgItem(hwnd, 102));
-          //~SetExplorerTheme(GetDlgItem(hwnd, 103));
-          //~SetExplorerTheme(GetDlgItem(hwnd, 104));
-          //~SetExplorerTheme(GetDlgItem(hwnd, 105));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, -1 };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
         }
 #endif
 
@@ -8870,15 +8876,10 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         }
         else if (*piSortFlags & SORT_SHUFFLE) {
           CheckRadioButton(hwnd,100,102,102);
-          DialogEnableControl(hwnd,103,false);
-          DialogEnableControl(hwnd,104,false);
-          DialogEnableControl(hwnd,105,false);
-          DialogEnableControl(hwnd,106,false);
-          DialogEnableControl(hwnd,107,false);
-          DialogEnableControl(hwnd,108,false);
-          DialogEnableControl(hwnd,109,false);
-          DialogEnableControl(hwnd,110,false);
-          DialogEnableControl(hwnd,111,false);
+          int const ctl[] = { 103, 104, 105, 106, 107, 108, 109, 110, 111, 112 };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            DialogEnableControl(hwnd, ctl[i], false);
+          }
         }
         else {
           CheckRadioButton(hwnd, 100, 102, 100);
@@ -8947,11 +8948,13 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    //~case WM_CTLCOLORBTN: - BS_AUTORADIOBUTTON
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -8965,7 +8968,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         AllowDarkModeForWindow(hwnd, darkModeEnabled);
         RefreshTitleBarThemeColor(hwnd);
 
-        int const buttons[] = { IDOK, IDCANCEL/*, 100, 101, 102, 103, 104, 105*/ };
+        int const buttons[] = { IDOK, IDCANCEL, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112 };
         for (int id = 0; id < COUNTOF(buttons); ++id) {
           HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
           AllowDarkModeForWindow(hBtn, darkModeEnabled);

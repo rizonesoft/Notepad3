@@ -147,8 +147,8 @@ extern "C" LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-COLORREF g_rgbDarkBkgColor = 0;
-COLORREF g_rgbDarkTextColor = 0;
+COLORREF g_rgbDarkBkgColor = RGB(0x38, 0x38, 0x38);
+COLORREF g_rgbDarkTextColor = RGB(0xEF, 0xEF, 0xEF);
 
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Uxtheme.lib")
@@ -360,7 +360,7 @@ constexpr COLORREF GetDarkBkgColor() {
   //    return color;
   //  }
   //}
-  return 0x282828;
+  return RGB(0x38,0x38,0x38);
 }
 
 constexpr COLORREF GetDarkTextColor() {
@@ -373,7 +373,7 @@ constexpr COLORREF GetDarkTextColor() {
   //    return color;
   //  }
   //}
-  return 0xEFEFEF;
+  return RGB(0xEF, 0xEF, 0xEF);
 }
 
 
@@ -386,7 +386,7 @@ constexpr bool CheckBuildNumber(DWORD buildNumber) {
 
 
 extern "C" void InitDarkMode()
-{
+ {
   g_rgbDarkBkgColor = GetDarkBkgColor();
   g_rgbDarkTextColor = GetDarkTextColor();
   g_hbrWndDarkBkgBrush = CreateSolidBrush(g_rgbDarkBkgColor);

@@ -82,7 +82,7 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 //void SnapToDefaultButton(HWND);
 
 inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
-  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
+  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); } else { SetWindowTheme(hwnd, L"", L""); }
   SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 }
 

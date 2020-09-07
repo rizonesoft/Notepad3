@@ -118,7 +118,6 @@ static WCHAR     s_wchWndClass[64] = { L'\0' };
 
 static HWND      s_hwndEditFrame = NULL;
 static HWND      s_hwndNextCBChain = NULL;
-static HWND      s_hwndReBar = NULL;
 
 static WCHAR     s_wchTmpFilePath[MAX_PATH] = { L'\0' };
 
@@ -1887,7 +1886,7 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
-  InitWindowCommon(hwndEditCtrl, false);
+  InitWindowCommon(hwndEditCtrl, true);
 
   SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)Settings.RenderingTechnology, 0);
   Settings.RenderingTechnology = SciCall_GetTechnology();
@@ -2190,7 +2189,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
   DragAcceptFiles(hwnd,true);
 
   if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
-    Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || s_hwndReBar == NULL) {
+    Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || Globals.hwndRebar == NULL) {
     return -1LL;
   }
   Style_SetDefaultLexer(Globals.hwndEdit);
@@ -2381,7 +2380,7 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 //
 void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
-  DWORD dwToolbarStyle = NP3_WS_TOOLBAR | TBSTYLE_TRANSPARENT;
+  DWORD dwToolbarStyle = NP3_WS_TOOLBAR /*| TBSTYLE_CUSTOMERASE */ | TBSTYLE_TRANSPARENT;
   DWORD dwToolbarExStyle = TBSTYLE_EX_DOUBLEBUFFER /* | TBSTYLE_EX_HIDECLIPPEDBUTTONS */;
 
   if (Settings.ToolBarTheme < 0) { // undefined: determine High DPI screen
@@ -2418,19 +2417,12 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   //    hInstance,                 // handle to application instance
   //    NULL);                     // no window creation data
 
-  //~InitWindowCommon(Globals.hwndToolbar, true); ~ SetWindowLayoutRTL() no correct behavior
-  //~SetWindowTheme(Globals.hwndToolbar, L"", L""); // you cannot change a toolbar's color when a visual style is active
-  SetExplorerTheme(Globals.hwndToolbar);
+  InitWindowCommon(Globals.hwndToolbar, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndToolbar, CheckDarkModeEnabled());
   }
-  //~ no effect:
-  //~HDC const hdcTB = GetWindowDC(Globals.hwndToolbar);
-  //~SelectObject(hdcTB, g_hbrWndDarkBgrBrush);
-  //~SetBkColor(hdcTB, Globals.rgbDarkBkgColor);
-  //~ReleaseDC(Globals.hwndToolbar, hdcTB);
 #endif
 
   SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
@@ -2587,40 +2579,48 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // ------------------------------
   DWORD const dwReBarStyle = Settings.ShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
 
-  if (s_hwndReBar) { DestroyWindow(s_hwndReBar); }
+  if (Globals.hwndRebar) {
+    DestroyWindow(Globals.hwndRebar);
+  }
+  Globals.hwndRebar = CreateWindowEx(WS_EX_TOOLWINDOW, REBARCLASSNAME, NULL, dwReBarStyle,
+                                     0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
-  s_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
-                             0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
+  InitWindowCommon(Globals.hwndRebar, false); // false(!) ~ you cannot change a toolbar's color when a visual style is active
 
-  SetExplorerTheme(s_hwndReBar);
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(Globals.hwndRebar, CheckDarkModeEnabled());
+  }
+#endif
 
   REBARINFO rbi;
   rbi.cbSize = sizeof(REBARINFO);
   rbi.fMask  = 0;
   rbi.himl   = (HIMAGELIST)NULL;
-  SendMessage(s_hwndReBar,RB_SETBARINFO,0,(LPARAM)&rbi);
+  SendMessage(Globals.hwndRebar, RB_SETBARINFO, 0, (LPARAM)&rbi);
 
   RECT rc;
   SendMessage(Globals.hwndToolbar, TB_GETITEMRECT, 0, (LPARAM)&rc);
   //SendMessage(Globals.hwndToolbar,TB_SETINDENT,2,0);
 
   REBARBANDINFO rbBand;  ZeroMemory(&rbBand, sizeof(REBARBANDINFO));
-
   rbBand.cbSize  = sizeof(REBARBANDINFO);
-  rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
+  rbBand.fMask   = RBBIM_COLORS /*| RBBIM_TEXT | RBBIM_BACKGROUND */ |
                    RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
   //rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
   rbBand.fStyle = s_bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
-  rbBand.lpText     = L"Toolbar";
+  rbBand.lpText  = L"Toolbar";
+  rbBand.clrFore = UseDarkMode() ? g_rgbDarkTextColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
+  rbBand.clrBack = UseDarkMode() ? g_rgbDarkBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
   rbBand.hwndChild  = Globals.hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
   rbBand.cx         = 0;
-  SendMessage(s_hwndReBar,RB_INSERTBAND,(WPARAM)-1,(LPARAM)&rbBand);
+  SendMessage(Globals.hwndRebar, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rbBand);
 
-  SetWindowPos(s_hwndReBar,NULL,0,0,0,0,SWP_NOZORDER);
-  GetWindowRect(s_hwndReBar,&rc);
+  SetWindowPos(Globals.hwndRebar, NULL, 0, 0, 0, 0, SWP_NOZORDER);
+  GetWindowRect(Globals.hwndRebar, &rc);
   s_cyReBar = rc.bottom - rc.top;
 
   s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;
@@ -2849,13 +2849,13 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     cy -= (rc.bottom - rc.top);*/
 
     //SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
-    SetWindowPos(s_hwndReBar,NULL,0,0,LOWORD(lParam),s_cyReBar,SWP_NOZORDER);
+    SetWindowPos(Globals.hwndRebar, NULL, 0, 0, LOWORD(lParam), s_cyReBar, SWP_NOZORDER);
     // the ReBar automatically sets the correct height
     // calling SetWindowPos() with the height of one toolbar button
     // causes the control not to temporarily use the whole client area
     // and prevents flickering
 
-    //GetWindowRect(s_hwndReBar,&rc);
+    //GetWindowRect(Globals.hwndRebar,&rc);
     y = s_cyReBar + s_cyReBarFrame;    // define
     cy -= s_cyReBar + s_cyReBarFrame;  // border
   }
@@ -5683,7 +5683,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TOOLBAR:
       Settings.ShowToolbar = !Settings.ShowToolbar;
-      ShowWindow(s_hwndReBar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
+      ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
       SendWMSize(hwnd, NULL);
       break;
 
@@ -5826,7 +5826,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_SET_RTL_LAYOUT_DLG:
       Settings.DialogsLayoutRTL = !Settings.DialogsLayoutRTL;
       SetWindowLayoutRTL(Globals.hwndMain, Settings.DialogsLayoutRTL);
-      //~SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL); ~ not working correct
+      SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL);
+      SetWindowLayoutRTL(Globals.hwndRebar, Settings.DialogsLayoutRTL);
       SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
       break;
 
@@ -6806,21 +6807,6 @@ void HandlePosChange()
 //
 static DocPos prevCursorPosition = -1;
 
-#define RGB_TOLERANCE 0x20
-#define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
-
-inline COLORREF _CalcContrastColor(COLORREF rgb, int alpha)
-{
-
-  bool const mask = RGB_SUB(MulDiv(rgb >>  0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB(MulDiv(rgb >>  8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE &&
-                    RGB_SUB(MulDiv(rgb >> 16, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= RGB_TOLERANCE;
-
-  return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
-}
-
-// ----------------------------------------------------------------------------
-
 #define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >>  8) & SC_ALPHA_OPAQUE, (X) & SC_ALPHA_OPAQUE))
 #define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 8) & SC_ALPHA_OPAQUE))
 #define BGRA_TO_COLREF(X) (RGB(((X) >>  8) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 24) & SC_ALPHA_OPAQUE))
@@ -6963,7 +6949,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
             rgb   = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
             alpha = SC_ALPHA_OPAQUE;
           }
-          COLORREF const fgr = _CalcContrastColor(rgb, alpha);
+          COLORREF const fgr = CalcContrastColor(rgb, alpha);
 
           SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
           SciCall_IndicatorFillRange(firstPos, length);

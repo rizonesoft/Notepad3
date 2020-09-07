@@ -241,21 +241,22 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SetDialogIconNP3(hwnd);
-
       LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)lParam;
-
+  
+      SetDialogIconNP3(hwnd);
       InitWindowCommon(hwnd, true);
 
-      if (UseDarkMode())
-      {
+#ifdef D_NP3_WIN10_DARK_MODE
+      if (UseDarkMode()) {
         for (int btn = IDOK; btn <= IDCONTINUE; ++btn) {
           HWND const hBtn = GetDlgItem(hwnd, btn);
           if (hBtn) {
             SetExplorerTheme(hBtn);
           }
         }
+        SetWindowTheme(GetDlgItem(hwnd, IDC_INFOBOXCHECK), L"", L"");
       }
+#endif
 
       dpi = Scintilla_GetWindowDPI(hwnd);
 
@@ -330,11 +331,12 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -584,11 +586,12 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -645,15 +648,19 @@ INT_PTR DisplayCmdLineHelp(HWND hwnd)
 //
 int CALLBACK BFFCallBack(HWND hwnd, UINT umsg, LPARAM lParam, LPARAM lpData)
 {
-  if (umsg == BFFM_INITIALIZED) {
-
-    SetDialogIconNP3(hwnd);
-    //?InitWindowCommon(hwnd, true);
-
-    SendMessage(hwnd, BFFM_SETSELECTION, true, lpData);
-  }
   UNUSED(lParam);
-  return(0);
+  switch (umsg) {
+  case BFFM_INITIALIZED:
+    SetDialogIconNP3(hwnd);
+    //~InitWindowCommon(hwnd, true);
+    SendMessage(hwnd, BFFM_SETSELECTION, true, lpData);
+    break;
+  case BFFM_VALIDATEFAILED:
+    break;
+  default:
+    break;
+  }
+  return 0;
 }
 
 
@@ -679,7 +686,7 @@ bool GetDirectory(HWND hwndParent, int uiTitle, LPWSTR pszFolder, LPCWSTR pszBas
   bi.pidlRoot = NULL;
   bi.pszDisplayName = pszFolder;
   bi.lpszTitle = szTitle;
-  bi.ulFlags = BIF_RETURNONLYFSDIRS | (bNewDialogStyle ? BIF_NEWDIALOGSTYLE : 0);
+  bi.ulFlags = BIF_RETURNONLYFSDIRS | (bNewDialogStyle ? (BIF_NEWDIALOGSTYLE | BIF_USENEWUI) : 0);
   bi.lpfn = &BFFCallBack;
   bi.lParam = (LPARAM)szBase;
   bi.iImage = 0;
@@ -960,24 +967,24 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     //case WM_ERASEBKGND:
     //  if (UseDarkMode()) {
     //    HDC const hdc = (HDC)wParam;
-    //    SelectObject((HDC)wParam, g_hbrWndDarkBgrBrush);
+    //    SelectObject((HDC)wParam, g_hbrWndDarkBkgBrush);
     //    RECT rc;
     //    GetClientRect(hwnd, &rc);
     //    SetMapMode(hdc, MM_ANISOTROPIC);
     //    SetWindowExtEx(hdc, 100, 100, NULL);
     //    SetViewportExtEx(hdc, rc.right, rc.bottom, NULL);
-    //    FillRect(hdc, &rc, g_hbrWndDarkBgrBrush);
+    //    FillRect(hdc, &rc, g_hbrWndDarkBkgBrush);
     //  }
     //  return TRUE;
 	
 	  case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    }
-    break;
+      break;
 
 
     case WM_SETTINGCHANGE:
@@ -1214,11 +1221,12 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
   
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -1473,11 +1481,12 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
   
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -1663,7 +1672,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
 		    hwndLV = GetDlgItem(hwnd, IDC_FAVORITESDIR);
-        InitWindowCommon(hwndLV, false);
+        InitWindowCommon(hwndLV, true);
         InitListView(hwndLV); // DarkMode
 
         ListView_SetExtendedListViewStyle(hwndLV,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
@@ -1721,11 +1730,12 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -1928,11 +1938,12 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -2134,6 +2145,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
         SetExplorerTheme(GetDlgItem(hwnd, IDC_REMOVE));
         SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        int const ctl[] = { IDC_SAVEMRU, IDC_PRESERVECARET, IDC_REMEMBERSEARCHPATTERN, IDC_STATIC };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
       }
 #endif
       // sync with other instances
@@ -2247,11 +2262,12 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
   
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -2599,6 +2615,10 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
         SetExplorerTheme(GetDlgItem(hwnd, IDOK));
         SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
         //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        int const ctl[] = { 100, 101, 102, 103, -1 };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
       }
 #endif
 
@@ -2618,11 +2638,12 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
   
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -2636,7 +2657,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
         AllowDarkModeForWindow(hwnd, darkModeEnabled);
         RefreshTitleBarThemeColor(hwnd);
 
-        int const buttons[] = { IDOK, IDCANCEL };
+        int const buttons[] = { IDOK, IDCANCEL, 100, 101, 102, 103 };
         for (int id = 0; id < COUNTOF(buttons); ++id) {
           HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
@@ -2750,11 +2771,12 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -2861,6 +2883,10 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
         SetExplorerTheme(GetDlgItem(hwnd, IDOK));
         SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
         //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        int const ctl[] = { 100, 101, 102, 103, -1 };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
       }
 #endif
 
@@ -2898,11 +2924,12 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -3007,6 +3034,10 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
         SetExplorerTheme(GetDlgItem(hwnd, IDOK));
         SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
         //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        int const ctl[] = { IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_STATIC };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
       }
 #endif
 
@@ -3045,11 +3076,12 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -3180,6 +3212,11 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
           SetExplorerTheme(GetDlgItem(hwnd, IDOK));
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { IDC_TAB_AS_SPC, IDC_TAB_INDENTS, IDC_BACKTAB_INDENTS, 
+                              IDC_WARN_INCONSISTENT_INDENTS, IDC_AUTO_DETECT_INDENTS, IDC_STATIC };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
         }
 #endif
 
@@ -3209,6 +3246,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
   
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
     case WM_CTLCOLORSTATIC: {
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
@@ -3344,6 +3382,11 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
           SetExplorerTheme(GetDlgItem(hwnd, IDC_ENCODINGLIST));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { IDC_USEASREADINGFALLBACK, IDC_ASCIIASUTF8, IDC_RELIABLE_DETECTION_RES, IDC_NFOASOEM, 
+                              IDC_ENCODINGFROMFILEVARS, IDC_NOUNICODEDETECTION, IDC_NOANSICPDETECTION, IDC_STATIC };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
         }
 #endif
 
@@ -3388,11 +3431,11 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
     case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -3611,11 +3654,12 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
   
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -3787,6 +3831,10 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
           SetExplorerTheme(GetDlgItem(hwnd, IDOK));
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { IDC_EOLMODELIST, IDC_WARN_INCONSISTENT_EOLS, IDC_CONSISTENT_EOLS, IDC_AUTOSTRIPBLANKS, IDC_STATIC };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
         }
 #endif
 
@@ -3820,11 +3868,12 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
   
     case WM_CTLCOLORDLG:
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC: {
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -3912,6 +3961,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
       SetExplorerTheme(GetDlgItem(hwnd, IDOK));
       SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
       //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+      SetWindowTheme(GetDlgItem(hwnd, IDC_WARN_INCONSISTENT_EOLS), L"", L""); // remove theme for BS_AUTORADIOBUTTON
     }
 #endif
 
@@ -3949,11 +3999,12 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -4034,6 +4085,10 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
       SetExplorerTheme(GetDlgItem(hwnd, IDOK));
       SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
       //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+      int const ctl[] = { IDC_INDENT_BY_SPCS, IDC_INDENT_BY_TABS, IDC_WARN_INCONSISTENT_INDENTS, IDC_STATIC };
+      for (int i = 0; i < COUNTOF(ctl); ++i) {
+        SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+      }
     }
 #endif
 
@@ -4093,11 +4148,12 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
   case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORSTATIC: {
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
-  } break;
+    break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
