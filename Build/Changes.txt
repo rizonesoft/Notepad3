@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.905.(build_#) (2020-09-05)
+Current BETA/RC Version 5.20.906.(build_#) (2020-09-06)
 ========================================================
 
 --------------------------------------------------------
@@ -102,6 +102,7 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.906.1]- Delete marker of (comletely) deleted lines.
 [.905.1]- Initial state of "Focus View" button in F/R-Dlg.
 [.901.2]- Buffer size calculation.
 [.901.2]- Running out of occurrences bookmarks.
