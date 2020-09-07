@@ -2629,7 +2629,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // -------------------
   // Create Statusbar 
   // -------------------
-  DWORD const dwStatusbarStyle = Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
+  DWORD const dwStatusbarStyle = SBT_NOBORDERS | Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
 
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
@@ -2649,25 +2649,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   InitWindowCommon(Globals.hwndStatus, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
   }
-
-  //if (UseDarkMode())
-  //{
-  //  RECT rcSB;
-  //  HDC const hdc = GetWindowDC(Globals.hwndStatus);
-  //  GetWindowRect(Globals.hwndStatus, &rcSB);
-  //  SetMapMode(hdc, MM_ANISOTROPIC); 
-  //  SetWindowExtEx(hdc, 100, 100, NULL);
-  //  SetViewportExtEx(hdc, rcSB.right, rcSB.bottom, NULL);
-  //  FillRect(hdc, &rcSB, g_hbrWndDarkBgrBrush);
-  //  ReleaseDC(Globals.hwndStatus, hdc);
-  //}
-
 #endif
-
 }
 
 
@@ -2902,31 +2887,47 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
 
-    //UINT const ctlId = pDIS->CtlID;
-    //int const partId = (int)pDIS->itemID;
-    //int const stateId = (int)pDIS->itemState;
+    HWND const hWndItem = pDIS->hwndItem;
+    HDC const hdc = pDIS->hDC;
+    RECT const rc = pDIS->rcItem;
+
+    //UINT const ctlId = pDIS->CtlID; // child window identifier
+    //~int const partId = (int)pDIS->itemID ~ don't use
+    //~int const stateId = (int)pDIS->itemState ~ don't use
 
     //~PAINTSTRUCT ps;
-    //~HWND const hWndItem = pDIS->hwndItem;
     //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
 
-    HDC const hdc = pDIS->hDC;
-
 #ifdef D_NP3_WIN10_DARK_MODE
-    //HTHEME const hTheme = OpenThemeData(hWndItem, L"BUTTON");
-    //if (hTheme) {
-      SetBkColor(hdc, UseDarkMode() ? g_rgbDarkBkgColor : GetSysColor(COLOR_BTNFACE));
-      //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
-      //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
-      SetTextColor(hdc, UseDarkMode() ? g_rgbDarkTextColor : GetSysColor(COLOR_BTNTEXT));
-    //  CloseThemeData(hTheme);
-    //}
-#else
-    SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
-    SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+
+    if (UseDarkMode())
+    {
+      // overpaint part frames
+      HDC const hdcFrm = GetWindowDC(hWndItem);
+      RECT rcf = rc;
+      rcf.left -= 1;
+      rcf.top -= 1;
+      FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
+      rcf.left -= 1;
+      rcf.top -= 1;
+      rcf.bottom += 1;
+      rcf.right += 1;
+      FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
+      rcf.left -= 1;
+      rcf.top -= 1;
+      FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
+      ReleaseDC(hWndItem, hdcFrm);
+
+      SetBkColor(hdc, g_rgbDarkBkgColor);
+      SetTextColor(hdc, g_rgbDarkTextColor);
+    } 
+    else {
+      SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
+      SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+    }
+
 #endif
 
-    RECT rc = pDIS->rcItem;
     LPCWSTR const text = (LPCWSTR)(pDIS->itemData);
     ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
 

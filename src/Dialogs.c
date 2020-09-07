@@ -5420,7 +5420,8 @@ void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
 {
   if (lpszText) {
-    SendMessage(hwnd, SB_SETTEXT, (WPARAM)(SBT_OWNERDRAW | nPart), (LPARAM)lpszText);
+    UINT const flags = SBT_OWNERDRAW | nPart;
+    SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)lpszText);
   }
 }
 
@@ -5431,15 +5432,16 @@ void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
 //
 bool StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID)
 {
+  UINT const flags = SBT_OWNERDRAW | nPart;
   if (!uID) {
-    SendMessage(hwnd, SB_SETTEXT, (WPARAM)(SBT_OWNERDRAW | nPart), (LPARAM)L"");
+    SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)L"");
     return TRUE;
   }
   WCHAR szText[256] = { L'\0' };
   if (!GetLngString(uID, szText, COUNTOF(szText))) {
     return FALSE;
   }
-  return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)(SBT_OWNERDRAW | nPart), (LPARAM)szText);
+  return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)szText);
 }
 
 
