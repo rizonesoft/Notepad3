@@ -3529,6 +3529,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   // --------------------------------------------------------------------------
 
+  int const mnuMain = 2;
+  int const mnuSubOcc = 13;
+  int const mnuSubSubWord = 6;
+
   if (Settings.MarkOccurrencesMatchWholeWords) {
     i = IDM_VIEW_MARKOCCUR_WORD;
   }
@@ -3539,7 +3543,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_MARKOCCUR_WNONE;
   }
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
-  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
+  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, (i != IDM_VIEW_MARKOCCUR_WNONE));
   
   i = IsMarkOccurrencesEnabled();
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
@@ -3547,8 +3551,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
-  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13), 5, i);
-  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13, i);
+  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, i);
+  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc, i);
 
   // --------------------------------------------------------------------------
 
