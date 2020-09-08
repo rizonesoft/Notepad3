@@ -813,6 +813,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   _CrtSetReportMode(_CRT_ASSERT, 0); // Disable the message box for assertions.
 
   _InitGlobals();
+  InitDarkMode();
 
   // Set global variable Globals.hInstance
   Globals.hInstance = hInstance;
@@ -857,8 +858,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     IniFileSetString(Globals.IniFile, _W(SAPPNAME), NULL, NULL);
   }
   LoadSettings();
-
-  InitDarkMode(true); // try
 
   // set AppUserModelID
   PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
@@ -991,7 +990,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     return 1; 
   }
 
-  InitDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
+#ifdef D_NP3_WIN10_DARK_MODE
+  SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
+#endif
 
   HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nShowCmd);
   if (!hwnd) { 
@@ -2911,19 +2912,17 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (UseDarkMode())
     {
       // overpaint part frames
+      int const bdh = GetSystemMetrics(SM_CYFRAME);
       HDC const hdcFrm = GetWindowDC(hWndItem);
       RECT rcf = rc;
-      rcf.left -= 1;
-      rcf.top -= 1;
-      FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
-      rcf.left -= 1;
-      rcf.top -= 1;
-      rcf.bottom += 1;
-      rcf.right += 1;
-      FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
-      rcf.left -= 1;
-      rcf.top -= 1;
-      FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
+      for (int i = 1; i < bdh; ++i) {
+        FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
+        rcf.left -= 1;
+        rcf.top -= 1;
+        rcf.bottom += 1;
+        rcf.right += 1;
+      }
+      FrameRect(hdcFrm, &rcf, GetSysColorBrush(COLOR_3DDKSHADOW));
       ReleaseDC(hWndItem, hdcFrm);
 
       SetBkColor(hdc, g_rgbDarkBkgColor);
@@ -2937,7 +2936,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 #endif
 
     LPCWSTR const text = (LPCWSTR)(pDIS->itemData);
-    ExtTextOut(hdc, rc.left + 2, rc.top + 2, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
+    ExtTextOut(hdc, rc.left + 1, rc.top + 1, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
 
     //~EndPaint(hWndItem, &ps);
     return TRUE;
@@ -3707,8 +3706,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
   CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 12, (i != IDM_VIEW_HILITCURLN_NONE));
 
+#ifdef D_NP3_WIN10_DARK_MODE
   EnableCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, IsDarkModeSupported());
   CheckCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, Settings.WinThemeDarkMode);
+#else
+  RemoveMenu(hmenu, IDM_VIEW_WIN_DARK_MODE, 0);
+#endif
 
   // --------------------------------------------------------------------------
 
@@ -5856,15 +5859,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+#ifdef D_NP3_WIN10_DARK_MODE
+
     case IDM_VIEW_WIN_DARK_MODE:
       Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode;
-      InitDarkMode(Settings.WinThemeDarkMode);
-      SciCall_SetHScrollbar(false);
-      SciCall_SetHScrollbar(true);
-      SciCall_SetVScrollbar(false);
-      SciCall_SetVScrollbar(true);
+      SetDarkMode(Settings.WinThemeDarkMode);
+      Sci_RedrawScrollbars();
       PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
+
+#endif
 
     case IDM_VIEW_MUTE_MESSAGEBEEP:
       Settings.MuteMessageBeep = !Settings.MuteMessageBeep;

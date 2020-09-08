@@ -498,7 +498,10 @@ typedef struct _settings_t
   bool EditLayoutRTL;
   bool DialogsLayoutRTL;
   int  FocusViewMarkerMode;
+
+#ifdef D_NP3_WIN10_DARK_MODE
   bool WinThemeDarkMode;
+#endif
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;

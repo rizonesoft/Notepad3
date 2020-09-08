@@ -45,6 +45,8 @@ extern "C" {
 #include "MuiLanguage.h"
 #include "resource.h"
 }
+#include "DarkMode/DarkMode.h"
+
 
 extern "C" WININFO   g_IniWinInfo;
 extern "C" WININFO   g_DefWinInfo;
@@ -1472,7 +1474,11 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, true);
     GET_BOOL_VALUE_FROM_INISECTION(EditLayoutRTL, false);
     GET_BOOL_VALUE_FROM_INISECTION(DialogsLayoutRTL, false);
-    GET_BOOL_VALUE_FROM_INISECTION(WinThemeDarkMode, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+    Defaults.WinThemeDarkMode = ShouldAppsUseDarkMode();
+    Settings.WinThemeDarkMode = IniSectionGetBool(IniSecSettings, L"WinThemeDarkMode", Defaults.WinThemeDarkMode) && IsDarkModeSupported();
+#endif
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
@@ -1915,7 +1921,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SplitUndoTypingSeqOnLnBreak);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EditLayoutRTL);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, DialogsLayoutRTL);
+
+#ifdef D_NP3_WIN10_DARK_MODE
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WinThemeDarkMode);
+#endif
 
   ///~IniSectionSetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction);
 

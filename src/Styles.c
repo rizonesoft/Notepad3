@@ -3180,7 +3180,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
 /// Callback to set the font dialog's title
 static  WCHAR FontSelTitle[128];
 
-static UINT CALLBACK Style_FontDialogHook(
+static INT_PTR CALLBACK Style_FontDialogHook(
   HWND hdlg,      // handle to the dialog box window
   UINT uiMsg,     // message identifier
   WPARAM wParam,  // message parameter
@@ -3193,6 +3193,28 @@ static UINT CALLBACK Style_FontDialogHook(
     case WM_INITDIALOG:
     {
       if (Globals.hDlgIconSmall) { SendMessage(hdlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall); }
+
+      InitWindowCommon(hdlg, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+      #define IDCS_STRKOUT 0x410
+      #define IDCS_UNDERLN 0x411
+      #define IDCS_EFFECTS 0x430
+      #define IDCS_SAMPLE  0x431
+      #define IDCS_EXMPBOX 0x444
+      #define IDCS_EXMPTXT 0x445
+
+      if (UseDarkMode()) {
+        SetExplorerTheme(GetDlgItem(hdlg, IDOK));
+        SetExplorerTheme(GetDlgItem(hdlg, IDCANCEL));
+        //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        int const ctl[] = { IDCS_STRKOUT, IDCS_UNDERLN, IDCS_EFFECTS, IDCS_SAMPLE, IDCS_EXMPBOX, IDCS_EXMPTXT, IDC_STATIC };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
+      }
+#endif
 
       const CHOOSEFONT* const pChooseFont = ((CHOOSEFONT*)lParam);
 
@@ -3208,10 +3230,45 @@ static UINT CALLBACK Style_FontDialogHook(
     }
     break;
 
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hdlg, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hdlg, darkModeEnabled);
+        RefreshTitleBarThemeColor(hdlg);
+
+        int const buttons[] = { IDOK, IDCANCEL };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hdlg, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hdlg);
+      }
+      break;
+
+#endif
+
     default:
       break;
   }
-  return 0;	// Allow the default handler a chance to process
+  return FALSE;	// Allow the default handler a chance to process
 }
 
 

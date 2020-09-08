@@ -133,6 +133,7 @@ fnAllowDarkModeForApp _AllowDarkModeForApp = nullptr;
 fnFlushMenuThemes _FlushMenuThemes = nullptr;
 fnRefreshImmersiveColorPolicyState _RefreshImmersiveColorPolicyState = nullptr;
 fnIsDarkModeAllowedForWindow _IsDarkModeAllowedForWindow = nullptr;
+fnIsDarkModeAllowedForApp _IsDarkModeAllowedForApp = nullptr;
 fnGetIsImmersiveColorUsingHighContrast _GetIsImmersiveColorUsingHighContrast = nullptr;
 fnOpenNcThemeData _OpenNcThemeData = nullptr;
 // 1903 18362
@@ -142,19 +143,25 @@ fnSetPreferredAppMode _SetPreferredAppMode = nullptr;
 // ============================================================================
 
 
-static bool s_bDarkModeSupported = false;
+static bool _bDarkModeSupported = false;
 
 extern "C" bool IsDarkModeSupported() {
-  return s_bDarkModeSupported;
+  return _bDarkModeSupported;
 }
 // ============================================================================
 
 
-static bool s_UserDisabled = true;
+static bool _UserSetDarkMode = false;
 
 extern "C" bool CheckDarkModeEnabled() {
+  return _UserSetDarkMode && _bDarkModeSupported && !IsHighContrast();
+}
+// ============================================================================
+
+
+extern "C" bool ShouldAppsUseDarkMode() {
   if (_ShouldAppsUseDarkMode) {
-    return !s_UserDisabled && _ShouldAppsUseDarkMode() && !IsHighContrast();
+    return _ShouldAppsUseDarkMode() && !IsHighContrast();
   }
   return false;
 }
@@ -163,7 +170,7 @@ extern "C" bool CheckDarkModeEnabled() {
 
 extern "C" bool AllowDarkModeForWindow(HWND hWnd, bool allow)
 {
-  return s_bDarkModeSupported ? _AllowDarkModeForWindow(hWnd, allow) : false;
+  return _bDarkModeSupported ? _AllowDarkModeForWindow(hWnd, allow) : false;
 }
 // ============================================================================
 
@@ -171,8 +178,9 @@ extern "C" bool AllowDarkModeForWindow(HWND hWnd, bool allow)
 extern "C" bool IsHighContrast()
 {
   HIGHCONTRASTW highContrast = { sizeof(highContrast) };
+
   return SystemParametersInfoW(SPI_GETHIGHCONTRAST, sizeof(highContrast), &highContrast, FALSE) ? 
-    (highContrast.dwFlags & HCF_HIGHCONTRASTON) : false;
+                               (highContrast.dwFlags & HCF_HIGHCONTRASTON) : false;
 }
 // ============================================================================
 
@@ -257,7 +265,7 @@ static void _FixDarkScrollBar(bool bDarkMode)
 // ============================================================================
 
 
-constexpr COLORREF GetDarkBkgColor() { return RGB(0x38,0x38,0x38); }
+constexpr COLORREF GetDarkBkgColor() { return RGB(0x28,0x28,0x28); }
 constexpr COLORREF GetDarkTextColor() { return RGB(0xEF, 0xEF, 0xEF); }
 
 constexpr bool CheckBuildNumber(DWORD buildNumber) {
@@ -267,7 +275,7 @@ constexpr bool CheckBuildNumber(DWORD buildNumber) {
           buildNumber == 19041);  // 2004
 }
 
-extern "C" void InitDarkMode(bool bEnableDarkMode)
+extern "C" void SetDarkMode(bool bEnableDarkMode)
 {
   g_rgbDarkBkgColor = bEnableDarkMode ? GetDarkBkgColor() : GetSysColor(COLOR_WINDOW);
   g_rgbDarkTextColor = bEnableDarkMode ? GetDarkTextColor() : GetSysColor(COLOR_WINDOWTEXT);
@@ -320,12 +328,17 @@ extern "C" void InitDarkMode(bool bEnableDarkMode)
         if (!_IsDarkModeAllowedForWindow) {
           _IsDarkModeAllowedForWindow = reinterpret_cast<fnIsDarkModeAllowedForWindow>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(137)));
         }
+        if (!_IsDarkModeAllowedForApp) {
+          _IsDarkModeAllowedForApp = reinterpret_cast<fnIsDarkModeAllowedForApp>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(139)));
+        }
         if (!_SetWindowCompositionAttribute) {
           HMODULE const hModuleUSR32DLL = GetModuleHandleW(L"user32.dll");
           if (hModuleUSR32DLL) {
             _SetWindowCompositionAttribute = reinterpret_cast<fnSetWindowCompositionAttribute>(GetProcAddress(hModuleUSR32DLL, "SetWindowCompositionAttribute"));
           }
         }
+
+        _UserSetDarkMode = bEnableDarkMode;
 
         if (_OpenNcThemeData &&
           _RefreshImmersiveColorPolicyState &&
@@ -335,12 +348,11 @@ extern "C" void InitDarkMode(bool bEnableDarkMode)
           _FlushMenuThemes &&
           _IsDarkModeAllowedForWindow)
         {
-          s_UserDisabled = !bEnableDarkMode;
-          AllowDarkModeForApp(bEnableDarkMode);
+          AllowDarkModeForApp(_UserSetDarkMode);
           _RefreshImmersiveColorPolicyState();
-          s_bDarkModeSupported = _ShouldAppsUseDarkMode() && !IsHighContrast(); // (!) after _RefreshImmersiveColorPolicyState()
+          _bDarkModeSupported = _ShouldAppsUseDarkMode() && !IsHighContrast(); // (!) after _RefreshImmersiveColorPolicyState()
           _FlushMenuThemes();
-          _FixDarkScrollBar(bEnableDarkMode);
+          _FixDarkScrollBar(_UserSetDarkMode);
         }
       }
     }
@@ -350,10 +362,12 @@ extern "C" void InitDarkMode(bool bEnableDarkMode)
 
 #else // NO DarkMode support
 
-extern "C" void InitDarkMode(bool bEnableDarkMode)
+extern "C" void SetDarkMode(bool bEnableDarkMode)
 {
-  g_rgbDarkBkgColor = bEnableDarkMode ? GetDarkBkgColor() : GetSysColor(COLOR_WINDOW);
-  g_rgbDarkTextColor = bEnableDarkMode ? GetDarkTextColor() : GetSysColor(COLOR_WINDOWTEXT);
+  (void)(bEnableDarkMode);
+
+  g_rgbDarkBkgColor =  GetSysColor(COLOR_WINDOW);
+  g_rgbDarkTextColor =  GetSysColor(COLOR_WINDOWTEXT);
 
   if (g_hbrWndDarkBkgBrush) {
     DeleteObject(g_hbrWndDarkBkgBrush);

@@ -643,6 +643,10 @@ inline void Sci_ScrollChooseCaret() { SciCall_ScrollCaret(); SciCall_ChooseCaret
 inline void Sci_ScrollToLine(const DocLn line) { SciCall_EnsureVisible(line); SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
 inline void Sci_ScrollToCurrentLine() { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
 
+inline void Sci_RedrawScrollbars() {
+  SciCall_SetHScrollbar(false);  SciCall_SetHScrollbar(true);
+  SciCall_SetVScrollbar(false);  SciCall_SetVScrollbar(true);
+}
 
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 

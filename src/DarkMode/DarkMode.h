@@ -8,9 +8,10 @@ extern "C" {
   extern COLORREF g_rgbDarkTextColor;
   extern HBRUSH   g_hbrWndDarkBkgBrush;
 
-  void InitDarkMode(bool bEnableDarkMode);
+  void SetDarkMode(bool bEnableDarkMode);
   void InitListView(HWND hListView);
   void InitTreeView(HWND hTreeView);
+  inline void InitDarkMode() { SetDarkMode(true); };
   void ReleaseDarkMode();
 
   //LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -20,6 +21,7 @@ extern "C" {
 
   bool IsDarkModeSupported();
   bool CheckDarkModeEnabled();
+  bool ShouldAppsUseDarkMode();
 
   void AllowDarkModeForApp(bool allow);
   bool AllowDarkModeForWindow(HWND hWnd, bool allow);
