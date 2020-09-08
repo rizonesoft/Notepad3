@@ -354,7 +354,7 @@ BEGIN
             MENUITEM "&Coincidir sólo visible",             IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "Coincidir &sensible a mayúsculas",    IDM_VIEW_MARKOCCUR_CASE
-            POPUP "Coincidir &palabra completa solo"
+            POPUP "Coincidir sólo &palabra completa"
             BEGIN
                 MENUITEM "&OFF",                            IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Coincidir palabra &seleccionada", IDM_VIEW_MARKOCCUR_WORD

@@ -159,14 +159,14 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Gammal Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "Vill du ändra alla radslut till '%s'?"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Åtgärden kan inte utföras inom en rektangulär markering."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_SELMULTI        "Åtgärden kan inte utföras med multipla markeringar."
+    IDS_MUI_SELRECTORMULTI  "Åtgärden kan inte utföras med en rektangular markering eller multipla markeringar."
     IDS_MUI_BUFFERTOOSMALL  "Åtgärden kan inte utföras eftersom raderna är för långa."
     IDS_MUI_FIND_WRAPFW     "Kommit till slutet av dokumentet, börjar från början."
     IDS_MUI_FIND_WRAPRE     "Kommit till slutet av dokumentet, startar om sökning från slutet."
@@ -193,13 +193,13 @@ BEGIN
     IDS_MUI_RELOADSETTINGS   "Vill du ladda om applikationen med sparade inställningar?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "Om du fortsätter utan att starta om kommer inställningarna inte sparas!"
     IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s""."
-    IDS_MUI_REGEX_INVALID    "Fil vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
+    IDS_MUI_REGEX_INVALID    "Fel vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
     IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka för att öppna fil."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Bevarande av tidsstämpel för filmodifiering är aktiverad.\nInställningen är giltig för denna session!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Inga fler markeringar (bokmärke/markering)!"
 END
 
 STRINGTABLE
@@ -256,11 +256,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "&Standardinställningar"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Rensa alla"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Rensa sökhistorik"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "Rensa ersättningshistorik"
 END
 
 STRINGTABLE
