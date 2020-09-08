@@ -5980,9 +5980,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           return hBrush;
         }
       }
+#ifdef D_NP3_WIN10_DARK_MODE
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
+#endif
     }
     return FALSE;
 

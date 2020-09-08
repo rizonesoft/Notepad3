@@ -2887,7 +2887,6 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
 
-    HWND const hWndItem = pDIS->hwndItem;
     HDC const hdc = pDIS->hDC;
     RECT const rc = pDIS->rcItem;
 
@@ -2899,6 +2898,8 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
 
 #ifdef D_NP3_WIN10_DARK_MODE
+
+    HWND const hWndItem = pDIS->hwndItem;
 
     if (UseDarkMode())
     {

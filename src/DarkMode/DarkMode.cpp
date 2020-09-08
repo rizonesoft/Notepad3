@@ -20,6 +20,8 @@
 
 // ============================================================================
 
+COLORREF g_rgbDarkBkgColor  = RGB(0x38, 0x38, 0x38);
+COLORREF g_rgbDarkTextColor = RGB(0xEF, 0xEF, 0xEF);
 HBRUSH g_hbrWndDarkBkgBrush = nullptr; // GetSysColorBrush(COLOR_WINDOW);
 
 // ============================================================================
@@ -146,9 +148,6 @@ extern "C" LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 #endif
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-COLORREF g_rgbDarkBkgColor = RGB(0x38, 0x38, 0x38);
-COLORREF g_rgbDarkTextColor = RGB(0xEF, 0xEF, 0xEF);
 
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Uxtheme.lib")
@@ -441,14 +440,21 @@ extern "C" void InitDarkMode()
 }
 // ============================================================================
 
+#else // NO DarkMode support
 
-extern "C" void ReleaseDarkMode()
-{
+extern "C" void InitDarkMode() {
+  g_rgbDarkBkgColor = GetSysColor(COLOR_WINDOW);
+  g_rgbDarkTextColor = GetSysColor(COLOR_WINDOWTEXT);
+  g_hbrWndDarkBkgBrush = CreateSolidBrush(g_rgbDarkBkgColor);
+}
+
+#endif
+
+extern "C" void ReleaseDarkMode() {
   if (g_hbrWndDarkBkgBrush) {
     DeleteObject(g_hbrWndDarkBkgBrush);
   }
 }
-#endif
 
 // ============================================================================
 

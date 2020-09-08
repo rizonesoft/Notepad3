@@ -4,16 +4,19 @@
 extern "C" {
 #endif
 
+  extern COLORREF g_rgbDarkBkgColor;
+  extern COLORREF g_rgbDarkTextColor;
+  extern HBRUSH   g_hbrWndDarkBkgBrush;
+
+  void InitDarkMode();
   void InitListView(HWND hListView);
   void InitTreeView(HWND hTreeView);
+  void ReleaseDarkMode();
 
   //LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
   DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-
-  void InitDarkMode();
-  void ReleaseDarkMode();
 
   bool IsDarkModeSupported();
   bool CheckDarkModeEnabled();
@@ -25,10 +28,6 @@ extern "C" {
   void RefreshTitleBarThemeColor(HWND hWnd);
   bool IsColorSchemeChangeMessage(LPARAM lParam);
   bool IsColorSchemeChangeMessageEx(UINT message, LPARAM lParam);
-
-  extern COLORREF g_rgbDarkBkgColor;
-  extern COLORREF g_rgbDarkTextColor;
-  extern HBRUSH   g_hbrWndDarkBkgBrush;
 
   inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
     SetBkColor(hdc, g_rgbDarkBkgColor);
