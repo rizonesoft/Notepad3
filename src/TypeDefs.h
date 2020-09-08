@@ -498,7 +498,7 @@ typedef struct _settings_t
   bool EditLayoutRTL;
   bool DialogsLayoutRTL;
   int  FocusViewMarkerMode;
-  int  WinThemeDarkMode;  // 0=disabled, 1=enabled, 2=auto 
+  bool WinThemeDarkMode;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;

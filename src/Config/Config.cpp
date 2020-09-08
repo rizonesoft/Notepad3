@@ -1472,6 +1472,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, true);
     GET_BOOL_VALUE_FROM_INISECTION(EditLayoutRTL, false);
     GET_BOOL_VALUE_FROM_INISECTION(DialogsLayoutRTL, false);
+    GET_BOOL_VALUE_FROM_INISECTION(WinThemeDarkMode, true);
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
@@ -1914,6 +1915,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SplitUndoTypingSeqOnLnBreak);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EditLayoutRTL);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, DialogsLayoutRTL);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WinThemeDarkMode);
 
   ///~IniSectionSetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction);
 

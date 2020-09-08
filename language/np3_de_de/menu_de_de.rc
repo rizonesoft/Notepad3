@@ -430,6 +430,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Globaler &Standard Font...\tAlt+F12",         IDM_VIEW_FONT
         MENUITEM "Aktueller Schema Font...\tCtrl+Alt+F12",      IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Dunkler Modus",                       IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Einstellungen"
     BEGIN

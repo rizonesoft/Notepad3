@@ -383,6 +383,10 @@ DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
 DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line)
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
+DeclareSciCallV1(SetHScrollbar, SETHSCROLLBAR, bool, visible)
+DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible)
+
+
 //=============================================================================
 //
 //  Style definition
@@ -407,7 +411,8 @@ DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline)
 DeclareSciCallV1(SetViewWS, SETVIEWWS, int, wspc)
 DeclareSciCallV1(SetViewEOL, SETVIEWEOL, bool, eols)
 
-  //=============================================================================
+
+//=============================================================================
 //
 // Indentation Guides and Wraping
 //
@@ -487,7 +492,7 @@ DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber
 DeclareSciCallR2(MarkerNext, MARKERNEXT, DocLn, DocLn, start, int, markerMask)
 DeclareSciCallR2(MarkerPrevious, MARKERPREVIOUS, DocLn, DocLn, start, int, markerMask)
 
-  //=============================================================================
+//=============================================================================
 //
 //  Line State
 //

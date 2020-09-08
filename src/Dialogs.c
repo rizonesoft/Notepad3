@@ -4800,18 +4800,18 @@ static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
 static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
 static WCHAR szAdditionalTitleInfo[MAX_PATH] = { L'\0' };
 
-bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
+void SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
   LPCWSTR lpszFile, int iFormat, bool bModified,
   UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
 {
   if (bFreezeAppTitle) {
-    return FALSE;
+    return;
   }
   WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
   WCHAR szUntitled[SMALL_BUFFER] = { L'\0' };
   if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
       !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
-    return FALSE;
+    return;
   }
   if (bIsElevated) {
     WCHAR szElevatedAppName[SMALL_BUFFER] = { L'\0' };
@@ -4875,8 +4875,7 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
     StringCchCat(szTitle, COUNTOF(szTitle), szAdditionalTitleInfo);
   }
 
-  return SetWindowText(hwnd, szTitle);
-
+  SetWindowText(hwnd, szTitle);
 }
 
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)

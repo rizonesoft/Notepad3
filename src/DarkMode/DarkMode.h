@@ -8,7 +8,7 @@ extern "C" {
   extern COLORREF g_rgbDarkTextColor;
   extern HBRUSH   g_hbrWndDarkBkgBrush;
 
-  void InitDarkMode();
+  void InitDarkMode(bool bEnableDarkMode);
   void InitListView(HWND hListView);
   void InitTreeView(HWND hTreeView);
   void ReleaseDarkMode();

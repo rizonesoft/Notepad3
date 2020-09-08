@@ -66,7 +66,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
-bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
+void SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
                     LPCWSTR lpszFile, int iFormat, bool bModified,
                     UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);

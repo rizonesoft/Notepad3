@@ -131,6 +131,7 @@ void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSaveSettingsCmds();
 void UpdateMouseDWellTime();
+void UpdateTitleBar();
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
