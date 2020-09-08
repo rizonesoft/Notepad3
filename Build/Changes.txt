@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.906.(build_#) (2020-09-06)
+Current BETA/RC Version 5.20.909.(build_#) (2020-09-08)
 ========================================================
 
 --------------------------------------------------------
@@ -102,6 +102,7 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.908.1]- SubMenu active marker (Occurrences Indicator Options).
 [.906.1]- Delete marker of (comletely) deleted lines.
 [.905.1]- Initial state of "Focus View" button in F/R-Dlg.
 [.901.2]- Buffer size calculation.
