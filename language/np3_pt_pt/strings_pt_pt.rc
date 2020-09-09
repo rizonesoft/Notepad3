@@ -159,7 +159,7 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "Deseja normalizar todos os fins de linha para serem '%s'?"
 END
 
 STRINGTABLE
@@ -256,11 +256,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "&Definições padrão"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Limpar tudo"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Limpar histórico de localizar"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "Limpar histórico de substituir"
 END
 
 STRINGTABLE
