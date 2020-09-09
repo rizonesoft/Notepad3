@@ -2,8 +2,6 @@
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-extern HBRUSH g_hbrWndDarkBkgBrush;
-
 struct SubclassInfo {
 	COLORREF headerTextColor;
 };

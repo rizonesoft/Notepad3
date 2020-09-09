@@ -4,10 +4,6 @@
 extern "C" {
 #endif
 
-  extern COLORREF g_rgbDarkBkgColor;
-  extern COLORREF g_rgbDarkTextColor;
-  extern HBRUSH   g_hbrWndDarkBkgBrush;
-
   void SetDarkMode(bool bEnableDarkMode);
   void InitListView(HWND hListView);
   void InitTreeView(HWND hTreeView);
@@ -30,12 +26,6 @@ extern "C" {
   void RefreshTitleBarThemeColor(HWND hWnd);
   bool IsColorSchemeChangeMessage(LPARAM lParam);
   bool IsColorSchemeChangeMessageEx(UINT message, LPARAM lParam);
-
-  inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
-    SetBkColor(hdc, g_rgbDarkBkgColor);
-    SetTextColor(hdc, g_rgbDarkTextColor);
-    return (INT_PTR)g_hbrWndDarkBkgBrush;
-  }
 
 #else
   inline bool IsDarkModeSupported() { return false; }

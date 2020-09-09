@@ -881,6 +881,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   Scintilla_RegisterClasses(hInstance);
 
+#ifdef D_NP3_WIN10_DARK_MODE
+  SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
+#endif
+
   //SetProcessDPIAware(); -> .manifest
   //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
   Scintilla_LoadDpiForWindow();
@@ -980,7 +984,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     _CleanUpResources(NULL, false);
     return 1;
   }
-  
+
   _InsertLanguageMenu(Globals.hMainMenu);
   Style_InsertThemesMenu(Globals.hMainMenu);
 
@@ -989,10 +993,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     _CleanUpResources(NULL, false);
     return 1; 
   }
-
-#ifdef D_NP3_WIN10_DARK_MODE
-  SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
-#endif
 
   HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nShowCmd);
   if (!hwnd) { 
@@ -1297,7 +1297,7 @@ bool InitApplication(const HINSTANCE hInstance)
   wc.hInstance = hInstance;
   wc.hIcon = Globals.hDlgIcon256;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wc.hbrBackground = UseDarkMode() ? g_hbrWndDarkBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
+  wc.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
@@ -1323,7 +1323,7 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
   //wcx.lpfnWndProc = (WNDPROC)TBWndProc; ~ don't do that
   wcx.hInstance = hInstance; // done already
   wcx.hCursor = LoadCursor(NULL, IDC_HAND); 
-  wcx.hbrBackground = UseDarkMode() ? g_hbrWndDarkBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
+  wcx.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
   wcx.lpszClassName = lpszWndClassName;
 
   return RegisterClassEx(&wcx);
@@ -1369,7 +1369,6 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
   }
 
   SetDialogIconNP3(Globals.hwndMain);
-
   InitWindowCommon(Globals.hwndMain, true);
 
   if (Settings.TransparentMode) {
@@ -2615,8 +2614,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   rbBand.fStyle = s_bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
   rbBand.lpText  = L"Toolbar";
-  rbBand.clrFore = UseDarkMode() ? g_rgbDarkTextColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
-  rbBand.clrBack = UseDarkMode() ? g_rgbDarkBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
+  rbBand.clrFore = GetModeWndTextColor(UseDarkMode());
+  rbBand.clrBack = GetModeWndBkColor(UseDarkMode());
   rbBand.hwndChild  = Globals.hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
@@ -2909,14 +2908,13 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     HWND const hWndItem = pDIS->hwndItem;
 
-    if (UseDarkMode())
-    {
+    if (UseDarkMode()) {
       // overpaint part frames
       int const bdh = GetSystemMetrics(SM_CYFRAME);
       HDC const hdcFrm = GetWindowDC(hWndItem);
       RECT rcf = rc;
       for (int i = 1; i < bdh; ++i) {
-        FrameRect(hdcFrm, &rcf, g_hbrWndDarkBkgBrush);
+        FrameRect(hdcFrm, &rcf, Globals.hbrDarkModeBkgBrush);
         rcf.left -= 1;
         rcf.top -= 1;
         rcf.bottom += 1;
@@ -2924,14 +2922,9 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       FrameRect(hdcFrm, &rcf, GetSysColorBrush(COLOR_3DDKSHADOW));
       ReleaseDC(hWndItem, hdcFrm);
-
-      SetBkColor(hdc, g_rgbDarkBkgColor);
-      SetTextColor(hdc, g_rgbDarkTextColor);
-    } 
-    else {
-      SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
-      SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
     }
+    SetModeBkColor(hdc, UseDarkMode());
+    SetModeTextColor(hdc, UseDarkMode());
 
 #endif
 

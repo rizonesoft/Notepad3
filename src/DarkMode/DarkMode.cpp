@@ -14,15 +14,12 @@
 
 #include <cstdint>
 
+#include "TypeDefs.h"
+
 #include "DarkMode.h"
 #include "IatHook.hpp"
 #include "ListViewUtil.hpp"
 
-// ============================================================================
-
-COLORREF g_rgbDarkBkgColor  = RGB(0x38, 0x38, 0x38);
-COLORREF g_rgbDarkTextColor = RGB(0xEF, 0xEF, 0xEF);
-HBRUSH g_hbrWndDarkBkgBrush = nullptr; // GetSysColorBrush(COLOR_WINDOW);
 
 // ============================================================================
 
@@ -46,7 +43,7 @@ extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
   if (minor) { *minor = _minor; }
   return _dwWindowsBuildNumber;
 }
-// ============================================================================
+
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
@@ -264,10 +261,6 @@ static void _FixDarkScrollBar(bool bDarkMode)
 }
 // ============================================================================
 
-
-constexpr COLORREF GetDarkBkgColor() { return RGB(0x28,0x28,0x28); }
-constexpr COLORREF GetDarkTextColor() { return RGB(0xEF, 0xEF, 0xEF); }
-
 constexpr bool CheckBuildNumber(DWORD buildNumber) {
   return (buildNumber == 17763 || // 1809
           buildNumber == 18362 || // 1903
@@ -277,14 +270,6 @@ constexpr bool CheckBuildNumber(DWORD buildNumber) {
 
 extern "C" void SetDarkMode(bool bEnableDarkMode)
 {
-  g_rgbDarkBkgColor = bEnableDarkMode ? GetDarkBkgColor() : GetSysColor(COLOR_WINDOW);
-  g_rgbDarkTextColor = bEnableDarkMode ? GetDarkTextColor() : GetSysColor(COLOR_WINDOWTEXT);
-
-  if (g_hbrWndDarkBkgBrush) {
-    DeleteObject(g_hbrWndDarkBkgBrush);
-  }
-  g_hbrWndDarkBkgBrush = CreateSolidBrush(g_rgbDarkBkgColor);
-
   DWORD major, minor;
   DWORD const buildNumber = GetWindowsBuildNumber(&major, &minor);
   if (buildNumber) {
@@ -365,23 +350,11 @@ extern "C" void SetDarkMode(bool bEnableDarkMode)
 extern "C" void SetDarkMode(bool bEnableDarkMode)
 {
   (void)(bEnableDarkMode);
-
-  g_rgbDarkBkgColor =  GetSysColor(COLOR_WINDOW);
-  g_rgbDarkTextColor =  GetSysColor(COLOR_WINDOWTEXT);
-
-  if (g_hbrWndDarkBkgBrush) {
-    DeleteObject(g_hbrWndDarkBkgBrush);
-  }
-  g_hbrWndDarkBkgBrush = CreateSolidBrush(g_rgbDarkBkgColor);
 }
 
 #endif
 
-extern "C" void ReleaseDarkMode() {
-  if (g_hbrWndDarkBkgBrush) {
-    DeleteObject(g_hbrWndDarkBkgBrush);
-  }
-}
+extern "C" void ReleaseDarkMode() { }
 
 // ============================================================================
 
@@ -411,10 +384,10 @@ extern "C" LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam) {
 #ifdef D_NP3_WIN10_DARK_MODE
   //HTHEME const hTheme = OpenThemeData(hWndSB, L"BUTTON");
   //if (hTheme) {
-  SetBkColor(hdc, UseDarkMode() ? g_rgbDarkBkgColor : GetSysColor(COLOR_BTNFACE));
+  SetBkColor(hdc, UseDarkMode() ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_BTNFACE));
   //DrawEdge(hdc, &rc, EDGE_RAISED, BF_RECT);
   //DrawThemeEdge(hTheme, hdc, partId, stateId, &rc, EDGE_RAISED, BF_RECT, NULL);
-  SetTextColor(hdc, UseDarkMode() ? g_rgbDarkTextColor : GetSysColor(COLOR_BTNTEXT));
+  SetTextColor(hdc, UseDarkMode() ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_BTNTEXT));
   //  CloseThemeData(hTheme);
   //}
 #else

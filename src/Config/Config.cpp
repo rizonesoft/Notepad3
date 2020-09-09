@@ -45,6 +45,7 @@ extern "C" {
 #include "MuiLanguage.h"
 #include "resource.h"
 }
+
 #include "DarkMode/DarkMode.h"
 
 
@@ -1038,6 +1039,8 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 //
 void LoadSettings()
 {
+  WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
+
   CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
   bool bDirtyFlag = false;  // do we have to save the file on done
@@ -1296,6 +1299,33 @@ void LoadSettings()
 
     Defaults2.LargeIconScalePrecent = 150;
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
+    unsigned int iValue = 0;
+    WCHAR color[32] = { L'\0' };
+    Defaults2.DarkModeBkgColor = RGB(0x33, 0x33, 0x33);
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
+    IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
+    if (swscanf_s(wchBuffer, L"%xu", &iValue) == 1) {
+      Settings2.DarkModeBkgColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+    } else {
+      Settings2.DarkModeBkgColor = Defaults2.DarkModeBkgColor;
+    }
+    if (Globals.hbrDarkModeBkgBrush) {
+      DeleteObject(Globals.hbrDarkModeBkgBrush);
+    }
+    Globals.hbrDarkModeBkgBrush = CreateSolidBrush(Settings2.DarkModeBkgColor);
+
+    Defaults2.DarkModeTxtColor = RGB(0xEF, 0xEF, 0xEF);
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
+    IniSectionGetString(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
+    if (swscanf_s(wchBuffer, L"%xu", &iValue) == 1) {
+      Settings2.DarkModeTxtColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+    } else {
+      Settings2.DarkModeTxtColor = Defaults2.DarkModeTxtColor;
+    }
+#endif
 
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings

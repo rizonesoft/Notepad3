@@ -967,13 +967,13 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     //case WM_ERASEBKGND:
     //  if (UseDarkMode()) {
     //    HDC const hdc = (HDC)wParam;
-    //    SelectObject((HDC)wParam, g_hbrWndDarkBkgBrush);
+    //    SelectObject((HDC)wParam, Globals.hbrDarkModeBkgBrush);
     //    RECT rc;
     //    GetClientRect(hwnd, &rc);
     //    SetMapMode(hdc, MM_ANISOTROPIC);
     //    SetWindowExtEx(hdc, 100, 100, NULL);
     //    SetViewportExtEx(hdc, rc.right, rc.bottom, NULL);
-    //    FillRect(hdc, &rc, g_hbrWndDarkBkgBrush);
+    //    FillRect(hdc, &rc, Globals.hbrDarkModeBkgBrush);
     //  }
     //  return TRUE;
 	
@@ -3471,13 +3471,11 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         if (LOWORD(wParam) == IDC_ENCODINGLIST)
         {
           const DRAWITEMSTRUCT *const pDIS = (const DRAWITEMSTRUCT *const)lParam;
-
           //HWND const hWndItem = pDIS->hwndItem;
           HDC const hdc = pDIS->hDC;
           //RECT const rc = pDIS->rcItem;
-
-          SetBkColor(hdc, UseDarkMode() ? g_rgbDarkBkgColor : GetSysColor(COLOR_BTNFACE));
-          SetTextColor(hdc, UseDarkMode() ? g_rgbDarkTextColor : GetSysColor(COLOR_BTNTEXT));
+          SetModeBkColor(hdc, UseDarkMode());
+          SetModeTextColor(hdc, UseDarkMode());
         }
       }
       break;

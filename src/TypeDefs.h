@@ -1,5 +1,6 @@
-// encoding: UTF-8
+#pragma once
 /******************************************************************************
+* encoding: UTF-8
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -11,9 +12,6 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#pragma once
-#ifndef _NP3_TYPEDEFS_H_
-#define _NP3_TYPEDEFS_H_
 
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
@@ -387,6 +385,10 @@ typedef struct _globals_t
 
   FR_STATES FindReplaceMatchFoundState;
 
+#ifdef D_NP3_WIN10_DARK_MODE
+  HBRUSH    hbrDarkModeBkgBrush;
+#endif
+
   WCHAR     SelectedThemeName[SMALL_BUFFER];
   WCHAR     WorkingDirectory[MAX_PATH];
   WCHAR     IniFile[MAX_PATH];
@@ -580,6 +582,11 @@ typedef struct _settings2_t
   float  AnalyzeReliableConfidenceLevel;
   float  LocaleAnsiCodePageAnalysisBonus;
 
+#ifdef D_NP3_WIN10_DARK_MODE
+  COLORREF DarkModeBkgColor;
+  COLORREF DarkModeTxtColor;
+#endif
+
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[MINI_BUFFER];
   WCHAR DefaultDirectory[MAX_PATH];
@@ -707,5 +714,3 @@ typedef struct _themeFiles
 // ----------------------------------------------------------------------------
 
 //=============================================================================
-
-#endif //_NP3_TYPEDEFS_H_
