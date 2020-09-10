@@ -2060,18 +2060,20 @@ static bool _HandleTinyExpr(bool qmark)
       while (IsBlankChar(*pBegin)) { ++pBegin; }       
 
       double dExprEval = 0.0;
-      te_xint_t iExprErr = 1;
-      while (*pBegin && iExprErr) {
-        dExprEval = te_interp(pBegin++, &iExprErr);
+      te_xint_t exprErr = 1;
+      while (*pBegin && exprErr) {
+        dExprEval = te_interp(pBegin++, &exprErr);
       }
-      if (*pBegin && !iExprErr) {
+      if (!*pBegin) { exprErr = 1; }
+      FreeMem(lineBuf);
+
+      if (!exprErr) {
         char chExpr[64] = { '\0' };
         StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
         SciCall_SetSel(posBegin, posCur);
         SciCall_ReplaceSel(chExpr);
+        return true;
       }
-      FreeMem(lineBuf);
-      return true;
     }
   }
   return false;
