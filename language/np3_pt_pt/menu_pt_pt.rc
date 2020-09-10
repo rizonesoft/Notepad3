@@ -93,23 +93,23 @@ BEGIN
             MENUITEM "Abrir &Explorador de ficheiros",     IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Re&vert from File\tF5",                  IDM_FILE_REVERT
+        MENUITEM "Re&verter de ficheiro\tF5",                  IDM_FILE_REVERT
         POPUP "&Codificação"
         BEGIN
-            POPUP "&Revert from File as"
+            POPUP "&Reverter de ficheiro como"
             BEGIN
-                MENUITEM "&Default (Setting)",                 CMD_RECODEDEFAULT
+                MENUITEM "Pa&drão (Definição)",                CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",                CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",                 CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",          CMD_RELOADASCIIASUTF8
-                MENUITEM "Force U&CHARDET Analysis",                  CMD_RELOADFORCEDETECTION
+                MENUITEM "Forçar análise U&CHARDET",                  CMD_RELOADFORCEDETECTION
                 MENUITEM "Ignorar e&tiquetas de codificação\tAlt+F8", CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF8",         IDM_ENCODING_RECODE
+                MENUITEM "&Mais codificações...\tF8",         IDM_ENCODING_RECODE
             END
-            POPUP "&Set Document as"
+            POPUP "&Definir documento como"
             BEGIN
                 MENUITEM "&ANSI",                         IDM_ENCODING_ANSI
                 MENUITEM "&Unicode",                      IDM_ENCODING_UNICODE
@@ -117,10 +117,10 @@ BEGIN
                 MENUITEM "UTF-&8\tShift+F8",              IDM_ENCODING_UTF8
                 MENUITEM "UTF-8 com a&ssinatura",         IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+                MENUITEM "&Mais codificações...\tF9",         IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Set Encoding &Defaults...",          IDM_ENCODING_SETDEFAULT
+            MENUITEM "Definir pa&drões de codificação...",    IDM_ENCODING_SETDEFAULT
         END
         POPUP "Fins de linha"
         BEGIN
@@ -349,7 +349,7 @@ BEGIN
         POPUP "Marcar &ocorrências"
         BEGIN
             MENUITEM "&Activas\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use &Bookmarks too",               IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "Usar &marcadores também",          IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Só correspodências visíveis",      IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -363,7 +363,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Números de linha\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "&Margem do marcador\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Dobragem"
         BEGIN
@@ -379,13 +379,13 @@ BEGIN
         POPUP "&Exibir"
         BEGIN
             MENUITEM "Vista focada\tCtrl+Alt+V",                       IDM_VIEW_TOGGLE_VIEW
-            POPUP "View Mode"
+            POPUP "Modo de visualização"
             BEGIN
-                MENUITEM "Fold",                                       IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                                   IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Highlight",                                  IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",                           IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Highlight && Fold",                          IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Dobragem",                                    IDM_VIEW_FV_FOLD
+                MENUITEM "Marcador",                                    IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Realce",                                      IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Marcador && Dobragem",                        IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Realce && Dobragem",                          IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "Registo de &monitorização",                      IDM_VIEW_CHASING_DOCTAIL
@@ -485,10 +485,10 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (sem ligaturas)",        IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "R&TL Layout (GDI)"
+            POPUP "Esquema R&TL (GDI)"
             BEGIN
-                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "Área de &edição",                IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Outros diálogos",               IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Bidireccional"
             BEGIN
@@ -551,14 +551,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                               IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",                   IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",                  IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type",                IDM_EDIT_DELETE_MARKED
+        MENUITEM "Limpar marcador",                               IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Cortar linhas de tipo marcador",                IDM_EDIT_CUT_MARKED
+        MENUITEM "Copiar linhas de tipo marcador",                IDM_EDIT_COPY_MARKED
+        MENUITEM "Eliminar linhas de tipo marcador",              IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "Dobragem de código",                         IDM_VIEW_FOLDING
         MENUITEM "Números de linha",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",                            IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Margem do marcador",                         IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
