@@ -2035,6 +2035,53 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
 //=============================================================================
 //
+//  _HandleTinyExpr() - called on '?' or ENTER insert
+//
+static bool _HandleTinyExpr(bool qmark)
+{
+  DocPos const posCur = SciCall_GetCurrentPos();
+  DocPos const posBegin = qmark ? SciCall_PositionBefore(posCur) : posCur;
+  DocPos posBefore = SciCall_PositionBefore(posBegin);
+  char chBefore = SciCall_GetCharAt(posBefore);
+  while (IsBlankChar(chBefore) && (posBefore > 0)) {
+    posBefore = SciCall_PositionBefore(posBefore);
+    chBefore = SciCall_GetCharAt(posBefore);
+  }
+  if (chBefore == '=') // got "=?" or ENTER : evaluate expression trigger
+  {
+    DocPos lineLen = SciCall_LineLength(SciCall_LineFromPosition(posCur));
+    char *lineBuf = (char *)AllocMem(lineLen + 1, HEAP_ZERO_MEMORY);
+    if (lineBuf) {
+      DocPos const iLnCaretPos = SciCall_GetCurLine((unsigned int)lineLen, lineBuf);
+
+      lineBuf[iLnCaretPos - (posCur - posBefore)] = '\0'; // exclude "=?"
+      
+      const char *pBegin = lineBuf;
+      while (IsBlankChar(*pBegin)) { ++pBegin; }       
+
+      double dExprEval = 0.0;
+      te_xint_t exprErr = 1;
+      while (*pBegin && exprErr) {
+        dExprEval = te_interp(pBegin++, &exprErr);
+      }
+      if (!*pBegin) { exprErr = 1; }
+      FreeMem(lineBuf);
+
+      if (!exprErr) {
+        char chExpr[64] = { '\0' };
+        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
+        SciCall_SetSel(posBegin, posCur);
+        SciCall_ReplaceSel(chExpr);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
 //  MsgCreate() - Handles WM_CREATE
 //
 //
@@ -5864,6 +5911,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+    case CMD_ENTER_RTURN:
+      {
+        if (!_HandleTinyExpr(false)) {
+          SciCall_NewLine();
+        }
+      }
+      break;
 
     // Newline with toggled auto indent setting
     case CMD_SHIFTCTRLENTER:
@@ -5875,10 +5929,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CLEAR:
     case IDM_EDIT_CLEAR:
-        ///~_BEGIN_UNDO_ACTION_;
-        EditDeleteMarkerInSelection();
-        SciCall_Clear();
-        ///~_END_UNDO_ACTION_;
+      ///~_BEGIN_UNDO_ACTION_;
+      EditDeleteMarkerInSelection();
+      SciCall_Clear();
+      ///~_END_UNDO_ACTION_;
       break;
 
 
@@ -7160,42 +7214,6 @@ static void  _HandleAutoCloseTags()
   }
 }
 
-
-//=============================================================================
-//
-//  _HandleTinyExpr() - called on '?' insert
-//
-static void  _HandleTinyExpr()
-{
-  DocPos const iCurPos = SciCall_GetCurrentPos();
-  DocPos const iPosBefore = SciCall_PositionBefore(iCurPos);
-  char const chBefore = SciCall_GetCharAt(iPosBefore - 1);
-  if (chBefore == '=') // got "=?" evaluate expression trigger
-  {
-    DocPos lineLen = SciCall_LineLength(SciCall_LineFromPosition(iCurPos));
-    char* lineBuf = (char*)AllocMem(lineLen + 1, HEAP_ZERO_MEMORY);
-    if (lineBuf) {
-      DocPos const iLnCaretPos = SciCall_GetCurLine((unsigned int)lineLen, lineBuf);
-      lineBuf[(iLnCaretPos > 1) ? (iLnCaretPos - 2) : 0] = '\0'; // break before "=?"
-
-      te_xint_t iExprErr  = 1;
-      const char* pBegin = lineBuf;
-      double dExprEval = 0.0;
-
-      while (*pBegin && iExprErr) {
-        dExprEval = te_interp(pBegin++, &iExprErr);
-      }
-      if (*pBegin && !iExprErr) {
-        char chExpr[64] = { '\0' };
-        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
-        SciCall_SetSel(iPosBefore, iCurPos);
-        SciCall_ReplaceSel(chExpr);
-      }
-      FreeMem(lineBuf);
-    }
-  }
-}
-
 #if 0
 //=============================================================================
 //
@@ -7535,7 +7553,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
           break;
         case '?':
-          _HandleTinyExpr();
+          _HandleTinyExpr(true);
           break;
         default:
           break;
