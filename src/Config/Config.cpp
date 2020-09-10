@@ -1307,7 +1307,7 @@ void LoadSettings()
     Defaults2.DarkModeBkgColor = RGB(0x33, 0x33, 0x33);
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%xu", &iValue) == 1) {
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
       Settings2.DarkModeBkgColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
       Settings2.DarkModeBkgColor = Defaults2.DarkModeBkgColor;
@@ -1320,7 +1320,7 @@ void LoadSettings()
     Defaults2.DarkModeTxtColor = RGB(0xEF, 0xEF, 0xEF);
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%xu", &iValue) == 1) {
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
       Settings2.DarkModeTxtColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
       Settings2.DarkModeTxtColor = Defaults2.DarkModeTxtColor;

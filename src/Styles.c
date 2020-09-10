@@ -107,8 +107,9 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
 
 
 // Currently used lexer
-static int s_iDefaultLexer = 2; // (Constants.StdDefaultLexerID) Pure Text Files
 static PEDITLEXER s_pLexCurrent = &lexStandard;
+static int s_iDefaultLexer = 2; // (Constants.StdDefaultLexerID) Pure Text Files
+
 
 const COLORREF s_colorDefault[16] = 
 {
@@ -348,21 +349,17 @@ void Style_DynamicThemesMenuCmd(int cmd)
 }
 
 
-
-
-
-
 //=============================================================================
 //
 //  IsLexerStandard()
 //
 
-inline bool  IsLexerStandard(PEDITLEXER pLexer)
+inline bool IsLexerStandard(PEDITLEXER pLexer)
 {
-  return ( pLexer && ((pLexer == &lexStandard) || (pLexer == &lexStandard2nd)) );
+  return (pLexer && ((pLexer == &lexStandard) || (pLexer == &lexStandard2nd)));
 }
 
-inline PEDITLEXER  GetCurrentStdLexer()
+inline PEDITLEXER GetCurrentStdLexer()
 {
   return (Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard);
 }
@@ -2346,7 +2343,7 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
   bool const use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
   if (IsLexerStandard(s_pLexCurrent)) {
-    s_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard; // sync
+    s_pLexCurrent = GetCurrentStdLexer(); // sync
   }
   Style_ResetCurrentLexer(hwnd);
 }
@@ -2841,8 +2838,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb)
       *p = L'\0';
     TrimSpcW(tch);
     unsigned int iValue = 0;
-    int itok = swscanf_s(tch, L"%x", &iValue);
-    if (itok == 1)
+    if (swscanf_s(tch, L"%x", &iValue) == 1)
     {
       *rgb = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
       return true;
@@ -3793,20 +3789,30 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   COLORREF dColor = 0L;
-  // Fore
+  // Foregr
   if (Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &dColor)) {
     SendMessage(hwnd, SCI_STYLESETFORE, iStyle, (LPARAM)dColor);
-  }
+  } 
   else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETFORE, iStyle, (LPARAM)GetSysColor(COLOR_WINDOWTEXT));   // default text color
+#ifdef D_NP3_WIN10_DARK_MODE
+      COLORREF const rgbFore = UseDarkMode() ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_WINDOWTEXT);
+      SendMessage(hwnd, SCI_STYLESETFORE, iStyle, (LPARAM)rgbFore); // default text color
+#else
+    SendMessage(hwnd, SCI_STYLESETFORE, iStyle, (LPARAM)GetSysColor(COLOR_WINDOWTEXT)); // default text color
+#endif
   }
 
-  // Back
+  // Backgr
   if (Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &dColor)) {
     SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)dColor);
   }
   else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)GetSysColor(COLOR_WINDOW));       // default window color
+#ifdef D_NP3_WIN10_DARK_MODE
+    COLORREF const rgbBack = UseDarkMode() ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_WINDOW);
+    SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)rgbBack);
+#else
+    SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)GetSysColor(COLOR_WINDOW)); // default window color
+#endif
   }
 
   // Weight
@@ -3892,7 +3898,6 @@ int Style_GetCurrentLexerRID()
 void Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName)
 {
   if (!pLexer) {
-    //pLexer = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
     pLexer = &lexStandard; // don't distinguish between STD/2ND
   }
   if (!GetLngString(pLexer->resID, lpszName, cchName)) {
