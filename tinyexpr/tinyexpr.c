@@ -416,6 +416,7 @@ void next_token(state *s) {
                     case '-': s->type = TOK_INFIX; s->function = get_function_pointer_2d(sub); break;
                     case '*': s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;
                     case '/': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
+                    case ':': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
                     case '^': s->type = TOK_INFIX; s->function = get_function_pointer_2d(pow); break;
                     case '%':
                         if (s->next++[0] == '%') {
