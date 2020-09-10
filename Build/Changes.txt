@@ -33,13 +33,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.909.(build_#) (2020-09-09)
+Current BETA/RC Version 5.20.911.(build_#) (2020-09-11)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- 
+[.911.1]- Allow colon (:) as alternate divide operator to calculate TinyExpr.
 [.825.1]- grepWinNP3: default extension on saving search result list.
 [.824.1]- Focused-View: mode Fold-Only.
 [.823.1]- Mark Occurrences: show additional Bookmark (Arrows).
@@ -102,6 +103,7 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.911.1]- Allow RETURN / ENTER after equal sign (=) to calculate TinyExpr.
 [.908.1]- SubMenu active marker (Occurrences Indicator Options).
 [.906.1]- Delete marker of (comletely) deleted lines.
 [.905.1]- Initial state of "Focus View" button in F/R-Dlg.
