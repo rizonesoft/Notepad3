@@ -103,6 +103,9 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.911.2]- TinyExpr: inline evaluation on active option only.
+[.911.2]- TinyExpr: allow rh equal and questionmark.
+[.911.2]- TinyExpr: newline after evaluation by '=<ENTER>'.
 [.911.1]- Allow RETURN / ENTER after equal sign (=) to calculate TinyExpr.
 [.908.1]- SubMenu active marker (Occurrences Indicator Options).
 [.906.1]- Delete marker of (comletely) deleted lines.
