@@ -1796,7 +1796,7 @@ void Style_SetBookmark(HWND hwnd, bool bShowMargin)
 void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 {
   if (iStyle == STYLE_LINENUMBER) {
-    Style_SetStyles(hwnd, iStyle, lpszStyle, false);   // line numbers
+    Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle, false); // line numbers
     SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); // allow selection drag
   }
 
@@ -2831,12 +2831,15 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb)
   if (p) {
     WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem,0));
-    if (tch[0] == L'#')
+    if (tch[0] == L'#') {
       tch[0] = L' ';
+    }
     p = StrChr(tch, L';');
-    if (p)
+    if (p) {
       *p = L'\0';
+    }
     TrimSpcW(tch);
+
     unsigned int iValue = 0;
     if (swscanf_s(tch, L"%x", &iValue) == 1)
     {
@@ -3808,7 +3811,8 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
   else if (bInitDefault) {
 #ifdef D_NP3_WIN10_DARK_MODE
-    COLORREF const rgbBack = UseDarkMode() ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_WINDOW);
+    COLORREF const rgbBack = UseDarkMode() ? Settings2.DarkModeBkgColor - min_dw(Settings2.DarkModeBkgColor, RGB(12, 12, 12)) : 
+                                             GetSysColor(COLOR_WINDOW) - min_dw(GetSysColor(COLOR_WINDOW), RGB(12, 12, 12));
     SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)rgbBack);
 #else
     SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)GetSysColor(COLOR_WINDOW)); // default window color

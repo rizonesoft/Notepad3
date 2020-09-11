@@ -226,6 +226,8 @@ inline COLORREF GetModeWndTextColor(const bool bDarkMode) {
 #endif
 }
 
+
+
 #ifdef D_NP3_WIN10_DARK_MODE
 
 inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {

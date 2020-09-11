@@ -2131,6 +2131,46 @@ static bool _HandleTinyExpr(bool qmark)
 
 //=============================================================================
 //
+//  _HandleEditWndFrame()
+//
+static void _HandleEditWndFrame()
+{
+  s_bIsAppThemed = IsAppThemed();
+
+  if (s_bIsAppThemed) {
+
+    SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
+    SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+    if (IsWindowsVistaOrGreater()) {
+
+      s_cxEditFrame = 0;
+      s_cyEditFrame = 0;
+    
+    } else {
+      
+      SetWindowPos(s_hwndEditFrame, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+      RECT rc, rc2;
+      GetClientRect(s_hwndEditFrame, &rc);
+      GetWindowRect(s_hwndEditFrame, &rc2);
+      s_cxEditFrame = ((rc2.right - rc2.left) - (rc.right - rc.left)) / 2;
+      s_cyEditFrame = ((rc2.bottom - rc2.top) - (rc.bottom - rc.top)) / 2;
+    }
+
+  } else {
+
+    SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, WS_EX_CLIENTEDGE | GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE));
+    SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+    s_cxEditFrame = 0;
+    s_cyEditFrame = 0;
+  }
+}
+
+
+//=============================================================================
+//
 //  MsgCreate() - Handles WM_CREATE
 //
 //
@@ -2173,35 +2213,8 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
                     (HMENU)IDC_EDITFRAME,
                     hInstance,
                     NULL);
-
-  if (IsAppThemed()) {
-
-    RECT rc, rc2;
-
-    s_bIsAppThemed = true;
-
-    SetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE,GetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
-    SetWindowPos(Globals.hwndEdit,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
-
-    if (IsWindowsVistaOrGreater()) {
-      s_cxEditFrame = 0;
-      s_cyEditFrame = 0;
-    }
-
-    else {
-      GetClientRect(s_hwndEditFrame,&rc);
-      GetWindowRect(s_hwndEditFrame,&rc2);
-
-      s_cxEditFrame = ((rc2.right-rc2.left) - (rc.right-rc.left)) / 2;
-      s_cyEditFrame = ((rc2.bottom-rc2.top) - (rc.bottom-rc.top)) / 2;
-    }
-  }
-  else {
-    s_bIsAppThemed = false;
-
-    s_cxEditFrame = 0;
-    s_cyEditFrame = 0;
-  }
+  
+  _HandleEditWndFrame();
 
   // Create Toolbar and Statusbar
   CreateBars(hwnd, hInstance);
@@ -2635,7 +2648,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   Globals.hwndRebar = CreateWindowEx(WS_EX_TOOLWINDOW, REBARCLASSNAME, NULL, dwReBarStyle,
                                      0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
-  InitWindowCommon(Globals.hwndRebar, false); // false(!) ~ you cannot change a toolbar's color when a visual style is active
+  // No Theme = false(!) ~ you cannot change a toolbar's color when a visual style is active
+  InitWindowCommon(Globals.hwndRebar, false); 
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
@@ -2655,8 +2669,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   REBARBANDINFO rbBand;  ZeroMemory(&rbBand, sizeof(REBARBANDINFO));
   rbBand.cbSize  = sizeof(REBARBANDINFO);
-  rbBand.fMask   = RBBIM_COLORS /*| RBBIM_TEXT | RBBIM_BACKGROUND */ |
-                   RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
+  rbBand.fMask = RBBIM_COLORS /*| RBBIM_TEXT | RBBIM_BACKGROUND */ |
+                 RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
   //rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
   rbBand.fStyle = s_bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
@@ -2671,15 +2685,14 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   SetWindowPos(Globals.hwndRebar, NULL, 0, 0, 0, 0, SWP_NOZORDER);
   GetWindowRect(Globals.hwndRebar, &rc);
-  s_cyReBar = rc.bottom - rc.top;
-
+  s_cyReBar = (rc.bottom - rc.top);
   s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;
 
 
   // -------------------
   // Create Statusbar 
   // -------------------
-  DWORD const dwStatusbarStyle = SBT_NOBORDERS | Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
+  DWORD const dwStatusbarStyle = SBT_NOBORDERS | (Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS));
 
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
@@ -2793,37 +2806,8 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   UNUSED(lParam);
   UNUSED(wParam);
   
-  RECT rc, rc2;
-
   // reinitialize edit frame
-  if (IsAppThemed()) {
-    s_bIsAppThemed = true;
-
-    SetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE,GetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
-    SetWindowPos(Globals.hwndEdit,NULL,0,0,0,0,SWP_NOZORDER|SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE);
-
-    if (IsWindowsVistaOrGreater()) {
-      s_cxEditFrame = 0;
-      s_cyEditFrame = 0;
-    }
-    else {
-      SetWindowPos(s_hwndEditFrame,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
-      GetClientRect(s_hwndEditFrame,&rc);
-      GetWindowRect(s_hwndEditFrame,&rc2);
-
-      s_cxEditFrame = ((rc2.right-rc2.left) - (rc.right-rc.left)) / 2;
-      s_cyEditFrame = ((rc2.bottom-rc2.top) - (rc.bottom-rc.top)) / 2;
-    }
-  }
-  else {
-    s_bIsAppThemed = false;
-
-    SetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE,WS_EX_CLIENTEDGE|GetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE));
-    SetWindowPos(Globals.hwndEdit,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
-
-    s_cxEditFrame = 0;
-    s_cyEditFrame = 0;
-  }
+  _HandleEditWndFrame();
 
   // recreate toolbar and statusbar
   CreateBars(hwnd,Globals.hInstance);
@@ -2901,9 +2885,9 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if (Settings.ShowStatusbar)
   {
-    RECT rc;
     SendMessage(Globals.hwndStatus,WM_SIZE,0,0);
-    GetWindowRect(Globals.hwndStatus,&rc);
+    RECT rc;
+    GetWindowRect(Globals.hwndStatus, &rc);
     cy -= (rc.bottom - rc.top);
   }
 
@@ -2912,7 +2896,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   DeferWindowPos(hdwp,s_hwndEditFrame,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
 
   DeferWindowPos(hdwp,Globals.hwndEdit,NULL,x+s_cxEditFrame,y+s_cyEditFrame,
-                 cx-2*s_cxEditFrame,cy-2*s_cyEditFrame,
+                                            cx-2*s_cxEditFrame,cy-2*s_cyEditFrame,
                  SWP_NOZORDER | SWP_NOACTIVATE);
 
   EndDeferWindowPos(hdwp);
