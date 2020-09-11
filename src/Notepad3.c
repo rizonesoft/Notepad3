@@ -2035,10 +2035,12 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
 //=============================================================================
 //
-//  _HandleTinyExpr() - called on '?' or ENTER insert
+//  _EvalTinyExpr() - called on '?' or ENTER insert
 //
-static bool _HandleTinyExpr(bool qmark)
+static bool _EvalTinyExpr(bool qmark)
 {
+  if (!Settings.EvalTinyExprOnSelection) { return false; } 
+  
   DocPos const posCur = SciCall_GetCurrentPos();
   DocPos const posBegin = qmark ? SciCall_PositionBefore(posCur) : posCur;
   DocPos posBefore = SciCall_PositionBefore(posBegin);
@@ -4745,7 +4747,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         GUID guid;
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
-            StrTrimW(tchMaxPathBuffer, L"{}");
+            StrTrim(tchMaxPathBuffer, L"{}");
             //char chMaxPathBuffer[MAX_PATH] = { '\0' };
             //if (WideCharToMultiByteEx(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
             //  EditReplaceSelection(chMaxPathBuffer, false);
@@ -5913,9 +5915,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_ENTER_RTURN:
       {
-        if (!_HandleTinyExpr(false)) {
-          SciCall_NewLine();
-        }
+        _EvalTinyExpr(false);
+        SciCall_NewLine();
       }
       break;
 
@@ -6937,7 +6938,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
     ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, szTextW, COUNTOF(szTextW));
     szTextW[cchTextW] = L'\0';
-    StrTrimW(szTextW, L" \r\n\t");
+    StrTrim(szTextW, L" \r\n\t");
 
     const WCHAR* chkPreFix = L"file://";
 
@@ -6965,7 +6966,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
       size_t const lenPfx = StringCchLenW(chkPreFix, 0);
       WCHAR* szFileName = &(szTextW[lenPfx]);
       szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
-      StrTrimW(szFileName, L"/");
+      StrTrim(szFileName, L"/");
 
       PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
       if (PathIsDirectory(szFileName))
@@ -7553,7 +7554,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
           break;
         case '?':
-          _HandleTinyExpr(true);
+          _EvalTinyExpr(true);
           break;
         default:
           break;
@@ -8894,6 +8895,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
           SciCall_GetSelText(chSelectionBuffer);
           //~StrDelChrA(chExpression, " \r\n\t\v");
           StrDelChrA(chSelectionBuffer, "\r\n");
+          StrTrimA(chSelectionBuffer, "= ?");
           s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
         }
         else {

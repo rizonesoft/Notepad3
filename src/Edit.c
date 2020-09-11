@@ -1745,7 +1745,7 @@ void EditURLEncode()
   WCHAR szTextW[INTERNET_MAX_URL_LENGTH+1];
   ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)iSelSize, szTextW, INTERNET_MAX_URL_LENGTH);
   szTextW[cchTextW] = L'\0';
-  StrTrimW(szTextW, L" \r\n\t");
+  StrTrim(szTextW, L" \r\n\t");
 
   size_t const cchEscaped = iSelSize * 3 + 1;
   char* pszEscaped = (char*)AllocMem(cchEscaped, HEAP_ZERO_MEMORY);
@@ -8802,7 +8802,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
     }
   } while (iLine >= 0);
 
-  StrTrimW(pszBookMarks, L";");
+  StrTrim(pszBookMarks, L";");
 }
 
 
