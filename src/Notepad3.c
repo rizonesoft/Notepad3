@@ -1337,7 +1337,7 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
 
 //=============================================================================
 //
-//  InitInstance()
+//  InitInstance() - DarkMode already initialized !
 //
 HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 {
@@ -1379,6 +1379,9 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
   }
   
+  // hide bright menu strip on DarkMode (if no usr override)
+  Settings.ShowMenubar = Settings.ShowMenubar || !UseDarkMode(); 
+
   SetMenu(Globals.hwndMain, Globals.hMainMenu);
   SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
   DrawMenuBar(Globals.hwndMain);
@@ -2700,7 +2703,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   GetWindowRect(Globals.hwndRebar, &rc);
   s_cyReBar = (rc.bottom - rc.top);
   s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;
-
 
   // -------------------
   // Create Statusbar 
@@ -5899,10 +5901,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case IDM_VIEW_WIN_DARK_MODE:
-      Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode;
-      SetDarkMode(Settings.WinThemeDarkMode);
-      Sci_RedrawScrollbars();
-      PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      {
+        Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode;
+        Settings.ShowMenubar = !UseDarkMode();  // hide/show bright menu strip on switching
+        SetDarkMode(Settings.WinThemeDarkMode);
+        Sci_RedrawScrollbars();
+        PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
       break;
 
 #endif
@@ -9395,7 +9400,6 @@ void UpdateMarginWidth()
   else {
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
-
   Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
   Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }

@@ -76,7 +76,7 @@ bool   Style_StrGetCharSet(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i);
 bool   Style_StrGetSize(LPCWSTR lpszStyle,float* f);
 bool   Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize);
-bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb);
+bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bool useDefault);
 bool   Style_StrGetCase(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);
@@ -100,6 +100,15 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 void   Style_SelectLexerDlg(HWND hwnd);
 bool   Style_StrGetWeightValue(LPCWSTR lpszWeight,int* weight);
 void   Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight);
+
+
+inline void Style_PrintfCchColor(LPWSTR buffer, const size_t cch, LPCWSTR prefix, COLOR_LAYER layer, COLORREF color) {
+  if (layer == FOREGROUND_LAYER) {
+    StringCchPrintf(buffer, cch, L"%sfore:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
+  } else {
+    StringCchPrintf(buffer, cch, L"%sback:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
+  }
+}
 
 #if 0
 bool   Style_StrGetStretchValue(LPCWSTR lpszWeight, int* stretch);

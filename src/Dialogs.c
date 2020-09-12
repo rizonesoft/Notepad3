@@ -297,10 +297,10 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         DialogHideControl(hwnd, IDC_INFOBOXCHECK, true);
       }
 
+      FreeMem(lpMsgBox->lpstrMessage);
+
       CenterDlgInParent(hwnd, NULL);
       AttentionBeep(lpMsgBox->uType);
-
-      FreeMem(lpMsgBox->lpstrMessage);
     }
     return TRUE;
 
@@ -344,7 +344,6 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     }
     break;
 
-  
   case WM_THEMECHANGED:
     if (IsDarkModeSupported())
     {
@@ -561,8 +560,8 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+
       SetDialogIconNP3(hwnd);
-      
       InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -874,7 +873,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     //~}
 
     CenterDlgInParent(hwnd, NULL);
-
 
     HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
     if (hFont) {
@@ -3974,8 +3972,8 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
   case WM_INITDIALOG: 
   {
     SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    
     SetDialogIconNP3(hwnd);
-
     InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -4098,8 +4096,8 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
   case WM_INITDIALOG: 
   {
     SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    
     SetDialogIconNP3(hwnd);
-
     InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -4996,8 +4994,7 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
   SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
   //~SnapToDefaultButton(hDlg);
 
-  //~DPI_T const dpi = Scintilla_GetWindowDPI(hDlg);
-  //~PostMessage(hDlg, WM_DPICHANGED, MAKEWPARAM(dpi.x, dpi.y), 0);
+  SendMessage(hDlg, WM_THEMECHANGED, 0, 0); // DarkMode extension
 }
 
 

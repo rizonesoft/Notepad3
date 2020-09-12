@@ -391,18 +391,22 @@ DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible)
 //
 //  Style definition
 //
+DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid)
+DeclareSciCallV0(StyleClearAll, STYLECLEARALL);
 DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
 DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT)
 DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible)
-DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
-DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
-DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
+DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, style)
+DeclareSciCallV2(StyleSetFore, STYLESETFORE, int, style, COLORREF, rgb)
+DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, style)
+DeclareSciCallV2(StyleSetBack, STYLESETBACK, int, style, COLORREF, rgb)
+DeclareSciCallR1(GetStyleAt, GETSTYLEAT, int, DocPos, position)
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPos, length, int, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 
-DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
-DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, iStyle, bool, hotspot)
+DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, style)
+DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, style, bool, hotspot)
 DeclareSciCallV2(SetHotspotActiveFore, SETHOTSPOTACTIVEFORE, bool, useSetting, int, colour)
 DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, int, colour)
 DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline)
@@ -410,6 +414,8 @@ DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline)
 
 DeclareSciCallV1(SetViewWS, SETVIEWWS, int, wspc)
 DeclareSciCallV1(SetViewEOL, SETVIEWEOL, bool, eols)
+
+DeclareSciCallV2(StyleSetFont, STYLESETFONT, int, style, const char *, fontname)
 
 
 //=============================================================================

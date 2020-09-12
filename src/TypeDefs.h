@@ -245,9 +245,12 @@ typedef struct _cmq
 
 // --------------------------------------------------------------------------
 
-#define rgbRedColorRef    (RGB(255, 170, 170))
-#define rgbGreenColorRef  (RGB(170, 255, 170))
-#define rgbBlueColorRef   (RGB(170, 200, 255))
+#define rgbRedColorRef       (RGB(255, 170, 170))
+#define rgbGreenColorRef     (RGB(170, 255, 170))
+#define rgbBlueColorRef      (RGB(170, 200, 255))
+#define rgbBlueColorRef      (RGB(170, 200, 255))
+#define rgbDarkColorBkgRef   (RGB(0x1F, 0x1F, 0x1F))
+#define rgbDarkColorTxtRef   (RGB(0xEF, 0xEF, 0xEF))
 
 // --------------------------------------------------------------------------
 

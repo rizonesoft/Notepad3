@@ -40,6 +40,8 @@ extern "C" {
 #include "Dialogs.h"
 #include "SciCall.h"
 }
+#include "DarkMode/DarkMode.h"
+
 
 #include "resource.h"
 
@@ -52,11 +54,7 @@ static HGLOBAL hDevNames = nullptr;
 static void EditPrintInit();
 
 
-//=============================================================================
-//
-//  EditPrint() - Code from SciTE
-//
-void StatusUpdatePrintPage(int iPageNum)
+static void _StatusUpdatePrintPage(int iPageNum)
 {
   WCHAR tch[80] = { L'\0' };
   FormatLngStringW(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
@@ -67,6 +65,86 @@ void StatusUpdatePrintPage(int iPageNum)
 }
 
 
+//=============================================================================
+//
+// LPPRINTHOOKPROC _LPPrintHookProc()
+//
+static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (uiMsg) {
+  
+  case WM_INITDIALOG:
+    {
+
+      SetDialogIconNP3(hwnd);
+      InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+      if (UseDarkMode()) {
+        SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+        SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+      }
+#endif
+
+      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+   }
+    break;
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, NULL);
+    break;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+  case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
+    if (UseDarkMode()) {
+      return SetDarkModeCtlColors((HDC)wParam);
+    }
+    break;
+
+  case WM_SETTINGCHANGE:
+    if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+    }
+    break;
+
+  case WM_THEMECHANGED:
+    if (IsDarkModeSupported()) {
+      bool const darkModeEnabled = CheckDarkModeEnabled();
+      AllowDarkModeForWindow(hwnd, darkModeEnabled);
+      RefreshTitleBarThemeColor(hwnd);
+
+      int const buttons[] = { IDOK, IDCANCEL };
+      for (int id = 0; id < COUNTOF(buttons); ++id) {
+        HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+        AllowDarkModeForWindow(hBtn, darkModeEnabled);
+        SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+      }
+      UpdateWindow(hwnd);
+    }
+    break;
+
+#endif
+
+  case WM_COMMAND:
+    if (LOWORD(wParam) == IDOK) {
+    }
+    break;
+
+  default:
+    break;
+  }
+  return FALSE;
+}
+
+
+//=============================================================================
+//
+//  EditPrint() - Code from SciTE
+//
 extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 {
   // Don't print empty documents
@@ -80,7 +158,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
   pdlg.hwndOwner = GetParent(hwnd);
   pdlg.hInstance = Globals.hInstance;
-  pdlg.Flags = PD_USEDEVMODECOPIES | PD_ALLPAGES | PD_RETURNDC;
+  pdlg.Flags = PD_ENABLEPRINTHOOK | PD_USEDEVMODECOPIES | PD_ALLPAGES | PD_RETURNDC;
   pdlg.nFromPage = 1;
   pdlg.nToPage = 1;
   pdlg.nMinPage = 1;
@@ -89,6 +167,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   pdlg.hDC = nullptr;
   pdlg.hDevMode = hDevMode;
   pdlg.hDevNames = hDevNames;
+  pdlg.lpfnPrintHook = _LPPrintHookProc;
 
   DocPos const startPos = SciCall_GetSelectionStart();
   DocPos const endPos = SciCall_GetSelectionEnd();
@@ -323,7 +402,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       SendMessage(Globals.hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORWAIT, 0);
 
       // Display current page number in Statusbar
-      StatusUpdatePrintPage(pageNum);
+      _StatusUpdatePrintPage(pageNum);
 
       StartPage(hdc);
 
@@ -425,7 +504,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
 //=============================================================================
 //
-//  EditPrintSetup() - Code from SciTE
+//  LPSETUPHOOKPROC LPSetupHookProc() - Code from SciTE
 //
 //  Custom controls: 30 Zoom
 //                   31 Spin
@@ -433,101 +512,140 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 //                   33 Footer
 //                   34 Colors
 //
-extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
+static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
-  switch (uiMsg)
-  {
-    case WM_INITDIALOG:
-      {
-        WCHAR tch[512];
-        WCHAR *p1,*p2;
+  switch (uiMsg) {
+  case WM_INITDIALOG: {
+    WCHAR tch[512];
+    WCHAR *p1, *p2;
 
-        SetDialogIconNP3(hwnd);
+    SetDialogIconNP3(hwnd);
+    InitWindowCommon(hwnd, true);
 
-        UDACCEL const acc[1] = { { 0, 10 } };
-        SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
-        SendDlgItemMessage(hwnd,31,UDM_SETACCEL,1,(WPARAM)acc);
-        SendDlgItemMessage(hwnd,31,UDM_SETRANGE32,SC_MIN_ZOOM_LEVEL,SC_MAX_ZOOM_LEVEL);
-        SendDlgItemMessage(hwnd,31,UDM_SETPOS32,0,Settings.PrintZoom);
+#ifdef D_NP3_WIN10_DARK_MODE
+    if (UseDarkMode()) {
+      SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+      SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+    }
+#endif
 
-        // Set header options
-        GetLngString(IDS_MUI_PRINT_HEADER,tch,COUNTOF(tch));
-        StringCchCat(tch,COUNTOF(tch),L"|");
-        p1 = tch;
-        p2 = StrChr(p1, L'|');
-        while (p2) {
-          *p2++ = L'\0';
-          if (*p1)
-            SendDlgItemMessage(hwnd,32,CB_ADDSTRING,0,(LPARAM)p1);
-          p1 = p2;
-          p2 = StrChr(p1, L'|');  // next
-        }
-        SendDlgItemMessage(hwnd,32,CB_SETCURSEL,(WPARAM)Settings.PrintHeader,0);
+    UDACCEL const acc[1] = { { 0, 10 } };
+    SendDlgItemMessage(hwnd, 30, EM_LIMITTEXT, 32, 0);
+    SendDlgItemMessage(hwnd, 31, UDM_SETACCEL, 1, (WPARAM)acc);
+    SendDlgItemMessage(hwnd, 31, UDM_SETRANGE32, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+    SendDlgItemMessage(hwnd, 31, UDM_SETPOS32, 0, Settings.PrintZoom);
 
-        // Set footer options
-        GetLngString(IDS_MUI_PRINT_FOOTER,tch,COUNTOF(tch));
-        StringCchCat(tch,COUNTOF(tch),L"|");
-        p1 = tch;
-        p2 = StrChr(p1, L'|');
-        while (p2) {
-          *p2++ = L'\0';
-          if (*p1)
-            SendDlgItemMessage(hwnd,33,CB_ADDSTRING,0,(LPARAM)p1);
-          p1 = p2;
-          p2 = StrChr(p1, L'|');  // next
-        }
-        SendDlgItemMessage(hwnd,33,CB_SETCURSEL,(WPARAM)Settings.PrintFooter,0);
+    // Set header options
+    GetLngString(IDS_MUI_PRINT_HEADER, tch, COUNTOF(tch));
+    StringCchCat(tch, COUNTOF(tch), L"|");
+    p1 = tch;
+    p2 = StrChr(p1, L'|');
+    while (p2) {
+      *p2++ = L'\0';
+      if (*p1)
+        SendDlgItemMessage(hwnd, 32, CB_ADDSTRING, 0, (LPARAM)p1);
+      p1 = p2;
+      p2 = StrChr(p1, L'|'); // next
+    }
+    SendDlgItemMessage(hwnd, 32, CB_SETCURSEL, (WPARAM)Settings.PrintHeader, 0);
 
-        // Set color options
-        GetLngString(IDS_MUI_PRINT_COLOR,tch,COUNTOF(tch));
-        StringCchCat(tch,COUNTOF(tch),L"|");
-        p1 = tch;
-        p2 = StrChr(p1, L'|');
-        while (p2) {
-          *p2++ = L'\0';
-          if (*p1)
-            SendDlgItemMessage(hwnd,34,CB_ADDSTRING,0,(LPARAM)p1);
-          p1 = p2;
-          p2 = StrChr(p1, L'|');  // next
-        }
-        SendDlgItemMessage(hwnd,34,CB_SETCURSEL,(LPARAM)Settings.PrintColorMode,0);
+    // Set footer options
+    GetLngString(IDS_MUI_PRINT_FOOTER, tch, COUNTOF(tch));
+    StringCchCat(tch, COUNTOF(tch), L"|");
+    p1 = tch;
+    p2 = StrChr(p1, L'|');
+    while (p2) {
+      *p2++ = L'\0';
+      if (*p1)
+        SendDlgItemMessage(hwnd, 33, CB_ADDSTRING, 0, (LPARAM)p1);
+      p1 = p2;
+      p2 = StrChr(p1, L'|'); // next
+    }
+    SendDlgItemMessage(hwnd, 33, CB_SETCURSEL, (WPARAM)Settings.PrintFooter, 0);
 
-        // Make combos handier
-        SendDlgItemMessage(hwnd,32,CB_SETEXTENDEDUI,true,0);
-        SendDlgItemMessage(hwnd,33,CB_SETEXTENDEDUI,true,0);
-        SendDlgItemMessage(hwnd,34,CB_SETEXTENDEDUI,true,0);
-        SendDlgItemMessage(hwnd,1137,CB_SETEXTENDEDUI,true,0);
-        SendDlgItemMessage(hwnd,1138,CB_SETEXTENDEDUI,true,0);
+    // Set color options
+    GetLngString(IDS_MUI_PRINT_COLOR, tch, COUNTOF(tch));
+    StringCchCat(tch, COUNTOF(tch), L"|");
+    p1 = tch;
+    p2 = StrChr(p1, L'|');
+    while (p2) {
+      *p2++ = L'\0';
+      if (*p1)
+        SendDlgItemMessage(hwnd, 34, CB_ADDSTRING, 0, (LPARAM)p1);
+      p1 = p2;
+      p2 = StrChr(p1, L'|'); // next
+    }
+    SendDlgItemMessage(hwnd, 34, CB_SETCURSEL, (LPARAM)Settings.PrintColorMode, 0);
+
+    // Make combos handier
+    SendDlgItemMessage(hwnd, 32, CB_SETEXTENDEDUI, true, 0);
+    SendDlgItemMessage(hwnd, 33, CB_SETEXTENDEDUI, true, 0);
+    SendDlgItemMessage(hwnd, 34, CB_SETEXTENDEDUI, true, 0);
+    SendDlgItemMessage(hwnd, 1137, CB_SETEXTENDEDUI, true, 0);
+    SendDlgItemMessage(hwnd, 1138, CB_SETEXTENDEDUI, true, 0);
+
+    SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+  } 
+  break;
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, NULL);
+    break;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+  case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
+    if (UseDarkMode()) {
+      return SetDarkModeCtlColors((HDC)wParam);
+    }
+    break;
+
+  case WM_SETTINGCHANGE:
+    if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+    }
+    break;
+
+  case WM_THEMECHANGED:
+    if (IsDarkModeSupported()) {
+      bool const darkModeEnabled = CheckDarkModeEnabled();
+      AllowDarkModeForWindow(hwnd, darkModeEnabled);
+      RefreshTitleBarThemeColor(hwnd);
+
+      int const buttons[] = { IDOK, IDCANCEL };
+      for (int id = 0; id < COUNTOF(buttons); ++id) {
+        HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+        AllowDarkModeForWindow(hBtn, darkModeEnabled);
+        SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      break;
+      UpdateWindow(hwnd);
+    }
+    break;
 
-    case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-      break;
+#endif
+  case WM_COMMAND:
+    if (LOWORD(wParam) == IDOK) {
+      BOOL bError = FALSE;
+      int const iZoom = (int)SendDlgItemMessage(hwnd, 31, UDM_GETPOS32, 0, (LPARAM)&bError);
+      Settings.PrintZoom = bError ? Defaults.PrintZoom : iZoom;
+      /*int const iFontSize = (int)*/ SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
+      Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
+      Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
+      Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
+    } else if (LOWORD(wParam) == IDC_PRINTER) {
+      PostWMCommand(hwnd, 1026);
+    }
+    break;
 
-    case WM_COMMAND:
-      if (LOWORD(wParam) == IDOK)
-      {
-        BOOL bError = FALSE;
-        int const iZoom = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
-        Settings.PrintZoom = bError ? Defaults.PrintZoom : iZoom;
-        /*int const iFontSize = (int)*/ SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
-        Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
-        Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
-        Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
-      }
-      else if (LOWORD(wParam) == IDC_PRINTER)
-      {
-        PostWMCommand(hwnd, 1026);
-      }
-      break;
-
-    default:
-      break;
+  default:
+    break;
   }
-  return 0;
+  return FALSE;
 }
 
 
@@ -539,7 +657,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
   ZeroMemory(&pdlg,sizeof(PAGESETUPDLG));
   pdlg.lStructSize = sizeof(PAGESETUPDLG);
   pdlg.Flags = PSD_ENABLEPAGESETUPHOOK | PSD_ENABLEPAGESETUPTEMPLATEHANDLE;
-  pdlg.lpfnPageSetupHook = PageSetupHook;
+  pdlg.lpfnPageSetupHook = _LPSetupHookProc;
   pdlg.hPageSetupTemplate = pDlgTemplate;
   pdlg.hwndOwner = GetParent(hwnd);
   pdlg.hInstance = Globals.hInstance;

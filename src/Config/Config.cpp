@@ -1304,7 +1304,7 @@ void LoadSettings()
 #ifdef D_NP3_WIN10_DARK_MODE
     unsigned int iValue = 0;
     WCHAR color[32] = { L'\0' };
-    Defaults2.DarkModeBkgColor = RGB(0x33, 0x33, 0x33);
+    Defaults2.DarkModeBkgColor = rgbDarkColorBkgRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
@@ -1317,7 +1317,7 @@ void LoadSettings()
     }
     Globals.hbrDarkModeBkgBrush = CreateSolidBrush(Settings2.DarkModeBkgColor);
 
-    Defaults2.DarkModeTxtColor = RGB(0xEF, 0xEF, 0xEF);
+    Defaults2.DarkModeTxtColor = rgbDarkColorTxtRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
@@ -1516,7 +1516,7 @@ void LoadSettings()
     StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
     IniSectionGetString(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
-    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, false); // DarkMode switch
     GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
 
