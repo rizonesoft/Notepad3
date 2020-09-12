@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.911.(build_#) (2020-09-11)
+Current BETA/RC Version 5.20.912.(build_#) (2020-09-12)
 ========================================================
 
 --------------------------------------------------------
@@ -103,6 +103,9 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.912.1]- TinyExpr: enable CP1252 operators '×'(mul) and '÷'(div).
+[.912.1]- TinyExpr: ignoring currency chars ("$€¢£¥") in expressions.
+[.912.1]- TinyExpr: "<n>=?" result not taken into account.
 [.911.2]- TinyExpr: inline evaluation on active option only.
 [.911.2]- TinyExpr: allow rh equal and questionmark.
 [.911.2]- TinyExpr: newline after evaluation by '=<ENTER>'.
