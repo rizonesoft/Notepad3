@@ -105,6 +105,7 @@ it4u                    https://github.com/it4u
 jmacasd                 https://github.com/jmacasd
 jupester                https://github.com/jupester
 kofifus                 https://github.com/kofifus
+kRaLL-Turko             https://github.com/kRaLL-Turko
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
 lhmouse                 https://github.com/lhmouse

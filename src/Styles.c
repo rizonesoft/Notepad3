@@ -1392,7 +1392,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SendMessage(hwnd,SCI_SETADDITIONALCARETFORE,rgb,0);
 
 
-  StrTrimW(wchSpecificStyle, L" ;");
+  StrTrim(wchSpecificStyle, L" ;");
   StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
                 COUNTOF(pCurrentStandard->Styles[STY_CARET].szValue),wchSpecificStyle);
 
@@ -3478,7 +3478,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (lf.lfWeight == iFontWeight) {
     WCHAR check[64] = { L'\0' };
     Style_AppendWeightStr(check, COUNTOF(check), lf.lfWeight);
-    StrTrimW(check, L" ;");
+    StrTrim(check, L" ;");
     if (Style_StrGetAttribute(lpszStyle, check)) {
       Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
     }
@@ -3492,7 +3492,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (lf.lfWidth == 0) {
     WCHAR check[64] = { L'\0' };
     Style_AppendStretchStr(check, COUNTOF(check), /*lf.lfWidth*/ iFontStretch);
-    StrTrimW(check, L" ;");
+    StrTrim(check, L" ;");
     if (Style_StrGetAttribute(lpszStyle, check)) {
       Style_AppendStretchStr(szNewStyle, COUNTOF(szNewStyle), /*lf.lfWidth*/ iFontStretch);
     }

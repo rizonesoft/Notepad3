@@ -344,7 +344,7 @@ inline bool TrimSpcA(LPSTR lpString) {
 
 inline bool TrimSpcW(LPWSTR lpString) {
   if (!lpString || !*lpString) { return false; }
-  return (bool)StrTrimW(lpString, L" \t\v");
+  return (bool)StrTrim(lpString, L" \t\v");
 };
 
 #if (defined(UNICODE) || defined(_UNICODE))
