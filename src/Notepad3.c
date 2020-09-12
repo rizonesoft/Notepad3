@@ -2066,7 +2066,6 @@ static bool _EvalTinyExpr(bool qmark)
       while (*pBegin && exprErr) {
         dExprEval = te_interp(pBegin++, &exprErr);
       }
-      if (!*pBegin) { exprErr = 1; }
       FreeMem(lineBuf);
 
       if (!exprErr) {
