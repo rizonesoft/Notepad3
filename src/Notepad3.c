@@ -62,7 +62,6 @@ LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
   /*7*/ L"back:#FF8F20",
   /*8*/ L"back:#950095"};
 
-
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
 CONSTANTS_T const Constants = { 
@@ -220,7 +219,11 @@ static const int NUMTOOLBITMAPS = 30;
 
 // ----------------------------------------------------------------------------
 
-const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
+const char chr_currency[6] = { '$', 0x80, 0xA2, 0xA3, 0xA5, '\0' }; // "$€¢£¥"
+
+// ----------------------------------------------------------------------------
+
+const WCHAR *const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
 const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
 //=============================================================================
@@ -2051,13 +2054,21 @@ static bool _EvalTinyExpr(bool qmark)
   }
   if (chBefore == '=') // got "=?" or ENTER : evaluate expression trigger
   {
-    DocPos lineLen = SciCall_LineLength(SciCall_LineFromPosition(posCur));
-    char *lineBuf = (char *)AllocMem(lineLen + 1, HEAP_ZERO_MEMORY);
-    if (lineBuf) {
-      DocPos const iLnCaretPos = SciCall_GetCurLine((unsigned int)lineLen, lineBuf);
+    int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posCur)) + 1;
+    char *lineBuf = (char *)AllocMem(lineLen, HEAP_ZERO_MEMORY);
+    WCHAR *lineBufW = (WCHAR *)AllocMem(lineLen * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    if (lineBuf && lineBufW)
+    {
+      DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
 
       lineBuf[iLnCaretPos - (posCur - posBefore)] = '\0'; // exclude "=?"
       
+      char const defchar = (char)0x24;
+      MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, lineLen);
+      WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
+      StrDelChrA(lineBuf, chr_currency);
+      FreeMem(lineBufW);
+
       const char *pBegin = lineBuf;
       while (IsBlankChar(*pBegin)) { ++pBegin; }       
 
@@ -2066,7 +2077,6 @@ static bool _EvalTinyExpr(bool qmark)
       while (*pBegin && exprErr) {
         dExprEval = te_interp(pBegin++, &exprErr);
       }
-      if (!*pBegin) { exprErr = 1; }
       FreeMem(lineBuf);
 
       if (!exprErr) {
@@ -8638,8 +8648,9 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
   char tmpRectSelN[_tmpBufCnt] = { '\0' };
   
   DocPosU const selCount = SciCall_GetSelections();
-  DocPosU const calcBufSize = _tmpBufCnt * selCount;
-  char* calcBuffer = (char*)AllocMem(calcBufSize + 1, HEAP_ZERO_MEMORY);
+  int const calcBufSize = (int)(_tmpBufCnt * selCount + 1);
+  char* calcBuffer = (char*)AllocMem(calcBufSize, HEAP_ZERO_MEMORY);
+  WCHAR* calcBufferW = (WCHAR*)AllocMem(calcBufSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
   bool bLastCharWasDigit = false;
   for (DocPosU i = 0; i < selCount; ++i)
@@ -8650,6 +8661,12 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
     StringCchCopyNA(tmpRectSelN, _tmpBufCnt, SciCall_GetRangePointer(posSelStart, (DocPos)cchToCopy), cchToCopy);
     StrTrimA(tmpRectSelN, " ");
 
+    char const defchar = (char)0x24;
+    MultiByteToWideChar(Encoding_SciCP, 0, calcBuffer, -1, calcBufferW, calcBufSize);
+    WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), calcBufferW, -1, calcBuffer, calcBufSize, &defchar, NULL);
+    StrDelChrA(calcBuffer, chr_currency);
+    FreeMem(calcBufferW);
+
     if (!StrIsEmptyA(tmpRectSelN))
     {
       if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit) {
@@ -8659,7 +8676,9 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
       StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), tmpRectSelN);
     }
   }
-  return te_interp(calcBuffer, piExprError);
+  double const result = te_interp(calcBuffer, piExprError);
+  FreeMem(calcBuffer);
+  return result;
 }
 
 
@@ -8888,15 +8907,22 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (Settings.EvalTinyExprOnSelection)
     {
       if (bIsSelCharCountable) {
-        static char  chSelectionBuffer[XHUGE_BUFFER];
+        static char chSeBuf[LARGE_BUFFER];
+        static WCHAR wchSelBuf[LARGE_BUFFER];
         DocPos const iSelSize = SciCall_GetSelText(NULL);
-        if (iSelSize < COUNTOF(chSelectionBuffer)) // should be fast !
+        if (iSelSize < COUNTOF(chSeBuf)) // should be fast !
         {
-          SciCall_GetSelText(chSelectionBuffer);
+          SciCall_GetSelText(chSeBuf);
           //~StrDelChrA(chExpression, " \r\n\t\v");
-          StrDelChrA(chSelectionBuffer, "\r\n");
-          StrTrimA(chSelectionBuffer, "= ?");
-          s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
+          StrDelChrA(chSeBuf, "\r\n");
+          StrTrimA(chSeBuf, "= ?");
+
+          char const defchar = (char)0x24;
+          MultiByteToWideChar(Encoding_SciCP, 0, chSeBuf, -1, wchSelBuf, LARGE_BUFFER);
+          WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), wchSelBuf, -1, chSeBuf, LARGE_BUFFER, &defchar, NULL);
+          StrDelChrA(chSeBuf, chr_currency);
+          
+          s_dExpression = te_interp(chSeBuf, &s_iExprError);
         }
         else {
           s_iExprError = -1;
