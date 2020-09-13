@@ -245,7 +245,6 @@
 #define IDC_FINDWORD                    18005
 #define IDC_FINDSTART                   18006
 #define IDC_FINDTRANSFORMBS             18007
-#define IDC_FINDAUTOESCCTRLCHR          18008
 #define IDC_FINDREGEXP                  18009
 #define IDC_DOT_MATCH_ALL               18010
 #define IDC_NOWRAP                      18011
@@ -362,6 +361,8 @@
 #define IDC_SHOWEDGELINE                18121
 #define IDC_BACKGRDCOLOR                18122
 #define IDC_CLEAR_LIST                  18123
+#define IDC_FINDESCCTRLCHR              18124
+#define IDC_REPLESCCTRLCHR              18125
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
