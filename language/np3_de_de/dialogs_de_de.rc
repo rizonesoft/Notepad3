@@ -88,8 +88,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Suche Text"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Suche nach:",IDC_STATIC,7,7,60,8
-    CONTROL         "Esc Ctrl Zeichen", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 60, 7, 60, 10
+    LTEXT           "&Suche nach:",IDC_STATIC,7,7,40,8
+    CONTROL         "<a>Esc Ctrl Zeichen</a>", IDC_FINDESCCTRLCHR,"SysLink", 0x0, 60, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Groß/Klein unterscheiden",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
     CONTROL         "Nur ganze &Wörter",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,110,10
