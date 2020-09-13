@@ -94,7 +94,7 @@ BEGIN
     CONTROL         "Толькі &цэлыя словы",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,83,10
     CONTROL         "Толькі па&чаткі слоў",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,82,10
     CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,79,10
-    CONTROL         "А&ўтаэкр. сімвалаў кірав",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,73,96,10
+    //CONTROL         "А&ўтаэкр. сімвалаў кірав",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,73,96,10
     CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,84,10
     CONTROL         "Кр&опка — любы сімвал",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,93,10
     CONTROL         "Пошук &з перакрыццём",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,92,10
@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "Толькі &цэлыя словы",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,83,10
     CONTROL         "Толькі па&чаткі слоў",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,82,10
     CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,79,10
-    CONTROL         "А&ўтаэкр. сімвалаў кірав",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,102,96,10
+    //CONTROL         "А&ўтаэкр. сімвалаў кірав",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,102,96,10
     CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,84,10
     CONTROL         "Кр&опка — любы сімвал",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,93,10
     CONTROL         "Пошук &з перакрыццём",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,92,10

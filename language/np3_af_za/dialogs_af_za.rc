@@ -94,7 +94,7 @@ BEGIN
     CONTROL         "Pas slegs die hele &woord aan",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,99,10
     CONTROL         "Pas slegs die &begin van die woord aan",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,122,10
     CONTROL         "&Transformeer terugslag",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Outo Esc Ctrl C&hr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,73,85,10
+    //CONTROL         "Outo Esc Ctrl C&hr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,73,85,10
     CONTROL         "Gereelde &uitdrukkingssoektog",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,106,10
     CONTROL         "&Dot pas alles by",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
     CONTROL         "&Oorvleuelende soektog",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,37,75,10
@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "Pas slegs die hele &woord aan",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,99,10
     CONTROL         "Pas slegs die &begin van die woord aan",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,122,10
     CONTROL         "&Transformeer terugslag",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Outo Esc Ctrl C&hr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,102,85,10
+    //CONTROL         "Outo Esc Ctrl C&hr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,102,85,10
     CONTROL         "Gereelde &uitdrukkingssoektog",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,110,10
     CONTROL         "&Dot pas alles by",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "&Oorvleuelende soektog",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,66,75,10
