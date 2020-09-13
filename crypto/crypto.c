@@ -28,9 +28,10 @@ see ecryption-doc.txt for details
 #include <intsafe.h>
 #include <shellapi.h>
 #include <time.h>
-#include "..\src\Dialogs.h"
-#include "..\src\Helpers.h"
-#include "..\src\resource.h"
+#include "../src/Dialogs.h"
+#include "../src/Helpers.h"
+#include "../src/resource.h"
+#include "../src/DarkMode/DarkMode.h"
 #include "rijndael-api-fst.h"
 #include "crypto.h"
 
@@ -119,6 +120,20 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     case WM_INITDIALOG:
     {
         SetDialogIconNP3(hDlg);
+        InitWindowCommon(hDlg, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hDlg, IDOK));
+          SetExplorerTheme(GetDlgItem(hDlg, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { IDC_INDENT_BY_SPCS, IDC_INDENT_BY_TABS, IDC_WARN_INCONSISTENT_INDENTS, IDC_STATIC };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hDlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
+        }
+#endif
+
         SetDlgItemText(hDlg, IDC_PWD_EDIT1, unicodeFileKey);
         SetDlgItemText(hDlg, IDC_PWD_EDIT2, unicodeMasterKey);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), hasMasterFileKey);
@@ -134,6 +149,41 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
       return !0;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hDlg, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hDlg, darkModeEnabled);
+        RefreshTitleBarThemeColor(hDlg);
+
+        int const buttons[] = { IDOK, IDCANCEL };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hDlg, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hDlg);
+      }
+      break;
+
+#endif
 
     case WM_COMMAND:
 
@@ -243,6 +293,20 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
   case WM_INITDIALOG:
     {
       SetDialogIconNP3(hDlg);
+      InitWindowCommon(hDlg, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+      if (UseDarkMode()) {
+        SetExplorerTheme(GetDlgItem(hDlg, IDOK));
+        SetExplorerTheme(GetDlgItem(hDlg, IDCANCEL));
+        //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        int const ctl[] = { IDC_INDENT_BY_SPCS, IDC_INDENT_BY_TABS, IDC_WARN_INCONSISTENT_INDENTS, IDC_STATIC };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hDlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
+      }
+#endif
+
       int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
       ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
       ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);
@@ -258,6 +322,41 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
     return !0;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+  case WM_CTLCOLORDLG:
+  case WM_CTLCOLOREDIT:
+  case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORSTATIC:
+    if (UseDarkMode()) {
+      return SetDarkModeCtlColors((HDC)wParam);
+    }
+    break;
+
+  case WM_SETTINGCHANGE:
+    if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+      SendMessage(hDlg, WM_THEMECHANGED, 0, 0);
+    }
+    break;
+
+  case WM_THEMECHANGED:
+    if (IsDarkModeSupported()) {
+      bool const darkModeEnabled = CheckDarkModeEnabled();
+      AllowDarkModeForWindow(hDlg, darkModeEnabled);
+      RefreshTitleBarThemeColor(hDlg);
+
+      int const buttons[] = { IDOK, IDCANCEL };
+      for (int id = 0; id < COUNTOF(buttons); ++id) {
+        HWND const hBtn = GetDlgItem(hDlg, buttons[id]);
+        AllowDarkModeForWindow(hBtn, darkModeEnabled);
+        SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+      }
+      UpdateWindow(hDlg);
+    }
+    break;
+
+#endif
 
   case WM_COMMAND:
 

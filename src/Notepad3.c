@@ -69,7 +69,6 @@ CONSTANTS_T const Constants = {
     2                                    // StdDefaultLexerID
   , L"minipath.exe"                      // FileBrowserMiniPath
   , L"grepWinNP3.exe"                    // FileSearchGrepWin
-  , L"ThemeFileName"                     // StylingThemeName
   , L"Settings"                          // Inifile Section "Settings"
   , L"Settings2"                         // Inifile Section "Settings2"
   , L"Window"                            // Inifile Section "Window"
@@ -413,7 +412,6 @@ void ObserveNotifyChangeEvent()
   }
   if (CheckNotifyChangeEvent()) {
     EditUpdateVisibleIndicators();
-    //@@@ §§§ UpdateToolbar();
     UpdateStatusbar(false);
   }
 }
@@ -644,7 +642,8 @@ static void _InitGlobals()
   Globals.bReplaceInitialized = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
   Globals.bDocHasInconsistentEOLs = false;
-  Globals.idxSelectedTheme = 1; // Default(0), Standard(1)
+  Globals.idxLightModeTheme = 1; // Default(0), Standard(1)
+  Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
   Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
 
   Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
@@ -889,6 +888,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
 #endif
 
+  Style_ImportTheme(GetModeThemeIndex());
+
   //SetProcessDPIAware(); -> .manifest
   //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
   Scintilla_LoadDpiForWindow();
@@ -1003,6 +1004,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     _CleanUpResources(hwnd, true);
     return 1; 
   }
+
   DrawMenuBar(hwnd);
 
   HACCEL const hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
@@ -2711,7 +2713,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
-
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
   //~Globals.hwndStatus = CreateWindowEx(
   //~    0,                         // no extended styles
@@ -2815,20 +2816,29 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  MsgThemeChanged() - Handle WM_THEMECHANGED
 //
-//
 LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 {
   UNUSED(lParam);
   UNUSED(wParam);
-  
+ 
+#ifdef D_NP3_WIN10_DARK_MODE
+  AllowDarkModeForWindow(hwnd, UseDarkMode());
+  RefreshTitleBarThemeColor(hwnd);
+#endif
+
   // reinitialize edit frame
   _HandleEditWndFrame();
 
   // recreate toolbar and statusbar
   CreateBars(hwnd,Globals.hInstance);
-  SendWMSize(hwnd, NULL);
 
   Style_ResetCurrentLexer(Globals.hwndEdit);
+
+  UpdateTitleBar();
+  Sci_RedrawScrollbars();
+
+  SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+  DrawMenuBar(hwnd);
 
   if (FocusedView.HideNonMatchedLines) {
     EditToggleView(Globals.hwndEdit);
@@ -2845,16 +2855,12 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   EditUpdateVisibleIndicators();
 
-#ifdef D_NP3_WIN10_DARK_MODE
-  AllowDarkModeForWindow(hwnd, UseDarkMode());
-  RefreshTitleBarThemeColor(hwnd);
-#endif
-
-  UpdateUI();
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
-  UpdateTitleBar();
+  UpdateWindow(hwnd);
+
+  UpdateUI();
 
   return FALSE;
 }
@@ -3880,8 +3886,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   UpdateSaveSettingsCmds();
   
-  DrawMenuBar(hwnd);
-
   return FALSE;
 }
 
@@ -3923,7 +3927,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
     SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(Globals.hwndMain);
 
-    MsgThemeChanged(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
+    PostMessage(Globals.hwndMain, WM_THEMECHANGED, 0, 0);
   }
   return;
 }
@@ -3951,7 +3955,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
   bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
   if (bIsThemesMenuCmd) {
-    Style_DynamicThemesMenuCmd(iLoWParam);
+    Style_DynamicThemesMenuCmd(iLoWParam, GetModeThemeIndex());
     UpdateToolbar();
     UpdateStatusbar(true);
     UpdateMarginWidth();
@@ -5902,10 +5906,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WIN_DARK_MODE:
       {
+        unsigned const iCurTheme = GetModeThemeIndex();
+
         Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode;
-        Settings.ShowMenubar = !UseDarkMode();  // hide/show bright menu strip on switching
         SetDarkMode(Settings.WinThemeDarkMode);
-        Sci_RedrawScrollbars();
+        Settings.ShowMenubar = !UseDarkMode(); // hide/show bright menu strip on switching
+    
+        Style_DynamicThemesMenuCmd(GetModeThemeIndex() + IDM_THEMES_DEFAULT, iCurTheme);
+        
         PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
       }
       break;
@@ -9420,6 +9428,7 @@ void UpdateSaveSettingsCmds()
   EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !bSoftLocked);
   EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (bHaveIniFile || bHaveFallbackIniFile) && !bSoftLocked);
   EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, bHaveIniFile && !bSoftLocked);
+  DrawMenuBar(Globals.hwndMain);
 }
 
 
@@ -9437,6 +9446,7 @@ void UpdateUI()
   SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   //PostMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   COND_SHOW_ZOOM_CALLTIP();
+  SendWMSize(Globals.hwndMain, NULL);
 }
 
 
@@ -11179,8 +11189,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
     s_bPrevFullScreenFlag = true;
   }
 
-  DrawMenuBar(Globals.hwndMain);
-  MsgThemeChanged(hWindow, (WPARAM)NULL, (LPARAM)NULL);
+  SendWMSize(hWindow, NULL);
 }
 
 

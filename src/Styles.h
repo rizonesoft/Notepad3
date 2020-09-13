@@ -30,8 +30,9 @@
 #define NUMLEXERS 51
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
-void   Style_Load();
+void   Style_Init();
 bool   Style_Import(HWND hwnd);
+bool   Style_ImportTheme(const unsigned iThemeIdx);
 bool   Style_ImportFromFile(const WCHAR* szFile);
 void   Style_SaveSettings(bool bForceSaveSettings);
 bool   Style_Export(HWND hwnd);
@@ -39,8 +40,8 @@ void   Style_ToIniSection(bool bForceAll, bool bIsStdIniFile);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 
 unsigned ThemeItems_CountOf();
-bool     Style_InsertThemesMenu(HMENU hMenuBar);
-void     Style_DynamicThemesMenuCmd(int cmd);
+bool   Style_InsertThemesMenu(HMENU hMenuBar);
+void   Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx);
 
 float  Style_GetCurrentFontSize();
 void   Style_SetFoldingAvailability(PEDITLEXER pLexer);

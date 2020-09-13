@@ -270,11 +270,10 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
   bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
 
-  CheckCmd(hMenuBar, Theme_Files[Globals.idxSelectedTheme].rid, true);
-
-  if (StrIsEmpty(Theme_Files[Globals.idxSelectedTheme].szFilePath))
-  {
-    EnableCmd(hMenuBar, Theme_Files[Globals.idxSelectedTheme].rid, false);
+  unsigned const iTheme = GetModeThemeIndex();
+  CheckCmd(hMenuBar, Theme_Files[iTheme].rid, true);
+  if (StrIsEmpty(Theme_Files[iTheme].szFilePath)) {
+    EnableCmd(hMenuBar, Theme_Files[iTheme].rid, false);
   }
 
   return res;
@@ -292,43 +291,40 @@ static void _EnableSchemeConfig(const bool bEnable)
   EnableTool(Globals.hwndToolbar, IDT_VIEW_SCHEMECONFIG, bEnable);
 }
 
-void Style_DynamicThemesMenuCmd(int cmd)
+
+void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
 {
   unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
   if (iThemeIdx >= ThemeItems_CountOf()) {
     return;
   }
-  if (iThemeIdx == Globals.idxSelectedTheme) { return; }
 
-  CheckCmd(Globals.hMainMenu, Theme_Files[Globals.idxSelectedTheme].rid, false);
+  if (iThemeIdx == iCurThemeIdx) { return; }
+
+  CheckCmd(Globals.hMainMenu, Theme_Files[iCurThemeIdx].rid, false);
 
   if (Settings.SaveSettings) {
-    if (Globals.idxSelectedTheme == 0) {
-      // internal defaults
-    }
-    else if (Globals.idxSelectedTheme == 1) {
+    if (iCurThemeIdx == 0) {
+      // hard-coded internal/factory defaults
+    } else if (iCurThemeIdx == 1) {
       if (!Flags.bSettingsFileSoftLocked) {
         Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
         if (Globals.bCanSaveIniFile) {
           Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
         }
       }
-    }
-    else if (PathIsExistingFile(Theme_Files[Globals.idxSelectedTheme].szFilePath))
+    } else if (PathIsExistingFile(Theme_Files[iCurThemeIdx].szFilePath))
     {
-      Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, false);
+      Style_ExportToFile(Theme_Files[iCurThemeIdx].szFilePath, false);
     }
   }
-
-  Globals.idxSelectedTheme = iThemeIdx;
-  StringCchCopy(Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName), Theme_Files[Globals.idxSelectedTheme].szName);
 
   bool result = true;
-  if ((Globals.idxSelectedTheme > 1) && PathIsExistingFile(Theme_Files[Globals.idxSelectedTheme].szFilePath))
+  if ((iThemeIdx > 1) && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath))
   {
-    result = Style_ImportFromFile(Theme_Files[Globals.idxSelectedTheme].szFilePath);
-  }
-  else if (Globals.idxSelectedTheme == 1) {
+    result = Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
+  } 
+  else if (iThemeIdx == 1) {
     result = Style_ImportFromFile(Globals.IniFile);
   }
   else {
@@ -336,16 +332,25 @@ void Style_DynamicThemesMenuCmd(int cmd)
   }
 
   if (result) {
+    if (UseDarkMode()) {
+      StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName), Theme_Files[iThemeIdx].szName);
+      Globals.idxDarkModeTheme = iThemeIdx;
+    } else {
+      StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName), Theme_Files[iThemeIdx].szName);
+      Globals.idxLightModeTheme = iThemeIdx;
+    }
+
+    _EnableSchemeConfig(iThemeIdx != 0);
+    CheckCmd(Globals.hMainMenu, Theme_Files[iThemeIdx].rid, true);
+
     Style_ResetCurrentLexer(Globals.hwndEdit);
-    SendWMSize(Globals.hwndMain, NULL);
-    _EnableSchemeConfig(Globals.idxSelectedTheme != 0);
-    UpdateUI();
+
     UpdateToolbar();
     UpdateStatusbar(true);
     UpdateMarginWidth();
+    UpdateTitleBar();
   }
-
-  CheckCmd(Globals.hMainMenu, Theme_Files[Globals.idxSelectedTheme].rid, true);
+  UpdateUI();
 }
 
 
@@ -460,9 +465,9 @@ float Style_GetCurrentFontSize()
 
 //=============================================================================
 //
-//  Style_Load()
+//  Style_Init()
 //
-void Style_Load()
+void Style_Init()
 {
   _SetBaseFontSize((float)Globals.InitialFontSize);
   _SetCurrentFontSize((float)Globals.InitialFontSize);
@@ -473,17 +478,47 @@ void Style_Load()
 
   _FillThemesMenuTable();
 
-  unsigned iTheme = 1;
-  if (StrIsNotEmpty(Globals.SelectedThemeName)) {
+  unsigned iTheme = 2;
+  if (StrIsNotEmpty(Globals.LightThemeName)) {
     for (; iTheme < ThemeItems_CountOf(); ++iTheme)
     {
-      if (StringCchCompareXI(Globals.SelectedThemeName, Theme_Files[iTheme].szName) == 0) { break; }
+      if (StringCchCompareXI(Globals.LightThemeName, Theme_Files[iTheme].szName) == 0) {
+        break;
+      }
     }
   }
-  Globals.idxSelectedTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : 1;
-  StringCchCopy(Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName), Theme_Files[Globals.idxSelectedTheme].szName);
+  if (iTheme < ThemeItems_CountOf()) {
+    Globals.idxLightModeTheme = iTheme;
+  } else {
+    Globals.idxLightModeTheme = 1;
+    StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName), Theme_Files[1].szName);
+  }
 
-  Style_ImportFromFile(Theme_Files[Globals.idxSelectedTheme].szFilePath);
+
+  iTheme = 2;
+  if (StrIsNotEmpty(Globals.DarkThemeName)) {
+    for (; iTheme < ThemeItems_CountOf(); ++iTheme) {
+      if (StringCchCompareXI(Globals.DarkThemeName, Theme_Files[iTheme].szName) == 0) {
+        break;
+      }
+    }
+  }
+  if (iTheme < ThemeItems_CountOf()) {
+    Globals.idxDarkModeTheme = iTheme;
+  } else {
+    Globals.idxDarkModeTheme = 1;
+    StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName), Theme_Files[1].szName);
+  }
+}
+
+
+//=============================================================================
+//
+//  Style_ImportTheme()
+//
+bool Style_ImportTheme(const unsigned iThemeIdx)
+{
+  return Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
 }
 
 
@@ -648,7 +683,7 @@ void Style_SaveSettings(bool bForceSaveSettings)
 {
   if (Settings.SaveSettings || bForceSaveSettings)
   {
-    Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
+    Style_ExportToFile(Theme_Files[GetModeThemeIndex()].szFilePath, Globals.bIniFileFromScratch);
   }
 }
 
@@ -799,7 +834,7 @@ void Style_ToIniSection(bool bForceAll, bool bIsStdIniFile)
 bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
   if (StrIsEmpty(szFile)) {
-    if (Globals.idxSelectedTheme != 0) {
+    if (GetModeThemeIndex() != 0) {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
     }
     return false;
@@ -4762,7 +4797,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 {
                     _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-                    if ((!bWarnedNoIniFile && StrIsEmpty(Theme_Files[Globals.idxSelectedTheme].szFilePath)) && (Globals.idxSelectedTheme > 0))
+                    unsigned const iTheme = GetModeThemeIndex();
+                    if ((iTheme > 0) && (!bWarnedNoIniFile && StrIsEmpty(Theme_Files[iTheme].szFilePath)))
                     {
                         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
                         bWarnedNoIniFile = true;

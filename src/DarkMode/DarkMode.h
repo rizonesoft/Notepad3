@@ -33,6 +33,7 @@ extern "C" {
 #endif
 
 #define UseDarkMode() (IsDarkModeSupported() && CheckDarkModeEnabled())
+#define GetModeThemeIndex() (UseDarkMode() ? Globals.idxDarkModeTheme : Globals.idxLightModeTheme)
 
 #ifdef __cplusplus
 }

@@ -1677,7 +1677,10 @@ void LoadSettings()
     StringCchPrintf(tchSciFontQuality, COUNTOF(tchSciFontQuality), L"%ix%i SciFontQuality", ResX, ResY);
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchSciFontQuality, Settings2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
-    IniSectionGetString(Constants.Styles_Section, Constants.StylingThemeName, L"", Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName));
+    // ------------------------------------------------------------------------
+
+    IniSectionGetString(Constants.Styles_Section, L"ThemeFileName", L"", Globals.LightThemeName, COUNTOF(Globals.LightThemeName));
+    IniSectionGetString(Constants.Styles_Section, L"DarkThemeFileName", L"", Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName));
 
     // define scintilla internal codepage
     int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
@@ -1707,7 +1710,7 @@ void LoadSettings()
   }
 
   // Scintilla Styles
-  Style_Load();
+  Style_Init();
 
   ResetIniFileCache();
 }
@@ -2021,16 +2024,20 @@ static bool _SaveSettings(bool bForceSaveSettings)
   const WCHAR* const IniSecStyles = Constants.Styles_Section;
   // --------------------------------------------------------------------------
 
-  switch (Globals.idxSelectedTheme) {
-    case 1: 
-      Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
-      //~break;     
-    case 0: // fall trough
-      IniSectionDelete(IniSecStyles, Constants.StylingThemeName, false);
-      break;
-    default:
-      IniSectionSetString(IniSecStyles, Constants.StylingThemeName, Theme_Files[Globals.idxSelectedTheme].szName);
-      break;
+  if (GetModeThemeIndex() == 1) {
+    Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
+  }
+
+  if (Globals.idxLightModeTheme == 0) {
+    IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
+  } else {
+    IniSectionSetString(IniSecStyles, L"ThemeFileName", Globals.LightThemeName);
+  }
+  
+  if (Globals.idxDarkModeTheme == 0) {
+    IniSectionDelete(IniSecStyles, L"DarkThemeFileName", false);
+  } else {
+    IniSectionSetString(IniSecStyles, L"DarkThemeFileName", Globals.DarkThemeName);
   }
 
   return true;
@@ -2133,7 +2140,7 @@ __try {
       }
     }
 
-    if (Globals.idxSelectedTheme == 1) {
+    if (GetModeThemeIndex() == 1) {
       Style_SaveSettings(bForceSaveSettings);
     }
 
@@ -2143,7 +2150,7 @@ __try {
   }
 
   // separate INI files for Style-Themes
-  if (Globals.idxSelectedTheme >= 2)
+  if (GetModeThemeIndex() >= 2)
   {
     Style_SaveSettings(bForceSaveSettings);
   }
