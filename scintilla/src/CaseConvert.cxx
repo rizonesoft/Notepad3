@@ -591,15 +591,14 @@ class CaseConverter : public ICaseConverter {
 			return character < other.character;
 		}
 	};
-	typedef std::vector<CharacterConversion> CharacterToConversion;
+	using CharacterToConversion = std::vector<CharacterConversion>;
 	CharacterToConversion characterToConversion;
 	// The parallel arrays
 	std::vector<int> characters;
 	std::vector<ConversionString> conversions;
 
 public:
-	CaseConverter() noexcept {
-	}
+	CaseConverter() noexcept = default;
 	virtual ~CaseConverter() = default;
 	bool Initialised() const noexcept {
 		return !characters.empty();

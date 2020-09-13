@@ -89,12 +89,12 @@ CAPTION "Vind Teks"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Soe&kstring:",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Pas &case",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
     CONTROL         "Pas slegs die hele &woord aan",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,99,10
     CONTROL         "Pas slegs die &begin van die woord aan",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,122,10
     CONTROL         "&Transformeer terugslag",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Outo Esc Ctrl C&hr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,73,85,10
     CONTROL         "Gereelde &uitdrukkingssoektog",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,106,10
     CONTROL         "&Dot pas alles by",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
     CONTROL         "&Oorvleuelende soektog",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,37,75,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
     PUSHBUTTON      "Maak toe",IDCANCEL,221,111,55,14
-    CONTROL         "<a>Gaan na vervang (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,135,115,84,10
+    CONTROL         "<a>Gaan na vervang (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,135,115,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,116,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,116,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,208,97,14,10
@@ -122,14 +121,15 @@ CAPTION "Vervang Teks"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Soe&kstring:",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Vervang m&et:",IDC_STATIC,7,36,44,8
+    LTEXT           "Vervang m&et:",IDC_STATIC,7,36,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Pas &case",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
     CONTROL         "Pas slegs die hele &woord aan",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,99,10
     CONTROL         "Pas slegs die &begin van die woord aan",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,122,10
     CONTROL         "&Transformeer terugslag",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Outo Esc Ctrl C&hr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,102,85,10
     CONTROL         "Gereelde &uitdrukkingssoektog",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,110,10
     CONTROL         "&Dot pas alles by",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "&Oorvleuelende soektog",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,66,75,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "Vervang &Alles",IDC_REPLACEALL,221,75,55,14
     PUSHBUTTON      "Swap Strings",IDC_SWAPSTRG,160,32,49,12
     PUSHBUTTON      "Maak toe",IDCANCEL,221,126,55,14
-    CONTROL         "<a>Gaan Soek (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,135,142,74,10
+    CONTROL         "<a>Gaan Soek (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,135,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,117,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,117,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,208,126,12,10
@@ -267,9 +266,9 @@ BEGIN
     CONTROL         "&Stoor onlangse lêerlys by uitgang.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,126,10
     CONTROL         "&Onthou soekpatroon.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
-    PUSHBUTTON      "Gooi weg",IDC_REMOVE,212,107,50,14,WS_DISABLED
+    CONTROL         "Gooi weg", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
-    PUSHBUTTON      "Kanselleer",IDCANCEL,212,139,50,14
+    PUSHBUTTON      "Maak toe",IDCANCEL,212,139,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 

@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Nieuw\tCtrl+N",                                          IDM_FILE_NEW
         MENUITEM "&Openen...\tCtrl+O",                                      IDM_FILE_OPEN
-        MENUITEM "&Herladen\tF5",                                           IDM_FILE_REVERT
         MENUITEM "&Opslaan\tCtrl+S",                                        IDM_FILE_SAVE
         MENUITEM "Op&slaan als...\tF6",                                     IDM_FILE_SAVEAS
         MENUITEM "Opslaan &kopiëren...\tCtrl+F6",                           IDM_FILE_SAVECOPY
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "Open bestand &Verkenner",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Herladen uit Bestand\tF5",               IDM_FILE_REVERT
         POPUP "&Encodering"
         BEGIN
-            MENUITEM "&ANSI",                                   IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                                IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                     IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                        IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 met &signatuur",                    IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Meer...\tF9",                            IDM_ENCODING_SELECT
+            POPUP "&Herladen uit Bestand als"
+            BEGIN
+                MENUITEM "&Standaard (Instelling)",               CMD_RECODEDEFAULT
+                MENUITEM "&ANSI\tCtrl+Shift+A",                   CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",              CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII als UT&F-8\tCtrl+Shift+F8",       CMD_RELOADASCIIASUTF8
+                MENUITEM "Forceer U&CHARDET-analyse",             CMD_RELOADFORCEDETECTION
+                MENUITEM "Encoderingst&ags negeren\tAlt+F8",      CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&Meer Encoding...\tF8",                 IDM_ENCODING_RECODE
+            END
+            POPUP "Docu&ment instellen als"
+            BEGIN
+                MENUITEM "&ANSI",                                 IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                              IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",                   IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                      IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 met &signatuur",                  IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&Meer Encoding...\tF9",                 IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Hercoderen naar &Standaard",                CMD_RECODEDEFAULT
-            MENUITEM "Hercoderen naar &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
-            MENUITEM "Hercoderen naar &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
-            MENUITEM "Hercoderen naar &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
-            MENUITEM "Hercoderen naar UCHARDET-analyse",          CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
-            MENUITEM "Encoderingst&ags negeren\tAlt+F8",          CMD_RELOADNOFILEVARS
-            MENUITEM "&Hercoderen...\tF8",                        IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Instellen &standaard...",                   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Instellen de &Standaard Encoding...",       IDM_ENCODING_SETDEFAULT
         END
         POPUP "Lijn e&indes"
         BEGIN
@@ -342,6 +349,7 @@ BEGIN
         POPUP "Mar&keer voorvallen"
         BEGIN
             MENUITEM "&Actief\tAlt+A",                      IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Gebruiken &bladwijzers ook",          IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Match alleen zichtbaar",              IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -355,7 +363,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Lijn &nummers\tCtrl+Shift+N",             IDM_VIEW_LINENUMBERS
-        MENUITEM "Selectie &marge\tCtrl+Shift+M",           IDM_VIEW_MARGIN
+        MENUITEM "&Marge de bladwijzer\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Vouwen"
         BEGIN
@@ -371,10 +379,20 @@ BEGIN
         POPUP "&Tonen"
         BEGIN
             MENUITEM "Gefocust zicht\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
+            POPUP "Weergavemodus"
+            BEGIN
+                MENUITEM "Vouw",                                        IDM_VIEW_FV_FOLD
+                MENUITEM "Bladwijzer",                                  IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Markeer",                                     IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bladwijzer && Vouw",                          IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Markeer && Vouw",                             IDM_VIEW_FV_HIGHLGFOLD
+            END
+            MENUITEM SEPARATOR
             MENUITEM "Log &Monitoren",                                  IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scrollen na einde van bes&tand",                  IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Toon &hyperlink tooltip",                         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&anelen"
         BEGIN
             MENUITEM "&Menubalk tonen",                                 IDM_VIEW_MENUBAR
@@ -519,10 +537,6 @@ BEGIN
         MENUITEM "Openen Web Action 1",                    CMD_WEBACTION1
         MENUITEM "Openen Web Action 2",                    CMD_WEBACTION2
         MENUITEM "Open bestand Verkenne",                  IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Vouwcode",                               IDM_VIEW_FOLDING
-        MENUITEM "Lijn nummers",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selectie marge",                         IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -534,6 +548,17 @@ BEGIN
         MENUITEM "Werkbalk aanpassen...",                  IDM_VIEW_CUSTOMIZETB
         MENUITEM "Toggle werkbalken",                      IDM_VIEW_TOGGLETB
         MENUITEM "DPI schaal de werkbalk",                 IDM_VIEW_DPISCALETB
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Wis bladwijzer",                         IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Knippen de gemarkeerde lijnen",          IDM_EDIT_CUT_MARKED
+        MENUITEM "Kopiëren de gemarkeerde lijnen",         IDM_EDIT_COPY_MARKED
+        MENUITEM "Verwijderen de gemarkeerde lijnen",      IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "Vouwcode",                               IDM_VIEW_FOLDING
+        MENUITEM "Lijn nummers",                           IDM_VIEW_LINENUMBERS
+        MENUITEM "Marge de bladwijzer",                    IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

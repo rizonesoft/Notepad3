@@ -1,4 +1,4 @@
-﻿// grepWin - regex search and replace for Windows
+// grepWin - regex search and replace for Windows
 
 // Copyright (C) 2020 - Stefan Kueng
 
@@ -60,6 +60,11 @@ public:
     /// unregisters a callback function.
     bool RemoveRegisteredCallback(int id);
 
+    void SetDlgFontFaceName(LPCWSTR FontFaceName, int size);
+    LPCWSTR GetDlgFontFaceName();
+    int     GetDlgFontSize();
+    void SetFontForDialog(HWND hwnd, LPCWSTR FontFaceName, int FontSize);
+
     /// sets the theme for a whole dialog. For dark mode, the
     /// windows are subclassed if necessary. For normal mode,
     /// subclassing is removed to ensure the behavior is
@@ -89,4 +94,6 @@ private:
     int                                          m_lastThemeChangeCallbackId;
     CRegStdDWORD                                 m_regDarkTheme;
     static HBRUSH                                s_backBrush;
+    WCHAR                                        m_DlgFontFace[LF_FACESIZE];
+    int                                          m_DlgFontSize;
 };

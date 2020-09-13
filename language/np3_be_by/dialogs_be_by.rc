@@ -88,13 +88,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Знайсці тэкст"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Шукаць:",IDC_STATIC,7,7,30,8
+    LTEXT           "&Шукаць:",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Улічваць &рэгістр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,71,10
     CONTROL         "Толькі &цэлыя словы",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,83,10
     CONTROL         "Толькі па&чаткі слоў",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,82,10
     CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,79,10
-    CONTROL         "А&ўтаэкр. сімвалаў кірав",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,73,96,10
     CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,84,10
     CONTROL         "Кр&опка — любы сімвал",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,93,10
     CONTROL         "Пошук &з перакрыццём",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,92,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
     PUSHBUTTON      "&Папярэдняе",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "Закрыць",IDCANCEL,246,111,60,14
-    CONTROL         "<a>Замяніць (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,133,115,74,10
+    CONTROL         "<a>Замяніць (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,115,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,97,14,10
@@ -121,15 +120,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Замяніць тэкст"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Шукаць:",IDC_STATIC,7,7,30,8
+    LTEXT           "&Шукаць:",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Замяніц&ь на:",IDC_STATIC,7,36,43,8
+    LTEXT           "Замяніц&ь на:",IDC_STATIC,7,36,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Улічваць &рэгістр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,71,10
     CONTROL         "Толькі &цэлыя словы",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,83,10
     CONTROL         "Толькі па&чаткі слоў",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,82,10
     CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,79,10
-    CONTROL         "А&ўтаэкр. сімвалаў кірав",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,102,96,10
     CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,84,10
     CONTROL         "Кр&опка — любы сімвал",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,93,10
     CONTROL         "Пошук &з перакрыццём",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,92,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "Замяніць у&сё",IDC_REPLACEALL,246,75,60,14
     PUSHBUTTON      "Памяняць месцамі",IDC_SWAPSTRG,156,32,73,12
     PUSHBUTTON      "Закрыць",IDCANCEL,246,126,60,14
-    CONTROL         "<a>Знайсці (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,133,142,74,10
+    CONTROL         "<a>Знайсці (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,126,14,10
@@ -267,9 +266,9 @@ BEGIN
     CONTROL         "&Захоўваць гісторыю адкрытых файлаў",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,150,10
     CONTROL         "Захоўваць &пошукавыя запыты",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,121,10
-    PUSHBUTTON      "Прыняць",IDC_REMOVE,212,107,50,14,WS_DISABLED
+    CONTROL         "Прыняць", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
-    PUSHBUTTON      "Скасаваць",IDCANCEL,212,139,50,14
+    PUSHBUTTON      "Закрыць",IDCANCEL,212,139,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 

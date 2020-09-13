@@ -27,8 +27,7 @@
 
 using namespace Scintilla;
 
-MarkerHandleSet::MarkerHandleSet() {
-}
+MarkerHandleSet::MarkerHandleSet() = default;
 
 MarkerHandleSet::~MarkerHandleSet() {
 	mhList.clear();
@@ -89,8 +88,7 @@ void MarkerHandleSet::CombineWith(MarkerHandleSet *other) noexcept {
 	mhList.splice_after(mhList.before_begin(), other->mhList);
 }
 
-LineMarkers::~LineMarkers() {
-}
+LineMarkers::~LineMarkers() = default;
 
 void LineMarkers::Init() {
 	markers.DeleteAll();
@@ -98,7 +96,7 @@ void LineMarkers::Init() {
 
 void LineMarkers::InsertLine(Sci::Line line) {
 	if (markers.Length()) {
-		markers.Insert(line, 0);
+		markers.Insert(line, nullptr);
 	}
 }
 
@@ -215,8 +213,7 @@ void LineMarkers::DeleteMarkFromHandle(int markerHandle) {
 	}
 }
 
-LineLevels::~LineLevels() {
-}
+LineLevels::~LineLevels() = default;
 
 void LineLevels::Init() {
 	levels.DeleteAll();
@@ -279,8 +276,7 @@ int LineLevels::GetLevel(Sci::Line line) const noexcept {
 	}
 }
 
-LineState::~LineState() {
-}
+LineState::~LineState() = default;
 
 void LineState::Init() {
 	lineStates.DeleteAll();
@@ -350,8 +346,7 @@ std::unique_ptr<char[]>AllocateAnnotation(size_t length, int style) {
 
 }
 
-LineAnnotation::~LineAnnotation() {
-}
+LineAnnotation::~LineAnnotation() = default;
 
 void LineAnnotation::Init() {
 	ClearAll();
@@ -473,8 +468,7 @@ int LineAnnotation::Lines(Sci::Line line) const noexcept {
 		return 0;
 }
 
-LineTabstops::~LineTabstops() {
-}
+LineTabstops::~LineTabstops() = default;
 
 void LineTabstops::Init() {
 	tabstops.DeleteAll();

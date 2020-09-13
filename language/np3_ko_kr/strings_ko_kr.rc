@@ -158,6 +158,8 @@ BEGIN
     IDS_MUI_EOLMODENAME_CRLF    "윈도우 (CR+LF)"
     IDS_MUI_EOLMODENAME_LF      "유닉스/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR      "구형 Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "Do you want to normalise all line endings to be '%s'?"
 END
 
 STRINGTABLE
@@ -197,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click 브라우저에서 링크 열기."
     IDS_MUI_INF_PRSVFILEMODTM
                              "기존의 파일 수정 타임스탬프를 보존합니다.\n이 옵션은 이 세션에 한에서만 적용됩니다!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
@@ -249,10 +252,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "언어(&L)"
     IDS_MUI_MENU_THEMES     "스키마 모음(&S)"
-    IDM_THEMES_DEFAULT      "초기화"
-    IDM_THEMES_FILE_ITEM    "표준 설정"
+    IDM_THEMES_DEFAULT      "초기화(&F)"
+    IDM_THEMES_FILE_ITEM    "표준 설정(&S)"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Clear All"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Clear Find History"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Clear Replace History"
 END
 
 STRINGTABLE

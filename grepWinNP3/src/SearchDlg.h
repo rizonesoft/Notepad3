@@ -127,7 +127,7 @@ protected:
     void                    UpdateInfoLabel();
     bool                    SaveSettings();
     void                    SaveWndPosition();
-    void                    formatDate(TCHAR date_native[], const FILETIME& filetime, bool force_short_fmt);
+    void                    formatDate(wchar_t date_native[], const FILETIME& filetime, bool force_short_fmt);
     int                     CheckRegex();
     bool                    MatchPath(LPCTSTR pathbuf);
     void                    AutoSizeAllColumns();

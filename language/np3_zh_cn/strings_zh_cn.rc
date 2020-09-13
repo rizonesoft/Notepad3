@@ -158,6 +158,8 @@ BEGIN
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "是否将所有换行规格化为“%s”？"
 END
 
 STRINGTABLE
@@ -197,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接。"
     IDS_MUI_INF_PRSVFILEMODTM
                              "已启用维持文件最后修改时间功能。\n\n本选项将在当前会话期间生效。"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
@@ -253,6 +256,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "标准设置(&S)"
     IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,选定  ,字节  ,选行  ,匹配  ,,,,,,,字符  ,改写  ,求值  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "清除全部"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "清除查找历史"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "清除替换历史"
 END
 
 STRINGTABLE

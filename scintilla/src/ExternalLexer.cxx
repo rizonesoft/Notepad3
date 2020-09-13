@@ -37,9 +37,9 @@ namespace {
 
 int nextLanguage = SCLEX_AUTOMATIC + 1;
 
-typedef int (EXT_LEXER_DECL *GetLexerCountFn)();
-typedef void (EXT_LEXER_DECL *GetLexerNameFn)(unsigned int Index, char *name, int buflength);
-typedef LexerFactoryFunction(EXT_LEXER_DECL *GetLexerFactoryFunction)(unsigned int Index);
+using GetLexerCountFn = int (EXT_LEXER_DECL *)();
+using GetLexerNameFn = void (EXT_LEXER_DECL *)(unsigned int Index, char *name, int buflength);
+using GetLexerFactoryFunction = LexerFactoryFunction(EXT_LEXER_DECL *)(unsigned int Index);
 
 /// Generic function to convert from a void* to a function pointer.
 /// This avoids undefined and conditionally defined behaviour.
@@ -158,8 +158,7 @@ LexerLibrary::LexerLibrary(const char *moduleName_) {
 	}
 }
 
-LexerLibrary::~LexerLibrary() {
-}
+LexerLibrary::~LexerLibrary() = default;
 
 //------------------------------------------
 //
@@ -180,8 +179,7 @@ void LexerManager::DeleteInstance() noexcept {
 }
 
 /// protected constructor - this is a singleton...
-LexerManager::LexerManager() {
-}
+LexerManager::LexerManager() = default;
 
 LexerManager::~LexerManager() {
 	Clear();

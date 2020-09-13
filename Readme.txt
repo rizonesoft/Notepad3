@@ -105,12 +105,14 @@ it4u                    https://github.com/it4u
 jmacasd                 https://github.com/jmacasd
 jupester                https://github.com/jupester
 kofifus                 https://github.com/kofifus
+kRaLL-Turko             https://github.com/kRaLL-Turko
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
 lhmouse                 https://github.com/lhmouse
 ltGuillaume             https://github.com/ltGuillaume
 maboroshin              https://github.com/maboroshin
 MadDogVachon            https://github.com/MadDogVachon
+Mitezuss                https://github.com/Mitezuss
 ohgree                  https://github.com/ohgree
 RaffaeleBianc0          https://github.com/RaffaeleBianc0
 rizonesoft              https://github.com/rizonesoft

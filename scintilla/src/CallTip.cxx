@@ -279,7 +279,7 @@ PRectangle CallTip::CallTipStart(Sci::Position pos, Point pt, int textHeight, co
 	std::unique_ptr<Surface> surfaceMeasure(Surface::Allocate(technology));
 	surfaceMeasure->Init(wParent.GetID());
 	surfaceMeasure->SetUnicodeMode(SC_CP_UTF8 == codePage);
-	//~surfaceMeasure->SetDBCSMode(codePage);
+	surfaceMeasure->SetDBCSMode(codePage);
 	highlight = Chunk();
 	inCallTipMode = true;
 	posStartCallTip = pos;

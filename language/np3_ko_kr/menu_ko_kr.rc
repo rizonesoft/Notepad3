@@ -59,20 +59,19 @@ BEGIN
     BEGIN
         MENUITEM "새 파일(&N)\tCtrl+N",                        IDM_FILE_NEW
         MENUITEM "열기(&O)...\tCtrl+O",                        IDM_FILE_OPEN
-        MENUITEM "새로 고침(&V)\tF5",                          IDM_FILE_REVERT
         MENUITEM "저장(&S)\tCtrl+S",                           IDM_FILE_SAVE
         MENUITEM "다른 이름으로 저장(&A)...\tF6",               IDM_FILE_SAVEAS
         MENUITEM "복사본 저장(&C)...\tCtrl+F6",                 IDM_FILE_SAVECOPY
-        MENUITEM "기존의 날짜/시간 그대로 저장(&D)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "기존의 날짜/시간 그대로 저장(&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "읽기 전용(&R)",                              IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "클립보드 경로"
+        POPUP "클립보드 경로(&D)"
         BEGIN
             MENUITEM "파일 이름만 복사\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
-            MENUITEM "디렉토리 경로만 복사",               IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "디렉토리 경로만 복사(&D)",           IDM_EDIT_INSERT_DIRNAME
             MENUITEM "전체 경로 복사\tCtrl+Shift+F9",      IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "실행(&L)"
@@ -94,26 +93,34 @@ BEGIN
             MENUITEM "탐색기 열기(&F)",                       IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Revert from File(&V)\tF5",                  IDM_FILE_REVERT
         POPUP "인코딩(&E)"
         BEGIN
-            MENUITEM "&ANSI",                               IDM_ENCODING_ANSI
-            MENUITEM "유니코드(&U)",                         IDM_ENCODING_UNICODE
-            MENUITEM "유니코드 &Big Endian",                 IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                    IDM_ENCODING_UTF8
-            MENUITEM "서명 있는 UTF-8(&S)",                  IDM_ENCODING_UTF8SIGN
-            MENUITEM "기타(&M)...\tF9",                      IDM_ENCODING_SELECT
+            POPUP "Revert from File as(&R)"
+            BEGIN
+                MENUITEM "Default (Setting) (&D)",             CMD_RECODEDEFAULT
+                MENUITEM "ANSI (&N)\tCtrl+Shift+A",            CMD_RECODEANSI
+                MENUITEM "OEM (&O)\tCtrl+Shift+O",             CMD_RECODEOEM
+                MENUITEM "GB18030 (&G)\tCtrl+Shift+F10",       CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII를 UTF-8로 (&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
+                MENUITEM "Force UCHARDET Analysis(&C)",          CMD_RELOADFORCEDETECTION
+                MENUITEM "인코딩 태그 무시(&I)\tAlt+F8",          CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "More Encodings(&M)...\tF8",         IDM_ENCODING_RECODE
+            END
+            POPUP "Set Document as(&S)"
+            BEGIN
+                MENUITEM "&ANSI",                            IDM_ENCODING_ANSI
+                MENUITEM "유니코드(&U)",                      IDM_ENCODING_UNICODE
+                MENUITEM "유니코드 &Big Endian",              IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",                 IDM_ENCODING_UTF8
+                MENUITEM "서명 있는 UTF-8(&S)",               IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "More Encodings(&M)...\tF9",         IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "기본값으로 표시(&F)",                   CMD_RECODEDEFAULT
-            MENUITEM "ANSI로 표시(&N)\tCtrl+Shift+A",         CMD_RECODEANSI
-            MENUITEM "OEM으로 표시(&O)\tCtrl+Shift+O",        CMD_RECODEOEM
-            MENUITEM "GB18030으로 표시(&G)\tCtrl+Shift+F10",  CMD_RECODEGB18030
-            MENUITEM "UCHARDET 분석으로 재 코딩(&C)",         CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII를 UTF-8로 (&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
-            MENUITEM "인코딩 태그 무시(&I)\tAlt+F8",          CMD_RELOADNOFILEVARS
-            MENUITEM "문자 집합(&R)...\tF8",                 IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "기본값 설정(&T)...",                   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set Encoding Defaults(&D)...",          IDM_ENCODING_SETDEFAULT
         END
         POPUP "줄 끝(&G)"
         BEGIN
@@ -126,11 +133,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "들여 쓰기 확인(&I)...",                     CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "페이지 설정(&T)...",                        IDM_FILE_PAGESETUP
+        MENUITEM "페이지 설정(&U)...",                        IDM_FILE_PAGESETUP
         MENUITEM "인쇄(&P)...\tCtrl+P",                      IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "속성(&I)...",                              IDM_FILE_PROPERTIES
-        MENUITEM "바탕 화면 링크 만들기(&D)",                 IDM_FILE_CREATELINK
+        MENUITEM "속성(&T)...",                              IDM_FILE_PROPERTIES
+        MENUITEM "바탕 화면 링크 만들기(&K)",                 IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "Minipath로 탐색(&B)...\tCtrl+M",           IDM_FILE_BROWSE
         POPUP "즐겨 찾기(&F)"
@@ -172,7 +179,7 @@ BEGIN
             MENUITEM "위로 옮김(&U)\tCtrl+Shift+ ↑",                IDM_EDIT_MOVELINEUP
             MENUITEM "아래로 옮김(&M)\tCtrl+Shift+ ↓",              IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "선택 항목 또는 현재 라인 잘라내기\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "선택 항목 또는 현재 라인 잘라내기\tCtrl+X",  IDM_EDIT_CUT
             MENUITEM "선택한 모든 라인 잘라내기\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
             MENUITEM "선택 항목 또는 현재 라인 복사\tCtrl+C",     IDM_EDIT_COPY
             MENUITEM "선택한 모든 라인 잘라내기\tCtrl+Shift+C",   IDM_EDIT_COPYLINE
@@ -181,8 +188,8 @@ BEGIN
             MENUITEM "윗줄과 맞바꾸기(&T)\tAlt+D",                  IDM_EDIT_LINETRANSPOSE
             MENUITEM "줄 삭제(&E)\tCtrl+Shift+D",                  IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "커서의 왼쪽부터 줄의 처음 까지 삭제\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
-            MENUITEM "커서의 오른쪽부터 줄의 끝까지 삭제\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
+            MENUITEM "커서의 왼쪽부터 줄의 처음 까지 삭제(&N)\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
+            MENUITEM "커서의 오른쪽부터 줄의 끝까지 삭제(&H)\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "컬럼 랩(&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "줄 분할(&S)\tCtrl+I",                IDM_EDIT_SPLITLINES
@@ -191,9 +198,9 @@ BEGIN
             MENUITEM "단락 결합(&P)\tCtrl+Shift+J",        IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "빈 줄 합치기(&G)\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "공백 줄 합치기\tCtrl+Alt+Y",         IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "공백 줄 합치기(&K)\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
             MENUITEM "빈 줄 제거(&R)\tAlt+R",             IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "공백 줄 제거\tCtrl+Alt+B",          IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "공백 줄 제거(&B)\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "중복된 줄 제거(&O)\tCtrl+Alt+D",    IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "선택(&N)"
@@ -285,7 +292,7 @@ BEGIN
             MENUITEM "단어 또는 쥴 선택(&W)\tCtrl+Spc",              IDM_EDIT_SELECTWORD
             MENUITEM "모든 일치 항목 다중 선택(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "삽입한 각 행을 하나의 되돌리기로 취급",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "삽입한 각 행을 하나의 되돌리기로 취급(&T)",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"
@@ -342,6 +349,7 @@ BEGIN
         POPUP "선택 항목 강조(&K)"
         BEGIN
             MENUITEM "활성(&A)\tAlt+A",                     IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Use Bookmarks too(&B)",               IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "보이는 항목만 일치(&V)",               IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -355,7 +363,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "줄 번호(&N)\tCtrl+Shift+N",               IDM_VIEW_LINENUMBERS
-        MENUITEM "선택 영역 여백(&M)\tCtrl+Shift+M",         IDM_VIEW_MARGIN
+        MENUITEM "Bookmark Margin(&M)\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "접기"
         BEGIN
@@ -371,10 +379,20 @@ BEGIN
         POPUP "전시(&D)"
         BEGIN
             MENUITEM "집중(&F)\tCtrl+Alt+V",                IDM_VIEW_TOGGLE_VIEW
+            POPUP "View Mode"
+            BEGIN
+                MENUITEM "Fold",                            IDM_VIEW_FV_FOLD
+                MENUITEM "Bookmark",                        IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Highlight",                       IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bookmark && Fold",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Highlight && Fold",               IDM_VIEW_FV_HIGHLGFOLD
+            END
+            MENUITEM SEPARATOR
             MENUITEM "열람(&M)",                            IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "파일 끝 스크롤(&S)",                   IDM_VIEW_SCROLLPASTEOF
             MENUITEM "하이퍼 링크 툴팁 보이기(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "표시(&A)"
         BEGIN
             MENUITEM "메뉴바 보이기",                      IDM_VIEW_MENUBAR
@@ -384,7 +402,7 @@ BEGIN
             MENUITEM "도구 모음 테마 변경(&L)...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "도구 모음 사용자 지정(&U)...",        IDM_VIEW_CUSTOMIZETB
             MENUITEM "도구 모음 전환(&G)",                 IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI 비율 툴바",                     IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI 비율 툴바(&D)",                 IDM_VIEW_DPISCALETB
         END
         POPUP "확대/축소(&Z)"
         BEGIN
@@ -462,7 +480,7 @@ BEGIN
         BEGIN
             POPUP "렌더링(&R)"
             BEGIN
-                MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite (Direct2D)(&D)",     IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "GDI DC 직접 쓰기(&W)",             IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_GDI
@@ -502,43 +520,50 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "하이퍼 링크 열기",                    CMD_OPEN_HYPERLINK
+        MENUITEM "하이퍼 링크 열기",               CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "실행 취소",                           IDM_EDIT_UNDO
-        MENUITEM "다시 실행",                           IDM_EDIT_REDO
+        MENUITEM "실행 취소",                      IDM_EDIT_UNDO
+        MENUITEM "다시 실행",                      IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "잘라내기",                            IDM_EDIT_CUT
-        MENUITEM "복사",                                IDM_EDIT_COPY
-        MENUITEM "붙여 넣기",                           IDM_EDIT_PASTE
-        MENUITEM "삭제",                                IDM_EDIT_CLEAR
+        MENUITEM "잘라내기",                       IDM_EDIT_CUT
+        MENUITEM "복사",                          IDM_EDIT_COPY
+        MENUITEM "붙여 넣기",                      IDM_EDIT_PASTE
+        MENUITEM "삭제",                          IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "모두 선택",                           IDM_EDIT_SELECTALL
+        MENUITEM "모두 선택",                      IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "현재 접기 전환",                       IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "현재 접기 전환",                  IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "웹 작업 열기 &",                          CMD_WEBACTION1
-        MENUITEM "웹 작업 열기 &",                          CMD_WEBACTION2
-        MENUITEM "탐색기 열기",                IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "코드 접기",                  IDM_VIEW_FOLDING
-        MENUITEM "줄 번호",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "선택 영역 여백",             IDM_VIEW_MARGIN
+        MENUITEM "웹 작업 열기 &",                  CMD_WEBACTION1
+        MENUITEM "웹 작업 열기 &",                  CMD_WEBACTION2
+        MENUITEM "탐색기 열기",                     IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "메뉴바 보이기",                       IDM_VIEW_MENUBAR
-        MENUITEM "도구 모음 보이기",                     IDM_VIEW_TOOLBAR
-        MENUITEM "상태 표시 줄 보이기",                  IDM_VIEW_STATUSBAR
+        MENUITEM "메뉴바 보이기",                   IDM_VIEW_MENUBAR
+        MENUITEM "도구 모음 보이기",                IDM_VIEW_TOOLBAR
+        MENUITEM "상태 표시 줄 보이기",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "도구 모음 테마 변경...",               IDM_VIEW_LOADTHEMETB
-        MENUITEM "도구 모음 사용자 지정...",              IDM_VIEW_CUSTOMIZETB
-        MENUITEM "도구 모음 전환",                       IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI 비율 툴바",                       IDM_VIEW_DPISCALETB
+        MENUITEM "도구 모음 테마 변경...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "도구 모음 사용자 지정...",         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "도구 모음 전환",                   IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI 비율 툴바",                  IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Notepad3 열기",                      IDM_TRAY_RESTORE
-        MENUITEM "Notepad3 종료",                      IDM_TRAY_EXIT
+        MENUITEM "Clear Marker",                    IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Cut Lines of Marker-Type",        IDM_EDIT_CUT_MARKED
+        MENUITEM "Copy Lines of Marker-Type",       IDM_EDIT_COPY_MARKED
+        MENUITEM "Delete Lines of Marker-Type",     IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "코드 접기",                        IDM_VIEW_FOLDING
+        MENUITEM "줄 번호",                          IDM_VIEW_LINENUMBERS
+        MENUITEM "Bookmark Margin",                 IDM_VIEW_BOOKMARK_MARGIN
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Notepad3 열기",                   IDM_TRAY_RESTORE
+        MENUITEM "Notepad3 종료",                   IDM_TRAY_EXIT
     END
 END
 

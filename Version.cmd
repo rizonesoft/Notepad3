@@ -11,6 +11,11 @@ if ["%~1"] neq [""] call :ESCAPE_ARGS
 PowerShell.exe -NoProfile -NonInteractive -NoLogo -ExecutionPolicy Unrestricted -Command "& { $ErrorActionPreference = 'Stop'; & '%SCRIPTNAME%' @args; Exit $LastExitCode }" %ARGS%
 set EXITCODE=%ERRORLEVEL%
 ::ECHO ERRORLEVEL=%EXITCODE%
+
+:: Pause for 2 seconds to verify the "Notepad3 version number:" before exiting
+:: ============================================================================
+ping -n 3 127.0.0.1>nul
+
 goto :END
 
 :ESCAPE_ARGS

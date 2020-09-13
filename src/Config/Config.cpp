@@ -1177,10 +1177,6 @@ void LoadSettings()
     Defaults2.SciFontQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
-    Defaults2.MarkOccurrencesMaxCount = 2000;
-    Settings2.MarkOccurrencesMaxCount = IniSectionGetInt(IniSecSettings2, L"MarkOccurrencesMaxCount", Defaults2.MarkOccurrencesMaxCount);
-    if (Settings2.MarkOccurrencesMaxCount <= 0) { Settings2.MarkOccurrencesMaxCount = INT_MAX; }
-
     Defaults2.UpdateDelayMarkAllOccurrences = 50;
     Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences",
       Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
@@ -1263,7 +1259,7 @@ void LoadSettings()
     Defaults2.LineCommentPostfixStrg[0] = L'\0';
     IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", Defaults2.LineCommentPostfixStrg,
       Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
-    StrTrimW(Settings2.LineCommentPostfixStrg, L"\"'");
+    StrTrim(Settings2.LineCommentPostfixStrg, L"\"'");
 
     Defaults2.DateTimeFormat[0] = L'\0'; // empty to get <locale date-time format>
     IniSectionGetString(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
@@ -1331,8 +1327,6 @@ void LoadSettings()
     Settings.EFR_Data.bNoFindWrap = IniSectionGetBool(IniSecSettings, L"NoFindWrap", Defaults.EFR_Data.bNoFindWrap);
     Defaults.EFR_Data.bTransformBS = false;
     Settings.EFR_Data.bTransformBS = IniSectionGetBool(IniSecSettings, L"FindTransformBS", Defaults.EFR_Data.bTransformBS);
-    Defaults.EFR_Data.bAutoEscCtrlChars = false;
-    Settings.EFR_Data.bAutoEscCtrlChars = IniSectionGetBool(IniSecSettings, L"AutoEscCtrlChars", Defaults.EFR_Data.bAutoEscCtrlChars);
     Defaults.EFR_Data.bWildcardSearch = false;
     Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
     Defaults.EFR_Data.bOverlappingFind = false;
@@ -1398,11 +1392,13 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-    GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
+
+    GET_BOOL_VALUE_FROM_INISECTION(ShowBookmarkMargin, IniSectionGetBool(IniSecSettings, L"ShowSelectionMargin", true));
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
 
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrences, true);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesBookmark, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchVisible, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchCase, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchWholeWords, true);
@@ -1424,7 +1420,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
     GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
-    GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
+    GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, true);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
     GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
@@ -1435,7 +1431,10 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
-    int const zoomScale = 100;
+    //int const zoomScale = 100;
+    int const baseZoom = 100;
+    int const prtFontSize = 10;
+    int const zoomScale = MulDiv(baseZoom, prtFontSize, Globals.InitialFontSize);
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
@@ -1499,6 +1498,9 @@ void LoadSettings()
 
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
+
+    GET_INT_VALUE_FROM_INISECTION(FocusViewMarkerMode, FVMM_FOLD, FVMM_MARGIN, (FVMM_LN_BACKGR | FVMM_FOLD));
+    Settings.FocusViewMarkerMode = (Settings.FocusViewMarkerMode == (FVMM_MARGIN | FVMM_LN_BACKGR) ? FVMM_FOLD : Settings.FocusViewMarkerMode);
 
     // --------------------------------------------------------------------------
     const WCHAR* const StatusBar_Section = L"Statusbar Settings";
@@ -1565,7 +1567,7 @@ void LoadSettings()
     IniSectionGetString(IniSecSettings2, L"DefaultWindowPosition", Defaults2.DefaultWindowPosition,
       Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
 
-    bool const bExplicitDefaultWinPos = (StringCchLenW(Settings2.DefaultWindowPosition, 0) != 0);
+    bool const bExplicitDefaultWinPos = StrIsNotEmpty(Settings2.DefaultWindowPosition);
 
     // 1st set default window position 
 
@@ -1576,10 +1578,12 @@ void LoadSettings()
       int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
         &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
       if (itok == 4 || itok == 5) { // scan successful
-        if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
-        if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
-        if (bMaxi) g_DefWinInfo.max = true;
-        if (itok == 4) g_DefWinInfo.max = false;
+        if (itok == 4) {
+          g_DefWinInfo.max = false;
+        }
+        else {
+          g_DefWinInfo.max = bMaxi ? true : false;
+        }
       }
       else {
         g_DefWinInfo = GetFactoryDefaultWndPos(2);
@@ -1745,12 +1749,6 @@ static bool _SaveSettings(bool bForceSaveSettings)
   else {
     IniSectionDelete(IniSecSettings, L"FindTransformBS", false);
   }
-  if (Settings.EFR_Data.bAutoEscCtrlChars != Defaults.EFR_Data.bAutoEscCtrlChars) {
-    IniSectionSetBool(IniSecSettings, L"AutoEscCtrlChars", Settings.EFR_Data.bAutoEscCtrlChars);
-  }
-  else {
-    IniSectionDelete(IniSecSettings, L"AutoEscCtrlChars", false);
-  }
   if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
     IniSectionSetBool(IniSecSettings, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);
   }
@@ -1834,10 +1832,13 @@ static bool _SaveSettings(bool bForceSaveSettings)
   else {
     IniSectionDelete(IniSecSettings, L"MultiEdgeLines", false);
   }
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowSelectionMargin);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowBookmarkMargin);
+  IniSectionDelete(IniSecSettings, L"ShowSelectionMargin", false); // old
+
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowCodeFolding);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrences);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesBookmark);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchVisible);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchCase);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchWholeWords);
@@ -1937,10 +1938,14 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
 
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FocusViewMarkerMode);
+
   // --------------------------------------------------------------------------
-  //const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
+  const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
   // --------------------------------------------------------------------------
 
+  // ---  remove deprecated  ---
+  IniSectionDelete(IniSecSettings2, L"MarkOccurrencesMaxCount", false);
 
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecWindow = Constants.Window_Section;
@@ -2065,7 +2070,7 @@ __try {
       {
         if (!Settings.SaveRecentFiles) {
           // Cleanup unwanted MRUs
-          MRU_Empty(Globals.pFileMRU);
+          MRU_Empty(Globals.pFileMRU, false);
           MRU_Save(Globals.pFileMRU);
         }
         else {
@@ -2075,9 +2080,9 @@ __try {
 
         if (!Settings.SaveFindReplace) {
           // Cleanup unwanted MRUs
-          MRU_Empty(Globals.pMRUfind);
+          MRU_Empty(Globals.pMRUfind, false);
           MRU_Save(Globals.pMRUfind);
-          MRU_Empty(Globals.pMRUreplace);
+          MRU_Empty(Globals.pMRUreplace, false);
           MRU_Save(Globals.pMRUreplace);
         }
         else {
@@ -2354,10 +2359,11 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
 }
 
 
-bool MRU_Empty(LPMRULIST pmru)
+bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast)
 {
   if (pmru) {
-    for (int i = 0; i < pmru->iSize; ++i) {
+    int const beg = bExceptLeast ? 1 : 0;
+    for (int i = beg; i < pmru->iSize; ++i) {
       if (pmru->pszItems[i]) {
         LocalFree(pmru->pszItems[i]);  // StrDup()
         pmru->pszItems[i] = NULL;
@@ -2404,8 +2410,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
     int n = 0;
     if (IsIniFileCached()) {
 
-      MRU_Empty(pmru);
-      //if (bFileProps) { ClearDestinationsOnRecentDocs(); }
+      MRU_Empty(pmru, false);
 
       const WCHAR* const RegKey_Section = pmru->szRegKey;
 
@@ -2482,7 +2487,7 @@ void MRU_Save(LPMRULIST pmru)
             StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
             IniSectionSetPos(RegKey_Section, tchName, pmru->iSelAnchPos[i]);
           }
-          if (pmru->pszBookMarks[i] && (StringCchLenW(pmru->pszBookMarks[i], MRU_BMRK_SIZE) > 0)) {
+          if (StrIsNotEmpty(pmru->pszBookMarks[i])) {
             StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
             IniSectionSetString(RegKey_Section, tchName, pmru->pszBookMarks[i]);
           }

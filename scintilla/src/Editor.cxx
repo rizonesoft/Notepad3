@@ -98,7 +98,7 @@ Timer::Timer() noexcept :
 		ticking(false), ticksToWait(0), tickerID{} {}
 
 Idler::Idler() noexcept :
-		state(false), idlerID(0) {}
+		state(false), idlerID(nullptr) {}
 
 static constexpr bool IsAllSpacesOrTabs(std::string_view sv) noexcept {
 	for (const char ch : sv) {
@@ -184,7 +184,7 @@ Editor::Editor() : durationWrapOneLine(0.00001, 0.000001, 0.0001) {
 	modEventMask = SC_MODEVENTMASKALL;
 	commandEvents = true;
 
-	pdoc->AddWatcher(this, 0);
+	pdoc->AddWatcher(this, nullptr);
 
 	recordingMacro = false;
 	foldAutomatic = 0;
@@ -195,7 +195,7 @@ Editor::Editor() : durationWrapOneLine(0.00001, 0.000001, 0.0001) {
 }
 
 Editor::~Editor() {
-	pdoc->RemoveWatcher(this, 0);
+	pdoc->RemoveWatcher(this, nullptr);
 	DropGraphics(true);
 }
 
@@ -759,17 +759,17 @@ void Editor::MultipleSelectAdd(AddNumber addNumber) {
 			// Common case is that the selection is completely within the target but
 			// may also have overlap at start or end.
 			if (rangeMainSelection.end < rangeTarget.end)
-				searchRanges.push_back(Range(rangeMainSelection.end, rangeTarget.end));
+				searchRanges.emplace_back(rangeMainSelection.end, rangeTarget.end);
 			if (rangeTarget.start < rangeMainSelection.start)
-				searchRanges.push_back(Range(rangeTarget.start, rangeMainSelection.start));
+				searchRanges.emplace_back(rangeTarget.start, rangeMainSelection.start);
 		} else {
 			// No overlap
 			searchRanges.push_back(rangeTarget);
 		}
 
-		for (std::vector<Range>::const_iterator it = searchRanges.begin(); it != searchRanges.end(); ++it) {
-			Sci::Position searchStart = it->start;
-			const Sci::Position searchEnd = it->end;
+		for (const auto searchRange : searchRanges) {
+			Sci::Position searchStart = searchRange.start;
+			const Sci::Position searchEnd = searchRange.end;
 			for (;;) {
 				Sci::Position lengthFound = selectedText.length();
 				const Sci::Position pos = pdoc->FindText(searchStart, searchEnd,
@@ -4448,7 +4448,8 @@ void Editor::TrimAndSetSelection(Sci::Position currentPos_, Sci::Position anchor
 }
 
 void Editor::LineSelection(Sci::Position lineCurrentPos_, Sci::Position lineAnchorPos_, bool wholeLine) {
-	Sci::Position selCurrentPos, selAnchorPos;
+	Sci::Position selCurrentPos;
+	Sci::Position selAnchorPos;
 	if (wholeLine) {
 		const Sci::Line lineCurrent_ = pdoc->SciLineFromPosition(lineCurrentPos_);
 		const Sci::Line lineAnchor_ = pdoc->SciLineFromPosition(lineAnchorPos_);
@@ -4518,6 +4519,7 @@ void Editor::DwellEnd(bool mouseMoved) {
 
 void Editor::MouseLeave() {
 	SetHotSpotRange(nullptr);
+	SetHoverIndicatorPosition(Sci::invalidPosition);
 	if (!HaveMouseCapture()) {
 		ptMouseLast = Point(-1, -1);
 		DwellEnd(true);
@@ -4601,7 +4603,8 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 				charPos = MovePositionOutsideChar(charPos, -1);
 			}
 
-			Sci::Position startWord, endWord;
+			Sci::Position startWord;
+			Sci::Position endWord;
 			if ((sel.MainCaret() >= originalAnchorPos) && !pdoc->IsLineEndPosition(charPos)) {
 				startWord = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(charPos + 1, 1), -1);
 				endWord = pdoc->ExtendWordSelect(charPos, 1);
@@ -4890,12 +4893,14 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 			if (PointInSelMargin(pt)) {
 				DisplayCursor(GetMarginCursor(pt));
 				SetHotSpotRange(nullptr);
+				SetHoverIndicatorPosition(Sci::invalidPosition);
 				return; 	// No need to test for selection
 			}
 		}
 		// Display regular (drag) cursor over selection
 		if (PointInSelection(pt) && !SelectionEmpty()) {
 			DisplayCursor(Window::Cursor::cursorArrow);
+			SetHoverIndicatorPosition(Sci::invalidPosition);
 		} else {
 			SetHoverIndicatorPoint(pt);
 			if (PointIsHotspot(pt)) {
@@ -5187,7 +5192,7 @@ void Editor::QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo) {
 	workNeeded.Need(items, upTo);
 }
 
-bool Editor::PaintContains(PRectangle rc) {
+bool Editor::PaintContains(PRectangle rc) const noexcept {
 	if (rc.Empty()) {
 		return true;
 	} else {
@@ -5195,7 +5200,7 @@ bool Editor::PaintContains(PRectangle rc) {
 	}
 }
 
-bool Editor::PaintContainsMargin() {
+bool Editor::PaintContainsMargin() const noexcept {
 	if (wMargin.GetID()) {
 		// With separate margin view, paint of text view
 		// never contains margin.
@@ -5272,7 +5277,7 @@ void Editor::SetAnnotationHeights(Sci::Line start, Sci::Line end) {
 
 void Editor::SetDocPointer(Document *document) {
 	//Platform::DebugPrintf("** %x setdoc to %x\n", pdoc, document);
-	pdoc->RemoveWatcher(this, 0);
+	pdoc->RemoveWatcher(this, nullptr);
 	pdoc->Release();
 	if (!document) {
 		pdoc = new Document(SC_DOCUMENTOPTION_DEFAULT);
@@ -5305,7 +5310,7 @@ void Editor::SetDocPointer(Document *document) {
 
 	view.ClearAllTabstops();
 
-	pdoc->AddWatcher(this, 0);
+	pdoc->AddWatcher(this, nullptr);
 	SetScrollBars();
 	Redraw();
 }
@@ -5633,7 +5638,7 @@ Sci::Position Editor::ReplaceTarget(bool replacePatterns, const char *text, Sci:
 	targetRange.end = targetRange.start;
 
 	// Realize virtual space of target start
-	Sci::Position startAfterSpaceInsertion = RealizeVirtualSpace(targetRange.start.Position(), targetRange.start.VirtualSpace());
+	const Sci::Position startAfterSpaceInsertion = RealizeVirtualSpace(targetRange.start.Position(), targetRange.start.VirtualSpace());
 	targetRange.start.SetPosition(startAfterSpaceInsertion);
 	targetRange.end = targetRange.start;
 
@@ -5805,6 +5810,9 @@ sptr_t Editor::StyleGetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPar
 }
 
 void Editor::SetSelectionNMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
+	if (wParam >= sel.Count()) {
+		return;
+	}
 	InvalidateRange(sel.Range(wParam).Start().Position(), sel.Range(wParam).End().Position());
 
 	switch (iMessage) {
@@ -7760,7 +7768,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_MULTIEDGEADDLINE:
-		vs.theMultiEdge.push_back(EdgeProperties(wParam, lParam));
+		vs.theMultiEdge.emplace_back(wParam, lParam);
 		InvalidateStyleRedraw();
 		break;
 

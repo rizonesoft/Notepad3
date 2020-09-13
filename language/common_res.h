@@ -63,6 +63,7 @@
 #define IDS_MUI_BACKSLASHHELP           12022
 #define IDS_MUI_REGEXPHELP              12023
 #define IDS_MUI_WILDCARDHELP            12024
+#define IDS_CLEAR_ALL                   12025
 
 #define IDS_MUI_ERR_LOADFILE            13000
 #define IDS_MUI_ERR_SAVEFILE            13001
@@ -87,7 +88,8 @@
 #define IDS_MUI_EOLMODENAME_CRLF        13020
 #define IDS_MUI_EOLMODENAME_CR          13021
 #define IDS_MUI_EOLMODENAME_LF          13022
-#define IDS_MUI_INF_PRSVFILEMODTM       13023
+#define IDS_MUI_WARN_NORMALIZE_EOLS     13023
+#define IDS_MUI_INF_PRSVFILEMODTM       13024
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001
@@ -154,6 +156,8 @@
 #define IDS_MUI_ABOUT_ACKNOWLEDGES      15039
 #define IDS_MUI_ABOUT_MORE              15040
 #define IDS_MUI_ABOUT_LICENSES          15041
+#define IDS_MUI_CLEAR_FIND_HISTORY      15042
+#define IDS_MUI_CLEAR_REPL_HISTORY      15043
 
 #define IDS_MUI_TRANSL_AUTHOR           15050
 #define IDS_MUI_ASSOCIATED_EXT          15051
@@ -169,6 +173,7 @@
 #define IDS_MUI_STATUSBAR_POSTFIXES     15061
 #define IDS_MUI_RELOADSETTINGS          15062
 #define IDS_MUI_RELOADCFGSEX            15063
+#define IDS_MUI_OUT_OFF_OCCMRK          15064
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWNDTB                   16001
@@ -240,7 +245,6 @@
 #define IDC_FINDWORD                    18005
 #define IDC_FINDSTART                   18006
 #define IDC_FINDTRANSFORMBS             18007
-#define IDC_FINDAUTOESCCTRLCHR          18008
 #define IDC_FINDREGEXP                  18009
 #define IDC_DOT_MATCH_ALL               18010
 #define IDC_NOWRAP                      18011
@@ -356,6 +360,9 @@
 #define IDC_MULTIEDGELINE               18120
 #define IDC_SHOWEDGELINE                18121
 #define IDC_BACKGRDCOLOR                18122
+#define IDC_CLEAR_LIST                  18123
+#define IDC_FINDESCCTRLCHR              18124
+#define IDC_REPLESCCTRLCHR              18125
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
@@ -364,9 +371,9 @@
 #define CMD_SCROLLDOWN                  20004
 #define CMD_CTRLLEFT                    20005
 #define CMD_CTRLRIGHT                   20006
-//#define CMD_DELETEBACK                  20007
+#define CMD_DELETEBACK                  20007
 #define CMD_CTRLBACK                    20008
-//#define CMD_CLEAR                       20009
+#define CMD_CLEAR                       20009
 #define CMD_CTRLDEL                     20010
 #define CMD_CTRLTAB                     20011
 #define CMD_RECODEDEFAULT               20012
@@ -418,6 +425,7 @@
 #define CMD_CHECK_INDENTATION           20058
 #define CMD_ARROW_UP                    20059
 #define CMD_ARROW_DOWN                  20060
+#define CMD_ENTER_RTURN                 20061
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501
@@ -578,6 +586,10 @@
 #define IDM_EDIT_REMOVEDUPLICATELINES   40376
 #define IDM_EDIT_REMOVEEMPTYLINES       40377
 #define IDM_EDIT_MERGEEMPTYLINES        40378
+#define IDM_EDIT_CLEAR_MARKER           40379
+#define IDM_EDIT_CUT_MARKED             40380
+#define IDM_EDIT_COPY_MARKED            40381
+#define IDM_EDIT_DELETE_MARKED          40382
 
 #define IDM_VIEW_SCHEME                 40400
 #define IDM_VIEW_USE2NDDEFAULT          40401
@@ -595,7 +607,7 @@
 #define IDM_VIEW_HILITCURLN_BACK        40413
 #define IDM_VIEW_HILITCURLN_FRAME       40414
 #define IDM_VIEW_LINENUMBERS            40415
-#define IDM_VIEW_MARGIN                 40416
+#define IDM_VIEW_BOOKMARK_MARGIN        40416
 #define IDM_VIEW_ZOOMIN                 40417
 #define IDM_VIEW_ZOOMOUT                40418
 #define IDM_VIEW_RESETZOOM              40419
@@ -634,31 +646,37 @@
 #define IDM_VIEW_TOGGLEFOLDS            40452
 #define IDM_VIEW_TOGGLE_CURRENT_FOLD    40453
 #define IDM_VIEW_MARKOCCUR_ONOFF        40454
-#define IDM_VIEW_MARKOCCUR_CASE         40455
-#define IDM_VIEW_MARKOCCUR_WNONE        40456
-#define IDM_VIEW_MARKOCCUR_WORD         40457
-#define IDM_VIEW_MARKOCCUR_CURRENT      40458
-#define IDM_VIEW_MARKOCCUR_VISIBLE      40459
-#define IDM_VIEW_AUTOCOMPLETEWORDS      40460
-#define IDM_VIEW_AUTOCLEXKEYWORDS       40461
-#define IDM_VIEW_ACCELWORDNAV           40462
-#define IDM_VIEW_NOPRESERVECARET        40463
-#define IDM_VIEW_HYPERLINKHOTSPOTS      40464
-#define IDM_VIEW_COLORDEFHOTSPOTS       40465
-#define IDM_VIEW_COLOR_ARGB             40466
-#define IDM_VIEW_COLOR_RGBA             40467
-#define IDM_VIEW_COLOR_BGRA             40468
-#define IDM_VIEW_CURRENTSCHEME          40469
-#define IDM_VIEW_SCROLLPASTEOF          40470
-#define IDM_VIEW_TOGGLE_VIEW            40471
-#define IDM_VIEW_CHASING_DOCTAIL        40472
-#define IDM_VIEW_TOGGLETB               40473
-#define IDM_VIEW_MUTE_MESSAGEBEEP       40474
-#define IDM_VIEW_SHOW_HYPLNK_CALLTIP    40475
-#define IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK 40476
-#define IDM_VIEW_EDIT_LINECOMMENT       40477
-#define IDM_VIEW_EVALTINYEXPRONSEL      40478
-#define IDM_VIEW_UNICODE_POINTS         40479
+#define IDM_VIEW_MARKOCCUR_BOOKMARKS    40455
+#define IDM_VIEW_MARKOCCUR_CASE         40456
+#define IDM_VIEW_MARKOCCUR_WNONE        40457
+#define IDM_VIEW_MARKOCCUR_WORD         40458
+#define IDM_VIEW_MARKOCCUR_CURRENT      40459
+#define IDM_VIEW_MARKOCCUR_VISIBLE      40460
+#define IDM_VIEW_AUTOCOMPLETEWORDS      40461
+#define IDM_VIEW_AUTOCLEXKEYWORDS       40462
+#define IDM_VIEW_ACCELWORDNAV           40463
+#define IDM_VIEW_NOPRESERVECARET        40464
+#define IDM_VIEW_HYPERLINKHOTSPOTS      40465
+#define IDM_VIEW_COLORDEFHOTSPOTS       40466
+#define IDM_VIEW_COLOR_ARGB             40467
+#define IDM_VIEW_COLOR_RGBA             40468
+#define IDM_VIEW_COLOR_BGRA             40469
+#define IDM_VIEW_CURRENTSCHEME          40470
+#define IDM_VIEW_SCROLLPASTEOF          40471
+#define IDM_VIEW_TOGGLE_VIEW            40472
+#define IDM_VIEW_FV_FOLD                40473
+#define IDM_VIEW_FV_BOOKMARK            40474
+#define IDM_VIEW_FV_HIGHLIGHT           40475
+#define IDM_VIEW_FV_BKMRKFOLD           40476
+#define IDM_VIEW_FV_HIGHLGFOLD          40477
+#define IDM_VIEW_CHASING_DOCTAIL        40478
+#define IDM_VIEW_TOGGLETB               40479
+#define IDM_VIEW_MUTE_MESSAGEBEEP       40480
+#define IDM_VIEW_SHOW_HYPLNK_CALLTIP    40481
+#define IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK 40482
+#define IDM_VIEW_EDIT_LINECOMMENT       40483
+#define IDM_VIEW_EVALTINYEXPRONSEL      40484
+#define IDM_VIEW_UNICODE_POINTS         40485
 
 // keep Scintilla(SC) order
 #define IDM_SET_RENDER_TECH_GDI         40500   // SC_TECHNOLOGY_DEFAULT(0)

@@ -1215,7 +1215,7 @@ bool Document::DeleteChars(Sci::Position pos, Sci::Position len) {
 			    DocModification(
 			        SC_MOD_BEFOREDELETE | SC_PERFORMED_USER,
 			        pos, len,
-			        0, 0));
+			        0, nullptr));
 			const Sci::Line prevLinesTotal = LinesTotal();
 			const bool startSavePoint = cb.IsSavePoint();
 			bool startSequence = false;
@@ -2310,7 +2310,7 @@ Sci::Line Document::GetMaxLineState() const noexcept {
 
 void SCI_METHOD Document::ChangeLexerState(Sci_Position start, Sci_Position end) {
 	const DocModification mh(SC_MOD_LEXERSTATE, start,
-		end-start, 0, 0, 0);
+		end-start, 0, nullptr, 0);
 	NotifyModified(mh);
 }
 
@@ -2323,20 +2323,20 @@ StyledText Document::MarginStyledText(Sci::Line line) const noexcept {
 void Document::MarginSetText(Sci::Line line, const char *text) {
 	Margins()->SetText(line, text);
 	const DocModification mh(SC_MOD_CHANGEMARGIN, LineStart(line),
-		0, 0, 0, line);
+		0, 0, nullptr, line);
 	NotifyModified(mh);
 }
 
 void Document::MarginSetStyle(Sci::Line line, int style) {
 	Margins()->SetStyle(line, style);
 	NotifyModified(DocModification(SC_MOD_CHANGEMARGIN, LineStart(line),
-		0, 0, 0, line));
+		0, 0, nullptr, line));
 }
 
 void Document::MarginSetStyles(Sci::Line line, const unsigned char *styles) {
 	Margins()->SetStyles(line, styles);
 	NotifyModified(DocModification(SC_MOD_CHANGEMARGIN, LineStart(line),
-		0, 0, 0, line));
+		0, 0, nullptr, line));
 }
 
 void Document::MarginClearAll() {
@@ -2359,17 +2359,19 @@ void Document::AnnotationSetText(Sci::Line line, const char *text) {
 		Annotations()->SetText(line, text);
 		const int linesAfter = AnnotationLines(line);
 		DocModification mh(SC_MOD_CHANGEANNOTATION, LineStart(line),
-			0, 0, 0, line);
+			0, 0, nullptr, line);
 		mh.annotationLinesAdded = linesAfter - linesBefore;
 		NotifyModified(mh);
 	}
 }
 
 void Document::AnnotationSetStyle(Sci::Line line, int style) {
+	if (line >= 0 && line < LinesTotal()) {
 	Annotations()->SetStyle(line, style);
 	const DocModification mh(SC_MOD_CHANGEANNOTATION, LineStart(line),
-		0, 0, 0, line);
+		0, 0, nullptr, line);
 	NotifyModified(mh);
+	}
 }
 
 void Document::AnnotationSetStyles(Sci::Line line, const unsigned char *styles) {
@@ -2400,16 +2402,18 @@ void Document::EOLAnnotationSetText(Sci::Line line, const char *text) {
 	if (line >= 0 && line < LinesTotal()) {
 		EOLAnnotations()->SetText(line, text);
 		const DocModification mh(SC_MOD_CHANGEEOLANNOTATION, LineStart(line),
-			0, 0, 0, line);
+			0, 0, nullptr, line);
 		NotifyModified(mh);
 	}
 }
 
 void Document::EOLAnnotationSetStyle(Sci::Line line, int style) {
+	if (line >= 0 && line < LinesTotal()) {
 	EOLAnnotations()->SetStyle(line, style);
 	const DocModification mh(SC_MOD_CHANGEEOLANNOTATION, LineStart(line),
-		0, 0, 0, line);
+		0, 0, nullptr, line);
 	NotifyModified(mh);
+	}
 }
 
 void Document::EOLAnnotationClearAll() {

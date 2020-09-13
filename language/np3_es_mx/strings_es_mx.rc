@@ -158,6 +158,8 @@ BEGIN
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "¿Quiere normalizar todos los finales de línea para que sean '%s'?"
 END
 
 STRINGTABLE
@@ -188,7 +190,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "¿Activar la configuración actual reiniciando?n\n%s"
+    IDS_MUI_RELOADSETTINGS   "¿Activar la configuración actual reiniciando?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "¡Al continuar sin reiniciar, las configuraciones guardadas no se aplican y serán anuladas por las configuraciones internas al salir del programa!"
     IDS_MUI_EXPORT_FAIL      "Error al exportar la configuración de estilo a ""%s""."
     IDS_MUI_REGEX_INVALID    "Error al evaluar la expresión regular. ¡La expresión es inválida!"
@@ -197,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquear para abrir el enlace en navegador."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Conservar la marca de tiempo de modificación del archivo original habilitada.\n¡Esta opción permanecerá para esta sesión!"
+    IDS_MUI_OUT_OFF_OCCMRK   "¡No hay más marcadores de ocurrencia (Marcador/Resaltar)!"
 END
 
 STRINGTABLE
@@ -249,10 +252,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Idioma"
     IDS_MUI_MENU_THEMES     "&Colección de Esquemas"
-    IDM_THEMES_DEFAULT      "Defecto de fábrica"
-    IDM_THEMES_FILE_ITEM    "Ajustes estándar"
+    IDM_THEMES_DEFAULT      "&Defecto de fábrica"
+    IDM_THEMES_FILE_ITEM    "&Ajustes estándar"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Borrar todo"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Borrar historial de búsqueda"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Borrar historial de reemplazo"
 END
 
 STRINGTABLE

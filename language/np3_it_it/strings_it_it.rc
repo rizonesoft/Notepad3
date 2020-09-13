@@ -158,6 +158,8 @@ BEGIN
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "Vuoi normalizzare tutti i terminatori di riga, in modo che siano '%s'?"
 END
 
 STRINGTABLE
@@ -197,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click per aprire il link nel browser."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Conservazione della data di ultima modifica originale abilitata.\nQuesta opzione rimarrà attiva per questa sessione!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
@@ -249,10 +252,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Lingua"
     IDS_MUI_MENU_THEMES     "&Collezione di Schemi"
-    IDM_THEMES_DEFAULT      "Impostazioni di fabbrica"
-    IDM_THEMES_FILE_ITEM    "Impostazioni standard"
+    IDM_THEMES_DEFAULT      "Impostazioni di &fabbrica"
+    IDM_THEMES_FILE_ITEM    "Impostazioni &standard"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Pulisci tutto"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Pulisci Cronologia Ricerche"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Pulisci Cronologia Sostituzioni"
 END
 
 STRINGTABLE

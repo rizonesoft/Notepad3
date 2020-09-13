@@ -221,8 +221,6 @@ inline int IsFullHD(HWND hwnd, int resX, int resY)
   return ((resX == 1920) && (resY == 1080)) ? 0 : (((resX < 1920) || (resY < 1080)) ? -1 : +1);
 }
 
-inline float GetBaseFontSize(HWND hwnd) { return ((IsFullHD(hwnd, -1, -1) < 0) ? 10.0f : 11.0f); }
-
 // ----------------------------------------------------------------------------
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
@@ -288,7 +286,7 @@ inline bool TrimSpcA(LPSTR lpString) {
 
 inline bool TrimSpcW(LPWSTR lpString) {
   if (!lpString || !*lpString) { return false; }
-  return (bool)StrTrimW(lpString, L" \t\v");
+  return (bool)StrTrim(lpString, L" \t\v");
 };
 
 #if (defined(UNICODE) || defined(_UNICODE))
@@ -308,9 +306,9 @@ void PathFixBackslashes(LPWSTR lpsz);
 size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
 
-UINT    GetDlgItemTextW2MB(HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount);
-UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);
-LRESULT ComboBox_AddStringMB2W(HWND hwnd,LPCSTR lpString);
+UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount);
+UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
+LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString);
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -323,15 +321,14 @@ UINT CodePageFromCharSet(const UINT uCharSet);
 
 //==== UnSlash Functions ======================================================
 
-size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput);
-size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
-
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
-size_t UnSlashW(LPWSTR pchInOut);
 size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch);
 
-void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
-void TransformMetaChars(char* pszInput, bool, int iEOLMode);
+size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
+size_t UnSlashCtrlW(LPWSTR pchInOut);
+
+void TransformBackslashes(char *pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
+void TransformMetaChars(char *pszInput, bool bRegEx, int iEOLMode);
 
 
 //==== Large Text Conversion ==================================================
@@ -371,6 +368,13 @@ __inline ptrdiff_t MultiByteToWideCharEx(
 }
 
 #endif 
+
+// ============================================================================
+
+inline int32_t bitmask32_n(unsigned short n)
+{
+  return ((n >= 32) ? 0 - ((int32_t)1) : (((int32_t)1) << n) - 1);
+}
 
 // ============================================================================
 
@@ -588,6 +592,10 @@ inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); re
 
 inline bool IsReadOnly(const DWORD dwFileAttr) {
   return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
+}
+
+inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
+  return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
 }
 
 // ----------------------------------------------------------------------------

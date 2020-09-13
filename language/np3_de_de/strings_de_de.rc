@@ -158,6 +158,8 @@ BEGIN
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "Alle Zeilenumbrüche angleichen auf '%s'?"
 END
 
 STRINGTABLE
@@ -197,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Die Speicherung mit originalem Zeitstempel wurde aktiviert.\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Es stehen keine weiteren Fundstellen Markierungen/Lesezeichen mehr zur Verfügung!"
 END
 
 STRINGTABLE
@@ -249,10 +252,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Sprache"
     IDS_MUI_MENU_THEMES     "&Schema Sammlung"
-    IDM_THEMES_DEFAULT      "Fabrik-Vorgaben"
-    IDM_THEMES_FILE_ITEM    "Standard Einstellungen"
+    IDM_THEMES_DEFAULT      "&Fabrik-Vorgaben"
+    IDM_THEMES_FILE_ITEM    "&Standard Einstellungen"
     IDS_MUI_STATUSBAR_PREFIXES "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Alle löschen"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Suchen-Historie löschen"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Ersetzen-Historie löschen"
 END
 
 STRINGTABLE

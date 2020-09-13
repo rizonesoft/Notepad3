@@ -158,6 +158,8 @@ BEGIN
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "Czy chcesz znormalizować wszystkie zakończenia linii '%s'?"
 END
 
 STRINGTABLE
@@ -197,6 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyć link w przeglądarce."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Włączono zachowanie znacznika czasu w modyfikacji pliku.\nTa opcja pozostanie dla tej sesji!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
 END
 
 STRINGTABLE
@@ -249,10 +252,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Język"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
-    IDM_THEMES_DEFAULT      "Domyślne"
-    IDM_THEMES_FILE_ITEM    "Ustawienia standardowe"
+    IDM_THEMES_DEFAULT      "&Domyślne"
+    IDM_THEMES_FILE_ITEM    "&Ustawienia standardowe"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Wyczyść wszystko"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Wyczyść Znajdź Historię"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Wyczyść Zamień Historię"
 END
 
 STRINGTABLE

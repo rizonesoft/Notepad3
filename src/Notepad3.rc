@@ -218,7 +218,7 @@ BEGIN
     "L",            IDM_VIEW_LONGLINEMARKER,          VIRTKEY, CONTROL, ALT, NOINVERT
     "M",            IDM_FILE_BROWSE,                  VIRTKEY, CONTROL, NOINVERT
     "M",            IDM_EDIT_MODIFYLINES,             VIRTKEY, ALT, NOINVERT  /// NO Menu
-    "M",            IDM_VIEW_MARGIN,                  VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "M",            IDM_VIEW_BOOKMARK_MARGIN,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     "N",            IDM_FILE_NEW,                     VIRTKEY, CONTROL, NOINVERT
     "N",            IDM_FILE_NEWWINDOW,               VIRTKEY, ALT, NOINVERT  /// NO Menu
     "N",            IDM_FILE_NEWWINDOW2,              VIRTKEY, SHIFT, ALT, NOINVERT
@@ -284,11 +284,11 @@ BEGIN
     VK_ADD,         IDM_VIEW_ZOOMIN,                  VIRTKEY, CONTROL, NOINVERT
     //~VK_ADD,      CMD_INCLINELIMIT,                 VIRTKEY, ALT, NOINVERT   /// ALT+[+] is used for universal Unicode input
     VK_ADD,         CMD_INCREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
-    //~VK_BACK,        CMD_DELETEBACK,                   VIRTKEY, NOINVERT
+    VK_BACK,        CMD_DELETEBACK,                   VIRTKEY, NOINVERT
     VK_BACK,        CMD_CTRLBACK,                     VIRTKEY, CONTROL, NOINVERT
     VK_BACK,        IDM_EDIT_UNDO,                    VIRTKEY, ALT, NOINVERT
     VK_BACK,        IDM_EDIT_DELETELINELEFT,          VIRTKEY, SHIFT, CONTROL, NOINVERT
-    //~VK_DELETE,      CMD_CLEAR,                        VIRTKEY, NOINVERT
+    VK_DELETE,      CMD_CLEAR,                        VIRTKEY, NOINVERT
     VK_DELETE,      CMD_CTRLDEL,                      VIRTKEY, CONTROL, NOINVERT
     VK_DELETE,      IDM_EDIT_CUT,                     VIRTKEY, SHIFT, NOINVERT
     VK_DELETE,      IDM_EDIT_DELETELINERIGHT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -363,6 +363,7 @@ BEGIN
     VK_OEM_PLUS,    CMD_FOLDJUMPDOWN,                 VIRTKEY, ALT, NOINVERT
     VK_OEM_PLUS,    IDM_VIEW_ZOOMIN,                  VIRTKEY, CONTROL, NOINVERT
     VK_OEM_PLUS,    CMD_INCREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
+    VK_RETURN,      CMD_ENTER_RTURN,                  VIRTKEY, NOINVERT
     VK_RETURN,      CMD_INSERTNEWLINE,                VIRTKEY, CONTROL, NOINVERT
     VK_RETURN,      CMD_SHIFTCTRLENTER,               VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_RETURN,      IDM_EDIT_COMPLETEWORD,            VIRTKEY, CONTROL, ALT, NOINVERT

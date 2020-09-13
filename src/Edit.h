@@ -34,7 +34,7 @@ void  EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength);
 bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
-bool  EditCopyAppend(HWND hwnd,bool);
+bool  EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
 void  EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
 bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
@@ -75,6 +75,7 @@ void  EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBla
 void  EditCompressBlanks();
 void  EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
 void  EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines);
+void  EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete);
 void  EditWrapToColumn(DocPosU nColumn);
 //void  EditWrapToColumnForce(HWND hwnd, DocPosU nColumn);
 
@@ -108,6 +109,7 @@ void  EditPrintInit();
 bool  EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText);
 void  EditMatchBrace(HWND hwnd);
 void  EditClearAllOccurrenceMarkers(HWND hwnd);
+void  EditClearAllBookMarks(HWND hwnd);
 void  EditToggleView(HWND hwnd);
 void  EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int   EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
@@ -122,9 +124,13 @@ bool  EditCheckNewLineInACFillUps();
 void  EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
-void  EditBookmarkClick(const DocLn ln, const int modifiers);
+void  EditBookmarkNext(HWND hwnd, const DocLn iLine);
+void  EditBookmarkPrevious(HWND hwnd, const DocLn iLine);
+void  EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
-void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
+void  EditFoldMarkedLineRange(HWND hwnd, bool bHideLines);
+void  EditBookMarkLineRange(HWND hwnd);
+void  EditDeleteMarkerInSelection();
 void  EditSelectionMultiSelectAll();
 void  EditSelectionMultiSelectAllEx(EDITFINDREPLACE edFndRpl);
 

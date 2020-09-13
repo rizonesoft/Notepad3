@@ -59,7 +59,6 @@ BEGIN
     BEGIN
         MENUITEM "&Novo\tCtrl+N",                                        IDM_FILE_NEW
         MENUITEM "&Abrir...\tCtrl+O",                                    IDM_FILE_OPEN
-        MENUITEM "Re&verter\tF5",                                        IDM_FILE_REVERT
         MENUITEM "&Guardar\tCtrl+S",                                     IDM_FILE_SAVE
         MENUITEM "Guardar c&omo...\tF6",                                 IDM_FILE_SAVEAS
         MENUITEM "Guardar &cópia...\tCtrl+F6",                           IDM_FILE_SAVECOPY
@@ -79,41 +78,49 @@ BEGIN
         BEGIN
             MENUITEM "&Procurar em ficheiros\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nova janela\tAlt+N",              IDM_FILE_NEWWINDOW
-            MENUITEM "Jan&ela vazia\tAlt+Shift+N",       IDM_FILE_NEWWINDOW2
+            MENUITEM "&Nova janela\tAlt+N",                IDM_FILE_NEWWINDOW
+            MENUITEM "Jan&ela vazia\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Reiniciar com elevação",          IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Reiniciar com elevação",            IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "Executar &documento\tCtrl+L",      IDM_FILE_LAUNCH
-            MENUITEM "Abrir c&om...\tAlt+L",             IDM_FILE_OPENWITH
-            MENUITEM "&Comando...\tCtrl+R",              IDM_FILE_RUN
+            MENUITEM "Executar &documento\tCtrl+L",        IDM_FILE_LAUNCH
+            MENUITEM "Abrir c&om...\tAlt+L",               IDM_FILE_OPENWITH
+            MENUITEM "&Comando...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Modelo Web &1\tCtrl+Shift+1",      CMD_WEBACTION1
-            MENUITEM "Modelo Web &2\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM "Modelo Web &1\tCtrl+Shift+1",        CMD_WEBACTION1
+            MENUITEM "Modelo Web &2\tCtrl+Shift+2",        CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Abrir &Explorador de ficheiros",   IDM_FILE_EXPLORE_DIR
+            MENUITEM "Abrir &Explorador de ficheiros",     IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
+        MENUITEM "Re&verter de ficheiro\tF5",                  IDM_FILE_REVERT
         POPUP "&Codificação"
         BEGIN
-            MENUITEM "&ANSI",                              IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                           IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",                IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",                   IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 com a&ssinatura",              IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Mais...\tF9",                       IDM_ENCODING_SELECT
+            POPUP "&Reverter de ficheiro como"
+            BEGIN
+                MENUITEM "Pa&drão (Definição)",                CMD_RECODEDEFAULT
+                MENUITEM "&ANSI\tCtrl+Shift+A",                CMD_RECODEANSI
+                MENUITEM "&OEM\tCtrl+Shift+O",                 CMD_RECODEOEM
+                MENUITEM "&GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
+                MENUITEM SEPARATOR
+                MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",          CMD_RELOADASCIIASUTF8
+                MENUITEM "Forçar análise U&CHARDET",                  CMD_RELOADFORCEDETECTION
+                MENUITEM "Ignorar e&tiquetas de codificação\tAlt+F8", CMD_RELOADNOFILEVARS
+                MENUITEM SEPARATOR
+                MENUITEM "&Mais codificações...\tF8",         IDM_ENCODING_RECODE
+            END
+            POPUP "&Definir documento como"
+            BEGIN
+                MENUITEM "&ANSI",                         IDM_ENCODING_ANSI
+                MENUITEM "&Unicode",                      IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Big Endian",           IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8\tShift+F8",              IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 com a&ssinatura",         IDM_ENCODING_UTF8SIGN
+                MENUITEM SEPARATOR
+                MENUITEM "&Mais codificações...\tF9",         IDM_ENCODING_SELECT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Recodificar para Pa&drão",                  CMD_RECODEDEFAULT
-            MENUITEM "Recodificar para &ANSI\tCtrl+Shift+A",      CMD_RECODEANSI
-            MENUITEM "Recodificar para &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
-            MENUITEM "Recodificar para &GB18030\tCtrl+Shift+F10", CMD_RECODEGB18030
-            MENUITEM "Recodificar para análise UCHARDET",         CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
-            MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",          CMD_RELOADASCIIASUTF8
-            MENUITEM "Ignorar e&tiquetas de codificação\tAlt+F8", CMD_RELOADNOFILEVARS
-            MENUITEM "&Recodificar...\tF8",                       IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Definir pa&drão...",                        IDM_ENCODING_SETDEFAULT
+            MENUITEM "Definir pa&drões de codificação...",    IDM_ENCODING_SETDEFAULT
         END
         POPUP "Fins de linha"
         BEGIN
@@ -342,6 +349,7 @@ BEGIN
         POPUP "Marcar &ocorrências"
         BEGIN
             MENUITEM "&Activas\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Usar &marcadores também",          IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Só correspodências visíveis",      IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -355,7 +363,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Números de linha\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "Selecção da &margem\tCtrl+Shift+M",                  IDM_VIEW_MARGIN
+        MENUITEM "&Margem do marcador\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Dobragem"
         BEGIN
@@ -371,10 +379,20 @@ BEGIN
         POPUP "&Exibir"
         BEGIN
             MENUITEM "Vista focada\tCtrl+Alt+V",                       IDM_VIEW_TOGGLE_VIEW
+            POPUP "Modo de visualização"
+            BEGIN
+                MENUITEM "Dobragem",                                    IDM_VIEW_FV_FOLD
+                MENUITEM "Marcador",                                    IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Realce",                                      IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Marcador && Dobragem",                        IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Realce && Dobragem",                          IDM_VIEW_FV_HIGHLGFOLD
+            END
+            MENUITEM SEPARATOR
             MENUITEM "Registo de &monitorização",                      IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Rolagem para além do fim do ficheiro",          IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar dica da &hiperligação",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
+        MENUITEM SEPARATOR
         POPUP "P&ainéis"
         BEGIN
             MENUITEM "Mostrar barra de &menu",                         IDM_VIEW_MENUBAR
@@ -467,10 +485,10 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (sem ligaturas)",        IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "R&TL Layout (GDI)"
+            POPUP "Esquema R&TL (GDI)"
             BEGIN
-                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "Área de &edição",                IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Outros diálogos",               IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Bidireccional"
             BEGIN
@@ -519,10 +537,6 @@ BEGIN
         MENUITEM "Abrir acção Web 1",                          CMD_WEBACTION1
         MENUITEM "Abrir acção Web 2",                          CMD_WEBACTION2
         MENUITEM "Abrir Explorador de ficheiros",              IDM_FILE_EXPLORE_DIR
-        MENUITEM SEPARATOR
-        MENUITEM "Dobragem de código",                         IDM_VIEW_FOLDING
-        MENUITEM "Números de linha",                           IDM_VIEW_LINENUMBERS
-        MENUITEM "Selecção da margem",                         IDM_VIEW_MARGIN
     END
     POPUP "+"
     BEGIN
@@ -537,8 +551,19 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir o Notepad3",               IDM_TRAY_RESTORE
-        MENUITEM "Sair do Notepad3",               IDM_TRAY_EXIT
+        MENUITEM "Limpar marcador",                               IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Cortar linhas de tipo marcador",                IDM_EDIT_CUT_MARKED
+        MENUITEM "Copiar linhas de tipo marcador",                IDM_EDIT_COPY_MARKED
+        MENUITEM "Eliminar linhas de tipo marcador",              IDM_EDIT_DELETE_MARKED
+        MENUITEM SEPARATOR
+        MENUITEM "Dobragem de código",                         IDM_VIEW_FOLDING
+        MENUITEM "Números de linha",                           IDM_VIEW_LINENUMBERS
+        MENUITEM "Margem do marcador",                         IDM_VIEW_BOOKMARK_MARGIN
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Abrir o Notepad3",                           IDM_TRAY_RESTORE
+        MENUITEM "Sair do Notepad3",                           IDM_TRAY_EXIT
     END
 END
 

@@ -44,9 +44,10 @@
 #endif
 
 #include "Sci_Position.h"
+#include "Scintilla.h"
 
 //
-// TODO(rkotten): 
+// TODO: 
 // SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
 //
 
@@ -93,6 +94,7 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4, SELECT_HYPERLINK = 8 } HYPERLINK_OPS;  // Hyperlink Operations
 typedef enum { FWM_DONT_CARE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2 } FILE_WATCHING_MODE;
+typedef enum { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 
 // ----------------------------------------------------------------------------
 
@@ -183,7 +185,6 @@ typedef struct _editfindreplace
 {
   UINT fuFlags;
   bool bTransformBS;
-  bool bAutoEscCtrlChars;
   bool bFindClose;
   bool bReplaceClose;
   bool bOverlappingFind;
@@ -198,7 +199,7 @@ typedef struct _editfindreplace
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 
-#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, false, true, NULL, "", ""  }
+#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, "", ""  }
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
@@ -249,18 +250,46 @@ typedef struct _cmq
 
 // --------------------------------------------------------------------------
 
-#define MARKER_NP3_BOOKMARK      1
+typedef enum
+{
+  MARKER_NP3_OCCURRENCE = 0, // invisible
+  MARKER_NP3_1,
+  MARKER_NP3_2,
+  MARKER_NP3_3,
+  MARKER_NP3_4,
+  MARKER_NP3_5,
+  MARKER_NP3_6,
+  MARKER_NP3_7,
+  MARKER_NP3_8,
+  // std bookmark -> counter is last
+  MARKER_NP3_BOOKMARK
+} MARKER_ID;
 
-#define INDIC_NP3_MARK_OCCURANCE   (INDICATOR_CONTAINER +  1)
-#define INDIC_NP3_MATCH_BRACE      (INDICATOR_CONTAINER +  2)
-#define INDIC_NP3_BAD_BRACE        (INDICATOR_CONTAINER +  3)
-#define INDIC_NP3_FOCUS_VIEW       (INDICATOR_CONTAINER +  4)
-#define INDIC_NP3_HYPERLINK        (INDICATOR_CONTAINER +  5)
-#define INDIC_NP3_HYPERLINK_U      (INDICATOR_CONTAINER +  6)
-#define INDIC_NP3_COLOR_DEF        (INDICATOR_CONTAINER +  7)
-#define INDIC_NP3_COLOR_DEF_T      (INDICATOR_CONTAINER +  8)
-#define INDIC_NP3_MULTI_EDIT       (INDICATOR_CONTAINER +  9)
-#define INDIC_NP3_UNICODE_POINT    (INDICATOR_CONTAINER + 10)
+// ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_FOLDEREND )
+
+#define OCCURRENCE_MARKER_BITMASK() (bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE))
+
+extern LPCWSTR WordBookMarks[];
+
+// --------------------------------------------------------------------------
+
+
+typedef enum
+{
+  INDIC_NP3_MARK_OCCURANCE = INDICATOR_CONTAINER,
+  INDIC_NP3_MATCH_BRACE,
+  INDIC_NP3_BAD_BRACE,
+  INDIC_NP3_HYPERLINK,
+  INDIC_NP3_HYPERLINK_U,
+  INDIC_NP3_COLOR_DEF,
+  INDIC_NP3_COLOR_DEF_T,
+  INDIC_NP3_MULTI_EDIT,
+  INDIC_NP3_UNICODE_POINT,
+  // counter is last
+  INDIC_NP3_ID_CNT
+} INDIC_ID;
+
+// ASSERT( INDIC_NP3_ID_CNT < INDICATOR_IME )
 
 // --------------------------------------------------------------------------
 
@@ -317,7 +346,6 @@ typedef struct _globals_t
   HICON     hIconMsgError;
   HICON     hIconMsgQuest;
   HICON     hIconMsgShield;
-  HICON     hIconMsgShieldSmall;
   //HICON     hIconMsgWinLogo;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
@@ -330,6 +358,7 @@ typedef struct _globals_t
   CALLTIPTYPE CallTipType;
   FILEVARS  fvCurFile;
   int       iWrapCol;
+  int       InitialFontSize;
 
   bool      CmdLnFlag_PosParam;
   int       CmdLnFlag_WindowPos;
@@ -342,7 +371,7 @@ typedef struct _globals_t
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
-  DocPos    iMarkOccurrencesCount;
+  DocPosU   iMarkOccurrencesCount;
   bool      bUseLimitedAutoCCharSet;
   bool      bIsCJKInputCodePage;
   bool      bIniFileFromScratch;
@@ -401,10 +430,11 @@ typedef struct _settings_t
   bool MarkLongLines;
   int  LongLinesLimit;
   int  LongLineMode;
-  bool ShowSelectionMargin;
+  bool ShowBookmarkMargin;
   bool ShowLineNumbers;
   bool ShowCodeFolding;
   bool MarkOccurrences;
+  bool MarkOccurrencesBookmark;
   bool MarkOccurrencesMatchVisible;
   bool MarkOccurrencesMatchCase;
   bool MarkOccurrencesMatchWholeWords;
@@ -462,6 +492,7 @@ typedef struct _settings_t
   bool SplitUndoTypingSeqOnLnBreak;
   bool EditLayoutRTL;
   bool DialogsLayoutRTL;
+  int  FocusViewMarkerMode;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
@@ -525,7 +556,6 @@ typedef struct _settings2_t
   int    IMEInteraction;
   int    SciFontQuality;
 
-  int    MarkOccurrencesMaxCount;
   int    UpdateDelayMarkAllOccurrences;
   bool   DenyVirtualSpaceAccess;
   bool   UseOldStyleBraceMatching;
