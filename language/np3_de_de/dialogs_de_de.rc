@@ -88,13 +88,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Suche Text"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Suche nach:",IDC_STATIC,7,7,80,8
+    LTEXT           "&Suche nach:",IDC_STATIC,7,7,40,8
+    CONTROL         "<a>Esc Ctrl Zeichen</a>", IDC_FINDESCCTRLCHR,"SysLink", 0x0, 60, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Groß/Klein unterscheiden",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
     CONTROL         "Nur ganze &Wörter",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,110,10
     CONTROL         "Nur Wort-Anf&änge",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transformiere Backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,100,10
-    CONTROL         "A&uto Esc Ctrl Zeichen",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "&Regulärer Ausdruck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "&Punkt ersetzt Alle",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,70,10
     CONTROL         "&Überlappende Suche",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "&Nächstes",IDOK,211,7,55,14
     PUSHBUTTON      "&Vorheriges",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Schließen",IDCANCEL,211,111,55,14
-    CONTROL         "<a>Ersetzen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,115,74,10
+    CONTROL         "<a>Ersetzen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,115,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,97,14,10
@@ -121,15 +120,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Ersetze Text"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Suche nach:",IDC_STATIC,7,7,80,8
+    LTEXT           "&Suche nach:",IDC_STATIC,7,7,40,8
+    CONTROL         "<a>Esc Ctrl Zeichen</a>", IDC_FINDESCCTRLCHR,"SysLink", 0x0, 60, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Ersetze durch:",IDC_STATIC,7,36,44,8
+    LTEXT           "&Ersetze durch:",IDC_STATIC,7,36,40,8
+    CONTROL         "<a>Esc Ctrl Zeichen</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 60, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Groß/Klein unterscheiden",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,110,10
     CONTROL         "Nur ganze &Wörter",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,110,10
     CONTROL         "Nur Wort-Anf&änge",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transformiere Backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,100,10
-    CONTROL         "A&uto Esc Ctrl Zeichen",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "&Regulärer Ausdruck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,96,10
     CONTROL         "&Punkt ersetzt Alle",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,70,10
     CONTROL         "&Überlappende Suche",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "Ersetze &Alle",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "&Tausche Ausdrücke",IDC_SWAPSTRG,129,32,70,12
     PUSHBUTTON      "Schließen",IDCANCEL,211,138,55,14
-    CONTROL         "<a>Nur Suche (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,142,74,10
+    CONTROL         "<a>Nur Suche (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,126,14,10

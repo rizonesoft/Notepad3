@@ -1524,38 +1524,22 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 
 //=============================================================================
 //
-//  Esc/UnEsc Dialog Item Text
-//
-UINT SetDlgItemTextEx(HWND hDlg, int nIDDlgItem, LPCWSTR lpString, bool escCtrlChar)
-{
-  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-  if (escCtrlChar) {
-    SlashCtrlW(wsz, COUNTOF(wsz), lpString);
-  } else {
-    StringCchCopy(wsz, COUNTOF(wsz), lpString);
-    UnSlashCtrlW(wsz);
-  }
-  return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
-}
-
-//=============================================================================
-//
 //  A2W: Convert Dialog Item Text form Unicode to UTF-8 and vice versa
 //
 UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount)
 {
   WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-  UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
+  UINT const uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
   ZeroMemory(lpString, nMaxCount);
   WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
   return uRet;
 }
 
-UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString, bool escCtrlChar)
+UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 { 
   WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
   MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
-  return SetDlgItemTextEx(hDlg, nIDDlgItem, wsz, escCtrlChar);
+  return SetDlgItemText(hDlg, nIDDlgItem, wsz);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)

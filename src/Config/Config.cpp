@@ -1359,8 +1359,6 @@ void LoadSettings()
     Settings.EFR_Data.bNoFindWrap = IniSectionGetBool(IniSecSettings, L"NoFindWrap", Defaults.EFR_Data.bNoFindWrap);
     Defaults.EFR_Data.bTransformBS = false;
     Settings.EFR_Data.bTransformBS = IniSectionGetBool(IniSecSettings, L"FindTransformBS", Defaults.EFR_Data.bTransformBS);
-    Defaults.EFR_Data.bAutoEscCtrlChars = false;
-    Settings.EFR_Data.bAutoEscCtrlChars = IniSectionGetBool(IniSecSettings, L"AutoEscCtrlChars", Defaults.EFR_Data.bAutoEscCtrlChars);
     Defaults.EFR_Data.bWildcardSearch = false;
     Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
     Defaults.EFR_Data.bOverlappingFind = false;
@@ -1787,12 +1785,6 @@ static bool _SaveSettings(bool bForceSaveSettings)
   }
   else {
     IniSectionDelete(IniSecSettings, L"FindTransformBS", false);
-  }
-  if (Settings.EFR_Data.bAutoEscCtrlChars != Defaults.EFR_Data.bAutoEscCtrlChars) {
-    IniSectionSetBool(IniSecSettings, L"AutoEscCtrlChars", Settings.EFR_Data.bAutoEscCtrlChars);
-  }
-  else {
-    IniSectionDelete(IniSecSettings, L"AutoEscCtrlChars", false);
   }
   if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
     IniSectionSetBool(IniSecSettings, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);

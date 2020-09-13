@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.912.(build_#) (2020-09-12)
+Current BETA/RC Version 5.20.913.(build_#) (2020-09-13)
 ========================================================
 
 --------------------------------------------------------
@@ -65,6 +65,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- 
+[.913.1]- Bad design: F/R dialog: remove auto Esc Ctrl Chr (changed to manual explicit).
 [.901.1]- Open Recent File: Rename the Cancel button to Close button.
 [.901.1]- grepWinNP3: alpha transparency on losing focus.
 [.828.1]- Rearange and review "File Encoding" menu to clarify behavior.
@@ -160,7 +161,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- 
-[.722.2]- 
+[.913.1]- Nop SendMsg.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):

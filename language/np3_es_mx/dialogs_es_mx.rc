@@ -94,7 +94,7 @@ BEGIN
     CONTROL         "Coincidir la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,100,10
     CONTROL         "Co&incidir principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transformar backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "&Auto Esc Ctrl Car",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
+    //CONTROL         "&Auto Esc Ctrl Car",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "Con &expresión regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "P&unto coincide con todos",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
     CONTROL         "Bús&queda superpuesta",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,85,10
@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "Coincidir la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,100,10
     CONTROL         "Co&incidir principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transformar backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "&Auto Esc Ctrl Car",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
+    //CONTROL         "&Auto Esc Ctrl Car",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "Con &expresión regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "P&unto coincide con todos",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,90,10
     CONTROL         "Bús&queda superpuesta",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,85,10
