@@ -6298,35 +6298,29 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         break;
 
       case IDC_FINDESCCTRLCHR:
-        {
-          static bool toggle = true;
-          GetDlgItemTextW(hwnd, IDC_FINDTEXT, s_tchBuf, COUNTOF(s_tchBuf));
-          if (toggle) {
-            WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
-            SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
-            SetDlgItemTextW(hwnd, IDC_FINDTEXT, trf);
-          } else {
-            UnSlashCtrlW(s_tchBuf);
-            SetDlgItemTextW(hwnd, IDC_FINDTEXT, s_tchBuf);
-          }
-          toggle = !toggle;
-        }
-        break;
-
       case IDC_REPLESCCTRLCHR:
         {
           static bool toggle = true;
-          GetDlgItemTextW(hwnd, IDC_REPLACETEXT, s_tchBuf, COUNTOF(s_tchBuf));
+          UINT const ctrl_id = (LOWORD(wParam) == IDC_FINDESCCTRLCHR) ? IDC_FINDTEXT : IDC_REPLACETEXT;
+          GetDlgItemTextW(hwnd, ctrl_id, s_tchBuf, COUNTOF(s_tchBuf));
+          size_t const len1 = StringCchLen(s_tchBuf, 0);
           if (toggle) {
             WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
-            SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
-            SetDlgItemTextW(hwnd, IDC_REPLACETEXT, trf);
+            size_t const len2 = SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
+            if (len1 == len2) { UnSlashCtrlW(trf); }
+            SetDlgItemTextW(hwnd, ctrl_id, trf);
           } else {
-            UnSlashCtrlW(s_tchBuf);
-            SetDlgItemTextW(hwnd, IDC_REPLACETEXT, s_tchBuf);
+            size_t const len2 = UnSlashCtrlW(s_tchBuf);
+            if (len1 != len2) {
+              SetDlgItemTextW(hwnd, ctrl_id, s_tchBuf);
+            } else {
+              WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
+              SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
+              SetDlgItemTextW(hwnd, ctrl_id, trf);
+            }
           }
           toggle = !toggle;
-         }
+        }
         break;
 
       case IDC_SWAPSTRG:
