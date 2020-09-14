@@ -159,7 +159,7 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Régi Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "Szeretné az összes sorvéget átalakítani erre: '%s'?"
 END
 
 STRINGTABLE
@@ -256,11 +256,11 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "&Standard beállítások"
     IDS_MUI_STATUSBAR_PREFIXES "Sor ,Oszl ,Kij  ,Sb  ,SKij ,Tal  ,,,,,,,Ch  ,Csere ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Mind törlése"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Keresési előzmények törlése"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "Csere előzmények törlése"
 END
 
 STRINGTABLE
