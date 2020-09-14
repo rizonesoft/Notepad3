@@ -6381,11 +6381,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
 
         if (bIsFindDlg && (sg_pefrData->bFindClose)) {
-          //~EndDialog(hwnd, LOWORD(wParam)); ~ not running own message loop
+          //~EndDialog(hwnd, LOWORD(wParam)); ~ (!) not running on own message loop
           DestroyWindow(hwnd);
         }
         else if ((LOWORD(wParam) != IDOK) && sg_pefrData->bReplaceClose) {
-          //~EndDialog(hwnd, LOWORD(wParam)); ~ not running own message loop
+          //~EndDialog(hwnd, LOWORD(wParam)); ~ (!) not running on own message loop
           DestroyWindow(hwnd);
         }
       }
@@ -6394,33 +6394,18 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
       case IDCANCEL:
-        //~EndDialog(hwnd, IDCANCEL); ~ not running own message loop
+        //~EndDialog(hwnd, IDCANCEL); ~ (!) not running on own message loop
         DestroyWindow(hwnd);
         break;
 
       case IDC_FINDESCCTRLCHR:
       case IDC_REPLESCCTRLCHR:
         {
-          static bool toggle = true;
+          WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
           UINT const ctrl_id = (LOWORD(wParam) == IDC_FINDESCCTRLCHR) ? IDC_FINDTEXT : IDC_REPLACETEXT;
           GetDlgItemTextW(hwnd, ctrl_id, s_tchBuf, COUNTOF(s_tchBuf));
-          size_t const len1 = StringCchLen(s_tchBuf, 0);
-          if (toggle) {
-            WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
-            size_t const len2 = SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
-            if (len1 == len2) { UnSlashCtrlW(trf); }
-            SetDlgItemTextW(hwnd, ctrl_id, trf);
-          } else {
-            size_t const len2 = UnSlashCtrlW(s_tchBuf);
-            if (len1 != len2) {
-              SetDlgItemTextW(hwnd, ctrl_id, s_tchBuf);
-            } else {
-              WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
-              SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
-              SetDlgItemTextW(hwnd, ctrl_id, trf);
-            }
-          }
-          toggle = !toggle;
+          if (SlashCtrlW(trf, COUNTOF(trf), s_tchBuf) == StringCchLen(s_tchBuf, 0)) { UnSlashCtrlW(trf); }
+          SetDlgItemTextW(hwnd, ctrl_id, trf);
         }
         break;
 

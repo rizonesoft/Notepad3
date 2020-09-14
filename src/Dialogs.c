@@ -81,7 +81,13 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
   {
     HWND const hThisWnd = (HWND)wParam;
     if (hThisWnd) {
+
       SetDialogIconNP3(hThisWnd);
+      InitWindowCommon(hThisWnd, true);
+
+      //HDC const hdc = GetDC(hThisWnd);
+      //SetDarkModeCtlColors(hdc);
+      //ReleaseDC(hThisWnd, hdc);
 
       // get window handles
       LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
