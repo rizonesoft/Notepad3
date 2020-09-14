@@ -199,7 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyć link w przeglądarce."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Włączono zachowanie znacznika czasu w modyfikacji pliku.\nTa opcja pozostanie dla tej sesji!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Kończą się znaczniki występowania (Zakładka/Podświetlenie)!"
 END
 
 STRINGTABLE
