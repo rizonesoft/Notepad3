@@ -120,7 +120,7 @@ BEGIN
                 MENUITEM "&További kódolások...\tF9",      IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Alapértelmezett kó&dolások beállítása...",  IDM_ENCODING_SETDEFAULT
+            MENUITEM "Kó&dolások alapért. beállítása...",  IDM_ENCODING_SETDEFAULT
         END
         POPUP "Sorvé&gek"
         BEGIN
