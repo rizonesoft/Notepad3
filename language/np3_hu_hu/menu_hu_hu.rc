@@ -93,34 +93,34 @@ BEGIN
             MENUITEM "Fájl&böngésző megnyitása",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Re&vert from File\tF5",                  IDM_FILE_REVERT
+        MENUITEM "&Visszaállás fájlból\tF5",               IDM_FILE_REVERT
         POPUP "&Kódolás"
         BEGIN
-            POPUP "&Revert from File as"
+            POPUP "Visszaállás fájlból másként&"
             BEGIN
-                MENUITEM "&Default (Setting)",                 CMD_RECODEDEFAULT
+                MENUITEM "&Alapértelmezett (beállítás)",       CMD_RECODEDEFAULT
                 MENUITEM "A&NSI-ra\tCtrl+Shift+A",             CMD_RECODEANSI
                 MENUITEM "&OEM-re\tCtrl+Shift+O",              CMD_RECODEOEM
                 MENUITEM "&GB18030-ra\tCtrl+Shift+F10",        CMD_RECODEGB18030
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII-t UTF-8-k&ént\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
-                MENUITEM "Force U&CHARDET Analysis",           CMD_RELOADFORCEDETECTION
+                MENUITEM "Erőltetett U&CHARDET analízis",      CMD_RELOADFORCEDETECTION
                 MENUITEM "Kódolási elemek ki&hagyása\tAlt+F8", CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF8",             IDM_ENCODING_RECODE
+                MENUITEM "&További kódolások...\tF8",          IDM_ENCODING_RECODE
             END
-            POPUP "&Set Document as"
+            POPUP "&Dokumentum átállítása"
             BEGIN
                 MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
                 MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
                 MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
                 MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
-                MENUITEM "UTF-8 with &Signature",          IDM_ENCODING_UTF8SIGN
+                MENUITEM "UTF-8 &Szignatúrával",           IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+                MENUITEM "&További kódolások...\tF9",      IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Set Encoding &Defaults...",          IDM_ENCODING_SETDEFAULT
+            MENUITEM "Kó&dolások alapért. beállítása...",  IDM_ENCODING_SETDEFAULT
         END
         POPUP "Sorvé&gek"
         BEGIN
@@ -267,7 +267,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Dátum/Idő (rövid)\tCtrl+F5",                IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Dátum/Idő (&hosszú)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Current Timestamp",                         CMD_INSERT_TIMESTAMP
+            MENUITEM "&Aktuális időbélyeg",                        CMD_INSERT_TIMESTAMP
             MENUITEM "Időbélye&gek frissítése\tShift+F5",          CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
@@ -338,7 +338,7 @@ BEGIN
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Highlight &Unicode-Points",             IDM_VIEW_UNICODE_POINTS
+        MENUITEM "&Unicode-Pontok kiemelése",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zárójelpár kiemelés\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Akt&uális sor kiemelése\tCtrl+Shift+I"
         BEGIN
@@ -349,12 +349,12 @@ BEGIN
         POPUP "Elő&fordulások kiemelése"
         BEGIN
             MENUITEM "&Aktív\tAlt+A",                   IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use &Bookmarks too",              IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "&Könyvjelzők is",                 IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
-            MENUITEM "Csak a láthatóak",                IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "Csak a l&áthatóak",               IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "Kis/Nag&ybetű érzékeny egyezés",  IDM_VIEW_MARKOCCUR_CASE
-            POPUP "Csak egész szavak esetén"
+            POPUP "Csak &egész szavak esetén"
             BEGIN
                 MENUITEM "Kika&pcsolva",                IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Kijelölt sza&vak egyezése",   IDM_VIEW_MARKOCCUR_WORD
@@ -363,7 +363,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Könyvjelző &Margó\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Behajtások"
         BEGIN
@@ -379,13 +379,13 @@ BEGIN
         POPUP "&Megjelenítés"
         BEGIN
             MENUITEM "Fókuszált nézet\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
-            POPUP "View Mode"
+            POPUP "Nézet mód"
             BEGIN
-                MENUITEM "Fold",                                IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                            IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Highlight",                           IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",                    IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Highlight && Fold",                   IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Behajtások",                          IDM_VIEW_FV_FOLD
+                MENUITEM "Könyvjelzők",                         IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Kiemelések",                          IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Könyvjelzők és Behajtások",           IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Kiemelések és Behajtások",            IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "&Naplófájl követése",                     IDM_VIEW_CHASING_DOCTAIL
@@ -454,7 +454,7 @@ BEGIN
             MENUITEM "Kilé&pés a Notepad3-ból",      IDM_VIEW_ESCEXIT
         END
         MENUITEM "Eszközök &futtatása előtt mentés", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",      IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Mi&ni kifejezések kiszámítása",    IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Emlékezés"
         BEGIN
@@ -485,10 +485,10 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (ligatúrák nélkül)",             IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "R&TL Layout (GDI)"
+            POPUP "R&TL elrendezés (GDI)"
             BEGIN
-                MENUITEM "&Edit Area",                     IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",                 IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Terület szerkesztése",          IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Egyéb párbesz. ablakok",        IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "K&étirányú"
             BEGIN
@@ -551,14 +551,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",    IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",   IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type", IDM_EDIT_DELETE_MARKED
+        MENUITEM "Jelölő törlése",              IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Jelölőtípus sorok kivágása",  IDM_EDIT_CUT_MARKED
+        MENUITEM "Jelölőtípus sorok másolása",  IDM_EDIT_COPY_MARKED
+        MENUITEM "Jelölőtípus sorok törlése",   IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "Kódblokk behajtások",         IDM_VIEW_FOLDING
         MENUITEM "Sorok száma",                 IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",             IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Könyvjelző margók",           IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

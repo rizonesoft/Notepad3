@@ -449,7 +449,7 @@ BEGIN
     IDS_LEX_STR_63353       "2nd Inline-IME Color"
     IDS_LEX_STR_63354       "Többszörös szerkesztés jelzése"
     IDS_LEX_STR_63355       "2. többszörös szerkesztés jelzése"
-    IDS_LEX_STR_63356       "Dátum-Id?"
+    IDS_LEX_STR_63356       "Dátum-Idő"
 END
 
 STRINGTABLE
@@ -463,7 +463,7 @@ BEGIN
     IDS_LEX_STR_63363       "Tag"
     IDS_LEX_STR_63364       "Tulajdonság név"
     IDS_LEX_STR_63365       "LD Kulcsszó"
-    IDS_LEX_STR_63366       "ESC Sekvencia"
+    IDS_LEX_STR_63366       "ESC Szekvencia"
     IDS_LEX_STR_63367       "Unicode-Point Hover"
     IDS_LEX_STR_63368       "2nd Unicode-Point Hover"
 END
