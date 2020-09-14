@@ -89,7 +89,7 @@ CAPTION "Найти текст"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "На&йти:",IDC_STATIC,7,7,46,8
-    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
+    CONTROL         "<a>Экранирование</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Учитывать &регистр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,83,10
     CONTROL         "Только &целые слова",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,85,10
@@ -121,10 +121,10 @@ CAPTION "Заменить тест"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "На&йти:",IDC_STATIC,7,7,46,8
-    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
+    CONTROL         "<a>Экранирование</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Заменит&ь на:",IDC_STATIC,7,36,46,8
-    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
+    CONTROL         "<a>Экранирование</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Только &целые слова",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,85,10
     CONTROL         "Только &начало слов",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,83,10
