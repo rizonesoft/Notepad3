@@ -12,12 +12,11 @@ Rizonesoft Notepad3 --- CHANGELOG ---
 --------------------------------------------------------
 LEGEND:
 --------------------------------------------------------
-1) NEW: (Added, Feature)
+1) NEW: (Added, Feature, Optimize)
 2) CHANGES:
-3) ENHANCEMENT: (Optimize)
-4) FIXES: (Debug)
-5) REMOVED:
-6) TRANSLATIONS (MUI): (New Language)
+3) FIXES: (Debug)
+4) REMOVED:
+5) TRANSLATIONS (MUI): (New Language)
 
 --------------------------------------------------------
 ABBREVIATIONS:
@@ -93,12 +92,6 @@ CHANGES:
 [.825.1]- Update grepWinNP3 (GRE) version 2.1.3.28 (2020-08-25).
 [.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.818.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-08-18).
-
---------------------------------------------------------
-ENHANCEMENT:
---------------------------------------------------------
-[.###.#]- 
-[.722.2]- 
 
 --------------------------------------------------------
 FIXES:

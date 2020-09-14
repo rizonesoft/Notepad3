@@ -349,7 +349,7 @@ BEGIN
         POPUP "标记匹配(&K)"
         BEGIN
             MENUITEM "启用(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "同时使用书签(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "显示在书签栏(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "仅标记可见内容(&V)",                     IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
