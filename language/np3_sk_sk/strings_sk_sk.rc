@@ -199,7 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + kliknutím otvoríte prepojenie."
     IDS_MUI_INF_PRSVFILEMODTM
                              "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené.\nTáto možnosť zostane len pre túto reláciu!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
 END
 
 STRINGTABLE
