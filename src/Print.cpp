@@ -83,6 +83,11 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
       if (UseDarkMode()) {
         SetExplorerTheme(GetDlgItem(hwnd, IDOK));
         SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+        SetExplorerTheme(GetDlgItem(hwnd, 0x401));
+        int const ctl[] = { 0x410, 0x420, 0x421, 0x422, 0x430, 0x431, 0x433, 0x473, IDC_STATIC };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
       }
 #endif
 
@@ -96,10 +101,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -117,7 +119,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
       AllowDarkModeForWindow(hwnd, darkModeEnabled);
       RefreshTitleBarThemeColor(hwnd);
 
-      int const buttons[] = { IDOK, IDCANCEL };
+      int const buttons[] = { IDOK, IDCANCEL, 0x401 };
       for (int id = 0; id < COUNTOF(buttons); ++id) {
         HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
@@ -528,6 +530,12 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
     if (UseDarkMode()) {
       SetExplorerTheme(GetDlgItem(hwnd, IDOK));
       SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+      SetExplorerTheme(GetDlgItem(hwnd, IDC_PRINTER));
+      int const ctl[] = { 30, 31, 32, 33, 34, 0x471, 0x472, 1037, 1038, 1056, 1057, 1072, 1073, 1074, 1075, 1076, 1089, 1090,
+                          IDC_STATIC, IDC_STATIC2, IDC_STATIC3, IDC_STATIC4, IDC_STATIC5, IDC_STATIC6 };
+      for (int i = 0; i < COUNTOF(ctl); ++i) {
+        SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+      }
     }
 #endif
 
@@ -596,10 +604,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -617,7 +622,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
       AllowDarkModeForWindow(hwnd, darkModeEnabled);
       RefreshTitleBarThemeColor(hwnd);
 
-      int const buttons[] = { IDOK, IDCANCEL };
+      int const buttons[] = { IDOK, IDCANCEL, IDC_PRINTER };
       for (int id = 0; id < COUNTOF(buttons); ++id) {
         HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
         AllowDarkModeForWindow(hBtn, darkModeEnabled);

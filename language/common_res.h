@@ -8,6 +8,11 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC                       (-1)
 #endif
+#define IDC_STATIC2                      (-2)
+#define IDC_STATIC3                      (-3)
+#define IDC_STATIC4                      (-4)
+#define IDC_STATIC5                      (-5)
+#define IDC_STATIC6                      (-6)
 
 #define IDR_MUI_MAINMENU                10001
 #define IDR_MUI_POPUPMENU               10002

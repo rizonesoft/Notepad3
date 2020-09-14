@@ -3253,10 +3253,7 @@ static INT_PTR CALLBACK Style_FontDialogHook(
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -4301,10 +4298,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-        case WM_CTLCOLORDLG:
-        case WM_CTLCOLOREDIT:
-        case WM_CTLCOLORLISTBOX:
-        case WM_CTLCOLORSTATIC:
+        CASE_WM_CTLCOLOR_SET:
           if (UseDarkMode()) {
             return SetDarkModeCtlColors((HDC)wParam);
           }
@@ -5010,10 +5004,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }

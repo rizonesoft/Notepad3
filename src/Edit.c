@@ -5610,7 +5610,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
         int const ctl[] = { IDC_FINDCASE, IDC_FINDWORD, IDC_FINDSTART, IDC_FINDTRANSFORMBS, IDC_FINDESCCTRLCHR, IDC_REPLESCCTRLCHR,
                             IDC_FINDREGEXP, IDC_DOT_MATCH_ALL, IDC_FIND_OVERLAPPING, IDC_NOWRAP, IDC_FINDCLOSE,
-                            IDC_ALL_OCCURRENCES, IDC_WILDCARDSEARCH, IDC_TRANSPARENT, IDC_STATIC };
+                            IDC_ALL_OCCURRENCES, IDC_WILDCARDSEARCH, IDC_TRANSPARENT, IDC_STATIC, IDC_STATIC2 };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
           SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
         }
@@ -5885,6 +5885,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case WM_CTLCOLORDLG:
+    case WM_CTLCOLORBTN:
     //~case WM_CTLCOLOREDIT:
     //~case WM_CTLCOLORLISTBOX:
     case WM_CTLCOLORSTATIC:
@@ -8004,10 +8005,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-      case WM_CTLCOLORDLG:
-      case WM_CTLCOLOREDIT:
-      case WM_CTLCOLORLISTBOX:
-      case WM_CTLCOLORSTATIC:
+      CASE_WM_CTLCOLOR_SET:
         if (UseDarkMode()) {
           return SetDarkModeCtlColors((HDC)wParam);
         }
@@ -8229,10 +8227,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       {
         DWORD const dwId = GetWindowLong((HWND)lParam, GWL_ID);
         HDC const hdc = (HDC)wParam;
@@ -8249,7 +8244,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           SelectObject(hdc, hFontHover);
         }
         return hbrReturn;
-    } 
+      } 
       break;
 
     case WM_SETTINGCHANGE:
@@ -8436,10 +8431,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -8564,10 +8556,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -8697,10 +8686,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -8942,13 +8928,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
     //  return FALSE;
     //}
 
-    //case WM_CTLCOLORBTN:(BS_OWNERDRAW)
-
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    //~case WM_CTLCOLORBTN: - BS_AUTORADIOBUTTON
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }

@@ -127,7 +127,8 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
           SetExplorerTheme(GetDlgItem(hDlg, IDOK));
           SetExplorerTheme(GetDlgItem(hDlg, IDCANCEL));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-          int const ctl[] = { IDC_INDENT_BY_SPCS, IDC_INDENT_BY_TABS, IDC_WARN_INCONSISTENT_INDENTS, IDC_STATIC };
+          int const ctl[] = { IDC_PWD_EDIT1, IDC_PWD_EDIT2, IDC_PWD_CHECK1,
+                              IDC_PWD_CHECK2, IDC_PWD_CHECK3, IDC_PWD_CHECK4, IDC_STATIC, IDC_STATIC2 };
           for (int i = 0; i < COUNTOF(ctl); ++i) {
             SetWindowTheme(GetDlgItem(hDlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
           }
@@ -150,12 +151,19 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
       UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
       return !0;
 
+//#define WM_CTLCOLORMSGBOX               0x0132
+//#define WM_CTLCOLOREDIT                 0x0133
+//#define WM_CTLCOLORLISTBOX              0x0134
+//#define WM_CTLCOLORBTN                  0x0135
+//#define WM_CTLCOLORDLG                  0x0136
+//#define WM_CTLCOLORSCROLLBAR            0x0137
+//#define WM_CTLCOLORSTATIC               0x0138
+//#define MN_GETHMENU                     0x01E1
+
+
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET :
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -300,9 +308,9 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         SetExplorerTheme(GetDlgItem(hDlg, IDOK));
         SetExplorerTheme(GetDlgItem(hDlg, IDCANCEL));
         //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-        int const ctl[] = { IDC_INDENT_BY_SPCS, IDC_INDENT_BY_TABS, IDC_WARN_INCONSISTENT_INDENTS, IDC_STATIC };
+        int const ctl[] = { IDC_PWD_STATMPW, IDC_PWD_EDIT3, IDC_PWD_CHECK3, IDC_STATIC };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
-          SetWindowTheme(GetDlgItem(hDlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          SetWindowTheme(GetDlgItem(hDlg, ctl[i]), L"", L""); // remove theme for static controls
         }
       }
 #endif
@@ -325,10 +333,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }

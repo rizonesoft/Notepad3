@@ -329,10 +329,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -583,10 +580,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -975,10 +969,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     //  }
     //  return TRUE;
 	
-	  case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -1217,10 +1208,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -1477,10 +1465,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -1726,10 +1711,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -1934,10 +1916,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -2258,10 +2237,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -2634,10 +2610,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -2767,10 +2740,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -2920,10 +2890,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -3072,10 +3039,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -3211,7 +3175,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
           SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
           int const ctl[] = { IDC_TAB_AS_SPC, IDC_TAB_INDENTS, IDC_BACKTAB_INDENTS, 
-                              IDC_WARN_INCONSISTENT_INDENTS, IDC_AUTO_DETECT_INDENTS, IDC_STATIC };
+                              IDC_WARN_INCONSISTENT_INDENTS, IDC_AUTO_DETECT_INDENTS, IDC_STATIC, IDC_STATIC2, IDC_STATIC3 };
           for (int i = 0; i < COUNTOF(ctl); ++i) {
             SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
           }
@@ -3242,14 +3206,11 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC: {
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
-    } break;
+      break;
 
     case WM_SETTINGCHANGE:
       if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -3381,7 +3342,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
           //~SetExplorerTheme(GetDlgItem(hwnd, IDC_ENCODINGLIST)); ~ OWNERDRAWN -> WM_DRAWITEM
           //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
           int const ctl[] = { IDC_ENCODINGLIST, IDC_USEASREADINGFALLBACK, IDC_ASCIIASUTF8, IDC_RELIABLE_DETECTION_RES,
-                              IDC_NFOASOEM, IDC_ENCODINGFROMFILEVARS, IDC_NOUNICODEDETECTION, IDC_NOANSICPDETECTION, IDC_STATIC };
+                              IDC_NFOASOEM, IDC_ENCODINGFROMFILEVARS, IDC_NOUNICODEDETECTION, IDC_NOANSICPDETECTION, IDC_STATIC, IDC_STATIC2 };
           for (int i = 0; i < COUNTOF(ctl); ++i) {
             SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
           }
@@ -3427,10 +3388,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -3672,10 +3630,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -3886,10 +3841,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
 #ifdef D_NP3_WIN10_DARK_MODE
   
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-    case WM_CTLCOLORSTATIC:
+    CASE_WM_CTLCOLOR_SET:
       if (UseDarkMode()) {
         return SetDarkModeCtlColors((HDC)wParam);
       }
@@ -4017,10 +3969,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }
@@ -4105,7 +4054,8 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
       SetExplorerTheme(GetDlgItem(hwnd, IDOK));
       SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
       //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-      int const ctl[] = { IDC_INDENT_BY_SPCS, IDC_INDENT_BY_TABS, IDC_WARN_INCONSISTENT_INDENTS, IDC_STATIC };
+      int const ctl[] = { IDC_INDENT_BY_SPCS, IDC_INDENT_BY_TABS, IDC_WARN_INCONSISTENT_INDENTS,
+                          IDC_STATIC, IDC_STATIC2 };
       for (int i = 0; i < COUNTOF(ctl); ++i) {
         SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
       }
@@ -4166,10 +4116,7 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  case WM_CTLCOLORDLG:
-  case WM_CTLCOLOREDIT:
-  case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC:
+  CASE_WM_CTLCOLOR_SET:
     if (UseDarkMode()) {
       return SetDarkModeCtlColors((HDC)wParam);
     }

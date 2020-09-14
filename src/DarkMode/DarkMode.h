@@ -27,6 +27,13 @@ extern "C" {
   bool IsColorSchemeChangeMessage(LPARAM lParam);
   bool IsColorSchemeChangeMessageEx(UINT message, LPARAM lParam);
 
+  #define  CASE_WM_CTLCOLOR_SET     \
+           case WM_CTLCOLORDLG:     \
+           case WM_CTLCOLORBTN:     \
+           case WM_CTLCOLOREDIT:    \
+           case WM_CTLCOLORLISTBOX: \
+           case WM_CTLCOLORSTATIC 
+
 #else
   inline bool IsDarkModeSupported() { return false; }
   inline bool CheckDarkModeEnabled() { return false; }

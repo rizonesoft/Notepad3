@@ -232,6 +232,9 @@ inline COLORREF GetModeWndTextColor(const bool bDarkMode) {
 inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
   SetBkColor(hdc, Settings2.DarkModeBkgColor);
   SetTextColor(hdc, Settings2.DarkModeTxtColor);
+  //~RECT rc;
+  //~GetWindowRect(WindowFromDC(hdc), &rc);
+  //~DrawEdge(hdc, &rc, EDGE_RAISED, BF_FLAT | BF_MONO);
   return (INT_PTR)Globals.hbrDarkModeBkgBrush;
 }
 
