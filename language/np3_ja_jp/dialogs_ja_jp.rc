@@ -89,12 +89,12 @@ CAPTION "検索"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "検索文字列(&G):",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>制御文字エスケープ</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "大文字/小文字を区別(&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,98,10
     CONTROL         "単語全体が一致(&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "単語の先頭から一致(&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "バックスラッシュを変換(&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,92,10
-    //CONTROL         "バックスラッシュを付与(&U)",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "正規表現(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "ドット(.)を改行にもマッチ(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,99,10
     CONTROL         "一致文字列を含め検索続行(&O)",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "次を検索(&F)",IDOK,211,7,55,14
     PUSHBUTTON      "前へ検索(&P)",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "閉じる",IDCANCEL,211,111,55,14
-    CONTROL         "<a>置換を開く (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,115,74,10
+    CONTROL         "<a>置換を開く (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,115,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,97,14,10
@@ -122,14 +121,15 @@ CAPTION "置換"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "検索文字列(&G):",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>制御文字エスケープ</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "置換文字列(&H):",IDC_STATIC,7,36,50,8
+    CONTROL         "<a>制御文字エスケープ</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "大文字/小文字を区別(&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,99,10
     CONTROL         "単語全体が一致(&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "単語の先頭から一致(&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "バックスラッシュを変換(&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    //CONTROL         "バックスラッシュを付与(&U)",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "正規表現(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "ドット(.)を改行にもマッチ(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,99,10
     CONTROL         "一致文字列を含め検索続行(&O)",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "すべて置換(&A)",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "文字列入れ替え",IDC_SWAPSTRG,131,32,69,12
     PUSHBUTTON      "閉じる",IDCANCEL,211,126,55,14
-    CONTROL         "<a>検索を開く (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,142,74,10
+    CONTROL         "<a>検索を開く (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,126,14,10

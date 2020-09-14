@@ -199,7 +199,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます。"
     IDS_MUI_INF_PRSVFILEMODTM
                              "元ファイルの更新日時のままにします。\nこのセッションでのみ有効となります。"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highligt)!"
+    IDS_MUI_OUT_OFF_OCCMRK   "単語出現マーカーが枯渇しています (しおり/強調表示)!"
 END
 
 STRINGTABLE

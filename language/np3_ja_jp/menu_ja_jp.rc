@@ -93,10 +93,10 @@ BEGIN
             MENUITEM "エクスプローラーを開く(&F)",                    IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "ファイルから読み直し(&V)\tF5",                  IDM_FILE_REVERT
+        MENUITEM "ファイルを読み直し(&V)\tF5",                  IDM_FILE_REVERT
         POPUP "文字コード(&E)"
         BEGIN
-            POPUP "文字コードを指定しファイルから読み直し(&R)"
+            POPUP "文字コード指定しファイル読み直し(&R)"
             BEGIN
                 MENUITEM "デフォルト (設定を使用) (&D)",          CMD_RECODEDEFAULT
                 MENUITEM "ANSI (&N)\tCtrl+Shift+A",         CMD_RECODEANSI
@@ -295,7 +295,7 @@ BEGIN
             MENUITEM "改行で「元に戻す」の履歴を区切る(&T)",                IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
-        POPUP "ブックマーク(しおり)(&K)"
+        POPUP "しおり(ブックマーク)(&K)"
         BEGIN
             MENUITEM "指定の切替(&T)\tCtrl+F2",                BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
@@ -338,7 +338,7 @@ BEGIN
             MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "BGRA(&B)"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Unicode の符号点を強調表示(&U)",               IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Unicode 符号点を強調表示(&U)",               IDM_VIEW_UNICODE_POINTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN
