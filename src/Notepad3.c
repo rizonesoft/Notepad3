@@ -8665,7 +8665,6 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
     MultiByteToWideChar(Encoding_SciCP, 0, calcBuffer, -1, calcBufferW, calcBufSize);
     WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), calcBufferW, -1, calcBuffer, calcBufSize, &defchar, NULL);
     StrDelChrA(calcBuffer, chr_currency);
-    FreeMem(calcBufferW);
 
     if (!StrIsEmptyA(tmpRectSelN))
     {
@@ -8677,6 +8676,7 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
     }
   }
   double const result = te_interp(calcBuffer, piExprError);
+  FreeMem(calcBufferW);
   FreeMem(calcBuffer);
   return result;
 }
