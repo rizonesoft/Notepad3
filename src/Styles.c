@@ -478,7 +478,7 @@ void Style_Init()
 
   _FillThemesMenuTable();
 
-  unsigned iTheme = 2;
+  unsigned iTheme = 1;
   if (StrIsNotEmpty(Globals.LightThemeName)) {
     for (; iTheme < ThemeItems_CountOf(); ++iTheme)
     {
@@ -487,15 +487,11 @@ void Style_Init()
       }
     }
   }
-  if (iTheme < ThemeItems_CountOf()) {
-    Globals.idxLightModeTheme = iTheme;
-  } else {
-    Globals.idxLightModeTheme = 1;
-    StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName), Theme_Files[1].szName);
-  }
+  Globals.idxLightModeTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : 1;
+  StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName), 
+                Theme_Files[Globals.idxLightModeTheme].szName);
 
-
-  iTheme = 2;
+  iTheme = 1;
   if (StrIsNotEmpty(Globals.DarkThemeName)) {
     for (; iTheme < ThemeItems_CountOf(); ++iTheme) {
       if (StringCchCompareXI(Globals.DarkThemeName, Theme_Files[iTheme].szName) == 0) {
@@ -503,12 +499,9 @@ void Style_Init()
       }
     }
   }
-  if (iTheme < ThemeItems_CountOf()) {
-    Globals.idxDarkModeTheme = iTheme;
-  } else {
-    Globals.idxDarkModeTheme = 1;
-    StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName), Theme_Files[1].szName);
-  }
+  Globals.idxDarkModeTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : 1;
+  StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName),
+                Theme_Files[Globals.idxDarkModeTheme].szName);
 }
 
 
