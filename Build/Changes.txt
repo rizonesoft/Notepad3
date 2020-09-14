@@ -32,7 +32,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.913.(build_#) (2020-09-13)
+Current BETA/RC Version 5.20.914.(build_#) (2020-09-14)
 ========================================================
 
 --------------------------------------------------------
@@ -64,6 +64,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- 
+[.914.1]- F/R Dialog: toggle "Esc Ctrl Chr", try reverse operation if no length change
 [.913.1]- Bad design: F/R dialog: remove auto Esc Ctrl Chr (changed to manual explicit).
 [.901.1]- Open Recent File: Rename the Cancel button to Close button.
 [.901.1]- grepWinNP3: alpha transparency on losing focus.
@@ -97,6 +98,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.914.1]- TinyExpr: crash on rectangular selection.
 [.912.1]- TinyExpr: enable CP1252 operators '×'(mul) and '÷'(div).
 [.912.1]- TinyExpr: ignoring currency chars ("$€¢£¥") in expressions.
 [.912.1]- TinyExpr: "<n>=?" result not taken into account.
