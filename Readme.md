@@ -11,7 +11,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 ## Important links!
 * Notepad3/RC download page - https://www.rizonesoft.com/downloads/notepad3
 * Latest changelog (release notes) - https://www.rizonesoft.com/downloads/notepad3/update
-* Notepad3 changelog (all versions/builds) - [Notepad3 - Full Changelog](https://github.com/rizonesoft/Notepad3/blob/master/Build/Changes.txt)
+* Notepad3 changelog (all versions/builds) - [Notepad3 - Full Changelog](https://raw.githubusercontent.com/rizonesoft/Notepad3/master/Build/Changes.txt)
 * Notepad3 Documentation - https://www.rizonesoft.com/documents/notepad3
 
 ## Rizonesoft Support
