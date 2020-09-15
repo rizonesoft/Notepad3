@@ -2369,7 +2369,7 @@ void Document::AnnotationSetStyle(Sci::Line line, int style) {
 	if (line >= 0 && line < LinesTotal()) {
 	Annotations()->SetStyle(line, style);
 	const DocModification mh(SC_MOD_CHANGEANNOTATION, LineStart(line),
-		0, 0, nullptr, line);
+			0, 0, 0, line);
 	NotifyModified(mh);
 	}
 }
@@ -2411,7 +2411,7 @@ void Document::EOLAnnotationSetStyle(Sci::Line line, int style) {
 	if (line >= 0 && line < LinesTotal()) {
 	EOLAnnotations()->SetStyle(line, style);
 	const DocModification mh(SC_MOD_CHANGEEOLANNOTATION, LineStart(line),
-		0, 0, nullptr, line);
+			0, 0, 0, line);
 	NotifyModified(mh);
 	}
 }
