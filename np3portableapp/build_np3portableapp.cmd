@@ -169,6 +169,8 @@ copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" 
 
 :: ---------------------------------------------------------------------------------------------------
 
+goto :SKIP_DLL
+
 :: Only for "Notepad3Portable_DLL" version
 :: Copy all current "Scintilla.dll" files
 if exist %NP3_WIN32_DIR%\Scintilla.dll (
@@ -182,6 +184,8 @@ if exist %NP3_X64_DIR%\Scintilla.dll (
 ) else (
     echo. \x64\Scintilla.dll does not exist
 )
+
+:SKIP_DLL
 
 :: ---------------------------------------------------------------------------------------------------
 
