@@ -46,19 +46,22 @@ extern "C" {
 #include "resource.h"
 }
 
+#include "DarkMode/DarkMode.h"
+
+
 extern "C" WININFO   g_IniWinInfo;
 extern "C" WININFO   g_DefWinInfo;
 
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V1;
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
 
-extern "C" bool      s_iStatusbarVisible[STATUS_SECTOR_COUNT];
-extern "C" int       s_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
-extern "C" int       s_vSBSOrder[STATUS_SECTOR_COUNT];
+extern "C" bool      g_iStatusbarVisible[STATUS_SECTOR_COUNT];
+extern "C" int       g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
+extern "C" int       g_vSBSOrder[STATUS_SECTOR_COUNT];
 
-extern "C" WCHAR     s_tchToolbarBitmap[MAX_PATH];
-extern "C" WCHAR     s_tchToolbarBitmapHot[MAX_PATH];
-extern "C" WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH];
+extern "C" WCHAR     g_tchToolbarBitmap[MAX_PATH];
+extern "C" WCHAR     g_tchToolbarBitmapHot[MAX_PATH];
+extern "C" WCHAR     g_tchToolbarBitmapDisabled[MAX_PATH];
 
 extern "C"           THEMEFILES Theme_Files[];
 
@@ -1036,6 +1039,8 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 //
 void LoadSettings()
 {
+  WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
+
   CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
   bool bDirtyFlag = false;  // do we have to save the file on done
@@ -1280,8 +1285,16 @@ void LoadSettings()
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
 
+    //~GetMenuStringW(Globals.hCtxMenu, CMD_WEBACTION1, Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), MF_BYCOMMAND))
+    StringCchCopyW(Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), L""); // use resource string
+    IniSectionGetString(IniSecSettings2, L"WebTmpl1MenuName", Defaults2.WebTmpl1MenuName, Settings2.WebTmpl1MenuName, COUNTOF(Settings2.WebTmpl1MenuName));
+
     StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+
+    //~GetMenuStringW(Globals.hMainMenu, CMD_WEBACTION2, Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), MF_BYCOMMAND))
+    StringCchCopyW(Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), L""); // use resource string
+    IniSectionGetString(IniSecSettings2, L"WebTmpl2MenuName", Defaults2.WebTmpl2MenuName, Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
 
     Defaults2.LexerSQLNumberSignAsComment = true;
     Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
@@ -1294,6 +1307,33 @@ void LoadSettings()
 
     Defaults2.LargeIconScalePrecent = 150;
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
+    unsigned int iValue = 0;
+    WCHAR color[32] = { L'\0' };
+    Defaults2.DarkModeBkgColor = rgbDarkColorBkgRef;
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
+    IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
+      Settings2.DarkModeBkgColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+    } else {
+      Settings2.DarkModeBkgColor = Defaults2.DarkModeBkgColor;
+    }
+    if (Globals.hbrDarkModeBkgBrush) {
+      DeleteObject(Globals.hbrDarkModeBkgBrush);
+    }
+    Globals.hbrDarkModeBkgBrush = CreateSolidBrush(Settings2.DarkModeBkgColor);
+
+    Defaults2.DarkModeTxtColor = rgbDarkColorTxtRef;
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
+    IniSectionGetString(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
+      Settings2.DarkModeTxtColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+    } else {
+      Settings2.DarkModeTxtColor = Defaults2.DarkModeTxtColor;
+    }
+#endif
 
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
@@ -1471,13 +1511,18 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(EditLayoutRTL, false);
     GET_BOOL_VALUE_FROM_INISECTION(DialogsLayoutRTL, false);
 
+#ifdef D_NP3_WIN10_DARK_MODE
+    Defaults.WinThemeDarkMode = ShouldAppsUseDarkMode();
+    Settings.WinThemeDarkMode = IniSectionGetBool(IniSecSettings, L"WinThemeDarkMode", Defaults.WinThemeDarkMode) && IsDarkModeSupported();
+#endif
+
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
     // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
     StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
     IniSectionGetString(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
-    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, false); // DarkMode switch
     GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
 
@@ -1511,19 +1556,19 @@ void LoadSettings()
     ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
 
     // cppcheck-suppress useStlAlgorithm
-    for (bool& sbv : s_iStatusbarVisible) { sbv = false; }
+    for (bool& sbv : g_iStatusbarVisible) { sbv = false; }
     int cnt = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      s_vSBSOrder[i] = -1;
+      g_vSBSOrder[i] = -1;
       int const id = s_iStatusbarSections[i];
       if (id >= 0) {
-        s_vSBSOrder[cnt++] = id;
-        s_iStatusbarVisible[id] = true;
+        g_vSBSOrder[cnt++] = id;
+        g_iStatusbarVisible[id] = true;
       }
     }
 
     IniSectionGetString(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
-    ReadVectorFromString(tchStatusBar, s_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
+    ReadVectorFromString(tchStatusBar, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
 
     Globals.bZeroBasedColumnIndex = IniSectionGetBool(StatusBar_Section, L"ZeroBasedColumnIndex", false);
     Globals.bZeroBasedCharacterCount = IniSectionGetBool(StatusBar_Section, L"ZeroBasedCharacterCount", false);
@@ -1534,11 +1579,11 @@ void LoadSettings()
     // --------------------------------------------------------------------------
 
     IniSectionGetString(ToolbarImg_Section, L"BitmapDefault", L"",
-      s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap));
+      g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap));
     IniSectionGetString(ToolbarImg_Section, L"BitmapHot", L"",
-      s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmap));
+      g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmap));
     IniSectionGetString(ToolbarImg_Section, L"BitmapDisabled", L"",
-      s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmap));
+      g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmap));
 
 
     // --------------------------------------------------------------------------
@@ -1553,7 +1598,7 @@ void LoadSettings()
 
     Defaults.ToolBarTheme = -1;
     Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
-    Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
+    Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(g_tchToolbarBitmap) ? 1 : 2);
 
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
     Defaults.DpiScaleToolBar = false;
@@ -1640,7 +1685,10 @@ void LoadSettings()
     StringCchPrintf(tchSciFontQuality, COUNTOF(tchSciFontQuality), L"%ix%i SciFontQuality", ResX, ResY);
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchSciFontQuality, Settings2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
-    IniSectionGetString(Constants.Styles_Section, Constants.StylingThemeName, L"", Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName));
+    // ------------------------------------------------------------------------
+
+    IniSectionGetString(Constants.Styles_Section, L"ThemeFileName", L"", Globals.LightThemeName, COUNTOF(Globals.LightThemeName));
+    IniSectionGetString(Constants.Styles_Section, L"DarkThemeFileName", L"", Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName));
 
     // define scintilla internal codepage
     int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
@@ -1670,7 +1718,7 @@ void LoadSettings()
   }
 
   // Scintilla Styles
-  Style_Load();
+  Style_Init();
 
   ResetIniFileCache();
 }
@@ -1907,6 +1955,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EditLayoutRTL);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, DialogsLayoutRTL);
 
+#ifdef D_NP3_WIN10_DARK_MODE
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WinThemeDarkMode);
+#endif
+
   ///~IniSectionSetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction);
 
   Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
@@ -1980,16 +2032,20 @@ static bool _SaveSettings(bool bForceSaveSettings)
   const WCHAR* const IniSecStyles = Constants.Styles_Section;
   // --------------------------------------------------------------------------
 
-  switch (Globals.idxSelectedTheme) {
-    case 1: 
-      Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
-      //~break;     
-    case 0: // fall trough
-      IniSectionDelete(IniSecStyles, Constants.StylingThemeName, false);
-      break;
-    default:
-      IniSectionSetString(IniSecStyles, Constants.StylingThemeName, Theme_Files[Globals.idxSelectedTheme].szName);
-      break;
+  if (GetModeThemeIndex() == 1) {
+    Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
+  }
+
+  if (Globals.idxLightModeTheme == 0) {
+    IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
+  } else {
+    IniSectionSetString(IniSecStyles, L"ThemeFileName", Globals.LightThemeName);
+  }
+  
+  if (Globals.idxDarkModeTheme == 0) {
+    IniSectionDelete(IniSecStyles, L"DarkThemeFileName", false);
+  } else {
+    IniSectionSetString(IniSecStyles, L"DarkThemeFileName", Globals.DarkThemeName);
   }
 
   return true;
@@ -2092,7 +2148,7 @@ __try {
       }
     }
 
-    if (Globals.idxSelectedTheme == 1) {
+    if (GetModeThemeIndex() == 1) {
       Style_SaveSettings(bForceSaveSettings);
     }
 
@@ -2102,7 +2158,7 @@ __try {
   }
 
   // separate INI files for Style-Themes
-  if (Globals.idxSelectedTheme >= 2)
+  if (GetModeThemeIndex() >= 2)
   {
     Style_SaveSettings(bForceSaveSettings);
   }

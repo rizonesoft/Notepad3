@@ -168,6 +168,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regDate2Low(L"Software\\grepWinNP3\\Date2Low", 0)
     , m_regDate2High(L"Software\\grepWinNP3\\Date2High", 0)
     , m_regShowContent(L"Software\\grepWinNP3\\ShowContent", 0)
+    , m_regTranspAlphaNoFocus(L"Software\\grepWinNP3\\TranspAlphaNoFocus", 100)
     , m_AutoCompleteFilePatterns(bPortable ? &g_iniFile : nullptr)
     , m_AutoCompleteExcludeDirsPatterns(bPortable ? &g_iniFile : nullptr)
     , m_AutoCompleteSearchPatterns(bPortable ? &g_iniFile : nullptr)
@@ -207,6 +208,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     {
     case WM_INITDIALOG:
         {
+            SetTransparency(ALPHA_OPAQUE);
             SHAutoComplete(GetDlgItem(*this, IDC_SEARCHPATH), SHACF_FILESYSTEM|SHACF_AUTOSUGGEST_FORCE_ON);
 
             m_AutoCompleteFilePatterns.Load(L"Software\\grepWinNP3\\History", L"FilePattern");
@@ -394,6 +396,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
 
             m_bUseRegex = (bPortable ? g_iniFile.GetBoolValue(L"global", L"UseRegex", false) : DWORD(m_regUseRegex));
+
+            m_TranspAlphaNoFocus = (BYTE)(bPortable ? g_iniFile.GetLongValue(L"global", L"TranspAlphaNoFocus", 80) : DWORD(m_regTranspAlphaNoFocus));
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
 
@@ -903,6 +907,20 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
         }
     break;
+    case WM_ACTIVATE:
+        switch (LOWORD(wParam))
+        {
+            case WA_INACTIVE:
+                SetTransparency(m_TranspAlphaNoFocus);
+                break;
+
+            case WA_CLICKACTIVE:
+                // mouse click activation
+            case WA_ACTIVE:
+                SetTransparency(ALPHA_OPAQUE);
+                break;
+        }
+        break;
     default:
         return FALSE;
     }

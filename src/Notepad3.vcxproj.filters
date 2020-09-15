@@ -40,6 +40,9 @@
     <Filter Include="Source Files\Config">
       <UniqueIdentifier>{413ae81d-2d64-473f-aa31-a62dd3ba7050}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DarkMode">
+      <UniqueIdentifier>{58a7392f-1acc-45d1-b93b-d8738f911286}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -399,6 +402,9 @@
     <ClCompile Include="Resample.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DarkMode\DarkMode.cpp">
+      <Filter>Source Files\DarkMode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">
@@ -562,6 +568,15 @@
     </ClInclude>
     <ClInclude Include="Resample.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkMode\DarkMode.h">
+      <Filter>Source Files\DarkMode</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkMode\IatHook.hpp">
+      <Filter>Source Files\DarkMode</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkMode\ListViewUtil.hpp">
+      <Filter>Source Files\DarkMode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

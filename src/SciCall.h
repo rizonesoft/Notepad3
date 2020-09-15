@@ -383,22 +383,30 @@ DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
 DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line)
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
+DeclareSciCallV1(SetHScrollbar, SETHSCROLLBAR, bool, visible)
+DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible)
+
+
 //=============================================================================
 //
 //  Style definition
 //
+DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid)
+DeclareSciCallV0(StyleClearAll, STYLECLEARALL);
 DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
 DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT)
 DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible)
-DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
-DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
-DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
+DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, style)
+DeclareSciCallV2(StyleSetFore, STYLESETFORE, int, style, COLORREF, rgb)
+DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, style)
+DeclareSciCallV2(StyleSetBack, STYLESETBACK, int, style, COLORREF, rgb)
+DeclareSciCallR1(GetStyleAt, GETSTYLEAT, int, DocPos, position)
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPos, length, int, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 
-DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
-DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, iStyle, bool, hotspot)
+DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, style)
+DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, style, bool, hotspot)
 DeclareSciCallV2(SetHotspotActiveFore, SETHOTSPOTACTIVEFORE, bool, useSetting, int, colour)
 DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, int, colour)
 DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline)
@@ -407,7 +415,10 @@ DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline)
 DeclareSciCallV1(SetViewWS, SETVIEWWS, int, wspc)
 DeclareSciCallV1(SetViewEOL, SETVIEWEOL, bool, eols)
 
-  //=============================================================================
+DeclareSciCallV2(StyleSetFont, STYLESETFONT, int, style, const char *, fontname)
+
+
+//=============================================================================
 //
 // Indentation Guides and Wraping
 //
@@ -487,7 +498,7 @@ DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber
 DeclareSciCallR2(MarkerNext, MARKERNEXT, DocLn, DocLn, start, int, markerMask)
 DeclareSciCallR2(MarkerPrevious, MARKERPREVIOUS, DocLn, DocLn, start, int, markerMask)
 
-  //=============================================================================
+//=============================================================================
 //
 //  Line State
 //
@@ -638,6 +649,10 @@ inline void Sci_ScrollChooseCaret() { SciCall_ScrollCaret(); SciCall_ChooseCaret
 inline void Sci_ScrollToLine(const DocLn line) { SciCall_EnsureVisible(line); SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
 inline void Sci_ScrollToCurrentLine() { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
 
+inline void Sci_RedrawScrollbars() {
+  SciCall_SetHScrollbar(false);  SciCall_SetHScrollbar(true);
+  SciCall_SetVScrollbar(false);  SciCall_SetVScrollbar(true);
+}
 
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 

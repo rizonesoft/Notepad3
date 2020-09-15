@@ -37,6 +37,7 @@
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
+#include "DarkMode/DarkMode.h"
 
 #include "SciCall.h"
 #include "SciLexer.h"
@@ -123,7 +124,7 @@ static int msgcmp(void* mqc1, void* mqc2)
       && (pMQC1->cmd == pMQC2->cmd)
       && (pMQC1->wparam == pMQC2->wparam)
       && (pMQC1->lparam == pMQC2->lparam)) {
-    return 0;
+    return FALSE;
   }
   return 1;
 }
@@ -497,7 +498,7 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 //
 size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength)
 {
-  if (!pwchBuffer || (wchLength == 0)) { return 0; }
+  if (!pwchBuffer || (wchLength == 0)) { return FALSE; }
   size_t const selSize = SciCall_GetSelText(NULL);
   if (1 < selSize) {
     char* pszText = AllocMem(selSize, HEAP_ZERO_MEMORY);
@@ -512,7 +513,7 @@ size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength)
     pwchBuffer[0] = L'\0';
     return selSize;
   }
-  return 0;
+  return FALSE;
 }
 
 
@@ -5374,7 +5375,7 @@ static void  _EscapeWildcards(char* szFind2, size_t cch, LPCEDITFINDREPLACE lpef
 //
 static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, size_t cchCnt) {
   UNUSED(hwnd);
-  if (!lpefr) { return 0; }
+  if (!lpefr) { return FALSE; }
   if (!StrIsEmptyA(lpefr->szFind)) {
     StringCchCopyNA(szFind, cchCnt, lpefr->szFind, COUNTOF(lpefr->szFind));
   }
@@ -5383,7 +5384,7 @@ static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
     StringCchCopyNA(lpefr->szFind, COUNTOF(lpefr->szFind), szFind, cchCnt);
   }
   if (StrIsEmptyA(lpefr->szFind)) {
-    return 0;
+    return FALSE;
   }
 
   bool const bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
@@ -5565,7 +5566,7 @@ static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam
 //
 //  EditFindReplaceDlgProc()
 //
-extern int    s_flagMatchText;
+extern int    g_flagMatchText;
 
 static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -5588,15 +5589,34 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   {
   case WM_INITDIALOG:
     {
+      Globals.hwndDlgFindReplace = hwnd;
+
       // clear cmd line stuff
-      s_flagMatchText = 0;
+      g_flagMatchText = 0;
       sg_pefrData = NULL;
 
       // the global static Find/Replace data structure
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SetDialogIconNP3(hwnd);
 
-      Globals.hwndDlgFindReplace = hwnd;
+      InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+      if (UseDarkMode()) {
+        int const ctlx[] = { IDOK, IDCANCEL, IDC_FINDPREV, IDC_REPLACE, IDC_REPLACEALL,
+                             IDC_REPLACEINSEL, IDC_SWAPSTRG, IDC_TOGGLE_VISIBILITY };
+        for (int i = 0; i < COUNTOF(ctlx); ++i) {
+          SetExplorerTheme(GetDlgItem(hwnd, ctlx[i]));
+        }
+        int const ctl[] = { IDC_FINDCASE, IDC_FINDWORD, IDC_FINDSTART, IDC_FINDTRANSFORMBS, IDC_FINDESCCTRLCHR, IDC_REPLESCCTRLCHR,
+                            IDC_FINDREGEXP, IDC_DOT_MATCH_ALL, IDC_FIND_OVERLAPPING, IDC_NOWRAP, IDC_FINDCLOSE,
+                            IDC_ALL_OCCURRENCES, IDC_WILDCARDSEARCH, IDC_TRANSPARENT, IDC_STATIC, IDC_STATIC2 };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+          SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+        }
+        //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+      }
+#endif
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
 
@@ -5777,12 +5797,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, sg_pefrData->bMarkOccurences);
     }
-    return !0; // (!) further processing
+    return TRUE; // (!) further processing
 
   case WM_ENABLE:
     // modal child dialog should disable main window too
     EnableWindow(Globals.hwndMain, (BOOL)wParam);
-    return !0;
+    return TRUE;
 
   case WM_DESTROY:
     {
@@ -5849,7 +5869,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       sg_pefrData = NULL;
       Globals.hwndDlgFindReplace = NULL;
     }
-    return 0;
+    return FALSE;
 
 
     case WM_DPICHANGED:
@@ -5859,10 +5879,91 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         dpi.y = HIWORD(wParam);
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
       }
-      return !0; // further processing
+      return TRUE; // further processing
 
 
-  case WM_ACTIVATE:
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    case WM_CTLCOLORDLG:
+    case WM_CTLCOLORBTN:
+    //~case WM_CTLCOLOREDIT:
+    //~case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORSTATIC:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+        int const buttons[] = { IDOK, IDCANCEL, IDC_FINDPREV, IDC_REPLACE, IDC_SWAPSTRG,
+                                IDC_REPLACEALL, IDC_REPLACEINSEL, IDC_TOGGLE_VISIBILITY };
+        for (int i = 0; i < COUNTOF(buttons); ++i) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[i]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hwnd);
+      }
+      break;
+
+#endif
+
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
+      {
+      if (sg_pefrData->bMarkOccurences) {
+        HWND hCheck = (HWND)lParam;
+        HDC hDC = (HDC)wParam;
+
+        HWND hComboBox = GetDlgItem(hwnd, IDC_FINDTEXT);
+        COMBOBOXINFO ci = { sizeof(COMBOBOXINFO) };
+        GetComboBoxInfo(hComboBox, &ci);
+
+        //if (hCheck == ci.hwndItem || hCheck == ci.hwndList)
+        if (hCheck == ci.hwndItem) {
+          SetBkMode(hDC, TRANSPARENT);
+          INT_PTR hBrush;
+          switch (s_anyMatch) {
+          case MATCH:
+            //SetTextColor(hDC, green);
+            SetBkColor(hDC, rgbGreenColorRef);
+            hBrush = (INT_PTR)hBrushGreen;
+            break;
+          case NO_MATCH:
+            //SetTextColor(hDC, blue);
+            SetBkColor(hDC, rgbBlueColorRef);
+            hBrush = (INT_PTR)hBrushBlue;
+            break;
+          case INVALID:
+          default:
+            //SetTextColor(hDC, red);
+            SetBkColor(hDC, rgbRedColorRef);
+            hBrush = (INT_PTR)hBrushRed;
+            break;
+          }
+          return hBrush;
+        }
+      }
+#ifdef D_NP3_WIN10_DARK_MODE
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+#endif
+    }
+    return FALSE;
+
+
+    case WM_ACTIVATE:
     {
       if (!sg_pefrData) { return false; }
 
@@ -6280,11 +6381,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
 
         if (bIsFindDlg && (sg_pefrData->bFindClose)) {
-          //~EndDialog(hwnd, LOWORD(wParam)); ~ not running own message loop
+          //~EndDialog(hwnd, LOWORD(wParam)); ~ (!) not running on own message loop
           DestroyWindow(hwnd);
         }
         else if ((LOWORD(wParam) != IDOK) && sg_pefrData->bReplaceClose) {
-          //~EndDialog(hwnd, LOWORD(wParam)); ~ not running own message loop
+          //~EndDialog(hwnd, LOWORD(wParam)); ~ (!) not running on own message loop
           DestroyWindow(hwnd);
         }
       }
@@ -6293,33 +6394,18 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
       case IDCANCEL:
-        //~EndDialog(hwnd, IDCANCEL); ~ not running own message loop
+        //~EndDialog(hwnd, IDCANCEL); ~ (!) not running on own message loop
         DestroyWindow(hwnd);
         break;
 
       case IDC_FINDESCCTRLCHR:
       case IDC_REPLESCCTRLCHR:
         {
-          static bool toggle = true;
+          WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
           UINT const ctrl_id = (LOWORD(wParam) == IDC_FINDESCCTRLCHR) ? IDC_FINDTEXT : IDC_REPLACETEXT;
           GetDlgItemTextW(hwnd, ctrl_id, s_tchBuf, COUNTOF(s_tchBuf));
-          size_t const len1 = StringCchLen(s_tchBuf, 0);
-          if (toggle) {
-            WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
-            size_t const len2 = SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
-            if (len1 == len2) { UnSlashCtrlW(trf); }
-            SetDlgItemTextW(hwnd, ctrl_id, trf);
-          } else {
-            size_t const len2 = UnSlashCtrlW(s_tchBuf);
-            if (len1 != len2) {
-              SetDlgItemTextW(hwnd, ctrl_id, s_tchBuf);
-            } else {
-              WCHAR trf[FNDRPL_BUFFER] = { L'\0' };
-              SlashCtrlW(trf, COUNTOF(trf), s_tchBuf);
-              SetDlgItemTextW(hwnd, ctrl_id, trf);
-            }
-          }
-          toggle = !toggle;
+          if (SlashCtrlW(trf, COUNTOF(trf), s_tchBuf) == StringCchLen(s_tchBuf, 0)) { UnSlashCtrlW(trf); }
+          SetDlgItemTextW(hwnd, ctrl_id, trf);
         }
         break;
 
@@ -6403,29 +6489,29 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         break;
 
       default:
-        return !0;
+        return TRUE;
       }
 
     } // WM_COMMAND:
-    return !0;
+    return TRUE;
 
 
     case WM_SYSCOMMAND:
       if (wParam == IDS_MUI_SAVEPOS) {
         PostWMCommand(hwnd, IDACC_SAVEPOS);
-        return !0;
+        return TRUE;
       }
       else if (wParam == IDS_MUI_RESETPOS) {
         PostWMCommand(hwnd, IDACC_RESETPOS);
-        return !0;
+        return TRUE;
       }
       else if (wParam == IDS_MUI_CLEAR_FIND_HISTORY) {
         PostWMCommand(hwnd, IDACC_CLEAR_FIND_HISTORY);
-        return !0;
+        return TRUE;
       }
       else if (wParam == IDS_MUI_CLEAR_REPL_HISTORY) {
         PostWMCommand(hwnd, IDACC_CLEAR_REPL_HISTORY);
-        return !0;
+        return TRUE;
       }
       break;
 
@@ -6471,52 +6557,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       }
       break;
 
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-      {
-        if (sg_pefrData->bMarkOccurences)
-        {
-          HWND hCheck = (HWND)lParam;
-          HDC hDC = (HDC)wParam;
-
-          HWND hComboBox = GetDlgItem(hwnd, IDC_FINDTEXT);
-          COMBOBOXINFO ci = { sizeof(COMBOBOXINFO) };
-          GetComboBoxInfo(hComboBox, &ci);
-
-          //if (hCheck == ci.hwndItem || hCheck == ci.hwndList)
-          if (hCheck == ci.hwndItem) {
-            SetBkMode(hDC, TRANSPARENT);
-            INT_PTR hBrush;
-            switch (s_anyMatch) {
-            case MATCH:
-              //SetTextColor(hDC, green);
-              SetBkColor(hDC, rgbGreenColorRef);
-              hBrush = (INT_PTR)hBrushGreen;
-              break;
-            case NO_MATCH:
-              //SetTextColor(hDC, blue);
-              SetBkColor(hDC, rgbBlueColorRef);
-              hBrush = (INT_PTR)hBrushBlue;
-              break;
-            case INVALID:
-            default:
-              //SetTextColor(hDC, red);
-              SetBkColor(hDC, rgbRedColorRef);
-              hBrush = (INT_PTR)hBrushRed;
-              break;
-            }
-            return hBrush;
-          }
-        }
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-
     default:
       break;
 
   } // switch(umsg)
 
-  return 0; // message handled
+  return FALSE; // message handled
 }
 
 
@@ -6933,7 +6979,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
 
   char szFind[FNDRPL_BUFFER];
   size_t const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
-  if (slen <= 0) { return 0; }
+  if (slen <= 0) { return FALSE; }
   int const sFlags = (int)(lpefr->fuFlags);
 
   // SCI_REPLACETARGET or SCI_REPLACETARGETRE
@@ -6976,7 +7022,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   } 
   
   iCount = utarray_len(ReplPosUTArray);
-  if (iCount <= 0) { FreeMem(pszReplace); return 0; }
+  if (iCount <= 0) { FreeMem(pszReplace); return FALSE; }
 
   // ===  iterate over findings and replace strings  ===
   DocPos searchStart = iStartPos;
@@ -7898,16 +7944,24 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
   {
     case WM_INITDIALOG:
       {
-        WCHAR wchLineCaption[96];
-        WCHAR wchColumnCaption[96];
-
         SetDialogIconNP3(hwnd);
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+          SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        }
+#endif
 
         DocLn const iCurLine = SciCall_LineFromPosition(SciCall_GetCurrentPos())+1;
         DocLn const iMaxLnNum = SciCall_GetLineCount();
         DocPos const iCurColumn = SciCall_GetColumn(SciCall_GetCurrentPos()) + 1;
         DocPos const iLineEndPos = Sci_GetNetLineLength(iCurLine);
 
+        WCHAR wchLineCaption[96];
+        WCHAR wchColumnCaption[96];
         FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE, 
           (int)clampp(iMaxLnNum, 0, INT_MAX));
         FormatLngStringW(wchColumnCaption, COUNTOF(wchColumnCaption), IDS_MUI_GOTO_COLUMN, 
@@ -7932,6 +7986,39 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
       }
       return true;
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+      CASE_WM_CTLCOLOR_SET:
+        if (UseDarkMode()) {
+          return SetDarkModeCtlColors((HDC)wParam);
+        }
+        break;
+
+      case WM_SETTINGCHANGE:
+        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+          SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        }
+        break;
+
+      case WM_THEMECHANGED:
+        if (IsDarkModeSupported()) {
+          bool const darkModeEnabled = CheckDarkModeEnabled();
+          AllowDarkModeForWindow(hwnd, darkModeEnabled);
+          RefreshTitleBarThemeColor(hwnd);
+
+        int const buttons[] = { IDOK, IDCANCEL };
+          for (int id = 0; id < COUNTOF(buttons); ++id) {
+            HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+            AllowDarkModeForWindow(hBtn, darkModeEnabled);
+            SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+          }
+          UpdateWindow(hwnd);
+        }
+        break;
+
+#endif
 
 
     case WM_COMMAND:
@@ -8050,6 +8137,15 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         id_capture = 0;
 
         SetDialogIconNP3(hwnd);
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+          SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        }
+#endif
 
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
@@ -8097,12 +8193,12 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
       }
-      return !0;
+      return TRUE;
 
     case WM_DESTROY:
       //DeleteObject(hFontNormal);
       DeleteObject(hFontHover);
-      return 0;
+      return FALSE;
 
     case WM_NCACTIVATE:
       if (!(bool)wParam) {
@@ -8112,27 +8208,53 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           id_capture = 0;
         }
       }
-      return 0;
+      return FALSE;
 
-    case WM_CTLCOLORSTATIC:
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
       {
-        DWORD dwId = GetWindowLong((HWND)lParam,GWL_ID);
-        HDC hdc = (HDC)wParam;
-
+        DWORD const dwId = GetWindowLong((HWND)lParam, GWL_ID);
+        HDC const hdc = (HDC)wParam;
+        INT_PTR const hbrReturn = UseDarkMode() ? SetDarkModeCtlColors(hdc) : 
+                                                  (INT_PTR)GetSysColorBrush(COLOR_BTNFACE);
         if (dwId >= 200 && dwId <= 205) {
-          SetBkMode(hdc,TRANSPARENT);
+          SetBkMode(hdc, TRANSPARENT);
           if (GetSysColorBrush(COLOR_HOTLIGHT)) {
             SetTextColor(hdc, GetSysColor(COLOR_HOTLIGHT));
-          }
-          else {
+          } else {
             SetTextColor(hdc, RGB(0, 0, 0xFF));
           }
           //SelectObject(hdc, (dwId == id_hover) ? hFontHover : hFontNormal);
           SelectObject(hdc, hFontHover);
-          return (INT_PTR)GetSysColorBrush(COLOR_BTNFACE);
         }
+        return hbrReturn;
+      } 
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       }
       break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+
+        int const buttons[] = { IDOK, IDCANCEL };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hwnd);
+      }
+      break;
+
+#endif
 
     case WM_MOUSEMOVE:
       {
@@ -8222,9 +8344,9 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           EndDialog(hwnd,IDCANCEL);
           break;
       }
-      return !0;
+      return TRUE;
   }
-  return 0;
+  return FALSE;
 }
 
 
@@ -8270,6 +8392,19 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         piAlignMode = (int*)lParam;
         SetDialogIconNP3(hwnd);
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+          SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { 100, 101, 102, 103, 104, -1 };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
+        }
+#endif
         CheckRadioButton(hwnd,100,104,*piAlignMode+100);
         CenterDlgInParent(hwnd, NULL);
       }
@@ -8278,6 +8413,38 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+
+        int const buttons[] = { IDOK, IDCANCEL };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hwnd);
+      }
+      break;
+
+#endif
 
     case WM_COMMAND:
       switch(LOWORD(wParam))
@@ -8351,17 +8518,58 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
       {
         pdata = (PENCLOSESELDATA)lParam;
         SetDialogIconNP3(hwnd);
-        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,255,0);
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+          SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        }
+#endif
+        SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 255, 0);
         SetDlgItemTextW(hwnd,100,pdata->pwsz1);
         SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
         SetDlgItemTextW(hwnd,101,pdata->pwsz2);
         CenterDlgInParent(hwnd, NULL);
       }
-      return true;
+      return TRUE;
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-      return true;
+      return TRUE;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+
+        int const buttons[] = { IDOK, IDCANCEL };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hwnd);
+      }
+      break;
+
+#endif
 
     case WM_COMMAND:
       switch(LOWORD(wParam))
@@ -8376,9 +8584,9 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
           EndDialog(hwnd,IDCANCEL);
           break;
       }
-      return true;
+      return TRUE;
   }
-  return false;
+  return FALSE;
 }
 
 
@@ -8432,7 +8640,18 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
       {
         pdata = (PTAGSDATA)lParam;
         SetDialogIconNP3(hwnd);
-        if (!wchOpenTagStrg[0]) { StringCchCopy(wchOpenTagStrg, COUNTOF(wchOpenTagStrg), L"<tag>"); }
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+          SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+        }
+#endif
+        if (!wchOpenTagStrg[0]) {
+          StringCchCopy(wchOpenTagStrg, COUNTOF(wchOpenTagStrg), L"<tag>");
+        }
         if (!wchCloseTagStrg[0]) { StringCchCopy(wchCloseTagStrg, COUNTOF(wchCloseTagStrg), L"</tag>"); }
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT, COUNTOF(wchOpenTagStrg)-1,0);
         SetDlgItemTextW(hwnd,100, wchOpenTagStrg);
@@ -8449,6 +8668,38 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+
+        int const buttons[] = { IDOK, IDCANCEL };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hwnd);
+      }
+      break;
+
+#endif
 
     case WM_COMMAND:
       switch(LOWORD(wParam))
@@ -8575,21 +8826,29 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         }
 
         SetDialogIconNP3(hwnd);
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+          SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+          SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+          //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+          int const ctl[] = { 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, -1 };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+          }
+        }
+#endif
 
         if (*piSortFlags & SORT_DESCENDING) {
           CheckRadioButton(hwnd, 100, 102, 101);
         }
         else if (*piSortFlags & SORT_SHUFFLE) {
           CheckRadioButton(hwnd,100,102,102);
-          DialogEnableControl(hwnd,103,false);
-          DialogEnableControl(hwnd,104,false);
-          DialogEnableControl(hwnd,105,false);
-          DialogEnableControl(hwnd,106,false);
-          DialogEnableControl(hwnd,107,false);
-          DialogEnableControl(hwnd,108,false);
-          DialogEnableControl(hwnd,109,false);
-          DialogEnableControl(hwnd,110,false);
-          DialogEnableControl(hwnd,111,false);
+          int const ctl[] = { 103, 104, 105, 106, 107, 108, 109, 110, 111, 112 };
+          for (int i = 0; i < COUNTOF(ctl); ++i) {
+            DialogEnableControl(hwnd, ctl[i], false);
+          }
         }
         else {
           CheckRadioButton(hwnd, 100, 102, 100);
@@ -8639,6 +8898,50 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    //case WM_DRAWITEM: {
+    //  // needs .rc: BS_OWNERDRAW flag
+    //  const DRAWITEMSTRUCT *const pDIS = (const DRAWITEMSTRUCT *const)lParam;
+    //  UINT const ctl[] = { 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112 };
+    //  UINT const ctlId = pDIS->CtlID;
+    //  for (UINT i = 0; i < COUNTOF(ctl); ++i) {
+    //    if (ctl[i] == ctlId)
+    //      return OwnerDrawTextItem(hwnd, wParam, lParam);
+    //  }
+    //  return FALSE;
+    //}
+
+    CASE_WM_CTLCOLOR_SET:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
+
+    case WM_THEMECHANGED:
+      if (IsDarkModeSupported()) {
+        bool const darkModeEnabled = CheckDarkModeEnabled();
+        AllowDarkModeForWindow(hwnd, darkModeEnabled);
+        RefreshTitleBarThemeColor(hwnd);
+
+        int const buttons[] = { IDOK, IDCANCEL, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112 };
+        for (int id = 0; id < COUNTOF(buttons); ++id) {
+          HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+        }
+        UpdateWindow(hwnd);
+      }
+      break;
+
+#endif
 
     case WM_COMMAND:
       switch(LOWORD(wParam))

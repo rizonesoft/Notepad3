@@ -1,5 +1,6 @@
-// encoding: UTF-8
+#pragma once
 /******************************************************************************
+* encoding: UTF-8
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -11,9 +12,6 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#pragma once
-#ifndef _NP3_TYPEDEFS_H_
-#define _NP3_TYPEDEFS_H_
 
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
@@ -30,9 +28,11 @@
 #define NOMINMAX
 #endif
 
-#define VC_EXTRALEAN 1
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
+#endif
 #include <windows.h>
+#include <CommCtrl.h>
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
@@ -143,7 +143,7 @@ typedef enum {
   STATUS_OCCURRENCE, STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF,
   STATUS_LEXER, STATUS_DOCCHAR, STATUS_OCCREPLACE, STATUS_TINYEXPR,
   STATUS_SECTOR_COUNT,
-  STATUS_HELP = 255
+  STATUS_HELP = SB_SIMPLEID // (!)
 } STATUS_SECTOR_T;
 
 #define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } 
@@ -244,9 +244,12 @@ typedef struct _cmq
 
 // --------------------------------------------------------------------------
 
-#define rgbRedColorRef    (RGB(255, 170, 170))
-#define rgbGreenColorRef  (RGB(170, 255, 170))
-#define rgbBlueColorRef   (RGB(170, 200, 255))
+#define rgbRedColorRef       (RGB(255, 170, 170))
+#define rgbGreenColorRef     (RGB(170, 255, 170))
+#define rgbBlueColorRef      (RGB(170, 200, 255))
+#define rgbBlueColorRef      (RGB(170, 200, 255))
+#define rgbDarkColorBkgRef   (RGB(0x1F, 0x1F, 0x1F))
+#define rgbDarkColorTxtRef   (RGB(0xEF, 0xEF, 0xEF))
 
 // --------------------------------------------------------------------------
 
@@ -302,8 +305,6 @@ typedef struct _constants_t
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
   const WCHAR* const FileSearchGrepWin;
-  const WCHAR* const StylingThemeName;
-
   const WCHAR* const Settings_Section;
   const WCHAR* const Settings2_Section;
   const WCHAR* const Window_Section;
@@ -322,6 +323,7 @@ typedef struct _globals_t
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
   HINSTANCE hLngResContainer;
+  DWORD     WindowsBuildNumber;
   bool      bCanSaveIniFile;
   int       iAvailLngCount;
   bool      bPrefLngNotAvail;
@@ -330,6 +332,7 @@ typedef struct _globals_t
   HWND      hwndEdit;
   HANDLE    hndlScintilla;
   HANDLE    hwndToolbar;
+  HANDLE    hwndRebar;
   HWND      hwndStatus;
   DWORD     dwLastError;
   HMENU     hMainMenu;
@@ -378,15 +381,22 @@ typedef struct _globals_t
   bool      bFindReplCopySelOrClip;
   bool      bReplaceInitialized;
   bool      bDocHasInconsistentEOLs;
-  unsigned  idxSelectedTheme;
+  unsigned  idxLightModeTheme;
+  unsigned  idxDarkModeTheme;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  HBRUSH hbrDarkModeBkgBrush;
+#endif
 
   FR_STATES FindReplaceMatchFoundState;
 
-  WCHAR     SelectedThemeName[SMALL_BUFFER];
-  WCHAR     WorkingDirectory[MAX_PATH];
-  WCHAR     IniFile[MAX_PATH];
-  WCHAR     IniFileDefault[MAX_PATH];
-  WCHAR     CurrentFile[MAX_PATH];
+  WCHAR LightThemeName[SMALL_BUFFER];
+  WCHAR DarkThemeName[SMALL_BUFFER];
+
+  WCHAR WorkingDirectory[MAX_PATH];
+  WCHAR IniFile[MAX_PATH];
+  WCHAR IniFileDefault[MAX_PATH];
+  WCHAR CurrentFile[MAX_PATH];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -494,6 +504,10 @@ typedef struct _settings_t
   bool DialogsLayoutRTL;
   int  FocusViewMarkerMode;
 
+#ifdef D_NP3_WIN10_DARK_MODE
+  bool WinThemeDarkMode;
+#endif
+
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH];
@@ -571,6 +585,11 @@ typedef struct _settings2_t
   float  AnalyzeReliableConfidenceLevel;
   float  LocaleAnsiCodePageAnalysisBonus;
 
+#ifdef D_NP3_WIN10_DARK_MODE
+  COLORREF DarkModeBkgColor;
+  COLORREF DarkModeTxtColor;
+#endif
+
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[MINI_BUFFER];
   WCHAR DefaultDirectory[MAX_PATH];
@@ -590,7 +609,9 @@ typedef struct _settings2_t
   WCHAR TimeStampFormat[SMALL_BUFFER];
 
   WCHAR WebTemplate1[MAX_PATH];
+  WCHAR WebTmpl1MenuName[MICRO_BUFFER];
   WCHAR WebTemplate2[MAX_PATH];
+  WCHAR WebTmpl2MenuName[MICRO_BUFFER];
   WCHAR AdministrationTool[MAX_PATH];
   WCHAR DefaultWindowPosition[MINI_BUFFER];
 
@@ -698,5 +719,3 @@ typedef struct _themeFiles
 // ----------------------------------------------------------------------------
 
 //=============================================================================
-
-#endif //_NP3_TYPEDEFS_H_

@@ -2753,7 +2753,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
         if (iSection->pComment) {
             if (bNeedNewLine) {
                 a_oOutput.Write(SI_NEWLINE_A);
-                //§§§a_oOutput.Write(SI_NEWLINE_A);
+                //???a_oOutput.Write(SI_NEWLINE_A);
                 bNeedNewLine = false;
             }
             if (!OutputMultiLineText(a_oOutput, convert, iSection->pComment)) {
@@ -2763,7 +2763,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         if (bNeedNewLine) {
             a_oOutput.Write(SI_NEWLINE_A);
-            //§§§a_oOutput.Write(SI_NEWLINE_A);
+            //???a_oOutput.Write(SI_NEWLINE_A);
             bNeedNewLine = false;
         }
 
@@ -2839,7 +2839,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                 bNeedNewLine = false;
             }
         }
-        //§§§bNeedNewLine = true;
+        //???bNeedNewLine = true;
     }
 
     return SI_Error::SI_OK;

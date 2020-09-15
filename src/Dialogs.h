@@ -66,7 +66,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
-bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
+void SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
                     LPCWSTR lpszFile, int iFormat, bool bModified,
                     UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
@@ -82,8 +82,8 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 //void SnapToDefaultButton(HWND);
 
 inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
-  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
-  if (Settings.DialogsLayoutRTL) { SetWindowLayoutRTL(hwnd, true); }
+  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); } else { SetWindowTheme(hwnd, L"", L""); }
+  SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 }
 
 // resize dialog directions
@@ -128,8 +128,10 @@ void DeleteBitmapButton(HWND hwnd, int nCtrlId);
 
 
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
-void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText);
-bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID);
+void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText);
+bool StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID);
+//void StatusPartSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText);
+//bool StatusPartSetTextID(HWND hwnd, BYTE nPart, UINT uID);
 
 int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
 int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);

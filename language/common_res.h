@@ -8,6 +8,11 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC                       (-1)
 #endif
+#define IDC_STATIC2                      (-2)
+#define IDC_STATIC3                      (-3)
+#define IDC_STATIC4                      (-4)
+#define IDC_STATIC5                      (-5)
+#define IDC_STATIC6                      (-6)
 
 #define IDR_MUI_MAINMENU                10001
 #define IDR_MUI_POPUPMENU               10002
@@ -677,6 +682,7 @@
 #define IDM_VIEW_EDIT_LINECOMMENT       40483
 #define IDM_VIEW_EVALTINYEXPRONSEL      40484
 #define IDM_VIEW_UNICODE_POINTS         40485
+#define IDM_VIEW_WIN_DARK_MODE          40486
 
 // keep Scintilla(SC) order
 #define IDM_SET_RENDER_TECH_GDI         40500   // SC_TECHNOLOGY_DEFAULT(0)

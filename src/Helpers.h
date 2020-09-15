@@ -157,6 +157,19 @@ inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0x
 
 // ----------------------------------------------------------------------------
 
+#define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
+
+inline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
+
+  bool const mask = RGB_SUB(MulDiv(rgb >> 0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
+                    RGB_SUB(MulDiv(rgb >> 8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
+                    RGB_SUB(MulDiv(rgb >> 16, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20;
+
+  return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
+}
+
+// ----------------------------------------------------------------------------
+
 #define SendWMCommandEx(hwnd, id, extra)  SendMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (extra)), 0)
 #define SendWMCommand(hwnd, id)           SendWMCommandEx((hwnd), (id), 1)
 #define PostWMCommand(hwnd, id)           PostMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), 1), 0)
@@ -180,6 +193,52 @@ inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
 // ----------------------------------------------------------------------------
 
 inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
+
+inline int SetModeBkColor(const HDC hdc, const bool bDarkMode) {
+#ifdef D_NP3_WIN10_DARK_MODE
+  return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_BTNFACE));
+#else
+  return SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
+#endif
+}
+
+inline int SetModeTextColor(const HDC hdc, const bool bDarkMode) {
+#ifdef D_NP3_WIN10_DARK_MODE
+  return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_BTNTEXT));
+#else
+  return SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+#endif
+}
+
+inline COLORREF GetModeWndBkColor(const bool bDarkMode) {
+#ifdef D_NP3_WIN10_DARK_MODE
+  return bDarkMode ? Settings2.DarkModeBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
+#else
+  return (COLORREF)GetSysColor(COLOR_WINDOW);
+#endif
+}
+
+inline COLORREF GetModeWndTextColor(const bool bDarkMode) {
+#ifdef D_NP3_WIN10_DARK_MODE
+  return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
+#else
+  return (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
+#endif
+}
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
+  SetBkColor(hdc, Settings2.DarkModeBkgColor);
+  SetTextColor(hdc, Settings2.DarkModeTxtColor);
+  //~RECT rc;
+  //~GetWindowRect(WindowFromDC(hdc), &rc);
+  //~DrawEdge(hdc, &rc, EDGE_RAISED, BF_FLAT | BF_MONO);
+  return (INT_PTR)Globals.hbrDarkModeBkgBrush;
+}
+
+#endif
 
 // ----------------------------------------------------------------------------
 
@@ -224,6 +283,7 @@ inline int IsFullHD(HWND hwnd, int resX, int resY)
 // ----------------------------------------------------------------------------
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
+
 bool IsProcessElevated();
 //bool IsUserAdmin();
 bool IsUserInAdminGroup();
