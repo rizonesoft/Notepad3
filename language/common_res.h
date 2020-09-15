@@ -245,7 +245,6 @@
 #define IDC_FINDWORD                    18005
 #define IDC_FINDSTART                   18006
 #define IDC_FINDTRANSFORMBS             18007
-#define IDC_FINDAUTOESCCTRLCHR          18008
 #define IDC_FINDREGEXP                  18009
 #define IDC_DOT_MATCH_ALL               18010
 #define IDC_NOWRAP                      18011
@@ -362,6 +361,8 @@
 #define IDC_SHOWEDGELINE                18121
 #define IDC_BACKGRDCOLOR                18122
 #define IDC_CLEAR_LIST                  18123
+#define IDC_FINDESCCTRLCHR              18124
+#define IDC_REPLESCCTRLCHR              18125
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
@@ -370,9 +371,9 @@
 #define CMD_SCROLLDOWN                  20004
 #define CMD_CTRLLEFT                    20005
 #define CMD_CTRLRIGHT                   20006
-//#define CMD_DELETEBACK                  20007
+#define CMD_DELETEBACK                  20007
 #define CMD_CTRLBACK                    20008
-//#define CMD_CLEAR                       20009
+#define CMD_CLEAR                       20009
 #define CMD_CTRLDEL                     20010
 #define CMD_CTRLTAB                     20011
 #define CMD_RECODEDEFAULT               20012
@@ -424,6 +425,7 @@
 #define CMD_CHECK_INDENTATION           20058
 #define CMD_ARROW_UP                    20059
 #define CMD_ARROW_DOWN                  20060
+#define CMD_ENTER_RTURN                 20061
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501

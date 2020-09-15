@@ -363,7 +363,6 @@ static const te_variable *find_lookup(const state *s, const char *name, size_t l
     return 0;
 }
 
-
 void next_token(state *s) {
     s->type = TOK_NULL;
 
@@ -415,7 +414,10 @@ void next_token(state *s) {
                     case '+': s->type = TOK_INFIX; s->function = get_function_pointer_2d(add); break;
                     case '-': s->type = TOK_INFIX; s->function = get_function_pointer_2d(sub); break;
                     case '*': s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;
+                    case -41: s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;    // '×' CP-1252
                     case '/': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
+                    case ':': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
+                    case -9: s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;    // '÷' CP-1252
                     case '^': s->type = TOK_INFIX; s->function = get_function_pointer_2d(pow); break;
                     case '%':
                         if (s->next++[0] == '%') {

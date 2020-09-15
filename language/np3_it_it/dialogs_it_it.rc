@@ -88,13 +88,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Trova testo"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Stringa di ri&cerca:",IDC_STATIC,7,7,66,8
+    LTEXT           "Stringa di ri&cerca:",IDC_STATIC,7,7,60,8
+    CONTROL         "<a>Carattere Ctrl Esc</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Case-sensitive",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
     CONTROL         "Solo parole &intere",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,90,10
     CONTROL         "Solo l'&inizio della parola",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Trasforma backslash",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "&Auto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "Ricerca Regular &Expression",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "Il punto corrisponde a &tutto",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,95,10
     CONTROL         "&Ricerca sovrapposta",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
     PUSHBUTTON      "&< Precedente",IDC_FINDPREV,221,24,63,14
     PUSHBUTTON      "Chiudi",IDCANCEL,221,111,63,14
-    CONTROL         "<a>Vai a Sostituisci (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,115,74,10
+    CONTROL         "<a>Vai a Sostituisci (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,115,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,201,97,14,10
@@ -121,15 +120,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Sostituisci Testo"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Stringa da &cercare:",IDC_STATIC,7,7,66,8
+    LTEXT           "Stringa da &cercare:",IDC_STATIC,7,7,60,8
+    CONTROL         "<a>Carattere Ctrl Esc</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "&Sostituisci con:",IDC_STATIC,7,36,54,8
+    CONTROL         "<a>Carattere Ctrl Esc</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Case-sensitive",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
     CONTROL         "Solo parole &intere",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,90,10
     CONTROL         "Solo l'&inizio della parola",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Trasforma backslash",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,90,10
-    CONTROL         "&Auto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "Ricerca &Regular Expression",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Il punto corrisponde a &tutto",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,95,10
     CONTROL         "&Ricerca sovrapposta",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "Sostituisci &Tutto",IDC_REPLACEALL,221,75,63,14
     PUSHBUTTON      "Scambia stringhe",IDC_SWAPSTRG,150,32,59,12
     PUSHBUTTON      "Chiudi",IDCANCEL,221,126,63,14
-    CONTROL         "<a>Vai a Cerca (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,142,74,10
+    CONTROL         "<a>Vai a Cerca (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,201,126,14,10

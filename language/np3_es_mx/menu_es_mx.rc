@@ -354,7 +354,7 @@ BEGIN
             MENUITEM "&Coincidir sólo visible",             IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "Coincidir &sensible a mayúsculas",    IDM_VIEW_MARKOCCUR_CASE
-            POPUP "Coincidir &palabra completa solo"
+            POPUP "Coincidir sólo &palabra completa"
             BEGIN
                 MENUITEM "&OFF",                            IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Coincidir palabra &seleccionada", IDM_VIEW_MARKOCCUR_WORD
@@ -534,8 +534,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Alternar el pliegue actual",                 IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Abrir Web Action 1",                         CMD_WEBACTION1
-        MENUITEM "Abrir Web Action 2",                         CMD_WEBACTION2
+        MENUITEM "Abrir Web Acción 1",                         CMD_WEBACTION1
+        MENUITEM "Abrir Web Acción 2",                         CMD_WEBACTION2
         MENUITEM "Abrir Explorador de archivos",               IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"

@@ -12,12 +12,11 @@ Rizonesoft Notepad3 --- CHANGELOG ---
 --------------------------------------------------------
 LEGEND:
 --------------------------------------------------------
-1) NEW: (Added, Feature)
+1) NEW: (Added, Feature, Optimize)
 2) CHANGES:
-3) ENHANCEMENT: (Optimize)
-4) FIXES: (Debug)
-5) REMOVED:
-6) TRANSLATIONS (MUI): (New Language)
+3) FIXES: (Debug)
+4) REMOVED:
+5) TRANSLATIONS (MUI): (New Language)
 
 --------------------------------------------------------
 ABBREVIATIONS:
@@ -33,13 +32,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.902.(build_#) (2020-09-02)
+Version 5.20.915.1 (15 September 2020)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- 
+[.911.1]- Allow colon (:) as alternate divide operator to calculate TinyExpr.
 [.825.1]- grepWinNP3: default extension on saving search result list.
 [.824.1]- Focused-View: mode Fold-Only.
 [.823.1]- Mark Occurrences: show additional Bookmark (Arrows).
@@ -64,6 +64,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- 
+[.914.1]- F/R Dialog: toggle "Esc Ctrl Chr", try reverse operation if no length change
+[.913.1]- Bad design: F/R dialog: remove auto Esc Ctrl Chr (changed to manual explicit).
 [.901.1]- Open Recent File: Rename the Cancel button to Close button.
 [.901.1]- grepWinNP3: alpha transparency on losing focus.
 [.828.1]- Rearange and review "File Encoding" menu to clarify behavior.
@@ -93,15 +95,20 @@ CHANGES:
 [.818.1]- Update Scintilla Library (SCI) version 4.4.4 (2020-08-18).
 
 --------------------------------------------------------
-ENHANCEMENT:
---------------------------------------------------------
-[.###.#]- 
-[.722.2]- 
-
---------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- 
+[.914.1]- TinyExpr: crash on rectangular selection.
+[.912.1]- TinyExpr: enable CP1252 operators '×'(mul) and '÷'(div).
+[.912.1]- TinyExpr: ignoring currency chars ("$€¢£¥") in expressions.
+[.912.1]- TinyExpr: "<n>=?" result not taken into account.
+[.911.2]- TinyExpr: inline evaluation on active option only.
+[.911.2]- TinyExpr: allow rh equal and questionmark.
+[.911.2]- TinyExpr: newline after evaluation by '=<ENTER>'.
+[.911.1]- Allow RETURN / ENTER after equal sign (=) to calculate TinyExpr.
+[.908.1]- SubMenu active marker (Occurrences Indicator Options).
+[.906.1]- Delete marker of (comletely) deleted lines.
+[.905.1]- Initial state of "Focus View" button in F/R-Dlg.
 [.901.2]- Buffer size calculation.
 [.901.2]- Running out of occurrences bookmarks.
 [.901.1]- Crash caused by buffer overflow.
@@ -149,17 +156,17 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- 
-[.722.2]- 
+[.913.1]- Nop SendMsg.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- 
 [.802.1]- Portuguese Brazilian (pt-BR).
+[.722.2]- Turkish (tr-TR) in processing...
 [.722.2]- Chinese Traditional (zh-TW) in waiting...
 [.722.2]- Hindi (hi-IN) in waiting...
 [.722.2]- Indonesian (id-ID) in waiting...
-[.722.2]- Turkish (tr-TR) in waiting...
 [.722.2]- Vietnamese (vi-VN) in waiting...
 
 

@@ -89,12 +89,12 @@ CAPTION "Rechercher Texte"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Rechercher:",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Esc Ctrl Caract.</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Respe&cter la casse",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,63,10
     CONTROL         "&Mot entier seulement",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "&Début du mot seulement",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transformer backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Echap A&uto Car de Ctrl",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "Avec &Expression Régulière",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "Po&int correspond à tous",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,85,10
     CONTROL         "Recherche superp&osée",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,85,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Fermer",IDCANCEL,211,111,55,14
-    CONTROL         "<a>Aller à Remplacer (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,120,115,84,10
+    CONTROL         "<a>Aller à Remplacer (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,120,115,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,97,14,10
@@ -122,14 +121,15 @@ CAPTION "Remplacer Texte"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Rechercher :",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Remplacer par :",IDC_STATIC,7,36,48,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Respe&cter la casse",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,63,10
     CONTROL         "&Mot entier seulement",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "&Début du mot seulement",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transformer backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Echap A&uto Car de Ctrl",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "Avec &Expression Régulière",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Po&int correspond à tous",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,85,10
     CONTROL         "Recherche superp&osée",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,85,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "Rempl&acer tous",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Permuter te&xtes",IDC_SWAPSTRG,140,32,59,12
     PUSHBUTTON      "Fermer",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Aller à Rechercher (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,120,142,84,10
+    CONTROL         "<a>Aller à Rechercher (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,120,142,84,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,126,14,10

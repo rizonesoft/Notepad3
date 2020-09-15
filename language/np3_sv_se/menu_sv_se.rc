@@ -93,23 +93,23 @@ BEGIN
             MENUITEM "Öppna filutforskaren",                        IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Re&vert from File\tF5",                           IDM_FILE_REVERT
+        MENUITEM "Återgå till filens version\tF5",                  IDM_FILE_REVERT
         POPUP "Teckenkodning"
         BEGIN
-            POPUP "&Revert from File as"
+            POPUP "Återgå till filversion som"
             BEGIN
-                MENUITEM "&Default (Setting)",                      CMD_RECODEDEFAULT
+                MENUITEM "Grundinställning",                        CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",                     CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",                      CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",                CMD_RECODEGB18030
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII som UT&F-8\tCtrl+Shift+F8",         CMD_RELOADASCIIASUTF8
-                MENUITEM "Force U&CHARDET Analysis",                CMD_RELOADFORCEDETECTION
+                MENUITEM "Tvinga U&CHARDET analys",                 CMD_RELOADFORCEDETECTION
                 MENUITEM "Ignorera kodningstaggar\tAlt+F8",         CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF8",                  IDM_ENCODING_RECODE
+                MENUITEM "&Fler teckenkodningar...\tF8",            IDM_ENCODING_RECODE
             END
-            POPUP "&Set Document as"
+            POPUP "Koda dokumentet som"
             BEGIN
                 MENUITEM "&ANSI",                                   IDM_ENCODING_ANSI
                 MENUITEM "&Unicode",                                IDM_ENCODING_UNICODE
@@ -117,10 +117,10 @@ BEGIN
                 MENUITEM "UTF-&8\tShift+F8",                        IDM_ENCODING_UTF8
                 MENUITEM "UTF-8 med &signatur",                     IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF9",                  IDM_ENCODING_SELECT
+                MENUITEM "Fler teckenkodningar...\tF9",             IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Set Encoding &Defaults...",                   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Ange förvald teckenkodning...",                   IDM_ENCODING_SETDEFAULT
         END
         POPUP "Radslut"
         BEGIN
@@ -220,7 +220,7 @@ BEGIN
                 MENUITEM "[ ]\tCtrl+4",                             CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                             CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "Grave accent\tCtrl+6",                    CMD_EMBRACE4
+                MENUITEM "Grav accent\tCtrl+6",                    CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "Med...\tAlt+Q",                           IDM_EDIT_ENCLOSESELECTION
             END
@@ -229,7 +229,7 @@ BEGIN
             MENUITEM "Utfyllnad med blanksteg\tAlt+B",              IDM_EDIT_PADWITHSPACES
             MENUITEM "Ta bort första bokstav\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
             MENUITEM "Ta bort sista bokstav\tAlt+U",                IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Ta bort blankstek i slutet av rader\tAlt+W",  IDM_EDIT_TRIMLINES
+            MENUITEM "Ta bort blanksteg i slutet av rader\tAlt+W",  IDM_EDIT_TRIMLINES
             MENUITEM "Komprimera blanksteg\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Modifiera rader...\tAlt+M",                   IDM_EDIT_MODIFYLINES
@@ -317,7 +317,7 @@ BEGIN
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
+            MENUITEM "Sök i filer\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "Visa"
@@ -349,7 +349,7 @@ BEGIN
         POPUP "Markera förekomster"
         BEGIN
             MENUITEM "Visa aktiva\tAlt+A",                          IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use &Bookmarks too",                          IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "Markera i bokmärken",                         IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Matcha endast synliga",                       IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -379,13 +379,13 @@ BEGIN
         POPUP "Visa"
         BEGIN
             MENUITEM "Fokuserad vy\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
-            POPUP "View Mode"
+            POPUP "Visningsläge"
             BEGIN
-                MENUITEM "Fold",                                    IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                                IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Highlight",                               IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",                        IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Highlight && Fold",                       IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Ihopvikning",                             IDM_VIEW_FV_FOLD
+                MENUITEM "Bokmärke",                                IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Markera",                                 IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Bokmärk och vik ihop",                    IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Markera och vik ihop",                    IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "Logg",                                        IDM_VIEW_CHASING_DOCTAIL
@@ -454,7 +454,7 @@ BEGIN
             MENUITEM "Avsluta Notepad3",                            IDM_VIEW_ESCEXIT
         END
         MENUITEM "Spara innan verktyg används",                     IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Räkna ut Tiny-E&xpressions",                     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Räkna ut Tiny-E&xpressions",                      IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
         BEGIN
@@ -487,8 +487,8 @@ BEGIN
             END
             POPUP "R&TL Layout (GDI)"
             BEGIN
-                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Redigera area",                  IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Andra dialogrutor",              IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Dubbelriktad"
             BEGIN
@@ -551,14 +551,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                                    IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",                        IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",                       IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type",                     IDM_EDIT_DELETE_MARKED
+        MENUITEM "Ta bort markör",                                  IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Klipp ut rader av markerad typ",                  IDM_EDIT_CUT_MARKED
+        MENUITEM "Kopiera rader av markerad typ",                   IDM_EDIT_COPY_MARKED
+        MENUITEM "Ta bort rader av markerad typ",                   IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
         MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",                                 IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Marginal för bokmärken",                          IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN

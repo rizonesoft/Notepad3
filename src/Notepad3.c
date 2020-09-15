@@ -62,7 +62,6 @@ LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
   /*7*/ L"back:#FF8F20",
   /*8*/ L"back:#950095"};
 
-
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
 CONSTANTS_T const Constants = { 
@@ -220,7 +219,11 @@ static const int NUMTOOLBITMAPS = 30;
 
 // ----------------------------------------------------------------------------
 
-const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
+const char chr_currency[6] = { '$', 0x80, 0xA2, 0xA3, 0xA5, '\0' }; // "$€¢£¥"
+
+// ----------------------------------------------------------------------------
+
+const WCHAR *const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
 const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
 //=============================================================================
@@ -2035,6 +2038,62 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
 //=============================================================================
 //
+//  _EvalTinyExpr() - called on '?' or ENTER insert
+//
+static bool _EvalTinyExpr(bool qmark)
+{
+  if (!Settings.EvalTinyExprOnSelection) { return false; } 
+  
+  DocPos const posCur = SciCall_GetCurrentPos();
+  DocPos const posBegin = qmark ? SciCall_PositionBefore(posCur) : posCur;
+  DocPos posBefore = SciCall_PositionBefore(posBegin);
+  char chBefore = SciCall_GetCharAt(posBefore);
+  while (IsBlankChar(chBefore) && (posBefore > 0)) {
+    posBefore = SciCall_PositionBefore(posBefore);
+    chBefore = SciCall_GetCharAt(posBefore);
+  }
+  if (chBefore == '=') // got "=?" or ENTER : evaluate expression trigger
+  {
+    int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posCur)) + 1;
+    char *lineBuf = (char *)AllocMem(lineLen, HEAP_ZERO_MEMORY);
+    WCHAR *lineBufW = (WCHAR *)AllocMem(lineLen * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    if (lineBuf && lineBufW)
+    {
+      DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
+
+      lineBuf[iLnCaretPos - (posCur - posBefore)] = '\0'; // exclude "=?"
+      
+      char const defchar = (char)0x24;
+      MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, lineLen);
+      WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
+      StrDelChrA(lineBuf, chr_currency);
+      FreeMem(lineBufW);
+
+      const char *pBegin = lineBuf;
+      while (IsBlankChar(*pBegin)) { ++pBegin; }       
+
+      double dExprEval = 0.0;
+      te_xint_t exprErr = 1;
+      while (*pBegin && exprErr) {
+        dExprEval = te_interp(pBegin++, &exprErr);
+      }
+      FreeMem(lineBuf);
+
+      if (!exprErr) {
+        char chExpr[64] = { '\0' };
+        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
+        SciCall_SetSel(posBegin, posCur);
+        SciCall_ReplaceSel(chExpr);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
 //  MsgCreate() - Handles WM_CREATE
 //
 //
@@ -3529,6 +3588,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   // --------------------------------------------------------------------------
 
+  int const mnuMain = 2;
+  int const mnuSubOcc = 13;
+  int const mnuSubSubWord = 6;
+
   if (Settings.MarkOccurrencesMatchWholeWords) {
     i = IDM_VIEW_MARKOCCUR_WORD;
   }
@@ -3539,7 +3602,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_MARKOCCUR_WNONE;
   }
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
-  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
+  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, (i != IDM_VIEW_MARKOCCUR_WNONE));
   
   i = IsMarkOccurrencesEnabled();
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
@@ -3547,8 +3610,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
-  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13), 5, i);
-  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 13, i);
+  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, i);
+  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc, i);
 
   // --------------------------------------------------------------------------
 
@@ -4174,6 +4237,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           if (!Settings2.NoCutLineOnEmptySelection) {
             _BEGIN_UNDO_ACTION_;
+            SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
             SciCall_LineCut();
             _END_UNDO_ACTION_;
           }
@@ -4193,6 +4257,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         s_bLastCopyFromMe = true;
       }
       _BEGIN_UNDO_ACTION_;
+        SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
         SciCall_LineCut();
       _END_UNDO_ACTION_;
     }
@@ -4371,6 +4436,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINE:
       {
         _BEGIN_UNDO_ACTION_;
+        SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
         SciCall_LineDelete();
         _END_UNDO_ACTION_;
       }
@@ -4429,11 +4495,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-    //case CMD_DELETEBACK:
-    //  ///~_BEGIN_UNDO_ACTION_;
-    //  SciCall_DeleteBack();
-    //  ///~_END_UNDO_ACTION_;
-    //  break;
+    case CMD_DELETEBACK:
+      {
+        ///~_BEGIN_UNDO_ACTION_;
+        EditDeleteMarkerInSelection();
+        SciCall_DeleteBack();
+        ///~_END_UNDO_ACTION_;
+      }
+      break;
 
     case CMD_VK_INSERT:
       SciCall_EditToggleOverType();
@@ -4688,7 +4757,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         GUID guid;
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
-            StrTrimW(tchMaxPathBuffer, L"{}");
+            StrTrim(tchMaxPathBuffer, L"{}");
             //char chMaxPathBuffer[MAX_PATH] = { '\0' };
             //if (WideCharToMultiByteEx(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
             //  EditReplaceSelection(chMaxPathBuffer, false);
@@ -5854,6 +5923,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+    case CMD_ENTER_RTURN:
+      {
+        _EvalTinyExpr(false);
+        SciCall_NewLine();
+      }
+      break;
 
     // Newline with toggled auto indent setting
     case CMD_SHIFTCTRLENTER:
@@ -5863,11 +5938,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case CMD_CLEAR:
     case IDM_EDIT_CLEAR:
-    //case CMD_CLEAR:
-        ///~_BEGIN_UNDO_ACTION_;
-        SciCall_Clear();
-        ///~_END_UNDO_ACTION_;
+      ///~_BEGIN_UNDO_ACTION_;
+      EditDeleteMarkerInSelection();
+      SciCall_Clear();
+      ///~_END_UNDO_ACTION_;
       break;
 
 
@@ -5971,10 +6047,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           _END_UNDO_ACTION_;
         }
         else {
-          if (iStartPos != iEndPos)
+          if (iStartPos != iEndPos) {
             SciCall_DelWordRight();
-          else // iStartPos == iEndPos
+          } else { // iStartPos == iEndPos
+            SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
             SciCall_LineDelete();
+          }
         }
       }
       break;
@@ -6870,7 +6948,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
     ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, szTextW, COUNTOF(szTextW));
     szTextW[cchTextW] = L'\0';
-    StrTrimW(szTextW, L" \r\n\t");
+    StrTrim(szTextW, L" \r\n\t");
 
     const WCHAR* chkPreFix = L"file://";
 
@@ -6898,7 +6976,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
       size_t const lenPfx = StringCchLenW(chkPreFix, 0);
       WCHAR* szFileName = &(szTextW[lenPfx]);
       szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
-      StrTrimW(szFileName, L"/");
+      StrTrim(szFileName, L"/");
 
       PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
       if (PathIsDirectory(szFileName))
@@ -7143,42 +7221,6 @@ static void  _HandleAutoCloseTags()
           SciCall_SetSel(iCurPos,iCurPos);
         }
       }
-    }
-  }
-}
-
-
-//=============================================================================
-//
-//  _HandleTinyExpr() - called on '?' insert
-//
-static void  _HandleTinyExpr()
-{
-  DocPos const iCurPos = SciCall_GetCurrentPos();
-  DocPos const iPosBefore = SciCall_PositionBefore(iCurPos);
-  char const chBefore = SciCall_GetCharAt(iPosBefore - 1);
-  if (chBefore == '=') // got "=?" evaluate expression trigger
-  {
-    DocPos lineLen = SciCall_LineLength(SciCall_LineFromPosition(iCurPos));
-    char* lineBuf = (char*)AllocMem(lineLen + 1, HEAP_ZERO_MEMORY);
-    if (lineBuf) {
-      DocPos const iLnCaretPos = SciCall_GetCurLine((unsigned int)lineLen, lineBuf);
-      lineBuf[(iLnCaretPos > 1) ? (iLnCaretPos - 2) : 0] = '\0'; // break before "=?"
-
-      te_xint_t iExprErr  = 1;
-      const char* pBegin = lineBuf;
-      double dExprEval = 0.0;
-
-      while (*pBegin && iExprErr) {
-        dExprEval = te_interp(pBegin++, &iExprErr);
-      }
-      if (*pBegin && !iExprErr) {
-        char chExpr[64] = { '\0' };
-        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
-        SciCall_SetSel(iPosBefore, iCurPos);
-        SciCall_ReplaceSel(chExpr);
-      }
-      FreeMem(lineBuf);
     }
   }
 }
@@ -7522,7 +7564,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
           break;
         case '?':
-          _HandleTinyExpr();
+          _EvalTinyExpr(true);
           break;
         default:
           break;
@@ -7679,11 +7721,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case TBN_QUERYDELETE:
         case TBN_QUERYINSERT:
           // (!) must exist and return true 
-          GUARD_RETURN(!0);
+          GUARD_RETURN(TRUE);
 
         case TBN_BEGINADJUST:
           s_tb_reset_already = false;
-          GUARD_RETURN(0);
+          GUARD_RETURN(FALSE);
 
         case TBN_GETBUTTONINFO:
         {
@@ -7693,10 +7735,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
             StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
             CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
-            GUARD_RETURN(!0);
+            GUARD_RETURN(TRUE);
           }
         }
-        GUARD_RETURN(0);
+        GUARD_RETURN(FALSE);
 
         case TBN_RESET:
         {
@@ -7716,14 +7758,14 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           s_tb_reset_already = !s_tb_reset_already;
         }
-        GUARD_RETURN(0);
+        GUARD_RETURN(FALSE);
 
         case TBN_ENDADJUST:
           UpdateToolbar();
-          GUARD_RETURN(!0);
+          GUARD_RETURN(TRUE);
 
         default:
-          GUARD_RETURN(0);
+          GUARD_RETURN(FALSE);
       }
       break;
 
@@ -8606,8 +8648,9 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
   char tmpRectSelN[_tmpBufCnt] = { '\0' };
   
   DocPosU const selCount = SciCall_GetSelections();
-  DocPosU const calcBufSize = _tmpBufCnt * selCount;
-  char* calcBuffer = (char*)AllocMem(calcBufSize + 1, HEAP_ZERO_MEMORY);
+  int const calcBufSize = (int)(_tmpBufCnt * selCount + 1);
+  char* calcBuffer = (char*)AllocMem(calcBufSize, HEAP_ZERO_MEMORY);
+  WCHAR* calcBufferW = (WCHAR*)AllocMem(calcBufSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
   bool bLastCharWasDigit = false;
   for (DocPosU i = 0; i < selCount; ++i)
@@ -8618,6 +8661,11 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
     StringCchCopyNA(tmpRectSelN, _tmpBufCnt, SciCall_GetRangePointer(posSelStart, (DocPos)cchToCopy), cchToCopy);
     StrTrimA(tmpRectSelN, " ");
 
+    char const defchar = (char)0x24;
+    MultiByteToWideChar(Encoding_SciCP, 0, calcBuffer, -1, calcBufferW, calcBufSize);
+    WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), calcBufferW, -1, calcBuffer, calcBufSize, &defchar, NULL);
+    StrDelChrA(calcBuffer, chr_currency);
+
     if (!StrIsEmptyA(tmpRectSelN))
     {
       if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit) {
@@ -8627,7 +8675,10 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
       StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), tmpRectSelN);
     }
   }
-  return te_interp(calcBuffer, piExprError);
+  double const result = te_interp(calcBuffer, piExprError);
+  FreeMem(calcBufferW);
+  FreeMem(calcBuffer);
+  return result;
 }
 
 
@@ -8856,14 +8907,22 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (Settings.EvalTinyExprOnSelection)
     {
       if (bIsSelCharCountable) {
-        static char  chSelectionBuffer[XHUGE_BUFFER];
+        static char chSeBuf[LARGE_BUFFER];
+        static WCHAR wchSelBuf[LARGE_BUFFER];
         DocPos const iSelSize = SciCall_GetSelText(NULL);
-        if (iSelSize < COUNTOF(chSelectionBuffer)) // should be fast !
+        if (iSelSize < COUNTOF(chSeBuf)) // should be fast !
         {
-          SciCall_GetSelText(chSelectionBuffer);
+          SciCall_GetSelText(chSeBuf);
           //~StrDelChrA(chExpression, " \r\n\t\v");
-          StrDelChrA(chSelectionBuffer, "\r\n");
-          s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
+          StrDelChrA(chSeBuf, "\r\n");
+          StrTrimA(chSeBuf, "= ?");
+
+          char const defchar = (char)0x24;
+          MultiByteToWideChar(Encoding_SciCP, 0, chSeBuf, -1, wchSelBuf, LARGE_BUFFER);
+          WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), wchSelBuf, -1, chSeBuf, LARGE_BUFFER, &defchar, NULL);
+          StrDelChrA(chSeBuf, chr_currency);
+          
+          s_dExpression = te_interp(chSeBuf, &s_iExprError);
         }
         else {
           s_iExprError = -1;

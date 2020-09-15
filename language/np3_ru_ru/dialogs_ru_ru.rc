@@ -88,13 +88,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Найти текст"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "На&йти:",IDC_STATIC,7,7,24,8
+    LTEXT           "На&йти:",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Экранирование</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Учитывать &регистр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,83,10
     CONTROL         "Только &целые слова",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,85,10
     CONTROL         "Только &начало слов",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,83,10
     CONTROL         "&Управляющие символы",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,95,10
-    CONTROL         "Авто&экр. упр. символов",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,73,94,10
     CONTROL         "Регулярные &выражения",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,97,10
     CONTROL         "Перекрыва&ющийся поиск",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,102,10
     CONTROL         "Т&очка — любой символ",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "Найти &далее",IDOK,246,7,60,14
     PUSHBUTTON      "&Предыдущее",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "Закрыть",IDCANCEL,246,111,60,14
-    CONTROL         "<a>Заменить (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,133,115,74,10
+    CONTROL         "<a>Заменить (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,115,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,97,14,10
@@ -121,15 +120,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Заменить тест"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "На&йти:",IDC_STATIC,7,7,24,8
+    LTEXT           "На&йти:",IDC_STATIC,7,7,46,8
+    CONTROL         "<a>Экранирование</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Заменит&ь на:",IDC_STATIC,7,36,46,8
+    CONTROL         "<a>Экранирование</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Учитывать &регистр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,83,10
     CONTROL         "Только &целые слова",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,85,10
     CONTROL         "Только &начало слов",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,83,10
     CONTROL         "&Управляющие символы",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,95,10
-    CONTROL         "Авто&экр. упр. символов",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,102,94,10
+    //CONTROL         "Авто&экр. упр. символов",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,102,94,10
     CONTROL         "Регулярные &выражения",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Т&очка — любой символ",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,94,10
     CONTROL         "Перекрыва&ющийся поиск",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,102,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "Заменить в&сё",IDC_REPLACEALL,246,75,60,14
     PUSHBUTTON      "Поменять местами",IDC_SWAPSTRG,156,32,73,12
     PUSHBUTTON      "Закрыть",IDCANCEL,246,126,60,14
-    CONTROL         "<a>Найти (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,133,142,74,10
+    CONTROL         "<a>Найти (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,126,14,10

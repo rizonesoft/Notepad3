@@ -88,13 +88,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Hľadať text"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Hľ&adaný reťazec:",IDC_STATIC,7,7,57,8
+    LTEXT           "Hľ&adaný reťazec:",IDC_STATIC,7,7,55,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Rozlišovať veľkosť písma",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,93,10
     CONTROL         "Len &celé slová",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "Začiatok &slov",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "Trans&form. spätné lomítko",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,94,10
-    CONTROL         "A&uto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "Re&gulárne výrazy",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "&Bodka na všetky výsledky",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,95,10
     CONTROL         "&Prekryť hľadanie",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,84,10
@@ -107,8 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "&Hľadať",IDOK,211,7,55,14
     PUSHBUTTON      "&Naspäť",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Zatvoriť",IDCANCEL,211,111,55,14
-    CONTROL         "<a>Zameniť (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,115,74,10
+    CONTROL         "<a>Zameniť (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,115,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,97,14,10
@@ -121,15 +120,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Zameniť text"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Hľ&adaný reťazec:",IDC_STATIC,7,7,59,8
+    LTEXT           "Hľ&adaný reťazec:",IDC_STATIC,7,7,55,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Za&meniť za:",IDC_STATIC,7,36,44,8
+    LTEXT           "Za&meniť za:",IDC_STATIC,7,36,46,8
+    CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Rozlišovať veľkosť písma",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,93,10
     CONTROL         "Len &celé slová",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "Začiatok &slov",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "Trans&form. spätné lomítko",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,94,10
-    CONTROL         "A&uto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "Re&gulárne výrazy",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "&Bodka na všetky výsledky",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,95,10
     CONTROL         "&Prekryť hľadanie",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,69,10
@@ -146,8 +146,7 @@ BEGIN
     PUSHBUTTON      "&Všetko",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Vymeniť reťazce",IDC_SWAPSTRG,138,32,61,12
     PUSHBUTTON      "Zatvoriť",IDCANCEL,211,138,55,14
-    CONTROL         "<a>Hľadať (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,142,74,10
+    CONTROL         "<a>Hľadať (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,126,14,10
