@@ -609,7 +609,9 @@ typedef struct _settings2_t
   WCHAR TimeStampFormat[SMALL_BUFFER];
 
   WCHAR WebTemplate1[MAX_PATH];
+  WCHAR WebTmpl1MenuName[MICRO_BUFFER];
   WCHAR WebTemplate2[MAX_PATH];
+  WCHAR WebTmpl2MenuName[MICRO_BUFFER];
   WCHAR AdministrationTool[MAX_PATH];
   WCHAR DefaultWindowPosition[MINI_BUFFER];
 

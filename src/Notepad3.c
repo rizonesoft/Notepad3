@@ -722,6 +722,7 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
     InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
     return res;
   }
+
   return false;
 }
 
@@ -3225,7 +3226,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     return FALSE;
   }
 
-  HMENU hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+  HMENU const hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
 
   POINT pt;
@@ -3233,6 +3234,16 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   pt.y = (int)(short)HIWORD(lParam);
 
   int imenu = 0;
+
+  // modify configured items
+  HMENU const hStdCtxMenu = GetSubMenu(hMenuCtx, imenu);
+  if (StrIsNotEmpty(Settings2.WebTmpl1MenuName)) {
+    ModifyMenu(hStdCtxMenu, CMD_WEBACTION1, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION1, Settings2.WebTmpl1MenuName);
+  }
+  if (StrIsNotEmpty(Settings2.WebTmpl2MenuName)) {
+    ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
+  }
+
   switch (nID) {
   case IDC_EDIT:
     {
@@ -3927,7 +3938,8 @@ static void _DynamicLanguageMenuCmd(int cmd)
     SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(Globals.hwndMain);
 
-    PostMessage(Globals.hwndMain, WM_THEMECHANGED, 0, 0);
+    UpdateStatusbar(true);
+    UpdateUI();
   }
   return;
 }

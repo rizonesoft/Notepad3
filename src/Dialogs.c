@@ -4947,7 +4947,7 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
   SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
   //~SnapToDefaultButton(hDlg);
 
-  SendMessage(hDlg, WM_THEMECHANGED, 0, 0); // DarkMode extension
+  SendMessage(hDlg, WM_THEMECHANGED, 0, 0); // (!) DarkMode finalization
 }
 
 

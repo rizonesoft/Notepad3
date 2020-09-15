@@ -1285,8 +1285,16 @@ void LoadSettings()
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
 
+    //~GetMenuStringW(Globals.hCtxMenu, CMD_WEBACTION1, Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), MF_BYCOMMAND))
+    StringCchCopyW(Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), L""); // use resource string
+    IniSectionGetString(IniSecSettings2, L"WebTmpl1MenuName", Defaults2.WebTmpl1MenuName, Settings2.WebTmpl1MenuName, COUNTOF(Settings2.WebTmpl1MenuName));
+
     StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+
+    //~GetMenuStringW(Globals.hMainMenu, CMD_WEBACTION2, Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), MF_BYCOMMAND))
+    StringCchCopyW(Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), L""); // use resource string
+    IniSectionGetString(IniSecSettings2, L"WebTmpl2MenuName", Defaults2.WebTmpl2MenuName, Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
 
     Defaults2.LexerSQLNumberSignAsComment = true;
     Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
