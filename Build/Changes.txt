@@ -32,7 +32,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.914.(build_#) (2020-09-14)
+Version 5.20.915.1 (15 September 2020)
 ========================================================
 
 --------------------------------------------------------
@@ -163,10 +163,10 @@ TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- 
 [.802.1]- Portuguese Brazilian (pt-BR).
+[.722.2]- Turkish (tr-TR) in processing...
 [.722.2]- Chinese Traditional (zh-TW) in waiting...
 [.722.2]- Hindi (hi-IN) in waiting...
 [.722.2]- Indonesian (id-ID) in waiting...
-[.722.2]- Turkish (tr-TR) in waiting...
 [.722.2]- Vietnamese (vi-VN) in waiting...
 
 
