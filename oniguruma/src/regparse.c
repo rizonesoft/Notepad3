@@ -440,6 +440,7 @@ strcat_capa(UChar* dest, UChar* dest_end, const UChar* src, const UChar* src_end
             int capa)
 {
   UChar* r;
+  ptrdiff_t dest_delta = dest_end - dest;
 
   if (dest)
     r = (UChar* )xrealloc(dest, capa + 1);
@@ -447,7 +448,7 @@ strcat_capa(UChar* dest, UChar* dest_end, const UChar* src, const UChar* src_end
     r = (UChar* )xmalloc(capa + 1);
 
   CHECK_NULL_RETURN(r);
-  onig_strcpy(r + (dest_end - dest), src, src_end);
+  onig_strcpy(r + dest_delta, src, src_end);
   return r;
 }
 
