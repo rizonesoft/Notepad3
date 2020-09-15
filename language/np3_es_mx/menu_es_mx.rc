@@ -534,8 +534,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Alternar el pliegue actual",                 IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Abrir Web Action 1",                         CMD_WEBACTION1
-        MENUITEM "Abrir Web Action 2",                         CMD_WEBACTION2
+        MENUITEM "Abrir Web Acción 1",                         CMD_WEBACTION1
+        MENUITEM "Abrir Web Acción 2",                         CMD_WEBACTION2
         MENUITEM "Abrir Explorador de archivos",               IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
