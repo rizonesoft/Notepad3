@@ -7768,7 +7768,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_MULTIEDGEADDLINE:
-		vs.theMultiEdge.emplace_back(wParam, lParam);
+		vs.AddMultiEdge(wParam, lParam);
 		InvalidateStyleRedraw();
 		break;
 
@@ -7776,6 +7776,15 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		std::vector<EdgeProperties>().swap(vs.theMultiEdge); // Free vector and memory, C++03 compatible
 		InvalidateStyleRedraw();
 		break;
+
+	case SCI_GETMULTIEDGECOLUMN: {
+			const size_t which = wParam;
+			// size_t is unsigned so this also handles negative inputs.
+			if (which >= vs.theMultiEdge.size()) {
+				return -1;
+			}
+			return vs.theMultiEdge[which].column;
+		}
 
 	case SCI_GETACCESSIBILITY:
 		return SC_ACCESSIBILITY_DISABLED;
