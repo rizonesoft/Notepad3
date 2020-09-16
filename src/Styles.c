@@ -1139,8 +1139,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // --------------------------------------------------------------------------
   
-  Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].iStyle,
-                  pCurrentStandard->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
+  // margin (line number, bookmarks, folding) style
+  Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].szValue);
 
   int iValue;
   COLORREF dColor;
@@ -1432,8 +1432,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   if (s_pLexCurrent == &lexANSI) { // special ANSI-Art style
 
-    Style_SetMargin(hwnd, s_pLexCurrent->Styles[STY_MARGIN].iStyle,
-                    s_pLexCurrent->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
+    // margin (line number, bookmarks, folding) style
+    Style_SetMargin(hwnd, s_pLexCurrent->Styles[STY_MARGIN].szValue);
 
     if (Settings2.UseOldStyleBraceMatching) {
       Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
@@ -1813,19 +1813,21 @@ void Style_SetBookmark(HWND hwnd, bool bShowMargin)
 //
 //  Style_SetMargin()
 //
-void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
+void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
 {
-  if (iStyle == STYLE_LINENUMBER) {
-    Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle, false); // line numbers
-    SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); // allow selection drag
+  COLORREF clrBack = UseDarkMode() ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_3DFACE);
+
+  Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle, false); // line numbers
+  if (!Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack, false)) {
+    clrBack = UseDarkMode() ? (clrBack + RGB(0x10, 0x10, 0x10)) : GetSysColor(COLOR_3DFACE);
   }
+  SciCall_StyleSetBack(STYLE_LINENUMBER, clrBack);
+  SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
+  SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); // allow selection drag
+  //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
   COLORREF clrFore = SciCall_StyleGetFore(STYLE_LINENUMBER);
   Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &clrFore, true);
-
-  COLORREF clrBack = SciCall_StyleGetBack(STYLE_LINENUMBER);
-  Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack, true);
-  //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
   // CallTips
   SciCall_CallTipSetFore(clrFore);
@@ -4093,17 +4095,25 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static bool       bIsStyleSelected = false;
     static bool       bWarnedNoIniFile = false;
     static WCHAR*     Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
+    static WCHAR      title[128] = { L'\0' };
 
-    static WCHAR tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
+    static WCHAR      tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
 
     switch (umsg)
     {
         case WM_INITDIALOG:
         {
             SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-            SetDialogIconNP3(hwnd);
 
+            SetDialogIconNP3(hwnd);
             InitWindowCommon(hwnd, true);
+
+            WCHAR buf[80] = { L'\0' };
+            GetWindowText(hwnd, buf, COUNTOF(buf));
+            unsigned const iTheme = GetModeThemeIndex();
+            const WCHAR *const strThemeName = (iTheme <= 1) ? L"Standard" : Theme_Files[iTheme].szName;
+            StringCchPrintf(title, COUNTOF(title), L"%s  -  %s", buf, strThemeName);
+            SetWindowText(hwnd, title);
 
 #ifdef D_NP3_WIN10_DARK_MODE
             if (UseDarkMode()) {
@@ -4230,6 +4240,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
               }
               hFontTitle = CreateFontIndirectW(&lf);
               SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+              SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)title);
             }
         }
         return TRUE;
@@ -4261,6 +4272,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
             hFontTitle = CreateFontIndirectW(&lf);
             SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+            SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)title);
           }
 
           MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);

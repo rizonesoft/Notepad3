@@ -54,7 +54,7 @@ void   Style_SetReadonly(HWND hwnd, bool);
 void   Style_HighlightCurrentLine(HWND hwnd, int);
 void   Style_SetFolding(HWND hwnd, bool bShowMargin);
 void   Style_SetBookmark(HWND hwnd, bool bShowMargin);
-void   Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle);
+void   Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle);
 bool   Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile);
 bool   Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile);
 void   Style_SetLexerFromName(HWND hwnd,LPCWSTR lpszFile,LPCWSTR lpszName);
