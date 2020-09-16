@@ -168,7 +168,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regDate2Low(L"Software\\grepWinNP3\\Date2Low", 0)
     , m_regDate2High(L"Software\\grepWinNP3\\Date2High", 0)
     , m_regShowContent(L"Software\\grepWinNP3\\ShowContent", 0)
-    , m_regTranspAlphaNoFocus(L"Software\\grepWinNP3\\TranspAlphaNoFocus", 100)
+    , m_regOpacityNoFocus(L"Software\\grepWinNP3\\OpacityNoFocus", 100)
     , m_AutoCompleteFilePatterns(bPortable ? &g_iniFile : nullptr)
     , m_AutoCompleteExcludeDirsPatterns(bPortable ? &g_iniFile : nullptr)
     , m_AutoCompleteSearchPatterns(bPortable ? &g_iniFile : nullptr)
@@ -397,7 +397,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             m_bUseRegex = (bPortable ? g_iniFile.GetBoolValue(L"global", L"UseRegex", false) : DWORD(m_regUseRegex));
 
-            m_TranspAlphaNoFocus = (BYTE)(bPortable ? g_iniFile.GetLongValue(L"global", L"TranspAlphaNoFocus", 80) : DWORD(m_regTranspAlphaNoFocus));
+            m_OpacityNoFocus = (BYTE)(bPortable ? g_iniFile.GetLongValue(L"global", L"OpacityNoFocus", 100) : DWORD(m_regOpacityNoFocus));
+            m_OpacityNoFocus = (m_OpacityNoFocus > 100) ? 100 : m_OpacityNoFocus;
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
 
@@ -911,7 +912,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         switch (LOWORD(wParam))
         {
             case WA_INACTIVE:
-                SetTransparency(m_TranspAlphaNoFocus);
+                SetTransparency((BYTE)MulDiv(m_OpacityNoFocus, 255, 100));
                 break;
 
             case WA_CLICKACTIVE:

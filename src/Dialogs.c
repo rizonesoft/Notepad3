@@ -4612,8 +4612,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", tchNotepad3Path);
       IniSectionSetString(globalSection, L"editorcmd", tchTemp);
 
-      long const iTranspAlpha = IniSectionGetLong(globalSection, L"TranspAlphaNoFocus", MulDiv(Settings2.FindReplaceOpacityLevel, 255, 100));
-      IniSectionSetLong(globalSection, L"TranspAlphaNoFocus", iTranspAlpha);
+      long const iOpacity = IniSectionGetLong(globalSection, L"OpacityNoFocus", Settings2.FindReplaceOpacityLevel);
+      IniSectionSetLong(globalSection, L"OpacityNoFocus", iOpacity);
 
       // [settings]
       const WCHAR *const settingsSection = L"settings";
