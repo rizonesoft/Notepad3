@@ -1522,7 +1522,11 @@ void LoadSettings()
     StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
     IniSectionGetString(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
-    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, false); // DarkMode switch
+#ifdef D_NP3_WIN10_DARK_MODE
+    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, !Settings.WinThemeDarkMode);
+#else
+    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true); // DarkMode switch
+#endif
     GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
 
@@ -2036,13 +2040,13 @@ static bool _SaveSettings(bool bForceSaveSettings)
     Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
   }
 
-  if (Globals.idxLightModeTheme == 0) {
+  if (Globals.idxLightModeTheme <= 1) {
     IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
   } else {
     IniSectionSetString(IniSecStyles, L"ThemeFileName", Globals.LightThemeName);
   }
   
-  if (Globals.idxDarkModeTheme == 0) {
+  if (Globals.idxDarkModeTheme <= 1) {
     IniSectionDelete(IniSecStyles, L"DarkThemeFileName", false);
   } else {
     IniSectionSetString(IniSecStyles, L"DarkThemeFileName", Globals.DarkThemeName);

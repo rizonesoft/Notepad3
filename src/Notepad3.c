@@ -1382,9 +1382,6 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
   }
   
-  // hide bright menu strip on DarkMode (if no usr override)
-  Settings.ShowMenubar = Settings.ShowMenubar || !UseDarkMode(); 
-
   SetMenu(Globals.hwndMain, Globals.hMainMenu);
   SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
   DrawMenuBar(Globals.hwndMain);
@@ -5921,8 +5918,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         unsigned const iCurTheme = GetModeThemeIndex();
 
         Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode;
+
+        // hide/show bright menu strip on switching
+        if (Settings.ShowMenubar == Defaults.ShowMenubar) {
+          Settings.ShowMenubar = !Settings.WinThemeDarkMode;
+        }
+        Defaults.ShowMenubar = !Settings.WinThemeDarkMode; // (!) need for saving
+
         SetDarkMode(Settings.WinThemeDarkMode);
-        Settings.ShowMenubar = !UseDarkMode(); // hide/show bright menu strip on switching
     
         Style_DynamicThemesMenuCmd(GetModeThemeIndex() + IDM_THEMES_DEFAULT, iCurTheme);
         
