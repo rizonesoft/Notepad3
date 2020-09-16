@@ -423,13 +423,15 @@ BEGIN
     END
     POPUP "&Vzhľad"
     BEGIN
-        MENUITEM "&Prispôsobenie schémy...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Prispôsobenie schémy...\tCtrl+F12",                  IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "&Schémy syntaxov...\tF12",                           IDM_VIEW_SCHEME
-        MENUITEM "&2. spoločná schéma\tShift+F12",                     IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&Schémy syntaxov...\tF12",                            IDM_VIEW_SCHEME
+        MENUITEM "&2. spoločná schéma\tShift+F12",                      IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Globálne východzie &písmo...\tAlt+F12",               IDM_VIEW_FONT
         MENUITEM "Východzie písmo akt&uálnej schémy...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Dark Mode",                                   IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Nastavenia"
     BEGIN

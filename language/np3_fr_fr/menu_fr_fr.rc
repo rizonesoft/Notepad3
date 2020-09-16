@@ -430,6 +430,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Police par &Défaut Globale...\tAlt+F12",                  IDM_VIEW_FONT
         MENUITEM "Police par Défaut C&oloration Courante...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Mode sombre",                                     IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Paramètres"
     BEGIN

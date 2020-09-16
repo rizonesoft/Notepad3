@@ -430,6 +430,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Fuente global por defecto...\tAlt+F12",          IDM_VIEW_FONT
         MENUITEM "Fuente del Esquema &actual por defecto...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Modo oscuro",                             IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Configuración"
     BEGIN
