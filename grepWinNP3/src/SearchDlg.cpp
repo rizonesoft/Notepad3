@@ -281,7 +281,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 if (bPortable)
                 {
                     m_patternregex = g_iniFile.GetValue(L"global", L"pattern", L"");
-                    m_bUseRegexForPaths = !!_wtoi(g_iniFile.GetValue(L"global", L"UseFileMatchRegex", L""));
+                    m_bUseRegexForPaths = g_iniFile.GetBoolValue(L"global", L"UseFileMatchRegex", false);
                 }
                 else
                 {
@@ -384,15 +384,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (!m_bSizeC)
             {
                 m_bAllSize = bPortable ? g_iniFile.GetBoolValue(L"global", L"AllSize", false) : !!DWORD(m_regAllSize);
-                m_sizeCmp = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"SizeCombo", L"0")) : (int)DWORD(m_regSizeCombo);
+                m_sizeCmp = bPortable ? g_iniFile.GetLongValue(L"global", L"SizeCombo", 0) : (int)DWORD(m_regSizeCombo);
             }
             if (!m_bDateLimitC)
             {
-                m_DateLimit = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"DateLimit", L"0")) : (int)DWORD(m_regDateLimit);
-                m_Date1.dwLowDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date1Low", L"0"), nullptr, 10) : DWORD(m_regDate1Low);
-                m_Date1.dwHighDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date1High", L"0"), nullptr, 10) : DWORD(m_regDate1High);
-                m_Date2.dwLowDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date2Low", L"0"), nullptr, 10) : DWORD(m_regDate2Low);
-                m_Date2.dwHighDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date2High", L"0"), nullptr, 10) : DWORD(m_regDate2High);
+                m_DateLimit = bPortable ? g_iniFile.GetLongValue(L"global", L"DateLimit", 0) : (int)DWORD(m_regDateLimit);
+                m_Date1.dwLowDateTime = bPortable ? g_iniFile.GetLongValue(L"global", L"Date1Low", 0) : DWORD(m_regDate1Low);
+                m_Date1.dwHighDateTime = bPortable ? g_iniFile.GetLongValue(L"global", L"Date1High", 0) : DWORD(m_regDate1High);
+                m_Date2.dwLowDateTime = bPortable ? g_iniFile.GetLongValue(L"global", L"Date2Low", 0) : DWORD(m_regDate2Low);
+                m_Date2.dwHighDateTime = bPortable ? g_iniFile.GetLongValue(L"global", L"Date2High", 0) : DWORD(m_regDate2High);
             }
 
             m_bUseRegex = (bPortable ? g_iniFile.GetBoolValue(L"global", L"UseRegex", false) : DWORD(m_regUseRegex));
@@ -554,7 +554,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 #ifdef NP3_ALLOW_UPDATE
             bool doCheck = true;
             if (bPortable)
-                doCheck = !!_wtoi(g_iniFile.GetValue(L"global", L"CheckForUpdates", L"1"));
+                doCheck = g_iniFile.GetBoolValue(L"global", L"CheckForUpdates", true));
             else
                 doCheck = !!DWORD(CRegStdDWORD(L"Software\\grepWin\\CheckForUpdates", 1));
             if (doCheck)
@@ -3952,7 +3952,7 @@ void CSearchDlg::CheckForUpdates(bool force)
     // check for newer versions
     bool doCheck = true;
     if (bPortable)
-        doCheck = !!_wtoi(g_iniFile.GetValue(L"global", L"CheckForUpdates", L"1"));
+        doCheck = g_iniFile.GetBoolValue(L"global", L"CheckForUpdates", true));
     else
         doCheck = !!DWORD(CRegStdDWORD(L"Software\\grepWin\\CheckForUpdates", 1));
     if (doCheck)
