@@ -140,6 +140,25 @@ static inline const void* get_function_pointer_2d(double (*function)(double, dou
 }
 
 
+static inline bool isNextCharNumber(const state* s)
+{
+  if (!s || !(s->next)) { return false; }
+  const char* ch = s->next + 1;
+  while (*ch) {
+    if (*ch == ' ') {
+      ++ch; continue;
+    }
+    // ASCII 0-9 -> [48,57]
+    else if ((*ch > 47) && (*ch < 58)) {
+      return true;
+    }
+    // no number
+    break;
+  }
+  return false;
+}
+
+
 static te_expr *new_expr(const int type, const te_expr *parameters[]) {
     const int arity = ARITY(type);
 #if defined(TINYEXPR_USE_STATIC_MEMORY)
@@ -417,16 +436,10 @@ void next_token(state *s) {
                     case -41: s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;    // '×' CP-1252
                     case '/': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
                     case ':': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
-                    case -9: s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;    // '÷' CP-1252
+                    case  -9: s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;    // '÷' CP-1252
                     case '^': s->type = TOK_INFIX; s->function = get_function_pointer_2d(pow); break;
                     case '%':
-                        if (s->next++[0] == '%') {
-                          s->type = TOK_INFIX; s->function = get_function_pointer_1d(percent);
-                        }
-                        else {
-                          s->next--;
-                          s->type = TOK_INFIX; s->function = get_function_pointer_2d(fmod);
-                        }
+                        s->type = TOK_INFIX; s->function = isNextCharNumber(s) ? get_function_pointer_2d(fmod) : get_function_pointer_1d(percent);
                         break;
                     case '!':
                         if (s->next++[0] == '=') {
