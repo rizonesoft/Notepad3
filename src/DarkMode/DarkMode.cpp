@@ -2,6 +2,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
+#include <VersionHelpers.h>
 
 #ifdef D_NP3_WIN10_DARK_MODE
 #include <CommCtrl.h>
@@ -15,10 +16,12 @@
 #include <cstdint>
 
 #include "TypeDefs.h"
-
 #include "DarkMode.h"
+
+#ifdef D_NP3_WIN10_DARK_MODE
 #include "IatHook.hpp"
 #include "ListViewUtil.hpp"
+#endif
 
 
 // ============================================================================
@@ -46,6 +49,20 @@ extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
 
 
 #ifdef D_NP3_WIN10_DARK_MODE
+
+#ifndef LOAD_LIBRARY_SEARCH_SYSTEM32
+#define LOAD_LIBRARY_SEARCH_SYSTEM32 0x00000800
+#endif
+
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
+DWORD const kSystemLibraryLoadFlags = (IsWindows8Point1OrGreater() ||
+   GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetDefaultDllDirectories")) ? 
+  LOAD_LIBRARY_SEARCH_SYSTEM32 : 0;
+#else
+#define kSystemLibraryLoadFlags LOAD_LIBRARY_SEARCH_SYSTEM32
+#endif
+
+// ----------------------------------------------------------------------------
 
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Uxtheme.lib")
@@ -237,7 +254,7 @@ extern "C" void AllowDarkModeForApp(bool allow)
 
 static void _FixDarkScrollBar(bool bDarkMode)
 {
-  HMODULE hComctl = LoadLibraryExW(L"comctl32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+  HMODULE hComctl = LoadLibraryExW(L"comctl32.dll", nullptr, kSystemLibraryLoadFlags);
   if (hComctl) {
     auto addr = FindDelayLoadThunkInModule(hComctl, "uxtheme.dll", 49); // OpenNcThemeData
     if (addr) {
@@ -274,9 +291,9 @@ extern "C" void SetDarkMode(bool bEnableDarkMode)
   DWORD const buildNumber = GetWindowsBuildNumber(&major, &minor);
   if (buildNumber) {
     // undocumented function addresses are only valid for this WinVer build numbers
-    if (major == 10 && minor == 0 && CheckBuildNumber(buildNumber))
+    if ((major == 10) && (minor == 0) && CheckBuildNumber(buildNumber))
     {
-      HMODULE const hUxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+      HMODULE const hUxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, kSystemLibraryLoadFlags);
       if (hUxtheme)
       {
         if (!_OpenNcThemeData) {
