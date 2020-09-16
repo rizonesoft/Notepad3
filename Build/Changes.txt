@@ -12,6 +12,8 @@ Rizonesoft Notepad3 --- CHANGELOG ---
 --------------------------------------------------------
 LEGEND:
 --------------------------------------------------------
+LEGEND:
+--------------------------------------------------------
 1) NEW: (Added, Feature, Optimize)
 2) CHANGES:
 3) FIXES: (Debug)
@@ -32,13 +34,60 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
+Current BETA/RC Version 5.20.915.(build_#) (2020-09-16)
+========================================================
+
+--------------------------------------------------------
+NEW:
+--------------------------------------------------------
+[.xxx.x]- 
+[.915.2]- DarkMode: remember DarkMode chosen Scheme/Theme for next start.
+[.915.2]- Configurable Dark Mode colors (non Explorer-Theme, Owner-Drawn).
+[.915.2]- Menu item to switch between Default and Dark-Mode.
+[.915.2]- DarkMode: Toolbar, static checkbox/listbox control.
+[.915.2]- Win10 DarkMode Awareness (initial development)
+
+--------------------------------------------------------
+CHANGES:
+--------------------------------------------------------
+[.xxx.x]- 
+[.915.3]- Due to lack of interest, "Notepad3DLL" was discontinued.
+[.915.2]- User configurable "Web Action" menu item names.
+[.825.1]- Update grepWinNP3 (GRE) version 2.1.3.28 (2020-08-25).
+[.915.3]- Update Oniguruma Regex (ONI) engine version 6.9.6+ (2020-09-15).
+[.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-09).
+
+--------------------------------------------------------
+FIXES:
+--------------------------------------------------------
+[.xxx.x]- 
+[.915.2]- DarkMode: switch std. background and text color too.
+[.915.2]- DarkMode support / init / settings handling.
+
+--------------------------------------------------------
+REMOVED:
+--------------------------------------------------------
+[.xxx.x]- 
+[.915.2]- 
+
+--------------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------------
+[.xxx.x]- 
+[.915.2]- Turkish (tr-TR) in processing...
+[.915.2]- Chinese Traditional (zh-TW) in waiting...
+[.915.2]- Hindi (hi-IN) in waiting...
+[.915.2]- Indonesian (id-ID) in waiting...
+[.915.2]- Vietnamese (vi-VN) in waiting...
+
+
+========================================================
 Version 5.20.915.1 (15 September 2020)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.###.#]- 
 [.911.1]- Allow colon (:) as alternate divide operator to calculate TinyExpr.
 [.825.1]- grepWinNP3: default extension on saving search result list.
 [.824.1]- Focused-View: mode Fold-Only.
@@ -63,7 +112,6 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.###.#]- 
 [.914.1]- F/R Dialog: toggle "Esc Ctrl Chr", try reverse operation if no length change
 [.913.1]- Bad design: F/R dialog: remove auto Esc Ctrl Chr (changed to manual explicit).
 [.901.1]- Open Recent File: Rename the Cancel button to Close button.
@@ -97,7 +145,6 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.###.#]- 
 [.914.1]- TinyExpr: crash on rectangular selection.
 [.912.1]- TinyExpr: enable CP1252 operators '×'(mul) and '÷'(div).
 [.912.1]- TinyExpr: ignoring currency chars ("$€¢£¥") in expressions.
@@ -155,13 +202,11 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.###.#]- 
 [.913.1]- Nop SendMsg.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.###.#]- 
 [.802.1]- Portuguese Brazilian (pt-BR).
 [.722.2]- Turkish (tr-TR) in processing...
 [.722.2]- Chinese Traditional (zh-TW) in waiting...
