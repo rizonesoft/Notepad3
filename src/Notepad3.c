@@ -578,7 +578,6 @@ static void SetSaveNeeded()
   }
   s_DocNeedSaving = true;
   UpdateToolbar();
-  UpdateTitleBar();
 }
 
 void SetSavePoint()
@@ -586,7 +585,6 @@ void SetSavePoint()
   s_DocNeedSaving = false;
   if (SciCall_GetModify()) { SciCall_SetSavePoint(); }
   UpdateToolbar();
-  UpdateTitleBar();
 }
 
 //==============================================================================
@@ -8629,12 +8627,12 @@ void UpdateToolbar()
 
 static void  _UpdateToolbarDelayed()
 {
-  bool const bDocModified = GetDocModified();
+  UpdateTitleBar(); // (!) DocModified or Undo/Redo
 
   if (!Settings.ShowToolbar) { return; }
 
   EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
-  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, bDocModified /*&& !bReadOnly*/);
+  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() /*&& !bReadOnly*/);
   EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
   CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
