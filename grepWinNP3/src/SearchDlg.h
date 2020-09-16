@@ -205,7 +205,7 @@ private:
     bool                    m_bConfirmationOnReplace;
     bool                    m_showContent;
     bool                    m_showContentSet;
-    BYTE                    m_TranspAlphaNoFocus;
+    BYTE                    m_OpacityNoFocus;
 
     std::vector<CSearchInfo> m_items;
     std::vector<std::tuple<int, int>> m_listItems;
@@ -265,5 +265,5 @@ private:
     CRegStdDWORD            m_regDate2Low;
     CRegStdDWORD            m_regDate2High;
     CRegStdDWORD            m_regShowContent;
-    CRegStdDWORD            m_regTranspAlphaNoFocus;
+    CRegStdDWORD            m_regOpacityNoFocus;
 };
