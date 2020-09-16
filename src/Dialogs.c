@@ -4606,6 +4606,9 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         }
       }
 
+      bool const bDarkMode = UseDarkMode(); // <- override usr ~ IniSectionGetBool(globalSection, L"darkmode", UseDarkMode());
+      IniSectionSetBool(globalSection, L"darkmode", bDarkMode);
+
       StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", tchNotepad3Path);
       IniSectionSetString(globalSection, L"editorcmd", tchTemp);
 

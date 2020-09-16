@@ -82,7 +82,7 @@ void CTheme::Load()
 {
     IsDarkModeAllowed();
     OnSysColorChanged();
-    auto setDarkMode = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"darkmode", L"0")) != 0 : !!m_regDarkTheme;
+    auto setDarkMode = bPortable ? g_iniFile.GetBoolValue(L"global", L"darkmode", false) : !!m_regDarkTheme;
     m_dark           = setDarkMode && IsDarkModeAllowed() && !IsHighContrastMode() && DarkModeHelper::Instance().ShouldAppsUseDarkMode();
     m_bLoaded        = true;
 }
@@ -933,7 +933,7 @@ void CTheme::OnSysColorChanged()
         RGBtoHSL(::GetSysColor(COLOR_WINDOW), h2, s2, l2);
         m_isHighContrastModeDark = l2 < l1;
     }
-    auto setDarkMode = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"darkmode", L"0")) != 0 : !!m_regDarkTheme;
+    auto setDarkMode = bPortable ? g_iniFile.GetBoolValue(L"global", L"darkmode", false) : !!m_regDarkTheme;
     m_dark           = setDarkMode && IsDarkModeAllowed() && !IsHighContrastMode() && DarkModeHelper::Instance().ShouldAppsUseDarkMode();
 }
 
