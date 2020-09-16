@@ -430,6 +430,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Globaal Stan&daard Lettertype...\tAlt+F12",             IDM_VIEW_FONT
         MENUITEM "Actueel Sc&heme Standaard Lettertype...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Donkere modus",                                 IDM_VIEW_WIN_DARK_MODE
         END
     POPUP "&Instellingen"
     BEGIN

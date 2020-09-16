@@ -430,6 +430,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Fonte Global &Padrão...\tAlt+F12",                  IDM_VIEW_FONT
         MENUITEM "Fonte Padrão do Esq&uema Atual...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Dark Mode",                                 IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Configurações"
     BEGIN

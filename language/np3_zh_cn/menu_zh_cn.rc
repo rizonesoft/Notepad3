@@ -430,6 +430,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "全局默认字体(&D)...\tAlt+F12",                 IDM_VIEW_FONT
         MENUITEM "当前方案默认字体(&H)...\tCtrl+Alt+F12",        IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Dark Mode",                               IDM_VIEW_WIN_DARK_MODE
         END
     POPUP "设置(&S)"
     BEGIN
