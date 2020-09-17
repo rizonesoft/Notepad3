@@ -2672,7 +2672,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
                                      0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
   // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
-  InitWindowCommon(Globals.hwndRebar, false); 
+  InitWindowCommon(Globals.hwndRebar, !(IsWindows10OrGreater() && IsDarkModeSupported())); 
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
