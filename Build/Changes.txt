@@ -54,6 +54,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.917.4]- Need to separate DarkMode window-backgr color from button-facecolor.
 [.916.1]- Opacity level on loosing focus for grepWinNP3.
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
@@ -66,6 +67,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.917.4]- Allow removing of compile pre-processing switch D_NP3_WIN10_DARK_MODE.
 [.917.3]- Bring back themed ReBar (Toolbar parent) for Win7.
 [.917.3]- Bring back themed ReBar (Toolbar parent) for Win10 using Light Mode (DarkMode not wanted).
 [.917.2]- Win7 Toolbar background back to COLOR_BTNFACE, Win10 stays with COLOR_WINDOWS.
