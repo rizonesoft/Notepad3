@@ -1039,8 +1039,6 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 //
 void LoadSettings()
 {
-  WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
-
   CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
   bool bDirtyFlag = false;  // do we have to save the file on done
@@ -1313,6 +1311,8 @@ void LoadSettings()
 
     unsigned int iValue = 0;
     WCHAR color[32] = { L'\0' };
+    WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
+
     Defaults2.DarkModeBkgColor = rgbDarkBkgColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));

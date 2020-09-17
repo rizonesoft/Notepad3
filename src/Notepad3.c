@@ -1311,7 +1311,11 @@ bool InitApplication(const HINSTANCE hInstance)
   wc.hInstance = hInstance;
   wc.hIcon = Globals.hDlgIcon256;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+#ifdef D_NP3_WIN10_DARK_MODE
   wc.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
+#else
+  wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+#endif
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
@@ -2965,11 +2969,11 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //~PAINTSTRUCT ps;
     //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
 
-#ifdef D_NP3_WIN10_DARK_MODE
-
     //~SetModeBkColor(hdc, UseDarkMode());
     SetModeBtnFaceColor(hdc, UseDarkMode());
     SetModeTextColor(hdc, UseDarkMode());
+
+#ifdef D_NP3_WIN10_DARK_MODE
 
     if (UseDarkMode()) {
       // overpaint part frames
