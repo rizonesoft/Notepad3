@@ -66,6 +66,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.917.3]- Bring back themed ReBar (Toolbar parent) for Win7.
+[.917.3]- Bring back themed ReBar (Toolbar parent) for Win10 using Light Mode (DarkMode not wanted).
 [.917.2]- Win7 Toolbar background back to COLOR_BTNFACE, Win10 stays with COLOR_WINDOWS.
 [.916.1]- 1st try to fix Win7 startup crash (library loading).
 [.916.1]- Update Titlebar on document modified.
