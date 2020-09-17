@@ -419,7 +419,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63328       "블록 인용문"
     IDS_LEX_STR_63329       "취소선"
-    IDS_LEX_STR_63330       "수평 규칙
+    IDS_LEX_STR_63330       "수평 규칙"
     IDS_LEX_STR_63331       "링크"
     IDS_LEX_STR_63332       "코드"
     IDS_LEX_STR_63333       "참고"
