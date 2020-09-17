@@ -1817,16 +1817,16 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
 {
   Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle, false); // line numbers
 
-  COLORREF clrBack = GetModeBkColor(UseDarkMode());
+  COLORREF clrBack;
   if (!Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack, false)) {
-    clrBack = UseDarkMode() ? (clrBack + RGB(0x10, 0x10, 0x10)) : GetSysColor(COLOR_BTNFACE);
+    clrBack = GetModeBtnfaceColor(UseDarkMode());
   }
   SciCall_StyleSetBack(STYLE_LINENUMBER, clrBack);
   SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
   SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); // allow selection drag
   //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
-  COLORREF clrFore = SciCall_StyleGetFore(STYLE_LINENUMBER);
+  COLORREF clrFore;
   Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &clrFore, true);
 
   // CallTips

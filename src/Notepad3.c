@@ -2699,7 +2699,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   rbBand.hbmBack = NULL;
   rbBand.lpText  = L"Toolbar";
   rbBand.clrFore = GetModeTextColor(UseDarkMode());
-  rbBand.clrBack = GetModeBkColor(UseDarkMode());
+  rbBand.clrBack = GetModeBtnfaceColor(UseDarkMode());
   rbBand.hwndChild  = Globals.hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + (2 * rc.top);
@@ -2737,7 +2737,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
   }
-  //SetModeCtlColors(Globals.hwndStatus, UseDarkMode());
 #endif
 
 }
@@ -2968,7 +2967,8 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    SetModeBkColor(hdc, UseDarkMode());
+    //~SetModeBkColor(hdc, UseDarkMode());
+    SetModeBtnFaceColor(hdc, UseDarkMode());
     SetModeTextColor(hdc, UseDarkMode());
 
     if (UseDarkMode()) {
@@ -2978,7 +2978,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
       HDC const hdcFrm = GetWindowDC(hWndItem);
       RECT rcf = rc;
       for (int i = 1; i < bdh; ++i) {
-        FrameRect(hdcFrm, &rcf, Globals.hbrDarkModeBkgBrush);
+        FrameRect(hdcFrm, &rcf, Globals.hbrDarkModeBtnFcBrush);
         rcf.left -= 1;
         rcf.top -= 1;
         rcf.bottom += 1;
@@ -2995,7 +2995,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     //~EndPaint(hWndItem, &ps);
     return TRUE;
-  }
+  } 
   return FALSE;
 }
 
