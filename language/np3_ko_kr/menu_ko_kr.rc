@@ -514,7 +514,7 @@ BEGIN
         MENUITEM "웹 사이트에서 업데이트 확인(&W)",          IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "명령행 도움말(&C)...",                    IDM_HELP_CMD
-        MENUITEM "정보(&A) 한국어 번역: VₑₙᵤₛGᵢᵣₗ...\tShift+F1",         IDM_HELP_ABOUT
+        MENUITEM "정보(&A)...\tShift+F1",       IDM_HELP_ABOUT
     END
 END
 
