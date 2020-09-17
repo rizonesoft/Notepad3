@@ -1398,7 +1398,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // caret fore
   if (!Style_StrGetColor(pCurrentStandard->Styles[STY_CARET].szValue, FOREGROUND_LAYER, &rgb, false))
   {
-    rgb = GetModeWndTextColor(UseDarkMode());
+    rgb = GetModeTextColor(UseDarkMode());
   }
   else {
     WCHAR wch[32] = { L'\0' };
@@ -1815,11 +1815,11 @@ void Style_SetBookmark(HWND hwnd, bool bShowMargin)
 //
 void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
 {
-  COLORREF clrBack = UseDarkMode() ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_3DFACE);
-
   Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle, false); // line numbers
+
+  COLORREF clrBack = GetModeBkColor(UseDarkMode());
   if (!Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack, false)) {
-    clrBack = UseDarkMode() ? (clrBack + RGB(0x10, 0x10, 0x10)) : GetSysColor(COLOR_3DFACE);
+    clrBack = UseDarkMode() ? (clrBack + RGB(0x10, 0x10, 0x10)) : GetSysColor(COLOR_BTNFACE);
   }
   SciCall_StyleSetBack(STYLE_LINENUMBER, clrBack);
   SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
@@ -3221,6 +3221,7 @@ static INT_PTR CALLBACK Style_FontDialogHook(
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
+      //#define IDCS_COMBOX1 0x3E8
       #define IDCS_STRKOUT 0x410
       #define IDCS_UNDERLN 0x411
       #define IDCS_EFFECTS 0x430
@@ -3238,7 +3239,7 @@ static INT_PTR CALLBACK Style_FontDialogHook(
         }
       }
 #endif
-
+      
       const CHOOSEFONT* const pChooseFont = ((CHOOSEFONT*)lParam);
 
       if (pChooseFont->lCustData) {
@@ -3798,12 +3799,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     SciCall_StyleSetFore(iStyle, dColor);
   } 
   else if (bInitDefault) {
-#ifdef D_NP3_WIN10_DARK_MODE
-    COLORREF const rgbFore = UseDarkMode() ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_WINDOWTEXT);
-    SciCall_StyleSetFore(iStyle, rgbFore); 
-#else
-    SciCall_StyleSetFore(iStyle, GetSysColor(COLOR_WINDOWTEXT)); // default text color
-#endif
+    SciCall_StyleSetFore(iStyle, GetModeTextColor(UseDarkMode())); 
   }
   else { // fallback: SCI default
     Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &dColor, true);
@@ -3815,12 +3811,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     SciCall_StyleSetBack(iStyle, dColor);
   }
   else if (bInitDefault) {
-#ifdef D_NP3_WIN10_DARK_MODE
-    COLORREF const rgbBack = UseDarkMode() ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_WINDOW);
-    SciCall_StyleSetBack(iStyle, rgbBack);
-#else
-    SciCall_StyleSetBack(iStyle, GetSysColor(COLOR_WINDOW)); // default window color
-#endif
+    SciCall_StyleSetBack(iStyle, GetModeBkColor(UseDarkMode()));
   } else { // fallback: SCI default
     Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &dColor, true);
     SciCall_StyleSetBack(iStyle, dColor);

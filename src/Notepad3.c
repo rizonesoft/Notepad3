@@ -446,7 +446,9 @@ static int msgcmp(void* mqc1, void* mqc2)
 // ----------------------------------------------------------------------------
 
 #define _MQ_IMMEDIATE (2 * USER_TIMER_MINIMUM - 1)
-#define _MQ_FAST (4 * USER_TIMER_MINIMUM)
+#define _MQ_FAST (USER_TIMER_MINIMUM << 2)
+#define _MQ_STD (USER_TIMER_MINIMUM << 3)
+#define _MQ_LAZY (USER_TIMER_MINIMUM << 4)
 #define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
@@ -564,27 +566,34 @@ static void  _UpdateToolbarDelayed();
 //
 static bool s_DocNeedSaving = false; // dirty-flag
 
-bool GetDocModified()
-{
-  return (SciCall_GetModify() || s_DocNeedSaving);
-}
-
 static void SetSaveNeeded()
 {
-  if (!GetDocModified()) {
-    if (IsWindow(Globals.hwndDlgFindReplace)) {
-      PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
-    }
+  if (!s_DocNeedSaving) {
+    s_DocNeedSaving = true;
+    UpdateTitleBar();
   }
-  s_DocNeedSaving = true;
   UpdateToolbar();
+
+  if (IsWindow(Globals.hwndDlgFindReplace)) {
+    PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
+  }
 }
 
 void SetSavePoint()
 {
+  if (SciCall_GetModify()) { 
+    SciCall_SetSavePoint(); 
+  }
   s_DocNeedSaving = false;
-  if (SciCall_GetModify()) { SciCall_SetSavePoint(); }
   UpdateToolbar();
+  UpdateTitleBar();
+}
+
+inline static bool GetDocModified() {
+  if (SciCall_GetModify() && !s_DocNeedSaving) {
+    SetSaveNeeded();
+  }
+  return s_DocNeedSaving;
 }
 
 //==============================================================================
@@ -2494,7 +2503,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   //    hInstance,                 // handle to application instance
   //    NULL);                     // no window creation data
 
-  InitWindowCommon(Globals.hwndToolbar, true);
+  InitWindowCommon(Globals.hwndToolbar, true); // (!) themed = true : glow effects
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
@@ -2662,7 +2671,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   Globals.hwndRebar = CreateWindowEx(WS_EX_TOOLWINDOW, REBARCLASSNAME, NULL, dwReBarStyle,
                                      0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
-  // No Theme = false(!) ~ you cannot change a toolbar's color when a visual style is active
+  // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
   InitWindowCommon(Globals.hwndRebar, false); 
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -2689,18 +2698,19 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   rbBand.fStyle = s_bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
   rbBand.lpText  = L"Toolbar";
-  rbBand.clrFore = GetModeWndTextColor(UseDarkMode());
-  rbBand.clrBack = GetModeWndBkColor(UseDarkMode());
+  rbBand.clrFore = GetModeTextColor(UseDarkMode());
+  rbBand.clrBack = GetModeBkColor(UseDarkMode());
   rbBand.hwndChild  = Globals.hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
-  rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
+  rbBand.cyMinChild = (rc.bottom - rc.top) + (2 * rc.top);
   rbBand.cx         = 0;
   SendMessage(Globals.hwndRebar, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rbBand);
 
   SetWindowPos(Globals.hwndRebar, NULL, 0, 0, 0, 0, SWP_NOZORDER);
   GetWindowRect(Globals.hwndRebar, &rc);
   s_cyReBar = (rc.bottom - rc.top);
-  s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;
+  s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;  // (!) frame color is same as INITIAL title-bar ???
+
 
   // -------------------
   // Create Statusbar 
@@ -2721,13 +2731,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   //~    hInstance,                 // handle to application instance
   //~    NULL);                     // no window creation data
 
-  InitWindowCommon(Globals.hwndStatus, true);
+  InitWindowCommon(Globals.hwndStatus, true); // (!) themed = true : resize grip
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
   }
+  //SetModeCtlColors(Globals.hwndStatus, UseDarkMode());
 #endif
+
 }
 
 
@@ -2821,6 +2833,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   AllowDarkModeForWindow(hwnd, UseDarkMode());
   RefreshTitleBarThemeColor(hwnd);
 #endif
+  UpdateTitleBar();
 
   // reinitialize edit frame
   _HandleEditWndFrame();
@@ -2830,7 +2843,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   Style_ResetCurrentLexer(Globals.hwndEdit);
 
-  UpdateTitleBar();
   Sci_RedrawScrollbars();
 
   SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
@@ -2870,7 +2882,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(hwnd);
-  UNUSED(lParam);
 
   if (wParam == SIZE_MINIMIZED) { return FALSE; }
 
@@ -2882,14 +2893,16 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if (Settings.ShowToolbar)
   {
-/*  SendMessage(Globals.hwndToolbar,WM_SIZE,0,0);
-    RECT rc;
-    GetWindowRect(Globals.hwndToolbar,&rc);
-    y = (rc.bottom - rc.top);
-    cy -= (rc.bottom - rc.top);*/
+    //~SendMessage(Globals.hwndToolbar,WM_SIZE,0,0);
+    //~RECT rc;
+    //~GetWindowRect(Globals.hwndToolbar,&rc);
+    //~y = (rc.bottom - rc.top);
+    //~cy -= (rc.bottom - rc.top);
 
-    //SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
+    //~SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
+
     SetWindowPos(Globals.hwndRebar, NULL, 0, 0, LOWORD(lParam), s_cyReBar, SWP_NOZORDER);
+
     // the ReBar automatically sets the correct height
     // calling SetWindowPos() with the height of one toolbar button
     // causes the control not to temporarily use the whole client area
@@ -2923,6 +2936,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
+  UpdateTitleBar();
 
   return FALSE;
 }
@@ -2954,10 +2968,12 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    HWND const hWndItem = pDIS->hwndItem;
+    SetModeBkColor(hdc, UseDarkMode());
+    SetModeTextColor(hdc, UseDarkMode());
 
     if (UseDarkMode()) {
       // overpaint part frames
+      HWND const hWndItem = pDIS->hwndItem;
       int const bdh = GetSystemMetrics(SM_CYFRAME);
       HDC const hdcFrm = GetWindowDC(hWndItem);
       RECT rcf = rc;
@@ -2971,8 +2987,6 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
       FrameRect(hdcFrm, &rcf, GetSysColorBrush(COLOR_3DDKSHADOW));
       ReleaseDC(hWndItem, hdcFrm);
     }
-    SetModeBkColor(hdc, UseDarkMode());
-    SetModeTextColor(hdc, UseDarkMode());
 
 #endif
 
@@ -8619,7 +8633,7 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 //
 void UpdateToolbar()
 {
-  _DelayUpdateToolbar(_MQ_FAST);
+  _DelayUpdateToolbar(_MQ_LAZY);
 }
 
 
@@ -8627,8 +8641,6 @@ void UpdateToolbar()
 
 static void  _UpdateToolbarDelayed()
 {
-  UpdateTitleBar(); // (!) DocModified or Undo/Redo
-
   if (!Settings.ShowToolbar) { return; }
 
   EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
@@ -8879,7 +8891,7 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
 //
 void UpdateStatusbar(bool bForceRedraw)
 {
-  _DelayUpdateStatusbar(_MQ_FAST, bForceRedraw);
+  _DelayUpdateStatusbar(_MQ_STD, bForceRedraw);
 }
 
 //=============================================================================

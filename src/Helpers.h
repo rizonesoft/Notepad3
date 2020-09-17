@@ -202,6 +202,15 @@ inline int SetModeBkColor(const HDC hdc, const bool bDarkMode) {
 #endif
 }
 
+inline COLORREF GetModeBkColor(const bool bDarkMode) {
+#ifdef D_NP3_WIN10_DARK_MODE
+  return bDarkMode ? Settings2.DarkModeBkgColor : (COLORREF)(
+    IsWindows10OrGreater() ? GetSysColor(COLOR_WINDOW) : GetSysColor(COLOR_BTNFACE));
+#else
+  return (COLORREF)GetSysColor(COLOR_BTNFACE);
+#endif
+}
+
 inline int SetModeTextColor(const HDC hdc, const bool bDarkMode) {
 #ifdef D_NP3_WIN10_DARK_MODE
   return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_BTNTEXT));
@@ -210,19 +219,12 @@ inline int SetModeTextColor(const HDC hdc, const bool bDarkMode) {
 #endif
 }
 
-inline COLORREF GetModeWndBkColor(const bool bDarkMode) {
+inline COLORREF GetModeTextColor(const bool bDarkMode) {
 #ifdef D_NP3_WIN10_DARK_MODE
-  return bDarkMode ? Settings2.DarkModeBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
+  return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)(
+    IsWindows10OrGreater() ? GetSysColor(COLOR_WINDOWTEXT) : GetSysColor(COLOR_BTNTEXT));
 #else
-  return (COLORREF)GetSysColor(COLOR_WINDOW);
-#endif
-}
-
-inline COLORREF GetModeWndTextColor(const bool bDarkMode) {
-#ifdef D_NP3_WIN10_DARK_MODE
-  return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
-#else
-  return (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
+  return (COLORREF)GetSysColor(COLOR_BTNTEXT);
 #endif
 }
 
@@ -236,6 +238,13 @@ inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
   //~GetWindowRect(WindowFromDC(hdc), &rc);
   //~DrawEdge(hdc, &rc, EDGE_RAISED, BF_FLAT | BF_MONO);
   return (INT_PTR)Globals.hbrDarkModeBkgBrush;
+}
+
+inline void SetModeCtlColors(HWND hwnd, const bool bDarkMode) {
+  HDC const hdc = GetDC(hwnd);
+  SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_BTNFACE));
+  SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_BTNTEXT));
+  ReleaseDC(hwnd, hdc);
 }
 
 #endif
