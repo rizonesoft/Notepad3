@@ -55,11 +55,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "새 파일"
+    IDT_FILE_NEW            "새로 만들기"
     IDT_FILE_OPEN           "열기"
-    IDT_FILE_BROWSE         "Minipath로 탐색"
+    IDT_FILE_BROWSE         "찾아보기"
     IDT_FILE_SAVE           "저장"
-    IDT_FILE_RECENT         "최근 파일들"
+    IDT_FILE_RECENT         "사용 내역"
     IDT_EDIT_UNDO           "실행 취소"
     IDT_EDIT_REDO           "다시 실행"
     IDT_EDIT_CUT            "잘라내기"
@@ -68,31 +68,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "붙여 넣기"
+    IDT_EDIT_PASTE          "붙여넣기"
     IDT_EDIT_FIND           "찾기"
     IDT_EDIT_REPLACE        "바꾸기"
-    IDT_VIEW_WORDWRAP       "워드 랩"
+    IDT_VIEW_WORDWRAP       "줄 바꿈"
     IDT_VIEW_ZOOMIN         "확대"
     IDT_VIEW_ZOOMOUT        "축소"
-    IDT_VIEW_SCHEME         "스키마 선택"
-    IDT_VIEW_SCHEMECONFIG   "스키마 편집"
+    IDT_VIEW_SCHEME         "구성표 선택"
+    IDT_VIEW_SCHEMECONFIG   "사용자 지정 구성표"
     IDT_FILE_EXIT           "종료"
     IDT_FILE_SAVEAS         "다른 이름으로 저장"
     IDT_FILE_SAVECOPY       "복사본 저장"
     IDT_EDIT_CLEAR          "삭제"
     IDT_FILE_PRINT          "인쇄"
-    IDT_FILE_OPENFAV        "즐겨 찾기"
-    IDT_FILE_ADDTOFAV       "즐겨 찾기에 추가"
-    IDT_VIEW_TOGGLEFOLDS    "모든 접기 전환"
+    IDT_FILE_OPENFAV        "즐겨찾기"
+    IDT_FILE_ADDTOFAV       "즐겨찾기에 추가"
+    IDT_VIEW_TOGGLEFOLDS    "접기 전환"
 END
 
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "문서 실행"
-    IDT_VIEW_TOGGLE_VIEW     "집중"
-    IDT_VIEW_CHASING_DOCTAIL "열람(&M)"
-    IDT_VIEW_PIN_ON_TOP      "항상 위에"
-    IDT_GREP_WIN_TOOL        "파일에서 찾기"
+    IDT_VIEW_TOGGLE_VIEW     "집중해서 보기"
+    IDT_VIEW_CHASING_DOCTAIL "모니터링 로그(&M)"
+    IDT_VIEW_PIN_ON_TOP      "항상 맨 위에"
+    IDT_GREP_WIN_TOOL        "파일에서 검색"
 END
 
 STRINGTABLE
@@ -103,10 +103,10 @@ BEGIN
     IDS_MUI_UNTITLED        "제목 없음"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(읽기 전용)"
-    IDS_MUI_LOADFILE        "읽어오기 ""%s""..."
-    IDS_MUI_SAVEFILE        "저장 ""%s""..."
-    IDS_MUI_PRINTFILE       "인쇄 페이지 %i..."
-    IDS_MUI_SAVINGSETTINGS  "설정 저장..."
+    IDS_MUI_LOADFILE        "불러오는 중 ""%s""..."
+    IDS_MUI_SAVEFILE        "저장 중""%s""..."
+    IDS_MUI_PRINTFILE       "페이지 인쇄 중%i..."
+    IDS_MUI_SAVINGSETTINGS  "설정 저장 중..."
     IDS_MUI_LINKDESCRIPTION "Notepad3로 편집"
 END
 
@@ -114,118 +114,118 @@ STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "실행 파일 (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|모든 파일 (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "설정 파일 (*.ini)|*.ini|모든 파일 (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "구성 파일 (*.ini)|*.ini|모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "비트맵 파일 (*.bmp)|*.bmp|모든 파일 (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "선호하는 응용 프로그램 링크들의 디렉토리를 정하세요."
-    IDS_MUI_FAVORITES       "즐겨 찾는 파일 링크들의 디렉토리를 정하세요."
-    IDS_MUI_BACKSLASHHELP   "백 슬래시 변환\n\n\\a\t경보 (BEL, Ascii 7)\n\\b\t백스페이스 (BS, Ascii 8)\n\\f\t폼 피드 (FF, Ascii 12)\n\\n\t새 라인 (LF, Ascii 10)\n\\r\t캐리지 리턴 (CR, Ascii 13)\n\\t\t가로 탭 (HT, Ascii 9)\n\\v\t수직 탭 (VT, Ascii 11)\n\\0oo\t8진법 값\n\\u####\t16진수 값\n\\xhh\t16진수 값\n\\\\\t백 슬래시"
-    IDS_MUI_REGEXPHELP      "정규식 구문 (여러 줄)\n\n.\t모든 문자와 일치.\n^\t줄의 처음\n$\t줄의 끝\n\\<\t단어의 시작\n\\>\t단어의 끝\n\\b\t단어 경계\n[...]\t문자 집합([abc]) 또는 범위 ([a-z])\n[^...]\t제외할 문자 집합 또는 범위\n\\d\t모든 10진수\n\\D\t숫자가 아닌 문자\n\\s\t공백 문자\n\\S\t공백이 아닌 문자\n\\w\t모든 ""단어"" 문자\n\\W\t모든 ""비-단어"" 문자\n\\x\t특별한 의미를 가진 Escape 문자\n\\xHH\tHex 값이 HH인 문자\n?\t0회 또는 1회 일치\n*\t0회 이상 일치\n+\t1회 이상 일치\n*? or +?\t ""?"" 및 ""+"" 의 욕심 없는 일치\n(\t영역의 시작\n)\t영역의 끝\n\\n\t대체 할 영역 참조 (n은 1-9)\n"
+    IDS_MUI_OPENWITH        "즐겨찾는 응용프로그램에 대한 링크가 있는 디렉토리를 선택하십시오."
+    IDS_MUI_FAVORITES       "즐겨찾는 파일에 대한 링크가 있는 디렉토리를 선택하십시오."
+    IDS_MUI_BACKSLASHHELP   "백 슬래시 변환\n\n\\a\t경보 (BEL, Ascii 7)\n\\b\t백스페이스 (BS, Ascii 8)\n\\f\t폼 피드 (FF, Ascii 12)\n\\n\t새 줄 (LF, Ascii 10)\n\\r\t캐리지 리턴 (CR, Ascii 13)\n\\t\t가로 탭 (HT, Ascii 9)\n\\v\t세로 탭 (VT, Ascii 11)\n\\0oo\t8진법 값\n\\u####\t16진수 값\n\\xhh\t16진수 값\n\\\\\t백 슬래시"
+    IDS_MUI_REGEXPHELP      "정규식 구문 (여러 줄)\n\n.\t모든 문자와 일치\n^\t새 줄 바로 뒤에 빈 문자열\n$\t줄 끝 바로 앞의 빈 문자열\n\\<\t단어의 시작\n\\>\t단어의 끝\n\\b\t단어 경계\n[...]\t문자 집합([abc]) 또는 범위 ([a-z])\n[^...]\t설정 또는 범위에 포함되지 않는 문자\n\\d\t모든 10진수\n\\D\t숫자가 아닌 문자\n\\s\t모든 공백 문자\n\\S\t공백이 아닌 문자\n\\w\t모든 ""단어"" 문자\n\\W\t모든 ""비-단어"" 문자\n\\x\t특별한 의미를 가진 Escape 문자\n\\xHH\tHex 값이 HH인 문자\n?\t0회 또는 1회 선행 일치\n*\t0회 이상 선행 일치\n+\t1회 이상 선행 일치\n*? or +?\t정량자 ""?"" 및 ""+""의 욕심 없는 일치\n(\t영역의 시작\n)\t영역의 끝\n\\n\t교체할 때 영역 참조 (n은 1-9)\n"
     IDS_MUI_WILDCARDHELP    "와일드 카드 검색\n\n*\t0개 이상의 문자와 일치합니다.\n?\t정확하게 하나의 문자와 일치합니다. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    """%s"" 파일을 읽는 도중 오류가 발생하였습니다."
-    IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 도중 오류가 발생하였습니다."
-    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다.\nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
-    IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다.\ngrepWinNP3 파일 검색 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
-    IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
+    IDS_MUI_ERR_LOADFILE    """%s"" 파일을 불러오는 동안 오류가 발생하였습니다."
+    IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 동안 오류가 발생하였습니다."
+    IDS_MUI_ERR_DLG_FORMAT  "오류 '%s', 원인:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다.\nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다."
+    IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다.\ngrepWinNP3 파일 검색 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다."
+    IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거 하시겠습니까?"
     IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\nNotepad3 창을 새로 열겠습니까?"
-    IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 지원하지 않습니다."
-    IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 중 오류가 발생하였습니다.\n파일을 저장하면 데이터가 손실됩니다!"
-    IDS_MUI_ERR_BITMAP      """%s"" 비트맵을 읽는 도중 오류가 발생하였습니다.\n필요한 크기: %i x %i (너비 >= %i x 높이)."
+                            "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\n다른 Notepad3 창을여시겠습니까?"
+    IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 사용할 수 없습니다."
+    IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 동안 오류가 발생했습니다.\n파일을 저장하면 데이터가 손실됩니다!"
+    IDS_MUI_ERR_BITMAP      """%s"" 비트맵을 불러오는 도중 오류가 발생하였습니다.\n필요한 크기: %i x %i (너비 >= %i x 높이)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "사용자 권한 상승 중 오류가 발생하였습니다!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자를 현재 인코딩에서 지원하지 않기 때문에 저장시에는 기본 문자로 대체될 것입니다. 다른 인코딩을 선택하는게 좋습니다. 계속 할까요?"
+    IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자는 선택한 인코딩에서 지원되지 않으며 저장할 때 기본 자리 표시 자로 대체될 수 있습니다. 다른 파일 인코딩을 선택하는 것이 좋습니다. 계속하시겠습니까"
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다.\n\nDo you want to launch %s as 'Elevated' application?"
-    IDS_MUI_ERR_ADMINEXE    "사용 가능한 관리 도구를 찾을 수 없습니다. https://rizonesoft.com 에서 확인 하시겠습니까?"
+                            """%s"" 파일을 저장할 수 없으며 보호할 수 있습니다.\n\n%s을 '상승된' 응용프로그램으로 시작하시겠습니까?"
+    IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다. https://rizonesoft.com 에서 확인하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "이 대용량 파일을 열겠습니까?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "이 큰 파일을 여시겠습니까?\n\t(크기: %s >= %s)!\n(스타일링 및 구문 강조가 적용되지 않습니다!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "파일의 크기(%s)가 너무 큽니다!"
+                            "대용량 파일을 처리할 수 없습니다 (크기: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "알 수 없는 확장자(%s)입니다!\n데이터를 로딩하시겠습니까?"
-    IDS_MUI_INDENT_CONSISTENT   "들여쓰기가 일관적입니다!"
-    IDS_MUI_EOLMODENAME_CRLF    "윈도우 (CR+LF)"
-    IDS_MUI_EOLMODENAME_LF      "유닉스/Mac (LF)"
+                            "알 수 없는 확장자 (%s)입니다!\n그래도 데이터를 불러오시겠습니까?"
+    IDS_MUI_INDENT_CONSISTENT   "파일에 일관된 들여쓰기가 있습니다!"
+    IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR      "구형 Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "모든 줄 끝을 '%s'로 정규화하시겠습니까?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "이 작업은 사각형 선택 중에 수행 할 수 없습니다."
-    IDS_MUI_SELMULTI        "이 작업은 다중 선택 중에 수행 할 수 없습니다."
-    IDS_MUI_SELRECTORMULTI  "이 작업은 사각형 선택 혹은 다중 선택 중에 수행 할 수 없습니다."
-    IDS_MUI_BUFFERTOOSMALL  "이 작업은 수행 할 수 없습니다 (너무 긴 줄)."
-    IDS_MUI_FIND_WRAPFW     "문서 끝에 도달하여 처음부터 다시 찾습니다."
-    IDS_MUI_FIND_WRAPRE     "문서의 처음 부분에 도달하여 끝에서 부터 다시 찾습니다."
-    IDS_MUI_NOTFOUND        "지정된 문자열을 찾을 수 없습니다."
-    IDS_MUI_REPLCOUNT       "%i 개의 검색된 문자열을 교체하였습니다."
-    IDS_MUI_ASK_ENCODING    "한 인코딩에서 다른 인코딩으로 파일 인코딩을 전환하면 지원되지 않는 텍스트가 기본 문자로 바뀔 수 있으며 실행 취소 기록이 지워집니다. 계속할까요?"
-    IDS_MUI_ASK_ENCODING2   "빈 파일의 인코딩을 변경하려고합니다. 새 인코딩과 동기화 할 수 없으므로 실행 취소 기록이 지워집니다. 계속할까요?"
-    IDS_MUI_READONLY_SAVE   """%s""은(는) 읽기 전용입니다. 다른 파일로 저장 하시겠습니까?"
+    IDS_MUI_SELRECT         "이 작업은 직사각형 선택 내에서 수행할 수 없습니다."
+    IDS_MUI_SELMULTI        "이 작업은 다중 선택 내에서 수행할 수 없습니다."
+    IDS_MUI_SELRECTORMULTI  "이 작업은 직사각형 또는 다중 선택 내에서 수행할 수 없습니다."
+    IDS_MUI_BUFFERTOOSMALL  "이 작업을 수행할 수 없습니다 (줄이 너무 깁니다)."
+    IDS_MUI_FIND_WRAPFW     "문서의 끝에 도달하여 검색을 처음부터 다시 시작합니다."
+    IDS_MUI_FIND_WRAPRE     "문서의 시작 부분에 도달하여 검색을 다시 시작합니다."
+    IDS_MUI_NOTFOUND        "지정한 텍스트를 찾을 수 없습니다."
+    IDS_MUI_REPLCOUNT       "%i 개의 지정된 텍스트을 교체하였습니다."
+    IDS_MUI_ASK_ENCODING    "파일 인코딩을 한 인코딩에서 다른 인코딩으로 전환하면 지원되지 않는 텍스트가 기본 문자로 대체될 수 있으며 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
+    IDS_MUI_ASK_ENCODING2   "빈 파일의 인코딩을 변경하려고합니다. 새 인코딩과 동기화할 수 없기 때문에 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
+    IDS_MUI_READONLY_SAVE   """%s""은 읽기 전용입니다. 다른 파일로 저장하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY
-                            "현재 파일은 외부 프로그램에 의해 변경 되었습니다. 다시 로드 하시겠습니까?"
-    IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장할까요?"
-    IDS_MUI_STICKYWINPOS    "창 위치 고정 기능이 활성화 되었습니다. 모든 새로운 Notepad3 창은 현재 위치 설정을 사용하게 됩니다."
+                            "현재 파일이 외부 프로그램에 의해 수정되었습니다. 새로 고침 하시겠습니까? 다시 불러오시겠습니까?"
+    IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장하시겠습니까?"
+    IDS_MUI_STICKYWINPOS    "고정 창 위치가 활성화되었습니다. 새 Notepad3 창은 현재 창 배치 설정을 사용합니다."
     IDS_MUI_SAVEDSETTINGS   "현재 프로그램 설정이 저장되었습니다."
-    IDS_MUI_CREATEINI_FAIL  "설정 파일을 만드는 중 오류가 발생하였습니다."
-    IDS_MUI_WRITEINI_FAIL   "설정을 저장 하는 중 오류가 발생하였습니다."
+    IDS_MUI_CREATEINI_FAIL  "구성 파일을 만드는 동안 오류가 발생했습니다."
+    IDS_MUI_WRITEINI_FAIL   "구성 파일에 설정을 쓰는 동안 오류가 발생했습니다."
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "구성 파일이 읽기 전용입니다. 설정을 무시하고 재정의하시겠습니까?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "기존 설정 파일이 없습니다.\n스타일 설정을 유지하려면 저장(F7) 하거나 스키마 편집(Ctrl+F12) 에서 스타일을 내보내기 하면 됩니다."
+                            "기존 구성 파일을 찾을 수 없습니다. \n스타일 수정 사항을 유지하려면 지금 설정을 저장 (F7)하거나 구성표 구성으로 돌아가 (Ctrl+F12) 스타일을 내보내십시오."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "저장된 설정을 적용하기 위해 재시작할까요?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "재시작하지 않는 경우, 저장된 설정은 적용되지 못하고 프로그램이 종료될 때 덮어씌워집니다!"
-    IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생하였습니다."
-    IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 중 오류가 발생하였습니다. 표현식이 유효하지 않습니다!"
-    IDS_MUI_DROP_NO_FILE     "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\nNotepad3의 도구 모음에 드래그 앤 드롭하십시오."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click 파일 열기."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click 브라우저에서 링크 열기."
+    IDS_MUI_RELOADSETTINGS   "프로그램을 다시 실행해서 저장된 설정을 활성화하시겠습니까?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "다시 시작하지 않고 계속하면 저장된 설정이 적용되지 않으며 프로그램 종료시 내부 설정이 무시됩니다!"
+    IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""으로 내보내는 중 오류가 발생하였습니다."
+    IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 동안 오류가 발생했습니다. 표현식이 잘못되었습니다!"
+    IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다. \n32 비트 응용 프로그램에서 드롭하는 경우 \nNotepad3의 도구 모음으로 끌어서 놓으십시오."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt+클릭하여 파일을 엽니 다."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl+클릭하여 브라우저에서 링크를 엽니다."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "기존의 파일 수정 타임스탬프를 보존합니다.\n이 옵션은 이 세션에 한에서만 적용됩니다!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
+                             "원래 파일 수정 타임스탬프를 보존할 수 있습니다.\n이 옵션은 이 세션에 유지됩니다!"
+    IDS_MUI_OUT_OFF_OCCMRK   "발생 마커 (책갈피/강조)가 부족합니다!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "변경 사항을 다음에 저장하십시오:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "파일을 마지막으로 저장된 상태로 되 돌리시겠습니까?"
-    IDS_MUI_ASK_RECODE      "코드 변경시 파일을 다시 로드 해야 하며, 저장하지 않은 변경 내용은 잃게 됩니다!"
-    IDS_MUI_ASK_CREATE      """%s"" 파일이 존재하지 않습니다.\n이 파일을 생성하시겠습니까?"
-    IDS_MUI_PRINT_HEADER    "파일 이름, 현재 날짜 및 시간|파일 이름, 현재 날짜|파일 이름|비워 두기"
-    IDS_MUI_PRINT_FOOTER    "페이지 번호|비워 두기."
-    IDS_MUI_PRINT_COLOR     "일반|색 반전 (어두운 배경)|흑백(흰 배경)|색깔(흰 배경)|색깔(라인 번호 제외, 흰 배경)|스크린 색상"
+    IDS_MUI_ASK_SAVE        "변경 사항을 저장하시겠습니까:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "파일을 마지막으로 저장된 상태로 되돌리시겠습니까?"
+    IDS_MUI_ASK_RECODE      "레코딩하려면 디스크에서 파일을 다시로드해야 합니다. 저장하지 않은 변경 사항은 손실됩니다!"
+    IDS_MUI_ASK_CREATE      """%s"" 파일을 찾을 수 없습니다.\n이 파일을 만드시겠습니까?"
+    IDS_MUI_PRINT_HEADER    "파일 이름, 현재 날짜 및 시간|파일 이름, 현재 날짜|파일 이름|비워두기"
+    IDS_MUI_PRINT_FOOTER    "페이지 번호|비워두기"
+    IDS_MUI_PRINT_COLOR     "일반|색 반전 (어두운 배경)|흰색 바탕에 검은 색|하얀색|하얀색(라인 번호 제외)|화면 색상"
     IDS_MUI_PRINT_PAGENUM   "페이지 %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "이 문서에는 인쇄 할 텍스트가 없습니다."
+    IDS_MUI_PRINT_EMPTY     "이 문서에는 인쇄할 텍스트가 없습니다."
     IDS_MUI_PRINT_ERROR     """%s"" 인쇄 오류!"
-    IDS_MUI_FAV_SUCCESS     "현재 파일에 대한 바로 가기가 즐겨 찾기 디렉토리에 만들어졌습니다."
-    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로 가기를 만들 수 없습니다.\n같은 이름의 다른 파일이 없는지 확인하십시오."
+    IDS_MUI_FAV_SUCCESS     "현재 파일에 대한 바로가기가 즐겨 찾기 디렉토리에 만들어졌습니다."
+    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로가기를 만들 수 없습니다.\n같은 이름의 다른 파일이 없는지 확인하십시오."
     IDS_MUI_READONLY_MODIFY """%s""의 속성을 수정할 수 없습니다."
     IDS_MUI_SAVEPOS         "위치 저장(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "위치 재설정(&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "미리 보기 설정(&P)\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "암호가 올바르지 않습니다.\n다른 암호 문구를 다시 입력 하시겠습니까?"
-    IDS_MUI_NOPASS          "해독 취소됨!\n암호화 된 원시 데이터 읽기?"
+    IDS_MUI_PASS_FAILURE    "암호가 잘못되었습니다. \n다른 암호로 다시 시도하시겠습니까?"
+    IDS_MUI_NOPASS          "암호 해독이 취소되었습니다. \n암호화된 원시 데이터를 읽으시겠습니까?"
     IDS_MUI_STY_BASESTD     "BASE (기본 스타일):"
     IDS_MUI_STY_BASE2ND     "BASE (두 번째 기본 스타일):"
     IDS_MUI_STY_LEXDEF      "%s - 기본 스타일:"
@@ -235,15 +235,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역 ohgree"
+    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역: VₑₙᵤₛGᵢᵣₗ💋´``°³о💗"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s - 스타일 +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s - 스타일"
-    IDS_MUI_TITLE_RELARB    " +++ Style '%s' - (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Style '%s' - (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "연결된 확장자:"
-    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\r\n얍삽한 귤빛 여우가 퍼진 코요테를 뛰어넘는다.\r\n\\ * & ^ % $ # @ ! ~"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length 매치"
+    IDS_MUI_TITLE_RELARB    " +++ 스타일 '%s' - (%s) +++"
+    IDS_MUI_TITLE_FIXARB    " 스타일 '%s' - (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "연결된 파일 이름 확장자:"
+    IDS_MUI_EXAMPLE_TEXT    "지금 이 순간, 나의 아름다움은 가장 빛난다, 0123456789."
+    IDS_MUI_ZERO_LEN_MATCH  "^ 제로 길이 일치"
     IDS_MUI_GOTO_LINE       "행 (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "열 (1 - %ti):"
 END
@@ -251,16 +251,16 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "언어(&L)"
-    IDS_MUI_MENU_THEMES     "스키마 모음(&S)"
-    IDM_THEMES_DEFAULT      "초기화(&F)"
+    IDS_MUI_MENU_THEMES     "구성표 모음(&S)"
+    IDM_THEMES_DEFAULT      "기본값(&F)"
     IDM_THEMES_FILE_ITEM    "표준 설정(&S)"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "모두 지우기"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "찾기 내역 지우기"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "바꾸기 내역 지우기"
 END
 
 STRINGTABLE
@@ -270,52 +270,52 @@ IDS_MUI_CMDLINEHELP "\
 Notepad3 \t[/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]파일명[...]]\r\n\r\n\
-파일명\t마지막 인수여야 하며, 기본적으로 큰따옴표 생략.\r\n\
-+\t여러개의 파일 지정(큰따옴표 사용).\r\n\
--\t단일 파일 지정(큰따옴표 생략).\r\n\r\n\
+파일\t기본적으로 따옴표로 묶인 공백이 없는 마지막 인수여야 합니다.\r\n\
++\t여러 파일 인수를 허용합니다 (따옴표로 묶인 공백 포함).\r\n\
+-\t단일 파일 인수를 허용합니다 (따옴표로 묶인 공백 없음).\r\n\r\n\
 옵션:\r\n\
-/?\t도움말 메시지 표시.\r\n\
+/?\t이 도움말 메시지를 표시합니다.\r\n\
 ...\t인코딩 (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\t줄 끝 모드 (/crlf, /cr, /lf).\r\n\
-/e\t파일 소스 인코딩.\r\n\
-/g\t지정 위치로 이동 (/g -1 end of file).\r\n\
-/m\t지정 문자열 일치 (/m- last, /mr regex, /mb backslash).\r\n\
-/l\t변경된 파일 자동으로 다시 읽음.\r\n\
-/q\t실행시 새 파일 생성.\r\n\
-/s\t지정된 스키마 선택.\r\n\
-/d\t기본 텍스트 스키마 선택.\r\n\
-/h\t웹 소스코드 스키마 선택.\r\n\
-/x\tXML 문서 스키마 선택.\r\n\
-/c\t새 창을 열면서 클립보드 내용 붙여넣기.\r\n\
-/b\t클립보드 항목 수집용 붙여넣기판으로 열기.\r\n\
-/n\t항상 새 창 열기 (/ns 단일 파일 인스턴스).\r\n\
-/r\t윈도우 다시 사용 (/rs 단일 파일 인스턴스).\r\n\
-/p\t윈도우 위치와 크기 지정 (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+/e\t파일 소스 인코딩입니다.\r\n\
+/g\t지정된 위치로 이동합니다 (/g -1 파일 끝).\r\n\
+/m\t지정된 텍스트와 일치합니다 (/m- 마지막, /mr 정규식, /mb 백슬래시).\r\n\
+/l\t수정된 파일을 자동으로 다시 로드합니다.\r\n\
+/q\t프롬프트 없이 새 파일을 강제로 만듭니다.\r\n\
+/s\t지정된 구문 체계를 선택합니다.\r\n\
+/d\t기본 텍스트 구성표를 선택합니다.\r\n\
+/h\t웹 소스 코드 체계를 선택합니다.\r\n\
+/x\tXML 문서 체계를 선택합니다.\r\n\
+/c\t새 창을 열고 클립보드 내용을 붙여넣습니다.\r\n\
+/b\t새 붙여넣기 보드를 열어 클립보드 항목을 수집합니다.\r\n\
+/n\t항상 새 창을 엽니다 (/ns 단일 파일 인스턴스).\r\n\
+/r\t창을 재사용합니다 (/rs 단일 파일 인스턴스).\r\n\
+/p\t창 위치와 크기 지정 (/p0, /ps, /pf,l,t,r,b,m)\r\n\
 \tor /p <left>,<top>,<width>,<height>,<max>    [all integers].\r\n\
-/t\t윈도우 타이틀 지정.\r\n\
-/i\t트레이 아이콘으로 실행.\r\n\
-/o\t최상위 창으로.\r\n\
-/f\t지정된 ini 파일 사용 (/f0 ini 파일 없음).\r\n\
-/u\t높은 권한(관리자 권한)으로 실행.\r\n\
-/v\t파일을 즉시 인쇄 한 후 종료.\r\n\
-/vd\t파일 인쇄 (프린터 대화 상자 열기).\r\n\
-/y\t상대 경로 파일 이름의 경우 PATH 환경 검색.\r\n\
-/z\t다음 건너 뛰기 (레지스트리 기반 메모장 교체를 위해 사용 가능).\r\n\r\n\
+/t\t창 제목을 설정합니다.\r\n\
+/i\t트레이 아이콘으로 시작합니다.\r\n\
+/o\t창을 맨 위에 둡니다.\r\n\
+/f\tini-파일 (/f0 ini 파일 없음)을 지정합니다.\r\n\
+/u\t상승된 권한으로 시작합니다.\r\n\
+/v\t즉시 파일을 인쇄하고 종료합니다.\r\n\
+/vd\t파일을 인쇄합니다(프린터 대화 상자를 엽니다).\r\n\
+/y\t상대 파일 이름의 경우 환경 PATH를 검색합니다.\r\n\
+/z\t다음을 건너뜁니다(레지스트리 기반 메모장 교체에 사용 가능).\r\n\r\n\
 예:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... 새 파일 열기: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... 파일 바로 인쇄: ""Test.txt""\
+ \t... 파일을 즉시 인쇄합니다: ""Test.txt""\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-확장자는 ';' 로 구분되어야 합니다.\r\n\
-\\<regex> 사용; 파일 이름과 일치하는 패턴 정의:\r\n\
-   \\xyz$;   => 'xyz'로 파일 이름(기본 이름+확장자) 지정.\r\n\r\n\
+파일 이름 확장자는 ';'를 사용해 구분해야 합니다 \r\n\
+\\<regex>; 파일 이름과 일치하는 패턴 정의하려면:\r\n\
+   \\xyz$;   => 파일 이름(기본 이름+확장자)과 'xyz'를 마지막 문자로 지정합니다.\r\n\r\n\
 스타일 형식:\r\n\
-font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+글꼴:이름; 크기:[+/-]nn.mm; 굵게; 기울임; 밑줄;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-스타일 속성은 복사/붙여넣기, 혹은 끌어서 놓기로 복사 할 수 있습니다.\
+스타일 속성은 복사 및 붙여넣기 또는 끌어서 놓기를 사용하여 복사할 수 있습니다.\
 "
 
 END
@@ -361,4 +361,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
