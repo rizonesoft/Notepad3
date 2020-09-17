@@ -20,9 +20,9 @@
 
 #ifdef D_NP3_WIN10_DARK_MODE
 #include "IatHook.hpp"
-#include "ListViewUtil.hpp"
 #endif
 
+#include "ListViewUtil.hpp"
 
 // ============================================================================
 

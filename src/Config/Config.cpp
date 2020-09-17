@@ -1039,8 +1039,6 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 //
 void LoadSettings()
 {
-  WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
-
   CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
   bool bDirtyFlag = false;  // do we have to save the file on done
@@ -1310,9 +1308,12 @@ void LoadSettings()
 
 
 #ifdef D_NP3_WIN10_DARK_MODE
+
     unsigned int iValue = 0;
     WCHAR color[32] = { L'\0' };
-    Defaults2.DarkModeBkgColor = rgbDarkColorBkgRef;
+    WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
+
+    Defaults2.DarkModeBkgColor = rgbDarkBkgColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
@@ -1323,9 +1324,22 @@ void LoadSettings()
     if (Globals.hbrDarkModeBkgBrush) {
       DeleteObject(Globals.hbrDarkModeBkgBrush);
     }
+    if (Globals.hbrDarkModeBtnFcBrush) {
+      DeleteObject(Globals.hbrDarkModeBtnFcBrush);
+    }
     Globals.hbrDarkModeBkgBrush = CreateSolidBrush(Settings2.DarkModeBkgColor);
 
-    Defaults2.DarkModeTxtColor = rgbDarkColorTxtRef;
+    Defaults2.DarkModeBtnFaceColor = rgbDarkBtnFcColorRef;
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBtnFaceColor);
+    IniSectionGetString(IniSecSettings2, L"DarkModeBtnFaceColor", color, wchBuffer, COUNTOF(wchBuffer));
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
+      Settings2.DarkModeBtnFaceColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+    } else {
+      Settings2.DarkModeBtnFaceColor = Defaults2.DarkModeBtnFaceColor;
+    }
+    Globals.hbrDarkModeBtnFcBrush = CreateSolidBrush(Settings2.DarkModeBtnFaceColor);
+
+    Defaults2.DarkModeTxtColor = rgbDarkTxtColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
@@ -1333,6 +1347,7 @@ void LoadSettings()
     } else {
       Settings2.DarkModeTxtColor = Defaults2.DarkModeTxtColor;
     }
+
 #endif
 
     // --------------------------------------------------------------------------

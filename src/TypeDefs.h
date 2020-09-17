@@ -247,9 +247,9 @@ typedef struct _cmq
 #define rgbRedColorRef       (RGB(255, 170, 170))
 #define rgbGreenColorRef     (RGB(170, 255, 170))
 #define rgbBlueColorRef      (RGB(170, 200, 255))
-#define rgbBlueColorRef      (RGB(170, 200, 255))
-#define rgbDarkColorBkgRef   (RGB(0x1F, 0x1F, 0x1F))
-#define rgbDarkColorTxtRef   (RGB(0xEF, 0xEF, 0xEF))
+#define rgbDarkBkgColorRef   (RGB(0x1F, 0x1F, 0x1F))
+#define rgbDarkBtnFcColorRef (RGB(0x33, 0x33, 0x33))
+#define rgbDarkTxtColorRef   (RGB(0xEF, 0xEF, 0xEF))
 
 // --------------------------------------------------------------------------
 
@@ -386,6 +386,7 @@ typedef struct _globals_t
 
 #ifdef D_NP3_WIN10_DARK_MODE
   HBRUSH hbrDarkModeBkgBrush;
+  HBRUSH hbrDarkModeBtnFcBrush;
 #endif
 
   FR_STATES FindReplaceMatchFoundState;
@@ -587,6 +588,7 @@ typedef struct _settings2_t
 
 #ifdef D_NP3_WIN10_DARK_MODE
   COLORREF DarkModeBkgColor;
+  COLORREF DarkModeBtnFaceColor;
   COLORREF DarkModeTxtColor;
 #endif
 

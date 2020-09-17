@@ -1311,7 +1311,11 @@ bool InitApplication(const HINSTANCE hInstance)
   wc.hInstance = hInstance;
   wc.hIcon = Globals.hDlgIcon256;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+#ifdef D_NP3_WIN10_DARK_MODE
   wc.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
+#else
+  wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+#endif
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
@@ -2699,7 +2703,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   rbBand.hbmBack = NULL;
   rbBand.lpText  = L"Toolbar";
   rbBand.clrFore = GetModeTextColor(UseDarkMode());
-  rbBand.clrBack = GetModeBkColor(UseDarkMode());
+  rbBand.clrBack = GetModeBtnfaceColor(UseDarkMode());
   rbBand.hwndChild  = Globals.hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + (2 * rc.top);
@@ -2737,7 +2741,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
   }
-  //SetModeCtlColors(Globals.hwndStatus, UseDarkMode());
 #endif
 
 }
@@ -2966,10 +2969,11 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //~PAINTSTRUCT ps;
     //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
 
-#ifdef D_NP3_WIN10_DARK_MODE
-
-    SetModeBkColor(hdc, UseDarkMode());
+    //~SetModeBkColor(hdc, UseDarkMode());
+    SetModeBtnFaceColor(hdc, UseDarkMode());
     SetModeTextColor(hdc, UseDarkMode());
+
+#ifdef D_NP3_WIN10_DARK_MODE
 
     if (UseDarkMode()) {
       // overpaint part frames
@@ -2978,7 +2982,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
       HDC const hdcFrm = GetWindowDC(hWndItem);
       RECT rcf = rc;
       for (int i = 1; i < bdh; ++i) {
-        FrameRect(hdcFrm, &rcf, Globals.hbrDarkModeBkgBrush);
+        FrameRect(hdcFrm, &rcf, Globals.hbrDarkModeBtnFcBrush);
         rcf.left -= 1;
         rcf.top -= 1;
         rcf.bottom += 1;
@@ -2995,7 +2999,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     //~EndPaint(hWndItem, &ps);
     return TRUE;
-  }
+  } 
   return FALSE;
 }
 
