@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.916.(build_#) (2020-09-16)
+Current BETA/RC Version 5.20.917.(build_#) (2020-09-17)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- 
+[.917.2]- Reducing Titlebar, Toolbar and Statusbar flickering.
 [.916.1]- Set Light/Dark Mode for grepWinNP3 execution (GRE).
 [.916.1]- Customize Schemes: show selected theme title.
 [.915.2]- DarkMode: remember DarkMode chosen Scheme/Theme for next start.
@@ -65,6 +66,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.917.2]- Win7 Toolbar background back to COLOR_BTNFACE, Win10 stays with COLOR_WINDOWS.
 [.916.1]- 1st try to fix Win7 startup crash (library loading).
 [.916.1]- Update Titlebar on document modified.
 [.916.1]- Clean .ini-config for default values.
