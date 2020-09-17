@@ -46,7 +46,7 @@ extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
   if (minor) { *minor = _minor; }
   return _dwWindowsBuildNumber;
 }
-
+// ============================================================================
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
@@ -117,6 +117,7 @@ enum WINDOWCOMPOSITIONATTRIB {
   WCA_USEDARKMODECOLORS = 26,
   WCA_LAST = 27
 };
+// ============================================================================
 
 
 struct WINDOWCOMPOSITIONATTRIBDATA {
@@ -124,6 +125,7 @@ struct WINDOWCOMPOSITIONATTRIBDATA {
   PVOID pvData;
   SIZE_T cbData;
 };
+// ============================================================================
 
 using fnSetWindowCompositionAttribute = BOOL(WINAPI *)(HWND hWnd, WINDOWCOMPOSITIONATTRIBDATA *);
 // 1809 17763

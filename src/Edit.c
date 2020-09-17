@@ -5597,8 +5597,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       // the global static Find/Replace data structure
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SetDialogIconNP3(hwnd);
 
+      SetDialogIconNP3(hwnd);
       InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -5921,7 +5921,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     case WM_CTLCOLOREDIT:
     case WM_CTLCOLORLISTBOX:
       {
-      if (sg_pefrData->bMarkOccurences) {
+      if (sg_pefrData->bMarkOccurences)
+      {
         HWND hCheck = (HWND)lParam;
         HDC hDC = (HDC)wParam;
 

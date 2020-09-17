@@ -115,7 +115,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
 void InstallFileWatching(LPCWSTR lpszFile);
-bool GetDocModified();
+//bool GetDocModified();
 void SetSavePoint();
 void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
