@@ -34,13 +34,15 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.915.(build_#) (2020-09-16)
+Current BETA/RC Version 5.20.916.(build_#) (2020-09-16)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- 
+[.916.1]- Set Light/Dark Mode for grepWinNP3 execution (GRE).
+[.916.1]- Customize Schemes: show selected theme title.
 [.915.2]- DarkMode: remember DarkMode chosen Scheme/Theme for next start.
 [.915.2]- Configurable Dark Mode colors (non Explorer-Theme, Owner-Drawn).
 [.915.2]- Menu item to switch between Default and Dark-Mode.
@@ -51,9 +53,11 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
-[.915.3]- Due to lack of interest, "Notepad3DLL" was discontinued.
+[.916.1]- Opacity level on loosing focus for grepWinNP3.
+[.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
+[.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
-[.825.1]- Update grepWinNP3 (GRE) version 2.1.3.28 (2020-08-25).
+[.916.1]- Update grepWinNP3 (GRE) version 2.1.3.28 (2020-08-25).
 [.915.3]- Update Oniguruma Regex (ONI) engine version 6.9.6+ (2020-09-15).
 [.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-09).
 
@@ -61,6 +65,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.916.1]- 1st try to fix Win7 startup crash (library loading).
+[.916.1]- Update Titlebar on document modified.
+[.916.1]- Clean .ini-config for default values.
+[.916.1]- Standard margin background colors.
 [.915.2]- DarkMode: switch std. background and text color too.
 [.915.2]- DarkMode support / init / settings handling.
 

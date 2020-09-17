@@ -430,6 +430,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Агульны прадвызначаны &шрыфт...\tAlt+F12",    IDM_VIEW_FONT
         MENUITEM "&Прадвызначаны шрыфт для выбранай схемы...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Dark Mode",                           IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Налады"
     BEGIN

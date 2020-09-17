@@ -423,13 +423,15 @@ BEGIN
     END
     POPUP "T&ercihler"
     BEGIN
-        MENUITEM "&Özelleştirme...\tCtrl+F12",                        IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Özelleştirme...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Select Synta&x Scheme...\tF12",                      IDM_VIEW_SCHEME
         MENUITEM "&2nd Common Base\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Varsayılan Yazı Tipi...\tAlt+F12",                  IDM_VIEW_FONT
         MENUITEM "Stil Yapılandırıcı Var. Yazı Tipi...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM SEPARATOR
+        MENUITEM "Windows Dark Mode",                                  IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Ayarlar"
     BEGIN
