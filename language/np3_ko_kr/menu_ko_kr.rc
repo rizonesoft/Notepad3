@@ -137,7 +137,7 @@ BEGIN
         MENUITEM "인쇄(&P)...\tCtrl+P",                      IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "속성(&T)...",                              IDM_FILE_PROPERTIES
-        MENUITEM "바탕 화면 링크 만들기(&K)",                 IDM_FILE_CREATELINK
+        MENUITEM "바탕화면 링크 만들기(&K)",                 IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "찾아보기(&B)...\tCtrl+M",           IDM_FILE_BROWSE
         POPUP "즐겨찾기(&F)"
@@ -390,7 +390,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "모니터링 로그(&M)",                            IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "파일 끝을 지나 스크롤(&S)",                   IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "하이퍼 링크 툴팁 표시(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "하이퍼링크 도구팁 표시(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
         POPUP "패널(&A)"
