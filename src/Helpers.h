@@ -224,8 +224,7 @@ inline COLORREF GetModeBkColor(const bool bDarkMode) {
 
 inline COLORREF GetModeBtnfaceColor(const bool bDarkMode) {
 #ifdef D_NP3_WIN10_DARK_MODE
-  return bDarkMode ? Settings2.DarkModeBtnFaceColor : (COLORREF)(
-    IsWindows10OrGreater() ? GetSysColor(COLOR_WINDOW) : GetSysColor(COLOR_BTNFACE)); // (!) Win10 case
+  return bDarkMode ? Settings2.DarkModeBtnFaceColor : (COLORREF)GetSysColor(COLOR_BTNFACE);
 #else
   UNUSED(bDarkMode);
   return (COLORREF)GetSysColor(COLOR_BTNFACE);
@@ -244,8 +243,7 @@ inline int SetModeTextColor(const HDC hdc, const bool bDarkMode) {
 
 inline COLORREF GetModeTextColor(const bool bDarkMode) {
 #ifdef D_NP3_WIN10_DARK_MODE
-  return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)(
-    IsWindows10OrGreater() ? GetSysColor(COLOR_WINDOWTEXT) : GetSysColor(COLOR_BTNTEXT));
+  return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_BTNTEXT);
 #else
   UNUSED(bDarkMode);
   return (COLORREF)GetSysColor(COLOR_BTNTEXT);

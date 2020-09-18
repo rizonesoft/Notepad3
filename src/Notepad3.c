@@ -2703,7 +2703,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   rbBand.hbmBack = NULL;
   rbBand.lpText  = L"Toolbar";
   rbBand.clrFore = GetModeTextColor(UseDarkMode());
-  rbBand.clrBack = GetModeBtnfaceColor(UseDarkMode());
+  rbBand.clrBack = IsWindows10OrGreater() ? GetModeBkColor(UseDarkMode()) : GetModeBtnfaceColor(UseDarkMode());
   rbBand.hwndChild  = Globals.hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + (2 * rc.top);
@@ -2723,17 +2723,17 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
 
-  Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
-  //~Globals.hwndStatus = CreateWindowEx(
-  //~    0,                         // no extended styles
-  //~    STATUSCLASSNAME,           // name of status bar class
-  //~    (PCTSTR)NULL,              // no text when first created
-  //~    dwStatusbarStyle,          // creates a visible child window
-  //~    0, 0, 0, 0,                // ignores size and position
-  //~    hwnd,                      // handle to parent window
-  //~    (HMENU)IDC_STATUSBAR,      // child window identifier
-  //~    hInstance,                 // handle to application instance
-  //~    NULL);                     // no window creation data
+  //~Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
+  Globals.hwndStatus = CreateWindowEx(
+      WS_EX_COMPOSITED,          // => double-buffering avoids flickering
+      STATUSCLASSNAME,           // name of status bar class
+      (PCTSTR)NULL,              // no text when first created
+      dwStatusbarStyle,          // creates a visible child window
+      0, 0, 0, 0,                // ignores size and position
+      hwnd,                      // handle to parent window
+      (HMENU)IDC_STATUSBAR,      // child window identifier
+      hInstance,                 // handle to application instance
+      NULL);                     // no window creation data
 
   InitWindowCommon(Globals.hwndStatus, true); // (!) themed = true : resize grip
 
@@ -2741,6 +2741,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (IsDarkModeSupported()) {
     AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
   }
+  //~HDC const hdc = GetDC(Globals.hwndStatus);
+  //~SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
+  //~SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
+  //~ReleaseDC(Globals.hwndStatus, hdc);
 #endif
 
 }
@@ -3951,7 +3955,6 @@ static void _DynamicLanguageMenuCmd(int cmd)
     SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(Globals.hwndMain);
 
-    UpdateStatusbar(true);
     UpdateUI();
   }
   return;
@@ -3972,18 +3975,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
   if (bIsLngMenuCmd) {
     _DynamicLanguageMenuCmd(iLoWParam);
-    UpdateToolbar();
-    UpdateStatusbar(true);
-    UpdateMarginWidth();
     return FALSE;
   }
 
   bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
   if (bIsThemesMenuCmd) {
     Style_DynamicThemesMenuCmd(iLoWParam, GetModeThemeIndex());
-    UpdateToolbar();
-    UpdateStatusbar(true);
-    UpdateMarginWidth();
     return FALSE;
   }
 
@@ -5357,8 +5354,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
       }
       PostWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
-      UpdateStatusbar(true);
       UpdateMarginWidth();
+      UpdateUI();
       break;
 
 
@@ -5366,9 +5363,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         Style_SetDefaultFont(Globals.hwndEdit, true);
       }
-      UpdateToolbar();
-      UpdateStatusbar(true);
       UpdateMarginWidth();
+      UpdateUI();
       break;
 
 
@@ -5376,9 +5372,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         Style_SetDefaultFont(Globals.hwndEdit, false);
       }
-      UpdateToolbar();
-      UpdateStatusbar(true);
       UpdateMarginWidth();
+      UpdateUI();
       break;
 
 
@@ -5945,6 +5940,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     
         Style_DynamicThemesMenuCmd(GetModeThemeIndex() + IDM_THEMES_DEFAULT, iCurTheme);
         
+        COND_SHOW_ZOOM_CALLTIP();
+
         PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
       }
       break;
@@ -8637,7 +8634,7 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 //
 void UpdateToolbar()
 {
-  _DelayUpdateToolbar(_MQ_LAZY);
+  _DelayUpdateToolbar(_MQ_STD);
 }
 
 
@@ -8710,7 +8707,6 @@ static LONG  _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
 }
 
 
-
 //=============================================================================
 //
 //  _CalculateStatusbarSections
@@ -8721,6 +8717,7 @@ typedef WCHAR sectionTxt_t[txtWidth];
 
 static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchStatusBar[], bool* bIsUpdNeeded)
 {
+  // main window width changed ?
   static int s_iWinFormerWidth = -1;
   if (s_iWinFormerWidth != s_WinCurrentWidth) {
     *bIsUpdNeeded = true;
@@ -8895,12 +8892,12 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
 //
 void UpdateStatusbar(bool bForceRedraw)
 {
-  _DelayUpdateStatusbar(_MQ_STD, bForceRedraw);
+  _DelayUpdateStatusbar(_MQ_FAST, bForceRedraw);
 }
 
 //=============================================================================
 
-const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
+const static WCHAR* const FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
@@ -9398,7 +9395,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     else
       StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
 
-    const WCHAR* SBFMT = L" %s%s / %s     %s%s     %s%s     %s%s     %s%s     (  %s  )              ";
+    const WCHAR* const SBFMT = L" %s%s / %s     %s%s     %s%s     %s%s     %s%s     (  %s  )              ";
 
     static WCHAR tchFRStatus[128] = { L'\0' };
     StringCchPrintf(tchFRStatus, COUNTOF(tchFRStatus), SBFMT,
@@ -9473,8 +9470,6 @@ void UpdateUI()
   scn.nmhdr.code = SCN_UPDATEUI;
   scn.updated = (SC_UPDATE_CONTENT/* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
   SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-  //PostMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-  COND_SHOW_ZOOM_CALLTIP();
   SendWMSize(Globals.hwndMain, NULL);
 }
 
@@ -10047,11 +10042,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     Style_SetDefaultLexer(Globals.hwndEdit);
 
     s_bFileReadOnly = false;
-    SetSavePoint();
 
-    UpdateToolbar();
-    UpdateStatusbar(true);
+    SetSavePoint();
     UpdateMarginWidth();
+    UpdateStatusbar(true);
 
     // Terminate file watching
     if (FileWatching.ResetFileWatching) {
@@ -10285,9 +10279,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
   }
 
+  UpdateTitleBar();
   UpdateToolbar();
-  UpdateStatusbar(true);
   UpdateMarginWidth();
+  UpdateStatusbar(true);
 
   return fSuccess;
 }
@@ -10342,10 +10337,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   }
 
   SetSavePoint();
-
-  UpdateToolbar();
-  UpdateStatusbar(true);
   UpdateMarginWidth();
+  UpdateStatusbar(true);
 
   if (bPreserveView) {
     EditJumpTo(curLineNum + 1, 0);
