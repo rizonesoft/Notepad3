@@ -42,8 +42,10 @@ extern "C" {
 
 #ifdef _WIN64
   typedef __int64          te_xint_t;
+  #define TE_XINT_FMT      "%lli" 
 #else
   typedef int              te_xint_t;
+  #define TE_XINT_FMT      "%i"
 #endif
 
 typedef struct te_expr {

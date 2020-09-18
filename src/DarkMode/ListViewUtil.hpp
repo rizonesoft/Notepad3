@@ -2,6 +2,8 @@
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
+#define UINT_NM_CUSTOMDRAW (0xFFFFFFF4) // NM_CUSTOMDRAW = (0U - 12)
+
 struct SubclassInfo {
 	COLORREF headerTextColor;
 };
@@ -17,7 +19,7 @@ extern "C" void InitListView(HWND hListView)
 			{
 			case WM_NOTIFY:
 			{
-				if (reinterpret_cast<LPNMHDR>(lParam)->code == NM_CUSTOMDRAW)
+        if (reinterpret_cast<LPNMHDR>(lParam)->code == UINT_NM_CUSTOMDRAW)
 				{
 					LPNMCUSTOMDRAW nmcd = reinterpret_cast<LPNMCUSTOMDRAW>(lParam);
 					switch (nmcd->dwDrawStage)
@@ -104,7 +106,7 @@ extern "C" void InitTreeView(HWND hTreeView)
 			{
 			case WM_NOTIFY:
 			{
-				if (reinterpret_cast<LPNMHDR>(lParam)->code == NM_CUSTOMDRAW)
+        if (reinterpret_cast<LPNMHDR>(lParam)->code == UINT_NM_CUSTOMDRAW)
 				{
 					LPNMCUSTOMDRAW nmcd = reinterpret_cast<LPNMCUSTOMDRAW>(lParam);
 					switch (nmcd->dwDrawStage)
