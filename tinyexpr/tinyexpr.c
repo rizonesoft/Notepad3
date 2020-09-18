@@ -53,7 +53,6 @@ For log = natural log uncomment the next line. */
 #define INFINITY (1.0/0.0)
 #endif
 
-
 enum {
     TOK_NULL = TE_CLOSURE7+1, TOK_ERROR, TOK_END, TOK_SEP,
     TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
@@ -184,17 +183,19 @@ static te_expr *new_expr(const int type, const te_expr *parameters[]) {
     const int psize = sizeof(void*) * arity;
     const int size = (sizeof(te_expr) - sizeof(void*)) + psize + (IS_CLOSURE(type) ? sizeof(void*) : 0);
     te_expr *ret = malloc(size);
-    memset(ret, 0, size);
+    if (ret) {
+      memset(ret, 0, size);
 #endif
-    if (arity && parameters) {
+      if (arity && parameters) {
 #if defined(TINYEXPR_USE_STATIC_MEMORY)
-        memcpy(ret->parameters, parameters, sizeof(void*)*TINYEXPR_MAX_PARAMETERS);
+        memcpy(ret->parameters, parameters, sizeof(void*) * TINYEXPR_MAX_PARAMETERS);
 #else
         memcpy(ret->parameters, parameters, psize);
 #endif
+      }
+      ret->type = type;
+      ret->bound = 0;
     }
-    ret->type = type;
-    ret->bound = 0;
     return ret;
 }
 

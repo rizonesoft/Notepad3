@@ -8062,11 +8062,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                     SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
                   }
                   else if (s_iExprError > 0) {
-#ifdef _WIN64
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[%ll]", s_iExprError);
-#else
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[%i]", s_iExprError);
-#endif
+                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[" TE_XINT_FMT "]", s_iExprError);
                     SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
                   }
                   else {
@@ -8199,7 +8195,7 @@ void ParseCommandLine()
                          lp1 + CSTRLEN(L"appid="), len - CSTRLEN(L"appid="));
           StrTrim(Settings2.AppUserModelID, L" ");
           if (StrIsEmpty(Settings2.AppUserModelID)) {
-            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
+            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft.") _W(SAPPNAME));
           }
         }
         else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
@@ -9148,11 +9144,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6G", s_dExpression);
     }
     else if (s_iExprError > 0) {
-#ifdef _WIN64
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%ll]", s_iExprError);
-#else
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", s_iExprError);
-#endif
+        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_XINT_FMT) L"]", s_iExprError);
     }
 
     if (bForceRedraw || (!s_iExprError || (s_iExErr != s_iExprError))) 
