@@ -103,7 +103,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\sciXlexers;..\ced\ced;..\uchardet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -169,7 +169,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\sciXlexers;..\ced\ced;..\uchardet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -234,7 +234,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\sciXlexers;..\ced\ced;..\uchardet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -305,7 +305,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\sciXlexers;..\ced\ced;..\uchardet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -375,69 +375,69 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\crypto\crypto.c" />
-    <ClCompile Include="..\crypto\rijndael-alg-fst.c" />
-    <ClCompile Include="..\crypto\rijndael-api-fst.c" />
-    <ClCompile Include="..\crypto\sha-256.c" />
-    <ClCompile Include="..\tinyexpr\tinyexpr.c" />
-    <ClCompile Include="..\uchardet\uchardet\src\CharDistribution.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\JpCntx.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangAfricaansModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangArabicModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangBelarusianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangBulgarianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangCroatianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangCzechModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangDanishModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangEsperantoModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangEstonianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangFinnishModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangFrenchModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangGermanModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangGreekModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangHebrewModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangHungarianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangIrishModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangItalianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangLatvianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangLithuanianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangMalteseModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangNederlandsModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPolishModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPortugueseModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangRomanianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangRussianModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangSlovakModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangSloveneModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangSpanishModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangSwedishModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangThaiModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangTurkishModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangVietnameseModel.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsBig5Prober.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsCharSetProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsEscCharsetProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsEscSM.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsEUCJPProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsEUCKRProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsEUCTWProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsGB18030Prober.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsGB2312Prober.cpp">
+    <ClCompile Include="crypto\crypto.c" />
+    <ClCompile Include="crypto\rijndael-alg-fst.c" />
+    <ClCompile Include="crypto\rijndael-api-fst.c" />
+    <ClCompile Include="crypto\sha-256.c" />
+    <ClCompile Include="tinyexpr\tinyexpr.c" />
+    <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\JpCntx.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangAfricaansModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangArabicModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangBelarusianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangBulgarianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangCroatianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangCzechModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangDanishModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangEsperantoModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangEstonianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangFinnishModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangFrenchModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangGermanModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangGreekModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangHebrewModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangHungarianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangIrishModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangItalianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangLatvianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangLithuanianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangMalteseModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangNederlandsModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangPolishModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangPortugueseModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangRomanianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangRussianModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangSlovakModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangSloveneModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangSpanishModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangSwedishModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangThaiModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangTurkishModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangVietnameseModel.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsBig5Prober.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsCharSetProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsEscCharsetProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsEscSM.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsEUCJPProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsEUCKRProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsEUCTWProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsGB18030Prober.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsGB2312Prober.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\uchardet\uchardet\src\nsHebrewProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsLatin1Prober.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsMBCSGroupProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsMBCSSM.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsSBCharSetProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsSBCSGroupProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsSJISProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsUniversalDetector.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsUTF8Prober.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\uchardet.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsHebrewProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsLatin1Prober.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsMBCSGroupProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsMBCSSM.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsSBCharSetProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsSBCSGroupProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsSJISProber.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsUniversalDetector.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\nsUTF8Prober.cpp" />
+    <ClCompile Include="uchardet\uchardet\src\uchardet.cpp" />
     <ClCompile Include="AccelKeys.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -516,46 +516,46 @@
     <ClCompile Include="Styles.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\crypto\crypto.h" />
-    <ClInclude Include="..\crypto\rijndael-alg-fst.h" />
-    <ClInclude Include="..\crypto\rijndael-api-fst.h" />
-    <ClInclude Include="..\crypto\sha-256.h" />
+    <ClInclude Include="crypto\crypto.h" />
+    <ClInclude Include="crypto\rijndael-alg-fst.h" />
+    <ClInclude Include="crypto\rijndael-api-fst.h" />
+    <ClInclude Include="crypto\sha-256.h" />
     <ClInclude Include="..\language\common_res.h" />
-    <ClInclude Include="..\tinyexpr\tinyexpr.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\CharDistribution.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\JpCntx.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsBig5Prober.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsCharSetProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsCodingStateMachine.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nscore.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsEscCharsetProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsEUCJPProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsEUCKRProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsEUCTWProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsGB18030Prober.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsGB2312Prober.h">
+    <ClInclude Include="tinyexpr\tinyexpr.h" />
+    <ClInclude Include="uchardet\uchardet\src\CharDistribution.h" />
+    <ClInclude Include="uchardet\uchardet\src\JpCntx.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsBig5Prober.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsCharSetProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsCodingStateMachine.h" />
+    <ClInclude Include="uchardet\uchardet\src\nscore.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsEscCharsetProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsEUCJPProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsEUCKRProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsEUCTWProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsGB18030Prober.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsGB2312Prober.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\uchardet\uchardet\src\nsHebrewProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsLatin1Prober.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsMBCSGroupProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsPkgInt.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsSBCharSetProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsSBCSGroupProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsSJISProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsUniversalDetector.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsUTF8Prober.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\prmem.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\uchardet.h" />
-    <ClInclude Include="..\uthash\utarray.h" />
-    <ClInclude Include="..\uthash\uthash.h" />
-    <ClInclude Include="..\uthash\utlist.h" />
-    <ClInclude Include="..\uthash\utringbuffer.h" />
-    <ClInclude Include="..\uthash\utstack.h" />
-    <ClInclude Include="..\uthash\utstring.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsHebrewProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsLatin1Prober.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsMBCSGroupProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsPkgInt.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsSBCharSetProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsSBCSGroupProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsSJISProber.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsUniversalDetector.h" />
+    <ClInclude Include="uchardet\uchardet\src\nsUTF8Prober.h" />
+    <ClInclude Include="uchardet\uchardet\src\prmem.h" />
+    <ClInclude Include="uchardet\uchardet\src\uchardet.h" />
+    <ClInclude Include="uthash\utarray.h" />
+    <ClInclude Include="uthash\uthash.h" />
+    <ClInclude Include="uthash\utlist.h" />
+    <ClInclude Include="uthash\utringbuffer.h" />
+    <ClInclude Include="uthash\utstack.h" />
+    <ClInclude Include="uthash\utstring.h" />
     <ClInclude Include="AccelKeys.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -595,12 +595,12 @@
     <None Include="..\res\Run.ico" />
     <None Include="..\res\Styles.ico" />
     <None Include="..\res\Toolbar.bmp" />
-    <None Include="..\uchardet\uchardet\src\Big5Freq.tab" />
-    <None Include="..\uchardet\uchardet\src\EUCKRFreq.tab" />
-    <None Include="..\uchardet\uchardet\src\EUCTWFreq.tab" />
-    <None Include="..\uchardet\uchardet\src\GB18030Freq.tab" />
-    <None Include="..\uchardet\uchardet\src\GB2312Freq.tab" />
-    <None Include="..\uchardet\uchardet\src\JISFreq.tab" />
+    <None Include="uchardet\uchardet\src\Big5Freq.tab" />
+    <None Include="uchardet\uchardet\src\EUCKRFreq.tab" />
+    <None Include="uchardet\uchardet\src\EUCTWFreq.tab" />
+    <None Include="uchardet\uchardet\src\GB18030Freq.tab" />
+    <None Include="uchardet\uchardet\src\GB2312Freq.tab" />
+    <None Include="uchardet\uchardet\src\JISFreq.tab" />
     <None Include="..\Versions\Notepad3.exe.manifest.tpl" />
     <None Include="..\Versions\VersionEx.h.tpl" />
     <None Include=".clang-format" />

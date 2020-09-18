@@ -16,17 +16,20 @@
     <Filter Include="win32">
       <UniqueIdentifier>{afe7e35e-cd81-406c-a770-df29d2b3fc95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sciXlexers">
-      <UniqueIdentifier>{3e51698b-084e-40cf-8dee-860bd61d7a2c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="oniguruma">
       <UniqueIdentifier>{97da2683-9a5a-42f9-8ac6-0e8c54ce61e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scioniguruma">
-      <UniqueIdentifier>{72633fd7-00ab-45b0-b160-40f5ded15bd4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lexilla">
       <UniqueIdentifier>{326090d3-060e-4529-9b3e-4be7793fb194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lexers_x">
+      <UniqueIdentifier>{3e51698b-084e-40cf-8dee-860bd61d7a2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma\scintilla">
+      <UniqueIdentifier>{32ffd4ad-2b04-4d07-acff-dad68cf258de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma\src">
+      <UniqueIdentifier>{02da00bc-9c25-4955-b7b3-bf9283a4256f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -267,86 +270,86 @@
     <ClCompile Include="lexers\LexRust.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
-      <Filter>sciXlexers</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexNim.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="src\UniqueString.cxx">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\oniguruma\src\ascii.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\mktable.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\onig_init.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regcomp.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regenc.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regerror.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regexec.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regext.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\reggnu.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regparse.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regsyntax.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regtrav.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\regversion.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\st.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\unicode.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\unicode_fold1_key.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\unicode_fold2_key.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\unicode_fold3_key.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\unicode_unfold_key.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\oniguruma\src\utf8.c">
-      <Filter>oniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx">
-      <Filter>scioniguruma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sciXlexers\LexTOML.cxx">
-      <Filter>sciXlexers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sciXlexers\LexCSV.cxx">
-      <Filter>sciXlexers</Filter>
-    </ClCompile>
     <ClCompile Include="lexilla\src\Lexilla.cxx">
       <Filter>lexilla</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexAHKL.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexCSV.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexTOML.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\scintilla\OnigurumaRegExEngine.cxx">
+      <Filter>oniguruma\scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\ascii.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\mktable.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\onig_init.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regcomp.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regenc.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regerror.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regexec.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regext.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\reggnu.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regparse.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regsyntax.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regtrav.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regversion.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\st.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_fold1_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_fold2_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_fold3_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_unfold_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\utf8.c">
+      <Filter>oniguruma\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -536,35 +539,35 @@
     <ClInclude Include="src\IntegerRectangle.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\sciXlexers\SciXLexer.h">
-      <Filter>sciXlexers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oniguruma\src\oniggnu.h">
-      <Filter>oniguruma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oniguruma\src\oniguruma.h">
-      <Filter>oniguruma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oniguruma\src\regenc.h">
-      <Filter>oniguruma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oniguruma\src\regint.h">
-      <Filter>oniguruma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oniguruma\src\regparse.h">
-      <Filter>oniguruma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oniguruma\src\st.h">
-      <Filter>oniguruma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oniguruma\src\config.h">
-      <Filter>oniguruma</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sciXlexers\CharSetX.h">
-      <Filter>sciXlexers</Filter>
-    </ClInclude>
     <ClInclude Include="lexilla\src\Lexilla.h">
       <Filter>lexilla</Filter>
+    </ClInclude>
+    <ClInclude Include="lexers_x\CharSetX.h">
+      <Filter>lexers_x</Filter>
+    </ClInclude>
+    <ClInclude Include="lexers_x\SciXLexer.h">
+      <Filter>lexers_x</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\config.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\oniggnu.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\oniguruma.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\regenc.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\regint.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\regparse.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\st.h">
+      <Filter>oniguruma\src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

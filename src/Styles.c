@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 #include "SciLexer.h"
-#include "SciXLexer.h"
+#include "lexers_x/SciXLexer.h"
 
 #include "Edit.h"
 #include "Dialogs.h"

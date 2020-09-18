@@ -7,7 +7,7 @@
 
 #include "Scintilla.h"
 #include "SciLexer.h"
-#include "../sciXlexers/SciXLexer.h"
+#include "../scintilla/lexers_x/SciXLexer.h"
 
 #include "resource.h"
 
