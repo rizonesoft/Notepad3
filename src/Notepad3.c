@@ -32,10 +32,10 @@
 #include "Styles.h"
 #include "Dialogs.h"
 #include "resource.h"
-#include "../crypto/crypto.h"
-#include "../uthash/utarray.h"
-#include "../uthash/utlist.h"
-#include "../tinyexpr/tinyexpr.h"
+#include "crypto/crypto.h"
+#include "uthash/utarray.h"
+#include "uthash/utlist.h"
+#include "tinyexpr/tinyexpr.h"
 #include "Encoding.h"
 #include "VersionEx.h"
 #include "MuiLanguage.h"
@@ -44,7 +44,7 @@
 #include "DarkMode/DarkMode.h"
 
 #include "SciLexer.h"
-#include "SciXLexer.h"
+#include "lexers_x/SciXLexer.h"
 
 // ============================================================================
 //

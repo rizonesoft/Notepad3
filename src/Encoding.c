@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "../uthash/utarray.h"
+#include "uthash/utarray.h"
 
 #include "resource.h"
 #include "Encoding.h"

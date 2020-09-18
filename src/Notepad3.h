@@ -19,7 +19,7 @@
 
 #include "TypeDefs.h"
 #include "SciCall.h"
-#include "../uthash/utarray.h"
+#include "uthash/utarray.h"
 
 //==== Main Window ============================================================
 

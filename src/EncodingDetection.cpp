@@ -41,10 +41,10 @@ extern "C" {
 }
 
 // CED - Compact Encoding Detection (by Google)
-#include "compact_enc_det/compact_enc_det.h"
+//~#include "compact_enc_det/compact_enc_det.h" ~ deprecated
 
 // UCHARDET - Universal Character Detection (by Mozilla)
-#include "uchardet/src/uchardet.h"
+#include "uchardet/uchardet/src/uchardet.h"
 
 #include "resource.h"
 
@@ -567,6 +567,8 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
 }
 // ============================================================================
 
+#if 0
+
 constexpr Encoding _MapCPI2CEDEncoding(const cpi_enc_t cpiEncoding)
 {
   if ((cpiEncoding < 0) || (cpiEncoding >= _CountOfEncodings())) { return UNKNOWN_ENCODING; }
@@ -593,6 +595,8 @@ constexpr Encoding _MapCPI2CEDEncoding(const cpi_enc_t cpiEncoding)
   return encoding;
 }
 // ============================================================================
+
+#endif // 0
 
 
 constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfidence,
