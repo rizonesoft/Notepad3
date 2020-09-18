@@ -393,7 +393,7 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,139,79,50,14
-    LTEXT           "Sem indentação de quebra automática|Indentação de quebra automática por 1 caractere|Indentação de quebra automática por 2 caracteres|Indentação de quebra automática por 1 nível|Indentação de quebra automática por 2 níveis|Indentação de quebra automática como a primeira sublinha|Indentação de quebra automática por 1 nível a mais do que a primeira sublinha",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Sem indentação|Indentação de 1 caractere|Indentação de 2 caracteres|Indentação de 1 nível|Indentação de 2 níveis|Indentação igual à primeira sub-linha|Indentação de mais 1 nível que a primeira sub-linha",200,0,0,615,8,NOT WS_VISIBLE
     LTEXT           "Sem indicadores visuais antes da quebra automática|Mostrar indicadores visuais antes da quebra automática (perto do texto)|Mostrar indicadores visuais antes da quebra automática (perto da borda)",201,0,0,418,8,NOT WS_VISIBLE
     LTEXT           "Sem indicadores visuais depois da quebra automática|Mostrar indicadores visuais depois da quebra automática (perto do texto)|Mostrar indicadores visuais depois da quebra automática (perto da borda)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "Quebra automática de texto entre palavras|Quebra automática de texto entre qualquer glifo",203,0,0,187,8,NOT WS_VISIBLE
