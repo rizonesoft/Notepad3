@@ -233,8 +233,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
  
     g_iniPath = CPathUtils::GetModuleDir(0);
     g_iniPath += L"\\grepwinNP3.ini";
-    if (parser.HasVal(L"inipath"))
+    if (parser.HasVal(L"inipath")) {
         g_iniPath = parser.GetVal(L"inipath");
+        bPortable = true;
+    }
 
     if (bPortable)
     {
@@ -433,9 +435,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }
-        if (bPortable)
+        if (bPortable) {
             g_iniFile.SaveFile(g_iniPath.c_str(), true);
-        
+        }
         Gdiplus::GdiplusShutdown(gdiplusToken);
     }
 
