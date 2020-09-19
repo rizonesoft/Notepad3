@@ -2951,7 +2951,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  MsgDrawItem() - Handles WM_DRAWITEM
+//  MsgDrawItem() - Handles WM_DRAWITEM  (needs SBT_OWNERDRAW)
 //
 //  https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
 //

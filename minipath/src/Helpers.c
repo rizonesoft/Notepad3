@@ -514,10 +514,8 @@ void SetWindowTransparentMode(HWND hwnd, BOOL bTransparentMode, int iOpacityLeve
 //
 BOOL StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
 {
-
-  UINT uFlags = (nPart == 255) ? nPart|SBT_NOBORDERS : nPart;
+  UINT const uFlags = SBT_OWNERDRAW | nPart;
   return (BOOL)SendMessage(hwnd,SB_SETTEXT,uFlags,(LPARAM)lpszText);
-
 }
 
 

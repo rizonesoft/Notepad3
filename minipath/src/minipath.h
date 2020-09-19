@@ -182,7 +182,7 @@ void    MsgSize(HWND,WPARAM,LPARAM);
 void    MsgInitMenu(HWND,WPARAM,LPARAM);
 LRESULT MsgCommand(HWND,WPARAM,LPARAM);
 LRESULT MsgNotify(HWND,WPARAM,LPARAM);
-
+LRESULT MsgDrawItem(HWND, WPARAM, LPARAM);
 
 
 ///   End of minipath.h   \\\

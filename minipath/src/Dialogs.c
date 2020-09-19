@@ -30,6 +30,7 @@
 #include "minipath.h"
 #include "dlapi.h"
 #include "config.h"
+#include "..\..\src\DarkMode\DarkMode.h"
 #include "dialogs.h"
 #include "resource.h"
 
@@ -1021,7 +1022,6 @@ INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
       }
 
-
     case WM_CTLCOLORSTATIC:
 
       if (!m_bDefCrNoFilt && GetDlgCtrlID((HWND)lParam) == IDC_COLOR_SAMP1)
@@ -1263,22 +1263,20 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
       ListView_SetExtendedListViewStyleEx(hwndDirList,
         LVS_EX_FULLROWSELECT,
         LVS_EX_FULLROWSELECT);
-      if (IsVista())
-        SetTheme(hwndDirList,L"Explorer");
+      SetExplorerTheme(hwndDirList);
     }
     else {
       ListView_SetExtendedListViewStyleEx(hwndDirList,
         LVS_EX_FULLROWSELECT,0);
-      if (IsVista())
-        SetTheme(hwndDirList,L"Listview");
+      SetTheme(hwndDirList,L"Listview");
     }
 
     if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crFilter);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crFilter);
       ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
     }
     else {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crNoFilt);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crNoFilt);
       ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
     }
 

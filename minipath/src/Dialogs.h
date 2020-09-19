@@ -13,6 +13,7 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#include <uxtheme.h>
 
 BOOL GetDirectory(HWND,int,LPWSTR,LPCWSTR,BOOL);
 BOOL GetDirectory2(HWND,int,LPWSTR,int);
@@ -47,5 +48,14 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND, UINT, WPARAM, LPARAM);
 int  ErrorMessage(int, UINT, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
+
+#define SetExplorerTheme(hwnd) SetWindowTheme((hwnd), L"Explorer", NULL)
+
+inline void InitWindowCommon(HWND hwnd, BOOL bSetExplorerTheme) {
+  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
+  else { SetWindowTheme(hwnd, L"", L""); }
+  //SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
+}
+
 
 // End of Dialogs.h

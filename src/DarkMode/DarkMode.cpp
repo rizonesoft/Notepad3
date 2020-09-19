@@ -15,7 +15,6 @@
 
 #include <cstdint>
 
-#include "TypeDefs.h"
 #include "DarkMode.h"
 
 #ifdef D_NP3_WIN10_DARK_MODE

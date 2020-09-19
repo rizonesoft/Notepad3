@@ -37,6 +37,9 @@
     <ClCompile Include="src\Config.cpp">
       <Filter>C/C++ Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\DarkMode\DarkMode.cpp">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dialogs.h">
@@ -67,6 +70,9 @@
       <Filter>H Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Config\SimpleIni.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\DarkMode\DarkMode.h">
       <Filter>H Source Files</Filter>
     </ClInclude>
   </ItemGroup>
