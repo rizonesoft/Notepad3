@@ -42,6 +42,8 @@
 
 #define ID_ABOUTBOX         0x0010
 #define ID_CLONE            0x0011
+#define ID_STAY_ON_TOP      0x0022
+
 #define ALPHA_OPAQUE         (255)
 
 enum ExecuteAction
@@ -205,6 +207,7 @@ private:
     bool                    m_bConfirmationOnReplace;
     bool                    m_showContent;
     bool                    m_showContentSet;
+    bool                    m_stayOnTop;
     BYTE                    m_OpacityNoFocus;
 
     std::vector<CSearchInfo> m_items;
