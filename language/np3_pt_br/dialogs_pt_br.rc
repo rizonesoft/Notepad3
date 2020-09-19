@@ -123,7 +123,7 @@ BEGIN
     LTEXT           "Procurar Strin&g:",IDC_STATIC,7,7,50,8
     CONTROL         "<a>Esc Ctrl Caract.</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Trocar co&m:",IDC_STATIC,7,36,46,8
+    LTEXT           "Trocar co&m:",IDC_STATIC2,7,36,46,8
     CONTROL         "<a>Esc Ctrl Caract.</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Diferenciar Maiús./Minús&c.",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,92,10
@@ -189,7 +189,7 @@ BEGIN
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
     CONTROL         "Use como &segunda opção ao detectar uma falha.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,160,10
-    GROUPBOX        "Detectar Codificação: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Detectar Codificação: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Abrir arquivos 7-bit &ASCII em modo UTF-8.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,140,10
     CONTROL         "Use apenas &resultados de detecção confiáveis.",IDC_RELIABLE_DETECTION_RES,
@@ -229,13 +229,13 @@ CAPTION "Final de Linha Incosistente"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Final de linha inconsistente encontrado no arquivo:",IDC_STATIC,7,7,180,8
-    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
-    RTEXT           "CR:",IDC_STATIC,10,28,34,8
-    RTEXT           "LF:",IDC_STATIC,10,38,34,8
+    RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC3,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC4,10,38,34,8
     LTEXT           "%s linha(s).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s linha(s).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s linha(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Você quer normalizar os finais da linha?",IDC_STATIC,7,52,180,8
+    LTEXT           "&Você quer normalizar os finais da linha?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Sim",IDOK,138,63,50,14
     PUSHBUTTON      "&Não",IDCANCEL,138,80,50,14
@@ -332,7 +332,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Largura do Tabulador:",IDC_STATIC,7,10,80,8
     EDITTEXT        IDC_TAB_WIDTH,90,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "Tamanho da &Indentação:",IDC_STATIC,7,30,80,8
+    LTEXT           "Tamanho da &Indentação:",IDC_STATIC2,7,30,80,8
     EDITTEXT        IDC_INDENT_DEPTH,90,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Inserir tabulações como &espaços.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Tecla de &Tabulação reformata indentação.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
@@ -354,11 +354,11 @@ BEGIN
     GROUPBOX        "Estatisticas: ",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Abas[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
     LTEXT           "Vazio[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
-    LTEXT           "Misturado[x]:",IDC_STATIC,39,42,40,8
+    LTEXT           "Misturado[x]:",IDC_STATIC3,39,42,40,8
     RTEXT           "%s linha(s)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s linha(s)",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s linha(s)",IDC_INDENT_SUM_MIX,84,42,52,8
-    GROUPBOX        "Re-Indentar Totos? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    GROUPBOX        "Re-Indentar Totos? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabulaç.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,40,10
     CONTROL         "&Espaços",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,35,10
     RTEXT           "%s linha(s) c/ profund. identação irreg.",IDC_INDENT_TAB_MODX,50,72,130,8
@@ -424,19 +424,19 @@ BEGIN
     GROUPBOX        "Cabeçalho e Rodapé",1074,8,130,224,56,WS_GROUP
     LTEXT           "&Cabeçalho:",IDC_STATIC,16,146,36,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Rodapé:",IDC_STATIC,16,167,36,8
+    LTEXT           "&Rodapé:",IDC_STATIC3,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Cores de impressão",1076,8,191,224,37,WS_GROUP
-    LTEXT           "Mo&do:",IDC_STATIC,16,207,36,8
+    LTEXT           "Mo&do:",IDC_STATIC4,16,207,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Escala",IDC_STATIC,240,170,108,58,WS_GROUP
-    LTEXT           "&Nível (10% até 500%):",IDC_STATIC,248,188,92,8
+    GROUPBOX        "Escala",IDC_STATIC5,240,170,108,58,WS_GROUP
+    LTEXT           "&Nível (10% até 500%):",IDC_STATIC6,248,188,92,8
     EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
     CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
     DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
     PUSHBUTTON      "Cancelar",IDCANCEL,244,237,50,14
     PUSHBUTTON      "&Impressora...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "Previsualizar",IDC_STATIC,240,8,108,157
+    GROUPBOX        "Previsualizar",IDC_STATIC2,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -478,7 +478,7 @@ BEGIN
     CONTROL         "Definir Nova Chave Mestra",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,90,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Chave mestra Opicional:",IDC_STATIC,17,61,76,10,NOT WS_GROUP
+    LTEXT           "Chave mestra Opicional:",IDC_STATIC2,17,61,76,10,NOT WS_GROUP
     CONTROL         "Encriptar usando Frase de Acesso",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,120,10
     CONTROL         "Reutilizar Chave Mestra",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     CONTROL         "Mostrar frase de acesso",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,90,10
@@ -516,19 +516,19 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Testo &Prefixo para linhas:",IDC_STATIC,7,7,88,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Fixar texto nas linhas",IDC_STATIC,7,37,88,8
+    LTEXT           "&Fixar texto nas linhas",IDC_STATIC2,7,37,88,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Número da linha do documento.",IDC_STATIC,57,72,100,8
+    LTEXT           "Número da linha do documento.",IDC_STATIC3,57,72,100,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Número contínuo.",IDC_STATIC,57,82,66,8
+    LTEXT           "Número contínuo.",IDC_STATIC4,57,82,66,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Número contínuo (base-zero).",IDC_STATIC,57,92,109,8
+    LTEXT           "Número contínuo (base-zero).",IDC_STATIC5,57,92,109,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -538,10 +538,10 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Abrindo tag (com atributos):",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Fechando tag (pode ser editada):",IDC_STATIC,7,37,120,8
+    LTEXT           "&Fechando tag (pode ser editada):",IDC_STATIC2,7,37,120,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X Vezes",IDC_STATIC,148,50,24,8
+    LTEXT           "X Vezes",IDC_STATIC3,148,50,24,8
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
 END
@@ -553,7 +553,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Inserir &antes da seleção:",IDC_STATIC,7,7,76,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Insertir &depois da seleção:",IDC_STATIC,7,37,88,8
+    LTEXT           "Insertir &depois da seleção:",IDC_STATIC2,7,37,88,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
@@ -695,11 +695,11 @@ CAPTION "Escolher Fontes"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
     GROUPBOX        "Amostra", IDC_STATIC, 7, 102, 284, 68, BS_BITMAP
-    LTEXT           "&Fonte:",IDC_STATIC,7,7,127,8
+    LTEXT           "&Fonte:",IDC_STATIC2,7,7,127,8
     COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Estilo de F&onte:",IDC_STATIC,154,7,72,8
+    LTEXT           "Estilo de F&onte:",IDC_STATIC3,154,7,72,8
     COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Tamanho:",IDC_STATIC,247,7,40,8
+    LTEXT           "&Tamanho:",IDC_STATIC4,247,7,40,8
     COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
     CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54
     DEFPUSHBUTTON   "OK",IDOK,182,178,50,14

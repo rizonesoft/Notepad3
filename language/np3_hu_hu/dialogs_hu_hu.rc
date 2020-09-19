@@ -123,7 +123,7 @@ BEGIN
     LTEXT           "Keresési szöve&g:",IDC_STATIC,7,7,48,8
     CONTROL         "<a>Esc Ctrl karak.</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Cserélés &erre:",IDC_STATIC,7,36,46,8
+    LTEXT           "Cserélés &erre:",IDC_STATIC2,7,36,46,8
     CONTROL         "<a>Esc Ctrl karak.</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "K&is-/nagybetű számít",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,89,10
@@ -189,7 +189,7 @@ BEGIN
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
     CONTROL         "Használja ezt, &ha nem tudja detektálni.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Kódolás detektálás: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Kódolás detektálás: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Nyissa meg a 7-bit &ASCII fájlokat UTF-8 módban.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,160,10
     CONTROL         "Csak megbízható detektálási e&redmények használata.",IDC_RELIABLE_DETECTION_RES,
@@ -229,13 +229,13 @@ CAPTION "Inkonzisztens sorvégek"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Inkonzisztens sorvégek vannak e fájlban:",IDC_STATIC,7,7,180,8
-    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
-    RTEXT           "CR:",IDC_STATIC,10,28,34,8
-    RTEXT           "LF:",IDC_STATIC,10,38,34,8
+    RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC3,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC4,10,38,34,8
     LTEXT           "%s sor(ok).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s sor(ok).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s sor(ok).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Szeretné rendbetenni a sorvégeket?",IDC_STATIC,7,52,180,8
+    LTEXT           "&Szeretné rendbetenni a sorvégeket?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "I&gen",IDOK,138,63,50,14
     PUSHBUTTON      "&Nem",IDCANCEL,138,80,50,14
@@ -332,7 +332,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Tabulátor szélesség:",IDC_STATIC,7,10,60,8
     EDITTEXT        IDC_TAB_WIDTH,70,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "&Behúzás mérete:",IDC_STATIC,7,30,60,8
+    LTEXT           "&Behúzás mérete:",IDC_STATIC2,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,70,27,30,14,ES_AUTOHSCROLL
     CONTROL         "&Szóközök Tab helyett.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Tab &gomb újraformázza a behúzásokat.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
@@ -354,11 +354,11 @@ BEGIN
     GROUPBOX        "Statistika: ",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tabulátorok[%i]:",IDC_INDENT_WIDTH_TAB,34,18,50,8
     LTEXT           "Üres karakterek[%i]:",IDC_INDENT_WIDTH_SPC,34,30,60,8
-    LTEXT           "Vegyes[x]:",IDC_STATIC,34,42,30,8
+    LTEXT           "Vegyes[x]:",IDC_STATIC3,34,42,30,8
     RTEXT           "%s sor(ok)",IDC_INDENT_SUM_SPC,104,30,52,8
     RTEXT           "%s sor(ok)",IDC_INDENT_SUM_TAB,104,18,52,8
     RTEXT           "%s sor(ok)",IDC_INDENT_SUM_MIX,104,42,52,8
-    GROUPBOX        "Minden újrarendezése ? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    GROUPBOX        "Minden újrarendezése ? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tab-ok",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
     CONTROL         "&Üres karakt.",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,44,10
     RTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_TAB_MODX,60,72,124,8
@@ -424,19 +424,19 @@ BEGIN
     GROUPBOX        "Fejléc és lábléc",1074,8,130,224,56,WS_GROUP
     LTEXT           "Fe&jléc:",IDC_STATIC,16,146,36,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Lábléc:",IDC_STATIC,16,167,36,8
+    LTEXT           "&Lábléc:",IDC_STATIC3,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Nyomtatási színek",1076,8,191,224,37,WS_GROUP
-    LTEXT           "Mó&d:",IDC_STATIC,16,207,36,8
+    LTEXT           "Mó&d:",IDC_STATIC4,16,207,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Nagyítás",IDC_STATIC,240,170,108,58,WS_GROUP
-    LTEXT           "S&zint (10% - 500%):",IDC_STATIC,248,188,92,8
+    GROUPBOX        "Nagyítás",IDC_STATIC5,240,170,108,58,WS_GROUP
+    LTEXT           "S&zint (10% - 500%):",IDC_STATIC6,248,188,92,8
     EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
     CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
     DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
     PUSHBUTTON      "Mégsem",IDCANCEL,244,237,50,14
     PUSHBUTTON      "&Nyomtató...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "Előnézet",IDC_STATIC,240,8,108,157
+    GROUPBOX        "Előnézet",IDC_STATIC2,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -478,7 +478,7 @@ BEGIN
     CONTROL         "Új mesterkulcs megadása",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,95,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Nem kötelező mesterkulcs:",IDC_STATIC,17,61,88,10,NOT WS_GROUP
+    LTEXT           "Nem kötelező mesterkulcs:",IDC_STATIC2,17,61,88,10,NOT WS_GROUP
     CONTROL         "Kódolás jelmondat segítségével",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,128,10
     CONTROL         "Mesterkulcs újrafelhasználása",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     CONTROL         "Jelmondat megjelenítése",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,98,10
@@ -516,19 +516,19 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Sor &elejére:",IDC_STATIC,7,7,62,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Sor &végére:",IDC_STATIC,7,37,68,8
+    LTEXT           "Sor &végére:",IDC_STATIC2,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Dokumentum sorok száma.",IDC_STATIC,57,72,94,8
+    LTEXT           "Dokumentum sorok száma.",IDC_STATIC3,57,72,94,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Folytatólagos szám.",IDC_STATIC,57,82,66,8
+    LTEXT           "Folytatólagos szám.",IDC_STATIC4,57,82,66,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Folytatólagos szám (nullától).",IDC_STATIC,57,92,109,8
+    LTEXT           "Folytatólagos szám (nullától).",IDC_STATIC5,57,92,109,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -538,10 +538,10 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Nyitó elem (attribútumokkal):",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Záró elem (szerkeszthető):",IDC_STATIC,7,37,90,8
+    LTEXT           "&Záró elem (szerkeszthető):",IDC_STATIC2,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X-szer",IDC_STATIC,148,50,24,8
+    LTEXT           "X-szer",IDC_STATIC3,148,50,24,8
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,125,24,50,14
 END
@@ -553,7 +553,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Kijelölés &elé:",IDC_STATIC,7,7,76,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Kijelölés &mögé:",IDC_STATIC,7,37,71,8
+    LTEXT           "Kijelölés &mögé:",IDC_STATIC2,7,37,71,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,125,24,50,14
@@ -695,11 +695,11 @@ CAPTION "Betűtípus"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
     GROUPBOX        "Minta", IDC_STATIC, 7, 102, 284, 68, BS_BITMAP
-    LTEXT           "&Betűtípus:",IDC_STATIC,7,7,127,8
+    LTEXT           "&Betűtípus:",IDC_STATIC2,7,7,127,8
     COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Betű &stílus:",IDC_STATIC,154,7,72,8
+    LTEXT           "Betű &stílus:",IDC_STATIC3,154,7,72,8
     COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Méret:",IDC_STATIC,247,7,40,8
+    LTEXT           "&Méret:",IDC_STATIC4,247,7,40,8
     COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
     CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54
     DEFPUSHBUTTON   "OK",IDOK,182,178,50,14
