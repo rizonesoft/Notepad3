@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,14 +23,13 @@ class CPidl
 {
 public:
     /// returns the next ID in the list
-    static LPITEMIDLIST         GetNextItemID(LPCITEMIDLIST pidl);
+    static LPITEMIDLIST GetNextItemID(LPCITEMIDLIST pidl);
     /// returns the size of the pidl
-    static UINT                 GetSize(LPCITEMIDLIST pidl);
+    static UINT GetSize(LPCITEMIDLIST pidl);
     /// creates a copy of a pidl. The returned pidl must be freed with CoTaskMemFree
-    static LPITEMIDLIST         MakeCopy(LPCITEMIDLIST pidl);
+    static LPITEMIDLIST MakeCopy(LPCITEMIDLIST pidl);
     /// removes the child part from a pidl
-    static BOOL                 GetParentID(LPITEMIDLIST pidl);
+    static BOOL GetParentID(LPITEMIDLIST pidl);
     /// appends two pidls. The returned pidl must be freed with CoTaskMemFree
-    static LPITEMIDLIST         Append(LPITEMIDLIST pidlBase, LPCITEMIDLIST pidlAdd);
-
+    static LPITEMIDLIST Append(LPITEMIDLIST pidlBase, LPCITEMIDLIST pidlAdd);
 };

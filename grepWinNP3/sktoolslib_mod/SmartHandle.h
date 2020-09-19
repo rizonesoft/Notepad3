@@ -41,13 +41,13 @@ struct CDefaultHandleInvalid
  * Helper classes for handles.
  */
 template <typename HandleType,
-    template <class> class CloseFunction,
-    typename NullType = CDefaultHandleNull<HandleType>>
+          template <class> class CloseFunction,
+          typename NullType = CDefaultHandleNull<HandleType>>
 class CSmartHandle
 {
 public:
     CSmartHandle()
-    : m_Handle(NullType::DefaultHandle())
+        : m_Handle(NullType::DefaultHandle())
     {
     }
 
@@ -55,28 +55,28 @@ public:
     // Handles must be copied only using DuplicateHandle(). But we leave
     // that to an explicit call.
     // See compiler tests at the bottom
-    CSmartHandle(const HandleType& h) = delete;
+    CSmartHandle(const HandleType& h)   = delete;
     CSmartHandle(const CSmartHandle& h) = delete;
-    HandleType& operator=(const HandleType& h) = delete;
+    HandleType&   operator=(const HandleType& h) = delete;
     CSmartHandle& operator=(const CSmartHandle& h) = delete;
 
-    CSmartHandle(HandleType && h)
+    CSmartHandle(HandleType&& h)
     {
         m_Handle = h;
     }
 
-    CSmartHandle(CSmartHandle && h)
+    CSmartHandle(CSmartHandle&& h)
     {
         m_Handle = h.Detach();
     }
 
-    CSmartHandle& operator=(CSmartHandle && h)
+    CSmartHandle& operator=(CSmartHandle&& h)
     {
         *this = h.Detach();
         return *this;
     }
 
-    HandleType& operator=(HandleType && h)
+    HandleType& operator=(HandleType&& h)
     {
         if (m_Handle != h)
         {
@@ -95,7 +95,7 @@ public:
     HandleType Detach()
     {
         HandleType p = m_Handle;
-        m_Handle = NullType::DefaultHandle();
+        m_Handle     = NullType::DefaultHandle();
 
         return p;
     }
@@ -105,7 +105,7 @@ public:
         return m_Handle;
     }
 
-    HandleType * GetPointer()
+    HandleType* GetPointer()
     {
         return &m_Handle;
     }
@@ -141,19 +141,17 @@ public:
         CleanUp();
     }
 
-
 protected:
     bool CleanUp()
     {
         if (m_Handle != NullType::DefaultHandle())
         {
             const bool b = CloseFunction<HandleType>::Close(m_Handle);
-            m_Handle = NullType::DefaultHandle();
+            m_Handle     = NullType::DefaultHandle();
             return b;
         }
         return false;
     }
-
 
     HandleType m_Handle;
 };
@@ -167,8 +165,6 @@ struct CCloseHandle
     }
 };
 
-
-
 template <typename T>
 struct CCloseRegKey
 {
@@ -178,7 +174,6 @@ struct CCloseRegKey
     }
 };
 
-
 template <typename T>
 struct CCloseLibrary
 {
@@ -187,7 +182,6 @@ struct CCloseLibrary
         return !!::FreeLibrary(handle);
     }
 };
-
 
 template <typename T>
 struct CCloseViewOfFile
@@ -226,14 +220,14 @@ struct CCloseIcon
 };
 
 // Client code (definitions of standard Windows handles).
-typedef CSmartHandle<HANDLE,  CCloseHandle>                                         CAutoGeneralHandle;
-typedef CSmartHandle<HKEY,    CCloseRegKey>                                         CAutoRegKey;
-typedef CSmartHandle<PVOID,   CCloseViewOfFile>                                     CAutoViewOfFile;
-typedef CSmartHandle<HMODULE, CCloseLibrary>                                        CAutoLibrary;
-typedef CSmartHandle<HANDLE,  CCloseHandle, CDefaultHandleInvalid>                  CAutoFile;
-typedef CSmartHandle<HANDLE,  CCloseFindFile, CDefaultHandleInvalid>                CAutoFindFile;
-typedef CSmartHandle<HTHEME, CCloseThemeData>                                       CAutoThemeData;
-typedef CSmartHandle<HICON,  CCloseIcon>                                            CAutoIcon;
+typedef CSmartHandle<HANDLE, CCloseHandle>                          CAutoGeneralHandle;
+typedef CSmartHandle<HKEY, CCloseRegKey>                            CAutoRegKey;
+typedef CSmartHandle<PVOID, CCloseViewOfFile>                       CAutoViewOfFile;
+typedef CSmartHandle<HMODULE, CCloseLibrary>                        CAutoLibrary;
+typedef CSmartHandle<HANDLE, CCloseHandle, CDefaultHandleInvalid>   CAutoFile;
+typedef CSmartHandle<HANDLE, CCloseFindFile, CDefaultHandleInvalid> CAutoFindFile;
+typedef CSmartHandle<HTHEME, CCloseThemeData>                       CAutoThemeData;
+typedef CSmartHandle<HICON, CCloseIcon>                             CAutoIcon;
 
 /*
 void CompilerTests()

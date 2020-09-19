@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,22 +18,21 @@
 //
 #include "stdafx.h"
 #include <stdio.h>
-#include <tchar.h>
 #include <malloc.h>
 #include <crtdbg.h>
 #include "ResourceFile.h"
 
 CResourceFile::CResourceFile()
-  : m_pBytes(NULL)
-  , m_bText(FALSE)
-  , m_nBufLen(0)
-  , m_nPosition(0)
-  , m_bIsOpen(FALSE)
-  , m_bDoNotDeleteBuffer(FALSE)
+    : m_pBytes(NULL)
+    , m_bText(FALSE)
+    , m_nBufLen(0)
+    , m_nPosition(0)
+    , m_bIsOpen(FALSE)
+    , m_bDoNotDeleteBuffer(FALSE)
 {
 }
 
-CResourceFile::CResourceFile(const CResourceFile& rf)
+CResourceFile::CResourceFile(const CResourceFile &rf)
 {
     if (rf.m_bDoNotDeleteBuffer)
     {
@@ -42,15 +41,15 @@ CResourceFile::CResourceFile(const CResourceFile& rf)
     }
     else
     {
-        m_pBytes = new BYTE [rf.m_nBufLen + 2];
-        memset(m_pBytes, 0, rf.m_nBufLen+2);
+        m_pBytes = new BYTE[rf.m_nBufLen + 2];
+        memset(m_pBytes, 0, rf.m_nBufLen + 2);
         memcpy(m_pBytes, rf.m_pBytes, rf.m_nBufLen);
     }
 
-    m_nBufLen = rf.m_nBufLen;
-    m_nPosition = 0;
-    m_bIsOpen = rf.m_bIsOpen;
-    m_bText = rf.m_bText;
+    m_nBufLen            = rf.m_nBufLen;
+    m_nPosition          = 0;
+    m_bIsOpen            = rf.m_bIsOpen;
+    m_bText              = rf.m_bText;
     m_bDoNotDeleteBuffer = rf.m_bDoNotDeleteBuffer;
 }
 
@@ -60,8 +59,8 @@ CResourceFile::~CResourceFile()
 }
 
 BOOL CResourceFile::Open(HINSTANCE hInstance,
-                         LPCTSTR lpszResId,
-                         LPCTSTR lpszResType)
+                         LPCWSTR   lpszResId,
+                         LPCWSTR   lpszResType)
 {
     BOOL rc = FALSE;
 
@@ -72,7 +71,7 @@ BOOL CResourceFile::Open(HINSTANCE hInstance,
 
     if (lpszResId && lpszResType)
     {
-        TCHAR *pszRes = NULL;
+        wchar_t *pszRes = NULL;
 
         // is this a resource name string or an id?
         if (HIWORD(lpszResId) == 0)
@@ -83,7 +82,7 @@ BOOL CResourceFile::Open(HINSTANCE hInstance,
         else
         {
             // string
-            pszRes = (TCHAR *)lpszResId;
+            pszRes = (wchar_t *)lpszResId;
         }
 
         HRSRC hrsrc = FindResource(hInstance, pszRes, lpszResType);
@@ -91,7 +90,7 @@ BOOL CResourceFile::Open(HINSTANCE hInstance,
 
         if (hrsrc)
         {
-            DWORD dwSize = SizeofResource(hInstance, hrsrc);    // in bytes
+            DWORD dwSize = SizeofResource(hInstance, hrsrc); // in bytes
 
             HGLOBAL hglob = LoadResource(hInstance, hrsrc);
             _ASSERTE(hglob);
@@ -105,15 +104,15 @@ BOOL CResourceFile::Open(HINSTANCE hInstance,
                 {
                     // save resource as byte buffer
 
-                    m_pBytes = new BYTE [dwSize+16];
-                    memset(m_pBytes, 0, dwSize+16);
-                    m_nBufLen = (int) dwSize;
+                    m_pBytes = new BYTE[dwSize + 16];
+                    memset(m_pBytes, 0, dwSize + 16);
+                    m_nBufLen = (int)dwSize;
                     memcpy(m_pBytes, lplock, m_nBufLen);
 
-                    m_nPosition = 0;
-                    m_bIsOpen = TRUE;
-                    m_bDoNotDeleteBuffer = FALSE;   // ok to delete the buffer
-                    rc = TRUE;
+                    m_nPosition          = 0;
+                    m_bIsOpen            = TRUE;
+                    m_bDoNotDeleteBuffer = FALSE; // ok to delete the buffer
+                    rc                   = TRUE;
                 }
             }
         }
@@ -126,40 +125,40 @@ void CResourceFile::Close()
 {
     m_bIsOpen = FALSE;
     if (m_pBytes && !m_bDoNotDeleteBuffer)
-        delete [] m_pBytes;
-    m_pBytes = NULL;
-    m_nBufLen = 0;
+        delete[] m_pBytes;
+    m_pBytes    = NULL;
+    m_nBufLen   = 0;
     m_nPosition = 0;
 }
 
-BYTE * CResourceFile::DetachByteBuffer()
+BYTE *CResourceFile::DetachByteBuffer()
 {
     BYTE *p = NULL;
 
     if (m_bIsOpen && !m_bText)
     {
         m_bDoNotDeleteBuffer = TRUE;
-        p = m_pBytes;
+        p                    = m_pBytes;
     }
 
     return p;
 }
 
-BYTE * CResourceFile::DuplicateByteBuffer()
+BYTE *CResourceFile::DuplicateByteBuffer()
 {
     BYTE *dup = NULL;
 
     if (IsOpen() && !m_bText)
     {
-        dup = (BYTE *) malloc(m_nBufLen+2);
-        memset(dup, 0, m_nBufLen+2);
+        dup = (BYTE *)malloc(m_nBufLen + 2);
+        memset(dup, 0, m_nBufLen + 2);
         memcpy(dup, m_pBytes, m_nBufLen);
     }
 
     return dup;
 }
 
-void CResourceFile::SetByteBuffer(BYTE * buf, DWORD len)
+void CResourceFile::SetByteBuffer(BYTE *buf, DWORD len)
 {
     _ASSERTE(buf);
     _ASSERTE(len != 0);
@@ -167,20 +166,20 @@ void CResourceFile::SetByteBuffer(BYTE * buf, DWORD len)
 
     if (buf && (len > 0))
     {
-        m_pBytes = buf;
-        m_nBufLen = len;
-        m_bText = FALSE;
-        m_bDoNotDeleteBuffer = TRUE;    // do not delete this buffer
-        m_bIsOpen = TRUE;
+        m_pBytes             = buf;
+        m_nBufLen            = len;
+        m_bText              = FALSE;
+        m_bDoNotDeleteBuffer = TRUE; // do not delete this buffer
+        m_bIsOpen            = TRUE;
     }
 }
 
 size_t CResourceFile::Read(BYTE *buf, size_t nBufLen)
 {
     size_t nOldPosition = m_nPosition;
-    size_t nIndex = 0;
+    size_t nIndex       = 0;
     if (buf)
-        *buf = _T('\0');
+        *buf = L'\0';
 
     if (m_bIsOpen && m_pBytes && !m_bText)
     {
@@ -221,15 +220,15 @@ size_t CResourceFile::Seek(size_t offset, size_t origin)
         switch (origin)
         {
             default:
-            case SEEK_SET:      // beginning of file
+            case SEEK_SET: // beginning of file
                 if (offset <= m_nBufLen)
                 {
                     m_nPosition = offset;
-                    rc = m_nPosition;
+                    rc          = m_nPosition;
                 }
                 break;
 
-            case SEEK_CUR:      // current position of file pointer
+            case SEEK_CUR: // current position of file pointer
                 if ((m_nPosition + offset) <= m_nBufLen)
                 {
                     m_nPosition += offset;
@@ -237,9 +236,9 @@ size_t CResourceFile::Seek(size_t offset, size_t origin)
                 }
                 break;
 
-            case SEEK_END:      // end of file
+            case SEEK_END: // end of file
                 m_nPosition = m_nBufLen;
-                rc = m_nPosition;
+                rc          = m_nPosition;
                 break;
         }
     }

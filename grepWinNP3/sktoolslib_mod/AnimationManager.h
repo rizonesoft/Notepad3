@@ -17,12 +17,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-
 /**
  * \brief helper class for the Windows Animation Manager.
  * Provides convenience methods to use the Windows Animation Manager using
  * timer events.
- * 
+ *
  * Example to animate transparency:
  * \code
  * // create the animation variable for the alpha value to animate.
@@ -62,6 +61,7 @@
 #include <vector>
 #include <memory>
 #include <comip.h>
+#include <comdef.h>
 #include <comdefsp.h>
 
 _COM_SMARTPTR_TYPEDEF(IUIAnimationStoryboard, __uuidof(IUIAnimationStoryboard));
@@ -86,10 +86,9 @@ public:
     Animator(const Animator&) = delete;
     Animator& operator=(const Animator&) = delete;
 
-
     IUIAnimationVariablePtr CreateAnimationVariable(double start);
-    static INT32 GetIntegerValue(IUIAnimationVariablePtr var);
-    static double GetValue(IUIAnimationVariablePtr var);
+    static INT32            GetIntegerValue(IUIAnimationVariablePtr var);
+    static double           GetValue(IUIAnimationVariablePtr var);
 
     IUIAnimationTransitionPtr CreateAccelerateDecelerateTransition(UI_ANIMATION_SECONDS duration, double finalValue, double accelerationRatio = 0.4, double decelerationRatio = 0.4);
     IUIAnimationTransitionPtr CreateSmoothStopTransition(UI_ANIMATION_SECONDS duration, double finalValue);
@@ -111,6 +110,7 @@ public:
     HRESULT AbandonAllStoryBoards();
 
     virtual ~Animator();
+
 private:
     Animator();
 
@@ -122,5 +122,5 @@ private:
     /// The holder of the UITransitionLibrary
     IUIAnimationTransitionLibraryPtr pTransLib;
     /// the timer callback object
-    CTimerEventHandler * timerEventHandler;
+    CTimerEventHandler* timerEventHandler;
 };

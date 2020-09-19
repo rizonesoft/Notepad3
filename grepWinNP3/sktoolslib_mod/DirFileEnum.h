@@ -1,6 +1,6 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017-2018 - Stefan Kueng
+// Copyright (C) 2012, 2017-2018, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -36,7 +36,8 @@
  *    automatically.
  * 4) No dynamic memory allocation.
  */
-class CSimpleFileFind {
+class CSimpleFileFind
+{
 private:
     /**
      * Windows FindFirstFile() handle.
@@ -59,6 +60,7 @@ private:
      * Flag indicating whether CSimpleFileFind was started for a file
      */
     BOOL m_bFile;
+
 protected:
     /**
      * The prefix for files in this directory.
@@ -74,14 +76,13 @@ protected:
     WIN32_FIND_DATA m_FindFileData;
 
 public:
-
     /**
      * Constructor.
      *
      * \param sPath    The path to search in.
      * \param sPattern The filename pattern - default all files.
      */
-    CSimpleFileFind(const std::wstring &sPath, LPCTSTR pPattern = L"*.*", FINDEX_INFO_LEVELS infoLevel = FindExInfoBasic);
+    CSimpleFileFind(const std::wstring& sPath, LPCWSTR pPattern = L"*.*", FINDEX_INFO_LEVELS infoLevel = FindExInfoBasic);
     ~CSimpleFileFind();
 
     /**
@@ -169,8 +170,7 @@ public:
      */
     inline bool IsError() const
     {
-        return (m_dError != ERROR_SUCCESS)
-               && (m_dError != ERROR_NO_MORE_FILES);
+        return (m_dError != ERROR_SUCCESS) && (m_dError != ERROR_NO_MORE_FILES);
     }
 
     /**
@@ -193,7 +193,7 @@ public:
         return m_FindFileData.cFileName;
     }
 
-    const WIN32_FIND_DATA * GetFileFindData() const {return &m_FindFileData;}
+    const WIN32_FIND_DATA* GetFileFindData() const { return &m_FindFileData; }
 
     /*
      * Get the current file name, including the path.
@@ -207,27 +207,27 @@ public:
         return m_sPathPrefix + m_FindFileData.cFileName;
     }
 
-   /**
+    /**
     * Get the last write time of the file
     *
     * \return the last write time
     */
-   FILETIME GetLastWriteTime() const
-   {
-       return m_FindFileData.ftLastWriteTime;
-   }
+    FILETIME GetLastWriteTime() const
+    {
+        return m_FindFileData.ftLastWriteTime;
+    }
 
-   /**
+    /**
     * Get the creation time of the file
     *
     * \return the creation time
     */
-   FILETIME GetCreateTime() const
-   {
-       return m_FindFileData.ftCreationTime;
-   }
+    FILETIME GetCreateTime() const
+    {
+        return m_FindFileData.ftCreationTime;
+    }
 
-   /**
+    /**
      * Check if the current file is the "." or ".."
      * pseudo-directory.
      *
@@ -236,11 +236,7 @@ public:
      */
     inline bool IsDots() const
     {
-        return IsDirectory()
-               && m_FindFileData.cFileName[0] == L'.'
-               && ((m_FindFileData.cFileName[1] == 0)
-                   || (m_FindFileData.cFileName[1] == L'.'
-                       && m_FindFileData.cFileName[2] == 0));
+        return IsDirectory() && m_FindFileData.cFileName[0] == L'.' && ((m_FindFileData.cFileName[1] == 0) || (m_FindFileData.cFileName[1] == L'.' && m_FindFileData.cFileName[2] == 0));
     }
 };
 
@@ -250,19 +246,18 @@ public:
 class CDirFileEnum
 {
 private:
-
     class CDirStackEntry : public CSimpleFileFind
     {
     public:
-        CDirStackEntry(CDirStackEntry * seNext, const std::wstring& sDirName);
+        CDirStackEntry(CDirStackEntry* seNext, const std::wstring& sDirName);
         ~CDirStackEntry();
 
-        CDirStackEntry * m_seNext;
+        CDirStackEntry* m_seNext;
     };
 
-    CDirStackEntry * m_seStack;
-    bool m_bIsNew;
-    DWORD m_attrToIgnore;
+    CDirStackEntry* m_seStack;
+    bool            m_bIsNew;
+    DWORD           m_attrToIgnore;
 
     inline void PopStack();
     inline void PushStack(const std::wstring& sDirName);
@@ -296,17 +291,14 @@ public:
      * \param  recurse true if recursing into subdirectories is requested.
      * \return TRUE iff a file was found, false at end of the iteration.
      */
-    bool NextFile(std::wstring &result, bool* pbIsDirectory, bool recurse = true);
+    bool NextFile(std::wstring& result, bool* pbIsDirectory, bool recurse = true);
 
     /**
      * Get the file info structure.
      *
      * \return The WIN32_FIND_DATA structure of the file or directory
      */
-    const WIN32_FIND_DATA* GetFileInfo()
-    {
-        return (m_seStack && m_seStack->IsValid()) ? m_seStack->GetFileFindData() : nullptr;
-    }
+    const WIN32_FIND_DATA* GetFileInfo() { return m_seStack->GetFileFindData(); }
 
     /**
      * Set a mask of file attributes to ignore. Files or directories that
@@ -318,36 +310,36 @@ public:
      */
     void SetAttributesToIgnore(DWORD attr) { m_attrToIgnore = attr; }
 
-   /**
+    /**
     * Get the last write time of the file
     *
     * \return the last write time
     */
-   FILETIME GetLastWriteTime() const
-   {
-       if (m_seStack)
-           return m_seStack->GetLastWriteTime();
-       FILETIME ft = {0};
-       return ft;
-   }
+    FILETIME GetLastWriteTime() const
+    {
+        if (m_seStack)
+            return m_seStack->GetLastWriteTime();
+        FILETIME ft = {0};
+        return ft;
+    }
 
-   /**
+    /**
     * Get the creation time of the file
     *
     * \return the creation time
     */
-   FILETIME GetCreateTime() const
-   {
-       if (m_seStack)
-           return m_seStack->GetCreateTime();
-       FILETIME ft = {0};
-       return ft;
-   }
+    FILETIME GetCreateTime() const
+    {
+        if (m_seStack)
+            return m_seStack->GetCreateTime();
+        FILETIME ft = {0};
+        return ft;
+    }
 
-   DWORD GetError() const
-   {
-       if (m_seStack)
-           return m_seStack->GetError();
-       return 0;
-   }
+    DWORD GetError() const
+    {
+        if (m_seStack)
+            return m_seStack->GetError();
+        return 0;
+    }
 };

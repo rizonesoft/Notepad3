@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,13 +20,13 @@
 #include "stdafx.h"
 #include "AeroColors.h"
 #pragma warning(push)
-#pragma warning(disable: 4458) // declaration of 'xx' hides class member
+#pragma warning(disable : 4458) // declaration of 'xx' hides class member
 #include <GdiPlus.h>
 #pragma warning(pop)
 #include <dwmapi.h>
+#include <memory>
 
 #pragma comment(lib, "dwmapi.lib")
-
 
 typedef struct tagCOLORIZATIONPARAMS
 {
@@ -39,9 +39,8 @@ typedef struct tagCOLORIZATIONPARAMS
     BOOL        fOpaque;
 } COLORIZATIONPARAMS;
 
-typedef void (WINAPI *FN_DwmGetColorizationParameters) (COLORIZATIONPARAMS * parameters);
-typedef void (WINAPI *FN_DwmSetColorizationParameters) (COLORIZATIONPARAMS * parameters, BOOL unknown);
-
+typedef void(WINAPI* FN_DwmGetColorizationParameters)(COLORIZATIONPARAMS* parameters);
+typedef void(WINAPI* FN_DwmSetColorizationParameters)(COLORIZATIONPARAMS* parameters, BOOL unknown);
 
 CAeroColors::CAeroColors(void)
 {
@@ -64,7 +63,7 @@ std::wstring CAeroColors::AdjustColorsFromWallpaper()
     }
     if (oldWallpaperPath.compare(wallPaperPath) == 0)
     {
-        HANDLE hFile = CreateFile(wallPaperPath, GENERIC_READ, FILE_SHARE_DELETE|FILE_SHARE_WRITE|FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+        HANDLE hFile = CreateFile(wallPaperPath, GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_WRITE | FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
         if (hFile != INVALID_HANDLE_VALUE)
         {
             FILETIME create, access, write;
@@ -81,14 +80,14 @@ std::wstring CAeroColors::AdjustColorsFromWallpaper()
     BOOL bDwmEnabled = FALSE;
     if (SUCCEEDED(DwmIsCompositionEnabled(&bDwmEnabled)) && bDwmEnabled)
     {
-        Gdiplus::Bitmap * bmp = new Gdiplus::Bitmap(wallPaperPath);
+        auto bmp = std::make_unique<Gdiplus::Bitmap>(wallPaperPath);
         if (bmp == nullptr)
             return oldWallpaperPath;
 
-        Gdiplus::Bitmap * bitmap = new Gdiplus::Bitmap(1, 1, PixelFormat32bppRGB);
-        Gdiplus::Graphics * graphics = Gdiplus::Graphics::FromImage(bitmap);
+        auto               bitmap   = std::make_unique<Gdiplus::Bitmap>(1, 1, PixelFormat32bppRGB);
+        Gdiplus::Graphics* graphics = Gdiplus::Graphics::FromImage(bitmap.get());
         graphics->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
-        graphics->DrawImage(bmp, Gdiplus::RectF(0, 0, 1, 1));
+        graphics->DrawImage(bmp.get(), Gdiplus::RectF(0, 0, 1, 1));
         Gdiplus::Color clr;
         bitmap->GetPixel(0, 0, &clr);
 
@@ -104,8 +103,6 @@ std::wstring CAeroColors::AdjustColorsFromWallpaper()
         }
 
         delete graphics;
-        delete bitmap;
-        delete bmp;
     }
     return oldWallpaperPath;
 }

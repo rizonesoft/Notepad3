@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2016-2017 Stefan Kueng
+// Copyright (C) 2016-2017, 2020 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +18,6 @@
 //
 #include "stdafx.h"
 #include "ScrollTool.h"
-
 
 CScrollTool::CScrollTool(HINSTANCE hInst)
     : CWindow(hInst)
@@ -45,17 +44,17 @@ bool CScrollTool::Init(bool bRightAligned /* = false */)
         }
         //m_hwnd = CreateWindowEx(0, TOOLTIPS_CLASSW, nullptr, TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hParent, 0, hResource, (void *)this);
 
-        ti.cbSize = sizeof(TOOLINFO);
-        ti.uFlags = TTF_TRACK;
-        ti.hwnd = nullptr;
-        ti.hinst = nullptr;
-        ti.uId = 0;
+        ti.cbSize   = sizeof(TOOLINFO);
+        ti.uFlags   = TTF_TRACK;
+        ti.hwnd     = nullptr;
+        ti.hinst    = nullptr;
+        ti.uId      = 0;
         ti.lpszText = L" ";
 
         // ToolTip control will cover the whole window
-        ti.rect.left = 0;
-        ti.rect.top = 0;
-        ti.rect.right = 0;
+        ti.rect.left   = 0;
+        ti.rect.top    = 0;
+        ti.rect.right  = 0;
         ti.rect.bottom = 0;
 
         POINT point;
@@ -66,21 +65,21 @@ bool CScrollTool::Init(bool bRightAligned /* = false */)
         SendMessage(*this, TTM_TRACKACTIVATE, true, (LPARAM)(LPTOOLINFO)&ti);
 
         m_bRightAligned = bRightAligned;
-        m_bInitCalled = true;
+        m_bInitCalled   = true;
     }
     return true;
 }
 
-void CScrollTool::SetText(LPPOINT pos, const TCHAR * fmt, ...)
+void CScrollTool::SetText(LPPOINT pos, const wchar_t* fmt, ...)
 {
     if (!m_bInitCalled)
     {
-        ASSERT(0);
+        assert(0);
         return;
     }
 
     std::wstring s;
-    va_list marker;
+    va_list      marker;
 
     va_start(marker, fmt);
     // Get formatted string length adding one for the NUL
@@ -93,7 +92,7 @@ void CScrollTool::SetText(LPPOINT pos, const TCHAR * fmt, ...)
     }
     va_end(marker);
 
-    SIZE textsize = { 0 };
+    SIZE textsize = {0};
     if (m_bRightAligned)
     {
         auto hDC = GetDC(*this);
@@ -116,10 +115,10 @@ void CScrollTool::Clear()
     m_bInitCalled = false;
 }
 
-LONG CScrollTool::GetTextWidth(LPCTSTR szText)
+LONG CScrollTool::GetTextWidth(LPCWSTR szText)
 {
-    SIZE textsize = { 0 };
-    auto hDC = GetDC(*this);
+    SIZE textsize = {0};
+    auto hDC      = GetDC(*this);
     GetTextExtentPoint32(hDC, szText, (int)wcslen(szText), &textsize);
     ReleaseDC(*this, hDC);
     return textsize.cx;

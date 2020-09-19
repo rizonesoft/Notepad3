@@ -25,9 +25,9 @@
 #include <memory>
 
 #ifdef UNICODE
-#define _tcswildcmp wcswildcmp
+#    define _tcswildcmp wcswildcmp
 #else
-#define _tcswildcmp strwildcmp
+#    define _tcswildcmp strwildcmp
 #endif
 
 /**
@@ -53,11 +53,11 @@
  * not found
  * \endcode
  */
-int strwildcmp(const char * wild, const char * string);
-int wcswildcmp(const wchar_t * wild, const wchar_t * string);
-int wcswildicmp(const wchar_t * wild, const wchar_t * string);
+int strwildcmp(const char* wild, const char* string);
+int wcswildcmp(const wchar_t* wild, const wchar_t* string);
+int wcswildicmp(const wchar_t* wild, const wchar_t* string);
 
-bool WriteAsciiStringToClipboard(const wchar_t * sClipdata, HWND hOwningWnd);
+bool WriteAsciiStringToClipboard(const wchar_t* sClipdata, HWND hOwningWnd);
 void SearchReplace(std::wstring& str, const std::wstring& toreplace, const std::wstring& replacewith);
 void SearchReplace(std::string& str, const std::string& toreplace, const std::string& replacewith);
 
@@ -66,45 +66,11 @@ void SearchRemoveAll(std::wstring& str, const std::wstring& toremove);
 
 // append = true as the default: a default value should never lose data!
 template <typename Container>
-void stringtok(Container &container, const std::wstring  &in, bool trim,
-    const wchar_t * const delimiters = L"|", bool append = true)
+void stringtok(Container& container, const std::wstring& in, bool trim,
+               const wchar_t* const delimiters = L"|", bool append = true)
 {
     const std::string::size_type len = in.length();
-    std::string::size_type i = 0;
-    if (!append)
-        container.clear();
-
-    while ( i < len )
-    {
-        if (trim)
-        {
-            // eat leading whitespace
-            i = in.find_first_not_of (delimiters, i);
-            if (i == std::string::npos)
-                return;   // nothing left but white space
-        }
-
-        // find the end of the token
-        std::string::size_type j = in.find_first_of (delimiters, i);
-
-        // push token
-        if (j == std::string::npos) {
-            container.push_back (in.substr(i));
-            return;
-        } else
-            container.push_back (in.substr(i, j-i));
-
-        // set up for next loop
-        i = j + 1;
-    }
-}
-
-template <typename Container>
-void stringtokset(Container &container, const std::wstring  &in, bool trim,
-               const wchar_t * const delimiters = L"|", bool append = false)
-{
-    const std::string::size_type len = in.length();
-    std::string::size_type i = 0;
+    std::string::size_type       i   = 0;
     if (!append)
         container.clear();
 
@@ -115,7 +81,43 @@ void stringtokset(Container &container, const std::wstring  &in, bool trim,
             // eat leading whitespace
             i = in.find_first_not_of(delimiters, i);
             if (i == std::string::npos)
-                return;   // nothing left but white space
+                return; // nothing left but white space
+        }
+
+        // find the end of the token
+        std::string::size_type j = in.find_first_of(delimiters, i);
+
+        // push token
+        if (j == std::string::npos)
+        {
+            container.push_back(in.substr(i));
+            return;
+        }
+        else
+            container.push_back(in.substr(i, j - i));
+
+        // set up for next loop
+        i = j + 1;
+    }
+}
+
+template <typename Container>
+void stringtokset(Container& container, const std::wstring& in, bool trim,
+                  const wchar_t* const delimiters = L"|", bool append = false)
+{
+    const std::string::size_type len = in.length();
+    std::string::size_type       i   = 0;
+    if (!append)
+        container.clear();
+
+    while (i < len)
+    {
+        if (trim)
+        {
+            // eat leading whitespace
+            i = in.find_first_not_of(delimiters, i);
+            if (i == std::string::npos)
+                return; // nothing left but white space
         }
 
         // find the end of the token
@@ -137,45 +139,11 @@ void stringtokset(Container &container, const std::wstring  &in, bool trim,
 
 // append = true as the default: a default value should never lose data!
 template <typename Container>
-void stringtok(Container &container, const std::string  &in, bool trim,
-               const char * const delimiters = "|", bool append = true)
+void stringtok(Container& container, const std::string& in, bool trim,
+               const char* const delimiters = "|", bool append = true)
 {
     const std::string::size_type len = in.length();
-    std::string::size_type i = 0;
-    if (!append)
-        container.clear();
-
-    while ( i < len )
-    {
-        if (trim)
-        {
-            // eat leading whitespace
-            i = in.find_first_not_of (delimiters, i);
-            if (i == std::string::npos)
-                return;   // nothing left but white space
-        }
-
-        // find the end of the token
-        std::string::size_type j = in.find_first_of (delimiters, i);
-
-        // push token
-        if (j == std::string::npos) {
-            container.push_back (in.substr(i));
-            return;
-        } else
-            container.push_back (in.substr(i, j-i));
-
-        // set up for next loop
-        i = j + 1;
-    }
-}
-
-template <typename Container>
-void stringtokset(Container &container, const std::string  &in, bool trim,
-               const char * const delimiters = "|", bool append = false)
-{
-    const std::string::size_type len = in.length();
-    std::string::size_type i = 0;
+    std::string::size_type       i   = 0;
     if (!append)
         container.clear();
 
@@ -186,7 +154,43 @@ void stringtokset(Container &container, const std::string  &in, bool trim,
             // eat leading whitespace
             i = in.find_first_not_of(delimiters, i);
             if (i == std::string::npos)
-                return;   // nothing left but white space
+                return; // nothing left but white space
+        }
+
+        // find the end of the token
+        std::string::size_type j = in.find_first_of(delimiters, i);
+
+        // push token
+        if (j == std::string::npos)
+        {
+            container.push_back(in.substr(i));
+            return;
+        }
+        else
+            container.push_back(in.substr(i, j - i));
+
+        // set up for next loop
+        i = j + 1;
+    }
+}
+
+template <typename Container>
+void stringtokset(Container& container, const std::string& in, bool trim,
+                  const char* const delimiters = "|", bool append = false)
+{
+    const std::string::size_type len = in.length();
+    std::string::size_type       i   = 0;
+    if (!append)
+        container.clear();
+
+    while (i < len)
+    {
+        if (trim)
+        {
+            // eat leading whitespace
+            i = in.find_first_not_of(delimiters, i);
+            if (i == std::string::npos)
+                return; // nothing left but white space
         }
 
         // find the end of the token
@@ -206,20 +210,21 @@ void stringtokset(Container &container, const std::string  &in, bool trim,
     }
 }
 
-template<typename T> std::wstring to_bit_wstring(T number, bool trim_significant_clear_bits)
+template <typename T>
+std::wstring to_bit_wstring(T number, bool trim_significant_clear_bits)
 {
     // Unsigned version of type given.
     typedef typename std::make_unsigned<T>::type UT;
-    UT one = 1;
-    UT zero = 0;
-    UT unumber;
-    unumber = UT(number);
-    const int nbits = std::numeric_limits<UT>::digits;
+    UT                                           one  = 1;
+    UT                                           zero = 0;
+    UT                                           unumber;
+    unumber            = UT(number);
+    const int    nbits = std::numeric_limits<UT>::digits;
     std::wstring bs;
-    bool seen_set_bit = false;
+    bool         seen_set_bit = false;
     for (int bn = nbits - 1; bn >= 0; --bn)
     {
-        UT mask = one << bn;
+        UT   mask   = one << bn;
         bool is_set = (unumber & mask) != zero;
         if (trim_significant_clear_bits && !seen_set_bit && !is_set)
             continue;
@@ -230,20 +235,21 @@ template<typename T> std::wstring to_bit_wstring(T number, bool trim_significant
     return bs;
 }
 
-template<typename T> std::string to_bit_string(T number, bool trim_significant_clear_bits)
+template <typename T>
+std::string to_bit_string(T number, bool trim_significant_clear_bits)
 {
     // Unsigned version of type given.
     typedef typename std::make_unsigned<T>::type UT;
-    UT one = 1;
-    UT zero = 0;
-    UT unumber;
-    unumber = UT(number);
-    const int nbits = std::numeric_limits<UT>::digits;
+    UT                                           one  = 1;
+    UT                                           zero = 0;
+    UT                                           unumber;
+    unumber           = UT(number);
+    const int   nbits = std::numeric_limits<UT>::digits;
     std::string bs;
-    bool seen_set_bit = false;
+    bool        seen_set_bit = false;
     for (int bn = nbits - 1; bn >= 0; --bn)
     {
-        UT mask = one << bn;
+        UT   mask   = one << bn;
         bool is_set = (unumber & mask) != zero;
         if (trim_significant_clear_bits && !seen_set_bit && !is_set)
             continue;
@@ -263,14 +269,16 @@ struct ci_less
     // case-independent (ci) compare_less binary function
     struct nocase_compare
     {
-        bool operator() (const unsigned char& c1, const unsigned char& c2) const {
+        bool operator()(const unsigned char& c1, const unsigned char& c2) const
+        {
             return tolower(c1) < tolower(c2);
         }
     };
-    bool operator() (const std::string & s1, const std::string & s2) const {
-        return std::lexicographical_compare(s1.begin(), s1.end(),   // source range
-                                            s2.begin(), s2.end(),   // dest range
-                                            nocase_compare());      // comparison
+    bool operator()(const std::string& s1, const std::string& s2) const
+    {
+        return std::lexicographical_compare(s1.begin(), s1.end(), // source range
+                                            s2.begin(), s2.end(), // dest range
+                                            nocase_compare());    // comparison
     }
 };
 
@@ -279,14 +287,16 @@ struct ci_lessW
     // case-independent (ci) compare_less binary function
     struct nocase_compare
     {
-        bool operator() (const wchar_t& c1, const wchar_t& c2) const {
+        bool operator()(const wchar_t& c1, const wchar_t& c2) const
+        {
             return towlower(c1) < towlower(c2);
         }
     };
-    bool operator() (const std::wstring & s1, const std::wstring & s2) const {
-        return std::lexicographical_compare(s1.begin(), s1.end(),   // source range
-                                            s2.begin(), s2.end(),   // dest range
-                                            nocase_compare());      // comparison
+    bool operator()(const std::wstring& s1, const std::wstring& s2) const
+    {
+        return std::lexicographical_compare(s1.begin(), s1.end(), // source range
+                                            s2.begin(), s2.end(), // dest range
+                                            nocase_compare());    // comparison
     }
 };
 
@@ -389,41 +399,39 @@ public:
         return s;
     }
 
-    static std::wstring ExpandEnvironmentStrings (const std::wstring& s)
+    static std::wstring ExpandEnvironmentStrings(const std::wstring& s)
     {
-        DWORD len = ::ExpandEnvironmentStrings (s.c_str(), nullptr, 0);
+        DWORD len = ::ExpandEnvironmentStrings(s.c_str(), nullptr, 0);
         if (len == 0)
             return s;
 
-        auto buf = std::make_unique<TCHAR[]>(len+1);
-        if (::ExpandEnvironmentStrings (s.c_str(), buf.get(), len) == 0)
+        auto buf = std::make_unique<wchar_t[]>(len + 1);
+        if (::ExpandEnvironmentStrings(s.c_str(), buf.get(), len) == 0)
             return s;
 
         return buf.get();
     }
 
-    static std::string ToHexString( BYTE* pSrc, int nSrcLen );
+    static std::string ToHexString(BYTE* pSrc, int nSrcLen);
 
-    static bool FromHexString( const std::string& src, BYTE* pDest );
+    static bool FromHexString(const std::string& src, BYTE* pDest);
 
-    static std::wstring ToHexWString( BYTE* pSrc, int nSrcLen );
+    static std::wstring ToHexWString(BYTE* pSrc, int nSrcLen);
 
-    static std::unique_ptr<char[]>      Decrypt(const char * text);
-    static std::unique_ptr<wchar_t[]>   Decrypt(const wchar_t * text);
-    static std::string                  Encrypt(const char * text);
-    static std::wstring                 Encrypt(const wchar_t * text);
+    static std::unique_ptr<char[]>    Decrypt(const char* text);
+    static std::unique_ptr<wchar_t[]> Decrypt(const wchar_t* text);
+    static std::string                Encrypt(const char* text);
+    static std::wstring               Encrypt(const wchar_t* text);
 
     static std::wstring Format(const wchar_t* frmt, ...);
-    static std::string Format(const char* frmt, ...);
+    static std::string  Format(const char* frmt, ...);
 
-    [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]]
-    static inline void emplace_to_lower(std::wstring& s)
+    [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]] static inline void emplace_to_lower(std::wstring& s)
     {
         std::transform(s.begin(), s.end(), s.begin(), ::towlower);
     }
 
-    [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]]
-    static inline void emplace_to_lower(std::string& s)
+    [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]] static inline void emplace_to_lower(std::string& s)
     {
         std::transform(s.begin(), s.end(), s.begin(), [](char c) { return (char)::tolower(c); });
     }
@@ -434,14 +442,13 @@ public:
     /// and special cases to handle.
     static inline std::wstring to_lower(const std::wstring& s)
     {
-        auto len = LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, nullptr, 0, nullptr, nullptr, 0);
+        auto len    = LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, nullptr, 0, nullptr, nullptr, 0);
         auto outbuf = std::make_unique<wchar_t[]>(len + 1);
         LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, outbuf.get(), len, nullptr, nullptr, 0);
         return outbuf.get();
     }
 
-    [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]]
-    static inline std::string to_lower(const std::string& s)
+    [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]] static inline std::string to_lower(const std::string& s)
     {
         std::string ls(s);
         std::transform(ls.begin(), ls.end(), ls.begin(), [](char c) { return (char)::tolower(c); });
@@ -475,7 +482,8 @@ public:
         return ret;
     }
 
-    template<typename T, typename T2> static void TrimLeading(T& s, const T2& vals)
+    template <typename T, typename T2>
+    static void TrimLeading(T& s, const T2& vals)
     {
         auto it = s.begin();
         while (it != s.end())
@@ -490,7 +498,8 @@ public:
         s.erase(s.begin(), it);
     }
 
-    template<typename T, typename T2> static void TrimTrailing(T& s, const T2& vals)
+    template <typename T, typename T2>
+    static void TrimTrailing(T& s, const T2& vals)
     {
         while (!s.empty())
         {
@@ -504,10 +513,10 @@ public:
     // Trim container T of values in T2.
     // T1 can at least be a string, wstring, vector,
     // T2 can be simiar but initializer_list is the typical type used.
-    template<typename T, typename T2> static void TrimLeadingAndTrailing(T& s, const T2& vals)
+    template <typename T, typename T2>
+    static void TrimLeadingAndTrailing(T& s, const T2& vals)
     {
         TrimLeading(s, vals);
         TrimTrailing(s, vals);
     }
-
 };

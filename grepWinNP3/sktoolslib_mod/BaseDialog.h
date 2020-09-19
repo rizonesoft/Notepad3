@@ -43,8 +43,10 @@ public:
         m_margins = {};
     }
     INT_PTR         DoModal(HINSTANCE hInstance, int resID, HWND hWndParent);
+    INT_PTR     DoModal(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent);
     INT_PTR         DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel);
     void            ShowModeless(HINSTANCE hInstance, int resID, HWND hWndParent);
+    void        ShowModeless(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent);
     static BOOL     IsDialogMessage(LPMSG lpMsg);
     HWND            Create(HINSTANCE hInstance, int resID, HWND hWndParent);
     BOOL            EndDialog(HWND hDlg, INT_PTR nResult);
@@ -68,7 +70,7 @@ public:
     void            OnCompositionChanged();
     void            ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT rightControl, UINT botomControl);
     int             GetDlgItemTextLength(UINT nId);
-    std::unique_ptr<TCHAR[]> GetDlgItemText(UINT nId);
+    std::unique_ptr<wchar_t[]> GetDlgItemText(UINT nId);
 
     virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
     virtual bool    PreTranslateMessage(MSG* pMsg);
@@ -77,6 +79,7 @@ public:
     operator HWND() const { return m_hwnd; }
 
     HWND GetToolTipHWND() const { return m_hToolTips; }
+
 protected:
     HINSTANCE       hResource;
     HWND            m_hwnd;
@@ -97,10 +100,11 @@ protected:
     static INT_PTR CALLBACK stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     // returns a pointer the dialog (stored as the WindowLong)
-    inline static CDialog * GetObjectFromWindow(HWND hWnd)
+    inline static CDialog* GetObjectFromWindow(HWND hWnd)
     {
-        return (CDialog *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+        return (CDialog*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     }
+
 private:
     bool        m_bPseudoModal;
     bool        m_bPseudoEnded;

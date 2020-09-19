@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ HBITMAP IconBitmapUtils::IconToBitmap(HINSTANCE hInst, UINT uIcon)
 
     RECT rect;
 
-    rect.right = ::GetSystemMetrics(SM_CXMENUCHECK);
+    rect.right  = ::GetSystemMetrics(SM_CXMENUCHECK);
     rect.bottom = ::GetSystemMetrics(SM_CYMENUCHECK);
 
     rect.left = rect.top = 0;
@@ -125,7 +125,7 @@ HBITMAP IconBitmapUtils::IconToBitmapPARGB32(HINSTANCE hInst, UINT uIcon)
 
     DestroyIcon(hIcon);
 
-    if(hBmp)
+    if (hBmp)
         bitmaps.insert(bitmap_it, std::make_pair(uIcon, hBmp));
 
     return hBmp;
@@ -152,13 +152,13 @@ HBITMAP IconBitmapUtils::IconToBitmapPARGB32(HICON hIcon)
             HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcDest, hBmp);
             if (hbmpOld)
             {
-                BLENDFUNCTION bfAlpha = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+                BLENDFUNCTION  bfAlpha     = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
                 BP_PAINTPARAMS paintParams = {0};
-                paintParams.cbSize = sizeof(paintParams);
-                paintParams.dwFlags = BPPF_ERASE;
+                paintParams.cbSize         = sizeof(paintParams);
+                paintParams.dwFlags        = BPPF_ERASE;
                 paintParams.pBlendFunction = &bfAlpha;
 
-                HDC hdcBuffer;
+                HDC          hdcBuffer;
                 HPAINTBUFFER hPaintBuffer = BeginBufferedPaint(hdcDest, &rcIcon, BPBF_DIB, &paintParams, &hdcBuffer);
                 if (hPaintBuffer)
                 {
@@ -182,7 +182,7 @@ HBITMAP IconBitmapUtils::IconToBitmapPARGB32(HICON hIcon)
     return hBmp;
 }
 
-HRESULT IconBitmapUtils::Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_opt_out void **ppvBits, __out HBITMAP* phBmp)
+HRESULT IconBitmapUtils::Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_opt_out void **ppvBits, __out HBITMAP *phBmp)
 {
     if (psize == 0)
         return E_INVALIDARG;
@@ -194,12 +194,12 @@ HRESULT IconBitmapUtils::Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_
 
     BITMAPINFO bmi;
     SecureZeroMemory(&bmi, sizeof(bmi));
-    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biSize        = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biPlanes      = 1;
     bmi.bmiHeader.biCompression = BI_RGB;
 
-    bmi.bmiHeader.biWidth = psize->cx;
-    bmi.bmiHeader.biHeight = psize->cy;
+    bmi.bmiHeader.biWidth    = psize->cx;
+    bmi.bmiHeader.biHeight   = psize->cy;
     bmi.bmiHeader.biBitCount = 32;
 
     HDC hdcUsed = hdc ? hdc : GetDC(NULL);
@@ -214,11 +214,11 @@ HRESULT IconBitmapUtils::Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_
     return (NULL == *phBmp) ? E_OUTOFMEMORY : S_OK;
 }
 
-HRESULT IconBitmapUtils::ConvertBufferToPARGB32(HPAINTBUFFER hPaintBuffer, HDC hdc, HICON hicon, SIZE& sizIcon)
+HRESULT IconBitmapUtils::ConvertBufferToPARGB32(HPAINTBUFFER hPaintBuffer, HDC hdc, HICON hicon, SIZE &sizIcon)
 {
     RGBQUAD *prgbQuad;
-    int cxRow;
-    HRESULT hr = GetBufferedPaintBits(hPaintBuffer, &prgbQuad, &cxRow);
+    int      cxRow;
+    HRESULT  hr = GetBufferedPaintBits(hPaintBuffer, &prgbQuad, &cxRow);
     if (SUCCEEDED(hr))
     {
         Gdiplus::ARGB *pargb = reinterpret_cast<Gdiplus::ARGB *>(prgbQuad);
@@ -241,7 +241,7 @@ HRESULT IconBitmapUtils::ConvertBufferToPARGB32(HPAINTBUFFER hPaintBuffer, HDC h
     return hr;
 }
 
-bool IconBitmapUtils::HasAlpha(__in Gdiplus::ARGB *pargb, SIZE& sizImage, int cxRow)
+bool IconBitmapUtils::HasAlpha(__in Gdiplus::ARGB *pargb, SIZE &sizImage, int cxRow)
 {
     ULONG cxDelta = cxRow - sizImage.cx;
     for (ULONG y = sizImage.cy; y; --y)
@@ -260,27 +260,27 @@ bool IconBitmapUtils::HasAlpha(__in Gdiplus::ARGB *pargb, SIZE& sizImage, int cx
     return false;
 }
 
-HRESULT IconBitmapUtils::ConvertToPARGB32(HDC hdc, __inout Gdiplus::ARGB *pargb, HBITMAP hbmp, SIZE& sizImage, int cxRow)
+HRESULT IconBitmapUtils::ConvertToPARGB32(HDC hdc, __inout Gdiplus::ARGB *pargb, HBITMAP hbmp, SIZE &sizImage, int cxRow)
 {
     BITMAPINFO bmi;
     SecureZeroMemory(&bmi, sizeof(bmi));
-    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biSize        = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biPlanes      = 1;
     bmi.bmiHeader.biCompression = BI_RGB;
 
-    bmi.bmiHeader.biWidth = sizImage.cx;
-    bmi.bmiHeader.biHeight = sizImage.cy;
+    bmi.bmiHeader.biWidth    = sizImage.cx;
+    bmi.bmiHeader.biHeight   = sizImage.cy;
     bmi.bmiHeader.biBitCount = 32;
 
-    HANDLE hHeap = GetProcessHeap();
-    void *pvBits = HeapAlloc(hHeap, 0, bmi.bmiHeader.biWidth * 4 * bmi.bmiHeader.biHeight);
+    HANDLE hHeap  = GetProcessHeap();
+    void * pvBits = HeapAlloc(hHeap, 0, bmi.bmiHeader.biWidth * 4 * bmi.bmiHeader.biHeight);
     if (pvBits == 0)
         return E_OUTOFMEMORY;
 
     HRESULT hr = E_UNEXPECTED;
     if (GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, pvBits, &bmi, DIB_RGB_COLORS) == bmi.bmiHeader.biHeight)
     {
-        ULONG cxDelta = cxRow - bmi.bmiHeader.biWidth;
+        ULONG          cxDelta   = cxRow - bmi.bmiHeader.biWidth;
         Gdiplus::ARGB *pargbMask = static_cast<Gdiplus::ARGB *>(pvBits);
 
         for (ULONG y = bmi.bmiHeader.biHeight; y; --y)

@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2014, 2017 - Stefan Kueng
+// Copyright (C) 2014, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -41,20 +41,20 @@ CTempFiles& CTempFiles::Instance()
 
 std::wstring CTempFiles::ConstructTempPath(const std::wstring& path) const
 {
-    DWORD len = ::GetTempPath(0, nullptr);
-    auto temppath = std::make_unique<TCHAR[]>(len+1);
-    auto tempF = std::make_unique<TCHAR[]>(len+50);
-    ::GetTempPath (len+1, temppath.get());
+    DWORD len      = ::GetTempPath(0, nullptr);
+    auto  temppath = std::make_unique<wchar_t[]>(len + 1);
+    auto  tempF    = std::make_unique<wchar_t[]>(len + 50);
+    ::GetTempPath(len + 1, temppath.get());
     std::wstring tempfile;
     std::wstring possibletempfile;
     if (path.empty())
     {
-        ::GetTempFileName (temppath.get(), L"skt", 0, tempF.get());
+        ::GetTempFileName(temppath.get(), L"skt", 0, tempF.get());
         tempfile = std::wstring(tempF.get());
     }
     else
     {
-        int i=0;
+        int i = 0;
         do
         {
             std::wstring filename = path;
@@ -64,11 +64,10 @@ std::wstring CTempFiles::ConstructTempPath(const std::wstring& path) const
             std::wstring sExt = CPathUtils::GetFileExtension(path);
             do
             {
-                possibletempfile = CStringUtils::Format(L"%s%s.svn%3.3x.tmp.%s", temppath.get(), (LPCTSTR)filename.c_str(), i, (LPCTSTR)sExt.c_str());
-                tempfile = possibletempfile;
-                filename = filename.substr(0, filename.size()-1);
-            } while (   (filename.size() > 4)
-                     && (tempfile.size() >= MAX_PATH));
+                possibletempfile = CStringUtils::Format(L"%s%s.svn%3.3x.tmp.%s", temppath.get(), (LPCWSTR)filename.c_str(), i, (LPCWSTR)sExt.c_str());
+                tempfile         = possibletempfile;
+                filename         = filename.substr(0, filename.size() - 1);
+            } while ((filename.size() > 4) && (tempfile.size() >= MAX_PATH));
             i++;
         } while (PathFileExists(tempfile.c_str()));
     }
@@ -92,7 +91,7 @@ std::wstring CTempFiles::CreateTempPath(bool bRemoveAtEnd, const std::wstring& p
         if (directory)
         {
             DeleteFile(tempfile.c_str());
-            if (CreateDirectory (tempfile.c_str(), nullptr) == FALSE)
+            if (CreateDirectory(tempfile.c_str(), nullptr) == FALSE)
             {
                 if (GetLastError() != ERROR_ALREADY_EXISTS)
                     return std::wstring();
@@ -132,7 +131,7 @@ std::wstring CTempFiles::CreateTempPath(bool bRemoveAtEnd, const std::wstring& p
 
 std::wstring CTempFiles::GetTempFilePath(bool bRemoveAtEnd, const std::wstring& path /*= std::wstring()*/)
 {
-    return CreateTempPath (bRemoveAtEnd, path, false);
+    return CreateTempPath(bRemoveAtEnd, path, false);
 }
 
 std::wstring CTempFiles::GetTempFilePathString()
@@ -142,6 +141,5 @@ std::wstring CTempFiles::GetTempFilePathString()
 
 std::wstring CTempFiles::GetTempDirPath(bool bRemoveAtEnd, const std::wstring& path /* = CTSVNPath() */)
 {
-    return CreateTempPath (bRemoveAtEnd, path, true);
+    return CreateTempPath(bRemoveAtEnd, path, true);
 }
-

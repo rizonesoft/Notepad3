@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2015, 2017 - Stefan Kueng
+// Copyright (C) 2012, 2015, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
 
 // A little like a release build assert. Always evaluate expr.
 // Does not abort in this variant.
-#define APPVERIFY(expr) CTraceToOutputDebugString::Instance().Verify(expr, __FUNCTION__, __LINE__, (const char*)nullptr)
-#define APPVERIFYM(expr,msg,...) CTraceToOutputDebugString::Instance().Verify(expr, __FUNCTION__, __LINE__, msg, ##__VA_ARGS__)
+#define APPVERIFY(expr)            CTraceToOutputDebugString::Instance().Verify(expr, __FUNCTION__, __LINE__, (const char*)nullptr)
+#define APPVERIFYM(expr, msg, ...) CTraceToOutputDebugString::Instance().Verify(expr, __FUNCTION__, __LINE__, msg, ##__VA_ARGS__)
 
 class CTraceToOutputDebugString
 {
@@ -74,7 +74,7 @@ public:
         {
             va_list ptr;
             va_start(ptr, pszFormat);
-            TraceV(pszFormat,ptr);
+            TraceV(pszFormat, ptr);
             va_end(ptr);
         }
     }
@@ -86,12 +86,12 @@ public:
         {
             va_list ptr;
             va_start(ptr, pszFormat);
-            TraceV(pszFormat,ptr);
+            TraceV(pszFormat, ptr);
             va_end(ptr);
         }
     }
 
-    void Verify(bool expr, const char* function, int line, const char * msg, ...)
+    void Verify(bool expr, const char* function, int line, const char* msg, ...)
     {
         if (!expr)
         {
@@ -127,7 +127,7 @@ public:
         }
     }
 
-    void Verify(bool expr, const char* function, int line, const wchar_t * msg, ...)
+    void Verify(bool expr, const char* function, int line, const wchar_t* msg, ...)
     {
         if (!expr)
         {
@@ -169,17 +169,17 @@ private:
         : m_fi(nullptr)
     {
         m_LastTick = GetTickCount64();
-        m_bActive = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
+        m_bActive  = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
     }
     ~CTraceToOutputDebugString()
     {
         delete m_pInstance;
     }
 
-    ULONGLONG   m_LastTick;
-    bool        m_bActive;
-    FILE *      m_fi;
-    static CTraceToOutputDebugString * m_pInstance;
+    ULONGLONG                         m_LastTick;
+    bool                              m_bActive;
+    FILE*                             m_fi;
+    static CTraceToOutputDebugString* m_pInstance;
 
     // Non Unicode output helper
     void TraceV(PCSTR pszFormat, va_list args)
@@ -210,13 +210,12 @@ private:
         if (GetTickCount64() - m_LastTick > 10000)
         {
             m_LastTick = GetTickCount64();
-            m_bActive = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
+            m_bActive  = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
         }
         return m_bActive;
 #endif
     }
 };
-
 
 class ProfileTimer
 {
@@ -240,7 +239,6 @@ public:
     }
 
 private:
-    LARGE_INTEGER   startTime;
-    std::wstring    info;
+    LARGE_INTEGER startTime;
+    std::wstring  info;
 };
-

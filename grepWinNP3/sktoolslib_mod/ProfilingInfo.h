@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2014 - Stefan Kueng
+// Copyright (C) 2014, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,32 +23,32 @@
 //////////////////////////////////////////////////////////////////////
 
 #ifndef _DEBUG
-#ifndef __INTRIN_H_
-#include <intrin.h>
-#endif
+#    ifndef __INTRIN_H_
+#        include <intrin.h>
+#    endif
 #endif
 
 #ifndef _PSAPI_H_
-#include <psapi.h>
+#    include <psapi.h>
 #endif
 
 #ifndef _STRING_
-#include <string>
+#    include <string>
 #endif
 
 #ifndef _VECTOR_
-#include <vector>
+#    include <vector>
 #endif
 
 #ifndef _FSTREAM_
-#include <fstream>
+#    include <fstream>
 #endif
 
 #ifndef _TIME_
-#include <time.h>
+#    include <time.h>
 #endif
 
-#pragma comment (lib, "psapi.lib")
+#pragma comment(lib, "psapi.lib")
 
 /**
 * Collects the profiling info for a given profiled block / line.
@@ -61,12 +61,13 @@ class CProfilingRecord
 public:
     /// collected profiling info
 
-    struct CSpent {
+    struct CSpent
+    {
         unsigned __int64 sum;
         unsigned __int64 minValue;
         unsigned __int64 maxValue;
 
-        void Add(unsigned __int64  value)
+        void Add(unsigned __int64 value)
         {
             sum += value;
 
@@ -76,15 +77,15 @@ public:
                 maxValue = value;
         }
         /// First value add
-        void Init(unsigned __int64  value)
+        void Init(unsigned __int64 value)
         {
-            sum = value;
+            sum      = value;
             minValue = value;
             maxValue = value;
         }
         void Init()
         {
-            sum = 0;
+            sum      = 0;
             minValue = ULLONG_MAX; /* -1 */
             maxValue = 0;
         }
@@ -92,17 +93,11 @@ public:
 
     /// construction
 
-    CProfilingRecord ( const char* name
-                     , const char* file
-                     , int line);
+    CProfilingRecord(const char* name, const char* file, int line);
 
     /// record values
 
-    void Add ( unsigned __int64 valueRdtsc
-             , unsigned __int64 valueWall
-             , unsigned __int64 valueUser
-             , unsigned __int64 valueKernel
-             );
+    void Add(unsigned __int64 valueRdtsc, unsigned __int64 valueWall, unsigned __int64 valueUser, unsigned __int64 valueKernel);
 
     /// modification
 
@@ -110,24 +105,22 @@ public:
 
     /// data access
 
-    const char* GetName() const {return name;}
-    const char* GetFile() const {return file;}
-    int GetLine() const {return line;}
+    const char* GetName() const { return name; }
+    const char* GetFile() const { return file; }
+    int         GetLine() const { return line; }
 
-    size_t GetCount() const {return count;}
-    const CSpent & Get() const {return m_rdtsc; }
-    const CSpent & GetU() const {return m_user; }
-    const CSpent & GetK() const {return m_kernel; }
-    const CSpent & GetW() const {return m_wall; }
-
+    size_t        GetCount() const { return count; }
+    const CSpent& Get() const { return m_rdtsc; }
+    const CSpent& GetU() const { return m_user; }
+    const CSpent& GetK() const { return m_kernel; }
+    const CSpent& GetW() const { return m_wall; }
 
 private:
-
     /// identification
 
     const char* name;
     const char* file;
-    int line;
+    int         line;
 
     CSpent m_rdtsc, m_user, m_kernel, m_wall;
     size_t count;
@@ -141,20 +134,18 @@ private:
 class CRecordProfileEvent
 {
 private:
-
     CProfilingRecord* record;
 
     /// the initial counter values
     unsigned __int64 m_rdtscStart;
-    FILETIME m_kernelStart;
-    FILETIME m_userStart;
-    FILETIME m_wallStart;
+    FILETIME         m_kernelStart;
+    FILETIME         m_userStart;
+    FILETIME         m_wallStart;
 
 public:
-
     /// construction: start clock
 
-    CRecordProfileEvent (CProfilingRecord* aRecord);
+    CRecordProfileEvent(CProfilingRecord* aRecord);
 
     /// destruction: time interval to profiling record,
     /// if Stop() had not been called before
@@ -168,8 +159,8 @@ public:
 
 /// construction / destruction
 
-inline CRecordProfileEvent::CRecordProfileEvent (CProfilingRecord* aRecord)
-    : record (aRecord)
+inline CRecordProfileEvent::CRecordProfileEvent(CProfilingRecord* aRecord)
+    : record(aRecord)
 {
     // less precise first
     SYSTEMTIME st;
@@ -188,7 +179,7 @@ inline CRecordProfileEvent::~CRecordProfileEvent()
 
 UINT64 inline DiffFiletime(FILETIME time1, FILETIME time2)
 {
-    return *(UINT64 *)&time1 - *(UINT64 *)&time2;
+    return *(UINT64*)&time1 - *(UINT64*)&time2;
 }
 
 /// stop counting
@@ -208,10 +199,7 @@ inline void CRecordProfileEvent::Stop()
         FILETIME oTime;
         SystemTimeToFileTime(&st, &oTime);
 
-        record->Add (nTake
-                   , DiffFiletime(oTime, m_wallStart)
-                   , DiffFiletime(userEnd, m_userStart)
-                   , DiffFiletime(kernelEnd, m_kernelStart));
+        record->Add(nTake, DiffFiletime(oTime, m_wallStart), DiffFiletime(userEnd, m_userStart), DiffFiletime(kernelEnd, m_kernelStart));
         record = NULL;
     }
 }
@@ -224,9 +212,8 @@ inline void CRecordProfileEvent::Stop()
 class CProfilingInfo
 {
 private:
-
     typedef std::vector<CProfilingRecord*> TRecords;
-    TRecords records;
+    TRecords                               records;
 
     /// construction / destruction
 
@@ -238,16 +225,13 @@ private:
     std::string GetReport() const;
 
 public:
-
     /// access to default instance
 
     static CProfilingInfo* GetInstance();
 
     /// add a new record
 
-    CProfilingRecord* Create ( const char* name
-                             , const char* file
-                             , int line);
+    CProfilingRecord* Create(const char* name, const char* file, int line);
 
     /// write the current results to disk
 
@@ -258,37 +242,32 @@ public:
 * Profiling macros
 */
 
-#define PROFILE_CONCAT( a, b )   PROFILE_CONCAT3( a, b )
-#define PROFILE_CONCAT3( a, b )  a##b
+#define PROFILE_CONCAT(a, b)  PROFILE_CONCAT3(a, b)
+#define PROFILE_CONCAT3(a, b) a##b
 
 /// measures the time from the point of usage to the end of the respective block
 
-#define PROFILE_BLOCK\
-    static CProfilingRecord* PROFILE_CONCAT(record,__LINE__) \
-        = CProfilingInfo::GetInstance()->Create(__FUNCTION__,__FILE__,__LINE__);\
-    CRecordProfileEvent PROFILE_CONCAT(profileSection,__LINE__) (PROFILE_CONCAT(record,__LINE__));
+#define PROFILE_BLOCK                                                                                                                    \
+    static CProfilingRecord* PROFILE_CONCAT(record, __LINE__) = CProfilingInfo::GetInstance()->Create(__FUNCTION__, __FILE__, __LINE__); \
+    CRecordProfileEvent      PROFILE_CONCAT(profileSection, __LINE__)(PROFILE_CONCAT(record, __LINE__));
 
 /// measures the time taken to execute the respective code line
 
-#define PROFILE_LINE(line)\
-    static CProfilingRecord* PROFILE_CONCAT(record,__LINE__) \
-        = CProfilingInfo::GetInstance()->Create(__FUNCTION__,__FILE__,__LINE__);\
-    CRecordProfileEvent PROFILE_CONCAT(profileSection,__LINE__) (PROFILE_CONCAT(record,__LINE__));\
-    line;\
-    PROFILE_CONCAT(profileSection,__LINE__).Stop();
-
+#define PROFILE_LINE(line)                                                                                                               \
+    static CProfilingRecord* PROFILE_CONCAT(record, __LINE__) = CProfilingInfo::GetInstance()->Create(__FUNCTION__, __FILE__, __LINE__); \
+    CRecordProfileEvent      PROFILE_CONCAT(profileSection, __LINE__)(PROFILE_CONCAT(record, __LINE__));                                 \
+    line;                                                                                                                                \
+    PROFILE_CONCAT(profileSection, __LINE__).Stop();
 
 //////////////////////////////////////////////////////////////////////
 // construction / destruction
 //////////////////////////////////////////////////////////////////////
 
-inline CProfilingRecord::CProfilingRecord ( const char* name
-                                   , const char* file
-                                   , int line)
-    : name (name)
-    , file (file)
-    , line (line)
-    , count (0)
+inline CProfilingRecord::CProfilingRecord(const char* name, const char* file, int line)
+    : name(name)
+    , file(file)
+    , line(line)
+    , count(0)
 {
     Reset();
 }
@@ -297,11 +276,7 @@ inline CProfilingRecord::CProfilingRecord ( const char* name
 // record values
 //////////////////////////////////////////////////////////////////////
 
-void inline CProfilingRecord::Add (unsigned __int64 valueRdtsc
-    , unsigned __int64 valueTime
-    , unsigned __int64 valueUser
-    , unsigned __int64 valueKernel
-)
+void inline CProfilingRecord::Add(unsigned __int64 valueRdtsc, unsigned __int64 valueTime, unsigned __int64 valueUser, unsigned __int64 valueKernel)
 {
     if (!count++)
     {
@@ -368,36 +343,36 @@ inline void CProfilingInfo::DumpReport()
         // write profile to file
 
 #ifdef _WIN32
-        char buffer [MAX_PATH];
-        if (GetModuleFileNameExA (GetCurrentProcess(), NULL, buffer, _countof(buffer)) > 0)
+        char buffer[MAX_PATH];
+        if (GetModuleFileNameExA(GetCurrentProcess(), NULL, buffer, _countof(buffer)) > 0)
 #else
         const char* buffer = "application";
 #endif
 
-        try
-        {
-            char datebuf[MAX_PATH];
+            try
+            {
+                char datebuf[MAX_PATH];
 
-            time_t rawtime;
-            struct tm timeinfo;
-            time ( &rawtime );
-            localtime_s(&timeinfo, &rawtime);
+                time_t    rawtime;
+                struct tm timeinfo;
+                time(&rawtime);
+                localtime_s(&timeinfo, &rawtime);
 
-            strftime(datebuf, MAX_PATH, "-%y-%m-%d-%H-%M", &timeinfo);
-            std::string fileName (buffer);
-            fileName += datebuf;
-            fileName += ".profile";
+                strftime(datebuf, MAX_PATH, "-%y-%m-%d-%H-%M", &timeinfo);
+                std::string fileName(buffer);
+                fileName += datebuf;
+                fileName += ".profile";
 
-            std::string report = GetInstance()->GetReport();
+                std::string report = GetInstance()->GetReport();
 
-            std::ofstream file;
-            file.open (fileName.c_str(), std::ios::binary | std::ios::out);
-            file.write (report.c_str(), report.size());
-        }
-        catch (...)
-        {
-            // ignore all file errors etc.
-        }
+                std::ofstream file;
+                file.open(fileName.c_str(), std::ios::binary | std::ios::out);
+                file.write(report.c_str(), report.size());
+            }
+            catch (...)
+            {
+                // ignore all file errors etc.
+            }
     }
 }
 
@@ -405,76 +380,52 @@ inline void CProfilingInfo::DumpReport()
 // create a report
 //////////////////////////////////////////////////////////////////////
 
-inline static std::string IntToStr (unsigned __int64 value)
+inline static std::string IntToStr(unsigned __int64 value)
 {
     char buffer[100];
-    _ui64toa_s (value, buffer, _countof(buffer), 10);
+    _ui64toa_s(value, buffer, _countof(buffer), 10);
 
     std::string result = buffer;
     for (size_t i = 3; i < result.length(); i += 4)
-        result.insert (result.length() - i, 1, ',');
+        result.insert(result.length() - i, 1, ',');
 
     return result;
 };
 
 inline std::string CProfilingInfo::GetReport() const
 {
-    enum { LINE_LENGTH = 600 };
+    enum
+    {
+        LINE_LENGTH = 600
+    };
 
-    char lineBuffer [LINE_LENGTH];
+    char        lineBuffer[LINE_LENGTH];
     std::string result;
-    result.reserve (LINE_LENGTH * records.size());
+    result.reserve(LINE_LENGTH * records.size());
 
-    const char * const format ="%15s%17s%17s%17s%17s\n";
+    const char* const format = "%15s%17s%17s%17s%17s\n";
 
-    for ( TRecords::const_iterator iter = records.begin(), end = records.end()
-        ; iter != end
-        ; ++iter)
+    for (TRecords::const_iterator iter = records.begin(), end = records.end(); iter != end; ++iter)
     {
         size_t nCount = (*iter)->GetCount();
-        sprintf_s ( lineBuffer, "%7sx %s\n%s:%s\n"
-                  , IntToStr (nCount).c_str()
-                  , (*iter)->GetName()
-                  , (*iter)->GetFile()
-                  , IntToStr ((*iter)->GetLine()).c_str());
+        sprintf_s(lineBuffer, "%7sx %s\n%s:%s\n", IntToStr(nCount).c_str(), (*iter)->GetName(), (*iter)->GetFile(), IntToStr((*iter)->GetLine()).c_str());
         result += lineBuffer;
-        if (nCount==0)
+        if (nCount == 0)
             continue;
 
-        sprintf_s ( lineBuffer, format
-                  , "type", "sum", "avg", "min", "max");
+        sprintf_s(lineBuffer, format, "type", "sum", "avg", "min", "max");
         result += lineBuffer;
 
-        sprintf_s ( lineBuffer, format
-                  , "CPU Ticks"
-                  , IntToStr ((*iter)->Get().sum).c_str()
-                  , IntToStr ((*iter)->Get().sum/nCount).c_str()
-                  , IntToStr ((*iter)->Get().minValue).c_str()
-                  , IntToStr ((*iter)->Get().maxValue).c_str());
+        sprintf_s(lineBuffer, format, "CPU Ticks", IntToStr((*iter)->Get().sum).c_str(), IntToStr((*iter)->Get().sum / nCount).c_str(), IntToStr((*iter)->Get().minValue).c_str(), IntToStr((*iter)->Get().maxValue).c_str());
         result += lineBuffer;
 
-        sprintf_s ( lineBuffer, format
-                  , "UserMode[us]"
-                  , IntToStr ((*iter)->GetU().sum/10).c_str()
-                  , IntToStr ((*iter)->GetU().sum/10/nCount).c_str()
-                  , IntToStr ((*iter)->GetU().minValue/10).c_str()
-                  , IntToStr ((*iter)->GetU().maxValue/10).c_str());
+        sprintf_s(lineBuffer, format, "UserMode[us]", IntToStr((*iter)->GetU().sum / 10).c_str(), IntToStr((*iter)->GetU().sum / 10 / nCount).c_str(), IntToStr((*iter)->GetU().minValue / 10).c_str(), IntToStr((*iter)->GetU().maxValue / 10).c_str());
         result += lineBuffer;
 
-        sprintf_s ( lineBuffer, format
-                  , "KernelMode[us]"
-                  , IntToStr ((*iter)->GetK().sum/10).c_str()
-                  , IntToStr ((*iter)->GetK().sum/10/nCount).c_str()
-                  , IntToStr ((*iter)->GetK().minValue/10).c_str()
-                  , IntToStr ((*iter)->GetK().maxValue/10).c_str());
+        sprintf_s(lineBuffer, format, "KernelMode[us]", IntToStr((*iter)->GetK().sum / 10).c_str(), IntToStr((*iter)->GetK().sum / 10 / nCount).c_str(), IntToStr((*iter)->GetK().minValue / 10).c_str(), IntToStr((*iter)->GetK().maxValue / 10).c_str());
         result += lineBuffer;
 
-        sprintf_s ( lineBuffer, format
-                  , "WallTime[us]"
-                  , IntToStr ((*iter)->GetW().sum/10).c_str()
-                  , IntToStr ((*iter)->GetW().sum/10/nCount).c_str()
-                  , IntToStr ((*iter)->GetW().minValue/10).c_str()
-                  , IntToStr ((*iter)->GetW().maxValue/10).c_str());
+        sprintf_s(lineBuffer, format, "WallTime[us]", IntToStr((*iter)->GetW().sum / 10).c_str(), IntToStr((*iter)->GetW().sum / 10 / nCount).c_str(), IntToStr((*iter)->GetW().minValue / 10).c_str(), IntToStr((*iter)->GetW().maxValue / 10).c_str());
         result += lineBuffer;
 
         result += "\n";
@@ -490,18 +441,17 @@ inline std::string CProfilingInfo::GetReport() const
                                 KEY_READ,
                                 &hKey);
 
-    if(lError == ERROR_SUCCESS)
+    if (lError == ERROR_SUCCESS)
     {
         // query the key:
         DWORD BufSize = _MAX_PATH;
-        DWORD dwMHz = 0;
-        RegQueryValueExA(hKey, "~MHz", NULL, NULL, (LPBYTE) &dwMHz, &BufSize);
+        DWORD dwMHz   = 0;
+        RegQueryValueExA(hKey, "~MHz", NULL, NULL, (LPBYTE)&dwMHz, &BufSize);
         RegCloseKey(hKey);
 
-        sprintf_s ( lineBuffer, "processor speed is %ld MHz\n", dwMHz);
+        sprintf_s(lineBuffer, "processor speed is %ld MHz\n", dwMHz);
         result += lineBuffer;
     }
-
 
     return result;
 }
@@ -510,13 +460,10 @@ inline std::string CProfilingInfo::GetReport() const
 // add a new record
 //////////////////////////////////////////////////////////////////////
 
-inline CProfilingRecord* CProfilingInfo::Create ( const char* name
-                                         , const char* file
-                                         , int line)
+inline CProfilingRecord* CProfilingInfo::Create(const char* name, const char* file, int line)
 {
-    CProfilingRecord* record = new CProfilingRecord (name, file, line);
-    records.push_back (record);
+    CProfilingRecord* record = new CProfilingRecord(name, file, line);
+    records.push_back(record);
 
     return record;
 }
-

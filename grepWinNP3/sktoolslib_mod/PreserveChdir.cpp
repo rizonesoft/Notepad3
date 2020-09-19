@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,7 +21,8 @@
 #include "PreserveChdir.h"
 #include "PathUtils.h"
 
-PreserveChdir::PreserveChdir() : m_originalDir(CPathUtils::GetCWD())
+PreserveChdir::PreserveChdir()
+    : m_originalDir(CPathUtils::GetCWD())
 {
 }
 
@@ -33,6 +34,6 @@ PreserveChdir::~PreserveChdir()
     std::wstring currentDir = CPathUtils::GetCWD();
     // Restore the current directory if it doesn't match the original directory
     // or if we failed to get the current directory.
-    if (currentDir.empty() || _tcsicmp(m_originalDir.c_str(), currentDir.c_str()) != 0)
+    if (currentDir.empty() || _wcsicmp(m_originalDir.c_str(), currentDir.c_str()) != 0)
         SetCurrentDirectory(m_originalDir.c_str());
 }

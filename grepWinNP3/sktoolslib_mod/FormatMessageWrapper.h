@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,20 +27,30 @@
 class CFormatMessageWrapper
 {
 private:
-    LPTSTR buffer;
-    DWORD result;
-    void release();
-    void obtainMessage() { obtainMessage(::GetLastError()); }
-    void obtainMessage(DWORD errorCode);
+    LPWSTR buffer;
+    DWORD  result;
+    void   release();
+    void   obtainMessage() { obtainMessage(::GetLastError()); }
+    void   obtainMessage(DWORD errorCode);
 
 public:
-    CFormatMessageWrapper() : buffer(nullptr), result(0) { obtainMessage(); }
-    CFormatMessageWrapper(DWORD lastError) : buffer(nullptr), result(0) { obtainMessage(lastError); }
+    CFormatMessageWrapper()
+        : buffer(nullptr)
+        , result(0)
+    {
+        obtainMessage();
+    }
+    CFormatMessageWrapper(DWORD lastError)
+        : buffer(nullptr)
+        , result(0)
+    {
+        obtainMessage(lastError);
+    }
     ~CFormatMessageWrapper() { release(); }
-    operator LPCTSTR() const { return buffer; }
+    operator LPCWSTR() const { return buffer; }
     operator bool() const { return result != 0; }
-    bool operator!() const { return result == 0; }
-    LPCTSTR c_str() const { return buffer; }
+    bool    operator!() const { return result == 0; }
+    LPCWSTR c_str() const { return buffer; }
 };
 
 inline void CFormatMessageWrapper::obtainMessage(DWORD errorCode)
@@ -49,15 +59,14 @@ inline void CFormatMessageWrapper::obtainMessage(DWORD errorCode)
     // method more than once on the same object.
     release();
     result = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                           FORMAT_MESSAGE_FROM_SYSTEM |
-                           FORMAT_MESSAGE_IGNORE_INSERTS,
+                               FORMAT_MESSAGE_FROM_SYSTEM |
+                               FORMAT_MESSAGE_IGNORE_INSERTS,
                            nullptr,
                            errorCode,
                            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                           (LPTSTR)&buffer,
+                           (LPWSTR)&buffer,
                            0,
-                           nullptr
-    );
+                           nullptr);
 }
 
 inline void CFormatMessageWrapper::release()

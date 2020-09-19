@@ -23,7 +23,6 @@
 #include <memory>
 #include <mshtmhst.h>
 
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -42,25 +41,25 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
     //Load the IE Specific MSTML Interface DKK
     HINSTANCE hinstMSHTML = LoadLibrary(TEXT("mshtml.dll"));
     BOOL bSuccess = FALSE;
-    if(hinstMSHTML)
+    if (hinstMSHTML)
     {
         SHOWHTMLDIALOGEXFN  *pfnShowHTMLDialog;
         //Locate The Function ShowHTMLDialog in the Loaded mshtml.dll
-        pfnShowHTMLDialog = (SHOWHTMLDIALOGEXFN*)GetProcAddress(hinstMSHTML, "ShowHTMLDialogEx");
-        if(pfnShowHTMLDialog)
+        pfnShowHTMLDialog = (SHOWHTMLDIALOGEXFN *)GetProcAddress(hinstMSHTML, "ShowHTMLDialogEx");
+        if (pfnShowHTMLDialog)
         {
-            std::unique_ptr<TCHAR[]> lpszModule(new TCHAR[MAX_PATH_NEW]);
+            auto lpszModule = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
             //Get The Application Path
             if (GetModuleFileName(hInstance, lpszModule.get(), MAX_PATH_NEW))
             {
                 //Add the IE Res protocol
-                std::unique_ptr<TCHAR[]> strResourceURL(new TCHAR[MAX_PATH_NEW]);
-                _stprintf_s(strResourceURL.get(), MAX_PATH_NEW, L"res://%s/%u", lpszModule.get(), idAboutHTMLID);
-                int iLength = (int)_tcslen(strResourceURL.get());
-                std::unique_ptr<wchar_t[]> lpWideCharStr(new wchar_t[iLength+1]);
+                auto strResourceURL = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
+                swprintf_s(strResourceURL.get(), MAX_PATH_NEW, L"res://%s/%u", lpszModule.get(), idAboutHTMLID);
+                int  iLength       = (int)wcslen(strResourceURL.get());
+                auto lpWideCharStr = std::make_unique<wchar_t[]>(iLength + 1);
                 //Attempt to Create the URL Moniker to the specified in the URL String
                 IMoniker *pmk;
-                if(SUCCEEDED(CreateURLMoniker(NULL,strResourceURL.get(),&pmk)))
+                if (SUCCEEDED(CreateURLMoniker(NULL, strResourceURL.get(), &pmk)))
                 {
                     //Invoke the ShowHTMLDialog function by pointer
                     //passing the HWND of your Application , the Moniker,

@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,13 +25,14 @@ class CCircularLog
 private:
     CCircularLog();
     ~CCircularLog();
-public:
-    static CCircularLog&    Instance();
 
-    bool                    Init(const std::wstring& path, int maxlines);
-    bool                    AddLine(const std::wstring& line);
-    bool                    Save();
-    std::wstring            GetSavePath() const { return m_path; }
+public:
+    static CCircularLog& Instance();
+
+    bool         Init(const std::wstring& path, int maxlines);
+    bool         AddLine(const std::wstring& line);
+    bool         Save();
+    std::wstring GetSavePath() const { return m_path; }
 
     // Unicode output helper
     void operator()(LPCWSTR pszFormat, ...);

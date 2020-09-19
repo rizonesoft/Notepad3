@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013, 2016 Stefan Kueng
+// Copyright (C) 2013, 2016, 2020 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
 
 inline std::wstring LoadResourceWString(HINSTANCE hInstance, UINT uID)
 {
-    const wchar_t* p = nullptr;
-    int len = ::LoadStringW(hInstance, uID, reinterpret_cast<LPWSTR>(&p), 0);
+    const wchar_t* p   = nullptr;
+    int            len = ::LoadStringW(hInstance, uID, reinterpret_cast<LPWSTR>(&p), 0);
     return (len > 0) ? std::wstring(p, static_cast<size_t>(len)) : std::wstring();
 }
 
@@ -35,14 +35,15 @@ class ResString
 {
 public:
     // hInst is necessary to support multiple languages with resource dlls
-    inline ResString (HINSTANCE hInst, int resId)
+    inline ResString(HINSTANCE hInst, int resId)
         : str(LoadResourceWString(hInst, resId))
     {
     }
     // Handy for when used with printf etc and to avoid explicit casts.
-    inline const TCHAR* c_str() const { return str.c_str(); }
-    inline operator const TCHAR*const () const { return str.c_str(); }
-    inline operator const std::wstring& () const { return str; }
+    inline const wchar_t* c_str() const { return str.c_str(); }
+    inline                operator const wchar_t* const() const { return str.c_str(); }
+    inline                operator const std::wstring &() const { return str; }
+
 private:
     const std::wstring str;
 };

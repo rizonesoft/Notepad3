@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,18 +20,13 @@
 #include "stdafx.h"
 #include "ShellLink.h"
 
-
-
-
 //////////////// Macros / Locals /////////////////////////////////////
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
+#    define new DEBUG_NEW
+#    undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-
 
 //////////////// Implementation //////////////////////////////////////
 
@@ -52,7 +47,7 @@ CShellLinkInfo::~CShellLinkInfo()
 {
     // Get the shell's allocator.
     IMalloc* pMalloc;
-    HRESULT hRes = SHGetMalloc(&pMalloc);
+    HRESULT  hRes = SHGetMalloc(&pMalloc);
     if (!SUCCEEDED(hRes))
     {
         return;
@@ -71,14 +66,14 @@ CShellLinkInfo::~CShellLinkInfo()
 
 CShellLinkInfo& CShellLinkInfo::operator=(const CShellLinkInfo& sli)
 {
-    m_sTarget = sli.m_sTarget;
-    m_pidl = sli.m_pidl;
-    m_sArguments = sli.m_sArguments;
-    m_sDescription = sli.m_sDescription;
-    m_wHotkey = sli.m_wHotkey;
-    m_sIconLocation = sli.m_sIconLocation;
-    m_nIconIndex = sli.m_nIconIndex;
-    m_nShowCmd = sli.m_nShowCmd;
+    m_sTarget           = sli.m_sTarget;
+    m_pidl              = sli.m_pidl;
+    m_sArguments        = sli.m_sArguments;
+    m_sDescription      = sli.m_sDescription;
+    m_wHotkey           = sli.m_wHotkey;
+    m_sIconLocation     = sli.m_sIconLocation;
+    m_nIconIndex        = sli.m_nIconIndex;
+    m_nShowCmd          = sli.m_nShowCmd;
     m_sWorkingDirectory = sli.m_sWorkingDirectory;
 
     return *this;
@@ -113,11 +108,11 @@ BOOL CShellLink::Initialise()
     else
     {
         //Instantiate the COM class
-        HRESULT hRes = ::CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*) &m_psl);
+        HRESULT hRes = ::CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&m_psl);
         if (SUCCEEDED(hRes))
         {
             //Also get a pointer to IPersistFile
-            hRes = m_psl->QueryInterface(IID_IPersistFile, (LPVOID*) &m_ppf);
+            hRes     = m_psl->QueryInterface(IID_IPersistFile, (LPVOID*)&m_ppf);
             bSuccess = SUCCEEDED(hRes);
         }
 
@@ -142,13 +137,13 @@ BOOL CShellLink::Save(const std::wstring& sFilename)
     if (!Initialise())
         return FALSE;
 
-    BOOL bSuccess = FALSE;
+    BOOL    bSuccess = FALSE;
     HRESULT hRes;
 
     //Convert the path to a UNICODE string
     WCHAR wszPath[MAX_PATH];
 
-    _tcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
+    wcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
 
     //Set the various link values
     if (m_sli.m_pidl)
@@ -190,14 +185,14 @@ BOOL CShellLink::Load(const std::wstring& sFilename)
     //Convert the path to a UNICODE string
     WCHAR wszPath[MAX_PATH];
 
-    _tcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
+    wcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
 
     //Load the link from file
     HRESULT hRes = m_ppf->Load(wszPath, STGM_READ);
     if (SUCCEEDED(hRes))
     {
         //Get the various link values
-        TCHAR szBuf[MAX_PATH];
+        wchar_t         szBuf[MAX_PATH];
         WIN32_FIND_DATA fd;
         SecureZeroMemory(&fd, sizeof(fd));
 
@@ -339,7 +334,6 @@ void CShellLink::SetWorkingDirectory(const std::wstring& sWorkingDirectory)
     m_sli.m_sWorkingDirectory = sWorkingDirectory;
 }
 
-
 CUrlShellLink::CUrlShellLink()
     : m_pURL(NULL)
 {
@@ -382,15 +376,15 @@ BOOL CUrlShellLink::Initialise()
     else
     {
         //Instantiate the COM class
-        HRESULT hRes = ::CoCreateInstance(CLSID_InternetShortcut, NULL, CLSCTX_INPROC_SERVER, IID_IUniformResourceLocator, (LPVOID*) &m_pURL);
+        HRESULT hRes = ::CoCreateInstance(CLSID_InternetShortcut, NULL, CLSCTX_INPROC_SERVER, IID_IUniformResourceLocator, (LPVOID*)&m_pURL);
         if (SUCCEEDED(hRes))
         {
             //Also get a pointer to IPersistFile
-            hRes = m_pURL->QueryInterface(IID_IPersistFile, (LPVOID*) &m_ppf);
+            hRes = m_pURL->QueryInterface(IID_IPersistFile, (LPVOID*)&m_ppf);
             if (SUCCEEDED(hRes))
             {
                 //Also get a pointer to IShellLink
-                hRes = m_pURL->QueryInterface(IID_IShellLink, (LPVOID*) &m_psl);
+                hRes = m_pURL->QueryInterface(IID_IShellLink, (LPVOID*)&m_psl);
                 if (SUCCEEDED(hRes))
                     bSuccess = TRUE;
             }
@@ -412,7 +406,7 @@ BOOL CUrlShellLink::Save(const std::wstring& sFilename)
     //Convert the path to a UNICODE string
     WCHAR wszPath[MAX_PATH];
 
-    _tcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
+    wcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
 
     //Set the various arguments
     HRESULT hRes = m_pURL->SetURL(m_sli.m_sTarget.c_str(), 0);
@@ -441,15 +435,15 @@ BOOL CUrlShellLink::Load(const std::wstring& sFilename)
     //Convert the path to a UNICODE string
     WCHAR wszPath[MAX_PATH];
 
-    _tcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
+    wcscpy_s(wszPath, _countof(wszPath), sFilename.c_str());
 
     //Load the link from file
     HRESULT hRes = m_ppf->Load(wszPath, STGM_READ);
     if (SUCCEEDED(hRes))
     {
         //Get the various link values
-        LPTSTR lpTemp = NULL;
-        hRes = m_pURL->GetURL(&lpTemp);
+        LPWSTR lpTemp = NULL;
+        hRes          = m_pURL->GetURL(&lpTemp);
         if (lpTemp == NULL)
             return FALSE;
         if (SUCCEEDED(hRes))
@@ -465,7 +459,7 @@ BOOL CUrlShellLink::Load(const std::wstring& sFilename)
             }
         }
 
-        TCHAR szBuf[MAX_PATH];
+        wchar_t szBuf[MAX_PATH];
         hRes = m_psl->GetWorkingDirectory(szBuf, _countof(szBuf));
         if (SUCCEEDED(hRes))
             m_sli.m_sWorkingDirectory = szBuf;
@@ -495,8 +489,8 @@ BOOL CUrlShellLink::Invoke(HWND hParentWnd, DWORD dwFlags, const std::wstring& s
     BOOL bSuccess = FALSE;
 
     URLINVOKECOMMANDINFO urlicmi;
-    urlicmi.dwcbSize = sizeof(URLINVOKECOMMANDINFO);
-    urlicmi.dwFlags = dwFlags;
+    urlicmi.dwcbSize   = sizeof(URLINVOKECOMMANDINFO);
+    urlicmi.dwFlags    = dwFlags;
     urlicmi.hwndParent = NULL;
     if (hParentWnd)
         urlicmi.hwndParent = hParentWnd;

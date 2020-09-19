@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2017 Stefan Kueng
+// Copyright (C) 2017, 2020 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -42,34 +42,34 @@ class CRichStatusBarItem
 {
 public:
     /// text to show for the part.
-    std::wstring        text;
+    std::wstring text;
     /// text to show if the width of the part is smaller than requested.
     /// if not set, the default text is used and cropped
-    std::wstring        shortText;
+    std::wstring shortText;
     /// 0 : left align
     /// 1 : center
     /// 2 : right align
-    int                 align;
+    int align;
     /// text for the tooltip of the part
-    std::wstring        tooltip;
+    std::wstring tooltip;
     /// icon to show. When the text is left-aligned or centered, the icon is shown to the left,
     /// when the text is right-aligned, the icon is shown right of the text.
     /// note: the icon will be shown with the same width and height.
-    HICON               icon;
+    HICON icon;
     /// the requested width of the part, in pixels. If set to 0, the width is calculated
     /// at runtime from the text and icon. A negative value is used as padding to the
     /// calculated width.
-    int                 width;
+    int width;
     /// if \b fixedWidth is set to true, then this sets the width for the short text
-    int                 shortWidth;
+    int shortWidth;
     /// determines whether the part can be resized with the main window
-    bool                fixedWidth;
+    bool fixedWidth;
     /// if set to true, the part indicates when the mouse pointer hovers over it.
     /// can be used to indicate that a click/right-click does something
-    bool                hoverActive;
+    bool hoverActive;
     /// icon to show if the width is too small for text.
     /// if not set, the text is shown cropped
-    HICON               collapsedIcon;
+    HICON collapsedIcon;
 };
 
 /**
@@ -77,15 +77,14 @@ public:
  */
 struct PartWidths
 {
-    int shortWidth = 0;
-    int defaultWidth = 0;
-    bool fixed = false;
-    bool shortened = false;
-    bool collapsed = false;
-    bool canCollapse = false;
-    int calculatedWidth = 0;
+    int  shortWidth      = 0;
+    int  defaultWidth    = 0;
+    bool fixed           = false;
+    bool shortened       = false;
+    bool collapsed       = false;
+    bool canCollapse     = false;
+    int  calculatedWidth = 0;
 };
-
 
 /**
  * a custom status bar control
@@ -109,35 +108,35 @@ public:
     /// \param redraw redraws the status bar after setting/inserting the part. Set to false while initializing.
     /// \param replace if true, the index must exist or be set to -1. if set to false,
     ///               the item is inserted before the index
-    bool                SetPart(int index, const CRichStatusBarItem& item, bool redraw, bool replace = true);
-    bool                SetPart(int index, const std::wstring& text, const std::wstring& shortText, const std::wstring& tooltip, int width, int shortWidth, int align = 0, bool fixedWidth = false, bool hover = false, HICON icon = nullptr, HICON collapsedIcon = nullptr);
+    bool SetPart(int index, const CRichStatusBarItem& item, bool redraw, bool replace = true);
+    bool SetPart(int index, const std::wstring& text, const std::wstring& shortText, const std::wstring& tooltip, int width, int shortWidth, int align = 0, bool fixedWidth = false, bool hover = false, HICON icon = nullptr, HICON collapsedIcon = nullptr);
     /// returns the recommended height of the status bar
-    int                 GetHeight() const { return m_height; }
+    int GetHeight() const { return m_height; }
     /// calculates the widths of all parts and updates the status bar.
     /// call this after changing parts or inserting new ones
-    void                CalcWidths();
+    void CalcWidths();
     /// sets a callback function that takes a COLORREF and returns a (modified) COLORREF.
     /// useful if you want the color to change depending on a selected theme.
-    void                SetHandlerFunc(std::function<COLORREF(const COLORREF&)> themeColor) { m_ThemeColorFunc = themeColor; }
+    void SetHandlerFunc(std::function<COLORREF(const COLORREF&)> themeColor) { m_ThemeColorFunc = themeColor; }
     /// returns the index of the part at the specified client coordinates
-    int                 GetPartIndexAt(const POINT& pt) const;
+    int GetPartIndexAt(const POINT& pt) const;
     /// returns a plain string without the formatting chars
     static std::wstring GetPlainString(const std::wstring& text);
+
 protected:
-    LRESULT CALLBACK    WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
-    void                CalcRequestedWidths(int index);
-    void                DrawRichText(HDC hdc, const std::wstring& text, RECT& rect, UINT flags);
-    void                DrawSizeGrip(HDC hdc, LPCRECT lpRect);
+    LRESULT CALLBACK WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+    void             CalcRequestedWidths(int index);
+    void             DrawRichText(HDC hdc, const std::wstring& text, RECT& rect, UINT flags);
+    void             DrawSizeGrip(HDC hdc, LPCRECT lpRect);
 
 private:
-    std::vector<CRichStatusBarItem>     m_parts;
-    std::vector<PartWidths>             m_partwidths;
-    HFONT                               m_fonts[4];
-    HWND                                m_tooltip;
+    std::vector<CRichStatusBarItem>          m_parts;
+    std::vector<PartWidths>                  m_partwidths;
+    HFONT                                    m_fonts[4];
+    HWND                                     m_tooltip;
     std::function<COLORREF(const COLORREF&)> m_ThemeColorFunc;
-    int                                 m_hoverPart;
-    int                                 m_height;
-    bool                                m_drawGrip;
-    std::vector<IUIAnimationVariablePtr>m_AnimVars;
+    int                                      m_hoverPart;
+    int                                      m_height;
+    bool                                     m_drawGrip;
+    std::vector<IUIAnimationVariablePtr>     m_AnimVars;
 };
-

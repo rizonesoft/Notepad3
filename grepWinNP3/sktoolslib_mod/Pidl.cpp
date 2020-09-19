@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #include "stdafx.h"
 #include "Pidl.h"
 
-
 LPITEMIDLIST CPidl::GetNextItemID(LPCITEMIDLIST pidl)
 {
     // Check for valid pidl.
@@ -35,10 +34,10 @@ LPITEMIDLIST CPidl::GetNextItemID(LPCITEMIDLIST pidl)
         return NULL;
 
     // Add cb to pidl (casting to increment by bytes).
-    pidl = (LPITEMIDLIST) (((LPBYTE) pidl) + cb);
+    pidl = (LPITEMIDLIST)(((LPBYTE)pidl) + cb);
 
     // Return NULL if it is null-terminating, or a pidl otherwise.
-    return (pidl->mkid.cb == 0) ? NULL : (LPITEMIDLIST) pidl;
+    return (pidl->mkid.cb == 0) ? NULL : (LPITEMIDLIST)pidl;
 }
 
 UINT CPidl::GetSize(LPCITEMIDLIST pidl)
@@ -46,7 +45,7 @@ UINT CPidl::GetSize(LPCITEMIDLIST pidl)
     UINT cbTotal = 0;
     if (pidl)
     {
-        cbTotal += sizeof(pidl->mkid.cb);    // Terminating null character
+        cbTotal += sizeof(pidl->mkid.cb); // Terminating null character
         while (pidl)
         {
             cbTotal += pidl->mkid.cb;
@@ -75,19 +74,19 @@ BOOL CPidl::GetParentID(LPITEMIDLIST pidl)
 
     // Make sure it's a valid PIDL.
     if (pidl == NULL)
-        return(FALSE);
+        return (FALSE);
 
     if (pidl->mkid.cb)
     {
         LPITEMIDLIST pidlNext = pidl;
         while (pidlNext)
         {
-            pidl = pidlNext;
+            pidl     = pidlNext;
             pidlNext = GetNextItemID(pidl);
         }
         // Remove the last one, insert terminating null character.
         pidl->mkid.cb = 0;
-        fRemoved = TRUE;
+        fRemoved      = TRUE;
     }
 
     return fRemoved;

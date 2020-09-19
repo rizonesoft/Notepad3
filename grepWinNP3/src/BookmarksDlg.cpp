@@ -212,11 +212,11 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
             if (iItem >= 0)
             {
-                std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
-                LVITEM lv = {0};
-                lv.iItem = iItem;
-                lv.mask = LVIF_TEXT;
-                lv.pszText = buf.get();
+                auto   buf    = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
+                LVITEM lv     = {0};
+                lv.iItem      = iItem;
+                lv.mask       = LVIF_TEXT;
+                lv.pszText    = buf.get();
                 lv.cchTextMax = MAX_PATH_NEW;
                 ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
                 m_bookmarks.RemoveBookmark(buf.get());
@@ -229,11 +229,11 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
             if (iItem >= 0)
             {
-                std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
-                LVITEM lv = {0};
-                lv.iItem = iItem;
-                lv.mask = LVIF_TEXT;
-                lv.pszText = buf.get();
+                auto   buf    = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
+                LVITEM lv     = {0};
+                lv.iItem      = iItem;
+                lv.mask       = LVIF_TEXT;
+                lv.pszText    = buf.get();
                 lv.cchTextMax = MAX_PATH_NEW;
                 ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
                 CNameDlg nameDlg(*this);
@@ -291,34 +291,31 @@ void CBookmarksDlg::InitBookmarks()
     m_bookmarks.GetAllSections(sections);
     for (const auto & section : sections)
     {
-        std::wstring searchString = m_bookmarks.GetValue(section.pItem, L"searchString", _T(""));
-        std::wstring replaceString = m_bookmarks.GetValue(section.pItem, L"replaceString", _T(""));
+        std::wstring searchString = m_bookmarks.GetValue(section.pItem, L"searchString", L"");
+        std::wstring replaceString = m_bookmarks.GetValue(section.pItem, L"replaceString", L"");
         RemoveQuotes(searchString);
         RemoveQuotes(replaceString);
 
         LVITEM lv = {0};
-        lv.mask = LVIF_TEXT;
-        TCHAR* pBuf = new TCHAR[_tcslen(section.pItem) + 1];
-        _tcscpy_s(pBuf, _tcslen(section.pItem) + 1, section.pItem);
-        lv.pszText = pBuf;
-        lv.iItem = ListView_GetItemCount(hListControl);
-        int ret = ListView_InsertItem(hListControl, &lv);
-        delete [] pBuf;
+        lv.mask   = LVIF_TEXT;
+        auto pBuf = std::make_unique<wchar_t[]>(wcslen(section.pItem) + 1);
+        wcscpy_s(pBuf.get(), wcslen(section.pItem) + 1, section.pItem);
+        lv.pszText = pBuf.get();
+        lv.iItem   = ListView_GetItemCount(hListControl);
+        int ret    = ListView_InsertItem(hListControl, &lv);
         if (ret >= 0)
         {
             lv.iItem = ret;
             lv.iSubItem = 1;
-            pBuf = new TCHAR[searchString.size()+1];
-            lv.pszText = pBuf;
-            _tcscpy_s(lv.pszText, searchString.size()+1, searchString.c_str());
+            pBuf        = std::make_unique<wchar_t[]>(searchString.size() + 1);
+            lv.pszText  = pBuf.get();
+            wcscpy_s(lv.pszText, searchString.size() + 1, searchString.c_str());
             ListView_SetItem(hListControl, &lv);
-            delete [] pBuf;
             lv.iSubItem = 2;
-            pBuf = new TCHAR[replaceString.size()+1];
-            lv.pszText = pBuf;
-            _tcscpy_s(lv.pszText, replaceString.size()+1, replaceString.c_str());
+            pBuf        = std::make_unique<wchar_t[]>(replaceString.size() + 1);
+            lv.pszText  = pBuf.get();
+            wcscpy_s(lv.pszText, replaceString.size() + 1, replaceString.c_str());
             ListView_SetItem(hListControl, &lv);
-            delete [] pBuf;
         }
     }
 
@@ -347,32 +344,32 @@ void CBookmarksDlg::PrepareSelected()
     int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
     if (iItem >= 0)
     {
-        std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
-        LVITEM lv = { 0 };
-        lv.iItem = iItem;
-        lv.mask = LVIF_TEXT;
-        lv.pszText = buf.get();
+        auto   buf    = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
+        LVITEM lv     = {0};
+        lv.iItem      = iItem;
+        lv.mask       = LVIF_TEXT;
+        lv.pszText    = buf.get();
         lv.cchTextMax = MAX_PATH_NEW;
         ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
-        m_searchString = m_bookmarks.GetValue(buf.get(), L"searchString", _T(""));
+        m_searchString = m_bookmarks.GetValue(buf.get(), L"searchString", L"");
         m_path          = m_bookmarks.GetValue(buf.get(), L"searchpath", L"");
-        m_replaceString = m_bookmarks.GetValue(buf.get(), L"replaceString", _T(""));
-        m_sExcludeDirs = m_bookmarks.GetValue(buf.get(), L"excludedirs", _T(""));
-        m_sFileMatch = m_bookmarks.GetValue(buf.get(), L"filematch", _T(""));
+        m_replaceString = m_bookmarks.GetValue(buf.get(), L"replaceString", L"");
+        m_sExcludeDirs = m_bookmarks.GetValue(buf.get(), L"excludedirs", L"");
+        m_sFileMatch = m_bookmarks.GetValue(buf.get(), L"filematch", L"");
         RemoveQuotes(m_searchString);
         RemoveQuotes(m_replaceString);
         RemoveQuotes(m_sExcludeDirs);
         RemoveQuotes(m_sFileMatch);
-        m_bUseRegex = _tcscmp(m_bookmarks.GetValue(buf.get(), L"useregex", L"false"), L"true") == 0;
-        m_bCaseSensitive = _tcscmp(m_bookmarks.GetValue(buf.get(), L"casesensitive", L"false"), L"true") == 0;
-        m_bDotMatchesNewline = _tcscmp(m_bookmarks.GetValue(buf.get(), L"dotmatchesnewline", L"false"), L"true") == 0;
-        m_bBackup = _tcscmp(m_bookmarks.GetValue(buf.get(), L"backup", L"false"), L"true") == 0;
-        m_bUtf8 = _tcscmp(m_bookmarks.GetValue(buf.get(), L"utf8", L"false"), L"true") == 0;
-        m_bForceBinary       = _tcscmp(m_bookmarks.GetValue(buf.get(), L"binary", L"false"), L"true") == 0;
-        m_bIncludeSystem = _tcscmp(m_bookmarks.GetValue(buf.get(), L"includesystem", L"false"), L"true") == 0;
-        m_bIncludeFolder = _tcscmp(m_bookmarks.GetValue(buf.get(), L"includefolder", L"false"), L"true") == 0;
-        m_bIncludeHidden = _tcscmp(m_bookmarks.GetValue(buf.get(), L"includehidden", L"false"), L"true") == 0;
-        m_bIncludeBinary = _tcscmp(m_bookmarks.GetValue(buf.get(), L"includebinary", L"false"), L"true") == 0;
-        m_bFileMatchRegex = _tcscmp(m_bookmarks.GetValue(buf.get(), L"filematchregex", L"false"), L"true") == 0;
+        m_bUseRegex          = wcscmp(m_bookmarks.GetValue(buf.get(), L"useregex", L"false"), L"true") == 0;
+        m_bCaseSensitive     = wcscmp(m_bookmarks.GetValue(buf.get(), L"casesensitive", L"false"), L"true") == 0;
+        m_bDotMatchesNewline = wcscmp(m_bookmarks.GetValue(buf.get(), L"dotmatchesnewline", L"false"), L"true") == 0;
+        m_bBackup            = wcscmp(m_bookmarks.GetValue(buf.get(), L"backup", L"false"), L"true") == 0;
+        m_bUtf8              = wcscmp(m_bookmarks.GetValue(buf.get(), L"utf8", L"false"), L"true") == 0;
+        m_bForceBinary       = wcscmp(m_bookmarks.GetValue(buf.get(), L"binary", L"false"), L"true") == 0;
+        m_bIncludeSystem     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includesystem", L"false"), L"true") == 0;
+        m_bIncludeFolder     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includefolder", L"false"), L"true") == 0;
+        m_bIncludeHidden     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includehidden", L"false"), L"true") == 0;
+        m_bIncludeBinary     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includebinary", L"false"), L"true") == 0;
+        m_bFileMatchRegex    = wcscmp(m_bookmarks.GetValue(buf.get(), L"filematchregex", L"false"), L"true") == 0;
     }
 }

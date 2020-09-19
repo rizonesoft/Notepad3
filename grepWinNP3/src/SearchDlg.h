@@ -24,7 +24,6 @@
 #include "FileDropTarget.h"
 #include "AutoComplete.h"
 #include "Registry.h"
-#include "hyperlink.h"
 #include "EditDoubleClick.h"
 #include "StringUtils.h"
 #include <string>
@@ -41,8 +40,8 @@
 #define SEARCH_END           (WM_APP+3)
 #define WM_GREPWIN_THREADEND (WM_APP+4)
 
-#define ID_ABOUTBOX          (0x0010)
-
+#define ID_ABOUTBOX         0x0010
+#define ID_CLONE            0x0011
 #define ALPHA_OPAQUE         (255)
 
 enum ExecuteAction
@@ -140,6 +139,7 @@ protected:
     void                    ShowUpdateAvailable();
     bool                    IsVersionNewer(const std::wstring& sVer);
 #endif
+    bool                    CloneWindow();
 private:
     static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
     static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
@@ -217,7 +217,6 @@ private:
     std::wstring            m_resultString;
 
     CDlgResizer             m_resizer;
-    CHyperLink              m_link;
     int                     m_themeCallbackId;
 
     CFileDropTarget *       m_pDropTarget;

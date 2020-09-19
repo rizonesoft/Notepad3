@@ -45,12 +45,12 @@ public:
     /**
      * Loads a file from the specified \c path.
      */
-    bool Load(LPCTSTR path, UnicodeType& type, bool bUTF8, volatile LONG* bCancelled);
+    bool Load(LPCWSTR path, UnicodeType& type, bool bUTF8, volatile LONG* bCancelled);
 
     /**
      * Saves the file contents to disk at \c path.
      */
-    bool Save(LPCTSTR path);
+    bool Save(LPCWSTR path);
 
     /**
      * modifies the contents of a file.

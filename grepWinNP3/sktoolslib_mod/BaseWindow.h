@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2017-2018 - Stefan Kueng
+// Copyright (C) 2012-2013, 2017-2018, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,7 +22,6 @@
 
 #include <string>
 
-
 /**
  * \ingroup Utils
  * A base window class.
@@ -33,8 +32,8 @@ class CWindow
 {
 public:
     virtual bool RegisterWindow(UINT style, HICON hIcon, HCURSOR hCursor,
-                                HBRUSH hbrBackground, LPCTSTR lpszMenuName,
-                                LPCTSTR lpszClassName, HICON hIconSm);
+                                HBRUSH hbrBackground, LPCWSTR lpszMenuName,
+                                LPCWSTR lpszClassName, HICON hIconSm);
     virtual bool RegisterWindow(CONST WNDCLASSEX* wcx);
 
     /// static message handler to put in WNDCLASSEX structure
@@ -51,8 +50,8 @@ public:
     void SetRegistryPath(const std::wstring& sPath)
     {
         size_t slashPos = sPath.find_last_of('\\');
-        sRegistryPath = sPath.substr(0, slashPos);
-        sRegistryValue = sPath.substr(slashPos+1);
+        sRegistryPath   = sPath.substr(0, slashPos);
+        sRegistryValue  = sPath.substr(slashPos + 1);
     }
 
     /**
@@ -63,26 +62,26 @@ public:
 
     virtual bool Create();
     virtual bool Create(DWORD dwStyles, HWND hParent = nullptr, RECT* rect = nullptr);
-    virtual bool CreateEx(DWORD dwExStyles, DWORD dwStyles, HWND hParent = nullptr, RECT* rect = nullptr, LPCTSTR classname = nullptr, HMENU hMenu = nullptr);
+    virtual bool CreateEx(DWORD dwExStyles, DWORD dwStyles, HWND hParent = nullptr, RECT* rect = nullptr, LPCWSTR classname = nullptr, HMENU hMenu = nullptr);
 
     //void MsgLoop();
     bool IsWindowClosed() { return bWindowClosed; };
 
-    operator HWND() {return m_hwnd;}
-    operator HWND() const {return m_hwnd;}
+    operator HWND() { return m_hwnd; }
+    operator HWND() const { return m_hwnd; }
+
 protected:
-    HINSTANCE hResource;
-    HWND m_hwnd;
-    HWND m_hParent;
-    bool bWindowClosed;
+    HINSTANCE    hResource;
+    HWND         m_hwnd;
+    HWND         m_hParent;
+    bool         bWindowClosed;
     std::wstring sClassName;
     std::wstring sWindowTitle;
     std::wstring sRegistryPath;
     std::wstring sRegistryValue;
-    bool bWindowRestored;
-    bool bRegisterWindowCalled;
-    WNDPROC prevWndProc;
-    float m_dpiScale;
+    bool         bWindowRestored;
+    bool         bRegisterWindowCalled;
+    WNDPROC      prevWndProc;
 
     //constructor
     CWindow(HINSTANCE hInst, CONST WNDCLASSEX* wcx = nullptr)
@@ -93,7 +92,6 @@ protected:
         , bWindowRestored(false)
         , bRegisterWindowCalled(false)
         , prevWndProc(nullptr)
-        , m_dpiScale(1.0)
     {
         hResource = hInst;
         if (wcx != nullptr)
@@ -104,8 +102,8 @@ protected:
     virtual LRESULT CALLBACK WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
 
     // returns a pointer the window (stored as the WindowLong)
-    inline static CWindow * GetObjectFromWindow(HWND hWnd)
+    inline static CWindow* GetObjectFromWindow(HWND hWnd)
     {
-        return (CWindow *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+        return (CWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
     }
 };

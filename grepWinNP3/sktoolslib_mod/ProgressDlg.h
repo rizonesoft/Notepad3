@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ public:
      * sets the title of the progress dialog box.
      * \param szTitle pointer to a NULL-terminated string that contains the dialog box title
      */
-    void SetTitle ( LPCWSTR szTitle );
+    void SetTitle(LPCWSTR szTitle);
 
     /**
      * Displays a message.
@@ -51,7 +51,7 @@ public:
      * \remark This call should be made *after* the dialog has been shown - this allows
      * the system to measure the space available for the text, and do path compaction properly
      */
-    void SetLine ( DWORD dwLine, LPCWSTR szText, bool bCompactPath = false );
+    void SetLine(DWORD dwLine, LPCWSTR szText, bool bCompactPath = false);
 
 #ifdef _MFC_VER
     /**
@@ -61,8 +61,8 @@ public:
     * \remark These calls should be made *after* the dialog has been shown - this allows
     * the system to measure the space available for the text, and do path compaction properly
     */
-    void FormatPathLine ( DWORD dwLine, UINT idFormatText, ...);
-    void FormatNonPathLine ( DWORD dwLine, UINT idFormatText, ...);
+    void FormatPathLine(DWORD dwLine, UINT idFormatText, ...);
+    void FormatNonPathLine(DWORD dwLine, UINT idFormatText, ...);
 #endif
     /**
      * Sets a message to be displayed if the user clicks the cancel button.
@@ -77,32 +77,32 @@ public:
      * the progress dialog box will be closed shortly. It is typically is set to
      * something like "Please wait while ...".
      */
-    void SetCancelMsg ( LPCWSTR szMessage );
+    void SetCancelMsg(LPCWSTR szMessage);
 #ifdef _MFC_VER
-    void SetCancelMsg ( UINT idMessage );
+    void SetCancelMsg(UINT idMessage);
     /**
      * Specifies an AVI-clip that will run in the dialog box.
      * \param uRsrcID AVI resource identifier. To create this value use the MAKEINTRESOURCE macro.
      */
-    void SetAnimation ( UINT uRsrcID );
+    void SetAnimation(UINT uRsrcID);
 #endif
     /**
      * Specifies an AVI-clip that will run in the dialog box.
      * \param hinst instance handle to the module from which the avi resource should be loaded.
      * \param uRsrcID AVI resource identifier. To create this value use the MAKEINTRESOURCE macro.
      */
-    void SetAnimation ( HINSTANCE hinst, UINT uRsrcID );
+    void SetAnimation(HINSTANCE hinst, UINT uRsrcID);
 
     /**
      * Specifies that the progress dialog should have a line indicating the time remaining to complete.
      * \param bCalculate false to deactivate the time remaining line.
      */
-    void SetTime ( bool bTime = true );
+    void SetTime(bool bTime = true);
 
     /**
      * Specifies if the progress bar should be shown or not.
      */
-    void SetShowProgressBar ( bool bShow = true );
+    void SetShowProgressBar(bool bShow = true);
 
     /**
      * Resets the progress dialog box timer to zero.
@@ -118,16 +118,16 @@ public:
      * Shows the progress dialog box modal.
      */
 #ifdef _MFC_VER
-    HRESULT ShowModal ( CWnd* pwndParent );
+    HRESULT ShowModal(CWnd* pwndParent);
 #endif
-    HRESULT ShowModal ( HWND hWndParent );
+    HRESULT ShowModal(HWND hWndParent);
     /**
      * Shows the progress dialog box modeless.
      */
 #ifdef _MFC_VER
-    HRESULT ShowModeless ( CWnd* pwndParent );
+    HRESULT ShowModeless(CWnd* pwndParent);
 #endif
-    HRESULT ShowModeless ( HWND hWndParent );
+    HRESULT ShowModeless(HWND hWndParent);
 
     /**
      * Stops the progress dialog box and removes it from the screen.
@@ -139,13 +139,13 @@ public:
      * \param dwProgress Application-defined value that indicates what proportion of the operation has been completed at the time the method was called
      * \param dwMax Application-defined value that specifies what value dwCompleted will have when the operation is complete
      */
-    void SetProgress ( DWORD dwProgress, DWORD dwMax );
+    void SetProgress(DWORD dwProgress, DWORD dwMax);
     /**
      * Updates the progress dialog box with the current state of the operation.
      * \param u64Progress Application-defined value that indicates what proportion of the operation has been completed at the time the method was called
      * \param u64ProgressMax Application-defined value that specifies what value dwCompleted will have when the operation is complete
      */
-    void SetProgress64 ( ULONGLONG u64Progress, ULONGLONG u64ProgressMax );
+    void SetProgress64(ULONGLONG u64Progress, ULONGLONG u64ProgressMax);
 
     /**
      * Checks whether the user has canceled the operation.
@@ -166,9 +166,9 @@ public:
     bool EnsureValid();
 
 protected:
-    IProgressDialog*    m_pIDlg;
-    bool                m_bValid;
-    bool                m_isVisible;
-    DWORD               m_dwDlgFlags;
-    HWND                m_hWndProgDlg;
+    IProgressDialog* m_pIDlg;
+    bool             m_bValid;
+    bool             m_isVisible;
+    DWORD            m_dwDlgFlags;
+    HWND             m_hWndProgDlg;
 };

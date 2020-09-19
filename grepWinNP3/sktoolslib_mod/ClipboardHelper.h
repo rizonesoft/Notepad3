@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,10 +22,14 @@
 class CClipboardHelper
 {
 public:
-    CClipboardHelper() : bClipBoardOpen(false) {}
+    CClipboardHelper()
+        : bClipBoardOpen(false)
+    {
+    }
     ~CClipboardHelper();
-    bool Open(HWND hOwningWnd);
+    bool           Open(HWND hOwningWnd);
     static HGLOBAL GlobalAlloc(SIZE_T dwBytes);
+
 private:
     bool bClipBoardOpen;
 };

@@ -23,11 +23,11 @@
 #include "UnicodeUtils.h"
 
 #if defined(_M_IX86) || defined(_M_X64)
-#include <emmintrin.h>
+#    include <emmintrin.h>
 #endif
 
-static BOOL sse2supported = ::IsProcessorFeaturePresent( PF_XMMI64_INSTRUCTIONS_AVAILABLE );
-
+static BOOL sse2supported = ::IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE);
+// clang-format off
 static constexpr char iri_escape_chars[256] = {
     1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
@@ -98,8 +98,9 @@ static constexpr char uri_char_validity[256] = {
     0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
 };
+// clang-format on
 
-bool CEscapeUtils::ContainsEscapedChars( const char * psz, size_t length )
+bool CEscapeUtils::ContainsEscapedChars(const char* psz, size_t length)
 {
     // most of our strings will be tens of bytes long
     // -> afford some minor overhead to handle the main part very fast
@@ -108,18 +109,17 @@ bool CEscapeUtils::ContainsEscapedChars( const char * psz, size_t length )
 #if defined(_M_IX86) || defined(_M_X64)
     if (sse2supported)
     {
-        __m128i mask = _mm_set_epi8 ( '%', '%', '%', '%', '%', '%', '%', '%'
-                                    , '%', '%', '%', '%', '%', '%', '%', '%');
+        __m128i mask = _mm_set_epi8('%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%');
 
-        for (; psz + sizeof (mask) <= end; psz += sizeof (mask))
+        for (; psz + sizeof(mask) <= end; psz += sizeof(mask))
         {
             // fetch the next 16 bytes from the source
 
-            __m128i chunk = _mm_loadu_si128 ((const __m128i*)psz);
+            __m128i chunk = _mm_loadu_si128((const __m128i*)psz);
 
             // check for non-ASCII
 
-            int flags = _mm_movemask_epi8 (_mm_cmpeq_epi8 (chunk, mask));
+            int flags = _mm_movemask_epi8(_mm_cmpeq_epi8(chunk, mask));
             if (flags != 0)
                 return true;
         };
@@ -135,10 +135,10 @@ bool CEscapeUtils::ContainsEscapedChars( const char * psz, size_t length )
     return false;
 }
 
-char* CEscapeUtils::Unescape( char * psz )
+char* CEscapeUtils::Unescape(char* psz)
 {
-    char * pszSource = psz;
-    char * pszDest = psz;
+    char* pszSource = psz;
+    char* pszDest   = psz;
 
     static constexpr char szHex[] = "0123456789ABCDEF";
 
@@ -151,30 +151,30 @@ char* CEscapeUtils::Unescape( char * psz )
         if (*pszSource == '%')
         {
             // The next two chars following '%' should be digits
-            if ( *(pszSource + 1) == '\0' ||
-                *(pszSource + 2) == '\0' )
+            if (*(pszSource + 1) == '\0' ||
+                *(pszSource + 2) == '\0')
             {
                 // nothing left to do
                 break;
             }
 
-            char nValue = '?';
-            const char * pszHigh = nullptr;
+            char        nValue  = '?';
+            const char* pszHigh = nullptr;
             pszSource++;
 
-            *pszSource = (char) toupper(*pszSource);
-            pszHigh = strchr(szHex, *pszSource);
+            *pszSource = (char)toupper(*pszSource);
+            pszHigh    = strchr(szHex, *pszSource);
 
             if (pszHigh != nullptr)
             {
                 pszSource++;
-                *pszSource = (char) toupper(*pszSource);
-                const char * pszLow = strchr(szHex, *pszSource);
+                *pszSource         = (char)toupper(*pszSource);
+                const char* pszLow = strchr(szHex, *pszSource);
 
                 if (pszLow != nullptr)
                 {
-                    nValue = (char) (((pszHigh - szHex) << 4) +
-                        (pszLow - szHex));
+                    nValue = (char)(((pszHigh - szHex) << 4) +
+                                    (pszLow - szHex));
                 }
             }
             else
@@ -194,12 +194,12 @@ char* CEscapeUtils::Unescape( char * psz )
     return pszDest;
 }
 
-std::string CEscapeUtils::EscapeString( const std::string& str )
+std::string CEscapeUtils::EscapeString(const std::string& str)
 {
     std::string ret2;
-    int c;
-    int i;
-    for (i=0; str[i]; ++i)
+    int         c;
+    int         i;
+    for (i = 0; str[i]; ++i)
     {
         c = (unsigned char)str[i];
         if (iri_escape_chars[c])
@@ -214,12 +214,12 @@ std::string CEscapeUtils::EscapeString( const std::string& str )
         }
     }
     std::string ret;
-    for (i=0; ret2[i]; ++i)
+    for (i = 0; ret2[i]; ++i)
     {
         c = (unsigned char)ret2[i];
         if (uri_autoescape_chars[c])
         {
-            if ((c == '%')&&(DoesPercentNeedEscaping(ret2.substr(i).c_str())))
+            if ((c == '%') && (DoesPercentNeedEscaping(ret2.substr(i).c_str())))
             {
                 // this percent sign needs escaping!
                 ret += CStringUtils::Format("%%%02X", (unsigned char)c);
@@ -237,28 +237,27 @@ std::string CEscapeUtils::EscapeString( const std::string& str )
         }
     }
     return ret;
-
 }
 
-std::wstring CEscapeUtils::EscapeString( const std::wstring& str )
+std::wstring CEscapeUtils::EscapeString(const std::wstring& str)
 {
     return CUnicodeUtils::StdGetUnicode(EscapeString(CUnicodeUtils::StdGetUTF8(str)));
 }
 
-std::string CEscapeUtils::StringUnescape( const std::string& str )
+std::string CEscapeUtils::StringUnescape(const std::string& str)
 {
-    auto urlabuf = std::make_unique<char[]>(str.size()+1);
+    auto urlabuf = std::make_unique<char[]>(str.size() + 1);
 
-    strcpy_s(urlabuf.get(), str.size()+1, str.c_str());
+    strcpy_s(urlabuf.get(), str.size() + 1, str.c_str());
     Unescape(urlabuf.get());
 
     return urlabuf.get();
 }
 
-std::wstring CEscapeUtils::StringUnescape( const std::wstring& str )
+std::wstring CEscapeUtils::StringUnescape(const std::wstring& str)
 {
     int len = (int)str.size();
-    if (len==0)
+    if (len == 0)
         return std::wstring();
     std::string stra = CUnicodeUtils::StdGetUTF8(str);
 
@@ -267,14 +266,13 @@ std::wstring CEscapeUtils::StringUnescape( const std::wstring& str )
     return CUnicodeUtils::StdGetUnicode(stra);
 }
 
-
-bool CEscapeUtils::DoesPercentNeedEscaping( LPCSTR str )
+bool CEscapeUtils::DoesPercentNeedEscaping(LPCSTR str)
 {
     if (str[1] == 0)
         return true;
-    if (!(((str[1] >= '0')&&(str[1] <= '9'))||((str[1] >= 'A')&&(str[1] <= 'F'))||((str[1] >= 'a')&&(str[1] <= 'f'))))
+    if (!(((str[1] >= '0') && (str[1] <= '9')) || ((str[1] >= 'A') && (str[1] <= 'F')) || ((str[1] >= 'a') && (str[1] <= 'f'))))
         return true;
-    if (!(((str[2] >= '0')&&(str[2] <= '9'))||((str[2] >= 'A')&&(str[2] <= 'F'))||((str[2] >= 'a')&&(str[2] <= 'f'))))
+    if (!(((str[2] >= '0') && (str[2] <= '9')) || ((str[2] >= 'A') && (str[2] <= 'F')) || ((str[2] >= 'a') && (str[2] <= 'f'))))
         return true;
     return false;
 }

@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,8 +21,7 @@
 #include "Registry.h"
 #include "RegHistory.h"
 
-
-CRegHistory::CRegHistory(CSimpleIni * pIni)
+CRegHistory::CRegHistory(CSimpleIni* pIni)
     : m_nMaxHistoryItems(25)
     , m_pIniFile(pIni)
 {
@@ -32,7 +31,7 @@ CRegHistory::~CRegHistory()
 {
 }
 
-bool CRegHistory::AddEntry(LPCTSTR szText)
+bool CRegHistory::AddEntry(LPCWSTR szText)
 {
     if (szText[0] == 0)
         return false;
@@ -43,9 +42,9 @@ bool CRegHistory::AddEntry(LPCTSTR szText)
         Load(m_sSection.c_str(), m_sKeyPrefix.c_str());
     }
 
-    for (size_t i=0; i<m_arEntries.size(); ++i)
+    for (size_t i = 0; i < m_arEntries.size(); ++i)
     {
-        if (_tcscmp(szText, m_arEntries[i].c_str()) == 0)
+        if (wcscmp(szText, m_arEntries[i].c_str()) == 0)
         {
             m_arEntries.erase(m_arEntries.begin() + i);
             m_arEntries.insert(m_arEntries.begin(), szText);
@@ -61,7 +60,7 @@ void CRegHistory::RemoveEntry(int pos)
     m_arEntries.erase(m_arEntries.begin() + pos);
 }
 
-void CRegHistory::RemoveEntry(LPCTSTR str)
+void CRegHistory::RemoveEntry(LPCWSTR str)
 {
     if (str == NULL)
         return;
@@ -75,32 +74,32 @@ void CRegHistory::RemoveEntry(LPCTSTR str)
     }
 }
 
-int CRegHistory::Load(LPCTSTR lpszSection, LPCTSTR lpszKeyPrefix)
+int CRegHistory::Load(LPCWSTR lpszSection, LPCWSTR lpszKeyPrefix)
 {
     if (lpszSection == NULL || lpszKeyPrefix == NULL || *lpszSection == '\0')
         return -1;
 
     m_arEntries.clear();
 
-    m_sSection = lpszSection;
+    m_sSection   = lpszSection;
     m_sKeyPrefix = lpszKeyPrefix;
 
-    int n = 0;
+    int          n = 0;
     std::wstring sText;
     do
     {
         //keys are of form <lpszKeyPrefix><entrynumber>
-        TCHAR sKey[4096] = {0};
+        wchar_t sKey[4096] = {0};
         if (m_pIniFile)
         {
-            _stprintf_s(sKey, _countof(sKey), _T("%s%d"), lpszKeyPrefix, n++);
+            swprintf_s(sKey, _countof(sKey), L"%s%d", lpszKeyPrefix, n++);
             sText = m_pIniFile->GetValue(lpszSection, sKey, L"");
         }
         else
         {
-            _stprintf_s(sKey, _countof(sKey), _T("%s\\%s%d"), lpszSection, lpszKeyPrefix, n++);
+            swprintf_s(sKey, _countof(sKey), L"%s\\%s%d", lpszSection, lpszKeyPrefix, n++);
             CRegStdString regkey = CRegStdString(sKey);
-            sText = std::wstring(regkey);
+            sText                = std::wstring(regkey);
         }
         if (!sText.empty())
         {
@@ -120,33 +119,33 @@ bool CRegHistory::Save() const
     int nMax = min((int)m_arEntries.size(), m_nMaxHistoryItems + 1);
     for (int n = 0; n < (int)m_arEntries.size(); n++)
     {
-        TCHAR sKey[4096] = {0};
+        wchar_t sKey[4096] = {0};
         if (m_pIniFile)
         {
-            _stprintf_s(sKey, _countof(sKey), _T("%s%d"), m_sKeyPrefix.c_str(), n);
+            swprintf_s(sKey, _countof(sKey), L"%s%d", m_sKeyPrefix.c_str(), n);
             m_pIniFile->SetValue(m_sSection.c_str(), sKey, m_arEntries[n].c_str());
         }
         else
         {
-            _stprintf_s(sKey, _countof(sKey), _T("%s\\%s%d"), m_sSection.c_str(), m_sKeyPrefix.c_str(), n);
+            swprintf_s(sKey, _countof(sKey), L"%s\\%s%d", m_sSection.c_str(), m_sKeyPrefix.c_str(), n);
             CRegStdString regkey(sKey);
             regkey = m_arEntries[n];
         }
     }
     // remove items exceeding the max number of history items
-    for (int n = nMax; ; n++)
+    for (int n = nMax;; n++)
     {
-        TCHAR sKey[4096] = {0};
+        wchar_t sKey[4096] = {0};
         if (m_pIniFile)
         {
-            _stprintf_s(sKey, _countof(sKey), _T("%s\\%s%d"), m_sSection.c_str(), m_sKeyPrefix.c_str(), n);
-            if (wcscmp(m_pIniFile->GetValue(m_sSection.c_str(), sKey, L""), L"")==0)
+            swprintf_s(sKey, _countof(sKey), L"%s\\%s%d", m_sSection.c_str(), m_sKeyPrefix.c_str(), n);
+            if (wcscmp(m_pIniFile->GetValue(m_sSection.c_str(), sKey, L""), L"") == 0)
                 break;
             m_pIniFile->Delete(m_sSection.c_str(), sKey, false);
         }
         else
         {
-            _stprintf_s(sKey, _countof(sKey), _T("%s\\%s%d"), m_sSection.c_str(), m_sKeyPrefix.c_str(), n);
+            swprintf_s(sKey, _countof(sKey), L"%s\\%s%d", m_sSection.c_str(), m_sKeyPrefix.c_str(), n);
             CRegStdString regkey = CRegStdString(sKey);
             if (std::wstring(regkey).empty())
                 break;

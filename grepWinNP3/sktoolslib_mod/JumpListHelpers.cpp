@@ -19,13 +19,15 @@
 #include "stdafx.h"
 #include "SmartHandle.h"
 #include "JumpListHelpers.h"
+#include <shellapi.h>
+#include <Shlobj.h>
 #include <propvarutil.h>
 #include <propsys.h>
 #include <propkey.h>
 #include <wrl.h>
 using Microsoft::WRL::ComPtr;
 
-HRESULT SetAppID(LPCTSTR appID)
+HRESULT SetAppID(LPCWSTR appID)
 {
     // set the AppID
     typedef HRESULT STDAPICALLTYPE SetCurrentProcessExplicitAppUserModelIDFN(PCWSTR AppID);
@@ -147,7 +149,7 @@ bool IsItemInArray(IShellItem *psi, IObjectArray *poaRemoved)
     return fRet;
 }
 
-HRESULT DeleteJumpList(LPCTSTR appID)
+HRESULT DeleteJumpList(LPCWSTR appID)
 {
     ComPtr<ICustomDestinationList> pcdl;
     HRESULT                        hr = CoCreateInstance(CLSID_DestinationList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(pcdl.GetAddressOf()));

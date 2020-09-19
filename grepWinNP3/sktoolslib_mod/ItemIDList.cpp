@@ -1,6 +1,6 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,7 +19,9 @@
 
 #include "stdafx.h"
 #include "ItemIDList.h"
-
+#include <Shobjidl.h>
+#include <Shlobj.h>
+#include <string>
 
 ItemIDList::ItemIDList(LPCITEMIDLIST item, LPCITEMIDLIST parent)
     : item_(item)
@@ -43,9 +45,9 @@ int ItemIDList::size() const
             while (ptr != 0 && ptr->cb != 0)
             {
                 ++count_;
-                LPBYTE byte = (LPBYTE) ptr;
+                LPBYTE byte = (LPBYTE)ptr;
                 byte += ptr->cb;
-                ptr = (LPCSHITEMID) byte;
+                ptr = (LPCSHITEMID)byte;
             }
         }
     }
@@ -67,29 +69,28 @@ LPCSHITEMID ItemIDList::get(int index) const
             break;
 
         ++count;
-        LPBYTE byte = (LPBYTE) ptr;
+        LPBYTE byte = (LPBYTE)ptr;
         byte += ptr->cb;
-        ptr = (LPCSHITEMID) byte;
+        ptr = (LPCSHITEMID)byte;
     }
     return ptr;
-
 }
 
-tstring ItemIDList::toString()
+std::wstring ItemIDList::toString()
 {
-    IShellFolder *shellFolder = NULL;
+    IShellFolder *shellFolder  = NULL;
     IShellFolder *parentFolder = NULL;
-    STRRET name;
-    TCHAR * szDisplayName = NULL;
-    tstring ret;
-    HRESULT hr;
+    STRRET        name;
+    wchar_t *     szDisplayName = NULL;
+    std::wstring  ret;
+    HRESULT       hr;
 
     hr = ::SHGetDesktopFolder(&shellFolder);
     if (!SUCCEEDED(hr))
         return ret;
     if (parent_)
     {
-        hr = shellFolder->BindToObject(parent_, 0, IID_IShellFolder, (void**) &parentFolder);
+        hr = shellFolder->BindToObject(parent_, 0, IID_IShellFolder, (void **)&parentFolder);
         if (!SUCCEEDED(hr))
             parentFolder = shellFolder;
     }
@@ -106,7 +107,8 @@ tstring ItemIDList::toString()
             parentFolder->Release();
             return ret;
         }
-        hr = StrRetToStr (&name, item_, &szDisplayName);
+        hr = StrRetToStr(&name, item_, &szDisplayName);
+        CoTaskMemFree(name.pOleStr);
         if (!SUCCEEDED(hr))
             return ret;
     }
@@ -114,14 +116,14 @@ tstring ItemIDList::toString()
     if (szDisplayName == NULL)
     {
         CoTaskMemFree(szDisplayName);
-        return ret;         //to avoid a crash!
+        return ret; //to avoid a crash!
     }
     ret = szDisplayName;
     CoTaskMemFree(szDisplayName);
     return ret;
 }
 
-LPCITEMIDLIST ItemIDList::operator& ()
+LPCITEMIDLIST ItemIDList::operator&()
 {
     return item_;
 }

@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2014 - Stefan Kueng
+// Copyright (C) 2012, 2014, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@
 #include "Registry.h"
 #include <map>
 #pragma warning(push)
-#pragma warning(disable: 4458) // declaration of 'xxx' hides class member
+#pragma warning(disable : 4458) // declaration of 'xxx' hides class member
 #include <gdiplus.h>
 #pragma warning(pop)
 
@@ -47,10 +47,10 @@ private:
     int GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture) const;
     void PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
     void ScreenToClient(HWND hWnd, LPRECT lprc);
-    void DrawSolidWndRectOnParent(HWND hWnd,Gdiplus:: Color clr);
+    void DrawSolidWndRectOnParent(HWND hWnd, Gdiplus::Color clr);
     void DrawEditBorder(HWND hWnd);
-    BOOL GetEditBorderColor(HWND hWnd, COLORREF *pClr);
-    void GetRoundRectPath(Gdiplus::GraphicsPath *pPath, const Gdiplus::Rect& r, int dia) const;
+    BOOL GetEditBorderColor(HWND hWnd, COLORREF* pClr);
+    void GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia) const;
 
     CDwmApiImpl                 m_dwm;
     CUxThemeAeroImpl            m_theme;

@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,7 +21,6 @@
 
 #include <windows.h>
 
-
 // does not implement HKM_SETRULES
 class CHotKeyCtrl
 {
@@ -32,7 +31,7 @@ public:
     BOOL ConvertEditToHotKeyCtrl(HWND hwndCtl);
     BOOL ConvertEditToHotKeyCtrl(HWND hwndParent, UINT uiCtlId);
 
-    void SetHotKey(WPARAM hk);
+    void   SetHotKey(WPARAM hk);
     WPARAM GetHotKey();
 
 private:
@@ -42,7 +41,7 @@ private:
     static LRESULT CALLBACK _HotKeyProc(HWND hwnd, UINT message,
                                         WPARAM wParam, LPARAM lParam);
 
-    HHOOK kb_hook;
+    HHOOK                   kb_hook;
     static LRESULT CALLBACK _KeyboardProc(int code, WPARAM wParam, LPARAM lParam);
 
     void SetHKText(WORD hk);
@@ -52,10 +51,10 @@ private:
     bool menudown;
     bool lwindown;
 
-    TCHAR controltext[MAX_PATH];
-    TCHAR shifttext[MAX_PATH];
-    TCHAR menutext[MAX_PATH];
-    TCHAR lwintext[MAX_PATH];
+    wchar_t controltext[MAX_PATH];
+    wchar_t shifttext[MAX_PATH];
+    wchar_t menutext[MAX_PATH];
+    wchar_t lwintext[MAX_PATH];
 
     WORD hotkey;
 };

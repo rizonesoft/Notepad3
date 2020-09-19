@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,25 +21,26 @@
 
 #include <string>
 
-typedef std::basic_string<TCHAR> tstring;
-
 class CUnicodeUtils
 {
 public:
     CUnicodeUtils(void);
     ~CUnicodeUtils(void);
 #ifdef UNICODE
-    static std::string StdGetUTF8(const std::wstring& wide, bool stopAtNull = true);
+    static std::string  StdGetUTF8(const std::wstring& wide, bool stopAtNull = true);
     static std::wstring StdGetUnicode(const std::string& multibyte, bool stopAtNull = true);
-    static std::string StdGetANSI(const std::wstring& wide, bool stopAtNull = true);
+    static std::string  StdGetANSI(const std::wstring& wide, bool stopAtNull = true);
 #else
-    static std::string StdGetUTF8(std::string str, bool stopAtNull = true) {return str;}
-    static std::string StdGetUnicode(std::string multibyte, bool stopAtNull = true) {return multibyte;}
+    static std::string StdGetUTF8(std::string str, bool stopAtNull = true)
+    {
+        return str;
+    }
+    static std::string StdGetUnicode(std::string multibyte, bool stopAtNull = true) { return multibyte; }
 #endif
 };
 
-std::string WideToMultibyte(const std::wstring& wide, bool stopAtNull = true);
-std::string WideToUTF8(const std::wstring& wide, bool stopAtNull = true);
+std::string  WideToMultibyte(const std::wstring& wide, bool stopAtNull = true);
+std::string  WideToUTF8(const std::wstring& wide, bool stopAtNull = true);
 std::wstring MultibyteToWide(const std::string& multibyte, bool stopAtNull = true);
 std::wstring UTF8ToWide(const std::string& multibyte, bool stopAtNull = true);
 
@@ -47,55 +48,58 @@ std::wstring UTF8ToWide(const std::string& multibyte, bool stopAtNull = true);
 int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive);
 
 #ifdef UNICODE
-    tstring UTF8ToString(const std::string& string, bool stopAtNull = true);
-    std::string StringToUTF8(const tstring& string, bool stopAtNull = true);
+std::wstring UTF8ToString(const std::string& string, bool stopAtNull = true);
+std::string  StringToUTF8(const std::wstring& string, bool stopAtNull = true);
 #else
-    tstring UTF8ToString(const std::string& string, bool stopAtNull = true);
-    std::string StringToUTF8(const tstring& string, bool stopAtNull = true);
+std::string UTF8ToString(const std::string& string, bool stopAtNull = true);
+std::string StringToUTF8(const std::string& string, bool stopAtNull = true);
 #endif
 
 class UTF8Helper
 {
 public:
     // basic classification of UTF-8 bytes
-    inline static bool isSingleByte(UCHAR c)       { return c < 0x80; }
-    inline static bool isPartOfMultibyte(UCHAR c)  { return c >= 0x80; }
+    inline static bool isSingleByte(UCHAR c) { return c < 0x80; }
+    inline static bool isPartOfMultibyte(UCHAR c) { return c >= 0x80; }
     inline static bool isFirstOfMultibyte(UCHAR c) { return c >= 0xC2 && c < 0xF5; } // 0xF5 to 0xFD are defined by UTF-8, but are not currently valid Unicode
-    inline static bool isContinuation(UCHAR c)     { return (c & 0xC0) == 0x80; }
-    inline static bool isValid(UCHAR c)            { return c < 0xC0 || isFirstOfMultibyte(c); }    // validates a byte, out of context
+    inline static bool isContinuation(UCHAR c) { return (c & 0xC0) == 0x80; }
+    inline static bool isValid(UCHAR c) { return c < 0xC0 || isFirstOfMultibyte(c); } // validates a byte, out of context
 
     // number of continuation bytes for a given valid first character (0 for single byte characters)
-    inline static int  continuationBytes(UCHAR c)
+    inline static int continuationBytes(UCHAR c)
     {
-        static constexpr char len[] = { 1,1,2,3 };
-        return (c < 0xC0) ? 0 : len[(c & 0x30) >>  4];
+        static constexpr char len[] = {1, 1, 2, 3};
+        return (c < 0xC0) ? 0 : len[(c & 0x30) >> 4];
     }
 
     // validates a full character
     inline static bool isValid(const char* buf, int buflen)
     {
-        if (isSingleByte(buf[0])) return true; // single byte is valid
-        if (!isFirstOfMultibyte(buf[0])) return false; // not single byte, nor valid multi-byte first byte
+        if (isSingleByte(buf[0]))
+            return true; // single byte is valid
+        if (!isFirstOfMultibyte(buf[0]))
+            return false; // not single byte, nor valid multi-byte first byte
         int charContinuationBytes = continuationBytes(buf[0]);
-        if(buflen < charContinuationBytes+1) return false; // character does not fit in buffer
+        if (buflen < charContinuationBytes + 1)
+            return false; // character does not fit in buffer
         for (int i = charContinuationBytes; i > 0; --i)
-            if (!isContinuation(*(++buf))) return false; // not enough continuation bytes
-        return true;  // the character is valid (if there are too many continuation bytes, it is the next character that will be invalid)
+            if (!isContinuation(*(++buf)))
+                return false; // not enough continuation bytes
+        return true;          // the character is valid (if there are too many continuation bytes, it is the next character that will be invalid)
     }
 
     // rewinds to the first byte of a multi-byte character for any valid UTF-8 (and will not rewind too much on any other input)
     inline static int characterStart(const char* buf, int startingIndex)
     {
         int charContinuationBytes = 0;
-        while(charContinuationBytes < startingIndex // rewind past start of buffer?
-            && charContinuationBytes < 5    // UTF-8 support up to 5 continuation bytes (but valid sequences currently do not have more than 3)
-            && isContinuation(buf[startingIndex-charContinuationBytes])
-            )
+        while (charContinuationBytes < startingIndex // rewind past start of buffer?
+               && charContinuationBytes < 5          // UTF-8 support up to 5 continuation bytes (but valid sequences currently do not have more than 3)
+               && isContinuation(buf[startingIndex - charContinuationBytes]))
             ++charContinuationBytes;
-        return startingIndex-charContinuationBytes;
+        return startingIndex - charContinuationBytes;
     }
 
-    inline static void Advance(const char * str, size_t& pos)
+    inline static void Advance(const char* str, size_t& pos)
     {
         if ((str[pos] & 0xE0) == 0xC0)
         {
@@ -116,11 +120,11 @@ public:
             pos++;
     }
 
-    inline static size_t UTF16PosFromUTF8Pos(const char * utf8string, size_t utf8pos)
+    inline static size_t UTF16PosFromUTF8Pos(const char* utf8string, size_t utf8pos)
     {
-        size_t utf16pos = 0;
-        const char * pCurrentPos = utf8string;
-        const char * pFinalPos = pCurrentPos + utf8pos;
+        size_t      utf16pos    = 0;
+        const char* pCurrentPos = utf8string;
+        const char* pFinalPos   = pCurrentPos + utf8pos;
         while (pCurrentPos < pFinalPos)
         {
             if (((*pCurrentPos) & 0xE0) == 0xC0)
@@ -146,5 +150,4 @@ public:
     }
 };
 
-
-int LoadStringEx(HINSTANCE hInstance, UINT uID, LPTSTR lpBuffer, int nBufferMax, WORD wLanguage);
+int LoadStringEx(HINSTANCE hInstance, UINT uID, LPWSTR lpBuffer, int nBufferMax, WORD wLanguage);
