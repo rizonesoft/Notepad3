@@ -177,6 +177,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_pBookmarksDlg(nullptr)
     , m_showContent(false)
     , m_showContentSet(false)
+    , m_stayOnTop(false)
+    , m_OpacityNoFocus(100)
     , m_themeCallbackId(0)
 {
 }
@@ -330,6 +332,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 int menuItemsCount = GetMenuItemCount(hSysMenu);
                 if (menuItemsCount > 2)
                 {
+                    InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_STAY_ON_TOP, TranslatedString(hResource, IDS_STAY_ON_TOP).c_str());
+                    InsertMenu(hSysMenu, menuItemsCount - 2, MF_SEPARATOR | MF_BYPOSITION, NULL, NULL);
                     InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_ABOUTBOX, TranslatedString(hResource, IDS_ABOUT).c_str());
                     InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_CLONE, TranslatedString(hResource, IDS_CLONE).c_str());
                     InsertMenu(hSysMenu, menuItemsCount - 2, MF_SEPARATOR | MF_BYPOSITION, NULL, NULL);
@@ -339,6 +343,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     AppendMenu(hSysMenu, MF_SEPARATOR, NULL, NULL);
                     AppendMenu(hSysMenu, MF_STRING, ID_CLONE, TranslatedString(hResource, IDS_CLONE).c_str());
                     AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, TranslatedString(hResource, IDS_ABOUT).c_str());
+                    AppendMenu(hSysMenu, MF_SEPARATOR, NULL, NULL);
+                    AppendMenu(hSysMenu, MF_STRING, ID_STAY_ON_TOP, TranslatedString(hResource, IDS_STAY_ON_TOP).c_str());
                 }
             }
 
@@ -799,6 +805,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 case ID_CLONE:
                 {
                     CloneWindow();
+                }
+                break;
+                case ID_STAY_ON_TOP:
+                {
+                    m_stayOnTop = !m_stayOnTop;  // toggle
+                    SetWindowPos(*this, m_stayOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+                    CheckMenuItem(GetSystemMenu(*this, FALSE), ID_STAY_ON_TOP, m_stayOnTop ? MF_BYCOMMAND | MF_CHECKED : MF_BYCOMMAND | MF_UNCHECKED);
                 }
                 break;
             }

@@ -185,6 +185,7 @@
 #define IDC_MAXNUMWORKER                3003
 #define IDC_TEXT_NUMOFWORKER            3004
 #define IDC_ENTRYCONTEXTMENU            3005
+#define IDS_STAY_ON_TOP                 3006
 
 
 #define ID_REMOVEBOOKMARK               32771

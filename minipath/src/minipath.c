@@ -1049,9 +1049,9 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // DirList
   InitListView(hwndDirList);
-  ListView_InsertColumn(hwndDirList, 0, &lvc);
+  DirList_Init(hwndDirList, NULL);
   ListView_SetExtendedListViewStyle(hwndDirList,LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
-  DirList_Init(hwndDirList,NULL);
+  ListView_InsertColumn(hwndDirList, 0, &lvc);
   if (Settings.bTrackSelect)
     ListView_SetExtendedListViewStyleEx(hwndDirList,
       LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE,
@@ -1060,6 +1060,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     ListView_SetExtendedListViewStyleEx(hwndDirList,
       LVS_EX_FULLROWSELECT,
       LVS_EX_FULLROWSELECT);
+    SetExplorerTheme(hwndDirList);
   }
   ListView_SetHoverTime(hwndDirList,10);
 

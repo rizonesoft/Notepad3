@@ -418,6 +418,9 @@ BEGIN
     IDS_EXPORTMATCHLINECONTENT "include match line text"
     IDS_UPDATEAVAILABLE     "grepWinNP3 %s is available"
     IDS_CAPTURESEARCH       "Capture search"
+    IDS_CLONE               "Start new grepWinNP3 window"
+    IDS_NEWINSTANCE_TT      "Start new grepWinNP3 window"
+    IDS_STAY_ON_TOP         "Stay On Top"
 END
 
 #endif    // Neutral resources
