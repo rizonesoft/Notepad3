@@ -18,9 +18,10 @@
 //
 #pragma once
 #include <wrl.h>
+#include <Shobjidl.h>
 
 /// Sets the application ID
-HRESULT SetAppID(LPCTSTR appID);
+HRESULT SetAppID(LPCWSTR appID);
 /// creates an IShellLink object with the specified arguments
 /// note: the shell link is created for the current process exe path
 /// \param pszArguments the command line arguments to pass to this application
@@ -33,8 +34,7 @@ HRESULT CreateSeparatorLink(Microsoft::WRL::ComPtr<IShellLink> *ppsl);
 /// checks if an IShellItem is in an IObjectArray
 bool IsItemInArray(IShellItem *psi, IObjectArray *poaRemoved);
 /// removes the existing jump list
-HRESULT DeleteJumpList(LPCTSTR appID);
+HRESULT DeleteJumpList(LPCWSTR appID);
 /// sets the relaunch command for the specified window.
 /// use this to specify command line parameters for the default jump list command which starts the pinned application
 HRESULT SetRelaunchCommand(HWND hWnd, LPCWSTR appID, LPCWSTR commandLine, LPCWSTR dispName, LPCWSTR icon = nullptr);
-

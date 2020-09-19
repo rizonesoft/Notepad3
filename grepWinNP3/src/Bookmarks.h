@@ -30,6 +30,7 @@ public:
         , DotMatchesNewline(false)
         , Backup(false)
         , Utf8(false)
+        , Binary(false)
         , IncludeSystem(false)
         , IncludeFolder(false)
         , IncludeHidden(false)

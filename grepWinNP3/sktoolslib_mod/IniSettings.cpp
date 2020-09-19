@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013, 2017 - Stefan Kueng
+// Copyright (C) 2013, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@ CIniSettings::CIniSettings(void)
 {
 }
 
-
 CIniSettings::~CIniSettings(void)
 {
     Save();
@@ -36,7 +35,7 @@ CIniSettings& CIniSettings::Instance()
     return instance;
 }
 
-void CIniSettings::SetIniPath( const std::wstring& p )
+void CIniSettings::SetIniPath(const std::wstring& p)
 {
     if (p.empty())
     {
@@ -53,44 +52,44 @@ void CIniSettings::SetIniPath( const std::wstring& p )
 
 void CIniSettings::Save()
 {
-    FILE * pFile = nullptr;
-    _tfopen_s(&pFile, m_iniPath.c_str(), _T("wb"));
+    FILE* pFile = nullptr;
+    _wfopen_s(&pFile, m_iniPath.c_str(), L"wb");
     m_IniFile.SaveFile(pFile);
     fclose(pFile);
 }
 
-__int64 CIniSettings::GetInt64( LPCWSTR section, LPCWSTR key, __int64 default )
+__int64 CIniSettings::GetInt64(LPCWSTR section, LPCWSTR key, __int64 default)
 {
     _ASSERT(m_iniPath.size());
-    const wchar_t * v = m_IniFile.GetValue(section, key, nullptr);
+    const wchar_t* v = m_IniFile.GetValue(section, key, nullptr);
     if (v == nullptr)
         return default;
 
     return _wcstoi64(v, nullptr, 10);
 }
 
-void CIniSettings::SetInt64( LPCWSTR section, LPCWSTR key, __int64 value )
+void CIniSettings::SetInt64(LPCWSTR section, LPCWSTR key, __int64 value)
 {
     wchar_t val[100] = {0};
     _i64tow_s(value, val, _countof(val), 10);
     m_IniFile.SetValue(section, key, val);
 }
 
-LPCWSTR CIniSettings::GetString( LPCWSTR section, LPCWSTR key, LPCWSTR default /*= nullptr*/ )
+LPCWSTR CIniSettings::GetString(LPCWSTR section, LPCWSTR key, LPCWSTR default /*= nullptr*/)
 {
     _ASSERT(m_iniPath.size());
     return m_IniFile.GetValue(section, key, default);
 }
 
-void CIniSettings::SetString( LPCWSTR section, LPCWSTR key, LPCWSTR value )
+void CIniSettings::SetString(LPCWSTR section, LPCWSTR key, LPCWSTR value)
 {
     m_IniFile.SetValue(section, key, value);
 }
 
-void CIniSettings::RestoreWindowPos( LPCWSTR windowname, HWND hWnd, UINT showCmd )
+void CIniSettings::RestoreWindowPos(LPCWSTR windowname, HWND hWnd, UINT showCmd)
 {
     WINDOWPLACEMENT wpl = {0};
-    wpl.length = sizeof(WINDOWPLACEMENT);
+    wpl.length          = sizeof(WINDOWPLACEMENT);
 
     wpl.flags                   = (UINT)GetInt64(L"windowpos", CStringUtils::Format(L"%s_flags", windowname).c_str(), 0);
     wpl.showCmd                 = (UINT)GetInt64(L"windowpos", CStringUtils::Format(L"%s_showCmd", windowname).c_str(), -1);
@@ -119,25 +118,25 @@ void CIniSettings::RestoreWindowPos( LPCWSTR windowname, HWND hWnd, UINT showCmd
         ShowWindow(hWnd, SW_SHOW);
 }
 
-void CIniSettings::SaveWindowPos( LPCWSTR windowname, HWND hWnd )
+void CIniSettings::SaveWindowPos(LPCWSTR windowname, HWND hWnd)
 {
     WINDOWPLACEMENT wpl = {0};
-    wpl.length = sizeof(WINDOWPLACEMENT);
+    wpl.length          = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(hWnd, &wpl);
 
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_flags", windowname).c_str(),                   wpl.flags);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_showCmd", windowname).c_str(),                 wpl.showCmd);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMinPositionX", windowname).c_str(),          wpl.ptMinPosition.x);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMinPositionY", windowname).c_str(),          wpl.ptMinPosition.y);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMaxPositionX", windowname).c_str(),          wpl.ptMaxPosition.x);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMaxPositionY", windowname).c_str(),          wpl.ptMaxPosition.y);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionLeft", windowname).c_str(),    wpl.rcNormalPosition.left);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionTop", windowname).c_str(),     wpl.rcNormalPosition.top);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionRight", windowname).c_str(),   wpl.rcNormalPosition.right);
-    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionBottom", windowname).c_str(),  wpl.rcNormalPosition.bottom);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_flags", windowname).c_str(), wpl.flags);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_showCmd", windowname).c_str(), wpl.showCmd);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMinPositionX", windowname).c_str(), wpl.ptMinPosition.x);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMinPositionY", windowname).c_str(), wpl.ptMinPosition.y);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMaxPositionX", windowname).c_str(), wpl.ptMaxPosition.x);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_ptMaxPositionY", windowname).c_str(), wpl.ptMaxPosition.y);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionLeft", windowname).c_str(), wpl.rcNormalPosition.left);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionTop", windowname).c_str(), wpl.rcNormalPosition.top);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionRight", windowname).c_str(), wpl.rcNormalPosition.right);
+    SetInt64(L"windowpos", CStringUtils::Format(L"%s_rcNormalPositionBottom", windowname).c_str(), wpl.rcNormalPosition.bottom);
 }
 
-void CIniSettings::Delete( LPCWSTR section, LPCWSTR key )
+void CIniSettings::Delete(LPCWSTR section, LPCWSTR key)
 {
     m_IniFile.Delete(section, key, true);
 }

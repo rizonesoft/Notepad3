@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2018 - Stefan Kueng
+// Copyright (C) 2018, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -52,7 +52,7 @@ template <typename IF>
 static HRESULT ActivateInstance(HSTRING classId, ComPtr<IF>& instance)
 {
     ComPtr<IInspectable> inspectable;
-    auto hr = Win10Colors::RoActivateInstance(classId, &inspectable);
+    auto                 hr = Win10Colors::RoActivateInstance(classId, &inspectable);
     if (FAILED(hr))
         return hr;
     return inspectable.As(&instance);
@@ -109,11 +109,11 @@ HRESULT Win10Colors::GetAccentColor(AccentColor& color)
     if (FAILED(hr))
         return hr;
     color.foreground = ToRGBA(ui_color);
-    hr = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Background, &ui_color);
+    hr               = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Background, &ui_color);
     if (FAILED(hr))
         return hr;
     color.background = ToRGBA(ui_color);
-    hr = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark3, &ui_color);
+    hr               = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark3, &ui_color);
     if (FAILED(hr))
         return hr;
     color.darkest = ToRGBA(ui_color);

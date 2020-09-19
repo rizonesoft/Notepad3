@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,15 +28,16 @@ class ItemIDList
 public:
     ItemIDList(LPCITEMIDLIST item, LPCITEMIDLIST parent = 0);
 
-    int size() const;
+    int         size() const;
     LPCSHITEMID get(int index) const;
     virtual ~ItemIDList();
 
-    tstring toString();
+    std::wstring toString();
 
-    LPCITEMIDLIST operator& ();
+    LPCITEMIDLIST operator&();
+
 private:
     LPCITEMIDLIST item_;
     LPCITEMIDLIST parent_;
-    mutable int count_;
+    mutable int   count_;
 };

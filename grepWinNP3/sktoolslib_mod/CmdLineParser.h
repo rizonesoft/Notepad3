@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,14 +21,6 @@
 
 #include <map>
 #include <string>
-
-#ifndef stdstring
-#   ifdef UNICODE
-#       define stdstring std::wstring
-#   else
-#       define stdstring std::string
-#   endif
-#endif
 
 /**
  *
@@ -60,21 +52,21 @@
 class CCmdLineParser
 {
 public:
-    typedef std::map<stdstring, stdstring> CValsMap;
-    typedef CValsMap::const_iterator ITERPOS;
+    typedef std::map<std::wstring, std::wstring> CValsMap;
+    typedef CValsMap::const_iterator             ITERPOS;
 
     /**
      * Creates a CCmdLineParser object and parses the parameters in.
      * \param sCmdLine the command line
      */
-    CCmdLineParser(LPCTSTR sCmdLine = nullptr);
+    CCmdLineParser(LPCWSTR sCmdLine = nullptr);
     virtual ~CCmdLineParser();
 
     /**
      * returns the command line string this object was created on.
      * \return the command line
      */
-    LPCTSTR getCmdLine() const { return m_sCmdLine.c_str(); }
+    LPCWSTR getCmdLine() const { return m_sCmdLine.c_str(); }
 
     /**
      * Starts an iteration over all command line parameters.
@@ -91,7 +83,7 @@ public:
      * \param sValue returns the value
      * \return the next position
      */
-    ITERPOS getNext(ITERPOS& pos, stdstring& sKey, stdstring& sValue) const;
+    ITERPOS getNext(ITERPOS& pos, std::wstring& sKey, std::wstring& sValue) const;
 
     /**
      * Checks if the position is the last or if there are more key/value pairs in the command line.
@@ -105,21 +97,21 @@ public:
      * \param sKey the key to check for
      * \return TRUE if the key exists, FALSE if the key is not in command line
      */
-    BOOL HasKey(LPCTSTR sKey) const;
+    BOOL HasKey(LPCWSTR sKey) const;
 
     /**
      * Checks if a key also has a value or not.
      * \param sKey the key to check for a value
      * \return TRUE if the key has a value, FALSE if no value (or no key) was found
      */
-    BOOL HasVal(LPCTSTR sKey) const;
+    BOOL HasVal(LPCWSTR sKey) const;
 
     /**
      * Reads the value for a key. If the key has no value then nullptr is returned.
      * \param sKey the key to get the value from
      * \return the value string of the key
      */
-    LPCTSTR GetVal(LPCTSTR sKey) const;
+    LPCWSTR GetVal(LPCWSTR sKey) const;
 
     /**
      * Reads the value for a key as a long. If the value is a string which can't be
@@ -127,18 +119,19 @@ public:
      * \param the key to get the value from
      * \return the value converted to a long
      */
-    LONG GetLongVal(LPCTSTR sKey) const;
+    LONG GetLongVal(LPCWSTR sKey) const;
 
-    __int64 GetLongLongVal(LPCTSTR sKey) const;
+    __int64 GetLongLongVal(LPCWSTR sKey) const;
+
 private:
-    BOOL Parse(LPCTSTR sCmdLine);
-    CValsMap::const_iterator findKey(LPCTSTR sKey) const;
-    const CValsMap& getVals() const { return m_valueMap; }
+    BOOL                     Parse(LPCWSTR sCmdLine);
+    CValsMap::const_iterator findKey(LPCWSTR sKey) const;
+    const CValsMap&          getVals() const { return m_valueMap; }
 
-    stdstring   m_sCmdLine;
-    CValsMap    m_valueMap;
+    std::wstring m_sCmdLine;
+    CValsMap     m_valueMap;
 
-    static const TCHAR m_sDelims[];
-    static const TCHAR m_sValueSep[];
-    static const TCHAR m_sQuotes[];
+    static const wchar_t m_sDelims[];
+    static const wchar_t m_sValueSep[];
+    static const wchar_t m_sQuotes[];
 };

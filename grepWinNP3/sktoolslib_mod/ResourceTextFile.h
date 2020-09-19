@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@ class CResourceTextFile : public CResourceFile
 {
 public:
     CResourceTextFile();
-    CResourceTextFile(const CResourceTextFile&);
+    CResourceTextFile(const CResourceTextFile &);
     virtual ~CResourceTextFile();
 
     enum ConvertAction
@@ -42,26 +42,26 @@ public:
         AddBom
     };
 
-    TCHAR * DuplicateTextBuffer();
-    TCHAR * GetTextBuffer()             { return m_pszText; }
-    BomAction     GetBomAction()        { return m_eBomAction; }
-    ConvertAction GetConvertAction()    { return m_eConvertAction; }
+    wchar_t *     DuplicateTextBuffer();
+    wchar_t *     GetTextBuffer() { return m_pszText; }
+    BomAction     GetBomAction() { return m_eBomAction; }
+    ConvertAction GetConvertAction() { return m_eConvertAction; }
 
 public:
-    void    Close();
-    TCHAR * DetachTextBuffer();
-    BOOL    Open(HINSTANCE hInstance,
-                 LPCTSTR lpszResId,
-                 LPCTSTR lpszResType = _T("TEXT"),
-                 ConvertAction eConvert = NoConvertAction,
-                 BomAction eBomAction = NoBomAction);
-    size_t  ReadLine(TCHAR *buf, size_t nBufLen);
-    BOOL    SetTextBuffer(TCHAR * buf, DWORD len,
-                          ConvertAction eConvert = NoConvertAction,
-                          BomAction eBomAction = NoBomAction);
+    void     Close();
+    wchar_t *DetachTextBuffer();
+    BOOL     Open(HINSTANCE     hInstance,
+                  LPCWSTR       lpszResId,
+                  LPCWSTR       lpszResType = L"TEXT",
+                  ConvertAction eConvert    = NoConvertAction,
+                  BomAction     eBomAction  = NoBomAction);
+    size_t   ReadLine(wchar_t *buf, size_t nBufLen);
+    BOOL     SetTextBuffer(wchar_t *buf, DWORD len,
+                           ConvertAction eConvert   = NoConvertAction,
+                           BomAction     eBomAction = NoBomAction);
 
 protected:
-    TCHAR *         m_pszText;          // text file buffer
-    BomAction       m_eBomAction;       // BOM action requested at file open
-    ConvertAction   m_eConvertAction;   // conversion requested at file open
+    wchar_t *     m_pszText;        // text file buffer
+    BomAction     m_eBomAction;     // BOM action requested at file open
+    ConvertAction m_eConvertAction; // conversion requested at file open
 };

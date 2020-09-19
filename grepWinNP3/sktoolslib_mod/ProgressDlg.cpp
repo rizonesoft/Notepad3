@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
 
 CProgressDlg::CProgressDlg()
     : m_pIDlg(nullptr)
-    , m_bValid(false)       //not valid by default
+    , m_bValid(false) //not valid by default
     , m_isVisible(false)
     , m_dwDlgFlags(PROGDLG_NORMAL)
     , m_hWndProgDlg(nullptr)
@@ -34,7 +34,7 @@ CProgressDlg::~CProgressDlg()
 {
     if (m_bValid)
     {
-        if (m_isVisible)            //still visible, so stop first before destroying
+        if (m_isVisible) //still visible, so stop first before destroying
             m_pIDlg->StopProgressDialog();
 
         m_pIDlg->Release();
@@ -48,11 +48,11 @@ bool CProgressDlg::EnsureValid()
     {
         HRESULT hr;
 
-        hr = CoCreateInstance (CLSID_ProgressDialog, nullptr, CLSCTX_INPROC_SERVER,
-            IID_IProgressDialog, (void**)&m_pIDlg);
+        hr = CoCreateInstance(CLSID_ProgressDialog, nullptr, CLSCTX_INPROC_SERVER,
+                              IID_IProgressDialog, (void**)&m_pIDlg);
 
         if (SUCCEEDED(hr))
-            m_bValid = true;                //instance successfully created
+            m_bValid = true; //instance successfully created
     }
     return m_bValid;
 }
@@ -74,7 +74,7 @@ void CProgressDlg::SetLine(DWORD dwLine, LPCWSTR szText, bool bCompactPath /* = 
 }
 
 #ifdef _MFC_VER
-void CProgressDlg::SetCancelMsg ( UINT idMessage )
+void CProgressDlg::SetCancelMsg(UINT idMessage)
 {
     SetCancelMsg(CString(MAKEINTRESOURCE(idMessage)));
 }
@@ -125,7 +125,7 @@ void CProgressDlg::SetShowProgressBar(bool bShow /* = true */)
 }
 
 #ifdef _MFC_VER
-HRESULT CProgressDlg::ShowModal (CWnd* pwndParent)
+HRESULT CProgressDlg::ShowModal(CWnd* pwndParent)
 {
     EnsureValid();
     return ShowModal(pwndParent->GetSafeHwnd());
@@ -137,7 +137,7 @@ HRESULT CProgressDlg::ShowModeless(CWnd* pwndParent)
     return ShowModeless(pwndParent->GetSafeHwnd());
 }
 
-void CProgressDlg::FormatPathLine ( DWORD dwLine, UINT idFormatText, ...)
+void CProgressDlg::FormatPathLine(DWORD dwLine, UINT idFormatText, ...)
 {
     va_list args;
     va_start(args, idFormatText);
@@ -162,7 +162,7 @@ void CProgressDlg::FormatNonPathLine(DWORD dwLine, UINT idFormatText, ...)
 }
 #endif
 
-HRESULT CProgressDlg::ShowModal (HWND hWndParent)
+HRESULT CProgressDlg::ShowModal(HWND hWndParent)
 {
     EnsureValid();
     if (m_bValid)
@@ -185,7 +185,7 @@ HRESULT CProgressDlg::ShowModal (HWND hWndParent)
 HRESULT CProgressDlg::ShowModeless(HWND hWndParent)
 {
     EnsureValid();
-    HRESULT hr = E_FAIL;
+    HRESULT hr    = E_FAIL;
     m_hWndProgDlg = nullptr;
     if (m_bValid)
     {
@@ -198,8 +198,8 @@ HRESULT CProgressDlg::ShowModeless(HWND hWndParent)
             // The progress window can be remarkably slow to display, particularly
             // if its parent is blocked.
             // This process finds the hwnd for the progress window and gives it a kick...
-            IOleWindow *pOleWindow;
-            HRESULT hr2 = m_pIDlg->QueryInterface(IID_IOleWindow,(LPVOID *)&pOleWindow);
+            IOleWindow* pOleWindow;
+            HRESULT     hr2 = m_pIDlg->QueryInterface(IID_IOleWindow, (LPVOID*)&pOleWindow);
             if (SUCCEEDED(hr2))
             {
                 hr2 = pOleWindow->GetWindow(&m_hWndProgDlg);
@@ -253,7 +253,7 @@ void CProgressDlg::Stop()
         }
         m_isVisible = false;
         m_pIDlg->Release();
-        m_bValid = false;
+        m_bValid      = false;
         m_hWndProgDlg = nullptr;
     }
 }

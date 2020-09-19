@@ -95,8 +95,8 @@ bool GetLocaleDefaultUIFont(std::wstring langFileName, LPWSTR lpFaceName, WORD& 
 
 CSettingsDlg::CSettingsDlg(HWND hParent)
     : m_hParent(hParent)
-    , m_regEditorCmd(_T("Software\\grepWinNP3\\editorcmd"))
-    , m_regEsc(_T("Software\\grepWinNP3\\escclose"), FALSE)
+    , m_regEditorCmd(L"Software\\grepWinNP3\\editorcmd")
+    , m_regEsc(L"Software\\grepWinNP3\\escclose", FALSE)
     , m_themeCallbackId(0)
 {
 }
@@ -106,7 +106,7 @@ CSettingsDlg::~CSettingsDlg()
 }
 
 const wchar_t* const defaultLang  = L"English (United States) [en-US]";
-const wchar_t* const stdEditorCmd = _T(".\\Notepad3.exe /%mode% \"%pattern%\" /g %line% - %path%");
+const wchar_t* const stdEditorCmd = L".\\Notepad3.exe /%mode% \"%pattern%\" /g %line% - %path%";
 
 LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -372,7 +372,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             CLanguage::Instance().LoadFile(langpath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
 
-            wchar_t worker[32];
+            wchar_t worker[32] = { 0 };
             SendDlgItemMessage(*this, IDC_MAXNUMWORKER, WM_GETTEXT, (LPARAM)32, (WPARAM)worker);
             long const nWorker = _wtol((wchar_t*)worker);
             std::wstring sNumNull = GetDlgItemText(IDC_NUMNULL).get();
@@ -410,15 +410,15 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             }
             CTheme::Instance().SetDarkTheme(IsDlgButtonChecked(*this, IDC_DARKMODE) == BST_CHECKED);
         }
-        // fall through
+        //[[fallthrough]]
     case IDCANCEL:
         CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
         EndDialog(*this, id);
         break;
     case IDC_SEARCHPATHBROWSE:
         {
-            OPENFILENAME ofn = {0};     // common dialog box structure
-            TCHAR szFile[MAX_PATH] = {0};  // buffer for file name
+            OPENFILENAME ofn              = {0}; // common dialog box structure
+            wchar_t      szFile[MAX_PATH] = {0}; // buffer for file name
             // Initialize OPENFILENAME
             ofn.lStructSize = sizeof(OPENFILENAME);
             ofn.hwndOwner = *this;

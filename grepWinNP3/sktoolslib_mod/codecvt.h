@@ -19,15 +19,14 @@
 
 #include <locale>
 #pragma warning(push)
-#pragma warning(disable: 4511)
-#pragma warning(disable: 4512)
+#pragma warning(disable : 4511)
+#pragma warning(disable : 4512)
 
 /** Conversion facet that allows to use Unicode files in UCS-2 encoding */
 class ucs2_conversion
-: public std::codecvt<wchar_t, char, std::mbstate_t>
+    : public std::codecvt<wchar_t, char, std::mbstate_t>
 {
 protected:
-
     result do_in(std::mbstate_t& state,
                  const char* from, const char* from_end, const char*& from_next,
                  wchar_t* to, wchar_t* to_limit, wchar_t*& to_next) const;
@@ -40,13 +39,11 @@ protected:
     int  do_encoding() const throw() { return 2; }
 };
 
-
 /** Conversion facet that allows to read Unicode files in UTF-8 encoding */
 class utf8_conversion
-: public std::codecvt<wchar_t, char, std::mbstate_t>
+    : public std::codecvt<wchar_t, char, std::mbstate_t>
 {
 protected:
-
     result do_in(std::mbstate_t& state,
                  const char* from, const char* from_end, const char*& from_next,
                  wchar_t* to, wchar_t* to_limit, wchar_t*& to_next) const;

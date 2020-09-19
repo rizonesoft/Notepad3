@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,17 +20,16 @@
 #include "stdafx.h"
 #include "SysImageList.h"
 
-
 // Singleton constructor and destructor (private)
 
-CSysImageList * CSysImageList::instance = 0;
+CSysImageList* CSysImageList::instance = 0;
 
 CSysImageList::CSysImageList()
 {
     m_hSystemImageList = nullptr;
-    SHFILEINFO ssfi = {0};
-    TCHAR windir[MAX_PATH];
-    GetWindowsDirectory(windir, _countof(windir));  // MAX_PATH ok.
+    SHFILEINFO ssfi    = {0};
+    wchar_t    windir[MAX_PATH];
+    GetWindowsDirectory(windir, _countof(windir)); // MAX_PATH ok.
     m_hSystemImageList =
         (HIMAGELIST)SHGetFileInfo(
             windir,
@@ -42,7 +41,6 @@ CSysImageList::CSysImageList()
 CSysImageList::~CSysImageList()
 {
 }
-
 
 // Singleton specific operations
 
@@ -59,7 +57,6 @@ void CSysImageList::Cleanup()
     instance = 0;
 }
 
-
 // Operations
 
 int CSysImageList::GetDirIconIndex() const
@@ -68,7 +65,7 @@ int CSysImageList::GetDirIconIndex() const
     SecureZeroMemory(&sfi, sizeof sfi);
 
     SHGetFileInfo(
-        _T("Doesn't matter"),
+        L"Doesn't matter",
         FILE_ATTRIBUTE_DIRECTORY,
         &sfi, sizeof sfi,
         SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
@@ -82,7 +79,7 @@ int CSysImageList::GetDirOpenIconIndex() const
     SecureZeroMemory(&sfi, sizeof sfi);
 
     SHGetFileInfo(
-        _T("Doesn't matter"),
+        L"Doesn't matter",
         FILE_ATTRIBUTE_DIRECTORY,
         &sfi, sizeof sfi,
         SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES | SHGFI_OPENICON);
@@ -96,7 +93,7 @@ int CSysImageList::GetDefaultIconIndex() const
     SecureZeroMemory(&sfi, sizeof sfi);
 
     SHGetFileInfo(
-        _T(""),
+        L"",
         FILE_ATTRIBUTE_NORMAL,
         &sfi, sizeof sfi,
         SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);

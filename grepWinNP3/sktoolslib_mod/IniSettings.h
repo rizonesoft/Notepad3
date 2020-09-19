@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,25 +24,25 @@ class CIniSettings
 private:
     CIniSettings(void);
     ~CIniSettings(void);
+
 public:
-    static CIniSettings&    Instance();
+    static CIniSettings& Instance();
 
-    void                    SetIniPath(const std::wstring& p);
-    std::wstring            GetIniPath() const { return m_iniPath; }
-    void                    Save();
-    void                    Reload();
+    void         SetIniPath(const std::wstring& p);
+    std::wstring GetIniPath() const { return m_iniPath; }
+    void         Save();
+    void         Reload();
 
-    LPCWSTR                 GetString(LPCWSTR section, LPCWSTR key, LPCWSTR default = nullptr);
-    void                    SetString(LPCWSTR section, LPCWSTR key, LPCWSTR value);
-    __int64                 GetInt64(LPCWSTR section, LPCWSTR key, __int64 default);
-    void                    SetInt64(LPCWSTR section, LPCWSTR key, __int64 value);
-    void                    Delete(LPCWSTR section, LPCWSTR key);
-    void                    RestoreWindowPos(LPCWSTR windowname, HWND hWnd, UINT showCmd);
-    void                    SaveWindowPos(LPCWSTR windowname, HWND hWnd);
+    LPCWSTR GetString(LPCWSTR section, LPCWSTR key, LPCWSTR default = nullptr);
+    void    SetString(LPCWSTR section, LPCWSTR key, LPCWSTR value);
+    __int64 GetInt64(LPCWSTR section, LPCWSTR key, __int64 default);
+    void    SetInt64(LPCWSTR section, LPCWSTR key, __int64 value);
+    void    Delete(LPCWSTR section, LPCWSTR key);
+    void    RestoreWindowPos(LPCWSTR windowname, HWND hWnd, UINT showCmd);
+    void    SaveWindowPos(LPCWSTR windowname, HWND hWnd);
 
 private:
-    CSimpleIni              m_IniFile;
+    CSimpleIni m_IniFile;
 
-    std::wstring            m_iniPath;
+    std::wstring m_iniPath;
 };
-

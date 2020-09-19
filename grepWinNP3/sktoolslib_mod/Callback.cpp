@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,12 +21,12 @@
 #include "Callback.h"
 
 #include <urlmon.h>
-#include <Shlwapi.h>                    // for StrFormatByteSize()
+#include <Shlwapi.h> // for StrFormatByteSize()
 
 #ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
+#    undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#    define new DEBUG_NEW
 #endif
 
 //////////////////////////////////////////////////////////////////////
@@ -42,12 +42,12 @@ CCallback::~CCallback()
 {
 }
 
-STDMETHODIMP CCallback::Authenticate( HWND * phwnd, LPWSTR * pszUsername, LPWSTR * pszPassword)
+STDMETHODIMP CCallback::Authenticate(HWND* phwnd, LPWSTR* pszUsername, LPWSTR* pszPassword)
 {
-    *phwnd = NULL;
-    *pszUsername = (LPWSTR)CoTaskMemAlloc((m_username.size()+1)*2);
-    _tcscpy_s(*pszUsername, m_username.size()+1, m_username.c_str());
-    *pszPassword = (LPWSTR)CoTaskMemAlloc((m_password.size()+1)*2);
-    _tcscpy_s(*pszPassword, m_password.size()+1, m_password.c_str());
+    *phwnd       = NULL;
+    *pszUsername = (LPWSTR)CoTaskMemAlloc((m_username.size() + 1) * 2);
+    wcscpy_s(*pszUsername, m_username.size() + 1, m_username.c_str());
+    *pszPassword = (LPWSTR)CoTaskMemAlloc((m_password.size() + 1) * 2);
+    wcscpy_s(*pszPassword, m_password.size() + 1, m_password.c_str());
     return S_OK;
 }

@@ -51,10 +51,10 @@ protect writers against indefinite blockage by readers..."
 // On multiprocessor systems, this value define number of times
 // that a thread tries to spin before actually performing a wait
 // operation (see InitializeCriticalSectionAndSpinCount API)
-#ifndef READER_WRITER_SPIN_COUNT
-#define READER_WRITER_SPIN_COUNT 400
-#endif // READER_WRITER_SPIN_COUNT
-#endif // _WIN32_WINNT
+#    ifndef READER_WRITER_SPIN_COUNT
+#        define READER_WRITER_SPIN_COUNT 400
+#    endif // READER_WRITER_SPIN_COUNT
+#endif     // _WIN32_WINNT
 
 // Forward reference
 class CReaderWriterLock;
@@ -88,6 +88,7 @@ public:
     // and the thread goes to the end of the writer queue. Thus, other threads
     // might write to resources before this method returns
     bool UpgradeToWriterLock(DWORD dwTimeout = INFINITE);
+
 protected:
     // A critical section to guard all the other members
     mutable CRITICAL_SECTION m_cs;
@@ -140,13 +141,14 @@ public:
 
     // Query thread's status
     DWORD GetCurrentThreadStatus() const;
-    void GetCurrentThreadStatus(DWORD* lpdwReaderLockCounter,
-        DWORD* lpdwWriterLockCounter) const;
+    void  GetCurrentThreadStatus(DWORD* lpdwReaderLockCounter,
+                                 DWORD* lpdwWriterLockCounter) const;
+
 protected:
     CReaderWriterLockNonReentrance m_impl;
 
-    typedef std::map<DWORD,DWORD> CMapThreadToState;
-    CMapThreadToState m_map;
+    typedef std::map<DWORD, DWORD> CMapThreadToState;
+    CMapThreadToState              m_map;
 };
 
 //////////////////////////////////////////////////////////////////
@@ -156,11 +158,12 @@ protected:
 // that lock if an exception is encountered in that piece of code or
 // if there are multiple return points out of that piece.
 
-template<typename T>
+template <typename T>
 class CAutoReadLockT
 {
 public:
-    CAutoReadLockT(T& objLock) : m_lock(objLock)
+    CAutoReadLockT(T& objLock)
+        : m_lock(objLock)
     {
         m_lock.AcquireReaderLock();
     }
@@ -168,17 +171,20 @@ public:
     {
         m_lock.ReleaseReaderLock();
     }
+
 protected:
     T& m_lock;
+
 private:
-    CAutoReadLockT & operator=(const CAutoReadLockT &) = delete;
+    CAutoReadLockT& operator=(const CAutoReadLockT&) = delete;
 };
 
-template<typename T>
+template <typename T>
 class CAutoWriteLockT
 {
-public :
-    CAutoWriteLockT(T& objLock) : m_lock(objLock)
+public:
+    CAutoWriteLockT(T& objLock)
+        : m_lock(objLock)
     {
         m_lock.AcquireWriterLock();
     }
@@ -186,17 +192,20 @@ public :
     {
         m_lock.ReleaseWriterLock();
     }
+
 protected:
     T& m_lock;
+
 private:
-    CAutoWriteLockT & operator=(const CAutoWriteLockT &) = delete;
+    CAutoWriteLockT& operator=(const CAutoWriteLockT&) = delete;
 };
 
-template<typename T>
+template <typename T>
 class CAutoReadWeakLockT
 {
 public:
-    CAutoReadWeakLockT(T& objLock, DWORD timeout = 1) : m_lock(objLock)
+    CAutoReadWeakLockT(T& objLock, DWORD timeout = 1)
+        : m_lock(objLock)
     {
         isAcquired = m_lock.AcquireReaderLock(timeout);
     }
@@ -209,16 +218,18 @@ public:
     {
         return isAcquired;
     }
+
 protected:
-    T& m_lock;
+    T&   m_lock;
     bool isAcquired;
 };
 
-template<typename T>
+template <typename T>
 class CAutoWriteWeakLockT
 {
-public :
-    CAutoWriteWeakLockT(T& objLock, DWORD timeout = 1) : m_lock(objLock)
+public:
+    CAutoWriteWeakLockT(T& objLock, DWORD timeout = 1)
+        : m_lock(objLock)
     {
         isAcquired = m_lock.AcquireWriterLock(timeout);
     }
@@ -234,8 +245,9 @@ public :
     {
         return isAcquired;
     }
+
 protected:
-    T& m_lock;
+    T&   m_lock;
     bool isAcquired;
 
     void release()
@@ -251,20 +263,20 @@ protected:
 //////////////////////////////////////////////////////////////////
 // Instances of above template helper classes
 
-typedef CAutoReadLockT<CReaderWriterLock> CAutoReadLock;
-typedef CAutoWriteLockT<CReaderWriterLock> CAutoWriteLock;
-typedef CAutoReadWeakLockT<CReaderWriterLock> CAutoReadWeakLock;
+typedef CAutoReadLockT<CReaderWriterLock>      CAutoReadLock;
+typedef CAutoWriteLockT<CReaderWriterLock>     CAutoWriteLock;
+typedef CAutoReadWeakLockT<CReaderWriterLock>  CAutoReadWeakLock;
 typedef CAutoWriteWeakLockT<CReaderWriterLock> CAutoWriteWeakLock;
 
 //////////////////////////////////////////////////////////////////
 // Inline methods
 
-__forceinline
-    void CReaderWriterLockNonReentrance::EnterCS() const {
-        ::EnterCriticalSection(&m_cs);
+__forceinline void CReaderWriterLockNonReentrance::EnterCS() const
+{
+    ::EnterCriticalSection(&m_cs);
 }
 
-__forceinline
-    void CReaderWriterLockNonReentrance::LeaveCS() const{
-        ::LeaveCriticalSection(&m_cs);
+__forceinline void CReaderWriterLockNonReentrance::LeaveCS() const
+{
+    ::LeaveCriticalSection(&m_cs);
 }

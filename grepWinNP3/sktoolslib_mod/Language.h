@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 #include <string>
 #include <map>
 
-#define TranslatedString(a,b) CLanguage::Instance().GetTranslatedString(ResString(a,b))
+#define TranslatedString(a, b) CLanguage::Instance().GetTranslatedString(ResString(a, b))
 
 /**
  * Helps with showing a translated UI
@@ -30,6 +30,7 @@ class CLanguage
 private:
     CLanguage() {}
     ~CLanguage() {}
+
 public:
     static CLanguage& Instance();
 
@@ -46,9 +47,8 @@ public:
 
 private:
     static BOOL CALLBACK TranslateWindowProc(HWND hwnd, LPARAM lParam);
-    static std::wstring GetTranslatedString(const std::wstring& s, std::map<std::wstring, std::wstring>* pLangMap);
+    static std::wstring  GetTranslatedString(const std::wstring& s, std::map<std::wstring, std::wstring>* pLangMap);
 
 private:
-    std::map<std::wstring, std::wstring>    langmap;
+    std::map<std::wstring, std::wstring> langmap;
 };
-

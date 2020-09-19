@@ -36,7 +36,7 @@ CBookmarks::~CBookmarks(void)
 
 void CBookmarks::Load()
 {
-    std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
+    auto path = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
     GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
     if (bPortable)
     {
@@ -59,7 +59,7 @@ void CBookmarks::Load()
 
 void CBookmarks::Save()
 {
-    std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
+    auto path = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
     GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
     if (bPortable)
     {
@@ -88,70 +88,69 @@ void CBookmarks::AddBookmark(const Bookmark& bm)
     val = L"\"";
     val += bm.Replace;
     val += L"\"";
-    SetValue(bm.Name.c_str(), L"replaceString",      val.c_str());
-    SetValue(bm.Name.c_str(), L"useregex",           bm.UseRegex ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"casesensitive",      bm.CaseSensitive ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"dotmatchesnewline",  bm.DotMatchesNewline ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"backup",             bm.Backup ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"utf8",               bm.Utf8 ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"includesystem",      bm.IncludeSystem ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"includefolder",      bm.IncludeFolder ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"includehidden",      bm.IncludeHidden ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"includebinary",      bm.IncludeBinary ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"replaceString", val.c_str());
+    SetValue(bm.Name.c_str(), L"useregex", bm.UseRegex ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"casesensitive", bm.CaseSensitive ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"dotmatchesnewline", bm.DotMatchesNewline ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"backup", bm.Backup ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"utf8", bm.Utf8 ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includesystem", bm.IncludeSystem ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includefolder", bm.IncludeFolder ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includehidden", bm.IncludeHidden ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includebinary", bm.IncludeBinary ? L"true" : L"false");
     val = L"\"";
     val += bm.ExcludeDirs;
     val += L"\"";
-    SetValue(bm.Name.c_str(), L"excludedirs",        val.c_str());
+    SetValue(bm.Name.c_str(), L"excludedirs", val.c_str());
     val = L"\"";
     val += bm.FileMatch;
     val += L"\"";
-    SetValue(bm.Name.c_str(), L"filematch",          val.c_str());
-    SetValue(bm.Name.c_str(), L"filematchregex",     bm.FileMatchRegex ? L"true" : L"false");
-    SetValue(bm.Name.c_str(), L"searchpath",         bm.Path.c_str());
+    SetValue(bm.Name.c_str(), L"filematch", val.c_str());
+    SetValue(bm.Name.c_str(), L"filematchregex", bm.FileMatchRegex ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"searchpath", bm.Path.c_str());
 }
 
 void CBookmarks::RemoveBookmark(const std::wstring& name)
 {
-    Delete(name.c_str(), L"searchString",        true);
-    Delete(name.c_str(), L"replaceString",       true);
-    Delete(name.c_str(), L"useregex",            true);
-    Delete(name.c_str(), L"casesensitive",       true);
-    Delete(name.c_str(), L"dotmatchesnewline",   true);
-    Delete(name.c_str(), L"backup",              true);
-    Delete(name.c_str(), L"utf8",                true);
-    Delete(name.c_str(), L"includesystem",       true);
-    Delete(name.c_str(), L"includefolder",       true);
-    Delete(name.c_str(), L"includehidden",       true);
-    Delete(name.c_str(), L"includebinary",       true);
-    Delete(name.c_str(), L"excludedirs",         true);
-    Delete(name.c_str(), L"filematch",           true);
-    Delete(name.c_str(), L"filematchregex",      true);
-    Delete(name.c_str(), L"searchpath",          true);
+    Delete(name.c_str(), L"searchString", true);
+    Delete(name.c_str(), L"replaceString", true);
+    Delete(name.c_str(), L"useregex", true);
+    Delete(name.c_str(), L"casesensitive", true);
+    Delete(name.c_str(), L"dotmatchesnewline", true);
+    Delete(name.c_str(), L"backup", true);
+    Delete(name.c_str(), L"utf8", true);
+    Delete(name.c_str(), L"includesystem", true);
+    Delete(name.c_str(), L"includefolder", true);
+    Delete(name.c_str(), L"includehidden", true);
+    Delete(name.c_str(), L"includebinary", true);
+    Delete(name.c_str(), L"excludedirs", true);
+    Delete(name.c_str(), L"filematch", true);
+    Delete(name.c_str(), L"filematchregex", true);
+    Delete(name.c_str(), L"searchpath", true);
 }
 
-Bookmark CBookmarks::GetBookmark( const std::wstring& name )
+Bookmark CBookmarks::GetBookmark(const std::wstring& name)
 {
     Bookmark bk;
     if (GetSectionSize(name.c_str()) >= 0)
     {
-        bk.Name = name;
-        bk.Search               = GetValue(name.c_str(), L"searchString",       L"");
-        bk.Replace              = GetValue(name.c_str(), L"replaceString",      L"");
-        bk.UseRegex             = wcscmp(GetValue(name.c_str(), L"useregex",           L"false"), L"true") == 0;
-        bk.CaseSensitive        = wcscmp(GetValue(name.c_str(), L"casesensitive",      L"false"), L"true") == 0;
-        bk.DotMatchesNewline    = wcscmp(GetValue(name.c_str(), L"dotmatchesnewline",  L"false"), L"true") == 0;
-        bk.Backup               = wcscmp(GetValue(name.c_str(), L"backup",             L"false"), L"true") == 0;
-        bk.Utf8                 = wcscmp(GetValue(name.c_str(), L"utf8",               L"false"), L"true") == 0;
-        bk.IncludeSystem        = wcscmp(GetValue(name.c_str(), L"includesystem",      L"false"), L"true") == 0;
-        bk.IncludeFolder        = wcscmp(GetValue(name.c_str(), L"includefolder",      L"false"), L"true") == 0;
-        bk.IncludeHidden        = wcscmp(GetValue(name.c_str(), L"includehidden",      L"false"), L"true") == 0;
-        bk.IncludeBinary        = wcscmp(GetValue(name.c_str(), L"includebinary",      L"false"), L"true") == 0;
-        bk.ExcludeDirs          = GetValue(name.c_str(), L"excludedirs",        L"");
-        bk.FileMatch            = GetValue(name.c_str(), L"filematch",          L"");
-        bk.FileMatchRegex       = wcscmp(GetValue(name.c_str(), L"filematchregex",     L"false"), L"true") == 0;
-        bk.Path                 = GetValue(name.c_str(), L"searchpath", L"");
+        bk.Name              = name;
+        bk.Search            = GetValue(name.c_str(), L"searchString", L"");
+        bk.Replace           = GetValue(name.c_str(), L"replaceString", L"");
+        bk.UseRegex          = wcscmp(GetValue(name.c_str(), L"useregex", L"false"), L"true") == 0;
+        bk.CaseSensitive     = wcscmp(GetValue(name.c_str(), L"casesensitive", L"false"), L"true") == 0;
+        bk.DotMatchesNewline = wcscmp(GetValue(name.c_str(), L"dotmatchesnewline", L"false"), L"true") == 0;
+        bk.Backup            = wcscmp(GetValue(name.c_str(), L"backup", L"false"), L"true") == 0;
+        bk.Utf8              = wcscmp(GetValue(name.c_str(), L"utf8", L"false"), L"true") == 0;
+        bk.IncludeSystem     = wcscmp(GetValue(name.c_str(), L"includesystem", L"false"), L"true") == 0;
+        bk.IncludeFolder     = wcscmp(GetValue(name.c_str(), L"includefolder", L"false"), L"true") == 0;
+        bk.IncludeHidden     = wcscmp(GetValue(name.c_str(), L"includehidden", L"false"), L"true") == 0;
+        bk.IncludeBinary     = wcscmp(GetValue(name.c_str(), L"includebinary", L"false"), L"true") == 0;
+        bk.ExcludeDirs       = GetValue(name.c_str(), L"excludedirs", L"");
+        bk.FileMatch         = GetValue(name.c_str(), L"filematch", L"");
+        bk.FileMatchRegex    = wcscmp(GetValue(name.c_str(), L"filematchregex", L"false"), L"true") == 0;
+        bk.Path              = GetValue(name.c_str(), L"searchpath", L"");
     }
 
     return bk;
 }
-

@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
 #include <Shldisp.h>
 
 #ifndef __IDataObjectAsyncCapability_FWD_DEFINED__
-#define IDataObjectAsyncCapability IAsyncOperation
+#    define IDataObjectAsyncCapability IAsyncOperation
 #endif
 
 #define DRAG_NUMFORMATS 2
@@ -63,14 +63,12 @@ protected:
     std::vector<std::wstring> m_arFiles;
 };
 
-
 class CDragSourceNotify : IDropSourceNotify
 {
 private:
     LONG refCount;
 
 public:
-
     CDragSourceNotify(void)
     {
         refCount = 0;
@@ -82,17 +80,21 @@ public:
 
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject)
     {
-        if(!ppvObject) {
+        if (!ppvObject)
+        {
             return E_POINTER;
         }
 
-        if (riid == IID_IUnknown) {
-            *ppvObject = (IUnknown*) dynamic_cast<IDropSourceNotify*>(this);
+        if (riid == IID_IUnknown)
+        {
+            *ppvObject = (IUnknown*)dynamic_cast<IDropSourceNotify*>(this);
         }
-        else if (riid == IID_IDropSourceNotify) {
+        else if (riid == IID_IDropSourceNotify)
+        {
             *ppvObject = dynamic_cast<IDropSourceNotify*>(this);
         }
-        else {
+        else
+        {
             *ppvObject = NULL;
             return E_NOINTERFACE;
         }
@@ -109,7 +111,8 @@ public:
     ULONG STDMETHODCALLTYPE Release(void)
     {
         ULONG ret = InterlockedDecrement(&refCount);
-        if(!ret) {
+        if (!ret)
+        {
             delete this;
         }
         return ret;
@@ -124,18 +127,16 @@ public:
     {
         return S_OK;
     }
-
 };
-
 
 class CIDropSource : public IDropSource
 {
     long m_cRefCount;
-public:
-    bool m_bDropped;
-    IDataObject * m_pIDataObj;
-    CDragSourceNotify* pDragSourceNotify;
 
+public:
+    bool               m_bDropped;
+    IDataObject*       m_pIDataObj;
+    CDragSourceNotify* pDragSourceNotify;
 
     CIDropSource()
         : m_cRefCount(0)
@@ -160,31 +161,30 @@ public:
     }
     //IUnknown
     virtual HRESULT STDMETHODCALLTYPE QueryInterface(
-        /* [in] */ REFIID riid,
-        /* [iid_is][out] */ void __RPC_FAR *__RPC_FAR *ppvObject);
-    virtual ULONG STDMETHODCALLTYPE AddRef( void);
-    virtual ULONG STDMETHODCALLTYPE Release( void);
+        /* [in] */ REFIID        riid,
+        /* [iid_is][out] */ void __RPC_FAR* __RPC_FAR* ppvObject);
+    virtual ULONG STDMETHODCALLTYPE AddRef(void);
+    virtual ULONG STDMETHODCALLTYPE Release(void);
     //IDropSource
     virtual HRESULT STDMETHODCALLTYPE QueryContinueDrag(
-        /* [in] */ BOOL fEscapePressed,
+        /* [in] */ BOOL  fEscapePressed,
         /* [in] */ DWORD grfKeyState);
 
     virtual HRESULT STDMETHODCALLTYPE GiveFeedback(
         /* [in] */ DWORD dwEffect);
 };
 
-
-
-extern  CLIPFORMAT  CF_FILECONTENTS;
-extern  CLIPFORMAT  CF_FILEDESCRIPTOR;
-extern  CLIPFORMAT  CF_PREFERREDDROPEFFECT;
+extern CLIPFORMAT CF_FILECONTENTS;
+extern CLIPFORMAT CF_FILEDESCRIPTOR;
+extern CLIPFORMAT CF_PREFERREDDROPEFFECT;
 
 /**
  * Represents a path as an IDataObject.
  * This can be used for drag and drop operations to other applications like
  * the shell itself.
  */
-class FileDataObject : public IDataObject, public IDataObjectAsyncCapability
+class FileDataObject : public IDataObject
+    , public IDataObjectAsyncCapability
 {
 public:
     /**
@@ -196,8 +196,8 @@ public:
 
     //IUnknown
     virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject);
-    virtual ULONG STDMETHODCALLTYPE AddRef(void);
-    virtual ULONG STDMETHODCALLTYPE Release(void);
+    virtual ULONG STDMETHODCALLTYPE   AddRef(void);
+    virtual ULONG STDMETHODCALLTYPE   Release(void);
 
     //IDataObject
     virtual HRESULT STDMETHODCALLTYPE GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium);
@@ -217,19 +217,18 @@ public:
     virtual HRESULT STDMETHODCALLTYPE InOperation(BOOL* pfInAsyncOp);
     virtual HRESULT STDMETHODCALLTYPE EndOperation(HRESULT hResult, IBindCtx* pbcReserved, DWORD dwEffects);
 
-    virtual HRESULT STDMETHODCALLTYPE SetDropDescription(DROPIMAGETYPE image, LPCTSTR format, LPCTSTR insert);
+    virtual HRESULT STDMETHODCALLTYPE SetDropDescription(DROPIMAGETYPE image, LPCWSTR format, LPCWSTR insert);
 
 private:
     void CopyMedium(STGMEDIUM* pMedDest, STGMEDIUM* pMedSrc, FORMATETC* pFmtSrc);
 
-    std::vector<std::wstring>   m_allPaths;
-    long                        m_cRefCount;
-    BOOL                        m_bInOperation;
-    BOOL                        m_bIsAsync;
-    std::vector<FORMATETC*>     m_vecFormatEtc;
-    std::vector<STGMEDIUM*>     m_vecStgMedium;
+    std::vector<std::wstring> m_allPaths;
+    long                      m_cRefCount;
+    BOOL                      m_bInOperation;
+    BOOL                      m_bIsAsync;
+    std::vector<FORMATETC*>   m_vecFormatEtc;
+    std::vector<STGMEDIUM*>   m_vecStgMedium;
 };
-
 
 /**
 * Helper class for the FileDataObject class: implements the enumerator
@@ -241,46 +240,54 @@ public:
     CSVNEnumFormatEtc(const std::vector<FORMATETC*>& vec);
     CSVNEnumFormatEtc(const std::vector<FORMATETC>& vec);
     //IUnknown members
-    STDMETHOD(QueryInterface)(REFIID, void**);
-    STDMETHOD_(ULONG, AddRef)(void);
-    STDMETHOD_(ULONG, Release)(void);
+    STDMETHOD(QueryInterface)
+    (REFIID, void**);
+    STDMETHOD_(ULONG, AddRef)
+    (void);
+    STDMETHOD_(ULONG, Release)
+    (void);
 
     //IEnumFORMATETC members
-    STDMETHOD(Next)(ULONG, LPFORMATETC, ULONG*);
-    STDMETHOD(Skip)(ULONG);
-    STDMETHOD(Reset)(void);
-    STDMETHOD(Clone)(IEnumFORMATETC**);
-private:
-    void                        Init();
+    STDMETHOD(Next)
+    (ULONG, LPFORMATETC, ULONG*);
+    STDMETHOD(Skip)
+    (ULONG);
+    STDMETHOD(Reset)
+    (void);
+    STDMETHOD(Clone)
+    (IEnumFORMATETC**);
 
-    std::vector<FORMATETC>      m_vecFormatEtc;
-    FORMATETC                   m_formats[DRAG_NUMFORMATS];
-    ULONG                       m_cRefCount;
-    size_t                      m_iCur;
+private:
+    void Init();
+
+    std::vector<FORMATETC> m_vecFormatEtc;
+    FORMATETC              m_formats[DRAG_NUMFORMATS];
+    ULONG                  m_cRefCount;
+    size_t                 m_iCur;
 };
 
 class CDragSourceHelper
 {
     IDragSourceHelper2* pDragSourceHelper2;
-    IDragSourceHelper* pDragSourceHelper;
+    IDragSourceHelper*  pDragSourceHelper;
 
 public:
     CDragSourceHelper()
     {
-        pDragSourceHelper = NULL;
+        pDragSourceHelper  = NULL;
         pDragSourceHelper2 = NULL;
         if (FAILED(CoCreateInstance(CLSID_DragDropHelper,
-            NULL,
-            CLSCTX_INPROC_SERVER,
-            IID_IDragSourceHelper2,
-            (void**)&pDragSourceHelper2)))
+                                    NULL,
+                                    CLSCTX_INPROC_SERVER,
+                                    IID_IDragSourceHelper2,
+                                    (void**)&pDragSourceHelper2)))
         {
             pDragSourceHelper2 = NULL;
             if (FAILED(CoCreateInstance(CLSID_DragDropHelper,
-                NULL,
-                CLSCTX_INPROC_SERVER,
-                IID_IDragSourceHelper,
-                (void**)&pDragSourceHelper)))
+                                        NULL,
+                                        CLSCTX_INPROC_SERVER,
+                                        IID_IDragSourceHelper,
+                                        (void**)&pDragSourceHelper)))
                 pDragSourceHelper = NULL;
         }
     }
@@ -289,25 +296,25 @@ public:
         if (pDragSourceHelper2 != NULL)
         {
             pDragSourceHelper2->Release();
-            pDragSourceHelper2=NULL;
+            pDragSourceHelper2 = NULL;
         }
         if (pDragSourceHelper != NULL)
         {
             pDragSourceHelper->Release();
-            pDragSourceHelper=NULL;
+            pDragSourceHelper = NULL;
         }
     }
 
     // IDragSourceHelper
-    HRESULT InitializeFromBitmap(HBITMAP hBitmap,
-        POINT& pt,  // cursor position in client coords of the window
-        RECT& rc,   // selected item's bounding rect
-        IDataObject* pDataObject,
-        BOOL allowDropDescription=TRUE,
-        COLORREF crColorKey=GetSysColor(COLOR_WINDOW)// color of the window used for transparent effect.
-        )
+    HRESULT InitializeFromBitmap(HBITMAP      hBitmap,
+                                 POINT&       pt, // cursor position in client coords of the window
+                                 RECT&        rc, // selected item's bounding rect
+                                 IDataObject* pDataObject,
+                                 BOOL         allowDropDescription = TRUE,
+                                 COLORREF     crColorKey           = GetSysColor(COLOR_WINDOW) // color of the window used for transparent effect.
+    )
     {
-        if((pDragSourceHelper == NULL) && (pDragSourceHelper2 == NULL))
+        if ((pDragSourceHelper == NULL) && (pDragSourceHelper2 == NULL))
             return E_FAIL;
 
         if ((allowDropDescription) && (pDragSourceHelper2))
@@ -318,17 +325,17 @@ public:
         GetObject(hBitmap, sizeof(bm), &bm);
         di.sizeDragImage.cx = bm.bmWidth;
         di.sizeDragImage.cy = bm.bmHeight;
-        di.hbmpDragImage = hBitmap;
-        di.crColorKey = crColorKey;
-        di.ptOffset.x = pt.x - rc.left;
-        di.ptOffset.y = pt.y - rc.top;
+        di.hbmpDragImage    = hBitmap;
+        di.crColorKey       = crColorKey;
+        di.ptOffset.x       = pt.x - rc.left;
+        di.ptOffset.y       = pt.y - rc.top;
         if (pDragSourceHelper2)
             return pDragSourceHelper2->InitializeFromBitmap(&di, pDataObject);
         return pDragSourceHelper->InitializeFromBitmap(&di, pDataObject);
     }
-    HRESULT InitializeFromWindow(HWND hwnd, POINT& pt, IDataObject* pDataObject, BOOL allowDropDescription=TRUE)
+    HRESULT InitializeFromWindow(HWND hwnd, POINT& pt, IDataObject* pDataObject, BOOL allowDropDescription = TRUE)
     {
-        if((pDragSourceHelper == NULL) && (pDragSourceHelper2 == NULL))
+        if ((pDragSourceHelper == NULL) && (pDragSourceHelper2 == NULL))
             return E_FAIL;
         if ((allowDropDescription) && (pDragSourceHelper2))
             pDragSourceHelper2->SetFlags(DSH_ALLOWDROPDESCRIPTIONTEXT);

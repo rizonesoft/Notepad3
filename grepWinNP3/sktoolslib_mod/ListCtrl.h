@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,7 +21,6 @@
 
 #include <string>
 
-
 /**
  * Subclasses a list view control.
  */
@@ -31,17 +30,17 @@ public:
     CListCtrl();
     bool SubClassListCtrl(HWND hWnd);
 
-    void SetInfoText(LPCTSTR sText, bool bPermanent = false);
-    bool InfoTextShown() {return !m_sInfoText.empty();}
-
+    void SetInfoText(LPCWSTR sText, bool bPermanent = false);
+    bool InfoTextShown() { return !m_sInfoText.empty(); }
 
     /// static message handler to put in WNDCLASSEX structure
     static LRESULT CALLBACK stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-    operator HWND() {return m_hwnd;}
+    operator HWND() { return m_hwnd; }
+
 protected:
-    HWND        m_hwnd;
-    WNDPROC     m_pfnOrigCtlProc;
+    HWND         m_hwnd;
+    WNDPROC      m_pfnOrigCtlProc;
     std::wstring m_sInfoText;
-    bool        m_bInfoTextPermanent;
+    bool         m_bInfoTextPermanent;
 };

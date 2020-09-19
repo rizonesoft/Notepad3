@@ -33,12 +33,12 @@
 #pragma warning(pop)
 
 // Global Variables:
-HINSTANCE g_hInst;            // current instance
-HICON     g_hDlgIcon128;
-
-bool bPortable = false;
-CSimpleIni g_iniFile;
-HANDLE     hInitProtection = nullptr;
+HINSTANCE    g_hInst; // current instance
+HICON        g_hDlgIcon128;
+bool         bPortable = false;
+CSimpleIni   g_iniFile;
+std::wstring g_iniPath;
+HANDLE       hInitProtection = nullptr;
 
 ULONGLONG g_startTime = GetTickCount64();
 UINT      GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWinNP3_StartupMessage");
@@ -121,10 +121,10 @@ BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
     return TRUE;
 }
 
-int APIENTRY _tWinMain(HINSTANCE hInstance,
-                       HINSTANCE hPrevInstance,
-                       LPTSTR    lpCmdLine,
-                       int       nCmdShow)
+int APIENTRY wWinMain(HINSTANCE hInstance,
+                      HINSTANCE hPrevInstance,
+                      LPTSTR    lpCmdLine,
+                      int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -197,7 +197,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     HWND hWnd = nullptr;
     int timeout = 20;
     // find already running grepWin windows
-    if (alreadyRunning)
+    if (alreadyRunning && !parser.HasKey(L"new"))
     {
         do
         {
@@ -210,7 +210,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 {
                     CloseHandle(hInitProtection);
                     Sleep(100);
-                    initInProgress = false;
+                    initInProgress  = false;
                     hInitProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
                     if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
                     {
@@ -227,29 +227,28 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         } while ((hWnd == nullptr) && alreadyRunning && timeout);
     }
     auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
-    bPortable       = ((_tcsstr(modulename.c_str(), L"portable")) || 
-                       (_tcsstr(modulename.c_str(), L"NP3")) || 
+    bPortable       = ((wcsstr(modulename.c_str(), L"portable")) || 
+                       (wcsstr(modulename.c_str(), L"NP3")) || 
                        (parser.HasKey(L"portable")));
-
-    std::wstring iniPath = CPathUtils::GetModuleDir(nullptr);
-    iniPath += L"\\grepWinNP3.ini";
-
+ 
+    g_iniPath = CPathUtils::GetModuleDir(0);
+    g_iniPath += L"\\grepwinNP3.ini";
     if (parser.HasVal(L"inipath"))
-        iniPath = parser.GetVal(L"inipath");
+        g_iniPath = parser.GetVal(L"inipath");
 
     if (bPortable)
     {
-        if (PathIsRelative(iniPath.c_str()))
+        if (PathIsRelative(g_iniPath.c_str()))
         {
             WCHAR absPath[MAX_PATH] = {L'\0'};
             StringCchCopy(absPath, MAX_PATH, CPathUtils::GetModuleDir(nullptr).c_str());
-            PathAppend(absPath, iniPath.c_str());
-            iniPath = absPath;
+            PathAppend(absPath, g_iniPath.c_str());
+            g_iniPath = absPath;
         }
         g_iniFile.SetUnicode();
         g_iniFile.SetMultiLine();
         g_iniFile.SetSpaces(false);
-        g_iniFile.LoadFile(iniPath.c_str());
+        g_iniFile.LoadFile(g_iniPath.c_str());
     }
 
     if (hWnd)
@@ -320,7 +319,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         else
             CLanguage::Instance().LoadFile(std::wstring(CRegStdString(L"Software\\grepWinNP3\\languagefile")));
 
-        if (parser.HasKey(L"about")||parser.HasKey(_T("?"))||parser.HasKey(L"help"))
+        if (parser.HasKey(L"about")||parser.HasKey(L"?")||parser.HasKey(L"help"))
         {
             if (hInitProtection)
                 CloseHandle(hInitProtection);
@@ -355,15 +354,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetPreset(parser.GetVal(L"preset"));
 
             if (parser.HasVal(L"i"))
-                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(L"i"), L"yes")!=0);
+                searchDlg.SetCaseSensitive(_wcsicmp(parser.GetVal(L"i"), L"yes")!=0);
             if (parser.HasVal(L"n"))
-                searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(L"n"), L"yes")==0);
+                searchDlg.SetMatchesNewline(_wcsicmp(parser.GetVal(L"n"), L"yes")==0);
             if (parser.HasVal(L"k"))
-                searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(L"k"), L"yes")==0);
+                searchDlg.SetCreateBackups(_wcsicmp(parser.GetVal(L"k"), L"yes")==0);
             if (parser.HasVal(L"utf8"))
-                searchDlg.SetUTF8(_tcsicmp(parser.GetVal(L"utf8"), L"yes")==0);
+                searchDlg.SetUTF8(_wcsicmp(parser.GetVal(L"utf8"), L"yes")==0);
             if (parser.HasVal(L"binary"))
-                searchDlg.SetBinary(_tcsicmp(parser.GetVal(L"binary"), L"yes") == 0);
+                searchDlg.SetBinary(_wcsicmp(parser.GetVal(L"binary"), L"yes") == 0);
             if (parser.HasVal(L"size"))
             {
                 int cmp = 0;
@@ -372,15 +371,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetSize(parser.GetLongVal(L"size"), cmp);
             }
             if (parser.HasVal(L"s"))
-                searchDlg.SetIncludeSystem(_tcsicmp(parser.GetVal(L"s"), L"yes")==0);
+                searchDlg.SetIncludeSystem(_wcsicmp(parser.GetVal(L"s"), L"yes")==0);
             if (parser.HasVal(L"h"))
-                searchDlg.SetIncludeHidden(_tcsicmp(parser.GetVal(L"h"), L"yes")==0);
+                searchDlg.SetIncludeHidden(_wcsicmp(parser.GetVal(L"h"), L"yes")==0);
             if (parser.HasVal(L"u"))
-                searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(L"u"), L"yes")==0);
+                searchDlg.SetIncludeSubfolders(_wcsicmp(parser.GetVal(L"u"), L"yes")==0);
             if (parser.HasVal(L"b"))
-                searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(L"b"), L"yes")==0);
+                searchDlg.SetIncludeBinary(_wcsicmp(parser.GetVal(L"b"), L"yes")==0);
             if (parser.HasVal(L"regex"))
-                searchDlg.SetUseRegex(_tcsicmp(parser.GetVal(L"regex"), L"yes") == 0);
+                searchDlg.SetUseRegex(_wcsicmp(parser.GetVal(L"regex"), L"yes") == 0);
             else if(parser.HasVal(L"searchfor"))
                 searchDlg.SetUseRegex(true);
 
@@ -435,7 +434,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }
         if (bPortable)
-            g_iniFile.SaveFile(iniPath.c_str(), true);
+            g_iniFile.SaveFile(g_iniPath.c_str(), true);
         
         Gdiplus::GdiplusShutdown(gdiplusToken);
     }

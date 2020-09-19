@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <string.h>
-#include <tchar.h>
 #include <malloc.h>
 #include <crtdbg.h>
 #include "ResourceTextFile.h"
@@ -32,7 +31,7 @@ CResourceTextFile::CResourceTextFile()
 {
 }
 
-CResourceTextFile::CResourceTextFile(const CResourceTextFile& rf)
+CResourceTextFile::CResourceTextFile(const CResourceTextFile &rf)
 {
     if (rf.m_bDoNotDeleteBuffer)
     {
@@ -41,18 +40,18 @@ CResourceTextFile::CResourceTextFile(const CResourceTextFile& rf)
     }
     else
     {
-        m_pszText = new TCHAR [rf.m_nBufLen + 2];
-        memset(m_pszText, 0, (rf.m_nBufLen+2)*sizeof(TCHAR));
-        _tcsncpy_s(m_pszText, rf.m_nBufLen + 2, rf.m_pszText, rf.m_nBufLen);
+        m_pszText = new wchar_t[rf.m_nBufLen + 2];
+        memset(m_pszText, 0, (rf.m_nBufLen + 2) * sizeof(wchar_t));
+        wcsncpy_s(m_pszText, rf.m_nBufLen + 2, rf.m_pszText, rf.m_nBufLen);
     }
 
-    m_nBufLen = rf.m_nBufLen;
-    m_nPosition = 0;
-    m_bIsOpen = rf.m_bIsOpen;
-    m_bText = rf.m_bText;
+    m_nBufLen            = rf.m_nBufLen;
+    m_nPosition          = 0;
+    m_bIsOpen            = rf.m_bIsOpen;
+    m_bText              = rf.m_bText;
     m_bDoNotDeleteBuffer = rf.m_bDoNotDeleteBuffer;
-    m_eConvertAction = rf.m_eConvertAction;
-    m_eBomAction = rf.m_eBomAction;
+    m_eConvertAction     = rf.m_eConvertAction;
+    m_eBomAction         = rf.m_eBomAction;
 }
 
 CResourceTextFile::~CResourceTextFile()
@@ -60,11 +59,11 @@ CResourceTextFile::~CResourceTextFile()
     Close();
 }
 
-BOOL CResourceTextFile::Open(HINSTANCE hInstance,
-                             LPCTSTR lpszResId,
-                             LPCTSTR lpszResType /*= _T("TEXT")*/,
+BOOL CResourceTextFile::Open(HINSTANCE     hInstance,
+                             LPCWSTR       lpszResId,
+                             LPCWSTR       lpszResType /*= L"TEXT"*/,
                              ConvertAction eConvertAction /*= NoConvertAction*/,
-                             BomAction eBomAction /*= NoBomAction*/)
+                             BomAction     eBomAction /*= NoBomAction*/)
 {
     BOOL rc = FALSE;
 
@@ -74,7 +73,7 @@ BOOL CResourceTextFile::Open(HINSTANCE hInstance,
     _ASSERTE(lpszResType);
 
     m_eConvertAction = eConvertAction;
-    m_eBomAction = eBomAction;
+    m_eBomAction     = eBomAction;
 
     if (lpszResId && lpszResType)
     {
@@ -82,11 +81,11 @@ BOOL CResourceTextFile::Open(HINSTANCE hInstance,
 
         if (rc)
         {
-            TCHAR *cp = (TCHAR *) GetByteBuffer();
-            DWORD dwSize = (DWORD) GetLength();
+            wchar_t *cp     = (wchar_t *)GetByteBuffer();
+            DWORD    dwSize = (DWORD)GetLength();
 
             rc = SetTextBuffer(cp, dwSize,
-                    eConvertAction, eBomAction);
+                               eConvertAction, eBomAction);
 
             if (rc)
             {
@@ -107,37 +106,37 @@ void CResourceTextFile::Close()
     CResourceFile::Close();
 
     if (m_pszText && !m_bDoNotDeleteBuffer)
-        delete [] m_pszText;
+        delete[] m_pszText;
     m_pszText = NULL;
 }
 
-TCHAR * CResourceTextFile::DetachTextBuffer()
+wchar_t *CResourceTextFile::DetachTextBuffer()
 {
-    TCHAR *cp = NULL;
+    wchar_t *cp = NULL;
 
     if (m_bIsOpen && m_bText)
     {
         m_bDoNotDeleteBuffer = TRUE;
-        cp = m_pszText;
+        cp                   = m_pszText;
     }
 
     return cp;
 }
 
-TCHAR * CResourceTextFile::DuplicateTextBuffer()
+wchar_t *CResourceTextFile::DuplicateTextBuffer()
 {
-    TCHAR *dup = NULL;
+    wchar_t *dup = NULL;
 
     if (IsOpen() && m_bText)
-        dup = _tcsdup(m_pszText);
+        dup = _wcsdup(m_pszText);
 
     return dup;
 }
 
-BOOL CResourceTextFile::SetTextBuffer(TCHAR * inbuf,
-                                      DWORD len,
+BOOL CResourceTextFile::SetTextBuffer(wchar_t *     inbuf,
+                                      DWORD         len,
                                       ConvertAction eConvertAction /*= NoConvertAction*/,
-                                      BomAction eBomAction /*= NoBomAction*/)
+                                      BomAction     eBomAction /*= NoBomAction*/)
 {
     BOOL rc = FALSE;
 
@@ -150,13 +149,13 @@ BOOL CResourceTextFile::SetTextBuffer(TCHAR * inbuf,
         m_bText = TRUE;
 
         m_eConvertAction = eConvertAction;
-        m_eBomAction = eBomAction;
+        m_eBomAction     = eBomAction;
 
-        DWORD dwSize = len;     // bytes
+        DWORD dwSize = len; // bytes
 
         // copy buffer to ensure it's null terminated
-        BYTE * buf = new BYTE [dwSize+16];
-        memset(buf, 0, dwSize+16);
+        BYTE *buf = new BYTE[dwSize + 16];
+        memset(buf, 0, dwSize + 16);
         memcpy(buf, inbuf, dwSize);
 
         BOOL bFoundBom = (buf[0] == 0xFF) && (buf[1] == 0xFE);
@@ -167,43 +166,43 @@ BOOL CResourceTextFile::SetTextBuffer(TCHAR * inbuf,
 #ifndef _UNICODE
             wlen = wlen * sizeof(WCHAR);
 #endif
-            m_pszText = new TCHAR [wlen+16];
-            memset(m_pszText, 0, (wlen+16)*sizeof(TCHAR));
-            LPWSTR wp = (LPWSTR) m_pszText;
+            m_pszText = new wchar_t[wlen + 16];
+            memset(m_pszText, 0, (wlen + 16) * sizeof(wchar_t));
+            LPWSTR wp = (LPWSTR)m_pszText;
             if ((m_eBomAction == AddBom) && !bFoundBom)
             {
                 // caller wants a BOM
-                BYTE * p = (BYTE *)m_pszText;
-                p[0] = 0xFF;
-                p[1] = 0xFE;
+                BYTE *p = (BYTE *)m_pszText;
+                p[0]    = 0xFF;
+                p[1]    = 0xFE;
                 wp += 1;
             }
-            MultiByteToWideChar(CP_ACP, 0, (LPCSTR)buf, -1, wp, wlen+2);
-            m_nBufLen = wcslen((WCHAR*)m_pszText);
+            MultiByteToWideChar(CP_ACP, 0, (LPCSTR)buf, -1, wp, wlen + 2);
+            m_nBufLen = wcslen((WCHAR *)m_pszText);
         }
         else if (m_eConvertAction == ConvertToAnsi)
         {
-            LPCWSTR wp = (LPCWSTR) buf;
+            LPCWSTR wp = (LPCWSTR)buf;
             if (bFoundBom && (m_eBomAction == RemoveBom))
-                wp++;   // skip over BOM
-            int alen = WideCharToMultiByte(CP_ACP, 0, wp, -1,
-                            NULL, 0, NULL, NULL);
-            m_pszText = new TCHAR [alen+4];
-            memset(m_pszText, 0, (alen+4)*sizeof(TCHAR));
+                wp++; // skip over BOM
+            int alen  = WideCharToMultiByte(CP_ACP, 0, wp, -1,
+                                           NULL, 0, NULL, NULL);
+            m_pszText = new wchar_t[alen + 4];
+            memset(m_pszText, 0, (alen + 4) * sizeof(wchar_t));
             WideCharToMultiByte(CP_ACP, 0, wp, -1,
-                (LPSTR)m_pszText, alen+1, NULL, NULL);
+                                (LPSTR)m_pszText, alen + 1, NULL, NULL);
             m_nBufLen = strlen((LPCSTR)m_pszText);
         }
         else
         {
             // no conversion
-            m_pszText = new TCHAR [(dwSize + 16)/sizeof(TCHAR)];
-            TCHAR *cp = m_pszText;
-            memset(m_pszText, 0, dwSize+8);
+            m_pszText   = new wchar_t[(dwSize + 16) / sizeof(wchar_t)];
+            wchar_t *cp = m_pszText;
+            memset(m_pszText, 0, dwSize + 8);
             int index = 0;
             if ((m_eBomAction == AddBom) && !bFoundBom)
             {
-                BYTE bom[2] = { 0xFF, 0xFE };
+                BYTE bom[2] = {0xFF, 0xFE};
                 memcpy(cp, bom, 2);
                 cp += 2;
             }
@@ -212,46 +211,46 @@ BOOL CResourceTextFile::SetTextBuffer(TCHAR * inbuf,
                 index = 2;
             }
             memcpy(cp, &buf[index], dwSize);
-            m_nBufLen = _tcslen(m_pszText);
+            m_nBufLen = wcslen(m_pszText);
         }
 
-        m_nPosition = 0;
-        m_bIsOpen = TRUE;
-        m_bDoNotDeleteBuffer = FALSE;   // ok to delete the buffer
-        delete [] buf;
+        m_nPosition          = 0;
+        m_bIsOpen            = TRUE;
+        m_bDoNotDeleteBuffer = FALSE; // ok to delete the buffer
+        delete[] buf;
         rc = TRUE;
     }
 
     return rc;
 }
 
-size_t CResourceTextFile::ReadLine(TCHAR *buf, size_t nBufLen)
+size_t CResourceTextFile::ReadLine(wchar_t *buf, size_t nBufLen)
 {
     size_t nOldPosition = m_nPosition;
-    size_t nIndex = 0;
+    size_t nIndex       = 0;
     if (buf)
-        *buf = _T('\0');
+        *buf = L'\0';
 
     if (m_bIsOpen && m_pszText && m_bText)
     {
         while (!IsAtEOF())
         {
-            TCHAR c = m_pszText[m_nPosition++];
+            wchar_t c = m_pszText[m_nPosition++];
 
-            if ((c == _T('\r')) || (c == _T('\n')))
+            if ((c == L'\r') || (c == L'\n'))
             {
                 if (!IsAtEOF())
                 {
                     // check for \r\n pair
-                    TCHAR prevc = c;
-                    c = m_pszText[m_nPosition];
-                    if (((prevc == _T('\r')) && (c == _T('\n'))) ||
-                        ((prevc == _T('\n')) && (c == _T('\r'))))
+                    wchar_t prevc = c;
+                    c             = m_pszText[m_nPosition];
+                    if (((prevc == L'\r') && (c == L'\n')) ||
+                        ((prevc == L'\n') && (c == L'\r')))
                     {
                         m_nPosition++;
                     }
                 }
-                break;  // end of line
+                break; // end of line
             }
 
             if (buf && (nIndex < nBufLen))
@@ -270,7 +269,7 @@ size_t CResourceTextFile::ReadLine(TCHAR *buf, size_t nBufLen)
             if (nBufLen == 0)
                 nIndex = 0;
         }
-        buf[nIndex] = _T('\0');
+        buf[nIndex] = L'\0';
     }
 
     // if we were just getting buffer size, restore position

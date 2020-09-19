@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2014 - Stefan Kueng
+// Copyright (C) 2014, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -32,24 +32,27 @@
  **/
 
 #define AUTOOUTOFSCOPE_TOKEN_PASTEx(x, y) x##y
-#define AUTOOUTOFSCOPE_TOKEN_PASTE(x, y) AUTOOUTOFSCOPE_TOKEN_PASTEx(x, y)
+#define AUTOOUTOFSCOPE_TOKEN_PASTE(x, y)  AUTOOUTOFSCOPE_TOKEN_PASTEx(x, y)
 
-template<typename T>
+template <typename T>
 class AutoOutOfScope
 {
 public:
-    AutoOutOfScope(T& destructor) : m_destructor(destructor) {}
+    AutoOutOfScope(T& destructor)
+        : m_destructor(destructor)
+    {
+    }
     ~AutoOutOfScope() { m_destructor(); }
     // no copies of this class, also to avoid compiler warnings
     AutoOutOfScope(const AutoOutOfScope&) = delete;
-    AutoOutOfScope& operator=(const AutoOutOfScope &tmp) = delete;
+    AutoOutOfScope& operator=(const AutoOutOfScope& tmp) = delete;
+
 private:
     T& m_destructor;
 };
 
-#define AUTOOUTOFSCOPE__INTERNAL(Destructor, counter) \
-auto AUTOOUTOFSCOPE_TOKEN_PASTE(auto_func_, counter) = [&]() { Destructor; };\
-AutoOutOfScope<decltype(AUTOOUTOFSCOPE_TOKEN_PASTE(auto_func_, counter))> AUTOOUTOFSCOPE_TOKEN_PASTE(auto_, counter)(AUTOOUTOFSCOPE_TOKEN_PASTE(auto_func_, counter));
+#define AUTOOUTOFSCOPE__INTERNAL(Destructor, counter)                                                                                                  \
+    auto                                                                      AUTOOUTOFSCOPE_TOKEN_PASTE(auto_func_, counter) = [&]() { Destructor; }; \
+    AutoOutOfScope<decltype(AUTOOUTOFSCOPE_TOKEN_PASTE(auto_func_, counter))> AUTOOUTOFSCOPE_TOKEN_PASTE(auto_, counter)(AUTOOUTOFSCOPE_TOKEN_PASTE(auto_func_, counter));
 
 #define OnOutOfScope(Destructor) AUTOOUTOFSCOPE__INTERNAL(Destructor, __COUNTER__)
-

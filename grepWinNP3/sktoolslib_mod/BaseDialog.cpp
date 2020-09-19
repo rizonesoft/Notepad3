@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2015-2017 - Stefan Kueng
+// Copyright (C) 2012-2013, 2015-2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -29,6 +29,13 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent)
     m_bPseudoModal = false;
     hResource = hInstance;
     return DialogBoxParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+}
+
+INT_PTR CDialog::DoModal(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent)
+{
+    m_bPseudoModal = false;
+    hResource      = hInstance;
+    return DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
 }
 
 INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel)
@@ -62,8 +69,7 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT i
             if (!PreTranslateMessage(&msg))
             {
                 if (!TranslateAccelerator(m_hwnd, hAccelTable, &msg) &&
-                    !::IsDialogMessage(m_hwnd, &msg)
-                    )
+                    !::IsDialogMessage(m_hwnd, &msg))
                 {
                     TranslateMessage(&msg);
                     DispatchMessage(&msg);
@@ -100,19 +106,29 @@ HWND CDialog::Create(HINSTANCE hInstance, int resID, HWND hWndParent)
     return m_hwnd;
 }
 
-
-void CDialog::ShowModeless( HINSTANCE hInstance, int resID, HWND hWndParent )
+void CDialog::ShowModeless(HINSTANCE hInstance, int resID, HWND hWndParent)
 {
     if (m_hwnd == nullptr)
     {
         hResource = hInstance;
-        m_hwnd = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+        m_hwnd    = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
     }
     ShowWindow(m_hwnd, SW_SHOW);
     SetFocus(m_hwnd);
 }
 
-void CDialog::InitDialog(HWND hwndDlg, UINT iconID, bool bPosition/* = true*/)
+void CDialog::ShowModeless(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent)
+{
+    if (m_hwnd == nullptr)
+    {
+        hResource = hInstance;
+        m_hwnd    = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+    }
+    ShowWindow(m_hwnd, SW_SHOW);
+    SetFocus(m_hwnd);
+}
+
+void CDialog::InitDialog(HWND hwndDlg, UINT iconID, bool bPosition /* = true*/)
 {
     HWND hwndOwner;
     RECT rc, rcDlg, rcOwner;
@@ -134,7 +150,7 @@ void CDialog::InitDialog(HWND hwndDlg, UINT iconID, bool bPosition/* = true*/)
 
     if (bPosition)
         SetWindowPos(hwndDlg, HWND_TOP, rcOwner.left + (rc.right / 2), rcOwner.top + (rc.bottom / 2), 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
-    HICON hIcon = (HICON)::LoadImage(hResource, MAKEINTRESOURCE(iconID), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE|LR_SHARED);
+    HICON hIcon = (HICON)::LoadImage(hResource, MAKEINTRESOURCE(iconID), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
     ::SendMessage(hwndDlg, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
     ::SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
     m_Dwm.Initialize();
@@ -148,12 +164,12 @@ void CDialog::AddToolTip(UINT ctrlID, LPCWSTR text)
 {
     TOOLINFO tt;
     tt.cbSize = sizeof(TOOLINFO);
-    tt.uFlags = TTF_IDISHWND|TTF_SUBCLASS;
+    tt.uFlags   = TTF_IDISHWND | TTF_SUBCLASS;
     tt.hwnd = GetDlgItem(*this, ctrlID);
     tt.uId = (UINT_PTR)GetDlgItem(*this, ctrlID);
-    tt.lpszText = const_cast<LPTSTR>(text);
+    tt.lpszText = const_cast<LPWSTR>(text);
 
-    SendMessage (m_hToolTips, TTM_ADDTOOL, 0, (LPARAM) &tt);
+    SendMessage(m_hToolTips, TTM_ADDTOOL, 0, (LPARAM)&tt);
 }
 
 void CDialog::AddToolTip(HWND hWnd, LPCWSTR text)
@@ -163,7 +179,7 @@ void CDialog::AddToolTip(HWND hWnd, LPCWSTR text)
     tt.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
     tt.hwnd = hWnd;
     tt.uId = (UINT_PTR)hWnd;
-    tt.lpszText = const_cast<LPTSTR>(text);
+    tt.lpszText = const_cast<LPWSTR>(text);
 
     SendMessage(m_hToolTips, TTM_ADDTOOL, 0, (LPARAM)&tt);
 }
@@ -193,7 +209,7 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
                 nullptr, pWnd->hResource,
                 nullptr);
 
-            SetWindowPos(pWnd->m_hToolTips, HWND_TOPMOST,0, 0, 0, 0,
+            SetWindowPos(pWnd->m_hToolTips, HWND_TOPMOST, 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             SendMessage(pWnd->m_hToolTips, TTM_SETMAXTIPWIDTH, 0, 600);
             SendMessage(pWnd->m_hToolTips, TTM_ACTIVATE, TRUE, 0);
@@ -225,12 +241,12 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
                     GetClientRect(hwndDlg, &rc);
                     if (pWnd->m_margins.cxLeftWidth < 0)
                     {
-                        SetBkColor(hdc, RGB(0,0,0));
+                        SetBkColor(hdc, RGB(0, 0, 0));
                         ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
                     }
                     else
                     {
-                        SetBkColor(hdc, RGB(0,0,0));
+                        SetBkColor(hdc, RGB(0, 0, 0));
                         RECT rect;
                         rect.left = rc.left;
                         rect.top = rc.top;
@@ -274,7 +290,6 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 
                     if (pWnd->m_margins.cxLeftWidth < 0)
                     {
-
                         lRes = PtInRect(&rc, pt) ? HTCAPTION : FALSE;
                     }
                     else
@@ -367,7 +382,7 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
             return;
         ::GetWindowRect(hw, &rccontrol);
         m_margins.cxLeftWidth = rccontrol.left - rc.left;
-        m_margins.cxLeftWidth -= (rc2.left-rc.left);
+        m_margins.cxLeftWidth -= (rc2.left - rc.left);
     }
     else
         m_margins.cxLeftWidth = 0;
@@ -379,7 +394,7 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
             return;
         ::GetWindowRect(hw, &rccontrol);
         m_margins.cyTopHeight = rccontrol.top - rc.top;
-        m_margins.cyTopHeight -= (rc2.top-rc.top);
+        m_margins.cyTopHeight -= (rc2.top - rc.top);
     }
     else
         m_margins.cyTopHeight = 0;
@@ -391,7 +406,7 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
             return;
         ::GetWindowRect(hw, &rccontrol);
         m_margins.cxRightWidth = rc.right - rccontrol.right;
-        m_margins.cxRightWidth -= (rc.right-rc2.right);
+        m_margins.cxRightWidth -= (rc.right - rc2.right);
     }
     else
         m_margins.cxRightWidth = 0;
@@ -403,7 +418,7 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
             return;
         ::GetWindowRect(hw, &rccontrol);
         m_margins.cyBottomHeight = rc.bottom - rccontrol.bottom;
-        m_margins.cyBottomHeight -= (rc.bottom-rc2.bottom);
+        m_margins.cyBottomHeight -= (rc.bottom - rc2.bottom);
     }
     else
         m_margins.cyBottomHeight = 0;
@@ -424,17 +439,17 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
     }
 }
 
-int CDialog::GetDlgItemTextLength( UINT nId )
+int CDialog::GetDlgItemTextLength(UINT nId)
 {
     HWND hWnd = GetDlgItem(*this, nId);
     return GetWindowTextLength(hWnd);
 }
 
-std::unique_ptr<TCHAR[]> CDialog::GetDlgItemText( UINT nId )
+std::unique_ptr<wchar_t[]> CDialog::GetDlgItemText(UINT nId)
 {
     int len = GetDlgItemTextLength(nId);
     len++;
-    auto buf = std::make_unique<TCHAR[]>(len);
+    auto buf = std::make_unique<wchar_t[]>(len);
     ::GetDlgItemText(*this, nId, buf.get(), len);
     return buf;
 }
@@ -446,7 +461,7 @@ void CDialog::RefreshCursor()
     SetCursorPos(pt.x, pt.y);
 }
 
-void CDialog::ShowEditBalloon( UINT nId, LPCWSTR title, LPCWSTR text, int icon /*= TTI_ERROR*/ )
+void CDialog::ShowEditBalloon(UINT nId, LPCWSTR title, LPCWSTR text, int icon /*= TTI_ERROR*/)
 {
     EDITBALLOONTIP ebt = {0};
     ebt.cbStruct = sizeof(EDITBALLOONTIP);
@@ -478,7 +493,7 @@ void CDialog::ShowEditBalloon( UINT nId, LPCWSTR title, LPCWSTR text, int icon /
     }
 }
 
-void CDialog::SetTransparency( BYTE alpha, COLORREF color /*= 0xFF000000*/ )
+void CDialog::SetTransparency(BYTE alpha, COLORREF color /*= 0xFF000000*/)
 {
     if (alpha == 255)
     {
@@ -506,7 +521,7 @@ void CDialog::SetTransparency( BYTE alpha, COLORREF color /*= 0xFF000000*/ )
     SetLayeredWindowAttributes(*this, col, alpha, flags);
 }
 
-BOOL CDialog::IsDialogMessage( LPMSG lpMsg )
+BOOL CDialog::IsDialogMessage(LPMSG lpMsg)
 {
     if (g_hDlgCurrent)
     {

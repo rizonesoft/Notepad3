@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,31 +24,30 @@
 #include <functional>
 #include <memory>
 
-
 class CEscapeUtils
 {
 public:
     /**
      * Returns false if calling \ref Unescape is not necessary.
      */
-    static bool ContainsEscapedChars(const char * psz, size_t length);
+    static bool ContainsEscapedChars(const char* psz, size_t length);
 
     /**
      * Replaces escaped sequences with the corresponding characters in a string.
      * \return Position of the terminating \0 char.
      */
-    static char* Unescape(char * psz);
+    static char* Unescape(char* psz);
 
     /**
      * Replaces non-URI chars with the corresponding escape sequences.
      */
-    static std::string EscapeString(const std::string& str);
+    static std::string  EscapeString(const std::string& str);
     static std::wstring EscapeString(const std::wstring& str);
 
     /**
      * Replaces escaped sequences with the corresponding characters in a string.
      */
-    static std::string StringUnescape(const std::string& path);
+    static std::string  StringUnescape(const std::string& path);
     static std::wstring StringUnescape(const std::wstring& path);
 
     static bool DoesPercentNeedEscaping(LPCSTR str);

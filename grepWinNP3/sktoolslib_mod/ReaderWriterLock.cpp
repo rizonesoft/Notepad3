@@ -24,16 +24,16 @@ Email questions, comments or suggestions to quynhnguyenhuu@gmail.com
 // Following macros make this file can be used in non-MFC project
 #ifndef ASSERT
 // Define ASSERT macro
-#   define ASSERT _ASSERT
+#    define ASSERT _ASSERT
 
 // Define VERIFY macro
-#   ifdef _DEBUG
-#       define VERIFY ASSERT
-#       define DEBUG_ONLY(f) ((void)(f))
-#   else
-#       define VERIFY(f) ((void)(f))
-#       define DEBUG_ONLY(f)
-#   endif
+#    ifdef _DEBUG
+#        define VERIFY        ASSERT
+#        define DEBUG_ONLY(f) ((void)(f))
+#    else
+#        define VERIFY(f) ((void)(f))
+#        define DEBUG_ONLY(f)
+#    endif
 #endif
 
 ///////////////////////////////////////////////////////
@@ -51,8 +51,8 @@ CReaderWriterLockNonReentrance::CReaderWriterLockNonReentrance()
 
 CReaderWriterLockNonReentrance::~CReaderWriterLockNonReentrance()
 {
-    _ASSERT( (NULL == m_hSafeToReadEvent) &&
-        (NULL == m_hSafeToWriteEvent) );
+    _ASSERT((NULL == m_hSafeToReadEvent) &&
+            (NULL == m_hSafeToWriteEvent));
     DeleteCriticalSection(&m_cs);
 }
 
@@ -75,8 +75,7 @@ bool CReaderWriterLockNonReentrance::_ReaderWait(DWORD dwTimeout)
             // There might be one or more Writers entered, that's
             // why we need DO-WHILE loop here
             EnterCS();
-        }
-        while (0 != m_iNumOfWriter);
+        } while (0 != m_iNumOfWriter);
 
         ++m_iNumOfReaderEntered;
         blCanRead = TRUE;
@@ -85,13 +84,13 @@ bool CReaderWriterLockNonReentrance::_ReaderWait(DWORD dwTimeout)
     {
         LeaveCS();
 
-        DWORD const dwBeginTime = GetTickCount();
-        DWORD dwConsumedTime = 0;
+        DWORD const dwBeginTime    = GetTickCount();
+        DWORD       dwConsumedTime = 0;
 
-        for(;;)
+        for (;;)
         {
             blCanRead = (WAIT_OBJECT_0 == WaitForSingleObject(m_hSafeToReadEvent,
-                dwTimeout - dwConsumedTime));
+                                                              dwTimeout - dwConsumedTime));
 
             EnterCS();
 
@@ -141,8 +140,8 @@ void CReaderWriterLockNonReentrance::_ReaderRelease()
     INT _iNumOfReaderEntered = --m_iNumOfReaderEntered;
     _ASSERT(0 <= _iNumOfReaderEntered);
 
-    if ( (0 == _iNumOfReaderEntered) &&
-        (NULL != m_hSafeToWriteEvent) )
+    if ((0 == _iNumOfReaderEntered) &&
+        (NULL != m_hSafeToWriteEvent))
     {
         SetEvent(m_hSafeToWriteEvent);
     }
@@ -155,7 +154,7 @@ bool CReaderWriterLockNonReentrance::_WriterWaitAndLeaveCSIfSuccess(DWORD dwTime
 
     // Increase Writer-counter & reset Reader-event if necessary
     INT _iNumOfWriter = ++m_iNumOfWriter;
-    if ( (1 == _iNumOfWriter) && (NULL != m_hSafeToReadEvent) )
+    if ((1 == _iNumOfWriter) && (NULL != m_hSafeToReadEvent))
     {
         ResetEvent(m_hSafeToReadEvent);
     }
@@ -223,8 +222,8 @@ bool CReaderWriterLockNonReentrance::_UpgradeToWriterLockAndLeaveCS(DWORD dwTime
                 // After wait, now it's safe to be writer
                 _ASSERT(0 == m_iNumOfWriter);
                 m_iNumOfReaderEntered = 0;
-                m_iNumOfWriter = 1;
-                blCanWrite = TRUE;
+                m_iNumOfWriter        = 1;
+                blCanWrite            = TRUE;
             }
         }
         LeaveCS();
@@ -259,7 +258,7 @@ void CReaderWriterLockNonReentrance::_WriterRelease(bool blDowngrade)
     {
         //////////////////////////////////////////////////////////////////////////
         // Some WRITERs are queued
-        _ASSERT( (0 < m_iNumOfWriter) && (NULL != m_hSafeToWriteEvent));
+        _ASSERT((0 < m_iNumOfWriter) && (NULL != m_hSafeToWriteEvent));
 
         if (FALSE == blDowngrade)
         {
@@ -281,7 +280,7 @@ bool CReaderWriterLockNonReentrance::AcquireReaderLock(DWORD dwTimeout)
     }
     else
     {
-        blCanRead = (dwTimeout)? _ReaderWait(dwTimeout) : FALSE;
+        blCanRead = (dwTimeout) ? _ReaderWait(dwTimeout) : FALSE;
     }
     LeaveCS();
 
@@ -297,7 +296,7 @@ void CReaderWriterLockNonReentrance::ReleaseReaderLock()
 
 bool CReaderWriterLockNonReentrance::AcquireWriterLock(DWORD dwTimeout)
 {
-    bool blCanWrite ;
+    bool blCanWrite;
 
     EnterCS();
     if (0 == (m_iNumOfWriter | m_iNumOfReaderEntered))
@@ -411,7 +410,7 @@ void CReaderWriterLock::ReleaseReaderLock()
     m_impl.EnterCS();
 
     CMapThreadToState::iterator ite = m_map.find(dwCurrentThreadId);
-    _ASSERT( (ite != m_map.end()) && (READER_RECURRENCE_MASK & ite->second));
+    _ASSERT((ite != m_map.end()) && (READER_RECURRENCE_MASK & ite->second));
 
     const DWORD dwThreadState = (ite->second -= READER_RECURRENCE_UNIT);
     if (0 == dwThreadState)
@@ -425,7 +424,7 @@ void CReaderWriterLock::ReleaseReaderLock()
 bool CReaderWriterLock::AcquireWriterLock(DWORD dwTimeout)
 {
     const DWORD dwCurrentThreadId = GetCurrentThreadId();
-    bool blCanWrite;
+    bool        blCanWrite;
 
     m_impl.EnterCS();
     CMapThreadToState::iterator ite = m_map.find(dwCurrentThreadId);
@@ -503,7 +502,7 @@ void CReaderWriterLock::ReleaseWriterLock()
     m_impl.EnterCS();
 
     CMapThreadToState::iterator ite = m_map.find(dwCurrentThreadId);
-    _ASSERT( (ite != m_map.end()) && (WRITER_RECURRENCE_UNIT <= ite->second));
+    _ASSERT((ite != m_map.end()) && (WRITER_RECURRENCE_UNIT <= ite->second));
 
     const DWORD dwThreadState = (ite->second -= WRITER_RECURRENCE_UNIT);
     if (0 == dwThreadState)
@@ -544,7 +543,7 @@ void CReaderWriterLock::ReleaseAllLocks()
 
 DWORD CReaderWriterLock::GetCurrentThreadStatus() const
 {
-    DWORD dwThreadState;
+    DWORD       dwThreadState;
     const DWORD dwCurrentThreadId = GetCurrentThreadId();
 
     m_impl.EnterCS();
@@ -565,7 +564,7 @@ DWORD CReaderWriterLock::GetCurrentThreadStatus() const
 }
 
 void CReaderWriterLock::GetCurrentThreadStatus(DWORD* lpdwReaderLockCounter,
-    DWORD* lpdwWriterLockCounter) const
+                                               DWORD* lpdwWriterLockCounter) const
 {
     const DWORD dwThreadState = GetCurrentThreadStatus();
 
@@ -579,4 +578,3 @@ void CReaderWriterLock::GetCurrentThreadStatus(DWORD* lpdwReaderLockCounter,
         *lpdwWriterLockCounter = (dwThreadState / WRITER_RECURRENCE_UNIT);
     }
 }
-

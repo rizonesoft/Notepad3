@@ -22,6 +22,7 @@
 #include "version.h"
 #include "Theme.h"
 #include "DPIAware.h"
+#include <shellapi.h>
 #include <string>
 
 extern HICON g_hDlgIcon128;
@@ -76,11 +77,11 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
             CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
-            TCHAR buf[MAX_PATH] = {0};
+            wchar_t buf[MAX_PATH] = {0};
 #if defined(_WIN64)
-            _stprintf_s(buf, _countof(buf), L"grepWinNP3 (x64) version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
+            swprintf_s(buf, _countof(buf), L"grepWinNP3 (x64) version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
 #else
-            _stprintf_s(buf, _countof(buf), L"grepWinNP3 (x86) version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
+            swprintf_s(buf, _countof(buf), L"grepWinNP3 (x86) version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
 #endif
             SetDlgItemText(*this, IDC_VERSIONINFO, buf);
             SetDlgItemText(*this, IDC_DATE, TEXT(GREPWIN_VERDATE));
@@ -91,6 +92,30 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
         return DoCommand(LOWORD(wParam), HIWORD(wParam));
         case WM_CLOSE:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
+            break;
+        case WM_NOTIFY:
+        {
+            switch (wParam)
+            {
+            case IDC_WEBLINK:
+                switch (((LPNMHDR)lParam)->code)
+                {
+                case NM_CLICK:
+                case NM_RETURN:
+                {
+                    PNMLINK pNMLink = (PNMLINK)lParam;
+                    LITEM   item = pNMLink->item;
+                    if (item.iLink == 0)
+                    {
+                        ShellExecute(*this, L"open", item.szUrl, nullptr, nullptr, SW_SHOW);
+                    }
+                    break;
+                }
+                }
+                break;
+
+            }
+        }
         break;
         default:
             return FALSE;

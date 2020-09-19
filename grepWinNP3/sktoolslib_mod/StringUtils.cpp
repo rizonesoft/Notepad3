@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2017, 2019 - Stefan Kueng
+// Copyright (C) 2012-2017, 2019-2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,11 +25,10 @@
 
 #pragma comment(lib, "Crypt32.lib")
 
-
-int strwildcmp(const char *wild, const char *str)
+int strwildcmp(const char* wild, const char* str)
 {
-    const char *cp = nullptr;
-    const char *mp = nullptr;
+    const char* cp = nullptr;
+    const char* mp = nullptr;
     while ((*str) && (*wild != '*'))
     {
         if ((*wild != *str) && (*wild != '?'))
@@ -48,7 +47,7 @@ int strwildcmp(const char *wild, const char *str)
                 return 1;
             }
             mp = wild;
-            cp = str +1;
+            cp = str + 1;
         }
         else if ((*wild == *str) || (*wild == '?'))
         {
@@ -58,7 +57,7 @@ int strwildcmp(const char *wild, const char *str)
         else
         {
             wild = mp;
-            str = cp++;
+            str  = cp++;
         }
     }
 
@@ -69,10 +68,10 @@ int strwildcmp(const char *wild, const char *str)
     return !*wild;
 }
 
-int wcswildcmp(const wchar_t *wild, const wchar_t *str)
+int wcswildcmp(const wchar_t* wild, const wchar_t* str)
 {
-    const wchar_t *cp = nullptr;
-    const wchar_t *mp = nullptr;
+    const wchar_t* cp = nullptr;
+    const wchar_t* mp = nullptr;
     while ((*str) && (*wild != L'*'))
     {
         if ((*wild != *str) && (*wild != L'?'))
@@ -91,7 +90,7 @@ int wcswildcmp(const wchar_t *wild, const wchar_t *str)
                 return 1;
             }
             mp = wild;
-            cp = str +1;
+            cp = str + 1;
         }
         else if ((*wild == *str) || (*wild == L'?'))
         {
@@ -101,7 +100,7 @@ int wcswildcmp(const wchar_t *wild, const wchar_t *str)
         else
         {
             wild = mp;
-            str = cp++;
+            str  = cp++;
         }
     }
 
@@ -112,10 +111,10 @@ int wcswildcmp(const wchar_t *wild, const wchar_t *str)
     return !*wild;
 }
 
-int wcswildicmp(const wchar_t *wild, const wchar_t *str)
+int wcswildicmp(const wchar_t* wild, const wchar_t* str)
 {
-    const wchar_t *cp = nullptr;
-    const wchar_t *mp = nullptr;
+    const wchar_t* cp = nullptr;
+    const wchar_t* mp = nullptr;
     while ((*str) && (*wild != L'*'))
     {
         if ((*wild != L'?') && (::towlower(*wild) != ::towlower(*str)))
@@ -144,7 +143,7 @@ int wcswildicmp(const wchar_t *wild, const wchar_t *str)
         else
         {
             wild = mp;
-            str = cp++;
+            str  = cp++;
         }
     }
 
@@ -171,35 +170,35 @@ static constexpr BYTE HexLookup[513] = {
     "c0c1c2c3c4c5c6c7c8c9cacbcccdcecf"
     "d0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
     "e0e1e2e3e4e5e6e7e8e9eaebecedeeef"
-    "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
-};
+    "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"};
 static constexpr BYTE DecLookup[] = {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // gap before first hex digit
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,1,2,3,4,5,6,7,8,9,       // 0123456789
-    0,0,0,0,0,0,0,             // :;<=>?@ (gap)
-    10,11,12,13,14,15,         // ABCDEF
-    0,0,0,0,0,0,0,0,0,0,0,0,0, // GHIJKLMNOPQRS (gap)
-    0,0,0,0,0,0,0,0,0,0,0,0,0, // TUVWXYZ[/]^_` (gap)
-    10,11,12,13,14,15          // abcdef
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // gap before first hex digit
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,          // 0123456789
+    0, 0, 0, 0, 0, 0, 0,                   // :;<=>?@ (gap)
+    10, 11, 12, 13, 14, 15,                // ABCDEF
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // GHIJKLMNOPQRS (gap)
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // TUVWXYZ[/]^_` (gap)
+    10, 11, 12, 13, 14, 15                 // abcdef
 };
 
-std::string CStringUtils::ToHexString( BYTE* pSrc, int nSrcLen )
+std::string CStringUtils::ToHexString(BYTE* pSrc, int nSrcLen)
 {
-    WORD * pwHex=  (WORD*)HexLookup;
-    auto dest = std::make_unique<char[]>((nSrcLen*2)+1);
-    WORD * pwDest = (WORD*)dest.get();
-    for (int j=0; j<nSrcLen; j++ )
+    WORD* pwHex  = (WORD*)HexLookup;
+    auto  dest   = std::make_unique<char[]>((nSrcLen * 2) + 1);
+    WORD* pwDest = (WORD*)dest.get();
+    for (int j = 0; j < nSrcLen; j++)
     {
-        *pwDest= pwHex[*pSrc];
-        pwDest++; pSrc++;
+        *pwDest = pwHex[*pSrc];
+        pwDest++;
+        pSrc++;
     }
-    *((BYTE*)pwDest)= 0;  // terminate the string
+    *((BYTE*)pwDest) = 0; // terminate the string
     return std::string(dest.get());
 }
 
-bool CStringUtils::FromHexString( const std::string& src, BYTE* pDest )
+bool CStringUtils::FromHexString(const std::string& src, BYTE* pDest)
 {
     if (src.size() % 2)
         return false;
@@ -215,13 +214,13 @@ bool CStringUtils::FromHexString( const std::string& src, BYTE* pDest )
     return true;
 }
 
-std::wstring CStringUtils::ToHexWString( BYTE* pSrc, int nSrcLen )
+std::wstring CStringUtils::ToHexWString(BYTE* pSrc, int nSrcLen)
 {
     std::string s = ToHexString(pSrc, nSrcLen);
     return std::wstring(s.begin(), s.end());
 }
 
-std::unique_ptr<char[]> CStringUtils::Decrypt(const char * text)
+std::unique_ptr<char[]> CStringUtils::Decrypt(const char* text)
 {
     DWORD dwLen = 0;
     if (CryptStringToBinaryA(text, (DWORD)strlen(text), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
@@ -232,10 +231,10 @@ std::unique_ptr<char[]> CStringUtils::Decrypt(const char * text)
         return nullptr;
 
     DATA_BLOB blobin;
-    blobin.cbData = dwLen;
-    blobin.pbData = strIn.get();
-    LPWSTR descr = nullptr;
-    DATA_BLOB blobout = { 0 };
+    blobin.cbData     = dwLen;
+    blobin.pbData     = strIn.get();
+    LPWSTR    descr   = nullptr;
+    DATA_BLOB blobout = {0};
     if (CryptUnprotectData(&blobin, &descr, nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobout) == FALSE)
         return nullptr;
     SecureZeroMemory(blobin.pbData, blobin.cbData);
@@ -248,7 +247,7 @@ std::unique_ptr<char[]> CStringUtils::Decrypt(const char * text)
     return result;
 }
 
-std::unique_ptr<wchar_t[]> CStringUtils::Decrypt(const wchar_t * text)
+std::unique_ptr<wchar_t[]> CStringUtils::Decrypt(const wchar_t* text)
 {
     DWORD dwLen = 0;
     if (CryptStringToBinaryW(text, (DWORD)wcslen(text), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
@@ -259,10 +258,10 @@ std::unique_ptr<wchar_t[]> CStringUtils::Decrypt(const wchar_t * text)
         return nullptr;
 
     DATA_BLOB blobin;
-    blobin.cbData = dwLen;
-    blobin.pbData = strIn.get();
-    LPWSTR descr = nullptr;
-    DATA_BLOB blobout = { 0 };
+    blobin.cbData     = dwLen;
+    blobin.pbData     = strIn.get();
+    LPWSTR    descr   = nullptr;
+    DATA_BLOB blobout = {0};
     if (CryptUnprotectData(&blobin, &descr, nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobout) == FALSE)
         return nullptr;
     SecureZeroMemory(blobin.pbData, blobin.cbData);
@@ -275,10 +274,10 @@ std::unique_ptr<wchar_t[]> CStringUtils::Decrypt(const wchar_t * text)
     return result;
 }
 
-std::string CStringUtils::Encrypt(const char * text)
+std::string CStringUtils::Encrypt(const char* text)
 {
-    DATA_BLOB blobin = { 0 };
-    DATA_BLOB blobout = { 0 };
+    DATA_BLOB   blobin  = {0};
+    DATA_BLOB   blobout = {0};
     std::string result;
 
     blobin.cbData = (DWORD)strlen(text);
@@ -298,13 +297,13 @@ std::string CStringUtils::Encrypt(const char * text)
     return result;
 }
 
-std::wstring CStringUtils::Encrypt(const wchar_t * text)
+std::wstring CStringUtils::Encrypt(const wchar_t* text)
 {
-    DATA_BLOB blobin = { 0 };
-    DATA_BLOB blobout = { 0 };
+    DATA_BLOB    blobin  = {0};
+    DATA_BLOB    blobout = {0};
     std::wstring result;
 
-    blobin.cbData = (DWORD)wcslen(text)*sizeof(wchar_t);
+    blobin.cbData = (DWORD)wcslen(text) * sizeof(wchar_t);
     blobin.pbData = (BYTE*)(LPCWSTR)text;
     if (CryptProtectData(&blobin, L"TSVNAuth", nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobout) == FALSE)
         return result;
@@ -321,7 +320,7 @@ std::wstring CStringUtils::Encrypt(const wchar_t * text)
     return result;
 }
 
-std::wstring CStringUtils::Format( const wchar_t* frmt, ... )
+std::wstring CStringUtils::Format(const wchar_t* frmt, ...)
 {
     std::wstring buffer;
     if (frmt != nullptr)
@@ -344,7 +343,7 @@ std::wstring CStringUtils::Format( const wchar_t* frmt, ... )
     return buffer;
 }
 
-std::string CStringUtils::Format( const char* frmt, ... )
+std::string CStringUtils::Format(const char* frmt, ...)
 {
     std::string buffer;
     if (frmt != nullptr)
@@ -367,22 +366,21 @@ std::string CStringUtils::Format( const char* frmt, ... )
     return buffer;
 }
 
-bool WriteAsciiStringToClipboard(const wchar_t * sClipdata, HWND hOwningWnd)
+bool WriteAsciiStringToClipboard(const wchar_t* sClipdata, HWND hOwningWnd)
 {
     if (OpenClipboard(hOwningWnd))
     {
         OnOutOfScope(
-            CloseClipboard();
-        );
+            CloseClipboard(););
         EmptyClipboard();
-        size_t sLen = _tcslen(sClipdata);
-        HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, (sLen+1)*sizeof(wchar_t));
+        size_t  sLen           = wcslen(sClipdata);
+        HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, (sLen + 1) * sizeof(wchar_t));
         if (hClipboardData)
         {
             wchar_t* pchData = (wchar_t*)GlobalLock(hClipboardData);
             if (pchData)
             {
-                _tcscpy_s(pchData, sLen+1, sClipdata);
+                wcscpy_s(pchData, sLen + 1, sClipdata);
                 if (GlobalUnlock(hClipboardData))
                 {
                     if (SetClipboardData(CF_UNICODETEXT, hClipboardData) == nullptr)
@@ -396,12 +394,12 @@ bool WriteAsciiStringToClipboard(const wchar_t * sClipdata, HWND hOwningWnd)
 
 void SearchReplace(std::wstring& str, const std::wstring& toreplace, const std::wstring& replacewith)
 {
-    std::wstring result;
+    std::wstring            result;
     std::wstring::size_type pos = 0;
     for (;;)
     {
         std::wstring::size_type next = str.find(toreplace, pos);
-        result.append(str, pos, next-pos);
+        result.append(str, pos, next - pos);
         if (next != std::wstring::npos)
         {
             result.append(replacewith);
@@ -409,21 +407,20 @@ void SearchReplace(std::wstring& str, const std::wstring& toreplace, const std::
         }
         else
         {
-            break;  // exit loop
+            break; // exit loop
         }
     }
     str = std::move(result);
 }
 
-
-void SearchReplace( std::string& str, const std::string& toreplace, const std::string& replacewith )
+void SearchReplace(std::string& str, const std::string& toreplace, const std::string& replacewith)
 {
-    std::string result;
+    std::string            result;
     std::string::size_type pos = 0;
     for (;;)
     {
         std::string::size_type next = str.find(toreplace, pos);
-        result.append(str, pos, next-pos);
+        result.append(str, pos, next - pos);
         if (next != std::string::npos)
         {
             result.append(replacewith);
@@ -431,7 +428,7 @@ void SearchReplace( std::string& str, const std::string& toreplace, const std::s
         }
         else
         {
-            break;  // exit loop
+            break; // exit loop
         }
     }
     str = std::move(result);

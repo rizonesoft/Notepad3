@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2016 Stefan Kueng
+// Copyright (C) 2016, 2020 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ public:
      * \param pos the position in screen coordinates where the tooltip should be shown
      * \fmt a format string
      */
-    void SetText(LPPOINT pos, const TCHAR * fmt, ...);
+    void SetText(LPPOINT pos, const wchar_t* fmt, ...);
     /**
      * Removes the tooltip control.
      */
@@ -63,13 +63,13 @@ public:
     /**
      * Returns the width of \c szText in pixels for the tooltip control
      */
-    LONG GetTextWidth(LPCTSTR szText);
+    LONG GetTextWidth(LPCWSTR szText);
 
 protected:
     LRESULT CALLBACK WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 private:
     TOOLINFO ti;
-    bool m_bInitCalled;
-    bool m_bRightAligned;
+    bool     m_bInitCalled;
+    bool     m_bRightAligned;
 };

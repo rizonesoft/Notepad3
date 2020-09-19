@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,8 +24,8 @@
 class PreserveChdir
 {
 public:
-    PreserveChdir();                                ///< saves originalCurrentDirectory
-    ~PreserveChdir();                               ///< restores originalCurrentDirectory
+    PreserveChdir();  ///< saves originalCurrentDirectory
+    ~PreserveChdir(); ///< restores originalCurrentDirectory
 
 private:
     PreserveChdir(const PreserveChdir&);            ///< non-copyable
@@ -33,4 +33,3 @@ private:
 
     std::wstring m_originalDir;
 };
-

@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2017 - Stefan Kueng
+// Copyright (C) 2012-2013, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ SysInfo::SysInfo(void)
 #ifndef NTDDI_WINBLUE
     SecureZeroMemory(&inf, sizeof(OSVERSIONINFOEX));
     inf.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-    GetVersionEx((OSVERSIONINFO *)&inf);
+    GetVersionEx((OSVERSIONINFO*)&inf);
     if (IsVistaOrLater())
 #else
     if (IsWindowsVistaOrGreater())
@@ -36,8 +36,8 @@ SysInfo::SysInfo(void)
         HANDLE hToken = nullptr;
         if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_QUERY, &hToken))
         {
-            TOKEN_ELEVATION te = {0};
-            DWORD dwReturnLength = 0;
+            TOKEN_ELEVATION te             = {0};
+            DWORD           dwReturnLength = 0;
 
             if (::GetTokenInformation(hToken, TokenElevation, &te, sizeof(te), &dwReturnLength))
             {
@@ -48,7 +48,7 @@ SysInfo::SysInfo(void)
             {
                 isUACEnabled = tet != TokenElevationTypeDefault;
             }
-            ::CloseHandle( hToken );
+            ::CloseHandle(hToken);
         }
     }
     else

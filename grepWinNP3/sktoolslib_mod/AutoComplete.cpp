@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include "AutoComplete.h"
 
-CAutoComplete::CAutoComplete(CSimpleIni * pIni)
+CAutoComplete::CAutoComplete(CSimpleIni* pIni)
     : m_pcacs(NULL)
     , m_pac(NULL)
     , m_pdrop(NULL)
@@ -45,25 +45,25 @@ bool CAutoComplete::Init(HWND hEdit)
     if (m_pdrop)
         m_pdrop->Release();
     if (CoCreateInstance(CLSID_AutoComplete,
-        NULL,
-        CLSCTX_INPROC_SERVER,
-        IID_IAutoComplete2,
-        (LPVOID*)&m_pac) == S_OK)
+                         NULL,
+                         CLSCTX_INPROC_SERVER,
+                         IID_IAutoComplete2,
+                         (LPVOID*)&m_pac) == S_OK)
     {
-        IUnknown *punkSource;
+        IUnknown* punkSource;
 
         if (m_pcacs)
             delete m_pcacs;
         m_pcacs = new CAutoCompleteEnum(m_arEntries);
 
         if (m_pcacs->QueryInterface(IID_IUnknown,
-            (void **) &punkSource) == S_OK)
+                                    (void**)&punkSource) == S_OK)
         {
             if (m_pac->Init(hEdit, punkSource, NULL, NULL) == S_OK)
             {
                 m_pac->Enable(TRUE);
-                m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
-                if (m_pac->QueryInterface(IID_IAutoCompleteDropDown, (void **)&m_pdrop) != S_OK)
+                m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                if (m_pac->QueryInterface(IID_IAutoCompleteDropDown, (void**)&m_pdrop) != S_OK)
                 {
                     m_pdrop = NULL;
                 }
@@ -90,7 +90,7 @@ bool CAutoComplete::Enable(bool bEnable)
     return false;
 }
 
-bool CAutoComplete::AddEntry(LPCTSTR szText)
+bool CAutoComplete::AddEntry(LPCWSTR szText)
 {
     bool bRet = CRegHistory::AddEntry(szText);
     if (m_pcacs)
@@ -107,7 +107,7 @@ bool CAutoComplete::RemoveSelected()
     if (m_pcacs == NULL)
         return false;
 
-    DWORD flags;
+    DWORD  flags;
     LPWSTR string = 0;
     if (m_pdrop->GetDropDownStatus(&flags, &string) == S_OK)
     {
@@ -133,7 +133,7 @@ bool CAutoComplete::RemoveSelected()
     return true;
 }
 
-void CAutoComplete::SetOptions( DWORD dwFlags )
+void CAutoComplete::SetOptions(DWORD dwFlags)
 {
     if (m_pac)
     {
@@ -182,12 +182,11 @@ void CAutoCompleteEnum::Init(const std::vector<std::wstring*>& vec)
         m_vecStrings.push_back(*vec[i]);
 }
 
-
-STDMETHODIMP  CAutoCompleteEnum::QueryInterface(REFIID refiid, void** ppv)
+STDMETHODIMP CAutoCompleteEnum::QueryInterface(REFIID refiid, void** ppv)
 {
     *ppv = NULL;
     if (IID_IUnknown == refiid || IID_IEnumString == refiid)
-        *ppv=this;
+        *ppv = this;
 
     if (*ppv != NULL)
     {
@@ -197,12 +196,14 @@ STDMETHODIMP  CAutoCompleteEnum::QueryInterface(REFIID refiid, void** ppv)
     return E_NOINTERFACE;
 }
 
-STDMETHODIMP_(ULONG) CAutoCompleteEnum::AddRef(void)
+STDMETHODIMP_(ULONG)
+CAutoCompleteEnum::AddRef(void)
 {
     return ++m_cRefCount;
 }
 
-STDMETHODIMP_(ULONG) CAutoCompleteEnum::Release(void)
+STDMETHODIMP_(ULONG)
+CAutoCompleteEnum::Release(void)
 {
     --m_cRefCount;
     if (m_cRefCount == 0)
@@ -221,12 +222,12 @@ STDMETHODIMP CAutoCompleteEnum::Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFe
         celt = 1;
 
     ULONG i = 0;
-    for ( ; i < celt; i++)
+    for (; i < celt; i++)
     {
         if (m_iCur == (ULONG)m_vecStrings.size())
             break;
 
-        rgelt[i] = (LPWSTR)::CoTaskMemAlloc((ULONG) sizeof(WCHAR) * (m_vecStrings[m_iCur].size() + 1));
+        rgelt[i] = (LPWSTR)::CoTaskMemAlloc((ULONG)sizeof(WCHAR) * (m_vecStrings[m_iCur].size() + 1));
         wcscpy_s(rgelt[i], m_vecStrings[m_iCur].size() + 1, m_vecStrings[m_iCur].c_str());
 
         if (pceltFetched)
@@ -262,11 +263,11 @@ STDMETHODIMP CAutoCompleteEnum::Clone(IEnumString** ppenum)
 
     try
     {
-        CAutoCompleteEnum *newEnum = new CAutoCompleteEnum(m_vecStrings);
+        CAutoCompleteEnum* newEnum = new CAutoCompleteEnum(m_vecStrings);
 
         newEnum->AddRef();
         newEnum->m_iCur = m_iCur;
-        *ppenum = newEnum;
+        *ppenum         = newEnum;
     }
     catch (const std::bad_alloc&)
     {

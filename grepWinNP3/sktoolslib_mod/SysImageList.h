@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -35,12 +35,12 @@
  */
 class CSysImageList
 {
-// Singleton constructor and destructor (private)
+    // Singleton constructor and destructor (private)
 private:
     CSysImageList();
     ~CSysImageList();
 
-// Singleton specific operations
+    // Singleton specific operations
 public:
     /**
      * Returns a reference to the one and only instance of this class.
@@ -52,7 +52,7 @@ public:
      */
     static void Cleanup();
 
-// Operations
+    // Operations
 public:
     /**
      * Returns the icon index for a directory.
@@ -75,11 +75,10 @@ public:
     operator HIMAGELIST() const;
 
 private:
-    static CSysImageList *              instance;
+    static CSysImageList* instance;
 
-    HIMAGELIST                          m_hSystemImageList;
+    HIMAGELIST m_hSystemImageList;
 };
-
 
 /**
  * \relates CSysImageList

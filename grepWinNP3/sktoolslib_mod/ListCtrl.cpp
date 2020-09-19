@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012 - Stefan Kueng
+// Copyright (C) 2012, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,10 +27,14 @@ class CGlobalAtom
 {
 public:
     CGlobalAtom(void)
-    { atom = GlobalAddAtom(TEXT("_ListControl_Object_Pointer_")
-    TEXT("\\{8C1D10DA-FC2E-47bf-8281-DC0EF685B568}")); }
+    {
+        atom = GlobalAddAtom(L"_ListControl_Object_Pointer_"
+                             L"\\{8C1D10DA-FC2E-47bf-8281-DC0EF685B568}");
+    }
     ~CGlobalAtom(void)
-    { DeleteAtom(atom); }
+    {
+        DeleteAtom(atom);
+    }
 
     ATOM atom;
 };
@@ -40,8 +44,8 @@ public:
 */
 static CGlobalAtom ga;
 
-#define PROP_OBJECT_PTR         MAKEINTATOM(ga.atom)
-#define PROP_ORIGINAL_PROC      MAKEINTATOM(ga.atom)
+#define PROP_OBJECT_PTR    MAKEINTATOM(ga.atom)
+#define PROP_ORIGINAL_PROC MAKEINTATOM(ga.atom)
 
 CListCtrl::CListCtrl()
     : m_pfnOrigCtlProc(NULL)
@@ -52,13 +56,13 @@ CListCtrl::CListCtrl()
 
 bool CListCtrl::SubClassListCtrl(HWND hWnd)
 {
-    m_hwnd = hWnd;
-    m_pfnOrigCtlProc = (WNDPROC) GetWindowLongPtr(hWnd, GWLP_WNDPROC);
+    m_hwnd           = hWnd;
+    m_pfnOrigCtlProc = (WNDPROC)GetWindowLongPtr(hWnd, GWLP_WNDPROC);
     SetProp(hWnd, PROP_OBJECT_PTR, (HANDLE)this);
-    return (SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR) (WNDPROC) stWinMsgHandler) != 0);
+    return (SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)(WNDPROC)stWinMsgHandler) != 0);
 }
 
-void CListCtrl::SetInfoText(LPCTSTR sText, bool bPermanent /* = false */)
+void CListCtrl::SetInfoText(LPCWSTR sText, bool bPermanent /* = false */)
 {
     m_bInfoTextPermanent = bPermanent;
     if (sText)
@@ -66,7 +70,7 @@ void CListCtrl::SetInfoText(LPCTSTR sText, bool bPermanent /* = false */)
         m_sInfoText = sText;
     }
     else
-        m_sInfoText = _T("");
+        m_sInfoText = L"";
 }
 
 LRESULT CALLBACK CListCtrl::stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -75,7 +79,7 @@ LRESULT CALLBACK CListCtrl::stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
 
     switch (uMsg)
     {
-    case WM_PAINT:
+        case WM_PAINT:
         {
             // first call the default draw
             CallWindowProc(pListCtrl->m_pfnOrigCtlProc, hwnd, uMsg, wParam, lParam);
@@ -104,8 +108,7 @@ LRESULT CALLBACK CListCtrl::stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
                     ::ExtTextOut(hDC, 0, 0, ETO_OPAQUE, &rc, NULL, 0, NULL);
                     rc.top += 10;
                     HGDIOBJ holdfont = SelectObject(hDC, GetStockObject(DEFAULT_GUI_FONT));
-                    DrawTextEx(hDC, (LPWSTR)pListCtrl->m_sInfoText.c_str(), (int)pListCtrl->m_sInfoText.size(), &rc, DT_CENTER | DT_VCENTER |
-                        DT_WORDBREAK | DT_NOPREFIX | DT_NOCLIP, NULL);
+                    DrawTextEx(hDC, (LPWSTR)pListCtrl->m_sInfoText.c_str(), (int)pListCtrl->m_sInfoText.size(), &rc, DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_NOPREFIX | DT_NOCLIP, NULL);
                     SelectObject(hDC, holdfont);
                 }
                 ReleaseDC(*pListCtrl, hDC);
@@ -113,7 +116,7 @@ LRESULT CALLBACK CListCtrl::stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
             return 0;
         }
         break;
-    case WM_LBUTTONDBLCLK:
+        case WM_LBUTTONDBLCLK:
         {
             if ((!pListCtrl->m_bInfoTextPermanent) && (!pListCtrl->m_sInfoText.empty()))
             {
@@ -126,10 +129,10 @@ LRESULT CALLBACK CListCtrl::stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
             }
         }
         break;
-    default:
-        break;
+        default:
+            break;
     }
 
     return CallWindowProc(pListCtrl->m_pfnOrigCtlProc, hwnd, uMsg,
-        wParam, lParam);
+                          wParam, lParam);
 }

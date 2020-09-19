@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,59 +27,59 @@
 class CCreateProcessHelper
 {
 public:
-    static bool CreateProcess(LPCTSTR lpApplicationName,
-                    LPTSTR lpCommandLine,
-                    LPCTSTR lpCurrentDirectory,
-                    LPPROCESS_INFORMATION lpProcessInformation,
-                    bool hidden = false,
-                    DWORD dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
-    static bool CreateProcess(LPCTSTR lpApplicationName,
-                    LPTSTR lpCommandLine,
-                    LPPROCESS_INFORMATION lpProcessInformation,
-                    bool hidden = false,
-                    DWORD dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
+    static bool CreateProcess(LPCWSTR               lpApplicationName,
+                              LPWSTR                lpCommandLine,
+                              LPCWSTR               lpCurrentDirectory,
+                              LPPROCESS_INFORMATION lpProcessInformation,
+                              bool                  hidden          = false,
+                              DWORD                 dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
+    static bool CreateProcess(LPCWSTR               lpApplicationName,
+                              LPWSTR                lpCommandLine,
+                              LPPROCESS_INFORMATION lpProcessInformation,
+                              bool                  hidden          = false,
+                              DWORD                 dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
 
-    static bool CreateProcessDetached(LPCTSTR lpApplicationName,
-                    LPTSTR lpCommandLine,
-                    LPCTSTR lpCurrentDirectory,
-                    bool hidden = false,
-                    DWORD dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
-    static bool CreateProcessDetached(LPCTSTR lpApplicationName,
-                    LPTSTR lpCommandLine,
-                    bool hidden = false,
-                    DWORD dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
+    static bool CreateProcessDetached(LPCWSTR lpApplicationName,
+                                      LPWSTR  lpCommandLine,
+                                      LPCWSTR lpCurrentDirectory,
+                                      bool    hidden          = false,
+                                      DWORD   dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
+    static bool CreateProcessDetached(LPCWSTR lpApplicationName,
+                                      LPWSTR  lpCommandLine,
+                                      bool    hidden          = false,
+                                      DWORD   dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
 };
 
-inline bool CCreateProcessHelper::CreateProcess(LPCTSTR applicationName,
-    LPTSTR commandLine, LPCTSTR currentDirectory,
-    LPPROCESS_INFORMATION processInfo,
-    bool hidden,
-    DWORD dwCreationFlags)
+inline bool CCreateProcessHelper::CreateProcess(LPCWSTR applicationName,
+                                                LPWSTR commandLine, LPCWSTR currentDirectory,
+                                                LPPROCESS_INFORMATION processInfo,
+                                                bool                  hidden,
+                                                DWORD                 dwCreationFlags)
 {
     STARTUPINFO startupInfo;
     SecureZeroMemory(&startupInfo, sizeof(startupInfo));
     startupInfo.cb = sizeof(STARTUPINFO);
     if (hidden)
     {
-        startupInfo.dwFlags = STARTF_USESHOWWINDOW;
+        startupInfo.dwFlags     = STARTF_USESHOWWINDOW;
         startupInfo.wShowWindow = SW_HIDE;
     }
 
     SecureZeroMemory(processInfo, sizeof(PROCESS_INFORMATION));
-    const BOOL result = ::CreateProcess( applicationName,
-                    commandLine, nullptr, nullptr, FALSE, dwCreationFlags, 0, currentDirectory,
-                    &startupInfo, processInfo );
+    const BOOL result = ::CreateProcess(applicationName,
+                                        commandLine, nullptr, nullptr, FALSE, dwCreationFlags, 0, currentDirectory,
+                                        &startupInfo, processInfo);
     return result != 0;
 }
 
-inline bool CCreateProcessHelper::CreateProcess(LPCTSTR applicationName,
-    LPTSTR commandLine, LPPROCESS_INFORMATION processInformation, bool hidden, DWORD dwCreationFlags)
+inline bool CCreateProcessHelper::CreateProcess(LPCWSTR applicationName,
+                                                LPWSTR commandLine, LPPROCESS_INFORMATION processInformation, bool hidden, DWORD dwCreationFlags)
 {
-    return CreateProcess( applicationName, commandLine, 0, processInformation, hidden, dwCreationFlags );
+    return CreateProcess(applicationName, commandLine, 0, processInformation, hidden, dwCreationFlags);
 }
 
-inline bool CCreateProcessHelper::CreateProcessDetached(LPCTSTR lpApplicationName,
-    LPTSTR lpCommandLine, LPCTSTR lpCurrentDirectory, bool hidden, DWORD dwCreationFlags)
+inline bool CCreateProcessHelper::CreateProcessDetached(LPCWSTR lpApplicationName,
+                                                        LPWSTR lpCommandLine, LPCWSTR lpCurrentDirectory, bool hidden, DWORD dwCreationFlags)
 {
     PROCESS_INFORMATION process;
     if (!CreateProcess(lpApplicationName, lpCommandLine, lpCurrentDirectory, &process, hidden, dwCreationFlags))
@@ -90,8 +90,8 @@ inline bool CCreateProcessHelper::CreateProcessDetached(LPCTSTR lpApplicationNam
     return true;
 }
 
-inline bool CCreateProcessHelper::CreateProcessDetached(LPCTSTR lpApplicationName,
-    LPTSTR lpCommandLine, bool hidden, DWORD dwCreationFlags)
+inline bool CCreateProcessHelper::CreateProcessDetached(LPCWSTR lpApplicationName,
+                                                        LPWSTR lpCommandLine, bool hidden, DWORD dwCreationFlags)
 {
     return CreateProcessDetached(lpApplicationName, lpCommandLine, 0, hidden, dwCreationFlags);
 }

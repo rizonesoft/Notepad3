@@ -80,6 +80,8 @@
 #define IDS_EXPORTMATCHLINECONTENT      167
 #define IDS_UPDATEAVAILABLE             168
 #define IDS_CAPTURESEARCH               169
+#define IDS_CLONE                       170
+#define IDS_NEWINSTANCE_TT              171
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -103,6 +105,7 @@
 #define IDC_ADDTOBOOKMARKS              1021
 #define IDC_BOOKMARKS                   1022
 #define IDC_REPLACETEXT                 1023
+#define IDC_NEWINSTANCE                 1024
 #define IDC_SEARCHFORLABEL              1026
 #define IDC_REPLACEWITHLABEL            1027
 #define IDC_TESTREGEX                   1028
@@ -128,6 +131,7 @@
 #define IDC_UTF8                        1053
 #define IDC_UTF9                        1054
 #define IDC_BINARY                      1054
+#define IDC_ABOUTLINK2                  1055
 #define IDC_INFOLABEL                   1056
 #define IDC_RESULTFILES                 1059
 #define IDC_RADIO2                      1060
@@ -171,7 +175,9 @@
 #define IDC_UPDATELINK                  1087
 #define IDC_DOUPDATECHECKS              1088
 #define IDC_CAPTURESEARCH               1089
+#define IDC_EDIT1                       1090
 #define IDC_NUMNULL                     1090
+#define IDC_SYSLINK1                    1091
 
 #define IDC_RESETDEFAULT                3000
 #define IDC_NP3_DISCLAIMER              3001
@@ -193,7 +199,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        139
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1091
+#define _APS_NEXT_CONTROL_VALUE         1092
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

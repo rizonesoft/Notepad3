@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013 - Stefan Kueng
+// Copyright (C) 2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,7 +27,6 @@
 CCircularLog::CCircularLog()
     : m_maxlines(10000)
 {
-
 }
 
 CCircularLog::~CCircularLog()
@@ -41,9 +40,9 @@ CCircularLog& CCircularLog::Instance()
     return instance;
 }
 
-bool CCircularLog::Init( const std::wstring& path, int maxlines )
+bool CCircularLog::Init(const std::wstring& path, int maxlines)
 {
-    m_path = path;
+    m_path     = path;
     m_maxlines = maxlines;
 
     try
@@ -73,7 +72,7 @@ bool CCircularLog::Init( const std::wstring& path, int maxlines )
     return true;
 }
 
-bool CCircularLog::AddLine( const std::wstring& line )
+bool CCircularLog::AddLine(const std::wstring& line)
 {
     wchar_t tmpbuf1[128] = {0};
     _wstrtime_s(tmpbuf1, 128);
@@ -112,7 +111,7 @@ bool CCircularLog::Save()
     return true;
 }
 
-void CCircularLog::operator()( LPCWSTR pszFormat, ... )
+void CCircularLog::operator()(LPCWSTR pszFormat, ...)
 {
     va_list marker;
 
