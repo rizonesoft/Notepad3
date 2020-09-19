@@ -1084,7 +1084,6 @@ BOOL DirList_MatchFilter(LPSHELLFOLDER lpsf,LPCITEMIDLIST pidl,PDL_FILTER pdlf)
 //
 typedef struct tagDC_ITEMDATA
 {
-
   LPITEMIDLIST  pidl;
   LPSHELLFOLDER lpsf;
 
@@ -1105,6 +1104,7 @@ BOOL DriveBox_Init(HWND hwnd)
 
   hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
                                   SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
+  SendMessage(hwnd,CBEM_SETWINDOWTHEME, 0, (LPARAM)L"Explorer");
   SendMessage(hwnd,CBEM_SETIMAGELIST,0,(LPARAM)hil);
   SendMessage(hwnd,CBEM_SETEXTENDEDSTYLE,CBES_EX_NOSIZELIMIT,CBES_EX_NOSIZELIMIT);
 

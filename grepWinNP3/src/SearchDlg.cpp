@@ -4118,24 +4118,26 @@ bool CSearchDlg::CloneWindow()
         return false;
     if (bPortable)
     {
-        FILE* pFile = NULL;
-        _wfopen_s(&pFile, g_iniPath.c_str(), L"wb");
-        g_iniFile.SaveFile(pFile);
-        fclose(pFile);
+        g_iniFile.SaveFile(g_iniPath.c_str());
     }
 
+    auto const dir   = CPathUtils::GetModuleDir();
+    auto const file  = CPathUtils::GetFileName(CPathUtils::GetModulePath());
+    auto const inifn = CPathUtils::GetFileName(g_iniPath);
+
     std::wstring arguments;
+    arguments += CStringUtils::Format(L" /inipath:\"%s\"", inifn.c_str());
     arguments += CStringUtils::Format(L" /searchpath:\"%s\"", m_searchpath.c_str());
     arguments += CStringUtils::Format(L" /searchfor:\"%s\"", m_searchString.c_str());
     arguments += CStringUtils::Format(L" /replacewith:\"%s\"", m_replaceString.c_str());
-    arguments += L" /new";
-    auto file = CPathUtils::GetModulePath();
+    arguments += L" /new"; // prevents searching of existing instance
 
     SHELLEXECUTEINFO sei = {0};
     sei.cbSize           = sizeof(SHELLEXECUTEINFO);
     sei.lpVerb           = TEXT("open");
     sei.lpFile           = file.c_str();
     sei.lpParameters     = arguments.c_str();
+    sei.lpDirectory      = dir.c_str();
     sei.nShow            = SW_SHOWNORMAL;
     ShellExecuteEx(&sei);
     return true;

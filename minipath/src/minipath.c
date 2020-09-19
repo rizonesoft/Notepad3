@@ -28,6 +28,7 @@
 #include "dlapi.h"
 #include "dialogs.h"
 #include "config.h"
+#include "..\..\src\DarkMode\DarkMode.h"
 #include "minipath.h"
 #include "resource.h"
 
@@ -46,6 +47,8 @@ HICON     g_hDlgIconSmall = NULL;
 WCHAR     g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 LANGID    g_iPrefLANGID;
 
+HBRUSH    g_hbrDarkModeBkgBrush = NULL;
+HBRUSH    g_hbrDarkModeBtnFcBrush = NULL;
 
 /******************************************************************************
 *
@@ -262,6 +265,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
   // Command Line, Ini File and Flags
+  InitDarkMode();
   InitDefaultSettings();
   ParseCommandLine();
   FindIniFile();
@@ -285,6 +289,13 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
 
   // Load Settings
   LoadSettings();
+
+  g_hbrDarkModeBkgBrush = CreateSolidBrush(GetModeBkColor(IsDarkModeSupported()));
+  g_hbrDarkModeBtnFcBrush = CreateSolidBrush(GetModeBtnfaceColor(IsDarkModeSupported()));
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  SetDarkMode(IsDarkModeSupported() /* && Settings.WinThemeDarkMode*/); // settings
+#endif
 
   // ----------------------------------------------------
   // MultiLingual
@@ -610,6 +621,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_CREATE:
       {
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (IsDarkModeSupported()) {
+          AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
+          RefreshTitleBarThemeColor(hwnd);
+        }
+#endif
+
         // Init directory watching
         // iAutoRefreshRate is in 1/10 sec
       int iAutoRefreshRate = IniFileGetInt(g_wchIniFile, L"Settings2", L"AutoRefreshRate", 30);
@@ -654,12 +673,26 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         PostQuitMessage(0);
       break;
 
+    case WM_DRAWITEM:
+      return MsgDrawItem(hwnd, wParam, lParam);
+
+
+    CASE_WM_CTLCOLOR_SET:
+      if (UseDarkMode()) {
+        return SetDarkModeCtlColors((HDC)wParam);
+      }
+      break;
+
+    case WM_SETTINGCHANGE:
+      if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+      }
+      break;
 
     // Reinitialize theme-dependent values and resize windows
     case WM_THEMECHANGED:
       MsgThemeChanged(hwnd,wParam,lParam);
       break;
-
 
     // update colors of DirList manually
     case WM_SYSCOLORCHANGE:
@@ -667,11 +700,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         LRESULT lret = DefWindowProc(hwnd,umsg,wParam,lParam);
 
         if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
-          ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crFilter);
+          ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crFilter);
           ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
         }
         else {
-          ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crNoFilt);
+          ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crNoFilt);
           ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
         }
 
@@ -955,6 +988,11 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   MENUITEMINFO mii;
 
   HINSTANCE hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
+
+  // Create Toolbar and Statusbar
+  CreateBars(hwnd, hInstance);
+
+
   DWORD dwDriveBoxStyle = WS_DRIVEBOX;
 
   hwndDirList = CreateWindowEx(
@@ -968,10 +1006,19 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   hInstance,
                   NULL);
 
-  if (IsVista() && PrivateIsAppThemed()) {
+  if (PrivateIsAppThemed()) {
     SetWindowLongPtr(hwndDirList,GWL_EXSTYLE,GetWindowLongPtr(hwndDirList,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
     SetWindowPos(hwndDirList,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
   }
+
+  // Window Initialization
+  InitWindowCommon(hwndDirList, TRUE);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(hwndDirList, CheckDarkModeEnabled());
+  }
+#endif
 
   if (Settings.bShowDriveBox)
     dwDriveBoxStyle |= WS_VISIBLE;
@@ -987,16 +1034,23 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
                    hInstance,
                    NULL);
 
-  // Create Toolbar and Statusbar
-  CreateBars(hwnd,hInstance);
-
   // Window Initialization
+  InitWindowCommon(hwndDriveBox, TRUE);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(hwndDriveBox, CheckDarkModeEnabled());
+  }
+#endif
+
   // DriveBox
   DriveBox_Init(hwndDriveBox);
   SendMessage(hwndDriveBox,CB_SETEXTENDEDUI,TRUE,0);
+
   // DirList
+  InitListView(hwndDirList);
+  ListView_InsertColumn(hwndDirList, 0, &lvc);
   ListView_SetExtendedListViewStyle(hwndDirList,LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
-  ListView_InsertColumn(hwndDirList,0,&lvc);
   DirList_Init(hwndDirList,NULL);
   if (Settings.bTrackSelect)
     ListView_SetExtendedListViewStyleEx(hwndDirList,
@@ -1006,16 +1060,17 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     ListView_SetExtendedListViewStyleEx(hwndDirList,
       LVS_EX_FULLROWSELECT,
       LVS_EX_FULLROWSELECT);
-    if (IsVista())
-      SetTheme(hwndDirList,L"Explorer");
   }
   ListView_SetHoverTime(hwndDirList,10);
+
   // Drag & Drop
   DragAcceptFiles(hwnd,TRUE);
+
   // History
   History_Init(&g_mHistory);
   History_UpdateToolbar(&g_mHistory,hwndToolbar,
         IDT_HISTORY_BACK,IDT_HISTORY_FORWARD);
+
   // ToolTip with Current Directory
   ZeroMemory(&ti,sizeof(TOOLINFO));
   ti.cbSize = sizeof(TOOLINFO);
@@ -1084,10 +1139,7 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
 void CreateBars(HWND hwnd,HINSTANCE hInstance)
 {
 
-  REBARINFO rbi;
-  REBARBANDINFO rbBand;
   RECT rc;
-
   BITMAP bmp;
   HBITMAP hbmp, hbmpCopy = NULL;
   HIMAGELIST himl;
@@ -1109,6 +1161,15 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
+
+  InitWindowCommon(hwndToolbar, TRUE);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(hwndToolbar, CheckDarkModeEnabled());
+  }
+#endif
+
   SendMessage(hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
   // Add normal Toolbar Bitmap
@@ -1125,7 +1186,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     hbmpCopy = CopyImage(hbmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
   }
   GetObject(hbmp,sizeof(BITMAP),&bmp);
-  if (!IsXP()) {
+  if (!IsWindowsXPOrGreater()) {
     BitmapMergeAlpha(hbmp, GetSysColor(COLOR_3DFACE));
   }
   himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -1168,9 +1229,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     BOOL fProcessed = FALSE;
     if (flagToolbarLook == 1)
       fProcessed = BitmapAlphaBlend(hbmpCopy,GetSysColor(COLOR_3DFACE),0x60);
-    else if (flagToolbarLook == 2 || (!IsXP() && flagToolbarLook == 0))
+    else if (flagToolbarLook == 2 || (!IsWindowsXPOrGreater() && flagToolbarLook == 0))
       fProcessed = BitmapGrayScale(hbmpCopy);
-    if (fProcessed && !IsXP())
+    if (fProcessed && !IsWindowsXPOrGreater())
       BitmapMergeAlpha(hbmpCopy,GetSysColor(COLOR_3DFACE));
     if (fProcessed) {
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -1231,25 +1292,58 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   if (Settings.bShowStatusbar)
     dwStatusbarStyle |= WS_VISIBLE;
 
-  hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
+  //~hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
+  hwndStatus = CreateWindowEx(
+    WS_EX_COMPOSITED,          // => double-buffering avoids flickering
+    STATUSCLASSNAME,           // name of status bar class
+    (PCTSTR)NULL,              // no text when first created
+    dwStatusbarStyle,          // creates a visible child window
+    0, 0, 0, 0,                // ignores size and position
+    hwnd,                      // handle to parent window
+    (HMENU)IDC_STATUSBAR,      // child window identifier
+    hInstance,                 // handle to application instance
+    NULL);                     // no window creation data
+
+  InitWindowCommon(hwndStatus, TRUE); // (!) themed = true : resize grip
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(hwndStatus, CheckDarkModeEnabled());
+  }
+#endif
+
 
   // Create ReBar and add Toolbar
   hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
+
+  // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
+  InitWindowCommon(hwndReBar, !(IsWindows10OrGreater() && IsDarkModeSupported()));
+
+#ifdef D_NP3_WIN10_DARK_MODE
+  if (IsDarkModeSupported()) {
+    AllowDarkModeForWindow(hwndReBar, CheckDarkModeEnabled());
+  }
+#endif
+
+  REBARINFO rbi;
   rbi.cbSize = sizeof(REBARINFO);
   rbi.fMask  = 0;
   rbi.himl   = (HIMAGELIST)NULL;
   SendMessage(hwndReBar,RB_SETBARINFO,0,(LPARAM)&rbi);
 
+  REBARBANDINFO rbBand;
   rbBand.cbSize  = sizeof(REBARBANDINFO);
-  rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
+  rbBand.fMask   = RBBIM_COLORS /*| RBBIM_TEXT | RBBIM_BACKGROUND */ |
                    RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
   rbBand.fStyle  = /*RBBS_CHILDEDGE | *//*RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
   if (bIsAppThemed)
     rbBand.fStyle |= RBBS_CHILDEDGE;
   rbBand.hbmBack = NULL;
   rbBand.lpText     = L"Toolbar";
+  rbBand.clrFore    = GetModeTextColor(UseDarkMode());
+  rbBand.clrBack    = IsWindows10OrGreater() ? GetModeBkColor(UseDarkMode()) : GetModeBtnfaceColor(UseDarkMode());
   rbBand.hwndChild  = hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
@@ -1261,8 +1355,66 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   cyReBar = rc.bottom - rc.top;
 
   cyReBarFrame = bIsAppThemed ? 0 : 2;
-  cyDriveBoxFrame = (bIsAppThemed && IsVista()) ? 0 : 2;
+  cyDriveBoxFrame = (bIsAppThemed && IsWindowsVistaOrGreater()) ? 0 : 2;
+}
 
+
+//=============================================================================
+//
+//  MsgDrawItem() - Handles WM_DRAWITEM (needs SBT_OWNERDRAW)
+//
+//  https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
+//
+LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+  UNUSED(hwnd);
+
+  if (LOWORD(wParam) == IDC_STATUSBAR) // Statusbar SB_SETTEXT caused parent's WM_DRAWITEM message
+  {
+    const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
+
+    HDC const hdc = pDIS->hDC;
+    RECT const rc = pDIS->rcItem;
+
+    //UINT const ctlId = pDIS->CtlID; // child window identifier
+    //~int const partId = (int)pDIS->itemID ~ don't use
+    //~int const stateId = (int)pDIS->itemState ~ don't use
+
+    //~PAINTSTRUCT ps;
+    //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
+
+    //~SetModeBkColor(hdc, UseDarkMode());
+    SetModeBtnFaceColor(hdc, UseDarkMode());
+    SetModeTextColor(hdc, UseDarkMode());
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    if (UseDarkMode()) {
+      // overpaint part frames
+      HWND const hWndItem = pDIS->hwndItem;
+      int const bdh = GetSystemMetrics(SM_CYFRAME);
+      HDC const hdcFrm = GetWindowDC(hWndItem);
+      RECT rcf = rc;
+      for (int i = 1; i < bdh; ++i) {
+        FrameRect(hdcFrm, &rcf, g_hbrDarkModeBtnFcBrush);
+        rcf.left -= 1;
+        rcf.top -= 1;
+        rcf.bottom += 1;
+        rcf.right += 1;
+      }
+      FrameRect(hdcFrm, &rcf, GetSysColorBrush(COLOR_3DDKSHADOW));
+      ReleaseDC(hWndItem, hdcFrm);
+    }
+
+#endif
+
+    LPCWSTR const text = (LPCWSTR)(pDIS->itemData);
+    ExtTextOut(hdc, rc.left + 1, rc.top + 1, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
+
+    //~EndPaint(hWndItem, &ps);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 
@@ -1273,28 +1425,26 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 //
 void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
-  RECT rc;
-  WCHAR chStatus[255];
   HINSTANCE hInstance = (HINSTANCE)(INT_PTR)GetWindowLongPtr(hwnd,GWLP_HINSTANCE);
 
-  BOOL bIsAppThemed = PrivateIsAppThemed();
+  //BOOL const bIsAppThemed = PrivateIsAppThemed();
+  //if (Settings.bFullRowSelect)
+  //  SetTheme(hwndDirList,L"Explorer");
+  //else
+  //  SetTheme(hwndDirList,L"Listview");
 
-  if (IsVista() && bIsAppThemed) {
-    SetWindowLongPtr(hwndDirList,GWL_EXSTYLE,GetWindowLongPtr(hwndDirList,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
-    SetWindowPos(hwndDirList,NULL,0,0,0,0,SWP_NOZORDER|SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE);
-    if (Settings.bFullRowSelect)
-      SetTheme(hwndDirList,L"Explorer");
-    else
-      SetTheme(hwndDirList,L"Listview");
+  if (IsDarkModeSupported())
+  {
+    bool const darkModeEnabled = CheckDarkModeEnabled();
+    AllowDarkModeForWindow(hwnd, darkModeEnabled);
+    RefreshTitleBarThemeColor(hwnd);
   }
-  else {
-    SetWindowLongPtr(hwndDirList,GWL_EXSTYLE,WS_EX_CLIENTEDGE|GetWindowLongPtr(hwndDirList,GWL_EXSTYLE));
-    SetWindowPos(hwndDirList,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
-    if (bIsAppThemed)
-      SetTheme(hwndDirList,L"Listview");
-  }
+
+  SetWindowLongPtr(hwndDirList, GWL_EXSTYLE, GetWindowLongPtr(hwndDirList, GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
+  SetWindowPos(hwndDirList, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
 
   // recreate toolbar and statusbar
+  WCHAR chStatus[255] = { 0 };
   SendMessage(hwndStatus,SB_GETTEXT,ID_FILEINFO,(LPARAM)chStatus);
 
   // recreate toolbar and statusbar
@@ -1305,15 +1455,17 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   DestroyWindow(hwndStatus);
   CreateBars(hwnd,hInstance);
 
+  RECT rc;
   GetClientRect(hwnd,&rc);
   SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,MAKELONG(rc.right,rc.bottom));
 
   StatusSetText(hwndStatus,ID_FILEINFO,chStatus);
 
+  UpdateWindow(hwnd);
+
   UNUSED(hwnd);
   UNUSED(wParam);
   UNUSED(lParam);
-
 }
 
 
@@ -1324,21 +1476,14 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
 //
 void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
+  if (wParam == SIZE_MINIMIZED) { return; }
+
+  int x  = 0;
+  int y  = 0;
+  int cx = LOWORD(lParam);
+  int cy = HIWORD(lParam);
 
   RECT rc;
-  int  x,y,cx,cy;
-  HDWP hdwp;
-  int  aWidth[1];
-
-  if (wParam == SIZE_MINIMIZED)
-    return;
-
-  x  = 0;
-  y  = 0;
-
-  cx = LOWORD(lParam);
-  cy = HIWORD(lParam);
-
   if (Settings.bShowToolbar)
   {
 /*  SendMessage(hwndToolbar,WM_SIZE,0,0);
@@ -1365,10 +1510,9 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
     cy -= (rc.bottom - rc.top);
   }
 
-  hdwp = BeginDeferWindowPos(2);
+  HDWP hdwp = BeginDeferWindowPos(2);
 
-  DeferWindowPos(hdwp,hwndDriveBox,NULL,x,y,cx,max(cy,100),
-                SWP_NOZORDER | SWP_NOACTIVATE);
+  DeferWindowPos(hdwp,hwndDriveBox,NULL,x,y,cx,max(cy,100),SWP_NOZORDER | SWP_NOACTIVATE);
 
   if (Settings.bShowDriveBox) {
     GetWindowRect(hwndDriveBox,&rc);
@@ -1376,18 +1520,19 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
     cy -= (rc.bottom - rc.top) + cyDriveBoxFrame;
   }
 
-  DeferWindowPos(hdwp,hwndDirList,NULL,x,y,cx,cy,
-                 SWP_NOZORDER | SWP_NOACTIVATE);
+  DeferWindowPos(hdwp,hwndDirList,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
 
   EndDeferWindowPos(hdwp);
 
   // Rebuild DirList Columns
   ListView_SetColumnWidth(hwndDirList,0,LVSCW_AUTOSIZE_USEHEADER);
 
-  GetClientRect(hwndStatus,&rc);
-  aWidth[0] = -1;
+  // Statusbar
+  //GetClientRect(hwndStatus,&rc);
+  int aWidth[1] = { 0 };  aWidth[0] = -1;
   SendMessage(hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
   InvalidateRect(hwndStatus,NULL,TRUE);
+  StatusSetText(hwndStatus, ID_FILEINFO, L"");
 
   UNUSED(hwnd);
 }
@@ -2810,11 +2955,11 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
     SetWindowPathTitle(hwnd, Settings.szCurDir);
 
     if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crFilter);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crFilter);
       Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,TBFILTERBMP);
     }
     else {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crNoFilt);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crNoFilt);
       Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,TBFILTERBMP+1);
     }
 

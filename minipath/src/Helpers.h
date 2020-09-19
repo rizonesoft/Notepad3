@@ -14,6 +14,8 @@
 *                                                                             *
 *******************************************************************************/
 
+#include <VersionHelpers.h>
+
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 extern UINT16    g_uWinVer;
@@ -33,11 +35,6 @@ inline BOOL IsKeyDown(int key) { return (((GetKeyState(key) >> 8) & 0xff) != 0);
 
 void BeginWaitCursor();
 void EndWaitCursor();
-
-#define Is2k()    (g_uWinVer >= 0x0500)
-#define IsXP()    (g_uWinVer >= 0x0501)
-#define IsVista() (g_uWinVer >= 0x0600)
-#define IsW7()    (g_uWinVer >= 0x0601)
 
 BOOL ExeNameFromWnd(HWND,LPWSTR,int);
 //BOOL Is32bitExe(LPCWSTR);
@@ -216,5 +213,52 @@ INT_PTR ThemedDialogBoxParam(HINSTANCE,LPCTSTR,HWND,DLGPROC,LPARAM);
 BOOL GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
+
+
+#define rgbDarkBkgColorRef   (RGB(0x1F, 0x1F, 0x1F))
+#define rgbDarkBtnFcColorRef (RGB(0x33, 0x33, 0x33))
+#define rgbDarkTxtColorRef   (RGB(0xEF, 0xEF, 0xEF))
+
+inline int SetModeBkColor(const HDC hdc, const BOOL bDarkMode) {
+  return SetBkColor(hdc, bDarkMode ? rgbDarkBkgColorRef : GetSysColor(COLOR_WINDOW));
+}
+
+inline int SetModeBtnFaceColor(const HDC hdc, const BOOL bDarkMode) {
+  return SetBkColor(hdc, bDarkMode ? rgbDarkBtnFcColorRef : GetSysColor(COLOR_BTNFACE));
+}
+
+inline COLORREF GetModeBkColor(const BOOL bDarkMode) {
+  return bDarkMode ? rgbDarkBkgColorRef : (COLORREF)GetSysColor(COLOR_WINDOW);
+}
+
+inline COLORREF GetModeBtnfaceColor(const BOOL bDarkMode) {
+  return bDarkMode ? rgbDarkBtnFcColorRef : (COLORREF)GetSysColor(COLOR_BTNFACE);
+}
+
+
+inline int SetModeTextColor(const HDC hdc, const BOOL bDarkMode) {
+  return SetTextColor(hdc, bDarkMode ? rgbDarkTxtColorRef : GetSysColor(COLOR_BTNTEXT));
+}
+
+inline COLORREF GetModeTextColor(const BOOL bDarkMode) {
+  return bDarkMode ? rgbDarkTxtColorRef : (COLORREF)GetSysColor(COLOR_BTNTEXT);
+}
+
+extern HBRUSH  g_hbrDarkModeBkgBrush;
+extern HBRUSH  g_hbrDarkModeBtnFcBrush;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
+  SetBkColor(hdc, rgbDarkBkgColorRef); // (!) non-button static controls
+  SetTextColor(hdc, rgbDarkTxtColorRef);
+  //~RECT rc;
+  //~GetWindowRect(WindowFromDC(hdc), &rc);
+  //~DrawEdge(hdc, &rc, EDGE_RAISED, BF_FLAT | BF_MONO);
+  return (INT_PTR)g_hbrDarkModeBkgBrush;
+}
+
+#endif
+
 
 ///   End of Helpers.h   \\\
