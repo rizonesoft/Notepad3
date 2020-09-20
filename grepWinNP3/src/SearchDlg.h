@@ -207,7 +207,7 @@ private:
     bool                    m_bConfirmationOnReplace;
     bool                    m_showContent;
     bool                    m_showContentSet;
-    bool                    m_stayOnTop;
+    bool                    m_bStayOnTop;
     BYTE                    m_OpacityNoFocus;
 
     std::vector<CSearchInfo> m_items;
@@ -268,4 +268,5 @@ private:
     CRegStdDWORD            m_regDate2High;
     CRegStdDWORD            m_regShowContent;
     CRegStdDWORD            m_regOpacityNoFocus;
+    CRegStdDWORD            m_regStayOnTop;
 };
