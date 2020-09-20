@@ -361,7 +361,11 @@ UseOldStyleBraceMatching=1 to switch back to (not recommended) old style behavio
 
 #### `WebTemplate1=https://google.com/search?q=%s`
 
+#### `WebTmpl1MenuName=Open Web Action 1`
+
 #### `WebTemplate2=https://en.wikipedia.org/w/index.php?search=%s`
+
+#### `WebTmpl2MenuName=Open Web Action 2
 
 #### `ExtendedWhiteSpaceChars=:`
 
@@ -436,6 +440,12 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 #### `LargeIconScalePrecent=150`
 
 - `Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
+
+#### `DarkModeBkgColor=0x1F1F1F;`
+
+#### `DarkModeBtnFaceColor=0x333333`
+
+#### `DarkModeTxtColor=0xEFEFEF;`
 
 
 ## **`[Statusbar Settings]`**
