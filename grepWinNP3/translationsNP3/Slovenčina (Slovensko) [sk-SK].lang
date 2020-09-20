@@ -574,6 +574,10 @@ msgstr "skenovanie súboru '%s'"
 msgid "search string is empty"
 msgstr "hľadaný reťazec je prázdny"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "cesta(y), ktorá je prehľadávaná rekurzívne.\nOddeľte cesty týmto '|' symbolom.\nPríklad: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "Max # súbežných pracovníkov"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Týmto sa pridá nová položka do kontextovej ponuky s názvom 'Otvoriť v Editore'"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 

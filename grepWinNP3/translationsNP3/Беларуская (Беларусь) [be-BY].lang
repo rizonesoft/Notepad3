@@ -574,6 +574,10 @@ msgstr "Пошук файлаў '%s'"
 msgid "search string is empty"
 msgstr "Пошукавы радок пусты"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "Рэкурсіўны пошук шляхаў.\nАддзяляйце шляхі сімвалам |.\nПрыклад: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "Макс. паралельных воркераў"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Дадае пункт у кантэкстнае меню з назвай 'Адкрыць у рэдактары'"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 

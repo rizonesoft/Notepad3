@@ -574,6 +574,10 @@ msgstr "σάρωση του αρχείου '%s'"
 msgid "search string is empty"
 msgstr "η συμβολοσειρά αναζήτησης είναι κενή"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "διαδρομές που αναζητούνται διαδοχικά. \r\nΧρήση του \"|\" ως διαχωριστικό.\r\nΠαράδειγμα: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr ""
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Αυτό προσθέτει ένα νέο στοιχείο στο μενού που ονομάζεται 'Ανοιγμα με επεξεργαστή κειμένου'"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 

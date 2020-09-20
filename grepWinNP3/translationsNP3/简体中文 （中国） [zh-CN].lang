@@ -574,6 +574,10 @@ msgstr "正在扫描文件“%s”"
 msgid "search string is empty"
 msgstr "查找字符串为空"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "要递归查找的路径。\n使用 | 来分隔路径。\n例如：c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "并发任务上限数"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "这将在上下文菜单中添加一个名为“使用编辑器打开”的选项。"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 

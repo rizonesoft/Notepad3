@@ -574,6 +574,10 @@ msgstr "söker i filen '%s'"
 msgid "search string is empty"
 msgstr "söksträngen är tom"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "sökväg(arna) söks rekursivt.\nSeparera sökvägar med '|' symbolen.\nExempelvis: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "Maximalt # samtidiga instanser"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Lägger till ny post i snabbmenyn med rubriken 'Öppna med editor'"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 
