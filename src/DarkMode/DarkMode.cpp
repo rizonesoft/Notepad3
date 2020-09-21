@@ -291,7 +291,8 @@ constexpr bool CheckBuildNumber(DWORD buildNumber) {
   return (buildNumber == 17763 || // 1809
           buildNumber == 18362 || // 1903
           buildNumber == 18363 || // 1909
-          buildNumber == 19041);  // 2004
+          buildNumber == 19041 || // 2004
+          buildNumber == 19042);  // 2010
 }
 
 
