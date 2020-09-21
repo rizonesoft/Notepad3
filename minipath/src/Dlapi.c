@@ -19,6 +19,7 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <strsafe.h>
+#include "..\..\src\DarkMode\DarkMode.h"
 #include "helpers.h"
 #include "dlapi.h"
 
@@ -1098,18 +1099,18 @@ typedef struct tagDC_ITEMDATA
 //
 BOOL DriveBox_Init(HWND hwnd)
 {
+  SendMessage(hwnd, CBEM_SETWINDOWTHEME, 0, (LPARAM)L"Explorer");
+  SendMessage(hwnd, CB_SETEXTENDEDUI, TRUE, 0);
 
-  HIMAGELIST hil;
-  SHFILEINFO shfi;
+  SHFILEINFO shfi = { 0 };
+  HIMAGELIST const himl = (HIMAGELIST)SHGetFileInfo(L"C:\\", 0, &shfi, sizeof(SHFILEINFO), SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
+  //HIMAGELIST const himl = (HIMAGELIST)SHGetFileInfo(L"C:\\", 0, &shfi, sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_SYSICONINDEX);
+  SendMessage(hwnd, CBEM_SETIMAGELIST, 0, (LPARAM)himl);
 
-  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
-                                  SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
-  SendMessage(hwnd,CBEM_SETWINDOWTHEME, 0, (LPARAM)L"Explorer");
-  SendMessage(hwnd,CBEM_SETIMAGELIST,0,(LPARAM)hil);
-  SendMessage(hwnd,CBEM_SETEXTENDEDSTYLE,CBES_EX_NOSIZELIMIT,CBES_EX_NOSIZELIMIT);
+  SendMessage(hwnd, CBEM_SETEXTENDEDSTYLE, CBES_EX_NOSIZELIMIT, CBES_EX_NOSIZELIMIT);
+  SendMessage(hwnd, CBEM_SETEXTENDEDSTYLE, CBES_EX_TEXTENDELLIPSIS, CBES_EX_TEXTENDELLIPSIS);
 
   return TRUE;
-
 }
 
 

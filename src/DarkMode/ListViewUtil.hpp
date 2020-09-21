@@ -124,6 +124,7 @@ extern "C" void InitTreeView(HWND hTreeView)
 				}
 			}
 			break;
+
 			case WM_THEMECHANGED:
 			{
         if (IsDarkModeSupported())
@@ -148,14 +149,17 @@ extern "C" void InitTreeView(HWND hTreeView)
 				}
 			}
 			break;
+
 			case WM_DESTROY:
 			{
 				auto info = reinterpret_cast<SubclassInfo*>(dwRefData);
 				delete info;
 			}
 			break;
+
 			}
 			return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+
 		}, 0, reinterpret_cast<DWORD_PTR>(new SubclassInfo{}));
 	}
 
@@ -166,6 +170,7 @@ extern "C" void InitTreeView(HWND hTreeView)
 
 	SetWindowTheme(hTreeView, L"ItemsView", nullptr); // DarkMode
 }
+
 
 #else
 

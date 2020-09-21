@@ -134,6 +134,7 @@ ops_init(regex_t* reg, int init_alloc_size)
     size = sizeof(Operation) * init_alloc_size;
     p = (Operation* )xrealloc(reg->ops, size);
     CHECK_NULL_RETURN_MEMERR(p);
+    reg->ops = p;
 #ifdef USE_DIRECT_THREADED_CODE
     {
       enum OpCode* cp;
@@ -145,13 +146,12 @@ ops_init(regex_t* reg, int init_alloc_size)
 #endif
   }
   else {
-    p  = (Operation* )0;
+    reg->ops = (Operation* )0;
 #ifdef USE_DIRECT_THREADED_CODE
     reg->ocs = (enum OpCode* )0;
 #endif
   }
 
-  reg->ops = p;
   reg->ops_curr  = 0; /* !!! not yet done ops_new() */
   reg->ops_alloc = init_alloc_size;
   reg->ops_used  = 0;
@@ -177,6 +177,7 @@ ops_expand(regex_t* reg, int n)
   size = sizeof(Operation) * n;
   p = (Operation* )xrealloc(reg->ops, size);
   CHECK_NULL_RETURN_MEMERR(p);
+  reg->ops = p;
 
 #ifdef USE_DIRECT_THREADED_CODE
   size = sizeof(enum OpCode) * n;
@@ -185,7 +186,6 @@ ops_expand(regex_t* reg, int n)
   reg->ocs = cp;
 #endif
 
-  reg->ops = p;
   reg->ops_alloc = n;
   if (reg->ops_used == 0)
     reg->ops_curr = 0;
@@ -1831,7 +1831,6 @@ compile_bag_memory_node(BagNode* node, regex_t* reg, ScanEnv* env)
   COP(reg)->memory_end.num = node->m.regnum;
 
   if (NODE_IS_CALLED(node)) {
-    if (r != 0) return r;
     r = add_op(reg, OP_RETURN);
   }
 #else
@@ -3989,6 +3988,7 @@ set_empty_repeat_node_trav(Node* node, Node* empty, ScanEnv* env)
     {
       BagNode* en = BAG_(node);
 
+      r = 0;
       if (en->type == BAG_MEMORY) {
         if (NODE_IS_BACKREF(node)) {
           if (IS_NOT_NULL(empty))
@@ -6258,7 +6258,7 @@ concat_opt_exact_str(OptStr* to, UChar* s, UChar* end, OnigEncoding enc)
 
   for (i = to->len, p = s; p < end && i < OPT_EXACT_MAXLEN; ) {
     len = enclen(enc, p);
-    if (i + len > OPT_EXACT_MAXLEN) break;
+    if (i + len >= OPT_EXACT_MAXLEN) break;
     for (j = 0; j < len && p < end; j++)
       to->s[i++] = *p++;
   }

@@ -2963,11 +2963,15 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
 
+    int const partId = (int)pDIS->itemID;
+    if (partId == -1) {
+      return FALSE;
+    }
+
     HDC const hdc = pDIS->hDC;
     RECT const rc = pDIS->rcItem;
 
     //UINT const ctlId = pDIS->CtlID; // child window identifier
-    //~int const partId = (int)pDIS->itemID ~ don't use
     //~int const stateId = (int)pDIS->itemState ~ don't use
 
     //~PAINTSTRUCT ps;
@@ -7970,6 +7974,32 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case TBN_ENDADJUST:
           UpdateToolbar();
           GUARD_RETURN(TRUE);
+
+        case NM_CUSTOMDRAW:
+          {
+            LPNMTBCUSTOMDRAW const lpNMTBCustomDraw = (LPNMTBCUSTOMDRAW)lParam;
+            LRESULT res = CDRF_DODEFAULT;
+            switch (lpNMTBCustomDraw->nmcd.dwDrawStage) {
+            case CDDS_PREPAINT:
+              res = CDRF_NOTIFYITEMDRAW;
+              break;
+            case CDDS_ITEMPREPAINT:
+            {
+              //~HDC const hdc = lpNMTBCustomDraw->nmcd.hdc;
+              //~if (hdc) {
+              //~  SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
+              //~  SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
+              //~}
+              lpNMTBCustomDraw->clrBtnFace = GetModeBtnfaceColor(UseDarkMode());
+              lpNMTBCustomDraw->clrText = GetModeTextColor(UseDarkMode());
+              res = TBCDRF_USECDCOLORS;
+            }
+            break;
+            default:
+              break;
+            }
+            GUARD_RETURN(res);
+          }
 
         default:
           GUARD_RETURN(FALSE);

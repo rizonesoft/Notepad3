@@ -290,12 +290,13 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   // Load Settings
   LoadSettings();
 
-  g_hbrDarkModeBkgBrush = CreateSolidBrush(GetModeBkColor(IsDarkModeSupported()));
-  g_hbrDarkModeBtnFcBrush = CreateSolidBrush(GetModeBtnfaceColor(IsDarkModeSupported()));
-
 #ifdef D_NP3_WIN10_DARK_MODE
   SetDarkMode(IsDarkModeSupported() /* && Settings.WinThemeDarkMode*/); // settings
 #endif
+
+  g_hbrDarkModeBkgBrush = CreateSolidBrush(GetModeBkColor(UseDarkMode()));
+  g_hbrDarkModeBtnFcBrush = CreateSolidBrush(GetModeBtnfaceColor(UseDarkMode()));
+
 
   // ----------------------------------------------------
   // MultiLingual
@@ -700,11 +701,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         LRESULT lret = DefWindowProc(hwnd,umsg,wParam,lParam);
 
         if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
-          ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crFilter);
+          ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(UseDarkMode()) : Settings.crFilter);
           ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
         }
         else {
-          ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crNoFilt);
+          ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(UseDarkMode()) : Settings.crNoFilt);
           ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
         }
 
@@ -907,6 +908,23 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       }
       break;
 
+#if 0
+    // will only be send by ConboBox, _not_ by ComboBox_Ex_ 
+    case WM_MEASUREITEM:
+      {
+        if (wParam == IDC_DRIVEBOX) {
+          LPMEASUREITEMSTRUCT const lpmis = (LPMEASUREITEMSTRUCT)lParam;
+          HIMAGELIST const himl = (HIMAGELIST)SendMessage(hwndDriveBox, CBEM_GETIMAGELIST, 0, 0);
+          int cx, cy;
+          if (ImageList_GetIconSize(himl, &cx, &cy)) {
+            if (lpmis->itemHeight < (UINT)(cx + 8)) {
+              lpmis->itemHeight = (UINT)(cx + 8);
+            }
+          }
+        }
+      }
+      return TRUE;
+#endif
 
     case WM_TRAYMESSAGE:
       switch(lParam)
@@ -992,8 +1010,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   // Create Toolbar and Statusbar
   CreateBars(hwnd, hInstance);
 
-
-  DWORD dwDriveBoxStyle = WS_DRIVEBOX;
+  // --------------------------------------------------------------------------
 
   hwndDirList = CreateWindowEx(
                   WS_EX_CLIENTEDGE,
@@ -1020,12 +1037,34 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   }
 #endif
 
+  // DirList
+  InitListView(hwndDirList);
+  DirList_Init(hwndDirList, NULL);
+  ListView_SetExtendedListViewStyle(hwndDirList, LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
+  ListView_InsertColumn(hwndDirList, 0, &lvc);
+  if (Settings.bTrackSelect)
+    ListView_SetExtendedListViewStyleEx(hwndDirList,
+      LVS_EX_TRACKSELECT | LVS_EX_ONECLICKACTIVATE,
+      LVS_EX_TRACKSELECT | LVS_EX_ONECLICKACTIVATE);
+  if (Settings.bFullRowSelect) {
+    ListView_SetExtendedListViewStyleEx(hwndDirList,
+      LVS_EX_FULLROWSELECT,
+      LVS_EX_FULLROWSELECT);
+    SetExplorerTheme(hwndDirList);
+  }
+  ListView_SetHoverTime(hwndDirList, 10);
+
+  // --------------------------------------------------------------------------
+
+  DWORD dwDriveBoxStyle = WS_DRIVEBOX;
+
   if (Settings.bShowDriveBox)
     dwDriveBoxStyle |= WS_VISIBLE;
 
-  hwndDriveBox = CreateWindowEx(
+  hwndDriveBox = CreateWindowExW(
                    0,
-                   WC_COMBOBOXEX,
+                   //~WC_COMBOBOX,
+                   WC_COMBOBOXEX, // COMBOBOX as child
                    NULL,
                    dwDriveBoxStyle,
                    0,0,0,GetSystemMetrics(SM_CYFULLSCREEN),
@@ -1045,27 +1084,13 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // DriveBox
   DriveBox_Init(hwndDriveBox);
-  SendMessage(hwndDriveBox,CB_SETEXTENDEDUI,TRUE,0);
 
-  // DirList
-  InitListView(hwndDirList);
-  DirList_Init(hwndDirList, NULL);
-  ListView_SetExtendedListViewStyle(hwndDirList,LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
-  ListView_InsertColumn(hwndDirList, 0, &lvc);
-  if (Settings.bTrackSelect)
-    ListView_SetExtendedListViewStyleEx(hwndDirList,
-      LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE,
-      LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE);
-  if (Settings.bFullRowSelect) {
-    ListView_SetExtendedListViewStyleEx(hwndDirList,
-      LVS_EX_FULLROWSELECT,
-      LVS_EX_FULLROWSELECT);
-    SetExplorerTheme(hwndDirList);
-  }
-  ListView_SetHoverTime(hwndDirList,10);
+  // --------------------------------------------------------------------------
 
   // Drag & Drop
   DragAcceptFiles(hwnd,TRUE);
+
+  // --------------------------------------------------------------------------
 
   // History
   History_Init(&g_mHistory);
@@ -1082,6 +1107,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   hwndTT = (HWND)SendMessage(hwndToolbar,TB_GETTOOLTIPS,0,0);
   SendMessage(hwndTT,TTM_ADDTOOL,0,(LPARAM)&ti);
+
+  // --------------------------------------------------------------------------
 
   // System Menu
   hmenu = GetSystemMenu(hwnd,FALSE);
@@ -1106,7 +1133,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   UNUSED(wParam);
 
-  return(0);
+  return FALSE;
 }
 
 
@@ -1146,7 +1173,8 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   HIMAGELIST himl;
   BOOL bExternalBitmap = FALSE;
 
-  DWORD dwToolbarStyle   = WS_TOOLBAR | TBSTYLE_FLAT | CCS_ADJUSTABLE;
+  DWORD dwToolbarStyle   = WS_TOOLBAR | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS | CCS_ADJUSTABLE;
+  DWORD dwToolbarStyleEx = TBSTYLE_EX_DOUBLEBUFFER;
   DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
   DWORD dwReBarStyle = WS_REBAR;
 
@@ -1159,7 +1187,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   if (Settings.bShowToolbar)
     dwReBarStyle |= WS_VISIBLE;
 
-  hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
+  hwndToolbar = CreateWindowEx(dwToolbarStyleEx,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
 
@@ -1374,13 +1402,16 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
 
+    int const partId = (int)pDIS->itemID;
+    if (partId == -1) { 
+      return FALSE; 
+    }
+
     HDC const hdc = pDIS->hDC;
     RECT const rc = pDIS->rcItem;
 
     //UINT const ctlId = pDIS->CtlID; // child window identifier
-    //~int const partId = (int)pDIS->itemID ~ don't use
     //~int const stateId = (int)pDIS->itemState ~ don't use
-
     //~PAINTSTRUCT ps;
     //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
 
@@ -1415,6 +1446,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //~EndPaint(hWndItem, &ps);
     return TRUE;
   }
+  //else if (LOWORD(wParam) == IDC_DRIVEBOX) {} // (!) this is not available for ComboBox_Ex_ 
   return FALSE;
 }
 
@@ -1436,13 +1468,13 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   if (IsDarkModeSupported())
   {
-    bool const darkModeEnabled = CheckDarkModeEnabled();
-    AllowDarkModeForWindow(hwnd, darkModeEnabled);
+    AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
     RefreshTitleBarThemeColor(hwnd);
   }
 
   SetWindowLongPtr(hwndDirList, GWL_EXSTYLE, GetWindowLongPtr(hwndDirList, GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
   SetWindowPos(hwndDirList, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
+  SendMessage(hwndDirList, WM_THEMECHANGED, 0, 0);
 
   // recreate toolbar and statusbar
   WCHAR chStatus[255] = { 0 };
@@ -1594,23 +1626,65 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UNUSED(lParam);
 }
 
+#if 0
+static LRESULT _HandleDriveBoxNotify(HWND hwnd, WPARAM wParam)
+{
+  LRESULT res = FALSE;
+  switch (wParam) {
+  case CBN_SELCHANGE:
+    res = true;
+    break;
+  default:
+    break;
+  }
+
+/*
+  const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
+
+  int const partId = (int)pDIS->itemID;
+  if (partId == -1) {
+    return FALSE;
+  }
+
+  HDC const hdc = pDIS->hDC;
+  //RECT const rc = pDIS->rcItem;
+
+  //UINT const ctlId = pDIS->CtlID; // child window identifier
+  //~int const stateId = (int)pDIS->itemState ~ don't use
+
+  //~PAINTSTRUCT ps;
+  //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
+
+  //~SetModeBkColor(hdc, UseDarkMode());
+  SetModeBtnFaceColor(hdc, UseDarkMode());
+  SetModeTextColor(hdc, UseDarkMode());
+
+  //~EndPaint(hWndItem, &ps);
+  return TRUE;
+*/
+
+  UNUSED(hwnd);
+  return res;
+}
+#endif
 
 //=============================================================================
 //
 //  MsgCommand() - Handles WM_COMMAND
 //
 //
-LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
+LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+  //if ((HWND)lParam == hwndDriveBox) {
+  //  // CBN_xxxx  notification from the child ComboBox within the ComboBoxEx control.
+  //  return _HandleDriveBoxNotify(hwnd, wParam);
+  //}
 
   switch(LOWORD(wParam))
   {
-
     case IDC_DRIVEBOX:
-
       switch(HIWORD(wParam))
       {
-
         case CBN_SETFOCUS:
           nIdFocus = IDC_DRIVEBOX;
           break;
@@ -1631,7 +1705,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             SetFocus(hwndDirList);
           }
           break;
-
       }
       break;
 
@@ -2705,14 +2778,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 //
 LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
-
   LPNMHDR pnmh = (LPNMHDR)lParam;
 
   switch(pnmh->idFrom)
   {
-
     case IDC_DIRLIST:
-
       switch(pnmh->code)
       {
 
@@ -2821,10 +2891,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDC_DRIVEBOX:
-
       switch(pnmh->code)
       {
-
         case CBEN_GETDISPINFO:
           DriveBox_GetDispInfo(hwndDriveBox,lParam);
           break;
@@ -2838,10 +2906,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDC_TOOLBAR:
-
       switch(pnmh->code)
       {
-
         case TBN_ENDADJUST:
           History_UpdateToolbar(&g_mHistory,hwndToolbar,
             IDT_HISTORY_BACK,IDT_HISTORY_FORWARD);
@@ -2876,15 +2942,38 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             return(0);
           }
 
+        case NM_CUSTOMDRAW:
+          {
+            LPNMTBCUSTOMDRAW const lpNMTBCustomDraw = (LPNMTBCUSTOMDRAW)lParam;
+            LRESULT res = CDRF_DODEFAULT;
+            switch (lpNMTBCustomDraw->nmcd.dwDrawStage) {
+            case CDDS_PREPAINT:
+              res = CDRF_NOTIFYITEMDRAW;
+              break;
+            case CDDS_ITEMPREPAINT:
+              {
+                //~HDC const hdc = lpNMTBCustomDraw->nmcd.hdc;
+                //~if (hdc) {
+                //~  SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
+                //~  SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
+                //~}
+                lpNMTBCustomDraw->clrBtnFace = GetModeBtnfaceColor(UseDarkMode());
+                lpNMTBCustomDraw->clrText = GetModeTextColor(UseDarkMode());
+                res = TBCDRF_USECDCOLORS;
+              }
+              break;
+            default:
+              break;
+            }
+            return res;
+          }
       }
       break;
 
 
     default:
-
       switch(pnmh->code)
       {
-
         case TTN_NEEDTEXT:
           {
             WCHAR tch[256];
@@ -2894,7 +2983,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               PathCompactPathEx(((LPTOOLTIPTEXT)lParam)->szText, Settings.szCurDir,
                                 COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),0);
             }
-
             else
             {
               GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
@@ -2956,11 +3044,11 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
     SetWindowPathTitle(hwnd, Settings.szCurDir);
 
     if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crFilter);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(UseDarkMode()) : Settings.crFilter);
       Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,TBFILTERBMP);
     }
     else {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crNoFilt);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(UseDarkMode()) : Settings.crNoFilt);
       Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,TBFILTERBMP+1);
     }
 

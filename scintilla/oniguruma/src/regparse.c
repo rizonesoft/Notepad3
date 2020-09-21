@@ -291,7 +291,7 @@ bbuf_clone(BBuf** rto, BBuf* from)
   CHECK_NULL_RETURN_MEMERR(to);
   r = BB_INIT(to, from->alloc);
   if (r != 0) {
-    xfree(to->p);
+    bbuf_free(to);
     *rto = 0;
     return r;
   }
@@ -3141,7 +3141,6 @@ make_absent_tree_for_simple_one_char_repeat(Node** node, Node* absent, Node* qua
 
   lower = QUANT_(quant)->lower;
   upper = QUANT_(quant)->upper;
-  onig_node_free(quant);
 
   r = node_new_save_gimmick(&ns[0], SAVE_RIGHT_RANGE, env);
   if (r != 0) goto err;
@@ -3208,9 +3207,9 @@ make_absent_tree(Node** node, Node* absent, Node* expr, int is_range_cutter,
       simple:
         r = make_absent_tree_for_simple_one_char_repeat(node, absent, quant,
                                                         body, possessive, env);
+        onig_node_free(quant);
         if (r != 0) {
           ns[4] = NULL_NODE;
-          onig_node_free(quant);
           onig_node_free(body);
           goto err;
         }
@@ -3714,11 +3713,7 @@ get_next_code_point(UChar** src, UChar* end, int base, OnigEncoding enc, int in_
 
   while (! PEND) {
     PFETCH(c);
-    if (! IS_CODE_POINT_DIVIDE(c)) break;
-  }
-  if (IS_CODE_POINT_DIVIDE(c))
-    return ONIGERR_INVALID_CODE_POINT_VALUE;
-
+    if (! IS_CODE_POINT_DIVIDE(c)) {
   if (c == '}') {
     *src = p;
     return 1; /* end of sequence */
@@ -3727,8 +3722,15 @@ get_next_code_point(UChar** src, UChar* end, int base, OnigEncoding enc, int in_
     *src = p;
     return 2; /* range */
   }
-
   PUNFETCH;
+      break;
+    }
+    else {
+      if (PEND)
+        return ONIGERR_INVALID_CODE_POINT_VALUE;
+    }
+  }
+
   r = scan_number_of_base(&p, end, 1, enc, rcode, base);
   if (r != 0) return r;
 
@@ -3879,13 +3881,17 @@ not_code_range_buf(OnigEncoding enc, BBuf* bbuf, BBuf** pbuf)
     to   = data[i*2+1];
     if (pre <= from - 1) {
       r = add_code_range_to_buf(pbuf, pre, from - 1);
-      if (r != 0) return r;
+      if (r != 0) {
+        bbuf_free(*pbuf);
+        return r;
+      }
     }
     if (to == ~((OnigCodePoint )0)) break;
     pre = to + 1;
   }
   if (to < ~((OnigCodePoint )0)) {
     r = add_code_range_to_buf(pbuf, to + 1, ~((OnigCodePoint )0));
+    if (r != 0) bbuf_free(*pbuf);
   }
   return r;
 }
@@ -6736,6 +6742,7 @@ prs_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           p = psave;
           for (i = 1; i < len; i++) {
             r = fetch_token_cc(tok, &p, end, env, CS_COMPLETE);
+            if (r < 0) goto err;
           }
           fetched = 0;
         }
@@ -7099,16 +7106,16 @@ prs_callout_of_contents(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* 
   contents = onigenc_strdup(enc, code_start, code_end);
   CHECK_NULL_RETURN_MEMERR(contents);
 
-  r = node_new_callout(np, ONIG_CALLOUT_OF_CONTENTS, num, ONIG_NON_NAME_ID, env);
-  if (r != 0) {
-    xfree(contents);
-    return r;
-  }
-
   e = onig_reg_callout_list_at(env->reg, num);
   if (IS_NULL(e)) {
     xfree(contents);
     return ONIGERR_MEMORY;
+  }
+
+  r = node_new_callout(np, ONIG_CALLOUT_OF_CONTENTS, num, ONIG_NON_NAME_ID, env);
+  if (r != 0) {
+    xfree(contents);
+    return r;
   }
 
   e->of      = ONIG_CALLOUT_OF_CONTENTS;
@@ -7472,13 +7479,13 @@ prs_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
     if (r != ONIG_NORMAL) goto err_clear;
   }
 
-  r = node_new_callout(&node, ONIG_CALLOUT_OF_NAME, num, name_id, env);
-  if (r != ONIG_NORMAL) goto err_clear;
-
   e = onig_reg_callout_list_at(env->reg, num);
   if (IS_NULL(e)) {
     r = ONIGERR_MEMORY; goto err_clear;
   }
+
+  r = node_new_callout(&node, ONIG_CALLOUT_OF_NAME, num, name_id, env);
+  if (r != ONIG_NORMAL) goto err_clear;
 
   e->of         = ONIG_CALLOUT_OF_NAME;
   e->in         = in;
@@ -8546,7 +8553,12 @@ prs_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           *np = node_new_cclass();
           CHECK_NULL_RETURN_MEMERR(*np);
           cc = CCLASS_(*np);
-          add_ctype_to_cc(cc, tok->u.prop.ctype, FALSE, env);
+          r = add_ctype_to_cc(cc, tok->u.prop.ctype, FALSE, env);
+          if (r != 0) {
+            onig_node_free(*np);
+            *np = NULL_NODE;
+            return r;
+          }
           if (tok->u.prop.not != 0) NCCLASS_SET_NOT(cc);
         }
         break;

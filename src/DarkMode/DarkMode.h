@@ -7,10 +7,11 @@ extern "C" {
 #endif
 
   void SetDarkMode(bool bEnableDarkMode);
-  void InitListView(HWND hListView);
-  void InitTreeView(HWND hTreeView);
   inline void InitDarkMode() { SetDarkMode(true); };
   void ReleaseDarkMode();
+
+  void InitListView(HWND hListView);
+  void InitTreeView(HWND hTreeView);
 
   //LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
   DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
