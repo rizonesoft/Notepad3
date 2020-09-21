@@ -141,8 +141,8 @@ static inline const void* get_function_pointer_2d(double (*function)(double, dou
 
 static inline bool isNextCharNumber(const state* s)
 {
-  if (!s || !(s->next)) { return false; }
-  const char* ch = s->next + 1;
+  if (!s) { return false; }
+  const char* ch = s->next;
   while (*ch) {
     if (*ch == ' ') {
       ++ch; continue;
