@@ -141,14 +141,14 @@ static inline const void* get_function_pointer_2d(double (*function)(double, dou
 
 static inline bool isNextCharNumber(const state* s)
 {
-  if (!s || !(s->next)) { return false; }
-  const char* ch = s->next + 1;
+  if (!s) { return false; }
+  const char* ch = s->next;
   while (*ch) {
     if (*ch == ' ') {
       ++ch; continue;
     }
-    // ASCII 0-9 -> [48,57]
-    else if ((*ch > 47) && (*ch < 58)) {
+    // ASCII 0-9 -> [48,57] or '('
+    else if (((*ch > 47) && (*ch < 58)) || (*ch == 40))  {
       return true;
     }
     // no number
