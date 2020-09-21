@@ -2963,11 +2963,15 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
 
+    int const partId = (int)pDIS->itemID;
+    if (partId == -1) {
+      return FALSE;
+    }
+
     HDC const hdc = pDIS->hDC;
     RECT const rc = pDIS->rcItem;
 
     //UINT const ctlId = pDIS->CtlID; // child window identifier
-    //~int const partId = (int)pDIS->itemID ~ don't use
     //~int const stateId = (int)pDIS->itemState ~ don't use
 
     //~PAINTSTRUCT ps;
