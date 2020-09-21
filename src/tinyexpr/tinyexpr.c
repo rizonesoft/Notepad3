@@ -147,8 +147,8 @@ static inline bool isNextCharNumber(const state* s)
     if (*ch == ' ') {
       ++ch; continue;
     }
-    // ASCII 0-9 -> [48,57]
-    else if ((*ch > 47) && (*ch < 58)) {
+    // ASCII 0-9 -> [48,57] or '('
+    else if (((*ch > 47) && (*ch < 58)) || (*ch == 40))  {
       return true;
     }
     // no number
