@@ -7971,6 +7971,32 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           UpdateToolbar();
           GUARD_RETURN(TRUE);
 
+        case NM_CUSTOMDRAW:
+          {
+            LPNMTBCUSTOMDRAW const lpNMTBCustomDraw = (LPNMTBCUSTOMDRAW)lParam;
+            LRESULT res = CDRF_DODEFAULT;
+            switch (lpNMTBCustomDraw->nmcd.dwDrawStage) {
+            case CDDS_PREPAINT:
+              res = CDRF_NOTIFYITEMDRAW;
+              break;
+            case CDDS_ITEMPREPAINT:
+            {
+              //~HDC const hdc = lpNMTBCustomDraw->nmcd.hdc;
+              //~if (hdc) {
+              //~  SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
+              //~  SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
+              //~}
+              lpNMTBCustomDraw->clrBtnFace = GetModeBtnfaceColor(UseDarkMode());
+              lpNMTBCustomDraw->clrText = GetModeTextColor(UseDarkMode());
+              res = TBCDRF_USECDCOLORS;
+            }
+            break;
+            default:
+              break;
+            }
+            GUARD_RETURN(res);
+          }
+
         default:
           GUARD_RETURN(FALSE);
       }

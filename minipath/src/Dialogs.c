@@ -1272,11 +1272,11 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
     }
 
     if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crFilter);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetModeTextColor(UseDarkMode()) : Settings.crFilter);
       ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
     }
     else {
-      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(IsDarkModeSupported()) : Settings.crNoFilt);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetModeTextColor(UseDarkMode()) : Settings.crNoFilt);
       ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
     }
 
