@@ -574,6 +574,10 @@ msgstr "pesquisando arquivos '%s'"
 msgid "search string is empty"
 msgstr "a sequência de pesquisa está vazia"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "o caminhos serão pesquisados recursivamente.\nSepare os caminhos com o símbolo '|'.\nExemplo: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "Max # de trabalhos simultâneos"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Isso adiciona uma nova entrada para o menu de contexto, chamada: 'Abrir com o Editor'"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 

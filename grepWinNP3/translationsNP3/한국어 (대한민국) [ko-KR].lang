@@ -574,6 +574,10 @@ msgstr "'%s' 파일 스캔중"
 msgid "search string is empty"
 msgstr "검색 문자열이 없습니다"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "재귀적으로 검색할 경로(들)입니다.\n'|' 문자를 사용해 경로들을 구분할 수 있습니다.\n예시: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "동시에 일할 수 있는 최대 숫자"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "컨텍스트 메뉴에 '에디터로 열기'라는 새로운 항목을 추가합니다"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 

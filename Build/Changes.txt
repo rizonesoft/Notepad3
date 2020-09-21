@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.918.(build_#) (2020-09-18)
+Current BETA/RC Version 5.20.920.(build_#) (2020-09-20)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- 
+[.920.1]- grepWinNP3: "Stay On Top" titlebar context-menu (GRE).
 [.918.1]- Faster statusbar update response / avoid flickering.
 [.917.2]- Reducing Titlebar, Toolbar and Statusbar flickering.
 [.916.1]- Set Light/Dark Mode for grepWinNP3 execution (GRE).
@@ -55,12 +56,14 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.920.1]- grepWinNP3: save changed "Stay On Top" settings on exit (GRE).
+[.920.1]- First part of DarkMode Theme for MiniPath.
 [.917.4]- Need to separate DarkMode window-backgr color from button-facecolor.
 [.916.1]- Opacity level on loosing focus for grepWinNP3.
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
-[.916.1]- Update grepWinNP3 (GRE) version 2.1.3.28 (2020-08-25).
+[.920.1]- Update grepWinNP3 (GRE) version 2.1.3.30 (2020-09-20).
 [.915.3]- Update Oniguruma Regex (ONI) engine version 6.9.6+ (2020-09-15).
 [.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-09).
 
@@ -68,6 +71,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.920.1]- grepWinNP3 new instance: read correct .ini-file (protable) (GRE).
 [.918.2]- 2nd try to fix Win7 start-up crash.
 [.918.1]- Final default color correction (toolbar, statusbar and margin).
 [.917.4]- Allow removing of compile pre-processing switch D_NP3_WIN10_DARK_MODE.

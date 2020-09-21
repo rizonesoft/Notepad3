@@ -574,6 +574,10 @@ msgstr "Keresés itt: '%s'"
 msgid "search string is empty"
 msgstr "A keresett szöveg üres"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "Az útvonal(ak), ahol rekurzívan keresünk.\nElválasztásra használja a '|' jelet.\nPéldául: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "Párhuzamos feldolgozók max. száma"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Ez hozzáadja a 'Megnyitás a szerkesztőben' pontot a helyi menüben"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 

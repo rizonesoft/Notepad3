@@ -574,6 +574,10 @@ msgstr "zoek bestand '%s'"
 msgid "search string is empty"
 msgstr "zoekstring is leeg"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr "Start nieuw grepWinNP3 venster"
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "het pad wordt recursief doorzocht.\nScheidt de paden met het'|'symbool.\nVoorbeeld: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "Max # gelijktijdige werkers"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Dit voegt in het Context menu toe: 'Openen in Editor'"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr "Blijven bovenop"
 

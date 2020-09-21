@@ -123,7 +123,7 @@ BEGIN
     LTEXT           "На&йти:",IDC_STATIC,7,7,46,8
     CONTROL         "<a>Экранирование</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Заменит&ь на:",IDC_STATIC,7,36,46,8
+    LTEXT           "Заменит&ь на:",IDC_STATIC2,7,36,46,8
     CONTROL         "<a>Экранирование</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Только &целые слова",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,85,10
@@ -189,7 +189,7 @@ BEGIN
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,181,128
     CONTROL         "Как &резервная при ошибке определения",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Определение кодировки: ",IDC_STATIC,7,58,197,88,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Определение кодировки: ",IDC_STATIC2,7,58,197,88,0,WS_EX_TRANSPARENT
     CONTROL         "Открывать 7-битные файлы A&SCII как UTF-8",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,169,10
     CONTROL         "Только &надежные результаты определения",IDC_RELIABLE_DETECTION_RES,
@@ -229,13 +229,13 @@ CAPTION "Разные окончания строк"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "В файле обнаружены строки с разными окончаниями:",IDC_STATIC,7,7,183,8
-    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
-    RTEXT           "CR:",IDC_STATIC,10,28,34,8
-    RTEXT           "LF:",IDC_STATIC,10,38,34,8
+    RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC3,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC4,10,38,34,8
     LTEXT           "%s",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "Нор&мализовать окончания строк?",IDC_STATIC,7,52,116,8
+    LTEXT           "Нор&мализовать окончания строк?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,133,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Да",IDOK,153,63,50,14
     PUSHBUTTON      "&Нет",IDCANCEL,153,80,50,14
@@ -332,7 +332,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Размер табуляции:",IDC_STATIC,7,10,65,8
     EDITTEXT        IDC_TAB_WIDTH,79,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "Размер &отступа:",IDC_STATIC,7,30,56,8
+    LTEXT           "Размер &отступа:",IDC_STATIC2,7,30,56,8
     EDITTEXT        IDC_INDENT_DEPTH,79,27,30,14,ES_AUTOHSCROLL
     CONTROL         "&Заменять пробелами",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Клавиша &Tab переформатирует отступ",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
@@ -354,11 +354,11 @@ BEGIN
     GROUPBOX        "Статистика по строкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
     LTEXT           "Табуляция[%i]:",IDC_INDENT_WIDTH_TAB,40,18,55,8
     LTEXT           "Пробелы[%i]:",IDC_INDENT_WIDTH_SPC,42,30,55,8
-    LTEXT           "Смешанные[x]:",IDC_STATIC,33,42,55,8
+    LTEXT           "Смешанные[x]:",IDC_STATIC3,33,42,55,8
     RTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     RTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
     RTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8
-    GROUPBOX        "Переформатировать все? ",IDC_STATIC,7,60,217,56,WS_GROUP
+    GROUPBOX        "Переформатировать все? ",IDC_STATIC2,7,60,217,56,WS_GROUP
     CONTROL         "&Табуляция",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,52,10
     CONTROL         "&Пробелы",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,52,10
     RTEXT           "Cтрок с нестандартным размером: %s",IDC_INDENT_TAB_MODX,71,72,145,8
@@ -424,19 +424,19 @@ BEGIN
     GROUPBOX        "Колонтитулы",1074,8,130,224,56,WS_GROUP
     LTEXT           "&Верхний:",IDC_STATIC,16,147,36,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Нижний:",IDC_STATIC,16,167,36,8
+    LTEXT           "&Нижний:",IDC_STATIC3,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Цветная печать",1076,8,191,224,37,WS_GROUP
-    LTEXT           "Ре&жим:",IDC_STATIC,16,208,36,8
+    LTEXT           "Ре&жим:",IDC_STATIC4,16,208,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Масштабирование",IDC_STATIC,240,170,108,58,WS_GROUP
-    LTEXT           "&Значение (10-500%):",IDC_STATIC,248,188,92,8
+    GROUPBOX        "Масштабирование",IDC_STATIC5,240,170,108,58,WS_GROUP
+    LTEXT           "&Значение (10-500%):",IDC_STATIC6,248,188,92,8
     EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
     CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
     DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
     PUSHBUTTON      "Отмена",IDCANCEL,244,237,50,14
     PUSHBUTTON      "&Принтер...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "Просмотр",IDC_STATIC,240,8,108,157
+    GROUPBOX        "Просмотр",IDC_STATIC2,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -478,7 +478,7 @@ BEGIN
     CONTROL         "Задать новый",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,139,60,64,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,277,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Опциональный мастер-ключ:",IDC_STATIC,17,61,100,8,NOT WS_GROUP
+    LTEXT           "Опциональный мастер-ключ:",IDC_STATIC2,17,61,100,8,NOT WS_GROUP
     CONTROL         "Шифровать парольной фразой",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,121,10
     CONTROL         "Переиспользовать",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     CONTROL         "Показать парольную фразу",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,111,10
@@ -516,19 +516,19 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Вставить текст перед строками:",IDC_STATIC,7,7,112,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
-    LTEXT           "&Добавить текст в конце строк:",IDC_STATIC,7,37,108,8
+    LTEXT           "&Добавить текст в конце строк:",IDC_STATIC2,7,37,108,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,153,7,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,153,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Номер строки документа",IDC_STATIC,57,72,86,8
+    LTEXT           "Номер строки документа",IDC_STATIC3,57,72,86,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Последовательное число",IDC_STATIC,57,82,87,8
+    LTEXT           "Последовательное число",IDC_STATIC4,57,82,87,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Последовательное число (с нуля)",IDC_STATIC,57,92,116,8
+    LTEXT           "Последовательное число (с нуля)",IDC_STATIC5,57,92,116,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 210, 70
@@ -538,10 +538,10 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Открывающий тег (с атрибутами):",IDC_STATIC,7,7,120,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
-    LTEXT           "&Закрывающий тег (редактируемый):",IDC_STATIC,7,37,128,8
+    LTEXT           "&Закрывающий тег (редактируемый):",IDC_STATIC2,7,37,128,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X раз",IDC_STATIC,148,50,24,8
+    LTEXT           "X раз",IDC_STATIC3,148,50,24,8
     DEFPUSHBUTTON   "OK",IDOK,153,7,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,153,24,50,14
 END
@@ -553,7 +553,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Вставить п&еред выделением:",IDC_STATIC,7,7,102,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
-    LTEXT           "Вставить п&осле выделения:",IDC_STATIC,7,37,96,8
+    LTEXT           "Вставить п&осле выделения:",IDC_STATIC2,7,37,96,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,153,7,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,153,24,50,14
@@ -695,11 +695,11 @@ CAPTION "Выбрать шрифт"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
     GROUPBOX        "Пример", IDC_STATIC, 7, 102, 284, 68, BS_BITMAP
-    LTEXT           "&Шрифт:",IDC_STATIC,7,7,127,8
+    LTEXT           "&Шрифт:",IDC_STATIC2,7,7,127,8
     COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Стиль шрифта:",IDC_STATIC,154,7,72,8
+    LTEXT           "&Стиль шрифта:",IDC_STATIC3,154,7,72,8
     COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Размер:",IDC_STATIC,247,7,40,8
+    LTEXT           "&Размер:",IDC_STATIC4,247,7,40,8
     COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
     CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54
     DEFPUSHBUTTON   "OK",IDOK,182,178,50,14

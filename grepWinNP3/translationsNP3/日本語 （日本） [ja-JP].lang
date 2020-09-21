@@ -574,6 +574,10 @@ msgstr "ファイルをスキャン中 '%s'"
 msgid "search string is empty"
 msgstr "検索文字列が空です"
 
+#. Resource IDs: (170, 171)
+msgid "Start new grepWinNP3 window"
+msgstr ""
+
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr "パスは再帰的に検索されます。\nパスを「|」で区切ることができます。\n指定例: c:\\temp|d:\\logs"
@@ -597,4 +601,8 @@ msgstr "最大スレッド数"
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "これにより右クリックメニューに「エディタで開く」という新規項目を追加します"
+
+#. Resource IDs: (3006)
+msgid "Stay On Top"
+msgstr ""
 
