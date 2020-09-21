@@ -4188,6 +4188,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex);
             }
             TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
+            TreeView_Expand(hwndTV, hCurrentTVLex, TVE_EXPAND);
 
             pCurrentLexer = (found >= 0) ? s_pLexCurrent : GetDefaultLexer();
             pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
