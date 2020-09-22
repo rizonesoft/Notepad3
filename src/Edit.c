@@ -5796,6 +5796,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       sg_pefrData->bStateChanged = true;  // force update
 
       DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, sg_pefrData->bMarkOccurences);
+
+      PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
     }
     return TRUE; // (!) further processing
 
@@ -5889,9 +5891,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     //~case WM_CTLCOLOREDIT:
     //~case WM_CTLCOLORLISTBOX:
     case WM_CTLCOLORSTATIC:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -5905,24 +5905,22 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         bool const darkModeEnabled = CheckDarkModeEnabled();
         AllowDarkModeForWindow(hwnd, darkModeEnabled);
         RefreshTitleBarThemeColor(hwnd);
-        int const buttons[] = { IDOK, IDCANCEL, IDC_FINDPREV, IDC_REPLACE, IDC_SWAPSTRG,
-                                IDC_REPLACEALL, IDC_REPLACEINSEL, IDC_TOGGLE_VISIBILITY };
-        for (int i = 0; i < COUNTOF(buttons); ++i) {
-          HWND const hBtn = GetDlgItem(hwnd, buttons[i]);
+        int const ctlx[] = { IDOK, IDCANCEL, IDC_FINDPREV, IDC_REPLACE, IDC_SWAPSTRG,
+                            IDC_REPLACEALL, IDC_REPLACEINSEL, IDC_TOGGLE_VISIBILITY };
+        for (int i = 0; i < COUNTOF(ctlx); ++i) {
+          HWND const hBtn = GetDlgItem(hwnd, ctlx[i]);
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
 #endif
 
     case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORLISTBOX:
-      {
-      if (sg_pefrData->bMarkOccurences)
-      {
+    case WM_CTLCOLORLISTBOX: {
+      if (sg_pefrData->bMarkOccurences) {
         HWND hCheck = (HWND)lParam;
         HDC hDC = (HDC)wParam;
 
@@ -5955,13 +5953,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           return hBrush;
         }
       }
-#ifdef D_NP3_WIN10_DARK_MODE
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
-#endif
     }
+#ifdef D_NP3_WIN10_DARK_MODE
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
+#else
     return FALSE;
+#endif
 
 
     case WM_ACTIVATE:
@@ -7992,9 +7989,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 #ifdef D_NP3_WIN10_DARK_MODE
 
       CASE_WM_CTLCOLOR_SET:
-        if (UseDarkMode()) {
-          return SetDarkModeCtlColors((HDC)wParam);
-        }
+        return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
         break;
 
       case WM_SETTINGCHANGE:
@@ -8015,7 +8010,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
             AllowDarkModeForWindow(hBtn, darkModeEnabled);
             SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
           }
-          UpdateWindow(hwnd);
+          UpdateWindowEx(hwnd);
         }
         break;
 
@@ -8217,8 +8212,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       {
         DWORD const dwId = GetWindowLong((HWND)lParam, GWL_ID);
         HDC const hdc = (HDC)wParam;
-        INT_PTR const hbrReturn = UseDarkMode() ? SetDarkModeCtlColors(hdc) : 
-                                                  (INT_PTR)GetSysColorBrush(COLOR_BTNFACE);
+        INT_PTR const hbrReturn = SetDarkModeCtlColors(hdc, UseDarkMode());
         if (dwId >= 200 && dwId <= 205) {
           SetBkMode(hdc, TRANSPARENT);
           if (GetSysColorBrush(COLOR_HOTLIGHT)) {
@@ -8251,7 +8245,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -8418,9 +8412,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 #ifdef D_NP3_WIN10_DARK_MODE
 
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -8441,7 +8433,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -8543,9 +8535,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
 #ifdef D_NP3_WIN10_DARK_MODE
 
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -8566,7 +8556,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -8673,9 +8663,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
 #ifdef D_NP3_WIN10_DARK_MODE
 
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -8696,7 +8684,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -8915,9 +8903,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
     //}
 
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -8938,7 +8924,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 

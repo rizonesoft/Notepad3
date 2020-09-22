@@ -28,6 +28,9 @@
 
 #define SetExplorerTheme(hwnd) SetWindowTheme((hwnd), L"Explorer", NULL)
 
+#define UpdateWindowEx(hwnd) /* UpdateWindow(hwnd) */ \
+  RedrawWindow((hwnd), NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_INTERNALPAINT /* | RDW_UPDATENOW */)
+
 // ----------------------------------------------------------------------------
 
 INT_PTR DisplayCmdLineHelp(HWND hwnd);

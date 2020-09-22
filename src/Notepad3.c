@@ -570,7 +570,7 @@ static void SetSaveNeeded()
 {
   if (!s_DocNeedSaving) {
     s_DocNeedSaving = true;
-    UpdateTitleBar();
+    UpdateTitleBar(Globals.hwndMain);
   }
   UpdateToolbar();
 
@@ -586,7 +586,7 @@ void SetSavePoint()
   }
   s_DocNeedSaving = false;
   UpdateToolbar();
-  UpdateTitleBar();
+  UpdateTitleBar(Globals.hwndMain);
 }
 
 inline static bool GetDocModified() {
@@ -2840,7 +2840,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   AllowDarkModeForWindow(hwnd, UseDarkMode());
   RefreshTitleBarThemeColor(hwnd);
 #endif
-  UpdateTitleBar();
+  UpdateTitleBar(hwnd);
 
   // reinitialize edit frame
   _HandleEditWndFrame();
@@ -2873,9 +2873,9 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
-  UpdateWindow(hwnd);
-
   UpdateUI();
+
+  UpdateWindowEx(hwnd);
 
   return FALSE;
 }
@@ -2943,7 +2943,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
-  UpdateTitleBar();
+  UpdateTitleBar(hwnd);
 
   return FALSE;
 }
@@ -5932,7 +5932,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         unsigned const iCurTheme = GetModeThemeIndex();
 
-        Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode;
+        Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode; // toggle
 
         // hide/show bright menu strip on switching
         if (Settings.ShowMenubar == Defaults.ShowMenubar) {
@@ -5944,8 +5944,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     
         Style_DynamicThemesMenuCmd(GetModeThemeIndex() + IDM_THEMES_DEFAULT, iCurTheme);
         
-        COND_SHOW_ZOOM_CALLTIP();
+        if (IsWindow(Globals.hwndDlgFindReplace)) {
+          //~SendMessage(Globals.hwndDlgFindReplace, WM_THEMECHANGED, 0, 0); ~ (!) incomplete update
+          bool const isReplDlg = !!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE);
+          PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_FIND : IDM_EDIT_REPLACE); // swap
+          PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_REPLACE : IDM_EDIT_FIND); // restore
+        }
 
+        if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
+          //~SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0); ~ no need for restart
+          //~PostWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
+          SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
+          UpdateTitleBar(Globals.hwndDlgCustomizeSchemes);
+        }
+
+        PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
       }
       break;
@@ -5970,13 +5983,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SHOWFULLPATH:
       Settings.PathNameFormat = iLoWParam - IDM_VIEW_SHOWFILENAMEONLY;
       StringCchCopy(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt),L"");
-      UpdateTitleBar();
+      UpdateTitleBar(hwnd);
       break;
 
 
     case IDM_VIEW_SHOWEXCERPT:
       EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
-      UpdateTitleBar();
+      UpdateTitleBar(hwnd);
       break;
 
 
@@ -6521,7 +6534,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_TOGGLETITLE:
       EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
-      UpdateTitleBar();
+      UpdateTitleBar(hwnd);
       break;
 
 
@@ -9500,11 +9513,14 @@ void UpdateUI()
 //
 //  UpdateTitleBar()
 //
-void UpdateTitleBar() {
-  SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                 Settings.PathNameFormat, GetDocModified(), IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
-  PostMessage(Globals.hwndMain, WM_NCACTIVATE, FALSE, -1);
-  PostMessage(Globals.hwndMain, WM_NCACTIVATE, TRUE, 0);
+void UpdateTitleBar(const HWND hwnd)
+{
+  if (hwnd == Globals.hwndMain) {
+    SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
+                   Settings.PathNameFormat, GetDocModified(), IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
+  }
+  PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+  PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
 }
 
 
@@ -10301,10 +10317,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
   }
 
-  UpdateTitleBar();
   UpdateToolbar();
   UpdateMarginWidth();
   UpdateStatusbar(true);
+  UpdateTitleBar(Globals.hwndMain);
 
   return fSuccess;
 }

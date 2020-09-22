@@ -164,9 +164,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 #ifdef D_NP3_WIN10_DARK_MODE
 
     CASE_WM_CTLCOLOR_SET :
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -187,7 +185,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hDlg);
+        UpdateWindowEx(hDlg);
       }
       break;
 
@@ -334,9 +332,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 #ifdef D_NP3_WIN10_DARK_MODE
 
     CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -357,7 +353,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hDlg);
+      UpdateWindowEx(hDlg);
     }
     break;
 
