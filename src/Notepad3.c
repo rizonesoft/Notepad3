@@ -3936,8 +3936,6 @@ static void _DynamicLanguageMenuCmd(int cmd)
   }
   if (!MUI_LanguageDLLs[iLngIdx].bIsActive)
   {
-    CloseNonModalDialogs();
-
     DestroyMenu(Globals.hMainMenu);
     
     // desired language
@@ -3959,9 +3957,8 @@ static void _DynamicLanguageMenuCmd(int cmd)
     SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(Globals.hwndMain);
 
-    UpdateUI();
+    UpdateStatusbar(true);
   }
-  return;
 }
 
 
@@ -5949,6 +5946,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           bool const isReplDlg = !!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE);
           PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_FIND : IDM_EDIT_REPLACE); // swap
           PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_REPLACE : IDM_EDIT_FIND); // restore
+          PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         }
 
         if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
@@ -5956,9 +5954,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           //~PostWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
           SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
           UpdateTitleBar(Globals.hwndDlgCustomizeSchemes);
+          PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         }
 
-        PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
       }
       break;
@@ -11550,32 +11548,6 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
   UNUSED(idEvent);
   UNUSED(uMsg);
   UNUSED(hwnd);
-}
-
-
-//=============================================================================
-//
-//  CloseNonModalDialogs()
-//
-void CloseNonModalDialogs()
-{
-  if (IsWindow(Globals.hwndDlgFindReplace)) {
-    SendMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
-  }
-  if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-    SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
-  }
-}
-
-
-//=============================================================================
-//
-//  CloseApplication()
-//
-void CloseApplication()
-{
-  CloseNonModalDialogs();
-  PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
 }
 
 

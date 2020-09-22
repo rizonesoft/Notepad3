@@ -476,7 +476,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t fileSize, void** result, 
 
             if (useFileKey) {
               // use the file key to decode
-              /*@@@
+              /*§§§
                 char ansiKey[KEY_LEN+1];
                 ptrdiff_t len = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                 ansiKey[len] = '\0';
@@ -489,7 +489,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t fileSize, void** result, 
               BYTE binMasterKey[KEY_BYTES];
               AES_keyInstance masterdecode;
               AES_cipherInstance mastercypher;
-              /*@@@
+              /*§§§
                 char ansiKey[KEY_LEN+1];
                 int ptrdiff_t = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                 AES_keygen( ansiKey, binMasterKey );
@@ -586,7 +586,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
         {
             if (useFileKey) {
                 // generate the encryption key from the passphrase
-                /* @@@
+                /* §§§
                         char ansiKey[KEY_LEN+1];
                         int ptrdiff_t = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                         ansiKey[len] = '\0';
@@ -605,7 +605,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
                 BYTE binMasterKey[KEY_BYTES];
                 AES_keyInstance masterencode;
                 AES_cipherInstance mastercypher;
-                /* @@@
+                /* §§§
                         char ansiKey[KEY_LEN+1];
                         ptrdiff_t len = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                         ansiKey[len] = '\0';

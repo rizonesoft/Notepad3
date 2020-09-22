@@ -662,6 +662,9 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 #define MAX_ESCAPE_HEX_DIGIT 4
 int Hex2Char(char* ch, int cnt);
 
+void CloseNonModalDialogs();
+void CloseApplication();
+
 // ----------------------------------------------------------------------------
 
 inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }

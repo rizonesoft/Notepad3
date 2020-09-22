@@ -427,6 +427,7 @@ LANGID LoadLanguageResources()
 void FreeLanguageResources()
 {
   if (Globals.hLngResContainer != Globals.hInstance) {
+    CloseNonModalDialogs();
     HINSTANCE const _hLngResContainer = Globals.hLngResContainer;
     Globals.hLngResContainer = Globals.hInstance;
     MUI_LanguageDLLs[0].bIsActive = true;
