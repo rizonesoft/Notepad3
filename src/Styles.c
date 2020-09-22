@@ -405,7 +405,6 @@ bool Style_IsCurLexerStandard()
 //
 //  Style_GetBaseFontSize()
 //
-
 static float  _SetBaseFontSize(float fSize)
 {
   static float fBaseFontSize = 11.0f;
@@ -425,34 +424,17 @@ float Style_GetBaseFontSize()
   return _SetBaseFontSize(-1.0);
 }
 
-
-
-//=============================================================================
-//
-//  Style_RgbAlpha()
-//
-int  Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
-{
-  alpha = clampi(alpha, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
-
-  return (int)RGB(\
-    (0xFF - alpha) * (int)GetRValue(rgbBack) / 0xFF + alpha * (int)GetRValue(rgbFore) / 0xFF, \
-    (0xFF - alpha) * (int)GetGValue(rgbBack) / 0xFF + alpha * (int)GetGValue(rgbFore) / 0xFF, \
-    (0xFF - alpha) * (int)GetBValue(rgbBack) / 0xFF + alpha * (int)GetBValue(rgbFore) / 0xFF);
-}
-
-
 //=============================================================================
 //
 //  _SetCurrentFontSize(), _GetCurrentFontSize()
 //
 static float  _SetCurrentFontSize(float fSize)
 {
-  static float fCurrentFontSize = 10.0f;
+  static float fCurrentFontSize = 11.0f;
 
   if (signbit(fSize) == 0) {
     float const fSizeR10th = Round10th(fSize);
-    fCurrentFontSize = (0.5f < fSizeR10th) ? fSizeR10th :  0.5f;
+    fCurrentFontSize = (0.5f < fSizeR10th) ? fSizeR10th : 0.5f;
   }
   return fCurrentFontSize;
 }
@@ -460,6 +442,20 @@ static float  _SetCurrentFontSize(float fSize)
 float Style_GetCurrentFontSize()
 {
   return _SetCurrentFontSize(-1.0f);
+}
+
+
+//=============================================================================
+//
+//  Style_RgbAlpha()
+//
+int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha) {
+  alpha = clampi(alpha, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
+
+  return (int)RGB(
+      (0xFF - alpha) * (int)GetRValue(rgbBack) / 0xFF + alpha * (int)GetRValue(rgbFore) / 0xFF,
+      (0xFF - alpha) * (int)GetGValue(rgbBack) / 0xFF + alpha * (int)GetGValue(rgbFore) / 0xFF,
+      (0xFF - alpha) * (int)GetBValue(rgbBack) / 0xFF + alpha * (int)GetBValue(rgbFore) / 0xFF);
 }
 
 
@@ -2366,7 +2362,8 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
   if (IsLexerStandard(s_pLexCurrent)) {
     s_pLexCurrent = GetCurrentStdLexer(); // sync
   }
-  Style_ResetCurrentLexer(hwnd);
+  Style_ResetCurrentLexer(Globals.hwndEdit);
+  UNUSED(hwnd);
 }
 
 
@@ -2393,7 +2390,7 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
   {
     // set new styles to current lexer's default text
     StringCchCopyW(pLexerDefStyle->szValue, COUNTOF(pLexerDefStyle->szValue), newStyle);
-    Style_ResetCurrentLexer(hwnd);
+    Style_ResetCurrentLexer(Globals.hwndEdit);
   }
 }
 
@@ -4070,17 +4067,20 @@ static bool  _ApplyDialogItemText(HWND hwnd,
 }
 
 
+static WCHAR s_OrigTitle[64] = { L'\0' };
 static WCHAR s_TitleTxt[128] = { L'\0' };
 
 static void _UpdateTitleText(HWND hwnd)
 {
-  static WCHAR s_OrigTitle[64] = { L'\0' };
   if (StrIsEmpty(s_OrigTitle)) {
     GetWindowText(hwnd, s_OrigTitle, COUNTOF(s_OrigTitle));
   }
-  unsigned const iTheme = GetModeThemeIndex();
-  const WCHAR *const strThemeName = (iTheme <= 1) ? L"Standard" : Theme_Files[iTheme].szName;
-  StringCchPrintf(s_TitleTxt, COUNTOF(s_TitleTxt), L"%s - %s", s_OrigTitle, strThemeName);
+  unsigned const iTheme = max_u(1, GetModeThemeIndex());
+  WCHAR scheme[96] = { L'\0' };
+  StringCchCopy(scheme, COUNTOF(scheme), Theme_Files[iTheme].szName);
+  StrDelChr(scheme, L"&"); // rm hotkey mark
+  PWCHAR const e = StrChr(scheme, L' ');  if (e) { *e = L'\0'; } // until 1st space
+  StringCchPrintf(s_TitleTxt, COUNTOF(s_TitleTxt), L"%s - %s", s_OrigTitle, scheme);
   SetWindowText(hwnd, s_TitleTxt);
 }
 
@@ -4333,7 +4333,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SendMessage(hwndTV, WM_THEMECHANGED, 0, 0);
             _UpdateTitleText(hwnd);
             SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)s_TitleTxt); // scheme may have changed
-            Style_ResetCurrentLexer(hwnd);
+            Style_ResetCurrentLexer(Globals.hwndEdit);
             SendWMCommandEx(hwnd, IDC_STYLEEDIT, EN_CHANGE); // button color inlay
             UpdateWindowEx(hwnd);
           }
@@ -4382,11 +4382,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                   DeleteObject(hFontTitle);
                   hFontTitle = NULL;
                 }
+                s_TitleTxt[0] = L'\0';
+                s_OrigTitle[0] = L'\0';
                 pCurrentLexer = NULL;
                 pCurrentStyle = NULL;
                 iCurStyleIdx  = -1;
             }
-            return false;
+            return FALSE;
 
         case WM_SYSCOMMAND:
             if (wParam == IDS_MUI_SAVEPOS)
@@ -4400,7 +4402,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 return TRUE;
             }
             else
-                return 0;
+                return FALSE;
 
         case WM_NOTIFY:
 

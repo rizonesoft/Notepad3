@@ -537,6 +537,13 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens);
 // ----------------------------------------------------------------------------
 
 bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
+bool StrDelChrW(LPWSTR pszSource, LPCWSTR pCharsToRemove);
+#if defined(UNICODE) || defined(_UNICODE)
+#define StrDelChr(s,r) StrDelChrW((s),(r))
+#else
+#define StrDelChr(s,r) StrDelChrA((s),(r))
+#endif
+
 
 //==== StrSafe lstrlen() =======================================================
 //inline size_t StringCchLenA(LPCSTR s, size_t n) { 

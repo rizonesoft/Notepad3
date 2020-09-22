@@ -72,7 +72,7 @@ WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern)
   do {
     p = StrStrIW(s,pattern);
     if (p) {
-      WCHAR* q = p + StringCchLen(pattern,0);
+      WCHAR* q = p + StringCchLenW(pattern,0);
       while (*p != L'\0') { *p++ = *q++; }
     }
   } while (p);
@@ -88,8 +88,9 @@ WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern)
 //
 bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove)
 {
-  if (!pszSource || !pCharsToRemove)
+  if (!pszSource || !pCharsToRemove) {
     return false;
+  }
 
   LPSTR pch = pszSource;
   while (*pch) {
@@ -108,9 +109,32 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove)
 
 //=============================================================================
 //
+//  StrDelChrW()
+//
+bool StrDelChrW(LPWSTR pszSource, LPCWSTR pCharsToRemove)
+{
+  if (!pszSource || !pCharsToRemove) {
+    return false;
+  }
+  LPWSTR pch = pszSource;
+  while (*pch) {
+    LPWSTR prem = pch;
+    while (StrChrW(pCharsToRemove, *prem)) {
+      ++prem;
+    }
+    if (prem > pch) {
+      MoveMemory(pch, prem, sizeof(WCHAR)*(StringCchLenW(prem,0) + 1));
+    }
+    ++pch;
+  }
+  return true;
+}
+
+
+//=============================================================================
+//
 //  Find next token in string
 //
-
 CHAR* StrNextTokA(CHAR* strg, const CHAR* tokens)
 {
   CHAR* n = NULL;
