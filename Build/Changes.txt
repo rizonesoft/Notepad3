@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.921.(build_#) (2020-09-21)
+Current BETA/RC Version 5.20.922.(build_#) (2020-09-22)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- 
+[.922.1]- Support Lexer switching while Customize Schemes dialog is open.
 [.921.1]- Expand current lexers style tree on customize schemes dialog startup.
 [.920.1]- grepWinNP3: "Stay On Top" titlebar context-menu (GRE).
 [.918.1]- Faster statusbar update response / avoid flickering.
@@ -72,6 +73,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.922.1]- DarkMode switching while non-modal dialogs are active.
 [.921.1]- TinyExpr: interpretation of '%' operator: allow "(...)" on rhs of modulo interpretation.
 [.921.1]- TinyExpr: remove the need of blank for smart interpretation of '%' operator.
 [.921.1]- Failed to set DarkMode for owner drawn ComboBoxEx controls.
