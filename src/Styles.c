@@ -343,12 +343,13 @@ void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
     _EnableSchemeConfig(iThemeIdx != 0);
     CheckCmd(Globals.hMainMenu, Theme_Files[iThemeIdx].rid, true);
 
-    Style_ResetCurrentLexer(Globals.hwndEdit);
-
-    UpdateToolbar();
-    UpdateStatusbar(true);
+    if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
+      SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
+    } else {
+      Style_ResetCurrentLexer(Globals.hwndEdit);
+    }
     UpdateMarginWidth();
-    UpdateTitleBar(Globals.hwndMain);
+    UpdateUI();
   }
 }
 
@@ -1598,10 +1599,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
  
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
-  UpdateToolbar();
-  UpdateStatusbar(true);
   UpdateMarginWidth();
-  //~UpdateUI(); 
+  UpdateStatusbar(true);
 }
 
 
@@ -4071,6 +4070,21 @@ static bool  _ApplyDialogItemText(HWND hwnd,
 }
 
 
+static WCHAR s_TitleTxt[128] = { L'\0' };
+
+static void _UpdateTitleText(HWND hwnd)
+{
+  static WCHAR s_OrigTitle[64] = { L'\0' };
+  if (StrIsEmpty(s_OrigTitle)) {
+    GetWindowText(hwnd, s_OrigTitle, COUNTOF(s_OrigTitle));
+  }
+  unsigned const iTheme = GetModeThemeIndex();
+  const WCHAR *const strThemeName = (iTheme <= 1) ? L"Standard" : Theme_Files[iTheme].szName;
+  StringCchPrintf(s_TitleTxt, COUNTOF(s_TitleTxt), L"%s - %s", s_OrigTitle, strThemeName);
+  SetWindowText(hwnd, s_TitleTxt);
+}
+
+
 INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     static HWND       hwndTV;
@@ -4084,7 +4098,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static bool       bIsStyleSelected = false;
     static bool       bWarnedNoIniFile = false;
     static WCHAR*     Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
-    static WCHAR      title[128] = { L'\0' };
 
     static WCHAR      tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
 
@@ -4097,12 +4110,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetDialogIconNP3(hwnd);
             InitWindowCommon(hwnd, true);
 
-            WCHAR buf[80] = { L'\0' };
-            GetWindowText(hwnd, buf, COUNTOF(buf));
-            unsigned const iTheme = GetModeThemeIndex();
-            const WCHAR *const strThemeName = (iTheme <= 1) ? L"Standard" : Theme_Files[iTheme].szName;
-            StringCchPrintf(title, COUNTOF(title), L"%s  -  %s", buf, strThemeName);
-            SetWindowText(hwnd, title);
+            _UpdateTitleText(hwnd);
 
 #ifdef D_NP3_WIN10_DARK_MODE
             if (UseDarkMode()) {
@@ -4230,7 +4238,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
               }
               hFontTitle = CreateFontIndirectW(&lf);
               SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
-              SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)title);
+              SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)s_TitleTxt);
             }
         }
         return TRUE;
@@ -4262,7 +4270,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
             hFontTitle = CreateFontIndirectW(&lf);
             SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
-            SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)title);
+            SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)s_TitleTxt);
           }
 
           MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
@@ -4323,6 +4331,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
               SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
             }
             SendMessage(hwndTV, WM_THEMECHANGED, 0, 0);
+            _UpdateTitleText(hwnd);
+            SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)s_TitleTxt); // scheme may have changed
             Style_ResetCurrentLexer(hwnd);
             SendWMCommandEx(hwnd, IDC_STYLEEDIT, EN_CHANGE); // button color inlay
             UpdateWindowEx(hwnd);

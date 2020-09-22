@@ -2609,6 +2609,29 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
 }
 
 
+//=============================================================================
+//
+//  CloseNonModalDialogs()
+//
+void CloseNonModalDialogs() {
+  if (IsWindow(Globals.hwndDlgFindReplace)) {
+    SendMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
+  }
+  if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
+    SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
+  }
+}
+
+//=============================================================================
+//
+//  CloseApplication()
+//
+void CloseApplication() {
+  CloseNonModalDialogs();
+  PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 ///   End of Helpers.c   ///
