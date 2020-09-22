@@ -102,9 +102,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -125,7 +123,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -605,9 +603,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -628,7 +624,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 

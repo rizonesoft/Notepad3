@@ -348,9 +348,8 @@ void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
     UpdateToolbar();
     UpdateStatusbar(true);
     UpdateMarginWidth();
-    UpdateTitleBar();
+    UpdateTitleBar(Globals.hwndMain);
   }
-  UpdateUI();
 }
 
 
@@ -1602,6 +1601,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
+  //~UpdateUI(); 
 }
 
 
@@ -3257,9 +3257,7 @@ static INT_PTR CALLBACK Style_FontDialogHook(
 #ifdef D_NP3_WIN10_DARK_MODE
 
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -3280,7 +3278,7 @@ static INT_PTR CALLBACK Style_FontDialogHook(
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hdlg);
+        UpdateWindowEx(hdlg);
       }
       break;
 
@@ -4303,9 +4301,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 #ifdef D_NP3_WIN10_DARK_MODE
 
         CASE_WM_CTLCOLOR_SET:
-          if (UseDarkMode()) {
-            return SetDarkModeCtlColors((HDC)wParam);
-          }
+          return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
           break;
 
         case WM_SETTINGCHANGE:
@@ -4327,8 +4323,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
               SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
             }
             SendMessage(hwndTV, WM_THEMECHANGED, 0, 0);
-
-            UpdateWindow(hwnd);
+            Style_ResetCurrentLexer(hwnd);
+            SendWMCommandEx(hwnd, IDC_STYLEEDIT, EN_CHANGE); // button color inlay
+            UpdateWindowEx(hwnd);
           }
           break;
 #endif
@@ -5009,9 +5006,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 #ifdef D_NP3_WIN10_DARK_MODE
 
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -5032,8 +5027,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
         SendMessage(hwndLV, WM_THEMECHANGED, 0, 0);
-
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 

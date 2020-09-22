@@ -85,10 +85,6 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
       SetDialogIconNP3(hThisWnd);
       InitWindowCommon(hThisWnd, true);
 
-      //HDC const hdc = GetDC(hThisWnd);
-      //SetDarkModeCtlColors(hdc);
-      //ReleaseDC(hThisWnd, hdc);
-
       // get window handles
       LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
       HWND const           hParentWnd       = pCreateStructure->hwndParent; // GetParent(hThisWnd);
@@ -336,9 +332,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -361,7 +355,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -587,9 +581,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -611,7 +603,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -976,9 +968,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     //  return TRUE;
 	
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
 
@@ -1002,7 +992,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -1215,9 +1205,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -1238,7 +1226,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -1472,9 +1460,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -1497,7 +1483,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         }
         SendMessage(hwndLV, WM_THEMECHANGED, 0, 0);
 
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -1718,10 +1704,8 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
-    break;
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
+      break;
 
   case WM_SETTINGCHANGE:
     if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
@@ -1743,7 +1727,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       }
       SendMessage(hwndLV, WM_THEMECHANGED, 0, 0);
 
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -1923,9 +1907,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -1946,7 +1928,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -2244,9 +2226,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -2269,7 +2249,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         }
         SendMessage(hwndLV, WM_THEMECHANGED, 0, 0);
 
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -2617,9 +2597,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -2640,7 +2618,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -2747,9 +2725,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -2770,7 +2746,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -2897,9 +2873,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -2920,7 +2894,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -3046,9 +3020,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -3069,7 +3041,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -3213,9 +3185,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -3236,7 +3206,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -3395,9 +3365,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -3418,7 +3386,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -3637,9 +3605,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -3662,7 +3628,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         }
         SendMessage(hwndLV, WM_THEMECHANGED, 0, 0);
 
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -3848,9 +3814,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 #ifdef D_NP3_WIN10_DARK_MODE
   
     CASE_WM_CTLCOLOR_SET:
-      if (UseDarkMode()) {
-        return SetDarkModeCtlColors((HDC)wParam);
-      }
+      return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
       break;
 
     case WM_SETTINGCHANGE:
@@ -3871,7 +3835,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
           AllowDarkModeForWindow(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
-        UpdateWindow(hwnd);
+        UpdateWindowEx(hwnd);
       }
       break;
 
@@ -3976,9 +3940,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -3999,7 +3961,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 
@@ -4123,9 +4085,7 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 #ifdef D_NP3_WIN10_DARK_MODE
 
   CASE_WM_CTLCOLOR_SET:
-    if (UseDarkMode()) {
-      return SetDarkModeCtlColors((HDC)wParam);
-    }
+    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
     break;
 
   case WM_SETTINGCHANGE:
@@ -4146,7 +4106,7 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         AllowDarkModeForWindow(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
-      UpdateWindow(hwnd);
+      UpdateWindowEx(hwnd);
     }
     break;
 

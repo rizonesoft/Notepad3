@@ -170,9 +170,10 @@ inline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
 
 // ----------------------------------------------------------------------------
 
-#define SendWMCommandEx(hwnd, id, extra)  SendMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (extra)), 0)
-#define SendWMCommand(hwnd, id)           SendWMCommandEx((hwnd), (id), 1)
-#define PostWMCommand(hwnd, id)           PostMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), 1), 0)
+#define SendWMCommandEx(hwnd, id, hi)  SendMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (hi)), 0)
+#define SendWMCommand(hwnd, id)        SendWMCommandEx((hwnd), (id), 1)
+#define PostWMCommandEx(hwnd, id, hi)  PostMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (hi)), 0)
+#define PostWMCommand(hwnd, id)        PostWMCommandEx((hwnd), (id), 1)
 
 #define SetWindowStyle(hwnd, style)			  SetWindowLong((hwnd), GWL_STYLE, (style))
 #define SetWindowExStyle(hwnd, style)     SetWindowLong((hwnd), GWL_EXSTYLE, (style))
@@ -253,13 +254,12 @@ inline COLORREF GetModeTextColor(const bool bDarkMode) {
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
-  SetBkColor(hdc, Settings2.DarkModeBkgColor); // (!) non-button static controls
-  SetTextColor(hdc, Settings2.DarkModeTxtColor);
-  //~RECT rc;
-  //~GetWindowRect(WindowFromDC(hdc), &rc);
-  //~DrawEdge(hdc, &rc, EDGE_RAISED, BF_FLAT | BF_MONO);
-  return (INT_PTR)Globals.hbrDarkModeBkgBrush;
+inline INT_PTR SetDarkModeCtlColors(const HDC hdc, const bool bDarkMode) {
+  if (bDarkMode) {
+    SetBkColor(hdc, Settings2.DarkModeBkgColor);
+    SetTextColor(hdc, Settings2.DarkModeTxtColor);
+  }
+  return (INT_PTR)(bDarkMode ? Globals.hbrDarkModeBkgBrush : FALSE);
 }
 
 #endif
