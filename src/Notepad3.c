@@ -5354,8 +5354,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       else {
         SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
       }
-      PostWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
-      UpdateMarginWidth();
+      SendWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
       UpdateUI();
       break;
 
