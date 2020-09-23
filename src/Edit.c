@@ -525,7 +525,7 @@ size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength)
 char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int* pLenLastLn) 
 {
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
-    char* pEmpty = AllocMem(1, HEAP_ZERO_MEMORY);
+    char* const pEmpty = AllocMem(1, HEAP_ZERO_MEMORY);
     return pEmpty;
   }
 
@@ -5374,7 +5374,6 @@ static void  _EscapeWildcards(char* szFind2, size_t cch, LPCEDITFINDREPLACE lpef
 //  _EditGetFindStrg()
 //
 static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, size_t cchCnt) {
-  UNUSED(hwnd);
   if (!lpefr) { return FALSE; }
   if (!StrIsEmptyA(lpefr->szFind)) {
     StringCchCopyNA(szFind, cchCnt, lpefr->szFind, COUNTOF(lpefr->szFind));
@@ -5383,8 +5382,16 @@ static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
     CopyFindPatternMB(szFind, cchCnt);
     StringCchCopyNA(lpefr->szFind, COUNTOF(lpefr->szFind), szFind, cchCnt);
   }
-  if (StrIsEmptyA(lpefr->szFind)) {
-    return FALSE;
+  if (StrIsEmptyA(szFind)) {
+    char *const pClip = EditGetClipboardText(hwnd, false, NULL, NULL);
+    if (!StrIsEmptyA(pClip)) {
+        StringCchCopyA(szFind, cchCnt, pClip);
+        StringCchCopyA(lpefr->szFind, COUNTOF(lpefr->szFind), szFind);
+    }
+    FreeMem(pClip);
+    if (StrIsEmptyA(szFind)) {
+      return FALSE;
+    }
   }
 
   bool const bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
@@ -6041,7 +6048,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             }
             // no recent find pattern: copy content clipboard to find box
             if (s_tchBuf[0] == L'\0') {
-              char *const pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
+              char* const pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
               if (pClip) {
                 size_t const len = StringCchLenA(pClip, 0);
                 if (len) {
