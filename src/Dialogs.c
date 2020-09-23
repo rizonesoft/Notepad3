@@ -4909,8 +4909,6 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
   POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
   SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
   //~SnapToDefaultButton(hDlg);
-
-  SendMessage(hDlg, WM_THEMECHANGED, 0, 0); // (!) DarkMode finalization
 }
 
 
