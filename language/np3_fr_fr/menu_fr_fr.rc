@@ -423,10 +423,10 @@ BEGIN
     END
     POPUP "Appa&rence"
     BEGIN
-        MENUITEM "&Personnaliser les modèles...\tCtrl+F12",     IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Personnaliser les modèles...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Sélectionner Modèle Synta&xique...\tF12",             IDM_VIEW_SCHEME
-        MENUITEM "&2ème Base Commune\tShift+F12",                             IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "Sélectionner Modèle Synta&xe...\tF12",                    IDM_VIEW_SCHEME
+        MENUITEM "&2ème Base Commune\tShift+F12",                           IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Police par &Défaut Globale...\tAlt+F12",                  IDM_VIEW_FONT
         MENUITEM "Police par Défaut C&oloration Courante...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
