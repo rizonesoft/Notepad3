@@ -525,7 +525,7 @@ size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength)
 char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int* pLenLastLn) 
 {
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
-    char* pEmpty = AllocMem(1, HEAP_ZERO_MEMORY);
+    char* const pEmpty = AllocMem(1, HEAP_ZERO_MEMORY);
     return pEmpty;
   }
 
@@ -5374,18 +5374,35 @@ static void  _EscapeWildcards(char* szFind2, size_t cch, LPCEDITFINDREPLACE lpef
 //  _EditGetFindStrg()
 //
 static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, size_t cchCnt) {
-  UNUSED(hwnd);
   if (!lpefr) { return FALSE; }
   if (!StrIsEmptyA(lpefr->szFind)) {
-    StringCchCopyNA(szFind, cchCnt, lpefr->szFind, COUNTOF(lpefr->szFind));
+    StringCchCopyA(szFind, cchCnt, lpefr->szFind);
   }
   else {
     CopyFindPatternMB(szFind, cchCnt);
-    StringCchCopyNA(lpefr->szFind, COUNTOF(lpefr->szFind), szFind, cchCnt);
   }
-  if (StrIsEmptyA(lpefr->szFind)) {
+  if (StrIsEmptyA(szFind)) {
+    // get most recently used find pattern
+    WCHAR mruItem[FNDRPL_BUFFER] = { L'\0' };
+    MRU_Enum(Globals.pMRUfind, 0, mruItem, COUNTOF(mruItem));
+    if (StrIsNotEmpty(mruItem)) {
+      WideCharToMultiByte(Encoding_SciCP, 0, mruItem, -1, szFind, (int)cchCnt, NULL, NULL);
+    }
+  }
+  if (StrIsEmptyA(szFind)) {
+    // get clipboard content
+    char *const pClip = EditGetClipboardText(hwnd, false, NULL, NULL);
+    if (!StrIsEmptyA(pClip)) {
+      StringCchCopyA(szFind, cchCnt, pClip);
+    }
+    FreeMem(pClip);
+  }
+  if (StrIsEmptyA(szFind)) {
     return FALSE;
   }
+
+  // ensure to F/R-dialog data structure consistency
+  StringCchCopyA(lpefr->szFind, COUNTOF(lpefr->szFind), szFind);
 
   bool const bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
   if (lpefr->bTransformBS || bIsRegEx) {
@@ -6036,12 +6053,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             // if first time you bring up find/replace dialog,
             // use most recent search pattern to find box
             GetFindPattern(s_tchBuf, COUNTOF(s_tchBuf));
-            if (s_tchBuf[0] == L'\0') {
+            if (StrIsEmpty(s_tchBuf)) {
               MRU_Enum(Globals.pMRUfind, 0, s_tchBuf, COUNTOF(s_tchBuf));
             }
             // no recent find pattern: copy content clipboard to find box
-            if (s_tchBuf[0] == L'\0') {
-              char *const pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
+            if (StrIsEmpty(s_tchBuf)) {
+              char* const pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
               if (pClip) {
                 size_t const len = StringCchLenA(pClip, 0);
                 if (len) {
@@ -6060,10 +6077,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             bEditChange = true;
           }
           else {
-            if (s_tchBuf[0] == L'\0') {
+            if (StrIsEmpty(s_tchBuf)) {
               GetFindPattern(s_tchBuf, COUNTOF(s_tchBuf));
             }
-            if (s_tchBuf[0] == L'\0') {
+            if (StrIsEmpty(s_tchBuf)) {
               MRU_Enum(Globals.pMRUfind, 0, s_tchBuf, COUNTOF(s_tchBuf));
             }
             SetDlgItemText(hwnd, IDC_FINDTEXT, s_tchBuf);
