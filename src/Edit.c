@@ -5373,8 +5373,9 @@ static void  _EscapeWildcards(char* szFind2, size_t cch, LPCEDITFINDREPLACE lpef
 //
 //  _EditGetFindStrg()
 //
-static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, size_t cchCnt) {
-  if (!lpefr) { return FALSE; }
+static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, size_t cchCnt)
+{
+  if (!lpefr) { return 0; }
   if (!StrIsEmptyA(lpefr->szFind)) {
     StringCchCopyA(szFind, cchCnt, lpefr->szFind);
   }
@@ -5398,7 +5399,7 @@ static size_t _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
     FreeMem(pClip);
   }
   if (StrIsEmptyA(szFind)) {
-    return FALSE;
+    return 0;
   }
 
   // ensure to F/R-dialog data structure consistency
@@ -5937,6 +5938,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
     case WM_CTLCOLOREDIT:
     case WM_CTLCOLORLISTBOX: {
+      if (!sg_pefrData) { return false; }
       if (sg_pefrData->bMarkOccurences) {
         HWND hCheck = (HWND)lParam;
         HDC hDC = (HDC)wParam;
@@ -6041,8 +6043,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         if (Globals.bFindReplCopySelOrClip)
         {
           char* lpszSelection = NULL;
-          s_tchBuf[0] = L'\0';
-
           DocPos const cchSelection = SciCall_GetSelText(NULL);
           if ((1 < cchSelection) && (LOWORD(wParam) != IDC_REPLACETEXT)) {
             lpszSelection = AllocMem(cchSelection + 1, HEAP_ZERO_MEMORY);
@@ -6052,21 +6052,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             // nothing is selected in the editor:
             // if first time you bring up find/replace dialog,
             // use most recent search pattern to find box
-            GetFindPattern(s_tchBuf, COUNTOF(s_tchBuf));
-            if (StrIsEmpty(s_tchBuf)) {
-              MRU_Enum(Globals.pMRUfind, 0, s_tchBuf, COUNTOF(s_tchBuf));
-            }
-            // no recent find pattern: copy content clipboard to find box
-            if (StrIsEmpty(s_tchBuf)) {
-              char* const pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
-              if (pClip) {
-                size_t const len = StringCchLenA(pClip, 0);
-                if (len) {
-                  lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
-                  StringCchCopyA(lpszSelection, SizeOfMem(lpszSelection), pClip);
-                }
-                FreeMem(pClip);
-              }
+            lpszSelection = AllocMem(FNDRPL_BUFFER, HEAP_ZERO_MEMORY);
+            if (lpszSelection) {
+              _EditGetFindStrg(Globals.hwndEdit, sg_pefrData, lpszSelection, SizeOfMem(lpszSelection));
             }
           }
 
@@ -6076,17 +6064,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             lpszSelection = NULL;
             bEditChange = true;
           }
-          else {
-            if (StrIsEmpty(s_tchBuf)) {
-              GetFindPattern(s_tchBuf, COUNTOF(s_tchBuf));
-            }
-            if (StrIsEmpty(s_tchBuf)) {
-              MRU_Enum(Globals.pMRUfind, 0, s_tchBuf, COUNTOF(s_tchBuf));
-            }
-            SetDlgItemText(hwnd, IDC_FINDTEXT, s_tchBuf);
-            bEditChange = true;
-          }
-
           s_InitialTopLine = -1;  // reset
           s_anyMatch = s_fwrdMatch = NO_MATCH;
           Globals.bFindReplCopySelOrClip = false;
@@ -6456,19 +6433,24 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         break;
 
       case IDACC_CLEAR_FIND_HISTORY:
-        MRU_Empty(Globals.pMRUfind, true);
+        MRU_Empty(Globals.pMRUfind, false);
         if (Globals.bCanSaveIniFile) {
           MRU_Save(Globals.pMRUfind);
         }
+        if (sg_pefrData) { sg_pefrData->szFind[0] = '\0'; }
+        SetFindPattern(NULL);
         while ((int)SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_DELETESTRING, 0, 0) > 0) {};
+        SetDlgItemText(hwnd, IDC_FINDTEXT, L"");
         break;
 
       case IDACC_CLEAR_REPL_HISTORY:
-        MRU_Empty(Globals.pMRUreplace, true);
+        MRU_Empty(Globals.pMRUreplace, false);
         if (Globals.bCanSaveIniFile) {
           MRU_Save(Globals.pMRUreplace);
         }
+        if (sg_pefrData) { sg_pefrData->szReplace[0] = '\0'; }
         while ((int)SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_DELETESTRING, 0, 0) > 0) {};
+        SetDlgItemText(hwnd, IDC_REPLACETEXT, L"");
         break;
 
       case IDACC_FINDNEXT:
