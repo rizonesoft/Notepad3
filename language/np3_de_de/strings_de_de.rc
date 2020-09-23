@@ -253,7 +253,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Sprache"
     IDS_MUI_MENU_THEMES     "&Schema Sammlung"
     IDM_THEMES_DEFAULT      "&Fabrik-Vorgaben"
-    IDM_THEMES_FILE_ITEM    "&Standard Einstellungen"
+    IDM_THEMES_FILE_ITEM    "&Standard"
     IDS_MUI_STATUSBAR_PREFIXES "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Alle löschen"

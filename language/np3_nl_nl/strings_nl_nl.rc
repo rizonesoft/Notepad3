@@ -74,8 +74,8 @@ BEGIN
     IDT_VIEW_WORDWRAP       "Automatische terugloop"
     IDT_VIEW_ZOOMIN         "Inzoomen"
     IDT_VIEW_ZOOMOUT        "Uitzoomen"
-    IDT_VIEW_SCHEME         "Selectie Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Aanpassen Schemes"
+    IDT_VIEW_SCHEME         "Selectie Schema"
+    IDT_VIEW_SCHEMECONFIG   "Aanpassen Schema's"
     IDT_FILE_EXIT           "Afsluiten"
     IDT_FILE_SAVEAS         "Opslaan als"
     IDT_FILE_SAVECOPY       "Opslaan kopiëren"
@@ -185,7 +185,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Configuratie bestand alleen-lezen is - negeren en override-instellingen?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to schema configuration (Ctrl+F12) and export your styles."
 END
 
 STRINGTABLE
@@ -251,9 +251,9 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
+    IDS_MUI_MENU_THEMES     "&Schema Collectie"
     IDM_THEMES_DEFAULT      "&Fabrieksinstelling"
-    IDM_THEMES_FILE_ITEM    "&Standaard instellingen"
+    IDM_THEMES_FILE_ITEM    "&Standaard"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Wis alles"
@@ -285,7 +285,7 @@ Opties:\r\n\
 /s\tSelecteer opgegeven syntaxisschema.\r\n\
 /d\tSelecteer standaardtekstschema.\r\n\
 /h\tSelecteer Web Source Code-schema.\r\n\
-/x\tSelecteer XML-document scheme.\r\n\
+/x\tSelecteer XML-document schema.\r\n\
 /c\tOpen een nieuw venster en plak inhoud van klembord.\r\n\
 /b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
 /n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
