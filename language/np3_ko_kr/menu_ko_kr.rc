@@ -167,7 +167,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "단어(&W)"
         BEGIN
-            MENUITEM "단어 자동 완성(&C)\tCtrl+Alt+Enter",         IDM_EDIT_COMPLETEWORD
+            MENUITEM "단어 완성(&C)\tCtrl+Alt+Enter",         IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
             MENUITEM "단어 왼쪽으로 커서 이동(&L)\tCtrl+ ←",        CMD_CTRLLEFT
             MENUITEM "단어 오른쪽으로 커서 이동(&R)\tCtrl+ →",      CMD_CTRLRIGHT
@@ -211,7 +211,7 @@ BEGIN
             MENUITEM "선택 시작으로 이동\tCtrl+,",    CMD_JUMP2SELSTART
             MENUITEM "선택 끝으로 이동\tCtrl+.",      CMD_JUMP2SELEND
             MENUITEM SEPARATOR
-            POPUP "선택 둘러막기(&E)"
+            POPUP "선택 둘러싸기(&E)"
             BEGIN
                 MENUITEM "작은 따옴표(&S)\tCtrl+1",             CMD_STRINGIFY
                 MENUITEM "큰 따옴표(&D)\tCtrl+2",               CMD_STRINGIFY2
@@ -277,8 +277,8 @@ BEGIN
         BEGIN
             MENUITEM "GUID를 클립보드로 복사(&G)\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "C 언어 이스케이프 시퀀스 변환(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
-            MENUITEM "C 언어 이스케이프 시퀀스 복원(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "C 문자 이스케이프(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C 문자 이스케이프 해제(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "번호 증가(&I)\tCtrl+Alt+NK+",               CMD_INCREASENUM
             MENUITEM "번호 감소(&D)\tCtrl+Alt+NK-",               CMD_DECREASENUM
@@ -397,7 +397,7 @@ BEGIN
         BEGIN
             MENUITEM "메뉴 표시줄 표시",                      IDM_VIEW_MENUBAR
             MENUITEM "도구 모음 표시(&T)",               IDM_VIEW_TOOLBAR
-            MENUITEM "상태 표시 줄 표시(&S)",             IDM_VIEW_STATUSBAR
+            MENUITEM "상태 표시줄 표시(&S)",             IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "도구 모음 테마 불러오기(&L)...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "도구 모음 사용자 지정(&U)...",        IDM_VIEW_CUSTOMIZETB
@@ -441,8 +441,8 @@ BEGIN
         MENUITEM "긴 줄 설정(&O)...",                  IDM_VIEW_LONGLINESETTINGS
         MENUITEM "텍스트 자동 들여쓰기(&D)",                       IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "HTML/XML 자동 닫기(&H)\tCtrl+Shift+H",    IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "자동 단어 완성(&U)",                      IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "렉서-키-워드 자동 완성(&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
+        MENUITEM "단어 자동 완성(&U)",                      IDM_VIEW_AUTOCOMPLETEWORDS
+        MENUITEM "어휘 자동 완성(&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "가속화된 단어 탐색(&G)\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
         MENUITEM "줄 주석 블록 편집 활성화(&B)",                          IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
@@ -544,7 +544,7 @@ BEGIN
     BEGIN
         MENUITEM "메뉴 표시줄 표시",                   IDM_VIEW_MENUBAR
         MENUITEM "도구 모음 표시",                IDM_VIEW_TOOLBAR
-        MENUITEM "상태 표시 줄 표시",             IDM_VIEW_STATUSBAR
+        MENUITEM "상태 표시줄 표시",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
         MENUITEM "도구 모음 테마 불러오기...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "도구 모음 사용자 지정...",         IDM_VIEW_CUSTOMIZETB
@@ -554,9 +554,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "마커 지우기",                    IDM_EDIT_CLEAR_MARKER
-        MENUITEM "마커 유형의 선 잘라내기",        IDM_EDIT_CUT_MARKED
-        MENUITEM "마커 유형의 선 복사",       IDM_EDIT_COPY_MARKED
-        MENUITEM "마커 유형의 선 삭제",     IDM_EDIT_DELETE_MARKED
+        MENUITEM "마커 유형의 줄 잘라내기",        IDM_EDIT_CUT_MARKED
+        MENUITEM "마커 유형의 줄 복사",       IDM_EDIT_COPY_MARKED
+        MENUITEM "마커 유형의 줄 삭제",     IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "코드 접기",                        IDM_VIEW_FOLDING
         MENUITEM "줄 번호",                          IDM_VIEW_LINENUMBERS
