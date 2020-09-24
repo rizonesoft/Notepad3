@@ -279,7 +279,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "없음(&N)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,115,10
     CONTROL         "메시지를 표시합니다(&D).",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,115,10
-    CONTROL         "자동 새로 고침 (수정하지 않음)(&A).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,115,10
+    CONTROL         "자동 새로 고침 (수정하지 않음)(&A).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,116,10
     CONTROL         "새 파일이 열리면 재설정합니다(&R).",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,163,10
     DEFPUSHBUTTON   "확인",IDOK,127,7,50,14
     PUSHBUTTON      "취소",IDCANCEL,127,24,50,14
