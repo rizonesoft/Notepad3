@@ -40,7 +40,7 @@
 #include "DarkMode/DarkMode.h"
 
 #include "SciCall.h"
-#include "SciLexer.h"
+//#include "SciLexer.h"
 
 #include "Edit.h"
 

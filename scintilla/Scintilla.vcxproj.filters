@@ -19,9 +19,6 @@
     <Filter Include="oniguruma">
       <UniqueIdentifier>{97da2683-9a5a-42f9-8ac6-0e8c54ce61e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lexilla">
-      <UniqueIdentifier>{326090d3-060e-4529-9b3e-4be7793fb194}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lexers_x">
       <UniqueIdentifier>{3e51698b-084e-40cf-8dee-860bd61d7a2c}</UniqueIdentifier>
     </Filter>
@@ -275,9 +272,6 @@
     </ClCompile>
     <ClCompile Include="src\UniqueString.cxx">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="lexilla\src\Lexilla.cxx">
-      <Filter>lexilla</Filter>
     </ClCompile>
     <ClCompile Include="lexers_x\LexAHKL.cxx">
       <Filter>lexers_x</Filter>
@@ -538,9 +532,6 @@
     </ClInclude>
     <ClInclude Include="src\IntegerRectangle.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="lexilla\src\Lexilla.h">
-      <Filter>lexilla</Filter>
     </ClInclude>
     <ClInclude Include="lexers_x\CharSetX.h">
       <Filter>lexers_x</Filter>
