@@ -253,7 +253,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Langue"
     IDS_MUI_MENU_THEMES     "&Collection de Modèles"
     IDM_THEMES_DEFAULT      "Par &Défaut"
-    IDM_THEMES_FILE_ITEM    "&Paramètres standards"
+    IDM_THEMES_FILE_ITEM    "&Standard"
     IDS_MUI_STATUSBAR_PREFIXES "Lgn  ,Col  ,Sel  ,Sb  ,SLgn  ,Occ  ,,,,,,,Car  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Effacer tout"

@@ -253,7 +253,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語(&L)"
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
     IDM_THEMES_DEFAULT      "初期設定(&F)"
-    IDM_THEMES_FILE_ITEM    "標準設定(&S)"
+    IDM_THEMES_FILE_ITEM    "標準 (&S)"  // Keep blank space before (&S)
     IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "すべて削除"
