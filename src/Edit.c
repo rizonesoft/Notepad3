@@ -862,24 +862,25 @@ void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const sta
   // No NULL-terminated requirement for *ptr == '\n'
   const uint8_t* const end = (const uint8_t*)lpData + cbData - 1;
 
+  uint32_t const mask = (1 << '\r') | (1 << '\n');
   do {
     // skip to line end
-    uint8_t ch;
-    uint8_t type = 0;
-    while (ptr < end && ((ch = *ptr++) > '\r' || (type = eol_table[ch]) == 0)) {} // nop
-    switch (type) {
-      case 1: //'\n'
-        ++lineCountLF;
-        break;
-      case 2: //'\r'
-        if (*ptr == '\n') {
-          ++ptr;
-          ++lineCountCRLF;
-        }
-        else {
-          ++lineCountCR;
-        }
-        break;
+    uint8_t ch = 0;
+    while (ptr < end && ((ch = *ptr++) > '\r' || ((mask >> ch) & 1) == 0)) {
+      // nop
+    }
+    switch (ch) {
+    case '\n':
+      ++lineCountLF;
+      break;
+    case '\r':
+      if (*ptr == '\n') {
+        ++ptr;
+        ++lineCountCRLF;
+      } else {
+        ++lineCountCR;
+      }
+      break;
     }
   } while (ptr < end);
 
