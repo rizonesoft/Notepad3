@@ -4,9 +4,6 @@
     <Filter Include="include">
       <UniqueIdentifier>{b78c6486-26fc-4890-89c0-f7f3e301b79c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lexers">
-      <UniqueIdentifier>{6b8793d0-aa9c-432f-aa65-b763bc23ae40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lexlib">
       <UniqueIdentifier>{b4579e25-25b5-4f0d-8dab-c34ed9f53913}</UniqueIdentifier>
     </Filter>
@@ -19,9 +16,6 @@
     <Filter Include="oniguruma">
       <UniqueIdentifier>{97da2683-9a5a-42f9-8ac6-0e8c54ce61e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lexers_x">
-      <UniqueIdentifier>{3e51698b-084e-40cf-8dee-860bd61d7a2c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="oniguruma\scintilla">
       <UniqueIdentifier>{32ffd4ad-2b04-4d07-acff-dad68cf258de}</UniqueIdentifier>
     </Filter>
@@ -30,96 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lexers\LexAsm.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexAU3.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexAVS.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexBash.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexBatch.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexCmake.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexCoffeeScript.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexConf.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexCPP.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexCSS.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexDiff.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexHTML.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexInno.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexLaTeX.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexLua.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexMake.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexMarkdown.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexNsis.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexNull.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexPascal.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexPerl.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexPowerShell.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexProps.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexPython.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexRuby.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexSQL.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexTCL.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexVB.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexYAML.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexVHDL.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="lexlib\Accessor.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
@@ -243,44 +147,14 @@
     <ClCompile Include="win32\ScintillaWin.cxx">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="lexers\LexJSON.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexMatlab.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexRegistry.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="src\DBCS.cxx">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="lexlib\DefaultLexer.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="lexers\LexD.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexR.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexRust.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexNim.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="src\UniqueString.cxx">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers_x\LexAHKL.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers_x\LexCSV.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers_x\LexTOML.cxx">
-      <Filter>lexers_x</Filter>
     </ClCompile>
     <ClCompile Include="oniguruma\scintilla\OnigurumaRegExEngine.cxx">
       <Filter>oniguruma\scintilla</Filter>
@@ -532,12 +406,6 @@
     </ClInclude>
     <ClInclude Include="src\IntegerRectangle.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="lexers_x\CharSetX.h">
-      <Filter>lexers_x</Filter>
-    </ClInclude>
-    <ClInclude Include="lexers_x\SciXLexer.h">
-      <Filter>lexers_x</Filter>
     </ClInclude>
     <ClInclude Include="oniguruma\src\config.h">
       <Filter>oniguruma\src</Filter>

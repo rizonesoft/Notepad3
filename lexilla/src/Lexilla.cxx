@@ -7,15 +7,23 @@
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #include <cstring>
-
 #include <vector>
 
 #if _WIN32
+
+#ifdef DLL_EXPORT
 #define EXPORT_FUNCTION __declspec(dllexport)
-#define CALLING_CONVENTION __stdcall
 #else
+#define EXPORT_FUNCTION
+#endif // DLL_EXPORT
+
+#define CALLING_CONVENTION __stdcall
+
+#else
+
 #define EXPORT_FUNCTION __attribute__((visibility("default")))
 #define CALLING_CONVENTION
+
 #endif
 
 #include "ILexer.h"
@@ -175,7 +183,7 @@ void AddEachLexer() {
   //catalogueLexilla.AddLexerModule(&lmAbaqus);
   //catalogueLexilla.AddLexerModule(&lmAda);
   //catalogueLexilla.AddLexerModule(&lmAPDL);
-  //catalogueLexilla.AddLexerModule(&lmAs);
+ // catalogueLexilla.AddLexerModule(&lmAs);
 	catalogueLexilla.AddLexerModule(&lmAsm);
   //catalogueLexilla.AddLexerModule(&lmAsn1);
   //catalogueLexilla.AddLexerModule(&lmASY);
@@ -317,7 +325,7 @@ EXPORT_FUNCTION int CALLING_CONVENTION GetLexerCount() {
 	return catalogueLexilla.Count();
 }
 
-EXPORT_FUNCTION void CALLING_CONVENTION GetLexerName(unsigned int index, char *name, int buflength) {
+EXPORT_FUNCTION void CALLING_CONVENTION GetLexerName(unsigned int index, char* name, int buflength) {
 	AddEachLexer();
 	*name = 0;
 	const char *lexerName = catalogueLexilla.Name(index);
@@ -331,15 +339,27 @@ EXPORT_FUNCTION LexerFactoryFunction CALLING_CONVENTION GetLexerFactory(unsigned
 	return catalogueLexilla.Factory(index);
 }
 
-EXPORT_FUNCTION ILexer5 * CALLING_CONVENTION CreateLexer(const char *name) {
+
+EXPORT_FUNCTION void /*ILexer5*/* CALLING_CONVENTION CreateLexerByID(const int language) {
+  AddEachLexer();
+  for (unsigned int i = 0; i < catalogueLexilla.Count(); i++) {
+    const int lngID = catalogueLexilla.LngID(i);
+    if (language == lngID) {
+      return (void*)catalogueLexilla.Create(i);
+    }
+  }
+  return (void*)nullptr;
+}
+
+EXPORT_FUNCTION void /*ILexer5*/ * CALLING_CONVENTION CreateLexerByName(const char* name) {
 	AddEachLexer();
 	for (unsigned int i = 0; i < catalogueLexilla.Count(); i++) {
 		const char *lexerName = catalogueLexilla.Name(i);
 		if (0 == strcmp(lexerName, name)) {
-			return catalogueLexilla.Create(i);
+			return (void*)catalogueLexilla.Create(i);
 		}
 	}
-	return nullptr;
+	return (void*)nullptr;
 }
 
-}
+} // extern "C"
