@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.923.(build_#) (2020-09-23)
+Current BETA/RC Version 5.20.925.(build_#) (2020-09-25)
 ========================================================
 
 --------------------------------------------------------
@@ -59,6 +59,10 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.925.1]- Move home brew lexers to Lexills dir (SCI).
+[.925.1]- Scintilla 5 prep: Using ILexer5 interface from static build Lexilla.lib (SCI).
+[.925.1]- Prepare for Lexilla Library (Scintilla v5) (SCI).
+[.925.1]- Using @zufuliu's EOL Mode detection enhancement (no SSE2 or AVX2 specializations).
 [.923.1]- Unify search-pattern retrieval: (0.selection)[F/R-DLG] - 1.previous-search/MRU-List - 2.clipboard.
 [.923.1]- Performance leak in TOML Lexer.
 [.920.1]- grepWinNP3: save changed "Stay On Top" settings on exit (GRE).
@@ -70,12 +74,14 @@ CHANGES:
 [.915.2]- User configurable "Web Action" menu item names.
 [.921.1]- Update grepWinNP3 (GRE) version 2.1.4.30 (2020-09-21).
 [.921.1]- Update Oniguruma Regex (ONI) engine version 6.9.5 revised 1 (2020-09-21).
-[.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-09).
+[.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-11).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.925.1]- Stop file change notification on deleted files if save is rejected.
+[.925.1]- Some RegEx engine fixes (current Oniguruma dev) (ONI).
 [.923.1]- Customize Schemes title assembling.
 [.922.1]- DarkMode switching while non-modal dialogs are active.
 [.921.1]- TinyExpr: interpretation of '%' operator: allow "(...)" on rhs of modulo interpretation.
