@@ -216,7 +216,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Fchiers correspondent:\nutiliser'|' pour séparer plusieurs motifs, préfixe '-' pour exclure"
+msgstr "Fichiers correspondent:\nutiliser'|' pour séparer plusieurs motifs, préfixe '-' pour exclure"
 
 #. Resource IDs: (1059)
 msgid "Files"
