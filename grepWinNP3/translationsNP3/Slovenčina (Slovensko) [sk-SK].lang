@@ -61,11 +61,19 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1045)
+msgid "Visit Stefan Küng's website"
+msgstr "Navštíviť web-stránku Stefan Küng"
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWinNP3</a>"
+msgstr "<a>o grepWinNP3</a>"
+
 #. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
-#. Resource IDs: (1052, 135)
+#. Resource IDs: (135)
 msgid "About grepWinNP3"
 msgstr "O grepWinNP3"
 
@@ -463,10 +471,6 @@ msgstr "Považovať súbory ako UTF-8"
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
 msgstr "Považovať súbory ako binárne"
-
-#. Resource IDs: (1045)
-msgid "Visit Stefan Küng's website"
-msgstr "Navštíviť web-stránku Stefan Küng"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

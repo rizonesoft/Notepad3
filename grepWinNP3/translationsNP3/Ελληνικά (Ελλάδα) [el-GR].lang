@@ -61,11 +61,19 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1045)
+msgid "Visit Stefan Küng's website"
+msgstr ""
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWinNP3</a>"
+msgstr "<a>πληροφορίες για το grepWinNP3</a>"
+
 #. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
-#. Resource IDs: (1052, 135)
+#. Resource IDs: (135)
 msgid "About grepWinNP3"
 msgstr "Πληροφορίες για το grepWinNP3"
 
@@ -462,10 +470,6 @@ msgstr "Αντιμετώπιση αρχείων ως UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
-
-#. Resource IDs: (1045)
-msgid "Visit Stefan Küng's website"
 msgstr ""
 
 #. Resource IDs: (116)
