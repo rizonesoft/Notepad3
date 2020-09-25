@@ -142,8 +142,8 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             std::wstring path = moduledir;
             bool bRecurse = false;
             bool bIsDirectory = false;
-            CRegStdString regLang(L"Software\\grepWinNP3\\languagefile");
-            std::wstring  setLang = regLang;
+
+            std::wstring  setLang;
 
             if (bPortable)
             {
@@ -173,6 +173,11 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
                 setLang = absLngPath;
                 path    = moduledir;
+            }
+            else
+            {
+                CRegStdString regLang(L"Software\\grepWinNP3\\languagefile");
+                setLang = regLang;
             }
             
             // ordered map of language files
