@@ -244,7 +244,6 @@ DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE)
 DeclareSciCallV0(LineTranspose, LINETRANSPOSE)
 DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP)
 DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
-DeclareSciCallR0(GetLexer, GETLEXER, int)
 DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 
 // Operations
@@ -391,7 +390,10 @@ DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible)
 //
 //  Style definition
 //
-DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid)
+DeclareSciCallR0(GetLexer, GETLEXER, int)
+DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid) // deprecated
+DeclareSciCallV01(SetILexer, SETILEXER, void*, lexerPtr) // ILexer5*
+
 DeclareSciCallV0(StyleClearAll, STYLECLEARALL);
 DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
 DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT)

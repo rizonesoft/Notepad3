@@ -46,6 +46,7 @@ void Catalogue::AddLexerModule(LexerModule *plm) {
 
 // Force a reference to all of the Scintilla lexers so that the linker will
 // not remove the code of the lexers.
+#ifdef SCI_LEXER
 int Scintilla_LinkLexers() {
 
 	static int initialised = 0;
@@ -200,3 +201,5 @@ int Scintilla_LinkLexers() {
 
 	return 1;
 }
+#endif // SCI_LEXER
+

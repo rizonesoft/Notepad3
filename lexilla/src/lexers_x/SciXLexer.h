@@ -1,7 +1,7 @@
 // encoding: UTF-8
 #pragma once
-#ifndef _SCIXLEXER_H_
-#define _SCIXLEXER_H_
+
+#include "SciLexer.h"    // Scintilla/Lexilla Lexer defines
 
 #define SCLEX_AHKL  200
 #define SCLEX_TOML  201
@@ -92,5 +92,3 @@
 #define SCE_YAML_DATETIME 18
 #define SCE_YAML_INDENTED_TEXT 19
 
-
-#endif //_SCIXLEXER_H_

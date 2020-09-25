@@ -388,15 +388,15 @@ onigenc_unicode_get_case_fold_codes_by_str(OnigEncoding enc,
         for (i = 0; i < ncs[0]; i++) {
           for (j = 0; j < ncs[1]; j++) {
             for (k = 0; k < ncs[2]; k++) {
+              if (cs[0][i] == orig_codes[0] && cs[1][j] == orig_codes[1] &&
+                  cs[2][k] == orig_codes[2])
+                continue;
+
               items[n].byte_len = lens[2];
               items[n].code_len = 3;
               items[n].code[0]  = cs[0][i];
               items[n].code[1]  = cs[1][j];
               items[n].code[2]  = cs[2][k];
-              if (items[n].code[0] == orig_codes[0] &&
-                  items[n].code[1] == orig_codes[1] &&
-                  items[n].code[2] == orig_codes[2])
-                continue;
               n++;
             }
           }
@@ -432,13 +432,12 @@ onigenc_unicode_get_case_fold_codes_by_str(OnigEncoding enc,
 
       for (i = 0; i < ncs[0]; i++) {
         for (j = 0; j < ncs[1]; j++) {
+          if (cs[0][i] == orig_codes[0] && cs[1][j] == orig_codes[1])
+            continue;
           items[n].byte_len = lens[1];
           items[n].code_len = 2;
           items[n].code[0]  = cs[0][i];
           items[n].code[1]  = cs[1][j];
-          if (items[n].code[0] == orig_codes[0] &&
-              items[n].code[1] == orig_codes[1])
-            continue;
           n++;
         }
       }

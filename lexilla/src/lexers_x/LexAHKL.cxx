@@ -782,4 +782,4 @@ void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
 
 }
 
-LexerModule lmAHKL(SCLEX_AHKL, LexerAHKL::LexerFactoryAHKL, "ahk; ahkl", ahklWordLists);
+LexerModule lmAHKL(SCLEX_AHKL, LexerAHKL::LexerFactoryAHKL, "ahkl", ahklWordLists);

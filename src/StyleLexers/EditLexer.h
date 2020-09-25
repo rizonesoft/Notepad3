@@ -1,5 +1,4 @@
-#ifndef _EDIT_LEXER_H_
-#define _EDIT_LEXER_H_
+#pragma once
 
 #include "typedefs.h"
 #include "Scintilla.h"
@@ -38,11 +37,11 @@ typedef struct _keywordlist
 #pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Structure/Union
 typedef struct _editlexer
 {
-  int lexerID;
-  int resID;
-  LPCWSTR pszName;
-  LPCWSTR pszDefExt;
-  WCHAR  szExtensions[BUFZIZE_STYLE_EXTENTIONS];
+  int          lexerID;
+  int          resID;
+  LPCWSTR      pszName;
+  LPCWSTR      pszDefExt;
+  WCHAR        szExtensions[BUFZIZE_STYLE_EXTENTIONS];
   PKEYWORDLIST pKeyWords;
   EDITSTYLE    Styles[];
 
@@ -138,6 +137,7 @@ extern EDITLEXER lexHTML;          // Web Source Code
 extern EDITLEXER lexXML;           // XML Document
 extern EDITLEXER lexYAML;          // YAML
 
+
 // -----------------------------------------------------------------------------
 // common defines
 // -----------------------------------------------------------------------------
@@ -162,5 +162,3 @@ extern EDITLEXER lexYAML;          // YAML
 "variant wend when while with withevents writeonly xor"
 
 // -----------------------------------------------------------------------------
-
-#endif // _EDIT_LEXER_H_

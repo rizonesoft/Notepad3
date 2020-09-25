@@ -43,7 +43,6 @@
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
 
-#include "SciLexer.h"
 #include "lexers_x/SciXLexer.h"
 
 // ============================================================================
@@ -1431,7 +1430,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         {
           if (StrIsNotEmpty(s_lpFileArg)) {
             StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), s_lpFileArg);
-            InstallFileWatching(Globals.CurrentFile);
+            InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
           }
           else {
             StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), L"");
@@ -1477,7 +1476,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         case FWM_MSGBOX:
           FileWatching.FileWatchingMode = FWM_DONT_CARE;
           FileWatching.ResetFileWatching = true;
-          InstallFileWatching(Globals.CurrentFile);
+          InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
           break;
         case FWM_AUTORELOAD:
           if (!FileWatching.MonitoringLog) {
@@ -1486,7 +1485,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
           else {
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
             FileWatching.ResetFileWatching = true;
-            InstallFileWatching(Globals.CurrentFile);
+            InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
           }
           break;
         case FWM_DONT_CARE:
@@ -2769,7 +2768,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
 
     // Terminate file watching
-    InstallFileWatching(NULL);
+    InstallFileWatching(false);
 
     DragAcceptFiles(hwnd, true);
 
@@ -3149,7 +3148,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
           {
             FileWatching.FileWatchingMode = FWM_DONT_CARE;
             FileWatching.ResetFileWatching = true;
-            InstallFileWatching(Globals.CurrentFile);
+            InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
           }
           else if (params->flagChangeNotify == FWM_AUTORELOAD) {
             if (!FileWatching.MonitoringLog) {
@@ -3158,7 +3157,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             else {
               FileWatching.FileWatchingMode = FWM_AUTORELOAD;
               FileWatching.ResetFileWatching = true;
-              InstallFileWatching(Globals.CurrentFile);
+              InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
             }
           }
 
@@ -3374,16 +3373,23 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         Sci_GotoPosChooseCaret(iCurPos);
       }
     }
+    if (!s_bRunningWatch) {
+      InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+    }
   }
   else {
     INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
     if ((IDOK == answer) || (IDYES == answer)) {
       FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+      if (!s_bRunningWatch) {
+        InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+      }
     }
-  }
-
-  if (!s_bRunningWatch) {
-    InstallFileWatching(Globals.CurrentFile);
+    else if (!PathIsExistingFile(Globals.CurrentFile))
+    {
+      InstallFileWatching(false); // terminate
+      SetSaveNeeded();
+    }
   }
   return FALSE;
 }
@@ -5745,7 +5751,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         EditEnsureSelectionVisible();
 
-        InstallFileWatching(Globals.CurrentFile); // force
+        InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
@@ -6016,7 +6022,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_CHANGENOTIFY:
       if (ChangeNotifyDlg(hwnd)) {
-        InstallFileWatching(Globals.CurrentFile);
+        InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
       }
       break;
 
@@ -10089,7 +10095,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       }
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
-    InstallFileWatching(NULL);
+    InstallFileWatching(false); // terminate
     Flags.bSettingsFileSoftLocked = false;
     UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
@@ -10230,7 +10236,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       }
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
-    InstallFileWatching(Globals.CurrentFile);
+    InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
 
     // the .LOG feature ...
     if (SciCall_GetTextLength() >= 4) {
@@ -10658,7 +10664,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         }
         FileWatching.FileWatchingMode = Settings.FileWatchingMode;
       }
-      InstallFileWatching(Globals.CurrentFile);
+      InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
     }
 
     // if current file is settings/config file: ask to start
@@ -11374,12 +11380,12 @@ void CancelCallTip()
 
 //=============================================================================
 //
-//  TerminateFileWatching()
+//  InstallFileWatching()
 //
-static void TerminateFileWatching()
+void InstallFileWatching(const bool bInstall)
 {
-  if (s_bRunningWatch)
-  {
+  // Terminate previous watching
+  if (s_bRunningWatch) {
     KillTimer(NULL, ID_WATCHTIMER);
     if (s_hChangeHandle) {
       FindCloseChangeNotification(s_hChangeHandle);
@@ -11388,26 +11394,12 @@ static void TerminateFileWatching()
     s_bRunningWatch = false;
     s_dwChangeNotifyTime = 0UL; // reset
   }
-}
 
-//=============================================================================
-//
-//  InstallFileWatching()
-//
-void InstallFileWatching(LPCWSTR lpszFile)
-{
-  // Terminate
-  if (StrIsEmpty(lpszFile) || (FileWatching.FileWatchingMode == FWM_DONT_CARE))
+  // Install
+  if (bInstall && (FileWatching.FileWatchingMode != FWM_DONT_CARE))
   {
-    TerminateFileWatching();
-  }
-  else  // Install
-  {
-    // Terminate previous watching
-    TerminateFileWatching();
-
     WCHAR tchDirectory[MAX_PATH] = { L'\0' };
-    StringCchCopy(tchDirectory,COUNTOF(tchDirectory),lpszFile);
+    StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Globals.CurrentFile);
     PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
 
     // Save data of current file
@@ -11487,7 +11479,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
             && //|| // TODO: OR for read only auto reload without save requester
             CurrentFileChanged()) 
         {
-          TerminateFileWatching();
+          InstallFileWatching(false); // terminate
           PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
         }
         break;
@@ -11500,7 +11492,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
               // Check if the changes affect the current file
               if (CurrentFileChanged()) {
                 // Shutdown current watching and give control to main window
-                TerminateFileWatching();
+                InstallFileWatching(false); // terminate
                 PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
                 break; // while
               }
