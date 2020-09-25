@@ -113,11 +113,11 @@ ltGuillaume             https://github.com/ltGuillaume
 maboroshin              https://github.com/maboroshin
 MadDogVachon            https://github.com/MadDogVachon
 Mitezuss                https://github.com/Mitezuss
-ohgree                  https://github.com/ohgree
 RaffaeleBianc0          https://github.com/RaffaeleBianc0
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
 ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
+VenusGirl               https://github.com/VenusGirl
 xsak                    https://github.com/xsak
 zufuliu                 https://github.com/zufuliu
 
