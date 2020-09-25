@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\scintilla\lexers_x\CharSetX.h" />
-    <ClInclude Include="..\scintilla\lexers_x\SciXLexer.h" />
+    <ClInclude Include="src\lexers_x\CharSetX.h" />
+    <ClInclude Include="src\lexers_x\SciXLexer.h" />
     <ClInclude Include="src\Lexilla.h" />
   </ItemGroup>
   <ItemGroup>
@@ -61,13 +61,16 @@
     <ClCompile Include="..\scintilla\lexers\LexVB.cxx" />
     <ClCompile Include="..\scintilla\lexers\LexVHDL.cxx" />
     <ClCompile Include="..\scintilla\lexers\LexYAML.cxx" />
-    <ClCompile Include="..\scintilla\lexers_x\LexAHKL.cxx" />
-    <ClCompile Include="..\scintilla\lexers_x\LexCSV.cxx" />
-    <ClCompile Include="..\scintilla\lexers_x\LexTOML.cxx" />
+    <ClCompile Include="src\lexers_x\LexAHKL.cxx" />
+    <ClCompile Include="src\lexers_x\LexCSV.cxx" />
+    <ClCompile Include="src\lexers_x\LexTOML.cxx" />
     <ClCompile Include="src\Lexilla.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\LexillaVersion.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\lexers_x\SciX.iface" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -175,7 +178,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;src;ser\lexer_x</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <StringPooling>true</StringPooling>
@@ -226,7 +229,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;src;ser\lexer_x</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <StringPooling>true</StringPooling>

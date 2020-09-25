@@ -27,10 +27,10 @@
     <ClInclude Include="src\Lexilla.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\scintilla\lexers_x\CharSetX.h">
+    <ClInclude Include="src\lexers_x\CharSetX.h">
       <Filter>lexers_x</Filter>
     </ClInclude>
-    <ClInclude Include="..\scintilla\lexers_x\SciXLexer.h">
+    <ClInclude Include="src\lexers_x\SciXLexer.h">
       <Filter>lexers_x</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,13 +149,13 @@
     <ClCompile Include="..\scintilla\lexers\LexYAML.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\scintilla\lexers_x\LexAHKL.cxx">
+    <ClCompile Include="src\lexers_x\LexAHKL.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
-    <ClCompile Include="..\scintilla\lexers_x\LexCSV.cxx">
+    <ClCompile Include="src\lexers_x\LexCSV.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
-    <ClCompile Include="..\scintilla\lexers_x\LexTOML.cxx">
+    <ClCompile Include="src\lexers_x\LexTOML.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>
@@ -163,5 +163,10 @@
     <ResourceCompile Include="src\LexillaVersion.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\lexers_x\SciX.iface">
+      <Filter>lexers_x</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -24,10 +24,8 @@
 #include <shlwapi.h>
 #include <stdio.h>
 
-#include "SciLexer.h"
-#include "lexers_x/SciXLexer.h"
-
 #include "Lexilla.h"
+#include "lexers_x/SciXLexer.h"
 
 #include "Edit.h"
 #include "Dialogs.h"
