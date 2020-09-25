@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2013, 2017-2018, 2020 - Stefan Kueng
 
@@ -40,9 +40,9 @@ bool CLanguage::LoadFile(const std::wstring& path)
     if (_wcsicmp(lastLangPath.c_str(), path.c_str()))
     {
         std::map<std::wstring, std::wstring> langmap2;
-        for (auto it = langmap.cbegin(); it != langmap.cend(); ++it)
+        for (const auto& item : langmap)
         {
-            langmap2[it->second] = it->first;
+            langmap2[item.second] = item.first;
         }
         langmap = langmap2;
     }
@@ -52,11 +52,16 @@ bool CLanguage::LoadFile(const std::wstring& path)
 
     lastLangPath = path;
 
+#ifdef _WIN32
+    // The wchar_t version is a compiler extension, it works on Microsoft C++ compiler
+    const wchar_t* const filepath = path.c_str();
+#else
     // since stream classes still expect the filepath in char and not wchar_t
     // we need to convert the filepath to multibyte first
     char filepath[MAX_PATH + 1];
     SecureZeroMemory(filepath, sizeof(filepath));
     WideCharToMultiByte(CP_ACP, 0, path.c_str(), -1, filepath, _countof(filepath) - 1, nullptr, nullptr);
+#endif
 
     std::wifstream File;
     File.imbue(std::locale(std::locale(), new utf8_conversion()));
@@ -72,7 +77,7 @@ bool CLanguage::LoadFile(const std::wstring& path)
     {
         return false;
     }
-    auto                      line = std::make_unique<wchar_t[]>(2 * MAX_STRING_LENGTH);
+    auto  line = std::make_unique<wchar_t[]>(2 * MAX_STRING_LENGTH);
     std::vector<std::wstring> entry;
     do
     {

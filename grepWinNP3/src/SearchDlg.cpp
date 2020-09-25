@@ -4136,19 +4136,14 @@ bool CSearchDlg::IsVersionNewer(const std::wstring& sVer)
 
 bool CSearchDlg::CloneWindow()
 {
-    if (!SaveSettings())
-        return false;
-    if (bPortable)
-    {
-        g_iniFile.SaveFile(g_iniPath.c_str());
-    }
+    if (!SaveSettings()) { return false; }
+    if (bPortable) { g_iniFile.SaveFile(g_iniPath.c_str()); }
 
     auto const dir   = CPathUtils::GetModuleDir();
     auto const file  = CPathUtils::GetFileName(CPathUtils::GetModulePath());
-    auto const inifn = CPathUtils::GetFileName(g_iniPath);
 
     std::wstring arguments;
-    arguments += CStringUtils::Format(L" /inipath:\"%s\"", inifn.c_str());
+    arguments += CStringUtils::Format(L" /inipath:\"%s\"", g_iniPath.c_str());
     arguments += CStringUtils::Format(L" /searchpath:\"%s\"", m_searchpath.c_str());
     arguments += CStringUtils::Format(L" /searchfor:\"%s\"", m_searchString.c_str());
     arguments += CStringUtils::Format(L" /replacewith:\"%s\"", m_replaceString.c_str());
