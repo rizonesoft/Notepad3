@@ -297,7 +297,7 @@ msgstr "より古い"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "多重に起動しない(注・常にオン)"
+msgstr "多重に起動しない"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
@@ -563,7 +563,7 @@ msgstr "正規表現 - OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr "grepWinNP3 のインスタンスを再利用します。(注: grepWinNP3 では設定無効で常に再利用)"
+msgstr "grepWinNP3 のインスタンスを再利用します。"
 
 #. Resource IDs: (151)
 #, c-format
@@ -576,7 +576,7 @@ msgstr "検索文字列が空です"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "grepWinNP3 の新規ウィンドウを開く"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -604,5 +604,5 @@ msgstr "これにより右クリックメニューに「エディタで開く」
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "常に手前に表示"
 
