@@ -256,7 +256,7 @@ msgstr "Érvénytelen útvonal!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr "Inverz keresés (NOT kereső szüveg)"
+msgstr "Inverz keresés (NOT keresési szöveg)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -608,5 +608,5 @@ msgstr "Ez hozzáadja a 'Megnyitás a szerkesztőben' pontot a helyi menüben"
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Mindig felül"
 
