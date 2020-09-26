@@ -171,7 +171,7 @@ CAPTION "일반"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "MiniPath에 대한 일반 프로그램 설정을 지정합니다.",IDC_STATIC,40,15,153,8
+    LTEXT           "MiniPath에 대한 일반 프로그램 설정을 지정합니다.",IDC_STATIC,40,15,180,8
     CONTROL         "마우스를 한 번만 클릭하여 개체를 열도록 허용합니다(&A).",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,195,10
     CONTROL         "추적 선택을 사용합니다(&E).",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,195,10
@@ -207,7 +207,7 @@ BEGIN
     CONTROL         "삭제된 파일을 휴지통으로 이동합니다(&M).",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,159,10
     CONTROL         "파일 삭제를 확인하지 않습니다 (권장하지 않음)(&D).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         """Esc"" 키 사용(&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "창을 최소화(&W).",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,78,10
@@ -220,15 +220,15 @@ CAPTION "항목"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "디렉터리 목록에 있는 항목의 모양입니다.",IDC_STATIC,40,15,118,8
+    LTEXT           "디렉터리 목록에 있는 항목의 모양입니다.",IDC_STATIC,40,15,140,8
     GROUPBOX        "색상",IDC_STATIC,10,41,205,134
     LTEXT           "필터 없음이 설정된 경우 이 텍스트 색 사용:",IDC_STATIC,20,54,136,8
     CONTROL         "Windows 기본 색상(&W).",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "사용자 지정 색상(&C).:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,80,10
+    CONTROL         "사용자 지정 색상(&C):",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,80,10
     EDITTEXT        IDC_COLOR_SAMP1,105,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "색상 선택...",IDC_COLOR_PICK1,140,80,50,14
     LTEXT           "필터가 활성 상태인 경우 이 텍스트 색 사용:",IDC_STATIC,20,105,146,8
-    CONTROL         "Windows 기본 색상(&E)",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "Windows 기본 색상(&E).",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "사용자 지정 색상(&U):",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,80,10
     EDITTEXT        IDC_COLOR_SAMP2,105,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "색상 선택...",IDC_COLOR_PICK2,140,130,50,14
