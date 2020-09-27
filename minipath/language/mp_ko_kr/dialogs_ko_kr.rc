@@ -76,7 +76,7 @@ CAPTION "실행"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "실행할 프로그램 파일,\na 폴더 또는 열려는 문서의 이름을 입력합니다.",IDC_STATIC,35,7,188,17
+    LTEXT           "실행할 프로그램 파일,\n폴더 또는 열려는 문서의 이름을 입력합니다.",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "확인",IDOK,112,64,50,14
