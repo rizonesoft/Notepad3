@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr ""
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>πληροφορίες για το grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>σχετικά με το grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -429,7 +429,7 @@ msgid "Select path to search"
 msgstr "Επιλέξτε διαδρομή για έρευνα"
 
 #. Resource IDs: (1071)
-msgid "Settings"
+msgid "Settings..."
 msgstr "Ρυθμίσεις"
 
 #. Resource IDs: (133)
