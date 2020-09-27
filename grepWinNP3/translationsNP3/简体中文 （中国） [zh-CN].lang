@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "关于 grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "添加到预置方案"
+msgid "Add to Presets..."
+msgstr "添加到预置方案..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "预置方案名称"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "预置方案"
+msgid "Presets..."
+msgstr "预置方案..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "按 F1 键查看帮助"
+msgid "Press F1 for help..."
+msgstr "按 F1 键查看帮助..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "大小为"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "测试正则"
+msgid "Test regex..."
+msgstr "测试正则..."
 
 #. Resource IDs: (136)
 msgid "Text"

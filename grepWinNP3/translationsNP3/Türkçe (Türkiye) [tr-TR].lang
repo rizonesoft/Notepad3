@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "grepWinNP3 Hakkında"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Hazır ayarlara ekle"
+msgid "Add to Presets..."
+msgstr "Hazır ayarlara ekle..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Ön Ayar Adı"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Hazır ayarlar"
+msgid "Presets..."
+msgstr "Hazır ayarlar..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Yardım için F1 tuşuna basınız"
+msgid "Press F1 for help..."
+msgstr "Yardım için F1 tuşuna basınız..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Boyut"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Regex'i test et"
+msgid "Test regex..."
+msgstr "Regex'i test et..."
 
 #. Resource IDs: (136)
 msgid "Text"

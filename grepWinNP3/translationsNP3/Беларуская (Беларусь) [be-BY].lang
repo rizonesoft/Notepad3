@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "Пра grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Дадаць у прэсеты"
+msgid "Add to Presets..."
+msgstr "Дадаць у прэсеты..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Імя прэсета"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Прэсеты"
+msgid "Presets..."
+msgstr "Прэсеты..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "F1 для даведкі"
+msgid "Press F1 for help..."
+msgstr "F1 для даведкі..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Памер"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Тэст regex"
+msgid "Test regex..."
+msgstr "Тэст regex..."
 
 #. Resource IDs: (136)
 msgid "Text"

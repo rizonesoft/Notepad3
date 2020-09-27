@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "A grepWinNP3 névjegye"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Sablonokhoz ad"
+msgid "Add to Presets..."
+msgstr "Sablonokhoz ad..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Sablon neve"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Sablonok"
+msgid "Presets..."
+msgstr "Sablonok..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Súgó: F1"
+msgid "Press F1 for help..."
+msgstr "Súgó: F1..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Méret:"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Teszt regex"
+msgid "Test regex..."
+msgstr "Teszt regex..."
 
 #. Resource IDs: (136)
 msgid "Text"
