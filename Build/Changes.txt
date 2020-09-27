@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.926.(build_#) (2020-09-26)
+Current BETA/RC Version 5.20.927.(build_#) (2020-09-27)
 ========================================================
 
 --------------------------------------------------------
@@ -59,6 +59,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.927.1]- TinyExpr floating point format.
+[.927.1]- TinyExpr: change format (allow longer integer before switching to mantissa/exponent format).
 [.925.1]- Move home brew lexers to Lexills dir (SCI).
 [.925.1]- Scintilla 5 prep: Using ILexer5 interface from static build Lexilla.lib (SCI).
 [.925.1]- Prepare for Lexilla Library (Scintilla v5) (SCI).
@@ -80,6 +82,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.927.1]- Lexer file extensions maintained in standard config.
+[.927.1]- grepWin language switching (github.com/stefankueng/grepWin/issues/199) (GRE).
 [.926.1]- Clone full .ini-file path for forked new instance (GRE).
 [.926.1]- grepWinNP3: wide char path names for language files (GRE).
 [.925.1]- Stop file change notification on deleted files if save is rejected.

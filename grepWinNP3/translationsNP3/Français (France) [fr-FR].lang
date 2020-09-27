@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "À propos de grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Ajout aux prédéfinis"
+msgid "Add to Presets..."
+msgstr "Ajouter aux prédéfinis..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Nom du Prédéfini"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Prédéfinis"
+msgid "Presets..."
+msgstr "Prédéfinis..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Appuyer sur F1 pour Aide"
+msgid "Press F1 for help..."
+msgstr "Appuyer sur F1 pour Aide..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Taille est"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Tester Regex"
+msgid "Test regex..."
+msgstr "Tester Regex..."
 
 #. Resource IDs: (136)
 msgid "Text"
