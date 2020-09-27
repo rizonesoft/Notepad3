@@ -175,11 +175,13 @@ unsigned ThemeItems_CountOf() { return COUNTOF(Theme_Files); }
 static void _FillThemesMenuTable()
 {
   Theme_Files[0].rid = IDM_THEMES_DEFAULT;    // factory default
-  Theme_Files[1].rid = IDM_THEMES_FILE_ITEM;  // NP3.ini settings
+  StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), L"");
 
   unsigned iTheme = 1; // Standard
-
   WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
+
+  Theme_Files[iTheme].rid = IDM_THEMES_FILE_ITEM; // NP3.ini settings
+
   // find "themes" sub-dir (side-by-side to Notepad3.ini)
   if (StrIsNotEmpty(Globals.IniFile)) {
     StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
@@ -498,6 +500,10 @@ void Style_Init()
   Globals.idxDarkModeTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : 1;
   StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName),
                 Theme_Files[Globals.idxDarkModeTheme].szName);
+
+  Style_LoadLexerFileExtensions();
+
+  Style_ImportFromFile(Globals.IniFile);
 }
 
 
@@ -546,6 +552,50 @@ bool Style_Import(HWND hwnd)
 
 //=============================================================================
 //
+//   Style_LoadLexerFileExtensions()
+//
+void Style_LoadLexerFileExtensions()
+{
+  bool bOpendByMe;
+  OpenSettingsFile(&bOpendByMe);
+
+  for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+
+    LPCWSTR Lexer_Section = g_pLexArray[iLexer]->pszName;
+
+    if ((Globals.iCfgVersionRead < CFG_VER_0004) && (iLexer < 2)) {
+      Lexer_Section = (iLexer == 0) ? L"Default Text" : L"2nd Default Text";
+    }
+
+    IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
+      g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
+
+    // don't allow empty extensions settings => use default ext
+    if (StrIsEmpty(g_pLexArray[iLexer]->szExtensions)) {
+      StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[iLexer]->pszDefExt);
+    }
+
+    if (Globals.iCfgVersionRead < CFG_VER_0004) {
+      // handling "Text Files" lexer
+      if (StringCchCompareXI(L"Text Files", g_pLexArray[iLexer]->pszName) == 0) {
+        if (StrIsNotEmpty(g_pLexArray[0]->szExtensions)) {
+          StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[0]->szExtensions);
+          StrTrim(g_pLexArray[iLexer]->szExtensions, L"; ");
+        }
+        lexStandard.szExtensions[0] = L'\0';
+        lexStandard2nd.szExtensions[0] = L'\0';
+        // copy default style
+        StringCchCopy(g_pLexArray[iLexer]->Styles[0].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[0].szValue), g_pLexArray[0]->Styles[0].szValue);
+      }
+    }
+  }
+
+  CloseSettingsFile(false, bOpendByMe);
+}
+
+
+//=============================================================================
+//
 //  Style_ImportFromFile()
 //
 bool Style_ImportFromFile(const WCHAR* szFile)
@@ -563,7 +613,8 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     }
   }
 
-  bool const result = bIsStdIniFile ? OpenSettingsFile(&bIsStdIniFile) :
+  bool bOpendByMe = false;
+  bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) :
                      (bFactoryReset ? ResetIniFileCache() : LoadIniFileCache(szFile));
 
   if (result) {
@@ -622,15 +673,6 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         Lexer_Section = (iLexer == 0) ? L"Default Text" : L"2nd Default Text";
       }
 
-      if (bIsStdIniFile) {
-        IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
-            g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
-      }
-      // don't allow empty extensions settings => use default ext
-      if (StrIsEmpty(g_pLexArray[iLexer]->szExtensions)) {
-        StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[iLexer]->pszDefExt);
-      }
-
       unsigned i = 0;
       while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
       {
@@ -641,24 +683,9 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         ++i;
       }
 
-      if (bIsStdIniFile && (Globals.iCfgVersionRead < CFG_VER_0004))
-      {
-        // handling "Text Files" lexer
-        if (StringCchCompareXI(L"Text Files", g_pLexArray[iLexer]->pszName) == 0)
-        {
-          if (StrIsNotEmpty(g_pLexArray[0]->szExtensions)) {
-            StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[0]->szExtensions);
-            StrTrim(g_pLexArray[iLexer]->szExtensions, L"; ");
-          }
-          lexStandard.szExtensions[0] = L'\0';
-          lexStandard2nd.szExtensions[0] = L'\0';
-          // copy default style
-          StringCchCopy(g_pLexArray[iLexer]->Styles[0].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[0].szValue), g_pLexArray[0]->Styles[0].szValue);
-        }
-      }
     }
 
-    CloseSettingsFile(false, bIsStdIniFile);
+    CloseSettingsFile(false, bOpendByMe);
   }
   return result;
 }
@@ -712,6 +739,24 @@ bool Style_Export(HWND hwnd)
 }
 
 
+
+//=============================================================================
+//
+//  Style_FileExtToIniSection()
+//
+void Style_FileExtToIniSection(bool bForceAll) {
+  for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+    LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+
+    if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0)) {
+      IniSectionSetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
+    } else {
+      IniSectionDelete(Lexer_Section, L"FileNameExtensions", false);
+    }
+  }
+}
+
+
 //=============================================================================
 //
 //  Style_ToIniSection()
@@ -724,7 +769,7 @@ bool Style_Export(HWND hwnd)
     IniSectionDelete(IniSecStyles, _W(_STRG(VARNAME)), false);           \
   }
 
-void Style_ToIniSection(bool bForceAll, bool bIsStdIniFile)
+void Style_ToIniSection(bool bForceAll)
 {
   // Custom colors
   const WCHAR* const CustomColors_Section = L"Custom Colors";
@@ -781,14 +826,6 @@ void Style_ToIniSection(bool bForceAll, bool bIsStdIniFile)
   {
     LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
 
-    if (bForceAll || (bIsStdIniFile && (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0)))
-    {
-      IniSectionSetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
-    }
-    else {
-      IniSectionDelete(Lexer_Section, L"FileNameExtensions", false);
-    }
-
     unsigned i = 0;
     while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
     {
@@ -834,13 +871,13 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
 
   bool ok = false;
-  bool bIsStdIniFile = false;
 
+  // special handling of standard .ini-file
   if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
-    bool bOpendByMe = false;
-    bIsStdIniFile = true;
+    bool bOpendByMe;
     if (OpenSettingsFile(&bOpendByMe)) {
-      Style_ToIniSection(bForceAll, bIsStdIniFile);
+      Style_FileExtToIniSection(bForceAll);
+      Style_ToIniSection(bForceAll);
       ok = CloseSettingsFile(true, bOpendByMe);
     }
   }
@@ -856,7 +893,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
         }
       }
       if (LoadIniFileCache(szFilePathNorm)) {
-        Style_ToIniSection(bForceAll, bIsStdIniFile);
+        Style_ToIniSection(bForceAll);
         ok = SaveIniFileCache(szFilePathNorm);
         ResetIniFileCache();
       }

@@ -35,7 +35,7 @@ bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);
 void CmdSaveSettingsNow();
 
-  bool OpenSettingsFile(bool* keepCached);
+bool OpenSettingsFile(bool* keepCached);
 bool CloseSettingsFile(bool bSaveChanges, bool keepCached);
 
 // ----------------------------------------------------------------------------

@@ -2492,7 +2492,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     DestroyWindow(Globals.hwndToolbar); 
   }
 
-  bool bOpendByMe = false;
+  bool bOpendByMe;
   OpenSettingsFile(&bOpendByMe);
   bool bDirtyFlag = false;
 
@@ -5813,7 +5813,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (Flags.bStickyWindowPosition) { InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS); }
 
-        bool bOpendByMe = false;
+        bool bOpendByMe;
         OpenSettingsFile(&bOpendByMe);
 
         SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
