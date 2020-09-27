@@ -2143,8 +2143,12 @@ static bool _EvalTinyExpr(bool qmark)
       FreeMem(lineBuf);
 
       if (!exprErr) {
-        char chExpr[64] = { '\0' };
-        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", dExprEval);
+        char chExpr[80] = { '\0' };
+        if (fabs(dExprEval) < 1E+21) {
+          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", dExprEval);
+        } else {
+          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.4G", dExprEval);
+        }
         SciCall_SetSel(posBegin, posCur);
         SciCall_ReplaceSel(chExpr);
         return true;
@@ -8102,18 +8106,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
               case STATUS_TINYEXPR:
                 {
-                  char chBuf[80];
+                  char chExpr[80] = { '\0' };
                   if (s_iExprError == 0) {
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.21G", s_dExpression);
-                    SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
+                    if (fabs(s_dExpression) < 1E+21) {
+                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", s_dExpression);
+                    } else {
+                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.4G", s_dExpression);
+                    }
                   }
                   else if (s_iExprError > 0) {
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[" TE_XINT_FMT "]", s_iExprError);
-                    SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
+                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "^[" TE_XINT_FMT "]", s_iExprError);
+                    SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
                   }
-                  else {
-                    SciCall_CopyText(0, "");
-                  }
+                  SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
                 }
                 break;
 
