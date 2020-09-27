@@ -2144,7 +2144,7 @@ static bool _EvalTinyExpr(bool qmark)
 
       if (!exprErr) {
         char chExpr[64] = { '\0' };
-        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
+        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", dExprEval);
         SciCall_SetSel(posBegin, posCur);
         SciCall_ReplaceSel(chExpr);
         return true;
@@ -8104,7 +8104,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 {
                   char chBuf[80];
                   if (s_iExprError == 0) {
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.6G", s_dExpression);
+                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.21G", s_dExpression);
                     SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
                   }
                   else if (s_iExprError > 0) {
@@ -9184,10 +9184,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
 
     if (!s_iExprError) {
-      if (fabs(s_dExpression) > 99999999.9999)
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", s_dExpression);
-      else
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6G", s_dExpression);
+      StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.7G", s_dExpression);
     }
     else if (s_iExprError > 0) {
         StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_XINT_FMT) L"]", s_iExprError);
