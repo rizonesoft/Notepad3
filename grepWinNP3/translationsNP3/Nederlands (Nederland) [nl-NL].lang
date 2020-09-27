@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr "Bezoeken de website van Stefan Küng"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>over grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>over grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "Kies zoekpad"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Instellingen"
+msgid "Settings..."
+msgstr "Instellingen..."
 
 #. Resource IDs: (133)
 msgid "Size"

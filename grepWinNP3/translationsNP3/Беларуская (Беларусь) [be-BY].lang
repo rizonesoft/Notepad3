@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr "Наведаць сайт Stefan Küng"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>пра grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>пра grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "Выбар шляху пошуку"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Налады"
+msgid "Settings..."
+msgstr "Налады..."
 
 #. Resource IDs: (133)
 msgid "Size"
