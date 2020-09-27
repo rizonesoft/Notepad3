@@ -2143,8 +2143,12 @@ static bool _EvalTinyExpr(bool qmark)
       FreeMem(lineBuf);
 
       if (!exprErr) {
-        char chExpr[64] = { '\0' };
-        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
+        char chExpr[80] = { '\0' };
+        if (fabs(dExprEval) < 1E+21) {
+          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", dExprEval);
+        } else {
+          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.4G", dExprEval);
+        }
         SciCall_SetSel(posBegin, posCur);
         SciCall_ReplaceSel(chExpr);
         return true;
@@ -2488,7 +2492,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     DestroyWindow(Globals.hwndToolbar); 
   }
 
-  bool bOpendByMe = false;
+  bool bOpendByMe;
   OpenSettingsFile(&bOpendByMe);
   bool bDirtyFlag = false;
 
@@ -5809,7 +5813,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (Flags.bStickyWindowPosition) { InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS); }
 
-        bool bOpendByMe = false;
+        bool bOpendByMe;
         OpenSettingsFile(&bOpendByMe);
 
         SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
@@ -8102,18 +8106,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
               case STATUS_TINYEXPR:
                 {
-                  char chBuf[80];
+                  char chExpr[80] = { '\0' };
                   if (s_iExprError == 0) {
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.6G", s_dExpression);
-                    SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
+                    if (fabs(s_dExpression) < 1E+21) {
+                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", s_dExpression);
+                    } else {
+                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.4G", s_dExpression);
+                    }
                   }
                   else if (s_iExprError > 0) {
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[" TE_XINT_FMT "]", s_iExprError);
-                    SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
+                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "^[" TE_XINT_FMT "]", s_iExprError);
+                    SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
                   }
-                  else {
-                    SciCall_CopyText(0, "");
-                  }
+                  SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
                 }
                 break;
 
@@ -9184,10 +9189,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
 
     if (!s_iExprError) {
-      if (fabs(s_dExpression) > 99999999.9999)
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", s_dExpression);
-      else
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6G", s_dExpression);
+      StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.7G", s_dExpression);
     }
     else if (s_iExprError > 0) {
         StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_XINT_FMT) L"]", s_iExprError);

@@ -215,8 +215,22 @@
     </nant>
     <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
     <property name="verstringfull" value="${verstring}.${environment::get-variable('WCREV')}" />
-    <copy file="bin\Release\grepWin.exe" tofile="bin\grepWin-${verstring}_portable.exe" />
-    <copy file="bin\Release64\grepWin.exe" tofile="bin\grepWin-x64-${verstring}_portable.exe" />
+    <zip zipfile="bin\grepWin-${verstring}_portable.zip" ziplevel="9">
+      <fileset basedir="bin\release">
+        <include name="grepWin.exe" />
+      </fileset>
+      <fileset basedir="src\Setup">
+        <include name="website.url" />
+      </fileset>
+    </zip>
+    <zip zipfile="bin\grepWin-x64-${verstring}_portable.zip" ziplevel="9">
+      <fileset basedir="bin\release64">
+        <include name="grepWin.exe" />
+      </fileset>
+      <fileset basedir="src\Setup">
+        <include name="website.url" />
+      </fileset>
+    </zip>
 
     <exec program="checksum" output="bin\checksum.txt">
       <arg value="-t" />
