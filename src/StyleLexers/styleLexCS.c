@@ -125,8 +125,8 @@ NULL,
 
 
 EDITLEXER lexCS = { 
-SCLEX_CPP, IDS_LEX_CSHARP_SRC, L"C# Source Code", L"cs; csx; vala", L"", 
-&KeyWords_CS, {
+SCLEX_CPP, "cpp", IDS_LEX_CSHARP_SRC, L"C# Source Code", L"cs; csx; vala", L"",
+  &KeyWords_CS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"C Default", L"", L"" },
     { {SCE_C_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

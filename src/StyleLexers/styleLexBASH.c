@@ -20,8 +20,8 @@ NULL,
 
 
 EDITLEXER lexBASH = { 
-SCLEX_BASH, IDS_LEX_SHELL_SCR, L"Shell Script", L"sh; csh; zsh; bash; tcsh; m4; in; \\^mozconfig$", L"", 
-&KeyWords_BASH, {
+SCLEX_BASH, "bash", IDS_LEX_SHELL_SCR, L"Shell Script", L"sh; csh; zsh; bash; tcsh; m4; in; \\^mozconfig$", L"",
+  &KeyWords_BASH, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_SH_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_SH_ERROR}, IDS_LEX_STR_63261, L"Error", L"", L"" },

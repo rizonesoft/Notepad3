@@ -10,8 +10,8 @@ NULL,
 
 
 EDITLEXER lexJS = { 
-SCLEX_CPP, IDS_LEX_J_SCR, L"JavaScript", L"js; jse; jsm; as; mjs; qs", L"", 
-&KeyWords_JS, {
+SCLEX_CPP, "cpp", IDS_LEX_J_SCR, L"JavaScript", L"js; jse; jsm; as; mjs; qs", L"",
+  &KeyWords_JS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_C_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },

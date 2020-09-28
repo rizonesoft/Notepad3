@@ -24,8 +24,8 @@ NULL,
 
 
 EDITLEXER lexGo = { 
-SCLEX_D, IDS_LEX_GO_SRC, L"Go Source Code", L"go", L"", 
-&KeyWords_Go,{
+SCLEX_D, "d", IDS_LEX_GO_SRC, L"Go Source Code", L"go", L"",
+  &KeyWords_Go,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_D_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

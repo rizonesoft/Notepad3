@@ -91,8 +91,8 @@ NULL,
 
 
 EDITLEXER lexSQL = { 
-SCLEX_SQL, IDS_LEX_SQL, L"SQL Query", L"sql; mysql; hsql", L"", 
-&KeyWords_SQL, {
+SCLEX_SQL, "sql", IDS_LEX_SQL, L"SQL Query", L"sql; mysql; hsql", L"",
+  &KeyWords_SQL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_SQL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_SQL_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#505050", L"" },

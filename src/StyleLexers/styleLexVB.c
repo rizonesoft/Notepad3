@@ -9,8 +9,8 @@ NULL,
 
 
 EDITLEXER lexVB = { 
-SCLEX_VB, IDS_LEX_VIS_BAS, L"Visual Basic", L"vb; bas; frm; cls; ctl; pag; dsr; dob", L"", 
-&KeyWords_VB, {
+SCLEX_VB, "vb", IDS_LEX_VIS_BAS, L"Visual Basic", L"vb; bas; frm; cls; ctl; pag; dsr; dob", L"",
+  &KeyWords_VB, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_B_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_B_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#808080", L"" },

@@ -16,8 +16,8 @@ NULL,
 
 
 EDITLEXER lexAwk = { 
-SCLEX_PYTHON,  IDS_LEX_AWK_SCR, L"Awk Script", L"awk", L"", 
-&KeyWords_Awk,{
+SCLEX_PYTHON, "python", IDS_LEX_AWK_SCR, L"Awk Script", L"awk", L"",
+  &KeyWords_Awk,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_P_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_P_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0000A0", L"" },

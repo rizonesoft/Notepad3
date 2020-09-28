@@ -61,8 +61,8 @@ NULL,
 
 
 EDITLEXER lexNSIS = { 
-SCLEX_NSIS, IDS_LEX_NSIS, L"NSIS Script", L"nsi; nsh", L"", 
-&KeyWords_NSIS, {
+SCLEX_NSIS, "nsis", IDS_LEX_NSIS, L"NSIS Script", L"nsi; nsh", L"",
+  &KeyWords_NSIS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //,{ {SCE_NSIS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_NSIS_COMMENT,SCE_NSIS_COMMENTBOX,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

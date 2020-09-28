@@ -9,8 +9,8 @@ NULL,
 };
 
 EDITLEXER lexRUBY = { 
-SCLEX_RUBY, IDS_LEX_RUBY, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; rakefile; gemspec; podspec; \\^Rakefile$; \\^Podfile$", L"", 
-&KeyWords_RUBY, {
+SCLEX_RUBY, "ruby", IDS_LEX_RUBY, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; rakefile; gemspec; podspec; \\^Rakefile$; \\^Podfile$", L"",
+  &KeyWords_RUBY, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_RB_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_RB_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
