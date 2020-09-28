@@ -1430,7 +1430,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         {
           if (StrIsNotEmpty(s_lpFileArg)) {
             StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), s_lpFileArg);
-            InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+            InstallFileWatching(true);
           }
           else {
             StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), L"");
@@ -1476,7 +1476,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         case FWM_MSGBOX:
           FileWatching.FileWatchingMode = FWM_DONT_CARE;
           FileWatching.ResetFileWatching = true;
-          InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+          InstallFileWatching(true);
           break;
         case FWM_AUTORELOAD:
           if (!FileWatching.MonitoringLog) {
@@ -1485,7 +1485,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
           else {
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
             FileWatching.ResetFileWatching = true;
-            InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+            InstallFileWatching(true);
           }
           break;
         case FWM_DONT_CARE:
@@ -1654,8 +1654,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case WM_CLOSE:
-      s_flagAppIsClosing = true;
       if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
+        s_flagAppIsClosing = true;
         DestroyWindow(Globals.hwndMain);
       }
       break;
@@ -3153,7 +3153,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
           {
             FileWatching.FileWatchingMode = FWM_DONT_CARE;
             FileWatching.ResetFileWatching = true;
-            InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+            InstallFileWatching(true);
           }
           else if (params->flagChangeNotify == FWM_AUTORELOAD) {
             if (!FileWatching.MonitoringLog) {
@@ -3162,7 +3162,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             else {
               FileWatching.FileWatchingMode = FWM_AUTORELOAD;
               FileWatching.ResetFileWatching = true;
-              InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+              InstallFileWatching(true);
             }
           }
 
@@ -3379,16 +3379,13 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
     }
     if (!s_bRunningWatch) {
-      InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+      InstallFileWatching(true);
     }
   }
   else {
     INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
     if ((IDOK == answer) || (IDYES == answer)) {
       FileSave(true, false, false, false, Flags.bPreserveFileModTime);
-      if (!s_bRunningWatch) {
-        InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
-      }
     }
     else if (!PathIsExistingFile(Globals.CurrentFile))
     {
@@ -3678,7 +3675,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu, IDM_VIEW_SHOWEXCERPT, !se);
 
-  i = SciCall_GetLexer();
+  i = max_i(SCLEX_NULL, SciCall_GetLexer());
 
   EnableCmd(hmenu, IDM_EDIT_LINECOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
@@ -5756,7 +5753,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         EditEnsureSelectionVisible();
 
-        InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+        InstallFileWatching(true);
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
@@ -6027,7 +6024,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_CHANGENOTIFY:
       if (ChangeNotifyDlg(hwnd)) {
-        InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+        InstallFileWatching(true);
       }
       break;
 
@@ -10240,7 +10237,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       }
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
-    InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+    InstallFileWatching(true);
 
     // the .LOG feature ...
     if (SciCall_GetTextLength() >= 4) {
@@ -10668,7 +10665,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         }
         FileWatching.FileWatchingMode = Settings.FileWatchingMode;
       }
-      InstallFileWatching(StrIsNotEmpty(Globals.CurrentFile));
+      InstallFileWatching(true);
     }
 
     // if current file is settings/config file: ask to start
@@ -11399,8 +11396,10 @@ void InstallFileWatching(const bool bInstall)
     s_dwChangeNotifyTime = 0UL; // reset
   }
 
+  bool const bFileExists = StrIsNotEmpty(Globals.CurrentFile) && PathIsExistingFile(Globals.CurrentFile);
+
   // Install
-  if (bInstall && (FileWatching.FileWatchingMode != FWM_DONT_CARE))
+  if (bInstall && bFileExists && (FileWatching.FileWatchingMode != FWM_DONT_CARE))
   {
     WCHAR tchDirectory[MAX_PATH] = { L'\0' };
     StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Globals.CurrentFile);

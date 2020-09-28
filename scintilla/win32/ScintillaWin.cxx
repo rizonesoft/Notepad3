@@ -422,7 +422,7 @@ public:
 
 /**
  */
-class ScintillaWin :
+class ScintillaWin final :
 	public ScintillaBase {
 
 	bool lastKeyDownConsumed;
@@ -479,7 +479,7 @@ class ScintillaWin :
 #endif
 
 	explicit ScintillaWin(HWND hwnd);
-	// virtual ~ScintillaWin() in public section
+	// ~ScintillaWin() in public section
 
 	void Init() noexcept;
 	void Finalise() noexcept override;
@@ -612,7 +612,7 @@ class ScintillaWin :
 	sptr_t SciMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 
 public:
-	virtual ~ScintillaWin() override;
+	~ScintillaWin() override;
 
 	// Deleted so ScintillaWin objects can not be copied.
 	ScintillaWin(const ScintillaWin &) = delete;
@@ -2070,6 +2070,7 @@ sptr_t ScintillaWin::IdleMessage(unsigned int iMessage, uptr_t wParam, sptr_t lP
 					// wraps after 49 days. The WM_TIMER will kick off another SC_WIN_IDLE
 					// after the wrap.
 
+					#pragma warning( disable : 28159 )
 					const DWORD dwCurrent = GetTickCount();
 					const DWORD dwStart = wParam ? static_cast<DWORD>(wParam) : dwCurrent;
 					constexpr DWORD maxWorkTime = 50;
