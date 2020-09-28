@@ -388,11 +388,22 @@ DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible)
 
 //=============================================================================
 //
+//  Line State (parser internals)
+//
+//~DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
+//~DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
+//~DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
+
+
+//=============================================================================
+//
 //  Style definition
 //
 DeclareSciCallR0(GetLexer, GETLEXER, int)
 DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid) // deprecated
 DeclareSciCallV01(SetILexer, SETILEXER, void*, lexerPtr) // ILexer5*
+
+DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
 
 DeclareSciCallV0(StyleClearAll, STYLECLEARALL);
 DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
@@ -499,15 +510,6 @@ DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
 DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber, int, colour)
 DeclareSciCallR2(MarkerNext, MARKERNEXT, DocLn, DocLn, start, int, markerMask)
 DeclareSciCallR2(MarkerPrevious, MARKERPREVIOUS, DocLn, DocLn, start, int, markerMask)
-
-//=============================================================================
-//
-//  Line State
-//
-DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
-DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
-DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
-DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
 
 //=============================================================================
 //

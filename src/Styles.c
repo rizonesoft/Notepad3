@@ -1114,12 +1114,25 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetUse2ndDefault(pCurrentStandard == &lexStandard2nd); // sync if forced
 
   // Set Lexer 
-  if ((pLexNew->lexerID == SCLEX_CONTAINER) || (pLexNew->lexerID == SCLEX_NULL)) {
+  int const iPrevLexer = SciCall_GetLexer();
+  bool const bIsResetLexer = (iPrevLexer == pLexNew->lexerID);
+
+  if (pLexNew->lexerID <= SCLEX_NULL) {
     SciCall_SetLexer(pLexNew->lexerID);
   } 
   else { // ILexer5 via Lexilla
-    SciCall_SetILexer(CreateLexerByID(pLexNew->lexerID));
-    assert(SciCall_GetLexer() == pLexNew->lexerID);
+    if (!bIsResetLexer) {
+      SciCall_SetILexer(CreateLexerByID(pLexNew->lexerID));
+    }
+  }
+  int const iNewLexer = SciCall_GetLexer();
+
+  if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {
+    WCHAR msg[256] = { L'\0' };
+    StringCchPrintf(msg, COUNTOF(msg), L"Failed to set desired Lexer (#%i), got Lexer #%i!", pLexNew->lexerID, iNewLexer);
+    /*Dbg*/MsgBoxLastError(msg, ERROR_DLL_INIT_FAILED);
+    // try to use old method
+    SciCall_SetLexer(pLexNew->lexerID);
   }
 
   // Lexer very specific styles

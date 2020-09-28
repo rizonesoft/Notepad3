@@ -2144,10 +2144,11 @@ static bool _EvalTinyExpr(bool qmark)
 
       if (!exprErr) {
         char chExpr[80] = { '\0' };
-        if (fabs(dExprEval) < 1E+21) {
-          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", dExprEval);
+        double intpart;
+        if ((modf(dExprEval, &intpart) == 0) && (fabs(intpart) < 1.0E+21)) {
+          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
         } else {
-          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.4G", dExprEval);
+          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", dExprEval);
         }
         SciCall_SetSel(posBegin, posCur);
         SciCall_ReplaceSel(chExpr);
@@ -8108,10 +8109,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 {
                   char chExpr[80] = { '\0' };
                   if (s_iExprError == 0) {
-                    if (fabs(s_dExpression) < 1E+21) {
-                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", s_dExpression);
+                    double intpart;
+                    if ((modf(s_dExpression, &intpart) == 0) && (fabs(intpart) < 1.0E+21)) {
+                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
                     } else {
-                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.4G", s_dExpression);
+                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", s_dExpression);
                     }
                   }
                   else if (s_iExprError > 0) {
