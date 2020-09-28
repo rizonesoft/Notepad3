@@ -1114,25 +1114,17 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetUse2ndDefault(pCurrentStandard == &lexStandard2nd); // sync if forced
 
   // Set Lexer 
-  int const iPrevLexer = SciCall_GetLexer();
-  bool const bIsResetLexer = (iPrevLexer == pLexNew->lexerID);
+  SciCall_SetILexer(CreateLexerByID(pLexNew->lexerID));
 
-  if (pLexNew->lexerID <= SCLEX_NULL) {
-    SciCall_SetLexer(pLexNew->lexerID);
-  } 
-  else { // ILexer5 via Lexilla
-    if (!bIsResetLexer) {
-      SciCall_SetILexer(CreateLexerByID(pLexNew->lexerID));
-    }
-  }
   int const iNewLexer = SciCall_GetLexer();
-
   if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {
+#ifdef _DEBUG    
     WCHAR msg[256] = { L'\0' };
     StringCchPrintf(msg, COUNTOF(msg), L"Failed to set desired Lexer (#%i), got Lexer #%i!", pLexNew->lexerID, iNewLexer);
-    /*Dbg*/MsgBoxLastError(msg, ERROR_DLL_INIT_FAILED);
+    DbgMsgBoxLastError(msg, ERROR_DLL_INIT_FAILED);
+#endif
     // try to use old method
-    SciCall_SetLexer(pLexNew->lexerID);
+    SciCall_SetLexer(pLexNew->lexerID); // mixing lexers might cause problems
   }
 
   // Lexer very specific styles
@@ -1141,7 +1133,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // Code folding
   Style_SetFoldingAvailability(pLexNew);
   Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
-
 
   // Add KeyWord Lists
   for (int i = 0;  i <= KEYWORDSET_MAX;  ++i)
@@ -2472,7 +2463,6 @@ bool Style_GetUse2ndDefault()
 //
 //  Style_SetIndentGuides()
 //
-
 void Style_SetIndentGuides(HWND hwnd,bool bShow)
 {
   UNUSED(hwnd);

@@ -82,7 +82,6 @@ HWND GetParentOrDesktop(HWND hDlg);
 void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
-//void SnapToDefaultButton(HWND);
 
 inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
   if (bSetExplorerTheme) { SetExplorerTheme(hwnd); } else { SetWindowTheme(hwnd, L"", L""); }
