@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.927.(build_#) (2020-09-27)
+Current BETA/RC Version 5.20.928.(build_#) (2020-09-28)
 ========================================================
 
 --------------------------------------------------------
@@ -59,6 +59,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.928.1]- grepWinNP3: code clean-up (GRE).
+[.928.1]- TinyExpr format floating.point with non zero fractional part.
 [.927.1]- TinyExpr floating point format.
 [.927.1]- TinyExpr: change format (allow longer integer before switching to mantissa/exponent format).
 [.925.1]- Move home brew lexers to Lexills dir (SCI).
@@ -82,6 +84,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).
 [.927.1]- Lexer file extensions maintained in standard config.
 [.927.1]- grepWin language switching (github.com/stefankueng/grepWin/issues/199) (GRE).
 [.926.1]- Clone full .ini-file path for forked new instance (GRE).
