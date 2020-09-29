@@ -71,8 +71,8 @@ NULL,
 
 
 EDITLEXER lexR = { 
-SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"r; rdata; rds; rda", L"", 
-&KeyWords_R,{
+SCLEX_R, "r", IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"r; rdata; rds; rda", L"",
+  &KeyWords_R,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_R_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_R_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

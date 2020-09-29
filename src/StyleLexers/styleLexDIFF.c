@@ -6,8 +6,8 @@ KEYWORDLIST KeyWords_DIFF = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexDIFF = { 
-SCLEX_DIFF, IDS_LEX_DIFF, L"Diff Files", L"diff; patch", L"", 
-&KeyWords_DIFF, {
+SCLEX_DIFF, "diff", IDS_LEX_DIFF, L"Diff Files", L"diff; patch", L"",
+  &KeyWords_DIFF, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_DIFF_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_DIFF_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

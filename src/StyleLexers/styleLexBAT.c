@@ -18,8 +18,8 @@ NULL,
 
 
 EDITLEXER lexBAT = { 
-SCLEX_BATCH, IDS_LEX_BATCH, L"Batch Files", L"bat; cmd", L"", 
-&KeyWords_BAT, {
+SCLEX_BATCH, "batch", IDS_LEX_BATCH, L"Batch Files", L"bat; cmd", L"",
+  &KeyWords_BAT, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_BAT_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_BAT_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

@@ -7,8 +7,8 @@ NULL,
 };
 
 EDITLEXER lexYAML = { 
-SCLEX_YAML, IDS_LEX_YAML, L"YAML", L"yaml; yml", L"", 
-&KeyWords_YAML, {
+SCLEX_YAML, "yaml", IDS_LEX_YAML, L"YAML", L"yaml; yml", L"",
+  &KeyWords_YAML, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_YAML_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_YAML_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },

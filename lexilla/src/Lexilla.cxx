@@ -339,19 +339,7 @@ EXPORT_FUNCTION LexerFactoryFunction CALLING_CONVENTION GetLexerFactory(unsigned
 	return catalogueLexilla.Factory(index);
 }
 
-
-EXPORT_FUNCTION void /*ILexer5*/* CALLING_CONVENTION CreateLexerByID(const int language) {
-  AddEachLexer();
-  for (unsigned int i = 0; i < catalogueLexilla.Count(); i++) {
-    const int lngID = catalogueLexilla.LngID(i);
-    if (language == lngID) {
-      return (void*)catalogueLexilla.Create(i);
-    }
-  }
-  return (void*)nullptr;
-}
-
-EXPORT_FUNCTION void /*ILexer5*/ * CALLING_CONVENTION CreateLexerByName(const char* name) {
+EXPORT_FUNCTION void /*ILexer5*/ * CALLING_CONVENTION CreateLexer(const char* name) {
 	AddEachLexer();
 	for (unsigned int i = 0; i < catalogueLexilla.Count(); i++) {
 		const char *lexerName = catalogueLexilla.Name(i);

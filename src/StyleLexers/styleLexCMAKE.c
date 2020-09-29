@@ -33,8 +33,8 @@ NULL,
 
 
 EDITLEXER lexCmake = { 
-SCLEX_CMAKE, IDS_LEX_CMAKE, L"Cmake Script", L"cmake; ctest; \\^cmakelists\\.txt$", L"", 
-&KeyWords_CMAKE, {
+SCLEX_CMAKE, "cmake", IDS_LEX_CMAKE, L"Cmake Script", L"cmake; ctest; \\^cmakelists\\.txt$", L"",
+  &KeyWords_CMAKE, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_CMAKE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_CMAKE_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

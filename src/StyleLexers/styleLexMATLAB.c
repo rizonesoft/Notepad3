@@ -10,8 +10,8 @@ NULL,
 
 
 EDITLEXER lexMATLAB = { 
-SCLEX_MATLAB, IDS_LEX_MATLAB, L"MATLAB", L"matlab; m; sce; sci", L"", 
-&KeyWords_MATLAB, {
+SCLEX_MATLAB, "matlab", IDS_LEX_MATLAB, L"MATLAB", L"matlab; m; sce; sci", L"",
+  &KeyWords_MATLAB, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_MATLAB_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_MATLAB_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

@@ -5,8 +5,8 @@
 KEYWORDLIST KeyWords_LaTex = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexLATEX = {
-SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty; texi; texinfo; txi", L"",
-& KeyWords_LaTex, {
+  SCLEX_LATEX, "latex", IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty; texi; texinfo; txi", L"",
+  &KeyWords_LaTex, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_L_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_L_COMMAND,SCE_L_SHORTCMD,SCE_L_CMDOPT,0)}, IDS_LEX_STR_63236, L"Command", L"fore:#0000FF", L"" },

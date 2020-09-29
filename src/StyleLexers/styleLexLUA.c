@@ -33,8 +33,8 @@ NULL,
 
 
 EDITLEXER lexLUA = { 
-SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua; wlua; nse; luadoc; luax", L"", 
-&KeyWords_LUA, {
+SCLEX_LUA, "lua", IDS_LEX_LUA, L"Lua Script", L"lua; wlua; nse; luadoc; luax", L"",
+  &KeyWords_LUA, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_LUA_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

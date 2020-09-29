@@ -5,8 +5,8 @@
 KEYWORDLIST KeyWords_Registry = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexRegistry = { 
-SCLEX_REGISTRY, IDS_LEX_REG_FILES, L"Registry Files", L"reg", L"", 
-&KeyWords_Registry, {
+SCLEX_REGISTRY, "registry", IDS_LEX_REG_FILES, L"Registry Files", L"reg", L"",
+  &KeyWords_Registry, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_REG_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_REG_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },

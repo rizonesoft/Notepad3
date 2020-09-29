@@ -24,8 +24,8 @@ NULL,
 
 
 EDITLEXER lexRust = { 
-SCLEX_RUST, IDS_LEX_RUST_SRC, L"Rust Source Code", L"rs; rust", L"", 
-&KeyWords_Rust,{
+SCLEX_RUST, "rust", IDS_LEX_RUST_SRC, L"Rust Source Code", L"rs; rust", L"",
+  &KeyWords_Rust,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_RUST_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_RUST_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },

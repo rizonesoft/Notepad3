@@ -31,8 +31,8 @@ NULL,
 
 
 EDITLEXER lexTCL = { 
-SCLEX_TCL, IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl; tm", L"", 
-&KeyWords_TCL, {
+SCLEX_TCL, "tcl", IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl; tm", L"",
+  &KeyWords_TCL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_TCL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_TCL__MULTI_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

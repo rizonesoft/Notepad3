@@ -1114,7 +1114,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetUse2ndDefault(pCurrentStandard == &lexStandard2nd); // sync if forced
 
   // Set Lexer 
-  SciCall_SetILexer(CreateLexerByID(pLexNew->lexerID));
+  SciCall_SetILexer(CreateLexer(pLexNew->lexerName));
 
   int const iNewLexer = SciCall_GetLexer();
   if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {

@@ -11,8 +11,8 @@ NULL,
 
 
 EDITLEXER lexJSON = { 
-SCLEX_JSON, IDS_LEX_JSON, L"JSON", L"json; har; ipynb; wxcp; jshintrc; eslintrc; babelrc; prettierrc; stylelintrc; jsonld; jsonc; arcconfig; arclint; jscop", L"", 
-&KeyWords_JSON, {
+SCLEX_JSON, "json", IDS_LEX_JSON, L"JSON", L"json; har; ipynb; wxcp; jshintrc; eslintrc; babelrc; prettierrc; stylelintrc; jsonld; jsonc; arcconfig; arclint; jscop", L"",
+  &KeyWords_JSON, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_JSON_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_JSON_LINECOMMENT,SCE_JSON_BLOCKCOMMENT,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
