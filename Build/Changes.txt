@@ -84,6 +84,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.928.2]- Freezing of main wnd caused by mixed usage of Lexer Interfaces.
 [.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).
 [.927.1]- Lexer file extensions maintained in standard config.
 [.927.1]- grepWin language switching (github.com/stefankueng/grepWin/issues/199) (GRE).
