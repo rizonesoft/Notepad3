@@ -103,15 +103,7 @@ typedef enum { TAM_ALWAYS_RUN = 0, TAM_SEND_DROP_MSG = 1, TAM_SEND_DDE_MSG = 2 }
 typedef struct _settings_t
 {
   BOOL      bSaveSettings;
-  WCHAR     szQuickview[MAX_PATH];
-  WCHAR     szQuickviewParams[MAX_PATH];
-  WCHAR     g_tchFavoritesDir[MAX_PATH];
   BOOL      bNP3sFavoritesSettings;
-  WCHAR     tchOpenWithDir[MAX_PATH];
-  WCHAR     tchToolbarButtons[512];
-  WCHAR     tchToolbarBitmap[MAX_PATH];
-  WCHAR     tchToolbarBitmapHot[MAX_PATH];
-  WCHAR     tchToolbarBitmapDisabled[MAX_PATH];
   BOOL      bClearReadOnly;
   BOOL      bRenameOnCollision;
   BOOL      bSingleClick;
@@ -121,7 +113,7 @@ typedef struct _settings_t
   int       iEscFunction;
   BOOL      bFocusEdit;
   BOOL      bAlwaysOnTop;
-  BOOL      g_bTransparentMode;
+  BOOL      bTransparentMode;
   BOOL      bMinimizeToTray;
   BOOL      fUseRecycleBin;
   BOOL      fNoConfirmDelete;
@@ -135,7 +127,6 @@ typedef struct _settings_t
 
   BOOL      bHasQuickview;
 
-  WCHAR     tchFilter[DL_FILTER_BUFSIZE];
   BOOL      bNegFilter;
   BOOL      bDefCrNoFilt;
   BOOL      bDefCrFilter;
@@ -145,15 +136,35 @@ typedef struct _settings_t
 
   WININFO   wi;
 
-  WCHAR     szCurDir[MAX_PATH + 40];
   DWORD     dwFillMask;
   int       nSortFlags;
   BOOL      fSortRev;
+
+  WCHAR     szCurDir[MAX_PATH + 40];
+  WCHAR     szQuickview[MAX_PATH];
+  WCHAR     szQuickviewParams[MAX_PATH];
+  WCHAR     tchFavoritesDir[MAX_PATH];
+  WCHAR     tchOpenWithDir[MAX_PATH];
+  WCHAR     tchToolbarButtons[512];
+  WCHAR     tchToolbarBitmap[MAX_PATH];
+  WCHAR     tchToolbarBitmapHot[MAX_PATH];
+  WCHAR     tchToolbarBitmapDisabled[MAX_PATH];
+  WCHAR     tchFilter[DL_FILTER_BUFSIZE];
 
 } SETTINGS_T, * PSETTINGS_T;
 
 extern SETTINGS_T Settings;
 extern SETTINGS_T Defaults;
+
+
+typedef struct _settings2_t
+{
+  int      OpacityLevel;
+  int      FocusLostOpacity;
+
+} SETTINGS2_T, * PSETTINGS2_T;
+
+extern SETTINGS2_T Settings2;
 
 
 //==== Function Declarations ==================================================

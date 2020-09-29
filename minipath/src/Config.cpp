@@ -617,7 +617,7 @@ void InitDefaultSettings()
 {
   Defaults.szQuickview[0] = L'\0';
   Defaults.szQuickviewParams[0] = L'\0';
-  Defaults.g_tchFavoritesDir[0] = L'\0';
+  Defaults.tchFavoritesDir[0] = L'\0';
   Defaults.tchOpenWithDir[0] = L'\0';
   Defaults.tchToolbarButtons[0] = L'\0';
   Defaults.tchToolbarBitmap[0] = L'\0';
@@ -980,23 +980,23 @@ void LoadSettings()
   GET_BOOL_VALUE_FROM_INISECTION(bFocusEdit, L"FocusEdit", TRUE);
   GET_BOOL_VALUE_FROM_INISECTION(bAlwaysOnTop, L"AlwaysOnTop", FALSE);
   GET_BOOL_VALUE_FROM_INISECTION(bMinimizeToTray, L"MinimizeToTray", FALSE);
-  GET_BOOL_VALUE_FROM_INISECTION(g_bTransparentMode, L"TransparentMode", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(bTransparentMode, L"TransparentMode", FALSE);
   GET_INT_VALUE_FROM_INISECTION(iEscFunction, L"EscFunction", 2, 0, 2);
   GET_INT_VALUE_FROM_INISECTION(iStartupDir, L"StartupDirectory", 2, 0, 2);
 
-  Defaults.g_tchFavoritesDir[0] = L'\0';
-  if (!IniSectionGetString(Settings_Section, L"Favorites", Defaults.g_tchFavoritesDir,
-    Settings.g_tchFavoritesDir, COUNTOF(Settings.g_tchFavoritesDir))) {
+  Defaults.tchFavoritesDir[0] = L'\0';
+  if (!IniSectionGetString(Settings_Section, L"Favorites", Defaults.tchFavoritesDir,
+    Settings.tchFavoritesDir, COUNTOF(Settings.tchFavoritesDir))) {
     // try to fetch Favorites dir from Notepad3.ini
     if (StrIsNotEmpty(g_wchNP3IniFile)) {
       Settings.bNP3sFavoritesSettings = TRUE;
-      IniFileGetString(g_wchNP3IniFile, L"Settings", L"Favorites", L"", Settings.g_tchFavoritesDir, COUNTOF(Settings.g_tchFavoritesDir));
+      IniFileGetString(g_wchNP3IniFile, L"Settings", L"Favorites", L"", Settings.tchFavoritesDir, COUNTOF(Settings.tchFavoritesDir));
     }
   }
-  if (StrIsEmpty(Settings.g_tchFavoritesDir))
-    SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, Settings.g_tchFavoritesDir);
+  if (StrIsEmpty(Settings.tchFavoritesDir))
+    SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, Settings.tchFavoritesDir);
   else
-    PathAbsoluteFromApp(Settings.g_tchFavoritesDir, nullptr, COUNTOF(Settings.g_tchFavoritesDir), TRUE);
+    PathAbsoluteFromApp(Settings.tchFavoritesDir, nullptr, COUNTOF(Settings.tchFavoritesDir), TRUE);
 
 
   Defaults.szQuickview[0] = L'\0';
@@ -1097,6 +1097,11 @@ void LoadSettings()
     Settings.crCustom[i] = Defaults.crCustom[i];
   }
   
+
+  const WCHAR* const Settings_Section2 = L"Settings2";
+  Settings2.OpacityLevel = clampi(IniSectionGetInt(Settings_Section2, L"OpacityLevel", 75), 0, 100);
+  Settings2.FocusLostOpacity = clampi(IniSectionGetInt(Settings_Section2, L"FocusLostOpacity", 100), 0, 100);
+
   }
   __finally {
     ResetIniFileCache();
@@ -1161,7 +1166,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"FocusEdit", bFocusEdit);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"AlwaysOnTop", bAlwaysOnTop);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"MinimizeToTray", bMinimizeToTray);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TransparentMode", g_bTransparentMode);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TransparentMode", bTransparentMode);
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"EscFunction", iEscFunction);
 
@@ -1170,7 +1175,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
       IniSectionSetString(Settings_Section, L"MRUDirectory", Settings.szCurDir);
     }
     if (!Settings.bNP3sFavoritesSettings) {
-      PathRelativeToApp(Settings.g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+      PathRelativeToApp(Settings.tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
       IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
     }
 

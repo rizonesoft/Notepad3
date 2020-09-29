@@ -1071,7 +1071,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SHAutoComplete(GetDlgItem(hwnd,IDC_QUICKVIEW),SHACF_FILESYSTEM);
 
         SendDlgItemMessage(hwnd,IDC_FAVORITES,EM_LIMITTEXT,MAX_PATH - 2,0);
-        SetDlgItemText(hwnd,IDC_FAVORITES, Settings.g_tchFavoritesDir);
+        SetDlgItemText(hwnd,IDC_FAVORITES, Settings.tchFavoritesDir);
         SHAutoComplete(GetDlgItem(hwnd,IDC_FAVORITES),SHACF_FILESYSTEM);
       }
       return TRUE;
@@ -1168,14 +1168,14 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             else
               ExtractFirstArgument(tch, Settings.szQuickview, Settings.szQuickviewParams);
 
-            lstrcpy(tch, Settings.g_tchFavoritesDir);
-            if (!GetDlgItemText(hwnd, IDC_FAVORITES, Settings.g_tchFavoritesDir, MAX_PATH)) {
-              GetDefaultFavoritesDir(Settings.g_tchFavoritesDir, COUNTOF(Settings.g_tchFavoritesDir));
+            lstrcpy(tch, Settings.tchFavoritesDir);
+            if (!GetDlgItemText(hwnd, IDC_FAVORITES, Settings.tchFavoritesDir, MAX_PATH)) {
+              GetDefaultFavoritesDir(Settings.tchFavoritesDir, COUNTOF(Settings.tchFavoritesDir));
             }
             else
-              StrTrim(Settings.g_tchFavoritesDir,L" \"");
+              StrTrim(Settings.tchFavoritesDir,L" \"");
 
-            if (lstrcmpi(tch, Settings.g_tchFavoritesDir) != 0) { Settings.bNP3sFavoritesSettings = FALSE; }
+            if (lstrcmpi(tch, Settings.tchFavoritesDir) != 0) { Settings.bNP3sFavoritesSettings = FALSE; }
 
             SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
             

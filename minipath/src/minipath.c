@@ -35,6 +35,7 @@
 
 SETTINGS_T Settings;
 SETTINGS_T Defaults;
+SETTINGS2_T Settings2;
 
 WCHAR     g_wchIniFile[MAX_PATH];
 WCHAR     g_wchIniFile2[MAX_PATH];
@@ -504,13 +505,11 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
                hInstance,
                NULL);
 
-  if (Settings.bAlwaysOnTop)
-    SetWindowPos(hwndMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-
-  if (Settings.g_bTransparentMode) {
-    int const iAlphaPercent = IniFileGetInt(g_wchIniFile, L"Settings2", L"OpacityLevel", 75);
-    SetWindowTransparentMode(hwndMain, TRUE, clampi(iAlphaPercent, 0, 100));
+  if (Settings.bAlwaysOnTop) {
+    SetWindowPos(hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
+
+  SetWindowTransparentMode(hwndMain, Settings.bTransparentMode, Settings2.OpacityLevel);
 
   if (!flagStartAsTrayIcon) {
     ShowWindow(hwndMain,nCmdShow);
@@ -540,12 +539,12 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
         ErrorMessage(2,IDS_ERR_STARTUPDIR);
     }
     else
-      DisplayPath(Settings.g_tchFavoritesDir,IDS_ERR_STARTUPDIR);
+      DisplayPath(Settings.tchFavoritesDir,IDS_ERR_STARTUPDIR);
   }
 
   // Favorites
   else if (flagGotoFavorites)
-    DisplayPath(Settings.g_tchFavoritesDir,IDS_ERR_FAVORITES);
+    DisplayPath(Settings.tchFavoritesDir,IDS_ERR_FAVORITES);
 
   // Update Dirlist
   if (!ListView_GetItemCount(hwndDirList))
@@ -771,6 +770,27 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       SetFocus(GetDlgItem(hwnd, nIdFocus));
       break;
 
+    case WM_ACTIVATE:
+      {
+        switch (LOWORD(wParam))
+        {
+        case WA_INACTIVE:
+          {
+            int const opacity = Settings.bTransparentMode ? min(Settings2.OpacityLevel, Settings2.FocusLostOpacity) :
+                                                            Settings2.FocusLostOpacity;
+            SetWindowTransparentMode(hwnd, (opacity < 100), opacity);
+          }
+          break;
+        case WA_CLICKACTIVE:
+          // mouse click activation
+        case WA_ACTIVE:
+          SetWindowTransparentMode(hwnd, Settings.bTransparentMode, Settings2.OpacityLevel);
+          break;
+        default:
+          break;
+        }
+      }
+      return FALSE;
 
     case WM_DROPFILES:
       {
@@ -972,19 +992,16 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 
     default:
-
       if (umsg == msgTaskbarCreated) {
         if (!IsWindowVisible(hwnd))
           ShowNotifyIcon(hwnd,TRUE);
         return(0);
       }
-
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
   }
 
-  return(0);
-
+  return FALSE;
 }
 
 
@@ -2281,7 +2298,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_FAVORITES:
       // Goto Favorites Directory
-      DisplayPath(Settings.g_tchFavoritesDir,IDS_ERR_FAVORITES);
+      DisplayPath(Settings.tchFavoritesDir,IDS_ERR_FAVORITES);
       break;
 
 
@@ -2292,7 +2309,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         sei.fMask = 0;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = Settings.g_tchFavoritesDir;
+        sei.lpFile = Settings.tchFavoritesDir;
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
@@ -2502,9 +2519,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case ACC_SWITCHTRANSPARENCY:
-      Settings.g_bTransparentMode = !Settings.g_bTransparentMode;
-      int const iAlphaPercent = IniFileGetInt(g_wchIniFile, L"Settings2", L"OpacityLevel", 75);
-      SetWindowTransparentMode(hwndMain, Settings.g_bTransparentMode, clampi(iAlphaPercent, 0, 100));
+      Settings.bTransparentMode = !Settings.bTransparentMode;
+      SetWindowTransparentMode(hwnd, Settings.bTransparentMode, Settings2.OpacityLevel);
       break;
 
 
