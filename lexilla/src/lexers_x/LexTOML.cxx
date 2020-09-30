@@ -276,16 +276,15 @@ static bool IsDateTimeStr(StyleContext& sc, const CharacterSet& validCh, const C
 
 static bool IsLookAheadLineEmpty(StyleContext& sc)
 {
-  auto const posCurrent = static_cast<Sci_Position>(sc.currentPos);
-  auto const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
+  auto const posRelEnd = static_cast<Sci_Position>(sc.lineStartNext) -
+                         static_cast<Sci_Position>(sc.currentPos);
 
   bool bLHLineEmpty = true;
 
   Sci_Position i = 0;
-  while ((++i + posCurrent) < posEnd)
+  while (++i < posRelEnd)
   {
     int const ch = sc.GetRelative(i);
-
     if (!Scintilla::IsASpace(ch)) {
       if (IsCommentChar(ch)) {
         break; // ignore rest of line
@@ -332,92 +331,8 @@ static bool IsLookAheadInList(StyleContext& sc, const CharacterSet& validCh, con
 }
 // ----------------------------------------------------------------------------
 
-
-static bool _inComment(StyleContext& sc, Sci_Position& pos)
-{
-  bool isInComment = false;
-  auto const posCurrent = static_cast<Sci_Position>(sc.currentPos);
-
-  Sci_Position p = pos + 1;
-  while (--p >= 0)
-  {
-    Sci_Position const d = p - posCurrent;
-    int const ch = sc.GetRelative(d);
-
-    if (IsLineBreak(ch)) {
-      break;
-    }
-    else if (IsCommentChar(ch)) {
-      isInComment = true;
-      pos = p;
-      break;
-    }
-  }
-  return isInComment;
-}
-
-
+//@@@ replace by state
 constexpr bool _isQuoted(const bool q1, const bool q2) noexcept { return (q1 || q2); }
-
-
-static int GetSquareBracketLevel(StyleContext& sc, const bool stopAtLnBreak)
-{
-  auto const posCurrent = static_cast<Sci_Position>(sc.currentPos);
-
-  int iBracketLevel = 0;
-  bool inSQStrg = false;
-  bool inDQStrg = false;
-
-  Sci_Position pos = posCurrent;
-
-  while ((--pos >= 0) && (iBracketLevel <= 0))
-  {
-    Sci_Position const diff = pos - posCurrent;
-    int const ch = sc.GetRelative(diff);
-
-    if (stopAtLnBreak && IsLineBreak(ch)) {
-      break;
-    }
-    if (_inComment(sc, pos)) {
-      continue;
-    }
-
-	int const ch_p = sc.GetRelative(diff - 1);
-
-    if (ch_p != '\\') // not ESCaped
-    {
-      if (ch == '"')
-      {
-        if (inDQStrg) {
-          inDQStrg = false;
-        }
-        else {
-          inDQStrg = !inSQStrg;
-        }
-      }
-      else if (ch == '\'')
-      {
-        if (inSQStrg) {
-          inSQStrg = false;
-        }
-        else {
-          inSQStrg = !inDQStrg;
-        }
-      }
-    }
-    if (!_isQuoted(inDQStrg, inSQStrg)) {
-
-      if (ch == ']') {
-        --iBracketLevel;
-      }
-      else if (ch == '[') {
-        ++iBracketLevel;
-      }
-    }
-  }
-  return iBracketLevel;
-}
-// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 
@@ -429,15 +344,11 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
   bool inSQuotedKey = false;
   bool inDQuotedKey = false;
 
-  bool inSectionDef = false;
-  bool isSectKeyBeg = false;
-  bool isSectKeyEnd = false;
-  
-  bool inMultiLnString = (sc.state == SCE_TOML_STR_BASIC) || (sc.state == SCE_TOML_STR_LITERAL);
-  int  const iSqrBraLevBeg = GetSquareBracketLevel(sc, false);
-  int  iSqrBraLev = iSqrBraLevBeg;
-  bool inMultiLnArrayDef = (iSqrBraLev > 0);
-  
+  bool inMultiLnArrayDef = false;
+
+  bool bMultiLineStrg = false;
+  int  iSqrBracketLevel = 0;
+
   bool inHex = false;
   bool inBin = false;
   bool inOct = false;
@@ -447,53 +358,53 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
   for (; sc.More(); sc.Forward())
   {
-    // --------------------------------------------------
-    // check if in the middle of a line continuation ...
-    // --------------------------------------------------
-    // reset context infos
     if (sc.atLineStart) 
     {
-      inMultiLnArrayDef = (iSqrBraLev > 0);
       inSQuotedKey = inDQuotedKey = false;
-      isSectKeyBeg = isSectKeyEnd = false;
       bPossibleKeyword = true;
+      bInInlBracket = false;
+      bMultiLineStrg = false;
+      iSqrBracketLevel = 0;
 
-      if (inMultiLnArrayDef) {
+      if (sc.currentLine > 0)
+      {
+        int const iLineState = styler.GetLineState(sc.currentLine - 1);
+        // 0-7:  MultiLineStr
+        // 8-15: SqrBraLevel
+        bMultiLineStrg =  ((iLineState >> 0) & 0xFF) == 0 ? false : true;
+        iSqrBracketLevel = (iLineState >> 8) & 0xFF;
+
+        inMultiLnArrayDef = (iSqrBracketLevel > 0);
+      }
+
+      if (inMultiLnArrayDef)
+      {
         switch (sc.state)
         {
           case SCE_TOML_COMMENT:
-            sc.SetState(SCE_TOML_VALUE);
+            sc.SetState(SCE_TOML_VALUE); // continue value
             break;
           default:
-            // no state change
             break;
         }
       }
-      else {
-        // NOT in inMultiLnArrayDef
+      else { // NOT in inMultiLnArrayDef
+
         switch (sc.state)
         {
+          case SCE_TOML_KEY:
+          case SCE_TOML_ASSIGNMENT:
+            SetStateParsingError(sc);
+            break;
+
           case SCE_TOML_STR_BASIC:
           case SCE_TOML_STR_LITERAL:
-            if (!inMultiLnString) {
+            if (!bMultiLineStrg) {
               SetStateParsingError(sc);
             }
             break;
 
-          case SCE_TOML_KEY:
-          case SCE_TOML_ASSIGNMENT:
-            //???SetStateParsingError(sc);
-            break;
-
-          case SCE_TOML_COMMENT:
-              sc.SetState(SCE_TOML_DEFAULT); // reset
-            break;
-
-          case SCE_TOML_PARSINGERROR:
-            sc.SetState(SCE_TOML_DEFAULT); // reset
-            break;
-
-          case SCE_TOML_VALUE:
+          case SCE_TOML_PARSINGERROR:  // reset
           default:
             sc.SetState(SCE_TOML_DEFAULT);
             break;
@@ -501,49 +412,26 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
       }
     }
 
-	// square-bracket level
-	if (sc.ch == '[') {
-		auto p = static_cast<Sci_Position>(sc.currentPos);
-		if (!_inComment(sc, p) && !_isQuoted(inSQuotedKey, inDQuotedKey)) {
-			++iSqrBraLev;
-		}
-	}
-	else if (sc.ch == ']') {
-		auto p = static_cast<Sci_Position>(sc.currentPos);
-		if (!_inComment(sc, p) && !_isQuoted(inSQuotedKey, inDQuotedKey)) {
-			--iSqrBraLev;
-		}
-	}
+    // ------------------------------------------------------------------------
 
-    // -------------------------
-    // current state independent
-    // -------------------------
-    if (IsLineBreak(sc.ch)) {
+    if (sc.atLineEnd)
+    {
+      iSqrBracketLevel = (iSqrBracketLevel > 0) ? iSqrBracketLevel : 0;
+      int const iLineState = ((iSqrBracketLevel & 0xFF) << 8) | ((bMultiLineStrg ? 1 : 0) & 0xFF);
+      styler.SetLineState(sc.currentLine, iLineState);
+
       if (bInInlBracket) {
-        ForwardSetStateParsingError(sc);
-      }
-      else {
-        continue; // eat line breaks
+        SetStateParsingError(sc);
       }
     }
 
-    if (sc.state != SCE_TOML_PARSINGERROR) 
-    {
-      if (IsCommentChar(sc.ch)) {
-        if (inSectionDef) {
-          SetStateParsingError(sc);
-        }
-        else if ((sc.state == SCE_TOML_STR_BASIC) || 
-                 (sc.state == SCE_TOML_STR_LITERAL))
-        {
-          sc.ForwardSetState(sc.state); // ignore
-        }
-        else {
-          sc.SetState(SCE_TOML_COMMENT);
-        }
-      }
-    } // SCE_TOML_PARSINGERROR
+    // ------------------------------------------------------------------------
 
+    if (IsLineBreak(sc.ch)) {
+      continue; // eat
+    }
+
+    // ------------------------------------------------------------------------
 
     // -------------------------
     // state dependent
@@ -559,8 +447,17 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
           sc.SetState(SCE_TOML_COMMENT);
         }
         else if (sc.ch == '[') {
-			inSectionDef = !inMultiLnArrayDef;// true;
-          sc.SetState(SCE_TOML_SECTION);
+          if (iSqrBracketLevel == 0) {
+            sc.SetState(SCE_TOML_SECTION);
+            ++iSqrBracketLevel;
+          }
+          else {
+            SetStateParsingError(sc);
+          }
+        }
+        else if (sc.ch == ']') {
+          --iSqrBracketLevel;
+          // eat array of tables
         }
         else if (validKey.Contains(sc.ch)) {
           sc.SetState(SCE_TOML_KEY);
@@ -575,9 +472,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             sc.SetState(SCE_TOML_KEY);
           }
           else {
-            if (!inMultiLnArrayDef) {
-              SetStateParsingError(sc);
-            }
+            SetStateParsingError(sc);
           }
         }
       }
@@ -603,45 +498,29 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             inSQuotedKey = !inSQuotedKey;
           }
         }
-        else if (!(inDQuotedKey || inSQuotedKey)) {
+        else if (!(inDQuotedKey || inSQuotedKey))
+        {
           if (sc.ch == '[') {
-            if (isSectKeyBeg) {
-              SetStateParsingError(sc);
-            }
+            ++iSqrBracketLevel;
+            sc.SetState(SCE_TOML_VALUE);
             // Array of Tables - eat
           }
           else if (sc.ch == ']') {
-            if (isSectKeyBeg) {
-              isSectKeyEnd = true;
-            }
-            if (iSqrBraLev <= 0) {
-              inSectionDef = false;
-            }
-            //~else if (level < 1) {
-            //~  SetStateParsingError(sc);
-            //~}
+            --iSqrBracketLevel;
+            sc.SetState(SCE_TOML_SECTION);
           }
           else if (IsCommentChar(sc.ch)) {
-            if (!inSectionDef) {
-              sc.SetState(SCE_TOML_COMMENT);
-            }
-            else {
+            if (iSqrBracketLevel != 0) {
               SetStateParsingError(sc);
+            } else {
+              sc.SetState(SCE_TOML_COMMENT);
             }
           }
           else if (IsASpaceOrTab(sc.ch)) {
             // eat
           }
           else {
-            if (validKey.Contains(sc.ch)) {
-              if (isSectKeyEnd) {
-                SetStateParsingError(sc);
-              }
-              else {
-                isSectKeyBeg = true;
-              }
-            }
-            else {
+            if (!validKey.Contains(sc.ch)) {
               SetStateParsingError(sc);
             }
           }
@@ -718,6 +597,10 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
       case SCE_TOML_VALUE:
       {
+        if (IsCommentChar(sc.ch)) { 
+          sc.SetState(SCE_TOML_COMMENT);
+          break;
+        }
         if (bPossibleKeyword && IsLookAheadInList(sc, validKeyWord, keywords)) {
           sc.SetState(SCE_TOML_KEYWORD);
           break;
@@ -726,32 +609,35 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
           bPossibleKeyword = false;
         }
         if (sc.ch == '[') {
-			inMultiLnArrayDef = (iSqrBraLev > 0);
+          ++iSqrBracketLevel;
         }
         else if (sc.ch == ']') {
-          if (iSqrBraLev <= 0) {
-            inMultiLnArrayDef = false;
+          --iSqrBracketLevel;
+          if (iSqrBracketLevel < 0) {
+            SetStateParsingError(sc);
           }
-          //~else if (iSqrBraLev < 0) {
-          //~  SetStateParsingError(sc);
-          //~}
         }
         else if (sc.ch == '}') {
-          if (bInInlBracket) {
-            bInInlBracket = false;
-          }
-          else {
-            SetStateParsingError(sc);
+          auto p = static_cast<Sci_Position>(sc.currentPos);
+          if (!_isQuoted(inSQuotedKey, inDQuotedKey)) {
+            if (bInInlBracket) {
+              bInInlBracket = false;
+            }
+            else {
+              SetStateParsingError(sc);
+            }
           }
         }
         else if (sc.ch == '{') {
-          if (bInInlBracket)
-          {
-            SetStateParsingError(sc);
-          }
-          else {
-            bInInlBracket = true;
-            sc.SetState(SCE_TOML_VALUE);
+          auto p = static_cast<Sci_Position>(sc.currentPos);
+          if (!_isQuoted(inSQuotedKey, inDQuotedKey)) {
+            if (bInInlBracket) {
+              SetStateParsingError(sc);
+            }
+            else {
+              bInInlBracket = true;
+              sc.SetState(SCE_TOML_VALUE);
+            }
           }
         }
         else if (IsNumber(sc)) {
@@ -780,21 +666,15 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
         else if ((sc.ch == '"') && (sc.chPrev != '\\')) {
           sc.SetState(SCE_TOML_STR_BASIC);
           if (sc.Match(R"(""")")) {
-            inMultiLnString = true;
+            bMultiLineStrg = true;
             sc.Forward(2);
-          }
-          else {
-            inMultiLnString = false;
           }
         }
         else if ((sc.ch == '\'') && (sc.chPrev != '\\')) {
           sc.SetState(SCE_TOML_STR_LITERAL);
           if (sc.Match(R"(''')")) {
-            inMultiLnString = true;
+            bMultiLineStrg = true;
             sc.Forward(2);
-          }
-          else {
-            inMultiLnString = false;
           }
         }
       }
@@ -803,7 +683,11 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
       case SCE_TOML_KEYWORD:
       {
-        if (!(IsASpaceX(sc.ch) || validKeyWord.Contains(sc.ch))) {
+        if (!validKeyWord.Contains(sc.ch)) {
+          if (IsCommentChar(sc.ch)) {
+            sc.SetState(SCE_TOML_COMMENT);
+            break;
+          }
           sc.SetState(SCE_TOML_VALUE);
         }
       }
@@ -821,6 +705,16 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             inHex = false;
             inBin = false;
             inOct = false;
+            if (IsCommentChar(sc.ch)) {
+              sc.SetState(SCE_TOML_COMMENT);
+              break;
+            }
+            else if (sc.ch == ']') {
+              --iSqrBracketLevel;
+              if (iSqrBracketLevel < 0) {
+                SetStateParsingError(sc);
+              }
+            }
           }
           else {
             if ((inHex && !IsADigit(sc.ch, 16)) ||
@@ -852,6 +746,16 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             inHex = false;
             inBin = false;
             inOct = false;
+            if (IsCommentChar(sc.ch)) {
+              sc.SetState(SCE_TOML_COMMENT);
+              break;
+            }
+            else if (sc.ch == ']') {
+              --iSqrBracketLevel;
+              if (iSqrBracketLevel < 0) {
+                SetStateParsingError(sc);
+              }
+            }
           }
           else {
             SetStateParsingError(sc);
@@ -866,6 +770,16 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
         if (!IsADigit(sc.ch) && !chDateTime.Contains(sc.ch) && (sc.ch != '.')) {
           if (validNumberEnd.Contains(sc.ch)) {
             sc.SetState(SCE_TOML_VALUE);
+            if (IsCommentChar(sc.ch)) {
+              sc.SetState(SCE_TOML_COMMENT);
+              break;
+            }
+            else if (sc.ch == ']') {
+              --iSqrBracketLevel;
+              if (iSqrBracketLevel < 0) {
+                SetStateParsingError(sc);
+              }
+            }
           }
           else {
             SetStateParsingError(sc);
@@ -876,37 +790,35 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
 
       case SCE_TOML_STR_BASIC:
-      case SCE_TOML_STR_LITERAL:
       {
         if (sc.ch == '"') {
-          if (sc.state == SCE_TOML_STR_BASIC) {
-            if (sc.chPrev != '\\') {
-              if (!inMultiLnString) {
-                sc.ForwardSetState(SCE_TOML_VALUE);
-              }
-              else {
-                // inMultiLnString
-                if (sc.Match(R"(""")")) {
-                  sc.Forward(2);
-                  sc.ForwardSetState(SCE_TOML_VALUE);
-                  inMultiLnString = false;
-                }
+          if (sc.chPrev != '\\') {
+            if (!bMultiLineStrg) {
+              sc.SetState(SCE_TOML_VALUE);
+            }
+            else { // inMultiLnString
+              if (sc.Match(R"(""")")) {
+                bMultiLineStrg = false;
+                sc.Forward(2);
+                sc.SetState(SCE_TOML_VALUE);
               }
             }
           }
         }
-        else if (sc.ch == '\'') {
-          if (sc.state == SCE_TOML_STR_LITERAL) {
-            if (!inMultiLnString) {
-              sc.ForwardSetState(SCE_TOML_VALUE);
-            }
-            else {
-              // inMultiLnString
-              if (sc.Match(R"(''')")) {
-                sc.Forward(2);
-                sc.ForwardSetState(SCE_TOML_VALUE);
-                inMultiLnString = false;
-              }
+      }
+      break;
+
+      case SCE_TOML_STR_LITERAL:
+      {
+        if (sc.ch == '\'') {
+          if (!bMultiLineStrg) {
+            sc.SetState(SCE_TOML_VALUE);
+          }
+          else { // inMultiLnString
+            if (sc.Match(R"(''')")) {
+              bMultiLineStrg = false;
+              sc.Forward(2);
+              sc.SetState(SCE_TOML_VALUE);
             }
           }
         }
@@ -923,18 +835,10 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
       default:
       {
-        SetStateParsingError(sc); // unknown
+        //~SetStateParsingError(sc); // unknown
       }
       break;
     }
-
-    //~if (sc.atLineEnd) {
-    //~  if (!inMultiLnArrayDef && !inMultiLnString) {
-    //~    if (sc.state == SCE_TOML_VALUE) {
-    //~      sc.ForwardSetState(SCE_TOML_DEFAULT);
-    //~    }
-    //~  }
-    //~}
 
   }
   sc.Complete();
