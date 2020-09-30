@@ -5,7 +5,7 @@
 KEYWORDLIST KeyWords_SQL = {
 // Keywords
 "abort accessible account action active add admin after against aggregate algorithm all allocate alter "
-"always analyse analyze and any as asc ascii asensitive at attach audit authorization authors "
+"always analyse analyze and any apply as asc ascii asensitive at attach audit authorization authors "
 "auto_increment autoextend_size autoincrement avg avg_row_length backup before begin between binlog block "
 "both break btree buckets by cache call cascade cascaded case cast catalog_name chain change changed "
 "channel charset check checksum cipher class_origin client clone close cluster coalesce code collate "
