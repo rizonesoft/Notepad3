@@ -8,8 +8,8 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts ***               date: 2020/08/26
----------------------------------------------------------
+*** Keyboard Shortcuts for Notepad3 ***              date: 2020/09/29
+---------------------------------------------------------------------
 
 
   FILE
@@ -289,9 +289,71 @@
 
 ================================================================================
 
+*** Keyboard Shortcuts for Minipath ***             date: 2020/09/29
+---------------------------------------------------------------------
+
+
+  Enter           Open selected file in an existing target window.
+  Shift+Enter     Open selected file in a new window.
+  Alt+Enter       Properties of selected object.
+  Backspace       Move to upper directory.
+  Ctrl+Backspace  Move to root directory.
+  Alt+Left        Go to previous directory.
+  Alt+Right       Go to next directory.
+  Tab             Move to next control.
+  Shift+Tab       Move to previous control.
+  Esc             Exit or minimize metapath (optional).
+  Ctrl+D          Change to another directory.
+  Ctrl+E          Toggle "Activate target window" option.
+  Ctrl+F          Launch target application without any file.
+  Ctrl+H          Save settings.
+  Ctrl+K          Create link.
+  Ctrl+L          Launch selected file.
+  Ctrl+M          Specify file filter.
+  Ctrl+N          Create new file.
+  Ctrl+Q          Open file with specified quickviewer.
+  Ctrl+P          Snap to target window.
+  Ctrl+Shift+P    Move window to default position.
+  Ctrl+R          Open run dialog box.
+  Ctrl+S          Save file to new location.
+  Ctrl+T          Toggle "Keep on top" option.
+  Ctrl+U          Toggle transparency mode.
+  Ctrl+1          Sort files by name.
+  Ctrl+2          Sort files by size.
+  Ctrl+3          Sort files by type.
+  Ctrl+4          Sort files by date.
+  Ctrl+5          Sort files in reverse order.
+  Ctrl+*          Set file filter to *.*
+  Alt+D           Create new directory.
+  Alt+G           Goto link target.
+  Alt+L           Open selected file with another application.
+  Alt+N           Open new window.
+  Alt+S           Toggle statusbar.
+  Alt+T           Toggle toolbar.
+  Del             Delete selected object.
+  Shift+Del       Delete selected object (no recycling).
+  Ctrl+Shift+Del  Delete file without confirmation.
+  Alt+Up          Goto next file.
+  Alt+Down        Goto previous file.
+  F1              Display version info.
+  F2              Rename seletced object.
+  F5              Update view of directory.
+  F6              Copy/move selected object to another location.
+  F7              Save settings now.
+  Ctrl+F7         Jump to ini-file.
+  F9              Edit "Favorites" folder.
+  F11             Jump to "Favorites" folder.
+  F12             View program settings.
+  Ctrl+F12        Setup metapath target application.
+
+
+
+================================================================================
+
 *** Regular Expression Matching Syntax (Multi Lines) ***
     (Advanced features: see .\Oniguruma_RE.txt)
----------------------------------------------------------
+---------------------------------------------------------------------
+
 
   .        This matches any character.
 
@@ -358,7 +420,8 @@
 ================================================================================
 
 *** Command Line Help ***
----------------------------------------------------------
+---------------------------------------------------------------------
+
 
   Usage:
     Notepad3  [/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]

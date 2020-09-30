@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.928.(build_#) (2020-09-28)
+Current BETA/RC Version 5.20.929.(build_#) (2020-09-29)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- 
+[.929.1]- Minipath.ini: [Settings2] FocusLostOpacity=100 (opycity level on losing focus).
 [.923.1]- Hotkey 'F3': use MRU latest item before clipboard content as search pattern if prior search pattern is empty.
 [.922.1]- Support Lexer switching while Customize Schemes dialog is open.
 [.921.1]- Expand current lexers style tree on customize schemes dialog startup.
@@ -59,6 +60,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.929.1]- Migration from CreateLexer() by ID to CreateLexer() by Name (Lexilla IFace5 conform) (GRE).
 [.928.1]- grepWinNP3: code clean-up (GRE).
 [.928.1]- TinyExpr format floating.point with non zero fractional part.
 [.927.1]- TinyExpr floating point format.
@@ -84,7 +86,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
-[.928.2]- Freezing of main wnd caused by mixed usage of Lexer Interfaces.
+[.928.2]- Freezing of main window caused by mixed usage of Lexer Interfaces.
 [.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).
 [.927.1]- Lexer file extensions maintained in standard config.
 [.927.1]- grepWin language switching (github.com/stefankueng/grepWin/issues/199) (GRE).

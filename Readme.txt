@@ -96,6 +96,7 @@ Acknowledgments:
 ----------------
 alexantr                https://github.com/alexantr
 AlexIljin               https://github.com/AlexIljin
+bravo-hero              https://github.com/bravo-hero
 craigo-                 https://github.com/craigo-/
 Crane70                 https://github.com/Crane70
 engelhro                https://github.com/engelhro
