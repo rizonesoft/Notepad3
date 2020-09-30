@@ -54,13 +54,15 @@
 LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
   /*0*/ L"back:#0000", // OCC MARKER
   /*1*/ L"back:#FF0000",
-  /*2*/ L"back:#0000FF",
-  /*3*/ L"back:#00FF00",
-  /*4*/ L"back:#FFFF00",
-  /*5*/ L"back:#00E8E8",
+  /*2*/ L"back:#00FF00",
+  /*3*/ L"back:#0000FF",
+  /*4*/ L"back:#FF8000",
+  /*5*/ L"back:#0080FF",
   /*6*/ L"back:#FF00FF",
-  /*7*/ L"back:#FF8F20",
-  /*8*/ L"back:#950095"};
+  /*7*/ L"back:#408040",
+  /*8*/ L"back:#C080C0"
+};
+
 
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
