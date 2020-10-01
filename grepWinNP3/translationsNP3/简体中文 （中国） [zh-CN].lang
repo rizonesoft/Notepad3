@@ -584,7 +584,7 @@ msgstr "查找字符串为空"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "启动新的 grepWinNP3 窗口"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -612,5 +612,5 @@ msgstr "这将在上下文菜单中添加一个名为“使用编辑器打开”
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "总是置顶"
 

@@ -94,7 +94,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Ri&pristina dal File\tF5",                 IDM_FILE_REVERT
-        POPUP "&Encoding"
+        POPUP "&Codifica"
         BEGIN
             POPUP "&Ripristina dal File come"
             BEGIN
@@ -105,9 +105,9 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII come UTF-&8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
                 MENUITEM "Forza analisi U&CHARDET",          CMD_RELOADFORCEDETECTION
-                MENUITEM "Ignora Encoding &Tags\tAlt+F8",    CMD_RELOADNOFILEVARS
+                MENUITEM "Ignora &Tag di Codifica\tAlt+F8",  CMD_RELOADNOFILEVARS
             MENUITEM SEPARATOR
-                MENUITEM "&Altri Encoding...\tF8",           IDM_ENCODING_RECODE
+                MENUITEM "&Altre Codifiche...\tF8",           IDM_ENCODING_RECODE
             END
             POPUP "&Imposta Documento come"
             BEGIN
@@ -117,10 +117,10 @@ BEGIN
                 MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
                 MENUITEM "UTF-8 with &Signature",          IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "&Altri Encoding...\tF9",         IDM_ENCODING_SELECT
+                MENUITEM "&Altre Codifiche...\tF9",        IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Imposta Pre&definiti Encoding...",   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Imposta Pre&definiti Codifica...",   IDM_ENCODING_SETDEFAULT
         END
         POPUP "Terminatori di ri&ga"
         BEGIN
@@ -263,7 +263,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Tag &HTML/XML...\tAlt+X",                   IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "Identificatore di &Encoding\tCtrl+F8",      IDM_EDIT_INSERT_ENCODING
+            MENUITEM "Identificatore &Codifica\tCtrl+F8",      IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "Ora/Data (formato &breve)\tCtrl+F5",        IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Ora/Data (formato &lungo)\tCtrl+Shift+F5",  IDM_EDIT_INSERT_LONGDATE
@@ -431,7 +431,7 @@ BEGIN
         MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "Font di Default dello Schema corrente...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Dark Mode",                                      IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Modalità Scura (Windows)",                               IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Impostazioni"
     BEGIN

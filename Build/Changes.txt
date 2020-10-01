@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.929.(build_#) (2020-09-29)
+Current BETA/RC Version 5.20.930.(build_#) (2020-09-30)
 ========================================================
 
 --------------------------------------------------------
@@ -60,6 +60,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[.930.1]- Update the KeyWordList of lexers "C# Source Code" and "SQL Query".
+[.930.1]- Bookmark Occurrences Colors changed to get perceptually distinct colors.
 [.929.1]- Migration from CreateLexer() by ID to CreateLexer() by Name (Lexilla IFace5 conform) (GRE).
 [.928.1]- grepWinNP3: code clean-up (GRE).
 [.928.1]- TinyExpr format floating.point with non zero fractional part.
