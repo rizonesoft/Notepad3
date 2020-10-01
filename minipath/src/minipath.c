@@ -624,7 +624,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
         if (IsDarkModeSupported()) {
-          AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
+          AllowDarkModeForWindowEx(hwnd, CheckDarkModeEnabled());
           RefreshTitleBarThemeColor(hwnd);
         }
 #endif
@@ -1050,7 +1050,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(hwndDirList, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(hwndDirList, CheckDarkModeEnabled());
   }
 #endif
 
@@ -1095,7 +1095,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(hwndDriveBox, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(hwndDriveBox, CheckDarkModeEnabled());
   }
 #endif
 
@@ -1212,7 +1212,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(hwndToolbar, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(hwndToolbar, CheckDarkModeEnabled());
   }
 #endif
 
@@ -1354,7 +1354,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(hwndStatus, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(hwndStatus, CheckDarkModeEnabled());
   }
 #endif
 
@@ -1369,7 +1369,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(hwndReBar, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(hwndReBar, CheckDarkModeEnabled());
   }
 #endif
 
@@ -1485,7 +1485,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   if (IsDarkModeSupported())
   {
-    AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(hwnd, CheckDarkModeEnabled());
     RefreshTitleBarThemeColor(hwnd);
   }
 
