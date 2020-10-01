@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.930.(build_#) (2020-09-30)
+Current BETA/RC Version 5.20.1001.(build_#) (2020-10-01)
 ========================================================
 
 --------------------------------------------------------
@@ -60,6 +60,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- 
+[1001.1]- Rebase DarkMode module on delay load version branch of win32-darkmode project.
 [.930.1]- Update the KeyWordList of lexers "C# Source Code" and "SQL Query".
 [.930.1]- Bookmark Occurrences Colors changed to get perceptually distinct colors.
 [.929.1]- Migration from CreateLexer() by ID to CreateLexer() by Name (Lexilla IFace5 conform) (GRE).
@@ -88,6 +89,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- 
+[1001.1]- TOML Lexer performance leak.
 [.928.2]- Freezing of main window caused by mixed usage of Lexer Interfaces.
 [.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).
 [.927.1]- Lexer file extensions maintained in standard config.
