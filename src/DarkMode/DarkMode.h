@@ -1,5 +1,11 @@
 #pragma once
 
+#include <Windows.h>
+
+#pragma comment(lib, "NtDll.lib")
+#pragma comment(lib, "Comctl32.lib")
+#pragma comment(lib, "Uxtheme.lib")
+
 #ifdef __cplusplus
 extern "C" {
 #else
@@ -20,15 +26,15 @@ extern "C" {
 
   bool IsDarkModeSupported();
   bool CheckDarkModeEnabled();
-  bool ShouldAppsUseDarkMode();
+  bool ShouldAppsUseDarkModeEx();
 
-  void AllowDarkModeForApp(bool allow);
-  bool AllowDarkModeForWindow(HWND hWnd, bool allow);
+  void AllowDarkModeForAppEx(bool allow);
+  bool AllowDarkModeForWindowEx(HWND hWnd, bool allow);
 
   bool IsHighContrast();
   void RefreshTitleBarThemeColor(HWND hWnd);
   bool IsColorSchemeChangeMessage(LPARAM lParam);
-  bool IsColorSchemeChangeMessageEx(UINT message, LPARAM lParam);
+  bool IsColorSchemeChangeMessageMsg(UINT message, LPARAM lParam);
 
   #define  CASE_WM_CTLCOLOR_SET     \
            case WM_CTLCOLORDLG:     \

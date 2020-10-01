@@ -176,13 +176,13 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     case WM_THEMECHANGED:
       if (IsDarkModeSupported()) {
         bool const darkModeEnabled = CheckDarkModeEnabled();
-        AllowDarkModeForWindow(hDlg, darkModeEnabled);
+        AllowDarkModeForWindowEx(hDlg, darkModeEnabled);
         RefreshTitleBarThemeColor(hDlg);
 
         int const buttons[] = { IDOK, IDCANCEL };
         for (int id = 0; id < COUNTOF(buttons); ++id) {
           HWND const hBtn = GetDlgItem(hDlg, buttons[id]);
-          AllowDarkModeForWindow(hBtn, darkModeEnabled);
+          AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
           SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
         }
         UpdateWindowEx(hDlg);
@@ -344,13 +344,13 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
   case WM_THEMECHANGED:
     if (IsDarkModeSupported()) {
       bool const darkModeEnabled = CheckDarkModeEnabled();
-      AllowDarkModeForWindow(hDlg, darkModeEnabled);
+      AllowDarkModeForWindowEx(hDlg, darkModeEnabled);
       RefreshTitleBarThemeColor(hDlg);
 
       int const buttons[] = { IDOK, IDCANCEL };
       for (int id = 0; id < COUNTOF(buttons); ++id) {
         HWND const hBtn = GetDlgItem(hDlg, buttons[id]);
-        AllowDarkModeForWindow(hBtn, darkModeEnabled);
+        AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
       UpdateWindowEx(hDlg);

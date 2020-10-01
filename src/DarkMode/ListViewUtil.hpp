@@ -43,8 +43,8 @@ extern "C" void InitListView(HWND hListView)
 				{
 					HWND const hHeader = ListView_GetHeader(hWnd);
 
-					AllowDarkModeForWindow(hWnd, CheckDarkModeEnabled());
-          AllowDarkModeForWindow(hHeader, CheckDarkModeEnabled());
+					AllowDarkModeForWindowEx(hWnd, CheckDarkModeEnabled());
+          AllowDarkModeForWindowEx(hHeader, CheckDarkModeEnabled());
 
 					HTHEME hTheme = OpenThemeData(nullptr, L"ItemsView");
 					if (hTheme)
@@ -129,7 +129,7 @@ extern "C" void InitTreeView(HWND hTreeView)
 			{
         if (IsDarkModeSupported())
 				{
-					AllowDarkModeForWindow(hWnd, CheckDarkModeEnabled());
+					AllowDarkModeForWindowEx(hWnd, CheckDarkModeEnabled());
 
 					HTHEME const hTheme = OpenThemeData(nullptr, L"ItemsView");
 					if (hTheme)

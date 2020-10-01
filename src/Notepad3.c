@@ -2213,7 +2213,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(hwnd, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(hwnd, CheckDarkModeEnabled());
     RefreshTitleBarThemeColor(hwnd);
   }
 #endif
@@ -2517,7 +2517,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(Globals.hwndToolbar, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(Globals.hwndToolbar, CheckDarkModeEnabled());
   }
 #endif
 
@@ -2686,7 +2686,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(Globals.hwndRebar, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(Globals.hwndRebar, CheckDarkModeEnabled());
   }
 #endif
 
@@ -2745,7 +2745,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
 #ifdef D_NP3_WIN10_DARK_MODE
   if (IsDarkModeSupported()) {
-    AllowDarkModeForWindow(Globals.hwndStatus, CheckDarkModeEnabled());
+    AllowDarkModeForWindowEx(Globals.hwndStatus, CheckDarkModeEnabled());
   }
   //~HDC const hdc = GetDC(Globals.hwndStatus);
   //~SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
@@ -2843,7 +2843,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   UNUSED(wParam);
  
 #ifdef D_NP3_WIN10_DARK_MODE
-  AllowDarkModeForWindow(hwnd, UseDarkMode());
+  AllowDarkModeForWindowEx(hwnd, UseDarkMode());
   RefreshTitleBarThemeColor(hwnd);
 #endif
   UpdateTitleBar(hwnd);

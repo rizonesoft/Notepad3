@@ -1531,7 +1531,7 @@ void LoadSettings() {
   GET_BOOL_VALUE_FROM_INISECTION(DialogsLayoutRTL, false);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-  Defaults.WinThemeDarkMode = ShouldAppsUseDarkMode();
+  Defaults.WinThemeDarkMode = ShouldAppsUseDarkModeEx();
   Settings.WinThemeDarkMode = IniSectionGetBool(IniSecSettings, L"WinThemeDarkMode", Defaults.WinThemeDarkMode) && IsDarkModeSupported();
 #endif
 
