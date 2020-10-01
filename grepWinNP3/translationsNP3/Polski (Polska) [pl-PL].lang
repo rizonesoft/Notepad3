@@ -580,7 +580,7 @@ msgstr "Ciąg wyszukiwania jest pusty"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Uruchom nowe okno grepWinNP3"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -608,5 +608,5 @@ msgstr "Spowoduje to dodanie nowego wpisu do menu kontekstowego o nazwie 'Otwór
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Zawsze na wierzchu"
 
