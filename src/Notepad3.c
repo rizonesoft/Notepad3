@@ -133,8 +133,6 @@ static LPWSTR    s_lpFileList[FILE_LIST_SIZE] = { NULL };
 static int       s_cFileList = 0;
 static int       s_cchiFileList = 0;
 
-static WCHAR     s_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
-
 static bool      s_bRunningWatch = false;
 static bool      s_bFileReadOnly = false;
 
@@ -10607,18 +10605,20 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   // Save As...
   if (bSaveAs || bSaveCopy || StrIsEmpty(Globals.CurrentFile))
   {
+    static WCHAR _tchLastSaveCopyDir[MAX_PATH] = { L'\0' }; // session remember copyTo dir
+
     WCHAR tchFile[MAX_PATH] = { L'\0' };
     WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-    if (bSaveCopy && StrIsNotEmpty(s_tchLastSaveCopyDir)) {
-      StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), s_tchLastSaveCopyDir);
-      StringCchCopy(tchFile, COUNTOF(tchFile), s_tchLastSaveCopyDir);
+    if (bSaveCopy && StrIsNotEmpty(_tchLastSaveCopyDir)) {
+      StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), _tchLastSaveCopyDir);
+      StringCchCopy(tchFile, COUNTOF(tchFile), _tchLastSaveCopyDir);
       PathCchAppend(tchFile, COUNTOF(tchFile), PathFindFileName(Globals.CurrentFile));
     }
     else {
       StringCchCopy(tchFile, COUNTOF(tchFile), Globals.CurrentFile);
     }
 
-    if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), tchInitialDir))
+    if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL))
     {
       fSuccess = FileIO(false, tchFile, true, true, false, true, &fioStatus, bSaveCopy, bPreserveTimeStamp);
       if (fSuccess)
@@ -10634,8 +10634,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
           Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
         }
         else {
-          StringCchCopy(s_tchLastSaveCopyDir, COUNTOF(s_tchLastSaveCopyDir), tchFile);
-          PathCchRemoveFileSpec(s_tchLastSaveCopyDir, COUNTOF(s_tchLastSaveCopyDir));
+          StringCchCopy(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir), tchFile);
+          PathCchRemoveFileSpec(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir));
         }
       }
     }
@@ -10732,105 +10732,115 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
 //=============================================================================
 //
-//  OpenFileDlg()
+//  _CanonicalizeInitialDir()
 //
-//
-static WCHAR s_szFilter[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100];
-
-bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
+static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
 {
-  OPENFILENAME ofn;
-  WCHAR szFile[MAX_PATH] = { L'\0' };
-  WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-
-  Style_GetOpenDlgFilterStr(s_szFilter,COUNTOF(s_szFilter));
-
-  if (!lpstrInitialDir) {
+  if (StrIsEmpty(lpstrInitialDir)) {
     if (StrIsNotEmpty(Globals.CurrentFile)) {
-      StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
-      PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
+      StringCchCopy(lpstrInitialDir, cchInitialDir, Globals.CurrentFile);
+      PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
+    } else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
+      ExpandEnvironmentStrings(Settings2.DefaultDirectory, lpstrInitialDir, cchInitialDir);
+    } else {
+      StringCchCopy(lpstrInitialDir, cchInitialDir, Globals.WorkingDirectory);
     }
-    else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
-      ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
-      if (PathIsRelative(tchInitialDir)) {
-        WCHAR tchModule[MAX_PATH] = { L'\0' };
-        PathGetAppDirectory(tchModule, COUNTOF(tchModule));
-        PathCchAppend(tchModule,COUNTOF(tchModule),tchInitialDir);
+  }
+  if (StrIsNotEmpty(lpstrInitialDir)) {
+    if (PathIsRelative(lpstrInitialDir)) {
+      WCHAR tchModule[MAX_PATH] = { L'\0' };
+      PathGetAppDirectory(tchModule, COUNTOF(tchModule));
+      PathCchAppend(tchModule, COUNTOF(tchModule), lpstrInitialDir);
+      StringCchCopy(lpstrInitialDir, cchInitialDir, tchModule);
+    }
+  }
+  if (StrIsNotEmpty(lpstrInitialDir)) {
+    if (PathFileExists(lpstrInitialDir)) {
+      if (!PathIsDirectory(lpstrInitialDir)) {
+        PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
       }
+    } else {
+      StringCchCopy(lpstrInitialDir, cchInitialDir, L""); // clear
     }
-    else
-      StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.WorkingDirectory);
+  }
+}
+
+
+//=============================================================================
+//
+//  OpenFileDlg() 
+//  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
+//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
+//
+bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialDir)
+{
+  if (!lpstrFile || (cchFile < 256)) { return false; }
+
+  WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 1];
+  WCHAR szDefExt[64] = { L'\0' };
+  Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
+
+  WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
+  if (lpstrInitialDir) {
+    StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
+    _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
   }
 
-  ZeroMemory(&ofn,sizeof(OPENFILENAME));
+  OPENFILENAME ofn;
+  ZeroMemory(&ofn, sizeof(OPENFILENAME));
   ofn.lStructSize = sizeof(OPENFILENAME);
   ofn.hwndOwner = hwnd;
-  ofn.lpstrFilter = s_szFilter;
-  ofn.lpstrFile = szFile;
-  ofn.lpstrInitialDir = (lpstrInitialDir) ? lpstrInitialDir : tchInitialDir;
-  ofn.nMaxFile = COUNTOF(szFile);
+  ofn.hInstance = Globals.hInstance;
+  ofn.lpstrFilter = szFilter;
+  ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
+  ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
+  ofn.lpstrFile = lpstrFile;
+  ofn.nMaxFile = cchFile;
   ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
               OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
               OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-  ofn.lpstrDefExt = StrIsNotEmpty(Settings2.DefaultExtension) ? Settings2.DefaultExtension : NULL;
+  ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
-  if (GetOpenFileName(&ofn)) {
-    StringCchCopyN(lpstrFile,cchFile,szFile,COUNTOF(szFile));
-    return true;
-  }
-  return false;
+  return GetOpenFileName(&ofn);
 }
 
 
 //=============================================================================
 //
 //  SaveFileDlg()
+//  lpstrInitialDir == NULL      : leave initial dir to Save File Explorer
+//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path 
 //
-//
-bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
+bool SaveFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialDir)
 {
-  OPENFILENAME ofn;
-  WCHAR szNewFile[MAX_PATH] = { L'\0' };
+  if (!lpstrFile || (cchFile < 256)) { return false; }
+
+  WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 2];
+  WCHAR szDefExt[64] = { L'\0' };
+  Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
+
   WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-
-  StringCchCopy(szNewFile,COUNTOF(szNewFile),lpstrFile);
-  Style_GetOpenDlgFilterStr(s_szFilter,COUNTOF(s_szFilter));
-
-  if (StrIsNotEmpty(lpstrInitialDir)) {
+  if (lpstrInitialDir) {
     StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
+    _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
   }
-  else if (StrIsNotEmpty(Globals.CurrentFile)) {
-    StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
-    PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
-  }
-  else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
-    ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
-    if (PathIsRelative(tchInitialDir)) {
-      WCHAR tchModule[MAX_PATH] = { L'\0' };
-      PathGetAppDirectory(tchModule, COUNTOF(tchModule));
-      PathCchAppend(tchModule,COUNTOF(tchModule),tchInitialDir);
-    }
-  }
-  else {
-    StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), Globals.WorkingDirectory);
-  }
-  ZeroMemory(&ofn,sizeof(OPENFILENAME));
+
+  OPENFILENAME ofn;
+  ZeroMemory(&ofn, sizeof(OPENFILENAME));
   ofn.lStructSize = sizeof(OPENFILENAME);
   ofn.hwndOwner = hwnd;
-  ofn.lpstrFilter = s_szFilter;
-  ofn.lpstrFile = szNewFile;
-  ofn.lpstrInitialDir = tchInitialDir;
-  ofn.nMaxFile = MAX_PATH;
+  ofn.hInstance = Globals.hInstance;
+  ofn.lpstrFilter = szFilter;
+  ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
+  ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
+  ofn.lpstrFile = lpstrFile;
+  ofn.nMaxFile = cchFile;
   ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
-            /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
-            OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
-  ofn.lpstrDefExt = StrIsNotEmpty(Settings2.DefaultExtension) ? Settings2.DefaultExtension : NULL;
+              /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
+              OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
+  ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
-  if (GetSaveFileName(&ofn)) {
-    StringCchCopyN(lpstrFile,cchFile,szNewFile,COUNTOF(szNewFile));
-    return true;
-  }
-  return false;
+  return GetSaveFileName(&ofn);
 }
 
 
