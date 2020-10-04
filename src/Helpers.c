@@ -1268,8 +1268,9 @@ void PrepareFilterStr(LPWSTR lpFilter)
   LPWSTR psz = StrEnd(lpFilter,0);
   while (psz != lpFilter)
   {
-    if (*(psz = CharPrev(lpFilter,psz)) == L'|')
+    if (*(psz = CharPrev(lpFilter, psz)) == L'|') {
       *psz = L'\0';
+    }
   }
 }
 

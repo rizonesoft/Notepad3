@@ -71,7 +71,7 @@ bool   Style_GetUse2ndDefault();
 void   Style_SetUse2ndDefault(bool);
 void   Style_SetIndentGuides(HWND hwnd,bool);
 void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch);
-bool   Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter);
+bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt, int cchExt, bool bSaveAs);
 bool   Style_StrGetFontName(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont);
 bool   Style_StrGetFontStyle(LPCWSTR lpszStyle,LPWSTR lpszFontStyle,int cchFontStyle);
 bool   Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality);

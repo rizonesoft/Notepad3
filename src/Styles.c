@@ -2519,18 +2519,74 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 
 //=============================================================================
 //
-//  Style_GetFileOpenDlgFilter()
+//  Style_GetFileFilterStr()
 //
-
-bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
+bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt, int cchExt, bool bSaveAs)
 {
-  if (StrIsEmpty(Settings2.FileDlgFilters)) {
-    GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
+  ZeroMemory(lpszFilter, cchFilter * sizeof(WCHAR));
+
+  LPCWSTR curExt = PathFindExtension(Globals.CurrentFile);
+  if (StrIsNotEmpty(curExt)) {
+    curExt += 1;
   }
-  else {
-    StringCchCopyN(lpszFilter,cchFilter,Settings2.FileDlgFilters,cchFilter - 2);
-    StringCchCat(lpszFilter,cchFilter,L"||");
+
+  WCHAR filterAll[80] = { L'\0' };
+  GetLngString(IDS_MUI_FILTER_ALL, filterAll, COUNTOF(filterAll));
+
+  WCHAR filterDef[BUFZIZE_STYLE_EXTENTIONS << 1] = { L'\0' };
+  WCHAR ext[64] = { L'\0' };
+  WCHAR append[80] = { L'\0' };
+  bool bCurExtIncl = false;
+  LPWSTR p = Style_GetCurrentLexerPtr()->szExtensions;
+  while (p) {
+    LPWSTR q = StrChrW(p, L';');
+    if (q) {
+      StringCchCopyN(ext, COUNTOF(ext), p, (q - p));
+      p = q + 1;
+    } else {
+      StringCchCopy(ext, COUNTOF(ext), p);
+      p = q;
+    }
+    if (StrIsNotEmpty(ext)) {
+      if (StringCchCompareXI(ext, curExt) == 0) { bCurExtIncl = true; }
+      if (StrIsNotEmpty(append)) {
+        StringCchCat(filterDef, COUNTOF(filterDef), L";");
+      } else {
+        StringCchCopy(lpszDefExt, cchExt, ext); // first found ext is default
+      }
+      StringCchPrintf(append, COUNTOF(append), L"*.%s", ext);
+      StringCchCat(filterDef, COUNTOF(filterDef), append);
+    }
   }
+  if (!bCurExtIncl && StrIsNotEmpty(curExt)) {
+    StringCchPrintf(append, COUNTOF(append), L";*.%s", curExt);
+    StringCchCat(filterDef, COUNTOF(filterDef), append);
+  }
+
+  if (!bSaveAs) {
+    StringCchCat(lpszFilter, cchFilter, filterAll); // 1st for open dlg
+  }
+
+  if (StrIsNotEmpty(filterDef)) {
+    WCHAR lexerNameLng[80];
+    GetLngString(Style_GetCurrentLexerPtr()->resID, lexerNameLng, COUNTOF(lexerNameLng));
+    StringCchCat(lpszFilter, cchFilter, lexerNameLng);
+    StringCchCat(lpszFilter, cchFilter, L" (");
+    StringCchCat(lpszFilter, cchFilter, filterDef);
+    StringCchCat(lpszFilter, cchFilter, L")|");
+    StringCchCat(lpszFilter, cchFilter, filterDef);
+    StringCchCat(lpszFilter, cchFilter, L"|");
+  }
+
+  if (StrIsNotEmpty(Settings2.FileDlgFilters)) {
+    StringCchCat(lpszFilter, cchFilter, Settings2.FileDlgFilters);
+    StringCchCat(lpszFilter, cchFilter, L"|");
+  }
+
+  if (bSaveAs) {
+    StringCchCat(lpszFilter, cchFilter, filterAll); // last if save as dlg
+  }
+
   PrepareFilterStr(lpszFilter);
   return true;
 }
