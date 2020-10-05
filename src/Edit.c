@@ -779,11 +779,11 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
   WCHAR* pszTextW = NULL;
   ptrdiff_t cchTextW = 0;
   if (pszText && *pszText) {
-    cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, NULL, 0);
+    cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, NULL, 0);
     if (cchTextW > 0) {
       pszTextW = AllocMem((cchTextW + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
       if (pszTextW) {
-        MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, pszTextW, cchTextW + 1);
+        MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, pszTextW, (int)(cchTextW + 1));
         pszTextW[cchTextW] = L'\0';
       }
     }
@@ -4296,9 +4296,9 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
     _IGNORE_NOTIFY_CHANGE_;
     SciCall_BeginUndoAction();
 
-    DocLn line = -1;
+    DocLn line = 0;
     do {
-        line = SciCall_MarkerNext(line + 1, bitmask);
+        line = SciCall_MarkerNext(line, bitmask);
         if (line >= 0) {
             int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
             if (lnmask == bitmask) { // fit all markers
@@ -4312,7 +4312,8 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
                     SciCall_GotoLine(line);
                     SciCall_MarkerDelete(line, -1);
                     SciCall_LineDelete();
-                    --line;
+                } else {
+                  ++line;
                 }
             }
         }
@@ -7845,13 +7846,14 @@ void EditBookMarkLineRange(HWND hwnd)
       return;
     }
 
-    DocLn line = -1;
+    DocLn line = 0;
     int const bitmask = (1 << MARKER_NP3_OCCURRENCE);
     do {
-        line = SciCall_MarkerNext(line + 1, bitmask);
-        if (line >= 0) {
-            SciCall_MarkerAdd(line, marker);
-        }
+      line = SciCall_MarkerNext(line, bitmask);
+      if (line >= 0) {
+        SciCall_MarkerAdd(line, marker);
+        ++line;
+      }
     } while (line >= 0);
 }
 
@@ -9079,12 +9081,13 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
   WCHAR tchLine[32];
   StringCchCopyW(pszBookMarks, cchLength, L"");
   int const bitmask = (1 << MARKER_NP3_BOOKMARK);
-  DocLn iLine = -1;
+  DocLn iLine = 0;
   do {
-    iLine = SciCall_MarkerNext(iLine + 1, bitmask);
+    iLine = SciCall_MarkerNext(iLine, bitmask);
     if (iLine >= 0) {
       StringCchPrintfW(tchLine, COUNTOF(tchLine), DOCPOSFMTW L";", iLine);
       StringCchCatW(pszBookMarks, cchLength, tchLine);
+      ++iLine;
     }
   } while (iLine >= 0);
 
