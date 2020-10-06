@@ -2772,7 +2772,7 @@ compile_tree(Node* node, regex_t* reg, ScanEnv* env)
 static int
 make_named_capture_number_map(Node** plink, GroupNumMap* map, int* counter)
 {
-  int r = 0;
+  int r;
   Node* node = *plink;
 
   switch (NODE_TYPE(node)) {
@@ -2780,17 +2780,17 @@ make_named_capture_number_map(Node** plink, GroupNumMap* map, int* counter)
   case NODE_ALT:
     do {
       r = make_named_capture_number_map(&(NODE_CAR(node)), map, counter);
-    } while (r == 0 && IS_NOT_NULL(node = NODE_CDR(node)));
+    } while (r >= 0 && IS_NOT_NULL(node = NODE_CDR(node)));
+    if (r < 0) return r;
     break;
 
   case NODE_QUANT:
     {
       Node** ptarget = &(NODE_BODY(node));
-      Node*  old = *ptarget;
       r = make_named_capture_number_map(ptarget, map, counter);
-      if (r != 0) return r;
-      if (*ptarget != old && NODE_TYPE(*ptarget) == NODE_QUANT) {
-        r = onig_reduce_nested_quantifier(node);
+      if (r < 0) return r;
+      if (r == 1 && NODE_TYPE(*ptarget) == NODE_QUANT) {
+        return onig_reduce_nested_quantifier(node);
       }
     }
     break;
@@ -2804,41 +2804,48 @@ make_named_capture_number_map(Node** plink, GroupNumMap* map, int* counter)
           map[en->m.regnum].new_val = *counter;
           en->m.regnum = *counter;
           r = make_named_capture_number_map(&(NODE_BODY(node)), map, counter);
+          if (r < 0) return r;
         }
         else {
           *plink = NODE_BODY(node);
           NODE_BODY(node) = NULL_NODE;
           onig_node_free(node);
           r = make_named_capture_number_map(plink, map, counter);
+          if (r < 0) return r;
+          return 1;
         }
       }
       else if (en->type == BAG_IF_ELSE) {
         r = make_named_capture_number_map(&(NODE_BAG_BODY(en)), map, counter);
-        if (r != 0) return r;
+        if (r < 0) return r;
         if (IS_NOT_NULL(en->te.Then)) {
           r = make_named_capture_number_map(&(en->te.Then), map, counter);
-          if (r != 0) return r;
+          if (r < 0) return r;
         }
         if (IS_NOT_NULL(en->te.Else)) {
           r = make_named_capture_number_map(&(en->te.Else), map, counter);
-          if (r != 0) return r;
+          if (r < 0) return r;
         }
       }
-      else
+      else {
         r = make_named_capture_number_map(&(NODE_BODY(node)), map, counter);
+        if (r < 0) return r;
+      }
     }
     break;
 
   case NODE_ANCHOR:
-    if (IS_NOT_NULL(NODE_BODY(node)))
+    if (IS_NOT_NULL(NODE_BODY(node))) {
       r = make_named_capture_number_map(&(NODE_BODY(node)), map, counter);
+      if (r < 0) return r;
+    }
     break;
 
   default:
     break;
   }
 
-  return r;
+  return 0;
 }
 
 static int
@@ -6232,7 +6239,7 @@ concat_opt_exact(OptStr* to, OptStr* add, OnigEncoding enc)
   end = p + add->len;
   for (i = to->len; p < end; ) {
     len = enclen(enc, p);
-    if (i + len > OPT_EXACT_MAXLEN) {
+    if (i + len >= OPT_EXACT_MAXLEN) {
       r = 1; /* 1:full */
       break;
     }
