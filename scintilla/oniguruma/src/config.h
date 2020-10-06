@@ -5,6 +5,7 @@
 #define _ONIGURUMA_CONFIG_H_
 
 #define USE_POSIX_API 1
+#define USE_BINARY_COMPATIBLE_POSIX_API 1
 
 #define STDC_HEADERS 1
 #define HAVE_SYS_TYPES_H 1
@@ -41,6 +42,7 @@
 #endif
 #define HAVE_DECL_SYS_NERR 1
 #define STDC_HEADERS 1
+#define HAVE_BASETSD_H 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRING_H 1

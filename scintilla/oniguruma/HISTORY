@@ -1,5 +1,39 @@
 History
 
+2020/10/06: Release Candidate 1 for Version 6.9.6
+
+2020/09/30: add configure option --enable-binary-compatible-posix-api
+2020/09/24: fix: Issue 25893 in oss-fuzz: Stack-buffer-overflow
+2020/09/22: fix Issues found with Coverity (Issue #207)
+2020/08/27: fix Issue #204: define uint32_t and uint64_t for Visual Studio older than 2010
+2020/08/04: fix Issue 24544 in oss-fuzz: Timeout
+2020/07/21: add USE_CHECK_VALIDITY_OF_STRING_IN_TREE (fix Issue 24276 in oss-fuzz: Undefined-shift)
+2020/07/20: fix: Issue 24268 in oss-fuzz: Timeout
+2020/07/17: fix: Issue 24112 in oss-fuzz: Undefined-shift
+2020/07/14: fix: Issue 24066 in oss-fuzz: Timeout
+2020/07/05: fix: Incomplete application of ONIG_OPTION_NOTBOL to \A
+2020/07/05: fix: Incomplete application of ONIG_OPTION_NOT_END_STRING to \Z (Issue #192)
+2020/07/05: fix: Incomplete application of ONIG_OPTION_NOTEOL to \z
+2020/07/05: fix: Incomplete application of ONIG_OPTION_NOTEOL to \Z
+2020/07/01: add ONIG_OPTION_NOT_END_STRING (Issue #198)
+2020/06/28: add ONIG_OPTION_NOT_BEGIN_POSITION (Issue #198)
+2020/06/28: add ONIG_OPTION_NOT_BEGIN_STRING
+2020/06/28: fix: Issue 23754 in oss-fuzz: Timeout
+2020/06/21: fix: Issue 23525 in oss-fuzz: Timeout
+2020/06/15: fix: Issue 23311 in oss-fuzz: Timeout
+2020/06/03: fix: Issue 22925 in oss-fuzz: Index-out-of-bounds
+2020/06/03: fix: Issue 22917 in oss-fuzz: Out-of-memory
+2020/06/02: fix: Issue 22916 in oss-fuzz: Timeout
+2020/05/29: fix: Issue 22744 in oss-fuzz: Integer-overflow
+2020/05/28: fix: Issue 22658 in oss-fuzz: check backref with level
+2020/05/28: fix: Issue 22533 in oss-fuzz: memory leak
+2020/05/23: fix: Issue 22393 in oss-fuzz: Integer-overflow
+2020/05/13: fix: Issue 22154 in oss-fuzz: When the option FIND_LONGEST is specified, match_at() returns ONIG_MISMATCH unless there is no need to search any more.
+2020/05/06: Add SOVERSION info to library when using cmake
+2020/05/04: fix: 22008 in oss-fuzz
+2020/05/04: fix: 21998 in oss-fuzz
+2020/05/03: fix: 21944, 21977 in oss-fuzz
+
 2020/04/26: Version 6.9.5 revised 1
 
 2020/04/24: fix #192: Unexpected regex match

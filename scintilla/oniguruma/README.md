@@ -2,6 +2,7 @@
 [![Code Quality: Cpp](https://img.shields.io/lgtm/grade/cpp/g/kkos/oniguruma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kkos/oniguruma/context:cpp)
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/kkos/oniguruma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kkos/oniguruma/alerts)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/oniguruma.svg)](https://oss-fuzz-build-logs.storage.googleapis.com/index.html#oniguruma)
+[![TrustInSoft CI](https://ci.trust-in-soft.com/projects/kkos/oniguruma.svg?branch=master)](https://ci.trust-in-soft.com/projects/kkos/oniguruma)
 
 Oniguruma
 =========
@@ -35,6 +36,7 @@ Master branch
 * NEW API: ONIG_OPTION_NOT_BEGIN_STRING / NOT_END_STRING / NOT_BEGIN_POSITION
 * Fixed behavior of ONIG_OPTION_NOTBOL / NOTEOL
 * Fixed many problems found by OSS-Fuzz
+* Fixed CVE-2020-26159
 
 
 Version 6.9.5 revised 1
@@ -168,7 +170,15 @@ License
 Install
 -------
 
-### Case 1: Unix and Cygwin platform
+### Case 1: Linux distribution packages
+
+   * Fedora:         `dnf install oniguruma`
+   * RHEL/CentOS:    `yum install oniguruma`
+   * Debian/Ubuntu:  `apt install libonig5`
+   * Arch:           `pacman -S oniguruma`
+   * openSUSE:       `zypper install oniguruma`
+
+### Case 2: Manual compilation on Linux, Unix, and Cygwin platform
 
    1. autoreconf -vfi   (* case: configure script is not found.)
 
@@ -189,7 +199,7 @@ Install
 
 
 
-### Case 2: Windows 64/32bit platform (Visual Studio)
+### Case 3: Windows 64/32bit platform (Visual Studio)
 
    Execute make_win.bat
 
