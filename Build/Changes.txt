@@ -34,13 +34,13 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1004.(build_#) (2020-10-04)
+Current BETA/RC Version 5.20.1006.(build_#) (2020-10-06)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
 [1004.1]- Open/Save file explorer dialog: populate file filter with current lexer supported file extensions.
 [.929.1]- Minipath.ini: [Settings2] FocusLostOpacity=100 (opycity level on losing focus).
 [.923.1]- Hotkey 'F3': use MRU latest item before clipboard content as search pattern if prior search pattern is empty.
@@ -60,7 +60,7 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
 [1001.1]- Rebase DarkMode module on delay load version branch of win32-darkmode project.
 [.930.1]- Update the KeyWordList of lexers "C# Source Code" and "SQL Query".
 [.930.1]- Bookmark Occurrences Colors changed to get perceptually distinct colors.
@@ -89,7 +89,9 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
+[1006.1]- Copy/Cut/Delete "Focused View" lines (clipboard).
+[1006.1]- Cut/cop occurrences marker line(s) if marker in first line.
 [1004.1]- Initial directory for open/save file explorer dlg.
 [1001.1]- TOML Lexer performance leak.
 [.928.2]- Freezing of main window caused by mixed usage of Lexer Interfaces.
@@ -124,13 +126,13 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
 [.921.1]- TinyExpr: '%%' as percent operator is deprecated.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
 [.915.2]- Turkish (tr-TR) in processing...
 [.915.2]- Chinese Traditional (zh-TW) in waiting...
 [.915.2]- Hindi (hi-IN) in waiting...
