@@ -279,7 +279,7 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 
 // ----------------------------------------------------------------------------
 
-bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
+bool SetClipboardText(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 
 // ----------------------------------------------------------------------------
 

@@ -686,7 +686,7 @@ bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText)
   }
 
   if (pszTextW) {
-    SetClipboardTextW(GetParent(hwnd), pszTextW, cchTextW);
+    SetClipboardText(GetParent(hwnd), pszTextW, cchTextW);
     FreeMem(pszTextW);
     return true;
   }
@@ -700,10 +700,12 @@ bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText)
 //
 bool EditClearClipboard(HWND hwnd)
 {
-  if (!OpenClipboard(GetParent(hwnd))) { return false; }
-  EmptyClipboard();
-  CloseClipboard();
-  return true;
+  bool ok = false;
+  if (OpenClipboard(GetParent(hwnd))) {
+    ok = EmptyClipboard();
+    CloseClipboard();
+  }
+  return ok;
 }
 
 
@@ -793,7 +795,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
   HWND const hwndParent = GetParent(hwnd);
 
   if (!bAppend) {
-    res = SetClipboardTextW(hwndParent, pszTextW, cchTextW);
+    res = SetClipboardText(hwndParent, pszTextW, cchTextW);
     FreeMem(pszTextW);
     return res;
   }
@@ -828,7 +830,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
   // Add New
   if (pszTextW && *pszTextW && pszNewTextW) {
     StringCchCat(pszNewTextW, cchNewText + 1, pszTextW);
-    res = SetClipboardTextW(hwndParent, pszNewTextW, cchNewText);
+    res = SetClipboardText(hwndParent, pszNewTextW, cchNewText);
   }
 
   FreeMem(pszTextW);
@@ -4289,38 +4291,92 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
         return;
     }
 
-    if (bCopy) {
-        EditClearClipboard(hwnd);
-    }
-
-    _IGNORE_NOTIFY_CHANGE_;
-    SciCall_BeginUndoAction();
-
     DocLn line = 0;
-    do {
+
+    if (bCopy) { // --- copy to clipboard ---
+
+      DocPosU copyBufSize = 0;
+      while (line >= 0) {
         line = SciCall_MarkerNext(line, bitmask);
         if (line >= 0) {
-            int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
-            if (lnmask == bitmask) { // fit all markers
-                if (bCopy) {
-                    DocPos const lnBeg = SciCall_PositionFromLine(line);
-                    //DocPos const lnEnd = lnBeg + SciCall_LineLength(line); // incl line-breaks
-                    DocPos const lnEnd = SciCall_GetLineEndPosition(line); // w/o line-breaks
-                    EditCopyRangeAppend(hwnd, lnBeg, lnEnd, true);
-                }
-                if (bDelete) {
-                    SciCall_GotoLine(line);
-                    SciCall_MarkerDelete(line, -1);
-                    SciCall_LineDelete();
-                } else {
-                  ++line;
-                }
-            }
+          int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
+          if (lnmask == bitmask) { // must fit all markers
+            copyBufSize += SciCall_LineLength(line); // incl line-breaks
+          }
+          ++line; // next
         }
-    } while (line >= 0);
+      }
 
-    SciCall_EndUndoAction();
-    _OBSERVE_NOTIFY_CHANGE_;
+      if (copyBufSize > 0) {
+        char *const pchBuffer = (char *const)AllocMem(copyBufSize + 1, HEAP_ZERO_MEMORY);
+        if (pchBuffer) {
+          // --- collect marked lines ---
+          line = 0;
+          char *p = pchBuffer;
+          while (line >= 0) {
+            line = SciCall_MarkerNext(line, bitmask);
+            if (line >= 0) {
+              int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
+              if (lnmask == bitmask) { // must fit all markers
+                DocPos const lnBeg = SciCall_PositionFromLine(line);
+                DocPos const lnLen = SciCall_LineLength(line); // incl line-breaks
+                const char *const pszLine = SciCall_GetRangePointer(lnBeg, lnLen);
+                memcpy(p, pszLine, lnLen);
+                p += lnLen;
+              }
+              ++line; // next
+            }
+          }
+          // --- copy collection to clipboard ---
+          int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pchBuffer, -1, NULL, 0);
+          if (cchTextW > 0) {
+            bool ok = false;
+            HANDLE const hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
+            if (hData) {
+              WCHAR* const pszClipBoard = GlobalLock(hData);
+              if (pszClipBoard) {
+                MultiByteToWideChar(Encoding_SciCP, 0, pchBuffer, -1, pszClipBoard, (int)(cchTextW + 1));
+                GlobalUnlock(hData);
+                if (OpenClipboard(hwnd)) {
+                  EmptyClipboard();
+                  ok = (SetClipboardData(CF_UNICODETEXT, hData) != NULL); // move ownership
+                  CloseClipboard();
+                }
+              }
+              if (!ok) {
+                GlobalFree(hData);
+              }
+            }
+          }
+          FreeMem(pchBuffer);
+        }
+      }
+    } // bCopy
+
+    if (bDelete) {
+
+      _IGNORE_NOTIFY_CHANGE_;
+      SciCall_BeginUndoAction();
+
+      line = 0;
+      while (line >= 0) {
+        line = SciCall_MarkerNext(line, bitmask);
+        if (line >= 0) {
+          int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
+          if (lnmask == bitmask) { // must fit all markers
+            SciCall_MarkerDelete(line, -1);
+            DocPos const lnBeg = SciCall_PositionFromLine(line);
+            DocPos const lnLen = SciCall_LineLength(line); // incl line-breaks
+            SciCall_DeleteRange(lnBeg, lnLen); // complete line
+          } else {
+            ++line; // next
+          }
+        }
+      }
+
+      SciCall_EndUndoAction();
+      _OBSERVE_NOTIFY_CHANGE_;
+    }
 
     SciCall_GotoLine(min_ln(curLn, Sci_GetLastDocLineNumber()));
 }

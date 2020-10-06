@@ -1143,7 +1143,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
         // --------------------------------------------------------------------
 
-        SetClipboardTextW(Globals.hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
+        SetClipboardText(Globals.hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
       }
       break;
 
@@ -4207,7 +4207,7 @@ void WinInfoToScreen(WININFO* pWinInfo)
 //
 WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 {
-  WINDOWPLACEMENT wndpl;
+  WINDOWPLACEMENT wndpl = { 0 };
   wndpl.length = sizeof(WINDOWPLACEMENT);
   GetWindowPlacement(hwnd, &wndpl);
 
@@ -4626,7 +4626,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s", tchOptions);
   }
   //if (StrIsNotEmpty(searchPattern)) {
-  //  SetClipboardTextW(hwnd, searchPattern, StringCchLen(searchPattern, 0));
+  //  SetClipboardText(Globals.hwndMain, searchPattern, StringCchLen(searchPattern, 0));
   //}
 
   SHELLEXECUTEINFO sei;

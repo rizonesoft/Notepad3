@@ -277,25 +277,28 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 
 //=============================================================================
 //
-//  SetClipboardWchTextW()
+//  SetClipboardTextW()
 //
-bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
+bool SetClipboardText(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
 {
-  if (!OpenClipboard(hwnd)) { return false; }
-  HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
+  bool ok = false;
+  HANDLE const hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
   if (hData) {
-    WCHAR* pszNew = GlobalLock(hData);
+    WCHAR* const pszNew = GlobalLock(hData);
     if (pszNew) {
       StringCchCopy(pszNew, cchTextW + 1, pszTextW);
       GlobalUnlock(hData);
-      EmptyClipboard();
-      SetClipboardData(CF_UNICODETEXT, hData);
+      if (OpenClipboard(hwnd)) {
+        EmptyClipboard();
+        ok = (SetClipboardData(CF_UNICODETEXT, hData) != NULL); // move ownership
+        CloseClipboard();
+      }
     }
-    CloseClipboard();
-    return true; 
+    if (!ok) {
+      GlobalFree(hData);
+    }
   }
-  CloseClipboard();
-  return false;
+  return ok;
 }
 
 
