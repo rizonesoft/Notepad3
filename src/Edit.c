@@ -1332,12 +1332,15 @@ bool EditSaveFile(
   bool bWriteSuccess = false;
   status->bCancelDataLoss = false;
 
+  ///~ (!) FILE_FLAG_NO_BUFFERING needs sector-size aligned buffer layout
+  DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL | /*FILE_FLAG_NO_BUFFERING |*/ FILE_FLAG_WRITE_THROUGH;
+
   HANDLE hFile = CreateFile(pszFile,
                             GENERIC_WRITE,
                             FILE_SHARE_READ|FILE_SHARE_WRITE,
                             NULL,
                             OPEN_ALWAYS,
-                            FILE_ATTRIBUTE_NORMAL,
+                            dwWriteAttributes,
                             NULL);
 
   Globals.dwLastError = GetLastError();
@@ -1345,16 +1348,16 @@ bool EditSaveFile(
   // failure could be due to missing attributes (2k/XP)
   if (hFile == INVALID_HANDLE_VALUE)
   {
-    DWORD dwAttributes = GetFileAttributes(pszFile);
-    if (dwAttributes != INVALID_FILE_ATTRIBUTES)
+    DWORD dwSpecialAttributes = GetFileAttributes(pszFile);
+    if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES)
     {
-      dwAttributes = dwAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
+      dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
       hFile = CreateFile(pszFile,
                         GENERIC_WRITE,
                         FILE_SHARE_READ|FILE_SHARE_WRITE,
                         NULL,
                         OPEN_ALWAYS,
-                        FILE_ATTRIBUTE_NORMAL | dwAttributes,
+                        dwWriteAttributes | dwSpecialAttributes,
                         NULL);
 
       Globals.dwLastError = GetLastError();
