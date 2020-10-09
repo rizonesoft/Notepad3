@@ -7017,40 +7017,31 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr)
 //
 //  EditReplaceAllInRange()
 //
-
-typedef struct _replPos
+//
+int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement)
 {
-  DocPos beg;
-  DocPos end;
-}
-ReplPos_t;
 
-static UT_icd ReplPos_icd = { sizeof(ReplPos_t), NULL, NULL, NULL };
-
-// -------------------------------------------------------------------------------------------------------
-
-int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos* enlargement)
-{
-  int iCount = 0;
-
-  if (iStartPos > iEndPos) { swapos(&iStartPos, &iEndPos); }
+  if (iStartPos > iEndPos) {
+    swapos(&iStartPos, &iEndPos);
+  }
 
   char szFind[FNDRPL_BUFFER];
   size_t const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
-  if (slen <= 0) { return FALSE; }
+  if (slen <= 0) {
+    return FALSE;
+  }
   int const sFlags = (int)(lpefr->fuFlags);
 
   // SCI_REPLACETARGET or SCI_REPLACETARGETRE
   int iReplaceMsg = SCI_REPLACETARGET;
-  char* pszReplace = _GetReplaceString(hwnd, lpefr, &iReplaceMsg);
+  char *pszReplace = _GetReplaceString(hwnd, lpefr, &iReplaceMsg);
   if (!pszReplace) {
     return -1; // recoding of clipboard canceled
   }
 
-  UT_array* ReplPosUTArray = NULL;
-  utarray_new(ReplPosUTArray, &ReplPos_icd);
-  utarray_reserve(ReplPosUTArray, (2 * SciCall_GetLineCount()) );
-  
+  DocPos const saveTargetBeg = SciCall_GetTargetStart();
+  DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
   DocPos start = iStartPos;
   DocPos end = iEndPos;
 
@@ -7058,70 +7049,35 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
+    return 0;
   }
 
-  // ===  build array of matches for later replacements  ===
-
-  ReplPos_t posPair = { 0, 0 };
-
-  while ((iPos >= 0) && (start <= iEndPos))
-  {
-    posPair.beg = start;
-    posPair.end = end;
-    utarray_push_back(ReplPosUTArray, &posPair);
-
-    start = end;
-    end = iEndPos;
-
-    if (start <= iEndPos)
-      iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, ((posPair.end - posPair.beg) == 0), FRMOD_IGNORE);
-    else
-      iPos = -1;
-  } 
-  
-  iCount = utarray_len(ReplPosUTArray);
-  if (iCount <= 0) { FreeMem(pszReplace); return FALSE; }
-
-  // ===  iterate over findings and replace strings  ===
-  DocPos searchStart = iStartPos;
-  DocPos totalReplLength = 0;
+  int iCount = 0;
+  DocPos chgLenDiff = 0;
 
   _BEGIN_UNDO_ACTION_;
 
-  for (ReplPos_t* pPosPair = (ReplPos_t*)utarray_front(ReplPosUTArray);
-                  pPosPair != NULL;
-                  pPosPair = (ReplPos_t*)utarray_next(ReplPosUTArray, pPosPair)) {
-
-    start = searchStart;
-    end = iEndPos + totalReplLength;
-
-    if (iReplaceMsg == SCI_REPLACETARGETRE) 
-    {
-      // redo find to get group ranges filled
-      /*iPos = */_FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_IGNORE);
+  start = iStartPos;
+  DocPos iNewEndPos = iEndPos;
+  while ((iPos >= 0) && (start <= iEndPos))
+  {
+    end = iNewEndPos;
+    iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
+    if ((iPos >= 0) && (iPos <= iNewEndPos)) {
+      SciCall_SetTargetRange(iPos, end);
+      DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
+      start = SciCall_GetTargetEnd();
+      chgLenDiff += replLen - (end - iPos);
+      iNewEndPos = iEndPos + chgLenDiff;
+      ++iCount;
     }
-    else {
-      start = pPosPair->beg + totalReplLength;
-      end = pPosPair->end + totalReplLength;
-    }
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
-    SciCall_SetTargetRange(start, end);
-    DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
-    totalReplLength += replLen + pPosPair->beg - pPosPair->end;
-    searchStart = (start != end) ? SciCall_GetTargetEnd() : SciCall_GetTargetEnd() + 1; // zero-find-length
-
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
   }
 
   _END_UNDO_ACTION_;
 
-  utarray_clear(ReplPosUTArray);
-  utarray_free(ReplPosUTArray);
-  FreeMem(pszReplace);
+  SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd + chgLenDiff); //restore
 
-  *enlargement = totalReplLength;
+  *enlargement = chgLenDiff;
   return iCount;
 }
 

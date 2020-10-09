@@ -29,13 +29,16 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
-Master branch
+Version 6.9.6
 -------------
+* In a Unix environment, if you have the POSIX API enabled in an earlier version (disabled by default in 6.9.5) and you need application binary compatibility with the POSIX API, specify "--enable-binary-compatible-posix-api=yes" instead of "--enable-posix-api=yes". Starting in 6.9.6, "--enable-posix-api=yes" only supports source-level compatibility for 6.9.5 and earlier about POSIX API.
 
+* NEW: configure option --enable-binary-compatible-posix-api=[yes/no]
 * NEW API: Limiting the maximum number of calls of subexp-call
 * NEW API: ONIG_OPTION_NOT_BEGIN_STRING / NOT_END_STRING / NOT_BEGIN_POSITION
 * Fixed behavior of ONIG_OPTION_NOTBOL / NOTEOL
 * Fixed many problems found by OSS-Fuzz
+* Fixed many problems found by Coverity
 * Fixed CVE-2020-26159
 
 

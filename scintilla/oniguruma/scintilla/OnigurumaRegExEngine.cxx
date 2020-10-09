@@ -59,7 +59,8 @@ using namespace Scintilla;
 
 enum class EOLmode : int { CRLF = SC_EOL_CRLF, CR = SC_EOL_CR, LF = SC_EOL_LF };
 
-static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING_UTF8_CR, ONIG_ENCODING_UTF8_CRLF };
+//static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING_UTF8_CR, ONIG_ENCODING_UTF8_CRLF };
+static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8 };
 
 // ============================================================================
 // ============================================================================
@@ -84,13 +85,13 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode eolMode,
 
   // dynamic options
 
-  switch (eolMode) {
-    case EOLmode::CR:
-    case EOLmode::LF:
-    case EOLmode::CRLF:
-    default:
-      break;
-  }
+  //switch (eolMode) {
+  //  case EOLmode::CR:
+  //  case EOLmode::LF:
+  //  case EOLmode::CRLF:
+  //  default:
+  //    break;
+  //}
 
   if (searchFlags & SCFIND_DOT_MATCH_ALL) {
     ONIG_OPTION_ON(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
@@ -298,9 +299,9 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
       OnigErrorInfo einfo;
       onig_free(m_RegExpr);
 
-      OnigEncoding const onigEncType = (eolMode == EOLmode::LF) ? ONIG_ENCODING_UTF8 : 
-                                      ((eolMode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8_CRLF);
-      int res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
+	  OnigEncoding const onigEncType = ONIG_ENCODING_UTF8;
+
+	  int res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
                          m_CmplOptions, onigEncType, &m_OnigSyntax, &einfo);
       if (res != ONIG_NORMAL) {
         onig_error_code_to_str(UCharPtr(m_ErrorInfo), res, &einfo);
@@ -739,8 +740,9 @@ OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* 
   try {
     onig_free(m_RegExpr);
 
-    OnigEncoding const onigEncType = (m_EOLmode == EOLmode::LF) ? ONIG_ENCODING_UTF8 :
-      ((m_EOLmode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8_CRLF);
+    //OnigEncoding const onigEncType = (m_EOLmode == EOLmode::LF) ? ONIG_ENCODING_UTF8 :
+    //  ((m_EOLmode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8_CRLF);
+	OnigEncoding const onigEncType = ONIG_ENCODING_UTF8;
 
     OnigErrorInfo einfo;
     int res = onig_new(&m_RegExpr, pattern, (pattern + patternLen), m_Options, onigEncType, &m_OnigSyntax, &einfo);

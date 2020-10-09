@@ -35,10 +35,6 @@
 
 #include "regint.h"
 
-#pragma warning( push )
-#pragma warning( disable : 4018 )
-
-
 #define IS_MBC_WORD_ASCII_MODE(enc,s,end,mode) \
   ((mode) == 0 ? ONIGENC_IS_MBC_WORD(enc,s,end) : ONIGENC_IS_MBC_WORD_ASCII(enc,s,end))
 
@@ -1104,7 +1100,7 @@ onig_region_copy(OnigRegion* to, OnigRegion* from)
 #define STK_MASK_TO_VOID_TARGET    0x100e
 #define STK_MASK_MEM_END_OR_MARK   0x8000  /* MEM_END or MEM_END_MARK */
 
-typedef ssize_t StackIndex;
+typedef ptrdiff_t StackIndex;
 
 #define INVALID_STACK_INDEX   ((StackIndex )-1)
 
@@ -6616,8 +6612,6 @@ onig_setup_builtin_monitors_by_ascii_encoded_name(void* fp /* FILE* */)
 
   return ONIG_NORMAL;
 }
-
-#pragma warning( pop )
 
 #endif /* ONIG_NO_PRINT */
 
