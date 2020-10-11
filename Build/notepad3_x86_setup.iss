@@ -1,4 +1,4 @@
-;* Notepad3 - Installer script
+﻿;* Notepad3 - Installer script
 ;*
 ;* (c) Rizonesoft 2008-2020
 
@@ -6,8 +6,8 @@
 ; Inno Setup: http://www.jrsoftware.org/isdl.php
 
 ; Preprocessor related stuff
-#if VER < EncodeVer(5,5,9)
-  #error Update your Inno Setup version (5.5.9 or newer)
+#if VER < EncodeVer(6,0,2)
+  #error Update your Inno Setup version (6.0.2 or newer)
 #endif
 
 #define bindir "..\Bin"
@@ -23,7 +23,7 @@
 #define app_name      "Notepad3"
 #define app_publisher "Rizonesoft"
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
-#define app_copyright "(c) Rizonesoft 2008-2020"
+#define app_copyright "Copyright © 2008-2020 Rizonesoft"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
 
@@ -38,13 +38,15 @@ AppSupportURL=https://rizonesoft.com
 AppUpdatesURL=https://rizonesoft.com
 AppContact=https://rizonesoft.com
 AppCopyright={#app_copyright}
-;VersionInfoVersion={#app_version}
+VersionInfoVersion={#app_version}
 UninstallDisplayIcon={app}\Notepad3.exe
 UninstallDisplayName={#app_name} {#app_version}
+; UninstallDisplayName={#app_name} {#app_version} (beta)
 DefaultDirName={pf}\Notepad3
 LicenseFile="..\License.txt"
 OutputDir=.\Packages
 OutputBaseFilename={#app_name}_{#app_version}_x86_Setup
+; OutputBaseFilename={#app_name}_{#app_version}_x86_beta_Setup
 WizardStyle=modern
 WizardSmallImageFile=.\Resources\WizardSmallImageFile.bmp
 Compression=lzma2/max
@@ -57,7 +59,7 @@ DisableProgramGroupPage=yes
 DisableReadyPage=yes
 DisableWelcomePage=yes
 AllowCancelDuringInstall=yes
-MinVersion=6.0
+MinVersion=0,6.1.7601
 ArchitecturesAllowed=x86 x64
 ArchitecturesInstallIn64BitMode=
 #ifexist "..\signinfo_notepad3.txt"
@@ -65,7 +67,6 @@ SignTool=MySignTool
 #endif
 CloseApplications=true
 SetupMutex='{#app_name}' + '_setup_mutex'
-
 
 [Languages]
 Name: en; MessagesFile: compiler:Default.isl
