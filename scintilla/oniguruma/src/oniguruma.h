@@ -2,7 +2,6 @@
 #define ONIGURUMA_H
 /**********************************************************************
   oniguruma.h - Oniguruma (regular expression library)
-  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2020  K.Kosako
@@ -37,9 +36,9 @@ extern "C" {
 #define ONIGURUMA
 #define ONIGURUMA_VERSION_MAJOR   6
 #define ONIGURUMA_VERSION_MINOR   9
-#define ONIGURUMA_VERSION_TEENY   5
+#define ONIGURUMA_VERSION_TEENY   6
 
-#define ONIGURUMA_VERSION_INT     60905
+#define ONIGURUMA_VERSION_INT     60906
 
 #ifndef P_
 #if defined(__STDC__) || defined(_WIN32)

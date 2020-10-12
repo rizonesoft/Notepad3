@@ -2,7 +2,6 @@
 #define REGINT_H
 /**********************************************************************
   regint.h -  Oniguruma (regular expression library)
-  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2020  K.Kosako
@@ -125,11 +124,6 @@
 
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
-#endif
-
-#if defined(_MSC_VER) && defined(HAVE_BASETSD_H)
-#include <basetsd.h>
-typedef SSIZE_T ssize_t;
 #endif
 
 #if defined(_WIN32) || defined(__BORLANDC__)

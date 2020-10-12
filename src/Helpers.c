@@ -766,7 +766,9 @@ bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberO
     bytesLeft -= (size_t)dwWritten;
   }
   while (bWriteOk && ((dwWritten != 0) && (bytesLeft > 0)));
-  
+
+  FlushFileBuffers(hFile);
+
   *lpNumberOfBytesWritten = bytesWritten;
   return (bytesWritten == nNumberOfBytesToWrite);
 }

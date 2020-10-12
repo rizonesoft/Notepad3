@@ -1,6 +1,5 @@
 /**********************************************************************
   regcomp.c -  Oniguruma (regular expression library)
-  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2020  K.Kosako
@@ -2997,7 +2996,7 @@ disable_noname_group_capture(Node** root, regex_t* reg, ScanEnv* env)
   }
   counter = 0;
   r = make_named_capture_number_map(root, map, &counter);
-  if (r != 0) return r;
+  if (r < 0) return r;
 
   r = renumber_backref_traverse(*root, map);
   if (r != 0) return r;
