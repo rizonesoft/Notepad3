@@ -4,7 +4,7 @@
 =                                                                              =
 =                                                            Notepad2 4.2.25   =
 =                                               (c) Florian Balmer 2004-2011   =
-=                                                http://www.flos-freeware.ch   =
+=                                               https://www.flos-freeware.ch   =
 =                                                                              =
 ================================================================================
 
@@ -837,7 +837,7 @@ Source Code
   https://www.scintilla.org
 
   The full Notepad2 source code can be found at:
-  http://www.flos-freeware.ch
+  https://www.flos-freeware.ch
 
 
 More Information and Resources
@@ -845,7 +845,7 @@ More Information and Resources
   For more information on Notepad2 features, how to replace Windows
   Notepad, and answers to the most frequently asked questions (FAQ),
   please visit the Notepad2 website:
-  http://www.flos-freeware.ch
+  https://www.flos-freeware.ch
 
 
 Feature Requests

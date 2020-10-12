@@ -60,9 +60,9 @@ Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
 Contributors
 --------------------------------------------------------------------------------
 - Rainer Kottenhoff
-- Florian Balmer ( http://www.flos-freeware.ch )
-- XhmikosR ( http://xhmikosr.github.io/notepad2-mod/ )
-- Kai Liu ( http://code.kliu.org/misc/notepad2/ )
+- Florian Balmer ( https://www.flos-freeware.ch )
+- XhmikosR ( https://xhmikosr.github.io/notepad2-mod/ )
+- Kai Liu ( https://code.kliu.org/misc/notepad2/ )
 - RL Vision
 - Aleksandar Lekov
 - Bruno Barbieri
@@ -128,9 +128,9 @@ Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
 Contributors
 --------------------------------------------------------------------------------
 - Rainer Kottenhoff
-- Florian Balmer ( http://www.flos-freeware.ch )
-- XhmikosR ( http://xhmikosr.github.io/notepad2-mod/ )
-- Kai Liu ( http://code.kliu.org/misc/notepad2/ )
+- Florian Balmer ( https://www.flos-freeware.ch )
+- XhmikosR ( https://xhmikosr.github.io/notepad2-mod/ )
+- Kai Liu ( https://code.kliu.org/misc/notepad2/ )
 - RL Vision
 - Aleksandar Lekov
 - Bruno Barbieri

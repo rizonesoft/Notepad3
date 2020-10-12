@@ -1,7 +1,7 @@
 ;Copyright 2004-2016 John T. Haller of PortableApps.com
 ;encoding: UTF-8
 
-;Website: http://PortableApps.com/Notepad3Portable
+;Website: https://PortableApps.com/Notepad3Portable
 
 ;This software is OSI Certified Open Source Software.
 ;OSI Certified is a certification mark of the Open Source Initiative.

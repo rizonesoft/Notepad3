@@ -4,7 +4,7 @@
 =                                                                              =
 =                                                            metapath 4.0.13   =
 =                                               (c) Florian Balmer 1996-2011   =
-=                                                http://www.flos-freeware.ch   =
+=                                               https://www.flos-freeware.ch   =
 =                                                                              =
 ================================================================================
 
@@ -36,6 +36,6 @@ Copyright
   florian.balmer@gmail.com
 
   (c) Florian Balmer 1996-2011
-  http://www.flos-freeware.ch
+  https://www.flos-freeware.ch
 
 ###
