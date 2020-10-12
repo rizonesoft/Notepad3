@@ -582,7 +582,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           case NM_RETURN:
             {
               if (pnmhdr->idFrom == IDC_WEBPAGE) {
-                ShellExecute(hwnd,L"open",L"http://www.flos-freeware.ch",NULL,NULL,SW_SHOWNORMAL);
+                ShellExecute(hwnd,L"open",L"https://www.flos-freeware.ch",NULL,NULL,SW_SHOWNORMAL);
               }
               else if (pnmhdr->idFrom == IDC_EMAIL) {
                 ShellExecute(hwnd,L"open",L"mailto:florian.balmer@gmail.com",NULL,NULL,SW_SHOWNORMAL);

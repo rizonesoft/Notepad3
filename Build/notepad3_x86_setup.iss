@@ -3,7 +3,7 @@
 ;* (c) Rizonesoft 2008-2020
 
 ; Requirements:
-; Inno Setup: http://www.jrsoftware.org/isdl.php
+; Inno Setup: https://www.jrsoftware.org/isdl.php
 
 ; Preprocessor related stuff
 #if VER < EncodeVer(6,0,2)

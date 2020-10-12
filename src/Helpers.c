@@ -212,7 +212,10 @@ static void _GetTrueWindowsVersion()
 // ----------------------------------------------------------------------------
 static DWORD _Win10BuildToReleaseId(DWORD build)
 {
-  if (build >= 19041) {
+  if (build >= 19042) {
+    return 2009;
+  }
+  else if (build >= 19041) {
     return 2004;
   }
   else if (build >= 18363) {

@@ -44,7 +44,7 @@ Contributors:
 More information:
 --------------------------------------------------
 * Source code and binaries:   https://github.com/XhmikosR/notepad2-mod
-* Official Notepad2 website:  http://www.flos-freeware.ch/notepad2.html
+* Official Notepad2 website:  https://www.flos-freeware.ch/notepad2.html
 * Code folding usage guide:   https://github.com/XhmikosR/notepad2-mod/wiki/Code-Folding-Usage
 * Kai Liu's website:          https://code.kliu.org/misc/notepad2
 * Bookmark Edition website:   https://www.rlvision.com/notepad2/about.asp

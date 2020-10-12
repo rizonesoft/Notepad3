@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1006.(build_#) (2020-10-06)
+Current BETA/RC Version 5.20.1012.(build_#) (2020-10-12)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[1012.1]- Support for Windows 10 20H2 Version 2009 (Build 19042).
 [1004.1]- Open/Save file explorer dialog: populate file filter with current lexer supported file extensions.
 [.929.1]- Minipath.ini: [Settings2] FocusLostOpacity=100 (opycity level on losing focus).
 [.923.1]- Hotkey 'F3': use MRU latest item before clipboard content as search pattern if prior search pattern is empty.
@@ -83,16 +84,20 @@ CHANGES:
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
 [.921.1]- Update grepWinNP3 (GRE) version 2.1.4.30 (2020-09-21).
-[.921.1]- Update Oniguruma Regex (ONI) engine version 6.9.5 revised 1 (2020-09-21).
+[1012.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-10-09).
 [.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-11).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1012.1]- Find/Repl all in range algo.
+[1012.1]- Oniguruma flexible EOL handling (Win CRLF, Unix LF and Mac CR) (ONI).
+[1012.1]- Replace all in range.
+[1012.1]- Avoid file cache lost on power failure.
 [1006.1]- Copy/Cut/Delete "Focused View" lines (clipboard).
 [1006.1]- Cut/cop occurrences marker line(s) if marker in first line.
-[1004.1]- Initial directory for open/save file explorer dlg.
+[1004.1]- Initial directory for open/save file Explorer dialog.
 [1001.1]- TOML Lexer performance leak.
 [.928.2]- Freezing of main window caused by mixed usage of Lexer Interfaces.
 [.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).

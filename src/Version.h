@@ -48,7 +48,7 @@
 #define VERSION_WEBPAGEDISPLAY         "https://www.rizonesoft.com"
 #define VERSION_COMPANYNAME            "© Rizonesoft"
 //#define VERSION_MODPAGEDISPLAY       "https://xhmikosr.github.io/notepad2-mod/"
-//#define VERSION_WEBPAGE2DISPLAY      "http://www.flos-freeware.ch"
+//#define VERSION_WEBPAGE2DISPLAY      "https://www.flos-freeware.ch"
 
 #ifdef _DLL
 #define _SCI_BUILD                     L"Scintilla(dll) "
