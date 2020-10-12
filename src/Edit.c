@@ -7875,7 +7875,10 @@ void EditBookMarkLineRange(HWND hwnd)
 //
 void EditDeleteMarkerInSelection()
 {
-  if (Sci_IsStreamSelection() && !SciCall_IsSelectionEmpty())
+  if (SciCall_IsSelectionEmpty()) {
+    SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
+  }
+  else if (Sci_IsStreamSelection())
   {
     DocPos const posSelBeg = SciCall_GetSelectionStart();
     DocPos const posSelEnd = SciCall_GetSelectionEnd();

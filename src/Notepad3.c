@@ -3621,8 +3621,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
   EnableCmd(hmenu, IDM_EDIT_DUPLINEORSELECTION, !ro);
   EnableCmd(hmenu, IDM_EDIT_LINETRANSPOSE, !ro);
-  EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro);
-  //EnableCmd(hmenu, IDM_EDIT_COPYLINE, true);
+  EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro && !mrs);
+  EnableCmd(hmenu, IDM_EDIT_COPYLINE, !mrs);
   EnableCmd(hmenu, IDM_EDIT_DELETELINE, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, !ro);
@@ -4437,11 +4437,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SciCall_IsSelectionEmpty())
         {
           if (!Settings2.NoCutLineOnEmptySelection) {
-            SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
+            EditDeleteMarkerInSelection();
             SciCall_LineCut();
           }
         }
         else {
+          EditDeleteMarkerInSelection();
           SciCall_Cut();
         }
       }
@@ -4450,10 +4451,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CUTLINE:
       {
+        if (Sci_IsMultiOrRectangleSelection()) {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+          break;
+        }
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
+        EditDeleteMarkerInSelection();
         SciCall_LineCut();
       }
       break;
@@ -4481,13 +4486,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COPYLINE:
       {
+        if (Sci_IsMultiOrRectangleSelection()) {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+          break;
+        }
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
         DocPos const iSelLnStart = Sci_GetLineStartPosition(SciCall_GetSelectionStart());
-        DocPos const iLineSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
         // copy incl last line-breaks
-        DocPos const iSelLnEnd = SciCall_PositionFromLine(iLineSelLast) + SciCall_LineLength(iLineSelLast);
+        DocLn const lnSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+        DocPos const iSelLnEnd = SciCall_PositionFromLine(lnSelLast) + SciCall_LineLength(lnSelLast);
         SciCall_CopyRange(iSelLnStart, iSelLnEnd);
       }
       break;
@@ -6677,7 +6686,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SendWMCommand(hwnd, IDM_EDIT_CUT);
       else
         SimpleBeep();
-        //SendWMCommand(hwnd, IDM_EDIT_CUTLINE);
+        //~SendWMCommand(hwnd, IDM_EDIT_CUTLINE);
       break;
 
 
