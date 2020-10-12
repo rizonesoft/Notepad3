@@ -4350,7 +4350,7 @@ node_new_general_newline(Node** node, ScanEnv* env)
   Node* x;
   CClassNode* cc;
 
-  dlen = ONIGENC_CODE_TO_MBC(env->enc, 0x0d, buf);
+  dlen = ONIGENC_CODE_TO_MBC(env->enc, CARRIAGE_RET, buf);
   if (dlen < 0) return dlen;
   alen = ONIGENC_CODE_TO_MBC(env->enc, NEWLINE_CODE, buf + dlen);
   if (alen < 0) return alen;
@@ -4363,7 +4363,7 @@ node_new_general_newline(Node** node, ScanEnv* env)
 
   cc = CCLASS_(ncc);
   if (dlen == 1) {
-    bitset_set_range(cc->bs, NEWLINE_CODE, 0x0d);
+    bitset_set_range(cc->bs, NEWLINE_CODE, CARRIAGE_RET);
   }
   else {
     r = add_code_range(&(cc->mbuf), env, NEWLINE_CODE, 0x0d);

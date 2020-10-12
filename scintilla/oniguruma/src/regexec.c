@@ -40,9 +40,16 @@
 
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
 #define ONIGENC_IS_MBC_CRNL(enc,p,end) \
-  (ONIGENC_MBC_TO_CODE(enc,p,end) == 13 && \
+  (ONIGENC_MBC_TO_CODE(enc,p,end) == CARRIAGE_RET && \
    ONIGENC_IS_MBC_NEWLINE(enc,(p+enclen(enc,p)),end))
 #endif
+
+// --- fexible NP3 mode (CR|LF|CRLF) dependant ANCHOR and BOL/EOL handling   ---
+const OnigUChar* const _CRLF = "\r\n\0";
+#define IS_CRLF_NEWLINE(enc) ((enc)->is_mbc_newline(&_CRLF[0], &_CRLF[1]) && (enc)->is_mbc_newline(&_CRLF[1], &_CRLF[2]))
+#define IS_LF_CODE(enc, s, end) (ONIGENC_MBC_TO_CODE((enc), (s), (end)) == NEWLINE_CODE)
+#define IS_CR_CODE(enc, s, end) (ONIGENC_MBC_TO_CODE((enc), (s), (end)) == CARRIAGE_RET)
+// ----------------------------------------------------------------------------
 
 #define CHECK_INTERRUPT_IN_MATCH
 
@@ -3345,7 +3352,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         STACK_PUSH_ALT(p, s);
         n = enclen(encode, s);
         DATA_ENSURE(n);
-        if (ONIGENC_IS_MBC_NEWLINE(encode, s, end))  goto fail;
+        if (ONIGENC_IS_MBC_NEWLINE(encode, s, end)) goto fail;
         s += n;
       }
       JUMP_OUT;
@@ -3377,7 +3384,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
           }
           n = enclen(encode, s);
           DATA_ENSURE(n);
-          if (ONIGENC_IS_MBC_NEWLINE(encode, s, end))  goto fail;
+          if (ONIGENC_IS_MBC_NEWLINE(encode, s, end)) goto fail;
           s += n;
         }
       }
@@ -3587,9 +3594,11 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       else if (! ON_STR_END(s)) {
         UChar* sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
         if (ONIGENC_IS_MBC_NEWLINE(encode, sprev, end)) {
-        INC_OP;
-        JUMP_OUT;
-      }
+          if (!IS_CRLF_NEWLINE(encode) || IS_LF_CODE(encode, sprev, end)) {
+            INC_OP;
+            JUMP_OUT;
+          }
+        }
       }
       goto fail;
 
@@ -3607,8 +3616,10 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #endif
       }
       else if (ONIGENC_IS_MBC_NEWLINE(encode, s, end)) {
-        INC_OP;
-        JUMP_OUT;
+        if (!IS_CRLF_NEWLINE(encode) || IS_CR_CODE(encode, s, end)) {
+          INC_OP;
+          JUMP_OUT;
+        }
       }
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
       else if (ONIGENC_IS_MBC_CRNL(encode, s, end)) {
@@ -5133,8 +5144,13 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
       case ANCR_BEGIN_LINE:
         if (!ON_STR_BEGIN(p)) {
           prev = onigenc_get_prev_char_head(reg->enc, (pprev ? pprev : str), p);
-          if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end))
-            goto retry_gate;
+          if (IS_NOT_NULL(prev)) {
+            if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end)) {
+              goto retry_gate;
+            } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, prev, end)) {
+              goto retry_gate;
+            }
+          }
         }
         break;
 
@@ -5146,14 +5162,16 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
           if (prev && ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end))
             goto retry_gate;
 #endif
-        }
-        else if (! ONIGENC_IS_MBC_NEWLINE(reg->enc, p, end)
+        } else if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, p, end)
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
-                 && ! ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
+                   && !ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
 #endif
-                 )
+        ) {
           goto retry_gate;
-
+        }
+        else if (IS_CRLF_NEWLINE(reg->enc) && !IS_CR_CODE(reg->enc, p, end)) {
+          goto retry_gate;
+        }
         break;
       }
     }
@@ -5228,9 +5246,14 @@ backward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
       case ANCR_BEGIN_LINE:
         if (!ON_STR_BEGIN(p)) {
           prev = onigenc_get_prev_char_head(reg->enc, str, p);
-          if (IS_NOT_NULL(prev) && !ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end)) {
-            p = prev;
-            goto retry;
+          if (IS_NOT_NULL(prev)) {
+            if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end)) {
+              p = prev;
+              goto retry;
+            } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, prev, end)) {
+              p = prev;
+              goto retry;
+            }
           }
         }
         break;
@@ -5245,12 +5268,15 @@ backward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
             goto retry;
           }
 #endif
-        }
-        else if (! ONIGENC_IS_MBC_NEWLINE(reg->enc, p, end)
+        } else if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, p, end)
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
-                 && ! ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
+                   && !ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
 #endif
-                 ) {
+        ) {
+          p = onigenc_get_prev_char_head(reg->enc, adjrange, p);
+          if (IS_NULL(p)) goto fail;
+          goto retry;
+        } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, p, end)) {
           p = onigenc_get_prev_char_head(reg->enc, adjrange, p);
           if (IS_NULL(p)) goto fail;
           goto retry;

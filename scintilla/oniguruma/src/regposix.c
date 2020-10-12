@@ -379,4 +379,10 @@ reg_foreach_name(onig_posix_regex_t* reg,
   return onig_posix_reg_foreach_name(reg, func, arg);
 }
 
-#endif
+extern int
+reg_number_of_names(onig_posix_regex_t* reg)
+{
+  return onig_posix_reg_number_of_names(reg);
+}
+
+#endif /* USE_BINARY_COMPATIBLE_POSIX_API */

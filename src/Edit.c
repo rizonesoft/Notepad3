@@ -7043,9 +7043,9 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
   DocPos start = iStartPos;
-  DocPos end = iEndPos;
-
-  DocPos iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
+  DocPos end_m = iEndPos;
+  DocPos end   = end_m;
+  DocPos iPos  = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
@@ -7057,22 +7057,18 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
 
   _BEGIN_UNDO_ACTION_;
 
-  start = iStartPos;
-  DocPos iNewEndPos = iEndPos;
-  while ((iPos >= 0) && (start <= iEndPos))
+  while ((iPos >= 0) && (start <= end_m))
   {
-    end = iNewEndPos;
-    iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
-    if ((iPos >= 0) && (iPos <= iNewEndPos)) {
-      SciCall_SetTargetRange(iPos, end);
-      DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
-      start = SciCall_GetTargetEnd();
-      chgLenDiff += replLen - (end - iPos);
-      iNewEndPos = iEndPos + chgLenDiff;
-      ++iCount;
-    }
-  }
+    SciCall_SetTargetRange(iPos, end);
+    DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
+    chgLenDiff += replLen - (end - iPos);
+    start = SciCall_PositionAfter(SciCall_GetTargetEnd());
+    end_m = iEndPos + chgLenDiff;
+    end = end_m;
+    ++iCount;
 
+    iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
+  }
   _END_UNDO_ACTION_;
 
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd + chgLenDiff); //restore
