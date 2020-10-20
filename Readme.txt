@@ -96,6 +96,7 @@ Acknowledgments:
 ----------------
 alexantr                https://github.com/alexantr
 AlexIljin               https://github.com/AlexIljin
+ashish12phnx            https://github.com/ashish12phnx
 bravo-hero              https://github.com/bravo-hero
 craigo-                 https://github.com/craigo-/
 Crane70                 https://github.com/Crane70
@@ -106,7 +107,6 @@ it4u                    https://github.com/it4u
 jmacasd                 https://github.com/jmacasd
 jupester                https://github.com/jupester
 kofifus                 https://github.com/kofifus
-kRaLL-Turko             https://github.com/kRaLL-Turko
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
 lhmouse                 https://github.com/lhmouse
@@ -118,6 +118,7 @@ RaffaeleBianc0          https://github.com/RaffaeleBianc0
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
 ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
+Turko-py                https://github.com/Turko-py
 VenusGirl               https://github.com/VenusGirl
 xsak                    https://github.com/xsak
 zufuliu                 https://github.com/zufuliu
