@@ -57,72 +57,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Open",                       IDM_FILE_OPEN
-        MENUITEM "Open &w/ Alternate App...",   IDM_FILE_OPENWITH
+        MENUITEM "खोलें (&O)",                       IDM_FILE_OPEN
+        MENUITEM "अन्य एप के साथ खोलें (&W)...",   IDM_FILE_OPENWITH
         MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copy Name",                  IDM_POP_COPYNAME
-        MENUITEM "Create Lin&k...",             IDM_FILE_CREATELINK
-        MENUITEM "&Save As...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copy/&Move...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&elete...",                  IDM_FILE_DELETE
-        MENUITEM "Re&name...",                  IDM_FILE_RENAME
+        MENUITEM "नाम कॉपी करें (&C)",                  IDM_POP_COPYNAME
+        MENUITEM "लिंक बनाएं (&K)...",             IDM_FILE_CREATELINK
+        MENUITEM "इस रूप में सहेजें (&S)...",                 IDM_FILE_SAVEAS
+        MENUITEM "कॉपी/ले जाएं (&M)...",               IDM_FILE_COPYMOVE
+        MENUITEM "मिटाएं (&E)...",                  IDM_FILE_DELETE
+        MENUITEM "नाम बदलें (&N)...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Launch",                     IDM_FILE_LAUNCH
-        MENUITEM "&Run w/ Arguments...",        IDM_FILE_RUN
+        MENUITEM "प्रक्षेपित करें (&L)",                     IDM_FILE_LAUNCH
+        MENUITEM "कोणांक के साथ चलाएं (&R)...",        IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 IDM_FILE_PROPERTIES
+        MENUITEM "गुण (&P)",                 IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&New File...",                IDM_FILE_NEW
-        MENUITEM "Ne&w Directory...",           IDM_FILE_NEWDIR
+        MENUITEM "नई फ़ाइल (&N)...",                IDM_FILE_NEW
+        MENUITEM "नई निदेशिका (&W)...",           IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&File Filter...",             IDM_VIEW_FILTER
-        MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
-        POPUP "&Show"
+        MENUITEM "फ़ाइल  फ़िल्टर (&F)...",             IDM_VIEW_FILTER
+        MENUITEM "फ़िल्टर रीसेट करें (&R)",               IDM_VIEW_FILTERALL
+        POPUP "दिखाएं (&S)"
         BEGIN
-            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                  IDM_VIEW_FILES
-            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
+            MENUITEM "निदेशिकाएं (&D)",            IDM_VIEW_FOLDERS
+            MENUITEM "फ़ाइलें (&F)",                  IDM_VIEW_FILES
+            MENUITEM "सिस्टम ऑब्जेक्ट (&S)",         IDM_VIEW_HIDDEN
         END
-        POPUP "S&ort"
+        POPUP "क्रमानुसार (&O)"
         BEGIN
-            MENUITEM "by &Name",                IDM_SORT_NAME
-            MENUITEM "by &Size",                IDM_SORT_SIZE
-            MENUITEM "by &Type",                IDM_SORT_TYPE
-            MENUITEM "by &Date",                IDM_SORT_DATE
+            MENUITEM "नाम से (&N)",                IDM_SORT_NAME
+            MENUITEM "आकार से (&S)",                IDM_SORT_SIZE
+            MENUITEM "प्रकार से (&T)",                IDM_SORT_TYPE
+            MENUITEM "दिनाँक से (&D)",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                IDM_SORT_REVERSE
+            MENUITEM "उल्टा करें (&R)",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Goto Favourites",             IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
+        MENUITEM "पसंदीदा पर जाएं (&G)",             IDM_VIEW_FAVORITES
+        MENUITEM "पसंदीदा संपादित करें (&E)",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "निदेशिका (&D)...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "ड्राइव दिखाएं (&V)",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "S&ave Settings",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Setup &Target...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "सेटिंग सहेजें (&A)",              IDM_VIEW_SAVESETTINGS
+        MENUITEM "गंतव्य बनाएं (&T)...",            IDM_VIEW_FINDTARGET
+        MENUITEM "विकल्प (&P)...",                 IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
-        MENUITEM "Drive &Properties",           IDM_FILE_DRIVEPROP
+        MENUITEM "निदेशिका (&D)...",               IDM_FILE_CHANGEDIR
+        MENUITEM "ड्राइव गुण (&P)",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "ड्राइव दिखाएं (&V)",                IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Edit Toolbar...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "औज़ार पट्टी दिखाएं (&T)",               IDM_VIEW_TOOLBAR
+        MENUITEM "टूलपट्टी संपादित करें (&E)...",            IDM_VIEW_CUSTOMIZETB
+        MENUITEM "अवस्था पट्टी दिखाएं (&S)",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Exit MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath खोलें",               IDM_TRAY_RESTORE
+        MENUITEM "MiniPath से बाहर निकलें",               IDM_TRAY_EXIT
     END
 END
 
