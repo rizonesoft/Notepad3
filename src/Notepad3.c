@@ -8157,15 +8157,13 @@ void ParseCommandLine()
 
     while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len)) {
       // options
-      if (lp1[1] == L'\0') {
-        if (!bIsFileArg && (lp1[0] == L'+')) {
-          Globals.CmdLnFlag_MultiFileArg = 2;
-          bIsFileArg = true;
-        }
-        else if (!bIsFileArg && (lp1[0] == L'-')) {
-          Globals.CmdLnFlag_MultiFileArg = 1;
-          bIsFileArg = true;
-        }
+      if (!bIsFileArg && (lp1[0] == L'+') && (lp1[1] == L'\0')) {
+        Globals.CmdLnFlag_MultiFileArg = 2;
+        bIsFileArg = true;
+      } 
+      else if (!bIsFileArg && (lp1[0] == L'-') && (lp1[1] == L'\0')) {
+        Globals.CmdLnFlag_MultiFileArg = 1;
+        bIsFileArg = true;
       }
       else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-'))) 
       {
