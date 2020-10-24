@@ -104,6 +104,7 @@ engelhro                https://github.com/engelhro
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
 it4u                    https://github.com/it4u
+JeepWillys58            https://github.com/JeepWillys58
 jmacasd                 https://github.com/jmacasd
 jupester                https://github.com/jupester
 kofifus                 https://github.com/kofifus
@@ -115,6 +116,7 @@ maboroshin              https://github.com/maboroshin
 MadDogVachon            https://github.com/MadDogVachon
 Mitezuss                https://github.com/Mitezuss
 RaffaeleBianc0          https://github.com/RaffaeleBianc0
+RaiKoHoff               https://github.com/RaiKoHoff
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
 ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
