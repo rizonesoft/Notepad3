@@ -91,6 +91,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1024.2]- Allow single character filename on command line.
 [1012.2]- Disable Copy/Cut complete lines on partial multi-selection.
 [1012.1]- Find/Repl all in range algo.
 [1012.1]- Oniguruma flexible EOL handling (Win CRLF, Unix LF and Mac CR) (ONI).
