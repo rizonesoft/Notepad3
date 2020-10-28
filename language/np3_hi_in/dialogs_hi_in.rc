@@ -190,12 +190,12 @@ BEGIN
     CONTROL         "पहचान में असमर्थ होने पर पीछे हटें (&F)",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "एन्कोडिंग पहचान: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "7-bit &ASCII फ़ाइल UTF-8 मोड में खोलें",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
+    CONTROL         "7-bit &ASCII फ़ाइल UTF-8 मोड में खोलें (&A)",IDC_ASCIIASUTF8,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,156,10
     CONTROL         "पहचान के लिए विश्वशनीय नतीजे ही प्रयोग में लें (&R)",IDC_RELIABLE_DETECTION_RES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
-    CONTROL         "8-bit *.&nfo/diz फ़ाइल DOS-437 मोड में खोलें",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,156,10
+    CONTROL         "8-bit *.&nfo/diz फ़ाइल DOS-437 मोड में खोलें (&N)",IDC_NFOASOEM,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,156,10
     CONTROL         "एन्कोडिंग फ़ाइल टैग Parse करें (&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
     CONTROL         "ANSI कोड पेज का विश्लेषण करें (&A)",IDC_NOANSICPDETECTION,
@@ -263,7 +263,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
     CONTROL         "कैरट स्तिथि संरक्षित करें (&P)",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
-    CONTROL         "हाल की फ़ाइल बाहर निकलते समय सहेजें (&S)",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
+    CONTROL         "हाल की फ़ाइल बाहर निकलते समय सहेजें (&S)",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,140,10
     CONTROL         "खोज तरीका याद रखें (&R)",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
     CONTROL         "छोड़ें", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
@@ -277,7 +277,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "फ़ाइल परिवर्तन सूचना"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    CONTROL         "कुछ नहीं (&N)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
+    CONTROL         "कुछ नहीं (&N)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,50,10
     CONTROL         "संदेश दिखाएं (&D)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
     CONTROL         "स्वतः रीलोड करें (अपरिवर्तित)(&A)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "नई फ़ाइल खुली होने पर रेसेट करें (&R)",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
@@ -312,8 +312,8 @@ BEGIN
     PUSHBUTTON      "अग्रभूमि (&E)...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "पृष्ठभूमि (&B)...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "फॉन्ट (&F)...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "पूर्वावलोकन (&P)",IDC_PREVIEW,330,201,42,14
-    PUSHBUTTON      "रीसेट (&R)",IDC_STYLEDEFAULT,377,201,42,14
+    PUSHBUTTON      "पूर्वावलोकन (&P)",IDC_PREVIEW,330,201,44,14
+    PUSHBUTTON      "रीसेट (&R)",IDC_STYLEDEFAULT,378,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
     PUSHBUTTON      "आयात (&I)...",IDC_IMPORT,181,232,50,14
@@ -359,10 +359,10 @@ BEGIN
     RTEXT           "%s रेखा/रेखाएं",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s रेखा/रेखाएं",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "सारा पुनः इंडेंट करें? ",IDC_STATIC2,7,60,182,56,WS_GROUP
-    CONTROL         "टैब (&T)",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "रिक्त (&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    RTEXT           "%s रेखा/रेखाएं अस्थायी इडेंट डेप्थ के साथ",IDC_INDENT_TAB_MODX,40,72,124,8
-    RTEXT           "%s रेखाएं अस्थायी इडेंट डेप्थ के साथ",IDC_INDENT_SPC_MODX,40,84,124,8
+    CONTROL         "टैब (&T)",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,30,10
+    CONTROL         "रिक्त (&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
+    RTEXT           "%s रेखा/रेखाएं अस्थायी इडेंट डेप्थ के साथ",IDC_INDENT_TAB_MODX,50,72,132,8
+    RTEXT           "%s रेखाएं अस्थायी इडेंट डेप्थ के साथ",IDC_INDENT_SPC_MODX,50,84,132,8
     PUSHBUTTON      "हाँ (&Y)",IDOK,80,98,50,14
     PUSHBUTTON      "नहीं (&N)",IDCANCEL,134,98,50,14
     CONTROL         "हमेशा यह डायलॉग दिखाएं (&A)",IDC_WARN_INCONSISTENT_INDENTS,
@@ -417,9 +417,9 @@ BEGIN
     EDITTEXT        1155,120,82,28,12,WS_GROUP
     LTEXT           "दायाँ: (&R)",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
-    LTEXT           "शीर्ष भाग: (&T)",1104,88,104,32,8
+    LTEXT           "शीर्ष: (&T)",1104,88,104,32,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP
-    LTEXT           "नीचला स्थान: (&B)",1105,164,104,32,8
+    LTEXT           "नीचे (&B)",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
     GROUPBOX        "हेडेर और फूटर",1074,8,130,224,56,WS_GROUP
     LTEXT           "हेडेर: (&H)",IDC_STATIC,16,146,36,8
@@ -514,9 +514,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "रेखाओं में बदलाव करें"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "टेक्स्ट को रेखाओं के पूर्व जोड़ें: (&P)",IDC_STATIC,7,7,62,8
+    LTEXT           "टेक्स्ट को रेखाओं के पूर्व जोड़ें: (&P)",IDC_STATIC,7,7,90,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "टेक्स्ट को रेखाओं के पीछे जोड़ें: (&A)",IDC_STATIC2,7,37,68,8
+    LTEXT           "टेक्स्ट को रेखाओं के पीछे जोड़ें: (&A)",IDC_STATIC2,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "सही है",IDOK,125,7,50,14
     PUSHBUTTON      "रद्द करें",IDCANCEL,125,24,50,14
@@ -538,7 +538,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "शुरुआती टैग (गुणों के साथ) (&O)",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "बंद करने वाला टैग (संपादित योग्य) (&C)",IDC_STATIC2,7,37,90,8
+    LTEXT           "बंद करने वाला टैग (संपादित योग्य) (&C)",IDC_STATIC2,7,37,110,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
     LTEXT           "X गुणा",IDC_STATIC3,148,50,24,8
@@ -680,11 +680,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "संरेखण"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    CONTROL         "बायाँ संरेखण (&L)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
-    CONTROL         "दायाँ संरेखण (&R)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
-    CONTROL         "मध्य संरेखण (&C)",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
-    CONTROL         "दोनों और संरेखित करें (&J)",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
-    CONTROL         "दोनों और संरेखित करें (पैराग्राफ़ मोड) (&P)",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "बायाँ संरेखण (&L)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,60,10
+    CONTROL         "दायाँ संरेखण (&R)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,60,10
+    CONTROL         "मध्य संरेखण (&C)",102,"Button",BS_AUTORADIOBUTTON,7,31,60,10
+    CONTROL         "दोनों और संरेखित करें (&J)",103,"Button",BS_AUTORADIOBUTTON,7,43,90,10
+    CONTROL         "दोनों और संरेखित करें (पैराग्राफ़ मोड) (&P)",104,"Button",BS_AUTORADIOBUTTON,7,55,120,10
     DEFPUSHBUTTON   "सही है",IDOK,127,7,50,14
     PUSHBUTTON      "रद्द करें",IDCANCEL,127,24,50,14
 END
