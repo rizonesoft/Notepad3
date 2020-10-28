@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1024.(build_#) (2020-10-24)
+Current BETA/RC Version 5.20.1028.(build_#) (2020-10-28)
 ========================================================
 
 --------------------------------------------------------
@@ -140,7 +140,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.xxx.x]- .
-[1024.1]- Hindi (hi-IN) in processing...
+[1028.1]- Hindi (hi-IN).
 [.915.2]- Turkish (tr-TR) in processing...
 [.915.2]- Chinese Traditional (zh-TW) in waiting...
 [.915.2]- Indonesian (id-ID) in waiting...
