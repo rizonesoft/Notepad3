@@ -130,7 +130,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "चालू:",IDC_STATIC,7,9,28,8
     EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "नया: (&N)",IDC_STATIC,7,26,18,8
+    LTEXT           "नया: (&N)",IDC_STATIC,7,26,28,8
     EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "सही है",IDOK,59,53,50,14,WS_DISABLED
     PUSHBUTTON      "रद्द करें",IDCANCEL,115,53,50,14
@@ -173,7 +173,7 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath के लिए सामान्य प्रोग्राम सेटिंग बताएं",IDC_STATIC,40,15,153,8
     CONTROL         "ऑब्जेक्ट खोलने के लिए सिर्फ़ एक माउस-क्लिक ही स्वीकारें (&A)",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,175,10
     CONTROL         "ट्रैक चुनाव सक्षम करें (&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
     CONTROL         "सम्पूर्ण पंक्ति चुनाव सक्षम करें (&F)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
     CONTROL         "फ़ाइल खुली होने की अवस्था में लक्ष्य विंडो को हमेशा सक्रिय रखें (&A)",IDC_FOCUSEDIT,
@@ -182,11 +182,11 @@ BEGIN
     CONTROL         "MiniPath विंडो को हमेशा ऊपर रखें (&K)",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "सिस्टम ट्रे में छोटा करें (पुनः सक्रिय करने लिए क्लिक करें) (&M)",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,175,10
     CONTROL         "जब MiniPath शुरू हो, मौजूदा विंडो को पुनः इस्तेमाल करने का प्रयत्न करें (&T)",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,208,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "बाहर निकलते समय सेटिंग सहेजें (&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "बाहर निकलते समय सेटिंग सहेजें (&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,120,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -196,22 +196,22 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath के लिए उन्नत प्रोग्राम सेटिंग बताएं",IDC_STATIC,40,15,160,8
-    CONTROL         "स्टार्ट-अप निदेशिका प्रयोग में लें: (&U)",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "हाल ही में अधिक प्रयोग हुई (&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
+    CONTROL         "स्टार्टअप निर्देशिका: (&U)",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
+    CONTROL         "हाल ही में अधिक प्रयोग हुई (&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,90,10
     CONTROL         """पसंदीदा"" फ़ोल्डर (&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "सहेजी हुई फ़ाइल का सिर्फ़ पढ़ने-योग्य गुण साफ़ करें (&C)",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,160,10
     CONTROL         "कॉपी की गई फ़ाइलों के नाम विरोधाभास होने में नाम बदलें (&N)",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,170,10
     CONTROL         "मिटाई हुई फ़ाइल रीसाइकल बिन में भेजें। (&M)",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "फ़ाइल मिटाने की पुष्टि न करें (यह अनुशंसित नहीं है) (&D)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         """Esc"" कुंजी को यह करने में सक्षम करें (&E)",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         """Esc"" कुंजी सक्षम करें (&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "विंडो छोटी करें (&W)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "MiniPath से बाहर निकलें (&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "MiniPath से बाहर निकलें (&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -222,7 +222,7 @@ BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "निदेशिका सूची में आइटम का दिखाव",IDC_STATIC,40,15,118,8
     GROUPBOX        "रंग",IDC_STATIC,10,41,205,134
-    LTEXT           "कोई फ़िल्टर न होने की अवस्था में इस रंग के टेक्स्ट का प्रयोग करें:",IDC_STATIC,20,54,136,8
+    LTEXT           "कोई फ़िल्टर न होने की अवस्था में इस रंग के टेक्स्ट का प्रयोग करें:",IDC_STATIC,20,54,180,8
     CONTROL         "डिफ़ॉल्ट विंडो रंग (&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "मनचाहे रंग: (&C)",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED

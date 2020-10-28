@@ -425,7 +425,7 @@ BEGIN
     BEGIN
         MENUITEM "मनपसंद स्कीम बनाएं (&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "वाक्य-रचना स्कीम चुनें (&x)\tF12",                   IDM_VIEW_SCHEME
+        MENUITEM "वाक्य-रचना स्कीम चुनें (&X)\tF12",                   IDM_VIEW_SCHEME
         MENUITEM "दूसरा सामान्य बेस (&2)\tShift+F12",                     IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "व्यापक डिफ़ॉल्ट फॉन्ट (&D)...\tAlt+F12",                IDM_VIEW_FONT
@@ -453,10 +453,10 @@ BEGIN
         BEGIN
             MENUITEM "कुछ न करें (&N)",                       IDM_VIEW_NOESCFUNC
             MENUITEM "Notepad3 छोटा करें (&M)",          IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Notepad3 से बाहर निकलें (&x)",              IDM_VIEW_ESCEXIT
+            MENUITEM "Notepad3 से बाहर निकलें (&X)",              IDM_VIEW_ESCEXIT
         END
         MENUITEM "टूल चलाने से पूर्व सहेजें (&B)",      IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "लघु व्यंजक की गणना करें (&x)",     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "लघु व्यंजक की गणना करें (&X)",     IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "स्मरण (&R)"
         BEGIN
