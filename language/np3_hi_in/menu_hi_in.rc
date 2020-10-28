@@ -474,7 +474,7 @@ BEGIN
                 MENUITEM "टेक्स्ट उद्धरण (&T)\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
             END
             MENUITEM "विंडो पुनर्प्रयोग करें (&R)\tCtrl+Shift+L",     IDM_VIEW_REUSEWINDOW
-            MENUITEM "हमेशा ऊपर रखें (&A)\tAlt+T",           IDM_VIEW_ALWAYSONTOP
+            MENUITEM "सदैव शीर्ष पर रखें (&A)\tAlt+T",           IDM_VIEW_ALWAYSONTOP
             MENUITEM "छोटा करें (&M)",               IDM_VIEW_MINTOTRAY
             MENUITEM "पारदर्शी मोड (&T)\tAlt+G",        IDM_VIEW_TRANSPARENT
         END
@@ -511,7 +511,7 @@ BEGIN
         MENUITEM "ऑनलाइन सहायता (&O)\tF1",           IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
         MENUITEM "प्रबंधक टूल प्रक्षेपित करें (&T)...",      IDM_HELP_ADMINEXE
-        MENUITEM "नवीन संस्करण के लिए वेबसाईट देखें (&W)",           IDM_HELP_UPDATEWEBSITE
+        MENUITEM "अद्यतन के लिए वेबसाईट देखें (&W)",           IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "कमांड लाइन मदद (&C)...",               IDM_HELP_CMD
         MENUITEM "परिचय (&A)...\tShift+F1",                 IDM_HELP_ABOUT

@@ -122,7 +122,7 @@ END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "ऊपर रखें (&K)"
+    SC_ALWAYSONTOP          "शीर्ष पर रखें (&K)"
     SC_ABOUT                "जानकारी (&I)..."
 END
 
