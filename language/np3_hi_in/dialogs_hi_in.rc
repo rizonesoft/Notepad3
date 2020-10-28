@@ -91,15 +91,15 @@ BEGIN
     LTEXT           "स्ट्रिंग ढूँढें: (&G)",IDC_STATIC,7,7,46,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "केस मिलान (&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
+    CONTROL         "केस मिलान करें (&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,65,10
     CONTROL         "सिर्फ़ पूरा शब्द मिलान करें (&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "सिर्फ़ शब्द के आरंभ से मिलान करें (&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "बैकस्लैश बदलें (&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
     CONTROL         "सामान्य व्यंजक ढूँढें (&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Dot से सब मिलान करें (&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
+    CONTROL         "Dot से सब मिलान करें (&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,80,10
     CONTROL         "अतिव्यापी खोज (&O)",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "लपेटें नहीं (&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
-    CONTROL         "ढूँढने के बाद बंद करें (&l)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,65,10
+    CONTROL         "ढूँढने के बाद बंद करें (&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,77,10
     CONTROL         "उपस्थिति चिन्हित करें (&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,73,10
     CONTROL         "Wildcard ढूँढें (&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,97,63,10
     CONTROL         "केंद्र खोने पर पारदर्शी मोड",IDC_TRANSPARENT,
@@ -123,18 +123,18 @@ BEGIN
     LTEXT           "स्ट्रिंग खोजें: (&G)",IDC_STATIC,7,7,46,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "इसके साथ बदलें (&H)",IDC_STATIC2,7,36,46,8
+    LTEXT           "इसके साथ बदलें (&H)",IDC_STATIC2,7,36,55,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "केस मिलान करें (&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
-    CONTROL         "सिर्फ़ पूरा शब्द मिलाएं (&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
+    CONTROL         "केस मिलान करें (&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,65,10
+    CONTROL         "सिर्फ़ पूरा शब्द मिलान करें (&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "सिर्फ़ शब्द के आरंभ से मिलान करें (&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "बैकस्लैश बदलें (&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "सामान्य व्यंजक ढूँढें (&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Dot से सब मिलान करें (&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
+    CONTROL         "Dot से सब मिलान करें (&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,80,10
     CONTROL         "अतिव्यापी खोज (&O)",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "लपेटे नहीं (&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
-    CONTROL         "ढूँढने के बाद बंद करें (&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,77,10
+    CONTROL         "बदलने के बाद बंद करें (&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,77,10
     CONTROL         "उपस्थिति चिन्हित करें (&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,73,10
     CONTROL         "Wildcard खोजें (I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,126,63,10
     CONTROL         "केंद्र खोने पर पारदर्शी मोड",IDC_TRANSPARENT,
@@ -144,7 +144,7 @@ BEGIN
     PUSHBUTTON      "बदलें (&R)",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "चुना हुआ (&S)",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "सबको बदलें (&A)",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "स्ट्रिंग अदला-बदली",IDC_SWAPSTRG,150,32,49,12
+    PUSHBUTTON      "स्ट्रिंग अदला-बदली",IDC_SWAPSTRG,140,32,59,12
     PUSHBUTTON      "बंद करें",IDCANCEL,211,138,55,14
     CONTROL         "<a>ढूँढें(Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,142,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
@@ -312,7 +312,7 @@ BEGIN
     PUSHBUTTON      "अग्रभूमि (&E)...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "पृष्ठभूमि (&B)...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "फॉन्ट (&F)...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "पूर्वदर्शन (&P)",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "पूर्वावलोकन (&P)",IDC_PREVIEW,330,201,42,14
     PUSHBUTTON      "रीसेट (&R)",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
@@ -417,7 +417,7 @@ BEGIN
     EDITTEXT        1155,120,82,28,12,WS_GROUP
     LTEXT           "दायाँ: (&R)",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
-    LTEXT           "ऊपरी भाग: (&T)",1104,88,104,32,8
+    LTEXT           "शीर्ष भाग: (&T)",1104,88,104,32,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP
     LTEXT           "नीचला स्थान: (&B)",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
@@ -436,7 +436,7 @@ BEGIN
     DEFPUSHBUTTON   "सही है",IDOK,190,237,50,14,WS_GROUP
     PUSHBUTTON      "रद्द करें",IDCANCEL,244,237,50,14
     PUSHBUTTON      "प्रिंटर (&P)...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "पूर्व दर्शन",IDC_STATIC2,240,8,108,157
+    GROUPBOX        "पूर्वावलोकन",IDC_STATIC2,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -480,7 +480,7 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "वैकल्पिक मुख्य कूटशब्द: ",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
     CONTROL         "मुख्य कूटशब्द से एनक्रिप्ट करें",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "मुख्य कूटशब्द पुनः प्रयोग करें",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    CONTROL         "मुख्य कूटशब्द पुनः प्रयोग करें",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,215,60,85,10
     CONTROL         "पासफ्रेज़ दिखाएं",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
@@ -493,8 +493,8 @@ BEGIN
     DEFPUSHBUTTON   "सही है",IDOK,233,58,50,14
     PUSHBUTTON      "रद्द करें",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "मुख्य कूटशब्द कुंजी की सहायता से डिक्रिप्ट करें",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "इस फ़ाइल के पास मुख्य कूटशब्द कुंजी है",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    CONTROL         "मुख्य कूटशब्द कुंजी की सहायता से डिक्रिप्ट करें",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,40,130,10
+    LTEXT           "इस फ़ाइल के पास मुख्य कूटशब्द कुंजी है",IDC_PWD_STATMPW,16,41,110,11,NOT WS_GROUP
     CONTROL         "पासफ्रेज़ दिखाएं",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
