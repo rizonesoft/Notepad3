@@ -499,7 +499,7 @@ BEGIN
                 MENUITEM "दाएं से बाएं (&R)",               IDM_SET_BIDIRECTIONAL_R2L
             END
         END
-        POPUP "उन्नत विन्यास (&A)"
+        POPUP "उन्नत कन्फ़िगरेशन (&A)"
         BEGIN
             MENUITEM "बाहर निकलते समय सेटिंग्स सहेजें (&X)",          IDM_VIEW_SAVESETTINGS
             MENUITEM "सेटिंग्स अभी सहेजें (&N)\tF7",          IDM_VIEW_SAVESETTINGSNOW
