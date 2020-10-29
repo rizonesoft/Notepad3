@@ -82,7 +82,7 @@ BEGIN
     IDS_LEX_PASCAL_SRC      "Pascal स्रोत कोड"
     IDS_LEX_ASM_SCR         "Assembly स्क्रिप्ट"
     IDS_LEX_PERL_SCR        "Perl स्क्रिप्ट"
-    IDS_LEX_CONF            "Configuration फ़ाइल"
+    IDS_LEX_CONF            "कन्फ़िगरेशन फ़ाइल"
     IDS_LEX_BATCH           "Batch फ़ाइल"
     IDS_LEX_DIFF            "Diff फ़ाइल"
     IDS_LEX_SQL             "SQL Query"
