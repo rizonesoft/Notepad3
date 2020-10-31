@@ -1,5 +1,16 @@
 History
 
+2020/10/27: fix Issue 26675 in oss-fuzz: Timeout
+
+2020/10/21: Release Candidate 4 for Version 6.9.6
+
+2020/10/20: #221: revert cbe9f8b and 8155473: Out-of-bounds write in #207 (Issues found with Coverity) is fake
+
+2020/10/16: Release Candidate 3 for Version 6.9.6
+
+2020/10/15: fix #220: autotools not building DLL using msys2 and mingw64 on windows 10
+2020/10/12: fix #219: Binary incompatibilty between 6.9.5_rev1 -> 6.9.2_rc2: reg_number_of_names
+
 2020/10/09: Release Candidate 2 for Version 6.9.6
 
 2020/10/09: fix #216: build fails on Windows
