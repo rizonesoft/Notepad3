@@ -580,7 +580,7 @@ msgstr "Пошукавы радок пусты"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Адкрыць новае акно grepWinNP3"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -608,5 +608,5 @@ msgstr "Дадае пункт у кантэкстнае меню з назвай
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Зверху іншых вокнаў"
 
