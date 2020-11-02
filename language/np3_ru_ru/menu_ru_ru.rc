@@ -431,7 +431,7 @@ BEGIN
         MENUITEM "Общий &шрифт по умолчанию...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "Шрифт по умолчанию для &текущей схемы...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Dark Mode",                                       IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Темный режим Windows",                                    IDM_VIEW_WIN_DARK_MODE
         END
     POPUP "&Настройки"
     BEGIN
