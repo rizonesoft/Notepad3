@@ -67,7 +67,7 @@ msgstr "Посетить сайт Stefan Küng"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWinNP3...</a>"
-msgstr "<a>o grepWinNP3...</a>"
+msgstr "<a>о grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -580,7 +580,7 @@ msgstr "Строка поиска пуста"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Открыть новое окно grepWinNP3"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -608,5 +608,5 @@ msgstr "Добавляет пункт в контекстное меню с на
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Поверх других окон"
 
