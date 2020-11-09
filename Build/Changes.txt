@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1029.(build_#) (2020-10-29)
+Current BETA/RC Version 5.20.1109.(build_#) (2020-11-09)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[1109.1]- Extension ".pkb" to SQL Lexer.
 [1012.1]- Support for Windows 10 20H2 Version 2009 (Build 19042).
 [1004.1]- Open/Save file explorer dialog: populate file filter with current lexer supported file extensions.
 [.929.1]- Minipath.ini: [Settings2] FocusLostOpacity=100 (opycity level on losing focus).
@@ -84,7 +85,7 @@ CHANGES:
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
 [.921.1]- Update grepWinNP3 (GRE) version 2.1.4.30 (2020-09-21).
-[1012.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-10-09).
+[.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-11).
 
 --------------------------------------------------------
