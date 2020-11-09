@@ -91,7 +91,7 @@ NULL,
 
 
 EDITLEXER lexSQL = { 
-SCLEX_SQL, "sql", IDS_LEX_SQL, L"SQL Query", L"sql; mysql; hsql", L"",
+SCLEX_SQL, "sql", IDS_LEX_SQL, L"SQL Query", L"sql; mysql; hsql; pkb", L"",
   &KeyWords_SQL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_SQL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
