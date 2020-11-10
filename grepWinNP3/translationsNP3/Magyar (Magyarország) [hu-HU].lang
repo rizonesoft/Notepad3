@@ -590,6 +590,10 @@ msgstr "Az útvonal(ak), ahol rekurzívan keresünk.\nElválasztásra használja
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Ki lehet hagyni könyvtárakat, pl. CVS fájlokat és képeket.\nPéldául: ^(CVS|images)$\nFigyelem: a '.svn' mappák rejtettek Windows-on, így bennük általában nem keres."
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Visszaállítás"

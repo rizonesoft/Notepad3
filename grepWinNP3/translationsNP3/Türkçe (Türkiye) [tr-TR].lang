@@ -590,6 +590,10 @@ msgstr "öniznelemede aranan yollar.\n| sembolü ile ayrı yollar.\nÖrnek: c:\\
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "dizinleri hariç tutabilirsiniz, ör. CVS ve Resimler.\nÖrnek: ^(CVS|images)$\nNot: '.svn' klasörlerinin Windows\'ta 'gizli' olduğuna dikkat edin, bu nedenle genellikle taranmazlar."
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Sıfırla"

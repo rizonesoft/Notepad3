@@ -590,6 +590,10 @@ msgstr "die pad(e) wat rekursief gesoek word.\nAfsonder paaie met die '|' simboo
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "jy kan directories uitsluit, bv. CVS en beelde.\nVoorbeeld: ^(CVS|images)$\nOpmerking: '.svn' gidse is 'versteek' op Windows, dus word dit meestal nie geskandeer nie"
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Reset"

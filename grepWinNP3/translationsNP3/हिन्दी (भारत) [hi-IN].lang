@@ -590,6 +590,10 @@ msgstr "जो पथ recursively खोजे जा रहे हैं.\n'|' 
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "आप निदेशिका बाहर रख सकते हैं, उदाहरण CVS and चित्र .\nउदाहरण: ^(CVS|चित्र)$\nकृपया ध्यान दें, 'Windows में .svn' फ़ोल्डर 'छिपे' हुए हैं, अतः वो प्रायः स्कैन नहीं किए जाते"
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "रीसेट"

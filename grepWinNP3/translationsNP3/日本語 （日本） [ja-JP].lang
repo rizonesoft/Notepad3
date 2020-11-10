@@ -590,6 +590,10 @@ msgstr "パスは再帰的に検索されます。\nパスを「|」で区切る
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "フォルダを除外できます。CVS と images を除外する例です。\n指定例: ^(CVS|images)$\n注: Windows では「.svn」フォルダは隠されているため、通常はスキャンされません。"
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "初期化"

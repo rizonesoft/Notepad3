@@ -472,10 +472,6 @@ msgstr "将文件视为 UTF-8"
 msgid "Treat files as binary"
 msgstr "将文件视为二进制"
 
-#. Resource IDs: (1045)
-msgid "Visit Stefan Küng's website"
-msgstr "访问 Stefan Küng 的网站"
-
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "用于查找的正则表达式。按 F1 键获取更多信息。"
@@ -593,6 +589,10 @@ msgstr "要递归查找的路径。\n使用 | 来分隔路径。\n例如：c:\\t
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "你可以排除目录，例如 CVS 和图片。\n例如：^(CVS|images)$\n注意：.svn 目录在 Windows 中是隐藏的，所以通常不会扫描。"
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"

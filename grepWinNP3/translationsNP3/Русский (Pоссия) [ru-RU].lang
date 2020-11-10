@@ -590,6 +590,10 @@ msgstr "Рекурсивный поиск путей.\nРазделение пу
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Можно исключать папки, например, CVS и images.\nПример: ^(CVS|images)$\nВнимание: папки '.svn' скрыты в Windows, поэтому они обычно не сканируются."
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Сброс"
