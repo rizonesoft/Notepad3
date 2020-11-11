@@ -590,6 +590,10 @@ msgstr "재귀적으로 검색되는 경로입니다.\n'|' 기호로 경로를 �
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "디렉토리를 제외할 수 있고, 예를 들어 CVS 및 이미지입니다.\n예제: ^(CVS|images)$\n참고: '.svn'폴더는 Windows에서 '숨겨져' 있으므로 일반적으로 검색되지 않습니다."
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "재설정"

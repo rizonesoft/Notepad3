@@ -590,6 +590,10 @@ msgstr "o(s) caminho(s) serão pesquisados recursivamente.\nSepare os caminhos c
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "pode excluir pastas, ex. CVS e imagens.\nExemplo: ^(CVS|imagens)$\nLembre-se, pastas '.svn' estão 'ocultas' no Windows, por isso, geralmente não são examinadas."
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Repor"

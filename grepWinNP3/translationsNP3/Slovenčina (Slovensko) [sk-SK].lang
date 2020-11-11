@@ -590,6 +590,10 @@ msgstr "cesta(y), ktorá je prehľadávaná rekurzívne.\nOddeľte cesty týmto 
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "môžete vylúčiť adresáre, napr. CVS a obrázky.\nPríklad: ^(CVS|obrázky)$\nPoznámka, '.svn' priečinky sú v systéme Windows 'skryté', takže zvyčajne nie sú skenované."
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Reset"

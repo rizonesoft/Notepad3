@@ -590,6 +590,10 @@ msgstr "διαδρομές που αναζητούνται διαδοχικά. \
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "μπορείτε να εξαιρέσετε καταλόγους, π.χ. CVS και εικόνες.\r\nΠαράδειγμα: ^(CVS|images)$\r\nΣημείωση, οι φάκελοι '.svn' είναι 'κρυφοί' στα Windows, επομένως συνήθως δεν σαρώνονται."
 
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
+
 #. Resource IDs: (3000)
 msgid "Reset"
 msgstr ""
