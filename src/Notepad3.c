@@ -7845,7 +7845,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_URIDROPPED:
     {
       // see WM_DROPFILES
-      WCHAR szBuf[MAX_PATH + 40];
+      WCHAR szBuf[MAX_PATH + 40] = { L'\0' };
       if (MultiByteToWideCharEx(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
       {
         if (IsIconic(hwnd)) {
@@ -10009,7 +10009,6 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
 bool FileLoad(bool bDontSave, bool bNew, bool bReload, 
               bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile)
 {
-  WCHAR szFilePath[MAX_PATH] = { L'\0' };
   bool fSuccess = false;
 
   EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
@@ -10069,8 +10068,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     return true;
   }
 
+  WCHAR szFolder[MAX_PATH] = { L'\0' };
+  WCHAR szFilePath[MAX_PATH] = { L'\0' };
   if (StrIsEmpty(lpszFile)) {
-    if (!OpenFileDlg(Globals.hwndMain, szFilePath, COUNTOF(szFilePath), NULL)) {
+    if (!OpenFileDlg(Globals.hwndMain, szFilePath, COUNTOF(szFilePath), szFolder)) {
       return false;
     }
   }
@@ -10080,8 +10081,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   NormalizePathEx(szFilePath, COUNTOF(szFilePath), true, Flags.bSearchPathIfRelative);
 
   // change current directory to prevent directory lock on another path
-  WCHAR szFolder[MAX_PATH];
-  if (SUCCEEDED(StringCchCopy(szFolder,COUNTOF(szFolder), szFilePath))) {
+  if (SUCCEEDED(StringCchCopy(szFolder, COUNTOF(szFolder), szFilePath))) {
     if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder)))) {
       SetCurrentDirectory(szFolder);
     }
@@ -10746,7 +10746,7 @@ bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
   Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
   WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-  if (lpstrInitialDir) {
+  if (lpstrInitialDir != NULL) {
     StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
     _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
   }
