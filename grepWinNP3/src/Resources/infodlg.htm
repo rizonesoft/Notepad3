@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="iso-8859-1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,7 +24,9 @@
             margin: 8px auto 4px
         }
 
-        table, th, td {
+        table,
+        th,
+        td {
             border-collapse: collapse;
             border: 1px solid black;
             padding: 8px;
@@ -62,14 +65,25 @@
         }
     </style>
 </head>
+
 <body>
     <p>this help file shows only the basics of a regular expression search, and
     it's here only to show the flavor of the used regex.</p>
     <p>If you're not familiar with regular expressions, please consult
-    a tutorial like <a href="https://www.regular-expressions.info/tutorial.html" target="_blank">https://www.regular-expressions.info/tutorial.html</a></p>
+        a tutorial like <a href="https://www.regular-expressions.info/tutorial.html"
+            target="_blank">https://www.regular-expressions.info/tutorial.html</a></p>
+    <p>
+        The Regex syntax is described in detail here:
+        <a href="https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html" target="_blank">https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html</a>
+        <br />
+        and all the possible character classes can be found here:
+        <a href="https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/character_classes.html" target="_blank">https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/character_classes.html</a>
+    </p>
     <table>
         <tr>
-            <td colspan="2"><h1>Regular expression examples</h1></td>
+            <td colspan="2">
+                <h1>Regular expression examples</h1>
+            </td>
         </tr>
         <tr>
             <td class="style1">.</td>
@@ -89,7 +103,8 @@
         </tr>
         <tr>
             <td class="style2">\Q...\E</td>
-            <td class="style5 td-left">Matches the characters between <code>\Q</code> and <code>\E</code> literally, suppressing the meaning of special characters.</td>
+            <td class="style5 td-left">Matches the characters between <code>\Q</code> and <code>\E</code> literally,
+                suppressing the meaning of special characters.</td>
         </tr>
         <tr>
             <td class="style2">[a-c]</td>
@@ -123,13 +138,44 @@
             <td class="style3">\xFF</td>
             <td class="style4 td-left">Matches the character 0xFF</td>
         </tr>
+    </table>
+    <p>for replacing, the following placeholders can be used</p>
+    <table>
         <tr>
-            <td class="style3">$1..$9</td>
-            <td class="style4 td-left">groups are referenced in the replace expression by <code>$i</code> for the i-th group</td>
+            <td class="style3">$&</td>
+            <td class="style4 td-left">Outputs what matched the whole expression</td>
+        </tr>
+        <tr>
+            <td class="style3">$` or ${^PREMATCH}</td>
+            <td class="style4 td-left">Outputs the text between the end of the last match found (or the start of the
+                text if no previous match was found), and the start of the current match</td>
+        </tr>
+        <tr>
+            <td class="style3">$' or ${^POSTMATCH}</td>
+            <td class="style4 td-left">Outputs all the text following the end of the current match</td>
+        </tr>
+        <tr>
+            <td class="style3">$+</td>
+            <td class="style4 td-left">Outputs what matched the last marked sub-expression in the regular expression
+            </td>
+        </tr>
+        <tr>
+            <td class="style3">$n or ${n}</td>
+            <td class="style4 td-left">Outputs what matched the n'th sub-expression</td>
+        </tr>
+        <tr>
+            <td class="style3">$$</td>
+            <td class="style4 td-left">Outputs a literal '$'</td>
+        </tr>
+        <tr>
+            <td class="style3">$+{NAME}</td>
+            <td class="style4 td-left">Outputs whatever matched the sub-expression named "NAME"</td>
         </tr>
         <tr>
             <td class="style3">${count08}</td>
-            <td class="style4 td-left">replaced with numbers starting from 1, incrementing by 1 for every match. The numbers after "count" are optional and indicate how many leading spaces the output should use, or if the number is preceded by a zero how many leading zeros.</td>
+            <td class="style4 td-left">replaced with numbers starting from 1, incrementing by 1 for every match. The
+                numbers after "count" are optional and indicate how many leading spaces the output should use, or if the
+                number is preceded by a zero how many leading zeros.</td>
         </tr>
         <tr>
             <td class="style3">${count08(start)}</td>
@@ -137,7 +183,8 @@
         </tr>
         <tr>
             <td class="style3">${count08(start, increment)}</td>
-            <td class="style4 td-left">same as <code>${count(start)}</code>, but with "increment" as the increment value instead of the default 1</td>
+            <td class="style4 td-left">same as <code>${count(start)}</code>, but with "increment" as the increment value
+                instead of the default 1</td>
         </tr>
         <tr>
             <td class="style3">${filepath}</td>
@@ -145,11 +192,77 @@
         </tr>
         <tr>
             <td class="style3">${filename}</td>
-            <td class="style4 td-left">replaced with the name of the currently searched file. The name does not include the file extension</td>
+            <td class="style4 td-left">replaced with the name of the currently searched file. The name does not include
+                the file extension</td>
         </tr>
         <tr>
             <td class="style3">${fileext}</td>
             <td class="style4 td-left">replaced with the extension of the currently searched file</td>
+        </tr>
+        <tr>
+            <td class="style3">\a</td>
+            <td class="style4 td-left">Outputs the bell character: '\a'</td>
+        </tr>
+        <tr>
+            <td class="style3">\e</td>
+            <td class="style4 td-left">Outputs the ANSI escape character (code point 27)</td>
+        </tr>
+        <tr>
+            <td class="style3">\f</td>
+            <td class="style4 td-left">Outputs a form feed character: '\f'</td>
+        </tr>
+        <tr>
+            <td class="style3">\n</td>
+            <td class="style4 td-left">Outputs a newline character: '\n'</td>
+        </tr>
+        <tr>
+            <td class="style3">\r</td>
+            <td class="style4 td-left">Outputs a carriage return character: '\r'</td>
+        </tr>
+        <tr>
+            <td class="style3">\t</td>
+            <td class="style4 td-left">Outputs a tab character: '\t'</td>
+        </tr>
+        <tr>
+            <td class="style3">\v</td>
+            <td class="style4 td-left">Outputs a vertical tab character: '\v'</td>
+        </tr>
+        <tr>
+            <td class="style3">\xDD</td>
+            <td class="style4 td-left">Outputs the character whose hexadecimal code point is 0xDD</td>
+        </tr>
+        <tr>
+            <td class="style3">\x{DDDD}</td>
+            <td class="style4 td-left">Outputs the character whose hexadecimal code point is 0xDDDDD</td>
+        </tr>
+        <tr>
+            <td class="style3">\cX</td>
+            <td class="style4 td-left">Outputs the ANSI escape sequence "escape-X"</td>
+        </tr>
+        <tr>
+            <td class="style3">\D</td>
+            <td class="style4 td-left">If D is a decimal digit in the range 1-9, then outputs the text
+                    that matched sub-expression D</td>
+        </tr>
+        <tr>
+            <td class="style3">\l</td>
+            <td class="style4 td-left">Causes the next character to be outputted, to be output in lower case</td>
+        </tr>
+        <tr>
+            <td class="style3">\u</td>
+            <td class="style4 td-left">Causes the next character to be outputted, to be output in upper case</td>
+        </tr>
+        <tr>
+            <td class="style3">\L</td>
+            <td class="style4 td-left">Causes all subsequent characters to be output in lower case, until a \E is found</td>
+        </tr>
+        <tr>
+            <td class="style3">\U</td>
+            <td class="style4 td-left">Causes all subsequent characters to be output in upper case, until a \E is found</td>
+        </tr>
+        <tr>
+            <td class="style3">\E</td>
+            <td class="style4 td-left">Terminates a \L or \U sequence</td>
         </tr>
         <tr>
             <td class="style3"></td>
@@ -157,4 +270,5 @@
         </tr>
     </table>
 </body>
+
 </html>

@@ -368,27 +368,38 @@ std::string CStringUtils::Format(const char* frmt, ...)
 
 bool WriteAsciiStringToClipboard(const wchar_t* sClipdata, HWND hOwningWnd)
 {
-    if (OpenClipboard(hOwningWnd))
+    // OpenClipboard may fail if another application has opened the clipboard.
+    // Try up to 8 times, with an initial delay of 1 ms and an exponential back off
+    // for a maximum total delay of 127 ms (1+2+4+8+16+32+64).
+    for (int attempt = 0; attempt < 8; ++attempt)
     {
-        OnOutOfScope(
-            CloseClipboard(););
-        EmptyClipboard();
-        size_t  sLen           = wcslen(sClipdata);
-        HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, (sLen + 1) * sizeof(wchar_t));
-        if (hClipboardData)
+        if (attempt > 0)
         {
-            wchar_t* pchData = (wchar_t*)GlobalLock(hClipboardData);
-            if (pchData)
+            ::Sleep(1 << (attempt - 1));
+        }
+        if (OpenClipboard(hOwningWnd))
+        {
+            OnOutOfScope(
+                CloseClipboard(););
+            EmptyClipboard();
+            size_t  sLen           = wcslen(sClipdata);
+            HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, (sLen + 1) * sizeof(wchar_t));
+            if (hClipboardData)
             {
-                wcscpy_s(pchData, sLen + 1, sClipdata);
-                if (GlobalUnlock(hClipboardData))
+                wchar_t* pchData = (wchar_t*)GlobalLock(hClipboardData);
+                if (pchData)
                 {
-                    if (SetClipboardData(CF_UNICODETEXT, hClipboardData) == nullptr)
-                        return true;
+                    wcscpy_s(pchData, sLen + 1, sClipdata);
+                    if (GlobalUnlock(hClipboardData))
+                    {
+                        if (SetClipboardData(CF_UNICODETEXT, hClipboardData) == nullptr)
+                            return true;
+                    }
                 }
             }
         }
     }
+
     return false;
 }
 

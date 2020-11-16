@@ -61,7 +61,7 @@ public:
     }
 
     /// Inherited via IUIAnimationTimerEventHandler
-    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject) override
+    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void ** ppvObject) override
     {
         if (ppvObject == nullptr)
             return E_POINTER;
@@ -94,6 +94,7 @@ public:
         return ref;
     }
 
+
     virtual HRESULT STDMETHODCALLTYPE OnPreUpdate(void) override
     {
         return S_OK;
@@ -112,7 +113,7 @@ public:
     }
 
 private:
-    std::map<IUIAnimationStoryboard*, std::function<void()>> callbacks;
+    std::map<IUIAnimationStoryboard *, std::function<void()>> callbacks;
     unsigned long ref;
 };
 
@@ -134,7 +135,7 @@ public:
     }
 
     /// Sets the timer object event handler
-    void SetTimerObj(CTimerEventHandler* handler)
+    void SetTimerObj(CTimerEventHandler * handler)
     {
         if (timerEventHandler)
             timerEventHandler->Release();
@@ -144,7 +145,7 @@ public:
     }
 
     /// Inherited via IUIAnimationStoryboardEventHandler
-    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject) override
+    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void ** ppvObject) override
     {
         if (ppvObject == nullptr)
             return E_POINTER;
@@ -177,6 +178,7 @@ public:
         return ref;
     }
 
+
     /// IUIAnimationStoryboardEventHandler Interface implementation
     HRESULT STDMETHODCALLTYPE OnStoryboardStatusChanged(IUIAnimationStoryboard* storyboard,
                                                         UI_ANIMATION_STORYBOARD_STATUS newStatus,
@@ -201,10 +203,12 @@ public:
         return S_OK;
     }
 
+
 private:
-    CTimerEventHandler* timerEventHandler;
+    CTimerEventHandler * timerEventHandler;
     unsigned long ref;
 };
+
 
 IUIAnimationVariablePtr Animator::CreateAnimationVariable(double start)
 {
@@ -411,7 +415,7 @@ Animator::~Animator()
     pAnimMgr->Shutdown();
 }
 
-Animator& Animator::Instance()
+Animator & Animator::Instance()
 {
     if (instance == nullptr)
         instance.reset(new Animator());
@@ -423,4 +427,10 @@ void Animator::ShutDown()
     instance.reset(nullptr);
 }
 
+bool Animator::IsInstanceActive()
+{
+    return instance != nullptr;
+}
+
 std::unique_ptr<Animator> Animator::instance = nullptr;
+

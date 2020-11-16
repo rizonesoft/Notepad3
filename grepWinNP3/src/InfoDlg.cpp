@@ -18,6 +18,8 @@
 //
 #include "stdafx.h"
 #include "InfoDlg.h"
+#include "StringUtils.h"
+#include "DPIAware.h"
 #include "maxpath.h"
 
 #include <memory>
@@ -36,7 +38,7 @@ CInfoDlg::~CInfoDlg()
 }
 
 //Function which takes input of An HTML Resource Id
-BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
+BOOL CInfoDlg::ShowDialog(HWND hParent, UINT idAboutHTMLID, HINSTANCE hInstance)
 {
     //Load the IE Specific MSTML Interface DKK
     HINSTANCE hinstMSHTML = LoadLibrary(TEXT("mshtml.dll"));
@@ -55,7 +57,7 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
                 //Add the IE Res protocol
                 auto strResourceURL = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
                 swprintf_s(strResourceURL.get(), MAX_PATH_NEW, L"res://%s/%u", lpszModule.get(), idAboutHTMLID);
-                int  iLength       = (int)wcslen(strResourceURL.get());
+                auto iLength       = wcslen(strResourceURL.get());
                 auto lpWideCharStr = std::make_unique<wchar_t[]>(iLength + 1);
                 //Attempt to Create the URL Moniker to the specified in the URL String
                 IMoniker *pmk;
@@ -64,7 +66,10 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
                     //Invoke the ShowHTMLDialog function by pointer
                     //passing the HWND of your Application , the Moniker,
                     //the remaining parameters can be set to NULL
-                    pfnShowHTMLDialog(NULL, pmk, HTMLDLG_MODELESS, NULL, L"resizable:yes", NULL);
+                    auto opts = CStringUtils::Format(L"dialogHeight:%dpx; dialogWidth:%dpx; resizable:yes",
+                                                     CDPIAware::Instance().Scale(hParent, 600),
+                                                     CDPIAware::Instance().Scale(hParent, 480));
+                    pfnShowHTMLDialog(NULL, pmk, HTMLDLG_MODELESS, NULL, opts.data(), NULL);
                     bSuccess = TRUE;
                 }
             }

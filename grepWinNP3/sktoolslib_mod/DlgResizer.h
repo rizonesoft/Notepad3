@@ -51,7 +51,7 @@ public:
     RECT* GetDlgRect() { return &m_dlgRect; }
     RECT* GetDlgRectScreen() { return &m_dlgRectScreen; }
     void  UpdateGripPos();
-    void  UseSizeGrip(bool use) { m_useSizeGrip = use; }
+    void  UseSizeGrip(bool use) { m_useSizeGrip = use; ShowSizeGrip(m_useSizeGrip); }
 
 private:
     void                     ShowSizeGrip(bool bShow = true);

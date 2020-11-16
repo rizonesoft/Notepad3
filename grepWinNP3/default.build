@@ -98,6 +98,11 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Hindi.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
       <arg value="translations\Polish.lang" />
     </exec>
     <exec program="tools\restext.exe" >

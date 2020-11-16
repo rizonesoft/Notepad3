@@ -89,6 +89,7 @@ public:
     BOOL GetIsImmersiveColorUsingHighContrast(IMMERSIVE_HC_CACHE_MODE mode);
     void FlushMenuThemes();
     BOOL SetWindowCompositionAttribute(HWND hWnd, WINDOWCOMPOSITIONATTRIBDATA* data);
+    void RefreshTitleBarThemeColor(HWND hWnd, BOOL dark);
 
 private:
     DarkModeHelper();

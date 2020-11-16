@@ -44,12 +44,13 @@ bool CScrollTool::Init(bool bRightAligned /* = false */)
         }
         //m_hwnd = CreateWindowEx(0, TOOLTIPS_CLASSW, nullptr, TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hParent, 0, hResource, (void *)this);
 
+        wchar_t space[] = L" ";
         ti.cbSize   = sizeof(TOOLINFO);
         ti.uFlags   = TTF_TRACK;
         ti.hwnd     = nullptr;
         ti.hinst    = nullptr;
         ti.uId      = 0;
-        ti.lpszText = L" ";
+        ti.lpszText = space;
 
         // ToolTip control will cover the whole window
         ti.rect.left   = 0;

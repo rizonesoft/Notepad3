@@ -1,4 +1,4 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
 // Copyright (C) 2012, 2020 - Stefan Kueng
 
@@ -74,7 +74,7 @@ public:
     wchar_t     m_title[200];
 
 protected:
-    static void SetFont(HWND hwnd, LPWSTR FontName, int FontSize);
+    static void SetFont(HWND hwnd, LPCWSTR FontName, int FontSize);
 
     static int CALLBACK     BrowseCallBackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
     static LRESULT APIENTRY CheckBoxSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

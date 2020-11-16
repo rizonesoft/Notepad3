@@ -30,13 +30,13 @@
 
 typedef struct tagCOLORIZATIONPARAMS
 {
-    COLORREF    clr1;
-    COLORREF    clr2;
-    UINT        nIntensity;
-    UINT        nReserved2;
-    UINT        nReserved3;
-    UINT        nReserved4;
-    BOOL        fOpaque;
+    COLORREF clr1;
+    COLORREF clr2;
+    UINT     nIntensity;
+    UINT     nReserved2;
+    UINT     nReserved3;
+    UINT     nReserved4;
+    BOOL     fOpaque;
 } COLORIZATIONPARAMS;
 
 typedef void(WINAPI* FN_DwmGetColorizationParameters)(COLORIZATIONPARAMS* parameters);
@@ -116,7 +116,7 @@ void CAeroColors::SetRandomColor()
         FN_DwmSetColorizationParameters pDwmSetColorizationParameters = (FN_DwmSetColorizationParameters)GetProcAddress(GetModuleHandle(L"dwmapi.dll"), LPCSTR(131));
         if (pDwmGetColorizationParameters && pDwmSetColorizationParameters)
         {
-            COLORREF clr = RGB(rand() & 0xFF, rand() & 0xFF, rand() & 0xFF);
+            COLORREF           clr    = RGB(rand() & 0xFF, rand() & 0xFF, rand() & 0xFF);
             COLORIZATIONPARAMS params = {0};
             pDwmGetColorizationParameters(&params);
             params.clr1 = clr;
