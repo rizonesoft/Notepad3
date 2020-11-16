@@ -110,6 +110,7 @@ typedef struct {
   struct _Node* head_exact;
   struct _Node* next_head_exact;
   int include_referred;  /* include called node. don't eliminate even if {0} */
+  MemStatusType empty_status_mem;
 } QuantNode;
 
 typedef struct {

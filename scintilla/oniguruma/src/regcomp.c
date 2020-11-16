@@ -1060,14 +1060,20 @@ compile_quant_body_with_empty_check(QuantNode* qn, regex_t* reg, ScanEnv* env)
     if (emptiness == BODY_MAY_BE_EMPTY)
       r = add_op(reg, OP_EMPTY_CHECK_END);
     else if (emptiness == BODY_MAY_BE_EMPTY_MEM) {
-      if (NODE_IS_EMPTY_STATUS_CHECK(qn) != 0)
+      if (NODE_IS_EMPTY_STATUS_CHECK(qn) != 0 && qn->empty_status_mem != 0) {
         r = add_op(reg, OP_EMPTY_CHECK_END_MEMST);
+        if (r != 0) return r;
+        COP(reg)->empty_check_end.empty_status_mem = qn->empty_status_mem;
+      }
       else
         r = add_op(reg, OP_EMPTY_CHECK_END);
     }
 #ifdef USE_CALL
-    else if (emptiness == BODY_MAY_BE_EMPTY_REC)
+    else if (emptiness == BODY_MAY_BE_EMPTY_REC) {
       r = add_op(reg, OP_EMPTY_CHECK_END_MEMST_PUSH);
+      if (r != 0) return r;
+      COP(reg)->empty_check_end.empty_status_mem = qn->empty_status_mem;
+    }
 #endif
 
     if (r != 0) return r;
@@ -4085,7 +4091,7 @@ set_empty_status_check_trav(Node* node, ScanEnv* env)
         Node* ernode = mem_env[backs[i]].empty_repeat_node;
         if (IS_NOT_NULL(ernode)) {
           if (! is_ancestor_node(ernode, node)) {
-            MEM_STATUS_LIMIT_ON(env->reg->empty_status_mem, backs[i]);
+            MEM_STATUS_LIMIT_ON(QUANT_(ernode)->empty_status_mem, backs[i]);
             NODE_STATUS_ADD(ernode, EMPTY_STATUS_CHECK);
             NODE_STATUS_ADD(mem_env[backs[i]].mem_node, EMPTY_STATUS_CHECK);
           }
@@ -7706,6 +7712,7 @@ onig_is_code_in_cc(OnigEncoding enc, OnigCodePoint code, CClassNode* cc)
 typedef struct {
   int prec_read;
   int look_behind;
+  int backref;
   int backref_with_level;
   int call;
 } SlowElementCount;
@@ -7771,6 +7778,8 @@ node_detect_can_be_slow(Node* node, SlowElementCount* ct)
   case NODE_BACKREF:
     if (NODE_IS_NEST_LEVEL(node))
       ct->backref_with_level++;
+    else
+      ct->backref++;
     break;
 #endif
 
@@ -7812,13 +7821,14 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
   if (r == 0) {
     count.prec_read          = 0;
     count.look_behind        = 0;
+    count.backref            = 0;
     count.backref_with_level = 0;
     count.call               = 0;
 
     r = node_detect_can_be_slow(root, &count);
     if (r == 0) {
       int n = count.prec_read + count.look_behind
-            + count.backref_with_level + count.call;
+            + count.backref + count.backref_with_level + count.call;
       r = n;
     }
   }

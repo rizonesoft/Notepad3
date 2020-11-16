@@ -1,5 +1,8 @@
 History
 
+2020/11/05: Version 6.9.6
+
+2020/11/01: fix Issue 26798 in oss-fuzz: Timeout
 2020/10/27: fix Issue 26675 in oss-fuzz: Timeout
 
 2020/10/21: Release Candidate 4 for Version 6.9.6
