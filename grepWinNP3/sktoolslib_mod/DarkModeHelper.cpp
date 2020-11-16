@@ -39,7 +39,7 @@ void DarkModeHelper::AllowDarkModeForApp(BOOL allow)
     if (m_pAllowDarkModeForApp)
         m_pAllowDarkModeForApp(allow ? 1 : 0);
     if (m_pSetPreferredAppMode)
-        m_pSetPreferredAppMode(allow ? AllowDark : Default);
+        m_pSetPreferredAppMode(allow ? ForceDark : Default);
 }
 
 void DarkModeHelper::AllowDarkModeForWindow(HWND hwnd, BOOL allow)
@@ -50,9 +50,9 @@ void DarkModeHelper::AllowDarkModeForWindow(HWND hwnd, BOOL allow)
 
 BOOL DarkModeHelper::ShouldAppsUseDarkMode()
 {
-    if (m_pShouldAppsUseDarkMode)
+    if (m_pShouldAppsUseDarkMode && m_pAllowDarkModeForApp)
         return m_pShouldAppsUseDarkMode() & 0x01;
-    return FALSE;
+    return ShouldSystemUseDarkMode();
 }
 
 BOOL DarkModeHelper::IsDarkModeAllowedForWindow(HWND hwnd)
@@ -100,6 +100,12 @@ BOOL DarkModeHelper::SetWindowCompositionAttribute(HWND hWnd, WINDOWCOMPOSITIONA
     if (m_pSetWindowCompositionAttribute)
         return m_pSetWindowCompositionAttribute(hWnd, data);
     return FALSE;
+}
+
+void DarkModeHelper::RefreshTitleBarThemeColor(HWND hWnd, BOOL dark)
+{
+    WINDOWCOMPOSITIONATTRIBDATA data = {WCA_USEDARKMODECOLORS, &dark, sizeof(dark)};
+    SetWindowCompositionAttribute(hWnd, &data);
 }
 
 DarkModeHelper::DarkModeHelper()

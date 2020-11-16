@@ -884,6 +884,7 @@ typedef struct {
     } empty_check_start;
     struct {
       MemNumType mem;
+      MemStatusType empty_status_mem;
     } empty_check_end; /* EMPTY_CHECK_END, EMPTY_CHECK_END_MEMST, EMPTY_CHECK_END_MEMST_PUSH */
     struct {
       RelAddrType addr;
@@ -977,7 +978,6 @@ struct re_pattern_buffer {
   MemStatusType  capture_history;  /* (?@...) flag (1-31) */
   MemStatusType  push_mem_start;   /* need backtrack flag */
   MemStatusType  push_mem_end;     /* need backtrack flag */
-  MemStatusType  empty_status_mem;
   int            stack_pop_level;
   int            repeat_range_alloc;
   RepeatRange*   repeat_range;

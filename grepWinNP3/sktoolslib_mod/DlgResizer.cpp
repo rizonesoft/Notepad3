@@ -79,9 +79,12 @@ void CDlgResizer::Init(HWND hWndDlg)
         }
         ::SetWindowRgn(m_wndGrip, rgnGrip, FALSE);
 
-        // update pos
-        UpdateGripPos();
-        ShowSizeGrip();
+        if (m_useSizeGrip)
+        {
+            // update pos
+            UpdateGripPos();
+            ShowSizeGrip();
+        }
     }
 }
 

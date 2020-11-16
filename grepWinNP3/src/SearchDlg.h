@@ -34,6 +34,8 @@
 #include <thread>
 #endif
 
+#include <wrl.h>
+using namespace Microsoft::WRL;
 
 #define SEARCH_START         (WM_APP+1)
 #define SEARCH_PROGRESS      (WM_APP+2)
@@ -162,6 +164,7 @@ private:
 private:
     HWND                    m_hParent;
     CBookmarksDlg *         m_pBookmarksDlg;
+    ComPtr<ITaskbarList3>   m_pTaskbarList;
 
     std::wstring            m_searchpath;
     std::wstring            m_searchString;
