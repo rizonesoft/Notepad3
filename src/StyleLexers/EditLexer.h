@@ -37,13 +37,14 @@ typedef struct _keywordlist
 #pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Structure/Union
 typedef struct _editlexer
 {
-  int          lexerID;
-  int          resID;
-  LPCWSTR      pszName;
-  LPCWSTR      pszDefExt;
+  int          lexerID;      // Scintilla/Lexilla ID
+  LPCSTR       lexerName;    // Lexilla Name (case sensitive)
+  int          resID;        // language resource
+  LPCWSTR      pszName;      // config/settings section
+  LPCWSTR      pszDefExt;    // default file name ext (4 reset)
   WCHAR        szExtensions[BUFZIZE_STYLE_EXTENTIONS];
   PKEYWORDLIST pKeyWords;
-  EDITSTYLE    Styles[];
+  EDITSTYLE    Styles[];     // must be last
 
 } EDITLEXER, *PEDITLEXER;
 

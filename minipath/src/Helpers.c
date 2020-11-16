@@ -503,8 +503,9 @@ void SetWindowTransparentMode(HWND hwnd, BOOL bTransparentMode, int iOpacityLeve
     BYTE const bAlpha = (BYTE)MulDiv(iOpacityLevel, 255, 100);
     SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
   }
-  else
-    SetWindowLongPtr(hwnd,GWL_EXSTYLE, GetWindowLongPtr(hwnd,GWL_EXSTYLE) & ~WS_EX_LAYERED);
+  else {
+    SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
+  }
 }
 
 
@@ -1075,7 +1076,7 @@ BOOL SearchPathEx(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer) {
 
   // Search Favorites if no result
   if (!dwRetVal) {
-    dwRetVal = SearchPath(Settings.g_tchFavoritesDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
+    dwRetVal = SearchPath(Settings.tchFavoritesDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
   }
 
   return dwRetVal != 0;

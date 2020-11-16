@@ -2,7 +2,6 @@
 #define REGENC_H
 /**********************************************************************
   regenc.h -  Oniguruma (regular expression library)
-  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2020  K.Kosako
@@ -80,6 +79,7 @@ typedef struct {
 #define MAX_CODE_POINT         (~((OnigCodePoint )0))
 #define ASCII_LIMIT            127
 #define NEWLINE_CODE           0x0a
+#define CARRIAGE_RET           0x0d
 
 #define enclen(enc,p)          ONIGENC_MBC_ENC_LEN(enc,p)
 
@@ -117,7 +117,7 @@ struct PropertyNameCtype {
   int ctype;
 };
 
-#define USE_CRNL_AS_LINE_TERMINATOR
+//~#define USE_CRNL_AS_LINE_TERMINATOR ~ solved by is_new_line() fct-ptr
 #define USE_UNICODE_PROPERTIES
 #define USE_UNICODE_EXTENDED_GRAPHEME_CLUSTER
 #define USE_UNICODE_WORD_BREAK
@@ -125,7 +125,7 @@ struct PropertyNameCtype {
 /* #define USE_UNICODE_ALL_LINE_TERMINATORS */ /* see Unicode.org UTS #18 */
 
 
-//#define ONIG_ENCODING_INIT_DEFAULT           ONIG_ENCODING_ASCII
+//~#define ONIG_ENCODING_INIT_DEFAULT           ONIG_ENCODING_ASCII
 #define ONIG_ENCODING_INIT_DEFAULT           ONIG_ENCODING_UTF8
 
 

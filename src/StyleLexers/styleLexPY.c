@@ -10,8 +10,8 @@ NULL,
 
 
 EDITLEXER lexPY = { 
-SCLEX_PYTHON, IDS_LEX_PYTHON, L"Python Script", L"py; pyw; pyx; pxd; pxi; boo; empy; cobra; gs", L"", 
-&KeyWords_PY, {
+SCLEX_PYTHON, "python", IDS_LEX_PYTHON, L"Python Script", L"py; pyw; pyx; pxd; pxi; boo; empy; cobra; gs", L"",
+  &KeyWords_PY, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_P_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#880000", L"" },

@@ -5,8 +5,8 @@
 KEYWORDLIST KeyWords_NULL = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexStandard = { 
-SCLEX_NULL, IDS_LEX_DEF_TXT, L"Common Base", L"", L"", 
-&KeyWords_NULL, {
+SCLEX_NULL, "null", IDS_LEX_DEF_TXT, L"Common Base", L"", L"",
+  &KeyWords_NULL, {
     /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_STD_STYLE, L"Default Style", L"font:Default", L"" },
     /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"size:-2; fore:#008080", L"" },
     /*  2 */ { {STYLE_BRACELIGHT}, IDS_LEX_STD_BRACE, L"Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:80; indic_roundbox", L"" },
@@ -29,8 +29,8 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Common Base", L"", L"",
 
 
 EDITLEXER lexStandard2nd = { 
-SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Common Base", L"", L"", 
-&KeyWords_NULL,{
+SCLEX_NULL, "null", IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
+  &KeyWords_NULL,{
     /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New", L"" },
     /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Courier New; size:-2; fore:#008080", L"" },
     /*  2 */ { {STYLE_BRACELIGHT}, IDS_LEX_2ND_BRACE, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
@@ -53,8 +53,8 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
 
 
 EDITLEXER lexTEXT = {
-SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx", L"",
-&KeyWords_NULL,{
+SCLEX_NULL, "null", IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx", L"",
+  &KeyWords_NULL,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
     { {SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
@@ -62,8 +62,8 @@ SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; 
 
 
 EDITLEXER lexANSI = { 
-SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz; \\^Readme$", L"", 
-&KeyWords_NULL,{
+SCLEX_NULL, "null", IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz; \\^Readme$", L"",
+  &KeyWords_NULL,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; size:11; thin; smoothing:none", L"" },
     { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
     { {STYLE_BRACELIGHT}, IDS_LEX_STD_BRACE, L"Matching Braces", L"", L"" },

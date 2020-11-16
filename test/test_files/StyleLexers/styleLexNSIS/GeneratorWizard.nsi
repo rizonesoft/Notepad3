@@ -1,5 +1,5 @@
 ﻿;Copyright 2006-2016 John T. Haller
-;Website: http://PortableApps.com/
+;Website: https://PortableApps.com/
 
 ;This software is OSI Certified Open Source Software.
 ;OSI Certified is a certification mark of the Open Source Initiative.

@@ -13,8 +13,8 @@ NULL,
 
 
 EDITLEXER lexRC = { 
-SCLEX_CPP, IDS_LEX_RESOURCE_SCR, L"Resource Script", L"rc; rc2; rct; rh; dlg; lang", L"", 
-&KeyWords_RC, {
+SCLEX_CPP, "cpp", IDS_LEX_RESOURCE_SCR, L"Resource Script", L"rc; rc2; rct; rh; dlg; lang", L"",
+  &KeyWords_RC, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_C_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

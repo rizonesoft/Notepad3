@@ -16,8 +16,7 @@
 extern "C" {
 #endif
 
-void /*ILexer5*/ * LEXILLA_CALLING_CONVENTION CreateLexerByID(const int language);
-void /*ILexer5*/ * LEXILLA_CALLING_CONVENTION CreateLexerByName(const char* name);
+void /*ILexer5*/ * LEXILLA_CALLING_CONVENTION CreateLexer(const char* name);
 
 #ifdef _cplusplus
 } // extern "C"

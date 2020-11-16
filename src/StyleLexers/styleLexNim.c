@@ -15,8 +15,8 @@ NULL,
 
 
 EDITLEXER lexNim = { 
-SCLEX_NIM, IDS_LEX_NIM_SRC, L"Nim Source Code", L"nim; nimrod", L"", 
-&KeyWords_Nim,{
+SCLEX_NIM, "nim", IDS_LEX_NIM_SRC, L"Nim Source Code", L"nim; nimrod", L"",
+  &KeyWords_Nim,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_NIM_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_NIM_COMMENT,SCE_NIM_COMMENTDOC,SCE_NIM_COMMENTLINE,SCE_NIM_COMMENTLINEDOC)}, IDS_LEX_STR_63127, L"Comment", L"italic; fore:#484A86", L"" },

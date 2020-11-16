@@ -1,0 +1,14 @@
+LIBRARY UxTheme.dll
+EXPORTS
+	ShouldAppsUseDarkMode @132 NONAME
+	AllowDarkModeForWindow @133 NONAME
+	AllowDarkModeForApp @135 NONAME
+	FlushMenuThemes @136 NONAME
+	RefreshImmersiveColorPolicyState @104 NONAME
+	IsDarkModeAllowedForWindow @137 NONAME
+	GetIsImmersiveColorUsingHighContrast @106 NONAME
+	OpenNcThemeData @49 NONAME
+
+	ShouldSystemUseDarkMode @138 NONAME
+;	SetPreferredAppMode@135 NONAME
+	IsDarkModeAllowedForApp @139 NONAME

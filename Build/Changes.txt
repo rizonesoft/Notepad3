@@ -34,13 +34,17 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.926.(build_#) (2020-09-26)
+Current BETA/RC Version 5.20.1109.(build_#) (2020-11-09)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
+[1109.1]- Extension ".pkb" to SQL Lexer.
+[1012.1]- Support for Windows 10 20H2 Version 2009 (Build 19042).
+[1004.1]- Open/Save file explorer dialog: populate file filter with current lexer supported file extensions.
+[.929.1]- Minipath.ini: [Settings2] FocusLostOpacity=100 (opycity level on losing focus).
 [.923.1]- Hotkey 'F3': use MRU latest item before clipboard content as search pattern if prior search pattern is empty.
 [.922.1]- Support Lexer switching while Customize Schemes dialog is open.
 [.921.1]- Expand current lexers style tree on customize schemes dialog startup.
@@ -58,7 +62,15 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
+[1001.1]- Rebase DarkMode module on delay load version branch of win32-darkmode project.
+[.930.1]- Update the KeyWordList of lexers "C# Source Code" and "SQL Query".
+[.930.1]- Bookmark Occurrences Colors changed to get perceptually distinct colors.
+[.929.1]- Migration from CreateLexer() by ID to CreateLexer() by Name (Lexilla IFace5 conform) (GRE).
+[.928.1]- grepWinNP3: code clean-up (GRE).
+[.928.1]- TinyExpr format floating.point with non zero fractional part.
+[.927.1]- TinyExpr floating point format.
+[.927.1]- TinyExpr: change format (allow longer integer before switching to mantissa/exponent format).
 [.925.1]- Move home brew lexers to Lexills dir (SCI).
 [.925.1]- Scintilla 5 prep: Using ILexer5 interface from static build Lexilla.lib (SCI).
 [.925.1]- Prepare for Lexilla Library (Scintilla v5) (SCI).
@@ -73,13 +85,27 @@ CHANGES:
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
 [.921.1]- Update grepWinNP3 (GRE) version 2.1.4.30 (2020-09-21).
-[.921.1]- Update Oniguruma Regex (ONI) engine version 6.9.5 revised 1 (2020-09-21).
+[.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
 [.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-11).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
+[1024.2]- Allow single character filename on command line.
+[1012.2]- Disable Copy/Cut complete lines on partial multi-selection.
+[1012.1]- Find/Repl all in range algo.
+[1012.1]- Oniguruma flexible EOL handling (Win CRLF, Unix LF and Mac CR) (ONI).
+[1012.1]- Replace all in range.
+[1012.1]- Avoid file cache lost on power failure.
+[1006.1]- Copy/Cut/Delete "Focused View" lines (clipboard).
+[1006.1]- Cut/cop occurrences marker line(s) if marker in first line.
+[1004.1]- Initial directory for open/save file Explorer dialog.
+[1001.1]- TOML Lexer performance leak.
+[.928.2]- Freezing of main window caused by mixed usage of Lexer Interfaces.
+[.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).
+[.927.1]- Lexer file extensions maintained in standard config.
+[.927.1]- grepWin language switching (github.com/stefankueng/grepWin/issues/199) (GRE).
 [.926.1]- Clone full .ini-file path for forked new instance (GRE).
 [.926.1]- grepWinNP3: wide char path names for language files (GRE).
 [.925.1]- Stop file change notification on deleted files if save is rejected.
@@ -108,16 +134,16 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
 [.921.1]- TinyExpr: '%%' as percent operator is deprecated.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.xxx.x]- 
+[.xxx.x]- .
+[1028.1]- Hindi (hi-IN).
 [.915.2]- Turkish (tr-TR) in processing...
 [.915.2]- Chinese Traditional (zh-TW) in waiting...
-[.915.2]- Hindi (hi-IN) in waiting...
 [.915.2]- Indonesian (id-ID) in waiting...
 [.915.2]- Vietnamese (vi-VN) in waiting...
 

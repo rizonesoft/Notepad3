@@ -58,9 +58,11 @@ bool CTextFile::Save(LPCWSTR path)
     DWORD byteswritten;
     if (!WriteFile(hFile, pFileBuf.get(), filelen, &byteswritten, NULL))
     {
+        FlushFileBuffers(hFile);
         CloseHandle(hFile);
         return false;
     }
+    FlushFileBuffers(hFile);
     CloseHandle(hFile);
     return true;
 }

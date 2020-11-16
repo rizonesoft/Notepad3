@@ -46,8 +46,8 @@ NULL,
 
 
 EDITLEXER lexINNO = { 
-SCLEX_INNOSETUP, IDS_LEX_INNO, L"Inno Setup Script", L"iss; isl; islu", L"", 
-&KeyWords_INNO, {
+SCLEX_INNOSETUP, "inno", IDS_LEX_INNO, L"Inno Setup Script", L"iss; isl; islu", L"",
+  &KeyWords_INNO, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_INNO_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_INNO_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

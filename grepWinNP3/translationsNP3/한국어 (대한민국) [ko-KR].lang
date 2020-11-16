@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr "Stefan Küng의 웹사이트 방문"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>grepWinNP3 정보</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>grepWinNP3 정보...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "grepWinNP3 정보"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "프리셋에 추가"
+msgid "Add to Presets..."
+msgstr "프리셋에 추가..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "프리셋 이름"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "프리셋"
+msgid "Presets..."
+msgstr "프리셋..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "도움말을 보려면 F1을 누르세요"
+msgid "Press F1 for help..."
+msgstr "도움말을 보려면 F1을 누르세요..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "검색할 경로를 선택하세요"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "설정"
+msgid "Settings..."
+msgstr "설정..."
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "크기가"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "정규식 검사"
+msgid "Test regex..."
+msgstr "정규식 검사..."
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -589,6 +589,10 @@ msgstr "재귀적으로 검색되는 경로입니다.\n'|' 기호로 경로를 �
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "디렉토리를 제외할 수 있고, 예를 들어 CVS 및 이미지입니다.\n예제: ^(CVS|images)$\n참고: '.svn'폴더는 Windows에서 '숨겨져' 있으므로 일반적으로 검색되지 않습니다."
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"

@@ -9,7 +9,7 @@
 #
 # encoding: UTF-8
 # Language: Portuguese Brazilian (Brazil) resources
-# Translator: (pt-BR) Tradução em português brasileiro por fcgouveia
+# Translator: (pt-BR) Tradução em português brasileiro por JeepWillys58
 #
 
 #, fuzzy
@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr "Visite o site de Stefan Küng"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>sobre o grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>sobre o grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "Sobre o grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Adicionar à Predefinições"
+msgid "Add to Presets..."
+msgstr "Adicionar à Predefinições..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Nome da Predefinição"
 
 #. Resource IDs: (132, 1022)
-msgid "Presets"
-msgstr "Predefinições"
+msgid "Presets..."
+msgstr "Predefinições..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Pressione F1 para obter ajuda"
+msgid "Press F1 for help..."
+msgstr "Pressione F1 para obter ajuda..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "Selecione o caminho de pesquisa"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Configurações"
+msgid "Settings..."
+msgstr "Configurações..."
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Tamanho é"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Testar Regex"
+msgid "Test regex..."
+msgstr "Testar Regex..."
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -589,6 +589,10 @@ msgstr "o caminhos serão pesquisados recursivamente.\nSepare os caminhos com o 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "você pode excluir diretórios, ex. CVS e images.\nExemplo: ^(CVS|images)$\nNote, pastas '.svn' são 'ocultas' no Windows, geralmente não são escaneadas."
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"

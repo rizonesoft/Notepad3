@@ -86,7 +86,7 @@ NULL,
 
 
 EDITLEXER lexASM = { 
-SCLEX_ASM, IDS_LEX_ASM_SCR, L"Assembly Script", L"asm; s; sx; inc; a51", L"", 
+SCLEX_ASM, "asm", IDS_LEX_ASM_SCR, L"Assembly Script", L"asm; s; sx; inc; a51", L"", 
 &KeyWords_ASM, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_ASM_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

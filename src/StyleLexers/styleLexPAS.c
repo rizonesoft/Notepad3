@@ -16,8 +16,8 @@ NULL,
 
 
 EDITLEXER lexPAS = { 
-SCLEX_PASCAL, IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; pp; lfm; lpr; fpd", L"", 
-&KeyWords_PAS, {
+SCLEX_PASCAL, "pascal", IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; pp; lfm; lpr; fpd", L"",
+  &KeyWords_PAS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_PAS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_PAS_COMMENT,SCE_PAS_COMMENT2,SCE_PAS_COMMENTLINE,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },

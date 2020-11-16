@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr "Navštíviť web-stránku Stefan Küng"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>o grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>o grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "O grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Pridať do predvolieb"
+msgid "Add to Presets..."
+msgstr "Pridať do predvolieb..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Názov predvoľby"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Predvoľby"
+msgid "Presets..."
+msgstr "Predvoľby..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Stlač F1 pre nápovedu"
+msgid "Press F1 for help..."
+msgstr "Stlač F1 pre nápovedu..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -349,7 +349,7 @@ msgstr "Preme&novať predvoľbu"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Test Regex"
+msgstr "Regex Test"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "Výber cesty na vyhľadávanie"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Nastavenia"
+msgid "Settings..."
+msgstr "Nastavenia..."
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Veľkosť je"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Test regex"
+msgid "Test regex..."
+msgstr "Test regex..."
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -589,6 +589,10 @@ msgstr "cesta(y), ktorá je prehľadávaná rekurzívne.\nOddeľte cesty týmto 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "môžete vylúčiť adresáre, napr. CVS a obrázky.\nPríklad: ^(CVS|obrázky)$\nPoznámka, '.svn' priečinky sú v systéme Windows 'skryté', takže zvyčajne nie sú skenované."
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"

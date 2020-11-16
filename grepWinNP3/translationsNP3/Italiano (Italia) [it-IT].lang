@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr "Visita il sito web di Stefan Küng"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>informazioni su grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>informazioni su grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "Informazioni su grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Aggiungi a Predefiniti"
+msgid "Add to Presets..."
+msgstr "Aggiungi a Predefiniti..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Nome Predefinito"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Predefiniti"
+msgid "Presets..."
+msgstr "Predefiniti..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Premi F1 per aiuto"
+msgid "Press F1 for help..."
+msgstr "Premi F1 per aiuto..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -349,7 +349,7 @@ msgstr "Ri&nomina Predefinito"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Test regex"
+msgstr "Regex Test"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "Seleziona percorso di ricerca"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Impostazioni"
+msgid "Settings..."
+msgstr "Impostazioni..."
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Dimens."
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Prova regex"
+msgid "Test regex..."
+msgstr "Prova regex..."
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -580,7 +580,7 @@ msgstr "la stringa di ricerca è vuota"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Avvia nuova finestra grepWinNP3"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -589,6 +589,10 @@ msgstr "il percorso/i che viene cercato in modo ricorsivo.\nSeparare i percorsi 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "puoi escludere le cartelle, ad es. CVS e immagini.\nEsempio: ^(CVS|immagini)$\nNota, le cartelle '.svn' sono 'nascoste' su Windows, quindi di solito non vengono scansionate."
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"
@@ -608,5 +612,5 @@ msgstr "Questo aggiunge una nuova voce al menu contestuale 'Apri con l'Editor'"
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Sempre in primo piano"
 

@@ -181,6 +181,12 @@ void CLanguage::TranslateWindow(HWND hWnd)
     // texts with the translation
     TranslateWindowProc(hWnd, (LPARAM)&langmap);
     EnumChildWindows(hWnd, TranslateWindowProc, (LPARAM)&langmap);
+    EnumThreadWindows(GetCurrentThreadId(), TranslateWindowProc, (LPARAM)&langmap);
+    HMENU hSysMenu = GetSystemMenu(hWnd, FALSE);
+    if (hSysMenu)
+    {
+        TranslateMenu(hSysMenu);
+    }
 }
 
 void CLanguage::TranslateMenu(HMENU hMenu)
@@ -228,7 +234,8 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
     wchar_t classname[1024] = {0};
     if (GetClassName(hwnd, classname, _countof(classname)))
     {
-        if (wcscmp(classname, WC_COMBOBOX) == 0)
+        if ((wcscmp(classname, WC_COMBOBOX) == 0) ||
+            (wcscmp(classname, WC_COMBOBOXEX) == 0))
         {
             // translate the items in the combobox
             int nSel   = (int)SendMessage(hwnd, CB_GETCURSEL, 0, 0);
@@ -295,6 +302,34 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
                 std::wstring sTranslated = GetTranslatedString(buf.get(), pLangMap);
                 hdi.pszText              = const_cast<LPWSTR>(sTranslated.c_str());
                 Header_SetItem(hwnd, i, &hdi);
+            }
+        }
+        else if (wcscmp(classname, WC_EDIT) == 0)
+        {
+            // translate hint texts in edit controls
+            const int bufCount = 4096;
+            auto      buf      = std::make_unique<wchar_t[]>(bufCount);
+            SecureZeroMemory(buf.get(), bufCount * sizeof(wchar_t));
+            Edit_GetCueBannerText(hwnd, buf.get(), bufCount);
+            auto sTranslated = GetTranslatedString(buf.get(), pLangMap);
+            Edit_SetCueBannerText(hwnd, buf.get());
+        }
+        else if (wcscmp(classname, TOOLTIPS_CLASS) == 0)
+        {
+            const int bufCount  = 4096;
+            auto      buf       = std::make_unique<wchar_t[]>(bufCount);
+            auto      toolCount = (int)SendMessage(hwnd, TTM_GETTOOLCOUNT, 0, 0);
+            for (int i = 0; i < toolCount; ++i)
+            {
+                SecureZeroMemory(buf.get(), bufCount * sizeof(wchar_t));
+                TOOLINFO tt = {0};
+                tt.cbSize   = sizeof(TOOLINFO);
+                tt.lpszText = buf.get();
+                SendMessage(hwnd, TTM_ENUMTOOLS, i, (LPARAM)&tt);
+
+                auto sTranslated = GetTranslatedString(buf.get(), pLangMap);
+                tt.lpszText      = sTranslated.data();
+                SendMessage(hwnd, TTM_SETTOOLINFO, 0, (LPARAM)&tt);
             }
         }
     }

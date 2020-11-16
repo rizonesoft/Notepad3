@@ -25,8 +25,8 @@ NULL,
 
 
 EDITLEXER lexPL = { 
-SCLEX_PERL, IDS_LEX_PERL_SCR, L"Perl Script", L"pl; pm; cgi; pod; plx; stp", L"", 
-&KeyWords_PL, {
+SCLEX_PERL, "perl", IDS_LEX_PERL_SCR, L"Perl Script", L"pl; pm; cgi; pod; plx; stp", L"",
+  &KeyWords_PL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_PL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_PL_COMMENTLINE}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },

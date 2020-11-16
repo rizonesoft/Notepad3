@@ -14,8 +14,8 @@ NULL,
 
 
 EDITLEXER lexVBS = { 
-SCLEX_VBSCRIPT, IDS_LEX_VB_SCR, L"VBScript", L"vbs; dsm", L"", 
-&KeyWords_VBS, {
+SCLEX_VBSCRIPT, "vbscript", IDS_LEX_VB_SCR, L"VBScript", L"vbs; dsm", L"",
+  &KeyWords_VBS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_B_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_B_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#808080", L"" },

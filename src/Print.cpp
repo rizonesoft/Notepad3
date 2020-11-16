@@ -114,13 +114,13 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
   case WM_THEMECHANGED:
     if (IsDarkModeSupported()) {
       bool const darkModeEnabled = CheckDarkModeEnabled();
-      AllowDarkModeForWindow(hwnd, darkModeEnabled);
+      AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
       RefreshTitleBarThemeColor(hwnd);
 
       int const buttons[] = { IDOK, IDCANCEL, 0x401 };
       for (int id = 0; id < COUNTOF(buttons); ++id) {
         HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
-        AllowDarkModeForWindow(hBtn, darkModeEnabled);
+        AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
       UpdateWindowEx(hwnd);
@@ -615,13 +615,13 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
   case WM_THEMECHANGED:
     if (IsDarkModeSupported()) {
       bool const darkModeEnabled = CheckDarkModeEnabled();
-      AllowDarkModeForWindow(hwnd, darkModeEnabled);
+      AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
       RefreshTitleBarThemeColor(hwnd);
 
       int const buttons[] = { IDOK, IDCANCEL, IDC_PRINTER };
       for (int id = 0; id < COUNTOF(buttons); ++id) {
         HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
-        AllowDarkModeForWindow(hBtn, darkModeEnabled);
+        AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
         SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
       }
       UpdateWindowEx(hwnd);

@@ -1,6 +1,5 @@
 /**********************************************************************
   regenc.c -  Oniguruma (regular expression library)
-  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2019  K.Kosako
@@ -264,12 +263,12 @@ onigenc_strlen_null(OnigEncoding enc, const UChar* s)
 extern int
 onigenc_str_bytelen_null(OnigEncoding enc, const UChar* s)
 {
-  UChar* start = (UChar* )s;
-  UChar* p = (UChar* )s;
+  const UChar* start = s;
+  const UChar* p = s;
 
   while (1) {
     if (*p == '\0') {
-      UChar* q;
+      const UChar* q;
       int len = ONIGENC_MBC_MINLEN(enc);
 
       if (len == 1) return (int )(p - start);
@@ -693,7 +692,7 @@ extern int
 onigenc_is_mbc_newline_0x0a(const UChar* p, const UChar* end)
 {
   if (p < end) {
-    if (*p == NEWLINE_CODE) return 1;
+    if (*p == NEWLINE_CODE) return 1; // LF
   }
   return 0;
 }
@@ -702,7 +701,7 @@ extern int
 onigenc_is_mbc_newline_0x0d(const UChar* p, const UChar* end)
 {
   if (p < end) {
-    if (*p == 0x0d) return 1;
+    if (*p == CARRIAGE_RET) return 1; // CR
   }
   return 0;
 }
@@ -711,7 +710,8 @@ extern int
 onigenc_is_mbc_newline_0x0d_0x0a(const UChar* p, const UChar* end)
 {
   if (p < end) {
-    if ((*(p-1) == 0x0d) && (*p == 0x0a)) return 1;
+    //~if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE)) return 1; // CRLF
+    if ((*p == NEWLINE_CODE) || (*p == CARRIAGE_RET)) return 1; // LF|CR
   }
   return 0;
 }

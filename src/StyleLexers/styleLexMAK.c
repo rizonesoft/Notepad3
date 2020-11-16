@@ -5,8 +5,8 @@
 KEYWORDLIST KeyWords_MAK = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexMAK = { 
-SCLEX_MAKEFILE, IDS_LEX_MAKEFILES, L"Makefiles", L"mak; make; mk; dsp; msc; msvc; am; pro; pri; gmk; ninja; dsw; \\^Makefile$; \\^Kbuild$", L"", 
-&KeyWords_MAK, {
+SCLEX_MAKEFILE, "makefile", IDS_LEX_MAKEFILES, L"Makefiles", L"mak; make; mk; dsp; msc; msvc; am; pro; pri; gmk; ninja; dsw; \\^Makefile$; \\^Kbuild$", L"",
+  &KeyWords_MAK, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_MAKE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_MAKE_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

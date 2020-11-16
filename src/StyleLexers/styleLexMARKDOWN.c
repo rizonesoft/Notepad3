@@ -6,8 +6,8 @@ KEYWORDLIST KeyWords_MARKDOWN = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexMARKDOWN = { 
-SCLEX_MARKDOWN, IDS_LEX_MARKDOWN, L"Markdown", L"md; markdown; mdown; mkdn; mkd", L"", 
-&KeyWords_MARKDOWN, {
+SCLEX_MARKDOWN, "markdown", IDS_LEX_MARKDOWN, L"Markdown", L"md; markdown; mdown; mkdn; mkd", L"",
+  &KeyWords_MARKDOWN, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_MARKDOWN_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_MARKDOWN_LINE_BEGIN}, IDS_LEX_STR_63317, L"Line Begin", L"", L"" },

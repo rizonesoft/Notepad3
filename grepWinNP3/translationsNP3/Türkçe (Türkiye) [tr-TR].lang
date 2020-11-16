@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr ""
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>grepWinNP3 hakkında</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>grepWinNP3 hakkında...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "grepWinNP3 Hakkında"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Hazır ayarlara ekle"
+msgid "Add to Presets..."
+msgstr "Hazır ayarlara ekle..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Ön Ayar Adı"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Hazır ayarlar"
+msgid "Presets..."
+msgstr "Hazır ayarlar..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Yardım için F1 tuşuna basınız"
+msgid "Press F1 for help..."
+msgstr "Yardım için F1 tuşuna basınız..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "Aranacak yolu seçin"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Genel Ayarlar"
+msgid "Settings..."
+msgstr "Genel Ayarlar..."
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Boyut"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Regex'i test et"
+msgid "Test regex..."
+msgstr "Regex'i test et..."
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -589,6 +589,10 @@ msgstr "öniznelemede aranan yollar.\n| sembolü ile ayrı yollar.\nÖrnek: c:\\
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "dizinleri hariç tutabilirsiniz, ör. CVS ve Resimler.\nÖrnek: ^(CVS|images)$\nNot: '.svn' klasörlerinin Windows\'ta 'gizli' olduğuna dikkat edin, bu nedenle genellikle taranmazlar."
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"

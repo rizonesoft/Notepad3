@@ -6,8 +6,8 @@ KEYWORDLIST KeyWords_XML = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexXML = { 
-SCLEX_XML, IDS_LEX_XML_DOC, L"XML Document", L"xml; xsl; rss; svg; xul; xsd; xslt; axl; rdf; xaml; vcproj; ffs_gui; nzb; resx; plist; xrc; fbp; manifest", L"", 
-&KeyWords_XML, {
+SCLEX_XML, "xml", IDS_LEX_XML_DOC, L"XML Document", L"xml; xsl; rss; svg; xul; xsd; xslt; axl; rdf; xaml; vcproj; ffs_gui; nzb; resx; plist; xrc; fbp; manifest", L"",
+  &KeyWords_XML, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_H_TAG,SCE_H_TAGUNKNOWN,SCE_H_TAGEND,0)}, IDS_LEX_STR_63187, L"XML Tag", L"fore:#881280", L"" },
     { {MULTI_STYLE(SCE_H_ATTRIBUTE,SCE_H_ATTRIBUTEUNKNOWN,0,0)}, IDS_LEX_STR_63188, L"XML Attribute", L"fore:#994500", L"" },

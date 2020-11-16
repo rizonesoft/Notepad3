@@ -63,7 +63,7 @@ Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
 --------------------------------------------------------------------------------
 Development:
 ------------
-- Florian 'Flo' Balmer (Notepad2)       http://www.flos-freeware.ch
+- Florian 'Flo' Balmer (Notepad2)       https://www.flos-freeware.ch
 - RaiKoHoff                             https://github.com/RaiKoHoff
 
 --------------------------------------------------------------------------------
@@ -96,16 +96,18 @@ Acknowledgments:
 ----------------
 alexantr                https://github.com/alexantr
 AlexIljin               https://github.com/AlexIljin
+ashish12phnx            https://github.com/ashish12phnx
+bravo-hero              https://github.com/bravo-hero
 craigo-                 https://github.com/craigo-/
 Crane70                 https://github.com/Crane70
 engelhro                https://github.com/engelhro
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
 it4u                    https://github.com/it4u
+JeepWillys58            https://github.com/JeepWillys58
 jmacasd                 https://github.com/jmacasd
 jupester                https://github.com/jupester
 kofifus                 https://github.com/kofifus
-kRaLL-Turko             https://github.com/kRaLL-Turko
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
 lhmouse                 https://github.com/lhmouse
@@ -114,9 +116,11 @@ maboroshin              https://github.com/maboroshin
 MadDogVachon            https://github.com/MadDogVachon
 Mitezuss                https://github.com/Mitezuss
 RaffaeleBianc0          https://github.com/RaffaeleBianc0
+RaiKoHoff               https://github.com/RaiKoHoff
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
 ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
+Turko-py                https://github.com/Turko-py
 VenusGirl               https://github.com/VenusGirl
 xsak                    https://github.com/xsak
 zufuliu                 https://github.com/zufuliu

@@ -32,6 +32,7 @@ Thumbs.db
 /Build/.vs
 /Build/Packages
 /Build/temp_zip*
+/Build/*setup_beta*
 /Build/Bin/Password.txt
 /Build/Bin/Certum.cer
 /Build/Bin/Certum.p12

@@ -26,8 +26,8 @@ NULL,
 };
 
 EDITLEXER lexVHDL = { 
-SCLEX_VHDL, IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"", 
-&KeyWords_VHDL, {
+SCLEX_VHDL, "vhdl", IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"",
+  &KeyWords_VHDL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_VHDL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_VHDL_COMMENTLINEBANG, SCE_VHDL_COMMENT, SCE_VHDL_BLOCK_COMMENT, 0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },

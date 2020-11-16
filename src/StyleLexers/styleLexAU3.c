@@ -652,8 +652,8 @@ NULL,
 
 
 EDITLEXER lexAU3 = { 
-SCLEX_AU3, IDS_LEX_AUTOIT3, L"AutoIt3 Script", L"au3", L"", 
-&KeyWords_AU3, {
+SCLEX_AU3, "au3", IDS_LEX_AUTOIT3, L"AutoIt3 Script", L"au3", L"",
+  &KeyWords_AU3, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_AU3_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_AU3_COMMENT,SCE_AU3_COMMENTBLOCK,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },

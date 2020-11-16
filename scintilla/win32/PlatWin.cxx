@@ -2829,7 +2829,7 @@ int ListBoxX::Find(const char *) const noexcept {
 
 void ListBoxX::GetValue(int n, char *value, int len) const noexcept {
 	const ListItemData item = lti.Get(n);
-	strncpy(value, item.text, len);
+	strncpy_s(value, len, item.text, len);
 	value[len - 1] = '\0';
 }
 

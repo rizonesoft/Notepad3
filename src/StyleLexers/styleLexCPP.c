@@ -32,8 +32,8 @@ NULL,
 };
 
 EDITLEXER lexCPP = { 
-SCLEX_CPP, IDS_LEX_CPP_SRC, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; mm; idl; midl; inl; odl; xpm; pch", L"", 
-&KeyWords_CPP, {
+SCLEX_CPP, "cpp", IDS_LEX_CPP_SRC, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; mm; idl; midl; inl; odl; xpm; pch", L"",
+  &KeyWords_CPP, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_C_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },

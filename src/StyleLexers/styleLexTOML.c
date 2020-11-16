@@ -10,8 +10,8 @@ NULL,
 
 
 EDITLEXER lexTOML = {
-SCLEX_TOML, IDS_LEX_TOML_CFG, L"TOML Config", L"toml", L"",
-&KeyWords_TOML,{
+SCLEX_TOML, "toml", IDS_LEX_TOML_CFG, L"TOML Config", L"toml", L"",
+  &KeyWords_TOML,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_TOML_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_TOML_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#FF0080", L"" },

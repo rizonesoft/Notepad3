@@ -212,7 +212,10 @@ static void _GetTrueWindowsVersion()
 // ----------------------------------------------------------------------------
 static DWORD _Win10BuildToReleaseId(DWORD build)
 {
-  if (build >= 19041) {
+  if (build >= 19042) {
+    return 2009;
+  }
+  else if (build >= 19041) {
     return 2004;
   }
   else if (build >= 18363) {
@@ -277,25 +280,28 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 
 //=============================================================================
 //
-//  SetClipboardWchTextW()
+//  SetClipboardTextW()
 //
-bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
+bool SetClipboardText(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
 {
-  if (!OpenClipboard(hwnd)) { return false; }
-  HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
+  bool ok = false;
+  HANDLE const hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
   if (hData) {
-    WCHAR* pszNew = GlobalLock(hData);
+    WCHAR* const pszNew = GlobalLock(hData);
     if (pszNew) {
       StringCchCopy(pszNew, cchTextW + 1, pszTextW);
       GlobalUnlock(hData);
-      EmptyClipboard();
-      SetClipboardData(CF_UNICODETEXT, hData);
+      if (OpenClipboard(hwnd)) {
+        EmptyClipboard();
+        ok = (SetClipboardData(CF_UNICODETEXT, hData) != NULL); // move ownership
+        CloseClipboard();
+      }
     }
-    CloseClipboard();
-    return true; 
+    if (!ok) {
+      GlobalFree(hData);
+    }
   }
-  CloseClipboard();
-  return false;
+  return ok;
 }
 
 
@@ -763,7 +769,9 @@ bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberO
     bytesLeft -= (size_t)dwWritten;
   }
   while (bWriteOk && ((dwWritten != 0) && (bytesLeft > 0)));
-  
+
+  FlushFileBuffers(hFile);
+
   *lpNumberOfBytesWritten = bytesWritten;
   return (bytesWritten == nNumberOfBytesToWrite);
 }
@@ -1268,8 +1276,9 @@ void PrepareFilterStr(LPWSTR lpFilter)
   LPWSTR psz = StrEnd(lpFilter,0);
   while (psz != lpFilter)
   {
-    if (*(psz = CharPrev(lpFilter,psz)) == L'|')
+    if (*(psz = CharPrev(lpFilter, psz)) == L'|') {
       *psz = L'\0';
+    }
   }
 }
 

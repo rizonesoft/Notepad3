@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr ""
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>πληροφορίες για το grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>σχετικά με το grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "Πληροφορίες για το grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "Αποθήκευση regex"
+msgid "Add to Presets..."
+msgstr "Αποθήκευση regex..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "Προκαθορισμένο όνομα"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "Αποθηκευμένα"
+msgid "Presets..."
+msgstr "Αποθηκευμένα..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "Πιέστε F1 για βοήθεια"
+msgid "Press F1 for help..."
+msgstr "Πιέστε F1 για βοήθεια..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -429,7 +429,7 @@ msgid "Select path to search"
 msgstr "Επιλέξτε διαδρομή για έρευνα"
 
 #. Resource IDs: (1071)
-msgid "Settings"
+msgid "Settings..."
 msgstr "Ρυθμίσεις"
 
 #. Resource IDs: (133)
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "Μέγεθος"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "Δοκιμή regex"
+msgid "Test regex..."
+msgstr "Δοκιμή regex..."
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -589,6 +589,10 @@ msgstr "διαδρομές που αναζητούνται διαδοχικά. \
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "μπορείτε να εξαιρέσετε καταλόγους, π.χ. CVS και εικόνες.\r\nΠαράδειγμα: ^(CVS|images)$\r\nΣημείωση, οι φάκελοι '.svn' είναι 'κρυφοί' στα Windows, επομένως συνήθως δεν σαρώνονται."
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"

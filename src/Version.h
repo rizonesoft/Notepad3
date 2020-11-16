@@ -48,7 +48,7 @@
 #define VERSION_WEBPAGEDISPLAY         "https://www.rizonesoft.com"
 #define VERSION_COMPANYNAME            "© Rizonesoft"
 //#define VERSION_MODPAGEDISPLAY       "https://xhmikosr.github.io/notepad2-mod/"
-//#define VERSION_WEBPAGE2DISPLAY      "http://www.flos-freeware.ch"
+//#define VERSION_WEBPAGE2DISPLAY      "https://www.flos-freeware.ch"
 
 #ifdef _DLL
 #define _SCI_BUILD                     L"Scintilla(dll) "
@@ -74,7 +74,9 @@
 
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1927)
-        #if(_MSC_FULL_VER >= 192729111)
+        #if(_MSC_FULL_VER >= 192729112)
+            #define VER_CPL     MS Visual C++ 2019 v16.7.(5-7)
+        #elif(_MSC_FULL_VER >= 192729111)
             #define VER_CPL     MS Visual C++ 2019 v16.7.(1-4)
         #elif(_MSC_FULL_VER >= 192729110)
             #define VER_CPL     MS Visual C++ 2019 v16.7.0

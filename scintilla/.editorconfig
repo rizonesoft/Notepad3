@@ -30,3 +30,11 @@ tab_width = 4
 
 [**.{ini}]
 charset = utf-8-sig
+
+[oniguruma/**.{h,c,cpp,hpp,cxx}]
+charset = utf-8
+# space (w=2) indentation
+indent_style = space
+indent_size = 2
+tab_width = 2
+

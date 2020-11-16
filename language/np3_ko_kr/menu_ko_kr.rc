@@ -191,7 +191,7 @@ BEGIN
             MENUITEM "왼쪽 줄 삭제(&N)\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
             MENUITEM "오른쪽 줄 삭제(&H)\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "열 줄 바꿈(&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
+            MENUITEM "열 바꿈(&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "줄 분할(&S)\tCtrl+I",                IDM_EDIT_SPLITLINES
             MENUITEM "줄 결합(&J)\tCtrl+J",                IDM_EDIT_JOINLINES
             MENUITEM "줄 조합(&F)\tCtrl+Alt+J",            IDM_EDIT_JOINLN_NOSP
@@ -213,8 +213,8 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "선택 둘러싸기(&E)"
             BEGIN
-                MENUITEM "작은 따옴표(&S)\tCtrl+1",             CMD_STRINGIFY
-                MENUITEM "큰 따옴표(&D)\tCtrl+2",               CMD_STRINGIFY2
+                MENUITEM "단일 큰 따옴표(&S)\tCtrl+1",             CMD_STRINGIFY
+                MENUITEM "이중 큰 따옴표(&D)\tCtrl+2",               CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                      CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                      CMD_EMBRACE2
@@ -227,9 +227,9 @@ BEGIN
             MENUITEM "선택/줄 복제(&D)\tCtrl+D",         IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "공백이 있는 패드(&P)\tAlt+B",          IDM_EDIT_PADWITHSPACES
-            MENUITEM "첫 문자 제거(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
-            MENUITEM "끝 문자 제거(&L)\tAlt+U",               IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "뒷 공백 제거(&T)\tAlt+W",               IDM_EDIT_TRIMLINES
+            MENUITEM "첫번째 문자 제거(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
+            MENUITEM "마지막 문자 제거(&L)\tAlt+U",               IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "후행 공백 제거(&T)\tAlt+W",               IDM_EDIT_TRIMLINES
             MENUITEM "공백 압축(&B)\tCtrl+Alt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "줄 수정(&M)...\tAlt+M",          IDM_EDIT_MODIFYLINES
@@ -245,11 +245,11 @@ BEGIN
             MENUITEM "단어 첫글자만 대문자(&T)\tCtrl+Alt+I",          IDM_EDIT_TITLECASE
             MENUITEM "문장 첫글자만 대문자(&S)\tCtrl+Alt+O",          IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "선택 영역의 공백을 탭으로(&A)\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
-            MENUITEM "선택 영역의 탭을 공백으로(&N)\tCtrl+Shift+S",   IDM_EDIT_CONVERTTABS
+            MENUITEM "선택 영역 탭 지정(&A)\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
+            MENUITEM "선택 영역 탭 해제(&N)\tCtrl+Shift+S",   IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "들여쓰기를 탭으로(&B)\tCtrl+Alt+T",            IDM_EDIT_CONVERTSPACES2
-            MENUITEM "들여쓰기를 공백으로(&F)\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
+            MENUITEM "들여쓰기 탭 지정(&B)\tCtrl+Alt+T",            IDM_EDIT_CONVERTSPACES2
+            MENUITEM "들여쓰기 탭 해제(&F)\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
@@ -267,8 +267,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "날짜/시간 (짧은 형식)(&S)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "날짜/시간 (긴 형식)(&L)\tCtrl+Shift+F5",       IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "현재 타임 스탬프(&C)(&T)",                     CMD_INSERT_TIMESTAMP
-            MENUITEM "타임 스탬프 업데이트(&U)\tShift+F5",           CMD_UPDATE_TIMESTAMPS
+            MENUITEM "현재 타임스탬프(&C)(&T)",                     CMD_INSERT_TIMESTAMP
+            MENUITEM "타임스탬프 업데이트(&U)\tShift+F5",           CMD_UPDATE_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "줄 주석 (전환)(&C)\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
             MENUITEM "스트림 주석(&R)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
@@ -277,11 +277,11 @@ BEGIN
         BEGIN
             MENUITEM "GUID를 클립보드로 복사(&G)\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "C 문자 이스케이프(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
-            MENUITEM "C 문자 이스케이프 해제(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "C 문자 탈출(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C 문자 탈출 해제(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "번호 증가(&I)\tCtrl+Alt+NK+",               CMD_INCREASENUM
-            MENUITEM "번호 감소(&D)\tCtrl+Alt+NK-",               CMD_DECREASENUM
+            MENUITEM "숫자 증가(&I)\tCtrl+Alt+NK+",               CMD_INCREASENUM
+            MENUITEM "숫자 감소(&D)\tCtrl+Alt+NK-",               CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "일치하는 중괄호 찾기(&F)\tCtrl+B",              IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "일치하는 중괄호 선택(&S)\tCtrl+Shift+B",       IDM_EDIT_SELTOMATCHINGBRACE
@@ -292,7 +292,7 @@ BEGIN
             MENUITEM "단어 또는 줄 선택(&W)\tCtrl+Spc",              IDM_EDIT_SELECTWORD
             MENUITEM "모든 일치 항목 다중 선택(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "줄 바꿈에서 실행 취소 처리 분할(&T)",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "줄 바꿈에서 실행 취소 처리 과정 분할(&T)",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"
@@ -348,7 +348,7 @@ BEGIN
         END
         POPUP "항목 표시(&K)"
         BEGIN
-            MENUITEM "활성(&A)\tAlt+A",                     IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "사용함(&A)\tAlt+A",                     IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM "책갈피도 사용(&B)",               IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "보이는 항목만 일치(&V)",               IDM_VIEW_MARKOCCUR_VISIBLE
@@ -416,12 +416,12 @@ BEGIN
             MENUITEM "기본 위치에 맞추기(&N)\tCtrl+Shift+P",   CMD_DEFAULTWINPOS
             MENUITEM "기본 위치로 저장(&S)",                   CMD_SAVEASDEFWINPOS
             MENUITEM "저장된 기본 위치 지우기(&C)",             CMD_CLEARSAVEDWINPOS
-            MENUITEM "처음 위치에 맞추기(&I)\tCtrl+F11",        CMD_INITIALWINPOS
+            MENUITEM "초기 위치에 맞추기(&I)\tCtrl+F11",        CMD_INITIALWINPOS
             MENUITEM "전체 영역 위치 전환(&F)\tF11",            CMD_FULLSCRWINPOS
             MENUITEM "창 위치 고정(&T)",                       IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "외형(&P)"
+    POPUP "모양(&P)"
     BEGIN
         MENUITEM "구성표 사용자 지정(&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR

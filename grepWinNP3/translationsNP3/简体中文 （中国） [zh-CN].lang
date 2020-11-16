@@ -66,8 +66,8 @@ msgid "Visit Stefan Küng's website"
 msgstr "访问 Stefan Küng 的网站"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3</a>"
-msgstr "<a>关于 grepWinNP3</a>"
+msgid "<a>about grepWinNP3...</a>"
+msgstr "<a>关于 grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -78,8 +78,8 @@ msgid "About grepWinNP3"
 msgstr "关于 grepWinNP3"
 
 #. Resource IDs: (1021)
-msgid "Add to Presets"
-msgstr "添加到预置方案"
+msgid "Add to Presets..."
+msgstr "添加到预置方案..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -332,12 +332,12 @@ msgid "Preset name"
 msgstr "预置方案名称"
 
 #. Resource IDs: (1022, 132)
-msgid "Presets"
-msgstr "预置方案"
+msgid "Presets..."
+msgstr "预置方案..."
 
 #. Resource IDs: (1065)
-msgid "Press F1 for help"
-msgstr "按 F1 键查看帮助"
+msgid "Press F1 for help..."
+msgstr "按 F1 键查看帮助..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -429,8 +429,8 @@ msgid "Select path to search"
 msgstr "选择要查找的路径"
 
 #. Resource IDs: (1071)
-msgid "Settings"
-msgstr "设置"
+msgid "Settings..."
+msgstr "设置..."
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -441,8 +441,8 @@ msgid "Size is"
 msgstr "大小为"
 
 #. Resource IDs: (1028)
-msgid "Test regex"
-msgstr "测试正则"
+msgid "Test regex..."
+msgstr "测试正则..."
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -471,10 +471,6 @@ msgstr "将文件视为 UTF-8"
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
 msgstr "将文件视为二进制"
-
-#. Resource IDs: (1045)
-msgid "Visit Stefan Küng's website"
-msgstr "访问 Stefan Küng 的网站"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -584,7 +580,7 @@ msgstr "查找字符串为空"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "启动新的 grepWinNP3 窗口"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -593,6 +589,10 @@ msgstr "要递归查找的路径。\n使用 | 来分隔路径。\n例如：c:\\t
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "你可以排除目录，例如 CVS 和图片。\n例如：^(CVS|images)$\n注意：.svn 目录在 Windows 中是隐藏的，所以通常不会扫描。"
+
+#. Resource IDs: (1024)
+msgid "Y"
+msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"
@@ -612,5 +612,5 @@ msgstr "这将在上下文菜单中添加一个名为“使用编辑器打开”
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "总是置顶"
 

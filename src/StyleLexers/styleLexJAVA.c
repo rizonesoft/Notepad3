@@ -14,8 +14,8 @@ NULL,
 
 
 EDITLEXER lexJAVA = { 
-SCLEX_CPP, IDS_LEX_JAVA_SRC, L"Java Source Code", L"java; jad; aidl; bsh", L"", 
-&KeyWords_JAVA, {
+SCLEX_CPP, "cpp", IDS_LEX_JAVA_SRC, L"Java Source Code", L"java; jad; aidl; bsh", L"",
+  &KeyWords_JAVA, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_C_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },

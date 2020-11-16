@@ -80,8 +80,8 @@ NULL,
 
 
 EDITLEXER lexAVS = { 
-SCLEX_AVS, IDS_LEX_AVI_SYNTH, L"AviSynth Script", L"avs; avsi", L"", 
-&KeyWords_AVS, {
+SCLEX_AVS, "avs", IDS_LEX_AVI_SYNTH, L"AviSynth Script", L"avs; avsi", L"",
+  &KeyWords_AVS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_AVS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_AVS_COMMENTLINE,SCE_AVS_COMMENTBLOCK,SCE_AVS_COMMENTBLOCKN,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
