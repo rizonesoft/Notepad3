@@ -22,8 +22,7 @@ typedef ptrdiff_t Sci_Position;
 typedef size_t Sci_PositionU;
 
 // For Sci_CharacterRange  which is defined as long to be compatible with Win32 CHARRANGE
-//typedef long Sci_PositionCR;
-typedef Sci_Position Sci_PositionCR;
+typedef long Sci_PositionCR;
 
 
 #ifdef _WIN32
