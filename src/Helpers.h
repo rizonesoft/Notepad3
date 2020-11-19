@@ -58,24 +58,24 @@
 
 // direct heap allocation
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-  #define DEFAULT_ALLOC_FLAGS (HEAP_GENERATE_EXCEPTIONS)
+#define DEFAULT_ALLOC_FLAGS (HEAP_GENERATE_EXCEPTIONS)
 #else
-  #define DEFAULT_ALLOC_FLAGS (0)
+#define DEFAULT_ALLOC_FLAGS (0)
 #endif
 
 inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 {
-  return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
+    return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
 inline bool FreeMem(LPVOID lpMemory)
 {
-  return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
+    return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
 }
 
 inline size_t SizeOfMem(LPCVOID lpMemory)
 {
-  return (lpMemory ? HeapSize(Globals.hndlProcessHeap, 0, lpMemory) : 0);
+    return (lpMemory ? HeapSize(Globals.hndlProcessHeap, 0, lpMemory) : 0);
 }
 
 // ============================================================================
@@ -113,59 +113,105 @@ inline DocLn max_ln(const DocLn x, const DocLn y) _RETCMPMAX_
 inline DocPosCR max_cr(const DocPosCR x, const DocPosCR y) _RETCMPMAX_
 inline float max_f(float x, float y) _RETCMPMAX_
 
-inline DocPos abs_p(const DocPos x) { return (x >= 0LL) ? x : (0LL - x); }
+inline DocPos abs_p(const DocPos x)
+{
+    return (x >= 0LL) ? x : (0LL - x);
+}
 
-// swap 
-inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
-inline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
+// swap
+inline void swapi(int* a, int* b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+inline void swapos(DocPos* a, DocPos* b)
+{
+    DocPos t = *a;
+    *a = *b;
+    *b = t;
+}
 
 // clamp
-inline int clampi(int x, int lower, int upper) {
-  return (x < lower) ? lower : ((x > upper) ? upper : x);
+inline int clampi(int x, int lower, int upper)
+{
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
-  return (x < lower) ? lower : ((x > upper) ? upper : x);
+inline unsigned clampu(unsigned x, unsigned lower, unsigned upper)
+{
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline unsigned clampul(unsigned long x, unsigned long lower, unsigned long upper) {
-  return (x < lower) ? lower : ((x > upper) ? upper : x);
+inline unsigned clampul(unsigned long x, unsigned long lower, unsigned long upper)
+{
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline DocPos clampp(DocPos x, DocPos lower, DocPos upper) {
-  return (x < lower) ? lower : ((x > upper) ? upper : x);
+inline DocPos clampp(DocPos x, DocPos lower, DocPos upper)
+{
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper) {
-  return (x < lower) ? lower : ((x > upper) ? upper : x);
+inline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper)
+{
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
 // Is the character an octal digit?
-inline bool IsDigitA(const CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
-inline bool IsDigitW(const WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
+inline bool IsDigitA(const CHAR ch)
+{
+    return ((ch >= '0') && (ch <= '9'));
+}
+inline bool IsDigitW(const WCHAR wch)
+{
+    return ((wch >= L'0') && (wch <= L'9'));
+}
 
 // Is the character a white space char?
-inline bool IsBlankChar(const CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
-inline bool IsBlankCharW(const WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
+inline bool IsBlankChar(const CHAR ch)
+{
+    return ((ch == ' ') || (ch == '\t'));
+}
+inline bool IsBlankCharW(const WCHAR wch)
+{
+    return ((wch == L' ') || (wch == L'\t'));
+}
 
-inline int float2int(const float f) { return (int)lroundf(f); }
-inline float Round10th(const float f) { return (float)float2int(f * 10.0f) / 10; }
-inline bool HasNonZeroFraction(const float f) { return ((float2int(f * 10.0f) % 10) != 0); }
+inline int float2int(const float f)
+{
+    return (int)lroundf(f);
+}
+inline float Round10th(const float f)
+{
+    return (float)float2int(f * 10.0f) / 10;
+}
+inline bool HasNonZeroFraction(const float f)
+{
+    return ((float2int(f * 10.0f) % 10) != 0);
+}
 
-inline bool IsKeyDown(int key) { return (((GetKeyState(key) >> 8) & 0xff) != 0); }
-inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0xff) != 0); }
+inline bool IsKeyDown(int key)
+{
+    return (((GetKeyState(key) >> 8) & 0xff) != 0);
+}
+inline bool IsAsyncKeyDown(int key)
+{
+    return (((GetAsyncKeyState(key) >> 8) & 0xff) != 0);
+}
 
 // ----------------------------------------------------------------------------
 
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
 
-inline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
+inline COLORREF CalcContrastColor(COLORREF rgb, int alpha)
+{
 
-  bool const mask = RGB_SUB(MulDiv(rgb >> 0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
-                    RGB_SUB(MulDiv(rgb >> 8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
-                    RGB_SUB(MulDiv(rgb >> 16, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20;
+    bool const mask = RGB_SUB(MulDiv(rgb >> 0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
+                      RGB_SUB(MulDiv(rgb >> 8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
+                      RGB_SUB(MulDiv(rgb >> 16, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20;
 
-  return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
+    return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
 }
 
 // ----------------------------------------------------------------------------
@@ -180,8 +226,14 @@ inline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
 
 //==== StrIs(Not)Empty() =============================================
 
-inline bool StrIsEmptyA(LPCSTR s) { return (!s || (*s == '\0')); }
-inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
+inline bool StrIsEmptyA(LPCSTR s)
+{
+    return (!s || (*s == '\0'));
+}
+inline bool StrIsEmptyW(LPCWSTR s)
+{
+    return (!s || (*s == L'\0'));
+}
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrIsEmpty(s)     StrIsEmptyW(s)
@@ -196,70 +248,78 @@ inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
 //inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
 
 
-inline int SetModeBkColor(const HDC hdc, const bool bDarkMode) {
+inline int SetModeBkColor(const HDC hdc, const bool bDarkMode)
+{
 #ifdef D_NP3_WIN10_DARK_MODE
-  return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_WINDOW));
+    return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_WINDOW));
 #else
-  UNUSED(bDarkMode);
-  return SetBkColor(hdc, GetSysColor(COLOR_WINDOW));
+    UNUSED(bDarkMode);
+    return SetBkColor(hdc, GetSysColor(COLOR_WINDOW));
 #endif
 }
 
-inline int SetModeBtnFaceColor(const HDC hdc, const bool bDarkMode) {
+inline int SetModeBtnFaceColor(const HDC hdc, const bool bDarkMode)
+{
 #ifdef D_NP3_WIN10_DARK_MODE
-  return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBtnFaceColor : GetSysColor(COLOR_BTNFACE));
+    return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBtnFaceColor : GetSysColor(COLOR_BTNFACE));
 #else
-  UNUSED(bDarkMode);
-  return SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
+    UNUSED(bDarkMode);
+    return SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
 #endif
 }
 
-inline COLORREF GetModeBkColor(const bool bDarkMode) {
+inline COLORREF GetModeBkColor(const bool bDarkMode)
+{
 #ifdef D_NP3_WIN10_DARK_MODE
-  return bDarkMode ? Settings2.DarkModeBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
+    return bDarkMode ? Settings2.DarkModeBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
 #else
-  UNUSED(bDarkMode);
-  return (COLORREF)GetSysColor(COLOR_WINDOW);
+    UNUSED(bDarkMode);
+    return (COLORREF)GetSysColor(COLOR_WINDOW);
 #endif
 }
 
-inline COLORREF GetModeBtnfaceColor(const bool bDarkMode) {
+inline COLORREF GetModeBtnfaceColor(const bool bDarkMode)
+{
 #ifdef D_NP3_WIN10_DARK_MODE
-  return bDarkMode ? Settings2.DarkModeBtnFaceColor : (COLORREF)GetSysColor(COLOR_BTNFACE);
+    return bDarkMode ? Settings2.DarkModeBtnFaceColor : (COLORREF)GetSysColor(COLOR_BTNFACE);
 #else
-  UNUSED(bDarkMode);
-  return (COLORREF)GetSysColor(COLOR_BTNFACE);
-#endif
-}
-
-
-inline int SetModeTextColor(const HDC hdc, const bool bDarkMode) {
-#ifdef D_NP3_WIN10_DARK_MODE
-  return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_BTNTEXT));
-#else
-  UNUSED(bDarkMode);
-  return SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
-#endif
-}
-
-inline COLORREF GetModeTextColor(const bool bDarkMode) {
-#ifdef D_NP3_WIN10_DARK_MODE
-  return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_BTNTEXT);
-#else
-  UNUSED(bDarkMode);
-  return (COLORREF)GetSysColor(COLOR_BTNTEXT);
+    UNUSED(bDarkMode);
+    return (COLORREF)GetSysColor(COLOR_BTNFACE);
 #endif
 }
 
 
+inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
+{
+#ifdef D_NP3_WIN10_DARK_MODE
+    return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_BTNTEXT));
+#else
+    UNUSED(bDarkMode);
+    return SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+#endif
+}
+
+inline COLORREF GetModeTextColor(const bool bDarkMode)
+{
+#ifdef D_NP3_WIN10_DARK_MODE
+    return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_BTNTEXT);
+#else
+    UNUSED(bDarkMode);
+    return (COLORREF)GetSysColor(COLOR_BTNTEXT);
+#endif
+}
+
+
 #ifdef D_NP3_WIN10_DARK_MODE
 
-inline INT_PTR SetDarkModeCtlColors(const HDC hdc, const bool bDarkMode) {
-  if (bDarkMode) {
-    SetBkColor(hdc, Settings2.DarkModeBkgColor);
-    SetTextColor(hdc, Settings2.DarkModeTxtColor);
-  }
-  return (INT_PTR)(bDarkMode ? Globals.hbrDarkModeBkgBrush : FALSE);
+inline INT_PTR SetDarkModeCtlColors(const HDC hdc, const bool bDarkMode)
+{
+    if (bDarkMode)
+    {
+        SetBkColor(hdc, Settings2.DarkModeBkgColor);
+        SetTextColor(hdc, Settings2.DarkModeTxtColor);
+    }
+    return (INT_PTR)(bDarkMode ? Globals.hbrDarkModeBkgBrush : FALSE);
 }
 
 #endif
@@ -285,23 +345,29 @@ bool SetClipboardText(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 
 inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScreen)
 {
-  HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-  MONITORINFO mi;
-  ZeroMemory(&mi, sizeof(MONITORINFO));
-  mi.cbSize = sizeof(mi);
-  GetMonitorInfo(hMonitor, &mi);
-  *pCXScreen = (mi.rcMonitor.right - mi.rcMonitor.left);
-  *pCYScreen = (mi.rcMonitor.bottom - mi.rcMonitor.top);
+    HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi;
+    ZeroMemory(&mi, sizeof(MONITORINFO));
+    mi.cbSize = sizeof(mi);
+    GetMonitorInfo(hMonitor, &mi);
+    *pCXScreen = (mi.rcMonitor.right - mi.rcMonitor.left);
+    *pCYScreen = (mi.rcMonitor.bottom - mi.rcMonitor.top);
 }
 
 // FullHD? =>   0:'==',   -1:'<',   +1:'>'
-inline int IsFullHD(HWND hwnd, int resX, int resY) 
+inline int IsFullHD(HWND hwnd, int resX, int resY)
 {
-  int cxScreen, cyScreen;
-  GetCurrentMonitorResolution(hwnd, &cxScreen, &cyScreen);
-  if (resX <= 0) { resX = cxScreen; }
-  if (resY <= 0) { resY = cyScreen; }
-  return ((resX == 1920) && (resY == 1080)) ? 0 : (((resX < 1920) || (resY < 1080)) ? -1 : +1);
+    int cxScreen, cyScreen;
+    GetCurrentMonitorResolution(hwnd, &cxScreen, &cyScreen);
+    if (resX <= 0)
+    {
+        resX = cxScreen;
+    }
+    if (resY <= 0)
+    {
+        resY = cyScreen;
+    }
+    return ((resX == 1920) && (resY == 1080)) ? 0 : (((resX < 1920) || (resY < 1080)) ? -1 : +1);
 }
 
 // ----------------------------------------------------------------------------
@@ -325,9 +391,18 @@ bool IsCmdEnabled(HWND hwnd, UINT uId);
 
 #define SetBtn(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
 
-inline bool IsButtonChecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_CHECKED); }
-inline bool IsButtonIntermediate(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_INDETERMINATE); }
-inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_UNCHECKED); }
+inline bool IsButtonChecked(HWND hwnd, int iButtonID)
+{
+    return (IsDlgButtonChecked(hwnd, iButtonID) == BST_CHECKED);
+}
+inline bool IsButtonIntermediate(HWND hwnd, int iButtonID)
+{
+    return (IsDlgButtonChecked(hwnd, iButtonID) == BST_INDETERMINATE);
+}
+inline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
+{
+    return (IsDlgButtonChecked(hwnd, iButtonID) == BST_UNCHECKED);
+}
 
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
@@ -363,14 +438,22 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 
-inline bool TrimSpcA(LPSTR lpString) {
-  if (!lpString || !*lpString) { return false; }
-  return (bool)StrTrimA(lpString, " \t\v");
+inline bool TrimSpcA(LPSTR lpString)
+{
+    if (!lpString || !*lpString)
+    {
+        return false;
+    }
+    return (bool)StrTrimA(lpString, " \t\v");
 };
 
-inline bool TrimSpcW(LPWSTR lpString) {
-  if (!lpString || !*lpString) { return false; }
-  return (bool)StrTrim(lpString, L" \t\v");
+inline bool TrimSpcW(LPWSTR lpString)
+{
+    if (!lpString || !*lpString)
+    {
+        return false;
+    }
+    return (bool)StrTrim(lpString, L" \t\v");
 };
 
 #if (defined(UNICODE) || defined(_UNICODE))
@@ -422,16 +505,16 @@ void TransformMetaChars(char *pszInput, bool bRegEx, int iEOLMode);
 
 #ifdef WC2MB_EX
 ptrdiff_t WideCharToMultiByteEx(
-  UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
-  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar);
+    UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
+    LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar);
 #else
 
 __inline ptrdiff_t WideCharToMultiByteEx(
-  UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
-  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar)
+    UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
+    LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar)
 {
-  return (ptrdiff_t)WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, (int)cchWideChar,
-                                        lpMultiByteStr, (int)cbMultiByte, lpDefaultChar, lpUsedDefaultChar);
+    return (ptrdiff_t)WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, (int)cchWideChar,
+                                          lpMultiByteStr, (int)cbMultiByte, lpDefaultChar, lpUsedDefaultChar);
 }
 
 #endif
@@ -439,70 +522,74 @@ __inline ptrdiff_t WideCharToMultiByteEx(
 
 #ifdef MB2WC_EX
 ptrdiff_t MultiByteToWideCharEx(
-  UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
-  LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
+    UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
+    LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
 #else
 
 __inline ptrdiff_t MultiByteToWideCharEx(
-  UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
-  LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
+    UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
+    LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
 {
-  return (ptrdiff_t)MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, (int)cbMultiByte,
-                                        lpWideCharStr, (int)cchWideChar);
+    return (ptrdiff_t)MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, (int)cbMultiByte,
+                                          lpWideCharStr, (int)cchWideChar);
 }
 
-#endif 
+#endif
 
 // ============================================================================
 
 inline int32_t bitmask32_n(unsigned short n)
 {
-  return ((n >= 32) ? 0 - ((int32_t)1) : (((int32_t)1) << n) - 1);
+    return ((n >= 32) ? 0 - ((int32_t)1) : (((int32_t)1) << n) - 1);
 }
 
 // ============================================================================
 
 inline int wcscmp_s(const wchar_t* s1, const wchar_t* s2)
 {
-  return (s1 && s2) ? wcscmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+    return (s1 && s2) ? wcscmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
 inline int wcscoll_s(const wchar_t* s1, const wchar_t* s2)
 {
-  return (s1 && s2) ? wcscoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+    return (s1 && s2) ? wcscoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
 inline int wcsicmp_s(const wchar_t* s1, const wchar_t* s2)
 {
-  return (s1 && s2) ? _wcsicmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+    return (s1 && s2) ? _wcsicmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
 inline int wcsicoll_s(const wchar_t* s1, const wchar_t* s2)
 {
-  return (s1 && s2) ? _wcsicoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+    return (s1 && s2) ? _wcsicoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
 // ============================================================================
 
 inline void SwabEx(char* src, char* dest, size_t n)
 {
-  static int const max = (INT_MAX - (INT_MAX % 2));
+    static int const max = (INT_MAX - (INT_MAX % 2));
 
-  if (n <= (size_t)max) {
-    _swab(src, dest, (int)n);
-  }
-  else {
-    size_t size = n - (n % 2LL);
-    while (size > (size_t)max) {
-      _swab(src, dest, max);
-      size -= max;
-      src += max;
-      dest += max;
+    if (n <= (size_t)max)
+    {
+        _swab(src, dest, (int)n);
     }
-    if (size > 0) {
-      _swab(src, dest, (int)size);
+    else
+    {
+        size_t size = n - (n % 2LL);
+        while (size > (size_t)max)
+        {
+            _swab(src, dest, max);
+            size -= max;
+            src += max;
+            dest += max;
+        }
+        if (size > 0)
+        {
+            _swab(src, dest, (int)size);
+        }
     }
-  }
 }
 
 
@@ -518,7 +605,7 @@ VOID RestoreWndFromTray(HWND hWnd);
 
 CHAR*  StrCutIA(CHAR* s,const CHAR* pattern);
 WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern);
-#if defined(UNICODE) || defined(_UNICODE)  
+#if defined(UNICODE) || defined(_UNICODE)
 #define StrCutI StrCutIW
 #else
 #define StrCutI _StrCutIA
@@ -528,7 +615,7 @@ WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern);
 //==== StrNextTok methods ===================
 CHAR*  StrNextTokA(CHAR* strg, const CHAR* tokens);
 WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens);
-#if defined(UNICODE) || defined(_UNICODE)  
+#if defined(UNICODE) || defined(_UNICODE)
 #define StrNextTok StrNextTokW
 #else
 #define StrNextTok StrNextTokA
@@ -546,21 +633,25 @@ bool StrDelChrW(LPWSTR pszSource, LPCWSTR pCharsToRemove);
 
 
 //==== StrSafe lstrlen() =======================================================
-//inline size_t StringCchLenA(LPCSTR s, size_t n) { 
+//inline size_t StringCchLenA(LPCSTR s, size_t n) {
 //  n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n));
 //}
-//inline size_t StringCchLenW(LPCWSTR s, size_t n) { 
+//inline size_t StringCchLenW(LPCWSTR s, size_t n) {
 //  n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n));
 //}
 
-inline size_t StringCchLenA(LPCSTR s, size_t n) {
-  n = (n ? n : STRSAFE_MAX_CCH); return (s ? strnlen_s(s, n) : 0LL);
+inline size_t StringCchLenA(LPCSTR s, size_t n)
+{
+    n = (n ? n : STRSAFE_MAX_CCH);
+    return (s ? strnlen_s(s, n) : 0LL);
 }
-inline size_t StringCchLenW(LPCWSTR s, size_t n) {
-  n = (n ? n : STRSAFE_MAX_CCH); return (s ? wcsnlen_s(s, n) : 0LL);
+inline size_t StringCchLenW(LPCWSTR s, size_t n)
+{
+    n = (n ? n : STRSAFE_MAX_CCH);
+    return (s ? wcsnlen_s(s, n) : 0LL);
 }
 
-#if defined(UNICODE) || defined(_UNICODE)  
+#if defined(UNICODE) || defined(_UNICODE)
 #define StringCchLen(s,n)  StringCchLenW((s),(n))
 #else
 #define StringCchLen(s,n)  StringCchLenA((s),(n))
@@ -568,17 +659,19 @@ inline size_t StringCchLenW(LPCWSTR s, size_t n) {
 
 // ----------------------------------------------------------------------------
 
-inline char* StrEndA(const char* pStart, size_t siz) {
-  // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
-  return (char*)(pStart + StringCchLenA(pStart, siz));
+inline char* StrEndA(const char* pStart, size_t siz)
+{
+    // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
+    return (char*)(pStart + StringCchLenA(pStart, siz));
 }
 
-inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
-  // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
-  return (WCHAR*)(pStart + StringCchLenW(pStart, siz));
+inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz)
+{
+    // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
+    return (WCHAR*)(pStart + StringCchLenW(pStart, siz));
 }
 
-#if defined(UNICODE) || defined(_UNICODE)  
+#if defined(UNICODE) || defined(_UNICODE)
 #define StrEnd(s,n) StrEndW((s),(n))
 #else
 #define StrEnd(s,n) StrEndA((s),(n))
@@ -605,7 +698,7 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 #define StringCchCompareNIW(s1,l1,s2,l2)  StrCmpNIW((s1),(s2),min_i((int)(l1),(int)(l2)))
 #define StringCchCompareXIW(s1,s2)        StrCmpIW((s1),(s2))
 
-#if defined(UNICODE) || defined(_UNICODE)  
+#if defined(UNICODE) || defined(_UNICODE)
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNW((s1),(l1),(s2),(l2))
 #define StringCchCompareX(s1,s2)         StringCchCompareXW((s1),(s2))
 #define StringCchCompareNI(s1,l1,s2,l2)  StringCchCompareNIW((s1),(l1),(s2),(l2))
@@ -628,26 +721,47 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 #define IsOctalDigit(ch) (((ch) >= '0') && ((ch) <= '7'))
 
 // no encoding for safe chars
-__inline bool IsAlphaNumeric(WCHAR ch) {
-  return
-    ((ch >= L'0') && (ch <= L'9')) ||
-    ((ch >= L'a') && (ch <= L'z')) ||
-    ((ch >= L'A') && (ch <= L'Z'));
+__inline bool IsAlphaNumeric(WCHAR ch)
+{
+    return
+        ((ch >= L'0') && (ch <= L'9')) ||
+        ((ch >= L'a') && (ch <= L'z')) ||
+        ((ch >= L'A') && (ch <= L'Z'));
 }
 
 // If the character is an hexadecimal digit, get its value.
-__inline int GetHexDigitA(char ch) {
-  if (ch >= '0' && ch <= '9') { return ch - '0'; }
-  if (ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
-  if (ch >= 'a' && ch <= 'f') { return ch - 'a' + 10; }
-  return -1;
+__inline int GetHexDigitA(char ch)
+{
+    if (ch >= '0' && ch <= '9')
+    {
+        return ch - '0';
+    }
+    if (ch >= 'A' && ch <= 'F')
+    {
+        return ch - 'A' + 10;
+    }
+    if (ch >= 'a' && ch <= 'f')
+    {
+        return ch - 'a' + 10;
+    }
+    return -1;
 }
 
-__inline int GetHexDigitW(WCHAR ch) {
-  if (ch >= L'0' && ch <= L'9') { return ch - L'0'; }
-  if (ch >= L'A' && ch <= L'F') { return ch - L'A' + 10; }
-  if (ch >= L'a' && ch <= L'f') { return ch - L'a' + 10; }
-  return -1;
+__inline int GetHexDigitW(WCHAR ch)
+{
+    if (ch >= L'0' && ch <= L'9')
+    {
+        return ch - L'0';
+    }
+    if (ch >= L'A' && ch <= L'F')
+    {
+        return ch - L'A' + 10;
+    }
+    if (ch >= L'a' && ch <= L'f')
+    {
+        return ch - L'a' + 10;
+    }
+    return -1;
 }
 // ----------------------------------------------------------------------------
 
@@ -658,10 +772,11 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLe
 size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int iMin, int iMax, int iDefault, bool ordered);
 size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount);
 
-inline bool Char2IntW(LPCWSTR str, int* value) {
-  LPWSTR end;
-  *value = (int)wcstol(str, &end, 10);
-  return (str != end);
+inline bool Char2IntW(LPCWSTR str, int* value)
+{
+    LPWSTR end;
+    *value = (int)wcstol(str, &end, 10);
+    return (str != end);
 }
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
@@ -674,22 +789,43 @@ void CloseApplication();
 
 // ----------------------------------------------------------------------------
 
-inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
+inline bool PathIsExistingFile(LPCWSTR pszPath)
+{
+    return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
+}
 
 // including <pathcch.h> and linking against pathcch.lib
 // api-ms-win-core-path-l1-1-0.dll  library : Minimum supported client is Windows 8 :-/
 // so switch back to previous (deprecated) methods:
-inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); return (PathAppend(p,a) ? S_OK : E_FAIL); }
-inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
-inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
-inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
-
-inline bool IsReadOnly(const DWORD dwFileAttr) {
-  return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
+inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)
+{
+    UNUSED(l);
+    return (PathAppend(p,a) ? S_OK : E_FAIL);
+}
+inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)
+{
+    UNUSED(l);
+    return (PathCanonicalize(p,a) ? S_OK : E_FAIL);
+}
+inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a)
+{
+    UNUSED(l);
+    return (PathRenameExtension(p,a) ? S_OK : E_FAIL);
+}
+inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)
+{
+    UNUSED(l);
+    return (PathRemoveFileSpec(p) ? S_OK : E_FAIL);
 }
 
-inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
-  return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
+inline bool IsReadOnly(const DWORD dwFileAttr)
+{
+    return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
+}
+
+inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc)
+{
+    return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
 }
 
 // ----------------------------------------------------------------------------

@@ -19,72 +19,87 @@
 //- IsUpperOrLowerCase(int ch);
 //- IsAlphaNumeric(int ch);
 
-constexpr bool IsASpaceX(const int ch) noexcept {
-  return ((ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d)));
+constexpr bool IsASpaceX(const int ch) noexcept
+{
+    return ((ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d)));
 }
 
-constexpr bool IsABlankOrTabX(const int ch) noexcept {
-  return ((ch == ' ') || (ch == '\t'));
+constexpr bool IsABlankOrTabX(const int ch) noexcept
+{
+    return ((ch == ' ') || (ch == '\t'));
 }
 
-constexpr bool IsADigitX(const int ch) noexcept {
-  return ((ch >= '0') && (ch <= '9'));
+constexpr bool IsADigitX(const int ch) noexcept
+{
+    return ((ch >= '0') && (ch <= '9'));
 }
 
-constexpr bool IsADigitX(int ch, int base) noexcept {
-  if (base <= 10) {
-    return (ch >= '0') && (ch < ('0' + base));
-  }
-  return ((ch >= '0') && (ch <= '9'))
-    || ((ch >= 'A') && (ch < ('A' + base - 10)))
-    || ((ch >= 'a') && (ch < ('a' + base - 10)));
+constexpr bool IsADigitX(int ch, int base) noexcept
+{
+    if (base <= 10)
+    {
+        return (ch >= '0') && (ch < ('0' + base));
+    }
+    return ((ch >= '0') && (ch <= '9'))
+           || ((ch >= 'A') && (ch < ('A' + base - 10)))
+           || ((ch >= 'a') && (ch < ('a' + base - 10)));
 }
 
-constexpr bool IsAHexDigit(int ch) noexcept {
-  return ((ch >= '0') && (ch <= '9'))
-      || ((ch >= 'A') && (ch <= 'F'))
-      || ((ch >= 'a') && (ch <= 'f'));
+constexpr bool IsAHexDigit(int ch) noexcept
+{
+    return ((ch >= '0') && (ch <= '9'))
+           || ((ch >= 'A') && (ch <= 'F'))
+           || ((ch >= 'a') && (ch <= 'f'));
 }
 
-constexpr bool IsALetter(const int ch) noexcept {
-  // 97 to 122 || 65 to 90
-  return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+constexpr bool IsALetter(const int ch) noexcept
+{
+    // 97 to 122 || 65 to 90
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
 
-constexpr bool IsLineBreak(const int ch) noexcept {
-  return ((ch == '\n') || (ch == '\r') || (ch == '\0'));
+constexpr bool IsLineBreak(const int ch) noexcept
+{
+    return ((ch == '\n') || (ch == '\r') || (ch == '\0'));
 }
 
-inline int IsNumber(const Scintilla::StyleContext& sc) {
-  return  Scintilla::IsADigit(sc.ch) || 
-          (((sc.ch == '+') || (sc.ch == '-')) && Scintilla::IsADigit(sc.chNext));
+inline int IsNumber(const Scintilla::StyleContext& sc)
+{
+    return  Scintilla::IsADigit(sc.ch) ||
+            (((sc.ch == '+') || (sc.ch == '-')) && Scintilla::IsADigit(sc.chNext));
 }
 
-constexpr int IsNumHex(const Scintilla::StyleContext& sc) noexcept {
-  return (sc.ch == '0') && (sc.chNext == 'x') || (sc.chNext == 'X');
+constexpr int IsNumHex(const Scintilla::StyleContext& sc) noexcept
+{
+    return (sc.ch == '0') && (sc.chNext == 'x') || (sc.chNext == 'X');
 }
 
-constexpr int IsNumBinary(const Scintilla::StyleContext& sc) noexcept {
-  return (sc.ch == '0') && (sc.chNext == 'b') || (sc.chNext == 'B');
+constexpr int IsNumBinary(const Scintilla::StyleContext& sc) noexcept
+{
+    return (sc.ch == '0') && (sc.chNext == 'b') || (sc.chNext == 'B');
 }
 
-inline int IsNumOctal(const Scintilla::StyleContext& sc) {
-  return (sc.ch == '0') && (sc.chNext == 'o') || (sc.chNext == 'O');
+inline int IsNumOctal(const Scintilla::StyleContext& sc)
+{
+    return (sc.ch == '0') && (sc.chNext == 'o') || (sc.chNext == 'O');
 }
 
-inline int IsNumExponent(const Scintilla::StyleContext& sc) {
-  return Scintilla::IsADigit(sc.ch) && ((sc.chNext == 'e') || (sc.chNext == 'E'));
+inline int IsNumExponent(const Scintilla::StyleContext& sc)
+{
+    return Scintilla::IsADigit(sc.ch) && ((sc.chNext == 'e') || (sc.chNext == 'E'));
 }
 
 inline void TrimIdentifier(const char* input, char* output)
 {
-  size_t j = 0;
-  for (size_t i = 0; input[i] != '\0'; ++i) {
-    if (!IsASpaceX(input[i])) {
-      output[j++] = input[i];
+    size_t j = 0;
+    for (size_t i = 0; input[i] != '\0'; ++i)
+    {
+        if (!IsASpaceX(input[i]))
+        {
+            output[j++] = input[i];
+        }
     }
-  }
-  output[j] = '\0';
+    output[j] = '\0';
 }
 
 

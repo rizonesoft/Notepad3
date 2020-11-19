@@ -58,12 +58,16 @@ static WCHAR wchEncodingInfo[MAX_PATH] = { L'\0' };
 
 static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo);
 
-extern "C" const WCHAR* Encoding_GetTitleInfo() { return wchEncodingInfo; }
+extern "C" const WCHAR* Encoding_GetTitleInfo()
+{
+    return wchEncodingInfo;
+}
 
-extern "C" const char* Encoding_GetTitleInfoA() {
-  static char chEncodingInfo[MAX_PATH] = { '\0' };
-  ::WideCharToMultiByte(CP_ACP, 0, wchEncodingInfo, -1, chEncodingInfo, (int)COUNTOF(chEncodingInfo), NULL, NULL);
-  return chEncodingInfo;
+extern "C" const char* Encoding_GetTitleInfoA()
+{
+    static char chEncodingInfo[MAX_PATH] = { '\0' };
+    ::WideCharToMultiByte(CP_ACP, 0, wchEncodingInfo, -1, chEncodingInfo, (int)COUNTOF(chEncodingInfo), NULL, NULL);
+    return chEncodingInfo;
 }
 
 
@@ -208,37 +212,37 @@ extern "C" const char* Encoding_GetTitleInfoA() {
 //        UTF8},  // we do not have an output converter for this font encoding
 //  { "X-TAM-WEBTAMIL", "x-tam-webtamil",
 //        UTF8},  // we do not have an output converter for this font encoding
-//  
+//
 //  { "X-KDDI-Shift_JIS", "Shift_JIS", JAPANESE_SHIFT_JIS},
 //  // KDDI version of Shift_JIS with Google Emoji PUA mappings.
 //  // Note that MimeEncodingName() returns "Shift_JIS", since KDDI uses
 //  // "Shift_JIS" in HTTP headers and email messages.
-//  
+//
 //  { "X-DoCoMo-Shift_JIS", "Shift_JIS", JAPANESE_SHIFT_JIS},
 //  // DoCoMo version of Shift_JIS with Google Emoji PUA mappings.
 //  // See the comment at KDDI_SHIFT_JIS for other issues.
-//  
+//
 //  { "X-SoftBank-Shift_JIS", "Shift_JIS", JAPANESE_SHIFT_JIS},
 //  // SoftBank version of Shift_JIS with Google Emoji PUA mappings.
 //  // See the comment at KDDI_SHIFT_JIS for other issues.
-//  
+//
 //  { "X-KDDI-ISO-2022-JP", "ISO-2022-JP", JAPANESE_SHIFT_JIS},
 //  // KDDI version of ISO-2022-JP with Google Emoji PUA mappings.
 //  // See the comment at KDDI_SHIFT_JIS for other issues.
 //  // The preferred Web encoding is due to potential confusion with
 //  // HTML syntax chars.
-//  
+//
 //  { "X-SoftBank-ISO-2022-JP", "ISO-2022-JP", JAPANESE_SHIFT_JIS},
 //  // SoftBank version of ISO-2022-JP with Google Emoji PUA mappings.
 //  // See the comment at KDDI_SHIFT_JIS for other issues.
 //  // The preferred Web encoding is due to potential confusion with
 //  // HTML syntax chars.
-//  
+//
 //  // Please refer to NOTE: section in the comments in the definition
 //  // of "struct I18NInfoByEncoding", before adding new encodings.
-//  
+//
 //  };
-//  
+//
 
 
 #define ENC_PARSE_NAM_ASCII                ",ASCII,ascii,"
@@ -340,230 +344,246 @@ extern "C" const char* Encoding_GetTitleInfoA() {
 // "ISO-8859-11"
 // "VISCII"
 
-extern "C" NP2ENCODING g_Encodings[] = {
-  /* 000 */{ NCP_ASCII_7BIT | NCP_ANSI | NCP_RECODE,              CP_ACP,   ENC_PARSE_NAM_ANSI,              IDS_ENC_ANSI,              L"" }, // CPI_ANSI_DEFAULT       0
-  /* 001 */{ NCP_ASCII_7BIT | NCP_OEM | NCP_RECODE,               CP_OEMCP, ENC_PARSE_NAM_OEM,               IDS_ENC_OEM,               L"" }, // CPI_OEM                1
-  /* 002 */{ NCP_UNICODE | NCP_UNICODE_BOM,                       CP_UTF8,  ENC_PARSE_NAM_UTF16LEBOM,        IDS_ENC_UTF16LEBOM,        L"" }, // CPI_UNICODEBOM         2
-  /* 003 */{ NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_UNICODE_BOM, CP_UTF8,  ENC_PARSE_NAM_UTF16BEBOM,        IDS_ENC_UTF16BEBOM,        L"" }, // CPI_UNICODEBEBOM       3
-  /* 004 */{ NCP_UNICODE | NCP_RECODE,                            CP_UTF8,  ENC_PARSE_NAM_UTF16LE,           IDS_ENC_UTF16LE,           L"" }, // CPI_UNICODE            4
-  /* 005 */{ NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_RECODE,      CP_UTF8,  ENC_PARSE_NAM_UTF16BE,           IDS_ENC_UTF16BE,           L"" }, // CPI_UNICODEBE          5
-  /* 006 */{ NCP_ASCII_7BIT | NCP_UTF8 | NCP_RECODE,              CP_UTF8,  ENC_PARSE_NAM_UTF8,              IDS_ENC_UTF8,              L"" }, // CPI_UTF8               6
-  /* 007 */{ NCP_UTF8 | NCP_UTF8_SIGN,                            CP_UTF8,  ENC_PARSE_NAM_UTF8SIG,           IDS_ENC_UTF8SIG,           L"" }, // CPI_UTF8SIGN           7
-  /* 008 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     CP_UTF7,  ENC_PARSE_NAM_UTF7,              IDS_ENC_UTF7,              L"" }, // CPI_UTF7               8
-  /* 009 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     720,      ENC_PARSE_NAM_DOS_720,           IDS_ENC_DOS_720,           L"" },
-  /* 010 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28596,    ENC_PARSE_NAM_ISO_8859_6,        IDS_ENC_ISO_8859_6,        L"" },
-  /* 011 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10004,    ENC_PARSE_NAM_MAC_ARABIC,        IDS_ENC_MAC_ARABIC,        L"" },
-  /* 012 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1256,     ENC_PARSE_NAM_WIN_1256,          IDS_ENC_WIN_1256,          L"" },
-  /* 013 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     775,      ENC_PARSE_NAM_DOS_775,           IDS_ENC_DOS_775,           L"" },
-  /* 014 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28594,    ENC_PARSE_NAM_ISO_8859_4,        IDS_ENC_ISO_8859_4,        L"" },
-  /* 015 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1257,     ENC_PARSE_NAM_WIN_1257,          IDS_ENC_WIN_1257,          L"" },
-  /* 016 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     852,      ENC_PARSE_NAM_DOS_852,           IDS_ENC_DOS_852,           L"" },
-  /* 017 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28592,    ENC_PARSE_NAM_ISO_8859_2,        IDS_ENC_ISO_8859_2,        L"" },
-  /* 018 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10029,    ENC_PARSE_NAM_MAC_CENTRAL_EUROP, IDS_ENC_MAC_CENTRAL_EUROP, L"" },
-  /* 019 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1250,     ENC_PARSE_NAM_WIN_1250,          IDS_ENC_WIN_1250,          L"" },
-  /* 020 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     936,      ENC_PARSE_NAM_GBK_936,           IDS_ENC_GBK_936,           L"" },
-  /* 021 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10008,    ENC_PARSE_NAM_MAC_ZH_CN,         IDS_ENC_MAC_ZH_CN,         L"" },
-  /* 022 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     950,      ENC_PARSE_NAM_BIG5,              IDS_ENC_BIG5,              L"" },
-  /* 023 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10002,    ENC_PARSE_NAM_MAC_ZH_TW,         IDS_ENC_MAC_ZH_TW,         L"" },
-  /* 024 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10082,    ENC_PARSE_NAM_MAC_CROATIAN,      IDS_ENC_MAC_CROATIAN,      L"" },
-  /* 025 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     866,      ENC_PARSE_NAM_DOS_866,           IDS_ENC_DOS_866,           L"" },
-  /* 026 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28595,    ENC_PARSE_NAM_ISO_8859_5,        IDS_ENC_ISO_8859_5,        L"" },
-  /* 027 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20866,    ENC_PARSE_NAM_KOI8_R,            IDS_ENC_KOI8_R,            L"" },
-  /* 028 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     21866,    ENC_PARSE_NAM_KOI8_U,            IDS_ENC_KOI8_U,            L"" },
-  /* 029 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10007,    ENC_PARSE_NAM_MAC_CYRILLIC,      IDS_ENC_MAC_CYRILLIC,      L"" },
-  /* 030 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1251,     ENC_PARSE_NAM_WIN_1251,          IDS_ENC_WIN_1251,          L"" },
-  /* 031 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28603,    ENC_PARSE_NAM_ISO_8859_13,       IDS_ENC_ISO_8859_13,       L"" },
-  /* 032 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     863,      ENC_PARSE_NAM_DOS_863,           IDS_ENC_DOS_863,           L"" },
-  /* 033 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     737,      ENC_PARSE_NAM_DOS_737,           IDS_ENC_DOS_737,           L"" },
-  /* 034 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28597,    ENC_PARSE_NAM_ISO_8859_7,        IDS_ENC_ISO_8859_7,        L"" },
-  /* 035 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10006,    ENC_PARSE_NAM_MAC_GREEK,         IDS_ENC_MAC_GREEK,         L"" },
-  /* 036 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1253,     ENC_PARSE_NAM_WIN_1253,          IDS_ENC_WIN_1253,          L"" },
-  /* 037 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     869,      ENC_PARSE_NAM_DOS_869,           IDS_ENC_DOS_869,           L"" },
-  /* 038 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     862,      ENC_PARSE_NAM_DOS_862,           IDS_ENC_DOS_862,           L"" },
-  /* 039 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     38598,    ENC_PARSE_NAM_ISO_8859_8_I,      IDS_ENC_ISO_8859_8_I,      L"" },
-  /* 040 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28598,    ENC_PARSE_NAM_ISO_8859_8,        IDS_ENC_ISO_8859_8,        L"" },
-  /* 041 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10005,    ENC_PARSE_NAM_MAC_HEBREW,        IDS_ENC_MAC_HEBREW,        L"" },
-  /* 042 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1255,     ENC_PARSE_NAM_WIN_1255,          IDS_ENC_WIN_1255,          L"" },
-  /* 043 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     861,      ENC_PARSE_NAM_DOS_861,           IDS_ENC_DOS_861,           L"" },
-  /* 044 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10079,    ENC_PARSE_NAM_MAC_ICELANDIC,     IDS_ENC_MAC_ICELANDIC,     L"" },
-  /* 045 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10001,    ENC_PARSE_NAM_MAC_JAPANESE,      IDS_ENC_MAC_JAPANESE,      L"" },
-  /* 046 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     932,      ENC_PARSE_NAM_SHIFT_JIS,         IDS_ENC_SHIFT_JIS,         L"" },
-  /* 047 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10003,    ENC_PARSE_NAM_MAC_KOREAN,        IDS_ENC_MAC_KOREAN,        L"" },
-  /* 048 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     949,      ENC_PARSE_NAM_WIN_949,           IDS_ENC_WIN_949,           L"" },
-  /* 049 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28593,    ENC_PARSE_NAM_ISO_8859_3,        IDS_ENC_ISO_8859_3,        L"" },
-  /* 050 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28605,    ENC_PARSE_NAM_ISO_8859_15,       IDS_ENC_ISO_8859_15,       L"" },
-  /* 051 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     865,      ENC_PARSE_NAM_DOS_865,           IDS_ENC_DOS_865,           L"" },
-  /* 052 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     437,      ENC_PARSE_NAM_DOS_437,           IDS_ENC_DOS_437,           L"" },
-  /* 053 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     858,      ENC_PARSE_NAM_DOS_858,           IDS_ENC_DOS_858,           L"" },
-  /* 054 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     860,      ENC_PARSE_NAM_DOS_860,           IDS_ENC_DOS_860,           L"" },
-  /* 055 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10000,    ENC_PARSE_NAM_MAC_WESTERN_EUROP, IDS_ENC_MAC_WESTERN_EUROP, L"" },
-  /* 056 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10021,    ENC_PARSE_NAM_MAC_THAI,          IDS_ENC_MAC_THAI,          L"" },
-  /* 057 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     874,      ENC_PARSE_NAM_WIN_874,           IDS_ENC_WIN_874,           L"" },
-  /* 058 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     857,      ENC_PARSE_NAM_DOS_857,           IDS_ENC_DOS_857,           L"" },
-  /* 059 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28599,    ENC_PARSE_NAM_ISO_8859_9,        IDS_ENC_ISO_8859_9,        L"" },
-  /* 060 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10081,    ENC_PARSE_NAM_MAC_TURKISH,       IDS_ENC_MAC_TURKISH,       L"" },
-  /* 061 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1254,     ENC_PARSE_NAM_WIN_1254,          IDS_ENC_WIN_1254,          L"" },
-  /* 062 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10017,    ENC_PARSE_NAM_MAC_UKRAINIAN,     IDS_ENC_MAC_UKRAINIAN,     L"" },
-  /* 063 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1258,     ENC_PARSE_NAM_WIN_1258,          IDS_ENC_WIN_1258,          L"" },
-  /* 064 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     850,      ENC_PARSE_NAM_DOS_850,           IDS_ENC_DOS_850,           L"" },
-  /* 065 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28591,    ENC_PARSE_NAM_ISO_8859_1,        IDS_ENC_ISO_8859_1,        L"" },
-  /* 066 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10010,    ENC_PARSE_NAM_MAC_ROMANIAN,      IDS_ENC_MAC_ROMANIAN,      L"" },
-  /* 067 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1252,     ENC_PARSE_NAM_WIN_1252,          IDS_ENC_WIN_1252,          L"" },
-  /* 068 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      37,       ENC_PARSE_NAM_IBM_EBCDIC_US,     IDS_ENC_IBM_EBCDIC_US,     L"" },
-  /* 069 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      500,      ENC_PARSE_NAM_IBM_EBCDIC_INT,    IDS_ENC_IBM_EBCDIC_INT,    L"" },
-  /* 070 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      875,      ENC_PARSE_NAM_IBM_EBCDIC_GR,     IDS_ENC_IBM_EBCDIC_GR,     L"" },
-  /* 071 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      1026,     ENC_PARSE_NAM_IBM_EBCDIC_LAT_5,  IDS_ENC_IBM_EBCDIC_LAT_5,  L"" },
-  /* 072 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20936,    ENC_PARSE_NAM_GB2312_80,         IDS_ENC_GB2312_80,         L"" }, // Chinese Simplified (GB2312-80)
-  /* 073 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     54936,    ENC_PARSE_NAM_GB18030,           IDS_ENC_GB18030,           L"" }, // Chinese Simplified (GB18030)
-  /* 074 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20932,    ENC_PARSE_NAM_EUC_JAPANESE,      IDS_ENC_EUC_JAPANESE,      L"" }, // Japanese (EUC)
-  /* 075 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     51949,    ENC_PARSE_NAM_EUC_KOREAN,        IDS_ENC_EUC_KOREAN,        L"" }, // Korean (EUC)
-  /* 076 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     50229,    ENC_PARSE_NAM_ISO_2022_CN,       IDS_ENC_ISO_2022_CN,       L"" }, // Chinese Traditional (ISO-2022-CN)
-  /* 077 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     52936,    ENC_PARSE_NAM_HZ_GB2312,         IDS_ENC_HZ_GB2312,         L"" }, // Chinese Simplified (HZ-GB2312)
-  /* 078 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     50220,    ENC_PARSE_NAM_ISO_2022_JP,       IDS_ENC_ISO_2022_JP,       L"" }, // Japanese (JIS)
-  /* 079 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     50225,    ENC_PARSE_NAM_ISO_2022_KR,       IDS_ENC_ISO_2022_KR,       L"" }, // Korean (ISO-2022-KR)
-  /* 080 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20000,    ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     L"" }, // Chinese Traditional (CNS)
-  /* 081 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1361,     ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             L"" }, // Korean (Johab)
-  // may need special codepage installation on some
-  /* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      951,      ENC_PARSE_NAM_BIG5_HKSCS,        IDS_ENC_BIG5_HKSCS,        L"" }  // Chinese (Hong Kong Supplementary Character Set)
-  
-  ///* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" }, // Nordic (ISO 8859-10)
+extern "C" NP2ENCODING g_Encodings[] =
+{
+    /* 000 */{ NCP_ASCII_7BIT | NCP_ANSI | NCP_RECODE,              CP_ACP,   ENC_PARSE_NAM_ANSI,              IDS_ENC_ANSI,              L"" }, // CPI_ANSI_DEFAULT       0
+    /* 001 */{ NCP_ASCII_7BIT | NCP_OEM | NCP_RECODE,               CP_OEMCP, ENC_PARSE_NAM_OEM,               IDS_ENC_OEM,               L"" }, // CPI_OEM                1
+    /* 002 */{ NCP_UNICODE | NCP_UNICODE_BOM,                       CP_UTF8,  ENC_PARSE_NAM_UTF16LEBOM,        IDS_ENC_UTF16LEBOM,        L"" }, // CPI_UNICODEBOM         2
+    /* 003 */{ NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_UNICODE_BOM, CP_UTF8,  ENC_PARSE_NAM_UTF16BEBOM,        IDS_ENC_UTF16BEBOM,        L"" }, // CPI_UNICODEBEBOM       3
+    /* 004 */{ NCP_UNICODE | NCP_RECODE,                            CP_UTF8,  ENC_PARSE_NAM_UTF16LE,           IDS_ENC_UTF16LE,           L"" }, // CPI_UNICODE            4
+    /* 005 */{ NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_RECODE,      CP_UTF8,  ENC_PARSE_NAM_UTF16BE,           IDS_ENC_UTF16BE,           L"" }, // CPI_UNICODEBE          5
+    /* 006 */{ NCP_ASCII_7BIT | NCP_UTF8 | NCP_RECODE,              CP_UTF8,  ENC_PARSE_NAM_UTF8,              IDS_ENC_UTF8,              L"" }, // CPI_UTF8               6
+    /* 007 */{ NCP_UTF8 | NCP_UTF8_SIGN,                            CP_UTF8,  ENC_PARSE_NAM_UTF8SIG,           IDS_ENC_UTF8SIG,           L"" }, // CPI_UTF8SIGN           7
+    /* 008 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     CP_UTF7,  ENC_PARSE_NAM_UTF7,              IDS_ENC_UTF7,              L"" }, // CPI_UTF7               8
+    /* 009 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     720,      ENC_PARSE_NAM_DOS_720,           IDS_ENC_DOS_720,           L"" },
+    /* 010 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28596,    ENC_PARSE_NAM_ISO_8859_6,        IDS_ENC_ISO_8859_6,        L"" },
+    /* 011 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10004,    ENC_PARSE_NAM_MAC_ARABIC,        IDS_ENC_MAC_ARABIC,        L"" },
+    /* 012 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1256,     ENC_PARSE_NAM_WIN_1256,          IDS_ENC_WIN_1256,          L"" },
+    /* 013 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     775,      ENC_PARSE_NAM_DOS_775,           IDS_ENC_DOS_775,           L"" },
+    /* 014 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28594,    ENC_PARSE_NAM_ISO_8859_4,        IDS_ENC_ISO_8859_4,        L"" },
+    /* 015 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1257,     ENC_PARSE_NAM_WIN_1257,          IDS_ENC_WIN_1257,          L"" },
+    /* 016 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     852,      ENC_PARSE_NAM_DOS_852,           IDS_ENC_DOS_852,           L"" },
+    /* 017 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28592,    ENC_PARSE_NAM_ISO_8859_2,        IDS_ENC_ISO_8859_2,        L"" },
+    /* 018 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10029,    ENC_PARSE_NAM_MAC_CENTRAL_EUROP, IDS_ENC_MAC_CENTRAL_EUROP, L"" },
+    /* 019 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1250,     ENC_PARSE_NAM_WIN_1250,          IDS_ENC_WIN_1250,          L"" },
+    /* 020 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     936,      ENC_PARSE_NAM_GBK_936,           IDS_ENC_GBK_936,           L"" },
+    /* 021 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10008,    ENC_PARSE_NAM_MAC_ZH_CN,         IDS_ENC_MAC_ZH_CN,         L"" },
+    /* 022 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     950,      ENC_PARSE_NAM_BIG5,              IDS_ENC_BIG5,              L"" },
+    /* 023 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10002,    ENC_PARSE_NAM_MAC_ZH_TW,         IDS_ENC_MAC_ZH_TW,         L"" },
+    /* 024 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10082,    ENC_PARSE_NAM_MAC_CROATIAN,      IDS_ENC_MAC_CROATIAN,      L"" },
+    /* 025 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     866,      ENC_PARSE_NAM_DOS_866,           IDS_ENC_DOS_866,           L"" },
+    /* 026 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28595,    ENC_PARSE_NAM_ISO_8859_5,        IDS_ENC_ISO_8859_5,        L"" },
+    /* 027 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20866,    ENC_PARSE_NAM_KOI8_R,            IDS_ENC_KOI8_R,            L"" },
+    /* 028 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     21866,    ENC_PARSE_NAM_KOI8_U,            IDS_ENC_KOI8_U,            L"" },
+    /* 029 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10007,    ENC_PARSE_NAM_MAC_CYRILLIC,      IDS_ENC_MAC_CYRILLIC,      L"" },
+    /* 030 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1251,     ENC_PARSE_NAM_WIN_1251,          IDS_ENC_WIN_1251,          L"" },
+    /* 031 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28603,    ENC_PARSE_NAM_ISO_8859_13,       IDS_ENC_ISO_8859_13,       L"" },
+    /* 032 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     863,      ENC_PARSE_NAM_DOS_863,           IDS_ENC_DOS_863,           L"" },
+    /* 033 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     737,      ENC_PARSE_NAM_DOS_737,           IDS_ENC_DOS_737,           L"" },
+    /* 034 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28597,    ENC_PARSE_NAM_ISO_8859_7,        IDS_ENC_ISO_8859_7,        L"" },
+    /* 035 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10006,    ENC_PARSE_NAM_MAC_GREEK,         IDS_ENC_MAC_GREEK,         L"" },
+    /* 036 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1253,     ENC_PARSE_NAM_WIN_1253,          IDS_ENC_WIN_1253,          L"" },
+    /* 037 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     869,      ENC_PARSE_NAM_DOS_869,           IDS_ENC_DOS_869,           L"" },
+    /* 038 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     862,      ENC_PARSE_NAM_DOS_862,           IDS_ENC_DOS_862,           L"" },
+    /* 039 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     38598,    ENC_PARSE_NAM_ISO_8859_8_I,      IDS_ENC_ISO_8859_8_I,      L"" },
+    /* 040 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28598,    ENC_PARSE_NAM_ISO_8859_8,        IDS_ENC_ISO_8859_8,        L"" },
+    /* 041 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10005,    ENC_PARSE_NAM_MAC_HEBREW,        IDS_ENC_MAC_HEBREW,        L"" },
+    /* 042 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1255,     ENC_PARSE_NAM_WIN_1255,          IDS_ENC_WIN_1255,          L"" },
+    /* 043 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     861,      ENC_PARSE_NAM_DOS_861,           IDS_ENC_DOS_861,           L"" },
+    /* 044 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10079,    ENC_PARSE_NAM_MAC_ICELANDIC,     IDS_ENC_MAC_ICELANDIC,     L"" },
+    /* 045 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10001,    ENC_PARSE_NAM_MAC_JAPANESE,      IDS_ENC_MAC_JAPANESE,      L"" },
+    /* 046 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     932,      ENC_PARSE_NAM_SHIFT_JIS,         IDS_ENC_SHIFT_JIS,         L"" },
+    /* 047 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10003,    ENC_PARSE_NAM_MAC_KOREAN,        IDS_ENC_MAC_KOREAN,        L"" },
+    /* 048 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     949,      ENC_PARSE_NAM_WIN_949,           IDS_ENC_WIN_949,           L"" },
+    /* 049 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28593,    ENC_PARSE_NAM_ISO_8859_3,        IDS_ENC_ISO_8859_3,        L"" },
+    /* 050 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28605,    ENC_PARSE_NAM_ISO_8859_15,       IDS_ENC_ISO_8859_15,       L"" },
+    /* 051 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     865,      ENC_PARSE_NAM_DOS_865,           IDS_ENC_DOS_865,           L"" },
+    /* 052 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     437,      ENC_PARSE_NAM_DOS_437,           IDS_ENC_DOS_437,           L"" },
+    /* 053 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     858,      ENC_PARSE_NAM_DOS_858,           IDS_ENC_DOS_858,           L"" },
+    /* 054 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     860,      ENC_PARSE_NAM_DOS_860,           IDS_ENC_DOS_860,           L"" },
+    /* 055 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10000,    ENC_PARSE_NAM_MAC_WESTERN_EUROP, IDS_ENC_MAC_WESTERN_EUROP, L"" },
+    /* 056 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10021,    ENC_PARSE_NAM_MAC_THAI,          IDS_ENC_MAC_THAI,          L"" },
+    /* 057 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     874,      ENC_PARSE_NAM_WIN_874,           IDS_ENC_WIN_874,           L"" },
+    /* 058 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     857,      ENC_PARSE_NAM_DOS_857,           IDS_ENC_DOS_857,           L"" },
+    /* 059 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28599,    ENC_PARSE_NAM_ISO_8859_9,        IDS_ENC_ISO_8859_9,        L"" },
+    /* 060 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10081,    ENC_PARSE_NAM_MAC_TURKISH,       IDS_ENC_MAC_TURKISH,       L"" },
+    /* 061 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1254,     ENC_PARSE_NAM_WIN_1254,          IDS_ENC_WIN_1254,          L"" },
+    /* 062 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10017,    ENC_PARSE_NAM_MAC_UKRAINIAN,     IDS_ENC_MAC_UKRAINIAN,     L"" },
+    /* 063 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1258,     ENC_PARSE_NAM_WIN_1258,          IDS_ENC_WIN_1258,          L"" },
+    /* 064 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     850,      ENC_PARSE_NAM_DOS_850,           IDS_ENC_DOS_850,           L"" },
+    /* 065 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28591,    ENC_PARSE_NAM_ISO_8859_1,        IDS_ENC_ISO_8859_1,        L"" },
+    /* 066 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     10010,    ENC_PARSE_NAM_MAC_ROMANIAN,      IDS_ENC_MAC_ROMANIAN,      L"" },
+    /* 067 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1252,     ENC_PARSE_NAM_WIN_1252,          IDS_ENC_WIN_1252,          L"" },
+    /* 068 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      37,       ENC_PARSE_NAM_IBM_EBCDIC_US,     IDS_ENC_IBM_EBCDIC_US,     L"" },
+    /* 069 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      500,      ENC_PARSE_NAM_IBM_EBCDIC_INT,    IDS_ENC_IBM_EBCDIC_INT,    L"" },
+    /* 070 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      875,      ENC_PARSE_NAM_IBM_EBCDIC_GR,     IDS_ENC_IBM_EBCDIC_GR,     L"" },
+    /* 071 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      1026,     ENC_PARSE_NAM_IBM_EBCDIC_LAT_5,  IDS_ENC_IBM_EBCDIC_LAT_5,  L"" },
+    /* 072 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20936,    ENC_PARSE_NAM_GB2312_80,         IDS_ENC_GB2312_80,         L"" }, // Chinese Simplified (GB2312-80)
+    /* 073 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     54936,    ENC_PARSE_NAM_GB18030,           IDS_ENC_GB18030,           L"" }, // Chinese Simplified (GB18030)
+    /* 074 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20932,    ENC_PARSE_NAM_EUC_JAPANESE,      IDS_ENC_EUC_JAPANESE,      L"" }, // Japanese (EUC)
+    /* 075 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     51949,    ENC_PARSE_NAM_EUC_KOREAN,        IDS_ENC_EUC_KOREAN,        L"" }, // Korean (EUC)
+    /* 076 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     50229,    ENC_PARSE_NAM_ISO_2022_CN,       IDS_ENC_ISO_2022_CN,       L"" }, // Chinese Traditional (ISO-2022-CN)
+    /* 077 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     52936,    ENC_PARSE_NAM_HZ_GB2312,         IDS_ENC_HZ_GB2312,         L"" }, // Chinese Simplified (HZ-GB2312)
+    /* 078 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     50220,    ENC_PARSE_NAM_ISO_2022_JP,       IDS_ENC_ISO_2022_JP,       L"" }, // Japanese (JIS)
+    /* 079 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     50225,    ENC_PARSE_NAM_ISO_2022_KR,       IDS_ENC_ISO_2022_KR,       L"" }, // Korean (ISO-2022-KR)
+    /* 080 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20000,    ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     L"" }, // Chinese Traditional (CNS)
+    /* 081 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1361,     ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             L"" }, // Korean (Johab)
+    // may need special codepage installation on some
+    /* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      951,      ENC_PARSE_NAM_BIG5_HKSCS,        IDS_ENC_BIG5_HKSCS,        L"" }  // Chinese (Hong Kong Supplementary Character Set)
 
-  
+    ///* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" }, // Nordic (ISO 8859-10)
+
+
 #if 0
-  NP2ENCODING mEncoding[] = {
-  { NCP_8BIT | NCP_RECODE, 38596, "ISO-8859-6-I,ISO88596I,", 61011, L"" },// Arabic (ISO 8859-6-I Logical)
-  { NCP_8BIT | NCP_RECODE, 28604, "ISO-8859-14,ISO885914,Windows-28604,windows28604,", 61055, L"" },// Celtic (ISO 8859-14)
-  { NCP_8BIT | NCP_RECODE, 28606, "ISO-8859-16,ISO885916,Windows-28606,windows28606", 61054, L"" },// Latin-10 (ISO 8859-16)
-};
+    NP2ENCODING mEncoding[] = {
+        { NCP_8BIT | NCP_RECODE, 38596, "ISO-8859-6-I,ISO88596I,", 61011, L"" },// Arabic (ISO 8859-6-I Logical)
+        { NCP_8BIT | NCP_RECODE, 28604, "ISO-8859-14,ISO885914,Windows-28604,windows28604,", 61055, L"" },// Celtic (ISO 8859-14)
+        { NCP_8BIT | NCP_RECODE, 28606, "ISO-8859-16,ISO885916,Windows-28606,windows28606", 61054, L"" },// Latin-10 (ISO 8859-16)
+    };
 #endif
 
-  /* 073 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 870,   "CP870,cp870,ebcdiccproece,ebcdiccpyu,csibm870,ibm870,",                          00000, L"" }, // IBM EBCDIC (Multilingual Latin-2)
-  /* 074 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1047,  "IBM01047,ibm01047,",                                                             00000, L"" }, // IBM EBCDIC (Open System Latin-1)
-  /* 075 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1140,  "x-ebcdic-cp-us-euro,xebcdiccpuseuro,",                                           00000, L"" }, // IBM EBCDIC (US-Canada-Euro)
-  /* 076 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1141,  "x-ebcdic-germany-euro,xebcdicgermanyeuro,",                                      00000, L"" }, // IBM EBCDIC (Germany-Euro)
-  /* 077 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1142,  "x-ebcdic-denmarknorway-euro,xebcdicdenmarknorwayeuro,",                          00000, L"" }, // IBM EBCDIC (Denmark-Norway-Euro)
-  /* 078 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1143,  "x-ebcdic-finlandsweden-euro,xebcdicfinlandswedeneuro,",                          00000, L"" }, // IBM EBCDIC (Finland-Sweden-Euro)
-  /* 079 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1144,  "x-ebcdic-italy-euro,xebcdicitalyeuro,",                                          00000, L"" }, // IBM EBCDIC (Italy-Euro)
-  /* 080 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1145,  "x-ebcdic-spain-euro,xebcdicspaineuro,",                                          00000, L"" }, // IBM EBCDIC (Spain-Latin America-Euro)
-  /* 081 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1146,  "x-ebcdic-uk-euro,xebcdicukeuro,",                                                00000, L"" }, // IBM EBCDIC (UK-Euro)
-  /* 082 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1147,  "x-ebcdic-france-euro,xebcdicfranceeuro,",                                        00000, L"" }, // IBM EBCDIC (France-Euro)
-  /* 083 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1148,  "x-ebcdic-international-euro,xebcdicinternationaleuro,",                          00000, L"" }, // IBM EBCDIC (International-Euro)
-  /* 084 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1149,  "x-ebcdic-icelandic-euro,xebcdicicelandiceuro,",                                  00000, L"" }, // IBM EBCDIC (Icelandic-Euro)
-  /* 086 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20273, "x-EBCDIC-Germany,xebcdicgermany,",                                               00000, L"" }, // IBM EBCDIC (Germany)
-  /* 087 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20277, "x-EBCDIC-DenmarkNorway,xebcdicdenmarknorway,ebcdiccpdk,ebcdiccpno,",             00000, L"" }, // IBM EBCDIC (Denmark-Norway)
-  /* 088 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20278, "x-EBCDIC-FinlandSweden,xebcdicfinlandsweden,ebcdicpfi,ebcdiccpse,",              00000, L"" }, // IBM EBCDIC (Finland-Sweden)
-  /* 089 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20280, "x-EBCDIC-Italy,xebcdicitaly,",                                                   00000, L"" }, // IBM EBCDIC (Italy)
-  /* 090 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20284, "x-EBCDIC-Spain,xebcdicspain,ebcdiccpes,",                                        00000, L"" }, // IBM EBCDIC (Spain-Latin America)
-  /* 091 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20285, "x-EBCDIC-UK,xebcdicuk,ebcdiccpgb,",                                              00000, L"" }, // IBM EBCDIC (UK)
-  /* 092 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20290, "x-EBCDIC-JapaneseKatakana,xebcdicjapanesekatakana,",                             00000, L"" }, // IBM EBCDIC (Japanese Katakana)
-  /* 093 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20297, "x-EBCDIC-France,xebcdicfrance,ebcdiccpfr,",                                      00000, L"" }, // IBM EBCDIC (France)
-  /* 094 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20420, "x-EBCDIC-Arabic,xebcdicarabic,ebcdiccpar1,",                                     00000, L"" }, // IBM EBCDIC (Arabic)
-  /* 095 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20423, "x-EBCDIC-Greek,xebcdicgreek,ebcdiccpgr,",                                        00000, L"" }, // IBM EBCDIC (Greek)
-  /* 096 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20424, "x-EBCDIC-Hebrew,xebcdichebrew,ebcdiccphe,",                                      00000, L"" }, // IBM EBCDIC (Hebrew)
-  /* 097 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20833, "x-EBCDIC-KoreanExtended,xebcdickoreanextended,",                                 00000, L"" }, // IBM EBCDIC (Korean Extended)
-  /* 098 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20838, "x-EBCDIC-Thai,xebcdicthai,ibmthai,csibmthai,",                                   00000, L"" }, // IBM EBCDIC (Thai)
-  /* 099 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20871, "x-EBCDIC-Icelandic,xebcdicicelandic,ebcdiccpis,",                                00000, L"" }, // IBM EBCDIC (Icelandic)
-  /* 100 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20880, "x-EBCDIC-CyrillicRussian,xebcdiccyrillicrussian,ebcdiccyrillic,",                00000, L"" }, // IBM EBCDIC (Cyrillic Russian)
-  /* 101 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20905, "x-EBCDIC-Turkish,xebcdicturkish,ebcdiccptr,",                                    00000, L"" }, // IBM EBCDIC (Turkish)
-  /* 102 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20924, "IBM00924,ibm00924,ebcdiclatin9euro,",                                            00000, L"" }, // IBM EBCDIC (Open System-Euro Latin-1)
-  /* 103 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 21025, "x-EBCDIC-CyrillicSerbianBulgarian,xebcdiccyrillicserbianbulgarian,",             00000, L"" }, // IBM EBCDIC (Cyrillic Serbian-Bulgarian)
-  /* 104 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50930, "x-EBCDIC-JapaneseAndKana,xebcdicjapaneseandkana,",                               00000, L"" }, // IBM EBCDIC (Japanese and Japanese Katakana)
-  /* 105 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50931, "x-EBCDIC-JapaneseAndUSCanada,xebcdicjapaneseanduscanada,",                       00000, L"" }, // IBM EBCDIC (Japanese and US-Canada)
-  /* 106 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50933, "x-EBCDIC-KoreanAndKoreanExtended,xebcdickoreanandkoreanextended,",               00000, L"" }, // IBM EBCDIC (Korean and Korean Extended)
-  /* 107 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50935, "x-EBCDIC-SimplifiedChinese,xebcdicsimplifiedchinese,",                           00000, L"" }, // IBM EBCDIC (Chinese Simplified)
-  /* 108 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50937, "x-EBCDIC-TraditionalChinese,xebcdictraditionalchinese,",                         00000, L"" }, // IBM EBCDIC (Chinese Traditional)
-  /* 109 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50939, "x-EBCDIC-JapaneseAndJapaneseLatin,xebcdicjapaneseandjapaneselatin,",             00000, L"" }, // IBM EBCDIC (Japanese and Japanese-Latin)
-  /* 110 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20105, "x-IA5,xia5,",                                                                    00000, L"" }, // Western European (IA5)
-  /* 111 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20106, "x-IA5-German,xia5german,",                                                       00000, L"" }, // German (IA5)
-  /* 112 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20107, "x-IA5-Swedish,xia5swedish,",                                                     00000, L"" }, // Swedish (IA5)
-  /* 113 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20108, "x-IA5-Norwegian,xia5norwegian,",                                                 00000, L"" }, // Norwegian (IA5)
-  /* 114 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20936, "x-cp20936,xcp20936,",                                                            00000, L"" }, // Chinese Simplified (GB2312)
-  /* 115 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20932, "euc-jp,,",                                                                       00000, L"" }, // Japanese (JIS X 0208-1990 & 0212-1990)
-  /* 117 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50221, "csISO2022JP,csiso2022jp,",                                                       00000, L"" }, // Japanese (JIS-Allow 1 byte Kana)
-  /* 118 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50222, "_ISO-2022-jp$SIO,iso2022jpSIO,",                                                 00000, L"" }, // Japanese (JIS-Allow 1 byte Kana - SO/SI)
-  /* 120 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50227, "x-cp50227,xcp50227,",                                                            00000, L"" }, // Chinese Simplified (ISO-2022)
-  /* 123 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20002, "x-Chinese-Eten,xchineseeten,",                                                   00000, L"" }, // Chinese Traditional (Eten)
-  /* 125 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 51936, "euc-cn,euccn,xeuccn,",                                                           00000, L"" }, // Chinese Simplified (EUC)
-  /* 128 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57002, "x-iscii-de,xisciide,",                                                           00000, L"" }, // ISCII Devanagari
-  /* 129 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57003, "x-iscii-be,xisciibe,",                                                           00000, L"" }, // ISCII Bengali
-  /* 130 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57004, "x-iscii-ta,xisciita,",                                                           00000, L"" }, // ISCII Tamil
-  /* 131 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57005, "x-iscii-te,xisciite,",                                                           00000, L"" }, // ISCII Telugu
-  /* 132 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57006, "x-iscii-as,xisciias,",                                                           00000, L"" }, // ISCII Assamese
-  /* 133 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57007, "x-iscii-or,xisciior,",                                                           00000, L"" }, // ISCII Oriya
-  /* 134 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57008, "x-iscii-ka,xisciika,",                                                           00000, L"" }, // ISCII Kannada
-  /* 135 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57009, "x-iscii-ma,xisciima,",                                                           00000, L"" }, // ISCII Malayalam
-  /* 136 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57010, "x-iscii-gu,xisciigu,",                                                           00000, L"" }, // ISCII Gujarathi
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            /* 137 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57011, "x-iscii-pa,xisciipa,",                                                           00000, L"" }, // ISCII Panjabi
+    /* 073 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 870,   "CP870,cp870,ebcdiccproece,ebcdiccpyu,csibm870,ibm870,",                          00000, L"" }, // IBM EBCDIC (Multilingual Latin-2)
+    /* 074 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1047,  "IBM01047,ibm01047,",                                                             00000, L"" }, // IBM EBCDIC (Open System Latin-1)
+    /* 075 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1140,  "x-ebcdic-cp-us-euro,xebcdiccpuseuro,",                                           00000, L"" }, // IBM EBCDIC (US-Canada-Euro)
+    /* 076 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1141,  "x-ebcdic-germany-euro,xebcdicgermanyeuro,",                                      00000, L"" }, // IBM EBCDIC (Germany-Euro)
+    /* 077 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1142,  "x-ebcdic-denmarknorway-euro,xebcdicdenmarknorwayeuro,",                          00000, L"" }, // IBM EBCDIC (Denmark-Norway-Euro)
+    /* 078 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1143,  "x-ebcdic-finlandsweden-euro,xebcdicfinlandswedeneuro,",                          00000, L"" }, // IBM EBCDIC (Finland-Sweden-Euro)
+    /* 079 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1144,  "x-ebcdic-italy-euro,xebcdicitalyeuro,",                                          00000, L"" }, // IBM EBCDIC (Italy-Euro)
+    /* 080 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1145,  "x-ebcdic-spain-euro,xebcdicspaineuro,",                                          00000, L"" }, // IBM EBCDIC (Spain-Latin America-Euro)
+    /* 081 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1146,  "x-ebcdic-uk-euro,xebcdicukeuro,",                                                00000, L"" }, // IBM EBCDIC (UK-Euro)
+    /* 082 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1147,  "x-ebcdic-france-euro,xebcdicfranceeuro,",                                        00000, L"" }, // IBM EBCDIC (France-Euro)
+    /* 083 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1148,  "x-ebcdic-international-euro,xebcdicinternationaleuro,",                          00000, L"" }, // IBM EBCDIC (International-Euro)
+    /* 084 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1149,  "x-ebcdic-icelandic-euro,xebcdicicelandiceuro,",                                  00000, L"" }, // IBM EBCDIC (Icelandic-Euro)
+    /* 086 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20273, "x-EBCDIC-Germany,xebcdicgermany,",                                               00000, L"" }, // IBM EBCDIC (Germany)
+    /* 087 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20277, "x-EBCDIC-DenmarkNorway,xebcdicdenmarknorway,ebcdiccpdk,ebcdiccpno,",             00000, L"" }, // IBM EBCDIC (Denmark-Norway)
+    /* 088 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20278, "x-EBCDIC-FinlandSweden,xebcdicfinlandsweden,ebcdicpfi,ebcdiccpse,",              00000, L"" }, // IBM EBCDIC (Finland-Sweden)
+    /* 089 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20280, "x-EBCDIC-Italy,xebcdicitaly,",                                                   00000, L"" }, // IBM EBCDIC (Italy)
+    /* 090 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20284, "x-EBCDIC-Spain,xebcdicspain,ebcdiccpes,",                                        00000, L"" }, // IBM EBCDIC (Spain-Latin America)
+    /* 091 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20285, "x-EBCDIC-UK,xebcdicuk,ebcdiccpgb,",                                              00000, L"" }, // IBM EBCDIC (UK)
+    /* 092 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20290, "x-EBCDIC-JapaneseKatakana,xebcdicjapanesekatakana,",                             00000, L"" }, // IBM EBCDIC (Japanese Katakana)
+    /* 093 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20297, "x-EBCDIC-France,xebcdicfrance,ebcdiccpfr,",                                      00000, L"" }, // IBM EBCDIC (France)
+    /* 094 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20420, "x-EBCDIC-Arabic,xebcdicarabic,ebcdiccpar1,",                                     00000, L"" }, // IBM EBCDIC (Arabic)
+    /* 095 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20423, "x-EBCDIC-Greek,xebcdicgreek,ebcdiccpgr,",                                        00000, L"" }, // IBM EBCDIC (Greek)
+    /* 096 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20424, "x-EBCDIC-Hebrew,xebcdichebrew,ebcdiccphe,",                                      00000, L"" }, // IBM EBCDIC (Hebrew)
+    /* 097 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20833, "x-EBCDIC-KoreanExtended,xebcdickoreanextended,",                                 00000, L"" }, // IBM EBCDIC (Korean Extended)
+    /* 098 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20838, "x-EBCDIC-Thai,xebcdicthai,ibmthai,csibmthai,",                                   00000, L"" }, // IBM EBCDIC (Thai)
+    /* 099 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20871, "x-EBCDIC-Icelandic,xebcdicicelandic,ebcdiccpis,",                                00000, L"" }, // IBM EBCDIC (Icelandic)
+    /* 100 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20880, "x-EBCDIC-CyrillicRussian,xebcdiccyrillicrussian,ebcdiccyrillic,",                00000, L"" }, // IBM EBCDIC (Cyrillic Russian)
+    /* 101 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20905, "x-EBCDIC-Turkish,xebcdicturkish,ebcdiccptr,",                                    00000, L"" }, // IBM EBCDIC (Turkish)
+    /* 102 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20924, "IBM00924,ibm00924,ebcdiclatin9euro,",                                            00000, L"" }, // IBM EBCDIC (Open System-Euro Latin-1)
+    /* 103 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 21025, "x-EBCDIC-CyrillicSerbianBulgarian,xebcdiccyrillicserbianbulgarian,",             00000, L"" }, // IBM EBCDIC (Cyrillic Serbian-Bulgarian)
+    /* 104 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50930, "x-EBCDIC-JapaneseAndKana,xebcdicjapaneseandkana,",                               00000, L"" }, // IBM EBCDIC (Japanese and Japanese Katakana)
+    /* 105 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50931, "x-EBCDIC-JapaneseAndUSCanada,xebcdicjapaneseanduscanada,",                       00000, L"" }, // IBM EBCDIC (Japanese and US-Canada)
+    /* 106 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50933, "x-EBCDIC-KoreanAndKoreanExtended,xebcdickoreanandkoreanextended,",               00000, L"" }, // IBM EBCDIC (Korean and Korean Extended)
+    /* 107 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50935, "x-EBCDIC-SimplifiedChinese,xebcdicsimplifiedchinese,",                           00000, L"" }, // IBM EBCDIC (Chinese Simplified)
+    /* 108 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50937, "x-EBCDIC-TraditionalChinese,xebcdictraditionalchinese,",                         00000, L"" }, // IBM EBCDIC (Chinese Traditional)
+    /* 109 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50939, "x-EBCDIC-JapaneseAndJapaneseLatin,xebcdicjapaneseandjapaneselatin,",             00000, L"" }, // IBM EBCDIC (Japanese and Japanese-Latin)
+    /* 110 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20105, "x-IA5,xia5,",                                                                    00000, L"" }, // Western European (IA5)
+    /* 111 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20106, "x-IA5-German,xia5german,",                                                       00000, L"" }, // German (IA5)
+    /* 112 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20107, "x-IA5-Swedish,xia5swedish,",                                                     00000, L"" }, // Swedish (IA5)
+    /* 113 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20108, "x-IA5-Norwegian,xia5norwegian,",                                                 00000, L"" }, // Norwegian (IA5)
+    /* 114 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20936, "x-cp20936,xcp20936,",                                                            00000, L"" }, // Chinese Simplified (GB2312)
+    /* 115 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20932, "euc-jp,,",                                                                       00000, L"" }, // Japanese (JIS X 0208-1990 & 0212-1990)
+    /* 117 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50221, "csISO2022JP,csiso2022jp,",                                                       00000, L"" }, // Japanese (JIS-Allow 1 byte Kana)
+    /* 118 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50222, "_ISO-2022-jp$SIO,iso2022jpSIO,",                                                 00000, L"" }, // Japanese (JIS-Allow 1 byte Kana - SO/SI)
+    /* 120 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50227, "x-cp50227,xcp50227,",                                                            00000, L"" }, // Chinese Simplified (ISO-2022)
+    /* 123 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20002, "x-Chinese-Eten,xchineseeten,",                                                   00000, L"" }, // Chinese Traditional (Eten)
+    /* 125 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 51936, "euc-cn,euccn,xeuccn,",                                                           00000, L"" }, // Chinese Simplified (EUC)
+    /* 128 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57002, "x-iscii-de,xisciide,",                                                           00000, L"" }, // ISCII Devanagari
+    /* 129 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57003, "x-iscii-be,xisciibe,",                                                           00000, L"" }, // ISCII Bengali
+    /* 130 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57004, "x-iscii-ta,xisciita,",                                                           00000, L"" }, // ISCII Tamil
+    /* 131 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57005, "x-iscii-te,xisciite,",                                                           00000, L"" }, // ISCII Telugu
+    /* 132 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57006, "x-iscii-as,xisciias,",                                                           00000, L"" }, // ISCII Assamese
+    /* 133 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57007, "x-iscii-or,xisciior,",                                                           00000, L"" }, // ISCII Oriya
+    /* 134 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57008, "x-iscii-ka,xisciika,",                                                           00000, L"" }, // ISCII Kannada
+    /* 135 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57009, "x-iscii-ma,xisciima,",                                                           00000, L"" }, // ISCII Malayalam
+    /* 136 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57010, "x-iscii-gu,xisciigu,",                                                           00000, L"" }, // ISCII Gujarathi
+    /* 137 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57011, "x-iscii-pa,xisciipa,",                                                           00000, L"" }, // ISCII Panjabi
 };
 
-constexpr cpi_enc_t _CountOfEncodings() { return static_cast<cpi_enc_t>(ARRAYSIZE(g_Encodings)); }
+constexpr cpi_enc_t _CountOfEncodings()
+{
+    return static_cast<cpi_enc_t>(ARRAYSIZE(g_Encodings));
+}
 
 extern "C" cpi_enc_t Encoding_CountOf()
 {
-  return _CountOfEncodings();
+    return _CountOfEncodings();
 }
 
 extern "C" void ChangeEncodingCodePage(const cpi_enc_t cpi, UINT newCP)
 {
-  if (Encoding_IsValidIdx(cpi)) {
-    g_Encodings[cpi].uCodePage = newCP; 
-  }
+    if (Encoding_IsValidIdx(cpi))
+    {
+        g_Encodings[cpi].uCodePage = newCP;
+    }
 }
 
 //=============================================================================
 
-constexpr float clampf(float x, float lower, float upper) { return (x < lower) ? lower : ((x > upper) ? upper : x); }
+constexpr float clampf(float x, float lower, float upper)
+{
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
 
 //=============================================================================
 
 cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse)
 {
-  cpi_enc_t iEncoding = CPI_NONE;
+    cpi_enc_t iEncoding = CPI_NONE;
 
-  size_t const enoughData = 2048LL;
-  size_t const cb = (len < enoughData) ? len : enoughData;
+    size_t const enoughData = 2048LL;
+    size_t const cb = (len < enoughData) ? len : enoughData;
 
-  if (!pBuffer || cb < 2) { return iEncoding; }
-
-  // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
-  // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
-  // IS_TEXT_UNICODE_NOT_UNICODE_MASK -> IS_TEXT_UNICODE_ILLEGAL_CHARS, IS_TEXT_UNICODE_ODD_LENGTH, and two currently unused bit flags.
-  // IS_TEXT_UNICODE_NOT_ASCII_MASK -> IS_TEXT_UNICODE_NULL_BYTES and three currently unused bit flags.
-  //
-  int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
-
-  int iTest = iAllTests;
-  /*bool const ok =*/ (void)IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok
-
-  if (iTest == iAllTests) {
-    iTest = 0; // iTest doesn't seem to have been modified ...
-  }
-
-  bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
-  bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
-
-  bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
-  bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
-  bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_NOT_UNICODE_MASK);
-
-  //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
-
-  if (bHasBOM || bHasRBOM || ((bIsUnicode || bIsReverse) && !bIsIllegal && !(bIsUnicode && bIsReverse)))
-  {
-    if (lpbBOM) {
-      *lpbBOM = (bHasBOM || bHasRBOM);
+    if (!pBuffer || cb < 2)
+    {
+        return iEncoding;
     }
-    if (lpbReverse) {
-      *lpbReverse = (bHasRBOM || bIsReverse);
+
+    // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
+    // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
+    // IS_TEXT_UNICODE_NOT_UNICODE_MASK -> IS_TEXT_UNICODE_ILLEGAL_CHARS, IS_TEXT_UNICODE_ODD_LENGTH, and two currently unused bit flags.
+    // IS_TEXT_UNICODE_NOT_ASCII_MASK -> IS_TEXT_UNICODE_NULL_BYTES and three currently unused bit flags.
+    //
+    int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
+
+    int iTest = iAllTests;
+    /*bool const ok =*/ (void)IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok
+
+    if (iTest == iAllTests)
+    {
+        iTest = 0; // iTest doesn't seem to have been modified ...
     }
-    if (bHasBOM || bHasRBOM) {
-      iEncoding = bHasBOM ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
+
+    bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
+    bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
+
+    bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
+    bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
+    bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_NOT_UNICODE_MASK);
+
+    //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
+
+    if (bHasBOM || bHasRBOM || ((bIsUnicode || bIsReverse) && !bIsIllegal && !(bIsUnicode && bIsReverse)))
+    {
+        if (lpbBOM)
+        {
+            *lpbBOM = (bHasBOM || bHasRBOM);
+        }
+        if (lpbReverse)
+        {
+            *lpbReverse = (bHasRBOM || bIsReverse);
+        }
+        if (bHasBOM || bHasRBOM)
+        {
+            iEncoding = bHasBOM ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
+        }
+        else if (bIsUnicode || bIsReverse)
+        {
+            iEncoding = bIsUnicode ? CPI_UNICODE : CPI_UNICODEBE;
+        }
     }
-    else if (bIsUnicode || bIsReverse) {
-      iEncoding = bIsUnicode ? CPI_UNICODE : CPI_UNICODEBE;
-    }
-  }
-  return iEncoding;
+    return iEncoding;
 }
 // ============================================================================
 
@@ -571,28 +591,42 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
 
 constexpr Encoding _MapCPI2CEDEncoding(const cpi_enc_t cpiEncoding)
 {
-  if ((cpiEncoding < 0) || (cpiEncoding >= _CountOfEncodings())) { return UNKNOWN_ENCODING; }
-  
-  char parseNames[256] = { '\0' };
-  StringCchCopyA(parseNames, 256, g_Encodings[cpiEncoding].pszParseNames);
-  if (parseNames[0] == '\0') { return UNKNOWN_ENCODING; }
+    if ((cpiEncoding < 0) || (cpiEncoding >= _CountOfEncodings()))
+    {
+        return UNKNOWN_ENCODING;
+    }
 
-  char* p = &(parseNames[1]); // skip 1st null
-  while (*p != '\0') {
-    if (*p == ',') { *p = '\0'; }
-    ++p;
-  }
-  *(++p) = '\0'; // ensure double '\0' at the end
+    char parseNames[256] = { '\0' };
+    StringCchCopyA(parseNames, 256, g_Encodings[cpiEncoding].pszParseNames);
+    if (parseNames[0] == '\0')
+    {
+        return UNKNOWN_ENCODING;
+    }
 
-  Encoding encoding = UNKNOWN_ENCODING;
+    char* p = &(parseNames[1]); // skip 1st null
+    while (*p != '\0')
+    {
+        if (*p == ',')
+        {
+            *p = '\0';
+        }
+        ++p;
+    }
+    *(++p) = '\0'; // ensure double '\0' at the end
 
-  p = &(parseNames[1]); // skip 1st null
-  while (*p != '\0') {
-    if (EncodingFromName(p, &encoding)) { break; }
-    for (; *p != '\0'; ++p) {} // next
-    ++p; // double null at end
-  }
-  return encoding;
+    Encoding encoding = UNKNOWN_ENCODING;
+
+    p = &(parseNames[1]); // skip 1st null
+    while (*p != '\0')
+    {
+        if (EncodingFromName(p, &encoding))
+        {
+            break;
+        }
+        for (; *p != '\0'; ++p) {} // next
+        ++p; // double null at end
+    }
+    return encoding;
 }
 // ============================================================================
 
@@ -600,45 +634,51 @@ constexpr Encoding _MapCPI2CEDEncoding(const cpi_enc_t cpiEncoding)
 
 
 constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfidence,
-                                              const char* const text, const size_t len)
+        const char* const text, const size_t len)
 {
-  float const confidence = *pConfidence;
-  
-  cpi_enc_t cpiEncoding = CPI_NONE;
+    float const confidence = *pConfidence;
 
-  if (encStrg && (encStrg[0] != '\0')) {
-    // preprocessing: special cases
-    if (_stricmp(encStrg, "ascii") == 0) {
-      cpiEncoding = CPI_ASCII_7BIT;
-    }
-    else {
-      cpiEncoding = Encoding_MatchA(encStrg);
-    }
+    cpi_enc_t cpiEncoding = CPI_NONE;
 
-    if (Encoding_IsUNICODE(cpiEncoding))
+    if (encStrg && (encStrg[0] != '\0'))
     {
-      bool bBOM = false;
-      bool bReverse = false;
-      cpi_enc_t const cpi = GetUnicodeEncoding(text, len, &bBOM, &bReverse);
-      if (!Encoding_IsNONE(cpiEncoding)) 
-      {
-        cpiEncoding = cpi;
-      }
-      else {
-        cpiEncoding = bBOM ? (bReverse ? CPI_UNICODEBE : CPI_UNICODE) : (bReverse ? CPI_UNICODEBE : CPI_UNICODE);
-      }
+        // preprocessing: special cases
+        if (_stricmp(encStrg, "ascii") == 0)
+        {
+            cpiEncoding = CPI_ASCII_7BIT;
+        }
+        else
+        {
+            cpiEncoding = Encoding_MatchA(encStrg);
+        }
+
+        if (Encoding_IsUNICODE(cpiEncoding))
+        {
+            bool bBOM = false;
+            bool bReverse = false;
+            cpi_enc_t const cpi = GetUnicodeEncoding(text, len, &bBOM, &bReverse);
+            if (!Encoding_IsNONE(cpiEncoding))
+            {
+                cpiEncoding = cpi;
+            }
+            else
+            {
+                cpiEncoding = bBOM ? (bReverse ? CPI_UNICODEBE : CPI_UNICODE) : (bReverse ? CPI_UNICODEBE : CPI_UNICODE);
+            }
+        }
+
+        // check for default ANSI
+        if (cpiEncoding > CPI_ANSI_DEFAULT)
+        {
+            if (g_Encodings[cpiEncoding].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)
+            {
+                cpiEncoding = CPI_ANSI_DEFAULT;
+            }
+        }
     }
 
-    // check for default ANSI
-    if (cpiEncoding > CPI_ANSI_DEFAULT) {
-      if (g_Encodings[cpiEncoding].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage) {
-        cpiEncoding = CPI_ANSI_DEFAULT;
-      }
-    }
-  }
-
-  *pConfidence = Encoding_IsNONE(cpiEncoding) ? 0.0f : confidence;
-  return cpiEncoding;
+    *pConfidence = Encoding_IsNONE(cpiEncoding) ? 0.0f : confidence;
+    return cpiEncoding;
 }
 // ============================================================================
 
@@ -650,45 +690,46 @@ constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfi
 
 cpi_enc_t AnalyzeText_CED
 (
-  const char* const text, const size_t len, 
-  const cpi_enc_t encodingHint,
-  float* pConfidence, char* encodingStrg, int cch)
+    const char* const text, const size_t len,
+    const cpi_enc_t encodingHint,
+    float* pConfidence, char* encodingStrg, int cch)
 {
-  float const ReliableCEDConfThresh = Settings2.ReliableCEDConfidenceMapping;
-  float const UnReliableCEDConfThresh = Settings2.UnReliableCEDConfidenceMapping;
+    float const ReliableCEDConfThresh = Settings2.ReliableCEDConfidenceMapping;
+    float const UnReliableCEDConfThresh = Settings2.UnReliableCEDConfidenceMapping;
 
-  cpi_enc_t cpiEncoding = CPI_NONE;
-  float confidence = 0.0f;
+    cpi_enc_t cpiEncoding = CPI_NONE;
+    float confidence = 0.0f;
 
-  int bytes_consumed = 0;
-  bool isReliable = false;
+    int bytes_consumed = 0;
+    bool isReliable = false;
 
-  Encoding const encoding = CompactEncDet::DetectEncoding(
-    text, static_cast<int>(len),
-    nullptr, nullptr, nullptr,
-    _MapCPI2CEDEncoding(encodingHint),
-    UNKNOWN_LANGUAGE, CompactEncDet::QUERY_CORPUS, true,
-    &bytes_consumed,
-    &isReliable);
+    Encoding const encoding = CompactEncDet::DetectEncoding(
+                                  text, static_cast<int>(len),
+                                  nullptr, nullptr, nullptr,
+                                  _MapCPI2CEDEncoding(encodingHint),
+                                  UNKNOWN_LANGUAGE, CompactEncDet::QUERY_CORPUS, true,
+                                  &bytes_consumed,
+                                  &isReliable);
 
-  //~const char* charset = EncodingName(encoding);
-  const char* charset = MimeEncodingName(encoding);
+    //~const char* charset = EncodingName(encoding);
+    const char* charset = MimeEncodingName(encoding);
 
-  StringCchCopyA(encodingStrg, cch, charset);  // CED
+    StringCchCopyA(encodingStrg, cch, charset);  // CED
 
-  confidence = isReliable ? ReliableCEDConfThresh : UnReliableCEDConfThresh;
+    confidence = isReliable ? ReliableCEDConfThresh : UnReliableCEDConfThresh;
 
-  cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence, text, len);
+    cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence, text, len);
 
 #if 1
-  Encoding const check_enc = _MapCPI2CEDEncoding(cpiEncoding);
-  if (encoding != check_enc) {
-    *pConfidence = 0.0;
-  }
+    Encoding const check_enc = _MapCPI2CEDEncoding(cpiEncoding);
+    if (encoding != check_enc)
+    {
+        *pConfidence = 0.0;
+    }
 #endif
 
-  *pConfidence = confidence;
-  return cpiEncoding; 
+    *pConfidence = confidence;
+    return cpiEncoding;
 }
 // ============================================================================
 #endif
@@ -699,42 +740,42 @@ cpi_enc_t AnalyzeText_CED
 // ============================================================================
 
 cpi_enc_t AnalyzeText_UCHARDET(
-  const char* const text, const size_t len, 
-  float* pConfidence, char* encodingStrg, int cch)
+    const char* const text, const size_t len,
+    float* pConfidence, char* encodingStrg, int cch)
 {
-  cpi_enc_t cpiEncoding = CPI_NONE;
-  float confidence = 0.0f;
+    cpi_enc_t cpiEncoding = CPI_NONE;
+    float confidence = 0.0f;
 
-  uchardet_t hUcharDet = uchardet_new();
+    uchardet_t hUcharDet = uchardet_new();
 
-  int const result = uchardet_handle_data(hUcharDet, text, len);
-  
-  uchardet_data_end(hUcharDet); // transfer report
+    int const result = uchardet_handle_data(hUcharDet, text, len);
 
-  switch (result) 
-  {
-  case HANDLE_DATA_RESULT_NEED_MORE_DATA:  // need more data is a result too 
-  case HANDLE_DATA_RESULT_DETECTED:
-  {
-    const char* charset = uchardet_get_charset(hUcharDet);
-    StringCchCopyA(encodingStrg, cch, charset);  // UCHARDET
+    uchardet_data_end(hUcharDet); // transfer report
 
-    confidence = uchardet_get_confidence(hUcharDet);
-    cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence, text, len);
-  }
-  break;
+    switch (result)
+    {
+    case HANDLE_DATA_RESULT_NEED_MORE_DATA:  // need more data is a result too
+    case HANDLE_DATA_RESULT_DETECTED:
+    {
+        const char* charset = uchardet_get_charset(hUcharDet);
+        StringCchCopyA(encodingStrg, cch, charset);  // UCHARDET
 
-  case HANDLE_DATA_RESULT_ERROR:
-  default:
-    cpiEncoding = CPI_NONE;
-    confidence = 0.0f;
+        confidence = uchardet_get_confidence(hUcharDet);
+        cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence, text, len);
+    }
     break;
-  }
 
-  uchardet_delete(hUcharDet);
+    case HANDLE_DATA_RESULT_ERROR:
+    default:
+        cpiEncoding = CPI_NONE;
+        confidence = 0.0f;
+        break;
+    }
 
-  *pConfidence = clampf(confidence, 0.0f, 1.0f);
-  return cpiEncoding;
+    uchardet_delete(hUcharDet);
+
+    *pConfidence = clampf(confidence, 0.0f, 1.0f);
+    return cpiEncoding;
 }
 
 
@@ -742,142 +783,143 @@ cpi_enc_t AnalyzeText_UCHARDET(
 // ============================================================================
 
 void Encoding_AnalyzeText(const char* const text, const size_t len,
-                               ENC_DET_T* pEncDetInfo, const cpi_enc_t encodingHint)
+                          ENC_DET_T* pEncDetInfo, const cpi_enc_t encodingHint)
 {
-  if (len == 0)
-  {
-    pEncDetInfo->analyzedEncoding = CPI_NONE;
-    pEncDetInfo->confidence = 0.0f;
-    return;
-  }
+    if (len == 0)
+    {
+        pEncDetInfo->analyzedEncoding = CPI_NONE;
+        pEncDetInfo->confidence = 0.0f;
+        return;
+    }
 
-  float confidence_UCD = 0.0f;
-  cpi_enc_t cpiEncoding_UCD = CPI_NONE;
+    float confidence_UCD = 0.0f;
+    cpi_enc_t cpiEncoding_UCD = CPI_NONE;
 
 #if FALSE
-  size_t const largeFile = static_cast<size_t>(Settings2.FileLoadWarningMB) * 1024LL * 1024LL;
+    size_t const largeFile = static_cast<size_t>(Settings2.FileLoadWarningMB) * 1024LL * 1024LL;
 
-  if (len < largeFile)
-  {
-    // small file: do SERIAL encoding detection
-    cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
-    cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
-  }
-  else {  // large file:  start ASYNC PARALLEL encoding detection
+    if (len < largeFile)
+    {
+        // small file: do SERIAL encoding detection
+        cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
+        cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
+    }
+    else    // large file:  start ASYNC PARALLEL encoding detection
+    {
 
-    std::future<int> cpiUCD = std::async(std::launch::async, AnalyzeText_UCHARDET,
-      text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
+        std::future<int> cpiUCD = std::async(std::launch::async, AnalyzeText_UCHARDET,
+                                             text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
 
-    std::future<int> cpiCED = std::async(std::launch::async, AnalyzeText_CED,
-      text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
+        std::future<int> cpiCED = std::async(std::launch::async, AnalyzeText_CED,
+                                             text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
 
-    cpiEncoding_UCD = cpiUCD.get();
-    cpiEncoding_CED = cpiCED.get();
-  }
+        cpiEncoding_UCD = cpiUCD.get();
+        cpiEncoding_CED = cpiCED.get();
+    }
 
 #else
 
-  // no need to run analyzers asynchrony, cause they analyze only the first KB of large files ...
-  //~cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
-  //~if (ced_cnf < 1.0f) 
-  //~{
-  cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
+    // no need to run analyzers asynchrony, cause they analyze only the first KB of large files ...
+    //~cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
+    //~if (ced_cnf < 1.0f)
+    //~{
+    cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
 
-  //~}
-  //~else {
-  //~  cpiEncoding_UCD = CPI_NONE;
-  //~  ucd_cnf = 1.0f;
-  //~}
+    //~}
+    //~else {
+    //~  cpiEncoding_UCD = CPI_NONE;
+    //~  ucd_cnf = 1.0f;
+    //~}
 
 #endif
 
-  // ---  re-mapping UCD ----
+    // ---  re-mapping UCD ----
 
-  switch (Encoding_GetCodePage(cpiEncoding_UCD))
-  {
-  case 28591:  // ISO 8859 - 1  mapped to  Windows - 1252  (HTML5 Standard advice)
-    cpiEncoding_UCD = Encoding_GetByCodePage(1252); // auto detect default ANSI (!)
-    break;
-
-  /*
-  case 54936:
-    if ((codePage_CED == 936) || (codePage_CED == 20936))
+    switch (Encoding_GetCodePage(cpiEncoding_UCD))
     {
-      cpiEncoding_UCD = cpiEncoding_CED; // trust CED's choice
+    case 28591:  // ISO 8859 - 1  mapped to  Windows - 1252  (HTML5 Standard advice)
+        cpiEncoding_UCD = Encoding_GetByCodePage(1252); // auto detect default ANSI (!)
+        break;
+
+    /*
+    case 54936:
+      if ((codePage_CED == 936) || (codePage_CED == 20936))
+      {
+        cpiEncoding_UCD = cpiEncoding_CED; // trust CED's choice
+      }
+      break;
+    */
+
+    default:
+        break;
     }
-    break;
-  */
 
-  default:
-    break;
-  }
-
-  // UCARDET does not rely on encodingHint, so make a bias here
-  confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
-  // Default ANSI CodePage detection ? -> bonus
-  confidence_UCD += (cpiEncoding_UCD == CPI_ANSI_DEFAULT) ? ((1.0f - confidence_UCD) * Settings2.LocaleAnsiCodePageAnalysisBonus) : 0.0f;
+    // UCARDET does not rely on encodingHint, so make a bias here
+    confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
+    // Default ANSI CodePage detection ? -> bonus
+    confidence_UCD += (cpiEncoding_UCD == CPI_ANSI_DEFAULT) ? ((1.0f - confidence_UCD) * Settings2.LocaleAnsiCodePageAnalysisBonus) : 0.0f;
 
 
-  pEncDetInfo->confidence = confidence_UCD;
-  pEncDetInfo->analyzedEncoding = cpiEncoding_UCD;
+    pEncDetInfo->confidence = confidence_UCD;
+    pEncDetInfo->analyzedEncoding = cpiEncoding_UCD;
 
-  
-  /* ~~~ //////////////////////////////////////////////////////////////////////
 
-  // ---  re-mapping CED ----
+    /* ~~~ //////////////////////////////////////////////////////////////////////
 
-  switch (codePage_CED)
-  {
-  case 20936:  // Map old GB2312 -> GBK
-    cpiEncoding_CED = Encoding_GetByCodePage(936);
-    break;
+    // ---  re-mapping CED ----
 
-  case 28591:  // ISO 8859-1  mapped to  Windows-1252  (HTML5 Standard advice)
-    cpiEncoding_CED = Encoding_GetByCodePage(1252);
-    break;
-
-  default:
-    break;
-  }
-
-  // --------------------------------------------------------------------------
-  // vote for encoding prognosis based on confidence levels or reliability
-  // --------------------------------------------------------------------------
-
-  float confidence = ucd_confidence;
-
-  if ((cpiEncoding_UCD == cpiEncoding_CED) && !Encoding_IsNONE(cpiEncoding_UCD))
-  {
-    iAnalyzedEncoding = cpiEncoding_UCD;
-    confidence = max_f(ucd_confidence, ced_confidence);
-  }
-  else { // ---  ambiguous results  ---
-
-    if (Encoding_IsNONE(cpiEncoding_UCD))
+    switch (codePage_CED)
     {
-      // _NO_ UCHARDET rely on CED
-      iAnalyzedEncoding = cpiEncoding_CED;
-      confidence = ced_confidence;
-    }
-    else { // _OK_ UCHARDET result
+    case 20936:  // Map old GB2312 -> GBK
+      cpiEncoding_CED = Encoding_GetByCodePage(936);
+      break;
 
-      if ((ced_confidence < ucd_confidence) || Encoding_IsNONE(cpiEncoding_CED))
+    case 28591:  // ISO 8859-1  mapped to  Windows-1252  (HTML5 Standard advice)
+      cpiEncoding_CED = Encoding_GetByCodePage(1252);
+      break;
+
+    default:
+      break;
+    }
+
+    // --------------------------------------------------------------------------
+    // vote for encoding prognosis based on confidence levels or reliability
+    // --------------------------------------------------------------------------
+
+    float confidence = ucd_confidence;
+
+    if ((cpiEncoding_UCD == cpiEncoding_CED) && !Encoding_IsNONE(cpiEncoding_UCD))
+    {
+      iAnalyzedEncoding = cpiEncoding_UCD;
+      confidence = max_f(ucd_confidence, ced_confidence);
+    }
+    else { // ---  ambiguous results  ---
+
+      if (Encoding_IsNONE(cpiEncoding_UCD))
       {
-        // unreliable CED use UCHARDET
-        iAnalyzedEncoding = cpiEncoding_UCD;
-        confidence = ucd_confidence;
+        // _NO_ UCHARDET rely on CED
+        iAnalyzedEncoding = cpiEncoding_CED;
+        confidence = ced_confidence;
       }
-      else  // --- more reliable CED result  ---
-      {
-        iAnalyzedEncoding = cpiEncoding_CED;  // prefer CED
-        confidence = (ucd_confidence + ced_confidence) / 2.0f;  // adjust confidence
+      else { // _OK_ UCHARDET result
+
+        if ((ced_confidence < ucd_confidence) || Encoding_IsNONE(cpiEncoding_CED))
+        {
+          // unreliable CED use UCHARDET
+          iAnalyzedEncoding = cpiEncoding_UCD;
+          confidence = ucd_confidence;
+        }
+        else  // --- more reliable CED result  ---
+        {
+          iAnalyzedEncoding = cpiEncoding_CED;  // prefer CED
+          confidence = (ucd_confidence + ced_confidence) / 2.0f;  // adjust confidence
+        }
       }
     }
-  }
-  *confidence_io = confidence;
-  return iAnalyzedEncoding;
+    *confidence_io = confidence;
+    return iAnalyzedEncoding;
 
-  ~~~ */ //////////////////////////////////////////////////////////////////////
+    ~~~ */ //////////////////////////////////////////////////////////////////////
 
 }
 // ============================================================================
@@ -888,54 +930,55 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
 //  _SetEncodingTitleInfo()
 //
 static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
-  //const char* encodingUCD, cpi_enc_t encUCD, float ucd_confidence)
+//const char* encodingUCD, cpi_enc_t encUCD, float ucd_confidence)
 {
-  WCHAR encodingUCD[80] = { L'\0' };
-  ::MultiByteToWideChar(CP_ACP, 0, pEncDetInfo->encodingStrg, -1, encodingUCD, COUNTOF(encodingUCD));
-  cpi_enc_t const encUCD = pEncDetInfo->analyzedEncoding;
-  float const ucd_confidence = pEncDetInfo->confidence;
+    WCHAR encodingUCD[80] = { L'\0' };
+    ::MultiByteToWideChar(CP_ACP, 0, pEncDetInfo->encodingStrg, -1, encodingUCD, COUNTOF(encodingUCD));
+    cpi_enc_t const encUCD = pEncDetInfo->analyzedEncoding;
+    float const ucd_confidence = pEncDetInfo->confidence;
 
-  StringCchCopy(wchEncodingInfo, COUNTOF(wchEncodingInfo), L"UCD='");
-  if (encUCD >= 0)
-  {
-    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), encodingUCD);
-  }
-  else {
-    const WCHAR* const ukn = (encodingUCD[0] == L'\0') ? L"<unknown>" : encodingUCD;
-    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? L"ASCII" : ukn);
-  }
-  WCHAR tmpBuf[80] = { '\0' };
-  int const ucd_conf_perc = float2int(ucd_confidence * 100.0f);
-  StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), L"' Conf=%i%%", ucd_conf_perc);
-  StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
+    StringCchCopy(wchEncodingInfo, COUNTOF(wchEncodingInfo), L"UCD='");
+    if (encUCD >= 0)
+    {
+        StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), encodingUCD);
+    }
+    else
+    {
+        const WCHAR* const ukn = (encodingUCD[0] == L'\0') ? L"<unknown>" : encodingUCD;
+        StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? L"ASCII" : ukn);
+    }
+    WCHAR tmpBuf[80] = { '\0' };
+    int const ucd_conf_perc = float2int(ucd_confidence * 100.0f);
+    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), L"' Conf=%i%%", ucd_conf_perc);
+    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
-  //~StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), " || CED='");
-  //~if (encCED >= 0)
-  //~{
-  //~  //::WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, ARRAYSIZE(chEncodingLabel), 0, 0);
-  //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), encodingCED);
-  //~}
-  //~else {
-  //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), (encCED == CPI_ASCII_7BIT) ? "ASCII" : "<unknown>");
-  //~}
-  //~if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
-  //~  bool const ced_reliable = (ced_confidence >= Settings2.ReliableCEDConfidenceMapping);
-  //~  bool const ced_not_reliable = (ced_confidence <= Settings2.UnReliableCEDConfidenceMapping);
-  //~  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), "' Conf=%.0f%% [%s])", ced_confidence * 100.0f,
-  //~    ced_reliable ? "reliable" : (ced_not_reliable ? "NOT reliable" : "???"));
-  //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
-  //~}
-  //~else {
-  //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
-  //~}
-  
-  int const relThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
-  const WCHAR* rel_fmt = (ucd_conf_perc >= relThreshold) ? L" (reliable (%i%%))" : L" (NOT reliable (%i%%))";
-  StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, relThreshold);
-  StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
+    //~StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), " || CED='");
+    //~if (encCED >= 0)
+    //~{
+    //~  //::WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, ARRAYSIZE(chEncodingLabel), 0, 0);
+    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), encodingCED);
+    //~}
+    //~else {
+    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), (encCED == CPI_ASCII_7BIT) ? "ASCII" : "<unknown>");
+    //~}
+    //~if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
+    //~  bool const ced_reliable = (ced_confidence >= Settings2.ReliableCEDConfidenceMapping);
+    //~  bool const ced_not_reliable = (ced_confidence <= Settings2.UnReliableCEDConfidenceMapping);
+    //~  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), "' Conf=%.0f%% [%s])", ced_confidence * 100.0f,
+    //~    ced_reliable ? "reliable" : (ced_not_reliable ? "NOT reliable" : "???"));
+    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
+    //~}
+    //~else {
+    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
+    //~}
 
-  const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? L" [Valid UTF-8]" : L" [Invalid UTF-8]";
-  StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), validUTF8);
+    int const relThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+    const WCHAR* rel_fmt = (ucd_conf_perc >= relThreshold) ? L" (reliable (%i%%))" : L" (NOT reliable (%i%%))";
+    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, relThreshold);
+    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
+
+    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? L" [Valid UTF-8]" : L" [Invalid UTF-8]";
+    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), validUTF8);
 
 }
 
@@ -947,71 +990,88 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
 //
 static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 {
-  bool bDisableFileVar = false;
+    bool bDisableFileVar = false;
 
-  if (!Flags.NoFileVariables)
-  {
-    int i;
-    if (FileVars_ParseInt(buffer, "enable-local-variables", &i) && (!i)) {
-      bDisableFileVar = true;
+    if (!Flags.NoFileVariables)
+    {
+        int i;
+        if (FileVars_ParseInt(buffer, "enable-local-variables", &i) && (!i))
+        {
+            bDisableFileVar = true;
+        }
+        if (!bDisableFileVar)
+        {
+
+            if (FileVars_ParseInt(buffer, "tab-width", &i))
+            {
+                lpfv->iTabWidth = clampi(i, 1, 256);
+                lpfv->mask |= FV_TABWIDTH;
+            }
+
+            if (FileVars_ParseInt(buffer, "c-basic-indent", &i))
+            {
+                lpfv->iIndentWidth = clampi(i, 0, 256);
+                lpfv->mask |= FV_INDENTWIDTH;
+            }
+
+            if (FileVars_ParseInt(buffer, "indent-tabs-mode", &i))
+            {
+                lpfv->bTabsAsSpaces = (i) ? false : true;
+                lpfv->mask |= FV_TABSASSPACES;
+            }
+
+            if (FileVars_ParseInt(buffer, "c-tab-always-indent", &i))
+            {
+                lpfv->bTabIndents = (i) ? true : false;
+                lpfv->mask |= FV_TABINDENTS;
+            }
+
+            if (FileVars_ParseInt(buffer, "truncate-lines", &i))
+            {
+                lpfv->bWordWrap = (i) ? false : true;
+                lpfv->mask |= FV_WORDWRAP;
+            }
+        }
+
+        char columns[SMALL_BUFFER];
+        if (FileVars_ParseStr(buffer, "fill-column", columns, COUNTOF(columns)))
+        {
+            NormalizeColumnVector(columns, lpfv->wchMultiEdgeLines, COUNTOF(lpfv->wchMultiEdgeLines));
+            lpfv->mask |= FV_LONGLINESLIMIT;
+        }
     }
-    if (!bDisableFileVar) {
 
-      if (FileVars_ParseInt(buffer, "tab-width", &i)) {
-        lpfv->iTabWidth = clampi(i, 1, 256);
-        lpfv->mask |= FV_TABWIDTH;
-      }
+    // Unicode Sig
+    bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
 
-      if (FileVars_ParseInt(buffer, "c-basic-indent", &i)) {
-        lpfv->iIndentWidth = clampi(i, 0, 256);
-        lpfv->mask |= FV_INDENTWIDTH;
-      }
+    if (!bHasSignature && !Settings.NoEncodingTags && !bDisableFileVar)
+    {
 
-      if (FileVars_ParseInt(buffer, "indent-tabs-mode", &i)) {
-        lpfv->bTabsAsSpaces = (i) ? false : true;
-        lpfv->mask |= FV_TABSASSPACES;
-      }
-
-      if (FileVars_ParseInt(buffer, "c-tab-always-indent", &i)) {
-        lpfv->bTabIndents = (i) ? true : false;
-        lpfv->mask |= FV_TABINDENTS;
-      }
-
-      if (FileVars_ParseInt(buffer, "truncate-lines", &i)) {
-        lpfv->bWordWrap = (i) ? false : true;
-        lpfv->mask |= FV_WORDWRAP;
-      }
+        if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding)))
+        {
+            lpfv->mask |= FV_ENCODING;
+        }
+        else if (FileVars_ParseStr(buffer, "encoding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding)))
+        {
+            lpfv->mask |= FV_ENCODING;
+        }
+        else if (FileVars_ParseStr(buffer, "charset", lpfv->chEncoding, COUNTOF(lpfv->chEncoding)))
+        {
+            lpfv->mask |= FV_ENCODING;
+        }
+    }
+    if (lpfv->mask & FV_ENCODING)
+    {
+        lpfv->iEncoding = Encoding_MatchA(lpfv->chEncoding);
     }
 
-    char columns[SMALL_BUFFER];
-    if (FileVars_ParseStr(buffer, "fill-column", columns, COUNTOF(columns))) {
-      NormalizeColumnVector(columns, lpfv->wchMultiEdgeLines, COUNTOF(lpfv->wchMultiEdgeLines));
-      lpfv->mask |= FV_LONGLINESLIMIT;
+    if (!Flags.NoFileVariables && !bDisableFileVar)
+    {
+        if (FileVars_ParseStr(buffer, "mode", lpfv->chMode, COUNTOF(lpfv->chMode)))
+        {
+            lpfv->mask |= FV_MODE;
+        }
     }
-  }
-
-  // Unicode Sig
-  bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
-
-  if (!bHasSignature && !Settings.NoEncodingTags && !bDisableFileVar) {
-
-    if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
-      lpfv->mask |= FV_ENCODING;
-    } else if (FileVars_ParseStr(buffer, "encoding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
-      lpfv->mask |= FV_ENCODING;
-    } else if (FileVars_ParseStr(buffer, "charset", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
-      lpfv->mask |= FV_ENCODING;
-    }
-  }
-  if (lpfv->mask & FV_ENCODING) {
-    lpfv->iEncoding = Encoding_MatchA(lpfv->chEncoding);
-  }
-
-  if (!Flags.NoFileVariables && !bDisableFileVar) {
-    if (FileVars_ParseStr(buffer, "mode", lpfv->chMode, COUNTOF(lpfv->chMode))) {
-      lpfv->mask |= FV_MODE;
-    }
-  }
 }
 
 //=============================================================================
@@ -1020,30 +1080,34 @@ static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 //
 extern "C" bool FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVARS lpfv)
 {
-  ZeroMemory(lpfv, sizeof(FILEVARS));
-  lpfv->bTabIndents = Settings.TabIndents;
-  lpfv->bTabsAsSpaces = Settings.TabsAsSpaces;
-  lpfv->bWordWrap = Settings.WordWrap;
-  lpfv->iTabWidth = Settings.TabWidth;
-  lpfv->iIndentWidth = Settings.IndentWidth;
-  lpfv->iEncoding = Settings.DefaultEncoding;
-  StringCchCopy(lpfv->wchMultiEdgeLines, COUNTOF(lpfv->wchMultiEdgeLines), Settings.MultiEdgeLines);
+    ZeroMemory(lpfv, sizeof(FILEVARS));
+    lpfv->bTabIndents = Settings.TabIndents;
+    lpfv->bTabsAsSpaces = Settings.TabsAsSpaces;
+    lpfv->bWordWrap = Settings.WordWrap;
+    lpfv->iTabWidth = Settings.TabWidth;
+    lpfv->iIndentWidth = Settings.IndentWidth;
+    lpfv->iEncoding = Settings.DefaultEncoding;
+    StringCchCopy(lpfv->wchMultiEdgeLines, COUNTOF(lpfv->wchMultiEdgeLines), Settings.MultiEdgeLines);
 
-  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData) { return true; }
+    if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData)
+    {
+        return true;
+    }
 
-  char tmpbuf[LARGE_BUFFER];
-  size_t const cch = min_s(cbData + 1, COUNTOF(tmpbuf));
+    char tmpbuf[LARGE_BUFFER];
+    size_t const cch = min_s(cbData + 1, COUNTOF(tmpbuf));
 
-  StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData, cch);
-  _SetFileVars(tmpbuf, cch, lpfv);
-
-  // if no file vars found, look at EOF
-  if ((lpfv->mask == 0) && (cbData > COUNTOF(tmpbuf))) {
-    StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData + cbData - COUNTOF(tmpbuf) + 1, COUNTOF(tmpbuf));
+    StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData, cch);
     _SetFileVars(tmpbuf, cch, lpfv);
-  }
 
-  return true;
+    // if no file vars found, look at EOF
+    if ((lpfv->mask == 0) && (cbData > COUNTOF(tmpbuf)))
+    {
+        StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData + cbData - COUNTOF(tmpbuf) + 1, COUNTOF(tmpbuf));
+        _SetFileVars(tmpbuf, cch, lpfv);
+    }
+
+    return true;
 }
 
 
@@ -1051,30 +1115,31 @@ extern "C" bool FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVA
 //
 //  FileVars_Apply()
 //
-extern "C" bool FileVars_Apply(LPFILEVARS lpfv) {
+extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
+{
 
-  int const _iTabWidth = (lpfv->mask & FV_TABWIDTH) ? lpfv->iTabWidth : Settings.TabWidth;
-  SciCall_SetTabWidth(_iTabWidth);
+    int const _iTabWidth = (lpfv->mask & FV_TABWIDTH) ? lpfv->iTabWidth : Settings.TabWidth;
+    SciCall_SetTabWidth(_iTabWidth);
 
-  int const _iIndentWidth = (lpfv->mask & FV_INDENTWIDTH) ? lpfv->iIndentWidth : ((lpfv->mask & FV_TABWIDTH) ? 0 : Settings.IndentWidth);
-  SciCall_SetIndent(_iIndentWidth);
+    int const _iIndentWidth = (lpfv->mask & FV_INDENTWIDTH) ? lpfv->iIndentWidth : ((lpfv->mask & FV_TABWIDTH) ? 0 : Settings.IndentWidth);
+    SciCall_SetIndent(_iIndentWidth);
 
-  bool const _bTabsAsSpaces = (lpfv->mask & FV_TABSASSPACES) ? lpfv->bTabsAsSpaces : Settings.TabsAsSpaces;
-  SciCall_SetUseTabs(!_bTabsAsSpaces);
+    bool const _bTabsAsSpaces = (lpfv->mask & FV_TABSASSPACES) ? lpfv->bTabsAsSpaces : Settings.TabsAsSpaces;
+    SciCall_SetUseTabs(!_bTabsAsSpaces);
 
-  bool const _bTabIndents = (lpfv->mask & FV_TABINDENTS) ? lpfv->bTabIndents : Settings.TabIndents;
-  SciCall_SetTabIndents(_bTabIndents);
-  SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
+    bool const _bTabIndents = (lpfv->mask & FV_TABINDENTS) ? lpfv->bTabIndents : Settings.TabIndents;
+    SciCall_SetTabIndents(_bTabIndents);
+    SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
 
-  bool const _bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
-  int const  _iWrapMode = _bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
-  SciCall_SetWrapMode(_iWrapMode);
+    bool const _bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
+    int const  _iWrapMode = _bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
+    SciCall_SetWrapMode(_iWrapMode);
 
-  int edgeColumns[SMALL_BUFFER];
-  size_t const cnt = ReadVectorFromString(lpfv->wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
-  Style_SetMultiEdgeLine(edgeColumns, cnt);
+    int edgeColumns[SMALL_BUFFER];
+    size_t const cnt = ReadVectorFromString(lpfv->wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
+    Style_SetMultiEdgeLine(edgeColumns, cnt);
 
-  return true;
+    return true;
 }
 
 
@@ -1082,53 +1147,67 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv) {
 //
 //  FileVars_ParseInt()
 //
-extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue) {
+extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue)
+{
 
-  char* pvStart = StrStrIA(pszData, pszName);
-  while (pvStart) {
-    char chPrev = (pvStart > pszData) ? *(pvStart - 1) : 0;
-    if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
-      pvStart += StringCchLenA(pszName, 0);
-      while (*pvStart == ' ') {
-        pvStart++;
-      }
-      if (*pvStart == ':' || *pvStart == '=') { break; }
+    char* pvStart = StrStrIA(pszData, pszName);
+    while (pvStart)
+    {
+        char chPrev = (pvStart > pszData) ? *(pvStart - 1) : 0;
+        if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_')
+        {
+            pvStart += StringCchLenA(pszName, 0);
+            while (*pvStart == ' ')
+            {
+                pvStart++;
+            }
+            if (*pvStart == ':' || *pvStart == '=')
+            {
+                break;
+            }
+        }
+        else
+        {
+            pvStart += StringCchLenA(pszName, 0);
+        }
+        pvStart = StrStrIA(pvStart, pszName); // next
     }
-    else {
-      pvStart += StringCchLenA(pszName, 0);
-    }
-    pvStart = StrStrIA(pvStart, pszName); // next
-  }
 
-  if (pvStart) {
+    if (pvStart)
+    {
 
-    while (*pvStart && StrChrIA(":=\"' \t", *pvStart)) {
-      pvStart++;
-    }
-    char tch[32] = { L'\0' };
-    StringCchCopyNA(tch, COUNTOF(tch), pvStart, COUNTOF(tch));
+        while (*pvStart && StrChrIA(":=\"' \t", *pvStart))
+        {
+            pvStart++;
+        }
+        char tch[32] = { L'\0' };
+        StringCchCopyNA(tch, COUNTOF(tch), pvStart, COUNTOF(tch));
 
-    char* pvEnd = tch;
-    while (*pvEnd && IsCharAlphaNumericA(*pvEnd)) {
-      pvEnd++;
-    }
-    *pvEnd = 0;
-    StrTrimA(tch, " \t:=\"'");
+        char* pvEnd = tch;
+        while (*pvEnd && IsCharAlphaNumericA(*pvEnd))
+        {
+            pvEnd++;
+        }
+        *pvEnd = 0;
+        StrTrimA(tch, " \t:=\"'");
 
-    int itok = sscanf_s(tch, "%i", piValue);
-    if (itok == 1) {
-      return true;
+        int itok = sscanf_s(tch, "%i", piValue);
+        if (itok == 1)
+        {
+            return true;
+        }
+        if (tch[0] == 't')
+        {
+            *piValue = 1;
+            return true;
+        }
+        if (tch[0] == 'n' || tch[0] == 'f')
+        {
+            *piValue = 0;
+            return true;
+        }
     }
-    if (tch[0] == 't') {
-      *piValue = 1;
-      return true;
-    }
-    if (tch[0] == 'n' || tch[0] == 'f') {
-      *piValue = 0;
-      return true;
-    }
-  }
-  return false;
+    return false;
 }
 
 
@@ -1136,51 +1215,59 @@ extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue) {
 //
 //  FileVars_ParseStr()
 //
-extern "C" bool FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue) {
+extern "C" bool FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue)
+{
 
-  const char* pvStart = StrStrIA(pszData, pszName);
-  while (pvStart) {
-    char chPrev = (pvStart > pszData) ? *(pvStart - 1) : 0;
-    if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
-      pvStart += StringCchLenA(pszName, 0);
-      while (*pvStart == ' ') {
-        pvStart++;
-      }
-      if (*pvStart == ':' || *pvStart == '=') {
-        break;
-      }
-    }
-    else {
-      pvStart += StringCchLenA(pszName, 0);
-    }
-    pvStart = StrStrIA(pvStart, pszName);  // next
-  }
-
-  if (pvStart)
-  {
-    bool bQuoted = false;
-    while (*pvStart && StrChrIA(":=\"' \t", *pvStart)) {
-      if (*pvStart == '\'' || *pvStart == '"')
-        bQuoted = true;
-      pvStart++;
+    const char* pvStart = StrStrIA(pszData, pszName);
+    while (pvStart)
+    {
+        char chPrev = (pvStart > pszData) ? *(pvStart - 1) : 0;
+        if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_')
+        {
+            pvStart += StringCchLenA(pszName, 0);
+            while (*pvStart == ' ')
+            {
+                pvStart++;
+            }
+            if (*pvStart == ':' || *pvStart == '=')
+            {
+                break;
+            }
+        }
+        else
+        {
+            pvStart += StringCchLenA(pszName, 0);
+        }
+        pvStart = StrStrIA(pvStart, pszName);  // next
     }
 
-    char tch[32] = { L'\0' };
-    StringCchCopyNA(tch, COUNTOF(tch), pvStart, COUNTOF(tch));
+    if (pvStart)
+    {
+        bool bQuoted = false;
+        while (*pvStart && StrChrIA(":=\"' \t", *pvStart))
+        {
+            if (*pvStart == '\'' || *pvStart == '"')
+                bQuoted = true;
+            pvStart++;
+        }
 
-    char* pvEnd = tch;
-    while (*pvEnd && (IsCharAlphaNumericA(*pvEnd) || StrChrIA("+-/_", *pvEnd) || (bQuoted && *pvEnd == ' '))) {
-      pvEnd++;
+        char tch[32] = { L'\0' };
+        StringCchCopyNA(tch, COUNTOF(tch), pvStart, COUNTOF(tch));
+
+        char* pvEnd = tch;
+        while (*pvEnd && (IsCharAlphaNumericA(*pvEnd) || StrChrIA("+-/_", *pvEnd) || (bQuoted && *pvEnd == ' ')))
+        {
+            pvEnd++;
+        }
+        *pvEnd = 0;
+
+        StrTrimA(tch, " \t:=\"'");
+
+        StringCchCopyNA(pszValue, cchValue, tch, COUNTOF(tch));
+
+        return true;
     }
-    *pvEnd = 0;
-
-    StrTrimA(tch, " \t:=\"'");
-
-    StringCchCopyNA(pszValue, cchValue, tch, COUNTOF(tch));
-
-    return true;
-  }
-  return false;
+    return false;
 }
 
 
@@ -1188,13 +1275,15 @@ extern "C" bool FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, 
 //
 //  FileVars_IsUTF8()
 //
-extern "C" bool FileVars_IsUTF8(LPFILEVARS lpfv) {
-  if (lpfv->mask & FV_ENCODING) {
-    if (StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf-8", CSTRLEN("utf-8")) == 0 ||
-      StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf8", CSTRLEN("utf8")) == 0)
-      return true;
-  }
-  return false;
+extern "C" bool FileVars_IsUTF8(LPFILEVARS lpfv)
+{
+    if (lpfv->mask & FV_ENCODING)
+    {
+        if (StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf-8", CSTRLEN("utf-8")) == 0 ||
+                StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf8", CSTRLEN("utf8")) == 0)
+            return true;
+    }
+    return false;
 }
 
 
@@ -1202,16 +1291,19 @@ extern "C" bool FileVars_IsUTF8(LPFILEVARS lpfv) {
 //
 //  FileVars_IsValidEncoding()
 //
-extern "C" bool FileVars_IsValidEncoding(LPFILEVARS lpfv) {
-  CPINFO cpi;
-  if (lpfv->mask & FV_ENCODING && Encoding_IsValidIdx(lpfv->iEncoding)) {
-    if ((Encoding_IsINTERNAL(lpfv->iEncoding)) ||
-      (IsValidCodePage(Encoding_GetCodePage(lpfv->iEncoding)) &&
-        GetCPInfo(Encoding_GetCodePage(lpfv->iEncoding), &cpi))) {
-      return true;
+extern "C" bool FileVars_IsValidEncoding(LPFILEVARS lpfv)
+{
+    CPINFO cpi;
+    if (lpfv->mask & FV_ENCODING && Encoding_IsValidIdx(lpfv->iEncoding))
+    {
+        if ((Encoding_IsINTERNAL(lpfv->iEncoding)) ||
+                (IsValidCodePage(Encoding_GetCodePage(lpfv->iEncoding)) &&
+                 GetCPInfo(Encoding_GetCodePage(lpfv->iEncoding), &cpi)))
+        {
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 
@@ -1221,10 +1313,11 @@ extern "C" bool FileVars_IsValidEncoding(LPFILEVARS lpfv) {
 //
 extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 {
-  if (lpfv->mask & FV_ENCODING) {
-    return(lpfv->iEncoding);
-  }
-  return CPI_NONE;
+    if (lpfv->mask & FV_ENCODING)
+    {
+        return(lpfv->iEncoding);
+    }
+    return CPI_NONE;
 }
 
 //=============================================================================
@@ -1234,156 +1327,170 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //
 //  GetFileEncoding()
 //
-extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData, 
-                                             cpi_enc_t iAnalyzeHint,
-                                             bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
+extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+        cpi_enc_t iAnalyzeHint,
+        bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
-  ENC_DET_T encDetRes = INIT_ENC_DET_T;
+    ENC_DET_T encDetRes = INIT_ENC_DET_T;
 
-  FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
+    FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
 
-  bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
-  bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
+    bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
+    bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
 
-  #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
+#define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
-  // --- 1st check for force encodings ---
+    // --- 1st check for force encodings ---
 
-  LPCWSTR lpszExt = PathFindExtension(pszFile);
-  bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
+    LPCWSTR lpszExt = PathFindExtension(pszFile);
+    bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
 
-  encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
+    encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
 
-  encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
-  encDetRes.bIsReverse = bBOM_BE;
-  encDetRes.bIs7BitASCII = IsValidUTF7(lpData, cbData);
-  if (encDetRes.bIs7BitASCII) {
-    bSkipUTFDetection = true;
-    bSkipANSICPDetection = true;
-    encDetRes.bValidUTF8 = true;
-  }
-  else {
-    encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
-    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
-  }
-
-  if (!IS_ENC_ENFORCED()) 
-  {
-    // force file vars ?
-    encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
-    if (Encoding_IsValid(encDetRes.fileVarEncoding) && (Globals.fvCurFile.mask & FV_ENCODING)) {
-      encDetRes.forcedEncoding = encDetRes.fileVarEncoding;
-    }
-  }
-  if (!IS_ENC_ENFORCED() && encDetRes.bIs7BitASCII)
-  {
-    encDetRes.forcedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-  }
-
-
-  // --- 2nd Use Encoding Analysis if applicable
-
-  size_t const cbNbytes4Analysis = min_s(cbData, 200000LL);
-
-  encDetRes.confidence = 0.0f;
-
-  // analysis hint correction
-  if (Encoding_IsUTF8(iAnalyzeHint) && !encDetRes.bValidUTF8) { iAnalyzeHint = CPI_ANSI_DEFAULT; }
-
-  if (!IS_ENC_ENFORCED() || bForceEncDetection)
-  {
-    if (!bSkipANSICPDetection) 
-    {
-      // ---------------------------------------------------------------------------
-      Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
-      // ---------------------------------------------------------------------------
-    }
-
-    if (encDetRes.analyzedEncoding == CPI_NONE)
-    {
-      encDetRes.analyzedEncoding = iAnalyzeHint;
-      encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
-    }
-    else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) 
-    {
-      encDetRes.analyzedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-    }
-
-    if (!bSkipUTFDetection)
-    {
-      encDetRes.unicodeAnalysis = GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
-
-      if (Encoding_IsNONE(encDetRes.unicodeAnalysis) && Encoding_IsUNICODE(encDetRes.analyzedEncoding))
-      {
-        encDetRes.unicodeAnalysis = encDetRes.analyzedEncoding;
-      }
-
-      //// check for UTF-32, can't handle
-      //if (encDetRes.bHasBOM && !bBOM_LE && !bBOM_BE) {
-      //  encDetRes.unicodeAnalysis = CPI_NONE;
-      //}
-      //else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
-      //  encDetRes.unicodeAnalysis = CPI_NONE;
-      //}
-      //else if (encDetRes.bHasBOM && !encDetRes.bIsReverse && !bBOM_LE) {
-      //  // must be UTF-32, can't handle
-      //  encDetRes.unicodeAnalysis = CPI_NONE;
-      //}
-    }
-
-    if (bForceEncDetection) 
-    {
-      if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
-        // no bIsReliable check (forced unreliable detection)
-        encDetRes.forcedEncoding = encDetRes.analyzedEncoding;
-      }
-      else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
-        encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
-      }
-    }
-  }
-
-  if (Flags.bDevDebugMode)
-  {
-    _SetEncodingTitleInfo(&encDetRes);
-  }
-
-  int const iConfidence = float2int(encDetRes.confidence * 100.0f);
-  int const iReliableThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
-  encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
-
-  // --------------------------------------------------------------------------
-  // ---  choose best encoding guess  ----
-  // --------------------------------------------------------------------------
-
-  // init Preferred Encoding
-  encDetRes.Encoding = CPI_PREFERRED_ENCODING;
-
-  if (IS_ENC_ENFORCED()) 
-  {
-    encDetRes.Encoding = encDetRes.forcedEncoding;
-  }
-  else if (encDetRes.bIsUTF8Sig)
-  {
-    encDetRes.Encoding = CPI_UTF8SIGN;
-  }
-  else if (bBOM_LE || bBOM_BE) {
-    encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
+    encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
     encDetRes.bIsReverse = bBOM_BE;
-  }
-  else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
-  {
-    encDetRes.Encoding = encDetRes.analyzedEncoding;
-  }
-  else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
-    encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
-  }
-  else if (Encoding_IsValid(iAnalyzeHint)) {
-    encDetRes.Encoding = iAnalyzeHint;
-  }
+    encDetRes.bIs7BitASCII = IsValidUTF7(lpData, cbData);
+    if (encDetRes.bIs7BitASCII)
+    {
+        bSkipUTFDetection = true;
+        bSkipANSICPDetection = true;
+        encDetRes.bValidUTF8 = true;
+    }
+    else
+    {
+        encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
+        encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
+    }
 
-  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = CPI_PREFERRED_ENCODING; }
+    if (!IS_ENC_ENFORCED())
+    {
+        // force file vars ?
+        encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
+        if (Encoding_IsValid(encDetRes.fileVarEncoding) && (Globals.fvCurFile.mask & FV_ENCODING))
+        {
+            encDetRes.forcedEncoding = encDetRes.fileVarEncoding;
+        }
+    }
+    if (!IS_ENC_ENFORCED() && encDetRes.bIs7BitASCII)
+    {
+        encDetRes.forcedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+    }
 
-  return encDetRes;
+
+    // --- 2nd Use Encoding Analysis if applicable
+
+    size_t const cbNbytes4Analysis = min_s(cbData, 200000LL);
+
+    encDetRes.confidence = 0.0f;
+
+    // analysis hint correction
+    if (Encoding_IsUTF8(iAnalyzeHint) && !encDetRes.bValidUTF8)
+    {
+        iAnalyzeHint = CPI_ANSI_DEFAULT;
+    }
+
+    if (!IS_ENC_ENFORCED() || bForceEncDetection)
+    {
+        if (!bSkipANSICPDetection)
+        {
+            // ---------------------------------------------------------------------------
+            Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
+            // ---------------------------------------------------------------------------
+        }
+
+        if (encDetRes.analyzedEncoding == CPI_NONE)
+        {
+            encDetRes.analyzedEncoding = iAnalyzeHint;
+            encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
+        }
+        else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT)
+        {
+            encDetRes.analyzedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+        }
+
+        if (!bSkipUTFDetection)
+        {
+            encDetRes.unicodeAnalysis = GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
+
+            if (Encoding_IsNONE(encDetRes.unicodeAnalysis) && Encoding_IsUNICODE(encDetRes.analyzedEncoding))
+            {
+                encDetRes.unicodeAnalysis = encDetRes.analyzedEncoding;
+            }
+
+            //// check for UTF-32, can't handle
+            //if (encDetRes.bHasBOM && !bBOM_LE && !bBOM_BE) {
+            //  encDetRes.unicodeAnalysis = CPI_NONE;
+            //}
+            //else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
+            //  encDetRes.unicodeAnalysis = CPI_NONE;
+            //}
+            //else if (encDetRes.bHasBOM && !encDetRes.bIsReverse && !bBOM_LE) {
+            //  // must be UTF-32, can't handle
+            //  encDetRes.unicodeAnalysis = CPI_NONE;
+            //}
+        }
+
+        if (bForceEncDetection)
+        {
+            if (Encoding_IsValid(encDetRes.analyzedEncoding))
+            {
+                // no bIsReliable check (forced unreliable detection)
+                encDetRes.forcedEncoding = encDetRes.analyzedEncoding;
+            }
+            else if (Encoding_IsValid(encDetRes.unicodeAnalysis))
+            {
+                encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
+            }
+        }
+    }
+
+    if (Flags.bDevDebugMode)
+    {
+        _SetEncodingTitleInfo(&encDetRes);
+    }
+
+    int const iConfidence = float2int(encDetRes.confidence * 100.0f);
+    int const iReliableThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+    encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
+
+    // --------------------------------------------------------------------------
+    // ---  choose best encoding guess  ----
+    // --------------------------------------------------------------------------
+
+    // init Preferred Encoding
+    encDetRes.Encoding = CPI_PREFERRED_ENCODING;
+
+    if (IS_ENC_ENFORCED())
+    {
+        encDetRes.Encoding = encDetRes.forcedEncoding;
+    }
+    else if (encDetRes.bIsUTF8Sig)
+    {
+        encDetRes.Encoding = CPI_UTF8SIGN;
+    }
+    else if (bBOM_LE || bBOM_BE)
+    {
+        encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
+        encDetRes.bIsReverse = bBOM_BE;
+    }
+    else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
+    {
+        encDetRes.Encoding = encDetRes.analyzedEncoding;
+    }
+    else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
+    {
+        encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
+    }
+    else if (Encoding_IsValid(iAnalyzeHint))
+    {
+        encDetRes.Encoding = iAnalyzeHint;
+    }
+
+    if (!Encoding_IsValid(encDetRes.Encoding))
+    {
+        encDetRes.Encoding = CPI_PREFERRED_ENCODING;
+    }
+
+    return encDetRes;
 }
 

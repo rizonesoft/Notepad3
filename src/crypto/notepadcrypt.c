@@ -50,7 +50,11 @@ long ROpen_AES
 )
 {
     FILE *file = NULL;
-    if (fopen_s(&file, name, "rb") != 0) { printf("File %s can't be opened\n", name); return(1); }
+    if (fopen_s(&file, name, "rb") != 0)
+    {
+        printf("File %s can't be opened\n", name);
+        return(1);
+    }
     fp->file = file;
     fp->buffer_index = 0;
     fp->buffer_end = 0;
@@ -65,14 +69,17 @@ long ROpen_AES
     // left over if this is an encrypted file.
     fp->buffer_end = (long)fread(fp->buffer, 1, MASTER_KEY_OFFSET, fp->file);
     fp->bytesleft -= fp->buffer_end;
-    if (fp->buffer_end >= MASTER_KEY_OFFSET) {
+    if (fp->buffer_end >= MASTER_KEY_OFFSET)
+    {
         unsigned long *lbuf = (unsigned long *)&fp->buffer;
         BYTE binFileKey[KEY_BYTES];
         BOOL hasFileKey = FALSE;
 
         //possibly encrypted
-        if (lbuf[0] == PREAMBLE) {
-            switch (lbuf[1]) {
+        if (lbuf[0] == PREAMBLE)
+        {
+            switch (lbuf[1])
+            {
             default:
                 printf("File %s is encrypted with an unsupported format: %lu", name, lbuf[1]);
                 fclose(file);
@@ -80,14 +87,16 @@ long ROpen_AES
             case MASTERKEY_FORMAT:
                 // read the masterkey block
                 if (fread(fp->buffer + fp->buffer_end, 1, KEY_BYTES + AES_MAX_IV_SIZE, fp->file)
-                    != (KEY_BYTES + AES_MAX_IV_SIZE)) {
+                        != (KEY_BYTES + AES_MAX_IV_SIZE))
+                {
                     fclose(fp->file);
                     return(2);	// short file
                 }
                 fp->buffer_index = fp->buffer_end;
                 fp->bytesleft -= (KEY_BYTES + AES_MAX_IV_SIZE);
 
-                if (masterkey && *masterkey) {
+                if (masterkey && *masterkey)
+                {
                     BYTE binMasterKey[KEY_BYTES];
                     AES_keygen(masterkey, binMasterKey);
                     AES_bin_setup(&fp->key, AES_DIR_DECRYPT, KEY_BYTES * 8, binMasterKey);
@@ -95,22 +104,24 @@ long ROpen_AES
                     AES_blockDecrypt(&fp->cipher, &fp->key, &fp->buffer[MASTER_KEY_OFFSET + AES_MAX_IV_SIZE], sizeof(binFileKey), binFileKey);
                     hasFileKey = TRUE;
                 }
-                else
-                    if (filekey && *filekey) {
-                        AES_keygen(filekey, binFileKey);
-                        fp->buffer_index = fp->buffer_end;
-                        hasFileKey = TRUE;
-                    }
+                else if (filekey && *filekey)
+                {
+                    AES_keygen(filekey, binFileKey);
+                    fp->buffer_index = fp->buffer_end;
+                    hasFileKey = TRUE;
+                }
                 break;
             case FILEKEY_FORMAT:
-                if (filekey && *filekey) {
+                if (filekey && *filekey)
+                {
                     AES_keygen(filekey, binFileKey);
                     fp->buffer_index = fp->buffer_end;
                     hasFileKey = TRUE;
                 }
                 break;
             }
-            if (hasFileKey) {
+            if (hasFileKey)
+            {
                 fp->encrypted = TRUE;
                 AES_bin_setup(&fp->key, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
                 AES_bin_cipherInit(&fp->cipher, AES_MODE_CBC, &fp->buffer[PREAMBLE_SIZE]);
@@ -132,11 +143,21 @@ int encrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
 {
     int err = 0;
     FILE *in = NULL;
-    if (fopen_s(&in, infile, "rb") != 0) { printf("input file %s can't be opened\1", infile); err++; }
-    else {
+    if (fopen_s(&in, infile, "rb") != 0)
+    {
+        printf("input file %s can't be opened\1", infile);
+        err++;
+    }
+    else
+    {
         FILE *out = NULL;
-        if (fopen_s(&out, outfile, "wb") != 0) { printf("output file %s can't be opened\n", outfile); err++; }
-        else {
+        if (fopen_s(&out, outfile, "wb") != 0)
+        {
+            printf("output file %s can't be opened\n", outfile);
+            err++;
+        }
+        else
+        {
             BYTE buffer[BLOCKSIZE];
             unsigned long preamble[] = { PREAMBLE, FILEKEY_FORMAT };
             BYTE iv[AES_MAX_IV_SIZE];
@@ -145,7 +166,10 @@ int encrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
             AES_cipherInstance cipher;
             AES_keyInstance key;
 
-            if (masterformat) { preamble[1] = MASTERKEY_FORMAT; }
+            if (masterformat)
+            {
+                preamble[1] = MASTERKEY_FORMAT;
+            }
 
             gen_iv(iv, sizeof(iv));				// generate a random iv
             AES_keygen(filephrase, filekey);		// make key file passphrase
@@ -155,7 +179,8 @@ int encrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
             AES_bin_setup(&key, AES_DIR_ENCRYPT, KEY_BYTES * 8, filekey);	// prepare the encryption
             AES_bin_cipherInit(&cipher, AES_MODE_CBC, iv);
 
-            if (masterformat) {	// encrypt the file key with the masterkey and write it.
+            if (masterformat)  	// encrypt the file key with the masterkey and write it.
+            {
                 BYTE masteriv[AES_MAX_IV_SIZE];
                 BYTE masterkey[KEY_BYTES];
                 BYTE encfilekey[KEY_BYTES];
@@ -176,14 +201,17 @@ int encrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
             {
                 long bytesread = 0;
                 long bytesencrypted = 0;
-                do {
+                do
+                {
                     bytesread = (long)fread(buffer, 1, sizeof(buffer), in);
                     bytesencrypted = 0;
-                    if (bytesread > 0) {
+                    if (bytesread > 0)
+                    {
                         bytesencrypted = AES_blockEncrypt(&cipher, &key, buffer, bytesread, buffer);
                         fwrite(buffer, 1, bytesencrypted, out);
                     }
-                } while ((bytesread > 0) && (bytesencrypted == bytesread));
+                }
+                while ((bytesread > 0) && (bytesencrypted == bytesread));
                 // pad the last block
                 bytesencrypted = AES_padEncrypt(&cipher, &key, buffer + bytesencrypted, (bytesread - bytesencrypted), buffer);
                 fwrite(buffer, 1, bytesencrypted, out);
@@ -202,17 +230,22 @@ int decrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
 {
     AES_file in;
     int err = 0;
-    if (0 == ROpen_AES(infile, &in, filephrase, masterphrase)) {
+    if (0 == ROpen_AES(infile, &in, filephrase, masterphrase))
+    {
         FILE *out = NULL;
-        if (fopen_s(&out, outfile, "wb") == 0) {
-            while (in.bytesleft > 0) {
-                if (in.buffer_index < in.buffer_end) { //write the data already available 
+        if (fopen_s(&out, outfile, "wb") == 0)
+        {
+            while (in.bytesleft > 0)
+            {
+                if (in.buffer_index < in.buffer_end)   //write the data already available
+                {
                     fwrite(in.buffer + in.buffer_index, 1, in.buffer_end - in.buffer_index, out);
                 }
                 // read and decrypt some more data
                 {
                     long sizeread = (long)fread(in.buffer, 1, sizeof(in.buffer), in.file);
-                    if (sizeread <= 0) {
+                    if (sizeread <= 0)
+                    {
                         printf("ran out of input data\n");
                         in.bytesleft = 0;
                         err++;
@@ -237,7 +270,8 @@ int decrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
 int main(int argc, char *argv[])
 {
     int err = 0;
-    if (argc >= 4) {
+    if (argc >= 4)
+    {
         long idx = 1;
         char *op = argv[idx++];
         char *infile = argv[idx++];
@@ -245,24 +279,33 @@ int main(int argc, char *argv[])
         char *pass1 = argv[idx++];
         char *pass2 = (idx < argc) ? argv[idx++] : "";
 
-        if (_stricmp(op, "EF") == 0) {	// encrypt with file passphrase only
+        if (_stricmp(op, "EF") == 0)  	// encrypt with file passphrase only
+        {
             encrypt(infile, outfile, pass1, "");
         }
-        else if (_stricmp(op, "DF") == 0) {	// decrypt using the file passphrase
+        else if (_stricmp(op, "DF") == 0)  	// decrypt using the file passphrase
+        {
             decrypt(infile, outfile, pass1, "");
         }
-        else if ((_stricmp(op, "EM") == 0) && (*pass2 != (char)0)) {	// encrypt using file and master passphrases
+        else if ((_stricmp(op, "EM") == 0) && (*pass2 != (char)0))  	// encrypt using file and master passphrases
+        {
             encrypt(infile, outfile, pass1, pass2);
         }
-        else if (_stricmp(op, "DM") == 0) {	// decrypt using the master passphrase
+        else if (_stricmp(op, "DM") == 0)  	// decrypt using the master passphrase
+        {
             decrypt(infile, outfile, "", pass1);
         }
-        else { err++; }
+        else
+        {
+            err++;
+        }
     }
-    else {
+    else
+    {
         err++;
     }
-    if (err) {
+    if (err)
+    {
         printf("\n%s - command line file encrypt/decrypt compatible with Notepad3\n\n"
                "Usage: %s {ef em df dm} source destination {passphrase} {passphrase}\n", argv[0], argv[0]);
         printf("       ef - encrypt w/filekey\n       em - encrypt w/masterkey\n"

@@ -83,9 +83,17 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 
-inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme) {
-  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); } else { SetWindowTheme(hwnd, L"", L""); }
-  SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
+inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme)
+{
+    if (bSetExplorerTheme)
+    {
+        SetExplorerTheme(hwnd);
+    }
+    else
+    {
+        SetWindowTheme(hwnd, L"", L"");
+    }
+    SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 }
 
 // resize dialog directions
@@ -93,17 +101,21 @@ typedef enum { RSZ_NONE = -1, RSZ_BOTH = 0, RSZ_ONLY_X = 1, RSZ_ONLY_Y = 2 } RSZ
 
 void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection);
 
-inline void ResizeDlg_Init0(HWND hwnd, int nIdGrip) {
-  ResizeDlg_InitEx(hwnd, 0, 0, nIdGrip, RSZ_NONE);
+inline void ResizeDlg_Init0(HWND hwnd, int nIdGrip)
+{
+    ResizeDlg_InitEx(hwnd, 0, 0, nIdGrip, RSZ_NONE);
 }
-inline void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip) {
-  ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH);
+inline void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
+{
+    ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH);
 }
-inline void ResizeDlg_InitX(HWND hwnd, int cxFrame, int nIdGrip) {
-  ResizeDlg_InitEx(hwnd, cxFrame, 0, nIdGrip, RSZ_ONLY_X);
+inline void ResizeDlg_InitX(HWND hwnd, int cxFrame, int nIdGrip)
+{
+    ResizeDlg_InitEx(hwnd, cxFrame, 0, nIdGrip, RSZ_ONLY_X);
 }
-inline void ResizeDlg_InitY(HWND hwnd, int cyFrame, int nIdGrip) {
-  ResizeDlg_InitEx(hwnd, 0, cyFrame, nIdGrip, RSZ_ONLY_Y);
+inline void ResizeDlg_InitY(HWND hwnd, int cyFrame, int nIdGrip)
+{
+    ResizeDlg_InitEx(hwnd, 0, cyFrame, nIdGrip, RSZ_ONLY_Y);
 }
 void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame);
 void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy);
@@ -114,8 +126,9 @@ void ResizeDlg_SetAttr(HWND hwnd, int index, int value);
 int ResizeDlg_GetAttr(HWND hwnd, int index);
 
 void ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection, int nCtlId1, int nCtlId2);
-inline void ResizeDlg_InitY2(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int nCtlId1, int nCtlId2) {
-  ResizeDlg_InitY2Ex(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH, nCtlId1, nCtlId2);
+inline void ResizeDlg_InitY2(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int nCtlId1, int nCtlId2)
+{
+    ResizeDlg_InitY2Ex(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH, nCtlId1, nCtlId2);
 }
 int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2);
 void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy);
@@ -142,27 +155,54 @@ int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
 inline int GetDlgCtrlWidth(HWND hwndDlg, int nCtrlId)
 {
-  RECT rc; GetWindowRect(GetDlgItem(hwndDlg, nCtrlId), &rc);
-  return (rc.right - rc.left);
+    RECT rc;
+    GetWindowRect(GetDlgItem(hwndDlg, nCtrlId), &rc);
+    return (rc.right - rc.left);
 }
 
 inline int GetDlgCtrlHeight(HWND hwndDlg, int nCtrlId)
 {
-  RECT rc; GetWindowRect(GetDlgItem(hwndDlg, nCtrlId), &rc);
-  return (rc.bottom - rc.top);
+    RECT rc;
+    GetWindowRect(GetDlgItem(hwndDlg, nCtrlId), &rc);
+    return (rc.bottom - rc.top);
 }
 
 DPI_T GetCurrentPPI(HWND hwnd);
 
-inline int ScaleIntByDPI(int val, unsigned dpi) { return MulDiv(val, dpi, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleIntByDPI(val, dpi.x); }
-inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleIntByDPI(val, dpi.y); }
+inline int ScaleIntByDPI(int val, unsigned dpi)
+{
+    return MulDiv(val, dpi, USER_DEFAULT_SCREEN_DPI);
+}
+inline int ScaleIntToDPI_X(HWND hwnd, int val)
+{
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+    return ScaleIntByDPI(val, dpi.x);
+}
+inline int ScaleIntToDPI_Y(HWND hwnd, int val)
+{
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+    return ScaleIntByDPI(val, dpi.y);
+}
 
-inline int ScaleFloatByDPI(float fVal, unsigned dpi) { return (int)lroundf((fVal * dpi) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.x); }
-inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);  return ScaleFloatByDPI(fVal, dpi.y); }
+inline int ScaleFloatByDPI(float fVal, unsigned dpi)
+{
+    return (int)lroundf((fVal * dpi) / (float)USER_DEFAULT_SCREEN_DPI);
+}
+inline int ScaleFloatToDPI_X(HWND hwnd, float fVal)
+{
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+    return ScaleFloatByDPI(fVal, dpi.x);
+}
+inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal)
+{
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+    return ScaleFloatByDPI(fVal, dpi.y);
+}
 
-inline unsigned LargeIconDPI() { return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, Settings2.LargeIconScalePrecent, 100); };
+inline unsigned LargeIconDPI()
+{
+    return (unsigned)MulDiv(USER_DEFAULT_SCREEN_DPI, Settings2.LargeIconScalePrecent, 100);
+};
 
 // ----------------------------------------------------------------------------
 
@@ -181,8 +221,20 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 // ----------------------------------------------------------------------------
 
-inline void SimpleBeep() { if (!Settings.MuteMessageBeep) { MessageBeep(0xFFFFFFFF); } }
-inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { MessageBeep(uType & MB_ICONMASK); } }
+inline void SimpleBeep()
+{
+    if (!Settings.MuteMessageBeep)
+    {
+        MessageBeep(0xFFFFFFFF);
+    }
+}
+inline void AttentionBeep(UINT uType)
+{
+    if (!Settings.MuteMessageBeep)
+    {
+        MessageBeep(uType & MB_ICONMASK);
+    }
+}
 
 #define DialogEnableControl(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
@@ -190,32 +242,39 @@ inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { Message
 #define DialogHideControl(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; ShowWindow(hctrl, (b)?SW_HIDE:SW_SHOW); }
 
-inline bool IsDialogItemEnabled(HWND hdlg, int id) { return IsWindowEnabled(GetDlgItem(hdlg, id)); }
+inline bool IsDialogItemEnabled(HWND hdlg, int id)
+{
+    return IsWindowEnabled(GetDlgItem(hdlg, id));
+}
 
-inline void SetDialogIconNP3(HWND hwnd) {
-  if (Globals.hDlgIconSmall) {
-    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
-  }
-  if (Globals.hDlgIconBig) {
-    SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
-  }
+inline void SetDialogIconNP3(HWND hwnd)
+{
+    if (Globals.hDlgIconSmall)
+    {
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
+    }
+    if (Globals.hDlgIconBig)
+    {
+        SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
+    }
 }
 
 // --- Themed Dialogs ---------------------------------------------------------
 
 #ifndef DLGTEMPLATEEX
 #pragma pack(push, 1)
-typedef struct {
-  WORD      dlgVer;
-  WORD      signature;
-  DWORD     helpID;
-  DWORD     exStyle;
-  DWORD     style;
-  WORD      cDlgItems;
-  short     x;
-  short     y;
-  short     cx;
-  short     cy;
+typedef struct
+{
+    WORD      dlgVer;
+    WORD      signature;
+    DWORD     helpID;
+    DWORD     exStyle;
+    DWORD     style;
+    WORD      cDlgItems;
+    short     x;
+    short     y;
+    short     cx;
+    short     cy;
 } DLGTEMPLATEEX;
 #pragma pack(pop)
 #endif

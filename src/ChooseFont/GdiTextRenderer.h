@@ -33,7 +33,7 @@ private:
     volatile LONG                m_refs = 0;
     IDWriteBitmapRenderTarget*   m_renderTarget = nullptr;
     IDWriteRenderingParams*      m_renderingParams = nullptr;
-    
+
     HRESULT STDMETHODCALLTYPE DrawGlyphRun(
         void* clientDrawingContext,
         FLOAT baselineOriginX,
@@ -80,7 +80,7 @@ private:
 
 public:
 
-    HRESULT STDMETHODCALLTYPE QueryInterface( 
+    HRESULT STDMETHODCALLTYPE QueryInterface(
         REFIID riid,
         void **ppvObject) override;
 

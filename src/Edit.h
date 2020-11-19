@@ -37,7 +37,7 @@ bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
 void  EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
-bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
+bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection,
                    bool bForceEncDetection, bool bClearUndoHistory, EditFileIOStatus* const status);
 bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp);
 
@@ -137,16 +137,20 @@ void  EditSelectionMultiSelectAllEx(EDITFINDREPLACE edFndRpl);
 //
 //  Folding Functions
 //
-typedef enum {
-  FOLD = SC_FOLDACTION_CONTRACT,
-  EXPAND = SC_FOLDACTION_EXPAND,
-  SNIFF = SC_FOLDACTION_TOGGLE
+typedef enum
+{
+    FOLD = SC_FOLDACTION_CONTRACT,
+    EXPAND = SC_FOLDACTION_EXPAND,
+    SNIFF = SC_FOLDACTION_TOGGLE
+    
 } FOLD_ACTION;
 
-typedef enum {
-  UP = -1,
-  NONE = 0,
-  DOWN = 1
+typedef enum
+{
+    UP = -1,
+    NONE = 0,
+    DOWN = 1
+    
 } FOLD_MOVE;
 
 void EditToggleFolds(FOLD_ACTION action,bool);
@@ -158,8 +162,8 @@ void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action);
 
 inline int GetMarkAllOccSearchFlags()
 {
-  return EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,
-    Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false);
+    return EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,
+                              Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false);
 }
 
 #endif //_NP3_EDIT_H_

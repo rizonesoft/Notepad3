@@ -20,13 +20,13 @@
 
 typedef struct _muilanguage
 {
-  UINT    rid;
-  const WCHAR* szLocaleName;
-  const WCHAR* szMenuItem;
-  // !!! WARNING:  LCID is DEPRECATED
-  LANGID  LangId;
-  bool    bHasDLL;
-  bool    bIsActive;
+    UINT    rid;
+    const WCHAR* szLocaleName;
+    const WCHAR* szMenuItem;
+    // !!! WARNING:  LCID is DEPRECATED
+    LANGID  LangId;
+    bool    bHasDLL;
+    bool    bIsActive;
 
 } MUILANGUAGE, *PMUILANGUAGE;
 
@@ -36,8 +36,8 @@ int MuiLanguages_CountOf();
 
 typedef struct _gwlang_ini
 {
-  const LANGID       lngid;
-  const WCHAR* const filename;
+    const LANGID       lngid;
+    const WCHAR* const filename;
 }
 grepWinLng_t;
 

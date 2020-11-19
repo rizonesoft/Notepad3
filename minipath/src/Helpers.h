@@ -25,11 +25,15 @@ extern UINT16    g_uWinVer;
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
 // clamp
-inline int clampi(int x, int lower, int upper) {
-  return (x < lower) ? lower : ((x > upper) ? upper : x);
+inline int clampi(int x, int lower, int upper)
+{
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline BOOL IsKeyDown(int key) { return (((GetKeyState(key) >> 8) & 0xff) != 0); }
+inline BOOL IsKeyDown(int key)
+{
+    return (((GetKeyState(key) >> 8) & 0xff) != 0);
+}
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
@@ -110,7 +114,10 @@ BOOL DirList_IsFileSelected(HWND);
 
 BOOL ExecDDECommand(LPCWSTR,LPCWSTR,LPCWSTR,LPCWSTR);
 
-inline BOOL PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
+inline BOOL PathIsExistingFile(LPCWSTR pszPath)
+{
+    return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
+}
 
 //==== StrNextTok methods ===================
 CHAR*  StrNextTokA(CHAR*, const CHAR*);
@@ -123,8 +130,14 @@ WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
 
 //==== StrIs(Not)Empty() =============================================
 
-inline BOOL StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
-inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+inline BOOL StrIsEmptyA(LPCSTR s)
+{
+    return ((s == NULL) || (*s == '\0'));
+}
+inline BOOL StrIsEmptyW(LPCWSTR s)
+{
+    return ((s == NULL) || (*s == L'\0'));
+}
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrIsEmpty(s)     StrIsEmptyW(s)
@@ -145,8 +158,8 @@ inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
 
 typedef struct tagHISTORY
 {
-  WCHAR *psz[HISTORY_ITEMS]; // Strings
-  int  iCurItem;            // Current Item
+    WCHAR *psz[HISTORY_ITEMS]; // Strings
+    int  iCurItem;            // Current Item
 
 } HISTORY, *PHISTORY;
 
@@ -164,12 +177,13 @@ void History_UpdateToolbar(PHISTORY,HWND,int,int);
 #define MRU_NOCASE    1
 #define MRU_UTF8      2
 
-typedef struct _mrulist {
+typedef struct _mrulist
+{
 
-  WCHAR  szRegKey[256];
-  int   iFlags;
-  int   iSize;
-  LPCWSTR pszItems[MRU_MAXITEMS];
+    WCHAR  szRegKey[256];
+    int   iFlags;
+    int   iSize;
+    LPCWSTR pszItems[MRU_MAXITEMS];
 
 } MRULIST, *PMRULIST, *LPMRULIST;
 
@@ -188,17 +202,18 @@ void      MRU_AddOneItem(LPCWSTR,LPCWSTR);
 //==== Themed Dialogs =========================================================
 #ifndef DLGTEMPLATEEX
 #pragma pack(push, 1)
-typedef struct {
-  WORD      dlgVer;
-  WORD      signature;
-  DWORD     helpID;
-  DWORD     exStyle;
-  DWORD     style;
-  WORD      cDlgItems;
-  short     x;
-  short     y;
-  short     cx;
-  short     cy;
+typedef struct
+{
+    WORD      dlgVer;
+    WORD      signature;
+    DWORD     helpID;
+    DWORD     exStyle;
+    DWORD     style;
+    WORD      cDlgItems;
+    short     x;
+    short     y;
+    short     cx;
+    short     cy;
 } DLGTEMPLATEEX;
 #pragma pack(pop)
 #endif
@@ -219,29 +234,35 @@ VOID RestoreWndFromTray(HWND hWnd);
 #define rgbDarkBtnFcColorRef (RGB(0x33, 0x33, 0x33))
 #define rgbDarkTxtColorRef   (RGB(0xEF, 0xEF, 0xEF))
 
-inline int SetModeBkColor(const HDC hdc, const BOOL bDarkMode) {
-  return SetBkColor(hdc, bDarkMode ? rgbDarkBkgColorRef : GetSysColor(COLOR_WINDOW));
+inline int SetModeBkColor(const HDC hdc, const BOOL bDarkMode)
+{
+    return SetBkColor(hdc, bDarkMode ? rgbDarkBkgColorRef : GetSysColor(COLOR_WINDOW));
 }
 
-inline int SetModeBtnFaceColor(const HDC hdc, const BOOL bDarkMode) {
-  return SetBkColor(hdc, bDarkMode ? rgbDarkBtnFcColorRef : GetSysColor(COLOR_BTNFACE));
+inline int SetModeBtnFaceColor(const HDC hdc, const BOOL bDarkMode)
+{
+    return SetBkColor(hdc, bDarkMode ? rgbDarkBtnFcColorRef : GetSysColor(COLOR_BTNFACE));
 }
 
-inline COLORREF GetModeBkColor(const BOOL bDarkMode) {
-  return bDarkMode ? rgbDarkBkgColorRef : (COLORREF)GetSysColor(COLOR_WINDOW);
+inline COLORREF GetModeBkColor(const BOOL bDarkMode)
+{
+    return bDarkMode ? rgbDarkBkgColorRef : (COLORREF)GetSysColor(COLOR_WINDOW);
 }
 
-inline COLORREF GetModeBtnfaceColor(const BOOL bDarkMode) {
-  return bDarkMode ? rgbDarkBtnFcColorRef : (COLORREF)GetSysColor(COLOR_BTNFACE);
+inline COLORREF GetModeBtnfaceColor(const BOOL bDarkMode)
+{
+    return bDarkMode ? rgbDarkBtnFcColorRef : (COLORREF)GetSysColor(COLOR_BTNFACE);
 }
 
 
-inline int SetModeTextColor(const HDC hdc, const BOOL bDarkMode) {
-  return SetTextColor(hdc, bDarkMode ? rgbDarkTxtColorRef : GetSysColor(COLOR_BTNTEXT));
+inline int SetModeTextColor(const HDC hdc, const BOOL bDarkMode)
+{
+    return SetTextColor(hdc, bDarkMode ? rgbDarkTxtColorRef : GetSysColor(COLOR_BTNTEXT));
 }
 
-inline COLORREF GetModeTextColor(const BOOL bDarkMode) {
-  return bDarkMode ? rgbDarkTxtColorRef : (COLORREF)GetSysColor(COLOR_BTNTEXT);
+inline COLORREF GetModeTextColor(const BOOL bDarkMode)
+{
+    return bDarkMode ? rgbDarkTxtColorRef : (COLORREF)GetSysColor(COLOR_BTNTEXT);
 }
 
 extern HBRUSH  g_hbrDarkModeBkgBrush;
@@ -249,13 +270,14 @@ extern HBRUSH  g_hbrDarkModeBtnFcBrush;
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-inline INT_PTR SetDarkModeCtlColors(const HDC hdc) {
-  SetBkColor(hdc, rgbDarkBkgColorRef); // (!) non-button static controls
-  SetTextColor(hdc, rgbDarkTxtColorRef);
-  //~RECT rc;
-  //~GetWindowRect(WindowFromDC(hdc), &rc);
-  //~DrawEdge(hdc, &rc, EDGE_RAISED, BF_FLAT | BF_MONO);
-  return (INT_PTR)g_hbrDarkModeBkgBrush;
+inline INT_PTR SetDarkModeCtlColors(const HDC hdc)
+{
+    SetBkColor(hdc, rgbDarkBkgColorRef); // (!) non-button static controls
+    SetTextColor(hdc, rgbDarkTxtColorRef);
+    //~RECT rc;
+    //~GetWindowRect(WindowFromDC(hdc), &rc);
+    //~DrawEdge(hdc, &rc, EDGE_RAISED, BF_FLAT | BF_MONO);
+    return (INT_PTR)g_hbrDarkModeBkgBrush;
 }
 
 #endif

@@ -27,8 +27,8 @@ struct FontFaceInfo
 
     FontFaceInfo(
         const WCHAR* fontFaceName,
-        DWRITE_FONT_WEIGHT   fontWeight, 
-        DWRITE_FONT_STYLE    fontStyle, 
+        DWRITE_FONT_WEIGHT   fontWeight,
+        DWRITE_FONT_STYLE    fontStyle,
         DWRITE_FONT_STRETCH  fontStretch)
         :   fontWeight(fontWeight),
             fontStyle(fontStyle),

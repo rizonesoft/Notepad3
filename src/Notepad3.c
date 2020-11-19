@@ -51,30 +51,32 @@
 //
 // ============================================================================
 
-LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
-  /*0*/ L"back:#0000", // OCC MARKER
-  /*1*/ L"back:#FF0000",
-  /*2*/ L"back:#00FF00",
-  /*3*/ L"back:#0000FF",
-  /*4*/ L"back:#FF8000",
-  /*5*/ L"back:#0080FF",
-  /*6*/ L"back:#FF00FF",
-  /*7*/ L"back:#408040",
-  /*8*/ L"back:#C080C0"
+LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] =
+{
+    /*0*/ L"back:#0000", // OCC MARKER
+    /*1*/ L"back:#FF0000",
+    /*2*/ L"back:#00FF00",
+    /*3*/ L"back:#0000FF",
+    /*4*/ L"back:#FF8000",
+    /*5*/ L"back:#0080FF",
+    /*6*/ L"back:#FF00FF",
+    /*7*/ L"back:#408040",
+    /*8*/ L"back:#C080C0"
 };
 
 
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
-CONSTANTS_T const Constants = { 
+CONSTANTS_T const Constants =
+{
     2                                    // StdDefaultLexerID
-  , L"minipath.exe"                      // FileBrowserMiniPath
-  , L"grepWinNP3.exe"                    // FileSearchGrepWin
-  , L"Settings"                          // Inifile Section "Settings"
-  , L"Settings2"                         // Inifile Section "Settings2"
-  , L"Window"                            // Inifile Section "Window"
-  , L"Styles"                            // Inifile Section "Styles"
-  , L"Suppressed Messages"               // Inifile Section "SuppressedMessages"
+    , L"minipath.exe"                      // FileBrowserMiniPath
+    , L"grepWinNP3.exe"                    // FileSearchGrepWin
+    , L"Settings"                          // Inifile Section "Settings"
+    , L"Settings2"                         // Inifile Section "Settings2"
+    , L"Window"                            // Inifile Section "Window"
+    , L"Styles"                            // Inifile Section "Styles"
+    , L"Suppressed Messages"               // Inifile Section "SuppressedMessages"
 };
 
 FLAGS_T     Flags;
@@ -170,50 +172,51 @@ static WIN32_FIND_DATA s_fdCurFile;
 
 static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
-static TBBUTTON  s_tbbMainWnd[] = { 
-  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 3,IDT_FILE_SAVE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 2,IDT_FILE_BROWSE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 27,IDT_FILE_RECENT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 4,IDT_EDIT_UNDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 5,IDT_EDIT_REDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 6,IDT_EDIT_CUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 7,IDT_EDIT_COPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 8,IDT_EDIT_PASTE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 29,IDT_GREP_WIN_TOOL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 25,IDT_VIEW_TOGGLE_VIEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 16,IDT_FILE_EXIT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+static TBBUTTON  s_tbbMainWnd[] =
+{
+    { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 3,IDT_FILE_SAVE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 2,IDT_FILE_BROWSE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 27,IDT_FILE_RECENT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 4,IDT_EDIT_UNDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 5,IDT_EDIT_REDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 6,IDT_EDIT_CUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 7,IDT_EDIT_COPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 8,IDT_EDIT_PASTE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 29,IDT_GREP_WIN_TOOL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 25,IDT_VIEW_TOGGLE_VIEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 16,IDT_FILE_EXIT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0,0,0,BTNS_SEP,{0},0,0 },
+    { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
 };
 static const int NUMTOOLBITMAPS = 30;
 
@@ -235,141 +238,167 @@ static UT_icd UndoRedoSelElement_icd = { sizeof(DocPos), NULL, NULL, NULL };
 
 static void InitUndoRedoSelection(void* elt)
 {
-  UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
+    UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
 
-  if (selection != NULL) {
-    selection->selMode_undo = SC_SEL_STREAM;
-    selection->anchorPos_undo = NULL;
-    selection->curPos_undo = NULL;
-    selection->anchorVS_undo = NULL;
-    selection->curVS_undo = NULL;
+    if (selection != NULL)
+    {
+        selection->selMode_undo = SC_SEL_STREAM;
+        selection->anchorPos_undo = NULL;
+        selection->curPos_undo = NULL;
+        selection->anchorVS_undo = NULL;
+        selection->curVS_undo = NULL;
 
-    selection->selMode_redo = SC_SEL_STREAM;
-    selection->anchorPos_redo = NULL;
-    selection->curPos_redo = NULL;
-    selection->anchorVS_redo = NULL;
-    selection->curVS_redo = NULL;
-  }
+        selection->selMode_redo = SC_SEL_STREAM;
+        selection->anchorPos_redo = NULL;
+        selection->curPos_redo = NULL;
+        selection->anchorVS_redo = NULL;
+        selection->curVS_redo = NULL;
+    }
 }
 
 
 static void DelUndoRedoSelection(void* elt)
 {
-  UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
+    UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
 
-  if (selection != NULL) {
-    if (selection->anchorPos_undo != NULL) {
-      utarray_clear(selection->anchorPos_undo);
-      utarray_free(selection->anchorPos_undo);
-      selection->anchorPos_undo = NULL;
-    }
-    if (selection->curPos_undo != NULL) {
-      utarray_clear(selection->curPos_undo);
-      utarray_free(selection->curPos_undo);
-      selection->curPos_undo = NULL;
-    }
-    if (selection->anchorVS_undo != NULL) {
-      utarray_clear(selection->anchorVS_undo);
-      utarray_free(selection->anchorVS_undo);
-      selection->anchorVS_undo = NULL;
-    }
-    if (selection->curVS_undo != NULL) {
-      utarray_clear(selection->curVS_undo);
-      utarray_free(selection->curVS_undo);
-      selection->curVS_undo = NULL;
-    }
+    if (selection != NULL)
+    {
+        if (selection->anchorPos_undo != NULL)
+        {
+            utarray_clear(selection->anchorPos_undo);
+            utarray_free(selection->anchorPos_undo);
+            selection->anchorPos_undo = NULL;
+        }
+        if (selection->curPos_undo != NULL)
+        {
+            utarray_clear(selection->curPos_undo);
+            utarray_free(selection->curPos_undo);
+            selection->curPos_undo = NULL;
+        }
+        if (selection->anchorVS_undo != NULL)
+        {
+            utarray_clear(selection->anchorVS_undo);
+            utarray_free(selection->anchorVS_undo);
+            selection->anchorVS_undo = NULL;
+        }
+        if (selection->curVS_undo != NULL)
+        {
+            utarray_clear(selection->curVS_undo);
+            utarray_free(selection->curVS_undo);
+            selection->curVS_undo = NULL;
+        }
 
-    if (selection->anchorPos_redo != NULL) {
-      utarray_clear(selection->anchorPos_redo);
-      utarray_free(selection->anchorPos_redo);
-      selection->anchorPos_redo = NULL;
+        if (selection->anchorPos_redo != NULL)
+        {
+            utarray_clear(selection->anchorPos_redo);
+            utarray_free(selection->anchorPos_redo);
+            selection->anchorPos_redo = NULL;
+        }
+        if (selection->curPos_redo != NULL)
+        {
+            utarray_clear(selection->curPos_redo);
+            utarray_free(selection->curPos_redo);
+            selection->curPos_redo = NULL;
+        }
+        if (selection->anchorVS_redo != NULL)
+        {
+            utarray_clear(selection->anchorVS_redo);
+            utarray_free(selection->anchorVS_redo);
+            selection->anchorVS_redo = NULL;
+        }
+        if (selection->curVS_redo != NULL)
+        {
+            utarray_clear(selection->curVS_redo);
+            utarray_free(selection->curVS_redo);
+            selection->curVS_redo = NULL;
+        }
     }
-    if (selection->curPos_redo != NULL) {
-      utarray_clear(selection->curPos_redo);
-      utarray_free(selection->curPos_redo);
-      selection->curPos_redo = NULL;
-    }
-    if (selection->anchorVS_redo != NULL) {
-      utarray_clear(selection->anchorVS_redo);
-      utarray_free(selection->anchorVS_redo);
-      selection->anchorVS_redo = NULL;
-    }
-    if (selection->curVS_redo != NULL) {
-      utarray_clear(selection->curVS_redo);
-      utarray_free(selection->curVS_redo);
-      selection->curVS_redo = NULL;
-    }
-  }
 }
 
 static void CopyUndoRedoSelection(void* dst, const void* src)
 {
-  UndoRedoSelection_t* dst_sel = (UndoRedoSelection_t*)dst;
-  const UndoRedoSelection_t* src_sel = (UndoRedoSelection_t*)src;
+    UndoRedoSelection_t* dst_sel = (UndoRedoSelection_t*)dst;
+    const UndoRedoSelection_t* src_sel = (UndoRedoSelection_t*)src;
 
-  DocPos* pPos = NULL;
-  InitUndoRedoSelection(dst);
+    DocPos* pPos = NULL;
+    InitUndoRedoSelection(dst);
 
-  dst_sel->selMode_undo = (src_sel) ? src_sel->selMode_undo : SC_SEL_STREAM;
+    dst_sel->selMode_undo = (src_sel) ? src_sel->selMode_undo : SC_SEL_STREAM;
 
-  utarray_new(dst_sel->anchorPos_undo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_undo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->anchorPos_undo, pPos);
+    utarray_new(dst_sel->anchorPos_undo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_undo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->anchorPos_undo, pPos);
+        }
     }
-  }
 
-  utarray_new(dst_sel->curPos_undo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->curPos_undo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->curPos_undo, pPos);
+    utarray_new(dst_sel->curPos_undo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->curPos_undo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->curPos_undo, pPos);
+        }
     }
-  }
-  
-  utarray_new(dst_sel->anchorVS_undo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_undo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->anchorVS_undo, pPos);
+
+    utarray_new(dst_sel->anchorVS_undo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_undo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->anchorVS_undo, pPos);
+        }
     }
-  }
 
-  utarray_new(dst_sel->curVS_undo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->curVS_undo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->curVS_undo, pPos);
+    utarray_new(dst_sel->curVS_undo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->curVS_undo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->curVS_undo, pPos);
+        }
     }
-  }
 
 
-  dst_sel->selMode_redo = (src_sel) ? src_sel->selMode_redo : SC_SEL_STREAM;
+    dst_sel->selMode_redo = (src_sel) ? src_sel->selMode_redo : SC_SEL_STREAM;
 
-  utarray_new(dst_sel->anchorPos_redo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_redo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->anchorPos_redo, pPos);
+    utarray_new(dst_sel->anchorPos_redo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_redo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->anchorPos_redo, pPos);
+        }
     }
-  }
 
-  utarray_new(dst_sel->curPos_redo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->curPos_redo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->curPos_redo, pPos);
+    utarray_new(dst_sel->curPos_redo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->curPos_redo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->curPos_redo, pPos);
+        }
     }
-  }
 
-  utarray_new(dst_sel->anchorVS_redo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_redo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->anchorVS_redo, pPos);
+    utarray_new(dst_sel->anchorVS_redo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_redo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->anchorVS_redo, pPos);
+        }
     }
-  }
 
-  utarray_new(dst_sel->curVS_redo, &UndoRedoSelElement_icd);
-  if (src_sel) {
-    while ((pPos = (DocPos*)utarray_next(src_sel->curVS_redo, pPos)) != NULL) {
-      utarray_push_back(dst_sel->curVS_redo, pPos);
+    utarray_new(dst_sel->curVS_redo, &UndoRedoSelElement_icd);
+    if (src_sel)
+    {
+        while ((pPos = (DocPos*)utarray_next(src_sel->curVS_redo, pPos)) != NULL)
+        {
+            utarray_push_back(dst_sel->curVS_redo, pPos);
+        }
     }
-  }
 }
 
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), InitUndoRedoSelection, CopyUndoRedoSelection, DelUndoRedoSelection };
@@ -396,23 +425,25 @@ static volatile LONG iNotifyChangeStackCounter = 0L;
 
 static __forceinline bool CheckNotifyChangeEvent()
 {
-  return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
+    return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
 }
 
-void IgnoreNotifyChangeEvent() 
+void IgnoreNotifyChangeEvent()
 {
-  InterlockedIncrement(&iNotifyChangeStackCounter);
+    InterlockedIncrement(&iNotifyChangeStackCounter);
 }
 
-void ObserveNotifyChangeEvent() 
+void ObserveNotifyChangeEvent()
 {
-  if (!CheckNotifyChangeEvent()) {
-    InterlockedDecrement(&iNotifyChangeStackCounter);
-  }
-  if (CheckNotifyChangeEvent()) {
-    EditUpdateVisibleIndicators();
-    UpdateStatusbar(false);
-  }
+    if (!CheckNotifyChangeEvent())
+    {
+        InterlockedDecrement(&iNotifyChangeStackCounter);
+    }
+    if (CheckNotifyChangeEvent())
+    {
+        EditUpdateVisibleIndicators();
+        UpdateStatusbar(false);
+    }
 }
 
 // SCN_UPDATEUI notification
@@ -430,17 +461,18 @@ static CmdMessageQueue_t* MessageQueue = NULL;
 
 static int msgcmp(void* mqc1, void* mqc2)
 {
-  CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
-  CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
+    CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
+    CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
 
-  if ((pMQC1->cmd == pMQC2->cmd)
-       //&& (pMQC1->hwnd == pMQC2->hwnd)
-       && (pMQC1->wparam == pMQC2->wparam) // command
-       //&& (pMQC1->lparam == pMQC2->lparam)
-  ){
-    return FALSE;
-  }
-  return 1;
+    if ((pMQC1->cmd == pMQC2->cmd)
+            //&& (pMQC1->hwnd == pMQC2->hwnd)
+            && (pMQC1->wparam == pMQC2->wparam) // command
+            //&& (pMQC1->lparam == pMQC2->lparam)
+       )
+    {
+        return FALSE;
+    }
+    return 1;
 }
 // ----------------------------------------------------------------------------
 
@@ -452,25 +484,31 @@ static int msgcmp(void* mqc1, void* mqc2)
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
-  if (!pMsgQCmd) { return; }
+    if (!pMsgQCmd)
+    {
+        return;
+    }
 
-  CmdMessageQueue_t* pmqc = NULL;
-  DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
+    CmdMessageQueue_t* pmqc = NULL;
+    DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
 
-  if (!pmqc) { // NOT found
-    pmqc = pMsgQCmd;
-    pmqc->delay = cycles;
-    DL_APPEND(MessageQueue, pmqc);
-  }
-  else {
-    pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
-  }
-  if (pmqc->delay < 2) {
-    // execute now (do not use PostMessage() here)
-    SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
-    pmqc->delay = -1;
-    pmqc->lparam = 0;
-  }
+    if (!pmqc)   // NOT found
+    {
+        pmqc = pMsgQCmd;
+        pmqc->delay = cycles;
+        DL_APPEND(MessageQueue, pmqc);
+    }
+    else
+    {
+        pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
+    }
+    if (pmqc->delay < 2)
+    {
+        // execute now (do not use PostMessage() here)
+        SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+        pmqc->delay = -1;
+        pmqc->lparam = 0;
+    }
 }
 // ----------------------------------------------------------------------------
 
@@ -499,24 +537,26 @@ static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 //
 static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-  UNUSED(hwnd);    // must be main window handle
-  UNUSED(uMsg);    // must be WM_TIMER
-  UNUSED(idEvent); // must be IDT_TIMER_MRKALL
-  UNUSED(dwTime);  // This is the value returned by the GetTickCount function
+    UNUSED(hwnd);    // must be main window handle
+    UNUSED(uMsg);    // must be WM_TIMER
+    UNUSED(idEvent); // must be IDT_TIMER_MRKALL
+    UNUSED(dwTime);  // This is the value returned by the GetTickCount function
 
-  CmdMessageQueue_t* pmqc;
+    CmdMessageQueue_t* pmqc;
 
-  DL_FOREACH(MessageQueue, pmqc) 
-  {
-    if (pmqc->delay == 0) {
-      SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
-      pmqc->delay = -1;
-      pmqc->lparam = 0;
+    DL_FOREACH(MessageQueue, pmqc)
+    {
+        if (pmqc->delay == 0)
+        {
+            SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+            pmqc->delay = -1;
+            pmqc->lparam = 0;
+        }
+        else if (pmqc->delay >= 0)
+        {
+            pmqc->delay -= 1;  // decrease
+        }
     }
-    else if (pmqc->delay >= 0) {
-      pmqc->delay -= 1;  // decrease
-    }
-  }
 }
 
 
@@ -526,7 +566,7 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 //
 static inline void InvalidateStyleRedraw()
 {
-  SciCall_SetViewEOL(Settings.ViewEOLs);
+    SciCall_SetViewEOL(Settings.ViewEOLs);
 }
 
 
@@ -554,7 +594,7 @@ static bool                  s_flagDisplayHelp = false;
 
 //==============================================================================
 
-// static forward declarations 
+// static forward declarations
 static void  _UpdateStatusbarDelayed(bool bForceRedraw);
 static void  _UpdateToolbarDelayed();
 
@@ -567,32 +607,37 @@ static bool s_DocNeedSaving = false; // dirty-flag
 
 static void SetSaveNeeded()
 {
-  if (!s_DocNeedSaving) {
-    s_DocNeedSaving = true;
-    UpdateTitleBar(Globals.hwndMain);
-  }
-  UpdateToolbar();
+    if (!s_DocNeedSaving)
+    {
+        s_DocNeedSaving = true;
+        UpdateTitleBar(Globals.hwndMain);
+    }
+    UpdateToolbar();
 
-  if (IsWindow(Globals.hwndDlgFindReplace)) {
-    PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
-  }
+    if (IsWindow(Globals.hwndDlgFindReplace))
+    {
+        PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
+    }
 }
 
 void SetSavePoint()
 {
-  if (SciCall_GetModify()) { 
-    SciCall_SetSavePoint(); 
-  }
-  s_DocNeedSaving = false;
-  UpdateToolbar();
-  UpdateTitleBar(Globals.hwndMain);
+    if (SciCall_GetModify())
+    {
+        SciCall_SetSavePoint();
+    }
+    s_DocNeedSaving = false;
+    UpdateToolbar();
+    UpdateTitleBar(Globals.hwndMain);
 }
 
-inline static bool GetDocModified() {
-  if (SciCall_GetModify() && !s_DocNeedSaving) {
-    SetSaveNeeded();
-  }
-  return s_DocNeedSaving;
+inline static bool GetDocModified()
+{
+    if (SciCall_GetModify() && !s_DocNeedSaving)
+    {
+        SetSaveNeeded();
+    }
+    return s_DocNeedSaving;
 }
 
 //==============================================================================
@@ -600,88 +645,88 @@ inline static bool GetDocModified() {
 
 static void _InitGlobals()
 {
-  ZeroMemory(&Globals, sizeof(GLOBALS_T));
-  ZeroMemory(&Defaults, sizeof(SETTINGS_T));
-  ZeroMemory(&Settings, sizeof(SETTINGS_T));
-  ZeroMemory(&Defaults2, sizeof(SETTINGS_T));
-  ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
-  ZeroMemory(&Flags, sizeof(FLAGS_T));
+    ZeroMemory(&Globals, sizeof(GLOBALS_T));
+    ZeroMemory(&Defaults, sizeof(SETTINGS_T));
+    ZeroMemory(&Settings, sizeof(SETTINGS_T));
+    ZeroMemory(&Defaults2, sizeof(SETTINGS_T));
+    ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
+    ZeroMemory(&Flags, sizeof(FLAGS_T));
 
-  ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
+    ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
 
-  Globals.WindowsBuildNumber = GetWindowsBuildNumber(NULL, NULL);
+    Globals.WindowsBuildNumber = GetWindowsBuildNumber(NULL, NULL);
 
-  Globals.hDlgIcon256   = NULL;
-  Globals.hDlgIcon128   = NULL;
-  Globals.hDlgIconBig   = NULL;
-  Globals.hDlgIconSmall = NULL;
-  Globals.hDlgIconPrefs256 = NULL;
-  Globals.hDlgIconPrefs128 = NULL;
-  Globals.hDlgIconPrefs64  = NULL;
+    Globals.hDlgIcon256   = NULL;
+    Globals.hDlgIcon128   = NULL;
+    Globals.hDlgIconBig   = NULL;
+    Globals.hDlgIconSmall = NULL;
+    Globals.hDlgIconPrefs256 = NULL;
+    Globals.hDlgIconPrefs128 = NULL;
+    Globals.hDlgIconPrefs64  = NULL;
 
-  Globals.hMainMenu = NULL;
-  Globals.pFileMRU = NULL;
-  Globals.pMRUfind = NULL;
-  Globals.pMRUreplace = NULL;
-  Globals.iAvailLngCount = 1;
-  Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-  Globals.iWrapCol = 80;
-  Globals.CallTipType = CT_NONE;
+    Globals.hMainMenu = NULL;
+    Globals.pFileMRU = NULL;
+    Globals.pMRUfind = NULL;
+    Globals.pMRUreplace = NULL;
+    Globals.iAvailLngCount = 1;
+    Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+    Globals.iWrapCol = 80;
+    Globals.CallTipType = CT_NONE;
 
-  Globals.CmdLnFlag_PosParam = false;
-  Globals.CmdLnFlag_WindowPos = 0;
-  Globals.CmdLnFlag_ReuseWindow = 0;
-  Globals.CmdLnFlag_SingleFileInstance = 0;
-  Globals.CmdLnFlag_MultiFileArg = 0;
-  Globals.CmdLnFlag_ShellUseSystemMRU = 0;
-  Globals.CmdLnFlag_PrintFileAndLeave = 0;
+    Globals.CmdLnFlag_PosParam = false;
+    Globals.CmdLnFlag_WindowPos = 0;
+    Globals.CmdLnFlag_ReuseWindow = 0;
+    Globals.CmdLnFlag_SingleFileInstance = 0;
+    Globals.CmdLnFlag_MultiFileArg = 0;
+    Globals.CmdLnFlag_ShellUseSystemMRU = 0;
+    Globals.CmdLnFlag_PrintFileAndLeave = 0;
 
-  Globals.DOSEncoding = CPI_NONE;
-  Globals.bZeroBasedColumnIndex = false;
-  Globals.bZeroBasedCharacterCount = false;
-  Globals.iReplacedOccurrences = 0;
-  Globals.iMarkOccurrencesCount = 0;
-  Globals.bUseLimitedAutoCCharSet = false;
-  Globals.bIsCJKInputCodePage = false;
-  Globals.bIniFileFromScratch = false;
-  Globals.bFindReplCopySelOrClip = true;
-  Globals.bReplaceInitialized = false;
-  Globals.FindReplaceMatchFoundState = FND_NOP;
-  Globals.bDocHasInconsistentEOLs = false;
-  Globals.idxLightModeTheme = 1; // Default(0), Standard(1)
-  Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
-  Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
+    Globals.DOSEncoding = CPI_NONE;
+    Globals.bZeroBasedColumnIndex = false;
+    Globals.bZeroBasedCharacterCount = false;
+    Globals.iReplacedOccurrences = 0;
+    Globals.iMarkOccurrencesCount = 0;
+    Globals.bUseLimitedAutoCCharSet = false;
+    Globals.bIsCJKInputCodePage = false;
+    Globals.bIniFileFromScratch = false;
+    Globals.bFindReplCopySelOrClip = true;
+    Globals.bReplaceInitialized = false;
+    Globals.FindReplaceMatchFoundState = FND_NOP;
+    Globals.bDocHasInconsistentEOLs = false;
+    Globals.idxLightModeTheme = 1; // Default(0), Standard(1)
+    Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
+    Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
 
-  Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
-  Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
-  Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
-  Flags.bReuseWindow = DefaultFlags.bReuseWindow = false;
-  Flags.bSingleFileInstance = DefaultFlags.bSingleFileInstance = true;
-  Flags.MultiFileArg = DefaultFlags.MultiFileArg = false;
-  Flags.RelativeFileMRU = DefaultFlags.RelativeFileMRU = true;
-  Flags.PortableMyDocs = DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
-  Flags.NoFadeHidden = DefaultFlags.NoFadeHidden = false;
-  Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsWindowsXPSP3OrGreater() ? 1 : 2;
-  Flags.SimpleIndentGuides = DefaultFlags.SimpleIndentGuides = false;
-  Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
-  Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
-  Flags.NoFileVariables = DefaultFlags.NoFileVariables = false;
-  Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
-  Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
-  Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime = false;
-  Flags.bDoRelaunchElevated = DefaultFlags.bDoRelaunchElevated = false;
-  Flags.bSearchPathIfRelative = DefaultFlags.bSearchPathIfRelative = false;
+    Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
+    Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
+    Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
+    Flags.bReuseWindow = DefaultFlags.bReuseWindow = false;
+    Flags.bSingleFileInstance = DefaultFlags.bSingleFileInstance = true;
+    Flags.MultiFileArg = DefaultFlags.MultiFileArg = false;
+    Flags.RelativeFileMRU = DefaultFlags.RelativeFileMRU = true;
+    Flags.PortableMyDocs = DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
+    Flags.NoFadeHidden = DefaultFlags.NoFadeHidden = false;
+    Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsWindowsXPSP3OrGreater() ? 1 : 2;
+    Flags.SimpleIndentGuides = DefaultFlags.SimpleIndentGuides = false;
+    Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
+    Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
+    Flags.NoFileVariables = DefaultFlags.NoFileVariables = false;
+    Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
+    Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
+    Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime = false;
+    Flags.bDoRelaunchElevated = DefaultFlags.bDoRelaunchElevated = false;
+    Flags.bSearchPathIfRelative = DefaultFlags.bSearchPathIfRelative = false;
 
-  Flags.bSettingsFileSoftLocked = DefaultFlags.bSettingsFileSoftLocked = false;
+    Flags.bSettingsFileSoftLocked = DefaultFlags.bSettingsFileSoftLocked = false;
 
-  FocusedView.HideNonMatchedLines = false;
-  FocusedView.CodeFoldingAvailable = false;
-  FocusedView.ShowCodeFolding = true;
+    FocusedView.HideNonMatchedLines = false;
+    FocusedView.CodeFoldingAvailable = false;
+    FocusedView.ShowCodeFolding = true;
 
-  FileWatching.flagChangeNotify = FWM_DONT_CARE;
-  FileWatching.FileWatchingMode = FWM_DONT_CARE;
-  FileWatching.ResetFileWatching = true;
-  FileWatching.MonitoringLog = false;
+    FileWatching.flagChangeNotify = FWM_DONT_CARE;
+    FileWatching.FileWatchingMode = FWM_DONT_CARE;
+    FileWatching.ResetFileWatching = true;
+    FileWatching.MonitoringLog = false;
 }
 
 
@@ -699,37 +744,42 @@ static HMENU s_hmenuLanguage = NULL;
 
 static bool _InsertLanguageMenu(HMENU hMenuBar)
 {
-  // check, if we need a language switching menu
-  if (Globals.iAvailLngCount < 2) {
-    return false;
-  }
-
-  if (s_hmenuLanguage) { DestroyMenu(s_hmenuLanguage); }
-  s_hmenuLanguage = CreatePopupMenu();
-
-  WCHAR wchMenuItemFmt[128] = { L'\0' };
-  WCHAR wchMenuItemStrg[196] = { L'\0' };
-  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng)
-  {
-    if (MUI_LanguageDLLs[lng].bHasDLL) 
+    // check, if we need a language switching menu
+    if (Globals.iAvailLngCount < 2)
     {
-      StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].szMenuItem);
-      StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
-      AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
+        return false;
     }
-  }
 
-  // --- insert ---
-  int const pos = GetMenuItemCount(hMenuBar) - 1;
-  if (pos >= 0) {
-    GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
-    //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
-    bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
-    InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
-    return res;
-  }
+    if (s_hmenuLanguage)
+    {
+        DestroyMenu(s_hmenuLanguage);
+    }
+    s_hmenuLanguage = CreatePopupMenu();
 
-  return false;
+    WCHAR wchMenuItemFmt[128] = { L'\0' };
+    WCHAR wchMenuItemStrg[196] = { L'\0' };
+    for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng)
+    {
+        if (MUI_LanguageDLLs[lng].bHasDLL)
+        {
+            StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].szMenuItem);
+            StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
+            AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
+        }
+    }
+
+    // --- insert ---
+    int const pos = GetMenuItemCount(hMenuBar) - 1;
+    if (pos >= 0)
+    {
+        GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+        //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
+        bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
+        InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
+        return res;
+    }
+
+    return false;
 }
 
 //=============================================================================
@@ -740,53 +790,59 @@ static _invalid_parameter_handler _hOldInvalidParamHandler = NULL;
 
 static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
-  if (hwnd) {
-    KillTimer(hwnd, IDT_TIMER_MRKALL);
-  }
+    if (hwnd)
+    {
+        KillTimer(hwnd, IDT_TIMER_MRKALL);
+    }
 
-  CmdMessageQueue_t* pmqc = NULL;
-  CmdMessageQueue_t* dummy;
-  DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
-  {
-    DL_DELETE(MessageQueue, pmqc);
-    //~FreeMem(pmqc); // No AllocMem Anymore
-  }
+    CmdMessageQueue_t* pmqc = NULL;
+    CmdMessageQueue_t* dummy;
+    DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
+    {
+        DL_DELETE(MessageQueue, pmqc);
+        //~FreeMem(pmqc); // No AllocMem Anymore
+    }
 
-  if (UndoRedoSelectionUTArray != NULL) {
-    utarray_clear(UndoRedoSelectionUTArray);
-    utarray_free(UndoRedoSelectionUTArray);
-    UndoRedoSelectionUTArray = NULL;
-  }
+    if (UndoRedoSelectionUTArray != NULL)
+    {
+        utarray_clear(UndoRedoSelectionUTArray);
+        utarray_free(UndoRedoSelectionUTArray);
+        UndoRedoSelectionUTArray = NULL;
+    }
 
-  // -------------------------------
-  // Save Settings is done elsewhere
-  // -------------------------------
+    // -------------------------------
+    // Save Settings is done elsewhere
+    // -------------------------------
 
-  if (Globals.hMainMenu) { 
-    DestroyMenu(Globals.hMainMenu); 
-  }
+    if (Globals.hMainMenu)
+    {
+        DestroyMenu(Globals.hMainMenu);
+    }
 
-  FreeLanguageResources();
+    FreeLanguageResources();
 
-  Scintilla_ReleaseResources();
+    Scintilla_ReleaseResources();
 
-  OleUninitialize();
+    OleUninitialize();
 
-  if (bIsInitialized) {
-    //~UnregisterClass(s_ToolbarWndClassName, Globals.hInstance);
-    UnregisterClass(s_wchWndClass, Globals.hInstance);
-  }
+    if (bIsInitialized)
+    {
+        //~UnregisterClass(s_ToolbarWndClassName, Globals.hInstance);
+        UnregisterClass(s_wchWndClass, Globals.hInstance);
+    }
 
-  ReleaseDarkMode();
+    ReleaseDarkMode();
 
-  if (s_lpOrigFileArg) {
-    FreeMem(s_lpOrigFileArg);
-    s_lpOrigFileArg = NULL;
-  }
+    if (s_lpOrigFileArg)
+    {
+        FreeMem(s_lpOrigFileArg);
+        s_lpOrigFileArg = NULL;
+    }
 
-  if (_hOldInvalidParamHandler) {
-    _set_invalid_parameter_handler(_hOldInvalidParamHandler);
-  }
+    if (_hOldInvalidParamHandler)
+    {
+        _set_invalid_parameter_handler(_hOldInvalidParamHandler);
+    }
 }
 
 
@@ -801,13 +857,13 @@ void InvalidParameterHandler(const wchar_t* expression,
                              unsigned int   line,
                              uintptr_t      pReserved)
 {
-  UNUSED(expression);
-  UNUSED(pReserved);
-  WCHAR msg[256];
-  StringCchPrintf(msg, COUNTOF(msg), 
-                  L"Invalid Parameter in function '%s()' - File:'%s' Line:%i !",
-                  function, file, line);
-  DbgMsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
+    UNUSED(expression);
+    UNUSED(pReserved);
+    WCHAR msg[256];
+    StringCchPrintf(msg, COUNTOF(msg),
+                    L"Invalid Parameter in function '%s()' - File:'%s' Line:%i !",
+                    function, file, line);
+    DbgMsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
 }
 
 
@@ -818,240 +874,269 @@ void InvalidParameterHandler(const wchar_t* expression,
 //
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
-  _invalid_parameter_handler const hNewInvalidParamHandler = InvalidParameterHandler;
-  _hOldInvalidParamHandler= _set_invalid_parameter_handler(hNewInvalidParamHandler);
-  _CrtSetReportMode(_CRT_ASSERT, 0); // Disable the message box for assertions.
+    _invalid_parameter_handler const hNewInvalidParamHandler = InvalidParameterHandler;
+    _hOldInvalidParamHandler= _set_invalid_parameter_handler(hNewInvalidParamHandler);
+    _CrtSetReportMode(_CRT_ASSERT, 0); // Disable the message box for assertions.
 
-  _InitGlobals();
-  InitDarkMode();
+    _InitGlobals();
+    InitDarkMode();
 
-  // Set global variable Globals.hInstance
-  Globals.hInstance = hInstance;
-  Globals.hPrevInst = hPrevInstance;
-  Globals.hndlProcessHeap = GetProcessHeap();
+    // Set global variable Globals.hInstance
+    Globals.hInstance = hInstance;
+    Globals.hPrevInst = hPrevInstance;
+    Globals.hndlProcessHeap = GetProcessHeap();
 
-  WCHAR wchAppDir[MAX_PATH] = { L'\0' };
-  PathGetAppDirectory(wchAppDir, COUNTOF(wchAppDir));
+    WCHAR wchAppDir[MAX_PATH] = { L'\0' };
+    PathGetAppDirectory(wchAppDir, COUNTOF(wchAppDir));
 
-  if (!GetCurrentDirectory(COUNTOF(Globals.WorkingDirectory),Globals.WorkingDirectory)) {
-    StringCchCopy(Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory),wchAppDir);
-  }
+    if (!GetCurrentDirectory(COUNTOF(Globals.WorkingDirectory),Globals.WorkingDirectory))
+    {
+        StringCchCopy(Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory),wchAppDir);
+    }
 
-  // Don't keep working directory locked
-  SetCurrentDirectory(wchAppDir);
+    // Don't keep working directory locked
+    SetCurrentDirectory(wchAppDir);
 
-  SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+    SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
-  // check if running at least on Windows 7 (SP1)
-  if (!IsWindows7SP1OrGreater()) {
-    MsgBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
-    return 1; // exit
-  }
+    // check if running at least on Windows 7 (SP1)
+    if (!IsWindows7SP1OrGreater())
+    {
+        MsgBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
+        return 1; // exit
+    }
 
-  // Check if running with elevated privileges
-  s_bIsProcessElevated = IsProcessElevated();
-  s_bIsUserInAdminGroup = IsUserInAdminGroup();
-  s_bIsRunAsAdmin = IsRunAsAdmin();
+    // Check if running with elevated privileges
+    s_bIsProcessElevated = IsProcessElevated();
+    s_bIsUserInAdminGroup = IsUserInAdminGroup();
+    s_bIsRunAsAdmin = IsRunAsAdmin();
 
-  // Default Encodings (may already be used for command line parsing)
-  Encoding_InitDefaults();
+    // Default Encodings (may already be used for command line parsing)
+    Encoding_InitDefaults();
 
-  // Command Line, Ini File and Flags
-  ParseCommandLine();
-  FindIniFile();
-  TestIniFile();
-  DWORD dwFileSize = 0UL;
-  Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
-  Globals.bIniFileFromScratch = (dwFileSize == 0UL);
-  if (Globals.bIniFileFromScratch && Globals.bCanSaveIniFile) {
-    // Set at least Application Name Section
-    IniFileSetString(Globals.IniFile, _W(SAPPNAME), NULL, NULL);
-  }
-  LoadSettings();
+    // Command Line, Ini File and Flags
+    ParseCommandLine();
+    FindIniFile();
+    TestIniFile();
+    DWORD dwFileSize = 0UL;
+    Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
+    Globals.bIniFileFromScratch = (dwFileSize == 0UL);
+    if (Globals.bIniFileFromScratch && Globals.bCanSaveIniFile)
+    {
+        // Set at least Application Name Section
+        IniFileSetString(Globals.IniFile, _W(SAPPNAME), NULL, NULL);
+    }
+    LoadSettings();
 
-  // set AppUserModelID
-  PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
+    // set AppUserModelID
+    PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
-  // Adapt window class name
-  StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), _W(SAPPNAME));
-  if (s_bIsProcessElevated) {
-    StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
-  }
-  if (s_flagPasteBoard) {
-    StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
-  }
-  
-  (void)OleInitialize(NULL);
-  
-  INITCOMMONCONTROLSEX icex;
-  ZeroMemory(&icex, sizeof(INITCOMMONCONTROLSEX));
-  icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-  icex.dwICC = ICC_WIN95_CLASSES | ICC_USEREX_CLASSES | ICC_COOL_CLASSES | ICC_NATIVEFNTCTL_CLASS | ICC_STANDARD_CLASSES;
-  InitCommonControlsEx(&icex);
+    // Adapt window class name
+    StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), _W(SAPPNAME));
+    if (s_bIsProcessElevated)
+    {
+        StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
+    }
+    if (s_flagPasteBoard)
+    {
+        StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
+    }
 
-  Scintilla_RegisterClasses(hInstance);
+    (void)OleInitialize(NULL);
+
+    INITCOMMONCONTROLSEX icex;
+    ZeroMemory(&icex, sizeof(INITCOMMONCONTROLSEX));
+    icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+    icex.dwICC = ICC_WIN95_CLASSES | ICC_USEREX_CLASSES | ICC_COOL_CLASSES | ICC_NATIVEFNTCTL_CLASS | ICC_STANDARD_CLASSES;
+    InitCommonControlsEx(&icex);
+
+    Scintilla_RegisterClasses(hInstance);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-  SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
+    SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
 #endif
 
-  Style_ImportTheme(GetModeThemeIndex());
+    Style_ImportTheme(GetModeThemeIndex());
 
-  //SetProcessDPIAware(); -> .manifest
-  //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
-  Scintilla_LoadDpiForWindow();
+    //SetProcessDPIAware(); -> .manifest
+    //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+    Scintilla_LoadDpiForWindow();
 
-  // ----------------------------------------------------
-  // MultiLingual
-  //
-  SetPreferredLanguage(LoadLanguageResources());
+    // ----------------------------------------------------
+    // MultiLingual
+    //
+    SetPreferredLanguage(LoadLanguageResources());
 
-  // ----------------------------------------------------
+    // ----------------------------------------------------
 
-  // ICON_BIG
-  int const cxb = GetSystemMetrics(SM_CXICON) << 2;
-  int const cyb = GetSystemMetrics(SM_CYICON) << 2;
-  // ICON_SMALL
-  int const cxs = GetSystemMetrics(SM_CXSMICON) << 1;
-  int const cys = GetSystemMetrics(SM_CYSMICON) << 1;
+    // ICON_BIG
+    int const cxb = GetSystemMetrics(SM_CXICON) << 2;
+    int const cyb = GetSystemMetrics(SM_CYICON) << 2;
+    // ICON_SMALL
+    int const cxs = GetSystemMetrics(SM_CXSMICON) << 1;
+    int const cys = GetSystemMetrics(SM_CYSMICON) << 1;
 
-  //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
+    //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
-  if (!Globals.hDlgIcon256) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon256));
-  }
-  if (!Globals.hDlgIcon128) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hDlgIcon128));
-  }
-  if (!Globals.hDlgIconBig) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hDlgIconBig));
-  }
-  if (!Globals.hDlgIconSmall) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall));
-  }
-
-  if (!Globals.hDlgIconPrefs256) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs256));
-  }
-  if (!Globals.hDlgIconPrefs128) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 128, 128, &(Globals.hDlgIconPrefs128));
-  }
-  if (!Globals.hDlgIconPrefs64) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 64, 64, &(Globals.hDlgIconPrefs64));
-  }
-
-  if (!Globals.hIconMsgUser) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hIconMsgUser));
-  }
-  if (!Globals.hIconMsgInfo) {
-    LoadIconWithScaleDown(NULL, IDI_INFORMATION, cxb, cyb, &(Globals.hIconMsgInfo));
-  }
-  if (!Globals.hIconMsgWarn) {
-    LoadIconWithScaleDown(NULL, IDI_WARNING, cxb, cyb, &(Globals.hIconMsgWarn));
-  }
-  if (!Globals.hIconMsgError) {
-    LoadIconWithScaleDown(NULL, IDI_ERROR, cxb, cyb, &(Globals.hIconMsgError));
-  }
-  if (!Globals.hIconMsgQuest) {
-    LoadIconWithScaleDown(NULL, IDI_QUESTION, cxb, cyb, &(Globals.hIconMsgQuest));
-  }
-  if (!Globals.hIconMsgShield) {
-    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShield));
-  }
-  //if (!Globals.hIconMsgWinLogo) {
-  //  LoadIconWithScaleDown(NULL, IDI_WINLOGO, cxl, cyl, &(Globals.hIconMsgWinLogo));
-  //}
-
-  if (s_IsThisAnElevatedRelaunch && !IsRunAsAdmin()) {
-    InfoBoxLng(MB_ICONSHIELD, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
-    s_flagSaveOnRelaunch = false;
-  }
-
-  // Try to Relaunch with elevated privileges
-  if (RelaunchElevated(NULL)) {
-    return FALSE;
-  }
-
-  // Try to run multiple instances
-  if (RelaunchMultiInst()) {
-    return FALSE;
-  }
-  // Try to activate another window
-  if (ActivatePrevInst()) {
-    return FALSE;
-  }
-
-  // Command Line Help Dialog
-  if (s_flagDisplayHelp) {
-    DisplayCmdLineHelp(NULL);
-    _CleanUpResources(NULL, false);
-    return FALSE;
-  }
-
-  s_msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
-
-  Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
-  if (!Globals.hMainMenu) {
-    MsgBoxLastError(L"LoadMenu()", 0);
-    _CleanUpResources(NULL, false);
-    return 1;
-  }
-
-  _InsertLanguageMenu(Globals.hMainMenu);
-  Style_InsertThemesMenu(Globals.hMainMenu);
-
-  if (!InitApplication(Globals.hInstance)) 
-  {
-    _CleanUpResources(NULL, false);
-    return 1; 
-  }
-
-  HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nShowCmd);
-  if (!hwnd) { 
-    _CleanUpResources(hwnd, true);
-    return 1; 
-  }
-
-  DrawMenuBar(hwnd);
-
-  HACCEL const hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
-  HACCEL const hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
-  HACCEL const hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
- 
-  SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
-  
-  if (Globals.bPrefLngNotAvail) {
-    const WCHAR* const suprMsg = L"MsgPrefLanguageNotAvailable";
-    InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
-    int const noMsg = IniFileGetInt(Globals.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
-    if (noMsg && Globals.bCanSaveIniFile) {
-      IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[0].szLocaleName);
-    }
-  }
-
-  MSG msg;
-  while (GetMessage(&msg,NULL,0,0))
-  {
-    if (IsWindow(Globals.hwndDlgFindReplace) && ((msg.hwnd == Globals.hwndDlgFindReplace) || IsChild(Globals.hwndDlgFindReplace, msg.hwnd))) 
+    if (!Globals.hDlgIcon256)
     {
-      const int iTr = TranslateAccelerator(Globals.hwndDlgFindReplace, hAccFindReplace, &msg);
-      if (iTr || IsDialogMessage(Globals.hwndDlgFindReplace, &msg))
-        continue;
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon256));
     }
-    if (IsWindow(Globals.hwndDlgCustomizeSchemes) && ((msg.hwnd == Globals.hwndDlgCustomizeSchemes) || IsChild(Globals.hwndDlgCustomizeSchemes, msg.hwnd))) {
-      const int iTr = TranslateAccelerator(Globals.hwndDlgCustomizeSchemes, hAccCoustomizeSchemes, &msg);
-      if (iTr || IsDialogMessage(Globals.hwndDlgCustomizeSchemes, &msg))
-        continue;
+    if (!Globals.hDlgIcon128)
+    {
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hDlgIcon128));
     }
-    if (!TranslateAccelerator(hwnd, hAccMain, &msg)) {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
+    if (!Globals.hDlgIconBig)
+    {
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hDlgIconBig));
     }
-  }
+    if (!Globals.hDlgIconSmall)
+    {
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall));
+    }
 
-  _CleanUpResources(hwnd, true);
+    if (!Globals.hDlgIconPrefs256)
+    {
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs256));
+    }
+    if (!Globals.hDlgIconPrefs128)
+    {
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 128, 128, &(Globals.hDlgIconPrefs128));
+    }
+    if (!Globals.hDlgIconPrefs64)
+    {
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 64, 64, &(Globals.hDlgIconPrefs64));
+    }
 
-  return (int)(msg.wParam);
+    if (!Globals.hIconMsgUser)
+    {
+        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hIconMsgUser));
+    }
+    if (!Globals.hIconMsgInfo)
+    {
+        LoadIconWithScaleDown(NULL, IDI_INFORMATION, cxb, cyb, &(Globals.hIconMsgInfo));
+    }
+    if (!Globals.hIconMsgWarn)
+    {
+        LoadIconWithScaleDown(NULL, IDI_WARNING, cxb, cyb, &(Globals.hIconMsgWarn));
+    }
+    if (!Globals.hIconMsgError)
+    {
+        LoadIconWithScaleDown(NULL, IDI_ERROR, cxb, cyb, &(Globals.hIconMsgError));
+    }
+    if (!Globals.hIconMsgQuest)
+    {
+        LoadIconWithScaleDown(NULL, IDI_QUESTION, cxb, cyb, &(Globals.hIconMsgQuest));
+    }
+    if (!Globals.hIconMsgShield)
+    {
+        LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShield));
+    }
+    //if (!Globals.hIconMsgWinLogo) {
+    //  LoadIconWithScaleDown(NULL, IDI_WINLOGO, cxl, cyl, &(Globals.hIconMsgWinLogo));
+    //}
+
+    if (s_IsThisAnElevatedRelaunch && !IsRunAsAdmin())
+    {
+        InfoBoxLng(MB_ICONSHIELD, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
+        s_flagSaveOnRelaunch = false;
+    }
+
+    // Try to Relaunch with elevated privileges
+    if (RelaunchElevated(NULL))
+    {
+        return FALSE;
+    }
+
+    // Try to run multiple instances
+    if (RelaunchMultiInst())
+    {
+        return FALSE;
+    }
+    // Try to activate another window
+    if (ActivatePrevInst())
+    {
+        return FALSE;
+    }
+
+    // Command Line Help Dialog
+    if (s_flagDisplayHelp)
+    {
+        DisplayCmdLineHelp(NULL);
+        _CleanUpResources(NULL, false);
+        return FALSE;
+    }
+
+    s_msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
+
+    Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+    if (!Globals.hMainMenu)
+    {
+        MsgBoxLastError(L"LoadMenu()", 0);
+        _CleanUpResources(NULL, false);
+        return 1;
+    }
+
+    _InsertLanguageMenu(Globals.hMainMenu);
+    Style_InsertThemesMenu(Globals.hMainMenu);
+
+    if (!InitApplication(Globals.hInstance))
+    {
+        _CleanUpResources(NULL, false);
+        return 1;
+    }
+
+    HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nShowCmd);
+    if (!hwnd)
+    {
+        _CleanUpResources(hwnd, true);
+        return 1;
+    }
+
+    DrawMenuBar(hwnd);
+
+    HACCEL const hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+    HACCEL const hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
+    HACCEL const hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
+
+    SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
+
+    if (Globals.bPrefLngNotAvail)
+    {
+        const WCHAR* const suprMsg = L"MsgPrefLanguageNotAvailable";
+        InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
+        int const noMsg = IniFileGetInt(Globals.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
+        if (noMsg && Globals.bCanSaveIniFile)
+        {
+            IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[0].szLocaleName);
+        }
+    }
+
+    MSG msg;
+    while (GetMessage(&msg,NULL,0,0))
+    {
+        if (IsWindow(Globals.hwndDlgFindReplace) && ((msg.hwnd == Globals.hwndDlgFindReplace) || IsChild(Globals.hwndDlgFindReplace, msg.hwnd)))
+        {
+            const int iTr = TranslateAccelerator(Globals.hwndDlgFindReplace, hAccFindReplace, &msg);
+            if (iTr || IsDialogMessage(Globals.hwndDlgFindReplace, &msg))
+                continue;
+        }
+        if (IsWindow(Globals.hwndDlgCustomizeSchemes) && ((msg.hwnd == Globals.hwndDlgCustomizeSchemes) || IsChild(Globals.hwndDlgCustomizeSchemes, msg.hwnd)))
+        {
+            const int iTr = TranslateAccelerator(Globals.hwndDlgCustomizeSchemes, hAccCoustomizeSchemes, &msg);
+            if (iTr || IsDialogMessage(Globals.hwndDlgCustomizeSchemes, &msg))
+                continue;
+        }
+        if (!TranslateAccelerator(hwnd, hAccMain, &msg))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
+
+    _CleanUpResources(hwnd, true);
+
+    return (int)(msg.wParam);
 }
 
 //=============================================================================
@@ -1061,18 +1146,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 //
 WININFO GetFactoryDefaultWndPos(const int flagsPos)
 {
-  RECT rc;
-  GetWindowRect(GetDesktopWindow(), &rc);
-  MONITORINFO mi;
-  GetMonitorInfoFromRect(&rc, &mi);
-  WININFO winfo = INIT_WININFO;
-  winfo.y = mi.rcMonitor.top;
-  winfo.cy = mi.rcWork.bottom - mi.rcWork.top;
-  winfo.cx = (mi.rcWork.right - mi.rcWork.left) / 2;
-  winfo.x = (flagsPos == 3) ? mi.rcMonitor.left : winfo.cx;
-  winfo.max = 0;
-  winfo.zoom = 100;
-  return winfo;
+    RECT rc;
+    GetWindowRect(GetDesktopWindow(), &rc);
+    MONITORINFO mi;
+    GetMonitorInfoFromRect(&rc, &mi);
+    WININFO winfo = INIT_WININFO;
+    winfo.y = mi.rcMonitor.top;
+    winfo.cy = mi.rcWork.bottom - mi.rcWork.top;
+    winfo.cx = (mi.rcWork.right - mi.rcWork.left) / 2;
+    winfo.x = (flagsPos == 3) ? mi.rcMonitor.left : winfo.cx;
+    winfo.max = 0;
+    winfo.zoom = 100;
+    return winfo;
 }
 // ----------------------------------------------------------------------------
 
@@ -1084,81 +1169,88 @@ WININFO GetFactoryDefaultWndPos(const int flagsPos)
 //
 WININFO GetWinInfoByFlag(const int flagsPos)
 {
-  WININFO winfo = INIT_WININFO;
+    WININFO winfo = INIT_WININFO;
 
-  if (flagsPos < 0) {
-    winfo = GetMyWindowPlacement(Globals.hwndMain, NULL); // current window position
-  }
-  else if (flagsPos == 0) {
-    winfo = g_IniWinInfo; // initial window position
-  }
-  else if (flagsPos == 1) {
-    winfo.x = winfo.y = winfo.cx = winfo.cy = CW_USEDEFAULT;
-    winfo.max = false;
-    winfo.zoom = 100;
-  }
-  else if (flagsPos == 2)
-  {
-    winfo = g_DefWinInfo; // NP3 default window position
-  }
-  else if (flagsPos == 3)
-  {
-    winfo = GetFactoryDefaultWndPos(flagsPos);
-  }
-  else if ((flagsPos >= 4) && (flagsPos < 256))
-  {
-    RECT rc;
-    GetWindowRect(GetDesktopWindow(), &rc);
-    MONITORINFO mi;
-    GetMonitorInfoFromRect(&rc, &mi);
-
-    int const width = (mi.rcWork.right - mi.rcWork.left);
-    int const height = (mi.rcWork.bottom - mi.rcWork.top);
-
-    if (flagsPos & 8)
-      winfo.x = mi.rcMonitor.left + (width >> 1);
-    else
-      winfo.x = mi.rcMonitor.left;
-
-    if (flagsPos & (4 | 8))
-      winfo.cx = (width >> 1);
-    else 
-      winfo.cx = width;
-
-    if (flagsPos & 32)
-      winfo.y = mi.rcMonitor.top + (height >> 1);
-    else
-      winfo.y = mi.rcMonitor.top;
-
-    if (flagsPos & (16 | 32))
-      winfo.cy = (height >> 1);
-    else
-      winfo.cy = height;
-
-    if (flagsPos & 64) {
-      winfo.x = mi.rcMonitor.left;
-      winfo.y = mi.rcMonitor.top;
-      winfo.cx = width;
-      winfo.cy = height;
+    if (flagsPos < 0)
+    {
+        winfo = GetMyWindowPlacement(Globals.hwndMain, NULL); // current window position
     }
-    if (flagsPos & 128) {
-      winfo = g_DefWinInfo;
-      winfo.max = true;
-      winfo.zoom = 100;
+    else if (flagsPos == 0)
+    {
+        winfo = g_IniWinInfo; // initial window position
     }
-  }
-  else { // ( > 256) restore window, move upper left corner to Work Area 
-    
-    MONITORINFO mi;
-    RECT const rc = RectFromWinInfo(&winfo);
-    GetMonitorInfoFromRect(&rc, &mi);
-    WININFO wi = winfo; wi.cx = wi.cy = 16; // really small
-    FitIntoMonitorGeometry(&(mi.rcWork), &wi, SCR_NORMAL);
-    winfo.x = wi.x;
-    winfo.y = wi.y;
-  }
+    else if (flagsPos == 1)
+    {
+        winfo.x = winfo.y = winfo.cx = winfo.cy = CW_USEDEFAULT;
+        winfo.max = false;
+        winfo.zoom = 100;
+    }
+    else if (flagsPos == 2)
+    {
+        winfo = g_DefWinInfo; // NP3 default window position
+    }
+    else if (flagsPos == 3)
+    {
+        winfo = GetFactoryDefaultWndPos(flagsPos);
+    }
+    else if ((flagsPos >= 4) && (flagsPos < 256))
+    {
+        RECT rc;
+        GetWindowRect(GetDesktopWindow(), &rc);
+        MONITORINFO mi;
+        GetMonitorInfoFromRect(&rc, &mi);
 
-  return winfo;
+        int const width = (mi.rcWork.right - mi.rcWork.left);
+        int const height = (mi.rcWork.bottom - mi.rcWork.top);
+
+        if (flagsPos & 8)
+            winfo.x = mi.rcMonitor.left + (width >> 1);
+        else
+            winfo.x = mi.rcMonitor.left;
+
+        if (flagsPos & (4 | 8))
+            winfo.cx = (width >> 1);
+        else
+            winfo.cx = width;
+
+        if (flagsPos & 32)
+            winfo.y = mi.rcMonitor.top + (height >> 1);
+        else
+            winfo.y = mi.rcMonitor.top;
+
+        if (flagsPos & (16 | 32))
+            winfo.cy = (height >> 1);
+        else
+            winfo.cy = height;
+
+        if (flagsPos & 64)
+        {
+            winfo.x = mi.rcMonitor.left;
+            winfo.y = mi.rcMonitor.top;
+            winfo.cx = width;
+            winfo.cy = height;
+        }
+        if (flagsPos & 128)
+        {
+            winfo = g_DefWinInfo;
+            winfo.max = true;
+            winfo.zoom = 100;
+        }
+    }
+    else   // ( > 256) restore window, move upper left corner to Work Area
+    {
+
+        MONITORINFO mi;
+        RECT const rc = RectFromWinInfo(&winfo);
+        GetMonitorInfoFromRect(&rc, &mi);
+        WININFO wi = winfo;
+        wi.cx = wi.cy = 16; // really small
+        FitIntoMonitorGeometry(&(mi.rcWork), &wi, SCR_NORMAL);
+        winfo.x = wi.x;
+        winfo.y = wi.y;
+    }
+
+    return winfo;
 }
 
 
@@ -1166,69 +1258,69 @@ WININFO GetWinInfoByFlag(const int flagsPos)
 //=============================================================================
 //
 //  Set/Get FindPattern()
-// 
+//
 static WCHAR sCurrentFindPattern[FNDRPL_BUFFER] = { L'\0' };
 
 bool IsFindPatternEmpty()
 {
-  return  StrIsEmpty(sCurrentFindPattern);
+    return  StrIsEmpty(sCurrentFindPattern);
 }
 
 //=============================================================================
 //
 //  SetFindPattern()
-// 
+//
 void SetFindPattern(LPCWSTR wchFindPattern)
 {
-  StringCchCopy(sCurrentFindPattern, COUNTOF(sCurrentFindPattern), (wchFindPattern ? wchFindPattern : L""));
+    StringCchCopy(sCurrentFindPattern, COUNTOF(sCurrentFindPattern), (wchFindPattern ? wchFindPattern : L""));
 }
 
 //=============================================================================
 //
 //  SetFindPatternMB()
-// 
+//
 void SetFindPatternMB(LPCSTR chFindPattern)
 {
-  MultiByteToWideCharEx(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
+    MultiByteToWideCharEx(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
 }
 
 
 //=============================================================================
 //
 //  LengthOfFindPattern()
-// 
+//
 size_t LengthOfFindPattern()
 {
-  return StringCchLen(sCurrentFindPattern, 0);
+    return StringCchLen(sCurrentFindPattern, 0);
 }
 
 
 //=============================================================================
 //
 //  GetFindPattern()
-// 
+//
 LPCWSTR GetFindPattern()
 {
-  return sCurrentFindPattern;
+    return sCurrentFindPattern;
 }
 
 
 //=============================================================================
 //
 //  CopyFindPattern()
-// 
+//
 void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
 {
-  StringCchCopy(wchFindPattern, bufferCount, sCurrentFindPattern);
+    StringCchCopy(wchFindPattern, bufferCount, sCurrentFindPattern);
 }
 
 //=============================================================================
 //
 //  CopyFindPatternMB()
-// 
+//
 void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
 {
-  WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
+    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
 }
 
 
@@ -1240,31 +1332,36 @@ static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
 //
 static void SetFindReplaceData()
 {
-  s_FindReplaceData = Settings.EFR_Data; // reset
+    s_FindReplaceData = Settings.EFR_Data; // reset
 
-  if (!IsFindPatternEmpty()) {
-    CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
-    CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
-  }
+    if (!IsFindPatternEmpty())
+    {
+        CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
+        CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
+    }
 
-  if (g_flagMatchText) // cmd line
-  {
-    if (g_flagMatchText & 4) {
-      s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+    if (g_flagMatchText) // cmd line
+    {
+        if (g_flagMatchText & 4)
+        {
+            s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+        }
+        if (g_flagMatchText & 8)
+        {
+            s_FindReplaceData.fuFlags |= SCFIND_MATCHCASE;
+        }
+        if (g_flagMatchText & 16)
+        {
+            s_FindReplaceData.fuFlags |= SCFIND_DOT_MATCH_ALL;
+        }
+        if (g_flagMatchText & 32)
+        {
+            s_FindReplaceData.bTransformBS = true;
+        }
+        s_FindReplaceData.bOverlappingFind = false;
+        s_FindReplaceData.bWildcardSearch = false;
+        s_FindReplaceData.bReplaceClose = false;
     }
-    if (g_flagMatchText & 8) {
-      s_FindReplaceData.fuFlags |= SCFIND_MATCHCASE;
-    }
-    if (g_flagMatchText & 16) {
-      s_FindReplaceData.fuFlags |= SCFIND_DOT_MATCH_ALL;
-    }
-    if (g_flagMatchText & 32) {
-      s_FindReplaceData.bTransformBS = true;
-    }
-    s_FindReplaceData.bOverlappingFind = false;
-    s_FindReplaceData.bWildcardSearch = false;
-    s_FindReplaceData.bReplaceClose = false;
-  }
 }
 
 
@@ -1274,23 +1371,26 @@ static void SetFindReplaceData()
 //
 static bool SetCurrentSelAsFindReplaceData()
 {
-  if (SciCall_IsSelectionEmpty()) {
-    EditSelectWordAtPos(SciCall_GetCurrentPos(), true);
-  }
-
-  size_t const cchSelection = SciCall_GetSelText(NULL);
-
-  if (1 < cchSelection) {
-    char* szSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
-    if (szSelection) {
-      SciCall_GetSelText(szSelection);
-      SetFindPatternMB(szSelection);
-      SetFindReplaceData(); // s_FindReplaceData
-      FreeMem(szSelection);
-      return true;
+    if (SciCall_IsSelectionEmpty())
+    {
+        EditSelectWordAtPos(SciCall_GetCurrentPos(), true);
     }
-  }
-  return false;
+
+    size_t const cchSelection = SciCall_GetSelText(NULL);
+
+    if (1 < cchSelection)
+    {
+        char* szSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
+        if (szSelection)
+        {
+            SciCall_GetSelText(szSelection);
+            SetFindPatternMB(szSelection);
+            SetFindReplaceData(); // s_FindReplaceData
+            FreeMem(szSelection);
+            return true;
+        }
+    }
+    return false;
 }
 
 //=============================================================================
@@ -1300,25 +1400,25 @@ static bool SetCurrentSelAsFindReplaceData()
 //
 bool InitApplication(const HINSTANCE hInstance)
 {
-  WNDCLASSEX wc;
-  ZeroMemory(&wc, sizeof(WNDCLASSEX));
-  wc.cbSize = sizeof(WNDCLASSEX);
-  wc.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
-  wc.lpfnWndProc = (WNDPROC)MainWndProc;
-  wc.cbClsExtra = 0;
-  wc.cbWndExtra = 0;
-  wc.hInstance = hInstance;
-  wc.hIcon = Globals.hDlgIcon256;
-  wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    WNDCLASSEX wc;
+    ZeroMemory(&wc, sizeof(WNDCLASSEX));
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc = (WNDPROC)MainWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = hInstance;
+    wc.hIcon = Globals.hDlgIcon256;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 #ifdef D_NP3_WIN10_DARK_MODE
-  wc.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
 #else
-  wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 #endif
-  wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
-  wc.lpszClassName = s_wchWndClass;
+    wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
+    wc.lpszClassName = s_wchWndClass;
 
-  return RegisterClassEx(&wc);
+    return RegisterClassEx(&wc);
 }
 
 
@@ -1327,23 +1427,25 @@ bool InitApplication(const HINSTANCE hInstance)
 //
 // InitToolbarWndClass()
 //
-bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR lpszCopyFromWC, bool bUnregisterFirst) {
-  WNDCLASSEX wcx;
-  if (bUnregisterFirst) {
-    UnregisterClass(lpszWndClassName, hInstance);
-  }
-  ZeroMemory(&wcx, sizeof(WNDCLASSEX));
-  wcx.cbSize = sizeof(WNDCLASSEX);
+bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR lpszCopyFromWC, bool bUnregisterFirst)
+{
+    WNDCLASSEX wcx;
+    if (bUnregisterFirst)
+    {
+        UnregisterClass(lpszWndClassName, hInstance);
+    }
+    ZeroMemory(&wcx, sizeof(WNDCLASSEX));
+    wcx.cbSize = sizeof(WNDCLASSEX);
 
-  GetClassInfoEx(hInstance, lpszCopyFromWC, &wcx); // copy members
+    GetClassInfoEx(hInstance, lpszCopyFromWC, &wcx); // copy members
 
-  //wcx.lpfnWndProc = (WNDPROC)TBWndProc; ~ don't do that
-  wcx.hInstance = hInstance; // done already
-  wcx.hCursor = LoadCursor(NULL, IDC_HAND); 
-  wcx.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
-  wcx.lpszClassName = lpszWndClassName;
+    //wcx.lpfnWndProc = (WNDPROC)TBWndProc; ~ don't do that
+    wcx.hInstance = hInstance; // done already
+    wcx.hCursor = LoadCursor(NULL, IDC_HAND);
+    wcx.hbrBackground = UseDarkMode() ? Globals.hbrDarkModeBkgBrush : (HBRUSH)(COLOR_WINDOW + 1);
+    wcx.lpszClassName = lpszWndClassName;
 
-  return RegisterClassEx(&wcx);
+    return RegisterClassEx(&wcx);
 }
 #endif
 
@@ -1354,282 +1456,328 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
 //
 HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 {
-  UNUSED(pszCmdLine);
- 
-  g_IniWinInfo = GetWinInfoByFlag(Globals.CmdLnFlag_WindowPos);
-  s_WinCurrentWidth = g_IniWinInfo.cx;
+    UNUSED(pszCmdLine);
 
-  // get monitor coordinates from g_IniWinInfo
-  WININFO srcninfo = g_IniWinInfo;
-  WinInfoToScreen(&srcninfo);
+    g_IniWinInfo = GetWinInfoByFlag(Globals.CmdLnFlag_WindowPos);
+    s_WinCurrentWidth = g_IniWinInfo.cx;
 
-  Globals.hwndMain = CreateWindowEx(
-               0,
-               s_wchWndClass,
-               _W(SAPPNAME),
-               WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-               srcninfo.x,
-               srcninfo.y,
-               srcninfo.cx,
-               srcninfo.cy,
-               NULL,
-               NULL,
-               hInstance,
-               NULL);
+    // get monitor coordinates from g_IniWinInfo
+    WININFO srcninfo = g_IniWinInfo;
+    WinInfoToScreen(&srcninfo);
 
-  if (g_IniWinInfo.max) {
-    nCmdShow = SW_SHOWMAXIMIZED;
-  }
+    Globals.hwndMain = CreateWindowEx(
+                           0,
+                           s_wchWndClass,
+                           _W(SAPPNAME),
+                           WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                           srcninfo.x,
+                           srcninfo.y,
+                           srcninfo.cx,
+                           srcninfo.cy,
+                           NULL,
+                           NULL,
+                           hInstance,
+                           NULL);
 
-  if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
-    SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-  }
-
-  SetDialogIconNP3(Globals.hwndMain);
-  InitWindowCommon(Globals.hwndMain, true);
-
-  if (Settings.TransparentMode) {
-    SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
-  }
-  
-  SetMenu(Globals.hwndMain, Globals.hMainMenu);
-  SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
-  DrawMenuBar(Globals.hwndMain);
-
-  // Current file information -- moved in front of ShowWindow()
-  FileLoad(true,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,false,L"");
-
-  if (!s_flagStartAsTrayIcon) {
-    ShowWindow(Globals.hwndMain,nCmdShow);
-    UpdateWindow(Globals.hwndMain);
-  }
-  else {
-    ShowWindow(Globals.hwndMain,SW_HIDE);    // trick ShowWindow()
-    ShowNotifyIcon(Globals.hwndMain,true);
-  }
-
-  // Source Encoding
-  Encoding_Forced(s_flagSetEncoding);
-
-  // Pathname parameter
-  if (s_IsThisAnElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/))
-  {
-    bool bOpened = false;
-
-    // Open from Directory
-    if (!s_IsThisAnElevatedRelaunch && PathIsDirectory(s_lpFileArg)) {
-      WCHAR tchFile[MAX_PATH] = { L'\0' };
-      if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), s_lpFileArg))
-        bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+    if (g_IniWinInfo.max)
+    {
+        nCmdShow = SW_SHOWMAXIMIZED;
     }
-    else {
-      LPCWSTR lpFileToOpen = s_IsThisAnElevatedRelaunch ? s_wchTmpFilePath : s_lpFileArg;
-      bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, lpFileToOpen);
-      if (bOpened) {
-        if (s_IsThisAnElevatedRelaunch)
+
+    if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1)
+    {
+        SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    }
+
+    SetDialogIconNP3(Globals.hwndMain);
+    InitWindowCommon(Globals.hwndMain, true);
+
+    if (Settings.TransparentMode)
+    {
+        SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
+    }
+
+    SetMenu(Globals.hwndMain, Globals.hMainMenu);
+    SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+    DrawMenuBar(Globals.hwndMain);
+
+    // Current file information -- moved in front of ShowWindow()
+    FileLoad(true,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,false,L"");
+
+    if (!s_flagStartAsTrayIcon)
+    {
+        ShowWindow(Globals.hwndMain,nCmdShow);
+        UpdateWindow(Globals.hwndMain);
+    }
+    else
+    {
+        ShowWindow(Globals.hwndMain,SW_HIDE);    // trick ShowWindow()
+        ShowNotifyIcon(Globals.hwndMain,true);
+    }
+
+    // Source Encoding
+    Encoding_Forced(s_flagSetEncoding);
+
+    // Pathname parameter
+    if (s_IsThisAnElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/))
+    {
+        bool bOpened = false;
+
+        // Open from Directory
+        if (!s_IsThisAnElevatedRelaunch && PathIsDirectory(s_lpFileArg))
         {
-          if (StrIsNotEmpty(s_lpFileArg)) {
-            StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), s_lpFileArg);
-            InstallFileWatching(true);
-          }
-          else {
-            StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), L"");
-          }
-          if (!s_flagLexerSpecified) {
-            Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
-          }
-
-          // check for temp file and delete
-          if (s_IsThisAnElevatedRelaunch && PathIsExistingFile(s_wchTmpFilePath))
-          {
-            DeleteFile(s_wchTmpFilePath);
-            // delete possible .tmp guard
-            size_t const len = StringCchLen(s_wchTmpFilePath, MAX_PATH);
-            LPWSTR p = PathFindExtension(s_wchTmpFilePath);
-            if (p && *p) {
-              StringCchCopy(p, (MAX_PATH - len), L".tmp");
-            }
-            if (PathIsExistingFile(s_wchTmpFilePath)) {
-              DeleteFile(s_wchTmpFilePath);
-            }
-          }
-
-          UndoRedoReset();
-          SetSaveNeeded();
-
-          if (StrIsNotEmpty(Globals.CurrentFile)) {
-            if (s_flagSaveOnRelaunch) {
-              FileSave(true, false, false, false, Flags.bPreserveFileModTime); // issued from elevation instances
-            }
-          }
+            WCHAR tchFile[MAX_PATH] = { L'\0' };
+            if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), s_lpFileArg))
+                bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
         }
-        if (s_flagJumpTo) { // Jump to position
-          EditJumpTo(s_iInitialLine,s_iInitialColumn);
+        else
+        {
+            LPCWSTR lpFileToOpen = s_IsThisAnElevatedRelaunch ? s_wchTmpFilePath : s_lpFileArg;
+            bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, lpFileToOpen);
+            if (bOpened)
+            {
+                if (s_IsThisAnElevatedRelaunch)
+                {
+                    if (StrIsNotEmpty(s_lpFileArg))
+                    {
+                        StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), s_lpFileArg);
+                        InstallFileWatching(true);
+                    }
+                    else
+                    {
+                        StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), L"");
+                    }
+                    if (!s_flagLexerSpecified)
+                    {
+                        Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+                    }
+
+                    // check for temp file and delete
+                    if (s_IsThisAnElevatedRelaunch && PathIsExistingFile(s_wchTmpFilePath))
+                    {
+                        DeleteFile(s_wchTmpFilePath);
+                        // delete possible .tmp guard
+                        size_t const len = StringCchLen(s_wchTmpFilePath, MAX_PATH);
+                        LPWSTR p = PathFindExtension(s_wchTmpFilePath);
+                        if (p && *p)
+                        {
+                            StringCchCopy(p, (MAX_PATH - len), L".tmp");
+                        }
+                        if (PathIsExistingFile(s_wchTmpFilePath))
+                        {
+                            DeleteFile(s_wchTmpFilePath);
+                        }
+                    }
+
+                    UndoRedoReset();
+                    SetSaveNeeded();
+
+                    if (StrIsNotEmpty(Globals.CurrentFile))
+                    {
+                        if (s_flagSaveOnRelaunch)
+                        {
+                            FileSave(true, false, false, false, Flags.bPreserveFileModTime); // issued from elevation instances
+                        }
+                    }
+                }
+                if (s_flagJumpTo)   // Jump to position
+                {
+                    EditJumpTo(s_iInitialLine,s_iInitialColumn);
+                }
+            }
         }
-      }
+
+        s_lpFileArg[0] = L'\0';
+
+        if (bOpened)
+        {
+            switch (s_flagChangeNotify)
+            {
+            case FWM_MSGBOX:
+                FileWatching.FileWatchingMode = FWM_DONT_CARE;
+                FileWatching.ResetFileWatching = true;
+                InstallFileWatching(true);
+                break;
+            case FWM_AUTORELOAD:
+                if (!FileWatching.MonitoringLog)
+                {
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
+                else
+                {
+                    FileWatching.FileWatchingMode = FWM_AUTORELOAD;
+                    FileWatching.ResetFileWatching = true;
+                    InstallFileWatching(true);
+                }
+                break;
+            case FWM_DONT_CARE:
+            default:
+                break;
+            }
+        }
+    }
+    else
+    {
+        cpi_enc_t const forcedEncoding = Encoding_Forced(CPI_GET);
+        if (Encoding_IsValid(forcedEncoding))
+        {
+            Encoding_Current(forcedEncoding);
+        }
     }
 
-    s_lpFileArg[0] = L'\0';
+    // reset
+    Encoding_Forced(CPI_NONE);
+    s_flagQuietCreate = false;
+    s_flagKeepTitleExcerpt = false;
 
-    if (bOpened) {
-      switch (s_flagChangeNotify) {
-        case FWM_MSGBOX:
-          FileWatching.FileWatchingMode = FWM_DONT_CARE;
-          FileWatching.ResetFileWatching = true;
-          InstallFileWatching(true);
-          break;
-        case FWM_AUTORELOAD:
-          if (!FileWatching.MonitoringLog) {
-            PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-          }
-          else {
-            FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-            FileWatching.ResetFileWatching = true;
-            InstallFileWatching(true);
-          }
-          break;
-        case FWM_DONT_CARE:
-        default:
-          break;
-      }
+    // undo / redo selections
+    if (UndoRedoSelectionUTArray != NULL)
+    {
+        utarray_clear(UndoRedoSelectionUTArray);
+        utarray_free(UndoRedoSelectionUTArray);
+        UndoRedoSelectionUTArray = NULL;
     }
-  }
-  else {
-    cpi_enc_t const forcedEncoding = Encoding_Forced(CPI_GET);
-    if (Encoding_IsValid(forcedEncoding)) {
-      Encoding_Current(forcedEncoding);
-    }
-  }
+    utarray_new(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
+    utarray_reserve(UndoRedoSelectionUTArray,256);
 
-  // reset
-  Encoding_Forced(CPI_NONE);
-  s_flagQuietCreate = false;
-  s_flagKeepTitleExcerpt = false;
-
-  // undo / redo selections
-  if (UndoRedoSelectionUTArray != NULL) {
-    utarray_clear(UndoRedoSelectionUTArray);
-    utarray_free(UndoRedoSelectionUTArray);
-    UndoRedoSelectionUTArray = NULL;
-  }
-  utarray_new(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-  utarray_reserve(UndoRedoSelectionUTArray,256);
-
-  // Check for /c [if no file is specified] -- even if a file is specified
-  /*else */if (s_flagNewFromClipboard) {
-    if (SciCall_CanPaste()) {
-      bool bAutoIndent2 = Settings.AutoIndent;
-      Settings.AutoIndent = 0;
-      EditJumpTo(-1, 0);
-      _BEGIN_UNDO_ACTION_;
-      if (!Sci_IsDocEmpty()) {
-        SciCall_NewLine();
-      }
-      SciCall_Paste();
-      SciCall_NewLine();
-      _END_UNDO_ACTION_;
-      Settings.AutoIndent = bAutoIndent2;
-      if (s_flagJumpTo)
-        EditJumpTo(s_iInitialLine, s_iInitialColumn);
-      else
-        EditEnsureSelectionVisible();
-    }
-  }
-
-  // Encoding
-  if (s_flagSetEncoding != CPI_NONE) {
-    SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
-    s_flagSetEncoding = CPI_NONE;
-  }
-
-  // EOL mode
-  if (s_flagSetEOLMode != 0) {
-    SendWMCommand(Globals.hwndMain, IDM_LINEENDINGS_CRLF + s_flagSetEOLMode - 1);
-    s_flagSetEOLMode = 0;
-  }
-
-  // Match Text
-  if (g_flagMatchText && !IsFindPatternEmpty()) 
-  {
-    if (!Sci_IsDocEmpty()) {
-
-      SetFindReplaceData(); // s_FindReplaceData
-
-      if (g_flagMatchText & 2) {
-        if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
-        EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
-      }
-      else {
-        if (!s_flagJumpTo) { SciCall_DocumentStart(); }
-        EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
-      }
-    }
-  }
-
-  // Check for Paste Board option -- after loading files
-  if (s_flagPasteBoard) {
-    s_bLastCopyFromMe = true;
-    s_hwndNextCBChain = SetClipboardViewer(Globals.hwndMain);
-    s_uidsAppTitle = IDS_MUI_APPTITLE_PASTEBOARD;
-    s_bLastCopyFromMe = false;
-
-    s_dwLastCopyTime = 0;
-    SetTimer(Globals.hwndMain,ID_PASTEBOARDTIMER,100,PasteBoardTimer);
-  }
-
-  // check if a lexer was specified from the command line
-  if (s_flagLexerSpecified) {
-    if (s_lpSchemeArg) {
-      Style_SetLexerFromName(Globals.hwndEdit,Globals.CurrentFile,s_lpSchemeArg);
-      LocalFree(s_lpSchemeArg);  // StrDup()
-    }
-    else if ((s_iInitialLexer >= 0) && (s_iInitialLexer < NUMLEXERS)) {
-      Style_SetLexerFromID(Globals.hwndEdit, s_iInitialLexer);
-    }
-    s_flagLexerSpecified = false;
-  }
-
-  // If start as tray icon, set current filename as tooltip
-  if (s_flagStartAsTrayIcon) {
-    SetNotifyIconTitle(Globals.hwndMain);
-  }
-  Globals.iReplacedOccurrences = 0;
-  Globals.iMarkOccurrencesCount = 0;
-
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
-  UpdateMouseDWellTime();
-
-  // print file immediately and quit
-  if (Globals.CmdLnFlag_PrintFileAndLeave)
-  {
-    WCHAR *pszTitle;
-    WCHAR tchUntitled[32] = { L'\0' };
-    WCHAR tchPageFmt[32] = { L'\0' };
-    WCHAR szDisplayName[MAX_PATH];
-
-    if (StrIsNotEmpty(Globals.CurrentFile)) {
-      PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
-      pszTitle = szDisplayName;
-    }
-    else {
-      GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
-      pszTitle = tchUntitled;
+    // Check for /c [if no file is specified] -- even if a file is specified
+    /*else */if (s_flagNewFromClipboard)
+    {
+        if (SciCall_CanPaste())
+        {
+            bool bAutoIndent2 = Settings.AutoIndent;
+            Settings.AutoIndent = 0;
+            EditJumpTo(-1, 0);
+            _BEGIN_UNDO_ACTION_;
+            if (!Sci_IsDocEmpty())
+            {
+                SciCall_NewLine();
+            }
+            SciCall_Paste();
+            SciCall_NewLine();
+            _END_UNDO_ACTION_;
+            Settings.AutoIndent = bAutoIndent2;
+            if (s_flagJumpTo)
+                EditJumpTo(s_iInitialLine, s_iInitialColumn);
+            else
+                EditEnsureSelectionVisible();
+        }
     }
 
-    GetLngString(IDS_MUI_PRINT_PAGENUM, tchPageFmt, COUNTOF(tchPageFmt));
-
-    if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt)) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
+    // Encoding
+    if (s_flagSetEncoding != CPI_NONE)
+    {
+        SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
+        s_flagSetEncoding = CPI_NONE;
     }
-  }
 
-  if (s_flagAppIsClosing || Globals.CmdLnFlag_PrintFileAndLeave) {
-    CloseApplication();
-  }
+    // EOL mode
+    if (s_flagSetEOLMode != 0)
+    {
+        SendWMCommand(Globals.hwndMain, IDM_LINEENDINGS_CRLF + s_flagSetEOLMode - 1);
+        s_flagSetEOLMode = 0;
+    }
 
-  return(Globals.hwndMain);
+    // Match Text
+    if (g_flagMatchText && !IsFindPatternEmpty())
+    {
+        if (!Sci_IsDocEmpty())
+        {
+
+            SetFindReplaceData(); // s_FindReplaceData
+
+            if (g_flagMatchText & 2)
+            {
+                if (!s_flagJumpTo)
+                {
+                    SciCall_DocumentEnd();
+                }
+                EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
+            }
+            else
+            {
+                if (!s_flagJumpTo)
+                {
+                    SciCall_DocumentStart();
+                }
+                EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
+            }
+        }
+    }
+
+    // Check for Paste Board option -- after loading files
+    if (s_flagPasteBoard)
+    {
+        s_bLastCopyFromMe = true;
+        s_hwndNextCBChain = SetClipboardViewer(Globals.hwndMain);
+        s_uidsAppTitle = IDS_MUI_APPTITLE_PASTEBOARD;
+        s_bLastCopyFromMe = false;
+
+        s_dwLastCopyTime = 0;
+        SetTimer(Globals.hwndMain,ID_PASTEBOARDTIMER,100,PasteBoardTimer);
+    }
+
+    // check if a lexer was specified from the command line
+    if (s_flagLexerSpecified)
+    {
+        if (s_lpSchemeArg)
+        {
+            Style_SetLexerFromName(Globals.hwndEdit,Globals.CurrentFile,s_lpSchemeArg);
+            LocalFree(s_lpSchemeArg);  // StrDup()
+        }
+        else if ((s_iInitialLexer >= 0) && (s_iInitialLexer < NUMLEXERS))
+        {
+            Style_SetLexerFromID(Globals.hwndEdit, s_iInitialLexer);
+        }
+        s_flagLexerSpecified = false;
+    }
+
+    // If start as tray icon, set current filename as tooltip
+    if (s_flagStartAsTrayIcon)
+    {
+        SetNotifyIconTitle(Globals.hwndMain);
+    }
+    Globals.iReplacedOccurrences = 0;
+    Globals.iMarkOccurrencesCount = 0;
+
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
+    UpdateMouseDWellTime();
+
+    // print file immediately and quit
+    if (Globals.CmdLnFlag_PrintFileAndLeave)
+    {
+        WCHAR *pszTitle;
+        WCHAR tchUntitled[32] = { L'\0' };
+        WCHAR tchPageFmt[32] = { L'\0' };
+        WCHAR szDisplayName[MAX_PATH];
+
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+            pszTitle = szDisplayName;
+        }
+        else
+        {
+            GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
+            pszTitle = tchUntitled;
+        }
+
+        GetLngString(IDS_MUI_PRINT_PAGENUM, tchPageFmt, COUNTOF(tchPageFmt));
+
+        if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt))
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
+        }
+    }
+
+    if (s_flagAppIsClosing || Globals.CmdLnFlag_PrintFileAndLeave)
+    {
+        CloseApplication();
+    }
+
+    return(Globals.hwndMain);
 }
 
 
@@ -1644,94 +1792,100 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  switch(umsg)
-  {
+    switch(umsg)
+    {
     case WM_CREATE:
-      return MsgCreate(hwnd, wParam, lParam);
+        return MsgCreate(hwnd, wParam, lParam);
 
     case WM_SETFOCUS:
-      SetFocus(Globals.hwndEdit);
-      break;
+        SetFocus(Globals.hwndEdit);
+        break;
 
     case WM_CLOSE:
-      if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-        s_flagAppIsClosing = true;
-        DestroyWindow(Globals.hwndMain);
-      }
-      break;
+        if (FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+        {
+            s_flagAppIsClosing = true;
+            DestroyWindow(Globals.hwndMain);
+        }
+        break;
 
     case WM_QUERYENDSESSION:
-      if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-        return TRUE;
-      }
-      break;
+        if (FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+        {
+            return TRUE;
+        }
+        break;
 
     case WM_DESTROY:
     case WM_ENDSESSION:
-      return MsgEndSession(hwnd, umsg, wParam, lParam);
+        return MsgEndSession(hwnd, umsg, wParam, lParam);
 
     // Reinitialize theme-dependent values and resize windows
     case WM_THEMECHANGED:
-      return MsgThemeChanged(hwnd, wParam, lParam);
+        return MsgThemeChanged(hwnd, wParam, lParam);
 
     case WM_DPICHANGED:
-      return MsgDPIChanged(hwnd, wParam, lParam);
+        return MsgDPIChanged(hwnd, wParam, lParam);
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      if (Flags.bLargeFileLoaded) {
-        EditUpdateVisibleIndicators();
-      }
-      else {
-        EditUpdateIndicators(0, -1, false);
-      }
-      MarkAllOccurrences(0, true);
-      UpdateToolbar();
-      UpdateStatusbar(true);
-      UpdateMarginWidth();
-      return DefWindowProc(hwnd,umsg,wParam,lParam);
+        if (Flags.bLargeFileLoaded)
+        {
+            EditUpdateVisibleIndicators();
+        }
+        else
+        {
+            EditUpdateIndicators(0, -1, false);
+        }
+        MarkAllOccurrences(0, true);
+        UpdateToolbar();
+        UpdateStatusbar(true);
+        UpdateMarginWidth();
+        return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
-      return MsgSize(hwnd, wParam, lParam);
+        return MsgSize(hwnd, wParam, lParam);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-	  case WM_SETTINGCHANGE: {
-      if (IsColorSchemeChangeMessage(lParam)) {
-        RefreshTitleBarThemeColor(hwnd);
-        SendMessage(Globals.hwndEdit, WM_THEMECHANGED, 0, 0);
-      }
+    case WM_SETTINGCHANGE:
+    {
+        if (IsColorSchemeChangeMessage(lParam))
+        {
+            RefreshTitleBarThemeColor(hwnd);
+            SendMessage(Globals.hwndEdit, WM_THEMECHANGED, 0, 0);
+        }
     }
     break;
 #endif
 
     case WM_DRAWITEM:
-      return MsgDrawItem(hwnd, wParam, lParam);
+        return MsgDrawItem(hwnd, wParam, lParam);
 
     case WM_DROPFILES:
-      // see SCN_URIDROPP
-      return MsgDropFiles(hwnd, wParam, lParam);
+        // see SCN_URIDROPP
+        return MsgDropFiles(hwnd, wParam, lParam);
 
     case WM_COPYDATA:
-      return MsgCopyData(hwnd, wParam, lParam);
+        return MsgCopyData(hwnd, wParam, lParam);
 
     case WM_CONTEXTMENU:
-      MsgContextMenu(hwnd, umsg, wParam, lParam);
-      break;
+        MsgContextMenu(hwnd, umsg, wParam, lParam);
+        break;
 
     case WM_ENTERMENULOOP:
-      return MsgEnterMenuLoop(hwnd, wParam);
+        return MsgEnterMenuLoop(hwnd, wParam);
 
     case WM_INITMENU:
-      return MsgInitMenu(hwnd, wParam, lParam);
+        return MsgInitMenu(hwnd, wParam, lParam);
 
     case WM_EXITMENULOOP:
-      return MsgExitMenuLoop(hwnd, wParam);
+        return MsgExitMenuLoop(hwnd, wParam);
 
     case WM_NOTIFY:
-      return MsgNotify(hwnd, wParam, lParam);
+        return MsgNotify(hwnd, wParam, lParam);
 
     case WM_CHANGENOTIFY:
-      return MsgChangeNotify(hwnd, wParam, lParam);
+        return MsgChangeNotify(hwnd, wParam, lParam);
 
     //case WM_PARENTNOTIFY:
     //  if (iLoWParam & WM_DESTROY) {
@@ -1742,10 +1896,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  break;
 
     case WM_COMMAND:
-      return MsgCommand(hwnd, umsg, wParam, lParam);
+        return MsgCommand(hwnd, umsg, wParam, lParam);
 
     case WM_TRAYMESSAGE:
-      return MsgTrayMessage(hwnd, wParam, lParam);
+        return MsgTrayMessage(hwnd, wParam, lParam);
 
     //// This message is posted before Notepad3 reactivates itself
     //case WM_CHANGENOTIFYCLEAR:
@@ -1753,67 +1907,76 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  break;
 
     case WM_DRAWCLIPBOARD:
-      if (!s_bLastCopyFromMe)
-        s_dwLastCopyTime = GetTickCount();
-      else
-        s_bLastCopyFromMe = false;
+        if (!s_bLastCopyFromMe)
+            s_dwLastCopyTime = GetTickCount();
+        else
+            s_bLastCopyFromMe = false;
 
-      if (s_hwndNextCBChain)
-        SendMessage(s_hwndNextCBChain,WM_DRAWCLIPBOARD,wParam,lParam);
-      break;
+        if (s_hwndNextCBChain)
+            SendMessage(s_hwndNextCBChain,WM_DRAWCLIPBOARD,wParam,lParam);
+        break;
 
     case WM_CHANGECBCHAIN:
-      if ((HWND)wParam == s_hwndNextCBChain)
-        s_hwndNextCBChain = (HWND)lParam;
-      if (s_hwndNextCBChain)
-        SendMessage(s_hwndNextCBChain,WM_CHANGECBCHAIN,lParam,wParam);
-      break;
+        if ((HWND)wParam == s_hwndNextCBChain)
+            s_hwndNextCBChain = (HWND)lParam;
+        if (s_hwndNextCBChain)
+            SendMessage(s_hwndNextCBChain,WM_CHANGECBCHAIN,lParam,wParam);
+        break;
 
     case WM_SYSCOMMAND:
-      return MsgSysCommand(hwnd, umsg, wParam, lParam);
+        return MsgSysCommand(hwnd, umsg, wParam, lParam);
 
     case WM_MBUTTONDOWN:
-      {
+    {
         DocPos const pos = SciCall_CharPositionFromPointClose(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-        if (pos >= 0) {
-          HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
+        if (pos >= 0)
+        {
+            HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
         }
-      }
-      break;
+    }
+    break;
 
     //case WM_LBUTTONDBLCLK:
     //  //return DefWindowProc(hwnd, umsg, wParam, lParam);
     //  break;
 
     case WM_MOUSEWHEEL:
-      if (wParam & MK_CONTROL) { 
-        ShowZoomCallTip(); 
-      }
-      else if (wParam & MK_RBUTTON) {
-        // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
-        if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
-          s_bUndoRedoScroll = true;
-          SciCall_Redo();
+        if (wParam & MK_CONTROL)
+        {
+            ShowZoomCallTip();
         }
-        else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
-          s_bUndoRedoScroll = true;
-          SciCall_Undo();
+        else if (wParam & MK_RBUTTON)
+        {
+            // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
+            if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+            {
+                s_bUndoRedoScroll = true;
+                SciCall_Redo();
+            }
+            else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
+            {
+                s_bUndoRedoScroll = true;
+                SciCall_Undo();
+            }
         }
-      }
-      break;
+        break;
 
     case WM_INPUTLANGCHANGE:
-      Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
-      break;
+        Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
+        break;
 
     default:
-      if (umsg == s_msgTaskbarCreated) {
-        if (!IsWindowVisible(hwnd)) { ShowNotifyIcon(hwnd, true); }
-        SetNotifyIconTitle(hwnd);
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-  }
-  return FALSE;
+        if (umsg == s_msgTaskbarCreated)
+        {
+            if (!IsWindowVisible(hwnd))
+            {
+                ShowNotifyIcon(hwnd, true);
+            }
+            SetNotifyIconTitle(hwnd);
+        }
+        return DefWindowProc(hwnd, umsg, wParam, lParam);
+    }
+    return FALSE;
 }
 
 
@@ -1823,15 +1986,25 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 static void  _SetWrapStartIndent()
 {
-  int i = 0;
-  switch (Settings.WordWrapIndent) {
-  case 1: i = 1; break;
-  case 2: i = 2; break;
-  case 3: i = (Globals.fvCurFile.iIndentWidth) ? 1 * Globals.fvCurFile.iIndentWidth : 1 * Globals.fvCurFile.iTabWidth; break;
-  case 4: i = (Globals.fvCurFile.iIndentWidth) ? 2 * Globals.fvCurFile.iIndentWidth : 2 * Globals.fvCurFile.iTabWidth; break;
-  default: break;
-  }
-  SciCall_SetWrapStartIndent(i);
+    int i = 0;
+    switch (Settings.WordWrapIndent)
+    {
+    case 1:
+        i = 1;
+        break;
+    case 2:
+        i = 2;
+        break;
+    case 3:
+        i = (Globals.fvCurFile.iIndentWidth) ? 1 * Globals.fvCurFile.iIndentWidth : 1 * Globals.fvCurFile.iTabWidth;
+        break;
+    case 4:
+        i = (Globals.fvCurFile.iIndentWidth) ? 2 * Globals.fvCurFile.iIndentWidth : 2 * Globals.fvCurFile.iTabWidth;
+        break;
+    default:
+        break;
+    }
+    SciCall_SetWrapStartIndent(i);
 }
 
 
@@ -1841,23 +2014,27 @@ static void  _SetWrapStartIndent()
 //
 static void  _SetWrapIndentMode()
 {
-  int const wrap_mode = (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
+    int const wrap_mode = (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
 
-  SciCall_SetWrapMode(wrap_mode);
+    SciCall_SetWrapMode(wrap_mode);
 
-  if (Settings.WordWrapIndent == 5) {
-    SciCall_SetWrapIndentMode(SC_WRAPINDENT_SAME);
-  }
-  else if (Settings.WordWrapIndent == 6) {
-    SciCall_SetWrapIndentMode(SC_WRAPINDENT_INDENT);
-  }
-  else if (Settings.WordWrapIndent == 7) {
-    SciCall_SetWrapIndentMode(SC_WRAPINDENT_DEEPINDENT);
-  }
-  else {
-    _SetWrapStartIndent();
-    SciCall_SetWrapIndentMode(SC_WRAPINDENT_FIXED);
-  }
+    if (Settings.WordWrapIndent == 5)
+    {
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_SAME);
+    }
+    else if (Settings.WordWrapIndent == 6)
+    {
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_INDENT);
+    }
+    else if (Settings.WordWrapIndent == 7)
+    {
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_DEEPINDENT);
+    }
+    else
+    {
+        _SetWrapStartIndent();
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_FIXED);
+    }
 }
 
 
@@ -1867,36 +2044,41 @@ static void  _SetWrapIndentMode()
 //
 static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 {
-  if (Settings.ShowWordWrapSymbols) {
-    int wrapVisualFlags = 0;
-    int wrapVisualFlagsLocation = 0;
-    if (Settings.WordWrapSymbols == 0) {
-      Settings.WordWrapSymbols = 22;
+    if (Settings.ShowWordWrapSymbols)
+    {
+        int wrapVisualFlags = 0;
+        int wrapVisualFlagsLocation = 0;
+        if (Settings.WordWrapSymbols == 0)
+        {
+            Settings.WordWrapSymbols = 22;
+        }
+        switch (Settings.WordWrapSymbols % 10)
+        {
+        case 1:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+            wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT;
+            break;
+        case 2:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+            break;
+        }
+        switch (((Settings.WordWrapSymbols % 100) - (Settings.WordWrapSymbols % 10)) / 10)
+        {
+        case 1:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+            wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT;
+            break;
+        case 2:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+            break;
+        }
+        SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
+        SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
     }
-    switch (Settings.WordWrapSymbols % 10) {
-    case 1:
-      wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
-      wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT;
-      break;
-    case 2:
-      wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
-      break;
+    else
+    {
+        SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, 0, 0);
     }
-    switch (((Settings.WordWrapSymbols % 100) - (Settings.WordWrapSymbols % 10)) / 10) {
-    case 1:
-      wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
-      wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT;
-      break;
-    case 2:
-      wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
-      break;
-    }
-    SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
-    SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
-  }
-  else {
-    SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, 0, 0);
-  }
 }
 
 
@@ -1906,196 +2088,203 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
-  InitWindowCommon(hwndEditCtrl, true);
+    InitWindowCommon(hwndEditCtrl, true);
 
-  SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)Settings.RenderingTechnology, 0);
-  Settings.RenderingTechnology = SciCall_GetTechnology();
-  SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)Settings.Bidirectional, 0); // experimental
-  Settings.Bidirectional = SciCall_GetBidirectional();
+    SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)Settings.RenderingTechnology, 0);
+    Settings.RenderingTechnology = SciCall_GetTechnology();
+    SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)Settings.Bidirectional, 0); // experimental
+    Settings.Bidirectional = SciCall_GetBidirectional();
 
-  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-  // There are some older platforms and unusual modes where buffering may still be useful 
-  SendMessage(hwndEditCtrl, SCI_SETBUFFEREDDRAW, (WPARAM)(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT), 0);
-  //~SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_TWO, 0); // (= default)
-  SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0);
-  //~SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0); // memory consumption !
-  SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
-  //~SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 1024, 0); // default = 1024
-  SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 2048, 0); // default = 1024
+    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
+    // There are some older platforms and unusual modes where buffering may still be useful
+    SendMessage(hwndEditCtrl, SCI_SETBUFFEREDDRAW, (WPARAM)(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT), 0);
+    //~SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_TWO, 0); // (= default)
+    SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0);
+    //~SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0); // memory consumption !
+    SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
+    //~SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 1024, 0); // default = 1024
+    SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 2048, 0); // default = 1024
 
-  // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED: 
-  // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER, 
-  // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER, 
-  // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
-  //  
-  ///~ int const evtMask = SC_MODEVENTMASKALL; (!) - don't listen to all events (SC_MOD_CHANGESTYLE) => RECURSON!
-  ///~ SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)evtMask, 0);
-  ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE; 
-  /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
+    // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED:
+    // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER,
+    // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER,
+    // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
+    //
+    ///~ int const evtMask = SC_MODEVENTMASKALL; (!) - don't listen to all events (SC_MOD_CHANGESTYLE) => RECURSON!
+    ///~ SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)evtMask, 0);
+    ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE;
+    /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
 
-  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO;
-  int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
+    int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO;
+    int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
-  SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
-  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
-  SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
+    SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
+    SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
+    SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
 
-  SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
-  SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
-  SendMessage(hwndEditCtrl, SCI_USEPOPUP, false, 0);
-  SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
-  SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
+    SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
+    SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
+    SendMessage(hwndEditCtrl, SCI_USEPOPUP, false, 0);
+    SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
+    SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
+    SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
 
-  SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);  // paste into rectangular selection
-  SendMessage(hwndEditCtrl, SCI_AUTOCSETMULTI, SC_MULTIAUTOC_EACH, 0);
-  SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
+    SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
+    SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
+    SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);  // paste into rectangular selection
+    SendMessage(hwndEditCtrl, SCI_AUTOCSETMULTI, SC_MULTIAUTOC_EACH, 0);
+    SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
 
-  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, NP3_VIRTUAL_SPACE_ACCESS_OPTIONS, 0);
+    SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, NP3_VIRTUAL_SPACE_ACCESS_OPTIONS, 0);
 
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
+    SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
+    SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
 
-  // Idle Styling (very large text)
-  //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
-  //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
-  SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_NONE, 0); // needed for focused view
+    // Idle Styling (very large text)
+    //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
+    //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
+    SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_NONE, 0); // needed for focused view
 
-  // assign command keys
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + (SCMOD_CTRL << 16)), SCI_PARAUP);
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARADOWNEXTEND);
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARAUPEXTEND);
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (0 << 16)), SCI_VCHOMEWRAP);
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (0 << 16)), SCI_LINEENDWRAP);
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (SCMOD_SHIFT << 16)), SCI_VCHOMEWRAPEXTEND);
-  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (SCMOD_SHIFT << 16)), SCI_LINEENDWRAPEXTEND);
+    // assign command keys
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + (SCMOD_CTRL << 16)), SCI_PARAUP);
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARADOWNEXTEND);
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARAUPEXTEND);
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (0 << 16)), SCI_VCHOMEWRAP);
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (0 << 16)), SCI_LINEENDWRAP);
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (SCMOD_SHIFT << 16)), SCI_VCHOMEWRAPEXTEND);
+    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (SCMOD_SHIFT << 16)), SCI_LINEENDWRAPEXTEND);
 
-  // set indicator styles (foreground and alpha maybe overridden by style settings)
+    // set indicator styles (foreground and alpha maybe overridden by style settings)
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, 120);
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
+    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
+    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
+    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, 120);
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
-  if (!Settings2.UseOldStyleBraceMatching) {
-    SendMessage(hwndEditCtrl, SCI_BRACEHIGHLIGHTINDICATOR, true, INDIC_NP3_MATCH_BRACE);
-    SendMessage(hwndEditCtrl, SCI_BRACEBADLIGHTINDICATOR, true, INDIC_NP3_BAD_BRACE);
-  }
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
+    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
+    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
+    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
+    if (!Settings2.UseOldStyleBraceMatching)
+    {
+        SendMessage(hwndEditCtrl, SCI_BRACEHIGHLIGHTINDICATOR, true, INDIC_NP3_MATCH_BRACE);
+        SendMessage(hwndEditCtrl, SCI_BRACEBADLIGHTINDICATOR, true, INDIC_NP3_BAD_BRACE);
+    }
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00, 0x00, 0xFF));
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
+    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00, 0x00, 0xFF));
+    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xA0));
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xA0));
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xA0));
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
+    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xA0));
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xFF));
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xFF));
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xFF));
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xFF));
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
-  SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_COLOR_DEF, true);
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT); // reset on hover
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_OPAQUE);
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // HOVER
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
+    SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_COLOR_DEF, true);
+    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT); // reset on hover
+    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_OPAQUE);
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // HOVER
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN ); // invisible
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);       // HOVER
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF_T, RGB(0x00, 0x00, 0x00)); // recalc on hover
- 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
-  //SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_UNICODE_POINT, false);
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_TRANSPARENT);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_NOALPHA);
-  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX); // HOVER
-  //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0));
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN ); // invisible
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);       // HOVER
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF_T, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MULTI_EDIT, INDIC_ROUNDBOX);
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MULTI_EDIT, 60);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MULTI_EDIT, 180);
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
+    //SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_UNICODE_POINT, false);
+    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_TRANSPARENT);
+    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_NOALPHA);
+    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX); // HOVER
+    //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0));
 
-  // No SC_AUTOMATICFOLD_CLICK, performed by 
-  SendMessage(hwndEditCtrl, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
+    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MULTI_EDIT, INDIC_ROUNDBOX);
+    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
+    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MULTI_EDIT, 60);
+    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MULTI_EDIT, 180);
 
-  // Properties
-  SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
-  //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
+    // No SC_AUTOMATICFOLD_CLICK, performed by
+    SendMessage(hwndEditCtrl, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
 
-  if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled()) {
-    SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)100, 0);
-  }
-  else {
-    SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
-  }
+    // Properties
+    SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
+    //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
+
+    if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled())
+    {
+        SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)100, 0);
+    }
+    else
+    {
+        SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
+    }
 
 
-  #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
-  #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
+#define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
+#define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
 
-  if (Settings2.CurrentLineHorizontalSlop > 0)
-    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineHorizontalSlop);
-  else
-    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), (LPARAM)0);
+    if (Settings2.CurrentLineHorizontalSlop > 0)
+        SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineHorizontalSlop);
+    else
+        SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), (LPARAM)0);
 
-  if (Settings2.CurrentLineVerticalSlop > 0) {
-    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineVerticalSlop);
-  }
-  else {
-    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
-  }
-  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
+    if (Settings2.CurrentLineVerticalSlop > 0)
+    {
+        SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineVerticalSlop);
+    }
+    else
+    {
+        SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
+    }
+    SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
 
-  // Tabs
-  SendMessage(hwndEditCtrl, SCI_SETUSETABS, (WPARAM)!Globals.fvCurFile.bTabsAsSpaces, 0);
-  SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, (WPARAM)Globals.fvCurFile.bTabIndents, 0);
-  SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, (WPARAM)Settings.BackspaceUnindents, 0);
-  SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, (WPARAM)Globals.fvCurFile.iTabWidth, 0);
-  SendMessage(hwndEditCtrl, SCI_SETINDENT, (WPARAM)Globals.fvCurFile.iIndentWidth, 0);
+    // Tabs
+    SendMessage(hwndEditCtrl, SCI_SETUSETABS, (WPARAM)!Globals.fvCurFile.bTabsAsSpaces, 0);
+    SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, (WPARAM)Globals.fvCurFile.bTabIndents, 0);
+    SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, (WPARAM)Settings.BackspaceUnindents, 0);
+    SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, (WPARAM)Globals.fvCurFile.iTabWidth, 0);
+    SendMessage(hwndEditCtrl, SCI_SETINDENT, (WPARAM)Globals.fvCurFile.iIndentWidth, 0);
 
-  // Indent Guides
-  Style_SetIndentGuides(hwndEditCtrl, Settings.ShowIndentGuides);
+    // Indent Guides
+    Style_SetIndentGuides(hwndEditCtrl, Settings.ShowIndentGuides);
 
-  // Word Wrap
-  _SetWrapIndentMode(hwndEditCtrl);
-  _SetWrapVisualFlags(hwndEditCtrl);
+    // Word Wrap
+    _SetWrapIndentMode(hwndEditCtrl);
+    _SetWrapVisualFlags(hwndEditCtrl);
 
-  // Long Lines
-  if (Settings.MarkLongLines) {
-    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((Settings.LongLineMode == EDGE_BACKGROUND) ? EDGE_BACKGROUND : EDGE_LINE), 0);
-  }
-  else {
-    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)EDGE_NONE, 0);
-  }
-  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)Settings.LongLinesLimit, 0);
+    // Long Lines
+    if (Settings.MarkLongLines)
+    {
+        SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((Settings.LongLineMode == EDGE_BACKGROUND) ? EDGE_BACKGROUND : EDGE_LINE), 0);
+    }
+    else
+    {
+        SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)EDGE_NONE, 0);
+    }
+    SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)Settings.LongLinesLimit, 0);
 
-  // general margin
-  SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, (WPARAM)SC_MARGINOPTION_SUBLINESELECT, 0);
+    // general margin
+    SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, (WPARAM)SC_MARGINOPTION_SUBLINESELECT, 0);
 
-  // Nonprinting characters
-  SendMessage(hwndEditCtrl, SCI_SETVIEWWS, (WPARAM)(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE), 0);
-  SendMessage(hwndEditCtrl, SCI_SETVIEWEOL, (WPARAM)Settings.ViewEOLs, 0);
+    // Nonprinting characters
+    SendMessage(hwndEditCtrl, SCI_SETVIEWWS, (WPARAM)(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE), 0);
+    SendMessage(hwndEditCtrl, SCI_SETVIEWEOL, (WPARAM)Settings.ViewEOLs, 0);
 
-  // IME Interaction
-  SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)Settings2.IMEInteraction, 0);
+    // IME Interaction
+    SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)Settings2.IMEInteraction, 0);
 
-  // word delimiter handling
-  EditInitWordDelimiter(hwndEditCtrl);
-  EditSetAccelWordNav(hwndEditCtrl, Settings.AccelWordNavigation);
+    // word delimiter handling
+    EditInitWordDelimiter(hwndEditCtrl);
+    EditSetAccelWordNav(hwndEditCtrl, Settings.AccelWordNavigation);
 
-  UpdateMarginWidth();
+    UpdateMarginWidth();
 }
 
 
@@ -2105,58 +2294,70 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 //
 static bool _EvalTinyExpr(bool qmark)
 {
-  if (!Settings.EvalTinyExprOnSelection) { return false; } 
-  
-  DocPos const posCur = SciCall_GetCurrentPos();
-  DocPos const posBegin = qmark ? SciCall_PositionBefore(posCur) : posCur;
-  DocPos posBefore = SciCall_PositionBefore(posBegin);
-  char chBefore = SciCall_GetCharAt(posBefore);
-  while (IsBlankChar(chBefore) && (posBefore > 0)) {
-    posBefore = SciCall_PositionBefore(posBefore);
-    chBefore = SciCall_GetCharAt(posBefore);
-  }
-  if (chBefore == '=') // got "=?" or ENTER : evaluate expression trigger
-  {
-    int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posCur)) + 1;
-    char *lineBuf = (char *)AllocMem(lineLen, HEAP_ZERO_MEMORY);
-    WCHAR *lineBufW = (WCHAR *)AllocMem(lineLen * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-    if (lineBuf && lineBufW)
+    if (!Settings.EvalTinyExprOnSelection)
     {
-      DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
-
-      lineBuf[iLnCaretPos - (posCur - posBefore)] = '\0'; // exclude "=?"
-      
-      char const defchar = (char)0x24;
-      MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, lineLen);
-      WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
-      StrDelChrA(lineBuf, chr_currency);
-      FreeMem(lineBufW);
-
-      const char *pBegin = lineBuf;
-      while (IsBlankChar(*pBegin)) { ++pBegin; }       
-
-      double dExprEval = 0.0;
-      te_xint_t exprErr = 1;
-      while (*pBegin && exprErr) {
-        dExprEval = te_interp(pBegin++, &exprErr);
-      }
-      FreeMem(lineBuf);
-
-      if (!exprErr) {
-        char chExpr[80] = { '\0' };
-        double intpart;
-        if ((modf(dExprEval, &intpart) == 0) && (fabs(intpart) < 1.0E+21)) {
-          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
-        } else {
-          StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", dExprEval);
-        }
-        SciCall_SetSel(posBegin, posCur);
-        SciCall_ReplaceSel(chExpr);
-        return true;
-      }
+        return false;
     }
-  }
-  return false;
+
+    DocPos const posCur = SciCall_GetCurrentPos();
+    DocPos const posBegin = qmark ? SciCall_PositionBefore(posCur) : posCur;
+    DocPos posBefore = SciCall_PositionBefore(posBegin);
+    char chBefore = SciCall_GetCharAt(posBefore);
+    while (IsBlankChar(chBefore) && (posBefore > 0))
+    {
+        posBefore = SciCall_PositionBefore(posBefore);
+        chBefore = SciCall_GetCharAt(posBefore);
+    }
+    if (chBefore == '=') // got "=?" or ENTER : evaluate expression trigger
+    {
+        int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posCur)) + 1;
+        char *lineBuf = (char *)AllocMem(lineLen, HEAP_ZERO_MEMORY);
+        WCHAR *lineBufW = (WCHAR *)AllocMem(lineLen * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (lineBuf && lineBufW)
+        {
+            DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
+
+            lineBuf[iLnCaretPos - (posCur - posBefore)] = '\0'; // exclude "=?"
+
+            char const defchar = (char)0x24;
+            MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, lineLen);
+            WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
+            StrDelChrA(lineBuf, chr_currency);
+            FreeMem(lineBufW);
+
+            const char *pBegin = lineBuf;
+            while (IsBlankChar(*pBegin))
+            {
+                ++pBegin;
+            }
+
+            double dExprEval = 0.0;
+            te_xint_t exprErr = 1;
+            while (*pBegin && exprErr)
+            {
+                dExprEval = te_interp(pBegin++, &exprErr);
+            }
+            FreeMem(lineBuf);
+
+            if (!exprErr)
+            {
+                char chExpr[80] = { '\0' };
+                double intpart;
+                if ((modf(dExprEval, &intpart) == 0) && (fabs(intpart) < 1.0E+21))
+                {
+                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
+                }
+                else
+                {
+                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", dExprEval);
+                }
+                SciCall_SetSel(posBegin, posCur);
+                SciCall_ReplaceSel(chExpr);
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 
@@ -2166,37 +2367,43 @@ static bool _EvalTinyExpr(bool qmark)
 //
 static void _HandleEditWndFrame()
 {
-  s_bIsAppThemed = IsAppThemed();
+    s_bIsAppThemed = IsAppThemed();
 
-  if (s_bIsAppThemed) {
+    if (s_bIsAppThemed)
+    {
 
-    SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
-    SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+        SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
+        SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
-    if (IsWindowsVistaOrGreater()) {
+        if (IsWindowsVistaOrGreater())
+        {
 
-      s_cxEditFrame = 0;
-      s_cyEditFrame = 0;
-    
-    } else {
-      
-      SetWindowPos(s_hwndEditFrame, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+            s_cxEditFrame = 0;
+            s_cyEditFrame = 0;
 
-      RECT rc, rc2;
-      GetClientRect(s_hwndEditFrame, &rc);
-      GetWindowRect(s_hwndEditFrame, &rc2);
-      s_cxEditFrame = ((rc2.right - rc2.left) - (rc.right - rc.left)) / 2;
-      s_cyEditFrame = ((rc2.bottom - rc2.top) - (rc.bottom - rc.top)) / 2;
+        }
+        else
+        {
+
+            SetWindowPos(s_hwndEditFrame, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+            RECT rc, rc2;
+            GetClientRect(s_hwndEditFrame, &rc);
+            GetWindowRect(s_hwndEditFrame, &rc2);
+            s_cxEditFrame = ((rc2.right - rc2.left) - (rc.right - rc.left)) / 2;
+            s_cyEditFrame = ((rc2.bottom - rc2.top) - (rc.bottom - rc.top)) / 2;
+        }
+
     }
+    else
+    {
 
-  } else {
+        SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, WS_EX_CLIENTEDGE | GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE));
+        SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
-    SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, WS_EX_CLIENTEDGE | GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE));
-    SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-
-    s_cxEditFrame = 0;
-    s_cyEditFrame = 0;
-  }
+        s_cxEditFrame = 0;
+        s_cyEditFrame = 0;
+    }
 }
 
 
@@ -2207,96 +2414,99 @@ static void _HandleEditWndFrame()
 //
 LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
-  UNUSED(wParam);
+    UNUSED(wParam);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-  if (IsDarkModeSupported()) {
-    AllowDarkModeForWindowEx(hwnd, CheckDarkModeEnabled());
-    RefreshTitleBarThemeColor(hwnd);
-  }
+    if (IsDarkModeSupported())
+    {
+        AllowDarkModeForWindowEx(hwnd, CheckDarkModeEnabled());
+        RefreshTitleBarThemeColor(hwnd);
+    }
 #endif
 
-  HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
+    HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
-  // Setup edit control
-  Globals.hwndEdit = CreateWindowEx(
-    WS_EX_CLIENTEDGE,
-    L"Scintilla",
-    NULL,
-    WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS,
-    0, 0, 0, 0,
-    hwnd,
-    (HMENU)IDC_EDIT,
-    hInstance,
-    NULL);
+    // Setup edit control
+    Globals.hwndEdit = CreateWindowEx(
+                           WS_EX_CLIENTEDGE,
+                           L"Scintilla",
+                           NULL,
+                           WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS,
+                           0, 0, 0, 0,
+                           hwnd,
+                           (HMENU)IDC_EDIT,
+                           hInstance,
+                           NULL);
 
-  Globals.hndlScintilla = (HANDLE)SendMessage(Globals.hwndEdit, SCI_GETDIRECTPOINTER, 0, 0);
+    Globals.hndlScintilla = (HANDLE)SendMessage(Globals.hwndEdit, SCI_GETDIRECTPOINTER, 0, 0);
 
-  _InitializeSciEditCtrl(Globals.hwndEdit);
+    _InitializeSciEditCtrl(Globals.hwndEdit);
 
-  s_hwndEditFrame = CreateWindowEx(
-                    WS_EX_CLIENTEDGE,
-                    WC_LISTVIEW,
-                    NULL,
-                    WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
-                    0,0,100,100,
-                    hwnd,
-                    (HMENU)IDC_EDITFRAME,
-                    hInstance,
-                    NULL);
-  
-  _HandleEditWndFrame();
+    s_hwndEditFrame = CreateWindowEx(
+                          WS_EX_CLIENTEDGE,
+                          WC_LISTVIEW,
+                          NULL,
+                          WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
+                          0,0,100,100,
+                          hwnd,
+                          (HMENU)IDC_EDITFRAME,
+                          hInstance,
+                          NULL);
 
-  // Create Toolbar and Statusbar
-  CreateBars(hwnd, hInstance);
+    _HandleEditWndFrame();
 
-  // Window Initialization
+    // Create Toolbar and Statusbar
+    CreateBars(hwnd, hInstance);
 
-  (void)CreateWindow(
-    WC_STATIC,
-    NULL,
-    WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
-    0,0,10,10,
-    hwnd,
-    (HMENU)IDC_FILENAME,
-    hInstance,
-    NULL);
+    // Window Initialization
 
-  SetDlgItemText(hwnd,IDC_FILENAME,Globals.CurrentFile);
+    (void)CreateWindow(
+        WC_STATIC,
+        NULL,
+        WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
+        0,0,10,10,
+        hwnd,
+        (HMENU)IDC_FILENAME,
+        hInstance,
+        NULL);
 
-  (void)CreateWindow(
-    WC_STATIC,
-    NULL,
-    WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
-    10,10,10,10,
-    hwnd,
-    (HMENU)IDC_REUSELOCK,
-    hInstance,
-    NULL);
+    SetDlgItemText(hwnd,IDC_FILENAME,Globals.CurrentFile);
 
-  SetDlgItemInt(hwnd,IDC_REUSELOCK,GetTickCount(),false);
+    (void)CreateWindow(
+        WC_STATIC,
+        NULL,
+        WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
+        10,10,10,10,
+        hwnd,
+        (HMENU)IDC_REUSELOCK,
+        hInstance,
+        NULL);
 
-  // Menu
-  //SetMenuDefaultItem(GetSubMenu(GetMenu(hwnd),0),0);
+    SetDlgItemInt(hwnd,IDC_REUSELOCK,GetTickCount(),false);
 
-  // Drag & Drop
-  DragAcceptFiles(hwnd,true);
+    // Menu
+    //SetMenuDefaultItem(GetSubMenu(GetMenu(hwnd),0),0);
 
-  if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
-    Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || Globals.hwndRebar == NULL) {
-    return -1LL;
-  }
-  Style_SetDefaultLexer(Globals.hwndEdit);
+    // Drag & Drop
+    DragAcceptFiles(hwnd,true);
 
-  Encoding_Current(Settings.DefaultEncoding);
+    if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
+            Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || Globals.hwndRebar == NULL)
+    {
+        return -1LL;
+    }
+    Style_SetDefaultLexer(Globals.hwndEdit);
 
-  ObserveNotifyChangeEvent();
+    Encoding_Current(Settings.DefaultEncoding);
 
-  if (g_IniWinInfo.zoom) {
-    SciCall_SetZoom(g_IniWinInfo.zoom);
-  }
+    ObserveNotifyChangeEvent();
 
-  return 0LL;
+    if (g_IniWinInfo.zoom)
+    {
+        SciCall_SetZoom(g_IniWinInfo.zoom);
+    }
+
+    return 0LL;
 }
 
 
@@ -2306,80 +2516,89 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 bool SelectExternalToolBar(HWND hwnd)
 {
-  UNUSED(hwnd);
+    UNUSED(hwnd);
 
-  WCHAR szArgs[MAX_PATH] = { L'\0' };
-  WCHAR szArg2[MAX_PATH] = { L'\0' };
-  WCHAR szFile[MAX_PATH] = { L'\0' };
-  WCHAR szFilter[MAX_PATH] = { L'\0' };
-  OPENFILENAME ofn;
-  ZeroMemory(&ofn, sizeof(OPENFILENAME));
+    WCHAR szArgs[MAX_PATH] = { L'\0' };
+    WCHAR szArg2[MAX_PATH] = { L'\0' };
+    WCHAR szFile[MAX_PATH] = { L'\0' };
+    WCHAR szFilter[MAX_PATH] = { L'\0' };
+    OPENFILENAME ofn;
+    ZeroMemory(&ofn, sizeof(OPENFILENAME));
 
-  GetDlgItemText(hwnd, IDC_COMMANDLINE, szArgs, COUNTOF(szArgs));
-  ExpandEnvironmentStringsEx(szArgs, COUNTOF(szArgs));
-  ExtractFirstArgument(szArgs, szFile, szArg2, MAX_PATH);
+    GetDlgItemText(hwnd, IDC_COMMANDLINE, szArgs, COUNTOF(szArgs));
+    ExpandEnvironmentStringsEx(szArgs, COUNTOF(szArgs));
+    ExtractFirstArgument(szArgs, szFile, szArg2, MAX_PATH);
 
-  GetLngString(IDS_MUI_FILTER_BITMAP, szFilter, COUNTOF(szFilter));
-  PrepareFilterStr(szFilter);
+    GetLngString(IDS_MUI_FILTER_BITMAP, szFilter, COUNTOF(szFilter));
+    PrepareFilterStr(szFilter);
 
-  ofn.lStructSize = sizeof(OPENFILENAME);
-  ofn.hwndOwner = hwnd;
-  ofn.lpstrFilter = szFilter;
-  ofn.lpstrFile = szFile;
-  ofn.nMaxFile = COUNTOF(szFile);
-  ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-    | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = szFilter;
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = COUNTOF(szFile);
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
+                | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
 
-  if (GetOpenFileName(&ofn)) {
-    PathQuoteSpaces(szFile);
-    if (StrIsNotEmpty(szArg2))
+    if (GetOpenFileName(&ofn))
     {
-      StringCchCat(szFile, COUNTOF(szFile), L" ");
-      StringCchCat(szFile, COUNTOF(szFile), szArg2);
+        PathQuoteSpaces(szFile);
+        if (StrIsNotEmpty(szArg2))
+        {
+            StringCchCat(szFile, COUNTOF(szFile), L" ");
+            StringCchCat(szFile, COUNTOF(szFile), szArg2);
+        }
+        PathRelativeToApp(szFile, g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), true,true, true);
+        if (Globals.bCanSaveIniFile)
+        {
+            IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDefault", g_tchToolbarBitmap);
+        }
     }
-    PathRelativeToApp(szFile, g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), true,true, true);
-    if (Globals.bCanSaveIniFile) {
-      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDefault", g_tchToolbarBitmap);
-    }
-  }
 
-  if (StrIsNotEmpty(g_tchToolbarBitmap))
-  {
-    StringCchCopy(szFile, COUNTOF(szFile), g_tchToolbarBitmap);
-    PathRemoveExtension(szFile);
-    StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
-    if (Globals.bCanSaveIniFile) {
-      if (PathIsExistingFile(szFile)) {
-        PathRelativeToApp(szFile, g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), true, true, true);
-        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", g_tchToolbarBitmapHot);
-      }
-      else {
-        StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
+    if (StrIsNotEmpty(g_tchToolbarBitmap))
+    {
+        StringCchCopy(szFile, COUNTOF(szFile), g_tchToolbarBitmap);
+        PathRemoveExtension(szFile);
+        StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
+        if (Globals.bCanSaveIniFile)
+        {
+            if (PathIsExistingFile(szFile))
+            {
+                PathRelativeToApp(szFile, g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), true, true, true);
+                IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", g_tchToolbarBitmapHot);
+            }
+            else
+            {
+                StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
+                IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapHot", false);
+            }
+        }
+
+        StringCchCopy(szFile, COUNTOF(szFile), g_tchToolbarBitmap);
+        PathRemoveExtension(szFile);
+        StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
+        if (Globals.bCanSaveIniFile)
+        {
+            if (PathIsExistingFile(szFile))
+            {
+                PathRelativeToApp(szFile, g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), true, true, true);
+                IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", g_tchToolbarBitmapDisabled);
+            }
+            else
+            {
+                StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
+                IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
+            }
+        }
+        Settings.ToolBarTheme = 2;
+        return true;
+    }
+    else
+    {
         IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapHot", false);
-      }
-    }
-
-    StringCchCopy(szFile, COUNTOF(szFile), g_tchToolbarBitmap);
-    PathRemoveExtension(szFile);
-    StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
-    if (Globals.bCanSaveIniFile) {
-      if (PathIsExistingFile(szFile)) {
-        PathRelativeToApp(szFile, g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), true, true, true);
-        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", g_tchToolbarBitmapDisabled);
-      }
-      else {
-        StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
         IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
-      }
     }
-    Settings.ToolBarTheme = 2;
-    return true;
-  }
-  else {
-    IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapHot", false);
-    IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
-  }
-  return false;
+    return false;
 }
 
 
@@ -2389,29 +2608,39 @@ bool SelectExternalToolBar(HWND hwnd)
 //
 static HBITMAP LoadBitmapFile(LPCWSTR path)
 {
-  WCHAR szTmp[MAX_PATH];
-  if (PathIsRelative(path)) {
-    PathGetAppDirectory(szTmp, COUNTOF(szTmp));
-    PathAppend(szTmp, path);
-    path = szTmp;
-  }
-  if (!PathIsExistingFile(path)) { return NULL; }
+    WCHAR szTmp[MAX_PATH];
+    if (PathIsRelative(path))
+    {
+        PathGetAppDirectory(szTmp, COUNTOF(szTmp));
+        PathAppend(szTmp, path);
+        path = szTmp;
+    }
+    if (!PathIsExistingFile(path))
+    {
+        return NULL;
+    }
 
-  HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
 
-  bool bDimOK = false;
-  int height = 16;
-  if (hbmp) { 
-    BITMAP bmp;  GetObject(hbmp, sizeof(BITMAP), &bmp);
-    height = bmp.bmHeight;
-    bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
-  }
-  if (!bDimOK) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, path, (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
-    if (hbmp) { DeleteObject(hbmp); }
-    hbmp = NULL;
-  }
-  return hbmp;
+    bool bDimOK = false;
+    int height = 16;
+    if (hbmp)
+    {
+        BITMAP bmp;
+        GetObject(hbmp, sizeof(BITMAP), &bmp);
+        height = bmp.bmHeight;
+        bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
+    }
+    if (!bDimOK)
+    {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, path, (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
+        if (hbmp)
+        {
+            DeleteObject(hbmp);
+        }
+        hbmp = NULL;
+    }
+    return hbmp;
 }
 
 
@@ -2421,40 +2650,40 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
 //
 static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 {
-  BITMAP bmp;
-  GetObject(hBmp, sizeof(BITMAP), &bmp);
+    BITMAP bmp;
+    GetObject(hBmp, sizeof(BITMAP), &bmp);
 
-  int const mod = bmp.bmWidth % NUMTOOLBITMAPS;
-  int const cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
-  int const cy = bmp.bmHeight;
+    int const mod = bmp.bmWidth % NUMTOOLBITMAPS;
+    int const cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
+    int const cy = bmp.bmHeight;
 
-  HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
-  ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
+    HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
+    ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
 
-  DPI_T dpi = Scintilla_GetWindowDPI(hWnd);
-  if (!Settings.DpiScaleToolBar || 
-      ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI)))
-  {
-    return himl; // default DPI, we are done
-  }
-  
+    DPI_T dpi = Scintilla_GetWindowDPI(hWnd);
+    if (!Settings.DpiScaleToolBar ||
+            ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI)))
+    {
+        return himl; // default DPI, we are done
+    }
 
-  // Scale button icons/images 
-  int const scx = ScaleIntToDPI_X(hWnd, cx);
-  int const scy = ScaleIntToDPI_Y(hWnd, cy);
 
-  HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
+    // Scale button icons/images
+    int const scx = ScaleIntToDPI_X(hWnd, cx);
+    int const scy = ScaleIntToDPI_Y(hWnd, cy);
 
-  for (int i = 0; i < NUMTOOLBITMAPS; ++i) 
-  {
-    HICON const hicon = ImageList_GetIcon(himl, i, ILD_TRANSPARENT | ILD_PRESERVEALPHA | ILD_SCALE);
-    ImageList_AddIcon(hsciml, hicon);
-    DestroyIcon(hicon);
-  }
+    HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
 
-  ImageList_Destroy(himl);
+    for (int i = 0; i < NUMTOOLBITMAPS; ++i)
+    {
+        HICON const hicon = ImageList_GetIcon(himl, i, ILD_TRANSPARENT | ILD_PRESERVEALPHA | ILD_SCALE);
+        ImageList_AddIcon(hsciml, hicon);
+        DestroyIcon(hicon);
+    }
 
-  return hsciml;
+    ImageList_Destroy(himl);
+
+    return hsciml;
 }
 
 
@@ -2474,281 +2703,318 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 //
 void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
-  DWORD dwToolbarStyle = NP3_WS_TOOLBAR /*| TBSTYLE_CUSTOMERASE */ | TBSTYLE_TRANSPARENT;
-  DWORD dwToolbarExStyle = TBSTYLE_EX_DOUBLEBUFFER /* | TBSTYLE_EX_HIDECLIPPEDBUTTONS */;
+    DWORD dwToolbarStyle = NP3_WS_TOOLBAR /*| TBSTYLE_CUSTOMERASE */ | TBSTYLE_TRANSPARENT;
+    DWORD dwToolbarExStyle = TBSTYLE_EX_DOUBLEBUFFER /* | TBSTYLE_EX_HIDECLIPPEDBUTTONS */;
 
-  if (Settings.ToolBarTheme < 0) { // undefined: determine High DPI screen
-    DPI_T const dpi       = Scintilla_GetWindowDPI(hwnd);
-    Settings.ToolBarTheme = (dpi.y < LargeIconDPI()) ? 0 : 1;
-  }
+    if (Settings.ToolBarTheme < 0)   // undefined: determine High DPI screen
+    {
+        DPI_T const dpi       = Scintilla_GetWindowDPI(hwnd);
+        Settings.ToolBarTheme = (dpi.y < LargeIconDPI()) ? 0 : 1;
+    }
 
-  if (Globals.hwndToolbar) 
-  { 
-    HIMAGELIST himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETIMAGELIST, 0, 0);
-    if (himl) { ImageList_Destroy(himl); }
-    himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETHOTIMAGELIST, 0, 0);
-    if (himl) { ImageList_Destroy(himl); }
-    himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, 0);
-    if (himl) { ImageList_Destroy(himl); }
-    DestroyWindow(Globals.hwndToolbar); 
-  }
+    if (Globals.hwndToolbar)
+    {
+        HIMAGELIST himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETIMAGELIST, 0, 0);
+        if (himl)
+        {
+            ImageList_Destroy(himl);
+        }
+        himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETHOTIMAGELIST, 0, 0);
+        if (himl)
+        {
+            ImageList_Destroy(himl);
+        }
+        himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, 0);
+        if (himl)
+        {
+            ImageList_Destroy(himl);
+        }
+        DestroyWindow(Globals.hwndToolbar);
+    }
 
-  bool bOpendByMe;
-  OpenSettingsFile(&bOpendByMe);
-  bool bDirtyFlag = false;
+    bool bOpendByMe;
+    OpenSettingsFile(&bOpendByMe);
+    bool bDirtyFlag = false;
 
-  //InitToolbarWndClass(hInstance);
-  Globals.hwndToolbar = CreateWindowEx(dwToolbarExStyle, TOOLBARCLASSNAME, NULL, dwToolbarStyle,
-                                       0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
-  //Globals.hwndToolbar = CreateWindowEx(
-  //    dwToolbarExStyle,          // no extended styles
-  //    s_ToolbarWndClassName,     // name of status bar class
-  //    (PCTSTR)NULL,              // no text when first created
-  //    dwToolbarStyle,            // creates a visible child window
-  //    0, 0, 0, 0,                // ignores size and position
-  //    hwnd,                      // handle to parent window
-  //    (HMENU)IDC_TOOLBAR,        // child window identifier
-  //    hInstance,                 // handle to application instance
-  //    NULL);                     // no window creation data
+    //InitToolbarWndClass(hInstance);
+    Globals.hwndToolbar = CreateWindowEx(dwToolbarExStyle, TOOLBARCLASSNAME, NULL, dwToolbarStyle,
+                                         0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
+    //Globals.hwndToolbar = CreateWindowEx(
+    //    dwToolbarExStyle,          // no extended styles
+    //    s_ToolbarWndClassName,     // name of status bar class
+    //    (PCTSTR)NULL,              // no text when first created
+    //    dwToolbarStyle,            // creates a visible child window
+    //    0, 0, 0, 0,                // ignores size and position
+    //    hwnd,                      // handle to parent window
+    //    (HMENU)IDC_TOOLBAR,        // child window identifier
+    //    hInstance,                 // handle to application instance
+    //    NULL);                     // no window creation data
 
-  InitWindowCommon(Globals.hwndToolbar, true); // (!) themed = true : glow effects
+    InitWindowCommon(Globals.hwndToolbar, true); // (!) themed = true : glow effects
 
 #ifdef D_NP3_WIN10_DARK_MODE
-  if (IsDarkModeSupported()) {
-    AllowDarkModeForWindowEx(Globals.hwndToolbar, CheckDarkModeEnabled());
-  }
+    if (IsDarkModeSupported())
+    {
+        AllowDarkModeForWindowEx(Globals.hwndToolbar, CheckDarkModeEnabled());
+    }
 #endif
 
-  SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
+    SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
-  // -------------------------
-  // Add Toolbar Bitmap
-  // -------------------------
-  HBITMAP hbmp = NULL;
-  HBITMAP hbmpCopy = NULL;
+    // -------------------------
+    // Add Toolbar Bitmap
+    // -------------------------
+    HBITMAP hbmp = NULL;
+    HBITMAP hbmpCopy = NULL;
 
-  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmap))
-  {
-    hbmp = LoadBitmapFile(g_tchToolbarBitmap);
-    if (!hbmp) {
-      StringCchCopy(g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), L"");
-      IniSectionDelete(L"Toolbar Images", L"BitmapDefault", false);
-      bDirtyFlag = true;
-    }
-  }
-  if (!hbmp) {
-    Settings.ToolBarTheme = Settings.ToolBarTheme % 2;
-    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2);
-    hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  }
-
-  // use copy for alphablend a disabled Toolbar (if not provided)
-  hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-
-
-  HIMAGELIST himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
-  DeleteObject(hbmp);
-  hbmp = NULL;
-
-  SendMessage(Globals.hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
-
-
-  // --------------------------
-  // Add a Hot Toolbar Bitmap
-  // --------------------------
-  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmapHot))
-  {
-    hbmp = LoadBitmapFile(g_tchToolbarBitmapHot);
-    if (!hbmp) {
-      StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
-      IniSectionDelete(L"Toolbar Images", L"BitmapHot", false);
-      bDirtyFlag = true;
-    }
-  }
-  if (!hbmp && (Settings.ToolBarTheme < 2)) {
-    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
-    hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  }
-
-  if (hbmp) 
-  {
-    himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
-    DeleteObject(hbmp);
-    hbmp = NULL;
-
-    SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
-  }
-  else { // clear the old one
-    SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, 0);
-  }
-
-
-  // ------------------------------
-  // Add a disabled Toolbar Bitmap
-  // ------------------------------
-  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmapDisabled))
-  {
-    hbmp = LoadBitmapFile(g_tchToolbarBitmapDisabled);
-    if (!hbmp) {
-      StringCchCopy(g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), L"");
-      IniSectionDelete(L"Toolbar Images", L"BitmapDisabled", false);
-      bDirtyFlag = true;
-    }
-  }
-  if (!hbmp && (Settings.ToolBarTheme < 2)) {
-    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
-    hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  }
-
-  if (hbmp)
-  {
-    himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
-    DeleteObject(hbmp);
-    hbmp = NULL;
-
-    SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
-  }
-  else {  // create disabled Toolbar, no external bitmap is supplied
-
-    if ((Settings.ToolBarTheme == 2) && StrIsEmpty(g_tchToolbarBitmapDisabled))
+    if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmap))
     {
-      bool bProcessed = false;
-      if (Flags.ToolbarLook == 1) {
-        bProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
-      }
-      else if (Flags.ToolbarLook == 2 || (!IsWindowsXPSP3OrGreater() && Flags.ToolbarLook == 0)) {
-        bProcessed = BitmapGrayScale(hbmpCopy);
-      }
-      if (bProcessed && !IsWindowsXPSP3OrGreater()) {
-        BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
-      }
-      if (bProcessed)
-      {
-        himl = CreateScaledImageListFromBitmap(hwnd, hbmpCopy);
+        hbmp = LoadBitmapFile(g_tchToolbarBitmap);
+        if (!hbmp)
+        {
+            StringCchCopy(g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), L"");
+            IniSectionDelete(L"Toolbar Images", L"BitmapDefault", false);
+            bDirtyFlag = true;
+        }
+    }
+    if (!hbmp)
+    {
+        Settings.ToolBarTheme = Settings.ToolBarTheme % 2;
+        LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2);
+        hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    }
+
+    // use copy for alphablend a disabled Toolbar (if not provided)
+    hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+
+
+    HIMAGELIST himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
+    DeleteObject(hbmp);
+    hbmp = NULL;
+
+    SendMessage(Globals.hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
+
+
+    // --------------------------
+    // Add a Hot Toolbar Bitmap
+    // --------------------------
+    if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmapHot))
+    {
+        hbmp = LoadBitmapFile(g_tchToolbarBitmapHot);
+        if (!hbmp)
+        {
+            StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
+            IniSectionDelete(L"Toolbar Images", L"BitmapHot", false);
+            bDirtyFlag = true;
+        }
+    }
+    if (!hbmp && (Settings.ToolBarTheme < 2))
+    {
+        LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
+        hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    }
+
+    if (hbmp)
+    {
+        himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
+        DeleteObject(hbmp);
+        hbmp = NULL;
+
+        SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
+    }
+    else   // clear the old one
+    {
+        SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, 0);
+    }
+
+
+    // ------------------------------
+    // Add a disabled Toolbar Bitmap
+    // ------------------------------
+    if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(g_tchToolbarBitmapDisabled))
+    {
+        hbmp = LoadBitmapFile(g_tchToolbarBitmapDisabled);
+        if (!hbmp)
+        {
+            StringCchCopy(g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), L"");
+            IniSectionDelete(L"Toolbar Images", L"BitmapDisabled", false);
+            bDirtyFlag = true;
+        }
+    }
+    if (!hbmp && (Settings.ToolBarTheme < 2))
+    {
+        LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
+        hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    }
+
+    if (hbmp)
+    {
+        himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
+        DeleteObject(hbmp);
+        hbmp = NULL;
 
         SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
-      }
     }
-  }
+    else    // create disabled Toolbar, no external bitmap is supplied
+    {
 
-  if (hbmpCopy) {
-    DeleteObject(hbmpCopy);
-    hbmpCopy = NULL;
-  }
+        if ((Settings.ToolBarTheme == 2) && StrIsEmpty(g_tchToolbarBitmapDisabled))
+        {
+            bool bProcessed = false;
+            if (Flags.ToolbarLook == 1)
+            {
+                bProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
+            }
+            else if (Flags.ToolbarLook == 2 || (!IsWindowsXPSP3OrGreater() && Flags.ToolbarLook == 0))
+            {
+                bProcessed = BitmapGrayScale(hbmpCopy);
+            }
+            if (bProcessed && !IsWindowsXPSP3OrGreater())
+            {
+                BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
+            }
+            if (bProcessed)
+            {
+                himl = CreateScaledImageListFromBitmap(hwnd, hbmpCopy);
 
-  // Load toolbar labels
-  WCHAR tchDesc[256] = { L'\0' };
-  WCHAR tchIndex[256] = { L'\0' };
-  for (int i = 0; i < COUNTOF(s_tbbMainWnd); ++i) {
-    if (s_tbbMainWnd[i].fsStyle == BTNS_SEP) { continue; }
-
-    int n = s_tbbMainWnd[i].iBitmap + 1;
-    StringCchPrintf(tchIndex, COUNTOF(tchIndex), L"%02i", n);
-
-    if (IniSectionGetString(L"Toolbar Labels", tchIndex, L"", tchDesc, COUNTOF(tchDesc)) > 0) {
-      s_tbbMainWnd[i].iString = SendMessage(Globals.hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc);
-      s_tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
+                SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
+            }
+        }
     }
-    else {
-      GetLngString(s_tbbMainWnd[i].idCommand, tchDesc, COUNTOF(tchDesc));
-      s_tbbMainWnd[i].iString = SendMessage(Globals.hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc); // tooltip
-      s_tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
+
+    if (hbmpCopy)
+    {
+        DeleteObject(hbmpCopy);
+        hbmpCopy = NULL;
     }
-  }
 
-  //~SendMessage(Globals.hwndToolbar, TB_SETMAXTEXTROWS, 0, 0);
-  DWORD const tbxstyle = (DWORD)SendMessage(Globals.hwndToolbar, TB_GETEXTENDEDSTYLE, 0, 0);
-  SendMessage(Globals.hwndToolbar,TB_SETEXTENDEDSTYLE,0,(tbxstyle | (TBSTYLE_EX_MIXEDBUTTONS | TBSTYLE_EX_DOUBLEBUFFER)));
+    // Load toolbar labels
+    WCHAR tchDesc[256] = { L'\0' };
+    WCHAR tchIndex[256] = { L'\0' };
+    for (int i = 0; i < COUNTOF(s_tbbMainWnd); ++i)
+    {
+        if (s_tbbMainWnd[i].fsStyle == BTNS_SEP)
+        {
+            continue;
+        }
 
-  SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+        int n = s_tbbMainWnd[i].iBitmap + 1;
+        StringCchPrintf(tchIndex, COUNTOF(tchIndex), L"%02i", n);
 
-  if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
+        if (IniSectionGetString(L"Toolbar Labels", tchIndex, L"", tchDesc, COUNTOF(tchDesc)) > 0)
+        {
+            s_tbbMainWnd[i].iString = SendMessage(Globals.hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc);
+            s_tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
+        }
+        else
+        {
+            GetLngString(s_tbbMainWnd[i].idCommand, tchDesc, COUNTOF(tchDesc));
+            s_tbbMainWnd[i].iString = SendMessage(Globals.hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc); // tooltip
+            s_tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
+        }
+    }
+
+    //~SendMessage(Globals.hwndToolbar, TB_SETMAXTEXTROWS, 0, 0);
+    DWORD const tbxstyle = (DWORD)SendMessage(Globals.hwndToolbar, TB_GETEXTENDEDSTYLE, 0, 0);
+    SendMessage(Globals.hwndToolbar,TB_SETEXTENDEDSTYLE,0,(tbxstyle | (TBSTYLE_EX_MIXEDBUTTONS | TBSTYLE_EX_DOUBLEBUFFER)));
+
     SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
-  }
 
-  CloseSettingsFile(bDirtyFlag, bOpendByMe);
+    if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0)
+    {
+        SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+    }
 
-  // ------------------------------
-  // Create ReBar and add Toolbar
-  // ------------------------------
-  DWORD const dwReBarStyle = Settings.ShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
+    CloseSettingsFile(bDirtyFlag, bOpendByMe);
 
-  if (Globals.hwndRebar) {
-    DestroyWindow(Globals.hwndRebar);
-  }
-  Globals.hwndRebar = CreateWindowEx(WS_EX_TOOLWINDOW, REBARCLASSNAME, NULL, dwReBarStyle,
-                                     0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
+    // ------------------------------
+    // Create ReBar and add Toolbar
+    // ------------------------------
+    DWORD const dwReBarStyle = Settings.ShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
 
-  // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
-  InitWindowCommon(Globals.hwndRebar, !(IsWindows10OrGreater() && IsDarkModeSupported())); 
+    if (Globals.hwndRebar)
+    {
+        DestroyWindow(Globals.hwndRebar);
+    }
+    Globals.hwndRebar = CreateWindowEx(WS_EX_TOOLWINDOW, REBARCLASSNAME, NULL, dwReBarStyle,
+                                       0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
+
+    // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
+    InitWindowCommon(Globals.hwndRebar, !(IsWindows10OrGreater() && IsDarkModeSupported()));
 
 #ifdef D_NP3_WIN10_DARK_MODE
-  if (IsDarkModeSupported()) {
-    AllowDarkModeForWindowEx(Globals.hwndRebar, CheckDarkModeEnabled());
-  }
+    if (IsDarkModeSupported())
+    {
+        AllowDarkModeForWindowEx(Globals.hwndRebar, CheckDarkModeEnabled());
+    }
 #endif
 
-  REBARINFO rbi;
-  rbi.cbSize = sizeof(REBARINFO);
-  rbi.fMask  = 0;
-  rbi.himl   = (HIMAGELIST)NULL;
-  SendMessage(Globals.hwndRebar, RB_SETBARINFO, 0, (LPARAM)&rbi);
+    REBARINFO rbi;
+    rbi.cbSize = sizeof(REBARINFO);
+    rbi.fMask  = 0;
+    rbi.himl   = (HIMAGELIST)NULL;
+    SendMessage(Globals.hwndRebar, RB_SETBARINFO, 0, (LPARAM)&rbi);
 
-  RECT rc;
-  SendMessage(Globals.hwndToolbar, TB_GETITEMRECT, 0, (LPARAM)&rc);
-  //SendMessage(Globals.hwndToolbar,TB_SETINDENT,2,0);
+    RECT rc;
+    SendMessage(Globals.hwndToolbar, TB_GETITEMRECT, 0, (LPARAM)&rc);
+    //SendMessage(Globals.hwndToolbar,TB_SETINDENT,2,0);
 
-  REBARBANDINFO rbBand;  ZeroMemory(&rbBand, sizeof(REBARBANDINFO));
-  rbBand.cbSize  = sizeof(REBARBANDINFO);
-  rbBand.fMask = RBBIM_COLORS /*| RBBIM_TEXT | RBBIM_BACKGROUND */ |
-                 RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
-  //rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
-  rbBand.fStyle = s_bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
-  rbBand.hbmBack = NULL;
-  rbBand.lpText  = L"Toolbar";
-  rbBand.clrFore = GetModeTextColor(UseDarkMode());
-  rbBand.clrBack = IsWindows10OrGreater() ? GetModeBkColor(UseDarkMode()) : GetModeBtnfaceColor(UseDarkMode());
-  rbBand.hwndChild  = Globals.hwndToolbar;
-  rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
-  rbBand.cyMinChild = (rc.bottom - rc.top) + (2 * rc.top);
-  rbBand.cx         = 0;
-  SendMessage(Globals.hwndRebar, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rbBand);
+    REBARBANDINFO rbBand;
+    ZeroMemory(&rbBand, sizeof(REBARBANDINFO));
+    rbBand.cbSize  = sizeof(REBARBANDINFO);
+    rbBand.fMask = RBBIM_COLORS /*| RBBIM_TEXT | RBBIM_BACKGROUND */ |
+                   RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
+    //rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
+    rbBand.fStyle = s_bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
+    rbBand.hbmBack = NULL;
+    rbBand.lpText  = L"Toolbar";
+    rbBand.clrFore = GetModeTextColor(UseDarkMode());
+    rbBand.clrBack = IsWindows10OrGreater() ? GetModeBkColor(UseDarkMode()) : GetModeBtnfaceColor(UseDarkMode());
+    rbBand.hwndChild  = Globals.hwndToolbar;
+    rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
+    rbBand.cyMinChild = (rc.bottom - rc.top) + (2 * rc.top);
+    rbBand.cx         = 0;
+    SendMessage(Globals.hwndRebar, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rbBand);
 
-  SetWindowPos(Globals.hwndRebar, NULL, 0, 0, 0, 0, SWP_NOZORDER);
-  GetWindowRect(Globals.hwndRebar, &rc);
-  s_cyReBar = (rc.bottom - rc.top);
-  s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;  // (!) frame color is same as INITIAL title-bar ???
+    SetWindowPos(Globals.hwndRebar, NULL, 0, 0, 0, 0, SWP_NOZORDER);
+    GetWindowRect(Globals.hwndRebar, &rc);
+    s_cyReBar = (rc.bottom - rc.top);
+    s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;  // (!) frame color is same as INITIAL title-bar ???
 
 
-  // -------------------
-  // Create Statusbar 
-  // -------------------
-  DWORD const dwStatusbarStyle = SBT_NOBORDERS | (Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS));
+    // -------------------
+    // Create Statusbar
+    // -------------------
+    DWORD const dwStatusbarStyle = SBT_NOBORDERS | (Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS));
 
-  if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
+    if (Globals.hwndStatus)
+    {
+        DestroyWindow(Globals.hwndStatus);
+    }
 
-  //~Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
-  Globals.hwndStatus = CreateWindowEx(
-      WS_EX_COMPOSITED,          // => double-buffering avoids flickering
-      STATUSCLASSNAME,           // name of status bar class
-      (PCTSTR)NULL,              // no text when first created
-      dwStatusbarStyle,          // creates a visible child window
-      0, 0, 0, 0,                // ignores size and position
-      hwnd,                      // handle to parent window
-      (HMENU)IDC_STATUSBAR,      // child window identifier
-      hInstance,                 // handle to application instance
-      NULL);                     // no window creation data
+    //~Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
+    Globals.hwndStatus = CreateWindowEx(
+                             WS_EX_COMPOSITED,          // => double-buffering avoids flickering
+                             STATUSCLASSNAME,           // name of status bar class
+                             (PCTSTR)NULL,              // no text when first created
+                             dwStatusbarStyle,          // creates a visible child window
+                             0, 0, 0, 0,                // ignores size and position
+                             hwnd,                      // handle to parent window
+                             (HMENU)IDC_STATUSBAR,      // child window identifier
+                             hInstance,                 // handle to application instance
+                             NULL);                     // no window creation data
 
-  InitWindowCommon(Globals.hwndStatus, true); // (!) themed = true : resize grip
+    InitWindowCommon(Globals.hwndStatus, true); // (!) themed = true : resize grip
 
 #ifdef D_NP3_WIN10_DARK_MODE
-  if (IsDarkModeSupported()) {
-    AllowDarkModeForWindowEx(Globals.hwndStatus, CheckDarkModeEnabled());
-  }
-  //~HDC const hdc = GetDC(Globals.hwndStatus);
-  //~SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
-  //~SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
-  //~ReleaseDC(Globals.hwndStatus, hdc);
+    if (IsDarkModeSupported())
+    {
+        AllowDarkModeForWindowEx(Globals.hwndStatus, CheckDarkModeEnabled());
+    }
+    //~HDC const hdc = GetDC(Globals.hwndStatus);
+    //~SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
+    //~SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
+    //~ReleaseDC(Globals.hwndStatus, hdc);
 #endif
 
 }
@@ -2761,45 +3027,49 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 //
 LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(wParam);
-  UNUSED(lParam);
+    UNUSED(wParam);
+    UNUSED(lParam);
 
-  static bool bShutdownOK = false;
+    static bool bShutdownOK = false;
 
-  if (!bShutdownOK) {
+    if (!bShutdownOK)
+    {
 
-    if (s_bPrevFullScreenFlag) {
-      SendWMCommand(hwnd, CMD_FULLSCRWINPOS);
+        if (s_bPrevFullScreenFlag)
+        {
+            SendWMCommand(hwnd, CMD_FULLSCRWINPOS);
+        }
+
+        // Terminate file watching
+        InstallFileWatching(false);
+
+        DragAcceptFiles(hwnd, true);
+
+        // Terminate clipboard watching
+        if (s_flagPasteBoard)
+        {
+            KillTimer(hwnd, ID_PASTEBOARDTIMER);
+            ChangeClipboardChain(hwnd, s_hwndNextCBChain);
+        }
+
+        // close Find/Replace and CustomizeSchemes
+        CloseNonModalDialogs();
+
+        // call SaveAllSettings() when Globals.hwndToolbar is still valid
+        SaveAllSettings(false);
+
+        // Remove tray icon if necessary
+        ShowNotifyIcon(hwnd, false);
+
+        bShutdownOK = true;
     }
 
-    // Terminate file watching
-    InstallFileWatching(false);
-
-    DragAcceptFiles(hwnd, true);
-
-    // Terminate clipboard watching
-    if (s_flagPasteBoard) {
-      KillTimer(hwnd, ID_PASTEBOARDTIMER);
-      ChangeClipboardChain(hwnd, s_hwndNextCBChain);
+    if (umsg == WM_DESTROY)
+    {
+        PostQuitMessage(0);
     }
 
-    // close Find/Replace and CustomizeSchemes
-    CloseNonModalDialogs();
-    
-    // call SaveAllSettings() when Globals.hwndToolbar is still valid
-    SaveAllSettings(false);
-
-    // Remove tray icon if necessary
-    ShowNotifyIcon(hwnd, false);
-
-    bShutdownOK = true;
-  }
-
-  if (umsg == WM_DESTROY) {
-    PostQuitMessage(0);
-  }
-
-  return FALSE;
+    return FALSE;
 }
 
 
@@ -2811,23 +3081,23 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  //DPI_T dpi;
-  //dpi.x = LOWORD(wParam);
-  //dpi.y = HIWORD(wParam);
-  UNUSED(wParam);
-  //const RECT* const rc = (RECT*)lParam;
+    //DPI_T dpi;
+    //dpi.x = LOWORD(wParam);
+    //dpi.y = HIWORD(wParam);
+    UNUSED(wParam);
+    //const RECT* const rc = (RECT*)lParam;
 
-  DocPos const pos = SciCall_GetCurrentPos();
+    DocPos const pos = SciCall_GetCurrentPos();
 
-  UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
 
-  SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
+    SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
 
-  MsgThemeChanged(hwnd, wParam, lParam);
+    MsgThemeChanged(hwnd, wParam, lParam);
 
-  Sci_GotoPosChooseCaret(pos);
-    
-  return TRUE;
+    Sci_GotoPosChooseCaret(pos);
+
+    return TRUE;
 }
 
 
@@ -2835,53 +3105,56 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  MsgThemeChanged() - Handle WM_THEMECHANGED
 //
-LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
+LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
-  UNUSED(lParam);
-  UNUSED(wParam);
- 
+    UNUSED(lParam);
+    UNUSED(wParam);
+
 #ifdef D_NP3_WIN10_DARK_MODE
-  AllowDarkModeForWindowEx(hwnd, UseDarkMode());
-  RefreshTitleBarThemeColor(hwnd);
+    AllowDarkModeForWindowEx(hwnd, UseDarkMode());
+    RefreshTitleBarThemeColor(hwnd);
 #endif
-  UpdateTitleBar(hwnd);
+    UpdateTitleBar(hwnd);
 
-  // reinitialize edit frame
-  _HandleEditWndFrame();
+    // reinitialize edit frame
+    _HandleEditWndFrame();
 
-  // recreate toolbar and statusbar
-  CreateBars(hwnd,Globals.hInstance);
+    // recreate toolbar and statusbar
+    CreateBars(hwnd,Globals.hInstance);
 
-  Style_ResetCurrentLexer(Globals.hwndEdit);
+    Style_ResetCurrentLexer(Globals.hwndEdit);
 
-  Sci_RedrawScrollbars();
+    Sci_RedrawScrollbars();
 
-  SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
-  DrawMenuBar(hwnd);
+    SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+    DrawMenuBar(hwnd);
 
-  if (FocusedView.HideNonMatchedLines) {
-    EditToggleView(Globals.hwndEdit);
-  }
+    if (FocusedView.HideNonMatchedLines)
+    {
+        EditToggleView(Globals.hwndEdit);
+    }
 
-  MarkAllOccurrences(0, false);
+    MarkAllOccurrences(0, false);
 
-  if (Flags.bLargeFileLoaded) {
-    EditDoVisibleStyling();
-  }
-  else {
-    EditDoStyling(0, -1);
-  }
+    if (Flags.bLargeFileLoaded)
+    {
+        EditDoVisibleStyling();
+    }
+    else
+    {
+        EditDoStyling(0, -1);
+    }
 
-  EditUpdateVisibleIndicators();
+    EditUpdateVisibleIndicators();
 
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
-  UpdateUI();
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
+    UpdateUI();
 
-  UpdateWindowEx(hwnd);
+    UpdateWindowEx(hwnd);
 
-  return FALSE;
+    return FALSE;
 }
 
 
@@ -2892,64 +3165,67 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 //
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(hwnd);
+    UNUSED(hwnd);
 
-  if (wParam == SIZE_MINIMIZED) { return FALSE; }
+    if (wParam == SIZE_MINIMIZED)
+    {
+        return FALSE;
+    }
 
-  int x = 0;
-  int y = 0;
+    int x = 0;
+    int y = 0;
 
-  int cx = GET_X_LPARAM(lParam);
-  int cy = GET_Y_LPARAM(lParam);
+    int cx = GET_X_LPARAM(lParam);
+    int cy = GET_Y_LPARAM(lParam);
 
-  if (Settings.ShowToolbar)
-  {
-    //~SendMessage(Globals.hwndToolbar,WM_SIZE,0,0);
-    //~RECT rc;
-    //~GetWindowRect(Globals.hwndToolbar,&rc);
-    //~y = (rc.bottom - rc.top);
-    //~cy -= (rc.bottom - rc.top);
+    if (Settings.ShowToolbar)
+    {
+        //~SendMessage(Globals.hwndToolbar,WM_SIZE,0,0);
+        //~RECT rc;
+        //~GetWindowRect(Globals.hwndToolbar,&rc);
+        //~y = (rc.bottom - rc.top);
+        //~cy -= (rc.bottom - rc.top);
 
-    //~SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
+        //~SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
 
-    SetWindowPos(Globals.hwndRebar, NULL, 0, 0, LOWORD(lParam), s_cyReBar, SWP_NOZORDER);
+        SetWindowPos(Globals.hwndRebar, NULL, 0, 0, LOWORD(lParam), s_cyReBar, SWP_NOZORDER);
 
-    // the ReBar automatically sets the correct height
-    // calling SetWindowPos() with the height of one toolbar button
-    // causes the control not to temporarily use the whole client area
-    // and prevents flickering
+        // the ReBar automatically sets the correct height
+        // calling SetWindowPos() with the height of one toolbar button
+        // causes the control not to temporarily use the whole client area
+        // and prevents flickering
 
-    //GetWindowRect(Globals.hwndRebar,&rc);
-    y = s_cyReBar + s_cyReBarFrame;    // define
-    cy -= s_cyReBar + s_cyReBarFrame;  // border
-  }
+        //GetWindowRect(Globals.hwndRebar,&rc);
+        y = s_cyReBar + s_cyReBarFrame;    // define
+        cy -= s_cyReBar + s_cyReBarFrame;  // border
+    }
 
-  if (Settings.ShowStatusbar)
-  {
-    SendMessage(Globals.hwndStatus,WM_SIZE,0,0);
-    RECT rc;
-    GetWindowRect(Globals.hwndStatus, &rc);
-    cy -= (rc.bottom - rc.top);
-  }
+    if (Settings.ShowStatusbar)
+    {
+        SendMessage(Globals.hwndStatus,WM_SIZE,0,0);
+        RECT rc;
+        GetWindowRect(Globals.hwndStatus, &rc);
+        cy -= (rc.bottom - rc.top);
+    }
 
-  HDWP hdwp = BeginDeferWindowPos(2);
+    HDWP hdwp = BeginDeferWindowPos(2);
 
-  DeferWindowPos(hdwp,s_hwndEditFrame,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
+    DeferWindowPos(hdwp,s_hwndEditFrame,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
 
-  DeferWindowPos(hdwp,Globals.hwndEdit,NULL,x+s_cxEditFrame,y+s_cyEditFrame,
-                                            cx-2*s_cxEditFrame,cy-2*s_cyEditFrame,
-                 SWP_NOZORDER | SWP_NOACTIVATE);
+    DeferWindowPos(hdwp,Globals.hwndEdit,NULL,x+s_cxEditFrame,y+s_cyEditFrame,
+                   cx-2*s_cxEditFrame,cy-2*s_cyEditFrame,
+                   SWP_NOZORDER | SWP_NOACTIVATE);
 
-  EndDeferWindowPos(hdwp);
+    EndDeferWindowPos(hdwp);
 
-  s_WinCurrentWidth = cx;
+    s_WinCurrentWidth = cx;
 
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
-  UpdateTitleBar(hwnd);
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
+    UpdateTitleBar(hwnd);
 
-  return FALSE;
+    return FALSE;
 }
 
 
@@ -2959,60 +3235,63 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  https://docs.microsoft.com/en-us/windows/win32/controls/status-bars#owner-drawn-status-bars
 //
-LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam) 
+LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(hwnd);
+    UNUSED(hwnd);
 
-  if (LOWORD(wParam) == IDC_STATUSBAR) // Statusbar SB_SETTEXT caused parent's WM_DRAWITEM message
-  {
-    const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
+    if (LOWORD(wParam) == IDC_STATUSBAR) // Statusbar SB_SETTEXT caused parent's WM_DRAWITEM message
+    {
+        const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
 
-    int const partId = (int)pDIS->itemID;
-    if (partId == -1) {
-      return FALSE;
-    }
+        int const partId = (int)pDIS->itemID;
+        if (partId == -1)
+        {
+            return FALSE;
+        }
 
-    HDC const hdc = pDIS->hDC;
-    RECT const rc = pDIS->rcItem;
+        HDC const hdc = pDIS->hDC;
+        RECT const rc = pDIS->rcItem;
 
-    //UINT const ctlId = pDIS->CtlID; // child window identifier
-    //~int const stateId = (int)pDIS->itemState ~ don't use
+        //UINT const ctlId = pDIS->CtlID; // child window identifier
+        //~int const stateId = (int)pDIS->itemState ~ don't use
 
-    //~PAINTSTRUCT ps;
-    //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
+        //~PAINTSTRUCT ps;
+        //~BeginPaint(hWndItem, &ps); ~ not needed on WM_DRAWITEM
 
-    //~SetModeBkColor(hdc, UseDarkMode());
-    SetModeBtnFaceColor(hdc, UseDarkMode());
-    SetModeTextColor(hdc, UseDarkMode());
+        //~SetModeBkColor(hdc, UseDarkMode());
+        SetModeBtnFaceColor(hdc, UseDarkMode());
+        SetModeTextColor(hdc, UseDarkMode());
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-    if (UseDarkMode()) {
-      // overpaint part frames
-      HWND const hWndItem = pDIS->hwndItem;
-      int const bdh = GetSystemMetrics(SM_CYFRAME);
-      HDC const hdcFrm = GetWindowDC(hWndItem);
-      RECT rcf = rc;
-      for (int i = 1; i < bdh; ++i) {
-        FrameRect(hdcFrm, &rcf, Globals.hbrDarkModeBtnFcBrush);
-        rcf.left -= 1;
-        rcf.top -= 1;
-        rcf.bottom += 1;
-        rcf.right += 1;
-      }
-      FrameRect(hdcFrm, &rcf, GetSysColorBrush(COLOR_3DDKSHADOW));
-      ReleaseDC(hWndItem, hdcFrm);
-    }
+        if (UseDarkMode())
+        {
+            // overpaint part frames
+            HWND const hWndItem = pDIS->hwndItem;
+            int const bdh = GetSystemMetrics(SM_CYFRAME);
+            HDC const hdcFrm = GetWindowDC(hWndItem);
+            RECT rcf = rc;
+            for (int i = 1; i < bdh; ++i)
+            {
+                FrameRect(hdcFrm, &rcf, Globals.hbrDarkModeBtnFcBrush);
+                rcf.left -= 1;
+                rcf.top -= 1;
+                rcf.bottom += 1;
+                rcf.right += 1;
+            }
+            FrameRect(hdcFrm, &rcf, GetSysColorBrush(COLOR_3DDKSHADOW));
+            ReleaseDC(hWndItem, hdcFrm);
+        }
 
 #endif
 
-    LPCWSTR const text = (LPCWSTR)(pDIS->itemData);
-    ExtTextOut(hdc, rc.left + 1, rc.top + 1, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
+        LPCWSTR const text = (LPCWSTR)(pDIS->itemData);
+        ExtTextOut(hdc, rc.left + 1, rc.top + 1, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
 
-    //~EndPaint(hWndItem, &ps);
-    return TRUE;
-  } 
-  return FALSE;
+        //~EndPaint(hWndItem, &ps);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 
@@ -3023,44 +3302,52 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(lParam);
+    UNUSED(lParam);
 
-  WCHAR szDropStrgBuf[MAX_PATH + 40];
-  HDROP hDrop = (HDROP)wParam;
+    WCHAR szDropStrgBuf[MAX_PATH + 40];
+    HDROP hDrop = (HDROP)wParam;
 
-  if (IsIconic(hwnd)) {
-    ShowWindow(hwnd, SW_RESTORE);
-  }
-
-  DragQueryFile(hDrop, 0, szDropStrgBuf, COUNTOF(szDropStrgBuf));
-
-  if (PathIsDirectory(szDropStrgBuf)) {
-    WCHAR tchFile[MAX_PATH] = { L'\0' };
-    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szDropStrgBuf)) {
-      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+    if (IsIconic(hwnd))
+    {
+        ShowWindow(hwnd, SW_RESTORE);
     }
-  }
-  else if (PathIsExistingFile(szDropStrgBuf)) {
-    if (Flags.bReuseWindow) {
-      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szDropStrgBuf);
+
+    DragQueryFile(hDrop, 0, szDropStrgBuf, COUNTOF(szDropStrgBuf));
+
+    if (PathIsDirectory(szDropStrgBuf))
+    {
+        WCHAR tchFile[MAX_PATH] = { L'\0' };
+        if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szDropStrgBuf))
+        {
+            FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+        }
     }
-    else {
-      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, szDropStrgBuf);
+    else if (PathIsExistingFile(szDropStrgBuf))
+    {
+        if (Flags.bReuseWindow)
+        {
+            FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szDropStrgBuf);
+        }
+        else
+        {
+            DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, szDropStrgBuf);
+        }
     }
-  }
-  else {
-    // delegated to SCN_URIDROPPED
-    // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
-    //~InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
-  }
+    else
+    {
+        // delegated to SCN_URIDROPPED
+        // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
+        //~InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
+    }
 
-  if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
-  }
+    if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
+    {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
+    }
 
-  DragFinish(hDrop);
+    DragFinish(hDrop);
 
-  return FALSE;
+    return FALSE;
 }
 
 
@@ -3071,40 +3358,42 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData)
 {
-  DWORD dwEffect = DROPEFFECT_NONE;
+    DWORD dwEffect = DROPEFFECT_NONE;
 
-  //HWND hEditWnd = (HWND)pUserData;
-  UNUSED(pUserData);
+    //HWND hEditWnd = (HWND)pUserData;
+    UNUSED(pUserData);
 
-  if (cf == CF_HDROP)
-  {
-    WCHAR szBuf[MAX_PATH + 40];
-    HDROP hDrop = (HDROP)hData;
+    if (cf == CF_HDROP)
+    {
+        WCHAR szBuf[MAX_PATH + 40];
+        HDROP hDrop = (HDROP)hData;
 
-    if (IsIconic(hWnd))
-      ShowWindow(hWnd, SW_RESTORE);
+        if (IsIconic(hWnd))
+            ShowWindow(hWnd, SW_RESTORE);
 
-    DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
+        DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
 
-    if (PathIsDirectory(szBuf)) {
-      WCHAR tchFile[MAX_PATH] = { L'\0' };
-      if (OpenFileDlg(hWnd, tchFile, COUNTOF(tchFile), szBuf))
-        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+        if (PathIsDirectory(szBuf))
+        {
+            WCHAR tchFile[MAX_PATH] = { L'\0' };
+            if (OpenFileDlg(hWnd, tchFile, COUNTOF(tchFile), szBuf))
+                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+        }
+        else
+            FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+
+        if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
+        }
+        dwEffect = DROPEFFECT_COPY;
     }
-    else
-      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
 
-    if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
-    }
-    dwEffect = DROPEFFECT_COPY;
-  }
+    UNUSED(dwKeyState);
+    UNUSED(pt);
 
-  UNUSED(dwKeyState);
-  UNUSED(pt);
-
-  return dwEffect;
-} 
+    return dwEffect;
+}
 
 
 //=============================================================================
@@ -3114,122 +3403,146 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 //
 LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(wParam);
+    UNUSED(wParam);
 
-  PCOPYDATASTRUCT pcds = (PCOPYDATASTRUCT)lParam;
+    PCOPYDATASTRUCT pcds = (PCOPYDATASTRUCT)lParam;
 
-  // Reset Change Notify
-  //bPendingChangeNotify = false;
+    // Reset Change Notify
+    //bPendingChangeNotify = false;
 
-  SetDlgItemInt(hwnd, IDC_REUSELOCK, GetTickCount(), false);
+    SetDlgItemInt(hwnd, IDC_REUSELOCK, GetTickCount(), false);
 
-  if (pcds->dwData == DATA_NOTEPAD3_PARAMS) 
-  {
-    LPnp3params params = AllocMem(pcds->cbData, HEAP_ZERO_MEMORY);
-    if (params) {
-      CopyMemory(params, pcds->lpData, pcds->cbData);
+    if (pcds->dwData == DATA_NOTEPAD3_PARAMS)
+    {
+        LPnp3params params = AllocMem(pcds->cbData, HEAP_ZERO_MEMORY);
+        if (params)
+        {
+            CopyMemory(params, pcds->lpData, pcds->cbData);
 
-      if (params->flagLexerSpecified) {
-        s_flagLexerSpecified = true;
-      }
-      if (params->flagQuietCreate) {
-        s_flagQuietCreate = true;
-      }
-      if (params->flagFileSpecified) {
-
-        bool bOpened = false;
-        Encoding_Forced(params->flagSetEncoding);
-
-        if (PathIsDirectory(&params->wchData)) {
-          WCHAR tchFile[MAX_PATH] = { L'\0' };
-          if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), &params->wchData))
-            bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-        }
-        else {
-          bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, &params->wchData);
-        }
-        if (bOpened) {
-          if (params->flagChangeNotify == FWM_MSGBOX) 
-          {
-            FileWatching.FileWatchingMode = FWM_DONT_CARE;
-            FileWatching.ResetFileWatching = true;
-            InstallFileWatching(true);
-          }
-          else if (params->flagChangeNotify == FWM_AUTORELOAD) {
-            if (!FileWatching.MonitoringLog) {
-              PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+            if (params->flagLexerSpecified)
+            {
+                s_flagLexerSpecified = true;
             }
-            else {
-              FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-              FileWatching.ResetFileWatching = true;
-              InstallFileWatching(true);
+            if (params->flagQuietCreate)
+            {
+                s_flagQuietCreate = true;
             }
-          }
+            if (params->flagFileSpecified)
+            {
 
-          if (params->flagSetEncoding != CPI_NONE) {
-            s_flagSetEncoding = params->flagSetEncoding;
-            SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
-            s_flagSetEncoding = CPI_NONE;
-          }
+                bool bOpened = false;
+                Encoding_Forced(params->flagSetEncoding);
 
-          if (0 != params->flagSetEOLMode) {
-            s_flagSetEOLMode = params->flagSetEOLMode;
-            SendWMCommand(Globals.hwndMain, IDM_LINEENDINGS_CRLF + s_flagSetEOLMode - 1);
-            s_flagSetEOLMode = 0;
-          }
+                if (PathIsDirectory(&params->wchData))
+                {
+                    WCHAR tchFile[MAX_PATH] = { L'\0' };
+                    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), &params->wchData))
+                        bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+                }
+                else
+                {
+                    bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, &params->wchData);
+                }
+                if (bOpened)
+                {
+                    if (params->flagChangeNotify == FWM_MSGBOX)
+                    {
+                        FileWatching.FileWatchingMode = FWM_DONT_CARE;
+                        FileWatching.ResetFileWatching = true;
+                        InstallFileWatching(true);
+                    }
+                    else if (params->flagChangeNotify == FWM_AUTORELOAD)
+                    {
+                        if (!FileWatching.MonitoringLog)
+                        {
+                            PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                        }
+                        else
+                        {
+                            FileWatching.FileWatchingMode = FWM_AUTORELOAD;
+                            FileWatching.ResetFileWatching = true;
+                            InstallFileWatching(true);
+                        }
+                    }
 
-          if (params->flagLexerSpecified) {
-            if (params->iInitialLexer < 0) {
-              WCHAR wchExt[32] = { L'\0' };
-              StringCchCopy(wchExt, COUNTOF(wchExt), L".");
-              StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData, 0) + 1, 31);
-              Style_SetLexerFromName(Globals.hwndEdit, &params->wchData, wchExt);
+                    if (params->flagSetEncoding != CPI_NONE)
+                    {
+                        s_flagSetEncoding = params->flagSetEncoding;
+                        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
+                        s_flagSetEncoding = CPI_NONE;
+                    }
+
+                    if (0 != params->flagSetEOLMode)
+                    {
+                        s_flagSetEOLMode = params->flagSetEOLMode;
+                        SendWMCommand(Globals.hwndMain, IDM_LINEENDINGS_CRLF + s_flagSetEOLMode - 1);
+                        s_flagSetEOLMode = 0;
+                    }
+
+                    if (params->flagLexerSpecified)
+                    {
+                        if (params->iInitialLexer < 0)
+                        {
+                            WCHAR wchExt[32] = { L'\0' };
+                            StringCchCopy(wchExt, COUNTOF(wchExt), L".");
+                            StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData, 0) + 1, 31);
+                            Style_SetLexerFromName(Globals.hwndEdit, &params->wchData, wchExt);
+                        }
+                        else if (params->iInitialLexer >= 0 && params->iInitialLexer < NUMLEXERS)
+                            Style_SetLexerFromID(Globals.hwndEdit, params->iInitialLexer);
+                    }
+
+                    if (params->flagTitleExcerpt)
+                    {
+                        StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), StrEnd(&params->wchData, 0) + 1, COUNTOF(s_wchTitleExcerpt));
+                    }
+                }
+                // reset
+                Encoding_Forced(CPI_NONE);
             }
-            else if (params->iInitialLexer >= 0 && params->iInitialLexer < NUMLEXERS)
-              Style_SetLexerFromID(Globals.hwndEdit, params->iInitialLexer);
-          }
 
-          if (params->flagTitleExcerpt) {
-            StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), StrEnd(&params->wchData, 0) + 1, COUNTOF(s_wchTitleExcerpt));
-          }
+            if (params->flagJumpTo)
+            {
+                s_flagJumpTo = true;
+                EditJumpTo(params->iInitialLine, params->iInitialColumn);
+            }
+
+            if (params->flagMatchText)
+            {
+                g_flagMatchText = params->flagMatchText;
+                SetFindPattern(StrEnd(&params->wchData, 0) + 1);
+                SetFindReplaceData(); // s_FindReplaceData
+
+                if (g_flagMatchText & 2)
+                {
+                    if (!s_flagJumpTo)
+                    {
+                        SciCall_DocumentEnd();
+                    }
+                    EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                }
+                else
+                {
+                    if (!s_flagJumpTo)
+                    {
+                        SciCall_DocumentStart();
+                    }
+                    EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                }
+            }
+
+            s_flagLexerSpecified = false;
+            s_flagQuietCreate = false;
+
+            FreeMem(params);
         }
-        // reset
-        Encoding_Forced(CPI_NONE);
-      }
 
-      if (params->flagJumpTo) {
-        s_flagJumpTo = true;
-        EditJumpTo(params->iInitialLine, params->iInitialColumn);
-      }
-
-      if (params->flagMatchText)
-      {
-        g_flagMatchText = params->flagMatchText;
-        SetFindPattern(StrEnd(&params->wchData, 0) + 1);
-        SetFindReplaceData(); // s_FindReplaceData
-
-        if (g_flagMatchText & 2) {
-          if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
-          EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
-        }
-        else {
-          if (!s_flagJumpTo) { SciCall_DocumentStart(); }
-          EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
-        }
-      }
-
-      s_flagLexerSpecified = false;
-      s_flagQuietCreate = false;
-
-      FreeMem(params);
+        UpdateToolbar();
+        UpdateStatusbar(true);
+        UpdateMarginWidth();
     }
 
-    UpdateToolbar();
-    UpdateStatusbar(true);
-    UpdateMarginWidth();
-  }
-
-  return FALSE;
+    return FALSE;
 }
 
 //=============================================================================
@@ -3239,107 +3552,118 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  bool const bMargin = (SCN_MARGINRIGHTCLICK == umsg);
-  int const nID = bMargin ? IDC_MARGIN : GetDlgCtrlID((HWND)wParam);
-  if ((nID != IDC_MARGIN) && (nID != IDC_EDIT) && (nID != IDC_STATUSBAR) && (nID != IDC_REBAR) && (nID != IDC_TOOLBAR)) {
-    return DefWindowProc(hwnd, umsg, wParam, lParam);
-  }
-
-  // no context menu after undo/redo history scrolling
-  if (s_bUndoRedoScroll) {
-    s_bUndoRedoScroll = false;
-    return FALSE;
-  }
-
-  HMENU const hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
-  //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
-
-  POINT pt;
-  pt.x = (int)(short)LOWORD(lParam);
-  pt.y = (int)(short)HIWORD(lParam);
-
-  int imenu = 0;
-
-  // modify configured items
-  HMENU const hStdCtxMenu = GetSubMenu(hMenuCtx, imenu);
-  if (StrIsNotEmpty(Settings2.WebTmpl1MenuName)) {
-    ModifyMenu(hStdCtxMenu, CMD_WEBACTION1, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION1, Settings2.WebTmpl1MenuName);
-  }
-  if (StrIsNotEmpty(Settings2.WebTmpl2MenuName)) {
-    ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
-  }
-
-  switch (nID) {
-  case IDC_EDIT:
+    bool const bMargin = (SCN_MARGINRIGHTCLICK == umsg);
+    int const nID = bMargin ? IDC_MARGIN : GetDlgCtrlID((HWND)wParam);
+    if ((nID != IDC_MARGIN) && (nID != IDC_EDIT) && (nID != IDC_STATUSBAR) && (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
     {
-      if (SciCall_IsSelectionEmpty() && (pt.x != -1) && (pt.y != -1)) {
-        POINT ptc;
-        ptc.x = pt.x;  ptc.y = pt.y;
-        ScreenToClient(Globals.hwndEdit, &ptc);
-        //~SciCall_GotoPos(SciCall_PositionFromPoint(ptc.x, ptc.y));
-      }
+        return DefWindowProc(hwnd, umsg, wParam, lParam);
+    }
 
-      if (pt.x == -1 && pt.y == -1) {
-        DocPos const iCurrentPos = SciCall_GetCurrentPos();
-        pt.x = (LONG)SciCall_PointXFromPosition(iCurrentPos);
-        pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
-        ClientToScreen(Globals.hwndEdit, &pt);
-      }
+    // no context menu after undo/redo history scrolling
+    if (s_bUndoRedoScroll)
+    {
+        s_bUndoRedoScroll = false;
+        return FALSE;
+    }
 
-      DocLn const curLn = Sci_GetCurrentLineNumber();
-      int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
-      imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? 2 : 0;
+    HMENU const hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+    //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
+
+    POINT pt;
+    pt.x = (int)(short)LOWORD(lParam);
+    pt.y = (int)(short)HIWORD(lParam);
+
+    int imenu = 0;
+
+    // modify configured items
+    HMENU const hStdCtxMenu = GetSubMenu(hMenuCtx, imenu);
+    if (StrIsNotEmpty(Settings2.WebTmpl1MenuName))
+    {
+        ModifyMenu(hStdCtxMenu, CMD_WEBACTION1, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION1, Settings2.WebTmpl1MenuName);
+    }
+    if (StrIsNotEmpty(Settings2.WebTmpl2MenuName))
+    {
+        ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
+    }
+
+    switch (nID)
+    {
+    case IDC_EDIT:
+    {
+        if (SciCall_IsSelectionEmpty() && (pt.x != -1) && (pt.y != -1))
+        {
+            POINT ptc;
+            ptc.x = pt.x;
+            ptc.y = pt.y;
+            ScreenToClient(Globals.hwndEdit, &ptc);
+            //~SciCall_GotoPos(SciCall_PositionFromPoint(ptc.x, ptc.y));
+        }
+
+        if (pt.x == -1 && pt.y == -1)
+        {
+            DocPos const iCurrentPos = SciCall_GetCurrentPos();
+            pt.x = (LONG)SciCall_PointXFromPosition(iCurrentPos);
+            pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
+            ClientToScreen(Globals.hwndEdit, &pt);
+        }
+
+        DocLn const curLn = Sci_GetCurrentLineNumber();
+        int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
+        imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? 2 : 0;
     }
     break;
 
-  case IDC_TOOLBAR:
-  case IDC_STATUSBAR:
-  case IDC_REBAR:
+    case IDC_TOOLBAR:
+    case IDC_STATUSBAR:
+    case IDC_REBAR:
     {
-      if ((pt.x == -1) && (pt.y == -1)) {
-        GetCursorPos(&pt);
-      }
-      imenu = 1;
+        if ((pt.x == -1) && (pt.y == -1))
+        {
+            GetCursorPos(&pt);
+        }
+        imenu = 1;
     }
     break;
 
-  case IDC_MARGIN:
+    case IDC_MARGIN:
     {
-      if ((pt.x == -1) && (pt.y == -1)) {
-        GetCursorPos(&pt);
-      }
+        if ((pt.x == -1) && (pt.y == -1))
+        {
+            GetCursorPos(&pt);
+        }
 
-      DocLn const curLn = Sci_GetCurrentLineNumber();
-      int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
-      EnableCmd(hMenuCtx, IDM_EDIT_CLEAR_MARKER, bitmask);
-      EnableCmd(hMenuCtx, IDM_EDIT_CUT_MARKED, bitmask);
-      EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
-      EnableCmd(hMenuCtx, IDM_EDIT_DELETE_MARKED, bitmask);
+        DocLn const curLn = Sci_GetCurrentLineNumber();
+        int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
+        EnableCmd(hMenuCtx, IDM_EDIT_CLEAR_MARKER, bitmask);
+        EnableCmd(hMenuCtx, IDM_EDIT_CUT_MARKED, bitmask);
+        EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
+        EnableCmd(hMenuCtx, IDM_EDIT_DELETE_MARKED, bitmask);
 
-      //DocLn const curLn = Sci_GetCurrentLineNumber();
-      const SCNotification* const scn = (SCNotification*)wParam;
-      switch (scn->margin) {
+        //DocLn const curLn = Sci_GetCurrentLineNumber();
+        const SCNotification* const scn = (SCNotification*)wParam;
+        switch (scn->margin)
+        {
         case MARGIN_SCI_FOLDING:
-          //[[fallthrough]];
+        //[[fallthrough]];
         case MARGIN_SCI_LINENUM:
-          //[[fallthrough]];
+        //[[fallthrough]];
         case MARGIN_SCI_BOOKMRK:
-          imenu = 2;
-          break;
+            imenu = 2;
+            break;
         default:
-          imenu = 0;
-          break;
-      }
+            imenu = 0;
+            break;
+        }
     }
     break;
-  }
+    }
 
-  TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu),
-                   TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
+    TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu),
+                     TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
 
-  DestroyMenu(hMenuCtx);
+    DestroyMenu(hMenuCtx);
 
-  return (bMargin ? !0 : 0);
+    return (bMargin ? !0 : 0);
 }
 
 //=============================================================================
@@ -3348,52 +3672,58 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(wParam);
-  UNUSED(lParam);
+    UNUSED(wParam);
+    UNUSED(lParam);
 
-  DocPos const iCurPos = SciCall_GetCurrentPos();
+    DocPos const iCurPos = SciCall_GetCurrentPos();
 
-  if (FileWatching.FileWatchingMode == FWM_MSGBOX || GetDocModified()) {
-    SetForegroundWindow(hwnd);
-  }
-
-  if (PathIsExistingFile(Globals.CurrentFile))
-  {
-    bool bRevertFile = (FileWatching.FileWatchingMode == FWM_AUTORELOAD && !GetDocModified());
-
-    if (!bRevertFile) {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
-      bRevertFile = ((IDOK == answer) || (IDYES == answer));
-    }
-
-    if (bRevertFile) 
+    if (FileWatching.FileWatchingMode == FWM_MSGBOX || GetDocModified())
     {
-      FileRevert(Globals.CurrentFile, /*Encoding_Changed(CPI_GET)*/false);
-      if (FileWatching.MonitoringLog) 
-      {
-        SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditEnsureSelectionVisible();
-      }
-      else {
-        Sci_GotoPosChooseCaret(iCurPos);
-      }
+        SetForegroundWindow(hwnd);
     }
-    if (!s_bRunningWatch) {
-      InstallFileWatching(true);
-    }
-  }
-  else {
-    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
-    if ((IDOK == answer) || (IDYES == answer)) {
-      FileSave(true, false, false, false, Flags.bPreserveFileModTime);
-    }
-    else if (!PathIsExistingFile(Globals.CurrentFile))
+
+    if (PathIsExistingFile(Globals.CurrentFile))
     {
-      InstallFileWatching(false); // terminate
-      SetSaveNeeded();
+        bool bRevertFile = (FileWatching.FileWatchingMode == FWM_AUTORELOAD && !GetDocModified());
+
+        if (!bRevertFile)
+        {
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
+            bRevertFile = ((IDOK == answer) || (IDYES == answer));
+        }
+
+        if (bRevertFile)
+        {
+            FileRevert(Globals.CurrentFile, /*Encoding_Changed(CPI_GET)*/false);
+            if (FileWatching.MonitoringLog)
+            {
+                SciCall_SetReadOnly(FileWatching.MonitoringLog);
+                EditEnsureSelectionVisible();
+            }
+            else
+            {
+                Sci_GotoPosChooseCaret(iCurPos);
+            }
+        }
+        if (!s_bRunningWatch)
+        {
+            InstallFileWatching(true);
+        }
     }
-  }
-  return FALSE;
+    else
+    {
+        INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
+        if ((IDOK == answer) || (IDYES == answer))
+        {
+            FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+        }
+        else if (!PathIsExistingFile(Globals.CurrentFile))
+        {
+            InstallFileWatching(false); // terminate
+            SetSaveNeeded();
+        }
+    }
+    return FALSE;
 }
 
 
@@ -3404,53 +3734,55 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(wParam);
+    UNUSED(wParam);
 
-  switch (lParam) 
-  {
+    switch (lParam)
+    {
     case WM_RBUTTONUP:
     {
-      HMENU hTrayMenu  = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
-      HMENU hMenuPopup = GetSubMenu(hTrayMenu, 3);
+        HMENU hTrayMenu  = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+        HMENU hMenuPopup = GetSubMenu(hTrayMenu, 3);
 
-      POINT pt;
-      int iCmd;
+        POINT pt;
+        int iCmd;
 
-      SetForegroundWindow(hwnd);
+        SetForegroundWindow(hwnd);
 
-      GetCursorPos(&pt);
-      SetMenuDefaultItem(hMenuPopup, IDM_TRAY_RESTORE, false);
-      iCmd = TrackPopupMenu(hMenuPopup,
-        TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
-        pt.x, pt.y, 0, hwnd, NULL);
+        GetCursorPos(&pt);
+        SetMenuDefaultItem(hMenuPopup, IDM_TRAY_RESTORE, false);
+        iCmd = TrackPopupMenu(hMenuPopup,
+                              TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
+                              pt.x, pt.y, 0, hwnd, NULL);
 
-      PostMessage(hwnd, WM_NULL, 0, 0);
+        PostMessage(hwnd, WM_NULL, 0, 0);
 
-      DestroyMenu(hTrayMenu);
+        DestroyMenu(hTrayMenu);
 
-      if (iCmd == IDM_TRAY_RESTORE) {
-        ShowNotifyIcon(hwnd, false);
-        RestoreWndFromTray(hwnd);
-        ShowOwnedPopups(hwnd, true);
-      }
-      else if (iCmd == IDM_TRAY_EXIT) {
-        //ShowNotifyIcon(hwnd,false);
-        CloseApplication();
-      }
+        if (iCmd == IDM_TRAY_RESTORE)
+        {
+            ShowNotifyIcon(hwnd, false);
+            RestoreWndFromTray(hwnd);
+            ShowOwnedPopups(hwnd, true);
+        }
+        else if (iCmd == IDM_TRAY_EXIT)
+        {
+            //ShowNotifyIcon(hwnd,false);
+            CloseApplication();
+        }
     }
     break;
 
     case WM_LBUTTONUP:
-      ShowNotifyIcon(hwnd, false);
-      RestoreWndFromTray(hwnd);
-      ShowOwnedPopups(hwnd, true);
-      break;
+        ShowNotifyIcon(hwnd, false);
+        RestoreWndFromTray(hwnd);
+        ShowOwnedPopups(hwnd, true);
+        break;
 
     default:
-      return TRUE;
+        return TRUE;
 
-  }
-  return FALSE;
+    }
+    return FALSE;
 }
 
 
@@ -3461,17 +3793,17 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam)
 {
-  if ((BOOL)wParam == FALSE) // is main menu
-  {
-    HMENU const hCurMenu = GetMenu(hwnd);
-    if (!hCurMenu)
+    if ((BOOL)wParam == FALSE) // is main menu
     {
-      SetMenu(hwnd, Globals.hMainMenu);
-      DrawMenuBar(hwnd);
-      //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        HMENU const hCurMenu = GetMenu(hwnd);
+        if (!hCurMenu)
+        {
+            SetMenu(hwnd, Globals.hMainMenu);
+            DrawMenuBar(hwnd);
+            //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        }
     }
-  }
-  return (LRESULT)wParam;
+    return (LRESULT)wParam;
 }
 
 
@@ -3483,17 +3815,17 @@ LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam)
 //
 LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
 {
-  if ((BOOL)wParam == FALSE) // is main menu
-  {
-    HMENU const hCurMenu = GetMenu(hwnd);
-    if (hCurMenu && !Settings.ShowMenubar)
+    if ((BOOL)wParam == FALSE) // is main menu
     {
-      SetMenu(hwnd, NULL);
-      DrawMenuBar(hwnd);
-      //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        HMENU const hCurMenu = GetMenu(hwnd);
+        if (hCurMenu && !Settings.ShowMenubar)
+        {
+            SetMenu(hwnd, NULL);
+            DrawMenuBar(hwnd);
+            //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        }
     }
-  }
-  return (LRESULT)wParam;
+    return (LRESULT)wParam;
 }
 
 
@@ -3504,429 +3836,456 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
 //
 LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(lParam);
+    UNUSED(lParam);
 
-  HMENU const hmenu = wParam ? (HMENU)wParam : GetMenu(hwnd);
-  if (!hmenu) { return FALSE; }
+    HMENU const hmenu = wParam ? (HMENU)wParam : GetMenu(hwnd);
+    if (!hmenu)
+    {
+        return FALSE;
+    }
 
-  bool const sav = Globals.bCanSaveIniFile;
-  bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
-  bool const faro = s_bFileReadOnly;     // file attrib read-only
-  DocPos const iCurPos = SciCall_GetCurrentPos();
-  DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
-  bool const bPosInSel = Sci_IsPosInSelection(iCurPos);
+    bool const sav = Globals.bCanSaveIniFile;
+    bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
+    bool const faro = s_bFileReadOnly;     // file attrib read-only
+    DocPos const iCurPos = SciCall_GetCurrentPos();
+    DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
+    bool const bPosInSel = Sci_IsPosInSelection(iCurPos);
 
-  bool const pst = SciCall_CanPaste();
-  bool const se = SciCall_IsSelectionEmpty();
-  bool const mrs = Sci_IsMultiOrRectangleSelection();
-  bool const cf = StrIsNotEmpty(Globals.CurrentFile);
-  bool const te = Sci_IsDocEmpty();
-  bool const mls = Sci_IsSelectionMultiLine();
-  //bool const lfl = Flags.bLargeFileLoaded;
+    bool const pst = SciCall_CanPaste();
+    bool const se = SciCall_IsSelectionEmpty();
+    bool const mrs = Sci_IsMultiOrRectangleSelection();
+    bool const cf = StrIsNotEmpty(Globals.CurrentFile);
+    bool const te = Sci_IsDocEmpty();
+    bool const mls = Sci_IsSelectionMultiLine();
+    //bool const lfl = Flags.bLargeFileLoaded;
 
-  EnableCmd(hmenu, IDM_FILE_REVERT, cf);
-  EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, cf);
-  EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, cf);
-  EnableCmd(hmenu, CMD_RECODEANSI, cf);
-  EnableCmd(hmenu, CMD_RECODEOEM, cf);
-  EnableCmd(hmenu, CMD_RELOADNOFILEVARS, cf);
-  EnableCmd(hmenu, CMD_RECODEDEFAULT, cf);
-  EnableCmd(hmenu, CMD_RECODEGB18030, cf);
-  EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
+    EnableCmd(hmenu, IDM_FILE_REVERT, cf);
+    EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, cf);
+    EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, cf);
+    EnableCmd(hmenu, CMD_RECODEANSI, cf);
+    EnableCmd(hmenu, CMD_RECODEOEM, cf);
+    EnableCmd(hmenu, CMD_RELOADNOFILEVARS, cf);
+    EnableCmd(hmenu, CMD_RECODEDEFAULT, cf);
+    EnableCmd(hmenu, CMD_RECODEGB18030, cf);
+    EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
 
-  SetUACIcon(hwnd, hmenu, IDM_FILE_LAUNCH_ELEVATED);
-  CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsProcessElevated);
-  EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsProcessElevated);
+    SetUACIcon(hwnd, hmenu, IDM_FILE_LAUNCH_ELEVATED);
+    CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsProcessElevated);
+    EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsProcessElevated);
 
-  EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
-  EnableCmd(hmenu, IDM_FILE_PROPERTIES, cf);
-  EnableCmd(hmenu, IDM_FILE_CREATELINK, cf);
-  EnableCmd(hmenu, IDM_FILE_ADDTOFAV, cf);
+    EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
+    EnableCmd(hmenu, IDM_FILE_PROPERTIES, cf);
+    EnableCmd(hmenu, IDM_FILE_CREATELINK, cf);
+    EnableCmd(hmenu, IDM_FILE_ADDTOFAV, cf);
 
-  EnableCmd(hmenu, IDM_FILE_READONLY, cf);
-  EnableCmd(hmenu, IDM_EDIT_INSERT_FILENAME, cf);
-  EnableCmd(hmenu, IDM_EDIT_INSERT_DIRNAME, cf);
-  EnableCmd(hmenu, IDM_EDIT_INSERT_PATHNAME, cf);
-  EnableCmd(hmenu, IDM_ENCODING_RECODE, cf);
+    EnableCmd(hmenu, IDM_FILE_READONLY, cf);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_FILENAME, cf);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_DIRNAME, cf);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_PATHNAME, cf);
+    EnableCmd(hmenu, IDM_ENCODING_RECODE, cf);
 
-  CheckCmd(hmenu, IDM_FILE_READONLY, faro);
-  CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
+    CheckCmd(hmenu, IDM_FILE_READONLY, faro);
+    CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
 
-  EnableCmd(hmenu, IDM_ENCODING_UNICODEREV, !ro);
-  EnableCmd(hmenu, IDM_ENCODING_UNICODE, !ro);
-  EnableCmd(hmenu, IDM_ENCODING_UTF8SIGN, !ro);
-  EnableCmd(hmenu, IDM_ENCODING_UTF8, !ro);
-  EnableCmd(hmenu, IDM_ENCODING_ANSI, !ro);
-  EnableCmd(hmenu, IDM_LINEENDINGS_CRLF, !ro);
-  EnableCmd(hmenu, IDM_LINEENDINGS_LF, !ro);
-  EnableCmd(hmenu, IDM_LINEENDINGS_CR, !ro);
+    EnableCmd(hmenu, IDM_ENCODING_UNICODEREV, !ro);
+    EnableCmd(hmenu, IDM_ENCODING_UNICODE, !ro);
+    EnableCmd(hmenu, IDM_ENCODING_UTF8SIGN, !ro);
+    EnableCmd(hmenu, IDM_ENCODING_UTF8, !ro);
+    EnableCmd(hmenu, IDM_ENCODING_ANSI, !ro);
+    EnableCmd(hmenu, IDM_LINEENDINGS_CRLF, !ro);
+    EnableCmd(hmenu, IDM_LINEENDINGS_LF, !ro);
+    EnableCmd(hmenu, IDM_LINEENDINGS_CR, !ro);
 
-  int i;
+    int i;
 
-  if (Encoding_IsUNICODE_REVERSE(Encoding_GetCurrent())) {
-    i = IDM_ENCODING_UNICODEREV;
-  }
-  else if (Encoding_IsUNICODE(Encoding_GetCurrent())) {
-    i = IDM_ENCODING_UNICODE;
-  }
-  else if (Encoding_IsUTF8_SIGN(Encoding_GetCurrent())) {
-    i = IDM_ENCODING_UTF8SIGN;
-  }
-  else if (Encoding_IsUTF8(Encoding_GetCurrent())) {
-    i = IDM_ENCODING_UTF8;
-  }
-  else if (Encoding_IsANSI(Encoding_GetCurrent())) {
-    i = IDM_ENCODING_ANSI;
-  }
-  else {
-    i = -1;
-  }
-  CheckMenuRadioItem(hmenu,IDM_ENCODING_ANSI,IDM_ENCODING_UTF8SIGN,i,MF_BYCOMMAND);
+    if (Encoding_IsUNICODE_REVERSE(Encoding_GetCurrent()))
+    {
+        i = IDM_ENCODING_UNICODEREV;
+    }
+    else if (Encoding_IsUNICODE(Encoding_GetCurrent()))
+    {
+        i = IDM_ENCODING_UNICODE;
+    }
+    else if (Encoding_IsUTF8_SIGN(Encoding_GetCurrent()))
+    {
+        i = IDM_ENCODING_UTF8SIGN;
+    }
+    else if (Encoding_IsUTF8(Encoding_GetCurrent()))
+    {
+        i = IDM_ENCODING_UTF8;
+    }
+    else if (Encoding_IsANSI(Encoding_GetCurrent()))
+    {
+        i = IDM_ENCODING_ANSI;
+    }
+    else
+    {
+        i = -1;
+    }
+    CheckMenuRadioItem(hmenu,IDM_ENCODING_ANSI,IDM_ENCODING_UTF8SIGN,i,MF_BYCOMMAND);
 
-  int const eol_mode = SciCall_GetEOLMode();
-  if (eol_mode == SC_EOL_CRLF) {
-    i = IDM_LINEENDINGS_CRLF;
-  }
-  else if (eol_mode == SC_EOL_CR) {
-    i = IDM_LINEENDINGS_CR;
-  }
-  else {
-    i = IDM_LINEENDINGS_LF;
-  }
-  CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_LF,i,MF_BYCOMMAND);
+    int const eol_mode = SciCall_GetEOLMode();
+    if (eol_mode == SC_EOL_CRLF)
+    {
+        i = IDM_LINEENDINGS_CRLF;
+    }
+    else if (eol_mode == SC_EOL_CR)
+    {
+        i = IDM_LINEENDINGS_CR;
+    }
+    else
+    {
+        i = IDM_LINEENDINGS_LF;
+    }
+    CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_LF,i,MF_BYCOMMAND);
 
-  EnableCmd(hmenu, IDM_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
+    EnableCmd(hmenu, IDM_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
-  EnableCmd(hmenu, IDM_EDIT_UNDO, SciCall_CanUndo() && !ro);
-  EnableCmd(hmenu, IDM_EDIT_REDO, SciCall_CanRedo() && !ro);
+    EnableCmd(hmenu, IDM_EDIT_UNDO, SciCall_CanUndo() && !ro);
+    EnableCmd(hmenu, IDM_EDIT_REDO, SciCall_CanRedo() && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_CUT, !te && !ro);       // allow Ctrl-X w/o selection
-  EnableCmd(hmenu, IDM_EDIT_COPY, !te);             // allow Ctrl-C w/o selection
+    EnableCmd(hmenu, IDM_EDIT_CUT, !te && !ro);       // allow Ctrl-X w/o selection
+    EnableCmd(hmenu, IDM_EDIT_COPY, !te);             // allow Ctrl-C w/o selection
 
-  EnableCmd(hmenu, IDM_EDIT_COPYALL, !te);
-  EnableCmd(hmenu, IDM_EDIT_COPYADD, !te);
+    EnableCmd(hmenu, IDM_EDIT_COPYALL, !te);
+    EnableCmd(hmenu, IDM_EDIT_COPYADD, !te);
 
-  EnableCmd(hmenu, IDM_EDIT_PASTE, pst && !ro);
-  EnableCmd(hmenu, IDM_EDIT_SWAP, (!se || pst) && !ro);
-  EnableCmd(hmenu, IDM_EDIT_CLEAR, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_PASTE, pst && !ro);
+    EnableCmd(hmenu, IDM_EDIT_SWAP, (!se || pst) && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CLEAR, !se && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_SELECTALL, !te);
-  EnableCmd(hmenu, IDM_EDIT_GOTOLINE, !te);
+    EnableCmd(hmenu, IDM_EDIT_SELECTALL, !te);
+    EnableCmd(hmenu, IDM_EDIT_GOTOLINE, !te);
 
-  OpenClipboard(hwnd);
-  EnableCmd(hmenu, IDM_EDIT_CLEARCLIPBOARD, CountClipboardFormats());
-  CloseClipboard();
+    OpenClipboard(hwnd);
+    EnableCmd(hmenu, IDM_EDIT_CLEARCLIPBOARD, CountClipboardFormats());
+    CloseClipboard();
 
-  EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro);
-  EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
-  EnableCmd(hmenu, IDM_EDIT_DUPLINEORSELECTION, !ro);
-  EnableCmd(hmenu, IDM_EDIT_LINETRANSPOSE, !ro);
-  EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro && !mrs);
-  EnableCmd(hmenu, IDM_EDIT_COPYLINE, !mrs);
-  EnableCmd(hmenu, IDM_EDIT_DELETELINE, !ro);
+    EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro);
+    EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
+    EnableCmd(hmenu, IDM_EDIT_DUPLINEORSELECTION, !ro);
+    EnableCmd(hmenu, IDM_EDIT_LINETRANSPOSE, !ro);
+    EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro && !mrs);
+    EnableCmd(hmenu, IDM_EDIT_COPYLINE, !mrs);
+    EnableCmd(hmenu, IDM_EDIT_DELETELINE, !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_MERGEEMPTYLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_REMOVEBLANKLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_REMOVEEMPTYLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_MERGEEMPTYLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_REMOVEBLANKLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_REMOVEEMPTYLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_INDENT, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_UNINDENT, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_INDENT, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_UNINDENT, !se && !ro);
 
-  EnableCmd(hmenu, CMD_JUMP2SELSTART, !se || mrs);
-  EnableCmd(hmenu, CMD_JUMP2SELEND, !se || mrs);
+    EnableCmd(hmenu, CMD_JUMP2SELSTART, !se || mrs);
+    EnableCmd(hmenu, CMD_JUMP2SELEND, !se || mrs);
 
-  EnableCmd(hmenu, IDM_EDIT_PADWITHSPACES, !ro && !se);
-  EnableCmd(hmenu, IDM_EDIT_STRIP1STCHAR, !ro && !se);
-  EnableCmd(hmenu, IDM_EDIT_STRIPLASTCHAR, !ro && !se);
-  EnableCmd(hmenu, IDM_EDIT_TRIMLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
+    EnableCmd(hmenu, IDM_EDIT_PADWITHSPACES, !ro && !se);
+    EnableCmd(hmenu, IDM_EDIT_STRIP1STCHAR, !ro && !se);
+    EnableCmd(hmenu, IDM_EDIT_STRIPLASTCHAR, !ro && !se);
+    EnableCmd(hmenu, IDM_EDIT_TRIMLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_ALIGN, mls && !ro);
-  EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
+    EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_ALIGN, mls && !ro);
+    EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
 
-  //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu, IDM_EDIT_SPLITLINES, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, !se && !ro);
+    //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
+    EnableCmd(hmenu, IDM_EDIT_SPLITLINES, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, !se && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_CONVERTUPPERCASE, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_CONVERTLOWERCASE, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_INVERTCASE, !se && !ro /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu, IDM_EDIT_TITLECASE, !se && !ro /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu, IDM_EDIT_SENTENCECASE, !se && !ro /*&& IsWindowsNT()*/);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTUPPERCASE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTLOWERCASE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_INVERTCASE, !se && !ro /*&& IsWindowsNT()*/);
+    EnableCmd(hmenu, IDM_EDIT_TITLECASE, !se && !ro /*&& IsWindowsNT()*/);
+    EnableCmd(hmenu, IDM_EDIT_SENTENCECASE, !se && !ro /*&& IsWindowsNT()*/);
 
-  EnableCmd(hmenu, IDM_EDIT_CONVERTTABS, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_CONVERTTABS2, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES2, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTTABS, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTTABS2, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES2, !se && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_URLENCODE, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_URLDECODE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_URLENCODE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_URLDECODE, !se && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_ESCAPECCHARS, !se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_UNESCAPECCHARS, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_ESCAPECCHARS, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_UNESCAPECCHARS, !se && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after current pos
-  EnableCmd(hmenu, IDM_EDIT_HEX2CHAR, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after current pos
+    EnableCmd(hmenu, IDM_EDIT_HEX2CHAR, !se && !ro);
 
-  EnableCmd(hmenu, IDM_VIEW_SHOWEXCERPT, !se);
+    EnableCmd(hmenu, IDM_VIEW_SHOWEXCERPT, !se);
 
-  i = max_i(SCLEX_NULL, SciCall_GetLexer());
+    i = max_i(SCLEX_NULL, SciCall_GetLexer());
 
-  EnableCmd(hmenu, IDM_EDIT_LINECOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
+    EnableCmd(hmenu, IDM_EDIT_LINECOMMENT,
+              !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
-      i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES || i == SCLEX_CONF ||
-      i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
-      i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
+    EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT,
+              !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
+                i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES || i == SCLEX_CONF ||
+                i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
+                i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
+                i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
 
-  EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
-  EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
-  EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_GetCurrent()) != NULL) && !ro);
+    EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_GetCurrent()) != NULL) && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_INSERT_SHORTDATE, !ro);
-  EnableCmd(hmenu, IDM_EDIT_INSERT_LONGDATE, !ro);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_SHORTDATE, !ro);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_LONGDATE, !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
+    EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_FIND, !te);
-  EnableCmd(hmenu, IDM_EDIT_SAVEFIND, !te);
-  EnableCmd(hmenu, IDM_EDIT_FINDNEXT, !te);
-  EnableCmd(hmenu, IDM_EDIT_FINDPREV, !te);
-  EnableCmd(hmenu, IDM_EDIT_REPLACE, !te && !ro);
-  EnableCmd(hmenu, IDM_EDIT_REPLACENEXT, !te && !ro);
-  EnableCmd(hmenu, IDM_EDIT_SELTONEXT, !te);
-  EnableCmd(hmenu, IDM_EDIT_SELTOPREV, !te);
-  EnableCmd(hmenu, IDM_EDIT_FINDMATCHINGBRACE, !te);
-  EnableCmd(hmenu, IDM_EDIT_SELTOMATCHINGBRACE, !te);
+    EnableCmd(hmenu, IDM_EDIT_FIND, !te);
+    EnableCmd(hmenu, IDM_EDIT_SAVEFIND, !te);
+    EnableCmd(hmenu, IDM_EDIT_FINDNEXT, !te);
+    EnableCmd(hmenu, IDM_EDIT_FINDPREV, !te);
+    EnableCmd(hmenu, IDM_EDIT_REPLACE, !te && !ro);
+    EnableCmd(hmenu, IDM_EDIT_REPLACENEXT, !te && !ro);
+    EnableCmd(hmenu, IDM_EDIT_SELTONEXT, !te);
+    EnableCmd(hmenu, IDM_EDIT_SELTOPREV, !te);
+    EnableCmd(hmenu, IDM_EDIT_FINDMATCHINGBRACE, !te);
+    EnableCmd(hmenu, IDM_EDIT_SELTOMATCHINGBRACE, !te);
 
-  CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
+    CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
 
-  EnableCmd(hmenu, BME_EDIT_BOOKMARKPREV, !te);
-  EnableCmd(hmenu, BME_EDIT_BOOKMARKNEXT, !te);
-  EnableCmd(hmenu, BME_EDIT_BOOKMARKTOGGLE, !te);
-  EnableCmd(hmenu, BME_EDIT_BOOKMARKCLEAR, !te);
+    EnableCmd(hmenu, BME_EDIT_BOOKMARKPREV, !te);
+    EnableCmd(hmenu, BME_EDIT_BOOKMARKNEXT, !te);
+    EnableCmd(hmenu, BME_EDIT_BOOKMARKTOGGLE, !te);
+    EnableCmd(hmenu, BME_EDIT_BOOKMARKCLEAR, !te);
 
-  EnableCmd(hmenu, IDM_EDIT_DELETELINELEFT, !te && !ro);
-  EnableCmd(hmenu, IDM_EDIT_DELETELINERIGHT, !te && !ro);
-  EnableCmd(hmenu, CMD_CTRLBACK, !te && !ro);
-  EnableCmd(hmenu, CMD_CTRLDEL, !te && !ro);
-  EnableCmd(hmenu, CMD_INSERT_TIMESTAMP, !ro);
-  EnableCmd(hmenu, CMD_UPDATE_TIMESTAMPS, !te && !ro);
+    EnableCmd(hmenu, IDM_EDIT_DELETELINELEFT, !te && !ro);
+    EnableCmd(hmenu, IDM_EDIT_DELETELINERIGHT, !te && !ro);
+    EnableCmd(hmenu, CMD_CTRLBACK, !te && !ro);
+    EnableCmd(hmenu, CMD_CTRLDEL, !te && !ro);
+    EnableCmd(hmenu, CMD_INSERT_TIMESTAMP, !ro);
+    EnableCmd(hmenu, CMD_UPDATE_TIMESTAMPS, !te && !ro);
 
-  EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(Globals.hwndDlgCustomizeSchemes));
-  EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
+    EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(Globals.hwndDlgCustomizeSchemes));
+    EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
 
-  EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.HideNonMatchedLines);
-  bool const fd = (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
-  CheckCmd(hmenu, IDM_VIEW_FOLDING, fd);
-  EnableCmd(hmenu, IDM_VIEW_TOGGLEFOLDS, !te && fd);
-  EnableCmd(hmenu, CMD_FOLDJUMPDOWN, !te && fd);
-  EnableCmd(hmenu, CMD_FOLDJUMPUP, !te && fd);
-  EnableCmd(hmenu, CMD_FOLDCOLLAPSE, !te && fd);
-  EnableCmd(hmenu, CMD_FOLDEXPAND, !te && fd);
-  bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
-  bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
-  EnableCmd(hmenu, IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
-  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 18, fd);
+    EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.HideNonMatchedLines);
+    bool const fd = (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
+    CheckCmd(hmenu, IDM_VIEW_FOLDING, fd);
+    EnableCmd(hmenu, IDM_VIEW_TOGGLEFOLDS, !te && fd);
+    EnableCmd(hmenu, CMD_FOLDJUMPDOWN, !te && fd);
+    EnableCmd(hmenu, CMD_FOLDJUMPUP, !te && fd);
+    EnableCmd(hmenu, CMD_FOLDCOLLAPSE, !te && fd);
+    EnableCmd(hmenu, CMD_FOLDEXPAND, !te && fd);
+    bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
+    bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
+    EnableCmd(hmenu, IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 18, fd);
 
-  CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
+    CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
 
-  CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
-  CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
-  CheckCmd(hmenu, IDM_VIEW_TABSASSPACES, Globals.fvCurFile.bTabsAsSpaces);
-  CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
-  CheckCmd(hmenu, IDM_VIEW_AUTOINDENTTEXT, Settings.AutoIndent);
-  CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
-  CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, Settings.ShowBookmarkMargin);
-  CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+    CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
+    CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
+    CheckCmd(hmenu, IDM_VIEW_TABSASSPACES, Globals.fvCurFile.bTabsAsSpaces);
+    CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
+    CheckCmd(hmenu, IDM_VIEW_AUTOINDENTTEXT, Settings.AutoIndent);
+    CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
+    CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, Settings.ShowBookmarkMargin);
+    CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
-  EnableCmd(hmenu, IDM_EDIT_COMPLETEWORD, !te && !ro);
-  CheckCmd(hmenu, IDM_VIEW_AUTOCOMPLETEWORDS, Settings.AutoCompleteWords && !ro);
-  CheckCmd(hmenu, IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
+    EnableCmd(hmenu, IDM_EDIT_COMPLETEWORD, !te && !ro);
+    CheckCmd(hmenu, IDM_VIEW_AUTOCOMPLETEWORDS, Settings.AutoCompleteWords && !ro);
+    CheckCmd(hmenu, IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
 
-  CheckCmd(hmenu, IDM_VIEW_ACCELWORDNAV, Settings.AccelWordNavigation);
-  CheckCmd(hmenu, IDM_VIEW_EDIT_LINECOMMENT, Settings.EditLineCommentBlock);
+    CheckCmd(hmenu, IDM_VIEW_ACCELWORDNAV, Settings.AccelWordNavigation);
+    CheckCmd(hmenu, IDM_VIEW_EDIT_LINECOMMENT, Settings.EditLineCommentBlock);
 
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_BOOKMARKS, Settings.MarkOccurrencesBookmark);
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
+    CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
+    CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_BOOKMARKS, Settings.MarkOccurrencesBookmark);
+    CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
+    CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
-  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
-  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
+    EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
+    CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
 
-  i = IDM_VIEW_FV_FOLD;
-  int const fvm_mode = Settings.FocusViewMarkerMode;
-  if (fvm_mode == FVMM_MARGIN) {
-    i = IDM_VIEW_FV_BOOKMARK;
-  } else if (fvm_mode == FVMM_LN_BACKGR) {
-    i = IDM_VIEW_FV_HIGHLIGHT;
-  } else if (fvm_mode == (FVMM_MARGIN | FVMM_FOLD)) {
-    i = IDM_VIEW_FV_BKMRKFOLD;
-  } else if (fvm_mode == (FVMM_LN_BACKGR | FVMM_FOLD)) {
-    i = IDM_VIEW_FV_HIGHLGFOLD;
-  } else {
     i = IDM_VIEW_FV_FOLD;
-  }
-  CheckMenuRadioItem(hmenu, IDM_VIEW_FV_FOLD, IDM_VIEW_FV_HIGHLGFOLD, i, MF_BYCOMMAND);
+    int const fvm_mode = Settings.FocusViewMarkerMode;
+    if (fvm_mode == FVMM_MARGIN)
+    {
+        i = IDM_VIEW_FV_BOOKMARK;
+    }
+    else if (fvm_mode == FVMM_LN_BACKGR)
+    {
+        i = IDM_VIEW_FV_HIGHLIGHT;
+    }
+    else if (fvm_mode == (FVMM_MARGIN | FVMM_FOLD))
+    {
+        i = IDM_VIEW_FV_BKMRKFOLD;
+    }
+    else if (fvm_mode == (FVMM_LN_BACKGR | FVMM_FOLD))
+    {
+        i = IDM_VIEW_FV_HIGHLGFOLD;
+    }
+    else
+    {
+        i = IDM_VIEW_FV_FOLD;
+    }
+    CheckMenuRadioItem(hmenu, IDM_VIEW_FV_FOLD, IDM_VIEW_FV_HIGHLGFOLD, i, MF_BYCOMMAND);
 
-  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
-  
-  i = IDM_VIEW_COLORDEFHOTSPOTS + Settings.ColorDefHotspot;
-  CheckMenuRadioItem(hmenu, IDM_VIEW_COLORDEFHOTSPOTS, IDM_VIEW_COLOR_BGRA, i, MF_BYCOMMAND);
-  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 9, IsColorDefHotspotEnabled());
+    CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
 
-  CheckCmd(hmenu, IDM_VIEW_UNICODE_POINTS, Settings.HighlightUnicodePoints);
-  CheckCmd(hmenu, IDM_VIEW_MATCHBRACES, Settings.MatchBraces);
-  
-  i = IDM_VIEW_HILITCURLN_NONE + Settings.HighlightCurrentLine;
-  CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
-  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 12, (i != IDM_VIEW_HILITCURLN_NONE));
+    i = IDM_VIEW_COLORDEFHOTSPOTS + Settings.ColorDefHotspot;
+    CheckMenuRadioItem(hmenu, IDM_VIEW_COLORDEFHOTSPOTS, IDM_VIEW_COLOR_BGRA, i, MF_BYCOMMAND);
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 9, IsColorDefHotspotEnabled());
+
+    CheckCmd(hmenu, IDM_VIEW_UNICODE_POINTS, Settings.HighlightUnicodePoints);
+    CheckCmd(hmenu, IDM_VIEW_MATCHBRACES, Settings.MatchBraces);
+
+    i = IDM_VIEW_HILITCURLN_NONE + Settings.HighlightCurrentLine;
+    CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 12, (i != IDM_VIEW_HILITCURLN_NONE));
 
 #ifdef D_NP3_WIN10_DARK_MODE
-  EnableCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, IsDarkModeSupported());
-  CheckCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, Settings.WinThemeDarkMode);
+    EnableCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, IsDarkModeSupported());
+    CheckCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, Settings.WinThemeDarkMode);
 #else
-  RemoveMenu(hmenu, IDM_VIEW_WIN_DARK_MODE, 0);
+    RemoveMenu(hmenu, IDM_VIEW_WIN_DARK_MODE, 0);
 #endif
 
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  int const mnuMain = 2;
-  int const mnuSubOcc = 13;
-  int const mnuSubSubWord = 6;
+    int const mnuMain = 2;
+    int const mnuSubOcc = 13;
+    int const mnuSubSubWord = 6;
 
-  if (Settings.MarkOccurrencesMatchWholeWords) {
-    i = IDM_VIEW_MARKOCCUR_WORD;
-  }
-  else if (Settings.MarkOccurrencesCurrentWord) {
-    i = IDM_VIEW_MARKOCCUR_CURRENT;
-  }
-  else {
-    i = IDM_VIEW_MARKOCCUR_WNONE;
-  }
-  CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
-  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, (i != IDM_VIEW_MARKOCCUR_WNONE));
-  
-  i = IsMarkOccurrencesEnabled();
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, i);
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
-  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, i);
-  CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc, i);
+    if (Settings.MarkOccurrencesMatchWholeWords)
+    {
+        i = IDM_VIEW_MARKOCCUR_WORD;
+    }
+    else if (Settings.MarkOccurrencesCurrentWord)
+    {
+        i = IDM_VIEW_MARKOCCUR_CURRENT;
+    }
+    else
+    {
+        i = IDM_VIEW_MARKOCCUR_WNONE;
+    }
+    CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
+    CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, (i != IDM_VIEW_MARKOCCUR_WNONE));
 
-  // --------------------------------------------------------------------------
+    i = IsMarkOccurrencesEnabled();
+    EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
+    EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
+    EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
+    EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, i);
+    EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
+    EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc), mnuSubSubWord, i);
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), mnuMain), mnuSubOcc, i);
 
-  CheckCmd(hmenu, IDM_VIEW_SHOWBLANKS, Settings.ViewWhiteSpace);
-  CheckCmd(hmenu, IDM_VIEW_SHOWEOLS, Settings.ViewEOLs);
-  CheckCmd(hmenu, IDM_VIEW_WORDWRAPSYMBOLS, Settings.ShowWordWrapSymbols);
-  CheckCmd(hmenu, IDM_VIEW_MENUBAR, Settings.ShowMenubar);
-  CheckCmd(hmenu, IDM_VIEW_TOOLBAR, Settings.ShowToolbar);
-  EnableCmd(hmenu, IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
-  CheckCmd(hmenu, IDM_VIEW_STATUSBAR, Settings.ShowStatusbar);
-  CheckCmd(hmenu, IDM_VIEW_DPISCALETB, Settings.DpiScaleToolBar);
+    // --------------------------------------------------------------------------
 
-  //i = SciCall_GetLexer();
-  //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
-  CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
+    CheckCmd(hmenu, IDM_VIEW_SHOWBLANKS, Settings.ViewWhiteSpace);
+    CheckCmd(hmenu, IDM_VIEW_SHOWEOLS, Settings.ViewEOLs);
+    CheckCmd(hmenu, IDM_VIEW_WORDWRAPSYMBOLS, Settings.ShowWordWrapSymbols);
+    CheckCmd(hmenu, IDM_VIEW_MENUBAR, Settings.ShowMenubar);
+    CheckCmd(hmenu, IDM_VIEW_TOOLBAR, Settings.ShowToolbar);
+    EnableCmd(hmenu, IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
+    CheckCmd(hmenu, IDM_VIEW_STATUSBAR, Settings.ShowStatusbar);
+    CheckCmd(hmenu, IDM_VIEW_DPISCALETB, Settings.DpiScaleToolBar);
 
-  CheckCmd(hmenu, IDM_VIEW_SHOW_HYPLNK_CALLTIP, Settings.ShowHypLnkToolTip);
-  CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
+    //i = SciCall_GetLexer();
+    //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
+    CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
 
-  CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, Flags.bReuseWindow);
-  EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, sav);
-  CheckCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, Flags.bSingleFileInstance);
-  EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, sav);
-  CheckCmd(hmenu, IDM_VIEW_STICKYWINPOS, Flags.bStickyWindowPosition);
-  EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, sav);
-  EnableCmd(hmenu, CMD_SAVEASDEFWINPOS, sav);
+    CheckCmd(hmenu, IDM_VIEW_SHOW_HYPLNK_CALLTIP, Settings.ShowHypLnkToolTip);
+    CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
 
-  CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
-  CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
-  CheckCmd(hmenu, IDM_VIEW_TRANSPARENT, Settings.TransparentMode);
+    CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, Flags.bReuseWindow);
+    EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, sav);
+    CheckCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, Flags.bSingleFileInstance);
+    EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, sav);
+    CheckCmd(hmenu, IDM_VIEW_STICKYWINPOS, Flags.bStickyWindowPosition);
+    EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, sav);
+    EnableCmd(hmenu, CMD_SAVEASDEFWINPOS, sav);
 
-  bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
-  //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);
-  
-  i = IDM_SET_RENDER_TECH_GDI + Settings.RenderingTechnology;
-  CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_GDI, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
-  
-  CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, Settings.EditLayoutRTL);
-  //~EnableCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, gdi);
-  CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_DLG, Settings.DialogsLayoutRTL);
+    CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
+    CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
+    CheckCmd(hmenu, IDM_VIEW_TRANSPARENT, Settings.TransparentMode);
 
-  if (dwr) {
-    i = IDM_SET_BIDIRECTIONAL_NONE + Settings.Bidirectional;
-    CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
-  }
-  else {
-    i = IDM_SET_BIDIRECTIONAL_NONE;
-    CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
-  }
-  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_NONE, dwr);
-  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_L2R, dwr);
-  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, dwr);
+    bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
+    //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);
+
+    i = IDM_SET_RENDER_TECH_GDI + Settings.RenderingTechnology;
+    CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_GDI, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
+
+    CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, Settings.EditLayoutRTL);
+    //~EnableCmd(hmenu, IDM_SET_RTL_LAYOUT_EDIT, gdi);
+    CheckCmd(hmenu, IDM_SET_RTL_LAYOUT_DLG, Settings.DialogsLayoutRTL);
+
+    if (dwr)
+    {
+        i = IDM_SET_BIDIRECTIONAL_NONE + Settings.Bidirectional;
+        CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
+    }
+    else
+    {
+        i = IDM_SET_BIDIRECTIONAL_NONE;
+        CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
+    }
+    EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_NONE, dwr);
+    EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_L2R, dwr);
+    EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, dwr);
 
 
-  CheckCmd(hmenu, IDM_VIEW_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
-  CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
-  //~EnableCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, !faro);
+    CheckCmd(hmenu, IDM_VIEW_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
+    CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
+    //~EnableCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, !faro);
 
-  CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
-  EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, sav);
-  CheckCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
-  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles && sav);
-  CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
-  EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, sav);
+    CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
+    EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, sav);
+    CheckCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
+    EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles && sav);
+    CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
+    EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, sav);
 
-  CheckCmd(hmenu, IDM_VIEW_EVALTINYEXPRONSEL, Settings.EvalTinyExprOnSelection);
-  
-  CheckCmd(hmenu, IDM_VIEW_CHANGENOTIFY, Settings.FileWatchingMode);
+    CheckCmd(hmenu, IDM_VIEW_EVALTINYEXPRONSEL, Settings.EvalTinyExprOnSelection);
 
-  if (StrIsNotEmpty(s_wchTitleExcerpt))
-    i = IDM_VIEW_SHOWEXCERPT;
-  else if (Settings.PathNameFormat == 0)
-    i = IDM_VIEW_SHOWFILENAMEONLY;
-  else if (Settings.PathNameFormat == 1)
-    i = IDM_VIEW_SHOWFILENAMEFIRST;
-  else
-    i = IDM_VIEW_SHOWFULLPATH;
-  CheckMenuRadioItem(hmenu, IDM_VIEW_SHOWFILENAMEONLY, IDM_VIEW_SHOWEXCERPT, i, MF_BYCOMMAND);
+    CheckCmd(hmenu, IDM_VIEW_CHANGENOTIFY, Settings.FileWatchingMode);
 
-  if (Settings.EscFunction == 1)
-    i = IDM_VIEW_ESCMINIMIZE;
-  else if (Settings.EscFunction == 2)
-    i = IDM_VIEW_ESCEXIT;
-  else
-    i = IDM_VIEW_NOESCFUNC;
-  CheckMenuRadioItem(hmenu, IDM_VIEW_NOESCFUNC, IDM_VIEW_ESCEXIT, i, MF_BYCOMMAND);
+    if (StrIsNotEmpty(s_wchTitleExcerpt))
+        i = IDM_VIEW_SHOWEXCERPT;
+    else if (Settings.PathNameFormat == 0)
+        i = IDM_VIEW_SHOWFILENAMEONLY;
+    else if (Settings.PathNameFormat == 1)
+        i = IDM_VIEW_SHOWFILENAMEFIRST;
+    else
+        i = IDM_VIEW_SHOWFULLPATH;
+    CheckMenuRadioItem(hmenu, IDM_VIEW_SHOWFILENAMEONLY, IDM_VIEW_SHOWEXCERPT, i, MF_BYCOMMAND);
 
-  bool const bIsHLink = (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, iCurPos) > 0);
-  EnableCmd(hmenu, CMD_OPEN_HYPERLINK, !mrs && bIsHLink);
-  EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel && !bIsHLink);
-  EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel && !bIsHLink);
+    if (Settings.EscFunction == 1)
+        i = IDM_VIEW_ESCMINIMIZE;
+    else if (Settings.EscFunction == 2)
+        i = IDM_VIEW_ESCEXIT;
+    else
+        i = IDM_VIEW_NOESCFUNC;
+    CheckMenuRadioItem(hmenu, IDM_VIEW_NOESCFUNC, IDM_VIEW_ESCEXIT, i, MF_BYCOMMAND);
 
-  i = (int)StrIsNotEmpty(Settings2.AdministrationTool);
-  EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
+    bool const bIsHLink = (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, iCurPos) > 0);
+    EnableCmd(hmenu, CMD_OPEN_HYPERLINK, !mrs && bIsHLink);
+    EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel && !bIsHLink);
+    EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel && !bIsHLink);
 
-  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-    //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
-    CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
-  }
+    i = (int)StrIsNotEmpty(Settings2.AdministrationTool);
+    EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
-  UpdateSaveSettingsCmds();
-  
-  return FALSE;
+    for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng)
+    {
+        //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
+        CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
+    }
+
+    UpdateSaveSettingsCmds();
+
+    return FALSE;
 }
 
 
@@ -3937,36 +4296,38 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 static void _DynamicLanguageMenuCmd(int cmd)
 {
-  int const iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
+    int const iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
 
-  if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
-    return;
-  }
-  if (!MUI_LanguageDLLs[iLngIdx].bIsActive)
-  {
-    DestroyMenu(Globals.hMainMenu);
-    
-    // desired language
-    LANGID const desiredLngID = MUI_LanguageDLLs[iLngIdx].LangId;
-    SetPreferredLanguage(desiredLngID);
-
-    FreeLanguageResources();
-    LoadLanguageResources();
-
-    Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
-    if (!Globals.hMainMenu) {
-      MsgBoxLastError(L"LoadMenu()", 0);
-      CloseApplication();
-      return;
+    if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf()))
+    {
+        return;
     }
+    if (!MUI_LanguageDLLs[iLngIdx].bIsActive)
+    {
+        DestroyMenu(Globals.hMainMenu);
 
-    _InsertLanguageMenu(Globals.hMainMenu);
-    Style_InsertThemesMenu(Globals.hMainMenu);
-    SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
-    DrawMenuBar(Globals.hwndMain);
+        // desired language
+        LANGID const desiredLngID = MUI_LanguageDLLs[iLngIdx].LangId;
+        SetPreferredLanguage(desiredLngID);
 
-    UpdateStatusbar(true);
-  }
+        FreeLanguageResources();
+        LoadLanguageResources();
+
+        Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+        if (!Globals.hMainMenu)
+        {
+            MsgBoxLastError(L"LoadMenu()", 0);
+            CloseApplication();
+            return;
+        }
+
+        _InsertLanguageMenu(Globals.hMainMenu);
+        Style_InsertThemesMenu(Globals.hMainMenu);
+        SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+        DrawMenuBar(Globals.hwndMain);
+
+        UpdateStatusbar(true);
+    }
 }
 
 
@@ -3979,155 +4340,166 @@ static   WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
 
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  int const iLoWParam = LOWORD(wParam);
- 
-  bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
-  if (bIsLngMenuCmd) {
-    _DynamicLanguageMenuCmd(iLoWParam);
-    return FALSE;
-  }
+    int const iLoWParam = LOWORD(wParam);
 
-  bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
-  if (bIsThemesMenuCmd) {
-    Style_DynamicThemesMenuCmd(iLoWParam, GetModeThemeIndex());
-    return FALSE;
-  }
+    bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
+    if (bIsLngMenuCmd)
+    {
+        _DynamicLanguageMenuCmd(iLoWParam);
+        return FALSE;
+    }
 
-  switch(iLoWParam)
-  {
+    bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
+    if (bIsThemesMenuCmd)
+    {
+        Style_DynamicThemesMenuCmd(iLoWParam, GetModeThemeIndex());
+        return FALSE;
+    }
+
+    switch(iLoWParam)
+    {
     case SCEN_CHANGE:
-      EditUpdateVisibleIndicators();
-      MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
-      break;
+        EditUpdateVisibleIndicators();
+        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
+        break;
 
     case IDT_TIMER_UPDATE_STATUSBAR:
-      _UpdateStatusbarDelayed((bool)lParam);
-      break;
+        _UpdateStatusbarDelayed((bool)lParam);
+        break;
 
     case IDT_TIMER_UPDATE_TOOLBAR:
-      _UpdateToolbarDelayed();
-      break;
+        _UpdateToolbarDelayed();
+        break;
 
     case IDT_TIMER_MAIN_MRKALL:
-      EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
-      break;
+        EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
+        break;
 
     case IDT_TIMER_CLEAR_CALLTIP:
-      CancelCallTip();
-      break;
+        CancelCallTip();
+        break;
 
     case IDT_TIMER_UNDO_TRANSACTION:
-      _SplitUndoTransaction((int)lParam);
-      break;
+        _SplitUndoTransaction((int)lParam);
+        break;
 
 
     case IDM_FILE_NEW:
-      FileLoad(false,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, L"");
-      break;
+        FileLoad(false,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, L"");
+        break;
 
 
     case IDM_FILE_OPEN:
-      FileLoad(false,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, L"");
-      break;
+        FileLoad(false,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, L"");
+        break;
 
 
     case IDM_FILE_REVERT:
-      if (GetDocModified()) {
-        INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT);
-        if (!((IDOK == answer) || (IDYES == answer))) {
-          break;
+        if (GetDocModified())
+        {
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT);
+            if (!((IDOK == answer) || (IDYES == answer)))
+            {
+                break;
+            }
+            //~ don't revert if no save needed
+            //~FileRevert(Globals.CurrentFile, Encoding_Changed(CPI_GET));
         }
-        //~ don't revert if no save needed
-        //~FileRevert(Globals.CurrentFile, Encoding_Changed(CPI_GET)); 
-      }
-      // revert in any case (manually forced)
-      FileRevert(Globals.CurrentFile, /*Encoding_Changed(CPI_GET)*/true);
-      break;
+        // revert in any case (manually forced)
+        FileRevert(Globals.CurrentFile, /*Encoding_Changed(CPI_GET)*/true);
+        break;
 
 
     case IDM_FILE_SAVE:
-      FileSave(true, false, false, false, Flags.bPreserveFileModTime);
-      break;
+        FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+        break;
 
 
     case IDM_FILE_SAVEAS:
-      FileSave(true, false, true, false, Flags.bPreserveFileModTime);
-      break;
+        FileSave(true, false, true, false, Flags.bPreserveFileModTime);
+        break;
 
 
     case IDM_FILE_SAVECOPY:
-      FileSave(true, false, true, true, Flags.bPreserveFileModTime);
-      break;
+        FileSave(true, false, true, true, Flags.bPreserveFileModTime);
+        break;
 
 
     case IDM_FILE_PRESERVE_FILEMODTIME:
-      if (!Flags.bPreserveFileModTime) {
-        InfoBoxLng(MB_OK, L"PreserveFileModTime", IDS_MUI_INF_PRSVFILEMODTM);
-      }
-      Flags.bPreserveFileModTime = true;
-      FileSave(true, false, false, false, Flags.bPreserveFileModTime);
-      break;
+        if (!Flags.bPreserveFileModTime)
+        {
+            InfoBoxLng(MB_OK, L"PreserveFileModTime", IDS_MUI_INF_PRSVFILEMODTM);
+        }
+        Flags.bPreserveFileModTime = true;
+        FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+        break;
 
 
     case IDM_FILE_READONLY:
-      if (StrIsNotEmpty(Globals.CurrentFile))
-      {
-        DWORD dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
-        if (dwFileAttributes != INVALID_FILE_ATTRIBUTES) {
-          if (s_bFileReadOnly) {
-            dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
-          }
-          else {
-            dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
-          }
-          if (!SetFileAttributes(Globals.CurrentFile, dwFileAttributes)) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, PathFindFileName(Globals.CurrentFile));
-          }
-        }
-        else {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, PathFindFileName(Globals.CurrentFile));
-        }
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            DWORD dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
+            if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
+            {
+                if (s_bFileReadOnly)
+                {
+                    dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
+                }
+                else
+                {
+                    dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
+                }
+                if (!SetFileAttributes(Globals.CurrentFile, dwFileAttributes))
+                {
+                    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, PathFindFileName(Globals.CurrentFile));
+                }
+            }
+            else
+            {
+                InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, PathFindFileName(Globals.CurrentFile));
+            }
 
-        s_bFileReadOnly = IsReadOnly(GetFileAttributes(Globals.CurrentFile)); // ensure setting
+            s_bFileReadOnly = IsReadOnly(GetFileAttributes(Globals.CurrentFile)); // ensure setting
 
-        if (Flags.bSettingsFileSoftLocked) {
-          Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
-          UpdateSaveSettingsCmds();
+            if (Flags.bSettingsFileSoftLocked)
+            {
+                Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+                UpdateSaveSettingsCmds();
+            }
+            UpdateToolbar();
         }
-        UpdateToolbar();
-      }
-      break;
+        break;
 
 
     case IDM_FILE_BROWSE:
         DialogFileBrowse(hwnd);
-      break;
+        break;
 
 
     case IDM_GREP_WIN_SEARCH:
-      {
+    {
         WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
         EditGetSelectedText(wchBuffer, COUNTOF(wchBuffer));
         DialogGrepWin(hwnd, wchBuffer);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
-      SaveAllSettings(false);
-      LPCWSTR lpcwFilePath = (iLoWParam != IDM_FILE_NEWWINDOW2) ? Globals.CurrentFile : NULL;
-      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, lpcwFilePath);
-      break;
+        SaveAllSettings(false);
+        LPCWSTR lpcwFilePath = (iLoWParam != IDM_FILE_NEWWINDOW2) ? Globals.CurrentFile : NULL;
+        DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, lpcwFilePath);
+        break;
 
 
     case IDM_FILE_LAUNCH:
-      {
+    {
         if (StrIsEmpty(Globals.CurrentFile))
-          break;
+            break;
 
         if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false,Flags.bPreserveFileModTime))
-          break;
+            break;
 
         StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
         PathCchRemoveFileSpec(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer));
@@ -4143,68 +4515,72 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         sei.lpDirectory = tchMaxPathBuffer;
         sei.nShow = SW_SHOWNORMAL;
         ShellExecuteEx(&sei);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_FILE_EXPLORE_DIR:
     {
-      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-        break;
-      }
-      PIDLIST_ABSOLUTE pidl = NULL;
-      DWORD rfg = 0;
-      SHILCreateFromPath(StrIsEmpty(Globals.CurrentFile) ? Globals.WorkingDirectory : Globals.CurrentFile, &pidl, &rfg);
-      if (pidl) {
-        SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
-        ILFree(pidl);
-      }
+        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+        {
+            break;
+        }
+        PIDLIST_ABSOLUTE pidl = NULL;
+        DWORD rfg = 0;
+        SHILCreateFromPath(StrIsEmpty(Globals.CurrentFile) ? Globals.WorkingDirectory : Globals.CurrentFile, &pidl, &rfg);
+        if (pidl)
+        {
+            SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
+            ILFree(pidl);
+        }
     }
     break;
 
 
     case IDM_FILE_LAUNCH_ELEVATED:
-      {
+    {
         EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
         fioStatus.iEncoding        = Encoding_GetCurrent();
         fioStatus.iEOLMode         = SciCall_GetEOLMode();
 
         if (DoElevatedRelaunch(&fioStatus, false))
         {
-          CloseApplication();
+            CloseApplication();
         }
-        else {
-          InfoBoxLng(MB_ICONSHIELD, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
+        else
+        {
+            InfoBoxLng(MB_ICONSHIELD, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_FILE_RUN:
-      {
-        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-          break;
+    {
+        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+        {
+            break;
         }
         StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
         PathQuoteSpaces(tchMaxPathBuffer);
 
         RunDlg(hwnd,tchMaxPathBuffer);
-      }
-      break;
+    }
+    break;
 
     case IDM_FILE_OPENWITH:
-      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+            break;
+        OpenWithDlg(hwnd,Globals.CurrentFile);
         break;
-      OpenWithDlg(hwnd,Globals.CurrentFile);
-      break;
 
 
     case IDM_FILE_PAGESETUP:
-      EditPrintSetup(Globals.hwndEdit);
-      break;
+        EditPrintSetup(Globals.hwndEdit);
+        break;
 
     case IDM_FILE_PRINT:
-      {
+    {
         WCHAR *pszTitle;
         WCHAR tchUntitled[32] = { L'\0' };
         WCHAR tchPageFmt[32] = { L'\0' };
@@ -4212,27 +4588,29 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (StrIsNotEmpty(Globals.CurrentFile))
         {
-          PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
-          pszTitle = szDisplayName;
+            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+            pszTitle = szDisplayName;
         }
-        else {
-          GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
-          pszTitle = tchUntitled;
+        else
+        {
+            GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
+            pszTitle = tchUntitled;
         }
 
         GetLngString(IDS_MUI_PRINT_PAGENUM,tchPageFmt,COUNTOF(tchPageFmt));
 
-        if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt)) {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
+        if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt))
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_FILE_PROPERTIES:
-      {
+    {
         if (StrIsEmpty(Globals.CurrentFile))
-          break;
+            break;
 
         SHELLEXECUTEINFO sei;
         ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
@@ -4243,51 +4621,55 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         sei.lpFile = Globals.CurrentFile;
         sei.nShow = SW_SHOWNORMAL;
         ShellExecuteEx(&sei);
-      }
-      break;
+    }
+    break;
 
     case IDM_FILE_CREATELINK:
-      {
-        if (StrIsEmpty(Globals.CurrentFile)) {
-          break;
+    {
+        if (StrIsEmpty(Globals.CurrentFile))
+        {
+            break;
         }
-        if (!PathCreateDeskLnk(Globals.CurrentFile)) {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_CREATELINK);
+        if (!PathCreateDeskLnk(Globals.CurrentFile))
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_CREATELINK);
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_FILE_OPENFAV:
-      if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-        if (FavoritesDlg(hwnd,tchMaxPathBuffer))
+        if (FileSave(false, true, false, false, Flags.bPreserveFileModTime))
         {
-          if (PathIsLnkToDirectory(tchMaxPathBuffer,NULL,0))
-            PathGetLnkPath(tchMaxPathBuffer,tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer));
+            if (FavoritesDlg(hwnd,tchMaxPathBuffer))
+            {
+                if (PathIsLnkToDirectory(tchMaxPathBuffer,NULL,0))
+                    PathGetLnkPath(tchMaxPathBuffer,tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer));
 
-          if (PathIsDirectory(tchMaxPathBuffer))
-          {
-            if (OpenFileDlg(Globals.hwndMain, tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), tchMaxPathBuffer))
-              FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
-          }
-          else
-            FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
-          }
+                if (PathIsDirectory(tchMaxPathBuffer))
+                {
+                    if (OpenFileDlg(Globals.hwndMain, tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), tchMaxPathBuffer))
+                        FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
+                }
+                else
+                    FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
+            }
         }
-      break;
+        break;
 
 
     case IDM_FILE_ADDTOFAV:
-      if (StrIsNotEmpty(Globals.CurrentFile)) {
-        WCHAR szDisplayName[MAX_PATH];
-        PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
-        AddToFavDlg(hwnd, szDisplayName, Globals.CurrentFile);
-      }
-      break;
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            WCHAR szDisplayName[MAX_PATH];
+            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+            AddToFavDlg(hwnd, szDisplayName, Globals.CurrentFile);
+        }
+        break;
 
 
     case IDM_FILE_MANAGEFAV:
-      {
+    {
         SHELLEXECUTEINFO sei;
         ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -4300,25 +4682,28 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         sei.nShow = SW_SHOWNORMAL;
         // Run favorites directory
         ShellExecuteEx(&sei);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_FILE_RECENT:
-      if (MRU_Count(Globals.pFileMRU) > 0) {
-        if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-          WCHAR tchFile[MAX_PATH] = { L'\0' };
-          if (FileMRUDlg(hwnd, tchFile)) {
-            FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-          }
+        if (MRU_Count(Globals.pFileMRU) > 0)
+        {
+            if (FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+            {
+                WCHAR tchFile[MAX_PATH] = { L'\0' };
+                if (FileMRUDlg(hwnd, tchFile))
+                {
+                    FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+                }
+            }
         }
-      }
-      break;
+        break;
 
 
     case IDM_FILE_EXIT:
-      CloseApplication();
-      break;
+        CloseApplication();
+        break;
 
 
     case IDM_ENCODING_ANSI:
@@ -4327,72 +4712,87 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_ENCODING_UTF8:
     case IDM_ENCODING_UTF8SIGN:
     case IDM_ENCODING_SELECT:
-      {
-        cpi_enc_t iNewEncoding = (HIWORD(wParam) >= IDM_ENCODING_SELECT) ? 
-          (cpi_enc_t)(HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_GetCurrent();
+    {
+        cpi_enc_t iNewEncoding = (HIWORD(wParam) >= IDM_ENCODING_SELECT) ?
+                                 (cpi_enc_t)(HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_GetCurrent();
 
-        if (iLoWParam == IDM_ENCODING_SELECT) {
-          if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
-            break; // no change
-          }
+        if (iLoWParam == IDM_ENCODING_SELECT)
+        {
+            if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding))
+            {
+                break; // no change
+            }
         }
-        else {
-          switch (iLoWParam)
-          {
-          case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
-          case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
-          case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
-          case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
-          case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
-          }
+        else
+        {
+            switch (iLoWParam)
+            {
+            case IDM_ENCODING_UNICODE:
+                iNewEncoding = CPI_UNICODEBOM;
+                break;
+            case IDM_ENCODING_UNICODEREV:
+                iNewEncoding = CPI_UNICODEBEBOM;
+                break;
+            case IDM_ENCODING_UTF8:
+                iNewEncoding = CPI_UTF8;
+                break;
+            case IDM_ENCODING_UTF8SIGN:
+                iNewEncoding = CPI_UTF8SIGN;
+                break;
+            case IDM_ENCODING_ANSI:
+                iNewEncoding = CPI_ANSI_DEFAULT;
+                break;
+            }
         }
         BeginWaitCursor(true,L"Recoding...");
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE)))
         {
-          SetSaveNeeded();
+            SetSaveNeeded();
         }
         EndWaitCursor();
         UpdateToolbar();
         UpdateStatusbar(false);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_ENCODING_RECODE:
-      {
+    {
         if (StrIsNotEmpty(Globals.CurrentFile))
         {
-          cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_GetCurrent());
+            cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_GetCurrent());
 
-          if (GetDocModified()) {
-            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE);
-            if (!((IDOK == answer) || (IDYES == answer))) {
-              break;
+            if (GetDocModified())
+            {
+                INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE);
+                if (!((IDOK == answer) || (IDYES == answer)))
+                {
+                    break;
+                }
             }
-          }
 
-          if (RecodeDlg(hwnd,&iNewEncoding)) 
-          {
-            StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-            Encoding_Forced(iNewEncoding);
-            FileLoad(true, false, true, true, true, false, tchMaxPathBuffer);
-          }
+            if (RecodeDlg(hwnd,&iNewEncoding))
+            {
+                StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
+                Encoding_Forced(iNewEncoding);
+                FileLoad(true, false, true, true, true, false, tchMaxPathBuffer);
+            }
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_ENCODING_SETDEFAULT:
-      SelectDefEncodingDlg(hwnd, &Settings.DefaultEncoding);
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      break;
+        SelectDefEncodingDlg(hwnd, &Settings.DefaultEncoding);
+        UpdateToolbar();
+        UpdateStatusbar(false);
+        break;
 
 
     case IDM_LINEENDINGS_CRLF:
     case IDM_LINEENDINGS_CR:
     case IDM_LINEENDINGS_LF:
-      {
+    {
         BeginWaitCursor(true,L"Line Breaks...");
         _IGNORE_NOTIFY_CHANGE_;
         int const _eol_mode = (iLoWParam - IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
@@ -4402,790 +4802,839 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EndWaitCursor();
         UpdateToolbar();
         UpdateStatusbar(false);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_LINEENDINGS_SETDEFAULT:
         SelectDefLineEndingDlg(hwnd, (LPARAM)&Settings.DefaultEOLMode);
-      break;
+        break;
 
 
     case IDM_EDIT_UNDO:
-      if (SciCall_CanUndo()) {
-        _IGNORE_NOTIFY_CHANGE_;
-        SciCall_Undo();
-        _OBSERVE_NOTIFY_CHANGE_;
-      }
-      break;
+        if (SciCall_CanUndo())
+        {
+            _IGNORE_NOTIFY_CHANGE_;
+            SciCall_Undo();
+            _OBSERVE_NOTIFY_CHANGE_;
+        }
+        break;
 
 
     case IDM_EDIT_REDO:
-      if (SciCall_CanRedo()) {
-        _IGNORE_NOTIFY_CHANGE_;
-        SciCall_Redo();
-        _OBSERVE_NOTIFY_CHANGE_;
-      }
-      break;
+        if (SciCall_CanRedo())
+        {
+            _IGNORE_NOTIFY_CHANGE_;
+            SciCall_Redo();
+            _OBSERVE_NOTIFY_CHANGE_;
+        }
+        break;
 
 
     case IDM_EDIT_CUT:
-      {
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+    {
+        if (s_flagPasteBoard)
+        {
+            s_bLastCopyFromMe = true;
         }
         if (SciCall_IsSelectionEmpty())
         {
-          if (!Settings2.NoCutLineOnEmptySelection) {
+            if (!Settings2.NoCutLineOnEmptySelection)
+            {
+                EditDeleteMarkerInSelection();
+                SciCall_LineCut();
+            }
+        }
+        else
+        {
             EditDeleteMarkerInSelection();
-            SciCall_LineCut();
-          }
+            SciCall_Cut();
         }
-        else {
-          EditDeleteMarkerInSelection();
-          SciCall_Cut();
-        }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_CUTLINE:
-      {
-        if (Sci_IsMultiOrRectangleSelection()) {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-          break;
+    {
+        if (Sci_IsMultiOrRectangleSelection())
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+            break;
         }
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+        if (s_flagPasteBoard)
+        {
+            s_bLastCopyFromMe = true;
         }
         EditDeleteMarkerInSelection();
         SciCall_LineCut();
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_COPY:
-      {
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+    {
+        if (s_flagPasteBoard)
+        {
+            s_bLastCopyFromMe = true;
         }
-        if (SciCall_IsSelectionEmpty()) {
-          if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK) && 
-              !Settings2.NoCopyLineOnEmptySelection)
-          {
-            // VisualStudio behavior
-            SciCall_CopyAllowLine();
-          }
+        if (SciCall_IsSelectionEmpty())
+        {
+            if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK) &&
+                    !Settings2.NoCopyLineOnEmptySelection)
+            {
+                // VisualStudio behavior
+                SciCall_CopyAllowLine();
+            }
         }
-        else {
-          SciCall_Copy();
+        else
+        {
+            SciCall_Copy();
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_COPYLINE:
-      {
-        if (Sci_IsMultiOrRectangleSelection()) {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-          break;
+    {
+        if (Sci_IsMultiOrRectangleSelection())
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+            break;
         }
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+        if (s_flagPasteBoard)
+        {
+            s_bLastCopyFromMe = true;
         }
         DocPos const iSelLnStart = Sci_GetLineStartPosition(SciCall_GetSelectionStart());
         // copy incl last line-breaks
         DocLn const lnSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
         DocPos const iSelLnEnd = SciCall_PositionFromLine(lnSelLast) + SciCall_LineLength(lnSelLast);
         SciCall_CopyRange(iSelLnStart, iSelLnEnd);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_COPYALL:
-      {
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+    {
+        if (s_flagPasteBoard)
+        {
+            s_bLastCopyFromMe = true;
         }
         SciCall_CopyRange(0, Sci_GetDocEndPosition());
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_COPYADD:
-      {
-        if (Sci_IsMultiOrRectangleSelection()) {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-          break;
+    {
+        if (Sci_IsMultiOrRectangleSelection())
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+            break;
         }
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+        if (s_flagPasteBoard)
+        {
+            s_bLastCopyFromMe = true;
         }
         DocPos const posSelStart = SciCall_IsSelectionEmpty() ? Sci_GetLineStartPosition(SciCall_GetSelectionStart()) : SciCall_GetSelectionStart();
         DocPos const posSelEnd   = SciCall_IsSelectionEmpty() ? Sci_GetLineEndPosition(SciCall_GetSelectionEnd()) : SciCall_GetSelectionEnd();
         EditCopyRangeAppend(Globals.hwndEdit, posSelStart, posSelEnd, true);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_PASTE:
-      if (SciCall_CanPaste()) {
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+        if (SciCall_CanPaste())
+        {
+            if (s_flagPasteBoard)
+            {
+                s_bLastCopyFromMe = true;
+            }
+            SciCall_Paste();
         }
-        SciCall_Paste();
-      }
-      break;
+        break;
 
 
     case IDM_EDIT_SWAP:
-      if (!SciCall_IsSelectionEmpty() && SciCall_CanPaste()) {
-        if (s_flagPasteBoard) {
-          s_bLastCopyFromMe = true;
+        if (!SciCall_IsSelectionEmpty() && SciCall_CanPaste())
+        {
+            if (s_flagPasteBoard)
+            {
+                s_bLastCopyFromMe = true;
+            }
+            EditSwapClipboard(Globals.hwndEdit, Settings.SkipUnicodeDetection);
         }
-        EditSwapClipboard(Globals.hwndEdit, Settings.SkipUnicodeDetection);
-      }
-      break;
+        break;
 
 
     case IDM_EDIT_CLEARCLIPBOARD:
-      EditClearClipboard(Globals.hwndEdit);
-      break;
+        EditClearClipboard(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_SELECTALL:
         SciCall_SelectAll();
-      break;
+        break;
 
 
     case IDM_EDIT_SELECTWORD:
     {
-      if (SciCall_IsSelectionEmpty()) {
+        if (SciCall_IsSelectionEmpty())
+        {
 
-        EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
+            EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
 
-        if (!SciCall_IsSelectionEmpty()) {
-          SciCall_ChooseCaretX();
-          break;
+            if (!SciCall_IsSelectionEmpty())
+            {
+                SciCall_ChooseCaretX();
+                break;
+            }
         }
-      }
-      // selection not empty or no word found - select line
-      DocPos const iLineStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-      DocPos const iLineEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
-      SciCall_SetSelection(SciCall_GetLineEndPosition(iLineEnd), SciCall_PositionFromLine(iLineStart));
-      SciCall_ChooseCaretX();
+        // selection not empty or no word found - select line
+        DocPos const iLineStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+        DocPos const iLineEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+        SciCall_SetSelection(SciCall_GetLineEndPosition(iLineEnd), SciCall_PositionFromLine(iLineStart));
+        SciCall_ChooseCaretX();
     }
     break;
 
 
     case IDM_EDIT_SELECTALLMATCHES:
     {
-      if (!Sci_IsMultiOrRectangleSelection()) {
-        if (!IsWindow(Globals.hwndDlgFindReplace)) {
-          if (SciCall_IsSelectionEmpty()) {
-            EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
-          }
-          EditSelectionMultiSelectAll();
+        if (!Sci_IsMultiOrRectangleSelection())
+        {
+            if (!IsWindow(Globals.hwndDlgFindReplace))
+            {
+                if (SciCall_IsSelectionEmpty())
+                {
+                    EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
+                }
+                EditSelectionMultiSelectAll();
+            }
+            else
+            {
+                SetFindReplaceData();  // s_FindReplaceData
+                EditSelectionMultiSelectAllEx(s_FindReplaceData);
+            }
         }
-        else {
-          SetFindReplaceData();  // s_FindReplaceData 
-          EditSelectionMultiSelectAllEx(s_FindReplaceData);
-        }
-      }
     }
     break;
 
 
     case IDM_EDIT_MOVELINEUP:
-      EditMoveUp(Globals.hwndEdit);
-      break;
+        EditMoveUp(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_MOVELINEDOWN:
-      EditMoveDown(Globals.hwndEdit);
-      break;
+        EditMoveDown(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_DUPLINEORSELECTION:
-      if (SciCall_IsSelectionEmpty()) { 
-        SciCall_LineDuplicate(); 
-      } 
-      else { 
-        SciCall_SelectionDuplicate(); 
-      }
-      break;
+        if (SciCall_IsSelectionEmpty())
+        {
+            SciCall_LineDuplicate();
+        }
+        else
+        {
+            SciCall_SelectionDuplicate();
+        }
+        break;
 
 
     case IDM_EDIT_LINETRANSPOSE:
-      SciCall_LineTranspose();
-      break;
+        SciCall_LineTranspose();
+        break;
 
 
     case IDM_EDIT_DELETELINE:
-      {
+    {
         SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
         SciCall_LineDelete();
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_DELETELINELEFT:
-      {
+    {
         SciCall_DelLineLeft();
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_DELETELINERIGHT:
-      {
+    {
         SciCall_DelLineRight();
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_INDENT:
-      EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
-      break;
+        EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
+        break;
 
     case IDM_EDIT_UNINDENT:
-      EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
-      break;
+        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
+        break;
 
     case CMD_TAB:
-      EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-      break;
+        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        break;
 
     case CMD_BACKTAB:
-      EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
-      break;
+        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
+        break;
 
     case CMD_CTRLTAB:
-      SciCall_SetUseTabs(true);
-      SciCall_SetTabIndents(false);
-      EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-      SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
-      SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
-      break;
+        SciCall_SetUseTabs(true);
+        SciCall_SetTabIndents(false);
+        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
+        SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
+        break;
 
     case CMD_CHECK_INDENTATION:
-      {  
+    {
         EditFileIOStatus status = INIT_FILEIO_STATUS;
         EditIndentationStatistic(Globals.hwndEdit, &status);
-        if (ConsistentIndentationCheck(&status)) {
-          InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_INDENT_CONSISTENT);
+        if (ConsistentIndentationCheck(&status))
+        {
+            InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_INDENT_CONSISTENT);
         }
-      }
-      break;
+    }
+    break;
 
     case CMD_DELETEBACK:
-      {
+    {
         EditDeleteMarkerInSelection();
         SciCall_DeleteBack();
-      }
-      break;
+    }
+    break;
 
     case CMD_VK_INSERT:
-      SciCall_EditToggleOverType();
-      break;
+        SciCall_EditToggleOverType();
+        break;
 
     case IDM_EDIT_ENCLOSESELECTION:
-      if (EditEncloseSelectionDlg(hwnd,s_wchPrefixSelection,s_wchAppendSelection)) {
-        EditEncloseSelection(s_wchPrefixSelection,s_wchAppendSelection);
-      }
-      break;
+        if (EditEncloseSelectionDlg(hwnd,s_wchPrefixSelection,s_wchAppendSelection))
+        {
+            EditEncloseSelection(s_wchPrefixSelection,s_wchAppendSelection);
+        }
+        break;
 
 
     case IDM_EDIT_PADWITHSPACES:
-      EditPadWithSpaces(Globals.hwndEdit, false, false);
-      break;
+        EditPadWithSpaces(Globals.hwndEdit, false, false);
+        break;
 
 
     case IDM_EDIT_STRIP1STCHAR:
-      EditStripFirstCharacter(Globals.hwndEdit);
-      break;
+        EditStripFirstCharacter(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_STRIPLASTCHAR:
-      EditStripLastCharacter(Globals.hwndEdit, false, false);
-      break;
+        EditStripLastCharacter(Globals.hwndEdit, false, false);
+        break;
 
 
     case IDM_EDIT_TRIMLINES:
-      EditStripLastCharacter(Globals.hwndEdit, false, true);
-      break;
+        EditStripLastCharacter(Globals.hwndEdit, false, true);
+        break;
 
 
     case IDM_EDIT_COMPRESS_BLANKS:
-      EditCompressBlanks(Globals.hwndEdit);
-      break;
+        EditCompressBlanks(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_MERGEBLANKLINES:
-      EditRemoveBlankLines(Globals.hwndEdit, true, true);
-      break;
+        EditRemoveBlankLines(Globals.hwndEdit, true, true);
+        break;
 
     case IDM_EDIT_MERGEEMPTYLINES:
-      EditRemoveBlankLines(Globals.hwndEdit, true, false);
-      break;
+        EditRemoveBlankLines(Globals.hwndEdit, true, false);
+        break;
 
 
     case IDM_EDIT_REMOVEBLANKLINES:
-      EditRemoveBlankLines(Globals.hwndEdit, false, true);
-      break;
+        EditRemoveBlankLines(Globals.hwndEdit, false, true);
+        break;
 
 
     case IDM_EDIT_REMOVEEMPTYLINES:
-      EditRemoveBlankLines(Globals.hwndEdit, false, false);
-      break;
+        EditRemoveBlankLines(Globals.hwndEdit, false, false);
+        break;
 
 
     case IDM_EDIT_REMOVEDUPLICATELINES:
-      EditRemoveDuplicateLines(Globals.hwndEdit, false);
-      break;
+        EditRemoveDuplicateLines(Globals.hwndEdit, false);
+        break;
 
 
     case IDM_EDIT_CLEAR_MARKER:
-      EditBookmarkToggle(Globals.hwndEdit, Sci_GetCurrentLineNumber(), 0);
-      break;
+        EditBookmarkToggle(Globals.hwndEdit, Sci_GetCurrentLineNumber(), 0);
+        break;
 
 
     case IDM_EDIT_CUT_MARKED:
-      EditFocusMarkedLinesCmd(Globals.hwndEdit, true, true);
-      break;
+        EditFocusMarkedLinesCmd(Globals.hwndEdit, true, true);
+        break;
 
 
     case IDM_EDIT_COPY_MARKED:
-      EditFocusMarkedLinesCmd(Globals.hwndEdit, true, false);
-      break;
+        EditFocusMarkedLinesCmd(Globals.hwndEdit, true, false);
+        break;
 
 
     case IDM_EDIT_DELETE_MARKED:
-      EditFocusMarkedLinesCmd(Globals.hwndEdit, false, true);
-      break;
+        EditFocusMarkedLinesCmd(Globals.hwndEdit, false, true);
+        break;
 
 
     case IDM_EDIT_MODIFYLINES:
-      if (EditModifyLinesDlg(hwnd,s_wchPrefixLines,s_wchAppendLines)) {
-        EditModifyLines(s_wchPrefixLines,s_wchAppendLines);
-      }
-      break;
+        if (EditModifyLinesDlg(hwnd,s_wchPrefixLines,s_wchAppendLines))
+        {
+            EditModifyLines(s_wchPrefixLines,s_wchAppendLines);
+        }
+        break;
 
 
     case IDM_EDIT_ALIGN:
-      if (EditAlignDlg(hwnd,&s_iAlignMode)) {
-        EditAlignText(s_iAlignMode);
-      }
-      break;
+        if (EditAlignDlg(hwnd,&s_iAlignMode))
+        {
+            EditAlignText(s_iAlignMode);
+        }
+        break;
 
 
     case IDM_EDIT_SORTLINES:
-      if (EditSortDlg(hwnd,&s_iSortOptions)) {
-        EditSortLines(Globals.hwndEdit,s_iSortOptions);
-      }
-      break;
+        if (EditSortDlg(hwnd,&s_iSortOptions))
+        {
+            EditSortLines(Globals.hwndEdit,s_iSortOptions);
+        }
+        break;
 
 
     case IDM_EDIT_COLUMNWRAP:
-      {
+    {
         UINT uWrpCol = Globals.iWrapCol;
         if (ColumnWrapDlg(hwnd, IDD_MUI_COLUMNWRAP, &uWrpCol))
         {
-          Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
-          EditWrapToColumn(Globals.iWrapCol);
+            Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
+            EditWrapToColumn(Globals.iWrapCol);
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_SPLITLINES:
-      EditSplitLines(Globals.hwndEdit);
-      break;
+        EditSplitLines(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_JOINLINES:
-      EditJoinLinesEx(false, true);
-      break;
+        EditJoinLinesEx(false, true);
+        break;
 
     case IDM_EDIT_JOINLN_NOSP:
-      EditJoinLinesEx(false, false);
-      break;
+        EditJoinLinesEx(false, false);
+        break;
 
     case IDM_EDIT_JOINLINES_PARA:
-      EditJoinLinesEx(true, true);
-      break;
+        EditJoinLinesEx(true, true);
+        break;
 
 
     case IDM_EDIT_CONVERTUPPERCASE:
-      SciCall_UpperCase();
-      break;
+        SciCall_UpperCase();
+        break;
 
 
     case IDM_EDIT_CONVERTLOWERCASE:
-      SciCall_LowerCase();
-      break;
+        SciCall_LowerCase();
+        break;
 
 
     case IDM_EDIT_INVERTCASE:
-      EditInvertCase(Globals.hwndEdit);
-      break;
+        EditInvertCase(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_TITLECASE:
-      EditTitleCase(Globals.hwndEdit);
-      break;
+        EditTitleCase(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_SENTENCECASE:
-      EditSentenceCase(Globals.hwndEdit);
-      break;
+        EditSentenceCase(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_CONVERTTABS:
-      EditTabsToSpaces(Globals.fvCurFile.iTabWidth, false);
-      break;
+        EditTabsToSpaces(Globals.fvCurFile.iTabWidth, false);
+        break;
 
 
     case IDM_EDIT_CONVERTSPACES:
-      EditSpacesToTabs(Globals.fvCurFile.iTabWidth, false);
-      break;
+        EditSpacesToTabs(Globals.fvCurFile.iTabWidth, false);
+        break;
 
 
     case IDM_EDIT_CONVERTTABS2:
-      EditTabsToSpaces(Globals.fvCurFile.iTabWidth, true);
-      break;
+        EditTabsToSpaces(Globals.fvCurFile.iTabWidth, true);
+        break;
 
 
     case IDM_EDIT_CONVERTSPACES2:
-      EditSpacesToTabs(Globals.fvCurFile.iTabWidth, true);
-      break;
+        EditSpacesToTabs(Globals.fvCurFile.iTabWidth, true);
+        break;
 
 
     case IDM_EDIT_INSERT_TAG:
-      {
+    {
         WCHAR wszOpen[256] = { L'\0' };
         WCHAR wszClose[256] = { L'\0' };
         UINT repeat = 1;
-        if (EditInsertTagDlg(hwnd, wszOpen, wszClose, &repeat)) {
-          while (repeat > 0) {
-            EditEncloseSelection(wszOpen, wszClose);
-            --repeat;
-          }
+        if (EditInsertTagDlg(hwnd, wszOpen, wszClose, &repeat))
+        {
+            while (repeat > 0)
+            {
+                EditEncloseSelection(wszOpen, wszClose);
+                --repeat;
+            }
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_INSERT_ENCODING:
-      {
+    {
         cpi_enc_t const iEncoding = Encoding_GetCurrent();
         char chEncStrg[128] = { '\0' };
         WideCharToMultiByteEx(Encoding_SciCP, 0, Encoding_GetLabel(iEncoding), -1, chEncStrg, COUNTOF(chEncStrg), NULL, NULL);
         EditReplaceSelection(chEncStrg, false);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_INSERT_SHORTDATE:
     case IDM_EDIT_INSERT_LONGDATE:
-      EditInsertDateTimeStrg((iLoWParam == IDM_EDIT_INSERT_SHORTDATE), false);
-      break;
+        EditInsertDateTimeStrg((iLoWParam == IDM_EDIT_INSERT_SHORTDATE), false);
+        break;
 
 
     case IDM_EDIT_INSERT_FILENAME:
     case IDM_EDIT_INSERT_DIRNAME:
     case IDM_EDIT_INSERT_PATHNAME:
-      {
+    {
         WCHAR *pszInsert;
         WCHAR tchUntitled[32];
         WCHAR szDisplayName[MAX_PATH];
 
-        if (StrIsNotEmpty(Globals.CurrentFile)) {
-          if (iLoWParam == IDM_EDIT_INSERT_FILENAME) 
-          {
-            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
-            pszInsert = szDisplayName;
-          }
-          else if (iLoWParam == IDM_EDIT_INSERT_DIRNAME) 
-          {
-            StringCchCopy(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
-            PathCchRemoveFileSpec(szDisplayName, COUNTOF(szDisplayName));
-            pszInsert = szDisplayName;
-          }
-          else {
-            pszInsert = Globals.CurrentFile;
-          }
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            if (iLoWParam == IDM_EDIT_INSERT_FILENAME)
+            {
+                PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+                pszInsert = szDisplayName;
+            }
+            else if (iLoWParam == IDM_EDIT_INSERT_DIRNAME)
+            {
+                StringCchCopy(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+                PathCchRemoveFileSpec(szDisplayName, COUNTOF(szDisplayName));
+                pszInsert = szDisplayName;
+            }
+            else
+            {
+                pszInsert = Globals.CurrentFile;
+            }
         }
-        else {
-          GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
-          pszInsert = tchUntitled;
+        else
+        {
+            GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
+            pszInsert = tchUntitled;
         }
         SetClipboardText(hwnd, pszInsert, StringCchLen(pszInsert, 0));
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_INSERT_GUID:
-      {
+    {
         GUID guid;
-        if (SUCCEEDED(CoCreateGuid(&guid))) {  
-          if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
-            StrTrim(tchMaxPathBuffer, L"{}");
-            //char chMaxPathBuffer[MAX_PATH] = { '\0' };
-            //if (WideCharToMultiByteEx(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
-            //  EditReplaceSelection(chMaxPathBuffer, false);
-            //}
-            SetClipboardText(hwnd, tchMaxPathBuffer, StringCchLen(tchMaxPathBuffer, 0));
-          }
+        if (SUCCEEDED(CoCreateGuid(&guid)))
+        {
+            if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer)))
+            {
+                StrTrim(tchMaxPathBuffer, L"{}");
+                //char chMaxPathBuffer[MAX_PATH] = { '\0' };
+                //if (WideCharToMultiByteEx(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
+                //  EditReplaceSelection(chMaxPathBuffer, false);
+                //}
+                SetClipboardText(hwnd, tchMaxPathBuffer, StringCchLen(tchMaxPathBuffer, 0));
+            }
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_LINECOMMENT:
-      {
-        switch (SciCall_GetLexer()) {
-          case SCLEX_CPP:
-          case SCLEX_D:
-          case SCLEX_HTML:
-          case SCLEX_PASCAL:
-          case SCLEX_RUST:
-          case SCLEX_XML:
+    {
+        switch (SciCall_GetLexer())
+        {
+        case SCLEX_CPP:
+        case SCLEX_D:
+        case SCLEX_HTML:
+        case SCLEX_PASCAL:
+        case SCLEX_RUST:
+        case SCLEX_XML:
             EditToggleLineComments(Globals.hwndEdit, L"//", false);
             break;
-          case SCLEX_VB:
-          case SCLEX_VBSCRIPT:
+        case SCLEX_VB:
+        case SCLEX_VBSCRIPT:
             EditToggleLineComments(Globals.hwndEdit, L"'", false);
             break;
-          case SCLEX_AVS:
-          case SCLEX_BASH:
-          case SCLEX_CMAKE:
-          case SCLEX_COFFEESCRIPT:
-          case SCLEX_CONF:
-          case SCLEX_MAKEFILE:
-          case SCLEX_NIM:
-          case SCLEX_PERL:
-          case SCLEX_POWERSHELL:
-          case SCLEX_PYTHON:
-          case SCLEX_R:
-          case SCLEX_RUBY:
-          case SCLEX_TCL:
-          case SCLEX_TOML:
-          case SCLEX_YAML:
+        case SCLEX_AVS:
+        case SCLEX_BASH:
+        case SCLEX_CMAKE:
+        case SCLEX_COFFEESCRIPT:
+        case SCLEX_CONF:
+        case SCLEX_MAKEFILE:
+        case SCLEX_NIM:
+        case SCLEX_PERL:
+        case SCLEX_POWERSHELL:
+        case SCLEX_PYTHON:
+        case SCLEX_R:
+        case SCLEX_RUBY:
+        case SCLEX_TCL:
+        case SCLEX_TOML:
+        case SCLEX_YAML:
             EditToggleLineComments(Globals.hwndEdit, L"#", true);
             break;
-          case SCLEX_AHKL:
-          case SCLEX_ASM:
-          case SCLEX_AU3:
-          case SCLEX_INNOSETUP:
-          case SCLEX_NSIS: // # could also be used instead
-          case SCLEX_PROPERTIES:
-          case SCLEX_REGISTRY:
+        case SCLEX_AHKL:
+        case SCLEX_ASM:
+        case SCLEX_AU3:
+        case SCLEX_INNOSETUP:
+        case SCLEX_NSIS: // # could also be used instead
+        case SCLEX_PROPERTIES:
+        case SCLEX_REGISTRY:
             EditToggleLineComments(Globals.hwndEdit, L";", true);
             break;
-          case SCLEX_LUA:
-          case SCLEX_SQL:
-          case SCLEX_VHDL:
+        case SCLEX_LUA:
+        case SCLEX_SQL:
+        case SCLEX_VHDL:
             EditToggleLineComments(Globals.hwndEdit, L"--", true);
             break;
-          case SCLEX_BATCH:
+        case SCLEX_BATCH:
             EditToggleLineComments(Globals.hwndEdit, L"rem ", true);
             break;
-          case SCLEX_LATEX:
-          case SCLEX_MATLAB:
+        case SCLEX_LATEX:
+        case SCLEX_MATLAB:
             EditToggleLineComments(Globals.hwndEdit, L"%", true);
             break;
-          // ------------------
-          case SCLEX_NULL:
-          case SCLEX_CSS:
-          case SCLEX_DIFF:
-          case SCLEX_JSON:
-          case SCLEX_MARKDOWN:
-          default:
+        // ------------------
+        case SCLEX_NULL:
+        case SCLEX_CSS:
+        case SCLEX_DIFF:
+        case SCLEX_JSON:
+        case SCLEX_MARKDOWN:
+        default:
             // do nothing
             break;
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_STREAMCOMMENT:
-      {
-        switch (SciCall_GetLexer()) {
-          case SCLEX_D:
-            //~EditEncloseSelection(Globals.hwndEdit, L"/+", L"+/");
-            //~break;
-          case SCLEX_AVS:
-          case SCLEX_CPP:
-          case SCLEX_CSS:
-          case SCLEX_HTML:
-          case SCLEX_NSIS:
-          case SCLEX_RUST:
-          case SCLEX_SQL:
-          case SCLEX_VHDL:
-          case SCLEX_XML:
+    {
+        switch (SciCall_GetLexer())
+        {
+        case SCLEX_D:
+        //~EditEncloseSelection(Globals.hwndEdit, L"/+", L"+/");
+        //~break;
+        case SCLEX_AVS:
+        case SCLEX_CPP:
+        case SCLEX_CSS:
+        case SCLEX_HTML:
+        case SCLEX_NSIS:
+        case SCLEX_RUST:
+        case SCLEX_SQL:
+        case SCLEX_VHDL:
+        case SCLEX_XML:
             EditEncloseSelection(L"/*", L"*/");
             break;
-          case SCLEX_INNOSETUP:
-          case SCLEX_PASCAL:
+        case SCLEX_INNOSETUP:
+        case SCLEX_PASCAL:
             EditEncloseSelection(L"{", L"}");
             break;
-          case SCLEX_LUA:
+        case SCLEX_LUA:
             EditEncloseSelection(L"--[[", L"]]");
             break;
-          case SCLEX_COFFEESCRIPT:
+        case SCLEX_COFFEESCRIPT:
             EditEncloseSelection(L"###", L"###");
             break;
-          case SCLEX_MATLAB:
+        case SCLEX_MATLAB:
             EditEncloseSelection(L"%{", L"%}");
             break;
-          // ------------------
-          case SCLEX_NULL:
-          case SCLEX_AHKL:
-          case SCLEX_ASM:
-          case SCLEX_AU3:
-          case SCLEX_BASH:
-          case SCLEX_BATCH:
-          case SCLEX_CMAKE:
-          case SCLEX_CONF:
-          case SCLEX_DIFF:
-          case SCLEX_JSON:
-          case SCLEX_LATEX:
-          case SCLEX_MAKEFILE:
-          case SCLEX_MARKDOWN:
-          case SCLEX_NIM:
-          case SCLEX_PERL:
-          case SCLEX_POWERSHELL:
-          case SCLEX_PROPERTIES:
-          case SCLEX_PYTHON:
-          case SCLEX_R:
-          case SCLEX_REGISTRY:
-          case SCLEX_RUBY:
-          case SCLEX_TCL:
-          case SCLEX_TOML:
-          case SCLEX_VB:
-          case SCLEX_VBSCRIPT:
-          case SCLEX_YAML:
-          default:
+        // ------------------
+        case SCLEX_NULL:
+        case SCLEX_AHKL:
+        case SCLEX_ASM:
+        case SCLEX_AU3:
+        case SCLEX_BASH:
+        case SCLEX_BATCH:
+        case SCLEX_CMAKE:
+        case SCLEX_CONF:
+        case SCLEX_DIFF:
+        case SCLEX_JSON:
+        case SCLEX_LATEX:
+        case SCLEX_MAKEFILE:
+        case SCLEX_MARKDOWN:
+        case SCLEX_NIM:
+        case SCLEX_PERL:
+        case SCLEX_POWERSHELL:
+        case SCLEX_PROPERTIES:
+        case SCLEX_PYTHON:
+        case SCLEX_R:
+        case SCLEX_REGISTRY:
+        case SCLEX_RUBY:
+        case SCLEX_TCL:
+        case SCLEX_TOML:
+        case SCLEX_VB:
+        case SCLEX_VBSCRIPT:
+        case SCLEX_YAML:
+        default:
             // do nothing
             break;
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_URLENCODE:
-      {
+    {
         EditURLEncode(Globals.hwndEdit);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_URLDECODE:
-      {
+    {
         EditURLDecode(Globals.hwndEdit);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_ESCAPECCHARS:
-      {
+    {
         EditEscapeCChars(Globals.hwndEdit);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_UNESCAPECCHARS:
-      {
+    {
         EditUnescapeCChars(Globals.hwndEdit);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_EDIT_CHAR2HEX:
-      EditChar2Hex(Globals.hwndEdit);
-      break;
+        EditChar2Hex(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_HEX2CHAR:
-      EditHex2Char(Globals.hwndEdit);
-      break;
+        EditHex2Char(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_FINDMATCHINGBRACE:
-      EditFindMatchingBrace(Globals.hwndEdit);
-      break;
+        EditFindMatchingBrace(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_SELTOMATCHINGBRACE:
-      EditSelectToMatchingBrace(Globals.hwndEdit);
-      break;
+        EditSelectToMatchingBrace(Globals.hwndEdit);
+        break;
 
 
     // Main Bookmark Functions
     case BME_EDIT_BOOKMARKNEXT:
-      EditBookmarkNext(Globals.hwndEdit, Sci_GetCurrentLineNumber());
-      break;
+        EditBookmarkNext(Globals.hwndEdit, Sci_GetCurrentLineNumber());
+        break;
 
 
     case BME_EDIT_BOOKMARKPREV:
-      EditBookmarkPrevious(Globals.hwndEdit, Sci_GetCurrentLineNumber());
-      break;
+        EditBookmarkPrevious(Globals.hwndEdit, Sci_GetCurrentLineNumber());
+        break;
 
 
     case BME_EDIT_BOOKMARKTOGGLE:
-      EditBookmarkToggle(Globals.hwndEdit, Sci_GetCurrentLineNumber(), 0);
-      break;
+        EditBookmarkToggle(Globals.hwndEdit, Sci_GetCurrentLineNumber(), 0);
+        break;
 
 
     case BME_EDIT_BOOKMARKCLEAR:
-      EditClearAllBookMarks(Globals.hwndEdit);
-      break;
+        EditClearAllBookMarks(Globals.hwndEdit);
+        break;
 
 
     case IDM_EDIT_FIND:
-      {
+    {
         SetFindReplaceData(); // s_FindReplaceData
-        if (!IsWindow(Globals.hwndDlgFindReplace)) {
-          Globals.bFindReplCopySelOrClip = true;
-          /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
-        }
-        else {
-          Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
-          if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
-            SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
-            DestroyWindow(Globals.hwndDlgFindReplace);
+        if (!IsWindow(Globals.hwndDlgFindReplace))
+        {
+            Globals.bFindReplCopySelOrClip = true;
             /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
-          }
-          else {
-            SetForegroundWindow(Globals.hwndDlgFindReplace);
-            PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
-          }
         }
-      }
-      break;
+        else
+        {
+            Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
+            if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE))
+            {
+                SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
+                DestroyWindow(Globals.hwndDlgFindReplace);
+                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+            }
+            else
+            {
+                SetForegroundWindow(Globals.hwndDlgFindReplace);
+                PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+            }
+        }
+    }
+    break;
 
 
     case IDM_EDIT_REPLACE:
-      {
+    {
         SetFindReplaceData(); // s_FindReplaceData
-        if (!IsWindow(Globals.hwndDlgFindReplace)) {
-          Globals.bFindReplCopySelOrClip = true;
-          /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
-        }
-        else {
-          Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
-          if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
-            SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
-            DestroyWindow(Globals.hwndDlgFindReplace);
+        if (!IsWindow(Globals.hwndDlgFindReplace))
+        {
+            Globals.bFindReplCopySelOrClip = true;
             /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
-          }
-          else {
-            SetForegroundWindow(Globals.hwndDlgFindReplace);
-            PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
-          }
         }
-      }
-      break;
+        else
+        {
+            Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
+            if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE))
+            {
+                SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
+                DestroyWindow(Globals.hwndDlgFindReplace);
+                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+            }
+            else
+            {
+                SetForegroundWindow(Globals.hwndDlgFindReplace);
+                PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+            }
+        }
+    }
+    break;
 
 
     case IDM_EDIT_FINDNEXT:
@@ -5194,348 +5643,386 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SELTONEXT:
     case IDM_EDIT_SELTOPREV:
 
-      if (Sci_IsDocEmpty()) { break; }
-
-      if (Sci_IsMultiSelection()) { 
-        switch (iLoWParam) {
-          case IDM_EDIT_SELTONEXT:
-          {
-            SciCall_RotateSelection();
-            EditEnsureSelectionVisible();
-          }
-          break;
-
-          case IDM_EDIT_SELTOPREV:
-          {
-            DocPosU const iMain = SciCall_GetMainSelection();
-            if (iMain > 0) {
-              SciCall_SetMainSelection(iMain - 1);
-            } else {
-              DocPosU const iNewMain = SciCall_GetSelections() - 1;
-              SciCall_SetMainSelection(iNewMain);
-            }
-            EditEnsureSelectionVisible();
-          }
-          break;
-
-          default: break;
-        }
-        break; // done
-      }
-
-      SetFindReplaceData(); // s_FindReplaceData
-
-      if (IsFindPatternEmpty() && !StrIsEmptyA(s_FindReplaceData.szFind))
-      {
-        if (iLoWParam != IDM_EDIT_REPLACENEXT) {
-          SendWMCommand(hwnd, IDM_EDIT_FIND);
-        }
-        else {
-          SendWMCommand(hwnd, IDM_EDIT_REPLACE);
-        }
-      }
-      else {
-
-        switch (iLoWParam) {
-
-          case IDM_EDIT_FINDNEXT:
-            EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
+        if (Sci_IsDocEmpty())
+        {
             break;
+        }
 
-          case IDM_EDIT_FINDPREV:
-            EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
-            break;
-
-          case IDM_EDIT_REPLACENEXT:
-            if (Globals.bReplaceInitialized) {
-              EditReplace(Globals.hwndEdit, &s_FindReplaceData);
-            }
-            else {
-              SendWMCommand(hwnd, IDM_EDIT_REPLACE);
+        if (Sci_IsMultiSelection())
+        {
+            switch (iLoWParam)
+            {
+            case IDM_EDIT_SELTONEXT:
+            {
+                SciCall_RotateSelection();
+                EditEnsureSelectionVisible();
             }
             break;
 
-          case IDM_EDIT_SELTONEXT:
-            if (IsFindPatternEmpty()) {
-              if (!SetCurrentSelAsFindReplaceData()) {
+            case IDM_EDIT_SELTOPREV:
+            {
+                DocPosU const iMain = SciCall_GetMainSelection();
+                if (iMain > 0)
+                {
+                    SciCall_SetMainSelection(iMain - 1);
+                }
+                else
+                {
+                    DocPosU const iNewMain = SciCall_GetSelections() - 1;
+                    SciCall_SetMainSelection(iNewMain);
+                }
+                EditEnsureSelectionVisible();
+            }
+            break;
+
+            default:
                 break;
-              }
             }
-            EditFindNext(Globals.hwndEdit,&s_FindReplaceData,true,false);
-            break;
-
-          case IDM_EDIT_SELTOPREV:
-            if (IsFindPatternEmpty()) {
-              if (!SetCurrentSelAsFindReplaceData()) {
-                break;
-              }
-            }
-            EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,true,false);
-            break;
+            break; // done
         }
-      }
-      break;
+
+        SetFindReplaceData(); // s_FindReplaceData
+
+        if (IsFindPatternEmpty() && !StrIsEmptyA(s_FindReplaceData.szFind))
+        {
+            if (iLoWParam != IDM_EDIT_REPLACENEXT)
+            {
+                SendWMCommand(hwnd, IDM_EDIT_FIND);
+            }
+            else
+            {
+                SendWMCommand(hwnd, IDM_EDIT_REPLACE);
+            }
+        }
+        else
+        {
+
+            switch (iLoWParam)
+            {
+
+            case IDM_EDIT_FINDNEXT:
+                EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
+                break;
+
+            case IDM_EDIT_FINDPREV:
+                EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
+                break;
+
+            case IDM_EDIT_REPLACENEXT:
+                if (Globals.bReplaceInitialized)
+                {
+                    EditReplace(Globals.hwndEdit, &s_FindReplaceData);
+                }
+                else
+                {
+                    SendWMCommand(hwnd, IDM_EDIT_REPLACE);
+                }
+                break;
+
+            case IDM_EDIT_SELTONEXT:
+                if (IsFindPatternEmpty())
+                {
+                    if (!SetCurrentSelAsFindReplaceData())
+                    {
+                        break;
+                    }
+                }
+                EditFindNext(Globals.hwndEdit,&s_FindReplaceData,true,false);
+                break;
+
+            case IDM_EDIT_SELTOPREV:
+                if (IsFindPatternEmpty())
+                {
+                    if (!SetCurrentSelAsFindReplaceData())
+                    {
+                        break;
+                    }
+                }
+                EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,true,false);
+                break;
+            }
+        }
+        break;
 
 
     case CMD_FINDNEXTSEL:
     case CMD_FINDPREVSEL:
     case IDM_EDIT_SAVEFIND:
     {
-      if (SetCurrentSelAsFindReplaceData()) {
+        if (SetCurrentSelAsFindReplaceData())
+        {
 
-        MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
+            MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
 
-        s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
-        s_FindReplaceData.bTransformBS = false;
+            s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
+            s_FindReplaceData.bTransformBS = false;
 
-        switch (iLoWParam) {
+            switch (iLoWParam)
+            {
 
-        case IDM_EDIT_SAVEFIND:
-          break;
+            case IDM_EDIT_SAVEFIND:
+                break;
 
-        case CMD_FINDNEXTSEL:
-          EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
-          break;
+            case CMD_FINDNEXTSEL:
+                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                break;
 
-        case CMD_FINDPREVSEL:
-          EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
-          break;
+            case CMD_FINDPREVSEL:
+                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                break;
+            }
         }
-      }
     }
     break;
 
 
     case IDM_EDIT_COMPLETEWORD:
-      EditAutoCompleteWord(Globals.hwndEdit, true);
-      break;
+        EditAutoCompleteWord(Globals.hwndEdit, true);
+        break;
 
 
     case IDM_EDIT_GOTOLINE:
-      EditLinenumDlg(Globals.hwndEdit);
-      break;
+        EditLinenumDlg(Globals.hwndEdit);
+        break;
 
 
     case IDM_VIEW_SCHEME:
-      Style_SelectLexerDlg(Globals.hwndEdit);
-      break;
+        Style_SelectLexerDlg(Globals.hwndEdit);
+        break;
 
 
     case IDM_VIEW_USE2NDDEFAULT:
-      Style_ToggleUse2ndDefault(Globals.hwndEdit);
-      break;
+        Style_ToggleUse2ndDefault(Globals.hwndEdit);
+        break;
 
 
     case IDM_VIEW_SCHEMECONFIG:
-      if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-        Globals.hwndDlgCustomizeSchemes = Style_CustomizeSchemesDlg(Globals.hwndEdit);
-      }
-      else {
-        SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
-      }
-      SendWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
-      UpdateUI();
-      break;
+        if (!IsWindow(Globals.hwndDlgCustomizeSchemes))
+        {
+            Globals.hwndDlgCustomizeSchemes = Style_CustomizeSchemesDlg(Globals.hwndEdit);
+        }
+        else
+        {
+            SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
+        }
+        SendWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
+        UpdateUI();
+        break;
 
 
     case IDM_VIEW_FONT:
-      if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-        Style_SetDefaultFont(Globals.hwndEdit, true);
-      }
-      UpdateMarginWidth();
-      UpdateUI();
-      break;
+        if (!IsWindow(Globals.hwndDlgCustomizeSchemes))
+        {
+            Style_SetDefaultFont(Globals.hwndEdit, true);
+        }
+        UpdateMarginWidth();
+        UpdateUI();
+        break;
 
 
     case IDM_VIEW_CURRENTSCHEME:
-      if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-        Style_SetDefaultFont(Globals.hwndEdit, false);
-      }
-      UpdateMarginWidth();
-      UpdateUI();
-      break;
+        if (!IsWindow(Globals.hwndDlgCustomizeSchemes))
+        {
+            Style_SetDefaultFont(Globals.hwndEdit, false);
+        }
+        UpdateMarginWidth();
+        UpdateUI();
+        break;
 
 
     case IDM_VIEW_WORDWRAP:
-      Settings.WordWrap = !Settings.WordWrap;
-      Globals.fvCurFile.bWordWrap = Settings.WordWrap;
-      _SetWrapIndentMode(Globals.hwndEdit);
-      EditEnsureSelectionVisible();
-      UpdateToolbar();
-      break;
+        Settings.WordWrap = !Settings.WordWrap;
+        Globals.fvCurFile.bWordWrap = Settings.WordWrap;
+        _SetWrapIndentMode(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
+        UpdateToolbar();
+        break;
 
 
     case IDM_VIEW_WORDWRAPSETTINGS:
-      if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP, &Settings.WordWrapIndent)) {
-        _SetWrapIndentMode(Globals.hwndEdit);
-        _SetWrapVisualFlags(Globals.hwndEdit);
-        UpdateToolbar();
-      }
-      break;
+        if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP, &Settings.WordWrapIndent))
+        {
+            _SetWrapIndentMode(Globals.hwndEdit);
+            _SetWrapVisualFlags(Globals.hwndEdit);
+            UpdateToolbar();
+        }
+        break;
 
 
     case IDM_VIEW_WORDWRAPSYMBOLS:
-      Settings.ShowWordWrapSymbols = !Settings.ShowWordWrapSymbols;
-      _SetWrapVisualFlags(Globals.hwndEdit);
-      UpdateToolbar();
-      break;
+        Settings.ShowWordWrapSymbols = !Settings.ShowWordWrapSymbols;
+        _SetWrapVisualFlags(Globals.hwndEdit);
+        UpdateToolbar();
+        break;
 
 
     case IDM_VIEW_LONGLINEMARKER:
-      {
+    {
         Settings.MarkLongLines = !Settings.MarkLongLines;
         size_t cnt = 0;
         int edgeColumns[SMALL_BUFFER] = { 0 };
-        if (Settings.MarkLongLines) {
-          cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
+        if (Settings.MarkLongLines)
+        {
+            cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
         }
         Style_SetMultiEdgeLine(edgeColumns, cnt);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_VIEW_LONGLINESETTINGS:
-      {
+    {
         int _iLongLinesLimit = Defaults.LongLinesLimit;
 
-        if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, Globals.fvCurFile.wchMultiEdgeLines)) {
+        if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, Globals.fvCurFile.wchMultiEdgeLines))
+        {
 
-          int edgeColumns[SMALL_BUFFER];
-          size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
+            int edgeColumns[SMALL_BUFFER];
+            size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
 
-          if (cnt == 0) {
-            Settings.MarkLongLines = false;
-          }
-          else if (cnt == 1) {
-            _iLongLinesLimit = edgeColumns[0];
-            Settings.MarkLongLines = true;
-            //~Settings.LongLineMode = EDGE_LINE|EDGE_BACKGROUND; // set by Dlg
-          }
-          else {
-            _iLongLinesLimit = edgeColumns[cnt - 1];
-            Settings.MarkLongLines = true;
-            Settings.LongLineMode = EDGE_MULTILINE;
-          }
-          Globals.iWrapCol = _iLongLinesLimit;
-          Settings.LongLinesLimit = _iLongLinesLimit;
+            if (cnt == 0)
+            {
+                Settings.MarkLongLines = false;
+            }
+            else if (cnt == 1)
+            {
+                _iLongLinesLimit = edgeColumns[0];
+                Settings.MarkLongLines = true;
+                //~Settings.LongLineMode = EDGE_LINE|EDGE_BACKGROUND; // set by Dlg
+            }
+            else
+            {
+                _iLongLinesLimit = edgeColumns[cnt - 1];
+                Settings.MarkLongLines = true;
+                Settings.LongLineMode = EDGE_MULTILINE;
+            }
+            Globals.iWrapCol = _iLongLinesLimit;
+            Settings.LongLinesLimit = _iLongLinesLimit;
 
-          // new multi-edge lines setting
-          WCHAR col[32];
-          Settings.MultiEdgeLines[0] = L'\0';
-          for (size_t i = 0; i < cnt; ++i) {
-            StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), edgeColumns[i]);
-            StringCchCat(Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines), col);
-          }
-          // make current too
-          StringCchCopy(Globals.fvCurFile.wchMultiEdgeLines, COUNTOF(Globals.fvCurFile.wchMultiEdgeLines), Settings.MultiEdgeLines);
+            // new multi-edge lines setting
+            WCHAR col[32];
+            Settings.MultiEdgeLines[0] = L'\0';
+            for (size_t i = 0; i < cnt; ++i)
+            {
+                StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), edgeColumns[i]);
+                StringCchCat(Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines), col);
+            }
+            // make current too
+            StringCchCopy(Globals.fvCurFile.wchMultiEdgeLines, COUNTOF(Globals.fvCurFile.wchMultiEdgeLines), Settings.MultiEdgeLines);
 
-          Style_SetMultiEdgeLine(edgeColumns, cnt);
+            Style_SetMultiEdgeLine(edgeColumns, cnt);
         }
-      }
-      break;
+    }
+    break;
 
 
     case IDM_VIEW_TABSASSPACES:
-      {
+    {
         Settings.TabsAsSpaces = !Settings.TabsAsSpaces;
         Globals.fvCurFile.bTabsAsSpaces = Settings.TabsAsSpaces;
         SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
-      }
-      break;
+    }
+    break;
 
 
     case IDM_VIEW_TABSETTINGS:
-      if (TabSettingsDlg(hwnd,IDD_MUI_TABSETTINGS,NULL))
-      {
-        SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
-        SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
-        SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
-        SciCall_SetTabWidth(Globals.fvCurFile.iTabWidth);
-        SciCall_SetIndent(Globals.fvCurFile.iIndentWidth);
-        if (SendMessage(Globals.hwndEdit, SCI_GETWRAPINDENTMODE, 0, 0) == SC_WRAPINDENT_FIXED) {
-          _SetWrapStartIndent(Globals.hwndEdit);
+        if (TabSettingsDlg(hwnd,IDD_MUI_TABSETTINGS,NULL))
+        {
+            SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
+            SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
+            SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
+            SciCall_SetTabWidth(Globals.fvCurFile.iTabWidth);
+            SciCall_SetIndent(Globals.fvCurFile.iIndentWidth);
+            if (SendMessage(Globals.hwndEdit, SCI_GETWRAPINDENTMODE, 0, 0) == SC_WRAPINDENT_FIXED)
+            {
+                _SetWrapStartIndent(Globals.hwndEdit);
+            }
         }
-      }
-      break;
+        break;
 
 
     case IDM_VIEW_SHOWINDENTGUIDES:
-      Settings.ShowIndentGuides = !Settings.ShowIndentGuides;
-      Style_SetIndentGuides(Globals.hwndEdit,Settings.ShowIndentGuides);
-      break;
+        Settings.ShowIndentGuides = !Settings.ShowIndentGuides;
+        Style_SetIndentGuides(Globals.hwndEdit,Settings.ShowIndentGuides);
+        break;
 
 
     case IDM_VIEW_AUTOINDENTTEXT:
-      Settings.AutoIndent = !Settings.AutoIndent;
-      break;
+        Settings.AutoIndent = !Settings.AutoIndent;
+        break;
 
 
     case IDM_VIEW_LINENUMBERS:
-      Settings.ShowLineNumbers = !Settings.ShowLineNumbers;
-      UpdateMarginWidth();
-      break;
+        Settings.ShowLineNumbers = !Settings.ShowLineNumbers;
+        UpdateMarginWidth();
+        break;
 
 
     case IDM_VIEW_BOOKMARK_MARGIN:
-      Settings.ShowBookmarkMargin = !Settings.ShowBookmarkMargin;
-      UpdateMarginWidth();
-      break;
+        Settings.ShowBookmarkMargin = !Settings.ShowBookmarkMargin;
+        UpdateMarginWidth();
+        break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
-      Settings.AutoCompleteWords = !Settings.AutoCompleteWords;
-      SciCall_AutoCCancel();
-      break;
+        Settings.AutoCompleteWords = !Settings.AutoCompleteWords;
+        SciCall_AutoCCancel();
+        break;
 
     case IDM_VIEW_AUTOCLEXKEYWORDS:
-      Settings.AutoCLexerKeyWords = !Settings.AutoCLexerKeyWords;
-      SciCall_AutoCCancel();
-      break;
+        Settings.AutoCLexerKeyWords = !Settings.AutoCLexerKeyWords;
+        SciCall_AutoCCancel();
+        break;
 
     case IDM_VIEW_ACCELWORDNAV:
-      Settings.AccelWordNavigation = !Settings.AccelWordNavigation;
-      EditSetAccelWordNav(Globals.hwndEdit,Settings.AccelWordNavigation);
-      MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-      break;
+        Settings.AccelWordNavigation = !Settings.AccelWordNavigation;
+        EditSetAccelWordNav(Globals.hwndEdit,Settings.AccelWordNavigation);
+        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        break;
 
     case IDM_VIEW_EDIT_LINECOMMENT:
-      Settings.EditLineCommentBlock = !Settings.EditLineCommentBlock;
-      break;
-      
+        Settings.EditLineCommentBlock = !Settings.EditLineCommentBlock;
+        break;
+
     case IDM_VIEW_MARKOCCUR_ONOFF:
-      Settings.MarkOccurrences = !Settings.MarkOccurrences;
-      if (!Settings.MarkOccurrences && FocusedView.HideNonMatchedLines) {
-        EditToggleView(Globals.hwndEdit);
-      }
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
-      if (IsMarkOccurrencesEnabled()) {
-        MarkAllOccurrences(0, true);
-      }
-      else {
-        EditClearAllOccurrenceMarkers(Globals.hwndEdit);
-        Globals.iMarkOccurrencesCount = 0;
-      }
-      break;
+        Settings.MarkOccurrences = !Settings.MarkOccurrences;
+        if (!Settings.MarkOccurrences && FocusedView.HideNonMatchedLines)
+        {
+            EditToggleView(Globals.hwndEdit);
+        }
+        EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
+        if (IsMarkOccurrencesEnabled())
+        {
+            MarkAllOccurrences(0, true);
+        }
+        else
+        {
+            EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+            Globals.iMarkOccurrencesCount = 0;
+        }
+        break;
 
     case IDM_VIEW_MARKOCCUR_BOOKMARKS:
-      Settings.MarkOccurrencesBookmark = !Settings.MarkOccurrencesBookmark;
-      SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, Settings.MarkOccurrencesBookmark ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
-      break;
+        Settings.MarkOccurrencesBookmark = !Settings.MarkOccurrencesBookmark;
+        SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, Settings.MarkOccurrencesBookmark ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
+        break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
-      Settings.MarkOccurrencesMatchVisible = !Settings.MarkOccurrencesMatchVisible;
-      MarkAllOccurrences(0, true);
-      break;
+        Settings.MarkOccurrencesMatchVisible = !Settings.MarkOccurrencesMatchVisible;
+        MarkAllOccurrences(0, true);
+        break;
 
     case IDM_VIEW_TOGGLE_VIEW:
-      if (FocusedView.HideNonMatchedLines) {
-        EditToggleView(Globals.hwndEdit);
-        MarkAllOccurrences(0, true);
-      }
-      else {
-        EditToggleView(Globals.hwndEdit);
-      }
-      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
-      break;
+        if (FocusedView.HideNonMatchedLines)
+        {
+            EditToggleView(Globals.hwndEdit);
+            MarkAllOccurrences(0, true);
+        }
+        else
+        {
+            EditToggleView(Globals.hwndEdit);
+        }
+        CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
+        break;
 
     case IDM_VIEW_FV_FOLD:
     case IDM_VIEW_FV_BOOKMARK:
@@ -5544,183 +6031,192 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_FV_HIGHLGFOLD:
     {
         int newSetting = Settings.FocusViewMarkerMode;
-        switch (iLoWParam) {
-            case IDM_VIEW_FV_FOLD:
-                newSetting = (FVMM_FOLD);
-                break;
-            case IDM_VIEW_FV_BOOKMARK:
-                newSetting = (FVMM_MARGIN);
-                break;
-            case IDM_VIEW_FV_HIGHLIGHT:
-                newSetting = (FVMM_LN_BACKGR);
-                break;
-            case IDM_VIEW_FV_BKMRKFOLD:
-                newSetting = (FVMM_MARGIN | FVMM_FOLD);
-                break;
-            case IDM_VIEW_FV_HIGHLGFOLD:
-                newSetting = (FVMM_LN_BACKGR | FVMM_FOLD);
-                break;
+        switch (iLoWParam)
+        {
+        case IDM_VIEW_FV_FOLD:
+            newSetting = (FVMM_FOLD);
+            break;
+        case IDM_VIEW_FV_BOOKMARK:
+            newSetting = (FVMM_MARGIN);
+            break;
+        case IDM_VIEW_FV_HIGHLIGHT:
+            newSetting = (FVMM_LN_BACKGR);
+            break;
+        case IDM_VIEW_FV_BKMRKFOLD:
+            newSetting = (FVMM_MARGIN | FVMM_FOLD);
+            break;
+        case IDM_VIEW_FV_HIGHLGFOLD:
+            newSetting = (FVMM_LN_BACKGR | FVMM_FOLD);
+            break;
         }
         if (newSetting != Settings.FocusViewMarkerMode)
         {
-            if (FocusedView.HideNonMatchedLines) {
-                if ((newSetting & FVMM_FOLD) != (Settings.FocusViewMarkerMode & FVMM_FOLD)) {
+            if (FocusedView.HideNonMatchedLines)
+            {
+                if ((newSetting & FVMM_FOLD) != (Settings.FocusViewMarkerMode & FVMM_FOLD))
+                {
                     EditToggleView(Globals.hwndEdit);
                 }
             }
-            for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
+            for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m)
+            {
                 SciCall_MarkerDefine(m, (newSetting & FVMM_LN_BACKGR) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
             }
             Settings.FocusViewMarkerMode = newSetting;
         }
-    } break;
+    }
+    break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
-      Settings.MarkOccurrencesMatchCase = !Settings.MarkOccurrencesMatchCase;
-      MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-      break;
+        Settings.MarkOccurrencesMatchCase = !Settings.MarkOccurrencesMatchCase;
+        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        break;
 
     case IDM_VIEW_MARKOCCUR_WNONE:
-      Settings.MarkOccurrencesMatchWholeWords = false;
-      Settings.MarkOccurrencesCurrentWord = false;
-      MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-      break;
+        Settings.MarkOccurrencesMatchWholeWords = false;
+        Settings.MarkOccurrencesCurrentWord = false;
+        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
-      Settings.MarkOccurrencesMatchWholeWords = true;
-      Settings.MarkOccurrencesCurrentWord = false;
-      MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-      break;
+        Settings.MarkOccurrencesMatchWholeWords = true;
+        Settings.MarkOccurrencesCurrentWord = false;
+        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
-      Settings.MarkOccurrencesMatchWholeWords = false;
-      Settings.MarkOccurrencesCurrentWord = true;
-      MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-      break;
+        Settings.MarkOccurrencesMatchWholeWords = false;
+        Settings.MarkOccurrencesCurrentWord = true;
+        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        break;
 
     case IDM_VIEW_FOLDING:
-      Settings.ShowCodeFolding = !Settings.ShowCodeFolding;
-      FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
-      Style_SetFolding(Globals.hwndEdit, FocusedView.ShowCodeFolding);
-      if (!FocusedView.ShowCodeFolding) { EditToggleFolds(EXPAND, true); }
-      break;
+        Settings.ShowCodeFolding = !Settings.ShowCodeFolding;
+        FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
+        Style_SetFolding(Globals.hwndEdit, FocusedView.ShowCodeFolding);
+        if (!FocusedView.ShowCodeFolding)
+        {
+            EditToggleFolds(EXPAND, true);
+        }
+        break;
 
 
     case IDM_VIEW_TOGGLEFOLDS:
-      EditToggleFolds(SNIFF, SciCall_IsSelectionEmpty());
-      break;
-      
+        EditToggleFolds(SNIFF, SciCall_IsSelectionEmpty());
+        break;
+
     case IDM_VIEW_TOGGLE_CURRENT_FOLD:
-      EditToggleFolds(SNIFF, false);
-      break;
+        EditToggleFolds(SNIFF, false);
+        break;
 
     case IDM_VIEW_SHOWBLANKS:
-      Settings.ViewWhiteSpace = !Settings.ViewWhiteSpace;
-      SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
-      break;
+        Settings.ViewWhiteSpace = !Settings.ViewWhiteSpace;
+        SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
+        break;
 
     case IDM_VIEW_SHOWEOLS:
-      Settings.ViewEOLs = !Settings.ViewEOLs;
-      SciCall_SetViewEOL(Settings.ViewEOLs);
-      break;
+        Settings.ViewEOLs = !Settings.ViewEOLs;
+        SciCall_SetViewEOL(Settings.ViewEOLs);
+        break;
 
     case IDM_VIEW_MATCHBRACES:
-      Settings.MatchBraces = !Settings.MatchBraces;
-      if (Settings.MatchBraces)
-        EditMatchBrace(Globals.hwndEdit);
-      else
-        SciCall_BraceHighLight(INVALID_POSITION, INVALID_POSITION);
-      break;
+        Settings.MatchBraces = !Settings.MatchBraces;
+        if (Settings.MatchBraces)
+            EditMatchBrace(Globals.hwndEdit);
+        else
+            SciCall_BraceHighLight(INVALID_POSITION, INVALID_POSITION);
+        break;
 
     case IDM_VIEW_AUTOCLOSETAGS:
-      Settings.AutoCloseTags = !Settings.AutoCloseTags;
-      break;
+        Settings.AutoCloseTags = !Settings.AutoCloseTags;
+        break;
 
     case IDM_VIEW_TOGGLE_HILITCURLN:
     case IDM_VIEW_HILITCURLN_NONE:
     case IDM_VIEW_HILITCURLN_BACK:
     case IDM_VIEW_HILITCURLN_FRAME:
-      {
+    {
         int const set = iLoWParam - IDM_VIEW_HILITCURLN_NONE;
         Settings.HighlightCurrentLine = (set >= 0) ? set : ((Settings.HighlightCurrentLine + 1) % 3);
         Style_HighlightCurrentLine(Globals.hwndEdit, Settings.HighlightCurrentLine);
-      }
-      break;
+    }
+    break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
-      Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
-      EditUpdateVisibleIndicators();
-      break;
+        Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
+        EditUpdateVisibleIndicators();
+        break;
 
     case IDM_VIEW_SHOW_HYPLNK_CALLTIP:
-      Settings.ShowHypLnkToolTip = !Settings.ShowHypLnkToolTip;
-      UpdateMouseDWellTime();
-      break;
+        Settings.ShowHypLnkToolTip = !Settings.ShowHypLnkToolTip;
+        UpdateMouseDWellTime();
+        break;
 
     case IDM_VIEW_COLORDEFHOTSPOTS:
     case IDM_VIEW_COLOR_ARGB:
     case IDM_VIEW_COLOR_RGBA:
     case IDM_VIEW_COLOR_BGRA:
-      {
+    {
         Settings.ColorDefHotspot = iLoWParam - IDM_VIEW_COLORDEFHOTSPOTS;
         EditUpdateVisibleIndicators();
         UpdateMouseDWellTime();
-      }
-      break;
+    }
+    break;
 
     case IDM_VIEW_UNICODE_POINTS:
-      Settings.HighlightUnicodePoints = !Settings.HighlightUnicodePoints;
-      EditUpdateVisibleIndicators();
-      UpdateMouseDWellTime();
-      break;
+        Settings.HighlightUnicodePoints = !Settings.HighlightUnicodePoints;
+        EditUpdateVisibleIndicators();
+        UpdateMouseDWellTime();
+        break;
 
     case IDM_VIEW_ZOOMIN:
-      {
+    {
         SciCall_ZoomIn();
         ShowZoomCallTip();
-      }
-      break;
+    }
+    break;
 
     case IDM_VIEW_ZOOMOUT:
-      {
+    {
         SciCall_ZoomOut();
         ShowZoomCallTip();
     }
-      break;
+    break;
 
     case IDM_VIEW_RESETZOOM:
-      {
+    {
         SciCall_SetZoom(100);
         ShowZoomCallTip();
     }
-      break;
+    break;
 
-    case IDM_VIEW_CHASING_DOCTAIL: 
-      {
+    case IDM_VIEW_CHASING_DOCTAIL:
+    {
         FileWatching.MonitoringLog = !FileWatching.MonitoringLog; // toggle
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
 
         if (FileWatching.MonitoringLog)
         {
-          SetForegroundWindow(hwnd);
-          SendWMCommand(hwnd, IDM_FILE_REVERT);
-          FileWatching.flagChangeNotify = s_flagChangeNotify;
-          s_flagChangeNotify = FWM_AUTORELOAD;
-          FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-          FileWatching.ResetFileWatching = true;
-          FileWatching.FileCheckInverval = 250UL;
-          FileWatching.AutoReloadTimeout = 250UL;
-          UndoRedoRecordingStop();
-          SciCall_SetEndAtLastLine(false);
+            SetForegroundWindow(hwnd);
+            SendWMCommand(hwnd, IDM_FILE_REVERT);
+            FileWatching.flagChangeNotify = s_flagChangeNotify;
+            s_flagChangeNotify = FWM_AUTORELOAD;
+            FileWatching.FileWatchingMode = FWM_AUTORELOAD;
+            FileWatching.ResetFileWatching = true;
+            FileWatching.FileCheckInverval = 250UL;
+            FileWatching.AutoReloadTimeout = 250UL;
+            UndoRedoRecordingStop();
+            SciCall_SetEndAtLastLine(false);
         }
-        else {
-          s_flagChangeNotify = FileWatching.flagChangeNotify;
-          FileWatching.FileWatchingMode = Settings.FileWatchingMode;
-          FileWatching.ResetFileWatching = Settings.ResetFileWatching;
-          FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
-          FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
-          UndoRedoRecordingStart();
-          SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
+        else
+        {
+            s_flagChangeNotify = FileWatching.flagChangeNotify;
+            FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+            FileWatching.ResetFileWatching = Settings.ResetFileWatching;
+            FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
+            FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
+            UndoRedoRecordingStart();
+            SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
         }
         EditEnsureSelectionVisible();
 
@@ -5728,140 +6224,156 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
-      }
-      break;
-    
+    }
+    break;
+
     case IDM_VIEW_SCROLLPASTEOF:
-      Settings.ScrollPastEOF = !Settings.ScrollPastEOF;
-      SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-      break;
+        Settings.ScrollPastEOF = !Settings.ScrollPastEOF;
+        SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
+        break;
 
     case IDM_VIEW_MENUBAR:
-      Settings.ShowMenubar = !Settings.ShowMenubar;
-      SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
-      DrawMenuBar(Globals.hwndMain);
-      break;
+        Settings.ShowMenubar = !Settings.ShowMenubar;
+        SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+        DrawMenuBar(Globals.hwndMain);
+        break;
 
     case IDM_VIEW_TOOLBAR:
-      Settings.ShowToolbar = !Settings.ShowToolbar;
-      ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
-      SendWMSize(hwnd, NULL);
-      break;
+        Settings.ShowToolbar = !Settings.ShowToolbar;
+        ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
+        SendWMSize(hwnd, NULL);
+        break;
 
     case IDM_VIEW_TOGGLETB:
-      Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
-      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
-      break;
+        Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        break;
 
     case IDM_VIEW_CUSTOMIZETB:
-      SendMessage(Globals.hwndToolbar,TB_CUSTOMIZE,0,0);
-      break;
+        SendMessage(Globals.hwndToolbar,TB_CUSTOMIZE,0,0);
+        break;
 
     case IDM_VIEW_LOADTHEMETB:
-      if (SelectExternalToolBar(hwnd)) {
-        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
-      }
-      break;
+        if (SelectExternalToolBar(hwnd))
+        {
+            SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        }
+        break;
 
     case IDM_VIEW_DPISCALETB:
-      Settings.DpiScaleToolBar = !Settings.DpiScaleToolBar;
-      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
-      break;
+        Settings.DpiScaleToolBar = !Settings.DpiScaleToolBar;
+        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        break;
 
     case IDM_VIEW_STATUSBAR:
-      Settings.ShowStatusbar = !Settings.ShowStatusbar;
-      ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOW : SW_HIDE));
-      UpdateStatusbar(Settings.ShowStatusbar);
-      SendWMSize(hwnd, NULL);
-      break;
+        Settings.ShowStatusbar = !Settings.ShowStatusbar;
+        ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOW : SW_HIDE));
+        UpdateStatusbar(Settings.ShowStatusbar);
+        SendWMSize(hwnd, NULL);
+        break;
 
 
     case IDM_VIEW_STICKYWINPOS:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_STICKYWINPOS)) {
-        Flags.bStickyWindowPosition = !Flags.bStickyWindowPosition; // toggle
-
-        if (Flags.bStickyWindowPosition) { InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS); }
-
-        bool bOpendByMe;
-        OpenSettingsFile(&bOpendByMe);
-
-        SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
-
-        if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition)
+        if (IsCmdEnabled(hwnd, IDM_VIEW_STICKYWINPOS))
         {
-          IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
-        }
-        else {
-          IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
-        }
+            Flags.bStickyWindowPosition = !Flags.bStickyWindowPosition; // toggle
 
-        CloseSettingsFile(true, bOpendByMe);
-      }
-      break;
+            if (Flags.bStickyWindowPosition)
+            {
+                InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
+            }
+
+            bool bOpendByMe;
+            OpenSettingsFile(&bOpendByMe);
+
+            SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
+
+            if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition)
+            {
+                IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
+            }
+            else
+            {
+                IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
+            }
+
+            CloseSettingsFile(true, bOpendByMe);
+        }
+        break;
 
 
     case IDM_VIEW_REUSEWINDOW:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_REUSEWINDOW)) {
-        Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
-        if (Globals.bCanSaveIniFile) {
-          if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
-            IniFileSetBool(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
-          }
-          else {
-            IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
-          }
+        if (IsCmdEnabled(hwnd, IDM_VIEW_REUSEWINDOW))
+        {
+            Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
+            if (Globals.bCanSaveIniFile)
+            {
+                if (Flags.bReuseWindow != DefaultFlags.bReuseWindow)
+                {
+                    IniFileSetBool(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
+                }
+                else
+                {
+                    IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
+                }
+            }
         }
-      }
-      break;
+        break;
 
 
     case IDM_VIEW_SINGLEFILEINSTANCE:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_SINGLEFILEINSTANCE)) {
-        Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
-        if (Globals.bCanSaveIniFile) {
-          if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
-            IniFileSetInt(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
-          }
-          else {
-            IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
-          }
+        if (IsCmdEnabled(hwnd, IDM_VIEW_SINGLEFILEINSTANCE))
+        {
+            Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
+            if (Globals.bCanSaveIniFile)
+            {
+                if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance)
+                {
+                    IniFileSetInt(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
+                }
+                else
+                {
+                    IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
+                }
+            }
         }
-      }
-      break;
+        break;
 
 
     case IDM_VIEW_ALWAYSONTOP:
-      if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
-        Settings.AlwaysOnTop = false;
-        s_flagAlwaysOnTop = 0;
-        SetWindowPos(hwnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-      }
-      else {
-        Settings.AlwaysOnTop = true;
-        s_flagAlwaysOnTop = 0;
-        SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-      }
-      CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
-      UpdateToolbar();
-      break;
+        if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1)
+        {
+            Settings.AlwaysOnTop = false;
+            s_flagAlwaysOnTop = 0;
+            SetWindowPos(hwnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+        }
+        else
+        {
+            Settings.AlwaysOnTop = true;
+            s_flagAlwaysOnTop = 0;
+            SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+        }
+        CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
+        UpdateToolbar();
+        break;
 
 
     case IDM_VIEW_MINTOTRAY:
-      Settings.MinimizeToTray = !Settings.MinimizeToTray;
-      break;
+        Settings.MinimizeToTray = !Settings.MinimizeToTray;
+        break;
 
 
     case IDM_VIEW_TRANSPARENT:
-      Settings.TransparentMode = !Settings.TransparentMode;
-      SetWindowTransparentMode(hwnd,Settings.TransparentMode, Settings2.OpacityLevel);
-      break;
+        Settings.TransparentMode = !Settings.TransparentMode;
+        SetWindowTransparentMode(hwnd,Settings.TransparentMode, Settings2.OpacityLevel);
+        break;
 
 
     case IDM_SET_RENDER_TECH_GDI:
     case IDM_SET_RENDER_TECH_D2D:
     case IDM_SET_RENDER_TECH_D2DRETAIN:
     case IDM_SET_RENDER_TECH_D2DDC:
-      {
+    {
         int const prevRT = Settings.RenderingTechnology;
         Settings.RenderingTechnology = (iLoWParam - IDM_SET_RENDER_TECH_GDI);
         SciCall_SetTechnology(Settings.RenderingTechnology);
@@ -5871,83 +6383,87 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         int const prevBD = Settings.Bidirectional;
         SciCall_SetBidirectional(Settings.Bidirectional);
         Settings.Bidirectional = SciCall_GetBidirectional();
-        
-        if ((prevRT != Settings.RenderingTechnology) || (prevBD != Settings.Bidirectional)) {
-          UpdateMarginWidth();
-        }
-      }
-      break;
 
-   	case IDM_SET_RTL_LAYOUT_EDIT:
-      Settings.EditLayoutRTL = !Settings.EditLayoutRTL;
-      SetWindowLayoutRTL(Globals.hwndEdit, Settings.EditLayoutRTL);
-      InvalidateStyleRedraw();
-      break;
+        if ((prevRT != Settings.RenderingTechnology) || (prevBD != Settings.Bidirectional))
+        {
+            UpdateMarginWidth();
+        }
+    }
+    break;
+
+    case IDM_SET_RTL_LAYOUT_EDIT:
+        Settings.EditLayoutRTL = !Settings.EditLayoutRTL;
+        SetWindowLayoutRTL(Globals.hwndEdit, Settings.EditLayoutRTL);
+        InvalidateStyleRedraw();
+        break;
 
     case IDM_SET_RTL_LAYOUT_DLG:
-      Settings.DialogsLayoutRTL = !Settings.DialogsLayoutRTL;
-      SetWindowLayoutRTL(Globals.hwndMain, Settings.DialogsLayoutRTL);
-      SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL);
-      SetWindowLayoutRTL(Globals.hwndRebar, Settings.DialogsLayoutRTL);
-      SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
-      break;
+        Settings.DialogsLayoutRTL = !Settings.DialogsLayoutRTL;
+        SetWindowLayoutRTL(Globals.hwndMain, Settings.DialogsLayoutRTL);
+        SetWindowLayoutRTL(Globals.hwndToolbar, Settings.DialogsLayoutRTL);
+        SetWindowLayoutRTL(Globals.hwndRebar, Settings.DialogsLayoutRTL);
+        SetWindowLayoutRTL(Globals.hwndStatus, Settings.DialogsLayoutRTL);
+        break;
 
     case IDM_SET_BIDIRECTIONAL_NONE:
     case IDM_SET_BIDIRECTIONAL_L2R:
     case IDM_SET_BIDIRECTIONAL_R2L:
-      {
+    {
         SciCall_SetBidirectional(iLoWParam - IDM_SET_BIDIRECTIONAL_NONE);
         Settings.Bidirectional = SciCall_GetBidirectional();
-      }
-      break;
+    }
+    break;
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case IDM_VIEW_WIN_DARK_MODE:
-      {
+    {
         unsigned const iCurTheme = GetModeThemeIndex();
 
         Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode; // toggle
 
         // hide/show bright menu strip on switching
-        if (Settings.ShowMenubar == Defaults.ShowMenubar) {
-          Settings.ShowMenubar = !Settings.WinThemeDarkMode;
+        if (Settings.ShowMenubar == Defaults.ShowMenubar)
+        {
+            Settings.ShowMenubar = !Settings.WinThemeDarkMode;
         }
         Defaults.ShowMenubar = !Settings.WinThemeDarkMode; // (!) need for saving
 
         SetDarkMode(Settings.WinThemeDarkMode);
-    
+
         Style_DynamicThemesMenuCmd(GetModeThemeIndex() + IDM_THEMES_DEFAULT, iCurTheme);
-        
-        if (IsWindow(Globals.hwndDlgFindReplace)) {
-          //~SendMessage(Globals.hwndDlgFindReplace, WM_THEMECHANGED, 0, 0); ~ (!) incomplete update
-          bool const isReplDlg = !!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE);
-          PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_FIND : IDM_EDIT_REPLACE); // swap
-          PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_REPLACE : IDM_EDIT_FIND); // restore
-          PostMessage(hwnd, WM_SETFOCUS, 0, 0);
+
+        if (IsWindow(Globals.hwndDlgFindReplace))
+        {
+            //~SendMessage(Globals.hwndDlgFindReplace, WM_THEMECHANGED, 0, 0); ~ (!) incomplete update
+            bool const isReplDlg = !!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE);
+            PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_FIND : IDM_EDIT_REPLACE); // swap
+            PostWMCommand(hwnd, isReplDlg ? IDM_EDIT_REPLACE : IDM_EDIT_FIND); // restore
+            PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         }
 
-        if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-          //~SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0); ~ no need for restart
-          //~PostWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
-          SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
-          UpdateTitleBar(Globals.hwndDlgCustomizeSchemes);
-          PostMessage(hwnd, WM_SETFOCUS, 0, 0);
+        if (IsWindow(Globals.hwndDlgCustomizeSchemes))
+        {
+            //~SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0); ~ no need for restart
+            //~PostWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
+            SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
+            UpdateTitleBar(Globals.hwndDlgCustomizeSchemes);
+            PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         }
 
         PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
-      }
-      break;
+    }
+    break;
 
 #endif
 
     case IDM_VIEW_MUTE_MESSAGEBEEP:
-      Settings.MuteMessageBeep = !Settings.MuteMessageBeep;
-      break;
+        Settings.MuteMessageBeep = !Settings.MuteMessageBeep;
+        break;
 
     case IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK:
-      Settings.SplitUndoTypingSeqOnLnBreak = !Settings.SplitUndoTypingSeqOnLnBreak;
-      break;
+        Settings.SplitUndoTypingSeqOnLnBreak = !Settings.SplitUndoTypingSeqOnLnBreak;
+        break;
 
     //case IDM_SET_INLINE_IME:
     //  Settings2.IMEInteraction = (Settings2.IMEInteraction == SC_IME_WINDOWED) ? SC_IME_INLINE : SC_IME_WINDOWED;
@@ -5957,404 +6473,433 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SHOWFILENAMEONLY:
     case IDM_VIEW_SHOWFILENAMEFIRST:
     case IDM_VIEW_SHOWFULLPATH:
-      Settings.PathNameFormat = iLoWParam - IDM_VIEW_SHOWFILENAMEONLY;
-      StringCchCopy(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt),L"");
-      UpdateTitleBar(hwnd);
-      break;
+        Settings.PathNameFormat = iLoWParam - IDM_VIEW_SHOWFILENAMEONLY;
+        StringCchCopy(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt),L"");
+        UpdateTitleBar(hwnd);
+        break;
 
 
     case IDM_VIEW_SHOWEXCERPT:
-      EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
-      UpdateTitleBar(hwnd);
-      break;
+        EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
+        UpdateTitleBar(hwnd);
+        break;
 
 
     case IDM_VIEW_NOSAVERECENT:
-      Settings.SaveRecentFiles = !Settings.SaveRecentFiles;
-      break;
+        Settings.SaveRecentFiles = !Settings.SaveRecentFiles;
+        break;
 
 
     case IDM_VIEW_NOPRESERVECARET:
-      Settings.PreserveCaretPos = !Settings.PreserveCaretPos;
-      break;
+        Settings.PreserveCaretPos = !Settings.PreserveCaretPos;
+        break;
 
 
     case IDM_VIEW_NOSAVEFINDREPL:
-      Settings.SaveFindReplace = !Settings.SaveFindReplace;
-      break;
+        Settings.SaveFindReplace = !Settings.SaveFindReplace;
+        break;
 
 
     case IDM_VIEW_SAVEBEFORERUNNINGTOOLS:
-      Settings.SaveBeforeRunningTools = !Settings.SaveBeforeRunningTools;
-      break;
+        Settings.SaveBeforeRunningTools = !Settings.SaveBeforeRunningTools;
+        break;
 
     case IDM_VIEW_EVALTINYEXPRONSEL:
-      Settings.EvalTinyExprOnSelection = !Settings.EvalTinyExprOnSelection;
-      UpdateStatusbar(false);
-      break;
+        Settings.EvalTinyExprOnSelection = !Settings.EvalTinyExprOnSelection;
+        UpdateStatusbar(false);
+        break;
 
     case IDM_VIEW_CHANGENOTIFY:
-      if (ChangeNotifyDlg(hwnd)) {
-        InstallFileWatching(true);
-      }
-      break;
+        if (ChangeNotifyDlg(hwnd))
+        {
+            InstallFileWatching(true);
+        }
+        break;
 
 
     case IDM_VIEW_NOESCFUNC:
     case IDM_VIEW_ESCMINIMIZE:
     case IDM_VIEW_ESCEXIT:
-      Settings.EscFunction = iLoWParam - IDM_VIEW_NOESCFUNC;
-      break;
+        Settings.EscFunction = iLoWParam - IDM_VIEW_NOESCFUNC;
+        break;
 
 
     case IDM_VIEW_SAVESETTINGS:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS)) {
-        Settings.SaveSettings = !Settings.SaveSettings;
-        if (Globals.bCanSaveIniFile) {
-          if (Settings.SaveSettings == Defaults.SaveSettings) {
-            IniFileDelete(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", false);
-          }
-          else {
-            IniFileSetBool(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", Settings.SaveSettings);
-          }
+        if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS))
+        {
+            Settings.SaveSettings = !Settings.SaveSettings;
+            if (Globals.bCanSaveIniFile)
+            {
+                if (Settings.SaveSettings == Defaults.SaveSettings)
+                {
+                    IniFileDelete(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", false);
+                }
+                else
+                {
+                    IniFileSetBool(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", Settings.SaveSettings);
+                }
+            }
         }
-      }
-      break;
+        break;
 
 
     case IDM_VIEW_SAVESETTINGSNOW:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGSNOW))
-      {
-        CmdSaveSettingsNow();
-      }
-      break;
+        if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGSNOW))
+        {
+            CmdSaveSettingsNow();
+        }
+        break;
 
 
     case IDM_HELP_ONLINEDOCUMENTATION:
-      ShellExecute(0, 0, ONLINE_HELP_WEBSITE, 0, 0, SW_SHOW);
-      break;
+        ShellExecute(0, 0, ONLINE_HELP_WEBSITE, 0, 0, SW_SHOW);
+        break;
 
     case IDM_HELP_ABOUT:
-      {
+    {
         //~HMODULE hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
         HMODULE const hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h;
-        if (hRichEdit) {
-          ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
-          FreeLibrary(hRichEdit);
+        if (hRichEdit)
+        {
+            ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
+            FreeLibrary(hRichEdit);
         }
-      }
-      break;
+    }
+    break;
 
     case IDM_SETPASS:
-      if (GetFileKey(Globals.hwndEdit)) {
-        SetSaveNeeded();
-      }
-      break;
+        if (GetFileKey(Globals.hwndEdit))
+        {
+            SetSaveNeeded();
+        }
+        break;
 
     case IDM_HELP_CMD:
-      DisplayCmdLineHelp(hwnd);
-      break;
+        DisplayCmdLineHelp(hwnd);
+        break;
 
 
     case CMD_ESCAPE:
-      {
+    {
         DocPos const iCurPos = SciCall_GetCurrentPos();
-        
+
         int skipLevel = Settings2.ExitOnESCSkipLevel;
 
-        if (SciCall_AutoCActive()) {
-          SciCall_AutoCCancel();
-          --skipLevel;
+        if (SciCall_AutoCActive())
+        {
+            SciCall_AutoCCancel();
+            --skipLevel;
         }
-        else if (SciCall_CallTipActive()) {
-          CancelCallTip();
-          s_bCallTipEscDisabled = true;
-          --skipLevel;
+        else if (SciCall_CallTipActive())
+        {
+            CancelCallTip();
+            s_bCallTipEscDisabled = true;
+            --skipLevel;
         }
-        else if (s_bInMultiEditMode) {
-          //~_BEGIN_UNDO_ACTION_;
-          SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
-          SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-          SciCall_ClearSelections();
-          //~_END_UNDO_ACTION_;
-          SciCall_GotoPos(iCurPos);
-          s_bInMultiEditMode = false;
-          --skipLevel;
+        else if (s_bInMultiEditMode)
+        {
+            //~_BEGIN_UNDO_ACTION_;
+            SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+            SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+            SciCall_ClearSelections();
+            //~_END_UNDO_ACTION_;
+            SciCall_GotoPos(iCurPos);
+            s_bInMultiEditMode = false;
+            --skipLevel;
         }
 
-        if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
-          Sci_GotoPosChooseCaret(iCurPos);
-          skipLevel -= Defaults2.ExitOnESCSkipLevel;
+        if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel))
+        {
+            Sci_GotoPosChooseCaret(iCurPos);
+            skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
 
         if ((skipLevel < 0) || (skipLevel == Settings2.ExitOnESCSkipLevel))
         {
-          switch (Settings.EscFunction) {
-          case 1:
-            SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-            break;
+            switch (Settings.EscFunction)
+            {
+            case 1:
+                SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+                break;
 
-          case 2:
-            CloseApplication();
-            break;
+            case 2:
+                CloseApplication();
+                break;
 
-          default:
-            Sci_GotoPosChooseCaret(iCurPos);
-            break;
-          }
+            default:
+                Sci_GotoPosChooseCaret(iCurPos);
+                break;
+            }
         }
         SciCall_Cancel();
-      }
-      break;
+    }
+    break;
 
 
     case CMD_SHIFTESC:
-      FileSave(false, false, false, false, Flags.bPreserveFileModTime);
+        FileSave(false, false, false, false, Flags.bPreserveFileModTime);
     case IDT_FILE_EXIT:
-      CloseApplication();
-      break;
+        CloseApplication();
+        break;
 
 
     case CMD_INSERTNEWLINE:
-      {
+    {
         _BEGIN_UNDO_ACTION_;
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
-        if (iLine <= 0) {
-          SciCall_GotoLine(0);
-          SciCall_NewLine();
-          SciCall_GotoLine(0);
+        if (iLine <= 0)
+        {
+            SciCall_GotoLine(0);
+            SciCall_NewLine();
+            SciCall_GotoLine(0);
         }
-        else {
-          SciCall_GotoPos(SciCall_GetLineEndPosition(iLine - 1));
-          SciCall_NewLine();
+        else
+        {
+            SciCall_GotoPos(SciCall_GetLineEndPosition(iLine - 1));
+            SciCall_NewLine();
         }
         _END_UNDO_ACTION_;
-      }
-      break;
+    }
+    break;
 
     case CMD_ENTER_RTURN:
-      {
+    {
         _EvalTinyExpr(false);
         SciCall_NewLine();
-      }
-      break;
+    }
+    break;
 
     // Newline with toggled auto indent setting
     case CMD_SHIFTCTRLENTER:
-      Settings.AutoIndent = !Settings.AutoIndent;
-      SciCall_NewLine();
-      Settings.AutoIndent = !Settings.AutoIndent;
-      break;
+        Settings.AutoIndent = !Settings.AutoIndent;
+        SciCall_NewLine();
+        Settings.AutoIndent = !Settings.AutoIndent;
+        break;
 
 
     case CMD_CLEAR:
     case IDM_EDIT_CLEAR:
-      ///~_BEGIN_UNDO_ACTION_;
-      EditDeleteMarkerInSelection();
-      SciCall_Clear();
-      ///~_END_UNDO_ACTION_;
-      break;
+        ///~_BEGIN_UNDO_ACTION_;
+        EditDeleteMarkerInSelection();
+        SciCall_Clear();
+        ///~_END_UNDO_ACTION_;
+        break;
 
 
     case CMD_ARROW_UP:
-      if (Sci_IsMultiSelection())
-      {
-        SciCall_Cancel();
-      }
-      SciCall_LineUp();
-      break;
-    
+        if (Sci_IsMultiSelection())
+        {
+            SciCall_Cancel();
+        }
+        SciCall_LineUp();
+        break;
+
     case CMD_ARROW_DOWN:
-      if (Sci_IsMultiSelection())
-      {
-        SciCall_Cancel();
-      }
-      SciCall_LineDown();
-      break;
-    
+        if (Sci_IsMultiSelection())
+        {
+            SciCall_Cancel();
+        }
+        SciCall_LineDown();
+        break;
+
 
     case CMD_SCROLLUP:
-      if (Sci_IsMultiSelection())
-      {
-        SciCall_LineUpExtend();
-      }
-      else {
-        SciCall_LineScrollUp();
-      }
-      break;
+        if (Sci_IsMultiSelection())
+        {
+            SciCall_LineUpExtend();
+        }
+        else
+        {
+            SciCall_LineScrollUp();
+        }
+        break;
 
 
     case CMD_SCROLLDOWN:
-      if (Sci_IsMultiSelection())
-      {
-        SciCall_LineDownExtend();
-      }
-      else {
-        SciCall_LineScrollDown();
-      }
-      break;
+        if (Sci_IsMultiSelection())
+        {
+            SciCall_LineDownExtend();
+        }
+        else
+        {
+            SciCall_LineScrollDown();
+        }
+        break;
 
 
     case CMD_CTRLLEFT:
-      if (Sci_IsMultiSelection())
-      {
-        SciCall_CharLeftExtend();
-      }
-      else {
-        SciCall_WordLeft();
-      }
-      break;
+        if (Sci_IsMultiSelection())
+        {
+            SciCall_CharLeftExtend();
+        }
+        else
+        {
+            SciCall_WordLeft();
+        }
+        break;
 
 
     case CMD_CTRLRIGHT:
-      if (Sci_IsMultiSelection())
-      {
-        SciCall_CharRightExtend();
-      }
-      else {
-        SciCall_WordRight();
-      }
-      break;
+        if (Sci_IsMultiSelection())
+        {
+            SciCall_CharRightExtend();
+        }
+        else
+        {
+            SciCall_WordRight();
+        }
+        break;
 
 
     case CMD_CTRLBACK:
-      {
+    {
         DocPos const iPos = SciCall_GetCurrentPos();
         DocPos const iAnchor = SciCall_GetAnchor();
         DocLn  const iLine = SciCall_LineFromPosition(iPos);
         DocPos const iStartPos = SciCall_PositionFromLine(iLine);
         DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
-        if (iPos != iAnchor) {
-          _BEGIN_UNDO_ACTION_;
-          SciCall_SetSel(iPos, iPos);
-          _END_UNDO_ACTION_;
+        if (iPos != iAnchor)
+        {
+            _BEGIN_UNDO_ACTION_;
+            SciCall_SetSel(iPos, iPos);
+            _END_UNDO_ACTION_;
         }
-        else {
-          if (iPos == iStartPos)
-            SciCall_DeleteBack();
-          else if (iPos <= iIndentPos)
-            SciCall_DelLineLeft();
-          else
-            SciCall_DelWordLeft();
+        else
+        {
+            if (iPos == iStartPos)
+                SciCall_DeleteBack();
+            else if (iPos <= iIndentPos)
+                SciCall_DelLineLeft();
+            else
+                SciCall_DelWordLeft();
         }
-      }
-      break;
+    }
+    break;
 
 
     case CMD_CTRLDEL:
-      {
+    {
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocPos iAnchor = SciCall_GetAnchor();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
         const DocPos iStartPos = SciCall_PositionFromLine(iLine);
         const DocPos iEndPos = SciCall_GetLineEndPosition(iLine);
 
-        if (iPos != iAnchor) {
-          _BEGIN_UNDO_ACTION_;
-          SciCall_SetSel(iPos, iPos);
-          _END_UNDO_ACTION_;
+        if (iPos != iAnchor)
+        {
+            _BEGIN_UNDO_ACTION_;
+            SciCall_SetSel(iPos, iPos);
+            _END_UNDO_ACTION_;
         }
-        else {
-          if (iStartPos != iEndPos) {
-            SciCall_DelWordRight();
-          } else { // iStartPos == iEndPos
-            SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
-            SciCall_LineDelete();
-          }
+        else
+        {
+            if (iStartPos != iEndPos)
+            {
+                SciCall_DelWordRight();
+            }
+            else     // iStartPos == iEndPos
+            {
+                SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
+                SciCall_LineDelete();
+            }
         }
-      }
-      break;
+    }
+    break;
 
 
     case CMD_RECODEDEFAULT:
-      {
-      if (StrIsNotEmpty(Globals.CurrentFile)) {
-        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
-        Encoding_Forced(Settings.DefaultEncoding);
-        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-      }
-      }
-      break;
+    {
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+            Encoding_Forced(Settings.DefaultEncoding);
+            FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+        }
+    }
+    break;
 
 
     case CMD_RECODEANSI:
-      {
-      if (StrIsNotEmpty(Globals.CurrentFile)) {
-        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
-        Encoding_Forced(CPI_ANSI_DEFAULT);
-        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-      }
-      }
-      break;
+    {
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+            Encoding_Forced(CPI_ANSI_DEFAULT);
+            FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+        }
+    }
+    break;
 
 
     case CMD_RECODEOEM:
-      {
-      if (StrIsNotEmpty(Globals.CurrentFile)) {
-        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
-        Encoding_Forced(CPI_OEM);
-        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-      }
-      }
-      break;
+    {
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+            Encoding_Forced(CPI_OEM);
+            FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+        }
+    }
+    break;
 
 
     case CMD_RECODEGB18030:
     {
-      if (StrIsNotEmpty(Globals.CurrentFile)) {
-        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
-        Encoding_Forced(Encoding_GetByCodePage(54936)); // GB18030
-        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-      }
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+            Encoding_Forced(Encoding_GetByCodePage(54936)); // GB18030
+            FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+        }
     }
     break;
 
 
     case CMD_RELOADASCIIASUTF8:
-      {
-      if (StrIsNotEmpty(Globals.CurrentFile))
-      {
-        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
-        Encoding_Forced(CPI_UTF8);
-        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-      }
-      }
-      break;
+    {
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+            Encoding_Forced(CPI_UTF8);
+            FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+        }
+    }
+    break;
 
 
     case CMD_RELOADFORCEDETECTION:
     {
-      if (StrIsNotEmpty(Globals.CurrentFile))
-      {
-        Encoding_Forced(CPI_NONE);
-        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
-        FileLoad(false, false, true, false, false, true, tchMaxPathBuffer);
-      }
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            Encoding_Forced(CPI_NONE);
+            StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+            FileLoad(false, false, true, false, false, true, tchMaxPathBuffer);
+        }
     }
     break;
 
     case CMD_RELOADNOFILEVARS:
-      {
+    {
         if (StrIsNotEmpty(Globals.CurrentFile))
         {
-          bool const _fNoFileVariables = Flags.NoFileVariables;
-          bool const _bNoEncodingTags = Settings.NoEncodingTags;
-          Flags.NoFileVariables = true;
-          Settings.NoEncodingTags = true;
-          StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          FileLoad(false,false,true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
-          Flags.NoFileVariables = _fNoFileVariables;
-          Settings.NoEncodingTags = _bNoEncodingTags;
+            bool const _fNoFileVariables = Flags.NoFileVariables;
+            bool const _bNoEncodingTags = Settings.NoEncodingTags;
+            Flags.NoFileVariables = true;
+            Settings.NoEncodingTags = true;
+            StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
+            FileLoad(false,false,true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
+            Flags.NoFileVariables = _fNoFileVariables;
+            Settings.NoEncodingTags = _bNoEncodingTags;
         }
-      }
-      break;
+    }
+    break;
 
 
     case CMD_LEXDEFAULT:
-      Style_SetDefaultLexer(Globals.hwndEdit);
-      break;
+        Style_SetDefaultLexer(Globals.hwndEdit);
+        break;
 
 
     //case CMD_LEXHTML:
@@ -6368,499 +6913,510 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_INSERT_TIMESTAMP:
-      EditInsertDateTimeStrg(true, true);
-      break;
+        EditInsertDateTimeStrg(true, true);
+        break;
 
     case CMD_UPDATE_TIMESTAMPS:
-      EditUpdateTimestamps();
-      break;
+        EditUpdateTimestamps();
+        break;
 
 
     case IDM_HELP_ADMINEXE:
-      DialogAdminExe(hwnd, true);
-      break;
+        DialogAdminExe(hwnd, true);
+        break;
 
     case IDM_HELP_UPDATEWEBSITE:
-      DialogAdminExe(hwnd, false);
-      break;
+        DialogAdminExe(hwnd, false);
+        break;
 
     case CMD_WEBACTION1:
     case CMD_WEBACTION2:
-      {
+    {
         StringCchCopyW(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer),
-          (iLoWParam == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
+                       (iLoWParam == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
 
-        if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
+        if (StringCchLenW(tchMaxPathBuffer,0) > 0)
+        {
 
-          WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
-          size_t const cchSelection = EditGetSelectedText(wszSelection, HUGE_BUFFER);
+            WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
+            size_t const cchSelection = EditGetSelectedText(wszSelection, HUGE_BUFFER);
 
-          if (1 < cchSelection)
-          {
-            // Check lpszSelection and truncate bad WCHARs
-            WCHAR* lpsz = StrChr(wszSelection, L'\r');
-            if (lpsz) *lpsz = L'\0';
+            if (1 < cchSelection)
+            {
+                // Check lpszSelection and truncate bad WCHARs
+                WCHAR* lpsz = StrChr(wszSelection, L'\r');
+                if (lpsz) *lpsz = L'\0';
 
-            lpsz = StrChr(wszSelection, L'\n');
-            if (lpsz) *lpsz = L'\0';
+                lpsz = StrChr(wszSelection, L'\n');
+                if (lpsz) *lpsz = L'\0';
 
-            lpsz = StrChr(wszSelection, L'\t');
-            if (lpsz) *lpsz = L'\0';
+                lpsz = StrChr(wszSelection, L'\t');
+                if (lpsz) *lpsz = L'\0';
 
-            int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
-            LPWSTR lpszCommand = AllocMem(sizeof(WCHAR) * cmdsz, HEAP_ZERO_MEMORY);
-            StringCchPrintf(lpszCommand, cmdsz, tchMaxPathBuffer, wszSelection);
-            ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
+                int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
+                LPWSTR lpszCommand = AllocMem(sizeof(WCHAR) * cmdsz, HEAP_ZERO_MEMORY);
+                StringCchPrintf(lpszCommand, cmdsz, tchMaxPathBuffer, wszSelection);
+                ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
 
-            WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-            if (StrIsNotEmpty(Globals.CurrentFile)) {
-              StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
-              PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+                if (StrIsNotEmpty(Globals.CurrentFile))
+                {
+                    StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                }
+
+                SHELLEXECUTEINFO sei;
+                ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+                sei.cbSize = sizeof(SHELLEXECUTEINFO);
+                sei.fMask = SEE_MASK_NOZONECHECKS;
+                sei.hwnd = NULL;
+                sei.lpVerb = NULL;
+                sei.lpFile = lpszCommand;
+                sei.lpParameters = NULL;
+                sei.lpDirectory = wchDirectory;
+                sei.nShow = SW_SHOWNORMAL;
+                ShellExecuteEx(&sei);
+
+                FreeMem(lpszCommand);
             }
-
-            SHELLEXECUTEINFO sei;
-            ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-            sei.cbSize = sizeof(SHELLEXECUTEINFO);
-            sei.fMask = SEE_MASK_NOZONECHECKS;
-            sei.hwnd = NULL;
-            sei.lpVerb = NULL;
-            sei.lpFile = lpszCommand;
-            sei.lpParameters = NULL;
-            sei.lpDirectory = wchDirectory;
-            sei.nShow = SW_SHOWNORMAL;
-            ShellExecuteEx(&sei);
-
-            FreeMem(lpszCommand);
-          }
         }
-      }
-      break;
+    }
+    break;
 
-/* ~~~
-    case CMD_INCLINELIMIT:
-    case CMD_DECLINELIMIT:
-      if (!Settings.MarkLongLines)
-        SendWMCommand(hwnd, IDM_VIEW_LONGLINEMARKER);
-      else {
-        if (iLoWParam == CMD_INCLINELIMIT)
-          Settings.LongLinesLimit++;
-        else
-          Settings.LongLinesLimit--;
-        Globals.fvCurFile.iLongLinesLimit = clampi(Settings.LongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
-        SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
-        //Globals.fvCurFile.iLongLinesLimit = Settings.LongLinesLimit;
-      }
-      break;
-~~~ */
-      
+    /* ~~~
+        case CMD_INCLINELIMIT:
+        case CMD_DECLINELIMIT:
+          if (!Settings.MarkLongLines)
+            SendWMCommand(hwnd, IDM_VIEW_LONGLINEMARKER);
+          else {
+            if (iLoWParam == CMD_INCLINELIMIT)
+              Settings.LongLinesLimit++;
+            else
+              Settings.LongLinesLimit--;
+            Globals.fvCurFile.iLongLinesLimit = clampi(Settings.LongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
+            SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
+            //Globals.fvCurFile.iLongLinesLimit = Settings.LongLinesLimit;
+          }
+          break;
+    ~~~ */
+
 
     case CMD_STRINGIFY:
-      {
+    {
         EditEncloseSelection(L"'", L"'");
-      }
-      break;
+    }
+    break;
 
 
     case CMD_STRINGIFY2:
-      {
+    {
         EditEncloseSelection(L"\"", L"\"");
-      }
-      break;
+    }
+    break;
 
 
     case CMD_EMBRACE:
-      {
+    {
         EditEncloseSelection(L"(", L")");
-      }
-      break;
+    }
+    break;
 
 
     case CMD_EMBRACE2:
-      {
+    {
         EditEncloseSelection(L"[", L"]");
-      }
-      break;
+    }
+    break;
 
 
     case CMD_EMBRACE3:
-      {
+    {
         EditEncloseSelection(L"{", L"}");
-      }
-      break;
+    }
+    break;
 
 
     case CMD_EMBRACE4:
-      {
+    {
         EditEncloseSelection(L"`", L"`");
-      }
-      break;
+    }
+    break;
 
 
     case CMD_INCREASENUM:
-      EditModifyNumber(Globals.hwndEdit,true);
-      break;
+        EditModifyNumber(Globals.hwndEdit,true);
+        break;
 
 
     case CMD_DECREASENUM:
-      EditModifyNumber(Globals.hwndEdit,false);
-      break;
+        EditModifyNumber(Globals.hwndEdit,false);
+        break;
 
 
     case CMD_TOGGLETITLE:
-      EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
-      UpdateTitleBar(hwnd);
-      break;
+        EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
+        UpdateTitleBar(hwnd);
+        break;
 
 
     case CMD_JUMP2SELSTART:
-      if (!EditSetCaretToSelectionStart() && Sci_IsMultiOrRectangleSelection()) {
-        size_t const n = SciCall_GetSelections();
-        DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionNCaret(0));
-        DocPos const beg = SciCall_PositionFromLine(lineStart);
-        SciCall_ClearSelections(); // needed to reset mode
-        SciCall_SetSelection(beg, beg);
-        for (size_t i = 1; i < n; ++i) {
-          DocPos const pos = SciCall_PositionFromLine(lineStart + i);
-          SciCall_AddSelection(pos, pos);
+        if (!EditSetCaretToSelectionStart() && Sci_IsMultiOrRectangleSelection())
+        {
+            size_t const n = SciCall_GetSelections();
+            DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionNCaret(0));
+            DocPos const beg = SciCall_PositionFromLine(lineStart);
+            SciCall_ClearSelections(); // needed to reset mode
+            SciCall_SetSelection(beg, beg);
+            for (size_t i = 1; i < n; ++i)
+            {
+                DocPos const pos = SciCall_PositionFromLine(lineStart + i);
+                SciCall_AddSelection(pos, pos);
+            }
         }
-      }
-      Sci_ScrollChooseCaret();
-      break;
+        Sci_ScrollChooseCaret();
+        break;
 
     case CMD_JUMP2SELEND:
-      if (!EditSetCaretToSelectionEnd() && Sci_IsMultiOrRectangleSelection()) {
-        size_t const n = SciCall_GetSelections();
-        DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionNCaret(0));
-        DocPos const beg = SciCall_GetLineEndPosition(lineStart);
-        SciCall_ClearSelections(); // needed to reset mode
-        SciCall_SetSelection(beg, beg);
-        for (size_t i = 1; i < n; ++i) {
-          DocPos const pos = SciCall_GetLineEndPosition(lineStart + i);
-          SciCall_AddSelection(pos, pos);
+        if (!EditSetCaretToSelectionEnd() && Sci_IsMultiOrRectangleSelection())
+        {
+            size_t const n = SciCall_GetSelections();
+            DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionNCaret(0));
+            DocPos const beg = SciCall_GetLineEndPosition(lineStart);
+            SciCall_ClearSelections(); // needed to reset mode
+            SciCall_SetSelection(beg, beg);
+            for (size_t i = 1; i < n; ++i)
+            {
+                DocPos const pos = SciCall_GetLineEndPosition(lineStart + i);
+                SciCall_AddSelection(pos, pos);
+            }
         }
-      }
-      Sci_ScrollChooseCaret();
-      break;
+        Sci_ScrollChooseCaret();
+        break;
 
 
-    case CMD_COPYPATHNAME: {
+    case CMD_COPYPATHNAME:
+    {
 
         WCHAR *pszCopy;
         WCHAR tchUntitled[32] = { L'\0' };
         if (StrIsNotEmpty(Globals.CurrentFile))
-          pszCopy = Globals.CurrentFile;
-        else {
-          GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
-          pszCopy = tchUntitled;
+            pszCopy = Globals.CurrentFile;
+        else
+        {
+            GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
+            pszCopy = tchUntitled;
         }
         SetClipboardText(hwnd, pszCopy, StringCchLen(pszCopy,0));
-      }
-      break;
+    }
+    break;
 
 
-    case CMD_COPYWINPOS: {
+    case CMD_COPYWINPOS:
+    {
         WININFO wi = GetMyWindowPlacement(Globals.hwndMain,NULL);
         StringCchPrintf(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),L"/pos %i,%i,%i,%i,%i",wi.x,wi.y,wi.cx,wi.cy,wi.max);
         SetClipboardText(hwnd, tchMaxPathBuffer, StringCchLen(tchMaxPathBuffer, 0));
-      }
-      break;
+    }
+    break;
 
 
     case CMD_INITIALWINPOS:
-      SnapToWinInfoPos(hwnd, g_IniWinInfo, SCR_NORMAL);
-      break;
+        SnapToWinInfoPos(hwnd, g_IniWinInfo, SCR_NORMAL);
+        break;
 
     case CMD_FULLSCRWINPOS:
-      {
+    {
         WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
         SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN);
-      }
-      break;
+    }
+    break;
 
     case CMD_DEFAULTWINPOS:
-      SnapToWinInfoPos(hwnd, g_DefWinInfo, SCR_NORMAL);
-      break;
+        SnapToWinInfoPos(hwnd, g_DefWinInfo, SCR_NORMAL);
+        break;
 
     case CMD_SAVEASDEFWINPOS:
-      {
+    {
         WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
         WCHAR tchDefWinPos[80];
         StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
-        if (Globals.bCanSaveIniFile) {
-          IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
+        if (Globals.bCanSaveIniFile)
+        {
+            IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
         }
         g_DefWinInfo = wi; //GetWinInfoByFlag(-1); // use current win pos as new default
-      }
-      break;
-
-    case CMD_CLEARSAVEDWINPOS:
-      g_DefWinInfo = GetFactoryDefaultWndPos(2);
-      IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", false);
+    }
     break;
 
+    case CMD_CLEARSAVEDWINPOS:
+        g_DefWinInfo = GetFactoryDefaultWndPos(2);
+        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", false);
+        break;
+
     case CMD_OPENINIFILE:
-      if (StrIsNotEmpty(Globals.IniFile)) {
-        SaveAllSettings(false);
-        FileLoad(false, false, false, false, true, false, Globals.IniFile);
-      }
-      break;
+        if (StrIsNotEmpty(Globals.IniFile))
+        {
+            SaveAllSettings(false);
+            FileLoad(false, false, false, false, true, false, Globals.IniFile);
+        }
+        break;
 
     case CMD_OPEN_HYPERLINK:
         HandleHotSpotURLClicked(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3));
-      break;
+        break;
 
     case CMD_FOLDJUMPDOWN:
-      EditFoldCmdKey(DOWN, SNIFF);
-      break;
+        EditFoldCmdKey(DOWN, SNIFF);
+        break;
 
     case CMD_FOLDJUMPUP:
-      EditFoldCmdKey(UP, SNIFF);
-      break;
+        EditFoldCmdKey(UP, SNIFF);
+        break;
 
     case CMD_FOLDCOLLAPSE:
-      EditFoldCmdKey(NONE, FOLD);
-      break;
+        EditFoldCmdKey(NONE, FOLD);
+        break;
 
     case CMD_FOLDEXPAND:
-      EditFoldCmdKey(NONE, EXPAND);
-      break;
+        EditFoldCmdKey(NONE, EXPAND);
+        break;
 
 
     case IDT_FILE_NEW:
-      if (IsCmdEnabled(hwnd,IDM_FILE_NEW))
-        SendWMCommand(hwnd, IDM_FILE_NEW);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_NEW))
+            SendWMCommand(hwnd, IDM_FILE_NEW);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_OPEN:
-      if (IsCmdEnabled(hwnd,IDM_FILE_OPEN))
-        SendWMCommand(hwnd, IDM_FILE_OPEN);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_OPEN))
+            SendWMCommand(hwnd, IDM_FILE_OPEN);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_BROWSE:
-      if (IsCmdEnabled(hwnd,IDM_FILE_BROWSE))
-        SendWMCommand(hwnd, IDM_FILE_BROWSE);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_BROWSE))
+            SendWMCommand(hwnd, IDM_FILE_BROWSE);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_RECENT:
-      if (IsCmdEnabled(hwnd,IDM_FILE_RECENT))
-        SendWMCommand(hwnd, IDM_FILE_RECENT);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_RECENT))
+            SendWMCommand(hwnd, IDM_FILE_RECENT);
+        else
+            SimpleBeep();
+        break;
 
     case IDT_FILE_SAVE:
-      if (IsCmdEnabled(hwnd,IDM_FILE_SAVE))
-        SendWMCommand(hwnd, IDM_FILE_SAVE);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_SAVE))
+            SendWMCommand(hwnd, IDM_FILE_SAVE);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_EDIT_UNDO:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_UNDO))
-        SendWMCommand(hwnd, IDM_EDIT_UNDO);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_EDIT_UNDO))
+            SendWMCommand(hwnd, IDM_EDIT_UNDO);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_EDIT_REDO:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_REDO))
-        SendWMCommand(hwnd, IDM_EDIT_REDO);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_EDIT_REDO))
+            SendWMCommand(hwnd, IDM_EDIT_REDO);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_EDIT_CUT:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_CUT))
-        SendWMCommand(hwnd, IDM_EDIT_CUT);
-      else
-        SimpleBeep();
+        if (IsCmdEnabled(hwnd,IDM_EDIT_CUT))
+            SendWMCommand(hwnd, IDM_EDIT_CUT);
+        else
+            SimpleBeep();
         //~SendWMCommand(hwnd, IDM_EDIT_CUTLINE);
-      break;
+        break;
 
 
     case IDT_EDIT_COPY:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_COPY))
-        SendWMCommand(hwnd, IDM_EDIT_COPY);
-      else
-        SendWMCommand(hwnd, IDM_EDIT_COPYALL);
-      break;
+        if (IsCmdEnabled(hwnd,IDM_EDIT_COPY))
+            SendWMCommand(hwnd, IDM_EDIT_COPY);
+        else
+            SendWMCommand(hwnd, IDM_EDIT_COPYALL);
+        break;
 
 
     case IDT_EDIT_PASTE:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_PASTE))
-        SendWMCommand(hwnd, IDM_EDIT_PASTE);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_EDIT_PASTE))
+            SendWMCommand(hwnd, IDM_EDIT_PASTE);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_EDIT_FIND:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_FIND))
-        SendWMCommand(hwnd, IDM_EDIT_FIND);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_EDIT_FIND))
+            SendWMCommand(hwnd, IDM_EDIT_FIND);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_EDIT_REPLACE:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_REPLACE))
-        SendWMCommand(hwnd, IDM_EDIT_REPLACE);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_EDIT_REPLACE))
+            SendWMCommand(hwnd, IDM_EDIT_REPLACE);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_GREP_WIN_TOOL:
-      if (IsCmdEnabled(hwnd, IDM_GREP_WIN_SEARCH))
-        SendWMCommand(hwnd, IDM_GREP_WIN_SEARCH);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd, IDM_GREP_WIN_SEARCH))
+            SendWMCommand(hwnd, IDM_GREP_WIN_SEARCH);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_WORDWRAP:
-      if (IsCmdEnabled(hwnd,IDM_VIEW_WORDWRAP))
-        SendWMCommand(hwnd, IDM_VIEW_WORDWRAP);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_VIEW_WORDWRAP))
+            SendWMCommand(hwnd, IDM_VIEW_WORDWRAP);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_ZOOMIN:
-      if (IsCmdEnabled(hwnd,IDM_VIEW_ZOOMIN))
-        SendWMCommand(hwnd, IDM_VIEW_ZOOMIN);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_VIEW_ZOOMIN))
+            SendWMCommand(hwnd, IDM_VIEW_ZOOMIN);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_ZOOMOUT:
-      if (IsCmdEnabled(hwnd,IDM_VIEW_ZOOMOUT))
-        SendWMCommand(hwnd, IDM_VIEW_ZOOMOUT);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_VIEW_ZOOMOUT))
+            SendWMCommand(hwnd, IDM_VIEW_ZOOMOUT);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_CHASING_DOCTAIL:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_CHASING_DOCTAIL))
-        SendWMCommand(hwnd, IDM_VIEW_CHASING_DOCTAIL);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd, IDM_VIEW_CHASING_DOCTAIL))
+            SendWMCommand(hwnd, IDM_VIEW_CHASING_DOCTAIL);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_SCHEME:
-      if (IsCmdEnabled(hwnd,IDM_VIEW_SCHEME))
-        SendWMCommand(hwnd, IDM_VIEW_SCHEME);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_VIEW_SCHEME))
+            SendWMCommand(hwnd, IDM_VIEW_SCHEME);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_SCHEMECONFIG:
-      if (IsCmdEnabled(hwnd,IDM_VIEW_SCHEMECONFIG))
-        SendWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_VIEW_SCHEMECONFIG))
+            SendWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_SAVEAS:
-      if (IsCmdEnabled(hwnd,IDM_FILE_SAVEAS))
-        SendWMCommand(hwnd, IDM_FILE_SAVEAS);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_SAVEAS))
+            SendWMCommand(hwnd, IDM_FILE_SAVEAS);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_SAVECOPY:
-      if (IsCmdEnabled(hwnd,IDM_FILE_SAVECOPY))
-        SendWMCommand(hwnd, IDM_FILE_SAVECOPY);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_SAVECOPY))
+            SendWMCommand(hwnd, IDM_FILE_SAVECOPY);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_EDIT_CLEAR:
-      if (IsCmdEnabled(hwnd,IDM_EDIT_CLEAR))
-        SendWMCommand(hwnd, IDM_EDIT_CLEAR);
-      else
-        SendMessage(Globals.hwndEdit,SCI_CLEARALL,0,0);
-      break;
+        if (IsCmdEnabled(hwnd,IDM_EDIT_CLEAR))
+            SendWMCommand(hwnd, IDM_EDIT_CLEAR);
+        else
+            SendMessage(Globals.hwndEdit,SCI_CLEARALL,0,0);
+        break;
 
 
     case IDT_FILE_PRINT:
-      if (IsCmdEnabled(hwnd,IDM_FILE_PRINT))
-        SendWMCommand(hwnd, IDM_FILE_PRINT);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_PRINT))
+            SendWMCommand(hwnd, IDM_FILE_PRINT);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_OPENFAV:
-      if (IsCmdEnabled(hwnd,IDM_FILE_OPENFAV))
-        SendWMCommand(hwnd, IDM_FILE_OPENFAV);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_OPENFAV))
+            SendWMCommand(hwnd, IDM_FILE_OPENFAV);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_ADDTOFAV:
-      if (IsCmdEnabled(hwnd,IDM_FILE_ADDTOFAV))
-        SendWMCommand(hwnd, IDM_FILE_ADDTOFAV);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_ADDTOFAV))
+            SendWMCommand(hwnd, IDM_FILE_ADDTOFAV);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_TOGGLEFOLDS:
-      if (IsCmdEnabled(hwnd,IDM_VIEW_TOGGLEFOLDS))
-        SendWMCommand(hwnd, IDM_VIEW_TOGGLEFOLDS);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_VIEW_TOGGLEFOLDS))
+            SendWMCommand(hwnd, IDM_VIEW_TOGGLEFOLDS);
+        else
+            SimpleBeep();
+        break;
 
-      
+
     case IDT_VIEW_TOGGLE_VIEW:
-      if (IsCmdEnabled(hwnd,IDM_VIEW_TOGGLE_VIEW))
-        SendWMCommand(hwnd, IDM_VIEW_TOGGLE_VIEW);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_VIEW_TOGGLE_VIEW))
+            SendWMCommand(hwnd, IDM_VIEW_TOGGLE_VIEW);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_VIEW_PIN_ON_TOP:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_ALWAYSONTOP))
-        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_ALWAYSONTOP, 1), 0);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd, IDM_VIEW_ALWAYSONTOP))
+            SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_ALWAYSONTOP, 1), 0);
+        else
+            SimpleBeep();
+        break;
 
 
     case IDT_FILE_LAUNCH:
-      if (IsCmdEnabled(hwnd,IDM_FILE_LAUNCH))
-        SendWMCommand(hwnd, IDM_FILE_LAUNCH);
-      else
-        SimpleBeep();
-      break;
+        if (IsCmdEnabled(hwnd,IDM_FILE_LAUNCH))
+            SendWMCommand(hwnd, IDM_FILE_LAUNCH);
+        else
+            SimpleBeep();
+        break;
 
     default:
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-  }
-  return FALSE;
+        return DefWindowProc(hwnd, umsg, wParam, lParam);
+    }
+    return FALSE;
 }
 
 
@@ -6870,28 +7426,30 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  switch (wParam) {
-  case SC_MINIMIZE:
-    ShowOwnedPopups(hwnd, false);
-    if (Settings.MinimizeToTray) {
-      MinimizeWndToTray(hwnd);
-      ShowNotifyIcon(hwnd, true);
-      SetNotifyIconTitle(hwnd);
-      return FALSE; // swallowed
-    }
-    break;
-
-  case SC_RESTORE:
+    switch (wParam)
     {
-      LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
-      ShowOwnedPopups(hwnd, true);
-      return(lrv);
+    case SC_MINIMIZE:
+        ShowOwnedPopups(hwnd, false);
+        if (Settings.MinimizeToTray)
+        {
+            MinimizeWndToTray(hwnd);
+            ShowNotifyIcon(hwnd, true);
+            SetNotifyIconTitle(hwnd);
+            return FALSE; // swallowed
+        }
+        break;
+
+    case SC_RESTORE:
+    {
+        LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
+        ShowOwnedPopups(hwnd, true);
+        return(lrv);
     }
 
-  default:
-    break;
-  }
-  return DefWindowProc(hwnd, umsg, wParam, lParam);
+    default:
+        break;
+    }
+    return DefWindowProc(hwnd, umsg, wParam, lParam);
 }
 
 
@@ -6901,11 +7459,14 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 void HandlePosChange()
 {
-  static DocPos prevPosition = -1;
-  DocPos const curPos = SciCall_GetCurrentPos();
-  if (curPos == prevPosition) { return; }
+    static DocPos prevPosition = -1;
+    DocPos const curPos = SciCall_GetCurrentPos();
+    if (curPos == prevPosition)
+    {
+        return;
+    }
 
-  prevPosition = curPos;
+    prevPosition = curPos;
 }
 
 
@@ -6921,201 +7482,249 @@ static DocPos prevCursorPosition = -1;
 #define ARGB_GET_ALPHA(A) (((A) >> 24) & SC_ALPHA_OPAQUE)
 #define RGBA_GET_ALPHA(A) ((A) & SC_ALPHA_OPAQUE)
 #define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
-                               
+
 // ----------------------------------------------------------------------------
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
-  static DocPos prevStartPosition = -1;
-  static DocPos prevEndPosition = -1;
+    static DocPos prevStartPosition = -1;
+    static DocPos prevEndPosition = -1;
 
-  if (position >= 0) {
-    if (prevCursorPosition < 0) { prevCursorPosition = position; }
-    if (prevStartPosition < 0) { prevStartPosition = position; }
-    if (prevEndPosition < 0) { prevEndPosition = position; }
-  }
+    if (position >= 0)
+    {
+        if (prevCursorPosition < 0)
+        {
+            prevCursorPosition = position;
+        }
+        if (prevStartPosition < 0)
+        {
+            prevStartPosition = position;
+        }
+        if (prevEndPosition < 0)
+        {
+            prevEndPosition = position;
+        }
+    }
 
-  int indicator_id = INDICATOR_CONTAINER;
+    int indicator_id = INDICATOR_CONTAINER;
 
-  switch (uid)
-  {
+    switch (uid)
+    {
     case SCN_DWELLSTART:
     {
-      if (position < 0) { CancelCallTip(); prevCursorPosition = -1;  return; }
-        
-      if (Settings.HyperlinkHotspot) {
-        if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) > 0) {
-          indicator_id = INDIC_NP3_HYPERLINK;
-          if (position != prevCursorPosition) {
+        if (position < 0)
+        {
             CancelCallTip();
-          }
+            prevCursorPosition = -1;
+            return;
         }
-      }
-      if (IsColorDefHotspotEnabled()) {
-        if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, position) > 0) {
-          indicator_id = INDIC_NP3_COLOR_DEF;
+
+        if (Settings.HyperlinkHotspot)
+        {
+            if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) > 0)
+            {
+                indicator_id = INDIC_NP3_HYPERLINK;
+                if (position != prevCursorPosition)
+                {
+                    CancelCallTip();
+                }
+            }
         }
-      }
-      if (Settings.HighlightUnicodePoints) {
-        if (SciCall_IndicatorValueAt(INDIC_NP3_UNICODE_POINT, position) > 0) {
-          indicator_id = INDIC_NP3_UNICODE_POINT;
+        if (IsColorDefHotspotEnabled())
+        {
+            if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, position) > 0)
+            {
+                indicator_id = INDIC_NP3_COLOR_DEF;
+            }
         }
-      }
-     
-      switch (indicator_id) 
-      {
+        if (Settings.HighlightUnicodePoints)
+        {
+            if (SciCall_IndicatorValueAt(INDIC_NP3_UNICODE_POINT, position) > 0)
+            {
+                indicator_id = INDIC_NP3_UNICODE_POINT;
+            }
+        }
+
+        switch (indicator_id)
+        {
         case INDIC_NP3_HYPERLINK:
-          if (!Settings.ShowHypLnkToolTip || SciCall_CallTipActive()) { return; }
-          break;
+            if (!Settings.ShowHypLnkToolTip || SciCall_CallTipActive())
+            {
+                return;
+            }
+            break;
 
         case INDIC_NP3_UNICODE_POINT:
-          if (!Settings.HighlightUnicodePoints || SciCall_CallTipActive()) { return; }
-          break;
+            if (!Settings.HighlightUnicodePoints || SciCall_CallTipActive())
+            {
+                return;
+            }
+            break;
 
         case INDIC_NP3_COLOR_DEF:
-          // ok
-          break;
-  
+            // ok
+            break;
+
         // nothing to do for these indicators
         case INDICATOR_CONTAINER:
         default:
-          return;
-      }
-
-      // ----------------------------------------------------------------------
-
-      if ((position < prevStartPosition) || (position > prevEndPosition)) { s_bCallTipEscDisabled = false; }
-
-      //SciCall_SetCursor(SC_NP3_CURSORHAND);
-
-      DocPos const firstPos = SciCall_IndicatorStart(indicator_id, position);
-      DocPos const lastPos = SciCall_IndicatorEnd(indicator_id, position);
-      DocPos const length = (lastPos - firstPos);
-
-      // WebLinks and Color Refs are ASCII only - No need for UTF-8 conversion here
-
-      if (INDIC_NP3_HYPERLINK == indicator_id) 
-      {
-        if (!s_bCallTipEscDisabled) {
-          char chText[MIDSZ_BUFFER] = { '\0' };
-          // No need for UTF-8 conversion here and 
-          StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
-          StrTrimA(chText, " \t\n\r");
-          if (StrIsEmptyA(chText)) { break; }
-
-          WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
-          if (StrStrIA(chText, "file:") == chText) {
-            GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
-          }
-          else {
-            GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
-          }
-          CHAR  chAdd[LARGE_BUFFER] = { L'\0' };
-          WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, (int)COUNTOF(chAdd), NULL, NULL);
-
-          char chCallTip[HUGE_BUFFER] = { '\0' };
-          StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
-          StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
-          //SciCall_CallTipSetPosition(true);
-          SciCall_CallTipShow(position, chCallTip);
-          SciCall_CallTipSetHlt(0, (int)length);
-          Globals.CallTipType = CT_DWELL;
+            return;
         }
-      }
-      else if (INDIC_NP3_COLOR_DEF == indicator_id)
-      {
-        char chText[MICRO_BUFFER] = { '\0' };
-        // Color Refs are ASCII only - No need for UTF-8 conversion here
-        StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
-        unsigned int iValue = 0;
-        if (sscanf_s(&chText[1], "%x", &iValue) == 1) 
+
+        // ----------------------------------------------------------------------
+
+        if ((position < prevStartPosition) || (position > prevEndPosition))
         {
-          COLORREF rgb = 0x000000;
-          int alpha = SC_ALPHA_OPAQUE;
-          if (length >= 8) // ARGB, RGBA, BGRA
-          {
-            switch (Settings.ColorDefHotspot) {
-              case 1:
-                rgb   = ARGB_TO_COLREF(iValue);
-                alpha = ARGB_GET_ALPHA(iValue);
-                break;
-              case 2:
-                rgb   = RGBA_TO_COLREF(iValue);
-                alpha = RGBA_GET_ALPHA(iValue);
-                break;
-              case 3:
-                rgb   = BGRA_TO_COLREF(iValue);
-                alpha = BGRA_GET_ALPHA(iValue);
-                break;
-              case 0:
-              default:
-                break;
+            s_bCallTipEscDisabled = false;
+        }
+
+        //SciCall_SetCursor(SC_NP3_CURSORHAND);
+
+        DocPos const firstPos = SciCall_IndicatorStart(indicator_id, position);
+        DocPos const lastPos = SciCall_IndicatorEnd(indicator_id, position);
+        DocPos const length = (lastPos - firstPos);
+
+        // WebLinks and Color Refs are ASCII only - No need for UTF-8 conversion here
+
+        if (INDIC_NP3_HYPERLINK == indicator_id)
+        {
+            if (!s_bCallTipEscDisabled)
+            {
+                char chText[MIDSZ_BUFFER] = { '\0' };
+                // No need for UTF-8 conversion here and
+                StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
+                StrTrimA(chText, " \t\n\r");
+                if (StrIsEmptyA(chText))
+                {
+                    break;
+                }
+
+                WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
+                if (StrStrIA(chText, "file:") == chText)
+                {
+                    GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+                }
+                else
+                {
+                    GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+                }
+                CHAR  chAdd[LARGE_BUFFER] = { L'\0' };
+                WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, (int)COUNTOF(chAdd), NULL, NULL);
+
+                char chCallTip[HUGE_BUFFER] = { '\0' };
+                StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
+                StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
+                //SciCall_CallTipSetPosition(true);
+                SciCall_CallTipShow(position, chCallTip);
+                SciCall_CallTipSetHlt(0, (int)length);
+                Globals.CallTipType = CT_DWELL;
             }
-          }
-          else // RGB
-          {
-            rgb   = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
-            alpha = SC_ALPHA_OPAQUE;
-          }
-          COLORREF const fgr = CalcContrastColor(rgb, alpha);
-
-          SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
-          SciCall_IndicatorFillRange(firstPos, length);
-          SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, fgr);
-
-          SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, Sci_ClampAlpha(alpha));
-          SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
         }
-      }
-      else if (INDIC_NP3_UNICODE_POINT == indicator_id)
-      {
-        if (!s_bCallTipEscDisabled) {
-          char chHex2Char[MIDSZ_BUFFER] = {'\0'};
-          // No need for UTF-8 conversion here and
-          StringCchCopyNA(chHex2Char, COUNTOF(chHex2Char), SciCall_GetRangePointer(firstPos, length), length);
-          //StrTrimA(chHex2Char, " \t\n\r");
+        else if (INDIC_NP3_COLOR_DEF == indicator_id)
+        {
+            char chText[MICRO_BUFFER] = { '\0' };
+            // Color Refs are ASCII only - No need for UTF-8 conversion here
+            StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
+            unsigned int iValue = 0;
+            if (sscanf_s(&chText[1], "%x", &iValue) == 1)
+            {
+                COLORREF rgb = 0x000000;
+                int alpha = SC_ALPHA_OPAQUE;
+                if (length >= 8) // ARGB, RGBA, BGRA
+                {
+                    switch (Settings.ColorDefHotspot)
+                    {
+                    case 1:
+                        rgb   = ARGB_TO_COLREF(iValue);
+                        alpha = ARGB_GET_ALPHA(iValue);
+                        break;
+                    case 2:
+                        rgb   = RGBA_TO_COLREF(iValue);
+                        alpha = RGBA_GET_ALPHA(iValue);
+                        break;
+                    case 3:
+                        rgb   = BGRA_TO_COLREF(iValue);
+                        alpha = BGRA_GET_ALPHA(iValue);
+                        break;
+                    case 0:
+                    default:
+                        break;
+                    }
+                }
+                else // RGB
+                {
+                    rgb   = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
+                    alpha = SC_ALPHA_OPAQUE;
+                }
+                COLORREF const fgr = CalcContrastColor(rgb, alpha);
 
-          Hex2Char(chHex2Char, COUNTOF(chHex2Char));
-          if (StrIsEmptyA(chHex2Char)) { break; }
+                SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
+                SciCall_IndicatorFillRange(firstPos, length);
+                SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, fgr);
 
-          //SciCall_CallTipSetPosition(true);
-          SciCall_CallTipShow(position, chHex2Char);
-          SciCall_CallTipSetHlt(0, (int)length);
-          Globals.CallTipType = CT_DWELL;
+                SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, Sci_ClampAlpha(alpha));
+                SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
+            }
         }
-      }
+        else if (INDIC_NP3_UNICODE_POINT == indicator_id)
+        {
+            if (!s_bCallTipEscDisabled)
+            {
+                char chHex2Char[MIDSZ_BUFFER] = {'\0'};
+                // No need for UTF-8 conversion here and
+                StringCchCopyNA(chHex2Char, COUNTOF(chHex2Char), SciCall_GetRangePointer(firstPos, length), length);
+                //StrTrimA(chHex2Char, " \t\n\r");
 
-      prevCursorPosition = position;
-      prevStartPosition = firstPos;
-      prevEndPosition = lastPos;
+                Hex2Char(chHex2Char, COUNTOF(chHex2Char));
+                if (StrIsEmptyA(chHex2Char))
+                {
+                    break;
+                }
+
+                //SciCall_CallTipSetPosition(true);
+                SciCall_CallTipShow(position, chHex2Char);
+                SciCall_CallTipSetHlt(0, (int)length);
+                Globals.CallTipType = CT_DWELL;
+            }
+        }
+
+        prevCursorPosition = position;
+        prevStartPosition = firstPos;
+        prevEndPosition = lastPos;
     }
     break;
 
     case SCN_DWELLEND:
     {
-      if ((position >= prevStartPosition) && ((position <= prevEndPosition))) { return; } // avoid flickering
-      
-      CancelCallTip();
+        if ((position >= prevStartPosition) && ((position <= prevEndPosition)))
+        {
+            return;    // avoid flickering
+        }
 
-      DocPos const curPos = SciCall_GetCurrentPos();
-      if ((curPos >= prevStartPosition) && ((curPos <= prevEndPosition))) { return; } // no change for if caret in range
-      s_bCallTipEscDisabled = false;
-      prevCursorPosition = -1;
+        CancelCallTip();
 
-      // clear SCN_DWELLSTART visual styles
-      SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
-      SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+        DocPos const curPos = SciCall_GetCurrentPos();
+        if ((curPos >= prevStartPosition) && ((curPos <= prevEndPosition)))
+        {
+            return;    // no change for if caret in range
+        }
+        s_bCallTipEscDisabled = false;
+        prevCursorPosition = -1;
 
-      SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
-      SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
+        // clear SCN_DWELLSTART visual styles
+        SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
+        SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
-      HandlePosChange();
+        SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
+        SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
+
+        HandlePosChange();
     }
     break;
 
     default:
-      break;
-  }
+        break;
+    }
 }
 
 //=============================================================================
@@ -7125,96 +7734,109 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 //
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation)
 {
-  if (position < 0) { return false; }
-
-  //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
-  CancelCallTip();
-
-  bool bHandled = false;
-  if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position))
-  {
-    DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
-    DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
-    DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
-
-    if (length < 4) { return false; }
-
-    const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
-
-    WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
-    ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, szTextW, COUNTOF(szTextW));
-    szTextW[cchTextW] = L'\0';
-    StrTrim(szTextW, L" \r\n\t");
-
-    const WCHAR* chkPreFix = L"file://";
-
-    if (operation & SELECT_HYPERLINK)
+    if (position < 0)
     {
-      SciCall_SetSelection(firstPos, lastPos);
-      bHandled = true;
+        return false;
     }
-    else if (operation & COPY_HYPERLINK)
-    {
-      if (cchTextW > 0) {
-        DWORD cchEscapedW = (DWORD)(length * 3);
-        LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-        if (pszEscapedW) {
-          //~UrlEscape(szTextW, pszEscapedW, &cchEscapedW, (URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8));
-          UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, false);
-          SetClipboardText(Globals.hwndMain, pszEscapedW, cchEscapedW);
-          FreeMem(pszEscapedW);
-          bHandled = true;
-        }
-      }
-    }
-    else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrI(szTextW, chkPreFix) == szTextW))
-    {
-      size_t const lenPfx = StringCchLenW(chkPreFix, 0);
-      WCHAR* szFileName = &(szTextW[lenPfx]);
-      szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
-      StrTrim(szFileName, L"/");
 
-      PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
-      if (PathIsDirectory(szFileName))
-      {
-        WCHAR tchFile[MAX_PATH] = { L'\0' };
-        if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
+    //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
+    CancelCallTip();
+
+    bool bHandled = false;
+    if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position))
+    {
+        DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
+        DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
+        DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
+
+        if (length < 4)
         {
-          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+            return false;
         }
-      }
-      else {
-        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
-      }
-      bHandled = true;
+
+        const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
+
+        WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
+        ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, szTextW, COUNTOF(szTextW));
+        szTextW[cchTextW] = L'\0';
+        StrTrim(szTextW, L" \r\n\t");
+
+        const WCHAR* chkPreFix = L"file://";
+
+        if (operation & SELECT_HYPERLINK)
+        {
+            SciCall_SetSelection(firstPos, lastPos);
+            bHandled = true;
+        }
+        else if (operation & COPY_HYPERLINK)
+        {
+            if (cchTextW > 0)
+            {
+                DWORD cchEscapedW = (DWORD)(length * 3);
+                LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+                if (pszEscapedW)
+                {
+                    //~UrlEscape(szTextW, pszEscapedW, &cchEscapedW, (URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8));
+                    UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, false);
+                    SetClipboardText(Globals.hwndMain, pszEscapedW, cchEscapedW);
+                    FreeMem(pszEscapedW);
+                    bHandled = true;
+                }
+            }
+        }
+        else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrI(szTextW, chkPreFix) == szTextW))
+        {
+            size_t const lenPfx = StringCchLenW(chkPreFix, 0);
+            WCHAR* szFileName = &(szTextW[lenPfx]);
+            szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
+            StrTrim(szFileName, L"/");
+
+            PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
+            if (PathIsDirectory(szFileName))
+            {
+                WCHAR tchFile[MAX_PATH] = { L'\0' };
+                if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
+                {
+                    FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+                }
+            }
+            else
+            {
+                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
+            }
+            bHandled = true;
+        }
+        else if (operation & OPEN_WITH_BROWSER) // open in web browser
+        {
+            WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+            if (StrIsNotEmpty(Globals.CurrentFile))
+            {
+                StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+                PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+            }
+
+            SHELLEXECUTEINFO sei;
+            ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+            sei.cbSize = sizeof(SHELLEXECUTEINFO);
+            sei.fMask = SEE_MASK_NOZONECHECKS;
+            sei.hwnd = NULL;
+            sei.lpVerb = NULL;
+            sei.lpFile = szTextW;
+            sei.lpParameters = NULL;
+            sei.lpDirectory = wchDirectory;
+            sei.nShow = SW_SHOWNORMAL;
+            ShellExecuteEx(&sei);
+
+            bHandled = true;
+        }
     }
-    else if (operation & OPEN_WITH_BROWSER) // open in web browser
+
+    if (!(operation & SELECT_HYPERLINK))
     {
-      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-      if (StrIsNotEmpty(Globals.CurrentFile)) {
-        StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
-        PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
-      }
-
-      SHELLEXECUTEINFO sei;
-      ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-      sei.cbSize = sizeof(SHELLEXECUTEINFO);
-      sei.fMask = SEE_MASK_NOZONECHECKS;
-      sei.hwnd = NULL;
-      sei.lpVerb = NULL;
-      sei.lpFile = szTextW;
-      sei.lpParameters = NULL;
-      sei.lpDirectory = wchDirectory;
-      sei.nShow = SW_SHOWNORMAL;
-      ShellExecuteEx(&sei);
-
-      bHandled = true;
+        SciCall_SetEmptySelection(position);
     }
-  }
 
-  if (!(operation & SELECT_HYPERLINK)) { SciCall_SetEmptySelection(position); }
-
-  return bHandled;
+    return bHandled;
 }
 
 
@@ -7224,96 +7846,106 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 //
 void HandleColorDefClicked(HWND hwnd, const DocPos position)
 {
-  if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, position) == 0) { return; }
-
-  DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_COLOR_DEF, position);
-  DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_COLOR_DEF, position);
-  DocPos const length = (lastPos - firstPos);
-
-  char chText[32] = { '\0' };
-  // Color Refs are ASCII only - No need for UTF-8 conversion here
-  StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
-  unsigned int iValue = 0;
-  if (sscanf_s(&chText[1], "%x", &iValue) == 1)
-  {
-    COLORREF rgbCur = 0x000000;
-    BYTE     alpha  = 0xFF;
-    if (length >= 8) // ARGB, RGBA, BGRA
+    if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, position) == 0)
     {
-      switch (Settings.ColorDefHotspot) {
-        case 1:
-          rgbCur = ARGB_TO_COLREF(iValue);
-          alpha  = ARGB_GET_ALPHA(iValue);
-          break;
-        case 2:
-          rgbCur = RGBA_TO_COLREF(iValue);
-          alpha  = RGBA_GET_ALPHA(iValue);
-          break;
-        case 3:
-          rgbCur = BGRA_TO_COLREF(iValue);
-          alpha  = BGRA_GET_ALPHA(iValue);
-          break;
-        case 0:
-        default:
-          break;
-      }
+        return;
     }
-    else // RGB
+
+    DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_COLOR_DEF, position);
+    DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_COLOR_DEF, position);
+    DocPos const length = (lastPos - firstPos);
+
+    char chText[32] = { '\0' };
+    // Color Refs are ASCII only - No need for UTF-8 conversion here
+    StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
+    unsigned int iValue = 0;
+    if (sscanf_s(&chText[1], "%x", &iValue) == 1)
     {
-      rgbCur = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
-      alpha  = 0xFF;
+        COLORREF rgbCur = 0x000000;
+        BYTE     alpha  = 0xFF;
+        if (length >= 8) // ARGB, RGBA, BGRA
+        {
+            switch (Settings.ColorDefHotspot)
+            {
+            case 1:
+                rgbCur = ARGB_TO_COLREF(iValue);
+                alpha  = ARGB_GET_ALPHA(iValue);
+                break;
+            case 2:
+                rgbCur = RGBA_TO_COLREF(iValue);
+                alpha  = RGBA_GET_ALPHA(iValue);
+                break;
+            case 3:
+                rgbCur = BGRA_TO_COLREF(iValue);
+                alpha  = BGRA_GET_ALPHA(iValue);
+                break;
+            case 0:
+            default:
+                break;
+            }
+        }
+        else // RGB
+        {
+            rgbCur = RGB((iValue >> 16) & 0xFF, (iValue >> 8) & 0xFF, iValue & 0xFF);
+            alpha  = 0xFF;
+        }
+
+        CHOOSECOLOR cc;
+        ZeroMemory(&cc, sizeof(CHOOSECOLOR));
+        cc.lStructSize = sizeof(CHOOSECOLOR);
+        cc.hwndOwner = hwnd;
+        cc.rgbResult = rgbCur;
+        cc.lpCustColors = g_colorCustom;
+        //cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
+        cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR;
+
+        if (!ChooseColor(&cc))
+        {
+            return;
+        }
+
+        COLORREF const rgbNew = cc.rgbResult;
+
+        CHAR wchColor[32] = { L'\0' };
+        if (length >= 8)
+        {
+            switch (Settings.ColorDefHotspot)
+            {
+            case 1:
+                StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X", (int)(alpha),
+                                 (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
+                break;
+            case 2:
+                StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X",
+                                 (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew),
+                                 (int)(alpha));
+                break;
+            case 3:
+                StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X",
+                                 (int)GetBValue(rgbNew), (int)GetGValue(rgbNew), (int)GetRValue(rgbNew),
+                                 (int)(alpha));
+                break;
+            case 0:
+            default:
+                break;
+            }
+        }
+        else
+        {
+            StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X",
+                             (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
+        }
+
+        DocPos const saveTargetBeg = SciCall_GetTargetStart();
+        DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
+        SciCall_SetTargetRange(firstPos, lastPos);
+        SciCall_ReplaceTarget(length, wchColor);
+
+        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+
+        EditUpdateVisibleIndicators();
     }
-
-    CHOOSECOLOR cc;
-    ZeroMemory(&cc, sizeof(CHOOSECOLOR));
-    cc.lStructSize = sizeof(CHOOSECOLOR);
-    cc.hwndOwner = hwnd;
-    cc.rgbResult = rgbCur;
-    cc.lpCustColors = g_colorCustom;
-    //cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
-    cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR;
-
-    if (!ChooseColor(&cc)) { return; }
-
-    COLORREF const rgbNew = cc.rgbResult;
-
-    CHAR wchColor[32] = { L'\0' };
-    if (length >= 8) {
-      switch (Settings.ColorDefHotspot) {
-        case 1:
-          StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X", (int)(alpha),
-                           (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
-          break;
-        case 2:
-          StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X",
-                           (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew),
-                           (int)(alpha));
-          break;
-        case 3:
-          StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X%02X",
-                           (int)GetBValue(rgbNew), (int)GetGValue(rgbNew), (int)GetRValue(rgbNew),
-                           (int)(alpha));
-          break;
-        case 0:
-        default:
-          break;
-      }
-    }
-    else {
-      StringCchPrintfA(wchColor, COUNTOF(wchColor), "#%02X%02X%02X",
-                       (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
-    }
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
-    SciCall_SetTargetRange(firstPos, lastPos);
-    SciCall_ReplaceTarget(length, wchColor);
-
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
-    EditUpdateVisibleIndicators();
-  }
 }
 
 
@@ -7326,15 +7958,19 @@ static void _HandleAutoIndent(int const charAdded)
     // TODO: handle indent after '{' and un-indent on '}' in C/C++ ?
     // in CRLF mode handle LF only...
     int const eol_mode = SciCall_GetEOLMode();
-    if (((SC_EOL_CRLF == eol_mode) && (charAdded != '\r')) || (SC_EOL_CRLF != eol_mode)) {
+    if (((SC_EOL_CRLF == eol_mode) && (charAdded != '\r')) || (SC_EOL_CRLF != eol_mode))
+    {
         DocLn const iCurLine = Sci_GetCurrentLineNumber();
 
         // Move bookmark along with line if inserting lines (pressing return within indent area of line) because Scintilla does not do this for us
-        if (iCurLine > 0) {
+        if (iCurLine > 0)
+        {
             //~DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
-            if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1)) {
-                int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1); // all bookmarks 
-                if (bitmask) {
+            if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
+            {
+                int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1); // all bookmarks
+                if (bitmask)
+                {
                     SciCall_MarkerDelete((iCurLine - 1), -1);
                     SciCall_MarkerAddSet(iCurLine, bitmask);
                 }
@@ -7345,15 +7981,19 @@ static void _HandleAutoIndent(int const charAdded)
                 DocLn const  iPrevLine       = iCurLine - 1;
                 DocPos const iPrevLineLength = SciCall_LineLength(iPrevLine);
                 char*        pLineBuf        = (char*)AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
-                if (pLineBuf) {
+                if (pLineBuf)
+                {
                     SciCall_GetLine_Safe(iPrevLine, pLineBuf);
-                    for (char* pPos = pLineBuf; *pPos; pPos++) {
-                        if ((*pPos != ' ') && (*pPos != '\t')) {
+                    for (char* pPos = pLineBuf; *pPos; pPos++)
+                    {
+                        if ((*pPos != ' ') && (*pPos != '\t'))
+                        {
                             *pPos = '\0';
                             break;
                         }
                     }
-                    if (*pLineBuf) {
+                    if (*pLineBuf)
+                    {
                         SciCall_AddText((DocPos)StringCchLenA(pLineBuf, SizeOfMem(pLineBuf)), pLineBuf);
                     }
                     FreeMem(pLineBuf);
@@ -7370,53 +8010,59 @@ static void _HandleAutoIndent(int const charAdded)
 //
 static void  _HandleAutoCloseTags()
 {
-  ///int lexerID = SciCall_GetLexer();
-  ///if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
-  DocPos const maxSearchBackward = 4096;
-  {
-    DocPos const iCurPos = SciCall_GetCurrentPos();
-    DocPos const iHelper = iCurPos - maxSearchBackward;
-    DocPos const iStartPos = max_p(0, iHelper);
-    DocPos const iSize = iCurPos - iStartPos;
-
-    if (iSize >= 3)
+    ///int lexerID = SciCall_GetLexer();
+    ///if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
+    DocPos const maxSearchBackward = 4096;
     {
-      const char* pBegin = SciCall_GetRangePointer(iStartPos, iSize);
+        DocPos const iCurPos = SciCall_GetCurrentPos();
+        DocPos const iHelper = iCurPos - maxSearchBackward;
+        DocPos const iStartPos = max_p(0, iHelper);
+        DocPos const iSize = iCurPos - iStartPos;
 
-      if (pBegin[iSize - 2] != '/') 
-      {
-        const char* pCur = &pBegin[iSize - 2];
-        while (pCur > pBegin && *pCur != '<' && *pCur != '>') { --pCur; }
-
-        int  cchIns = 2;
-        char replaceBuf[FNDRPL_BUFFER+2];
-        StringCchCopyA(replaceBuf, FNDRPL_BUFFER, "</");
-        if (*pCur == '<') {
-          ++pCur;
-          while ((StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) && (cchIns < (FNDRPL_BUFFER-2))) {
-            replaceBuf[cchIns++] = *pCur;
-            ++pCur;
-          }
-        }
-        replaceBuf[cchIns++] = '>';
-        replaceBuf[cchIns] = '\0';
-
-        // except tags w/o closing tags
-        const char* const nonClosingTags[9] = { "</base>", "</bgsound>", "</br>", "</embed>", "</hr>", "</img>", "</input>", "</link>", "</meta>" };
-        int const cntCount = COUNTOF(nonClosingTags);
-
-        bool isNonClosingTag = false;
-        for (int i = 0; ((i < cntCount) && !isNonClosingTag); ++i) {
-          isNonClosingTag = (StringCchCompareXIA(replaceBuf, nonClosingTags[i]) == 0);
-        }
-        if ((cchIns > 3) && !isNonClosingTag)
+        if (iSize >= 3)
         {
-          EditReplaceSelection(replaceBuf,false);
-          SciCall_SetSel(iCurPos,iCurPos);
+            const char* pBegin = SciCall_GetRangePointer(iStartPos, iSize);
+
+            if (pBegin[iSize - 2] != '/')
+            {
+                const char* pCur = &pBegin[iSize - 2];
+                while (pCur > pBegin && *pCur != '<' && *pCur != '>')
+                {
+                    --pCur;
+                }
+
+                int  cchIns = 2;
+                char replaceBuf[FNDRPL_BUFFER+2];
+                StringCchCopyA(replaceBuf, FNDRPL_BUFFER, "</");
+                if (*pCur == '<')
+                {
+                    ++pCur;
+                    while ((StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) && (cchIns < (FNDRPL_BUFFER-2)))
+                    {
+                        replaceBuf[cchIns++] = *pCur;
+                        ++pCur;
+                    }
+                }
+                replaceBuf[cchIns++] = '>';
+                replaceBuf[cchIns] = '\0';
+
+                // except tags w/o closing tags
+                const char* const nonClosingTags[9] = { "</base>", "</bgsound>", "</br>", "</embed>", "</hr>", "</img>", "</input>", "</link>", "</meta>" };
+                int const cntCount = COUNTOF(nonClosingTags);
+
+                bool isNonClosingTag = false;
+                for (int i = 0; ((i < cntCount) && !isNonClosingTag); ++i)
+                {
+                    isNonClosingTag = (StringCchCompareXIA(replaceBuf, nonClosingTags[i]) == 0);
+                }
+                if ((cchIns > 3) && !isNonClosingTag)
+                {
+                    EditReplaceSelection(replaceBuf,false);
+                    SciCall_SetSel(iCurPos,iCurPos);
+                }
+            }
         }
-      }
     }
-  }
 }
 
 #if 0
@@ -7426,18 +8072,21 @@ static void  _HandleAutoCloseTags()
 //
 static bool  _IsIMEOpenInNoNativeMode()
 {
-  bool result = false;
-  HIMC const himc = ImmGetContext(Globals.hwndEdit);
-  if (himc) {
-    if (ImmGetOpenStatus(himc)) {
-      DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
-      if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
-        result = (dwConversion != IME_CMODE_ALPHANUMERIC);
-      }
+    bool result = false;
+    HIMC const himc = ImmGetContext(Globals.hwndEdit);
+    if (himc)
+    {
+        if (ImmGetOpenStatus(himc))
+        {
+            DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
+            if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence))
+            {
+                result = (dwConversion != IME_CMODE_ALPHANUMERIC);
+            }
+        }
+        ImmReleaseContext(Globals.hwndEdit, himc);
     }
-    ImmReleaseContext(Globals.hwndEdit, himc);
-  }
-  return result;
+    return result;
 }
 #endif
 
@@ -7450,65 +8099,86 @@ static bool  _IsIMEOpenInNoNativeMode()
 //
 inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* const scn)
 {
-  static int _mod_insdel_token = -1;
-  // --- check only mandatory events (must be fast !!!) ---
-  if (pnmh->idFrom == IDC_EDIT) {
-    if (pnmh->code == SCN_MODIFIED) {
-      bool bModified = true;
-      int const iModType = scn->modificationType;
-      if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
-        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) && 
-             (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection())) {
-            int const tok = _SaveUndoSelection();
-            if (tok >= 0) {
-              _mod_insdel_token = tok;
+    static int _mod_insdel_token = -1;
+    // --- check only mandatory events (must be fast !!!) ---
+    if (pnmh->idFrom == IDC_EDIT)
+    {
+        if (pnmh->code == SCN_MODIFIED)
+        {
+            bool bModified = true;
+            int const iModType = scn->modificationType;
+            if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE))
+            {
+                if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO)))
+                {
+                    if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) &&
+                            (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()))
+                    {
+                        int const tok = _SaveUndoSelection();
+                        if (tok >= 0)
+                        {
+                            _mod_insdel_token = tok;
+                        }
+                    }
+                }
+                bModified = false; // not yet
             }
-          }
+            else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT))
+            {
+                if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO)))
+                {
+                    if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0))
+                    {
+                        _SaveRedoSelection(_mod_insdel_token);
+                        _mod_insdel_token = -1;
+                    }
+                }
+            }
+            // check for ADDUNDOACTION step
+            if (iModType & SC_MOD_CONTAINER)
+            {
+                if (iModType & SC_PERFORMED_UNDO)
+                {
+                    RestoreAction(scn->token, UNDO);
+                }
+                else if (iModType & SC_PERFORMED_REDO)
+                {
+                    RestoreAction(scn->token, REDO);
+                }
+            }
+            if (bModified)
+            {
+                DWORD const timeout = Settings2.UndoTransactionTimeout;
+                if (timeout != 0UL)
+                {
+                    if (timeout > _MQ_IMMEDIATE)
+                    {
+                        _DelaySplitUndoTransaction(timeout, iModType);
+                    }
+                    else
+                    {
+                        _SplitUndoTransaction(iModType);
+                    }
+                }
+            }
         }
-        bModified = false; // not yet
-      }
-      else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
-        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
-            _SaveRedoSelection(_mod_insdel_token);
-            _mod_insdel_token = -1;
-          }
+        else if (pnmh->code == SCN_SAVEPOINTREACHED)
+        {
+            SetSavePoint();
         }
-      }
-      // check for ADDUNDOACTION step
-      if (iModType & SC_MOD_CONTAINER)
-      {
-        if (iModType & SC_PERFORMED_UNDO) {
-          RestoreAction(scn->token, UNDO);
+        else if (pnmh->code == SCN_SAVEPOINTLEFT)
+        {
+            SetSaveNeeded();
         }
-        else if (iModType & SC_PERFORMED_REDO) {
-          RestoreAction(scn->token, REDO);
+        else if (pnmh->code == SCN_MODIFYATTEMPTRO)
+        {
+            if (FocusedView.HideNonMatchedLines)
+            {
+                EditToggleView(Globals.hwndEdit);
+            }
         }
-      }
-      if (bModified) {
-        DWORD const timeout = Settings2.UndoTransactionTimeout;
-        if (timeout != 0UL) {
-          if (timeout > _MQ_IMMEDIATE) {
-            _DelaySplitUndoTransaction(timeout, iModType);
-          }
-          else {
-            _SplitUndoTransaction(iModType);
-          }
-        }
-      }
     }
-    else if (pnmh->code == SCN_SAVEPOINTREACHED) {
-      SetSavePoint();
-    }
-    else if (pnmh->code == SCN_SAVEPOINTLEFT) {
-      SetSaveNeeded();
-    }
-    else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
-      if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-    }
-  }
-  return TRUE;
+    return TRUE;
 }
 
 
@@ -7520,157 +8190,181 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
 //
 static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
 {
-  static int  _s_indic_click_modifiers = SCMOD_NORM;
-  static int _mod_insdel_token         = -1;
+    static int  _s_indic_click_modifiers = SCMOD_NORM;
+    static int _mod_insdel_token         = -1;
 
-  switch (pnmh->code)
-  {
+    switch (pnmh->code)
+    {
     // unused:
     case SCN_HOTSPOTCLICK:
     case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTRELEASECLICK:
-      return FALSE;
+        return FALSE;
 
     case SCN_AUTOCSELECTION:
     {
-      switch (scn->listCompletionMethod) 
-      {
+        switch (scn->listCompletionMethod)
+        {
         case SC_AC_TAB:
         case SC_AC_COMMAND:
         case SC_AC_DOUBLECLICK:
-          // accepted
-          break;
+            // accepted
+            break;
 
         case SC_AC_FILLUP:
-          // see: SciCall_AutoCSetFillups() -> accepted
-          break;
+            // see: SciCall_AutoCSetFillups() -> accepted
+            break;
 
         case SC_AC_NEWLINE:
-          if (!EditCheckNewLineInACFillUps()) {
-            SciCall_AutoCCancel(); // rejected
-            PostMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
-          }
-          break;
+            if (!EditCheckNewLineInACFillUps())
+            {
+                SciCall_AutoCCancel(); // rejected
+                PostMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
+            }
+            break;
 
         default:
-          SciCall_AutoCCancel(); // rejected
-          break;
-      }
+            SciCall_AutoCCancel(); // rejected
+            break;
+        }
     }
     break;
 
     case SCN_MODIFIED:
     {
-      int const iModType = scn->modificationType;
-      bool bModified = true;
-      if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
-        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) &&
-             (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection())) {
-            _mod_insdel_token = _SaveUndoSelection();
-          }
+        int const iModType = scn->modificationType;
+        bool bModified = true;
+        if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE))
+        {
+            if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO)))
+            {
+                if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) &&
+                        (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()))
+                {
+                    _mod_insdel_token = _SaveUndoSelection();
+                }
+            }
+            bModified = false; // not yet
         }
-        bModified = false; // not yet
-      }
-      else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
-        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
-            _SaveRedoSelection(_mod_insdel_token);
-            _mod_insdel_token = -1;
-          }
+        else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT))
+        {
+            if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO)))
+            {
+                if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0))
+                {
+                    _SaveRedoSelection(_mod_insdel_token);
+                    _mod_insdel_token = -1;
+                }
+            }
         }
-      }
-      if (iModType & SC_MOD_CONTAINER) {
-        if (iModType & SC_PERFORMED_UNDO) {
-          bModified = RestoreAction(scn->token, UNDO);
+        if (iModType & SC_MOD_CONTAINER)
+        {
+            if (iModType & SC_PERFORMED_UNDO)
+            {
+                bModified = RestoreAction(scn->token, UNDO);
+            }
+            else if (iModType & SC_PERFORMED_REDO)
+            {
+                bModified = RestoreAction(scn->token, REDO);
+            }
         }
-        else if (iModType & SC_PERFORMED_REDO) {
-          bModified = RestoreAction(scn->token, REDO);
+        if (bModified)
+        {
+            if (IsMarkOccurrencesEnabled())
+            {
+                MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+            }
+            EditUpdateVisibleIndicators();
+            if (scn->linesAdded != 0)
+            {
+                if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded == 1))
+                {
+                    _SplitUndoTransaction(iModType);
+                }
+                UpdateMarginWidth();
+            }
+            DWORD const timeout = Settings2.UndoTransactionTimeout;
+            if (timeout != 0UL)
+            {
+                if (timeout > _MQ_IMMEDIATE)
+                {
+                    _DelaySplitUndoTransaction(timeout, iModType);
+                }
+                else
+                {
+                    _SplitUndoTransaction(iModType);
+                }
+            }
         }
-      }
-      if (bModified) {
-        if (IsMarkOccurrencesEnabled()) {
-          MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-        }
-        EditUpdateVisibleIndicators();
-        if (scn->linesAdded != 0) {
-          if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded == 1)) {
-            _SplitUndoTransaction(iModType);
-          }
-          UpdateMarginWidth();
-        }
-        DWORD const timeout = Settings2.UndoTransactionTimeout;
-        if (timeout != 0UL) {
-          if (timeout > _MQ_IMMEDIATE) {
-            _DelaySplitUndoTransaction(timeout, iModType);
-          }
-          else {
-            _SplitUndoTransaction(iModType);
-          }
-        }
-      }
 
-      if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
-        if (!Sci_IsMultiSelection()) {
-          SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
-          SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-          s_bInMultiEditMode = false;
+        if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO))
+        {
+            if (!Sci_IsMultiSelection())
+            {
+                SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+                SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+                s_bInMultiEditMode = false;
+            }
         }
-      }
     }
     break;
 
 
     case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
     {
-      EditDoStyling(-1, scn->position);
+        EditDoStyling(-1, scn->position);
     }
     break;
 
 
     case SCN_UPDATEUI:
     {
-      int const iUpd = scn->updated;
+        int const iUpd = scn->updated;
 
-      if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
-      {
-        // Brace Match
-        if (Settings.MatchBraces) {
-          EditMatchBrace(Globals.hwndEdit);
-        }
-        if (iUpd & SC_UPDATE_SELECTION)
+        if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
         {
-          // clear marks only, if selection changed
-          if (IsMarkOccurrencesEnabled()) {
-            if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord)
+            // Brace Match
+            if (Settings.MatchBraces)
             {
-              MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+                EditMatchBrace(Globals.hwndEdit);
             }
-            else {
-              if (Globals.iMarkOccurrencesCount > 0) {
-                EditClearAllOccurrenceMarkers(Globals.hwndEdit);
-              }
+            if (iUpd & SC_UPDATE_SELECTION)
+            {
+                // clear marks only, if selection changed
+                if (IsMarkOccurrencesEnabled())
+                {
+                    if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord)
+                    {
+                        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+                    }
+                    else
+                    {
+                        if (Globals.iMarkOccurrencesCount > 0)
+                        {
+                            EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+                        }
+                    }
+                }
             }
-          }
+            //~if (iUpd & SC_UPDATE_CONTENT) {
+            //~ ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+            //~ using WM_COMMAND -> SCEN_CHANGE  instead!
+            //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+            //~~~EditUpdateVisibleIndicators(); // will lead to recursion
+            //~}
+            HandlePosChange();
+            UpdateToolbar();
+            UpdateMarginWidth();
+            UpdateStatusbar(false);
         }
-        //~if (iUpd & SC_UPDATE_CONTENT) {
-          //~ ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-          //~ using WM_COMMAND -> SCEN_CHANGE  instead!
-          //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
-          //~~~EditUpdateVisibleIndicators(); // will lead to recursion
-        //~}
-        HandlePosChange();
-        UpdateToolbar();
-        UpdateMarginWidth();
-        UpdateStatusbar(false);
-      }
-      else if (iUpd & SC_UPDATE_V_SCROLL)
-      {
-        if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
-          MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
+        else if (iUpd & SC_UPDATE_V_SCROLL)
+        {
+            if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible)
+            {
+                MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
+            }
+            EditUpdateVisibleIndicators();
         }
-        EditUpdateVisibleIndicators();
-      }
     }
     break;
 
@@ -7678,144 +8372,163 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_DWELLSTART:
     case SCN_DWELLEND:
     {
-      HandleDWellStartEnd(scn->position, pnmh->code);
+        HandleDWellStartEnd(scn->position, pnmh->code);
     }
     break;
 
 
     case SCN_DOUBLECLICK:
     {
-      HandleHotSpotURLClicked(scn->position, SELECT_HYPERLINK); // COPY_HYPERLINK
+        HandleHotSpotURLClicked(scn->position, SELECT_HYPERLINK); // COPY_HYPERLINK
     }
     break;
 
 
     case SCN_CALLTIPCLICK:
     {
-      if (prevCursorPosition >= 0)
-      {
-        //~HandleHotSpotURLClicked(SciCall_CallTipPosStart(), OPEN_WITH_BROWSER);
-        HandleHotSpotURLClicked(prevCursorPosition, OPEN_WITH_BROWSER);
-      }
+        if (prevCursorPosition >= 0)
+        {
+            //~HandleHotSpotURLClicked(SciCall_CallTipPosStart(), OPEN_WITH_BROWSER);
+            HandleHotSpotURLClicked(prevCursorPosition, OPEN_WITH_BROWSER);
+        }
     }
     break;
 
 
     case SCN_INDICATORCLICK:
     {
-      _s_indic_click_modifiers = scn->modifiers;
+        _s_indic_click_modifiers = scn->modifiers;
     }
     break;
 
 
     case SCN_INDICATORRELEASE:
     {
-      if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, scn->position) > 0)
-      {
-        if (_s_indic_click_modifiers & SCMOD_CTRL)
+        if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, scn->position) > 0)
         {
-          HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER);
+            if (_s_indic_click_modifiers & SCMOD_CTRL)
+            {
+                HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER);
+            }
+            else if (_s_indic_click_modifiers & SCMOD_ALT)
+            {
+                HandleHotSpotURLClicked(scn->position, OPEN_WITH_NOTEPAD3); // if applicable (file://)
+            }
         }
-        else if (_s_indic_click_modifiers & SCMOD_ALT)
+        else if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, scn->position) > 0)
         {
-          HandleHotSpotURLClicked(scn->position, OPEN_WITH_NOTEPAD3); // if applicable (file://)
+            if (_s_indic_click_modifiers & SCMOD_ALT)
+            {
+                HandleColorDefClicked(Globals.hwndEdit, scn->position);
+            }
         }
-      }
-      else if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, scn->position) > 0)
-      {
-        if (_s_indic_click_modifiers & SCMOD_ALT)
-        {
-          HandleColorDefClicked(Globals.hwndEdit, scn->position);
-        }
-      }
-      _s_indic_click_modifiers = SCMOD_NORM;
+        _s_indic_click_modifiers = SCMOD_NORM;
     }
     break;
 
 
     case SCN_CHARADDED:
     {
-      int const ich = scn->ch;
+        int const ich = scn->ch;
 
-      if (Globals.CallTipType != CT_NONE) { CancelCallTip(); }
-
-      if (Sci_IsMultiSelection())
-      {
-        SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
-        DocPosU const selCount = SciCall_GetSelections();
-        for (DocPosU s = 0; s < selCount; ++s)
+        if (Globals.CallTipType != CT_NONE)
         {
-          DocPos const pos = SciCall_GetSelectionNStart(s);
-          SciCall_IndicatorFillRange(SciCall_PositionBefore(pos), 1);
+            CancelCallTip();
         }
-        s_bInMultiEditMode = true;
-      }
 
-      switch (ich) {
+        if (Sci_IsMultiSelection())
+        {
+            SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+            DocPosU const selCount = SciCall_GetSelections();
+            for (DocPosU s = 0; s < selCount; ++s)
+            {
+                DocPos const pos = SciCall_GetSelectionNStart(s);
+                SciCall_IndicatorFillRange(SciCall_PositionBefore(pos), 1);
+            }
+            s_bInMultiEditMode = true;
+        }
+
+        switch (ich)
+        {
         case '\r':
         case '\n':
-          if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
-          break;
+            if (Settings.AutoIndent)
+            {
+                _HandleAutoIndent(ich);
+            }
+            break;
         case '>':
-          if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
-          break;
+            if (Settings.AutoCloseTags)
+            {
+                _HandleAutoCloseTags();
+            }
+            break;
         case '?':
-          _EvalTinyExpr(true);
-          break;
+            _EvalTinyExpr(true);
+            break;
         default:
-          break;
-      }
+            break;
+        }
 
-      if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
-      {
-        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return FALSE; }
-      }
+        if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+        {
+            if (!EditAutoCompleteWord(Globals.hwndEdit, false))
+            {
+                return FALSE;
+            }
+        }
     }
     break;
 
 
     case SCN_AUTOCCHARDELETED:
-      if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
-      {
-        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return FALSE; }
-      }
-      break;
+        if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+        {
+            if (!EditAutoCompleteWord(Globals.hwndEdit, false))
+            {
+                return FALSE;
+            }
+        }
+        break;
 
 
     case SCN_NEEDSHOWN:
     {
-      DocLn const iFirstLine = SciCall_LineFromPosition(scn->position);
-      DocLn const iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
-      for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
-      EditUpdateVisibleIndicators();
+        DocLn const iFirstLine = SciCall_LineFromPosition(scn->position);
+        DocLn const iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
+        for (DocLn i = iFirstLine; i <= iLastLine; ++i)
+        {
+            SciCall_EnsureVisible(i);
+        }
+        EditUpdateVisibleIndicators();
     }
     break;
 
 
     case SCN_MARGINCLICK:
-    switch (scn->margin) 
-    {
-      case MARGIN_SCI_FOLDING:
-        EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+        switch (scn->margin)
+        {
+        case MARGIN_SCI_FOLDING:
+            EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+            break;
+        case MARGIN_SCI_BOOKMRK:
+            EditBookmarkToggle(Globals.hwndEdit, SciCall_LineFromPosition(scn->position), scn->modifiers);
+            break;
+        case MARGIN_SCI_LINENUM:
+            //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
+            break;
+        default:
+            break;
+        }
         break;
-      case MARGIN_SCI_BOOKMRK:
-        EditBookmarkToggle(Globals.hwndEdit, SciCall_LineFromPosition(scn->position), scn->modifiers);
-        break;
-      case MARGIN_SCI_LINENUM:
-        //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
-        break;
-      default:
-        break;
-    }
-    break;
 
 
     case SCN_MARGINRIGHTCLICK:
-      {
+    {
         POINT pt = {-1,-1};
         MsgContextMenu(hwnd, SCN_MARGINRIGHTCLICK, (WPARAM)scn, MAKELPARAM(pt.x,pt.y));
-      }
-      break;
+    }
+    break;
 
 
     // ~~~ Not used in Windows ~~~
@@ -7827,48 +8540,52 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
 
     case SCN_SAVEPOINTREACHED:
-      SetSavePoint();
-      break;
+        SetSavePoint();
+        break;
 
 
     case SCN_SAVEPOINTLEFT:
-      SetSaveNeeded();
-      break;
+        SetSaveNeeded();
+        break;
 
 
     case SCN_ZOOM:
-      UpdateToolbar();
-      UpdateMarginWidth();
-      break;
+        UpdateToolbar();
+        UpdateMarginWidth();
+        break;
 
 
     case SCN_URIDROPPED:
     {
-      // see WM_DROPFILES
-      WCHAR szBuf[MAX_PATH + 40] = { L'\0' };
-      if (MultiByteToWideCharEx(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
-      {
-        if (IsIconic(hwnd)) {
-          ShowWindow(hwnd, SW_RESTORE);
+        // see WM_DROPFILES
+        WCHAR szBuf[MAX_PATH + 40] = { L'\0' };
+        if (MultiByteToWideCharEx(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
+        {
+            if (IsIconic(hwnd))
+            {
+                ShowWindow(hwnd, SW_RESTORE);
+            }
+            //SetForegroundWindow(hwnd);
+            if (PathIsDirectory(szBuf))
+            {
+                WCHAR tchFile[MAX_PATH];
+                if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf))
+                {
+                    FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+                }
+            }
+            else if (PathIsExistingFile(szBuf))
+            {
+                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+            }
         }
-        //SetForegroundWindow(hwnd);
-        if (PathIsDirectory(szBuf)) {
-          WCHAR tchFile[MAX_PATH];
-          if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
-            FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-          }
-        }
-        else if (PathIsExistingFile(szBuf)) {
-          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
-        }
-      }
     }
     break;
 
     default:
-      return FALSE;
-  }
-  return TRUE;
+        return FALSE;
+    }
+    return TRUE;
 }
 
 
@@ -7884,245 +8601,263 @@ static bool s_tb_reset_already = false;
 
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(wParam);
+    UNUSED(wParam);
 
-  static bool _guard = false;
-  if (_guard) { return TRUE; } else { _guard = true; } // avoid recursion
+    static bool _guard = false;
+    if (_guard)
+    {
+        return TRUE;    // avoid recursion
+    }
+    else
+    {
+        _guard = true;
+    }
 
-  #define GUARD_RETURN(res) { _guard = false; return(res); }
+#define GUARD_RETURN(res) { _guard = false; return(res); }
 
-  LPNMHDR const pnmh = (LPNMHDR)lParam;
-  const SCNotification* const scn = (SCNotification*)lParam;
+    LPNMHDR const pnmh = (LPNMHDR)lParam;
+    const SCNotification* const scn = (SCNotification*)lParam;
 
-  if (!CheckNotifyChangeEvent()) 
-  {
-    LRESULT const res = _MsgNotifyLean(pnmh, scn);
-    GUARD_RETURN(res);
-  }
+    if (!CheckNotifyChangeEvent())
+    {
+        LRESULT const res = _MsgNotifyLean(pnmh, scn);
+        GUARD_RETURN(res);
+    }
 
-  switch(pnmh->idFrom)
-  {
+    switch(pnmh->idFrom)
+    {
     case IDC_EDIT:
-      {
+    {
         LRESULT const res = _MsgNotifyFromEdit(hwnd, pnmh, scn);
         GUARD_RETURN(res);
-      }
-      
+    }
+
     // ------------------------------------------------------------------------
 
     case IDC_TOOLBAR:
 
-      switch (pnmh->code)
-      {
+        switch (pnmh->code)
+        {
         case TBN_QUERYDELETE:
         case TBN_QUERYINSERT:
-          // (!) must exist and return true 
-          GUARD_RETURN(TRUE);
+            // (!) must exist and return true
+            GUARD_RETURN(TRUE);
 
         case TBN_BEGINADJUST:
-          s_tb_reset_already = false;
-          GUARD_RETURN(FALSE);
+            s_tb_reset_already = false;
+            GUARD_RETURN(FALSE);
 
         case TBN_GETBUTTONINFO:
         {
-          if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd))
-          {
-            WCHAR tch[SMALL_BUFFER] = { L'\0' };
-            GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
-            StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
-            CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
-            GUARD_RETURN(TRUE);
-          }
+            if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd))
+            {
+                WCHAR tch[SMALL_BUFFER] = { L'\0' };
+                GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
+                StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
+                CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
+                GUARD_RETURN(TRUE);
+            }
         }
         GUARD_RETURN(FALSE);
 
         case TBN_RESET:
         {
-          int const count = (int)SendMessage(Globals.hwndToolbar, TB_BUTTONCOUNT, 0, 0);
-          for (int i = 0; i < count; i++) {
-            SendMessage(Globals.hwndToolbar, TB_DELETEBUTTON, 0, 0);
-          }
-          if (s_tb_reset_already) {
-            if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Defaults.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
-              SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+            int const count = (int)SendMessage(Globals.hwndToolbar, TB_BUTTONCOUNT, 0, 0);
+            for (int i = 0; i < count; i++)
+            {
+                SendMessage(Globals.hwndToolbar, TB_DELETEBUTTON, 0, 0);
             }
-          }
-          else {
-            if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
-              SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+            if (s_tb_reset_already)
+            {
+                if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Defaults.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0)
+                {
+                    SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+                }
             }
-          }
-          s_tb_reset_already = !s_tb_reset_already;
+            else
+            {
+                if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0)
+                {
+                    SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+                }
+            }
+            s_tb_reset_already = !s_tb_reset_already;
         }
         GUARD_RETURN(FALSE);
 
         case TBN_ENDADJUST:
-          UpdateToolbar();
-          GUARD_RETURN(TRUE);
+            UpdateToolbar();
+            GUARD_RETURN(TRUE);
 
         case NM_CUSTOMDRAW:
-          {
+        {
             LPNMTBCUSTOMDRAW const lpNMTBCustomDraw = (LPNMTBCUSTOMDRAW)lParam;
             LRESULT res = CDRF_DODEFAULT;
-            switch (lpNMTBCustomDraw->nmcd.dwDrawStage) {
+            switch (lpNMTBCustomDraw->nmcd.dwDrawStage)
+            {
             case CDDS_PREPAINT:
-              res = CDRF_NOTIFYITEMDRAW;
-              break;
+                res = CDRF_NOTIFYITEMDRAW;
+                break;
             case CDDS_ITEMPREPAINT:
             {
-              //~HDC const hdc = lpNMTBCustomDraw->nmcd.hdc;
-              //~if (hdc) {
-              //~  SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
-              //~  SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
-              //~}
-              lpNMTBCustomDraw->clrBtnFace = GetModeBtnfaceColor(UseDarkMode());
-              lpNMTBCustomDraw->clrText = GetModeTextColor(UseDarkMode());
-              res = TBCDRF_USECDCOLORS;
+                //~HDC const hdc = lpNMTBCustomDraw->nmcd.hdc;
+                //~if (hdc) {
+                //~  SetBkColor(hdc, GetModeBtnfaceColor(UseDarkMode()));
+                //~  SetTextColor(hdc, GetModeTextColor(UseDarkMode()));
+                //~}
+                lpNMTBCustomDraw->clrBtnFace = GetModeBtnfaceColor(UseDarkMode());
+                lpNMTBCustomDraw->clrText = GetModeTextColor(UseDarkMode());
+                res = TBCDRF_USECDCOLORS;
             }
             break;
             default:
-              break;
+                break;
             }
             GUARD_RETURN(res);
-          }
+        }
 
         default:
-          GUARD_RETURN(FALSE);
-      }
-      break;
+            GUARD_RETURN(FALSE);
+        }
+        break;
 
     // ------------------------------------------------------------------------
 
     case IDC_STATUSBAR:
 
-      switch(pnmh->code)
-      {
+        switch(pnmh->code)
+        {
         case NM_CLICK: // single click
-          {
+        {
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
             switch (g_vSBSOrder[pnmm->dwItemSpec])
             {
-              case STATUS_EOLMODE:
+            case STATUS_EOLMODE:
+            {
+                if (Globals.bDocHasInconsistentEOLs)
                 {
-                  if (Globals.bDocHasInconsistentEOLs)
-                  {
                     int const eol_mode = SciCall_GetEOLMode();
-                    
-                    int const  eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF : 
-                                           ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
 
-                    UINT const msgid    = (eol_mode == SC_EOL_CRLF) ? IDS_MUI_EOLMODENAME_CRLF : 
-                                           ((eol_mode == SC_EOL_CR) ? IDS_MUI_EOLMODENAME_CR : IDS_MUI_EOLMODENAME_LF); 
-                    
+                    int const  eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF :
+                                          ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
+
+                    UINT const msgid    = (eol_mode == SC_EOL_CRLF) ? IDS_MUI_EOLMODENAME_CRLF :
+                                          ((eol_mode == SC_EOL_CR) ? IDS_MUI_EOLMODENAME_CR : IDS_MUI_EOLMODENAME_LF);
+
                     WCHAR wch[64] = {L'\0'};
                     GetLngString(msgid, wch, COUNTOF(wch));
                     INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_WARN_NORMALIZE_EOLS, wch);
 
                     if ((IDOK == answer) || (IDYES == answer))
                     {
-                      PostWMCommand(hwnd, eol_cmd);
+                        PostWMCommand(hwnd, eol_cmd);
                     }
-                  }
                 }
-                GUARD_RETURN(!0);
+            }
+            GUARD_RETURN(!0);
 
-              default:
+            default:
                 break;
             }
-          }
-          break;
+        }
+        break;
 
         case NM_DBLCLK: // double click
-          {
+        {
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
 
             switch (g_vSBSOrder[pnmm->dwItemSpec])
             {
-              case STATUS_DOCLINE:
-              case STATUS_DOCCOLUMN:
+            case STATUS_DOCLINE:
+            case STATUS_DOCCOLUMN:
                 PostWMCommand(hwnd, IDM_EDIT_GOTOLINE);
                 GUARD_RETURN(!0);
 
-              case STATUS_CODEPAGE:
+            case STATUS_CODEPAGE:
                 PostWMCommand(hwnd, IDM_ENCODING_SELECT);
                 GUARD_RETURN(!0);
 
-              case STATUS_EOLMODE:
-                {
-                  int const eol_mode = (SciCall_GetEOLMode() + 1) % 3;
-                  int const eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF : 
-                                        ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF); 
-                  PostWMCommand(hwnd, eol_cmd);
-                }
-                GUARD_RETURN(!0);
+            case STATUS_EOLMODE:
+            {
+                int const eol_mode = (SciCall_GetEOLMode() + 1) % 3;
+                int const eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF :
+                                     ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
+                PostWMCommand(hwnd, eol_cmd);
+            }
+            GUARD_RETURN(!0);
 
-              case STATUS_OVRMODE:
+            case STATUS_OVRMODE:
                 PostWMCommand(hwnd, CMD_VK_INSERT);
                 GUARD_RETURN(!0);
 
-              case STATUS_2ND_DEF:
+            case STATUS_2ND_DEF:
                 PostWMCommand(hwnd, IDM_VIEW_USE2NDDEFAULT);
                 GUARD_RETURN(!0);
 
-              case STATUS_LEXER:
+            case STATUS_LEXER:
                 PostWMCommand(hwnd, IDM_VIEW_SCHEME);
                 GUARD_RETURN(!0);
 
-              case STATUS_TINYEXPR:
+            case STATUS_TINYEXPR:
+            {
+                char chExpr[80] = { '\0' };
+                if (s_iExprError == 0)
                 {
-                  char chExpr[80] = { '\0' };
-                  if (s_iExprError == 0) {
                     double intpart;
-                    if ((modf(s_dExpression, &intpart) == 0) && (fabs(intpart) < 1.0E+21)) {
-                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
-                    } else {
-                      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", s_dExpression);
+                    if ((modf(s_dExpression, &intpart) == 0) && (fabs(intpart) < 1.0E+21))
+                    {
+                        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
                     }
-                  }
-                  else if (s_iExprError > 0) {
+                    else
+                    {
+                        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", s_dExpression);
+                    }
+                }
+                else if (s_iExprError > 0)
+                {
                     StringCchPrintfA(chExpr, COUNTOF(chExpr), "^[" TE_XINT_FMT "]", s_iExprError);
                     SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
-                  }
-                  SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
                 }
-                break;
+                SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
+            }
+            break;
 
-              default:
+            default:
                 break;
             }
-          }
-          break;
+        }
+        break;
 
         default:
-          break;
-      }
-      break;
+            break;
+        }
+        break;
 
     // ------------------------------------------------------------------------
 
     default:
-      switch(pnmh->code)
-      {
+        switch(pnmh->code)
+        {
         // ToolTip
         case TTN_NEEDTEXT:
-          if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
-          {
-            WCHAR tch[SMALL_BUFFER] = { L'\0' };
-            GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
-            WCHAR* pttText = ((LPTOOLTIPTEXT)lParam)->szText;
-            size_t const ttLen = COUNTOF(((LPTOOLTIPTEXT)lParam)->szText);
-            StringCchCopyN(pttText, ttLen, tch,COUNTOF(tch));
-          }
-          break;
-          
-        default:
-          break;
-      }
-      break;
+            if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
+            {
+                WCHAR tch[SMALL_BUFFER] = { L'\0' };
+                GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
+                WCHAR* pttText = ((LPTOOLTIPTEXT)lParam)->szText;
+                size_t const ttLen = COUNTOF(((LPTOOLTIPTEXT)lParam)->szText);
+                StringCchCopyN(pttText, ttLen, tch,COUNTOF(tch));
+            }
+            break;
 
-  }
-  GUARD_RETURN(0);
+        default:
+            break;
+        }
+        break;
+
+    }
+    GUARD_RETURN(0);
 }
 
 
@@ -8133,509 +8868,575 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 void ParseCommandLine()
 {
-  LPWSTR lpCmdLine = GetCommandLine();
-  if (StrIsEmpty(lpCmdLine)) { return; }
-
-  // Good old console can also send args separated by Tabs
-  StrTab2Space(lpCmdLine);
-
-  DocPos const len = (DocPos)(StringCchLenW(lpCmdLine,0) + 2UL);
-  LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
-  LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
-  LPWSTR lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
-
-  if (lp1 && lp2 && lp3) 
-  {
-    bool bIsNotepadReplacement = false;
-    
-    // Start with 2nd argument
-    ExtractFirstArgument(lpCmdLine, lp1, lp3, (int)len);
-
-    bool bContinue = true;
-    bool bIsFileArg = false;
-    s_flagSetEncoding = CPI_NONE;
-
-    while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len)) {
-      // options
-      if (!bIsFileArg && (lp1[0] == L'+') && (lp1[1] == L'\0')) {
-        Globals.CmdLnFlag_MultiFileArg = 2;
-        bIsFileArg = true;
-      } 
-      else if (!bIsFileArg && (lp1[0] == L'-') && (lp1[1] == L'\0')) {
-        Globals.CmdLnFlag_MultiFileArg = 1;
-        bIsFileArg = true;
-      }
-      else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-'))) 
-      {
-        // LTrim
-        StrLTrimI(lp1, L"-/");
-
-        // Encoding
-        cpi_enc_t const encoding = Encoding_MatchW(lp1);
-
-        if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0) {
-          s_flagSetEncoding = CPI_ANSI_DEFAULT;
-        }
-        else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0) {
-          s_flagSetEncoding = CPI_UNICODEBOM;
-        }
-        else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0) {
-          s_flagSetEncoding = CPI_UNICODEBEBOM;
-        }
-        else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0) {
-          s_flagSetEncoding = CPI_UTF8;
-        }
-        else if (StringCchCompareXI(lp1, L"UTF8SIG") == 0 || StringCchCompareXI(lp1, L"UTF-8SIG") == 0 ||
-          StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
-            StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0) {
-          s_flagSetEncoding = CPI_UTF8SIGN;
-        }
-        // maybe parsed encoding
-        else if (Encoding_IsValid(encoding)) {
-          s_flagSetEncoding = encoding;
-        }
-        // EOL Mode
-        else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0) {
-          s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
-        }
-        else if (StringCchCompareXI(lp1, L"CR") == 0) {
-          s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
-        }
-        else if (StringCchCompareXI(lp1, L"LF") == 0) {
-          s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
-        }
-        // Shell integration
-        else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0) {
-          StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
-                         lp1 + CSTRLEN(L"appid="), len - CSTRLEN(L"appid="));
-          StrTrim(Settings2.AppUserModelID, L" ");
-          if (StrIsEmpty(Settings2.AppUserModelID)) {
-            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft.") _W(SAPPNAME));
-          }
-        }
-        else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
-          WCHAR wch[16];
-          StringCchCopyN(wch, COUNTOF(wch), lp1 + CSTRLEN(L"sysmru="), COUNTOF(wch));
-          StrTrim(wch, L" ");
-          if (*wch == L'1')
-            Globals.CmdLnFlag_ShellUseSystemMRU = 2;
-          else
-            Globals.CmdLnFlag_ShellUseSystemMRU = 1;
-        }
-        // Relaunch elevated
-        else if (StrCmpNI(lp1, RELAUNCH_ELEVATED_BUF_ARG, CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG)) == 0) {
-          StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
-                         lp1 + CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG));
-          TrimSpcW(s_wchTmpFilePath);
-          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, Flags.bSearchPathIfRelative);
-          s_IsThisAnElevatedRelaunch = true;
-        }
-
-        else {
-
-          switch (*CharUpper(lp1)) {
-
-            case L'N':
-              Globals.CmdLnFlag_ReuseWindow = 1;
-              if (*CharUpper(lp1 + 1) == L'S')
-                Globals.CmdLnFlag_SingleFileInstance = 2;
-              else
-                Globals.CmdLnFlag_SingleFileInstance = 1;
-              break;
-
-            case L'R':
-              if (*CharUpper(lp1 + 1) == L'P') {
-                Flags.bPreserveFileModTime = true;
-              }
-              else {
-                Globals.CmdLnFlag_ReuseWindow = 2;
-                if (*CharUpper(lp1 + 1) == L'S')
-                  Globals.CmdLnFlag_SingleFileInstance = 2;
-                else
-                  Globals.CmdLnFlag_SingleFileInstance = 1;
-              }
-              break;
-
-            case L'F':
-              if (*(lp1 + 1) == L'0' || *CharUpper(lp1 + 1) == L'O')
-                StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"*?");
-              else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                StringCchCopyN(Globals.IniFile, COUNTOF(Globals.IniFile), lp1, len);
-                TrimSpcW(Globals.IniFile);
-                NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
-              }
-              break;
-
-            case L'I':
-              s_flagStartAsTrayIcon = true;
-              break;
-
-            case L'O':
-              if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O')
-                s_flagAlwaysOnTop = 1;
-              else
-                s_flagAlwaysOnTop = 2;
-              break;
-
-            case L'P':
-            {
-              WCHAR* lp = lp1;
-              if (StrCmpNI(lp1, L"POS:", CSTRLEN(L"POS:")) == 0)
-                lp += CSTRLEN(L"POS:") - 1;
-              else if (StrCmpNI(lp1, L"POS", CSTRLEN(L"POS")) == 0)
-                lp += CSTRLEN(L"POS") - 1;
-              else if (*(lp1 + 1) == L':')
-                lp += 1;
-              else if (bIsNotepadReplacement) {
-                if (*(lp1 + 1) == L'T')
-                  ExtractFirstArgument(lp2, lp1, lp2, (int)len);
-                break;
-              }
-              if (*(lp + 1) == L'0' || *CharUpper(lp + 1) == L'O') {
-                Globals.CmdLnFlag_PosParam = true;
-                Globals.CmdLnFlag_WindowPos = 1;
-              }
-              else if (*CharUpper(lp + 1) == L'D' || *CharUpper(lp + 1) == L'S') {
-                Globals.CmdLnFlag_PosParam = true;
-                Globals.CmdLnFlag_WindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
-              }
-              else if (StrChrI(L"FLTRBM", *(lp + 1))) {
-                WCHAR* p = (lp + 1);
-                Globals.CmdLnFlag_PosParam = true;
-                Globals.CmdLnFlag_WindowPos = 0;
-                while (*p) {
-                  switch (*CharUpper(p)) {
-                    case L'F':
-                      Globals.CmdLnFlag_WindowPos &= ~(4 | 8 | 16 | 32);
-                      Globals.CmdLnFlag_WindowPos |= 64;
-                      break;
-                    case L'L':
-                      Globals.CmdLnFlag_WindowPos &= ~(8 | 64);
-                      Globals.CmdLnFlag_WindowPos |= 4;
-                      break;
-                    case  L'R':
-                      Globals.CmdLnFlag_WindowPos &= ~(4 | 64);
-                      Globals.CmdLnFlag_WindowPos |= 8;
-                      break;
-                    case L'T':
-                      Globals.CmdLnFlag_WindowPos &= ~(32 | 64);
-                      Globals.CmdLnFlag_WindowPos |= 16;
-                      break;
-                    case L'B':
-                      Globals.CmdLnFlag_WindowPos &= ~(16 | 64);
-                      Globals.CmdLnFlag_WindowPos |= 32;
-                      break;
-                    case L'M':
-                      if (Globals.CmdLnFlag_WindowPos == 0)
-                        Globals.CmdLnFlag_WindowPos |= 64;
-                      Globals.CmdLnFlag_WindowPos |= 128;
-                      break;
-                  }
-                  p = CharNext(p);
-                }
-              }
-              else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                WININFO wi = INIT_WININFO;
-                int bMaximize = 0;
-                int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &wi.x, &wi.y, &wi.cx, &wi.cy, &bMaximize);
-                if (itok == 4 || itok == 5) { // scan successful
-                  Globals.CmdLnFlag_PosParam = true;
-                  Globals.CmdLnFlag_WindowPos = 0;
-                  if (bMaximize) wi.max = true;
-                  if (itok == 4) wi.max = false;
-                  g_IniWinInfo = wi; // set window placement
-                }
-              }
-            }
-            break;
-
-            case L'T':
-              if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), lp1, len);
-                s_flagKeepTitleExcerpt = true;
-              }
-              break;
-
-            case L'C':
-              s_flagNewFromClipboard = true;
-              break;
-
-            case L'B':
-              s_flagPasteBoard = true;
-              break;
-
-            case L'E':
-              if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                s_flagSetEncoding = Encoding_MatchW(lp1);
-              }
-              break;
-
-            case L'G':
-              if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                int itok =
-                  swscanf_s(lp1, L"%i,%i", &s_iInitialLine, &s_iInitialColumn);
-                if (itok == 1 || itok == 2) { // scan successful
-                  s_flagJumpTo = true;
-                }
-              }
-              break;
-
-            case L'M':
-              {
-                bool bFindUp = false;
-                bool bMatchCase = false;
-                bool bRegex = false;
-                bool bDotMatchAll = false;
-                bool bTransBS = false;
-
-                if (StrChr(lp1, L'-')) {
-                  bFindUp = true;
-                }
-                if (StrChr(lp1, L'C')) {
-                  bMatchCase = true;
-                }
-                if (StrChr(lp1, L'R')) {
-                  bRegex = true;
-                  bTransBS = true;
-                }
-                if (StrChr(lp1, L'A')) {
-                  bDotMatchAll = true;
-                }
-                if (StrChr(lp1, L'B')) {
-                  bTransBS = true;
-                }
-                if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) 
-                {
-                  SetFindPattern(lp1);
-                  
-                  g_flagMatchText = 1;
-                  if (bFindUp) {
-                    g_flagMatchText |= 2;
-                  }
-                  if (bRegex) {
-                    g_flagMatchText |= 4;
-                  }
-                  if (bMatchCase) {
-                    g_flagMatchText |= 8;
-                  }
-                  if (bDotMatchAll) {
-                    g_flagMatchText |= 16;
-                  }
-                  if (bTransBS) {
-                    g_flagMatchText |= 32;
-                  }
-                }
-              }
-              break;
-
-            case L'L':
-              if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O')
-                s_flagChangeNotify = FWM_MSGBOX;
-              else
-                s_flagChangeNotify = FWM_AUTORELOAD;
-              break;
-
-            case L'Q':
-              if (*CharUpper(lp1 + 1) == L'S') {
-                s_flagSaveOnRelaunch = true;
-              }
-              else {
-                s_flagQuietCreate = true;
-              }
-              break;
-
-            case L'S':
-              if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                if (s_lpSchemeArg) { LocalFree(s_lpSchemeArg); }  // StrDup()
-                s_lpSchemeArg = StrDup(lp1);
-                s_flagLexerSpecified = true;
-              }
-              break;
-
-            case L'D':
-              if (s_lpSchemeArg) {
-                LocalFree(s_lpSchemeArg);  // StrDup()
-                s_lpSchemeArg = NULL;
-              }
-              s_iInitialLexer = 0;
-              s_flagLexerSpecified = true;
-              break;
-
-            case L'H':
-              if (s_lpSchemeArg) {
-                LocalFree(s_lpSchemeArg);  // StrDup()
-                s_lpSchemeArg = NULL;
-              }
-              s_iInitialLexer = 35;
-              s_flagLexerSpecified = true;
-              break;
-
-            case L'X':
-              if (s_lpSchemeArg) {
-                LocalFree(s_lpSchemeArg);  // StrDup()
-                s_lpSchemeArg = NULL;
-              }
-              s_iInitialLexer = 36;
-              s_flagLexerSpecified = true;
-              break;
-
-            case L'U':
-              if (*CharUpper(lp1 + 1) == L'C') {
-                s_flagAppIsClosing = true;
-              }
-              else {
-                Flags.bDoRelaunchElevated = true;
-              }
-              break;
-
-            case L'Y':
-              Flags.bSearchPathIfRelative = true;
-              break;
-
-            case L'Z':
-              ExtractFirstArgument(lp2, lp1, lp2, (int)len);
-              Globals.CmdLnFlag_MultiFileArg = 1;
-              bIsNotepadReplacement = true;
-              break;
-
-            case L'?':
-              s_flagDisplayHelp = true;
-              break;
-
-            case L'V':
-              Globals.CmdLnFlag_PrintFileAndLeave = 1;
-              if (*CharUpper(lp1 + 1) == L'D') {
-                Globals.CmdLnFlag_PrintFileAndLeave = 2;  // open printer dialog
-              }
-              break;
-
-            default:
-              break;
-
-          }
-        }
-      }
-      // pathname
-      else {
-        LPWSTR lpFileBuf = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
-        if (lpFileBuf) {
-          size_t const fileArgLen = StringCchLenW(lp3, len);
-          s_cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - fileArgLen);
-
-          if (s_lpOrigFileArg) {
-            FreeMem(s_lpOrigFileArg);
-            //s_lpOrigFileArg = NULL;
-          }
-          s_lpOrigFileArg = AllocMem(sizeof(WCHAR)*(fileArgLen + 1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
-          StringCchCopy(s_lpOrigFileArg, fileArgLen + 1, lp3);
-
-          StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), lp3);
-          PathFixBackslashes(s_lpFileArg);
-          if (!PathIsRelative(s_lpFileArg) && !PathIsUNC(s_lpFileArg) &&
-              PathGetDriveNumber(s_lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) 
-          {
-            WCHAR wchPath[MAX_PATH] = { L'\0' };
-            StringCchCopy(wchPath, COUNTOF(wchPath), Globals.WorkingDirectory);
-            PathStripToRoot(wchPath);
-            PathCchAppend(wchPath, COUNTOF(wchPath), s_lpFileArg);
-            StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), wchPath);
-          }
-          StrTrim(s_lpFileArg, L" \"");
-
-          while ((s_cFileList < FILE_LIST_SIZE) && ExtractFirstArgument(lp3, lpFileBuf, lp3, (int)len)) {
-            PathQuoteSpaces(lpFileBuf);
-            s_lpFileList[s_cFileList++] = StrDup(lpFileBuf); // LocalAlloc()
-          }
-          bContinue = false;
-          FreeMem(lpFileBuf);
-        }
-      }
-
-      // Continue with next argument
-      if (bContinue) {
-        StringCchCopy(lp3, len, lp2);
-      }
+    LPWSTR lpCmdLine = GetCommandLine();
+    if (StrIsEmpty(lpCmdLine))
+    {
+        return;
     }
 
-    FreeMem(lp1);
-    FreeMem(lp2);
-    FreeMem(lp3);
-  }
+    // Good old console can also send args separated by Tabs
+    StrTab2Space(lpCmdLine);
+
+    DocPos const len = (DocPos)(StringCchLenW(lpCmdLine,0) + 2UL);
+    LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+    LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+    LPWSTR lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+
+    if (lp1 && lp2 && lp3)
+    {
+        bool bIsNotepadReplacement = false;
+
+        // Start with 2nd argument
+        ExtractFirstArgument(lpCmdLine, lp1, lp3, (int)len);
+
+        bool bContinue = true;
+        bool bIsFileArg = false;
+        s_flagSetEncoding = CPI_NONE;
+
+        while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len))
+        {
+            // options
+            if (!bIsFileArg && (lp1[0] == L'+') && (lp1[1] == L'\0'))
+            {
+                Globals.CmdLnFlag_MultiFileArg = 2;
+                bIsFileArg = true;
+            }
+            else if (!bIsFileArg && (lp1[0] == L'-') && (lp1[1] == L'\0'))
+            {
+                Globals.CmdLnFlag_MultiFileArg = 1;
+                bIsFileArg = true;
+            }
+            else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-')))
+            {
+                // LTrim
+                StrLTrimI(lp1, L"-/");
+
+                // Encoding
+                cpi_enc_t const encoding = Encoding_MatchW(lp1);
+
+                if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0)
+                {
+                    s_flagSetEncoding = CPI_ANSI_DEFAULT;
+                }
+                else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0)
+                {
+                    s_flagSetEncoding = CPI_UNICODEBOM;
+                }
+                else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0)
+                {
+                    s_flagSetEncoding = CPI_UNICODEBEBOM;
+                }
+                else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0)
+                {
+                    s_flagSetEncoding = CPI_UTF8;
+                }
+                else if (StringCchCompareXI(lp1, L"UTF8SIG") == 0 || StringCchCompareXI(lp1, L"UTF-8SIG") == 0 ||
+                         StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
+                         StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0)
+                {
+                    s_flagSetEncoding = CPI_UTF8SIGN;
+                }
+                // maybe parsed encoding
+                else if (Encoding_IsValid(encoding))
+                {
+                    s_flagSetEncoding = encoding;
+                }
+                // EOL Mode
+                else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0)
+                {
+                    s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
+                }
+                else if (StringCchCompareXI(lp1, L"CR") == 0)
+                {
+                    s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
+                }
+                else if (StringCchCompareXI(lp1, L"LF") == 0)
+                {
+                    s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
+                }
+                // Shell integration
+                else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0)
+                {
+                    StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
+                                   lp1 + CSTRLEN(L"appid="), len - CSTRLEN(L"appid="));
+                    StrTrim(Settings2.AppUserModelID, L" ");
+                    if (StrIsEmpty(Settings2.AppUserModelID))
+                    {
+                        StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft.") _W(SAPPNAME));
+                    }
+                }
+                else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0)
+                {
+                    WCHAR wch[16];
+                    StringCchCopyN(wch, COUNTOF(wch), lp1 + CSTRLEN(L"sysmru="), COUNTOF(wch));
+                    StrTrim(wch, L" ");
+                    if (*wch == L'1')
+                        Globals.CmdLnFlag_ShellUseSystemMRU = 2;
+                    else
+                        Globals.CmdLnFlag_ShellUseSystemMRU = 1;
+                }
+                // Relaunch elevated
+                else if (StrCmpNI(lp1, RELAUNCH_ELEVATED_BUF_ARG, CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG)) == 0)
+                {
+                    StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
+                                   lp1 + CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG));
+                    TrimSpcW(s_wchTmpFilePath);
+                    NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, Flags.bSearchPathIfRelative);
+                    s_IsThisAnElevatedRelaunch = true;
+                }
+
+                else
+                {
+
+                    switch (*CharUpper(lp1))
+                    {
+
+                    case L'N':
+                        Globals.CmdLnFlag_ReuseWindow = 1;
+                        if (*CharUpper(lp1 + 1) == L'S')
+                            Globals.CmdLnFlag_SingleFileInstance = 2;
+                        else
+                            Globals.CmdLnFlag_SingleFileInstance = 1;
+                        break;
+
+                    case L'R':
+                        if (*CharUpper(lp1 + 1) == L'P')
+                        {
+                            Flags.bPreserveFileModTime = true;
+                        }
+                        else
+                        {
+                            Globals.CmdLnFlag_ReuseWindow = 2;
+                            if (*CharUpper(lp1 + 1) == L'S')
+                                Globals.CmdLnFlag_SingleFileInstance = 2;
+                            else
+                                Globals.CmdLnFlag_SingleFileInstance = 1;
+                        }
+                        break;
+
+                    case L'F':
+                        if (*(lp1 + 1) == L'0' || *CharUpper(lp1 + 1) == L'O')
+                            StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"*?");
+                        else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len))
+                        {
+                            StringCchCopyN(Globals.IniFile, COUNTOF(Globals.IniFile), lp1, len);
+                            TrimSpcW(Globals.IniFile);
+                            NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
+                        }
+                        break;
+
+                    case L'I':
+                        s_flagStartAsTrayIcon = true;
+                        break;
+
+                    case L'O':
+                        if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O')
+                            s_flagAlwaysOnTop = 1;
+                        else
+                            s_flagAlwaysOnTop = 2;
+                        break;
+
+                    case L'P':
+                    {
+                        WCHAR* lp = lp1;
+                        if (StrCmpNI(lp1, L"POS:", CSTRLEN(L"POS:")) == 0)
+                            lp += CSTRLEN(L"POS:") - 1;
+                        else if (StrCmpNI(lp1, L"POS", CSTRLEN(L"POS")) == 0)
+                            lp += CSTRLEN(L"POS") - 1;
+                        else if (*(lp1 + 1) == L':')
+                            lp += 1;
+                        else if (bIsNotepadReplacement)
+                        {
+                            if (*(lp1 + 1) == L'T')
+                                ExtractFirstArgument(lp2, lp1, lp2, (int)len);
+                            break;
+                        }
+                        if (*(lp + 1) == L'0' || *CharUpper(lp + 1) == L'O')
+                        {
+                            Globals.CmdLnFlag_PosParam = true;
+                            Globals.CmdLnFlag_WindowPos = 1;
+                        }
+                        else if (*CharUpper(lp + 1) == L'D' || *CharUpper(lp + 1) == L'S')
+                        {
+                            Globals.CmdLnFlag_PosParam = true;
+                            Globals.CmdLnFlag_WindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
+                        }
+                        else if (StrChrI(L"FLTRBM", *(lp + 1)))
+                        {
+                            WCHAR* p = (lp + 1);
+                            Globals.CmdLnFlag_PosParam = true;
+                            Globals.CmdLnFlag_WindowPos = 0;
+                            while (*p)
+                            {
+                                switch (*CharUpper(p))
+                                {
+                                case L'F':
+                                    Globals.CmdLnFlag_WindowPos &= ~(4 | 8 | 16 | 32);
+                                    Globals.CmdLnFlag_WindowPos |= 64;
+                                    break;
+                                case L'L':
+                                    Globals.CmdLnFlag_WindowPos &= ~(8 | 64);
+                                    Globals.CmdLnFlag_WindowPos |= 4;
+                                    break;
+                                case  L'R':
+                                    Globals.CmdLnFlag_WindowPos &= ~(4 | 64);
+                                    Globals.CmdLnFlag_WindowPos |= 8;
+                                    break;
+                                case L'T':
+                                    Globals.CmdLnFlag_WindowPos &= ~(32 | 64);
+                                    Globals.CmdLnFlag_WindowPos |= 16;
+                                    break;
+                                case L'B':
+                                    Globals.CmdLnFlag_WindowPos &= ~(16 | 64);
+                                    Globals.CmdLnFlag_WindowPos |= 32;
+                                    break;
+                                case L'M':
+                                    if (Globals.CmdLnFlag_WindowPos == 0)
+                                        Globals.CmdLnFlag_WindowPos |= 64;
+                                    Globals.CmdLnFlag_WindowPos |= 128;
+                                    break;
+                                }
+                                p = CharNext(p);
+                            }
+                        }
+                        else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len))
+                        {
+                            WININFO wi = INIT_WININFO;
+                            int bMaximize = 0;
+                            int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &wi.x, &wi.y, &wi.cx, &wi.cy, &bMaximize);
+                            if (itok == 4 || itok == 5)   // scan successful
+                            {
+                                Globals.CmdLnFlag_PosParam = true;
+                                Globals.CmdLnFlag_WindowPos = 0;
+                                if (bMaximize) wi.max = true;
+                                if (itok == 4) wi.max = false;
+                                g_IniWinInfo = wi; // set window placement
+                            }
+                        }
+                    }
+                    break;
+
+                    case L'T':
+                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len))
+                        {
+                            StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), lp1, len);
+                            s_flagKeepTitleExcerpt = true;
+                        }
+                        break;
+
+                    case L'C':
+                        s_flagNewFromClipboard = true;
+                        break;
+
+                    case L'B':
+                        s_flagPasteBoard = true;
+                        break;
+
+                    case L'E':
+                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len))
+                        {
+                            s_flagSetEncoding = Encoding_MatchW(lp1);
+                        }
+                        break;
+
+                    case L'G':
+                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len))
+                        {
+                            int itok =
+                                swscanf_s(lp1, L"%i,%i", &s_iInitialLine, &s_iInitialColumn);
+                            if (itok == 1 || itok == 2)   // scan successful
+                            {
+                                s_flagJumpTo = true;
+                            }
+                        }
+                        break;
+
+                    case L'M':
+                    {
+                        bool bFindUp = false;
+                        bool bMatchCase = false;
+                        bool bRegex = false;
+                        bool bDotMatchAll = false;
+                        bool bTransBS = false;
+
+                        if (StrChr(lp1, L'-'))
+                        {
+                            bFindUp = true;
+                        }
+                        if (StrChr(lp1, L'C'))
+                        {
+                            bMatchCase = true;
+                        }
+                        if (StrChr(lp1, L'R'))
+                        {
+                            bRegex = true;
+                            bTransBS = true;
+                        }
+                        if (StrChr(lp1, L'A'))
+                        {
+                            bDotMatchAll = true;
+                        }
+                        if (StrChr(lp1, L'B'))
+                        {
+                            bTransBS = true;
+                        }
+                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len))
+                        {
+                            SetFindPattern(lp1);
+
+                            g_flagMatchText = 1;
+                            if (bFindUp)
+                            {
+                                g_flagMatchText |= 2;
+                            }
+                            if (bRegex)
+                            {
+                                g_flagMatchText |= 4;
+                            }
+                            if (bMatchCase)
+                            {
+                                g_flagMatchText |= 8;
+                            }
+                            if (bDotMatchAll)
+                            {
+                                g_flagMatchText |= 16;
+                            }
+                            if (bTransBS)
+                            {
+                                g_flagMatchText |= 32;
+                            }
+                        }
+                    }
+                    break;
+
+                    case L'L':
+                        if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O')
+                            s_flagChangeNotify = FWM_MSGBOX;
+                        else
+                            s_flagChangeNotify = FWM_AUTORELOAD;
+                        break;
+
+                    case L'Q':
+                        if (*CharUpper(lp1 + 1) == L'S')
+                        {
+                            s_flagSaveOnRelaunch = true;
+                        }
+                        else
+                        {
+                            s_flagQuietCreate = true;
+                        }
+                        break;
+
+                    case L'S':
+                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len))
+                        {
+                            if (s_lpSchemeArg)
+                            {
+                                LocalFree(s_lpSchemeArg);    // StrDup()
+                            }
+                            s_lpSchemeArg = StrDup(lp1);
+                            s_flagLexerSpecified = true;
+                        }
+                        break;
+
+                    case L'D':
+                        if (s_lpSchemeArg)
+                        {
+                            LocalFree(s_lpSchemeArg);  // StrDup()
+                            s_lpSchemeArg = NULL;
+                        }
+                        s_iInitialLexer = 0;
+                        s_flagLexerSpecified = true;
+                        break;
+
+                    case L'H':
+                        if (s_lpSchemeArg)
+                        {
+                            LocalFree(s_lpSchemeArg);  // StrDup()
+                            s_lpSchemeArg = NULL;
+                        }
+                        s_iInitialLexer = 35;
+                        s_flagLexerSpecified = true;
+                        break;
+
+                    case L'X':
+                        if (s_lpSchemeArg)
+                        {
+                            LocalFree(s_lpSchemeArg);  // StrDup()
+                            s_lpSchemeArg = NULL;
+                        }
+                        s_iInitialLexer = 36;
+                        s_flagLexerSpecified = true;
+                        break;
+
+                    case L'U':
+                        if (*CharUpper(lp1 + 1) == L'C')
+                        {
+                            s_flagAppIsClosing = true;
+                        }
+                        else
+                        {
+                            Flags.bDoRelaunchElevated = true;
+                        }
+                        break;
+
+                    case L'Y':
+                        Flags.bSearchPathIfRelative = true;
+                        break;
+
+                    case L'Z':
+                        ExtractFirstArgument(lp2, lp1, lp2, (int)len);
+                        Globals.CmdLnFlag_MultiFileArg = 1;
+                        bIsNotepadReplacement = true;
+                        break;
+
+                    case L'?':
+                        s_flagDisplayHelp = true;
+                        break;
+
+                    case L'V':
+                        Globals.CmdLnFlag_PrintFileAndLeave = 1;
+                        if (*CharUpper(lp1 + 1) == L'D')
+                        {
+                            Globals.CmdLnFlag_PrintFileAndLeave = 2;  // open printer dialog
+                        }
+                        break;
+
+                    default:
+                        break;
+
+                    }
+                }
+            }
+            // pathname
+            else
+            {
+                LPWSTR lpFileBuf = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
+                if (lpFileBuf)
+                {
+                    size_t const fileArgLen = StringCchLenW(lp3, len);
+                    s_cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - fileArgLen);
+
+                    if (s_lpOrigFileArg)
+                    {
+                        FreeMem(s_lpOrigFileArg);
+                        //s_lpOrigFileArg = NULL;
+                    }
+                    s_lpOrigFileArg = AllocMem(sizeof(WCHAR)*(fileArgLen + 1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
+                    StringCchCopy(s_lpOrigFileArg, fileArgLen + 1, lp3);
+
+                    StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), lp3);
+                    PathFixBackslashes(s_lpFileArg);
+                    if (!PathIsRelative(s_lpFileArg) && !PathIsUNC(s_lpFileArg) &&
+                            PathGetDriveNumber(s_lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/)
+                    {
+                        WCHAR wchPath[MAX_PATH] = { L'\0' };
+                        StringCchCopy(wchPath, COUNTOF(wchPath), Globals.WorkingDirectory);
+                        PathStripToRoot(wchPath);
+                        PathCchAppend(wchPath, COUNTOF(wchPath), s_lpFileArg);
+                        StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), wchPath);
+                    }
+                    StrTrim(s_lpFileArg, L" \"");
+
+                    while ((s_cFileList < FILE_LIST_SIZE) && ExtractFirstArgument(lp3, lpFileBuf, lp3, (int)len))
+                    {
+                        PathQuoteSpaces(lpFileBuf);
+                        s_lpFileList[s_cFileList++] = StrDup(lpFileBuf); // LocalAlloc()
+                    }
+                    bContinue = false;
+                    FreeMem(lpFileBuf);
+                }
+            }
+
+            // Continue with next argument
+            if (bContinue)
+            {
+                StringCchCopy(lp3, len, lp2);
+            }
+        }
+
+        FreeMem(lp1);
+        FreeMem(lp2);
+        FreeMem(lp3);
+    }
 }
 
 
 //=============================================================================
 //
 //  _DelayUpdateStatusbar()
-//  
+//
 //
 static void  _DelayUpdateStatusbar(int delay, bool bForceRedraw)
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0);
-  mqc.hwnd = Globals.hwndMain;
-  if (bForceRedraw) {
-    mqc.lparam = (LPARAM)bForceRedraw;
-  }
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0);
+    mqc.hwnd = Globals.hwndMain;
+    if (bForceRedraw)
+    {
+        mqc.lparam = (LPARAM)bForceRedraw;
+    }
+    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
 //=============================================================================
 //
 //  _DelayUpdateToolbar()
-//  
+//
 //
 static void  _DelayUpdateToolbar(int delay)
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0);
-  mqc.hwnd = Globals.hwndMain;
-  //mqc.lparam = (LPARAM)2nd_param;
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0);
+    mqc.hwnd = Globals.hwndMain;
+    //mqc.lparam = (LPARAM)2nd_param;
+    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
 //=============================================================================
 //
 //  _DelayClearZoomCallTip()
-//  
+//
 //
 static void  _DelayClearZoomCallTip(int delay)
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0);
-  mqc.hwnd = Globals.hwndMain;
-  //mqc.lparam = (LPARAM)2nd_param;
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0);
+    mqc.hwnd = Globals.hwndMain;
+    //mqc.lparam = (LPARAM)2nd_param;
+    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
 //=============================================================================
 //
 //  _DelaySplitUndoTransaction()
-//  
+//
 //
 static void  _DelaySplitUndoTransaction(int delay, int iModType)
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_TRANSACTION, 0);
-  if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-    mqc.hwnd = Globals.hwndMain;
-    mqc.lparam = (LPARAM)iModType;
-    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
-  }
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_TRANSACTION, 0);
+    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO)))
+    {
+        mqc.hwnd = Globals.hwndMain;
+        mqc.lparam = (LPARAM)iModType;
+        _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    }
 }
 
 
 //=============================================================================
 //
 //  MarkAllOccurrences()
-// 
+//
 void MarkAllOccurrences(int delay, bool bForceClear)
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
-  mqc.hwnd = Globals.hwndMain;
-  if (bForceClear) {
-    mqc.lparam = (LPARAM)bForceClear;
-  }
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
+    mqc.hwnd = Globals.hwndMain;
+    if (bForceClear)
+    {
+        mqc.lparam = (LPARAM)bForceClear;
+    }
+    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
@@ -8645,7 +9446,7 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 //
 void UpdateToolbar()
 {
-  _DelayUpdateToolbar(_MQ_STD);
+    _DelayUpdateToolbar(_MQ_STD);
 }
 
 
@@ -8653,45 +9454,48 @@ void UpdateToolbar()
 
 static void  _UpdateToolbarDelayed()
 {
-  if (!Settings.ShowToolbar) { return; }
+    if (!Settings.ShowToolbar)
+    {
+        return;
+    }
 
-  EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
-  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() /*&& !bReadOnly*/);
-  EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
+    EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
+    EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() /*&& !bReadOnly*/);
+    EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
-  bool const b1 = SciCall_IsSelectionEmpty();
-  bool const b2 = !Sci_IsDocEmpty();
-  bool const ro = SciCall_GetReadOnly();
-  bool const tv = FocusedView.HideNonMatchedLines;
-  bool const zi = (SciCall_GetZoom() > 100);
-  bool const zo = (SciCall_GetZoom() < 100);
+    bool const b1 = SciCall_IsSelectionEmpty();
+    bool const b2 = !Sci_IsDocEmpty();
+    bool const ro = SciCall_GetReadOnly();
+    bool const tv = FocusedView.HideNonMatchedLines;
+    bool const zi = (SciCall_GetZoom() > 100);
+    bool const zo = (SciCall_GetZoom() < 100);
 
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_PASTE, SciCall_CanPaste() && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_PASTE, SciCall_CanPaste() && !ro);
 
-  EnableTool(Globals.hwndToolbar, IDT_FILE_LAUNCH, b2);
+    EnableTool(Globals.hwndToolbar, IDT_FILE_LAUNCH, b2);
 
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_FIND, b2);
-  //EnableTool(Globals.hwndToolbar, ,b2);
-  //EnableTool(Globals.hwndToolbar, IDT_EDIT_FINDPREV,b2 && !StrIsEmptyA(s_FindReplaceData.szFind));
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_REPLACE, b2 && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_FIND, b2);
+    //EnableTool(Globals.hwndToolbar, ,b2);
+    //EnableTool(Globals.hwndToolbar, IDT_EDIT_FINDPREV,b2 && !StrIsEmptyA(s_FindReplaceData.szFind));
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_REPLACE, b2 && !ro);
 
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_CUT, !b1 && !ro);
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_COPY, !b1 && !ro);
-  EnableTool(Globals.hwndToolbar, IDT_EDIT_CLEAR, !b1 && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_CUT, !b1 && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_COPY, !b1 && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
+    EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
-  EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, tv);
+    EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, tv);
 
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMIN, zi);
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMOUT, zo);
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMIN, zi);
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMOUT, zo);
 }
 
 
@@ -8702,19 +9506,19 @@ static void  _UpdateToolbarDelayed()
 //
 static LONG  _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
 {
-  HDC const hdc = GetDC(hwnd);
-  HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd, WM_GETFONT, 0, 0);
-  HGDIOBJ const hfold = SelectObject(hdc, hfont);
-  int const mmode = SetMapMode(hdc, MM_TEXT);
+    HDC const hdc = GetDC(hwnd);
+    HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd, WM_GETFONT, 0, 0);
+    HGDIOBJ const hfold = SelectObject(hdc, hfont);
+    int const mmode = SetMapMode(hdc, MM_TEXT);
 
-  SIZE size = { 0L, 0L };
-  GetTextExtentPoint32(hdc, lpsz, (int)StringCchLenW(lpsz,0), &size);
+    SIZE size = { 0L, 0L };
+    GetTextExtentPoint32(hdc, lpsz, (int)StringCchLenW(lpsz,0), &size);
 
-  SetMapMode(hdc, mmode);
-  SelectObject(hdc, hfold);
-  ReleaseDC(hwnd, hdc);
+    SetMapMode(hdc, mmode);
+    SelectObject(hdc, hfold);
+    ReleaseDC(hwnd, hdc);
 
-  return (size.cx + 8L);
+    return (size.cx + 8L);
 }
 
 
@@ -8728,125 +9532,165 @@ typedef WCHAR sectionTxt_t[txtWidth];
 
 static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchStatusBar[], bool* bIsUpdNeeded)
 {
-  // main window width changed ?
-  static int s_iWinFormerWidth = -1;
-  if (s_iWinFormerWidth != s_WinCurrentWidth) {
-    *bIsUpdNeeded = true;
-    s_iWinFormerWidth = s_WinCurrentWidth;
-  }
-  if (!(*bIsUpdNeeded)) { return; }
-
-  // count fixed and dynamic optimized pixels
-  int pxCount = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    if (g_iStatusbarVisible[i]) {
-      if (g_iStatusbarWidthSpec[i] == 0) { // dynamic optimized
-        vSectionWidth[i] = _StatusCalcPaneWidth(Globals.hwndStatus, tchStatusBar[i]);
-      }
-      else if (g_iStatusbarWidthSpec[i] < -1) { // fixed pixel count
-        vSectionWidth[i] = -(g_iStatusbarWidthSpec[i]);
-      }
-      //else { /* 0,-1 : relative counts */ }
-      // accumulate
-      if (vSectionWidth[i] > 0) { pxCount += vSectionWidth[i]; }
-    }
-  }
-
-  int const iPropSectTotalWidth = s_WinCurrentWidth - pxCount - STAUSBAR_RIGHT_MARGIN;
-
-  // init proportional section checker
-  bool bIsPropSection[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
-      assert(g_iStatusbarWidthSpec[i] > 0);
-      bIsPropSection[i] = true;
-    }
-  }
-
-  // get min. required widths
-  int vMinWidth[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-  int iTotalMinWidth = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    if (bIsPropSection[i]) {
-      int const iMinWidth = _StatusCalcPaneWidth(Globals.hwndStatus, tchStatusBar[i]);
-      vMinWidth[i] = iMinWidth;
-      iTotalMinWidth += iMinWidth;
-    }
-  }
-
-  if (iTotalMinWidth >= iPropSectTotalWidth) 
-  {
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      if (bIsPropSection[i]) {
-        vSectionWidth[i] = vMinWidth[i];
-      }
-    }
-  }
-  else // space left for proportional elements
-  {
-    int vPropWidth[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-    int totalCnt = 0;
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      if (bIsPropSection[i]) {
-        vPropWidth[i] = iPropSectTotalWidth * g_iStatusbarWidthSpec[i];
-        totalCnt += g_iStatusbarWidthSpec[i];
-      }
-    }
-    // normalize
-    int const iCeilFloor = (totalCnt + 1) / 2;
-    //int iTotalPropWidth = 0;
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      if (bIsPropSection[i]) {
-        int const width = (totalCnt > 1) ? ((vPropWidth[i] + iCeilFloor) / totalCnt) : 0;
-        vPropWidth[i] = width;
-        //iTotalPropWidth += width;
-      }
-    }
-    // check for fitting
-    int iOverlappingText = 0;
-    int iOvlTxtCount = 0;
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      if (bIsPropSection[i]) {
-        if (vMinWidth[i] > vPropWidth[i]) {
-          iOverlappingText += (vMinWidth[i] - vPropWidth[i]);
-          ++iOvlTxtCount;
-        }
-      }
-    }
-    if (iOvlTxtCount == 0) {
-      // we are fine
-      for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-        if (bIsPropSection[i]) {
-          vSectionWidth[i] = vPropWidth[i];
-        }
-      }
-    }
-    else // handling overlaps
+    // main window width changed ?
+    static int s_iWinFormerWidth = -1;
+    if (s_iWinFormerWidth != s_WinCurrentWidth)
     {
-      while (iOverlappingText > 0) {
-        const int iNoProgress = iOverlappingText;
-        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-          if (bIsPropSection[i]) {
-            if (vMinWidth[i] < vPropWidth[i]) {
-              vPropWidth[i] -= 1;
-              --iOverlappingText;
-            }
-            else if (vMinWidth[i] > vPropWidth[i]) {
-              vPropWidth[i] = vMinWidth[i];
-            }
-          }
-          if (iOverlappingText == 0) { break; /* for */}
-        }
-        if ((iOverlappingText == 0) || (iNoProgress == iOverlappingText)) { break; }
-      }
-      // fill missing widths
-      for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-        if (bIsPropSection[i]) {
-          vSectionWidth[i] = vPropWidth[i];
-        }
-      }
+        *bIsUpdNeeded = true;
+        s_iWinFormerWidth = s_WinCurrentWidth;
     }
-  }
+    if (!(*bIsUpdNeeded))
+    {
+        return;
+    }
+
+    // count fixed and dynamic optimized pixels
+    int pxCount = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+    {
+        if (g_iStatusbarVisible[i])
+        {
+            if (g_iStatusbarWidthSpec[i] == 0)   // dynamic optimized
+            {
+                vSectionWidth[i] = _StatusCalcPaneWidth(Globals.hwndStatus, tchStatusBar[i]);
+            }
+            else if (g_iStatusbarWidthSpec[i] < -1)   // fixed pixel count
+            {
+                vSectionWidth[i] = -(g_iStatusbarWidthSpec[i]);
+            }
+            //else { /* 0,-1 : relative counts */ }
+            // accumulate
+            if (vSectionWidth[i] > 0)
+            {
+                pxCount += vSectionWidth[i];
+            }
+        }
+    }
+
+    int const iPropSectTotalWidth = s_WinCurrentWidth - pxCount - STAUSBAR_RIGHT_MARGIN;
+
+    // init proportional section checker
+    bool bIsPropSection[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+    {
+        if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0))
+        {
+            assert(g_iStatusbarWidthSpec[i] > 0);
+            bIsPropSection[i] = true;
+        }
+    }
+
+    // get min. required widths
+    int vMinWidth[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+    int iTotalMinWidth = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+    {
+        if (bIsPropSection[i])
+        {
+            int const iMinWidth = _StatusCalcPaneWidth(Globals.hwndStatus, tchStatusBar[i]);
+            vMinWidth[i] = iMinWidth;
+            iTotalMinWidth += iMinWidth;
+        }
+    }
+
+    if (iTotalMinWidth >= iPropSectTotalWidth)
+    {
+        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+        {
+            if (bIsPropSection[i])
+            {
+                vSectionWidth[i] = vMinWidth[i];
+            }
+        }
+    }
+    else // space left for proportional elements
+    {
+        int vPropWidth[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+        int totalCnt = 0;
+        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+        {
+            if (bIsPropSection[i])
+            {
+                vPropWidth[i] = iPropSectTotalWidth * g_iStatusbarWidthSpec[i];
+                totalCnt += g_iStatusbarWidthSpec[i];
+            }
+        }
+        // normalize
+        int const iCeilFloor = (totalCnt + 1) / 2;
+        //int iTotalPropWidth = 0;
+        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+        {
+            if (bIsPropSection[i])
+            {
+                int const width = (totalCnt > 1) ? ((vPropWidth[i] + iCeilFloor) / totalCnt) : 0;
+                vPropWidth[i] = width;
+                //iTotalPropWidth += width;
+            }
+        }
+        // check for fitting
+        int iOverlappingText = 0;
+        int iOvlTxtCount = 0;
+        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+        {
+            if (bIsPropSection[i])
+            {
+                if (vMinWidth[i] > vPropWidth[i])
+                {
+                    iOverlappingText += (vMinWidth[i] - vPropWidth[i]);
+                    ++iOvlTxtCount;
+                }
+            }
+        }
+        if (iOvlTxtCount == 0)
+        {
+            // we are fine
+            for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+            {
+                if (bIsPropSection[i])
+                {
+                    vSectionWidth[i] = vPropWidth[i];
+                }
+            }
+        }
+        else // handling overlaps
+        {
+            while (iOverlappingText > 0)
+            {
+                const int iNoProgress = iOverlappingText;
+                for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+                {
+                    if (bIsPropSection[i])
+                    {
+                        if (vMinWidth[i] < vPropWidth[i])
+                        {
+                            vPropWidth[i] -= 1;
+                            --iOverlappingText;
+                        }
+                        else if (vMinWidth[i] > vPropWidth[i])
+                        {
+                            vPropWidth[i] = vMinWidth[i];
+                        }
+                    }
+                    if (iOverlappingText == 0)
+                    {
+                        break; /* for */
+                    }
+                }
+                if ((iOverlappingText == 0) || (iNoProgress == iOverlappingText))
+                {
+                    break;
+                }
+            }
+            // fill missing widths
+            for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+            {
+                if (bIsPropSection[i])
+                {
+                    vSectionWidth[i] = vPropWidth[i];
+                }
+            }
+        }
+    }
 }
 
 
@@ -8858,41 +9702,42 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
 //
 static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
 {
-  #define _tmpBufCnt 128
-  char tmpRectSelN[_tmpBufCnt] = { '\0' };
-  
-  DocPosU const selCount = SciCall_GetSelections();
-  int const calcBufSize = (int)(_tmpBufCnt * selCount + 1);
-  char* calcBuffer = (char*)AllocMem(calcBufSize, HEAP_ZERO_MEMORY);
-  WCHAR* calcBufferW = (WCHAR*)AllocMem(calcBufSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+#define _tmpBufCnt 128
+    char tmpRectSelN[_tmpBufCnt] = { '\0' };
 
-  bool bLastCharWasDigit = false;
-  for (DocPosU i = 0; i < selCount; ++i)
-  {
-    DocPos const posSelStart = SciCall_GetSelectionNStart(i);
-    DocPos const posSelEnd = SciCall_GetSelectionNEnd(i);
-    size_t const cchToCopy = (size_t)(posSelEnd - posSelStart);
-    StringCchCopyNA(tmpRectSelN, _tmpBufCnt, SciCall_GetRangePointer(posSelStart, (DocPos)cchToCopy), cchToCopy);
-    StrTrimA(tmpRectSelN, " ");
+    DocPosU const selCount = SciCall_GetSelections();
+    int const calcBufSize = (int)(_tmpBufCnt * selCount + 1);
+    char* calcBuffer = (char*)AllocMem(calcBufSize, HEAP_ZERO_MEMORY);
+    WCHAR* calcBufferW = (WCHAR*)AllocMem(calcBufSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
-    char const defchar = (char)0x24;
-    MultiByteToWideChar(Encoding_SciCP, 0, calcBuffer, -1, calcBufferW, calcBufSize);
-    WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), calcBufferW, -1, calcBuffer, calcBufSize, &defchar, NULL);
-    StrDelChrA(calcBuffer, chr_currency);
-
-    if (!StrIsEmptyA(tmpRectSelN))
+    bool bLastCharWasDigit = false;
+    for (DocPosU i = 0; i < selCount; ++i)
     {
-      if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit) {
-        StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), "+"); // default: add numbers
-      }
-      bLastCharWasDigit = IsDigitA(tmpRectSelN[StringCchLenA(tmpRectSelN,COUNTOF(tmpRectSelN)) - 1]);
-      StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), tmpRectSelN);
+        DocPos const posSelStart = SciCall_GetSelectionNStart(i);
+        DocPos const posSelEnd = SciCall_GetSelectionNEnd(i);
+        size_t const cchToCopy = (size_t)(posSelEnd - posSelStart);
+        StringCchCopyNA(tmpRectSelN, _tmpBufCnt, SciCall_GetRangePointer(posSelStart, (DocPos)cchToCopy), cchToCopy);
+        StrTrimA(tmpRectSelN, " ");
+
+        char const defchar = (char)0x24;
+        MultiByteToWideChar(Encoding_SciCP, 0, calcBuffer, -1, calcBufferW, calcBufSize);
+        WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), calcBufferW, -1, calcBuffer, calcBufSize, &defchar, NULL);
+        StrDelChrA(calcBuffer, chr_currency);
+
+        if (!StrIsEmptyA(tmpRectSelN))
+        {
+            if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit)
+            {
+                StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), "+"); // default: add numbers
+            }
+            bLastCharWasDigit = IsDigitA(tmpRectSelN[StringCchLenA(tmpRectSelN,COUNTOF(tmpRectSelN)) - 1]);
+            StringCchCatA(calcBuffer, SizeOfMem(calcBuffer), tmpRectSelN);
+        }
     }
-  }
-  double const result = te_interp(calcBuffer, piExprError);
-  FreeMem(calcBufferW);
-  FreeMem(calcBuffer);
-  return result;
+    double const result = te_interp(calcBuffer, piExprError);
+    FreeMem(calcBufferW);
+    FreeMem(calcBuffer);
+    return result;
 }
 
 
@@ -8903,7 +9748,7 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
 //
 void UpdateStatusbar(bool bForceRedraw)
 {
-  _DelayUpdateStatusbar(_MQ_FAST, bForceRedraw);
+    _DelayUpdateStatusbar(_MQ_FAST, bForceRedraw);
 }
 
 //=============================================================================
@@ -8912,506 +9757,548 @@ const static WCHAR* const FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+-
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
-  if (!Settings.ShowStatusbar) { return; }
-
-  static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
-
-  // ------------------------------------------------------
-  // common calculations 
-  // ------------------------------------------------------
-  DocPos const iPos              = SciCall_GetCurrentPos();
-  DocLn  const iLnFromPos        = SciCall_LineFromPosition(iPos);
-  DocPos const iLineBegin        = SciCall_PositionFromLine(iLnFromPos);
-  DocPos const iLineBack         = SciCall_GetLineEndPosition(iLnFromPos);
-  DocPos const iSelStart         = SciCall_GetSelectionStart();
-  DocPos const iSelEnd           = SciCall_GetSelectionEnd();
-
-  bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
-  bool const   bIsSelCharCountable = !(bIsSelectionEmpty || Sci_IsMultiOrRectangleSelection());
-  bool const   bIsMultiSelection = Sci_IsMultiSelection();
-  bool const   bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
-
-  bool bIsUpdateNeeded = bForceRedraw;
-
-  static WCHAR tchLn[32] = { L'\0' };
-  static WCHAR tchLines[32] = { L'\0' };
-
-  // ------------------------------------------------------
-
-  if (g_iStatusbarVisible[STATUS_DOCLINE] || bIsWindowFindReplace)
-  {
-    static DocLn s_iLnFromPos = -1;
-    static DocLn s_iLnCnt = -1;
-
-    if (bForceRedraw || (s_iLnFromPos != iLnFromPos)) {
-      StringCchPrintf(tchLn, COUNTOF(tchLn), DOCPOSFMTW, iLnFromPos + 1);
-      FormatNumberStr(tchLn, COUNTOF(tchLn), 0);
-    }
-
-    DocLn const  iLnCnt = SciCall_GetLineCount();
-    if (bForceRedraw || (s_iLnCnt != iLnCnt)) {
-      StringCchPrintf(tchLines, COUNTOF(tchLines), DOCPOSFMTW, iLnCnt);
-      FormatNumberStr(tchLines, COUNTOF(tchLines), 0);
-    }
-
-    if (bForceRedraw || ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt)))
+    if (!Settings.ShowStatusbar)
     {
-      StringCchPrintf(tchStatusBar[STATUS_DOCLINE], txtWidth, L"%s%s / %s%s",
-        g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, g_mxSBPostfix[STATUS_DOCLINE]);
-      s_iLnFromPos = iLnFromPos;
-      s_iLnCnt = iLnCnt;
-      bIsUpdateNeeded = true;
-    }
-  }
-  // ------------------------------------------------------
-
-  static WCHAR tchCol[32] = { L'\0' };
-
-  if (g_iStatusbarVisible[STATUS_DOCCOLUMN] || bIsWindowFindReplace)
-  {
-    DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
-
-    static DocPos s_iCol = -1;
-    DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
-    if (bForceRedraw || (s_iCol != iCol)) {
-      StringCchPrintf(tchCol, COUNTOF(tchCol), DOCPOSFMTW, iCol + colOffset);
-      FormatNumberStr(tchCol, COUNTOF(tchCol), 0);
+        return;
     }
 
-    static DocPos s_iCols = -1;
-    static WCHAR tchCols[32] = { L'\0' };
-    DocPos const iCols = SciCall_GetColumn(iLineBack);
-    if (bForceRedraw || (s_iCols != iCols)) {
-      StringCchPrintf(tchCols, COUNTOF(tchCols), DOCPOSFMTW, iCols);
-      FormatNumberStr(tchCols, COUNTOF(tchCols), 0);
-    }
+    static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
 
-    if (bForceRedraw || ((s_iCol != iCol) || (s_iCols != iCols))) {
-      StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
-        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
+    // ------------------------------------------------------
+    // common calculations
+    // ------------------------------------------------------
+    DocPos const iPos              = SciCall_GetCurrentPos();
+    DocLn  const iLnFromPos        = SciCall_LineFromPosition(iPos);
+    DocPos const iLineBegin        = SciCall_PositionFromLine(iLnFromPos);
+    DocPos const iLineBack         = SciCall_GetLineEndPosition(iLnFromPos);
+    DocPos const iSelStart         = SciCall_GetSelectionStart();
+    DocPos const iSelEnd           = SciCall_GetSelectionEnd();
 
-      s_iCol = iCol;
-      s_iCols = iCols;
-      bIsUpdateNeeded = true;
-    }
-  }
-  // ------------------------------------------------------
+    bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
+    bool const   bIsSelCharCountable = !(bIsSelectionEmpty || Sci_IsMultiOrRectangleSelection());
+    bool const   bIsMultiSelection = Sci_IsMultiSelection();
+    bool const   bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
 
-  if (g_iStatusbarVisible[STATUS_DOCCHAR])
-  {
-    static WCHAR tchChr[32] = { L'\0' };
-    static WCHAR tchChrs[32] = { L'\0' };
-    static DocPos s_iChr = -1;
-    DocPos const chrOffset = Globals.bZeroBasedCharacterCount ? 0 : 1;
+    bool bIsUpdateNeeded = bForceRedraw;
 
-    DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
-    if (bForceRedraw || (s_iChr != iChr)) {
-      StringCchPrintf(tchChr, COUNTOF(tchChr), DOCPOSFMTW, iChr + chrOffset);
-      FormatNumberStr(tchChr, COUNTOF(tchChr), 0);
-    }
+    static WCHAR tchLn[32] = { L'\0' };
+    static WCHAR tchLines[32] = { L'\0' };
 
-    static DocPos s_iChrs = -1;
-    DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
-    if (bForceRedraw || (s_iChrs != iChrs)) {
-      StringCchPrintf(tchChrs, COUNTOF(tchChrs), DOCPOSFMTW, iChrs);
-      FormatNumberStr(tchChrs, COUNTOF(tchChrs), 0);
-    }
+    // ------------------------------------------------------
 
-    if ((s_iChr != iChr) || (s_iChrs != iChrs)) {
-      StringCchPrintf(tchStatusBar[STATUS_DOCCHAR], txtWidth, L"%s%s / %s%s",
-        g_mxSBPrefix[STATUS_DOCCHAR], tchChr, tchChrs, g_mxSBPostfix[STATUS_DOCCHAR]);
-
-      s_iChr = iChr;
-      s_iChrs = iChrs;
-      bIsUpdateNeeded = true;
-    }
-  }
-  // ------------------------------------------------------
-
-  static WCHAR tchSel[32] = { L'\0' };
-
-  // number of selected chars in statusbar
-  if (g_iStatusbarVisible[STATUS_SELECTION] || g_iStatusbarVisible[STATUS_SELCTBYTES] || bIsWindowFindReplace)
-  {
-    static bool s_bIsSelCountable = false;
-    static bool s_bIsMultiSelection = false;
-    static DocPos s_iSelStart = -1;
-    static DocPos s_iSelEnd = -1;
-
-    if (bForceRedraw || ((s_bIsSelCountable != bIsSelCharCountable) || (s_iSelStart != iSelStart) 
-        || (s_iSelEnd != iSelEnd)) || (s_bIsMultiSelection != bIsMultiSelection))
+    if (g_iStatusbarVisible[STATUS_DOCLINE] || bIsWindowFindReplace)
     {
-      static WCHAR tchSelB[64] = { L'\0' };
-      if (bIsSelCharCountable)
-      {
-        const DocPos iSel = (DocPos)SendMessage(Globals.hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
-        StringCchPrintf(tchSel, COUNTOF(tchSel), DOCPOSFMTW, iSel);
-        FormatNumberStr(tchSel, COUNTOF(tchSel), 0);
-        StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
-      }
-      else if (bIsMultiSelection) {
-        StringCchPrintf(tchSel, COUNTOF(tchSel), L"# " DOCPOSFMTW, SciCall_GetSelections());
-        tchSelB[0] = L'0'; tchSelB[1] = L'\0';
-      }
-      else {
-        tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
-        tchSelB[0] = L'0'; tchSelB[1] = L'\0';
-      }
-      StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
+        static DocLn s_iLnFromPos = -1;
+        static DocLn s_iLnCnt = -1;
 
-      StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, g_mxSBPostfix[STATUS_SELCTBYTES]);
-
-      s_bIsSelCountable = bIsSelCharCountable;
-      s_bIsMultiSelection = bIsMultiSelection;
-      s_iSelStart = iSelStart;
-      s_iSelEnd = iSelEnd;
-      bIsUpdateNeeded = true;
-    }
-  }
-  // ------------------------------------------------------
-
-  // number of selected lines in statusbar
-  if (g_iStatusbarVisible[STATUS_SELCTLINES])
-  {
-    static bool s_bIsSelectionEmpty = true;
-    static DocLn s_iLinesSelected = -1;
-
-    DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
-    DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
-    DocPos const iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
-
-    DocLn const iLinesSelected = ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) ? ((iLineEnd - iLineStart) + 1) : (iLineEnd - iLineStart);
-
-    if (bForceRedraw || ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected)))
-    {
-      static bool s_bIsMultiSelection = false;
-      static WCHAR tchLinesSelected[32] = { L'\0' };
-      if (bIsSelectionEmpty || bIsMultiSelection) {
-        tchLinesSelected[0] = L'-';
-        tchLinesSelected[1] = L'-';
-        tchLinesSelected[2] = L'\0';
-      }
-      else {
-        StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), DOCPOSFMTW, iLinesSelected);
-        FormatNumberStr(tchLinesSelected, COUNTOF(tchLinesSelected), 0);
-      }
-      StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, g_mxSBPostfix[STATUS_SELCTLINES]);
-
-      s_bIsSelectionEmpty = bIsSelectionEmpty;
-      s_bIsMultiSelection = bIsMultiSelection;
-      s_iLinesSelected = iLinesSelected;
-      bIsUpdateNeeded = true;
-    }
-  }
-  // ------------------------------------------------------
-
-  // try calculate expression of selection
-  if (g_iStatusbarVisible[STATUS_TINYEXPR])
-  {
-    static WCHAR tchExpression[32] = { L'\0' };
-    static te_xint_t s_iExErr          = -3;
-    s_dExpression = 0.0;
-    tchExpression[0] = L'-';
-    tchExpression[1] = L'-';
-    tchExpression[2] = L'\0';
-
-    if (Settings.EvalTinyExprOnSelection)
-    {
-      if (bIsSelCharCountable) {
-        static char chSeBuf[LARGE_BUFFER];
-        static WCHAR wchSelBuf[LARGE_BUFFER];
-        DocPos const iSelSize = SciCall_GetSelText(NULL);
-        if (iSelSize < COUNTOF(chSeBuf)) // should be fast !
+        if (bForceRedraw || (s_iLnFromPos != iLnFromPos))
         {
-          SciCall_GetSelText(chSeBuf);
-          //~StrDelChrA(chExpression, " \r\n\t\v");
-          StrDelChrA(chSeBuf, "\r\n");
-          StrTrimA(chSeBuf, "= ?");
-
-          char const defchar = (char)0x24;
-          MultiByteToWideChar(Encoding_SciCP, 0, chSeBuf, -1, wchSelBuf, LARGE_BUFFER);
-          WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), wchSelBuf, -1, chSeBuf, LARGE_BUFFER, &defchar, NULL);
-          StrDelChrA(chSeBuf, chr_currency);
-          
-          s_dExpression = te_interp(chSeBuf, &s_iExprError);
+            StringCchPrintf(tchLn, COUNTOF(tchLn), DOCPOSFMTW, iLnFromPos + 1);
+            FormatNumberStr(tchLn, COUNTOF(tchLn), 0);
         }
-        else {
-          s_iExprError = -1;
+
+        DocLn const  iLnCnt = SciCall_GetLineCount();
+        if (bForceRedraw || (s_iLnCnt != iLnCnt))
+        {
+            StringCchPrintf(tchLines, COUNTOF(tchLines), DOCPOSFMTW, iLnCnt);
+            FormatNumberStr(tchLines, COUNTOF(tchLines), 0);
         }
-      }
-      else if (Sci_IsMultiOrRectangleSelection() && !bIsSelectionEmpty) {
-        s_dExpression = _InterpMultiSelectionTinyExpr(&s_iExprError);
-      }
-      else
-        s_iExprError = -2;
-    }
-    else {
-      s_iExprError = -3;
-    }
 
-    if (!s_iExprError) {
-      StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.7G", s_dExpression);
+        if (bForceRedraw || ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt)))
+        {
+            StringCchPrintf(tchStatusBar[STATUS_DOCLINE], txtWidth, L"%s%s / %s%s",
+                            g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, g_mxSBPostfix[STATUS_DOCLINE]);
+            s_iLnFromPos = iLnFromPos;
+            s_iLnCnt = iLnCnt;
+            bIsUpdateNeeded = true;
+        }
     }
-    else if (s_iExprError > 0) {
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_XINT_FMT) L"]", s_iExprError);
-    }
+    // ------------------------------------------------------
 
-    if (bForceRedraw || (!s_iExprError || (s_iExErr != s_iExprError))) 
+    static WCHAR tchCol[32] = { L'\0' };
+
+    if (g_iStatusbarVisible[STATUS_DOCCOLUMN] || bIsWindowFindReplace)
     {
-      StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s ",
-        g_mxSBPrefix[STATUS_TINYEXPR], tchExpression, g_mxSBPostfix[STATUS_TINYEXPR]);
+        DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
 
-      s_iExErr = s_iExprError;
-      bIsUpdateNeeded = true;
+        static DocPos s_iCol = -1;
+        DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
+        if (bForceRedraw || (s_iCol != iCol))
+        {
+            StringCchPrintf(tchCol, COUNTOF(tchCol), DOCPOSFMTW, iCol + colOffset);
+            FormatNumberStr(tchCol, COUNTOF(tchCol), 0);
+        }
+
+        static DocPos s_iCols = -1;
+        static WCHAR tchCols[32] = { L'\0' };
+        DocPos const iCols = SciCall_GetColumn(iLineBack);
+        if (bForceRedraw || (s_iCols != iCols))
+        {
+            StringCchPrintf(tchCols, COUNTOF(tchCols), DOCPOSFMTW, iCols);
+            FormatNumberStr(tchCols, COUNTOF(tchCols), 0);
+        }
+
+        if (bForceRedraw || ((s_iCol != iCol) || (s_iCols != iCols)))
+        {
+            StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
+                            g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
+
+            s_iCol = iCol;
+            s_iCols = iCols;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // ------------------------------------------------------
+    // ------------------------------------------------------
 
-  static WCHAR tchOcc[32] = { L'\0' };
-
-  // number of occurrence marks found
-  if (g_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace)
-  {
-    static DocPosU s_iMarkOccurrencesCount = 0;
-    static bool s_bMOVisible = false;
-    if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount)))
+    if (g_iStatusbarVisible[STATUS_DOCCHAR])
     {
-      if (Globals.iMarkOccurrencesCount > 0)
-      {
-        StringCchPrintf(tchOcc, COUNTOF(tchOcc), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
-        FormatNumberStr(tchOcc, COUNTOF(tchOcc), 0);
-      }
-      else {
-        StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
-      }
-      if (Settings.MarkOccurrencesMatchVisible) {
-        StringCchCat(tchOcc, COUNTOF(tchOcc), L"(V)");
-      }
+        static WCHAR tchChr[32] = { L'\0' };
+        static WCHAR tchChrs[32] = { L'\0' };
+        static DocPos s_iChr = -1;
+        DocPos const chrOffset = Globals.bZeroBasedCharacterCount ? 0 : 1;
 
-      StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, g_mxSBPostfix[STATUS_OCCURRENCE]);
+        DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
+        if (bForceRedraw || (s_iChr != iChr))
+        {
+            StringCchPrintf(tchChr, COUNTOF(tchChr), DOCPOSFMTW, iChr + chrOffset);
+            FormatNumberStr(tchChr, COUNTOF(tchChr), 0);
+        }
 
-      s_bMOVisible = Settings.MarkOccurrencesMatchVisible;
-      s_iMarkOccurrencesCount = Globals.iMarkOccurrencesCount;
-      bIsUpdateNeeded = true;
+        static DocPos s_iChrs = -1;
+        DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
+        if (bForceRedraw || (s_iChrs != iChrs))
+        {
+            StringCchPrintf(tchChrs, COUNTOF(tchChrs), DOCPOSFMTW, iChrs);
+            FormatNumberStr(tchChrs, COUNTOF(tchChrs), 0);
+        }
+
+        if ((s_iChr != iChr) || (s_iChrs != iChrs))
+        {
+            StringCchPrintf(tchStatusBar[STATUS_DOCCHAR], txtWidth, L"%s%s / %s%s",
+                            g_mxSBPrefix[STATUS_DOCCHAR], tchChr, tchChrs, g_mxSBPostfix[STATUS_DOCCHAR]);
+
+            s_iChr = iChr;
+            s_iChrs = iChrs;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // ------------------------------------------------------
+    // ------------------------------------------------------
 
-  // number of replaced pattern
-  if (g_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace)
-  {
-    static int s_iReplacedOccurrences = -1;
+    static WCHAR tchSel[32] = { L'\0' };
 
-    if (bForceRedraw || (s_iReplacedOccurrences != Globals.iReplacedOccurrences))
+    // number of selected chars in statusbar
+    if (g_iStatusbarVisible[STATUS_SELECTION] || g_iStatusbarVisible[STATUS_SELCTBYTES] || bIsWindowFindReplace)
     {
-      static WCHAR tchRepl[32] = { L'\0' };
-      if (Globals.iReplacedOccurrences > 0)
-      {
-        StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", Globals.iReplacedOccurrences);
-        FormatNumberStr(tchRepl, COUNTOF(tchRepl), 0);
-      }
-      else {
-        StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
-      }
+        static bool s_bIsSelCountable = false;
+        static bool s_bIsMultiSelection = false;
+        static DocPos s_iSelStart = -1;
+        static DocPos s_iSelEnd = -1;
 
-      StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
+        if (bForceRedraw || ((s_bIsSelCountable != bIsSelCharCountable) || (s_iSelStart != iSelStart)
+                             || (s_iSelEnd != iSelEnd)) || (s_bIsMultiSelection != bIsMultiSelection))
+        {
+            static WCHAR tchSelB[64] = { L'\0' };
+            if (bIsSelCharCountable)
+            {
+                const DocPos iSel = (DocPos)SendMessage(Globals.hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
+                StringCchPrintf(tchSel, COUNTOF(tchSel), DOCPOSFMTW, iSel);
+                FormatNumberStr(tchSel, COUNTOF(tchSel), 0);
+                StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
+            }
+            else if (bIsMultiSelection)
+            {
+                StringCchPrintf(tchSel, COUNTOF(tchSel), L"# " DOCPOSFMTW, SciCall_GetSelections());
+                tchSelB[0] = L'0';
+                tchSelB[1] = L'\0';
+            }
+            else
+            {
+                tchSel[0] = L'-';
+                tchSel[1] = L'-';
+                tchSel[2] = L'\0';
+                tchSelB[0] = L'0';
+                tchSelB[1] = L'\0';
+            }
+            StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
 
-      s_iReplacedOccurrences = Globals.iReplacedOccurrences;
-      bIsUpdateNeeded = true;
+            StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, g_mxSBPostfix[STATUS_SELCTBYTES]);
+
+            s_bIsSelCountable = bIsSelCharCountable;
+            s_bIsMultiSelection = bIsMultiSelection;
+            s_iSelStart = iSelStart;
+            s_iSelEnd = iSelEnd;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // ------------------------------------------------------
+    // ------------------------------------------------------
 
-  // get number of bytes in current encoding
-  if (g_iStatusbarVisible[STATUS_DOCSIZE])
-  {
-    static DocPos s_iTextLength = -1;
-    DocPos const iTextLength = SciCall_GetTextLength();
-    if (bForceRedraw || (s_iTextLength != iTextLength)) 
+    // number of selected lines in statusbar
+    if (g_iStatusbarVisible[STATUS_SELCTLINES])
     {
-      static WCHAR tchBytes[32] = { L'\0' };
-      StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
+        static bool s_bIsSelectionEmpty = true;
+        static DocLn s_iLinesSelected = -1;
 
-      StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_DOCSIZE], tchBytes, g_mxSBPostfix[STATUS_DOCSIZE]);
+        DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
+        DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
+        DocPos const iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
 
-      s_iTextLength = iTextLength;
-      bIsUpdateNeeded = true;
+        DocLn const iLinesSelected = ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) ? ((iLineEnd - iLineStart) + 1) : (iLineEnd - iLineStart);
+
+        if (bForceRedraw || ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected)))
+        {
+            static bool s_bIsMultiSelection = false;
+            static WCHAR tchLinesSelected[32] = { L'\0' };
+            if (bIsSelectionEmpty || bIsMultiSelection)
+            {
+                tchLinesSelected[0] = L'-';
+                tchLinesSelected[1] = L'-';
+                tchLinesSelected[2] = L'\0';
+            }
+            else
+            {
+                StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), DOCPOSFMTW, iLinesSelected);
+                FormatNumberStr(tchLinesSelected, COUNTOF(tchLinesSelected), 0);
+            }
+            StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, g_mxSBPostfix[STATUS_SELCTLINES]);
+
+            s_bIsSelectionEmpty = bIsSelectionEmpty;
+            s_bIsMultiSelection = bIsMultiSelection;
+            s_iLinesSelected = iLinesSelected;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // ------------------------------------------------------
+    // ------------------------------------------------------
 
-  if (g_iStatusbarVisible[STATUS_CODEPAGE])
-  {
-    static cpi_enc_t s_iEncoding = CPI_NONE;
-    cpi_enc_t const  iEncoding   = Encoding_GetCurrent();
-    if (bForceRedraw || (s_iEncoding != iEncoding)) 
+    // try calculate expression of selection
+    if (g_iStatusbarVisible[STATUS_TINYEXPR])
     {
-      StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), g_mxSBPostfix[STATUS_CODEPAGE]);
+        static WCHAR tchExpression[32] = { L'\0' };
+        static te_xint_t s_iExErr          = -3;
+        s_dExpression = 0.0;
+        tchExpression[0] = L'-';
+        tchExpression[1] = L'-';
+        tchExpression[2] = L'\0';
 
-      s_iEncoding = iEncoding;
-      bIsUpdateNeeded = true;
+        if (Settings.EvalTinyExprOnSelection)
+        {
+            if (bIsSelCharCountable)
+            {
+                static char chSeBuf[LARGE_BUFFER];
+                static WCHAR wchSelBuf[LARGE_BUFFER];
+                DocPos const iSelSize = SciCall_GetSelText(NULL);
+                if (iSelSize < COUNTOF(chSeBuf)) // should be fast !
+                {
+                    SciCall_GetSelText(chSeBuf);
+                    //~StrDelChrA(chExpression, " \r\n\t\v");
+                    StrDelChrA(chSeBuf, "\r\n");
+                    StrTrimA(chSeBuf, "= ?");
+
+                    char const defchar = (char)0x24;
+                    MultiByteToWideChar(Encoding_SciCP, 0, chSeBuf, -1, wchSelBuf, LARGE_BUFFER);
+                    WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), wchSelBuf, -1, chSeBuf, LARGE_BUFFER, &defchar, NULL);
+                    StrDelChrA(chSeBuf, chr_currency);
+
+                    s_dExpression = te_interp(chSeBuf, &s_iExprError);
+                }
+                else
+                {
+                    s_iExprError = -1;
+                }
+            }
+            else if (Sci_IsMultiOrRectangleSelection() && !bIsSelectionEmpty)
+            {
+                s_dExpression = _InterpMultiSelectionTinyExpr(&s_iExprError);
+            }
+            else
+                s_iExprError = -2;
+        }
+        else
+        {
+            s_iExprError = -3;
+        }
+
+        if (!s_iExprError)
+        {
+            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.7G", s_dExpression);
+        }
+        else if (s_iExprError > 0)
+        {
+            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_XINT_FMT) L"]", s_iExprError);
+        }
+
+        if (bForceRedraw || (!s_iExprError || (s_iExErr != s_iExprError)))
+        {
+            StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s ",
+                            g_mxSBPrefix[STATUS_TINYEXPR], tchExpression, g_mxSBPostfix[STATUS_TINYEXPR]);
+
+            s_iExErr = s_iExprError;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // ------------------------------------------------------
+    // ------------------------------------------------------
 
-  const WCHAR* const _LF_f    = L"%sLF%s";
-  const WCHAR* const _LFi_f   = L"%sLF*%s";
-  const WCHAR* const _CR_f    = L"%sCR%s";
-  const WCHAR* const _CRi_f   = L"%sCR*%s";
-  const WCHAR* const _CRLF_f  = L"%sCR+LF%s";
-  const WCHAR* const _CRLFi_f = L"%sCR+LF*%s";
+    static WCHAR tchOcc[32] = { L'\0' };
 
-  if (g_iStatusbarVisible[STATUS_EOLMODE]) 
-  {
-    static int s_iEOLMode = -1;
-    int const eol_mode = SciCall_GetEOLMode();
-
-    if (bForceRedraw || (s_iEOLMode != eol_mode))
+    // number of occurrence marks found
+    if (g_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace)
     {
-      static WCHAR tchEOL[16] = { L'\0' };
-      if (eol_mode == SC_EOL_LF) 
-      {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _LFi_f : _LF_f),
-          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
-      }
-      else if (eol_mode == SC_EOL_CR) 
-      {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRi_f : _CR_f),
-          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
-      }
-      else {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRLFi_f : _CRLF_f),
-          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
-      }
-      s_iEOLMode = eol_mode;
-      bIsUpdateNeeded = true;
-    }
-  }
-  // ------------------------------------------------------
+        static DocPosU s_iMarkOccurrencesCount = 0;
+        static bool s_bMOVisible = false;
+        if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount)))
+        {
+            if (Globals.iMarkOccurrencesCount > 0)
+            {
+                StringCchPrintf(tchOcc, COUNTOF(tchOcc), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
+                FormatNumberStr(tchOcc, COUNTOF(tchOcc), 0);
+            }
+            else
+            {
+                StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+            }
+            if (Settings.MarkOccurrencesMatchVisible)
+            {
+                StringCchCat(tchOcc, COUNTOF(tchOcc), L"(V)");
+            }
 
-  if (g_iStatusbarVisible[STATUS_OVRMODE])
-  {
-    static bool s_bIsOVR = -1;
-    bool const bIsOVR = (bool)SendMessage(Globals.hwndEdit, SCI_GETOVERTYPE, 0, 0);
-    if (bForceRedraw || (s_bIsOVR != bIsOVR)) 
+            StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, g_mxSBPostfix[STATUS_OCCURRENCE]);
+
+            s_bMOVisible = Settings.MarkOccurrencesMatchVisible;
+            s_iMarkOccurrencesCount = Globals.iMarkOccurrencesCount;
+            bIsUpdateNeeded = true;
+        }
+    }
+    // ------------------------------------------------------
+
+    // number of replaced pattern
+    if (g_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace)
     {
-      if (bIsOVR)
-      {
-        StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
-          g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
-      }
-      else {
-        StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS%s",
-          g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
-      }
-      s_bIsOVR = bIsOVR;
-      bIsUpdateNeeded = true;
-    }
-  }
-  // ------------------------------------------------------
+        static int s_iReplacedOccurrences = -1;
 
-  if (g_iStatusbarVisible[STATUS_2ND_DEF])
-  {
-    static bool s_bUse2ndDefault = -1;
-    bool const bUse2ndDefault = Style_GetUse2ndDefault();
-    if (bForceRedraw || (s_bUse2ndDefault != bUse2ndDefault))
+        if (bForceRedraw || (s_iReplacedOccurrences != Globals.iReplacedOccurrences))
+        {
+            static WCHAR tchRepl[32] = { L'\0' };
+            if (Globals.iReplacedOccurrences > 0)
+            {
+                StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", Globals.iReplacedOccurrences);
+                FormatNumberStr(tchRepl, COUNTOF(tchRepl), 0);
+            }
+            else
+            {
+                StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
+            }
+
+            StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
+
+            s_iReplacedOccurrences = Globals.iReplacedOccurrences;
+            bIsUpdateNeeded = true;
+        }
+    }
+    // ------------------------------------------------------
+
+    // get number of bytes in current encoding
+    if (g_iStatusbarVisible[STATUS_DOCSIZE])
     {
-      if (bUse2ndDefault)
-        StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND%s",
-          g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
-      else
-        StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD%s",
-          g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
+        static DocPos s_iTextLength = -1;
+        DocPos const iTextLength = SciCall_GetTextLength();
+        if (bForceRedraw || (s_iTextLength != iTextLength))
+        {
+            static WCHAR tchBytes[32] = { L'\0' };
+            StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
 
-      s_bUse2ndDefault = bUse2ndDefault;
-      bIsUpdateNeeded = true;
+            StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_DOCSIZE], tchBytes, g_mxSBPostfix[STATUS_DOCSIZE]);
+
+            s_iTextLength = iTextLength;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // ------------------------------------------------------
+    // ------------------------------------------------------
 
-  if (g_iStatusbarVisible[STATUS_LEXER])
-  {
-    static int s_iCurLexer = -1;
-    int const iCurLexer = Style_GetCurrentLexerRID();
-    if (bForceRedraw || (s_iCurLexer != iCurLexer))
+    if (g_iStatusbarVisible[STATUS_CODEPAGE])
     {
-      static WCHAR tchLexerName[MINI_BUFFER];
-      if (Style_IsCurLexerStandard())
-        Style_GetLexerDisplayName(NULL, tchLexerName, MINI_BUFFER); // don't distinguish between STD/2ND
-      else
-        Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), tchLexerName, MINI_BUFFER);
+        static cpi_enc_t s_iEncoding = CPI_NONE;
+        cpi_enc_t const  iEncoding   = Encoding_GetCurrent();
+        if (bForceRedraw || (s_iEncoding != iEncoding))
+        {
+            StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), g_mxSBPostfix[STATUS_CODEPAGE]);
 
-      StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_LEXER], tchLexerName, g_mxSBPostfix[STATUS_LEXER]);
-
-      s_iCurLexer = iCurLexer;
-      bIsUpdateNeeded = true;
+            s_iEncoding = iEncoding;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // ------------------------------------------------------
+    // ------------------------------------------------------
 
-  // ====  Statusbar widths  ====
+    const WCHAR* const _LF_f    = L"%sLF%s";
+    const WCHAR* const _LFi_f   = L"%sLF*%s";
+    const WCHAR* const _CR_f    = L"%sCR%s";
+    const WCHAR* const _CRi_f   = L"%sCR*%s";
+    const WCHAR* const _CRLF_f  = L"%sCR+LF%s";
+    const WCHAR* const _CRLFi_f = L"%sCR+LF*%s";
 
-  int g_vStatusbarSectionWidth[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
+    if (g_iStatusbarVisible[STATUS_EOLMODE])
+    {
+        static int s_iEOLMode = -1;
+        int const eol_mode = SciCall_GetEOLMode();
 
-  _CalculateStatusbarSections(g_vStatusbarSectionWidth, tchStatusBar, &bIsUpdateNeeded);
-
-  if (bIsUpdateNeeded) {
-    int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-    BYTE cnt = 0;
-    int totalWidth = 0;
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      int const id = g_vSBSOrder[i];
-      if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0))
-      {
-        totalWidth += g_vStatusbarSectionWidth[id];
-        aStatusbarSections[cnt++] = totalWidth;
-      }
+        if (bForceRedraw || (s_iEOLMode != eol_mode))
+        {
+            static WCHAR tchEOL[16] = { L'\0' };
+            if (eol_mode == SC_EOL_LF)
+            {
+                StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _LFi_f : _LF_f),
+                                g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
+            }
+            else if (eol_mode == SC_EOL_CR)
+            {
+                StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRi_f : _CR_f),
+                                g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
+            }
+            else
+            {
+                StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRLFi_f : _CRLF_f),
+                                g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
+            }
+            s_iEOLMode = eol_mode;
+            bIsUpdateNeeded = true;
+        }
     }
+    // ------------------------------------------------------
 
-    if (cnt > 0) { aStatusbarSections[cnt - 1] = -1; }
-    else { aStatusbarSections[0] = -1; Settings.ShowStatusbar = false; }
-
-    SendMessage(Globals.hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
-
-    cnt = 0;
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      int const id = g_vSBSOrder[i];
-      if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0)) {
-        StatusSetText(Globals.hwndStatus, cnt++, tchStatusBar[id]);
-      }
+    if (g_iStatusbarVisible[STATUS_OVRMODE])
+    {
+        static bool s_bIsOVR = -1;
+        bool const bIsOVR = (bool)SendMessage(Globals.hwndEdit, SCI_GETOVERTYPE, 0, 0);
+        if (bForceRedraw || (s_bIsOVR != bIsOVR))
+        {
+            if (bIsOVR)
+            {
+                StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
+                                g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
+            }
+            else
+            {
+                StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS%s",
+                                g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
+            }
+            s_bIsOVR = bIsOVR;
+            bIsUpdateNeeded = true;
+        }
     }
-  }
-  // --------------------------------------------------------------------------
+    // ------------------------------------------------------
 
-  // update Find/Replace dialog (if any)
-  if (bIsWindowFindReplace) {
-    static WCHAR tchReplOccs[32] = { L'\0' };
-    if (Globals.iReplacedOccurrences > 0)
-      StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", Globals.iReplacedOccurrences);
-    else
-      StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
+    if (g_iStatusbarVisible[STATUS_2ND_DEF])
+    {
+        static bool s_bUse2ndDefault = -1;
+        bool const bUse2ndDefault = Style_GetUse2ndDefault();
+        if (bForceRedraw || (s_bUse2ndDefault != bUse2ndDefault))
+        {
+            if (bUse2ndDefault)
+                StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND%s",
+                                g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
+            else
+                StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD%s",
+                                g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
 
-    const WCHAR* const SBFMT = L" %s%s / %s     %s%s     %s%s     %s%s     %s%s     (  %s  )              ";
+            s_bUse2ndDefault = bUse2ndDefault;
+            bIsUpdateNeeded = true;
+        }
+    }
+    // ------------------------------------------------------
 
-    static WCHAR tchFRStatus[128] = { L'\0' };
-    StringCchPrintf(tchFRStatus, COUNTOF(tchFRStatus), SBFMT,
-      g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines,
-      g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
-      g_mxSBPrefix[STATUS_SELECTION], tchSel,
-      g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
-      g_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
-      FR_Status[Globals.FindReplaceMatchFoundState]);
+    if (g_iStatusbarVisible[STATUS_LEXER])
+    {
+        static int s_iCurLexer = -1;
+        int const iCurLexer = Style_GetCurrentLexerRID();
+        if (bForceRedraw || (s_iCurLexer != iCurLexer))
+        {
+            static WCHAR tchLexerName[MINI_BUFFER];
+            if (Style_IsCurLexerStandard())
+                Style_GetLexerDisplayName(NULL, tchLexerName, MINI_BUFFER); // don't distinguish between STD/2ND
+            else
+                Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), tchLexerName, MINI_BUFFER);
 
-    SetWindowText(GetDlgItem(Globals.hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
-  }
+            StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s%s",
+                            g_mxSBPrefix[STATUS_LEXER], tchLexerName, g_mxSBPostfix[STATUS_LEXER]);
+
+            s_iCurLexer = iCurLexer;
+            bIsUpdateNeeded = true;
+        }
+    }
+    // ------------------------------------------------------
+
+    // ====  Statusbar widths  ====
+
+    int g_vStatusbarSectionWidth[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
+
+    _CalculateStatusbarSections(g_vStatusbarSectionWidth, tchStatusBar, &bIsUpdateNeeded);
+
+    if (bIsUpdateNeeded)
+    {
+        int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+        BYTE cnt = 0;
+        int totalWidth = 0;
+        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+        {
+            int const id = g_vSBSOrder[i];
+            if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0))
+            {
+                totalWidth += g_vStatusbarSectionWidth[id];
+                aStatusbarSections[cnt++] = totalWidth;
+            }
+        }
+
+        if (cnt > 0)
+        {
+            aStatusbarSections[cnt - 1] = -1;
+        }
+        else
+        {
+            aStatusbarSections[0] = -1;
+            Settings.ShowStatusbar = false;
+        }
+
+        SendMessage(Globals.hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
+
+        cnt = 0;
+        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
+        {
+            int const id = g_vSBSOrder[i];
+            if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0))
+            {
+                StatusSetText(Globals.hwndStatus, cnt++, tchStatusBar[id]);
+            }
+        }
+    }
+    // --------------------------------------------------------------------------
+
+    // update Find/Replace dialog (if any)
+    if (bIsWindowFindReplace)
+    {
+        static WCHAR tchReplOccs[32] = { L'\0' };
+        if (Globals.iReplacedOccurrences > 0)
+            StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", Globals.iReplacedOccurrences);
+        else
+            StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
+
+        const WCHAR* const SBFMT = L" %s%s / %s     %s%s     %s%s     %s%s     %s%s     (  %s  )              ";
+
+        static WCHAR tchFRStatus[128] = { L'\0' };
+        StringCchPrintf(tchFRStatus, COUNTOF(tchFRStatus), SBFMT,
+                        g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines,
+                        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
+                        g_mxSBPrefix[STATUS_SELECTION], tchSel,
+                        g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
+                        g_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
+                        FR_Status[Globals.FindReplaceMatchFoundState]);
+
+        SetWindowText(GetDlgItem(Globals.hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
+    }
 
 }
 
@@ -9423,23 +10310,25 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 //
 void UpdateMarginWidth()
 {
-  if (Settings.ShowLineNumbers)
-  {
-    static char chLines[32] = { '\0' };
-    StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
+    if (Settings.ShowLineNumbers)
+    {
+        static char chLines[32] = { '\0' };
+        StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
 
-    int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
-    int const iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
+        int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
+        int const iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
 
-    if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
+        if (iLineMarginWidthNow != iLineMarginWidthFit)
+        {
+            SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
+        }
     }
-  }
-  else {
-    SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
-  }
-  Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
-  Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
+    else
+    {
+        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
+    }
+    Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
+    Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
 
@@ -9451,14 +10340,14 @@ void UpdateMarginWidth()
 //
 void UpdateSaveSettingsCmds()
 {
-  bool const bSoftLocked = Flags.bSettingsFileSoftLocked;
-  bool const bHaveIniFile = StrIsNotEmpty(Globals.IniFile);
-  bool const bHaveFallbackIniFile = StrIsNotEmpty(Globals.IniFileDefault);
-  CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !bSoftLocked);
-  EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !bSoftLocked);
-  EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (bHaveIniFile || bHaveFallbackIniFile) && !bSoftLocked);
-  EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, bHaveIniFile && !bSoftLocked);
-  DrawMenuBar(Globals.hwndMain);
+    bool const bSoftLocked = Flags.bSettingsFileSoftLocked;
+    bool const bHaveIniFile = StrIsNotEmpty(Globals.IniFile);
+    bool const bHaveFallbackIniFile = StrIsNotEmpty(Globals.IniFileDefault);
+    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !bSoftLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !bSoftLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (bHaveIniFile || bHaveFallbackIniFile) && !bSoftLocked);
+    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, bHaveIniFile && !bSoftLocked);
+    DrawMenuBar(Globals.hwndMain);
 }
 
 
@@ -9468,13 +10357,13 @@ void UpdateSaveSettingsCmds()
 //
 void UpdateUI()
 {
-  struct SCNotification scn;
-  scn.nmhdr.hwndFrom = Globals.hwndEdit;
-  scn.nmhdr.idFrom = IDC_EDIT;
-  scn.nmhdr.code = SCN_UPDATEUI;
-  scn.updated = (SC_UPDATE_CONTENT/* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
-  SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-  SendWMSize(Globals.hwndMain, NULL);
+    struct SCNotification scn;
+    scn.nmhdr.hwndFrom = Globals.hwndEdit;
+    scn.nmhdr.idFrom = IDC_EDIT;
+    scn.nmhdr.code = SCN_UPDATEUI;
+    scn.updated = (SC_UPDATE_CONTENT/* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
+    SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
+    SendWMSize(Globals.hwndMain, NULL);
 }
 
 
@@ -9484,12 +10373,13 @@ void UpdateUI()
 //
 void UpdateTitleBar(const HWND hwnd)
 {
-  if (hwnd == Globals.hwndMain) {
-    SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                   Settings.PathNameFormat, GetDocModified(), IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
-  }
-  PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
-  PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+    if (hwnd == Globals.hwndMain)
+    {
+        SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
+                       Settings.PathNameFormat, GetDocModified(), IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
+    }
+    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
 }
 
 
@@ -9501,8 +10391,9 @@ static volatile LONG UndoActionToken = UNDOREDO_BLOCKED; // block
 
 //=============================================================================
 
-static bool  _InUndoRedoTransaction() {
-  return (InterlockedOr(&UndoActionToken, 0L) != UNDOREDO_FREE);
+static bool  _InUndoRedoTransaction()
+{
+    return (InterlockedOr(&UndoActionToken, 0L) != UNDOREDO_FREE);
 }
 
 //=============================================================================
@@ -9511,9 +10402,9 @@ static bool  _InUndoRedoTransaction() {
 //
 void UndoRedoRecordingStart()
 {
-  InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // clear
-  _UndoRedoActionMap(-1, NULL);
-  SciCall_SetUndoCollection(true);
+    InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // clear
+    _UndoRedoActionMap(-1, NULL);
+    SciCall_SetUndoCollection(true);
 }
 
 
@@ -9523,13 +10414,16 @@ void UndoRedoRecordingStart()
 //
 void UndoRedoRecordingStop()
 {
-  int const curToken = InterlockedOr(&UndoActionToken, 0L);
-  if (curToken >= 0) { EndUndoAction(curToken); }
+    int const curToken = InterlockedOr(&UndoActionToken, 0L);
+    if (curToken >= 0)
+    {
+        EndUndoAction(curToken);
+    }
 
-  _UndoRedoActionMap(-1, NULL);
+    _UndoRedoActionMap(-1, NULL);
 
-  SciCall_SetUndoCollection(false);
-  SciCall_EmptyUndoBuffer();
+    SciCall_SetUndoCollection(false);
+    SciCall_EmptyUndoBuffer();
 }
 
 
@@ -9539,8 +10433,8 @@ void UndoRedoRecordingStop()
 //
 void UndoRedoReset()
 {
-  UndoRedoRecordingStop();
-  UndoRedoRecordingStart();
+    UndoRedoRecordingStop();
+    UndoRedoRecordingStart();
 }
 
 //=============================================================================
@@ -9550,60 +10444,66 @@ void UndoRedoReset()
 //
 static int _SaveUndoSelection()
 {
-  static DocPosU _s_iSelection = 0;           // index
+    static DocPosU _s_iSelection = 0;           // index
 
-  UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
-  CopyUndoRedoSelection(&sel, NULL); // init
+    UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
+    CopyUndoRedoSelection(&sel, NULL); // init
 
-  DocPosU const numOfSel = SciCall_GetSelections();
+    DocPosU const numOfSel = SciCall_GetSelections();
 
-  // each single selection of a multi-selection will call thid method
-  // we are only interested in the first call
-  if (0 == _s_iSelection) {
-    _s_iSelection = numOfSel;
-  }
-  if ((numOfSel-1) != --_s_iSelection) {
-    return -1;
-  }
+    // each single selection of a multi-selection will call thid method
+    // we are only interested in the first call
+    if (0 == _s_iSelection)
+    {
+        _s_iSelection = numOfSel;
+    }
+    if ((numOfSel-1) != --_s_iSelection)
+    {
+        return -1;
+    }
 
-  int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
+    int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
 
-  sel.selMode_undo = selMode;
+    sel.selMode_undo = selMode;
 
-  switch (selMode)
-  {
+    switch (selMode)
+    {
     case NP3_SEL_MULTI:
     {
-      for (DocPosU i = 0; i < numOfSel; ++i) {
-        if (sel.anchorPos_undo && sel.curPos_undo) {
-          DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
-          utarray_push_back(sel.anchorPos_undo, &anchorPos);
-          DocPos const curPos = SciCall_GetSelectionNCaret(i);
-          utarray_push_back(sel.curPos_undo, &curPos);
+        for (DocPosU i = 0; i < numOfSel; ++i)
+        {
+            if (sel.anchorPos_undo && sel.curPos_undo)
+            {
+                DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
+                utarray_push_back(sel.anchorPos_undo, &anchorPos);
+                DocPos const curPos = SciCall_GetSelectionNCaret(i);
+                utarray_push_back(sel.curPos_undo, &curPos);
+            }
+            if (!Settings2.DenyVirtualSpaceAccess && sel.anchorVS_undo && sel.curVS_undo)
+            {
+                DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
+                utarray_push_back(sel.anchorVS_undo, &anchorVS);
+                DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
+                utarray_push_back(sel.curVS_undo, &curVS);
+            }
         }
-        if (!Settings2.DenyVirtualSpaceAccess && sel.anchorVS_undo && sel.curVS_undo) {
-          DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
-          utarray_push_back(sel.anchorVS_undo, &anchorVS);
-          DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
-          utarray_push_back(sel.curVS_undo, &curVS);
-        }
-      }
     }
     break;
 
     case SC_SEL_RECTANGLE:
     case SC_SEL_THIN:
     {
-      DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
-      utarray_push_back(sel.anchorPos_undo, &anchorPos);
-      DocPos const curPos = SciCall_GetRectangularSelectionCaret();
-      utarray_push_back(sel.curPos_undo, &curPos);
-      if (!Settings2.DenyVirtualSpaceAccess) {
-        DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
-        utarray_push_back(sel.anchorVS_undo, &anchorVS);
-        DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
-        utarray_push_back(sel.curVS_undo, &curVS);
-      }
+        DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
+        utarray_push_back(sel.anchorPos_undo, &anchorPos);
+        DocPos const curPos = SciCall_GetRectangularSelectionCaret();
+        utarray_push_back(sel.curPos_undo, &curPos);
+        if (!Settings2.DenyVirtualSpaceAccess)
+        {
+            DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+            utarray_push_back(sel.anchorVS_undo, &anchorVS);
+            DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
+            utarray_push_back(sel.curVS_undo, &curVS);
+        }
     }
     break;
 
@@ -9611,27 +10511,28 @@ static int _SaveUndoSelection()
     case SC_SEL_STREAM:
     default:
     {
-      DocPos const anchorPos = SciCall_GetAnchor();
-      utarray_push_back(sel.anchorPos_undo, &anchorPos);
-      DocPos const curPos = SciCall_GetCurrentPos();
-      utarray_push_back(sel.curPos_undo, &curPos);
-      DocPos const dummy = (DocPos)-1;
-      utarray_push_back(sel.anchorVS_undo, &dummy);
-      utarray_push_back(sel.curVS_undo, &dummy);
+        DocPos const anchorPos = SciCall_GetAnchor();
+        utarray_push_back(sel.anchorPos_undo, &anchorPos);
+        DocPos const curPos = SciCall_GetCurrentPos();
+        utarray_push_back(sel.curPos_undo, &curPos);
+        DocPos const dummy = (DocPos)-1;
+        utarray_push_back(sel.anchorVS_undo, &dummy);
+        utarray_push_back(sel.curVS_undo, &dummy);
     }
     break;
-  }
+    }
 
-  const UndoRedoSelection_t* pSel = &sel;
-  int const token = _UndoRedoActionMap(-1, &pSel);
+    const UndoRedoSelection_t* pSel = &sel;
+    int const token = _UndoRedoActionMap(-1, &pSel);
 
-  if (token >= 0) {
-    //~SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
-    SciCall_AddUndoAction(token, UNDO_NONE);
-  }
-  _s_iSelection = 0; // reset
+    if (token >= 0)
+    {
+        //~SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
+        SciCall_AddUndoAction(token, UNDO_NONE);
+    }
+    _s_iSelection = 0; // reset
 
-  return token;
+    return token;
 }
 
 
@@ -9642,79 +10543,87 @@ static int _SaveUndoSelection()
 //
 static void  _SaveRedoSelection(int token)
 {
-  static DocPosU _s_iSelection = 0;  // index
+    static DocPosU _s_iSelection = 0;  // index
 
-  if (token < 0) { return; }
-
-  UndoRedoSelection_t* pSel = NULL;
-
-  DocPosU const numOfSel = SciCall_GetSelections();
-
-  // each single selection of a multi-selection will call this method
-  // we are only interested in the last call
-  if (0 == _s_iSelection) {
-    _s_iSelection = numOfSel;
-  }
-  if (0 != --_s_iSelection) {
-    return;
-  }
-
-  if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
-  {
-    int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
-    
-    pSel->selMode_redo = selMode;
-
-    switch (selMode)
+    if (token < 0)
     {
-      case NP3_SEL_MULTI:
-      {
-        for (DocPosU i = 0; i < numOfSel; ++i) {
-          DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
-          utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-          DocPos const curPos = SciCall_GetSelectionNCaret(i);
-          utarray_push_back(pSel->curPos_redo, &curPos);
-          if (!Settings2.DenyVirtualSpaceAccess) {
-            DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
-            utarray_push_back(pSel->anchorVS_redo, &anchorVS);
-            DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
-            utarray_push_back(pSel->curVS_redo, &curVS);
-          }
-        }
-      }
-      break;
-
-      case SC_SEL_RECTANGLE:
-      case SC_SEL_THIN:
-      {
-        DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
-        utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-        DocPos const curPos = SciCall_GetRectangularSelectionCaret();
-        utarray_push_back(pSel->curPos_redo, &curPos);
-        if (!Settings2.DenyVirtualSpaceAccess) {
-          DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
-          utarray_push_back(pSel->anchorVS_redo, &anchorVS);
-          DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
-          utarray_push_back(pSel->curVS_redo, &curVS);
-        }
-      }
-      break;
-
-      case SC_SEL_LINES:
-      case SC_SEL_STREAM:
-      default:
-      {
-        DocPos const anchorPos = SciCall_GetAnchor();
-        utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-        DocPos const curPos = SciCall_GetCurrentPos();
-        utarray_push_back(pSel->curPos_redo, &curPos);
-        //~DocPos const dummy = (DocPos)-1;
-        //~utarray_push_back(pSel->anchorVS_redo, &dummy);
-        //~utarray_push_back(pSel->curVS_redo, &dummy);
-      }
-      break;
+        return;
     }
-  }
+
+    UndoRedoSelection_t* pSel = NULL;
+
+    DocPosU const numOfSel = SciCall_GetSelections();
+
+    // each single selection of a multi-selection will call this method
+    // we are only interested in the last call
+    if (0 == _s_iSelection)
+    {
+        _s_iSelection = numOfSel;
+    }
+    if (0 != --_s_iSelection)
+    {
+        return;
+    }
+
+    if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
+    {
+        int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
+
+        pSel->selMode_redo = selMode;
+
+        switch (selMode)
+        {
+        case NP3_SEL_MULTI:
+        {
+            for (DocPosU i = 0; i < numOfSel; ++i)
+            {
+                DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
+                utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+                DocPos const curPos = SciCall_GetSelectionNCaret(i);
+                utarray_push_back(pSel->curPos_redo, &curPos);
+                if (!Settings2.DenyVirtualSpaceAccess)
+                {
+                    DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
+                    utarray_push_back(pSel->anchorVS_redo, &anchorVS);
+                    DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
+                    utarray_push_back(pSel->curVS_redo, &curVS);
+                }
+            }
+        }
+        break;
+
+        case SC_SEL_RECTANGLE:
+        case SC_SEL_THIN:
+        {
+            DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
+            utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+            DocPos const curPos = SciCall_GetRectangularSelectionCaret();
+            utarray_push_back(pSel->curPos_redo, &curPos);
+            if (!Settings2.DenyVirtualSpaceAccess)
+            {
+                DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+                utarray_push_back(pSel->anchorVS_redo, &anchorVS);
+                DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
+                utarray_push_back(pSel->curVS_redo, &curVS);
+            }
+        }
+        break;
+
+        case SC_SEL_LINES:
+        case SC_SEL_STREAM:
+        default:
+        {
+            DocPos const anchorPos = SciCall_GetAnchor();
+            utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+            DocPos const curPos = SciCall_GetCurrentPos();
+            utarray_push_back(pSel->curPos_redo, &curPos);
+            //~DocPos const dummy = (DocPos)-1;
+            //~utarray_push_back(pSel->anchorVS_redo, &dummy);
+            //~utarray_push_back(pSel->curVS_redo, &dummy);
+        }
+        break;
+        }
+    }
 }
 
 
@@ -9725,11 +10634,14 @@ static void  _SaveRedoSelection(int token)
 //
 int BeginUndoAction()
 {
-  if (_InUndoRedoTransaction()) { return -1; }
-  SciCall_BeginUndoAction();
-  int const token = _SaveUndoSelection();
-  InterlockedExchange(&UndoActionToken, (LONG)token);
-  return token;
+    if (_InUndoRedoTransaction())
+    {
+        return -1;
+    }
+    SciCall_BeginUndoAction();
+    int const token = _SaveUndoSelection();
+    InterlockedExchange(&UndoActionToken, (LONG)token);
+    return token;
 }
 
 
@@ -9741,12 +10653,12 @@ int BeginUndoAction()
 //
 void EndUndoAction(int token)
 {
-  if ((token >= 0) && (token == (int)InterlockedOr(&UndoActionToken, 0L)))
-  {
-    _SaveRedoSelection(token);
-    SciCall_EndUndoAction();
-    InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
-  }
+    if ((token >= 0) && (token == (int)InterlockedOr(&UndoActionToken, 0L)))
+    {
+        _SaveRedoSelection(token);
+        SciCall_EndUndoAction();
+        InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
+    }
 }
 
 
@@ -9757,99 +10669,110 @@ void EndUndoAction(int token)
 //
 bool RestoreAction(int token, DoAction doAct)
 {
-  if (_InUndoRedoTransaction()) { return false; }
-
-  UndoRedoSelection_t* pSel = NULL;
-
-  if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
-  {
-    // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-    HWND const hwndedit = Globals.hwndEdit;
-
-    DocPos* pPosAnchor = NULL;
-    DocPos* pPosCur = NULL;
-    DocPos* pPosAnchorVS = NULL;
-    DocPos* pPosCurVS = NULL;
-    pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
-    pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
-    pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
-    pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
-
-    if (pPosAnchor && pPosCur)
+    if (_InUndoRedoTransaction())
     {
-      // Ensure that the first and last lines of a selection are always unfolded
-      // This needs to be done _before_ the SCI_SETSEL message
-      DocLn const anchorPosLine = SciCall_LineFromPosition((*pPosAnchor));
-      DocLn const currPosLine = SciCall_LineFromPosition((*pPosCur));
-      PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
-      if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
-
-
-      int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
-
-      PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
-
-      switch (selectionMode)
-      {
-        case NP3_SEL_MULTI:
-        {
-          unsigned int i = 0;
-
-          DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
-          DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
-
-          PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
-          if (pPosAnchorVS && pPosCurVS) {
-            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosAnchorVS));
-            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosCurVS));
-          }
-          PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
-
-          ++i;
-          while (i < selCount)
-          {
-            pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorPos_undo, i) : utarray_eltptr(pSel->anchorPos_redo, i));
-            pPosCur = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curPos_undo, i) : utarray_eltptr(pSel->curPos_redo, i));
-            if (pPosAnchor && pPosCur) {
-              PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
-              if (i < selCountVS) {
-                pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorVS_undo, i) : utarray_eltptr(pSel->anchorVS_redo, i));
-                pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curVS_undo, i) : utarray_eltptr(pSel->curVS_redo, i));
-                if (pPosAnchorVS && pPosCurVS) {
-                  PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosAnchorVS));
-                  PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosCurVS));
-                }
-              }
-            }
-            ++i;
-          }
-          //~PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, (LPARAM)0);
-        }
-        break;
-
-        case SC_SEL_RECTANGLE:
-        case SC_SEL_THIN:
-          PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)(*pPosAnchor), 0);
-          PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)(*pPosCur), 0);
-          if (pPosAnchorVS && pPosCurVS) {
-            PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)(*pPosAnchorVS), 0);
-            PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)(*pPosCurVS), 0);
-          }
-          PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
-          break;
-
-        case SC_SEL_LINES:
-        case SC_SEL_STREAM:
-        default:
-          PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
-          PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
-          break;
-      }
+        return false;
     }
-    PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
-    PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
-  }
-  return true;
+
+    UndoRedoSelection_t* pSel = NULL;
+
+    if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
+    {
+        // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
+        HWND const hwndedit = Globals.hwndEdit;
+
+        DocPos* pPosAnchor = NULL;
+        DocPos* pPosCur = NULL;
+        DocPos* pPosAnchorVS = NULL;
+        DocPos* pPosCurVS = NULL;
+        pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
+        pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
+        pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
+        pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
+
+        if (pPosAnchor && pPosCur)
+        {
+            // Ensure that the first and last lines of a selection are always unfolded
+            // This needs to be done _before_ the SCI_SETSEL message
+            DocLn const anchorPosLine = SciCall_LineFromPosition((*pPosAnchor));
+            DocLn const currPosLine = SciCall_LineFromPosition((*pPosCur));
+            PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
+            if (anchorPosLine != currPosLine)
+            {
+                PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0);
+            }
+
+
+            int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
+
+            PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
+
+            switch (selectionMode)
+            {
+            case NP3_SEL_MULTI:
+            {
+                unsigned int i = 0;
+
+                DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
+                DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
+
+                PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                if (pPosAnchorVS && pPosCurVS)
+                {
+                    PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosAnchorVS));
+                    PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosCurVS));
+                }
+                PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
+
+                ++i;
+                while (i < selCount)
+                {
+                    pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorPos_undo, i) : utarray_eltptr(pSel->anchorPos_redo, i));
+                    pPosCur = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curPos_undo, i) : utarray_eltptr(pSel->curPos_redo, i));
+                    if (pPosAnchor && pPosCur)
+                    {
+                        PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                        if (i < selCountVS)
+                        {
+                            pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorVS_undo, i) : utarray_eltptr(pSel->anchorVS_redo, i));
+                            pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curVS_undo, i) : utarray_eltptr(pSel->curVS_redo, i));
+                            if (pPosAnchorVS && pPosCurVS)
+                            {
+                                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosAnchorVS));
+                                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosCurVS));
+                            }
+                        }
+                    }
+                    ++i;
+                }
+                //~PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, (LPARAM)0);
+            }
+            break;
+
+            case SC_SEL_RECTANGLE:
+            case SC_SEL_THIN:
+                PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)(*pPosAnchor), 0);
+                PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)(*pPosCur), 0);
+                if (pPosAnchorVS && pPosCurVS)
+                {
+                    PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)(*pPosAnchorVS), 0);
+                    PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)(*pPosCurVS), 0);
+                }
+                PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
+                break;
+
+            case SC_SEL_LINES:
+            case SC_SEL_STREAM:
+            default:
+                PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
+                break;
+            }
+        }
+        PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
+        PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
+    }
+    return true;
 }
 
 
@@ -9860,47 +10783,60 @@ bool RestoreAction(int token, DoAction doAct)
 //
 static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
 {
-  if (UndoRedoSelectionUTArray == NULL) { return -1; };
+    if (UndoRedoSelectionUTArray == NULL)
+    {
+        return -1;
+    };
 
-  static unsigned int uiTokenCnt = 0U;
+    static unsigned int uiTokenCnt = 0U;
 
-  // indexing is unsigned
-  unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
+    // indexing is unsigned
+    unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
 
-  if (selection == NULL) {
-    // reset / clear
-    int const curToken = InterlockedOr(&UndoActionToken, 0L);
-    if (curToken >= 0) { EndUndoAction(curToken); }
-    utarray_clear(UndoRedoSelectionUTArray);
-    utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-    uiTokenCnt = 0U;
-    InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
-    return -1;
-  }
-
-  if (!SciCall_GetUndoCollection()) { return -1; }
-
-  // get or set map item request ?
-  if ((token >= 0) && (utoken < uiTokenCnt)) 
-  {
-    if ((*selection) == NULL) {
-      // this is a get request
-      (*selection) = (UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
+    if (selection == NULL)
+    {
+        // reset / clear
+        int const curToken = InterlockedOr(&UndoActionToken, 0L);
+        if (curToken >= 0)
+        {
+            EndUndoAction(curToken);
+        }
+        utarray_clear(UndoRedoSelectionUTArray);
+        utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
+        uiTokenCnt = 0U;
+        InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
+        return -1;
     }
-    else {
-      // this is a set request (fill redo pos)
-      assert(false); // not used yet
-      //utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
+
+    if (!SciCall_GetUndoCollection())
+    {
+        return -1;
     }
-    // don't clear map item here (token used in redo/undo again)
-  }
-  else if (token < 0) {
-    // set map new item request
-    token = (int)uiTokenCnt;
-    utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), uiTokenCnt);
-    uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
-  }
-  return token;
+
+    // get or set map item request ?
+    if ((token >= 0) && (utoken < uiTokenCnt))
+    {
+        if ((*selection) == NULL)
+        {
+            // this is a get request
+            (*selection) = (UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
+        }
+        else
+        {
+            // this is a set request (fill redo pos)
+            assert(false); // not used yet
+            //utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
+        }
+        // don't clear map item here (token used in redo/undo again)
+    }
+    else if (token < 0)
+    {
+        // set map new item request
+        token = (int)uiTokenCnt;
+        utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), uiTokenCnt);
+        uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
+    }
+    return token;
 }
 
 
@@ -9909,14 +10845,16 @@ static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
 //  _SplitUndoTransaction()
 //
 //
-static void _SplitUndoTransaction(const int iModType) 
+static void _SplitUndoTransaction(const int iModType)
 {
-  if (!_InUndoRedoTransaction()) {
-    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-      SciCall_BeginUndoAction();
-      SciCall_EndUndoAction();
+    if (!_InUndoRedoTransaction())
+    {
+        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO)))
+        {
+            SciCall_BeginUndoAction();
+            SciCall_EndUndoAction();
+        }
     }
-  }
 }
 
 
@@ -9929,37 +10867,41 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
             bool bSkipUnicodeDetect,bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
             EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp)
 {
-  WCHAR tch[MAX_PATH + 40];
-  FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
-  bool fSuccess = false;
+    WCHAR tch[MAX_PATH + 40];
+    FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
+    bool fSuccess = false;
 
-  BeginWaitCursor(true,tch);
+    BeginWaitCursor(true,tch);
 
-  if (fLoad) {
-    fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,bSetSavePoint,status);
-  }
-  else {
-    int idx;
-    if (MRU_FindFile(Globals.pFileMRU,pszFileName,&idx)) {
-      Globals.pFileMRU->iEncoding[idx] = status->iEncoding;
-      Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : -1);
-      Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetAnchor() : -1);
-
-      WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
-      EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-      if (Globals.pFileMRU->pszBookMarks[idx]) {
-        LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
-      }
-      Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
+    if (fLoad)
+    {
+        fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,bSetSavePoint,status);
     }
-    fSuccess = EditSaveFile(Globals.hwndEdit, pszFileName, status, bSaveCopy, bPreserveTimeStamp);
-  }
+    else
+    {
+        int idx;
+        if (MRU_FindFile(Globals.pFileMRU,pszFileName,&idx))
+        {
+            Globals.pFileMRU->iEncoding[idx] = status->iEncoding;
+            Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : -1);
+            Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetAnchor() : -1);
 
-  s_bFileReadOnly = IsReadOnly(GetFileAttributes(pszFileName));
-  
-  EndWaitCursor();
+            WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+            EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+            if (Globals.pFileMRU->pszBookMarks[idx])
+            {
+                LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
+            }
+            Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
+        }
+        fSuccess = EditSaveFile(Globals.hwndEdit, pszFileName, status, bSaveCopy, bPreserveTimeStamp);
+    }
 
-  return(fSuccess);
+    s_bFileReadOnly = IsReadOnly(GetFileAttributes(pszFileName));
+
+    EndWaitCursor();
+
+    return(fSuccess);
 }
 
 
@@ -9970,34 +10912,35 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
 //
 bool ConsistentIndentationCheck(EditFileIOStatus* status)
 {
-  bool const hasTabOrSpaceIndent = (status->indentCount[I_TAB_LN] > 0) && (status->indentCount[I_SPC_LN] > 0);
-  bool const hasMixedIndents = (status->indentCount[I_MIX_LN] > 0);
-  //bool const hasIrregularIndentDepth = (status->indentCount[I_TAB_MOD_X] > 0) || (status->indentCount[I_SPC_MOD_X] > 0);
+    bool const hasTabOrSpaceIndent = (status->indentCount[I_TAB_LN] > 0) && (status->indentCount[I_SPC_LN] > 0);
+    bool const hasMixedIndents = (status->indentCount[I_MIX_LN] > 0);
+    //bool const hasIrregularIndentDepth = (status->indentCount[I_TAB_MOD_X] > 0) || (status->indentCount[I_SPC_MOD_X] > 0);
 
-  if (hasTabOrSpaceIndent || hasMixedIndents /*|| hasIrregularIndentDepth */)
-  {
-    if (WarnIndentationDlg(Globals.hwndMain, status))
+    if (hasTabOrSpaceIndent || hasMixedIndents /*|| hasIrregularIndentDepth */)
     {
-      bool const useTabs = SciCall_GetUseTabs();
-      SciCall_SetUseTabs(status->iGlobalIndent == I_TAB_LN);
-      bool const tabIndents = SciCall_GetTabIndents();
-      SciCall_SetTabIndents(true);
-      bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
-      SciCall_SetBackSpaceUnIndents(true);
+        if (WarnIndentationDlg(Globals.hwndMain, status))
+        {
+            bool const useTabs = SciCall_GetUseTabs();
+            SciCall_SetUseTabs(status->iGlobalIndent == I_TAB_LN);
+            bool const tabIndents = SciCall_GetTabIndents();
+            SciCall_SetTabIndents(true);
+            bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
+            SciCall_SetBackSpaceUnIndents(true);
 
-      EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
-      EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
+            EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
+            EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
 
-      SciCall_SetUseTabs(useTabs);
-      SciCall_SetTabIndents(tabIndents);
-      SciCall_SetBackSpaceUnIndents(backSpcUnindents);
+            SciCall_SetUseTabs(useTabs);
+            SciCall_SetTabIndents(tabIndents);
+            SciCall_SetBackSpaceUnIndents(backSpcUnindents);
+        }
+        else
+        {
+            status->iGlobalIndent = I_MIX_LN;
+            return false;
+        }
     }
-    else {
-      status->iGlobalIndent = I_MIX_LN;
-      return false;
-    }
-  }
-  return true;
+    return true;
 }
 
 
@@ -10006,292 +10949,332 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
 //  FileLoad()
 //
 //
-bool FileLoad(bool bDontSave, bool bNew, bool bReload, 
+bool FileLoad(bool bDontSave, bool bNew, bool bReload,
               bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile)
 {
-  bool fSuccess = false;
+    bool fSuccess = false;
 
-  EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
-  fioStatus.iEOLMode = Settings.DefaultEOLMode;
-  fioStatus.iEncoding = CPI_ANSI_DEFAULT;
+    EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
+    fioStatus.iEOLMode = Settings.DefaultEOLMode;
+    fioStatus.iEncoding = CPI_ANSI_DEFAULT;
 
-  if (!bDontSave)
-  {
-    if (!FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-      return false;
-    }
-  }
-
-  if (!bReload) { 
-    ResetEncryption(); 
-  }
-
-  if (bNew) 
-  {
-    if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-
-    if (!s_IsThisAnElevatedRelaunch) {
-      Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
+    if (!bDontSave)
+    {
+        if (!FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+        {
+            return false;
+        }
     }
 
-    StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),L"");
-    SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
-    SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
-    if (!s_flagKeepTitleExcerpt) { StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L""); }
-    FileVars_GetFromData(NULL,0,&Globals.fvCurFile); // init-reset
-
-    EditSetNewText(Globals.hwndEdit, "", 0, true);
-
-    SciCall_SetEOLMode(Settings.DefaultEOLMode);
-    Encoding_Current(Settings.DefaultEncoding);
-    
-    Style_SetDefaultLexer(Globals.hwndEdit);
-
-    s_bFileReadOnly = false;
-
-    SetSavePoint();
-    UpdateMarginWidth();
-    UpdateStatusbar(true);
-
-    // Terminate file watching
-    if (FileWatching.ResetFileWatching) {
-      if (FileWatching.MonitoringLog) {
-        PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-      }
-      FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    if (!bReload)
+    {
+        ResetEncryption();
     }
-    InstallFileWatching(false); // terminate
-    Flags.bSettingsFileSoftLocked = false;
-    UpdateSaveSettingsCmds();
-    COND_SHOW_ZOOM_CALLTIP();
 
-    return true;
-  }
+    if (bNew)
+    {
+        if (FocusedView.HideNonMatchedLines)
+        {
+            EditToggleView(Globals.hwndEdit);
+        }
 
-  WCHAR szFolder[MAX_PATH] = { L'\0' };
-  WCHAR szFilePath[MAX_PATH] = { L'\0' };
-  if (StrIsEmpty(lpszFile)) {
-    if (!OpenFileDlg(Globals.hwndMain, szFilePath, COUNTOF(szFilePath), szFolder)) {
-      return false;
-    }
-  }
-  else {
-    StringCchCopy(szFilePath, COUNTOF(szFilePath), lpszFile);
-  }
-  NormalizePathEx(szFilePath, COUNTOF(szFilePath), true, Flags.bSearchPathIfRelative);
+        if (!s_IsThisAnElevatedRelaunch)
+        {
+            Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
+        }
 
-  // change current directory to prevent directory lock on another path
-  if (SUCCEEDED(StringCchCopy(szFolder, COUNTOF(szFolder), szFilePath))) {
-    if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder)))) {
-      SetCurrentDirectory(szFolder);
-    }
-  }
- 
-  // Ask to create a new file...
-  if (!bReload && !PathIsExistingFile(szFilePath))
-  {
-    bool bCreateFile = s_flagQuietCreate;
-    if (!bCreateFile) {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, PathFindFileName(szFilePath));
-      if ((IDOK == answer) || (IDYES == answer)) {
-        bCreateFile = true;
-      }
-    }
-    if (bCreateFile) {
-      HANDLE hFile = CreateFile(szFilePath,
-                      GENERIC_READ | GENERIC_WRITE,
-                      FILE_SHARE_READ | FILE_SHARE_WRITE,
-                      NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
-      Globals.dwLastError = GetLastError();
-      fSuccess = (hFile != INVALID_HANDLE_VALUE);
-      if (fSuccess) {
-        FileVars_GetFromData(NULL,0,&Globals.fvCurFile); // init/reset
-        EditSetNewText(Globals.hwndEdit,"",0, true);
-        Style_SetDefaultLexer(Globals.hwndEdit);
+        StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),L"");
+        SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
+        SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
+        if (!s_flagKeepTitleExcerpt)
+        {
+            StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
+        }
+        FileVars_GetFromData(NULL,0,&Globals.fvCurFile); // init-reset
+
+        EditSetNewText(Globals.hwndEdit, "", 0, true);
+
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
-        if (Encoding_IsValid(Encoding_Forced(CPI_GET))) {
-          fioStatus.iEncoding = Encoding_Forced(CPI_GET);
-          Encoding_Current(fioStatus.iEncoding);
-        }
-        else {
-          fioStatus.iEncoding = Globals.fvCurFile.iEncoding;
-          Encoding_Current(Globals.fvCurFile.iEncoding);
-        }
+        Encoding_Current(Settings.DefaultEncoding);
+
+        Style_SetDefaultLexer(Globals.hwndEdit);
+
         s_bFileReadOnly = false;
-      }
-      if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE)) {
-        CloseHandle(hFile);
-      }
+
+        SetSavePoint();
+        UpdateMarginWidth();
+        UpdateStatusbar(true);
+
+        // Terminate file watching
+        if (FileWatching.ResetFileWatching)
+        {
+            if (FileWatching.MonitoringLog)
+            {
+                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+            }
+            FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+        }
+        InstallFileWatching(false); // terminate
+        Flags.bSettingsFileSoftLocked = false;
+        UpdateSaveSettingsCmds();
+        COND_SHOW_ZOOM_CALLTIP();
+
+        return true;
+    }
+
+    WCHAR szFolder[MAX_PATH] = { L'\0' };
+    WCHAR szFilePath[MAX_PATH] = { L'\0' };
+    if (StrIsEmpty(lpszFile))
+    {
+        if (!OpenFileDlg(Globals.hwndMain, szFilePath, COUNTOF(szFilePath), szFolder))
+        {
+            return false;
+        }
     }
     else
-      return false;
-  }
-  else {
-    int idx;
-    if (!bReload && MRU_FindFile(Globals.pFileMRU,szFilePath,&idx)) {
-      fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
-      if (Encoding_IsValid(fioStatus.iEncoding)) {
-        Encoding_SrcWeak(fioStatus.iEncoding);
-      }
-    }
-    else {
-      fioStatus.iEncoding = Encoding_GetCurrent();
-    }
-    if (bReload && !FileWatching.MonitoringLog) 
     {
-      Sci_GotoPosChooseCaret(0);
-
-      _BEGIN_UNDO_ACTION_;
-      fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false, false);
-      _END_UNDO_ACTION_;
+        StringCchCopy(szFilePath, COUNTOF(szFilePath), lpszFile);
     }
-    else {
-      fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !s_IsThisAnElevatedRelaunch, &fioStatus, false, false);
-    }
-  }
+    NormalizePathEx(szFilePath, COUNTOF(szFilePath), true, Flags.bSearchPathIfRelative);
 
-  bool bUnknownLexer = s_flagLexerSpecified;
-
-  if (fSuccess)
-  {
-    BeginWaitCursor(true, L"Styling...");
-
-    Sci_GotoPosChooseCaret(0);
-
-    if (!s_IsThisAnElevatedRelaunch) {
-      Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
-    }
-
-    StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFilePath);
-    SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
-    SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
-
-    if (!s_flagKeepTitleExcerpt) {
-      StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
-    }
-    
-    if (!s_flagLexerSpecified) { // flagLexerSpecified will be cleared
-      bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
-    }
-    SciCall_SetEOLMode(fioStatus.iEOLMode);
-    Encoding_Current(fioStatus.iEncoding); // load may change encoding
-
-    int idx = 0;
-    DocPos iCaretPos = -1;
-    DocPos iAnchorPos = -1;
-    LPCWSTR pszBookMarks = L"";
-    if (!bReload && MRU_FindFile(Globals.pFileMRU,szFilePath,&idx)) {
-      iCaretPos = Globals.pFileMRU->iCaretPos[idx];
-      iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
-      pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
-    }
-    if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch))
+    // change current directory to prevent directory lock on another path
+    if (SUCCEEDED(StringCchCopy(szFolder, COUNTOF(szFolder), szFilePath)))
     {
-      MRU_AddFile(Globals.pFileMRU, szFilePath, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
+        if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder))))
+        {
+            SetCurrentDirectory(szFolder);
+        }
     }
 
-    EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
-    if (IsFindPatternEmpty()) {
-      SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
-    }
-
-    // Install watching of the current file
-    if (!bReload && FileWatching.ResetFileWatching) {
-      if (FileWatching.MonitoringLog) {
-        PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-      }
-      FileWatching.FileWatchingMode = Settings.FileWatchingMode;
-    }
-    InstallFileWatching(true);
-
-    // the .LOG feature ...
-    if (SciCall_GetTextLength() >= 4) {
-      char tchLog[5] = { '\0','\0','\0','\0','\0' };
-      SciCall_GetText(COUNTOF(tchLog), tchLog);
-      if (StringCchCompareXA(tchLog,".LOG") == 0) {
-        SciCall_DocumentEnd();
-        _BEGIN_UNDO_ACTION_;
-        SciCall_NewLine();
-        SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
-        SciCall_DocumentEnd();
-        SciCall_NewLine();
-        _END_UNDO_ACTION_;
-        SciCall_ScrollToEnd();
-      }
-    }
-
-    // set historic caret/selection  pos
-    if ((iCaretPos >= 0) && (iAnchorPos >= 0) && (SciCall_GetCurrentPos() == 0))
+    // Ask to create a new file...
+    if (!bReload && !PathIsExistingFile(szFilePath))
     {
-      EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
+        bool bCreateFile = s_flagQuietCreate;
+        if (!bCreateFile)
+        {
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, PathFindFileName(szFilePath));
+            if ((IDOK == answer) || (IDYES == answer))
+            {
+                bCreateFile = true;
+            }
+        }
+        if (bCreateFile)
+        {
+            HANDLE hFile = CreateFile(szFilePath,
+                                      GENERIC_READ | GENERIC_WRITE,
+                                      FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                      NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+            Globals.dwLastError = GetLastError();
+            fSuccess = (hFile != INVALID_HANDLE_VALUE);
+            if (fSuccess)
+            {
+                FileVars_GetFromData(NULL,0,&Globals.fvCurFile); // init/reset
+                EditSetNewText(Globals.hwndEdit,"",0, true);
+                Style_SetDefaultLexer(Globals.hwndEdit);
+                SciCall_SetEOLMode(Settings.DefaultEOLMode);
+                if (Encoding_IsValid(Encoding_Forced(CPI_GET)))
+                {
+                    fioStatus.iEncoding = Encoding_Forced(CPI_GET);
+                    Encoding_Current(fioStatus.iEncoding);
+                }
+                else
+                {
+                    fioStatus.iEncoding = Globals.fvCurFile.iEncoding;
+                    Encoding_Current(Globals.fvCurFile.iEncoding);
+                }
+                s_bFileReadOnly = false;
+            }
+            if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE))
+            {
+                CloseHandle(hFile);
+            }
+        }
+        else
+            return false;
     }
-
-    SetSavePoint();
-
-    // consistent settings file handling (if loaded in editor)
-    Flags.bSettingsFileSoftLocked = (StringCchCompareXIW(Globals.CurrentFile, Globals.IniFile) == 0);
-    UpdateSaveSettingsCmds();
-    COND_SHOW_ZOOM_CALLTIP();
-
-    // Show warning: Unicode file loaded as ANSI
-    if (fioStatus.bUnicodeErr) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_UNICODE);
-    }
-
-    // Show inconsistent line endings warning
-    Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
-
-    bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave
-      && !fioStatus.bEncryptedRaw
-      && !(fioStatus.bUnknownExt && bUnknownLexer)
-      && !bReload;
-    //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
-
-    bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
-
-    if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath))
+    else
     {
-      if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
-        SciCall_ConvertEOLs(fioStatus.iEOLMode);
-        Globals.bDocHasInconsistentEOLs = false;
-      }
-      SciCall_SetEOLMode(fioStatus.iEOLMode);
+        int idx;
+        if (!bReload && MRU_FindFile(Globals.pFileMRU,szFilePath,&idx))
+        {
+            fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
+            if (Encoding_IsValid(fioStatus.iEncoding))
+            {
+                Encoding_SrcWeak(fioStatus.iEncoding);
+            }
+        }
+        else
+        {
+            fioStatus.iEncoding = Encoding_GetCurrent();
+        }
+        if (bReload && !FileWatching.MonitoringLog)
+        {
+            Sci_GotoPosChooseCaret(0);
+
+            _BEGIN_UNDO_ACTION_;
+            fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload, &fioStatus, false, false);
+            _END_UNDO_ACTION_;
+        }
+        else
+        {
+            fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !s_IsThisAnElevatedRelaunch, &fioStatus, false, false);
+        }
     }
 
+    bool bUnknownLexer = s_flagLexerSpecified;
 
-    // Show inconsistent indentation 
-    fioStatus.iGlobalIndent = I_MIX_LN; // init
-
-    bool const bCheckIndent = bCheckFile && !Flags.bLargeFileLoaded && Settings.WarnInconsistentIndents;
-
-    if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath))
+    if (fSuccess)
     {
-      EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
-      ConsistentIndentationCheck(&fioStatus);
-    }
+        BeginWaitCursor(true, L"Styling...");
 
-    if (Settings.AutoDetectIndentSettings && !Globals.CmdLnFlag_PrintFileAndLeave)
+        Sci_GotoPosChooseCaret(0);
+
+        if (!s_IsThisAnElevatedRelaunch)
+        {
+            Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
+        }
+
+        StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFilePath);
+        SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
+        SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
+
+        if (!s_flagKeepTitleExcerpt)
+        {
+            StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
+        }
+
+        if (!s_flagLexerSpecified)   // flagLexerSpecified will be cleared
+        {
+            bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+        }
+        SciCall_SetEOLMode(fioStatus.iEOLMode);
+        Encoding_Current(fioStatus.iEncoding); // load may change encoding
+
+        int idx = 0;
+        DocPos iCaretPos = -1;
+        DocPos iAnchorPos = -1;
+        LPCWSTR pszBookMarks = L"";
+        if (!bReload && MRU_FindFile(Globals.pFileMRU,szFilePath,&idx))
+        {
+            iCaretPos = Globals.pFileMRU->iCaretPos[idx];
+            iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
+            pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
+        }
+        if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch))
+        {
+            MRU_AddFile(Globals.pFileMRU, szFilePath, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
+        }
+
+        EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
+        if (IsFindPatternEmpty())
+        {
+            SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
+        }
+
+        // Install watching of the current file
+        if (!bReload && FileWatching.ResetFileWatching)
+        {
+            if (FileWatching.MonitoringLog)
+            {
+                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+            }
+            FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+        }
+        InstallFileWatching(true);
+
+        // the .LOG feature ...
+        if (SciCall_GetTextLength() >= 4)
+        {
+            char tchLog[5] = { '\0','\0','\0','\0','\0' };
+            SciCall_GetText(COUNTOF(tchLog), tchLog);
+            if (StringCchCompareXA(tchLog,".LOG") == 0)
+            {
+                SciCall_DocumentEnd();
+                _BEGIN_UNDO_ACTION_;
+                SciCall_NewLine();
+                SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
+                SciCall_DocumentEnd();
+                SciCall_NewLine();
+                _END_UNDO_ACTION_;
+                SciCall_ScrollToEnd();
+            }
+        }
+
+        // set historic caret/selection  pos
+        if ((iCaretPos >= 0) && (iAnchorPos >= 0) && (SciCall_GetCurrentPos() == 0))
+        {
+            EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
+        }
+
+        SetSavePoint();
+
+        // consistent settings file handling (if loaded in editor)
+        Flags.bSettingsFileSoftLocked = (StringCchCompareXIW(Globals.CurrentFile, Globals.IniFile) == 0);
+        UpdateSaveSettingsCmds();
+        COND_SHOW_ZOOM_CALLTIP();
+
+        // Show warning: Unicode file loaded as ANSI
+        if (fioStatus.bUnicodeErr)
+        {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_UNICODE);
+        }
+
+        // Show inconsistent line endings warning
+        Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
+
+        bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave
+                                && !fioStatus.bEncryptedRaw
+                                && !(fioStatus.bUnknownExt && bUnknownLexer)
+                                && !bReload;
+        //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
+
+        bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
+
+        if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath))
+        {
+            if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus))
+            {
+                SciCall_ConvertEOLs(fioStatus.iEOLMode);
+                Globals.bDocHasInconsistentEOLs = false;
+            }
+            SciCall_SetEOLMode(fioStatus.iEOLMode);
+        }
+
+
+        // Show inconsistent indentation
+        fioStatus.iGlobalIndent = I_MIX_LN; // init
+
+        bool const bCheckIndent = bCheckFile && !Flags.bLargeFileLoaded && Settings.WarnInconsistentIndents;
+
+        if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath))
+        {
+            EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
+            ConsistentIndentationCheck(&fioStatus);
+        }
+
+        if (Settings.AutoDetectIndentSettings && !Globals.CmdLnFlag_PrintFileAndLeave)
+        {
+            if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))
+            {
+                EditIndentationStatistic(Globals.hwndMain, &fioStatus);  // new statistic needed
+            }
+            Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
+            SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
+        }
+
+        EndWaitCursor();
+    }
+    else if (!(Flags.bLargeFileLoaded || fioStatus.bUnknownExt))
     {
-      if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))
-      {
-        EditIndentationStatistic(Globals.hwndMain, &fioStatus);  // new statistic needed
-      }
-      Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
-      SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
     }
-  
-    EndWaitCursor();
-  }
-  else if (!(Flags.bLargeFileLoaded || fioStatus.bUnknownExt)) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
-  }
 
-  UpdateToolbar();
-  UpdateMarginWidth();
-  UpdateStatusbar(true);
-  UpdateTitleBar(Globals.hwndMain);
+    UpdateToolbar();
+    UpdateMarginWidth();
+    UpdateStatusbar(true);
+    UpdateTitleBar(Globals.hwndMain);
 
-  return fSuccess;
+    return fSuccess;
 }
 
 
@@ -10303,55 +11286,66 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 //
 bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 {
-  if (StrIsEmpty(szFileName)) { return false; }
-
-  bool bPreserveView = true;
-  DocLn const curLineNum = Sci_GetCurrentLineNumber();
-  bool const bIsAtDocEnd = (curLineNum >= (Sci_GetLastDocLineNumber() - Settings2.CurrentLineVerticalSlop));
-
-  Encoding_SrcWeak(CPI_NONE);
-  if (bIgnoreCmdLnEnc) {
-    Encoding_Forced(CPI_NONE);  // ignore history too
-  }
-  else {
-    Encoding_SrcWeak(Encoding_GetCurrent());
-  }
-
-  WCHAR tchFileName2[MAX_PATH] = { L'\0' };
-  StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
-
-  if (!FileLoad(true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFileName2)) { 
-    return false; 
-  }
-
-  if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-    if (bIsAtDocEnd || FileWatching.MonitoringLog) {
-      bPreserveView = false;
-      SciCall_DocumentEnd();
-      EditEnsureSelectionVisible();
+    if (StrIsEmpty(szFileName))
+    {
+        return false;
     }
-  }
 
-  if (SciCall_GetTextLength() >= 4) {
-    char tch[5] = { '\0','\0','\0','\0','\0' };
-    SciCall_GetText(COUNTOF(tch), tch);
-    if (StringCchCompareXA(tch, ".LOG") == 0) {
-      SciCall_ClearSelections();
-      bPreserveView = false;
-      SciCall_DocumentEnd();
-      EditEnsureSelectionVisible();
+    bool bPreserveView = true;
+    DocLn const curLineNum = Sci_GetCurrentLineNumber();
+    bool const bIsAtDocEnd = (curLineNum >= (Sci_GetLastDocLineNumber() - Settings2.CurrentLineVerticalSlop));
+
+    Encoding_SrcWeak(CPI_NONE);
+    if (bIgnoreCmdLnEnc)
+    {
+        Encoding_Forced(CPI_NONE);  // ignore history too
     }
-  }
+    else
+    {
+        Encoding_SrcWeak(Encoding_GetCurrent());
+    }
 
-  SetSavePoint();
-  UpdateMarginWidth();
-  UpdateStatusbar(true);
+    WCHAR tchFileName2[MAX_PATH] = { L'\0' };
+    StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
 
-  if (bPreserveView) {
-    EditJumpTo(curLineNum + 1, 0);
-  }
+    if (!FileLoad(true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFileName2))
+    {
+        return false;
+    }
 
-  return true;
+    if (FileWatching.FileWatchingMode == FWM_AUTORELOAD)
+    {
+        if (bIsAtDocEnd || FileWatching.MonitoringLog)
+        {
+            bPreserveView = false;
+            SciCall_DocumentEnd();
+            EditEnsureSelectionVisible();
+        }
+    }
+
+    if (SciCall_GetTextLength() >= 4)
+    {
+        char tch[5] = { '\0','\0','\0','\0','\0' };
+        SciCall_GetText(COUNTOF(tch), tch);
+        if (StringCchCompareXA(tch, ".LOG") == 0)
+        {
+            SciCall_ClearSelections();
+            bPreserveView = false;
+            SciCall_DocumentEnd();
+            EditEnsureSelectionVisible();
+        }
+    }
+
+    SetSavePoint();
+    UpdateMarginWidth();
+    UpdateStatusbar(true);
+
+    if (bPreserveView)
+    {
+        EditJumpTo(curLineNum + 1, 0);
+    }
+
+    return true;
 }
 
 
@@ -10362,114 +11356,125 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 //
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 {
-  SaveAllSettings(false);
+    SaveAllSettings(false);
 
-  Flags.bDoRelaunchElevated = true;
+    Flags.bDoRelaunchElevated = true;
 
-  LPWSTR lpCmdLine = GetCommandLine();
-  size_t const wlen = StringCchLen(lpCmdLine, 0) + 2;
-  LPWSTR lpExe = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
-  LPWSTR lpArgs = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
+    LPWSTR lpCmdLine = GetCommandLine();
+    size_t const wlen = StringCchLen(lpCmdLine, 0) + 2;
+    LPWSTR lpExe = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
+    LPWSTR lpArgs = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
 
-  // ~ don't use original argument list (try to reconstruct current state as close as possible
+    // ~ don't use original argument list (try to reconstruct current state as close as possible
 #if 0
-  ExtractFirstArgument(lpCmdLine, lpExe, lpArgs, (int)wlen);
+    ExtractFirstArgument(lpCmdLine, lpExe, lpArgs, (int)wlen);
 
-  // remove relaunch elevated, we are doing this here already
-  lpArgs[StringCchLen(lpArgs, 0)] = L' '; // add a space
-  lpArgs = StrCutI(lpArgs, L"/u ");
-  lpArgs = StrCutI(lpArgs, L"-u ");
+    // remove relaunch elevated, we are doing this here already
+    lpArgs[StringCchLen(lpArgs, 0)] = L' '; // add a space
+    lpArgs = StrCutI(lpArgs, L"/u ");
+    lpArgs = StrCutI(lpArgs, L"-u ");
 
-  // remove forced command line encoding from argument list
-  WCHAR wchEncoding[80] = { L'\0' };
-  wchEncoding[0] = L'/';
-  Encoding_GetNameW(Encoding_Forced(CPI_GET), &wchEncoding[1], COUNTOF(wchEncoding)-1);
-  if (StrIsNotEmpty(&wchEncoding[1])) {
-    lpArgs = StrCutI(lpArgs, wchEncoding);
-  }
+    // remove forced command line encoding from argument list
+    WCHAR wchEncoding[80] = { L'\0' };
+    wchEncoding[0] = L'/';
+    Encoding_GetNameW(Encoding_Forced(CPI_GET), &wchEncoding[1], COUNTOF(wchEncoding)-1);
+    if (StrIsNotEmpty(&wchEncoding[1]))
+    {
+        lpArgs = StrCutI(lpArgs, wchEncoding);
+    }
 
-  // remove file from argument list
-  if (s_lpOrigFileArg) {
-    lpArgs = StrCutI(lpArgs, s_lpOrigFileArg);
-  }
+    // remove file from argument list
+    if (s_lpOrigFileArg)
+    {
+        lpArgs = StrCutI(lpArgs, s_lpOrigFileArg);
+    }
 #else
-  lpArgs[0] = L'\0';
+    lpArgs[0] = L'\0';
 #endif
 
-  // ----------------------------------------------
+    // ----------------------------------------------
 
-  WCHAR wchFlags[32] = { L'\0' };
-  if (s_flagAppIsClosing) { 
-    StringCchCat(wchFlags, COUNTOF(wchFlags), L"/UC "); 
-  }
-  if (bAutoSaveOnRelaunch) {
-    StringCchCat(wchFlags, COUNTOF(wchFlags), L"/QS ");
-  }
-  if (Flags.bPreserveFileModTime) {
-    StringCchCat(wchFlags, COUNTOF(wchFlags), L"/RP ");
-  }
-
-  DocPos const iCurPos = SciCall_GetCurrentPos();
-  int const iCurLn = (int)SciCall_LineFromPosition(iCurPos) + 1;
-  int const iCurCol = (int)SciCall_GetColumn(iCurPos) + 1;
-  WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
-
-
-  WCHAR szArguments[2048] = { L'\0' };
-  StringCchPrintf(szArguments, COUNTOF(szArguments),
-    L"%s/pos %i,%i,%i,%i,%i /g %i,%i %s", wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, lpArgs);
-
-  WCHAR lpTempPathBuffer[MAX_PATH] = { L'\0' };
-  WCHAR szTempFileName[MAX_PATH] = { L'\0' };
-
-  const WCHAR* szCurFile = StrIsNotEmpty(Globals.CurrentFile) ? Globals.CurrentFile : L".\\Untitled.txt";
-
-  WCHAR tchBase[MAX_PATH] = { L'\0' };
-  StringCchCopy(tchBase, COUNTOF(tchBase), PathFindFileName(szCurFile));  // eq. PathStripPath(tchBase);
-
-
-  if (GetTempPath(MAX_PATH, lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer, TEXT("NP3"), 0, szTempFileName))
-  {
-    size_t const len = StringCchLen(szTempFileName, MAX_PATH); // replace possible unknown extension
-      LPWSTR p = PathFindExtension(szTempFileName);
-      LPCWSTR q = PathFindExtension(szCurFile);
-    if ((p && *p) && (q && *q)) {
-      StringCchCopy(p, (MAX_PATH - len), q);
-    }
-
-    if (pFioStatus && FileIO(false, szTempFileName, true, true, false, true, pFioStatus, true, false))
+    WCHAR wchFlags[32] = { L'\0' };
+    if (s_flagAppIsClosing)
     {
-      // preserve encoding
-      WCHAR wchEncoding[80] = { L'\0' };
-      Encoding_GetNameW(Encoding_GetCurrent(), wchEncoding, COUNTOF(wchEncoding));
+        StringCchCat(wchFlags, COUNTOF(wchFlags), L"/UC ");
+    }
+    if (bAutoSaveOnRelaunch)
+    {
+        StringCchCat(wchFlags, COUNTOF(wchFlags), L"/QS ");
+    }
+    if (Flags.bPreserveFileModTime)
+    {
+        StringCchCat(wchFlags, COUNTOF(wchFlags), L"/RP ");
+    }
 
-      StringCchPrintf(szArguments, COUNTOF(szArguments),
-        L"%s/%s /pos %i,%i,%i,%i,%i /g %i,%i /%s\"%s\" %s", 
-        wchFlags, wchEncoding, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, RELAUNCH_ELEVATED_BUF_ARG, szTempFileName, lpArgs);
+    DocPos const iCurPos = SciCall_GetCurrentPos();
+    int const iCurLn = (int)SciCall_LineFromPosition(iCurPos) + 1;
+    int const iCurCol = (int)SciCall_GetColumn(iCurPos) + 1;
+    WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
 
-      if (!StrStrI(szArguments, tchBase)) {
-        if (StrIsNotEmpty(Globals.CurrentFile)) {
-          StringCchPrintf(szArguments, COUNTOF(szArguments), L"%s \"%s\"", szArguments, Globals.CurrentFile);
+
+    WCHAR szArguments[2048] = { L'\0' };
+    StringCchPrintf(szArguments, COUNTOF(szArguments),
+                    L"%s/pos %i,%i,%i,%i,%i /g %i,%i %s", wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, lpArgs);
+
+    WCHAR lpTempPathBuffer[MAX_PATH] = { L'\0' };
+    WCHAR szTempFileName[MAX_PATH] = { L'\0' };
+
+    const WCHAR* szCurFile = StrIsNotEmpty(Globals.CurrentFile) ? Globals.CurrentFile : L".\\Untitled.txt";
+
+    WCHAR tchBase[MAX_PATH] = { L'\0' };
+    StringCchCopy(tchBase, COUNTOF(tchBase), PathFindFileName(szCurFile));  // eq. PathStripPath(tchBase);
+
+
+    if (GetTempPath(MAX_PATH, lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer, TEXT("NP3"), 0, szTempFileName))
+    {
+        size_t const len = StringCchLen(szTempFileName, MAX_PATH); // replace possible unknown extension
+        LPWSTR p = PathFindExtension(szTempFileName);
+        LPCWSTR q = PathFindExtension(szCurFile);
+        if ((p && *p) && (q && *q))
+        {
+            StringCchCopy(p, (MAX_PATH - len), q);
         }
-      }
-    }
-    FreeMem(lpExe);
-    FreeMem(lpArgs);
-  }
 
-  if (RelaunchElevated(szArguments)) {
-    // set no change and quit
-    SetSavePoint();
-  }
-  else {
-    Globals.dwLastError = GetLastError();
-    if (PathFileExists(szTempFileName)) {
-      DeleteFile(szTempFileName);
-    }
-    Flags.bDoRelaunchElevated = false;
-  }
+        if (pFioStatus && FileIO(false, szTempFileName, true, true, false, true, pFioStatus, true, false))
+        {
+            // preserve encoding
+            WCHAR wchEncoding[80] = { L'\0' };
+            Encoding_GetNameW(Encoding_GetCurrent(), wchEncoding, COUNTOF(wchEncoding));
 
-  return Flags.bDoRelaunchElevated;
+            StringCchPrintf(szArguments, COUNTOF(szArguments),
+                            L"%s/%s /pos %i,%i,%i,%i,%i /g %i,%i /%s\"%s\" %s",
+                            wchFlags, wchEncoding, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, RELAUNCH_ELEVATED_BUF_ARG, szTempFileName, lpArgs);
+
+            if (!StrStrI(szArguments, tchBase))
+            {
+                if (StrIsNotEmpty(Globals.CurrentFile))
+                {
+                    StringCchPrintf(szArguments, COUNTOF(szArguments), L"%s \"%s\"", szArguments, Globals.CurrentFile);
+                }
+            }
+        }
+        FreeMem(lpExe);
+        FreeMem(lpArgs);
+    }
+
+    if (RelaunchElevated(szArguments))
+    {
+        // set no change and quit
+        SetSavePoint();
+    }
+    else
+    {
+        Globals.dwLastError = GetLastError();
+        if (PathFileExists(szTempFileName))
+        {
+            DeleteFile(szTempFileName);
+        }
+        Flags.bDoRelaunchElevated = false;
+    }
+
+    return Flags.bDoRelaunchElevated;
 }
 
 
@@ -10480,218 +11485,246 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 //
 bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bPreserveTimeStamp)
 {
-  bool fSuccess = false;
+    bool fSuccess = false;
 
-  EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
-  fioStatus.iEncoding        = Encoding_GetCurrent();
-  fioStatus.iEOLMode         = SciCall_GetEOLMode();
+    EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
+    fioStatus.iEncoding        = Encoding_GetCurrent();
+    fioStatus.iEOLMode         = SciCall_GetEOLMode();
 
 #if 0
-  bool bIsEmptyNewFile = false;
-  if (StrIsEmpty(Globals.CurrentFile)) {
-    DocPos const cchText = SciCall_GetTextLength();
-    if (cchText <= 0) {
-      bIsEmptyNewFile = true;
+    bool bIsEmptyNewFile = false;
+    if (StrIsEmpty(Globals.CurrentFile))
+    {
+        DocPos const cchText = SciCall_GetTextLength();
+        if (cchText <= 0)
+        {
+            bIsEmptyNewFile = true;
+        }
+        else if (cchText < 2048)
+        {
+            char chTextBuf[2048] = { '\0' };
+            SciCall_GetText(COUNTOF(chTextBuf), chTextBuf);
+            StrTrimA(chTextBuf, " \t\n\r");
+            if (StrIsEmptyA(chTextBuf))
+            {
+                bIsEmptyNewFile = true;
+            }
+        }
     }
-    else if (cchText < 2048) {
-      char chTextBuf[2048] = { '\0' };
-      SciCall_GetText(COUNTOF(chTextBuf), chTextBuf);
-      StrTrimA(chTextBuf, " \t\n\r");
-      if (StrIsEmptyA(chTextBuf)) {
-        bIsEmptyNewFile = true;
-      }
-    }
-  }
 #else
-  bool const bIsEmptyNewFile = (StrIsEmpty(Globals.CurrentFile) && (SciCall_GetTextLength() <= 0LL));
+    bool const bIsEmptyNewFile = (StrIsEmpty(Globals.CurrentFile) && (SciCall_GetTextLength() <= 0LL));
 #endif
 
 
-  if (!bSaveAlways && (!GetDocModified() || bIsEmptyNewFile) && !bSaveAs) {
-    int idx;
-    if (MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &idx)) {
-      Globals.pFileMRU->iEncoding[idx]   = Encoding_GetCurrent();
-      Globals.pFileMRU->iCaretPos[idx]   = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : -1;
-      Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetAnchor() : -1;
-      WCHAR wchBookMarks[MRU_BMRK_SIZE]  = {L'\0'};
-      EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-      if (Globals.pFileMRU->pszBookMarks[idx]) {
-        LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
-      }
-      Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
-    }
-    return true;
-  }
-
-  if (bAsk)
-  {
-    // File or "Untitled" ...
-    WCHAR tch[MAX_PATH] = { L'\0' };
-    if (StrIsNotEmpty(Globals.CurrentFile)) {
-      StringCchCopy(tch, COUNTOF(tch), PathFindFileName(Globals.CurrentFile));  // eq. PathStripPath(tch);
-    }
-    else {
-      GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
-    }
-
-    INT_PTR const answer = (Settings.MuteMessageBeep) ? 
-                           InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch) :
-                           MessageBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch);
-    switch (answer)
-    //switch ()
+    if (!bSaveAlways && (!GetDocModified() || bIsEmptyNewFile) && !bSaveAs)
     {
-    case IDCANCEL:
-      return false;
-    case IDNO:
-      return true;
-    default:
-      // proceed
-      break;
-    }
-  }
-
-  // Read only...
-  if (!bSaveAs && !bSaveCopy && StrIsNotEmpty(Globals.CurrentFile))
-  {
-    s_bFileReadOnly = IsReadOnly(GetFileAttributes(Globals.CurrentFile));
-    if (s_bFileReadOnly) {
-      INT_PTR const answer = (Settings.MuteMessageBeep) ? 
-                             InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, PathFindFileName(Globals.CurrentFile)) : 
-                             MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_READONLY_SAVE, Globals.CurrentFile);
-      if ((IDOK == answer) || (IDYES == answer)) {
-        bSaveAs = true;
-      }
-      else {
-        return false;
-      }
-    }
-  }
-
-  // Save As...
-  if (bSaveAs || bSaveCopy || StrIsEmpty(Globals.CurrentFile))
-  {
-    static WCHAR _tchLastSaveCopyDir[MAX_PATH] = { L'\0' }; // session remember copyTo dir
-
-    WCHAR tchFile[MAX_PATH] = { L'\0' };
-    WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-    if (bSaveCopy && StrIsNotEmpty(_tchLastSaveCopyDir)) {
-      StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), _tchLastSaveCopyDir);
-      StringCchCopy(tchFile, COUNTOF(tchFile), _tchLastSaveCopyDir);
-      PathCchAppend(tchFile, COUNTOF(tchFile), PathFindFileName(Globals.CurrentFile));
-    }
-    else {
-      StringCchCopy(tchFile, COUNTOF(tchFile), Globals.CurrentFile);
-    }
-
-    if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL))
-    {
-      fSuccess = FileIO(false, tchFile, true, true, false, true, &fioStatus, bSaveCopy, bPreserveTimeStamp);
-      if (fSuccess)
-      {
-        if (!bSaveCopy)
+        int idx;
+        if (MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &idx))
         {
-          StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), tchFile);
-          SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Globals.CurrentFile);
-          SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, GetTickCount(), false);
-          if (!s_flagKeepTitleExcerpt) {
-            StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
-          }
-          Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+            Globals.pFileMRU->iEncoding[idx]   = Encoding_GetCurrent();
+            Globals.pFileMRU->iCaretPos[idx]   = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : -1;
+            Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetAnchor() : -1;
+            WCHAR wchBookMarks[MRU_BMRK_SIZE]  = {L'\0'};
+            EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+            if (Globals.pFileMRU->pszBookMarks[idx])
+            {
+                LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
+            }
+            Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
-        else {
-          StringCchCopy(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir), tchFile);
-          PathCchRemoveFileSpec(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir));
-        }
-      }
+        return true;
     }
-    else {
-      return false;
-    }
-  }
-  else {
-    fSuccess = FileIO(false, Globals.CurrentFile, true, true, false, true, &fioStatus, false, bPreserveTimeStamp);
-  }
 
-  if (fSuccess)
-  {
-    if (!(bSaveCopy || Flags.bDoRelaunchElevated))
+    if (bAsk)
     {
-      cpi_enc_t iCurrEnc = Encoding_GetCurrent();
-      const DocPos iCaretPos = SciCall_GetCurrentPos();
-      const DocPos iAnchorPos = Sci_IsMultiOrRectangleSelection() ? -1 : SciCall_GetAnchor();
-      WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
-      EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-      MRU_AddFile(Globals.pFileMRU, Globals.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
-
-      SetSavePoint();
-
-      // Install watching of the current file
-      if (bSaveAs && Settings.ResetFileWatching) {
-        if (FileWatching.MonitoringLog) {
-          PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-        }
-        FileWatching.FileWatchingMode = Settings.FileWatchingMode;
-      }
-      InstallFileWatching(true);
-    }
-
-    // if current file is settings/config file: ask to start
-    if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing)
-    {
-      //~ LoadSettings(); NOT all settings will be applied ...
-      INT_PTR answer = 0;
-      if (Settings.SaveSettings) {
-        WCHAR tch[256] = { L'\0' };
-        LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
-        answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
-      }
-      else {
-        answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
-      }
-      if ((IDOK == answer) || (IDYES == answer))
-      {
-        DialogNewWindow(Globals.hwndMain, false, Globals.CurrentFile);
-        CloseApplication();
-      }
-    }
-
-  }
-  else if (!fioStatus.bCancelDataLoss)
-  {
-    LPCWSTR const currentFileName = PathFindFileName(Globals.CurrentFile);
-
-    if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
-    {
-      INT_PTR const answer = (Settings.MuteMessageBeep) ?
-                             InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME)) : 
-                             MessageBoxLng(MB_YESNO | MB_ICONSHIELD, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile, _W(SAPPNAME));
-      if ((IDOK == answer) || (IDYES == answer)) 
-      {
-        if (DoElevatedRelaunch(&fioStatus, true))
+        // File or "Untitled" ...
+        WCHAR tch[MAX_PATH] = { L'\0' };
+        if (StrIsNotEmpty(Globals.CurrentFile))
         {
-          CloseApplication();
+            StringCchCopy(tch, COUNTOF(tch), PathFindFileName(Globals.CurrentFile));  // eq. PathStripPath(tch);
         }
-        else {
-          s_flagAppIsClosing = false;
-          if (Settings.MuteMessageBeep) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
-          }
-          else {
-            MessageBoxLng(MB_ICONWARNING, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
-          }
+        else
+        {
+            GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
         }
-      }
+
+        INT_PTR const answer = (Settings.MuteMessageBeep) ?
+                               InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch) :
+                               MessageBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch);
+        switch (answer)
+            //switch ()
+        {
+        case IDCANCEL:
+            return false;
+        case IDNO:
+            return true;
+        default:
+            // proceed
+            break;
+        }
     }
-    else {
-      if (Settings.MuteMessageBeep) {
-        InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
-      }
-      else {
-        MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
-      }
+
+    // Read only...
+    if (!bSaveAs && !bSaveCopy && StrIsNotEmpty(Globals.CurrentFile))
+    {
+        s_bFileReadOnly = IsReadOnly(GetFileAttributes(Globals.CurrentFile));
+        if (s_bFileReadOnly)
+        {
+            INT_PTR const answer = (Settings.MuteMessageBeep) ?
+                                   InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, PathFindFileName(Globals.CurrentFile)) :
+                                   MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_READONLY_SAVE, Globals.CurrentFile);
+            if ((IDOK == answer) || (IDYES == answer))
+            {
+                bSaveAs = true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
-  }
-  return fSuccess;
+
+    // Save As...
+    if (bSaveAs || bSaveCopy || StrIsEmpty(Globals.CurrentFile))
+    {
+        static WCHAR _tchLastSaveCopyDir[MAX_PATH] = { L'\0' }; // session remember copyTo dir
+
+        WCHAR tchFile[MAX_PATH] = { L'\0' };
+        WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
+        if (bSaveCopy && StrIsNotEmpty(_tchLastSaveCopyDir))
+        {
+            StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), _tchLastSaveCopyDir);
+            StringCchCopy(tchFile, COUNTOF(tchFile), _tchLastSaveCopyDir);
+            PathCchAppend(tchFile, COUNTOF(tchFile), PathFindFileName(Globals.CurrentFile));
+        }
+        else
+        {
+            StringCchCopy(tchFile, COUNTOF(tchFile), Globals.CurrentFile);
+        }
+
+        if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL))
+        {
+            fSuccess = FileIO(false, tchFile, true, true, false, true, &fioStatus, bSaveCopy, bPreserveTimeStamp);
+            if (fSuccess)
+            {
+                if (!bSaveCopy)
+                {
+                    StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), tchFile);
+                    SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Globals.CurrentFile);
+                    SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, GetTickCount(), false);
+                    if (!s_flagKeepTitleExcerpt)
+                    {
+                        StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
+                    }
+                    Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+                }
+                else
+                {
+                    StringCchCopy(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir), tchFile);
+                    PathCchRemoveFileSpec(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir));
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        fSuccess = FileIO(false, Globals.CurrentFile, true, true, false, true, &fioStatus, false, bPreserveTimeStamp);
+    }
+
+    if (fSuccess)
+    {
+        if (!(bSaveCopy || Flags.bDoRelaunchElevated))
+        {
+            cpi_enc_t iCurrEnc = Encoding_GetCurrent();
+            const DocPos iCaretPos = SciCall_GetCurrentPos();
+            const DocPos iAnchorPos = Sci_IsMultiOrRectangleSelection() ? -1 : SciCall_GetAnchor();
+            WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+            EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+            MRU_AddFile(Globals.pFileMRU, Globals.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
+
+            SetSavePoint();
+
+            // Install watching of the current file
+            if (bSaveAs && Settings.ResetFileWatching)
+            {
+                if (FileWatching.MonitoringLog)
+                {
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
+                FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+            }
+            InstallFileWatching(true);
+        }
+
+        // if current file is settings/config file: ask to start
+        if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing)
+        {
+            //~ LoadSettings(); NOT all settings will be applied ...
+            INT_PTR answer = 0;
+            if (Settings.SaveSettings)
+            {
+                WCHAR tch[256] = { L'\0' };
+                LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
+                answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
+            }
+            else
+            {
+                answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
+            }
+            if ((IDOK == answer) || (IDYES == answer))
+            {
+                DialogNewWindow(Globals.hwndMain, false, Globals.CurrentFile);
+                CloseApplication();
+            }
+        }
+
+    }
+    else if (!fioStatus.bCancelDataLoss)
+    {
+        LPCWSTR const currentFileName = PathFindFileName(Globals.CurrentFile);
+
+        if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
+        {
+            INT_PTR const answer = (Settings.MuteMessageBeep) ?
+                                   InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME)) :
+                                   MessageBoxLng(MB_YESNO | MB_ICONSHIELD, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile, _W(SAPPNAME));
+            if ((IDOK == answer) || (IDYES == answer))
+            {
+                if (DoElevatedRelaunch(&fioStatus, true))
+                {
+                    CloseApplication();
+                }
+                else
+                {
+                    s_flagAppIsClosing = false;
+                    if (Settings.MuteMessageBeep)
+                    {
+                        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+                    }
+                    else
+                    {
+                        MessageBoxLng(MB_ICONWARNING, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (Settings.MuteMessageBeep)
+            {
+                InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+            }
+            else
+            {
+                MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
+            }
+        }
+    }
+    return fSuccess;
 }
 
 
@@ -10701,72 +11734,89 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 //
 static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
 {
-  if (StrIsEmpty(lpstrInitialDir)) {
-    if (StrIsNotEmpty(Globals.CurrentFile)) {
-      StringCchCopy(lpstrInitialDir, cchInitialDir, Globals.CurrentFile);
-      PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
-    } else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
-      ExpandEnvironmentStrings(Settings2.DefaultDirectory, lpstrInitialDir, cchInitialDir);
-    } else {
-      StringCchCopy(lpstrInitialDir, cchInitialDir, Globals.WorkingDirectory);
+    if (StrIsEmpty(lpstrInitialDir))
+    {
+        if (StrIsNotEmpty(Globals.CurrentFile))
+        {
+            StringCchCopy(lpstrInitialDir, cchInitialDir, Globals.CurrentFile);
+            PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
+        }
+        else if (StrIsNotEmpty(Settings2.DefaultDirectory))
+        {
+            ExpandEnvironmentStrings(Settings2.DefaultDirectory, lpstrInitialDir, cchInitialDir);
+        }
+        else
+        {
+            StringCchCopy(lpstrInitialDir, cchInitialDir, Globals.WorkingDirectory);
+        }
     }
-  }
-  if (StrIsNotEmpty(lpstrInitialDir)) {
-    if (PathIsRelative(lpstrInitialDir)) {
-      WCHAR tchModule[MAX_PATH] = { L'\0' };
-      PathGetAppDirectory(tchModule, COUNTOF(tchModule));
-      PathCchAppend(tchModule, COUNTOF(tchModule), lpstrInitialDir);
-      StringCchCopy(lpstrInitialDir, cchInitialDir, tchModule);
+    if (StrIsNotEmpty(lpstrInitialDir))
+    {
+        if (PathIsRelative(lpstrInitialDir))
+        {
+            WCHAR tchModule[MAX_PATH] = { L'\0' };
+            PathGetAppDirectory(tchModule, COUNTOF(tchModule));
+            PathCchAppend(tchModule, COUNTOF(tchModule), lpstrInitialDir);
+            StringCchCopy(lpstrInitialDir, cchInitialDir, tchModule);
+        }
     }
-  }
-  if (StrIsNotEmpty(lpstrInitialDir)) {
-    if (PathFileExists(lpstrInitialDir)) {
-      if (!PathIsDirectory(lpstrInitialDir)) {
-        PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
-      }
-    } else {
-      StringCchCopy(lpstrInitialDir, cchInitialDir, L""); // clear
+    if (StrIsNotEmpty(lpstrInitialDir))
+    {
+        if (PathFileExists(lpstrInitialDir))
+        {
+            if (!PathIsDirectory(lpstrInitialDir))
+            {
+                PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
+            }
+        }
+        else
+        {
+            StringCchCopy(lpstrInitialDir, cchInitialDir, L""); // clear
+        }
     }
-  }
 }
 
 
 //=============================================================================
 //
-//  OpenFileDlg() 
+//  OpenFileDlg()
 //  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
 //  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
 //
 bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialDir)
 {
-  if (!lpstrFile || (cchFile < 256)) { return false; }
+    if (!lpstrFile || (cchFile < 256))
+    {
+        return false;
+    }
 
-  WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 1];
-  WCHAR szDefExt[64] = { L'\0' };
-  Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
+    WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 1];
+    WCHAR szDefExt[64] = { L'\0' };
+    Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
-  WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-  if (lpstrInitialDir != NULL) {
-    StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
-    _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
-  }
+    WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
+    if (lpstrInitialDir != NULL)
+    {
+        StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
+        _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
+    }
 
-  OPENFILENAME ofn;
-  ZeroMemory(&ofn, sizeof(OPENFILENAME));
-  ofn.lStructSize = sizeof(OPENFILENAME);
-  ofn.hwndOwner = hwnd;
-  ofn.hInstance = Globals.hInstance;
-  ofn.lpstrFilter = szFilter;
-  ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-  ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
-  ofn.lpstrFile = lpstrFile;
-  ofn.nMaxFile = cchFile;
-  ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
-              OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
-              OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-  ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    OPENFILENAME ofn;
+    ZeroMemory(&ofn, sizeof(OPENFILENAME));
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = hwnd;
+    ofn.hInstance = Globals.hInstance;
+    ofn.lpstrFilter = szFilter;
+    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
+    ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
+    ofn.lpstrFile = lpstrFile;
+    ofn.nMaxFile = cchFile;
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
+                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
+                OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
+    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
-  return GetOpenFileName(&ofn);
+    return GetOpenFileName(&ofn);
 }
 
 
@@ -10774,38 +11824,42 @@ bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
 //
 //  SaveFileDlg()
 //  lpstrInitialDir == NULL      : leave initial dir to Save File Explorer
-//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path 
+//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
 //
 bool SaveFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialDir)
 {
-  if (!lpstrFile || (cchFile < 256)) { return false; }
+    if (!lpstrFile || (cchFile < 256))
+    {
+        return false;
+    }
 
-  WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 2];
-  WCHAR szDefExt[64] = { L'\0' };
-  Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
+    WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 2];
+    WCHAR szDefExt[64] = { L'\0' };
+    Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
 
-  WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-  if (lpstrInitialDir) {
-    StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
-    _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
-  }
+    WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
+    if (lpstrInitialDir)
+    {
+        StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
+        _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
+    }
 
-  OPENFILENAME ofn;
-  ZeroMemory(&ofn, sizeof(OPENFILENAME));
-  ofn.lStructSize = sizeof(OPENFILENAME);
-  ofn.hwndOwner = hwnd;
-  ofn.hInstance = Globals.hInstance;
-  ofn.lpstrFilter = szFilter;
-  ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-  ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
-  ofn.lpstrFile = lpstrFile;
-  ofn.nMaxFile = cchFile;
-  ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
-              /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
-              OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
-  ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    OPENFILENAME ofn;
+    ZeroMemory(&ofn, sizeof(OPENFILENAME));
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = hwnd;
+    ofn.hInstance = Globals.hInstance;
+    ofn.lpstrFilter = szFilter;
+    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
+    ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
+    ofn.lpstrFile = lpstrFile;
+    ofn.nMaxFile = cchFile;
+    ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
+                /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
+                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
+    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
-  return GetSaveFileName(&ofn);
+    return GetSaveFileName(&ofn);
 }
 
 
@@ -10819,228 +11873,258 @@ bool SaveFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
 ******************************************************************************/
 BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
 {
-  BOOL bContinue = TRUE;
-  WCHAR szClassName[64] = { L'\0' };
+    BOOL bContinue = TRUE;
+    WCHAR szClassName[64] = { L'\0' };
 
-  if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
+    if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
-    if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0) {
+        if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0)
+        {
 
-      DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
-      if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
+            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
+            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT)
+            {
 
-        *(HWND*)lParam = hwnd;
+                *(HWND*)lParam = hwnd;
 
-        if (IsWindowEnabled(hwnd))
-          bContinue = FALSE;
-      }
-    }
-  return bContinue;
+                if (IsWindowEnabled(hwnd))
+                    bContinue = FALSE;
+            }
+        }
+    return bContinue;
 }
 
 BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 {
-  BOOL bContinue = TRUE;
-  WCHAR szClassName[64] = { L'\0' };
+    BOOL bContinue = TRUE;
+    WCHAR szClassName[64] = { L'\0' };
 
-  if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
+    if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
-    if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0) {
+        if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0)
+        {
 
-      DWORD const dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL, FALSE);
-      if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) 
-      {
-        if (IsWindowEnabled(hwnd)) { bContinue = FALSE; }
+            DWORD const dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL, FALSE);
+            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT)
+            {
+                if (IsWindowEnabled(hwnd))
+                {
+                    bContinue = FALSE;
+                }
 
-        WCHAR tchFileName[MAX_PATH] = { L'\0' };
-        GetDlgItemText(hwnd, IDC_FILENAME, tchFileName, COUNTOF(tchFileName));
-        
-        if (StringCchCompareXI(tchFileName, s_lpFileArg) == 0) {
-          *(HWND*)lParam = hwnd;
+                WCHAR tchFileName[MAX_PATH] = { L'\0' };
+                GetDlgItemText(hwnd, IDC_FILENAME, tchFileName, COUNTOF(tchFileName));
+
+                if (StringCchCompareXI(tchFileName, s_lpFileArg) == 0)
+                {
+                    *(HWND*)lParam = hwnd;
+                }
+                else
+                {
+                    bContinue = TRUE;
+                }
+            }
         }
-        else {
-          bContinue = TRUE;
-        }
-      }
-    }
-  return bContinue;
+    return bContinue;
 }
 
 
 bool ActivatePrevInst()
 {
-  HWND hwnd = NULL;
-  COPYDATASTRUCT cds;
+    HWND hwnd = NULL;
+    COPYDATASTRUCT cds;
 
-  if ((!Flags.bReuseWindow && !Flags.bSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard) {
-    return false;
-  }
+    if ((!Flags.bReuseWindow && !Flags.bSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard)
+    {
+        return false;
+    }
 
-  if (Flags.bSingleFileInstance && StrIsNotEmpty(s_lpFileArg))
-  {
-    NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, Flags.bSearchPathIfRelative);
+    if (Flags.bSingleFileInstance && StrIsNotEmpty(s_lpFileArg))
+    {
+        NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, Flags.bSearchPathIfRelative);
 
-    EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
+        EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
+        if (hwnd != NULL)
+        {
+            // Enabled
+            if (IsWindowEnabled(hwnd))
+            {
+                // Make sure the previous window won't pop up a change notification message
+                //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
+
+                if (IsIconic(hwnd))
+                {
+                    ShowWindowAsync(hwnd, SW_RESTORE);
+                }
+                if (!IsWindowVisible(hwnd))
+                {
+                    SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
+                    SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
+                }
+
+                SetForegroundWindow(hwnd);
+
+                size_t cb = sizeof(np3params);
+                if (s_lpSchemeArg)
+                {
+                    cb += ((StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR));
+                }
+
+                if (!IsFindPatternEmpty())
+                {
+                    cb += ((LengthOfFindPattern() + 1) * sizeof(WCHAR));
+                }
+                LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
+                params->flagFileSpecified = false;
+                params->flagChangeNotify = FWM_DONT_CARE;
+                params->flagQuietCreate = false;
+                params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
+                if (s_flagLexerSpecified && s_lpSchemeArg)
+                {
+                    StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(s_lpSchemeArg,0)+1),s_lpSchemeArg);
+                    params->iInitialLexer = -1;
+                }
+                else
+                {
+                    params->iInitialLexer = s_iInitialLexer;
+                }
+                params->flagJumpTo = s_flagJumpTo ? 1 : 0;
+                params->iInitialLine = s_iInitialLine;
+                params->iInitialColumn = s_iInitialColumn;
+
+                params->flagSetEncoding = s_flagSetEncoding;
+                params->flagSetEOLMode = s_flagSetEOLMode;
+                params->flagTitleExcerpt = 0;
+
+                params->flagMatchText = g_flagMatchText;
+                if (!IsFindPatternEmpty())
+                {
+                    StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
+                }
+
+                cds.dwData = DATA_NOTEPAD3_PARAMS;
+                cds.cbData = (DWORD)SizeOfMem(params);
+                cds.lpData = params;
+
+                SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
+                FreeMem(params);
+                params = NULL;
+
+                return true;
+            }
+            // IsWindowEnabled()
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
+            if ((IDOK == answer) || (IDYES == answer))
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    if (!Flags.bReuseWindow)
+    {
+        return false;
+    }
+
+    hwnd = NULL;
+    EnumWindows(EnumWndProc,(LPARAM)&hwnd);
+
+    // Found a window
     if (hwnd != NULL)
     {
-      // Enabled
-      if (IsWindowEnabled(hwnd))
-      {
-        // Make sure the previous window won't pop up a change notification message
-        //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
+        // Enabled
+        if (IsWindowEnabled(hwnd))
+        {
+            // Make sure the previous window won't pop up a change notification message
+            //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
 
-        if (IsIconic(hwnd)) {
-          ShowWindowAsync(hwnd, SW_RESTORE);
+            if (IsIconic(hwnd))
+            {
+                ShowWindowAsync(hwnd, SW_RESTORE);
+            }
+            if (!IsWindowVisible(hwnd))
+            {
+                SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
+                SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
+            }
+
+            SetForegroundWindow(hwnd);
+
+            if (StrIsNotEmpty(s_lpFileArg))
+            {
+                size_t cb = sizeof(np3params);
+                cb += (StringCchLenW(s_lpFileArg,0) + 1) * sizeof(WCHAR);
+
+                if (s_lpSchemeArg)
+                {
+                    cb += (StringCchLenW(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR);
+                }
+                size_t cchTitleExcerpt = StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
+                if (cchTitleExcerpt)
+                {
+                    cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
+                }
+                if (!IsFindPatternEmpty())
+                {
+                    cb += ((LengthOfFindPattern() + 1) * sizeof(WCHAR));
+                }
+
+                LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
+                params->flagFileSpecified = true;
+                StringCchCopy(&params->wchData, StringCchLenW(s_lpFileArg,0)+1,s_lpFileArg);
+                params->flagChangeNotify = s_flagChangeNotify;
+                params->flagQuietCreate = s_flagQuietCreate ? 1 : 0;
+                params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
+                if (s_flagLexerSpecified && s_lpSchemeArg)
+                {
+                    StringCchCopy(StrEnd(&params->wchData,0)+1, StringCchLen(s_lpSchemeArg,0)+1,s_lpSchemeArg);
+                    params->iInitialLexer = -1;
+                }
+                else
+                {
+                    params->iInitialLexer = s_iInitialLexer;
+                }
+                params->flagJumpTo = s_flagJumpTo ? 1 : 0;
+                params->iInitialLine = s_iInitialLine;
+                params->iInitialColumn = s_iInitialColumn;
+
+                params->flagSetEncoding = s_flagSetEncoding;
+                params->flagSetEOLMode = s_flagSetEOLMode;
+
+                if (cchTitleExcerpt)
+                {
+                    StringCchCopy(StrEnd(&params->wchData,0)+1,cchTitleExcerpt+1,s_wchTitleExcerpt);
+                    params->flagTitleExcerpt = 1;
+                }
+                else
+                {
+                    params->flagTitleExcerpt = 0;
+                }
+
+                params->flagMatchText = g_flagMatchText;
+                if (!IsFindPatternEmpty())
+                {
+                    StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
+                }
+
+                cds.dwData = DATA_NOTEPAD3_PARAMS;
+                cds.cbData = (DWORD)SizeOfMem(params);
+                cds.lpData = params;
+
+                SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
+                FreeMem(params);
+                params = NULL;
+                s_lpFileArg[0] = L'\0';
+            }
+            return true;
         }
-        if (!IsWindowVisible(hwnd)) {
-          SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
-          SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
-        }
-
-        SetForegroundWindow(hwnd);
-
-        size_t cb = sizeof(np3params);
-        if (s_lpSchemeArg) {
-          cb += ((StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR));
-        }
-
-        if (!IsFindPatternEmpty()) {
-          cb += ((LengthOfFindPattern() + 1) * sizeof(WCHAR));
-        }
-        LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
-        params->flagFileSpecified = false;
-        params->flagChangeNotify = FWM_DONT_CARE;
-        params->flagQuietCreate = false;
-        params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
-        if (s_flagLexerSpecified && s_lpSchemeArg) {
-          StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(s_lpSchemeArg,0)+1),s_lpSchemeArg);
-          params->iInitialLexer = -1;
-        }
-        else {
-          params->iInitialLexer = s_iInitialLexer;
-        }
-        params->flagJumpTo = s_flagJumpTo ? 1 : 0;
-        params->iInitialLine = s_iInitialLine;
-        params->iInitialColumn = s_iInitialColumn;
-
-        params->flagSetEncoding = s_flagSetEncoding;
-        params->flagSetEOLMode = s_flagSetEOLMode;
-        params->flagTitleExcerpt = 0;
-
-        params->flagMatchText = g_flagMatchText;
-        if (!IsFindPatternEmpty()) {
-          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
-        }
-
-        cds.dwData = DATA_NOTEPAD3_PARAMS;
-        cds.cbData = (DWORD)SizeOfMem(params);
-        cds.lpData = params;
-
-        SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
-        FreeMem(params);    params = NULL;
-
-        return true;
-      }
-      // IsWindowEnabled()
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
-      if ((IDOK == answer) || (IDYES == answer)) {
-        return false;
-      }
-      return true;
+        // IsWindowEnabled()
+        INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
+        return ((IDOK == answer) || (IDYES == answer)) ? false : true;;
     }
-  }
-
-  if (!Flags.bReuseWindow) {
     return false;
-  }
-
-  hwnd = NULL;
-  EnumWindows(EnumWndProc,(LPARAM)&hwnd);
-
-  // Found a window
-  if (hwnd != NULL)
-  {
-    // Enabled
-    if (IsWindowEnabled(hwnd))
-    {
-      // Make sure the previous window won't pop up a change notification message
-      //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
-
-      if (IsIconic(hwnd)) {
-        ShowWindowAsync(hwnd, SW_RESTORE);
-      }
-      if (!IsWindowVisible(hwnd)) {
-        SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
-        SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
-      }
-
-      SetForegroundWindow(hwnd);
-
-      if (StrIsNotEmpty(s_lpFileArg))
-      {
-        size_t cb = sizeof(np3params);
-        cb += (StringCchLenW(s_lpFileArg,0) + 1) * sizeof(WCHAR);
-
-        if (s_lpSchemeArg) {
-          cb += (StringCchLenW(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR);
-        }
-        size_t cchTitleExcerpt = StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
-        if (cchTitleExcerpt) {
-          cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
-        }
-        if (!IsFindPatternEmpty()) {
-          cb += ((LengthOfFindPattern() + 1) * sizeof(WCHAR));
-        }
-
-        LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
-        params->flagFileSpecified = true;
-        StringCchCopy(&params->wchData, StringCchLenW(s_lpFileArg,0)+1,s_lpFileArg);
-        params->flagChangeNotify = s_flagChangeNotify;
-        params->flagQuietCreate = s_flagQuietCreate ? 1 : 0;
-        params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
-        if (s_flagLexerSpecified && s_lpSchemeArg) {
-          StringCchCopy(StrEnd(&params->wchData,0)+1, StringCchLen(s_lpSchemeArg,0)+1,s_lpSchemeArg);
-          params->iInitialLexer = -1;
-        }
-        else {
-          params->iInitialLexer = s_iInitialLexer;
-        }
-        params->flagJumpTo = s_flagJumpTo ? 1 : 0;
-        params->iInitialLine = s_iInitialLine;
-        params->iInitialColumn = s_iInitialColumn;
-
-        params->flagSetEncoding = s_flagSetEncoding;
-        params->flagSetEOLMode = s_flagSetEOLMode;
-
-        if (cchTitleExcerpt) {
-          StringCchCopy(StrEnd(&params->wchData,0)+1,cchTitleExcerpt+1,s_wchTitleExcerpt);
-          params->flagTitleExcerpt = 1;
-        }
-        else {
-          params->flagTitleExcerpt = 0;
-        }
-
-        params->flagMatchText = g_flagMatchText;
-        if (!IsFindPatternEmpty()) {
-          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
-        }
-
-        cds.dwData = DATA_NOTEPAD3_PARAMS;
-        cds.cbData = (DWORD)SizeOfMem(params);
-        cds.lpData = params;
-
-        SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
-        FreeMem(params);    params = NULL;
-        s_lpFileArg[0] = L'\0';
-      }
-      return true;
-    }
-    // IsWindowEnabled()
-    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
-    return ((IDOK == answer) || (IDYES == answer)) ? false : true;;
-  }
-  return false;
 }
 
 
@@ -11049,62 +12133,65 @@ bool ActivatePrevInst()
 //  RelaunchMultiInst()
 //
 //
-bool RelaunchMultiInst() {
+bool RelaunchMultiInst()
+{
 
-  if (Flags.MultiFileArg && (s_cFileList > 1)) 
-  {
-    LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
-    size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
-    LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
-    LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
-
-    StrTab2Space(lpCmdLineNew);
-    StringCchCopy(lpCmdLineNew + s_cchiFileList,2,L"");
-
-    WCHAR* pwch = CharPrev(lpCmdLineNew,StrEnd(lpCmdLineNew,len));
-    int k = 0;
-    while (*pwch == L' ' || *pwch == L'-' || *pwch == L'+') {
-      *pwch = L' ';
-      pwch = CharPrev(lpCmdLineNew,pwch);
-      if (k++ > 1)
-        s_cchiFileList--;
-    }
-
-    for (int i = 0; i < s_cFileList; i++) 
+    if (Flags.MultiFileArg && (s_cFileList > 1))
     {
-      StringCchCopy(lpCmdLineNew + s_cchiFileList,8,L" /n - ");
-      StringCchCat(lpCmdLineNew,len,s_lpFileList[i]);
-      LocalFree(s_lpFileList[i]); // StrDup()
+        LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
+        size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
+        LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
+        LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
 
-      STARTUPINFO si;
-      ZeroMemory(&si,sizeof(STARTUPINFO));
-      si.cb = sizeof(STARTUPINFO);
+        StrTab2Space(lpCmdLineNew);
+        StringCchCopy(lpCmdLineNew + s_cchiFileList,2,L"");
 
-      PROCESS_INFORMATION pi;
-      ZeroMemory(&pi,sizeof(PROCESS_INFORMATION));
+        WCHAR* pwch = CharPrev(lpCmdLineNew,StrEnd(lpCmdLineNew,len));
+        int k = 0;
+        while (*pwch == L' ' || *pwch == L'-' || *pwch == L'+')
+        {
+            *pwch = L' ';
+            pwch = CharPrev(lpCmdLineNew,pwch);
+            if (k++ > 1)
+                s_cchiFileList--;
+        }
 
-      CreateProcess(NULL, lpCmdLineNew, NULL, NULL, false, CREATE_NEW_PROCESS_GROUP, NULL, Globals.WorkingDirectory, &si, &pi);
-      
-      // don't wait for it to finish.
-      //::WaitForSingleObject(pi.hProcess, INFINITE);
-      // free up resources...
-      CloseHandle(pi.hThread);
-      CloseHandle(pi.hProcess);
+        for (int i = 0; i < s_cFileList; i++)
+        {
+            StringCchCopy(lpCmdLineNew + s_cchiFileList,8,L" /n - ");
+            StringCchCat(lpCmdLineNew,len,s_lpFileList[i]);
+            LocalFree(s_lpFileList[i]); // StrDup()
+
+            STARTUPINFO si;
+            ZeroMemory(&si,sizeof(STARTUPINFO));
+            si.cb = sizeof(STARTUPINFO);
+
+            PROCESS_INFORMATION pi;
+            ZeroMemory(&pi,sizeof(PROCESS_INFORMATION));
+
+            CreateProcess(NULL, lpCmdLineNew, NULL, NULL, false, CREATE_NEW_PROCESS_GROUP, NULL, Globals.WorkingDirectory, &si, &pi);
+
+            // don't wait for it to finish.
+            //::WaitForSingleObject(pi.hProcess, INFINITE);
+            // free up resources...
+            CloseHandle(pi.hThread);
+            CloseHandle(pi.hProcess);
+        }
+
+        LocalFree(lpCmdLineNew); // StrDup()
+        FreeMem(lp1);
+        FreeMem(lp2);
+        s_lpFileArg[0] = L'\0';
+
+        return true;
     }
 
-    LocalFree(lpCmdLineNew); // StrDup()
-    FreeMem(lp1);
-    FreeMem(lp2);
-    s_lpFileArg[0] = L'\0';
+    for (int i = 0; i < s_cFileList; i++)
+    {
+        LocalFree(s_lpFileList[i]); // StrDup()
+    }
 
-    return true;
-  }
-
-  for (int i = 0; i < s_cFileList; i++) {
-    LocalFree(s_lpFileList[i]); // StrDup()
-  }
-
-  return false;
+    return false;
 }
 
 
@@ -11113,62 +12200,65 @@ bool RelaunchMultiInst() {
 //  RelaunchElevated()
 //
 //
-bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
+bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 {
-  if (!IsWindowsVistaOrGreater() || !Flags.bDoRelaunchElevated ||
-      s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_bIsRunAsAdmin ||
-      s_flagDisplayHelp) 
-  {
-    return false; // reject initial RelaunchElevated() try
-  }
+    if (!IsWindowsVistaOrGreater() || !Flags.bDoRelaunchElevated ||
+            s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_bIsRunAsAdmin ||
+            s_flagDisplayHelp)
+    {
+        return false; // reject initial RelaunchElevated() try
+    }
 
-  STARTUPINFO si;
-  si.cb = sizeof(STARTUPINFO);
-  GetStartupInfo(&si);
+    STARTUPINFO si;
+    si.cb = sizeof(STARTUPINFO);
+    GetStartupInfo(&si);
 
-  WCHAR lpExe[MAX_PATH] = { L'\0' };
-  WCHAR szOrigArgs[2032] = { L'\0' };
+    WCHAR lpExe[MAX_PATH] = { L'\0' };
+    WCHAR szOrigArgs[2032] = { L'\0' };
 
-  LPWSTR lpCmdLine = GetCommandLine();
-  size_t wlen = StringCchLenW(lpCmdLine, 0) + 2UL;
-  ExtractFirstArgument(lpCmdLine, lpExe, szOrigArgs, (int)wlen);
-  // override
-  GetModuleFileName(NULL, lpExe, COUNTOF(lpExe)); // full path
-  PathCanonicalizeEx(lpExe, COUNTOF(lpExe));
-  if (lpNewCmdLnArgs) {
-    StringCchCopy(szOrigArgs, COUNTOF(szOrigArgs), lpNewCmdLnArgs);
-  }
-  size_t const len = StringCchLen(szOrigArgs, 0);
-  szOrigArgs[len] = L' '; // add a space
-  szOrigArgs[len+1] = L'\0'; // ensure termination
-  // remove relaunch elevated, we are doing this here already
-  StrCutI(szOrigArgs, L"/u ");
-  StrCutI(szOrigArgs, L"-u ");
+    LPWSTR lpCmdLine = GetCommandLine();
+    size_t wlen = StringCchLenW(lpCmdLine, 0) + 2UL;
+    ExtractFirstArgument(lpCmdLine, lpExe, szOrigArgs, (int)wlen);
+    // override
+    GetModuleFileName(NULL, lpExe, COUNTOF(lpExe)); // full path
+    PathCanonicalizeEx(lpExe, COUNTOF(lpExe));
+    if (lpNewCmdLnArgs)
+    {
+        StringCchCopy(szOrigArgs, COUNTOF(szOrigArgs), lpNewCmdLnArgs);
+    }
+    size_t const len = StringCchLen(szOrigArgs, 0);
+    szOrigArgs[len] = L' '; // add a space
+    szOrigArgs[len+1] = L'\0'; // ensure termination
+    // remove relaunch elevated, we are doing this here already
+    StrCutI(szOrigArgs, L"/u ");
+    StrCutI(szOrigArgs, L"-u ");
 
-  WCHAR szArguments[2032] = { L'\0' };
-  if (StrStrI(szOrigArgs, L"/f ") || StrStrI(szOrigArgs, L"-f ") || StrIsEmpty(Globals.IniFile))
-  {
-    StringCchCopy(szArguments, COUNTOF(szArguments), szOrigArgs);
-  }
-  else {
-    StringCchPrintf(szArguments, COUNTOF(szArguments), L"/f \"%s\" %s", Globals.IniFile, szOrigArgs);
-  }
+    WCHAR szArguments[2032] = { L'\0' };
+    if (StrStrI(szOrigArgs, L"/f ") || StrStrI(szOrigArgs, L"-f ") || StrIsEmpty(Globals.IniFile))
+    {
+        StringCchCopy(szArguments, COUNTOF(szArguments), szOrigArgs);
+    }
+    else
+    {
+        StringCchPrintf(szArguments, COUNTOF(szArguments), L"/f \"%s\" %s", Globals.IniFile, szOrigArgs);
+    }
 
-  if (StrIsNotEmpty(szArguments)) {
-    SHELLEXECUTEINFO sei;
-    ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-    sei.cbSize = sizeof(SHELLEXECUTEINFO);
-    sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_UNICODE | SEE_MASK_HMONITOR | SEE_MASK_NOZONECHECKS | SEE_MASK_WAITFORINPUTIDLE;
-    sei.hwnd = GetForegroundWindow();
-    sei.hMonitor = MonitorFromWindow(sei.hwnd, MONITOR_DEFAULTTONEAREST);
-    sei.lpVerb = L"runas";
-    sei.lpFile = lpExe;
-    sei.lpParameters = szArguments;
-    sei.lpDirectory = Globals.WorkingDirectory;
-    sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
-    return ShellExecuteEx(&sei);
-  }
-  return false;
+    if (StrIsNotEmpty(szArguments))
+    {
+        SHELLEXECUTEINFO sei;
+        ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+        sei.cbSize = sizeof(SHELLEXECUTEINFO);
+        sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_UNICODE | SEE_MASK_HMONITOR | SEE_MASK_NOZONECHECKS | SEE_MASK_WAITFORINPUTIDLE;
+        sei.hwnd = GetForegroundWindow();
+        sei.hMonitor = MonitorFromWindow(sei.hwnd, MONITOR_DEFAULTTONEAREST);
+        sei.lpVerb = L"runas";
+        sei.lpFile = lpExe;
+        sei.lpParameters = szArguments;
+        sei.lpDirectory = Globals.WorkingDirectory;
+        sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
+        return ShellExecuteEx(&sei);
+    }
+    return false;
 }
 
 
@@ -11179,58 +12269,68 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 //
 void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
 {
-  static bool s_bPrevShowMenubar   = true;
-  static bool s_bPrevShowToolbar   = true;
-  static bool s_bPrevShowStatusbar = true;
-  static WINDOWPLACEMENT s_wndplPrev = { 0 };
-  s_wndplPrev.length = sizeof(WINDOWPLACEMENT);
+    static bool s_bPrevShowMenubar   = true;
+    static bool s_bPrevShowToolbar   = true;
+    static bool s_bPrevShowStatusbar = true;
+    static WINDOWPLACEMENT s_wndplPrev = { 0 };
+    s_wndplPrev.length = sizeof(WINDOWPLACEMENT);
 
-  UINT const fPrevFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
-  UINT const  fFScrFlags     = SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
-  DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
+    UINT const fPrevFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
+    UINT const  fFScrFlags     = SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
+    DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
 
-  HWND const hWindow = hwnd ? hwnd : GetDesktopWindow();
+    HWND const hWindow = hwnd ? hwnd : GetDesktopWindow();
 
-  DWORD dwStyle = GetWindowLong(hWindow, GWL_STYLE);
-  RECT rcCurrent; GetWindowRect(hWindow, &rcCurrent);
+    DWORD dwStyle = GetWindowLong(hWindow, GWL_STYLE);
+    RECT rcCurrent;
+    GetWindowRect(hWindow, &rcCurrent);
 
-  if ((mode == SCR_NORMAL) || s_bPrevFullScreenFlag) 
-  { 
-    SetWindowLong(hWindow, GWL_STYLE, dwStyle | dwRmvFScrStyle);
-    if (s_bPrevFullScreenFlag) {
-      SetWindowPlacement(hWindow, &s_wndplPrev); // 1st set correct screen (DPI Aware)
-      SetWindowPlacement(hWindow, &s_wndplPrev); // 2nd resize position to correct DPI settings
-      Settings.ShowMenubar = s_bPrevShowMenubar;
-      Settings.ShowToolbar = s_bPrevShowToolbar;
-      Settings.ShowStatusbar = s_bPrevShowStatusbar;
+    if ((mode == SCR_NORMAL) || s_bPrevFullScreenFlag)
+    {
+        SetWindowLong(hWindow, GWL_STYLE, dwStyle | dwRmvFScrStyle);
+        if (s_bPrevFullScreenFlag)
+        {
+            SetWindowPlacement(hWindow, &s_wndplPrev); // 1st set correct screen (DPI Aware)
+            SetWindowPlacement(hWindow, &s_wndplPrev); // 2nd resize position to correct DPI settings
+            Settings.ShowMenubar = s_bPrevShowMenubar;
+            Settings.ShowToolbar = s_bPrevShowToolbar;
+            Settings.ShowStatusbar = s_bPrevShowStatusbar;
+        }
+        else
+        {
+            WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
+            if (GetDoAnimateMinimize())
+            {
+                DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+            }
+            SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
+            SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
+        }
+        SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, fPrevFlags);
+        s_bPrevFullScreenFlag = false;
     }
-    else {
-      WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
-      if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
-      SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
-      SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
+    else   // full screen mode
+    {
+        GetWindowPlacement(hWindow, &s_wndplPrev);
+        MONITORINFO mi = { sizeof(mi) };
+        GetMonitorInfo(MonitorFromWindow(hWindow, MONITOR_DEFAULTTOPRIMARY), &mi);
+        SetWindowLong(hWindow, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
+        WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, NULL, mode);
+        if (GetDoAnimateMinimize())
+        {
+            DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+        }
+        SetWindowPlacement(hWindow, &wndpl);
+        SetWindowPos(hWindow, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
+                     mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, fFScrFlags);
+        s_bPrevShowMenubar = Settings.ShowMenubar;
+        s_bPrevShowToolbar = Settings.ShowToolbar;
+        s_bPrevShowStatusbar = Settings.ShowStatusbar;
+        Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
+        s_bPrevFullScreenFlag = true;
     }
-    SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, fPrevFlags);
-    s_bPrevFullScreenFlag = false;
-  }
-  else { // full screen mode
-    GetWindowPlacement(hWindow, &s_wndplPrev);
-    MONITORINFO mi = { sizeof(mi) };
-    GetMonitorInfo(MonitorFromWindow(hWindow, MONITOR_DEFAULTTOPRIMARY), &mi);
-    SetWindowLong(hWindow, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
-    WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, NULL, mode);
-    if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
-    SetWindowPlacement(hWindow, &wndpl);
-    SetWindowPos(hWindow, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
-      mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, fFScrFlags);
-    s_bPrevShowMenubar = Settings.ShowMenubar;
-    s_bPrevShowToolbar = Settings.ShowToolbar;
-    s_bPrevShowStatusbar = Settings.ShowStatusbar;
-    Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
-    s_bPrevFullScreenFlag = true;
-  }
 
-  SendWMSize(hWindow, NULL);
+    SendWMSize(hWindow, NULL);
 }
 
 
@@ -11241,25 +12341,26 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
 //
 void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
-  static HICON hIcon = NULL;
-  if (!hIcon) {
-    LoadIconWithScaleDown(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), 
-                          GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), &hIcon);
-  }
-  NOTIFYICONDATA nid;
-  ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
-  nid.cbSize = sizeof(NOTIFYICONDATA);
-  nid.hWnd = hwnd;
-  nid.uID = 0;
-  nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
-  nid.uCallbackMessage = WM_TRAYMESSAGE;
-  nid.hIcon = hIcon;
-  StringCchCopy(nid.szTip,COUNTOF(nid.szTip), _W(SAPPNAME));
+    static HICON hIcon = NULL;
+    if (!hIcon)
+    {
+        LoadIconWithScaleDown(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND),
+                              GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), &hIcon);
+    }
+    NOTIFYICONDATA nid;
+    ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
+    nid.cbSize = sizeof(NOTIFYICONDATA);
+    nid.hWnd = hwnd;
+    nid.uID = 0;
+    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+    nid.uCallbackMessage = WM_TRAYMESSAGE;
+    nid.hIcon = hIcon;
+    StringCchCopy(nid.szTip,COUNTOF(nid.szTip), _W(SAPPNAME));
 
-  if(bAdd)
-    Shell_NotifyIcon(NIM_ADD,&nid);
-  else
-    Shell_NotifyIcon(NIM_DELETE,&nid);
+    if(bAdd)
+        Shell_NotifyIcon(NIM_ADD,&nid);
+    else
+        Shell_NotifyIcon(NIM_DELETE,&nid);
 
 }
 
@@ -11271,36 +12372,41 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
 //
 void SetNotifyIconTitle(HWND hwnd)
 {
-  NOTIFYICONDATA nid;
-  ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
-  nid.cbSize = sizeof(NOTIFYICONDATA);
-  nid.hWnd = hwnd;
-  nid.uID = 0;
-  nid.uFlags = NIF_TIP;
+    NOTIFYICONDATA nid;
+    ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
+    nid.cbSize = sizeof(NOTIFYICONDATA);
+    nid.hWnd = hwnd;
+    nid.uID = 0;
+    nid.uFlags = NIF_TIP;
 
-  WCHAR tchTitle[256] = { L'\0' };
-  if (StrIsNotEmpty(s_wchTitleExcerpt)) {
-    WCHAR tchFormat[32] = { L'\0' };
-    GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
-    StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);
-  }
-  else if (StrIsNotEmpty(Globals.CurrentFile)) {
-    WCHAR szDisplayName[MAX_PATH];
-    PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
-    PathCompactPathEx(tchTitle,szDisplayName,COUNTOF(tchTitle)-4,0);
-  }
-  else {
-    GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
-  }
-  if (GetDocModified()) {
-    StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"* ");
-  }
-  else {
-    StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"");
-  }
-  StringCchCat(nid.szTip,COUNTOF(nid.szTip),tchTitle);
+    WCHAR tchTitle[256] = { L'\0' };
+    if (StrIsNotEmpty(s_wchTitleExcerpt))
+    {
+        WCHAR tchFormat[32] = { L'\0' };
+        GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
+        StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);
+    }
+    else if (StrIsNotEmpty(Globals.CurrentFile))
+    {
+        WCHAR szDisplayName[MAX_PATH];
+        PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+        PathCompactPathEx(tchTitle,szDisplayName,COUNTOF(tchTitle)-4,0);
+    }
+    else
+    {
+        GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
+    }
+    if (GetDocModified())
+    {
+        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"* ");
+    }
+    else
+    {
+        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"");
+    }
+    StringCchCat(nid.szTip,COUNTOF(nid.szTip),tchTitle);
 
-  Shell_NotifyIcon(NIM_MODIFY,&nid);
+    Shell_NotifyIcon(NIM_MODIFY,&nid);
 }
 
 
@@ -11310,10 +12416,10 @@ void SetNotifyIconTitle(HWND hwnd)
 //
 void UpdateMouseDWellTime()
 {
-  if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints)
-    SciCall_SetMouseDWellTime(100);
-  else
-    Sci_DisableMouseDWellNotification();
+    if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints)
+        SciCall_SetMouseDWellTime(100);
+    else
+        Sci_DisableMouseDWellNotification();
 }
 
 
@@ -11323,25 +12429,27 @@ void UpdateMouseDWellTime()
 //
 void ShowZoomCallTip()
 {
-  int const delayClr = Settings2.ZoomTooltipTimeout;
-  if (delayClr >= (10*USER_TIMER_MINIMUM)) {
-    int const iZoomLevelPercent = SciCall_GetZoom();
+    int const delayClr = Settings2.ZoomTooltipTimeout;
+    if (delayClr >= (10*USER_TIMER_MINIMUM))
+    {
+        int const iZoomLevelPercent = SciCall_GetZoom();
 
-    char chToolTip[32] = { '\0' };
-    StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
+        char chToolTip[32] = { '\0' };
+        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
 
-    DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+        DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
 
-    int const iXOff = SciCall_GetXOffset();
-    SciCall_SetXOffset(0);
-    SciCall_CallTipShow(iPos, chToolTip);
-    SciCall_SetXOffset(iXOff);
-    Globals.CallTipType = CT_ZOOM;
-    _DelayClearZoomCallTip(delayClr);
-  }
-  else {
-    CancelCallTip();
-  }
+        int const iXOff = SciCall_GetXOffset();
+        SciCall_SetXOffset(0);
+        SciCall_CallTipShow(iPos, chToolTip);
+        SciCall_SetXOffset(iXOff);
+        Globals.CallTipType = CT_ZOOM;
+        _DelayClearZoomCallTip(delayClr);
+    }
+    else
+    {
+        CancelCallTip();
+    }
 }
 
 
@@ -11351,8 +12459,8 @@ void ShowZoomCallTip()
 //
 void CancelCallTip()
 {
-  SciCall_CallTipCancel();
-  Globals.CallTipType = CT_NONE;
+    SciCall_CallTipCancel();
+    Globals.CallTipType = CT_NONE;
 }
 
 
@@ -11362,80 +12470,89 @@ void CancelCallTip()
 //
 void InstallFileWatching(const bool bInstall)
 {
-  // Terminate previous watching
-  if (s_bRunningWatch) {
-    KillTimer(NULL, ID_WATCHTIMER);
-    if (s_hChangeHandle) {
-      FindCloseChangeNotification(s_hChangeHandle);
-      s_hChangeHandle = NULL;
+    // Terminate previous watching
+    if (s_bRunningWatch)
+    {
+        KillTimer(NULL, ID_WATCHTIMER);
+        if (s_hChangeHandle)
+        {
+            FindCloseChangeNotification(s_hChangeHandle);
+            s_hChangeHandle = NULL;
+        }
+        s_bRunningWatch = false;
+        s_dwChangeNotifyTime = 0UL; // reset
     }
-    s_bRunningWatch = false;
-    s_dwChangeNotifyTime = 0UL; // reset
-  }
 
-  bool const bFileExists = StrIsNotEmpty(Globals.CurrentFile) && PathIsExistingFile(Globals.CurrentFile);
+    bool const bFileExists = StrIsNotEmpty(Globals.CurrentFile) && PathIsExistingFile(Globals.CurrentFile);
 
-  // Install
-  if (bInstall && bFileExists && (FileWatching.FileWatchingMode != FWM_DONT_CARE))
-  {
-    WCHAR tchDirectory[MAX_PATH] = { L'\0' };
-    StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Globals.CurrentFile);
-    PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
+    // Install
+    if (bInstall && bFileExists && (FileWatching.FileWatchingMode != FWM_DONT_CARE))
+    {
+        WCHAR tchDirectory[MAX_PATH] = { L'\0' };
+        StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Globals.CurrentFile);
+        PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
 
-    // Save data of current file
-    HANDLE hFind = FindFirstFile(Globals.CurrentFile, &s_fdCurFile);
-    if (hFind != INVALID_HANDLE_VALUE) {
-      FindClose(hFind);
+        // Save data of current file
+        HANDLE hFind = FindFirstFile(Globals.CurrentFile, &s_fdCurFile);
+        if (hFind != INVALID_HANDLE_VALUE)
+        {
+            FindClose(hFind);
+        }
+        else
+        {
+            ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
+        }
+        s_hChangeHandle = FindFirstChangeNotification(
+                              tchDirectory,false,
+                              FILE_NOTIFY_CHANGE_FILE_NAME  | \
+                              FILE_NOTIFY_CHANGE_DIR_NAME   | \
+                              FILE_NOTIFY_CHANGE_ATTRIBUTES | \
+                              FILE_NOTIFY_CHANGE_SIZE | \
+                              FILE_NOTIFY_CHANGE_LAST_WRITE);
+
+        // No previous watching installed, so launch the timer first
+        if (!s_bRunningWatch)
+        {
+            SetTimer(NULL, ID_WATCHTIMER,
+                     min_dw(FileWatching.FileCheckInverval, FileWatching.AutoReloadTimeout),
+                     WatchTimerProc);
+            s_bRunningWatch = true;
+        }
+        s_dwChangeNotifyTime = GetTickCount(); // init
     }
-    else {
-      ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
-    }
-    s_hChangeHandle = FindFirstChangeNotification(
-      tchDirectory,false,
-      FILE_NOTIFY_CHANGE_FILE_NAME  | \
-      FILE_NOTIFY_CHANGE_DIR_NAME   | \
-      FILE_NOTIFY_CHANGE_ATTRIBUTES | \
-      FILE_NOTIFY_CHANGE_SIZE | \
-      FILE_NOTIFY_CHANGE_LAST_WRITE);
-
-    // No previous watching installed, so launch the timer first
-    if (!s_bRunningWatch) {
-      SetTimer(NULL, ID_WATCHTIMER, 
-               min_dw(FileWatching.FileCheckInverval, FileWatching.AutoReloadTimeout), 
-               WatchTimerProc);
-      s_bRunningWatch = true;
-    }
-    s_dwChangeNotifyTime = GetTickCount(); // init
-  }
-  UpdateToolbar();
+    UpdateToolbar();
 }
 
 
-static inline bool CurrentFileChanged() 
+static inline bool CurrentFileChanged()
 {
-  if (StrIsEmpty(Globals.CurrentFile)) { return false; }
+    if (StrIsEmpty(Globals.CurrentFile))
+    {
+        return false;
+    }
 
-  // Check if the file has been changed
-  WIN32_FIND_DATA fdUpdated;
-  ZeroMemory(&fdUpdated, sizeof(WIN32_FIND_DATA));
+    // Check if the file has been changed
+    WIN32_FIND_DATA fdUpdated;
+    ZeroMemory(&fdUpdated, sizeof(WIN32_FIND_DATA));
 
-  //~HANDLE const hFind = FindFirstFile(Globals.CurrentFile, &fdUpdated);
-  //~if (hFind != INVALID_HANDLE_VALUE)
-  //~  FindClose(hFind);
-  //~else
-  //~  return true;
+    //~HANDLE const hFind = FindFirstFile(Globals.CurrentFile, &fdUpdated);
+    //~if (hFind != INVALID_HANDLE_VALUE)
+    //~  FindClose(hFind);
+    //~else
+    //~  return true;
 
-  if (!GetFileAttributesEx(Globals.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
-    return true;   // The current file has been removed
-  }
+    if (!GetFileAttributesEx(Globals.CurrentFile, GetFileExInfoStandard, &fdUpdated))
+    {
+        return true;   // The current file has been removed
+    }
 
-  bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow)
-    || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
-    //|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
-    || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
-    || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
+    bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow)
+                         || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
+                         //|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
+                         || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
+                         || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
 
-  return changed;
+    return changed;
 }
 
 //=============================================================================
@@ -11445,48 +12562,50 @@ static inline bool CurrentFileChanged()
 //
 void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
-  UNUSED(dwTime);
-  UNUSED(idEvent);
-  UNUSED(uMsg);
-  UNUSED(hwnd);
-  
-  if (s_bRunningWatch)
-  {
-    switch (FileWatching.FileWatchingMode) 
-    {
-      case FWM_AUTORELOAD:
-        if (((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout)
-            && //|| // TODO: OR for read only auto reload without save requester
-            CurrentFileChanged()) 
-        {
-          InstallFileWatching(false); // terminate
-          PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
-        }
-        break;
+    UNUSED(dwTime);
+    UNUSED(idEvent);
+    UNUSED(uMsg);
+    UNUSED(hwnd);
 
-      case FWM_MSGBOX:
+    if (s_bRunningWatch)
+    {
+        switch (FileWatching.FileWatchingMode)
         {
-          if (s_hChangeHandle) 
-          {
-            while (WaitForSingleObject(s_hChangeHandle, 0) == WAIT_OBJECT_0) {
-              // Check if the changes affect the current file
-              if (CurrentFileChanged()) {
-                // Shutdown current watching and give control to main window
+        case FWM_AUTORELOAD:
+            if (((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout)
+                    && //|| // TODO: OR for read only auto reload without save requester
+                    CurrentFileChanged())
+            {
                 InstallFileWatching(false); // terminate
                 PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
-                break; // while
-              }
-              FindNextChangeNotification(s_hChangeHandle);
             }
-          }
+            break;
+
+        case FWM_MSGBOX:
+        {
+            if (s_hChangeHandle)
+            {
+                while (WaitForSingleObject(s_hChangeHandle, 0) == WAIT_OBJECT_0)
+                {
+                    // Check if the changes affect the current file
+                    if (CurrentFileChanged())
+                    {
+                        // Shutdown current watching and give control to main window
+                        InstallFileWatching(false); // terminate
+                        PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
+                        break; // while
+                    }
+                    FindNextChangeNotification(s_hChangeHandle);
+                }
+            }
         }
         break;
 
-      case FWM_DONT_CARE:
-      default:
-        break;
+        case FWM_DONT_CARE:
+        default:
+            break;
+        }
     }
-  }
 }
 
 
@@ -11496,29 +12615,32 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 //
 void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
-  if ((s_dwLastCopyTime > 0) && ((GetTickCount() - s_dwLastCopyTime) > 200)) {
+    if ((s_dwLastCopyTime > 0) && ((GetTickCount() - s_dwLastCopyTime) > 200))
+    {
 
-    if (SciCall_CanPaste()) {
-      bool bAutoIndent2 = Settings.AutoIndent;
-      Settings.AutoIndent = 0;
-      EditJumpTo(-1,0);
-      _BEGIN_UNDO_ACTION_;
-      if (!Sci_IsDocEmpty()) {
-        SciCall_NewLine();
-      }
-      SciCall_Paste();
-      SciCall_NewLine();
-      _END_UNDO_ACTION_;
-      EditEnsureSelectionVisible();
-      Settings.AutoIndent = bAutoIndent2;
+        if (SciCall_CanPaste())
+        {
+            bool bAutoIndent2 = Settings.AutoIndent;
+            Settings.AutoIndent = 0;
+            EditJumpTo(-1,0);
+            _BEGIN_UNDO_ACTION_;
+            if (!Sci_IsDocEmpty())
+            {
+                SciCall_NewLine();
+            }
+            SciCall_Paste();
+            SciCall_NewLine();
+            _END_UNDO_ACTION_;
+            EditEnsureSelectionVisible();
+            Settings.AutoIndent = bAutoIndent2;
+        }
+        s_dwLastCopyTime = 0;
     }
-    s_dwLastCopyTime = 0;
-  }
 
-  UNUSED(dwTime);
-  UNUSED(idEvent);
-  UNUSED(uMsg);
-  UNUSED(hwnd);
+    UNUSED(dwTime);
+    UNUSED(idEvent);
+    UNUSED(uMsg);
+    UNUSED(hwnd);
 }
 
 

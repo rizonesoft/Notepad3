@@ -69,8 +69,8 @@ HRESULT GdiTextRenderer::Initialize(HWND referenceHwnd, HDC referenceDC, UINT wi
     if (SUCCEEDED(hr))
     {
         hr = g_dwrite->CreateMonitorRenderingParams(
-                MonitorFromWindow(referenceHwnd, MONITOR_DEFAULTTONULL),
-                &m_renderingParams);
+                 MonitorFromWindow(referenceHwnd, MONITOR_DEFAULTTONULL),
+                 &m_renderingParams);
     }
 
     SafeRelease(&gdiInterop);
@@ -88,21 +88,21 @@ HRESULT GdiTextRenderer::Initialize(HWND referenceHwnd, HDC referenceDC, UINT wi
 ******************************************************************/
 
 HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawGlyphRun(
-        void* /* clientDrawingContext */,
-        FLOAT baselineOriginX,
-        FLOAT baselineOriginY,
-        DWRITE_MEASURING_MODE measuringMode,
-        DWRITE_GLYPH_RUN const* glyphRun,
-        DWRITE_GLYPH_RUN_DESCRIPTION const* /* glyphRunDescription */,
-        IUnknown* /* clientDrawingEffect */)
+    void* /* clientDrawingContext */,
+    FLOAT baselineOriginX,
+    FLOAT baselineOriginY,
+    DWRITE_MEASURING_MODE measuringMode,
+    DWRITE_GLYPH_RUN const* glyphRun,
+    DWRITE_GLYPH_RUN_DESCRIPTION const* /* glyphRunDescription */,
+    IUnknown* /* clientDrawingEffect */)
 {
     m_renderTarget->DrawGlyphRun(
-                            baselineOriginX,
-                            baselineOriginY,
-                            measuringMode,
-                            glyphRun,
-                            m_renderingParams,
-                            GetSysColor(COLOR_BTNTEXT));
+        baselineOriginX,
+        baselineOriginY,
+        measuringMode,
+        glyphRun,
+        m_renderingParams,
+        GetSysColor(COLOR_BTNTEXT));
 
     return S_OK;
 }
@@ -117,11 +117,11 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawGlyphRun(
 ******************************************************************/
 
 HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawUnderline(
-        void* /* clientDrawingContext */,
-        FLOAT /* baselineOriginX */,
-        FLOAT /* baselineOriginY */,
-        DWRITE_UNDERLINE const* /* underline */,
-        IUnknown* /* clientDrawingEffect */)
+    void* /* clientDrawingContext */,
+    FLOAT /* baselineOriginX */,
+    FLOAT /* baselineOriginY */,
+    DWRITE_UNDERLINE const* /* underline */,
+    IUnknown* /* clientDrawingEffect */)
 {
     return S_OK;
 }
@@ -136,11 +136,11 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawUnderline(
 ******************************************************************/
 
 HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawStrikethrough(
-        void* /* clientDrawingContext */,
-        FLOAT /* baselineOriginX */,
-        FLOAT /* baselineOriginY */,
-        DWRITE_STRIKETHROUGH const* /* strikethrough */,
-        IUnknown* /* clientDrawingEffect */)
+    void* /* clientDrawingContext */,
+    FLOAT /* baselineOriginX */,
+    FLOAT /* baselineOriginY */,
+    DWRITE_STRIKETHROUGH const* /* strikethrough */,
+    IUnknown* /* clientDrawingEffect */)
 {
     return S_OK;
 }
@@ -155,18 +155,18 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawStrikethrough(
 ******************************************************************/
 
 HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawInlineObject(
-        void* /* clientDrawingContext */,
-        FLOAT /* originX */,
-        FLOAT /* originY */,
-        IDWriteInlineObject* /* inlineObject */,
-        BOOL /* isSideways */,
-        BOOL /* isRightToLeft */,
-        IUnknown* /* clientDrawingEffect */)
+    void* /* clientDrawingContext */,
+    FLOAT /* originX */,
+    FLOAT /* originY */,
+    IDWriteInlineObject* /* inlineObject */,
+    BOOL /* isSideways */,
+    BOOL /* isRightToLeft */,
+    IUnknown* /* clientDrawingEffect */)
 {
     return S_OK;
 }
 
- 
+
 /******************************************************************
 *                                                                 *
 * GdiTextRenderer::IsPixelSnapped                                 *
@@ -176,8 +176,8 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::DrawInlineObject(
 ******************************************************************/
 
 HRESULT STDMETHODCALLTYPE GdiTextRenderer::IsPixelSnappingDisabled(
-        void* /* clientDrawingContext */,
-        BOOL* isDisabled)
+    void* /* clientDrawingContext */,
+    BOOL* isDisabled)
 {
     *isDisabled = false;
     return S_OK;
@@ -193,12 +193,13 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::IsPixelSnappingDisabled(
 ******************************************************************/
 
 HRESULT STDMETHODCALLTYPE GdiTextRenderer::GetCurrentTransform(
-        void* /* clientDrawingContext */,
-        DWRITE_MATRIX* transform)
+    void* /* clientDrawingContext */,
+    DWRITE_MATRIX* transform)
 {
     static const DWRITE_MATRIX identity = {1.0f, 0.0f,
                                            0.0f, 1.0f,
-                                           0.0f, 0.0f};
+                                           0.0f, 0.0f
+                                          };
 
     *transform = identity;
     return S_OK;
@@ -214,8 +215,8 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::GetCurrentTransform(
 ******************************************************************/
 
 HRESULT STDMETHODCALLTYPE GdiTextRenderer::GetPixelsPerDip(
-        void* /* clientDrawingContext */,
-        FLOAT* pixelsPerDip)
+    void* /* clientDrawingContext */,
+    FLOAT* pixelsPerDip)
 {
     *pixelsPerDip = m_renderTarget->GetPixelsPerDip();
     return S_OK;
@@ -230,14 +231,14 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::GetPixelsPerDip(
 *                                                                 *
 ******************************************************************/
 
-HRESULT STDMETHODCALLTYPE GdiTextRenderer::QueryInterface( 
-        REFIID riid,
-        void **ppvObject)
+HRESULT STDMETHODCALLTYPE GdiTextRenderer::QueryInterface(
+    REFIID riid,
+    void **ppvObject)
 {
     *ppvObject = nullptr;
 
     if (riid == __uuidof(IDWriteTextRenderer) ||
-        riid == __uuidof(IUnknown))
+            riid == __uuidof(IUnknown))
     {
         AddRef();
         *ppvObject = this;
@@ -273,8 +274,9 @@ ULONG STDMETHODCALLTYPE GdiTextRenderer::AddRef()
 ULONG STDMETHODCALLTYPE GdiTextRenderer::Release()
 {
     LONG refs = InterlockedDecrement(&m_refs);
-    if (refs == 0) {
-      delete this;
+    if (refs == 0)
+    {
+        delete this;
     }
     return refs;
 }

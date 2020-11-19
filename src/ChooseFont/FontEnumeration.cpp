@@ -36,12 +36,14 @@ HRESULT GetLocalizedName(IDWriteLocalizedStrings* names, const WCHAR* locale, OU
         // If there is no name with the desired locale fallback to US English.
         if (SUCCEEDED(hr))
         {
-            if (!nameExists) {
-              hr = names->FindLocaleName(L"en-US", &nameIndex, &nameExists);
+            if (!nameExists)
+            {
+                hr = names->FindLocaleName(L"en-US", &nameIndex, &nameExists);
             }
             // If the name still doesn't exist just take the first one.
-            if (!nameExists) { 
-              nameIndex = 0; 
+            if (!nameExists)
+            {
+                nameIndex = 0;
             }
         }
 
@@ -224,9 +226,9 @@ HRESULT GetFontFaceInfo(const std::vector<IDWriteFont*>& fonts, const WCHAR* loc
                 break;
 
             info.emplace_back(faceName.c_str(),
-                                fonts[i]->GetWeight(),
-                                fonts[i]->GetStyle(),
-                                fonts[i]->GetStretch());
+                              fonts[i]->GetWeight(),
+                              fonts[i]->GetStyle(),
+                              fonts[i]->GetStretch());
         }
     }
     catch (...)
@@ -252,7 +254,7 @@ HRESULT GetFontFamilyNames(IDWriteFontCollection* fontCollection, const WCHAR* l
     HRESULT hr = S_OK;
 
     std::wstring familyName;
-    
+
     UINT32  familyCount = fontCollection->GetFontFamilyCount();
 
     try
