@@ -580,7 +580,7 @@ msgstr "A keresett szöveg üres"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Új grepWinNP3 indítása"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
