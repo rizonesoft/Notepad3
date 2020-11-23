@@ -95,8 +95,8 @@ BOOL CDwmApiImpl::IsDwmCompositionEnabled(void)
     DWM_IS_COMPOSITION_ENABLED pfnDwmIsCompositionEnabled = (DWM_IS_COMPOSITION_ENABLED)GetProcAddress(m_hDwmApiLib, "DwmIsCompositionEnabled");
     if (!pfnDwmIsCompositionEnabled)
         return FALSE;
-    BOOL bEnabled = FALSE;
-    HRESULT hRes = pfnDwmIsCompositionEnabled(&bEnabled);
+    BOOL    bEnabled = FALSE;
+    HRESULT hRes     = pfnDwmIsCompositionEnabled(&bEnabled);
     return SUCCEEDED(hRes) && bEnabled && ((hc.dwFlags & HCF_HIGHCONTRASTON) == 0) && !IsWindows10OrGreater();
 }
 

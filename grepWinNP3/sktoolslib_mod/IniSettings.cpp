@@ -58,12 +58,12 @@ void CIniSettings::Save()
     fclose(pFile);
 }
 
-__int64 CIniSettings::GetInt64(LPCWSTR section, LPCWSTR key, __int64 default)
+__int64 CIniSettings::GetInt64(LPCWSTR section, LPCWSTR key, __int64 defaultVal)
 {
     _ASSERT(m_iniPath.size());
     const wchar_t* v = m_IniFile.GetValue(section, key, nullptr);
     if (v == nullptr)
-        return default;
+        return defaultVal;
 
     return _wcstoi64(v, nullptr, 10);
 }
@@ -75,10 +75,10 @@ void CIniSettings::SetInt64(LPCWSTR section, LPCWSTR key, __int64 value)
     m_IniFile.SetValue(section, key, val);
 }
 
-LPCWSTR CIniSettings::GetString(LPCWSTR section, LPCWSTR key, LPCWSTR default /*= nullptr*/)
+LPCWSTR CIniSettings::GetString(LPCWSTR section, LPCWSTR key, LPCWSTR defaultVal /*= nullptr*/)
 {
     _ASSERT(m_iniPath.size());
-    return m_IniFile.GetValue(section, key, default);
+    return m_IniFile.GetValue(section, key, defaultVal);
 }
 
 void CIniSettings::SetString(LPCWSTR section, LPCWSTR key, LPCWSTR value)

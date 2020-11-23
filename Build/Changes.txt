@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1109.(build_#) (2020-11-09)
+Current BETA/RC Version 5.20.1118.(build_#) (2020-11-18)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1118.1]- Sci_PositionCR type reverted to long for Win32 compatibility reasons.
 [1001.1]- Rebase DarkMode module on delay load version branch of win32-darkmode project.
 [.930.1]- Update the KeyWordList of lexers "C# Source Code" and "SQL Query".
 [.930.1]- Bookmark Occurrences Colors changed to get perceptually distinct colors.
@@ -84,14 +85,16 @@ CHANGES:
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
-[.921.1]- Update grepWinNP3 (GRE) version 2.1.4.30 (2020-09-21).
-[.813.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-07-31).
+[1116.1]- Update grepWinNP3 (GRE) version 2.1.4.31 (2020-11-16).
+[1116.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-11-05).
 [.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-11).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1116.1]- Initial path on OpenFile dialog (load file).
+[1116.1]- Compiler complaints (new VS2019 version v16.8.1).
 [1024.2]- Allow single character filename on command line.
 [1012.2]- Disable Copy/Cut complete lines on partial multi-selection.
 [1012.1]- Find/Repl all in range algo.

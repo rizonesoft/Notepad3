@@ -249,7 +249,8 @@
 #include <map>
 #include <list>
 #include <algorithm>
-#include <stdio.h>
+#include <cstdio>
+#include <strsafe.h>
 
 #ifdef SI_SUPPORT_IOSTREAMS
 # include <iostream>
@@ -1408,7 +1409,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     const char * a_pszFile
     )
 {
-    strcpy_s(m_FilePathA, _countof(m_FilePathA), a_pszFile);
+    //strcpy_s(m_FilePathA, _countof(m_FilePathA), a_pszFile);
     FILE * fp = nullptr;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     fopen_s(&fp, a_pszFile, "rb");
@@ -1416,7 +1417,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     fp = fopen(a_pszFile, "rb");
 #endif // __STDC_WANT_SECURE_LIB__
     if (!fp) {
-        return SI_FILE;
+        return SI_Error::SI_FILE;
     }
     SI_Error rc = LoadFile(fp);
     fclose(fp);
@@ -1433,9 +1434,13 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
   const SI_WCHAR_T* a_pwszFile
 )
 {
+  if (a_pwszFile && a_pwszFile[0])
+{
   HANDLE hFile = CreateFile(a_pwszFile,
     GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
     nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+    SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
 
   if (hFile == INVALID_HANDLE_VALUE) {
     return SI_Error::SI_FILE;
@@ -1445,6 +1450,8 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 
   CloseHandle(hFile);
   return rc;
+}
+  return SI_Error::SI_FILE;
 }
 
 #else
@@ -2614,7 +2621,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 #else // !__STDC_WANT_SECURE_LIB__
     fp = fopen(a_pszFile, "wb");
 #endif // __STDC_WANT_SECURE_LIB__
-    if (!fp) return SI_FILE;
+    if (!fp)
+        return SI_Error::SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
     fflush(fp);
     fclose(fp);
@@ -2632,9 +2640,13 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
   bool              a_bAddSignature
 ) const
 {
+  if (a_pwszFile && a_pwszFile[0]) 
+{
   HANDLE hFile = CreateFile(a_pwszFile,
     GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
     nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+    SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
 
   if (hFile == INVALID_HANDLE_VALUE) {
     return SI_Error::SI_FILE;
@@ -2644,6 +2656,8 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
 
   CloseHandle(hFile);
   return rc;
+}
+  return SI_Error::SI_FILE;
 }
 
 #else
@@ -2744,7 +2758,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
         if (iSection->pComment) {
             if (bNeedNewLine) {
                 a_oOutput.Write(SI_NEWLINE_A);
-                //§§§a_oOutput.Write(SI_NEWLINE_A);
+                //???a_oOutput.Write(SI_NEWLINE_A);
                 bNeedNewLine = false;
             }
             if (!OutputMultiLineText(a_oOutput, convert, iSection->pComment)) {
@@ -2754,7 +2768,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         if (bNeedNewLine) {
             a_oOutput.Write(SI_NEWLINE_A);
-            //§§§a_oOutput.Write(SI_NEWLINE_A);
+            //???a_oOutput.Write(SI_NEWLINE_A);
             bNeedNewLine = false;
         }
 
@@ -2830,7 +2844,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                 bNeedNewLine = false;
             }
         }
-        //§§§bNeedNewLine = true;
+        //???bNeedNewLine = true;
     }
 
     return SI_Error::SI_OK;

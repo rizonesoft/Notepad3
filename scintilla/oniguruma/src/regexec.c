@@ -2179,64 +2179,89 @@ stack_double(int* is_alloca, char** arg_alloc_base,
 } while (0)
 
 #ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
-#define STACK_EMPTY_CHECK_MEM(isnull, sid, s, reg) do {\
-  StackType* k;\
-  GET_EMPTY_CHECK_START(sid, k);\
-  if (k->u.empty_check.pstr != (s)) {\
+#define STACK_EMPTY_CHECK_MEM(isnull, sid, empty_status_mem, s, reg) do {\
+  StackType* klow;\
+  GET_EMPTY_CHECK_START(sid, klow);\
+  if (klow->u.empty_check.pstr != (s)) {\
+  stack_empty_check_mem_not_empty:\
     (isnull) = 0;\
   }\
   else {\
-    UChar* endp;\
+    StackType *k, *kk;\
+    MemStatusType ms = (empty_status_mem);\
     (isnull) = 1;\
-    while (k < stk) {\
-      if (k->type == STK_MEM_START &&\
-        MEM_STATUS_LIMIT_AT((reg)->empty_status_mem, k->zid)) {\
-        STACK_MEM_START_GET_PREV_END_ADDR(k, reg, endp);\
-        if (endp == 0) {\
-          (isnull) = 0; break;\
+    k = stk;\
+    while (k > klow) {\
+      k--;\
+      if (k->type == STK_MEM_END && MEM_STATUS_LIMIT_AT(ms, k->zid)) {\
+        kk = klow;\
+        while (kk < k) {\
+          if (kk->type == STK_MEM_START && kk->zid == k->zid) {\
+            if (kk->u.mem.prev_end.i == INVALID_STACK_INDEX || \
+                ((STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr) && (STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr))) {\
+              goto stack_empty_check_mem_not_empty;\
         }\
-        else if (STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr != endp) {\
-          (isnull) = 0; break;\
+            else {\
+              ms &= ~((MemStatusType )1 << k->zid);\
+              break;\
         }\
-        else if (endp != s) {\
-          (isnull) = -1; /* empty, but position changed */ \
         }\
+          kk++;\
+        }\
+        if (ms == 0) break;\
       }\
-      k++;\
     }\
   }\
 } while(0)
 
-#define STACK_EMPTY_CHECK_MEM_REC(isnull,sid,s,reg) do {\
+#define STACK_EMPTY_CHECK_MEM_REC(isnull,sid,empty_status_mem,s,reg) do {\
   int level = 0;\
-  StackType* k = stk;\
+  StackType* klow = stk;\
   while (1) {\
-    k--;\
+    klow--;\
     STACK_BASE_CHECK(k, "STACK_EMPTY_CHECK_MEM_REC");\
-    if (k->type == STK_EMPTY_CHECK_START) {\
-      if (k->zid == (sid)) {\
+    if (klow->type == STK_EMPTY_CHECK_START) {\
+      if (klow->zid == (sid)) {\
         if (level == 0) {\
-          if (k->u.empty_check.pstr != (s)) {\
+          if (klow->u.empty_check.pstr != (s)) {\
+          stack_empty_check_mem_rec_not_empty:\
             (isnull) = 0;\
             break;\
           }\
           else {\
-            UChar* endp;\
+            StackType *k, *kk;\
+            MemStatusType ms;\
             (isnull) = 1;\
-            while (k < stk) {\
-              if (k->type == STK_MEM_START) {\
-                if (level == 0 && \
-                  MEM_STATUS_LIMIT_AT((reg)->empty_status_mem, k->zid) !=0) {\
-                  STACK_MEM_START_GET_PREV_END_ADDR(k, reg, endp);\
-                  if (endp == 0) {\
-                    (isnull) = 0; break;\
+            if ((empty_status_mem) == 0) break;\
+            ms = (empty_status_mem);\
+            k = stk;\
+            while (k > klow) {\
+              k--;\
+              if (k->type == STK_MEM_END) {\
+                if (level == 0 && MEM_STATUS_LIMIT_AT(ms, k->zid)) {\
+                  kk = klow;\
+                  kk++;\
+                  while (kk < k) {\
+                    if (kk->type == STK_MEM_START && kk->zid == k->zid) {\
+                      if (kk->u.mem.prev_end.i == INVALID_STACK_INDEX || \
+                          ((STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr) && (STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr))) {\
+                        goto stack_empty_check_mem_rec_not_empty;\
                   }\
-                  else if (STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr != endp) { \
-                    (isnull) = 0; break;\
+                      else {\
+                        ms &= ~((MemStatusType )1 << k->zid);\
+                        break;\
+                      }\
+                    }\
+                    else if (kk->type == STK_EMPTY_CHECK_START) {\
+                      if (kk->zid == (sid)) level++;\
                   }\
-                  else if (endp != s) {\
-                    (isnull) = -1; /* empty, but position changed */\
+                    else if (kk->type == STK_EMPTY_CHECK_END) {\
+                      if (kk->zid == (sid)) level--;\
                   }\
+                    kk++;\
+                  }\
+                  level = 0;\
+                  if (ms == 0) break;\
                 }\
               }\
               else if (k->type == STK_EMPTY_CHECK_START) {\
@@ -2245,7 +2270,6 @@ stack_double(int* is_alloca, char** arg_alloc_base,
               else if (k->type == STK_EMPTY_CHECK_END) {\
                 if (k->zid == (sid)) level--;\
               }\
-              k++;\
             }\
             break;\
           }\
@@ -2255,8 +2279,8 @@ stack_double(int* is_alloca, char** arg_alloc_base,
         }\
       }\
     }\
-    else if (k->type == STK_EMPTY_CHECK_END) {\
-      if (k->zid == (sid)) level++;\
+    else if (klow->type == STK_EMPTY_CHECK_END) {\
+      if (klow->zid == (sid)) level++;\
     }\
   }\
 } while(0)
@@ -3941,7 +3965,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         int is_empty;
 
         mem = p->empty_check_end.mem;  /* mem: null check id */
-        STACK_EMPTY_CHECK_MEM(is_empty, mem, s, reg);
+        STACK_EMPTY_CHECK_MEM(is_empty, mem, p->empty_check_end.empty_status_mem, s, reg);
         INC_OP;
         if (is_empty) {
 #ifdef ONIG_DEBUG_MATCH
@@ -3961,7 +3985,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
         mem = p->empty_check_end.mem;  /* mem: null check id */
 #ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
-        STACK_EMPTY_CHECK_MEM_REC(is_empty, mem, s, reg);
+        STACK_EMPTY_CHECK_MEM_REC(is_empty, mem, p->empty_check_end.empty_status_mem, s, reg);
 #else
         STACK_EMPTY_CHECK_REC(is_empty, mem, s);
 #endif

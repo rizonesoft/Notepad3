@@ -28,9 +28,9 @@ public:
     ~CAeroColors(void);
 
     std::wstring AdjustColorsFromWallpaper();
-    void SetRandomColor();
+    void         SetRandomColor();
 
 private:
     std::wstring oldWallpaperPath;
-    FILETIME oldWallPaperDate;
+    FILETIME     oldWallPaperDate;
 };

@@ -37,14 +37,14 @@ public:
 
 private:
     static LRESULT CALLBACK SubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uidSubclass, DWORD_PTR dwRefData);
-    LRESULT StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    LRESULT ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    LRESULT ProgressbarWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT                 StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT                 ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT                 ProgressbarWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     void DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
     void DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width) const;
     void FillRect(LPRECT prc, HDC hdcPaint, Gdiplus::Color clr) const;
-    int GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture) const;
+    int  GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture) const;
     void PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
     void ScreenToClient(HWND hWnd, LPRECT lprc);
     void DrawSolidWndRectOnParent(HWND hWnd, Gdiplus::Color clr);
@@ -52,8 +52,8 @@ private:
     BOOL GetEditBorderColor(HWND hWnd, COLORREF* pClr);
     void GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia) const;
 
-    CDwmApiImpl                 m_dwm;
-    CUxThemeAeroImpl            m_theme;
-    std::map<HWND, UINT_PTR>    subclassedControls;
-    ULONG_PTR                   gdiplusToken;
+    CDwmApiImpl              m_dwm;
+    CUxThemeAeroImpl         m_theme;
+    std::map<HWND, UINT_PTR> subclassedControls;
+    ULONG_PTR                gdiplusToken;
 };

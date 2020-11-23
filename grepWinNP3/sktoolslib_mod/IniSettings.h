@@ -1,4 +1,4 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
 // Copyright (C) 2013, 2020 - Stefan Kueng
 
@@ -33,9 +33,9 @@ public:
     void         Save();
     void         Reload();
 
-    LPCWSTR GetString(LPCWSTR section, LPCWSTR key, LPCWSTR default = nullptr);
+    LPCWSTR GetString(LPCWSTR section, LPCWSTR key, LPCWSTR defaultVal = nullptr);
     void    SetString(LPCWSTR section, LPCWSTR key, LPCWSTR value);
-    __int64 GetInt64(LPCWSTR section, LPCWSTR key, __int64 default);
+    __int64 GetInt64(LPCWSTR section, LPCWSTR key, __int64 defaultVal);
     void    SetInt64(LPCWSTR section, LPCWSTR key, __int64 value);
     void    Delete(LPCWSTR section, LPCWSTR key);
     void    RestoreWindowPos(LPCWSTR windowname, HWND hWnd, UINT showCmd);

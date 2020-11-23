@@ -235,7 +235,7 @@ void CBrowseFolder::SetCheckBoxText2(LPCWSTR checktext)
         wcscpy_s(m_CheckText2, checktext);
 }
 
-void CBrowseFolder::SetFont(HWND hwnd, LPWSTR FontName, int FontSize)
+void CBrowseFolder::SetFont(HWND hwnd, LPCWSTR FontName, int FontSize)
 {
     HFONT   hf;
     LOGFONT lf  = {0};
