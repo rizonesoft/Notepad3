@@ -256,7 +256,7 @@ msgstr "Érvénytelen útvonal!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr "Inverz keresés (NOT kereső szüveg)"
+msgstr "Inverz keresés (NOT keresési szöveg)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -580,7 +580,7 @@ msgstr "A keresett szöveg üres"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Új grepWinNP3 indítása"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -612,5 +612,5 @@ msgstr "Ez hozzáadja a 'Megnyitás a szerkesztőben' pontot a helyi menüben"
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Mindig felül"
 
