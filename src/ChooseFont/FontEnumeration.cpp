@@ -29,35 +29,29 @@ HRESULT GetLocalizedName(IDWriteLocalizedStrings* names, const WCHAR* locale, OU
     BOOL   nameExists;
     UINT32 nameLength = 0;
 
-    try
-    {
+    try {
         hr = names->FindLocaleName(locale, &nameIndex, &nameExists);
 
         // If there is no name with the desired locale fallback to US English.
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             if (!nameExists) {
-              hr = names->FindLocaleName(L"en-US", &nameIndex, &nameExists);
+                hr = names->FindLocaleName(L"en-US", &nameIndex, &nameExists);
             }
             // If the name still doesn't exist just take the first one.
-            if (!nameExists) { 
-              nameIndex = 0; 
+            if (!nameExists) {
+                nameIndex = 0;
             }
         }
 
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             hr = names->GetStringLength(nameIndex, &nameLength);
         }
 
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             familyName.resize(static_cast<size_t>(nameLength + 1));
             hr = names->GetString(nameIndex, &familyName[0], static_cast<UINT32>(familyName.size()));
         }
-    }
-    catch (...)
-    {
+    } catch (...) {
         hr = ExceptionToHResult();
     }
     return hr;
@@ -79,8 +73,7 @@ HRESULT GetFontFamilyName(IDWriteFontFamily* fontFamily, const WCHAR* locale, OU
 
     HRESULT hr = fontFamily->GetFamilyNames(&familyNames);
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = GetLocalizedName(familyNames, locale, familyName);
     }
 
@@ -104,8 +97,7 @@ HRESULT GetFontFaceName(IDWriteFont* font, const WCHAR* locale, OUT std::wstring
 
     HRESULT hr = font->GetFaceNames(&faceNames);
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = GetLocalizedName(faceNames, locale, faceName);
     }
 
@@ -131,11 +123,11 @@ HRESULT GetFontFamily(IDWriteFontCollection* fontCollection, const WCHAR* fontFa
     BOOL    familyExists;
 
     hr = fontCollection->FindFamilyName(fontFamilyName, &familyIndex, &familyExists);
-    if (!familyExists)
+    if (!familyExists) {
         return DWRITE_E_NOFONT;
+    }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = fontCollection->GetFontFamily(familyIndex, fontFamily);
     }
 
@@ -159,25 +151,21 @@ HRESULT GetFonts(IDWriteFontCollection* fontCollection, const WCHAR* fontFamilyN
 
     HRESULT hr = GetFontFamily(fontCollection, fontFamilyName, &fontFamily);
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         UINT32 fontCount = fontFamily->GetFontCount();
 
         // Read font variant in the family.
-        try
-        {
-            for (UINT32 i = 0; i != fontCount; ++i)
-            {
+        try {
+            for (UINT32 i = 0; i != fontCount; ++i) {
                 hr = fontFamily->GetFont(i, &font);
-                if (FAILED(hr))
+                if (FAILED(hr)) {
                     break;
+                }
 
                 fonts.push_back(font);
                 SafeDetach(&font);
             }
-        }
-        catch (...)
-        {
+        } catch (...) {
             hr = ExceptionToHResult();
         }
     }
@@ -203,10 +191,8 @@ HRESULT GetFontFaceInfo(const std::vector<IDWriteFont*>& fonts, const WCHAR* loc
 
     // If there are no fonts in this family just returned standard harcoded choices
 
-    try
-    {
-        if (fonts.empty())
-        {
+    try {
+        if (fonts.empty()) {
             info.emplace_back(L"Regular", DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL);
             info.emplace_back(L"Bold", DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL);
             info.emplace_back(L"Italic", DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_ITALIC, DWRITE_FONT_STRETCH_NORMAL);
@@ -216,21 +202,19 @@ HRESULT GetFontFaceInfo(const std::vector<IDWriteFont*>& fonts, const WCHAR* loc
             return S_OK;
         }
 
-        for (size_t i = 0; i != fonts.size(); ++i)
-        {
+        for (size_t i = 0; i != fonts.size(); ++i) {
             std::wstring faceName;
             hr = GetFontFaceName(fonts[i], locale, faceName);
-            if (FAILED(hr))
+            if (FAILED(hr)) {
                 break;
+            }
 
             info.emplace_back(faceName.c_str(),
-                                fonts[i]->GetWeight(),
-                                fonts[i]->GetStyle(),
-                                fonts[i]->GetStretch());
+                              fonts[i]->GetWeight(),
+                              fonts[i]->GetStyle(),
+                              fonts[i]->GetStretch());
         }
-    }
-    catch (...)
-    {
+    } catch (...) {
         hr = ExceptionToHResult();
     }
 
@@ -252,30 +236,26 @@ HRESULT GetFontFamilyNames(IDWriteFontCollection* fontCollection, const WCHAR* l
     HRESULT hr = S_OK;
 
     std::wstring familyName;
-    
+
     UINT32  familyCount = fontCollection->GetFontFamilyCount();
 
-    try
-    {
-        for (UINT32 i = 0; i != familyCount; ++i)
-        {
+    try {
+        for (UINT32 i = 0; i != familyCount; ++i) {
             IDWriteFontFamily* fontFamily = nullptr;
             hr = fontCollection->GetFontFamily(i, &fontFamily);
 
-            if (SUCCEEDED(hr))
-            {
+            if (SUCCEEDED(hr)) {
                 hr = GetFontFamilyName(fontFamily, localeName, familyName);
             }
             SafeRelease(&fontFamily);
 
-            if (FAILED(hr))
+            if (FAILED(hr)) {
                 break;
+            }
 
             fontFamilyNames.push_back(familyName);
         }
-    }
-    catch (...)
-    {
+    } catch (...) {
         hr = ExceptionToHResult();
     }
 
@@ -297,14 +277,11 @@ HRESULT GetFontFamilyNameFromFormat(IDWriteTextFormat* textFormat, OUT std::wstr
 
     UINT32 familyNameLength = textFormat->GetFontFamilyNameLength() + 1;
 
-    try
-    {
+    try {
         fontFamilyName.resize(familyNameLength);
 
         hr = textFormat->GetFontFamilyName(&fontFamilyName[0], familyNameLength);
-    }
-    catch (...)
-    {
+    } catch (...) {
         hr = ExceptionToHResult();
     }
 
@@ -330,10 +307,8 @@ ULONG GetBestFontAttributes(IDWriteFontCollection* fontCollection, const WCHAR* 
     IDWriteFontFamily*  fontFamily = nullptr;
     IDWriteFont*        font = nullptr;
 
-    if (SUCCEEDED(GetFontFamily(fontCollection, fontFamilyName, &fontFamily)))
-    {
-        if (SUCCEEDED(fontFamily->GetFirstMatchingFont(fontWeight, fontStretch, fontStyle, &font)))
-        {
+    if (SUCCEEDED(GetFontFamily(fontCollection, fontFamilyName, &fontFamily))) {
+        if (SUCCEEDED(fontFamily->GetFirstMatchingFont(fontWeight, fontStretch, fontStyle, &font))) {
             fontWeight = font->GetWeight();
             fontStyle = font->GetStyle();
             fontStretch = font->GetStretch();

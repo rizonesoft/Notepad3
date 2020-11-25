@@ -9,8 +9,8 @@
 //----------------------------------------------------------------------------
 
 // The following macros define the minimum required platform.  The minimum required platform
-// is the earliest version of Windows, Internet Explorer etc. that has the necessary features to run 
-// your application.  The macros work by enabling all features available on platform versions up to and 
+// is the earliest version of Windows, Internet Explorer etc. that has the necessary features to run
+// your application.  The macros work by enabling all features available on platform versions up to and
 // including the version specified.
 
 // Modify the following defines if you have to target a platform prior to the ones specified below.
@@ -64,8 +64,7 @@ extern IDWriteFactory* g_dwrite;
 template <typename InterfaceType>
 inline void SafeRelease(InterfaceType** currentObject)
 {
-    if (*currentObject != nullptr)
-    {
+    if (*currentObject != nullptr) {
         (*currentObject)->Release();
         *currentObject = nullptr;
     }
@@ -76,8 +75,9 @@ inline void SafeRelease(InterfaceType** currentObject)
 template <typename InterfaceType>
 inline InterfaceType* SafeAcquire(InterfaceType* newObject)
 {
-    if (newObject != nullptr)
+    if (newObject != nullptr) {
         newObject->AddRef();
+    }
 
     return newObject;
 }
@@ -115,16 +115,11 @@ inline void SafeAttach(InterfaceType** currentObject, InterfaceType* newObject)
 // Maps exceptions to equivalent HRESULTs,
 inline HRESULT ExceptionToHResult() noexcept
 {
-    try
-    {
+    try {
         throw;  // Rethrow previous exception.
-    }
-    catch(std::bad_alloc&)
-    {
+    } catch(std::bad_alloc&) {
         return E_OUTOFMEMORY;
-    }
-    catch (...)
-    {
+    } catch (...) {
         return E_FAIL;
     }
 }

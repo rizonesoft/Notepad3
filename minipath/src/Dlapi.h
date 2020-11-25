@@ -28,8 +28,8 @@ extern "C" { // C-Declarations
 //==== LV_ITEMDATA Structure ==================================================
 typedef struct tagLV_ITEMDATA // lvid
 {
-  LPITEMIDLIST  pidl; // Item Id
-  LPSHELLFOLDER lpsf; // Parent IShellFolder Interface
+    LPITEMIDLIST  pidl; // Item Id
+    LPSHELLFOLDER lpsf; // Parent IShellFolder Interface
 
 } LV_ITEMDATA, *LPLV_ITEMDATA;
 
@@ -103,10 +103,10 @@ BOOL DirList_Sort(HWND,int,BOOL);
 typedef struct tagDLITEM // dli
 {
 
-  UINT mask;
-  WCHAR szFileName[MAX_PATH];
-  WCHAR szDisplayName[MAX_PATH];
-  int  ntype;
+    UINT mask;
+    WCHAR szFileName[MAX_PATH];
+    WCHAR szDisplayName[MAX_PATH];
+    int  ntype;
 
 } DLITEM, *LPDLITEM;
 
@@ -139,11 +139,12 @@ BOOL DirList_SelectItem(HWND,LPCWSTR,LPCWSTR);
 
 #define DL_FILTER_BUFSIZE 256
 
-typedef struct tagDL_FILTER { //dlf
-  int   nCount;
-  WCHAR  tFilterBuf[DL_FILTER_BUFSIZE];
-  WCHAR* pFilter[DL_FILTER_BUFSIZE];
-  BOOL  bExcludeFilter;
+typedef struct tagDL_FILTER   //dlf
+{
+    int   nCount;
+    WCHAR  tFilterBuf[DL_FILTER_BUFSIZE];
+    WCHAR* pFilter[DL_FILTER_BUFSIZE];
+    BOOL  bExcludeFilter;
 } DL_FILTER, * PDL_FILTER;
 
 

@@ -71,7 +71,7 @@ bool   Style_GetUse2ndDefault();
 void   Style_SetUse2ndDefault(bool);
 void   Style_SetIndentGuides(HWND hwnd,bool);
 void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch);
-bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt, int cchExt, bool bSaveAs);
+bool   Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt, int cchExt, bool bSaveAs);
 bool   Style_StrGetFontName(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont);
 bool   Style_StrGetFontStyle(LPCWSTR lpszStyle,LPWSTR lpszFontStyle,int cchFontStyle);
 bool   Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality);
@@ -105,12 +105,13 @@ bool   Style_StrGetWeightValue(LPCWSTR lpszWeight,int* weight);
 void   Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight);
 
 
-inline void Style_PrintfCchColor(LPWSTR buffer, const size_t cch, LPCWSTR prefix, COLOR_LAYER layer, COLORREF color) {
-  if (layer == FOREGROUND_LAYER) {
-    StringCchPrintf(buffer, cch, L"%sfore:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
-  } else {
-    StringCchPrintf(buffer, cch, L"%sback:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
-  }
+inline void Style_PrintfCchColor(LPWSTR buffer, const size_t cch, LPCWSTR prefix, COLOR_LAYER layer, COLORREF color)
+{
+    if (layer == FOREGROUND_LAYER) {
+        StringCchPrintf(buffer, cch, L"%sfore:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
+    } else {
+        StringCchPrintf(buffer, cch, L"%sback:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
+    }
 }
 
 #if 0

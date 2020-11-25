@@ -19,15 +19,15 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
- /* @doc CRYPTO
- */
+/* @doc CRYPTO
+*/
 
 #include <string.h>
 #include "sha-256.h"
- /* @func
- Convert a string of arbitrary bytes to hex with a trailing null.
- <nl>Overview: <l Crypto Utilities>
-   */
+/* @func
+Convert a string of arbitrary bytes to hex with a trailing null.
+<nl>Overview: <l Crypto Utilities>
+  */
 #include <stdio.h>
 void Hexify
 (const unsigned char *src,	// @parm the source byte string
@@ -37,13 +37,26 @@ void Hexify
 {
     long n = 0, sn = 0;
     static unsigned char  HexDigits[] = "0123456789abcdef";
-    while (sn < len) {
+    while (sn < len)
+    {
         unsigned char ch = src[sn++];
-        if (n < destlen) { dest[n++] = HexDigits[(ch & 0xf0) >> 4]; }
-        if (n < destlen) { dest[n++] = HexDigits[ch & 0x0f]; }
+        if (n < destlen)
+        {
+            dest[n++] = HexDigits[(ch & 0xf0) >> 4];
+        }
+        if (n < destlen)
+        {
+            dest[n++] = HexDigits[ch & 0x0f];
+        }
     }
-    if (n < destlen) { dest[n++] = (unsigned char)0; }
-    else { perror("Hexify: dest buffer too small"); }
+    if (n < destlen)
+    {
+        dest[n++] = (unsigned char)0;
+    }
+    else
+    {
+        perror("Hexify: dest buffer too small");
+    }
 }
 
 #define GET_UINT32(n,b,i)                       \
@@ -234,30 +247,33 @@ void sha256_update
     if (ctx->total[0] < length)
         ctx->total[1]++;
 
-    if (left && length >= fill) {
+    if (left && length >= fill)
+    {
         memcpy((void *)(ctx->buffer + left),
-            (void *)input, fill);
+               (void *)input, fill);
         sha256_process(ctx, ctx->buffer);
         length -= fill;
         input += fill;
         left = 0;
     }
 
-    while (length >= 64) {
+    while (length >= 64)
+    {
         sha256_process(ctx, input);
         length -= 64;
         input += 64;
     }
 
-    if (length) {
+    if (length)
+    {
         memcpy((void *)(ctx->buffer + left),
-            (void *)input, length);
+               (void *)input, length);
     }
 }
 
 static uint8 sha256_padding[64] =
 {
- 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -275,7 +291,7 @@ void sha256_finish
     uint8 msglen[8];
 
     high = (ctx->total[0] >> 29)
-        | (ctx->total[1] << 3);
+           | (ctx->total[1] << 3);
     low = (ctx->total[0] << 3);
 
     PUT_UINT32(high, msglen, 0);

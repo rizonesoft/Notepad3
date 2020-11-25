@@ -18,8 +18,8 @@ trim_trailing_whitespace = false
 charset = utf-8
 # space (w=2) indentation
 indent_style = space
-indent_size = 2
-tab_width = 2
+indent_size = 4
+tab_width = 4
 
 [**.{ini}]
 charset = utf-8-sig

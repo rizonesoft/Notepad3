@@ -14,22 +14,22 @@
 typedef struct _editstyle
 {
 #pragma warning(disable : 4201)  // MS's Non-Std: Structure/Union w/o name
-  union
-  {
-    INT32 iStyle;
-    UINT8 iStyle8[4];
-  };
-  int rid;
-  LPCWSTR pszName;
-  LPCWSTR pszDefault;
-  WCHAR   szValue[BUFSIZE_STYLE_VALUE];
+    union
+    {
+        INT32 iStyle;
+        UINT8 iStyle8[4];
+    };
+    int rid;
+    LPCWSTR pszName;
+    LPCWSTR pszDefault;
+    WCHAR   szValue[BUFSIZE_STYLE_VALUE];
 
 } EDITSTYLE, *PEDITSTYLE;
 
 
 typedef struct _keywordlist
 {
-  const char* const pszKeyWords[KEYWORDSET_MAX + 1];
+    const char* const pszKeyWords[KEYWORDSET_MAX + 1];
 
 } KEYWORDLIST, *PKEYWORDLIST;
 
@@ -37,45 +37,46 @@ typedef struct _keywordlist
 #pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Structure/Union
 typedef struct _editlexer
 {
-  int          lexerID;      // Scintilla/Lexilla ID
-  LPCSTR       lexerName;    // Lexilla Name (case sensitive)
-  int          resID;        // language resource
-  LPCWSTR      pszName;      // config/settings section
-  LPCWSTR      pszDefExt;    // default file name ext (4 reset)
-  WCHAR        szExtensions[BUFZIZE_STYLE_EXTENTIONS];
-  PKEYWORDLIST pKeyWords;
-  EDITSTYLE    Styles[];     // must be last
+    int          lexerID;      // Scintilla/Lexilla ID
+    LPCSTR       lexerName;    // Lexilla Name (case sensitive)
+    int          resID;        // language resource
+    LPCWSTR      pszName;      // config/settings section
+    LPCWSTR      pszDefExt;    // default file name ext (4 reset)
+    WCHAR        szExtensions[BUFZIZE_STYLE_EXTENTIONS];
+    PKEYWORDLIST pKeyWords;
+    EDITSTYLE    Styles[];     // must be last
 
 } EDITLEXER, *PEDITLEXER;
 
 // -----------------------------------------------------------------------------
 
 // Default Style (styleLexStandard.c) Indices
-typedef enum {
-  STY_DEFAULT = 0,
-  STY_MARGIN = 1,
-  STY_BRACE_OK = 2,
-  STY_BRACE_BAD = 3,
-  STY_CTRL_CHR = 4,
-  STY_INDENT_GUIDE = 5,
-  STY_SEL_TXT = 6,
-  STY_WHITESPACE = 7,
-  STY_CUR_LN = 8,
-  STY_CARET = 9,
-  STY_LONG_LN_MRK = 10,
-  STY_X_LN_SPACE = 11,
-  STY_BOOK_MARK = 12,
-  STY_MARK_OCC = 13,
-  STY_URL_HOTSPOT = 14,
-  STY_UNICODE_HOTSPOT = 15,
-  STY_MULTI_EDIT = 16,
-  STY_IME_COLOR = 17,
+typedef enum
+{
+    STY_DEFAULT = 0,
+    STY_MARGIN = 1,
+    STY_BRACE_OK = 2,
+    STY_BRACE_BAD = 3,
+    STY_CTRL_CHR = 4,
+    STY_INDENT_GUIDE = 5,
+    STY_SEL_TXT = 6,
+    STY_WHITESPACE = 7,
+    STY_CUR_LN = 8,
+    STY_CARET = 9,
+    STY_LONG_LN_MRK = 10,
+    STY_X_LN_SPACE = 11,
+    STY_BOOK_MARK = 12,
+    STY_MARK_OCC = 13,
+    STY_URL_HOTSPOT = 14,
+    STY_UNICODE_HOTSPOT = 15,
+    STY_MULTI_EDIT = 16,
+    STY_IME_COLOR = 17,
 
-  STY_INVISIBLE = 18,
-  STY_READONLY = 19
+    STY_INVISIBLE = 18,
+    STY_READONLY = 19
 
-  // MAX = (127 - STYLE_LASTPREDEFINED)
-  // -------^----- => char <-> int casting !!!
+                   // MAX = (127 - STYLE_LASTPREDEFINED)
+                   // -------^----- => char <-> int casting !!!
 }
 LexDefaultStyles;
 

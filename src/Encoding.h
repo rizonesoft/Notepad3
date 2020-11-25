@@ -61,19 +61,23 @@
 #define CPI_PREFERRED_ENCODING  CPI_UTF8
 
 typedef struct _np2encoding {
-
-  UINT        uFlags;
-  UINT        uCodePage;
-  const char* pszParseNames;
-  int         idsName;
-  WCHAR       wchLabel[64];
+    UINT        uFlags;
+    UINT        uCodePage;
+    const char* pszParseNames;
+    int         idsName;
+    WCHAR       wchLabel[64];
 
 } NP2ENCODING;
+
+DWORD Encoding_GetWCMB_Flags(const UINT codePage);
 
 cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);         // getter/setter
 cpi_enc_t  Encoding_Forced(cpi_enc_t iEncoding);          // getter/setter
 cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc);       // getter/setter
-inline cpi_enc_t const Encoding_GetCurrent() { return Encoding_Current(CPI_GET); }
+inline cpi_enc_t const Encoding_GetCurrent()
+{
+    return Encoding_Current(CPI_GET);
+}
 
 void       Encoding_InitDefaults();
 int        Encoding_MapIniSetting(bool, int iSetting);
@@ -88,9 +92,9 @@ void       Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool);
 bool       Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding);
 void       Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool);
 bool       Encoding_GetFromComboboxEx(HWND hwnd, cpi_enc_t* pidEncoding);
-           
+
 UINT       Encoding_GetCodePage(const cpi_enc_t iEncoding);
-           
+
 bool       Encoding_IsDefault(const cpi_enc_t iEncoding);
 bool       Encoding_IsASCII(const cpi_enc_t iEncoding);
 bool       Encoding_IsANSI(const cpi_enc_t iEncoding);
@@ -119,8 +123,9 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch);
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
 
-inline bool IsUTF8Signature(const char* p) {
-  return ((p[0] == '\xEF') && (p[1] == '\xBB') && (p[2] == '\xBF'));
+inline bool IsUTF8Signature(const char* p)
+{
+    return ((p[0] == '\xEF') && (p[1] == '\xBB') && (p[2] == '\xBF'));
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
@@ -129,7 +134,7 @@ bool IsValidUTF8(const char* pTest, size_t nLength);
 
 
 //////////////////////////////////////////////////////
-// Google's   CED       "Compact Encoding Detection" 
+// Google's   CED       "Compact Encoding Detection"
 // Mozilla's  UCHARDET  "Universal Charset Detection"
 //////////////////////////////////////////////////////
 
@@ -141,12 +146,13 @@ void ChangeEncodingCodePage(const cpi_enc_t cpi, UINT newCP);
 
 inline bool Encoding_IsValidIdx(const cpi_enc_t cpi)
 {
-  return ((cpi > CPI_NONE) && (cpi < Encoding_CountOf()));
+    return ((cpi > CPI_NONE) && (cpi < Encoding_CountOf()));
 }
 
 // 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 951 Big5-hkscs, 1361 Johab
-inline bool IsDBCSCodePage(UINT cp) {
-  return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 951) || (cp == 1361));
+inline bool IsDBCSCodePage(UINT cp)
+{
+    return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 951) || (cp == 1361));
 }
 
 // ----------------------------------------------------------------------------
@@ -170,25 +176,24 @@ cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
 
 // ----------------------------------------------------------------------------
 
-typedef struct _enc_det_t
-{
-  cpi_enc_t Encoding; // final detection result
-  // statistic:
-  cpi_enc_t forcedEncoding;
-  cpi_enc_t fileVarEncoding;
-  cpi_enc_t analyzedEncoding;
-  cpi_enc_t unicodeAnalysis;
-  float     confidence;
-  // flags:
-  bool bIsAnalysisReliable;
-  bool bIs7BitASCII;
-  bool bHasBOM;
-  bool bIsReverse;
-  bool bIsUTF8Sig;
-  bool bValidUTF8;
+typedef struct _enc_det_t {
+    cpi_enc_t Encoding; // final detection result
+    // statistic:
+    cpi_enc_t forcedEncoding;
+    cpi_enc_t fileVarEncoding;
+    cpi_enc_t analyzedEncoding;
+    cpi_enc_t unicodeAnalysis;
+    float     confidence;
+    // flags:
+    bool bIsAnalysisReliable;
+    bool bIs7BitOnly;
+    bool bHasBOM;
+    bool bIsReverse;
+    bool bIsUTF8Sig;
+    bool bValidUTF8;
 
-  char encodingStrg[64];
-  
+    char encodingStrg[64];
+
 } ENC_DET_T;
 
 #define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, "" }

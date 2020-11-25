@@ -12,40 +12,49 @@ extern "C" {
 #include <stdbool.h>
 #endif
 
-  void SetDarkMode(bool bEnableDarkMode);
-  inline void InitDarkMode() { SetDarkMode(true); };
-  void ReleaseDarkMode();
+void SetDarkMode(bool bEnableDarkMode);
+inline void InitDarkMode()
+{
+    SetDarkMode(true);
+};
+void ReleaseDarkMode();
 
-  void InitListView(HWND hListView);
-  void InitTreeView(HWND hTreeView);
+void InitListView(HWND hListView);
+void InitTreeView(HWND hTreeView);
 
-  //LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
-  DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
+//LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam);
+DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor);
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-  bool IsDarkModeSupported();
-  bool CheckDarkModeEnabled();
-  bool ShouldAppsUseDarkModeEx();
+bool IsDarkModeSupported();
+bool CheckDarkModeEnabled();
+bool ShouldAppsUseDarkModeEx();
 
-  void AllowDarkModeForAppEx(bool allow);
-  bool AllowDarkModeForWindowEx(HWND hWnd, bool allow);
+void AllowDarkModeForAppEx(bool allow);
+bool AllowDarkModeForWindowEx(HWND hWnd, bool allow);
 
-  bool IsHighContrast();
-  void RefreshTitleBarThemeColor(HWND hWnd);
-  bool IsColorSchemeChangeMessage(LPARAM lParam);
-  bool IsColorSchemeChangeMessageMsg(UINT message, LPARAM lParam);
+bool IsHighContrast();
+void RefreshTitleBarThemeColor(HWND hWnd);
+bool IsColorSchemeChangeMessage(LPARAM lParam);
+bool IsColorSchemeChangeMessageMsg(UINT message, LPARAM lParam);
 
-  #define  CASE_WM_CTLCOLOR_SET     \
+#define  CASE_WM_CTLCOLOR_SET       \
            case WM_CTLCOLORDLG:     \
            case WM_CTLCOLORBTN:     \
            case WM_CTLCOLOREDIT:    \
            case WM_CTLCOLORLISTBOX: \
-           case WM_CTLCOLORSTATIC 
+           case WM_CTLCOLORSTATIC
 
 #else
-  inline bool IsDarkModeSupported() { return false; }
-  inline bool CheckDarkModeEnabled() { return false; }
+inline bool IsDarkModeSupported()
+{
+    return false;
+}
+inline bool CheckDarkModeEnabled()
+{
+    return false;
+}
 #endif
 
 #define UseDarkMode() (IsDarkModeSupported() && CheckDarkModeEnabled())

@@ -48,40 +48,40 @@
 modes used by AES encryption
 <nl>Overview: <l Crypto Utilities>
 */
-typedef enum 
+typedef enum
 {
-	 AES_DIR_ENCRYPT   =        0, /*  @emem Are we encrpyting?  */
-	 AES_DIR_DECRYPT   =        1, /*  @emem Are we decrpyting?  */
-	 AES_MODE_ECB      =        1, /*  @emem Are we ciphering in ECB mode?   */
-	 AES_MODE_CBC      =        2, /*  @emem Are we ciphering in CBC mode?   */
-	 AES_MODE_CFB1     =        3, /*  @emem Are we ciphering in 1-bit CFB mode? */
-	 AES_BITSPERBLOCK  =      128 /* @emem Default number of bits in a cipher block */
+    AES_DIR_ENCRYPT   =        0, /*  @emem Are we encrpyting?  */
+    AES_DIR_DECRYPT   =        1, /*  @emem Are we decrpyting?  */
+    AES_MODE_ECB      =        1, /*  @emem Are we ciphering in ECB mode?   */
+    AES_MODE_CBC      =        2, /*  @emem Are we ciphering in CBC mode?   */
+    AES_MODE_CFB1     =        3, /*  @emem Are we ciphering in 1-bit CFB mode? */
+    AES_BITSPERBLOCK  =      128 /* @emem Default number of bits in a cipher block */
 } AES_MODES;
 
 /* @enum  AES_ERROR_CODES |
 error codes used by AES encryption
 <nl>Overview: <l Crypto Utilities>
-*/ 
-typedef enum 
+*/
+typedef enum
 {
-	 BAD_KEY_DIR       =   -1, /* @emem Key direction is invalid, e.g., unknown value */
-	 BAD_KEY_MAT       =   -2, /* @emem Key material not of correct length */
-	 BAD_KEY_INSTANCE  =   -3, /* @emem Key passed is not valid */
-	 BAD_CIPHER_MODE   =   -4, /* @emem Params struct passed to cipherInit invalid */
-	 BAD_CIPHER_STATE  =   -5, /* @emem Cipher in wrong state (e.g., not initialized) */
-	 BAD_BLOCK_LENGTH  =   -6, /* @emem bad block length */
-	 BAD_CIPHER_INSTANCE = -7, /* @emem bad cypher instance */
-	 BAD_DATA            = -8, /* @emem Data contents are invalid, e.g., invalid padding */
-	 BAD_OTHER           = -9 /*  @emem Unknown error */
+    BAD_KEY_DIR       =   -1, /* @emem Key direction is invalid, e.g., unknown value */
+    BAD_KEY_MAT       =   -2, /* @emem Key material not of correct length */
+    BAD_KEY_INSTANCE  =   -3, /* @emem Key passed is not valid */
+    BAD_CIPHER_MODE   =   -4, /* @emem Params struct passed to cipherInit invalid */
+    BAD_CIPHER_STATE  =   -5, /* @emem Cipher in wrong state (e.g., not initialized) */
+    BAD_BLOCK_LENGTH  =   -6, /* @emem bad block length */
+    BAD_CIPHER_INSTANCE = -7, /* @emem bad cypher instance */
+    BAD_DATA            = -8, /* @emem Data contents are invalid, e.g., invalid padding */
+    BAD_OTHER           = -9 /*  @emem Unknown error */
 } AES_ERROR_CODES;
 /* @enum  AES_CONSTANTS |
 misc constants used by AES encryption
 <nl>Overview: <l Crypto Utilities>
 */
-typedef enum 
+typedef enum
 {
-	 AES_MAX_KEY_SIZE    =     64, /* @emem # of ASCII char's needed to represent a key in hex */
-	 AES_MAX_IV_SIZE     =     16 /* @emem # bytes needed to represent an IV  */
+    AES_MAX_KEY_SIZE    =     64, /* @emem # of ASCII char's needed to represent a key in hex */
+    AES_MAX_IV_SIZE     =     16 /* @emem # bytes needed to represent an IV  */
 } AES_CONSTANTS;
 
 /*  @struct AES_keyInstance |
@@ -90,14 +90,14 @@ encrypt or decrypt many files.
 <nl>Overview: <l Crypto Utilities>
 */
 
-typedef struct 
+typedef struct
 {
-	AES_MODES  direction;                /* Key used for encrypting or decrypting? */
-	int   keyLen;                   /* Length of the key  */
-	char  TheKey[AES_MAX_KEY_SIZE+1];  /* Raw key data in ASCII, e.g., user input or KAT values */
-	int   Nr;                       /* key-length-dependent number of rounds */
-	u32   rk[4*(MAXNR + 1)];        /* key schedule */
-	u32   ek[4*(MAXNR + 1)];        /* CFB1 key schedule (encryption only) */
+    AES_MODES  direction;                /* Key used for encrypting or decrypting? */
+    int   keyLen;                   /* Length of the key  */
+    char  TheKey[AES_MAX_KEY_SIZE+1];  /* Raw key data in ASCII, e.g., user input or KAT values */
+    int   Nr;                       /* key-length-dependent number of rounds */
+    u32   rk[4*(MAXNR + 1)];        /* key schedule */
+    u32   ek[4*(MAXNR + 1)];        /* CFB1 key schedule (encryption only) */
 } AES_keyInstance;
 
 
@@ -109,10 +109,11 @@ of decrypted.
 <nl>Overview: <l Crypto Utilities>
 */
 
-typedef struct 
-{                    /* changed order of the components */
-	AES_MODES  mode;                     /* MODE_ECB, MODE_CBC, or MODE_CFB1 */
-	BYTE  IV[AES_MAX_IV_SIZE];          /* A possible Initialization Vector for ciphering */
+typedef struct
+{
+    /* changed order of the components */
+    AES_MODES  mode;                     /* MODE_ECB, MODE_CBC, or MODE_CFB1 */
+    BYTE  IV[AES_MAX_IV_SIZE];          /* A possible Initialization Vector for ciphering */
 } AES_cipherInstance;
 
 
@@ -139,20 +140,20 @@ int AES_cipherInit(AES_cipherInstance *cipher, AES_MODES mode, char *IV);
 int AES_bin_cipherInit(AES_cipherInstance *cipher, AES_MODES mode, BYTE *IV);
 
 ptrdiff_t AES_blockEncrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-          BYTE *input, ptrdiff_t inputLen, BYTE *outBuffer);
+                           BYTE *input, ptrdiff_t inputLen, BYTE *outBuffer);
 
 ptrdiff_t AES_padEncrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-          BYTE *input, ptrdiff_t inputOctets, BYTE *outBuffer);
+                         BYTE *input, ptrdiff_t inputOctets, BYTE *outBuffer);
 
 ptrdiff_t AES_blockDecrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-          BYTE *input, ptrdiff_t inputLen, BYTE *outBuffer);
+                           BYTE *input, ptrdiff_t inputLen, BYTE *outBuffer);
 
 ptrdiff_t AES_padDecrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-          BYTE *input, ptrdiff_t inputOctets, BYTE *outBuffer);
+                         BYTE *input, ptrdiff_t inputOctets, BYTE *outBuffer);
 
 #ifdef INTERMEDIATE_VALUE_KAT
 int cipherUpdateRounds(AES_cipherInstance *cipher, AES_keyInstance *key,
-					   BYTE *input, int inputLen, BYTE *outBuffer, int rounds);
+                       BYTE *input, int inputLen, BYTE *outBuffer, int rounds);
 #endif /* INTERMEDIATE_VALUE_KAT */
 
 #endif /* __RIJNDAEL_API_FST_H */

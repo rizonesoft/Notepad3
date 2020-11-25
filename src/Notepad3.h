@@ -28,38 +28,36 @@
 //==== Data Type for WM_COPYDATA ==============================================
 #define DATA_NOTEPAD3_PARAMS 0xFB10
 typedef struct np3params {
-
-  int                 flagFileSpecified;
-  FILE_WATCHING_MODE  flagChangeNotify;
-  int                 flagLexerSpecified;
-  int                 iInitialLexer;
-  int                 flagQuietCreate;
-  int                 flagJumpTo;
-  int                 iInitialLine;
-  int                 iInitialColumn;
-  cpi_enc_t           flagSetEncoding;
-  int                 flagSetEOLMode;
-  int                 flagTitleExcerpt;
-  int                 flagMatchText;
-  WCHAR               wchData;
+    int                 flagFileSpecified;
+    FILE_WATCHING_MODE  flagChangeNotify;
+    int                 flagLexerSpecified;
+    int                 iInitialLexer;
+    int                 flagQuietCreate;
+    int                 flagJumpTo;
+    int                 iInitialLine;
+    int                 iInitialColumn;
+    cpi_enc_t           flagSetEncoding;
+    int                 flagSetEOLMode;
+    int                 flagTitleExcerpt;
+    int                 flagMatchText;
+    WCHAR               wchData;
 }
 np3params, *LPnp3params;
 
 
 #pragma pack(push, 1)
-typedef struct _undoSel
-{
-  int selMode_undo;
-  UT_array* anchorPos_undo;
-  UT_array* curPos_undo;
-  UT_array* anchorVS_undo;
-  UT_array* curVS_undo;
+typedef struct _undoSel {
+    int selMode_undo;
+    UT_array* anchorPos_undo;
+    UT_array* curPos_undo;
+    UT_array* anchorVS_undo;
+    UT_array* curVS_undo;
 
-  int selMode_redo;
-  UT_array* anchorPos_redo;
-  UT_array* curPos_redo;
-  UT_array* anchorVS_redo;
-  UT_array* curVS_redo;
+    int selMode_redo;
+    UT_array* anchorPos_redo;
+    UT_array* curPos_redo;
+    UT_array* anchorVS_redo;
+    UT_array* curVS_redo;
 }
 UndoRedoSelection_t;
 #pragma pack(pop)
@@ -70,8 +68,9 @@ UndoRedoSelection_t;
 #define NP3_SEL_MULTI  (SC_SEL_RECTANGLE + SC_SEL_LINES + SC_SEL_THIN)
 
 typedef enum {
-  UNDO = true,
-  REDO = false
+    UNDO = true,
+    REDO = false
+
 } DoAction;
 
 

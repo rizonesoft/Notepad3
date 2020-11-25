@@ -51,10 +51,17 @@ DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
 #define SetExplorerTheme(hwnd) SetWindowTheme((hwnd), L"Explorer", NULL)
 
-inline void InitWindowCommon(HWND hwnd, BOOL bSetExplorerTheme) {
-  if (bSetExplorerTheme) { SetExplorerTheme(hwnd); }
-  else { SetWindowTheme(hwnd, L"", L""); }
-  //SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
+inline void InitWindowCommon(HWND hwnd, BOOL bSetExplorerTheme)
+{
+    if (bSetExplorerTheme)
+    {
+        SetExplorerTheme(hwnd);
+    }
+    else
+    {
+        SetWindowTheme(hwnd, L"", L"");
+    }
+    //SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 }
 
 
