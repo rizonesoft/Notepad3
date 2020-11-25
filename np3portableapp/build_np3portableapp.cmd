@@ -216,7 +216,7 @@ del /f /q "%NP3_PORTAPP_INFO%_tmp.ini"
 :: call %SCRIPT_DIR%Signing_for_NP3P_2nd_EXE.cmd
 
 :: Creation of a "7-Zip" file by appending the extension ".7z"
-set Notepad3Portable.paf.exe=%SCRIPT_DIR%Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe
+set Notepad3Portable.paf.exe=%SCRIPT_DIR%Notepad3Portable_%VERSION%%DEVNAME%.paf.exe
 if exist %Notepad3Portable.paf.exe% (
     copy /B %Notepad3Portable.paf.exe% %Notepad3Portable.paf.exe%.7z /Y /V
 ) else (
