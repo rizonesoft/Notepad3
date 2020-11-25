@@ -580,7 +580,7 @@ msgstr "hľadaný reťazec je prázdny"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Spustiť nové okno grepWinNP3"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -612,5 +612,5 @@ msgstr "Týmto sa pridá nová položka do kontextovej ponuky s názvom 'Otvori�
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Ponechať na vrchu"
 

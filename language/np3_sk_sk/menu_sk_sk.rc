@@ -431,7 +431,7 @@ BEGIN
         MENUITEM "Globálne východzie &písmo...\tAlt+F12",               IDM_VIEW_FONT
         MENUITEM "Východzie písmo akt&uálnej schémy...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Dark Mode",                                   IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Tmavý režim Windows",                                 IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Nastavenia"
     BEGIN
