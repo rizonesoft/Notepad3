@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1118.(build_#) (2020-11-18)
+Current BETA/RC Version 5.20.1125.(build_#) (2020-11-25)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1125.1]- Format: AStyle ALLMAN core code base.
 [1118.1]- Sci_PositionCR type reverted to long for Win32 compatibility reasons.
 [1001.1]- Rebase DarkMode module on delay load version branch of win32-darkmode project.
 [.930.1]- Update the KeyWordList of lexers "C# Source Code" and "SQL Query".
@@ -93,6 +94,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1125.1]- Code styling reformat (AStyle: OTBS).
+[1125.1]- File encoding analysis with 7-bit ASCII only.
+[1125.1]- File save problem after switching encoding to GB2312 (52936).
 [1116.1]- Initial path on OpenFile dialog (load file).
 [1116.1]- Compiler complaints (new VS2019 version v16.8.1).
 [1024.2]- Allow single character filename on command line.
