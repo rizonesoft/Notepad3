@@ -2,8 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
-KEYWORDLIST KeyWords_AHKL =
-{
+KEYWORDLIST KeyWords_AHKL = {
 // Directives
     "#AllowSameLineComments #ClipboardTimeout #CommentFlag #ErrorStdOut #EscapeChar #HotkeyInterval "
     "#HotkeyModifierTimeout #Hotstring #If #IfTimeout #IfWinActive #IfWinExist #IfWinNotActive #IfWinNotExist "
@@ -113,8 +112,7 @@ KEYWORDLIST KeyWords_AHKL =
 };
 
 
-EDITLEXER lexAHKL =
-{
+EDITLEXER lexAHKL = {
     SCLEX_AHKL, "ahkl", IDS_LEX_AHKL, L"AutoHotkey_L Script", L"ahkl; ahk; ia; scriptlet", L"",
     &KeyWords_AHKL, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

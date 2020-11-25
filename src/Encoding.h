@@ -60,8 +60,7 @@
 //#define CPI_PREFERRED_ENCODING  CPI_ANSI_DEFAULT
 #define CPI_PREFERRED_ENCODING  CPI_UTF8
 
-typedef struct _np2encoding
-{
+typedef struct _np2encoding {
     UINT        uFlags;
     UINT        uCodePage;
     const char* pszParseNames;
@@ -69,6 +68,8 @@ typedef struct _np2encoding
     WCHAR       wchLabel[64];
 
 } NP2ENCODING;
+
+DWORD Encoding_GetWCMB_Flags(const UINT codePage);
 
 cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);         // getter/setter
 cpi_enc_t  Encoding_Forced(cpi_enc_t iEncoding);          // getter/setter
@@ -175,8 +176,7 @@ cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
 
 // ----------------------------------------------------------------------------
 
-typedef struct _enc_det_t
-{
+typedef struct _enc_det_t {
     cpi_enc_t Encoding; // final detection result
     // statistic:
     cpi_enc_t forcedEncoding;
@@ -186,7 +186,7 @@ typedef struct _enc_det_t
     float     confidence;
     // flags:
     bool bIsAnalysisReliable;
-    bool bIs7BitASCII;
+    bool bIs7BitOnly;
     bool bHasBOM;
     bool bIsReverse;
     bool bIsUTF8Sig;

@@ -42,8 +42,7 @@
 //   WORD   cmd;
 // } ACCEL, *LPACCEL;
 
-typedef struct _CMDNAMEIDMAP
-{
+typedef struct _CMDNAMEIDMAP {
     char* pCmdName;
     int   ridStrgTbl;
     ACCEL accel;
@@ -53,8 +52,7 @@ CMD_NAME_ID_MAP, *LP_CMD_NAME_ID_MAP;
 
 // ============================================================================
 
-CMD_NAME_ID_MAP NP3_ACCEL_KEY_MAP[] =
-{
+CMD_NAME_ID_MAP NP3_ACCEL_KEY_MAP[] = {
     { "CMD_DUPLINEORSEL", 0, { (FVIRTKEY | FNOINVERT), 0, IDM_EDIT_DUPLINEORSELECTION } }
     ,{ "CMD_TRANSPLINES",  0, { (FVIRTKEY | FNOINVERT), 0, IDM_EDIT_LINETRANSPOSE } }
 };
@@ -69,14 +67,12 @@ CMD_NAME_ID_MAP NP3_ACCEL_KEY_MAP[] =
 
 #define MAXKEYS 25
 
-typedef struct _VKEYS
-{
+typedef struct _VKEYS {
     char *pKeyName;
     char *pKeyString;
 } VKEYS;
 
-VKEYS vkeys[MAXKEYS] =
-{
+VKEYS vkeys[MAXKEYS] = {
     "BkSp",     "Back Space",
     "PgUp",     "Page Up",
     "PgDn",     "Page Down",

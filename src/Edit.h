@@ -137,20 +137,18 @@ void  EditSelectionMultiSelectAllEx(EDITFINDREPLACE edFndRpl);
 //
 //  Folding Functions
 //
-typedef enum
-{
+typedef enum {
     FOLD = SC_FOLDACTION_CONTRACT,
     EXPAND = SC_FOLDACTION_EXPAND,
     SNIFF = SC_FOLDACTION_TOGGLE
-    
+
 } FOLD_ACTION;
 
-typedef enum
-{
+typedef enum {
     UP = -1,
     NONE = 0,
     DOWN = 1
-    
+
 } FOLD_MOVE;
 
 void EditToggleFolds(FOLD_ACTION action,bool);

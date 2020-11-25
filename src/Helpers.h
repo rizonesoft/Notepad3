@@ -314,8 +314,7 @@ inline COLORREF GetModeTextColor(const bool bDarkMode)
 
 inline INT_PTR SetDarkModeCtlColors(const HDC hdc, const bool bDarkMode)
 {
-    if (bDarkMode)
-    {
+    if (bDarkMode) {
         SetBkColor(hdc, Settings2.DarkModeBkgColor);
         SetTextColor(hdc, Settings2.DarkModeTxtColor);
     }
@@ -359,12 +358,10 @@ inline int IsFullHD(HWND hwnd, int resX, int resY)
 {
     int cxScreen, cyScreen;
     GetCurrentMonitorResolution(hwnd, &cxScreen, &cyScreen);
-    if (resX <= 0)
-    {
+    if (resX <= 0) {
         resX = cxScreen;
     }
-    if (resY <= 0)
-    {
+    if (resY <= 0) {
         resY = cyScreen;
     }
     return ((resX == 1920) && (resY == 1080)) ? 0 : (((resX < 1920) || (resY < 1080)) ? -1 : +1);
@@ -440,8 +437,7 @@ bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 
 inline bool TrimSpcA(LPSTR lpString)
 {
-    if (!lpString || !*lpString)
-    {
+    if (!lpString || !*lpString) {
         return false;
     }
     return (bool)StrTrimA(lpString, " \t\v");
@@ -449,8 +445,7 @@ inline bool TrimSpcA(LPSTR lpString)
 
 inline bool TrimSpcW(LPWSTR lpString)
 {
-    if (!lpString || !*lpString)
-    {
+    if (!lpString || !*lpString) {
         return false;
     }
     return (bool)StrTrim(lpString, L" \t\v");
@@ -571,22 +566,17 @@ inline void SwabEx(char* src, char* dest, size_t n)
 {
     static int const max = (INT_MAX - (INT_MAX % 2));
 
-    if (n <= (size_t)max)
-    {
+    if (n <= (size_t)max) {
         _swab(src, dest, (int)n);
-    }
-    else
-    {
+    } else {
         size_t size = n - (n % 2LL);
-        while (size > (size_t)max)
-        {
+        while (size > (size_t)max) {
             _swab(src, dest, max);
             size -= max;
             src += max;
             dest += max;
         }
-        if (size > 0)
-        {
+        if (size > 0) {
             _swab(src, dest, (int)size);
         }
     }
@@ -732,16 +722,13 @@ __inline bool IsAlphaNumeric(WCHAR ch)
 // If the character is an hexadecimal digit, get its value.
 __inline int GetHexDigitA(char ch)
 {
-    if (ch >= '0' && ch <= '9')
-    {
+    if (ch >= '0' && ch <= '9') {
         return ch - '0';
     }
-    if (ch >= 'A' && ch <= 'F')
-    {
+    if (ch >= 'A' && ch <= 'F') {
         return ch - 'A' + 10;
     }
-    if (ch >= 'a' && ch <= 'f')
-    {
+    if (ch >= 'a' && ch <= 'f') {
         return ch - 'a' + 10;
     }
     return -1;
@@ -749,16 +736,13 @@ __inline int GetHexDigitA(char ch)
 
 __inline int GetHexDigitW(WCHAR ch)
 {
-    if (ch >= L'0' && ch <= L'9')
-    {
+    if (ch >= L'0' && ch <= L'9') {
         return ch - L'0';
     }
-    if (ch >= L'A' && ch <= L'F')
-    {
+    if (ch >= L'A' && ch <= L'F') {
         return ch - L'A' + 10;
     }
-    if (ch >= L'a' && ch <= L'f')
-    {
+    if (ch >= L'a' && ch <= L'f') {
         return ch - L'a' + 10;
     }
     return -1;

@@ -100,16 +100,14 @@ typedef unsigned char  Boolean; /* 0 or 1 */
 #define UNI_MAX_UTF32 (UTF32)0x7FFFFFFF
 #define UNI_MAX_LEGAL_UTF32 (UTF32)0x0010FFFF
 
-typedef enum
-{
+typedef enum {
     conversionOK,     /* conversion successful */
     sourceExhausted,  /* partial character in source, but hit end */
     targetExhausted,  /* insuff. room in target for conversion */
     sourceIllegal    /* source sequence is illegal/malformed */
 } ConversionResult;
 
-typedef enum
-{
+typedef enum {
     strictConversion = 0,
     lenientConversion
 } ConversionFlags;

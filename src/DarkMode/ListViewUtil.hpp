@@ -4,8 +4,7 @@
 
 #define UINT_NM_CUSTOMDRAW (0xFFFFFFF4) // NM_CUSTOMDRAW = (0U - 12)
 
-struct SubclassInfo
-{
+struct SubclassInfo {
     COLORREF headerTextColor;
 };
 
@@ -13,24 +12,18 @@ extern "C" void InitListView(HWND hListView)
 {
     HWND hHeader = ListView_GetHeader(hListView);
 
-    if (IsDarkModeSupported())
-    {
-        SetWindowSubclass(hListView, [](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData) -> LRESULT
-        {
+    if (IsDarkModeSupported()) {
+        SetWindowSubclass(hListView, [](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData) -> LRESULT {
             switch (uMsg)
             {
-            case WM_NOTIFY:
-            {
-                if (reinterpret_cast<LPNMHDR>(lParam)->code == UINT_NM_CUSTOMDRAW)
-                {
+            case WM_NOTIFY: {
+                if (reinterpret_cast<LPNMHDR>(lParam)->code == UINT_NM_CUSTOMDRAW) {
                     LPNMCUSTOMDRAW nmcd = reinterpret_cast<LPNMCUSTOMDRAW>(lParam);
-                    switch (nmcd->dwDrawStage)
-                    {
+                    switch (nmcd->dwDrawStage) {
                     case CDDS_PREPAINT:
                         return CDRF_NOTIFYITEMDRAW;
 
-                    case CDDS_ITEMPREPAINT:
-                    {
+                    case CDDS_ITEMPREPAINT: {
                         auto info = reinterpret_cast<SubclassInfo *>(dwRefData);
                         SetTextColor(nmcd->hdc, info->headerTextColor);
                     }
@@ -39,25 +32,20 @@ extern "C" void InitListView(HWND hListView)
                 }
             }
             break;
-            case WM_THEMECHANGED:
-            {
-                if (IsDarkModeSupported())
-                {
+            case WM_THEMECHANGED: {
+                if (IsDarkModeSupported()) {
                     HWND const hHeader = ListView_GetHeader(hWnd);
 
                     AllowDarkModeForWindowEx(hWnd, CheckDarkModeEnabled());
                     AllowDarkModeForWindowEx(hHeader, CheckDarkModeEnabled());
 
                     HTHEME hTheme = OpenThemeData(nullptr, L"ItemsView");
-                    if (hTheme)
-                    {
+                    if (hTheme) {
                         COLORREF color;
-                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_TEXTCOLOR, &color)))
-                        {
+                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_TEXTCOLOR, &color))) {
                             ListView_SetTextColor(hWnd, color);
                         }
-                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_FILLCOLOR, &color)))
-                        {
+                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_FILLCOLOR, &color))) {
                             ListView_SetTextBkColor(hWnd, color);
                             ListView_SetBkColor(hWnd, color);
                         }
@@ -65,8 +53,7 @@ extern "C" void InitListView(HWND hListView)
                     }
 
                     hTheme = OpenThemeData(hHeader, L"Header");
-                    if (hTheme)
-                    {
+                    if (hTheme) {
                         auto info = reinterpret_cast<SubclassInfo*>(dwRefData);
                         GetThemeColor(hTheme, HP_HEADERITEM, 0, TMT_TEXTCOLOR, &(info->headerTextColor));
                         CloseThemeData(hTheme);
@@ -78,8 +65,7 @@ extern "C" void InitListView(HWND hListView)
                 }
             }
             break;
-            case WM_DESTROY:
-            {
+            case WM_DESTROY: {
                 auto info = reinterpret_cast<SubclassInfo*>(dwRefData);
                 delete info;
             }
@@ -101,24 +87,18 @@ extern "C" void InitListView(HWND hListView)
 
 extern "C" void InitTreeView(HWND hTreeView)
 {
-    if (IsDarkModeSupported())
-    {
-        SetWindowSubclass(hTreeView, [](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData) -> LRESULT
-        {
+    if (IsDarkModeSupported()) {
+        SetWindowSubclass(hTreeView, [](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData) -> LRESULT {
             switch (uMsg)
             {
-            case WM_NOTIFY:
-            {
-                if (reinterpret_cast<LPNMHDR>(lParam)->code == UINT_NM_CUSTOMDRAW)
-                {
+            case WM_NOTIFY: {
+                if (reinterpret_cast<LPNMHDR>(lParam)->code == UINT_NM_CUSTOMDRAW) {
                     LPNMCUSTOMDRAW nmcd = reinterpret_cast<LPNMCUSTOMDRAW>(lParam);
-                    switch (nmcd->dwDrawStage)
-                    {
+                    switch (nmcd->dwDrawStage) {
                     case CDDS_PREPAINT:
                         return CDRF_NOTIFYITEMDRAW;
 
-                    case CDDS_ITEMPREPAINT:
-                    {
+                    case CDDS_ITEMPREPAINT: {
                         auto info = reinterpret_cast<SubclassInfo *>(dwRefData);
                         SetTextColor(nmcd->hdc, info->headerTextColor);
                     }
@@ -128,22 +108,17 @@ extern "C" void InitTreeView(HWND hTreeView)
             }
             break;
 
-            case WM_THEMECHANGED:
-            {
-                if (IsDarkModeSupported())
-                {
+            case WM_THEMECHANGED: {
+                if (IsDarkModeSupported()) {
                     AllowDarkModeForWindowEx(hWnd, CheckDarkModeEnabled());
 
                     HTHEME const hTheme = OpenThemeData(nullptr, L"ItemsView");
-                    if (hTheme)
-                    {
+                    if (hTheme) {
                         COLORREF color;
-                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_TEXTCOLOR, &color)))
-                        {
+                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_TEXTCOLOR, &color))) {
                             TreeView_SetTextColor(hWnd, color);
                         }
-                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_FILLCOLOR, &color)))
-                        {
+                        if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_FILLCOLOR, &color))) {
                             TreeView_SetBkColor(hWnd, color);
                         }
                         CloseThemeData(hTheme);
@@ -153,8 +128,7 @@ extern "C" void InitTreeView(HWND hTreeView)
             }
             break;
 
-            case WM_DESTROY:
-            {
+            case WM_DESTROY: {
                 auto info = reinterpret_cast<SubclassInfo*>(dwRefData);
                 delete info;
             }

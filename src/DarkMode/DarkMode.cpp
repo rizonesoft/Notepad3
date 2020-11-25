@@ -84,17 +84,14 @@ extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
 {
     static DWORD _dwWindowsBuildNumber = 0;
     static DWORD _major = 0, _minor = 0;
-    if (!_dwWindowsBuildNumber)
-    {
+    if (!_dwWindowsBuildNumber) {
         RtlGetNtVersionNumbers(&_major, &_minor, &_dwWindowsBuildNumber);
         _dwWindowsBuildNumber &= ~0xF0000000;
     }
-    if (major)
-    {
+    if (major) {
         *major = _major;
     }
-    if (minor)
-    {
+    if (minor) {
         *minor = _minor;
     }
     return _dwWindowsBuildNumber;
@@ -102,15 +99,13 @@ extern "C" DWORD GetWindowsBuildNumber(LPDWORD major, LPDWORD minor)
 // ============================================================================
 
 
-enum class IMMERSIVE_HC_CACHE_MODE
-{
+enum class IMMERSIVE_HC_CACHE_MODE {
     IHCM_USE_CACHED_VALUE,
     IHCM_REFRESH
 };
 
 // Insider 18334
-enum class PreferredAppMode
-{
+enum class PreferredAppMode {
     Default,
     AllowDark,
     ForceDark,
@@ -119,8 +114,7 @@ enum class PreferredAppMode
 };
 
 
-enum WINDOWCOMPOSITIONATTRIB
-{
+enum WINDOWCOMPOSITIONATTRIB {
     WCA_UNDEFINED = 0,
     WCA_NCRENDERING_ENABLED = 1,
     WCA_NCRENDERING_POLICY = 2,
@@ -153,8 +147,7 @@ enum WINDOWCOMPOSITIONATTRIB
 // ============================================================================
 
 
-struct WINDOWCOMPOSITIONATTRIBDATA
-{
+struct WINDOWCOMPOSITIONATTRIBDATA {
     WINDOWCOMPOSITIONATTRIB Attrib;
     PVOID pvData;
     SIZE_T cbData;
@@ -234,32 +227,26 @@ extern "C" bool AllowDarkModeForWindowEx(HWND hWnd, bool allow)
 
 extern "C" void RefreshTitleBarThemeColor(HWND hWnd)
 {
-    if (!s_bDarkModeSupported)
-    {
+    if (!s_bDarkModeSupported) {
         return;
     }
 
     BOOL dark = FALSE;
     if (IsDarkModeAllowedForWindow(hWnd) &&
             ShouldAppsUseDarkMode() &&
-            !IsHighContrast())
-    {
+            !IsHighContrast()) {
         dark = TRUE;
     }
 #if USE_DWMAPI
-    if (SUCCEEDED(DwmSetWindowAttribute(hWnd, 20, &dark, sizeof(dark))))
-    {
+    if (SUCCEEDED(DwmSetWindowAttribute(hWnd, 20, &dark, sizeof(dark)))) {
         return;
     }
     DwmSetWindowAttribute(hWnd, 19, &dark, sizeof(dark));
 #else  // USE_DWMAPI
     DWORD const buildNum = GetWindowsBuildNumber(nullptr, nullptr);
-    if (buildNum < 18362)
-    {
+    if (buildNum < 18362) {
         SetPropW(hWnd, L"UseImmersiveDarkModeColors", reinterpret_cast<HANDLE>(static_cast<INT_PTR>(dark)));
-    }
-    else
-    {
+    } else {
         WINDOWCOMPOSITIONATTRIBDATA data = { WCA_USEDARKMODECOLORS, &dark, sizeof(dark) };
         SetWindowCompositionAttribute(hWnd, &data);
     }
@@ -271,10 +258,8 @@ extern "C" void RefreshTitleBarThemeColor(HWND hWnd)
 extern "C" bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
     bool is = false;
-    if (s_bDarkModeSupported)
-    {
-        if (lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL)
-        {
+    if (s_bDarkModeSupported) {
+        if (lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL) {
             RefreshImmersiveColorPolicyState();
             is = true;
         }
@@ -294,15 +279,11 @@ extern "C" bool IsColorSchemeChangeMessageMsg(UINT message, LPARAM lParam)
 
 extern "C" void AllowDarkModeForAppEx(bool allow)
 {
-    if (s_bDarkModeSupported)
-    {
+    if (s_bDarkModeSupported) {
         DWORD const buildNum = GetWindowsBuildNumber(nullptr, nullptr);
-        if (buildNum < 18362)
-        {
+        if (buildNum < 18362) {
             AllowDarkModeForApp(allow);
-        }
-        else
-        {
+        } else {
             reinterpret_cast<fnSetPreferredAppMode>(AllowDarkModeForApp)(allow ? PreferredAppMode::AllowDark : PreferredAppMode::Default);
         }
     }
@@ -313,16 +294,12 @@ extern "C" void AllowDarkModeForAppEx(bool allow)
 static void FixDarkScrollBar(bool bDarkMode)
 {
     HMODULE hComctl = LoadLibraryExW(L"comctl32.dll", nullptr, kSystemLibraryLoadFlags);
-    if (hComctl)
-    {
+    if (hComctl) {
         auto addr = FindDelayLoadThunkInModule(hComctl, "uxtheme.dll", 49); // OpenNcThemeData
-        if (addr)
-        {
+        if (addr) {
             DWORD oldProtect;
-            if (VirtualProtect(addr, sizeof(IMAGE_THUNK_DATA), PAGE_READWRITE, &oldProtect))
-            {
-                auto MyOpenThemeData = [](HWND hWnd, LPCWSTR classList) -> HTHEME
-                {
+            if (VirtualProtect(addr, sizeof(IMAGE_THUNK_DATA), PAGE_READWRITE, &oldProtect)) {
+                auto MyOpenThemeData = [](HWND hWnd, LPCWSTR classList) -> HTHEME {
                     if (wcscmp(classList, L"ScrollBar") == 0)
                     {
                         hWnd = nullptr;
@@ -331,10 +308,11 @@ static void FixDarkScrollBar(bool bDarkMode)
                     //return _FnOpenNcThemeData(hWnd, classList);
                     return OpenNcThemeData(hWnd, classList);
                 };
-                if (bDarkMode)
+                if (bDarkMode) {
                     addr->u1.Function = reinterpret_cast<ULONG_PTR>(static_cast<decltype(OpenNcThemeData)*>(MyOpenThemeData));
-                else
+                } else {
                     addr->u1.Function = reinterpret_cast<ULONG_PTR>(OpenNcThemeData);
+                }
                 VirtualProtect(addr, sizeof(IMAGE_THUNK_DATA), oldProtect, &oldProtect);
             }
         }
@@ -352,24 +330,17 @@ extern "C" void SetDarkMode(bool bEnableDarkMode)
 
     DWORD major, minor;
     DWORD const buildNumber = GetWindowsBuildNumber(&major, &minor);
-    if (buildNumber)
-    {
+    if (buildNumber) {
         // undocumented function addresses are only valid for this WinVer build numbers
-        if ((major == 10) && (minor == 0) && CheckBuildNumber(buildNumber))
-        {
-            if (!bUxThemeDllLoaded)
-            {
-                __try
-                {
+        if ((major == 10) && (minor == 0) && CheckBuildNumber(buildNumber)) {
+            if (!bUxThemeDllLoaded) {
+                __try {
                     __HrLoadAllImportsForDll("UxTheme.dll"); // Case sensitive
                     bUxThemeDllLoaded = true;
-                }
-                __except (GetExceptionCode() == VcppException(ERROR_SEVERITY_ERROR, ERROR_PROC_NOT_FOUND) ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH)
-                {
+                } __except (GetExceptionCode() == VcppException(ERROR_SEVERITY_ERROR, ERROR_PROC_NOT_FOUND) ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
                     bUxThemeDllLoaded = false;
                 }
-                if (!bUxThemeDllLoaded)
-                {
+                if (!bUxThemeDllLoaded) {
                     return;
                 }
             }
@@ -473,8 +444,7 @@ extern "C" LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     HWND const hwndButton = pDIS->hwndItem;
     HTHEME const hTheme = OpenThemeData(hwndButton, L"Button");
-    if (hTheme)
-    {
+    if (hTheme) {
         RECT rc;
         GetWindowRect(hwndButton, &rc);
 
@@ -483,12 +453,10 @@ extern "C" LRESULT OwnerDrawTextItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int const stateId = BST_UNCHECKED;     // (int)pDIS->itemState;
         HRESULT hr = DrawThemeBackground(hTheme, hdc, partId, stateId, &rc, 0);
         RECT rcContent = { 0 };
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             hr = GetThemeBackgroundContentRect(hTheme, hdc, partId, stateId, &rc, &rcContent);
         }
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             WCHAR szButtonText[255];
             int const len = GetWindowText(hwndButton, szButtonText, ARRAYSIZE(szButtonText));
             hr = DrawThemeText(hTheme, hdc, partId, stateId, szButtonText, len, DT_LEFT | DT_VCENTER | DT_SINGLELINE, 0, &rcContent);

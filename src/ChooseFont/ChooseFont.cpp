@@ -113,12 +113,9 @@ ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const 
     , m_currentTextFormat(nullptr)
     , m_renderTextFormat(nullptr)
 {
-    if (localeName != nullptr)
-    {
+    if (localeName != nullptr) {
         StringCchCopy(m_localeName, _ARRAYSIZE(m_localeName), localeName);
-    }
-    else
-    {
+    } else {
         // Default to the users' locale
         //GetUserDefaultLocaleName(&m_localeName[0], COUNTOF(m_localeName));
         GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, &m_localeName[0], _ARRAYSIZE(m_localeName));
@@ -153,44 +150,25 @@ ChooseFontDialog::~ChooseFontDialog()
 
 static DWRITE_FONT_WEIGHT GetFontWeightValue(LONG fontWeight)
 {
-    if (fontWeight < 150)
-    {
+    if (fontWeight < 150) {
         return DWRITE_FONT_WEIGHT_THIN;
-    }
-    else if (fontWeight < 250)
-    {
+    } else if (fontWeight < 250) {
         return DWRITE_FONT_WEIGHT_EXTRA_LIGHT; // == DWRITE_FONT_WEIGHT_ULTRA_LIGHT
-    }
-    else if (fontWeight < 325)
-    {
+    } else if (fontWeight < 325) {
         return DWRITE_FONT_WEIGHT_LIGHT;
-    }
-    else if (fontWeight < 375)
-    {
+    } else if (fontWeight < 375) {
         return DWRITE_FONT_WEIGHT_SEMI_LIGHT;
-    }
-    else if (fontWeight < 450)
-    {
+    } else if (fontWeight < 450) {
         return DWRITE_FONT_WEIGHT_NORMAL; // == DWRITE_FONT_WEIGHT_REGULAR
-    }
-    else if (fontWeight < 550)
-    {
+    } else if (fontWeight < 550) {
         return DWRITE_FONT_WEIGHT_MEDIUM;
-    }
-    else if (fontWeight < 650)
-    {
+    } else if (fontWeight < 650) {
         return DWRITE_FONT_WEIGHT_SEMI_BOLD; // == DWRITE_FONT_WEIGHT_DEMI_BOLD
-    }
-    else if (fontWeight < 750)
-    {
+    } else if (fontWeight < 750) {
         return DWRITE_FONT_WEIGHT_BOLD;
-    }
-    else if (fontWeight < 850)
-    {
+    } else if (fontWeight < 850) {
         return DWRITE_FONT_WEIGHT_EXTRA_BOLD; // == DWRITE_FONT_WEIGHT_ULTRA_BOLD
-    }
-    else if (fontWeight < 950)
-    {
+    } else if (fontWeight < 950) {
         return DWRITE_FONT_WEIGHT_HEAVY;  // == DWRITE_FONT_WEIGHT_BLACK
     }
     return DWRITE_FONT_WEIGHT_ULTRA_BLACK; // == DWRITE_FONT_WEIGHT_EXTRA_BLACK
@@ -199,12 +177,9 @@ static DWRITE_FONT_WEIGHT GetFontWeightValue(LONG fontWeight)
 
 static DWRITE_FONT_STYLE GetFontStyleValue(LPCWSTR const fontStyle, bool bItalic)
 {
-    if (StrStrI(fontStyle, L"oblique"))
-    {
+    if (StrStrI(fontStyle, L"oblique")) {
         return DWRITE_FONT_STYLE_OBLIQUE;
-    }
-    else if (StrStrI(fontStyle, L"italic") || bItalic)
-    {
+    } else if (StrStrI(fontStyle, L"italic") || bItalic) {
         return DWRITE_FONT_STYLE_ITALIC;
     }
     return DWRITE_FONT_STYLE_NORMAL;
@@ -213,16 +188,11 @@ static DWRITE_FONT_STYLE GetFontStyleValue(LPCWSTR const fontStyle, bool bItalic
 
 static DWRITE_FONT_STRETCH GetFontStrechValue(LPCWSTR const fontStyle)
 {
-    if (StrStrI(fontStyle, L"condensed"))
-    {
+    if (StrStrI(fontStyle, L"condensed")) {
         return DWRITE_FONT_STRETCH_CONDENSED;
-    }
-    else if (StrStrI(fontStyle, L"extended"))
-    {
+    } else if (StrStrI(fontStyle, L"extended")) {
         return DWRITE_FONT_STRETCH_EXPANDED;
-    }
-    else if (StrStrI(fontStyle, L"expanded"))
-    {
+    } else if (StrStrI(fontStyle, L"expanded")) {
         return DWRITE_FONT_STRETCH_EXPANDED;
     }
     return DWRITE_FONT_STRETCH_NORMAL;
@@ -238,8 +208,7 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
     HRESULT hr = g_dwrite->GetSystemFontCollection(&m_fontCollection);
 
     // Create a default text format
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         SafeRelease(&m_currentTextFormat);
 
         const WCHAR* const fontFamilyName = m_chooseFontStruct->lpLogFont->lfFaceName;
@@ -262,21 +231,16 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
     }
 
     // Open the dialog
-    if (SUCCEEDED(hr))
-    {
-        if (Globals.hLngResContainer)
-        {
+    if (SUCCEEDED(hr)) {
+        if (Globals.hLngResContainer) {
             hr = static_cast<HRESULT>(DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
-        }
-        else
-        {
+        } else {
             hr = static_cast<HRESULT>(DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
         }
     }
 
     // If all went well, and the user didn't cancel, return the new format.
-    if (hr == S_OK)
-    {
+    if (hr == S_OK) {
         *textFormat = SafeDetach(&m_currentTextFormat);
     }
     return hr;
@@ -302,27 +266,21 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat* textFormatIn, IDWrite
     SafeRelease(&m_fontCollection);
     HRESULT hr = m_currentTextFormat->GetFontCollection(&m_fontCollection);
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_currentTextFormat->GetLocaleName(&m_localeName[0], _ARRAYSIZE(m_localeName));
     }
 
     // Open the dialog
-    if (SUCCEEDED(hr))
-    {
-        if (Globals.hLngResContainer)
-        {
+    if (SUCCEEDED(hr)) {
+        if (Globals.hLngResContainer) {
             hr = static_cast<HRESULT>(DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
-        }
-        else
-        {
+        } else {
             hr = static_cast<HRESULT>(DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
         }
     }
 
     // If all went well, and the user didn't cancel, return the new format.
-    if (hr == S_OK)
-    {
+    if (hr == S_OK) {
         *textFormatOut = SafeDetach(&m_currentTextFormat);
     }
     return hr;
@@ -349,11 +307,11 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
     WCHAR fontFamilyName[128];
 
     UINT32 fontFamilyNameLength = ComboBox_GetLBTextLen(hwndFontFamilyNames, currentSelection) + 1;
-    if (fontFamilyNameLength > _ARRAYSIZE(fontFamilyName))
+    if (fontFamilyNameLength > _ARRAYSIZE(fontFamilyName)) {
         hr = E_NOT_SUFFICIENT_BUFFER;
+    }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         ComboBox_GetLBText(hwndFontFamilyNames, currentSelection, &fontFamilyName[0]);
     }
 
@@ -362,30 +320,25 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
     std::vector<IDWriteFont*>   fonts;
 
     // Get the font variants for this family
-    if (currentSelection != CB_ERR)
-    {
+    if (currentSelection != CB_ERR) {
         hr = GetFonts(m_fontCollection, fontFamilyName, fonts);
     }
     // Initialize the face name list
     std::vector<FontFaceInfo> fontFaceInfo;
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         ComboBox_ResetContent(hwndFontFaceNames);
         GetFontFaceInfo(fonts, m_localeName, fontFaceInfo);
     }
 
-    if (SUCCEEDED(hr))
-    {
-        for (size_t i = 0; i != fontFaceInfo.size(); ++i)
-        {
+    if (SUCCEEDED(hr)) {
+        for (size_t i = 0; i != fontFaceInfo.size(); ++i) {
             int fontFaceIndex = ComboBox_AddString(hwndFontFaceNames, fontFaceInfo[i].fontFaceName);
             ComboBox_SetItemData(hwndFontFaceNames, fontFaceIndex, fontFaceInfo[i].PackedFontAttributes());
         }
     }
 
     // Select the best fit font face for the current attributes
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         FontFaceInfo desiredAttributes(
             L"",
             m_currentTextFormat->GetFontWeight(),
@@ -397,10 +350,8 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
 
         int fontFaceCount = ComboBox_GetCount(hwndFontFaceNames);
 
-        for (int i = 0; i != fontFaceCount; ++i)
-        {
-            if (static_cast<ULONG>(ComboBox_GetItemData(hwndFontFaceNames, i)) == bestFitAttributes)
-            {
+        for (int i = 0; i != fontFaceCount; ++i) {
+            if (static_cast<ULONG>(ComboBox_GetItemData(hwndFontFaceNames, i)) == bestFitAttributes) {
                 selectedFontFaceName = i;
                 break;
             }
@@ -411,8 +362,7 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
     }
 
     // Release the held font list.
-    for (auto& font : fonts)
-    {
+    for (auto& font : fonts) {
         SafeRelease(&font);
     }
     SafeRelease(&fontFamily);
@@ -491,32 +441,26 @@ HRESULT ChooseFontDialog::OnFontFamilyNameEdit(HWND hwndFontFamilies)
 
     int matchingFontFamily = CB_ERR;
     PTSTR pSpc = NULL;
-    do
-    {
+    do {
         //matchingFontFamily = ComboBox_FindStringExact(hwndFontFamilies, -1, fontFullName);
         matchingFontFamily = ComboBox_FindString(hwndFontFamilies, -1, fontFamilyName);
-        if (matchingFontFamily == CB_ERR)
-        {
+        if (matchingFontFamily == CB_ERR) {
             pSpc = StrRChrIW(fontFamilyName, NULL, L' ');
-            if (pSpc != NULL)
-            {
+            if (pSpc != NULL) {
                 *pSpc = L'\0';
             }
         }
-    }
-    while ((matchingFontFamily == CB_ERR) && (pSpc != NULL));
+    } while ((matchingFontFamily == CB_ERR) && (pSpc != NULL));
 
     bool usedAltMatch = false;
 
-    if (matchingFontFamily == CB_ERR)
-    {
+    if (matchingFontFamily == CB_ERR) {
         // If a match isn't found, scan all for alternate forms in the font
         // collection.
         IDWriteFontFamily* fontFamily = nullptr;
         hr = GetFontFamily(m_fontCollection, fontFullName, &fontFamily);
 
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             // If a match is found, get the family name localized to the locale
             // we're using in the combo box and match against that.
             usedAltMatch = true;
@@ -524,13 +468,10 @@ HRESULT ChooseFontDialog::OnFontFamilyNameEdit(HWND hwndFontFamilies)
             std::wstring localFontFamilyName;
             hr = GetFontFamilyName(fontFamily, m_localeName, localFontFamilyName);
 
-            if (SUCCEEDED(hr))
-            {
+            if (SUCCEEDED(hr)) {
                 matchingFontFamily = ComboBox_FindStringExact(hwndFontFamilies, -1, localFontFamilyName.c_str());
             }
-        }
-        else if (hr == DWRITE_E_NOFONT)
-        {
+        } else if (hr == DWRITE_E_NOFONT) {
             // Ignore DWRITE_E_NOFONT errors
             hr = S_OK;
         }
@@ -539,15 +480,13 @@ HRESULT ChooseFontDialog::OnFontFamilyNameEdit(HWND hwndFontFamilies)
     }
 
     // Process the match, if any
-    if (SUCCEEDED(hr) && matchingFontFamily != CB_ERR)
-    {
+    if (SUCCEEDED(hr) && matchingFontFamily != CB_ERR) {
         ComboBox_SetCurSel(hwndFontFamilies, matchingFontFamily);
 
         // SetCurSel will update the edit text to match the text of the
         // selected item.  If we matched against an alternate name put that
         // name back.
-        if (usedAltMatch)
-        {
+        if (usedAltMatch) {
             ComboBox_SetText(hwndFontFamilies, fontFullName);
         }
         // Reset the edit selection to what is was before SetCurSel.
@@ -583,8 +522,7 @@ HRESULT ChooseFontDialog::OnFontFaceNameEdit(HWND hwnd)
     ComboBox_GetText(hwnd, &text[0], _ARRAYSIZE(text));
 
     int selectedItem = ComboBox_FindStringExact(hwnd, -1, text);
-    if (selectedItem != CB_ERR)
-    {
+    if (selectedItem != CB_ERR) {
         // If text is found, select the corresponding list item, put the
         // selection state back to what it was originally, and redraw the
         // sample text
@@ -620,8 +558,7 @@ HRESULT ChooseFontDialog::OnFontSizeNameEdit(HWND hwnd)
     ComboBox_GetText(hwnd, &text[0], _ARRAYSIZE(text));
 
     int selectedItem = ComboBox_FindStringExact(hwnd, -1, text);
-    if (selectedItem != CB_ERR)
-    {
+    if (selectedItem != CB_ERR) {
         // If text is found, select the corresponding list item, put the
         // selection state back to what it was originally, and redraw the
         // sample text
@@ -643,8 +580,7 @@ HRESULT ChooseFontDialog::OnFontSizeNameEdit(HWND hwnd)
 HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
 {
     static WCHAR sampleText[256] = { L'\0' };
-    if (sampleText[0] == L'\0')
-    {
+    if (sampleText[0] == L'\0') {
         LoadLngStringW(IDS_MUI_EXAMPLE_TEXT, sampleText, _ARRAYSIZE(sampleText));
     }
 
@@ -659,8 +595,7 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
     // don't update the text format and continue to use whatever we had before
     int  selectedFontFamily = ComboBox_GetCurSel(hwndFontFamilies);
 
-    if (selectedFontFamily != CB_ERR)
-    {
+    if (selectedFontFamily != CB_ERR) {
         // Get the font family name
         WCHAR fontFamilyName[100];
         GetWindowText(hwndFontFamilies, &fontFamilyName[0], _ARRAYSIZE(fontFamilyName));
@@ -677,8 +612,7 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
         GetWindowText(hwndFontSizes, &fontSizeText[0], _ARRAYSIZE(fontSizeText));
 
         auto pointSize = static_cast<float>(wcstod(fontSizeText, nullptr));
-        if (pointSize <= 0.0f)
-        {
+        if (pointSize <= 0.0f) {
             pointSize = 10.0f;
         }
 
@@ -696,8 +630,7 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
                  m_localeName,
                  &m_currentTextFormat);
 
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             // Create the rendering text format object
             float dipSize = (pointSize * m_currentDPI.y) / 72.0f;
             SafeRelease(&m_renderTextFormat);
@@ -721,8 +654,7 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
 
     // Layout the sample text using the text format and UI bounds (converted to DIPs)
     IDWriteTextLayout* textLayout = nullptr;
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = g_dwrite->CreateTextLayout(
                  sampleText,
                  _ARRAYSIZE(sampleText) - 1,
@@ -734,17 +666,16 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
 
     // Create a DWrite surface to render to
     GdiTextRenderer* textRenderer = nullptr;
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         textRenderer = SafeAcquire(new(std::nothrow) GdiTextRenderer());
-        if (textRenderer != nullptr)
+        if (textRenderer != nullptr) {
             hr = textRenderer->Initialize(m_dialog, sampleDC, width, height);
-        else
+        } else {
             hr = E_FAIL;
+        }
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         // Fill the DWrite surface with the background color
         HDC dwriteDC = textRenderer->GetDC();
         SetDCBrushColor(dwriteDC, GetSysColor(COLOR_BTNFACE));
@@ -783,20 +714,16 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
 
 INT_PTR CALLBACK ChooseFontDialog::CFDialogProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (message == WM_INITDIALOG)
-    {
+    if (message == WM_INITDIALOG) {
         SetWindowLongPtr(hWnd, GWLP_USERDATA, lParam);
     }
     auto this_ = reinterpret_cast<ChooseFontDialog*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-    if (this_ != nullptr)
-    {
+    if (this_ != nullptr) {
         LPCFHOOKPROC hookFct = this_->m_chooseFontStruct->lpfnHook;
-        if (hookFct)
-        {
+        if (hookFct) {
             (*hookFct)(hWnd, message, wParam, reinterpret_cast<LPARAM>(this_->m_chooseFontStruct));
         }
-        switch (message)
-        {
+        switch (message) {
             HANDLE_MSG(hWnd, WM_INITDIALOG, this_->OnInitDialog);
             HANDLE_MSG(hWnd, WM_COMMAND, this_->OnCommand);
             HANDLE_MSG(hWnd, WM_DRAWITEM, this_->OnDrawItem);
@@ -827,16 +754,17 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
     // Fill in the font family name list.
 
     std::vector<std::wstring> fontFamilyNames;
-    if (FAILED(GetFontFamilyNames(m_fontCollection, m_localeName, fontFamilyNames)))
+    if (FAILED(GetFontFamilyNames(m_fontCollection, m_localeName, fontFamilyNames))) {
         return FALSE;
+    }
 
-    for (size_t i = 0; i != fontFamilyNames.size(); ++i)
+    for (size_t i = 0; i != fontFamilyNames.size(); ++i) {
         ComboBox_AddString(hwndFamilyNames, fontFamilyNames[i].c_str());
+    }
 
     // Fill in the hardcoded font sizes
 
-    static const float FontSizes[] =
-    {
+    static const float FontSizes[] = {
         1.5, 2.5, 3.5, 4.5, 5, 5.5, 6, 6.5, 7, 7.5,
         8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5,
         13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
@@ -846,8 +774,7 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
     WCHAR sizeName[100];
     sizeName[0] = '\0';
 
-    for (int i = 0; i != _ARRAYSIZE(FontSizes); ++i)
-    {
+    for (int i = 0; i != _ARRAYSIZE(FontSizes); ++i) {
         StringCchPrintf(sizeName, _ARRAYSIZE(sizeName), L"%.3G", FontSizes[i]);
         ComboBox_AddString(hwndSizes, sizeName);
     }
@@ -857,21 +784,20 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
     StringCchPrintf(sizeName, _ARRAYSIZE(sizeName), L"%.3G", fCurFontSize);
 
     SetWindowText(hwndSizes, sizeName);
-    if (CB_ERR == ComboBox_SelectString(hwndSizes, -1, sizeName))
+    if (CB_ERR == ComboBox_SelectString(hwndSizes, -1, sizeName)) {
         SetWindowText(hwndSizes, sizeName);
+    }
 
     // Select the font family specified in the input text format.
 
     int selectedFontFamily = CB_ERR;
     std::wstring fontFamilyName;
 
-    if (SUCCEEDED(GetFontFamilyNameFromFormat(m_currentTextFormat, fontFamilyName)))
-    {
+    if (SUCCEEDED(GetFontFamilyNameFromFormat(m_currentTextFormat, fontFamilyName))) {
         selectedFontFamily = ComboBox_SelectString(hwndFamilyNames, -1, fontFamilyName.c_str());
     }
 
-    if (selectedFontFamily == CB_ERR)
-    {
+    if (selectedFontFamily == CB_ERR) {
         SetWindowText(hwndFamilyNames, fontFamilyName.c_str());
         OnFontFamilyNameEdit(hwndFamilyNames);
     }
@@ -893,29 +819,37 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
 
 void ChooseFontDialog::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    if (id == IDCANCEL && codeNotify == BN_CLICKED)
+    if (id == IDCANCEL && codeNotify == BN_CLICKED) {
         EndDialog(hwnd, S_FALSE);
+    }
 
-    else if (id == IDOK && codeNotify == BN_CLICKED)
+    else if (id == IDOK && codeNotify == BN_CLICKED) {
         EndDialog(hwnd, S_OK);
+    }
 
-    else if (id == IDC_FONT_FAMILY_NAMES && codeNotify == CBN_SELCHANGE)
+    else if (id == IDC_FONT_FAMILY_NAMES && codeNotify == CBN_SELCHANGE) {
         OnFontFamilySelect();
+    }
 
-    else if (id == IDC_FONT_FAMILY_NAMES && codeNotify == CBN_EDITCHANGE)
+    else if (id == IDC_FONT_FAMILY_NAMES && codeNotify == CBN_EDITCHANGE) {
         OnFontFamilyNameEdit(hwndCtl);
+    }
 
-    else if (id == IDC_FONT_FACE_NAMES && codeNotify == CBN_SELCHANGE)
+    else if (id == IDC_FONT_FACE_NAMES && codeNotify == CBN_SELCHANGE) {
         OnFontFaceSelect();
+    }
 
-    else if (id == IDC_FONT_FACE_NAMES && codeNotify == CBN_EDITCHANGE)
+    else if (id == IDC_FONT_FACE_NAMES && codeNotify == CBN_EDITCHANGE) {
         OnFontFaceNameEdit(hwndCtl);
+    }
 
-    else if (id == IDC_FONT_SIZE && codeNotify == CBN_SELCHANGE)
+    else if (id == IDC_FONT_SIZE && codeNotify == CBN_SELCHANGE) {
         OnFontSizeSelect();
+    }
 
-    else if (id == IDC_FONT_SIZE && codeNotify == CBN_EDITCHANGE)
+    else if (id == IDC_FONT_SIZE && codeNotify == CBN_EDITCHANGE) {
         OnFontSizeNameEdit(hwndCtl);
+    }
 }
 
 
@@ -941,8 +875,7 @@ static void  SetChosenFontFromTextFormat(
     LPCWSTR fontStyleStrg,
     LPCHOOSEFONT lpCF, const DPI_T dpi)
 {
-    if (textFormat != nullptr)
-    {
+    if (textFormat != nullptr) {
         WCHAR fontFamilyName[100];
         HDC hdc = GetDC(lpCF->hwndOwner);
 
@@ -972,8 +905,7 @@ static void  SetChosenFontFromTextFormat(
 
 extern "C" bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCFGDI)
 {
-    if (!lpCFGDI)
-    {
+    if (!lpCFGDI) {
         return false;
     }
 
@@ -983,8 +915,7 @@ extern "C" bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T 
     // for security exploits.
     HeapSetInformation(nullptr, HeapEnableTerminationOnCorruption, nullptr, 0);
 
-    if (dpi.x == 0)
-    {
+    if (dpi.x == 0) {
         dpi.x = dpi.y = USER_DEFAULT_SCREEN_DPI;
     }
 

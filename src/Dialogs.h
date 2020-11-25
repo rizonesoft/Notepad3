@@ -85,12 +85,9 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 
 inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme)
 {
-    if (bSetExplorerTheme)
-    {
+    if (bSetExplorerTheme) {
         SetExplorerTheme(hwnd);
-    }
-    else
-    {
+    } else {
         SetWindowTheme(hwnd, L"", L"");
     }
     SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
@@ -223,15 +220,13 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 inline void SimpleBeep()
 {
-    if (!Settings.MuteMessageBeep)
-    {
+    if (!Settings.MuteMessageBeep) {
         MessageBeep(0xFFFFFFFF);
     }
 }
 inline void AttentionBeep(UINT uType)
 {
-    if (!Settings.MuteMessageBeep)
-    {
+    if (!Settings.MuteMessageBeep) {
         MessageBeep(uType & MB_ICONMASK);
     }
 }
@@ -249,12 +244,10 @@ inline bool IsDialogItemEnabled(HWND hdlg, int id)
 
 inline void SetDialogIconNP3(HWND hwnd)
 {
-    if (Globals.hDlgIconSmall)
-    {
+    if (Globals.hDlgIconSmall) {
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
     }
-    if (Globals.hDlgIconBig)
-    {
+    if (Globals.hDlgIconBig) {
         SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
     }
 }
@@ -263,8 +256,7 @@ inline void SetDialogIconNP3(HWND hwnd)
 
 #ifndef DLGTEMPLATEEX
 #pragma pack(push, 1)
-typedef struct
-{
+typedef struct {
     WORD      dlgVer;
     WORD      signature;
     DWORD     helpID;

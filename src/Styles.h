@@ -107,12 +107,9 @@ void   Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight);
 
 inline void Style_PrintfCchColor(LPWSTR buffer, const size_t cch, LPCWSTR prefix, COLOR_LAYER layer, COLORREF color)
 {
-    if (layer == FOREGROUND_LAYER)
-    {
+    if (layer == FOREGROUND_LAYER) {
         StringCchPrintf(buffer, cch, L"%sfore:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
-    }
-    else
-    {
+    } else {
         StringCchPrintf(buffer, cch, L"%sback:#%02X%02X%02X", prefix, GetRValue(color), GetGValue(color), GetBValue(color));
     }
 }

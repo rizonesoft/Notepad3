@@ -328,7 +328,9 @@ DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const cha
 inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf)
 {
     DocPos const iLen = SciCall_GetLine(iLine, pTxtBuf);
-    if (pTxtBuf) pTxtBuf[iLen] = '\0';
+    if (pTxtBuf) {
+        pTxtBuf[iLen] = '\0';
+    }
     return (iLen + 1);
 }
 
@@ -645,11 +647,9 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine)
 {
     DocPos iMaxLineLen = 0;
-    for (DocLn iLine = iBeginLine; iLine <= iEndLine; ++iLine)
-    {
+    for (DocLn iLine = iBeginLine; iLine <= iEndLine; ++iLine) {
         DocPos const iLnLen = SciCall_LineLength(iLine);
-        if (iLnLen > iMaxLineLen)
-        {
+        if (iLnLen > iMaxLineLen) {
             iMaxLineLen = iLnLen;
         }
     }
@@ -699,26 +699,22 @@ inline void Sci_RedrawScrollbars()
 
 inline int Sci_GetCurrentEOL_A(LPCH eol)
 {
-    switch (SciCall_GetEOLMode())
-    {
+    switch (SciCall_GetEOLMode()) {
     case SC_EOL_CRLF:
-        if (eol)
-        {
+        if (eol) {
             eol[0] = '\r';
             eol[1] = '\n';
             eol[2] = '\0';
         }
         return 2;
     case SC_EOL_CR:
-        if (eol)
-        {
+        if (eol) {
             eol[0] = '\r';
             eol[1] = '\0';
         }
         return 1;
     case SC_EOL_LF:
-        if (eol)
-        {
+        if (eol) {
             eol[0] = '\n';
             eol[1] = '\0';
         }
@@ -731,26 +727,22 @@ inline int Sci_GetCurrentEOL_A(LPCH eol)
 
 inline int Sci_GetCurrentEOL_W(LPWCH eol)
 {
-    switch (SciCall_GetEOLMode())
-    {
+    switch (SciCall_GetEOLMode()) {
     case SC_EOL_CRLF:
-        if (eol)
-        {
+        if (eol) {
             eol[0] = L'\r';
             eol[1] = L'\n';
             eol[2] = L'\0';
         }
         return 2;
     case SC_EOL_CR:
-        if (eol)
-        {
+        if (eol) {
             eol[0] = L'\r';
             eol[1] = L'\0';
         }
         return 1;
     case SC_EOL_LF:
-        if (eol)
-        {
+        if (eol) {
             eol[0] = L'\n';
             eol[1] = L'\0';
         }
@@ -764,17 +756,14 @@ inline int Sci_GetCurrentEOL_W(LPWCH eol)
 
 inline DocPos Sci_GetSelectionStartEx()
 {
-    if (!Sci_IsMultiSelection())
-    {
+    if (!Sci_IsMultiSelection()) {
         return SciCall_GetSelectionStart();
     }
     DocPosU const nsel = SciCall_GetSelections();
     DocPos selStart = Sci_GetDocEndPosition() + 1;
-    for (DocPosU i = 0; i < nsel; ++i)
-    {
+    for (DocPosU i = 0; i < nsel; ++i) {
         DocPos const iStart = SciCall_GetSelectionNStart(i);
-        if (iStart < selStart)
-        {
+        if (iStart < selStart) {
             selStart = iStart;
         }
     }
@@ -784,17 +773,14 @@ inline DocPos Sci_GetSelectionStartEx()
 
 inline DocPos Sci_GetSelectionEndEx()
 {
-    if (!Sci_IsMultiSelection())
-    {
+    if (!Sci_IsMultiSelection()) {
         return SciCall_GetSelectionEnd();
     }
     DocPosU const nsel = SciCall_GetSelections();
     DocPos selEnd = 0;
-    for (DocPosU i = 0; i < nsel; ++i)
-    {
+    for (DocPosU i = 0; i < nsel; ++i) {
         DocPos const iEnd = SciCall_GetSelectionNEnd(i);
-        if (iEnd > selEnd)
-        {
+        if (iEnd > selEnd) {
             selEnd = iEnd;
         }
     }

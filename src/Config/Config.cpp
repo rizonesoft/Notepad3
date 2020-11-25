@@ -101,34 +101,27 @@ constexpr bool SI_Success(const SI_Error rc) noexcept
 bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
 {
     bool bRet = false;
-    if (StrIsEmpty(lpIniFilePath))
-    {
+    if (StrIsEmpty(lpIniFilePath)) {
         return false;
     }
     DWORD                      length  = 0;
     SECURITY_INFORMATION const secInfo = OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION;
 
     // check for read-only file attribute
-    if (genericAccessRights & GENERIC_WRITE)
-    {
-        if (IsReadOnly(GetFileAttributes(lpIniFilePath)))
-        {
+    if (genericAccessRights & GENERIC_WRITE) {
+        if (IsReadOnly(GetFileAttributes(lpIniFilePath))) {
             return false;
         }
     }
 
     // check security tokens
-    if (!::GetFileSecurity(lpIniFilePath, secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError()))
-    {
+    if (!::GetFileSecurity(lpIniFilePath, secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
         PSECURITY_DESCRIPTOR security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
-        if (security && ::GetFileSecurity(lpIniFilePath, secInfo, security, length, &length))
-        {
+        if (security && ::GetFileSecurity(lpIniFilePath, secInfo, security, length, &length)) {
             HANDLE hToken = NULL;
-            if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &hToken))
-            {
+            if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &hToken)) {
                 HANDLE hImpersonatedToken = NULL;
-                if (::DuplicateToken(hToken, SecurityImpersonation, &hImpersonatedToken))
-                {
+                if (::DuplicateToken(hToken, SecurityImpersonation, &hImpersonatedToken)) {
                     GENERIC_MAPPING mapping       = {0xFFFFFFFF};
                     PRIVILEGE_SET   privileges    = {0};
                     DWORD           grantedAccess = 0, privilegesLength = sizeof(privileges);
@@ -141,8 +134,7 @@ bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
 
                     ::MapGenericMask(&genericAccessRights, &mapping);
                     if (::AccessCheck(security, hImpersonatedToken, genericAccessRights,
-                                      &mapping, &privileges, &privilegesLength, &grantedAccess, &result))
-                    {
+                                      &mapping, &privileges, &privilegesLength, &grantedAccess, &result)) {
                         bRet = (result == TRUE);
                     }
                     ::CloseHandle(hImpersonatedToken);
@@ -164,8 +156,7 @@ bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
 
 HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
-    if (StrIsEmpty(lpIniFilePath))
-    {
+    if (StrIsEmpty(lpIniFilePath)) {
         return INVALID_HANDLE_VALUE;
     }
 
@@ -175,19 +166,15 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
                               GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                               OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hFile != INVALID_HANDLE_VALUE)
-    {
+    if (hFile != INVALID_HANDLE_VALUE) {
         bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
-        if (!bLocked)
-        {
+        if (!bLocked) {
             wchar_t msg[MAX_PATH + 128] = { 0 };
             StringCchPrintf(msg, ARRAYSIZE(msg),
                             L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
             MsgBoxLastError(msg, 0);
         }
-    }
-    else
-    {
+    } else {
         wchar_t msg[MAX_PATH + 128] = { 0 };
         StringCchPrintf(msg, ARRAYSIZE(msg),
                         L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
@@ -202,8 +189,7 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 
 HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
-    if (StrIsEmpty(lpIniFilePath))
-    {
+    if (StrIsEmpty(lpIniFilePath)) {
         return INVALID_HANDLE_VALUE;
     }
 
@@ -213,19 +199,15 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
                               GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hFile != INVALID_HANDLE_VALUE)
-    {
+    if (hFile != INVALID_HANDLE_VALUE) {
         bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
-        if (!bLocked)
-        {
+        if (!bLocked) {
             wchar_t msg[MAX_PATH + 128] = { 0 };
             StringCchPrintf(msg, ARRAYSIZE(msg),
                             L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
             MsgBoxLastError(msg, 0);
         }
-    }
-    else
-    {
+    } else {
         wchar_t msg[MAX_PATH + 128] = { 0 };
         StringCchPrintf(msg, ARRAYSIZE(msg),
                         L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
@@ -239,8 +221,7 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 {
     bool bUnLocked = true;
-    if (hFile != INVALID_HANDLE_VALUE)
-    {
+    if (hFile != INVALID_HANDLE_VALUE) {
         FlushFileBuffers(hFile);
         bUnLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &rOvrLpd);
         CloseHandle(hFile);
@@ -263,8 +244,7 @@ extern "C" bool ResetIniFileCache()
 
 extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
 {
-    if (StrIsEmpty(lpIniFilePath) || !PathIsExistingFile(lpIniFilePath))
-    {
+    if (StrIsEmpty(lpIniFilePath) || !PathIsExistingFile(lpIniFilePath)) {
         return false;
     }
 
@@ -276,8 +256,7 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hIniFile = AcquireReadFileLock(lpIniFilePath, ovrLpd);
 
-    if (hIniFile == INVALID_HANDLE_VALUE)
-    {
+    if (hIniFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
@@ -297,16 +276,14 @@ extern "C" bool IsIniFileCached()
 
 extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
 {
-    if (!s_bIniFileCacheLoaded || StrIsEmpty(lpIniFilePath))
-    {
+    if (!s_bIniFileCacheLoaded || StrIsEmpty(lpIniFilePath)) {
         return false;
     }
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hIniFile = AcquireWriteFileLock(lpIniFilePath, ovrLpd);
 
-    if (hIniFile == INVALID_HANDLE_VALUE)
-    {
+    if (hIniFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
@@ -327,25 +304,18 @@ extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
 //
 extern "C" bool OpenSettingsFile(bool* keepCached)
 {
-    if (StrIsNotEmpty(Globals.IniFile))
-    {
+    if (StrIsNotEmpty(Globals.IniFile)) {
         Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
 
-        if (!IsIniFileCached())
-        {
+        if (!IsIniFileCached()) {
             LoadIniFileCache(Globals.IniFile);
-            if (keepCached != NULL)
-            {
+            if (keepCached != NULL) {
                 *keepCached = false;
             }
-        }
-        else if (keepCached != NULL)
-        {
+        } else if (keepCached != NULL) {
             *keepCached = true;
         }
-    }
-    else
-    {
+    } else {
         Globals.bCanSaveIniFile = false;
     }
     return IsIniFileCached();
@@ -358,21 +328,17 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 //
 extern "C" bool CloseSettingsFile(bool bSaveChanges, bool keepCached)
 {
-    if (Globals.bCanSaveIniFile)
-    {
-        if (!IsIniFileCached())
-        {
+    if (Globals.bCanSaveIniFile) {
+        if (!IsIniFileCached()) {
             return false;
         }
         bool const bSaved = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : false;
-        if (!keepCached)
-        {
+        if (!keepCached) {
             ResetIniFileCache();
         }
         return bSaved;
     }
-    if (!keepCached)
-    {
+    if (!keepCached) {
         ResetIniFileCache();
     }
     return false;
@@ -509,8 +475,7 @@ extern "C" bool IniSectionDelete(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool 
 extern "C" bool IniSectionClear(LPCWSTR lpSectionName, bool bRemoveEmpty)
 {
     bool const ok = s_INI.Delete(lpSectionName, nullptr, bRemoveEmpty);
-    if (!bRemoveEmpty)
-    {
+    if (!bRemoveEmpty) {
         SI_Error const rc = s_INI.SetValue(lpSectionName, nullptr, nullptr);
         return SI_Success(rc);
     }
@@ -524,10 +489,8 @@ extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
 
     CSimpleIni::TNamesDepend Sections;
     s_INI.GetAllSections(Sections);
-    for (const auto& section : Sections)
-    {
-        if (StringCchCompareNI(section.pItem, len, lpPrefix, len) == 0)
-        {
+    for (const auto& section : Sections) {
+        if (StringCchCompareNI(section.pItem, len, lpPrefix, len) == 0) {
             IniSectionClear(section.pItem, bRemoveEmpty);
         }
     }
@@ -543,8 +506,7 @@ extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
 extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
                                    LPWSTR lpReturnedString, size_t cchReturnedString)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
         return StringCchLenW(lpReturnedString, cchReturnedString);
     }
@@ -553,8 +515,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
         return StringCchLenW(lpReturnedString, cchReturnedString);
     }
@@ -562,14 +523,11 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
     SI_Error const rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
         StringCchCopyW(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
         //assert(!bHasMultiple);
-    }
-    else
-    {
+    } else {
         StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
     }
     return StringCchLenW(lpReturnedString, cchReturnedString);
@@ -579,8 +537,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
 extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -589,18 +546,15 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
         rc = SI_Success(res) ? SI_Error::SI_OK : SI_Error::SI_FAIL;
-        if (SI_Success(rc))
-        {
+        if (SI_Success(rc)) {
             rc = Ini.SaveFile(hFile, s_bWriteSIG);
         }
     }
@@ -613,8 +567,7 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 
 extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return iDefault;
     }
 
@@ -622,16 +575,14 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return iDefault;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
         int const iValue = Ini.GetLongValue(lpSectionName, lpKeyName, (long)iDefault, &bHasMultiple);
         //assert(!bHasMultiple);
@@ -644,8 +595,7 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 
 extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -654,14 +604,12 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
         rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
@@ -674,8 +622,7 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
 extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return bDefault;
     }
 
@@ -683,16 +630,14 @@ extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return bDefault;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
         bool const bValue = Ini.GetBoolValue(lpSectionName, lpKeyName, bDefault, &bHasMultiple);
         //assert(!bHasMultiple);
@@ -705,8 +650,7 @@ extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -715,14 +659,12 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
         rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
@@ -735,8 +677,7 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -745,14 +686,12 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         Ini.Delete(lpSectionName, lpKeyName, bRemoveEmpty);
         rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
@@ -765,8 +704,7 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
 extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -774,16 +712,14 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
 
         // get all keys in a section
@@ -791,8 +727,7 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
         Ini.GetAllKeys(lpSectionName, keyList);
         keyList.sort(CSimpleIniW::Entry::LoadOrder());
 
-        for (const auto& key : keyList)
-        {
+        for (const auto& key : keyList) {
             callBack(key.pItem, Ini.GetValue(lpSectionName, key.pItem, L"", &bHasMultiple));
         }
     }
@@ -808,13 +743,11 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 //
 extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
 {
-    if (StrIsEmpty(szFilePath))
-    {
+    if (StrIsEmpty(szFilePath)) {
         return;
     }
 
-    if (Flags.ShellUseSystemMRU)
-    {
+    if (Flags.ShellUseSystemMRU) {
 #if TRUE
         SHAddToRecentDocs(SHARD_PATHW, szFilePath);
 #else
@@ -823,8 +756,7 @@ extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
         IShellItem* pShellItem = NULL;
         HRESULT const hr = SHCreateItemFromParsingName(szFilePath, NULL, IID_PPV_ARGS(&pShellItem));
 
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             SHARDAPPIDINFO info;
             info.psi = pShellItem;
             info.pszAppID = Settings2.AppUserModelID;  // our AppID - see above
@@ -849,11 +781,9 @@ extern "C" void ClearDestinationsOnRecentDocs()
     IApplicationDestinations* pDestinations = NULL;
     HRESULT hr = CoCreateInstance(CLSID_ApplicationDestinations, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pDestinations));
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pDestinations->SetAppID(Settings2.AppUserModelID);
-        if (SUCCEEDED(hr))
-        {
+        if (SUCCEEDED(hr)) {
             pDestinations->RemoveAllDestinations();
         }
         pDestinations->Release();
@@ -872,14 +802,12 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
     ExpandEnvironmentStrings(lpszFile, tchFileExpanded, COUNTOF(tchFileExpanded));
 
-    if (PathIsRelative(tchFileExpanded))
-    {
+    if (PathIsRelative(tchFileExpanded)) {
         WCHAR tchBuild[MAX_PATH] = { L'\0' };
         // program directory
         StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
         StringCchCopy(PathFindFileName(tchBuild), COUNTOF(tchBuild), tchFileExpanded);
-        if (PathIsExistingFile(tchBuild))
-        {
+        if (PathIsExistingFile(tchBuild)) {
             StringCchCopy(lpszFile, MAX_PATH, tchBuild);
             return true;
         }
@@ -888,27 +816,22 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
         PathCchRemoveFileSpec(tchBuild, COUNTOF(tchBuild));
         StringCchCat(tchBuild, COUNTOF(tchBuild), L"\\np3\\");
         StringCchCat(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-        if (PathIsExistingFile(tchBuild))
-        {
+        if (PathIsExistingFile(tchBuild)) {
             StringCchCopy(lpszFile, MAX_PATH, tchBuild);
             return true;
         }
         // Application Data (%APPDATA%)
-        if (GetKnownFolderPath(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild)))
-        {
+        if (GetKnownFolderPath(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
             PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-            if (PathIsExistingFile(tchBuild))
-            {
+            if (PathIsExistingFile(tchBuild)) {
                 StringCchCopy(lpszFile, MAX_PATH, tchBuild);
                 return true;
             }
         }
         // Home (%HOMEPATH%) user's profile dir
-        if (GetKnownFolderPath(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild)))
-        {
+        if (GetKnownFolderPath(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
             PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-            if (PathIsExistingFile(tchBuild))
-            {
+            if (PathIsExistingFile(tchBuild)) {
                 StringCchCopy(lpszFile, MAX_PATH, tchBuild);
                 return true;
             }
@@ -918,9 +841,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
         //~  StringCchCopy(lpszFile,MAX_PATH,tchBuild);
         //~  return true;
         //~}
-    }
-    else if (PathIsExistingFile(tchFileExpanded))
-    {
+    } else if (PathIsExistingFile(tchFileExpanded)) {
         StringCchCopy(lpszFile, MAX_PATH, tchFileExpanded);
         return true;
     }
@@ -932,10 +853,8 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
 static bool _HandleIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
     WCHAR wchPath[MAX_PATH] = { L'\0' };
-    if (PathIsExistingFile(lpszFile) && IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", wchPath, COUNTOF(wchPath)))
-    {
-        if (!_CheckIniFile(wchPath, lpszModule))
-        {
+    if (PathIsExistingFile(lpszFile) && IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", wchPath, COUNTOF(wchPath))) {
+        if (!_CheckIniFile(wchPath, lpszModule)) {
             PathCanonicalizeEx(wchPath, COUNTOF(wchPath));
         }
         StringCchCopy(lpszFile, MAX_PATH, wchPath);
@@ -961,40 +880,31 @@ extern "C" bool FindIniFile()
 
     SetEnvironmentVariable(NOTEPAD3_MODULE_DIR_ENV_VAR, wchIniFilePath);
 
-    if (StrIsNotEmpty(Globals.IniFile))
-    {
-        if (StringCchCompareXI(Globals.IniFile, L"*?") == 0)
-        {
+    if (StrIsNotEmpty(Globals.IniFile)) {
+        if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
             return bFound;
         }
 
         PathCanonicalizeEx(Globals.IniFile, COUNTOF(Globals.IniFile));
         bFound = _CheckIniFile(wchIniFilePath, tchModule);
-    }
-    else
-    {
+    } else {
         StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), PathFindFileName(tchModule));
         PathCchRenameExtension(wchIniFilePath, COUNTOF(wchIniFilePath), L".ini");
         bFound = _CheckIniFile(wchIniFilePath, tchModule);
 
-        if (!bFound)
-        {
+        if (!bFound) {
             StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), _W(SAPPNAME) L".ini");
             bFound = _CheckIniFile(wchIniFilePath, tchModule);
         }
 
-        if (bFound)
-        {
+        if (bFound) {
             // allow two redirections: administrator -> user -> custom
-            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule)) // 1st
-            {
+            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule)) { // 1st
                 _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule);  // 2nd
                 bFound = _CheckIniFile(wchIniFilePath, tchModule);
             }
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), wchIniFilePath);
-        }
-        else // force default name
-        {
+        } else { // force default name
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), tchModule);
             PathCchRenameExtension(Globals.IniFile, COUNTOF(Globals.IniFile), L".ini");
         }
@@ -1012,24 +922,20 @@ extern "C" bool TestIniFile()
     LPWSTR const pszIniFilePath = Globals.IniFile;
     size_t const pathBufCount = COUNTOF(Globals.IniFile);
 
-    if (StringCchCompareXI(pszIniFilePath, L"*?") == 0)
-    {
+    if (StringCchCompareXI(pszIniFilePath, L"*?") == 0) {
         StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
         StringCchCopy(pszIniFilePath, pathBufCount, L"");
         return false;
     }
 
-    if (PathIsDirectory(pszIniFilePath) || *CharPrev(pszIniFilePath, StrEnd(pszIniFilePath, pathBufCount)) == L'\\')
-    {
+    if (PathIsDirectory(pszIniFilePath) || *CharPrev(pszIniFilePath, StrEnd(pszIniFilePath, pathBufCount)) == L'\\') {
         WCHAR wchModule[MAX_PATH] = { L'\0' };
         GetModuleFileName(NULL, wchModule, COUNTOF(wchModule));
         PathCchAppend(pszIniFilePath, pathBufCount, PathFindFileName(wchModule));
         PathCchRenameExtension(pszIniFilePath, pathBufCount, L".ini");
-        if (!PathIsExistingFile(pszIniFilePath))
-        {
+        if (!PathIsExistingFile(pszIniFilePath)) {
             StringCchCopy(PathFindFileName(pszIniFilePath), pathBufCount, _W(SAPPNAME) L".ini");
-            if (!PathIsExistingFile(pszIniFilePath))
-            {
+            if (!PathIsExistingFile(pszIniFilePath)) {
                 StringCchCopy(PathFindFileName(pszIniFilePath), pathBufCount, PathFindFileName(wchModule));
                 PathCchRenameExtension(pszIniFilePath, pathBufCount, L".ini");
             }
@@ -1038,8 +944,7 @@ extern "C" bool TestIniFile()
 
     NormalizePathEx(pszIniFilePath, pathBufCount, true, false);
 
-    if (!PathFileExists(pszIniFilePath) || PathIsDirectory(pszIniFilePath))
-    {
+    if (!PathFileExists(pszIniFilePath) || PathIsDirectory(pszIniFilePath)) {
         StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), pszIniFilePath);
         StringCchCopy(pszIniFilePath, pathBufCount, L"");
         return false;
@@ -1052,12 +957,10 @@ extern "C" bool TestIniFile()
 
 extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 {
-    if (StrIsNotEmpty(pszIniFilePath))
-    {
+    if (StrIsNotEmpty(pszIniFilePath)) {
         WCHAR* pwchTail = StrRChrW(pszIniFilePath, NULL, L'\\');
 
-        if (pwchTail)
-        {
+        if (pwchTail) {
             *pwchTail = L'\0';
             SHCreateDirectoryEx(NULL, pszIniFilePath, NULL);
             *pwchTail = L'\\';
@@ -1065,38 +968,29 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 
         DWORD dwFileSize = 0UL;
 
-        if (!PathIsExistingFile(pszIniFilePath))
-        {
+        if (!PathIsExistingFile(pszIniFilePath)) {
             HANDLE hFile = CreateFile(pszIniFilePath,
                                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                       CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-            if (hFile != INVALID_HANDLE_VALUE)
-            {
+            if (hFile != INVALID_HANDLE_VALUE) {
                 CloseHandle(hFile); // done
-            }
-            else
-            {
+            } else {
                 wchar_t msg[MAX_PATH + 128] = { 0 };
                 StringCchPrintf(msg, ARRAYSIZE(msg),
                                 L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", pszIniFilePath);
                 MsgBoxLastError(msg, 0);
             }
-        }
-        else
-        {
+        } else {
             HANDLE hFile = CreateFile(pszIniFilePath,
                                       GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-            if (hFile != INVALID_HANDLE_VALUE)
-            {
+            if (hFile != INVALID_HANDLE_VALUE) {
                 DWORD dwFSHigh = 0UL;
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
-            }
-            else
-            {
+            } else {
                 wchar_t msg[MAX_PATH + 128] = { 0 };
                 StringCchPrintf(msg, ARRAYSIZE(msg),
                                 L"CreateIniFile(%s): FAILED TO READ FILESIZE!", pszIniFilePath);
@@ -1104,8 +998,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
                 dwFileSize = INVALID_FILE_SIZE;
             }
         }
-        if (pdwFileSize_out)
-        {
+        if (pdwFileSize_out) {
             *pdwFileSize_out = dwFileSize;
         }
 
@@ -1145,39 +1038,27 @@ void LoadSettings()
     Flags.bDevDebugMode = IniSectionGetBool(IniSecSettings2, L"DevDebugMode", DefaultFlags.bDevDebugMode);
     Flags.bStickyWindowPosition = IniSectionGetBool(IniSecSettings2, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
 
-    if (Globals.CmdLnFlag_ReuseWindow == 0)
-    {
+    if (Globals.CmdLnFlag_ReuseWindow == 0) {
         Flags.bReuseWindow = IniSectionGetBool(IniSecSettings2, L"ReuseWindow", DefaultFlags.bReuseWindow);
-    }
-    else
-    {
+    } else {
         Flags.bReuseWindow = (Globals.CmdLnFlag_ReuseWindow == 2);
     }
 
-    if (Globals.CmdLnFlag_SingleFileInstance == 0)
-    {
+    if (Globals.CmdLnFlag_SingleFileInstance == 0) {
         Flags.bSingleFileInstance = IniSectionGetBool(IniSecSettings2, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
-    }
-    else
-    {
+    } else {
         Flags.bSingleFileInstance = (Globals.CmdLnFlag_SingleFileInstance == 2);
     }
 
-    if (Globals.CmdLnFlag_MultiFileArg == 0)
-    {
+    if (Globals.CmdLnFlag_MultiFileArg == 0) {
         Flags.MultiFileArg = IniSectionGetBool(IniSecSettings2, L"MultiFileArg", DefaultFlags.MultiFileArg);
-    }
-    else
-    {
+    } else {
         Flags.MultiFileArg = (Globals.CmdLnFlag_MultiFileArg == 2);
     }
 
-    if (Globals.CmdLnFlag_ShellUseSystemMRU == 0)
-    {
+    if (Globals.CmdLnFlag_ShellUseSystemMRU == 0) {
         Flags.ShellUseSystemMRU = IniSectionGetBool(IniSecSettings2, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
-    }
-    else
-    {
+    } else {
         Flags.ShellUseSystemMRU = (Globals.CmdLnFlag_ShellUseSystemMRU == 2);
     }
 
@@ -1239,25 +1120,20 @@ void LoadSettings()
     // deprecated
 
     Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
-    if (Defaults.RenderingTechnology != -111)
-    {
-        if (Settings.SaveSettings)
-        {
+    if (Defaults.RenderingTechnology != -111) {
+        if (Settings.SaveSettings) {
             // cleanup
             IniSectionDelete(IniSecSettings2, L"SciDirectWriteTech", false); // old deprecated
             bDirtyFlag = true;
         }
         Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, SC_TECHNOLOGY_DEFAULT, SC_TECHNOLOGY_DIRECTWRITEDC);
-    }
-    else
-    {
+    } else {
         Defaults.RenderingTechnology = SC_TECHNOLOGY_DIRECTWRITE; // new default DirectWrite (D2D)
     }
 
     // Settings2 deprecated
     Defaults.Bidirectional = IniSectionGetInt(IniSecSettings2, L"EnableBidirectionalSupport", -111);
-    if ((Defaults.Bidirectional != -111) && Settings.SaveSettings)
-    {
+    if ((Defaults.Bidirectional != -111) && Settings.SaveSettings) {
         // cleanup
         IniSectionDelete(IniSecSettings2, L"EnableBidirectionalSupport", false);
         bDirtyFlag = true;
@@ -1267,8 +1143,7 @@ void LoadSettings()
     Defaults2.IMEInteraction = -1;
     Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings2, L"IMEInteraction", Defaults2.IMEInteraction), -1, SC_IME_INLINE);
     // Korean IME use inline mode by default
-    if (Settings2.IMEInteraction == -1)   // auto detection once
-    {
+    if (Settings2.IMEInteraction == -1) { // auto detection once
         // ScintillaWin::KoreanIME()
         int const codePage = Scintilla_InputCodePage();
         Settings2.IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
@@ -1341,8 +1216,7 @@ void LoadSettings()
     IniSectionGetString(IniSecSettings2, L"grepWin.exe", Defaults2.GrepWinPath, Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
 
     StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
-    if (StrIsEmpty(Settings2.AppUserModelID))   // set via CmdLine ?
-    {
+    if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
         IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
     }
     Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
@@ -1413,20 +1287,15 @@ void LoadSettings()
     Defaults2.DarkModeBkgColor = rgbDarkBkgColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1)
-    {
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeBkgColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-    }
-    else
-    {
+    } else {
         Settings2.DarkModeBkgColor = Defaults2.DarkModeBkgColor;
     }
-    if (Globals.hbrDarkModeBkgBrush)
-    {
+    if (Globals.hbrDarkModeBkgBrush) {
         DeleteObject(Globals.hbrDarkModeBkgBrush);
     }
-    if (Globals.hbrDarkModeBtnFcBrush)
-    {
+    if (Globals.hbrDarkModeBtnFcBrush) {
         DeleteObject(Globals.hbrDarkModeBtnFcBrush);
     }
     Globals.hbrDarkModeBkgBrush = CreateSolidBrush(Settings2.DarkModeBkgColor);
@@ -1434,12 +1303,9 @@ void LoadSettings()
     Defaults2.DarkModeBtnFaceColor = rgbDarkBtnFcColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBtnFaceColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeBtnFaceColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1)
-    {
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeBtnFaceColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-    }
-    else
-    {
+    } else {
         Settings2.DarkModeBtnFaceColor = Defaults2.DarkModeBtnFaceColor;
     }
     Globals.hbrDarkModeBtnFcBrush = CreateSolidBrush(Settings2.DarkModeBtnFaceColor);
@@ -1447,12 +1313,9 @@ void LoadSettings()
     Defaults2.DarkModeTxtColor = rgbDarkTxtColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
     IniSectionGetString(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1)
-    {
+    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeTxtColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-    }
-    else
-    {
+    } else {
         Settings2.DarkModeTxtColor = Defaults2.DarkModeTxtColor;
     }
 
@@ -1502,14 +1365,12 @@ void LoadSettings()
     Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
     GetKnownFolderPath(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
-    if (IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir)))
-    {
+    if (IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
         PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
     }
 
     GetKnownFolderPath(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
-    if (IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir)))
-    {
+    if (IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
         PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
     }
 
@@ -1538,8 +1399,7 @@ void LoadSettings()
     IniSectionGetString(IniSecSettings, L"MultiEdgeLines", Defaults.MultiEdgeLines, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
     size_t const n = NormalizeColumnVector(NULL, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
     StringCchCopy(Globals.fvCurFile.wchMultiEdgeLines, COUNTOF(Globals.fvCurFile.wchMultiEdgeLines), Settings.MultiEdgeLines);
-    if (n > 1)
-    {
+    if (n > 1) {
         Settings.LongLineMode = EDGE_MULTILINE;
     }
 
@@ -1611,8 +1471,7 @@ void LoadSettings()
     int const zoomScale = MulDiv(baseZoom, prtFontSize, Globals.InitialFontSize);
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
-    if (Globals.iCfgVersionRead < CFG_VER_0001)
-    {
+    if (Globals.iCfgVersionRead < CFG_VER_0001) {
         iPrintZoom = 100 + (iPrintZoom - 10) * 10;
     }
     Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
@@ -1698,17 +1557,14 @@ void LoadSettings()
     ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
 
     // cppcheck-suppress useStlAlgorithm
-    for (bool &sbv : g_iStatusbarVisible)
-    {
+    for (bool &sbv : g_iStatusbarVisible) {
         sbv = false;
     }
     int cnt = 0;
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i)
-    {
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
         g_vSBSOrder[i] = -1;
         int const id = s_iStatusbarSections[i];
-        if (id >= 0)
-        {
+        if (id >= 0) {
             g_vSBSOrder[cnt++] = id;
             g_iStatusbarVisible[id] = true;
         }
@@ -1763,24 +1619,17 @@ void LoadSettings()
 
     g_DefWinInfo = GetFactoryDefaultWndPos(2); // std. default position
 
-    if (bExplicitDefaultWinPos)
-    {
+    if (bExplicitDefaultWinPos) {
         int bMaxi = 0;
         int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
                                    &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
-        if (itok == 4 || itok == 5)   // scan successful
-        {
-            if (itok == 4)
-            {
+        if (itok == 4 || itok == 5) { // scan successful
+            if (itok == 4) {
                 g_DefWinInfo.max = false;
-            }
-            else
-            {
+            } else {
                 g_DefWinInfo.max = bMaxi ? true : false;
             }
-        }
-        else
-        {
+        } else {
             g_DefWinInfo = GetFactoryDefaultWndPos(2);
             // overwrite bad defined default position
             StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
@@ -1792,8 +1641,7 @@ void LoadSettings()
 
     // 2nd set initial window position
 
-    if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/)
-    {
+    if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
 
         WININFO winInfo = g_IniWinInfo;
         WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
@@ -1810,20 +1658,16 @@ void LoadSettings()
         winInfo.cy = IniSectionGetInt(IniSecWindow, tchSizeY, g_IniWinInfo.cy);
         winInfo.max = IniSectionGetBool(IniSecWindow, tchMaximized, false);
         winInfo.zoom = IniSectionGetInt(IniSecWindow, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
-        if (Globals.iCfgVersionRead < CFG_VER_0001)
-        {
+        if (Globals.iCfgVersionRead < CFG_VER_0001) {
             winInfo.zoom = (winInfo.zoom + 10) * 10;
         }
         winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
         if ((winInfo.x == CW_USEDEFAULT) || (winInfo.y == CW_USEDEFAULT) ||
-                (winInfo.cx == CW_USEDEFAULT) || (winInfo.cy == CW_USEDEFAULT))
-        {
+                (winInfo.cx == CW_USEDEFAULT) || (winInfo.cy == CW_USEDEFAULT)) {
             g_IniWinInfo = g_DefWinInfo;
             Globals.CmdLnFlag_WindowPos = 2; // std. default position (CmdLn: /pd)
-        }
-        else
-        {
+        } else {
             g_IniWinInfo = winInfo;
             Globals.CmdLnFlag_WindowPos = 0; // init to g_IniWinInfo
         }
@@ -1860,8 +1704,7 @@ void LoadSettings()
 
     Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/ true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
     MRU_Load(Globals.pMRUfind, false);
-    if (IsFindPatternEmpty())
-    {
+    if (IsFindPatternEmpty()) {
         SetFindPattern(Globals.pMRUfind->pszItems[0]);
     }
 
@@ -1901,8 +1744,7 @@ void LoadSettings()
 
 static bool _SaveSettings(bool bForceSaveSettings)
 {
-    if (!IsIniFileCached())
-    {
+    if (!IsIniFileCached()) {
         return false;
     }
 
@@ -1910,14 +1752,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
     const WCHAR* const IniSecSettings = Constants.Settings_Section;
     // --------------------------------------------------------------------------
 
-    if (!(Settings.SaveSettings || bForceSaveSettings))
-    {
-        if (Settings.SaveSettings != Defaults.SaveSettings)
-        {
+    if (!(Settings.SaveSettings || bForceSaveSettings)) {
+        if (Settings.SaveSettings != Defaults.SaveSettings) {
             IniSectionSetBool(IniSecSettings, L"SaveSettings", Settings.SaveSettings);
-        }
-        else
-        {
+        } else {
             IniSectionDelete(IniSecSettings, L"SaveSettings", false);
         }
         return true;
@@ -1930,96 +1768,63 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreserveCaretPos);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveFindReplace);
 
-    if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose)
-    {
+    if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose) {
         IniSectionSetBool(IniSecSettings, L"CloseFind", Settings.EFR_Data.bFindClose);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"CloseFind", false);
     }
-    if (Settings.EFR_Data.bReplaceClose != Defaults.EFR_Data.bReplaceClose)
-    {
+    if (Settings.EFR_Data.bReplaceClose != Defaults.EFR_Data.bReplaceClose) {
         IniSectionSetBool(IniSecSettings, L"CloseReplace", Settings.EFR_Data.bReplaceClose);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"CloseReplace", false);
     }
-    if (Settings.EFR_Data.bNoFindWrap != Defaults.EFR_Data.bNoFindWrap)
-    {
+    if (Settings.EFR_Data.bNoFindWrap != Defaults.EFR_Data.bNoFindWrap) {
         IniSectionSetBool(IniSecSettings, L"NoFindWrap", Settings.EFR_Data.bNoFindWrap);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"NoFindWrap", false);
     }
-    if (Settings.EFR_Data.bTransformBS != Defaults.EFR_Data.bTransformBS)
-    {
+    if (Settings.EFR_Data.bTransformBS != Defaults.EFR_Data.bTransformBS) {
         IniSectionSetBool(IniSecSettings, L"FindTransformBS", Settings.EFR_Data.bTransformBS);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"FindTransformBS", false);
     }
-    if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch)
-    {
+    if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
         IniSectionSetBool(IniSecSettings, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"WildcardSearch", false);
     }
-    if (Settings.EFR_Data.bOverlappingFind != Defaults.EFR_Data.bOverlappingFind)
-    {
+    if (Settings.EFR_Data.bOverlappingFind != Defaults.EFR_Data.bOverlappingFind) {
         IniSectionSetBool(IniSecSettings, L"OverlappingFind", Settings.EFR_Data.bOverlappingFind);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"OverlappingFind", false);
     }
-    if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences)
-    {
+    if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences) {
         IniSectionSetBool(IniSecSettings, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"FindMarkAllOccurrences", false);
     }
-    if (Settings.EFR_Data.bHideNonMatchedLines != Defaults.EFR_Data.bHideNonMatchedLines)
-    {
+    if (Settings.EFR_Data.bHideNonMatchedLines != Defaults.EFR_Data.bHideNonMatchedLines) {
         IniSectionSetBool(IniSecSettings, L"HideNonMatchedLines", Settings.EFR_Data.bHideNonMatchedLines);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"HideNonMatchedLines", false);
     }
-    if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags)
-    {
+    if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
         IniSectionSetInt(IniSecSettings, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"efrData_fuFlags", false);
     }
 
     WCHAR wchTmp[MAX_PATH] = { L'\0' };
-    if (StringCchCompareXIW(Settings.OpenWithDir, Defaults.OpenWithDir) != 0)
-    {
+    if (StringCchCompareXIW(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
         PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"OpenWithDir", wchTmp);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"OpenWithDir", false);
     }
-    if (StringCchCompareXIW(Settings.FavoritesDir, Defaults.FavoritesDir) != 0)
-    {
+    if (StringCchCompareXIW(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
         PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"Favorites", wchTmp);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"Favorites", false);
     }
 
@@ -2053,12 +1858,9 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLineMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLinesLimit);
-    if (StringCchCompareX(Settings.MultiEdgeLines, Defaults.MultiEdgeLines) != 0)
-    {
+    if (StringCchCompareX(Settings.MultiEdgeLines, Defaults.MultiEdgeLines) != 0) {
         IniSectionSetString(IniSecSettings, L"MultiEdgeLines", Settings.MultiEdgeLines);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"MultiEdgeLines", false);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowBookmarkMargin);
@@ -2096,36 +1898,24 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintColorMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintZoom);
 
-    if (Settings.PrintMargin.left != Defaults.PrintMargin.left)
-    {
+    if (Settings.PrintMargin.left != Defaults.PrintMargin.left) {
         IniSectionSetInt(IniSecSettings, L"PrintMarginLeft", Settings.PrintMargin.left);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"PrintMarginLeft", false);
     }
-    if (Settings.PrintMargin.top != Defaults.PrintMargin.top)
-    {
+    if (Settings.PrintMargin.top != Defaults.PrintMargin.top) {
         IniSectionSetInt(IniSecSettings, L"PrintMarginTop", Settings.PrintMargin.top);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"PrintMarginTop", false);
     }
-    if (Settings.PrintMargin.right != Defaults.PrintMargin.right)
-    {
+    if (Settings.PrintMargin.right != Defaults.PrintMargin.right) {
         IniSectionSetInt(IniSecSettings, L"PrintMarginRight", Settings.PrintMargin.right);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"PrintMarginRight", false);
     }
-    if (Settings.PrintMargin.bottom != Defaults.PrintMargin.bottom)
-    {
+    if (Settings.PrintMargin.bottom != Defaults.PrintMargin.bottom) {
         IniSectionSetInt(IniSecSettings, L"PrintMarginBottom", Settings.PrintMargin.bottom);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"PrintMarginBottom", false);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
@@ -2151,12 +1941,9 @@ static bool _SaveSettings(bool bForceSaveSettings)
     ///~IniSectionSetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction);
 
     Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
-    if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) != 0)
-    {
+    if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) != 0) {
         IniSectionSetString(IniSecSettings, L"ToolbarButtons", Settings.ToolbarButtons);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecSettings, L"ToolbarButtons", false);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowMenubar);
@@ -2199,27 +1986,20 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
     WCHAR tchHighDpiToolBar[64];
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
-    if (Settings.ToolBarTheme != Defaults.ToolBarTheme)
-    {
+    if (Settings.ToolBarTheme != Defaults.ToolBarTheme) {
         IniSectionSetInt(IniSecWindow, tchHighDpiToolBar, Settings.ToolBarTheme);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecWindow, tchHighDpiToolBar, false);
     }
 
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
-    if (Settings.DpiScaleToolBar != Defaults.DpiScaleToolBar)
-    {
+    if (Settings.DpiScaleToolBar != Defaults.DpiScaleToolBar) {
         IniSectionSetBool(IniSecWindow, tchHighDpiToolBar, Settings.DpiScaleToolBar);
-    }
-    else
-    {
+    } else {
         IniSectionDelete(IniSecWindow, tchHighDpiToolBar, false);
     }
 
-    if (!Flags.bStickyWindowPosition)
-    {
+    if (!Flags.bStickyWindowPosition) {
         SaveWindowPositionSettings(false);
     }
 
@@ -2228,27 +2008,20 @@ static bool _SaveSettings(bool bForceSaveSettings)
     const WCHAR* const IniSecStyles = Constants.Styles_Section;
     // --------------------------------------------------------------------------
 
-    if (GetModeThemeIndex() == 1)
-    {
+    if (GetModeThemeIndex() == 1) {
         Style_FileExtToIniSection(Globals.bIniFileFromScratch);
         Style_ToIniSection(Globals.bIniFileFromScratch); // Scintilla Styles
     }
 
-    if (Globals.idxLightModeTheme <= 1)
-    {
+    if (Globals.idxLightModeTheme <= 1) {
         IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
-    }
-    else
-    {
+    } else {
         IniSectionSetString(IniSecStyles, L"ThemeFileName", Globals.LightThemeName);
     }
 
-    if (Globals.idxDarkModeTheme <= 1)
-    {
+    if (Globals.idxDarkModeTheme <= 1) {
         IniSectionDelete(IniSecStyles, L"DarkThemeFileName", false);
-    }
-    else
-    {
+    } else {
         IniSectionSetString(IniSecStyles, L"DarkThemeFileName", Globals.DarkThemeName);
     }
 
@@ -2262,8 +2035,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
 //
 bool SaveWindowPositionSettings(bool bClearSettings)
 {
-    if (!IsIniFileCached())
-    {
+    if (!IsIniFileCached()) {
         return false;
     }
 
@@ -2280,17 +2052,14 @@ bool SaveWindowPositionSettings(bool bClearSettings)
     StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
     StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
 
-    if (bClearSettings)
-    {
+    if (bClearSettings) {
         IniSectionDelete(Constants.Window_Section, tchPosX, false);
         IniSectionDelete(Constants.Window_Section, tchPosY, false);
         IniSectionDelete(Constants.Window_Section, tchSizeX, false);
         IniSectionDelete(Constants.Window_Section, tchSizeY, false);
         IniSectionDelete(Constants.Window_Section, tchMaximized, false);
         IniSectionDelete(Constants.Window_Section, tchZoom, false);
-    }
-    else
-    {
+    } else {
         // overwrite last saved window position
         IniSectionSetInt(Constants.Window_Section, tchPosX, winInfo.x);
         IniSectionSetInt(Constants.Window_Section, tchPosY, winInfo.y);
@@ -2312,12 +2081,10 @@ bool SaveWindowPositionSettings(bool bClearSettings)
 //
 bool SaveAllSettings(bool bForceSaveSettings)
 {
-    if (Flags.bDoRelaunchElevated)
-    {
+    if (Flags.bDoRelaunchElevated) {
         return true;
     } // already saved before relaunch
-    if (Flags.bSettingsFileSoftLocked)
-    {
+    if (Flags.bSettingsFileSoftLocked) {
         return false;
     }
 
@@ -2331,35 +2098,27 @@ bool SaveAllSettings(bool bForceSaveSettings)
     bool bOpenedByMe;
     ok = OpenSettingsFile(&bOpenedByMe);
 
-    if (ok)
-    {
+    if (ok) {
 
         _SaveSettings(bForceSaveSettings);
 
-        if (Globals.bCanSaveIniFile)
-        {
-            if (!Settings.SaveRecentFiles)
-            {
+        if (Globals.bCanSaveIniFile) {
+            if (!Settings.SaveRecentFiles) {
                 // Cleanup unwanted MRUs
                 MRU_Empty(Globals.pFileMRU, false);
                 MRU_Save(Globals.pFileMRU);
-            }
-            else
-            {
+            } else {
                 //int const cnt = MRU_Count(Globals.pFileMRU);
                 MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
             }
 
-            if (!Settings.SaveFindReplace)
-            {
+            if (!Settings.SaveFindReplace) {
                 // Cleanup unwanted MRUs
                 MRU_Empty(Globals.pMRUfind, false);
                 MRU_Save(Globals.pMRUfind);
                 MRU_Empty(Globals.pMRUreplace, false);
                 MRU_Save(Globals.pMRUreplace);
-            }
-            else
-            {
+            } else {
                 MRU_MergeSave(Globals.pMRUfind, false, false, false);
                 MRU_MergeSave(Globals.pMRUreplace, false, false, false);
             }
@@ -2368,16 +2127,14 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
     Style_FileExtToIniSection(bForceSaveSettings);
 
-    if (GetModeThemeIndex() == 1)
-    {
+    if (GetModeThemeIndex() == 1) {
         Style_SaveSettings(bForceSaveSettings);
     }
 
     ok = CloseSettingsFile(true, bOpenedByMe); // reset/clear cache
 
     // separate INI files for Style-Themes
-    if (GetModeThemeIndex() >= 2)
-    {
+    if (GetModeThemeIndex() >= 2) {
         Style_SaveSettings(bForceSaveSettings);
     }
 
@@ -2394,69 +2151,51 @@ bool SaveAllSettings(bool bForceSaveSettings)
 void CmdSaveSettingsNow()
 {
     bool bCreateFailure = false;
-    if (StrIsEmpty(Globals.IniFile))
-    {
-        if (StrIsNotEmpty(Globals.IniFileDefault))
-        {
+    if (StrIsEmpty(Globals.IniFile)) {
+        if (StrIsNotEmpty(Globals.IniFileDefault)) {
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
             DWORD dwFileSize        = 0UL;
             Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
-            if (Globals.bCanSaveIniFile)
-            {
+            if (Globals.bCanSaveIniFile) {
                 Globals.bIniFileFromScratch = (dwFileSize == 0UL);
                 StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
-            }
-            else
-            {
+            } else {
                 StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
                 Globals.bCanSaveIniFile = false;
                 bCreateFailure          = true;
             }
-        }
-        else
-        {
+        } else {
             return;
         }
     }
-    if (bCreateFailure)
-    {
+    if (bCreateFailure) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
         return;
     }
     DWORD dwFileAttributes = 0;
-    if (!Globals.bCanSaveIniFile)
-    {
+    if (!Globals.bCanSaveIniFile) {
         dwFileAttributes = GetFileAttributes(Globals.IniFile);
-        if (dwFileAttributes == INVALID_FILE_ATTRIBUTES)
-        {
+        if (dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
             return;
         }
-        if (dwFileAttributes & FILE_ATTRIBUTE_READONLY)
-        {
+        if (dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
             INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_INIFILE_READONLY);
-            if ((IDOK == answer) || (IDYES == answer))
-            {
+            if ((IDOK == answer) || (IDYES == answer)) {
                 SetFileAttributes(Globals.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
                 Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
             }
-        }
-        else
-        {
+        } else {
             dwFileAttributes = 0; // no need to change the file attributes
         }
     }
-    if (Globals.bCanSaveIniFile && SaveAllSettings(true))
-    {
+    if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
         InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
-        if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES))
-        {
+        if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES)) {
             SetFileAttributes(Globals.IniFile, dwFileAttributes); // reset
         }
         Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
-    }
-    else
-    {
+    } else {
         Globals.dwLastError = GetLastError();
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_WRITEINI_FAIL);
         return;
@@ -2475,8 +2214,7 @@ void CmdSaveSettingsNow()
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize)
 {
     LPMRULIST pmru = (LPMRULIST)AllocMem(sizeof(MRULIST), HEAP_ZERO_MEMORY);
-    if (pmru)
-    {
+    if (pmru) {
         ZeroMemory(pmru, sizeof(MRULIST));
         pmru->szRegKey = pszRegKey;
         pmru->iFlags = iFlags;
@@ -2488,14 +2226,14 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize)
 
 bool MRU_Destroy(LPMRULIST pmru)
 {
-    if (pmru)
-    {
-        for (int i = 0; i < pmru->iSize; i++)
-        {
-            if (pmru->pszItems[i])
-                LocalFree(pmru->pszItems[i]);  // StrDup()
-            if (pmru->pszBookMarks[i])
-                LocalFree(pmru->pszBookMarks[i]);  // StrDup()
+    if (pmru) {
+        for (int i = 0; i < pmru->iSize; i++) {
+            if (pmru->pszItems[i]) {
+                LocalFree(pmru->pszItems[i]);    // StrDup()
+            }
+            if (pmru->pszBookMarks[i]) {
+                LocalFree(pmru->pszBookMarks[i]);    // StrDup()
+            }
         }
         ZeroMemory(pmru, sizeof(MRULIST));
         FreeMem(pmru);
@@ -2507,10 +2245,8 @@ bool MRU_Destroy(LPMRULIST pmru)
 
 int MRU_Compare(LPMRULIST pmru, LPCWSTR psz1, LPCWSTR psz2)
 {
-    if (pmru)
-    {
-        if (pmru->iFlags & MRU_NOCASE)
-        {
+    if (pmru) {
+        if (pmru->iFlags & MRU_NOCASE) {
             return(StringCchCompareXI(psz1, psz2));
         }
         return(StringCchCompareX(psz1, psz2));
@@ -2521,20 +2257,16 @@ int MRU_Compare(LPMRULIST pmru, LPCWSTR psz1, LPCWSTR psz2)
 
 bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
-    if (pmru)
-    {
+    if (pmru) {
         int i = 0;
-        for (; i < pmru->iSize; ++i)
-        {
-            if (MRU_Compare(pmru, pmru->pszItems[i], pszNew) == 0)
-            {
+        for (; i < pmru->iSize; ++i) {
+            if (MRU_Compare(pmru, pmru->pszItems[i], pszNew) == 0) {
                 LocalFree(pmru->pszItems[i]); // StrDup()
                 break;
             }
         }
         i = min_i(i, pmru->iSize - 1);
-        for (; i > 0; i--)
-        {
+        for (; i > 0; i--) {
             pmru->pszItems[i] = pmru->pszItems[i - 1];
             pmru->iEncoding[i] = pmru->iEncoding[i - 1];
             pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
@@ -2555,25 +2287,20 @@ bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos
 bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
 {
     *iIndex = 0;
-    if (pmru)
-    {
+    if (pmru) {
         WCHAR wchItem[MAX_PATH] = { L'\0' };
         int i = 0;
-        for (i = 0; i < pmru->iSize; ++i)
-        {
-            if (pmru->pszItems[i] == NULL)
-            {
+        for (i = 0; i < pmru->iSize; ++i) {
+            if (pmru->pszItems[i] == NULL) {
                 *iIndex = i;
                 return false;
             }
-            if (StringCchCompareXI(pmru->pszItems[i], pszFile) == 0)
-            {
+            if (StringCchCompareXI(pmru->pszItems[i], pszFile) == 0) {
                 *iIndex = i;
                 return true;
             }
             PathAbsoluteFromApp(pmru->pszItems[i], wchItem, COUNTOF(wchItem), true);
-            if (StringCchCompareXI(wchItem, pszFile) == 0)
-            {
+            if (StringCchCompareXI(wchItem, pszFile) == 0) {
                 *iIndex = i;
                 return true;
             }
@@ -2587,34 +2314,26 @@ bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
 bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
                  cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
-    if (pmru)
-    {
+    if (pmru) {
         int i = 0;
         bool const bAlreadyInList = MRU_FindFile(pmru, pszFile, &i);
-        if (bAlreadyInList)
-        {
+        if (bAlreadyInList) {
             LocalFree(pmru->pszItems[i]);  // StrDup()
-        }
-        else
-        {
+        } else {
             i = (i < pmru->iSize) ? i : (pmru->iSize - 1);
         }
-        for (; i > 0; i--)
-        {
+        for (; i > 0; i--) {
             pmru->pszItems[i] = pmru->pszItems[i - 1];
             pmru->iEncoding[i] = pmru->iEncoding[i - 1];
             pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
             pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i - 1];
             pmru->pszBookMarks[i] = pmru->pszBookMarks[i - 1];
         }
-        if (bRelativePath)
-        {
+        if (bRelativePath) {
             WCHAR wchFile[MAX_PATH] = { L'\0' };
             PathRelativeToApp(pszFile, wchFile, COUNTOF(wchFile), true, true, bUnexpandMyDocs);
             pmru->pszItems[0] = StrDup(wchFile);  // LocalAlloc()
-        }
-        else
-        {
+        } else {
             pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
         }
 
@@ -2623,8 +2342,7 @@ bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexp
         pmru->iSelAnchPos[0] = (Settings.PreserveCaretPos ? iSelAnc : -1);
         pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
 
-        if (!bAlreadyInList)
-        {
+        if (!bAlreadyInList) {
             AddFilePathToRecentDocs(pszFile);
         }
         return bAlreadyInList;
@@ -2635,21 +2353,16 @@ bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexp
 
 bool MRU_Delete(LPMRULIST pmru, int iIndex)
 {
-    if (pmru)
-    {
-        if (iIndex >= 0 || iIndex < pmru->iSize)
-        {
-            if (pmru->pszItems[iIndex])
-            {
+    if (pmru) {
+        if (iIndex >= 0 || iIndex < pmru->iSize) {
+            if (pmru->pszItems[iIndex]) {
                 LocalFree(pmru->pszItems[iIndex]);  // StrDup()
             }
-            if (pmru->pszBookMarks[iIndex])
-            {
+            if (pmru->pszBookMarks[iIndex]) {
                 LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
             }
             bool bZeroMoved = false;
-            for (int i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; ++i)
-            {
+            for (int i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; ++i) {
                 pmru->pszItems[i] = pmru->pszItems[i + 1];
                 pmru->iEncoding[i] = pmru->iEncoding[i + 1];
                 pmru->iCaretPos[i] = pmru->iCaretPos[i + 1];
@@ -2673,20 +2386,16 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
 
 bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast)
 {
-    if (pmru)
-    {
+    if (pmru) {
         int const beg = bExceptLeast ? 1 : 0;
-        for (int i = beg; i < pmru->iSize; ++i)
-        {
-            if (pmru->pszItems[i])
-            {
+        for (int i = beg; i < pmru->iSize; ++i) {
+            if (pmru->pszItems[i]) {
                 LocalFree(pmru->pszItems[i]);  // StrDup()
                 pmru->pszItems[i] = NULL;
                 pmru->iEncoding[i] = 0;
                 pmru->iCaretPos[i] = -1;
                 pmru->iSelAnchPos[i] = -1;
-                if (pmru->pszBookMarks[i])
-                {
+                if (pmru->pszBookMarks[i]) {
                     LocalFree(pmru->pszBookMarks[i]);  // StrDup()
                 }
                 pmru->pszBookMarks[i] = NULL;
@@ -2700,19 +2409,15 @@ bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast)
 
 int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 {
-    if (pmru)
-    {
-        if (pszItem == NULL || cchItem == 0)
-        {
+    if (pmru) {
+        if (pszItem == NULL || cchItem == 0) {
             int i = 0;
-            while (i < pmru->iSize && pmru->pszItems[i])
-            {
+            while (i < pmru->iSize && pmru->pszItems[i]) {
                 ++i;
             }
             return(i);
         }
-        if (iIndex < 0 || iIndex > pmru->iSize - 1 || !pmru->pszItems[iIndex])
-        {
+        if (iIndex < 0 || iIndex > pmru->iSize - 1 || !pmru->pszItems[iIndex]) {
             return(-1);
         }
         StringCchCopyN(pszItem, cchItem, pmru->pszItems[iIndex], cchItem);
@@ -2724,29 +2429,24 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 
 bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 {
-    if (pmru)
-    {
+    if (pmru) {
         bool bOpendByMe;
         OpenSettingsFile(&bOpendByMe);
 
         int n = 0;
-        if (IsIniFileCached())
-        {
+        if (IsIniFileCached()) {
 
             MRU_Empty(pmru, false);
 
             const WCHAR* const RegKey_Section = pmru->szRegKey;
 
-            for (int i = 0; i < pmru->iSize; ++i)
-            {
+            for (int i = 0; i < pmru->iSize; ++i) {
                 WCHAR tchName[32] = { L'\0' };
                 StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
                 WCHAR tchItem[2048] = { L'\0' };
-                if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem)))
-                {
+                if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
                     size_t const len = StringCchLen(tchItem, 0);
-                    if ((len > 1) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"'))
-                    {
+                    if ((len > 1) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
                         MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
                         tchItem[len - 2] = L'\0'; // clear dangling '"'
                     }
@@ -2781,45 +2481,37 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 
 void MRU_Save(LPMRULIST pmru)
 {
-    if (pmru)
-    {
+    if (pmru) {
         bool bOpendByMe;
         OpenSettingsFile(&bOpendByMe);
 
-        if (IsIniFileCached())
-        {
+        if (IsIniFileCached()) {
             WCHAR tchName[32] = { L'\0' };
             WCHAR tchItem[2048] = { L'\0' };
 
             const WCHAR* const RegKey_Section = pmru->szRegKey;
             IniSectionClear(pmru->szRegKey, false);
 
-            for (int i = 0; i < pmru->iSize; ++i)
-            {
-                if (pmru->pszItems[i])
-                {
+            for (int i = 0; i < pmru->iSize; ++i) {
+                if (pmru->pszItems[i]) {
                     StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
                     StringCchPrintf(tchItem, COUNTOF(tchItem), L"\"%s\"", pmru->pszItems[i]);
                     IniSectionSetString(RegKey_Section, tchName, tchItem);
 
-                    if (pmru->iEncoding[i] > 0)
-                    {
+                    if (pmru->iEncoding[i] > 0) {
                         StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
                         int const iCP = (int)Encoding_MapIniSetting(false, (int)pmru->iEncoding[i]);
                         IniSectionSetInt(RegKey_Section, tchName, iCP);
                     }
-                    if (pmru->iCaretPos[i] >= 0)
-                    {
+                    if (pmru->iCaretPos[i] >= 0) {
                         StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
                         IniSectionSetPos(RegKey_Section, tchName, pmru->iCaretPos[i]);
                     }
-                    if (pmru->iSelAnchPos[i] >= 0)
-                    {
+                    if (pmru->iSelAnchPos[i] >= 0) {
                         StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
                         IniSectionSetPos(RegKey_Section, tchName, pmru->iSelAnchPos[i]);
                     }
-                    if (StrIsNotEmpty(pmru->pszBookMarks[i]))
-                    {
+                    if (StrIsNotEmpty(pmru->pszBookMarks[i])) {
                         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
                         IniSectionSetString(RegKey_Section, tchName, pmru->pszBookMarks[i]);
                     }
@@ -2833,35 +2525,27 @@ void MRU_Save(LPMRULIST pmru)
 
 bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUnexpandMyDocs)
 {
-    if (pmru)
-    {
+    if (pmru) {
 
         bool bOpendByMe;
         OpenSettingsFile(&bOpendByMe);
 
-        if (IsIniFileCached())
-        {
+        if (IsIniFileCached()) {
 
             LPMRULIST pmruBase = MRU_Create(pmru->szRegKey, pmru->iFlags, pmru->iSize);
             MRU_Load(pmruBase, bAddFiles);
 
-            if (bAddFiles)
-            {
-                for (int i = pmru->iSize - 1; i >= 0; i--)
-                {
-                    if (pmru->pszItems[i])
-                    {
+            if (bAddFiles) {
+                for (int i = pmru->iSize - 1; i >= 0; i--) {
+                    if (pmru->pszItems[i]) {
                         WCHAR wchItem[MAX_PATH] = { L'\0' };
                         PathAbsoluteFromApp(pmru->pszItems[i], wchItem, COUNTOF(wchItem), true);
                         MRU_AddFile(pmruBase, wchItem, bRelativePath, bUnexpandMyDocs,
                                     pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
                     }
                 }
-            }
-            else
-            {
-                for (int i = pmru->iSize - 1; i >= 0; i--)
-                {
+            } else {
+                for (int i = pmru->iSize - 1; i >= 0; i--) {
                     if (pmru->pszItems[i])
                         MRU_Add(pmruBase, pmru->pszItems[i],
                                 pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
@@ -2894,35 +2578,27 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
 {
 #define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
 
-    if (!lpstrText || (lenText == 0))
-    {
+    if (!lpstrText || (lenText == 0)) {
         SciCall_SetDocPointer(0);
-    }
-    else
-    {
+    } else {
 #if TRUE
         ILoader* const pDocLoad = reinterpret_cast<ILoader*>(SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1, docOptions));
 
-        if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText))
-        {
+        if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {
             RELEASE_RETURN(false);
         }
         sptr_t const pNewDocumentPtr = (sptr_t)pDocLoad->ConvertToDocument(); // == SciCall_CreateDocument(lenText, docOptions);
-        if (!pNewDocumentPtr)
-        {
+        if (!pNewDocumentPtr) {
             RELEASE_RETURN(false);
         }
         SciCall_SetDocPointer(pNewDocumentPtr);
         SciCall_ReleaseDocument(pNewDocumentPtr);
 #else
         sptr_t const pNewDocumentPtr = SciCall_CreateDocument(lenText, docOptions);
-        if (pNewDocumentPtr)
-        {
+        if (pNewDocumentPtr) {
             SciCall_SetDocPointer(pNewDocumentPtr);
             SciCall_ReleaseDocument(pNewDocumentPtr);
-        }
-        else
-        {
+        } else {
             SciCall_SetDocPointer(0);
         }
         SciCall_TargetWholeDocument();
@@ -2935,12 +2611,9 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
 static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
 {
     UNUSED(docOptions);
-    if (!lpstrText || (lenText == 0))
-    {
+    if (!lpstrText || (lenText == 0)) {
         SciCall_ClearAll();
-    }
-    else
-    {
+    } else {
         SciCall_TargetWholeDocument();
         SciCall_ReplaceTarget(lenText, lpstrText);
     }
@@ -2956,19 +2629,13 @@ extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
     int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE)
                            : SC_DOCUMENTOPTION_DEFAULT;
 
-    if (SciCall_GetDocumentOptions() != docOptions)
-    {
+    if (SciCall_GetDocumentOptions() != docOptions) {
         // we have to create a new document with changed options
         return CreateNewDocument(lpstrText, lenText, docOptions);
-    }
-    else
-    {
-        if (!lpstrText || (lenText == 0))
-        {
+    } else {
+        if (!lpstrText || (lenText == 0)) {
             SciCall_ClearAll();
-        }
-        else
-        {
+        } else {
             SciCall_TargetWholeDocument();
             SciCall_ReplaceTarget(lenText, lpstrText);
         }

@@ -18,8 +18,7 @@
 #define _NP3_MUI_LANGUAGE_H_
 
 
-typedef struct _muilanguage
-{
+typedef struct _muilanguage {
     UINT    rid;
     const WCHAR* szLocaleName;
     const WCHAR* szMenuItem;
@@ -34,8 +33,7 @@ extern MUILANGUAGE MUI_LanguageDLLs[];
 int MuiLanguages_CountOf();
 
 
-typedef struct _gwlang_ini
-{
+typedef struct _gwlang_ini {
     const LANGID       lngid;
     const WCHAR* const filename;
 }

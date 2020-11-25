@@ -71,24 +71,20 @@ static void _StatusUpdatePrintPage(int iPageNum)
 //
 static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
-    switch (uiMsg)
-    {
+    switch (uiMsg) {
 
-    case WM_INITDIALOG:
-    {
+    case WM_INITDIALOG: {
 
         SetDialogIconNP3(hwnd);
         InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-        if (UseDarkMode())
-        {
+        if (UseDarkMode()) {
             SetExplorerTheme(GetDlgItem(hwnd, IDOK));
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             SetExplorerTheme(GetDlgItem(hwnd, 0x401));
             int const ctl[] = { 0x410, 0x420, 0x421, 0x422, 0x430, 0x431, 0x433, 0x473, IDC_STATIC };
-            for (int i = 0; i < COUNTOF(ctl); ++i)
-            {
+            for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
         }
@@ -109,22 +105,19 @@ CASE_WM_CTLCOLOR_SET:
         break;
 
     case WM_SETTINGCHANGE:
-        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam))
-        {
+        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
             SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
         }
         break;
 
     case WM_THEMECHANGED:
-        if (IsDarkModeSupported())
-        {
+        if (IsDarkModeSupported()) {
             bool const darkModeEnabled = CheckDarkModeEnabled();
             AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
             RefreshTitleBarThemeColor(hwnd);
 
             int const buttons[] = { IDOK, IDCANCEL, 0x401 };
-            for (int id = 0; id < COUNTOF(buttons); ++id)
-            {
+            for (int id = 0; id < COUNTOF(buttons); ++id) {
                 HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
                 SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
@@ -136,8 +129,7 @@ CASE_WM_CTLCOLOR_SET:
 #endif
 
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK)
-        {
+        if (LOWORD(wParam) == IDOK) {
         }
         break;
 
@@ -155,8 +147,7 @@ CASE_WM_CTLCOLOR_SET:
 extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 {
     // Don't print empty documents
-    if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0)
-    {
+    if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_EMPTY);
         return true;
     }
@@ -181,20 +172,16 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     DocPos const startPos = SciCall_GetSelectionStart();
     DocPos const endPos = SciCall_GetSelectionEnd();
 
-    if (startPos == endPos)
-    {
+    if (startPos == endPos) {
         pdlg.Flags |= PD_NOSELECTION;
-    }
-    else
-    {
+    } else {
         pdlg.Flags |= PD_SELECTION;
     }
 
     // |= 0 - Don't display dialog box, just use the default printer and options
     pdlg.Flags |= (Flags.PrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
 
-    if (!PrintDlg(&pdlg))
-    {
+    if (!PrintDlg(&pdlg)) {
         return true; // False means error...
     }
 
@@ -238,8 +225,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     RECT rectMargins;
     // Take in account the page setup given by the user (if one value is not null)
     if (Settings.PrintMargin.left != 0 || Settings.PrintMargin.right != 0 ||
-            Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0)
-    {
+            Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0) {
         // Convert the hundredths of millimeters (HiMetric) or
         // thousandths of inches (HiEnglish) margin values
         // from the Page Setup dialog to device units.
@@ -248,15 +234,12 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
 
         RECT rectSetup;
-        if (localeInfo[0] == L'0')    // Metric system. L'1' is US System
-        {
+        if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
             rectSetup.left = MulDiv (Settings.PrintMargin.left, ptDpi.x, 2540);
             rectSetup.top = MulDiv (Settings.PrintMargin.top, ptDpi.y, 2540);
             rectSetup.right  = MulDiv(Settings.PrintMargin.right, ptDpi.x, 2540);
             rectSetup.bottom  = MulDiv(Settings.PrintMargin.bottom, ptDpi.y, 2540);
-        }
-        else
-        {
+        } else {
             rectSetup.left  = MulDiv(Settings.PrintMargin.left, ptDpi.x, 1000);
             rectSetup.top  = MulDiv(Settings.PrintMargin.top, ptDpi.y, 1000);
             rectSetup.right  = MulDiv(Settings.PrintMargin.right, ptDpi.x, 1000);
@@ -268,9 +251,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         rectMargins.top  = max_l(rectPhysMargins.top, rectSetup.top);
         rectMargins.right  = max_l(rectPhysMargins.right, rectSetup.right);
         rectMargins.bottom  = max_l(rectPhysMargins.bottom, rectSetup.bottom);
-    }
-    else
-    {
+    } else {
         rectMargins.left  = rectPhysMargins.left;
         rectMargins.top  = rectPhysMargins.top;
         rectMargins.right  = rectPhysMargins.right;
@@ -304,8 +285,9 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     GetTextMetrics(hdc, &tm);
     headerLineHeight = tm.tmHeight + tm.tmExternalLeading;
 
-    if (Settings.PrintHeader == 3)
+    if (Settings.PrintHeader == 3) {
         headerLineHeight = 0;
+    }
 
     int footerLineHeight = MulDiv(7,ptDpi.y, 72);
     HFONT fontFooter = CreateFont(footerLineHeight,
@@ -321,21 +303,23 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     GetTextMetrics(hdc, &tm);
     footerLineHeight = tm.tmHeight + tm.tmExternalLeading;
 
-    if (Settings.PrintFooter == 1)
+    if (Settings.PrintFooter == 1) {
         footerLineHeight = 0;
+    }
 
     DOCINFO di = { sizeof(DOCINFO), nullptr, nullptr, nullptr, 0 };
     di.lpszDocName = pszDocTitle;
     di.lpszOutput = nullptr;
     di.lpszDatatype = nullptr;
     di.fwType = 0;
-    if (StartDoc(hdc, &di) < 0)
-    {
+    if (StartDoc(hdc, &di) < 0) {
         DeleteDC(hdc);
-        if (fontHeader)
+        if (fontHeader) {
             DeleteObject(fontHeader);
-        if (fontFooter)
+        }
+        if (fontFooter) {
             DeleteObject(fontFooter);
+        }
         return false;
     }
 
@@ -346,8 +330,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     GetDateFormat(LOCALE_USER_DEFAULT,DATE_SHORTDATE,&st,nullptr,dateString,MIDSZ_BUFFER);
 
     // Get current time...
-    if (Settings.PrintHeader == 0)
-    {
+    if (Settings.PrintHeader == 0) {
         WCHAR timeString[SMALL_BUFFER] = { L'\0' };
         GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,nullptr,timeString,SMALL_BUFFER);
         StringCchCat(dateString,COUNTOF(dateString),L" ");
@@ -355,8 +338,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     }
 
     // Set print color mode
-    int printColorModes[6] =
-    {
+    int printColorModes[6] = {
         SC_PRINT_NORMAL,
         SC_PRINT_INVERTLIGHT,
         SC_PRINT_BLACKONWHITE,
@@ -376,23 +358,21 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     DocPos lengthPrinted = 0;
 
     // Requested to print selection
-    if (pdlg.Flags & PD_SELECTION)
-    {
-        if (startPos > endPos)
-        {
+    if (pdlg.Flags & PD_SELECTION) {
+        if (startPos > endPos) {
             lengthPrinted = endPos;
             lengthDoc = startPos;
-        }
-        else
-        {
+        } else {
             lengthPrinted = startPos;
             lengthDoc = endPos;
         }
 
-        if (lengthPrinted < 0)
+        if (lengthPrinted < 0) {
             lengthPrinted = 0;
-        if (lengthDoc > lengthDocMax)
+        }
+        if (lengthDoc > lengthDocMax) {
             lengthDoc = lengthDocMax;
+        }
     }
 
     // We must substract the physical margins from the printable area
@@ -414,15 +394,13 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     int pageNum = 1;
     WCHAR pageString[32] = { L'\0' };
 
-    while (lengthPrinted < lengthDoc)
-    {
+    while (lengthPrinted < lengthDoc) {
         bool printPage = (!(pdlg.Flags & PD_PAGENUMS) ||
                           ((pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage)));
 
         StringCchPrintf(pageString,COUNTOF(pageString),pszPageFormat,pageNum);
 
-        if (printPage)
-        {
+        if (printPage) {
 
             // Show wait cursor...
             SendMessage(Globals.hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORWAIT, 0);
@@ -441,16 +419,14 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
                        };
             rcw.bottom = rcw.top + headerLineHeight;
 
-            if (Settings.PrintHeader < 3)
-            {
+            if (Settings.PrintHeader < 3) {
                 ExtTextOut(hdc, frPrint.rc.left + 5, frPrint.rc.top - headerLineHeight / 2,
                            /*ETO_OPAQUE*/0, &rcw, pszDocTitle,
                            (UINT)StringCchLenW(pszDocTitle,0), nullptr);
             }
 
             // Print date in header
-            if (Settings.PrintHeader == 0 || Settings.PrintHeader == 1)
-            {
+            if (Settings.PrintHeader == 0 || Settings.PrintHeader == 1) {
                 SIZE sizeInfo;
                 SelectObject(hdc,fontFooter);
                 GetTextExtentPoint32(hdc,dateString,(int)StringCchLenW(dateString,COUNTOF(dateString)),&sizeInfo);
@@ -459,8 +435,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
                            (UINT)StringCchLenW(dateString,COUNTOF(dateString)), nullptr);
             }
 
-            if (Settings.PrintHeader < 3)
-            {
+            if (Settings.PrintHeader < 3) {
                 SetTextAlign(hdc, ta);
                 HPEN pen = CreatePen(0, 1, RGB(0,0,0));
                 HPEN const penOld = (HPEN)SelectObject(hdc, pen);
@@ -476,8 +451,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
         lengthPrinted = (int)SendMessage(hwnd, SCI_FORMATRANGE, printPage, (LPARAM)&frPrint);
 
-        if (printPage)
-        {
+        if (printPage) {
             SetTextColor(hdc, RGB(0,0,0));
             SetBkColor(hdc, RGB(0xFF, 0xFF, 0xFF));
             SelectObject(hdc, fontFooter);
@@ -486,8 +460,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
                         frPrint.rc.right, frPrint.rc.bottom + footerLineHeight + footerLineHeight / 2
                        };
 
-            if (Settings.PrintFooter == 0)
-            {
+            if (Settings.PrintFooter == 0) {
                 SIZE sizeFooter;
                 GetTextExtentPoint32(hdc,pageString,(int)StringCchLenW(pageString,COUNTOF(pageString)),&sizeFooter);
                 ExtTextOut(hdc, frPrint.rc.right - 5 - sizeFooter.cx, frPrint.rc.bottom + footerLineHeight / 2,
@@ -508,18 +481,21 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         }
         pageNum++;
 
-        if ((pdlg.Flags & PD_PAGENUMS) && (pageNum > pdlg.nToPage))
+        if ((pdlg.Flags & PD_PAGENUMS) && (pageNum > pdlg.nToPage)) {
             break;
+        }
     }
 
     SendMessage(hwnd,SCI_FORMATRANGE, false, 0);
 
     EndDoc(hdc);
     DeleteDC(hdc);
-    if (fontHeader)
+    if (fontHeader) {
         DeleteObject(fontHeader);
-    if (fontFooter)
+    }
+    if (fontFooter) {
         DeleteObject(fontFooter);
+    }
 
     // Reset Statusbar to default mode
     StatusSetSimple(Globals.hwndStatus,false);
@@ -550,10 +526,8 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
 {
     UNUSED(lParam);
 
-    switch (uiMsg)
-    {
-    case WM_INITDIALOG:
-    {
+    switch (uiMsg) {
+    case WM_INITDIALOG: {
         WCHAR tch[512];
         WCHAR *p1, *p2;
 
@@ -561,16 +535,14 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-        if (UseDarkMode())
-        {
+        if (UseDarkMode()) {
             SetExplorerTheme(GetDlgItem(hwnd, IDOK));
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_PRINTER));
             int const ctl[] = { 30, 31, 32, 33, 34, 0x471, 0x472, 1037, 1038, 1056, 1057, 1072, 1073, 1074, 1075, 1076, 1089, 1090,
                                 IDC_STATIC, IDC_STATIC2, IDC_STATIC3, IDC_STATIC4, IDC_STATIC5, IDC_STATIC6
                               };
-            for (int i = 0; i < COUNTOF(ctl); ++i)
-            {
+            for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
         }
@@ -587,11 +559,11 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         StringCchCat(tch, COUNTOF(tch), L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
-        while (p2)
-        {
+        while (p2) {
             *p2++ = L'\0';
-            if (*p1)
+            if (*p1) {
                 SendDlgItemMessage(hwnd, 32, CB_ADDSTRING, 0, (LPARAM)p1);
+            }
             p1 = p2;
             p2 = StrChr(p1, L'|'); // next
         }
@@ -602,11 +574,11 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         StringCchCat(tch, COUNTOF(tch), L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
-        while (p2)
-        {
+        while (p2) {
             *p2++ = L'\0';
-            if (*p1)
+            if (*p1) {
                 SendDlgItemMessage(hwnd, 33, CB_ADDSTRING, 0, (LPARAM)p1);
+            }
             p1 = p2;
             p2 = StrChr(p1, L'|'); // next
         }
@@ -617,11 +589,11 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         StringCchCat(tch, COUNTOF(tch), L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
-        while (p2)
-        {
+        while (p2) {
             *p2++ = L'\0';
-            if (*p1)
+            if (*p1) {
                 SendDlgItemMessage(hwnd, 34, CB_ADDSTRING, 0, (LPARAM)p1);
+            }
             p1 = p2;
             p2 = StrChr(p1, L'|'); // next
         }
@@ -649,22 +621,19 @@ CASE_WM_CTLCOLOR_SET:
         break;
 
     case WM_SETTINGCHANGE:
-        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam))
-        {
+        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
             SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
         }
         break;
 
     case WM_THEMECHANGED:
-        if (IsDarkModeSupported())
-        {
+        if (IsDarkModeSupported()) {
             bool const darkModeEnabled = CheckDarkModeEnabled();
             AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
             RefreshTitleBarThemeColor(hwnd);
 
             int const buttons[] = { IDOK, IDCANCEL, IDC_PRINTER };
-            for (int id = 0; id < COUNTOF(buttons); ++id)
-            {
+            for (int id = 0; id < COUNTOF(buttons); ++id) {
                 HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
                 SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
@@ -675,8 +644,7 @@ CASE_WM_CTLCOLOR_SET:
 
 #endif
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK)
-        {
+        if (LOWORD(wParam) == IDOK) {
             BOOL bError = FALSE;
             int const iZoom = (int)SendDlgItemMessage(hwnd, 31, UDM_GETPOS32, 0, (LPARAM)&bError);
             Settings.PrintZoom = bError ? Defaults.PrintZoom : iZoom;
@@ -684,9 +652,7 @@ CASE_WM_CTLCOLOR_SET:
             Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
             Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
             Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
-        }
-        else if (LOWORD(wParam) == IDC_PRINTER)
-        {
+        } else if (LOWORD(wParam) == IDC_PRINTER) {
             PostWMCommand(hwnd, 1026);
         }
         break;
@@ -714,8 +680,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
     EditPrintInit();
 
     if (Settings.PrintMargin.left != 0 || Settings.PrintMargin.right != 0 ||
-        Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0)
-    {
+            Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0) {
         pdlg.Flags |= PSD_MARGINS;
 
         pdlg.rtMargin.left = Settings.PrintMargin.left;
@@ -727,8 +692,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
     pdlg.hDevMode = hDevMode;
     pdlg.hDevNames = hDevNames;
 
-    if (PageSetupDlg(&pdlg))
-    {
+    if (PageSetupDlg(&pdlg)) {
 
         Settings.PrintMargin.left = pdlg.rtMargin.left;
         Settings.PrintMargin.top = pdlg.rtMargin.top;
@@ -750,8 +714,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
 static void EditPrintInit()
 {
     if (Settings.PrintMargin.left  <= -1 || Settings.PrintMargin.top    <= -1 ||
-        Settings.PrintMargin.right <= -1 || Settings.PrintMargin.bottom <= -1)
-    {
+            Settings.PrintMargin.right <= -1 || Settings.PrintMargin.bottom <= -1) {
         WCHAR localeInfo[3];
         GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
         LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L;  // Metric system. L'1' is US System

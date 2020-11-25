@@ -18,8 +18,7 @@
 *                                                                 *
 ******************************************************************/
 
-struct FontFaceInfo
-{
+struct FontFaceInfo {
     WCHAR               fontFaceName[100];
     DWRITE_FONT_WEIGHT  fontWeight;
     DWRITE_FONT_STYLE   fontStyle;

@@ -27,8 +27,7 @@
 
 //==== Data Type for WM_COPYDATA ==============================================
 #define DATA_NOTEPAD3_PARAMS 0xFB10
-typedef struct np3params
-{
+typedef struct np3params {
     int                 flagFileSpecified;
     FILE_WATCHING_MODE  flagChangeNotify;
     int                 flagLexerSpecified;
@@ -47,8 +46,7 @@ np3params, *LPnp3params;
 
 
 #pragma pack(push, 1)
-typedef struct _undoSel
-{
+typedef struct _undoSel {
     int selMode_undo;
     UT_array* anchorPos_undo;
     UT_array* curPos_undo;
@@ -69,11 +67,10 @@ UndoRedoSelection_t;
 
 #define NP3_SEL_MULTI  (SC_SEL_RECTANGLE + SC_SEL_LINES + SC_SEL_THIN)
 
-typedef enum
-{
+typedef enum {
     UNDO = true,
     REDO = false
-    
+
 } DoAction;
 
 

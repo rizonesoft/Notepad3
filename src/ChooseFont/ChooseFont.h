@@ -64,8 +64,7 @@ extern IDWriteFactory* g_dwrite;
 template <typename InterfaceType>
 inline void SafeRelease(InterfaceType** currentObject)
 {
-    if (*currentObject != nullptr)
-    {
+    if (*currentObject != nullptr) {
         (*currentObject)->Release();
         *currentObject = nullptr;
     }
@@ -76,8 +75,9 @@ inline void SafeRelease(InterfaceType** currentObject)
 template <typename InterfaceType>
 inline InterfaceType* SafeAcquire(InterfaceType* newObject)
 {
-    if (newObject != nullptr)
+    if (newObject != nullptr) {
         newObject->AddRef();
+    }
 
     return newObject;
 }
@@ -115,16 +115,11 @@ inline void SafeAttach(InterfaceType** currentObject, InterfaceType* newObject)
 // Maps exceptions to equivalent HRESULTs,
 inline HRESULT ExceptionToHResult() noexcept
 {
-    try
-    {
+    try {
         throw;  // Rethrow previous exception.
-    }
-    catch(std::bad_alloc&)
-    {
+    } catch(std::bad_alloc&) {
         return E_OUTOFMEMORY;
-    }
-    catch (...)
-    {
+    } catch (...) {
         return E_FAIL;
     }
 }

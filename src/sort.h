@@ -74,45 +74,38 @@ static int clzll(uint64_t x)
 {
     int n;
 
-    if (x == 0)
-    {
+    if (x == 0) {
         return 64;
     }
 
     n = 0;
 
-    if (x <= 0x00000000FFFFFFFFL)
-    {
+    if (x <= 0x00000000FFFFFFFFL) {
         n = n + 32;
         x = x << 32;
     }
 
-    if (x <= 0x0000FFFFFFFFFFFFL)
-    {
+    if (x <= 0x0000FFFFFFFFFFFFL) {
         n = n + 16;
         x = x << 16;
     }
 
-    if (x <= 0x00FFFFFFFFFFFFFFL)
-    {
+    if (x <= 0x00FFFFFFFFFFFFFFL) {
         n = n + 8;
         x = x << 8;
     }
 
-    if (x <= 0x0FFFFFFFFFFFFFFFL)
-    {
+    if (x <= 0x0FFFFFFFFFFFFFFFL) {
         n = n + 4;
         x = x << 4;
     }
 
-    if (x <= 0x3FFFFFFFFFFFFFFFL)
-    {
+    if (x <= 0x3FFFFFFFFFFFFFFFL) {
         n = n + 2;
         x = x << 2;
     }
 
-    if (x <= 0x7FFFFFFFFFFFFFFFL)
-    {
+    if (x <= 0x7FFFFFFFFFFFFFFFL) {
         n = n + 1;
     }
 
@@ -130,8 +123,7 @@ static __inline int compute_minrun(const uint64_t size)
     const int minrun = (int)(size >> shift);
     const uint64_t mask = (1ULL << shift) - 1;
 
-    if (mask & size)
-    {
+    if (mask & size) {
         return minrun + 1;
     }
 
@@ -142,8 +134,7 @@ static __inline size_t rbnd(size_t len)
 {
     int k;
 
-    if (len < 16)
-    {
+    if (len < 16) {
         return 2;
     }
 
@@ -250,8 +241,7 @@ static __inline size_t rbnd(size_t len)
 #define SORT_CSWAP(x, y) { if(SORT_CMP((x),(y)) > 0) {SORT_SWAP((x),(y));}}
 #endif
 
-typedef struct
-{
+typedef struct {
     size_t start;
     size_t length;
 } TIM_SORT_RUN_T;
@@ -775,8 +765,7 @@ static __inline void BITONIC_SORT_16(SORT_TYPE *dst)
 
 void BITONIC_SORT(SORT_TYPE *dst, const size_t size)
 {
-    switch (size)
-    {
+    switch (size) {
     case 0:
     case 1:
         break;
@@ -852,8 +841,7 @@ void SORT_TYPE_CPY(SORT_TYPE *dst, SORT_TYPE *src, const size_t size)
 {
     size_t i = 0;
 
-    for (; i < size; ++i)
-    {
+    for (; i < size; ++i) {
         dst[i] = src[i];
     }
 }
@@ -862,14 +850,10 @@ void SORT_TYPE_MOVE(SORT_TYPE *dst, SORT_TYPE *src, const size_t size)
 {
     size_t i;
 
-    if (dst < src)
-    {
+    if (dst < src) {
         SORT_TYPE_CPY(dst, src, size);
-    }
-    else if (dst != src && size > 0)
-    {
-        for (i = size - 1; i > 0; --i)
-        {
+    } else if (dst != src && size > 0) {
+        for (i = size - 1; i > 0; --i) {
             dst[i] = src[i];
         }
 
@@ -916,25 +900,20 @@ void SHELL_SORT(SORT_TYPE *dst, const size_t size)
     size_t inc = shell_gaps[inci];
     size_t i;
 
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
-    while (inc > (size >> 1))
-    {
+    while (inc > (size >> 1)) {
         inc = shell_gaps[--inci];
     }
 
-    while (1)
-    {
-        for (i = inc; i < size; i++)
-        {
+    while (1) {
+        for (i = inc; i < size; i++) {
             SORT_TYPE temp = dst[i];
             size_t j = i;
 
-            while ((j >= inc) && (SORT_CMP(dst[j - inc], temp) > 0))
-            {
+            while ((j >= inc) && (SORT_CMP(dst[j - inc], temp) > 0)) {
                 dst[j] = dst[j - inc];
                 j -= inc;
             }
@@ -942,8 +921,7 @@ void SHELL_SORT(SORT_TYPE *dst, const size_t size)
             dst[j] = temp;
         }
 
-        if (inc == 1)
-        {
+        if (inc == 1) {
             break;
         }
 
@@ -962,34 +940,25 @@ static __inline size_t BINARY_INSERTION_FIND(SORT_TYPE *dst, const SORT_TYPE x,
     c = r >> 1;
 
     /* check for out of bounds at the beginning. */
-    if (SORT_CMP(x, dst[0]) < 0)
-    {
+    if (SORT_CMP(x, dst[0]) < 0) {
         return 0;
-    }
-    else if (SORT_CMP(x, dst[r]) > 0)
-    {
+    } else if (SORT_CMP(x, dst[r]) > 0) {
         return r;
     }
 
     cx = dst[c];
 
-    while (1)
-    {
+    while (1) {
         const int val = SORT_CMP(x, cx);
 
-        if (val < 0)
-        {
-            if (c - l <= 1)
-            {
+        if (val < 0) {
+            if (c - l <= 1) {
                 return c;
             }
 
             r = c;
-        }
-        else     /* allow = for stability. The binary search favors the right. */
-        {
-            if (r - c <= 1)
-            {
+        } else { /* allow = for stability. The binary search favors the right. */
+            if (r - c <= 1) {
                 return c + 1;
             }
 
@@ -1006,15 +975,13 @@ static void BINARY_INSERTION_SORT_START(SORT_TYPE *dst, const size_t start, cons
 {
     size_t i;
 
-    for (i = start; i < size; i++)
-    {
+    for (i = start; i < size; i++) {
         size_t j;
         SORT_TYPE x;
         size_t location;
 
         /* If this entry is already correct, just move along */
-        if (SORT_CMP(dst[i - 1], dst[i]) <= 0)
-        {
+        if (SORT_CMP(dst[i - 1], dst[i]) <= 0) {
             continue;
         }
 
@@ -1022,12 +989,10 @@ static void BINARY_INSERTION_SORT_START(SORT_TYPE *dst, const size_t start, cons
         x = dst[i];
         location = BINARY_INSERTION_FIND(dst, x, i);
 
-        for (j = i - 1; j >= location; j--)
-        {
+        for (j = i - 1; j >= location; j--) {
             dst[j + 1] = dst[j];
 
-            if (j == 0)   /* check edge case because j is unsigned */
-            {
+            if (j == 0) { /* check edge case because j is unsigned */
                 break;
             }
         }
@@ -1040,8 +1005,7 @@ static void BINARY_INSERTION_SORT_START(SORT_TYPE *dst, const size_t start, cons
 void BINARY_INSERTION_SORT(SORT_TYPE *dst, const size_t size)
 {
     /* don't bother sorting an array of size <= 1 */
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
@@ -1054,17 +1018,13 @@ void SELECTION_SORT(SORT_TYPE *dst, const size_t size)
     size_t i, j;
 
     /* don't bother sorting an array of size <= 1 */
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
-    for (i = 0; i < size; i++)
-    {
-        for (j = i + 1; j < size; j++)
-        {
-            if (SORT_CMP(dst[j], dst[i]) < 0)
-            {
+    for (i = 0; i < size; i++) {
+        for (j = i + 1; j < size; j++) {
+            if (SORT_CMP(dst[j], dst[i]) < 0) {
                 SORT_SWAP(dst[i], dst[j]);
             }
         }
@@ -1074,35 +1034,29 @@ void SELECTION_SORT(SORT_TYPE *dst, const size_t size)
 /* In-place mergesort */
 void MERGE_SORT_IN_PLACE_ASWAP(SORT_TYPE * dst1, SORT_TYPE * dst2, size_t len)
 {
-    do
-    {
+    do {
         SORT_SWAP(*dst1, *dst2);
         dst1++;
         dst2++;
-    }
-    while (--len);
+    } while (--len);
 }
 
 void MERGE_SORT_IN_PLACE_FRONTMERGE(SORT_TYPE *dst1, size_t l1, SORT_TYPE *dst2, size_t l2)
 {
     SORT_TYPE *dst0 = dst2 - l1;
 
-    if (SORT_CMP(dst1[l1 - 1], dst2[0]) <= 0)
-    {
+    if (SORT_CMP(dst1[l1 - 1], dst2[0]) <= 0) {
         MERGE_SORT_IN_PLACE_ASWAP(dst1, dst0, l1);
         return;
     }
 
-    do
-    {
-        while (SORT_CMP(*dst2, *dst1) > 0)
-        {
+    do {
+        while (SORT_CMP(*dst2, *dst1) > 0) {
             SORT_SWAP(*dst1, *dst0);
             dst1++;
             dst0++;
 
-            if (--l1 == 0)
-            {
+            if (--l1 == 0) {
                 return;
             }
         }
@@ -1110,16 +1064,13 @@ void MERGE_SORT_IN_PLACE_FRONTMERGE(SORT_TYPE *dst1, size_t l1, SORT_TYPE *dst2,
         SORT_SWAP(*dst2, *dst0);
         dst2++;
         dst0++;
-    }
-    while (--l2);
+    } while (--l2);
 
-    do
-    {
+    do {
         SORT_SWAP(*dst1, *dst0);
         dst1++;
         dst0++;
-    }
-    while (--l1);
+    } while (--l1);
 }
 
 size_t MERGE_SORT_IN_PLACE_BACKMERGE(SORT_TYPE * dst1, size_t l1, SORT_TYPE * dst2, size_t l2)
@@ -1127,22 +1078,18 @@ size_t MERGE_SORT_IN_PLACE_BACKMERGE(SORT_TYPE * dst1, size_t l1, SORT_TYPE * ds
     size_t res;
     SORT_TYPE *dst0 = dst2 + l1;
 
-    if (SORT_CMP(dst1[1 - l1], dst2[0]) >= 0)
-    {
+    if (SORT_CMP(dst1[1 - l1], dst2[0]) >= 0) {
         MERGE_SORT_IN_PLACE_ASWAP(dst1 - l1 + 1, dst0 - l1 + 1, l1);
         return l1;
     }
 
-    do
-    {
-        while (SORT_CMP(*dst2, *dst1) < 0)
-        {
+    do {
+        while (SORT_CMP(*dst2, *dst1) < 0) {
             SORT_SWAP(*dst1, *dst0);
             dst1--;
             dst0--;
 
-            if (--l1 == 0)
-            {
+            if (--l1 == 0) {
                 return 0;
             }
         }
@@ -1150,18 +1097,15 @@ size_t MERGE_SORT_IN_PLACE_BACKMERGE(SORT_TYPE * dst1, size_t l1, SORT_TYPE * ds
         SORT_SWAP(*dst2, *dst0);
         dst2--;
         dst0--;
-    }
-    while (--l2);
+    } while (--l2);
 
     res = l1;
 
-    do
-    {
+    do {
         SORT_SWAP(*dst1, *dst0);
         dst1--;
         dst0--;
-    }
-    while (--l1);
+    } while (--l1);
 
     return res;
 }
@@ -1172,52 +1116,43 @@ void MERGE_SORT_IN_PLACE_RMERGE(SORT_TYPE *dst, size_t len, size_t lp, size_t r)
     size_t i, lq;
     int cv;
 
-    if (SORT_CMP(dst[lp], dst[lp - 1]) >= 0)
-    {
+    if (SORT_CMP(dst[lp], dst[lp - 1]) >= 0) {
         return;
     }
 
     lq = lp;
 
-    for (i = 0; i < len; i += r)
-    {
+    for (i = 0; i < len; i += r) {
         /* select smallest dst[p0+n*r] */
         size_t q = i, j;
 
-        for (j = lp; j <= lq; j += r)
-        {
+        for (j = lp; j <= lq; j += r) {
             cv = SORT_CMP(dst[j], dst[q]);
 
-            if (cv == 0)
-            {
+            if (cv == 0) {
                 cv = SORT_CMP(dst[j + r - 1], dst[q + r - 1]);
             }
 
-            if (cv < 0)
-            {
+            if (cv < 0) {
                 q = j;
             }
         }
 
-        if (q != i)
-        {
+        if (q != i) {
             MERGE_SORT_IN_PLACE_ASWAP(dst + i, dst + q, r); /* swap it with current position */
 
-            if (q == lq && q < (len - r))
-            {
+            if (q == lq && q < (len - r)) {
                 lq += r;
             }
         }
 
-        if (i != 0 && SORT_CMP(dst[i], dst[i - 1]) < 0)
-        {
+        if (i != 0 && SORT_CMP(dst[i], dst[i - 1]) < 0) {
             MERGE_SORT_IN_PLACE_ASWAP(dst + len, dst + i, r); /* swap current position with buffer */
             MERGE_SORT_IN_PLACE_BACKMERGE(dst + (len + r - 1), r, dst + (i - 1),
                                           r);  /* buffer :merge: dst[i-r..i) -> dst[i-r..i+r) */
         }
 
-        if (lp == i)
-        {
+        if (lp == i) {
             lp += r;
         }
     }
@@ -1232,60 +1167,49 @@ void MERGE_SORT_IN_PLACE(SORT_TYPE *dst, const size_t len)
     SORT_TYPE *dst1 = dst - 1;
     size_t p, m, q, q1, p0;
 
-    if (len <= 1)
-    {
+    if (len <= 1) {
         return;
     }
 
-    if (len <= SMALL_SORT_BND)
-    {
+    if (len <= SMALL_SORT_BND) {
         SMALL_SORT(dst, len);
         return;
     }
 
-    for (p = 2; p <= lr; p += 2)
-    {
+    for (p = 2; p <= lr; p += 2) {
         dst1 += 2;
 
-        if (SORT_CMP(dst1[0], dst1[-1]) < 0)
-        {
+        if (SORT_CMP(dst1[0], dst1[-1]) < 0) {
             SORT_SWAP(dst1[0], dst1[-1]);
         }
 
-        if (p & 2)
-        {
+        if (p & 2) {
             continue;
         }
 
         m = len - p;
         q = 2;
 
-        while ((p & q) == 0)
-        {
-            if (SORT_CMP(dst1[1 - q], dst1[-(int) q]) < 0)
-            {
+        while ((p & q) == 0) {
+            if (SORT_CMP(dst1[1 - q], dst1[-(int) q]) < 0) {
                 break;
             }
 
             q *= 2;
         }
 
-        if (p & q)
-        {
+        if (p & q) {
             continue;
         }
 
-        if (q < m)
-        {
+        if (q < m) {
             p0 = len - q;
             MERGE_SORT_IN_PLACE_ASWAP(dst + p - q, dst + p0, q);
 
-            for (;;)
-            {
+            for (;;) {
                 q1 = 2 * q;
 
-                if ((q1 > m) || (p & q1))
-                {
+                if ((q1 > m) || (p & q1)) {
                     break;
                 }
 
@@ -1300,13 +1224,11 @@ void MERGE_SORT_IN_PLACE(SORT_TYPE *dst, const size_t len)
 
         q1 = q;
 
-        while (q1 > m)
-        {
+        while (q1 > m) {
             q1 /= 2;
         }
 
-        while ((q & p) == 0)
-        {
+        while ((q & p) == 0) {
             q *= 2;
             MERGE_SORT_IN_PLACE_RMERGE(dst + (p - q), q, q / 2, q1);
         }
@@ -1314,14 +1236,11 @@ void MERGE_SORT_IN_PLACE(SORT_TYPE *dst, const size_t len)
 
     q1 = 0;
 
-    for (q = r; q < lr; q *= 2)
-    {
-        if ((lr & q) != 0)
-        {
+    for (q = r; q < lr; q *= 2) {
+        if ((lr & q) != 0) {
             q1 += q;
 
-            if (q1 != q)
-            {
+            if (q1 != q) {
                 MERGE_SORT_IN_PLACE_RMERGE(dst + (lr - q1), q1, q, r);
             }
         }
@@ -1343,13 +1262,11 @@ void MERGE_SORT_RECURSIVE(SORT_TYPE *newdst, SORT_TYPE *dst, const size_t size)
     size_t j = middle;
 
     /* don't bother sorting an array of size <= 1 */
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
-    if (size <= SMALL_SORT_BND)
-    {
+    if (size <= SMALL_SORT_BND) {
         BINARY_INSERTION_SORT(dst, size);
         return;
     }
@@ -1357,28 +1274,18 @@ void MERGE_SORT_RECURSIVE(SORT_TYPE *newdst, SORT_TYPE *dst, const size_t size)
     MERGE_SORT_RECURSIVE(newdst, dst, middle);
     MERGE_SORT_RECURSIVE(newdst, &dst[middle], size - middle);
 
-    while (out != size)
-    {
-        if (i < middle)
-        {
-            if (j < size)
-            {
-                if (SORT_CMP(dst[i], dst[j]) <= 0)
-                {
+    while (out != size) {
+        if (i < middle) {
+            if (j < size) {
+                if (SORT_CMP(dst[i], dst[j]) <= 0) {
                     newdst[out] = dst[i++];
-                }
-                else
-                {
+                } else {
                     newdst[out] = dst[j++];
                 }
-            }
-            else
-            {
+            } else {
                 newdst[out] = dst[i++];
             }
-        }
-        else
-        {
+        } else {
             newdst[out] = dst[j++];
         }
 
@@ -1394,13 +1301,11 @@ void MERGE_SORT(SORT_TYPE *dst, const size_t size)
     SORT_TYPE *newdst;
 
     /* don't bother sorting an array of size <= 1 */
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
-    if (size <= SMALL_SORT_BND)
-    {
+    if (size <= SMALL_SORT_BND) {
         BINARY_INSERTION_SORT(dst, size);
         return;
     }
@@ -1421,14 +1326,12 @@ static __inline size_t QUICK_SORT_PARTITION(SORT_TYPE *dst, const size_t left,
     /* move the pivot to the right */
     SORT_SWAP(dst[pivot], dst[right]);
 
-    for (i = left; i < right; i++)
-    {
+    for (i = left; i < right; i++) {
         int cmp = SORT_CMP(dst[i], value);
         /* check if everything is all the same */
         not_all_same |= cmp;
 
-        if (cmp < 0)
-        {
+        if (cmp < 0) {
             SORT_SWAP(dst[i], dst[index]);
             index++;
         }
@@ -1437,8 +1340,7 @@ static __inline size_t QUICK_SORT_PARTITION(SORT_TYPE *dst, const size_t left,
     SORT_SWAP(dst[right], dst[index]);
 
     /* avoid degenerate case */
-    if (not_all_same == 0)
-    {
+    if (not_all_same == 0) {
         return SIZE_MAX;
     }
 
@@ -1483,55 +1385,40 @@ static __inline size_t MEDIAN(const SORT_TYPE *dst, const size_t a, const size_t
 {
     const int AB = SORT_CMP(dst[a], dst[b]) < 0;
 
-    if (AB)
-    {
+    if (AB) {
         /* a < b */
         const int BC = SORT_CMP(dst[b], dst[c]) < 0;
 
-        if (BC)
-        {
+        if (BC) {
             /* a < b < c */
             return b;
-        }
-        else
-        {
+        } else {
             /* a < b, c < b */
             const int AC = SORT_CMP(dst[a], dst[c]) < 0;
 
-            if (AC)
-            {
+            if (AC) {
                 /* a < c < b */
                 return c;
-            }
-            else
-            {
+            } else {
                 /* c < a < b */
                 return a;
             }
         }
-    }
-    else
-    {
+    } else {
         /* b < a */
         const int AC = SORT_CMP(dst[a], dst[b]) < 0;
 
-        if (AC)
-        {
+        if (AC) {
             /* b < a < c */
             return a;
-        }
-        else
-        {
+        } else {
             /* b < a, c < a */
             const int BC = SORT_CMP(dst[b], dst[c]) < 0;
 
-            if (BC)
-            {
+            if (BC) {
                 /* b < c < a */
                 return c;
-            }
-            else
-            {
+            } else {
                 /* c < b < a */
                 return b;
             }
@@ -1552,21 +1439,17 @@ static void QUICK_SORT_RECURSIVE(SORT_TYPE *dst, const size_t original_left,
     left = original_left;
     right = original_right;
 
-    while (1)
-    {
-        if (right <= left)
-        {
+    while (1) {
+        if (right <= left) {
             return;
         }
 
-        if ((right - left + 1U) <= SMALL_SORT_BND)
-        {
+        if ((right - left + 1U) <= SMALL_SORT_BND) {
             SMALL_SORT(&dst[left], right - left + 1U);
             return;
         }
 
-        if (++loop_count >= max_loops)
-        {
+        if (++loop_count >= max_loops) {
             /* we have recursed / looped too many times; switch to heap sort */
             HEAP_SORT(&dst[left], right - left + 1U);
             return;
@@ -1580,22 +1463,18 @@ static void QUICK_SORT_RECURSIVE(SORT_TYPE *dst, const size_t original_left,
         new_pivot = QUICK_SORT_PARTITION(dst, left, right, pivot);
 
         /* check for partition all equal */
-        if (new_pivot == SIZE_MAX)
-        {
+        if (new_pivot == SIZE_MAX) {
             return;
         }
 
         /* recurse only on the small part to avoid degenerate stack sizes */
         /* and manually do tail call on the large part */
-        if (new_pivot - 1U - left > right - new_pivot - 1U)
-        {
+        if (new_pivot - 1U - left > right - new_pivot - 1U) {
             /* left is bigger than right */
             QUICK_SORT_RECURSIVE(dst, new_pivot + 1U, right);
             /* tail call for left */
             right = new_pivot - 1U;
-        }
-        else
-        {
+        } else {
             /* right is bigger than left */
             QUICK_SORT_RECURSIVE(dst, left, new_pivot - 1U);
             /* tail call for right */
@@ -1607,8 +1486,7 @@ static void QUICK_SORT_RECURSIVE(SORT_TYPE *dst, const size_t original_left,
 void QUICK_SORT(SORT_TYPE *dst, const size_t size)
 {
     /* don't bother sorting an array of size 1 */
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
@@ -1620,10 +1498,8 @@ void QUICK_SORT(SORT_TYPE *dst, const size_t size)
 
 static __inline void REVERSE_ELEMENTS(SORT_TYPE *dst, size_t start, size_t end)
 {
-    while (1)
-    {
-        if (start >= end)
-        {
+    while (1) {
+        if (start >= end) {
             return;
         }
 
@@ -1637,15 +1513,12 @@ static size_t COUNT_RUN(SORT_TYPE *dst, const size_t start, const size_t size)
 {
     size_t curr;
 
-    if (size - start == 1)
-    {
+    if (size - start == 1) {
         return 1;
     }
 
-    if (start >= size - 2)
-    {
-        if (SORT_CMP(dst[size - 2], dst[size - 1]) > 0)
-        {
+    if (start >= size - 2) {
+        if (SORT_CMP(dst[size - 2], dst[size - 1]) > 0) {
             SORT_SWAP(dst[size - 2], dst[size - 1]);
         }
 
@@ -1654,18 +1527,14 @@ static size_t COUNT_RUN(SORT_TYPE *dst, const size_t start, const size_t size)
 
     curr = start + 2;
 
-    if (SORT_CMP(dst[start], dst[start + 1]) <= 0)
-    {
+    if (SORT_CMP(dst[start], dst[start + 1]) <= 0) {
         /* increasing run */
-        while (1)
-        {
-            if (curr == size - 1)
-            {
+        while (1) {
+            if (curr == size - 1) {
                 break;
             }
 
-            if (SORT_CMP(dst[curr - 1], dst[curr]) > 0)
-            {
+            if (SORT_CMP(dst[curr - 1], dst[curr]) > 0) {
                 break;
             }
 
@@ -1673,19 +1542,14 @@ static size_t COUNT_RUN(SORT_TYPE *dst, const size_t start, const size_t size)
         }
 
         return curr - start;
-    }
-    else
-    {
+    } else {
         /* decreasing run */
-        while (1)
-        {
-            if (curr == size - 1)
-            {
+        while (1) {
+            if (curr == size - 1) {
                 break;
             }
 
-            if (SORT_CMP(dst[curr - 1], dst[curr]) <= 0)
-            {
+            if (SORT_CMP(dst[curr - 1], dst[curr]) <= 0) {
                 break;
             }
 
@@ -1702,18 +1566,15 @@ static int CHECK_INVARIANT(TIM_SORT_RUN_T *stack, const int stack_curr)
 {
     size_t A, B, C;
 
-    if (stack_curr < 2)
-    {
+    if (stack_curr < 2) {
         return 1;
     }
 
-    if (stack_curr == 2)
-    {
+    if (stack_curr == 2) {
         const size_t A1 = stack[stack_curr - 2].length;
         const size_t B1 = stack[stack_curr - 1].length;
 
-        if (A1 <= B1)
-        {
+        if (A1 <= B1) {
             return 0;
         }
 
@@ -1724,28 +1585,24 @@ static int CHECK_INVARIANT(TIM_SORT_RUN_T *stack, const int stack_curr)
     B = stack[stack_curr - 2].length;
     C = stack[stack_curr - 1].length;
 
-    if ((A <= B + C) || (B <= C))
-    {
+    if ((A <= B + C) || (B <= C)) {
         return 0;
     }
 
     return 1;
 }
 
-typedef struct
-{
+typedef struct {
     size_t alloc;
     SORT_TYPE *storage;
 } TEMP_STORAGE_T;
 
 static void TIM_SORT_RESIZE(TEMP_STORAGE_T *store, const size_t new_size)
 {
-    if ((store->storage == NULL) || (store->alloc < new_size))
-    {
+    if ((store->storage == NULL) || (store->alloc < new_size)) {
         SORT_TYPE *tempstore = (SORT_TYPE *)realloc(store->storage, new_size * sizeof(SORT_TYPE));
 
-        if (tempstore == NULL)
-        {
+        if (tempstore == NULL) {
             fprintf(stderr, "Error allocating temporary storage for tim sort: need %lu bytes",
                     (unsigned long)(sizeof(SORT_TYPE) * new_size));
             exit(1);
@@ -1765,22 +1622,17 @@ static size_t TIM_SORT_GALLOP(SORT_TYPE *dst, const size_t size, const SORT_TYPE
     size_t  l, c, r;
     cmp = SORT_CMP(key, dst[anchor]);
 
-    if (cmp < 0 || (!right && cmp == 0))
-    {
+    if (cmp < 0 || (!right && cmp == 0)) {
         /* short cut */
-        if (anchor == 0)
-        {
+        if (anchor == 0) {
             return 0;
         }
 
         ofs = -1;
         ofs_sign = -1;
         max_ofs = -(int)anchor; /* ensure anchor+max_ofs is valid idx */
-    }
-    else
-    {
-        if (anchor == size - 1)
-        {
+    } else {
+        if (anchor == size - 1) {
             return size;
         }
 
@@ -1789,28 +1641,21 @@ static size_t TIM_SORT_GALLOP(SORT_TYPE *dst, const size_t size, const SORT_TYPE
         max_ofs = (int)(size - anchor - 1);
     }
 
-    for (;;)
-    {
+    for (;;) {
         /* deal with overflow */
-        if (max_ofs / ofs <= 1)
-        {
+        if (max_ofs / ofs <= 1) {
             ofs = max_ofs;
 
-            if (ofs < 0)
-            {
+            if (ofs < 0) {
                 cmp = SORT_CMP(key, dst[0]);
 
-                if ((right && cmp < 0) || (!right && cmp <= 0))
-                {
+                if ((right && cmp < 0) || (!right && cmp <= 0)) {
                     return 0;
                 }
-            }
-            else
-            {
+            } else {
                 cmp = SORT_CMP(dst[size - 1], key);
 
-                if ((right && cmp <= 0) || (!right && cmp < 0))
-                {
+                if ((right && cmp <= 0) || (!right && cmp < 0)) {
                     return size;
                 }
             }
@@ -1825,17 +1670,12 @@ static size_t TIM_SORT_GALLOP(SORT_TYPE *dst, const size_t size, const SORT_TYPE
         /* left,  ofs<0:  dst[anchor+ofs]      <   key  <= dst[anchor+last_ofs] */
         cmp = SORT_CMP(key, dst[c]);
 
-        if (0 < ofs)
-        {
-            if ((right && cmp < 0) || (!right && cmp <= 0))
-            {
+        if (0 < ofs) {
+            if ((right && cmp < 0) || (!right && cmp <= 0)) {
                 break;
             }
-        }
-        else
-        {
-            if ((right && 0 <= cmp) || (!right && 0 < cmp))
-            {
+        } else {
+            if ((right && 0 <= cmp) || (!right && 0 < cmp)) {
                 break;
             }
         }
@@ -1845,28 +1685,21 @@ static size_t TIM_SORT_GALLOP(SORT_TYPE *dst, const size_t size, const SORT_TYPE
     }
 
     /* key in region (l, r) , both l and r have already been compared */
-    if (ofs < 0)
-    {
+    if (ofs < 0) {
         l = anchor + ofs;
         r = anchor + last_ofs;
-    }
-    else
-    {
+    } else {
         l = anchor + last_ofs;
         r = anchor + ofs;
     }
 
-    while (1 < r - l)
-    {
+    while (1 < r - l) {
         c = l + ((r - l) >> 1);
         cmp = SORT_CMP(key, dst[c]);
 
-        if ((right && cmp < 0) || (!right && cmp <= 0))
-        {
+        if ((right && cmp < 0) || (!right && cmp <= 0)) {
             r = c;
-        }
-        else
-        {
+        } else {
             l = c;
         }
     }
@@ -1889,19 +1722,15 @@ static void TIM_SORT_MERGE_LEFT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_t
     /* first element must in B, otherwise skipped in the caller  */
     dst[pdst++] = B_src[pb++];
 
-    if (B == 1)
-    {
+    if (B == 1) {
         goto copyA;
     }
 
-    for (;;)
-    {
+    for (;;) {
         a_count = b_count = 0;
 
-        for (;;)
-        {
-            if (SORT_CMP(A_src[pa], B_src[pb]) <= 0)
-            {
+        for (;;) {
+            if (SORT_CMP(A_src[pa], B_src[pb]) <= 0) {
                 dst[pdst++] = A_src[pa++];
                 ++a_count;
                 b_count = 0;
@@ -1909,24 +1738,19 @@ static void TIM_SORT_MERGE_LEFT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_t
                 /* No need to check if pa == A because the last element must be in A
                  * so pb will reach to B first. You can check pa == A-1 and do
                  * some optimization if you wish.*/
-                if (min_gallop <= a_count)
-                {
+                if (min_gallop <= a_count) {
                     break;
                 }
-            }
-            else
-            {
+            } else {
                 dst[pdst++] = B_src[pb++];
                 ++b_count;
                 a_count = 0;
 
-                if (pb == B)
-                {
+                if (pb == B) {
                     goto copyA;
                 }
 
-                if (min_gallop <= b_count)
-                {
+                if (min_gallop <= b_count) {
                     break;
                 }
             }
@@ -1934,10 +1758,8 @@ static void TIM_SORT_MERGE_LEFT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_t
 
         ++min_gallop;
 
-        for (;;)
-        {
-            if (min_gallop != 0)
-            {
+        for (;;) {
+            if (min_gallop != 0) {
                 min_gallop --;
             }
 
@@ -1948,13 +1770,11 @@ static void TIM_SORT_MERGE_LEFT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_t
             /* now we know the next must be in B */
             dst[pdst++] = B_src[pb++];
 
-            if (pb == B)
-            {
+            if (pb == B) {
                 goto copyA;
             }
 
-            if (a_count && k < TIM_SORT_MIN_GALLOP)
-            {
+            if (a_count && k < TIM_SORT_MIN_GALLOP) {
                 ++min_gallop;
                 break;
             }
@@ -1964,15 +1784,13 @@ static void TIM_SORT_MERGE_LEFT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_t
             pdst += k;
             pb += k;
 
-            if (pb == B)
-            {
+            if (pb == B) {
                 goto copyA;
             }
 
             dst[pdst++] = A_src[pa++];
 
-            if (b_count && k < TIM_SORT_MIN_GALLOP)
-            {
+            if (b_count && k < TIM_SORT_MIN_GALLOP) {
                 ++min_gallop;
                 break;
             }
@@ -2001,45 +1819,36 @@ static void TIM_SORT_MERGE_RIGHT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_
     /* last element must in A, otherwise skipped in the caller  */
     dst[pdst--] = A_src[pa--];
 
-    if (A == 1)
-    {
+    if (A == 1) {
         goto copyB;
     }
 
-    for (;;)
-    {
+    for (;;) {
         a_count = b_count = 0;
 
-        for (;;)
-        {
-            if (SORT_CMP(A_src[pa], B_src[pb]) <= 0)
-            {
+        for (;;) {
+            if (SORT_CMP(A_src[pa], B_src[pb]) <= 0) {
                 dst[pdst--] = B_src[pb--];
                 ++b_count;
                 a_count = 0;
 
-                if (min_gallop <= b_count)
-                {
+                if (min_gallop <= b_count) {
                     break;
                 }
 
                 /* No need to check if pb == -1 because the first element must be in B
                  * so pa will reach to -1 first. You can check pb == 0 and do
                  * some optimization if you wish.*/
-            }
-            else
-            {
+            } else {
                 dst[pdst--] = A_src[pa--];
                 ++a_count;
                 b_count = 0;
 
-                if (pa == -1)
-                {
+                if (pa == -1) {
                     goto copyB;
                 }
 
-                if (min_gallop <= a_count)
-                {
+                if (min_gallop <= a_count) {
                     break;
                 }
             }
@@ -2047,10 +1856,8 @@ static void TIM_SORT_MERGE_RIGHT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_
 
         ++min_gallop;
 
-        for (;;)
-        {
-            if (min_gallop != 0)
-            {
+        for (;;) {
+            if (min_gallop != 0) {
                 min_gallop --;
             }
 
@@ -2060,16 +1867,14 @@ static void TIM_SORT_MERGE_RIGHT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_
             pdst = pb + (int)k;
             pa = (int)(k - 1);
 
-            if (pa == -1)
-            {
+            if (pa == -1) {
                 goto copyB;
             }
 
             /* now we know the next must be in B */
             dst[pdst--] = B_src[pb--];
 
-            if (a_count && pa + 1 - k < TIM_SORT_MIN_GALLOP)
-            {
+            if (a_count && pa + 1 - k < TIM_SORT_MIN_GALLOP) {
                 ++min_gallop;
                 break;
             }
@@ -2080,13 +1885,11 @@ static void TIM_SORT_MERGE_RIGHT(SORT_TYPE *A_src, SORT_TYPE *B_src, const size_
             pb = (int)(k - 1);
             dst[pdst--] = A_src[pa--];
 
-            if (pa == -1)
-            {
+            if (pa == -1) {
                 goto copyB;
             }
 
-            if (b_count && pb + 1 - k < TIM_SORT_MIN_GALLOP)
-            {
+            if (b_count && pb + 1 - k < TIM_SORT_MIN_GALLOP) {
                 ++min_gallop;
                 break;
             }
@@ -2114,8 +1917,7 @@ static void TIM_SORT_MERGE(SORT_TYPE *dst, const TIM_SORT_RUN_T *stack, const in
     A_start += k;
     A -= k;
 
-    if (A == 0)
-    {
+    if (A == 0) {
         *min_gallop_p /= 2;
         return;
     }
@@ -2126,12 +1928,9 @@ static void TIM_SORT_MERGE(SORT_TYPE *dst, const TIM_SORT_RUN_T *stack, const in
     TIM_SORT_RESIZE(store, MIN(A, B));
     storage = store->storage;
 
-    if (A < B)
-    {
+    if (A < B) {
         TIM_SORT_MERGE_LEFT(&dst[A_start], &dst[B_start], A, B, storage, min_gallop_p);
-    }
-    else
-    {
+    } else {
         TIM_SORT_MERGE_RIGHT(&dst[A_start], &dst[B_start], A, B, storage, min_gallop_p);
     }
 }
@@ -2139,35 +1938,29 @@ static void TIM_SORT_MERGE(SORT_TYPE *dst, const TIM_SORT_RUN_T *stack, const in
 static int TIM_SORT_COLLAPSE(SORT_TYPE *dst, TIM_SORT_RUN_T *stack, int stack_curr,
                              TEMP_STORAGE_T *store, const size_t size, int* min_gallop_p)
 {
-    while (1)
-    {
+    while (1) {
         size_t A, B, C, D;
         int ABC, BCD, CD;
 
         /* if the stack only has one thing on it, we are done with the collapse */
-        if (stack_curr <= 1)
-        {
+        if (stack_curr <= 1) {
             break;
         }
 
         /* if this is the last merge, just do it */
-        if ((stack_curr == 2) && (stack[0].length + stack[1].length == size))
-        {
+        if ((stack_curr == 2) && (stack[0].length + stack[1].length == size)) {
             TIM_SORT_MERGE(dst, stack, stack_curr, store, min_gallop_p);
             stack[0].length += stack[1].length;
             stack_curr--;
             break;
         }
         /* check if the invariant is off for a stack of 2 elements */
-        else if ((stack_curr == 2) && (stack[0].length <= stack[1].length))
-        {
+        else if ((stack_curr == 2) && (stack[0].length <= stack[1].length)) {
             TIM_SORT_MERGE(dst, stack, stack_curr, store, min_gallop_p);
             stack[0].length += stack[1].length;
             stack_curr--;
             break;
-        }
-        else if (stack_curr == 2)
-        {
+        } else if (stack_curr == 2) {
             break;
         }
 
@@ -2175,13 +1968,10 @@ static int TIM_SORT_COLLAPSE(SORT_TYPE *dst, TIM_SORT_RUN_T *stack, int stack_cu
         C = stack[stack_curr - 2].length;
         D = stack[stack_curr - 1].length;
 
-        if (stack_curr >= 4)
-        {
+        if (stack_curr >= 4) {
             A = stack[stack_curr - 4].length;
             ABC = (A <= B + C);
-        }
-        else
-        {
+        } else {
             ABC = 0;
         }
 
@@ -2189,21 +1979,17 @@ static int TIM_SORT_COLLAPSE(SORT_TYPE *dst, TIM_SORT_RUN_T *stack, int stack_cu
         CD = (C <= D);
 
         /* Both invariants are good */
-        if (!BCD && !CD)
-        {
+        if (!BCD && !CD) {
             break;
         }
 
         /* left merge */
-        if (BCD && !CD)
-        {
+        if (BCD && !CD) {
             TIM_SORT_MERGE(dst, stack, stack_curr - 1, store, min_gallop_p);
             stack[stack_curr - 3].length += stack[stack_curr - 2].length;
             stack[stack_curr - 2] = stack[stack_curr - 1];
             stack_curr--;
-        }
-        else
-        {
+        } else {
             /* right merge */
             TIM_SORT_MERGE(dst, stack, stack_curr, store, min_gallop_p);
             stack[stack_curr - 2].length += stack[stack_curr - 1].length;
@@ -2226,13 +2012,11 @@ static __inline int PUSH_NEXT(SORT_TYPE *dst,
     size_t len = COUNT_RUN(dst, *curr, size);
     size_t run = minrun;
 
-    if (run > size - *curr)
-    {
+    if (run > size - *curr) {
         run = size - *curr;
     }
 
-    if (run > len)
-    {
+    if (run > len) {
         BINARY_INSERTION_SORT_START(&dst[*curr], len, run);
         len = run;
     }
@@ -2242,18 +2026,15 @@ static __inline int PUSH_NEXT(SORT_TYPE *dst,
     (*stack_curr)++;
     *curr += len;
 
-    if (*curr == size)
-    {
+    if (*curr == size) {
         /* finish up */
-        while (*stack_curr > 1)
-        {
+        while (*stack_curr > 1) {
             TIM_SORT_MERGE(dst, run_stack, (int)*stack_curr, store, min_gallop_p);
             run_stack[*stack_curr - 2].length += run_stack[*stack_curr - 1].length;
             (*stack_curr)--;
         }
 
-        if (store->storage != NULL)
-        {
+        if (store->storage != NULL) {
             free(store->storage);
             store->storage = NULL;
         }
@@ -2274,13 +2055,11 @@ void TIM_SORT(SORT_TYPE *dst, const size_t size)
     int min_gallop = TIM_SORT_MIN_GALLOP;
 
     /* don't bother sorting an array of size 1 */
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
-    if (size < 64)
-    {
+    if (size < 64) {
         SMALL_SORT(dst, size);
         return;
     }
@@ -2292,31 +2071,25 @@ void TIM_SORT(SORT_TYPE *dst, const size_t size)
     store->alloc = 0;
     store->storage = NULL;
 
-    if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop))
-    {
+    if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop)) {
         return;
     }
 
-    if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop))
-    {
+    if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop)) {
         return;
     }
 
-    if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop))
-    {
+    if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop)) {
         return;
     }
 
-    while (1)
-    {
-        if (!CHECK_INVARIANT(run_stack, (int)stack_curr))
-        {
+    while (1) {
+        if (!CHECK_INVARIANT(run_stack, (int)stack_curr)) {
             stack_curr = TIM_SORT_COLLAPSE(dst, run_stack, (int)stack_curr, store, size, &min_gallop);
             continue;
         }
 
-        if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop))
-        {
+        if (!PUSH_NEXT(dst, size, store, minrun, run_stack, &stack_curr, &curr, &min_gallop)) {
             return;
         }
     }
@@ -2328,22 +2101,17 @@ static __inline void HEAP_SIFT_DOWN(SORT_TYPE *dst, const size_t start, const si
 {
     size_t root = start;
 
-    while ((root << 1) <= end)
-    {
+    while ((root << 1) <= end) {
         size_t child = root << 1;
 
-        if ((child < end) && (SORT_CMP(dst[child], dst[child + 1]) < 0))
-        {
+        if ((child < end) && (SORT_CMP(dst[child], dst[child + 1]) < 0)) {
             child++;
         }
 
-        if (SORT_CMP(dst[root], dst[child]) < 0)
-        {
+        if (SORT_CMP(dst[root], dst[child]) < 0) {
             SORT_SWAP(dst[root], dst[child]);
             root = child;
-        }
-        else
-        {
+        } else {
             return;
         }
     }
@@ -2353,12 +2121,10 @@ static __inline void HEAPIFY(SORT_TYPE *dst, const size_t size)
 {
     size_t start = size >> 1;
 
-    while (1)
-    {
+    while (1) {
         HEAP_SIFT_DOWN(dst, start, size - 1);
 
-        if (start == 0)
-        {
+        if (start == 0) {
             break;
         }
 
@@ -2371,15 +2137,13 @@ void HEAP_SORT(SORT_TYPE *dst, const size_t size)
     size_t end = size - 1;
 
     /* don't bother sorting an array of size <= 1 */
-    if (size <= 1)
-    {
+    if (size <= 1) {
         return;
     }
 
     HEAPIFY(dst, size);
 
-    while (end > 0)
-    {
+    while (end > 0) {
         SORT_SWAP(dst[end], dst[0]);
         HEAP_SIFT_DOWN(dst, 0, end - 1);
         end--;
@@ -2410,8 +2174,7 @@ static __inline void SQRT_SORT_SWAP_1(SORT_TYPE *a, SORT_TYPE *b)
 
 static __inline void SQRT_SORT_SWAP_N(SORT_TYPE *a, SORT_TYPE *b, int n)
 {
-    while (n--)
-    {
+    while (n--) {
         SQRT_SORT_SWAP_1(a++, b++);
     }
 }
@@ -2421,20 +2184,15 @@ static void SQRT_SORT_MERGE_RIGHT(SORT_TYPE *arr, int L1, int L2, int M)
 {
     int p0 = L1 + L2 + M - 1, p2 = L1 + L2 - 1, p1 = L1 - 1;
 
-    while (p1 >= 0)
-    {
-        if (p2 < L1 || SORT_CMP_A(arr + p1, arr + p2) > 0)
-        {
+    while (p1 >= 0) {
+        if (p2 < L1 || SORT_CMP_A(arr + p1, arr + p2) > 0) {
             arr[p0--] = arr[p1--];
-        }
-        else
-        {
+        } else {
             arr[p0--] = arr[p2--];
         }
     }
 
-    if (p2 != p0) while (p2 >= L1)
-        {
+    if (p2 != p0) while (p2 >= L1) {
             arr[p0--] = arr[p2--];
         }
 }
@@ -2445,20 +2203,15 @@ static void SQRT_SORT_MERGE_LEFT_WITH_X_BUF(SORT_TYPE *arr, int L1, int L2, int 
     int p0 = 0, p1 = L1;
     L2 += L1;
 
-    while (p1 < L2)
-    {
-        if (p0 == L1 || SORT_CMP_A(arr + p0, arr + p1) > 0)
-        {
+    while (p1 < L2) {
+        if (p0 == L1 || SORT_CMP_A(arr + p0, arr + p1) > 0) {
             arr[M++] = arr[p1++];
-        }
-        else
-        {
+        } else {
             arr[M++] = arr[p0++];
         }
     }
 
-    if (M != p0) while (p0 < L1)
-        {
+    if (M != p0) while (p0 < L1) {
             arr[M++] = arr[p0++];
         }
 }
@@ -2468,20 +2221,15 @@ static void SQRT_SORT_MERGE_DOWN(SORT_TYPE *arr, SORT_TYPE *arr2, int L1, int L2
 {
     int p0 = 0, p1 = 0, M = -L2;
 
-    while (p1 < L2)
-    {
-        if (p0 == L1 || SORT_CMP_A(arr + p0, arr2 + p1) >= 0)
-        {
+    while (p1 < L2) {
+        if (p0 == L1 || SORT_CMP_A(arr + p0, arr2 + p1) >= 0) {
             arr[M++] = arr2[p1++];
-        }
-        else
-        {
+        } else {
             arr[M++] = arr[p0++];
         }
     }
 
-    if (M != p0) while (p0 < L1)
-        {
+    if (M != p0) while (p0 < L1) {
             arr[M++] = arr[p0++];
         }
 }
@@ -2492,29 +2240,21 @@ static void SQRT_SORT_SMART_MERGE_WITH_X_BUF(SORT_TYPE *arr, int *alen1, int *at
     int p0 = -lkeys, p1 = 0, p2 = *alen1, q1 = p2, q2 = p2 + len2;
     int ftype = 1 - *atype; /* 1 if inverted */
 
-    while (p1 < q1 && p2 < q2)
-    {
-        if (SORT_CMP_A(arr + p1, arr + p2) - ftype < 0)
-        {
+    while (p1 < q1 && p2 < q2) {
+        if (SORT_CMP_A(arr + p1, arr + p2) - ftype < 0) {
             arr[p0++] = arr[p1++];
-        }
-        else
-        {
+        } else {
             arr[p0++] = arr[p2++];
         }
     }
 
-    if (p1 < q1)
-    {
+    if (p1 < q1) {
         *alen1 = q1 - p1;
 
-        while (p1 < q1)
-        {
+        while (p1 < q1) {
             arr[--q2] = arr[--q1];
         }
-    }
-    else
-    {
+    } else {
         *alen1 = q2 - p2;
         *atype = ftype;
     }
@@ -2533,8 +2273,7 @@ static void SQRT_SORT_MERGE_BUFFERS_LEFT_WITH_X_BUF(int *keys, int midkey, SORT_
 {
     int l, prest, lrest, frest, pidx, cidx, fnext;
 
-    if (nblock == 0)
-    {
+    if (nblock == 0) {
         l = nblock2 * lblock;
         SQRT_SORT_MERGE_LEFT_WITH_X_BUF(arr, l, llast, -lblock);
         return;
@@ -2544,43 +2283,33 @@ static void SQRT_SORT_MERGE_BUFFERS_LEFT_WITH_X_BUF(int *keys, int midkey, SORT_
     frest = keys[0] < midkey ? 0 : 1;
     pidx = lblock;
 
-    for (cidx = 1; cidx < nblock; cidx++, pidx += lblock)
-    {
+    for (cidx = 1; cidx < nblock; cidx++, pidx += lblock) {
         prest = pidx - lrest;
         fnext = keys[cidx] < midkey ? 0 : 1;
 
-        if (fnext == frest)
-        {
+        if (fnext == frest) {
             SORT_TYPE_CPY(arr + prest - lblock, arr + prest, lrest);
             prest = pidx;
             lrest = lblock;
-        }
-        else
-        {
+        } else {
             SQRT_SORT_SMART_MERGE_WITH_X_BUF(arr + prest, &lrest, &frest, lblock, lblock);
         }
     }
 
     prest = pidx - lrest;
 
-    if (llast)
-    {
-        if (frest)
-        {
+    if (llast) {
+        if (frest) {
             SORT_TYPE_CPY(arr + prest - lblock, arr + prest, lrest);
             prest = pidx;
             lrest = lblock * nblock2;
             frest = 0;
-        }
-        else
-        {
+        } else {
             lrest += lblock * nblock2;
         }
 
         SQRT_SORT_MERGE_LEFT_WITH_X_BUF(arr + prest, lrest, llast, -lblock);
-    }
-    else
-    {
+    } else {
         SORT_TYPE_CPY(arr + prest - lblock, arr + prest, lrest);
     }
 }
@@ -2594,12 +2323,10 @@ static void SQRT_SORT_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K)
 {
     int m, u, h, p0, p1, rest, restk, p;
 
-    for (m = 1; m < L; m += 2)
-    {
+    for (m = 1; m < L; m += 2) {
         u = 0;
 
-        if (SORT_CMP_A(arr + (m - 1), arr + m) > 0)
-        {
+        if (SORT_CMP_A(arr + (m - 1), arr + m) > 0) {
             u = 1;
         }
 
@@ -2607,34 +2334,27 @@ static void SQRT_SORT_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K)
         arr[m - 2] = arr[m - u];
     }
 
-    if (L % 2)
-    {
+    if (L % 2) {
         arr[L - 3] = arr[L - 1];
     }
 
     arr -= 2;
 
-    for (h = 2; h < K; h *= 2)
-    {
+    for (h = 2; h < K; h *= 2) {
         p0 = 0;
         p1 = L - 2 * h;
 
-        while (p0 <= p1)
-        {
+        while (p0 <= p1) {
             SQRT_SORT_MERGE_LEFT_WITH_X_BUF(arr + p0, h, h, -h);
             p0 += 2 * h;
         }
 
         rest = L - p0;
 
-        if (rest > h)
-        {
+        if (rest > h) {
             SQRT_SORT_MERGE_LEFT_WITH_X_BUF(arr + p0, h, rest - h, -h);
-        }
-        else
-        {
-            for (; p0 < L; p0++)
-            {
+        } else {
+            for (; p0 < L; p0++) {
                 arr[p0 - h] = arr[p0];
             }
         }
@@ -2645,17 +2365,13 @@ static void SQRT_SORT_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K)
     restk = L % (2 * K);
     p = L - restk;
 
-    if (restk <= K)
-    {
+    if (restk <= K) {
         SORT_TYPE_CPY(arr + p + K, arr + p, restk);
-    }
-    else
-    {
+    } else {
         SQRT_SORT_MERGE_RIGHT(arr + p, K, restk - K, K);
     }
 
-    while (p > 0)
-    {
+    while (p > 0) {
         p -= 2 * K;
         SQRT_SORT_MERGE_RIGHT(arr + p, K, K, K);
     }
@@ -2666,10 +2382,8 @@ static void SQRT_SORT_SORT_INS(SORT_TYPE *arr, int len)
 {
     int i, j;
 
-    for (i = 1; i < len; i++)
-    {
-        for (j = i - 1; j >= 0 && SORT_CMP_A(arr + (j + 1), arr + j) < 0; j--)
-        {
+    for (i = 1; i < len; i++) {
+        for (j = i - 1; j >= 0 && SORT_CMP_A(arr + (j + 1), arr + j) < 0; j--) {
             SQRT_SORT_SWAP_1(arr + j, arr + (j + 1));
         }
     }
@@ -2686,16 +2400,13 @@ static void SQRT_SORT_COMBINE_BLOCKS(SORT_TYPE *arr, int len, int LL, int lblock
     M = len / (2 * LL);
     lrest = len % (2 * LL);
 
-    if (lrest <= LL)
-    {
+    if (lrest <= LL) {
         len -= lrest;
         lrest = 0;
     }
 
-    for (b = 0; b <= M; b++)
-    {
-        if (b == M && lrest == 0)
-        {
+    for (b = 0; b <= M; b++) {
+        if (b == M && lrest == 0) {
             break;
         }
 
@@ -2703,29 +2414,24 @@ static void SQRT_SORT_COMBINE_BLOCKS(SORT_TYPE *arr, int len, int LL, int lblock
         NBlk = (b == M ? lrest : 2 * LL) / lblock;
         u = NBlk + (b == M ? 1 : 0);
 
-        for (i = 0; i <= u; i++)
-        {
+        for (i = 0; i <= u; i++) {
             tags[i] = i;
         }
 
         midkey = LL / lblock;
 
-        for (u = 1; u < NBlk; u++)
-        {
+        for (u = 1; u < NBlk; u++) {
             p = u - 1;
 
-            for (v = u; v < NBlk; v++)
-            {
+            for (v = u; v < NBlk; v++) {
                 kc = SORT_CMP_A(arr1 + p * lblock, arr1 + v * lblock);
 
-                if (kc > 0 || (kc == 0 && tags[p] > tags[v]))
-                {
+                if (kc > 0 || (kc == 0 && tags[p] > tags[v])) {
                     p = v;
                 }
             }
 
-            if (p != u - 1)
-            {
+            if (p != u - 1) {
                 SQRT_SORT_SWAP_N(arr1 + (u - 1)*lblock, arr1 + p * lblock, lblock);
                 i = tags[u - 1];
                 tags[u - 1] = tags[p];
@@ -2735,15 +2441,12 @@ static void SQRT_SORT_COMBINE_BLOCKS(SORT_TYPE *arr, int len, int LL, int lblock
 
         nbl2 = llast = 0;
 
-        if (b == M)
-        {
+        if (b == M) {
             llast = lrest % lblock;
         }
 
-        if (llast != 0)
-        {
-            while (nbl2 < NBlk && SORT_CMP_A(arr1 + NBlk * lblock, arr1 + (NBlk - nbl2 - 1)*lblock) < 0)
-            {
+        if (llast != 0) {
+            while (nbl2 < NBlk && SORT_CMP_A(arr1 + NBlk * lblock, arr1 + (NBlk - nbl2 - 1)*lblock) < 0) {
                 nbl2++;
             }
         }
@@ -2751,8 +2454,7 @@ static void SQRT_SORT_COMBINE_BLOCKS(SORT_TYPE *arr, int len, int LL, int lblock
         SQRT_SORT_MERGE_BUFFERS_LEFT_WITH_X_BUF(tags, midkey, arr1, NBlk - nbl2, lblock, nbl2, llast);
     }
 
-    for (p = len; --p >= 0;)
-    {
+    for (p = len; --p >= 0;) {
         arr[p] = arr[p - lblock];
     }
 }
@@ -2762,16 +2464,14 @@ static void SQRT_SORT_COMMON_SORT(SORT_TYPE *arr, int Len, SORT_TYPE *extbuf, in
 {
     int lblock, cbuf;
 
-    if (Len < 16)
-    {
+    if (Len < 16) {
         SQRT_SORT_SORT_INS(arr, Len);
         return;
     }
 
     lblock = 1;
 
-    while (lblock * lblock < Len)
-    {
+    while (lblock * lblock < Len) {
         lblock *= 2;
     }
 
@@ -2780,8 +2480,7 @@ static void SQRT_SORT_COMMON_SORT(SORT_TYPE *arr, int Len, SORT_TYPE *extbuf, in
     SQRT_SORT_BUILD_BLOCKS(arr + lblock, Len - lblock, lblock);
     cbuf = lblock;
 
-    while (Len > (cbuf *= 2))
-    {
+    while (Len > (cbuf *= 2)) {
         SQRT_SORT_COMBINE_BLOCKS(arr + lblock, Len - lblock, cbuf, lblock, Tags);
     }
 
@@ -2795,23 +2494,20 @@ void SQRT_SORT(SORT_TYPE *arr, size_t Len)
     int *Tags;
     int NK;
 
-    while (L * L < Len)
-    {
+    while (L * L < Len) {
         L *= 2;
     }
 
     NK = (int)((Len - 1) / L + 2);
     ExtBuf = SORT_NEW_BUFFER(L);
 
-    if (ExtBuf == NULL)
-    {
+    if (ExtBuf == NULL) {
         return;  /* fail */
     }
 
     Tags = (int*)malloc(NK * sizeof(int));
 
-    if (Tags == NULL)
-    {
+    if (Tags == NULL) {
         return;
     }
 
@@ -2853,24 +2549,19 @@ static __inline void GRAIL_SWAP1(SORT_TYPE *a, SORT_TYPE *b)
 
 static __inline void GRAIL_SWAP_N(SORT_TYPE *a, SORT_TYPE *b, int n)
 {
-    while (n--)
-    {
+    while (n--) {
         GRAIL_SWAP1(a++, b++);
     }
 }
 
 static void GRAIL_ROTATE(SORT_TYPE *a, int l1, int l2)
 {
-    while (l1 && l2)
-    {
-        if (l1 <= l2)
-        {
+    while (l1 && l2) {
+        if (l1 <= l2) {
             GRAIL_SWAP_N(a, a + l1, l1);
             a += l1;
             l2 -= l1;
-        }
-        else
-        {
+        } else {
             GRAIL_SWAP_N(a + (l1 - l2), a + l1, l2);
             l1 -= l2;
         }
@@ -2881,16 +2572,12 @@ static int GRAIL_BIN_SEARCH_LEFT(SORT_TYPE *arr, int len, SORT_TYPE *key)
 {
     int a = -1, b = len, c;
 
-    while (a < b - 1)
-    {
+    while (a < b - 1) {
         c = a + ((b - a) >> 1);
 
-        if (SORT_CMP_A(arr + c, key) >= 0)
-        {
+        if (SORT_CMP_A(arr + c, key) >= 0) {
             b = c;
-        }
-        else
-        {
+        } else {
             a = c;
         }
     }
@@ -2901,16 +2588,12 @@ static int GRAIL_BIN_SEARCH_RIGHT(SORT_TYPE *arr, int len, SORT_TYPE *key)
 {
     int a = -1, b = len, c;
 
-    while (a < b - 1)
-    {
+    while (a < b - 1) {
         c = a + ((b - a) >> 1);
 
-        if (SORT_CMP_A(arr + c, key) > 0)
-        {
+        if (SORT_CMP_A(arr + c, key) > 0) {
             b = c;
-        }
-        else
-        {
+        } else {
             a = c;
         }
     }
@@ -2924,12 +2607,10 @@ static int GRAIL_FIND_KEYS(SORT_TYPE *arr, int len, int nkeys)
     int h = 1, h0 = 0; /* first key is always here */
     int u = 1, r;
 
-    while (u < len && h < nkeys)
-    {
+    while (u < len && h < nkeys) {
         r = GRAIL_BIN_SEARCH_LEFT(arr + h0, h, arr + u);
 
-        if (r == h || SORT_CMP_A(arr + u, arr + (h0 + r)) != 0)
-        {
+        if (r == h || SORT_CMP_A(arr + u, arr + (h0 + r)) != 0) {
             GRAIL_ROTATE(arr + h0, h, u - (h0 + h));
             h0 = u - h;
             GRAIL_ROTATE(arr + (h0 + r), h - r, 1);
@@ -2948,54 +2629,41 @@ static void GRAIL_MERGE_WITHOUT_BUFFER(SORT_TYPE *arr, int len1, int len2)
 {
     int h;
 
-    if (len1 < len2)
-    {
-        while (len1)
-        {
+    if (len1 < len2) {
+        while (len1) {
             h = GRAIL_BIN_SEARCH_LEFT(arr + len1, len2, arr);
 
-            if (h != 0)
-            {
+            if (h != 0) {
                 GRAIL_ROTATE(arr, len1, h);
                 arr += h;
                 len2 -= h;
             }
 
-            if (len2 == 0)
-            {
+            if (len2 == 0) {
                 break;
             }
 
-            do
-            {
+            do {
                 arr++;
                 len1--;
-            }
-            while (len1 && SORT_CMP_A(arr, arr + len1) <= 0);
+            } while (len1 && SORT_CMP_A(arr, arr + len1) <= 0);
         }
-    }
-    else
-    {
-        while (len2)
-        {
+    } else {
+        while (len2) {
             h = GRAIL_BIN_SEARCH_RIGHT(arr, len1, arr + (len1 + len2 - 1));
 
-            if (h != len1)
-            {
+            if (h != len1) {
                 GRAIL_ROTATE(arr + h, len1 - h, len2);
                 len1 = h;
             }
 
-            if (len1 == 0)
-            {
+            if (len1 == 0) {
                 break;
             }
 
-            do
-            {
+            do {
                 len2--;
-            }
-            while (len2 && SORT_CMP_A(arr + len1 - 1, arr + len1 + len2 - 1) <= 0);
+            } while (len2 && SORT_CMP_A(arr + len1 - 1, arr + len1 + len2 - 1) <= 0);
         }
     }
 }
@@ -3006,20 +2674,15 @@ static void GRAIL_MERGE_LEFT(SORT_TYPE *arr, int L1, int L2, int M)
     int p0 = 0, p1 = L1;
     L2 += L1;
 
-    while (p1 < L2)
-    {
-        if (p0 == L1 || SORT_CMP_A(arr + p0, arr + p1) > 0)
-        {
+    while (p1 < L2) {
+        if (p0 == L1 || SORT_CMP_A(arr + p0, arr + p1) > 0) {
             GRAIL_SWAP1(arr + (M++), arr + (p1++));
-        }
-        else
-        {
+        } else {
             GRAIL_SWAP1(arr + (M++), arr + (p0++));
         }
     }
 
-    if (M != p0)
-    {
+    if (M != p0) {
         GRAIL_SWAP_N(arr + M, arr + p0, L1 - p0);
     }
 }
@@ -3027,20 +2690,15 @@ static void GRAIL_MERGE_RIGHT(SORT_TYPE *arr, int L1, int L2, int M)
 {
     int p0 = L1 + L2 + M - 1, p2 = L1 + L2 - 1, p1 = L1 - 1;
 
-    while (p1 >= 0)
-    {
-        if (p2 < L1 || SORT_CMP_A(arr + p1, arr + p2) > 0)
-        {
+    while (p1 >= 0) {
+        if (p2 < L1 || SORT_CMP_A(arr + p1, arr + p2) > 0) {
             GRAIL_SWAP1(arr + (p0--), arr + (p1--));
-        }
-        else
-        {
+        } else {
             GRAIL_SWAP1(arr + (p0--), arr + (p2--));
         }
     }
 
-    if (p2 != p0) while (p2 >= L1)
-        {
+    if (p2 != p0) while (p2 >= L1) {
             GRAIL_SWAP1(arr + (p0--), arr + (p2--));
         }
 }
@@ -3051,29 +2709,21 @@ static void GRAIL_SMART_MERGE_WITH_BUFFER(SORT_TYPE *arr, int *alen1, int *atype
     int p0 = -lkeys, p1 = 0, p2 = *alen1, q1 = p2, q2 = p2 + len2;
     int ftype = 1 - *atype; /* 1 if inverted */
 
-    while (p1 < q1 && p2 < q2)
-    {
-        if (SORT_CMP_A(arr + p1, arr + p2) - ftype < 0)
-        {
+    while (p1 < q1 && p2 < q2) {
+        if (SORT_CMP_A(arr + p1, arr + p2) - ftype < 0) {
             GRAIL_SWAP1(arr + (p0++), arr + (p1++));
-        }
-        else
-        {
+        } else {
             GRAIL_SWAP1(arr + (p0++), arr + (p2++));
         }
     }
 
-    if (p1 < q1)
-    {
+    if (p1 < q1) {
         *alen1 = q1 - p1;
 
-        while (p1 < q1)
-        {
+        while (p1 < q1) {
             GRAIL_SWAP1(arr + (--q1), arr + (--q2));
         }
-    }
-    else
-    {
+    } else {
         *alen1 = q2 - p2;
         *atype = ftype;
     }
@@ -3082,8 +2732,7 @@ static void GRAIL_SMART_MERGE_WITHOUT_BUFFER(SORT_TYPE *arr, int *alen1, int *at
 {
     int len1, len2, ftype, h;
 
-    if (!_len2)
-    {
+    if (!_len2) {
         return;
     }
 
@@ -3091,32 +2740,26 @@ static void GRAIL_SMART_MERGE_WITHOUT_BUFFER(SORT_TYPE *arr, int *alen1, int *at
     len2 = _len2;
     ftype = 1 - *atype;
 
-    if (len1 && SORT_CMP_A(arr + (len1 - 1), arr + len1) - ftype >= 0)
-    {
-        while (len1)
-        {
+    if (len1 && SORT_CMP_A(arr + (len1 - 1), arr + len1) - ftype >= 0) {
+        while (len1) {
             h = ftype ? GRAIL_BIN_SEARCH_LEFT(arr + len1, len2, arr) : GRAIL_BIN_SEARCH_RIGHT(arr + len1, len2,
                     arr);
 
-            if (h != 0)
-            {
+            if (h != 0) {
                 GRAIL_ROTATE(arr, len1, h);
                 arr += h;
                 len2 -= h;
             }
 
-            if (len2 == 0)
-            {
+            if (len2 == 0) {
                 *alen1 = len1;
                 return;
             }
 
-            do
-            {
+            do {
                 arr++;
                 len1--;
-            }
-            while (len1 && SORT_CMP_A(arr, arr + len1) - ftype < 0);
+            } while (len1 && SORT_CMP_A(arr, arr + len1) - ftype < 0);
         }
     }
 
@@ -3132,20 +2775,15 @@ static void GRAIL_MERGE_LEFT_WITH_X_BUF(SORT_TYPE *arr, int L1, int L2, int M)
     int p0 = 0, p1 = L1;
     L2 += L1;
 
-    while (p1 < L2)
-    {
-        if (p0 == L1 || SORT_CMP_A(arr + p0, arr + p1) > 0)
-        {
+    while (p1 < L2) {
+        if (p0 == L1 || SORT_CMP_A(arr + p0, arr + p1) > 0) {
             arr[M++] = arr[p1++];
-        }
-        else
-        {
+        } else {
             arr[M++] = arr[p0++];
         }
     }
 
-    if (M != p0) while (p0 < L1)
-        {
+    if (M != p0) while (p0 < L1) {
             arr[M++] = arr[p0++];
         }
 }
@@ -3156,29 +2794,21 @@ static void GRAIL_SMART_MERGE_WITH_X_BUF(SORT_TYPE *arr, int *alen1, int *atype,
     int p0 = -lkeys, p1 = 0, p2 = *alen1, q1 = p2, q2 = p2 + len2;
     int ftype = 1 - *atype; /* 1 if inverted */
 
-    while (p1 < q1 && p2 < q2)
-    {
-        if (SORT_CMP_A(arr + p1, arr + p2) - ftype < 0)
-        {
+    while (p1 < q1 && p2 < q2) {
+        if (SORT_CMP_A(arr + p1, arr + p2) - ftype < 0) {
             arr[p0++] = arr[p1++];
-        }
-        else
-        {
+        } else {
             arr[p0++] = arr[p2++];
         }
     }
 
-    if (p1 < q1)
-    {
+    if (p1 < q1) {
         *alen1 = q1 - p1;
 
-        while (p1 < q1)
-        {
+        while (p1 < q1) {
             arr[--q2] = arr[--q1];
         }
-    }
-    else
-    {
+    } else {
         *alen1 = q2 - p2;
         *atype = ftype;
     }
@@ -3196,8 +2826,7 @@ static void GRAIL_MERGE_BUFFERS_LEFT_WITH_X_BUF(SORT_TYPE *keys, SORT_TYPE *midk
 {
     int l, prest, lrest, frest, pidx, cidx, fnext;
 
-    if (nblock == 0)
-    {
+    if (nblock == 0) {
         l = nblock2 * lblock;
         GRAIL_MERGE_LEFT_WITH_X_BUF(arr, l, llast, -lblock);
         return;
@@ -3207,43 +2836,33 @@ static void GRAIL_MERGE_BUFFERS_LEFT_WITH_X_BUF(SORT_TYPE *keys, SORT_TYPE *midk
     frest = SORT_CMP_A(keys, midkey) < 0 ? 0 : 1;
     pidx = lblock;
 
-    for (cidx = 1; cidx < nblock; cidx++, pidx += lblock)
-    {
+    for (cidx = 1; cidx < nblock; cidx++, pidx += lblock) {
         prest = pidx - lrest;
         fnext = SORT_CMP_A(keys + cidx, midkey) < 0 ? 0 : 1;
 
-        if (fnext == frest)
-        {
+        if (fnext == frest) {
             SORT_TYPE_CPY(arr + prest - lblock, arr + prest, lrest);
             prest = pidx;
             lrest = lblock;
-        }
-        else
-        {
+        } else {
             GRAIL_SMART_MERGE_WITH_X_BUF(arr + prest, &lrest, &frest, lblock, lblock);
         }
     }
 
     prest = pidx - lrest;
 
-    if (llast)
-    {
-        if (frest)
-        {
+    if (llast) {
+        if (frest) {
             SORT_TYPE_CPY(arr + prest - lblock, arr + prest, lrest);
             prest = pidx;
             lrest = lblock * nblock2;
             frest = 0;
-        }
-        else
-        {
+        } else {
             lrest += lblock * nblock2;
         }
 
         GRAIL_MERGE_LEFT_WITH_X_BUF(arr + prest, lrest, llast, -lblock);
-    }
-    else
-    {
+    } else {
         SORT_TYPE_CPY(arr + prest - lblock, arr + prest, lrest);
     }
 }
@@ -3260,21 +2879,17 @@ static void GRAIL_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K, SORT_TYPE *extbuf, 
     int m, u, h, p0, p1, rest, restk, p, kbuf;
     kbuf = K < LExtBuf ? K : LExtBuf;
 
-    while (kbuf & (kbuf - 1))
-    {
+    while (kbuf & (kbuf - 1)) {
         kbuf &= kbuf - 1;  /* max power or 2 - just in case */
     }
 
-    if (kbuf)
-    {
+    if (kbuf) {
         SORT_TYPE_CPY(extbuf, arr - kbuf, kbuf);
 
-        for (m = 1; m < L; m += 2)
-        {
+        for (m = 1; m < L; m += 2) {
             u = 0;
 
-            if (SORT_CMP_A(arr + (m - 1), arr + m) > 0)
-            {
+            if (SORT_CMP_A(arr + (m - 1), arr + m) > 0) {
                 u = 1;
             }
 
@@ -3282,34 +2897,27 @@ static void GRAIL_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K, SORT_TYPE *extbuf, 
             arr[m - 2] = arr[m - u];
         }
 
-        if (L % 2)
-        {
+        if (L % 2) {
             arr[L - 3] = arr[L - 1];
         }
 
         arr -= 2;
 
-        for (h = 2; h < kbuf; h *= 2)
-        {
+        for (h = 2; h < kbuf; h *= 2) {
             p0 = 0;
             p1 = L - 2 * h;
 
-            while (p0 <= p1)
-            {
+            while (p0 <= p1) {
                 GRAIL_MERGE_LEFT_WITH_X_BUF(arr + p0, h, h, -h);
                 p0 += 2 * h;
             }
 
             rest = L - p0;
 
-            if (rest > h)
-            {
+            if (rest > h) {
                 GRAIL_MERGE_LEFT_WITH_X_BUF(arr + p0, h, rest - h, -h);
-            }
-            else
-            {
-                for (; p0 < L; p0++)
-                {
+            } else {
+                for (; p0 < L; p0++) {
                     arr[p0 - h] = arr[p0];
                 }
             }
@@ -3318,15 +2926,11 @@ static void GRAIL_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K, SORT_TYPE *extbuf, 
         }
 
         SORT_TYPE_CPY(arr + L, extbuf, kbuf);
-    }
-    else
-    {
-        for (m = 1; m < L; m += 2)
-        {
+    } else {
+        for (m = 1; m < L; m += 2) {
             u = 0;
 
-            if (SORT_CMP_A(arr + (m - 1), arr + m) > 0)
-            {
+            if (SORT_CMP_A(arr + (m - 1), arr + m) > 0) {
                 u = 1;
             }
 
@@ -3334,8 +2938,7 @@ static void GRAIL_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K, SORT_TYPE *extbuf, 
             GRAIL_SWAP1(arr + (m - 2), arr + (m - u));
         }
 
-        if (L % 2)
-        {
+        if (L % 2) {
             GRAIL_SWAP1(arr + (L - 1), arr + (L - 3));
         }
 
@@ -3343,25 +2946,20 @@ static void GRAIL_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K, SORT_TYPE *extbuf, 
         h = 2;
     }
 
-    for (; h < K; h *= 2)
-    {
+    for (; h < K; h *= 2) {
         p0 = 0;
         p1 = L - 2 * h;
 
-        while (p0 <= p1)
-        {
+        while (p0 <= p1) {
             GRAIL_MERGE_LEFT(arr + p0, h, h, -h);
             p0 += 2 * h;
         }
 
         rest = L - p0;
 
-        if (rest > h)
-        {
+        if (rest > h) {
             GRAIL_MERGE_LEFT(arr + p0, h, rest - h, -h);
-        }
-        else
-        {
+        } else {
             GRAIL_ROTATE(arr + p0 - h, h, rest);
         }
 
@@ -3371,17 +2969,13 @@ static void GRAIL_BUILD_BLOCKS(SORT_TYPE *arr, int L, int K, SORT_TYPE *extbuf, 
     restk = L % (2 * K);
     p = L - restk;
 
-    if (restk <= K)
-    {
+    if (restk <= K) {
         GRAIL_ROTATE(arr + p, restk, K);
-    }
-    else
-    {
+    } else {
         GRAIL_MERGE_RIGHT(arr + p, K, restk - K, K);
     }
 
-    while (p > 0)
-    {
+    while (p > 0) {
         p -= 2 * K;
         GRAIL_MERGE_RIGHT(arr + p, K, K, K);
     }
@@ -3399,16 +2993,12 @@ static void GRAIL_MERGE_BUFFERS_LEFT(SORT_TYPE *keys, SORT_TYPE *midkey, SORT_TY
 {
     int l, prest, lrest, frest, pidx, cidx, fnext;
 
-    if (nblock == 0)
-    {
+    if (nblock == 0) {
         l = nblock2 * lblock;
 
-        if (havebuf)
-        {
+        if (havebuf) {
             GRAIL_MERGE_LEFT(arr, l, llast, -lblock);
-        }
-        else
-        {
+        } else {
             GRAIL_MERGE_WITHOUT_BUFFER(arr, l, llast);
         }
 
@@ -3419,29 +3009,21 @@ static void GRAIL_MERGE_BUFFERS_LEFT(SORT_TYPE *keys, SORT_TYPE *midkey, SORT_TY
     frest = SORT_CMP_A(keys, midkey) < 0 ? 0 : 1;
     pidx = lblock;
 
-    for (cidx = 1; cidx < nblock; cidx++, pidx += lblock)
-    {
+    for (cidx = 1; cidx < nblock; cidx++, pidx += lblock) {
         prest = pidx - lrest;
         fnext = SORT_CMP_A(keys + cidx, midkey) < 0 ? 0 : 1;
 
-        if (fnext == frest)
-        {
-            if (havebuf)
-            {
+        if (fnext == frest) {
+            if (havebuf) {
                 GRAIL_SWAP_N(arr + prest - lblock, arr + prest, lrest);
             }
 
             prest = pidx;
             lrest = lblock;
-        }
-        else
-        {
-            if (havebuf)
-            {
+        } else {
+            if (havebuf) {
                 GRAIL_SMART_MERGE_WITH_BUFFER(arr + prest, &lrest, &frest, lblock, lblock);
-            }
-            else
-            {
+            } else {
                 GRAIL_SMART_MERGE_WITHOUT_BUFFER(arr + prest, &lrest, &frest, lblock);
             }
         }
@@ -3449,37 +3031,26 @@ static void GRAIL_MERGE_BUFFERS_LEFT(SORT_TYPE *keys, SORT_TYPE *midkey, SORT_TY
 
     prest = pidx - lrest;
 
-    if (llast)
-    {
-        if (frest)
-        {
-            if (havebuf)
-            {
+    if (llast) {
+        if (frest) {
+            if (havebuf) {
                 GRAIL_SWAP_N(arr + prest - lblock, arr + prest, lrest);
             }
 
             prest = pidx;
             lrest = lblock * nblock2;
             frest = 0;
-        }
-        else
-        {
+        } else {
             lrest += lblock * nblock2;
         }
 
-        if (havebuf)
-        {
+        if (havebuf) {
             GRAIL_MERGE_LEFT(arr + prest, lrest, llast, -lblock);
-        }
-        else
-        {
+        } else {
             GRAIL_MERGE_WITHOUT_BUFFER(arr + prest, lrest, llast);
         }
-    }
-    else
-    {
-        if (havebuf)
-        {
+    } else {
+        if (havebuf) {
             GRAIL_SWAP_N(arr + prest, arr + (prest - lblock), lrest);
         }
     }
@@ -3489,29 +3060,24 @@ static void GRAIL_LAZY_STABLE_SORT(SORT_TYPE *arr, int L)
 {
     int m, h, p0, p1, rest;
 
-    for (m = 1; m < L; m += 2)
-    {
-        if (SORT_CMP_A(arr + m - 1, arr + m) > 0)
-        {
+    for (m = 1; m < L; m += 2) {
+        if (SORT_CMP_A(arr + m - 1, arr + m) > 0) {
             GRAIL_SWAP1(arr + (m - 1), arr + m);
         }
     }
 
-    for (h = 2; h < L; h *= 2)
-    {
+    for (h = 2; h < L; h *= 2) {
         p0 = 0;
         p1 = L - 2 * h;
 
-        while (p0 <= p1)
-        {
+        while (p0 <= p1) {
             GRAIL_MERGE_WITHOUT_BUFFER(arr + p0, h, h);
             p0 += 2 * h;
         }
 
         rest = L - p0;
 
-        if (rest > h)
-        {
+        if (rest > h) {
             GRAIL_MERGE_WITHOUT_BUFFER(arr + p0, h, rest - h);
         }
     }
@@ -3529,21 +3095,17 @@ static void GRAIL_COMBINE_BLOCKS(SORT_TYPE *keys, SORT_TYPE *arr, int len, int L
     M = len / (2 * LL);
     lrest = len % (2 * LL);
 
-    if (lrest <= LL)
-    {
+    if (lrest <= LL) {
         len -= lrest;
         lrest = 0;
     }
 
-    if (xbuf)
-    {
+    if (xbuf) {
         SORT_TYPE_CPY(xbuf, arr - lblock, lblock);
     }
 
-    for (b = 0; b <= M; b++)
-    {
-        if (b == M && lrest == 0)
-        {
+    for (b = 0; b <= M; b++) {
+        if (b == M && lrest == 0) {
             break;
         }
 
@@ -3552,27 +3114,22 @@ static void GRAIL_COMBINE_BLOCKS(SORT_TYPE *keys, SORT_TYPE *arr, int len, int L
         SMALL_SORT(keys, NBlk + (b == M ? 1 : 0));
         midkey = LL / lblock;
 
-        for (u = 1; u < NBlk; u++)
-        {
+        for (u = 1; u < NBlk; u++) {
             p = u - 1;
 
-            for (v = u; v < NBlk; v++)
-            {
+            for (v = u; v < NBlk; v++) {
                 kc = SORT_CMP_A(arr1 + p * lblock, arr1 + v * lblock);
 
-                if (kc > 0 || (kc == 0 && SORT_CMP_A(keys + p, keys + v) > 0))
-                {
+                if (kc > 0 || (kc == 0 && SORT_CMP_A(keys + p, keys + v) > 0)) {
                     p = v;
                 }
             }
 
-            if (p != u - 1)
-            {
+            if (p != u - 1) {
                 GRAIL_SWAP_N(arr1 + (u - 1)*lblock, arr1 + p * lblock, lblock);
                 GRAIL_SWAP1(keys + (u - 1), keys + p);
 
-                if (midkey == u - 1 || midkey == p)
-                {
+                if (midkey == u - 1 || midkey == p) {
                     midkey ^= (u - 1)^p;
                 }
             }
@@ -3580,42 +3137,31 @@ static void GRAIL_COMBINE_BLOCKS(SORT_TYPE *keys, SORT_TYPE *arr, int len, int L
 
         nbl2 = llast = 0;
 
-        if (b == M)
-        {
+        if (b == M) {
             llast = lrest % lblock;
         }
 
-        if (llast != 0)
-        {
-            while (nbl2 < NBlk && SORT_CMP_A(arr1 + NBlk * lblock, arr1 + (NBlk - nbl2 - 1)*lblock) < 0)
-            {
+        if (llast != 0) {
+            while (nbl2 < NBlk && SORT_CMP_A(arr1 + NBlk * lblock, arr1 + (NBlk - nbl2 - 1)*lblock) < 0) {
                 nbl2++;
             }
         }
 
-        if (xbuf)
-        {
+        if (xbuf) {
             GRAIL_MERGE_BUFFERS_LEFT_WITH_X_BUF(keys, keys + midkey, arr1, NBlk - nbl2, lblock, nbl2, llast);
-        }
-        else
-        {
+        } else {
             GRAIL_MERGE_BUFFERS_LEFT(keys, keys + midkey, arr1, NBlk - nbl2, lblock, havebuf, nbl2, llast);
         }
     }
 
-    if (xbuf)
-    {
-        for (p = len; --p >= 0;)
-        {
+    if (xbuf) {
+        for (p = len; --p >= 0;) {
             arr[p] = arr[p - lblock];
         }
 
         SORT_TYPE_CPY(arr - lblock, xbuf, lblock);
-    }
-    else if (havebuf)
-    {
-        while (--len >= 0)
-        {
+    } else if (havebuf) {
+        while (--len >= 0) {
             GRAIL_SWAP1(arr + len, arr + len - lblock);
         }
     }
@@ -3628,16 +3174,14 @@ static void GRAIL_COMMON_SORT(SORT_TYPE *arr, int Len, SORT_TYPE *extbuf, int LE
     int havebuf, chavebuf;
     long long s;
 
-    if (Len <= SMALL_SORT_BND)
-    {
+    if (Len <= SMALL_SORT_BND) {
         SMALL_SORT(arr, Len);
         return;
     }
 
     lblock = 1;
 
-    while (lblock * lblock < Len)
-    {
+    while (lblock * lblock < Len) {
         lblock *= 2;
     }
 
@@ -3645,18 +3189,15 @@ static void GRAIL_COMMON_SORT(SORT_TYPE *arr, int Len, SORT_TYPE *extbuf, int LE
     findkeys = GRAIL_FIND_KEYS(arr, Len, nkeys + lblock);
     havebuf = 1;
 
-    if (findkeys < nkeys + lblock)
-    {
-        if (findkeys < 4)
-        {
+    if (findkeys < nkeys + lblock) {
+        if (findkeys < 4) {
             GRAIL_LAZY_STABLE_SORT(arr, Len);
             return;
         }
 
         nkeys = lblock;
 
-        while (nkeys > findkeys)
-        {
+        while (nkeys > findkeys) {
             nkeys /= 2;
         }
 
@@ -3667,35 +3208,26 @@ static void GRAIL_COMMON_SORT(SORT_TYPE *arr, int Len, SORT_TYPE *extbuf, int LE
     ptr = lblock + nkeys;
     cbuf = havebuf ? lblock : nkeys;
 
-    if (havebuf)
-    {
+    if (havebuf) {
         GRAIL_BUILD_BLOCKS(arr + ptr, Len - ptr, cbuf, extbuf, LExtBuf);
-    }
-    else
-    {
+    } else {
         GRAIL_BUILD_BLOCKS(arr + ptr, Len - ptr, cbuf, NULL, 0);
     }
 
     /* 2*cbuf are built */
-    while (Len - ptr > (cbuf *= 2))
-    {
+    while (Len - ptr > (cbuf *= 2)) {
         lb = lblock;
         chavebuf = havebuf;
 
-        if (!havebuf)
-        {
-            if (nkeys > 4 && nkeys / 8 * nkeys >= cbuf)
-            {
+        if (!havebuf) {
+            if (nkeys > 4 && nkeys / 8 * nkeys >= cbuf) {
                 lb = nkeys / 2;
                 chavebuf = 1;
-            }
-            else
-            {
+            } else {
                 nk = 1;
                 s = (long long)cbuf * findkeys / 2;
 
-                while (nk < nkeys && s != 0)
-                {
+                while (nk < nkeys && s != 0) {
                     nk *= 2;
                     s /= 8;
                 }
@@ -3728,19 +3260,15 @@ void GRAIL_SORT_DYN_BUFFER(SORT_TYPE *arr, size_t Len)
     int L = 1;
     SORT_TYPE *ExtBuf;
 
-    while (L * L < Len)
-    {
+    while (L * L < Len) {
         L *= 2;
     }
 
     ExtBuf = SORT_NEW_BUFFER(L);
 
-    if (ExtBuf == NULL)
-    {
+    if (ExtBuf == NULL) {
         GRAIL_SORT_FIXED_BUFFER(arr, Len);
-    }
-    else
-    {
+    } else {
         GRAIL_COMMON_SORT(arr, (int)Len, ExtBuf, L);
         SORT_DELETE_BUFFER(ExtBuf);
     }
@@ -3752,46 +3280,36 @@ static void GRAIL_REC_MERGE(SORT_TYPE *A, int L1, int L2)
 {
     int K, k1, k2, m1, m2;
 
-    if (L1 < 3 || L2 < 3)
-    {
+    if (L1 < 3 || L2 < 3) {
         GRAIL_MERGE_WITHOUT_BUFFER(A, L1, L2);
         return;
     }
 
-    if (L1 < L2)
-    {
+    if (L1 < L2) {
         K = L1 + L2 / 2;
-    }
-    else
-    {
+    } else {
         K = L1 / 2;
     }
 
     k1 = k2 = GRAIL_BIN_SEARCH_LEFT(A, L1, A + K);
 
-    if (k2 < L1 && SORT_CMP_A(A + k2, A + K) == 0)
-    {
+    if (k2 < L1 && SORT_CMP_A(A + k2, A + K) == 0) {
         k2 = GRAIL_BIN_SEARCH_RIGHT(A + k1, L1 - k1, A + K) + k1;
     }
 
     m1 = GRAIL_BIN_SEARCH_LEFT(A + L1, L2, A + K);
     m2 = m1;
 
-    if (m2 < L2 && SORT_CMP_A(A + L1 + m2, A + K) == 0)
-    {
+    if (m2 < L2 && SORT_CMP_A(A + L1 + m2, A + K) == 0) {
         m2 = GRAIL_BIN_SEARCH_RIGHT(A + L1 + m1, L2 - m1, A + K) + m1;
     }
 
-    if (k1 == k2)
-    {
+    if (k1 == k2) {
         GRAIL_ROTATE(A + k2, L1 - k2, m2);
-    }
-    else
-    {
+    } else {
         GRAIL_ROTATE(A + k1, L1 - k1, m1);
 
-        if (m2 != m1)
-        {
+        if (m2 != m1) {
             GRAIL_ROTATE(A + (k2 + m1), L1 - k2, m2 - m1);
         }
     }
@@ -3804,29 +3322,24 @@ void REC_STABLE_SORT(SORT_TYPE *arr, size_t L)
 {
     int m, h, p0, p1, rest;
 
-    for (m = 1; m < L; m += 2)
-    {
-        if (SORT_CMP_A(arr + m - 1, arr + m) > 0)
-        {
+    for (m = 1; m < L; m += 2) {
+        if (SORT_CMP_A(arr + m - 1, arr + m) > 0) {
             GRAIL_SWAP1(arr + (m - 1), arr + m);
         }
     }
 
-    for (h = 2; h < L; h *= 2)
-    {
+    for (h = 2; h < L; h *= 2) {
         p0 = 0;
         p1 = (int)(L - 2 * h);
 
-        while (p0 <= p1)
-        {
+        while (p0 <= p1) {
             GRAIL_REC_MERGE(arr + p0, h, h);
             p0 += 2 * h;
         }
 
         rest = (int)(L - p0);
 
-        if (rest > h)
-        {
+        if (rest > h) {
             GRAIL_REC_MERGE(arr + p0, h, rest - h);
         }
     }
@@ -3839,14 +3352,11 @@ void BUBBLE_SORT(SORT_TYPE *dst, const size_t size)
 {
     size_t n = size;
 
-    while (n)
-    {
+    while (n) {
         size_t i, newn = 0U;
 
-        for (i = 1U; i < n; ++i)
-        {
-            if (SORT_CMP(dst[i - 1U], dst[i]) > 0)
-            {
+        for (i = 1U; i < n; ++i) {
+            if (SORT_CMP(dst[i - 1U], dst[i]) > 0) {
                 SORT_SWAP(dst[i - 1U], dst[i]);
                 newn = i;
             }

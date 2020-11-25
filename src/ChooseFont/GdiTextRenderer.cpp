@@ -62,12 +62,10 @@ HRESULT GdiTextRenderer::Initialize(HWND referenceHwnd, HDC referenceDC, UINT wi
     IDWriteGdiInterop* gdiInterop = nullptr;
 
     hr = g_dwrite->GetGdiInterop(&gdiInterop);
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = gdiInterop->CreateBitmapRenderTarget(referenceDC, width, height, &m_renderTarget);
     }
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = g_dwrite->CreateMonitorRenderingParams(
                  MonitorFromWindow(referenceHwnd, MONITOR_DEFAULTTONULL),
                  &m_renderingParams);
@@ -238,8 +236,7 @@ HRESULT STDMETHODCALLTYPE GdiTextRenderer::QueryInterface(
     *ppvObject = nullptr;
 
     if (riid == __uuidof(IDWriteTextRenderer) ||
-            riid == __uuidof(IUnknown))
-    {
+            riid == __uuidof(IUnknown)) {
         AddRef();
         *ppvObject = this;
         return S_OK;
@@ -274,8 +271,7 @@ ULONG STDMETHODCALLTYPE GdiTextRenderer::AddRef()
 ULONG STDMETHODCALLTYPE GdiTextRenderer::Release()
 {
     LONG refs = InterlockedDecrement(&m_refs);
-    if (refs == 0)
-    {
+    if (refs == 0) {
         delete this;
     }
     return refs;
