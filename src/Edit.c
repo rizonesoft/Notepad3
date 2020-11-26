@@ -471,7 +471,7 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
         return false;
     }
 
-    DWORD dwFlags = Encoding_GetWCMB_Flags(codepage);
+    DWORD dwFlags = Encoding_GetWCMBFlagsByCodePage(codepage);
     if (dwFlags != 0) {
         dwFlags |= (WC_COMPOSITECHECK | WC_DEFAULTCHAR);
     }
@@ -1166,6 +1166,7 @@ bool EditLoadFile(
                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
 #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
+#define IS_ENC_PURE_ASCII() (encDetection.analyzedEncoding == CPI_ASCII_7BIT)
 
     // --------------------------------------------------------------------------
 
@@ -1238,7 +1239,6 @@ bool EditLoadFile(
         bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
 
         bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && bSkipUTFDetection);
-        bool const bIsCP_UTF7 = (Encoding_GetCodePage(encDetection.Encoding) == CP_UTF7);
 
         if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8))) {
             if (encDetection.bIsUTF8Sig) {
@@ -1250,8 +1250,8 @@ bool EditLoadFile(
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
             }
-        } else if (!IS_ENC_ENFORCED() && (bIsCP_UTF7 && encDetection.bIs7BitOnly)) {
-            // load UTF-7/ASCII(7-bit) as ANSI/UTF-8
+        } else if (!IS_ENC_ENFORCED() && IS_ENC_PURE_ASCII()) {
+            // load ASCII(7-bit) as ANSI/UTF-8
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
             status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
             EditDetectEOLMode(lpData, cbData, status);
@@ -1459,7 +1459,7 @@ bool EditSaveFile(
                                           lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
 
                 // dry conversion run
-                DWORD const dwFlags = Encoding_GetWCMB_Flags(uCodePage);
+                DWORD const dwFlags = Encoding_GetWCMBFlagsByCodePage(uCodePage);
                 size_t const cbSizeNeeded = (size_t)WideCharToMultiByteEx(uCodePage, dwFlags, lpDataWide, cbDataWide, NULL, 0, NULL, NULL);
                 size_t const cbDataNew = max(cbSizeNeeded, cbDataWide);
 

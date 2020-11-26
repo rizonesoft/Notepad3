@@ -53,7 +53,7 @@ const UINT uCodePageMBCS[] = {
 // ============================================================================
 
 
-DWORD Encoding_GetWCMB_Flags(const UINT codePage)
+DWORD Encoding_GetWCMBFlagsByCodePage(const UINT codePage)
 {
     DWORD flags = WC_NO_BEST_FIT_CHARS;
     for (int k = 0; k < COUNTOF(uCodePageMBCS); k++) {
@@ -721,7 +721,7 @@ bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 }
 // ============================================================================
 
-
+#if 0
 bool IsValidUTF7(const char* pTest, size_t nLength)
 {
     if (!pTest) {
@@ -737,6 +737,7 @@ bool IsValidUTF7(const char* pTest, size_t nLength)
     }
     return true;
 }
+#endif
 // ============================================================================
 
 
