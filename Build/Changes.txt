@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1125.(build_#) (2020-11-25)
+Current BETA/RC Version 5.20.1201.(build_#) (2020-12-01)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1201.1]- Renaming Chinese displayed encoding according to MIME/IANA.
+[1125.2]- Code styling reformat (AStyle: OTBS).
 [1125.2]- Format: AStyle ALLMAN core code base.
 [1118.1]- Sci_PositionCR type reverted to long for Win32 compatibility reasons.
 [1001.1]- Rebase DarkMode module on delay load version branch of win32-darkmode project.
@@ -94,7 +96,6 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
-[1125.2]- Code styling reformat (AStyle: OTBS).
 [1125.2]- File encoding analysis with 7-bit ASCII only.
 [1125.2]- File save problem after switching encoding to GB2312 (52936).
 [1116.1]- Initial path on OpenFile dialog (load file).
@@ -149,9 +150,9 @@ TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.xxx.x]- .
 [1028.1]- Hindi (hi-IN).
-[.915.2]- Turkish (tr-TR) in processing...
 [.915.2]- Chinese Traditional (zh-TW) in waiting...
 [.915.2]- Indonesian (id-ID) in waiting...
+[.915.2]- Turkish (tr-TR) in waiting...
 [.915.2]- Vietnamese (vi-VN) in waiting...
 
 

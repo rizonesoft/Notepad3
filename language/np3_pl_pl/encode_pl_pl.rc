@@ -79,9 +79,9 @@ BEGIN
     IDS_ENC_ISO_8859_2             "C;Środkowoeuropejski (ISO-8859-2);ISO-8859-2"
     IDS_ENC_MAC_CENTRAL_EUROP      "C;Środkowoeuropejski (Mac);Mac (Central)"
     IDS_ENC_WIN_1250               "C;Środkowoeuropejski (Windows-1250);Windows-1250"
-    IDS_ENC_GB18030                "C;Chiński (GB18030);GB-18030"
-    IDS_ENC_GBK_936                "C;Chiński (GBK);GBK-936"
-    IDS_ENC_GB2312_80              "C;Chiński uproszczony (GB2312-80);GB-2312-80"
+    IDS_ENC_GB18030                "C;Chiński (GB18030);GB18030"
+    IDS_ENC_GBK_936                "C;Chiński (GBK);GBK"
+    IDS_ENC_GB2312_80              "C;Chiński uproszczony (GB_2312-80);GB_2312-80"
     IDS_ENC_MAC_ZH_CN              "C;Chiński uproszczony (Mac);Mac (zh-cn)"
     IDS_ENC_BIG5                   "C;Chiński tradycyjny (Big5);Big5"
     IDS_ENC_MAC_ZH_TW              "C;Chiński tradycyjny (Mac);Mac (zh-tw)"
@@ -115,7 +115,7 @@ BEGIN
     IDS_ENC_DOS_861                "C;Islandzki (DOS-861);DOS-861"
     IDS_ENC_MAC_ICELANDIC          "C;Islandzki (Mac);Mac (Icelandic)"
     IDS_ENC_MAC_JAPANESE           "C;Japoński (Mac);Mac (Japanese)"
-    IDS_ENC_SHIFT_JIS              "C;Japoński (Shift-JIS);Shift-JIS"
+    IDS_ENC_SHIFT_JIS              "C;Japoński (Shift_JIS);Shift_JIS"
     IDS_ENC_MAC_KOREAN             "C;Koreański (Mac);Mac (Korean)"
     IDS_ENC_WIN_949                "C;Koreański (Windows-949);Windows-949"
     IDS_ENC_ISO_8859_3             "C;Łacina 3 (ISO-8859-3);ISO-8859-3"
@@ -149,16 +149,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ENC_EUC_JAPANESE           "C;Japoński (EUC);Japoński (EUC)"
-    IDS_ENC_EUC_KOREAN             "C;Koreański (EUC);Koreański (EUC)"
-    IDS_ENC_ISO_2022_CN            "C;Chiński (ISO-2022);ISO-2022-CN"
-    IDS_ENC_HZ_GB2312              "C;Chiński uproszczony (GB2312);HZ-GB2312"
-    IDS_ENC_ISO_2022_JP            "C;Japoński (ISO-2022);ISO-2022-JP"
-    IDS_ENC_ISO_2022_KR            "C;Koreański (ISO-2022);ISO-2022-KR"
-    IDS_ENC_X_CHINESE_CNS          "C;Chiński tradycyjny (CNS);x-chinese-cns"
+    IDS_ENC_EUC_JAPANESE           "C;Japoński (EUC-JP);EUC-JP"
+    IDS_ENC_EUC_KOREAN             "C;Koreański (EUC-KR);EUC-KR"
+    IDS_ENC_ISO_2022_CN            "C;Chiński (ISO-2022-CN);ISO-2022-CN"
+    IDS_ENC_HZ_GB2312              "C;Chiński uproszczony (HZ-GB-2312);HZ-GB-2312"
+    IDS_ENC_ISO_2022_JP            "C;Japoński (ISO-2022-JP);ISO-2022-JP"
+    IDS_ENC_ISO_2022_KR            "C;Koreański (ISO-2022-KR);ISO-2022-KR"
+    IDS_ENC_X_CHINESE_CNS          "C;Chiński tradycyjny (CNS);x-Chinese-CNS"
     IDS_ENC_JOHAB                  "C;Koreański (Johab);Koreański (Johab)"
     IDS_ENC_ISO_8859_10            "B;Nordycki (ISO-8859-10);ISO-8859-10"
-    IDS_ENC_BIG5_HKSCS             "C;Chiński tradycyjny (Big5HKSCS);Big5HKSCS"
+    IDS_ENC_BIG5_HKSCS             "C;Chiński tradycyjny (Big5-HKSCS);Big5-HKSCS"
 END
 
 
