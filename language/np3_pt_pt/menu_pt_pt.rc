@@ -431,7 +431,7 @@ BEGIN
         MENUITEM "Tipo de letra pa&drão global...\tAlt+F12",          IDM_VIEW_FONT
         MENUITEM "Tipo de letra do esquema act&ual...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Dark Mode",                                 IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Modo Escuro Windows",                                 IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "Definiçõe&s"
     BEGIN
