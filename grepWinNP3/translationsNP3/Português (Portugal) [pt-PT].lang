@@ -580,7 +580,7 @@ msgstr "a cadeia de procura está vazia"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Iniciar nova janela do grepWinNP3"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -612,5 +612,5 @@ msgstr "Isto adiciona uma nova entrada ao menu de contexto 'Abrir com o Editor'"
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Sempre visível"
 
