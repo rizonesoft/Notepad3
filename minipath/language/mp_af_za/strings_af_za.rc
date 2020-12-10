@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Kies 'n bestemmingsgids."
     IDS_CREATELINK          "Kies 'n bestemmingsgids vir die nuwe skakel."
     IDS_SAVESETTINGS        "Stoor Instellings\nDie huidige program instellings is gestoor."
-    IDS_MUI_TRANSL_AUTHOR   "(af-ZA) Afrikaans vertaling deur rizonesoft"
+    IDS_MUI_TRANSL_AUTHOR   "(af-ZA) Afrikaanse vertaling deur rizonesoft"
 END
 
 

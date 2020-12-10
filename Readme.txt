@@ -103,10 +103,10 @@ Crane70                 https://github.com/Crane70
 engelhro                https://github.com/engelhro
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
-it4u                    https://github.com/it4u
 JeepWillys58            https://github.com/JeepWillys58
 jmacasd                 https://github.com/jmacasd
 jupester                https://github.com/jupester
+kenneth-ran             https://github.com/kenneth-ran
 kofifus                 https://github.com/kofifus
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
