@@ -1073,7 +1073,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 {
     // Select standard if NULL is specified
     if (!pLexNew) {
-        pLexNew = Flags.bLargeFileLoaded ? GetLargeFileLexer() : GetDefaultLexer();
+        pLexNew = Flags.bHugeFileLoadState ? GetLargeFileLexer() : GetDefaultLexer();
         if (IsLexerStandard(pLexNew)) {
             pLexNew = GetCurrentStdLexer();
         }
@@ -1619,7 +1619,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_StartStyling(0);
 
     // apply lexer styles
-    if (Flags.bLargeFileLoaded) {
+    if (Flags.bHugeFileLoadState) {
         SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
         EditUpdateVisibleIndicators();
     } else {
@@ -2125,7 +2125,7 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 //
 bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
-    if (Flags.bLargeFileLoaded) {
+    if (Flags.bHugeFileLoadState) {
         Style_SetDefaultLexer(hwnd);
         return true;
     }

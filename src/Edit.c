@@ -947,7 +947,7 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
     status->indentCount[I_TAB_MOD_X] = 0;
     status->indentCount[I_SPC_MOD_X] = 0;
 
-    if (Flags.bLargeFileLoaded) {
+    if (Flags.bHugeFileLoadState) {
         return;
     }
 
@@ -1014,7 +1014,7 @@ bool EditLoadFile(
     status->bUnicodeErr = false;
     status->bUnknownExt = false;
     status->bEncryptedRaw = false;
-    Flags.bLargeFileLoaded = false;
+    Flags.bHugeFileLoadState = false;
 
     HANDLE hFile = CreateFile(pszFile,
                               GENERIC_READ,
@@ -1060,7 +1060,7 @@ bool EditLoadFile(
                 InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, sizeStr);
                 CloseHandle(hFile);
                 Encoding_Forced(CPI_NONE);
-                Flags.bLargeFileLoaded = true;
+                Flags.bHugeFileLoadState = true;
                 return false;
             }
         }
@@ -1075,12 +1075,12 @@ bool EditLoadFile(
         StrFormatByteSize((LONGLONG)liFileSize.QuadPart, sizeStr, COUNTOF(sizeStr));
         WCHAR sizeWarnStr[64] = { L'\0' };
         StrFormatByteSize((LONGLONG)fileSizeWarning, sizeWarnStr, COUNTOF(sizeWarnStr));
+        Flags.bHugeFileLoadState = true;
         if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr) != IDYES) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
             return false;
         }
-        Flags.bLargeFileLoaded = true;
     }
 
     // check for unknown file/extension
@@ -1101,7 +1101,7 @@ bool EditLoadFile(
         Globals.dwLastError = GetLastError();
         CloseHandle(hFile);
         Encoding_Forced(CPI_NONE);
-        Flags.bLargeFileLoaded = true;
+        Flags.bHugeFileLoadState = true;
         return false;
     }
 
@@ -7576,7 +7576,7 @@ void EditDoStyling(DocPos iStartPos, DocPos iEndPos)
 {
     static bool guard = false;  // protect against recursion by notification event SCN_STYLENEEDED
 
-    if (Flags.bLargeFileLoaded) {
+    if (Flags.bHugeFileLoadState) {
         return;
     }
 

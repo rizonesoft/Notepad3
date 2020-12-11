@@ -536,7 +536,7 @@ typedef struct _flags_t
     int  ToolbarLook;
     int PrintFileAndLeave;
 
-    bool bLargeFileLoaded;
+    bool bHugeFileLoadState;
     bool bDevDebugMode;
     bool bStickyWindowPosition;
     bool bReuseWindow;

@@ -652,7 +652,7 @@ static void _InitGlobals()
     Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
     Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
 
-    Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
+    Flags.bHugeFileLoadState = DefaultFlags.bHugeFileLoadState = false;
     Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
     Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
     Flags.bReuseWindow = DefaultFlags.bReuseWindow = false;
@@ -1665,7 +1665,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-        if (Flags.bLargeFileLoaded) {
+        if (Flags.bHugeFileLoadState) {
             EditUpdateVisibleIndicators();
         } else {
             EditUpdateIndicators(0, -1, false);
@@ -2855,7 +2855,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     MarkAllOccurrences(0, false);
 
-    if (Flags.bLargeFileLoaded) {
+    if (Flags.bHugeFileLoadState) {
         EditDoVisibleStyling();
     } else {
         EditDoStyling(0, -1);
@@ -3492,7 +3492,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const cf = StrIsNotEmpty(Globals.CurrentFile);
     bool const te = Sci_IsDocEmpty();
     bool const mls = Sci_IsSelectionMultiLine();
-    //bool const lfl = Flags.bLargeFileLoaded;
+    //bool const lfl = Flags.bHugeFileLoadState;
 
     EnableCmd(hmenu, IDM_FILE_REVERT, cf);
     EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, cf);
@@ -10034,7 +10034,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         // Show inconsistent indentation
         fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-        bool const bCheckIndent = bCheckFile && !Flags.bLargeFileLoaded && Settings.WarnInconsistentIndents;
+        bool const bCheckIndent = bCheckFile && !Flags.bHugeFileLoadState && Settings.WarnInconsistentIndents;
 
         if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath)) {
             EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
@@ -10050,8 +10050,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         }
 
         EndWaitCursor();
-    } else if (!(Flags.bLargeFileLoaded || fioStatus.bUnknownExt)) {
+    } else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
+        Flags.bHugeFileLoadState = false; // reset
     }
 
     UpdateToolbar();
