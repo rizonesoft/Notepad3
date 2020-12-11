@@ -471,7 +471,7 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
         return false;
     }
 
-    DWORD dwFlags = Encoding_GetWCMB_Flags(codepage);
+    DWORD dwFlags = Encoding_GetWCMBFlagsByCodePage(codepage);
     if (dwFlags != 0) {
         dwFlags |= (WC_COMPOSITECHECK | WC_DEFAULTCHAR);
     }
@@ -947,7 +947,7 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
     status->indentCount[I_TAB_MOD_X] = 0;
     status->indentCount[I_SPC_MOD_X] = 0;
 
-    if (Flags.bLargeFileLoaded) {
+    if (Flags.bHugeFileLoadState) {
         return;
     }
 
@@ -1014,7 +1014,7 @@ bool EditLoadFile(
     status->bUnicodeErr = false;
     status->bUnknownExt = false;
     status->bEncryptedRaw = false;
-    Flags.bLargeFileLoaded = false;
+    Flags.bHugeFileLoadState = false;
 
     HANDLE hFile = CreateFile(pszFile,
                               GENERIC_READ,
@@ -1060,7 +1060,7 @@ bool EditLoadFile(
                 InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, sizeStr);
                 CloseHandle(hFile);
                 Encoding_Forced(CPI_NONE);
-                Flags.bLargeFileLoaded = true;
+                Flags.bHugeFileLoadState = true;
                 return false;
             }
         }
@@ -1075,12 +1075,12 @@ bool EditLoadFile(
         StrFormatByteSize((LONGLONG)liFileSize.QuadPart, sizeStr, COUNTOF(sizeStr));
         WCHAR sizeWarnStr[64] = { L'\0' };
         StrFormatByteSize((LONGLONG)fileSizeWarning, sizeWarnStr, COUNTOF(sizeWarnStr));
+        Flags.bHugeFileLoadState = true;
         if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr) != IDYES) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
             return false;
         }
-        Flags.bLargeFileLoaded = true;
     }
 
     // check for unknown file/extension
@@ -1101,7 +1101,7 @@ bool EditLoadFile(
         Globals.dwLastError = GetLastError();
         CloseHandle(hFile);
         Encoding_Forced(CPI_NONE);
-        Flags.bLargeFileLoaded = true;
+        Flags.bHugeFileLoadState = true;
         return false;
     }
 
@@ -1166,6 +1166,7 @@ bool EditLoadFile(
                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
 #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
+#define IS_ENC_PURE_ASCII() (encDetection.analyzedEncoding == CPI_ASCII_7BIT)
 
     // --------------------------------------------------------------------------
 
@@ -1238,7 +1239,6 @@ bool EditLoadFile(
         bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
 
         bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && bSkipUTFDetection);
-        bool const bIsCP_UTF7 = (Encoding_GetCodePage(encDetection.Encoding) == CP_UTF7);
 
         if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8))) {
             if (encDetection.bIsUTF8Sig) {
@@ -1250,8 +1250,8 @@ bool EditLoadFile(
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
             }
-        } else if (!IS_ENC_ENFORCED() && (bIsCP_UTF7 && encDetection.bIs7BitOnly)) {
-            // load UTF-7/ASCII(7-bit) as ANSI/UTF-8
+        } else if (!IS_ENC_ENFORCED() && IS_ENC_PURE_ASCII()) {
+            // load ASCII(7-bit) as ANSI/UTF-8
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
             status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
             EditDetectEOLMode(lpData, cbData, status);
@@ -1459,7 +1459,7 @@ bool EditSaveFile(
                                           lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
 
                 // dry conversion run
-                DWORD const dwFlags = Encoding_GetWCMB_Flags(uCodePage);
+                DWORD const dwFlags = Encoding_GetWCMBFlagsByCodePage(uCodePage);
                 size_t const cbSizeNeeded = (size_t)WideCharToMultiByteEx(uCodePage, dwFlags, lpDataWide, cbDataWide, NULL, 0, NULL, NULL);
                 size_t const cbDataNew = max(cbSizeNeeded, cbDataWide);
 
@@ -7576,7 +7576,7 @@ void EditDoStyling(DocPos iStartPos, DocPos iEndPos)
 {
     static bool guard = false;  // protect against recursion by notification event SCN_STYLENEEDED
 
-    if (Flags.bLargeFileLoaded) {
+    if (Flags.bHugeFileLoadState) {
         return;
     }
 

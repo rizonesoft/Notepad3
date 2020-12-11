@@ -626,7 +626,7 @@ constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfi
 
     if (encStrg && (encStrg[0] != '\0')) {
         // preprocessing: special cases
-        if (_stricmp(encStrg, "ascii") == 0) {
+        if (StrCmpICA(encStrg, "ascii") == 0) {
             cpiEncoding = CPI_ASCII_7BIT;
         } else {
             cpiEncoding = Encoding_MatchA(encStrg);
@@ -1270,7 +1270,6 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
     encDetRes.bIsReverse = bBOM_BE;
     encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
-    encDetRes.bIs7BitOnly = IsValidUTF7(lpData, cbData);
     encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
 
     if (!IS_ENC_ENFORCED()) {
@@ -1298,6 +1297,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
             // ---------------------------------------------------------------------------
         }
+        //~encDetRes.bIs7BitOnly = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsValidUTF7(lpData, cbData);
 
         if (encDetRes.analyzedEncoding == CPI_NONE) {
             encDetRes.analyzedEncoding = iAnalyzeHint;

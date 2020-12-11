@@ -69,7 +69,7 @@ typedef struct _np2encoding {
 
 } NP2ENCODING;
 
-DWORD Encoding_GetWCMB_Flags(const UINT codePage);
+DWORD Encoding_GetWCMBFlagsByCodePage(const UINT codePage);
 
 cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);         // getter/setter
 cpi_enc_t  Encoding_Forced(cpi_enc_t iEncoding);          // getter/setter
@@ -186,7 +186,6 @@ typedef struct _enc_det_t {
     float     confidence;
     // flags:
     bool bIsAnalysisReliable;
-    bool bIs7BitOnly;
     bool bHasBOM;
     bool bIsReverse;
     bool bIsUTF8Sig;
@@ -196,7 +195,7 @@ typedef struct _enc_det_t {
 
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, "" }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, "" }
 
 
 ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
