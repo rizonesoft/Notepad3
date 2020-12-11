@@ -656,7 +656,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "इस स्तिथि में वापस जाएं"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "फ़ाइल को पुनः लोड करने हेतु स्रोत एन्कोडिंग चुनें: (&E)",IDC_STATIC,7,7,119,8
+    LTEXT           "फ़ाइल को पुनः लोड करने हेतु स्रोत एन्कोडिंग चुनें: (&E)",IDC_STATIC,7,7,160,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "सही है",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "रद्द करें",IDCANCEL,108,114,50,14
@@ -668,7 +668,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "एन्कोडिंग सेट करें"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "चालू दस्तावेज़ की एन्कोडिंग चुनें: (&E)",IDC_STATIC,7,7,90,8
+    LTEXT           "चालू दस्तावेज़ की एन्कोडिंग चुनें: (&E)",IDC_STATIC,7,7,120,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "सही है",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "रद्द करें",IDCANCEL,108,114,50,14
