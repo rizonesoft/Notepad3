@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1201.(build_#) (2020-12-01)
+Current BETA/RC Version 5.20.1211.(build_#) (2020-12-11)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1211.1]- No error message after decline loading file of huge size.
 [1201.1]- Renaming Chinese displayed encoding according to MIME/IANA.
 [1125.2]- Code styling reformat (AStyle: OTBS).
 [1125.2]- Format: AStyle ALLMAN core code base.
@@ -96,6 +97,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1211.1]- Refactoring encoding detection: pure ASCII vs. 7-bit.
 [1125.2]- File encoding analysis with 7-bit ASCII only.
 [1125.2]- File save problem after switching encoding to GB2312 (52936).
 [1116.1]- Initial path on OpenFile dialog (load file).
