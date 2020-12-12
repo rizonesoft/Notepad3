@@ -32,16 +32,7 @@ Thumbs.db
 /Build/.vs
 /Build/Packages
 /Build/temp_zip*
-/Build/*setup_beta*
-/Build/Bin/Password.txt
-/Build/Bin/Certum.cer
-/Build/Bin/Certum.p12
-/Build/sign.bat
-/Build/Signing/Certum.cer
-/Build/Signing/Certum.p12
-/Build/Signing/kSign.exe
-/Build/Signing/kSignCMD.exe
-/Build/Signing/Password.txt
+/Build/notepad3*setup_*
 /distrib/Notepad3*.exe
 
 /packages
