@@ -24,8 +24,6 @@ IF /I "%~1" == "-help"  GOTO SHOWHELP
 IF /I "%~1" == "--help" GOTO SHOWHELP
 IF /I "%~1" == "/?"     GOTO SHOWHELP
 
-rem IF EXIST "%~dp0..\signinfo_notepad3.txt" SET "SIGN=True"
-
 SET INPUTDIRx86=bin\Release_x86_v142
 SET INPUTDIRx64=bin\Release_x64_v142
 SET "TEMP_NAME=temp_zip"
@@ -41,9 +39,6 @@ CALL :SubGetVersion
 CALL :SubDetectSevenzipPath
 
 IF /I "%SEVENZIP%" == "" CALL :SUBMSG "ERROR" "7za wasn't found!"
-
-REM IF /I "%SIGN%" == "True" CALL :SubSign %INPUTDIRx86%
-REM IF /I "%SIGN%" == "True" CALL :SubSign %INPUTDIRx64%
 
 CALL :SubZipFiles %INPUTDIRx86% x86
 CALL :SubZipFiles %INPUTDIRx64% x64
@@ -147,18 +142,6 @@ FOR /F "tokens=3,4 delims= " %%K IN (
 
 SET NP2_VER=%VerMajor%.%VerMinor%.%VerRev%.%VerBuild%
 EXIT /B
-
-
-:SubSign
-REM IF %ERRORLEVEL% NEQ 0 EXIT /B
-REM %1 is the subfolder
-
-REM CALL "%~dp0sign.bat" "..\%1\Notepad2.exe" || (CALL :SUBMSG "ERROR" "Problem signing ..\%1\Notepad2.exe" & GOTO Break)
-
-REM CALL :SUBMSG "INFO" "..\%1\Notepad2.exe signed successfully."
-
-REM :Break
-REM EXIT /B
 
 
 :SHOWHELP
