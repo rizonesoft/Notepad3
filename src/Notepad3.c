@@ -4416,9 +4416,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         if (SciCall_IsSelectionEmpty()) {
             if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK) &&
-                    !Settings2.NoCopyLineOnEmptySelection) {
-                // VisualStudio behavior
-                SciCall_CopyAllowLine();
+                !Settings2.NoCopyLineOnEmptySelection) {
+                if (Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) > 0) {
+                    SciCall_CopyAllowLine(); // (!) VisualStudio behavior
+                    // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
+                    // which is then used in SCI_PASTE to paste the whole line before the current line.
+                }
             }
         } else {
             SciCall_Copy();
