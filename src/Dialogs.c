@@ -85,8 +85,8 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
             InitWindowCommon(hThisWnd, true);
 
             // get window handles
-            LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
-            HWND const           hParentWnd       = pCreateStructure->hwndParent; // GetParent(hThisWnd);
+            LPCREATESTRUCT const pCreateStruct = ((LPCBT_CREATEWND)lParam)->lpcs;
+            HWND const hParentWnd = pCreateStruct->hwndParent ? pCreateStruct->hwndParent : GetParent(hThisWnd);
 
             if (hParentWnd) {
 
@@ -99,15 +99,15 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 
                 // set new coordinates
                 RECT rcDlg;
-                rcDlg.left   = pCreateStructure->x;
-                rcDlg.top    = pCreateStructure->y;
-                rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
-                rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
+                rcDlg.left   = pCreateStruct->x;
+                rcDlg.top    = pCreateStruct->y;
+                rcDlg.right  = pCreateStruct->x + pCreateStruct->cx;
+                rcDlg.bottom = pCreateStruct->y + pCreateStruct->cy;
 
                 POINT const ptTL = GetCenterOfDlgInParent(&rcDlg, &rcParent);
 
-                pCreateStructure->x = ptTL.x;
-                pCreateStructure->y = ptTL.y;
+                pCreateStruct->x = ptTL.x;
+                pCreateStruct->y = ptTL.y;
             }
 
             // we are done
