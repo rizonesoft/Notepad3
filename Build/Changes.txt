@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1211.(build_#) (2020-12-11)
+Current BETA/RC Version 5.20.1214.(build_#) (2020-12-14)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1214.1]- Behavior change: copy to clipboard on empty selection -> don't copy anything if current line is empty.
+[1214.1]- Update keywords list in Style INNO Lexer.
 [1211.1]- No error message after decline loading file of huge size.
 [1201.1]- Renaming Chinese displayed encoding according to MIME/IANA.
 [1125.2]- Code styling reformat (AStyle: OTBS).
@@ -89,9 +91,9 @@ CHANGES:
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
-[1116.1]- Update grepWinNP3 (GRE) version 2.1.4.31 (2020-11-16).
-[1116.1]- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020-11-05).
-[.915.3]- Update Scintilla Library (SCI) version 4.4.5 (2020-09-11).
+[1214.1]- Update grepWinNP3 (GRE) version 2.1.4.32 (2020-12-14).
+[1214.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2020-12-07).
+[1214.1]- Update Scintilla Library (SCI) version 4.4.6 (2020-12-01).
 
 --------------------------------------------------------
 FIXES:
