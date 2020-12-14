@@ -23,6 +23,11 @@ FontAlias::FontAlias(const FontAlias &other) noexcept {
 	SetID(other.fid);
 }
 
+FontAlias::FontAlias(FontAlias &&other) noexcept : Font() {
+	SetID(other.fid);
+	other.ClearFont();
+}
+
 FontAlias::~FontAlias() {
 	SetID(FontID{});
 	// ~Font will not release the actual font resource since it is now 0

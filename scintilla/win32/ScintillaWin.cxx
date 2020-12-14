@@ -479,7 +479,7 @@ class ScintillaWin final :
 #endif
 
 	explicit ScintillaWin(HWND hwnd);
-	// ~ScintillaWin() in public section
+	// virtual ~ScintillaWin() in public section
 
 	void Init() noexcept;
 	void Finalise() noexcept override;
