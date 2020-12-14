@@ -214,8 +214,10 @@
     <ClCompile Include="sktoolslib_mod\DropFiles.cpp" />
     <ClCompile Include="sktoolslib_mod\EditDoubleClick.cpp" />
     <ClCompile Include="sktoolslib_mod\FileDropTarget.cpp" />
+    <ClCompile Include="sktoolslib_mod\Hash.cpp" />
     <ClCompile Include="sktoolslib_mod\hyperlink.cpp" />
     <ClCompile Include="sktoolslib_mod\Language.cpp" />
+    <ClCompile Include="sktoolslib_mod\Monitor.cpp" />
     <ClCompile Include="sktoolslib_mod\PathUtils.cpp" />
     <ClCompile Include="sktoolslib_mod\PreserveChdir.cpp" />
     <ClCompile Include="sktoolslib_mod\RegHistory.cpp" />
@@ -223,6 +225,7 @@
     <ClCompile Include="sktoolslib_mod\StringUtils.cpp" />
     <ClCompile Include="sktoolslib_mod\SysImageList.cpp" />
     <ClCompile Include="sktoolslib_mod\SysInfo.cpp" />
+    <ClCompile Include="sktoolslib_mod\TempFile.cpp" />
     <ClCompile Include="sktoolslib_mod\TextFile.cpp" />
     <ClCompile Include="sktoolslib_mod\UnicodeUtils.cpp" />
     <ClCompile Include="src\AboutDlg.cpp" />
@@ -259,10 +262,11 @@
     <ClInclude Include="sktoolslib_mod\DropFiles.h" />
     <ClInclude Include="sktoolslib_mod\EditDoubleClick.h" />
     <ClInclude Include="sktoolslib_mod\FileDropTarget.h" />
+    <ClInclude Include="sktoolslib_mod\Hash.h" />
     <ClInclude Include="sktoolslib_mod\hyperlink.h" />
     <ClInclude Include="sktoolslib_mod\Language.h" />
     <ClInclude Include="sktoolslib_mod\maxpath.h" />
-    <ClInclude Include="sktoolslib_mod\OnOutOfScope.h" />
+    <ClInclude Include="sktoolslib_mod\Monitor.h" />
     <ClInclude Include="sktoolslib_mod\PathUtils.h" />
     <ClInclude Include="sktoolslib_mod\PreserveChdir.h" />
     <ClInclude Include="sktoolslib_mod\RegHistory.h" />

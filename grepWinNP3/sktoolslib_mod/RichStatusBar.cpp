@@ -101,14 +101,14 @@ bool CRichStatusBar::SetPart(int index, const CRichStatusBarItem& item, bool red
         {
             m_parts.push_back(std::move(CRichStatusBarItem()));
             m_partwidths.push_back({});
-            m_AnimVars.push_back(Animator::Instance().CreateAnimationVariable(0.0));
+            m_AnimVars.push_back(Animator::Instance().CreateAnimationVariable(0.0, 0.0));
         }
     }
     if (index < 0)
     {
         m_parts.push_back(item);
         m_partwidths.push_back({});
-        m_AnimVars.push_back(Animator::Instance().CreateAnimationVariable(0.0));
+        m_AnimVars.push_back(Animator::Instance().CreateAnimationVariable(0.0, 0.0));
         index = (int)m_parts.size() - 1;
     }
     else if (replace)
@@ -119,7 +119,7 @@ bool CRichStatusBar::SetPart(int index, const CRichStatusBarItem& item, bool red
     {
         m_parts.insert(m_parts.begin() + index - 1, item);
         m_partwidths.insert(m_partwidths.begin() + index - 1, {});
-        m_AnimVars.insert(m_AnimVars.begin() + index - 1, Animator::Instance().CreateAnimationVariable(0.0));
+        m_AnimVars.insert(m_AnimVars.begin() + index - 1, Animator::Instance().CreateAnimationVariable(0.0, 1.0));
     }
     CalcRequestedWidths(index);
     if (redraw)
@@ -365,21 +365,31 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             {
                 if ((m_hoverPart >= 0) && m_parts[m_hoverPart].hoverActive)
                 {
-                    auto transHot   = Animator::Instance().CreateLinearTransition(0.3, 1.0);
+                    auto transHot   = Animator::Instance().CreateLinearTransition(m_AnimVars[m_hoverPart], 0.3, 1.0);
                     auto storyBoard = Animator::Instance().CreateStoryBoard();
-                    storyBoard->AddTransition(m_AnimVars[m_hoverPart], transHot);
+                    if (storyBoard && transHot)
+                    {
+                        storyBoard->AddTransition(m_AnimVars[m_hoverPart].m_animVar, transHot);
                     Animator::Instance().RunStoryBoard(storyBoard, [this]() {
                         InvalidateRect(*this, nullptr, false);
                     });
                 }
+                    else
+                        InvalidateRect(*this, nullptr, false);
+                }
                 if (oldHover >= 0)
                 {
-                    auto transHot   = Animator::Instance().CreateLinearTransition(0.3, 0.0);
+                    auto transHot   = Animator::Instance().CreateLinearTransition(m_AnimVars[oldHover], 0.3, 0.0);
                     auto storyBoard = Animator::Instance().CreateStoryBoard();
-                    storyBoard->AddTransition(m_AnimVars[oldHover], transHot);
+                    if (storyBoard && transHot)
+                    {
+                        storyBoard->AddTransition(m_AnimVars[oldHover].m_animVar, transHot);
                     Animator::Instance().RunStoryBoard(storyBoard, [this]() {
                         InvalidateRect(*this, nullptr, false);
                     });
+                }
+                    else
+                        InvalidateRect(*this, nullptr, false);
                 }
             }
         }
@@ -393,12 +403,17 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             TrackMouseEvent(&tme);
             if (m_hoverPart >= 0)
             {
-                auto transHot   = Animator::Instance().CreateLinearTransition(0.3, 0.0);
+                auto transHot   = Animator::Instance().CreateLinearTransition(m_AnimVars[m_hoverPart], 0.3, 0.0);
                 auto storyBoard = Animator::Instance().CreateStoryBoard();
-                storyBoard->AddTransition(m_AnimVars[m_hoverPart], transHot);
+                if (storyBoard && transHot)
+                {
+                    storyBoard->AddTransition(m_AnimVars[m_hoverPart].m_animVar, transHot);
                 Animator::Instance().RunStoryBoard(storyBoard, [this]() {
                     InvalidateRect(*this, nullptr, false);
                 });
+                }
+                else
+                    InvalidateRect(*this, nullptr, false);
             }
             m_hoverPart = -1;
         }

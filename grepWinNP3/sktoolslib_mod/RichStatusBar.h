@@ -138,5 +138,5 @@ private:
     int                                      m_hoverPart;
     int                                      m_height;
     bool                                     m_drawGrip;
-    std::vector<IUIAnimationVariablePtr>     m_AnimVars;
+    std::vector<AnimationVariable>           m_AnimVars;
 };

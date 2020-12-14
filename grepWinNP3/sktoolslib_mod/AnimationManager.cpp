@@ -61,7 +61,7 @@ public:
     }
 
     /// Inherited via IUIAnimationTimerEventHandler
-    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void ** ppvObject) override
+    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject) override
     {
         if (ppvObject == nullptr)
             return E_POINTER;
@@ -94,7 +94,6 @@ public:
         return ref;
     }
 
-
     virtual HRESULT STDMETHODCALLTYPE OnPreUpdate(void) override
     {
         return S_OK;
@@ -113,7 +112,7 @@ public:
     }
 
 private:
-    std::map<IUIAnimationStoryboard *, std::function<void()>> callbacks;
+    std::map<IUIAnimationStoryboard*, std::function<void()>> callbacks;
     unsigned long ref;
 };
 
@@ -135,7 +134,7 @@ public:
     }
 
     /// Sets the timer object event handler
-    void SetTimerObj(CTimerEventHandler * handler)
+    void SetTimerObj(CTimerEventHandler* handler)
     {
         if (timerEventHandler)
             timerEventHandler->Release();
@@ -145,7 +144,7 @@ public:
     }
 
     /// Inherited via IUIAnimationStoryboardEventHandler
-    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void ** ppvObject) override
+    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject) override
     {
         if (ppvObject == nullptr)
             return E_POINTER;
@@ -178,7 +177,6 @@ public:
         return ref;
     }
 
-
     /// IUIAnimationStoryboardEventHandler Interface implementation
     HRESULT STDMETHODCALLTYPE OnStoryboardStatusChanged(IUIAnimationStoryboard* storyboard,
                                                         UI_ANIMATION_STORYBOARD_STATUS newStatus,
@@ -203,72 +201,104 @@ public:
         return S_OK;
     }
 
-
 private:
-    CTimerEventHandler * timerEventHandler;
+    CTimerEventHandler* timerEventHandler;
     unsigned long ref;
 };
 
-
-IUIAnimationVariablePtr Animator::CreateAnimationVariable(double start)
+AnimationVariable Animator::CreateAnimationVariable(double start, double defValue)
 {
+    AnimationVariable var;
+    var.m_defaultValue = defValue;
+    if (pAnimMgr)
+    {
     IUIAnimationVariablePtr pAnimVar = nullptr;
     if (SUCCEEDED(pAnimMgr->CreateAnimationVariable(start, &pAnimVar)))
-        return pAnimVar;
-    return nullptr;
+        {
+            var.m_animVar = pAnimVar;
+        }
+    }
+    return var;
 }
 
-INT32 Animator::GetIntegerValue(IUIAnimationVariablePtr var)
+INT32 Animator::GetIntegerValue(AnimationVariable& var)
 {
-    INT32 val;
-    var->GetIntegerValue(&val);
+    if (var.m_animVar)
+    {
+        INT32 val = 0;
+        if (SUCCEEDED(var.m_animVar->GetIntegerValue(&val)))
     return val;
+    }
+    return (INT32)var.m_defaultValue;
 }
 
-double Animator::GetValue(IUIAnimationVariablePtr var)
+double Animator::GetValue(AnimationVariable& var)
 {
-    double val;
-    var->GetValue(&val);
+    if (var.m_animVar)
+    {
+        double val = 0.0;
+        if (SUCCEEDED(var.m_animVar->GetValue(&val)))
     return val;
+    }
+    return var.m_defaultValue;
 }
 
-IUIAnimationTransitionPtr Animator::CreateAccelerateDecelerateTransition(UI_ANIMATION_SECONDS duration, double finalValue, double accelerationRatio, double decelerationRatio)
+IUIAnimationTransitionPtr Animator::CreateAccelerateDecelerateTransition(AnimationVariable& var, UI_ANIMATION_SECONDS duration, double finalValue, double accelerationRatio, double decelerationRatio)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateAccelerateDecelerateTransition(duration, finalValue, accelerationRatio, decelerationRatio, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
-IUIAnimationTransitionPtr Animator::CreateSmoothStopTransition(UI_ANIMATION_SECONDS duration, double finalValue)
+IUIAnimationTransitionPtr Animator::CreateSmoothStopTransition(AnimationVariable& var, UI_ANIMATION_SECONDS duration, double finalValue)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateSmoothStopTransition(duration, finalValue, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
-IUIAnimationTransitionPtr Animator::CreateParabolicTransitionFromAcceleration(double finalValue, double finalVelocity, double acceleration)
+IUIAnimationTransitionPtr Animator::CreateParabolicTransitionFromAcceleration(AnimationVariable& var, double finalValue, double finalVelocity, double acceleration)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateParabolicTransitionFromAcceleration(finalValue, finalVelocity, acceleration, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
-IUIAnimationTransitionPtr Animator::CreateCubicTransition(UI_ANIMATION_SECONDS maximumDuration, double finalValue, double finalVelocity)
+IUIAnimationTransitionPtr Animator::CreateCubicTransition(AnimationVariable& var, UI_ANIMATION_SECONDS maximumDuration, double finalValue, double finalVelocity)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateCubicTransition(maximumDuration, finalValue, finalVelocity, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
 IUIAnimationTransitionPtr Animator::CreateReversalTransition(UI_ANIMATION_SECONDS duration)
 {
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateReversalTransition(duration, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
@@ -278,65 +308,93 @@ IUIAnimationTransitionPtr Animator::CreateSinusoidalTransitionFromRange(UI_ANIMA
                                                                         UI_ANIMATION_SECONDS period,
                                                                         UI_ANIMATION_SLOPE slope)
 {
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateSinusoidalTransitionFromRange(duration, minimumValue, maximumValue, period, slope, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
 IUIAnimationTransitionPtr Animator::CreateSinusoidalTransitionFromVelocity(UI_ANIMATION_SECONDS duration, UI_ANIMATION_SECONDS period)
 {
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateSinusoidalTransitionFromVelocity(duration, period, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
-IUIAnimationTransitionPtr Animator::CreateLinearTransitionFromSpeed(double speed, double finalValue)
+IUIAnimationTransitionPtr Animator::CreateLinearTransitionFromSpeed(AnimationVariable& var, double speed, double finalValue)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateLinearTransitionFromSpeed(speed, finalValue, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
-IUIAnimationTransitionPtr Animator::CreateLinearTransition(UI_ANIMATION_SECONDS duration, double finalValue)
+IUIAnimationTransitionPtr Animator::CreateLinearTransition(AnimationVariable& var, UI_ANIMATION_SECONDS duration, double finalValue)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateLinearTransition(duration, finalValue, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
-IUIAnimationTransitionPtr Animator::CreateDiscreteTransition(UI_ANIMATION_SECONDS delay, double finalValue, UI_ANIMATION_SECONDS hold)
+IUIAnimationTransitionPtr Animator::CreateDiscreteTransition(AnimationVariable& var, UI_ANIMATION_SECONDS delay, double finalValue, UI_ANIMATION_SECONDS hold)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateDiscreteTransition(delay, finalValue, hold, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
 IUIAnimationTransitionPtr Animator::CreateConstantTransition(UI_ANIMATION_SECONDS duration)
 {
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateConstantTransition(duration, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
-IUIAnimationTransitionPtr Animator::CreateInstantaneousTransition(double finalValue)
+IUIAnimationTransitionPtr Animator::CreateInstantaneousTransition(AnimationVariable& var, double finalValue)
 {
+    var.m_defaultValue = finalValue;
+    if (pTransLib)
+    {
     IUIAnimationTransitionPtr trans;
     if (SUCCEEDED(pTransLib->CreateInstantaneousTransition(finalValue, &trans)))
         return trans;
+    }
     return nullptr;
 }
 
 IUIAnimationStoryboardPtr Animator::CreateStoryBoard()
 {
+    if (pAnimMgr)
+    {
     IUIAnimationStoryboardPtr storyBoard;
     if (SUCCEEDED(pAnimMgr->CreateStoryboard(&storyBoard)))
         return storyBoard;
+    }
     return nullptr;
 }
 
@@ -351,6 +409,8 @@ HRESULT Animator::RunStoryBoard(IUIAnimationStoryboardPtr storyBoard, std::funct
         storyBoard->SetStoryboardEventHandler(notificationAnimEvHandler);
     }
 
+    if (pAnimTmr)
+    {
     // start the animation
     UI_ANIMATION_SECONDS secs = 0;
     pAnimTmr->GetTime(&secs);
@@ -360,11 +420,15 @@ HRESULT Animator::RunStoryBoard(IUIAnimationStoryboardPtr storyBoard, std::funct
     if (pAnimTmr->IsEnabled() != S_OK)
         pAnimTmr->Enable();
     return hr;
+    }
+    return E_FAIL;
 }
 
 HRESULT Animator::AbandonAllStoryBoards()
 {
+    if (pAnimMgr)
     return pAnimMgr->AbandonAllStoryboards();
+    return E_FAIL;
 }
 
 Animator::Animator()
@@ -410,12 +474,14 @@ Animator::Animator()
 Animator::~Animator()
 {
     // release the timer event handler object (CTimerEventHandler)
+    if (pAnimTmr)
     pAnimTmr->SetTimerEventHandler(nullptr);
     // shut down the animation manager: No methods can be called on any animation object after Shutdown
+    if (pAnimMgr)
     pAnimMgr->Shutdown();
 }
 
-Animator & Animator::Instance()
+Animator& Animator::Instance()
 {
     if (instance == nullptr)
         instance.reset(new Animator());
@@ -433,4 +499,3 @@ bool Animator::IsInstanceActive()
 }
 
 std::unique_ptr<Animator> Animator::instance = nullptr;
-
