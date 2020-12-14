@@ -2219,7 +2219,7 @@ stack_double(int* is_alloca, char** arg_alloc_base,
   StackType* klow = stk;\
   while (1) {\
     klow--;\
-    STACK_BASE_CHECK(k, "STACK_EMPTY_CHECK_MEM_REC");\
+    STACK_BASE_CHECK(klow, "STACK_EMPTY_CHECK_MEM_REC");\
     if (klow->type == STK_EMPTY_CHECK_START) {\
       if (klow->zid == (sid)) {\
         if (level == 0) {\
@@ -4144,6 +4144,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         }
       }
 
+#ifdef ONIG_DEBUG_CALL
+      fprintf(DBGFP, "CALL: id:%d, at:%ld, level:%lu\n", p->call.called_mem, s - str, subexp_call_nest_counter);
+#endif
       addr = p->call.addr;
       INC_OP; STACK_PUSH_CALL_FRAME(p);
       p = reg->ops + addr;

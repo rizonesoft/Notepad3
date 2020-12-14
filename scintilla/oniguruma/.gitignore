@@ -43,6 +43,7 @@ m4/*.m4
 
 # test/
 /test/test_utf8
+/test/test_options
 /test/testc
 /test/testcu
 /test/testp

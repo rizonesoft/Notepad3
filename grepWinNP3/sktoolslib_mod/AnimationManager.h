@@ -74,6 +74,14 @@ _COM_SMARTPTR_TYPEDEF(IUIAnimationTransition, __uuidof(IUIAnimationTransition));
 
 class CTimerEventHandler;
 
+class AnimationVariable
+{
+public:
+    IUIAnimationVariablePtr m_animVar;
+    double m_defaultValue;
+
+};
+
 class Animator
 {
 public:
@@ -88,22 +96,22 @@ public:
     Animator& operator=(const Animator&) = delete;
 
 
-    IUIAnimationVariablePtr CreateAnimationVariable(double start);
-    static INT32 GetIntegerValue(IUIAnimationVariablePtr var);
-    static double GetValue(IUIAnimationVariablePtr var);
+    AnimationVariable CreateAnimationVariable(double start, double defValue);
+    static INT32 GetIntegerValue(AnimationVariable& var);
+    static double GetValue(AnimationVariable& var);
 
-    IUIAnimationTransitionPtr CreateAccelerateDecelerateTransition(UI_ANIMATION_SECONDS duration, double finalValue, double accelerationRatio = 0.4, double decelerationRatio = 0.4);
-    IUIAnimationTransitionPtr CreateSmoothStopTransition(UI_ANIMATION_SECONDS duration, double finalValue);
-    IUIAnimationTransitionPtr CreateParabolicTransitionFromAcceleration(double finalValue, double finalVelocity, double acceleration);
-    IUIAnimationTransitionPtr CreateCubicTransition(UI_ANIMATION_SECONDS maximumDuration, double finalValue, double finalVelocity);
+    IUIAnimationTransitionPtr CreateAccelerateDecelerateTransition(AnimationVariable& var, UI_ANIMATION_SECONDS duration, double finalValue, double accelerationRatio = 0.4, double decelerationRatio = 0.4);
+    IUIAnimationTransitionPtr CreateSmoothStopTransition(AnimationVariable& var, UI_ANIMATION_SECONDS duration, double finalValue);
+    IUIAnimationTransitionPtr CreateParabolicTransitionFromAcceleration(AnimationVariable& var, double finalValue, double finalVelocity, double acceleration);
+    IUIAnimationTransitionPtr CreateCubicTransition(AnimationVariable& var, UI_ANIMATION_SECONDS maximumDuration, double finalValue, double finalVelocity);
     IUIAnimationTransitionPtr CreateReversalTransition(UI_ANIMATION_SECONDS duration);
     IUIAnimationTransitionPtr CreateSinusoidalTransitionFromRange(UI_ANIMATION_SECONDS duration, double minimumValue, double maximumValue, UI_ANIMATION_SECONDS period, UI_ANIMATION_SLOPE slope);
     IUIAnimationTransitionPtr CreateSinusoidalTransitionFromVelocity(UI_ANIMATION_SECONDS duration, UI_ANIMATION_SECONDS period);
-    IUIAnimationTransitionPtr CreateLinearTransitionFromSpeed(double speed, double finalValue);
-    IUIAnimationTransitionPtr CreateLinearTransition(UI_ANIMATION_SECONDS duration, double finalValue);
-    IUIAnimationTransitionPtr CreateDiscreteTransition(UI_ANIMATION_SECONDS delay, double finalValue, UI_ANIMATION_SECONDS hold);
+    IUIAnimationTransitionPtr CreateLinearTransitionFromSpeed(AnimationVariable& var, double speed, double finalValue);
+    IUIAnimationTransitionPtr CreateLinearTransition(AnimationVariable& var, UI_ANIMATION_SECONDS duration, double finalValue);
+    IUIAnimationTransitionPtr CreateDiscreteTransition(AnimationVariable& var, UI_ANIMATION_SECONDS delay, double finalValue, UI_ANIMATION_SECONDS hold);
     IUIAnimationTransitionPtr CreateConstantTransition(UI_ANIMATION_SECONDS duration);
-    IUIAnimationTransitionPtr CreateInstantaneousTransition(double finalValue);
+    IUIAnimationTransitionPtr CreateInstantaneousTransition(AnimationVariable& var, double finalValue);
 
     IUIAnimationStoryboardPtr CreateStoryBoard();
 

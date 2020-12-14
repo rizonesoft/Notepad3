@@ -114,9 +114,6 @@
     <ClCompile Include="sktoolslib_mod\FileDropTarget.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
-    <ClCompile Include="sktoolslib_mod\hyperlink.cpp">
-      <Filter>sktoolslib_mod</Filter>
-    </ClCompile>
     <ClCompile Include="sktoolslib_mod\Language.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
@@ -148,6 +145,18 @@
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
     <ClCompile Include="sktoolslib_mod\PreserveChdir.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\Hash.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\Monitor.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\TempFile.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\hyperlink.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
   </ItemGroup>
@@ -245,9 +254,6 @@
     <ClInclude Include="sktoolslib_mod\FileDropTarget.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
-    <ClInclude Include="sktoolslib_mod\hyperlink.h">
-      <Filter>sktoolslib_mod</Filter>
-    </ClInclude>
     <ClInclude Include="sktoolslib_mod\Language.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
@@ -296,11 +302,17 @@
     <ClInclude Include="src\COMPtrs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sktoolslib_mod\OnOutOfScope.h">
-      <Filter>sktoolslib_mod</Filter>
-    </ClInclude>
     <ClInclude Include="src\last\version.h">
       <Filter>Header Files\last</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\Hash.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\Monitor.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\hyperlink.h">
+      <Filter>sktoolslib_mod</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
