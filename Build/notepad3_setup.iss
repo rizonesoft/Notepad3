@@ -65,6 +65,7 @@ DisableProgramGroupPage=yes
 DisableReadyPage=yes
 DisableWelcomePage=yes
 AllowCancelDuringInstall=yes
+UsedUserAreasWarning=no
 MinVersion=0,6.1sp1
 ArchitecturesAllowed=x86 x64
 ArchitecturesInstallIn64BitMode=x64
