@@ -93,6 +93,7 @@ typedef unsigned int OnigCaseFoldType; /* case fold flag */
 
 ONIG_EXTERN OnigCaseFoldType OnigDefaultCaseFoldFlag;
 
+#define ONIGENC_CASE_FOLD_ASCII_ONLY            (1)
 /* #define ONIGENC_CASE_FOLD_HIRAGANA_KATAKANA  (1<<1) */
 /* #define ONIGENC_CASE_FOLD_KATAKANA_WIDTH     (1<<2) */
 #define ONIGENC_CASE_FOLD_TURKISH_AZERI         (1<<20)
@@ -402,9 +403,9 @@ typedef unsigned int        OnigOptionType;
 #define ONIG_OPTION_NOTEOL                    (ONIG_OPTION_NOTBOL << 1)
 #define ONIG_OPTION_POSIX_REGION              (ONIG_OPTION_NOTEOL << 1)
 #define ONIG_OPTION_CHECK_VALIDITY_OF_STRING  (ONIG_OPTION_POSIX_REGION << 1)
-/* #define ONIG_OPTION_CRLF_AS_LINE_SEPARATOR    (ONIG_OPTION_CHECK_VALIDITY_OF_STRING << 1) */
 /* options (compile time) */
-#define ONIG_OPTION_WORD_IS_ASCII        (ONIG_OPTION_CHECK_VALIDITY_OF_STRING << 4)
+#define ONIG_OPTION_IGNORECASE_IS_ASCII  (ONIG_OPTION_CHECK_VALIDITY_OF_STRING << 3)
+#define ONIG_OPTION_WORD_IS_ASCII        (ONIG_OPTION_IGNORECASE_IS_ASCII << 1)
 #define ONIG_OPTION_DIGIT_IS_ASCII       (ONIG_OPTION_WORD_IS_ASCII << 1)
 #define ONIG_OPTION_SPACE_IS_ASCII       (ONIG_OPTION_DIGIT_IS_ASCII << 1)
 #define ONIG_OPTION_POSIX_IS_ASCII       (ONIG_OPTION_SPACE_IS_ASCII << 1)
@@ -648,6 +649,7 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 #define ONIGERR_INVALID_COMBINATION_OF_OPTIONS               -403
 #define ONIGERR_TOO_MANY_USER_DEFINED_OBJECTS                -404
 #define ONIGERR_TOO_LONG_PROPERTY_NAME                       -405
+#define ONIGERR_VERY_INEFFICIENT_PATTERN                     -406
 #define ONIGERR_LIBRARY_IS_NOT_INITIALIZED                   -500
 
 /* errors related to thread */

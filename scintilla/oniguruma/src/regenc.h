@@ -144,6 +144,10 @@ struct PropertyNameCtype {
 #define ENC_GET_SKIP_OFFSET(enc) \
   (((enc)->flag & ENC_FLAG_SKIP_OFFSET_MASK)>>2)
 
+#define CASE_FOLD_IS_ASCII_ONLY(flag) \
+  (((flag) & ONIGENC_CASE_FOLD_ASCII_ONLY) != 0)
+#define CASE_FOLD_IS_NOT_ASCII_ONLY(flag) \
+  (((flag) & ONIGENC_CASE_FOLD_ASCII_ONLY) == 0)
 
 /* for encoding system implementation (internal) */
 extern int onigenc_end(void);
@@ -205,12 +209,12 @@ extern int onigenc_wb_is_break_position P_((OnigEncoding enc, UChar* p, UChar* p
 #define FOLDS1_UNFOLDS_NUM(i)  (OnigUnicodeFolds1[(i)+1])
 #define FOLDS2_UNFOLDS_NUM(i)  (OnigUnicodeFolds2[(i)+2])
 #define FOLDS3_UNFOLDS_NUM(i)  (OnigUnicodeFolds3[(i)+3])
-#define FOLDS1_UNFOLDS(i)      (OnigUnicodeFolds1 + (i) + 2)
-#define FOLDS2_UNFOLDS(i)      (OnigUnicodeFolds2 + (i) + 3)
-#define FOLDS3_UNFOLDS(i)      (OnigUnicodeFolds3 + (i) + 4)
-#define FOLDS1_NEXT_INDEX(i)   ((i) + 2 + OnigUnicodeFolds1[(i)+1])
-#define FOLDS2_NEXT_INDEX(i)   ((i) + 3 + OnigUnicodeFolds2[(i)+2])
-#define FOLDS3_NEXT_INDEX(i)   ((i) + 4 + OnigUnicodeFolds3[(i)+3])
+#define FOLDS1_UNFOLDS(i)      (FOLDS1_FOLD(i) + 2)
+#define FOLDS2_UNFOLDS(i)      (FOLDS2_FOLD(i) + 3)
+#define FOLDS3_UNFOLDS(i)      (FOLDS3_FOLD(i) + 4)
+#define FOLDS1_NEXT_INDEX(i)   ((i) + 2 + FOLDS1_UNFOLDS_NUM(i))
+#define FOLDS2_NEXT_INDEX(i)   ((i) + 3 + FOLDS2_UNFOLDS_NUM(i))
+#define FOLDS3_NEXT_INDEX(i)   ((i) + 4 + FOLDS3_UNFOLDS_NUM(i))
 
 #define FOLDS_FOLD_ADDR_BUK(buk, addr) do {\
   if ((buk)->fold_len == 1)\

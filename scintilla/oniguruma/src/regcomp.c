@@ -31,6 +31,9 @@
 
 #define OPS_INIT_SIZE  8
 
+#define NODE_IS_REAL_IGNORECASE(node) \
+  (NODE_IS_IGNORECASE(node) && !NODE_STRING_IS_CRUDE(node))
+
 typedef struct {
   OnigLen min;
   OnigLen max;
@@ -768,7 +771,8 @@ node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
       StrNode* sn = STR_(node);
       UChar *s = sn->s;
 
-      if (NODE_IS_IGNORECASE(node) && ! NODE_STRING_IS_CRUDE(node)) {
+      if (NODE_IS_REAL_IGNORECASE(node) &&
+          CASE_FOLD_IS_NOT_ASCII_ONLY(env->case_fold_flag)) {
         /* Such a case is possible.
            ex. /(?i)(?<=\1)(a)/
            Backref node refer to capture group, but it doesn't tune yet.
@@ -3291,8 +3295,7 @@ get_tree_head_literal(Node* node, int exact, regex_t* reg)
       if (sn->end <= sn->s)
         break;
 
-      if (exact == 0 ||
-          ! NODE_IS_IGNORECASE(node) || NODE_STRING_IS_CRUDE(node)) {
+      if (exact == 0 || !NODE_IS_REAL_IGNORECASE(node)) {
         n = node;
       }
     }
@@ -3387,7 +3390,7 @@ get_tree_tail_literal(Node* node, Node** rnode, regex_t* reg)
         break;
       }
 
-      if (NODE_IS_IGNORECASE(node) && ! NODE_STRING_IS_CRUDE(node)) {
+      if (NODE_IS_REAL_IGNORECASE(node)) {
         r = GET_VALUE_NONE;
         break;
       }
@@ -3635,10 +3638,8 @@ node_min_byte_len(Node* node, ScanEnv* env)
   case NODE_CALL:
     {
       Node* t = NODE_BODY(node);
-      if (NODE_IS_RECURSION(node)) {
         if (NODE_IS_FIXED_MIN(t))
           len = BAG_(t)->min_len;
-      }
       else
         len = node_min_byte_len(t, env);
     }
@@ -4197,6 +4198,8 @@ infinite_recursive_call_check(Node* node, ScanEnv* env, int head)
     break;
 
   case NODE_QUANT:
+    if (QUANT_(node)->upper == 0) break;
+
     r = infinite_recursive_call_check(NODE_BODY(node), env, head);
     if (r < 0) return r;
     if ((r & RECURSION_MUST) != 0) {
@@ -4623,7 +4626,7 @@ reduce_string_list(Node* node, OnigEncoding enc)
 #define IN_ZERO_REPEAT  (1<<4)
 #define IN_MULTI_ENTRY  (1<<5)
 #define IN_LOOK_BEHIND  (1<<6)
-
+#define IN_PEEK         (1<<7)
 
 /* divide different length alternatives in look-behind.
   (?<=A|B) ==> (?<=A)|(?<=B)
@@ -5545,6 +5548,8 @@ tune_called_state_call(Node* node, int state)
         state |= IN_REAL_REPEAT;
       if (qn->lower != qn->upper)
         state |= IN_VAR_REPEAT;
+      if ((state & IN_PEEK) != 0)
+        NODE_STATUS_ADD(node, INPEEK);
 
       tune_called_state_call(NODE_QUANT_BODY(qn), state);
     }
@@ -5557,10 +5562,12 @@ tune_called_state_call(Node* node, int state)
       switch (an->type) {
       case ANCR_PREC_READ_NOT:
       case ANCR_LOOK_BEHIND_NOT:
-        state |= IN_NOT;
-        /* fall */
+        state |= (IN_NOT | IN_PEEK);
+        tune_called_state_call(NODE_ANCHOR_BODY(an), state);
+        break;
       case ANCR_PREC_READ:
       case ANCR_LOOK_BEHIND:
+        state |= IN_PEEK;
         tune_called_state_call(NODE_ANCHOR_BODY(an), state);
         break;
       default:
@@ -5603,6 +5610,11 @@ tune_called_state_call(Node* node, int state)
     break;
 
   case NODE_CALL:
+    if ((state & IN_PEEK) != 0)
+      NODE_STATUS_ADD(node, INPEEK);
+    if ((state & IN_REAL_REPEAT) != 0)
+      NODE_STATUS_ADD(node, IN_REAL_REPEAT);
+
     tune_called_state_call(NODE_BODY(node), state);
     break;
 
@@ -5626,6 +5638,11 @@ tune_called_state(Node* node, int state)
 
 #ifdef USE_CALL
   case NODE_CALL:
+    if ((state & IN_PEEK) != 0)
+      NODE_STATUS_ADD(node, INPEEK);
+    if ((state & IN_REAL_REPEAT) != 0)
+      NODE_STATUS_ADD(node, IN_REAL_REPEAT);
+
     tune_called_state_call(node, state);
     break;
 #endif
@@ -5665,6 +5682,8 @@ tune_called_state(Node* node, int state)
         state |= IN_REAL_REPEAT;
       if (qn->lower != qn->upper)
         state |= IN_VAR_REPEAT;
+      if ((state & IN_PEEK) != 0)
+        NODE_STATUS_ADD(node, INPEEK);
 
       tune_called_state(NODE_QUANT_BODY(qn), state);
     }
@@ -5677,10 +5696,12 @@ tune_called_state(Node* node, int state)
       switch (an->type) {
       case ANCR_PREC_READ_NOT:
       case ANCR_LOOK_BEHIND_NOT:
-        state |= IN_NOT;
-        /* fall */
+        state |= (IN_NOT | IN_PEEK);
+        tune_called_state(NODE_ANCHOR_BODY(an), state);
+        break;
       case ANCR_PREC_READ:
       case ANCR_LOOK_BEHIND:
+        state |= IN_PEEK;
         tune_called_state(NODE_ANCHOR_BODY(an), state);
         break;
       default:
@@ -5838,7 +5859,7 @@ tune_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
     break;
 
   case NODE_STRING:
-    if (NODE_IS_IGNORECASE(node) && ! NODE_STRING_IS_CRUDE(node)) {
+    if (NODE_IS_REAL_IGNORECASE(node)) {
       r = unravel_case_fold_string(node, reg, state);
     }
     break;
@@ -5933,6 +5954,10 @@ tune_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
 
 #ifdef USE_CALL
   case NODE_CALL:
+    if (NODE_IS_RECURSION(node) && NODE_IS_INPEEK(node) &&
+        NODE_IS_IN_REAL_REPEAT(node)) {
+      return ONIGERR_VERY_INEFFICIENT_PATTERN;
+    }
 #endif
   case NODE_CTYPE:
   case NODE_CCLASS:
@@ -7037,8 +7062,34 @@ static void print_enc_string(FILE* fp, OnigEncoding enc,
       s++;
     }
   }
+}
 
-  fprintf(fp, "/\n");
+static void
+print_options(FILE* fp, OnigOptionType o)
+{
+  if ((o & ONIG_OPTION_IGNORECASE) != 0)      fprintf(fp, " IGNORECASE");
+  if ((o & ONIG_OPTION_EXTEND) != 0)          fprintf(fp, " EXTEND");
+  if ((o & ONIG_OPTION_MULTILINE) != 0)       fprintf(fp, " MULTILINE");
+  if ((o & ONIG_OPTION_SINGLELINE) != 0)      fprintf(fp, " SINGLELINE");
+  if ((o & ONIG_OPTION_FIND_LONGEST) != 0)    fprintf(fp, " FIND_LONGEST");
+  if ((o & ONIG_OPTION_FIND_NOT_EMPTY) != 0)  fprintf(fp, " FIND_NOT_EMPTY");
+  if ((o & ONIG_OPTION_NEGATE_SINGLELINE) != 0)  fprintf(fp, " NEGATE_SINGLELINE");
+  if ((o & ONIG_OPTION_DONT_CAPTURE_GROUP) != 0) fprintf(fp, " DONT_CAPTURE_GROUP");
+  if ((o & ONIG_OPTION_CAPTURE_GROUP) != 0)   fprintf(fp, " CAPTURE_GROUP");
+  if ((o & ONIG_OPTION_NOTBOL) != 0)          fprintf(fp, " NOTBOL");
+  if ((o & ONIG_OPTION_NOTEOL) != 0)          fprintf(fp, " NOTEOL");
+  if ((o & ONIG_OPTION_POSIX_REGION) != 0)    fprintf(fp, " POSIX_REGION");
+  if ((o & ONIG_OPTION_CHECK_VALIDITY_OF_STRING) != 0) fprintf(fp, " CHECK_VALIDITY_OF_STRING");
+  if ((o & ONIG_OPTION_IGNORECASE_IS_ASCII) != 0) fprintf(fp, " IGNORECASE_IS_ASCII");
+  if ((o & ONIG_OPTION_WORD_IS_ASCII) != 0)   fprintf(fp, " WORD_IS_ASCII");
+  if ((o & ONIG_OPTION_DIGIT_IS_ASCII) != 0)  fprintf(fp, " DIGIT_IS_ASCII");
+  if ((o & ONIG_OPTION_SPACE_IS_ASCII) != 0)  fprintf(fp, " SPACE_IS_ASCII");
+  if ((o & ONIG_OPTION_POSIX_IS_ASCII) != 0)  fprintf(fp, " POSIX_IS_ASCII");
+  if ((o & ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER) != 0) fprintf(fp, " TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER");
+  if ((o & ONIG_OPTION_TEXT_SEGMENT_WORD) != 0) fprintf(fp, " TEXT_SEGMENT_WORD");
+  if ((o & ONIG_OPTION_NOT_BEGIN_STRING) != 0) fprintf(fp, " NOT_BIGIN_STRING");
+  if ((o & ONIG_OPTION_NOT_END_STRING) != 0)   fprintf(fp, " NOT_END_STRING");
+  if ((o & ONIG_OPTION_NOT_BEGIN_POSITION) != 0) fprintf(fp, " NOT_BEGIN_POSITION");
 }
 
 #endif /* ONIG_DEBUG */
@@ -7285,6 +7336,10 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 #ifdef ONIG_DEBUG
   fprintf(DBGFP, "\nPATTERN: /");
   print_enc_string(DBGFP, reg->enc, pattern, pattern_end);
+  fprintf(DBGFP, "/\n");
+  fprintf(DBGFP, "OPTIONS:");
+  print_options(DBGFP, reg->options);
+  fprintf(DBGFP, "\n");
 #endif
 
   if (reg->ops_alloc == 0) {
@@ -7343,7 +7398,14 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 #endif
 
   r = tune_tree(root, reg, 0, &scan_env);
-  if (r != 0) goto err_unset;
+  if (r != 0) {
+#ifdef ONIG_DEBUG_PARSE
+    fprintf(DBGFP, "TREE (error in tune)\n");
+    print_tree(DBGFP, root);
+    fprintf(DBGFP, "\n");
+#endif
+    goto err_unset;
+  }
 
   if (scan_env.backref_num != 0) {
     set_parent_node_trav(root, NULL_NODE);
@@ -7518,6 +7580,12 @@ onig_reg_init(regex_t* reg, OnigOptionType option, OnigCaseFoldType case_fold_fl
   }
   else
     option |= syntax->options;
+
+  if ((option & ONIG_OPTION_IGNORECASE_IS_ASCII) != 0) {
+    case_fold_flag &= ~(INTERNAL_ONIGENC_CASE_FOLD_MULTI_CHAR |
+                        ONIGENC_CASE_FOLD_TURKISH_AZERI);
+    case_fold_flag |= ONIGENC_CASE_FOLD_ASCII_ONLY;
+  }
 
   (reg)->enc            = enc;
   (reg)->options        = option;
@@ -7863,6 +7931,8 @@ Indent(FILE* f, int indent)
 static void
 print_indent_tree(FILE* f, Node* node, int indent)
 {
+  static char* emptiness_name[] = { "", " empty", " empty_mem", " empty_rec" };
+
   int i;
   NodeType type;
   UChar* p;
@@ -8029,26 +8099,34 @@ print_indent_tree(FILE* f, Node* node, int indent)
       fprintf(f, "<call:%p>", node);
       fprintf(f, " num: %d, name", cn->called_gnum);
       p_string(f, cn->name_end - cn->name, cn->name);
+      if (NODE_IS_RECURSION(node)) fprintf(f, ", recursion");
+      if (NODE_IS_INPEEK(node))    fprintf(f, ", in-peek");
+      if (NODE_IS_IN_REAL_REPEAT(node)) fprintf(f, ", in-real-repeat");
     }
     break;
 #endif
 
   case NODE_QUANT:
-    fprintf(f, "<quantifier:%p>{%d,%d}%s%s\n", node,
+    {
+      fprintf(f, "<quantifier:%p>{%d,%d}%s%s%s", node,
             QUANT_(node)->lower, QUANT_(node)->upper,
             (QUANT_(node)->greedy ? "" : "?"),
-            QUANT_(node)->include_referred == 0 ? "" : " referred");
+              QUANT_(node)->include_referred == 0 ? "" : " referred",
+              emptiness_name[QUANT_(node)->emptiness]);
+      if (NODE_IS_INPEEK(node)) fprintf(f, ", in-peek");
+      fprintf(f, "\n");
     print_indent_tree(f, NODE_BODY(node), indent + add);
+    }
     break;
 
   case NODE_BAG:
+    {
+      BagNode* bn = BAG_(node);
     fprintf(f, "<bag:%p> ", node);
-    if (BAG_(node)->type == BAG_IF_ELSE) {
+      if (bn->type == BAG_IF_ELSE) {
       Node* Then;
       Node* Else;
-      BagNode* bn;
 
-      bn = BAG_(node);
       fprintf(f, "if-else\n");
       print_indent_tree(f, NODE_BODY(node), indent + add);
 
@@ -8067,22 +8145,26 @@ print_indent_tree(FILE* f, Node* node, int indent)
       }
       else
         print_indent_tree(f, Else, indent + add);
-
-      break;
     }
-
-    switch (BAG_(node)->type) {
+      else {
+        switch (bn->type) {
     case BAG_OPTION:
-      fprintf(f, "option:%d", BAG_(node)->o.options);
+          fprintf(f, "option:%d", bn->o.options);
       break;
     case BAG_MEMORY:
-      fprintf(f, "memory:%d", BAG_(node)->m.regnum);
-      if (NODE_IS_CALLED(node))
+          fprintf(f, "memory:%d", bn->m.regnum);
+          if (NODE_IS_CALLED(node)) {
         fprintf(f, ", called");
+            if (NODE_IS_RECURSION(node))
+              fprintf(f, ", recursion");
+          }
       else if (NODE_IS_REFERENCED(node))
         fprintf(f, ", referenced");
+
       if (NODE_IS_FIXED_ADDR(node))
         fprintf(f, ", fixed-addr");
+          if ((bn->m.called_state & IN_PEEK) != 0)
+            fprintf(f, ", in-peek");
       break;
     case BAG_STOP_BACKTRACK:
       fprintf(f, "stop-bt");
@@ -8092,6 +8174,8 @@ print_indent_tree(FILE* f, Node* node, int indent)
     }
     fprintf(f, "\n");
     print_indent_tree(f, NODE_BODY(node), indent + add);
+      }
+    }
     break;
 
   case NODE_GIMMICK:

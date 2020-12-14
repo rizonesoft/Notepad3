@@ -4259,10 +4259,10 @@ enum ReduceType {
   RQ_ASIS = 0, /* as is */
   RQ_DEL  = 1, /* delete parent */
   RQ_A,        /* to '*'    */
+  RQ_P,        /* to '+'    */
   RQ_AQ,       /* to '*?'   */
   RQ_QQ,       /* to '??'   */
   RQ_P_QQ,     /* to '+)??' */
-  RQ_PQ_Q      /* to '+?)?' */
 };
 
 static enum ReduceType ReduceTypeTable[6][6] = {
@@ -4271,7 +4271,7 @@ static enum ReduceType ReduceTypeTable[6][6] = {
   {RQ_A,    RQ_A,    RQ_DEL, RQ_ASIS, RQ_P_QQ, RQ_DEL},  /* '+'  */
   {RQ_DEL,  RQ_AQ,   RQ_AQ,  RQ_DEL,  RQ_AQ,   RQ_AQ},   /* '??' */
   {RQ_DEL,  RQ_DEL,  RQ_DEL, RQ_DEL,  RQ_DEL,  RQ_DEL},  /* '*?' */
-  {RQ_ASIS, RQ_PQ_Q, RQ_DEL, RQ_AQ,   RQ_AQ,   RQ_DEL}   /* '+?' */
+  {RQ_ASIS, RQ_A,    RQ_P,   RQ_AQ,   RQ_AQ,   RQ_DEL}   /* '+?' */
 };
 
 extern int
@@ -4310,6 +4310,11 @@ onig_reduce_nested_quantifier(Node* pnode)
     p->lower  = 0;  p->upper = INFINITE_REPEAT;  p->greedy = 1;
     goto remove_cnode;
     break;
+  case RQ_P:
+    NODE_BODY(pnode) = NODE_BODY(cnode);
+    p->lower  = 1;  p->upper = INFINITE_REPEAT;  p->greedy = 1;
+    goto remove_cnode;
+    break;
   case RQ_AQ:
     NODE_BODY(pnode) = NODE_BODY(cnode);
     p->lower  = 0;  p->upper = INFINITE_REPEAT;  p->greedy = 0;
@@ -4323,10 +4328,6 @@ onig_reduce_nested_quantifier(Node* pnode)
   case RQ_P_QQ:
     p->lower  = 0;  p->upper = 1;  p->greedy = 0;
     c->lower  = 1;  c->upper = INFINITE_REPEAT;  c->greedy = 1;
-    break;
-  case RQ_PQ_Q:
-    p->lower  = 0;  p->upper = 1;  p->greedy = 1;
-    c->lower  = 1;  c->upper = INFINITE_REPEAT;  c->greedy = 0;
     break;
   case RQ_ASIS:
     break;
@@ -8268,7 +8269,8 @@ typedef struct {
 } IApplyCaseFoldArg;
 
 static int
-i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len, void* arg)
+i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
+                  void* arg)
 {
   IApplyCaseFoldArg* iarg;
   ScanEnv* env;
@@ -8277,6 +8279,13 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len, void* arg)
   iarg = (IApplyCaseFoldArg* )arg;
   env = iarg->env;
   cc  = iarg->cc;
+
+#if 0
+  if (CASE_FOLD_IS_ASCII_ONLY(env->case_fold_flag)) {
+    if (! ONIGENC_IS_ASCII_CODE(from) || to_len != 1 || ! ONIGENC_IS_ASCII_CODE(*to))
+      return 0;
+  }
+#endif
 
   if (to_len == 1) {
     int is_in = onig_is_code_in_cc(env->enc, from, cc);

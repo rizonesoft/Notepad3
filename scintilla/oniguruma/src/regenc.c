@@ -2,7 +2,7 @@
   regenc.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako
+ * Copyright (c) 2002-2020  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -569,6 +569,9 @@ onigenc_apply_all_case_fold_with_map(int map_size,
   r = onigenc_ascii_apply_all_case_fold(flag, f, arg);
   if (r != 0) return r;
 
+  if (CASE_FOLD_IS_ASCII_ONLY(flag))
+    return 0;
+
   for (i = 0; i < map_size; i++) {
     code = map[i].to;
     r = (*f)(map[i].from, &code, 1, arg);
@@ -588,7 +591,7 @@ onigenc_apply_all_case_fold_with_map(int map_size,
 extern int
 onigenc_get_case_fold_codes_by_str_with_map(int map_size,
     const OnigPairCaseFoldCodes map[],
-    int ess_tsett_flag, OnigCaseFoldType flag ARG_UNUSED,
+    int ess_tsett_flag, OnigCaseFoldType flag,
     const OnigUChar* p, const OnigUChar* end, OnigCaseFoldCodeItem items[])
 {
   int i, j, n;
@@ -596,7 +599,8 @@ onigenc_get_case_fold_codes_by_str_with_map(int map_size,
 
   if (0x41 <= *p && *p <= 0x5a) { /* A - Z */
     if (*p == LARGE_S && ess_tsett_flag != 0 && end > p + 1
-        && (*(p+1) == LARGE_S || *(p+1) == SMALL_S)) { /* SS */
+        && (*(p+1) == LARGE_S || *(p+1) == SMALL_S) /* SS */
+        && CASE_FOLD_IS_NOT_ASCII_ONLY(flag)) {
     ss_combination:
       items[0].byte_len = 2;
       items[0].code_len = 1;
@@ -625,7 +629,8 @@ onigenc_get_case_fold_codes_by_str_with_map(int map_size,
   }
   else if (0x61 <= *p && *p <= 0x7a) { /* a - z */
     if (*p == SMALL_S && ess_tsett_flag != 0 && end > p + 1
-        && (*(p+1) == SMALL_S || *(p+1) == LARGE_S)) {
+        && (*(p+1) == SMALL_S || *(p+1) == LARGE_S)
+        && CASE_FOLD_IS_NOT_ASCII_ONLY(flag)) {
       goto ss_combination;
     }
 
@@ -634,7 +639,8 @@ onigenc_get_case_fold_codes_by_str_with_map(int map_size,
     items[0].code[0] = (OnigCodePoint )(*p - 0x20);
     return 1;
   }
-  else if (*p == 0xdf && ess_tsett_flag != 0) {
+  else if (*p == 0xdf && ess_tsett_flag != 0
+           && CASE_FOLD_IS_NOT_ASCII_ONLY(flag)) {
     items[0].byte_len = 1;
     items[0].code_len = 2;
     items[0].code[0] = (OnigCodePoint )'s';
@@ -659,6 +665,9 @@ onigenc_get_case_fold_codes_by_str_with_map(int map_size,
   }
   else {
     int i;
+
+    if (CASE_FOLD_IS_ASCII_ONLY(flag))
+      return 0;
 
     for (i = 0; i < map_size; i++) {
       if (*p == map[i].from) {
