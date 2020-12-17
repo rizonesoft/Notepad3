@@ -5,6 +5,18 @@ Click to return to the link:index.html[uthash home page].
 
 NOTE: This ChangeLog may be incomplete and/or incorrect. See the git commit log.
 
+Version 2.1.0 (2018-12-20)
+--------------------------
+* silence some Clang static analysis warnings
+* add LL_INSERT_INORDER and LL_LOWER_BOUND etc (thanks, Jeffrey Lovitz and Mattias Eriksson!)
+* add uthash_bzero for platforms without <string.h>
+* fix a missing HASH_BLOOM_ADD in HASH_SELECT (thanks, Pawel Veselov!)
+* permit malloc failure to be recoverable via HASH_NONFATAL_OOM (thanks, Pawel Veselov!)
+* avoid repeated calls to uthash_strlen in HASH_FIND_STR
+* rename uthash_memcmp to HASH_KEYCMP, leaving the old name for compatibility
+* add utstack.h
+* remove libut
+
 Version 2.0.2 (2017-03-02)
 --------------------------
 * fix segfault in HASH_ADD_INORDER etc (thanks, Yana Kireyonok!)
@@ -17,6 +29,7 @@ Version 2.0.1 (2016-07-05)
 * in-order insertion macros HASH_ADD_INORDER etc (thanks, Thilo Schulz!)
 * by-hashvalue insertion macros HASH_ADD_BYHASHVALUE etc
 * during key comparison, check hashvalue before doing a full memcmp
+* add utringbuffer.h
 
 Version 1.9.9.1 (2014-11-18)
 ----------------------------
@@ -43,7 +56,7 @@ Version 1.9.8 (2013-03-10)
 * `HASH_REPLACE` now in uthash (thanks, Nick Vatamaniuc!)
 * fixed clang warnings (thanks wynnw!)
 * fixed `utarray_insert` when inserting past array end (thanks Rob Willett!)
-* you can now find https://troydhanson.github.com/uthash[uthash on GitHub]
+* you can now find https://troydhanson.github.com/uthash/[uthash on GitHub]
 * there's a https://groups.google.com/d/forum/uthash[uthash Google Group]
 * uthash has been downloaded 29,000+ times since 2006 on SourceForge
 
@@ -183,7 +196,7 @@ Version 1.5 (2009-02-19)
   This change made HASH_FIND about 13% faster and enabled reader concurrency.
 * made link:license.html[BSD license] terms even more permissive
 * added link:userguide.pdf[PDF version] of User Guide
-* added https://troydhanson.wordpress.com/feed[update news] image:rss.png[(RSS)]
+* added https://troydhanson.wordpress.com/feed/[update news] image:rss.png[(RSS)]
 
 Version 1.4 (2008-09-23)
 --------------------------

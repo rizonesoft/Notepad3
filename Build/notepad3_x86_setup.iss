@@ -181,21 +181,9 @@ Source: Docs\Oniguruma_RE.txt;                                      DestDir: {ap
 Source: Docs\Notepad3.txt;                                          DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\crypto\encryption-doc.txt;                             DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
 Source: Docs\crypto\read_me.txt;                                    DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
-Source: Docs\uthash\banner.png;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\banner.svg;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
 Source: Docs\uthash\ChangeLog.txt;                                  DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\index.html;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\license.html;                                   DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\rss.png;                                        DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\styles.css;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\license.txt;                                    DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
 Source: Docs\uthash\userguide.txt;                                  DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\utarray.txt;                                    DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\uthash.png;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\uthash-mini.png;                                DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\uthash-mini.svg;                                DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\utlist.txt;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\utringbuffer.txt;                               DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\utstring.txt;                                   DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
 
 
 [Dirs]
