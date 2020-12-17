@@ -435,7 +435,7 @@ read the files without being told the new key.
 
 
 Technical Details:
-(http://www.andromeda.com/people/ddyer/notepad/NotepadCrypt-technotes.html)
+(https://www.real-me.net/ddyer/notepad/NotepadCrypt-technotes.html)
 
 Passphrase Management:
 256 bit encryption keys are geneated from ascii passphrases by

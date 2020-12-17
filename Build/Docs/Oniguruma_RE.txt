@@ -1,6 +1,6 @@
-Oniguruma Regular Expressions Version 6.9.5    2020/01/28
+Oniguruma Regular Expressions Version 6.9.6    2020/07/31
 
-syntax: ONIG_SYNTAX_ONIGURUMA (default)
+syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
 
 
 1. Syntax elements
@@ -21,17 +21,26 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
   \f           form feed              (0x0C)
   \a           bell                   (0x07)
   \e           escape                 (0x1B)
-  \nnn         octal char             (encoded byte value)
-  \o{17777777777} wide octal char     (character code point value)
-  \uHHHH       wide hexadecimal char  (character code point value)
-  \xHH         hexadecimal char       (encoded byte value)
-  \x{7HHHHHHH} wide hexadecimal char  (character code point value)
-  \cx          control char           (character code point value)
-  \C-x         control char           (character code point value)
-  \M-x         meta  (x|0x80)         (character code point value)
-  \M-\C-x      meta control char      (character code point value)
+  \nnn         octal char                    (encoded byte value)
+  \xHH         hexadecimal char              (encoded byte value)
+  \x{7HHHHHHH} (1-8 digits) hexadecimal char (code point value)
+  \o{17777777777} (1-11 digits) octal char   (code point value)
+  \uHHHH       hexadecimal char              (code point value)
+  \cx          control char                  (code point value)
+  \C-x         control char                  (code point value)
+  \M-x         meta  (x|0x80)                (code point value)
+  \M-\C-x      meta control char             (code point value)
 
  (* \b as backspace is effective in character class only)
+
+
+2.1 Code point sequences
+
+  Hexadecimal code point  (1-8 digits)
+  \x{7HHHHHHH 7HHHHHHH ... 7HHHHHHH}
+
+  Octal code point  (1-11 digits)
+  \o{17777777777 17777777777 ... 17777777777}
 
 
 3. Character types
@@ -91,13 +100,13 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
            [Extended Grapheme Cluster mode] (default)
              Unicode case:
-               See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
+               See [Unicode Standard Annex #29: https://unicode.org/reports/tr29/]
 
              Not Unicode case:  \X === (?>\r\n|\O)
 
            [Word mode]
              Currently, this mode is supported in Unicode only.
-             See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
+             See [Unicode Standard Annex #29: https://unicode.org/reports/tr29/]
 
 
   Character Property
@@ -182,14 +191,14 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
           [Extended Grapheme Cluster mode] (default)
             Unicode case:
-              See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
+              See [Unicode Standard Annex #29: https://unicode.org/reports/tr29/]
 
             Not Unicode:
               All positions except between \r and \n.
 
           [Word mode]
             Currently, this mode is supported in Unicode only.
-            See [Unicode Standard Annex #29: https://unicode.org/reports/tr29]
+            See [Unicode Standard Annex #29: https://unicode.org/reports/tr29/]
 
 
 
@@ -357,7 +366,7 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
   (?~|absent)        Absent stopper (* original)
                      After passed this operator, string right range is limited
-                     at the point that does not include the string match whth
+                     at the point that does not include the string match with
                      <absent>.
 
   (?~|)              Range clear

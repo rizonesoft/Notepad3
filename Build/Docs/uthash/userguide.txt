@@ -1,11 +1,11 @@
 uthash User Guide
 =================
 Troy D. Hanson, Arthur O'Dwyer
-v2.0.2, March 2017
+v2.1.0, December 2018
 
 To download uthash, follow this link back to the
 https://github.com/troydhanson/uthash[GitHub project page].
-Back to my https://troydhanson.github.io[other projects].
+Back to my https://troydhanson.github.io/[other projects].
 
 A hash in C
 -----------
@@ -230,8 +230,8 @@ last parameter is a pointer to the structure being added.
 .Wait.. the field name is a parameter?
 *******************************************************************************
 If you find it strange that `id`, which is the 'name of a field' in the
-structure, can be passed as a parameter, welcome to the world of macros. Don't
-worry- the C preprocessor expands this to valid C code.
+structure, can be passed as a parameter... welcome to the world of macros. Don't
+worry; the C preprocessor expands this to valid C code.
 *******************************************************************************
 
 Key must not be modified while in-use
@@ -257,7 +257,7 @@ Otherwise we just modify the structure that already exists.
 
       HASH_FIND_INT(users, &user_id, s);  /* id already in the hash? */
       if (s==NULL) {
-        s = (struct my_struct*)malloc(sizeof(struct my_struct));
+        s = (struct my_struct *)malloc(sizeof *s);
         s->id = user_id;
         HASH_ADD_INT( users, id, s );  /* id: name of key field */
       }
@@ -534,7 +534,7 @@ void add_user(int user_id, char *name) {
 
     HASH_FIND_INT(users, &user_id, s);  /* id already in the hash? */
     if (s==NULL) {
-      s = (struct my_struct*)malloc(sizeof(struct my_struct));
+      s = (struct my_struct *)malloc(sizeof *s);
       s->id = user_id;
       HASH_ADD_INT( users, id, s );  /* id: name of key field */
     }
@@ -713,14 +713,13 @@ struct my_struct {
 
 
 int main(int argc, char *argv[]) {
-    const char **n, *names[] = { "joe", "bob", "betty", NULL };
+    const char *names[] = { "joe", "bob", "betty", NULL };
     struct my_struct *s, *tmp, *users = NULL;
-    int i=0;
 
-    for (n = names; *n != NULL; n++) {
-        s = (struct my_struct*)malloc(sizeof(struct my_struct));
-        strncpy(s->name, *n,10);
-        s->id = i++;
+    for (int i = 0; names[i]; ++i) {
+        s = (struct my_struct *)malloc(sizeof *s);
+        strcpy(s->name, names[i]);
+        s->id = i;
         HASH_ADD_STR( users, name, s );
     }
 
@@ -760,14 +759,13 @@ struct my_struct {
 
 
 int main(int argc, char *argv[]) {
-    const char **n, *names[] = { "joe", "bob", "betty", NULL };
+    const char *names[] = { "joe", "bob", "betty", NULL };
     struct my_struct *s, *tmp, *users = NULL;
-    int i=0;
 
-    for (n = names; *n != NULL; n++) {
-        s = (struct my_struct*)malloc(sizeof(struct my_struct));
-        s->name = *n;
-        s->id = i++;
+    for (int i = 0; names[i]; ++i) {
+        s = (struct my_struct *)malloc(sizeof *s);
+        s->name = names[i];
+        s->id = i;
         HASH_ADD_KEYPTR( hh, users, s->name, strlen(s->name), s );
     }
 
@@ -810,7 +808,7 @@ char *someaddr = NULL;
 
 int main() {
   el_t *d;
-  el_t *e = (el_t*)malloc(sizeof(el_t));
+  el_t *e = (el_t *)malloc(sizeof *e);
   if (!e) return -1;
   e->key = (void*)someaddr;
   e->i = 1;
@@ -861,8 +859,8 @@ typedef struct {
 int main(int argc, char *argv[]) {
     record_t l, *p, *r, *tmp, *records = NULL;
 
-    r = (record_t*)malloc( sizeof(record_t) );
-    memset(r, 0, sizeof(record_t));
+    r = (record_t *)malloc(sizeof *r);
+    memset(r, 0, sizeof *r);
     r->key.a = 'a';
     r->key.b = 1;
     HASH_ADD(hh, records, key, sizeof(record_key_t), r);
@@ -926,7 +924,7 @@ int main(int argc, char *argv[]) {
     int beijing[] = {0x5317, 0x4eac};   /* UTF-32LE for 北京 */
 
     /* allocate and initialize our structure */
-    msg = (msg_t*)malloc( sizeof(msg_t) + sizeof(beijing) );
+    msg = (msg_t *)malloc( sizeof(msg_t) + sizeof(beijing) );
     memset(msg, 0, sizeof(msg_t)+sizeof(beijing)); /* zero fill */
     msg->len = sizeof(beijing);
     msg->encoding = UTF32;
@@ -943,7 +941,7 @@ int main(int argc, char *argv[]) {
     /* look it up to prove that it worked :-) */
     msg=NULL;
 
-    lookup_key = (lookup_key_t*)malloc(sizeof(*lookup_key) + sizeof(beijing));
+    lookup_key = (lookup_key_t *)malloc(sizeof(*lookup_key) + sizeof(beijing));
     memset(lookup_key, 0, sizeof(*lookup_key) + sizeof(beijing));
     lookup_key->encoding = UTF32;
     memcpy(lookup_key->text, beijing, sizeof(beijing));
@@ -968,6 +966,7 @@ by an `int` will normally have 3 "wasted" bytes of padding after the char, in
 order to make the `int` field start on a multiple-of-4 address (4 is the length
 of the int).
 
+[[multifield_note]]
 .Calculating the length of a multi-field key:
 *******************************************************************************
 To determine the key length when using a multi-field key, you must include any
@@ -991,6 +990,10 @@ zero-filling it. This zeroes out any padding between the key fields. If we
 didn't zero-fill the structure, this padding would contain random values.  The
 random values would lead to `HASH_FIND` failures; as two "identical" keys will
 appear to mismatch if there are any differences within their padding.
+
+Alternatively, you can customize the global <<hash_keycompare,key comparison function>>
+and <<hash_functions,key hashing function>> to ignore the padding in your key.
+See <<hash_keycompare,Specifying an alternate key comparison function>>.
 
 [[multilevel]]
 Multi-level hash tables
@@ -1072,7 +1075,7 @@ Items in several hash tables
 A structure can be added to more than one hash table. A few reasons you might do
 this include:
 
-- each hash table may use an alternative key;
+- each hash table may use a different key;
 - each hash table may have its own sort order;
 - or you might simply use multiple hash tables for grouping purposes.  E.g.,
   you could have users in an `admin_users` and a `users` hash table.
@@ -1082,19 +1085,19 @@ which it might be added. You can name them anything. E.g.,
 
   UT_hash_handle hh1, hh2;
 
-Items with alternative keys
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Items with multiple keys
+~~~~~~~~~~~~~~~~~~~~~~~~
 You might create a hash table keyed on an ID field, and another hash table keyed
 on username (if usernames are unique). You can add the same user structure to
 both hash tables (without duplication of the structure), allowing lookup of a
 user structure by their name or ID.  The way to achieve this is to have a
 separate `UT_hash_handle` for each hash to which the structure may be added.
 
-.A structure with two alternative keys
+.A structure with two different keys
 ----------------------------------------------------------------------
 struct my_struct {
-    int id;                    /* usual key */
-    char username[10];         /* alternative key */
+    int id;                    /* first key */
+    char username[10];         /* second key */
     UT_hash_handle hh1;        /* handle for first hash table */
     UT_hash_handle hh2;        /* handle for second hash table */
 };
@@ -1124,12 +1127,12 @@ always used with the `users_by_name` hash table).
     HASH_ADD(hh1, users_by_id, id, sizeof(int), s);
     HASH_ADD(hh2, users_by_name, username, strlen(s->username), s);
 
-    /* lookup user by ID in the "users_by_id" hash table */
+    /* find user by ID in the "users_by_id" hash table */
     i=1;
     HASH_FIND(hh1, users_by_id, &i, sizeof(int), s);
     if (s) printf("found id %d: %s\n", i, s->username);
 
-    /* lookup user by username in the "users_by_name" hash table */
+    /* find user by username in the "users_by_name" hash table */
     name = "thanson";
     HASH_FIND(hh2, users_by_name, name, strlen(name), s);
     if (s) printf("found user %s: %d\n", name, s->id);
@@ -1171,7 +1174,7 @@ ways. This is based on the ability to store a structure in several hash tables.
 
 Extending the previous example, suppose we have many users. We have added each
 user structure to the `users_by_id` hash table and the `users_by_name` hash table.
-(To reiterate, this is done without the need to have two copies of each structure).
+(To reiterate, this is done without the need to have two copies of each structure.)
 Now we can define two sort functions, then use `HASH_SRT`.
 
   int sort_by_id(struct my_struct *a, struct my_struct *b) {
@@ -1269,12 +1272,67 @@ items to the destination hash selectively.
 The two hash handles must differ. An example of using `HASH_SELECT` is included
 in `tests/test36.c`.
 
+[[hash_keycompare]]
+Specifying an alternate key comparison function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you call `HASH_FIND(hh, head, intfield, sizeof(int), out)`, uthash will
+first call <<hash_functions,`HASH_FUNCTION`>>`(intfield, sizeof(int), hashvalue)` to
+determine the bucket `b` in which to search, and then, for each element `elt`
+of bucket `b`, uthash will evaluate
+`elt->hh.hashv == hashvalue && elt.hh.keylen == sizeof(int) && HASH_KEYCMP(intfield, elt->hh.key, sizeof(int)) == 0`.
+`HASH_KEYCMP` should return `0` to indicate that `elt` is a match and should be
+returned, and any non-zero value to indicate that the search for a matching
+element should continue.
+
+By default, uthash defines `HASH_KEYCMP` as an alias for `memcmp`. On platforms
+that do not provide `memcmp`, you can substitute your own implementation.
+
+----------------------------------------------------------------------------
+#undef HASH_KEYCMP
+#define HASH_KEYCMP(a,b,len) bcmp(a,b,len)
+----------------------------------------------------------------------------
+
+Another reason to substitute your own key comparison function is if your "key" is not
+trivially comparable. In this case you will also need to substitute your own `HASH_FUNCTION`.
+
+----------------------------------------------------------------------------
+struct Key {
+    short s;
+    /* 2 bytes of padding */
+    float f;
+};
+/* do not compare the padding bytes; do not use memcmp on floats */
+unsigned key_hash(struct Key *s) { return s + (unsigned)f; }
+bool key_equal(struct Key *a, struct Key *b) { return a.s == b.s && a.f == b.f; }
+
+#define HASH_FUNCTION(s,len,hashv) (hashv) = key_hash((struct Key *)s)
+#define HASH_KEYCMP(a,b,len) (!key_equal((struct Key *)a, (struct Key *)b))
+----------------------------------------------------------------------------
+
+Another reason to substitute your own key comparison function is to trade off
+correctness for raw speed. During its linear search of a bucket, uthash always
+compares the 32-bit `hashv` first, and calls `HASH_KEYCMP` only if the `hashv`
+compares equal. This means that `HASH_KEYCMP` is called at least once per
+successful find. Given a good hash function, we expect the `hashv` comparison to
+produce a "false positive" equality only once in four billion times. Therefore,
+we expect `HASH_KEYCMP` to produce `0` most of the time. If we expect many
+successful finds, and our application doesn't mind the occasional false positive,
+we might substitute a no-op comparison function:
+
+----------------------------------------------------------------------------
+#undef HASH_KEYCMP
+#define HASH_KEYCMP(a,b,len) 0  /* occasionally wrong, but very fast */
+----------------------------------------------------------------------------
+
+Note: The global equality-comparison function `HASH_KEYCMP` has no relationship
+at all to the lessthan-comparison function passed as a parameter to `HASH_ADD_INORDER`.
 
 [[hash_functions]]
 Built-in hash functions
 ~~~~~~~~~~~~~~~~~~~~~~~
 Internally, a hash function transforms a key into a bucket number.  You don't
-have to take any action to use the default hash function, currently Jenkin's.
+have to take any action to use the default hash function, currently Jenkins.
 
 Some programs may benefit from using another of the built-in hash functions.
 There is a simple analysis utility included with uthash to help you determine
@@ -1296,16 +1354,7 @@ below. E.g.,
 |OAT    |   One-at-a-time
 |FNV    |   Fowler/Noll/Vo
 |SFH    |   Paul Hsieh
-|MUR    |   MurmurHash v3 (see note)
 |===============================================================================
-
-[NOTE]
-.MurmurHash
-================================================================================
-A special symbol must be defined if you intend to use MurmurHash. To use it, add
-`-DHASH_USING_NO_STRICT_ALIASING` to your `CFLAGS`. And, if you are using
-the gcc compiler with optimization, add `-fno-strict-aliasing` to your `CFLAGS`.
-================================================================================
 
 Which hash function is best?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1531,6 +1580,31 @@ inhibited' flag remains in effect as long as the hash has items in it.
 Inhibited expansion may cause `HASH_FIND` to exhibit worse than constant-time
 performance.
 
+Diagnostic hooks
+^^^^^^^^^^^^^^^^
+
+There are two "notification" hooks which get executed if uthash is
+expanding buckets, or setting the 'bucket expansion inhibited' flag.
+There is no need for the application to set these hooks or take action in
+response to these events. They are mainly for diagnostic purposes.
+Normally both of these hooks are undefined and thus compile away to nothing.
+
+The `uthash_expand_fyi` hook can be defined to execute code whenever
+uthash performs a bucket expansion.
+
+----------------------------------------------------------------------------
+#undef uthash_expand_fyi
+#define uthash_expand_fyi(tbl) printf("expanded to %u buckets\n", tbl->num_buckets)
+----------------------------------------------------------------------------
+
+The `uthash_noexpand_fyi` hook can be defined to execute code whenever
+uthash sets the 'bucket expansion inhibited' flag.
+
+----------------------------------------------------------------------------
+#undef uthash_noexpand_fyi
+#define uthash_noexpand_fyi(tbl) printf("warning: bucket expansion inhibited\n")
+----------------------------------------------------------------------------
+
 Hooks
 ~~~~~
 You don't need to use these hooks -- they are only here if you want to modify
@@ -1545,8 +1619,8 @@ example, by passing `-Duthash_malloc=my_malloc` on the command line.
 
 Specifying alternate memory management functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-By default this hash implementation uses `malloc` and `free` to manage memory.
-If your application uses its own custom allocator, this hash can use them too.
+By default, uthash uses `malloc` and `free` to manage memory.
+If your application uses its own custom allocator, uthash can use them too.
 
 ----------------------------------------------------------------------------
 #include "uthash.h"
@@ -1568,16 +1642,12 @@ convenience on embedded platforms that manage their own memory.
 Specifying alternate standard library functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Uthash also uses `strlen` (in the `HASH_FIND_STR` convenience macro, for
-example), `memcmp` (as the method of comparing keys for equality), and `memset`
-(used only for zeroing memory). On platforms that do not provide these functions,
-you can substitute your own implementations.
+example) and `memset` (used only for zeroing memory). On platforms that do not
+provide these functions, you can substitute your own implementations.
 
 ----------------------------------------------------------------------------
 #undef uthash_bzero
 #define uthash_bzero(a,len) my_bzero(a,len)
-
-#undef uthash_memcmp
-#define uthash_memcmp(a,b,len) my_memcmp(a,b,len)
 
 #undef uthash_strlen
 #define uthash_strlen(s) my_strlen(s)
@@ -1585,9 +1655,9 @@ you can substitute your own implementations.
 
 Out of memory
 ^^^^^^^^^^^^^
-If memory allocation fails (i.e., the malloc function returned `NULL`), the
-default behavior is to terminate the process by calling `exit(-1)`. This can
-be modified by re-defining the `uthash_fatal` macro.
+If memory allocation fails (i.e., the `uthash_malloc` function returns `NULL`),
+the default behavior is to terminate the process by calling `exit(-1)`. This
+can be modified by re-defining the `uthash_fatal` macro.
 
 ----------------------------------------------------------------------------
 #undef uthash_fatal
@@ -1595,36 +1665,36 @@ be modified by re-defining the `uthash_fatal` macro.
 ----------------------------------------------------------------------------
 
 The fatal function should terminate the process or `longjmp` back to a safe
-place. Uthash does not support "returning a failure" if memory cannot be
-allocated.
+place. Note that an allocation failure may leave allocated memory that cannot
+be recovered. After `uthash_fatal`, the hash table object should be considered
+unusable; it might not be safe even to run `HASH_CLEAR` on the hash table
+when it is in this state.
 
-Internal events
-^^^^^^^^^^^^^^^
-There is no need for the application to set these hooks or take action in
-response to these events. They are mainly for diagnostic purposes.
-
-These two hooks are "notification" hooks which get executed if uthash is
-expanding buckets, or setting the 'bucket expansion inhibited' flag. Normally
-both of these hooks are undefined and thus compile away to nothing.
-
-Expansion
-+++++++++
-There is a hook for the bucket expansion event.
+To enable "returning a failure" if memory cannot be allocated, define the
+macro `HASH_NONFATAL_OOM` before including the `uthash.h` header file. In this
+case, `uthash_fatal` is not used; instead, each allocation failure results in
+a single call to `uthash_nonfatal_oom(elt)` where `elt` is the address of the
+element whose insertion triggered the failure. The default behavior of
+`uthash_nonfatal_oom` is a no-op.
 
 ----------------------------------------------------------------------------
-#undef uthash_expand_fyi
-#define uthash_expand_fyi(tbl) printf("expanded to %d buckets\n", tbl->num_buckets)
+#undef uthash_nonfatal_oom
+#define uthash_nonfatal_oom(elt) perhaps_recover((element_t *) elt)
 ----------------------------------------------------------------------------
 
-Expansion-inhibition
-++++++++++++++++++++
-This hook can be defined to code to execute in the event that uthash decides to
-set the 'bucket expansion inhibited' flag.
+Before the call to `uthash_nonfatal_oom`, the hash table is rolled back
+to the state it was in prior to the problematic insertion; no memory is
+leaked. It is safe to `throw` or `longjmp` out of the `uthash_nonfatal_oom`
+handler.
 
-----------------------------------------------------------------------------
-#undef uthash_noexpand_fyi
-#define uthash_noexpand_fyi printf("warning: bucket expansion inhibited\n")
-----------------------------------------------------------------------------
+The `elt` argument will be of the correct pointer-to-element type, unless
+`uthash_nonfatal_oom` is invoked from `HASH_SELECT`, in which case it will
+be of `void*` type and must be cast before using. In any case, `elt->hh.tbl`
+will be `NULL`.
+
+Allocation failure is possible only when adding elements to the hash table
+(including the `ADD`, `REPLACE`, and `SELECT` operations).
+`uthash_free` is not allowed to fail.
 
 Debug mode
 ~~~~~~~~~~
@@ -1750,21 +1820,21 @@ than `hh`, or if your key's data type isn't `int` or `char[]`.
 |===============================================================================
 |macro                               | arguments
 |HASH_ADD                            | (hh_name, head, keyfield_name, key_len, item_ptr)
-|HASH_ADD_BYHASHVALUE                | (hh_name, head, keyfield_name, key_len, key_hash, item_ptr)
+|HASH_ADD_BYHASHVALUE                | (hh_name, head, keyfield_name, key_len, hashv, item_ptr)
 |HASH_ADD_KEYPTR                     | (hh_name, head, key_ptr, key_len, item_ptr)
-|HASH_ADD_KEYPTR_BYHASHVALUE         | (hh_name, head, key_ptr, key_len, key_hash, item_ptr)
+|HASH_ADD_KEYPTR_BYHASHVALUE         | (hh_name, head, key_ptr, key_len, hashv, item_ptr)
 |HASH_ADD_INORDER                    | (hh_name, head, keyfield_name, key_len, item_ptr, cmp)
-|HASH_ADD_BYHASHVALUE_INORDER        | (hh_name, head, keyfield_name, key_len, key_hash, item_ptr, cmp)
+|HASH_ADD_BYHASHVALUE_INORDER        | (hh_name, head, keyfield_name, key_len, hashv, item_ptr, cmp)
 |HASH_ADD_KEYPTR_INORDER             | (hh_name, head, key_ptr, key_len, item_ptr, cmp)
-|HASH_ADD_KEYPTR_BYHASHVALUE_INORDER | (hh_name, head, key_ptr, key_len, key_hash, item_ptr, cmp)
+|HASH_ADD_KEYPTR_BYHASHVALUE_INORDER | (hh_name, head, key_ptr, key_len, hashv, item_ptr, cmp)
 |HASH_REPLACE                        | (hh_name, head, keyfield_name, key_len, item_ptr, replaced_item_ptr)
-|HASH_REPLACE_BYHASHVALUE            | (hh_name, head, keyfield_name, key_len, key_hash, item_ptr, replaced_item_ptr)
+|HASH_REPLACE_BYHASHVALUE            | (hh_name, head, keyfield_name, key_len, hashv, item_ptr, replaced_item_ptr)
 |HASH_REPLACE_INORDER                | (hh_name, head, keyfield_name, key_len, item_ptr, replaced_item_ptr, cmp)
-|HASH_REPLACE_BYHASHVALUE_INORDER    | (hh_name, head, keyfield_name, key_len, key_hash, item_ptr, replaced_item_ptr, cmp)
+|HASH_REPLACE_BYHASHVALUE_INORDER    | (hh_name, head, keyfield_name, key_len, hashv, item_ptr, replaced_item_ptr, cmp)
 |HASH_FIND                           | (hh_name, head, key_ptr, key_len, item_ptr)
-|HASH_FIND_BYHASHVALUE               | (hh_name, head, key_ptr, key_len, key_hash, item_ptr)
+|HASH_FIND_BYHASHVALUE               | (hh_name, head, key_ptr, key_len, hashv, item_ptr)
 |HASH_DELETE                         | (hh_name, head, item_ptr)
-|HASH_VALUE                          | (key_ptr, key_len, key_hash)
+|HASH_VALUE                          | (key_ptr, key_len, hashv)
 |HASH_SRT                            | (hh_name, head, cmp)
 |HASH_CNT                            | (hh_name, head)
 |HASH_CLEAR                          | (hh_name, head)
@@ -1799,12 +1869,12 @@ keyfield_name::
 key_len::
     the length of the key field in bytes. E.g. for an integer key, this is
     `sizeof(int)`, while for a string key it's `strlen(key)`. (For a
-    multi-field key, see the notes in this guide on calculating key length).
+    multi-field key, see <<multifield_note,this note>>.)
 key_ptr::
     for `HASH_FIND`, this is a pointer to the key to look up in the hash
     (since it's a pointer, you can't directly pass a literal value here). For
     `HASH_ADD_KEYPTR`, this is the address of the key of the item being added.
-key_hash::
+hashv::
     the hash value of the provided key. This is an input parameter for the
     `..._BYHASHVALUE` macros, and an output parameter for `HASH_VALUE`.
     Reusing a cached hash value can be a performance optimization if
@@ -1823,9 +1893,9 @@ cmp::
     items to compare) and returns an int specifying whether the first item
     should sort before, equal to, or after the second item (like `strcmp`).
 condition::
-    a function or macro which accepts a single argument-- a void pointer to a
-    structure, which needs to be cast to the appropriate structure type. The
-    function or macro should return (or evaluate to) a non-zero value if the
+    a function or macro which accepts a single argument (a void pointer to a
+    structure, which needs to be cast to the appropriate structure type). The
+    function or macro should evaluate to a non-zero value if the
     structure should be "selected" for addition to the destination hash.
 
 // vim: set tw=80 wm=2 syntax=asciidoc:
