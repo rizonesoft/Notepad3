@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1214.(build_#) (2020-12-14)
+Current BETA/RC Version 5.20.1218.(build_#) (2020-12-18)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1218.1]- Avoid wrap-around requester if there is no other possible occurrence.
 [1214.1]- Behavior change: copy to clipboard on empty selection -> don't copy anything if current line is empty.
 [1214.1]- Update keywords list in Style INNO Lexer.
 [1211.1]- No error message after decline loading file of huge size.
@@ -99,6 +100,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1218.1]- Multi-Replace using RegExpr and Group-References.
 [1211.1]- Refactoring encoding detection: pure ASCII vs. 7-bit.
 [1125.2]- File encoding analysis with 7-bit ASCII only.
 [1125.2]- File save problem after switching encoding to GB2312 (52936).
