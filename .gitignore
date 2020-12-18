@@ -26,14 +26,11 @@ Thumbs.db
 *.VC.db*
 
 /.vs
-/minipath/.vs
 /Bin
-/build.user.bat
-/Build/.vs
 /Build/Packages
-/Build/temp_zip*
+/Build/temp_7-zip*
+/Build/make_7-zip_*
 /Build/notepad3*setup_*
-/distrib/Notepad3*.exe
 
 /packages
 /other_sln/packages

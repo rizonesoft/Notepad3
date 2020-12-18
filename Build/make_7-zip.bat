@@ -3,8 +3,8 @@ rem ****************************************************************************
 rem *                                                                            *
 rem * Notepad3                                                                   *
 rem *                                                                            *
-rem * make_zip.bat                                                               *
-rem *   Batch file for creating the zip packages                                 *
+rem * make_7-zip.bat                                                             *
+rem *   Batch file for creating the portable .zip packages                       *
 rem *                                                                            *
 rem * See License.txt for details about distribution and modification.           *
 rem *                                                                            *
@@ -26,7 +26,7 @@ IF /I "%~1" == "/?"     GOTO SHOWHELP
 
 SET INPUTDIRx86=bin\Release_x86_v142
 SET INPUTDIRx64=bin\Release_x64_v142
-SET "TEMP_NAME=temp_zip"
+SET "TEMP_NAME=temp_7-zip"
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
@@ -45,21 +45,20 @@ CALL :SubZipFiles %INPUTDIRx64% x64
 
 rem Compress everything into a single ZIP file
 PUSHD "packages"
-IF EXIST "Notepad3_%NP2_VER%.zip" DEL "Notepad3_%NP2_VER%.zip"
+IF EXIST "Notepad3_%NP3_VER%.zip" DEL "Notepad3_%NP3_VER%.zip"
 IF EXIST "%TEMP_NAME%"      RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%"  MD "%TEMP_NAME%"
 
-REM IF EXIST "Notepad3_%NP2_VER%*.exe" COPY /Y /V "Notepad3_%NP2_VER%*.exe" "%TEMP_NAME%\" >NUL
-IF EXIST "Notepad3_%NP2_VER%*.zip" COPY /Y /V "Notepad3_%NP2_VER%*.zip" "%TEMP_NAME%\" >NUL
+IF EXIST "Notepad3_%NP3_VER%*.zip" COPY /Y /V "Notepad3_%NP3_VER%*.zip" "%TEMP_NAME%\" >NUL
 
 PUSHD "%TEMP_NAME%"
 
-"%SEVENZIP%" a -tzip -mx=9 Notepad3_%NP2_VER%.zip * >NUL
+"%SEVENZIP%" a -tzip -mx=7 Notepad3_%NP3_VER%.zip * >NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
-CALL :SUBMSG "INFO" "Notepad3_%NP2_VER%.zip created successfully!"
+CALL :SUBMSG "INFO" "Notepad3_%NP3_VER%.zip created successfully!"
 
-MOVE /Y "Notepad3_%NP2_VER%.zip" ".." >NUL
+MOVE /Y "Notepad3_%NP3_VER%.zip" ".." >NUL
 
 POPD
 IF EXIST "%TEMP_NAME%" RD /S /Q "%TEMP_NAME%"
@@ -75,7 +74,7 @@ EXIT /B
 
 
 :SubZipFiles
-SET "ZIP_NAME=Notepad3_%NP2_VER%_%2%SUFFIX%"
+SET "ZIP_NAME=Notepad3_%NP3_VER%_%2%SUFFIX%"
 TITLE Creating %ZIP_NAME%.zip...
 CALL :SUBMSG "INFO" "Creating %ZIP_NAME%.zip..."
 echo off
@@ -103,7 +102,7 @@ SET "FAVORITES=%TEMP_NAME%\Favorites"
 IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 
 PUSHD "%TEMP_NAME%"
-"%SEVENZIP%" a -tzip -mx=9^
+"%SEVENZIP%" a -tzip -mx=7^
  "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "grepWinLicense.txt" "Readme.txt"^
  "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "themes" "Docs">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
@@ -140,7 +139,7 @@ FOR /F "tokens=3,4 delims= " %%K IN (
 FOR /F "tokens=3,4 delims= " %%K IN (
   'FINDSTR /I /L /C:"define VERSION_BUILD" "..\src\VersionEx.h"') DO (SET "VerBuild=%%K")
 
-SET NP2_VER=%VerMajor%.%VerMinor%.%VerRev%.%VerBuild%
+SET NP3_VER=%VerMajor%.%VerMinor%.%VerRev%.%VerBuild%
 EXIT /B
 
 
