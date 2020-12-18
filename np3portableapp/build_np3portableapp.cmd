@@ -102,6 +102,18 @@ if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\" (
     del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\*.*"
 )
 
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\crypto\" (
+     mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\crypto\"
+) else (
+    del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\crypto\*.*"
+)
+
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\" (
+     mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\"
+) else (
+    del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\*.*"
+)
+
 :: Delete all files in "Notepad3\x86" and "Notepad3\x64" folders, except all .ini files.
 :: Because "blank" in filenames, the files in "gwLng" folder is NOT deleted (done below)!
 for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
@@ -116,8 +128,8 @@ copy "%SCRIPT_DIR%..\Readme.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Readme.txt
 copy "%NP3_DOC_DIR%\Notepad3.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Notepad3.txt" /Y /V
 copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\KeyboardShortcuts.txt" /Y /V
 copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Oniguruma_RE.txt" /Y /V
-copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encryption-doc.txt" /Y /V
-copy "%NP3_DOC_DIR%\crypto\read_me.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encrypt-read_me.txt" /Y /V
+copy "%NP3_DOC_DIR%\crypto\*.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\crypto\*.txt" /Y /V
+copy "%NP3_DOC_DIR%\uthash\*.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\*.txt" /Y /V
 copy "%NP3_GREPWIN_DIR%\grepWinLicense.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\grepWinLicense.txt" /Y /V
 
 :: Copy all current "Notepad3.exe" and "MiniPath.exe" files
