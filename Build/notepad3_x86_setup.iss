@@ -176,14 +176,9 @@ Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\zh-TW\mplng.dll.mui;         DestDir: {app}\lng\zh-TW;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-TW\np3lng.dll.mui;        DestDir: {app}\lng\zh-TW;                           Flags: ignoreversion
 Source: Changes.txt;                                                DestDir: {app}\Docs;                                Flags: ignoreversion
-Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
-Source: Docs\Oniguruma_RE.txt;                                      DestDir: {app}\Docs;                                Flags: ignoreversion
-Source: Docs\Notepad3.txt;                                          DestDir: {app}\Docs;                                Flags: ignoreversion
-Source: Docs\crypto\encryption-doc.txt;                             DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
-Source: Docs\crypto\read_me.txt;                                    DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
-Source: Docs\uthash\ChangeLog.txt;                                  DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\license.txt;                                    DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
-Source: Docs\uthash\userguide.txt;                                  DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\*.txt;                                                 DestDir: {app}\Docs;                                Flags: ignoreversion
+Source: Docs\crypto\*.txt;                                          DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
+Source: Docs\uthash\*.txt;                                          DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
 
 
 [Dirs]
