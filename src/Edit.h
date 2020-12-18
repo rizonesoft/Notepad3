@@ -87,7 +87,7 @@ void  EditJumpTo(DocLn iNewLine, DocPos iNewCol);
 void  EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void  EditFixPositions();
 void  EditEnsureSelectionVisible();
-void	EditEnsureConsistentLineEndings(HWND hwnd);
+void  EditEnsureConsistentLineEndings(HWND hwnd);
 void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
 HWND  EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);

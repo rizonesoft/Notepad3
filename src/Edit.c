@@ -6984,10 +6984,10 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr)
 //
 int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement)
 {
-
     if (iStartPos > iEndPos) {
         swapos(&iStartPos, &iEndPos);
     }
+    DocPos const iOrigEndPos = iEndPos; // remember
 
     char szFind[FNDRPL_BUFFER];
     size_t const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
@@ -6995,6 +6995,9 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
         return FALSE;
     }
     int const sFlags = (int)(lpefr->fuFlags);
+    bool const bIsRegExpr = (sFlags & SCFIND_REGEXP);
+    bool const bOverlappingSearch = lpefr->bOverlappingFind;
+    bool const bSetPosAfter = bIsRegExpr && (szFind[0] == '^' || szFind[slen - 1] == '$') && !bOverlappingSearch;
 
     // SCI_REPLACETARGET or SCI_REPLACETARGETRE
     int iReplaceMsg = SCI_REPLACETARGET;
@@ -7006,37 +7009,34 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
     DocPos const saveTargetBeg = SciCall_GetTargetStart();
     DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
-    DocPos start = iStartPos;
-    DocPos end_m = iEndPos;
-    DocPos end   = end_m;
-    DocPos iPos  = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
+    DocPos start   = iStartPos;
+    DocPos end     = iEndPos;
+    DocPos iPos    = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
 
-    if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+    if ((iPos < -1LL) && bIsRegExpr) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
         return 0;
     }
 
     int iCount = 0;
-    DocPos chgLenDiff = 0;
 
     _BEGIN_UNDO_ACTION_;
 
-    while ((iPos >= 0) && (start <= end_m)) {
+    while ((iPos >= 0LL) && (start <= iEndPos))
+    {
         SciCall_SetTargetRange(iPos, end);
         DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
-        chgLenDiff += replLen - (end - iPos);
-        start = SciCall_PositionAfter(SciCall_GetTargetEnd());
-        end_m = iEndPos + chgLenDiff;
-        end = end_m;
         ++iCount;
-
-        iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
+        iStartPos = bSetPosAfter ? SciCall_PositionAfter(SciCall_GetTargetEnd()) : SciCall_GetTargetEnd();
+        iEndPos += replLen - (end - iPos);
+        start = iStartPos;
+        end   = iEndPos;
+        iPos = (start <= end) ? _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM) : -1LL;
     }
     _END_UNDO_ACTION_;
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd + chgLenDiff); //restore
-
-    *enlargement = chgLenDiff;
+    *enlargement = (iEndPos - iOrigEndPos);
+    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd + *enlargement); //restore
     return iCount;
 }
 
