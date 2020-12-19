@@ -28,8 +28,7 @@ Thumbs.db
 /.vs
 /Bin
 /Build/Packages
-/Build/temp_7-zip*
-/Build/make_7-zip_*
+/Build/make_portable_*
 /Build/notepad3*setup_*
 
 /packages
