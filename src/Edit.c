@@ -5274,16 +5274,18 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
                 }
             }
 
-            bIsFlagSet = ((lpefr->fuFlags & SCFIND_DOT_MATCH_ALL) != 0);
-            if (IsButtonChecked(hwnd, IDC_DOT_MATCH_ALL)) {
-                if (!bIsFlagSet) {
-                    lpefr->fuFlags |= SCFIND_DOT_MATCH_ALL;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->fuFlags &= ~SCFIND_DOT_MATCH_ALL;
-                    lpefr->bStateChanged = true;
+            if (IsDialogControlEnabled(hwnd, IDC_DOT_MATCH_ALL)) {
+                bIsFlagSet = ((lpefr->fuFlags & SCFIND_DOT_MATCH_ALL) != 0);
+                if (IsButtonChecked(hwnd, IDC_DOT_MATCH_ALL)) {
+                    if (!bIsFlagSet) {
+                        lpefr->fuFlags |= SCFIND_DOT_MATCH_ALL;
+                        lpefr->bStateChanged = true;
+                    }
+                } else {
+                    if (bIsFlagSet) {
+                        lpefr->fuFlags &= ~SCFIND_DOT_MATCH_ALL;
+                        lpefr->bStateChanged = true;
+                    }
                 }
             }
 
@@ -5339,16 +5341,18 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
                 }
             }
 
-            bIsFlagSet = lpefr->bTransformBS;
-            if (IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS)) {
-                if (!bIsFlagSet) {
-                    lpefr->bTransformBS = true;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->bTransformBS = false;
-                    lpefr->bStateChanged = true;
+            if (IsDialogControlEnabled(hwnd, IDC_FINDTRANSFORMBS)) {
+                bIsFlagSet = lpefr->bTransformBS;
+                if (IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS)) {
+                    if (!bIsFlagSet) {
+                        lpefr->bTransformBS = true;
+                        lpefr->bStateChanged = true;
+                    }
+                } else {
+                    if (bIsFlagSet) {
+                        lpefr->bTransformBS = false;
+                        lpefr->bStateChanged = true;
+                    }
                 }
             }
 
@@ -5598,7 +5602,6 @@ static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
 
 static bool s_SaveMarkOccurrences = false;
 static bool s_SaveMarkMatchVisible = false;
-static bool s_SaveTFBackSlashes = false;
 
 //=============================================================================
 //
@@ -5755,72 +5758,48 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         bool const bRegEx = (sg_pefrData->fuFlags & SCFIND_REGEXP) != 0;
         bool const bDotMatchAll = (sg_pefrData->fuFlags & SCFIND_DOT_MATCH_ALL) != 0;
-        s_SaveTFBackSlashes = sg_pefrData->bTransformBS;
 
-        if (sg_pefrData->bTransformBS || bRegEx) {
-            CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
-        }
-        if (bDotMatchAll) {
-            CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_CHECKED);
-        }
+        CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, SetBtn(bRegEx && bDotMatchAll));
+        DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, bRegEx);
+
         if (bRegEx) {
-            CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_CHECKED);
             sg_pefrData->bWildcardSearch = false;
+            CheckDlgButton(hwnd, IDC_FINDREGEXP, SetBtn(bRegEx));
             DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
-        } else {
-            DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
         }
 
         if (sg_pefrData->bWildcardSearch) {
             CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_CHECKED);
             CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
-            DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
-            // transform BS handled by regex (wildcard search based on):
-            CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
             DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
         }
 
-        CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, sg_pefrData->bOverlappingFind ? BST_CHECKED : BST_UNCHECKED);
+        // transform BS handled by regex (wildcard search based on):
+        CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(sg_pefrData->bTransformBS || bRegEx || sg_pefrData->bWildcardSearch));
+        CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, SetBtn(sg_pefrData->bOverlappingFind));
 
-        if (sg_pefrData->bMarkOccurences) {
-            CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
-        } else {
+        CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, SetBtn(sg_pefrData->bMarkOccurences));
+        if (!sg_pefrData->bMarkOccurences) {
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
             Globals.iMarkOccurrencesCount = 0;
         }
 
-        if (sg_pefrData->fuFlags & SCFIND_MATCHCASE) {
-            CheckDlgButton(hwnd, IDC_FINDCASE, BST_CHECKED);
-        }
-        if (sg_pefrData->fuFlags & SCFIND_WHOLEWORD) {
-            CheckDlgButton(hwnd, IDC_FINDWORD, BST_CHECKED);
-        }
-        if (sg_pefrData->fuFlags & SCFIND_WORDSTART) {
-            CheckDlgButton(hwnd, IDC_FINDSTART, BST_CHECKED);
-        }
-        if (sg_pefrData->bNoFindWrap) {
-            CheckDlgButton(hwnd, IDC_NOWRAP, BST_CHECKED);
-        }
+        CheckDlgButton(hwnd, IDC_FINDCASE, SetBtn(sg_pefrData->fuFlags & SCFIND_MATCHCASE));
+        CheckDlgButton(hwnd, IDC_FINDWORD, SetBtn(sg_pefrData->fuFlags & SCFIND_WHOLEWORD));
+        CheckDlgButton(hwnd, IDC_FINDSTART, SetBtn(sg_pefrData->fuFlags & SCFIND_WORDSTART));
+        CheckDlgButton(hwnd, IDC_NOWRAP, SetBtn(sg_pefrData->bNoFindWrap));
 
         if (GetDlgItem(hwnd, IDC_REPLACE)) {
             if (s_bSwitchedFindReplace) {
-                if (sg_pefrData->bFindClose) {
-                    CheckDlgButton(hwnd, IDC_FINDCLOSE, BST_CHECKED);
-                }
+                CheckDlgButton(hwnd, IDC_FINDCLOSE, SetBtn(sg_pefrData->bFindClose));
             } else {
-                if (sg_pefrData->bReplaceClose) {
-                    CheckDlgButton(hwnd, IDC_FINDCLOSE, BST_CHECKED);
-                }
+                CheckDlgButton(hwnd, IDC_FINDCLOSE, SetBtn(sg_pefrData->bReplaceClose));
             }
         } else {
             if (s_bSwitchedFindReplace) {
-                if (sg_pefrData->bReplaceClose) {
-                    CheckDlgButton(hwnd, IDC_FINDCLOSE, BST_CHECKED);
-                }
+                CheckDlgButton(hwnd, IDC_FINDCLOSE, SetBtn(sg_pefrData->bReplaceClose));
             } else {
-                if (sg_pefrData->bFindClose) {
-                    CheckDlgButton(hwnd, IDC_FINDCLOSE, BST_CHECKED);
-                }
+                CheckDlgButton(hwnd, IDC_FINDCLOSE, SetBtn(sg_pefrData->bFindClose));
             }
         }
 
@@ -6232,13 +6211,15 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         case IDC_FINDREGEXP:
             if (IsButtonChecked(hwnd, IDC_FINDREGEXP)) {
                 DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, true);
-                CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED); // Can not use wildcard search together with regexp
-                CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED); // transform BS handled by regex
+                // Can not use wildcard search together with regexp
+                CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
+                // transform BS handled by regex
+                CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
                 DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
             } else { // unchecked
                 DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
                 DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, true);
-                CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
+                CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(sg_pefrData->bTransformBS));
             }
             _SetSearchFlags(hwnd, sg_pefrData);
             _DelayMarkAll(hwnd, 50, 0);
@@ -6249,21 +6230,22 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             _DelayMarkAll(hwnd, 50, 0);
             break;
 
-        case IDC_WILDCARDSEARCH:
+        case IDC_WILDCARDSEARCH: {
             if (IsButtonChecked(hwnd, IDC_WILDCARDSEARCH)) {
+                // Can not use wildcard search together with regexp
                 CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
                 DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
-                CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
                 // transform BS handled by regex (wildcard search based on):
                 CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
                 DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
             } else { // unchecked
-                CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
                 DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, true);
+                CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(sg_pefrData->bTransformBS));
             }
             _SetSearchFlags(hwnd, sg_pefrData);
             _DelayMarkAll(hwnd, 50, 0);
-            break;
+        }
+        break;
 
         case IDC_FIND_OVERLAPPING:
             _SetSearchFlags(hwnd, sg_pefrData);
@@ -6271,7 +6253,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             break;
 
         case IDC_FINDTRANSFORMBS: {
-            s_SaveTFBackSlashes = IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS);
             _SetSearchFlags(hwnd, sg_pefrData);
             _DelayMarkAll(hwnd, 50, 0);
         }
@@ -6661,7 +6642,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
         iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
 
         if ((iPos < 0LL) || (end == _start) || (IDOK != InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW))) {
-            bSuppressNotFound = true;
+            bSuppressNotFound = (iPos != -1LL);
             if (iPos < 0LL) {
                 start = _start;
                 end = _end;
@@ -6689,7 +6670,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
                 if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
                     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex2", IDS_MUI_REGEX_INVALID);
                 }
-                bSuppressNotFound = true;
+                bSuppressNotFound = (iPos != -1LL);
                 if (iPos < 0LL) {
                     start = _start;
                     end = _end;
@@ -6702,13 +6683,6 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
         if (!bSuppressNotFound) {
             InfoBoxLng(MB_OK, L"MsgNotFound", IDS_MUI_NOTFOUND);
         }
-#ifdef _DEBUG
-        WCHAR fnd[256];
-        WCHAR msg[256];
-        MultiByteToWideChar(CP_UTF8, 0, szFind, -1, fnd, (int)COUNTOF(fnd));
-        StringCchPrintf(msg, COUNTOF(msg), L"Search-Pattern:'%s'", fnd);
-        MsgBoxLastError(msg, 0);
-#endif
         return false;
     }
 
@@ -6772,7 +6746,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
         iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
 
         if ((iPos < 0LL) || (start == _start) || (IDOK != InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPRE))) {
-            bSuppressNotFound = true;
+            bSuppressNotFound = (iPos != -1LL);
             if (iPos < 0LL) {
                 start = _start;
                 end = _end;
@@ -6800,7 +6774,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
                 if ((iPos < -1LL) && (sFlags & SCFIND_REGEXP)) {
                     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex2", IDS_MUI_REGEX_INVALID);
                 }
-                bSuppressNotFound = true;
+                bSuppressNotFound = (iPos != -1LL);
                 if (iPos < 0LL) {
                     start = _start;
                     end = _end;
@@ -6813,13 +6787,6 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
         if (!bSuppressNotFound) {
             InfoBoxLng(MB_OK, L"MsgNotFound", IDS_MUI_NOTFOUND);
         }
-#ifdef _DEBUG
-        WCHAR fnd[256];
-        WCHAR msg[256];
-        MultiByteToWideChar(CP_UTF8, 0, szFind, -1, fnd, (int)COUNTOF(fnd));
-        StringCchPrintf(msg, COUNTOF(msg), L"Search-Pattern:'%s'", fnd);
-        MsgBoxLastError(msg, 0);
-#endif
         return false;
     }
 

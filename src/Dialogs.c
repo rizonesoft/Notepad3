@@ -2990,7 +2990,7 @@ CASE_WM_CTLCOLOR_SET:
 
         case IDC_SHOWEDGELINE:
         case IDC_BACKGRDCOLOR:
-            if (IsDialogItemEnabled(hwnd, IDC_SHOWEDGELINE)) {
+            if (IsDialogControlEnabled(hwnd, IDC_SHOWEDGELINE)) {
                 Settings.LongLineMode = IsButtonChecked(hwnd, IDC_SHOWEDGELINE) ? EDGE_LINE : EDGE_BACKGROUND;
             }
             break;
