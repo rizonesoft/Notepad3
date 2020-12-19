@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1218.(build_#) (2020-12-18)
+Current BETA/RC Version 5.20.1219.(build_#) (2020-12-19)
 ========================================================
 
 --------------------------------------------------------
@@ -100,6 +100,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1219.1]- F/R dialog: Transform Backslash option glitch.
+[1219.1]- F/R dialog: message box in case of not matching pattern.
 [1218.1]- Multi-Replace using RegExpr and Group-References.
 [1211.1]- Refactoring encoding detection: pure ASCII vs. 7-bit.
 [1125.2]- File encoding analysis with 7-bit ASCII only.
