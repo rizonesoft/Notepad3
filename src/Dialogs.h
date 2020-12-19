@@ -237,7 +237,7 @@ inline void AttentionBeep(UINT uType)
 #define DialogHideControl(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; ShowWindow(hctrl, (b)?SW_HIDE:SW_SHOW); }
 
-inline bool IsDialogItemEnabled(HWND hdlg, int id)
+inline bool IsDialogControlEnabled(HWND hdlg, int id)
 {
     return IsWindowEnabled(GetDlgItem(hdlg, id));
 }
