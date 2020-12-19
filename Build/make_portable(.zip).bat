@@ -3,8 +3,8 @@ rem ****************************************************************************
 rem *                                                                            *
 rem * Notepad3                                                                   *
 rem *                                                                            *
-rem * make_7-zip.bat                                                             *
-rem *   Batch file for creating the portable .zip packages                       *
+rem * make_portable(.zip).bat                                                    *
+rem *   Batch file for creating "Portable (*.zip)" packages                      *
 rem *                                                                            *
 rem * See License.txt for details about distribution and modification.           *
 rem *                                                                            *
@@ -26,7 +26,7 @@ IF /I "%~1" == "/?"     GOTO SHOWHELP
 
 SET INPUTDIRx86=bin\Release_x86_v142
 SET INPUTDIRx64=bin\Release_x64_v142
-SET "TEMP_NAME=temp_7-zip"
+SET "TEMP_NAME=make_portable_temp"
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
