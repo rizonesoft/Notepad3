@@ -250,6 +250,7 @@ void te_free(te_expr *n) {
 
 static double pi(void) {return 3.14159265358979323846;}
 static double e(void) {return 2.71828182845904523536;}
+
 static double fac(double a) {/* simplest version of fac */
     if (a < 0.0)
         return NAN;
@@ -264,6 +265,7 @@ static double fac(double a) {/* simplest version of fac */
     }
     return (double)result;
 }
+
 static double ncr(double n, double r) {
     if (n < 0.0 || r < 0.0 || n < r) return NAN;
     if (n > UINT_MAX || r > UINT_MAX) return INFINITY;
@@ -303,6 +305,24 @@ static double negate_logical_notnot(double a) { return -(a != 0.0); }
 static double npr(double n, double r) { return ncr(n, r) * fac(r); }
 static double ceilx(double n) { return (double)ceil(n); }
 static double floorx(double n) { return (double)floor(n); }
+
+static double parse_number(const char *pstrg, char **pendptr) {
+    if (pstrg[0] == '0' && (strlen(pstrg) > 2)) {
+        switch (pstrg[1]) {
+        case 'o':
+        case 'O':
+            return (double)strtoll(&pstrg[2], pendptr, 8);
+            break;
+        case 'b':
+        case 'B':
+            return (double)strtoll(&pstrg[2], pendptr, 2);
+            break;
+        default:
+            break;
+        }
+    }
+    return strtod(pstrg, pendptr);
+}
 
 #ifndef COUNTOF
 #define COUNTOF(A) (sizeof(A)/sizeof((A)[0]))
@@ -395,7 +415,7 @@ void next_token(state *s) {
 
         /* Try reading a number. */
         if ((s->next[0] >= '0' && s->next[0] <= '9') || s->next[0] == '.') {
-            s->value = strtod(s->next, (char**)&s->next);
+            s->value = parse_number(s->next, (char **)&s->next);
             s->type = TOK_NUMBER;
         } else {
             /* Look for a variable or builtin function call. */
@@ -434,7 +454,7 @@ void next_token(state *s) {
                     case '+': s->type = TOK_INFIX; s->function = get_function_pointer_2d(add); break;
                     case '-': s->type = TOK_INFIX; s->function = get_function_pointer_2d(sub); break;
                     case '*': s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;
-                    case -41: s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;    // '×' CP-1252
+                    case -41: s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;       // '×' CP-1252
                     case '/': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
                     case ':': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
                     case  -9: s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;    // '÷' CP-1252
