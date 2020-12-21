@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1219.(build_#) (2020-12-19)
+Current BETA/RC Version 5.20.1221.(build_#) (2020-12-21)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[1221.1]- TinyExpr: additional number parsing for binary (0b...) and octal (0o...) number formats.
 [1109.1]- Extension ".pkb" to SQL Lexer.
 [1012.1]- Support for Windows 10 20H2 Version 2009 (Build 19042).
 [1004.1]- Open/Save file explorer dialog: populate file filter with current lexer supported file extensions.
