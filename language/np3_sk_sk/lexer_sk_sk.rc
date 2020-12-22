@@ -125,6 +125,8 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Text Files"
     IDS_LEX_TOML_CFG        "TOML"
+    IDS_LEX_DART_SRC        "Dart Source Code"
+    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
 END
 
 STRINGTABLE
@@ -466,6 +468,9 @@ BEGIN
     IDS_LEX_STR_63366       "ESC Sequence"
     IDS_LEX_STR_63367       "Unicode-Point Hover"
     IDS_LEX_STR_63368       "2nd Unicode-Point Hover"
+    IDS_LEX_STR_63369       "Interface"
+    IDS_LEX_STR_63370       "Annotation"
+    IDS_LEX_STR_63371       "Comment Doc Word"
 END
 
 STRINGTABLE
