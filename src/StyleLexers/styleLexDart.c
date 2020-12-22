@@ -41,7 +41,7 @@ KEYWORDLIST KeyWords_Dart =
 
 EDITLEXER lexDart =
 {
-    SCLEX_DART, "dart", IDS_LEX_DART_SRC, L"Dart Source Code", L"dart", L"",
+    SCLEX_DART, "Dart", IDS_LEX_DART_SRC, L"Dart Source Code", L"dart", L"",
     &KeyWords_Dart,{
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
         //{ {SCE_DART_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -49,7 +49,7 @@ EDITLEXER lexDart =
         { {SCE_DART_WORD2}, IDS_LEX_STR_63260, L"Keyword 2nd", L"fore:#0000FF", L"" },
         { {SCE_DART_METADATA}, IDS_LEX_STR_63203, L"Meta-Data", L"fore:#FF8000", L"" },
         { {SCE_DART_CLASS}, IDS_LEX_STR_63258, L"Class", L"fore:#0080FF", L"" },
-        { {SCE_DART_ENUM}, IDS_LEX_STR_63203, L"Enumberation", L"fore:#FF8000", L"" },
+        { {SCE_DART_ENUM}, IDS_LEX_STR_63203, L"Enumeration", L"fore:#FF8000", L"" },
         { {SCE_DART_FUNCTION}, IDS_LEX_STR_63277, L"Function", L"fore:#A46000", L"" },
         { {MULTI_STYLE(SCE_DART_COMMENTBLOCK, SCE_DART_COMMENTLINE, 0, 0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#608060", L"" },
         { {MULTI_STYLE(SCE_DART_COMMENTBLOCKDOC, SCE_DART_COMMENTLINEDOC, 0, 0)}, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#408040", L"" },

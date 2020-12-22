@@ -93,8 +93,8 @@ LexicalClass lexicalClasses[] =
     6,  "SCE_TOML_VALUE",          "value",                "Value",
     7,  "SCE_TOML_NUMBER",         "number",               "Number",
     8,  "SCE_TOML_STR_BASIC",      "string_basic",         "Basic String",
-    9,  "SCE_TOML_STR_LITERAL",    "string_basic",         "Literal String",
-    10, "SCE_TOML_PARSINGERROR",   "type_error",           "Type Error",
+    9,  "SCE_TOML_STR_LITERAL",    "string_literal",       "Literal String",
+    10, "SCE_TOML_PARSINGERROR",   "parsing_error",        "Parsing Error",
 };
 
 } // end of namespace
@@ -225,13 +225,6 @@ Sci_Position SCI_METHOD LexerTOML::WordListSet(int n, const char* wl)
     }
     return firstModification;
 }
-// ----------------------------------------------------------------------------
-
-constexpr int abs_i(const int i) noexcept
-{
-    return ((i < 0) ? (0 - i) : (0 + i));
-}
-
 // ----------------------------------------------------------------------------
 
 constexpr bool IsCommentChar(const int ch) noexcept
@@ -1099,7 +1092,7 @@ void SCI_METHOD LexerTOML::Fold(Sci_PositionU startPos, Sci_Position length, int
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "toml", tomlWordLists);
+LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "TOML", tomlWordLists);
 
 // ----------------------------------------------------------------------------
 

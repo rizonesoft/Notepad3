@@ -77,6 +77,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] = {
     &lexJAVA,          // Java Source Code
     &lexJS,            // JavaScript
     &lexJSON,          // JSON
+    &lexKotlin,        // Kotlin
     &lexLATEX,         // LaTeX Files
     &lexLUA,           // Lua Script
     &lexMAK,           // Makefiles

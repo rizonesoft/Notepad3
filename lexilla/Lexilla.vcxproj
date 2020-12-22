@@ -65,6 +65,7 @@
     <ClCompile Include="src\lexers_x\LexAHKL.cxx" />
     <ClCompile Include="src\lexers_x\LexCSV.cxx" />
     <ClCompile Include="src\lexers_x\LexDart.cxx" />
+    <ClCompile Include="src\lexers_x\LexKotlin.cxx" />
     <ClCompile Include="src\lexers_x\LexTOML.cxx" />
     <ClCompile Include="src\Lexilla.cxx" />
   </ItemGroup>

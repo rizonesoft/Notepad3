@@ -164,6 +164,9 @@
     <ClCompile Include="src\lexers_x\LexDart.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
+    <ClCompile Include="src\lexers_x\LexKotlin.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\LexillaVersion.rc">

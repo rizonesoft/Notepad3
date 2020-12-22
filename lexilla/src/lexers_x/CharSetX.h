@@ -30,6 +30,15 @@ inline bool EqualsAny(const char* s, Args... args) noexcept {
 //- IsUpperOrLowerCase(int ch);
 //- IsAlphaNumeric(int ch);
 
+constexpr int abs_i(const int i) noexcept
+{
+    return ((i < 0) ? (0 - i) : (0 + i));
+}
+
+constexpr bool IsWordCharEx(int ch) noexcept {
+    return Scintilla::iswordchar(ch) || ch >= 0x80;
+}
+
 constexpr bool IsASpaceX(const int ch) noexcept
 {
     return ((ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d)));
@@ -84,7 +93,6 @@ constexpr bool IsIdentifierStart(int ch) noexcept {
 constexpr bool IsIdentifierStartEx(int ch) noexcept {
     return IsIdentifierStart(ch) || ch >= 0x80;
 }
-
 
 constexpr int IsNumber(const Scintilla::StyleContext& sc)
 {

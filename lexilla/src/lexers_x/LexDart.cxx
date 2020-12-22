@@ -117,10 +117,10 @@ LexicalClass lexicalClasses[] =
 class LexerDart : public DefaultLexer
 {
 
-    CharacterSet validKey;
-    CharacterSet validKeyWord;
-    CharacterSet validNumberEnd;
-    CharacterSet chDateTime;
+    //CharacterSet validKey;
+    //CharacterSet validKeyWord;
+    //CharacterSet validNumberEnd;
+    //CharacterSet chDateTime;
 
     WordList wl_keywords;
     WordList wl_types;
@@ -135,10 +135,10 @@ class LexerDart : public DefaultLexer
 public:
     LexerDart()
         : DefaultLexer("Dart", SCLEX_DART, lexicalClasses, ELEMENTS(lexicalClasses))
-        , validKey(CharacterSet::setAlphaNum, R"(-_.)", 0x80, false)
-        , validKeyWord(CharacterSet::setAlphaNum, "_+-", 0x80, false)
-        , validNumberEnd(CharacterSet::setNone, " \t\n\v\f\r#,)}]", 0x80, false)
-        , chDateTime(CharacterSet::setNone, "-+.:TZ", 0x80, false)
+        //, validKey(CharacterSet::setAlphaNum, R"(-_.)", 0x80, false)
+        //, validKeyWord(CharacterSet::setAlphaNum, "_+-", 0x80, false)
+        //, validNumberEnd(CharacterSet::setNone, " \t\n\v\f\r#,)}]", 0x80, false)
+        //, chDateTime(CharacterSet::setNone, "-+.:TZ", 0x80, false)
     { }
 
     virtual ~LexerDart() { }
@@ -260,13 +260,6 @@ Sci_Position SCI_METHOD LexerDart::WordListSet(int n, const char* wl)
 }
 // ----------------------------------------------------------------------------
 
-constexpr int abs_i(const int i) noexcept
-{
-    return ((i < 0) ? (0 - i) : (0 + i));
-}
-
-// ----------------------------------------------------------------------------
-
 struct EscapeSequence {
 
     int outerState = SCE_DART_DEFAULT;
@@ -318,11 +311,11 @@ constexpr int UnpackState(int state) noexcept {
     }
 }
 
-int PackNestedState(const std::vector<int>& nestedState) noexcept {
+inline static int PackNestedState(const std::vector<int>& nestedState) noexcept {
     return PackLineState<3, MaxDartNestedStateCount, PackState>(nestedState) << 16;
 }
 
-void UnpackNestedState(int lineState, int count, std::vector<int>& nestedState) {
+inline static void UnpackNestedState(int lineState, int count, std::vector<int>& nestedState) {
     UnpackLineState<3, MaxDartNestedStateCount, UnpackState>(lineState, count, nestedState);
 }
 
@@ -415,7 +408,7 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
                     sc.ChangeState(kwType);
                 }
                 else {
-                    //@@@const int chNext = GetNextNSChar();
+                    //?const int chNext = GetNextNSChar();
                     while (IsASpace(sc.ch)){ sc.Forward(); };
                     if (sc.ch == '(') {
                         sc.ChangeState(SCE_DART_FUNCTION);
@@ -788,7 +781,7 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position length, int
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmDart(SCLEX_DART, LexerDart::LexerFactoryDart, "dart", dartWordLists);
+LexerModule lmDart(SCLEX_DART, LexerDart::LexerFactoryDart, "Dart", dartWordLists);
 
 // ----------------------------------------------------------------------------
 

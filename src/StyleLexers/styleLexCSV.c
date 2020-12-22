@@ -6,7 +6,7 @@ KEYWORDLIST KeyWords_CSV = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexCSV =
 {
-    SCLEX_CSV, "csv", IDS_LEX_PRISM_CSV, L"CSV Prism", L"csv", L"",
+    SCLEX_CSV, "CSV", IDS_LEX_PRISM_CSV, L"CSV Prism", L"csv", L"",
     & KeyWords_CSV,{
         //SCE_CSV_DEFAULT
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

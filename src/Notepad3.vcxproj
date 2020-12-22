@@ -385,6 +385,7 @@
     <ClCompile Include="crypto\rijndael-api-fst.c" />
     <ClCompile Include="crypto\sha-256.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
+    <ClCompile Include="StyleLexers\styleLexKotlin.c" />
     <ClCompile Include="tinyexpr\tinyexpr.c" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
     <ClCompile Include="uchardet\uchardet\src\JpCntx.cpp" />

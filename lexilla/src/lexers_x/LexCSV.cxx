@@ -199,13 +199,6 @@ Sci_Position SCI_METHOD LexerCSV::WordListSet(int n, const char* wl)
 }
 // ----------------------------------------------------------------------------
 
-constexpr int abs_i(const int i) noexcept
-{
-    return ((i < 0) ? (0 - i) : (0 + i));
-}
-
-// ----------------------------------------------------------------------------
-
 constexpr bool IsSingleQuoteChar(const int ch) noexcept
 {
     return (ch == '\'');
@@ -423,7 +416,7 @@ void SCI_METHOD LexerCSV::Fold(Sci_PositionU startPos, Sci_Position length, int,
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmCSV(SCLEX_CSV, LexerCSV::LexerFactoryCSV, "csv", csvWordLists);
+LexerModule lmCSV(SCLEX_CSV, LexerCSV::LexerFactoryCSV, "CSV", csvWordLists);
 
 // ----------------------------------------------------------------------------
 
