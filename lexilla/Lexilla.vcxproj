@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lexers_x\CharSetX.h" />
+    <ClInclude Include="src\lexers_x\LexerUtils.h" />
     <ClInclude Include="src\lexers_x\SciXLexer.h" />
     <ClInclude Include="src\Lexilla.h" />
   </ItemGroup>
@@ -63,6 +64,8 @@
     <ClCompile Include="..\scintilla\lexers\LexYAML.cxx" />
     <ClCompile Include="src\lexers_x\LexAHKL.cxx" />
     <ClCompile Include="src\lexers_x\LexCSV.cxx" />
+    <ClCompile Include="src\lexers_x\LexDart.cxx" />
+    <ClCompile Include="src\lexers_x\LexKotlin.cxx" />
     <ClCompile Include="src\lexers_x\LexTOML.cxx" />
     <ClCompile Include="src\Lexilla.cxx" />
   </ItemGroup>

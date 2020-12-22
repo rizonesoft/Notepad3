@@ -6,30 +6,24 @@
 ** TOML Spec: https://github.com/toml-lang/toml
 **/
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <ctype.h>
-
 #include <string>
+#include <assert.h>
 #include <map>
-#include <algorithm>
-
+//
 #include "ILexer.h"
 #include "Scintilla.h"
-#include "SciXLexer.h"
-
 #include "StringCopy.h"
-#include "WordList.h"
+#include "PropSetSimple.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
 #include "StyleContext.h"
-#include "CharSetX.h"
 #include "LexerModule.h"
-#include "OptionSet.h"
 #include "DefaultLexer.h"
+#include "OptionSet.h"
+#include "WordList.h"
+//
+#include "CharSetX.h"
+#include "SciXLexer.h"
 
 
 using namespace Scintilla;
@@ -63,12 +57,10 @@ struct OptionsTOML
 {
     bool fold;
     bool foldCompact;
-
     OptionsTOML()
-    {
-        fold = true;
-        foldCompact = true;
-    }
+        : fold(true)
+        , foldCompact(true)
+    { }
 };
 
 static const char* const tomlWordLists[] =
@@ -82,8 +74,8 @@ struct OptionSetTOML : public OptionSet<OptionsTOML>
     OptionSetTOML()
     {
 
-        DefineProperty("fold", &OptionsTOML::fold, "FOLD COMMENT");
-        DefineProperty("fold.compact", &OptionsTOML::foldCompact, "FOLDCOMPACT COMMENT");
+        DefineProperty("fold", &OptionsTOML::fold);
+        DefineProperty("fold.compact", &OptionsTOML::foldCompact);
 
         DefineWordListSets(tomlWordLists);
     }
@@ -101,8 +93,8 @@ LexicalClass lexicalClasses[] =
     6,  "SCE_TOML_VALUE",          "value",                "Value",
     7,  "SCE_TOML_NUMBER",         "number",               "Number",
     8,  "SCE_TOML_STR_BASIC",      "string_basic",         "Basic String",
-    9,  "SCE_TOML_STR_LITERAL",    "string_basic",         "Literal String",
-    10,  "SCE_TOML_PARSINGERROR",   "type_error",           "Type Error",
+    9,  "SCE_TOML_STR_LITERAL",    "string_literal",       "Literal String",
+    10, "SCE_TOML_PARSINGERROR",   "parsing_error",        "Parsing Error",
 };
 
 } // end of namespace
@@ -174,7 +166,8 @@ public:
 
     int SCI_METHOD LineEndTypesSupported() override
     {
-        return SC_LINE_END_TYPE_UNICODE;
+        //return SC_LINE_END_TYPE_UNICODE;
+        return SC_LINE_END_TYPE_DEFAULT;
     }
 
     int SCI_METHOD PrimaryStyleFromStyle(int style) override
@@ -232,13 +225,6 @@ Sci_Position SCI_METHOD LexerTOML::WordListSet(int n, const char* wl)
     }
     return firstModification;
 }
-// ----------------------------------------------------------------------------
-
-constexpr int abs_i(const int i) noexcept
-{
-    return ((i < 0) ? (0 - i) : (0 + i));
-}
-
 // ----------------------------------------------------------------------------
 
 constexpr bool IsCommentChar(const int ch) noexcept
@@ -352,7 +338,7 @@ static bool IsLookAheadInList(StyleContext& sc, const CharacterSet& validCh, con
     {
         int const ch = sc.GetRelative(i);
 
-        if (IsABlankOrTabX(ch))
+        if (IsABlankOrTab(ch))
         {
             if (j == 0)
             {
@@ -390,7 +376,10 @@ constexpr bool _isQuoted(const bool q1, const bool q2) noexcept
 
 void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess)
 {
-    Accessor styler(pAccess, nullptr);
+    PropSetSimple props;
+    props.SetMultiple(osTOML.PropertyNames());
+
+    Accessor styler(pAccess, &props);
     StyleContext sc(startPos, length, initStyle, styler);
 
     bool inSQuotedKey = false;
@@ -1005,12 +994,12 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
 void SCI_METHOD LexerTOML::Fold(Sci_PositionU startPos, Sci_Position length, int, IDocument* pAccess)
 {
-    if (!options.fold)
-    {
-        return;
-    }
+    if (!options.fold) { return; }
 
-    Accessor styler(pAccess, nullptr);
+    PropSetSimple props;
+    props.SetMultiple(osTOML.PropertyNames());
+
+    Accessor styler(pAccess, &props);
 
     //const Sci_Position docLines = styler.GetLine(styler.Length());
     //const Sci_Position maxPos = startPos + length;
@@ -1103,7 +1092,7 @@ void SCI_METHOD LexerTOML::Fold(Sci_PositionU startPos, Sci_Position length, int
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "toml", tomlWordLists);
+LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "TOML", tomlWordLists);
 
 // ----------------------------------------------------------------------------
 

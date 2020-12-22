@@ -106,12 +106,14 @@ extern EDITLEXER lexPROPS;         // Configuration Files
 extern EDITLEXER lexCSS;           // CSS Style Sheets
 extern EDITLEXER lexCSV;           // CSV Prism Color Lexer
 extern EDITLEXER lexD;             // D Source Code
+extern EDITLEXER lexDart;          // Dart Source Code
 extern EDITLEXER lexDIFF;          // Diff Files
 extern EDITLEXER lexGo;            // Go Source Code
 extern EDITLEXER lexINNO;          // Inno Setup Script
 extern EDITLEXER lexJAVA;          // Java Source Code
 extern EDITLEXER lexJS;            // JavaScript
 extern EDITLEXER lexJSON;          // JSON
+extern EDITLEXER lexKotlin;        // Kotlin
 extern EDITLEXER lexLATEX;         // LaTeX Files
 extern EDITLEXER lexLUA;           // Lua Script
 extern EDITLEXER lexMAK;           // Makefiles

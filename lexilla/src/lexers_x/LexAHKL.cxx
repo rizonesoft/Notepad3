@@ -8,30 +8,25 @@
 // The License.txt file describes the conditions under which this software may be distributed.
 // https://github.com/RaptorX/LexAHKL/
 //
-#include <stdlib.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <assert.h>
+
 #include <string>
-#include <sstream>
-
-#include <windows.h>
-#include <vector>
+#include <assert.h>
 #include <map>
-
+//
 #include "ILexer.h"
 #include "Scintilla.h"
-#include "SciXLexer.h"
-
-#include "WordList.h"
+#include "StringCopy.h"
+#include "PropSetSimple.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
 #include "StyleContext.h"
-#include "CharSetX.h"
 #include "LexerModule.h"
-#include "OptionSet.h"
 #include "DefaultLexer.h"
-//#include "PropSetSimple.h"
+#include "OptionSet.h"
+#include "WordList.h"
+//
+#include "CharSetX.h"
+#include "SciXLexer.h"
 
 
 using namespace Scintilla;
@@ -42,12 +37,11 @@ struct OptionsAHKL
     bool fold;
     bool foldComment;
     bool foldCompact;
-    OptionsAHKL()
-    {
-        fold = false;
-        foldComment = true;
-        foldCompact = true;
-    }
+    OptionsAHKL() 
+        : fold(false)
+        , foldComment(true)
+        , foldCompact(true)
+    { }
 };
 
 static const char* const ahklWordLists[] =
@@ -72,6 +66,7 @@ struct OptionSetAHKL : public OptionSet<OptionsAHKL>
         DefineProperty("fold", &OptionsAHKL::fold);
         DefineProperty("fold.comment", &OptionsAHKL::foldComment);
         DefineProperty("fold.compact", &OptionsAHKL::foldCompact);
+
         DefineWordListSets(ahklWordLists);
     }
 };
@@ -234,7 +229,10 @@ Sci_Position SCI_METHOD LexerAHKL::WordListSet(int n, const char *wl)
 
 void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess)
 {
-    LexAccessor styler(pAccess);
+    PropSetSimple props;
+    props.SetMultiple(osAHKL.PropertyNames());
+
+    Accessor styler(pAccess, &props);
     StyleContext sc(startPos, lengthDoc, initStyle, styler);
 
     // non-lexical states
@@ -739,12 +737,12 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess)
 {
-    if (!options.fold)
-    {
-        return;
-    }
+    if (!options.fold) { return; }
 
-    LexAccessor styler(pAccess);
+    PropSetSimple props;
+    props.SetMultiple(osAHKL.PropertyNames());
+
+    Accessor styler(pAccess, &props);
 
     bool const foldComment = options.foldComment; //props.GetInt("fold.comment") != 0;
     bool const foldCompact = options.foldCompact; //props.GetInt("fold.compact", 1) != 0;
@@ -817,4 +815,4 @@ void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
 
 }
 
-LexerModule lmAHKL(SCLEX_AHKL, LexerAHKL::LexerFactoryAHKL, "ahkl", ahklWordLists);
+LexerModule lmAHKL(SCLEX_AHKL, LexerAHKL::LexerFactoryAHKL, "AHKL", ahklWordLists);

@@ -848,6 +848,8 @@
 #define IDS_LEX_TEXT_FILES              63048
 #define IDS_LEX_TOML_CFG                63049
 #define IDS_LEX_PRISM_CSV               63050
+#define IDS_LEX_DART_SRC                63051
+#define IDS_LEX_KOTLIN_SRC              63052
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101
@@ -1119,6 +1121,9 @@
 #define IDS_LEX_STR_63366               63366
 #define IDS_LEX_STR_63367               63367
 #define IDS_LEX_STR_63368               63368
+#define IDS_LEX_STR_63369               63369
+#define IDS_LEX_STR_63370               63370
+#define IDS_LEX_STR_63371               63371
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401

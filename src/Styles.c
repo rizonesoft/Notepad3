@@ -70,12 +70,14 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] = {
     &lexCSS,           // CSS Style Sheets
     &lexCSV,           // CSV Prism Color Lexer
     &lexD,             // D Source Code
+    &lexDart,          // Dart Source Code
     &lexDIFF,          // Diff Files
     &lexGo,            // Go Source Code
     &lexINNO,          // Inno Setup Script
     &lexJAVA,          // Java Source Code
     &lexJS,            // JavaScript
     &lexJSON,          // JSON
+    &lexKotlin,        // Kotlin
     &lexLATEX,         // LaTeX Files
     &lexLUA,           // Lua Script
     &lexMAK,           // Makefiles
