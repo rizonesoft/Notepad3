@@ -5,30 +5,24 @@
 ** Written by RaiKoHoff
 **/
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <ctype.h>
-
 #include <string>
+#include <assert.h>
 #include <map>
-#include <algorithm>
-
+//
 #include "ILexer.h"
 #include "Scintilla.h"
-#include "SciXLexer.h"
-
 #include "StringCopy.h"
-#include "WordList.h"
+#include "PropSetSimple.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
 #include "StyleContext.h"
-#include "CharSetX.h"
 #include "LexerModule.h"
-#include "OptionSet.h"
 #include "DefaultLexer.h"
+#include "OptionSet.h"
+#include "WordList.h"
+//
+#include "CharSetX.h"
+#include "SciXLexer.h"
 
 
 using namespace Scintilla;
@@ -46,12 +40,10 @@ struct OptionsCSV
 {
     bool fold;
     bool foldCompact;
-
-    OptionsCSV()
-    {
-        fold = true;
-        foldCompact = true;
-    }
+    OptionsCSV() 
+        : fold(true)
+        , foldCompact(true)
+    { }
 };
 
 static const char* const csvWordLists[] =
@@ -63,9 +55,8 @@ struct OptionSetCSV : public OptionSet<OptionsCSV>
 {
     OptionSetCSV()
     {
-
-        DefineProperty("fold", &OptionsCSV::fold, "FOLD COMMENT");
-        DefineProperty("fold.compact", &OptionsCSV::foldCompact, "FOLDCOMPACT COMMENT");
+        DefineProperty("fold", &OptionsCSV::fold);
+        DefineProperty("fold.compact", &OptionsCSV::foldCompact);
 
         DefineWordListSets(csvWordLists);
     }
@@ -84,7 +75,7 @@ LexicalClass lexicalClasses[] =
     7,  "SCE_CSV_COLUMN_6",       "col_6",         "Column 6",
     8,  "SCE_CSV_COLUMN_7",       "col_7",         "Column 7",
     9,  "SCE_CSV_COLUMN_8",       "col_8",         "Column 8",
-    10,  "SCE_CSV_COLUMN_9",       "col_9",         "Column 9",
+    10, "SCE_CSV_COLUMN_9",       "col_9",         "Column 9",
 };
 
 
@@ -148,7 +139,7 @@ public:
 
     int SCI_METHOD LineEndTypesSupported() override
     {
-        return SC_LINE_END_TYPE_UNICODE;
+        return SC_LINE_END_TYPE_DEFAULT;
     }
 
     int SCI_METHOD PrimaryStyleFromStyle(int style) override
@@ -277,7 +268,10 @@ constexpr int GetStateByColumn(const int col) noexcept
 
 void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess)
 {
-    Accessor styler(pAccess, nullptr);
+    PropSetSimple props;
+    props.SetMultiple(osCSV.PropertyNames());
+
+    Accessor styler(pAccess, &props);
 
     // 2 passes:  1st pass: smart delimiter detection,   2nd pass: do styling
 

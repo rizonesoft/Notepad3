@@ -125,6 +125,7 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Text Files"
     IDS_LEX_TOML_CFG        "TOML"
+    IDS_LEX_DART_SRC        "Dart Source Code"
 END
 
 STRINGTABLE

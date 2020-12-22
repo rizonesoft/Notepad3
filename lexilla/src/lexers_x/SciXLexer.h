@@ -4,8 +4,9 @@
 #include "SciLexer.h"    // Scintilla/Lexilla Lexer defines
 
 #define SCLEX_AHKL  200
-#define SCLEX_TOML  201
-#define SCLEX_CSV   202
+#define SCLEX_CSV   201
+#define SCLEX_DART  202
+#define SCLEX_TOML  203
 
 // -----------------------------------------------------------------------------
 // !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!
@@ -55,6 +56,40 @@
 #define SCE_CSV_COLUMN_7 8
 #define SCE_CSV_COLUMN_8 9
 #define SCE_CSV_COLUMN_9 10
+
+
+#define SCE_DART_DEFAULT 0
+#define SCE_DART_COMMENTLINE 1
+#define SCE_DART_COMMENTLINEDOC 2
+#define SCE_DART_COMMENTBLOCK 3
+#define SCE_DART_COMMENTBLOCKDOC 4
+#define SCE_DART_NUMBER 5
+#define SCE_DART_OPERATOR 6
+#define SCE_DART_OPERATOR2 7
+#define SCE_DART_IDENTIFIER 8
+#define SCE_DART_STRING_SQ 9
+#define SCE_DART_STRING_DQ 10
+#define SCE_DART_TRIPLE_STRING_SQ 11
+#define SCE_DART_TRIPLE_STRING_DQ 12
+#define SCE_DART_ESCAPECHAR 13
+#define SCE_DART_RAWSTRING_SQ 14
+#define SCE_DART_RAWSTRING_DQ 15
+#define SCE_DART_TRIPLE_RAWSTRING_SQ 16
+#define SCE_DART_TRIPLE_RAWSTRING_DQ 17
+#define SCE_DART_TRIPLE_STRING_SQSTART 18
+#define SCE_DART_TRIPLE_STRING_DQSTART 19
+#define SCE_DART_TRIPLE_STRING_SQEND 20
+#define SCE_DART_TRIPLE_STRING_DQEND 21
+#define SCE_DART_SYMBOL_OPERATOR 22
+#define SCE_DART_SYMBOL_IDENTIFIER 23
+#define SCE_DART_VARIABLE 24
+#define SCE_DART_METADATA 25
+#define SCE_DART_LABEL 26
+#define SCE_DART_FUNCTION 27
+#define SCE_DART_WORD 28
+#define SCE_DART_WORD2 29
+#define SCE_DART_CLASS 30
+#define SCE_DART_ENUM 31
 
 
 #define SCE_TOML_DEFAULT 0

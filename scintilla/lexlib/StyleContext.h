@@ -185,6 +185,13 @@ public:
 	bool Match(char ch0, char ch1) const {
 		return (ch == static_cast<unsigned char>(ch0)) && (chNext == static_cast<unsigned char>(ch1));
 	}
+
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	bool Match(char ch0, char ch1, char ch2) const noexcept {
+		return Match(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 2);
+	}
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 	bool Match(const char *s) {
 		if (ch != static_cast<unsigned char>(*s))
 			return false;

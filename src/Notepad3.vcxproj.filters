@@ -405,6 +405,9 @@
     <ClCompile Include="uchardet\uchardet\src\uchardet.cpp">
       <Filter>Source Files\uchardet</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexDart.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">

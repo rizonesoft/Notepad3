@@ -195,6 +195,7 @@ int Scintilla_LinkLexers() {
 	// EXTERNAL LEXERS
 	LINK_LEXER(lmAHKL);
 	LINK_LEXER(lmCSV);
+	LINK_LEXER(lmDart);
 	LINK_LEXER(lmTOML);
 
 #endif // SCI_EMPTYCATALOGUE

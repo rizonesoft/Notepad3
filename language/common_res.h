@@ -848,6 +848,7 @@
 #define IDS_LEX_TEXT_FILES              63048
 #define IDS_LEX_TOML_CFG                63049
 #define IDS_LEX_PRISM_CSV               63050
+#define IDS_LEX_DART_SRC                63051
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101

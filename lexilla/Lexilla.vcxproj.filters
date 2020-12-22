@@ -33,6 +33,9 @@
     <ClInclude Include="src\lexers_x\SciXLexer.h">
       <Filter>lexers_x</Filter>
     </ClInclude>
+    <ClInclude Include="src\lexers_x\LexerUtils.h">
+      <Filter>lexers_x</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lexilla.cxx">
@@ -156,6 +159,9 @@
       <Filter>lexers_x</Filter>
     </ClCompile>
     <ClCompile Include="src\lexers_x\LexTOML.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lexers_x\LexDart.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>

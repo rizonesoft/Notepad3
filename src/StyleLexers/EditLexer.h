@@ -106,6 +106,7 @@ extern EDITLEXER lexPROPS;         // Configuration Files
 extern EDITLEXER lexCSS;           // CSS Style Sheets
 extern EDITLEXER lexCSV;           // CSV Prism Color Lexer
 extern EDITLEXER lexD;             // D Source Code
+extern EDITLEXER lexDart;          // Dart Source Code
 extern EDITLEXER lexDIFF;          // Diff Files
 extern EDITLEXER lexGo;            // Go Source Code
 extern EDITLEXER lexINNO;          // Inno Setup Script
