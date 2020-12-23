@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.20.1222.(build_#) (2020-12-22)
+Current BETA/RC Version 5.20.1223.(build_#) (2020-12-23)
 ========================================================
 
 --------------------------------------------------------
@@ -66,6 +66,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1223.1]- Iinitial start screen resolution independent fixed base font size.
 [1218.1]- Avoid wrap-around requester if there is no other possible occurrence.
 [1214.1]- Behavior change: copy to clipboard on empty selection -> don't copy anything if current line is empty.
 [1214.1]- Update keywords list in Style INNO Lexer.
