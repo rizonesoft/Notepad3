@@ -406,7 +406,7 @@ bool Style_IsCurLexerStandard()
 //
 static float  _SetBaseFontSize(float fSize)
 {
-    static float fBaseFontSize = 11.0f;
+    static float fBaseFontSize = GLOBAL_INITIAL_FONTSIZE;
 
     if (fSize >= 0.0f) {
         fBaseFontSize = Round10th(fSize);
@@ -420,7 +420,7 @@ static float  _SetBaseFontSize(float fSize)
 //
 float Style_GetBaseFontSize()
 {
-    return _SetBaseFontSize(-1.0);
+    return _SetBaseFontSize(-1.0); // neg. value indicate getter
 }
 
 //=============================================================================
@@ -429,7 +429,7 @@ float Style_GetBaseFontSize()
 //
 static float  _SetCurrentFontSize(float fSize)
 {
-    static float fCurrentFontSize = 11.0f;
+    static float fCurrentFontSize = GLOBAL_INITIAL_FONTSIZE;
 
     if (signbit(fSize) == 0) {
         float const fSizeR10th = Round10th(fSize);
@@ -440,7 +440,7 @@ static float  _SetCurrentFontSize(float fSize)
 
 float Style_GetCurrentFontSize()
 {
-    return _SetCurrentFontSize(-1.0f);
+    return _SetCurrentFontSize(-1.0f); // neg. value indicate getter
 }
 
 
@@ -461,12 +461,12 @@ int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 
 //=============================================================================
 //
-//  Style_Init()
+//  Style_Load()
 //
-void Style_Init()
+void Style_Load()
 {
-    _SetBaseFontSize((float)Globals.InitialFontSize);
-    _SetCurrentFontSize((float)Globals.InitialFontSize);
+    _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
+    _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
 
     for (int i = 0; i < 16; ++i) {
         g_colorCustom[i] = s_colorDefault[i];
@@ -1136,8 +1136,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     //~Style_SetACPfromCharSet(hwnd);
 
     // ---  apply/init  default style  ---
-    _SetBaseFontSize((float)Globals.InitialFontSize);
-    _SetCurrentFontSize((float)Globals.InitialFontSize);
+    _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
+    _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
 
     const WCHAR* const wchStandardStyleStrg = pCurrentStandard->Styles[STY_DEFAULT].szValue;
 
@@ -3378,7 +3378,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     // is "size:" definition relative ?
     bool const bRelFontSize = (!StrStr(lpszStyle, L"size:") || StrStr(lpszStyle, L"size:+") || StrStr(lpszStyle, L"size:-"));
 
-    float const fBaseFontSize = (bGlobalDefaultStyle ? (float)Globals.InitialFontSize :
+    float const fBaseFontSize = (bGlobalDefaultStyle ? GLOBAL_INITIAL_FONTSIZE :
                                  (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
     // Font Height

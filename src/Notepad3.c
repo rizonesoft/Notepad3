@@ -650,7 +650,6 @@ static void _InitGlobals()
     Globals.bDocHasInconsistentEOLs = false;
     Globals.idxLightModeTheme = 1; // Default(0), Standard(1)
     Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
-    Globals.InitialFontSize = (IsFullHD(NULL, -1, -1) < 0) ? 10 : 11;
 
     Flags.bHugeFileLoadState = DefaultFlags.bHugeFileLoadState = false;
     Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
