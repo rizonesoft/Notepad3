@@ -161,6 +161,9 @@ typedef enum
 #define MB_ICONSHIELD 0x000000B0L
 
 #define COLORREF_MAX (DWORD_MAX)
+
+#define GLOBAL_INITIAL_FONTSIZE 11.0f
+
 // --------------------------------------------------------------------------
 
 typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO, CT_DWELL } CALLTIPTYPE;
@@ -365,7 +368,6 @@ typedef struct _globals_t
     CALLTIPTYPE CallTipType;
     FILEVARS  fvCurFile;
     int       iWrapCol;
-    int       InitialFontSize;
 
     bool      CmdLnFlag_PosParam;
     int       CmdLnFlag_WindowPos;

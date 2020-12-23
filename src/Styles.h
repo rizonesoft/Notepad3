@@ -30,7 +30,7 @@
 #define NUMLEXERS 53
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
-void   Style_Init();
+void   Style_Load();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportTheme(const unsigned iThemeIdx);
 void   Style_LoadLexerFileExtensions();
