@@ -7,7 +7,7 @@ rem ****************************************************************************
 rem *                                                                            *
 rem * Notepad3                                                                   *
 rem *                                                                            *
-rem * make_portable(.zip).bat                                                    *
+rem * make_portable(.zip).cmd                                                    *
 rem *   Batch file for creating "Portable (*.zip)" packages                      *
 rem *                                                                            *
 rem * See License.txt for details about distribution and modification.           *
