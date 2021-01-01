@@ -7,7 +7,7 @@
 * MuiLanguage.c                                                               *
 *   General MUI Language support functions                                    *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2020   *
+*                                                  (c) Rizonesoft 2008-2021   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

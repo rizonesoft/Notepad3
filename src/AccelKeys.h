@@ -4,10 +4,10 @@
 *                                                                             *
 * Notepad3                                                                    *
 *                                                                             *
-* AccelKeys.h                                                           *
+* AccelKeys.h                                                                 *
 *   Load Accelerator Keys at Runtime                                          *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2020  *
+*                                                  (c) Rizonesoft 2008-2021   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
