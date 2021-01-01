@@ -1,6 +1,6 @@
 ﻿;* Notepad3 - Installer script
 ;*
-;* (c) Rizonesoft 2008-2020
+;* (c) Rizonesoft 2008-2021
 
 ; Requirements:
 ; Inno Setup: https://www.jrsoftware.org/isdl.php
@@ -31,7 +31,7 @@
 #define app_name      "Notepad3"
 #define app_publisher "Rizonesoft"
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
-#define app_copyright "Copyright © 2008-2020 Rizonesoft"
+#define app_copyright "Copyright © 2008-2021 Rizonesoft"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
 

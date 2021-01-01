@@ -8,7 +8,7 @@
 *   Main application window functionality                                     *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2020   *
+*                                                  (c) Rizonesoft 2008-2021   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
