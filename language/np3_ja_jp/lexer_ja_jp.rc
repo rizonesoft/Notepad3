@@ -125,8 +125,8 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_Lスクリプト"
     IDS_LEX_TEXT_FILES      "テキストファイル"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart Source Code"
-    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
+    IDS_LEX_DART_SRC        "Dart ソースコード"
+    IDS_LEX_KOTLIN_SRC      "Kotlin ソースコード"
 END
 
 STRINGTABLE
@@ -468,9 +468,9 @@ BEGIN
     IDS_LEX_STR_63366       "エスケープシーケンス"
     IDS_LEX_STR_63367       "Unicode 符号位置にマウス焦点"
     IDS_LEX_STR_63368       "第2 Unicode 符号位置にマウス焦点"
-    IDS_LEX_STR_63369       "Interface"
-    IDS_LEX_STR_63370       "Annotation"
-    IDS_LEX_STR_63371       "Comment Doc Word"
+    IDS_LEX_STR_63369       "インターフェース"
+    IDS_LEX_STR_63370       "アノテーション"
+    IDS_LEX_STR_63371       "コメント Doc 用語"
 END
 
 STRINGTABLE
