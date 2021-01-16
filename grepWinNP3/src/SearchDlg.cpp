@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2020 - Stefan Kueng
+// Copyright (C) 2007-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -2613,7 +2613,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     }
     // replace %1 with "path/of/selected/file"
     tag = L"%1";
-    if (application.find(L"rundll32.exe") == std::wstring::npos)
+    if (application.find(L"rundll32.exe") == std::wstring::npos && application.find(L"--single-argument") == std::wstring::npos)
         repl = L"\"" + inf.filepath + L"\"";
     else
         repl = inf.filepath;
