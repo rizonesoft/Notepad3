@@ -3382,25 +3382,24 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
                                  (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
     // Font Height
-    float fFontSize;
-    if (!Style_StrGetSize(lpszStyle, &fFontSize)) {
-        fFontSize = fBaseFontSize;
-    }
+    float fFontSize = fBaseFontSize;
+    Style_StrGetSize(lpszStyle, &fFontSize);
+
     HDC const hdc = GetDC(hwnd);
     int const iFontHeight = PointSizeToFontHeight(fFontSize, hdc);
     ReleaseDC(hwnd, hdc);
 
     // Font Weight
-    int  iFontWeight;
-    if (!Style_StrGetWeightValue(lpszStyle, &iFontWeight)) {
-        iFontWeight = FW_NORMAL;
-    }
+    int iFontWeight = FW_NORMAL;
+    Style_StrGetWeightValue(lpszStyle, &iFontWeight);
 
 #if 0
     int iFontStretch = FONT_STRETCH_NORMAL;
     if (!Style_StrGetStretchValue(lpszStyle, &iFontWeight)) {
         iFontStretch = FONT_STRETCH_NORMAL;
     }
+#else
+    int const iFontStretch = 0;
 #endif
 
     bool bIsItalic = Style_StrGetAttrItalic(lpszStyle);
@@ -3431,7 +3430,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
     lf.lfCharSet = (BYTE)iCharSet;
     lf.lfHeight = iFontHeight;
-    lf.lfWidth = 0; // iFontStretch
+    lf.lfWidth = iFontStretch;
     lf.lfWeight = iFontWeight;
     lf.lfItalic = (BYTE)(BOOL)bIsItalic;
     lf.lfUnderline = (BYTE)(BOOL)bIsUnderline;
@@ -3573,7 +3572,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
 #endif
 
-    float fNewFontSize = (float)(cf.iPointSize) / 10.0f;
+    float fNewFontSize = (float)(cf.iPointSize < 10 ? 10 : cf.iPointSize) / 10.0f;
+
     WCHAR newSize[64] = { L'\0' };
 
     if (bRelFontSize) {
