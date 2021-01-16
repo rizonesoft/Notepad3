@@ -34,7 +34,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.21.114.(build_#) (2021-01-14)
+Current BETA/RC Version 5.21.116.(build_#) (2021-01-16)
 ========================================================
 
 --------------------------------------------------------
@@ -66,7 +66,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
-[1223.1]- Iinitial start screen resolution independent fixed base font size.
+[.116.1]- Extent static find / repl / mark occurance pattern buffer to 4095 characters.
+[1223.1]- Initial start screen resolution independent fixed base font size.
 [1218.1]- Avoid wrap-around requester if there is no other possible occurrence.
 [1214.1]- Behavior change: copy to clipboard on empty selection -> don't copy anything if current line is empty.
 [1214.1]- Update keywords list in Style INNO Lexer.
@@ -96,14 +97,16 @@ CHANGES:
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
-[1214.1]- Update grepWinNP3 (GRE) version 2.1.4.32 (2020-12-14).
-[1214.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2020-12-07).
+[1214.1]- Update grepWinNP3 (GRE) version 2.1.5.33 (2021-01-16).
+[1214.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-01-16).
 [1214.1]- Update Scintilla Library (SCI) version 4.4.6 (2020-12-01).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.116.1]- Buffer overrun while initializing structures.
+[.116.1]- Try to fix Font Dialog (Size handling) problems (issue #3012).
 [1219.1]- F/R dialog: Transform Backslash option glitch.
 [1219.1]- F/R dialog: message box in case of not matching pattern.
 [1218.1]- Multi-Replace using RegExpr and Group-References.
