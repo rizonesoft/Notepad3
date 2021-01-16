@@ -603,7 +603,7 @@ static void _InitGlobals()
     ZeroMemory(&Globals, sizeof(GLOBALS_T));
     ZeroMemory(&Defaults, sizeof(SETTINGS_T));
     ZeroMemory(&Settings, sizeof(SETTINGS_T));
-    ZeroMemory(&Defaults2, sizeof(SETTINGS_T));
+    ZeroMemory(&Defaults2, sizeof(SETTINGS2_T));
     ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
     ZeroMemory(&Flags, sizeof(FLAGS_T));
 

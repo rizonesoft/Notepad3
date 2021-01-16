@@ -37,7 +37,6 @@ Master branch
 Version 6.9.6
 -------------
 * When using configure script, if you have the POSIX API enabled in an earlier version (disabled by default in 6.9.5) and you need application binary compatibility with the POSIX API, specify "--enable-binary-compatible-posix-api=yes" instead of "--enable-posix-api=yes". Starting in 6.9.6, "--enable-posix-api=yes" only supports source-level compatibility for 6.9.5 and earlier about POSIX API. (Issue #210)
-
 * NEW: configure option --enable-binary-compatible-posix-api=[yes/no]
 * NEW API: Limiting the maximum number of calls of subexp-call
 * NEW API: ONIG_OPTION_NOT_BEGIN_STRING / NOT_END_STRING / NOT_BEGIN_POSITION
@@ -131,21 +130,6 @@ Version 6.8.0
 * NEW: Callouts of name      (*name) (*name\[tag]{args...})
 * NEW: Builtin callouts  (*FAIL) (*MISMATCH) (*ERROR{n}) (*COUNT) (*MAX{n}) etc..
 * Examples of Callouts program: [callout.c](sample/callout.c), [count.c](sample/count.c), [echo.c](sample/echo.c)
-
-
-Version 6.7.1
--------------
-
-* NEW: Mechanism of retry-limit-in-match (* disabled by default)
-
-
-Version 6.7.0
--------------
-
-* NEW: hexadecimal codepoint \uHHHH
-* NEW: add ONIG_SYNTAX_ONIGURUMA (== ONIG_SYNTAX_DEFAULT)
-* Disabled \N and \O on ONIG_SYNTAX_RUBY
-* Reduced size of object file
 
 
 License

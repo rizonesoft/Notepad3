@@ -8274,31 +8274,26 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
 {
   IApplyCaseFoldArg* iarg;
   ScanEnv* env;
+  OnigEncoding enc;
   CClassNode* cc;
 
   iarg = (IApplyCaseFoldArg* )arg;
   env = iarg->env;
   cc  = iarg->cc;
-
-#if 0
-  if (CASE_FOLD_IS_ASCII_ONLY(env->case_fold_flag)) {
-    if (! ONIGENC_IS_ASCII_CODE(from) || to_len != 1 || ! ONIGENC_IS_ASCII_CODE(*to))
-      return 0;
-  }
-#endif
+  enc = env->enc;
 
   if (to_len == 1) {
-    int is_in = onig_is_code_in_cc(env->enc, from, cc);
+    int is_in = onig_is_code_in_cc(enc, from, cc);
 #ifdef CASE_FOLD_IS_APPLIED_INSIDE_NEGATIVE_CCLASS
     if ((is_in != 0 && !IS_NCCLASS_NOT(cc)) ||
         (is_in == 0 &&  IS_NCCLASS_NOT(cc))) {
-      ADD_CODE_INTO_CC(cc, *to, env->enc);
+      ADD_CODE_INTO_CC(cc, *to, enc);
     }
 #else
     if (is_in != 0) {
-      if (ONIGENC_MBC_MINLEN(env->enc) > 1 ||
-          ONIGENC_CODE_TO_MBCLEN(env->enc, *to) != 1) {
-        if (IS_NCCLASS_NOT(cc)) clear_not_flag_cclass(cc, env->enc);
+      if (ONIGENC_MBC_MINLEN(enc) > 1 ||
+          ONIGENC_CODE_TO_MBCLEN(enc, *to) != 1) {
+        if (IS_NCCLASS_NOT(cc)) clear_not_flag_cclass(cc, enc);
         add_code_range(&(cc->mbuf), env, *to, *to);
       }
       else {
@@ -8315,7 +8310,7 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
     int r, i, len;
     UChar buf[ONIGENC_CODE_TO_MBC_MAXLEN];
 
-    if (onig_is_code_in_cc(env->enc, from, cc)
+    if (onig_is_code_in_cc(enc, from, cc)
 #ifdef CASE_FOLD_IS_APPLIED_INSIDE_NEGATIVE_CCLASS
         && !IS_NCCLASS_NOT(cc)
 #endif
@@ -8330,8 +8325,9 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
         Node* csnode;
         CClassNode* cs_cc;
 
-        index = onigenc_unicode_fold1_key(&to[i]);
-        if (index >= 0) {
+        index = 0;
+        if (ONIGENC_IS_UNICODE_ENCODING(enc) &&
+            (index = onigenc_unicode_fold1_key(&to[i])) >= 0) {
           csnode = node_new_cclass();
           cs_cc = CCLASS_(csnode);
           if (IS_NULL(csnode)) {
@@ -8342,18 +8338,22 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
           m = FOLDS1_UNFOLDS_NUM(index);
           for (j = 0; j < m; j++) {
             code = FOLDS1_UNFOLDS(index)[j];
-            ADD_CODE_INTO_CC(cs_cc, code, env->enc);
+            ADD_CODE_INTO_CC(cs_cc, code, enc);
           }
-          ADD_CODE_INTO_CC(cs_cc, to[i], env->enc);
+          ADD_CODE_INTO_CC(cs_cc, to[i], enc);
           ns[n++] = csnode;
         }
         else {
-          len = ONIGENC_CODE_TO_MBC(env->enc, to[i], buf);
+          len = ONIGENC_CODE_TO_MBC(enc, to[i], buf);
           if (n == 0 || NODE_TYPE(ns[n-1]) != NODE_STRING) {
             csnode = node_new_str(buf, buf + len);
             if (IS_NULL(csnode)) goto err_free_ns;
 
+            if (index == 0)
+              NODE_STATUS_ADD(csnode, IGNORECASE);
+            else
             NODE_STRING_SET_CASE_EXPANDED(csnode);
+
             ns[n++] = csnode;
           }
           else {

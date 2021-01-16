@@ -4625,8 +4625,9 @@ reduce_string_list(Node* node, OnigEncoding enc)
 #define IN_VAR_REPEAT   (1<<3)
 #define IN_ZERO_REPEAT  (1<<4)
 #define IN_MULTI_ENTRY  (1<<5)
-#define IN_LOOK_BEHIND  (1<<6)
-#define IN_PEEK         (1<<7)
+#define IN_PREC_READ    (1<<6)
+#define IN_LOOK_BEHIND  (1<<7)
+#define IN_PEEK         (1<<8)
 
 /* divide different length alternatives in look-behind.
   (?<=A|B) ==> (?<=A)|(?<=B)
@@ -5192,7 +5193,7 @@ unravel_case_fold_string(Node* node, regex_t* reg, int state)
   return r;
 }
 
-#ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
+#ifdef USE_RIGID_CHECK_CAPTURES_IN_EMPTY_REPEAT
 static enum BodyEmptyType
 quantifiers_memory_node_info(Node* node)
 {
@@ -5274,7 +5275,7 @@ quantifiers_memory_node_info(Node* node)
 
   return r;
 }
-#endif /* USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT */
+#endif /* USE_RIGID_CHECK_CAPTURES_IN_EMPTY_REPEAT */
 
 
 #ifdef USE_CALL
@@ -5734,10 +5735,11 @@ tune_anchor(Node* node, regex_t* reg, int state, ScanEnv* env)
 
   switch (an->type) {
   case ANCR_PREC_READ:
-    r = tune_tree(NODE_ANCHOR_BODY(an), reg, state, env);
+    r = tune_tree(NODE_ANCHOR_BODY(an), reg, (state | IN_PREC_READ), env);
     break;
   case ANCR_PREC_READ_NOT:
-    r = tune_tree(NODE_ANCHOR_BODY(an), reg, (state | IN_NOT), env);
+    r = tune_tree(NODE_ANCHOR_BODY(an), reg, (state | IN_PREC_READ | IN_NOT),
+                  env);
     break;
 
   case ANCR_LOOK_BEHIND:
@@ -5773,7 +5775,7 @@ tune_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
   if (IS_INFINITE_REPEAT(qn->upper) || qn->upper >= 1) {
     OnigLen d = node_min_byte_len(body, env);
     if (d == 0) {
-#ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
+#ifdef USE_RIGID_CHECK_CAPTURES_IN_EMPTY_REPEAT
       qn->emptiness = quantifiers_memory_node_info(body);
 #else
       qn->emptiness = BODY_MAY_BE_EMPTY;
@@ -5945,6 +5947,9 @@ tune_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
     break;
 
   case NODE_QUANT:
+    if ((state & (IN_PREC_READ | IN_LOOK_BEHIND)) != 0)
+      NODE_STATUS_ADD(node, INPEEK);
+
     r = tune_quant(node, reg, state, env);
     break;
 
@@ -5954,10 +5959,6 @@ tune_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
 
 #ifdef USE_CALL
   case NODE_CALL:
-    if (NODE_IS_RECURSION(node) && NODE_IS_INPEEK(node) &&
-        NODE_IS_IN_REAL_REPEAT(node)) {
-      return ONIGERR_VERY_INEFFICIENT_PATTERN;
-    }
 #endif
   case NODE_CTYPE:
   case NODE_CCLASS:
@@ -7316,6 +7317,110 @@ static void print_tree P_((FILE* f, Node* node));
 
 extern int onig_init_for_match_at(regex_t* reg);
 
+static int parse_and_tune(regex_t* reg, const UChar* pattern,
+  const UChar* pattern_end, ScanEnv *scan_env, Node** rroot,
+  OnigErrorInfo* einfo
+#ifdef USE_CALL
+  , UnsetAddrList* uslist
+#endif
+)
+{
+  int r;
+  Node*  root;
+
+  root = NULL_NODE;
+  if (IS_NOT_NULL(einfo)) {
+    einfo->enc = reg->enc;
+    einfo->par = (UChar* )NULL;
+  }
+
+  r = onig_parse_tree(&root, pattern, pattern_end, reg, scan_env);
+  if (r != 0) goto err;
+
+  r = reduce_string_list(root, reg->enc);
+  if (r != 0) goto err;
+
+  /* mixed use named group and no-named group */
+  if (scan_env->num_named > 0 &&
+      IS_SYNTAX_BV(scan_env->syntax, ONIG_SYN_CAPTURE_ONLY_NAMED_GROUP) &&
+      ! OPTON_CAPTURE_GROUP(reg->options)) {
+    if (scan_env->num_named != scan_env->num_mem)
+      r = disable_noname_group_capture(&root, reg, scan_env);
+    else
+      r = numbered_ref_check(root);
+
+    if (r != 0) goto err;
+  }
+
+  r = check_backrefs(root, scan_env);
+  if (r != 0) goto err;
+
+#ifdef USE_CALL
+  if (scan_env->num_call > 0) {
+    r = unset_addr_list_init(uslist, scan_env->num_call);
+    if (r != 0) goto err;
+    scan_env->unset_addr_list = uslist;
+    r = tune_call(root, scan_env, 0);
+    if (r != 0) goto err_unset;
+    r = tune_call2(root);
+    if (r != 0) goto err_unset;
+    r = recursive_call_check_trav(root, scan_env, 0);
+    if (r  < 0) goto err_unset;
+    r = infinite_recursive_call_check_trav(root, scan_env);
+    if (r != 0) goto err_unset;
+
+    tune_called_state(root, 0);
+  }
+
+  reg->num_call = scan_env->num_call;
+#endif
+
+#ifdef ONIG_DEBUG_PARSE
+  fprintf(DBGFP, "MAX PARSE DEPTH: %d\n", scan_env->max_parse_depth);
+#endif
+
+  r = tune_tree(root, reg, 0, scan_env);
+  if (r != 0) {
+#ifdef ONIG_DEBUG_PARSE
+    fprintf(DBGFP, "TREE (error in tune)\n");
+    print_tree(DBGFP, root);
+    fprintf(DBGFP, "\n");
+#endif
+    goto err_unset;
+  }
+
+  if (scan_env->backref_num != 0) {
+    set_parent_node_trav(root, NULL_NODE);
+    r = set_empty_repeat_node_trav(root, NULL_NODE, scan_env);
+    if (r != 0) goto err_unset;
+    set_empty_status_check_trav(root, scan_env);
+  }
+
+  *rroot = root;
+  return r;
+
+ err_unset:
+#ifdef USE_CALL
+  if (scan_env->num_call > 0) {
+    unset_addr_list_end(uslist);
+  }
+#endif
+ err:
+  if (IS_NOT_NULL(scan_env->error)) {
+    if (IS_NOT_NULL(einfo)) {
+      einfo->par     = scan_env->error;
+      einfo->par_end = scan_env->error_end;
+    }
+  }
+
+  onig_node_free(root);
+  if (IS_NOT_NULL(scan_env->mem_env_dynamic))
+    xfree(scan_env->mem_env_dynamic);
+
+  *rroot = NULL_NODE;
+  return r;
+}
+
 extern int
 onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
              OnigErrorInfo* einfo)
@@ -7326,12 +7431,6 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 #ifdef USE_CALL
   UnsetAddrList  uslist = {0};
 #endif
-
-  root = 0;
-  if (IS_NOT_NULL(einfo)) {
-    einfo->enc = reg->enc;
-    einfo->par = (UChar* )NULL;
-  }
 
 #ifdef ONIG_DEBUG
   fprintf(DBGFP, "\nPATTERN: /");
@@ -7344,75 +7443,23 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 
   if (reg->ops_alloc == 0) {
     r = ops_init(reg, OPS_INIT_SIZE);
-    if (r != 0) goto end;
+    if (r != 0) {
+      if (IS_NOT_NULL(einfo)) {
+        einfo->enc = reg->enc;
+        einfo->par = (UChar* )NULL;
+      }
+      return r;
+    }
   }
   else
     reg->ops_used = 0;
 
-  r = onig_parse_tree(&root, pattern, pattern_end, reg, &scan_env);
-  if (r != 0) goto err;
-
-  r = reduce_string_list(root, reg->enc);
-  if (r != 0) goto err;
-
-  /* mixed use named group and no-named group */
-  if (scan_env.num_named > 0 &&
-      IS_SYNTAX_BV(scan_env.syntax, ONIG_SYN_CAPTURE_ONLY_NAMED_GROUP) &&
-      ! OPTON_CAPTURE_GROUP(reg->options)) {
-    if (scan_env.num_named != scan_env.num_mem)
-      r = disable_noname_group_capture(&root, reg, &scan_env);
-    else
-      r = numbered_ref_check(root);
-
-    if (r != 0) goto err;
-  }
-
-  r = check_backrefs(root, &scan_env);
-  if (r != 0) goto err;
-
+  r = parse_and_tune(reg, pattern, pattern_end, &scan_env, &root, einfo
 #ifdef USE_CALL
-  if (scan_env.num_call > 0) {
-    r = unset_addr_list_init(&uslist, scan_env.num_call);
-    if (r != 0) goto err;
-    scan_env.unset_addr_list = &uslist;
-    r = tune_call(root, &scan_env, 0);
-    if (r != 0) goto err_unset;
-    r = tune_call2(root);
-    if (r != 0) goto err_unset;
-    r = recursive_call_check_trav(root, &scan_env, 0);
-    if (r  < 0) goto err_unset;
-    r = infinite_recursive_call_check_trav(root, &scan_env);
-    if (r != 0) goto err_unset;
-
-    tune_called_state(root, 0);
-  }
-
-  reg->num_call = scan_env.num_call;
+                     , &uslist
 #endif
-
-#ifdef ONIG_DEBUG_PARSE
-  fprintf(DBGFP, "MAX PARSE DEPTH: %d\n", scan_env.max_parse_depth);
-  fprintf(DBGFP, "TREE (parsed)\n");
-  print_tree(DBGFP, root);
-  fprintf(DBGFP, "\n");
-#endif
-
-  r = tune_tree(root, reg, 0, &scan_env);
-  if (r != 0) {
-#ifdef ONIG_DEBUG_PARSE
-    fprintf(DBGFP, "TREE (error in tune)\n");
-    print_tree(DBGFP, root);
-    fprintf(DBGFP, "\n");
-#endif
-    goto err_unset;
-  }
-
-  if (scan_env.backref_num != 0) {
-    set_parent_node_trav(root, NULL_NODE);
-    r = set_empty_repeat_node_trav(root, NULL_NODE, &scan_env);
-    if (r != 0) goto err_unset;
-    set_empty_status_check_trav(root, &scan_env);
-  }
+                    );
+  if (r != 0) return r;
 
 #ifdef ONIG_DEBUG_PARSE
   fprintf(DBGFP, "TREE (after tune)\n");
@@ -7445,7 +7492,14 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
   clear_optimize_info(reg);
 #ifndef ONIG_DONT_OPTIMIZE
   r = set_optimize_info_from_tree(root, reg, &scan_env);
-  if (r != 0) goto err_unset;
+  if (r != 0)  {
+#ifdef USE_CALL
+    if (scan_env.num_call > 0) {
+      unset_addr_list_end(&uslist);
+    }
+#endif
+    goto err;
+  }
 #endif
 
   if (IS_NOT_NULL(scan_env.mem_env_dynamic)) {
@@ -7517,15 +7571,8 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
   onig_init_for_match_at(reg);
 #endif
 
- end:
   return r;
 
- err_unset:
-#ifdef USE_CALL
-  if (scan_env.num_call > 0) {
-    unset_addr_list_end(&uslist);
-  }
-#endif
  err:
   if (IS_NOT_NULL(scan_env.error)) {
     if (IS_NOT_NULL(einfo)) {
@@ -7777,16 +7824,22 @@ onig_is_code_in_cc(OnigEncoding enc, OnigCodePoint code, CClassNode* cc)
   return onig_is_code_in_cc_len(len, code, cc);
 }
 
+
+#define MAX_CALLS_IN_DETECT   10
+
 typedef struct {
   int prec_read;
   int look_behind;
   int backref;
   int backref_with_level;
   int call;
+  int empty_check_nest_level;
+  int max_empty_check_nest_level;
+  int heavy_element;
 } SlowElementCount;
 
 static int
-node_detect_can_be_slow(Node* node, SlowElementCount* ct)
+detect_can_be_slow(Node* node, SlowElementCount* ct, int ncall, int calls[])
 {
   int r;
 
@@ -7795,13 +7848,34 @@ node_detect_can_be_slow(Node* node, SlowElementCount* ct)
   case NODE_LIST:
   case NODE_ALT:
     do {
-      r = node_detect_can_be_slow(NODE_CAR(node), ct);
+      r = detect_can_be_slow(NODE_CAR(node), ct, ncall, calls);
       if (r != 0) return r;
     } while (IS_NOT_NULL(node = NODE_CDR(node)));
     break;
 
   case NODE_QUANT:
-    r = node_detect_can_be_slow(NODE_BODY(node), ct);
+    {
+      int prev_heavy_element;
+
+      if (QUANT_(node)->emptiness != BODY_IS_NOT_EMPTY) {
+        prev_heavy_element = ct->heavy_element;
+        ct->empty_check_nest_level++;
+        if (ct->empty_check_nest_level > ct->max_empty_check_nest_level)
+          ct->max_empty_check_nest_level = ct->empty_check_nest_level;
+      }
+
+      r = detect_can_be_slow(NODE_BODY(node), ct, ncall, calls);
+
+      if (QUANT_(node)->emptiness != BODY_IS_NOT_EMPTY) {
+        if (NODE_IS_INPEEK(node)) {
+          if (ct->empty_check_nest_level > 2) {
+            if (prev_heavy_element == ct->heavy_element)
+              ct->heavy_element++;
+          }
+        }
+        ct->empty_check_nest_level--;
+      }
+    }
     break;
 
   case NODE_ANCHOR:
@@ -7819,23 +7893,23 @@ node_detect_can_be_slow(Node* node, SlowElementCount* ct)
     }
 
     if (ANCHOR_HAS_BODY(ANCHOR_(node)))
-      r = node_detect_can_be_slow(NODE_BODY(node), ct);
+      r = detect_can_be_slow(NODE_BODY(node), ct, ncall, calls);
     break;
 
   case NODE_BAG:
     {
       BagNode* en = BAG_(node);
 
-      r = node_detect_can_be_slow(NODE_BODY(node), ct);
+      r = detect_can_be_slow(NODE_BODY(node), ct, ncall, calls);
       if (r != 0) return r;
 
       if (en->type == BAG_IF_ELSE) {
         if (IS_NOT_NULL(en->te.Then)) {
-          r = node_detect_can_be_slow(en->te.Then, ct);
+          r = detect_can_be_slow(en->te.Then, ct, ncall, calls);
           if (r != 0) return r;
         }
         if (IS_NOT_NULL(en->te.Else)) {
-          r = node_detect_can_be_slow(en->te.Else, ct);
+          r = detect_can_be_slow(en->te.Else, ct, ncall, calls);
           if (r != 0) return r;
         }
       }
@@ -7853,7 +7927,37 @@ node_detect_can_be_slow(Node* node, SlowElementCount* ct)
 
 #ifdef USE_CALL
   case NODE_CALL:
+    {
+      int i;
+      int found;
+      int gnum;
+
+      gnum = CALL_(node)->called_gnum;
     ct->call++;
+
+      if (NODE_IS_RECURSION(node) && NODE_IS_INPEEK(node) &&
+          NODE_IS_IN_REAL_REPEAT(node)) {
+         ct->heavy_element += 10;
+      }
+
+      found = FALSE;
+      for (i = 0; i < ncall; i++) {
+        if (gnum == calls[i]) {
+          found = TRUE;
+          break;
+        }
+      }
+
+      if (! found) {
+        if (ncall + 1 < MAX_CALLS_IN_DETECT) {
+          calls[ncall] = gnum;
+          r = detect_can_be_slow(NODE_BODY(node), ct, ncall + 1, calls);
+        }
+        else {
+          ct->heavy_element++;
+        }
+      }
+    }
     break;
 #endif
 
@@ -7874,6 +7978,10 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
   Node* root;
   ScanEnv scan_env;
   SlowElementCount count;
+  int calls[MAX_CALLS_IN_DETECT];
+#ifdef USE_CALL
+  UnsetAddrList  uslist = {0};
+#endif
 
   reg = (regex_t* )xmalloc(sizeof(regex_t));
   if (IS_NULL(reg)) return ONIGERR_MEMORY;
@@ -7884,26 +7992,42 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
     return r;
   }
 
-  root = 0;
-  r = onig_parse_tree(&root, pattern, pattern_end, reg, &scan_env);
-  if (r == 0) {
+  r = parse_and_tune(reg, pattern, pattern_end, &scan_env, &root, NULL
+#ifdef USE_CALL
+                     , &uslist
+#endif
+                    );
+  if (r != 0) goto err;
+
+#ifdef USE_CALL
+  if (scan_env.num_call > 0) {
+    unset_addr_list_end(&uslist);
+  }
+#endif
+
     count.prec_read          = 0;
     count.look_behind        = 0;
     count.backref            = 0;
     count.backref_with_level = 0;
     count.call               = 0;
+  count.empty_check_nest_level     = 0;
+  count.max_empty_check_nest_level = 0;
+  count.heavy_element = 0;
 
-    r = node_detect_can_be_slow(root, &count);
+  r = detect_can_be_slow(root, &count, 0, calls);
     if (r == 0) {
       int n = count.prec_read + count.look_behind
             + count.backref + count.backref_with_level + count.call;
+    if (count.heavy_element != 0)
+      n += count.heavy_element * 10;
+
       r = n;
     }
-  }
 
   if (IS_NOT_NULL(scan_env.mem_env_dynamic))
     xfree(scan_env.mem_env_dynamic);
 
+ err:
   onig_node_free(root);
   onig_free(reg);
   return r;

@@ -118,12 +118,13 @@ DarkModeHelper::DarkModeHelper()
     m_bCanHaveDarkMode = false;
     PWSTR sysPath      = nullptr;
     long  micro        = 0;
+    std::wstring dllPath;
     if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_System, 0, nullptr, &sysPath)))
     {
-        std::wstring dllPath = sysPath;
+        dllPath = sysPath;
         CoTaskMemFree(sysPath);
         dllPath += L"\\uxtheme.dll";
-        auto                      version = CPathUtils::GetVersionFromFile(L"uxtheme.dll");
+        auto                      version = CPathUtils::GetVersionFromFile(dllPath);
         std::vector<std::wstring> tokens;
         stringtok(tokens, version, false, L".");
         if (tokens.size() == 4)
@@ -146,8 +147,10 @@ DarkModeHelper::DarkModeHelper()
             }
         }
     }
-
+    if (dllPath.empty())
     m_hUxthemeLib = LoadLibrary(L"uxtheme.dll");
+    else
+        m_hUxthemeLib = LoadLibrary(dllPath.c_str());
     if (m_hUxthemeLib && m_bCanHaveDarkMode)
     {
         // Note: these functions are undocumented! Which meas I shouldn't even use them.
