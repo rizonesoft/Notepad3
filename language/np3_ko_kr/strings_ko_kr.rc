@@ -261,6 +261,8 @@ BEGIN
                             "찾기 내역 지우기"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "바꾸기 내역 지우기"
+    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
 END
 
 STRINGTABLE
