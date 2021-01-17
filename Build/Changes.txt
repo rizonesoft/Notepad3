@@ -34,13 +34,14 @@ SUP - (S)et(UP) / Installer Package
 
 
 ========================================================
-Current BETA/RC Version 5.21.116.(build_#) (2021-01-16)
+Current BETA/RC Version 5.21.117.(build_#) (2021-01-17)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[.117.1]- Show search wrap-around tooltip (issue #3038).
 [1222.1]- Kotlin Source Lexer based on Zufuliu's Kotlin Lexer code base.
 [1222.1]- Dart Lexer based on Zufuliu's Dart Lexer code base.
 [1221.1]- TinyExpr: additional number parsing for binary (0b...) and octal (0o...) number formats.
@@ -66,7 +67,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
-[.116.1]- Extent static find / repl / mark occurance pattern buffer to 4095 characters.
+[.116.1]- Extent static find/replace/mark occurances pattern buffer to 4095 characters.
 [1223.1]- Initial start screen resolution independent fixed base font size.
 [1218.1]- Avoid wrap-around requester if there is no other possible occurrence.
 [1214.1]- Behavior change: copy to clipboard on empty selection -> don't copy anything if current line is empty.
