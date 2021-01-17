@@ -261,8 +261,8 @@ BEGIN
                             "Effacer l'historique de recherche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Effacer l'historique de remplacement"
-    IDS_MUI_WRAPSEARCH_FWD  "Match enveloppant par le haut  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Match enveloppant par le bas  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Match en boucle par le haut  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Match en boucle par le bas  %s"
 END
 
 STRINGTABLE
