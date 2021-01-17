@@ -385,7 +385,7 @@ static void  _SplitUndoTransaction(const int iModType);
 
 // ----------------------------------------------------------------------------
 
-static void  _DelayClearZoomCallTip(int delay);
+static void  _DelayClearCallTip(int delay);
 static void  _DelaySplitUndoTransaction(int delay, int iModType);
 
 //=============================================================================
@@ -626,7 +626,6 @@ static void _InitGlobals()
     Globals.iAvailLngCount = 1;
     Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
     Globals.iWrapCol = 80;
-    Globals.CallTipType = CT_NONE;
 
     Globals.CmdLnFlag_PosParam = false;
     Globals.CmdLnFlag_WindowPos = 0;
@@ -3972,7 +3971,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDT_TIMER_CLEAR_CALLTIP:
-        CancelCallTip();
+        SciCall_CallTipCancel();
         break;
 
     case IDT_TIMER_UNDO_TRANSACTION:
@@ -5947,7 +5946,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_AutoCCancel();
             --skipLevel;
         } else if (SciCall_CallTipActive()) {
-            CancelCallTip();
+            SciCall_CallTipCancel();
             s_bCallTipEscDisabled = true;
             --skipLevel;
         } else if (s_bInMultiEditMode) {
@@ -6824,7 +6823,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
     switch (uid) {
     case SCN_DWELLSTART: {
         if (position < 0) {
-            CancelCallTip();
+            SciCall_CallTipCancel();
             prevCursorPosition = -1;
             return;
         }
@@ -6833,7 +6832,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
             if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) > 0) {
                 indicator_id = INDIC_NP3_HYPERLINK;
                 if (position != prevCursorPosition) {
-                    CancelCallTip();
+                    SciCall_CallTipCancel();
                 }
             }
         }
@@ -6910,7 +6909,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                 //SciCall_CallTipSetPosition(true);
                 SciCall_CallTipShow(position, chCallTip);
                 SciCall_CallTipSetHlt(0, (int)length);
-                Globals.CallTipType = CT_DWELL;
             }
         } else if (INDIC_NP3_COLOR_DEF == indicator_id) {
             char chText[MICRO_BUFFER] = { '\0' };
@@ -6966,7 +6964,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                 //SciCall_CallTipSetPosition(true);
                 SciCall_CallTipShow(position, chHex2Char);
                 SciCall_CallTipSetHlt(0, (int)length);
-                Globals.CallTipType = CT_DWELL;
             }
         }
 
@@ -6981,7 +6978,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
             return;    // avoid flickering
         }
 
-        CancelCallTip();
+        SciCall_CallTipCancel();
 
         DocPos const curPos = SciCall_GetCurrentPos();
         if ((curPos >= prevStartPosition) && ((curPos <= prevEndPosition))) {
@@ -7018,7 +7015,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     }
 
     //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
-    CancelCallTip();
+    SciCall_CallTipCancel();
 
     bool bHandled = false;
     if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position)) {
@@ -7583,10 +7580,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
     case SCN_CHARADDED: {
         int const ich = scn->ch;
-
-        if (Globals.CallTipType != CT_NONE) {
-            CancelCallTip();
-        }
+        SciCall_CallTipCancel();
 
         if (Sci_IsMultiSelection()) {
             SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
@@ -8420,10 +8414,10 @@ static void  _DelayUpdateToolbar(int delay)
 
 //=============================================================================
 //
-//  _DelayClearZoomCallTip()
+//  _DelayClearCallTip()
 //
 //
-static void  _DelayClearZoomCallTip(int delay)
+static void  _DelayClearCallTip(int delay)
 {
     static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0);
     mqc.hwnd = Globals.hwndMain;
@@ -8733,7 +8727,8 @@ void UpdateStatusbar(bool bForceRedraw)
 
 //=============================================================================
 
-const static WCHAR* const FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
+const static char* const  FR_StatusA[] = {  "[>--<]",  "[>>--]",  "[>>-+]",  "[+->]>",  "[--<<]",  "[+-<<]",  "<[<-+]"};
+const static WCHAR* const FR_StatusW[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
@@ -9198,7 +9193,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                         g_mxSBPrefix[STATUS_SELECTION], tchSel,
                         g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
                         g_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
-                        FR_Status[Globals.FindReplaceMatchFoundState]);
+                        FR_StatusW[Globals.FindReplaceMatchFoundState]);
 
         SetWindowText(GetDlgItem(Globals.hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
     }
@@ -11062,10 +11057,11 @@ void UpdateMouseDWellTime()
 void ShowZoomCallTip()
 {
     int const delayClr = Settings2.ZoomTooltipTimeout;
-    if (delayClr >= (10*USER_TIMER_MINIMUM)) {
+    if (delayClr >= (10*USER_TIMER_MINIMUM))
+    {
         int const iZoomLevelPercent = SciCall_GetZoom();
 
-        char chToolTip[32] = { '\0' };
+        static char chToolTip[32] = { '\0' };
         StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
 
         DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
@@ -11074,22 +11070,36 @@ void ShowZoomCallTip()
         SciCall_SetXOffset(0);
         SciCall_CallTipShow(iPos, chToolTip);
         SciCall_SetXOffset(iXOff);
-        Globals.CallTipType = CT_ZOOM;
-        _DelayClearZoomCallTip(delayClr);
+        _DelayClearCallTip(delayClr);
     } else {
-        CancelCallTip();
+        SciCall_CallTipCancel();
     }
 }
 
 
 //=============================================================================
 //
-//  CancelCallTip()
+//  ShowWrapAroundCallTip()
 //
-void CancelCallTip()
+void ShowWrapAroundCallTip(bool forwardSearch)
 {
-    SciCall_CallTipCancel();
-    Globals.CallTipType = CT_NONE;
+    int const delayClr = Settings2.WrapAroundTooltipTimeout;
+    if (delayClr >= (10*USER_TIMER_MINIMUM))
+    {
+        char chToolTipFmt[64] = { '\0' };
+        static char chToolTip[80] = { '\0' };
+        if (forwardSearch) {
+            GetLngStringA(IDS_MUI_WRAPSEARCH_FWD, chToolTipFmt, COUNTOF(chToolTipFmt));
+        } else {
+            GetLngStringA(IDS_MUI_WRAPSEARCH_BCK, chToolTipFmt, COUNTOF(chToolTipFmt));
+        }
+        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), chToolTipFmt, FR_StatusA[Globals.FindReplaceMatchFoundState]);
+
+        SciCall_CallTipShow(SciCall_GetCurrentPos(), chToolTip);
+        _DelayClearCallTip(delayClr);
+    } else {
+        SciCall_CallTipCancel();
+    }
 }
 
 

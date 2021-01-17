@@ -1179,7 +1179,6 @@ bool EditLoadFile(
         SciCall_SetXOffset(0);
         SciCall_CallTipShow(iPos, Encoding_GetTitleInfoA());
         SciCall_SetXOffset(iXOff);
-        Globals.CallTipType = CT_ENC_INFO;
 #endif
 
         if (IS_ENC_ENFORCED()) {
@@ -6606,8 +6605,12 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
 //
 bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd)
 {
-
     bool bSuppressNotFound = false;
+    bool bFoundWrapAround = false;
+
+    if (bFocusWnd) {
+        SetFocus(hwnd);
+    }
 
     char szFind[FNDRPL_BUFFER];
     DocPos const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
@@ -6616,9 +6619,6 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     }
     int const sFlags = (int)(lpefr->fuFlags);
 
-    if (bFocusWnd) {
-        SetFocus(hwnd);
-    }
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
     DocPos start = 0LL;
     if (lpefr->bOverlappingFind) {
@@ -6630,7 +6630,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     }
     DocPos end = iDocEndPos;
 
-    CancelCallTip();
+    SciCall_CallTipCancel();
 
     DocPos iPos = -1LL;
 
@@ -6675,6 +6675,8 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
                     start = _start;
                     end = _end;
                 }
+            } else {
+                bFoundWrapAround = true;
             }
         }
     }
@@ -6697,6 +6699,9 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     if (start == end) {
         EditShowZeroLengthCallTip(hwnd, start);
     }
+    if (bFoundWrapAround) {
+        ShowWrapAroundCallTip(true);
+    }
 
     return true;
 }
@@ -6709,12 +6714,13 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
 bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd)
 {
 
-    char szFind[FNDRPL_BUFFER];
     bool bSuppressNotFound = false;
+    bool bFoundWrapAround = false;
 
     if (bFocusWnd) {
         SetFocus(hwnd);
     }
+    char szFind[FNDRPL_BUFFER];
     DocPos const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
     if (slen <= 0LL) {
         return false;
@@ -6733,7 +6739,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     }
     DocPos end = 0LL;
 
-    CancelCallTip();
+    SciCall_CallTipCancel();
 
     DocPos iPos = -1LL;
 
@@ -6779,6 +6785,8 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
                     start = _start;
                     end = _end;
                 }
+            } else {
+                bFoundWrapAround = true;
             }
         }
     }
@@ -6801,6 +6809,10 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     if (start == end) {
         EditShowZeroLengthCallTip(hwnd, iPos);
     }
+    if (bFoundWrapAround) {
+        ShowWrapAroundCallTip(false);
+    }
+
     return true;
 }
 
@@ -9011,7 +9023,6 @@ void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition)
         GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, s_chZeroLenCT, COUNTOF(s_chZeroLenCT));
     }
     SciCall_CallTipShow(iPosition, s_chZeroLenCT);
-    Globals.CallTipType = CT_ZEROLEN_MATCH;
 }
 
 //=============================================================================
