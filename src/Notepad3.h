@@ -121,7 +121,7 @@ void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 
 void ParseCommandLine();
 void ShowZoomCallTip();
-void CancelCallTip();
+void ShowWrapAroundCallTip(bool forwardSearch);
 
 void MarkAllOccurrences(int delay, bool bForceClear);
 void UpdateUI();

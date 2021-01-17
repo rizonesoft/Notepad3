@@ -166,10 +166,6 @@ typedef enum
 
 // --------------------------------------------------------------------------
 
-typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO, CT_DWELL } CALLTIPTYPE;
-
-// --------------------------------------------------------------------------
-
 typedef struct _filevars
 {
     int        mask;
@@ -365,7 +361,6 @@ typedef struct _globals_t
     LPMRULIST pFileMRU;
     LPMRULIST pMRUfind;
     LPMRULIST pMRUreplace;
-    CALLTIPTYPE CallTipType;
     FILEVARS  fvCurFile;
     int       iWrapCol;
 
@@ -587,6 +582,7 @@ typedef struct _settings2_t
     bool   LexerSQLNumberSignAsComment;
     int    ExitOnESCSkipLevel;
     int    ZoomTooltipTimeout;
+    int    WrapAroundTooltipTimeout;
     int    LargeIconScalePrecent;
 
     float  AnalyzeReliableConfidenceLevel;
