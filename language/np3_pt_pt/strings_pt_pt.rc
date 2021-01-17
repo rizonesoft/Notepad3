@@ -261,6 +261,8 @@ BEGIN
                             "Limpar histórico de localizar"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar histórico de substituir"
+    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
 END
 
 STRINGTABLE
