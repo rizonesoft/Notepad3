@@ -253,16 +253,16 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "언어(&L)"
     IDS_MUI_MENU_THEMES     "구성표 모음(&S)"
     IDM_THEMES_DEFAULT      "기본값(&F)"
-    IDM_THEMES_FILE_ITEM    "표준 (&S)"  // Keep blank space before (&S)
-    IDS_MUI_STATUSBAR_PREFIXES "줄  ,열  ,선택  ,블럭  ,줄선택  ,횟수  ,,,,,,,글자  ,교체  ,유형  ,"
+    IDM_THEMES_FILE_ITEM    "표준 (&S)"  // 앞에 공백을 유지(&S)
+    IDS_MUI_STATUSBAR_PREFIXES "줄  ,열  ,선택  ,블럭  ,줄선택  ,일치  ,,,,,,,글자  ,교체  ,유형  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "모두 지우기"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "찾기 내역 지우기"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "바꾸기 내역 지우기"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "%s 위부터 반올림"
+    IDS_MUI_WRAPSEARCH_BCK  "%s 아래부터 반올림"
 END
 
 STRINGTABLE
