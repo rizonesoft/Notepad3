@@ -125,8 +125,8 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_L 스크립트"
     IDS_LEX_TEXT_FILES      "문서 파일"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart Source Code"
-    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
+    IDS_LEX_DART_SRC        "Dart 소스 코드"
+    IDS_LEX_KOTLIN_SRC      "Kotlin 소스 코드"
 END
 
 STRINGTABLE
@@ -361,7 +361,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63280       "매크로 정의"
     IDS_LEX_STR_63281       "매개 변수"
-    IDS_LEX_STR_63282       "Inline 확장"
+    IDS_LEX_STR_63282       "인라인 확장"
     IDS_LEX_STR_63283       "Pascal 주석"
     IDS_LEX_STR_63284       "Pascal 키워드"
     IDS_LEX_STR_63285       "값 이름"
@@ -369,7 +369,7 @@ BEGIN
     IDS_LEX_STR_63287       "Hex"
     IDS_LEX_STR_63288       "추가된 키"
     IDS_LEX_STR_63289       "삭제된 키"
-    IDS_LEX_STR_63290       "Escaped"
+    IDS_LEX_STR_63290       "이스케이프"
     IDS_LEX_STR_63291       "키 경로의 GUID"
     IDS_LEX_STR_63292       "POD"
     IDS_LEX_STR_63293       "심볼"
@@ -405,7 +405,7 @@ BEGIN
     IDS_LEX_STR_63315       "플러그인"
     IDS_LEX_STR_63316       "클립 속성"
     IDS_LEX_STR_63317       "줄 시작"
-    IDS_LEX_STR_63318       "Strong"
+    IDS_LEX_STR_63318       "강세"
     IDS_LEX_STR_63319       "강조"
     IDS_LEX_STR_63320       "머리말 1"
     IDS_LEX_STR_63321       "머리말 2"
@@ -446,7 +446,7 @@ BEGIN
     IDS_LEX_STR_63348       "키"
     IDS_LEX_STR_63349       "단축키"
     IDS_LEX_STR_63350       "핫스트링"
-    IDS_LEX_STR_63351       "핫스트링옵션"
+    IDS_LEX_STR_63351       "핫스트링 옵션"
     IDS_LEX_STR_63352       "인라인 IME 색상"
     IDS_LEX_STR_63353       "두 번째 인라인-IME 색상"
     IDS_LEX_STR_63354       "다중 편집 표시기"
@@ -468,9 +468,9 @@ BEGIN
     IDS_LEX_STR_63366       "ESC 시퀀스"
     IDS_LEX_STR_63367       "유니코드 포인트 호버"
     IDS_LEX_STR_63368       "두 번째 유니코드 포인트 호버"
-    IDS_LEX_STR_63369       "Interface"
-    IDS_LEX_STR_63370       "Annotation"
-    IDS_LEX_STR_63371       "Comment Doc Word"
+    IDS_LEX_STR_63369       "인터페이스"
+    IDS_LEX_STR_63370       "주석"
+    IDS_LEX_STR_63371       "주석 문서 단어"
 END
 
 STRINGTABLE
