@@ -24,17 +24,17 @@ LEGEND:
 ABBREVIATIONS:
 --------------------------------------------------------
 CED - (C)ompact (E)ncoding (D)etection (by Google)
+GRE - (GRE)pWinNP3 Search in Files Tool
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
 SCI - (SCI)ntilla Library
-UCD - (UCD)ARDET is an Encoding Detector Library
-GRE - (GRE)pWinNP3 Search in Files Tool
 SUP - (S)et(UP) / Installer Package
+UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.117.(build_#) (2021-01-17)
+Current BETA/RC Version 5.21.122.(build_#) (2021-01-22)
 ========================================================
 
 --------------------------------------------------------
@@ -106,6 +106,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.122.1]- Tinyexpr functions and constants parsing.
 [.116.1]- Buffer overrun while initializing structures.
 [.116.1]- Try to fix Font Dialog (Size handling) problems (issue #3012).
 [1219.1]- F/R dialog: Transform Backslash option glitch.
