@@ -2102,7 +2102,7 @@ static bool _EvalTinyExpr(bool qmark)
     DocPos const posBegin = qmark ? SciCall_PositionBefore(posCur) : posCur;
     DocPos posBefore = SciCall_PositionBefore(posBegin);
     char chBefore = SciCall_GetCharAt(posBefore);
-    while (IsBlankChar(chBefore) && (posBefore > 0)) {
+    while (IsBlankCharA(chBefore) && (posBefore > 0)) {
         posBefore = SciCall_PositionBefore(posBefore);
         chBefore = SciCall_GetCharAt(posBefore);
     }
@@ -2122,14 +2122,16 @@ static bool _EvalTinyExpr(bool qmark)
             FreeMem(lineBufW);
 
             const char *pBegin = lineBuf;
-            while (IsBlankChar(*pBegin)) {
+            while (IsBlankCharA(*pBegin)) {
                 ++pBegin;
             }
 
             double dExprEval = 0.0;
             te_xint_t exprErr = 1;
             while (*pBegin && exprErr) {
-                dExprEval = te_interp(pBegin++, &exprErr);
+                dExprEval = te_interp(pBegin, &exprErr);
+                // proceed to next possible expression
+                while (exprErr && IsIdentifierA(*pBegin++)) {}
             }
             FreeMem(lineBuf);
 

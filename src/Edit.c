@@ -3861,7 +3861,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
                             DocPos i = end;
                             while (--i >= 0) {
                                 const char ch = lineBuffer[i];
-                                if (IsBlankChar(ch)) {
+                                if (IsBlankCharA(ch)) {
                                     lineBuffer[i] = '\0';
                                 } else {
                                     break;
@@ -3909,7 +3909,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
                 char ch;
                 do {
                     ch = SciCall_GetCharAt(--i);
-                } while ((i >= iStartPos) && IsBlankChar(ch));
+                } while ((i >= iStartPos) && IsBlankCharA(ch));
                 if ((++i) < iEndPos) {
                     SciCall_SetTargetRange(i, iEndPos);
                     SciCall_ReplaceTarget(0, "");
@@ -3977,9 +3977,9 @@ void EditCompressBlanks()
                     DocPos i = 0;
                     while (pText < pEnd) {
                         const char ch = *pText++;
-                        if (IsBlankChar(ch)) {
+                        if (IsBlankCharA(ch)) {
                             lineBuffer[i++] = ' ';
-                            while (IsBlankChar(*pText)) {
+                            while (IsBlankCharA(*pText)) {
                                 ++pText;
                             }
                         } else {
@@ -4038,11 +4038,11 @@ void EditCompressBlanks()
             char* co = pszOut;
             DocPos remWSuntilCaretPos = 0;
             for (int i = 0; i < cch; ++i) {
-                if (IsBlankChar(pszIn[i])) {
+                if (IsBlankCharA(pszIn[i])) {
                     if (pszIn[i] == '\t') {
                         bModified = true;
                     }
-                    while (IsBlankChar(pszIn[i + 1])) {
+                    while (IsBlankCharA(pszIn[i + 1])) {
                         if (bIsSelEmpty && (i < iSelStartPos)) {
                             ++remWSuntilCaretPos;
                         }
@@ -4153,7 +4153,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
                 const char* pLine = SciCall_GetRangePointer(posLnBeg, iLnLength);
                 DocPos i = 0;
                 for (; i < iLnLength; ++i) {
-                    if (!IsBlankChar(pLine[i])) {
+                    if (!IsBlankCharA(pLine[i])) {
                         break;
                     }
                 }
