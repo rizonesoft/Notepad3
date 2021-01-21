@@ -158,26 +158,6 @@ inline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper)
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-// Is the character an octal digit?
-inline bool IsDigitA(const CHAR ch)
-{
-    return ((ch >= '0') && (ch <= '9'));
-}
-inline bool IsDigitW(const WCHAR wch)
-{
-    return ((wch >= L'0') && (wch <= L'9'));
-}
-
-// Is the character a white space char?
-inline bool IsBlankChar(const CHAR ch)
-{
-    return ((ch == ' ') || (ch == '\t'));
-}
-inline bool IsBlankCharW(const WCHAR wch)
-{
-    return ((wch == L' ') || (wch == L'\t'));
-}
-
 inline int float2int(const float f)
 {
     return (int)lroundf(f);
@@ -710,17 +690,46 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz)
 // Is the character an octal digit?
 #define IsOctalDigit(ch) (((ch) >= '0') && ((ch) <= '7'))
 
+// Is the character an octal digit?
+inline bool IsDigitA(const char ch) {
+    return ((ch >= '0') && (ch <= '9'));
+}
+inline bool IsDigitW(const WCHAR wch) {
+    return ((wch >= L'0') && (wch <= L'9'));
+}
+
+// Is the character a white space char?
+inline bool IsBlankCharA(const char ch) {
+    return ((ch == ' ') || (ch == '\t'));
+}
+inline bool IsBlankCharW(const WCHAR wch) {
+    return ((wch == L' ') || (wch == L'\t'));
+}
+
 // no encoding for safe chars
-__inline bool IsAlphaNumeric(WCHAR ch)
-{
+inline bool IsAlphaNumericA(const char ch) {
+    return ((ch >= '0') && (ch <= '9')) ||
+           ((ch >= 'a') && (ch <= 'z')) ||
+           ((ch >= 'A') && (ch <= 'Z'));
+}
+
+inline bool IsAlphaNumericW(const WCHAR ch) {
     return
         ((ch >= L'0') && (ch <= L'9')) ||
         ((ch >= L'a') && (ch <= L'z')) ||
         ((ch >= L'A') && (ch <= L'Z'));
 }
 
+// no encoding for safe chars
+inline bool IsIdentifierA(const char ch) {
+    return ((ch >= '0') && (ch <= '9')) ||
+           ((ch >= 'a') && (ch <= 'z')) ||
+           ((ch >= 'A') && (ch <= 'Z')) ||
+            (ch >= '_');
+}
+
 // If the character is an hexadecimal digit, get its value.
-__inline int GetHexDigitA(char ch)
+inline int GetHexDigitA(const char ch)
 {
     if (ch >= '0' && ch <= '9') {
         return ch - '0';
@@ -734,7 +743,7 @@ __inline int GetHexDigitA(char ch)
     return -1;
 }
 
-__inline int GetHexDigitW(WCHAR ch)
+inline int GetHexDigitW(const WCHAR ch)
 {
     if (ch >= L'0' && ch <= L'9') {
         return ch - L'0';

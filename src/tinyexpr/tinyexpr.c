@@ -377,8 +377,8 @@ static const te_variable *find_builtin(const char *name, size_t len) {
     /*Binary search.*/
     while (imax >= imin) {
         const int i = (imin + ((imax-imin)/2));
-        int c = strncmp(name, functions[i].name, len);
-        if (!c) c = '\0' - functions[i].name[len];
+        const int f = strncmp(name, functions[i].name, len);
+        const int c = f ? f : ('\0' - functions[i].name[len]);
         if (c == 0) {
             return functions + i;
         } else if (c > 0) {
@@ -420,8 +420,12 @@ void next_token(state *s) {
         } else {
             /* Look for a variable or builtin function call. */
             if (s->next[0] >= 'a' && s->next[0] <= 'z') {
-                const char *start = s->next;
-                while ((s->next[0] >= 'a' && s->next[0] <= 'z') || (s->next[0] >= '0' && s->next[0] <= '9') || (s->next[0] == '_')) s->next++;
+                const char * const start = s->next;
+                char ch = s->next[0];
+                while ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || (ch == '_')) {
+                    s->next++;
+                    ch = s->next[0];
+                };
 
                 const te_variable *var = find_lookup(s, start, s->next - start);
                 if (!var) var = find_builtin(start, s->next - start);

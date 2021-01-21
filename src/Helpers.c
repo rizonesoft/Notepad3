@@ -2342,7 +2342,7 @@ void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscR
     DWORD posOut = 0;
 
     while (lpURL[posIn] && (posOut < *pcchEscaped)) {
-        if (IsAlphaNumeric(lpURL[posIn]) || StrChrW(lpszUnreservedChars, lpURL[posIn])) {
+        if (IsAlphaNumericW(lpURL[posIn]) || StrChrW(lpszUnreservedChars, lpURL[posIn])) {
             lpEscaped[posOut++] = lpURL[posIn++];
         } else if (StrChrW(lpszReservedChars, lpURL[posIn])) {
             if (posOut < (*pcchEscaped - 3)) {
