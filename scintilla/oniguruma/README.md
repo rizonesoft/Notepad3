@@ -31,6 +31,7 @@ Supported character encodings:
 
 Master branch
 -------------
+* NEW API: ONIG_SYNTAX_PYTHON
 * NEW API: ONIG_OPTION_IGNORECASE_IS_ASCII
 
 

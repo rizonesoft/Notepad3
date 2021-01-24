@@ -2,7 +2,7 @@
   regsyntax.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -228,6 +228,35 @@ OnigSyntaxType OnigSyntaxPerl_NG = {
   , ( SYN_GNU_REGEX_BV | ONIG_SYN_ISOLATED_OPTION_CONTINUE_BRANCH |
       ONIG_SYN_CAPTURE_ONLY_NAMED_GROUP |
       ONIG_SYN_ALLOW_MULTIPLEX_DEFINITION_NAME )
+  , ONIG_OPTION_SINGLELINE
+  ,
+  {
+      (OnigCodePoint )'\\'                       /* esc */
+    , (OnigCodePoint )ONIG_INEFFECTIVE_META_CHAR /* anychar '.'  */
+    , (OnigCodePoint )ONIG_INEFFECTIVE_META_CHAR /* anytime '*'  */
+    , (OnigCodePoint )ONIG_INEFFECTIVE_META_CHAR /* zero or one time '?' */
+    , (OnigCodePoint )ONIG_INEFFECTIVE_META_CHAR /* one or more time '+' */
+    , (OnigCodePoint )ONIG_INEFFECTIVE_META_CHAR /* anychar anytime */
+  }
+};
+
+/* Python 3.9 */
+OnigSyntaxType OnigSyntaxPython = {
+  (( SYN_GNU_REGEX_OP | ONIG_SYN_OP_QMARK_NON_GREEDY |
+     ONIG_SYN_OP_ESC_OCTAL3 | ONIG_SYN_OP_ESC_X_HEX2 |
+     ONIG_SYN_OP_ESC_CONTROL_CHARS |
+     ONIG_SYN_OP_ESC_C_CONTROL )
+   & ~ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END )
+  , ( ONIG_SYN_OP2_QMARK_GROUP_EFFECT | ONIG_SYN_OP2_OPTION_PERL |
+      ONIG_SYN_OP2_QMARK_LPAREN_IF_ELSE |
+      ONIG_SYN_OP2_ASTERISK_CALLOUT_NAME    |
+      ONIG_SYN_OP2_ESC_P_BRACE_CHAR_PROPERTY  |
+      ONIG_SYN_OP2_ESC_P_BRACE_CIRCUMFLEX_NOT |
+      ONIG_SYN_OP2_QMARK_CAPITAL_P_NAME       |
+      ONIG_SYN_OP2_ESC_CAPITAL_K_KEEP |
+      ONIG_SYN_OP2_ESC_V_VTAB | ONIG_SYN_OP2_ESC_U_HEX4 )
+  , ( SYN_GNU_REGEX_BV | ONIG_SYN_ISOLATED_OPTION_CONTINUE_BRANCH |
+      ONIG_SYN_ALLOW_INTERVAL_LOW_ABBREV | ONIG_SYN_PYTHON )
   , ONIG_OPTION_SINGLELINE
   ,
   {

@@ -2,7 +2,7 @@
   regposix.c - Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -120,6 +120,7 @@ onig2posix_error_code(int code)
     { ONIGERR_NUMBERED_BACKREF_OR_CALL_NOT_ALLOWED,       REG_BADPAT  },
     { ONIGERR_TOO_BIG_WIDE_CHAR_VALUE,                    REG_EONIG_BADWC },
     { ONIGERR_TOO_LONG_WIDE_CHAR_VALUE,                   REG_EONIG_BADWC },
+    { ONIGERR_UNDEFINED_OPERATOR,                         REG_BADPAT  },
     { ONIGERR_INVALID_CODE_POINT_VALUE,                   REG_EONIG_BADWC },
     { ONIGERR_EMPTY_GROUP_NAME,                           REG_BADPAT },
     { ONIGERR_INVALID_GROUP_NAME,                         REG_BADPAT },

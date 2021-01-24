@@ -2,7 +2,7 @@
   regerror.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -146,6 +146,8 @@ onig_error_code_to_format(int code)
     p = "too big wide-char value"; break;
   case ONIGERR_TOO_LONG_WIDE_CHAR_VALUE:
     p = "too long wide-char value"; break;
+  case ONIGERR_UNDEFINED_OPERATOR:
+    p = "undefined operator"; break;
   case ONIGERR_INVALID_CODE_POINT_VALUE:
     p = "invalid code point value"; break;
   case ONIGERR_EMPTY_GROUP_NAME:
