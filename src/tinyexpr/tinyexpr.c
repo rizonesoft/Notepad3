@@ -454,6 +454,7 @@ void next_token(state *s) {
 
             } else {
                 /* Look for an operator or special character. */
+                /* keep in sync with te_isop(const char ch) defined in header */
                 switch (s->next++[0]) {
                     case '+': s->type = TOK_INFIX; s->function = get_function_pointer_2d(add); break;
                     case '-': s->type = TOK_INFIX; s->function = get_function_pointer_2d(sub); break;

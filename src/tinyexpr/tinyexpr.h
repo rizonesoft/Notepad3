@@ -105,6 +105,50 @@ void te_print(const te_expr *n);
 /* This is safe to call on NULL pointers. */
 void te_free(te_expr *n);
 
+/* check for operator or special character. */
+inline int te_is_op(const char* const expr) {
+    if (!expr)
+        return !0;
+    switch (*expr) {
+    case 0:
+    case '+':
+    case '-':
+    case '*':
+    case -41:
+    case '/':
+    case ':':
+    case -9:
+    case '^':
+    case '%':
+    case '!':
+    case '<':
+    case '>':
+    case '(':
+    case ')':
+    case ',':
+    case ' ':
+    case '\t':
+    case '\n':
+    case '\r':
+        return !0;
+    case '=':
+        if (expr[1] == '=')
+            return !0;
+        break;
+    case '&':
+        if (expr[1] == '&')
+            return !0;
+        break;
+    case '|':
+        if (expr[1] == '|')
+            return !0;
+        break;
+    default:
+        break;        
+    }
+    return 0;
+}
+
 
 #ifdef __cplusplus
 }

@@ -2131,7 +2131,7 @@ static bool _EvalTinyExpr(bool qmark)
             while (*pBegin && exprErr) {
                 dExprEval = te_interp(pBegin, &exprErr);
                 // proceed to next possible expression
-                while (exprErr && IsIdentifierA(*pBegin++)) {}
+                while (exprErr && !te_is_op(pBegin++)) {}
             }
             FreeMem(lineBuf);
 
