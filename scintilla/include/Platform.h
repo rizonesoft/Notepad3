@@ -236,38 +236,38 @@ constexpr float componentMaximum = 255.0F;
 class ColourDesired {
 	unsigned int co;
 public:
-	explicit ColourDesired(unsigned int co_ = 0) noexcept : co(co_) {}
+	constexpr explicit ColourDesired(unsigned int co_ = 0) noexcept : co(co_) {}
 
 	ColourDesired(unsigned int red, unsigned int green, unsigned int blue) noexcept :
 		co(red | (green << 8) | (blue << 16)) {}
 
-	bool operator==(const ColourDesired &other) const noexcept {
+	constexpr bool operator==(const ColourDesired &other) const noexcept {
 		return co == other.co;
 	}
 
-	unsigned int AsInteger() const noexcept {
+	constexpr unsigned int AsInteger() const noexcept {
 		return co;
 	}
 
 	// Red, green and blue values as bytes 0..255
-	unsigned char GetRed() const noexcept {
+	constexpr unsigned char GetRed() const noexcept {
 		return co & 0xff;
 	}
-	unsigned char GetGreen() const noexcept {
+	constexpr unsigned char GetGreen() const noexcept {
 		return (co >> 8) & 0xff;
 	}
-	unsigned char GetBlue() const noexcept {
+	constexpr unsigned char GetBlue() const noexcept {
 		return (co >> 16) & 0xff;
 	}
 
 	// Red, green and blue values as float 0..1.0
-	float GetRedComponent() const noexcept {
+	constexpr float GetRedComponent() const noexcept {
 		return GetRed() / componentMaximum;
 	}
-	float GetGreenComponent() const noexcept {
+	constexpr float GetGreenComponent() const noexcept {
 		return GetGreen() / componentMaximum;
 	}
-	float GetBlueComponent() const noexcept {
+	constexpr float GetBlueComponent() const noexcept {
 		return GetBlue() / componentMaximum;
 	}
 };
@@ -277,7 +277,7 @@ public:
 */
 class ColourAlpha : public ColourDesired {
 public:
-	explicit ColourAlpha(unsigned int co_ = 0) noexcept : ColourDesired(co_) {}
+	constexpr explicit ColourAlpha(unsigned int co_ = 0) noexcept : ColourDesired(co_) {}
 
 	ColourAlpha(unsigned int red, unsigned int green, unsigned int blue) noexcept :
 		ColourDesired(red | (green << 8) | (blue << 16)) {}
@@ -287,15 +287,15 @@ public:
 	ColourAlpha(ColourDesired cd, unsigned int alpha) noexcept :
 		ColourDesired(cd.AsInteger() | (alpha << 24)) {}
 
-	ColourDesired GetColour() const noexcept {
+	constexpr ColourDesired GetColour() const noexcept {
 		return ColourDesired(AsInteger() & 0xffffff);
 	}
 
-	unsigned char GetAlpha() const noexcept {
+	constexpr unsigned char GetAlpha() const noexcept {
 		return (AsInteger() >> 24) & 0xff;
 	}
 
-	float GetAlphaComponent() const noexcept {
+	constexpr float GetAlphaComponent() const noexcept {
 		return GetAlpha() / componentMaximum;
 	}
 
