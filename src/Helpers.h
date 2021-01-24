@@ -720,14 +720,6 @@ inline bool IsAlphaNumericW(const WCHAR ch) {
         ((ch >= L'A') && (ch <= L'Z'));
 }
 
-// no encoding for safe chars
-inline bool IsIdentifierA(const char ch) {
-    return ((ch >= '0') && (ch <= '9')) ||
-           ((ch >= 'a') && (ch <= 'z')) ||
-           ((ch >= 'A') && (ch <= 'Z')) ||
-            (ch >= '_');
-}
-
 // If the character is an hexadecimal digit, get its value.
 inline int GetHexDigitA(const char ch)
 {
