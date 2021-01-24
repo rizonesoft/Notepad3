@@ -2,7 +2,7 @@
   regparse.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -5061,6 +5061,7 @@ fetch_token_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env, int state)
   int r;
   OnigCodePoint code;
   OnigCodePoint c, c2;
+  int mindigits, maxdigits;
   OnigSyntaxType* syn = env->syntax;
   OnigEncoding enc = env->enc;
   UChar* prev;
@@ -5249,10 +5250,11 @@ fetch_token_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env, int state)
 
     case 'u':
       if (PEND) break;
-
       prev = p;
       if (IS_SYNTAX_OP2(syn, ONIG_SYN_OP2_ESC_U_HEX4)) {
-        r = scan_hexadecimal_number(&p, end, 4, 4, enc, &code);
+        mindigits = maxdigits = 4;
+      u_hex_digits:
+        r = scan_hexadecimal_number(&p, end, mindigits, maxdigits, enc, &code);
         if (r < 0) return r;
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
@@ -5260,6 +5262,15 @@ fetch_token_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env, int state)
         tok->type = TK_CODE_POINT;
         tok->base_num = 16;
         tok->u.code   = code;
+      }
+      break;
+
+    case 'U':
+      if (PEND) break;
+      prev = p;
+      if (IS_SYNTAX_BV(syn, ONIG_SYN_PYTHON)) {
+        mindigits = maxdigits = 8;
+        goto u_hex_digits;
       }
       break;
 
@@ -5334,10 +5345,17 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
   int r;
   OnigCodePoint code;
   OnigCodePoint c;
-  OnigEncoding enc = env->enc;
-  OnigSyntaxType* syn = env->syntax;
+  int mindigits, maxdigits;
   UChar* prev;
-  UChar* p = *src;
+  int allow_num;
+  OnigEncoding enc;
+  OnigSyntaxType* syn;
+  UChar* p;
+
+  enc = env->enc;
+  syn = env->syntax;
+  p = *src;
+
   PFETCH_READY;
 
   if (tok->code_point_continue != 0) {
@@ -5576,12 +5594,20 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       break;
 
     case 'Z':
+      if (IS_SYNTAX_BV(syn, ONIG_SYN_PYTHON)) {
+        goto end_buf;
+      }
+      else {
       if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_ESC_AZ_BUF_ANCHOR)) break;
       tok->type = TK_ANCHOR;
       tok->u.subtype = ANCR_SEMI_END_BUF;
+      }
       break;
 
     case 'z':
+      if (IS_SYNTAX_BV(syn, ONIG_SYN_PYTHON))
+        return ONIGERR_UNDEFINED_OPERATOR;
+
       if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_ESC_AZ_BUF_ANCHOR)) break;
     end_buf:
       tok->type = TK_ANCHOR;
@@ -5670,10 +5696,11 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
     case 'u':
       if (PEND) break;
-
       prev = p;
+      mindigits = maxdigits = 4;
       if (IS_SYNTAX_OP2(syn, ONIG_SYN_OP2_ESC_U_HEX4)) {
-        r = scan_hexadecimal_number(&p, end, 4, 4, enc, &code);
+    u_hex_digits:
+        r = scan_hexadecimal_number(&p, end, mindigits, maxdigits, enc, &code);
         if (r < 0) return r;
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
@@ -5681,6 +5708,15 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         tok->type = TK_CODE_POINT;
         tok->base_num = 16;
         tok->u.code   = code;
+      }
+      break;
+
+    case 'U':
+      if (PEND) break;
+      prev = p;
+      if (IS_SYNTAX_BV(syn, ONIG_SYN_PYTHON)) {
+        mindigits = maxdigits = 8;
+        goto u_hex_digits;
       }
       break;
 
@@ -5745,6 +5781,9 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           int back_num;
           enum REF_NUM num_type;
 
+          allow_num = 1;
+
+        backref_start:
           prev = p;
 
 #ifdef USE_BACKREF_WITH_LEVEL
@@ -5759,6 +5798,8 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           if (r < 0) return r;
 
           if (num_type != IS_NOT_NUM) {
+            if (allow_num == 0) return ONIGERR_INVALID_BACKREF;
+
             if (num_type == IS_REL_NUM) {
               back_num = backref_rel_to_abs(back_num, env);
             }
@@ -5815,12 +5856,17 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           UChar* name_end;
           enum REF_NUM num_type;
 
+          allow_num = 1;
+
+        call_start:
           prev = p;
           r = fetch_name((OnigCodePoint )c, &p, end, &name_end, env,
                          &gnum, &num_type, TRUE);
           if (r < 0) return r;
 
           if (num_type != IS_NOT_NUM) {
+            if (allow_num == 0) return ONIGERR_UNDEFINED_GROUP_REFERENCE;
+
             if (num_type == IS_REL_NUM) {
               gnum = backref_rel_to_abs(gnum, env);
               if (gnum < 0) {
@@ -5977,6 +6023,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
     case '(':
       if (!PEND && PPEEK_IS('?') &&
           IS_SYNTAX_OP2(syn, ONIG_SYN_OP2_QMARK_GROUP_EFFECT)) {
+        prev = p;
         PINC;
         if (! PEND) {
           c = PPEEK;
@@ -6064,11 +6111,35 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
               break;
             }
           }
+          else if (c == 'P' &&
+                   IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_QMARK_CAPITAL_P_NAME)) {
+            PINC; /* skip 'P' */
+            if (PEND) return ONIGERR_END_PATTERN_IN_GROUP;
+            PFETCH(c);
+            allow_num = 0;
+            if (c == '=') {
+              c = '(';
+              goto backref_start;
+            }
+            else if (c == '>') {
+#ifdef USE_CALL
+              c = '(';
+              goto call_start;
+#else
+              return ONIGERR_UNDEFINED_OPERATOR;
+#endif
+            }
+            else {
+              p = prev;
+              goto lparen_qmark_end2;
+            }
+          }
         }
       lparen_qmark_end:
         PUNFETCH;
       }
 
+    lparen_qmark_end2:
       if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_LPAREN_SUBEXP)) break;
       tok->type = TK_SUBEXP_OPEN;
       break;
@@ -7934,12 +8005,26 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
       break;
 #endif
 
+    case 'P':
+      if (IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_QMARK_CAPITAL_P_NAME)) {
+        if (PEND) return ONIGERR_END_PATTERN_IN_GROUP;
+        PFETCH(c);
+        if (c == '<') goto named_group1;
+
+        return ONIGERR_UNDEFINED_GROUP_OPTION;
+      }
+      /* else fall */
+    case 'W': case 'D': case 'S':
+    case 'y':
+      if (! IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_OPTION_ONIGURUMA))
+        return ONIGERR_UNDEFINED_GROUP_OPTION;
+      /* else fall */
+
 #ifdef USE_POSIXLINE_OPTION
     case 'p':
 #endif
+    case 'a':
     case '-': case 'i': case 'm': case 's': case 'x':
-    case 'W': case 'D': case 'S': case 'P':
-    case 'y':
       {
         int neg = 0;
 
@@ -7976,10 +8061,26 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
             OPTION_NEGATE(option, ONIG_OPTION_MULTILINE|ONIG_OPTION_SINGLELINE, neg);
             break;
 #endif
-          case 'W': OPTION_NEGATE(option, ONIG_OPTION_WORD_IS_ASCII, neg); break;
-          case 'D': OPTION_NEGATE(option, ONIG_OPTION_DIGIT_IS_ASCII, neg); break;
-          case 'S': OPTION_NEGATE(option, ONIG_OPTION_SPACE_IS_ASCII, neg); break;
-          case 'P': OPTION_NEGATE(option, ONIG_OPTION_POSIX_IS_ASCII, neg); break;
+          case 'W':
+            if (! IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_OPTION_ONIGURUMA))
+              return ONIGERR_UNDEFINED_GROUP_OPTION;
+            OPTION_NEGATE(option, ONIG_OPTION_WORD_IS_ASCII, neg);
+            break;
+          case 'D':
+            if (! IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_OPTION_ONIGURUMA))
+              return ONIGERR_UNDEFINED_GROUP_OPTION;
+            OPTION_NEGATE(option, ONIG_OPTION_DIGIT_IS_ASCII, neg);
+            break;
+          case 'S':
+            if (! IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_OPTION_ONIGURUMA))
+              return ONIGERR_UNDEFINED_GROUP_OPTION;
+            OPTION_NEGATE(option, ONIG_OPTION_SPACE_IS_ASCII, neg);
+            break;
+          case 'P':
+            if (! IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_OPTION_ONIGURUMA))
+              return ONIGERR_UNDEFINED_GROUP_OPTION;
+            OPTION_NEGATE(option, ONIG_OPTION_POSIX_IS_ASCII, neg);
+            break;
 
           case 'y': /* y{g}, y{w} */
             {
@@ -8018,8 +8119,15 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
               PFETCH(c);
               if (c != '}')
                 return ONIGERR_UNDEFINED_GROUP_OPTION;
-              break;
             } /* case 'y' */
+            break;
+
+          case 'a':
+            if (! IS_SYNTAX_BV(env->syntax, ONIG_SYN_PYTHON))
+              return ONIGERR_UNDEFINED_GROUP_OPTION;
+
+            OPTION_NEGATE(option, ONIG_OPTION_POSIX_IS_ASCII, neg);
+            break;
 
           default:
             return ONIGERR_UNDEFINED_GROUP_OPTION;

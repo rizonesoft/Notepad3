@@ -538,7 +538,7 @@ public:
 };
 using TextPositions = VarBuffer<XYPOSITION, stackBufferLength>;
 
-class SurfaceGDI : public Surface {
+class SurfaceGDI final : public Surface {
 	bool unicodeMode = false;
 	HDC hdc{};
 	bool hdcOwned = false;
@@ -798,7 +798,7 @@ constexpr byte AlphaScaled(unsigned char component, unsigned int alpha) noexcept
 	return static_cast<byte>(component * alpha / 255);
 }
 
-const inline DWORD dwordMultiplied(ColourDesired colour, unsigned int alpha) noexcept {
+constexpr DWORD dwordMultiplied(ColourDesired colour, unsigned int alpha) noexcept {
 	return dwordFromBGRA(
 		AlphaScaled(colour.GetBlue(), alpha),
 		AlphaScaled(colour.GetGreen(), alpha),
@@ -1206,7 +1206,7 @@ constexpr D2D1_RECT_F RectangleFromPRectangle(PRectangle rc) noexcept {
 
 class BlobInline;
 
-class SurfaceD2D : public Surface {
+class SurfaceD2D final : public Surface {
 	bool unicodeMode = false;
 	int x = 0;
 	int y = 0;
@@ -1553,25 +1553,27 @@ void SurfaceD2D::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesir
 void SurfaceD2D::AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
 	ColourDesired outline, int alphaOutline, int /* flags*/) {
 	if (pRenderTarget) {
+		float const left = std::round(rc.left);
+		float const right = std::round(rc.right);
 		if (cornerSize == 0) {
 			// When corner size is zero, draw square rectangle to prevent blurry pixels at corners
-			const D2D1_RECT_F rectFill = D2D1::RectF(std::round(rc.left) + 1.0f, rc.top + 1.0f, std::round(rc.right) - 1.0f, rc.bottom - 1.0f);
+			const D2D1_RECT_F rectFill = D2D1::RectF(left + 1.0f, rc.top + 1.0f, right - 1.0f, rc.bottom - 1.0f);
 			D2DPenColour(fill, alphaFill);
 			pRenderTarget->FillRectangle(rectFill, pBrush);
 
-			const D2D1_RECT_F rectOutline = D2D1::RectF(std::round(rc.left) + 0.5f, rc.top + 0.5f, std::round(rc.right) - 0.5f, rc.bottom - 0.5f);
+			const D2D1_RECT_F rectOutline = D2D1::RectF(left + 0.5f, rc.top + 0.5f, right - 0.5f, rc.bottom - 0.5f);
 			D2DPenColour(outline, alphaOutline);
 			pRenderTarget->DrawRectangle(rectOutline, pBrush);
 		} else {
 			const float cornerSizeF = static_cast<float>(cornerSize);
 			D2D1_ROUNDED_RECT roundedRectFill = {
-				D2D1::RectF(std::round(rc.left) + 1.0f, rc.top + 1.0f, std::round(rc.right) - 1.0f, rc.bottom - 1.0f),
+				D2D1::RectF(left + 1.0f, rc.top + 1.0f, right - 1.0f, rc.bottom - 1.0f),
 				cornerSizeF - 1.0f, cornerSizeF - 1.0f };
 			D2DPenColour(fill, alphaFill);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
 			D2D1_ROUNDED_RECT roundedRect = {
-				D2D1::RectF(std::round(rc.left) + 0.5f, rc.top + 0.5f, std::round(rc.right) - 0.5f, rc.bottom - 0.5f),
+				D2D1::RectF(left + 0.5f, rc.top + 0.5f, right - 0.5f, rc.bottom - 0.5f),
 				cornerSizeF, cornerSizeF };
 			D2DPenColour(outline, alphaOutline);
 			pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush);
@@ -1581,12 +1583,13 @@ void SurfaceD2D::AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fil
 
 namespace {
 
-inline D2D_COLOR_F ColorFromColourAlpha(ColourAlpha colour) noexcept {
-	D2D_COLOR_F col;
-	col.r = colour.GetRedComponent();
-	col.g = colour.GetGreenComponent();
-	col.b = colour.GetBlueComponent();
-	col.a = colour.GetAlphaComponent();
+constexpr D2D_COLOR_F ColorFromColourAlpha(ColourAlpha colour) noexcept {
+	D2D_COLOR_F col = {
+		colour.GetRedComponent(),
+		colour.GetGreenComponent(),
+		colour.GetBlueComponent(),
+		colour.GetAlphaComponent()
+	};
 	return col;
 }
 
@@ -1623,8 +1626,9 @@ void SurfaceD2D::GradientRectangle(PRectangle rc, const std::vector<ColourStop> 
 		if (SUCCEEDED(hr) && pBrushLinear) {
 			const D2D1_RECT_F rectangle = D2D1::RectF(std::round(rc.left), rc.top, std::round(rc.right), rc.bottom);
 			pRenderTarget->FillRectangle(&rectangle, pBrushLinear);
+			ReleaseUnknown(pBrushLinear);
 		}
-		ReleaseUnknown(pBrushLinear);
+		ReleaseUnknown(pGradientStops);
 	}
 }
 
@@ -2570,7 +2574,7 @@ ListBox::ListBox() noexcept = default;
 
 ListBox::~ListBox() = default;
 
-class ListBoxX : public ListBox {
+class ListBoxX final : public ListBox {
 	int lineHeight;
 	FontID fontCopy;
 	int technology;
@@ -3462,13 +3466,7 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 		wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
 		if (std::abs(wheelDelta) >= WHEEL_DELTA) {
 			const int nRows = GetVisibleRows();
-			int linesToScroll = 1;
-			if (nRows > 1) {
-				linesToScroll = nRows - 1;
-			}
-			if (linesToScroll > 3) {
-				linesToScroll = 3;
-			}
+			int linesToScroll = std::clamp(nRows - 1, 1, 3);
 			linesToScroll *= (wheelDelta / WHEEL_DELTA);
 			int top = ListBox_GetTopIndex(lb) + linesToScroll;
 			if (top < 0) {
