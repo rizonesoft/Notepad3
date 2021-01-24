@@ -257,11 +257,6 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         }
 #endif
 
-        dpi = Scintilla_GetWindowDPI(hwnd);
-
-        int const scxb = ScaleIntByDPI(GetSystemMetrics(SM_CXICON), dpi.x);
-        int const scyb = ScaleIntByDPI(GetSystemMetrics(SM_CYICON), dpi.y);
-
         switch (lpMsgBox->uType & MB_ICONMASK) {
         case MB_ICONQUESTION:
             hBoxIcon = Globals.hIconMsgQuest;
@@ -283,7 +278,12 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
             hBoxIcon = Globals.hIconMsgInfo;
             break;
         }
-        hIconBmp = ResampleIconToBitmap(hwnd, hBoxIcon, scxb, scyb);
+
+        dpi = Scintilla_GetWindowDPI(hwnd);
+        int const scxb = Scintilla_GetSystemMetricsForDpi(SM_CXICON, dpi);
+        int const scyb = Scintilla_GetSystemMetricsForDpi(SM_CYICON, dpi);
+
+        hIconBmp = ResampleIconToBitmap(hwnd, hIconBmp, hBoxIcon, scxb, scyb);
         if (hIconBmp) {
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
@@ -306,9 +306,9 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     case WM_DPICHANGED: {
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
-        int const scxb = ScaleIntByDPI(GetSystemMetrics(SM_CXICON), dpi.x);
-        int const scyb = ScaleIntByDPI(GetSystemMetrics(SM_CYICON), dpi.y);
-        hIconBmp       = ResampleIconToBitmap(hwnd, hBoxIcon, scxb, scyb);
+        int const scxb = Scintilla_GetSystemMetricsForDpi(SM_CXICON, dpi);
+        int const scyb = Scintilla_GetSystemMetricsForDpi(SM_CYICON, dpi);
+        hIconBmp = ResampleIconToBitmap(hwnd, hIconBmp, hBoxIcon, scxb, scyb);
         if (hIconBmp) {
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
@@ -5696,8 +5696,10 @@ HBITMAP ConvertIconToBitmap(const HICON hIcon, int cx, int cy)
 //
 //  ResampleIconToBitmap()
 //
-HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy)
-{
+HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, const int cx, const int cy) {
+    if (hOldBmp) {
+        DeleteObject(hOldBmp);
+    }
     //~return ConvertIconToBitmap(hwnd, hIcon, cx, cy);
     HBITMAP const hBmp = ConvertIconToBitmap(hIcon, 0, 0);
     return ResampleImageBitmap(hwnd, hBmp, cx, cy);
@@ -5709,24 +5711,25 @@ HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const i
 //
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 {
-    static bool bInitialized = false;
-    if (bInitialized) {
-        return;
-    }
+    static DPI_T dpi = { 0, 0 };
+    static MENUITEMINFO mii = { 0 };
 
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+    DPI_T const cur_dpi = Scintilla_GetWindowDPI(hwnd);
 
-    int const cx = ScaleIntByDPI(GetSystemMetrics(SM_CXSMICON), dpi.x);
-    int const cy = ScaleIntByDPI(GetSystemMetrics(SM_CYSMICON), dpi.y);
+    if ((dpi.x != cur_dpi.x) || (dpi.y != cur_dpi.y))
+    {
+        dpi = cur_dpi;
+        int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, dpi);
+        int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, dpi);
 
-    if (Globals.hIconMsgShield) {
-        MENUITEMINFO mii = { 0 };
-        mii.cbSize = sizeof(MENUITEMINFO);
-        mii.fMask = MIIM_BITMAP;
-        mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, cx, cy);
+        if (!mii.cbSize) { mii.cbSize = sizeof(MENUITEMINFO); }
+        if (!mii.fMask)  { mii.fMask = MIIM_BITMAP; }
+        if (!mii.hbmpItem) { DeleteObject(mii.hbmpItem); }
+
+        mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, scx, scy);
+
         SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
     }
-    bInitialized = true;
 }
 
 
