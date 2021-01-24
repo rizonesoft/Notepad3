@@ -10977,11 +10977,10 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
 //
 void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
-    static HICON hIcon = NULL;
-    if (!hIcon) {
-        LoadIconWithScaleDown(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND),
-                              GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), &hIcon);
-    }
+    HICON hIcon = NULL;
+    LoadIconWithScaleDown(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND),
+                          GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), &hIcon);
+
     NOTIFYICONDATA nid;
     ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
     nid.cbSize = sizeof(NOTIFYICONDATA);
@@ -10997,7 +10996,6 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
     } else {
         Shell_NotifyIcon(NIM_DELETE,&nid);
     }
-
 }
 
 

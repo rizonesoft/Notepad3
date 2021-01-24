@@ -204,7 +204,7 @@ inline unsigned LargeIconDPI()
 // ----------------------------------------------------------------------------
 
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
-HBITMAP ResampleIconToBitmap(HWND hwnd, const HICON hIcon, const int cx, const int cy);
+HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI);
 //#define HandleDpiChangedMessage(hW,wP,lP) { DPI_T dpi; dpi.x = LOWORD(wP); dpi.y = HIWORD(wP); \
