@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.122.(build_#) (2021-01-22)
+Current BETA/RC Version 5.21.124.(build_#) (2021-01-24)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[.124.1]- Enable horizontal scrolling by "Shift + Mouse-Wheel".
 [.117.1]- Show search wrap-around tooltip (issue #3038).
 [1222.1]- Kotlin Source Lexer based on Zufuliu's Kotlin Lexer code base.
 [1222.1]- Dart Lexer based on Zufuliu's Dart Lexer code base.
@@ -67,6 +68,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.124.1]- Tinyexpr evaluation of math constants "e" and "pi" not being separated from prepending text.
 [.116.1]- Extent static find/replace/mark occurances pattern buffer to 4095 characters.
 [1223.1]- Initial start screen resolution independent fixed base font size.
 [1218.1]- Avoid wrap-around requester if there is no other possible occurrence.
@@ -98,14 +100,15 @@ CHANGES:
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
-[1214.1]- Update grepWinNP3 (GRE) version 2.1.5.33 (2021-01-16).
-[1214.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-01-16).
+[.116.1]- Update grepWinNP3 (GRE) version 2.1.5.33 (2021-01-16).
+[.124.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-01-24).
 [1214.1]- Update Scintilla Library (SCI) version 4.4.6 (2020-12-01).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.124.1]- InfoBox message icon DPI scaling.
 [.122.1]- Tinyexpr functions and constants parsing.
 [.116.1]- Buffer overrun while initializing structures.
 [.116.1]- Try to fix Font Dialog (Size handling) problems (issue #3012).
