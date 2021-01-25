@@ -331,6 +331,13 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
                         inKey = true;
                         inCommand = false;
                     }
+                    else if (sc.ch == '}')
+                    {
+                        if (inKey) {
+                            inKey = false;
+                            inCommand = true;
+                        }
+                    }
                     else if (inExpression && !(sc.ch == '(' || sc.ch == '[' || sc.ch == '.'))  	// Dont lex as a variable if it is a function or an array
                     {
                         sc.ChangeState(SCE_AHKL_VAR);
@@ -690,7 +697,10 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
             }
             else if (sc.ch == '}')
             {
-                inKey = false;
+                if (inKey) {
+                    inKey = false;
+                    inCommand = true;
+                }
             }
             else if (sc.ch == '`' && EscSequence.Contains(sc.chNext))
             {
