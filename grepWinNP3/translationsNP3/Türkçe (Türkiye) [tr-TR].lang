@@ -472,6 +472,11 @@ msgstr "Dosyaları UTF-8 olarak kabul et"
 msgid "Treat files as binary"
 msgstr ""
 
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
+
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "arama yapmak için kullanılan normal bir ifadedir. Daha fazla bilgi için F1 tuşuna basın."

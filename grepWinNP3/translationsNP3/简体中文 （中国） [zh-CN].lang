@@ -472,6 +472,11 @@ msgstr "将文件视为 UTF-8"
 msgid "Treat files as binary"
 msgstr "将文件视为二进制"
 
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
+
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "用于查找的正则表达式。按 F1 键获取更多信息。"
