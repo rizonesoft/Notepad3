@@ -472,6 +472,11 @@ msgstr "ファイルを UTF-8 として処理"
 msgid "Treat files as binary"
 msgstr "ファイルをバイナリとして処理"
 
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr "設定の「%s」が有効になっています。\r\nこの設定のまま置換すると、ファイルが破損する場合があります。\r\n続行しますか?"
+
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "検索に使用する正規表現 - F1キーで詳細情報を表示します。"

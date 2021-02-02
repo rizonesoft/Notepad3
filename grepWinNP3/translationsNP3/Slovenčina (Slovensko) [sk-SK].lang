@@ -472,6 +472,11 @@ msgstr "Považovať súbory ako UTF-8"
 msgid "Treat files as binary"
 msgstr "Považovať súbory ako binárne"
 
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
+
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "regulárny výraz používaný na vyhľadávanie. Stlač F1 pre viac informácií."

@@ -472,6 +472,11 @@ msgstr "파일을 UTF-8로 취급"
 msgid "Treat files as binary"
 msgstr "파일을 바이너리로 취급"
 
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
+
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "검색에 사용되는 정규식입니다. 자세한 정보를 보려면 F1을 누르십시오."
