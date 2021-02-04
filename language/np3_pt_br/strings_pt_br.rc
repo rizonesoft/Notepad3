@@ -251,6 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Linguagem"
+    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
     IDS_MUI_MENU_THEMES     "&Coleção de Esquemas"
     IDM_THEMES_DEFAULT      "&Padrão de Fábrica"
     IDM_THEMES_FILE_ITEM    "&Padrão"

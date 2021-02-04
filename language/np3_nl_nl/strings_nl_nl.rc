@@ -251,6 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
+    IDS_USE_LOCALE_DATEFMT  "Taal definieert &Datumformaat"
     IDS_MUI_MENU_THEMES     "&Schema Collectie"
     IDM_THEMES_DEFAULT      "&Fabrieksinstelling"
     IDM_THEMES_FILE_ITEM    "&Standaard"

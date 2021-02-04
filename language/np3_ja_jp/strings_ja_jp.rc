@@ -251,6 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語(&L)"
+    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
     IDM_THEMES_DEFAULT      "初期設定(&F)"
     IDM_THEMES_FILE_ITEM    "標準 (&S)"  // Keep blank space before (&S)
