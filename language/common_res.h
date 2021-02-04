@@ -460,6 +460,7 @@
 #define IDS_MUI_LANG_VI_VN              34523
 #define IDS_MUI_LANG_ZH_CN              34524
 #define IDS_MUI_LANG_ZH_TW              34525
+#define IDS_USE_LOCALE_DATEFMT          34700
 
 #define IDS_MUI_MENU_THEMES             37000
 #define IDM_THEMES_DEFAULT              37001
