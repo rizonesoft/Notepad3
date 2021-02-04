@@ -2169,35 +2169,6 @@ void EditModifyNumber(HWND hwnd,bool bIncrease)
 
 //=============================================================================
 //
-//  _GetDateFormatProc() - date format information provided by the EnumDateFormatsExEx()
-//
-static unsigned int  _DateFmtIdx = 0;
-
-static BOOL CALLBACK _GetDateFormatProc(LPWSTR lpDateFormatString, CALID CalendarID, LPARAM lParam)
-{
-    UNUSED(CalendarID);
-    static unsigned int count = 0;
-
-    LPWSTR const pwchFind = (LPWSTR)lParam;
-
-    if (StrIsEmpty(pwchFind)) {
-        count = 0; // begin
-        StringCchCopy(pwchFind, SMALL_BUFFER, lpDateFormatString); // default
-        if (count == _DateFmtIdx) {
-            return FALSE;    // found
-        }
-    } else if (count == _DateFmtIdx) {
-        StringCchCopy(pwchFind, SMALL_BUFFER, lpDateFormatString);
-        return FALSE; // found
-    }
-    ++count;
-    return TRUE;
-}
-
-
-
-//=============================================================================
-//
 //  _GetCurrentDateTimeString()
 //
 static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen, bool bShortFmt)
@@ -2207,7 +2178,8 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
 
     const WCHAR* const confFormat = bShortFmt ? Settings2.DateTimeFormat : Settings2.DateTimeLongFormat;
 
-    if (StrIsNotEmpty(pwchDateTimeStrg) || StrIsNotEmpty(confFormat)) {
+    if (StrIsNotEmpty(pwchDateTimeStrg) || StrIsNotEmpty(confFormat))
+    {
         WCHAR wchTemplate[MIDSZ_BUFFER] = {L'\0'};
         StringCchCopyW(wchTemplate, COUNTOF(wchTemplate), StrIsNotEmpty(pwchDateTimeStrg) ? pwchDateTimeStrg : confFormat);
 
@@ -2225,18 +2197,27 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
         if (cnt == 0) {
             StringCchCopy(pwchDateTimeStrg, cchBufLen, wchTemplate);
         }
-    } else { // use configured DateTime Format
-        WCHAR wchFormat[SMALL_BUFFER] = { L'\0' };
-        _DateFmtIdx = 0;
-        EnumDateFormatsExEx(_GetDateFormatProc, Settings2.PreferredLanguageLocaleName, (bShortFmt ? DATE_SHORTDATE : DATE_LONGDATE), (LPARAM)wchFormat);
-
-        WCHAR wchDate[SMALL_BUFFER] = { L'\0' };
-        GetDateFormatEx(Settings2.PreferredLanguageLocaleName, DATE_AUTOLAYOUT, &st, wchFormat, wchDate, COUNTOF(wchDate), NULL);
+    
+    } else { // use configured Language Locale DateTime Format
 
         WCHAR wchTime[SMALL_BUFFER] = { L'\0' };
-        GetTimeFormatEx(Settings2.PreferredLanguageLocaleName, TIME_NOSECONDS, &st, NULL, wchTime, COUNTOF(wchTime));
+        WCHAR wchDate[SMALL_BUFFER] = { L'\0' };
+        WCHAR wchFormat[SMALL_BUFFER] = { L'\0' };
 
-        StringCchPrintf(pwchDateTimeStrg, cchBufLen, L"%s %s", wchTime, wchDate);
+        LPCWSTR const pLocaleName = Settings.PreferredLocale4DateFmt ? Settings2.PreferredLanguageLocaleName : LOCALE_NAME_USER_DEFAULT;
+
+        GetLocaleInfoEx(pLocaleName, (bShortFmt ? LOCALE_SSHORTDATE : LOCALE_SLONGDATE), wchFormat, COUNTOF(wchFormat));
+        GetDateFormatEx(pLocaleName, DATE_AUTOLAYOUT, &st, wchFormat, wchDate, COUNTOF(wchDate), NULL);
+        StrDelChrW(wchDate, L"\x200E"); // clear off the Left-to-Right Mark (LRM)
+
+        LPCWSTR const tfmt = bShortFmt ? NULL : wchFormat;
+        if (tfmt) {
+            GetLocaleInfoEx(pLocaleName, LOCALE_STIMEFORMAT, wchFormat, COUNTOF(wchFormat));
+        }
+        GetTimeFormatEx(pLocaleName, (bShortFmt ? TIME_NOSECONDS : 0), &st, tfmt, wchTime, COUNTOF(wchTime));
+        StrDelChrW(wchTime, L"\x200E"); // clear off the Left-to-Right Mark (LRM)
+
+        StringCchPrintf(pwchDateTimeStrg, cchBufLen, L"%s\t%s", wchDate, wchTime);
     }
 }
 

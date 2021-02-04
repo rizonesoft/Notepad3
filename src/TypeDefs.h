@@ -505,6 +505,7 @@ typedef struct _settings_t
     bool EditLayoutRTL;
     bool DialogsLayoutRTL;
     int  FocusViewMarkerMode;
+    bool PreferredLocale4DateFmt;
 
 #ifdef D_NP3_WIN10_DARK_MODE
     bool WinThemeDarkMode;
