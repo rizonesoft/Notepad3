@@ -42,10 +42,10 @@ BOOL CInfoDlg::ShowDialog(HWND hParent, UINT idAboutHTMLID, HINSTANCE hInstance)
 {
     //Load the IE Specific MSTML Interface DKK
     HINSTANCE hinstMSHTML = LoadLibrary(TEXT("mshtml.dll"));
-    BOOL bSuccess = FALSE;
+    BOOL      bSuccess    = FALSE;
     if (hinstMSHTML)
     {
-        SHOWHTMLDIALOGEXFN  *pfnShowHTMLDialog;
+        SHOWHTMLDIALOGEXFN *pfnShowHTMLDialog;
         //Locate The Function ShowHTMLDialog in the Loaded mshtml.dll
         pfnShowHTMLDialog = (SHOWHTMLDIALOGEXFN *)GetProcAddress(hinstMSHTML, "ShowHTMLDialogEx");
         if (pfnShowHTMLDialog)

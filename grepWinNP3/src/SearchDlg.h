@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2020 - Stefan Kueng
+// Copyright (C) 2007-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -111,6 +111,7 @@ public:
     void                    SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
     void                    SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
     void                    SetDateLimit(int datelimit, FILETIME t1, FILETIME t2) { m_bDateLimitC = true; m_DateLimit = datelimit; m_Date1 = t1; m_Date2 = t2; }
+    void                    SetNoSaveSettings(bool nosave) { m_bNoSaveSettings = nosave; }
 
     void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
     void                    SetEndDialog() { m_endDialog = true; }
@@ -205,6 +206,7 @@ private:
     bool                    m_bDateLimitC;
     FILETIME                m_Date1;
     FILETIME                m_Date2;
+    bool                    m_bNoSaveSettings;
 
     bool                    m_bReplace;
     bool                    m_bConfirmationOnReplace;

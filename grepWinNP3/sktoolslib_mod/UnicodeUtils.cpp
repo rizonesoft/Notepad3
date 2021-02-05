@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -204,10 +204,11 @@ int LoadStringEx(HINSTANCE hInstance, UINT uID, LPWSTR lpBuffer, int nBufferMax,
     return ret;
 }
 
-int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive)
+int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive, int& skip)
 {
     inconclusive = false;
     hasBOM       = false;
+    skip         = 0;
     if (cb < 2)
     {
         inconclusive = true;
@@ -291,6 +292,7 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive)
             }
             else if (nNeedData)
             {
+                skip = nNeedData;
                 return CP_ACP;
             }
             continue;
@@ -305,12 +307,16 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive)
         }
         else if (nNeedData)
         {
+            skip = nNeedData;
             return CP_ACP;
         }
         else if ((zChar & 0x20) == 0) // top two bits
         {
             if (zChar <= 0xC1)
+            {
+                skip = nNeedData;
                 return CP_ACP;
+            }
             nNeedData = 1;
         }
         else if ((zChar & 0x10) == 0) // top three bits
@@ -320,16 +326,23 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive)
         else if ((zChar & 0x08) == 0) // top four bits
         {
             if (zChar >= 0xf5)
+            {
+                skip = nNeedData;
                 return CP_ACP;
+            }
             nNeedData = 3;
         }
         else
+        {
+            skip = nNeedData;
             return CP_ACP;
+    }
     }
     if (bNonANSI && nNeedData == 0)
         return CP_UTF8;
 
     inconclusive = true;
+    skip         = nNeedData;
 
     return CP_ACP;
 }

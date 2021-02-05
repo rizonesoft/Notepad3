@@ -3714,15 +3714,15 @@ get_next_code_point(UChar** src, UChar* end, int base, OnigEncoding enc, int in_
   while (! PEND) {
     PFETCH(c);
     if (! IS_CODE_POINT_DIVIDE(c)) {
-  if (c == '}') {
-    *src = p;
-    return 1; /* end of sequence */
-  }
-  else if (c == '-' && in_cc == TRUE) {
-    *src = p;
-    return 2; /* range */
-  }
-  PUNFETCH;
+      if (c == '}') {
+        *src = p;
+        return 1; /* end of sequence */
+      }
+      else if (c == '-' && in_cc == TRUE) {
+        *src = p;
+        return 2; /* range */
+      }
+      PUNFETCH;
       break;
     }
     else {
@@ -5598,9 +5598,9 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         goto end_buf;
       }
       else {
-      if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_ESC_AZ_BUF_ANCHOR)) break;
-      tok->type = TK_ANCHOR;
-      tok->u.subtype = ANCR_SEMI_END_BUF;
+        if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_ESC_AZ_BUF_ANCHOR)) break;
+        tok->type = TK_ANCHOR;
+        tok->u.subtype = ANCR_SEMI_END_BUF;
       }
       break;
 
@@ -8460,7 +8460,7 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
             if (index == 0)
               NODE_STATUS_ADD(csnode, IGNORECASE);
             else
-            NODE_STRING_SET_CASE_EXPANDED(csnode);
+              NODE_STRING_SET_CASE_EXPANDED(csnode);
 
             ns[n++] = csnode;
           }

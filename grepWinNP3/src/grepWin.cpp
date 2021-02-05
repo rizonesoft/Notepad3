@@ -427,16 +427,16 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 }
             }
             std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
-              (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
+                (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
             if (!spath.empty()) {
-            SearchReplace(spath, L"/", L"\\");
-            spath = SanitizeSearchPaths(spath);
-            searchDlg.SetSearchPath(spath);
+                SearchReplace(spath, L"/", L"\\");
+                spath = SanitizeSearchPaths(spath);
+                searchDlg.SetSearchPath(spath);
             }
             std::wstring searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
-              (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
+                (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
             if (!spath.empty()) {
-            searchDlg.SetSearchString(searchfor);
+                searchDlg.SetSearchString(searchfor);
             }
             if (parser.HasVal(L"filemaskregex"))
                 searchDlg.SetFileMask(parser.GetVal(L"filemaskregex"), true);
@@ -528,6 +528,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetSearchPath(spath);
                 }
             }
+            if (parser.HasKey(L"nosavesettings"))
+                searchDlg.SetNoSaveSettings(true);
 
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }

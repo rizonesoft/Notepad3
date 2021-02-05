@@ -82,6 +82,7 @@
 #define IDS_CAPTURESEARCH               169
 #define IDS_CLONE                       170
 #define IDS_NEWINSTANCE_TT              171
+#define IDS_REPLACEUTF8                 172
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002

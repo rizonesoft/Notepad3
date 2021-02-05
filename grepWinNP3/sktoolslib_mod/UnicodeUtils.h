@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ std::wstring MultibyteToWide(const std::string& multibyte, bool stopAtNull = tru
 std::wstring UTF8ToWide(const std::string& multibyte, bool stopAtNull = true);
 
 /// determines the codepage from a text buffer. Returns -1 for binary
-int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive);
+int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive, int& skip);
 
 #ifdef UNICODE
 std::wstring UTF8ToString(const std::string& string, bool stopAtNull = true);
