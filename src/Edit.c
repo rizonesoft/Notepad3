@@ -2217,7 +2217,7 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
         GetTimeFormatEx(pLocaleName, (bShortFmt ? TIME_NOSECONDS : 0), &st, tfmt, wchTime, COUNTOF(wchTime));
         StrDelChrW(wchTime, L"\x200E"); // clear off the Left-to-Right Mark (LRM)
 
-        StringCchPrintf(pwchDateTimeStrg, cchBufLen, L"%s\t%s", wchDate, wchTime);
+        StringCchPrintf(pwchDateTimeStrg, cchBufLen, L"%s %s", wchTime, wchDate);
     }
 }
 

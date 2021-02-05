@@ -699,6 +699,7 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
 {
     // check, if we need a language switching menu
     if (Globals.iAvailLngCount < 2) {
+        Settings.PreferredLocale4DateFmt = false;
         return false;
     }
 
@@ -727,11 +728,7 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
         InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_STRING, (UINT_PTR)IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg);
         InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
         return res;
-    } else {
-        Settings.PreferredLocale4DateFmt = false;
     }
-
-
     return false;
 }
 
