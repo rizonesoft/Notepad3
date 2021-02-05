@@ -1225,7 +1225,6 @@ void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
     WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
 }
 
-
 static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
 
 //=============================================================================
@@ -1255,6 +1254,7 @@ static void SetFindReplaceData()
             s_FindReplaceData.bTransformBS = true;
         }
         s_FindReplaceData.bOverlappingFind = false;
+        s_FindReplaceData.bRegExprSearch = (s_FindReplaceData.fuFlags & SCFIND_REGEXP);
         s_FindReplaceData.bWildcardSearch = false;
         s_FindReplaceData.bReplaceClose = false;
     }
@@ -4532,7 +4532,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 EditSelectionMultiSelectAll();
             } else {
                 SetFindReplaceData();  // s_FindReplaceData
-                EditSelectionMultiSelectAllEx(s_FindReplaceData);
+                EditSelectionMultiSelectAllEx(&s_FindReplaceData);
             }
         }
     }
