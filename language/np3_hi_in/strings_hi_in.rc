@@ -251,6 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "भाषा (&L)"
+    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
     IDS_MUI_MENU_THEMES     "स्कीम संग्रह (&S)"
     IDM_THEMES_DEFAULT      "फैक्ट्री डिफ़ॉल्ट (&F)"
     IDM_THEMES_FILE_ITEM    "सामान्य (&S)"
