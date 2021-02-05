@@ -103,7 +103,7 @@ CHANGES:
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
-[.116.1]- Update grepWinNP3 (GRE) version 2.1.5.33 (2021-01-16).
+[.205.2]- Update grepWinNP3 (GRE) version 2.1.6.34 (2021-02.05).
 [.124.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-01-24).
 [1214.1]- Update Scintilla Library (SCI) version 4.4.6 (2020-12-01).
 
