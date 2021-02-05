@@ -262,8 +262,8 @@ BEGIN
                             "Keresési előzmények törlése"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Csere előzmények törlése"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Keresés folytatása az elejéről  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Keresés folytatása a végéről %s"
 END
 
 STRINGTABLE
