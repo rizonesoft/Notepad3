@@ -2200,12 +2200,12 @@ stack_double(int* is_alloca, char** arg_alloc_base,
             if (kk->u.mem.prev_end.i == INVALID_STACK_INDEX || \
                 ((STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr) && (STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr))) {\
               goto stack_empty_check_mem_not_empty;\
-        }\
+            }\
             else {\
               ms &= ~((MemStatusType )1 << k->zid);\
               break;\
-        }\
-        }\
+            }\
+          }\
           kk++;\
         }\
         if (ms == 0) break;\
@@ -2246,7 +2246,7 @@ stack_double(int* is_alloca, char** arg_alloc_base,
                       if (kk->u.mem.prev_end.i == INVALID_STACK_INDEX || \
                           ((STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr) && (STACK_AT(k->u.mem.prev_start.i)->u.mem.pstr != k->u.mem.pstr || STACK_AT(kk->u.mem.prev_start.i)->u.mem.pstr != STACK_AT(kk->u.mem.prev_end.i)->u.mem.pstr))) {\
                         goto stack_empty_check_mem_rec_not_empty;\
-                  }\
+                      }\
                       else {\
                         ms &= ~((MemStatusType )1 << k->zid);\
                         break;\
@@ -2254,10 +2254,10 @@ stack_double(int* is_alloca, char** arg_alloc_base,
                     }\
                     else if (kk->type == STK_EMPTY_CHECK_START) {\
                       if (kk->zid == (sid)) level++;\
-                  }\
+                    }\
                     else if (kk->type == STK_EMPTY_CHECK_END) {\
                       if (kk->zid == (sid)) level--;\
-                  }\
+                    }\
                     kk++;\
                   }\
                   level = 0;\
@@ -3376,7 +3376,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         STACK_PUSH_ALT(p, s);
         n = enclen(encode, s);
         DATA_ENSURE(n);
-        if (ONIGENC_IS_MBC_NEWLINE(encode, s, end)) goto fail;
+        if (ONIGENC_IS_MBC_NEWLINE(encode, s, end))  goto fail;
         s += n;
       }
       JUMP_OUT;
@@ -3408,7 +3408,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
           }
           n = enclen(encode, s);
           DATA_ENSURE(n);
-          if (ONIGENC_IS_MBC_NEWLINE(encode, s, end)) goto fail;
+          if (ONIGENC_IS_MBC_NEWLINE(encode, s, end))  goto fail;
           s += n;
         }
       }
@@ -3485,15 +3485,15 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         else {
           UChar* sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
           if (ON_STR_END(s)) {
-          if (! IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
-            goto fail;
+            if (! IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
+              goto fail;
+          }
+          else {
+            if (IS_MBC_WORD_ASCII_MODE(encode, s, end, mode)
+                == IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
+              goto fail;
+          }
         }
-        else {
-          if (IS_MBC_WORD_ASCII_MODE(encode, s, end, mode)
-              == IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
-            goto fail;
-        }
-      }
       }
       INC_OP;
       JUMP_OUT;
@@ -3510,15 +3510,15 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         else {
           UChar* sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
           if (ON_STR_END(s)) {
-          if (IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
-            goto fail;
+            if (IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
+              goto fail;
+          }
+          else {
+            if (IS_MBC_WORD_ASCII_MODE(encode, s, end, mode)
+                != IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
+              goto fail;
+          }
         }
-        else {
-          if (IS_MBC_WORD_ASCII_MODE(encode, s, end, mode)
-              != IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode))
-            goto fail;
-        }
-      }
       }
       INC_OP;
       JUMP_OUT;
@@ -3552,12 +3552,12 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         if (! ON_STR_BEGIN(s)) {
           UChar* sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
           if (IS_MBC_WORD_ASCII_MODE(encode, sprev, end, mode)) {
-          if (ON_STR_END(s) || ! IS_MBC_WORD_ASCII_MODE(encode, s, end, mode)) {
-            INC_OP;
-            JUMP_OUT;
+            if (ON_STR_END(s) || ! IS_MBC_WORD_ASCII_MODE(encode, s, end, mode)) {
+              INC_OP;
+              JUMP_OUT;
+            }
           }
         }
-      }
       }
       goto fail;
 #endif
@@ -3619,10 +3619,10 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         UChar* sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
         if (ONIGENC_IS_MBC_NEWLINE(encode, sprev, end)) {
           if (!IS_CRLF_NEWLINE(encode) || IS_LF_CODE(encode, sprev, end)) {
-            INC_OP;
-            JUMP_OUT;
-          }
+          INC_OP;
+          JUMP_OUT;
         }
+      }
       }
       goto fail;
 
@@ -3641,9 +3641,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       }
       else if (ONIGENC_IS_MBC_NEWLINE(encode, s, end)) {
         if (!IS_CRLF_NEWLINE(encode) || IS_CR_CODE(encode, s, end)) {
-          INC_OP;
-          JUMP_OUT;
-        }
+        INC_OP;
+        JUMP_OUT;
+      }
       }
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
       else if (ONIGENC_IS_MBC_CRNL(encode, s, end)) {
@@ -3877,9 +3877,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         mems = tlen == 1 ? &(p->backref_general.n1) : p->backref_general.ns;
 
         if (! backref_match_at_nested_level(reg, stk, stk_base, n,
-                    case_fold_flag, level, (int )tlen, mems, &s, end)) {
+                      case_fold_flag, level, (int )tlen, mems, &s, end)) {
           goto fail;
-      }
+        }
       }
       INC_OP;
       JUMP_OUT;
@@ -4133,8 +4133,8 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       if (SubexpCallLimitInSearch != 0) {
         msa->subexp_call_in_search_counter++;
 #ifdef ONIG_DEBUG_MATCH_COUNTER
-	if (p->call.called_mem < MAX_SUBEXP_CALL_COUNTERS)
-	  subexp_call_counters[p->call.called_mem]++;
+        if (p->call.called_mem < MAX_SUBEXP_CALL_COUNTERS)
+          subexp_call_counters[p->call.called_mem]++;
         if (msa->subexp_call_in_search_counter % 1000 == 0)
           MATCH_COUNTER_OUT("CALL");
 #endif
@@ -4210,7 +4210,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       mem  = p->cut_to_mark.id; /* mem: mark id */
       STACK_TO_VOID_TO_MARK(stkp, mem);
       if (p->cut_to_mark.restore_pos != 0) {
-        s     = stkp->u.val.v;
+        s = stkp->u.val.v;
       }
       INC_OP;
       JUMP_OUT;
@@ -4370,8 +4370,8 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
     fail:
 #endif
       STACK_POP;
-      p     = stk->u.state.pcode;
-      s     = stk->u.state.pstr;
+      p = stk->u.state.pcode;
+      s = stk->u.state.pstr;
       CHECK_RETRY_LIMIT_IN_MATCH;
       JUMP_OUT;
 
@@ -5175,7 +5175,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
           prev = onigenc_get_prev_char_head(reg->enc, (pprev ? pprev : str), p);
           if (IS_NOT_NULL(prev)) {
             if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end)) {
-              goto retry_gate;
+            goto retry_gate;
             } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, prev, end)) {
               goto retry_gate;
             }
@@ -5206,7 +5206,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
     }
 
     if (reg->dist_max == 0) {
-      *low = p;
+      *low  = p;
       *high = p;
     }
     else {
@@ -5277,13 +5277,13 @@ backward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
           prev = onigenc_get_prev_char_head(reg->enc, str, p);
           if (IS_NOT_NULL(prev)) {
             if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end)) {
-              p = prev;
-              goto retry;
+            p = prev;
+            goto retry;
             } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, prev, end)) {
               p = prev;
               goto retry;
-            }
           }
+        }
         }
         break;
 
@@ -5301,7 +5301,7 @@ backward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
                    && !ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
 #endif
-        ) {
+                 ) {
           p = onigenc_get_prev_char_head(reg->enc, adjrange, p);
           if (IS_NULL(p)) goto fail;
           goto retry;

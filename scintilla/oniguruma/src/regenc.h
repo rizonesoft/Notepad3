@@ -122,7 +122,7 @@ struct PropertyNameCtype {
 #define USE_UNICODE_EXTENDED_GRAPHEME_CLUSTER
 #define USE_UNICODE_WORD_BREAK
 /* #define USE_UNICODE_CASE_FOLD_TURKISH_AZERI */
-/* #define USE_UNICODE_ALL_LINE_TERMINATORS */ /* see Unicode.org UTS #18 */
+/* #define USE_UNICODE_ALL_LINE_TERMINATORS */  /* see Unicode.org UTS #18 */
 
 
 //~#define ONIG_ENCODING_INIT_DEFAULT           ONIG_ENCODING_ASCII
