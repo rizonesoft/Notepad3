@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.125.(build_#) (2021-01-25)
+Current BETA/RC Version 5.21.205.(build_#) (2021-02-05)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[.205.1]- Use user locale for date/time insert format: can be menu switched to preferred UI language.
 [.124.1]- Enable horizontal scrolling by "Shift + Mouse-Wheel".
 [.117.1]- Show search wrap-around tooltip (issue #3038).
 [1222.1]- Kotlin Source Lexer based on Zufuliu's Kotlin Lexer code base.
@@ -68,6 +69,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.205.1]- Revert minor insert date/time format changes.
+[.205.1]- Use user locale for date/time insert format: insert date before time & tab separated.
 [.124.1]- Tinyexpr evaluation of math constants "e" and "pi" not being separated from prepending text.
 [.116.1]- Extent static find/replace/mark occurances pattern buffer to 4095 characters.
 [1223.1]- Initial start screen resolution independent fixed base font size.
@@ -108,6 +111,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.205.1]- Wildcard search: unintentional wrap around.
 [.125.1]- AHKL lexer: visual brace matching mix-ups.
 [.124.1]- InfoBox message icon DPI scaling.
 [.122.1]- Tinyexpr functions and constants parsing.

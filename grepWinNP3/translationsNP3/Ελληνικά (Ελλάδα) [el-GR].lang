@@ -466,7 +466,7 @@ msgstr "Το προκύπτον κείμενο μετά την αντικατά�
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
-msgstr "Αντιμετώπιση αρχείων ως UTF8"
+msgstr "Αντιμετώπιση αρχείων ως UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
@@ -520,7 +520,7 @@ msgstr "ρυθμίσεις grepWinNP3"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "tieni premuto il tasto \"Maiusc\" per trovare i file che NON contengono la stringa di ricerca"
+msgstr ""
 
 #. Resource IDs: (165)
 msgid "include file paths"
