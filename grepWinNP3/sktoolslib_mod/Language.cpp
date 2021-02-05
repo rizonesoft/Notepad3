@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013, 2017-2018, 2020 - Stefan Kueng
+// Copyright (C) 2013, 2017-2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -329,7 +329,8 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
 
                 auto sTranslated = GetTranslatedString(buf.get(), pLangMap);
                 tt.lpszText      = sTranslated.data();
-                SendMessage(hwnd, TTM_SETTOOLINFO, 0, (LPARAM)&tt);
+                if (tt.lpszText[0])
+                    SendMessage(hwnd, TTM_SETTOOLINFO, 0, (LPARAM)&tt);
             }
         }
     }

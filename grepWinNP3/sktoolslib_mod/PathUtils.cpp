@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013-2015, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2013-2015, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -424,7 +424,7 @@ std::wstring CPathUtils::GetVersionFromFile(const std::wstring& path)
         {
             UINT nInfoSize         = 0,
                  nFixedLength      = 0;
-            LPSTR        lpVersion = nullptr;
+            LPCWSTR      lpVersion = nullptr;
             VOID*        lpFixedPointer;
             TRANSARRAY*  lpTransArray;
             std::wstring strLangProduktVersion;
@@ -445,11 +445,11 @@ std::wstring CPathUtils::GetVersionFromFile(const std::wstring& path)
                                                          lpTransArray[0].wLanguageID, lpTransArray[0].wCharacterSet);
 
             VerQueryValue(pBuffer.get(),
-                          (LPWSTR)(LPCWSTR)strLangProduktVersion.c_str(),
+                          (LPWSTR)strLangProduktVersion.c_str(),
                           (LPVOID*)&lpVersion,
                           &nInfoSize);
             if (nInfoSize && lpVersion)
-                strReturn = (LPCWSTR)lpVersion;
+                strReturn = lpVersion;
         }
     }
 

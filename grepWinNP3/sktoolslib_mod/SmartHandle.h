@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2015, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2015, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -206,7 +206,7 @@ struct CCloseThemeData
 {
     static bool Close(T hTheme)
     {
-        return !!::CloseThemeData(hTheme);
+        return SUCCEEDED(::CloseThemeData(hTheme));
     }
 };
 

@@ -421,6 +421,7 @@ BEGIN
     IDS_CLONE               "Start new grepWinNP3 window"
     IDS_NEWINSTANCE_TT      "Start new grepWinNP3 window"
     IDS_STAY_ON_TOP         "Stay On Top"
+    IDS_REPLACEUTF8         "You have the option ""%s"" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 END
 
 #endif    // Neutral resources

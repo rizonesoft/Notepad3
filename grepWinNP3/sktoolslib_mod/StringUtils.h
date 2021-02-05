@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2020 - Stefan Kueng
+// Copyright (C) 2012-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -469,7 +469,7 @@ public:
         if (len == 0)
             return s;
 
-        auto buf = std::make_unique<wchar_t[]>(len + 1);
+        auto buf = std::make_unique<wchar_t[]>(len + 1ULL);
         if (::ExpandEnvironmentStrings(s.c_str(), buf.get(), len) == 0)
             return s;
 
@@ -507,7 +507,7 @@ public:
     static inline std::wstring to_lower(const std::wstring& s)
     {
         auto len    = LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, nullptr, 0, nullptr, nullptr, 0);
-        auto outbuf = std::make_unique<wchar_t[]>(len + 1);
+        auto outbuf = std::make_unique<wchar_t[]>(len + 1LL);
         LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, outbuf.get(), len, nullptr, nullptr, 0);
         return outbuf.get();
     }

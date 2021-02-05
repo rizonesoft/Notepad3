@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017-2018, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017-2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,8 +28,24 @@ CSimpleFileFind::CSimpleFileFind(const std::wstring& sPath, LPCWSTR pPattern, FI
     , m_bFirst(true)
     , m_sPathPrefix(sPath)
 {
+    std::wstring sPattern = pPattern ? pPattern : L"";
+    if (pPattern == nullptr || wcscmp(pPattern, L"*.*") == 0)
+    {
+        auto slashpos = sPath.find_last_of(L"\\/");
+        if (slashpos != std::wstring::npos)
+        {
+            auto lastPart = sPath.substr(slashpos + 1);
+            if (lastPart.find_first_of(L"*?") != std::wstring::npos)
+            {
+                // the path contains a pattern
+                sPattern = lastPart;
+                m_sPathPrefix = sPath.substr(0, slashpos);
+            }
+        }
+    }
+
     m_FindFileData = {};
-    if (PathIsDirectory(sPath.c_str()))
+    if (PathIsDirectory(m_sPathPrefix.c_str()))
     {
         // Add a trailing \ to m_sPathPrefix if it is missing.
         // Do not add one to "C:" since "C:" and "C:\" are different.
@@ -37,14 +53,14 @@ CSimpleFileFind::CSimpleFileFind(const std::wstring& sPath, LPCWSTR pPattern, FI
             int len = (int)m_sPathPrefix.size();
             if (len != 0)
             {
-                wchar_t ch = sPath[len - 1];
+                wchar_t ch = m_sPathPrefix[len - 1];
                 if (ch != '\\' && (ch != ':' || len != 2))
                 {
                     m_sPathPrefix += '\\';
                 }
             }
         }
-        m_hFindFile = ::FindFirstFileEx(std::wstring(m_sPathPrefix + pPattern).c_str(), infoLevel, &m_FindFileData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
+        m_hFindFile = ::FindFirstFileEx(std::wstring(m_sPathPrefix + sPattern).c_str(), infoLevel, &m_FindFileData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
         m_bFile     = FALSE;
     }
     else
