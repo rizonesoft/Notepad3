@@ -251,7 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "语言(&L)"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "使用本地化的日期格式(&D)"
     IDS_MUI_MENU_THEMES     "语法高亮方案集(&S)"
     IDM_THEMES_DEFAULT      "工厂默认(&F)"
     IDM_THEMES_FILE_ITEM    "标准 (&S)"  // Keep blank space before (&S)
@@ -262,8 +262,8 @@ BEGIN
                             "清除查找历史"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "清除替换历史"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "从顶部循环找到  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "从底部循环找到  %s"
 END
 
 STRINGTABLE

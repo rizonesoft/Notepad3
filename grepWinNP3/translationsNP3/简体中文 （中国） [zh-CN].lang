@@ -475,7 +475,7 @@ msgstr "将文件视为二进制"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "已启用的选项“%s”可能在替换时导致文件损坏。\r\n仍然要继续吗？"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
