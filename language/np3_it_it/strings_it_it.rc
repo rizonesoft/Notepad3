@@ -251,7 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Lingua"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "La lingua define il Formato &Data"
     IDS_MUI_MENU_THEMES     "&Collezione di Schemi"
     IDM_THEMES_DEFAULT      "Impostazioni di &fabbrica"
     IDM_THEMES_FILE_ITEM    "&Standard"
@@ -262,8 +262,8 @@ BEGIN
                             "Pulisci Cronologia Ricerche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Pulisci Cronologia Sostituzioni"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Corrispondenza Wrap-Around dall'inizio  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Corrispondenza Wrap-Around dalla fine  %s"
 END
 
 STRINGTABLE
