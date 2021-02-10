@@ -262,8 +262,8 @@ BEGIN
                             "検索履歴を消去"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "置換履歴を消去"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "先頭に戻り一致した行  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "終端に行き一致した行  %s"
 END
 
 STRINGTABLE
