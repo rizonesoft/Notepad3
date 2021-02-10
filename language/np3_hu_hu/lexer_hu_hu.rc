@@ -125,8 +125,8 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Szövegfájlok"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart Source Code"
-    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
+    IDS_LEX_DART_SRC        "Dart forráskód"
+    IDS_LEX_KOTLIN_SRC      "Kotlin forráskód"
 END
 
 STRINGTABLE
