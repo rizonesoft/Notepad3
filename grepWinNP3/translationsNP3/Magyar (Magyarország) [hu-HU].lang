@@ -475,7 +475,7 @@ msgstr "Fájlok binárisként kezelése"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Ez az opció be van kapcsolva: \"%s\"\r\nCsere esetén ez hibás fájlhoz vezethet.\r\nBiztosan folytatja?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
