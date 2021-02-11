@@ -5705,6 +5705,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         Settings.MarkOccurrences = false;
         Settings.MarkOccurrencesMatchVisible = false;
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
+        EditMarkAllOccurrences(hwnd, true);
 
         // Load MRUs
         for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
@@ -6818,7 +6819,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
     }
 
     if (!IsMarkOccurrencesEnabled()) {
-        EditClearAllOccurrenceMarkers(hwnd);
         return;
     }
 
