@@ -251,7 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Język"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "Język definiuje Format &Daty"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
     IDM_THEMES_DEFAULT      "&Domyślne"
     IDM_THEMES_FILE_ITEM    "&Standardowe"
@@ -262,8 +262,8 @@ BEGIN
                             "Wyczyść Znajdź Historię"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Wyczyść Zamień Historię"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Zawijaj pasujące od góry  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Zawijaj pasujące od spodu  %s"
 END
 
 STRINGTABLE

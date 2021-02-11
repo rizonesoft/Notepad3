@@ -125,8 +125,8 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Pliki tekstowe"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart Source Code"
-    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
+    IDS_LEX_DART_SRC        "Kod źródłowy Dart"
+    IDS_LEX_KOTLIN_SRC      "Kod źródłowy Kotlin"
 END
 
 STRINGTABLE
@@ -468,9 +468,9 @@ BEGIN
     IDS_LEX_STR_63366       "Sekwencja ESC"
     IDS_LEX_STR_63367       "Punkt najechania Unicode"
     IDS_LEX_STR_63368       "Drugi punkt najechania Unicode"
-    IDS_LEX_STR_63369       "Interface"
-    IDS_LEX_STR_63370       "Annotation"
-    IDS_LEX_STR_63371       "Comment Doc Word"
+    IDS_LEX_STR_63369       "Interfejs"
+    IDS_LEX_STR_63370       "Dopisek"
+    IDS_LEX_STR_63371       "Komentarz Doc Word"
 END
 
 STRINGTABLE
