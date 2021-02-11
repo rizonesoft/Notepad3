@@ -8758,10 +8758,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     DocPos const iSelStart         = SciCall_GetSelectionStart();
     DocPos const iSelEnd           = SciCall_GetSelectionEnd();
 
-    bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
-    bool const   bIsSelCharCountable = !(bIsSelectionEmpty || Sci_IsMultiOrRectangleSelection());
-    bool const   bIsMultiSelection = Sci_IsMultiSelection();
-    bool const   bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
+    bool const bIsSelectionEmpty = SciCall_IsSelectionEmpty();
+    bool const bIsMultiSelection = Sci_IsMultiOrRectangleSelection();
+    bool const bIsSelCharCountable = !bIsSelectionEmpty && !bIsMultiSelection;
+    bool const bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
 
     bool bIsUpdateNeeded = bForceRedraw;
 
@@ -8869,7 +8869,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                              || (s_iSelEnd != iSelEnd)) || (s_bIsMultiSelection != bIsMultiSelection)) {
             static WCHAR tchSelB[64] = { L'\0' };
             if (bIsSelCharCountable) {
-                const DocPos iSel = (DocPos)SendMessage(Globals.hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
+                DocPos const iSel = Flags.bHugeFileLoadState ? (iSelEnd - iSelStart) : SciCall_CountCharacters(iSelStart, iSelEnd);
                 StringCchPrintf(tchSel, COUNTOF(tchSel), DOCPOSFMTW, iSel);
                 FormatNumberStr(tchSel, COUNTOF(tchSel), 0);
                 StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
@@ -8884,9 +8884,14 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                 tchSelB[0] = L'0';
                 tchSelB[1] = L'\0';
             }
-            StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
-                            g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
 
+            if (Flags.bHugeFileLoadState) {
+                StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
+                                g_mxSBPrefix[STATUS_SELCTBYTES], tchSel, g_mxSBPostfix[STATUS_SELCTBYTES]);
+            } else {
+                StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
+                                g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
+            }
             StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
                             g_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, g_mxSBPostfix[STATUS_SELCTBYTES]);
 
