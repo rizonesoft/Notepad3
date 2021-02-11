@@ -379,7 +379,7 @@ BOOL _resample(BYTE *ibuf, LONG iw, LONG ih, BYTE *obuf, LONG ow, LONG oh, PFN_F
 
     DWORD *tb; // Temporary (intermediate buffer)
 
-    double intensity[COLOR_COMPONENTS]; // RGBA component intensities
+    double intensity[COLOR_COMPONENTS] = { 0.0, 0.0, 0.0, 0.0 }; // RGBA component intensities
 
     double center; // Center of current sampling
     double weight; // Current wight
@@ -403,7 +403,7 @@ BOOL _resample(BYTE *ibuf, LONG iw, LONG ih, BYTE *obuf, LONG ow, LONG oh, PFN_F
     ob = (DWORD *)obuf;
 
     if (ow == iw && oh == ih) { /* Aame size, no resampling */
-        CopyMemory(ob, ib, iw * ih * sizeof(COLORREF));
+        CopyMemory(ob, ib, (size_t)iw * (size_t)ih * sizeof(COLORREF));
         return TRUE;
     }
 
@@ -422,7 +422,7 @@ BOOL _resample(BYTE *ibuf, LONG iw, LONG ih, BYTE *obuf, LONG ow, LONG oh, PFN_F
 
     tb = NULL;
 
-    tb = (DWORD *)AllocMem(ow * ih * sizeof(DWORD), HEAP_ZERO_MEMORY);
+    tb = (DWORD *)AllocMem((size_t)ow * ih * sizeof(DWORD), HEAP_ZERO_MEMORY);
 
     if (!tb) {
         goto Cleanup;
@@ -440,10 +440,10 @@ BOOL _resample(BYTE *ibuf, LONG iw, LONG ih, BYTE *obuf, LONG ow, LONG oh, PFN_F
     MAX_CONTRIBS = (int)(2 * SCALED_RADIUS + 1);
 
     /* Pre-allocating all of the needed memory */
-    h_weight = (double *)AllocMem(ow * MAX_CONTRIBS * sizeof(double), HEAP_ZERO_MEMORY); /* weights */
-    h_pixel  = (LONG *)AllocMem(ow * MAX_CONTRIBS * sizeof(int), HEAP_ZERO_MEMORY);       /* the contributing pixels */
-    h_count  = (LONG *)AllocMem(ow * sizeof(int), HEAP_ZERO_MEMORY);                      /* how may contributions for the target pixel */
-    h_wsum   = (double *)AllocMem(ow * sizeof(double), HEAP_ZERO_MEMORY);                /* sum of the weights for the target pixel */
+    h_weight = (double *)AllocMem((size_t)ow * MAX_CONTRIBS * sizeof(double), HEAP_ZERO_MEMORY);  /* weights */
+    h_pixel  = (LONG *)AllocMem((size_t)ow * MAX_CONTRIBS * sizeof(int), HEAP_ZERO_MEMORY);       /* the contributing pixels */
+    h_count  = (LONG *)AllocMem((size_t)ow * sizeof(int), HEAP_ZERO_MEMORY);                      /* how may contributions for the target pixel */
+    h_wsum   = (double *)AllocMem((size_t)ow * sizeof(double), HEAP_ZERO_MEMORY);                 /* sum of the weights for the target pixel */
 
     if (!(h_weight && h_pixel || h_count || h_wsum)) {
         goto Cleanup;
@@ -526,10 +526,10 @@ BOOL _resample(BYTE *ibuf, LONG iw, LONG ih, BYTE *obuf, LONG ow, LONG oh, PFN_F
     MAX_CONTRIBS = (int)(2 * SCALED_RADIUS + 1);
 
     /* Pre-calculate filter contributions for a column */
-    v_weight = (double *)AllocMem(oh * MAX_CONTRIBS * sizeof(double), HEAP_ZERO_MEMORY); /* Weights */
-    v_pixel  = (LONG *)AllocMem(oh * MAX_CONTRIBS * sizeof(int), HEAP_ZERO_MEMORY);       /* The contributing pixels */
-    v_count  = (LONG *)AllocMem(oh * sizeof(int), HEAP_ZERO_MEMORY);                      /* How may contributions for the target pixel */
-    v_wsum   = (double *)AllocMem(oh * sizeof(double), HEAP_ZERO_MEMORY);                /* Sum of the weights for the target pixel */
+    v_weight = (double *)AllocMem((size_t)oh * MAX_CONTRIBS * sizeof(double), HEAP_ZERO_MEMORY); /* Weights */
+    v_pixel  = (LONG *)AllocMem((size_t)oh * MAX_CONTRIBS * sizeof(int), HEAP_ZERO_MEMORY);      /* The contributing pixels */
+    v_count  = (LONG *)AllocMem((size_t)oh * sizeof(int), HEAP_ZERO_MEMORY);                     /* How may contributions for the target pixel */
+    v_wsum   = (double *)AllocMem((size_t)oh * sizeof(double), HEAP_ZERO_MEMORY);                /* Sum of the weights for the target pixel */
 
     if (!(v_weight && v_pixel && v_count && v_wsum)) {
         goto Cleanup;

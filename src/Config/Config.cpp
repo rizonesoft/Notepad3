@@ -2363,10 +2363,13 @@ bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexp
 }
 
 
+#pragma warning(push)
+#pragma warning(disable : 6385 6386)
+
 bool MRU_Delete(LPMRULIST pmru, int iIndex)
 {
-    if (pmru) {
-        if (iIndex >= 0 || iIndex < pmru->iSize) {
+    if (pmru && iIndex < MRU_MAXITEMS) {
+        if (iIndex >= 0 && iIndex < pmru->iSize) {
             if (pmru->pszItems[iIndex]) {
                 LocalFree(pmru->pszItems[iIndex]);  // StrDup()
             }
@@ -2394,6 +2397,8 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
     }
     return false;
 }
+
+#pragma warning(pop)
 
 
 bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast)

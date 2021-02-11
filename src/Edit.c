@@ -585,7 +585,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
             char *s = pmch;
             char *d = ptmp;
             int eolmode = SciCall_GetEOLMode();
-            for (int i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
+            for (ptrdiff_t i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
                 if (*s == '\n' || *s == '\r') {
                     if (eolmode == SC_EOL_CR) {
                         *d++ = '\r';
@@ -610,7 +610,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
             int mlen2 = (int)(d - ptmp);
 
             FreeMem(pmch);
-            pmch = AllocMem(mlen2 + 1, HEAP_ZERO_MEMORY);
+            pmch = AllocMem((size_t)mlen2 + 1LL, HEAP_ZERO_MEMORY);
             if (pmch) {
                 StringCchCopyA(pmch, SizeOfMem(pmch), ptmp);
                 FreeMem(ptmp);
@@ -619,7 +619,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     } else {
         // count lines only
         char *s = pmch;
-        for (int i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
+        for (ptrdiff_t i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
             if (*s == '\n' || *s == '\r') {
                 if ((*s == '\r') && (i + 1 < mlen) && (*(s + 1) == '\n')) {
                     i++;
@@ -2183,6 +2183,7 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
         StringCchCopyW(wchTemplate, COUNTOF(wchTemplate), StrIsNotEmpty(pwchDateTimeStrg) ? pwchDateTimeStrg : confFormat);
 
         struct tm sst;
+        ZeroMemory(&sst, sizeof(sst));
         sst.tm_isdst = -1;
         sst.tm_sec = (int)st.wSecond;
         sst.tm_min = (int)st.wMinute;
@@ -2357,7 +2358,7 @@ void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
     FreeMem(pszTextW);
 
     if (bModified) {
-        char* pszText2 = AllocMem(cchConvW*3, HEAP_ZERO_MEMORY);
+        char *pszText2 = AllocMem((size_t)cchConvW * 3, HEAP_ZERO_MEMORY);
 
         ptrdiff_t cchConvM = WideCharToMultiByteEx(Encoding_SciCP,0,pszConvW,cchConvW,
                              pszText2,SizeOfMem(pszText2),NULL,NULL);
@@ -2472,7 +2473,7 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
     FreeMem(pszTextW);
 
     if (bModified || cchConvW != cchTextW) {
-        char* pszText2 = AllocMem(cchConvW * 3, HEAP_ZERO_MEMORY);
+        char *pszText2 = AllocMem((size_t)cchConvW * 3, HEAP_ZERO_MEMORY);
 
         ptrdiff_t cchConvM = WideCharToMultiByteEx(Encoding_SciCP,0,pszConvW,cchConvW,
                              pszText2,SizeOfMem(pszText2),NULL,NULL);
@@ -3886,7 +3887,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
 
             if (bTrailingBlanksOnly) {
                 DocPos i = iEndPos;
-                char ch;
+                char ch = '\0';
                 do {
                     ch = SciCall_GetCharAt(--i);
                 } while ((i >= iStartPos) && IsBlankCharA(ch));
@@ -4298,7 +4299,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
                 int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pchBuffer, -1, NULL, 0);
                 if (cchTextW > 0) {
                     bool ok = false;
-                    HANDLE const hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
+                    HANDLE const hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, ((size_t)cchTextW + 1LL) * sizeof(WCHAR));
                     if (hData) {
                         WCHAR* const pszClipBoard = GlobalLock(hData);
                         if (pszClipBoard) {
@@ -4819,13 +4820,13 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
         int const cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0);
         if (cchw > 1) {
-            int tabs = _iTabWidth;
+            DocLn tabs = _iTabWidth;
             ptrdiff_t const lnLen = (sizeof(WCHAR) * cchw);
             pLines[i].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
             MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, cchw);
             pLines[i].pwszSortEntry = pLines[i].pwszLine;
             if (iSortFlags & SORT_COLUMN) {
-                int col = 0;
+                DocLn col = 0;
                 while (*(pLines[i].pwszSortEntry)) {
                     if (*(pLines[i].pwszSortEntry) == L'\t') {
                         if (col + tabs <= iSortColumn) {
@@ -4876,7 +4877,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         srand((UINT)GetTickCount());
         for (DocLn i = (iLineCount - 1); i > 0; --i) {
             int j = rand() % i;
-            SORTLINE sLine;
+            SORTLINE sLine = { NULL, NULL };
             sLine.pwszLine = pLines[i].pwszLine;
             sLine.pwszSortEntry = pLines[i].pwszSortEntry;
             pLines[i] = pLines[j];
@@ -4888,7 +4889,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     DocLn const lenRes = cchTotal + (2 * iLineCount) + 1;
     char* pmszResult = AllocMem(lenRes, HEAP_ZERO_MEMORY);
     char* pmszResOffset = pmszResult;
-    char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
+    char* pmszBuf = AllocMem((size_t)ichlMax + 1LL, HEAP_ZERO_MEMORY);
 
     FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? ((iSortFlags & SORT_LEXICOGRAPH) ? _wcsicmp_s : _wcsicoll_s) :
                                 ((iSortFlags & SORT_LEXICOGRAPH) ? _wcscmp_s  : _wcscoll_s);
@@ -5137,9 +5138,9 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
     }*/
     tr.chrg.cpMax = min_cr(tr.chrg.cpMax, (DocPosCR)Sci_GetDocEndPosition());
 
-    size_t const len = (tr.chrg.cpMax - tr.chrg.cpMin);
-    char*  pszText  = AllocMem(len+1, HEAP_ZERO_MEMORY);
-    LPWSTR pszTextW = AllocMem((len+1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    size_t const len = ((size_t)tr.chrg.cpMax - (size_t)tr.chrg.cpMin);
+    char*  pszText  = AllocMem(len+1LL, HEAP_ZERO_MEMORY);
+    LPWSTR pszTextW = AllocMem((len+1LL) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     DWORD cch = 0;
     if (pszText && pszTextW) {
@@ -5904,7 +5905,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
     case WM_DPICHANGED: {
-        DPI_T dpi;
+        DPI_T dpi = { 0, 0 };
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
@@ -6104,7 +6105,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             }
 
             if (HIWORD(wParam) == CBN_CLOSEUP) {
-                LONG lSelEnd;
+                LONG lSelEnd = 0;
                 SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETEDITSEL, 0, (LPARAM)&lSelEnd);
                 SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETEDITSEL, 0, MAKELPARAM(lSelEnd, lSelEnd));
             }
@@ -7514,7 +7515,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
                                 //LL_INSERT_INORDER(pListHead, pwlNewWord, wordcmpi);
                                 LL_APPEND_ELEM(pListHead, pPrev, pwlNewWord);
                                 ++iNumWords;
-                                iWListSize += (wlen + 1);
+                                iWListSize += ((size_t)wlen + 1LL);
                                 pwlNewWord = NULL; // alloc new
                             }
                         }
@@ -7941,7 +7942,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED: {
-        DPI_T dpi;
+        DPI_T dpi = { 0, 0 };
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
@@ -8099,6 +8100,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf;
+            ZeroMemory(&lf, sizeof(LOGFONT));
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfUnderline = true;
             //lf.lfWeight    = FW_BOLD;
@@ -8123,13 +8125,14 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     return true;
 
     case WM_DPICHANGED: {
-        DPI_T dpi;
+        DPI_T dpi = { 0, 0 };
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
 
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf;
+            ZeroMemory(&lf, sizeof(LOGFONT));
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfUnderline = true;
             //lf.lfWeight    = FW_BOLD;
@@ -8203,7 +8206,7 @@ CASE_WM_CTLCOLOR_SET: {
 #endif
 
     case WM_MOUSEMOVE: {
-        POINT pt;
+        POINT pt = { 0, 0 };
         pt.x = LOWORD(lParam);
         pt.y = HIWORD(lParam);
         HWND hwndHover = ChildWindowFromPoint(hwnd,pt);
@@ -8227,7 +8230,7 @@ CASE_WM_CTLCOLOR_SET: {
     break;
 
     case WM_LBUTTONDOWN: {
-        POINT pt;
+        POINT pt = { 0, 0 };
         pt.x = LOWORD(lParam);
         pt.y = HIWORD(lParam);
         HWND hwndHover = ChildWindowFromPoint(hwnd,pt);
@@ -8301,6 +8304,7 @@ bool EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2)
 
     INT_PTR iResult;
     MODLINESDATA data;
+    ZeroMemory(&data, sizeof(MODLINESDATA));
     data.pwsz1 = pwsz1;
     data.pwsz2 = pwsz2;
 
@@ -8533,6 +8537,7 @@ bool EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
 
     INT_PTR iResult;
     ENCLOSESELDATA data;
+    ZeroMemory(&data, sizeof(ENCLOSESELDATA));
     data.pwsz1 = pwszOpen;
     data.pwsz2 = pwszClose;
 
@@ -8595,7 +8600,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
         pdata->repeat = 1;
         SetDlgItemInt(hwnd, 102, pdata->repeat, FALSE);
         SetFocus(GetDlgItem(hwnd,100));
-        PostMessage(GetDlgItem(hwnd,100),EM_SETSEL,1,(int)(StringCchLen(wchOpenTagStrg,0)-1));
+        PostMessageW(GetDlgItem(hwnd,100),EM_SETSEL,1,(LPARAM)(StringCchLen(wchOpenTagStrg,0)-1));
         CenterDlgInParent(hwnd, NULL);
     }
     return false;
@@ -8719,8 +8724,9 @@ CASE_WM_CTLCOLOR_SET:
 bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose, UINT* pRepeat)
 {
 
-    INT_PTR iResult;
+    INT_PTR iResult = 0;
     TAGSDATA data;
+    ZeroMemory(&data, sizeof(TAGSDATA));
     data.pwsz1 = pwszOpen;
     data.pwsz2 = pwszClose;
     data.repeat = 1;
@@ -9250,7 +9256,7 @@ void EditFoldClick(DocLn ln, int mode)
         DocLn ln;
         int mode;
         DWORD dwTickCount;
-    } prev;
+    } prev = { 0, 0, 0 };
 
     bool fGotoFoldPoint = mode & FOLD_SIBLINGS;
 

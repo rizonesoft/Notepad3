@@ -91,14 +91,14 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
             if (hParentWnd) {
 
                 WININFO const winInfo = GetMyWindowPlacement(hParentWnd, NULL);
-                RECT rcParent;
+                RECT rcParent = { 0, 0, 0, 0 };
                 rcParent.left = winInfo.x;
                 rcParent.top = winInfo.y;
                 rcParent.right = winInfo.x + winInfo.cx;
                 rcParent.bottom = winInfo.y + winInfo.cy;
 
                 // set new coordinates
-                RECT rcDlg;
+                RECT rcDlg = { 0, 0, 0, 0 };
                 rcDlg.left   = pCreateStruct->x;
                 rcDlg.top    = pCreateStruct->y;
                 rcDlg.right  = pCreateStruct->x + pCreateStruct->cx;
@@ -431,6 +431,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     }
 
     INFOBOXLNG msgBox;
+    ZeroMemory(&msgBox, sizeof(INFOBOXLNG));
     msgBox.uType = uType;
     msgBox.lpstrMessage = AllocMem((COUNTOF(wchMessage)+1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
@@ -854,6 +855,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf;
+            ZeroMemory(&lf, sizeof(LOGFONT));
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
             lf.lfWeight = FW_BOLD;
@@ -921,6 +923,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf;
+            ZeroMemory(&lf, sizeof(LOGFONT));
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
             lf.lfWeight = FW_BOLD;
@@ -1026,6 +1029,7 @@ CASE_WM_CTLCOLOR_SET:
             if (penLink->msg == WM_LBUTTONDOWN) {
                 WCHAR hLink[256] = { L'\0' };
                 TEXTRANGE txtRng;
+                ZeroMemory(&txtRng, sizeof(TEXTRANGE));
                 txtRng.chrg = penLink->chrg;
                 txtRng.lpstrText = hLink;
                 SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETTEXTRANGE, 0, (LPARAM)&txtRng);
@@ -1535,6 +1539,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     bool result = false;
 
     DLITEM dliOpenWith;
+    ZeroMemory(&dliOpenWith, sizeof(DLITEM));
     dliOpenWith.mask = DLI_FILENAME;
 
     if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
@@ -2200,7 +2205,7 @@ CASE_WM_CTLCOLOR_SET:
             case BCN_DROPDOWN: {
                 const NMBCDROPDOWN* pDropDown = (NMBCDROPDOWN*)lParam;
                 // Get screen coordinates of the button.
-                POINT pt;
+                POINT pt = { 0, 0 };
                 pt.x = pDropDown->rcButton.left;
                 pt.y = pDropDown->rcButton.bottom;
                 ClientToScreen(pDropDown->hdr.hwndFrom, &pt);
@@ -3389,10 +3394,9 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool SelectDefEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
-
     INT_PTR iResult;
     ENCODEDLG dd;
-
+    ZeroMemory(&dd, sizeof(ENCODEDLG));
     dd.bRecodeOnly = false;
     dd.idEncoding = *pidREncoding;
 
@@ -3592,7 +3596,7 @@ bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 
     INT_PTR iResult;
     ENCODEDLG dd;
-
+    ZeroMemory(&dd, sizeof(ENCODEDLG));
     dd.bRecodeOnly = false;
     dd.idEncoding = *pidREncoding;
     dd.cxDlg = Settings.EncodingDlgSizeX;
@@ -3623,9 +3627,9 @@ bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
 
-    INT_PTR iResult;
+    INT_PTR iResult = 0;
     ENCODEDLG dd;
-
+    ZeroMemory(&dd, sizeof(ENCODEDLG));
     dd.bRecodeOnly = true;
     dd.idEncoding = *pidREncoding;
     dd.cxDlg = Settings.RecodeDlgSizeX;
@@ -4110,6 +4114,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
     }
 
     WININFO wi;
+    ZeroMemory(&wi, sizeof(WININFO));
     wi.x = wndpl.rcNormalPosition.left;
     wi.y = wndpl.rcNormalPosition.top;
     wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
@@ -4737,6 +4742,7 @@ POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent)
 {
     HMONITOR const hMonitor = MonitorFromRect(rcParent, MONITOR_DEFAULTTONEAREST);
     MONITORINFO mi;
+    ZeroMemory(&mi, sizeof(MONITORINFO));
     mi.cbSize = sizeof(MONITORINFO);
     GetMonitorInfo(hMonitor, &mi);
 
@@ -4748,7 +4754,7 @@ POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent)
     int const x = rcParent->left + max_i(20, ((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left)) / 2);
     int const y = rcParent->top + max_i(20, ((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top)) / 2);
 
-    POINT ptRet;
+    POINT ptRet = { 0, 0 };
     ptRet.x = clampi(x, xMin, xMax);
     ptRet.y = clampi(y, yMin, yMax);
     return ptRet;
@@ -4845,6 +4851,7 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
     HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
 
     MONITORINFO mi;
+    ZeroMemory(&mi, sizeof(MONITORINFO));
     mi.cbSize = sizeof(mi);
     GetMonitorInfo(hMonitor, &mi);
 
@@ -4900,6 +4907,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
     const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
 
     WRCT_T wrc;
+    ZeroMemory(&wrc, sizeof(WRCT_T));
     wrc.left = rc.left;
     wrc.top = rc.top;
     wrc.right = rc.right;
@@ -5159,8 +5167,10 @@ void MakeBitmapButton(HWND hwnd, int nCtrlId, WORD uBmpId, int width, int height
     hBmp         = ResampleImageBitmap(hwnd, hBmp, width, height);
 
     BITMAP bmp;
+    ZeroMemory(&bmp, sizeof(BITMAP));
     GetObject(hBmp, sizeof(BITMAP), &bmp);
     BUTTON_IMAGELIST bi;
+    ZeroMemory(&bi, sizeof(BUTTON_IMAGELIST));
     bi.himl = ImageList_Create(bmp.bmWidth, bmp.bmHeight, ILC_COLOR32 | ILC_MASK, 1, 0);
     ImageList_AddMasked(bi.himl, hBmp, CLR_DEFAULT);
 
@@ -5180,9 +5190,10 @@ void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF c
 {
     HWND const hwndCtl = GetDlgItem(hwnd, nCtrlId);
     HIMAGELIST himlOld = NULL;
-    COLORMAP colormap[2];
+    COLORMAP colormap[2] = { {0,0}, {0,0} };
 
     BUTTON_IMAGELIST bi;
+    ZeroMemory(&bi, sizeof(BUTTON_IMAGELIST));
     if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi)) {
         himlOld = bi.himl;
     }
@@ -5232,7 +5243,8 @@ void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 {
     HWND const hwndCtl = GetDlgItem(hwnd, nCtrlId);
     BUTTON_IMAGELIST bi;
-    if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)& bi)) {
+    ZeroMemory(&bi, sizeof(BUTTON_IMAGELIST));
+    if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi)) {
         ImageList_Destroy(bi.himl);
     }
 }
@@ -5324,6 +5336,7 @@ int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButt
 
     for (int i = 0; i < cnt; i++) {
         TBBUTTON tbb;
+        ZeroMemory(&tbb, sizeof(TBBUTTON));
         SendMessage(hwnd, TB_GETBUTTON, (WPARAM)i, (LPARAM)&tbb);
         StringCchPrintf(tchItem, COUNTOF(tchItem), L"%i ",
                         (tbb.idCommand == 0) ? 0 : tbb.idCommand - cmdBase + 1);
@@ -5382,7 +5395,7 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
 DPI_T GetCurrentPPI(HWND hwnd)
 {
     HDC const hDC = GetDC(hwnd);
-    DPI_T ppi;
+    DPI_T ppi = { 0, 0 };
     ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
     ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
     ReleaseDC(hwnd, hDC);
@@ -5724,7 +5737,7 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 
         if (!mii.cbSize) { mii.cbSize = sizeof(MENUITEMINFO); }
         if (!mii.fMask)  { mii.fMask = MIIM_BITMAP; }
-        if (!mii.hbmpItem) { DeleteObject(mii.hbmpItem); }
+        if (mii.hbmpItem) { DeleteObject(mii.hbmpItem); }
 
         mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, scx, scy);
 
@@ -5775,6 +5788,7 @@ HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
 {
     if (hbmp) {
         BITMAP bmp;
+        ZeroMemory(&bmp, sizeof(BITMAP));
         if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
             if ((width <= 0) || (height <= 0)) {
                 DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);

@@ -46,6 +46,9 @@
 #include "Sci_Position.h"
 #include "Scintilla.h"
 
+// no Analyze warning "prefer: enum class"
+#pragma warning(disable : 26812)
+
 //
 // TODO:
 // SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)

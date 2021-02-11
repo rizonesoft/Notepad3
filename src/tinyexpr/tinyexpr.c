@@ -73,6 +73,8 @@ typedef struct state {
     int lookup_len;
 } state;
 
+#define TE_INIT_STATE { NULL, NULL, 0, 0.0, NULL, NULL, 0 }
+
 #if defined(TINYEXPR_USE_STATIC_MEMORY)
     static te_expr te_expr_array[TINYEXPR_MAX_EXPRESSIONS] = {0};
     static bool te_expr_isAllocated[TINYEXPR_MAX_EXPRESSIONS] = {false};
@@ -1082,7 +1084,7 @@ static void optimize(te_expr *n) {
 
 
 te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, te_xint_t *error) {
-    state s;
+    state s = TE_INIT_STATE;
     s.start = s.next = expression;
     s.lookup = variables;
     s.lookup_len = var_count;
