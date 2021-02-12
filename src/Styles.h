@@ -25,6 +25,7 @@
 #define MARGIN_SCI_LINENUM 0
 #define MARGIN_SCI_BOOKMRK 1
 #define MARGIN_SCI_FOLDING 2
+#define NUMBER_OF_MARGINS  3
 
 // Number of Lexers in pLexArray
 #define NUMLEXERS 53

@@ -600,9 +600,8 @@ class ScintillaWin final :
 	sptr_t GetTextLength() const noexcept;
 	sptr_t GetText(uptr_t wParam, sptr_t lParam) const;
 	Window::Cursor SCICALL ContextCursor(Point pt);
-#if SCI_EnablePopupMenu
 	sptr_t ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
-#endif
+
 	void SizeWindow();
 	sptr_t MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 	sptr_t KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
@@ -795,6 +794,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) noexcept {
 		// Create a Direct2D render target.
 #if 1
 		D2D1_RENDER_TARGET_PROPERTIES drtp;
+		ZeroMemory(&drtp, sizeof(D2D1_RENDER_TARGET_PROPERTIES));
 		drtp.type = D2D1_RENDER_TARGET_TYPE_DEFAULT;
 		drtp.pixelFormat.format = DXGI_FORMAT_UNKNOWN;
 		drtp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_UNKNOWN;
@@ -820,6 +820,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) noexcept {
 
 		} else {
 			D2D1_HWND_RENDER_TARGET_PROPERTIES dhrtp;
+			ZeroMemory(&dhrtp, sizeof(D2D1_HWND_RENDER_TARGET_PROPERTIES));
 			dhrtp.hwnd = hw;
 			dhrtp.pixelSize = size;
 			dhrtp.presentOptions = (technology == SC_TECHNOLOGY_DIRECTWRITERETAIN) ?
@@ -1592,13 +1593,13 @@ Window::Cursor ScintillaWin::ContextCursor(Point pt) {
 	return Window::Cursor::cursorText;
 }
 
-#if SCI_EnablePopupMenu
 sptr_t ScintillaWin::ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	Point pt = PointFromLParam(lParam);
 	POINT rpt = POINTFromPoint(pt);
 	::ScreenToClient(MainHWND(), &rpt);
 	const Point ptClient = PointFromPOINT(rpt);
 	if (ShouldDisplayPopup(ptClient)) {
+#if SCI_EnablePopupMenu
 		if ((pt.x == -1) && (pt.y == -1)) {
 			// Caused by keyboard so display menu near caret
 			pt = PointMainCaret();
@@ -1608,10 +1609,16 @@ sptr_t ScintillaWin::ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_
 		}
 		ContextMenu(pt);
 		return 0;
-	}
-	return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
-}
+#else
+		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 #endif
+	}
+#if SCI_EnablePopupMenu
+	return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+#else
+	return 0;
+#endif
+}
 
 void ScintillaWin::SizeWindow() {
 #if defined(USE_D2D)
@@ -2303,11 +2310,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		break;
 
 		case WM_CONTEXTMENU:
-#if SCI_EnablePopupMenu
 			return ShowContextMenu(iMessage, wParam, lParam);
-#else
-			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
-#endif
 
 		case WM_ERASEBKGND:
 			return 1;   // Avoid any background erasure as whole window painted.

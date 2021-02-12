@@ -1933,9 +1933,10 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
     SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
 
+    SendMessage(hwndEditCtrl, SCI_SETMARGINS, NUMBER_OF_MARGINS, 0);
     SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
     SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
-    SendMessage(hwndEditCtrl, SCI_USEPOPUP, false, 0);
+    SendMessage(hwndEditCtrl, SCI_USEPOPUP, SC_POPUP_TEXT, 0);
     SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
     SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
     SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
@@ -2085,8 +2086,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     // word delimiter handling
     EditInitWordDelimiter(hwndEditCtrl);
     EditSetAccelWordNav(hwndEditCtrl, Settings.AccelWordNavigation);
-
-    UpdateMarginWidth();
 }
 
 
@@ -2395,6 +2394,7 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
     int height = 16;
     if (hbmp) {
         BITMAP bmp;
+        ZeroMemory(&bmp, sizeof(BITMAP));
         GetObject(hbmp, sizeof(BITMAP), &bmp);
         height = bmp.bmHeight;
         bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
@@ -2417,6 +2417,7 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
 static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 {
     BITMAP bmp;
+    ZeroMemory(&bmp, sizeof(BITMAP));
     GetObject(hBmp, sizeof(BITMAP), &bmp);
 
     int const mod = bmp.bmWidth % NUMTOOLBITMAPS;
@@ -2678,12 +2679,13 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 #endif
 
     REBARINFO rbi;
+    ZeroMemory(&rbi, sizeof(REBARINFO));
     rbi.cbSize = sizeof(REBARINFO);
     rbi.fMask  = 0;
     rbi.himl   = (HIMAGELIST)NULL;
     SendMessage(Globals.hwndRebar, RB_SETBARINFO, 0, (LPARAM)&rbi);
 
-    RECT rc;
+    RECT rc = {0, 0, 0, 0 };
     SendMessage(Globals.hwndToolbar, TB_GETITEMRECT, 0, (LPARAM)&rc);
     //SendMessage(Globals.hwndToolbar,TB_SETINDENT,2,0);
 
@@ -3227,6 +3229,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     bool const bMargin = (SCN_MARGINRIGHTCLICK == umsg);
     int const nID = bMargin ? IDC_MARGIN : GetDlgCtrlID((HWND)wParam);
+
     if ((nID != IDC_MARGIN) && (nID != IDC_EDIT) && (nID != IDC_STATUSBAR) && (nID != IDC_REBAR) && (nID != IDC_TOOLBAR)) {
         return DefWindowProc(hwnd, umsg, wParam, lParam);
     }
@@ -3240,58 +3243,56 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     HMENU const hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
     //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
 
-    POINT pt;
-    pt.x = (int)(short)LOWORD(lParam);
-    pt.y = (int)(short)HIWORD(lParam);
+    POINT pt = { 0, 0 };
+    pt.x = (int)((short)LOWORD(bMargin ? wParam : lParam));
+    pt.y = (int)((short)HIWORD(bMargin ? wParam : lParam));
+    #define IS_CTX_PT_VALID(P) (((P).x != -1 || (P).y != -1))
 
-    int imenu = 0;
-
-    // modify configured items
-    HMENU const hStdCtxMenu = GetSubMenu(hMenuCtx, imenu);
-    if (StrIsNotEmpty(Settings2.WebTmpl1MenuName)) {
-        ModifyMenu(hStdCtxMenu, CMD_WEBACTION1, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION1, Settings2.WebTmpl1MenuName);
-    }
-    if (StrIsNotEmpty(Settings2.WebTmpl2MenuName)) {
-        ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
-    }
+    typedef enum { MNU_NONE = -1, MNU_EDIT = 0, MNU_BAR = 1, MNU_MARGIN = 2, MNU_TRAY = 3 } mnu_t;
+    mnu_t imenu = MNU_NONE;
 
     switch (nID) {
     case IDC_EDIT: {
-        if (SciCall_IsSelectionEmpty() && (pt.x != -1) && (pt.y != -1)) {
-            POINT ptc;
-            ptc.x = pt.x;
-            ptc.y = pt.y;
-            ScreenToClient(Globals.hwndEdit, &ptc);
-            //~SciCall_GotoPos(SciCall_PositionFromPoint(ptc.x, ptc.y));
-        }
 
-        if (pt.x == -1 && pt.y == -1) {
+        if (!IS_CTX_PT_VALID(pt)) {
+            // caused by keypoard near caret pos
             DocPos const iCurrentPos = SciCall_GetCurrentPos();
             pt.x = (LONG)SciCall_PointXFromPosition(iCurrentPos);
             pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
-            ClientToScreen(Globals.hwndEdit, &pt);
+        } else {
+            ScreenToClient(Globals.hwndEdit, &pt);
         }
 
-        DocLn const curLn = Sci_GetCurrentLineNumber();
+        DocPos const iCurrentPos = SciCall_PositionFromPoint(pt.x, pt.y);
+        DocLn const curLn = SciCall_LineFromPosition(iCurrentPos);
         int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
-        imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? 2 : 0;
+        imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? MNU_MARGIN : MNU_EDIT;
+
+        if (imenu == MNU_EDIT) {
+            // modify configured items
+            HMENU const hStdCtxMenu = GetSubMenu(hMenuCtx, imenu);
+            if (StrIsNotEmpty(Settings2.WebTmpl1MenuName)) {
+                ModifyMenu(hStdCtxMenu, CMD_WEBACTION1, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION1, Settings2.WebTmpl1MenuName);
+            }
+            if (StrIsNotEmpty(Settings2.WebTmpl2MenuName)) {
+                ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
+            }
+        }
+        // back to screen coordinates for menu display
+        ClientToScreen(Globals.hwndEdit, &pt);
     }
     break;
 
     case IDC_TOOLBAR:
     case IDC_STATUSBAR:
     case IDC_REBAR: {
-        if ((pt.x == -1) && (pt.y == -1)) {
-            GetCursorPos(&pt);
-        }
-        imenu = 1;
+        if (!IS_CTX_PT_VALID(pt)) { GetCursorPos(&pt); }
+        imenu = MNU_BAR;
     }
     break;
 
     case IDC_MARGIN: {
-        if ((pt.x == -1) && (pt.y == -1)) {
-            GetCursorPos(&pt);
-        }
+        if (!IS_CTX_PT_VALID(pt)) { GetCursorPos(&pt); }
 
         DocLn const curLn = Sci_GetCurrentLineNumber();
         int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
@@ -3300,30 +3301,27 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
         EnableCmd(hMenuCtx, IDM_EDIT_DELETE_MARKED, bitmask);
 
-        //DocLn const curLn = Sci_GetCurrentLineNumber();
-        const SCNotification* const scn = (SCNotification*)wParam;
+        const SCNotification* const scn = (SCNotification*)lParam;
         switch (scn->margin) {
         case MARGIN_SCI_FOLDING:
-        //[[fallthrough]];
-        case MARGIN_SCI_LINENUM:
-        //[[fallthrough]];
         case MARGIN_SCI_BOOKMRK:
-            imenu = 2;
+        case MARGIN_SCI_LINENUM:
+            imenu = MNU_MARGIN;
             break;
         default:
-            imenu = 0;
             break;
         }
     }
     break;
     }
 
-    TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu),
-                     TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
-
+    if (imenu != MNU_NONE) {
+        TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu),
+            TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
+    }
     DestroyMenu(hMenuCtx);
 
-    return (bMargin ? !0 : 0);
+    return (imenu != MNU_NONE) ? !0 : 0;
 }
 
 //=============================================================================
@@ -7336,8 +7334,10 @@ static bool  _IsIMEOpenInNoNativeMode()
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
-inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* const scn)
+inline static LRESULT _MsgNotifyLean(const SCNotification* const scn)
 {
+    const LPNMHDR pnmh = (LPNMHDR)scn;
+
     static int _mod_insdel_token = -1;
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
@@ -7401,9 +7401,11 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
-static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
+static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 {
-    static int  _s_indic_click_modifiers = SCMOD_NORM;
+    const LPNMHDR pnmh = (LPNMHDR)scn;
+
+    static int _s_indic_click_modifiers = SCMOD_NORM;
     static int _mod_insdel_token         = -1;
 
     switch (pnmh->code) {
@@ -7660,16 +7662,16 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
             break;
         case MARGIN_SCI_LINENUM:
             //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
-            break;
+            // fallthrough
         default:
-            break;
+            return 0;
         }
         break;
 
 
     case SCN_MARGINRIGHTCLICK: {
-        POINT pt = {-1,-1};
-        MsgContextMenu(hwnd, SCN_MARGINRIGHTCLICK, (WPARAM)scn, MAKELPARAM(pt.x,pt.y));
+        POINT pt = { -1, -1 };
+        MsgContextMenu(hwnd, SCN_MARGINRIGHTCLICK, MAKEWPARAM(pt.x, pt.y), (LPARAM)scn);
     }
     break;
 
@@ -7748,17 +7750,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 #define GUARD_RETURN(res) { _guard = false; return(res); }
 
-    LPNMHDR const pnmh = (LPNMHDR)lParam;
     const SCNotification* const scn = (SCNotification*)lParam;
 
     if (!CheckNotifyChangeEvent()) {
-        LRESULT const res = _MsgNotifyLean(pnmh, scn);
+        LRESULT const res = _MsgNotifyLean(scn);
         GUARD_RETURN(res);
     }
 
-    switch(pnmh->idFrom) {
+    const LPNMHDR pnmh = (LPNMHDR)scn;
+
+    switch (pnmh->idFrom) {
+
     case IDC_EDIT: {
-        LRESULT const res = _MsgNotifyFromEdit(hwnd, pnmh, scn);
+        LRESULT const res = _MsgNotifyFromEdit(hwnd, scn);
         GUARD_RETURN(res);
     }
 
@@ -8948,8 +8952,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
         if (Settings.EvalTinyExprOnSelection) {
             if (bIsSelCharCountable) {
-                static char chSeBuf[LARGE_BUFFER];
-                static WCHAR wchSelBuf[LARGE_BUFFER];
+                static char chSeBuf[LARGE_BUFFER] = { '\0' };
+                static WCHAR wchSelBuf[LARGE_BUFFER] = { L'\0' };
                 DocPos const iSelSize = SciCall_GetSelText(NULL);
                 if (iSelSize < COUNTOF(chSeBuf)) { // should be fast !
                     SciCall_GetSelText(chSeBuf);
@@ -9267,6 +9271,7 @@ void UpdateSaveSettingsCmds()
 void UpdateUI()
 {
     struct SCNotification scn;
+    ZeroMemory(&scn, sizeof(struct SCNotification));
     scn.nmhdr.hwndFrom = Globals.hwndEdit;
     scn.nmhdr.idFrom = IDC_EDIT;
     scn.nmhdr.code = SCN_UPDATEUI;
@@ -10628,6 +10633,7 @@ bool ActivatePrevInst()
 {
     HWND hwnd = NULL;
     COPYDATASTRUCT cds;
+    ZeroMemory(&cds, sizeof(COPYDATASTRUCT));
 
     if ((!Flags.bReuseWindow && !Flags.bSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard) {
         return false;
@@ -10872,6 +10878,7 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
     }
 
     STARTUPINFO si;
+    ZeroMemory(&si, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
     GetStartupInfo(&si);
 
