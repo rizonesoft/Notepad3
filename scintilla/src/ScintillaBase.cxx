@@ -512,13 +512,13 @@ void ScintillaBase::CallTipClick() {
 	NotifyParent(scn);
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#if 0
 bool ScintillaBase::ShouldDisplayPopup(Point ptInWindowCoordinates) const {
 	return (displayPopupMenu == SC_POPUP_ALL ||
 		(displayPopupMenu == SC_POPUP_TEXT && !PointInSelMargin(ptInWindowCoordinates)));
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if SCI_EnablePopupMenu
 void ScintillaBase::ContextMenu(Point pt) {
 	if (displayPopupMenu) {
 		const bool writable = !WndProc(SCI_GETREADONLY, 0, 0);

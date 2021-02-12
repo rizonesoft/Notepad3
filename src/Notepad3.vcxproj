@@ -9,6 +9,14 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Dbg|Win32">
+      <Configuration>Release_Dbg</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Dbg|x64">
+      <Configuration>Release_Dbg</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -43,6 +51,15 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'" Label="Configuration">
+    <CharacterSet>Unicode</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>Application</ConfigurationType>
@@ -61,6 +78,15 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'" Label="Configuration">
+    <CharacterSet>Unicode</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -70,10 +96,16 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -86,7 +118,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>true</GenerateManifest>
     <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
+    <GenerateManifest>true</GenerateManifest>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -98,7 +136,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <GenerateManifest>true</GenerateManifest>
     <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
+    <GenerateManifest>true</GenerateManifest>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,7 +159,8 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <TreatWarningAsError>true</TreatWarningAsError>
       <StringPooling>true</StringPooling>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>
+      </EnableEnhancedInstructionSet>
       <FloatingPointModel>Precise</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -187,6 +232,7 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <ExceptionHandling>Async</ExceptionHandling>
+      <EnableEnhancedInstructionSet />
     </ClCompile>
     <Link>
       <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -255,11 +301,15 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>
+      </EnableEnhancedInstructionSet>
+      <OmitFramePointers>true</OmitFramePointers>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
       <SetChecksum>true</SetChecksum>
@@ -271,6 +321,85 @@
       <Profile>true</Profile>
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkErrorReporting>NoErrorReport</LinkErrorReporting>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
+    </PreBuildEvent>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;BOOKMARK_EDITION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Manifest>
+      <InputResourceManifests>
+      </InputResourceManifests>
+    </Manifest>
+    <Manifest>
+      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
+    </ManifestResourceCompile>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Merge MUIs</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla;..\lexilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <StringPooling>true</StringPooling>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <EnableEnhancedInstructionSet>
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <MergeSections>.rdata=.text</MergeSections>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SetChecksum>true</SetChecksum>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <ManifestFile>
+      </ManifestFile>
+      <Profile>true</Profile>
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
+      <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -328,10 +457,14 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableEnhancedInstructionSet />
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
       <SetChecksum>true</SetChecksum>
@@ -343,6 +476,84 @@
       <Profile>true</Profile>
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkErrorReporting>NoErrorReport</LinkErrorReporting>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
+    </PreBuildEvent>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WIN64;BOOKMARK_EDITION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Manifest>
+      <InputResourceManifests>
+      </InputResourceManifests>
+    </Manifest>
+    <Manifest>
+      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
+    </ManifestResourceCompile>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Merge MUIs</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla;..\lexilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <StringPooling>true</StringPooling>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <EnableEnhancedInstructionSet />
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <MergeSections>.rdata=.text</MergeSections>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SetChecksum>true</SetChecksum>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <ManifestFile>
+      </ManifestFile>
+      <Profile>true</Profile>
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
+      <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -432,8 +643,10 @@
     <ClCompile Include="uchardet\uchardet\src\nsGB2312Prober.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="uchardet\uchardet\src\nsHebrewProber.cpp" />
     <ClCompile Include="uchardet\uchardet\src\nsLatin1Prober.cpp" />
@@ -448,8 +661,10 @@
     <ClCompile Include="AccelKeys.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="DarkMode\DarkMode.cpp" />
@@ -462,9 +677,13 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Helpers.c" />
@@ -543,8 +762,10 @@
     <ClInclude Include="uchardet\uchardet\src\nsGB2312Prober.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="uchardet\uchardet\src\nsHebrewProber.h" />
     <ClInclude Include="uchardet\uchardet\src\nsLatin1Prober.h" />
@@ -566,8 +787,10 @@
     <ClInclude Include="AccelKeys.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Config\Config.h" />
     <ClInclude Include="Config\SimpleIni.h" />
@@ -617,8 +840,10 @@
     <ResourceCompile Include="..\language\common_res.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">true</ExcludedFromBuild>
     </ResourceCompile>
     <ResourceCompile Include="Notepad3.rc" />
   </ItemGroup>
@@ -642,9 +867,13 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
       </ExcludedFromBuild>
     </Text>
   </ItemGroup>

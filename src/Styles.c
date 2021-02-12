@@ -807,7 +807,7 @@ void Style_ToIniSection(bool bForceAll)
     }
     // ----------------------------------------------------------------
 
-    WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
+    WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
         LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
@@ -1853,7 +1853,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
     }
     SciCall_StyleSetBack(STYLE_LINENUMBER, clrBack);
     SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
-    SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); // allow selection drag
+    SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); /// false: allow selection drag
     //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
     COLORREF clrFore;
@@ -4124,8 +4124,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static PEDITLEXER pCurrentLexer = NULL;
     static PEDITSTYLE pCurrentStyle = NULL;
     static int        iCurStyleIdx  = -1;
-    static HBRUSH     hbrFore;
-    static HBRUSH     hbrBack;
+    static HBRUSH     hbrFore = { 0 };
+    static HBRUSH     hbrBack = { 0 };
     static bool       bIsStyleSelected = false;
     static bool       bWarnedNoIniFile = false;
     static WCHAR*     Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
@@ -4251,6 +4251,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf;
+            ZeroMemory(&lf, sizeof(LOGFONT));
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
             lf.lfWeight = FW_BOLD;
@@ -4266,7 +4267,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     return TRUE;
 
     case WM_DPICHANGED: {
-        DPI_T dpi;
+        DPI_T dpi = { 0, 0 };
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
 
@@ -4282,6 +4283,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf;
+            ZeroMemory(&lf, sizeof(LOGFONT));
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
             lf.lfWeight = FW_BOLD;
@@ -4539,7 +4541,9 @@ CASE_WM_CTLCOLOR_SET:
 
     case WM_MOUSEMOVE: {
         HTREEITEM     htiTarget;
+        ZeroMemory(&htiTarget, sizeof(HTREEITEM));
         TVHITTESTINFO tvht;
+        ZeroMemory(&tvht, sizeof(TVHITTESTINFO));
 
         if (fDragging && bIsStyleSelected) {
             LONG xCur = (LONG)(short)LOWORD(lParam);
@@ -4910,6 +4914,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         // Select current lexer
         int lvItems = ListView_GetItemCount(hwndLV);
         LVITEM lvi;
+        ZeroMemory(&lvi, sizeof(LVITEM));
         lvi.mask = LVIF_PARAM;
         for (int i = 0; i < lvItems; i++) {
             lvi.iItem = i;
@@ -4934,7 +4939,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     case WM_DPICHANGED: {
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
 
-        DPI_T dpi;
+        DPI_T dpi = { 0, 0 };
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
 

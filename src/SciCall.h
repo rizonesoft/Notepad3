@@ -159,6 +159,7 @@ DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, line)
 
 DeclareSciCallR2(PositionFromPoint, POSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
+DeclareSciCallR2(PositionFromPointClose, POSITIONFROMPOINTCLOSE, DocPos, int, pt_x, int, pt_y)
 DeclareSciCallR2(CharPositionFromPoint, CHARPOSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
 DeclareSciCallR2(CharPositionFromPointClose, CHARPOSITIONFROMPOINTCLOSE, DocPos, int, pt_x, int, pt_y)
 DeclareSciCallR01(PointXFromPosition, POINTXFROMPOSITION, int, DocPos, position)
