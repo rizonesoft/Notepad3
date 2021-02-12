@@ -543,14 +543,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Zeige Menüleiste",                       IDM_VIEW_MENUBAR
-        MENUITEM "Zeige Werkzeugleiste",                   IDM_VIEW_TOOLBAR
-        MENUITEM "Zeige Statusleiste",                     IDM_VIEW_STATUSBAR
+        MENUITEM "Zeige Menüleiste",                           IDM_VIEW_MENUBAR
+        MENUITEM "Zeige Werkzeugleiste",                       IDM_VIEW_TOOLBAR
+        MENUITEM "Zeige Statusleiste",                         IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "Lade andere Werkzeugleiste...",          IDM_VIEW_LOADTHEMETB
-        MENUITEM "Werkzeugleiste anpassen...",             IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Werkzeugleisten Umschalten",             IDM_VIEW_TOGGLETB
-        MENUITEM "DPI Skalierung der Werkzeugleiste",      IDM_VIEW_DPISCALETB
+        MENUITEM "Lade andere Werkzeugleiste...",              IDM_VIEW_LOADTHEMETB
+        MENUITEM "Werkzeugleiste anpassen...",                 IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Werkzeugleisten Umschalten",                 IDM_VIEW_TOGGLETB
+        MENUITEM "DPI Skalierung der Werkzeugleiste",          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
