@@ -12,12 +12,10 @@ Rizonesoft Notepad3 --- CHANGELOG ---
 --------------------------------------------------------
 LEGEND:
 --------------------------------------------------------
-LEGEND:
---------------------------------------------------------
 1) NEW: (Added, Feature, Optimize)
-2) CHANGES:
-3) FIXES: (Debug)
-4) REMOVED:
+2) CHANGES: (Change, Enhancement)
+3) FIXES: (Correction, Debug)
+4) REMOVED: (Obsolete, Deprecated)
 5) TRANSLATIONS (MUI): (New Language)
 
 --------------------------------------------------------
@@ -34,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.212.(build_#) (2021-02-12)
+Current BETA/RC Version 5.21.213.(build_#) (2021-02-13)
 ========================================================
 
 --------------------------------------------------------
@@ -69,6 +67,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.213.1]- JSON5 enhancements to Scintilla's original JSON-Lexer.
 [.211.1]- Statusbar Selection-Info: switch to byte (instead of character) counting for huge files.
 [.205.1]- Revert minor insert date/time format changes.
 [.205.1]- Use user locale for date/time insert format: insert date before time & tab separated.
