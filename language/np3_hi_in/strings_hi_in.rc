@@ -251,7 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "भाषा (&L)"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "दिनांक प्रारूप को भाषा अनुसार स्थापित करें (&D)"
     IDS_MUI_MENU_THEMES     "स्कीम संग्रह (&S)"
     IDM_THEMES_DEFAULT      "फैक्ट्री डिफ़ॉल्ट (&F)"
     IDM_THEMES_FILE_ITEM    "सामान्य (&S)"
@@ -262,8 +262,8 @@ BEGIN
                             "ढूँढी हुई फ़ाइलों की जानकारी हटाएं"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "बदलाव की जानकारी हटाएं"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "मिलान के चारों ओर ऊपर से लपेटें  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "मिलान के चारों ओर नीचे से लपेटें  %s"
 END
 
 STRINGTABLE
