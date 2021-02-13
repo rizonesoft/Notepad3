@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.211.(build_#) (2021-02-11)
+Current BETA/RC Version 5.21.212.(build_#) (2021-02-12)
 ========================================================
 
 --------------------------------------------------------
@@ -112,6 +112,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.212.1]- Context-Menu Handling in Release Mode.
 [.211.1]- Burndown some VS Analyze Mode Infos/Warnings.
 [.205.1]- Wildcard search: unintentional wrap around.
 [.125.1]- AHKL lexer: visual brace matching mix-ups.
