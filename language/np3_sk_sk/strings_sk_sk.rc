@@ -251,7 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Jazyk prostredia"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "Definovať jazyk a formát dátumu"
     IDS_MUI_MENU_THEMES     "&Výber motívu"
     IDM_THEMES_DEFAULT      "&Predvolené nastavenia"
     IDM_THEMES_FILE_ITEM    "&Štandardné"
