@@ -475,7 +475,7 @@ msgstr "फ़ाइलों को binary जैसा बरतें"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "आपके पास \"%s\" विकल्प सक्षम है|\r\nबदलने की प्रक्रिया में इस विकल्प से फ़ाइल खराब हो सकती है|\r\nक्या फ़िर भी आप आगे बढ़ना चाहते हैं?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

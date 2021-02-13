@@ -232,9 +232,9 @@ BEGIN
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s riadok(y).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s riadok(y).",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s riadok(y).",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "&Chcete normalizovať zakončenie riadkov?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Áno",IDOK,138,63,50,14
