@@ -83,9 +83,6 @@
     <ClCompile Include="..\scintilla\lexers\LexInno.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\scintilla\lexers\LexJSON.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexLaTeX.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -165,6 +162,9 @@
       <Filter>lexers_x</Filter>
     </ClCompile>
     <ClCompile Include="src\lexers_x\LexKotlin.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lexers_x\LexJSON.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>

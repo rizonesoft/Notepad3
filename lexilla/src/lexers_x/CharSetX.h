@@ -78,6 +78,16 @@ constexpr bool IsLineBreak(const int ch) noexcept
     return ((ch == '\n') || (ch == '\r') || (ch == '\0'));
 }
 
+constexpr bool IsLineEndUTF8(const unsigned char ch0, 
+                             const unsigned char ch1,
+                             const unsigned char ch2) noexcept
+{
+    return ((ch0 == '\n') || ((ch0 == '\r') && (ch1 == '\n')) || 
+            (((ch0 == 0xe2) && (ch1 == 0x80) && ((ch2 == 0xa8) || (ch2 == 0xa9))) || 
+             ((ch1 == 0xc2) && (ch2 == 0x85)))
+           );
+}
+
 constexpr bool IsIdentifierChar(int ch) noexcept {
     return Scintilla::IsAlphaNumeric(ch) || ch == '_';
 }

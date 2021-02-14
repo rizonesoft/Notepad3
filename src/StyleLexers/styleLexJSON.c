@@ -4,7 +4,7 @@
 
 KEYWORDLIST KeyWords_JSON =
 {
-    "Infinity NaN false null true",
+    "+Infinity -Infinity Infinity NaN false null true",
     "@base @container @context @direction @graph @id @import @included @index @json @language @list @nest @none "
     "@prefix @propagate @protected @reverse @set @type @value @version @vocab",
     NULL,

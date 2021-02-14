@@ -116,23 +116,10 @@ static void SortWordList(char **words, unsigned int len) {
 
 #endif
 
-
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-constexpr char asciitolower(const char ch) noexcept {
-	if ((ch >= 'A') && (ch <= 'Z')) {
-		return (ch - ('Z' - 'z'));
-	}
-	return ch;
-}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 bool WordList::Set(const char *s) {
 	const size_t lenS = strlen(s) + 1;
 	char *listTemp = new char[lenS];
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~memcpy(listTemp, s, lenS);
-	for (size_t i = 0; i < lenS; ++i) { listTemp[i] = asciitolower(s[i]); }
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	memcpy(listTemp, s, lenS);
 	int lenTemp = 0;
 	char **wordsTemp = ArrayFromWordList(listTemp, lenS - 1, &lenTemp, onlyLineEnds);
 #ifdef _MSC_VER

@@ -8,7 +8,7 @@ KEYWORDLIST KeyWords_BAT =
     "cleanmgr cls cmd cmdkey color com comp compact con convert copy country ctty date defined defrag del dir "
     "disableextensions diskcomp diskcopy diskpart do doskey driverquery echo echo. else enabledelayedexpansion "
     "enableextensions endlocal equ erase errorlevel exist exit expand fc find findstr for forfiles format "
-    "fsutil ftp ftype geq goto gpresult gpupdate graftabl gtr help icacls if in ipconfig kill label leq "
+    "fsutil ftp ftype geq goto goto:eof gpresult gpupdate graftabl gtr help icacls if in ipconfig kill label leq "
     "loadfix loadhigh logman logoff lpt lss md mem mkdir mklink mode more move msg msiexe nbtstat neq net "
     "netsh netstat not nslookup nul openfiles path pathping pause perfmon popd powercfg print prompt pushd rd "
     "recover reg regedit regsvr32 rem ren rename replace rmdir robocopy route runas rundll32 sc schtasks "
