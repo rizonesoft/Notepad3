@@ -63,7 +63,7 @@ struct OptionsTOML
     { }
 };
 
-static const char* const tomlWordLists[] =
+static const char* const tomlWordListsDesc[] =
 {
     "Keyword",
     nullptr
@@ -77,7 +77,7 @@ struct OptionSetTOML : public OptionSet<OptionsTOML>
         DefineProperty("fold", &OptionsTOML::fold);
         DefineProperty("fold.compact", &OptionsTOML::foldCompact);
 
-        DefineWordListSets(tomlWordLists);
+        DefineWordListSets(tomlWordListsDesc);
     }
 };
 
@@ -1092,7 +1092,7 @@ void SCI_METHOD LexerTOML::Fold(Sci_PositionU startPos, Sci_Position length, int
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "TOML", tomlWordLists);
+LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "TOML", tomlWordListsDesc);
 
 // ----------------------------------------------------------------------------
 
