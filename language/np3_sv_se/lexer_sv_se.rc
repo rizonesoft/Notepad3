@@ -125,8 +125,8 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_L-skript"
     IDS_LEX_TEXT_FILES      "Text-filer"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart Source Code"
-    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
+    IDS_LEX_DART_SRC        "Dart källkod"
+    IDS_LEX_KOTLIN_SRC      "Kotlin källkod"
 END
 
 STRINGTABLE
@@ -468,9 +468,9 @@ BEGIN
     IDS_LEX_STR_63366       "ESC sekvens"
     IDS_LEX_STR_63367       "Unicode-Punkt Hovra"
     IDS_LEX_STR_63368       "2nd Unicode-Punkt Hovra"
-    IDS_LEX_STR_63369       "Interface"
-    IDS_LEX_STR_63370       "Annotation"
-    IDS_LEX_STR_63371       "Comment Doc Word"
+    IDS_LEX_STR_63369       "Gränssnitt"
+    IDS_LEX_STR_63370       "Antecknning"
+    IDS_LEX_STR_63371       "Kommentera Doc ord"
 END
 
 STRINGTABLE

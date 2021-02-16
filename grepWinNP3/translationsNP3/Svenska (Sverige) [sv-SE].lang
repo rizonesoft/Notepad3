@@ -475,7 +475,7 @@ msgstr "Behandlar filer som binära"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Inställningen \"%s\ är aktiverad.\r\nVid ersättning kan denna inställning leda till korrupta filer.\r\nVill du fortsätta ändå?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

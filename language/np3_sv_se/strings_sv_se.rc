@@ -251,7 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "Språk"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "Använd valt språks datumformat"
     IDS_MUI_MENU_THEMES     "Schemasamling"
     IDM_THEMES_DEFAULT      "&Fabriksåterställning"
     IDM_THEMES_FILE_ITEM    "&Standard"
@@ -262,8 +262,8 @@ BEGIN
                             "Rensa sökhistorik"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Rensa ersättningshistorik"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Omslut sökning från början %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Omslut sökning från slutet %s"
 END
 
 STRINGTABLE
