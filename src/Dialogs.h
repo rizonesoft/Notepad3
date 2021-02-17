@@ -77,11 +77,18 @@ void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
 void SetWindowLayoutRTL(HWND hwnd, bool bRTL);
 void SetWindowReadingRTL(HWND hwnd, bool bRTL);
+
+UINT ComboBox_GetTextLenth(HWND hDlg, int nIDDlgItem);
+UINT ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount);
+void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
+LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString);
+
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent);
 HWND GetParentOrDesktop(HWND hDlg);
 void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
+
 
 inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme)
 {
