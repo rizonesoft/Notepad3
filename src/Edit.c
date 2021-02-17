@@ -6025,9 +6025,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
             DialogEnableControl(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
-            // redraw all
-            SendWMCommandEx(hwnd, IDC_FINDTEXT, CBN_EDITCHANGE);
+            _DelayMarkAll(hwnd, 50, 0);
 
+            // don't do:
+            ///~SendWMCommandEx(hwnd, IDC_FINDTEXT, CBN_EDITCHANGE);
             break;
 
         default:
@@ -6085,7 +6086,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             switch (HIWORD(wParam)) {
             case CBN_CLOSEUP:
             case CBN_EDITCHANGE:
-                bPatternChanged = true;
+                bPatternChanged = (LOWORD(wParam) == IDC_FINDTEXT);
                 break;
             default:
                 break;
@@ -6132,9 +6133,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             DocPos const slen = StringCchLenA(s_pEfrDataDlg->szFind, COUNTOF(s_pEfrDataDlg->szFind));
             DocPos const iPos = _FindInTarget(s_pEfrDataDlg->szFind, slen, (int)(s_pEfrDataDlg->fuFlags), &start, &end, false, FRMOD_NORM);
             if (iPos >= 0) {
-                EditSetSelectionEx(iPos, end, -1, -1);
+                SciCall_ScrollRange(end, iPos);
             } else {
-                EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+                SciCall_ScrollRange(s_InitialAnchorPos, s_InitialCaretPos);
                 if (s_InitialTopLine >= 0) {
                     SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
@@ -6960,8 +6961,6 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     }
     int const sFlags = (int)(lpefr->fuFlags);
     bool const bIsRegExpr = (sFlags & SCFIND_REGEXP);
-    bool const bOverlappingSearch = lpefr->bOverlappingFind;
-    bool const bSetPosAfter = bIsRegExpr && (szFind[0] == '^' || szFind[slen - 1] == '$') && !bOverlappingSearch;
 
     // SCI_REPLACETARGET or SCI_REPLACETARGETRE
     int iReplaceMsg = SCI_REPLACETARGET;
@@ -6983,6 +6982,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     }
 
     int iCount = 0;
+    bool bZeroLenMatch = (iPos == end);
 
     _BEGIN_UNDO_ACTION_;
 
@@ -6991,11 +6991,12 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
         SciCall_SetTargetRange(iPos, end);
         DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
         ++iCount;
-        iStartPos = bSetPosAfter ? SciCall_PositionAfter(SciCall_GetTargetEnd()) : SciCall_GetTargetEnd();
+        iStartPos = (bZeroLenMatch ? SciCall_PositionAfter(SciCall_GetTargetEnd()) : SciCall_GetTargetEnd());
         iEndPos += replLen - (end - iPos);
         start = iStartPos;
         end   = iEndPos;
         iPos = (start <= end) ? _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM) : -1LL;
+        bZeroLenMatch = (iPos == end);
     }
     _END_UNDO_ACTION_;
 
