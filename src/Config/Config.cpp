@@ -2192,7 +2192,7 @@ void CmdSaveSettingsNow()
             return;
         }
         if (dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
-            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_INIFILE_READONLY);
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_INIFILE_READONLY));
             if ((IDOK == answer) || (IDYES == answer)) {
                 SetFileAttributes(Globals.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
                 Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);

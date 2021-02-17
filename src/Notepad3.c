@@ -3343,7 +3343,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         bool bRevertFile = (FileWatching.FileWatchingMode == FWM_AUTORELOAD && !GetDocModified());
 
         if (!bRevertFile) {
-            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
             bRevertFile = ((IDOK == answer) || (IDYES == answer));
         }
 
@@ -3360,7 +3360,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             InstallFileWatching(true);
         }
     } else {
-        INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
+        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2));
         if ((IDOK == answer) || (IDYES == answer)) {
             FileSave(true, false, false, false, Flags.bPreserveFileModTime);
         } else if (!PathIsExistingFile(Globals.CurrentFile)) {
@@ -3994,7 +3994,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_REVERT:
         if (GetDocModified()) {
-            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT);
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT));
             if (!((IDOK == answer) || (IDYES == answer))) {
                 break;
             }
@@ -4318,7 +4318,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_GetCurrent());
 
             if (GetDocModified()) {
-                INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE);
+                WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE));
                 if (!((IDOK == answer) || (IDYES == answer))) {
                     break;
                 }
@@ -7863,7 +7863,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
                     WCHAR wch[64] = {L'\0'};
                     GetLngString(msgid, wch, COUNTOF(wch));
-                    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_WARN_NORMALIZE_EOLS, wch);
+                    WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_WARN_NORMALIZE_EOLS, wch));
 
                     if ((IDOK == answer) || (IDYES == answer)) {
                         PostWMCommand(hwnd, eol_cmd);
@@ -9890,7 +9890,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     if (!bReload && !PathIsExistingFile(szFilePath)) {
         bool bCreateFile = s_flagQuietCreate;
         if (!bCreateFile) {
-            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, PathFindFileName(szFilePath));
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, PathFindFileName(szFilePath)));
             if ((IDOK == answer) || (IDYES == answer)) {
                 bCreateFile = true;
             }
@@ -10407,13 +10407,13 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         // if current file is settings/config file: ask to start
         if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing) {
             //~ LoadSettings(); NOT all settings will be applied ...
-            INT_PTR answer = 0;
+            WORD answer = 0;
             if (Settings.SaveSettings) {
                 WCHAR tch[256] = { L'\0' };
                 LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
-                answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
+                answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch));
             } else {
-                answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
+                answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L""));
             }
             if ((IDOK == answer) || (IDYES == answer)) {
                 DialogNewWindow(Globals.hwndMain, false, Globals.CurrentFile);
@@ -10703,7 +10703,7 @@ bool ActivatePrevInst()
                 return true;
             }
             // IsWindowEnabled()
-            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED));
             if ((IDOK == answer) || (IDYES == answer)) {
                 return false;
             }
@@ -10793,7 +10793,7 @@ bool ActivatePrevInst()
             return true;
         }
         // IsWindowEnabled()
-        INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
+        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED));
         return ((IDOK == answer) || (IDYES == answer)) ? false : true;;
     }
     return false;

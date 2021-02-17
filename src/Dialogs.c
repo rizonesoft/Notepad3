@@ -398,7 +398,7 @@ CASE_WM_CTLCOLOR_SET:
 //
 //
 
-INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
+LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
     int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
 
@@ -410,7 +410,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     case IDOK:
     case IDYES:
     case IDCONTINUE:
-        return iMode;
+        return MAKELONG(iMode, iMode);
 
     case 0:
     // no entry found
@@ -427,7 +427,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 
     WCHAR wchMessage[LARGE_BUFFER];
     if (!GetLngString(uidMsg, wchMessage, COUNTOF(wchMessage))) {
-        return -1LL;
+        return MAKELONG(0, iMode);
     }
 
     INFOBOXLNG msgBox;
@@ -505,7 +505,8 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     HWND focus = GetFocus();
     HWND hwnd = focus ? focus : Globals.hwndMain;
 
-    return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
+    INT_PTR const answer = ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
+    return MAKELONG(answer, iMode);
 }
 
 
@@ -2423,7 +2424,7 @@ CASE_WM_CTLCOLOR_SET:
                     }
 
                     // Ask...
-                    INT_PTR const answer = (LOWORD(wParam) == IDOK) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
+                    WORD const answer = (LOWORD(wParam) == IDOK) ? INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG))
                                            : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                     if ((IDOK == answer) || (IDYES == answer)) {
@@ -4575,7 +4576,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     if (bExecInstaller) {
         ShellExecuteEx(&sei);
         if ((INT_PTR)sei.hInstApp < 32) {
-            INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE);
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE));
             if ((IDOK == answer) || (IDYES == answer)) {
                 sei.lpFile = VERSION_UPDATE_CHECK;
                 ShellExecuteEx(&sei);
