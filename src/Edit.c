@@ -429,8 +429,8 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
         }
 
         if (Sci_IsDocEmpty()) {
-            bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bSupressWarning) ?
-                                       (InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2) == IDYES) : true;
+            bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bSupressWarning) ? 
+                (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2)) == IDYES) : true;
 
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
@@ -443,7 +443,8 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
                 bSupressWarning         = bIsCurANSI && bIsTargetUTF;
             }
 
-            bool const doNewEncoding = (!bSupressWarning) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
+            bool const doNewEncoding = (!bSupressWarning) ? 
+                (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING)) == IDYES) : true;
 
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
@@ -1075,7 +1076,7 @@ bool EditLoadFile(
         WCHAR sizeWarnStr[64] = { L'\0' };
         StrFormatByteSize((LONGLONG)fileSizeWarning, sizeWarnStr, COUNTOF(sizeWarnStr));
         Flags.bHugeFileLoadState = true;
-        if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr) != IDYES) {
+        if (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr)) != IDYES) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
             return false;
@@ -1085,7 +1086,7 @@ bool EditLoadFile(
     // check for unknown file/extension
     status->bUnknownExt = false;
     if (!Style_HasLexerForExt(pszFile)) {
-        INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, PathFindFileName(pszFile));
+        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, PathFindFileName(pszFile)));
         if (!((IDOK == answer) || (IDYES == answer))) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
@@ -1122,7 +1123,7 @@ bool EditLoadFile(
     bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
 
     if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS)) {
-        bReadSuccess = (InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
+        bReadSuccess = (INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS)) == IDOK);
         if (!bReadSuccess) {
             Encoding_Forced(CPI_NONE);
             FreeMem(lpData);
@@ -1475,7 +1476,7 @@ bool EditSaveFile(
 
                     FreeMem(lpDataWide);
 
-                    if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2) == IDOK) {
+                    if (!bCancelDataLoss || INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2)) == IDOK) {
                         SetEndOfFile(hFile);
                         if (cbDataConverted != 0) {
                             bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbDataConverted, &bytesWritten);
@@ -6618,27 +6619,7 @@ bool EditFindNext(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
 
     SciCall_CallTipCancel();
 
-    DocPos iPos = -1LL;
-
-    if (start >= end) {
-        DocPos const _start = start;
-        DocPos const _end = end;
-        end = min_p(start, iDocEndPos);
-        start = 0LL;
-        iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
-
-        if ((iPos < 0LL) || (end == _start) || (IDOK != InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW))) {
-            bSuppressNotFound = (iPos != -1LL);
-            if (iPos < 0LL) {
-                start = _start;
-                end = _end;
-            }
-        }
-    }
-
-    if (iPos < 0LL) {
-        iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
-    }
+    DocPos iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
 
     if ((iPos < -1LL) && (lpefr->fuFlags & SCFIND_REGEXP)) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
@@ -6647,22 +6628,23 @@ bool EditFindNext(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
         UpdateStatusbar(false);
         if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
             DocPos const _start = start;
-            DocPos const _end = end;
+            //DocPos const _end = end;
             end = min_p(start, iDocEndPos);
             start = 0LL;
             iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
 
-            if ((iPos < 0LL) || (end == _start) || (IDOK != InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW))) {
+            if ((iPos < 0LL) || (end == _start)) {
                 if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
-                    InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex2", IDS_MUI_REGEX_INVALID);
-                }
-                bSuppressNotFound = (iPos != -1LL);
-                if (iPos < 0LL) {
-                    start = _start;
-                    end = _end;
+                    InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
+                    bSuppressNotFound = true;
                 }
             } else {
-                bFoundWrapAround = true;
+                LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
+                if (INFOBOX_ANSW(result) != IDOK) {
+                    iPos = -1LL;
+                    bSuppressNotFound = true;
+                }
+                bFoundWrapAround = (INFOBOX_MODE(result) != 0);
             }
         }
     }
@@ -6726,28 +6708,7 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
 
     SciCall_CallTipCancel();
 
-    DocPos iPos = -1LL;
-
-    if (start <= end) {
-        DocPos const _start = start;
-        DocPos const _end = end;
-        end = max_p(start, 0LL);
-        start = iDocEndPos;
-
-        iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
-
-        if ((iPos < 0LL) || (start == _start) || (IDOK != InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPRE))) {
-            bSuppressNotFound = (iPos != -1LL);
-            if (iPos < 0LL) {
-                start = _start;
-                end = _end;
-            }
-        }
-    }
-
-    if (iPos < 0LL) {
-        iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
-    }
+    DocPos iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
 
     if ((iPos < -1LL) && (sFlags & SCFIND_REGEXP)) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
@@ -6756,22 +6717,23 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
         UpdateStatusbar(false);
         if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
             DocPos const _start = start;
-            DocPos const _end = end;
+            //DocPos const _end = end;
             end = max_p(start, 0LL);
             start = iDocEndPos;
             iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
 
-            if ((iPos < 0LL) || (start == _start) || (IDOK != InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE))) {
+            if ((iPos < 0LL) || (start == _start)) {
                 if ((iPos < -1LL) && (sFlags & SCFIND_REGEXP)) {
-                    InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex2", IDS_MUI_REGEX_INVALID);
-                }
-                bSuppressNotFound = (iPos != -1LL);
-                if (iPos < 0LL) {
-                    start = _start;
-                    end = _end;
+                    InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
+                    bSuppressNotFound = true;
                 }
             } else {
-                bFoundWrapAround = true;
+                LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE);
+                if (INFOBOX_ANSW(result) != IDOK) {
+                    iPos = -1LL;
+                    bSuppressNotFound = true;
+                }
+                bFoundWrapAround = (INFOBOX_MODE(result) != 0);
             }
         }
     }

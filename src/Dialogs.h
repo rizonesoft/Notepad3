@@ -65,9 +65,12 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);
 
 int  MessageBoxLng(UINT uType, UINT uidMsg, ...);
-INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
+
+LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
+#define INFOBOX_ANSW(_R_) LOWORD(_R_)
+#define INFOBOX_MODE(_R_) HIWORD(_R_)
 
 void SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
                     LPCWSTR lpszFile, int iFormat, bool bModified,
