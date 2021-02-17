@@ -4736,6 +4736,46 @@ void SetWindowReadingRTL(HWND hwnd, bool bRTL)
 
 //=============================================================================
 //
+//  A2W: Convert Dialog Item Text form Unicode to UTF-8 and vice versa
+//
+
+UINT ComboBox_GetTextLenth(HWND hDlg, int nIDDlgItem) {
+    return (UINT)ComboBox_GetTextLength(GetDlgItem(hDlg, nIDDlgItem));
+}
+
+UINT ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount) {
+    WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+    HWND const hwndCtl = GetDlgItem(hDlg, nIDDlgItem);
+    UINT const uRet = (UINT)ComboBox_GetTextLength(hwndCtl);
+    int const idx = ComboBox_GetCurSel(hwndCtl);
+    if (-1 != idx) {
+        if (uRet < COUNTOF(wsz)) {
+            ComboBox_GetLBText(hwndCtl, ComboBox_GetCurSel(hwndCtl), wsz);
+        }
+    } else {
+        ComboBox_GetText(hwndCtl, wsz, COUNTOF(wsz));
+    }
+    ZeroMemory(lpString, nMaxCount);
+    WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
+    return uRet;
+}
+
+void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString) {
+    WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+    MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
+    ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), wsz);
+    //return SetDlgItemText(hDlg, nIDDlgItem, wsz);
+}
+
+LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString) {
+    WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+    MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
+    return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
+}
+
+
+//=============================================================================
+//
 //  GetCenterOfDlgInParent()
 //
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent)

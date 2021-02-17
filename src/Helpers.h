@@ -448,11 +448,6 @@ void PathFixBackslashes(LPWSTR lpsz);
 size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
 
-UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount);
-UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
-LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString);
-
-
 ///////////////////////////////////////////////////////////////////////
 ///  UINT  GDI CHARSET values  ==  Scintilla's  SC_CHARSET_XXX values
 ///////////////////////////////////////////////////////////////////////

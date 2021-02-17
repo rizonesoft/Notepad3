@@ -1561,34 +1561,6 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 
 //=============================================================================
 //
-//  A2W: Convert Dialog Item Text form Unicode to UTF-8 and vice versa
-//
-UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount)
-{
-    WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-    UINT const uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
-    ZeroMemory(lpString, nMaxCount);
-    WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
-    return uRet;
-}
-
-UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
-{
-    WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-    MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
-    return SetDlgItemText(hDlg, nIDDlgItem, wsz);
-}
-
-LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
-{
-    WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-    MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
-    return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
-}
-
-
-//=============================================================================
-//
 //  CodePageFromCharSet()
 //
 UINT CodePageFromCharSet(const UINT uCharSet)
