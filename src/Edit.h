@@ -121,7 +121,6 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly);
 void EditSetAccelWordNav(HWND hwnd,bool);
 bool EditAutoCompleteWord(HWND hwnd, bool autoInsert);
 bool EditCheckNewLineInACFillUps();
-void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 void EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
 void EditBookmarkNext(HWND hwnd, const DocLn iLine);

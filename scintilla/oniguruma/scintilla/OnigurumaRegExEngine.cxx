@@ -75,6 +75,7 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode eolMode,
   onigOptions = ONIG_OPTION_DEFAULT;
 
   // Notepad3 forced options
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_POSIX_REGION);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
@@ -261,19 +262,15 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
     return SciPos(-1);
   }
 
-  auto const docLen = SciPos(doc->Length());
+  auto const docEndPos = SciPos(doc->Length());
   EOLmode const eolMode = static_cast<EOLmode>(doc->eolMode);
 
   bool const findForward = (minPos <= maxPos);
   int const increment = findForward ? 1 : -1;
 
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
-  minPos = doc->MovePositionOutsideChar(minPos, increment, false);
+  minPos = doc->MovePositionOutsideChar(minPos + (findForward ? 0 : -1), increment, false);
   maxPos = doc->MovePositionOutsideChar(maxPos, increment, false);
-  
-  if (!findForward) {
-    minPos = doc->MovePositionOutsideChar(minPos - 1, increment, false);
-  }
 
 
   Sci::Position const rangeBeg = (findForward) ? minPos : maxPos;
@@ -283,7 +280,7 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
   OnigOptionType onigOptions;
   SetSimpleOptions(onigOptions, eolMode, caseSensitive, findForward, searchFlags);
   ONIG_OPTION_ON(onigOptions, (rangeBeg > 0) ? ONIG_OPTION_NOTBOL : ONIG_OPTION_NONE);
-  ONIG_OPTION_ON(onigOptions, (rangeEnd < docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
+  ONIG_OPTION_ON(onigOptions, (rangeEnd < docEndPos) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
   
   std::string sPattern(pattern);
   std::string const & sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigOptions);
@@ -319,8 +316,8 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 
   // ---  search document range for pattern match   ---
   // !!! Performance issue: Scintilla: moving Gap needs memcopy - high costs for find/replace in large document
-  auto const docBegPtr = UCharCPtr(doc->RangePointer(0, docLen));
-  auto const docEndPtr = UCharCPtr(doc->RangePointer(docLen, 0));
+  auto const docBegPtr = UCharCPtr(doc->RangePointer(0, docEndPos));
+  auto const docEndPtr = UCharCPtr(doc->RangePointer(docEndPos, 0));
   auto const rangeBegPtr = UCharCPtr(doc->RangePointer(rangeBeg, rangeLen));
   auto const rangeEndPtr = UCharCPtr(doc->RangePointer(rangeEnd, 0));
 

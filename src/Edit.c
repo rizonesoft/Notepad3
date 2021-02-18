@@ -5478,47 +5478,52 @@ static size_t _EditGetFindStrg(HWND hwnd, LPEDITFINDREPLACE lpefr, LPSTR szFind,
 //  _FindInTarget()
 //
 static DocPos  _FindInTarget(LPCSTR szFind, DocPos length, int sFlags,
-                             DocPos* start, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
+                             DocPos* begin, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
-    if ((length < 1) || StrIsEmptyA(szFind)) { return (DocPos)-1; }
+    UNUSED(bForceNext);
 
-    DocPos _start = *start;
-    DocPos _end = *end;
-    bool const bFindPrev = (_start > _end);
-    DocPos iPos = 0;
+    DocPos iPos = -1LL; // not found
+
+    if ((length < 1LL) || StrIsEmptyA(szFind)) {
+        return iPos;
+    }
+
+    DocPos start = *begin;
+    DocPos stop  = *end;
+    bool const bFindNext = (start <= stop); // else find previous
 
     DocPos const saveTargetBeg = SciCall_GetTargetStart();
     DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     SciCall_SetSearchFlags(sFlags);
-    SciCall_SetTargetRange(_start, _end);
+    SciCall_SetTargetRange(start, stop);
     iPos = SciCall_SearchInTarget(length, szFind);
     //  handle next in case of zero-length-matches (regex) !
-    if (iPos == _start) {
-        DocPos const nend = SciCall_GetTargetEnd();
-        if ((_start == nend) && bForceNext) {
-            DocPos const _new_start = (bFindPrev ? SciCall_PositionBefore(_start) : SciCall_PositionAfter(_start));
-            bool const bProceed = (bFindPrev ? (_new_start >= _end) : (_new_start <= _end));
-            if ((_new_start != _start) && bProceed) {
-                SciCall_SetTargetRange(_new_start, _end);
+    if (iPos == start) {
+        DocPos const nstop = SciCall_GetTargetEnd();
+        if ((start == nstop) && bForceNext) {
+            DocPos const new_start = (bFindNext ? SciCall_PositionAfter(start) : SciCall_PositionBefore(start));
+            bool const bProceed = (bFindNext ? (new_start < stop) : (new_start > stop));
+            if ((new_start != start) && bProceed) {
+                SciCall_SetTargetRange(new_start, stop);
                 iPos = SciCall_SearchInTarget(length, szFind);
             } else {
-                iPos = (DocPos)-1; // already at document begin or end => not found
+                iPos = (DocPos)-1LL; // already at document begin or end => not found
             }
         }
     }
     if (iPos >= 0) {
         if (fMode != FRMOD_IGNORE) {
-            Globals.FindReplaceMatchFoundState = bFindPrev ?
-                                                 ((fMode == FRMOD_WRAPED) ? PRV_WRP_FND : PRV_FND) :
-                                                 ((fMode == FRMOD_WRAPED) ? NXT_WRP_FND : NXT_FND);
+            Globals.FindReplaceMatchFoundState = bFindNext ? 
+                ((fMode == FRMOD_WRAPED) ? NXT_WRP_FND : NXT_FND) :
+                ((fMode == FRMOD_WRAPED) ? PRV_WRP_FND : PRV_FND);
         }
         // found in range, set begin and end of finding
-        *start = SciCall_GetTargetStart();
+        *begin = SciCall_GetTargetStart();
         *end = SciCall_GetTargetEnd();
     } else {
         if (fMode != FRMOD_IGNORE) {
-            Globals.FindReplaceMatchFoundState = (fMode != FRMOD_WRAPED) ? (bFindPrev ? PRV_NOT_FND : NXT_NOT_FND) : FND_NOP;
+            Globals.FindReplaceMatchFoundState = (fMode != FRMOD_WRAPED) ? (bFindNext ? NXT_NOT_FND : PRV_NOT_FND) : FND_NOP;
         }
     }
 
@@ -5617,6 +5622,17 @@ static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam
         }
     }
     return DefSubclassProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+//=============================================================================
+//
+//  _ShowZeroLengthCallTip()
+//
+static void _ShowZeroLengthCallTip(DocPos iPosition) {
+    char chZeroLenCT[80] = { '\0' };
+    GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, chZeroLenCT, COUNTOF(chZeroLenCT));
+    SciCall_CallTipShow(iPosition, chZeroLenCT);
 }
 
 
@@ -6018,14 +6034,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 }
             }
 
-            if (!SciCall_IsSelectionEmpty()) {
-                EditEnsureSelectionVisible();
-            }
-
             bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
             DialogEnableControl(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, 100, 0);
+
+            if (!SciCall_IsSelectionEmpty()) {
+                EditEnsureSelectionVisible();
+            }
 
             // don't do:
             ///~SendWMCommandEx(hwnd, IDC_FINDTEXT, CBN_EDITCHANGE);
@@ -6049,7 +6065,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             s_InitialSearchStart = SciCall_GetSelectionStart();
             s_InitialTopLine = -1;  // reset
             s_pEfrDataDlg->bStateChanged = true;
+            _DelayMarkAll(hwnd, 100, 0);
             break;
+
 
         case IDC_FINDTEXT:
         case IDC_REPLACETEXT: {
@@ -6133,9 +6151,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             DocPos const slen = StringCchLenA(s_pEfrDataDlg->szFind, COUNTOF(s_pEfrDataDlg->szFind));
             DocPos const iPos = _FindInTarget(s_pEfrDataDlg->szFind, slen, (int)(s_pEfrDataDlg->fuFlags), &start, &end, false, FRMOD_NORM);
             if (iPos >= 0) {
-                SciCall_ScrollRange(end, iPos);
+                EditSetSelectionEx(end, iPos, -1, -1);
+                if (iPos == end) {
+                    _ShowZeroLengthCallTip(iPos);
+                }
             } else {
-                SciCall_ScrollRange(s_InitialAnchorPos, s_InitialCaretPos);
+                EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
                 if (s_InitialTopLine >= 0) {
                     SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
@@ -6168,7 +6189,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
         return false;
 
-
         case IDC_ALL_OCCURRENCES: {
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
 
@@ -6187,7 +6207,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
         break;
 
-
         case IDC_TOGGLE_VISIBILITY:
             if (s_pEfrDataDlg) {
                 EditToggleView(s_pEfrDataDlg->hwnd);
@@ -6199,7 +6218,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 }
             }
             break;
-
 
         case IDC_FINDREGEXP:
             if (IsButtonChecked(hwnd, IDC_FINDREGEXP)) {
@@ -6464,8 +6482,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             break;
 
         case IDACC_FINDPREV:
-            //SetFocus(Globals.hwndMain);
-            //SetForegroundWindow(Globals.hwndMain);
             PostWMCommand(hwnd, IDC_FINDPREV);
             break;
 
@@ -6608,14 +6624,11 @@ bool EditFindNext(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
     int const sFlags = (int)(lpefr->fuFlags);
 
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
-    DocPos start = 0LL;
-    if (lpefr->bOverlappingFind) {
-        EditSetCaretToSelectionStart();
-        start = SciCall_PositionAfter(SciCall_GetSelectionStart());
-    } else {
-        EditSetCaretToSelectionEnd();
-        start = SciCall_GetSelectionEnd();
-    }
+    //DocPos const iSelStartPos = SciCall_GetSelectionStart(); 
+    //DocPos const iSelEndPos = SciCall_GetSelectionEnd(); 
+
+    EditSetCaretToSelectionEnd(); // fluent swittch between Prev/Next
+    DocPos start = SciCall_GetCurrentPos();
     DocPos end = iDocEndPos;
 
     SciCall_CallTipCancel();
@@ -6625,7 +6638,7 @@ bool EditFindNext(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
     if ((iPos < -1LL) && (lpefr->fuFlags & SCFIND_REGEXP)) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
         bSuppressNotFound = true;
-    } else if ((iPos < 0LL) && (start > 0LL) && !bExtendSelection) {
+    } else if ((iPos < 0LL) && (start >= 0LL) && !bExtendSelection) {
         UpdateStatusbar(false);
         if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
             DocPos const _start = start;
@@ -6665,8 +6678,8 @@ bool EditFindNext(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
         EditSetSelectionEx(iPos, end, -1, -1);
     }
 
-    if (start == end) {
-        EditShowZeroLengthCallTip(hwnd, start);
+    if (iPos == end) {
+        _ShowZeroLengthCallTip(iPos);
     }
     if (bFoundWrapAround) {
         ShowWrapAroundCallTip(true);
@@ -6696,15 +6709,11 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
     int const sFlags = (int)(lpefr->fuFlags);
 
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
+    //DocPos const iSelStartPos = SciCall_GetSelectionStart();
+    //DocPos const iSelEndPos = SciCall_GetSelectionEnd();
 
-    DocPos start = 0;
-    if (lpefr->bOverlappingFind) {
-        EditSetCaretToSelectionEnd();
-        start = SciCall_PositionBefore(SciCall_GetSelectionEnd());
-    } else {
-        EditSetCaretToSelectionStart();
-        start = SciCall_GetSelectionStart();
-    }
+    EditSetCaretToSelectionStart(); // fluent swittch between Next/Prev
+    DocPos start = SciCall_GetCurrentPos();
     DocPos end = 0LL;
 
     SciCall_CallTipCancel();
@@ -6754,8 +6763,8 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
         EditSetSelectionEx(end, iPos, -1, -1);
     }
 
-    if (start == end) {
-        EditShowZeroLengthCallTip(hwnd, iPos);
+    if (iPos == end) {
+        _ShowZeroLengthCallTip(iPos);
     }
     if (bFoundWrapAround) {
         ShowWrapAroundCallTip(false);
@@ -6904,10 +6913,10 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
     // w/o selection, replacement string is put into current position
     // but this maybe not intended here
     if (SciCall_IsSelectionEmpty()) {
-        if ((iPos < 0) || (_start != start) || (_start != end)) {
+        if ((iPos < 0LL) || (_start != start) || (_start != end)) {
             // empty-replace was not intended
             FreeMem(pszReplace);
-            if (iPos < 0) {
+            if (iPos < 0LL) {
                 return EditFindNext(hwnd, lpefr, false, false);
             }
             EditSetSelectionEx(start, end, -1, -1);
@@ -6982,21 +6991,17 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     }
 
     int iCount = 0;
-    bool bZeroLenMatch = (iPos == end);
-
     _BEGIN_UNDO_ACTION_;
-
     while ((iPos >= 0LL) && (start <= iEndPos))
     {
         SciCall_SetTargetRange(iPos, end);
         DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
         ++iCount;
-        iStartPos = (bZeroLenMatch ? SciCall_PositionAfter(SciCall_GetTargetEnd()) : SciCall_GetTargetEnd());
+        iStartPos = SciCall_GetTargetEnd();
         iEndPos += replLen - (end - iPos);
         start = iStartPos;
         end   = iEndPos;
-        iPos = (start <= end) ? _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM) : -1LL;
-        bZeroLenMatch = (iPos == end);
+        iPos = (start <= end) ? _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM) : -1LL;
     }
     _END_UNDO_ACTION_;
 
@@ -7251,17 +7256,10 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
 
         DocPos start = rangeStart;
         DocPos end = rangeEnd;
-
-        DocPos iPos = (DocPos)-1;
+        DocPos iPos = _FindInTarget(pszText, iFindLength, sFlags, &start, &end, false, FRMOD_NORM);
 
         DocPosU count = 0;
-        do {
-
-            iPos = _FindInTarget(pszText, iFindLength, sFlags, &start, &end, (start == iPos), FRMOD_IGNORE);
-
-            if (iPos < 0) {
-                break; // not found
-            }
+        while ((iPos >= 0LL) && (start <= rangeEnd)) {
 
             if (bMultiSel) {
                 if (count) {
@@ -7275,11 +7273,11 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
                 SciCall_IndicatorFillRange(iPos, (end - start));
                 SciCall_MarkerAdd(SciCall_LineFromPosition(iPos), MARKER_NP3_OCCURRENCE);
             }
+            ++count;
             start = end;
             end = rangeEnd;
-            ++count;
-
-        } while (start < end);
+            iPos = _FindInTarget(pszText, iFindLength, sFlags, &start, &end, true, FRMOD_NORM);
+        };
 
         Globals.iMarkOccurrencesCount = count;
     }
@@ -7620,7 +7618,7 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
 
         DocPos const start_m = start;
         DocPos const end_m   = end;
-        DocPos const iPos = _FindInTarget(regExpr, iRegExLen, SCFIND_REGEXP, &start, &end, false, FRMOD_IGNORE);
+        DocPos const iPos = _FindInTarget(regExpr, iRegExLen, SCFIND_REGEXP, &start, &end, true, FRMOD_IGNORE);
 
         if (iPos < 0) {
             // not found
@@ -7644,7 +7642,7 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
         }
 
         // next occurrence
-        start = SciCall_PositionAfter(end);
+        start = end;
         end = endPos;
 
     } while (start < end);
@@ -8964,21 +8962,6 @@ void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
     }
 }
 
-
-//=============================================================================
-//
-//  EditShowZeroLengthCallTip()
-//
-static char s_chZeroLenCT[80] = { '\0' };
-
-void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition)
-{
-    UNUSED(hwnd);
-    if (s_chZeroLenCT[0] == '\0') {
-        GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, s_chZeroLenCT, COUNTOF(s_chZeroLenCT));
-    }
-    SciCall_CallTipShow(iPosition, s_chZeroLenCT);
-}
 
 //=============================================================================
 //
