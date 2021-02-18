@@ -32,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.217.(build_#) (2021-02-17)
+Current BETA/RC Version 5.21.218.(build_#) (2021-02-18)
 ========================================================
 
 --------------------------------------------------------
@@ -67,7 +67,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
-[.217.1]- Find/Repl dialog - refactoring and minor fixes.
+[.218.1]- Find/Repl dialog - refactoring and minor fixes.
 [.213.1]- JSON5 enhancements to Scintilla's original JSON-Lexer.
 [.211.1]- Statusbar Selection-Info: switch to byte (instead of character) counting for huge files.
 [.205.1]- Revert minor insert date/time format changes.
@@ -112,7 +112,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
-[.217.1]- F/R show wrap-around tooltip only if message boxes are hidden.
+[.218.1]- ReplaceAll. avoid busy loop (infinity) while replacing zero-length-match (RegExpr).
+[.218.1]- F/R dialog don't change selection by typing search pattern.
+[.218.1]- F/R show wrap-around tooltip only if message boxes are hidden.
 [.215.1]- JSON5 string line continuation.
 [.212.1]- Context-Menu Handling in Release Mode.
 [.211.1]- Burndown some VS Analyze Mode Infos/Warnings.
