@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "インデント(&I)\tTab",                      IDM_EDIT_INDENT
             MENUITEM "逆インデント(&U)\tShift+Tab",              IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "選択範囲の先頭へ移動(&C)\tCtrl+,",      CMD_JUMP2SELSTART
-            MENUITEM "選択範囲の末端へ移動(&N)\tCtrl+.",        CMD_JUMP2SELEND
+            MENUITEM "行コメント(切替)(&C)\tCtrl+Q",             IDM_EDIT_LINECOMMENT
+            MENUITEM "矩形/複数選択時もコメント切替(&O)",          IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "ブロックコメント(&R)\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "選択範囲を囲む(&E)"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "行の修飾(&M)...\tAlt+M",                 IDM_EDIT_MODIFYLINES
             MENUITEM "行の整列(&A)...\tAlt+J",                 IDM_EDIT_ALIGN
             MENUITEM "行の並べ替え(&S)...\tAlt+O",              IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "選択範囲の先頭へ移動(&C)\tCtrl+,",      CMD_JUMP2SELSTART
+            MENUITEM "選択範囲の末端へ移動(&N)\tCtrl+.",        CMD_JUMP2SELEND
         END
         POPUP "変換(&V)"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "日時 年月日(&L)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
             MENUITEM "日時 (下の更新に対応)(&T)",                      CMD_INSERT_TIMESTAMP
             MENUITEM "日時の更新(&U)\tShift+F5",             CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "行コメント(切替)(&C)\tCtrl+Q",                IDM_EDIT_LINECOMMENT
-            MENUITEM "ブロックコメント(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
         END
         POPUP "プログラム(&M)"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "単語補完(&U)",                                 IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
-        MENUITEM "矩形/複数選択時もコメント切替(&B)",               IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "単一インスタンスでファイルを開く(&F)",                IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY

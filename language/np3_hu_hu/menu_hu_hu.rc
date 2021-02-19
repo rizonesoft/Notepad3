@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
             MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Ugrás a kijelölés &elejére\tCtrl+,", CMD_JUMP2SELSTART
-            MENUITEM "Ugrás a kijelölés &végére\tCtrl+.",  CMD_JUMP2SELEND
+            MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
+            MENUITEM "Sor-megjegyzés függőleges szerkesztésének engedélyezése", IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Kijelölés körbevétele"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "Sorok &módosítása...\tAlt+M",       IDM_EDIT_MODIFYLINES
             MENUITEM "Sorok i&gazítása...\tAlt+J",        IDM_EDIT_ALIGN
             MENUITEM "Sorok &rendezése...\tAlt+O",        IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Ugrás a kijelölés &elejére\tCtrl+,", CMD_JUMP2SELSTART
+            MENUITEM "Ugrás a kijelölés &végére\tCtrl+.",  CMD_JUMP2SELEND
         END
         POPUP "Ko&nvertálás"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "Dátum/Idő (&hosszú)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Aktuális időbélyeg",                        CMD_INSERT_TIMESTAMP
             MENUITEM "Időbélye&gek frissítése\tShift+F5",          CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
         END
         POPUP "&Vegyes"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "Szó kie&gészítés",                            IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Lexer kul&csszavak kiegészítése",             IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "G&yorsított szó navigálás\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Sor-megjegyzés függőleges szerkesztésének engedélyezése", IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Egyetlen fá&jl példány",                      IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_VIEW_CHANGENOTIFY

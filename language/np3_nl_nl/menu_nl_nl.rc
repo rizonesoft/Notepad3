@@ -205,11 +205,13 @@ BEGIN
         END
         POPUP "&Selectie"
         BEGIN
-            MENUITEM "&Inspringen",                                 IDM_EDIT_INDENT
-            MENUITEM "Teru&gspringen",                              IDM_EDIT_UNINDENT
+            MENUITEM "&Inspringen",                                  IDM_EDIT_INDENT
+            MENUITEM "Teru&gspringen",                               IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Gaan naar begin van sele&ctie\tCtrl+,",       CMD_JUMP2SELSTART
-            MENUITEM "Gaan naar ei&nde van selectie\tCtrl+.",       CMD_JUMP2SELEND
+            MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",            IDM_EDIT_LINECOMMENT
+            MENUITEM "Schakel bewerken van lijn &commentaarblok in", IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Omvatten selectie"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "&Wijzigen lijnen...\tAlt+M",                  IDM_EDIT_MODIFYLINES
             MENUITEM "Lijnen &uitlijnen...\tAlt+J",                 IDM_EDIT_ALIGN
             MENUITEM "Sorteren li&jnen...\tAlt+O",                  IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Gaan naar begin van sele&ctie\tCtrl+,",       CMD_JUMP2SELSTART
+            MENUITEM "Gaan naar ei&nde van selectie\tCtrl+.",       CMD_JUMP2SELEND
         END
         POPUP "Co&nverteren"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "Tijd/Datum (&Lange vorm)\tCtrl+Shift+F5",     IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Huidige Timestamp",                          CMD_INSERT_TIMESTAMP
             MENUITEM "&Tijdstempels bijwerken\tShift+F5",           CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
         END
         POPUP "&Overig"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "A&uto vervolledigen woorden",                         IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto &vervolledigen 'Lexer' sleutelwoorden",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Versnelde woordnavi&gatie\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Schakel bewerken van lijn &commentaarblok in",        IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "En&kel bestand instantie",                            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Bestandswijziging notifi&catie...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY

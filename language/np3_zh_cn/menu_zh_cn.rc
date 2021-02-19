@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "增加缩进(&I)",                           IDM_EDIT_INDENT
             MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "跳转到选区开始\tCtrl+,",       CMD_JUMP2SELSTART
-            MENUITEM "跳转到选区结束\tCtrl+.",         CMD_JUMP2SELEND
+            MENUITEM "切换行注释(&C)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
+            MENUITEM "使用矩形编辑模式修改行注释(&O)",            IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "添加块注释(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "围闭选区(&E)"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "修改(&M)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
             MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN
             MENUITEM "排序(&S)...\tAlt+O",                     IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "跳转到选区开始\tCtrl+,",         CMD_JUMP2SELSTART
+            MENUITEM "跳转到选区结束\tCtrl+.",         CMD_JUMP2SELEND
         END
         POPUP "转换(&V)"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "日期和时间（长格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
             MENUITEM "当前时间戳(&T)",                   CMD_INSERT_TIMESTAMP
             MENUITEM "更新时间戳(&U)\tShift+F5",                 CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "切换行注释(&C)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
-            MENUITEM "添加块注释(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
         END
         POPUP "杂项(&M)"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "自动补全单词(&U)",                            IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "自动补全语法关键字(&K)",                      IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "加速单词导航(&G)\tCtrl+Alt+A",                IDM_VIEW_ACCELWORDNAV
-        MENUITEM "使用矩形编辑模式修改行注释(&B)",              IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "单一文件实例(&F)",                            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_VIEW_CHANGENOTIFY

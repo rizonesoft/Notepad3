@@ -208,13 +208,15 @@ BEGIN
             MENUITEM "들여쓰기(&I)",                           IDM_EDIT_INDENT
             MENUITEM "내어쓰기(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "선택 시작으로 이동\tCtrl+,",    CMD_JUMP2SELSTART
-            MENUITEM "선택 끝으로 이동\tCtrl+.",      CMD_JUMP2SELEND
+            MENUITEM "줄 주석 (전환)(&C)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
+            MENUITEM "줄 주석 블록 편집 활성화(&O)",             IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "스트림 주석(&R)\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "선택 둘러싸기(&E)"
             BEGIN
                 MENUITEM "단일 큰 따옴표(&S)\tCtrl+1",             CMD_STRINGIFY
-                MENUITEM "이중 큰 따옴표(&D)\tCtrl+2",               CMD_STRINGIFY2
+                MENUITEM "이중 큰 따옴표(&D)\tCtrl+2",             CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                      CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                      CMD_EMBRACE2
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "줄 수정(&M)...\tAlt+M",          IDM_EDIT_MODIFYLINES
             MENUITEM "줄 맞춤(&N)...\tAlt+J",                 IDM_EDIT_ALIGN
             MENUITEM "줄 정렬(&O)...\tAlt+O",                 IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "선택 시작으로 이동\tCtrl+,",    CMD_JUMP2SELSTART
+            MENUITEM "선택 끝으로 이동\tCtrl+.",      CMD_JUMP2SELEND
         END
         POPUP "변환(&V)"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "날짜/시간 (긴 형식)(&L)\tCtrl+Shift+F5",       IDM_EDIT_INSERT_LONGDATE
             MENUITEM "현재 타임스탬프(&C)(&T)",                     CMD_INSERT_TIMESTAMP
             MENUITEM "타임스탬프 업데이트(&U)\tShift+F5",           CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "줄 주석 (전환)(&C)\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
-            MENUITEM "스트림 주석(&R)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
         END
         POPUP "기타(&I)"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "단어 자동 완성(&U)",                      IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "어휘 자동 완성(&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "가속화된 단어 탐색(&G)\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
-        MENUITEM "줄 주석 블록 편집 활성화(&B)",                          IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "단일 파일 인스턴스(&F)",                  IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "파일 변경 알림(&C)...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY

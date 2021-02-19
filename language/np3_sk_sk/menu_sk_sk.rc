@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "&Odsadenie",                          IDM_EDIT_INDENT
             MENUITEM "Z&rušiť odsadenie",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Prejsť na &začiatok výberu\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Prejsť na &koniec výberu\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "&Riadkový komentár (zap./vyp.)\tCtrl+Q",  IDM_EDIT_LINECOMMENT
+            MENUITEM "Povoliť úpravu bloku &komentárov riadka", IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Pridať k začiatku a koncu výberu"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "&Doplnenie riadkov...\tAlt+M",        IDM_EDIT_MODIFYLINES
             MENUITEM "&Zarovnať riadky...\tAlt+J",          IDM_EDIT_ALIGN
             MENUITEM "Zor&adiť riadky...\tAlt+O",           IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Prejsť na &začiatok výberu\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Prejsť na &koniec výberu\tCtrl+.",    CMD_JUMP2SELEND
         END
         POPUP "&Konvertovať"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "Čas/Dátum (&dlhý)\tCtrl+Shift+F5",        IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Aktuálne časové razítko",                CMD_INSERT_TIMESTAMP
             MENUITEM "&Aktualizovať časové razítka\tShift+F5",  CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&Riadkový komentár (zap./vyp.)\tCtrl+Q",  IDM_EDIT_LINECOMMENT
-            MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
         END
         POPUP "&Rôzne"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "A&utomatické dokončovanie slov",               IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Zrýchlená navi&gácia slov\tCtrl+Alt+A",        IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Povoliť úpravu bloku &komentárov riadka",      IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Inštancia &jedného súboru",                    IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_VIEW_CHANGENOTIFY
