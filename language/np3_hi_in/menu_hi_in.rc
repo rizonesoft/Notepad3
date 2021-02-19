@@ -205,16 +205,18 @@ BEGIN
         END
         POPUP "चुनाव (&N)"
         BEGIN
-            MENUITEM "इंडेंट (&I)",                           IDM_EDIT_INDENT
+            MENUITEM "इंडेंट (&I)",                              IDM_EDIT_INDENT
             MENUITEM "इंडेंट हटाएं (&U)",                         IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "चुनाव के आरंभ में जाएं (&C)\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "चुनाव के अंत में जाएं (&N)\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "रेखा टिप्पणी (टॉगल)(&C)\tCtrl+Q",          IDM_EDIT_LINECOMMENT
+            MENUITEM "रेखा ब्लॉक-टिप्पणी परिमार्जन समर्थ करें (&O)",   IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "Stream टिप्पणी (&R)\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "चुनाव संलग्न करें (&E)"
             BEGIN
                 MENUITEM "उद्धरण चिन्ह (&S)\tCtrl+1",        CMD_STRINGIFY
-                MENUITEM "दोहरा उद्धरण चिन्ह (&D)\tCtrl+2",        CMD_STRINGIFY2
+                MENUITEM "दोहरा उद्धरण चिन्ह (&D)\tCtrl+2",   CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                   CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "रेखा परिवर्तित करें (&M)...\tAlt+M",           IDM_EDIT_MODIFYLINES
             MENUITEM "संरेखित करें (&A)...\tAlt+J",            IDM_EDIT_ALIGN
             MENUITEM "रेखा क्रमवार करें (&S)...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "चुनाव के आरंभ में जाएं (&C)\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "चुनाव के अंत में जाएं (&N)\tCtrl+.",    CMD_JUMP2SELEND
         END
         POPUP "बदलें (&V)"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "समय/दिनाँक (विस्तृत प्रकार)(&L)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
             MENUITEM "आज का समय और दिनाँक डालें (&T)",                    CMD_INSERT_TIMESTAMP
             MENUITEM "समय-दिनाँक अपडेट करें (&U)\tShift+F5",          CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "रेखा टिप्पणी (टॉगल)(&C)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
-            MENUITEM "Stream टिप्पणी (&R)\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
         END
         POPUP "विविध (&M)"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                     IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "शब्द यात्रा त्वरित गति (&G)\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
-        MENUITEM "रेखा ब्लॉक-टिप्पणी परिमार्जन समर्थ करें (&B)",          IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "एकल फ़ाइल अवस्था (&F)",                    IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY

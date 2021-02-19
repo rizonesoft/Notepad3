@@ -32,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.218.(build_#) (2021-02-18)
+Current BETA/RC Version 5.21.219.(build_#) (2021-02-19)
 ========================================================
 
 --------------------------------------------------------
@@ -67,6 +67,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.219.1]- Simple Line Comment Toggle handles each line separately (Line Edit after toggle will still set mode of 1st line = former behavior).
+[.219.1]- Menu move Line/Stream Comment items to Edit -> Selection top.
 [.218.1]- Find/Repl dialog - refactoring and minor fixes.
 [.213.1]- JSON5 enhancements to Scintilla's original JSON-Lexer.
 [.211.1]- Statusbar Selection-Info: switch to byte (instead of character) counting for huge files.
@@ -112,6 +114,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.219.1]- Do not move selection on search pattern change if in Replace-Dlg.
+[.219.1]- FJSON Lexer has comments enabled now.
+[.219.1]- F/R-Dialog - allow multi-line clipboard paste to Replace String combobox too.
 [.218.2]- F/R: fixes some issues around RegEx zero-length match/findings.
 [.218.1]- ReplaceAll. avoid busy loop (infinity) while replacing zero-length-match (RegExpr).
 [.218.1]- F/R dialog don't change selection by typing search pattern.

@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "&Wcięcie",                              IDM_EDIT_INDENT
             MENUITEM "&Bez wcięcia",                          IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
-            MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND
+            MENUITEM "&Komentarz liniowy (Toggle)\tCtrl+Q",   IDM_EDIT_LINECOMMENT
+            MENUITEM "Włącz edycję wierszy bloku komentarzy", IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "&Komentarz strumieniowy\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Ujęcie zaznaczenia"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "&Modyfikuj wiersze...\tAlt+M",             IDM_EDIT_MODIFYLINES
             MENUITEM "&Wyrównaj wiersze...\tAlt+J",              IDM_EDIT_ALIGN
             MENUITEM "&Posortuj wiersze...\tAlt+O",              IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
+            MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND
         END
         POPUP "Ko&nwertuj"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "Godzinę/Datę (&długi format)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Bieżący znacznik czasu",                     CMD_INSERT_TIMESTAMP
             MENUITEM "&Aktualizacja znacznika czasu\tShift+F5",     CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&Komentarz liniowy (Toggle)\tCtrl+Q",         IDM_EDIT_LINECOMMENT
-            MENUITEM "&Komentarz strumieniowy\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
         END
         POPUP "&Różne"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "A&utouzupełnianie wyrazów",                       IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Autouzupełnianie Lekserem",                       IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Włącz edycję wierszy bloku komentarzy",                 IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Jedna Instancja Pliku",                           IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY

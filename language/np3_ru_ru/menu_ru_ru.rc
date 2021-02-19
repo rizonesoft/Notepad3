@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "&Добавить отступ",                  IDM_EDIT_INDENT
             MENUITEM "&Удалить отступ",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Перейти к началу в&ыделения\tCtrl+,", CMD_JUMP2SELSTART
-            MENUITEM "Перейти в конец выделени&я\tCtrl+.",  CMD_JUMP2SELEND
+            MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
+            MENUITEM "Блочное редактирование &комментариев",        IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Обернуть выделение"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "&Изменить строки...\tAlt+M",              IDM_EDIT_MODIFYLINES
             MENUITEM "Выров&нять строки...\tAlt+J",             IDM_EDIT_ALIGN
             MENUITEM "&Сортировать строки...\tAlt+O",           IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Перейти к началу в&ыделения\tCtrl+,", CMD_JUMP2SELSTART
+            MENUITEM "Перейти в конец выделени&я\tCtrl+.",  CMD_JUMP2SELEND
         END
         POPUP "Преобразование"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "Время/&дата (длинная форма)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Текущая метка времени",                          CMD_INSERT_TIMESTAMP
             MENUITEM "&Обновить метки времени\tShift+F5",               CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-            MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",              IDM_EDIT_STREAMCOMMENT
         END
         POPUP "Разное"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "Авто&завершение слов",                        IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Автозавершение на основе &лексем",            IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Ускоренная нави&гация по словам\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Блочное редактирование &комментариев",        IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Один &экземпляр файла",                       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY

@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "Indrag",                                      IDM_EDIT_INDENT
             MENUITEM "Ta bort indrag",                              IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Hoppa till början av markeringen\tCtrl+,",    CMD_JUMP2SELSTART
-            MENUITEM "Hoppa till slutet av markeringen\tCtrl+,",    CMD_JUMP2SELEND
+            MENUITEM "Linjekommentar (växla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
+            MENUITEM "Redigering av radkommentar",                  IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "Strömkommentar\tCtrl+Shift+Q",                IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "Omslut markering"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "Modifiera rader...\tAlt+M",                   IDM_EDIT_MODIFYLINES
             MENUITEM "Justera rader...\tAlt+J",                     IDM_EDIT_ALIGN
             MENUITEM "Sortera rader...\tAlt+O",                     IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Hoppa till början av markeringen\tCtrl+,",    CMD_JUMP2SELSTART
+            MENUITEM "Hoppa till slutet av markeringen\tCtrl+,",    CMD_JUMP2SELEND
         END
         POPUP "Konvertera"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "Tid och datum (lång)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
             MENUITEM "Aktuell tidsstämpel",                         CMD_INSERT_TIMESTAMP
             MENUITEM "Uppdatera tidsstämplar\tShift+F5",            CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "Linjekommentar (växla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
-            MENUITEM "Strömkommentar\tCtrl+Shift+Q",                IDM_EDIT_STREAMCOMMENT
         END
         POPUP "Övrigt"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "Kompletera ord automatiskt",                      IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Redigering av radkommentar",                      IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Endast en instans per fil",                       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY

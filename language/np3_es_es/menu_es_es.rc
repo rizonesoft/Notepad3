@@ -208,8 +208,10 @@ BEGIN
             MENUITEM "&Aumentar la sangría",                            IDM_EDIT_INDENT
             MENUITEM "&Reducir la sangría",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Ir al inicio de la selecci&ón\tCtrl+,",           CMD_JUMP2SELSTART
-            MENUITEM "Ir al final de la selecció&n\tCtrl+.",            CMD_JUMP2SELEND
+            MENUITEM "&Comentario de línea (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+            MENUITEM "Habilitar edición de bloque de &comentario de línea", IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM SEPARATOR
+            MENUITEM "Comentario &multilíneas\tCtrl+Shift+Q",               IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Envolver selección"
             BEGIN
@@ -235,6 +237,9 @@ BEGIN
             MENUITEM "&Modificar líneas...\tAlt+M",                     IDM_EDIT_MODIFYLINES
             MENUITEM "Alinear l&íneas...\tAlt+J",                       IDM_EDIT_ALIGN
             MENUITEM "&Ordenar líneas...\tAlt+O",                       IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Ir al inicio de la selecci&ón\tCtrl+,",           CMD_JUMP2SELSTART
+            MENUITEM "Ir al final de la selecció&n\tCtrl+.",            CMD_JUMP2SELEND
         END
         POPUP "Conve&rtir"
         BEGIN
@@ -269,9 +274,6 @@ BEGIN
             MENUITEM "Hora/Fecha (&formato largo)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Actual Timestamp",                               CMD_INSERT_TIMESTAMP
             MENUITEM "Actualización &Timestamps\tShift+F5",             CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&Comentario de línea (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "Comentario &multilíneas\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
         END
         POPUP "Div&erso"
         BEGIN
@@ -444,7 +446,6 @@ BEGIN
         MENUITEM "A&uto completar palabras",                            IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "&Navegación por palabra acelerada\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Habilitar edición de bloque de &comentario de línea", IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Ins&tancia de archivo único",                         IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
