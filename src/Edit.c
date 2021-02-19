@@ -3330,11 +3330,17 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
     DocPos const saveTargetBeg = SciCall_GetTargetStart();
     DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
-    int iAction = 0;
-
     _BEGIN_UNDO_ACTION_;
 
+    int iAction = 0;
+    bool const bKeepActionOf1stLine = false;
+
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
+
+        if (!bKeepActionOf1stLine) {
+            iAction = 0;
+        }
+
         DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if (iIndentPos == SciCall_GetLineEndPosition(iLine)) {
@@ -3352,7 +3358,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 iAction = 2;
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(0, "");
+                SciCall_ReplaceTarget(-1, "");
                 iSelEndOffset -= cchComment;
                 if (iLine == iLineStart) {
                     iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
@@ -3369,7 +3375,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 iAction = 2;
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(0, "");
+                SciCall_ReplaceTarget(-1, "");
                 iSelEndOffset -= cchPrefix;
                 if (iLine == iLineStart) {
                     iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchPrefix);
@@ -3462,8 +3468,6 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
     DocPos const saveTargetBeg = SciCall_GetTargetStart();
     DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
-    int iAction = 0;
-
     UT_icd docpos_icd = { sizeof(DocPos), NULL, NULL, NULL };
     UT_array* sel_positions = NULL;
     utarray_new(sel_positions, &docpos_icd);
@@ -3471,7 +3475,15 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
 
     _BEGIN_UNDO_ACTION_;
 
+    int iAction = 0;
+    bool const bKeepActionOf1stLine = true;
+
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
+
+        if (!bKeepActionOf1stLine) {
+            iAction = 0;
+        }
+
         DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if (iIndentPos == SciCall_GetLineEndPosition(iLine)) {
@@ -3489,7 +3501,7 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
                 iAction = 2;
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(0, "");
+                SciCall_ReplaceTarget(-1, "");
                 utarray_push_back(sel_positions, &iIndentPos);
                 break;
             case 1:

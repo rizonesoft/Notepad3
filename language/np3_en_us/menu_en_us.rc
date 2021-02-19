@@ -207,9 +207,9 @@ BEGIN
         BEGIN
             MENUITEM "&Indent",                           IDM_EDIT_INDENT
             MENUITEM "&Unindent",                         IDM_EDIT_UNINDENT
-            MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "Line &Comment (Toggle)\tCtrl+Q",    IDM_EDIT_LINECOMMENT
+            MENUITEM "Enable Line Comment &Block Edit",   IDM_VIEW_EDIT_LINECOMMENT
+            MENUITEM "St&ream Comment\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN
@@ -235,6 +235,9 @@ BEGIN
             MENUITEM "&Modify Lines...\tAlt+M",           IDM_EDIT_MODIFYLINES
             MENUITEM "&Align Lines...\tAlt+J",            IDM_EDIT_ALIGN
             MENUITEM "&Sort Lines...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Jump to Sele&ction Start\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Jump to Selectio&n End\tCtrl+.",    CMD_JUMP2SELEND
         END
         POPUP "Con&vert"
         BEGIN
@@ -269,9 +272,6 @@ BEGIN
             MENUITEM "Time/Date (&Long Form)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
             MENUITEM "Current &Timestamp",                    CMD_INSERT_TIMESTAMP
             MENUITEM "&Update Timestamps\tShift+F5",          CMD_UPDATE_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "Line &Comment (Toggle)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
-            MENUITEM "St&ream Comment\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
         END
         POPUP "&Miscellaneous"
         BEGIN
@@ -444,7 +444,6 @@ BEGIN
         MENUITEM "A&uto Complete Words",                     IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto Complete Lexer-&Key-Words",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerated Word Navi&gation\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Enable Line Comment &Block Edit",          IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Single &File Instance",                    IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY

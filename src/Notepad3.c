@@ -3465,6 +3465,152 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
 }
 
 
+static void _GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen) {
+
+    if (beg_out && end_out && maxlen) {
+    
+        switch (SciCall_GetLexer()) {
+        case SCLEX_AVS:
+        case SCLEX_CPP:
+        case SCLEX_CSS:
+        case SCLEX_D: // L"/+", L"+/" could also be used instead
+        case SCLEX_DART:
+        case SCLEX_HTML:
+        case SCLEX_JSON:
+        case SCLEX_KOTLIN:
+        case SCLEX_NSIS:
+        case SCLEX_RUST:
+        case SCLEX_SQL:
+        case SCLEX_VHDL:
+        case SCLEX_XML:
+            StringCchCopy(beg_out, maxlen, L"/*");
+            StringCchCopy(end_out, maxlen, L"*/");
+            break;
+        case SCLEX_INNOSETUP:
+        case SCLEX_PASCAL:
+            StringCchCopy(beg_out, maxlen, L"{");
+            StringCchCopy(end_out, maxlen, L"}");
+            break;
+        case SCLEX_LUA:
+            StringCchCopy(beg_out, maxlen, L"--[[");
+            StringCchCopy(end_out, maxlen, L"]]");
+            break;
+        case SCLEX_COFFEESCRIPT:
+            StringCchCopy(beg_out, maxlen, L"###");
+            StringCchCopy(end_out, maxlen, L"###");
+            break;
+        case SCLEX_MATLAB:
+            StringCchCopy(beg_out, maxlen, L"%{");
+            StringCchCopy(end_out, maxlen, L"%}");
+            break;
+        // ------------------
+        case SCLEX_NULL:
+        case SCLEX_AHKL:
+        case SCLEX_ASM:
+        case SCLEX_AU3:
+        case SCLEX_BASH:
+        case SCLEX_BATCH:
+        case SCLEX_CMAKE:
+        case SCLEX_CONF:
+        case SCLEX_DIFF:
+        case SCLEX_LATEX:
+        case SCLEX_MAKEFILE:
+        case SCLEX_MARKDOWN:
+        case SCLEX_NIM:
+        case SCLEX_PERL:
+        case SCLEX_POWERSHELL:
+        case SCLEX_PROPERTIES:
+        case SCLEX_PYTHON:
+        case SCLEX_R:
+        case SCLEX_REGISTRY:
+        case SCLEX_RUBY:
+        case SCLEX_TCL:
+        case SCLEX_TOML:
+        case SCLEX_VB:
+        case SCLEX_VBSCRIPT:
+        case SCLEX_YAML:
+        default:
+            StringCchCopy(beg_out, maxlen, L"");
+            StringCchCopy(end_out, maxlen, L"");
+            break;
+        }
+    }
+}
+
+
+static bool _GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
+{
+    if (pre_out && maxlen) {
+
+        switch (SciCall_GetLexer()) {
+        case SCLEX_CPP:
+        case SCLEX_D:
+        case SCLEX_DART:
+        case SCLEX_HTML:
+        case SCLEX_JSON:
+        case SCLEX_KOTLIN:
+        case SCLEX_PASCAL:
+        case SCLEX_RUST:
+        case SCLEX_XML:
+            StringCchCopy(pre_out, maxlen, L"//");
+            return false;
+        case SCLEX_VB:
+        case SCLEX_VBSCRIPT:
+            StringCchCopy(pre_out, maxlen, L"'");
+            return false;
+        case SCLEX_AVS:
+        case SCLEX_BASH:
+        case SCLEX_CMAKE:
+        case SCLEX_COFFEESCRIPT:
+        case SCLEX_CONF:
+        case SCLEX_MAKEFILE:
+        case SCLEX_NIM:
+        case SCLEX_PERL:
+        case SCLEX_POWERSHELL:
+        case SCLEX_PYTHON:
+        case SCLEX_R:
+        case SCLEX_RUBY:
+        case SCLEX_TCL:
+        case SCLEX_TOML:
+        case SCLEX_YAML:
+            StringCchCopy(pre_out, maxlen, L"#");
+            return true;
+        case SCLEX_AHKL:
+        case SCLEX_ASM:
+        case SCLEX_AU3:
+        case SCLEX_INNOSETUP:
+        case SCLEX_NSIS: // "#" could also be used instead
+        case SCLEX_PROPERTIES:
+        case SCLEX_REGISTRY:
+            StringCchCopy(pre_out, maxlen, L";");
+            return true;
+        case SCLEX_LUA:
+        case SCLEX_SQL:
+        case SCLEX_VHDL:
+            StringCchCopy(pre_out, maxlen, L"--");
+            return true;
+        case SCLEX_BATCH: // "::" could also be used instead
+            StringCchCopy(pre_out, maxlen, L"rem ");
+            return true;
+        case SCLEX_LATEX:
+        case SCLEX_MATLAB:
+            StringCchCopy(pre_out, maxlen, L"%");
+            return true;
+        // ------------------
+        case SCLEX_NULL:
+        case SCLEX_CSS:
+        case SCLEX_DIFF:
+        case SCLEX_MARKDOWN:
+        default:
+            StringCchCopy(pre_out, maxlen, L"");
+            break;
+        }
+    }
+    return false;
+}
+
+
+
 //=============================================================================
 //
 //  MsgInitMenu() - Handles WM_INITMENU
@@ -3638,17 +3784,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     EnableCmd(hmenu, IDM_VIEW_SHOWEXCERPT, !se);
 
-    i = max_i(SCLEX_NULL, SciCall_GetLexer());
+    WCHAR cmnt[8];
+    _GetLineCommentStrg(cmnt, COUNTOF(cmnt));
+    EnableCmd(hmenu, IDM_EDIT_LINECOMMENT, StrIsNotEmpty(cmnt) && !ro);
 
-    EnableCmd(hmenu, IDM_EDIT_LINECOMMENT,
-              !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
-
-    EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT,
-              !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
-                i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES || i == SCLEX_CONF ||
-                i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
-                i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-                i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
+    _GetStreamCommentStrgs(cmnt, cmnt, COUNTOF(cmnt));
+    EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT, StrIsNotEmpty(cmnt) && !ro);
 
     EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
     EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
@@ -4866,130 +5007,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_LINECOMMENT: {
-        switch (SciCall_GetLexer()) {
-        case SCLEX_CPP:
-        case SCLEX_D:
-        case SCLEX_HTML:
-        case SCLEX_PASCAL:
-        case SCLEX_RUST:
-        case SCLEX_XML:
-            EditToggleLineComments(Globals.hwndEdit, L"//", false);
-            break;
-        case SCLEX_VB:
-        case SCLEX_VBSCRIPT:
-            EditToggleLineComments(Globals.hwndEdit, L"'", false);
-            break;
-        case SCLEX_AVS:
-        case SCLEX_BASH:
-        case SCLEX_CMAKE:
-        case SCLEX_COFFEESCRIPT:
-        case SCLEX_CONF:
-        case SCLEX_MAKEFILE:
-        case SCLEX_NIM:
-        case SCLEX_PERL:
-        case SCLEX_POWERSHELL:
-        case SCLEX_PYTHON:
-        case SCLEX_R:
-        case SCLEX_RUBY:
-        case SCLEX_TCL:
-        case SCLEX_TOML:
-        case SCLEX_YAML:
-            EditToggleLineComments(Globals.hwndEdit, L"#", true);
-            break;
-        case SCLEX_AHKL:
-        case SCLEX_ASM:
-        case SCLEX_AU3:
-        case SCLEX_INNOSETUP:
-        case SCLEX_NSIS: // # could also be used instead
-        case SCLEX_PROPERTIES:
-        case SCLEX_REGISTRY:
-            EditToggleLineComments(Globals.hwndEdit, L";", true);
-            break;
-        case SCLEX_LUA:
-        case SCLEX_SQL:
-        case SCLEX_VHDL:
-            EditToggleLineComments(Globals.hwndEdit, L"--", true);
-            break;
-        case SCLEX_BATCH:
-            EditToggleLineComments(Globals.hwndEdit, L"rem ", true);
-            break;
-        case SCLEX_LATEX:
-        case SCLEX_MATLAB:
-            EditToggleLineComments(Globals.hwndEdit, L"%", true);
-            break;
-        // ------------------
-        case SCLEX_NULL:
-        case SCLEX_CSS:
-        case SCLEX_DIFF:
-        case SCLEX_JSON:
-        case SCLEX_MARKDOWN:
-        default:
-            // do nothing
-            break;
+        WCHAR comment[8] = { L'\0' };
+        bool const bAtStart = _GetLineCommentStrg(comment, COUNTOF(comment));
+        if (StrIsNotEmpty(comment)) {
+            EditToggleLineComments(Globals.hwndEdit, comment, bAtStart);
         }
-    }
+    } 
     break;
 
 
     case IDM_EDIT_STREAMCOMMENT: {
-        switch (SciCall_GetLexer()) {
-        case SCLEX_D:
-        //~EditEncloseSelection(Globals.hwndEdit, L"/+", L"+/");
-        //~break;
-        case SCLEX_AVS:
-        case SCLEX_CPP:
-        case SCLEX_CSS:
-        case SCLEX_HTML:
-        case SCLEX_NSIS:
-        case SCLEX_RUST:
-        case SCLEX_SQL:
-        case SCLEX_VHDL:
-        case SCLEX_XML:
-            EditEncloseSelection(L"/*", L"*/");
-            break;
-        case SCLEX_INNOSETUP:
-        case SCLEX_PASCAL:
-            EditEncloseSelection(L"{", L"}");
-            break;
-        case SCLEX_LUA:
-            EditEncloseSelection(L"--[[", L"]]");
-            break;
-        case SCLEX_COFFEESCRIPT:
-            EditEncloseSelection(L"###", L"###");
-            break;
-        case SCLEX_MATLAB:
-            EditEncloseSelection(L"%{", L"%}");
-            break;
-        // ------------------
-        case SCLEX_NULL:
-        case SCLEX_AHKL:
-        case SCLEX_ASM:
-        case SCLEX_AU3:
-        case SCLEX_BASH:
-        case SCLEX_BATCH:
-        case SCLEX_CMAKE:
-        case SCLEX_CONF:
-        case SCLEX_DIFF:
-        case SCLEX_JSON:
-        case SCLEX_LATEX:
-        case SCLEX_MAKEFILE:
-        case SCLEX_MARKDOWN:
-        case SCLEX_NIM:
-        case SCLEX_PERL:
-        case SCLEX_POWERSHELL:
-        case SCLEX_PROPERTIES:
-        case SCLEX_PYTHON:
-        case SCLEX_R:
-        case SCLEX_REGISTRY:
-        case SCLEX_RUBY:
-        case SCLEX_TCL:
-        case SCLEX_TOML:
-        case SCLEX_VB:
-        case SCLEX_VBSCRIPT:
-        case SCLEX_YAML:
-        default:
-            // do nothing
-            break;
+        WCHAR cmnt_beg[8] = { L'\0' };
+        WCHAR cmnt_end[8] = { L'\0' };
+        _GetStreamCommentStrgs(cmnt_beg, cmnt_end, COUNTOF(cmnt_beg));
+        if (StrIsNotEmpty(cmnt_beg)) {
+            EditEncloseSelection(cmnt_beg, cmnt_end);
         }
     }
     break;
