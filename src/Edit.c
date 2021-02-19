@@ -429,8 +429,8 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
         }
 
         if (Sci_IsDocEmpty()) {
-            bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bSupressWarning) ? 
-                (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2)) == IDYES) : true;
+            bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bSupressWarning) ?
+                                       (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2)) == IDYES) : true;
 
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
@@ -443,8 +443,8 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
                 bSupressWarning         = bIsCurANSI && bIsTargetUTF;
             }
 
-            bool const doNewEncoding = (!bSupressWarning) ? 
-                (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING)) == IDYES) : true;
+            bool const doNewEncoding = (!bSupressWarning) ?
+                                       (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING)) == IDYES) : true;
 
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
@@ -2178,8 +2178,7 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
 
     const WCHAR* const confFormat = bShortFmt ? Settings2.DateTimeFormat : Settings2.DateTimeLongFormat;
 
-    if (StrIsNotEmpty(pwchDateTimeStrg) || StrIsNotEmpty(confFormat))
-    {
+    if (StrIsNotEmpty(pwchDateTimeStrg) || StrIsNotEmpty(confFormat)) {
         WCHAR wchTemplate[MIDSZ_BUFFER] = {L'\0'};
         StringCchCopyW(wchTemplate, COUNTOF(wchTemplate), StrIsNotEmpty(pwchDateTimeStrg) ? pwchDateTimeStrg : confFormat);
 
@@ -2198,7 +2197,7 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
         if (cnt == 0) {
             StringCchCopy(pwchDateTimeStrg, cchBufLen, wchTemplate);
         }
-    
+
     } else { // use configured Language Locale DateTime Format
 
         WCHAR wchTime[SMALL_BUFFER] = { L'\0' };
@@ -5526,9 +5525,9 @@ static DocPos  _FindInTarget(LPCSTR szFind, DocPos length, int sFlags,
     }
     if (iPos >= 0) {
         if (fMode != FRMOD_IGNORE) {
-            Globals.FindReplaceMatchFoundState = bFindNext ? 
-                ((fMode == FRMOD_WRAPED) ? NXT_WRP_FND : NXT_FND) :
-                ((fMode == FRMOD_WRAPED) ? PRV_WRP_FND : PRV_FND);
+            Globals.FindReplaceMatchFoundState = bFindNext ?
+                                                 ((fMode == FRMOD_WRAPED) ? NXT_WRP_FND : NXT_FND) :
+                                                 ((fMode == FRMOD_WRAPED) ? PRV_WRP_FND : PRV_FND);
         }
         // found in range, set begin and end of finding
         *begin = SciCall_GetTargetStart();
@@ -5608,7 +5607,7 @@ static bool s_SaveMarkMatchVisible = false;
 //  EditBoxForPasteFixes()
 //
 static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
-                                             UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+        UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
     WCHAR* const s_wchBuffer = (WCHAR*)dwRefData;
 
@@ -5640,7 +5639,8 @@ static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam
 //
 //  _ShowZeroLengthCallTip()
 //
-static void _ShowZeroLengthCallTip(DocPos iPosition) {
+static void _ShowZeroLengthCallTip(DocPos iPosition)
+{
     char chZeroLenCT[80] = { '\0' };
     GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, chZeroLenCT, COUNTOF(chZeroLenCT));
     SciCall_CallTipShow(iPosition, chZeroLenCT);
@@ -5653,9 +5653,11 @@ static void _ShowZeroLengthCallTip(DocPos iPosition) {
 //
 extern int    g_flagMatchText;
 
-static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam) {
+static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
     static EDITFINDREPLACE s_efrSave = INIT_EFR_DATA;
     static LPEDITFINDREPLACE s_pEfrDataDlg = NULL;
+    static bool s_bIsReplaceDlg = false;
 
     static WCHAR s_tchBuf[FNDRPL_BUFFER] = { L'\0' }; // tmp working buffer
 
@@ -5679,7 +5681,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
     switch (umsg) {
     case WM_INITDIALOG: {
+
         Globals.hwndDlgFindReplace = hwnd;
+        s_bIsReplaceDlg = (GetDlgItem(hwnd, IDC_REPLACETEXT) != NULL);
 
         // clear cmd line stuff
         g_flagMatchText = 0;
@@ -5751,7 +5755,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
         }
 
-        if (GetDlgItem(hwnd, IDC_REPLACETEXT)) {
+        if (s_bIsReplaceDlg) {
 
             // Load MRUs
             for (int i = 0; i < MRU_Count(Globals.pMRUreplace); i++) {
@@ -5805,7 +5809,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         CheckDlgButton(hwnd, IDC_FINDSTART, SetBtn(s_pEfrDataDlg->fuFlags & SCFIND_WORDSTART));
         CheckDlgButton(hwnd, IDC_NOWRAP, SetBtn(s_pEfrDataDlg->bNoFindWrap));
 
-        if (GetDlgItem(hwnd, IDC_REPLACE)) {
+        if (s_bIsReplaceDlg) {
             if (s_bSwitchedFindReplace) {
                 CheckDlgButton(hwnd, IDC_FINDCLOSE, SetBtn(s_pEfrDataDlg->bFindClose));
             } else {
@@ -6036,8 +6040,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetWindowTransparentMode(hwnd, false, 100);
 
             // selection changed ?
-            if ((SciCall_GetCurrentPos() != s_InitialCaretPos) || 
-                (SciCall_GetAnchor() != s_InitialAnchorPos)) {
+            if ((SciCall_GetCurrentPos() != s_InitialCaretPos) ||
+                    (SciCall_GetAnchor() != s_InitialAnchorPos)) {
                 EditSetCaretToSelectionStart();
                 s_InitialAnchorPos = SciCall_GetAnchor();
                 s_InitialCaretPos = SciCall_GetCurrentPos();
@@ -6056,9 +6060,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             if (!SciCall_IsSelectionEmpty()) {
                 EditEnsureSelectionVisible();
             }
-
-            // don't do:
-            ///~SendWMCommandEx(hwnd, IDC_FINDTEXT, CBN_EDITCHANGE);
+            /// don't do:  ///~SendWMCommandEx(hwnd, IDC_FINDTEXT, CBN_EDITCHANGE);
             break;
 
         default:
@@ -6129,10 +6131,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
 
             bool const bEmptyFnd = (ComboBox_GetTextLenth(hwnd, IDC_FINDTEXT) ||
-                                   CB_ERR != SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_GETCURSEL, 0, 0));
+                                    CB_ERR != SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_GETCURSEL, 0, 0));
 
             bool const bEmptyRpl = (ComboBox_GetTextLenth(hwnd, IDC_REPLACETEXT) ||
-                                   CB_ERR != SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_GETCURSEL, 0, 0));
+                                    CB_ERR != SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_GETCURSEL, 0, 0));
 
             bool const bEmptySel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
 
@@ -6165,12 +6167,20 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             DocPos const slen = StringCchLenA(s_pEfrDataDlg->szFind, COUNTOF(s_pEfrDataDlg->szFind));
             DocPos const iPos = _FindInTarget(s_pEfrDataDlg->szFind, slen, (int)(s_pEfrDataDlg->fuFlags), &start, &end, false, FRMOD_NORM);
             if (iPos >= 0) {
-                EditSetSelectionEx(end, iPos, -1, -1);
+                if (s_bIsReplaceDlg) {
+                    SciCall_ScrollRange(end, iPos);
+                } else {
+                    EditSetSelectionEx(end, iPos, -1, -1);
+                }
                 if (iPos == end) {
                     _ShowZeroLengthCallTip(iPos);
                 }
             } else {
-                EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+                if (s_bIsReplaceDlg) {
+                    SciCall_ScrollRange(s_InitialAnchorPos, s_InitialCaretPos);
+                } else {
+                    EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+                }
                 if (s_InitialTopLine >= 0) {
                     SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
@@ -6312,17 +6322,16 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         case IDACC_SELTOPREV:
         case IDMSG_SWITCHTOFIND:
         case IDMSG_SWITCHTOREPLACE: {
-            bool bIsFindDlg = (GetDlgItem(hwnd, IDC_REPLACE) == NULL);
 
-            if ((bIsFindDlg && LOWORD(wParam) == IDMSG_SWITCHTOREPLACE) ||
-                    (!bIsFindDlg && LOWORD(wParam) == IDMSG_SWITCHTOFIND)) {
+            if ((!s_bIsReplaceDlg && LOWORD(wParam) == IDMSG_SWITCHTOREPLACE) ||
+                (s_bIsReplaceDlg && LOWORD(wParam) == IDMSG_SWITCHTOFIND)) {
                 GetDlgPos(hwnd, &s_xFindReplaceDlgSave, &s_yFindReplaceDlgSave);
                 s_bSwitchedFindReplace = true;
                 CopyMemory(&s_efrSave, s_pEfrDataDlg, sizeof(EDITFINDREPLACE));
             }
 
             if (!s_bSwitchedFindReplace &&
-                !ComboBox_GetTextW2MB(hwnd, IDC_FINDTEXT, s_pEfrDataDlg->szFind, COUNTOF(s_pEfrDataDlg->szFind))) {
+                    !ComboBox_GetTextW2MB(hwnd, IDC_FINDTEXT, s_pEfrDataDlg->szFind, COUNTOF(s_pEfrDataDlg->szFind))) {
                 DialogEnableControl(hwnd, IDOK, false);
                 DialogEnableControl(hwnd, IDC_FINDPREV, false);
                 DialogEnableControl(hwnd, IDC_REPLACE, false);
@@ -6372,7 +6381,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             switch (LOWORD(wParam)) {
             case IDOK: // find next
             case IDACC_SELTONEXT:
-                if (!bIsFindDlg) {
+                if (s_bIsReplaceDlg) {
                     Globals.bReplaceInitialized = true;
                 }
                 EditFindNext(s_pEfrDataDlg->hwnd, s_pEfrDataDlg, (LOWORD(wParam) == IDACC_SELTONEXT), IsKeyDown(VK_F3));
@@ -6381,7 +6390,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             case IDC_FINDPREV: // find previous
             case IDACC_SELTOPREV:
-                if (!bIsFindDlg) {
+                if (s_bIsReplaceDlg) {
                     Globals.bReplaceInitialized = true;
                 }
                 EditFindPrev(s_pEfrDataDlg->hwnd, s_pEfrDataDlg, (LOWORD(wParam) == IDACC_SELTOPREV), IsKeyDown(VK_F3));
@@ -6407,7 +6416,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 break;
             }
 
-            if (bIsFindDlg && (s_pEfrDataDlg->bFindClose)) {
+            if (!s_bIsReplaceDlg && (s_pEfrDataDlg->bFindClose)) {
                 //~EndDialog(hwnd, LOWORD(wParam)); ~ (!) not running on own message loop
                 DestroyWindow(hwnd);
             } else if ((LOWORD(wParam) != IDOK) && s_pEfrDataDlg->bReplaceClose) {
@@ -6500,7 +6509,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             break;
 
         case IDACC_REPLACENEXT:
-            if (GetDlgItem(hwnd, IDC_REPLACE) != NULL) {
+            if (s_bIsReplaceDlg) {
                 PostWMCommand(hwnd, IDC_REPLACE);
             }
             break;
@@ -6552,7 +6561,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         case NM_RETURN:
             switch (pnmhdr->idFrom) {
             case IDC_TOGGLEFINDREPLACE:
-                if (GetDlgItem(hwnd, IDC_REPLACE)) {
+                if (s_bIsReplaceDlg) {
                     PostWMCommand(GetParent(hwnd), IDM_EDIT_FIND);
                 } else {
                     PostWMCommand(GetParent(hwnd), IDM_EDIT_REPLACE);
@@ -6638,8 +6647,8 @@ bool EditFindNext(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
     int const sFlags = (int)(lpefr->fuFlags);
 
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
-    //DocPos const iSelStartPos = SciCall_GetSelectionStart(); 
-    //DocPos const iSelEndPos = SciCall_GetSelectionEnd(); 
+    //DocPos const iSelStartPos = SciCall_GetSelectionStart();
+    //DocPos const iSelEndPos = SciCall_GetSelectionEnd();
 
     EditSetCaretToSelectionEnd(); // fluent swittch between Prev/Next
     DocPos start = SciCall_GetCurrentPos();
@@ -7006,8 +7015,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
 
     int iCount = 0;
     _BEGIN_UNDO_ACTION_;
-    while ((iPos >= 0LL) && (start <= iEndPos))
-    {
+    while ((iPos >= 0LL) && (start <= iEndPos)) {
         SciCall_SetTargetRange(iPos, end);
         DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
         ++iCount;

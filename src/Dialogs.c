@@ -2425,7 +2425,7 @@ CASE_WM_CTLCOLOR_SET:
 
                     // Ask...
                     WORD const answer = (LOWORD(wParam) == IDOK) ? INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG))
-                                           : ((iCur == lvi.iItem) ? IDNO : IDYES);
+                                        : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                     if ((IDOK == answer) || (IDYES == answer)) {
                         MRU_Delete(Globals.pFileMRU, lvi.iItem);
@@ -4740,11 +4740,13 @@ void SetWindowReadingRTL(HWND hwnd, bool bRTL)
 //  A2W: Convert Dialog Item Text form Unicode to UTF-8 and vice versa
 //
 
-UINT ComboBox_GetTextLenth(HWND hDlg, int nIDDlgItem) {
+UINT ComboBox_GetTextLenth(HWND hDlg, int nIDDlgItem)
+{
     return (UINT)ComboBox_GetTextLength(GetDlgItem(hDlg, nIDDlgItem));
 }
 
-UINT ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount) {
+UINT ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount)
+{
     WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
     HWND const hwndCtl = GetDlgItem(hDlg, nIDDlgItem);
     UINT const uRet = (UINT)ComboBox_GetTextLength(hwndCtl);
@@ -4761,14 +4763,16 @@ UINT ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCou
     return uRet;
 }
 
-void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString) {
+void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
+{
     WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
     MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
     ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), wsz);
     //return SetDlgItemText(hDlg, nIDDlgItem, wsz);
 }
 
-LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString) {
+LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
+{
     WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
     MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
     return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
@@ -5750,7 +5754,8 @@ HBITMAP ConvertIconToBitmap(const HICON hIcon, int cx, int cy)
 //
 //  ResampleIconToBitmap()
 //
-HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, const int cx, const int cy) {
+HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, const int cx, const int cy)
+{
     if (hOldBmp) {
         DeleteObject(hOldBmp);
     }
@@ -5770,15 +5775,20 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 
     DPI_T const cur_dpi = Scintilla_GetWindowDPI(hwnd);
 
-    if ((dpi.x != cur_dpi.x) || (dpi.y != cur_dpi.y))
-    {
+    if ((dpi.x != cur_dpi.x) || (dpi.y != cur_dpi.y)) {
         dpi = cur_dpi;
         int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, dpi);
         int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, dpi);
 
-        if (!mii.cbSize) { mii.cbSize = sizeof(MENUITEMINFO); }
-        if (!mii.fMask)  { mii.fMask = MIIM_BITMAP; }
-        if (mii.hbmpItem) { DeleteObject(mii.hbmpItem); }
+        if (!mii.cbSize) {
+            mii.cbSize = sizeof(MENUITEMINFO);
+        }
+        if (!mii.fMask)  {
+            mii.fMask = MIIM_BITMAP;
+        }
+        if (mii.hbmpItem) {
+            DeleteObject(mii.hbmpItem);
+        }
 
         mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, scx, scy);
 
