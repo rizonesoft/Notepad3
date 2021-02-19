@@ -3246,7 +3246,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     POINT pt = { 0, 0 };
     pt.x = (int)((short)LOWORD(bMargin ? wParam : lParam));
     pt.y = (int)((short)HIWORD(bMargin ? wParam : lParam));
-    #define IS_CTX_PT_VALID(P) (((P).x != -1 || (P).y != -1))
+#define IS_CTX_PT_VALID(P) (((P).x != -1 || (P).y != -1))
 
     typedef enum { MNU_NONE = -1, MNU_EDIT = 0, MNU_BAR = 1, MNU_MARGIN = 2, MNU_TRAY = 3 } mnu_t;
     mnu_t imenu = MNU_NONE;
@@ -3286,13 +3286,17 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDC_TOOLBAR:
     case IDC_STATUSBAR:
     case IDC_REBAR: {
-        if (!IS_CTX_PT_VALID(pt)) { GetCursorPos(&pt); }
+        if (!IS_CTX_PT_VALID(pt)) {
+            GetCursorPos(&pt);
+        }
         imenu = MNU_BAR;
     }
     break;
 
     case IDC_MARGIN: {
-        if (!IS_CTX_PT_VALID(pt)) { GetCursorPos(&pt); }
+        if (!IS_CTX_PT_VALID(pt)) {
+            GetCursorPos(&pt);
+        }
 
         DocLn const curLn = Sci_GetCurrentLineNumber();
         int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
@@ -3317,7 +3321,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     if (imenu != MNU_NONE) {
         TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu),
-            TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
+                         TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
     }
     DestroyMenu(hMenuCtx);
 
@@ -3465,10 +3469,11 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
 }
 
 
-static void _GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen) {
+static void _GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
+{
 
     if (beg_out && end_out && maxlen) {
-    
+
         switch (SciCall_GetLexer()) {
         case SCLEX_AVS:
         case SCLEX_CPP:
@@ -4558,7 +4563,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         if (SciCall_IsSelectionEmpty()) {
             if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK) &&
-                !Settings2.NoCopyLineOnEmptySelection) {
+                    !Settings2.NoCopyLineOnEmptySelection) {
                 if (Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) > 0) {
                     SciCall_CopyAllowLine(); // (!) VisualStudio behavior
                     // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
@@ -5012,7 +5017,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (StrIsNotEmpty(comment)) {
             EditToggleLineComments(Globals.hwndEdit, comment, bAtStart);
         }
-    } 
+    }
     break;
 
 
@@ -7693,8 +7698,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             EditBookmarkToggle(Globals.hwndEdit, SciCall_LineFromPosition(scn->position), scn->modifiers);
             break;
         case MARGIN_SCI_LINENUM:
-            //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
-            // fallthrough
+        //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
+        // fallthrough
         default:
             return 0;
         }
@@ -11109,8 +11114,7 @@ void UpdateMouseDWellTime()
 void ShowZoomCallTip()
 {
     int const delayClr = Settings2.ZoomTooltipTimeout;
-    if (delayClr >= (10*USER_TIMER_MINIMUM))
-    {
+    if (delayClr >= (10*USER_TIMER_MINIMUM)) {
         int const iZoomLevelPercent = SciCall_GetZoom();
 
         static char chToolTip[32] = { '\0' };
@@ -11136,8 +11140,7 @@ void ShowZoomCallTip()
 void ShowWrapAroundCallTip(bool forwardSearch)
 {
     int const delayClr = Settings2.WrapAroundTooltipTimeout;
-    if (delayClr >= (10*USER_TIMER_MINIMUM))
-    {
+    if (delayClr >= (10*USER_TIMER_MINIMUM)) {
         char chToolTipFmt[64] = { '\0' };
         static char chToolTip[80] = { '\0' };
         if (forwardSearch) {
