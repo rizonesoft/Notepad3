@@ -3266,13 +3266,21 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
 void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 {
     UNUSED(hwnd);
-    const DocPos iCurPos = SciCall_GetCurrentPos();
-    const DocPos iAnchorPos = SciCall_GetAnchor();
+
+    if (Sci_IsMultiOrRectangleSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        return;
+    }
+
+    DocPos const saveTargetBeg = SciCall_GetTargetStart();
+    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
+    bool const bStraightSel = SciCall_GetAnchor() <= SciCall_GetCurrentPos();
+
     DocPos const iSelStart = SciCall_GetSelectionStart();
     DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
-    const DocPos iSelBegCol = SciCall_GetColumn(iSelStart);
-
+    //const DocPos iSelBegCol = SciCall_GetColumn(iSelStart);
 
     char mszPrefix[32 * 3] = { '\0' };
     char mszComment[96 * 3] = { '\0' };
@@ -3280,13 +3288,12 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
     if (StrIsNotEmpty(pwszComment)) {
         char mszPostfix[64 * 3] = { '\0' };
         WideCharToMultiByteEx(Encoding_SciCP, 0, pwszComment, -1, mszPrefix, COUNTOF(mszPrefix), NULL, NULL);
+        StringCchCopyA(mszComment, COUNTOF(mszComment), mszPrefix);
         if (StrIsNotEmpty(Settings2.LineCommentPostfixStrg)) {
             WideCharToMultiByteEx(Encoding_SciCP, 0, Settings2.LineCommentPostfixStrg, -1, mszPostfix, COUNTOF(mszPostfix), NULL, NULL);
+            StringCchCatA(mszComment, COUNTOF(mszComment), mszPostfix);
         }
-        StringCchCopyA(mszComment, COUNTOF(mszComment), mszPrefix);
-        StringCchCatA(mszComment, COUNTOF(mszComment), mszPostfix);
     }
-
     DocPos const cchPrefix = (DocPos)StringCchLenA(mszPrefix, COUNTOF(mszPrefix));
     DocPos const cchComment = (DocPos)StringCchLenA(mszComment, COUNTOF(mszComment));
 
@@ -3294,18 +3301,13 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
         return;
     }
 
-    if (Sci_IsMultiOrRectangleSelection()) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-        return;
-    }
-
-    const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
-    DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
+    const DocLn iStartLine = SciCall_LineFromPosition(iSelStart);
+    DocLn iEndLine = SciCall_LineFromPosition(iSelEnd);
 
     // don't consider (last) line where caret is before 1st column
-    if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) {
-        if ((iLineEnd - iLineStart) >= 1) { // except it is the only one
-            --iLineEnd;
+    if (iSelEnd <= SciCall_PositionFromLine(iEndLine)) {
+        if ((iEndLine - iStartLine) >= 1) { // except it is the only one
+            --iEndLine;
         }
     }
 
@@ -3313,7 +3315,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
 
     if (!bInsertAtStart) {
         iCommentCol = (DocPos)INT_MAX;
-        for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
+        for (DocLn iLine = iStartLine; iLine <= iEndLine; iLine++) {
             const DocPos iLineEndPos = SciCall_GetLineEndPosition(iLine);
             const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
             if (iLineIndentPos != iLineEndPos) {
@@ -3323,18 +3325,15 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
         }
     }
 
-    DocPos iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+    DocPos iSelStartOffset = 0;
     DocPos iSelEndOffset = 0;
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     _BEGIN_UNDO_ACTION_;
 
     int iAction = 0;
     bool const bKeepActionOf1stLine = false;
 
-    for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
+    for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine) {
 
         if (!bKeepActionOf1stLine) {
             iAction = 0;
@@ -3358,10 +3357,11 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
-                iSelEndOffset -= cchComment;
-                if (iLine == iLineStart) {
-                    iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
+                if (iLine == iStartLine) {
+                    iSelStartOffset -= (iSelStart < iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchComment;
                 }
+                DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
+                iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchComment;
                 break;
             case 1:
                 break;
@@ -3375,10 +3375,11 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
-                iSelEndOffset -= cchPrefix;
-                if (iLine == iLineStart) {
-                    iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchPrefix);
+                if (iLine == iStartLine) {
+                    iSelStartOffset -= (iSelStart < iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchPrefix;
                 }
+                DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
+                iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchPrefix;
                 break;
             case 1:
                 break;
@@ -3391,10 +3392,11 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
             case 1: {
                 DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
                 SciCall_InsertText(iPos, mszComment);
-                iSelEndOffset += cchComment;
-                if (iLine == iLineStart) {
-                    iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+                if (iLine == iStartLine) {
+                    iSelStartOffset += (iSelStart < iPos) ? 0 : cchComment;
                 }
+                DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
+                iSelEndOffset += (movedSelEnd < iPos) ? 0 : cchComment;
             }
             break;
             case 2:
@@ -3403,17 +3405,17 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
         }
     }
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+    SciCall_SetSelectionStart(iSelStart + iSelStartOffset);
+    SciCall_SetSelectionEnd(iSelEnd + iSelEndOffset);
 
-    if (iCurPos < iAnchorPos) {
-        EditSetSelectionEx(iAnchorPos + iSelEndOffset, iCurPos + iSelStartOffset, -1, -1);
-    } else if (iCurPos > iAnchorPos) {
-        EditSetSelectionEx(iAnchorPos + iSelStartOffset, iCurPos + iSelEndOffset, -1, -1);
-    } else {
-        EditSetSelectionEx(iAnchorPos + iSelStartOffset, iCurPos + iSelStartOffset, -1, -1);
+    if (!bStraightSel) {
+        EditSetCaretToSelectionStart();
     }
 
     _END_UNDO_ACTION_;
+
+    EditEnsureSelectionVisible();
+    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 }
 
 
@@ -3424,13 +3426,20 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
 void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 {
     UNUSED(hwnd);
+    DocPos const saveTargetBeg = SciCall_GetTargetStart();
+    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
     DocPos const iSelStart = Sci_GetSelectionStartEx();
     DocPos const iSelEnd = Sci_GetSelectionEndEx();
 
-    char mszComment[32 * 3] = { '\0' };
-
+    char mszComment[96 * 3] = { '\0' };
     if (StrIsNotEmpty(pwszComment)) {
         WideCharToMultiByteEx(Encoding_SciCP, 0, pwszComment, -1, mszComment, COUNTOF(mszComment), NULL, NULL);
+        char mszPostfix[64 * 3] = { '\0' };
+        if (StrIsNotEmpty(Settings2.LineCommentPostfixStrg)) {
+            WideCharToMultiByteEx(Encoding_SciCP, 0, Settings2.LineCommentPostfixStrg, -1, mszPostfix, COUNTOF(mszPostfix), NULL, NULL);
+            StringCchCatA(mszComment, COUNTOF(mszComment), mszPostfix);
+        }
     }
     DocPos const cchComment = (DocPos)StringCchLenA(mszComment, COUNTOF(mszComment));
 
@@ -3463,9 +3472,6 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
             }
         }
     }
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     UT_icd docpos_icd = { sizeof(DocPos), NULL, NULL, NULL };
     UT_array* sel_positions = NULL;
@@ -3525,8 +3531,6 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
         }
     }
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
     // cppcheck-suppress nullPointerArithmetic
     DocPos* p = (DocPos*)utarray_next(sel_positions, NULL);
     if (p) {
@@ -3539,6 +3543,8 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
         }
     }
     utarray_free(sel_positions);
+
+    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
     _END_UNDO_ACTION_;
 }
