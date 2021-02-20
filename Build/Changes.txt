@@ -32,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.219.(build_#) (2021-02-19)
+Current BETA/RC Version 5.21.220.(build_#) (2021-02-20)
 ========================================================
 
 --------------------------------------------------------
@@ -114,6 +114,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.220.1]- Toggle Comment: proper selection handling.
 [.219.1]- Do not move selection on search pattern change if in Replace-Dlg.
 [.219.1]- FJSON Lexer has comments enabled now.
 [.219.1]- F/R-Dialog - allow multi-line clipboard paste to Replace String combobox too.
