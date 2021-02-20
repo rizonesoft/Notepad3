@@ -475,7 +475,7 @@ msgstr "Файлы як бінарныя"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Уключана опцыя \"%s\".\r\nПадчас замены гэтая опцыя можа прывесці да пашкоджання файлаў.\r\nВы ўсё роўна хочаце працягнуць?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

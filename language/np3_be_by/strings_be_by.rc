@@ -251,10 +251,10 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Мова"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "Мова вызначае &фармат даты"
     IDS_MUI_MENU_THEMES     "&Калекцыя схем"
     IDM_THEMES_DEFAULT      "&Завадскія налады"
-    IDM_THEMES_FILE_ITEM    "&Стандартныя"
+    IDM_THEMES_FILE_ITEM    "&Стандартная"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Ачысціць усё"
@@ -262,8 +262,8 @@ BEGIN
                             "Ачысціць гісторыю пошука"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Ачысціць гісторыю замен"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Супадзенне ў пачатку  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Супадзенне ў канцы  %s"
 END
 
 STRINGTABLE
