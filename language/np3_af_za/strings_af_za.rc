@@ -251,7 +251,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_USE_LOCALE_DATEFMT  "Taal Definieer &Datumformaat"
     IDS_MUI_MENU_THEMES     "&Skema-versameling"
     IDM_THEMES_DEFAULT      "&Fabriek Verstek"
     IDM_THEMES_FILE_ITEM    "&Standaard"
@@ -262,8 +262,8 @@ BEGIN
                             "Vee geskiedenis uit"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vee die vervang geskiedenis uit"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Draai om pas van bo  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Draai om pas van onder  %s"
 END
 
 STRINGTABLE

@@ -123,10 +123,10 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statistiek Kode"
     IDS_LEX_RUST_SRC        "Rust Bronkode"
     IDS_LEX_AHKL            "AutoHotkey_L Skrip"
-    IDS_LEX_TEXT_FILES      "Text Files"
+    IDS_LEX_TEXT_FILES      "Teks Lêers"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart Source Code"
-    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
+    IDS_LEX_DART_SRC        "Dart Bronkode"
+    IDS_LEX_KOTLIN_SRC      "Kotlin Bronkode"
 END
 
 STRINGTABLE
@@ -468,9 +468,9 @@ BEGIN
     IDS_LEX_STR_63366       "ESC Sequence"
     IDS_LEX_STR_63367       "Unicode-Punt-Hover"
     IDS_LEX_STR_63368       "2de Unicode-Punt-Hover"
-    IDS_LEX_STR_63369       "Interface"
-    IDS_LEX_STR_63370       "Annotation"
-    IDS_LEX_STR_63371       "Comment Doc Word"
+    IDS_LEX_STR_63369       "Koppelvlak"
+    IDS_LEX_STR_63370       "Annotasie"
+    IDS_LEX_STR_63371       "Kommentaar op Doc Word"
 END
 
 STRINGTABLE

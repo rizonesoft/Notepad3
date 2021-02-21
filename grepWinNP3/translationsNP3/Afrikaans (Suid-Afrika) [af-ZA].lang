@@ -474,7 +474,7 @@ msgstr "Behandel lêers as binêre"
 
 #. Resource IDs: (172)
 #, c-format
-msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgid "U het die opsie \"%s\" geaktiveer.\r\nAs u dit vervang, kan hierdie opsie lei tot beskadigde lêers.\r\nWil u in elk geval voortgaan?"
 msgstr ""
 
 #. Resource IDs: (116)
@@ -584,7 +584,7 @@ msgid "search string is empty"
 msgstr "soekstring is leeg"
 
 #. Resource IDs: (170, 171)
-msgid "Start new grepWinNP3 window"
+msgid "Begin nuwe grepWinNP3-venster"
 msgstr ""
 
 #. Resource IDs: (114)
@@ -616,6 +616,6 @@ msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Dit voeg 'n nuwe inskrywing by die konteksmenu met die naam 'Open met Editor'"
 
 #. Resource IDs: (3006)
-msgid "Stay On Top"
+msgid "Bly Bo"
 msgstr ""
 
