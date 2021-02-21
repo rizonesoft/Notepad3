@@ -133,6 +133,13 @@ void EditDeleteMarkerInSelection();
 void EditSelectionMultiSelectAll();
 void EditSelectionMultiSelectAllEx(CLPCEDITFINDREPLACE edFndRpl);
 
+// maybe removed beyond next release
+#define _SAVE_TARGET_RANGE_  DocPos const _saveTargetBeg_ = SciCall_GetTargetStart();\
+                             DocPos const _saveTargetEnd_ = SciCall_GetTargetEnd()
+#define _RESTORE_TARGET_RANGE_ SciCall_SetTargetRange(_saveTargetBeg_, _saveTargetEnd_)
+//#define _SAVE_TARGET_RANGE_ 
+//#define _RESTORE_TARGET_RANGE_ 
+
 //
 //  Folding Functions
 //
