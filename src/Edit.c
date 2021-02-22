@@ -2513,14 +2513,16 @@ static void  _EditMoveLines(bool bMoveUp)
     }
 
     DocPos const iSelBeg = SciCall_GetSelectionStart();
-    DocPos const iSelEnd = SciCall_GetSelectionEnd();
     DocLn  const iBegLine = SciCall_LineFromPosition(iSelBeg);
-    DocLn  const iEndLine = SciCall_LineFromPosition(iSelEnd);
+    DocPos const iSelEnd = SciCall_GetSelectionEnd();
+    DocLn const iEndLine = SciCall_LineFromPosition(iSelEnd);
 
     DocLn lastLine = Sci_GetLastDocLineNumber();
 
     if (Sci_GetNetLineLength(lastLine) == 0) {
-        --lastLine;
+        if (SciCall_PositionFromLine(iEndLine) < iSelEnd) {
+            --lastLine;
+        }
     }
 
     bool const bCanMove = bMoveUp ? (iBegLine > 0) : (iEndLine < lastLine);
