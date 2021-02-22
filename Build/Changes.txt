@@ -38,7 +38,46 @@ Current BETA/RC Version 5.21.222.(build_#) (2021-02-22)
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- .
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+CHANGES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+FIXES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+REMOVED:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- Chinese Traditional (zh-TW) (motivated translator wanted...).
+[.###.#]- Indonesian (id-ID) (motivated translator wanted...).
+[.###.#]- Portuguese Brazilian (pt-BR) (motivated translator wanted...).
+[.###.#]- Spanish Mexican (es-MX) (motivated translator wanted...).
+[.###.#]- Turkish (tr-TR) (motivated translator wanted...).
+[.###.#]- Vietnamese (vi-VN) (motivated translator wanted...).
+
+
+========================================================
+Version 5.21.22x.x (2x February 2021)
+========================================================
+
+--------------------------------------------------------
+NEW:
+--------------------------------------------------------
 [.205.1]- Use user locale for date/time insert format: can be menu switched to preferred UI language.
 [.124.1]- Enable horizontal scrolling by "Shift + Mouse-Wheel".
 [.117.1]- Show search wrap-around tooltip (issue #3038).
@@ -66,7 +105,6 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]- .
 [.222.1]- Minor refactorings.
 [.222.1]- Toggle Line-Comments: handling of selection start movement.
 [.219.1]- Simple Line Comment Toggle handles each line separately (Line Edit after toggle will still set mode of 1st line = former behavior).
@@ -115,7 +153,6 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]- .
 [.220.1]- Toggle Comment: proper selection handling.
 [.219.1]- Do not move selection on search pattern change if in Replace-Dlg.
 [.219.1]- FJSON Lexer has comments enabled now.
@@ -183,13 +220,11 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.xxx.x]- .
 [.921.1]- TinyExpr: '%%' as percent operator is deprecated.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.xxx.x]- .
 [1028.1]- Hindi (hi-IN).
 [.915.2]- Chinese Traditional (zh-TW) in waiting...
 [.915.2]- Indonesian (id-ID) in waiting...
