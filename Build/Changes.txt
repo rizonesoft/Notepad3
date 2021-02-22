@@ -38,46 +38,6 @@ Current BETA/RC Version 5.21.222.(build_#) (2021-02-22)
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
-
---------------------------------------------------------
-CHANGES:
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
-
---------------------------------------------------------
-FIXES:
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
-
---------------------------------------------------------
-REMOVED:
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
-
---------------------------------------------------------
-TRANSLATIONS (MUI):
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- Chinese Traditional (zh-TW) (motivated translator wanted...).
-[.###.#]- Indonesian (id-ID) (motivated translator wanted...).
-[.###.#]- Portuguese Brazilian (pt-BR) (motivated translator wanted...).
-[.###.#]- Spanish Mexican (es-MX) (motivated translator wanted...).
-[.###.#]- Turkish (tr-TR) (motivated translator wanted...).
-[.###.#]- Vietnamese (vi-VN) (motivated translator wanted...).
-
-
-========================================================
-Version 5.21.22x.x (2x February 2021)
-========================================================
-
---------------------------------------------------------
-NEW:
---------------------------------------------------------
 [.205.1]- Use user locale for date/time insert format: can be menu switched to preferred UI language.
 [.124.1]- Enable horizontal scrolling by "Shift + Mouse-Wheel".
 [.117.1]- Show search wrap-around tooltip (issue #3038).
@@ -153,6 +113,9 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
+[.222.2]- Multi-Line movement: proceed to document end correctly.
+[.222.2]- Toggle comment on empty selection at insertion point: keep position of selection end.
+[.222.2]- MiniPath: Enable Mouse XButton usage ("browse back and forth").
 [.220.1]- Toggle Comment: proper selection handling.
 [.219.1]- Do not move selection on search pattern change if in Replace-Dlg.
 [.219.1]- FJSON Lexer has comments enabled now.
