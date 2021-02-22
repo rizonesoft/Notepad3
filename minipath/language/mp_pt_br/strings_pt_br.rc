@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Selecione o diretório destino."
     IDS_CREATELINK          "Selecione o diretório destino para o novo link."
     IDS_SAVESETTINGS        "Salvar Configurações\nAs configurações correntes do programa foram gravadas."
-    IDS_MUI_TRANSL_AUTHOR   "(pt-BR) Tradução em português brasileiro por JeepWillys58"
+    IDS_MUI_TRANSL_AUTHOR   "(pt-BR) Tradução em português brasileiro por Ghost"
 END
 
 
