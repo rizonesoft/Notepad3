@@ -750,7 +750,7 @@ CASE_WM_CTLCOLOR_SET:
     // update colors of DirList manually
     case WM_SYSCOLORCHANGE:
     {
-        LRESULT lret = DefWindowProc(hwnd,umsg,wParam,lParam);
+        LRESULT const lret = DefWindowProc(hwnd,umsg,wParam,lParam);
 
         if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter)
         {
@@ -763,9 +763,19 @@ CASE_WM_CTLCOLOR_SET:
             ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
         }
 
-        return(lret);
+        return lret;
     }
 
+    case WM_NCXBUTTONDOWN:
+        switch (HIWORD(wParam)) {
+        case XBUTTON1:
+            return SendWMCommand(hwnd, IDT_HISTORY_FORWARD);
+        case XBUTTON2:
+            return SendWMCommand(hwnd, IDT_HISTORY_BACK);
+        default:
+            break;
+        }
+        return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_NCLBUTTONDOWN:
     case WM_NCMOUSEMOVE:
@@ -775,15 +785,14 @@ CASE_WM_CTLCOLOR_SET:
     case WM_NCRBUTTONUP:
     case WM_NCMBUTTONUP:
     {
-        MSG  msg;
-        HWND hwndTT = (HWND)SendMessage(hwndToolbar,TB_GETTOOLTIPS,0,0);
-
+        HWND const hwndTT = (HWND)SendMessage(hwndToolbar,TB_GETTOOLTIPS,0,0);
         if (wParam != HTCAPTION)
         {
             SendMessage(hwndTT,TTM_POP,0,0);
             return DefWindowProc(hwnd,umsg,wParam,lParam);
         }
 
+        MSG msg;
         msg.hwnd = hwnd;
         msg.message = umsg;
         msg.wParam = wParam;
@@ -808,7 +817,7 @@ CASE_WM_CTLCOLOR_SET:
             DirList_GetItem(hwndDirList,-1,&dli);
 
             FindNextChangeNotification(hChangeHandle);
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+            SendWMCommand(hwnd, IDM_VIEW_UPDATE);
 
             // must use SendMessage() !!
             if (dli.ntype != DLE_NONE)
@@ -942,6 +951,22 @@ CASE_WM_CTLCOLOR_SET:
 
     case WM_COMMAND:
         return MsgCommand(hwnd,wParam,lParam);
+
+
+    case WM_PARENTNOTIFY:
+        switch (LOWORD(wParam)) {
+        case WM_XBUTTONDOWN:
+            switch (HIWORD(wParam)) {
+            case XBUTTON1:
+                return SendWMCommand(hwnd, IDT_HISTORY_FORWARD);
+            case XBUTTON2:
+                return SendWMCommand(hwnd, IDT_HISTORY_BACK);
+            default:
+                break;
+            }
+            break;
+        }
+        break;
 
 
     case WM_SYSCOMMAND:
@@ -2063,7 +2088,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             SetCurrentDirectory(szPath);
 
             // Select new file
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+            SendWMCommand(hwnd, IDM_VIEW_UPDATE);
             SHGetFileInfo(szNewFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
             if (!DirList_SelectItem(hwndDirList,shfi.szDisplayName,szNewFile))
                 ListView_EnsureVisible(hwndDirList,0,FALSE);
@@ -2214,8 +2239,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         // Check if there are any changes in the directory, then update!
         if (WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0))
         {
-
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+            SendWMCommand(hwnd, IDM_VIEW_UPDATE);
             if (iItem > 0)
                 iItem--;
             iItem = min(iItem,ListView_GetItemCount(hwndDirList) - 1);
@@ -2246,9 +2270,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_CHANGEDIR:
     {
-
         WCHAR tch[MAX_PATH];
-
         if (GetDirectory(hwnd,IDS_GETDIRECTORY,tch,NULL,FALSE))
         {
 
@@ -2256,7 +2278,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 ErrorMessage(2,IDS_ERR_CD);
 
         }
-
     }
     break;
 
@@ -2327,7 +2348,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             Settings.dwFillMask &= (~DL_FOLDERS);
         else
             Settings.dwFillMask |= DL_FOLDERS;
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+        SendWMCommand(hwnd, IDM_VIEW_UPDATE);
         ListView_EnsureVisible(hwndDirList,0,FALSE); // not done by update
         break;
 
@@ -2337,7 +2358,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             Settings.dwFillMask &= (~DL_NONFOLDERS);
         else
             Settings.dwFillMask |= DL_NONFOLDERS;
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+        SendWMCommand(hwnd, IDM_VIEW_UPDATE);
         ListView_EnsureVisible(hwndDirList,0,FALSE); // not done by update
         break;
 
@@ -2347,7 +2368,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             Settings.dwFillMask &= (~DL_INCLHIDDEN);
         else
             Settings.dwFillMask |= DL_INCLHIDDEN;
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+        SendWMCommand(hwnd, IDM_VIEW_UPDATE);
         ListView_EnsureVisible(hwndDirList,0,FALSE); // not done by update
         break;
 
@@ -2361,7 +2382,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             dli.ntype = DLE_NONE;
             DirList_GetItem(hwndDirList,-1,&dli);
 
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+            SendWMCommand(hwnd, IDM_VIEW_UPDATE);
 
             if (dli.ntype != DLE_NONE)
             {
@@ -2387,7 +2408,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             dli.ntype = DLE_NONE;
             DirList_GetItem(hwndDirList,-1,&dli);
 
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+            SendWMCommand(hwnd, IDM_VIEW_UPDATE);
 
             if (dli.ntype != DLE_NONE)
             {
@@ -2607,7 +2628,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case ACC_NEXTCTL:
     case ACC_PREVCTL:
     {
-
         int nId = GetDlgCtrlID(GetFocus());
 
         if (LOWORD(wParam) == ACC_NEXTCTL)
@@ -2620,7 +2640,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (--nId < IDC_DRIVEBOX)
                 nId = IDC_DIRLIST;
         }
-
         if (nId == IDC_DRIVEBOX && !Settings.bShowDriveBox)
             nId = IDC_DIRLIST;
 
@@ -2672,7 +2691,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
                             if (!PathIsRoot(szDir))
                                 *p = 0;
                             SetCurrentDirectory(szDir);
-                            SendMessage(hwndMain,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+                            SendWMCommand(hwnd, IDM_VIEW_UPDATE);
                             if (!DirList_SelectItem(hwndDirList,NULL,szFullPath))
                                 ListView_EnsureVisible(hwndDirList,0,FALSE);
                         }
@@ -2770,7 +2789,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDT_VIEW_FAVORITES:
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_FAVORITES,1),0);
+        SendWMCommand(hwnd, IDM_VIEW_FAVORITES);
         break;
 
 
@@ -2808,7 +2827,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             ListView_SetItemState(hwndDirList,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndDirList,i,FALSE);
             ListView_Update(hwndDirList,i);
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
+            SendWMCommand(hwnd, IDM_FILE_OPEN);
         }
 
         else
@@ -2852,7 +2871,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             ListView_SetItemState(hwndDirList,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndDirList,i,FALSE);
             ListView_Update(hwndDirList,i);
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
+            SendWMCommand(hwnd, IDM_FILE_OPEN);
         }
 
         else
@@ -2862,13 +2881,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDT_FILE_RUN:
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_RUN,1),0);
+        SendWMCommand(hwnd, IDM_FILE_RUN);
         break;
 
 
     case IDT_FILE_QUICKVIEW:
         if (DirList_IsFileSelected(hwndDirList))
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_QUICKVIEW,1),0);
+            SendWMCommand(hwnd, IDM_FILE_QUICKVIEW);
         else
             MessageBeep(0);
         break;
@@ -2876,7 +2895,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDT_FILE_SAVEAS:
         if (DirList_IsFileSelected(hwndDirList))
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_SAVEAS,1),0);
+            SendWMCommand(hwnd, IDM_FILE_SAVEAS);
         else
             MessageBeep(0);
         break;
@@ -2884,7 +2903,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDT_FILE_COPYMOVE:
         if (ListView_GetSelectedCount(hwndDirList))
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_COPYMOVE,1),0);
+            SendWMCommand(hwnd, IDM_FILE_COPYMOVE);
         else
             MessageBeep(0);
         break;
@@ -2895,7 +2914,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         {
             BOOL const fUseRecycleBin2 = Settings.fUseRecycleBin;
             Settings.fUseRecycleBin = 1;
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_DELETE,1),0);
+            SendWMCommand(hwnd, IDM_FILE_DELETE);
             Settings.fUseRecycleBin = fUseRecycleBin2;
         }
         else
@@ -2905,14 +2924,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDT_FILE_DELETE2:
         if (ListView_GetSelectedCount(hwndDirList))
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_DELETE2,1),0);
+            SendWMCommand(hwnd, IDM_FILE_DELETE2);
         else
             MessageBeep(0);
         break;
 
 
     case IDT_VIEW_FILTER:
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_FILTER,1),0);
+        SendWMCommand(hwnd, IDM_VIEW_FILTER);
         break;
 
     }
@@ -3021,11 +3040,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (Settings.bSingleClick && ListView_GetSelectedCount(hwndDirList))
             {
                 if (IsKeyDown(VK_MENU))
-                    SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PROPERTIES,1),0);
+                    SendWMCommand(hwnd, IDM_FILE_PROPERTIES);
                 else if (IsKeyDown(VK_SHIFT))
-                    SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPENNEW,1),0);
+                    SendWMCommand(hwnd, IDM_FILE_OPENNEW);
                 else
-                    SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
+                    SendWMCommand(hwnd, IDM_FILE_OPEN);
             }
             break;
 
@@ -3033,11 +3052,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case NM_RETURN:
 
             if (IsKeyDown(VK_MENU))
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PROPERTIES,1),0);
+                SendWMCommand(hwnd, IDM_FILE_PROPERTIES);
             else if (IsKeyDown(VK_SHIFT))
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPENNEW,1),0);
+                SendWMCommand(hwnd, IDM_FILE_OPENNEW);
             else
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
+                SendWMCommand(hwnd, IDM_FILE_OPEN);
             break;
 
         }
@@ -3440,7 +3459,7 @@ BOOL DisplayPath(LPCWSTR lpPath,UINT uIdError)
                 SetCurrentDirectory(szPath);
             }
 
-            SendMessage(hwndMain,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+            SendWMCommand(hwndMain, IDM_VIEW_UPDATE);
 
             if (!DirList_SelectItem(hwndDirList,shfi.szDisplayName,szTmp))
                 ListView_EnsureVisible(hwndDirList,0,FALSE);
