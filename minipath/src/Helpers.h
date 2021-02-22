@@ -119,6 +119,11 @@ inline BOOL PathIsExistingFile(LPCWSTR pszPath)
     return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
 }
 
+#define SendWMCommandEx(hwnd, id, hi)  SendMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (hi)), 0)
+#define SendWMCommand(hwnd, id)        SendWMCommandEx((hwnd), (id), 1)
+#define PostWMCommandEx(hwnd, id, hi)  PostMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (hi)), 0)
+#define PostWMCommand(hwnd, id)        PostWMCommandEx((hwnd), (id), 1)
+
 //==== StrNextTok methods ===================
 CHAR*  StrNextTokA(CHAR*, const CHAR*);
 WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
