@@ -3355,7 +3355,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
                 if (iLine == iStartLine) {
-                    iSelStartOffset -= (iSelStart < iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchComment;
+                    iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchComment;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
                 iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchComment;
@@ -3373,7 +3373,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
                 if (iLine == iStartLine) {
-                    iSelStartOffset -= (iSelStart < iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchPrefix;
+                    iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchPrefix;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
                 iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchPrefix;
@@ -3390,7 +3390,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
                 SciCall_InsertText(iPos, mszComment);
                 if (iLine == iStartLine) {
-                    iSelStartOffset += (iSelStart < iPos) ? 0 : cchComment;
+                    iSelStartOffset += (iSelStart <= iPos) ? 0 : cchComment;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
                 iSelEndOffset += (movedSelEnd < iPos) ? 0 : cchComment;
