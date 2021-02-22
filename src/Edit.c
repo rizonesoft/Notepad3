@@ -1714,6 +1714,8 @@ void EditURLEncode()
         return;
     }
 
+    _SAVE_TARGET_RANGE_;
+
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocPos const iAnchorPos = SciCall_GetAnchor();
     DocPos const iSelSize = SciCall_GetSelText(NULL) - 1;
@@ -1744,9 +1746,6 @@ void EditURLEncode()
     ptrdiff_t const cchEscapedEnc = WideCharToMultiByte(Encoding_SciCP, 0, pszEscapedW, cchEscapedW,
                                     pszEscaped, (int)cchEscaped, NULL, NULL);
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
     _BEGIN_UNDO_ACTION_;
 
     if (iCurPos < iAnchorPos) {
@@ -1756,8 +1755,6 @@ void EditURLEncode()
     }
     SciCall_ReplaceTarget(cchEscapedEnc, pszEscaped);
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
     if (iCurPos < iAnchorPos) {
         EditSetSelectionEx(iCurPos + cchEscapedEnc, iCurPos, -1, -1);
     } else {
@@ -1765,6 +1762,8 @@ void EditURLEncode()
     }
 
     _END_UNDO_ACTION_;
+
+    _RESTORE_TARGET_RANGE_;
 
     FreeMem(pszEscaped);
     FreeMem(pszEscapedW);
@@ -1785,6 +1784,8 @@ void EditURLDecode()
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
         return;
     }
+
+    _SAVE_TARGET_RANGE_;
 
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocPos const iAnchorPos = SciCall_GetAnchor();
@@ -1819,9 +1820,6 @@ void EditURLDecode()
     int const cchUnescapedDec = WideCharToMultiByte(Encoding_SciCP, 0, pszUnescapedW, cchUnescapedW,
                                 pszUnescaped, (int)cchUnescaped, NULL, NULL);
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
     _BEGIN_UNDO_ACTION_;
 
     if (iCurPos < iAnchorPos) {
@@ -1830,7 +1828,6 @@ void EditURLDecode()
         SciCall_SetTargetRange(iAnchorPos, iCurPos);
     }
     SciCall_ReplaceTarget(cchUnescapedDec, pszUnescaped);
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
     if (iCurPos < iAnchorPos) {
         EditSetSelectionEx(iCurPos + cchUnescapedDec, iCurPos, -1, -1);
@@ -1839,6 +1836,8 @@ void EditURLDecode()
     }
 
     _END_UNDO_ACTION_;
+
+    _RESTORE_TARGET_RANGE_;
 
     FreeMem(pszTextW);
     FreeMem(pszUnescaped);
@@ -2371,14 +2370,13 @@ void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
             iCurPos = iSelStart + cchConvM;
         }
 
-        DocPos const saveTargetBeg = SciCall_GetTargetStart();
-        DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+        _SAVE_TARGET_RANGE_;
         _BEGIN_UNDO_ACTION_;
         SciCall_SetTargetRange(iSelStart, iSelEnd);
         SciCall_ReplaceTarget(cchConvM, pszText2);
-        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
         _END_UNDO_ACTION_;
+        _RESTORE_TARGET_RANGE_;
         FreeMem(pszText2);
     }
     FreeMem(pszConvW);
@@ -2399,6 +2397,8 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
         return;
     }
+
+    _SAVE_TARGET_RANGE_;
 
     DocPos iCurPos = SciCall_GetCurrentPos();
     DocPos iAnchorPos = SciCall_GetAnchor();
@@ -2486,16 +2486,16 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
             iCurPos = iSelStart + cchConvM;
         }
 
-        DocPos const saveTargetBeg = SciCall_GetTargetStart();
-        DocPos const saveTargetEnd = SciCall_GetTargetEnd();
         _BEGIN_UNDO_ACTION_;
         SciCall_SetTargetRange(iSelStart, iSelEnd);
         SciCall_ReplaceTarget(cchConvM, pszText2);
-        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
         _END_UNDO_ACTION_;
         FreeMem(pszText2);
     }
+
+    _RESTORE_TARGET_RANGE_;
+
     FreeMem(pszConvW);
 }
 
@@ -2626,7 +2626,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
         return;
     }
 
-    char  mszPrefix1[256 * 3] = { '\0' };
+    _SAVE_TARGET_RANGE_;
+
+    char mszPrefix1[256 * 3] = { '\0' };
     char  mszAppend1[256 * 3] = { '\0' };
 
     DocPos iSelStart = SciCall_GetSelectionStart();
@@ -2638,8 +2640,6 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
     if (StrIsNotEmpty(pwszAppend)) {
         WideCharToMultiByteEx(Encoding_SciCP, 0, pwszAppend, -1, mszAppend1, COUNTOF(mszAppend1), NULL, NULL);
     }
-
-    DocLn iLine;
 
     DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
@@ -2815,11 +2815,7 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
 
     _BEGIN_UNDO_ACTION_;
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
-    for (iLine = iLineStart; iLine <= iLineEnd; iLine++) {
-        DocPos iPos;
+    for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
 
         if (StrIsNotEmpty(pwszPrefix)) {
 
@@ -2835,7 +2831,7 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszPrefix2);
                 iPrefixNum++;
             }
-            iPos = SciCall_PositionFromLine(iLine);
+            DocPos const iPos = SciCall_PositionFromLine(iLine);
             SciCall_SetTargetRange(iPos, iPos);
             SciCall_ReplaceTarget(-1, mszInsert);
         }
@@ -2854,13 +2850,11 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszAppend2);
                 iAppendNum++;
             }
-            iPos = SciCall_GetLineEndPosition(iLine);
+            DocPos const iPos = SciCall_GetLineEndPosition(iLine);
             SciCall_SetTargetRange(iPos, iPos);
             SciCall_ReplaceTarget(-1, mszInsert);
         }
     }
-
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
     // extend selection to start of first line
     // the above code is not required when last line has been excluded
@@ -2879,6 +2873,8 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
     }
 
     _END_UNDO_ACTION_;
+    
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -2979,6 +2975,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 //
 void EditAlignText(int nMode)
 {
+    _SAVE_TARGET_RANGE_;
+
     DocPos iCurPos = SciCall_GetCurrentPos();
     DocPos iAnchorPos = SciCall_GetAnchor();
 
@@ -3034,9 +3032,6 @@ void EditAlignText(int nMode)
     _BEGIN_UNDO_ACTION_;
 
     if (chNewLineBuf && wchLineBuf && wchNewLineBuf) {
-
-        DocPos const saveTargetBeg = SciCall_GetTargetStart();
-        DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
         for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
             DocPos const iStartPos = SciCall_PositionFromLine(iLine);
@@ -3182,7 +3177,6 @@ void EditAlignText(int nMode)
                 }
             }
         }
-        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
         FreeMem(pWords);
         FreeMem(wchNewLineBuf);
@@ -3202,6 +3196,8 @@ void EditAlignText(int nMode)
     EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
 
     _END_UNDO_ACTION_;
+
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -3217,13 +3213,14 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
         return;
     }
 
+    _SAVE_TARGET_RANGE_;
+
     char  mszOpen[256 * 3] = { '\0' };
     char  mszClose[256 * 3] = { '\0' };
 
-    const DocPos iCurPos = SciCall_GetCurrentPos();
-    const DocPos iAnchorPos = SciCall_GetAnchor();
-    const DocPos iSelStart = SciCall_GetSelectionStart();
-    const DocPos iSelEnd = SciCall_GetSelectionEnd();
+    bool const bStraightSel = (SciCall_GetCurrentPos() >= SciCall_GetAnchor());
+    DocPos const iSelStart = SciCall_GetSelectionStart();
+    DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
     if (StrIsNotEmpty(pwszOpen)) {
         WideCharToMultiByteEx(Encoding_SciCP, 0, pwszOpen, -1, mszOpen, COUNTOF(mszOpen), NULL, NULL);
@@ -3231,12 +3228,8 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
     if (StrIsNotEmpty(pwszClose)) {
         WideCharToMultiByteEx(Encoding_SciCP, 0, pwszClose, -1, mszClose, COUNTOF(mszClose), NULL, NULL);
     }
-
     DocPos const iLenOpen = (DocPos)StringCchLenA(mszOpen, COUNTOF(mszOpen));
     DocPos const iLenClose = (DocPos)StringCchLenA(mszClose, COUNTOF(mszClose));
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     _BEGIN_UNDO_ACTION_;
 
@@ -3250,12 +3243,17 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
         SciCall_ReplaceTarget(-1, mszClose);
     }
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
-    // Fix selection
-    EditSetSelectionEx(iAnchorPos + iLenOpen, iCurPos + iLenOpen, -1, -1);
+    // Move selection
+    SciCall_SetSelectionStart(iSelStart + iLenOpen);
+    SciCall_SetSelectionEnd(iSelEnd + iLenOpen);
+    if (!bStraightSel) {
+        EditSetCaretToSelectionStart();
+    }
+    EditEnsureSelectionVisible();
 
     _END_UNDO_ACTION_;
+
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -3272,8 +3270,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
         return;
     }
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+    _SAVE_TARGET_RANGE_;
 
     bool const bStraightSel = SciCall_GetAnchor() <= SciCall_GetCurrentPos();
 
@@ -3358,7 +3355,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
                 if (iLine == iStartLine) {
-                    iSelStartOffset -= (iSelStart < iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchComment;
+                    iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchComment;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
                 iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchComment;
@@ -3376,7 +3373,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
                 if (iLine == iStartLine) {
-                    iSelStartOffset -= (iSelStart < iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchPrefix;
+                    iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchPrefix;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
                 iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchPrefix;
@@ -3393,7 +3390,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                 DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
                 SciCall_InsertText(iPos, mszComment);
                 if (iLine == iStartLine) {
-                    iSelStartOffset += (iSelStart < iPos) ? 0 : cchComment;
+                    iSelStartOffset += (iSelStart <= iPos) ? 0 : cchComment;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
                 iSelEndOffset += (movedSelEnd < iPos) ? 0 : cchComment;
@@ -3407,15 +3404,14 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
 
     SciCall_SetSelectionStart(iSelStart + iSelStartOffset);
     SciCall_SetSelectionEnd(iSelEnd + iSelEndOffset);
-
     if (!bStraightSel) {
         EditSetCaretToSelectionStart();
     }
+    EditEnsureSelectionVisible();
 
     _END_UNDO_ACTION_;
 
-    EditEnsureSelectionVisible();
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -3426,8 +3422,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
 void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 {
     UNUSED(hwnd);
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+    _SAVE_TARGET_RANGE_;
 
     DocPos const iSelStart = Sci_GetSelectionStartEx();
     DocPos const iSelEnd = Sci_GetSelectionEndEx();
@@ -3544,9 +3539,9 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
     }
     utarray_free(sel_positions);
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
     _END_UNDO_ACTION_;
+    
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -3571,6 +3566,8 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
 {
     UNUSED(hwnd);
 
+    _SAVE_TARGET_RANGE_;
+
     size_t size = (size_t)iMaxColumn;
     char* pmszPadStr = AllocMem(size + 1, HEAP_ZERO_MEMORY);
     FillMemory(pmszPadStr, size, ' ');
@@ -3578,9 +3575,6 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
     DocPos spcCount = 0;
 
     _IGNORE_NOTIFY_CHANGE_;
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
 
@@ -3606,9 +3600,9 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
         spcCount += iPadLen;
     }
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
     _OBSERVE_NOTIFY_CHANGE_;
+
+    _RESTORE_TARGET_RANGE_;
 
     FreeMem(pmszPadStr);
 
@@ -3744,13 +3738,12 @@ void EditStripFirstCharacter(HWND hwnd)
         return;
     }
 
+    _SAVE_TARGET_RANGE_;
+
     DocPos const iSelStart = SciCall_IsSelectionEmpty() ? 0 : SciCall_GetSelectionStart();
     DocPos const iSelEnd = SciCall_IsSelectionEmpty() ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd();
     DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     _BEGIN_UNDO_ACTION_;
 
@@ -3804,9 +3797,9 @@ void EditStripFirstCharacter(HWND hwnd)
         }
     }
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
     _END_UNDO_ACTION_;
+
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -3822,13 +3815,12 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
         return;
     }
 
+    _SAVE_TARGET_RANGE_;
+
     DocPos const iSelStart = (SciCall_IsSelectionEmpty() || bIgnoreSelection) ? 0 : SciCall_GetSelectionStart();
     DocPos const iSelEnd = (SciCall_IsSelectionEmpty() || bIgnoreSelection) ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd();
     DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     _BEGIN_UNDO_ACTION_;
 
@@ -3922,9 +3914,9 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
             }
         }
     }
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
     _END_UNDO_ACTION_;
+    
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -3934,6 +3926,8 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
 //
 void EditCompressBlanks()
 {
+    _SAVE_TARGET_RANGE_;
+
     const bool bIsSelEmpty = SciCall_IsSelectionEmpty();
 
     const DocPos iSelStartPos = SciCall_GetSelectionStart();
@@ -4069,9 +4063,6 @@ void EditCompressBlanks()
 
             if (bModified) {
 
-                DocPos const saveTargetBeg = SciCall_GetTargetStart();
-                DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
                 _BEGIN_UNDO_ACTION_;
 
                 if (!SciCall_IsSelectionEmpty()) {
@@ -4080,8 +4071,6 @@ void EditCompressBlanks()
                     SciCall_TargetWholeDocument();
                 }
                 SciCall_ReplaceTarget(-1, pszOut);
-
-                SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
                 DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, SizeOfMem(pszOut));
 
@@ -4102,6 +4091,8 @@ void EditCompressBlanks()
         }
         FreeMem(pszOut);
     }
+
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -4131,8 +4122,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
         --iEndLine;
     }
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+    _SAVE_TARGET_RANGE_;
 
     _BEGIN_UNDO_ACTION_;
 
@@ -4181,8 +4171,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
 
     _END_UNDO_ACTION_;
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -4198,6 +4187,8 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
         return;
     }
+
+    _SAVE_TARGET_RANGE_;
 
     DocPos const iSelStart = SciCall_GetSelectionStart();
     DocPos const iSelEnd = SciCall_GetSelectionEnd();
@@ -4220,9 +4211,6 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
     if ((iEndLine - iStartLine) <= 1) {
         return;
     }
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     _BEGIN_UNDO_ACTION_;
 
@@ -4254,9 +4242,9 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
         } // empty
     }
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
     _END_UNDO_ACTION_;
+
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -4374,6 +4362,8 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
 //
 void EditWrapToColumn(DocPosU nColumn)
 {
+    _SAVE_TARGET_RANGE_;
+
     DocPosU const tabWidth = SciCall_GetTabWidth();
     nColumn = clamppu(nColumn, tabWidth, LONG_LINES_MARKER_LIMIT);
 
@@ -4508,17 +4498,16 @@ void EditWrapToColumn(DocPosU nColumn)
             }
 
             _BEGIN_UNDO_ACTION_;
-            DocPos const saveTargetBeg = SciCall_GetTargetStart();
-            DocPos const saveTargetEnd = SciCall_GetTargetEnd();
             SciCall_SetTargetRange(iSelStart, iSelEnd);
             SciCall_ReplaceTarget(cchConvM, pszText);
-            SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
             EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
             _END_UNDO_ACTION_;
             FreeMem(pszText);
         }
     }
     FreeMem(pszConvW);
+
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -4536,15 +4525,14 @@ void EditWrapToColumnForce(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
         return;
     }
 
+    _SAVE_TARGET_RANGE_;
+
     size_t const size = (size_t)nColumn + 1LL;
     char const spc = ' ';
     char* const pTxt = (char* const)AllocMem(size + 1, HEAP_ZERO_MEMORY);
     memset(pTxt, spc, size);
     int const width_pix = SciCall_TextWidth(STYLE_DEFAULT, pTxt);
     FreeMem(pTxt);
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     _BEGIN_UNDO_ACTION_;
     if (SciCall_IsSelectionEmpty()) {
@@ -4553,8 +4541,8 @@ void EditWrapToColumnForce(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
         SciCall_TargetFromSelection();
     }
     SciCall_LinesSplit(width_pix);
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
     _END_UNDO_ACTION_;
+    _RESTORE_TARGET_RANGE_;
 }
 #endif
 
@@ -4566,14 +4554,12 @@ void EditWrapToColumnForce(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
 void EditSplitLines(HWND hwnd)
 {
     UNUSED(hwnd);
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
+    _SAVE_TARGET_RANGE_;
     _BEGIN_UNDO_ACTION_;
     SciCall_TargetFromSelection();
     SciCall_LinesSplit(0);
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
     _END_UNDO_ACTION_;
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -4595,6 +4581,8 @@ void EditJoinLinesEx(bool bPreserveParagraphs, bool bCRLF2Space)
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
         return;
     }
+
+    _SAVE_TARGET_RANGE_;
 
     DocPos const iSelStart = SciCall_GetSelectionStart();
     DocPos const iSelEnd = SciCall_GetSelectionEnd();
@@ -4649,15 +4637,13 @@ void EditJoinLinesEx(bool bPreserveParagraphs, bool bCRLF2Space)
         }
 
         _BEGIN_UNDO_ACTION_;
-        DocPos const saveTargetBeg = SciCall_GetTargetStart();
-        DocPos const saveTargetEnd = SciCall_GetTargetEnd();
         SciCall_SetTargetRange(iSelStart, iSelEnd);
         SciCall_ReplaceTarget(cchJoin, pszJoin);
-        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
         _END_UNDO_ACTION_;
     }
     FreeMem(pszJoin);
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -4766,6 +4752,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     if (SciCall_IsSelectionEmpty()) {
         return;    // no selection
     }
+
+    _SAVE_TARGET_RANGE_;
 
     bool const bIsMultiSel = Sci_IsMultiOrRectangleSelection();
 
@@ -4970,24 +4958,18 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         }
     }
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
     _BEGIN_UNDO_ACTION_;
-
     //SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_PositionFromLine(iLineEnd + 1));
     SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_GetLineEndPosition(iLineEnd));
     SciCall_ReplaceTarget(-1, pmszResult);
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
     FreeMem(pmszResult);
-
     if (bIsMultiSel) {
         EditSetSelectionEx(iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
     } else {
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
     }
-
     _END_UNDO_ACTION_;
+    _RESTORE_TARGET_RANGE_;
 }
 
 
@@ -5505,12 +5487,13 @@ static DocPos  _FindInTarget(LPCSTR szFind, DocPos length, int sFlags,
         return iPos;
     }
 
+    // remember original target range
+    DocPos const saveTargetBeg = SciCall_GetTargetStart();
+    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
     DocPos start = *begin;
     DocPos stop  = *end;
     bool const bFindNext = (start <= stop); // else find previous
-
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
     SciCall_SetSearchFlags(sFlags);
     SciCall_SetTargetRange(start, stop);
@@ -5544,7 +5527,7 @@ static DocPos  _FindInTarget(LPCSTR szFind, DocPos length, int sFlags,
         }
     }
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); // restore original target range
 
     return iPos;
 }
@@ -6847,8 +6830,8 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 void EditSelectionMultiSelectAll()
 {
     if (SciCall_GetSelText(NULL) > 1) {
-        DocPos const saveTargetBeg = SciCall_GetTargetStart();
-        DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
+        _SAVE_TARGET_RANGE_;
 
         SciCall_TargetWholeDocument();
 
@@ -6860,10 +6843,9 @@ void EditSelectionMultiSelectAll()
         if (SciCall_GetSelectionNAnchor(0) > SciCall_GetSelectionNCaret(0)) {
             SciCall_SwapMainAnchorCaret();
         }
-
-        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
         EditEnsureSelectionVisible();
+
+        _RESTORE_TARGET_RANGE_;
     }
 }
 
@@ -6959,21 +6941,19 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
         return EditFindNext(hwnd, lpefr, false, false);
     }
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+    _SAVE_TARGET_RANGE_;
 
     _BEGIN_UNDO_ACTION_;
-
     SciCall_TargetFromSelection();
     Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
     // move caret behind replacement
     SciCall_SetCurrentPos(SciCall_GetTargetEnd());
     Globals.iReplacedOccurrences = 1;
 
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+    _END_UNDO_ACTION_;
     FreeMem(pszReplace);
 
-    _END_UNDO_ACTION_;
+    _RESTORE_TARGET_RANGE_;
 
     return EditFindNext(hwnd, lpefr, false, false);
 }
@@ -7007,10 +6987,10 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
         return -1; // recoding of clipboard canceled
     }
 
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+    DocPos const _saveTargetBeg_ = SciCall_GetTargetStart();
+    DocPos const _saveTargetEnd_ = SciCall_GetTargetEnd();
 
-    DocPos start   = iStartPos;
+    DocPos start = iStartPos;
     DocPos end     = iEndPos;
     DocPos iPos    = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
 
@@ -7034,7 +7014,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     _END_UNDO_ACTION_;
 
     *enlargement = (iEndPos - iOrigEndPos);
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd + *enlargement); //restore
+    SciCall_SetTargetRange(_saveTargetBeg_, _saveTargetEnd_ + *enlargement); //restore
     return iCount;
 }
 

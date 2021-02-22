@@ -7228,13 +7228,10 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
                              (int)GetRValue(rgbNew), (int)GetGValue(rgbNew), (int)GetBValue(rgbNew));
         }
 
-        DocPos const saveTargetBeg = SciCall_GetTargetStart();
-        DocPos const saveTargetEnd = SciCall_GetTargetEnd();
-
+        _SAVE_TARGET_RANGE_;
         SciCall_SetTargetRange(firstPos, lastPos);
         SciCall_ReplaceTarget(length, wchColor);
-
-        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+        _RESTORE_TARGET_RANGE_;
 
         EditUpdateVisibleIndicators();
     }
