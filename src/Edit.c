@@ -3393,7 +3393,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
                     iSelStartOffset += (iSelStart <= iPos) ? 0 : cchComment;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
-                iSelEndOffset += (movedSelEnd < iPos) ? 0 : cchComment;
+                iSelEndOffset += (movedSelEnd <= iPos) ? 0 : cchComment;
             }
             break;
             case 2:
