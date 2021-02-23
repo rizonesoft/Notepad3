@@ -161,8 +161,7 @@ inline BOOL StrIsEmptyW(LPCWSTR s)
 #define HISTORY_ITEMS 50
 
 
-typedef struct tagHISTORY
-{
+typedef struct tagHISTORY {
     WCHAR *psz[HISTORY_ITEMS]; // Strings
     int  iCurItem;            // Current Item
 
@@ -182,8 +181,7 @@ void History_UpdateToolbar(PHISTORY,HWND,int,int);
 #define MRU_NOCASE    1
 #define MRU_UTF8      2
 
-typedef struct _mrulist
-{
+typedef struct _mrulist {
 
     WCHAR  szRegKey[256];
     int   iFlags;
@@ -207,8 +205,7 @@ void      MRU_AddOneItem(LPCWSTR,LPCWSTR);
 //==== Themed Dialogs =========================================================
 #ifndef DLGTEMPLATEEX
 #pragma pack(push, 1)
-typedef struct
-{
+typedef struct {
     WORD      dlgVer;
     WORD      signature;
     DWORD     helpID;

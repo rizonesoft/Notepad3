@@ -53,12 +53,9 @@ DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
 inline void InitWindowCommon(HWND hwnd, BOOL bSetExplorerTheme)
 {
-    if (bSetExplorerTheme)
-    {
+    if (bSetExplorerTheme) {
         SetExplorerTheme(hwnd);
-    }
-    else
-    {
+    } else {
         SetWindowTheme(hwnd, L"", L"");
     }
     //SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);

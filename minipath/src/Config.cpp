@@ -78,8 +78,7 @@ constexpr bool SI_Success(const SI_Error rc) noexcept
 
 HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
-    if (StrIsEmpty(lpIniFilePath))
-    {
+    if (StrIsEmpty(lpIniFilePath)) {
         return INVALID_HANDLE_VALUE;
     }
 
@@ -89,16 +88,12 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
                               GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                               OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hFile != INVALID_HANDLE_VALUE)
-    {
+    if (hFile != INVALID_HANDLE_VALUE) {
         bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
-        if (!bLocked)
-        {
+        if (!bLocked) {
             MsgBoxLastError(L"AcquireWriteFileLock(): NO EXCLUSIVE LOCK ACQUIRED!", 0);
         }
-    }
-    else
-    {
+    } else {
         MsgBoxLastError(L"AcquireWriteFileLock(): INVALID FILE HANDLE!", 0);
     }
     return (bLocked ? hFile : INVALID_HANDLE_VALUE);
@@ -110,8 +105,7 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 
 HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
-    if (StrIsEmpty(lpIniFilePath))
-    {
+    if (StrIsEmpty(lpIniFilePath)) {
         return INVALID_HANDLE_VALUE;
     }
 
@@ -121,19 +115,15 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
                               GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hFile != INVALID_HANDLE_VALUE)
-    {
+    if (hFile != INVALID_HANDLE_VALUE) {
         bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
-        if (!bLocked)
-        {
+        if (!bLocked) {
             wchar_t msg[MAX_PATH + 128] = { 0 };
             StringCchPrintf(msg, ARRAYSIZE(msg),
                             L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
             MsgBoxLastError(msg, 0);
         }
-    }
-    else
-    {
+    } else {
         wchar_t msg[MAX_PATH + 128] = { 0 };
         StringCchPrintf(msg, ARRAYSIZE(msg),
                         L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
@@ -147,8 +137,7 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 BOOL ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 {
     bool bUnLocked = true;
-    if (hFile != INVALID_HANDLE_VALUE)
-    {
+    if (hFile != INVALID_HANDLE_VALUE) {
         FlushFileBuffers(hFile);
         bUnLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &rOvrLpd);
         CloseHandle(hFile);
@@ -171,8 +160,7 @@ extern "C" BOOL ResetIniFileCache()
 
 extern "C" BOOL LoadIniFileCache(LPCWSTR lpIniFilePath)
 {
-    if (StrIsEmpty(lpIniFilePath) || !PathIsExistingFile(lpIniFilePath))
-    {
+    if (StrIsEmpty(lpIniFilePath) || !PathIsExistingFile(lpIniFilePath)) {
         return FALSE;
     }
 
@@ -184,8 +172,7 @@ extern "C" BOOL LoadIniFileCache(LPCWSTR lpIniFilePath)
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hIniFile = AcquireReadFileLock(lpIniFilePath, ovrLpd);
 
-    if (hIniFile == INVALID_HANDLE_VALUE)
-    {
+    if (hIniFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
@@ -205,16 +192,14 @@ extern "C" BOOL IsIniFileCached()
 
 extern "C" BOOL SaveIniFileCache(LPCWSTR lpIniFilePath)
 {
-    if (!s_bIniFileCacheLoaded)
-    {
+    if (!s_bIniFileCacheLoaded) {
         return false;
     }
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hIniFile = AcquireWriteFileLock(lpIniFilePath, ovrLpd);
 
-    if (hIniFile == INVALID_HANDLE_VALUE)
-    {
+    if (hIniFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
@@ -358,8 +343,7 @@ extern "C" BOOL IniSectionDelete(LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL 
 extern "C" BOOL IniSectionClear(LPCWSTR lpSectionName, BOOL bRemoveEmpty)
 {
     BOOL const ok = s_INI.Delete(lpSectionName, nullptr, bRemoveEmpty);
-    if (!bRemoveEmpty)
-    {
+    if (!bRemoveEmpty) {
         SI_Error const rc = s_INI.SetValue(lpSectionName, nullptr, nullptr);
         return SI_Success(rc);
     }
@@ -374,10 +358,8 @@ extern "C" BOOL IniClearAllSections(LPCWSTR lpPrefix, BOOL bRemoveEmpty)
 
     CSimpleIni::TNamesDepend Sections;
     s_INI.GetAllSections(Sections);
-    for (const auto& section : Sections)
-    {
-        if (lstrcmpi(section.pItem, lpPrefix) == 0)
-        {
+    for (const auto& section : Sections) {
+        if (lstrcmpi(section.pItem, lpPrefix) == 0) {
             IniSectionClear(section.pItem, bRemoveEmpty);
         }
     }
@@ -393,8 +375,7 @@ extern "C" BOOL IniClearAllSections(LPCWSTR lpPrefix, BOOL bRemoveEmpty)
 extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
                                    LPWSTR lpReturnedString, size_t cchReturnedString)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
         return (size_t)lstrlen(lpReturnedString);
     }
@@ -403,8 +384,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
         return (size_t)lstrlen(lpReturnedString);
     }
@@ -412,14 +392,11 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
     SI_Error const rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
         StringCchCopyW(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
         //assert(!bHasMultiple);
-    }
-    else
-    {
+    } else {
         StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
     }
     return (size_t)lstrlen(lpReturnedString);
@@ -429,8 +406,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
 extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -439,18 +415,15 @@ extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
         rc = SI_Success(res) ? SI_Error::SI_OK : SI_Error::SI_FAIL;
-        if (SI_Success(rc))
-        {
+        if (SI_Success(rc)) {
             rc = Ini.SaveFile(hFile, s_bWriteSIG);
         }
     }
@@ -463,8 +436,7 @@ extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 
 extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return iDefault;
     }
 
@@ -472,16 +444,14 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return iDefault;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
         int const iValue = Ini.GetLongValue(lpSectionName, lpKeyName, (long)iDefault, &bHasMultiple);
         //assert(!bHasMultiple);
@@ -494,8 +464,7 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 
 extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -504,14 +473,12 @@ extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
         rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
@@ -524,8 +491,7 @@ extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
 extern "C" BOOL IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bDefault)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return bDefault;
     }
 
@@ -533,16 +499,14 @@ extern "C" BOOL IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return bDefault;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
         bool const bValue = Ini.GetBoolValue(lpSectionName, lpKeyName, bDefault, &bHasMultiple);
         //assert(!bHasMultiple);
@@ -555,8 +519,7 @@ extern "C" BOOL IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bValue)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -565,14 +528,12 @@ extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
         rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
@@ -585,8 +546,7 @@ extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bRemoveEmpty)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -595,14 +555,12 @@ extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         Ini.Delete(lpSectionName, lpKeyName, bRemoveEmpty);
         rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
@@ -615,8 +573,7 @@ extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
 extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
 {
-    if (StrIsEmpty(lpFilePath))
-    {
+    if (StrIsEmpty(lpFilePath)) {
         return false;
     }
 
@@ -624,16 +581,14 @@ extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
+    if (hFile == INVALID_HANDLE_VALUE) {
         return false;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
     ReleaseFileLock(hFile, ovrLpd);
 
-    if (SI_Success(rc))
-    {
+    if (SI_Success(rc)) {
         bool bHasMultiple = false;
 
         // get all keys in a section
@@ -641,8 +596,7 @@ extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
         Ini.GetAllKeys(lpSectionName, keyList);
         keyList.sort(CSimpleIniW::Entry::LoadOrder());
 
-        for (const auto& key : keyList)
-        {
+        for (const auto& key : keyList) {
             callBack(key.pItem, Ini.GetValue(lpSectionName, key.pItem, L"", &bHasMultiple));
         }
     }
@@ -704,12 +658,10 @@ void InitDefaultSettings()
 int CreateIniFile()
 {
     int result = 0;
-    if (g_wchIniFile[0] != L'\0')
-    {
+    if (g_wchIniFile[0] != L'\0') {
         WCHAR* pwchTail = StrRChrW(g_wchIniFile, NULL, L'\\');
 
-        if (pwchTail)
-        {
+        if (pwchTail) {
             *pwchTail = 0;
             SHCreateDirectoryEx(NULL, g_wchIniFile, NULL);
             *pwchTail = L'\\';
@@ -717,23 +669,18 @@ int CreateIniFile()
 
         DWORD dwFileSize = 0UL;
 
-        if (!PathIsExistingFile(g_wchIniFile))
-        {
+        if (!PathIsExistingFile(g_wchIniFile)) {
             HANDLE hFile = CreateFile(g_wchIniFile,
                                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                       CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-            if (hFile != INVALID_HANDLE_VALUE)
-            {
+            if (hFile != INVALID_HANDLE_VALUE) {
                 CloseHandle(hFile);
             }
-        }
-        else
-        {
+        } else {
             HANDLE hFile = CreateFile(g_wchIniFile,
                                       GENERIC_READ, FILE_SHARE_READ,
                                       nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-            if (hFile == INVALID_HANDLE_VALUE)
-            {
+            if (hFile == INVALID_HANDLE_VALUE) {
                 return result;
             }
             DWORD dwFSHigh = 0UL;
@@ -741,12 +688,9 @@ int CreateIniFile()
             CloseHandle(hFile);
         }
 
-        if ((dwFileSize == 0) && (dwFileSize != INVALID_FILE_SIZE))
-        {
+        if ((dwFileSize == 0) && (dwFileSize != INVALID_FILE_SIZE)) {
             result = IniFileSetString(g_wchIniFile, L"minipath", NULL, NULL);
-        }
-        else
-        {
+        } else {
             result = true;
         }
 
@@ -769,13 +713,11 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     WCHAR tchBuild[MAX_PATH];
     ExpandEnvironmentStrings(lpszFile, tchFileExpanded, COUNTOF(tchFileExpanded));
 
-    if (PathIsRelative(tchFileExpanded))
-    {
+    if (PathIsRelative(tchFileExpanded)) {
         // program directory
         lstrcpy(tchBuild, lpszModule);
         lstrcpy(PathFindFileName(tchBuild), tchFileExpanded);
-        if (PathIsExistingFile(tchBuild))
-        {
+        if (PathIsExistingFile(tchBuild)) {
             lstrcpy(lpszFile, tchBuild);
             return 1;
         }
@@ -784,34 +726,27 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
         PathRemoveFileSpec(tchBuild);
         lstrcat(tchBuild, L"\\np3\\");
         lstrcat(tchBuild, tchFileExpanded);
-        if (PathIsExistingFile(tchBuild))
-        {
+        if (PathIsExistingFile(tchBuild)) {
             lstrcpy(lpszFile, tchBuild);
             return 1;
         }
         // Application Data (%APPDATA%)
-        if (S_OK == SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, tchBuild))
-        {
+        if (S_OK == SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, tchBuild)) {
             PathAppend(tchBuild, tchFileExpanded);
-            if (PathIsExistingFile(tchBuild))
-            {
+            if (PathIsExistingFile(tchBuild)) {
                 lstrcpy(lpszFile, tchBuild);
                 return 1;
             }
         }
         // Home (%HOMEPATH%)
-        if (S_OK == SHGetFolderPath(nullptr, CSIDL_PROFILE, nullptr, SHGFP_TYPE_CURRENT, tchBuild))
-        {
+        if (S_OK == SHGetFolderPath(nullptr, CSIDL_PROFILE, nullptr, SHGFP_TYPE_CURRENT, tchBuild)) {
             PathAppend(tchBuild, tchFileExpanded);
-            if (PathIsExistingFile(tchBuild))
-            {
+            if (PathIsExistingFile(tchBuild)) {
                 lstrcpy(lpszFile, tchBuild);
                 return 1;
             }
         }
-    }
-    else if (PathIsExistingFile(tchFileExpanded))
-    {
+    } else if (PathIsExistingFile(tchFileExpanded)) {
         lstrcpy(lpszFile, tchFileExpanded);
         return 1;
     }
@@ -823,25 +758,18 @@ int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile
 {
     WCHAR tch[MAX_PATH];
 
-    if (IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch)))
-    {
-        if (CheckIniFile(tch, lpszModule))
-        {
+    if (IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch))) {
+        if (CheckIniFile(tch, lpszModule)) {
             lstrcpy(lpszFile, tch);
             return(1);
-        }
-        else
-        {
+        } else {
             WCHAR tchFileExpanded[MAX_PATH];
             ExpandEnvironmentStrings(tch, tchFileExpanded, COUNTOF(tchFileExpanded));
-            if (PathIsRelative(tchFileExpanded))
-            {
+            if (PathIsRelative(tchFileExpanded)) {
                 lstrcpy(lpszFile, lpszModule);
                 lstrcpy(PathFindFileName(lpszFile), tchFileExpanded);
                 return(1);
-            }
-            else
-            {
+            } else {
                 lstrcpy(lpszFile, tchFileExpanded);
                 return(1);
             }
@@ -858,17 +786,13 @@ int FindIniFile()
     WCHAR tchModule[MAX_PATH];
     GetModuleFileName(nullptr, tchModule, COUNTOF(tchModule));
 
-    if (StrIsNotEmpty(g_wchIniFile))
-    {
-        if (lstrcmpi(g_wchIniFile, L"*?") == 0)
+    if (StrIsNotEmpty(g_wchIniFile)) {
+        if (lstrcmpi(g_wchIniFile, L"*?") == 0) {
             return(0);
-        else
-        {
-            if (!CheckIniFile(g_wchIniFile, tchModule))
-            {
+        } else {
+            if (!CheckIniFile(g_wchIniFile, tchModule)) {
                 ExpandEnvironmentStringsEx(g_wchIniFile, COUNTOF(g_wchIniFile));
-                if (PathIsRelative(g_wchIniFile))
-                {
+                if (PathIsRelative(g_wchIniFile)) {
                     lstrcpy(tchTest, tchModule);
                     PathRemoveFileSpec(tchTest);
                     PathAppend(tchTest, g_wchIniFile);
@@ -883,21 +807,18 @@ int FindIniFile()
     PathRenameExtension(tchTest, L".ini");
     bFound = CheckIniFile(tchTest, tchModule);
 
-    if (!bFound)
-    {
+    if (!bFound) {
         lstrcpy(tchTest, L"minipath.ini");
         bFound = CheckIniFile(tchTest, tchModule);
     }
 
-    if (bFound)
-    {
+    if (bFound) {
         // allow two redirections: administrator -> user -> custom
-        if (CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule))
+        if (CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule)) {
             CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule);
+        }
         lstrcpy(g_wchIniFile, tchTest);
-    }
-    else
-    {
+    } else {
         lstrcpy(g_wchIniFile, tchModule);
         PathRenameExtension(g_wchIniFile, L".ini");
     }
@@ -908,22 +829,17 @@ int FindIniFile()
     lstrcpy(tchTest, PathFindFileName(tchModule));
     PathRenameExtension(tchTest, L".ini");
     bFound = CheckIniFile(tchTest, tchModule);
-    if (!bFound)
-    {
+    if (!bFound) {
         lstrcpy(tchTest, L"notepad3.ini");
         bFound = CheckIniFile(tchTest, tchModule);
     }
-    if (bFound)
-    {
+    if (bFound) {
         // allow two redirections: administrator -> user -> custom
-        if (CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule))
-        {
+        if (CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule)) {
             CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule);
         }
         lstrcpy(g_wchNP3IniFile, tchTest);
-    }
-    else
-    {
+    } else {
         lstrcpy(g_wchNP3IniFile, tchModule);
         PathRenameExtension(g_wchNP3IniFile, L".ini");
     }
@@ -934,61 +850,52 @@ int FindIniFile()
 int TestIniFile()
 {
 
-    if (lstrcmpi(g_wchIniFile, L"*?") == 0)
-    {
+    if (lstrcmpi(g_wchIniFile, L"*?") == 0) {
         lstrcpy(g_wchIniFile2, L"");
         lstrcpy(g_wchIniFile, L"");
         return(0);
     }
 
-    if (PathIsDirectory(g_wchIniFile) || *CharPrev(g_wchIniFile, StrEnd(g_wchIniFile)) == L'\\')
-    {
+    if (PathIsDirectory(g_wchIniFile) || *CharPrev(g_wchIniFile, StrEnd(g_wchIniFile)) == L'\\') {
         WCHAR wchModule[MAX_PATH];
         GetModuleFileName(nullptr, wchModule, COUNTOF(wchModule));
         PathAppend(g_wchIniFile, PathFindFileName(wchModule));
         PathRenameExtension(g_wchIniFile, L".ini");
-        if (!PathIsExistingFile(g_wchIniFile))
-        {
+        if (!PathIsExistingFile(g_wchIniFile)) {
             lstrcpy(PathFindFileName(g_wchIniFile), L"minipath.ini");
-            if (!PathIsExistingFile(g_wchIniFile))
-            {
+            if (!PathIsExistingFile(g_wchIniFile)) {
                 lstrcpy(PathFindFileName(g_wchIniFile), PathFindFileName(wchModule));
                 PathRenameExtension(g_wchIniFile, L".ini");
             }
         }
     }
     // --- test for Notepad3.ini ---
-    if (PathIsDirectory(g_wchNP3IniFile) || *CharPrev(g_wchNP3IniFile, StrEnd(g_wchNP3IniFile)) == L'\\')
-    {
+    if (PathIsDirectory(g_wchNP3IniFile) || *CharPrev(g_wchNP3IniFile, StrEnd(g_wchNP3IniFile)) == L'\\') {
         WCHAR wchModule[MAX_PATH];
         GetModuleFileName(nullptr, wchModule, COUNTOF(wchModule));
         PathRemoveFileSpec(wchModule);
         lstrcat(wchModule, L"\\Notepad3.exe");
         PathAppend(g_wchNP3IniFile, PathFindFileName(wchModule));
         PathRenameExtension(g_wchNP3IniFile, L".ini");
-        if (!PathIsExistingFile(g_wchNP3IniFile))
-        {
+        if (!PathIsExistingFile(g_wchNP3IniFile)) {
             lstrcpy(PathFindFileName(g_wchNP3IniFile), L"notepad3.ini");
-            if (!PathIsExistingFile(g_wchNP3IniFile))
-            {
+            if (!PathIsExistingFile(g_wchNP3IniFile)) {
                 lstrcpy(PathFindFileName(g_wchNP3IniFile), PathFindFileName(wchModule));
                 PathRenameExtension(g_wchNP3IniFile, L".ini");
             }
         }
     }
-    if (!PathIsExistingFile(g_wchNP3IniFile) || PathIsDirectory(g_wchNP3IniFile))
-    {
+    if (!PathIsExistingFile(g_wchNP3IniFile) || PathIsDirectory(g_wchNP3IniFile)) {
         lstrcpy(g_wchNP3IniFile, L"");
     }
 
-    if (!PathFileExists(g_wchIniFile) || PathIsDirectory(g_wchIniFile))
-    {
+    if (!PathFileExists(g_wchIniFile) || PathIsDirectory(g_wchIniFile)) {
         lstrcpy(g_wchIniFile2, g_wchIniFile);
         lstrcpy(g_wchIniFile, L"");
         return(0);
-    }
-    else
+    } else {
         return(1);
+    }
 }
 
 
@@ -999,40 +906,38 @@ int TestIniFile()
 //
 void LoadFlags()
 {
-    __try
-    {
+    __try {
 
         LoadIniFileCache(g_wchIniFile);
 
         const WCHAR* const Settings_Section2 = L"Settings2";
 
         if (!IniSectionGetString(Settings_Section2, L"PreferredLanguageLocaleName", L"",
-                                 g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName)))
-        {
+                                 g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) {
             // try to fetch Locale Name from Notepad3.ini
             IniFileGetString(g_wchNP3IniFile, L"Settings2", L"PreferredLanguageLocaleName", L"",
                              g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
         }
 
-        if (!flagNoReuseWindow)
-        {
+        if (!flagNoReuseWindow) {
 
-            if (!IniSectionGetInt(Settings_Section2, L"ReuseWindow", 1))
+            if (!IniSectionGetInt(Settings_Section2, L"ReuseWindow", 1)) {
                 flagNoReuseWindow = 1;
+            }
         }
 
-        if (IniSectionGetInt(Settings_Section2, L"PortableMyDocs", 1))
+        if (IniSectionGetInt(Settings_Section2, L"PortableMyDocs", 1)) {
             flagPortableMyDocs = 1;
+        }
 
-        if (IniSectionGetInt(Settings_Section2, L"NoFadeHidden", 0))
+        if (IniSectionGetInt(Settings_Section2, L"NoFadeHidden", 0)) {
             flagNoFadeHidden = 1;
+        }
 
         flagToolbarLook = IniSectionGetInt(Settings_Section2, L"ToolbarLook", 0);
         flagToolbarLook = max(min(flagToolbarLook, 2), 0);
 
-    }
-    __finally
-    {
+    } __finally {
         ResetIniFileCache();
     }
 }
@@ -1058,8 +963,7 @@ extern "C" LPWSTR lpFilterArg;
 
 void LoadSettings()
 {
-    __try
-    {
+    __try {
 
         LoadIniFileCache(g_wchIniFile);
 
@@ -1082,31 +986,29 @@ void LoadSettings()
 
         Defaults.tchFavoritesDir[0] = L'\0';
         if (!IniSectionGetString(Settings_Section, L"Favorites", Defaults.tchFavoritesDir,
-                                 Settings.tchFavoritesDir, COUNTOF(Settings.tchFavoritesDir)))
-        {
+                                 Settings.tchFavoritesDir, COUNTOF(Settings.tchFavoritesDir))) {
             // try to fetch Favorites dir from Notepad3.ini
-            if (StrIsNotEmpty(g_wchNP3IniFile))
-            {
+            if (StrIsNotEmpty(g_wchNP3IniFile)) {
                 Settings.bNP3sFavoritesSettings = TRUE;
                 IniFileGetString(g_wchNP3IniFile, L"Settings", L"Favorites", L"", Settings.tchFavoritesDir, COUNTOF(Settings.tchFavoritesDir));
             }
         }
-        if (StrIsEmpty(Settings.tchFavoritesDir))
+        if (StrIsEmpty(Settings.tchFavoritesDir)) {
             SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, Settings.tchFavoritesDir);
-        else
+        } else {
             PathAbsoluteFromApp(Settings.tchFavoritesDir, nullptr, COUNTOF(Settings.tchFavoritesDir), TRUE);
+        }
 
 
         Defaults.szQuickview[0] = L'\0';
         if (!IniSectionGetString(Settings_Section, L"Quikview.exe", Defaults.szQuickview,
-                                 Settings.szQuickview, COUNTOF(Settings.szQuickview)))
-        {
+                                 Settings.szQuickview, COUNTOF(Settings.szQuickview))) {
             GetSystemDirectory(Settings.szQuickview, COUNTOF(Settings.szQuickview));
             PathAddBackslash(Settings.szQuickview);
             lstrcat(Settings.szQuickview, L"Viewers\\Quikview.exe");
-        }
-        else
+        } else {
             PathAbsoluteFromApp(Settings.szQuickview, nullptr, COUNTOF(Settings.szQuickview), TRUE);
+        }
 
         Settings.bHasQuickview = PathIsExistingFile(Settings.szQuickview);
 
@@ -1117,34 +1019,28 @@ void LoadSettings()
 
         lstrcpy(Defaults.tchOpenWithDir, L"%USERPROFILE%\\Desktop");
         if (IniSectionGetString(Settings_Section, L"OpenWithDir", L"",
-                                Settings.tchOpenWithDir, COUNTOF(Settings.tchOpenWithDir)) == 0)
-        {
+                                Settings.tchOpenWithDir, COUNTOF(Settings.tchOpenWithDir)) == 0) {
             // try to fetch Open With dir from Notepad3.ini
             IniFileGetString(g_wchNP3IniFile, L"Settings", L"OpenWithDir", L"", Settings.tchOpenWithDir, COUNTOF(Settings.tchOpenWithDir));
         }
-        if (StrIsEmpty(Settings.tchOpenWithDir))
+        if (StrIsEmpty(Settings.tchOpenWithDir)) {
             SHGetSpecialFolderPath(nullptr, Settings.tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
-        else
+        } else {
             PathAbsoluteFromApp(Settings.tchOpenWithDir, nullptr, COUNTOF(Settings.tchOpenWithDir), TRUE);
+        }
 
         GET_INT_VALUE_FROM_INISECTION(dwFillMask, L"FillMask", DL_ALLOBJECTS, DL_FOLDERS, DL_ALLOBJECTS);
         GET_INT_VALUE_FROM_INISECTION(nSortFlags, L"SortOptions", DS_TYPE, 0, 3);
         GET_BOOL_VALUE_FROM_INISECTION(fSortRev, L"SortReverse", FALSE);
 
         lstrcpy(Defaults.tchFilter, L"*.*");
-        if (!lpFilterArg)
-        {
+        if (!lpFilterArg) {
             IniSectionGetString(Settings_Section, L"FileFilter", Defaults.tchFilter, Settings.tchFilter, COUNTOF(Settings.tchFilter));
-        }
-        else   // ignore filter if /m was specified
-        {
-            if (*(lpFilterArg) == L'-')
-            {
+        } else { // ignore filter if /m was specified
+            if (*(lpFilterArg) == L'-') {
                 Settings.bNegFilter = TRUE;
                 (void)lstrcpyn(Settings.tchFilter, lpFilterArg + 1, COUNTOF(Settings.tchFilter));
-            }
-            else
-            {
+            } else {
                 Settings.bNegFilter = FALSE;
                 (void)lstrcpyn(Settings.tchFilter, lpFilterArg, COUNTOF(Settings.tchFilter));
             }
@@ -1156,8 +1052,7 @@ void LoadSettings()
         GET_INT_VALUE_FROM_INISECTION(crFilter, L"ColorFilter", GetSysColor(COLOR_HIGHLIGHT), 0, INT_MAX);
 
         lstrcpy(Defaults.tchToolbarButtons, L"1 2 3 4 5 0 8");
-        if (IniSectionGetString(Settings_Section, L"ToolbarButtons", Defaults.tchToolbarButtons, Settings.tchToolbarButtons, COUNTOF(Settings.tchToolbarButtons)) == 0)
-        {
+        if (IniSectionGetString(Settings_Section, L"ToolbarButtons", Defaults.tchToolbarButtons, Settings.tchToolbarButtons, COUNTOF(Settings.tchToolbarButtons)) == 0) {
             lstrcpy(Settings.tchToolbarButtons, Defaults.tchToolbarButtons);
         }
 
@@ -1180,8 +1075,7 @@ void LoadSettings()
         IniSectionGetString(ToolbarImages_Section, L"BitmapHot", L"", Settings.tchToolbarBitmapHot, COUNTOF(Settings.tchToolbarBitmap));
         IniSectionGetString(ToolbarImages_Section, L"BitmapDisabled", L"", Settings.tchToolbarBitmapDisabled, COUNTOF(Settings.tchToolbarBitmap));
 
-        if (!flagPosParam)   // ignore window position if /p was specified
-        {
+        if (!flagPosParam) { // ignore window position if /p was specified
 
             WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32];
 
@@ -1199,8 +1093,7 @@ void LoadSettings()
         }
 
         // Initialize custom colors for ChooseColor()
-        for (int i = 0; i < COUNTOF(Settings.crCustom); ++i)
-        {
+        for (int i = 0; i < COUNTOF(Settings.crCustom); ++i) {
             Settings.crCustom[i] = Defaults.crCustom[i];
         }
 
@@ -1209,9 +1102,7 @@ void LoadSettings()
         Settings2.OpacityLevel = clampi(IniSectionGetInt(Settings_Section2, L"OpacityLevel", 75), 0, 100);
         Settings2.FocusLostOpacity = clampi(IniSectionGetInt(Settings_Section2, L"FocusLostOpacity", 100), 0, 100);
 
-    }
-    __finally
-    {
+    } __finally {
         ResetIniFileCache();
     }
 }
@@ -1245,25 +1136,21 @@ void SaveSettings(BOOL bSaveSettingsNow)
 {
     WCHAR wchTmp[MAX_PATH];
 
-    if (StrIsEmpty(g_wchIniFile))
-    {
+    if (StrIsEmpty(g_wchIniFile)) {
         return;
     }
 
     CreateIniFile();
 
-    if (!Settings.bSaveSettings && !bSaveSettingsNow)
-    {
-        if (Settings.iStartupDir == 1)
-        {
+    if (!Settings.bSaveSettings && !bSaveSettingsNow) {
+        if (Settings.iStartupDir == 1) {
             IniFileSetString(g_wchIniFile, L"Settings", L"MRUDirectory", Settings.szCurDir);
         }
         IniFileSetBool(g_wchIniFile, L"Settings", L"SaveSettings", Settings.bSaveSettings);
         return;
     }
 
-    __try
-    {
+    __try {
 
         LoadIniFileCache(g_wchIniFile);
 
@@ -1285,12 +1172,10 @@ void SaveSettings(BOOL bSaveSettingsNow)
         SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"EscFunction", iEscFunction);
 
         SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"StartupDirectory", iStartupDir);
-        if (Settings.iStartupDir == 1)
-        {
+        if (Settings.iStartupDir == 1) {
             IniSectionSetString(Settings_Section, L"MRUDirectory", Settings.szCurDir);
         }
-        if (!Settings.bNP3sFavoritesSettings)
-        {
+        if (!Settings.bNP3sFavoritesSettings) {
             PathRelativeToApp(Settings.tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
             IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
         }
@@ -1300,8 +1185,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
         SAVE_STRING_IF_NOT_EQ_DEFAULT(L"Quikview.exe", szQuickviewParams);
 
         PathRelativeToApp(Settings.tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
-        if (lstrcmp(wchTmp, Defaults.tchOpenWithDir) != 0)
-        {
+        if (lstrcmp(wchTmp, Defaults.tchOpenWithDir) != 0) {
             IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
         }
 
@@ -1330,8 +1214,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
           SaveSettingsNow(): query Window Dimensions
         */
 
-        if (bSaveSettingsNow)
-        {
+        if (bSaveSettingsNow) {
             WINDOWPLACEMENT wndpl;
             ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
             // GetWindowPlacement
@@ -1360,9 +1243,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
         IniSectionSetInt(Windows_Section, tchSizeX, Settings.wi.cx);
         IniSectionSetInt(Windows_Section, tchSizeY, Settings.wi.cy);
 
-    }
-    __finally
-    {
+    } __finally {
         SaveIniFileCache(g_wchIniFile);
     }
 }

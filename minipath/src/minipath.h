@@ -83,8 +83,7 @@
 
 
 //==== TypeDefs ======================================
-typedef struct _wi
-{
+typedef struct _wi {
     int x;
     int y;
     int cx;
@@ -100,8 +99,7 @@ typedef enum { TAM_ALWAYS_RUN = 0, TAM_SEND_DROP_MSG = 1, TAM_SEND_DDE_MSG = 2 }
 
 #define DL_FILTER_BUFSIZE 256  // should correspond to Dlapi.h def
 
-typedef struct _settings_t
-{
+typedef struct _settings_t {
     BOOL      bSaveSettings;
     BOOL      bNP3sFavoritesSettings;
     BOOL      bClearReadOnly;
@@ -157,8 +155,7 @@ extern SETTINGS_T Settings;
 extern SETTINGS_T Defaults;
 
 
-typedef struct _settings2_t
-{
+typedef struct _settings2_t {
     int      OpacityLevel;
     int      FocusLostOpacity;
 

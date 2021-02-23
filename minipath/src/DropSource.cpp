@@ -25,8 +25,7 @@
 ******************************************************************************/
 STDMETHODIMP CDropSource::QueryInterface(REFIID iid, PVOID *ppv) noexcept
 {
-    if (iid == IID_IUnknown || iid == IID_IDropSource)
-    {
+    if (iid == IID_IUnknown || iid == IID_IDropSource) {
         *ppv = this;
         AddRef();
         return NOERROR;
@@ -43,8 +42,7 @@ STDMETHODIMP_(ULONG) CDropSource::AddRef() noexcept
 STDMETHODIMP_(ULONG) CDropSource::Release() noexcept
 {
     const ULONG refs = --m_refs;
-    if (refs == 0)
-    {
+    if (refs == 0) {
         delete this;
     }
     return refs;
@@ -67,12 +65,10 @@ CDropSource::CDropSource() noexcept
 ******************************************************************************/
 STDMETHODIMP CDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState) noexcept
 {
-    if (fEscapePressed)
-    {
+    if (fEscapePressed) {
         return DRAGDROP_S_CANCEL;
     }
-    if (!(grfKeyState & MK_LBUTTON) && !(grfKeyState & MK_RBUTTON))
-    {
+    if (!(grfKeyState & MK_LBUTTON) && !(grfKeyState & MK_RBUTTON)) {
         return DRAGDROP_S_DROP;
     }
     return NOERROR;
