@@ -32,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.222.(build_#) (2021-02-22)
+Current BETA/RC Version 5.21.223.(build_#) (2021-02-23)
 ========================================================
 
 --------------------------------------------------------
@@ -65,6 +65,8 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
+[.223.1]- MiniPath: switch xbutton logic for browsing direction.
+[.223.1]- Code styling reformat MiniPath sources (AStyle: OTBS).
 [.222.1]- Minor refactorings.
 [.222.1]- Toggle Line-Comments: handling of selection start movement.
 [.219.1]- Simple Line Comment Toggle handles each line separately (Line Edit after toggle will still set mode of 1st line = former behavior).
