@@ -5033,13 +5033,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_URLENCODE: {
-        EditURLEncode(Globals.hwndEdit);
+        EditURLEncode(false);
+    }
+    break;
+
+
+    case IDM_EDIT_URL2PATH: {
+        EditURLEncode(true);
     }
     break;
 
 
     case IDM_EDIT_URLDECODE: {
-        EditURLDecode(Globals.hwndEdit);
+        EditURLDecode(false);
+    }
+    break;
+
+
+    case IDM_EDIT_PATH2URL: {
+        EditURLDecode(true);
     }
     break;
 

@@ -45,8 +45,8 @@ void EditInvertCase(HWND hwnd);
 void EditTitleCase(HWND hwnd);
 void EditSentenceCase(HWND hwnd);
 
-void EditURLEncode();
-void EditURLDecode();
+void EditURLEncode(const bool isPathConvert);
+void EditURLDecode(const bool isPathConvert);
 void EditEscapeCChars(HWND hwnd);
 void EditUnescapeCChars(HWND hwnd);
 void EditChar2Hex(HWND hwnd);
