@@ -111,8 +111,8 @@
 
       Selection
       ---------
-        Ctrl+,                Jump to Selection Start.
-        Ctrl+.                Jump to Selection End.
+        Ctrl+Q                Block Comment (Toggle).
+        Ctrl+Shift+Q          Stream Comment.
         Ctrl+D                Duplicate Selection or Line.
         Alt+B                 Pad with Blanks.
         Alt+Z                 Strip First Character.
@@ -122,6 +122,8 @@
         Alt+M                 Modify Lines...
         Alt+J                 Align Lines...
         Alt+O                 Sort Lines...
+        Ctrl+,                Jump to Selection Start.
+        Ctrl+.                Jump to Selection End.
         Tab                   Indent Selected Block.
         Shift+Tab             Unindent Selected Block.
         Ctrl+Tab              Insert Tabulator.
@@ -161,8 +163,6 @@
         Ctrl+F5               Time/Date (Short Form).
         Ctrl+Shift+F5         Time/Date (Long Form).
         Shift+F5              Update Timestamps.
-        Ctrl+Q                Block Comment (Toggle).
-        Ctrl+Shift+Q          Stream Comment.
 
       Miscellaneous
       -------------

@@ -32,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.223.(build_#) (2021-02-23)
+Current BETA/RC Version 5.21.226.(build_#) (2021-02-26)
 ========================================================
 
 --------------------------------------------------------
@@ -60,7 +60,7 @@ NEW:
 [.915.2]- Configurable Dark Mode colors (non Explorer-Theme, Owner-Drawn).
 [.915.2]- Menu item to switch between Default and Dark-Mode.
 [.915.2]- DarkMode: Toolbar, static checkbox/listbox control.
-[.915.2]- Win10 DarkMode Awareness (initial development)
+[.915.2]- Win10 DarkMode Awareness (initial development).
 
 --------------------------------------------------------
 CHANGES:
@@ -105,6 +105,7 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
+[.226.1]- Wrap-Around tooltip use correct encoding.
 [.222.2]- Multi-Line movement: proceed to document end correctly.
 [.222.2]- Toggle comment on empty selection at insertion point: keep position of selection end.
 [.222.2]- MiniPath: Enable Mouse XButton usage ("browse back and forth").
@@ -181,10 +182,6 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [1028.1]- Hindi (hi-IN).
-[.915.2]- Chinese Traditional (zh-TW) in waiting...
-[.915.2]- Indonesian (id-ID) in waiting...
-[.915.2]- Turkish (tr-TR) in waiting...
-[.915.2]- Vietnamese (vi-VN) in waiting...
 
 
 ========================================================
@@ -313,12 +310,6 @@ REMOVED:
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.802.1]- Portuguese Brazilian (pt-BR).
-[.722.2]- Turkish (tr-TR) in processing...
-[.722.2]- Chinese Traditional (zh-TW) in waiting...
-[.722.2]- Hindi (hi-IN) in waiting...
-[.722.2]- Indonesian (id-ID) in waiting...
-[.722.2]- Vietnamese (vi-VN) in waiting...
 
 
 ========================================================
