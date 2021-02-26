@@ -8775,7 +8775,6 @@ void UpdateStatusbar(bool bForceRedraw)
 
 //=============================================================================
 
-const static char* const  FR_StatusA[] = {  "[>--<]",  "[>>--]",  "[>>-+]",  "[+->]>",  "[--<<]",  "[+-<<]",  "<[<-+]"};
 const static WCHAR* const FR_StatusW[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
@@ -11137,16 +11136,17 @@ void ShowZoomCallTip()
 void ShowWrapAroundCallTip(bool forwardSearch)
 {
     int const delayClr = Settings2.WrapAroundTooltipTimeout;
-    if (delayClr >= (10*USER_TIMER_MINIMUM)) {
-        char chToolTipFmt[64] = { '\0' };
-        static char chToolTip[80] = { '\0' };
+    if (delayClr >= (USER_TIMER_MINIMUM<<4)) {
+        WCHAR wchToolTipFmt[64] = { '\0' };
+        WCHAR wchToolTip[80] = { '\0' };
+        static char chToolTip[80*3] = { '\0' };
         if (forwardSearch) {
-            GetLngStringA(IDS_MUI_WRAPSEARCH_FWD, chToolTipFmt, COUNTOF(chToolTipFmt));
+            GetLngString(IDS_MUI_WRAPSEARCH_FWD, wchToolTipFmt, COUNTOF(wchToolTipFmt));
         } else {
-            GetLngStringA(IDS_MUI_WRAPSEARCH_BCK, chToolTipFmt, COUNTOF(chToolTipFmt));
+            GetLngString(IDS_MUI_WRAPSEARCH_BCK, wchToolTipFmt, COUNTOF(wchToolTipFmt));
         }
-        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), chToolTipFmt, FR_StatusA[Globals.FindReplaceMatchFoundState]);
-
+        StringCchPrintf(wchToolTip, COUNTOF(wchToolTip), wchToolTipFmt, FR_StatusW[Globals.FindReplaceMatchFoundState]);
+        WideCharToMultiByte(Encoding_SciCP, 0, wchToolTip, -1, chToolTip, (int)COUNTOF(chToolTip), NULL, NULL);
         SciCall_CallTipShow(SciCall_GetCurrentPos(), chToolTip);
         _DelayClearCallTip(delayClr);
     } else {
