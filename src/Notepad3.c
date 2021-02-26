@@ -7061,6 +7061,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
     bool bHandled = false;
     if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position)) {
+
         DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
         DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
         DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
@@ -7069,14 +7070,15 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
             return false;
         }
 
-        const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
+        const char *pszText = (const char *)SciCall_GetRangePointer(firstPos, length);
 
         WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
         ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, szTextW, COUNTOF(szTextW));
         szTextW[cchTextW] = L'\0';
         StrTrim(szTextW, L" \r\n\t");
 
-        const WCHAR* chkPreFix = L"file://";
+        const WCHAR *chkPreFix = L"file://";
+        size_t const lenPfx = StringCchLenW(chkPreFix, 0);
 
         if (operation & SELECT_HYPERLINK) {
             SciCall_SetSelection(firstPos, lastPos);
@@ -7093,42 +7095,63 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     bHandled = true;
                 }
             }
-        } else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrI(szTextW, chkPreFix) == szTextW)) {
-            size_t const lenPfx = StringCchLenW(chkPreFix, 0);
-            WCHAR* szFileName = &(szTextW[lenPfx]);
-            szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
-            StrTrim(szFileName, L"/");
 
-            PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
-            if (PathIsDirectory(szFileName)) {
-                WCHAR tchFile[MAX_PATH] = { L'\0' };
-                if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName)) {
-                    FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+        } else {
+
+            bool const isFileUrl = (StrStrI(szTextW, chkPreFix) == szTextW);
+
+            WCHAR szUnEscW[INTERNET_MAX_URL_LENGTH + 1];
+            DWORD dCchUnEsc = COUNTOF(szUnEscW);
+            UrlUnescapeEx(szTextW, szUnEscW, &dCchUnEsc);
+
+            if ((operation & OPEN_WITH_NOTEPAD3) && isFileUrl) {
+
+                WCHAR *const szFileName = &(szUnEscW[lenPfx]);
+                szUnEscW[min_i(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
+                StrTrim(szFileName, L"/");
+
+                PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szUnEscW) - lenPfx));
+                if (PathIsDirectory(szFileName)) {
+                    WCHAR tchFile[MAX_PATH] = { L'\0' };
+                    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName)) {
+                        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+                    }
+                } else {
+                    FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
                 }
-            } else {
-                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
-            }
-            bHandled = true;
-        } else if (operation & OPEN_WITH_BROWSER) { // open in web browser
-            WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-            if (StrIsNotEmpty(Globals.CurrentFile)) {
-                StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
-                PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
-            }
+                bHandled = true;
 
-            SHELLEXECUTEINFO sei;
-            ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-            sei.cbSize = sizeof(SHELLEXECUTEINFO);
-            sei.fMask = SEE_MASK_NOZONECHECKS;
-            sei.hwnd = NULL;
-            sei.lpVerb = NULL;
-            sei.lpFile = szTextW;
-            sei.lpParameters = NULL;
-            sei.lpDirectory = wchDirectory;
-            sei.nShow = SW_SHOWNORMAL;
-            ShellExecuteEx(&sei);
+            } else if (operation & OPEN_WITH_BROWSER) { // open in web browser
 
-            bHandled = true;
+                if (isFileUrl) {
+                    WCHAR *const szFileName = &(szUnEscW[lenPfx]);
+                    dCchUnEsc = COUNTOF(szTextW);
+                    UrlCreateFromPath(szFileName, szTextW, &dCchUnEsc, 0);
+                    //~StringCchCopy(szUnEscW, COUNTOF(szUnEscW), L"http://");
+                    //~StringCchCat(szUnEscW, COUNTOF(szUnEscW), &(szTextW[lenPfx]));
+                    StringCchCopy(szUnEscW, COUNTOF(szUnEscW), szTextW);
+                }
+
+                WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+                if (StrIsNotEmpty(Globals.CurrentFile)) {
+                    StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                }
+
+                SHELLEXECUTEINFO sei;
+                ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+                sei.cbSize = sizeof(SHELLEXECUTEINFO);
+                sei.fMask = SEE_MASK_NOZONECHECKS;
+                sei.hwnd = NULL;
+                sei.lpVerb = NULL;
+                sei.lpFile = szUnEscW;
+                sei.lpParameters = NULL;
+                sei.lpDirectory = wchDirectory;
+                sei.nShow = SW_SHOWNORMAL;
+                ShellExecuteEx(&sei);
+
+                bHandled = true;
+            }
         }
     }
 

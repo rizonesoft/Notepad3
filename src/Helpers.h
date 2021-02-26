@@ -642,6 +642,40 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz)
 #define StrEnd(s,n) StrEndA((s),(n))
 #endif
 
+// ----------------------------------------------------------------------------
+
+#if 0
+
+inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chReplace)
+{
+    while (pStrg && *pStrg) {
+        if (*pStrg == chSearch) {
+            *pStrg = chReplace;
+        }
+        ++pStrg;
+    }
+}
+
+inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplace)
+{
+    while (pStrg && *pStrg) {
+        if (*pStrg == chSearch) {
+            *pStrg = chReplace;
+        }
+        ++pStrg;
+    }
+}
+
+#if defined(UNICODE) || defined(_UNICODE)
+#define StrReplChr(str, cs, cr) StrReplChrW((str), (cs), (cr))
+#else
+#define StrReplChr(str, cs, cr) StrReplChrA((str), (cs), (cr))
+#endif
+
+#endif
+
+// ----------------------------------------------------------------------------
+
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
 
 // NOTE: !!! differences in AutoCompleteList depending compare functions (CRT vs. Shlwapi)) !!!
