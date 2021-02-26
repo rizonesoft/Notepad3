@@ -7919,6 +7919,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             switch (g_vSBSOrder[pnmm->dwItemSpec]) {
             case STATUS_EOLMODE: {
                 if (Globals.bDocHasInconsistentEOLs) {
+
                     int const eol_mode = SciCall_GetEOLMode();
 
                     int const  eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF :
@@ -7958,7 +7959,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 GUARD_RETURN(!0);
 
             case STATUS_EOLMODE: {
-                int const eol_mode = (SciCall_GetEOLMode() + 1) % 3;
+                int const eol_mode = (SciCall_GetEOLMode() + 2) % 3;
                 int const eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF :
                                      ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
                 PostWMCommand(hwnd, eol_cmd);
