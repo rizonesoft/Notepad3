@@ -256,11 +256,13 @@ BEGIN
             MENUITEM "Mittels Tabulatoren einrücken\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
             MENUITEM "Mittels Leerzeichen einrücken\tCtrl+Alt+S",        IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "&URL Codierung\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
-            MENUITEM "URL Decodierung\tCtrl+Shift+R",                      IDM_EDIT_URLDECODE
+            MENUITEM "&URL Codierung\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
+            MENUITEM "URL Decodierung\tCtrl+Shift+R",                    IDM_EDIT_URLDECODE
+            MENUITEM "Datei-System Pfad als URL",                        IDM_EDIT_PATH2URL
+            MENUITEM "URL als Datei-System Pfad",                        IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "&Zeichen zu Hex\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex zu Zeichen\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
+            MENUITEM "&Zeichen zu Hex\tCtrl+Alt+X",                      IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex zu Zeichen\tCtrl+Alt+C",                      IDM_EDIT_HEX2CHAR
         END
         POPUP "&Einfügen"
         BEGIN

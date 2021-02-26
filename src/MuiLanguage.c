@@ -445,15 +445,19 @@ int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax)
 //
 //  LoadLngStringW2MB()
 //
-static WCHAR s_tmpStringBuffer[512];
-
-ptrdiff_t LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax)
+int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax)
 {
-    const int nLen = LoadStringW(Globals.hLngResContainer, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer));
-    if (nLen == 0) {
-        LoadStringW(Globals.hInstance, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer));
+    int len = 0;
+    WCHAR * const pBuffer = (WCHAR *)AllocMem(sizeof(WCHAR) * nBufferMax, HEAP_ZERO_MEMORY);
+    if (pBuffer) {
+        const int nLen = LoadStringW(Globals.hLngResContainer, uID, pBuffer, nBufferMax);
+        if (nLen == 0) {
+            LoadStringW(Globals.hInstance, uID, pBuffer, nBufferMax);
+        }
+        len = WideCharToMultiByte(Encoding_SciCP, 0, pBuffer, -1, lpBuffer, nBufferMax, NULL, NULL);
+        FreeMem(pBuffer);
     }
-    return WideCharToMultiByteEx(CP_UTF8, 0, s_tmpStringBuffer, -1, lpBuffer, nBufferMax, NULL, NULL);
+    return len;
 }
 
 //=============================================================================
@@ -473,7 +477,7 @@ int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
 //
 int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 {
-    WCHAR* pBuffer = AllocMem(sizeof(WCHAR) * nOutput, HEAP_ZERO_MEMORY);
+    WCHAR* const pBuffer = AllocMem(sizeof(WCHAR) * nOutput, HEAP_ZERO_MEMORY);
     if (pBuffer) {
         if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
             StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)& uIdFormat + 1));
@@ -490,7 +494,7 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 //
 int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 {
-    CHAR* pBuffer = AllocMem(sizeof(CHAR) * nOutput, HEAP_ZERO_MEMORY);
+    CHAR* const pBuffer = AllocMem(sizeof(CHAR) * nOutput, HEAP_ZERO_MEMORY);
     if (pBuffer) {
         if (LoadLngStringA(uIdFormat, pBuffer, nOutput)) {
             StringCchVPrintfA(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)& uIdFormat + 1));
