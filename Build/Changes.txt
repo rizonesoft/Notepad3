@@ -32,13 +32,12 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.220.(build_#) (2021-02-20)
+Current BETA/RC Version 5.21.223.(build_#) (2021-02-23)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- .
 [.205.1]- Use user locale for date/time insert format: can be menu switched to preferred UI language.
 [.124.1]- Enable horizontal scrolling by "Shift + Mouse-Wheel".
 [.117.1]- Show search wrap-around tooltip (issue #3038).
@@ -46,7 +45,7 @@ NEW:
 [1222.1]- Dart Lexer based on Zufuliu's Dart Lexer code base.
 [1221.1]- TinyExpr: additional number parsing for binary (0b...) and octal (0o...) number formats.
 [1109.1]- Extension ".pkb" to SQL Lexer.
-[1012.1]- Support for Windows 10 20H2 Version 2009 (Build 19042).
+[1012.1]- 'Dark Mode' support for Windows 10 20H2 Version 2009 (Build 19042).
 [1004.1]- Open/Save file explorer dialog: populate file filter with current lexer supported file extensions.
 [.929.1]- Minipath.ini: [Settings2] FocusLostOpacity=100 (opycity level on losing focus).
 [.923.1]- Hotkey 'F3': use MRU latest item before clipboard content as search pattern if prior search pattern is empty.
@@ -66,13 +65,13 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]- .
-[.219.1]- Simple Line Comment Toggle handles each line separately (Line Edit after toggle will still set mode of 1st line = former behavior).
+[.223.1]- MiniPath: support mouse xbuttons for browsing direction.
+[.223.1]- Code styling reformat MiniPath sources (AStyle: OTBS).
+[.219.1]- Simple Line Comment Toggle handles each line separately
 [.219.1]- Menu move Line/Stream Comment items to Edit -> Selection top.
 [.218.1]- Find/Repl dialog - refactoring and minor fixes.
 [.213.1]- JSON5 enhancements to Scintilla's original JSON-Lexer.
 [.211.1]- Statusbar Selection-Info: switch to byte (instead of character) counting for huge files.
-[.205.1]- Revert minor insert date/time format changes.
 [.205.1]- Use user locale for date/time insert format: insert date before time & tab separated.
 [.124.1]- Tinyexpr evaluation of math constants "e" and "pi" not being separated from prepending text.
 [.116.1]- Extent static find/replace/mark occurances pattern buffer to 4095 characters.
@@ -82,26 +81,19 @@ CHANGES:
 [1214.1]- Update keywords list in Style INNO Lexer.
 [1211.1]- No error message after decline loading file of huge size.
 [1201.1]- Renaming Chinese displayed encoding according to MIME/IANA.
-[1125.2]- Code styling reformat (AStyle: OTBS).
-[1125.2]- Format: AStyle ALLMAN core code base.
 [1118.1]- Sci_PositionCR type reverted to long for Win32 compatibility reasons.
 [1001.1]- Rebase DarkMode module on delay load version branch of win32-darkmode project.
 [.930.1]- Update the KeyWordList of lexers "C# Source Code" and "SQL Query".
 [.930.1]- Bookmark Occurrences Colors changed to get perceptually distinct colors.
 [.929.1]- Migration from CreateLexer() by ID to CreateLexer() by Name (Lexilla IFace5 conform) (GRE).
-[.928.1]- grepWinNP3: code clean-up (GRE).
 [.928.1]- TinyExpr format floating.point with non zero fractional part.
-[.927.1]- TinyExpr floating point format.
 [.927.1]- TinyExpr: change format (allow longer integer before switching to mantissa/exponent format).
-[.925.1]- Move home brew lexers to Lexills dir (SCI).
-[.925.1]- Scintilla 5 prep: Using ILexer5 interface from static build Lexilla.lib (SCI).
 [.925.1]- Prepare for Lexilla Library (Scintilla v5) (SCI).
 [.925.1]- Using @zufuliu's EOL Mode detection enhancement (no SSE2 or AVX2 specializations).
 [.923.1]- Unify search-pattern retrieval: (0.selection)[F/R-DLG] - 1.previous-search/MRU-List - 2.clipboard.
-[.923.1]- Performance leak in TOML Lexer.
 [.920.1]- grepWinNP3: save changed "Stay On Top" settings on exit (GRE).
 [.920.1]- First part of DarkMode Theme for MiniPath.
-[.917.4]- Need to separate DarkMode window-backgr color from button-facecolor.
+[.917.4]- Separate DarkMode window-backgr color from button-facecolor.
 [.916.1]- Opacity level on loosing focus for grepWinNP3.
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
@@ -113,7 +105,9 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]- .
+[.222.2]- Multi-Line movement: proceed to document end correctly.
+[.222.2]- Toggle comment on empty selection at insertion point: keep position of selection end.
+[.222.2]- MiniPath: Enable Mouse XButton usage ("browse back and forth").
 [.220.1]- Toggle Comment: proper selection handling.
 [.219.1]- Do not move selection on search pattern change if in Replace-Dlg.
 [.219.1]- FJSON Lexer has comments enabled now.
@@ -130,7 +124,7 @@ FIXES:
 [.124.1]- InfoBox message icon DPI scaling.
 [.122.1]- Tinyexpr functions and constants parsing.
 [.116.1]- Buffer overrun while initializing structures.
-[.116.1]- Try to fix Font Dialog (Size handling) problems (issue #3012).
+[.116.1]- Fix Font Dialog (Size handling) problems (issue #3012).
 [1219.1]- F/R dialog: Transform Backslash option glitch.
 [1219.1]- F/R dialog: message box in case of not matching pattern.
 [1218.1]- Multi-Replace using RegExpr and Group-References.
@@ -157,6 +151,7 @@ FIXES:
 [.926.1]- grepWinNP3: wide char path names for language files (GRE).
 [.925.1]- Stop file change notification on deleted files if save is rejected.
 [.925.1]- Some RegEx engine fixes (current Oniguruma dev) (ONI).
+[.923.1]- Performance leak in TOML Lexer.
 [.923.1]- Customize Schemes title assembling.
 [.922.1]- DarkMode switching while non-modal dialogs are active.
 [.921.1]- TinyExpr: interpretation of '%' operator: allow "(...)" on rhs of modulo interpretation.
@@ -165,13 +160,12 @@ FIXES:
 [.921.1]- DarkMode: toolbar button text.
 [.921.1]- Let DarkMode work with 20H2.
 [.920.1]- grepWinNP3 new instance: read correct .ini-file (protable) (GRE).
-[.918.2]- 2nd try to fix Win7 start-up crash.
+[.918.2]- Fix Win7 start-up crash.
 [.918.1]- Final default color correction (toolbar, statusbar and margin).
 [.917.4]- Allow removing of compile pre-processing switch D_NP3_WIN10_DARK_MODE.
 [.917.3]- Bring back themed ReBar (Toolbar parent) for Win7.
 [.917.3]- Bring back themed ReBar (Toolbar parent) for Win10 using Light Mode (DarkMode not wanted).
 [.917.2]- Win7 Toolbar background back to COLOR_BTNFACE, Win10 stays with COLOR_WINDOWS.
-[.916.1]- 1st try to fix Win7 startup crash (library loading).
 [.916.1]- Update Titlebar on document modified.
 [.916.1]- Clean .ini-config for default values.
 [.916.1]- Standard margin background colors.
@@ -181,13 +175,11 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.xxx.x]- .
 [.921.1]- TinyExpr: '%%' as percent operator is deprecated.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.xxx.x]- .
 [1028.1]- Hindi (hi-IN).
 [.915.2]- Chinese Traditional (zh-TW) in waiting...
 [.915.2]- Indonesian (id-ID) in waiting...

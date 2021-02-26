@@ -235,7 +235,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(es-MX) Traducción española mexicana por jmacasd"
+    IDS_MUI_TRANSL_AUTHOR   "(es-MX) Traducción española mexicana por Ghost"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Estilo +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Estilo"
