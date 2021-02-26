@@ -7144,7 +7144,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
                 if (UrlIsFileUrl(szTextW) || hasFileUrlPrefix) {
                     StringCchCopy(szUnEscW, COUNTOF(szUnEscW), chkPreFix);
-                    dCchUnEsc -= lenPfx;
+                    dCchUnEsc -= (DWORD)lenPfx;
                     PathCreateFromUrl(szTextW, &(szUnEscW[lenPfx]), &dCchUnEsc, 0);
                 } else {
                     UrlUnescapeEx(szTextW, szUnEscW, &dCchUnEsc);
