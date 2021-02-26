@@ -6939,18 +6939,15 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     break;
                 }
 
-                WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
+                CHAR chCalltipAdd[LARGE_BUFFER] = { L'\0' };
                 if (StrStrIA(chText, "file:") == chText) {
-                    GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+                    GetLngStringW2MB(IDS_MUI_URL_OPEN_FILE, chCalltipAdd, COUNTOF(chCalltipAdd));
                 } else {
-                    GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+                    GetLngStringW2MB(IDS_MUI_URL_OPEN_BROWSER, chCalltipAdd, COUNTOF(chCalltipAdd));
                 }
-                CHAR  chAdd[LARGE_BUFFER] = { L'\0' };
-                WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, (int)COUNTOF(chAdd), NULL, NULL);
-
                 char chCallTip[HUGE_BUFFER] = { '\0' };
                 StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
-                StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
+                StringCchCatA(chCallTip, COUNTOF(chCallTip), chCalltipAdd);
                 //SciCall_CallTipSetPosition(true);
                 SciCall_CallTipShow(position, chCallTip);
                 SciCall_CallTipSetHlt(0, (int)length);
