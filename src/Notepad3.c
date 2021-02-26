@@ -7110,15 +7110,22 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
         } else {
 
-            bool const isFileUrl = (StrStrI(szTextW, chkPreFix) == szTextW);
+            bool const hasFileUrlPrefix = (StrStrI(szTextW, chkPreFix) == szTextW);
 
             WCHAR szUnEscW[INTERNET_MAX_URL_LENGTH + 1];
             DWORD dCchUnEsc = COUNTOF(szUnEscW);
-            UrlUnescapeEx(szTextW, szUnEscW, &dCchUnEsc);
 
-            if ((operation & OPEN_WITH_NOTEPAD3) && isFileUrl) {
+            if ((operation & OPEN_WITH_NOTEPAD3) && hasFileUrlPrefix) {
 
-                WCHAR *const szFileName = &(szUnEscW[lenPfx]);
+                WCHAR *szFileName = NULL;
+                if (UrlIsFileUrl(szTextW)) {
+                    PathCreateFromUrl(szTextW, szUnEscW, &dCchUnEsc, 0);
+                    szFileName = szUnEscW;
+                } else {
+                    UrlUnescapeEx(szTextW, szUnEscW, &dCchUnEsc);
+                    szFileName = &(szUnEscW[lenPfx]);
+                }
+
                 szUnEscW[min_i(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
                 StrTrim(szFileName, L"/");
 
@@ -7135,13 +7142,12 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
             } else if (operation & OPEN_WITH_BROWSER) { // open in web browser
 
-                if (isFileUrl) {
-                    WCHAR *const szFileName = &(szUnEscW[lenPfx]);
-                    dCchUnEsc = COUNTOF(szTextW);
-                    UrlCreateFromPath(szFileName, szTextW, &dCchUnEsc, 0);
-                    //~StringCchCopy(szUnEscW, COUNTOF(szUnEscW), L"http://");
-                    //~StringCchCat(szUnEscW, COUNTOF(szUnEscW), &(szTextW[lenPfx]));
-                    StringCchCopy(szUnEscW, COUNTOF(szUnEscW), szTextW);
+                if (UrlIsFileUrl(szTextW) || hasFileUrlPrefix) {
+                    StringCchCopy(szUnEscW, COUNTOF(szUnEscW), chkPreFix);
+                    dCchUnEsc -= lenPfx;
+                    PathCreateFromUrl(szTextW, &(szUnEscW[lenPfx]), &dCchUnEsc, 0);
+                } else {
+                    UrlUnescapeEx(szTextW, szUnEscW, &dCchUnEsc);
                 }
 
                 WCHAR wchDirectory[MAX_PATH] = { L'\0' };
