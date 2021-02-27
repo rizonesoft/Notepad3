@@ -105,6 +105,7 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
+[.226.2]- URL-Decoding of file Hyperlinks ("file://...").
 [.226.1]- Wrap-Around tooltip use correct encoding.
 [.222.2]- Multi-Line movement: proceed to document end correctly.
 [.222.2]- Toggle comment on empty selection at insertion point: keep position of selection end.
