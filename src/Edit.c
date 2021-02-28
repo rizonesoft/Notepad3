@@ -1703,7 +1703,7 @@ void EditSentenceCase(HWND hwnd)
 //
 //  EditURLEncode()
 //
-void EditURLEncode()
+void EditURLEncode(const bool isPathConvert)
 {
     if (SciCall_IsSelectionEmpty()) {
         return;
@@ -1740,11 +1740,16 @@ void EditURLEncode()
     }
 
     DWORD cchEscapedW = (DWORD)cchEscaped;
+    if (isPathConvert) {
+        if (FAILED(PathCreateFromUrl(szTextW, pszEscapedW, &cchEscapedW, 0))) {
+            StringCchCopy(pszEscapedW, cchEscapedW, szTextW); // no op
+        }
+    } else {
+        UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, true);
+    }
 
-    UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, true);
-
-    ptrdiff_t const cchEscapedEnc = WideCharToMultiByte(Encoding_SciCP, 0, pszEscapedW, cchEscapedW,
-                                    pszEscaped, (int)cchEscaped, NULL, NULL);
+    int const cchEscapedEnc = WideCharToMultiByte(Encoding_SciCP, 0, pszEscapedW, cchEscapedW,
+                                                  pszEscaped, (int)cchEscaped, NULL, NULL);
 
     _BEGIN_UNDO_ACTION_;
 
@@ -1774,7 +1779,7 @@ void EditURLEncode()
 //
 //  EditURLDecode()
 //
-void EditURLDecode()
+void EditURLDecode(const bool isPathConvert)
 {
     if (SciCall_IsSelectionEmpty()) {
         return;
@@ -1798,9 +1803,9 @@ void EditURLDecode()
         return;
     }
 
-    /*ptrdiff_t cchTextW =*/ MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, (iSelSize-1), pszTextW, iSelSize);
+    /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)(iSelSize-1), pszTextW, (int)iSelSize);
 
-    size_t const cchUnescaped = iSelSize * 3;
+    size_t const cchUnescaped = iSelSize * 3 + 1;
     char* pszUnescaped = (char*)AllocMem(cchUnescaped, HEAP_ZERO_MEMORY);
     if (pszUnescaped == NULL) {
         FreeMem(pszTextW);
@@ -1815,7 +1820,13 @@ void EditURLDecode()
     }
 
     DWORD cchUnescapedW = (DWORD)cchUnescaped;
-    UrlUnescapeEx(pszTextW, pszUnescapedW, &cchUnescapedW);
+    if (isPathConvert) {
+        if (FAILED(UrlCreateFromPath(pszTextW, pszUnescapedW, &cchUnescapedW, 0))) {
+            StringCchCopy(pszUnescapedW, cchUnescaped, pszTextW); // no op
+        }
+    } else {
+        UrlUnescapeEx(pszTextW, pszUnescapedW, &cchUnescapedW);
+    }
 
     int const cchUnescapedDec = WideCharToMultiByte(Encoding_SciCP, 0, pszUnescapedW, cchUnescapedW,
                                 pszUnescaped, (int)cchUnescaped, NULL, NULL);
@@ -1842,6 +1853,34 @@ void EditURLDecode()
     FreeMem(pszTextW);
     FreeMem(pszUnescaped);
     FreeMem(pszUnescapedW);
+}
+
+
+//=============================================================================
+//
+//  EditPath2URL()
+//
+bool EditPath2URL() {
+
+    bool success = false;
+
+    if (SciCall_IsSelectionEmpty()) {
+        return success;
+    }
+
+    if (Sci_IsMultiOrRectangleSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        return success;
+    }
+
+    _SAVE_TARGET_RANGE_;
+
+
+
+
+    _RESTORE_TARGET_RANGE_;
+
+    return success;
 }
 
 

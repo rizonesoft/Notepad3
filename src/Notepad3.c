@@ -5033,13 +5033,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_URLENCODE: {
-        EditURLEncode(Globals.hwndEdit);
+        EditURLEncode(false);
+    }
+    break;
+
+
+    case IDM_EDIT_URL2PATH: {
+        EditURLEncode(true);
     }
     break;
 
 
     case IDM_EDIT_URLDECODE: {
-        EditURLDecode(Globals.hwndEdit);
+        EditURLDecode(false);
+    }
+    break;
+
+
+    case IDM_EDIT_PATH2URL: {
+        EditURLDecode(true);
     }
     break;
 
@@ -6939,18 +6951,15 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     break;
                 }
 
-                WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
+                CHAR chCalltipAdd[LARGE_BUFFER] = { L'\0' };
                 if (StrStrIA(chText, "file:") == chText) {
-                    GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+                    GetLngStringW2MB(IDS_MUI_URL_OPEN_FILE, chCalltipAdd, COUNTOF(chCalltipAdd));
                 } else {
-                    GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+                    GetLngStringW2MB(IDS_MUI_URL_OPEN_BROWSER, chCalltipAdd, COUNTOF(chCalltipAdd));
                 }
-                CHAR  chAdd[LARGE_BUFFER] = { L'\0' };
-                WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, (int)COUNTOF(chAdd), NULL, NULL);
-
                 char chCallTip[HUGE_BUFFER] = { '\0' };
                 StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
-                StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
+                StringCchCatA(chCallTip, COUNTOF(chCallTip), chCalltipAdd);
                 //SciCall_CallTipSetPosition(true);
                 SciCall_CallTipShow(position, chCallTip);
                 SciCall_CallTipSetHlt(0, (int)length);
@@ -7916,6 +7925,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             switch (g_vSBSOrder[pnmm->dwItemSpec]) {
             case STATUS_EOLMODE: {
                 if (Globals.bDocHasInconsistentEOLs) {
+
                     int const eol_mode = SciCall_GetEOLMode();
 
                     int const  eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF :
@@ -7955,7 +7965,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 GUARD_RETURN(!0);
 
             case STATUS_EOLMODE: {
-                int const eol_mode = (SciCall_GetEOLMode() + 1) % 3;
+                int const eol_mode = (SciCall_GetEOLMode() + 2) % 3;
                 int const eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF :
                                      ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
                 PostWMCommand(hwnd, eol_cmd);

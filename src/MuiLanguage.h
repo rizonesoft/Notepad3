@@ -55,7 +55,7 @@ int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
 int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...);
 int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...);
-ptrdiff_t LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
+int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
 
 #define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
 #define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))

@@ -45,8 +45,8 @@ void EditInvertCase(HWND hwnd);
 void EditTitleCase(HWND hwnd);
 void EditSentenceCase(HWND hwnd);
 
-void EditURLEncode();
-void EditURLDecode();
+void EditURLEncode(const bool isPathConvert);
+void EditURLDecode(const bool isPathConvert);
 void EditEscapeCChars(HWND hwnd);
 void EditUnescapeCChars(HWND hwnd);
 void EditChar2Hex(HWND hwnd);
@@ -134,11 +134,11 @@ void EditSelectionMultiSelectAll();
 void EditSelectionMultiSelectAllEx(CLPCEDITFINDREPLACE edFndRpl);
 
 // maybe removed beyond next release
-#define _SAVE_TARGET_RANGE_  DocPos const _saveTargetBeg_ = SciCall_GetTargetStart();\
-                             DocPos const _saveTargetEnd_ = SciCall_GetTargetEnd()
-#define _RESTORE_TARGET_RANGE_ SciCall_SetTargetRange(_saveTargetBeg_, _saveTargetEnd_)
-//#define _SAVE_TARGET_RANGE_ 
-//#define _RESTORE_TARGET_RANGE_ 
+//#define _SAVE_TARGET_RANGE_  DocPos const _saveTargetBeg_ = SciCall_GetTargetStart();\
+//                             DocPos const _saveTargetEnd_ = SciCall_GetTargetEnd()
+//#define _RESTORE_TARGET_RANGE_ SciCall_SetTargetRange(_saveTargetBeg_, _saveTargetEnd_)
+#define _SAVE_TARGET_RANGE_ 
+#define _RESTORE_TARGET_RANGE_ 
 
 //
 //  Folding Functions
