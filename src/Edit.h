@@ -47,6 +47,7 @@ void EditSentenceCase(HWND hwnd);
 
 void EditURLEncode(const bool isPathConvert);
 void EditURLDecode(const bool isPathConvert);
+void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace);
 void EditEscapeCChars(HWND hwnd);
 void EditUnescapeCChars(HWND hwnd);
 void EditChar2Hex(HWND hwnd);

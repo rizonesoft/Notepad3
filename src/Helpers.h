@@ -644,8 +644,6 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz)
 
 // ----------------------------------------------------------------------------
 
-#if 0
-
 inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chReplace)
 {
     while (pStrg && *pStrg) {
@@ -670,8 +668,6 @@ inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplac
 #define StrReplChr(str, cs, cr) StrReplChrW((str), (cs), (cr))
 #else
 #define StrReplChr(str, cs, cr) StrReplChrA((str), (cs), (cr))
-#endif
-
 #endif
 
 // ----------------------------------------------------------------------------
