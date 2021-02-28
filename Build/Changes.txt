@@ -32,7 +32,51 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.226.(build_#) (2021-02-26)
+Current BETA/RC Version 5.21.227.(build_#) (2021-02-27)
+========================================================
+
+--------------------------------------------------------
+NEW:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- Converter: File-System Path to URL and vice versa.
+
+--------------------------------------------------------
+CHANGES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
+
+--------------------------------------------------------
+FIXES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+REMOVED:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------------
+For our Notepad3 translation projects, we are looking for motivated volunteers, with a 
+priority to resume "aborted" translations for these languages:
+Please, send me a PM (hpwamr51 @ gmail.com) if you are willing to help.
+[.###.#]- .
+[.226.1]- Chinese Traditional (zh-TW) (incomplete...).
+[.226.1]- Greek (el-GR) (incomplete...).
+[.226.1]- Indonesian (id-ID) (incomplete...).
+[.226.1]- Portuguese Brazilian (pt-BR) (incomplete...).
+[.226.1]- Spanish Latin America (es-LA) (incomplete...).
+[.226.1]- Turkish (tr-TR) (incomplete...).
+[.226.1]- Vietnamese (vi-VN) (incomplete...).
+
+
+========================================================
+Version 5.21.227.1 (27 February 2021)
 ========================================================
 
 --------------------------------------------------------
