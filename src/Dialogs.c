@@ -1076,8 +1076,17 @@ CASE_WM_CTLCOLOR_SET:
             GetWinVersionString(wchBuf, COUNTOF(wchBuf));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
+            bool const bDarkModeSupported = IsDarkModeSupported();
+            bool const bIsThemeEnabled = ShouldAppsUseDarkModeEx();
+            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nWindows Colors 'Dark-Mode' Theme is %s.", 
+                bDarkModeSupported ? (bIsThemeEnabled ?  L"SUPPORTED and SELECTED" : L"SUPPORTED but NOT SELECTED") : L"NO SUPPORTED");
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
+
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? L"\n- Process is elevated." : L"\n- Process is not elevated"));
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ? L"\n- User is in Admin-Group." : L"\n- User is not in Admin-Group"));
 
             StringCchCopy(wchBuf, COUNTOF(wchBuf), L"en-US");
             for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
@@ -1093,6 +1102,11 @@ CASE_WM_CTLCOLOR_SET:
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding -> '%s'", Encoding_GetLabel(Encoding_GetCurrent()));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
+            if (bDarkModeSupported && bIsThemeEnabled) {
+                StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Dark-Mode enabled -> %s", CheckDarkModeEnabled() ? L"YES" : L"NO");
+                StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+            }
+
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution -> %i x %i [pix]", ResX, ResY);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
@@ -1104,13 +1118,6 @@ CASE_WM_CTLCOLOR_SET:
 
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom -> %i%%.", SciCall_GetZoom());
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
-
-            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ?
-                         L"\n- Process is elevated." :
-                         L"\n- Process is not elevated"));
-            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ?
-                         L"\n- User is in Admin-Group." :
-                         L"\n- User is not in Admin-Group"));
 
             Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), wchBuf, COUNTOF(wchBuf));
             StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Current Lexer -> '%s'", wchBuf);
