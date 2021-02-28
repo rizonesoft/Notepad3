@@ -3780,6 +3780,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     EnableCmd(hmenu, IDM_EDIT_URLENCODE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_URLDECODE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_PATH2URL, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_URL2PATH, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_INVERTBACKSLASH, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_INVERTSLASH, !se && !ro);
 
     EnableCmd(hmenu, IDM_EDIT_ESCAPECCHARS, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_UNESCAPECCHARS, !se && !ro);
@@ -5037,21 +5041,28 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
     break;
 
+    case IDM_EDIT_URLDECODE: {
+        EditURLDecode(false);
+    } break;
+
 
     case IDM_EDIT_URL2PATH: {
         EditURLEncode(true);
     }
     break;
 
-
-    case IDM_EDIT_URLDECODE: {
-        EditURLDecode(false);
+    case IDM_EDIT_PATH2URL: {
+        EditURLDecode(true);
     }
     break;
 
 
-    case IDM_EDIT_PATH2URL: {
-        EditURLDecode(true);
+    case IDM_EDIT_INVERTBACKSLASH: {
+        EditReplaceAllChr(L'\\', L'/');
+    } break;
+
+    case IDM_EDIT_INVERTSLASH: {
+        EditReplaceAllChr(L'/', L'\\');
     }
     break;
 
@@ -7093,11 +7104,14 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
         size_t const lenPfx = StringCchLenW(chkPreFix, 0);
 
         if (operation & SELECT_HYPERLINK) {
+
             SciCall_SetSelection(firstPos, lastPos);
             bHandled = true;
+
         } else if (operation & COPY_HYPERLINK) {
+
             if (cchTextW > 0) {
-                DWORD cchEscapedW = (DWORD)(length * 3);
+                DWORD cchEscapedW = (DWORD)(length * 3 + 1);
                 LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
                 if (pszEscapedW) {
                     //~UrlEscape(szTextW, pszEscapedW, &cchEscapedW, (URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8));
@@ -7110,23 +7124,15 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
         } else {
 
-            bool const hasFileUrlPrefix = (StrStrI(szTextW, chkPreFix) == szTextW);
-
             WCHAR szUnEscW[INTERNET_MAX_URL_LENGTH + 1];
-            DWORD dCchUnEsc = COUNTOF(szUnEscW);
+            DWORD dCch = COUNTOF(szUnEscW);
 
-            if ((operation & OPEN_WITH_NOTEPAD3) && hasFileUrlPrefix) {
+            if ((operation & OPEN_WITH_NOTEPAD3) && UrlIsFileUrl(szTextW)) {
 
-                WCHAR *szFileName = NULL;
-                if (UrlIsFileUrl(szTextW)) {
-                    PathCreateFromUrl(szTextW, szUnEscW, &dCchUnEsc, 0);
-                    szFileName = szUnEscW;
-                } else {
-                    UrlUnescapeEx(szTextW, szUnEscW, &dCchUnEsc);
-                    szFileName = &(szUnEscW[lenPfx]);
-                }
+                PathCreateFromUrl(szTextW, szUnEscW, &dCch, 0);
+                szUnEscW[min_u(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
 
-                szUnEscW[min_i(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
+                WCHAR *const szFileName = szUnEscW;
                 StrTrim(szFileName, L"/");
 
                 PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szUnEscW) - lenPfx));
@@ -7140,14 +7146,17 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                 }
                 bHandled = true;
 
-            } else if (operation & OPEN_WITH_BROWSER) { // open in web browser
-
-                if (UrlIsFileUrl(szTextW) || hasFileUrlPrefix) {
+            } else if (operation & OPEN_WITH_BROWSER) { 
+                
+                // open in web browser or associated application
+                
+                if (UrlIsFileUrl(szTextW)) {
+                    // ShellExecuteEx() will handle file-system path correctly for "file://" protocol
                     StringCchCopy(szUnEscW, COUNTOF(szUnEscW), chkPreFix);
-                    dCchUnEsc -= (DWORD)lenPfx;
-                    PathCreateFromUrl(szTextW, &(szUnEscW[lenPfx]), &dCchUnEsc, 0);
+                    dCch -= (DWORD)lenPfx;
+                    PathCreateFromUrl(szTextW, &(szUnEscW[lenPfx]), &dCch, 0);
                 } else {
-                    UrlUnescapeEx(szTextW, szUnEscW, &dCchUnEsc);
+                    UrlUnescapeEx(szTextW, szUnEscW, &dCch);
                 }
 
                 WCHAR wchDirectory[MAX_PATH] = { L'\0' };
@@ -7161,7 +7170,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                 sei.cbSize = sizeof(SHELLEXECUTEINFO);
                 sei.fMask = SEE_MASK_NOZONECHECKS;
                 sei.hwnd = NULL;
-                sei.lpVerb = NULL;
+                sei.lpVerb = L"open";
                 sei.lpFile = szUnEscW;
                 sei.lpParameters = NULL;
                 sei.lpDirectory = wchDirectory;

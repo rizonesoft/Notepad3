@@ -65,11 +65,18 @@ DWORD const kSystemLibraryLoadFlags = (IsWindows8Point1OrGreater() ||
 
 constexpr bool CheckBuildNumber(DWORD buildNumber)
 {
-    return (buildNumber == 17763 || // 1809
-            buildNumber == 18362 || // 1903
-            buildNumber == 18363 || // 1909
-            buildNumber == 19041 || // 2004
-            buildNumber == 19042);  // 2010
+    switch (buildNumber) {
+    case 17763: // Win10 v1809
+    case 18362: // Win10 v1903
+    case 18363: // Win10 v1909
+    case 19041: // Win10 v2004
+    case 19042: // Win10 v20H2
+        return true;
+    default:
+        // not supported
+        break;
+    }
+    return false;
 }
 
 // ============================================================================
