@@ -258,11 +258,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",                   IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",                   IDM_EDIT_URL2PATH
+            MENUITEM "URL에 대한 파일 시스템 경로",                   IDM_EDIT_PATH2URL
+            MENUITEM "파일 시스템 경로에 대한 URL",                   IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                        IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                            IDM_EDIT_INVERTSLASH
+            MENUITEM "백슬래시 반전",                        IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "슬래시 반전",                            IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "문자를 Hex로 변환(&H)\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
             MENUITEM "Hex를 문자로 변환(&C)\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
@@ -284,8 +284,8 @@ BEGIN
         BEGIN
             MENUITEM "GUID를 클립보드로 복사(&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "C 문자 탈출(&P)\tCtrl+Alt+E",          IDM_EDIT_ESCAPECCHARS
-            MENUITEM "C 문자 탈출 해제(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "C 문자 이스케이프(&P)\tCtrl+Alt+E",          IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C 문자 이스케이프 해제(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "숫자 증가(&I)\tCtrl+Alt+NK+",               CMD_INCREASENUM
             MENUITEM "숫자 감소(&D)\tCtrl+Alt+NK-",               CMD_DECREASENUM
@@ -345,7 +345,7 @@ BEGIN
             MENUITEM "A+RGB(&A)"                          IDM_VIEW_COLOR_ARGB
             MENUITEM "BGRA(&B)"                           IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "유니 코드 포인트 강조(&U)",             IDM_VIEW_UNICODE_POINTS
+        MENUITEM "유니코드 포인트 강조(&U)",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "시각적 괄호 일치(&V)\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "현재 줄 강조(&G)\tCtrl+Shift+I"
         BEGIN
