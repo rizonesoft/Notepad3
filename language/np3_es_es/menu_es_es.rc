@@ -256,11 +256,16 @@ BEGIN
             MENUITEM "Ta&bular la sangría\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
             MENUITEM "Destabular la &sangría\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
+            MENUITEM "&Codificar URL\tCtrl+Shift+E",                    IDM_EDIT_URLENCODE
+            MENUITEM "D&ecodificar URL\tCtrl+Shift+R",                  IDM_EDIT_URLDECODE
+            MENUITEM "Ruta sistema-archivos como URL",                  IDM_EDIT_PATH2URL
+            MENUITEM "URL como ruta sistema-archivos",                  IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Char To He&x\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
+            MENUITEM "Invertir barras oblicuas invertidas",             IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invertir barras oblicuas",                        IDM_EDIT_INVERTSLASH
+            MENUITEM SEPARATOR
+            MENUITEM "Char a He&x\tCtrl+Alt+X",                         IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex a Char\tCtrl+Alt+C",                         IDM_EDIT_HEX2CHAR
         END
         POPUP "&Insertar"
         BEGIN

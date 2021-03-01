@@ -32,26 +32,35 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.227.(build_#) (2021-02-27)
+Current BETA/RC Version 5.21.301.(build_#) (2021-03-01)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- Converter: File-System Path to URL and vice versa.
+[.301.1]- About Dlg:  Copy-Ver-Info-Btn : add Dark-Mode information.
+[.301.1]- Some filesystem path vs. file:// URL helpers (backslash invert).
+[.301.1]- Converter: File-System Path to URL and vice versa.
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
+[.301.1]- Enable Dark Mode feature for Win10 v21H1 insider beta.
+[.301.1]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
+[.301.1]- Update grepWinNP3 (GRE) version 2.1.6.35 (2021-03.01).
+[.301.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-03-01).
+[1214.1]- Update Scintilla Library (SCI) version 4.4.6 (2020-12-01).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.301.1]- "grepWinNP3": hide progress bar after search finisched (GRE).
+[.301.1]- ShellExecute() lpVerb for open hyperlink (Ctrl+Click) set to "open.
+[.301.1]- Data type mismatch.
+[.301.1]- Decoding of url-encoded file Hyperlinks ("file://...").
 
 --------------------------------------------------------
 REMOVED:
@@ -66,13 +75,13 @@ For our Notepad3 translation projects, we are looking for motivated volunteers, 
 priority to resume "aborted" translations for these languages:
 Please, send me a PM (hpwamr51 @ gmail.com) if you are willing to help.
 [.###.#]- .
-[.226.1]- Chinese Traditional (zh-TW) (incomplete...).
-[.226.1]- Greek (el-GR) (incomplete...).
-[.226.1]- Indonesian (id-ID) (incomplete...).
-[.226.1]- Portuguese Brazilian (pt-BR) (incomplete...).
-[.226.1]- Spanish Latin America (es-LA) (incomplete...).
-[.226.1]- Turkish (tr-TR) (incomplete...).
-[.226.1]- Vietnamese (vi-VN) (incomplete...).
+[.227.1]- Chinese Traditional (zh-TW) (incomplete...).
+[.227.1]- Greek (el-GR) (incomplete...).
+[.227.1]- Indonesian (id-ID) (incomplete...).
+[.227.1]- Portuguese Brazilian (pt-BR) (incomplete...).
+[.227.1]- Spanish Latin America (es-LA) (incomplete...).
+[.227.1]- Turkish (tr-TR) (incomplete...).
+[.227.1]- Vietnamese (vi-VN) (incomplete...).
 
 
 ========================================================

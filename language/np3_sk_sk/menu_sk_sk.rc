@@ -258,6 +258,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Kódovať URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Dekódovať URL\tCtrl+Shift+R",        IDM_EDIT_URLDECODE
+            MENUITEM "File System Path to URL",             IDM_EDIT_PATH2URL
+            MENUITEM "URL to File System Path",             IDM_EDIT_URL2PATH
+            MENUITEM SEPARATOR
+            MENUITEM "Invert Backslashes",                  IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invert Slashes",                      IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "Znaky na &Hex\tCtrl+Alt+X",           IDM_EDIT_CHAR2HEX
             MENUITEM "He&x na znaky\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR

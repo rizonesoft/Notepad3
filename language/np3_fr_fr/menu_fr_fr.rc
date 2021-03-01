@@ -257,7 +257,12 @@ BEGIN
             MENUITEM "Détabuler le R&etrait\tCtrl+Alt+S",               IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "&URL Encodage\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decodage\tCtrl+Shift+R",                     IDM_EDIT_URLDECODE
+            MENUITEM "URL &Décodage\tCtrl+Shift+R",                     IDM_EDIT_URLDECODE
+            MENUITEM "Chemin système-fichiers comme URL",               IDM_EDIT_PATH2URL
+            MENUITEM "URL comme chemin système-fichiers",               IDM_EDIT_URL2PATH
+            MENUITEM SEPARATOR
+            MENUITEM "Inverser les barres obliques inversées",          IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverser les barres obliques",                    IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Car vers Hex\tCtrl+Alt+X",                       IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex vers Car\tCtrl+Alt+C",                       IDM_EDIT_HEX2CHAR

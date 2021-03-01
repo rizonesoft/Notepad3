@@ -238,8 +238,8 @@ BEGIN
             MENUITEM "Выров&нять строки...\tAlt+J",             IDM_EDIT_ALIGN
             MENUITEM "&Сортировать строки...\tAlt+O",           IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "Перейти к началу в&ыделения\tCtrl+,", CMD_JUMP2SELSTART
-            MENUITEM "Перейти в конец выделени&я\tCtrl+.",  CMD_JUMP2SELEND
+            MENUITEM "Перейти к началу в&ыделения\tCtrl+,",     CMD_JUMP2SELSTART
+            MENUITEM "Перейти в конец выделени&я\tCtrl+.",      CMD_JUMP2SELEND
         END
         POPUP "Преобразование"
         BEGIN
@@ -258,6 +258,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
             MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
+            MENUITEM "File System Path to URL",                         IDM_EDIT_PATH2URL
+            MENUITEM "URL to File System Path",                         IDM_EDIT_URL2PATH
+            MENUITEM SEPARATOR
+            MENUITEM "Invert Backslashes",                              IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invert Slashes",                                  IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "Символ &в шестнадцатеричный код\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
             MENUITEM "&Шестнадцатеричный код в символ\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR
