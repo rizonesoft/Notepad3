@@ -256,24 +256,29 @@ BEGIN
             MENUITEM "インデントをタブに\tCtrl+Alt+T",               IDM_EDIT_CONVERTSPACES2
             MENUITEM "インデントを空白に\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "URLエンコード(&E)\tCtrl+Shift+E",              IDM_EDIT_URLENCODE
-            MENUITEM "URLデコード(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
+            MENUITEM "URLエンコード(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
+            MENUITEM "URLデコード(&D)\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
+            MENUITEM "File System Path to URL",                IDM_EDIT_PATH2URL
+            MENUITEM "URL to File System Path",                IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "16進表記へ(&H\tCtrl+Alt+X",                IDM_EDIT_CHAR2HEX
-            MENUITEM "16進表記を文字へ(&C)\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR
+            MENUITEM "Invert Backslashes",                     IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invert Slashes",                         IDM_EDIT_INVERTSLASH
+            MENUITEM SEPARATOR
+            MENUITEM "16進表記へ(&H\tCtrl+Alt+X",               IDM_EDIT_CHAR2HEX
+            MENUITEM "16進表記を文字へ(&C)\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
         END
         POPUP "挿入(&I)"
         BEGIN
             MENUITEM "上に改行(&N)\tCtrl+Enter",                 CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
-            MENUITEM "HTML/XMLタグ(&M)...\tAlt+X",                IDM_EDIT_INSERT_TAG
+            MENUITEM "HTML/XMLタグ(&M)...\tAlt+X",               IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
             MENUITEM "現在の文字コード形式(&E)\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "日時 /区切り(&S)\tCtrl+F5",                IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "日時 年月日(&L)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "日時 (下の更新に対応)(&T)",                      CMD_INSERT_TIMESTAMP
-            MENUITEM "日時の更新(&U)\tShift+F5",             CMD_UPDATE_TIMESTAMPS
+            MENUITEM "日時 年月日(&L)\tCtrl+Shift+F5",          IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "日時 (下の更新に対応)(&T)",                 CMD_INSERT_TIMESTAMP
+            MENUITEM "日時の更新(&U)\tShift+F5",                 CMD_UPDATE_TIMESTAMPS
         END
         POPUP "プログラム(&M)"
         BEGIN

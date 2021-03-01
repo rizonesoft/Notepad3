@@ -222,19 +222,19 @@ BEGIN
                 MENUITEM "[ ]\tCtrl+4",                      CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                      CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "역 따옴표(&B)\tCtrl+6",              CMD_EMBRACE4
+                MENUITEM "역 따옴표(&B)\tCtrl+6",             CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "지정(&W)...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "선택/줄 복제(&D)\tCtrl+D",         IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "선택/줄 복제(&D)\tCtrl+D",              IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "공백이 있는 패드(&P)\tAlt+B",          IDM_EDIT_PADWITHSPACES
-            MENUITEM "첫번째 문자 제거(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
-            MENUITEM "마지막 문자 제거(&L)\tAlt+U",               IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "공백이 있는 패드(&P)\tAlt+B",             IDM_EDIT_PADWITHSPACES
+            MENUITEM "첫번째 문자 제거(&F)\tAlt+Z",             IDM_EDIT_STRIP1STCHAR
+            MENUITEM "마지막 문자 제거(&L)\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
             MENUITEM "후행 공백 제거(&T)\tAlt+W",               IDM_EDIT_TRIMLINES
-            MENUITEM "공백 압축(&B)\tCtrl+Alt+P",           IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "공백 압축(&B)\tCtrl+Alt+P",             IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "줄 수정(&M)...\tAlt+M",          IDM_EDIT_MODIFYLINES
+            MENUITEM "줄 수정(&M)...\tAlt+M",                 IDM_EDIT_MODIFYLINES
             MENUITEM "줄 맞춤(&N)...\tAlt+J",                 IDM_EDIT_ALIGN
             MENUITEM "줄 정렬(&O)...\tAlt+O",                 IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
@@ -243,28 +243,33 @@ BEGIN
         END
         POPUP "변환(&V)"
         BEGIN
-            MENUITEM "대문자로(&U)\tCtrl+Shift+U",            IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "소문자로(&L)\tCtrl+U",                  IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "대문자로(&U)\tCtrl+Shift+U",                IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "소문자로(&L)\tCtrl+U",                      IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "대소문자 반전(&I)\tCtrl+Alt+U",               IDM_EDIT_INVERTCASE
-            MENUITEM "단어 첫글자만 대문자(&T)\tCtrl+Alt+I",          IDM_EDIT_TITLECASE
-            MENUITEM "문장 첫글자만 대문자(&S)\tCtrl+Alt+O",          IDM_EDIT_SENTENCECASE
+            MENUITEM "대소문자 반전(&I)\tCtrl+Alt+U",             IDM_EDIT_INVERTCASE
+            MENUITEM "단어 첫글자만 대문자(&T)\tCtrl+Alt+I",       IDM_EDIT_TITLECASE
+            MENUITEM "문장 첫글자만 대문자(&S)\tCtrl+Alt+O",       IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "선택 영역 탭 지정(&A)\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
-            MENUITEM "선택 영역 탭 해제(&N)\tCtrl+Shift+S",   IDM_EDIT_CONVERTTABS
+            MENUITEM "선택 영역 탭 지정(&A)\tCtrl+Shift+T",        IDM_EDIT_CONVERTSPACES
+            MENUITEM "선택 영역 탭 해제(&N)\tCtrl+Shift+S",        IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "들여쓰기 탭 지정(&B)\tCtrl+Alt+T",            IDM_EDIT_CONVERTSPACES2
-            MENUITEM "들여쓰기 탭 해제(&F)\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
+            MENUITEM "들여쓰기 탭 지정(&B)\tCtrl+Alt+T",           IDM_EDIT_CONVERTSPACES2
+            MENUITEM "들여쓰기 탭 해제(&F)\tCtrl+Alt+S",           IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
+            MENUITEM "File System Path to URL",                   IDM_EDIT_PATH2URL
+            MENUITEM "URL to File System Path",                   IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "문자를 Hex로 변환(&H)\tCtrl+Alt+X",        IDM_EDIT_CHAR2HEX
+            MENUITEM "Invert Backslashes",                        IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invert Slashes",                            IDM_EDIT_INVERTSLASH
+            MENUITEM SEPARATOR
+            MENUITEM "문자를 Hex로 변환(&H)\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
             MENUITEM "Hex를 문자로 변환(&C)\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
         END
         POPUP "삽입(&N)"
         BEGIN
-            MENUITEM "위로 새 줄(&N)\tCtrl+Enter",                      CMD_INSERTNEWLINE
+            MENUITEM "위로 새 줄(&N)\tCtrl+Enter",                  CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "HTML/XML 태그(&M)...\tAlt+X",                IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
@@ -272,14 +277,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "날짜/시간 (짧은 형식)(&S)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "날짜/시간 (긴 형식)(&L)\tCtrl+Shift+F5",       IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "현재 타임스탬프(&C)(&T)",                     CMD_INSERT_TIMESTAMP
-            MENUITEM "타임스탬프 업데이트(&U)\tShift+F5",           CMD_UPDATE_TIMESTAMPS
+            MENUITEM "현재 타임스탬프(&C)(&T)",                      CMD_INSERT_TIMESTAMP
+            MENUITEM "타임스탬프 업데이트(&U)\tShift+F5",            CMD_UPDATE_TIMESTAMPS
         END
         POPUP "기타(&I)"
         BEGIN
-            MENUITEM "GUID를 클립보드로 복사(&G)\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
+            MENUITEM "GUID를 클립보드로 복사(&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "C 문자 탈출(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C 문자 탈출(&P)\tCtrl+Alt+E",          IDM_EDIT_ESCAPECCHARS
             MENUITEM "C 문자 탈출 해제(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "숫자 증가(&I)\tCtrl+Alt+NK+",               CMD_INCREASENUM

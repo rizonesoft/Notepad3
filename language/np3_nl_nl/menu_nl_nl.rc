@@ -258,6 +258,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&URL Encode\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
             MENUITEM "URL &Decode\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
+            MENUITEM "Bestands-systeem pad als URL",                IDM_EDIT_PATH2URL
+            MENUITEM "URL als bestands-systeem pad",                IDM_EDIT_URL2PATH
+            MENUITEM SEPARATOR
+            MENUITEM "Backslashes omkeren",                         IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Slashes omkeren",                             IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Char naar Hex\tCtrl+Alt+X",                  IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex naar Char\tCtrl+Alt+C",                  IDM_EDIT_HEX2CHAR

@@ -258,6 +258,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Codificar &URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Descodificar URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
+            MENUITEM "File System Path to URL",               IDM_EDIT_PATH2URL
+            MENUITEM "URL to File System Path",               IDM_EDIT_URL2PATH
+            MENUITEM SEPARATOR
+            MENUITEM "Invert Backslashes",                    IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invert Slashes",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Caractere para Hex\tCtrl+Alt+X",       IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex para Caractere\tCtrl+Alt+C",       IDM_EDIT_HEX2CHAR
