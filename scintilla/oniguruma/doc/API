@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.7  2021/01/18
+Oniguruma API  Version 6.9.7  2021/03/01
 
 #include <oniguruma.h>
 
@@ -333,6 +333,9 @@ Oniguruma API  Version 6.9.7  2021/01/18
   not found: ONIG_MISMATCH (< 0)
   error:     error code    (< 0)
 
+    * If option ONIG_OPTION_CALLBACK_EACH_MATCH is used,
+      it will return ONIG_MISMATCH even if there is a match.
+
   arguments
   1 reg:    regex object
   2 str:    target string
@@ -344,11 +347,12 @@ Oniguruma API  Version 6.9.7  2021/01/18
   6 region: address for return group match range info (NULL is allowed)
   7 option: search time option
 
-    ONIG_OPTION_NOTBOL             Do not regard the beginning of the (str) as the beginning of the line and the beginning of the string
-    ONIG_OPTION_NOTEOL             Do not regard the (end) as the end of a line and the end of a string
-    ONIG_OPTION_NOT_BEGIN_STRING   Do not regard the beginning of the (str) as the beginning of a string  (* fail \A)
-    ONIG_OPTION_NOT_END_STRING     Do not regard the (end) as a string endpoint  (* fail \z, \Z)
-    ONIG_OPTION_NOT_BEGIN_POSITION Do not regard the (start) as start position of search  (* fail \G)
+    ONIG_OPTION_NOTBOL              Do not regard the beginning of the (str) as the beginning of the line and the beginning of the string
+    ONIG_OPTION_NOTEOL              Do not regard the (end) as the end of a line and the end of a string
+    ONIG_OPTION_NOT_BEGIN_STRING    Do not regard the beginning of the (str) as the beginning of a string  (* fail \A)
+    ONIG_OPTION_NOT_END_STRING      Do not regard the (end) as a string endpoint  (* fail \z, \Z)
+    ONIG_OPTION_NOT_BEGIN_POSITION  Do not regard the (start) as start position of search  (* fail \G)
+    ONIG_OPTION_CALLBACK_EACH_MATCH Call back for all successful matches. (including the case of the same matching start position).
 
 
 # int onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
@@ -374,6 +378,9 @@ Oniguruma API  Version 6.9.7  2021/01/18
   not match: ONIG_MISMATCH (< 0)
   error:     error code    (< 0)
 
+    * If option ONIG_OPTION_CALLBACK_EACH_MATCH is used,
+      it will return ONIG_MISMATCH even if there is a match.
+
   arguments
   1 reg:    regex object
   2 str:    target string
@@ -382,11 +389,12 @@ Oniguruma API  Version 6.9.7  2021/01/18
   5 region: address for return group match range info (NULL is allowed)
   6 option: search time option
 
-    ONIG_OPTION_NOTBOL             Do not regard the beginning of the (str) as the beginning of the line and the beginning of the string
-    ONIG_OPTION_NOTEOL             Do not regard the (end) as the end of a line and the end of a string
-    ONIG_OPTION_NOT_BEGIN_STRING   Do not regard the beginning of the (str) as the beginning of a string  (* fail \A)
-    ONIG_OPTION_NOT_END_STRING     Do not regard the (end) as a string endpoint  (* fail \z, \Z)
-    ONIG_OPTION_NOT_BEGIN_POSITION Do not regard the (start) as start position of search  (* fail \G)
+    ONIG_OPTION_NOTBOL              Do not regard the beginning of the (str) as the beginning of the line and the beginning of the string
+    ONIG_OPTION_NOTEOL              Do not regard the (end) as the end of a line and the end of a string
+    ONIG_OPTION_NOT_BEGIN_STRING    Do not regard the beginning of the (str) as the beginning of a string  (* fail \A)
+    ONIG_OPTION_NOT_END_STRING      Do not regard the (end) as a string endpoint  (* fail \z, \Z)
+    ONIG_OPTION_NOT_BEGIN_POSITION  Do not regard the (start) as start position of search  (* fail \G)
+    ONIG_OPTION_CALLBACK_EACH_MATCH Call back for all successful matches.
 
 
 # int onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end,
@@ -703,6 +711,23 @@ Oniguruma API  Version 6.9.7  2021/01/18
   1 reg:     regex object.
 
 
+# OnigCallbackEachMatchFunc onig_get_callback_each_match(void)
+
+  Return the current callback function for ONIG_OPTION_CALLBACK_EACH_MATCH.
+
+
+# int onig_set_callback_each_match(OnigCallbackEachMatchFunc func)
+
+  Set the callback function for ONIG_OPTION_CALLBACK_EACH_MATCH.
+  If NULL is set, the callback will never be executed.
+
+  return value
+  normal: 0
+
+  arguments
+  1 func: callback function
+
+
 # int onig_number_of_capture_histories(regex_t* reg)
 
   Return the number of capture history defined in the pattern.
@@ -712,7 +737,6 @@ Oniguruma API  Version 6.9.7  2021/01/18
 
   arguments
   1 reg:     regex object.
-
 
 
 # OnigCaptureTreeNode* onig_get_capture_tree(OnigRegion* region)

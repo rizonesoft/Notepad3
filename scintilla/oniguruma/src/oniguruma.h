@@ -740,7 +740,7 @@ typedef struct {
   OnigCaseFoldType   case_fold_flag;
 } OnigCompileInfo;
 
-typedef int (*OnigCallbackEachMatchFunc)(const UChar* str, const UChar* end, const UChar* range, const UChar* match_start, OnigRegion* region, void* user_data);
+typedef int (*OnigCallbackEachMatchFunc)(const UChar* str, const UChar* end, const UChar* match_start, OnigRegion* region, void* user_data);
 
 
 /* types for callout */
