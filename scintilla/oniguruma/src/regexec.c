@@ -3095,7 +3095,6 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
 #ifdef USE_CAPTURE_HISTORY
           if (reg->capture_history != 0) {
-            int r;
             OnigCaptureTreeNode* node;
 
             if (IS_NULL(region->history_root)) {
@@ -3112,9 +3111,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
             node->end   = (int )(s    - str);
 
             stkp = stk_base;
-            r = make_capture_history_tree(region->history_root, &stkp,
+            i = make_capture_history_tree(region->history_root, &stkp,
                                           stk, (UChar* )str, reg);
-            if (r < 0) MATCH_AT_ERROR_RETURN(r);
+            if (i < 0) MATCH_AT_ERROR_RETURN(i);
           }
 #endif /* USE_CAPTURE_HISTORY */
 #ifdef USE_POSIX_API
@@ -3126,9 +3125,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
       if (OPTON_CALLBACK_EACH_MATCH(options) &&
           IS_NOT_NULL(CallbackEachMatch)) {
-        int r = CallbackEachMatch(str, end, in_right_range, sstart, region,
-                                  msa->mp->callout_user_data);
-        if (r < 0) MATCH_AT_ERROR_RETURN(r);
+        i = CallbackEachMatch(str, end, sstart, region,
+                              msa->mp->callout_user_data);
+        if (i < 0) MATCH_AT_ERROR_RETURN(i);
 
 #ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
         if (! OPTON_FIND_LONGEST(options))
