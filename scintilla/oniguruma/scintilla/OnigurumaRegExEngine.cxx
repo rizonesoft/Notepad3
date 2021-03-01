@@ -692,7 +692,7 @@ public:
     onig_end();
   }
 
-  OnigPosition Find(const OnigUChar* pattern, const OnigUChar* document, const  bool caseSensitive);
+  OnigPosition Find(const OnigUChar *pattern, const OnigUChar *document, const bool caseSensitive, int *matchLen_out = nullptr);
 
   const OnigPosition GetMatchPos() const { return m_MatchPos; };
   const OnigPosition GetMatchLen() const { return m_MatchLen; };
@@ -719,7 +719,7 @@ private:
 // ============================================================================
 
 
-OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* document, const bool caseSensitive)
+OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* document, const bool caseSensitive, int* matchLen_out /*=nullptr*/)
 {
   auto const patternLen = (pattern) ? OnigPosition(_mbslen(pattern)) : 0;
   if (patternLen == 0) {
@@ -794,6 +794,9 @@ OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* 
     return OnigPosition(-666);
   }
 
+  if (matchLen_out) {
+    *matchLen_out = static_cast<int>(m_MatchLen);
+  }
   return m_MatchPos;
 }
 // ============================================================================
@@ -802,14 +805,14 @@ extern "C"
 #ifdef SCINTILLA_DLL
 __declspec(dllexport)
 #endif
-ptrdiff_t WINAPI OnigRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive, const int eolMode)
-{
+ptrdiff_t WINAPI OnigRegExFind(const char *pchPattern, const char *pchText, const bool caseSensitive, const int eolMode, int *matchLen_out) {
+
   const UChar* pattern = reinterpret_cast<const UChar*>(pchPattern);
   const UChar* string = reinterpret_cast<const UChar*>(pchText);
 
   SimpleRegExEngine ModuleRegExEngine(static_cast<EOLmode>(eolMode));
 
-  return static_cast<ptrdiff_t>(ModuleRegExEngine.Find(pattern, string, caseSensitive));
+  return static_cast<ptrdiff_t>(ModuleRegExEngine.Find(pattern, string, caseSensitive, matchLen_out));
 }
 // ============================================================================
 
