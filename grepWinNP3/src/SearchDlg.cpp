@@ -788,6 +788,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
             SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 0, 0);
+            ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
             if (m_pTaskbarList)
                 m_pTaskbarList->SetProgressState(*this, TBPF_NOPROGRESS);
             ShowWindow(GetDlgItem(*this, IDC_EXPORT), m_items.empty() ? SW_HIDE : SW_SHOW);
