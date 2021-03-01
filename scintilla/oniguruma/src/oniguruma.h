@@ -415,8 +415,9 @@ typedef unsigned int        OnigOptionType;
 #define ONIG_OPTION_NOT_BEGIN_STRING     (ONIG_OPTION_TEXT_SEGMENT_WORD << 1)
 #define ONIG_OPTION_NOT_END_STRING       (ONIG_OPTION_NOT_BEGIN_STRING << 1)
 #define ONIG_OPTION_NOT_BEGIN_POSITION   (ONIG_OPTION_NOT_END_STRING << 1)
+#define ONIG_OPTION_CALLBACK_EACH_MATCH  (ONIG_OPTION_NOT_BEGIN_POSITION << 1)
 
-#define ONIG_OPTION_MAXBIT               ONIG_OPTION_NOT_BEGIN_POSITION
+#define ONIG_OPTION_MAXBIT               ONIG_OPTION_CALLBACK_EACH_MATCH
 
 #define ONIG_OPTION_ON(options,regopt)      ((options) |= (regopt))
 #define ONIG_OPTION_OFF(options,regopt)     ((options) &= ~(regopt))
@@ -739,6 +740,8 @@ typedef struct {
   OnigCaseFoldType   case_fold_flag;
 } OnigCompileInfo;
 
+typedef int (*OnigCallbackEachMatchFunc)(const UChar* str, const UChar* end, const UChar* range, const UChar* match_start, OnigRegion* region, void* user_data);
+
 
 /* types for callout */
 typedef enum {
@@ -961,6 +964,12 @@ ONIG_EXTERN
 const char* onig_version P_((void));
 ONIG_EXTERN
 const char* onig_copyright P_((void));
+
+/* for callback each match */
+ONIG_EXTERN
+OnigCallbackEachMatchFunc onig_get_callback_each_match P_((void));
+ONIG_EXTERN
+int onig_set_callback_each_match P_((OnigCallbackEachMatchFunc f));
 
 /* for OnigMatchParam */
 ONIG_EXTERN

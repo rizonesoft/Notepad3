@@ -47,7 +47,7 @@ typedef struct {
 
 OnigCaseFoldType OnigDefaultCaseFoldFlag = ONIGENC_CASE_FOLD_MIN;
 
-static OnigLen node_min_byte_len(Node* node, ScanEnv* env);
+static OnigLen node_min_byte_len(Node* node, ParseEnv* env);
 
 #if 0
 typedef struct {
@@ -714,7 +714,7 @@ mml_alt_merge(MinMaxLen* to, MinMaxLen* alt)
 
 /* fixed size pattern node only */
 static int
-node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
+node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ParseEnv* env,
                int level)
 {
   MinMaxCharLen tci;
@@ -921,7 +921,7 @@ node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
     {
       int i;
       int* backs;
-      MemEnv* mem_env = SCANENV_MEMENV(env);
+      MemEnv* mem_env = PARSEENV_MEMENV(env);
       BackRefNode* br = BACKREF_(node);
 
       backs = BACKREFS_P(br);
@@ -947,7 +947,7 @@ node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
 }
 
 static int
-node_char_len(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env)
+node_char_len(Node* node, regex_t* reg, MinMaxCharLen* ci, ParseEnv* env)
 {
   return node_char_len1(node, reg, ci, env, 0);
 }
@@ -971,7 +971,7 @@ add_op(regex_t* reg, int opcode)
 }
 
 static int compile_length_tree(Node* node, regex_t* reg);
-static int compile_tree(Node* node, regex_t* reg, ScanEnv* env);
+static int compile_tree(Node* node, regex_t* reg, ParseEnv* env);
 
 
 #define IS_NEED_STR_LEN_OP(op) \
@@ -1039,7 +1039,7 @@ is_strict_real_node(Node* node)
 }
 
 static int
-compile_quant_body_with_empty_check(QuantNode* qn, regex_t* reg, ScanEnv* env)
+compile_quant_body_with_empty_check(QuantNode* qn, regex_t* reg, ParseEnv* env)
 {
   int r;
   int saved_num_empty_check;
@@ -1088,7 +1088,7 @@ compile_quant_body_with_empty_check(QuantNode* qn, regex_t* reg, ScanEnv* env)
 
 #ifdef USE_CALL
 static int
-compile_call(CallNode* node, regex_t* reg, ScanEnv* env)
+compile_call(CallNode* node, regex_t* reg, ParseEnv* env)
 {
   int r;
   int offset;
@@ -1108,7 +1108,7 @@ compile_call(CallNode* node, regex_t* reg, ScanEnv* env)
 #endif
 
 static int
-compile_tree_n_times(Node* node, int n, regex_t* reg, ScanEnv* env)
+compile_tree_n_times(Node* node, int n, regex_t* reg, ParseEnv* env)
 {
   int i, r;
 
@@ -1366,7 +1366,7 @@ entry_repeat_range(regex_t* reg, int id, int lower, int upper, int ops_index)
 
 static int
 compile_range_repeat_node(QuantNode* qn, int target_len, int emptiness,
-                          regex_t* reg, ScanEnv* env)
+                          regex_t* reg, ParseEnv* env)
 {
   int r;
   int num_repeat = reg->num_repeat++;
@@ -1479,7 +1479,7 @@ compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
 }
 
 static int
-compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
+compile_quantifier_node(QuantNode* qn, regex_t* reg, ParseEnv* env)
 {
   int i, r, mod_tlen;
   int infinite = IS_INFINITE_REPEAT(qn->upper);
@@ -1659,7 +1659,7 @@ compile_length_option_node(BagNode* node, regex_t* reg)
 }
 
 static int
-compile_option_node(BagNode* node, regex_t* reg, ScanEnv* env)
+compile_option_node(BagNode* node, regex_t* reg, ParseEnv* env)
 {
   int r;
 
@@ -1775,7 +1775,7 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
 }
 
 static int
-compile_bag_memory_node(BagNode* node, regex_t* reg, ScanEnv* env)
+compile_bag_memory_node(BagNode* node, regex_t* reg, ParseEnv* env)
 {
   int r;
 
@@ -1855,7 +1855,7 @@ compile_bag_memory_node(BagNode* node, regex_t* reg, ScanEnv* env)
 }
 
 static int
-compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
+compile_bag_node(BagNode* node, regex_t* reg, ParseEnv* env)
 {
   int r, len;
 
@@ -2046,7 +2046,7 @@ compile_length_anchor_node(AnchorNode* node, regex_t* reg)
 }
 
 static int
-compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
+compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ParseEnv* env)
 {
   int r;
 
@@ -2160,7 +2160,7 @@ compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
 
 static int
 compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
-                                    ScanEnv* env)
+                                    ParseEnv* env)
 {
   int r;
   int len;
@@ -2289,7 +2289,7 @@ compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
 }
 
 static int
-compile_anchor_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
+compile_anchor_node(AnchorNode* node, regex_t* reg, ParseEnv* env)
 {
   int r, len;
   enum OpCode op;
@@ -2583,7 +2583,7 @@ compile_length_tree(Node* node, regex_t* reg)
 }
 
 static int
-compile_tree(Node* node, regex_t* reg, ScanEnv* env)
+compile_tree(Node* node, regex_t* reg, ParseEnv* env)
 {
   int n, len, pos, r = 0;
 
@@ -2993,7 +2993,7 @@ numbered_ref_check(Node* node)
 }
 
 static int
-disable_noname_group_capture(Node** root, regex_t* reg, ScanEnv* env)
+disable_noname_group_capture(Node** root, regex_t* reg, ParseEnv* env)
 {
   int r, i, pos, counter;
   MemStatusType loc;
@@ -3013,7 +3013,7 @@ disable_noname_group_capture(Node** root, regex_t* reg, ScanEnv* env)
 
   for (i = 1, pos = 1; i <= env->num_mem; i++) {
     if (map[i].new_val > 0) {
-      SCANENV_MEMENV(env)[pos] = SCANENV_MEMENV(env)[i];
+      PARSEENV_MEMENV(env)[pos] = PARSEENV_MEMENV(env)[i];
       pos++;
     }
   }
@@ -3610,7 +3610,7 @@ check_node_in_look_behind(Node* node, int not, int* used)
 }
 
 static OnigLen
-node_min_byte_len(Node* node, ScanEnv* env)
+node_min_byte_len(Node* node, ParseEnv* env)
 {
   OnigLen len;
   OnigLen tmin;
@@ -3621,7 +3621,7 @@ node_min_byte_len(Node* node, ScanEnv* env)
     if (! NODE_IS_CHECKER(node)) {
       int i;
       int* backs;
-      MemEnv* mem_env = SCANENV_MEMENV(env);
+      MemEnv* mem_env = PARSEENV_MEMENV(env);
       BackRefNode* br = BACKREF_(node);
       if (NODE_IS_RECURSION(node)) break;
 
@@ -3750,7 +3750,7 @@ node_min_byte_len(Node* node, ScanEnv* env)
 }
 
 static OnigLen
-node_max_byte_len(Node* node, ScanEnv* env)
+node_max_byte_len(Node* node, ParseEnv* env)
 {
   OnigLen len;
   OnigLen tmax;
@@ -3787,7 +3787,7 @@ node_max_byte_len(Node* node, ScanEnv* env)
     if (! NODE_IS_CHECKER(node)) {
       int i;
       int* backs;
-      MemEnv* mem_env = SCANENV_MEMENV(env);
+      MemEnv* mem_env = PARSEENV_MEMENV(env);
       BackRefNode* br = BACKREF_(node);
       if (NODE_IS_RECURSION(node)) {
 #ifdef USE_BACKREF_WITH_LEVEL
@@ -3885,7 +3885,7 @@ node_max_byte_len(Node* node, ScanEnv* env)
 }
 
 static int
-check_backrefs(Node* node, ScanEnv* env)
+check_backrefs(Node* node, ParseEnv* env)
 {
   int r;
 
@@ -3930,7 +3930,7 @@ check_backrefs(Node* node, ScanEnv* env)
       int i;
       BackRefNode* br = BACKREF_(node);
       int* backs = BACKREFS_P(br);
-      MemEnv* mem_env = SCANENV_MEMENV(env);
+      MemEnv* mem_env = PARSEENV_MEMENV(env);
 
       for (i = 0; i < br->back_num; i++) {
         if (backs[i] > env->num_mem)
@@ -3951,7 +3951,7 @@ check_backrefs(Node* node, ScanEnv* env)
 }
 
 static int
-set_empty_repeat_node_trav(Node* node, Node* empty, ScanEnv* env)
+set_empty_repeat_node_trav(Node* node, Node* empty, ParseEnv* env)
 {
   int r;
 
@@ -4005,7 +4005,7 @@ set_empty_repeat_node_trav(Node* node, Node* empty, ScanEnv* env)
       if (en->type == BAG_MEMORY) {
         if (NODE_IS_BACKREF(node)) {
           if (IS_NOT_NULL(empty))
-            SCANENV_MEMENV(env)[en->m.regnum].empty_repeat_node = empty;
+            PARSEENV_MEMENV(env)[en->m.regnum].empty_repeat_node = empty;
         }
       }
       else if (en->type == BAG_IF_ELSE) {
@@ -4041,7 +4041,7 @@ is_ancestor_node(Node* node, Node* me)
 }
 
 static void
-set_empty_status_check_trav(Node* node, ScanEnv* env)
+set_empty_status_check_trav(Node* node, ParseEnv* env)
 {
   switch (NODE_TYPE(node)) {
   case NODE_LIST:
@@ -4085,7 +4085,7 @@ set_empty_status_check_trav(Node* node, ScanEnv* env)
     {
       int i;
       int* backs;
-      MemEnv* mem_env = SCANENV_MEMENV(env);
+      MemEnv* mem_env = PARSEENV_MEMENV(env);
       BackRefNode* br = BACKREF_(node);
       backs = BACKREFS_P(br);
       for (i = 0; i < br->back_num; i++) {
@@ -4157,7 +4157,7 @@ set_parent_node_trav(Node* node, Node* parent)
 #define RECURSION_INFINITE     (1<<2)
 
 static int
-infinite_recursive_call_check(Node* node, ScanEnv* env, int head)
+infinite_recursive_call_check(Node* node, ParseEnv* env, int head)
 {
   int ret;
   int r = 0;
@@ -4274,7 +4274,7 @@ infinite_recursive_call_check(Node* node, ScanEnv* env, int head)
 }
 
 static int
-infinite_recursive_call_check_trav(Node* node, ScanEnv* env)
+infinite_recursive_call_check_trav(Node* node, ParseEnv* env)
 {
   int r;
 
@@ -4412,7 +4412,7 @@ recursive_call_check(Node* node)
 #define FOUND_CALLED_NODE    1
 
 static int
-recursive_call_check_trav(Node* node, ScanEnv* env, int state)
+recursive_call_check_trav(Node* node, ParseEnv* env, int state)
 {
   int r = 0;
 
@@ -4718,7 +4718,7 @@ list_reduce_in_look_behind(Node* node)
 }
 
 static int
-alt_reduce_in_look_behind(Node* node, regex_t* reg, ScanEnv* env)
+alt_reduce_in_look_behind(Node* node, regex_t* reg, ParseEnv* env)
 {
   int r;
 
@@ -4737,10 +4737,10 @@ alt_reduce_in_look_behind(Node* node, regex_t* reg, ScanEnv* env)
   return r;
 }
 
-static int tune_tree(Node* node, regex_t* reg, int state, ScanEnv* env);
+static int tune_tree(Node* node, regex_t* reg, int state, ParseEnv* env);
 
 static int
-tune_look_behind(Node* node, regex_t* reg, int state, ScanEnv* env)
+tune_look_behind(Node* node, regex_t* reg, int state, ParseEnv* env)
 {
   int r;
   int state1;
@@ -5286,9 +5286,9 @@ quantifiers_memory_node_info(Node* node)
 __inline
 #endif
 static int
-check_call_reference(CallNode* cn, ScanEnv* env, int state)
+check_call_reference(CallNode* cn, ParseEnv* env, int state)
 {
-  MemEnv* mem_env = SCANENV_MEMENV(env);
+  MemEnv* mem_env = PARSEENV_MEMENV(env);
 
   if (cn->by_number != 0) {
     int gnum = cn->called_gnum;
@@ -5405,7 +5405,7 @@ tune_call2_call(Node* node)
 }
 
 static int
-tune_call(Node* node, ScanEnv* env, int state)
+tune_call(Node* node, ParseEnv* env, int state)
 {
   int r;
 
@@ -5730,7 +5730,7 @@ tune_called_state(Node* node, int state)
 __inline
 #endif
 static int
-tune_anchor(Node* node, regex_t* reg, int state, ScanEnv* env)
+tune_anchor(Node* node, regex_t* reg, int state, ParseEnv* env)
 {
   int r;
   AnchorNode* an = ANCHOR_(node);
@@ -5761,7 +5761,7 @@ tune_anchor(Node* node, regex_t* reg, int state, ScanEnv* env)
 __inline
 #endif
 static int
-tune_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
+tune_quant(Node* node, regex_t* reg, int state, ParseEnv* env)
 {
   int r;
   QuantNode* qn = QUANT_(node);
@@ -5838,7 +5838,7 @@ tune_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
  6. expand repeated string.
  */
 static int
-tune_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
+tune_tree(Node* node, regex_t* reg, int state, ParseEnv* env)
 {
   int r = 0;
 
@@ -6053,7 +6053,7 @@ typedef struct {
   MinMaxLen        mm;
   OnigEncoding     enc;
   OnigCaseFoldType case_fold_flag;
-  ScanEnv*         scan_env;
+  ParseEnv*        scan_env;
 } OptEnv;
 
 typedef struct {
@@ -6964,7 +6964,7 @@ static void print_optimize_info(FILE* f, regex_t* reg);
 #endif
 
 static int
-set_optimize_info_from_tree(Node* node, regex_t* reg, ScanEnv* scan_env)
+set_optimize_info_from_tree(Node* node, regex_t* reg, ParseEnv* scan_env)
 {
   int r;
   OptNode opt;
@@ -7093,6 +7093,7 @@ print_options(FILE* fp, OnigOptionType o)
   if ((o & ONIG_OPTION_NOT_BEGIN_STRING) != 0) fprintf(fp, " NOT_BIGIN_STRING");
   if ((o & ONIG_OPTION_NOT_END_STRING) != 0)   fprintf(fp, " NOT_END_STRING");
   if ((o & ONIG_OPTION_NOT_BEGIN_POSITION) != 0) fprintf(fp, " NOT_BEGIN_POSITION");
+  if ((o & ONIG_OPTION_CALLBACK_EACH_MATCH) != 0) fprintf(fp, " CALLBACK_EACH_MATCH");
 }
 
 #endif /* ONIG_DEBUG */
@@ -7320,7 +7321,7 @@ static void print_tree P_((FILE* f, Node* node));
 extern int onig_init_for_match_at(regex_t* reg);
 
 static int parse_and_tune(regex_t* reg, const UChar* pattern,
-  const UChar* pattern_end, ScanEnv *scan_env, Node** rroot,
+  const UChar* pattern_end, ParseEnv *scan_env, Node** rroot,
   OnigErrorInfo* einfo
 #ifdef USE_CALL
   , UnsetAddrList* uslist
@@ -7428,10 +7429,10 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
              OnigErrorInfo* einfo)
 {
   int r;
-  Node*  root;
-  ScanEnv  scan_env;
+  Node* root;
+  ParseEnv scan_env;
 #ifdef USE_CALL
-  UnsetAddrList  uslist = {0};
+  UnsetAddrList uslist = {0};
 #endif
 
 #ifdef ONIG_DEBUG
@@ -8112,7 +8113,7 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
   int r;
   regex_t* reg;
   Node* root;
-  ScanEnv scan_env;
+  ParseEnv scan_env;
   SlowElementCount count;
   int calls[MAX_CALLS_IN_DETECT];
 #ifdef USE_CALL

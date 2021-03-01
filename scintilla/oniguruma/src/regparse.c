@@ -300,7 +300,7 @@ bbuf_clone(BBuf** rto, BBuf* from)
 }
 
 static int
-backref_rel_to_abs(int rel_no, ScanEnv* env)
+backref_rel_to_abs(int rel_no, ParseEnv* env)
 {
   if (rel_no > 0) {
     if (rel_no > ONIG_INT_MAX - env->num_mem)
@@ -981,7 +981,7 @@ onig_number_of_names(regex_t* reg)
 #endif /* else USE_ST_LIBRARY */
 
 static int
-name_add(regex_t* reg, UChar* name, UChar* name_end, int backref, ScanEnv* env)
+name_add(regex_t* reg, UChar* name, UChar* name_end, int backref, ParseEnv* env)
 {
   int r;
   int alloc;
@@ -1115,7 +1115,7 @@ onig_name_to_group_numbers(regex_t* reg, const UChar* name,
 }
 
 static int
-name_to_group_numbers(ScanEnv* env, const UChar* name, const UChar* name_end,
+name_to_group_numbers(ParseEnv* env, const UChar* name, const UChar* name_end,
                       int** nums)
 {
   regex_t* reg;
@@ -1920,7 +1920,7 @@ callout_tag_table_new(CalloutTagTable** rt)
 }
 
 static int
-callout_tag_entry_raw(ScanEnv* env, CalloutTagTable* t, UChar* name,
+callout_tag_entry_raw(ParseEnv* env, CalloutTagTable* t, UChar* name,
                       UChar* name_end, CalloutTagVal entry_val)
 {
   int r;
@@ -1963,7 +1963,7 @@ ext_ensure_tag_table(regex_t* reg)
 }
 
 static int
-callout_tag_entry(ScanEnv* env, regex_t* reg, UChar* name, UChar* name_end,
+callout_tag_entry(ParseEnv* env, regex_t* reg, UChar* name, UChar* name_end,
                   CalloutTagVal entry_val)
 {
   int r;
@@ -1988,10 +1988,10 @@ callout_tag_entry(ScanEnv* env, regex_t* reg, UChar* name, UChar* name_end,
 #endif /* USE_CALLOUT */
 
 
-#define INIT_SCANENV_MEMENV_ALLOC_SIZE   16
+#define INIT_PARSEENV_MEMENV_ALLOC_SIZE   16
 
 static void
-scan_env_clear(ScanEnv* env)
+scan_env_clear(ParseEnv* env)
 {
   MEM_STATUS_CLEAR(env->cap_history);
   MEM_STATUS_CLEAR(env->backtrack_mem);
@@ -2024,7 +2024,7 @@ scan_env_clear(ScanEnv* env)
 }
 
 static int
-scan_env_add_mem_entry(ScanEnv* env)
+scan_env_add_mem_entry(ParseEnv* env)
 {
   int i, need, alloc;
   MemEnv* p;
@@ -2033,10 +2033,10 @@ scan_env_add_mem_entry(ScanEnv* env)
   if (need > MaxCaptureNum && MaxCaptureNum != 0)
     return ONIGERR_TOO_MANY_CAPTURES;
 
-  if (need >= SCANENV_MEMENV_SIZE) {
+  if (need >= PARSEENV_MEMENV_SIZE) {
     if (env->mem_alloc <= need) {
       if (IS_NULL(env->mem_env_dynamic)) {
-        alloc = INIT_SCANENV_MEMENV_ALLOC_SIZE;
+        alloc = INIT_PARSEENV_MEMENV_ALLOC_SIZE;
         p = (MemEnv* )xmalloc(sizeof(MemEnv) * alloc);
         CHECK_NULL_RETURN_MEMERR(p);
         xmemcpy(p, env->mem_env_static, sizeof(env->mem_env_static));
@@ -2062,10 +2062,10 @@ scan_env_add_mem_entry(ScanEnv* env)
 }
 
 static int
-scan_env_set_mem_node(ScanEnv* env, int num, Node* node)
+scan_env_set_mem_node(ParseEnv* env, int num, Node* node)
 {
   if (env->num_mem >= num)
-    SCANENV_MEMENV(env)[num].mem_node = node;
+    PARSEENV_MEMENV(env)[num].mem_node = node;
   else
     return ONIGERR_PARSER_BUG;
   return 0;
@@ -2285,7 +2285,7 @@ node_new_anychar(OnigOptionType options)
 }
 
 static int
-node_new_no_newline(Node** node, ScanEnv* env)
+node_new_no_newline(Node** node, ParseEnv* env)
 {
   Node* n;
 
@@ -2425,7 +2425,7 @@ node_new_backref(int back_num, int* backrefs, int by_name,
 #ifdef USE_BACKREF_WITH_LEVEL
                  int exist_level, int nest_level,
 #endif
-                 ScanEnv* env)
+                 ParseEnv* env)
 {
   int i;
   Node* node;
@@ -2451,7 +2451,7 @@ node_new_backref(int back_num, int* backrefs, int by_name,
 
   for (i = 0; i < back_num; i++) {
     if (backrefs[i] <= env->num_mem &&
-        IS_NULL(SCANENV_MEMENV(env)[backrefs[i]].mem_node)) {
+        IS_NULL(PARSEENV_MEMENV(env)[backrefs[i]].mem_node)) {
       NODE_STATUS_ADD(node, RECURSION);   /* /...(\1).../ */
       break;
     }
@@ -2481,7 +2481,7 @@ node_new_backref_checker(int back_num, int* backrefs, int by_name,
 #ifdef USE_BACKREF_WITH_LEVEL
                          int exist_level, int nest_level,
 #endif
-                         ScanEnv* env)
+                         ParseEnv* env)
 {
   Node* node;
 
@@ -2641,7 +2641,7 @@ node_set_fail(Node* node)
 }
 
 static int
-node_new_fail(Node** node, ScanEnv* env)
+node_new_fail(Node** node, ParseEnv* env)
 {
   *node = node_new();
   CHECK_NULL_RETURN_MEMERR(*node);
@@ -2657,7 +2657,7 @@ onig_node_reset_fail(Node* node)
 }
 
 static int
-node_new_save_gimmick(Node** node, enum SaveType save_type, ScanEnv* env)
+node_new_save_gimmick(Node** node, enum SaveType save_type, ParseEnv* env)
 {
   int id;
 
@@ -2676,7 +2676,7 @@ node_new_save_gimmick(Node** node, enum SaveType save_type, ScanEnv* env)
 
 static int
 node_new_update_var_gimmick(Node** node, enum UpdateVarType update_var_type,
-                            int id, ScanEnv* env)
+                            int id, ParseEnv* env)
 {
   *node = node_new();
   CHECK_NULL_RETURN_MEMERR(*node);
@@ -2690,7 +2690,7 @@ node_new_update_var_gimmick(Node** node, enum UpdateVarType update_var_type,
 }
 
 static int
-node_new_keep(Node** node, ScanEnv* env)
+node_new_keep(Node** node, ParseEnv* env)
 {
   int r;
 
@@ -2744,7 +2744,7 @@ onig_reg_callout_list_at(regex_t* reg, int num)
 }
 
 static int
-reg_callout_list_entry(ScanEnv* env, int* rnum)
+reg_callout_list_entry(ParseEnv* env, int* rnum)
 {
 #define INIT_CALLOUT_LIST_NUM  3
 
@@ -2796,7 +2796,7 @@ reg_callout_list_entry(ScanEnv* env, int* rnum)
 
 static int
 node_new_callout(Node** node, OnigCalloutOf callout_of, int num, int id,
-                 ScanEnv* env)
+                 ParseEnv* env)
 {
   *node = node_new();
   CHECK_NULL_RETURN_MEMERR(*node);
@@ -2812,7 +2812,7 @@ node_new_callout(Node** node, OnigCalloutOf callout_of, int num, int id,
 #endif
 
 static int
-make_text_segment(Node** node, ScanEnv* env)
+make_text_segment(Node** node, ParseEnv* env)
 {
   int r;
   int i;
@@ -2869,7 +2869,7 @@ make_text_segment(Node** node, ScanEnv* env)
 static int
 make_absent_engine(Node** node, int pre_save_right_id, Node* absent,
                    Node* step_one, int lower, int upper, int possessive,
-                   int is_range_cutter, ScanEnv* env)
+                   int is_range_cutter, ParseEnv* env)
 {
   int r;
   int i;
@@ -2951,7 +2951,7 @@ make_absent_engine(Node** node, int pre_save_right_id, Node* absent,
 
 static int
 make_absent_tail(Node** node1, Node** node2, int pre_save_right_id,
-                 ScanEnv* env)
+                 ParseEnv* env)
 {
   int r;
   int id;
@@ -2999,7 +2999,7 @@ make_absent_tail(Node** node1, Node** node2, int pre_save_right_id,
 }
 
 static int
-make_range_clear(Node** node, ScanEnv* env)
+make_range_clear(Node** node, ParseEnv* env)
 {
   int r;
   int id;
@@ -3058,7 +3058,7 @@ make_range_clear(Node** node, ScanEnv* env)
 
 static int
 is_simple_one_char_repeat(Node* node, Node** rquant, Node** rbody,
-                          int* is_possessive, ScanEnv* env)
+                          int* is_possessive, ParseEnv* env)
 {
   Node* quant;
   Node* body;
@@ -3124,8 +3124,8 @@ is_simple_one_char_repeat(Node* node, Node** rquant, Node** rbody,
 }
 
 static int
-make_absent_tree_for_simple_one_char_repeat(Node** node, Node* absent, Node* quant,
-                                            Node* body, int possessive, ScanEnv* env)
+make_absent_tree_for_simple_one_char_repeat(Node** node,
+  Node* absent, Node* quant, Node* body, int possessive, ParseEnv* env)
 {
   int r;
   int i;
@@ -3172,7 +3172,7 @@ make_absent_tree_for_simple_one_char_repeat(Node** node, Node* absent, Node* qua
 
 static int
 make_absent_tree(Node** node, Node* absent, Node* expr, int is_range_cutter,
-                 ScanEnv* env)
+                 ParseEnv* env)
 {
   int r;
   int i;
@@ -3845,7 +3845,7 @@ add_code_range_to_buf(BBuf** pbuf, OnigCodePoint from, OnigCodePoint to)
 }
 
 static int
-add_code_range(BBuf** pbuf, ScanEnv* env, OnigCodePoint from, OnigCodePoint to)
+add_code_range(BBuf** pbuf, ParseEnv* env, OnigCodePoint from, OnigCodePoint to)
 {
   if (from > to) {
     if (IS_SYNTAX_BV(env->syntax, ONIG_SYN_ALLOW_EMPTY_RANGE_IN_CC))
@@ -4173,7 +4173,7 @@ or_cclass(CClassNode* dest, CClassNode* cc, OnigEncoding enc)
 }
 
 static OnigCodePoint
-conv_backslash_value(OnigCodePoint c, ScanEnv* env)
+conv_backslash_value(OnigCodePoint c, ParseEnv* env)
 {
   if (IS_SYNTAX_OP(env->syntax, ONIG_SYN_OP_ESC_CONTROL_CHARS)) {
     switch (c) {
@@ -4342,7 +4342,7 @@ onig_reduce_nested_quantifier(Node* pnode)
 }
 
 static int
-node_new_general_newline(Node** node, ScanEnv* env)
+node_new_general_newline(Node** node, ParseEnv* env)
 {
   int r;
   int dlen, alen;
@@ -4474,7 +4474,7 @@ ptoken_init(PToken* tok)
 }
 
 static int
-fetch_interval(UChar** src, UChar* end, PToken* tok, ScanEnv* env)
+fetch_interval(UChar** src, UChar* end, PToken* tok, ParseEnv* env)
 {
   int low, up, syn_allow, non_low = 0;
   int r = 0;
@@ -4577,7 +4577,8 @@ fetch_interval(UChar** src, UChar* end, PToken* tok, ScanEnv* env)
 
 /* \M-, \C-, \c, or \... */
 static int
-fetch_escaped_value_raw(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
+fetch_escaped_value_raw(UChar** src, UChar* end, ParseEnv* env,
+                        OnigCodePoint* val)
 {
   int v;
   OnigCodePoint c;
@@ -4648,7 +4649,7 @@ fetch_escaped_value_raw(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* va
 }
 
 static int
-fetch_escaped_value(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
+fetch_escaped_value(UChar** src, UChar* end, ParseEnv* env, OnigCodePoint* val)
 {
   int r;
   int len;
@@ -4662,7 +4663,7 @@ fetch_escaped_value(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
   return 0;
 }
 
-static int fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env);
+static int fetch_token(PToken* tok, UChar** src, UChar* end, ParseEnv* env);
 
 static OnigCodePoint
 get_name_end_code_point(OnigCodePoint start)
@@ -4693,7 +4694,7 @@ enum REF_NUM {
 */
 static int
 fetch_name_with_level(OnigCodePoint start_code, UChar** src, UChar* end,
-                      UChar** rname_end, ScanEnv* env,
+                      UChar** rname_end, ParseEnv* env,
                       int* rback_num, int* rlevel, enum REF_NUM* num_type)
 {
   int r, sign, exist_level;
@@ -4827,7 +4828,7 @@ fetch_name_with_level(OnigCodePoint start_code, UChar** src, UChar* end,
 */
 static int
 fetch_name(OnigCodePoint start_code, UChar** src, UChar* end,
-           UChar** rname_end, ScanEnv* env, int* rback_num,
+           UChar** rname_end, ParseEnv* env, int* rback_num,
            enum REF_NUM* num_type, int is_ref)
 {
   int r, sign;
@@ -4959,7 +4960,7 @@ fetch_name(OnigCodePoint start_code, UChar** src, UChar* end,
 }
 
 static void
-CC_ESC_WARN(ScanEnv* env, UChar *c)
+CC_ESC_WARN(ParseEnv* env, UChar *c)
 {
   if (onig_warn == onig_null_warn) return ;
 
@@ -4975,7 +4976,7 @@ CC_ESC_WARN(ScanEnv* env, UChar *c)
 }
 
 static void
-CLOSE_BRACKET_WITHOUT_ESC_WARN(ScanEnv* env, UChar* c)
+CLOSE_BRACKET_WITHOUT_ESC_WARN(ParseEnv* env, UChar* c)
 {
   if (onig_warn == onig_null_warn) return ;
 
@@ -5056,7 +5057,7 @@ str_exist_check_with_esc(OnigCodePoint s[], int n, UChar* from, UChar* to,
 }
 
 static int
-fetch_token_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env, int state)
+fetch_token_cc(PToken* tok, UChar** src, UChar* end, ParseEnv* env, int state)
 {
   int r;
   OnigCodePoint code;
@@ -5340,7 +5341,7 @@ fetch_token_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env, int state)
 }
 
 static int
-fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
+fetch_token(PToken* tok, UChar** src, UChar* end, ParseEnv* env)
 {
   int r;
   OnigCodePoint code;
@@ -5732,7 +5733,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       if (IS_SYNTAX_OP(syn, ONIG_SYN_OP_DECIMAL_BACKREF) &&
           (r <= env->num_mem || r <= 9)) { /* This spec. from GNU regex */
         if (IS_SYNTAX_BV(syn, ONIG_SYN_STRICT_CHECK_BACKREF)) {
-          if (r > env->num_mem || IS_NULL(SCANENV_MEMENV(env)[r].mem_node))
+          if (r > env->num_mem || IS_NULL(PARSEENV_MEMENV(env)[r].mem_node))
             return ONIGERR_INVALID_BACKREF;
         }
 
@@ -5808,7 +5809,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
             if (IS_SYNTAX_BV(syn, ONIG_SYN_STRICT_CHECK_BACKREF)) {
               if (back_num > env->num_mem ||
-                  IS_NULL(SCANENV_MEMENV(env)[back_num].mem_node))
+                  IS_NULL(PARSEENV_MEMENV(env)[back_num].mem_node))
                 return ONIGERR_INVALID_BACKREF;
             }
             tok->type = TK_BACKREF;
@@ -5825,7 +5826,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
               int i;
               for (i = 0; i < num; i++) {
                 if (backs[i] > env->num_mem ||
-                    IS_NULL(SCANENV_MEMENV(env)[backs[i]].mem_node))
+                    IS_NULL(PARSEENV_MEMENV(env)[backs[i]].mem_node))
                   return ONIGERR_INVALID_BACKREF;
               }
             }
@@ -6368,7 +6369,7 @@ add_ctype_to_cc_by_range_limit(CClassNode* cc, int ctype ARG_UNUSED, int not,
 }
 
 static int
-add_ctype_to_cc(CClassNode* cc, int ctype, int not, ScanEnv* env)
+add_ctype_to_cc(CClassNode* cc, int ctype, int not, ParseEnv* env)
 {
   int c, r;
   int ascii_mode;
@@ -6471,7 +6472,7 @@ add_ctype_to_cc(CClassNode* cc, int ctype, int not, ScanEnv* env)
 }
 
 static int
-prs_posix_bracket(CClassNode* cc, UChar** src, UChar* end, ScanEnv* env)
+prs_posix_bracket(CClassNode* cc, UChar** src, UChar* end, ParseEnv* env)
 {
 #define POSIX_BRACKET_CHECK_LIMIT_LENGTH  20
 #define POSIX_BRACKET_NAME_MIN_LEN         4
@@ -6545,7 +6546,7 @@ prs_posix_bracket(CClassNode* cc, UChar** src, UChar* end, ScanEnv* env)
 }
 
 static int
-fetch_char_property_to_ctype(UChar** src, UChar* end, ScanEnv* env)
+fetch_char_property_to_ctype(UChar** src, UChar* end, ParseEnv* env)
 {
   int r;
   OnigCodePoint c;
@@ -6580,7 +6581,8 @@ fetch_char_property_to_ctype(UChar** src, UChar* end, ScanEnv* env)
 }
 
 static int
-prs_char_property(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
+prs_char_property(Node** np, PToken* tok, UChar** src, UChar* end,
+                  ParseEnv* env)
 {
   int r, ctype;
   CClassNode* cc;
@@ -6601,7 +6603,7 @@ prs_char_property(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
 static int
 cc_cprop_next(CClassNode* cc, OnigCodePoint* pcode, CVAL* val, CSTATE* state,
-              ScanEnv* env)
+              ParseEnv* env)
 {
   int r;
 
@@ -6625,7 +6627,7 @@ cc_cprop_next(CClassNode* cc, OnigCodePoint* pcode, CVAL* val, CSTATE* state,
 static int
 cc_char_next(CClassNode* cc, OnigCodePoint *from, OnigCodePoint to,
              int* from_raw, int to_raw, CVAL intype, CVAL* type,
-             CSTATE* state, ScanEnv* env)
+             CSTATE* state, ParseEnv* env)
 {
   int r;
 
@@ -6694,7 +6696,7 @@ cc_char_next(CClassNode* cc, OnigCodePoint *from, OnigCodePoint to,
 
 static int
 code_exist_check(OnigCodePoint c, UChar* from, UChar* end, int ignore_escaped,
-                 ScanEnv* env)
+                 ParseEnv* env)
 {
   int in_esc;
   OnigCodePoint code;
@@ -6716,7 +6718,7 @@ code_exist_check(OnigCodePoint c, UChar* from, UChar* end, int ignore_escaped,
 }
 
 static int
-prs_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
+prs_cc(Node** np, PToken* tok, UChar** src, UChar* end, ParseEnv* env)
 {
   int r, neg, len, fetched, and_start;
   OnigCodePoint in_code, curr_code;
@@ -7068,13 +7070,14 @@ prs_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 }
 
 static int prs_alts(Node** top, PToken* tok, int term,
-                    UChar** src, UChar* end, ScanEnv* env, int group_head);
+                    UChar** src, UChar* end, ParseEnv* env, int group_head);
 
 #ifdef USE_CALLOUT
 
 /* (?{...}[tag][+-]) (?{{...}}[tag][+-]) */
 static int
-prs_callout_of_contents(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
+prs_callout_of_contents(Node** np, int cterm, UChar** src, UChar* end,
+                        ParseEnv* env)
 {
   int r;
   int i;
@@ -7257,7 +7260,7 @@ clear_callout_args(int n, unsigned int types[], OnigValue vals[])
 static int
 prs_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
                  int max_arg_num, unsigned int types[], OnigValue vals[],
-                 ScanEnv* env)
+                 ParseEnv* env)
 {
 #define MAX_CALLOUT_ARG_BYTE_LENGTH   128
 
@@ -7420,7 +7423,8 @@ prs_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
 
 /* (*name[TAG]) (*name[TAG]{a,b,..}) */
 static int
-prs_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
+prs_callout_of_name(Node** np, int cterm, UChar** src, UChar* end,
+                    ParseEnv* env)
 {
   int r;
   int i;
@@ -7587,7 +7591,7 @@ prs_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* env)
 
 static int
 prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
-        ScanEnv* env)
+        ParseEnv* env)
 {
   int r, num;
   Node *target;
@@ -7820,7 +7824,7 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
             if (IS_SYNTAX_BV(env->syntax, ONIG_SYN_STRICT_CHECK_BACKREF)) {
               if (back_num > env->num_mem ||
-                  IS_NULL(SCANENV_MEMENV(env)[back_num].mem_node))
+                  IS_NULL(PARSEENV_MEMENV(env)[back_num].mem_node))
                 return ONIGERR_INVALID_BACKREF;
             }
 
@@ -7842,7 +7846,7 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
               int i;
               for (i = 0; i < num; i++) {
                 if (backs[i] > env->num_mem ||
-                    IS_NULL(SCANENV_MEMENV(env)[backs[i]].mem_node))
+                    IS_NULL(PARSEENV_MEMENV(env)[backs[i]].mem_node))
                   return ONIGERR_INVALID_BACKREF;
               }
             }
@@ -8222,7 +8226,7 @@ static const char* ReduceQStr[] = {
 };
 
 static int
-assign_quantifier_body(Node* qnode, Node* target, int group, ScanEnv* env)
+assign_quantifier_body(Node* qnode, Node* target, int group, ParseEnv* env)
 {
   QuantNode* qn;
 
@@ -8370,7 +8374,7 @@ onig_new_cclass_with_code_list(Node** rnode, OnigEncoding enc,
 }
 
 typedef struct {
-  ScanEnv*    env;
+  ParseEnv*   env;
   CClassNode* cc;
   Node*       alt_root;
   Node**      ptail;
@@ -8381,7 +8385,7 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
                   void* arg)
 {
   IApplyCaseFoldArg* iarg;
-  ScanEnv* env;
+  ParseEnv* env;
   OnigEncoding enc;
   CClassNode* cc;
 
@@ -8490,7 +8494,7 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len,
 
 static int
 prs_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
-        ScanEnv* env, int group_head)
+        ParseEnv* env, int group_head)
 {
   int r, len, group;
   Node* qn;
@@ -8896,7 +8900,7 @@ prs_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
 static int
 prs_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
-           ScanEnv* env, int group_head)
+           ParseEnv* env, int group_head)
 {
   int r;
   Node *node, **headp;
@@ -8947,7 +8951,7 @@ prs_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
 /* term_tok: TK_EOT or TK_SUBEXP_CLOSE */
 static int
 prs_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
-         ScanEnv* env, int group_head)
+         ParseEnv* env, int group_head)
 {
   int r;
   Node *node, **headp;
@@ -9010,7 +9014,7 @@ prs_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
 }
 
 static int
-prs_regexp(Node** top, UChar** src, UChar* end, ScanEnv* env)
+prs_regexp(Node** top, UChar** src, UChar* end, ParseEnv* env)
 {
   int r;
   PToken tok;
@@ -9026,7 +9030,7 @@ prs_regexp(Node** top, UChar** src, UChar* end, ScanEnv* env)
 
 #ifdef USE_CALL
 static int
-make_call_zero_body(Node* node, ScanEnv* env, Node** rnode)
+make_call_zero_body(Node* node, ParseEnv* env, Node** rnode)
 {
   int r;
 
@@ -9048,7 +9052,7 @@ make_call_zero_body(Node* node, ScanEnv* env, Node** rnode)
 
 extern int
 onig_parse_tree(Node** root, const UChar* pattern, const UChar* end,
-                regex_t* reg, ScanEnv* env)
+                regex_t* reg, ParseEnv* env)
 {
   int r;
   UChar* p;
@@ -9107,7 +9111,7 @@ onig_parse_tree(Node** root, const UChar* pattern, const UChar* end,
 }
 
 extern void
-onig_scan_env_set_error_string(ScanEnv* env, int ecode ARG_UNUSED,
+onig_scan_env_set_error_string(ParseEnv* env, int ecode ARG_UNUSED,
                                UChar* arg, UChar* arg_end)
 {
   env->error     = arg;

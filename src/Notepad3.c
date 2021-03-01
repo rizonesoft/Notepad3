@@ -7165,12 +7165,14 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
                 }
 
+                const WCHAR *const lpVerb = StrIsEmpty(Settings2.HyperlinkFileProtocolVerb) ? NULL : Settings2.HyperlinkFileProtocolVerb;
+
                 SHELLEXECUTEINFO sei;
                 ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
                 sei.cbSize = sizeof(SHELLEXECUTEINFO);
                 sei.fMask = SEE_MASK_NOZONECHECKS;
                 sei.hwnd = NULL;
-                sei.lpVerb = L"open";
+                sei.lpVerb = lpVerb;
                 sei.lpFile = szUnEscW;
                 sei.lpParameters = NULL;
                 sei.lpDirectory = wchDirectory;

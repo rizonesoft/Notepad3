@@ -81,6 +81,20 @@ static char AutoCompleteWordCharSet[ANSI_CHAR_BUFFER] = { L'\0' };
 #define IsWhiteSpaceW(wch)  StrChrW(W_WhiteSpaceCharsDefault, (wch))
 #define IsAccelWhiteSpaceW(wch)  StrChrW(W_WhiteSpaceCharsAccelerated, (wch))
 
+
+static const char *const s_pColorRegEx = "#([0-9a-fA-F]){8}|#([0-9a-fA-F]){6}"; // ARGB, RGBA, RGB
+static const char *const s_pColorRegEx_A = "#([0-9a-fA-F]){8}";                 // no RGB search (BGRA)
+
+static const char *const s_pUnicodeRegEx = "(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([0-9a-fA-F]){2})+";
+
+// https://mathiasbynens.be/demo/url-regex : @stephenhay
+//static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
+static const char *const s_pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
+                                       "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.])*"
+                                       "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[a-z\\u00a1-\\uffff0-9+&@#/%=~_|$])";
+
+// ----------------------------------------------------------------------------
+
 enum AlignMask {
     ALIGN_LEFT = 0,
     ALIGN_RIGHT = 1,
@@ -1743,6 +1757,13 @@ void EditURLEncode(const bool isPathConvert)
     if (isPathConvert) {
         if (FAILED(PathCreateFromUrl(szTextW, pszEscapedW, &cchEscapedW, 0))) {
             StringCchCopy(pszEscapedW, cchEscapedW, szTextW); // no op
+            cchEscapedW = (DWORD)StringCchLen(pszEscapedW, INTERNET_MAX_URL_LENGTH);
+        }
+        if (StrStr(pszEscapedW, L" ") != NULL) {
+            // quote paths with spaces in
+            StringCchCopy(szTextW, INTERNET_MAX_URL_LENGTH, pszEscapedW);
+            StringCchPrintf(pszEscapedW, INTERNET_MAX_URL_LENGTH, L"\"%s\"", szTextW);
+            cchEscapedW = (DWORD)StringCchLen(pszEscapedW, INTERNET_MAX_URL_LENGTH);
         }
     } else {
         UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, true);
@@ -1818,8 +1839,10 @@ void EditURLDecode(const bool isPathConvert)
 
     DWORD cchUnescapedW = (DWORD)cchUnescaped;
     if (isPathConvert) {
+        StrTrim(pszTextW, L"\\/ \"'");
         if (FAILED(UrlCreateFromPath(pszTextW, pszUnescapedW, &cchUnescapedW, 0))) {
             StringCchCopy(pszUnescapedW, cchUnescaped, pszTextW); // no op
+            cchUnescapedW = (DWORD)StringCchLen(pszUnescapedW, INTERNET_MAX_URL_LENGTH);
         }
     } else {
         UrlUnescapeEx(pszTextW, pszUnescapedW, &cchUnescapedW);
@@ -1828,19 +1851,27 @@ void EditURLDecode(const bool isPathConvert)
     int const cchUnescapedDec = WideCharToMultiByte(Encoding_SciCP, 0, pszUnescapedW, cchUnescapedW,
                                 pszUnescaped, (int)cchUnescaped, NULL, NULL);
 
-    _BEGIN_UNDO_ACTION_;
+    // can URL be found by Hyperlink pattern matching ?
+    int matchLen = 0;
+    ptrdiff_t const pos = OnigRegExFind(s_pUrlRegEx, pszUnescaped, false, SciCall_GetEOLMode(), &matchLen);
+    bool const bIsValidConversion = isPathConvert ? ((pos >= 0) && (cchUnescapedDec == matchLen)) : true;
 
-    SciCall_TargetFromSelection();
-    SciCall_ReplaceTarget(cchUnescapedDec, pszUnescaped);
+    if (bIsValidConversion) {
 
-    SciCall_SetSelectionStart(iSelStart);
-    SciCall_SetSelectionEnd(iSelStart + cchUnescapedDec);
-    if (!bStraightSel) {
-        SciCall_SwapMainAnchorCaret();
+        _BEGIN_UNDO_ACTION_;
+
+        SciCall_TargetFromSelection();
+        SciCall_ReplaceTarget(cchUnescapedDec, pszUnescaped);
+
+        SciCall_SetSelectionStart(iSelStart);
+        SciCall_SetSelectionEnd(iSelStart + cchUnescapedDec);
+        if (!bStraightSel) {
+            SciCall_SwapMainAnchorCaret();
+        }
+        EditEnsureSelectionVisible();
+
+        _END_UNDO_ACTION_;
     }
-    EditEnsureSelectionVisible();
-
-    _END_UNDO_ACTION_;
 
     _RESTORE_TARGET_RANGE_;
 
@@ -7740,33 +7771,23 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
         return;
     }
     if (Settings.HyperlinkHotspot) {
-        // https://mathiasbynens.be/demo/url-regex : @stephenhay
-        //static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
-
-        static const char* const pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-                                             "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.])*"
-                                             "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[a-z\\u00a1-\\uffff0-9+&@#/%=~_|$])";
-
-        _UpdateIndicators(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, pUrlRegEx, startPos, endPos);
+        _UpdateIndicators(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, s_pUrlRegEx, startPos, endPos);
     } else {
         _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
     }
 
     if (IsColorDefHotspotEnabled()) {
-        static const char* const pColorRegEx = "#([0-9a-fA-F]){8}|#([0-9a-fA-F]){6}"; // ARGB, RGBA, RGB
-        static const char* const pColorRegEx_A = "#([0-9a-fA-F]){8}"; // no RGB search (BGRA)
         if (Settings.ColorDefHotspot < 3) {
-            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
+            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, s_pColorRegEx, startPos, endPos);
         } else {
-            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, pColorRegEx_A, startPos, endPos);
+            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, s_pColorRegEx_A, startPos, endPos);
         }
     } else {
         _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DEF_T, startPos, endPos);
     }
 
     if (Settings.HighlightUnicodePoints) {
-        static const char* const pUnicodeRegEx = "(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([0-9a-fA-F]){2})+";
-        _UpdateIndicators(INDIC_NP3_UNICODE_POINT, -1, pUnicodeRegEx, startPos, endPos);
+        _UpdateIndicators(INDIC_NP3_UNICODE_POINT, -1, s_pUnicodeRegEx, startPos, endPos);
     } else {
         _ClearIndicatorInRange(INDIC_NP3_UNICODE_POINT, -1, startPos, endPos);
     }
