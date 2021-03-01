@@ -365,6 +365,19 @@ extern "C" size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, 
 // ============================================================================
 
 
+extern "C" size_t IniSectionGetStringNoQuotes(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
+                                              LPWSTR lpReturnedString, size_t cchReturnedString)
+{
+    bool bHasMultiple = false;
+    StringCchCopyW(lpReturnedString, cchReturnedString,
+                   s_INI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
+    //assert(!bHasMultiple);
+    StrTrim(lpReturnedString, L"\"'");
+    return StringCchLenW(lpReturnedString, cchReturnedString);
+}
+// ============================================================================
+
+
 extern "C" int IniSectionGetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
     bool bHasMultiple = false;
@@ -1082,23 +1095,23 @@ void LoadSettings()
     Defaults2.PreferredLanguageLocaleName[0] = L'\0';
     GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
 
-    IniSectionGetString(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
-                        Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
+                                Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
 
     // --------------------------------------------------------------------------
 
     StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
-    IniSectionGetString(IniSecSettings2, L"DefaultExtension", Defaults2.DefaultExtension,
-                        Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
-    StrTrim(Settings2.DefaultExtension, L" \t.\"");
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultExtension", Defaults2.DefaultExtension,
+                                Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
+    StrTrim(Settings2.DefaultExtension, L" \t.");
 
     Defaults2.DefaultDirectory[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"DefaultDirectory", Defaults2.DefaultDirectory,
-                        Settings2.DefaultDirectory, COUNTOF(Settings2.DefaultDirectory));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", Defaults2.DefaultDirectory,
+                                Settings2.DefaultDirectory, COUNTOF(Settings2.DefaultDirectory));
 
     Defaults2.FileDlgFilters[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"FileDlgFilters", Defaults2.FileDlgFilters,
-                        Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", Defaults2.FileDlgFilters,
+                                Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);
 
     Defaults2.FileCheckInverval = 2000UL;
     Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval",
@@ -1197,8 +1210,8 @@ void LoadSettings()
       ~~~ */
 
     Defaults2.AdministrationTool[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
-                        Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
+                                Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
 
     Defaults2.FileLoadWarningMB = 64;
     Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
@@ -1210,10 +1223,10 @@ void LoadSettings()
     Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"FindReplaceOpacityLevel", Defaults2.FindReplaceOpacityLevel), 10, 100);
 
     Defaults2.FileBrowserPath[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
 
     Defaults2.GrepWinPath[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"grepWin.exe", Defaults2.GrepWinPath, Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"grepWin.exe", Defaults2.GrepWinPath, Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
 
     StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
     if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
@@ -1237,34 +1250,30 @@ void LoadSettings()
     StrTrim(Settings2.LineCommentPostfixStrg, L"\"'");
 
     Defaults2.DateTimeFormat[0] = L'\0'; // empty to get <locale date-time format>
-    IniSectionGetString(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
-    StrTrim(Settings2.DateTimeFormat, L"\"'");
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
 
     Defaults2.DateTimeLongFormat[0] = L'\0'; // empty to get <locale date-time format>
-    IniSectionGetString(IniSecSettings2, L"DateTimeLongFormat", Defaults2.DateTimeLongFormat, Settings2.DateTimeLongFormat, COUNTOF(Settings2.DateTimeLongFormat));
-    StrTrim(Settings2.DateTimeLongFormat, L"\"'");
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DateTimeLongFormat", Defaults2.DateTimeLongFormat, Settings2.DateTimeLongFormat, COUNTOF(Settings2.DateTimeLongFormat));
 
     StringCchCopyW(Defaults2.TimeStampRegEx, COUNTOF(Defaults2.TimeStampRegEx), L"\\$Date:[^\\$]+\\$");
-    IniSectionGetString(IniSecSettings2, L"TimeStampRegEx", Defaults2.TimeStampRegEx, Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
-    StrTrim(Settings2.TimeStampRegEx, L"\"'");
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"TimeStampRegEx", Defaults2.TimeStampRegEx, Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
 
     StringCchCopyW(Defaults2.TimeStampFormat, COUNTOF(Defaults2.TimeStampFormat), L"$Date: %s $");
-    IniSectionGetString(IniSecSettings2, L"TimeStampFormat", Defaults2.TimeStampFormat, Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
-    StrTrim(Settings2.TimeStampFormat, L"\"'");
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"TimeStampFormat", Defaults2.TimeStampFormat, Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
 
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
-    IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
 
     //~GetMenuStringW(Globals.hCtxMenu, CMD_WEBACTION1, Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), MF_BYCOMMAND))
     StringCchCopyW(Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), L""); // use resource string
-    IniSectionGetString(IniSecSettings2, L"WebTmpl1MenuName", Defaults2.WebTmpl1MenuName, Settings2.WebTmpl1MenuName, COUNTOF(Settings2.WebTmpl1MenuName));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl1MenuName", Defaults2.WebTmpl1MenuName, Settings2.WebTmpl1MenuName, COUNTOF(Settings2.WebTmpl1MenuName));
 
     StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
-    IniSectionGetString(IniSecSettings2, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
 
     //~GetMenuStringW(Globals.hMainMenu, CMD_WEBACTION2, Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), MF_BYCOMMAND))
     StringCchCopyW(Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), L""); // use resource string
-    IniSectionGetString(IniSecSettings2, L"WebTmpl2MenuName", Defaults2.WebTmpl2MenuName, Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl2MenuName", Defaults2.WebTmpl2MenuName, Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
 
     Defaults2.LexerSQLNumberSignAsComment = true;
     Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
@@ -1281,6 +1290,18 @@ void LoadSettings()
     Defaults2.LargeIconScalePrecent = 150;
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
 
+    const static WCHAR *const allowedVerbs[7] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
+    StringCchCopyW(Defaults2.HyperlinkFileProtocolVerb, COUNTOF(Defaults2.HyperlinkFileProtocolVerb), L"");
+    StringCchCopyW(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), Defaults2.HyperlinkFileProtocolVerb);
+    WCHAR cfgVerb[MICRO_BUFFER] = { L'\0' };
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkFileProtocolVerb", L"", cfgVerb, COUNTOF(cfgVerb));
+    for (int i = 0; i < 7; ++i) {
+        if (StrStr(cfgVerb, allowedVerbs[i])) {
+            StringCchCopyW(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), cfgVerb);
+            break;
+        }
+    }
+
 #ifdef D_NP3_WIN10_DARK_MODE
 
     unsigned int iValue = 0;
@@ -1289,12 +1310,13 @@ void LoadSettings()
 
     Defaults2.DarkModeBkgColor = rgbDarkBkgColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
-    IniSectionGetString(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeBkgColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
         Settings2.DarkModeBkgColor = Defaults2.DarkModeBkgColor;
     }
+
     if (Globals.hbrDarkModeBkgBrush) {
         DeleteObject(Globals.hbrDarkModeBkgBrush);
     }
@@ -1305,7 +1327,7 @@ void LoadSettings()
 
     Defaults2.DarkModeBtnFaceColor = rgbDarkBtnFcColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBtnFaceColor);
-    IniSectionGetString(IniSecSettings2, L"DarkModeBtnFaceColor", color, wchBuffer, COUNTOF(wchBuffer));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBtnFaceColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeBtnFaceColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
@@ -1315,7 +1337,7 @@ void LoadSettings()
 
     Defaults2.DarkModeTxtColor = rgbDarkTxtColorRef;
     StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
-    IniSectionGetString(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeTxtColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
@@ -1370,12 +1392,12 @@ void LoadSettings()
     Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
     GetKnownFolderPath(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
-    if (IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
+    if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
         PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
     }
 
     GetKnownFolderPath(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
-    if (IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
+    if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
         PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
     }
 
@@ -1401,7 +1423,7 @@ void LoadSettings()
     Globals.iWrapCol = Settings.LongLinesLimit;
 
     _itow_s(Settings.LongLinesLimit, Defaults.MultiEdgeLines, COUNTOF(Defaults.MultiEdgeLines), 10);
-    IniSectionGetString(IniSecSettings, L"MultiEdgeLines", Defaults.MultiEdgeLines, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
+    IniSectionGetStringNoQuotes(IniSecSettings, L"MultiEdgeLines", Defaults.MultiEdgeLines, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
     size_t const n = NormalizeColumnVector(NULL, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
     StringCchCopy(Globals.fvCurFile.wchMultiEdgeLines, COUNTOF(Globals.fvCurFile.wchMultiEdgeLines), Settings.MultiEdgeLines);
     if (n > 1) {
@@ -1523,7 +1545,7 @@ void LoadSettings()
 
     // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
     StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
-    IniSectionGetString(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
+    IniSectionGetStringNoQuotes(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
 #ifdef D_NP3_WIN10_DARK_MODE
     GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, !Settings.WinThemeDarkMode);
@@ -1559,7 +1581,7 @@ void LoadSettings()
     // --------------------------------------------------------------------------
 
     WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
-    IniSectionGetString(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
+    IniSectionGetStringNoQuotes(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
     ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
 
     // cppcheck-suppress useStlAlgorithm
@@ -1576,7 +1598,7 @@ void LoadSettings()
         }
     }
 
-    IniSectionGetString(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
+    IniSectionGetStringNoQuotes(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
     ReadVectorFromString(tchStatusBar, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
 
     Globals.bZeroBasedColumnIndex = IniSectionGetBool(StatusBar_Section, L"ZeroBasedColumnIndex", false);
@@ -1586,12 +1608,9 @@ void LoadSettings()
     const WCHAR *const ToolbarImg_Section = L"Toolbar Images";
     // --------------------------------------------------------------------------
 
-    IniSectionGetString(ToolbarImg_Section, L"BitmapDefault", L"",
-                        g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap));
-    IniSectionGetString(ToolbarImg_Section, L"BitmapHot", L"",
-                        g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmap));
-    IniSectionGetString(ToolbarImg_Section, L"BitmapDisabled", L"",
-                        g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmap));
+    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapDefault", L"", g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap));
+    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapHot", L"", g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmap));
+    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapDisabled", L"", g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmap));
 
     // --------------------------------------------------------------------------
     const WCHAR *const IniSecWindow = Constants.Window_Section;
@@ -1692,8 +1711,8 @@ void LoadSettings()
 
     // ------------------------------------------------------------------------
 
-    IniSectionGetString(Constants.Styles_Section, L"ThemeFileName", L"", Globals.LightThemeName, COUNTOF(Globals.LightThemeName));
-    IniSectionGetString(Constants.Styles_Section, L"DarkThemeFileName", L"", Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName));
+    IniSectionGetStringNoQuotes(Constants.Styles_Section, L"ThemeFileName", L"", Globals.LightThemeName, COUNTOF(Globals.LightThemeName));
+    IniSectionGetStringNoQuotes(Constants.Styles_Section, L"DarkThemeFileName", L"", Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName));
 
     // define scintilla internal codepage
     int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8

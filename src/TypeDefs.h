@@ -626,6 +626,7 @@ typedef struct _settings2_t
     WCHAR WebTmpl2MenuName[MICRO_BUFFER];
     WCHAR AdministrationTool[MAX_PATH];
     WCHAR DefaultWindowPosition[MINI_BUFFER];
+    WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
 } SETTINGS2_T, *PSETTINGS2_T;
 
