@@ -4,7 +4,7 @@
   regparse.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -387,8 +387,8 @@ typedef struct {
 #define NODE_CALL_BODY(node)      ((node)->body)
 #define NODE_ANCHOR_BODY(node)    ((node)->body)
 
-#define SCANENV_MEMENV_SIZE  8
-#define SCANENV_MEMENV(senv) \
+#define PARSEENV_MEMENV_SIZE  8
+#define PARSEENV_MEMENV(senv) \
  (IS_NOT_NULL((senv)->mem_env_dynamic) ? \
     (senv)->mem_env_dynamic : (senv)->mem_env_static)
 
@@ -427,7 +427,7 @@ typedef struct {
   int              num_mem;
   int              num_named;
   int              mem_alloc;
-  MemEnv           mem_env_static[SCANENV_MEMENV_SIZE];
+  MemEnv           mem_env_static[PARSEENV_MEMENV_SIZE];
   MemEnv*          mem_env_dynamic;
   int              backref_num;
   int              keep_num;
@@ -442,14 +442,14 @@ typedef struct {
 #ifdef ONIG_DEBUG_PARSE
   unsigned int     max_parse_depth;
 #endif
-} ScanEnv;
+} ParseEnv;
 
 
 extern int    onig_renumber_name_table P_((regex_t* reg, GroupNumMap* map));
 
 extern int    onig_strncmp P_((const UChar* s1, const UChar* s2, int n));
 extern void   onig_strcpy P_((UChar* dest, const UChar* src, const UChar* end));
-extern void   onig_scan_env_set_error_string P_((ScanEnv* env, int ecode, UChar* arg, UChar* arg_end));
+extern void   onig_scan_env_set_error_string P_((ParseEnv* env, int ecode, UChar* arg, UChar* arg_end));
 extern int    onig_reduce_nested_quantifier P_((Node* pnode));
 extern int    onig_node_copy(Node** rcopy, Node* from);
 extern int    onig_node_str_cat P_((Node* node, const UChar* s, const UChar* end));
@@ -463,7 +463,7 @@ extern Node*  onig_node_new_str P_((const UChar* s, const UChar* end));
 extern Node*  onig_node_new_list P_((Node* left, Node* right));
 extern Node*  onig_node_new_alt P_((Node* left, Node* right));
 extern int    onig_names_free P_((regex_t* reg));
-extern int    onig_parse_tree P_((Node** root, const UChar* pattern, const UChar* end, regex_t* reg, ScanEnv* env));
+extern int    onig_parse_tree P_((Node** root, const UChar* pattern, const UChar* end, regex_t* reg, ParseEnv* env));
 extern int    onig_free_shared_cclass_table P_((void));
 extern int    onig_is_code_in_cc P_((OnigEncoding enc, OnigCodePoint code, CClassNode* cc));
 extern int    onig_new_cclass_with_code_list(Node** rnode, OnigEncoding enc, int n, OnigCodePoint codes[]);

@@ -390,10 +390,10 @@ typedef unsigned int  MemStatusType;
   (IS_CODE_DIGIT_ASCII(enc,code) ? DIGITVAL(code) \
    : (ONIGENC_IS_CODE_UPPER(enc,code) ? (code) - 'A' + 10 : (code) - 'a' + 10))
 
+#define OPTON_CALLBACK_EACH_MATCH(option) \
+        ((option) & ONIG_OPTION_CALLBACK_EACH_MATCH)
 #define OPTON_FIND_LONGEST(option)   ((option) & ONIG_OPTION_FIND_LONGEST)
 #define OPTON_FIND_NOT_EMPTY(option) ((option) & ONIG_OPTION_FIND_NOT_EMPTY)
-#define OPTON_FIND_CONDITION(option) ((option) & \
-          (ONIG_OPTION_FIND_LONGEST | ONIG_OPTION_FIND_NOT_EMPTY))
 #define OPTON_NEGATE_SINGLELINE(option) ((option) & \
                                           ONIG_OPTION_NEGATE_SINGLELINE)
 #define OPTON_DONT_CAPTURE_GROUP(option) ((option) & \

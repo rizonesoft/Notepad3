@@ -2432,4 +2432,13 @@ cvs rtag "VERSION_X_X_X" oniguruma
   age:      number of supported previous interfaces
             (if current only supported then age == 0)
 
+
+<add SHA256 checksum>
+MacOS X
+$ shasum -a 256 -b onig-X.Y.Z.tar.gz > onig-X.Y.Z.tar.gz.sha256
+
+<check SHA256 checksum>
+MacOS X
+$ shasum -a 256 -c onig-X.Y.Z.tar.gz.sha256
+
 //END
