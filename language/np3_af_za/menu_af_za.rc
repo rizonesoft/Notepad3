@@ -256,11 +256,16 @@ BEGIN
             MENUITEM "Ta&bifiseer Inkeep\tCtrl+Alt+T",          IDM_EDIT_CONVERTSPACES2
             MENUITEM "On-Tabi&fiseer Inkeep\tCtrl+Alt+S",       IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "URL Kod&eer\tCtrl+Shift+E",                    IDM_EDIT_URLENCODE
-            MENUITEM "URL &Dekodeer\tCtrl+Shift+R",                  IDM_EDIT_URLDECODE
+            MENUITEM "URL Kod&eer\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
+            MENUITEM "URL &Dekodeer\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
+            MENUITEM "File System Path to URL",                 IDM_EDIT_PATH2URL
+            MENUITEM "URL to File System Path",                 IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Karakter na &Hex\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
-            MENUITEM "Hex an &Karakters\tCtrl+Alt+C",                IDM_EDIT_HEX2CHAR
+            MENUITEM "Invert Backslashes",                      IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invert Slashes",                          IDM_EDIT_INVERTSLASH
+            MENUITEM SEPARATOR
+            MENUITEM "Karakter na &Hex\tCtrl+Alt+X",            IDM_EDIT_CHAR2HEX
+            MENUITEM "Hex an &Karakters\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR
         END
         POPUP "&Insetsel"
         BEGIN
