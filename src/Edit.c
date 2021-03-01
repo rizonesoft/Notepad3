@@ -88,10 +88,18 @@ static const char *const s_pColorRegEx_A = "#([0-9a-fA-F]){8}";                 
 static const char *const s_pUnicodeRegEx = "(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([0-9a-fA-F]){2})+";
 
 // https://mathiasbynens.be/demo/url-regex : @stephenhay
-//static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
+//static const char* s_pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
+
+// using  Gruber's  Liberal Regex Pattern for All URLs (https://gist.github.com/gruber/249502)
+/// => unfortunately to slow to use as scanner
+//static const char *const s_pUrlRegEx = "(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)"
+//                                       "(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+"
+//                                       "(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))";
+
+// pretty fast:
 static const char *const s_pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-                                       "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.])*"
-                                       "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[a-z\\u00a1-\\uffff0-9+&@#/%=~_|$])";
+                                       "(?:\\([-a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$?!:,.]*\\)|[-a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$?!:,.])*"
+                                       "(?:\\([-a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$?!:,.]*\\)|[a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$])";
 
 // ----------------------------------------------------------------------------
 
