@@ -18,7 +18,7 @@
 // Spanish (Latin America) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
-LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_LA
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Seleccionar una carpeta de destino."
     IDS_CREATELINK          "Seleccionar una carpeta de destino para el nuevo enlace."
     IDS_SAVESETTINGS        "Guardar configuración\nLa configuración actual del programa se ha guardado."
-    IDS_MUI_TRANSL_AUTHOR   "(es-LA) Traducción española latinoaméricana por Ghost"
+    IDS_MUI_TRANSL_AUTHOR   "(es-419) Traducción española latinoaméricana por Ghost"
 END
 
 

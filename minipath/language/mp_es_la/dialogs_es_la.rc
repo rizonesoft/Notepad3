@@ -18,7 +18,7 @@
 // Spanish (Latin America) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
-LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_LA
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
