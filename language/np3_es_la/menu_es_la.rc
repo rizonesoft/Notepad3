@@ -15,10 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Spanish Mexican (Mexico) resources
+// Spanish (Latin America) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
-LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -576,7 +576,7 @@ BEGIN
     END
 END
 
-#endif    // Spanish Mexican (Mexico) resources
+#endif    // Spanish (Latin America) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -15,10 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Spanish Mexican (Mexico) resources
+// Spanish (Latin America) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
-LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -235,7 +235,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(es-MX) Traducción española mexicana por Ghost"
+    IDS_MUI_TRANSL_AUTHOR   "(es-LA) Traducción española latinoaméricana por Ghost"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Estilo +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Estilo"
@@ -350,7 +350,7 @@ IDS_MUI_ABOUT_RTF_5  "\
 
 END
 
-#endif    // Spanish Mexican (Mexico) resources
+#endif    // Spanish (Latin America) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
