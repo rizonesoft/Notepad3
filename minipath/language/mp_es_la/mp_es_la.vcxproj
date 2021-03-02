@@ -155,11 +155,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-LA"
-         if exist "$(TargetDir)..\es-LA\mplng.dll.mui" del /f /q "$(TargetDir)..\es-LA\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-419"
+         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-LA\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-LA\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -183,11 +183,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-LA"
-         if exist "$(TargetDir)..\es-LA\mplng.dll.mui" del /f /q "$(TargetDir)..\es-LA\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-419"
+         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-LA\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-LA\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -217,11 +217,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-LA"
-         if exist "$(TargetDir)..\es-LA\mplng.dll.mui" del /f /q "$(TargetDir)..\es-LA\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-419"
+         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-LA\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-LA\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -251,11 +251,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-LA"
-         if exist "$(TargetDir)..\es-LA\mplng.dll.mui" del /f /q "$(TargetDir)..\es-LA\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-419"
+         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-LA\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-LA\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -285,11 +285,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-LA"
-         if exist "$(TargetDir)..\es-LA\mplng.dll.mui" del /f /q "$(TargetDir)..\es-LA\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-419"
+         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-LA\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-LA\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -319,11 +319,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-LA"
-         if exist "$(TargetDir)..\es-LA\mplng.dll.mui" del /f /q "$(TargetDir)..\es-LA\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-419"
+         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-LA\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-LA\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>

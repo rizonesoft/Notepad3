@@ -18,7 +18,7 @@
 // Spanish (Latin America) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
-LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_LA
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -235,7 +235,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(es-LA) Traducción española latinoaméricana por Ghost"
+    IDS_MUI_TRANSL_AUTHOR   "(es-419) Traducción española latinoaméricana por Ghost"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Estilo +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Estilo"

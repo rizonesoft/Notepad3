@@ -14,6 +14,9 @@
 #define IDC_STATIC5                      (-5)
 #define IDC_STATIC6                      (-6)
 
+// undefined Sub-Language
+#define SUBLANG_SPANISH_LA              0x16
+
 #define IDR_MUI_MAINMENU                10001
 #define IDR_MUI_POPUPMENU               10002
 
