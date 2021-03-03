@@ -76,7 +76,7 @@ CAPTION "Executar"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Entre o nome de um arquivo executavel de programa,\na pasta ou documento para abrir.",IDC_STATIC,35,7,188,17
+    LTEXT           "Entre o nome de um arquivo executável de programa,\na pasta ou documento para abrir.",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Clique aqui para especificar o diretorio com links para seus aplicativos favoritos.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Clique aqui para especificar a pasta com links para seus aplicativos favoritos.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -98,11 +98,11 @@ END
 
 IDD_GOTO DIALOGEX 0, 0, 224, 87
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Goto"
+CAPTION "Ir Para"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Entre o nome de um arquivo ou diretorio para ser aberto,\ou selecione na lista um diretorio visitado recentemente.",IDC_STATIC,35,7,182,17
+    LTEXT           "Entre o nome de um arquivo ou pasta para ser aberto,\ou selecione na lista uma pasta visitada recentemente.",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,167,66,50,14
@@ -114,10 +114,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Filtrar arquivo"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Especificar um novo &filtro. Separar multiplos filtros por ;",IDC_STATIC,7,7,170,8
+    LTEXT           "Especificar um novo &filtro. Separar múltiplos filtros por ;",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
-    CONTROL         "&Exclui aquivos correspondens ao filtro.",IDC_NEGFILTER,
+    CONTROL         "&Exclui aquivos correspondentes ao filtro.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,140,10
     DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,58,50,14
@@ -138,10 +138,10 @@ END
 
 IDD_NEWDIR DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Novo Diretório"
+CAPTION "Nova Pasta"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Entre o nome para o novo diretório:",IDC_STATIC,7,7,158,8
+    LTEXT           "Entre o nome para a nova pasta:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,115,45,50,14
@@ -220,7 +220,7 @@ CAPTION "Itens"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Aparência dos itens na lista do diretório.",IDC_STATIC,40,15,160,8
+    LTEXT           "Aparência dos itens na lista da pasta.",IDC_STATIC,40,15,160,8
     GROUPBOX        "Cores",IDC_STATIC,10,41,205,134
     LTEXT           "Use essa cor de texto quando SEM FILTRO está configurado:",IDC_STATIC,20,54,180,8
     CONTROL         "Padronizar cores das &janela.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,100,10
@@ -240,8 +240,8 @@ CAPTION "Locais"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Expecificar programas e caminhos externos.",IDC_STATIC,40,15,160,8
-    LTEXT           "&Programa de ""Vizualização rápida"" padrão (Ctrl+Q):",IDC_STATIC,10,41,160,8
+    LTEXT           "Especificar programas e caminhos externos.",IDC_STATIC,40,15,160,8
+    LTEXT           "&Programa de ""Visualização rápida"" padrão (Ctrl+Q):",IDC_STATIC,10,41,160,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "Pasta de &Favoritos (F11):",IDC_STATIC,10,76,76,8
@@ -258,7 +258,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
     CONTROL         "Use o seguinte aplicativo:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Especificar a ação se o alicativo já esta executando:",IDC_STATIC,7,64,196,8
+    LTEXT           "Especificar a ação se o aplicativo já esta executando:",IDC_STATIC,7,64,196,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
     LTEXT           "Mensagem:",IDC_STATIC,20,120,40,8

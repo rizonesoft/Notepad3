@@ -79,7 +79,7 @@ msgstr "Sobre o grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets..."
-msgstr "Adicionar à Predefinições..."
+msgstr "Adicionar às Predefinições..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -200,7 +200,7 @@ msgstr "Tecla Esc fecha grepWinNP3"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Excluir diretórios (Regex):"
+msgstr "Excluir pastas (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
@@ -264,7 +264,7 @@ msgstr "KB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Linguagem:"
+msgstr "Idioma:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
@@ -353,7 +353,7 @@ msgstr "Testar Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex corresp."
+msgstr "Corresponder regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -381,7 +381,7 @@ msgstr "Sequência de substituição"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Substituir com:"
+msgstr "Substituir com/\nFormato de captura:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -397,7 +397,7 @@ msgstr "Localizar &por:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Diferenciar MAI./min."
+msgstr "Diferenciar maiúsculas/minúsculas"
 
 #. Resource IDs: (1015)
 msgid "Search in"
@@ -475,7 +475,7 @@ msgstr "Tratar arquivos como binários"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Você possui a opção \"%s\" habilitada.\r\nAo substituir, esta opção pode levar a arquivos corrompidos.\r\nDeseja continuar assim mesmo?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -495,7 +495,7 @@ msgstr "clique para editar texto como um texto de múltiplas linhas"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Modo escuro requer Win10 v1803 no mínimo, e precisa ser habilitado nas configuraçoes do sistema operacional."
+msgstr "Modo escuro requer Win10 v1803 no mínimo, e precisa ser habilitado nas configurações do sistema operacional."
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -520,7 +520,7 @@ msgstr "Configurações grepWinNP3"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "Mantenha pressionada a tecla shift para encontrar arquivos que NÃO contenham as sequências da pesquisa"
+msgstr "Mantenha pressionada a tecla Shift para encontrar arquivos que NÃO contenham as sequências da pesquisa"
 
 #. Resource IDs: (165)
 msgid "include file paths"
@@ -572,7 +572,7 @@ msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr "reutilizar instâncias grepWinNP3."
+msgstr "reutilizar instâncias do grepWinNP3."
 
 #. Resource IDs: (151)
 #, c-format
@@ -585,7 +585,7 @@ msgstr "a sequência de pesquisa está vazia"
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
-msgstr ""
+msgstr "Iniciar nova janela do grepWinNP3"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -593,7 +593,7 @@ msgstr "o caminhos serão pesquisados recursivamente.\nSepare os caminhos com o 
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "você pode excluir diretórios, ex. CVS e images.\nExemplo: ^(CVS|images)$\nNote, pastas '.svn' são 'ocultas' no Windows, geralmente não são escaneadas."
+msgstr "você pode excluir pastas, ex. CVS e imagens.\nExemplo: ^(CVS|images)$\nNote, pastas '.svn' são 'ocultas' no Windows, geralmente não são escaneadas."
 
 #. Resource IDs: (1024)
 msgid "Y"
@@ -601,7 +601,7 @@ msgstr "Y"
 
 #. Resource IDs: (3000)
 msgid "Reset"
-msgstr "Resetar"
+msgstr "Redefinir"
 
 #. Resource IDs: (3001)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
@@ -609,7 +609,7 @@ msgstr "O mod do grepWin(NP3) de Stefan Küng para o Notepad3 é uma ótima ferr
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
-msgstr "Max # de trabalhos simultâneos"
+msgstr "Máximo de trabalhos simultâneos"
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
@@ -617,5 +617,5 @@ msgstr "Isso adiciona uma nova entrada para o menu de contexto, chamada: 'Abrir 
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"
-msgstr ""
+msgstr "Sempre no Topo"
 

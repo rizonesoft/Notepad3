@@ -32,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.302.(build_#) (2021-03-02)
+Current BETA/RC Version 5.21.303.(build_#) (2021-03-03)
 ========================================================
 
 --------------------------------------------------------
@@ -47,9 +47,10 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.301.x]- More liberal Hyperlink scanner (no need for validation here!).
-[.301.x]- RegEx API : retun matched pattern length too.
-[.301.x]- Prevent Path to URL conversion, if Hyperlink RegEx pattern does not match.
+[.303.1]- Renaming Spanish Mexican to Spanish Latin America (es-419) (MUI).
+[.302.1]- More liberal Hyperlink scanner (no need for validation here!).
+[.302.1]- RegEx API : retun matched pattern length too.
+[.302.1]- Prevent Path to URL conversion, if Hyperlink RegEx pattern does not match.
 [.301.1]- Enable Dark Mode feature for Win10 v21H1 insider beta.
 [.301.1]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
 [.301.1]- Update grepWinNP3 (GRE) version 2.1.6.35 (2021-03.01).
@@ -60,8 +61,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.301.x]- Hyperlink RegEx pattern fixed to use valid Unicode.
-[.301.x]- Handle quotes for URL <-> file-system path conversion.
+[.303.1]- Language "Spanish Latin America" identifier correction (es-LA -> es-419) (MUI).
+[.302.1]- Hyperlink RegEx pattern fixed to use valid Unicode.
+[.302.1]- Handle quotes for URL <-> file-system path conversion.
 [.301.1]- "grepWinNP3": hide progress bar after search finisched (GRE).
 [.301.1]- ShellExecute() lpVerb for open hyperlink (Ctrl+Click) set to "open.
 [.301.1]- Data type mismatch.
@@ -80,11 +82,11 @@ For our Notepad3 translation projects, we are looking for motivated volunteers, 
 priority to resume "aborted" translations for these languages:
 Please, send me a PM (hpwamr51 @ gmail.com) if you are willing to help.
 [.###.#]- .
+[.303.1]- Portuguese Brazilian (pt-BR).
 [.227.1]- Chinese Traditional (zh-TW) (incomplete...).
 [.227.1]- Greek (el-GR) (incomplete...).
 [.227.1]- Indonesian (id-ID) (incomplete...).
-[.227.1]- Portuguese Brazilian (pt-BR) (incomplete...).
-[.227.1]- Spanish Latin America (es-419) (incomplete...).
+[.303.1]- Spanish Latin America (es-419) (incomplete...).
 [.227.1]- Turkish (tr-TR) (incomplete...).
 [.227.1]- Vietnamese (vi-VN) (incomplete...).
 

@@ -103,15 +103,15 @@ BEGIN
     IDS_ENC_MAC_GREEK              "C;Grego (Mac);Mac (Greek)"
     IDS_ENC_WIN_1253               "C;Grego (Windows-1253);Windows-1253"
     IDS_ENC_DOS_869                "C;Grego, Moderno (DOS-869);DOS-869"
-    IDS_ENC_DOS_862                "C;Hebráico (DOS-862);DOS-862"
-    IDS_ENC_ISO_8859_8_I           "C;Hebráico (ISO-8859-8-I);ISO-8859-8-I"
+    IDS_ENC_DOS_862                "C;Hebraico (DOS-862);DOS-862"
+    IDS_ENC_ISO_8859_8_I           "C;Hebraico (ISO-8859-8-I);ISO-8859-8-I"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ENC_ISO_8859_8             "C;Hebráico (ISO-8859-8);ISO-8859-8"
-    IDS_ENC_MAC_HEBREW             "C;Hebráico (Mac);Mac (Hebrew)"
-    IDS_ENC_WIN_1255               "C;Hebráico (Windows-1255);Windows-1255"
+    IDS_ENC_ISO_8859_8             "C;Hebraico (ISO-8859-8);ISO-8859-8"
+    IDS_ENC_MAC_HEBREW             "C;Hebraico (Mac);Mac (Hebrew)"
+    IDS_ENC_WIN_1255               "C;Hebraico (Windows-1255);Windows-1255"
     IDS_ENC_DOS_861                "C;Islandês (DOS-861);DOS-861"
     IDS_ENC_MAC_ICELANDIC          "C;Islandês (Mac);Mac (Icelandic)"
     IDS_ENC_MAC_JAPANESE           "C;Japonês (Mac);Mac (Japanese)"
@@ -123,7 +123,7 @@ BEGIN
     IDS_ENC_DOS_865                "C;Nórdico (DOS-865);DOS-865"
     IDS_ENC_DOS_437                "C;OEM Estados Unidos (DOS-437);DOS-437"
     IDS_ENC_DOS_858                "C;OEM Multilingual Latin 1 (DOS-858);DOS-858"
-    IDS_ENC_DOS_860                "C;Portugês (DOS-860);DOS-860"
+    IDS_ENC_DOS_860                "C;Português (DOS-860);DOS-860"
     IDS_ENC_MAC_ROMANIAN           "C;Romeno (Mac);Mac (Romanian)"
 END
 

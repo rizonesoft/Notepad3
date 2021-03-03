@@ -5,7 +5,7 @@
 #define _COMMON_RES_H_
 
 // undefined Sub-Language
-#define SUBLANG_SPANISH_LA              0x16
+#define SUBLANG_SPANISH_LATIN_AMERICA   0x16
 
 #define IDR_MAINWND                     100
 #define IDC_COMMANDLINE                 100
