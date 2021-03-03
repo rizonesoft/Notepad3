@@ -58,14 +58,14 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Abrir",                       IDM_FILE_OPEN
-        MENUITEM "Abrir &com App Alternativo...",   IDM_FILE_OPENWITH
+        MENUITEM "Abrir &com Aplicativo Alternativo...",   IDM_FILE_OPENWITH
         MENUITEM "&Visualização Rápida",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
         MENUITEM "&Copiar Nome",                  IDM_POP_COPYNAME
         MENUITEM "Criar Lin&k...",             IDM_FILE_CREATELINK
         MENUITEM "&Salvar Como...",                 IDM_FILE_SAVEAS
         MENUITEM "Copiar/&Mover...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&eletar...",                  IDM_FILE_DELETE
+        MENUITEM "&xcluir...",                  IDM_FILE_DELETE
         MENUITEM "Re&nomear...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "&Iniciar",                     IDM_FILE_LAUNCH
@@ -76,13 +76,13 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Novo Arquivo...",                IDM_FILE_NEW
-        MENUITEM "No&vo Diretório...",           IDM_FILE_NEWDIR
+        MENUITEM "No&va Pasta...",           IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
         MENUITEM "&Filtro de Arquivo...",             IDM_VIEW_FILTER
         MENUITEM "&Reiniciar Filtro",               IDM_VIEW_FILTERALL
         POPUP "&Mostrar"
         BEGIN
-            MENUITEM "&Diretórios",            IDM_VIEW_FOLDERS
+            MENUITEM "&Pastas",            IDM_VIEW_FOLDERS
             MENUITEM "&Arquivos",                  IDM_VIEW_FILES
             MENUITEM "Objetos do &Sistema",         IDM_VIEW_HIDDEN
         END
@@ -93,14 +93,14 @@ BEGIN
             MENUITEM "por &Tipos",                IDM_SORT_TYPE
             MENUITEM "por &Datas",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "Inve&rsamente",                IDM_SORT_REVERSE
+            MENUITEM "Ordem Inve&rsa",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
         MENUITEM "&Ir para Favoritos",             IDM_VIEW_FAVORITES
         MENUITEM "&Editar Favoritos",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Diretório...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Pasta...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Mostrar Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Mostrar &Unidades",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
         MENUITEM "S&alvar Configurações",              IDM_VIEW_SAVESETTINGS
         MENUITEM "Configurar Des&tino...",            IDM_VIEW_FINDTARGET
@@ -108,10 +108,10 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Diretório...",               IDM_FILE_CHANGEDIR
-        MENUITEM "&Propriedades do Drive",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Pasta...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Propriedades da Unidade",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Mostrar Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Mostrar &Unidades",                IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN

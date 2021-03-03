@@ -125,8 +125,8 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_L (Script)"
     IDS_LEX_TEXT_FILES      "Arquivos Texto"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart Source Code"
-    IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
+    IDS_LEX_DART_SRC        "Código Fonte Dart"
+    IDS_LEX_KOTLIN_SRC      "Código Fonte Kotlin"
 END
 
 STRINGTABLE
@@ -152,7 +152,7 @@ BEGIN
     IDS_LEX_2ND_BRACE       "Segundo Par de Colchetes (Indicador)"
     IDS_LEX_2ND_BRACE_FAIL  "Segundo Par de Colchetes Erro (Indicador)"
     IDS_LEX_2ND_CTRL_CHAR   "Segundo Controle de Caracteres (Fonte)"
-    IDS_LEX_2ND_INDENT      "Segundo Guia de Identação (Cor)"
+    IDS_LEX_2ND_INDENT      "Segundo Guia de Indentação (Cor)"
     IDS_LEX_2ND_SEL         "Segundo Texto Selecionado (Cores)"
     IDS_LEX_2ND_WSPC        "Segundo Espaço em branco (Cores, Tamanho 0-12)"
 END
@@ -212,7 +212,7 @@ BEGIN
     IDS_LEX_STR_63162       "JS Identificador"
     IDS_LEX_STR_63163       "JS Palavra-Chave"
     IDS_LEX_STR_63164       "JS String"
-    IDS_LEX_STR_63165       "JS Simbolos"
+    IDS_LEX_STR_63165       "JS Símbolos"
     IDS_LEX_STR_63166       "JS Regex"
     IDS_LEX_STR_63167       "ASP JS Padrão"
 END
@@ -269,7 +269,7 @@ BEGIN
     IDS_LEX_STR_63207       "FPU Instrução"
     IDS_LEX_STR_63208       "Registro"
     IDS_LEX_STR_63209       "Directiva Operand"
-    IDS_LEX_STR_63210       "Instrução Extendida"
+    IDS_LEX_STR_63210       "Instrução Estendida"
     IDS_LEX_STR_63211       "String com Aspas Duplas"
     IDS_LEX_STR_63212       "String com Aspas Simples"
     IDS_LEX_STR_63213       "POD (Comum)"
@@ -310,7 +310,7 @@ BEGIN
     IDS_LEX_STR_63240       "Adicionar Linha"
     IDS_LEX_STR_63241       "Remover Linha"
     IDS_LEX_STR_63242       "Mudar Linha"
-    IDS_LEX_STR_63243       "Identitificador Aspeado"
+    IDS_LEX_STR_63243       "Identificador Aspeado"
     IDS_LEX_STR_63244       "String com triplas aspas duplas"
     IDS_LEX_STR_63245       "String com triplas aspas simples"
     IDS_LEX_STR_63246       "Nome de Classe"
@@ -374,7 +374,7 @@ BEGIN
     IDS_LEX_STR_63292       "POD"
     IDS_LEX_STR_63293       "Símbolo"
     IDS_LEX_STR_63294       "Módulo Nome"
-    IDS_LEX_STR_63295       "Instâcia Var"
+    IDS_LEX_STR_63295       "Instância Var"
 END
 
 STRINGTABLE
@@ -392,7 +392,7 @@ BEGIN
     IDS_LEX_STR_63306       "Caractere Especial"
     IDS_LEX_STR_63307       "Segmento Exato"
     IDS_LEX_STR_63308       "Expressão Operadora"
-    IDS_LEX_STR_63309       "Deferencia a Variável"
+    IDS_LEX_STR_63309       "Deferência a Variável"
     IDS_LEX_STR_63310       "Controle de Fluxo"
     IDS_LEX_STR_63311       "Teclas e Botões"
 END
@@ -404,7 +404,7 @@ BEGIN
     IDS_LEX_STR_63314       "Filtro"
     IDS_LEX_STR_63315       "Plugin"
     IDS_LEX_STR_63316       "Propriedade Clip"
-    IDS_LEX_STR_63317       "Iníciod e Linha"
+    IDS_LEX_STR_63317       "Início de Linha"
     IDS_LEX_STR_63318       "Forte"
     IDS_LEX_STR_63319       "Ênfase"
     IDS_LEX_STR_63320       "Título 1"
@@ -413,7 +413,7 @@ BEGIN
     IDS_LEX_STR_63323       "Título 4"
     IDS_LEX_STR_63324       "Título 5"
     IDS_LEX_STR_63325       "Título 6"
-    IDS_LEX_STR_63326       "Pre Caractere"
+    IDS_LEX_STR_63326       "Pré-Caractere"
     IDS_LEX_STR_63327       "Lista não ordenada"
 END
 
@@ -423,7 +423,7 @@ BEGIN
     IDS_LEX_STR_63329       "Riscado"
     IDS_LEX_STR_63330       "Linha Horizontal"
     IDS_LEX_STR_63331       "Link"
-    IDS_LEX_STR_63332       "Códico"
+    IDS_LEX_STR_63332       "Código"
     IDS_LEX_STR_63333       "Referência"
     IDS_LEX_STR_63334       "Documento"
     IDS_LEX_STR_63335       "Texto"
@@ -469,8 +469,8 @@ BEGIN
     IDS_LEX_STR_63367       "Unicode-Point Hover"
     IDS_LEX_STR_63368       "2nd Unicode-Point Hover"
     IDS_LEX_STR_63369       "Interface"
-    IDS_LEX_STR_63370       "Annotation"
-    IDS_LEX_STR_63371       "Comment Doc Word"
+    IDS_LEX_STR_63370       "Anotação"
+    IDS_LEX_STR_63371       "Comentário Doc Word"
 END
 
 STRINGTABLE
