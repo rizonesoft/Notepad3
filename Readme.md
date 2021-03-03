@@ -115,7 +115,7 @@ Belarusian/Belarus (be-BY)
 German/Germany (de-DE)
 English/United Kingdom (en-GB)
 Spanish/Spain (es-ES)
-Spanish/Mexico (es-MX)
+Spanish/Latin America (es-419)
 French/France (fr-FR)
 Hindi/India (hi-IN)
 Hungarian/Hungary (hu-HU)
@@ -441,11 +441,15 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 - `Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
 
-#### `DarkModeBkgColor=0x1F1F1F;`
+#### `DarkModeBkgColor=0x1F1F1F`
 
 #### `DarkModeBtnFaceColor=0x333333`
 
-#### `DarkModeTxtColor=0xEFEFEF;`
+#### `DarkModeTxtColor=0xEFEFEF`
+
+#### `HyperlinkFileProtocolVerb=""`
+
+- `(ShellExecuteEx()::lpVerb` (""=default, "edit", "explore", "find", "open", "print", "properties", "runas")`
 
 
 ## **`[Statusbar Settings]`**
