@@ -341,12 +341,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uxtheme-stub", "src\DarkMod
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "user32-stub", "src\DarkMode\user32-stub\user32-stub.vcxproj", "{1F757558-0E57-4DE5-82D6-A14E9D81F05F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_es_la", "minipath\language\mp_es_la\mp_es_la.vcxproj", "{2AD33E48-FEC6-47B1-8FEF-A0CF1F23DD58}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_es_419", "minipath\language\mp_es_419\mp_es_419.vcxproj", "{2AD33E48-FEC6-47B1-8FEF-A0CF1F23DD58}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_la", "language\np3_es_la\np3_es_la.vcxproj", "{B6757299-D2DD-4103-834D-45227AC13CB7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_419", "language\np3_es_419\np3_es_419.vcxproj", "{B6757299-D2DD-4103-834D-45227AC13CB7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection

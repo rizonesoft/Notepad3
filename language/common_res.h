@@ -15,7 +15,7 @@
 #define IDC_STATIC6                      (-6)
 
 // undefined Sub-Language
-#define SUBLANG_SPANISH_LA              0x16
+#define SUBLANG_SPANISH_LATIN_AMERICA   0x16
 
 #define IDR_MUI_MAINMENU                10001
 #define IDR_MUI_POPUPMENU               10002
@@ -444,7 +444,7 @@
 #define IDS_MUI_LANG_DE_DE              34504
 #define IDS_MUI_LANG_EN_GB              34505
 #define IDS_MUI_LANG_ES_ES              34506
-#define IDS_MUI_LANG_ES_LA              34507
+#define IDS_MUI_LANG_ES_419             34507
 #define IDS_MUI_LANG_FR_FR              34508
 #define IDS_MUI_LANG_HI_IN              34509
 #define IDS_MUI_LANG_HU_HU              34510
