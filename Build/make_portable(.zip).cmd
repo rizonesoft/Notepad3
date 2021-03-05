@@ -57,7 +57,7 @@ IF EXIST "%TEMP_NAME%\Notepad3_%NP3_VER%*.zip" DEL /F /Q "Notepad3_%NP3_VER%*.zi
 
 PUSHD "%TEMP_NAME%"
 
-"%SEVENZIP%" a -tzip -mx=7 Notepad3_%NP3_VER%.zip * >NUL
+"%SEVENZIP%" a -tzip -mcu=on -mx=7 Notepad3_%NP3_VER%.zip * >NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "Notepad3_%NP3_VER%.zip created successfully!"
@@ -105,7 +105,7 @@ SET "FAVORITES=%TEMP_NAME%\Favorites"
 IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 
 PUSHD "%TEMP_NAME%"
-"%SEVENZIP%" a -tzip -mx=7^
+"%SEVENZIP%" a -tzip -mcu=on -mx=7^
  "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "grepWinLicense.txt" "Readme.txt"^
  "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "themes" "Docs">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
