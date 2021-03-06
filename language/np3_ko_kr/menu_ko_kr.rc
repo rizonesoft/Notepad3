@@ -277,7 +277,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "날짜/시간 (짧은 형식)(&S)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "날짜/시간 (긴 형식)(&L)\tCtrl+Shift+F5",       IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "현재 타임스탬프(&C)(&T)",                      CMD_INSERT_TIMESTAMP
+            MENUITEM "현재 타임스탬프(&T)",                      CMD_INSERT_TIMESTAMP
             MENUITEM "타임스탬프 업데이트(&U)\tShift+F5",            CMD_UPDATE_TIMESTAMPS
         END
         POPUP "기타(&I)"
