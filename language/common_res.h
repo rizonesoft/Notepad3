@@ -171,7 +171,6 @@
 
 #define IDS_MUI_TRANSL_AUTHOR           15050
 #define IDS_MUI_ASSOCIATED_EXT          15051
-#define IDS_MUI_EXAMPLE_TEXT            15052
 #define IDS_MUI_ZERO_LEN_MATCH          15053
 #define IDS_MUI_STYLEEDIT_HELP          15054
 #define IDS_MUI_GOTO_LINE               15055
@@ -244,7 +243,6 @@
 #define IDD_MUI_RECODE                  17033
 #define IDD_MUI_ENCODING                17034
 #define IDD_MUI_ALIGN                   17035
-#define IDD_MUI_CHOOSEFONT              17036
 #define IDD_MUI_CMDLINEHELP             17037
 
 #define IDC_COMMANDLINE                 18000

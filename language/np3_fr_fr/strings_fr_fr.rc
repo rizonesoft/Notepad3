@@ -242,7 +242,6 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Extensions de fichiers associées :"
-    IDS_MUI_EXAMPLE_TEXT    "Voix ambiguë d'un cœur qui au zéphyr préfère les jattes de kiwis, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Correspondance de longueur zéro"
     IDS_MUI_GOTO_LINE       "Ligne (1 - %ti) :"
     IDS_MUI_GOTO_COLUMN     "Colonne (1 - %ti) :"

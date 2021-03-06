@@ -242,7 +242,6 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ 스타일 '%s' - (%s) +++"
     IDS_MUI_TITLE_FIXARB    " 스타일 '%s' - (%s)"
     IDS_MUI_ASSOCIATED_EXT  "연결된 파일 이름 확장자:"
-    IDS_MUI_EXAMPLE_TEXT    "지금 이 순간, 나의 아름다움은 가장 빛난다: VenusGirl, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ 제로 길이 일치"
     IDS_MUI_GOTO_LINE       "행 (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "열 (1 - %ti):"
