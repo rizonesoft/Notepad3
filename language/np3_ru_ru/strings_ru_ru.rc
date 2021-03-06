@@ -242,7 +242,6 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Стиль '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    "Стиль '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Связанные расширения файлов:"
-    IDS_MUI_EXAMPLE_TEXT    "Съешь ещё этих мягких французских булок да выпей чаю, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Совпадение нулевой длины"
     IDS_MUI_GOTO_LINE       "Строка (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "Колонка (1 - %ti):"
