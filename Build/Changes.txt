@@ -32,7 +32,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.303.(build_#) (2021-03-03)
+Current BETA/RC Version 5.21.309.(build_#) (2021-03-09)
 ========================================================
 
 --------------------------------------------------------
@@ -61,6 +61,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.309.1]- Replacing the "RCdll.dll" file to avoid garbage chars in foreign languages (MUI).
+[.309.1]- In ".zip" version, some filenames in "gwLng" folder are incorrectly displayed (MUI).
 [.303.1]- Language "Spanish Latin America" identifier correction (es-LA -> es-419) (MUI).
 [.302.1]- Hyperlink RegEx pattern fixed to use valid Unicode.
 [.302.1]- Handle quotes for URL <-> file-system path conversion.
