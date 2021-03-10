@@ -216,7 +216,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Nomes de Arquivo correspondentes:\nuse '|' para separar vários padrões de textos correspondentes, prece&der com '-' para excluir"
+msgstr "Arquivos correspondentes:\nuse '|' para separar vários padrões de textos correspondentes, prece&der com '-' para excluir"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -353,7 +353,7 @@ msgstr "Testar Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Corresponder regex"
+msgstr "Regex corresp."
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -397,7 +397,7 @@ msgstr "Localizar &por:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Diferenciar maiúsculas/minúsculas"
+msgstr "Diferenciar Maiúsc./Minúsc."
 
 #. Resource IDs: (1015)
 msgid "Search in"

@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts for Notepad3 ***              date: 2020/09/29
+*** Keyboard Shortcuts for Notepad3 ***              date: 2021/03/09
 ---------------------------------------------------------------------
 
 
@@ -178,6 +178,7 @@
         Ctrl+Space            Select Word or Lines.
         Ctrl+Shift+Space      Multi-Select All Matches.
         Alt+Shift+Arrows      Rectangular Selection.
+        Alt+Shift+Left Mouse  Rectangular Selection.
         Ctrl+F9               Copy Filename Only to Clipboard.
         Ctrl+Shift+F9         Copy Full Path to Clipboard.
 
