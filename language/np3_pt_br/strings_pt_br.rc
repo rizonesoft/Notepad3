@@ -317,7 +317,7 @@ use \\<regex>; para definir um nome de arquivo que corresponda ao padrão:\r\n\
 Formato de estilo:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-As propriedades do estilo podem ser copiada usando copiar e colar ou arrastar e soltar.\
+Propriedades do estilo podem ser copiadas usando copiar/colar ou arrastar/soltar.\
 "
 
 END
