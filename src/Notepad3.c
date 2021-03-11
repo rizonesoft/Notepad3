@@ -1861,6 +1861,8 @@ static void  _SetWrapIndentMode()
 //
 static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 {
+    UNUSED(hwndEditCtrl);
+
     if (Settings.ShowWordWrapSymbols) {
         int wrapVisualFlags = 0;
         int wrapVisualFlagsLocation = 0;
@@ -1885,10 +1887,10 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
             wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
             break;
         }
-        SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
-        SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
+        SciCall_SetWrapVisualFlags(wrapVisualFlags);
+        SciCall_SetWrapVisualFlagsLocation(wrapVisualFlagsLocation);
     } else {
-        SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, 0, 0);
+        SciCall_SetWrapVisualFlags(0);
     }
 }
 
@@ -1901,20 +1903,19 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
     InitWindowCommon(hwndEditCtrl, true);
 
-    SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)Settings.RenderingTechnology, 0);
+    SciCall_SetTechnology(Settings.RenderingTechnology);
     Settings.RenderingTechnology = SciCall_GetTechnology();
-    SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)Settings.Bidirectional, 0); // experimental
+    SciCall_SetBidirectional(Settings.Bidirectional);  // experimental
     Settings.Bidirectional = SciCall_GetBidirectional();
 
     // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     // There are some older platforms and unusual modes where buffering may still be useful
-    SendMessage(hwndEditCtrl, SCI_SETBUFFEREDDRAW, (WPARAM)(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT), 0);
-    //~SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_TWO, 0); // (= default)
-    SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0);
-    //~SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0); // memory consumption !
-    SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
-    //~SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 1024, 0); // default = 1024
-    SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 2048, 0); // default = 1024
+    SciCall_SetBufferedDraw(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT);
+    //~SciCall_SetPhasesDraw(SC_PHASES_TWO); // (= default)
+    SciCall_SetPhasesDraw(SC_PHASES_MULTIPLE);
+    //~SciCall_SetLayoutCache(SC_CACHE_DOCUMENT); // memory consumption !
+    SciCall_SetLayoutCache(SC_CACHE_PAGE);
+    SciCall_SetPositionCache(2048);  // default = 1024
 
     // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED:
     // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER,
@@ -1922,141 +1923,148 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
     //
     ///~ int const evtMask = SC_MODEVENTMASKALL; (!) - don't listen to all events (SC_MOD_CHANGESTYLE) => RECURSON!
-    ///~ SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)evtMask, 0);
+    ///~ SciCall_SetModEventMask(evtMask);
     ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE;
     /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
-
+    //
     int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO;
     int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
+    SciCall_SetModEventMask(evtMask1 | evtMask2);
+    SciCall_SetCommandEvents(false); // speedup folding
 
-    SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
-    SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
-    SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
+    SciCall_SetCodePage(SC_CP_UTF8); // fixed internal UTF-8 (Sci:default)
 
-    SendMessage(hwndEditCtrl, SCI_SETMARGINS, NUMBER_OF_MARGINS, 0);
-    SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
-    SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
-    SendMessage(hwndEditCtrl, SCI_USEPOPUP, SC_POPUP_TEXT, 0);
-    SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
-    SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
-    SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
+    SciCall_SetMargins(NUMBER_OF_MARGINS);
+    SciCall_SetEOLMode(Settings.DefaultEOLMode);
+    SciCall_SetPasteConvertEndings(true);
+    SciCall_UsePopUp(SC_POPUP_TEXT);
+    SciCall_SetScrollWidth(1);
+    SciCall_SetScrollWidthTracking(true);
 
-    SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
-    SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
-    SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);  // paste into rectangular selection
-    SendMessage(hwndEditCtrl, SCI_AUTOCSETMULTI, SC_MULTIAUTOC_EACH, 0);
-    SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
+    SciCall_SetMultipleSelection(true);
+    SciCall_SetMultiPaste(SC_MULTIPASTE_EACH); // paste into rectangular selection
+    SciCall_SetAdditionalSelectionTyping(true);
+    SciCall_SetMouseSelectionRectangularSwitch(true);
+    SciCall_SetVirtualSpaceOptions(NP3_VIRTUAL_SPACE_ACCESS_OPTIONS);
+    SciCall_AutoCSetMulti(SC_MULTIAUTOC_EACH);
 
-    SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, NP3_VIRTUAL_SPACE_ACCESS_OPTIONS, 0);
-
-    SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
-    SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
+    SciCall_SetAdditionalCaretsBlink(true);
+    SciCall_SetAdditionalCaretsVisible(true);
 
     // Idle Styling (very large text)
-    //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
-    //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
-    SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_NONE, 0); // needed for focused view
+    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_AFTERVISIBLE);
+    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view
 
     // assign command keys
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + (SCMOD_CTRL << 16)), SCI_PARAUP);
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARADOWNEXTEND);
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARAUPEXTEND);
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (0 << 16)), SCI_VCHOMEWRAP);
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (0 << 16)), SCI_LINEENDWRAP);
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (SCMOD_SHIFT << 16)), SCI_VCHOMEWRAPEXTEND);
-    SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (SCMOD_SHIFT << 16)), SCI_LINEENDWRAPEXTEND);
+    SciCall_AssignCmdKey(SCK_NEXT + (SCMOD_CTRL << 16), SCI_PARADOWN);
+    SciCall_AssignCmdKey(SCK_PRIOR + (SCMOD_CTRL << 16), SCI_PARAUP);
+    SciCall_AssignCmdKey(SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16), SCI_PARADOWNEXTEND);
+    SciCall_AssignCmdKey(SCK_PRIOR + ((SCMOD_CTRL | SCMOD_SHIFT) << 16), SCI_PARAUPEXTEND);
+    SciCall_AssignCmdKey(SCK_HOME + (0 << 16), SCI_VCHOMEWRAP);
+    SciCall_AssignCmdKey(SCK_END + (0 << 16), SCI_LINEENDWRAP);
+    SciCall_AssignCmdKey(SCK_HOME + (SCMOD_SHIFT << 16), SCI_VCHOMEWRAPEXTEND);
+    SciCall_AssignCmdKey(SCK_END + (SCMOD_SHIFT << 16), SCI_LINEENDWRAPEXTEND);
 
     // set indicator styles (foreground and alpha maybe overridden by style settings)
+    SciCall_IndicSetStyle(INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
+    SciCall_IndicSetFore(INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
+    SciCall_IndicSetAlpha(INDIC_NP3_MATCH_BRACE, 120);
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_MATCH_BRACE, 120);
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
-    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
-    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
-    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, 120);
+    SciCall_IndicSetStyle(INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
+    SciCall_IndicSetFore(INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
+    SciCall_IndicSetAlpha(INDIC_NP3_BAD_BRACE, 120);
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_BAD_BRACE, 120);
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
-    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
-    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
-    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
     if (!Settings2.UseOldStyleBraceMatching) {
-        SendMessage(hwndEditCtrl, SCI_BRACEHIGHLIGHTINDICATOR, true, INDIC_NP3_MATCH_BRACE);
-        SendMessage(hwndEditCtrl, SCI_BRACEBADLIGHTINDICATOR, true, INDIC_NP3_BAD_BRACE);
+        SciCall_BraceHighLightIndicator(true, INDIC_NP3_MATCH_BRACE);
+        SciCall_BraceBadLightIndicator(true, INDIC_NP3_BAD_BRACE);
     }
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
-    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00, 0x00, 0xFF));
-    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
-    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+    SciCall_IndicSetStyle(INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
+    SciCall_IndicSetFore(INDIC_NP3_MARK_OCCURANCE, RGB(0x00, 0x00, 0xFF));
+    SciCall_IndicSetAlpha(INDIC_NP3_MARK_OCCURANCE, 10);
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_MARK_OCCURANCE, 10);
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
-    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xA0));
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
-    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xA0));
+    SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+    SciCall_IndicSetFore(INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xA0));
+    SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
+    SciCall_IndicSetFore(INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xA0));
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xFF));
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xFF));
+    SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+    SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xFF));
+    SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
+    SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xFF));
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
-    SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_COLOR_DEF, true);
-    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT); // reset on hover
-    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_COLOR_DEF, SC_ALPHA_OPAQUE);
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // HOVER
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
+    SciCall_IndicSetStyle(INDIC_NP3_COLOR_DEF, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
+    SciCall_IndicSetUnder(INDIC_NP3_COLOR_DEF, true);
+    SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT); // reset on hover
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_OPAQUE);
+    SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // Hover
+    SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN ); // invisible
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);       // HOVER
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_COLOR_DEF_T, RGB(0x00, 0x00, 0x00)); // recalc on hover
+    SciCall_IndicSetStyle(INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN); // invisible
+    SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);
+    SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, RGB(0x00, 0x00, 0x00));
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/); // MARKER only
-    //SendMessage(hwndEditCtrl, SCI_INDICSETUNDER, INDIC_NP3_UNICODE_POINT, false);
-    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_TRANSPARENT);
-    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_UNICODE_POINT, SC_ALPHA_NOALPHA);
-    SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX); // HOVER
-    //SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0));
+    SciCall_IndicSetStyle(INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/);
+    //SciCall_IndicSetUnder(INDIC_NP3_UNICODE_POINT, false);
+    SciCall_IndicSetAlpha(INDIC_NP3_UNICODE_POINT, SC_ALPHA_TRANSPARENT);
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_UNICODE_POINT, SC_ALPHA_NOALPHA);
+    SciCall_IndicSetHoverStyle(INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX);
+    //SciCall_IndicSetHoverFore(INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0);
 
-    SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MULTI_EDIT, INDIC_ROUNDBOX);
-    SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
-    SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MULTI_EDIT, 60);
-    SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MULTI_EDIT, 180);
+    SciCall_IndicSetStyle(INDIC_NP3_MULTI_EDIT, INDIC_ROUNDBOX);
+    SciCall_IndicSetFore(INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
+    SciCall_IndicSetAlpha(INDIC_NP3_MULTI_EDIT, 60);
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_MULTI_EDIT, 180);
+
+    //SciCall_IndicSetStyle();
+    //SciCall_IndicSetUnder();
+    //SciCall_IndicSetFore();
+    //SciCall_IndicSetAlpha();
+    //SciCall_IndicSetOutlineAlpha();
+    //SciCall_IndicSetHoverStyle();
+    //SciCall_IndicSetHoverFore();
 
     // No SC_AUTOMATICFOLD_CLICK, performed by
-    SendMessage(hwndEditCtrl, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
+    SciCall_SetAutomaticFold(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE);
 
     // Properties
-    SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
-    //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
+    SciCall_SetCaretSticky(SC_CARETSTICKY_OFF);
+    //SciCall_SetCaretSticky(SC_CARETSTICKY_WHITESPACE);
 
     if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled()) {
-        SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)100, 0);
+        SciCall_SetMouseDWellTime(100);
     } else {
-        SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
+        SciCall_SetMouseDWellTime(SC_TIME_FOREVER); // default
     }
 
 
-#define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
-#define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
+    #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
+    #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
 
     if (Settings2.CurrentLineHorizontalSlop > 0) {
-        SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineHorizontalSlop);
+        SciCall_SetXCaretPolicy(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE, Settings2.CurrentLineHorizontalSlop);
     } else {
-        SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), (LPARAM)0);
+        SciCall_SetXCaretPolicy(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE, 0);
     }
 
     if (Settings2.CurrentLineVerticalSlop > 0) {
-        SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineVerticalSlop);
+        SciCall_SetYCaretPolicy(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE, Settings2.CurrentLineVerticalSlop);
     } else {
-        SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
+        SciCall_SetYCaretPolicy(_CARET_SYMETRY, 0);
     }
-    SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
+    SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
+
 
     // Tabs
-    SendMessage(hwndEditCtrl, SCI_SETUSETABS, (WPARAM)!Globals.fvCurFile.bTabsAsSpaces, 0);
-    SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, (WPARAM)Globals.fvCurFile.bTabIndents, 0);
-    SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, (WPARAM)Settings.BackspaceUnindents, 0);
-    SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, (WPARAM)Globals.fvCurFile.iTabWidth, 0);
-    SendMessage(hwndEditCtrl, SCI_SETINDENT, (WPARAM)Globals.fvCurFile.iIndentWidth, 0);
+    SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
+    SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
+    SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
+    SciCall_SetTabWidth(Globals.fvCurFile.iTabWidth);
+    SciCall_SetIndent(Globals.fvCurFile.iIndentWidth);
 
     // Indent Guides
     Style_SetIndentGuides(hwndEditCtrl, Settings.ShowIndentGuides);
@@ -2067,21 +2075,21 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
     // Long Lines
     if (Settings.MarkLongLines) {
-        SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((Settings.LongLineMode == EDGE_BACKGROUND) ? EDGE_BACKGROUND : EDGE_LINE), 0);
+        SciCall_SetEdgeMode((Settings.LongLineMode == EDGE_BACKGROUND) ? EDGE_BACKGROUND : EDGE_LINE);
     } else {
-        SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)EDGE_NONE, 0);
+        SciCall_SetEdgeMode(EDGE_NONE);
     }
-    SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)Settings.LongLinesLimit, 0);
+    SciCall_SetEdgeColumn(Settings.LongLinesLimit);
 
     // general margin
-    SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, (WPARAM)SC_MARGINOPTION_SUBLINESELECT, 0);
+    SciCall_SetMarginOptions(SC_MARGINOPTION_SUBLINESELECT);
 
     // Nonprinting characters
-    SendMessage(hwndEditCtrl, SCI_SETVIEWWS, (WPARAM)(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE), 0);
-    SendMessage(hwndEditCtrl, SCI_SETVIEWEOL, (WPARAM)Settings.ViewEOLs, 0);
+    SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
+    SciCall_SetViewEOL(Settings.ViewEOLs);
 
     // IME Interaction
-    SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)Settings2.IMEInteraction, 0);
+    SciCall_SetIMEInteraction(Settings2.IMEInteraction);
 
     // word delimiter handling
     EditInitWordDelimiter(hwndEditCtrl);
@@ -2156,9 +2164,9 @@ static bool _EvalTinyExpr(bool qmark)
 
 //=============================================================================
 //
-//  _HandleEditWndFrame()
+//  _InitEditWndFrame()
 //
-static void _HandleEditWndFrame()
+static void _InitEditWndFrame()
 {
     s_bIsAppThemed = IsAppThemed();
 
@@ -2224,6 +2232,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
                            hInstance,
                            NULL);
 
+    ///~~~SciCall_GetDirectPointer();
     Globals.hndlScintilla = (HANDLE)SendMessage(Globals.hwndEdit, SCI_GETDIRECTPOINTER, 0, 0);
 
     _InitializeSciEditCtrl(Globals.hwndEdit);
@@ -2239,7 +2248,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
                           hInstance,
                           NULL);
 
-    _HandleEditWndFrame();
+    _InitEditWndFrame();
 
     // Create Toolbar and Statusbar
     CreateBars(hwnd, hInstance);
@@ -2841,7 +2850,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
     UpdateTitleBar(hwnd);
 
     // reinitialize edit frame
-    _HandleEditWndFrame();
+    _InitEditWndFrame();
 
     // recreate toolbar and statusbar
     CreateBars(hwnd,Globals.hInstance);
@@ -5418,7 +5427,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
             SciCall_SetTabWidth(Globals.fvCurFile.iTabWidth);
             SciCall_SetIndent(Globals.fvCurFile.iIndentWidth);
-            if (SendMessage(Globals.hwndEdit, SCI_GETWRAPINDENTMODE, 0, 0) == SC_WRAPINDENT_FIXED) {
+            if (SciCall_GetWrapIndentMode() == SC_WRAPINDENT_FIXED) {
                 _SetWrapStartIndent(Globals.hwndEdit);
             }
         }
@@ -6370,12 +6379,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             else
               Settings.LongLinesLimit--;
             Globals.fvCurFile.iLongLinesLimit = clampi(Settings.LongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
-            SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
+            SciCall_SetEdgeColumn(Settings.LongLinesLimit);
             //Globals.fvCurFile.iLongLinesLimit = Settings.LongLinesLimit;
           }
           break;
     ~~~ */
-
+        
 
     case CMD_STRINGIFY: {
         EditEncloseSelection(L"'", L"'");
@@ -6734,7 +6743,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (IsCmdEnabled(hwnd,IDM_EDIT_CLEAR)) {
             SendWMCommand(hwnd, IDM_EDIT_CLEAR);
         } else {
-            SendMessage(Globals.hwndEdit,SCI_CLEARALL,0,0);
+            SciCall_ClearAll();
         }
         break;
 
@@ -7417,27 +7426,29 @@ static bool  _IsIMEOpenInNoNativeMode()
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
-inline static LRESULT _MsgNotifyLean(const SCNotification* const scn)
-{
+inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bModified) {
+
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
     static int _mod_insdel_token = -1;
+
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
         if (pnmh->code == SCN_MODIFIED) {
-            bool bModified = true;
+            *bModified = true;
             int const iModType = scn->modificationType;
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                    if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) &&
-                            (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection())) {
-                        int const tok = _SaveUndoSelection();
-                        if (tok >= 0) {
-                            _mod_insdel_token = tok;
+                    if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0)) {
+                        if (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) {
+                            int const tok = _SaveUndoSelection();
+                            if (tok >= 0) {
+                                _mod_insdel_token = tok;
+                            }
                         }
                     }
                 }
-                bModified = false; // not yet
+                *bModified = false; // not yet
             } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
@@ -7454,7 +7465,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn)
                     RestoreAction(scn->token, REDO);
                 }
             }
-            if (bModified) {
+            if (*bModified) {
                 DWORD const timeout = Settings2.UndoTransactionTimeout;
                 if (timeout != 0UL) {
                     if (timeout > _MQ_IMMEDIATE) {
@@ -7489,7 +7500,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
     static int _s_indic_click_modifiers = SCMOD_NORM;
-    static int _mod_insdel_token         = -1;
+
+    bool bModified = false;
+    _MsgNotifyLean(scn, &bModified);
 
     switch (pnmh->code) {
     // unused:
@@ -7497,6 +7510,32 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
     case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTRELEASECLICK:
         return FALSE;
+
+
+    case SCN_MODIFIED: {
+        int const iModType = scn->modificationType;
+        /// bModified = set in _MsgNotifyLean() !
+        if (bModified) {
+            if (IsMarkOccurrencesEnabled()) {
+                MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+            }
+            EditUpdateVisibleIndicators();
+            if (scn->linesAdded != 0) {
+                if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded > 0)) {
+                    _SplitUndoTransaction(iModType);
+                }
+                UpdateMarginWidth();
+            }
+        }
+        if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
+            if (!Sci_IsMultiSelection()) {
+                SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+                SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+                s_bInMultiEditMode = false;
+            }
+        }
+    } break;
+
 
     case SCN_AUTOCSELECTION: {
         switch (scn->listCompletionMethod) {
@@ -7523,64 +7562,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         }
     }
     break;
-
-    case SCN_MODIFIED: {
-        int const iModType = scn->modificationType;
-        bool bModified = true;
-        if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
-            if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) &&
-                        (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection())) {
-                    _mod_insdel_token = _SaveUndoSelection();
-                }
-            }
-            bModified = false; // not yet
-        } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
-            if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
-                    _SaveRedoSelection(_mod_insdel_token);
-                    _mod_insdel_token = -1;
-                }
-            }
-        }
-        if (iModType & SC_MOD_CONTAINER) {
-            if (iModType & SC_PERFORMED_UNDO) {
-                bModified = RestoreAction(scn->token, UNDO);
-            } else if (iModType & SC_PERFORMED_REDO) {
-                bModified = RestoreAction(scn->token, REDO);
-            }
-        }
-        if (bModified) {
-            if (IsMarkOccurrencesEnabled()) {
-                MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-            }
-            EditUpdateVisibleIndicators();
-            if (scn->linesAdded != 0) {
-                if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded == 1)) {
-                    _SplitUndoTransaction(iModType);
-                }
-                UpdateMarginWidth();
-            }
-            DWORD const timeout = Settings2.UndoTransactionTimeout;
-            if (timeout != 0UL) {
-                if (timeout > _MQ_IMMEDIATE) {
-                    _DelaySplitUndoTransaction(timeout, iModType);
-                } else {
-                    _SplitUndoTransaction(iModType);
-                }
-            }
-        }
-
-        if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
-            if (!Sci_IsMultiSelection()) {
-                SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
-                SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-                s_bInMultiEditMode = false;
-            }
-        }
-    }
-    break;
-
 
     case SCN_STYLENEEDED: { // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
         EditDoStyling(-1, scn->position);
@@ -7767,16 +7748,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
     //  break;
 
 
-    case SCN_SAVEPOINTREACHED:
-        SetSavePoint();
-        break;
-
-
-    case SCN_SAVEPOINTLEFT:
-        SetSaveNeeded();
-        break;
-
-
     case SCN_ZOOM:
         UpdateToolbar();
         UpdateMarginWidth();
@@ -7830,18 +7801,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     } else {
         _guard = true;
     }
-
-#define GUARD_RETURN(res) { _guard = false; return(res); }
+    #define GUARD_RETURN(res) { _guard = false; return(res); }
 
     const SCNotification* const scn = (SCNotification*)lParam;
 
     if (!CheckNotifyChangeEvent()) {
-        LRESULT const res = _MsgNotifyLean(scn);
+        bool bModified = false;
+        LRESULT const res = _MsgNotifyLean(scn, &bModified);
         GUARD_RETURN(res);
     }
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
-
     switch (pnmh->idFrom) {
 
     case IDC_EDIT: {
@@ -9188,7 +9158,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (g_iStatusbarVisible[STATUS_OVRMODE]) {
         static bool s_bIsOVR = -1;
-        bool const bIsOVR = (bool)SendMessage(Globals.hwndEdit, SCI_GETOVERTYPE, 0, 0);
+        bool const bIsOVR = SciCall_GetOverType();
         if (bForceRedraw || (s_bIsOVR != bIsOVR)) {
             if (bIsOVR) {
                 StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",

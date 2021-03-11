@@ -792,7 +792,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         dpi = Scintilla_GetWindowDPI(hwnd);
 
         SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
-        SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION L", ID='" _W(_STRG(VERSION_COMMIT_ID)) L"'");
+        SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION L", " VERSION_LXIVERSION L", ID='" _W(_STRG(VERSION_COMMIT_ID)) L"'");
         SetDlgItemText(hwnd, IDC_COPYRIGHT, _W(VERSION_LEGALCOPYRIGHT));
         SetDlgItemText(hwnd, IDC_AUTHORNAME, _W(VERSION_AUTHORNAME));
         SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
@@ -1083,6 +1083,7 @@ CASE_WM_CTLCOLOR_SET:
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_LXIVERSION);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
 
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? L"\n- Process is elevated." : L"\n- Process is not elevated"));

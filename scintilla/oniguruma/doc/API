@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.7  2021/03/01
+Oniguruma API  Version 6.9.7  2021/03/03
 
 #include <oniguruma.h>
 
@@ -352,7 +352,19 @@ Oniguruma API  Version 6.9.7  2021/03/01
     ONIG_OPTION_NOT_BEGIN_STRING    Do not regard the beginning of the (str) as the beginning of a string  (* fail \A)
     ONIG_OPTION_NOT_END_STRING      Do not regard the (end) as a string endpoint  (* fail \z, \Z)
     ONIG_OPTION_NOT_BEGIN_POSITION  Do not regard the (start) as start position of search  (* fail \G)
-    ONIG_OPTION_CALLBACK_EACH_MATCH Call back for all successful matches. (including the case of the same matching start position).
+
+    ONIG_OPTION_CALLBACK_EACH_MATCH
+      Call back for all successful matches.
+      (including the case of the same matching start position)
+      The search does not stop when a match is found at a certain position.
+      The callback function to be called is set by
+      onig_set_callback_each_match().
+      The user_data in the argument passed to the callback function is
+      specified by onig_set_callout_user_data_of_match_param(mp, user_data).
+      Therefore, if you want to specify user_data,
+      use onig_search_with_param() instead of onig_search().
+      The user_data specified by onig_set_callout_user_data_of_match_param()
+      will be shared with callout.
 
 
 # int onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,

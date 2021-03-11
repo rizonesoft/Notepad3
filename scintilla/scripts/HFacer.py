@@ -9,15 +9,6 @@ import Face
 
 from FileGenerator import UpdateFile, Generate, Regenerate, UpdateLineInFile, lineEnd
 
-def printLexHFile(f):
-	out = []
-	for name in f.order:
-		v = f.features[name]
-		if v["FeatureType"] in ["val"]:
-			if "SCE_" in name or "SCLEX_" in name:
-				out.append("#define " + name + " " + v["Value"])
-	return out
-
 def printHFile(f):
 	out = []
 	previousCategory = ""
@@ -36,8 +27,7 @@ def printHFile(f):
 				featureDefineName = "SCN_" + name.upper()
 				out.append("#define " + featureDefineName + " " + v["Value"])
 			elif v["FeatureType"] in ["val"]:
-				if not ("SCE_" in name or "SCLEX_" in name):
-					out.append("#define " + name + " " + v["Value"])
+				out.append("#define " + name + " " + v["Value"])
 	if anyProvisional:
 		out.append("#endif")
 	return out
@@ -46,7 +36,6 @@ def RegenerateAll(root, showMaxID):
 	f = Face.Face()
 	f.ReadFromFile(root / "include/Scintilla.iface")
 	Regenerate(root / "include/Scintilla.h", "/* ", printHFile(f))
-	Regenerate(root / "include/SciLexer.h", "/* ", printLexHFile(f))
 	if showMaxID:
 		valueSet = set(int(x) for x in f.values if int(x) < 3000)
 		maximumID = max(valueSet)

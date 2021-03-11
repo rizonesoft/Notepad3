@@ -251,6 +251,8 @@ void EditReplaceSelection(const char* text, bool bForceSel)
 //
 void EditInitWordDelimiter(HWND hwnd)
 {
+    UNUSED(hwnd);
+
     ZeroMemory(WordCharsDefault, COUNTOF(WordCharsDefault));
     ZeroMemory(WhiteSpaceCharsDefault, COUNTOF(WhiteSpaceCharsDefault));
     ZeroMemory(PunctuationCharsDefault, COUNTOF(PunctuationCharsDefault));
@@ -259,9 +261,9 @@ void EditInitWordDelimiter(HWND hwnd)
     //ZeroMemory(PunctuationCharsAccelerated, COUNTOF(PunctuationCharsAccelerated)); // empty!
 
     // 1st get/set defaults
-    SendMessage(hwnd, SCI_GETWORDCHARS, 0, (LPARAM)WordCharsDefault);
-    SendMessage(hwnd, SCI_GETWHITESPACECHARS, 0, (LPARAM)WhiteSpaceCharsDefault);
-    SendMessage(hwnd, SCI_GETPUNCTUATIONCHARS, 0, (LPARAM)PunctuationCharsDefault);
+    SciCall_GetWordChars(WordCharsDefault);
+    SciCall_GetWhiteSpaceChars(WhiteSpaceCharsDefault);
+    SciCall_GetPunctuationChars(PunctuationCharsDefault);
 
     // default word delimiter chars are whitespace & punctuation & line ends
     const char* lineEnds = "\r\n";
@@ -611,7 +613,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     int lineCount = 0;
     int lenLastLine = 0;
 
-    if ((bool)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
+    if (SciCall_GetPasteConvertEndings()) {
         char* ptmp = (char*)AllocMem((mlen+1)*2, HEAP_ZERO_MEMORY);
         if (ptmp) {
             char *s = pmch;
@@ -2761,7 +2763,7 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
     DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
-    //if (iSelStart > SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLineStart,0))
+    //if (iSelStart > SciCall_PositionFromLine(iLineStart))
     //  iLineStart++;
 
     if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) {
@@ -5248,9 +5250,9 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
     tr.chrg.cpMax = min_cr((tr.chrg.cpMin + (DocPosCR)COUNTOF(tch)), (DocPosCR)SciCall_GetSelectionEnd());
     /*}
     else {
-      int iLine = SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
-      tr.chrg.cpMin = SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
-      tr.chrg.cpMax = min_cr(SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0),(LONG)(tr.chrg.cpMin + COUNTOF(tchBuf2)));
+      int iLine = SciCall_LineFromPosition(iCurPos);
+      tr.chrg.cpMin = SciCall_PositionFromLine(iLine);
+      tr.chrg.cpMax = min_cr(SciCall_GetLineEndPosition(iLine),(LONG)(tr.chrg.cpMin + COUNTOF(tchBuf2)));
     }*/
     tr.chrg.cpMax = min_cr(tr.chrg.cpMax, (DocPosCR)Sci_GetDocEndPosition());
 
@@ -9210,7 +9212,6 @@ void EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers)
             }
         }
     }
-
     if (modifiers & SCMOD_ALT) {
         SciCall_GotoLine(ln);
     }

@@ -4,9 +4,6 @@
     <Filter Include="include">
       <UniqueIdentifier>{b78c6486-26fc-4890-89c0-f7f3e301b79c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lexlib">
-      <UniqueIdentifier>{b4579e25-25b5-4f0d-8dab-c34ed9f53913}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{9dbbd18e-d068-478e-82f3-5b03317a670d}</UniqueIdentifier>
     </Filter>
@@ -24,36 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lexlib\Accessor.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\CharacterCategory.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\CharacterSet.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\LexerBase.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\LexerModule.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\LexerNoExceptions.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\LexerSimple.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\PropSetSimple.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\StyleContext.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\WordList.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
     <ClCompile Include="src\AutoComplete.cxx">
       <Filter>src</Filter>
     </ClCompile>
@@ -64,9 +31,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\CaseFolder.cxx">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Catalogue.cxx">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\CellBuffer.cxx">
@@ -91,9 +55,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\EditView.cxx">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ExternalLexer.cxx">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Indicator.cxx">
@@ -149,9 +110,6 @@
     </ClCompile>
     <ClCompile Include="src\DBCS.cxx">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\DefaultLexer.cxx">
-      <Filter>lexlib</Filter>
     </ClCompile>
     <ClCompile Include="src\UniqueString.cxx">
       <Filter>src</Filter>
@@ -225,6 +183,12 @@
     <ClCompile Include="oniguruma\src\regposix.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CharacterCategory.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterSet.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -239,51 +203,6 @@
     <ClInclude Include="include\Scintilla.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="lexlib\Accessor.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\CharacterCategory.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\CharacterSet.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\LexAccessor.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\LexerBase.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\LexerModule.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\LexerNoExceptions.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\LexerSimple.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\OptionSet.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\PropSetSimple.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\SparseState.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\StringCopy.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\StyleContext.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\SubStyles.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
-    <ClInclude Include="lexlib\WordList.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
     <ClInclude Include="src\AutoComplete.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -294,9 +213,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\CaseFolder.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Catalogue.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\CellBuffer.h">
@@ -321,9 +237,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\EditView.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ExternalLexer.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\FontQuality.h">
@@ -398,9 +311,6 @@
     <ClInclude Include="src\DBCS.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="lexlib\DefaultLexer.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
     <ClInclude Include="include\ILoader.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -436,6 +346,12 @@
     </ClInclude>
     <ClInclude Include="oniguruma\src\onigposix.h">
       <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterCategory.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterSet.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

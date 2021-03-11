@@ -816,7 +816,7 @@ Sci::Position EditView::StartEndDisplayLine(Surface *surface, const EditModel &m
 						if (subLine == ll->lines - 1)
 							posRet = ll->numCharsBeforeEOL + posLineStart;
 						else
-							posRet = ll->LineStart(subLine + 1) + posLineStart - 1;
+							posRet = model.pdoc->MovePositionOutsideChar(ll->LineStart(subLine + 1) + posLineStart - 1, -1, false);
 					}
 				}
 			}

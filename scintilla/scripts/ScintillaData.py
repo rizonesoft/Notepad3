@@ -233,8 +233,6 @@ class ScintillaData:
         self.lexerProperties = list(lexerProperties)
         SortListInsensitive(self.lexerProperties)
 
-        self.lexersXcode = FindLexersInXcode(scintillaRoot /
-            "cocoa/ScintillaFramework/ScintillaFramework.xcodeproj/project.pbxproj")
         self.credits = FindCredits(scintillaRoot / "doc" / "ScintillaHistory.html")
 
 def printWrapped(text):
@@ -247,8 +245,6 @@ if __name__=="__main__":
         sci.dateModified, sci.yearModified, sci.mdyModified, sci.dmyModified, sci.myModified))
     printWrapped(str(len(sci.lexFiles)) + " lexer files: " + ", ".join(sci.lexFiles))
     printWrapped(str(len(sci.lexerModules)) + " lexer modules: " + ", ".join(sci.lexerModules))
-    #~ printWrapped(str(len(sci.lexersXcode)) + " Xcode lexer references: " + ", ".join(
-        #~ [lex+":"+uids[0]+","+uids[1] for lex, uids in sci.lexersXcode.items()]))
     print("Lexer name to ID:")
     lexNames = sorted(sci.sclexFromName.keys())
     for lexName in lexNames:

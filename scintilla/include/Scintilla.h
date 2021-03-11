@@ -31,10 +31,6 @@ __declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T d
 __declspec(dllexport) int   Scintilla_AdjustWindowRectForDpi(WRCT_T* lpRect, unsigned long dwStyle, unsigned long  dwExStyle, DPI_T dpi);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
-#ifdef SCI_LEXER
-int Scintilla_LinkLexers(void);
-#endif
-
 #ifdef __cplusplus
 }
 #endif
