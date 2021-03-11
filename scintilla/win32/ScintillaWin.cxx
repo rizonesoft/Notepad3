@@ -4083,9 +4083,6 @@ int Scintilla_RegisterClasses(void *hInstance) {
 	const bool result = ScintillaWin::Register(static_cast<HINSTANCE>(hInstance));
 	//@@@CharClassify::InitUnicodeData();
 	
-#ifdef SCI_LEXER
-	Scintilla_LinkLexers();
-#endif
 	return result;
 }
 
