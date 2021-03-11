@@ -22,7 +22,7 @@ interface IRadical;
 interface IHanja;
 interface IStrokes;
 
-enum HANJA_TYPE { HANJA_UNKNOWN = 0, HANJA_K0 = 1, HANJA_K1 = 2, HANJA_OTHER = 3 };
+typedef enum { HANJA_UNKNOWN = 0, HANJA_K0 = 1, HANJA_K1 = 2, HANJA_OTHER = 3 } HANJA_TYPE;
 
 interface IHanjaDic : IUnknown {
 	STDMETHOD(OpenMainDic)();
@@ -104,10 +104,10 @@ int GetHangulOfHanja(wchar_t *inout) noexcept {
 	int changed = 0;
 	HanjaDic dict;
 	if (dict.HJdictAvailable()) {
-		const size_t len = lstrlenW(inout);
-		wchar_t conv[UTF8MaxBytes] = { 0 };
+		const size_t len = wcslen(inout);
+		wchar_t conv[UTF8MaxBytes] = {0};
 		BSTR bstrHangul = SysAllocString(conv);
-		for (size_t i = 0; i < len; i++) {
+		for (size_t i=0; i<len; i++) {
 			if (dict.IsHanja(static_cast<int>(inout[i]))) { // Pass hanja only!
 				conv[0] = inout[i];
 				BSTR bstrHanja = SysAllocString(conv);

@@ -54,11 +54,6 @@ def UpdateVersionNumbers(sci, root):
 
     cocoa = root / "cocoa"
 
-    UpdateLineInPlistFile(cocoa / "ScintillaFramework/Info.plist",
-        "CFBundleVersion", sci.versionDotted)
-    UpdateLineInPlistFile(cocoa / "ScintillaFramework/Info.plist",
-        "CFBundleShortVersionString", sci.versionDotted)
-
     UpdateLineInPlistFile(cocoa / "Scintilla" / "Info.plist",
         "CFBundleShortVersionString", sci.versionDotted)
     ReplaceREInFile(cocoa / "Scintilla"/ "Scintilla.xcodeproj" / "project.pbxproj",
@@ -72,61 +67,6 @@ def uid24():
 def ciLexerKey(a):
     return a.split()[2].lower()
 
-"""
-		11F35FDB12AEFAF100F0236D /* LexA68k.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 11F35FDA12AEFAF100F0236D /* LexA68k.cxx */; };
-		11F35FDA12AEFAF100F0236D /* LexA68k.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexA68k.cxx; path = ../../lexers/LexA68k.cxx; sourceTree = SOURCE_ROOT; };
-				11F35FDA12AEFAF100F0236D /* LexA68k.cxx */,
-				11F35FDB12AEFAF100F0236D /* LexA68k.cxx in Sources */,
-"""
-def RegenerateXcodeProject(path, lexers, lexerReferences):
-    # Build 4 blocks for insertion:
-    # Each markers contains a unique section start, an optional wait string, and a section end
-
-    markersPBXBuildFile = ["Begin PBXBuildFile section", "", "End PBXBuildFile section"]
-    sectionPBXBuildFile = []
-
-    markersPBXFileReference = ["Begin PBXFileReference section", "", "End PBXFileReference section"]
-    sectionPBXFileReference = []
-
-    markersLexers = ["/* Lexers */ =", "children", ");"]
-    sectionLexers = []
-
-    markersPBXSourcesBuildPhase = ["Begin PBXSourcesBuildPhase section", "files", ");"]
-    sectionPBXSourcesBuildPhase = []
-
-    for lexer in lexers:
-        if lexer not in lexerReferences:
-            uid1 = uid24()
-            uid2 = uid24()
-            print("Lexer", lexer, "is not in Xcode project. Use IDs", uid1, uid2)
-            lexerReferences[lexer] = [uid1, uid2]
-            linePBXBuildFile = "\t\t{} /* {}.cxx in Sources */ = {{isa = PBXBuildFile; fileRef = {} /* {}.cxx */; }};".format(uid1, lexer, uid2, lexer)
-            linePBXFileReference = "\t\t{} /* {}.cxx */ = {{isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = {}.cxx; path = ../../lexers/{}.cxx; sourceTree = SOURCE_ROOT; }};".format(uid2, lexer, lexer, lexer)
-            lineLexers = "\t\t\t\t{} /* {}.cxx */,".format(uid2, lexer)
-            linePBXSourcesBuildPhase = "\t\t\t\t{} /* {}.cxx in Sources */,".format(uid1, lexer)
-            sectionPBXBuildFile.append(linePBXBuildFile)
-            sectionPBXFileReference.append(linePBXFileReference)
-            sectionLexers.append(lineLexers)
-            sectionPBXSourcesBuildPhase.append(linePBXSourcesBuildPhase)
-
-    lines = ReadFileAsList(path)
-
-    sli = FindSectionInList(lines, markersPBXBuildFile)
-    lines[sli.stop:sli.stop] = sectionPBXBuildFile
-
-    sli = FindSectionInList(lines, markersPBXFileReference)
-    lines[sli.stop:sli.stop] = sectionPBXFileReference
-
-    sli = FindSectionInList(lines, markersLexers)
-    # This section is shown in the project outline so sort it to make it easier to navigate.
-    allLexers = sorted(lines[sli.start:sli.stop] + sectionLexers, key=ciLexerKey)
-    lines[sli] = allLexers
-
-    sli = FindSectionInList(lines, markersPBXSourcesBuildPhase)
-    lines[sli.stop:sli.stop] = sectionPBXSourcesBuildPhase
-
-    UpdateFileFromLines(path, lines, "\n")
-
 def RegenerateAll(rootDirectory):
     
     root = pathlib.Path(rootDirectory)
@@ -135,7 +75,6 @@ def RegenerateAll(rootDirectory):
 
     sci = ScintillaData.ScintillaData(scintillaBase)
 
-    Regenerate(scintillaBase / "src/Catalogue.cxx", "//", sci.lexerModules)
     Regenerate(scintillaBase / "win32/scintilla.mak", "#", sci.lexFiles)
 
     startDir = os.getcwd()
@@ -144,9 +83,6 @@ def RegenerateAll(rootDirectory):
     os.chdir(os.path.join(scintillaBase, "gtk"))
     gtk.DepGen.Generate()
     os.chdir(startDir)
-
-    RegenerateXcodeProject(root / "cocoa/ScintillaFramework/ScintillaFramework.xcodeproj/project.pbxproj",
-        sci.lexFiles, sci.lexersXcode)
 
     UpdateVersionNumbers(sci, root)
 

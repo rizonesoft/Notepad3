@@ -1658,7 +1658,6 @@ fun void LinesSplit=2289(int pixelWidth,)
 
 # Set one of the colours used as a chequerboard pattern in the fold margin
 fun void SetFoldMarginColour=2290(bool useSetting, colour back)
-
 # Set the other colour used as a chequerboard pattern in the fold margin
 fun void SetFoldMarginHiColour=2291(bool useSetting, colour fore)
 
@@ -3132,7 +3131,6 @@ val SC_CHARACTERSOURCE_DIRECT_INPUT=0
 val SC_CHARACTERSOURCE_TENTATIVE_INPUT=1
 # IME (either inline or windowed mode) full composited string.
 val SC_CHARACTERSOURCE_IME_RESULT=2
-
 
 # Events
 
