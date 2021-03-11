@@ -73,7 +73,8 @@ LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 #endif // SCI_DIRECTFUNCTION_INTERFACE
 
 // SciOniguruma RegEx search
-ptrdiff_t WINAPI OnigRegExFind(const char *pchPattern, const char *pchText, const bool caseSensitive, const int eolMode, int *matchLen_out);
+ptrdiff_t WINAPI OnigRegExFind(const char *pchPattern, const char *pchText, 
+                               const bool caseSensitive, const int eolMode, int *matchLen_out);
 
 //=============================================================================
 
@@ -121,212 +122,262 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 
 //=============================================================================
-
+//
 // Initialize
-DeclareSciCallR0(GetLayoutCache, GETLAYOUTCACHE, int)
-DeclareSciCallV1(SetLayoutCache, SETLAYOUTCACHE, int, cache)
-DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int)
-DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache)
+//
+
+//  SetTechnology
+DeclareSciCallR0(GetTechnology, GETTECHNOLOGY, int);
+DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
+DeclareSciCallR0(GetBidirectional, GETBIDIRECTIONAL, int);
+DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction);
+DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value);
+DeclareSciCallV1(SetPhasesDraw, SETPHASESDRAW, int, phases);
+DeclareSciCallV1(SetCharacterCategoryOptimization, SETCHARACTERCATEGORYOPTIMIZATION, int, count);
+// Layout Cache
+DeclareSciCallR0(GetLayoutCache, GETLAYOUTCACHE, int);
+DeclareSciCallV1(SetLayoutCache, SETLAYOUTCACHE, int, cache);
+DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int);
+DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache);
+// Event Masks
+DeclareSciCallV1(SetModEventMask, SETMODEVENTMASK, int, mask);
+DeclareSciCallV1(SetCommandEvents, SETCOMMANDEVENTS, bool, flag);
+// Code Page
+DeclareSciCallV1(SetCodePage, SETCODEPAGE, int, cp);
+// Divers
+DeclareSciCallV1(SetMargins, SETMARGINS, int, nmarg);
+DeclareSciCallV1(SetPasteConvertEndings, SETPASTECONVERTENDINGS, bool, flag);
+DeclareSciCallV1(UsePopUp, USEPOPUP, int, option);
+// Multi Selection
+DeclareSciCallV1(SetMultipleSelection, SETMULTIPLESELECTION, bool, flag);
+DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option);
+DeclareSciCallR0(GetAdditionalSelectionTyping, GETADDITIONALSELECTIONTYPING, bool);
+DeclareSciCallV1(SetAdditionalSelectionTyping, SETADDITIONALSELECTIONTYPING, bool, flag);
+DeclareSciCallV1(SetMouseSelectionRectangularSwitch, SETMOUSESELECTIONRECTANGULARSWITCH, bool, flag);
+// Caret
+DeclareSciCallV1(SetCaretFore, SETCARETFORE, int, color);
+DeclareSciCallV1(SetAdditionalCaretFore, SETADDITIONALCARETFORE, int, color);
+DeclareSciCallV1(SetAdditionalCaretsBlink, SETADDITIONALCARETSBLINK, bool, flag);
+DeclareSciCallV1(SetAdditionalCaretsVisible, SETADDITIONALCARETSVISIBLE, bool, flag);
+
+DeclareSciCallV1(SetCaretLineFrame, SETCARETLINEFRAME, int, frm);
+DeclareSciCallV1(SetCaretLineVisible, SETCARETLINEVISIBLE, bool, flag);
+DeclareSciCallV1(SetCaretLineVisibleAlways, SETCARETLINEVISIBLEALWAYS, bool, flag);
+DeclareSciCallV1(SetCaretLineBack, SETCARETLINEBACK, COLORREF, colour);
+DeclareSciCallV1(SetCaretLineBackAlpha, SETCARETLINEBACKALPHA, int, alpha);
+
+DeclareSciCallV1(SetAutomaticFold, SETAUTOMATICFOLD, int, option);
+
+DeclareSciCallV1(SetCaretSticky, SETCARETSTICKY, int, option);
+DeclareSciCallV2(SetXCaretPolicy, SETXCARETPOLICY, int, policy, int, slop);
+DeclareSciCallV2(SetYCaretPolicy, SETXCARETPOLICY, int, policy, int, slop);
+
+DeclareSciCallV01(GetWordChars, GETWORDCHARS, char*, ptxt);
+DeclareSciCallV01(GetWhiteSpaceChars, GETWHITESPACECHARS, char*, ptxt);
+DeclareSciCallV01(GetPunctuationChars, GETPUNCTUATIONCHARS, char*, ptxt);
 
 // Document Pointer Handling
-DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t)
-DeclareSciCallV01(SetDocPointer, SETDOCPOINTER, sptr_t, pdoc)
-DeclareSciCallR2(CreateDocument, CREATEDOCUMENT, sptr_t, DocPos, bytes, int, options)
-DeclareSciCallR2(CreateLoader, CREATELOADER, sptr_t, DocPos, bytes, int, options)
-DeclareSciCallV01(AddRefDocument, ADDREFDOCUMENT, sptr_t, pdoc)
-DeclareSciCallV01(ReleaseDocument, RELEASEDOCUMENT, sptr_t, pdoc)
-DeclareSciCallR0(GetDocumentOptions, GETDOCUMENTOPTIONS, int)
+DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t);
+DeclareSciCallV01(SetDocPointer, SETDOCPOINTER, sptr_t, pdoc);
+DeclareSciCallR2(CreateDocument, CREATEDOCUMENT, sptr_t, DocPos, bytes, int, options);
+DeclareSciCallR2(CreateLoader, CREATELOADER, sptr_t, DocPos, bytes, int, options);
+DeclareSciCallV01(AddRefDocument, ADDREFDOCUMENT, sptr_t, pdoc);
+DeclareSciCallV01(ReleaseDocument, RELEASEDOCUMENT, sptr_t, pdoc);
+DeclareSciCallR0(GetDocumentOptions, GETDOCUMENTOPTIONS, int);
 
 //  Selection, positions and information
-DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
-DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
-DeclareSciCallV0(Undo, UNDO)
-DeclareSciCallV0(Redo, REDO)
-DeclareSciCallR0(CanUndo, CANUNDO, bool)
-DeclareSciCallR0(CanRedo, CANREDO, bool)
-DeclareSciCallR0(GetModify, GETMODIFY, bool)
-DeclareSciCallR0(CanPaste, CANPASTE, bool)
-DeclareSciCallV0(GrabFocus, GRABFOCUS)
-DeclareSciCallV1(SetFocus, SETFOCUS, bool, flag)
-DeclareSciCallR0(GetFocus, GETFOCUS, bool)
+DeclareSciCallR0(GetReadOnly, GETREADONLY, bool);
+DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag);
+DeclareSciCallV0(Undo, UNDO);
+DeclareSciCallV0(Redo, REDO);
+DeclareSciCallR0(CanUndo, CANUNDO, bool);
+DeclareSciCallR0(CanRedo, CANREDO, bool);
+DeclareSciCallR0(GetModify, GETMODIFY, bool);
+DeclareSciCallR0(CanPaste, CANPASTE, bool);
+DeclareSciCallV0(GrabFocus, GRABFOCUS);
+DeclareSciCallV1(SetFocus, SETFOCUS, bool, flag);
+DeclareSciCallR0(GetFocus, GETFOCUS, bool);
+DeclareSciCallR0(GetPasteConvertEndings, GETPASTECONVERTENDINGS, bool);
+DeclareSciCallR0(GetOverType, GETOVERTYPE, bool);
 
-DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position)
-DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
-DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos)
-DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, DocPos)
-DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos)
-DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn, line)
-DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, line)
 
-DeclareSciCallR2(PositionFromPoint, POSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
-DeclareSciCallR2(PositionFromPointClose, POSITIONFROMPOINTCLOSE, DocPos, int, pt_x, int, pt_y)
-DeclareSciCallR2(CharPositionFromPoint, CHARPOSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
-DeclareSciCallR2(CharPositionFromPointClose, CHARPOSITIONFROMPOINTCLOSE, DocPos, int, pt_x, int, pt_y)
-DeclareSciCallR01(PointXFromPosition, POINTXFROMPOSITION, int, DocPos, position)
-DeclareSciCallR01(PointYFromPosition, POINTYFROMPOSITION, int, DocPos, position)
+DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position);
+DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos);
+DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos);
+DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, DocPos);
+DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos);
+DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn, line);
+DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, line);
 
-DeclareSciCallR2(WordStartPosition, WORDSTARTPOSITION, DocPos, DocPos, pos, bool, onlyWordChars)
-DeclareSciCallR2(WordEndPosition, WORDENDPOSITION, DocPos, DocPos, pos, bool, onlyWordChars)
+DeclareSciCallR2(PositionFromPoint, POSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y);
+DeclareSciCallR2(PositionFromPointClose, POSITIONFROMPOINTCLOSE, DocPos, int, pt_x, int, pt_y);
+DeclareSciCallR2(CharPositionFromPoint, CHARPOSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y);
+DeclareSciCallR2(CharPositionFromPointClose, CHARPOSITIONFROMPOINTCLOSE, DocPos, int, pt_x, int, pt_y);
+DeclareSciCallR01(PointXFromPosition, POINTXFROMPOSITION, int, DocPos, position);
+DeclareSciCallR01(PointYFromPosition, POINTYFROMPOSITION, int, DocPos, position);
+
+DeclareSciCallR2(WordStartPosition, WORDSTARTPOSITION, DocPos, DocPos, pos, bool, onlyWordChars);
+DeclareSciCallR2(WordEndPosition, WORDENDPOSITION, DocPos, DocPos, pos, bool, onlyWordChars);
 
 // Rectangular selection with virtual space
-DeclareSciCallR0(GetRectangularSelectionCaret, GETRECTANGULARSELECTIONCARET, DocPos)
-DeclareSciCallV1(SetRectangularSelectionCaret, SETRECTANGULARSELECTIONCARET, DocPos, position)
-DeclareSciCallR0(GetRectangularSelectionAnchor, GETRECTANGULARSELECTIONANCHOR, DocPos)
-DeclareSciCallV1(SetRectangularSelectionAnchor, SETRECTANGULARSELECTIONANCHOR, DocPos, position)
-DeclareSciCallR0(GetRectangularSelectionCaretVirtualSpace, GETRECTANGULARSELECTIONCARETVIRTUALSPACE, DocPos)
-DeclareSciCallV1(SetRectangularSelectionCaretVirtualSpace, SETRECTANGULARSELECTIONCARETVIRTUALSPACE, DocPos, position)
-DeclareSciCallR0(GetRectangularSelectionAnchorVirtualSpace, GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos)
-DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos, position)
-DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
+DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options);
+DeclareSciCallR0(GetRectangularSelectionCaret, GETRECTANGULARSELECTIONCARET, DocPos);
+DeclareSciCallV1(SetRectangularSelectionCaret, SETRECTANGULARSELECTIONCARET, DocPos, position);
+DeclareSciCallR0(GetRectangularSelectionAnchor, GETRECTANGULARSELECTIONANCHOR, DocPos);
+DeclareSciCallV1(SetRectangularSelectionAnchor, SETRECTANGULARSELECTIONANCHOR, DocPos, position);
+DeclareSciCallR0(GetRectangularSelectionCaretVirtualSpace, GETRECTANGULARSELECTIONCARETVIRTUALSPACE, DocPos);
+DeclareSciCallV1(SetRectangularSelectionCaretVirtualSpace, SETRECTANGULARSELECTIONCARETVIRTUALSPACE, DocPos, position);
+DeclareSciCallR0(GetRectangularSelectionAnchorVirtualSpace, GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos);
+DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos, position);
 
-// Multiselections (Lines of Rectangular selection)
-DeclareSciCallV0(ClearSelections, CLEARSELECTIONS)
-DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int)
-DeclareSciCallV1(SetSelectionMode, SETSELECTIONMODE, int, mode)
-DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU)
-DeclareSciCallV2(SetSelection, SETSELECTION, DocPos, caretPos, DocPos, anchorPos)
-DeclareSciCallV1(SetSelectionStart, SETSELECTIONSTART, DocPos, anchorPos)
-DeclareSciCallV1(SetSelectionEnd, SETSELECTIONEND, DocPos, caretPos)
-DeclareSciCallV2(AddSelection, ADDSELECTION, DocPos, caretPos, DocPos, anchorPos)
-DeclareSciCallR0(GetMainSelection, GETMAINSELECTION, DocPosU)
-DeclareSciCallV1(SetMainSelection, SETMAINSELECTION, DocPosU, selnum)
-DeclareSciCallR1(GetSelectionNCaret, GETSELECTIONNCARET, DocPos, DocPosU, selnum)
-DeclareSciCallR1(GetSelectionNAnchor, GETSELECTIONNANCHOR, DocPos, DocPosU, selnum)
-DeclareSciCallR1(GetSelectionNCaretVirtualSpace, GETSELECTIONNCARETVIRTUALSPACE, DocPos, DocPosU, selnum)
-DeclareSciCallR1(GetSelectionNAnchorVirtualSpace, GETSELECTIONNANCHORVIRTUALSPACE, DocPos, DocPosU, selnum)
-DeclareSciCallV2(SetSelectionNCaret, SETSELECTIONNCARET, DocPosU, selnum, DocPos, caretPos)
-DeclareSciCallV2(SetSelectionNAnchor, SETSELECTIONNANCHOR, DocPosU, selnum, DocPos, anchorPos)
-DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE, DocPosU, selnum, DocPos, position)
-DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
-DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum)
-DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum)
-DeclareSciCallR1(GetSelectionNStartVirtualSpace, GETSELECTIONNSTARTVIRTUALSPACE, DocPos, DocPosU, selnum)
-DeclareSciCallR1(GetSelectionNEndVirtualSpace, GETSELECTIONNENDVIRTUALSPACE, DocPos, DocPosU, selnum)
+// Multiselections (Lines of Rectangular selection);
+DeclareSciCallV0(ClearSelections, CLEARSELECTIONS);
+DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
+DeclareSciCallV1(SetSelectionMode, SETSELECTIONMODE, int, mode);
+DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU);
+DeclareSciCallR0(GetSelectionEmpty, GETSELECTIONS, bool);
+DeclareSciCallV2(SetSelection, SETSELECTION, DocPos, caretPos, DocPos, anchorPos);
+DeclareSciCallV1(SetSelectionStart, SETSELECTIONSTART, DocPos, anchorPos);
+DeclareSciCallV1(SetSelectionEnd, SETSELECTIONEND, DocPos, caretPos);
+DeclareSciCallV2(AddSelection, ADDSELECTION, DocPos, caretPos, DocPos, anchorPos);
+DeclareSciCallR0(GetMainSelection, GETMAINSELECTION, DocPosU);
+DeclareSciCallV1(SetMainSelection, SETMAINSELECTION, DocPosU, selnum);
+DeclareSciCallR1(GetSelectionNCaret, GETSELECTIONNCARET, DocPos, DocPosU, selnum);
+DeclareSciCallR1(GetSelectionNAnchor, GETSELECTIONNANCHOR, DocPos, DocPosU, selnum);
+DeclareSciCallR1(GetSelectionNCaretVirtualSpace, GETSELECTIONNCARETVIRTUALSPACE, DocPos, DocPosU, selnum);
+DeclareSciCallR1(GetSelectionNAnchorVirtualSpace, GETSELECTIONNANCHORVIRTUALSPACE, DocPos, DocPosU, selnum);
+DeclareSciCallV2(SetSelectionNCaret, SETSELECTIONNCARET, DocPosU, selnum, DocPos, caretPos);
+DeclareSciCallV2(SetSelectionNAnchor, SETSELECTIONNANCHOR, DocPosU, selnum, DocPos, anchorPos);
+DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE, DocPosU, selnum, DocPos, position);
+DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position);
+DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum);
+DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum);
+DeclareSciCallR1(GetSelectionNStartVirtualSpace, GETSELECTIONNSTARTVIRTUALSPACE, DocPos, DocPosU, selnum);
+DeclareSciCallR1(GetSelectionNEndVirtualSpace, GETSELECTIONNENDVIRTUALSPACE, DocPos, DocPosU, selnum);
 
-DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
-DeclareSciCallV0(MultipleSelectAddEach, MULTIPLESELECTADDEACH)
-DeclareSciCallV0(RotateSelection, ROTATESELECTION)
+DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET);
+DeclareSciCallV0(MultipleSelectAddEach, MULTIPLESELECTADDEACH);
+DeclareSciCallV0(RotateSelection, ROTATESELECTION);
 
 // Zoom
-DeclareSciCallR0(GetZoom, GETZOOM, int)
-DeclareSciCallV1(SetZoom, SETZOOM, int, zoom)
-DeclareSciCallV0(ZoomIn, ZOOMIN)
-DeclareSciCallV0(ZoomOut, ZOOMOUT)
+DeclareSciCallR0(GetZoom, GETZOOM, int);
+DeclareSciCallV1(SetZoom, SETZOOM, int, zoom);
+DeclareSciCallV0(ZoomIn, ZOOMIN);
+DeclareSciCallV0(ZoomOut, ZOOMOUT);
 
 // Keyboard Commands
-DeclareSciCallV0(NewLine, NEWLINE)
-DeclareSciCallV0(Tab, TAB)
-DeclareSciCallV0(BackTab, BACKTAB)
-DeclareSciCallV0(VCHome, VCHOME)
-DeclareSciCallV0(LineUp, LINEUP)
-DeclareSciCallV0(LineDown, LINEDOWN)
-DeclareSciCallV0(LineUpExtend, LINEUPEXTEND)
-DeclareSciCallV0(LineScrollUp, LINESCROLLUP)
-DeclareSciCallV0(LineDownExtend, LINEDOWNEXTEND)
-DeclareSciCallV0(LineScrollDown, LINESCROLLDOWN)
-DeclareSciCallV0(CharLeft, CHARLEFT)
-DeclareSciCallV0(CharLeftExtend, CHARLEFTEXTEND)
-DeclareSciCallV0(CharRight, CHARRIGHT)
-DeclareSciCallV0(CharRightExtend, CHARRIGHTEXTEND)
-DeclareSciCallV0(WordLeft, WORDLEFT)
-DeclareSciCallV0(WordRight, WORDRIGHT)
-DeclareSciCallV0(DeleteBack, DELETEBACK)
-DeclareSciCallV0(DelWordLeft, DELWORDLEFT)
-DeclareSciCallV0(DelWordRight, DELWORDRIGHT)
-DeclareSciCallV0(DelLineLeft, DELLINELEFT)
-DeclareSciCallV0(DelLineRight, DELLINERIGHT)
-DeclareSciCallV0(LineDelete, LINEDELETE)
-DeclareSciCallV0(LineCut, LINECUT)
-DeclareSciCallV1(LinesSplit, LINESSPLIT, int, pix)
-DeclareSciCallV0(LinesJoin, LINESJOIN)
-DeclareSciCallV0(EditToggleOverType, EDITTOGGLEOVERTYPE)
+DeclareSciCallV0(NewLine, NEWLINE);
+DeclareSciCallV0(Tab, TAB);
+DeclareSciCallV0(BackTab, BACKTAB);
+DeclareSciCallV0(VCHome, VCHOME);
+DeclareSciCallV0(LineUp, LINEUP);
+DeclareSciCallV0(LineDown, LINEDOWN);
+DeclareSciCallV0(LineUpExtend, LINEUPEXTEND);
+DeclareSciCallV0(LineScrollUp, LINESCROLLUP);
+DeclareSciCallV0(LineDownExtend, LINEDOWNEXTEND);
+DeclareSciCallV0(LineScrollDown, LINESCROLLDOWN);
+DeclareSciCallV0(CharLeft, CHARLEFT);
+DeclareSciCallV0(CharLeftExtend, CHARLEFTEXTEND);
+DeclareSciCallV0(CharRight, CHARRIGHT);
+DeclareSciCallV0(CharRightExtend, CHARRIGHTEXTEND);
+DeclareSciCallV0(WordLeft, WORDLEFT);
+DeclareSciCallV0(WordRight, WORDRIGHT);
+DeclareSciCallV0(DeleteBack, DELETEBACK);
+DeclareSciCallV0(DelWordLeft, DELWORDLEFT);
+DeclareSciCallV0(DelWordRight, DELWORDRIGHT);
+DeclareSciCallV0(DelLineLeft, DELLINELEFT);
+DeclareSciCallV0(DelLineRight, DELLINERIGHT);
+DeclareSciCallV0(LineDelete, LINEDELETE);
+DeclareSciCallV0(LineCut, LINECUT);
+DeclareSciCallV1(LinesSplit, LINESSPLIT, int, pix);
+DeclareSciCallV0(LinesJoin, LINESJOIN);
+DeclareSciCallV0(EditToggleOverType, EDITTOGGLEOVERTYPE);
+
+DeclareSciCallV2(AssignCmdKey, ASSIGNCMDKEY, size_t, key, unsigned, cmd);
 
 //  Commands
-DeclareSciCallV0(LineDuplicate, LINEDUPLICATE)
-DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE)
-DeclareSciCallV0(LineTranspose, LINETRANSPOSE)
-DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP)
-DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
-DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
+DeclareSciCallV0(LineDuplicate, LINEDUPLICATE);
+DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE);
+DeclareSciCallV0(LineTranspose, LINETRANSPOSE);
+DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP);
+DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN);
+DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text);
 
 // Operations
-DeclareSciCallV0(Cut, CUT)
-DeclareSciCallV0(Copy, COPY)
-DeclareSciCallV0(Paste, PASTE)
-DeclareSciCallV0(Clear, CLEAR)
-DeclareSciCallV0(ClearAll, CLEARALL)
-DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end)
-DeclareSciCallV0(Cancel, CANCEL)
-DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
-DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
-DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text)
-DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange)
-DeclareSciCallV0(UpperCase, UPPERCASE)
-DeclareSciCallV0(LowerCase, LOWERCASE)
+DeclareSciCallV0(Cut, CUT);
+DeclareSciCallV0(Copy, COPY);
+DeclareSciCallV0(Paste, PASTE);
+DeclareSciCallV0(Clear, CLEAR);
+DeclareSciCallV0(ClearAll, CLEARALL);
+DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end);
+DeclareSciCallV0(Cancel, CANCEL);
+DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE);
+DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text);
+DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text);
+DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange);
+DeclareSciCallV0(UpperCase, UPPERCASE);
+DeclareSciCallV0(LowerCase, LOWERCASE);
 
-//DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text)  // WideCharToMultiByteEx(Encoding_SciCP)
-// SCI_ENCODEDFROMUTF8 - no need, internal CP is UTF8 always (fixed const for Notepad3)
+//DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text);  // WideCharToMultiByteEx(Encoding_SciCP);
+// SCI_ENCODEDFROMUTF8 - no need, internal CP is UTF8 always (fixed const for Notepad3);
 
-DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
-DeclareSciCallV0(SelectAll, SELECTALL)
-DeclareSciCallR01(GetSelText, GETSELTEXT, size_t, const char*, text)
-DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text)
-DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text)
-DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text)
-DeclareSciCallV0(SetSavePoint, SETSAVEPOINT)
+DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos);
+DeclareSciCallV0(SelectAll, SELECTALL);
+DeclareSciCallR01(GetSelText, GETSELTEXT, size_t, const char*, text);
+DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text);
+DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text);
+DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text);
+DeclareSciCallV0(SetSavePoint, SETSAVEPOINT);
 
-DeclareSciCallV1(SetAdditionalSelectionTyping, SETADDITIONALSELECTIONTYPING, bool, flag)
-DeclareSciCallR0(GetAdditionalSelectionTyping, GETADDITIONALSELECTIONTYPING, bool)
+DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos);
+DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos);
+//DeclareSciCallR01(GetTargetText, GETTARGETTEXT, sptr_t, const unsigned char*, text);
+DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
+DeclareSciCallV0(TargetWholeDocument, TARGETWHOLEDOCUMENT);
+DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
+DeclareSciCallR2(ReplaceTarget, REPLACETARGET, DocPos, DocPos, length, const char*, text);
+DeclareSciCallR2(ReplaceTargetRe, REPLACETARGETRE, DocPos, DocPos, length, const char*, text);
+DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text);
+DeclareSciCallV1(SetSearchFlags, SETSEARCHFLAGS, int, flags);
+DeclareSciCallR2(SearchInTarget, SEARCHINTARGET, DocPos, DocPos, length, const char*, text);
+DeclareSciCallV2(DeleteRange, DELETERANGE, DocPos, start, DocPos, length);
 
-DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos)
-DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
-//DeclareSciCallR01(GetTargetText, GETTARGETTEXT, sptr_t, const unsigned char*, text)
-DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION)
-DeclareSciCallV0(TargetWholeDocument, TARGETWHOLEDOCUMENT)
-DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end)
-DeclareSciCallR2(ReplaceTarget, REPLACETARGET, DocPos, DocPos, length, const char*, text)
-DeclareSciCallR2(ReplaceTargetRe, REPLACETARGETRE, DocPos, DocPos, length, const char*, text)
-DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text)
-DeclareSciCallV1(SetSearchFlags, SETSEARCHFLAGS, int, flags)
-DeclareSciCallR2(SearchInTarget, SEARCHINTARGET, DocPos, DocPos, length, const char*, text)
-DeclareSciCallV2(DeleteRange, DELETERANGE, DocPos, start, DocPos, length)
+DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
+DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position);
 
-DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position)
-DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position)
-DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option)
+DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position);
+DeclareSciCallV1(GotoLine, GOTOLINE, DocLn, line);
+DeclareSciCallV0(DocumentStart, DOCUMENTSTART);
+DeclareSciCallV0(DocumentEnd, DOCUMENTEND);
+DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position);
+DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position);
+DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position);
+DeclareSciCallR0(GetEOLMode, GETEOLMODE, int);
+DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode);
+DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode);
 
-DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position)
-DeclareSciCallV1(GotoLine, GOTOLINE, DocLn, line)
-DeclareSciCallV0(DocumentStart, DOCUMENTSTART)
-DeclareSciCallV0(DocumentEnd, DOCUMENTEND)
-DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position)
-DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
-DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
-DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
-DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode)
-DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode)
+DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT);
+DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs);
+DeclareSciCallV01(SetWhitespaceChars, SETWHITESPACECHARS, const char*, chrs);
+DeclareSciCallV01(SetPunctuationChars, SETPUNCTUATIONCHARS, const char*, chrs);
 
-DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
-DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)
-DeclareSciCallV01(SetWhitespaceChars, SETWHITESPACECHARS, const char*, chrs)
-DeclareSciCallV01(SetPunctuationChars, SETPUNCTUATIONCHARS, const char*, chrs)
+DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn);
+DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos);
+DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocLn, line);
+DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, DocLn, DocPos, position);
+DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line);
+DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line);
+DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position);
+DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column);
+DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, DocPos, endpos);
+DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, DocPos, relative);
 
-DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn)
-DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos)
-DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocLn, line)
-DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, DocLn, DocPos, position)
-DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line)
-DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line)
-DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position)
-DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column)
-DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, DocPos, endpos)
-DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, DocPos, relative)
+DeclareSciCallR0(GetDirectPointer, GETDIRECTPOINTER, const char *const);
+DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char *const);
+DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char *const, DocPos, start, DocPos, length);
 
-DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
-DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char* const)
-
-DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text)
-DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text)
+DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text);
+DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text);
 
 inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf)
 {
@@ -343,275 +394,270 @@ inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf)
 //  CallTip and AutoComplete
 //
 
-DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour)
-DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour)
-DeclareSciCallV1(CallTipSetPosition, CALLTIPSETPOSITION, bool, above)
-DeclareSciCallR0(CallTipPosStart, CALLTIPPOSSTART, DocPos)
-DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text)
-DeclareSciCallV2(CallTipSetHlt, CALLTIPSETHLT, int, beg, int, end)
-DeclareSciCallR0(CallTipActive, CALLTIPACTIVE, bool)
-DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL)
-DeclareSciCallV1(SetMouseDWellTime, SETMOUSEDWELLTIME, int, millisec)
+DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour);
+DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour);
+DeclareSciCallV1(CallTipSetPosition, CALLTIPSETPOSITION, bool, above);
+DeclareSciCallR0(CallTipPosStart, CALLTIPPOSSTART, DocPos);
+DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text);
+DeclareSciCallV2(CallTipSetHlt, CALLTIPSETHLT, int, beg, int, end);
+DeclareSciCallR0(CallTipActive, CALLTIPACTIVE, bool);
+DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL);
+DeclareSciCallV1(SetMouseDWellTime, SETMOUSEDWELLTIME, int, millisec);
 
-DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool)
-DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE)
-DeclareSciCallV0(AutoCCancel, AUTOCCANCEL)
-DeclareSciCallV0(ClearRegisteredImages, CLEARREGISTEREDIMAGES)
-DeclareSciCallV1(AutoCSetIgnoreCase, AUTOCSETIGNORECASE, bool, flag)
-DeclareSciCallV1(AutoCSetCaseInsensitiveBehaviour, AUTOCSETCASEINSENSITIVEBEHAVIOUR, int, options)
-DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator)
-DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text)
-DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag)
-DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options)
-DeclareSciCallV1(AutoCSetMulti, AUTOCSETMULTI, int, options)
-DeclareSciCallV2(AutoCShow, AUTOCSHOW, DocPos, len, const char*, list)
+DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool);
+DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE);
+DeclareSciCallV0(AutoCCancel, AUTOCCANCEL);
+DeclareSciCallV0(ClearRegisteredImages, CLEARREGISTEREDIMAGES);
+DeclareSciCallV1(AutoCSetIgnoreCase, AUTOCSETIGNORECASE, bool, flag);
+DeclareSciCallV1(AutoCSetCaseInsensitiveBehaviour, AUTOCSETCASEINSENSITIVEBEHAVIOUR, int, options);
+DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator);
+DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text);
+DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag);
+DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options);
+DeclareSciCallV1(AutoCSetMulti, AUTOCSETMULTI, int, options);
+DeclareSciCallV2(AutoCShow, AUTOCSHOW, DocPos, len, const char*, list);
 
 
 //=============================================================================
 //
 //  Scrolling and automatic scrolling
 //
-DeclareSciCallV0(ScrollToStart, SCROLLTOSTART)
-DeclareSciCallV0(ScrollToEnd, SCROLLTOEND)
-DeclareSciCallV0(ScrollCaret, SCROLLCARET)
-DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
-DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines)
-DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos)
-DeclareSciCallV1(SetScrollWidth, SETSCROLLWIDTH, int, width)
-DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag)
-DeclareSciCallR0(GetXOffset, GETXOFFSET, int)
-DeclareSciCallV1(SetXOffset, SETXOFFSET, int, offset)
-DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
-DeclareSciCallV0(MoveCaretInsideView, MOVECARETINSIDEVIEW)
+DeclareSciCallV0(ScrollToStart, SCROLLTOSTART);
+DeclareSciCallV0(ScrollToEnd, SCROLLTOEND);
+DeclareSciCallV0(ScrollCaret, SCROLLCARET);
+DeclareSciCallV0(ChooseCaretX, CHOOSECARETX);
+DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines);
+DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos);
+DeclareSciCallV1(SetScrollWidth, SETSCROLLWIDTH, int, width);
+DeclareSciCallV1(SetScrollWidthTracking, SETSCROLLWIDTHTRACKING, bool, srwt);
 
-DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
-DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)
-DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
-DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line)
-DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
+DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag);
+DeclareSciCallR0(GetXOffset, GETXOFFSET, int);
+DeclareSciCallV1(SetXOffset, SETXOFFSET, int, offset);
+DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines);
+DeclareSciCallV0(MoveCaretInsideView, MOVECARETINSIDEVIEW);
 
-DeclareSciCallV1(SetHScrollbar, SETHSCROLLBAR, bool, visible)
-DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible)
+DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn);
+DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn);
+DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line);
+DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line);
+DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
+
+DeclareSciCallV1(SetHScrollbar, SETHSCROLLBAR, bool, visible);
+DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible);
 
 
 //=============================================================================
 //
 //  Line State (parser internals)
 //
-//~DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
-//~DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
-//~DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
+//~DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state);
+//~DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line);
+//~DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn);
 
 
 //=============================================================================
 //
 //  Style definition
 //
-DeclareSciCallR0(GetLexer, GETLEXER, int)
-DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid) // deprecated
-DeclareSciCallV01(SetILexer, SETILEXER, void*, lexerPtr) // ILexer5*
+DeclareSciCallR0(GetLexer, GETLEXER, int);
+DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid); // deprecated
+DeclareSciCallV01(SetILexer, SETILEXER, void*, lexerPtr); // ILexer5*
 
-DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
+DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle);
 
 DeclareSciCallV0(StyleClearAll, STYLECLEARALL);
-DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
-DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT)
-DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible)
-DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, style)
-DeclareSciCallV2(StyleSetFore, STYLESETFORE, int, style, COLORREF, rgb)
-DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, style)
-DeclareSciCallV2(StyleSetBack, STYLESETBACK, int, style, COLORREF, rgb)
-DeclareSciCallR1(GetStyleAt, GETSTYLEAT, int, DocPos, position)
-DeclareSciCallV2(SetStyling, SETSTYLING, DocPos, length, int, style)
-DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
-DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
+DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE);
+DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT);
+DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible);
+DeclareSciCallV2(StyleSetChangeable, STYLESETCHANGEABLE, int, style, bool, ro);
+DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, style);
+DeclareSciCallV2(StyleSetFore, STYLESETFORE, int, style, COLORREF, rgb);
+DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, style);
+DeclareSciCallV2(StyleSetBack, STYLESETBACK, int, style, COLORREF, rgb);
+DeclareSciCallR1(GetStyleAt, GETSTYLEAT, int, DocPos, position);
+DeclareSciCallV2(SetStyling, SETSTYLING, DocPos, length, int, style);
+DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position);
+DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos);
 
-DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, style)
-DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, style, bool, hotspot)
-DeclareSciCallV2(SetHotspotActiveFore, SETHOTSPOTACTIVEFORE, bool, useSetting, int, colour)
-DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, int, colour)
-DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline)
-DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline)
+DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, style);
+DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, style, bool, hotspot);
+DeclareSciCallV2(SetHotspotActiveFore, SETHOTSPOTACTIVEFORE, bool, useSetting, int, colour);
+DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, int, colour);
+DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline);
+DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline);
 
-DeclareSciCallV1(SetViewWS, SETVIEWWS, int, wspc)
-DeclareSciCallV1(SetViewEOL, SETVIEWEOL, bool, eols)
+DeclareSciCallV1(SetViewWS, SETVIEWWS, int, wspc);
+DeclareSciCallV1(SetViewEOL, SETVIEWEOL, bool, eols);
 
-DeclareSciCallV2(StyleSetFont, STYLESETFONT, int, style, const char *, fontname)
+DeclareSciCallV2(StyleSetFont, STYLESETFONT, int, style, const char *, fontname);
 
 
 //=============================================================================
 //
 // Indentation Guides and Wraping
 //
-DeclareSciCallV1(SetWrapMode, SETWRAPMODE, int, mode)
-DeclareSciCallV1(SetWrapIndentMode, SETWRAPINDENTMODE, int, mode)
-DeclareSciCallV1(SetWrapStartIndent, SETWRAPSTARTINDENT, int, mode)
+DeclareSciCallV1(SetWrapMode, SETWRAPMODE, int, mode);
+DeclareSciCallR0(GetWrapIndentMode, GETWRAPINDENTMODE, int);
+DeclareSciCallV1(SetWrapIndentMode, SETWRAPINDENTMODE, int, mode);
+DeclareSciCallV1(SetWrapStartIndent, SETWRAPSTARTINDENT, int, mode);
+DeclareSciCallV1(SetWrapVisualFlags, SETWRAPVISUALFLAGS, int, opts);
+DeclareSciCallV1(SetWrapVisualFlagsLocation, SETWRAPVISUALFLAGSLOCATION, int, opts);
 
-DeclareSciCallV1(SetEdgeMode, SETEDGEMODE, int, mode)
-DeclareSciCallR0(GetEdgeMode, GETEDGEMODE, int)
-DeclareSciCallV1(SetEdgeColumn, SETEDGECOLUMN, int, column)
-DeclareSciCallR0(GetEdgeColumn, GETEDGECOLUMN, int)
-DeclareSciCallV1(SetEdgeColour, SETEDGECOLOUR, int, colour)
-DeclareSciCallR0(GetEdgeColour, GETEDGECOLOUR, int)
-DeclareSciCallV2(MultiEdgeAddLine, MULTIEDGEADDLINE, int, column, int, colour)
-DeclareSciCallV0(MultiEdgeClearAll, MULTIEDGECLEARALL)
+DeclareSciCallV1(SetEdgeMode, SETEDGEMODE, int, mode);
+DeclareSciCallR0(GetEdgeMode, GETEDGEMODE, int);
+DeclareSciCallV1(SetEdgeColumn, SETEDGECOLUMN, int, column);
+DeclareSciCallR0(GetEdgeColumn, GETEDGECOLUMN, int);
+DeclareSciCallV1(SetEdgeColour, SETEDGECOLOUR, int, colour);
+DeclareSciCallR0(GetEdgeColour, GETEDGECOLOUR, int);
+DeclareSciCallV2(MultiEdgeAddLine, MULTIEDGEADDLINE, int, column, int, colour);
+DeclareSciCallV0(MultiEdgeClearAll, MULTIEDGECLEARALL);
 
-DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width)
-DeclareSciCallR0(GetTabWidth, GETTABWIDTH, int)
+DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width);
+DeclareSciCallR0(GetTabWidth, GETTABWIDTH, int);
 
-DeclareSciCallV1(SetIndent, SETINDENT, int, width)
-DeclareSciCallR0(GetIndent, GETINDENT, int)
-DeclareSciCallV1(SetUseTabs, SETUSETABS, bool, use)
-DeclareSciCallR0(GetUseTabs, GETUSETABS, bool)
-DeclareSciCallV1(SetTabIndents, SETTABINDENTS, bool, indents)
-DeclareSciCallR0(GetTabIndents, GETTABINDENTS, bool)
-DeclareSciCallV1(SetBackSpaceUnIndents, SETBACKSPACEUNINDENTS, bool, unindents)
-DeclareSciCallR0(GetBackSpaceUnIndents, GETBACKSPACEUNINDENTS, bool)
+DeclareSciCallV1(SetIndent, SETINDENT, int, width);
+DeclareSciCallR0(GetIndent, GETINDENT, int);
+DeclareSciCallV1(SetUseTabs, SETUSETABS, bool, use);
+DeclareSciCallR0(GetUseTabs, GETUSETABS, bool);
+DeclareSciCallV1(SetTabIndents, SETTABINDENTS, bool, indents);
+DeclareSciCallR0(GetTabIndents, GETTABINDENTS, bool);
+DeclareSciCallV1(SetBackSpaceUnIndents, SETBACKSPACEUNINDENTS, bool, unindents);
+DeclareSciCallR0(GetBackSpaceUnIndents, GETBACKSPACEUNINDENTS, bool);
 
-DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
-DeclareSciCallR1(GetLineIndentation, GETLINEINDENTATION, int, DocLn, line)
-DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
+DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos);
+DeclareSciCallR1(GetLineIndentation, GETLINEINDENTATION, int, DocLn, line);
+DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line);
 
-DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
-DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
+DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview);
+DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column);
 
-DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, pos)
-DeclareSciCallR2(BraceMatchNext, BRACEMATCHNEXT, DocPos, DocPos, pos, DocPos, posStart)
-DeclareSciCallV2(BraceHighLight, BRACEHIGHLIGHT, DocPos, pos1, DocPos, pos2)
-DeclareSciCallV1(BraceBadLight, BRACEBADLIGHT, DocPos, pos)
-DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, int, indic)
-DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int, indic)
+DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, pos);
+DeclareSciCallR2(BraceMatchNext, BRACEMATCHNEXT, DocPos, DocPos, pos, DocPos, posStart);
+DeclareSciCallV2(BraceHighLight, BRACEHIGHLIGHT, DocPos, pos1, DocPos, pos2);
+DeclareSciCallV1(BraceBadLight, BRACEBADLIGHT, DocPos, pos);
+DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, int, indic);
+DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int, indic);
 
 
 //=============================================================================
 //
 //  Margins
 //
-DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, uintptr_t, margin, int, type)
-DeclareSciCallR1(GetMarginWidthN, GETMARGINWIDTHN, int, uintptr_t, margin)
-DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, uintptr_t, margin, int, pixelWidth)
-DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, uintptr_t, margin, int, mask)
-DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, uintptr_t, margin, bool, sensitive)
-DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, uintptr_t, margin, COLORREF, colour)
-DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, uintptr_t, margin, int, cursor)
-DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
-DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
-DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag)
-DeclareSciCallR2(MarkerNumberFromLine, MARKERNUMBERFROMLINE, int, DocLn, line, int, which)
-DeclareSciCallR2(MarkerHandleFromLine, MARKERHANDLEFROMLINE, int, DocLn, line, int, which)
+DeclareSciCallV1(SetMarginOptions, SETMARGINOPTIONS, int, options);
+DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, uintptr_t, margin, int, type);
+DeclareSciCallR1(GetMarginWidthN, GETMARGINWIDTHN, int, uintptr_t, margin);
+DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, uintptr_t, margin, int, pixelWidth);
+DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, uintptr_t, margin, int, mask);
+DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, uintptr_t, margin, bool, sensitive);
+DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, uintptr_t, margin, COLORREF, colour);
+DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, uintptr_t, margin, int, cursor);
+DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour);
+DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour);
+DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag);
+DeclareSciCallR2(MarkerNumberFromLine, MARKERNUMBERFROMLINE, int, DocLn, line, int, which);
+DeclareSciCallR2(MarkerHandleFromLine, MARKERHANDLEFROMLINE, int, DocLn, line, int, which);
 
-DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
+DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text);
 
 //=============================================================================
 //
 //  Markers
 //
-DeclareSciCallR1(MarkerGet, MARKERGET, int, DocLn, line)
-DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols)
-DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour)
-DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour)
-DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerNumber, int, alpha)
-DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber)
-DeclareSciCallV2(MarkerAddSet, MARKERADDSET, DocLn, line, int, markerMask)
-DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber)
-DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
-DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber, int, colour)
-DeclareSciCallR2(MarkerNext, MARKERNEXT, DocLn, DocLn, start, int, markerMask)
-DeclareSciCallR2(MarkerPrevious, MARKERPREVIOUS, DocLn, DocLn, start, int, markerMask)
+DeclareSciCallR1(MarkerGet, MARKERGET, int, DocLn, line);
+DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols);
+DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour);
+DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour);
+DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerNumber, int, alpha);
+DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber);
+DeclareSciCallV2(MarkerAddSet, MARKERADDSET, DocLn, line, int, markerMask);
+DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber);
+DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber);
+DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber, int, colour);
+DeclareSciCallR2(MarkerNext, MARKERNEXT, DocLn, DocLn, start, int, markerMask);
+DeclareSciCallR2(MarkerPrevious, MARKERPREVIOUS, DocLn, DocLn, start, int, markerMask);
 
 //=============================================================================
 //
 //  Indicators
 //
-DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicID, int, style)
-DeclareSciCallR1(IndicGetFore, INDICGETFORE, COLORREF, int, indicID)
-DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicID, COLORREF, colour)
-DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicID, bool, under)
-DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicID, int, style)
-DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicID, COLORREF, colour)
-DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicID, int, alpha)
-DeclareSciCallV2(IndicSetOutlineAlpha, INDICSETOUTLINEALPHA, int, indicID, int, alpha)
-DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicID)
-DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length)
-DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, DocPos, length)
-DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicID, DocPos, position)
-DeclareSciCallR2(IndicatorStart, INDICATORSTART, int, int, indicID, DocPos, position)
-DeclareSciCallR2(IndicatorEnd, INDICATOREND, int, int, indicID, DocPos, position)
+DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicID, int, style);
+DeclareSciCallR1(IndicGetFore, INDICGETFORE, COLORREF, int, indicID);
+DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicID, COLORREF, colour);
+DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicID, bool, under);
+DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicID, int, style);
+DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicID, COLORREF, colour);
+DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicID, int, alpha);
+DeclareSciCallV2(IndicSetOutlineAlpha, INDICSETOUTLINEALPHA, int, indicID, int, alpha);
+DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicID);
+DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length);
+DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, DocPos, length);
+DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicID, DocPos, position);
+DeclareSciCallR2(IndicatorStart, INDICATORSTART, int, int, indicID, DocPos, position);
+DeclareSciCallR2(IndicatorEnd, INDICATOREND, int, int, indicID, DocPos, position);
 
 //=============================================================================
 //
 //  Folding
 //
 //
-DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line)
-DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, level)
-DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line)
-DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags)
-DeclareSciCallV1(FoldDisplayTextSetStyle, FOLDDISPLAYTEXTSETSTYLE, int, flags)
-DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, DocLn, DocLn, line)
-DeclareSciCallR2(GetLastChild, GETLASTCHILD, DocLn, DocLn, line, int, level)
-DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, bool, DocLn, line)
-DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line)
-DeclareSciCallV1(FoldAll, FOLDALL, int, flags)
-DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line)
-DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, line)
+DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line);
+DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, level);
+DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line);
+DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags);
+DeclareSciCallV1(FoldDisplayTextSetStyle, FOLDDISPLAYTEXTSETSTYLE, int, flags);
+DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, DocLn, DocLn, line);
+DeclareSciCallR2(GetLastChild, GETLASTCHILD, DocLn, DocLn, line, int, level);
+DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, bool, DocLn, line);
+DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line);
+DeclareSciCallV1(FoldAll, FOLDALL, int, flags);
+DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line);
+DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, line);
 
 
 //=============================================================================
 //
 //  Lexer
 //
-DeclareSciCallV2(SetProperty, SETPROPERTY, const char*, key, const char*, value)
-DeclareSciCallV2(SetKeywords, SETKEYWORDS, int, keywordset, const char*, keywords)
-DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos)
+DeclareSciCallV2(SetProperty, SETPROPERTY, const char*, key, const char*, value);
+DeclareSciCallV2(SetKeywords, SETKEYWORDS, int, keywordset, const char*, keywords);
+DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos);
 
 
 //=============================================================================
 //
 //  Cursor
 //
-DeclareSciCallV1(SetCursor, SETCURSOR, int, flags)
+DeclareSciCallV1(SetCursor, SETCURSOR, int, flags);
 
 
 //=============================================================================
 //
 //  Undo/Redo Stack
 //
-DeclareSciCallV0(EmptyUndoBuffer, EMPTYUNDOBUFFER)
-DeclareSciCallV0(BeginUndoAction, BEGINUNDOACTION)
-DeclareSciCallV2(AddUndoAction, ADDUNDOACTION, int, token, int, flags)
-DeclareSciCallV0(EndUndoAction, ENDUNDOACTION)
-DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool)
-DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo)
+DeclareSciCallV0(EmptyUndoBuffer, EMPTYUNDOBUFFER);
+DeclareSciCallV0(BeginUndoAction, BEGINUNDOACTION);
+DeclareSciCallV2(AddUndoAction, ADDUNDOACTION, int, token, int, flags);
+DeclareSciCallV0(EndUndoAction, ENDUNDOACTION);
+DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool);
+DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo);
 
-
-//=============================================================================
-//
-//  SetTechnology
-//
-DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value)
-DeclareSciCallR0(GetTechnology, GETTECHNOLOGY, int)
-DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
-DeclareSciCallR0(GetBidirectional, GETBIDIRECTIONAL, int)
-DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
-
-DeclareSciCallV1(SetCharacterCategoryOptimization, SETCHARACTERCATEGORYOPTIMIZATION, int, count)
 
 //=============================================================================
 //
 //  IME
 //
-DeclareSciCallV1(SetIMEInteraction, SETIMEINTERACTION, int, interact)
-DeclareSciCallR0(IsIMEOpen, ISIMEOPEN, bool)
-DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
+DeclareSciCallV1(SetIMEInteraction, SETIMEINTERACTION, int, interact);
+DeclareSciCallR0(IsIMEOpen, ISIMEOPEN, bool);
+DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool);
 
 
 //=============================================================================
 //
 //  Utilities
 //
-DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
-DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
+DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
+DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
 #define Sci_IsDocEmpty() (SciCall_GetTextLength() <= 0LL)
 
