@@ -103,6 +103,7 @@ Crane70                 https://github.com/Crane70
 engelhro                https://github.com/engelhro
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
+igorruckert             https://github.com/igorruckert
 jupester                https://github.com/jupester
 kofifus                 https://github.com/kofifus
 Lacn0755                https://github.com/Lacn0755
