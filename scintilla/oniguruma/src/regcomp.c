@@ -132,27 +132,22 @@ ops_init(regex_t* reg, int init_alloc_size)
   Operation* p;
   size_t size;
 
-  if (init_alloc_size > 0) {
-    size = sizeof(Operation) * init_alloc_size;
-    p = (Operation* )xrealloc(reg->ops, size);
-    CHECK_NULL_RETURN_MEMERR(p);
-    reg->ops = p;
+  if (init_alloc_size <= 0)
+    return ONIGERR_PARSER_BUG;
+
+  size = sizeof(Operation) * init_alloc_size;
+  p = (Operation* )xrealloc(reg->ops, size);
+  CHECK_NULL_RETURN_MEMERR(p);
+  reg->ops = p;
 #ifdef USE_DIRECT_THREADED_CODE
-    {
-      enum OpCode* cp;
-      size = sizeof(enum OpCode) * init_alloc_size;
-      cp = (enum OpCode* )xrealloc(reg->ocs, size);
-      CHECK_NULL_RETURN_MEMERR(cp);
-      reg->ocs = cp;
-    }
-#endif
+  {
+    enum OpCode* cp;
+    size = sizeof(enum OpCode) * init_alloc_size;
+    cp = (enum OpCode* )xrealloc(reg->ocs, size);
+    CHECK_NULL_RETURN_MEMERR(cp);
+    reg->ocs = cp;
   }
-  else {
-    reg->ops = (Operation* )0;
-#ifdef USE_DIRECT_THREADED_CODE
-    reg->ocs = (enum OpCode* )0;
 #endif
-  }
 
   reg->ops_curr  = 0; /* !!! not yet done ops_new() */
   reg->ops_alloc = init_alloc_size;
@@ -162,19 +157,16 @@ ops_init(regex_t* reg, int init_alloc_size)
 }
 
 static int
-ops_expand(regex_t* reg, int n)
+ops_resize(regex_t* reg, int n)
 {
-#define MIN_OPS_EXPAND_SIZE   4
-
 #ifdef USE_DIRECT_THREADED_CODE
   enum OpCode* cp;
 #endif
   Operation* p;
   size_t size;
 
-  if (n <= 0) n = MIN_OPS_EXPAND_SIZE;
-
-  n += reg->ops_alloc;
+  if (n == reg->ops_alloc) return ONIG_NORMAL;
+  if (n <= 0) return ONIGERR_PARSER_BUG;
 
   size = sizeof(Operation) * n;
   p = (Operation* )xrealloc(reg->ops, size);
@@ -200,10 +192,8 @@ ops_expand(regex_t* reg, int n)
 static int
 ops_new(regex_t* reg)
 {
-  int r;
-
   if (reg->ops_used >= reg->ops_alloc) {
-    r = ops_expand(reg, reg->ops_alloc);
+    int r = ops_resize(reg, reg->ops_alloc << 1);
     if (r != ONIG_NORMAL) return r;
   }
 
@@ -7531,6 +7521,9 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
       if (r != 0) goto err;
     }
 #endif
+
+    r = ops_resize(reg, reg->ops_used);
+    if (r != ONIG_NORMAL) goto err;
 
     set_addr_in_repeat_range(reg);
 
