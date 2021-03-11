@@ -51,14 +51,6 @@ public:
 		}
 	}
 
-	int LngID(unsigned int index) const noexcept {
-		if (index < static_cast<unsigned int>(lexerCatalogue.size())) {
-			return lexerCatalogue[index]->language;
-		} else {
-			return -1;
-		}
-	}
-
 	LexerFactoryFunction Factory(unsigned int index) const noexcept {
 		// Works for object lexers but not for function lexers
 		return lexerCatalogue[index]->fnFactory;
