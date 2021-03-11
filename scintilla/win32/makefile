@@ -12,7 +12,6 @@
 DIR_BIN=../bin
 
 COMPONENT = $(DIR_BIN)/Scintilla.dll
-LEXCOMPONENT = $(DIR_BIN)/SciLexer.dll
 LIBSCI = $(DIR_BIN)/libscintilla.a
 
 WARNINGS = -Wpedantic -Wall
@@ -66,7 +65,7 @@ endif
 CXX_BASE_FLAGS =--std=c++17 $(BASE_FLAGS)
 CXX_ALL_FLAGS =$(DEFINES) $(INCLUDES) $(CXX_BASE_FLAGS)
 
-all:	$(COMPONENT) $(LEXCOMPONENT) $(LIBSCI)
+all:	$(COMPONENT) $(LIBSCI)
 
 clean:
 	$(DEL) *.exe *.o *.a *.obj *.dll *.res *.map *.plist $(call normalize,$(LIBSCI))
@@ -75,12 +74,10 @@ clean:
 	$(CXX) $(CXX_ALL_FLAGS) $(CXXFLAGS) -c $<
 
 analyze:
-	$(CXX) --analyze $(CXX_ALL_FLAGS) $(CXXFLAGS) *.cxx ../src/*.cxx ../lexlib/*.cxx ../lexers/*.cxx
+	$(CXX) --analyze $(CXX_ALL_FLAGS) $(CXXFLAGS) *.cxx ../src/*.cxx
 
 depend deps.mak:
 	$(PYTHON) DepGen.py
-
-LEX_OBJS:=$(addsuffix .o,$(basename $(sort $(notdir $(wildcard ../lexers/Lex*.cxx)))))
 
 # Required for base Scintilla
 SRC_OBJS = \
@@ -105,7 +102,6 @@ SRC_OBJS = \
 	MarginView.o \
 	PerLine.o \
 	PositionCache.o \
-	PropSetSimple.o \
 	RESearch.o \
 	RunStyles.o \
 	Selection.o \
@@ -115,23 +111,9 @@ SRC_OBJS = \
 	ViewStyle.o \
 	XPM.o
 
-# Required by lexers
-LEXLIB_OBJS = \
-	Accessor.o \
-	CatalogueL.o \
-	DefaultLexer.o \
-	ExternalLexer.o \
-	LexerBase.o \
-	LexerModule.o \
-	LexerSimple.o \
-	StyleContext.o \
-	WordList.o
-
 # Required by libraries and DLLs that include lexing
 SCILEX_OBJS=\
 	$(SRC_OBJS) \
-	$(LEXLIB_OBJS) \
-	$(LEX_OBJS) \
 	HanjaDic.o \
 	PlatWin.o \
 	ScintillaBaseL.o \
@@ -139,28 +121,14 @@ SCILEX_OBJS=\
 
 COMPONENT_OBJS = \
 	$(SRC_OBJS) \
-	Accessor.o \
-	Catalogue.o \
 	HanjaDic.o \
-	LexerBase.o \
-	LexerModule.o \
-	LexerSimple.o \
 	PlatWin.o \
 	ScintillaBase.o \
 	ScintillaDLL.o \
 	ScintillaWin.o \
-	ScintRes.o \
-	WordList.o
-
-LEXCOMPONENT_OBJS = \
-	$(SCILEX_OBJS) \
-	ScintillaDLL.o \
 	ScintRes.o
 
 $(COMPONENT): $(COMPONENT_OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $(STRIPFLAG) $^ $(CXXFLAGS) $(LIBS)
-
-$(LEXCOMPONENT): $(LEXCOMPONENT_OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $(STRIPFLAG) $^ $(CXXFLAGS) $(LIBS)
 
 $(LIBSCI): $(COMPONENT_OBJS)

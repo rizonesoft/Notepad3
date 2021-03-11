@@ -119,7 +119,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 9 September 2020 NH</p>
+    <p>Last edited 1 March 2021 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -3314,16 +3314,45 @@ struct Sci_TextToFind {
 
     <p><b id="SCI_SETCARETSTYLE">SCI_SETCARETSTYLE(int caretStyle)</b><br />
      <b id="SCI_GETCARETSTYLE">SCI_GETCARETSTYLE &rarr; int</b><br />
-     The style of the caret can be set with <code>SCI_SETCARETSTYLE</code> to be a line caret
-    (CARETSTYLE_LINE=1) or a block caret (CARETSTYLE_BLOCK=2) for insert mode (lower 4-bits, CARETSTYLE_INS_MASK) combined with
-    a bar caret (CARETSTYLE_OVERSTRIKE_BAR=0) or a block caret (CARETSTYLE_OVERSTRIKE_BLOCK=16) for overtype mode (bit 4),
-    or to not draw at all (CARETSTYLE_INVISIBLE=0). The default value for insert mode is the line caret (CARETSTYLE_LINE=1),
-    for overtype mode is the bar caret (CARETSTYLE_OVERSTRIKE_BAR=0).
-    You can determine the current caret style setting using <code>SCI_GETCARETSTYLE</code>.</p>
+     The style of the caret can be set with <code>SCI_SETCARETSTYLE</code>.
+     There are separate styles for insert mode (lower 4-bits, CARETSTYLE_INS_MASK) and
+     overtype mode (bit 4).
 
-    <p>When the caret end of a range is at the end and a block caret style is chosen, the block is
-    drawn just inside the selection instead of after.
-    This can be switched with an option (CARETSTYLE_BLOCK_AFTER=256).</p>
+     <table class="standard" summary="Caret Styles">
+       <tbody valign="top">
+         <tr>
+           <th align="left"><code>CARETSTYLE_INVISIBLE</code></th>
+           <td>0</td>
+           <td>Carets are not drawn at all.</td>
+         </tr>
+         <tr>
+           <th align="left"><code>CARETSTYLE_LINE</code></th>
+           <td>1</td>
+           <td>Draws insertion carets as lines. This is the default.</td>
+         </tr>
+         <tr>
+           <th align="left"><code>CARETSTYLE_BLOCK</code></th>
+           <td>2</td>
+           <td>Draws insertion carets as blocks.</td>
+         </tr>
+         <tr>
+           <th align="left"><code>CARETSTYLE_OVERSTRIKE_BAR</code></th>
+           <td>0</td>
+           <td>Draws an overstrike caret as a bar. This is the default.</td>
+         </tr>
+         <tr>
+           <th align="left"><code>CARETSTYLE_OVERSTRIKE_BLOCK</code></th>
+           <td>16</td>
+           <td>Draws an overstrike caret as a block. This should be ored with one of the first three styles.</td>
+         </tr>
+         <tr>
+           <th align="left"><code>CARETSTYLE_BLOCK_AFTER</code></th>
+           <td>256</td>
+           <td>When the caret end of a range is at the end and a block caret style is chosen, draws the block
+           outside the selection instead of inside. This can be ored with <code>CARETSTYLE_BLOCK</code> or <code>CARETSTYLE_CURSES</code>.</td>
+         </tr>
+       </tbody>
+     </table>
 
     <p>The block caret draws most combining and multibyte character sequences successfully,
     though some fonts like Thai Fonts (and possibly others) can sometimes appear strange when
@@ -3844,10 +3873,14 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_GETCODEPAGE">SCI_GETCODEPAGE &rarr; int</a><br />
      <a class="message" href="#SCI_SETIMEINTERACTION">SCI_SETIMEINTERACTION(int imeInteraction)</a><br />
      <a class="message" href="#SCI_GETIMEINTERACTION">SCI_GETIMEINTERACTION &rarr; int</a><br />
+    </code>
 <div  class="provisional">
+    <code>
      <a class="message" href="#SCI_SETBIDIRECTIONAL"><span class="provisional">SCI_SETBIDIRECTIONAL(int bidirectional)</span></a><br />
      <a class="message" href="#SCI_GETBIDIRECTIONAL">SCI_GETBIDIRECTIONAL &rarr; int</a><br />
+    </code>
 </div>
+    <code>
      <a class="message" href="#SCI_GRABFOCUS">SCI_GRABFOCUS</a><br />
      <a class="message" href="#SCI_SETFOCUS">SCI_SETFOCUS(bool focus)</a><br />
      <a class="message" href="#SCI_GETFOCUS">SCI_GETFOCUS &rarr; bool</a><br />
@@ -7825,7 +7858,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
 
           <td>Base value with no fields valid. Will not occur but is useful in tests.</td>
 
-          <td><code></code></td>
+          <td></td>
         </tr>
 
         <tr>
