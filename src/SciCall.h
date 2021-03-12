@@ -688,7 +688,7 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 #define Sci_GetNetLineLength(line) (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
 
 //~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
-#define Sci_GetDocEndPosition() SciCall_PositionAfter(SciCall_GetTextLength())
+#define Sci_GetDocEndPosition() SciCall_PositionAfter(SciCall_GetTextLength() - 1)
 
 #define Sci_ClampAlpha(alpha) clampi((alpha), SC_ALPHA_TRANSPARENT, /*SC_ALPHA_OPAQUE*/SC_ALPHA_NOALPHA)
 

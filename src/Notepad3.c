@@ -7046,7 +7046,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         prevEndPosition = lastPos;
     }
     break;
-
     case SCN_DWELLEND: {
         if ((position >= prevStartPosition) && ((position <= prevEndPosition))) {
             return;    // avoid flickering
@@ -7064,10 +7063,11 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         // clear SCN_DWELLSTART visual styles
         SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
         SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-
+#if 0 
+        // destroy rectangualr selection on multi-replace ???
         SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
-        SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, 0);
-
+        SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, RGB(0,0,0));
+#endif
         HandlePosChange();
     }
     break;
@@ -7431,7 +7431,6 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
     static int _mod_insdel_token = -1;
-
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
         if (pnmh->code == SCN_MODIFIED) {
@@ -7484,8 +7483,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 EditToggleView(Globals.hwndEdit);
             }
         }
+        return TRUE;
     }
-    return TRUE;
+    return FALSE;
 }
 
 
@@ -7502,7 +7502,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
     static int _s_indic_click_modifiers = SCMOD_NORM;
 
     bool bModified = false;
-    _MsgNotifyLean(scn, &bModified);
+    LRESULT resMN = _MsgNotifyLean(scn, &bModified);
 
     switch (pnmh->code) {
     // unused:
@@ -7526,15 +7526,16 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                 }
                 UpdateMarginWidth();
             }
-        }
-        if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
-            if (!Sci_IsMultiSelection()) {
-                SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
-                SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-                s_bInMultiEditMode = false;
+            if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
+                if (!Sci_IsMultiSelection()) {
+                    SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+                    SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+                    s_bInMultiEditMode = false;
+                }
             }
         }
-    } break;
+        return resMN;
+    }
 
 
     case SCN_AUTOCSELECTION: {
@@ -7580,7 +7581,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             if (iUpd & SC_UPDATE_SELECTION) {
                 // clear marks only, if selection changed
                 if (IsMarkOccurrencesEnabled()) {
-                    if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord) {
+                    bool const bValidSel = !SciCall_IsSelectionEmpty() && !Sci_IsMultiOrRectangleSelection();
+                    if (bValidSel || Settings.MarkOccurrencesCurrentWord) {
                         MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
                     } else {
                         if (Globals.iMarkOccurrencesCount > 0) {
@@ -7794,30 +7796,25 @@ static bool s_tb_reset_already = false;
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNUSED(wParam);
+    LRESULT result = FALSE;
 
     static bool _guard = false;
-    if (_guard) {
-        return TRUE;    // avoid recursion
-    } else {
-        _guard = true;
-    }
-    #define GUARD_RETURN(res) { _guard = false; return(res); }
+    if (_guard) { return result; }
+    _guard = true;
 
     const SCNotification* const scn = (SCNotification*)lParam;
 
     if (!CheckNotifyChangeEvent()) {
         bool bModified = false;
-        LRESULT const res = _MsgNotifyLean(scn, &bModified);
-        GUARD_RETURN(res);
+        result = _MsgNotifyLean(scn, &bModified);
     }
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
     switch (pnmh->idFrom) {
 
     case IDC_EDIT: {
-        LRESULT const res = _MsgNotifyFromEdit(hwnd, scn);
-        GUARD_RETURN(res);
-    }
+        result = _MsgNotifyFromEdit(hwnd, scn);
+    } break;
 
     // ------------------------------------------------------------------------
 
@@ -7827,11 +7824,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case TBN_QUERYDELETE:
         case TBN_QUERYINSERT:
             // (!) must exist and return true
-            GUARD_RETURN(TRUE);
+            result = TRUE;
+            break;
 
         case TBN_BEGINADJUST:
             s_tb_reset_already = false;
-            GUARD_RETURN(FALSE);
+            break;
 
         case TBN_GETBUTTONINFO: {
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd)) {
@@ -7839,10 +7837,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
                 StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
                 CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
-                GUARD_RETURN(TRUE);
+                result = TRUE;
             }
-        }
-        GUARD_RETURN(FALSE);
+        } 
+        break;
 
         case TBN_RESET: {
             int const count = (int)SendMessage(Globals.hwndToolbar, TB_BUTTONCOUNT, 0, 0);
@@ -7860,18 +7858,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
             s_tb_reset_already = !s_tb_reset_already;
         }
-        GUARD_RETURN(FALSE);
+        break;
 
         case TBN_ENDADJUST:
             UpdateToolbar();
-            GUARD_RETURN(TRUE);
+            result = TRUE;
+            break;
 
         case NM_CUSTOMDRAW: {
             LPNMTBCUSTOMDRAW const lpNMTBCustomDraw = (LPNMTBCUSTOMDRAW)lParam;
-            LRESULT res = CDRF_DODEFAULT;
+            result = CDRF_DODEFAULT;
             switch (lpNMTBCustomDraw->nmcd.dwDrawStage) {
             case CDDS_PREPAINT:
-                res = CDRF_NOTIFYITEMDRAW;
+                result = CDRF_NOTIFYITEMDRAW;
                 break;
             case CDDS_ITEMPREPAINT: {
                 //~HDC const hdc = lpNMTBCustomDraw->nmcd.hdc;
@@ -7881,24 +7880,25 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 //~}
                 lpNMTBCustomDraw->clrBtnFace = GetModeBtnfaceColor(UseDarkMode());
                 lpNMTBCustomDraw->clrText = GetModeTextColor(UseDarkMode());
-                res = TBCDRF_USECDCOLORS;
+                result = TBCDRF_USECDCOLORS;
             }
             break;
+
             default:
                 break;
             }
-            GUARD_RETURN(res);
         }
 
         default:
-            GUARD_RETURN(FALSE);
+            break;
         }
+
         break;
 
     // ------------------------------------------------------------------------
 
     case IDC_STATUSBAR:
-
+        result = TRUE;
         switch(pnmh->code) {
         case NM_CLICK: { // single click
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
@@ -7923,10 +7923,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                         PostWMCommand(hwnd, eol_cmd);
                     }
                 }
-            }
-            GUARD_RETURN(!0);
+            } 
+            break;
 
             default:
+                result = FALSE;
                 break;
             }
         }
@@ -7934,16 +7935,16 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case NM_DBLCLK: { // double click
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
-
+            result = TRUE;
             switch (g_vSBSOrder[pnmm->dwItemSpec]) {
             case STATUS_DOCLINE:
             case STATUS_DOCCOLUMN:
                 PostWMCommand(hwnd, IDM_EDIT_GOTOLINE);
-                GUARD_RETURN(!0);
+                break;
 
             case STATUS_CODEPAGE:
                 PostWMCommand(hwnd, IDM_ENCODING_SELECT);
-                GUARD_RETURN(!0);
+                break;
 
             case STATUS_EOLMODE: {
                 int const eol_mode = (SciCall_GetEOLMode() + 2) % 3;
@@ -7951,19 +7952,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                                      ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
                 PostWMCommand(hwnd, eol_cmd);
             }
-            GUARD_RETURN(!0);
+            break;
 
             case STATUS_OVRMODE:
                 PostWMCommand(hwnd, CMD_VK_INSERT);
-                GUARD_RETURN(!0);
+                break;
 
             case STATUS_2ND_DEF:
                 PostWMCommand(hwnd, IDM_VIEW_USE2NDDEFAULT);
-                GUARD_RETURN(!0);
+                break;
 
             case STATUS_LEXER:
                 PostWMCommand(hwnd, IDM_VIEW_SCHEME);
-                GUARD_RETURN(!0);
+                break;
 
             case STATUS_TINYEXPR: {
                 char chExpr[80] = { '\0' };
@@ -7983,6 +7984,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             break;
 
             default:
+                result = FALSE;
                 break;
             }
         }
@@ -8005,6 +8007,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 WCHAR* pttText = ((LPTOOLTIPTEXT)lParam)->szText;
                 size_t const ttLen = COUNTOF(((LPTOOLTIPTEXT)lParam)->szText);
                 StringCchCopyN(pttText, ttLen, tch,COUNTOF(tch));
+                result = TRUE;
             }
             break;
 
@@ -8012,9 +8015,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             break;
         }
         break;
-
     }
-    GUARD_RETURN(0);
+
+    _guard = false; // reset
+
+    return result;
 }
 
 
