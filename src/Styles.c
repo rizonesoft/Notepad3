@@ -1036,7 +1036,7 @@ static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t
 #define Style_StrGetAttrExtraBold(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"extrabold")
 #define Style_StrGetAttrHeavy(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"heavy")
 
-#if 0
+#if USE_FONT_STRETCH
 // font stretch
 #define Style_StrGetAttrUltraCondensed(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"ultracondensed")
 #define Style_StrGetAttrExtraCondensed(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"extracondensed")
@@ -2832,7 +2832,7 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
     }
 }
 
-#if 0
+#if USE_FONT_STRETCH
 //=============================================================================
 //
 //  Style_StrGetStretchValue()
@@ -3348,8 +3348,6 @@ CASE_WM_CTLCOLOR_SET:
     return FALSE;	// Allow the default handler a chance to process
 }
 
-
-
 //=============================================================================
 //
 //  Style_SelectFont()
@@ -3395,7 +3393,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     int iFontWeight = FW_NORMAL;
     Style_StrGetWeightValue(lpszStyle, &iFontWeight);
 
-#if 0
+#if USE_FONT_STRETCH
     int iFontStretch = FONT_STRETCH_NORMAL;
     if (!Style_StrGetStretchValue(lpszStyle, &iFontWeight)) {
         iFontStretch = FONT_STRETCH_NORMAL;
@@ -3456,7 +3454,11 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     cf.nFontType = SCREEN_FONTTYPE;
     cf.lpszStyle = szStyleStrg;
 
-    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_USESTYLE | CF_SCREENFONTS | CF_ENABLEHOOK;  //~ CF_NOSCRIPTSEL | CF_SCALABLEONLY | CF_FORCEFONTEXIST
+    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK | CF_FORCEFONTEXIST; //~ CF_USESTYLE | CF_NOSCRIPTSEL
+
+    cf.Flags |= (SciCall_GetTechnology() != SC_TECHNOLOGY_DEFAULT) ? CF_SCALABLEONLY : 0;
+    cf.Flags |= bWithEffects ? CF_EFFECTS : 0;
+    cf.Flags |= IsKeyDown(VK_SHIFT) ? CF_FIXEDPITCHONLY : 0;
 
     // CF_LIMITSIZE
     //cf.nSizeMin = 4;
@@ -3484,14 +3486,6 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
         } else {
             FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXARB, sStyleName, sLexerName);
         }
-    }
-
-    if (bWithEffects) {
-        cf.Flags |= CF_EFFECTS;
-    }
-
-    if (IsKeyDown(VK_SHIFT)) {
-        cf.Flags |= CF_FIXEDPITCHONLY;
     }
 
     // ---  open systems Font Selection dialog  ---
@@ -3560,7 +3554,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
         Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
     }
 
-#if 0
+#if USE_FONT_STRETCH
     // font stretch
     if (lf.lfWidth == 0) {
         WCHAR check[64] = { L'\0' };
@@ -3855,7 +3849,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
         SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)SC_WEIGHT_NORMAL);
     }
 
-#if 0
+#if USE_FONT_STRETCH
     // Stretch
     if (Style_StrGetStretchValue(lpszStyle, &iValue)) {
         SendMessage(hwnd, SCI_STYLESETSTRETCH, iStyle, (LPARAM)iValue);
