@@ -23,6 +23,7 @@ ABBREVIATIONS:
 --------------------------------------------------------
 CED - (C)ompact (E)ncoding (D)etection (by Google)
 GRE - (GRE)pWinNP3 Search in Files Tool
+LEX - (LEX)illa Library
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
@@ -32,14 +33,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.310.(build_#) (2021-03-10)
+Current BETA/RC Version 5.21.312.(build_#) (2021-03-12)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.301.1]- About Dlg:  Copy-Ver-Info-Btn : add Dark-Mode information.
+[.301.1]- About Dlg: version info for split-off Lexilla component.
+[.301.1]- About Dlg: Copy-Ver-Info-Btn : add Dark-Mode information.
 [.301.1]- Some filesystem path vs. file:// URL helpers (backslash invert).
 [.301.1]- Converter: File-System Path to URL and vice versa.
 
@@ -47,6 +49,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.311.1]- Using some more Scintilla direct call methods instead of SendMessage() thread independent calls. (SCI).
+[.311.1]- Refactoring for splitting Lexilla from Scintilla (SCI).
 [.303.1]- Renaming Spanish Mexican to Spanish Latin America (es-419) (MUI).
 [.302.1]- More liberal Hyperlink scanner (no need for validation here!).
 [.302.1]- RegEx API : retun matched pattern length too.
@@ -54,13 +58,15 @@ CHANGES:
 [.301.1]- Enable Dark Mode feature for Win10 v21H1 insider beta.
 [.301.1]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
 [.301.1]- Update grepWinNP3 (GRE) version 2.1.6.35 (2021-03.01).
-[.301.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-03-01).
-[1214.1]- Update Scintilla Library (SCI) version 4.4.6 (2020-12-01).
+[.311.1]- Update Lexilla Library (LEX) version 5.0.0 (2021-03-11).
+[.311.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-03-03).
+[.311.1]- Update Scintilla Library (SCI) version 5.0.0 (2021-03-11).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.312.1]- Rectangular selection typing issue.
 [.309.1]- Replacing the "RCdll.dll" file to avoid garbage chars in foreign languages (MUI).
 [.309.1]- In ".zip" version, some filenames in "gwLng" folder are incorrectly displayed (MUI).
 [.303.1]- Language "Spanish Latin America" identifier correction (es-LA -> es-419) (MUI).
@@ -75,16 +81,18 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.311.1]- Obsolete SCI_LEXER preproc symbol / no need to link lexers in Scintilla.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
+[.###.#]- .
+[.303.1]- Portuguese Brazilian (pt-BR).
+--------
 For our Notepad3 translation projects, we are looking for motivated volunteers, with a 
 priority to resume "aborted" translations for these languages:
 Please, send me a PM (hpwamr51 @ gmail.com) if you are willing to help.
-[.###.#]- .
-[.303.1]- Portuguese Brazilian (pt-BR).
+--------
 [.227.1]- Chinese Traditional (zh-TW) (incomplete...).
 [.227.1]- Greek (el-GR) (incomplete...).
 [.227.1]- Indonesian (id-ID) (incomplete...).
