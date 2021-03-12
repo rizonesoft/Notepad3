@@ -634,7 +634,9 @@ extern SETTINGS2_T Settings2;
 extern SETTINGS2_T Defaults2;
 
 //=============================================================================
-#if 0
+#define USE_FONT_STRETCH 0
+
+#if USE_FONT_STRETCH
 typedef enum
 {
     FONT_STRETCH_UNDEFINED = 0,
@@ -642,12 +644,13 @@ typedef enum
     FONT_STRETCH_EXTRA_CONDENSED,
     FONT_STRETCH_CONDENSED,
     FONT_STRETCH_SEMI_CONDENSED,
-    FONT_STRETCH_NORMAL,
+    FONT_STRETCH_NORMAL = SC_FONT_STRETCH_NORMAL,
     FONT_STRETCH_MEDIUM,
     FONT_STRETCH_SEMI_EXPANDED,
     FONT_STRETCH_EXPANDED,
     FONT_STRETCH_EXTRA_EXPANDED,
     FONT_STRETCH_ULTRA_EXPANDED
+
 } FONT_STRETCH_T;
 #endif
 //=============================================================================
