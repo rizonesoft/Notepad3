@@ -66,6 +66,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.312.2]- Limit ChooseFont Dlg to CF_SCALABLEONLY for DirectWrite Technology.
 [.312.1]- Rectangular selection typing issue.
 [.309.1]- Replacing the "RCdll.dll" file to avoid garbage chars in foreign languages (MUI).
 [.309.1]- In ".zip" version, some filenames in "gwLng" folder are incorrectly displayed (MUI).
