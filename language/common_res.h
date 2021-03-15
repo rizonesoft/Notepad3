@@ -441,8 +441,8 @@
 #define IDS_MUI_LANG_BE_BY              34503
 #define IDS_MUI_LANG_DE_DE              34504
 #define IDS_MUI_LANG_EN_GB              34505
-#define IDS_MUI_LANG_ES_ES              34506
-#define IDS_MUI_LANG_ES_419             34507
+#define IDS_MUI_LANG_ES_419             34506
+#define IDS_MUI_LANG_ES_ES              34507
 #define IDS_MUI_LANG_FR_FR              34508
 #define IDS_MUI_LANG_HI_IN              34509
 #define IDS_MUI_LANG_HU_HU              34510
