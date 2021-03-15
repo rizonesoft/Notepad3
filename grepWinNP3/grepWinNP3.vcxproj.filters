@@ -350,6 +350,9 @@
     <None Include="translationsNP3\English (United States) [en-US].lang">
       <Filter>translationsNP3</Filter>
     </None>
+    <None Include="translationsNP3\Español (América Latina) [es-419].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
     <None Include="translationsNP3\Español (España) [es-ES].lang">
       <Filter>translationsNP3</Filter>
     </None>
