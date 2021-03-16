@@ -30,7 +30,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{18CD506D-5596-4B58-B868-57FAAC657C6B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>mpengb</RootNamespace>
+    <RootNamespace>mpkokr</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

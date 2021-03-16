@@ -133,12 +133,14 @@ Source: {#bindir}\Release_x86_v142\lng\be-BY\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\be-BY\np3lng.dll.mui;        DestDir: {app}\lng\be-BY;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\de-DE\mplng.dll.mui;         DestDir: {app}\lng\de-DE;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\de-DE\np3lng.dll.mui;        DestDir: {app}\lng\de-DE;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\el-GR\mplng.dll.mui;         DestDir: {app}\lng\el-GR;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\el-GR\np3lng.dll.mui;        DestDir: {app}\lng\el-GR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\en-GB\mplng.dll.mui;         DestDir: {app}\lng\en-GB;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\en-GB\np3lng.dll.mui;        DestDir: {app}\lng\en-GB;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\es-ES\mplng.dll.mui;         DestDir: {app}\lng\es-ES;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\es-ES\np3lng.dll.mui;        DestDir: {app}\lng\es-ES;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\es-419\mplng.dll.mui;        DestDir: {app}\lng\es-419;                          Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\es-419\np3lng.dll.mui;       DestDir: {app}\lng\es-419;                          Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\es-ES\mplng.dll.mui;         DestDir: {app}\lng\es-ES;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\es-ES\np3lng.dll.mui;        DestDir: {app}\lng\es-ES;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\fr-FR\mplng.dll.mui;         DestDir: {app}\lng\fr-FR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\fr-FR\np3lng.dll.mui;        DestDir: {app}\lng\fr-FR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\hi-IN\mplng.dll.mui;         DestDir: {app}\lng\hi-IN;                           Flags: ignoreversion
