@@ -192,8 +192,11 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
                 std::wstring const ext = sPath.substr(dotpos);
                 if (ext.compare(L".lang"))
                     continue;
-                size_t const keypos = max(0, dotpos - 7);
-                std::wstring const lngKey = sPath.substr(keypos, (dotpos - keypos - 1));
+                size_t const lngidbeg = sPath.find_last_of('[');
+                size_t const lngidend = sPath.find_last_of(']');
+                if ((lngidbeg == std::wstring::npos) || (lngidend == std::wstring::npos) || (lngidend <= lngidbeg))
+                    continue;
+                std::wstring const lngKey = sPath.substr(lngidbeg, lngidend - lngidbeg + 1);
                 langFileMap.insert({ lngKey, sPath });
             }
 

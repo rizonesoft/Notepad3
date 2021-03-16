@@ -479,7 +479,7 @@ class ScintillaWin final :
 	bool renderTargetValid;
 #endif
 
-	explicit ScintillaWin(HWND hwnd);
+	explicit ScintillaWin(HWND hwnd) noexcept;
 	// virtual ~ScintillaWin() in public section
 
 	void Init() noexcept;
@@ -664,7 +664,7 @@ HINSTANCE ScintillaWin::hInstance {};
 ATOM ScintillaWin::scintillaClassAtom = 0;
 ATOM ScintillaWin::callClassAtom = 0;
 
-ScintillaWin::ScintillaWin(HWND hwnd) {
+ScintillaWin::ScintillaWin(HWND hwnd) noexcept {
 
 	lastKeyDownConsumed = false;
 	lastHighSurrogateChar = 0;
@@ -1516,7 +1516,8 @@ UINT CodePageFromCharSet(DWORD characterSet, UINT documentCodePage) noexcept {
 }
 
 UINT ScintillaWin::CodePageOfDocument() const noexcept {
-	return CodePageFromCharSet(vs.styles[STYLE_DEFAULT].characterSet, pdoc->dbcsCodePage);
+	return pdoc->dbcsCodePage; // see SCI_GETCODEPAGE in Editor.cxx
+	//return CodePageFromCharSet(vs.styles[STYLE_DEFAULT].characterSet, pdoc->dbcsCodePage);
 }
 
 std::string ScintillaWin::EncodeWString(std::wstring_view wsv) {
@@ -2145,7 +2146,7 @@ sptr_t ScintillaWin::SciMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 			(wParam == SC_TECHNOLOGY_DIRECTWRITE)) {
 			const int technologyNew = static_cast<int>(wParam);
 			if (technology != technologyNew) {
-				if (technologyNew > SC_TECHNOLOGY_DEFAULT) {
+				if (technologyNew != SC_TECHNOLOGY_DEFAULT) {
 #if defined(USE_D2D)
 					if (!LoadD2D())
 						// Failed to load Direct2D or DirectWrite so no effect
@@ -2158,6 +2159,7 @@ sptr_t ScintillaWin::SciMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 				}
 #if defined(USE_D2D)
 				DropRenderTarget();
+				view.bufferedDraw = technologyNew == SC_TECHNOLOGY_DEFAULT;
 #endif
 				technology = technologyNew;
 				// Invalidate all cached information including layout.
@@ -2656,16 +2658,14 @@ void ScintillaWin::NotifyURIDropped(const char *list) noexcept {
 	NotifyParent(scn);
 }
 
-class CaseFolderDBCS : public CaseFolderTable {
+class CaseFolderDBCS final : public CaseFolderTable {
 	// Allocate the expandable storage here so that it does not need to be reallocated
 	// for each call to Fold.
 	std::vector<wchar_t> utf16Mixed;
 	std::vector<wchar_t> utf16Folded;
 	UINT cp;
 public:
-	explicit CaseFolderDBCS(UINT cp_) noexcept : cp(cp_) {
-		StandardASCII();
-	}
+	explicit CaseFolderDBCS(UINT cp_) noexcept : cp(cp_) { }
 	size_t Fold(char *folded, size_t sizeFolded, const char *mixed, size_t lenMixed) override {
 		if ((lenMixed == 1) && (sizeFolded > 0)) {
 			folded[0] = mapping[static_cast<unsigned char>(mixed[0])];
@@ -2723,7 +2723,6 @@ CaseFolder *ScintillaWin::CaseFolderForEncoding() {
 	} else {
 		if (pdoc->dbcsCodePage == 0) {
 			CaseFolderTable *pcf = new CaseFolderTable();
-			pcf->StandardASCII();
 			// Only for single byte encodings
 			for (int i = 0x80; i < 0x100; i++) {
 				char sCharacter[2] = "A";
