@@ -30,7 +30,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{2AD33E48-FEC6-47B1-8FEF-A0CF1F23DD58}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>mpesla</RootNamespace>
+    <RootNamespace>mpes419</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
