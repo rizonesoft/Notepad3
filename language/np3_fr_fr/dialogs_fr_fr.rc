@@ -262,7 +262,7 @@ CAPTION "Ouvrir fichier récent"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Conserver la Position du Caret.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
+    CONTROL         "&Conserver la Position du Curseur.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
     CONTROL         "&Enregistrer la liste des fichiers récents en quittant.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,160,10
     CONTROL         "Se souvenir de la chaîne de &recherche.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,116,10
