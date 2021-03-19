@@ -325,9 +325,7 @@ bool SetClipboardText(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScreen)
 {
     HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-    MONITORINFO mi;
-    ZeroMemory(&mi, sizeof(MONITORINFO));
-    mi.cbSize = sizeof(mi);
+    MONITORINFO mi = { sizeof(MONITORINFO) };
     GetMonitorInfo(hMonitor, &mi);
     *pCXScreen = (mi.rcMonitor.right - mi.rcMonitor.left);
     *pCYScreen = (mi.rcMonitor.bottom - mi.rcMonitor.top);

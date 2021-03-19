@@ -297,9 +297,9 @@ void SetPreferredLanguage(LANGID iPreferredLanguageID)
 
             if (Globals.bCanSaveIniFile) {
                 if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
-                    IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+                    IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
                 } else {
-                    IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
+                    IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
                 }
             }
         }
@@ -402,11 +402,11 @@ LANGID LoadLanguageResources()
     WCHAR tchDefaultStrg[MIDSZ_BUFFER] = { L'\0' };
 
     GetLngString(IDS_MUI_STATUSBAR_PREFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
-    IniFileGetString(Globals.IniFile, StatusBar_Section, L"SectionPrefixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
+    IniFileGetString(Paths.IniFile, StatusBar_Section, L"SectionPrefixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
     ReadStrgsFromCSV(tchStatusBar, g_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_PRFX_");
 
     GetLngString(IDS_MUI_STATUSBAR_POSTFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
-    IniFileGetString(Globals.IniFile, StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
+    IniFileGetString(Paths.IniFile, StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
     ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
 
     return MUI_LanguageDLLs[iUsedLngIdx].LangId;

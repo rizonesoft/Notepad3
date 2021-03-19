@@ -646,10 +646,7 @@ Cleanup: /* CLEANUP */
 */
 BOOL _fillBITMAPINFO(HBITMAP hBmp, BITMAPINFO *pBinfo)
 {
-    BITMAP bmp;
-
-    ZeroMemory(&bmp, sizeof(bmp));
-
+    BITMAP bmp = { 0 };
     if (!GetObject(hBmp, sizeof(BITMAP), &bmp)) {
         return FALSE;
     }
@@ -659,7 +656,7 @@ BOOL _fillBITMAPINFO(HBITMAP hBmp, BITMAPINFO *pBinfo)
 
     /* Getting info about the source bitmap
     */
-    ZeroMemory(pBinfo, sizeof(*pBinfo));
+    ZeroMemory(pBinfo, sizeof(BITMAPINFO));
 
     pBinfo->bmiHeader.biSize        = sizeof(pBinfo->bmiHeader);
     pBinfo->bmiHeader.biWidth       = bmp.bmWidth;

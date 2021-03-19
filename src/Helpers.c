@@ -1429,7 +1429,7 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
     PathUnquoteSpaces(tmpFilePath);
 
     if (PathIsRelative(tmpFilePath)) {
-        StringCchCopyN(lpszPath, cchBuffer, Globals.WorkingDirectory, COUNTOF(Globals.WorkingDirectory));
+        StringCchCopyN(lpszPath, cchBuffer, Paths.WorkingDirectory, COUNTOF(Paths.WorkingDirectory));
         PathCchAppend(lpszPath, cchBuffer, tmpFilePath);
         if (bSearchPathIfRelative) {
             if (!PathIsExistingFile(lpszPath)) {
@@ -1460,7 +1460,7 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
                                   FILE_ATTRIBUTE_NORMAL,              // normal file
                                   NULL);                              // no attr. template
 
-        if (hFile != INVALID_HANDLE_VALUE) {
+        if (IS_VALID_HANDLE(hFile)) {
             if (GetFinalPathNameByHandleW(hFile, tmpFilePath,
                                           COUNTOF(tmpFilePath), FILE_NAME_OPENED) > 0) {
                 if (StrCmpN(tmpFilePath, L"\\\\?\\", 4) == 0) {
@@ -1566,8 +1566,7 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 UINT CodePageFromCharSet(const UINT uCharSet)
 {
     if (ANSI_CHARSET == uCharSet) {
-        CPINFOEX cpinfo;
-        ZeroMemory(&cpinfo, sizeof(CPINFOEX));
+        CPINFOEX cpinfo = { 0 };
         if (GetCPInfoEx(CP_THREAD_ACP, 0, &cpinfo)) {
             return cpinfo.CodePage;
         }

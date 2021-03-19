@@ -372,6 +372,15 @@
 #define IDC_FINDESCCTRLCHR              18124
 #define IDC_REPLESCCTRLCHR              18125
 
+#define IDC_RADIO_BTN_A                 18200
+#define IDC_RADIO_BTN_B                 18201
+#define IDC_RADIO_BTN_C                 18202
+#define IDC_RADIO_BTN_D                 18203
+#define IDC_RADIO_BTN_E                 18204
+#define IDC_CHECK_BOX_A                 18251
+#define IDC_CHECK_BOX_B                 18252
+#define IDC_CHECK_BOX_C                 18253
+
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
 #define CMD_SHIFTCTRLENTER              20002

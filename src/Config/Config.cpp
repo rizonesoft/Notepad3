@@ -166,7 +166,7 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
                               GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                               OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hFile != INVALID_HANDLE_VALUE) {
+    if (IS_VALID_HANDLE(hFile)) {
         bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
         if (!bLocked) {
             wchar_t msg[MAX_PATH + 128] = { 0 };
@@ -199,7 +199,7 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
                               GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hFile != INVALID_HANDLE_VALUE) {
+    if (IS_VALID_HANDLE(hFile)) {
         bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
         if (!bLocked) {
             wchar_t msg[MAX_PATH + 128] = { 0 };
@@ -221,7 +221,7 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 {
     bool bUnLocked = true;
-    if (hFile != INVALID_HANDLE_VALUE) {
+    if (IS_VALID_HANDLE(hFile)) {
         FlushFileBuffers(hFile);
         bUnLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &rOvrLpd);
         CloseHandle(hFile);
@@ -256,7 +256,7 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hIniFile = AcquireReadFileLock(lpIniFilePath, ovrLpd);
 
-    if (hIniFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hIniFile)) {
         return false;
     }
 
@@ -283,7 +283,7 @@ extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hIniFile = AcquireWriteFileLock(lpIniFilePath, ovrLpd);
 
-    if (hIniFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hIniFile)) {
         return false;
     }
 
@@ -304,11 +304,11 @@ extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
 //
 extern "C" bool OpenSettingsFile(bool* keepCached)
 {
-    if (StrIsNotEmpty(Globals.IniFile)) {
-        Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
+    if (StrIsNotEmpty(Paths.IniFile)) {
+        Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
 
         if (!IsIniFileCached()) {
-            LoadIniFileCache(Globals.IniFile);
+            LoadIniFileCache(Paths.IniFile);
             if (keepCached != NULL) {
                 *keepCached = false;
             }
@@ -332,7 +332,7 @@ extern "C" bool CloseSettingsFile(bool bSaveChanges, bool keepCached)
         if (!IsIniFileCached()) {
             return false;
         }
-        bool const bSaved = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : false;
+        bool const bSaved = bSaveChanges ? SaveIniFileCache(Paths.IniFile) : false;
         if (!keepCached) {
             ResetIniFileCache();
         }
@@ -528,7 +528,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
         return StringCchLenW(lpReturnedString, cchReturnedString);
     }
@@ -559,7 +559,7 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
 
@@ -588,7 +588,7 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return iDefault;
     }
 
@@ -617,7 +617,7 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
 
@@ -643,7 +643,7 @@ extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return bDefault;
     }
 
@@ -672,7 +672,7 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
 
@@ -699,7 +699,7 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
 
@@ -725,7 +725,7 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
 
@@ -893,12 +893,12 @@ extern "C" bool FindIniFile()
 
     SetEnvironmentVariable(NOTEPAD3_MODULE_DIR_ENV_VAR, wchIniFilePath);
 
-    if (StrIsNotEmpty(Globals.IniFile)) {
-        if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
+    if (StrIsNotEmpty(Paths.IniFile)) {
+        if (StringCchCompareXI(Paths.IniFile, L"*?") == 0) {
             return bFound;
         }
 
-        PathCanonicalizeEx(Globals.IniFile, COUNTOF(Globals.IniFile));
+        PathCanonicalizeEx(Paths.IniFile, COUNTOF(Paths.IniFile));
         bFound = _CheckIniFile(wchIniFilePath, tchModule);
     } else {
         StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), PathFindFileName(tchModule));
@@ -916,14 +916,14 @@ extern "C" bool FindIniFile()
                 _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule);  // 2nd
                 bFound = _CheckIniFile(wchIniFilePath, tchModule);
             }
-            StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), wchIniFilePath);
+            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), wchIniFilePath);
         } else { // force default name
-            StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), tchModule);
-            PathCchRenameExtension(Globals.IniFile, COUNTOF(Globals.IniFile), L".ini");
+            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), tchModule);
+            PathCchRenameExtension(Paths.IniFile, COUNTOF(Paths.IniFile), L".ini");
         }
     }
 
-    NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
+    NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), true, false);
 
     return bFound;
 }
@@ -932,11 +932,11 @@ extern "C" bool FindIniFile()
 
 extern "C" bool TestIniFile()
 {
-    LPWSTR const pszIniFilePath = Globals.IniFile;
-    size_t const pathBufCount = COUNTOF(Globals.IniFile);
+    LPWSTR const pszIniFilePath = Paths.IniFile;
+    size_t const pathBufCount = COUNTOF(Paths.IniFile);
 
     if (StringCchCompareXI(pszIniFilePath, L"*?") == 0) {
-        StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
+        StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), L"");
         StringCchCopy(pszIniFilePath, pathBufCount, L"");
         return false;
     }
@@ -958,7 +958,7 @@ extern "C" bool TestIniFile()
     NormalizePathEx(pszIniFilePath, pathBufCount, true, false);
 
     if (!PathFileExists(pszIniFilePath) || PathIsDirectory(pszIniFilePath)) {
-        StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), pszIniFilePath);
+        StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), pszIniFilePath);
         StringCchCopy(pszIniFilePath, pathBufCount, L"");
         return false;
     }
@@ -986,7 +986,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
                                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                       CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-            if (hFile != INVALID_HANDLE_VALUE) {
+            if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile); // done
             } else {
                 wchar_t msg[MAX_PATH + 128] = { 0 };
@@ -999,7 +999,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
                                       GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-            if (hFile != INVALID_HANDLE_VALUE) {
+            if (IS_VALID_HANDLE(hFile)) {
                 DWORD dwFSHigh = 0UL;
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
@@ -1015,7 +1015,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
             *pdwFileSize_out = dwFileSize;
         }
 
-        return CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+        return CanAccessPath(Paths.IniFile, GENERIC_WRITE);
     }
     return false;
 }
@@ -1029,7 +1029,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 //
 void LoadSettings()
 {
-    CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
+    CFG_VERSION const _ver = StrIsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
     bool bDirtyFlag = false; // do we have to save the file on done
 
@@ -1043,7 +1043,7 @@ void LoadSettings()
     // prerequisites
     Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", _ver);
 
-    Defaults.SaveSettings = StrIsNotEmpty(Globals.IniFile);
+    Defaults.SaveSettings = StrIsNotEmpty(Paths.IniFile);
     Settings.SaveSettings = Defaults.SaveSettings && IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
 
     // ---  first set "hard coded" .ini-Settings  ---
@@ -1517,10 +1517,8 @@ void LoadSettings()
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
     GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
-    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);
-    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_EXCLUSIVELOCK);
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);
-    FileWatching.ResetFileWatching = Settings.ResetFileWatching;
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
     GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
@@ -2182,16 +2180,16 @@ bool SaveAllSettings(bool bForceSaveSettings)
 void CmdSaveSettingsNow()
 {
     bool bCreateFailure = false;
-    if (StrIsEmpty(Globals.IniFile)) {
-        if (StrIsNotEmpty(Globals.IniFileDefault)) {
-            StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+    if (StrIsEmpty(Paths.IniFile)) {
+        if (StrIsNotEmpty(Paths.IniFileDefault)) {
+            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), Paths.IniFileDefault);
             DWORD dwFileSize        = 0UL;
-            Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
+            Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, &dwFileSize);
             if (Globals.bCanSaveIniFile) {
                 Globals.bIniFileFromScratch = (dwFileSize == 0UL);
-                StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
+                StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), L"");
             } else {
-                StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
+                StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), L"");
                 Globals.bCanSaveIniFile = false;
                 bCreateFailure          = true;
             }
@@ -2205,7 +2203,7 @@ void CmdSaveSettingsNow()
     }
     DWORD dwFileAttributes = 0;
     if (!Globals.bCanSaveIniFile) {
-        dwFileAttributes = GetFileAttributes(Globals.IniFile);
+        dwFileAttributes = GetFileAttributes(Paths.IniFile);
         if (dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
             return;
@@ -2213,8 +2211,8 @@ void CmdSaveSettingsNow()
         if (dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
             WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_INIFILE_READONLY));
             if ((IDOK == answer) || (IDYES == answer)) {
-                SetFileAttributes(Globals.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
-                Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+                SetFileAttributes(Paths.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
+                Globals.bCanSaveIniFile = CanAccessPath(Paths.IniFile, GENERIC_WRITE);
             }
         } else {
             dwFileAttributes = 0; // no need to change the file attributes
@@ -2223,9 +2221,9 @@ void CmdSaveSettingsNow()
     if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
         InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
         if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES)) {
-            SetFileAttributes(Globals.IniFile, dwFileAttributes); // reset
+            SetFileAttributes(Paths.IniFile, dwFileAttributes); // reset
         }
-        Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+        Globals.bCanSaveIniFile = CanAccessPath(Paths.IniFile, GENERIC_WRITE);
     } else {
         Globals.dwLastError = GetLastError();
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_WRITEINI_FAIL);
@@ -2246,7 +2244,6 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize)
 {
     LPMRULIST pmru = (LPMRULIST)AllocMem(sizeof(MRULIST), HEAP_ZERO_MEMORY);
     if (pmru) {
-        ZeroMemory(pmru, sizeof(MRULIST));
         pmru->szRegKey = pszRegKey;
         pmru->iFlags = iFlags;
         pmru->iSize = min_i(iSize, MRU_MAXITEMS);
@@ -2266,7 +2263,6 @@ bool MRU_Destroy(LPMRULIST pmru)
                 LocalFree(pmru->pszBookMarks[i]);    // StrDup()
             }
         }
-        ZeroMemory(pmru, sizeof(MRULIST));
         FreeMem(pmru);
         return true;
     }
