@@ -1117,7 +1117,6 @@ void LoadSettings()
     Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval",
                                           Defaults2.FileCheckInverval),
                                           250UL, 300000UL);
-    FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
 
     Defaults2.AutoReloadTimeout = 2000UL;
     Settings2.AutoReloadTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout",

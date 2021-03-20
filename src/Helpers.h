@@ -379,6 +379,7 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
     return (IsDlgButtonChecked(hwnd, iButtonID) == BST_UNCHECKED);
 }
 
+#define EnableItem(hwnd, id, b) EnableWindow(GetDlgItem((hwnd), (id)), (b))
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)

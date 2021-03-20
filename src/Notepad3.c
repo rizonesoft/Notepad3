@@ -25,6 +25,7 @@
 #include <commdlg.h>
 #include <stdio.h>
 #include <string.h>
+#include <process.h>
 //#include <pathcch.h>
 //#include <locale.h>
 
@@ -134,8 +135,18 @@ static LPWSTR    s_lpFileList[FILE_LIST_SIZE] = { NULL };
 static int       s_cFileList = 0;
 static int       s_cchiFileList = 0;
 
-static HANDLE    s_hChangeHandle = INVALID_HANDLE_VALUE;
-static HANDLE    s_hCurrFileHandle = INVALID_HANDLE_VALUE;
+
+static HANDLE    s_hEventNotifyFileChangeExternal = INVALID_HANDLE_VALUE;
+
+static inline bool isExternalChangeNotifyAllowed() {
+    return (WaitForSingleObject(s_hEventNotifyFileChangeExternal, 0) == WAIT_OBJECT_0);
+}
+static inline void disableExternalChangeNotify() { 
+    ResetEvent(s_hEventNotifyFileChangeExternal);
+}
+static inline void enableExternalChangeNotify() { 
+    SetEvent(s_hEventNotifyFileChangeExternal);
+}
 
 static bool      s_bFileReadOnly = false;
 
@@ -165,8 +176,6 @@ static bool      s_bPrevFullScreenFlag = false;
 // for tiny expression calculation
 static double    s_dExpression = 0.0;
 static te_xint_t s_iExprError  = -1;
-
-static WIN32_FIND_DATA s_fdCurFile;
 
 //~static CONST WCHAR *const s_ToolbarWndClassName = L"NP3_TOOLBAR_CLASS";
 
@@ -1374,6 +1383,9 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
 
+    // manual reset und initilly signaled (TRUE , TRUE)
+    s_hEventNotifyFileChangeExternal = CreateEvent(NULL, TRUE, TRUE, NULL);
+
     SetDialogIconNP3(Globals.hwndMain);
     InitWindowCommon(Globals.hwndMain, true);
 
@@ -1416,7 +1428,6 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                 if (s_IsThisAnElevatedRelaunch) {
                     if (StrIsNotEmpty(s_lpFileArg)) {
                         StringCchCopy(Paths.CurrentFile, COUNTOF(Paths.CurrentFile), s_lpFileArg);
-                        InstallFileWatching(true);
                     } else {
                         StringCchCopy(Paths.CurrentFile, COUNTOF(Paths.CurrentFile), L"");
                     }
@@ -1459,30 +1470,22 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
             switch (s_flagChangeNotify) {
             case FWM_NO_INIT:
                 FileWatching.FileWatchingMode = Settings.FileWatchingMode;
-                InstallFileWatching(FileWatching.FileWatchingMode != FWM_DONT_CARE);
                 break;
             case FWM_MSGBOX:
                 FileWatching.FileWatchingMode = FWM_MSGBOX;
-                InstallFileWatching(true);
                 break;
             case FWM_AUTORELOAD:
-                if (!FileWatching.MonitoringLog) {
-                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-                } else {
-                    FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-                    InstallFileWatching(true);
-                }
+                FileWatching.FileWatchingMode = FWM_AUTORELOAD;
                 break;
             case FWM_EXCLUSIVELOCK:
                 FileWatching.FileWatchingMode = FWM_EXCLUSIVELOCK;
-                InstallFileWatching(true);
                 break;
             case FWM_DONT_CARE:
             default:
                 FileWatching.FileWatchingMode = FWM_DONT_CARE;
-                InstallFileWatching(false);
                 break;
             }
+            InstallFileWatching(FileWatching.FileWatchingMode != FWM_DONT_CARE);
         }
     } else {
         cpi_enc_t const forcedEncoding = Encoding_Forced(CPI_GET);
@@ -1644,7 +1647,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_CLOSE:
         if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-            InstallFileWatching(false);
             s_flagAppIsClosing = true;
             DestroyWindow(Globals.hwndMain);
         }
@@ -3364,19 +3366,23 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 Sci_GotoPosChooseCaret(iCurPos);
             }
         }
-        if (!(IS_VALID_HANDLE(s_hChangeHandle) || IS_VALID_HANDLE(s_hCurrFileHandle))) {
+
+        if (!isExternalChangeNotifyAllowed()) {
             InstallFileWatching(true);
         }
+
     } else {
+
         WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2));
         if ((IDOK == answer) || (IDYES == answer)) {
             FileSave(true, false, false, false, Flags.bPreserveFileModTime);
-        } else if (!PathIsExistingFile(Paths.CurrentFile)) {
+            InstallFileWatching(true);
+        } else {
             InstallFileWatching(false); // terminate
             SetSaveNeeded();
         }
     }
-    return FALSE;
+    return TRUE;
 }
 
 
@@ -5659,6 +5665,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             _saveChgNotify = FileWatching.FileWatchingMode;    
         }
         FileWatching.MonitoringLog = !FileWatching.MonitoringLog; // toggle
+        FileWatching.flagChangeNotify = s_flagChangeNotify;
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
 
         if (FileWatching.MonitoringLog) {
@@ -5666,15 +5673,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SendWMCommand(hwnd, IDM_FILE_REVERT);
             _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-            FileWatching.flagChangeNotify = s_flagChangeNotify;
-            FileWatching.FileCheckInverval = 250UL;
             FileWatching.AutoReloadTimeout = 250UL;
             UndoRedoRecordingStop();
             SciCall_SetEndAtLastLine(false);
         } else {
             FileWatching.FileWatchingMode = _saveChgNotify;
-            FileWatching.flagChangeNotify = s_flagChangeNotify;
-            FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
             FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
             UndoRedoRecordingStart();
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
@@ -5684,7 +5687,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         InstallFileWatching(true);
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
-
     }
     break;
 
@@ -9848,6 +9850,15 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
 //  FileLoad()
 //
 //
+
+static inline void _ResetFileWatchingMode() {
+    if (FileWatching.MonitoringLog) {
+        PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+    }
+    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+}
+
+
 bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
               bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
@@ -9898,13 +9909,10 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         UpdateStatusbar(true);
 
         // Terminate file watching
-        if (Settings.ResetFileWatching) {
-            if (FileWatching.MonitoringLog) {
-                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-            }
-            FileWatching.FileWatchingMode = Settings.FileWatchingMode;
-        }
         InstallFileWatching(false); // terminate
+        if (Settings.ResetFileWatching) {
+            _ResetFileWatchingMode();
+        }
         Flags.bSettingsFileSoftLocked = false;
         UpdateSaveSettingsCmds();
         COND_SHOW_ZOOM_CALLTIP();
@@ -10032,11 +10040,11 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         }
 
         // Install watching of the current file
-        if (!bReload && Settings.ResetFileWatching) {
-            if (FileWatching.MonitoringLog) {
-                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+        if (!bReload) {
+            InstallFileWatching(false); // terminate previous
+            if (Settings.ResetFileWatching) {
+                _ResetFileWatchingMode();
             }
-            FileWatching.FileWatchingMode = Settings.FileWatchingMode;
         }
         InstallFileWatching(true);
 
@@ -10152,7 +10160,11 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };
     StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
 
-    if (!FileLoad(tchFileName2, true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false)) {
+    InstallFileWatching(false);
+    bool const result = FileLoad(tchFileName2, true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+    InstallFileWatching(true);
+
+    if (!result) {
         return false;
     }
 
@@ -10406,6 +10418,9 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
         if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL)) {
 
+            if (!bSaveCopy) {
+                InstallFileWatching(false);
+            }
             fSuccess = FileIO(false, tchFile, &fioStatus, true, true, false, true, bSaveCopy, bPreserveTimeStamp);
             
             if (fSuccess) {
@@ -10428,7 +10443,6 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     } else {
         InstallFileWatching(false);
         fSuccess = FileIO(false, Paths.CurrentFile, &fioStatus, true, true, false, true, false, bPreserveTimeStamp);
-        InstallFileWatching(true);
     }
 
     if (fSuccess) {
@@ -10444,10 +10458,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
             // Install watching of the current file
             if (bSaveAs && Settings.ResetFileWatching) {
-                if (FileWatching.MonitoringLog) {
-                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-                }
-                FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+                _ResetFileWatchingMode();
             }
             InstallFileWatching(true);
         }
@@ -10470,6 +10481,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         }
 
     } else if (!fioStatus.bCancelDataLoss) {
+
         LPCWSTR const currentFileName = PathFindFileName(Paths.CurrentFile);
 
         if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED)) {
@@ -11155,161 +11167,15 @@ void ShowWrapAroundCallTip(bool forwardSearch)
 
 //=============================================================================
 //
-//  InstallFileWatching()
-//
-static bool s_bRunningWatch = false;
-
-void InstallFileWatching(const bool bInstall) {
-
-    // Terminate previous watching
-    if (s_bRunningWatch) {
-        KillTimer(NULL, ID_WATCHTIMER);
-        if (IS_VALID_HANDLE(s_hChangeHandle)) {
-            FindCloseChangeNotification(s_hChangeHandle);
-            s_hChangeHandle = INVALID_HANDLE_VALUE;
-        }
-        s_bRunningWatch = false;
-        s_dwChangeNotifyTime = 0UL; // reset
-    }
-    if (IS_VALID_HANDLE(s_hCurrFileHandle)) {
-        CloseHandle(s_hCurrFileHandle);
-        s_hCurrFileHandle = INVALID_HANDLE_VALUE;
-    }
-
-    bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsExistingFile(Paths.CurrentFile);
-    bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
-    bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
-
-    // Install
-    if (bInstall && bFileExists) {
-        if (bWatchFile) {
-            WCHAR tchDirectory[MAX_PATH] = { L'\0' };
-            StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
-            PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
-
-            // Save data of current file
-            HANDLE const hFind = FindFirstFile(Paths.CurrentFile, &s_fdCurFile);
-            if (IS_VALID_HANDLE(hFind)) {
-                FindClose(hFind);
-            } else {
-                ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
-            }
-            s_hChangeHandle = FindFirstChangeNotification(
-                tchDirectory, false,
-                FILE_NOTIFY_CHANGE_FILE_NAME |
-                    FILE_NOTIFY_CHANGE_DIR_NAME |
-                    FILE_NOTIFY_CHANGE_ATTRIBUTES |
-                    FILE_NOTIFY_CHANGE_SIZE |
-                    FILE_NOTIFY_CHANGE_LAST_WRITE);
-
-            // No previous watching installed, so launch the timer first
-            if (!s_bRunningWatch) {
-                SetTimer(NULL, ID_WATCHTIMER,
-                    min_dw(FileWatching.FileCheckInverval, FileWatching.AutoReloadTimeout),
-                    WatchTimerProc);
-                s_bRunningWatch = true;
-            }
-            s_dwChangeNotifyTime = GetTickCount(); // init
-
-        } else if (bExclusiveLock) {
-            
-            s_hCurrFileHandle = CreateFile(Paths.CurrentFile,
-                                            GENERIC_READ | GENERIC_WRITE,
-                                            0, // 0 => NO FILE_SHARE_RW
-                                            NULL,
-                                            OPEN_EXISTING,
-                                            FILE_ATTRIBUTE_NORMAL,
-                                            NULL);
-
-            Globals.dwLastError = GetLastError();
-            if (!IS_VALID_HANDLE(s_hCurrFileHandle)) {
-                MsgBoxLastError(L"", Globals.dwLastError);
-            }
-        }
-    }
-    UpdateToolbar();
-}
-
-
-static inline bool CurrentFileChanged()
-{
-    if (StrIsEmpty(Paths.CurrentFile)) {
-        return false;
-    }
-    WIN32_FIND_DATA fdUpdated = { 0 };
-    if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
-        return true;   // The current file has been removed
-    }
-    bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow)
-                         || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
-                         //~|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
-                         || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
-                         || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
-
-    return changed;
-}
-
-
-//=============================================================================
-//
-//  WatchTimerProc()
-//
-//
-void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
-{
-    UNUSED(dwTime);
-    UNUSED(idEvent);
-    UNUSED(uMsg);
-    UNUSED(hwnd);
-
-    if (s_bRunningWatch) {
-        switch (FileWatching.FileWatchingMode) {
-        case FWM_AUTORELOAD:
-            if (((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout)
-                    && //|| // TODO: OR for read only auto reload without save requester
-                    CurrentFileChanged()) {
-                InstallFileWatching(false); // terminate
-                PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
-            }
-            break;
-
-        case FWM_MSGBOX: {
-            if (s_hChangeHandle) {
-                while (WaitForSingleObject(s_hChangeHandle, 0) == WAIT_OBJECT_0) {
-                    // Check if the changes affect the current file
-                    if (CurrentFileChanged()) {
-                        // Shutdown current watching and give control to main window
-                        InstallFileWatching(false); // terminate
-                        PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
-                        break; // while
-                    }
-                    FindNextChangeNotification(s_hChangeHandle);
-                }
-            }
-        }
-        break;
-
-        case FWM_EXCLUSIVELOCK:
-        case FWM_DONT_CARE:
-        default:
-            break;
-        }
-    }
-}
-
-
-//=============================================================================
-//
 //  PasteBoardTimer()
 //
-void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
-{
+void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     if ((s_dwLastCopyTime > 0) && ((GetTickCount() - s_dwLastCopyTime) > 200)) {
 
         if (SciCall_CanPaste()) {
             bool bAutoIndent2 = Settings.AutoIndent;
             Settings.AutoIndent = 0;
-            EditJumpTo(-1,0);
+            EditJumpTo(-1, 0);
             _BEGIN_UNDO_ACTION_;
             if (!Sci_IsDocEmpty()) {
                 SciCall_NewLine();
@@ -11327,6 +11193,232 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
     UNUSED(idEvent);
     UNUSED(uMsg);
     UNUSED(hwnd);
+}
+//=============================================================================
+
+
+
+//=============================================================================
+//
+//  InstallFileWatching()
+//
+//=============================================================================
+
+static inline void NotifyChangeEvent() {
+    if (isExternalChangeNotifyAllowed()) {
+        disableExternalChangeNotify();
+        KillTimer(NULL, ID_WATCHTIMER);
+        PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
+    }
+    s_dwChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
+}
+
+
+static WIN32_FIND_DATA s_fdCurFile = { 0 };
+
+static inline bool IsCurrentFileChanged() {
+    if (StrIsEmpty(Paths.CurrentFile)) {
+        return false;
+    }
+    WIN32_FIND_DATA fdUpdated = { 0 };
+    if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
+        return true; // The current file has been removed
+    }
+    bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
+                         //~|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
+                         || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime) 
+                         || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
+    return changed;
+}
+// ----------------------------------------------------------------------------
+
+
+
+static HANDLE s_hEventObserverDone = INVALID_HANDLE_VALUE;
+
+static unsigned __stdcall FileChangeObserver(void * pArg) {
+
+    if (!pArg) {
+        _endthreadex(0);
+        return 0;
+    }
+
+    // get handle for change notify from FindFirstChangeNotification()
+    HANDLE* const pChangeHandle = (HANDLE*)(LONG_PTR)pArg;
+
+    if (pChangeHandle && IS_VALID_HANDLE(*pChangeHandle)) {
+
+        s_hEventObserverDone = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+        if (IS_VALID_HANDLE(s_hEventObserverDone)) {
+
+            while (WaitForSingleObject(s_hEventObserverDone, 0) == WAIT_TIMEOUT) {
+
+                DWORD const chgEvt = WaitForSingleObject(*pChangeHandle, 240);
+                switch (chgEvt) {
+                case WAIT_TIMEOUT:
+                    // okay, wait again until done
+                    break;
+
+                case WAIT_OBJECT_0:
+                    // Check if the changes affect the current file
+                    if (IsCurrentFileChanged()) {
+                        NotifyChangeEvent();
+                    }
+                    FindNextChangeNotification(*pChangeHandle);
+                    break;
+
+                case WAIT_ABANDONED:
+                case WAIT_FAILED:
+                default:
+                    SetEvent(s_hEventObserverDone);
+                    break;
+                }
+            }
+        }
+        FindCloseChangeNotification(*pChangeHandle);
+        *pChangeHandle = INVALID_HANDLE_VALUE;
+    }
+
+    if (IS_VALID_HANDLE(s_hEventObserverDone)) {
+        CloseHandle(s_hEventObserverDone);
+        s_hEventObserverDone = INVALID_HANDLE_VALUE;
+    }
+    _endthreadex(0);
+    return 0;
+}
+
+
+static HANDLE s_hChangeHandle = INVALID_HANDLE_VALUE;
+static HANDLE s_hCurrFileHandle = INVALID_HANDLE_VALUE;
+static HANDLE s_hObserverThread = INVALID_HANDLE_VALUE;
+
+void InstallFileWatching(const bool bInstall) {
+
+    bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsExistingFile(Paths.CurrentFile);
+    bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
+    bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
+
+    // always release exclusive file lock in any case
+    disableExternalChangeNotify();
+    if (IS_VALID_HANDLE(s_hCurrFileHandle)) {
+        CloseHandle(s_hCurrFileHandle);
+        s_hCurrFileHandle = INVALID_HANDLE_VALUE;
+    }
+
+    bool const bTerminate = !bInstall || !bWatchFile || !bFileExists;
+
+    // Terminate previous watching
+    if (bTerminate) {
+
+        KillTimer(NULL, ID_WATCHTIMER);
+
+        if (IS_VALID_HANDLE(s_hObserverThread)) {
+            if (IS_VALID_HANDLE(s_hEventObserverDone)) {
+                if (SignalObjectAndWait(s_hEventObserverDone, s_hObserverThread, INFINITE, FALSE) == WAIT_OBJECT_0) {
+                    CloseHandle(s_hObserverThread);
+                } else {
+                    assert("Fatal Observer Error!" && false);
+                    TerminateThread(s_hObserverThread, 0UL);
+                }
+            } else {
+                assert("Fatal: Invalid Observer Done Handle!" && false);
+                TerminateThread(s_hObserverThread, 0UL);
+            }
+            s_hObserverThread = INVALID_HANDLE_VALUE;
+        }
+    }
+
+    if (bInstall) {
+
+        if (bWatchFile) {
+
+            if (!IS_VALID_HANDLE(s_hObserverThread)) {
+                // Save data of current file
+                HANDLE const hFind = FindFirstFile(Paths.CurrentFile, &s_fdCurFile);
+                if (IS_VALID_HANDLE(hFind)) {
+                    FindClose(hFind);
+                } else if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &s_fdCurFile)) {
+                    ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
+                }
+
+                WCHAR tchDirectory[MAX_PATH] = { L'\0' };
+                StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
+                PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
+
+                s_hChangeHandle = FindFirstChangeNotification(
+                    tchDirectory, false,
+                    FILE_NOTIFY_CHANGE_FILE_NAME |
+                        FILE_NOTIFY_CHANGE_DIR_NAME |
+                        FILE_NOTIFY_CHANGE_ATTRIBUTES |
+                        FILE_NOTIFY_CHANGE_SIZE |
+                        FILE_NOTIFY_CHANGE_LAST_WRITE);
+
+                s_hObserverThread = (HANDLE)_beginthreadex(NULL, 0, &FileChangeObserver, (void *)&s_hChangeHandle, 0, NULL);
+            }
+
+            enableExternalChangeNotify();
+            SetTimer(NULL, ID_WATCHTIMER, min_dw(Settings2.FileCheckInverval, FileWatching.AutoReloadTimeout), WatchTimerProc);
+            s_dwChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
+
+        } else if (bExclusiveLock) {
+
+            s_hCurrFileHandle = CreateFile(Paths.CurrentFile,
+                GENERIC_READ | GENERIC_WRITE,
+                0, // 0 => NO FILE_SHARE_RW
+                NULL,
+                OPEN_EXISTING,
+                FILE_ATTRIBUTE_NORMAL,
+                NULL);
+            Globals.dwLastError = GetLastError();
+
+            if (!IS_VALID_HANDLE(s_hCurrFileHandle)) {
+                InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, PathFindFileName(Paths.CurrentFile));
+                // need to chose another mode
+                FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
+                FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;
+                InstallFileWatching(bInstall);
+            }
+        } else {
+            assert("Unknown Install Change Notify Mode!" && false);
+        }
+    }
+    UpdateToolbar();
+}
+
+
+//=============================================================================
+//
+//  WatchTimerProc()
+//
+//
+void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
+{
+    UNUSED(dwTime);
+    UNUSED(idEvent);
+    UNUSED(uMsg);
+    UNUSED(hwnd);
+
+    if (s_dwChangeNotifyTime == 0UL) {
+        // FWM_MSGBOX
+        if (IsCurrentFileChanged()) {
+            NotifyChangeEvent();
+        }
+    } else if ((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout) {
+        // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
+        if (FileWatching.MonitoringLog) {
+            // monitoring: reload only on change
+            if (IsCurrentFileChanged()) {
+                NotifyChangeEvent();
+            }
+        } else {
+            // unconditional reload ???
+            //NotifyChangeEvent();
+            if (IsCurrentFileChanged()) {
+                NotifyChangeEvent();
+            }
+        }
+    }
 }
 
 

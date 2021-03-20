@@ -441,10 +441,23 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
         StringCchCopy(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage);
     }
 
-    if (uidMsg == IDS_MUI_ERR_LOADFILE || uidMsg == IDS_MUI_ERR_SAVEFILE ||
-            uidMsg == IDS_MUI_CREATEINI_FAIL || uidMsg == IDS_MUI_WRITEINI_FAIL ||
-            uidMsg == IDS_MUI_EXPORT_FAIL || uidMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) {
+    bool bLastError = false;
+    switch (uidMsg) {
+    case IDS_MUI_ERR_LOADFILE:
+    case IDS_MUI_ERR_SAVEFILE:
+    case IDS_MUI_CREATEINI_FAIL:
+    case IDS_MUI_WRITEINI_FAIL:
+    case IDS_MUI_EXPORT_FAIL:
+    case IDS_MUI_ERR_ELEVATED_RIGHTS:
+    case IDS_MUI_FILELOCK_ERROR:
+        bLastError = true;
+        break;
+    default:
+        //bLastError = false;
+        break;
+    }
 
+    if (bLastError) {
         LPVOID lpMsgBuf = NULL;
         if (Globals.dwLastError != ERROR_SUCCESS) {
             FormatMessage(
@@ -2478,10 +2491,13 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //            IDC_RADIO_BTN_B Radio Button (Display Message)
 //            IDC_RADIO_BTN_C Radio Button (Auto-Reload)
 //            IDC_CHECK_BOX_A Check Box    (Reset on New)
+//            IDC_CHECK_BOX_B Check Box    (Monitoring Log)
 //
 
 static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+    static FILE_WATCHING_MODE s_FWM = FWM_NO_INIT;
+
     switch (umsg) {
     case WM_INITDIALOG: {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
@@ -2494,18 +2510,29 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
             SetExplorerTheme(GetDlgItem(hwnd, IDOK));
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_RADIO_BTN_D, IDC_CHECK_BOX_A, -1 };
+            int const ctl[] = { IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_RADIO_BTN_D, IDC_CHECK_BOX_A, IDC_CHECK_BOX_B, -1 };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
         }
 #endif
-
-        CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_A + FileWatching.FileWatchingMode);
+        if (s_FWM == FWM_NO_INIT) {
+            s_FWM = Settings.FileWatchingMode;
+        }
         CheckDlgButton(hwnd, IDC_CHECK_BOX_A, SetBtn(Settings.ResetFileWatching));
+        CheckDlgButton(hwnd, IDC_CHECK_BOX_B, SetBtn(FileWatching.MonitoringLog));
 
-        EnableWindow(GetDlgItem(hwnd, IDC_RADIO_BTN_D), !FileWatching.MonitoringLog);
-
+        if (FileWatching.MonitoringLog) {
+            CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_C);
+            EnableItem(hwnd, IDC_RADIO_BTN_A, FALSE);
+            EnableItem(hwnd, IDC_RADIO_BTN_B, FALSE);
+            EnableItem(hwnd, IDC_RADIO_BTN_C, FALSE);
+            EnableItem(hwnd, IDC_RADIO_BTN_D, FALSE);
+            EnableItem(hwnd, IDC_CHECK_BOX_A, FALSE);
+        } else {
+            s_FWM = FileWatching.FileWatchingMode;
+            CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_A + s_FWM);
+        }
         CenterDlgInParent(hwnd, NULL);
     }
     return TRUE;
@@ -2532,7 +2559,7 @@ CASE_WM_CTLCOLOR_SET:
             AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
             RefreshTitleBarThemeColor(hwnd);
 
-            int const buttons[] = { IDOK, IDCANCEL, IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_CHECK_BOX_A };
+            int const buttons[] = { IDOK, IDCANCEL, IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_CHECK_BOX_A, IDC_CHECK_BOX_B };
             for (int id = 0; id < COUNTOF(buttons); ++id) {
                 HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
@@ -2546,40 +2573,72 @@ CASE_WM_CTLCOLOR_SET:
 
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
-        case IDOK: {
 
-            FILE_WATCHING_MODE FWM = FWM_DONT_CARE;
-            if (IsButtonChecked(hwnd, IDC_RADIO_BTN_B)) {
-                FWM = FWM_MSGBOX;
+        case IDC_CHECK_BOX_A:
+            if (!IsButtonChecked(hwnd, IDC_CHECK_BOX_A)) {
+                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_A + s_FWM);
+            }
+            break;
+
+
+        case IDC_CHECK_BOX_B:
+            FileWatching.MonitoringLog = IsButtonChecked(hwnd, IDC_CHECK_BOX_B);
+            if (FileWatching.MonitoringLog) {
+                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_C);
+                EnableItem(hwnd, IDC_RADIO_BTN_A, FALSE);
+                EnableItem(hwnd, IDC_RADIO_BTN_B, FALSE);
+                EnableItem(hwnd, IDC_RADIO_BTN_C, FALSE);
+                EnableItem(hwnd, IDC_RADIO_BTN_D, FALSE);
+                EnableItem(hwnd, IDC_CHECK_BOX_A, FALSE);
+            } else {
+                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_A + s_FWM);
+                EnableItem(hwnd, IDC_RADIO_BTN_A, TRUE);
+                EnableItem(hwnd, IDC_RADIO_BTN_B, TRUE);
+                EnableItem(hwnd, IDC_RADIO_BTN_C, TRUE);
+                EnableItem(hwnd, IDC_RADIO_BTN_D, TRUE);
+                EnableItem(hwnd, IDC_CHECK_BOX_A, TRUE);
+            }
+            break;
+
+
+        case IDOK:
+            if (FileWatching.MonitoringLog) {
+                FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
+                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                EndDialog(hwnd, IDOK);
+                break;
+            }
+
+            if (IsButtonChecked(hwnd, IDC_RADIO_BTN_A)) {
+                s_FWM = FWM_DONT_CARE;
+            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_B)) {
+                s_FWM = FWM_MSGBOX;
             } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_C)) {
-                FWM = FWM_AUTORELOAD;
+                s_FWM = FWM_AUTORELOAD;
             } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_D)) {
-                FWM = FWM_EXCLUSIVELOCK;
+                s_FWM = FWM_EXCLUSIVELOCK;
             }
 
             Settings.ResetFileWatching = IsButtonChecked(hwnd, IDC_CHECK_BOX_A);
 
-            if (!Settings.ResetFileWatching) {
-                Settings.FileWatchingMode = FWM;
-            }
             if (!FileWatching.MonitoringLog) {
-                FileWatching.FileWatchingMode = FWM;
+                FileWatching.FileWatchingMode = s_FWM;
             }
-            else {
-                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+            if (!Settings.ResetFileWatching) {
+                Settings.FileWatchingMode = s_FWM;
             }
-            InstallFileWatching(true);
+
             EndDialog(hwnd, IDOK);
-        }
-        break;
+            break;
+
 
         case IDCANCEL:
             EndDialog(hwnd, IDCANCEL);
             break;
+
         }
         return TRUE;
     }
-
     return FALSE;
 }
 

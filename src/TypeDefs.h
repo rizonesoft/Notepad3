@@ -679,7 +679,6 @@ typedef struct _filewatching_t
 {
     FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
-    DWORD FileCheckInverval;              // <-> Settings2.FileCheckInverval;
     DWORD AutoReloadTimeout;              // <-> Settings2.AutoReloadTimeout;
     bool MonitoringLog;
 
