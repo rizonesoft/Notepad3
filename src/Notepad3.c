@@ -11289,21 +11289,23 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
 }
 
 
-static HANDLE s_hChangeHandle = INVALID_HANDLE_VALUE;
-static HANDLE s_hCurrFileHandle = INVALID_HANDLE_VALUE;
-static HANDLE s_hObserverThread = INVALID_HANDLE_VALUE;
 
 void InstallFileWatching(const bool bInstall) {
+
+    static HANDLE _hChangeHandle = INVALID_HANDLE_VALUE;
+    static HANDLE _hObserverThread = INVALID_HANDLE_VALUE;
+    static HANDLE _hCurrFileHandle = INVALID_HANDLE_VALUE;
 
     bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsExistingFile(Paths.CurrentFile);
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
     bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
 
-    // always release exclusive file lock in any case
     disableExternalChangeNotify();
-    if (IS_VALID_HANDLE(s_hCurrFileHandle)) {
-        CloseHandle(s_hCurrFileHandle);
-        s_hCurrFileHandle = INVALID_HANDLE_VALUE;
+
+    // always release exclusive file lock in any case
+    if (IS_VALID_HANDLE(_hCurrFileHandle)) {
+        CloseHandle(_hCurrFileHandle);
+        _hCurrFileHandle = INVALID_HANDLE_VALUE;
     }
 
     bool const bTerminate = !bInstall || !bWatchFile || !bFileExists;
@@ -11313,19 +11315,19 @@ void InstallFileWatching(const bool bInstall) {
 
         KillTimer(NULL, ID_WATCHTIMER);
 
-        if (IS_VALID_HANDLE(s_hObserverThread)) {
+        if (IS_VALID_HANDLE(_hObserverThread)) {
             if (IS_VALID_HANDLE(s_hEventObserverDone)) {
-                if (SignalObjectAndWait(s_hEventObserverDone, s_hObserverThread, INFINITE, FALSE) == WAIT_OBJECT_0) {
-                    CloseHandle(s_hObserverThread);
+                if (SignalObjectAndWait(s_hEventObserverDone, _hObserverThread, INFINITE, FALSE) == WAIT_OBJECT_0) {
+                    CloseHandle(_hObserverThread);
                 } else {
                     assert("Fatal Observer Error!" && false);
-                    TerminateThread(s_hObserverThread, 0UL);
+                    TerminateThread(_hObserverThread, 0UL);
                 }
             } else {
                 assert("Fatal: Invalid Observer Done Handle!" && false);
-                TerminateThread(s_hObserverThread, 0UL);
+                TerminateThread(_hObserverThread, 0UL);
             }
-            s_hObserverThread = INVALID_HANDLE_VALUE;
+            _hObserverThread = INVALID_HANDLE_VALUE;
         }
     }
 
@@ -11333,12 +11335,10 @@ void InstallFileWatching(const bool bInstall) {
 
         if (bWatchFile) {
 
-            if (!IS_VALID_HANDLE(s_hObserverThread)) {
+            if (!IS_VALID_HANDLE(_hObserverThread)) {
+
                 // Save data of current file
-                HANDLE const hFind = FindFirstFile(Paths.CurrentFile, &s_fdCurFile);
-                if (IS_VALID_HANDLE(hFind)) {
-                    FindClose(hFind);
-                } else if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &s_fdCurFile)) {
+                if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &s_fdCurFile)) {
                     ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
                 }
 
@@ -11346,24 +11346,25 @@ void InstallFileWatching(const bool bInstall) {
                 StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
                 PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
 
-                s_hChangeHandle = FindFirstChangeNotification(
-                    tchDirectory, false,
-                    FILE_NOTIFY_CHANGE_FILE_NAME |
-                        FILE_NOTIFY_CHANGE_DIR_NAME |
-                        FILE_NOTIFY_CHANGE_ATTRIBUTES |
-                        FILE_NOTIFY_CHANGE_SIZE |
-                        FILE_NOTIFY_CHANGE_LAST_WRITE);
+                assert(!IS_VALID_HANDLE(_hChangeHandle) && "ChangeHandle not properly closed!");
 
-                s_hObserverThread = (HANDLE)_beginthreadex(NULL, 0, &FileChangeObserver, (void *)&s_hChangeHandle, 0, NULL);
+                _hChangeHandle = FindFirstChangeNotification(tchDirectory, false,
+                    FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
+                    FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE |
+                    FILE_NOTIFY_CHANGE_LAST_WRITE);
+
+                _hObserverThread = (HANDLE)_beginthreadex(NULL, 0, &FileChangeObserver, (void *)&_hChangeHandle, 0, NULL);
             }
 
-            enableExternalChangeNotify();
             SetTimer(NULL, ID_WATCHTIMER, min_dw(Settings2.FileCheckInverval, FileWatching.AutoReloadTimeout), WatchTimerProc);
             s_dwChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
+            enableExternalChangeNotify();
 
         } else if (bExclusiveLock) {
 
-            s_hCurrFileHandle = CreateFile(Paths.CurrentFile,
+            assert(!IS_VALID_HANDLE(_hCurrFileHandle) && "CurrFileHandle not properly closed!");
+
+            _hCurrFileHandle = CreateFile(Paths.CurrentFile,
                 GENERIC_READ | GENERIC_WRITE,
                 0, // 0 => NO FILE_SHARE_RW
                 NULL,
@@ -11372,15 +11373,13 @@ void InstallFileWatching(const bool bInstall) {
                 NULL);
             Globals.dwLastError = GetLastError();
 
-            if (!IS_VALID_HANDLE(s_hCurrFileHandle)) {
+            if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
                 InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, PathFindFileName(Paths.CurrentFile));
                 // need to chose another mode
                 FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
                 FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;
                 InstallFileWatching(bInstall);
             }
-        } else {
-            assert("Unknown Install Change Notify Mode!" && false);
         }
     }
     UpdateToolbar();

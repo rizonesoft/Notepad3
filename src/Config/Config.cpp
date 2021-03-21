@@ -1945,10 +1945,13 @@ static bool _SaveSettings(bool bForceSaveSettings)
     } else {
         IniSectionDelete(IniSecSettings, L"PrintMarginBottom", false);
     }
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EvalTinyExprOnSelection);
+
+    if (bForceSaveSettings) { Settings.FileWatchingMode = FileWatching.FileWatchingMode; }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
+
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EvalTinyExprOnSelection);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EscFunction);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AlwaysOnTop);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MinimizeToTray);
