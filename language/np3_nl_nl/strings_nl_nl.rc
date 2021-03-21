@@ -178,6 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                            "Het huidige bestand is gewijzigd door een extern programma. Herladen?"
     IDS_MUI_FILECHANGENOTIFY2 "Het huidige bestand is verwijderd. Nu opslaan?"
+    IDS_MUI_FILELOCK_ERROR  "Kan geen exclusieve bestandsvergrendeling verkrijgen voor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Kleverige vensterpositie is ingeschakeld. Alle nieuwe Notepad3 vensters gebruiken de huidige instellingen voor vensterplaatsing."
     IDS_MUI_SAVEDSETTINGS   "De huidige programma instellingen zijn opgeslagen."
     IDS_MUI_CREATEINI_FAIL  "Fout bij het maken van het configuratiebestand."

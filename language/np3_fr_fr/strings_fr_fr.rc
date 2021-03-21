@@ -178,6 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Le fichier actuel a été modifié par un programme externe. Recharger ?"
     IDS_MUI_FILECHANGENOTIFY2 "Le fichier actuel a été supprimé. Sauvegarder maintenant ?"
+    IDS_MUI_FILELOCK_ERROR  "Ne peut acquérir un verrouillage de fichier exclusif pour ""%s""!"
     IDS_MUI_STICKYWINPOS    "La position de la fenêtre fixée est activée. Toute nouvelle fenêtre Notepad3 utilisera les paramètres de placement de fenêtre en cours."
     IDS_MUI_SAVEDSETTINGS   "Les paramètres courants du programme ont été sauvegardés."
     IDS_MUI_CREATEINI_FAIL  "Erreur de création du fichier de configuration."

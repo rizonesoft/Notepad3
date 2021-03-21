@@ -178,6 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Этот файл был изменен внешней программой. Переоткрыть его?"
     IDS_MUI_FILECHANGENOTIFY2 "Этот файл был удален. Пересохранить?"
+    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фиксированное положение окна включено. Любое новое окно Notepad3 будет запущено с текущими настройками положения."
     IDS_MUI_SAVEDSETTINGS   "Текущие настройки приложения были сохранены."
     IDS_MUI_CREATEINI_FAIL  "Ошибка создания конфигурационного файла."

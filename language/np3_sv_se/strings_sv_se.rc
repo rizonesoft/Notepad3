@@ -178,6 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Aktuell fil har modifierats av ett externt program. Vill du ladda om?"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuell fil har tagits bort. Vill du spara nu?"
+    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fast fönsterposition är aktiverad. Alla nya Notepad3-fönster kommer att använda aktuella fösterplaceringsinställningar."
     IDS_MUI_SAVEDSETTINGS   "Inställningarna har sparats."
     IDS_MUI_CREATEINI_FAIL  "Kunde inte skapa konfigurationsfil."
