@@ -157,11 +157,11 @@ void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 
-bool FileIO(bool fLoad, LPWSTR pszFileName,
+bool FileIO(bool fLoad, LPWSTR pszFileName, EditFileIOStatus * status,
             bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
-            EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp);
-bool FileLoad(bool bDontSave, bool bNew, bool bReload,
-              bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile);
+            bool bSaveCopy, bool bPreserveTimeStamp);
+bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
+              bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection);
 bool FileRevert(LPCWSTR szFileName, bool);
 bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bPreserveTimeStamp);
 bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);

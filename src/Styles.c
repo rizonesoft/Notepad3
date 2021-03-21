@@ -185,12 +185,12 @@ static void _FillThemesMenuTable()
     Theme_Files[iTheme].rid = IDM_THEMES_FILE_ITEM; // NP3.ini settings
 
     // find "themes" sub-dir (side-by-side to Notepad3.ini)
-    if (StrIsNotEmpty(Globals.IniFile)) {
-        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
+    if (StrIsNotEmpty(Paths.IniFile)) {
+        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFile);
         // names are filled by Style_InsertThemesMenu()
-        StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), Globals.IniFile);
-    } else if (StrIsNotEmpty(Globals.IniFileDefault)) {
-        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFileDefault);
+        StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), Paths.IniFile);
+    } else if (StrIsNotEmpty(Paths.IniFileDefault)) {
+        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFileDefault);
     }
     if (StrIsNotEmpty(tchThemeDir)) {
         PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
@@ -205,7 +205,7 @@ static void _FillThemesMenuTable()
         WIN32_FIND_DATA FindFileData;
         ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
         HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
-        if (hFindFile != INVALID_HANDLE_VALUE) {
+        if (IS_VALID_HANDLE(hFindFile)) {
             // ---  fill table by directory entries  ---
             for (iTheme = 2; iTheme < ThemeItems_CountOf(); ++iTheme) {
                 Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_DEFAULT);
@@ -311,9 +311,9 @@ void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
             // hard-coded internal/factory defaults
         } else if (iCurThemeIdx == 1) {
             if (!Flags.bSettingsFileSoftLocked) {
-                Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
+                Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
                 if (Globals.bCanSaveIniFile) {
-                    Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
+                    Style_ExportToFile(Paths.IniFile, Globals.bIniFileFromScratch);
                 }
             }
         } else if (PathIsExistingFile(Theme_Files[iCurThemeIdx].szFilePath)) {
@@ -325,7 +325,7 @@ void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
     if ((iThemeIdx > 1) && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath)) {
         result = Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
     } else if (iThemeIdx == 1) {
-        result = Style_ImportFromFile(Globals.IniFile);
+        result = Style_ImportFromFile(Paths.IniFile);
     } else {
         result = Style_ImportFromFile(L"");
     }
@@ -500,7 +500,7 @@ void Style_Load()
 
     Style_LoadLexerFileExtensions();
 
-    Style_ImportFromFile(Globals.IniFile);
+    Style_ImportFromFile(Paths.IniFile);
 }
 
 
@@ -522,9 +522,7 @@ bool Style_Import(HWND hwnd)
 {
     WCHAR szFile[MAX_PATH] = { L'\0' };
     WCHAR szFilter[MAX_PATH] = { L'\0' };
-    OPENFILENAME ofn;
-
-    ZeroMemory(&ofn, sizeof(OPENFILENAME));
+    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     GetLngString(IDS_MUI_FILTER_INI, szFilter, COUNTOF(szFilter));
     PrepareFilterStr(szFilter);
 
@@ -604,7 +602,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
         StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
         NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
-        if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
+        if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
             bIsStdIniFile = true;
         }
     }
@@ -703,9 +701,7 @@ bool Style_Export(HWND hwnd)
 {
     WCHAR szFile[MAX_PATH] = { L'\0' };
     WCHAR szFilter[256] = { L'\0' };
-    OPENFILENAME ofn;
-
-    ZeroMemory(&ofn,sizeof(OPENFILENAME));
+    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
     PrepareFilterStr(szFilter);
 
@@ -856,7 +852,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     bool ok = false;
 
     // special handling of standard .ini-file
-    if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
+    if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
         bool bOpendByMe;
         if (OpenSettingsFile(&bOpendByMe)) {
             Style_FileExtToIniSection(bForceAll);
@@ -869,7 +865,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
                 HANDLE hFile = CreateFile(szFilePathNorm,
                                           GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-                if (hFile != INVALID_HANDLE_VALUE) {
+                if (IS_VALID_HANDLE(hFile)) {
                     CloseHandle(hFile); // done
                 }
             }
@@ -2501,7 +2497,7 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
 {
     ZeroMemory(lpszFilter, cchFilter * sizeof(WCHAR));
 
-    LPCWSTR curExt = PathFindExtension(Globals.CurrentFile);
+    LPCWSTR curExt = PathFindExtension(Paths.CurrentFile);
     if (StrIsNotEmpty(curExt)) {
         curExt += 1;
     }
@@ -3425,8 +3421,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
     // --------------------------------------------------------------------------
 
-    LOGFONT lf;
-    ZeroMemory(&lf, sizeof(LOGFONT));
+    LOGFONT lf = { 0 };
     StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
     lf.lfCharSet = (BYTE)iCharSet;
     lf.lfHeight = iFontHeight;
@@ -3443,9 +3438,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &color, true);
 
     // Init cf
-    CHOOSEFONT cf;
-    ZeroMemory(&cf, sizeof(CHOOSEFONT));
-    cf.lStructSize = sizeof(CHOOSEFONT);
+    CHOOSEFONT cf = { sizeof(CHOOSEFONT) };
     cf.hwndOwner = hwnd;
     cf.hInstance = Globals.hInstance; // ChooseFontDirectWrite
     cf.rgbColors = color;
@@ -3705,9 +3698,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
     COLORREF dRGBResult;
     Style_StrGetColor(lpszStyle, layer, &dRGBResult, true);
 
-    CHOOSECOLOR cc;
-    ZeroMemory(&cc, sizeof(CHOOSECOLOR));
-    cc.lStructSize = sizeof(CHOOSECOLOR);
+    CHOOSECOLOR cc = { sizeof(CHOOSECOLOR) };
     cc.hwndOwner = hwnd;
     cc.rgbResult = dRGBResult;
     cc.lpCustColors = g_colorCustom;
@@ -3966,9 +3957,7 @@ int Style_GetLexerIconId(PEDITLEXER plex)
     if (StringCchLen(pszFile, COUNTOF(pszFile)) < 3) {
         StringCchCat(pszFile, COUNTOF(pszFile), L"txt");
     }
-    SHFILEINFO shfi;
-    ZeroMemory(&shfi,sizeof(SHFILEINFO));
-
+    SHFILEINFO shfi = { 0 };
     SHGetFileInfo(pszFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
                   SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 
@@ -3986,11 +3975,8 @@ HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex)
 
     HTREEITEM hTreeNode;
 
-    TVINSERTSTRUCT tvis;
-    ZeroMemory(&tvis,sizeof(TVINSERTSTRUCT));
-
+    TVINSERTSTRUCT tvis = { 0 };
     tvis.hInsertAfter = TVI_LAST;
-
     tvis.item.mask = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
 
     if (GetLngString(plex->resID,tch,COUNTOF(tch))) {
@@ -4035,9 +4021,7 @@ HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex)
 void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 {
     WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
-    LVITEM lvi;
-    ZeroMemory(&lvi,sizeof(LVITEM));
-
+    LVITEM lvi = { 0 };
     lvi.mask = LVIF_IMAGE | LVIF_PARAM | LVIF_TEXT;
     lvi.iItem = ListView_GetItemCount(hwnd);
     if (GetLngString(plex->resID,tch,COUNTOF(tch))) {
@@ -4176,8 +4160,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         hwndTV    = GetDlgItem(hwnd, IDC_STYLELIST);
         fDragging = false;
 
-        SHFILEINFO shfi;
-        ZeroMemory(&shfi, sizeof(SHFILEINFO));
+        SHFILEINFO shfi = { 0 };
 
         InitWindowCommon(hwndTV, true);
         InitTreeView(hwndTV);
@@ -4246,8 +4229,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         // Set title font
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
         if (hFont) {
-            LOGFONT lf;
-            ZeroMemory(&lf, sizeof(LOGFONT));
+            LOGFONT lf = { 0 };
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
             lf.lfWeight = FW_BOLD;
@@ -4267,8 +4249,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
 
-        SHFILEINFO shfi;
-        ZeroMemory(&shfi, sizeof(SHFILEINFO));
+        SHFILEINFO shfi = { 0 };
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         TreeView_SetImageList(hwndTV,
                               (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
@@ -4278,8 +4259,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         // Set title font
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_STYLELABEL, WM_GETFONT, 0, 0);
         if (hFont) {
-            LOGFONT lf;
-            ZeroMemory(&lf, sizeof(LOGFONT));
+            LOGFONT lf = { 0 };
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfHeight = MulDiv(lf.lfHeight, 3, 2);
             lf.lfWeight = FW_BOLD;
@@ -4536,11 +4516,8 @@ CASE_WM_CTLCOLOR_SET:
         break;
 
     case WM_MOUSEMOVE: {
-        HTREEITEM     htiTarget;
-        ZeroMemory(&htiTarget, sizeof(HTREEITEM));
-        TVHITTESTINFO tvht;
-        ZeroMemory(&tvht, sizeof(TVHITTESTINFO));
-
+        HTREEITEM htiTarget = { 0 };
+        TVHITTESTINFO tvht = { 0 };
         if (fDragging && bIsStyleSelected) {
             LONG xCur = (LONG)(short)LOWORD(lParam);
             LONG yCur = (LONG)(short)HIWORD(lParam);
@@ -4834,7 +4811,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                         GetParent(hwnd),
                                         Style_CustomizeSchemesDlgProc,
                                         (LPARAM)hwnd);
-    if (hDlg != INVALID_HANDLE_VALUE) {
+    if (IS_VALID_HANDLE(hDlg)) {
         ShowWindow(hDlg, SW_SHOW);
     }
     return hDlg;
@@ -4883,8 +4860,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         InitWindowCommon(hwndLV, true);
         InitListView(hwndLV);
 
-        SHFILEINFO shfi;
-        ZeroMemory(&shfi, sizeof(SHFILEINFO));
+        SHFILEINFO shfi = { 0 };
 
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         ListView_SetImageList(hwndLV,
@@ -4909,8 +4885,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         // Select current lexer
         int lvItems = ListView_GetItemCount(hwndLV);
-        LVITEM lvi;
-        ZeroMemory(&lvi, sizeof(LVITEM));
+        LVITEM lvi = { 0 };
         lvi.mask = LVIF_PARAM;
         for (int i = 0; i < lvItems; i++) {
             lvi.iItem = i;
@@ -4939,8 +4914,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         dpi.x = LOWORD(wParam);
         dpi.y = HIWORD(wParam);
 
-        SHFILEINFO shfi;
-        ZeroMemory(&shfi, sizeof(SHFILEINFO));
+        SHFILEINFO shfi = { 0 };
         UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         ListView_SetImageList(hwndLV,
                               (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,

@@ -110,17 +110,18 @@
 #define IDS_MUI_READONLY_SAVE           14008
 #define IDS_MUI_FILECHANGENOTIFY        14009
 #define IDS_MUI_FILECHANGENOTIFY2       14010
-#define IDS_MUI_STICKYWINPOS            14011
-#define IDS_MUI_SAVEDSETTINGS           14012
-#define IDS_MUI_CREATEINI_FAIL          14013
-#define IDS_MUI_WRITEINI_FAIL           14014
-#define IDS_MUI_SETTINGSNOTSAVED        14015
-#define IDS_MUI_EXPORT_FAIL             14016
-#define IDS_MUI_REGEX_INVALID           14017
-#define IDS_MUI_DROP_NO_FILE            14018
-#define IDS_MUI_SELMULTI                14019
-#define IDS_MUI_SELRECTORMULTI          14020
-#define IDS_MUI_INIFILE_READONLY        14021
+#define IDS_MUI_FILELOCK_ERROR          14011
+#define IDS_MUI_STICKYWINPOS            14012
+#define IDS_MUI_SAVEDSETTINGS           14013
+#define IDS_MUI_CREATEINI_FAIL          14014
+#define IDS_MUI_WRITEINI_FAIL           14015
+#define IDS_MUI_SETTINGSNOTSAVED        14016
+#define IDS_MUI_EXPORT_FAIL             14017
+#define IDS_MUI_REGEX_INVALID           14018
+#define IDS_MUI_DROP_NO_FILE            14019
+#define IDS_MUI_SELMULTI                14020
+#define IDS_MUI_SELRECTORMULTI          14021
+#define IDS_MUI_INIFILE_READONLY        14022
 
 #define IDS_MUI_ASK_SAVE                15000
 #define IDS_MUI_ASK_REVERT              15001
@@ -371,6 +372,15 @@
 #define IDC_CLEAR_LIST                  18123
 #define IDC_FINDESCCTRLCHR              18124
 #define IDC_REPLESCCTRLCHR              18125
+
+#define IDC_RADIO_BTN_A                 18200
+#define IDC_RADIO_BTN_B                 18201
+#define IDC_RADIO_BTN_C                 18202
+#define IDC_RADIO_BTN_D                 18203
+#define IDC_RADIO_BTN_E                 18204
+#define IDC_CHECK_BOX_A                 18251
+#define IDC_CHECK_BOX_B                 18252
+#define IDC_CHECK_BOX_C                 18253
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

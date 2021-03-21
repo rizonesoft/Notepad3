@@ -99,7 +99,7 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo)
 
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4, SELECT_HYPERLINK = 8 } HYPERLINK_OPS;  // Hyperlink Operations
-typedef enum { FWM_DONT_CARE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2 } FILE_WATCHING_MODE;
+typedef enum { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2, FWM_EXCLUSIVELOCK = 3 } FILE_WATCHING_MODE;
 typedef enum { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 
 // ----------------------------------------------------------------------------
@@ -402,14 +402,22 @@ typedef struct _globals_t
     WCHAR LightThemeName[SMALL_BUFFER];
     WCHAR DarkThemeName[SMALL_BUFFER];
 
-    WCHAR WorkingDirectory[MAX_PATH];
-    WCHAR IniFile[MAX_PATH];
-    WCHAR IniFileDefault[MAX_PATH];
-    WCHAR CurrentFile[MAX_PATH];
-
 } GLOBALS_T, *PGLOBALS_T;
 
 extern GLOBALS_T Globals;
+
+// ------------------------------------
+
+typedef struct _paths_t {
+    
+    WCHAR  CurrentFile[MAX_PATH];
+    WCHAR  WorkingDirectory[MAX_PATH];
+    WCHAR  IniFile[MAX_PATH];
+    WCHAR  IniFileDefault[MAX_PATH];
+
+} PATHS_T, *PPATHS_T;
+
+extern PATHS_T Paths;
 
 // ------------------------------------
 
@@ -671,8 +679,6 @@ typedef struct _filewatching_t
 {
     FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
-    bool ResetFileWatching;               // <-> Settings.ResetFileWatching;
-    DWORD FileCheckInverval;              // <-> Settings2.FileCheckInverval;
     DWORD AutoReloadTimeout;              // <-> Settings2.AutoReloadTimeout;
     bool MonitoringLog;
 
@@ -718,6 +724,8 @@ typedef struct _themeFiles
 //=============================================================================
 
 // ---------   common defines   --------
+
+#define IS_VALID_HANDLE(HNDL) (((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE)) ? true : false)
 
 #define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"
 

@@ -325,9 +325,7 @@ bool SetClipboardText(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScreen)
 {
     HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-    MONITORINFO mi;
-    ZeroMemory(&mi, sizeof(MONITORINFO));
-    mi.cbSize = sizeof(mi);
+    MONITORINFO mi = { sizeof(MONITORINFO) };
     GetMonitorInfo(hMonitor, &mi);
     *pCXScreen = (mi.rcMonitor.right - mi.rcMonitor.left);
     *pCYScreen = (mi.rcMonitor.bottom - mi.rcMonitor.top);
@@ -381,6 +379,7 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
     return (IsDlgButtonChecked(hwnd, iButtonID) == BST_UNCHECKED);
 }
 
+#define EnableItem(hwnd, id, b) EnableWindow(GetDlgItem((hwnd), (id)), (b))
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)

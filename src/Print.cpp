@@ -668,9 +668,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
 {
     DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_MUI_PAGESETUP),Globals.hLngResContainer);
 
-    PAGESETUPDLG pdlg;
-    ZeroMemory(&pdlg,sizeof(PAGESETUPDLG));
-    pdlg.lStructSize = sizeof(PAGESETUPDLG);
+    PAGESETUPDLG pdlg = { sizeof(PAGESETUPDLG) };
     pdlg.Flags = PSD_ENABLEPAGESETUPHOOK | PSD_ENABLEPAGESETUPTEMPLATEHANDLE;
     pdlg.lpfnPageSetupHook = _LPSetupHookProc;
     pdlg.hPageSetupTemplate = pDlgTemplate;

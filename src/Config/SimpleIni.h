@@ -300,10 +300,14 @@ enum class SI_Error : int {
 #if defined(_WIN32)
 # define SI_HAS_WIDE_FILE
 # define SI_USE_LOCKING_WIDE_FILE
-# define SI_WCHAR_T     wchar_t
+# define SI_WCHAR_T     wchar_t 
 #elif defined(SI_CONVERT_ICU)
 # define SI_HAS_WIDE_FILE
 # define SI_WCHAR_T     UChar
+#endif
+
+#ifndef IS_VALID_HANDLE
+#define IS_VALID_HANDLE(HNDL) (((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE)) ? true : false)
 #endif
 
 // ---------------------------------------------------------------------------
@@ -1442,7 +1446,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 
     SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
 
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
       return SI_Error::SI_FILE;
     }
 
@@ -2648,7 +2652,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
 
     SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
 
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
       return SI_Error::SI_FILE;
     }
 

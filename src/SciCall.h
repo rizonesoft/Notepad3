@@ -170,7 +170,7 @@ DeclareSciCallV1(SetAutomaticFold, SETAUTOMATICFOLD, int, option);
 
 DeclareSciCallV1(SetCaretSticky, SETCARETSTICKY, int, option);
 DeclareSciCallV2(SetXCaretPolicy, SETXCARETPOLICY, int, policy, int, slop);
-DeclareSciCallV2(SetYCaretPolicy, SETXCARETPOLICY, int, policy, int, slop);
+DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, policy, int, slop);
 
 DeclareSciCallV01(GetWordChars, GETWORDCHARS, char*, ptxt);
 DeclareSciCallV01(GetWhiteSpaceChars, GETWHITESPACECHARS, char*, ptxt);

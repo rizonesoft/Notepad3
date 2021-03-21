@@ -1037,29 +1037,32 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
 bool EditLoadFile(
     HWND hwnd,
     LPWSTR pszFile,
+    EditFileIOStatus* const status,
     bool bSkipUTFDetection,
     bool bSkipANSICPDetection,
     bool bForceEncDetection,
-    bool bClearUndoHistory,
-    EditFileIOStatus* const status)
+    bool bClearUndoHistory)
 {
+    if (!status) {
+        return false;
+    }
     status->iEncoding = Settings.DefaultEncoding;
     status->bUnicodeErr = false;
     status->bUnknownExt = false;
     status->bEncryptedRaw = false;
     Flags.bHugeFileLoadState = false;
 
-    HANDLE hFile = CreateFile(pszFile,
-                              GENERIC_READ,
-                              FILE_SHARE_READ|FILE_SHARE_WRITE,
-                              NULL,
-                              OPEN_EXISTING,
-                              FILE_ATTRIBUTE_NORMAL,
-                              NULL);
+    HANDLE const hFile = CreateFile(pszFile,
+                                    GENERIC_READ,
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    NULL,
+                                    OPEN_EXISTING,
+                                    FILE_ATTRIBUTE_NORMAL,
+                                    NULL);
 
     Globals.dwLastError = GetLastError();
 
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         Encoding_Forced(CPI_NONE);
         return false;
     }
@@ -1139,19 +1142,10 @@ bool EditLoadFile(
     }
 
     size_t cbData = 0LL;
-    int const readFlag = ReadAndDecryptFile(hwnd, hFile, fileSize, (void**)&lpData, &cbData);
+    int const readFlag = ReadAndDecryptFile(hwnd, hFile, fileSize, (void **)&lpData, &cbData);
     Globals.dwLastError = GetLastError();
-    CloseHandle(hFile);
 
-    if (cbData == 0) {
-        FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init-reset
-        status->iEOLMode = Settings.DefaultEOLMode;
-        EditSetNewText(hwnd, "", 0, bClearUndoHistory);
-        SciCall_SetEOLMode(Settings.DefaultEOLMode);
-        Encoding_Forced(CPI_NONE);
-        FreeMem(lpData);
-        return true;
-    }
+    CloseHandle(hFile);
 
     bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
 
@@ -1160,7 +1154,7 @@ bool EditLoadFile(
         if (!bReadSuccess) {
             Encoding_Forced(CPI_NONE);
             FreeMem(lpData);
-            return true;
+            return false;
         } else {
             status->bEncryptedRaw =  true;
         }
@@ -1169,6 +1163,16 @@ bool EditLoadFile(
         Encoding_Forced(CPI_NONE);
         FreeMem(lpData);
         return false;
+    }
+    
+    if (cbData == 0) {
+        FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init-reset
+        status->iEOLMode = Settings.DefaultEOLMode;
+        EditSetNewText(hwnd, "", 0, bClearUndoHistory);
+        SciCall_SetEOLMode(Settings.DefaultEOLMode);
+        Encoding_Forced(CPI_NONE);
+        FreeMem(lpData);
+        return true;
     }
 
     // force very large file to be ASCII/UTF-8 (!) - Scintilla can't handle it otherwise
@@ -1198,8 +1202,8 @@ bool EditLoadFile(
                                    Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_PREFERRED_ENCODING,
                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
-#define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
-#define IS_ENC_PURE_ASCII() (encDetection.analyzedEncoding == CPI_ASCII_7BIT)
+    #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
+    #define IS_ENC_PURE_ASCII() (encDetection.analyzedEncoding == CPI_ASCII_7BIT)
 
     // --------------------------------------------------------------------------
 
@@ -1341,10 +1345,13 @@ bool EditLoadFile(
 bool EditSaveFile(
     HWND hwnd,
     LPCWSTR pszFile,
-    EditFileIOStatus* status,
+    EditFileIOStatus * const status,
     bool bSaveCopy,
     bool bPreserveTimeStamp)
 {
+    if (!status) {
+        return false;
+    }
     bool bWriteSuccess = false;
     status->bCancelDataLoss = false;
 
@@ -1352,40 +1359,40 @@ bool EditSaveFile(
     DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL | /*FILE_FLAG_NO_BUFFERING |*/ FILE_FLAG_WRITE_THROUGH;
 
     HANDLE hFile = CreateFile(pszFile,
-                              GENERIC_WRITE,
-                              FILE_SHARE_READ|FILE_SHARE_WRITE,
-                              NULL,
-                              OPEN_ALWAYS,
-                              dwWriteAttributes,
-                              NULL);
+                                GENERIC_WRITE,
+                                FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                NULL,
+                                OPEN_ALWAYS,
+                                dwWriteAttributes,
+                                NULL);
 
     Globals.dwLastError = GetLastError();
 
     // failure could be due to missing attributes (2k/XP)
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         DWORD dwSpecialAttributes = GetFileAttributes(pszFile);
         if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
             dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
             hFile = CreateFile(pszFile,
-                               GENERIC_WRITE,
-                               FILE_SHARE_READ|FILE_SHARE_WRITE,
-                               NULL,
-                               OPEN_ALWAYS,
-                               dwWriteAttributes | dwSpecialAttributes,
-                               NULL);
+                                       GENERIC_WRITE,
+                                       FILE_SHARE_READ|FILE_SHARE_WRITE,
+                                       NULL,
+                                       OPEN_ALWAYS,
+                                       dwWriteAttributes | dwSpecialAttributes,
+                                       NULL);
 
             Globals.dwLastError = GetLastError();
         }
     }
 
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
 
     //FILETIME createTime;
     //FILETIME laccessTime;
     FILETIME modTime;
-    //if (!GetFileTime(hFile, &createTime, &laccessTime, &modTime)) {
+    //if (!GetFileTime(status->hndlFile, &createTime, &laccessTime, &modTime)) {
     if (!GetFileTime(hFile, NULL, NULL, &modTime)) {
         return false;
     }
@@ -1433,7 +1440,7 @@ bool EditSaveFile(
                         CopyMemory(lpData, bom, bomoffset);
                     }
                     SciCall_GetText((cbData + 1), &lpData[bomoffset]);
-                    bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (size_t)(cbData + bomoffset), &bytesWritten);
+                    bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE *)lpData, (size_t)(cbData + bomoffset), &bytesWritten);
                     Globals.dwLastError = GetLastError();
                     FreeMem(lpData);
                 } else {
@@ -1472,7 +1479,7 @@ bool EditSaveFile(
                 if (Encoding_IsUNICODE_REVERSE(status->iEncoding)) {
                     SwabEx((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
                 }
-                bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &bytesWritten);
+                bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE *)lpDataWide, cbDataWide * sizeof(WCHAR), &bytesWritten);
                 Globals.dwLastError = GetLastError();
                 FreeMem(lpDataWide);
             } else {
@@ -1512,7 +1519,7 @@ bool EditSaveFile(
                     if (!bCancelDataLoss || INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2)) == IDOK) {
                         SetEndOfFile(hFile);
                         if (cbDataConverted != 0) {
-                            bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbDataConverted, &bytesWritten);
+                            bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE *)lpData, cbDataConverted, &bytesWritten);
                             Globals.dwLastError = GetLastError();
                         }
                     } else {
@@ -1534,7 +1541,7 @@ bool EditSaveFile(
                 if (lpData) {
                     SciCall_GetText((cbData + 1), lpData);
                     SetEndOfFile(hFile);
-                    bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)cbData, &bytesWritten);
+                    bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE *)lpData, (DWORD)cbData, &bytesWritten);
                     Globals.dwLastError = GetLastError();
                     FreeMem(lpData);
                 } else {
@@ -1550,6 +1557,7 @@ bool EditSaveFile(
     if (bPreserveTimeStamp) {
         SetFileTime(hFile, NULL, NULL, &modTime);
     }
+
     CloseHandle(hFile);
 
     if (bWriteSuccess && !bSaveCopy) {
@@ -2298,8 +2306,7 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
         WCHAR wchTemplate[MIDSZ_BUFFER] = {L'\0'};
         StringCchCopyW(wchTemplate, COUNTOF(wchTemplate), StrIsNotEmpty(pwchDateTimeStrg) ? pwchDateTimeStrg : confFormat);
 
-        struct tm sst;
-        ZeroMemory(&sst, sizeof(sst));
+        struct tm sst = { 0 };
         sst.tm_isdst = -1;
         sst.tm_sec = (int)st.wSecond;
         sst.tm_min = (int)st.wMinute;
@@ -6725,7 +6732,7 @@ HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace)
                                         EditFindReplaceDlgProc,
                                         (LPARAM) lpefr);
 
-    if (hDlg != INVALID_HANDLE_VALUE) {
+    if (IS_VALID_HANDLE(hDlg)) {
         ShowWindow(hDlg, SW_SHOW);
     }
     CoUninitialize();
@@ -8170,8 +8177,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
-            LOGFONT lf;
-            ZeroMemory(&lf, sizeof(LOGFONT));
+            LOGFONT lf = { 0 };
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfUnderline = true;
             //lf.lfWeight    = FW_BOLD;
@@ -8202,8 +8208,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
-            LOGFONT lf;
-            ZeroMemory(&lf, sizeof(LOGFONT));
+            LOGFONT lf = { 0 };
             GetObject(hFont, sizeof(LOGFONT), &lf);
             lf.lfUnderline = true;
             //lf.lfWeight    = FW_BOLD;
@@ -8374,8 +8379,7 @@ bool EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2)
 {
 
     INT_PTR iResult;
-    MODLINESDATA data;
-    ZeroMemory(&data, sizeof(MODLINESDATA));
+    MODLINESDATA data = { 0 };
     data.pwsz1 = pwsz1;
     data.pwsz2 = pwsz2;
 
@@ -8607,8 +8611,7 @@ bool EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
 {
 
     INT_PTR iResult;
-    ENCLOSESELDATA data;
-    ZeroMemory(&data, sizeof(ENCLOSESELDATA));
+    ENCLOSESELDATA data = { 0 };
     data.pwsz1 = pwszOpen;
     data.pwsz2 = pwszClose;
 
@@ -8796,8 +8799,7 @@ bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose, UINT* pRepeat)
 {
 
     INT_PTR iResult = 0;
-    TAGSDATA data;
-    ZeroMemory(&data, sizeof(TAGSDATA));
+    TAGSDATA data = { 0 };
     data.pwsz1 = pwszOpen;
     data.pwsz2 = pwszClose;
     data.repeat = 1;

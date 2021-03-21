@@ -365,7 +365,6 @@ int CmpEncoding(const void *s1, const void *s2)
 void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
 {
     int iSelItem = -1;
-    LVITEM lvi;
     WCHAR wchBuf[256] = { L'\0' };
 
     PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
@@ -376,7 +375,7 @@ void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
         }
         qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
 
-        ZeroMemory(&lvi, sizeof(LVITEM));
+        LVITEM lvi = { 0 };
         lvi.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
         lvi.pszText = wchBuf;
 
@@ -431,8 +430,7 @@ void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
 
 bool Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding)
 {
-    LVITEM lvi;
-    ZeroMemory(&lvi, sizeof(LVITEM));
+    LVITEM lvi = { 0 };
     lvi.iItem = ListView_GetNextItem(hwnd, -1, LVNI_ALL | LVNI_SELECTED);
     lvi.iSubItem = 0;
     lvi.mask = LVIF_PARAM;
@@ -453,7 +451,6 @@ bool Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding)
 void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
 {
     int iSelItem = -1;
-    COMBOBOXEXITEM cbei;
     WCHAR wchBuf[256] = { L'\0' };
 
     PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
@@ -464,7 +461,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
         }
         qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
 
-        ZeroMemory(&cbei, sizeof(COMBOBOXEXITEM));
+        COMBOBOXEXITEM cbei = { 0 };
         cbei.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE | CBEIF_LPARAM;
         cbei.pszText = wchBuf;
         cbei.cchTextMax = COUNTOF(wchBuf);
@@ -513,8 +510,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
 
 bool Encoding_GetFromComboboxEx(HWND hwnd, cpi_enc_t* pidEncoding)
 {
-    COMBOBOXEXITEM cbei;
-    ZeroMemory(&cbei, sizeof(COMBOBOXEXITEM));
+    COMBOBOXEXITEM cbei = { 0 };
     cbei.iItem = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
     cbei.mask = CBEIF_LPARAM;
 
