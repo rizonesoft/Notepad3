@@ -682,9 +682,9 @@ bool VerifyContrast(COLORREF cr1,COLORREF cr2)
 //
 static int CALLBACK EnumFontsProc(CONST LOGFONT *plf,CONST TEXTMETRIC *ptm,DWORD FontType,LPARAM lParam)
 {
-    UNUSED(plf);
-    UNUSED(ptm);
-    UNUSED(FontType);
+    UNREFERENCED_PARAMETER(plf);
+    UNREFERENCED_PARAMETER(ptm);
+    UNREFERENCED_PARAMETER(FontType);
     *((PBOOL)lParam) = true;
     return 0;
 }
@@ -858,9 +858,9 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
         return;
     }
 
-    if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
+    if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CONSTSTRGLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
         GetKnownFolderPath(&FOLDERID_Documents, wchPath, COUNTOF(wchPath));
-        PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
+        PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CONSTSTRGLEN("%CSIDL:MYDOCUMENTS%"));
     } else {
         StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
     }

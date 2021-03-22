@@ -60,7 +60,7 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 {
-    UNUSED(pszHeader);
+    UNREFERENCED_PARAMETER(pszHeader);
 
     HIMAGELIST hil;
     SHFILEINFO shfi = { 0 };
@@ -534,8 +534,8 @@ bool DirList_GetDispInfo(HWND hwnd,LPARAM lParam,bool bNoFadeHidden)
     // Set values
     lpdi->item.mask |= LVIF_DI_SETITEM;
 
-    UNUSED(hwnd);
-    UNUSED(bNoFadeHidden);
+    UNREFERENCED_PARAMETER(hwnd);
+    UNREFERENCED_PARAMETER(bNoFadeHidden);
 
     return true;
 }
@@ -1384,7 +1384,7 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
     // Set values
     lpnmcbe->ceItem.mask |= CBEIF_DI_SETITEM;
 
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     return true;
 }

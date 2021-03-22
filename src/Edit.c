@@ -210,10 +210,10 @@ static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 //
 static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-    UNUSED(hwnd);    // must be main wnd
-    UNUSED(uMsg);    // must be WM_TIMER
-    UNUSED(idEvent); // must be IDT_TIMER_MRKALL
-    UNUSED(dwTime);  // This is the value returned by the GetTickCount function
+    UNREFERENCED_PARAMETER(hwnd);    // must be main wnd
+    UNREFERENCED_PARAMETER(uMsg);    // must be WM_TIMER
+    UNREFERENCED_PARAMETER(idEvent); // must be IDT_TIMER_MRKALL
+    UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
 
     CmdMessageQueue_t* pmqc;
 
@@ -251,7 +251,7 @@ void EditReplaceSelection(const char* text, bool bForceSel)
 //
 void EditInitWordDelimiter(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     ZeroMemory(WordCharsDefault, COUNTOF(WordCharsDefault));
     ZeroMemory(WhiteSpaceCharsDefault, COUNTOF(WhiteSpaceCharsDefault));
@@ -968,7 +968,7 @@ void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const sta
 //
 void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     int const tabWidth = Globals.fvCurFile.iTabWidth;
     int const indentWidth = Globals.fvCurFile.iIndentWidth;
@@ -1573,7 +1573,7 @@ bool EditSaveFile(
 //
 void EditInvertCase(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     const DocPos iCurPos = SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_GetAnchor();
 
@@ -1625,7 +1625,7 @@ void EditInvertCase(HWND hwnd)
 //
 void EditTitleCase(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     const DocPos iCurPos = SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_GetAnchor();
 
@@ -1679,7 +1679,7 @@ void EditTitleCase(HWND hwnd)
 //
 void EditSentenceCase(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     const DocPos iCurPos = SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_GetAnchor();
 
@@ -2046,7 +2046,7 @@ void EditUnescapeCChars(HWND hwnd) {
 //
 void EditChar2Hex(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (Sci_IsMultiOrRectangleSelection()) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -2122,7 +2122,7 @@ void EditChar2Hex(HWND hwnd)
 //
 void EditHex2Char(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (SciCall_IsSelectionEmpty()) {
         return;
@@ -2287,7 +2287,7 @@ void EditModifyNumber(HWND hwnd,bool bIncrease)
             }
         }
     }
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 }
 
 
@@ -2686,7 +2686,7 @@ static void  _EditMoveLines(bool bMoveUp)
 //
 void EditMoveUp(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     _EditMoveLines(true);
 }
 
@@ -2697,7 +2697,7 @@ void EditMoveUp(HWND hwnd)
 //
 void EditMoveDown(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     _EditMoveLines(false);
 }
 
@@ -2793,9 +2793,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
         char* p = StrStrA(mszPrefix1, "$(");
         while (!bPrefixNum && p) {
 
-            if (StrCmpNA(p, "$(I)", CSTRLEN("$(I)")) == 0) {
+            if (StrCmpNA(p, "$(I)", CONSTSTRGLEN("$(I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CSTRLEN("$(I)"));
+                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(I)"));
                 bPrefixNum = true;
                 iPrefixNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
@@ -2804,9 +2804,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszPrefixNumPad[0] = '\0';
             }
 
-            else if (StrCmpNA(p, "$(0I)", CSTRLEN("$(0I)")) == 0) {
+            else if (StrCmpNA(p, "$(0I)", CONSTSTRGLEN("$(0I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CSTRLEN("$(0I)"));
+                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(0I)"));
                 bPrefixNum = true;
                 iPrefixNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
@@ -2815,9 +2815,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszPrefixNumPad[0] = '0';
             }
 
-            else if (StrCmpNA(p, "$(N)", CSTRLEN("$(N)")) == 0) {
+            else if (StrCmpNA(p, "$(N)", CONSTSTRGLEN("$(N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CSTRLEN("$(N)"));
+                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(N)"));
                 bPrefixNum = true;
                 iPrefixNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
@@ -2826,9 +2826,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszPrefixNumPad[0] = '\0';
             }
 
-            else if (StrCmpNA(p, "$(0N)", CSTRLEN("$(0N)")) == 0) {
+            else if (StrCmpNA(p, "$(0N)", CONSTSTRGLEN("$(0N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CSTRLEN("$(0N)"));
+                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(0N)"));
                 bPrefixNum = true;
                 iPrefixNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
@@ -2837,9 +2837,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszPrefixNumPad[0] = '0';
             }
 
-            else if (StrCmpNA(p, "$(L)", CSTRLEN("$(L)")) == 0) {
+            else if (StrCmpNA(p, "$(L)", CONSTSTRGLEN("$(L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CSTRLEN("$(L)"));
+                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(L)"));
                 bPrefixNum = true;
                 iPrefixNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
@@ -2848,9 +2848,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszPrefixNumPad[0] = '\0';
             }
 
-            else if (StrCmpNA(p, "$(0L)", CSTRLEN("$(0L)")) == 0) {
+            else if (StrCmpNA(p, "$(0L)", CONSTSTRGLEN("$(0L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CSTRLEN("$(0L)"));
+                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(0L)"));
                 bPrefixNum = true;
                 iPrefixNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
@@ -2858,7 +2858,7 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 }
                 pszPrefixNumPad[0] = '0';
             }
-            p += CSTRLEN("$(");
+            p += CONSTSTRGLEN("$(");
             p = StrStrA(p, "$("); // next
         }
     }
@@ -2869,9 +2869,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
         char* p = StrStrA(mszAppend1, "$(");
         while (!bAppendNum && p) {
 
-            if (StrCmpNA(p, "$(I)", CSTRLEN("$(I)")) == 0) {
+            if (StrCmpNA(p, "$(I)", CONSTSTRGLEN("$(I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CSTRLEN("$(I)"));
+                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(I)"));
                 bAppendNum = true;
                 iAppendNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
@@ -2880,9 +2880,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszAppendNumPad[0] = '\0';
             }
 
-            else if (StrCmpNA(p, "$(0I)", CSTRLEN("$(0I)")) == 0) {
+            else if (StrCmpNA(p, "$(0I)", CONSTSTRGLEN("$(0I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CSTRLEN("$(0I)"));
+                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(0I)"));
                 bAppendNum = true;
                 iAppendNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
@@ -2891,9 +2891,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszAppendNumPad[0] = '0';
             }
 
-            else if (StrCmpNA(p, "$(N)", CSTRLEN("$(N)")) == 0) {
+            else if (StrCmpNA(p, "$(N)", CONSTSTRGLEN("$(N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CSTRLEN("$(N)"));
+                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(N)"));
                 bAppendNum = true;
                 iAppendNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
@@ -2902,9 +2902,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszAppendNumPad[0] = '\0';
             }
 
-            else if (StrCmpNA(p, "$(0N)", CSTRLEN("$(0N)")) == 0) {
+            else if (StrCmpNA(p, "$(0N)", CONSTSTRGLEN("$(0N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CSTRLEN("$(0N)"));
+                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(0N)"));
                 bAppendNum = true;
                 iAppendNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
@@ -2913,9 +2913,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszAppendNumPad[0] = '0';
             }
 
-            else if (StrCmpNA(p, "$(L)", CSTRLEN("$(L)")) == 0) {
+            else if (StrCmpNA(p, "$(L)", CONSTSTRGLEN("$(L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CSTRLEN("$(L)"));
+                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(L)"));
                 bAppendNum = true;
                 iAppendNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
@@ -2924,9 +2924,9 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 pszAppendNumPad[0] = '\0';
             }
 
-            else if (StrCmpNA(p, "$(0L)", CSTRLEN("$(0L)")) == 0) {
+            else if (StrCmpNA(p, "$(0L)", CONSTSTRGLEN("$(0L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CSTRLEN("$(0L)"));
+                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(0L)"));
                 bAppendNum = true;
                 iAppendNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
@@ -2934,7 +2934,7 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
                 }
                 pszAppendNumPad[0] = '0';
             }
-            p += CSTRLEN("$(");
+            p += CONSTSTRGLEN("$(");
             p = StrStrA(p, "$("); // next
         }
     }
@@ -3389,7 +3389,7 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
 //
 void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (Sci_IsMultiOrRectangleSelection()) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -3547,7 +3547,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
 //
 void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     _SAVE_TARGET_RANGE_;
 
     DocPos const iSelStart = Sci_GetSelectionStartEx();
@@ -3690,7 +3690,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 //
 static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos iMaxColumn, bool bSkipEmpty)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     _SAVE_TARGET_RANGE_;
 
@@ -3858,7 +3858,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
 //
 void EditStripFirstCharacter(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (SciCall_IsSelectionEmpty()) {
         return;
@@ -3935,7 +3935,7 @@ void EditStripFirstCharacter(HWND hwnd)
 //
 void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlanksOnly)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (SciCall_IsSelectionEmpty() && !(bIgnoreSelection || bTrailingBlanksOnly)) {
         return;
@@ -4228,7 +4228,7 @@ void EditCompressBlanks()
 //
 void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (Sci_IsMultiOrRectangleSelection()) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -4307,7 +4307,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
 //
 void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (Sci_IsMultiOrRectangleSelection()) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -4644,7 +4644,7 @@ void EditWrapToColumn(DocPosU nColumn)
 //
 void EditWrapToColumnForce(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (Sci_IsMultiOrRectangleSelection()) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -4679,7 +4679,7 @@ void EditWrapToColumnForce(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
 //
 void EditSplitLines(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     _SAVE_TARGET_RANGE_;
     _BEGIN_UNDO_ACTION_;
     SciCall_TargetFromSelection();
@@ -5240,7 +5240,7 @@ void EditFixPositions()
 //
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     const DocPos iCurPos = SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_GetAnchor();
@@ -5604,7 +5604,7 @@ static size_t _EditGetFindStrg(HWND hwnd, LPEDITFINDREPLACE lpefr, LPSTR szFind,
 static DocPos  _FindInTarget(LPCSTR szFind, DocPos length, int sFlags,
                              DocPos* begin, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
-    UNUSED(bForceNext);
+    UNREFERENCED_PARAMETER(bForceNext);
 
     DocPos iPos = -1LL; // not found
 
@@ -7216,7 +7216,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInf
 //
 void EditClearAllOccurrenceMarkers(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     Globals.iMarkOccurrencesCount = 0;
 
     _IGNORE_NOTIFY_CHANGE_;
@@ -7236,7 +7236,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 //
 void EditClearAllBookMarks(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     int const bitmask = OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
     DocLn const line = SciCall_MarkerNext(0, bitmask);
     if (line >= 0) {
@@ -7876,7 +7876,7 @@ void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines)
 //
 void EditBookMarkLineRange(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     // get next free bookmark
     int marker;
     for (marker = MARKER_NP3_1; marker < MARKER_NP3_BOOKMARK; ++marker) { // all(!)
@@ -7929,7 +7929,7 @@ void EditDeleteMarkerInSelection()
 //
 static bool _HighlightIfBrace(const HWND hwnd, const DocPos iPos)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     if (iPos < 0) {
         // clear indicator
         SciCall_BraceBadLight(INVALID_POSITION);
@@ -7981,7 +7981,7 @@ void EditMatchBrace(HWND hwnd)
 //
 static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     switch(umsg) {
     case WM_INITDIALOG: {
@@ -9069,7 +9069,7 @@ bool EditSortDlg(HWND hwnd,int* piSortFlags)
 //
 void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     Settings.AccelWordNavigation = bAccelWordNav;
     if (Settings.AccelWordNavigation) {
         SciCall_SetWordChars(WordCharsAccelerated);
@@ -9087,7 +9087,7 @@ void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
 //
 void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     WCHAR tchLine[32];
     StringCchCopyW(pszBookMarks, cchLength, L"");
     int const bitmask = (1 << MARKER_NP3_BOOKMARK);
@@ -9111,7 +9111,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
 //
 void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     WCHAR lnNum[32];
     const WCHAR* p1 = pszBookMarks;
     if (!p1) {
@@ -9144,7 +9144,7 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 //
 void EditBookmarkNext(HWND hwnd, const DocLn iLine)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
     if (!bitmask) {
         bitmask = (1 << MARKER_NP3_BOOKMARK);
@@ -9172,7 +9172,7 @@ void EditBookmarkNext(HWND hwnd, const DocLn iLine)
 //
 void EditBookmarkPrevious(HWND hwnd, const DocLn iLine)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
     if (!bitmask) {
         bitmask = (1 << MARKER_NP3_BOOKMARK);
@@ -9201,7 +9201,7 @@ void EditBookmarkPrevious(HWND hwnd, const DocLn iLine)
 //
 void EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     int const bitmask = SciCall_MarkerGet(ln) & OCCURRENCE_MARKER_BITMASK();
     if (!bitmask) {
         SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set

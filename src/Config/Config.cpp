@@ -2644,7 +2644,7 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
 #else
 static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
 {
-    UNUSED(docOptions);
+    UNREFERENCED_PARAMETER(docOptions);
     if (!lpstrText || (lenText == 0)) {
         SciCall_ClearAll();
     } else {

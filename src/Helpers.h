@@ -46,11 +46,10 @@
 #define _STRG(s)  _STRINGIFY(s)
 #endif
 
-#define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)
 //#define ARRAYSIZE(A) (assert(!(sizeof(A) % sizeof(*(A)))), (sizeof(A) / sizeof((A)[0])))
 #define COUNTOF(ar) ARRAYSIZE(ar)
-#define CSTRLEN(s)  (COUNTOF(s)-1)
+#define CONSTSTRGLEN(s)  (COUNTOF(s)-1)
 
 #define NOOP ((void)0)
 
@@ -233,7 +232,7 @@ inline int SetModeBkColor(const HDC hdc, const bool bDarkMode)
 #ifdef D_NP3_WIN10_DARK_MODE
     return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_WINDOW));
 #else
-    UNUSED(bDarkMode);
+    UNREFERENCED_PARAMETER(bDarkMode);
     return SetBkColor(hdc, GetSysColor(COLOR_WINDOW));
 #endif
 }
@@ -243,7 +242,7 @@ inline int SetModeBtnFaceColor(const HDC hdc, const bool bDarkMode)
 #ifdef D_NP3_WIN10_DARK_MODE
     return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBtnFaceColor : GetSysColor(COLOR_BTNFACE));
 #else
-    UNUSED(bDarkMode);
+    UNREFERENCED_PARAMETER(bDarkMode);
     return SetBkColor(hdc, GetSysColor(COLOR_BTNFACE));
 #endif
 }
@@ -253,7 +252,7 @@ inline COLORREF GetModeBkColor(const bool bDarkMode)
 #ifdef D_NP3_WIN10_DARK_MODE
     return bDarkMode ? Settings2.DarkModeBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
 #else
-    UNUSED(bDarkMode);
+    UNREFERENCED_PARAMETER(bDarkMode);
     return (COLORREF)GetSysColor(COLOR_WINDOW);
 #endif
 }
@@ -263,7 +262,7 @@ inline COLORREF GetModeBtnfaceColor(const bool bDarkMode)
 #ifdef D_NP3_WIN10_DARK_MODE
     return bDarkMode ? Settings2.DarkModeBtnFaceColor : (COLORREF)GetSysColor(COLOR_BTNFACE);
 #else
-    UNUSED(bDarkMode);
+    UNREFERENCED_PARAMETER(bDarkMode);
     return (COLORREF)GetSysColor(COLOR_BTNFACE);
 #endif
 }
@@ -274,7 +273,7 @@ inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
 #ifdef D_NP3_WIN10_DARK_MODE
     return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_BTNTEXT));
 #else
-    UNUSED(bDarkMode);
+    UNREFERENCED_PARAMETER(bDarkMode);
     return SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
 #endif
 }
@@ -284,7 +283,7 @@ inline COLORREF GetModeTextColor(const bool bDarkMode)
 #ifdef D_NP3_WIN10_DARK_MODE
     return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_BTNTEXT);
 #else
-    UNUSED(bDarkMode);
+    UNREFERENCED_PARAMETER(bDarkMode);
     return (COLORREF)GetSysColor(COLOR_BTNTEXT);
 #endif
 }
@@ -808,22 +807,22 @@ inline bool PathIsExistingFile(LPCWSTR pszPath)
 // so switch back to previous (deprecated) methods:
 inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)
 {
-    UNUSED(l);
+    UNREFERENCED_PARAMETER(l);
     return (PathAppend(p,a) ? S_OK : E_FAIL);
 }
 inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)
 {
-    UNUSED(l);
+    UNREFERENCED_PARAMETER(l);
     return (PathCanonicalize(p,a) ? S_OK : E_FAIL);
 }
 inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a)
 {
-    UNUSED(l);
+    UNREFERENCED_PARAMETER(l);
     return (PathRenameExtension(p,a) ? S_OK : E_FAIL);
 }
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)
 {
-    UNUSED(l);
+    UNREFERENCED_PARAMETER(l);
     return (PathRemoveFileSpec(p) ? S_OK : E_FAIL);
 }
 

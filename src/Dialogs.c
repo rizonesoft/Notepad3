@@ -212,7 +212,7 @@ DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
     }
     return MsgBoxLastError(lpszMessage, dwErrID);
 #else
-    UNUSED(lpszMessage);
+    UNREFERENCED_PARAMETER(lpszMessage);
     return dwErrID;
 #endif
 }
@@ -556,7 +556,7 @@ void DisplayCmdLineHelp(HWND hwnd)
 
 static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     switch (umsg) {
     case WM_INITDIALOG: {
@@ -643,7 +643,7 @@ INT_PTR DisplayCmdLineHelp(HWND hwnd)
 //
 int CALLBACK BFFCallBack(HWND hwnd, UINT umsg, LPARAM lParam, LPARAM lpData)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
     switch (umsg) {
     case BFFM_INITIALIZED:
         SetDialogIconNP3(hwnd);
@@ -1288,8 +1288,8 @@ CASE_WM_CTLCOLOR_SET:
                 ExpandEnvironmentStringsEx(arg1, COUNTOF(arg1));
                 ExtractFirstArgument(arg1, arg1, arg2, MAX_PATH);
 
-                if (StringCchCompareNI(arg1, COUNTOF(arg1), _W(SAPPNAME), CSTRLEN(_W(SAPPNAME))) == 0 ||
-                        StringCchCompareNI(arg1, COUNTOF(arg1), L"Notepad3.exe", CSTRLEN(L"Notepad3.exe")) == 0) {
+                if (StringCchCompareNI(arg1, COUNTOF(arg1), _W(SAPPNAME), CONSTSTRGLEN(_W(SAPPNAME))) == 0 ||
+                    StringCchCompareNI(arg1, COUNTOF(arg1), _W(SAPPNAME) L".exe", CONSTSTRGLEN(_W(SAPPNAME) L".exe")) == 0) {
                     GetModuleFileName(NULL, arg1, COUNTOF(arg1));
                     PathCanonicalizeEx(arg1, COUNTOF(arg1));
                     bQuickExit = true;

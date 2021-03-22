@@ -116,7 +116,6 @@ void SetNotifyIconTitle(HWND hwnd);
 void InstallFileWatching(const bool bInstall);
 //bool GetDocModified();
 void SetSavePoint();
-void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 void ParseCommandLine();
@@ -139,8 +138,8 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyChangeEvent();
-#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); ObserveNotifyChangeEvent(); } }
+#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent();
+#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); ObserveNotifyDocChangedEvent(); } }
 
 void HandlePosChange();
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
@@ -190,10 +189,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 
-void IgnoreNotifyChangeEvent();
-void ObserveNotifyChangeEvent();
-#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent();
-#define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
+void IgnoreNotifyDocChangedEvent();
+void ObserveNotifyDocChangedEvent();
+#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyDocChangedEvent();
+#define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyDocChangedEvent(); }
 
 
 #define BeginWaitCursor(cond,text)   if (cond) { __try { SciCall_SetCursor(SC_CURSORWAIT);  StatusSetText(Globals.hwndStatus, STATUS_HELP, (text));
