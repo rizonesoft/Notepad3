@@ -178,6 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "ファイルが他のプログラムによって変更されました。再読み込みしますか？"
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか？"
+    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
     IDS_MUI_SAVEDSETTINGS   "設定が保存されました。"
     IDS_MUI_CREATEINI_FAIL  "設定ファイルの作成に失敗しました。"

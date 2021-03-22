@@ -178,6 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "चालू फ़ाईल एक बाहरी प्रोग्राम द्वारा परिवर्तित हो चुकी है। पुनः लोड करें?"
     IDS_MUI_FILECHANGENOTIFY2 "चालू फ़ाईल मिटा दी गई है। अभी सहेजें?"
+    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky विंडो की स्तिथि सक्षम है. कोई भी नई Notepad3 विंडो इस विंडो की स्तिथि सेटिंग को प्रयोग मे लेगी."
     IDS_MUI_SAVEDSETTINGS   "चालू प्रोग्राम सेटिंग सहेजी जा चुकी हैं."
     IDS_MUI_CREATEINI_FAIL  "कन्फ़िगरेशन फ़ाईल बनाने में त्रुटि."
