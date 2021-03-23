@@ -65,6 +65,7 @@ BEGIN
         MENUITEM "Stoor met oorspronklike lêer &Datum/Tyd\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "&Lees net",                               IDM_FILE_READONLY
+        MENUITEM "&Lock File (Read-Shared)",                IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Stel Enkripsie &Wagwoordfrase...",        IDM_SETPASS
         MENUITEM SEPARATOR

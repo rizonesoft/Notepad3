@@ -65,8 +65,9 @@ BEGIN
         MENUITEM "मूल प्रति के दिनाँक/समय में सहेजें (&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "केवल पढ़ने योग्य (&R)",                             IDM_FILE_READONLY
+        MENUITEM "&Lock File (Read-Shared)",                      IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "एन्क्रिप्शन पासफ्रेज़ तैयार करें (&Y)...",          IDM_SETPASS
+        MENUITEM "एन्क्रिप्शन पासफ्रेज़ तैयार करें (&Y)...",                 IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "क्लिपबोर्ड का स्थान (&D)"
         BEGIN

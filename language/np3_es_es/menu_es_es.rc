@@ -65,8 +65,9 @@ BEGIN
         MENUITEM "Guardar con &fecha/hora original del archivo\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "Sólo &lectura",                                 IDM_FILE_READONLY
+        MENUITEM "&Bloquear Archivo (Lectura-Compartido)",        IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "&Establecer contraseña de cifrado...",           IDM_SETPASS
+        MENUITEM "&Establecer contraseña de cifrado...",          IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "Ruta al portapapeles"
         BEGIN
