@@ -40,6 +40,7 @@ Current BETA/RC Version 5.21.323.(build_#) (2021-03-23)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.323.1]- Decorator styling for Python files.
 [.321.1]- Experimental DarkMode support for Win10 Insider 21Hx Dev-Preview.
 [.321.1]- Exclusive File Lock option.
 [.301.1]- About Dlg: version info for split-off Lexilla component.
@@ -51,6 +52,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.323.1]- Style color for triple strings in Python Lexer.
 [.316.1]- Cleanup lexilla component.
 [.311.1]- Using some more Scintilla direct call methods instead of SendMessage() thread independent calls. (SCI).
 [.311.1]- Refactoring for splitting Lexilla from Scintilla (SCI).
