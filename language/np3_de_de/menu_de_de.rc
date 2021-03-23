@@ -65,6 +65,7 @@ BEGIN
         MENUITEM "Speichern mit Original &Zeitstempel\tCtrl+Alt+F6",  IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "&Nur lesend",                             IDM_FILE_READONLY
+        MENUITEM "&Sperre Datei (Gemeinsam-Lesend)",        IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "&Verschlüsselungs Passwort...",           IDM_SETPASS
         MENUITEM SEPARATOR

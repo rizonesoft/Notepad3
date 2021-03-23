@@ -3642,6 +3642,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;
     }
 
+    bool const cf = StrIsNotEmpty(Paths.CurrentFile);
     bool const sav = Globals.bCanSaveIniFile;
     bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
     bool const faro = s_bFileReadOnly;     // file attrib read-only
@@ -3652,7 +3653,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const pst = SciCall_CanPaste();
     bool const se = SciCall_IsSelectionEmpty();
     bool const mrs = Sci_IsMultiOrRectangleSelection();
-    bool const cf = StrIsNotEmpty(Paths.CurrentFile);
     bool const te = Sci_IsDocEmpty();
     bool const mls = Sci_IsSelectionMultiLine();
     //bool const lfl = Flags.bHugeFileLoadState;
@@ -3684,6 +3684,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_FILE_READONLY, faro);
     CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
+
+    EnableCmd(hmenu, IDM_FILE_LOCK_SHARE_READ, cf);
+    CheckCmd(hmenu, IDM_FILE_LOCK_SHARE_READ, (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK));
 
     EnableCmd(hmenu, IDM_ENCODING_UNICODEREV, !ro);
     EnableCmd(hmenu, IDM_ENCODING_UNICODE, !ro);
@@ -4216,6 +4219,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             }
             UpdateToolbar();
         }
+        break;
+
+
+    case IDM_FILE_LOCK_SHARE_READ:
+        InstallFileWatching(false);
+        if (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK) {
+            FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+        } else {
+            FileWatching.FileWatchingMode = FWM_EXCLUSIVELOCK;
+        }
+        InstallFileWatching(true);
         break;
 
 
@@ -11405,7 +11419,7 @@ void InstallFileWatching(const bool bInstall) {
 
             _hCurrFileHandle = CreateFile(Paths.CurrentFile,
                 GENERIC_READ | GENERIC_WRITE,
-                0, // 0 => NO FILE_SHARE_RW
+                FILE_SHARE_READ, // 0 => NO FILE_SHARE_RW
                 NULL,
                 OPEN_EXISTING,
                 FILE_ATTRIBUTE_NORMAL,
