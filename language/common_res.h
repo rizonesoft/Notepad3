@@ -505,6 +505,7 @@
 #define IDM_FILE_RECENT                 40023
 #define IDM_FILE_EXIT                   40024
 #define IDM_FILE_PRESERVE_FILEMODTIME   40025
+#define IDM_FILE_LOCK_SHARE_READ        40026
 
 #define IDM_ENCODING_ANSI               40100
 #define IDM_ENCODING_UNICODE            40101
