@@ -176,9 +176,6 @@
     <ClCompile Include="lexers\LexProps.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="lexers\LexPython.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexR.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -256,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="lexlib\WordList.cxx">
       <Filter>lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexPython.cxx">
+      <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

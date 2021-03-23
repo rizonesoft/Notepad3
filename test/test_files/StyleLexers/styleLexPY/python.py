@@ -15,6 +15,9 @@ from datetime import datetime
 
 # =============================================================================
 
+X = 'blah'
+LOG_TEST = rf"test{X}test"
+
 WRITE_TO_LOGFILE = False
 DEFAULT_LOG_LEVEL = logging.INFO
 LOG_DIR_CONFIG_FILENAME = "_DBMIG_TMP_DIR_CFG.ini"

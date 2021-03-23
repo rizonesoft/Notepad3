@@ -974,6 +974,7 @@ void Style_SetLexerSpecificProperties(const int lexerId)
 
     case SCLEX_PYTHON:
         SciCall_SetProperty("tab.timmy.whinge.level", "1");
+        SciCall_SetProperty("lexer.python.strings.f", "1");
         break;
 
     case SCLEX_XML:
