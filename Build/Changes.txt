@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.321.(build_#) (2021-03-21)
+Current BETA/RC Version 5.21.323.(build_#) (2021-03-23)
 ========================================================
 
 --------------------------------------------------------
@@ -69,8 +69,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.321.1]- "Regression with vertical slope definition.
-[.321.1]- "Some regressions around external file change notification.
+[.323.1]- Lexer "Python": fixing Format-Strings (f-strings).
+[.321.1]- Regression with vertical slope definition.
+[.321.1]- Some regressions around external file change notification.
 [.316.1]- "grepWinNP3" Language-ID "[xx-YY]" exceeds 5 chars (e.g. [es-419]) (MUI).
 [.312.2]- Limit ChooseFont Dlg to CF_SCALABLEONLY for DirectWrite Technology.
 [.312.1]- Rectangular selection typing issue.
