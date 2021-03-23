@@ -65,7 +65,7 @@ BEGIN
         MENUITEM "Opslaan met originele bestands&datum/-tijd\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "&Alleen-lezen",                           IDM_FILE_READONLY
-        MENUITEM "&Bestand Vergrendelen (Lezen-Delen)",     IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "&Vergrendelen Bestand (Lezen-Delen)",     IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Instellen encryptie wachtwoord...",       IDM_SETPASS
         MENUITEM SEPARATOR
