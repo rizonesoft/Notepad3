@@ -65,6 +65,7 @@ BEGIN
         MENUITEM "使用原始修改時間儲存(&M)\tCtrl+Alt+F6",            IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "檔案唯讀(&R)",                                  IDM_FILE_READONLY
+        MENUITEM "&Lock File (Read-Shared)",                     IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "設定加密密碼(&Y)...",                           IDM_SETPASS
         MENUITEM SEPARATOR

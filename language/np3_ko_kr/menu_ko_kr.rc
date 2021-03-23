@@ -65,6 +65,7 @@ BEGIN
         MENUITEM "원본 파일 날짜/시간으로 저장(&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "읽기 전용(&R)",                             IDM_FILE_READONLY
+        MENUITEM "&Lock File (Read-Shared)",                 IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
