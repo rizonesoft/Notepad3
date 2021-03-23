@@ -135,26 +135,12 @@ static LPWSTR    s_lpFileList[FILE_LIST_SIZE] = { NULL };
 static int       s_cFileList = 0;
 static int       s_cchiFileList = 0;
 
-
-static HANDLE    s_hEventNotifyFileChangeExternal = INVALID_HANDLE_VALUE;
-
-static inline bool isExternalChangeNotifyAllowed() {
-    return (WaitForSingleObject(s_hEventNotifyFileChangeExternal, 0) == WAIT_OBJECT_0);
-}
-static inline void disableExternalChangeNotify() { 
-    ResetEvent(s_hEventNotifyFileChangeExternal);
-}
-static inline void enableExternalChangeNotify() { 
-    SetEvent(s_hEventNotifyFileChangeExternal);
-}
-
 static bool      s_bFileReadOnly = false;
 
 static int       s_iSortOptions = 0;
 static int       s_iAlignMode = 0;
 static bool      s_bIsAppThemed = true;
 static UINT      s_msgTaskbarCreated = 0;
-static DWORD     s_dwChangeNotifyTime = 0;
 static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 static UINT      s_uidsAppTitle = IDS_MUI_APPTITLE;
 static DWORD     s_dwLastCopyTime = 0;
@@ -399,28 +385,40 @@ static void  _SplitUndoTransaction(const int iModType);
 static void  _DelayClearCallTip(int delay);
 static void  _DelaySplitUndoTransaction(int delay, int iModType);
 
-//=============================================================================
-//
-//  IgnoreNotifyChangeEvent(), ObserveNotifyChangeEvent(), CheckNotifyChangeEvent()
-//
+// ----------------------------------------------------------------------------
+
+static HANDLE s_hEventNotifyFileChanged = INVALID_HANDLE_VALUE;
+
+static __forceinline bool isFileChangeNotifyAllowed() {
+    return (WaitForSingleObject(s_hEventNotifyFileChanged, 0) == WAIT_OBJECT_0);
+}
+static __forceinline void disableFileChangeNotify() {
+    ResetEvent(s_hEventNotifyFileChanged);
+}
+static __forceinline void enableFileChangeNotify() {
+    SetEvent(s_hEventNotifyFileChanged);
+}
+
+// ----------------------------------------------------------------------------
+
 static volatile LONG iNotifyChangeStackCounter = 0L;
 
-static __forceinline bool CheckNotifyChangeEvent()
+static __forceinline bool CheckNotifyDocChangedEvent()
 {
     return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
 }
 
-void IgnoreNotifyChangeEvent()
+void IgnoreNotifyDocChangedEvent()
 {
     InterlockedIncrement(&iNotifyChangeStackCounter);
 }
 
-void ObserveNotifyChangeEvent()
+void ObserveNotifyDocChangedEvent()
 {
-    if (!CheckNotifyChangeEvent()) {
+    if (!CheckNotifyDocChangedEvent()) {
         InterlockedDecrement(&iNotifyChangeStackCounter);
     }
-    if (CheckNotifyChangeEvent()) {
+    if (CheckNotifyDocChangedEvent()) {
         EditUpdateVisibleIndicators();
         UpdateStatusbar(false);
     }
@@ -486,7 +484,7 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 }
 // ----------------------------------------------------------------------------
 
-/* UNUSED yet
+/* Not used yet
 static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 {
   CmdMessageQueue_t* pmqc;
@@ -511,10 +509,10 @@ static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 //
 static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-    UNUSED(hwnd);    // must be main window handle
-    UNUSED(uMsg);    // must be WM_TIMER
-    UNUSED(idEvent); // must be IDT_TIMER_MRKALL
-    UNUSED(dwTime);  // This is the value returned by the GetTickCount function
+    UNREFERENCED_PARAMETER(hwnd);    // must be main window handle
+    UNREFERENCED_PARAMETER(uMsg);    // must be WM_TIMER
+    UNREFERENCED_PARAMETER(idEvent); // must be IDT_TIMER_MRKALL
+    UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
 
     CmdMessageQueue_t* pmqc;
 
@@ -811,8 +809,8 @@ void InvalidParameterHandler(const wchar_t* expression,
                              unsigned int   line,
                              uintptr_t      pReserved)
 {
-    UNUSED(expression);
-    UNUSED(pReserved);
+    UNREFERENCED_PARAMETER(expression);
+    UNREFERENCED_PARAMETER(pReserved);
     WCHAR msg[256];
     StringCchPrintf(msg, COUNTOF(msg),
                     L"Invalid Parameter in function '%s()' - File:'%s' Line:%i !",
@@ -1352,7 +1350,7 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
 //
 HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 {
-    UNUSED(pszCmdLine);
+    UNREFERENCED_PARAMETER(pszCmdLine);
 
     g_IniWinInfo = GetWinInfoByFlag(Globals.CmdLnFlag_WindowPos);
     s_WinCurrentWidth = g_IniWinInfo.cx;
@@ -1383,8 +1381,8 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
 
-    // manual reset und initilly signaled (TRUE , TRUE)
-    s_hEventNotifyFileChangeExternal = CreateEvent(NULL, TRUE, TRUE, NULL);
+    // manual reset und initially signaled (TRUE , TRUE)
+    s_hEventNotifyFileChanged = CreateEvent(NULL, TRUE, TRUE, NULL);
 
     SetDialogIconNP3(Globals.hwndMain);
     InitWindowCommon(Globals.hwndMain, true);
@@ -1867,7 +1865,7 @@ static void  _SetWrapIndentMode()
 //
 static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 {
-    UNUSED(hwndEditCtrl);
+    UNREFERENCED_PARAMETER(hwndEditCtrl);
 
     if (Settings.ShowWordWrapSymbols) {
         int wrapVisualFlags = 0;
@@ -2215,7 +2213,7 @@ static void _InitEditWndFrame()
 //
 LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
-    UNUSED(wParam);
+    UNREFERENCED_PARAMETER(wParam);
 
 #ifdef D_NP3_WIN10_DARK_MODE
     if (IsDarkModeSupported()) {
@@ -2299,7 +2297,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     Encoding_Current(Settings.DefaultEncoding);
 
-    ObserveNotifyChangeEvent();
+    ObserveNotifyDocChangedEvent();
 
     if (g_IniWinInfo.zoom) {
         SciCall_SetZoom(g_IniWinInfo.zoom);
@@ -2315,7 +2313,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 bool SelectExternalToolBar(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     WCHAR szArgs[MAX_PATH] = { L'\0' };
     WCHAR szArg2[MAX_PATH] = { L'\0' };
@@ -2762,8 +2760,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 //
 LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(wParam);
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(wParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     static bool bShutdownOK = false;
 
@@ -2793,6 +2791,10 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         // Remove tray icon if necessary
         ShowNotifyIcon(hwnd, false);
 
+        if (IS_VALID_HANDLE(s_hEventNotifyFileChanged)) {
+            CloseHandle(s_hEventNotifyFileChanged);
+        }
+
         bShutdownOK = true;
     }
 
@@ -2815,7 +2817,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //DPI_T dpi;
     //dpi.x = LOWORD(wParam);
     //dpi.y = HIWORD(wParam);
-    UNUSED(wParam);
+    UNREFERENCED_PARAMETER(wParam);
     //const RECT* const rc = (RECT*)lParam;
 
     DocPos const pos = SciCall_GetCurrentPos();
@@ -2838,8 +2840,8 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
-    UNUSED(lParam);
-    UNUSED(wParam);
+    UNREFERENCED_PARAMETER(lParam);
+    UNREFERENCED_PARAMETER(wParam);
 
 #ifdef D_NP3_WIN10_DARK_MODE
     AllowDarkModeForWindowEx(hwnd, UseDarkMode());
@@ -2892,7 +2894,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (wParam == SIZE_MINIMIZED) {
         return FALSE;
@@ -2961,7 +2963,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (LOWORD(wParam) == IDC_STATUSBAR) { // Statusbar SB_SETTEXT caused parent's WM_DRAWITEM message
         const DRAWITEMSTRUCT* const pDIS = (const DRAWITEMSTRUCT* const)lParam;
@@ -3022,7 +3024,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     WCHAR szDropStrgBuf[MAX_PATH + 40];
     HDROP hDrop = (HDROP)wParam;
@@ -3070,7 +3072,7 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
     DWORD dwEffect = DROPEFFECT_NONE;
 
     //HWND hEditWnd = (HWND)pUserData;
-    UNUSED(pUserData);
+    UNREFERENCED_PARAMETER(pUserData);
 
     if (cf == CF_HDROP) {
         WCHAR szBuf[MAX_PATH + 40];
@@ -3097,8 +3099,8 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
         dwEffect = DROPEFFECT_COPY;
     }
 
-    UNUSED(dwKeyState);
-    UNUSED(pt);
+    UNREFERENCED_PARAMETER(dwKeyState);
+    UNREFERENCED_PARAMETER(pt);
 
     return dwEffect;
 }
@@ -3111,7 +3113,7 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 //
 LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(wParam);
+    UNREFERENCED_PARAMETER(wParam);
 
     PCOPYDATASTRUCT pcds = (PCOPYDATASTRUCT)lParam;
 
@@ -3339,8 +3341,8 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(wParam);
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(wParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     DocPos const iCurPos = SciCall_GetCurrentPos();
 
@@ -3367,7 +3369,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        if (!isExternalChangeNotifyAllowed()) {
+        if (!isFileChangeNotifyAllowed()) {
             InstallFileWatching(true);
         }
 
@@ -3393,7 +3395,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(wParam);
+    UNREFERENCED_PARAMETER(wParam);
 
     switch (lParam) {
     case WM_RBUTTONUP: {
@@ -3633,7 +3635,7 @@ static bool _GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
 //
 LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     HMENU const hmenu = wParam ? (HMENU)wParam : GetMenu(hwnd);
     if (!hmenu) {
@@ -7781,7 +7783,7 @@ static bool s_tb_reset_already = false;
 
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(wParam);
+    UNREFERENCED_PARAMETER(wParam);
     LRESULT result = FALSE;
 
     static bool _guard = false;
@@ -7790,7 +7792,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     const SCNotification* const scn = (SCNotification*)lParam;
 
-    if (!CheckNotifyChangeEvent()) {
+    if (!CheckNotifyDocChangedEvent()) {
         bool bModified = false;
         result = _MsgNotifyLean(scn, &bModified);
     }
@@ -8080,16 +8082,16 @@ void ParseCommandLine()
                     s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
                 }
                 // Shell integration
-                else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0) {
+                else if (StrCmpNI(lp1, L"appid=", CONSTSTRGLEN(L"appid=")) == 0) {
                     StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
-                                   lp1 + CSTRLEN(L"appid="), len - CSTRLEN(L"appid="));
+                                   lp1 + CONSTSTRGLEN(L"appid="), len - CONSTSTRGLEN(L"appid="));
                     StrTrim(Settings2.AppUserModelID, L" ");
                     if (StrIsEmpty(Settings2.AppUserModelID)) {
                         StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft.") _W(SAPPNAME));
                     }
-                } else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
+                } else if (StrCmpNI(lp1, L"sysmru=", CONSTSTRGLEN(L"sysmru=")) == 0) {
                     WCHAR wch[16];
-                    StringCchCopyN(wch, COUNTOF(wch), lp1 + CSTRLEN(L"sysmru="), COUNTOF(wch));
+                    StringCchCopyN(wch, COUNTOF(wch), lp1 + CONSTSTRGLEN(L"sysmru="), COUNTOF(wch));
                     StrTrim(wch, L" ");
                     if (*wch == L'1') {
                         Globals.CmdLnFlag_ShellUseSystemMRU = 2;
@@ -8098,9 +8100,9 @@ void ParseCommandLine()
                     }
                 }
                 // Relaunch elevated
-                else if (StrCmpNI(lp1, RELAUNCH_ELEVATED_BUF_ARG, CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG)) == 0) {
+                else if (StrCmpNI(lp1, RELAUNCH_ELEVATED_BUF_ARG, CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG)) == 0) {
                     StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
-                                   lp1 + CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG));
+                                   lp1 + CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG));
                     TrimSpcW(s_wchTmpFilePath);
                     NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, Flags.bSearchPathIfRelative);
                     s_IsThisAnElevatedRelaunch = true;
@@ -8156,10 +8158,10 @@ void ParseCommandLine()
 
                     case L'P': {
                         WCHAR* lp = lp1;
-                        if (StrCmpNI(lp1, L"POS:", CSTRLEN(L"POS:")) == 0) {
-                            lp += CSTRLEN(L"POS:") - 1;
-                        } else if (StrCmpNI(lp1, L"POS", CSTRLEN(L"POS")) == 0) {
-                            lp += CSTRLEN(L"POS") - 1;
+                        if (StrCmpNI(lp1, L"POS:", CONSTSTRGLEN(L"POS:")) == 0) {
+                            lp += CONSTSTRGLEN(L"POS:") - 1;
+                        } else if (StrCmpNI(lp1, L"POS", CONSTSTRGLEN(L"POS")) == 0) {
+                            lp += CONSTSTRGLEN(L"POS") - 1;
                         } else if (*(lp1 + 1) == L':') {
                             lp += 1;
                         } else if (bIsNotepadReplacement) {
@@ -11189,10 +11191,10 @@ void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
         s_dwLastCopyTime = 0;
     }
 
-    UNUSED(dwTime);
-    UNUSED(idEvent);
-    UNUSED(uMsg);
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(dwTime);
+    UNREFERENCED_PARAMETER(idEvent);
+    UNREFERENCED_PARAMETER(uMsg);
+    UNREFERENCED_PARAMETER(hwnd);
 }
 //=============================================================================
 
@@ -11203,16 +11205,6 @@ void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 //  InstallFileWatching()
 //
 //=============================================================================
-
-static inline void NotifyChangeEvent() {
-    if (isExternalChangeNotifyAllowed()) {
-        disableExternalChangeNotify();
-        KillTimer(NULL, ID_WATCHTIMER);
-        PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
-    }
-    s_dwChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
-}
-
 
 static WIN32_FIND_DATA s_fdCurFile = { 0 };
 
@@ -11232,8 +11224,25 @@ static inline bool IsCurrentFileChanged() {
 }
 // ----------------------------------------------------------------------------
 
+static DWORD s_dwFileChangeNotifyTime = 0UL;
+
+static inline void NotifyChangeEvent(const bool bCheckChg) {
+    if (isFileChangeNotifyAllowed()) {
+        if (!bCheckChg || IsCurrentFileChanged()) {
+            disableFileChangeNotify();
+            KillTimer(NULL, ID_WATCHTIMER);
+            PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
+        }
+    }
+    // reset AutoReloadTimeout interval
+    if (s_dwFileChangeNotifyTime) {
+        s_dwFileChangeNotifyTime = GetTickCount();
+    }
+}
+// ----------------------------------------------------------------------------
 
 
+static DWORD const dwObservingTimeout = 240UL; // then check for done
 static HANDLE s_hEventObserverDone = INVALID_HANDLE_VALUE;
 
 static unsigned __stdcall FileChangeObserver(void * pArg) {
@@ -11248,13 +11257,14 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
 
     if (pChangeHandle && IS_VALID_HANDLE(*pChangeHandle)) {
 
+        // not manual (automatic) reset & initial state: not signaled (FALSE, FALSE)
         s_hEventObserverDone = CreateEvent(NULL, FALSE, FALSE, NULL);
 
         if (IS_VALID_HANDLE(s_hEventObserverDone)) {
 
             while (WaitForSingleObject(s_hEventObserverDone, 0) == WAIT_TIMEOUT) {
 
-                DWORD const chgEvt = WaitForSingleObject(*pChangeHandle, 240);
+                DWORD const chgEvt = WaitForSingleObject(*pChangeHandle, dwObservingTimeout);
                 switch (chgEvt) {
                 case WAIT_TIMEOUT:
                     // okay, wait again until done
@@ -11262,9 +11272,7 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
 
                 case WAIT_OBJECT_0:
                     // Check if the changes affect the current file
-                    if (IsCurrentFileChanged()) {
-                        NotifyChangeEvent();
-                    }
+                    NotifyChangeEvent(true);
                     FindNextChangeNotification(*pChangeHandle);
                     break;
 
@@ -11287,20 +11295,45 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
     _endthreadex(0);
     return 0;
 }
+// ----------------------------------------------------------------------------
 
+
+static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+
+    UNREFERENCED_PARAMETER(dwTime);
+    UNREFERENCED_PARAMETER(idEvent);
+    UNREFERENCED_PARAMETER(uMsg);
+    UNREFERENCED_PARAMETER(hwnd);
+
+    if (s_dwFileChangeNotifyTime == 0UL) {
+        // FWM_MSGBOX (polling: FileWatching.FileCheckInverval)
+        // Directory-Observer is not notified for continously updated (log-)files
+        NotifyChangeEvent(true);
+    } else if ((GetTickCount() - s_dwFileChangeNotifyTime) > FileWatching.AutoReloadTimeout) {
+        // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
+        if (FileWatching.MonitoringLog) {
+            // monitoring: reload only on change
+            NotifyChangeEvent(true);
+        } else {
+            // unconditional reload ??? -> NotifyChangeEvent(false);
+            NotifyChangeEvent(true);
+        }
+    }
+}
+// ----------------------------------------------------------------------------
 
 
 void InstallFileWatching(const bool bInstall) {
 
-    static HANDLE _hChangeHandle = INVALID_HANDLE_VALUE;
+    static HANDLE _hChangeHandle = INVALID_HANDLE_VALUE;    // observer
     static HANDLE _hObserverThread = INVALID_HANDLE_VALUE;
-    static HANDLE _hCurrFileHandle = INVALID_HANDLE_VALUE;
+    static HANDLE _hCurrFileHandle = INVALID_HANDLE_VALUE;  // exclusive lock
 
     bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsExistingFile(Paths.CurrentFile);
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
     bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
 
-    disableExternalChangeNotify();
+    disableFileChangeNotify();
 
     // always release exclusive file lock in any case
     if (IS_VALID_HANDLE(_hCurrFileHandle)) {
@@ -11317,15 +11350,21 @@ void InstallFileWatching(const bool bInstall) {
 
         if (IS_VALID_HANDLE(_hObserverThread)) {
             if (IS_VALID_HANDLE(s_hEventObserverDone)) {
-                if (SignalObjectAndWait(s_hEventObserverDone, _hObserverThread, INFINITE, FALSE) == WAIT_OBJECT_0) {
-                    CloseHandle(_hObserverThread);
-                } else {
-                    assert("Fatal Observer Error!" && false);
+                DWORD const wait = SignalObjectAndWait(s_hEventObserverDone, _hObserverThread,
+                    /*INFINITE*/ (dwObservingTimeout << 3), FALSE);
+                if (wait == WAIT_OBJECT_0) {
+                    CloseHandle(_hObserverThread); // ok
+                }
+                else if (wait == WAIT_TIMEOUT) {
                     TerminateThread(_hObserverThread, 0UL);
+                    assert("Observer Timeout Exceeded Error!" && false);
+                } else {
+                    TerminateThread(_hObserverThread, 0UL);
+                    assert("Fatal Observer Error!" && false);
                 }
             } else {
-                assert("Fatal: Invalid Observer Done Handle!" && false);
                 TerminateThread(_hObserverThread, 0UL);
+                assert("Fatal: Invalid Observer Done Handle!" && false);
             }
             _hObserverThread = INVALID_HANDLE_VALUE;
         }
@@ -11356,9 +11395,9 @@ void InstallFileWatching(const bool bInstall) {
                 _hObserverThread = (HANDLE)_beginthreadex(NULL, 0, &FileChangeObserver, (void *)&_hChangeHandle, 0, NULL);
             }
 
+            s_dwFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
             SetTimer(NULL, ID_WATCHTIMER, min_dw(Settings2.FileCheckInverval, FileWatching.AutoReloadTimeout), WatchTimerProc);
-            s_dwChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
-            enableExternalChangeNotify();
+            enableFileChangeNotify();
 
         } else if (bExclusiveLock) {
 
@@ -11383,41 +11422,6 @@ void InstallFileWatching(const bool bInstall) {
         }
     }
     UpdateToolbar();
-}
-
-
-//=============================================================================
-//
-//  WatchTimerProc()
-//
-//
-void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
-{
-    UNUSED(dwTime);
-    UNUSED(idEvent);
-    UNUSED(uMsg);
-    UNUSED(hwnd);
-
-    if (s_dwChangeNotifyTime == 0UL) {
-        // FWM_MSGBOX
-        if (IsCurrentFileChanged()) {
-            NotifyChangeEvent();
-        }
-    } else if ((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout) {
-        // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
-        if (FileWatching.MonitoringLog) {
-            // monitoring: reload only on change
-            if (IsCurrentFileChanged()) {
-                NotifyChangeEvent();
-            }
-        } else {
-            // unconditional reload ???
-            //NotifyChangeEvent();
-            if (IsCurrentFileChanged()) {
-                NotifyChangeEvent();
-            }
-        }
-    }
 }
 
 

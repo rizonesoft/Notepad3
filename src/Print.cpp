@@ -524,7 +524,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 //
 static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     switch (uiMsg) {
     case WM_INITDIALOG: {

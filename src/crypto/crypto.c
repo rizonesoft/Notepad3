@@ -116,7 +116,7 @@ void SetDialogFocus(HWND hDlg, HWND hwndControl)
 // caller (and hence the rest of the encryption) doesn't know unicode was involved.
 INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
     const WCHAR wDot = (WCHAR)0x25CF;
 
     switch (umsg)
@@ -313,7 +313,7 @@ CASE_WM_CTLCOLOR_SET :
 //
 INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(lParam);
+    UNREFERENCED_PARAMETER(lParam);
 
     const WCHAR wDot = (WCHAR)0x25CF;
 
@@ -611,7 +611,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t fileSize, void** result, 
 
 bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_t*written)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     if (IsEncryptionRequired())
     {

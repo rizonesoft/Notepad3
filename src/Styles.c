@@ -974,6 +974,7 @@ void Style_SetLexerSpecificProperties(const int lexerId)
 
     case SCLEX_PYTHON:
         SciCall_SetProperty("tab.timmy.whinge.level", "1");
+        SciCall_SetProperty("lexer.python.strings.f", "1");
         break;
 
     case SCLEX_XML:
@@ -1641,7 +1642,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 //
 void Style_SetUrlHotSpot(HWND hwnd)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 
     WCHAR* lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
     int const cCount = COUNTOF(GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue);
@@ -1695,7 +1696,7 @@ void Style_SetUrlHotSpot(HWND hwnd)
 //
 void Style_SetInvisible(HWND hwnd, bool bInvisible)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
     //SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
     if (bInvisible) {
@@ -1710,7 +1711,7 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
 //
 void Style_SetReadonly(HWND hwnd, bool bReadonly)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     SciCall_StyleSetChangeable(Style_GetReadonlyStyleID(), !bReadonly);
 }
 
@@ -2140,8 +2141,8 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
         WCHAR wchMode[MICRO_BUFFER] = { L'\0' };
         MultiByteToWideCharEx(Encoding_SciCP, 0, Globals.fvCurFile.chMode, -1, wchMode, MICRO_BUFFER);
 
-        if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
-                                  StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
+        if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CONSTSTRGLEN(L"cgi")) == 0 ||
+                                  StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CONSTSTRGLEN(L"fcgi")) == 0)) {
             char tchText[256] = { '\0' };
             SciCall_GetText(COUNTOF(tchText), tchText);
             StrTrimA(tchText," \t\n\r");
@@ -2251,9 +2252,9 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 //
 bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 #if 0
-    UNUSED(lpszFile);
+    UNREFERENCED_PARAMETER(lpszFile);
 #else
     unsigned char buf[5] = { '\0' }; // magic
     SciCall_GetText(COUNTOF(buf), (char*)buf);
@@ -2383,7 +2384,7 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
         s_pLexCurrent = GetCurrentStdLexer(); // sync
     }
     Style_ResetCurrentLexer(Globals.hwndEdit);
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
 }
 
 
@@ -2437,7 +2438,7 @@ bool Style_GetUse2ndDefault()
 //
 void Style_SetIndentGuides(HWND hwnd,bool bShow)
 {
-    UNUSED(hwnd);
+    UNREFERENCED_PARAMETER(hwnd);
     int iIndentView = SC_IV_NONE;
     if (bShow) {
         if (!Flags.SimpleIndentGuides) {
@@ -2574,7 +2575,7 @@ bool Style_StrGetFontName(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
 {
     WCHAR *p = StrStr(lpszStyle, L"font:");
     if (p) {
-        p += CSTRLEN(L"font:");
+        p += CONSTSTRGLEN(L"font:");
         while (*p == L' ') {
             ++p;
         }
@@ -2600,7 +2601,7 @@ bool Style_StrGetFontStyle(LPCWSTR lpszStyle, LPWSTR lpszFontStyle, int cchFontS
 {
     WCHAR* p = StrStr(lpszStyle, L"fstyle:");
     if (p) {
-        p += CSTRLEN(L"fstyle:");
+        p += CONSTSTRGLEN(L"fstyle:");
         while (*p == L' ') {
             ++p;
         }
@@ -2623,7 +2624,7 @@ bool Style_StrGetFontQuality(LPCWSTR lpszStyle, LPWSTR lpszQuality, int cchQuali
 {
     WCHAR *p = StrStr(lpszStyle, L"smoothing:");
     if (p) {
-        p += CSTRLEN(L"smoothing:");
+        p += CONSTSTRGLEN(L"smoothing:");
         while (*p == L' ') {
             ++p;
         }
@@ -2653,7 +2654,7 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
 {
     WCHAR *p = StrStr(lpszStyle, L"charset:");
     if (p) {
-        p += CSTRLEN(L"charset:");
+        p += CONSTSTRGLEN(L"charset:");
         int iValue = 0;
         if (Char2IntW(p, &iValue)) {
             *i = max_i(SC_CHARSET_ANSI, iValue);
@@ -2672,7 +2673,7 @@ bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
 {
     WCHAR *p = StrStr(lpszStyle, L"size:");
     if (p) {
-        p += CSTRLEN(L"size:");
+        p += CONSTSTRGLEN(L"size:");
         return Char2IntW(p, i);
     }
     return false;
@@ -2689,7 +2690,7 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
     if (p) {
         int fSign = 0;
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"size:"));
+        StringCchCopy(tch,COUNTOF(tch),p + CONSTSTRGLEN(L"size:"));
         if (tch[0] == L'+') {
             fSign = 1;
             tch[0] = L' ';
@@ -2728,7 +2729,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
     WCHAR *p = StrStr(lpszStyle, L"size:");
     if (p) {
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch, COUNTOF(tch), (p + CSTRLEN(L"size:")));
+        StringCchCopy(tch, COUNTOF(tch), (p + CONSTSTRGLEN(L"size:")));
         p = StrChr(tch, L';');
         if (p) {
             *p = L'\0';
@@ -2988,7 +2989,7 @@ bool Style_StrGetCase(LPCWSTR lpszStyle, int* i)
 {
     WCHAR *p = StrStr(lpszStyle, L"case:");
     if (p) {
-        p += CSTRLEN(L"case:");
+        p += CONSTSTRGLEN(L"case:");
         p += StrSpn(p, L" ");
         switch (*p) {
         case L'u':
@@ -3264,7 +3265,7 @@ static INT_PTR CALLBACK Style_FontDialogHook(
     LPARAM lParam   // message parameter
 )
 {
-    UNUSED(wParam);
+    UNREFERENCED_PARAMETER(wParam);
     switch (uiMsg) {
     case WM_INITDIALOG: {
         if (Globals.hDlgIconSmall) {
@@ -4045,7 +4046,7 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 static bool  _ApplyDialogItemText(HWND hwnd,
                                   PEDITLEXER pCurrentLexer, PEDITSTYLE pCurrentStyle, int iCurStyleIdx, bool bIsStyleSelected)
 {
-    UNUSED(iCurStyleIdx);
+    UNREFERENCED_PARAMETER(iCurStyleIdx);
 
     bool bChgNfy = false;
 

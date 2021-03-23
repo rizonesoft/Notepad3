@@ -18,7 +18,6 @@
 #define FILEKEY_FORMAT 1		  // next 4 bytes determine version/format
 #define MASTERKEY_FORMAT 2		// format with master key
 #define MASTER_KEY_OFFSET (PREAMBLE_SIZE+AES_MAX_IV_SIZE)
-#define UNUSED(expr) (void)(expr)
 
 #define DECRYPT_SUCCESS 0x00
 #define DECRYPT_FREAD_FAILED 0x01
