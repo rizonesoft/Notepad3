@@ -102,7 +102,7 @@ BEGIN
     IDS_MUI_UNTITLED        "제목 없음"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(읽기 전용)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<배타적>"
     IDS_MUI_LOADFILE        "불러오는 중 ""%s""..."
     IDS_MUI_SAVEFILE        "저장 중""%s""..."
     IDS_MUI_PRINTFILE       "페이지 인쇄 중%i..."
