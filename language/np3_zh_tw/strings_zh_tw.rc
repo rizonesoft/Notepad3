@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s （管理員權限）"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 剪貼簿收集模式"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : 剪貼簿收集模式"
     IDS_MUI_UNTITLED        "未命名"
     IDS_MUI_TITLEEXCERPT    "「%s」"
     IDS_MUI_READONLY        "（唯讀）"

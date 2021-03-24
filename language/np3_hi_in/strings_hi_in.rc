@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (व्यवस्थापक रूप में)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : क्लिपबोर्ड"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : क्लिपबोर्ड"
     IDS_MUI_UNTITLED        "अनामांकित"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(सिर्फ़ पढ़ने के लिए)"

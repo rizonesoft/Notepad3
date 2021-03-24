@@ -342,7 +342,7 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 //  EditSetNewText()
 //
-extern bool bFreezeAppTitle;
+extern bool s_bFreezeAppTitle;
 
 void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bClearUndoHistory)
 {
@@ -350,7 +350,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
         lenText = 0;
     }
 
-    bFreezeAppTitle = true;
+    s_bFreezeAppTitle = true;
 
     // clear markers, flags and positions
     if (FocusedView.HideNonMatchedLines) {
@@ -382,7 +382,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
         UndoRedoRecordingStart();
     }
 
-    bFreezeAppTitle = false;
+    s_bFreezeAppTitle = false;
 }
 
 

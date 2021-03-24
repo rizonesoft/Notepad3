@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Verhoogde)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Knipbord"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Knipbord"
     IDS_MUI_UNTITLED        "Ongetiteld"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Lees Net)"

@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Павышаныя правы)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Буфер абмену"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Буфер абмену"
     IDS_MUI_UNTITLED        "Безыменны"
     IDS_MUI_TITLEEXCERPT    "«%s»"
     IDS_MUI_READONLY        "(Толькі чытанне)"

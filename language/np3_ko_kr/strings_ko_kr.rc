@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (상승된 권한)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 클립보드"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : 클립보드"
     IDS_MUI_UNTITLED        "제목 없음"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(읽기 전용)"

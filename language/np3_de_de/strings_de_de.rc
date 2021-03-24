@@ -97,12 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Erhöhte Rechte)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Zwischenablage"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Zwischenablage"
     IDS_MUI_UNTITLED        "Kein Titel"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Nur Lesen)"
+    IDS_MUI_FILELOCKED      "<Exklusive>"
     IDS_MUI_LOADFILE        "Laden ""%s""..."
     IDS_MUI_SAVEFILE        "Speichern ""%s""..."
     IDS_MUI_PRINTFILE       "Drucken: Seite %i..."
