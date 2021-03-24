@@ -134,7 +134,7 @@ BEGIN
     IDS_LEX_STD_STYLE       "기본 스타일"
     IDS_LEX_STD_MARGIN      "여백 및 줄 번호"
     IDS_LEX_STD_BRACE       "일치하는 중괄호 (표시기)"
-    IDS_LEX_STD_BRACE_FAIL  "중괄호 일치 오류 (표시기)"
+    IDS_LEX_STD_BRACE_FAIL  "일치하는 중괄호 오류 (표시기)"
 END
 
 STRINGTABLE
@@ -149,8 +149,8 @@ BEGIN
     IDS_LEX_STD_X_SPC       "줄 간격 (크기)"
     IDS_LEX_2ND_STYLE       "두 번째 기본 스타일"
     IDS_LEX_2ND_MARGIN      "두 번째 여백 및 줄 번호"
-    IDS_LEX_2ND_BRACE       "두 번째 일치 중괄호 (표시기)"
-    IDS_LEX_2ND_BRACE_FAIL  "두 번째 일치 중괄호 오류(표시기)"
+    IDS_LEX_2ND_BRACE       "두 번째 일치하는 중괄호 (표시기)"
+    IDS_LEX_2ND_BRACE_FAIL  "두 번째 일치하는 중괄호 오류(표시기)"
     IDS_LEX_2ND_CTRL_CHAR   "두 번째 제어 문자 (글꼴)"
     IDS_LEX_2ND_INDENT      "두 번째 들여쓰기 안내선 (색상)"
     IDS_LEX_2ND_SEL         "두 번째 선택한 텍스트 (색상)"
@@ -264,7 +264,7 @@ BEGIN
     IDS_LEX_STR_63202       "중요"
     IDS_LEX_STR_63203       "지시어"
     IDS_LEX_STR_63204       "대상"
-    IDS_LEX_STR_63205       "인라인 Asm"
+    IDS_LEX_STR_63205       "인라인 어셈블리"
     IDS_LEX_STR_63206       "CPU 명령어"
     IDS_LEX_STR_63207       "FPU 명령어"
     IDS_LEX_STR_63208       "레지스터"
@@ -282,7 +282,7 @@ BEGIN
     IDS_LEX_STR_63216       "배열 @var"
     IDS_LEX_STR_63217       "해시 %var"
     IDS_LEX_STR_63218       "기호 테이블 *var"
-    IDS_LEX_STR_63219       "정규식 /re/ or m{re}"
+    IDS_LEX_STR_63219       "정규식 /re/ 또는 m{re}"
     IDS_LEX_STR_63220       "치환 s/re/ore/"
     IDS_LEX_STR_63221       "역따옴표"
     IDS_LEX_STR_63222       "데이터 섹션"
@@ -290,7 +290,7 @@ BEGIN
     IDS_LEX_STR_63224       "Here-Doc (작은 따옴표, q)"
     IDS_LEX_STR_63225       "Here-Doc (큰 따옴표, qq)"
     IDS_LEX_STR_63226       "Here-Doc (역 따옴표, qx)"
-    IDS_LEX_STR_63227       "작은따옴표 문자열 (generic, q)"
+    IDS_LEX_STR_63227       "작은따옴표 문자열 (포괄적인, q)"
     IDS_LEX_STR_63228       "큰따옴표 문자열 (qq)"
     IDS_LEX_STR_63229       "역따옴표 (qx)"
     IDS_LEX_STR_63230       "정규식 (qr)"
@@ -341,7 +341,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "하이퍼링크 핫스팟"
     IDS_LEX_STR_63265       "두 번째 하이퍼링크 핫스팟"
-    IDS_LEX_STR_63266       "두 번째 기본 구성"
+    IDS_LEX_STR_63266       "두 번째 공통 기반"
     IDS_LEX_STR_63267       "문자열 내 변수"
     IDS_LEX_STR_63268       "정렬된 목록"
     IDS_LEX_STR_63269       "삽입사"
@@ -413,7 +413,7 @@ BEGIN
     IDS_LEX_STR_63323       "머리말 4"
     IDS_LEX_STR_63324       "머리말 5"
     IDS_LEX_STR_63325       "머리말 6"
-    IDS_LEX_STR_63326       "Pre Char"
+    IDS_LEX_STR_63326       "사전 문자"
     IDS_LEX_STR_63327       "정렬되지 않은 목록"
 END
 
@@ -439,8 +439,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63344       "바이트 스트링"
-    IDS_LEX_STR_63345       "기타 스트링"
+    IDS_LEX_STR_63344       "바이트 문자열"
+    IDS_LEX_STR_63345       "기타 문자열"
     IDS_LEX_STR_63346       "부식 수명"
     IDS_LEX_STR_63347       "개체"
     IDS_LEX_STR_63348       "키"
@@ -475,7 +475,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63372       "Decorator"
+    IDS_LEX_STR_63372       "데코레이터"
 END
 
 STRINGTABLE
@@ -506,4 +506,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
