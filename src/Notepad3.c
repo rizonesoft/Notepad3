@@ -142,7 +142,6 @@ static int       s_iAlignMode = 0;
 static bool      s_bIsAppThemed = true;
 static UINT      s_msgTaskbarCreated = 0;
 static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
-static UINT      s_uidsAppTitle = IDS_MUI_APPTITLE;
 static DWORD     s_dwLastCopyTime = 0;
 static bool      s_bLastCopyFromMe = false;
 static bool      s_bInMultiEditMode = false;
@@ -1564,7 +1563,6 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     if (s_flagPasteBoard) {
         s_bLastCopyFromMe = true;
         s_hwndNextCBChain = SetClipboardViewer(Globals.hwndMain);
-        s_uidsAppTitle = IDS_MUI_APPTITLE_PASTEBOARD;
         s_bLastCopyFromMe = false;
 
         s_dwLastCopyTime = 0;
@@ -3645,7 +3643,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const cf = StrIsNotEmpty(Paths.CurrentFile);
     bool const sav = Globals.bCanSaveIniFile;
     bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
-    bool const faro = s_bFileReadOnly;     // file attrib read-only
+    bool const lck = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK); // file write lock
+    bool const faro = s_bFileReadOnly;                                     // file attrib read-only
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
     bool const bPosInSel = Sci_IsPosInSelection(iCurPos);
@@ -3684,9 +3683,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_FILE_READONLY, faro);
     CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
-
     EnableCmd(hmenu, IDM_FILE_LOCK_SHARE_READ, cf);
-    CheckCmd(hmenu, IDM_FILE_LOCK_SHARE_READ, (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK));
+    CheckCmd(hmenu, IDM_FILE_LOCK_SHARE_READ, lck);
 
     EnableCmd(hmenu, IDM_ENCODING_UNICODEREV, !ro);
     EnableCmd(hmenu, IDM_ENCODING_UNICODE, !ro);
@@ -4092,6 +4090,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
         SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
         DrawMenuBar(Globals.hwndMain);
 
+        UpdateTitleBar(Globals.hwndMain);
         UpdateStatusbar(true);
     }
 }
@@ -4218,6 +4217,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 UpdateSaveSettingsCmds();
             }
             UpdateToolbar();
+            UpdateTitleBar(Globals.hwndMain);
         }
         break;
 
@@ -9328,34 +9328,36 @@ void UpdateSaveSettingsCmds()
 
 //=============================================================================
 //
-//  UpdateUI()
-//
-void UpdateUI()
-{
-    struct SCNotification scn = { 0 };
-    scn.nmhdr.hwndFrom = Globals.hwndEdit;
-    scn.nmhdr.idFrom = IDC_EDIT;
-    scn.nmhdr.code = SCN_UPDATEUI;
-    scn.updated = (SC_UPDATE_CONTENT/* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
-    SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-    SendWMSize(Globals.hwndMain, NULL);
-}
-
-
-//=============================================================================
-//
 //  UpdateTitleBar()
 //
 void UpdateTitleBar(const HWND hwnd)
 {
     if (hwnd == Globals.hwndMain) {
-        SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Paths.CurrentFile,
-                       Settings.PathNameFormat, GetDocModified(), IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
+        bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
+
+        SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
+                       s_flagPasteBoard, s_bIsProcessElevated, GetDocModified(),
+                       bFileLocked, s_bFileReadOnly, s_wchTitleExcerpt);
     }
     PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
     PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
 }
 
+
+//=============================================================================
+//
+//  UpdateUI()
+//
+void UpdateUI() {
+    struct SCNotification scn = { 0 };
+    scn.nmhdr.hwndFrom = Globals.hwndEdit;
+    scn.nmhdr.idFrom = IDC_EDIT;
+    scn.nmhdr.code = SCN_UPDATEUI;
+    scn.updated = (SC_UPDATE_CONTENT /* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
+    SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
+    SendWMSize(Globals.hwndMain, NULL);
+    UpdateTitleBar(Globals.hwndMain);
+}
 
 //=============================================================================
 
@@ -9922,7 +9924,9 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
 
         SetSavePoint();
         UpdateMarginWidth();
+
         UpdateStatusbar(true);
+        UpdateTitleBar(Globals.hwndMain);
 
         // Terminate file watching
         InstallFileWatching(false); // terminate
@@ -11417,26 +11421,38 @@ void InstallFileWatching(const bool bInstall) {
 
             assert(!IS_VALID_HANDLE(_hCurrFileHandle) && "CurrFileHandle not properly closed!");
 
-            _hCurrFileHandle = CreateFile(Paths.CurrentFile,
-                GENERIC_READ | GENERIC_WRITE,
-                FILE_SHARE_READ, // 0 => NO FILE_SHARE_RW
-                NULL,
-                OPEN_EXISTING,
-                FILE_ATTRIBUTE_NORMAL,
-                NULL);
-            Globals.dwLastError = GetLastError();
-
-            if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
-                InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, PathFindFileName(Paths.CurrentFile));
-                // need to chose another mode
-                FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
-                FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;
-                InstallFileWatching(bInstall);
+            bool const bPrevReadOnlyAttrib = s_bFileReadOnly;
+            if (s_bFileReadOnly) {
+                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to gain access
             }
+
+            if (!s_bFileReadOnly) {
+                _hCurrFileHandle = CreateFile(Paths.CurrentFile,
+                    GENERIC_READ | GENERIC_WRITE,
+                    FILE_SHARE_READ, // 0 => NO FILE_SHARE_RW
+                    NULL,
+                    OPEN_EXISTING,
+                    FILE_ATTRIBUTE_NORMAL,
+                    NULL);
+                Globals.dwLastError = GetLastError();
+
+                if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
+                    InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, PathFindFileName(Paths.CurrentFile));
+                    // need to chose another mode
+                    FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
+                    FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;
+                    InstallFileWatching(bInstall);
+                }
+            }
+
+            if (bPrevReadOnlyAttrib && !s_bFileReadOnly) {
+                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
+            }
+
         }
     }
+    UpdateTitleBar(Globals.hwndMain);
     UpdateToolbar();
 }
-
 
 ///  End of Notepad3.c  ///

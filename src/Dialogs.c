@@ -132,9 +132,6 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
         return -1;
     }
 
-    WCHAR szTitle[128] = { L'\0' };
-    GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
-
     WCHAR szText[HUGE_BUFFER] = { L'\0' };
     const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
     if (argp && *argp) {
@@ -153,7 +150,7 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
     HWND const hwnd  = focus ? focus : Globals.hwndMain;
     s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
-    return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
+    return MessageBoxEx(hwnd, szText, _W(SAPPNAME), uType, Globals.iPrefLANGID);
 }
 
 
@@ -529,10 +526,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 #if 0
 void DisplayCmdLineHelp(HWND hwnd)
 {
-    WCHAR szTitle[32] = { L'\0' };
     WCHAR szText[2048] = { L'\0' };
-
-    GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
     GetLngString(IDS_MUI_CMDLINEHELP,szText,COUNTOF(szText));
 
     MSGBOXPARAMS mbp = { 0 };
@@ -540,7 +534,7 @@ void DisplayCmdLineHelp(HWND hwnd)
     mbp.hwndOwner = hwnd;
     mbp.hInstance = Globals.hInstance;
     mbp.lpszText = szText;
-    mbp.lpszCaption = szTitle;
+    mbp.lpszCaption = _W(SAPPNAME);
     mbp.dwStyle = MB_OK | MB_USERICON | MB_SETFOREGROUND;
     mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
     mbp.dwContextHelpId = 0;
@@ -4633,31 +4627,46 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 //
 //  SetWindowTitle()
 //
-bool bFreezeAppTitle = false;
+bool s_bFreezeAppTitle = false; // extern visible
+
+static WCHAR s_wchAdditionalTitleInfo[MAX_PATH] = { L'\0' };
+
+void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
+    StringCchCopy(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
+}
+
+void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
+    StringCchCat(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
+}
 
 static const WCHAR *pszSep = L" - ";
 static const WCHAR *pszMod = L"* ";
-static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
-static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
-static WCHAR szAdditionalTitleInfo[MAX_PATH] = { L'\0' };
+static WCHAR s_wchCachedFile[MAX_PATH] = { L'\0' };
+static WCHAR s_wchCachedDisplayName[MAX_PATH] = { L'\0' };
 
-void SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
-                    LPCWSTR lpszFile, int iFormat, bool bModified,
-                    UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
-{
-    if (bFreezeAppTitle) {
+// ----------------------------------------------------------------------------
+
+void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat, 
+                    bool bPasteBoard, bool bIsElevated, bool bModified,
+                    bool bFileLocked, bool bReadOnly, LPCWSTR lpszExcerpt) {
+
+    if (s_bFreezeAppTitle) {
         return;
     }
     WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
-    WCHAR szUntitled[SMALL_BUFFER] = { L'\0' };
-    if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
-            !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
-        return;
+    if (bPasteBoard) {
+        FormatLngStringW(szAppName, COUNTOF(szAppName), IDS_MUI_APPTITLE_PASTEBOARD, _W(SAPPNAME));
+    } else {
+        StringCchCopy(szAppName, COUNTOF(szAppName), _W(SAPPNAME));
     }
+
+    WCHAR szUntitled[SMALL_BUFFER] = { L'\0' };
+    GetLngString(IDS_MUI_UNTITLED, szUntitled, COUNTOF(szUntitled));
+
     if (bIsElevated) {
         WCHAR szElevatedAppName[SMALL_BUFFER] = { L'\0' };
-        FormatLngStringW(szElevatedAppName, COUNTOF(szElevatedAppName), IDS_MUI_APPTITLE_ELEVATED, szAppName);
-        StringCchCopyN(szAppName, COUNTOF(szAppName), szElevatedAppName, COUNTOF(szElevatedAppName));
+        FormatLngStringW(szElevatedAppName, COUNTOF(szElevatedAppName), IDS_MUI_APPTITLE_ELEVATED, _W(SAPPNAME));
+        StringCchCopy(szAppName, COUNTOF(szAppName), szElevatedAppName);
     }
 
     WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
@@ -4673,14 +4682,14 @@ void SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
         StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
     } else if (StrIsNotEmpty(lpszFile)) {
         if ((iFormat < 2) && !PathIsRoot(lpszFile)) {
-            if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) {
-                StringCchCopy(szCachedFile, COUNTOF(szCachedFile), lpszFile);
-                PathGetDisplayName(szCachedDisplayName, COUNTOF(szCachedDisplayName), szCachedFile);
+            if (StringCchCompareN(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile, MAX_PATH) != 0) {
+                StringCchCopy(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile);
+                PathGetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_wchCachedFile);
             }
-            StringCchCat(szTitle, COUNTOF(szTitle), szCachedDisplayName);
+            StringCchCat(szTitle, COUNTOF(szTitle), s_wchCachedDisplayName);
             if (iFormat == 1) {
                 WCHAR tchPath[MAX_PATH] = { L'\0' };
-                StringCchCopy(tchPath, COUNTOF(tchPath), lpszFile);
+                StringCchCopy(tchPath, COUNTOF(tchPath), s_wchCachedFile);
                 PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
                 StringCchCat(szTitle, COUNTOF(szTitle), L" [");
                 StringCchCat(szTitle, COUNTOF(szTitle), tchPath);
@@ -4690,37 +4699,33 @@ void SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
             StringCchCat(szTitle, COUNTOF(szTitle), lpszFile);
         }
     } else {
-        StringCchCopy(szCachedFile, COUNTOF(szCachedFile), L"");
-        StringCchCopy(szCachedDisplayName, COUNTOF(szCachedDisplayName), L"");
+        StringCchCopy(s_wchCachedFile, COUNTOF(s_wchCachedFile), L"");
+        StringCchCopy(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), L"");
         StringCchCat(szTitle, COUNTOF(szTitle), szUntitled);
     }
 
-    WCHAR szReadOnly[32] = { L'\0' };
-    if (bReadOnly && GetLngString(uIDReadOnly, szReadOnly, COUNTOF(szReadOnly))) {
+    WCHAR wchModeEx[64] = { L'\0' };
+    if (bFileLocked) {
+        GetLngString(IDS_MUI_FILELOCKED, wchModeEx, COUNTOF(wchModeEx));
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
-        StringCchCat(szTitle, COUNTOF(szTitle), szReadOnly);
+        StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);
+    }
+    if (bReadOnly) {
+        GetLngString(IDS_MUI_READONLY, wchModeEx, COUNTOF(wchModeEx));
+        StringCchCat(szTitle, COUNTOF(szTitle), L" ");
+        StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);
     }
 
     StringCchCat(szTitle, COUNTOF(szTitle), pszSep);
     StringCchCat(szTitle, COUNTOF(szTitle), szAppName);
 
     // UCHARDET
-    if (StrIsNotEmpty(szAdditionalTitleInfo)) {
+    if (StrIsNotEmpty(s_wchAdditionalTitleInfo)) {
         StringCchCat(szTitle, COUNTOF(szTitle), pszSep);
-        StringCchCat(szTitle, COUNTOF(szTitle), szAdditionalTitleInfo);
+        StringCchCat(szTitle, COUNTOF(szTitle), s_wchAdditionalTitleInfo);
     }
 
     SetWindowText(hwnd, szTitle);
-}
-
-void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
-{
-    StringCchCopy(szAdditionalTitleInfo, COUNTOF(szAdditionalTitleInfo), lpszAddTitleInfo);
-}
-
-void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
-{
-    StringCchCat(szAdditionalTitleInfo, COUNTOF(szAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
 

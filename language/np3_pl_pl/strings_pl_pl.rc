@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Podniesiony)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Schowek"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Schowek"
     IDS_MUI_UNTITLED        "Bez nazwy"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Tylko do odczytu)"

@@ -97,12 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Clipboard"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Clipboard"
     IDS_MUI_UNTITLED        "Untitled"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Read Only)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "Loading ""%s""..."
     IDS_MUI_SAVEFILE        "Saving ""%s""..."
     IDS_MUI_PRINTFILE       "Printing page %i..."

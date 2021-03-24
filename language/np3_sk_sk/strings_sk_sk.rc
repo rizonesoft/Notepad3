@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Zvýšené oprávnenia)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Schránka"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Schránka"
     IDS_MUI_UNTITLED        "Bez názvu"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Len na čítanie)"

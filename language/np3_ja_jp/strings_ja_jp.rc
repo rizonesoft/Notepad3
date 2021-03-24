@@ -97,9 +97,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (権限昇格)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3: クリップボード履歴"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s: クリップボード履歴"
     IDS_MUI_UNTITLED        "無題"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(読み取り専用)"
