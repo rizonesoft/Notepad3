@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Amministratore)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Amministratore"
     IDS_MUI_APPTITLE_PASTEBOARD "%s: Clipboard"
     IDS_MUI_UNTITLED        "Senza titolo"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Sola lettura)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "Apertura ""%s""..."
     IDS_MUI_SAVEFILE        "Salvataggio ""%s""..."
     IDS_MUI_PRINTFILE       "Stampa in corso pagina %i..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Il file corrente è stato modificato da un programma esterno. Ricaricare?"
     IDS_MUI_FILECHANGENOTIFY2 "Il file corrente è stato cancellato. Salvarlo adesso?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "La posizione della finestra ""sticky"" è abilitata. Qualunque finestra Notepad3 userà le attuali impostazioni di posizione finestra."
     IDS_MUI_SAVEDSETTINGS   "Le impostazioni correnti di Notepad3 sono state salvate."
     IDS_MUI_CREATEINI_FAIL  "Errore nella creazione del file delle impostazioni."

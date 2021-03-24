@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevado)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Elevado"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Área de transferência"
     IDS_MUI_UNTITLED        "Sem título"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Só de leitura)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "A carregar ""%s""..."
     IDS_MUI_SAVEFILE        "A guardar ""%s""..."
     IDS_MUI_PRINTFILE       "A imprimir página %i..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "O ficheiro actual foi modificado por um programa externo. Recarregar?"
     IDS_MUI_FILECHANGENOTIFY2 "O ficheiro actual foi eliminado. Guardar agora?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "A posição fixa da janela está activada. Todas as novas janelas do Notepad3 irão utilizar as actuais definições de posicionamento."
     IDS_MUI_SAVEDSETTINGS   "As actuais definições do programa foram guardadas."
     IDS_MUI_CREATEINI_FAIL  "Erro ao criar o ficheiro de configuração."

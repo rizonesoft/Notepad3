@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s （管理员权限）"
+    IDS_MUI_APPTITLE_ELEVATED "%s : 管理员权限"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : 剪贴板收集模式"
     IDS_MUI_UNTITLED        "未命名"
     IDS_MUI_TITLEEXCERPT    "“%s”"
     IDS_MUI_READONLY        "（只读）"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "正在加载“%s”..."
     IDS_MUI_SAVEFILE        "正在保存“%s”..."
     IDS_MUI_PRINTFILE       "正在打印第 %i 页..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "当前文件已被其它程序修改。是否重新加载？"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置。"
     IDS_MUI_SAVEDSETTINGS   "当前设置已保存。"
     IDS_MUI_CREATEINI_FAIL  "创建配置文件失败。"

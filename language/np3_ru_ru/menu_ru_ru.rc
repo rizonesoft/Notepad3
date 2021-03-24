@@ -64,10 +64,10 @@ BEGIN
         MENUITEM "Со&хранить копию...\tCtrl+F6", IDM_FILE_SAVECOPY
         MENUITEM "Сохранять исходну&ю дату/время файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Только чтение",              IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",    IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "&Только чтение File Attribute",      IDM_FILE_READONLY
+        MENUITEM "&Lock File (Read-Shared)",           IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "Задать парольную фразу...",   IDM_SETPASS
+        MENUITEM "Задать парольную фразу...",          IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "Путь в буфер обмена"
         BEGIN
