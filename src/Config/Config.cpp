@@ -43,7 +43,6 @@ extern "C" {
 #include "Encoding.h"
 #include "Notepad3.h"
 #include "MuiLanguage.h"
-#include "resource.h"
 }
 
 #include "DarkMode/DarkMode.h"
@@ -1091,12 +1090,14 @@ void LoadSettings()
 
     // --------------------------------------------------------------------------
 
-    LANGID lngID = 0;
-    Defaults2.PreferredLanguageLocaleName[0] = L'\0';
-    GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
+    #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+        LANGID lngID = 0;
+        Defaults2.PreferredLanguageLocaleName[0] = L'\0';
+        GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
-                                Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
+        IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
+                                    Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
+    #endif
 
     // --------------------------------------------------------------------------
 

@@ -68,6 +68,13 @@
 
 #include "../language/common_res.h"
 
+#define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1
+
+#define MUI_BASE_LNG_EN_US 1
+//#define MUI_BASE_LNG_DE_DE 1
+//#define MUI_BASE_LNG_FR_FR 1
+
+
 // Next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED

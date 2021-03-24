@@ -32,7 +32,6 @@
 
 #include "Edit.h"
 #include "Dlapi.h"
-#include "resource.h"
 #include "Version.h"
 #include "Encoding.h"
 #include "Styles.h"
@@ -1090,13 +1089,22 @@ CASE_WM_CTLCOLOR_SET:
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? L"\n- Process is elevated." : L"\n- Process is not elevated"));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ? L"\n- User is in Admin-Group." : L"\n- User is not in Admin-Group"));
 
-            StringCchCopy(wchBuf, COUNTOF(wchBuf), L"en-US");
+            #if defined(MUI_BASE_LNG_EN_US)
+                StringCchCopy(wchBuf, COUNTOF(wchBuf), L"en-US");
+            #elif defined(MUI_BASE_LNG_DE_DE)
+                StringCchCopy(wchBuf, COUNTOF(wchBuf), L"de-DE");
+            #elif defined(MUI_BASE_LNG_FR_FR)
+                StringCchCopy(wchBuf, COUNTOF(wchBuf), L"fr-FR");
+            #endif
+            #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
             for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
                 if (MUI_LanguageDLLs[lng].bIsActive) {
                     StringCchCopy(wchBuf, COUNTOF(wchBuf), MUI_LanguageDLLs[lng].szLocaleName);
                     break;
                 }
             }
+            #endif
+
             StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Locale -> %s (CP:'%s')",
                             wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
@@ -4471,30 +4479,33 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             // preserve [global] user settings from last call
             const WCHAR* const globalSection = L"global";
 
-            // get grepWin language
-            int lngIdx = -1;
-            for (int i = 0; i < grepWinLang_CountOf(); ++i) {
-                if (grepWinLangResName[i].lngid == Globals.iPrefLANGID) {
-                    lngIdx = i;
-                    break;
-                }
-            }
-
             WCHAR value[HUGE_BUFFER];
             for (int i = 0; i < COUNTOF(grepWinIniSettings); ++i) {
                 IniSectionGetString(globalSection, grepWinIniSettings[i].key, grepWinIniSettings[i].val, value, COUNTOF(value));
                 IniSectionSetString(globalSection, grepWinIniSettings[i].key, value);
             }
 
-            if (lngIdx >= 0) {
-                IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
-                IniSectionSetString(globalSection, L"languagefile", tchTemp);
-            } else {
-                IniSectionGetString(globalSection, L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
-                if (StrIsEmpty(tchTemp)) {
-                    IniSectionDelete(globalSection, L"languagefile", false);
+            #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+                // get grepWin language
+                int lngIdx = -1;
+                for (int i = 0; i < grepWinLang_CountOf(); ++i) {
+                    if (grepWinLangResName[i].lngid == Globals.iPrefLANGID) {
+                        lngIdx = i;
+                        break;
+                    }
                 }
-            }
+                if (lngIdx >= 0) {
+                    IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
+                    IniSectionSetString(globalSection, L"languagefile", tchTemp);
+                } else {
+                    IniSectionGetString(globalSection, L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
+                    if (StrIsEmpty(tchTemp)) {
+                        IniSectionDelete(globalSection, L"languagefile", false);
+                    }
+                }
+            #else
+                IniSectionDelete(globalSection, L"languagefile", false);
+            #endif
 
             bool const bDarkMode = UseDarkMode(); // <- override usr ~ IniSectionGetBool(globalSection, L"darkmode", UseDarkMode());
             IniSectionSetBool(globalSection, L"darkmode", bDarkMode);

@@ -17,6 +17,9 @@
 #ifndef _NP3_MUI_LANGUAGE_H_
 #define _NP3_MUI_LANGUAGE_H_
 
+#include "resource.h"
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
 typedef struct _muilanguage {
     UINT    rid;
@@ -50,6 +53,12 @@ void SetPreferredLanguage(LANGID iPreferredLanguageID);
 
 LANGID LoadLanguageResources();
 void   FreeLanguageResources();
+
+bool InsertLanguageMenu(HMENU hMenuBar);
+void DynamicLanguageMenuCmd(int cmd);
+
+#endif // HAVE_DYN_LOAD_LIBS_MUI_LNGS
+
 
 int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
