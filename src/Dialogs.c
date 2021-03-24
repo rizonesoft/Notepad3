@@ -4709,7 +4709,8 @@ void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
         GetLngString(IDS_MUI_FILELOCKED, wchModeEx, COUNTOF(wchModeEx));
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
         StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);
-    } else if (bReadOnly) {
+    }
+    if (bReadOnly) {
         GetLngString(IDS_MUI_READONLY, wchModeEx, COUNTOF(wchModeEx));
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
         StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);

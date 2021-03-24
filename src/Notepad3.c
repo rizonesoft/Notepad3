@@ -11421,22 +11421,34 @@ void InstallFileWatching(const bool bInstall) {
 
             assert(!IS_VALID_HANDLE(_hCurrFileHandle) && "CurrFileHandle not properly closed!");
 
-            _hCurrFileHandle = CreateFile(Paths.CurrentFile,
-                GENERIC_READ | GENERIC_WRITE,
-                FILE_SHARE_READ, // 0 => NO FILE_SHARE_RW
-                NULL,
-                OPEN_EXISTING,
-                FILE_ATTRIBUTE_NORMAL,
-                NULL);
-            Globals.dwLastError = GetLastError();
-
-            if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
-                InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, PathFindFileName(Paths.CurrentFile));
-                // need to chose another mode
-                FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
-                FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;
-                InstallFileWatching(bInstall);
+            bool const bPrevReadOnlyAttrib = s_bFileReadOnly;
+            if (s_bFileReadOnly) {
+                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to gain access
             }
+
+            if (!s_bFileReadOnly) {
+                _hCurrFileHandle = CreateFile(Paths.CurrentFile,
+                    GENERIC_READ | GENERIC_WRITE,
+                    FILE_SHARE_READ, // 0 => NO FILE_SHARE_RW
+                    NULL,
+                    OPEN_EXISTING,
+                    FILE_ATTRIBUTE_NORMAL,
+                    NULL);
+                Globals.dwLastError = GetLastError();
+
+                if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
+                    InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, PathFindFileName(Paths.CurrentFile));
+                    // need to chose another mode
+                    FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
+                    FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;
+                    InstallFileWatching(bInstall);
+                }
+            }
+
+            if (bPrevReadOnlyAttrib && !s_bFileReadOnly) {
+                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
+            }
+
         }
     }
     UpdateTitleBar(Globals.hwndMain);
