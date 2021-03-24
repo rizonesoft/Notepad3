@@ -66,7 +66,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "읽기 전용 File Attribute(&R)",              IDM_FILE_READONLY
         MENUITEM "독점 잠금 (읽기 공유)(&L)",                 IDM_FILE_LOCK_SHARE_READ
-
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
