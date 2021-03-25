@@ -1521,6 +1521,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
+    if (Globals.CmdLnFlag_AlwaysOnTop) { Settings.AlwaysOnTop = (Globals.CmdLnFlag_AlwaysOnTop == 2); }
     GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
     GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
     GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
