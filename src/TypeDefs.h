@@ -372,6 +372,7 @@ typedef struct _globals_t
     int       iWrapCol;
 
     bool      CmdLnFlag_PosParam;
+    int       CmdLnFlag_AlwaysOnTop;
     int       CmdLnFlag_WindowPos;
     int       CmdLnFlag_ReuseWindow;
     int       CmdLnFlag_SingleFileInstance;
