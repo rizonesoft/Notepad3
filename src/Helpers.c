@@ -24,7 +24,6 @@
 
 //#include <pathcch.h>
 
-#include "resource.h"
 #include "Edit.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"

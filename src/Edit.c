@@ -27,7 +27,6 @@
 
 #include "Styles.h"
 #include "Dialogs.h"
-#include "resource.h"
 #include "crypto/crypto.h"
 #include "uthash/utarray.h"
 #include "uthash/utlist.h"

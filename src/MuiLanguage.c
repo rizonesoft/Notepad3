@@ -15,17 +15,19 @@
 
 #include "Helpers.h"
 
-#include <muiload.h>
 #include <locale.h>
 #include <commctrl.h>
+#include <muiload.h>
 
-#include "resource.h"
 #include "Dialogs.h"
 #include "Encoding.h"
 #include "Config/Config.h"
+
 #include "MuiLanguage.h"
 
 //=============================================================================
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
 extern prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
 extern prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
@@ -200,8 +202,7 @@ static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t ln
 
 //=============================================================================
 //
-//  _GetUserPreferredLanguage
-//
+//  GetUserPreferredLanguage
 //
 bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID)
 {
@@ -418,8 +419,7 @@ LANGID LoadLanguageResources()
 //  FreeLanguageResources
 //
 //
-void FreeLanguageResources()
-{
+void FreeLanguageResources() {
     CloseNonModalDialogs();
     if (Globals.hLngResContainer != Globals.hInstance) {
         HINSTANCE const _hLngResContainer = Globals.hLngResContainer;
@@ -431,6 +431,88 @@ void FreeLanguageResources()
         MUI_LanguageDLLs[i].bIsActive = false;
     }
 }
+
+
+//=============================================================================
+//
+//  InsertLanguageMenu
+//
+//
+
+static HMENU s_hmenuLanguage = NULL;
+
+bool InsertLanguageMenu(HMENU hMenuBar) {
+
+    // check, if we need a language switching menu
+    if (Globals.iAvailLngCount < 2) {
+        Settings.PreferredLocale4DateFmt = false;
+        return false;
+    }
+
+    if (s_hmenuLanguage) {
+        DestroyMenu(s_hmenuLanguage);
+    }
+    s_hmenuLanguage = CreatePopupMenu();
+
+    WCHAR wchMenuItemFmt[128] = { L'\0' };
+    WCHAR wchMenuItemStrg[196] = { L'\0' };
+    for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+        if (MUI_LanguageDLLs[lng].bHasDLL) {
+            StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].szMenuItem);
+            StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
+            AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
+        }
+    }
+
+    // --- insert ---
+    int const pos = GetMenuItemCount(hMenuBar) - 1;
+    if (pos >= 0) {
+        GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+        //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
+        bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
+        GetLngString(IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+        InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_STRING, (UINT_PTR)IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg);
+        InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
+        return res;
+    }
+    return false;
+}
+
+//=============================================================================
+//
+//  DynamicLanguageMenuCmd() - Handles IDS_MUI_LANG_XX_YY messages
+//
+void DynamicLanguageMenuCmd(int cmd) {
+
+    int const iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
+
+    if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
+        return;
+    }
+    if (!MUI_LanguageDLLs[iLngIdx].bIsActive) {
+        DestroyMenu(Globals.hMainMenu);
+
+        // desired language
+        LANGID const desiredLngID = MUI_LanguageDLLs[iLngIdx].LangId;
+        SetPreferredLanguage(desiredLngID);
+
+        FreeLanguageResources();
+        LoadLanguageResources();
+
+        Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+        if (!Globals.hMainMenu) {
+            MsgBoxLastError(L"LoadMenu()", 0);
+            CloseApplication();
+            return;
+        }
+
+        InsertLanguageMenu(Globals.hMainMenu);
+        SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+    }
+}
+
+
+#endif  // HAVE_DYN_LOAD_LIBS_MUI_LNGS
 
 
 //=============================================================================
