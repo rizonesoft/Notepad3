@@ -443,7 +443,7 @@
 #define CMD_CHECK_INDENTATION           20058
 #define CMD_ARROW_UP                    20059
 #define CMD_ARROW_DOWN                  20060
-#define CMD_ENTER_RTURN                 20061
+#define CMD_ENTER_RETURN                20061
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501
