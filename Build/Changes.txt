@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.324.(build_#) (2021-03-24)
+Current BETA/RC Version 5.21.325.(build_#) (2021-03-25)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.325.1]- Compiler switch to allow mono language binary (no MUI DLL loading).
 [.324.1]- Exclusive Lock (write) Mode shown in windows title.
 [.323.1]- Menu item for excusive File Locking (write, shared read).
 [.323.1]- Decorator styling for Python files.
@@ -74,6 +75,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.325.3]- Possible busy-loop in Kotlin and Dard Lexer.
+[.325.2]- Don't keep window top-most after returning from full-screen mode (F11 toggle).
+[.325.1]- Compiler switch to allow mono language binary.
 [.324.1]- Read-Only-Attribute cooperating with Exclusive-Write-Lock.
 [.323.1]- Lexer "Python": fixing Format-Strings (f-strings).
 [.321.1]- Regression with vertical slope definition.
