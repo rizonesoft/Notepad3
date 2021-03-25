@@ -418,7 +418,7 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position length, in
                     if (kwType != SCE_KOTLIN_DEFAULT)
                     {
                         //?const int chNext = sc.GetNextNSChar();
-                        while (IsASpace(sc.ch)) { sc.Forward(); };
+                        while (IsASpace(sc.ch) && sc.More()) { sc.Forward(); };
                         if (!((kwType == SCE_KOTLIN_LABEL && sc.ch == '@') || (kwType != SCE_KOTLIN_LABEL && IsIdentifierStart(sc.ch))))
                         {
                             kwType = SCE_KOTLIN_DEFAULT;
@@ -450,7 +450,7 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position length, in
                     }
                     else
                     {
-                        while (IsASpace(sc.ch)) { sc.Forward(); };
+                        while (IsASpace(sc.ch) && sc.More()) { sc.Forward(); };
                         if (sc.ch == '(') {
                             sc.ChangeState(SCE_KOTLIN_FUNCTION);
                         }
