@@ -1,6 +1,7 @@
-// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -33,29 +34,19 @@ END
 3 TEXTINCLUDE
 BEGIN
   "#include ""Notepad3.ver""\r\n"
-  "#include ""../language/common_res.rc""\r\n"
+  
 #if defined(MUI_BASE_LNG_EN_US)
-  "#include ""../language/np3_en_us/menu_en_us.rc""\r\n"
-  "#include ""../language/np3_en_us/strings_en_us.rc""\r\n"
-  "#include ""../language/np3_en_us/encode_en_us.rc""\r\n"
-  "#include ""../language/np3_en_us/lexer_en_us.rc""\r\n"
-  "#include ""../language/np3_en_us/dialogs_en_us.rc""\r\n"
+  "#include ""../language/np3_en_us/np3_en_us.rc""\r\n"
+#elif defined(MUI_BASE_LNG_AF_ZA)
+  "#include ""../language/np3_af_za/np3_af_za.rc""\r\n"
 #elif defined(MUI_BASE_LNG_DE_DE)
-  "#include ""../language/np3_de_de/menu_de_de.rc""\r\n"
-  "#include ""../language/np3_de_de/strings_de_de.rc""\r\n"
-  "#include ""../language/np3_de_de/encode_de_de.rc""\r\n"
-  "#include ""../language/np3_de_de/lexer_de_de.rc""\r\n"
-  "#include ""../language/np3_de_de/dialogs_de_de.rc""\r\n"
+  "#include ""../language/np3_de_de/np3_de_de.rc""\r\n"
 #elif defined(MUI_BASE_LNG_FR_FR)
-  "#include ""../language/np3_fr_fr/menu_fr_fr.rc""\r\n"
-  "#include ""../language/np3_fr_fr/strings_fr_fr.rc""\r\n"
-  "#include ""../language/np3_fr_fr/encode_fr_fr.rc""\r\n"
-  "#include ""../language/np3_fr_fr/lexer_fr_fr.rc""\r\n"
-  "#include ""../language/np3_fr_fr/dialogs_fr_fr.rc""\r\n"
+  "#include ""../language/np3_fr_fr/np3_fr_fr.rc""\r\n"
 #endif
+
   "\0"
 END
-
 
 #endif    // APSTUDIO_INVOKED
 
@@ -438,25 +429,14 @@ END
 // Generated from the TEXTINCLUDE 3 resource.
 //
 #include "Notepad3.ver"
-#include "../language/common_res.rc"
 #if defined(MUI_BASE_LNG_EN_US)
-#include "../language/np3_en_us/menu_en_us.rc"
-#include "../language/np3_en_us/strings_en_us.rc"
-#include "../language/np3_en_us/encode_en_us.rc"
-#include "../language/np3_en_us/lexer_en_us.rc"
-#include "../language/np3_en_us/dialogs_en_us.rc"
+#include "../language/np3_en_us/np3_en_us.rc"
+#elif defined(MUI_BASE_LNG_AF_ZA)
+#include "../language/np3_af_za/np3_af_za.rc"
 #elif defined(MUI_BASE_LNG_DE_DE)
-#include "../language/np3_de_de/menu_de_de.rc"
-#include "../language/np3_de_de/strings_de_de.rc"
-#include "../language/np3_de_de/encode_de_de.rc"
-#include "../language/np3_de_de/lexer_de_de.rc"
-#include "../language/np3_de_de/dialogs_de_de.rc"
+#include "../language/np3_de_de/np3_de_de.rc"
 #elif defined(MUI_BASE_LNG_FR_FR)
-#include "../language/np3_fr_fr/menu_fr_fr.rc"
-#include "../language/np3_fr_fr/strings_fr_fr.rc"
-#include "../language/np3_fr_fr/encode_fr_fr.rc"
-#include "../language/np3_fr_fr/lexer_fr_fr.rc"
-#include "../language/np3_fr_fr/dialogs_fr_fr.rc"
+#include "../language/np3_fr_fr/np3_fr_fr.rc"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

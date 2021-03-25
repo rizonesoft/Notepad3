@@ -15,13 +15,14 @@
 
 #include "Helpers.h"
 
-#include <muiload.h>
 #include <locale.h>
 #include <commctrl.h>
+#include <muiload.h>
 
 #include "Dialogs.h"
 #include "Encoding.h"
 #include "Config/Config.h"
+
 #include "MuiLanguage.h"
 
 //=============================================================================

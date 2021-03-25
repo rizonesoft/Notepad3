@@ -1,0 +1,27 @@
+====================================================================================================
+===   How to build a NON MUI Notepad3 version for desired Language                               ===
+====================================================================================================
+
+  I.   Edit ".\src\resource.h":
+       - Comment-out define "HAVE_DYN_LOAD_LIBS_MUI_LNGS" => "///#define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1"
+       - Enable next define for the desired Base Language, e.g. "#define MUI_BASE_LNG_DE_DE 1" for German
+         (Keep all other Base Language defines in comments)
+         
+ II.   Edit ".\src\Notepad3.rc" with text editor (not Resource-Editor), e.g. Notepad3:
+       - Ensure, that the desired Base Language (previous define) #includes corresponding Language resources.
+         (At the begin of the Notepad3.rc file _AND_ at the end of this file (the real include section)
+         
+III.   (Re-)Compile Notepad3 project
+
+
+The resulting Notepad3.exe does not has the ability to change the language (MUI) anymore.
+
+---------------------------------------------------------------------------------------------------
+
+TODOs:
+------
+
+- #define  LanguageID in resource.h (e.g. "de-DE" too, to set language for common system controls, etc.)
+- make Mono-Language MiniPath.exe too
+- if building MUI DLLs but using other Base Language than "en-US", need to refactor Language Menu accordingly
+-

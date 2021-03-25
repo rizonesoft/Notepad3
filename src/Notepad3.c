@@ -27,7 +27,6 @@
 #include <string.h>
 #include <process.h>
 //#include <pathcch.h>
-//#include <locale.h>
 
 #include "Edit.h"
 #include "Styles.h"

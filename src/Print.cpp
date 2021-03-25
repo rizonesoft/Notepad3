@@ -43,8 +43,6 @@ extern "C" {
 #include "DarkMode/DarkMode.h"
 
 
-#include "resource.h"
-
 extern "C" float Style_GetBaseFontSize();
 
 // Stored objects...

@@ -25,7 +25,6 @@
 
 #include "uthash/utarray.h"
 
-#include "resource.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"
 
