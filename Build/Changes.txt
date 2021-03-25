@@ -75,6 +75,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.325.3]- Possible busy-loop in Kotlin and Dard Lexer.
 [.325.2]- Don't keep window top-most after returning from full-screen mode (F11 toggle).
 [.325.1]- Compiler switch to allow mono language binary.
 [.324.1]- Read-Only-Attribute cooperating with Exclusive-Write-Lock.
