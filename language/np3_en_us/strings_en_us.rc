@@ -97,7 +97,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Elevated"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Clipboard"
     IDS_MUI_UNTITLED        "Untitled"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "The current file has been modified by an external program. Reload?"
     IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
     IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
     IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."

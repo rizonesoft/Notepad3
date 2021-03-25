@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Павышаныя правы)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Павышаныя правы"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Буфер абмену"
     IDS_MUI_UNTITLED        "Безыменны"
     IDS_MUI_TITLEEXCERPT    "«%s»"
     IDS_MUI_READONLY        "(Толькі чытанне)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "Ладаванне «%s»..."
     IDS_MUI_SAVEFILE        "Захаванне «%s»..."
     IDS_MUI_PRINTFILE       "Друкаванне старонкі %i..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Гэты файл быў зменены вонкавай праграмай. Пераадкрыць яго?"
     IDS_MUI_FILECHANGENOTIFY2 "Гэты файл быў выдалены. Захаваць нанава?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фіксаваная пазіцыя акна задзейнічана. Усякае новае акно Notepad3 запусціцца з цяперашнімі наладамі пазіцыі."
     IDS_MUI_SAVEDSETTINGS   "Цяперашнія налады праграмы былі захаваны."
     IDS_MUI_CREATEINI_FAIL  "Памылка падчас стварэння файла наладаў."

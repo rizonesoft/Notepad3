@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Podniesiony)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Podniesiony"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Schowek"
     IDS_MUI_UNTITLED        "Bez nazwy"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Tylko do odczytu)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "Ładowanie ""%s""..."
     IDS_MUI_SAVEFILE        "Zapisywanie ""%s""..."
     IDS_MUI_PRINTFILE       "Drukowanie strony %i..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Bieżący plik został zmieniony przez zewnętrzny program. Załadować ponownie?"
     IDS_MUI_FILECHANGENOTIFY2 "Bieżący plik został usunięty. Zapisać teraz?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Zamrożona pozycja okna jest włączona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bieżącego umiejscowienia okna."
     IDS_MUI_SAVEDSETTINGS   "Bieżące ustawienia programu zostały zapisane."
     IDS_MUI_CREATEINI_FAIL  "Błąd podczas tworzenia pliku konfiguracyjnego."

@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Verhoogde)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Verhoogde"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Klembord"
     IDS_MUI_UNTITLED        "Naamloos"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Alleen lezen)"
+    IDS_MUI_FILELOCKED      "<Exclusief>"
     IDS_MUI_LOADFILE        "Laden ""%s""..."
     IDS_MUI_SAVEFILE        "Bewaren ""%s""..."
     IDS_MUI_PRINTFILE       "Afdrukken pagina %i..."

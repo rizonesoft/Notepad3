@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (व्यवस्थापक रूप में)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : व्यवस्थापक रूप में"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : क्लिपबोर्ड"
     IDS_MUI_UNTITLED        "अनामांकित"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(सिर्फ़ पढ़ने के लिए)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "शुरू हो रहा है ""%s""..."
     IDS_MUI_SAVEFILE        "सहेजा जा रहा है ""%s""..."
     IDS_MUI_PRINTFILE       "प्रष्ठ मुद्रित हो रहा है %i..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "चालू फ़ाईल एक बाहरी प्रोग्राम द्वारा परिवर्तित हो चुकी है। पुनः लोड करें?"
     IDS_MUI_FILECHANGENOTIFY2 "चालू फ़ाईल मिटा दी गई है। अभी सहेजें?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky विंडो की स्तिथि सक्षम है. कोई भी नई Notepad3 विंडो इस विंडो की स्तिथि सेटिंग को प्रयोग मे लेगी."
     IDS_MUI_SAVEDSETTINGS   "चालू प्रोग्राम सेटिंग सहेजी जा चुकी हैं."
     IDS_MUI_CREATEINI_FAIL  "कन्फ़िगरेशन फ़ाईल बनाने में त्रुटि."

@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (elevado)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Elevado"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Portapapeles"
     IDS_MUI_UNTITLED        "Sin título"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Sólo lectura)"
+    IDS_MUI_FILELOCKED      "<Exclusivo>"
     IDS_MUI_LOADFILE        "Carga ""%s""..."
     IDS_MUI_SAVEFILE        "Guardando ""%s""..."
     IDS_MUI_PRINTFILE       "Imprimir página %i..."

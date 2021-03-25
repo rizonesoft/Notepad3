@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Zapisz &kopię...\tCtrl+F6",                       IDM_FILE_SAVECOPY
         MENUITEM "Zapisz oryginalny plik, datę / czas\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Tylko do odczytu",                           IDM_FILE_READONLY
+        MENUITEM "&Tylko do odczytu File Attribute",            IDM_FILE_READONLY
         MENUITEM "&Lock File (Read-Shared)",                    IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Ustaw hasło szyfrowania...",                  IDM_SETPASS

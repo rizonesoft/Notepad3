@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Adminisztrátor)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Adminisztrátor"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Vágólap"
     IDS_MUI_UNTITLED        "Névtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Csak olvasható)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "Betöltés: ""%s""..."
     IDS_MUI_SAVEFILE        "Mentés ""%s""..."
     IDS_MUI_PRINTFILE       "Oldal nyomtatása %i..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Az aktuális fájl egy külső progarm által módosítva lett. Újratöltsük?"
     IDS_MUI_FILECHANGENOTIFY2 "Az aktuális fájl törölve lett. Elmentsük?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "A ragadós ablakpozíciók be van kapcsolva. Az új Notepad3 ablakok a jelenlegi ablakhelyzetét használják majd."
     IDS_MUI_SAVEDSETTINGS   "A jelenlegi beállítások el lettek mentve."
     IDS_MUI_CREATEINI_FAIL  "Hiba a beállításfájl létrehozásakor."

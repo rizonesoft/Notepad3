@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Uložiť &kópiu...\tCtrl+F6",                       IDM_FILE_SAVECOPY
         MENUITEM "Uložiť s pôvodným &dátumom a časom\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Len na čítanie",                                 IDM_FILE_READONLY
+        MENUITEM "&Len na čítanie File Attribute",                  IDM_FILE_READONLY
         MENUITEM "&Lock File (Read-Shared)",                        IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Nastaviť šifrovanie prístupovou frázou...",       IDM_SETPASS

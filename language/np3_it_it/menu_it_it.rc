@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Salva &copia...\tCtrl+F6",                        IDM_FILE_SAVECOPY
         MENUITEM "Salva con &Data/Ora originali del file\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Sola lettu&ra",                          IDM_FILE_READONLY
+        MENUITEM "Sola lettu&ra File Attribute",           IDM_FILE_READONLY
         MENUITEM "&Lock File (Read-Shared)",               IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Imposta passphrase per crittografia...", IDM_SETPASS

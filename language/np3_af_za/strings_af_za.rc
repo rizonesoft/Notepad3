@@ -97,11 +97,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s (Verhoogde)"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Verhoogde"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Knipbord"
     IDS_MUI_UNTITLED        "Ongetiteld"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Lees Net)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "Laai ""%s""..."
     IDS_MUI_SAVEFILE        "Stoor ""%s""..."
     IDS_MUI_PRINTFILE       "Print Bladsy %i..."
@@ -177,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Die huidige lêer is gewysig deur 'n eksterne program. Herlaai?"
     IDS_MUI_FILECHANGENOTIFY2 "Die huidige lêer is verwyder. Stoor nou?"
-    IDS_MUI_FILELOCK_ERROR  "Can not accquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Posisie is aangeskakel. Enige nuwe Notepad3-vensters sal die huidige vensterplasinginstellings gebruik."
     IDS_MUI_SAVEDSETTINGS   "Die huidige program instellings is gestoor."
     IDS_MUI_CREATEINI_FAIL  "Kon nie konfigurasielêer skep nie."

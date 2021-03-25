@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Guardar &copia...\tCtrl+F6",                                IDM_FILE_SAVECOPY
         MENUITEM "Guardar con &fecha/hora original del archivo\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Sólo &lectura",                                 IDM_FILE_READONLY
+        MENUITEM "Sólo &lectura Atributo de Archivo",             IDM_FILE_READONLY
         MENUITEM "&Bloquear Archivo (Lectura-Compartido)",        IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "&Establecer contraseña de cifrado...",          IDM_SETPASS

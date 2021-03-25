@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "복사본 저장(&C)...\tCtrl+F6",                          IDM_FILE_SAVECOPY
         MENUITEM "원본 파일 날짜/시간으로 저장(&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "읽기 전용(&R)",                             IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",                 IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "읽기 전용 파일 속성(&R)",              IDM_FILE_READONLY
+        MENUITEM "파일 잠금 (읽기 공유)(&L)",                 IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
@@ -216,8 +216,8 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "선택 둘러싸기(&E)"
             BEGIN
-                MENUITEM "단일 큰 따옴표(&S)\tCtrl+1",             CMD_STRINGIFY
-                MENUITEM "이중 큰 따옴표(&D)\tCtrl+2",             CMD_STRINGIFY2
+                MENUITEM "작은 따옴표(&S)\tCtrl+1",             CMD_STRINGIFY
+                MENUITEM "큰 따옴표(&D)\tCtrl+2",             CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                      CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                      CMD_EMBRACE2
@@ -361,7 +361,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "보이는 항목만 일치(&V)",               IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "대소문자 구별(&C)",                    IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM "대소문자 구분 일치(&C)",                    IDM_VIEW_MARKOCCUR_CASE
             POPUP "전체 단어만 일치(&W)"
             BEGIN
                 MENUITEM "끄기(&O)",                    IDM_VIEW_MARKOCCUR_WNONE
@@ -397,7 +397,7 @@ BEGIN
             END
             MENUITEM SEPARATOR
             MENUITEM "모니터링 로그(&M)",                            IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "파일 끝을 지나 스크롤(&S)",                   IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "파일 끝을 지나서 스크롤(&S)",                   IDM_VIEW_SCROLLPASTEOF
             MENUITEM "하이퍼링크 도구팁 표시(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
@@ -426,7 +426,7 @@ BEGIN
             MENUITEM "저장된 기본 위치 지우기(&C)",             CMD_CLEARSAVEDWINPOS
             MENUITEM "초기 위치에 맞추기(&I)\tCtrl+F11",        CMD_INITIALWINPOS
             MENUITEM "전체 영역 위치 전환(&F)\tF11",            CMD_FULLSCRWINPOS
-            MENUITEM "창 위치 고정(&T)",                       IDM_VIEW_STICKYWINPOS
+            MENUITEM "달라붙는 창 위치(&T)",                       IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "모양(&P)"
@@ -463,7 +463,7 @@ BEGIN
             MENUITEM "Notepad3 종료(&X)",                  IDM_VIEW_ESCEXIT
         END
         MENUITEM "도구 실행 전에 저장(&B)",                 IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "작은 식 계산",           IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "작은 표현식 계산",           IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
         BEGIN
@@ -480,7 +480,7 @@ BEGIN
                 MENUITEM "전체 경로(&P)",                   IDM_VIEW_SHOWFULLPATH
                 MENUITEM "텍스트 발췌(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "창 다시 사용(&R)\tCtrl+Shift+L",      IDM_VIEW_REUSEWINDOW
+            MENUITEM "창 재사용(&R)\tCtrl+Shift+L",      IDM_VIEW_REUSEWINDOW
             MENUITEM "항상 맨 위에(&A)\tAlt+T",                IDM_VIEW_ALWAYSONTOP
             MENUITEM "트레이로 최소화(&M)",                  IDM_VIEW_MINTOTRAY
             MENUITEM "투명 모드(&T)\tAlt+G",                IDM_VIEW_TRANSPARENT
@@ -492,11 +492,11 @@ BEGIN
                 MENUITEM "DirectWrite (Direct2D)(&D)",     IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",             IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_GDI
+                MENUITEM "GDI (합자 안 함) (&G)",            IDM_SET_RENDER_TECH_GDI
             END
             POPUP "RTL 레이아웃 (GDI)(&T)"
             BEGIN
-                MENUITEM "영역 편집(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "편집 영역(&E)",                   IDM_SET_RTL_LAYOUT_EDIT
                 MENUITEM "기타 대화상자(&O)",               IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "양방향(&B)"
@@ -566,7 +566,7 @@ BEGIN
         MENUITEM "마커 유형의 줄 복사",       IDM_EDIT_COPY_MARKED
         MENUITEM "마커 유형의 줄 삭제",     IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "코드 접기",                        IDM_VIEW_FOLDING
+        MENUITEM "접기",                        IDM_VIEW_FOLDING
         MENUITEM "줄 번호",                          IDM_VIEW_LINENUMBERS
         MENUITEM "책갈피 여백",                 IDM_VIEW_BOOKMARK_MARGIN
     END
