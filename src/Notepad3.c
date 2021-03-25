@@ -546,7 +546,6 @@ static WCHAR                 s_lpFileArg[MAX_PATH + 1] = { L'\0' };
 static cpi_enc_t             s_flagSetEncoding = CPI_NONE;
 static int                   s_flagSetEOLMode = 0;
 static bool                  s_flagStartAsTrayIcon = false;
-static int                   s_flagAlwaysOnTop = 0;
 static bool                  s_flagKeepTitleExcerpt = false;
 static bool                  s_flagNewFromClipboard = false;
 static bool                  s_flagPasteBoard = false;
@@ -635,6 +634,7 @@ static void _InitGlobals()
     Globals.iWrapCol = 80;
 
     Globals.CmdLnFlag_PosParam = false;
+    Globals.CmdLnFlag_AlwaysOnTop = 0;
     Globals.CmdLnFlag_WindowPos = 0;
     Globals.CmdLnFlag_ReuseWindow = 0;
     Globals.CmdLnFlag_SingleFileInstance = 0;
@@ -1333,7 +1333,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         nCmdShow = SW_SHOWMAXIMIZED;
     }
 
-    if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
+    if (Settings.AlwaysOnTop) {
         SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
 
@@ -3932,7 +3932,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, sav);
     EnableCmd(hmenu, CMD_SAVEASDEFWINPOS, sav);
 
-    CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
+    CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
     CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
     CheckCmd(hmenu, IDM_VIEW_TRANSPARENT, Settings.TransparentMode);
 
@@ -5728,16 +5728,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_ALWAYSONTOP:
-        if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
-            Settings.AlwaysOnTop = false;
-            s_flagAlwaysOnTop = 0;
+        if (Settings.AlwaysOnTop) {
             SetWindowPos(hwnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+            Settings.AlwaysOnTop = false;
         } else {
-            Settings.AlwaysOnTop = true;
-            s_flagAlwaysOnTop = 0;
             SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+            Settings.AlwaysOnTop = true;
         }
-        CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
+        UpdateTitleBar(Globals.hwndMain);
         UpdateToolbar();
         break;
 
@@ -6725,7 +6723,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_VIEW_PIN_ON_TOP:
         if (IsCmdEnabled(hwnd, IDM_VIEW_ALWAYSONTOP)) {
-            SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_ALWAYSONTOP, 1), 0);
+            SendWMCommand(hwnd, IDM_VIEW_ALWAYSONTOP);
         } else {
             SimpleBeep();
         }
@@ -8088,9 +8086,9 @@ void ParseCommandLine()
 
                     case L'O':
                         if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O') {
-                            s_flagAlwaysOnTop = 1;
+                            Globals.CmdLnFlag_AlwaysOnTop = 1;
                         } else {
-                            s_flagAlwaysOnTop = 2;
+                            Globals.CmdLnFlag_AlwaysOnTop = 2;
                         }
                         break;
 
@@ -10927,11 +10925,10 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
     static bool s_bPrevShowMenubar   = true;
     static bool s_bPrevShowToolbar   = true;
     static bool s_bPrevShowStatusbar = true;
+    static bool s_bPrevAlwaysOnTop   = false;
     static WINDOWPLACEMENT s_wndplPrev = { 0 };
     s_wndplPrev.length = sizeof(WINDOWPLACEMENT);
 
-    UINT const fPrevFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
-    UINT const  fFScrFlags     = SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
     DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
 
     HWND const hWindow = hwnd ? hwnd : GetDesktopWindow();
@@ -10948,6 +10945,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
             Settings.ShowMenubar = s_bPrevShowMenubar;
             Settings.ShowToolbar = s_bPrevShowToolbar;
             Settings.ShowStatusbar = s_bPrevShowStatusbar;
+            Settings.AlwaysOnTop = s_bPrevAlwaysOnTop;
         } else {
             WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
             if (GetDoAnimateMinimize()) {
@@ -10956,9 +10954,13 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
             SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
             SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
         }
-        SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, fPrevFlags);
+        SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         s_bPrevFullScreenFlag = false;
     } else { // full screen mode
+        s_bPrevShowMenubar = Settings.ShowMenubar;
+        s_bPrevShowToolbar = Settings.ShowToolbar;
+        s_bPrevShowStatusbar = Settings.ShowStatusbar;
+        s_bPrevAlwaysOnTop = Settings.AlwaysOnTop;
         GetWindowPlacement(hWindow, &s_wndplPrev);
         MONITORINFO mi = { sizeof(mi) };
         GetMonitorInfo(MonitorFromWindow(hWindow, MONITOR_DEFAULTTOPRIMARY), &mi);
@@ -10969,15 +10971,14 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
         }
         SetWindowPlacement(hWindow, &wndpl);
         SetWindowPos(hWindow, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
-                     mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, fFScrFlags);
-        s_bPrevShowMenubar = Settings.ShowMenubar;
-        s_bPrevShowToolbar = Settings.ShowToolbar;
-        s_bPrevShowStatusbar = Settings.ShowStatusbar;
+            mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
+            SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
+        Settings.AlwaysOnTop = true;
         s_bPrevFullScreenFlag = true;
     }
-
     SendWMSize(hWindow, NULL);
+    UpdateToolbar();
 }
 
 
