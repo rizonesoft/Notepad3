@@ -409,7 +409,7 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
                 }
                 else {
                     //?const int chNext = GetNextNSChar();
-                    while (IsASpace(sc.ch)){ sc.Forward(); };
+                    while (IsASpace(sc.ch) && sc.More()){ sc.Forward(); };
                     if (sc.ch == '(') {
                         sc.ChangeState(SCE_DART_FUNCTION);
                     }
