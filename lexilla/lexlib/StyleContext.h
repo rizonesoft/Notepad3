@@ -186,12 +186,6 @@ public:
 		return (ch == static_cast<unsigned char>(ch0)) && (chNext == static_cast<unsigned char>(ch1));
 	}
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	bool Match(char ch0, char ch1, char ch2) const noexcept {
-		return Match(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 2);
-	}
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 	bool Match(const char *s) {
 		if (ch != static_cast<unsigned char>(*s))
 			return false;
@@ -212,6 +206,23 @@ public:
 	bool MatchIgnoreCase(const char *s);
 	void GetCurrent(char *s, Sci_PositionU len);
 	void GetCurrentLowered(char *s, Sci_PositionU len);
+
+
+    // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+
+    bool Match(char ch0, char ch1, char ch2) const noexcept {
+        return Match(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 2);
+    }
+    bool MatchNext(char ch0, char ch1) const noexcept {
+        return chNext == static_cast<unsigned char>(ch0) && ch1 == styler.SafeGetCharAt(currentPos + 2);
+    }
+    bool MatchNext(char ch0, char ch1, char ch2) const noexcept {
+        return MatchNext(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 3);
+    }
+
+    // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
+
 };
 
 }

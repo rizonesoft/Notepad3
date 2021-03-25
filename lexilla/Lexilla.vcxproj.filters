@@ -93,6 +93,9 @@
     <ClInclude Include="include\SciLexer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lexers_x\StringUtils.h">
+      <Filter>lexers_x</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lexilla.cxx">
@@ -255,6 +258,9 @@
       <Filter>lexlib</Filter>
     </ClCompile>
     <ClCompile Include="lexers_x\LexPython.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexerUtils.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>

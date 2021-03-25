@@ -6,11 +6,11 @@
 ** Dart Spec:  https://dart.dev/guides/language/spec
 **/
 
+#include <cassert>
 #include <string>
-#include <assert.h>
 #include <map>
 #include <vector>
-//
+
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "StringCopy.h"
@@ -25,6 +25,7 @@
 //
 #include "CharSetX.h"
 #include "SciXLexer.h"
+#include "StringUtils.h"
 #include "LexerUtils.h"
 
 
@@ -33,12 +34,6 @@ using namespace Scintilla;
 namespace
 {
 // Use an unnamed namespace to protect the functions and classes from name conflicts
-
-enum {
-    MaxDartNestedStateCount = 4,
-    DartLineStateMaskLineComment = 1,	// line comment
-    DartLineStateMaskImport = (1 << 1),	// import
-};
 
 struct OptionsDart
 {
@@ -55,6 +50,7 @@ struct OptionsDart
 static const char* const dartWordLists[] =
 {
     "Keywords",
+    "Keywords2",
     "Types",
     "Classes",
     "Enums",
@@ -78,39 +74,40 @@ struct OptionSetDart : public OptionSet<OptionsDart>
 LexicalClass lexicalClasses[] =
 {
     // Lexer Dart  SCLEX_DART  SCE_DART_:
-    0,  "SCE_DART_DEFAULT",                 "default",              "Descr",
-    1,  "SCE_DART_COMMENTLINE",             "commentline",          "Descr",
-    2,  "SCE_DART_COMMENTLINEDOC",          "commentlinedoc",       "Descr",
-    3,  "SCE_DART_COMMENTBLOCK",            "commentblock",         "Descr",
-    4,  "SCE_DART_COMMENTBLOCKDOC",         "commentblockdoc",      "Descr",
-    5,  "SCE_DART_NUMBER",                  "number",               "Descr",
-    6,  "SCE_DART_OPERATOR",                "operator",             "Descr",
-    7,  "SCE_DART_OPERATOR2",               "operator2",            "Descr",
-    8,  "SCE_DART_IDENTIFIER",              "identifier",           "Descr",
-    9,  "SCE_DART_STRING_SQ ",              "string_sq",            "Descr",
-    10, "SCE_DART_STRING_DQ",               "string_dq",            "Descr",
-    11, "SCE_DART_TRIPLE_STRING_SQ",        "tristrg_sq",           "Descr",
-    12, "SCE_DART_TRIPLE_STRING_DQ",        "tristrg_dq",           "Descr",
-    13, "SCE_DART_ESCAPECHAR",              "escchar",              "Descr",
-    14, "SCE_DART_RAWSTRING_SQ",            "rawstrg_sq",           "Descr",
-    15, "SCE_DART_RAWSTRING_DQ",            "rawstrg_dq",           "Descr",
-    16, "SCE_DART_TRIPLE_RAWSTRING_SQ",     "trirawstrg_sq",        "Descr",
-    17, "SCE_DART_TRIPLE_RAWSTRING_DQ",     "trirawstrg_dq",        "Descr",
-    18, "SCE_DART_TRIPLE_STRING_SQSTART",   "default",              "Descr",
-    19, "SCE_DART_TRIPLE_STRING_DQSTART",   "default",              "Descr",
-    20, "SCE_DART_TRIPLE_STRING_SQEND",     "default",              "Descr",
-    21, "SCE_DART_TRIPLE_STRING_DQEND",     "default",              "Descr",
-    22, "SCE_DART_SYMBOL_OPERATOR",         "symbol_op",            "Descr",
-    23, "SCE_DART_SYMBOL_IDENTIFIER",       "symbol_id",            "Descr",
-    24, "SCE_DART_VARIABLE",                "var",                  "Descr",
-    25, "SCE_DART_METADATA",                "metadata",             "Descr",
-    26, "SCE_DART_LABEL",                   "label",                "Descr",
-    27, "SCE_DART_FUNCTION",                "function",             "Descr",
-    28, "SCE_DART_WORD",                    "word",                 "Descr",
-    29, "SCE_DART_WORD2",                   "word2",                "Descr",
-    30, "SCE_DART_CLASS",                   "class",                "Descr",
-    31, "SCE_DART_ENUM",                    "enum",                 "Descr"
+    SCE_DART_DEFAULT,             "SCE_DART_DEFAULT",                 "default",              "Descr",
+    SCE_DART_COMMENTLINE,         "SCE_DART_COMMENTLINE",             "commentline",          "Descr",
+    SCE_DART_COMMENTLINEDOC,      "SCE_DART_COMMENTLINEDOC",          "commentlinedoc",       "Descr",
+    SCE_DART_COMMENTBLOCK,        "SCE_DART_COMMENTBLOCK",            "commentblock",         "Descr",
+    SCE_DART_COMMENTBLOCKDOC,     "SCE_DART_COMMENTBLOCKDOC",         "commentblockdoc",      "Descr",
+    SCE_DART_TASKMARKER,          "SCE_DART_TASKMARKER",              "taskmarker",           "Descr",
+    SCE_DART_NUMBER,              "SCE_DART_NUMBER",                  "number",               "Descr",
+    SCE_DART_OPERATOR,            "SCE_DART_OPERATOR",                "operator",             "Descr",
+    SCE_DART_OPERATOR2,           "SCE_DART_OPERATOR2",               "operator2",            "Descr",
+    SCE_DART_IDENTIFIER,          "SCE_DART_IDENTIFIER",              "identifier",           "Descr",
+    SCE_DART_ESCAPECHAR,          "SCE_DART_ESCAPECHAR ",             "string_sq",            "Descr",
+    SCE_DART_STRING_SQ,           "SCE_DART_STRING_SQ",               "string_dq",            "Descr",
+    SCE_DART_STRING_DQ,           "SCE_DART_STRING_DQ",               "tristrg_sq",           "Descr",
+    SCE_DART_TRIPLE_STRING_SQ,    "SCE_DART_TRIPLE_STRING_SQ",        "tristrg_dq",           "Descr",
+    SCE_DART_TRIPLE_STRING_DQ,    "SCE_DART_TRIPLE_STRING_DQ",        "escchar",              "Descr",
+    SCE_DART_RAWSTRING_SQ,        "SCE_DART_RAWSTRING_SQ",            "rawstrg_sq",           "Descr",
+    SCE_DART_RAWSTRING_DQ,        "SCE_DART_RAWSTRING_DQ",            "rawstrg_dq",           "Descr",
+    SCE_DART_TRIPLE_RAWSTRING_SQ, "SCE_DART_TRIPLE_RAWSTRING_SQ",     "trirawstrg_sq",        "Descr",
+    SCE_DART_TRIPLE_RAWSTRING_DQ, "SCE_DART_TRIPLE_RAWSTRING_DQ",     "trirawstrg_dq",        "Descr",
+    SCE_DART_TRIPLE_STRINGSTART,  "SCE_DART_TRIPLE_STRINGSTART",      "string_beg",           "Descr",
+    SCE_DART_TRIPLE_STRINGEND,    "SCE_DART_TRIPLE_STRINGEND",        "string_end",           "Descr",
+    SCE_DART_SYMBOL_OPERATOR,     "SCE_DART_SYMBOL_OPERATOR",         "sym_operator",         "Descr",
+    SCE_DART_SYMBOL_IDENTIFIER,   "SCE_DART_SYMBOL_IDENTIFIER",       "sym_identifier",       "Descr",
+    SCE_DART_VARIABLE,            "SCE_DART_VARIABLE",                "variable",             "Descr",
+    SCE_DART_METADATA,            "SCE_DART_METADATA",                "metadata",             "Descr",
+    SCE_DART_LABEL,               "SCE_DART_LABEL",                   "label",                "Descr",
+    SCE_DART_FUNCTION,            "SCE_DART_FUNCTION",                "function",             "Descr",
+    SCE_DART_WORD,                "SCE_DART_WORD",                    "keword",               "Descr",
+    SCE_DART_WORD2,               "SCE_DART_WORD2",                   "keyword2",             "Descr",
+    SCE_DART_CLASS,               "SCE_DART_CLASS",                   "class",                "Descr",
+    SCE_DART_ENUM,                "SCE_DART_ENUM",                    "enum",                 "Descr"
 };
+
+
 
 } // end of namespace
 
@@ -123,6 +120,7 @@ class LexerDart : public DefaultLexer
     //CharacterSet chDateTime;
 
     WordList wl_keywords;
+    WordList wl_keywords2;
     WordList wl_types;
     WordList wl_classes;
     WordList wl_enums;
@@ -228,18 +226,21 @@ Sci_Position SCI_METHOD LexerDart::WordListSet(int n, const char* wl)
         wordListN = &wl_keywords;
         break;
     case 1:
-        wordListN = &wl_types;
+        wordListN = &wl_keywords2;
         break;
     case 2:
-        wordListN = &wl_classes;
+        wordListN = &wl_types;
         break;
     case 3:
-        wordListN = &wl_enums;
+        wordListN = &wl_classes;
         break;
     case 4:
-        wordListN = &wl_metadata;
+        wordListN = &wl_enums;
         break;
     case 5:
+        wordListN = &wl_metadata;
+        break;
+    case 6:
         wordListN = &wl_functions;
         break;
     }
@@ -260,8 +261,8 @@ Sci_Position SCI_METHOD LexerDart::WordListSet(int n, const char* wl)
 }
 // ----------------------------------------------------------------------------
 
-struct EscapeSequence {
 
+struct EscapeSequence {
     int outerState = SCE_DART_DEFAULT;
     int digitsLeft = 0;
 
@@ -271,96 +272,74 @@ struct EscapeSequence {
         digitsLeft = (chNext == 'x') ? 3 : ((chNext == 'u') ? 5 : 1);
         return true;
     }
-
     bool atEscapeEnd(int ch) noexcept {
-        if (digitsLeft <= 0) {
-            return true;
-        }
-        return --digitsLeft <= 0 || !IsAHexDigit(ch);
+        --digitsLeft;
+        return digitsLeft <= 0 || !IsAHexDigit(ch);
     }
 };
 
 
-constexpr int PackState(int state) noexcept {
-    switch (state) {
-    case SCE_DART_STRING_SQ:
-        return 1;
-    case SCE_DART_STRING_DQ:
-        return 2;
-    case SCE_DART_TRIPLE_STRING_SQ:
-        return 3;
-    case SCE_DART_TRIPLE_STRING_DQ:
-        return 4;
-    default:
-        return 0;
-    }
+enum {
+    DartLineStateMaskLineComment = 1,	// line comment
+    DartLineStateMaskImport = (1 << 1),	// import
+};
+
+static_assert(DefaultNestedStateBaseStyle + 1 == SCE_DART_STRING_SQ);
+static_assert(DefaultNestedStateBaseStyle + 2 == SCE_DART_STRING_DQ);
+static_assert(DefaultNestedStateBaseStyle + 3 == SCE_DART_TRIPLE_STRING_SQ);
+static_assert(DefaultNestedStateBaseStyle + 4 == SCE_DART_TRIPLE_STRING_DQ);
+
+constexpr bool IsDeclarableOperator(int ch) noexcept {
+    // https://github.com/dart-lang/sdk/blob/master/sdk/lib/core/symbol.dart
+    return AnyOf(ch, '+', '-', '*', '/', '%', '~', '&', '|',
+        '^', '<', '>', '=', '[', ']');
 }
 
-constexpr int UnpackState(int state) noexcept {
-    switch (state) {
-    case 1:
-        return SCE_DART_STRING_SQ;
-    case 2:
-        return SCE_DART_STRING_DQ;
-    case 3:
-        return SCE_DART_TRIPLE_STRING_SQ;
-    case 4:
-        return SCE_DART_TRIPLE_STRING_DQ;
-    default:
-        return SCE_DART_DEFAULT;
-    }
-}
-
-inline static int PackNestedState(const std::vector<int>& nestedState) noexcept {
-    return PackLineState<3, MaxDartNestedStateCount, PackState>(nestedState) << 16;
-}
-
-inline static void UnpackNestedState(int lineState, int count, std::vector<int>& nestedState) {
-    UnpackLineState<3, MaxDartNestedStateCount, UnpackState>(lineState, count, nestedState);
+constexpr bool IsSpaceEquiv(int state) noexcept {
+    return state <= SCE_DART_TASKMARKER;
 }
 
 
-void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess)
+
+void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument* pAccess)
 {
     PropSetSimple props;
     props.SetMultiple(osDart.PropertyNames());
 
     Accessor styler(pAccess, &props);
-    StyleContext sc(startPos, length, initStyle, styler);
+    StyleContext sc(startPos, lengthDoc, initStyle, styler);
 
-    int lineStateLineComment = 0;
-    int lineStateImport = 0;
+    int lineStateLineType = 0;
     int commentLevel = 0;	// nested block comment level
 
     int kwType = SCE_DART_DEFAULT;
     int chBeforeIdentifier = 0;
 
-    int curlyBrace = 0; // "${}"
-    int variableOuter = SCE_DART_DEFAULT;	// variable inside string
-    std::vector<int> nestedState;
+    std::vector<int> nestedState; // string interpolation "${}"
 
     int visibleChars = 0;
-    EscapeSequence escSeq = { SCE_DART_DEFAULT, 0 };
+    int visibleCharsBefore = 0;
+    EscapeSequence escSeq;
 
     if (sc.currentLine > 0) {
-        const int lineState = styler.GetLineState(sc.currentLine - 1);
+        int lineState = styler.GetLineState(sc.currentLine - 1);
         /*
-        1: lineStateLineComment
-        1: lineStateImport
+        2: lineStateLineType
         6: commentLevel
-        8: curlyBrace
+        3: nestedState count
         3*4: nestedState
         */
         commentLevel = (lineState >> 2) & 0x3f;
-        curlyBrace = (lineState >> 8) & 0xff;
-        if (curlyBrace) {
-            UnpackNestedState((lineState >> 16) & 0xff, curlyBrace, nestedState);
+        lineState >>= 8;
+        if (lineState) {
+            UnpackLineState(lineState, nestedState);
         }
     }
     if (startPos == 0 && sc.Match('#', '!')) {
         // Shell Shebang at beginning of file
         sc.SetState(SCE_DART_COMMENTLINE);
-        lineStateLineComment = DartLineStateMaskLineComment;
+        sc.Forward();
+        lineStateLineType = DartLineStateMaskLineComment;
     }
 
     while (sc.More()) {
@@ -380,22 +359,30 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
             if (!IsIdentifierCharEx(sc.ch)) {
                 char s[128];
                 sc.GetCurrent(s, sizeof(s));
-                
                 if (wl_keywords.InList(s)) {
                     sc.ChangeState(SCE_DART_WORD);
-                    if (EqualsAny(s, "import", "part")) {
+                    if (StrEqualsAny(s, "import", "part")) {
                         if (visibleChars == sc.LengthCurrent()) {
-                            lineStateImport = DartLineStateMaskImport;
+                            lineStateLineType = DartLineStateMaskImport;
                         }
                     }
-                    else if (EqualsAny(s, "as", "class", "extends", "implements", "is", "new", "throw")) {
+                    else if (StrEqualsAny(s, "class", "extends", "implements", "new", "throw", "as", "is")) {
                         kwType = SCE_DART_CLASS;
                     }
-                    else if (strcmp(s, "enum") == 0) {
+                    else if (StrEqual(s, "enum")) {
                         kwType = SCE_DART_ENUM;
                     }
+                    else if (StrEqualsAny(s, "break", "continue")) {
+                        kwType = SCE_DART_LABEL;
+                    }
+                    if (kwType != SCE_DART_DEFAULT) {
+                        const int chNext = GetLineNextChar(styler, sc);
+                        if (!IsIdentifierStartEx(chNext)) {
+                            kwType = SCE_DART_DEFAULT;
+                        }
+                    }
                 }
-                else if (wl_types.InList(s)) {
+                else if (wl_keywords2.InList(s)) {
                     sc.ChangeState(SCE_DART_WORD2);
                 }
                 else if (wl_classes.InList(s)) {
@@ -404,23 +391,35 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
                 else if (wl_enums.InList(s)) {
                     sc.ChangeState(SCE_DART_ENUM);
                 }
-                else if (kwType != SCE_DART_DEFAULT) {
-                    sc.ChangeState(kwType);
-                }
-                else {
-                    //?const int chNext = GetNextNSChar();
-                    while (IsASpace(sc.ch) && sc.More()){ sc.Forward(); };
-                    if (sc.ch == '(') {
-                        sc.ChangeState(SCE_DART_FUNCTION);
-                    }
-                    else if ((chBeforeIdentifier == '<' && sc.ch == '>')
-                        || IsIdentifierStartEx(sc.ch)) {
-                        // type<type>
-                        // type identifier
-                        sc.ChangeState(SCE_DART_CLASS);
+                else if (sc.ch == ':') {
+                    if (visibleChars == sc.LengthCurrent()) {
+                        const int chNext = GetLineNextChar(styler, sc, true);
+                        if (IsJumpLabelNextChar(chNext)) {
+                            sc.ChangeState(SCE_DART_LABEL);
+                        }
                     }
                 }
-                if (sc.state != SCE_DART_WORD) {
+                else if (sc.ch != '.') {
+                    if (kwType != SCE_DART_DEFAULT) {
+                        sc.ChangeState(kwType);
+                    }
+                    else {
+                        const int chNext = GetDocNextChar(styler, sc, (sc.ch == '?'));
+                        if (chNext == '(') {
+                            sc.ChangeState(SCE_DART_FUNCTION);
+                        }
+                        else if ((chBeforeIdentifier == '<' && (chNext == '>' || chNext == '<'))
+                            || IsIdentifierStartEx(chNext)) {
+                            // type<type>
+                            // type<type?>
+                            // type<type<type>>
+                            // type identifier
+                            // type? identifier
+                            sc.ChangeState(SCE_DART_CLASS);
+                        }
+                    }
+                }
+                if (sc.state != SCE_DART_WORD && sc.ch != '.') {
                     kwType = SCE_DART_DEFAULT;
                 }
                 sc.SetState(SCE_DART_DEFAULT);
@@ -441,7 +440,7 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
             break;
 
         case SCE_DART_SYMBOL_OPERATOR:
-            if (!isoperator(sc.ch)) {
+            if (!IsDeclarableOperator(sc.ch)) {
                 sc.SetState(SCE_DART_DEFAULT);
             }
             break;
@@ -450,6 +449,9 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
         case SCE_DART_COMMENTLINEDOC:
             if (sc.atLineStart) {
                 sc.SetState(SCE_DART_DEFAULT);
+            }
+            else {
+                HighlightTaskMarker(sc, visibleChars, visibleCharsBefore, SCE_DART_TASKMARKER);
             }
             break;
 
@@ -463,8 +465,11 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
                 }
             }
             else if (sc.Match('/', '*')) {
-                sc.Forward(2);
+                sc.Forward();
                 ++commentLevel;
+            }
+            else if (HighlightTaskMarker(sc, visibleChars, visibleCharsBefore, SCE_DART_TASKMARKER)) {
+                continue;
             }
             break;
 
@@ -492,7 +497,7 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
         case SCE_DART_STRING_DQ:
         case SCE_DART_TRIPLE_STRING_SQ:
         case SCE_DART_TRIPLE_STRING_DQ:
-            if (curlyBrace == 0 && (sc.state == SCE_DART_STRING_SQ || sc.state == SCE_DART_STRING_DQ) && sc.atLineStart) {
+            if ((sc.state == SCE_DART_STRING_SQ || sc.state == SCE_DART_STRING_DQ) && sc.atLineStart) {
                 sc.SetState(SCE_DART_DEFAULT);
             }
             else if (sc.ch == '\\') {
@@ -501,75 +506,62 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
                     sc.Forward();
                 }
             }
-            else if (sc.ch == '$' && IsIdentifierStartEx(sc.chNext)) {
-                variableOuter = sc.state;
-                sc.SetState(SCE_DART_VARIABLE);
-            }
-            else if (sc.Match('$', '{')) {
-                ++curlyBrace;
-                nestedState.push_back(sc.state);
-                sc.SetState(SCE_DART_OPERATOR2);
-                sc.Forward();
-            }
-            else if (curlyBrace && sc.ch == '}') {
-                const int outerState = TryPopBack(nestedState);
-                --curlyBrace;
-                sc.SetState(SCE_DART_OPERATOR2);
-                sc.ForwardSetState(outerState);
-                continue;
-            }
-            else if (sc.ch == '\'' && (sc.state == SCE_DART_STRING_SQ
-                || (sc.state == SCE_DART_TRIPLE_STRING_SQ && sc.Match('\'', '\'', '\'')))) {
-                if (sc.state == SCE_DART_TRIPLE_STRING_SQ) {
-                    sc.SetState(SCE_DART_TRIPLE_STRING_SQEND);
-                    sc.Forward(2);
-                }
-                sc.ForwardSetState(SCE_DART_DEFAULT);
-            }
-            else if (sc.ch == '"' && (sc.state == SCE_DART_STRING_DQ
-                || (sc.state == SCE_DART_TRIPLE_STRING_DQ && sc.Match('"', '"', '"')))) {
-                if (sc.state == SCE_DART_TRIPLE_STRING_DQ) {
-                    sc.SetState(SCE_DART_TRIPLE_STRING_DQEND);
-                    sc.Forward(2);
-                }
-                sc.ForwardSetState(SCE_DART_DEFAULT);
-            }
-            break;
-        case SCE_DART_ESCAPECHAR:
-            if (escSeq.atEscapeEnd(sc.ch)) {
-                const int outerState = escSeq.outerState;
-                if (sc.ch == '\\' && escSeq.resetEscapeState(outerState, sc.chNext)) {
+            else if (sc.ch == '$') {
+                if (sc.chNext == '{') {
+                    nestedState.push_back(sc.state);
+                    sc.SetState(SCE_DART_OPERATOR2);
                     sc.Forward();
                 }
-                else {
-                    sc.SetState(outerState);
-                    continue;
+                else if (IsIdentifierStartEx(sc.chNext)) {
+                    escSeq.outerState = sc.state;
+                    sc.SetState(SCE_DART_VARIABLE);
                 }
             }
+            else if ((sc.ch == '\'' && (sc.state == SCE_DART_STRING_SQ || (sc.state == SCE_DART_TRIPLE_STRING_SQ && sc.MatchNext('\'', '\''))))
+                || (sc.ch == '"' && (sc.state == SCE_DART_STRING_DQ || (sc.state == SCE_DART_TRIPLE_STRING_DQ && sc.MatchNext('"', '"'))))) {
+                if (sc.state == SCE_DART_TRIPLE_STRING_SQ || sc.state == SCE_DART_TRIPLE_STRING_DQ) {
+                    sc.SetState(SCE_DART_TRIPLE_STRINGEND);
+                    sc.Forward(2);
+                }
+                sc.ForwardSetState(SCE_DART_DEFAULT);
+            }
             break;
+
+        case SCE_DART_ESCAPECHAR:
+            if (escSeq.atEscapeEnd(sc.ch)) {
+                sc.SetState(escSeq.outerState);
+                continue;
+            }
+            break;
+
         case SCE_DART_VARIABLE:
             if (!IsIdentifierCharEx(sc.ch)) {
-                sc.SetState(variableOuter);
+                sc.SetState(escSeq.outerState);
                 continue;
             }
             break;
         }
 
         if (sc.state == SCE_DART_DEFAULT) {
-            if (sc.Match('/', '/')) {
-                const int chNext = sc.GetRelative(2);
-                sc.SetState((chNext == '/') ? SCE_DART_COMMENTLINEDOC : SCE_DART_COMMENTLINE);
-                if (visibleChars == 0) {
-                    lineStateLineComment = DartLineStateMaskLineComment;
+            if (sc.ch == '/' && (sc.chNext == '/' || sc.chNext == '*')) {
+                visibleCharsBefore = visibleChars;
+                const int chNext = sc.chNext;
+                sc.SetState((chNext == '/') ? SCE_DART_COMMENTLINE : SCE_DART_COMMENTBLOCK);
+                sc.Forward(2);
+                if (sc.ch == chNext && sc.chNext != chNext) {
+                    sc.ChangeState((chNext == '/') ? SCE_DART_COMMENTLINEDOC : SCE_DART_COMMENTBLOCKDOC);
                 }
+                if (chNext == '/') {
+                    if (visibleChars == 0) {
+                        lineStateLineType = DartLineStateMaskLineComment;
+                    }
+                }
+                else {
+                    commentLevel = 1;
+                }
+                continue;
             }
-            else if (sc.Match('/', '*')) {
-                const int chNext = sc.GetRelative(2);
-                sc.SetState((chNext == '*') ? SCE_DART_COMMENTBLOCKDOC : SCE_DART_COMMENTBLOCK);
-                sc.Forward();
-                commentLevel = 1;
-            }
-            else if (sc.ch == 'r' && (sc.chNext == '\'' || sc.chNext == '"')) {
+            if (sc.ch == 'r' && (sc.chNext == '\'' || sc.chNext == '"')) {
                 sc.SetState((sc.chNext == '\'') ? SCE_DART_RAWSTRING_SQ : SCE_DART_RAWSTRING_DQ);
                 sc.Forward(2);
                 if (sc.chPrev == '\'' && sc.Match('\'', '\'')) {
@@ -582,53 +574,54 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
                 }
                 continue;
             }
-            else if (sc.Match('"', '"', '"')) {
-                sc.ChangeState(SCE_DART_TRIPLE_STRING_DQSTART);
-                sc.Forward(2);
-                sc.ForwardSetState(SCE_DART_TRIPLE_STRING_DQ);
-                continue;
-            }
-            else if (sc.ch == '"') {
+            if (sc.ch == '"') {
+                if (sc.MatchNext('"', '"')) {
+                    sc.SetState(SCE_DART_TRIPLE_STRINGSTART);
+                    sc.Forward(2);
+                    sc.ForwardSetState(SCE_DART_TRIPLE_STRING_DQ);
+                    continue;
+                }
                 sc.SetState(SCE_DART_STRING_DQ);
             }
-            else if (sc.Match('\'', '\'', '\'')) {
-                sc.ChangeState(SCE_DART_TRIPLE_STRING_SQSTART);
-                sc.Forward(2);
-                sc.ForwardSetState(SCE_DART_TRIPLE_STRING_SQ);
-                continue;
-            }
             else if (sc.ch == '\'') {
+                if (sc.MatchNext('\'', '\'')) {
+                    sc.SetState(SCE_DART_TRIPLE_STRINGSTART);
+                    sc.Forward(2);
+                    sc.ForwardSetState(SCE_DART_TRIPLE_STRING_SQ);
+                    continue;
+                }
                 sc.SetState(SCE_DART_STRING_SQ);
             }
             else if (IsNumberStart(sc.ch, sc.chNext)) {
                 sc.SetState(SCE_DART_NUMBER);
             }
             else if ((sc.ch == '@' || sc.ch == '$') && IsIdentifierStartEx(sc.chNext)) {
-                variableOuter = SCE_DART_DEFAULT;
+                escSeq.outerState = SCE_DART_DEFAULT;
                 sc.SetState((sc.ch == '@') ? SCE_DART_METADATA : SCE_DART_VARIABLE);
             }
             else if (sc.ch == '#') {
                 if (IsIdentifierStartEx(sc.chNext)) {
                     sc.SetState(SCE_DART_SYMBOL_IDENTIFIER);
                 }
-                else if (isoperator(sc.ch)) {
+                else if (IsDeclarableOperator(sc.chNext)) {
                     sc.SetState(SCE_DART_SYMBOL_OPERATOR);
                 }
             }
             else if (IsIdentifierStartEx(sc.ch)) {
-                chBeforeIdentifier = sc.chPrev;
+                if (sc.chPrev != '.') {
+                    chBeforeIdentifier = sc.chPrev;
+                }
                 sc.SetState(SCE_DART_IDENTIFIER);
             }
             else if (isoperator(sc.ch)) {
-                sc.SetState(curlyBrace ? SCE_DART_OPERATOR2 : SCE_DART_OPERATOR);
-                if (curlyBrace) {
+                const bool interpolating = !nestedState.empty();
+                sc.SetState(interpolating ? SCE_DART_OPERATOR2 : SCE_DART_OPERATOR);
+                if (interpolating) {
                     if (sc.ch == '{') {
-                        ++curlyBrace;
                         nestedState.push_back(SCE_DART_DEFAULT);
                     }
                     else if (sc.ch == '}') {
-                        --curlyBrace;
-                        const int outerState = TryPopBack(nestedState);
+                        const int outerState = TakeAndPop(nestedState);
                         sc.ForwardSetState(outerState);
                         continue;
                     }
@@ -640,14 +633,14 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position length, int 
             visibleChars++;
         }
         if (sc.atLineEnd) {
-            int lineState = (curlyBrace << 8) | (commentLevel << 2) | lineStateLineComment | lineStateImport;
-            if (curlyBrace) {
-                lineState |= PackNestedState(nestedState);
+            int lineState = (commentLevel << 2) | lineStateLineType;
+            if (!nestedState.empty()) {
+                lineState |= PackLineState(nestedState) << 8;
             }
             styler.SetLineState(sc.currentLine, lineState);
-            lineStateLineComment = 0;
-            lineStateImport = 0;
+            lineStateLineType = 0;
             visibleChars = 0;
+            visibleCharsBefore = 0;
             kwType = SCE_DART_DEFAULT;
         }
         sc.Forward();
@@ -676,7 +669,7 @@ constexpr bool IsStreamCommentStyle(int style) noexcept {
     return style == SCE_DART_COMMENTBLOCK || style == SCE_DART_COMMENTBLOCKDOC;
 }
 
-void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position length, int, IDocument* pAccess)
+void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDocument* pAccess)
 {
     if (!options.fold) { return; }
 
@@ -689,23 +682,28 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position length, int
     //const int foldComment = props.GetInt("fold.comment", 1) != 0;
     const int foldComment = options.foldComment;
 
-    const Sci_PositionU endPos = startPos + length;
+    const Sci_PositionU endPos = startPos + lengthDoc;
     Sci_Position lineCurrent = styler.GetLine(startPos);
     FoldLineState foldPrev(0);
     int levelCurrent = SC_FOLDLEVELBASE;
     if (lineCurrent > 0) {
         levelCurrent = styler.LevelAt(lineCurrent - 1) >> 16;
         foldPrev = FoldLineState(styler.GetLineState(lineCurrent - 1));
+        const Sci_PositionU bracePos = CheckBraceOnNextLine(styler, lineCurrent - 1, SCE_DART_OPERATOR, SCE_DART_TASKMARKER);
+        if (bracePos) {
+            startPos = bracePos + 1; // skip the brace
+        }
     }
 
     int levelNext = levelCurrent;
     FoldLineState foldCurrent(styler.GetLineState(lineCurrent));
     Sci_PositionU lineStartNext = styler.LineStart(lineCurrent + 1);
-    Sci_PositionU lineEndPos = ((lineStartNext < endPos) ? lineStartNext : endPos) - 1;
+    Sci_PositionU lineEndPos = sci::min(lineStartNext, endPos) - 1;
 
     char chNext = styler[startPos];
     int styleNext = styler.StyleAt(startPos);
-    int style = styleNext; //initStyle;
+    int style = styleNext;
+    int visibleChars = 0;
 
     for (Sci_PositionU i = startPos; i < endPos; i++) {
         const char ch = chNext;
@@ -714,8 +712,9 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position length, int
         style = styleNext;
         styleNext = styler.StyleAt(i + 1);
 
-        if (IsStreamCommentStyle(style)) {
-            if (foldComment) {
+        switch (style) {
+        case SCE_DART_COMMENTBLOCKDOC:
+        case SCE_DART_COMMENTBLOCK: {
                 const int level = (ch == '/' && chNext == '*') ? 1 : ((ch == '*' && chNext == '/') ? -1 : 0);
                 if (level != 0) {
                     levelNext += level;
@@ -723,42 +722,58 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position length, int
                     chNext = styler.SafeGetCharAt(i + 1);
                     styleNext = styler.StyleAt(i + 1);
                 }
-            }
-        }
-        else if (style == SCE_DART_TRIPLE_RAWSTRING_SQ || style == SCE_DART_TRIPLE_RAWSTRING_DQ) {
+            } break;
+
+        case SCE_DART_TRIPLE_RAWSTRING_SQ:
+        case SCE_DART_TRIPLE_RAWSTRING_DQ:
             if (style != stylePrev) {
                 levelNext++;
             }
             else if (style != styleNext) {
                 levelNext--;
             }
-        }
-        else if (style == SCE_DART_TRIPLE_STRING_SQSTART || style == SCE_DART_TRIPLE_STRING_DQSTART) {
+            break;
+
+        case SCE_DART_TRIPLE_STRINGSTART:
             if (style != stylePrev) {
                 levelNext++;
             }
-        }
-        else if (style == SCE_DART_TRIPLE_STRING_SQEND || style == SCE_DART_TRIPLE_STRING_DQEND) {
+            break;
+
+        case SCE_DART_TRIPLE_STRINGEND:
             if (style != styleNext) {
                 levelNext--;
             }
-        }
-        else if (style == SCE_DART_OPERATOR) {
+            break;
+
+        case SCE_DART_OPERATOR:
             if (ch == '{' || ch == '[' || ch == '(') {
                 levelNext++;
             }
             else if (ch == '}' || ch == ']' || ch == ')') {
                 levelNext--;
             }
+            break;
         }
 
+        if (visibleChars == 0 && !IsSpaceEquiv(style)) {
+            ++visibleChars;
+        }
         if (i == lineEndPos) {
             const FoldLineState foldNext(styler.GetLineState(lineCurrent + 1));
-            if (foldComment & foldCurrent.lineComment) {
+            if (foldCurrent.lineComment) {
                 levelNext += foldNext.lineComment - foldPrev.lineComment;
             }
             else if (foldCurrent.packageImport) {
                 levelNext += foldNext.packageImport - foldPrev.packageImport;
+            }
+            else if (visibleChars) {
+                const Sci_PositionU bracePos = CheckBraceOnNextLine(styler, lineCurrent, SCE_DART_OPERATOR, SCE_DART_TASKMARKER);
+                if (bracePos) {
+                    levelNext++;
+                    i = bracePos; // skip the brace
+                    chNext = '\0';
+                }
             }
 
             const int levelUse = levelCurrent;
@@ -772,10 +787,11 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position length, int
 
             lineCurrent++;
             lineStartNext = styler.LineStart(lineCurrent + 1);
-            lineEndPos = ((lineStartNext < endPos) ? lineStartNext : endPos) - 1;
+            lineEndPos = sci::min(lineStartNext, endPos) - 1;
             levelCurrent = levelNext;
             foldPrev = foldCurrent;
             foldCurrent = foldNext;
+            visibleChars = 0;
         }
     }
 }

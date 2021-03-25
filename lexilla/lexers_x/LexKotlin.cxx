@@ -6,8 +6,8 @@
 ** Kotlin Ref: https://kotlinlang.org/docs/reference/
 **/
 
+#include <cassert>
 #include <string>
-#include <assert.h>
 #include <map>
 #include <vector>
 //
@@ -25,6 +25,7 @@
 //
 #include "CharSetX.h"
 #include "SciXLexer.h"
+#include "StringUtils.h"
 #include "LexerUtils.h"
 
 
@@ -74,31 +75,32 @@ struct OptionSetKotlin : public OptionSet<OptionsKotlin>
 LexicalClass lexicalClasses[] =
 { 
     // Lexer Dart  SCLEX_DART  SCE_DART_:
-    0,  "SCE_KOTLIN_DEFAULT",            "default",              "Descr",
-    1,  "SCE_KOTLIN_COMMENTLINE",        "commentline",          "Descr",
-    2,  "SCE_KOTLIN_COMMENTLINEDOC",     "commentlinedoc",       "Descr",
-    3,  "SCE_KOTLIN_COMMENTBLOCK",       "commentblock",         "Descr",
-    4,  "SCE_KOTLIN_COMMENTBLOCKDOC",    "commentblockdoc",      "Descr",
-    5,  "SCE_KOTLIN_COMMENTDOCWORD",     "commentdocword",       "Descr",
-    6,  "SCE_KOTLIN_STRING",             "srting",               "Descr",
-    7,  "SCE_KOTLIN_CHARACTER",          "character",            "Descr",
-    8,  "SCE_KOTLIN_ESCAPECHAR",         "escapechar",           "Descr",
-    9,  "SCE_KOTLIN_RAWSTRING ",         "rawstring",            "Descr",
-    10, "SCE_KOTLIN_RAWSTRINGSTART",     "rawstring_start",      "Descr",
-    11, "SCE_KOTLIN_RAWSTRINGEND",       "rawstring_end",        "Descr",
-    12, "SCE_KOTLIN_BACKTICKS",          "backticks",            "Descr",
-    13, "SCE_KOTLIN_NUMBER",             "number",               "Descr",
-    14, "SCE_KOTLIN_OPERATOR",           "operator",             "Descr",
-    15, "SCE_KOTLIN_OPERATOR2",          "operator2",            "Descr",
-    16, "SCE_KOTLIN_VARIABLE",           "variable",             "Descr",
-    17, "SCE_KOTLIN_ANNOTATION",         "annotation",           "Descr",
-    18, "SCE_KOTLIN_LABEL",              "label",                "Descr",
-    19, "SCE_KOTLIN_IDENTIFIER",         "identifier",           "Descr",
-    20, "SCE_KOTLIN_WORD",               "word",                 "Descr",
-    21, "SCE_KOTLIN_CLASS",              "class",                "Descr",
-    22, "SCE_KOTLIN_INTERFACE",          "interface",            "Descr",
-    23, "SCE_KOTLIN_ENUM",               "enum",                 "Descr",
-    24, "SCE_KOTLIN_FUNCTION",           "function",             "Descr"
+    SCE_KOTLIN_DEFAULT,         "SCE_KOTLIN_DEFAULT",            "default",              "Descr",
+    SCE_KOTLIN_COMMENTLINE,     "SCE_KOTLIN_COMMENTLINE",        "commentline",          "Descr",
+    SCE_KOTLIN_COMMENTLINEDOC,  "SCE_KOTLIN_COMMENTLINEDOC",     "commentlinedoc",       "Descr",
+    SCE_KOTLIN_COMMENTBLOCK,    "SCE_KOTLIN_COMMENTBLOCK",       "commentblock",         "Descr",
+    SCE_KOTLIN_COMMENTBLOCKDOC, "SCE_KOTLIN_COMMENTBLOCKDOC",    "commentblockdoc",      "Descr",
+    SCE_KOTLIN_COMMENTDOCWORD,  "SCE_KOTLIN_COMMENTDOCWORD",     "commentdocword",       "Descr",
+    SCE_KOTLIN_TASKMARKER,      "SCE_KOTLIN_TASKMARKER",         "taskmarker",           "Descr",
+    SCE_KOTLIN_NUMBER,          "SCE_KOTLIN_NUMBER",             "number",               "Descr",
+    SCE_KOTLIN_OPERATOR,        "SCE_KOTLIN_OPERATOR",           "operator",             "Descr",
+    SCE_KOTLIN_OPERATOR2,       "SCE_KOTLIN_OPERATOR2",          "operator2",            "Descr",
+    SCE_KOTLIN_CHARACTER,       "SCE_KOTLIN_CHARACTER",          "character",            "Descr",
+    SCE_KOTLIN_STRING,          "SCE_KOTLIN_STRING",             "string",               "Descr",
+    SCE_KOTLIN_RAWSTRING,       "SCE_KOTLIN_RAWSTRING ",         "rawstring",            "Descr",
+    SCE_KOTLIN_ESCAPECHAR,      "SCE_KOTLIN_ESCAPECHAR",         "escapechar",           "Descr",
+    SCE_KOTLIN_RAWSTRINGSTART,  "SCE_KOTLIN_RAWSTRINGSTART",     "rawstring_start",      "Descr",
+    SCE_KOTLIN_RAWSTRINGEND,    "SCE_KOTLIN_RAWSTRINGEND",       "rawstring_end",        "Descr",
+    SCE_KOTLIN_BACKTICKS,       "SCE_KOTLIN_BACKTICKS",          "backticks",            "Descr",
+    SCE_KOTLIN_VARIABLE,        "SCE_KOTLIN_VARIABLE",           "variable",             "Descr",
+    SCE_KOTLIN_ANNOTATION,      "SCE_KOTLIN_ANNOTATION",         "annotation",           "Descr",
+    SCE_KOTLIN_LABEL,           "SCE_KOTLIN_LABEL",              "label",                "Descr",
+    SCE_KOTLIN_IDENTIFIER,      "SCE_KOTLIN_IDENTIFIER",         "identifier",           "Descr",
+    SCE_KOTLIN_WORD,            "SCE_KOTLIN_WORD",               "word",                 "Descr",
+    SCE_KOTLIN_CLASS,           "SCE_KOTLIN_CLASS",              "class",                "Descr",
+    SCE_KOTLIN_INTERFACE,       "SCE_KOTLIN_INTERFACE",          "interface",            "Descr",
+    SCE_KOTLIN_ENUM,            "SCE_KOTLIN_ENUM",               "enum",                 "Descr",
+    SCE_KOTLIN_FUNCTION,        "SCE_KOTLIN_FUNCTION",           "function",             "Descr",
 };
 
 } // end of namespace
@@ -253,211 +255,166 @@ Sci_Position SCI_METHOD LexerKotlin::WordListSet(int n, const char* wl)
 }
 // ----------------------------------------------------------------------------
 
-enum
-{
-    MaxKotlinNestedStateCount = 4,
-    KotlinLineStateMaskLineComment = (1 << 14), // line comment
-    KotlinLineStateMaskImport = (1 << 15), // import
+enum {
+    KotlinLineStateMaskLineComment = 1, // line comment
+    KotlinLineStateMaskImport = 1 << 1, // import
 };
 
-struct EscapeSequence {
+static_assert(DefaultNestedStateBaseStyle + 1 == SCE_KOTLIN_STRING);
+static_assert(DefaultNestedStateBaseStyle + 2 == SCE_KOTLIN_RAWSTRING);
 
+struct EscapeSequence {
     int outerState = SCE_KOTLIN_DEFAULT;
     int digitsLeft = 0;
 
-    // highlight any character as escape sequence, no highlight for hex in '\u{hex}'.
+    // highlight any character as escape sequence.
     bool resetEscapeState(int state, int chNext) noexcept {
-        if (IsLineBreak(chNext)) { return false; }
+        if (IsLineBreak(chNext)) {
+            return false;
+        }
         outerState = state;
         digitsLeft = (chNext == 'u') ? 5 : 1;
         return true;
     }
-
     bool atEscapeEnd(int ch) noexcept {
-        if (digitsLeft <= 0) {
-            return true;
-        }
-        return --digitsLeft <= 0 || !IsAHexDigit(ch);
+        --digitsLeft;
+        return digitsLeft <= 0 || !IsAHexDigit(ch);
     }
 };
 
 
-constexpr int PackState(int state) noexcept {
-    switch (state)
-    {
-    case SCE_KOTLIN_STRING:
-        return 1;
-    case SCE_KOTLIN_RAWSTRING:
-        return 2;
-    default:
-        return 0;
-    }
+constexpr bool IsSpaceEquiv(int state) noexcept {
+    return state <= SCE_KOTLIN_TASKMARKER;
 }
 
-constexpr int UnpackState(int state) noexcept {
-    switch (state)
-    {
-    case 1:
-        return SCE_KOTLIN_STRING;
-    case 2:
-        return SCE_KOTLIN_RAWSTRING;
-    default:
-        return SCE_KOTLIN_DEFAULT;
-    }
-}
-
-inline static int PackNestedState(const std::vector<int>& nestedState) noexcept {
-    return PackLineState<2, MaxKotlinNestedStateCount, PackState>(nestedState) << 16;
-}
-
-inline static void UnpackNestedState(int lineState, int count, std::vector<int>& nestedState) {
-    UnpackLineState<2, MaxKotlinNestedStateCount, UnpackState>(lineState, count, nestedState);
+constexpr bool IsCommentTagPrev(int chPrev) noexcept {
+    return chPrev <= 32 || AnyOf(chPrev, '/', '*', '!');
 }
 
 
-void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess)
+
+void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument* pAccess)
 {
     PropSetSimple props;
     props.SetMultiple(osKotlin.PropertyNames());
 
     Accessor styler(pAccess, &props);
-    StyleContext sc(startPos, length, initStyle, styler);
+    StyleContext sc(startPos, lengthDoc, initStyle, styler);
 
-    int lineStateLineComment = 0;
-    int lineStateImport = 0;
+    int lineStateLineType = 0;
     int commentLevel = 0;	// nested block comment level
 
     int kwType = SCE_KOTLIN_DEFAULT;
     int chBeforeIdentifier = 0;
 
-    int curlyBrace = 0; // "${}"
-    int variableOuter = SCE_KOTLIN_DEFAULT;	// variable inside string
-    std::vector<int> nestedState;
+    std::vector<int> nestedState; // string interpolation "${}"
 
     int visibleChars = 0;
-    EscapeSequence escSeq = { SCE_KOTLIN_DEFAULT, 0 };
+    int visibleCharsBefore = 0;
+    EscapeSequence escSeq;
 
-    if (sc.currentLine > 0)
-    {
-        const int lineState = styler.GetLineState(sc.currentLine - 1);
+    if (sc.currentLine > 0) {
+        int lineState = styler.GetLineState(sc.currentLine - 1);
         /*
-        8: curlyBrace
+        2: lineStateLineType
         6: commentLevel
-        1: lineStateLineComment
-        1: lineStateImport
-        8: nestedState
+        3: nestedState count
+        3*4: nestedState
         */
-        curlyBrace = lineState & 0xff;
-        commentLevel = (lineState >> 8) & 0x3f;
-        if (curlyBrace)
-        {
-            UnpackNestedState((lineState >> 16) & 0xff, curlyBrace, nestedState);
+        commentLevel = (lineState >> 2) & 0x3f;
+        lineState >>= 8;
+        if (lineState) {
+            UnpackLineState(lineState, nestedState);
         }
     }
-    if (startPos == 0 && sc.Match('#', '!'))
-    {
+    if (startPos == 0 && sc.Match('#', '!')) {
         // Shell Shebang at beginning of file
         sc.SetState(SCE_KOTLIN_COMMENTLINE);
-        lineStateLineComment = KotlinLineStateMaskLineComment;
+        sc.Forward();
+        lineStateLineType = KotlinLineStateMaskLineComment;
     }
 
-    while (sc.More())
-    {
-        switch (sc.state)
-        {
+    while (sc.More()) {
+        switch (sc.state) {
         case SCE_KOTLIN_OPERATOR:
         case SCE_KOTLIN_OPERATOR2:
             sc.SetState(SCE_KOTLIN_DEFAULT);
             break;
 
         case SCE_KOTLIN_NUMBER:
-            if (!IsDecimalNumber(sc.chPrev, sc.ch, sc.chNext))
-            {
+            if (!IsDecimalNumber(sc.chPrev, sc.ch, sc.chNext)) {
                 sc.SetState(SCE_KOTLIN_DEFAULT);
             }
             break;
 
         case SCE_KOTLIN_IDENTIFIER:
-            if (!IsIdentifierCharEx(sc.ch))
-            {
+            if (!IsIdentifierCharEx(sc.ch)) {
                 char s[128];
                 sc.GetCurrent(s, sizeof(s));
-                if (wl_keywords.InList(s))
-                {
+                if (wl_keywords.InList(s)) {
                     sc.ChangeState(SCE_KOTLIN_WORD);
-                    if (strcmp(s, "import") == 0)
-                    {
-                        if (visibleChars == sc.LengthCurrent())
-                        {
-                            lineStateImport = KotlinLineStateMaskImport;
+                    if (StrEqual(s, "import")) {
+                        if (visibleChars == sc.LengthCurrent()) {
+                            lineStateLineType = KotlinLineStateMaskImport;
                         }
                     }
-                    else if (strcmp(s, "break") == 0 || strcmp(s, "continue") == 0 || strcmp(s, "return") == 0
-                        || strcmp(s, "this") == 0 || strcmp(s, "super") == 0)
-                    {
+                    else if (StrEqualsAny(s, "break", "continue", "return", "this", "super")) {
                         kwType = SCE_KOTLIN_LABEL;
                     }
-                    else if (((kwType != SCE_KOTLIN_ANNOTATION && kwType != SCE_KOTLIN_ENUM)
-                        && (chBeforeIdentifier != ':' && strcmp(s, "class") == 0))
-                        || strcmp(s, "typealias") == 0)
-                    {
-                        kwType = SCE_KOTLIN_CLASS;
+                    else if (StrEqualsAny(s, "class", "typealias")) {
+                        if (!(kwType == SCE_KOTLIN_ANNOTATION || kwType == SCE_KOTLIN_ENUM)) {
+                            kwType = SCE_KOTLIN_CLASS;
+                        }
                     }
-                    else if (strcmp(s, "enum") == 0)
-                    {
+                    else if (StrEqual(s, "enum")) {
                         kwType = SCE_KOTLIN_ENUM;
                     }
-                    else if (strcmp(s, "annotation") == 0)
-                    {
+                    else if (StrEqual(s, "annotation")) {
                         kwType = SCE_KOTLIN_ANNOTATION;
                     }
-                    else if (strcmp(s, "interface") == 0)
-                    {
+                    else if (StrEqual(s, "interface")) {
                         kwType = SCE_KOTLIN_INTERFACE;
                     }
-                    if (kwType != SCE_KOTLIN_DEFAULT)
-                    {
-                        //?const int chNext = sc.GetNextNSChar();
-                        while (IsASpace(sc.ch) && sc.More()) { sc.Forward(); };
-                        if (!((kwType == SCE_KOTLIN_LABEL && sc.ch == '@') || (kwType != SCE_KOTLIN_LABEL && IsIdentifierStart(sc.ch))))
-                        {
+                    if (kwType != SCE_KOTLIN_DEFAULT) {
+                        const int chNext = GetDocNextChar(styler, sc);
+                        if (!((kwType == SCE_KOTLIN_LABEL && sc.ch == '@') || (kwType != SCE_KOTLIN_LABEL && IsIdentifierStartEx(sc.ch)))) {
                             kwType = SCE_KOTLIN_DEFAULT;
                         }
                     }
                 }
-                else if (sc.ch == '@')
-                {
+                else if (sc.ch == '@') {
                     sc.ChangeState(SCE_KOTLIN_LABEL);
                     sc.Forward();
                 }
-                else if (wl_classes.InList(s))
-                {
+                else if (wl_classes.InList(s)) {
                     sc.ChangeState(SCE_KOTLIN_CLASS);
                 }
-                else if (wl_interfaces.InList(s))
-                {
+                else if (wl_interfaces.InList(s)) {
                     sc.ChangeState(SCE_KOTLIN_INTERFACE);
                 }
-                else if (wl_enums.InList(s))
-                {
+                else if (wl_enums.InList(s)) {
                     sc.ChangeState(SCE_KOTLIN_ENUM);
                 }
-                else
-                {
-                    if (kwType != SCE_KOTLIN_DEFAULT && kwType != SCE_KOTLIN_LABEL)
-                    {
+                else if (sc.ch != '.') {
+                    if (kwType != SCE_KOTLIN_DEFAULT && kwType != SCE_KOTLIN_LABEL) {
                         sc.ChangeState(kwType);
                     }
-                    else
-                    {
-                        while (IsASpace(sc.ch) && sc.More()) { sc.Forward(); };
+                    else {
+                        const int chNext = GetDocNextChar(styler, sc, (sc.ch == '?'));
                         if (sc.ch == '(') {
                             sc.ChangeState(SCE_KOTLIN_FUNCTION);
                         }
+                        else if (sc.Match(':', ':')
+                            || (chBeforeIdentifier == '<' && (sc.ch == '>' || sc.ch == '<'))) {
+                            // type::class
+                            // type<type>
+                            // type<type?>
+                            // type<type<type>>
+                            sc.ChangeState(SCE_KOTLIN_CLASS);
+                        }
                     }
                 }
-                if (sc.state != SCE_KOTLIN_WORD)
-                {
+                if (sc.state != SCE_KOTLIN_WORD && sc.ch != '.') {
                     kwType = SCE_KOTLIN_DEFAULT;
                 }
                 sc.SetState(SCE_KOTLIN_DEFAULT);
@@ -465,65 +422,55 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position length, in
             break;
 
         case SCE_KOTLIN_LABEL:
-            if (!IsIdentifierCharEx(sc.ch))
-            {
+            if (!IsIdentifierCharEx(sc.ch)) {
                 sc.SetState(SCE_KOTLIN_DEFAULT);
             }
             break;
+
         case SCE_KOTLIN_ANNOTATION:
-            if (!IsWordCharEx(sc.ch))
-            {
-                // highlight whole package.Name as annotation
+            if (sc.ch == '.' || sc.ch == ':') {
+                sc.SetState(SCE_KOTLIN_OPERATOR);
+                sc.ForwardSetState(SCE_KOTLIN_ANNOTATION);
+                continue;
+            }
+            if (!IsIdentifierCharEx(sc.ch)) {
                 sc.SetState(SCE_KOTLIN_DEFAULT);
             }
             break;
 
         case SCE_KOTLIN_COMMENTLINE:
         case SCE_KOTLIN_COMMENTLINEDOC:
-            if (sc.atLineStart)
-            {
+            if (sc.atLineStart) {
                 sc.SetState(SCE_KOTLIN_DEFAULT);
             }
+            else {
+                HighlightTaskMarker(sc, visibleChars, visibleCharsBefore, SCE_KOTLIN_TASKMARKER);
+            }
             break;
+
         case SCE_KOTLIN_COMMENTBLOCK:
-            if (sc.Match('*', '/'))
-            {
-                sc.Forward();
-                --commentLevel;
-                if (commentLevel == 0)
-                {
-                    sc.ForwardSetState(SCE_KOTLIN_DEFAULT);
-                }
-            }
-            else if (sc.Match('/', '*'))
-            {
-                sc.Forward(2);
-                ++commentLevel;
-            }
-            break;
         case SCE_KOTLIN_COMMENTBLOCKDOC:
-            if (sc.ch == '@' && IsLowerCase(sc.chNext) && isspacechar(sc.chPrev))
-            {
+            if (sc.state == SCE_KOTLIN_COMMENTBLOCKDOC && sc.ch == '@' && IsLowerCase(sc.chNext) && IsCommentTagPrev(sc.chPrev)) {
                 sc.SetState(SCE_KOTLIN_COMMENTDOCWORD);
             }
-            else if (sc.Match('*', '/'))
-            {
+            else if (sc.Match('*', '/')) {
                 sc.Forward();
                 --commentLevel;
-                if (commentLevel == 0)
-                {
+                if (commentLevel == 0) {
                     sc.ForwardSetState(SCE_KOTLIN_DEFAULT);
                 }
             }
-            else if (sc.Match('/', '*'))
-            {
-                sc.Forward(2);
+            else if (sc.Match('/', '*')) {
+                sc.Forward();
                 ++commentLevel;
             }
+            else if (HighlightTaskMarker(sc, visibleChars, visibleCharsBefore, SCE_KOTLIN_TASKMARKER)) {
+                continue;
+            }
             break;
+
         case SCE_KOTLIN_COMMENTDOCWORD:
-            if (!IsLowerCase(sc.ch))
-            {
+            if (!IsLowerCase(sc.ch)) {
                 sc.SetState(SCE_KOTLIN_COMMENTBLOCKDOC);
                 continue;
             }
@@ -531,188 +478,130 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position length, in
 
         case SCE_KOTLIN_STRING:
         case SCE_KOTLIN_RAWSTRING:
-            if (sc.state == SCE_KOTLIN_STRING && sc.atLineStart)
-            {
+            if (sc.state == SCE_KOTLIN_STRING && sc.atLineStart) {
                 sc.SetState(SCE_KOTLIN_DEFAULT);
             }
-            else if (sc.state == SCE_KOTLIN_STRING && sc.ch == '\\')
-            {
-                if (escSeq.resetEscapeState(sc.state, sc.chNext))
-                {
+            else if (sc.state == SCE_KOTLIN_STRING && sc.ch == '\\') {
+                if (escSeq.resetEscapeState(sc.state, sc.chNext)) {
                     sc.SetState(SCE_KOTLIN_ESCAPECHAR);
                     sc.Forward();
                 }
             }
-            else if (sc.ch == '$' && IsIdentifierStartEx(sc.chNext))
-            {
-                variableOuter = sc.state;
-                sc.SetState(SCE_KOTLIN_VARIABLE);
-            }
-            else if (sc.Match('$', '{'))
-            {
-                ++curlyBrace;
-                nestedState.push_back(sc.state);
-                sc.SetState(SCE_KOTLIN_OPERATOR2);
-                sc.Forward();
-            }
-            else if (curlyBrace && sc.ch == '}')
-            {
-                const int outerState = nestedState.empty() ? SCE_KOTLIN_DEFAULT : nestedState.back();
-                if (!nestedState.empty())
-                {
-                    nestedState.pop_back();
+            else if (sc.ch == '$') {
+                if (sc.chNext == '{') {
+                    nestedState.push_back(sc.state);
+                    sc.SetState(SCE_KOTLIN_OPERATOR2);
+                    sc.Forward();
                 }
-                --curlyBrace;
-                sc.SetState(SCE_KOTLIN_OPERATOR2);
-                sc.ForwardSetState(outerState);
-                continue;
+                else if (IsIdentifierStartEx(sc.chNext)) {
+                    escSeq.outerState = sc.state;
+                    sc.SetState(SCE_KOTLIN_VARIABLE);
+                }
             }
-            else if (sc.ch == '\"' && (sc.state == SCE_KOTLIN_STRING || sc.Match(R"(""")")))
-            {
-                if (sc.state == SCE_KOTLIN_RAWSTRING)
-                {
-                    sc.Forward(2);
+            else if (sc.ch == '\"' && (sc.state == SCE_KOTLIN_STRING || sc.MatchNext('"', '"'))) {
+                if (sc.state == SCE_KOTLIN_RAWSTRING) {
                     sc.SetState(SCE_KOTLIN_RAWSTRINGEND);
+                    sc.Forward(2);
                 }
                 sc.ForwardSetState(SCE_KOTLIN_DEFAULT);
             }
             break;
 
         case SCE_KOTLIN_CHARACTER:
-            if (sc.atLineStart)
-            {
+            if (sc.atLineStart) {
                 sc.SetState(SCE_KOTLIN_DEFAULT);
             }
-            else if (sc.ch == '\\')
-            {
-                if (escSeq.resetEscapeState(sc.state, sc.chNext))
-                {
+            else if (sc.ch == '\\') {
+                if (escSeq.resetEscapeState(sc.state, sc.chNext)) {
                     sc.SetState(SCE_KOTLIN_ESCAPECHAR);
                     sc.Forward();
                 }
             }
-            else if (sc.ch == '\'')
-            {
+            else if (sc.ch == '\'') {
                 sc.ForwardSetState(SCE_KOTLIN_DEFAULT);
             }
             break;
+
         case SCE_KOTLIN_ESCAPECHAR:
-            if (escSeq.atEscapeEnd(sc.ch))
-            {
-                const int outerState = escSeq.outerState;
-                if (outerState == SCE_KOTLIN_STRING)
-                {
-                    if (sc.ch == '\\' && escSeq.resetEscapeState(outerState, sc.chNext))
-                    {
-                        sc.Forward();
-                    }
-                    else
-                    {
-                        sc.SetState(outerState);
-                        if (sc.ch == '\"')
-                        {
-                            sc.ForwardSetState(SCE_KOTLIN_DEFAULT);
-                        }
-                    }
-                }
-                else
-                {
-                    sc.SetState(outerState);
-                    if (sc.ch == '\'')
-                    {
-                        sc.ForwardSetState(SCE_KOTLIN_DEFAULT);
-                    }
-                }
+            if (escSeq.atEscapeEnd(sc.ch)) {
+                sc.SetState(escSeq.outerState);
+                continue;
             }
             break;
+
         case SCE_KOTLIN_VARIABLE:
-            if (!IsIdentifierCharEx(sc.ch))
-            {
-                sc.SetState(variableOuter);
+            if (!IsIdentifierCharEx(sc.ch)) {
+                sc.SetState(escSeq.outerState);
                 continue;
             }
             break;
 
         case SCE_KOTLIN_BACKTICKS:
-            if (sc.atLineStart)
-            {
+            if (sc.atLineStart) {
                 sc.SetState(SCE_KOTLIN_DEFAULT);
             }
-            else if (sc.ch == '`')
-            {
+            else if (sc.ch == '`') {
                 sc.ForwardSetState(SCE_KOTLIN_DEFAULT);
             }
             break;
         }
 
-        if (sc.state == SCE_KOTLIN_DEFAULT)
-        {
-            if (sc.Match('/', '/'))
-            {
-                const int chNext = sc.GetRelative(2);
-                sc.SetState((chNext == '!' || chNext == '/') ? SCE_KOTLIN_COMMENTLINEDOC : SCE_KOTLIN_COMMENTLINE);
-                if (visibleChars == 0)
-                {
-                    lineStateLineComment = KotlinLineStateMaskLineComment;
+        if (sc.state == SCE_KOTLIN_DEFAULT) {
+            if (sc.ch == '/' && (sc.chNext == '/' || sc.chNext == '*')) {
+                visibleCharsBefore = visibleChars;
+                const int chNext = sc.chNext;
+                sc.SetState((chNext == '/') ? SCE_KOTLIN_COMMENTLINE : SCE_KOTLIN_COMMENTBLOCK);
+                sc.Forward(2);
+                if (sc.ch == '!' || (sc.ch == chNext && sc.chNext != chNext)) {
+                    sc.ChangeState((chNext == '/') ? SCE_KOTLIN_COMMENTLINEDOC : SCE_KOTLIN_COMMENTBLOCKDOC);
                 }
+                if (chNext == '/') {
+                    if (visibleChars == 0) {
+                        lineStateLineType = KotlinLineStateMaskLineComment;
+                    }
+                }
+                else {
+                    commentLevel = 1;
+                }
+                continue;
             }
-            else if (sc.Match('/', '*'))
-            {
-                const int chNext = sc.GetRelative(2);
-                sc.SetState((chNext == '*' || chNext == '!') ? SCE_KOTLIN_COMMENTBLOCKDOC : SCE_KOTLIN_COMMENTBLOCK);
-                sc.Forward();
-                commentLevel = 1;
-            }
-            else if (sc.Match(R"(""")"))
-            {
-                sc.SetState(SCE_KOTLIN_RAWSTRINGSTART);
-                sc.ForwardSetState(SCE_KOTLIN_RAWSTRING);
-                sc.Forward();
-            }
-            else if (sc.ch == '\"')
-            {
+            if (sc.ch == '\"') {
+                if (sc.MatchNext('"', '"')) {
+                    sc.SetState(SCE_KOTLIN_RAWSTRINGSTART);
+                    sc.Forward(2);
+                    sc.ForwardSetState(SCE_KOTLIN_RAWSTRING);
+                    continue;
+                }
                 sc.SetState(SCE_KOTLIN_STRING);
             }
-            else if (sc.ch == '\'')
-            {
+            else if (sc.ch == '\'') {
                 sc.SetState(SCE_KOTLIN_CHARACTER);
             }
-            else if (IsADigit(sc.ch))
-            {
+            else if (IsNumberStart(sc.ch, sc.chNext)) {
                 sc.SetState(SCE_KOTLIN_NUMBER);
             }
-            else if (sc.ch == '@' && IsIdentifierStartEx(sc.chNext))
-            {
+            else if (sc.ch == '@' && IsIdentifierStartEx(sc.chNext)) {
                 sc.SetState((kwType == SCE_KOTLIN_LABEL) ? SCE_KOTLIN_LABEL : SCE_KOTLIN_ANNOTATION);
                 kwType = SCE_KOTLIN_DEFAULT;
             }
-            else if (sc.ch == '`')
-            {
+            else if (sc.ch == '`') {
                 sc.SetState(SCE_KOTLIN_BACKTICKS);
             }
-            else if (IsIdentifierStartEx(sc.ch))
-            {
-                chBeforeIdentifier = sc.chPrev;
+            else if (IsIdentifierStartEx(sc.ch)) {
+                if (sc.chPrev != '.') {
+                    chBeforeIdentifier = sc.chPrev;
+                }
                 sc.SetState(SCE_KOTLIN_IDENTIFIER);
             }
-            else if (isoperator(sc.ch))
-            {
-                sc.SetState(curlyBrace ? SCE_KOTLIN_OPERATOR2 : SCE_KOTLIN_OPERATOR);
-                if (curlyBrace)
-                {
-                    if (sc.ch == '{')
-                    {
-                        ++curlyBrace;
+            else if (isoperator(sc.ch)) {
+                const bool interpolating = !nestedState.empty();
+                sc.SetState(interpolating ? SCE_KOTLIN_OPERATOR2 : SCE_KOTLIN_OPERATOR);
+                if (interpolating) {
+                    if (sc.ch == '{') {
                         nestedState.push_back(SCE_KOTLIN_DEFAULT);
                     }
-                    else if (sc.ch == '}')
-                    {
-                        --curlyBrace;
-                        const int outerState = nestedState.empty() ? SCE_KOTLIN_DEFAULT : nestedState.back();
-                        if (!nestedState.empty())
-                        {
-                            nestedState.pop_back();
-                        }
+                    else if (sc.ch == '}') {
+                        const int outerState = TakeAndPop(nestedState);
                         sc.ForwardSetState(outerState);
                         continue;
                     }
@@ -720,21 +609,18 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position length, in
             }
         }
 
-        if (!isspacechar(sc.ch))
-        {
+        if (!isspacechar(sc.ch)) {
             visibleChars++;
         }
-        if (sc.atLineEnd)
-        {
-            int lineState = curlyBrace | (commentLevel << 8) | lineStateLineComment | lineStateImport;
-            if (curlyBrace)
-            {
-                lineState |= PackNestedState(nestedState);
+        if (sc.atLineEnd) {
+            int lineState = (commentLevel << 2) | lineStateLineType;
+            if (!nestedState.empty()) {
+                lineState |= PackLineState(nestedState) << 8;
             }
             styler.SetLineState(sc.currentLine, lineState);
-            lineStateLineComment = 0;
-            lineStateImport = 0;
+            lineStateLineType = 0;
             visibleChars = 0;
+            visibleCharsBefore = 0;
             kwType = SCE_KOTLIN_DEFAULT;
         }
         sc.Forward();
@@ -763,7 +649,7 @@ constexpr bool IsStreamCommentStyle(int style) noexcept {
     return style == SCE_KOTLIN_COMMENTBLOCK || style == SCE_KOTLIN_COMMENTBLOCKDOC;
 }
 
-void SCI_METHOD LexerKotlin::Fold(Sci_PositionU startPos, Sci_Position length, int, IDocument* pAccess)
+void SCI_METHOD LexerKotlin::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDocument* pAccess)
 {
     if (!options.fold) { return; }
 
@@ -776,108 +662,106 @@ void SCI_METHOD LexerKotlin::Fold(Sci_PositionU startPos, Sci_Position length, i
     //const int foldComment = props.GetInt("fold.comment", 1) != 0;
     const int foldComment = options.foldComment;
 
-    const Sci_PositionU endPos = startPos + length;
+    const Sci_PositionU endPos = startPos + lengthDoc;
     Sci_Position lineCurrent = styler.GetLine(startPos);
     FoldLineState foldPrev(0);
     int levelCurrent = SC_FOLDLEVELBASE;
-    if (lineCurrent > 0)
-    {
+    if (lineCurrent > 0) {
         levelCurrent = styler.LevelAt(lineCurrent - 1) >> 16;
         foldPrev = FoldLineState(styler.GetLineState(lineCurrent - 1));
+        const Sci_PositionU bracePos = CheckBraceOnNextLine(styler, lineCurrent - 1, SCE_KOTLIN_OPERATOR, SCE_KOTLIN_TASKMARKER);
+        if (bracePos) {
+            startPos = bracePos + 1; // skip the brace
+        }
     }
 
     int levelNext = levelCurrent;
     FoldLineState foldCurrent(styler.GetLineState(lineCurrent));
     Sci_PositionU lineStartNext = styler.LineStart(lineCurrent + 1);
-    Sci_PositionU lineEndPos = ((lineStartNext < endPos) ? lineStartNext : endPos) - 1;
+    Sci_PositionU lineEndPos = sci::min(lineStartNext, endPos) - 1;
 
     char chNext = styler[startPos];
     int styleNext = styler.StyleAt(startPos);
+    int style = styleNext;
+    int visibleChars = 0;
 
-    for (Sci_PositionU i = startPos; i < endPos; i++)
-    {
+    for (Sci_PositionU i = startPos; i < endPos; i++) {
         const char ch = chNext;
         chNext = styler.SafeGetCharAt(i + 1);
-        const int style = styleNext;
+        const int stylePrev = style;
+        style = styleNext;
         styleNext = styler.StyleAt(i + 1);
 
-        if (IsStreamCommentStyle(style))
-        {
-            if (foldComment)
-            {
+        switch (style) {
+        case SCE_KOTLIN_COMMENTBLOCK:
+        case SCE_KOTLIN_COMMENTBLOCKDOC: {
                 const int level = (ch == '/' && chNext == '*') ? 1 : ((ch == '*' && chNext == '/') ? -1 : 0);
-                if (level != 0)
-                {
+                if (level != 0) {
                     levelNext += level;
                     i++;
                     chNext = styler.SafeGetCharAt(i + 1);
                     styleNext = styler.StyleAt(i + 1);
                 }
-            }
-        }
-        else if (style == SCE_KOTLIN_RAWSTRINGSTART)
-        {
-            levelNext++;
-        }
-        else if (style == SCE_KOTLIN_RAWSTRINGEND)
-        {
-            levelNext--;
-        }
-        else if (style == SCE_KOTLIN_OPERATOR)
-        {
-            if (ch == '{' || ch == '[' || ch == '(')
-            {
+            } break;
+
+        case SCE_KOTLIN_RAWSTRINGSTART:
+            if (style != stylePrev) {
                 levelNext++;
             }
-            else if (ch == '}' || ch == ']' || ch == ')')
-            {
+            break;
+
+        case SCE_KOTLIN_RAWSTRINGEND:
+            if (style != styleNext) {
                 levelNext--;
             }
+            break;
+
+        case SCE_KOTLIN_OPERATOR:
+            if (ch == '{' || ch == '[' || ch == '(') {
+                levelNext++;
+            }
+            else if (ch == '}' || ch == ']' || ch == ')') {
+                levelNext--;
+            }
+            break;
         }
 
-        if (i == lineEndPos)
-        {
+        if (visibleChars == 0 && !IsSpaceEquiv(style)) {
+            ++visibleChars;
+        }
+        if (i == lineEndPos) {
             const FoldLineState foldNext(styler.GetLineState(lineCurrent + 1));
-            if (foldComment && foldCurrent.lineComment)
-            {
-                if (!foldPrev.lineComment && foldNext.lineComment)
-                {
-                    levelNext++;
-                }
-                else if (foldPrev.lineComment && !foldNext.lineComment)
-                {
-                    levelNext--;
-                }
+            if (foldCurrent.lineComment) {
+                levelNext += foldNext.lineComment - foldPrev.lineComment;
             }
-            else if (foldCurrent.packageImport)
-            {
-                if (!foldPrev.packageImport && foldNext.packageImport)
-                {
+            else if (foldCurrent.packageImport) {
+                levelNext += foldNext.packageImport - foldPrev.packageImport;
+            }
+            else if (visibleChars) {
+                const Sci_PositionU bracePos = CheckBraceOnNextLine(styler, lineCurrent, SCE_KOTLIN_OPERATOR, SCE_KOTLIN_TASKMARKER);
+                if (bracePos) {
                     levelNext++;
-                }
-                else if (foldPrev.packageImport && !foldNext.packageImport)
-                {
-                    levelNext--;
+                    i = bracePos; // skip the brace
+                    chNext = '\0';
                 }
             }
 
             const int levelUse = levelCurrent;
             int lev = levelUse | levelNext << 16;
-            if (levelUse < levelNext)
-            {
+            if (levelUse < levelNext) {
                 lev |= SC_FOLDLEVELHEADERFLAG;
             }
-            if (lev != styler.LevelAt(lineCurrent))
-            {
+            if (lev != styler.LevelAt(lineCurrent)) {
                 styler.SetLevel(lineCurrent, lev);
             }
 
             lineCurrent++;
             lineStartNext = styler.LineStart(lineCurrent + 1);
-            lineEndPos = ((lineStartNext < endPos) ? lineStartNext : endPos) - 1;
+            lineEndPos = sci::min(lineStartNext, endPos) - 1;
             levelCurrent = levelNext;
             foldPrev = foldCurrent;
             foldCurrent = foldNext;
+            visibleChars = 0;
         }
     }
 }
