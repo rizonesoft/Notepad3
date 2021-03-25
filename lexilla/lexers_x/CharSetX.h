@@ -1,8 +1,23 @@
 // encoding: UTF-8
 #pragma once
 
+#include <string>
+
 #include "CharacterSet.h"
 #include "StyleContext.h"
+
+namespace sci {
+
+    template <typename T>
+    constexpr T min(T x, T y) noexcept {
+        return (x < y) ? x : y;
+    }
+
+    template <typename T>
+    constexpr T max(T x, T y) noexcept {
+        return (x > y) ? x : y;
+    }
+}
 
 
 template <typename T, typename... Args>
@@ -16,6 +31,7 @@ inline bool EqualsAny(const char* s, Args... args) noexcept {
     return ((::strcmp(s, args) == 0) || ...);
 }
 #endif
+
 
 // Functions for classifying characters
 
@@ -39,20 +55,14 @@ constexpr bool IsWordCharEx(int ch) noexcept {
     return Scintilla::iswordchar(ch) || ch >= 0x80;
 }
 
-constexpr bool IsASpaceX(const int ch) noexcept
+constexpr bool IsABlankOrTab(const int ch) noexcept
 {
-    return ((ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d)));
+    return ((ch == ' ') || (ch == '\t'));
 }
 
-constexpr bool IsADigitX(int ch, int base) noexcept
+constexpr bool IsWhiteSpace(const int ch) noexcept
 {
-    if (base <= 10)
-    {
-        return (ch >= '0') && (ch < ('0' + base));
-    }
-    return ((ch >= '0') && (ch <= '9'))
-           || ((ch >= 'A') && (ch < ('A' + base - 10)))
-           || ((ch >= 'a') && (ch < ('a' + base - 10)));
+    return ((ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d)));
 }
 
 constexpr bool IsAHexDigit(int ch) noexcept
@@ -60,11 +70,6 @@ constexpr bool IsAHexDigit(int ch) noexcept
     return ((ch >= '0') && (ch <= '9'))
            || ((ch >= 'A') && (ch <= 'F'))
            || ((ch >= 'a') && (ch <= 'f'));
-}
-
-constexpr bool IsABlankOrTab(const int ch) noexcept
-{
-    return ((ch == ' ') || (ch == '\t'));
 }
 
 constexpr bool IsALetter(const int ch) noexcept
@@ -120,7 +125,7 @@ constexpr bool IsNumberContinue(int chPrev, int ch, int chNext) noexcept {
 }
 
 constexpr bool IsNumberContinueEx(int chPrev, int ch, int chNext) noexcept {
-    return ((ch == '+' || ch == '-') && (chPrev == 'e' || chPrev == 'E' || chPrev == 'p' || chPrev == 'P'))
+    return ((ch == '+' || ch == '-') && AnyOf(chPrev, 'e', 'E', 'p', 'P'))
         || (ch == '.' && chNext != '.');
 }
 
@@ -149,6 +154,15 @@ constexpr int IsNumOctal(const Scintilla::StyleContext& sc)
     return (sc.ch == '0') && (sc.chNext == 'o') || (sc.chNext == 'O');
 }
 
+// characters can follow jump `label:`, based on Swift's document Labeled Statement at
+// https://docs.swift.org/swift-book/ReferenceManual/Statements.html#grammar_labeled-statement
+// good coding style should place left aligned label on it's own line.
+constexpr bool IsJumpLabelNextChar(int chNext) noexcept {
+    // own line, comment, for, foreach, while, do, if, switch, repeat
+    // TODO: match each word exactly like HighlightTaskMarker().
+    return AnyOf(chNext, '\0', '/', 'f', 'w', 'd', 'i', 's', 'r');
+}
+
 inline int IsNumExponent(const Scintilla::StyleContext& sc)
 {
     return Scintilla::IsADigit(sc.ch) && ((sc.chNext == 'e') || (sc.chNext == 'E'));
@@ -159,7 +173,7 @@ inline void TrimIdentifier(const char* input, char* output)
     size_t j = 0;
     for (size_t i = 0; input[i] != '\0'; ++i)
     {
-        if (!IsASpaceX(input[i]))
+        if (!IsWhiteSpace(input[i]))
         {
             output[j++] = input[i];
         }

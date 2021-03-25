@@ -443,7 +443,7 @@
 #define CMD_CHECK_INDENTATION           20058
 #define CMD_ARROW_UP                    20059
 #define CMD_ARROW_DOWN                  20060
-#define CMD_ENTER_RTURN                 20061
+#define CMD_ENTER_RETURN                20061
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501
@@ -1145,6 +1145,7 @@
 #define IDS_LEX_STR_63370               63370
 #define IDS_LEX_STR_63371               63371
 #define IDS_LEX_STR_63372               63372
+#define IDS_LEX_STR_63373               63373
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401

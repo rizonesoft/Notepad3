@@ -5,37 +5,40 @@
 //KEYWORDLIST KeyWords_Dart = EMPTY_KEYWORDLIST;
 KEYWORDLIST KeyWords_Dart =
 {
-  // 0 keywords
-"abstract as assert async await break case catch class const continue covariant default deferred do "
-"else enum export extends extension external factory false final finally for get hide "
-"if implements import in interface is late library mixin native new null of on operator part required rethrow return "
-"set show static super switch sync this throw true try typedef var while with yield "
+    // 0 keywords
+    "abstract as assert async await break case catch class const continue covariant default deferred do "
+    "else enum export extends extension external factory false final finally for get hide "
+    "if implements import in interface is late library mixin native new null of on operator part required rethrow return "
+    "set show static super switch sync this throw true try typedef var while with yield "
 
-, // 1 types
-"Function bool double dynamic int num void "
+    , // 1 keywords2
+    ""
 
-, // 2 class
-"BidirectionalIterator BigInt Comparable Comparator Completer "
-"DateTime Deprecated Directory DoubleLinkedQueue DoubleLinkedQueueEntry Duration Error Exception Expando "
-"File FileStat FileSystemEntity FileSystemEvent Future FutureOr HasNextIterator HashMap HashSet "
-"IOException Invocation Iterable IterableBase IterableMixin Iterator "
-"LinkedHashMap LinkedHashSet LinkedList LinkedListEntry List ListBase ListMixin ListQueue "
-"Map MapBase MapEntry MapMixin MapView Match Null OSError Object Pattern Platform Point Process Queue "
-"Random RawSocket RawSocketEvent Rectangle RegExp RegExpMatch RuneIterator Runes "
-"ServerSocket Set SetBase SetMixin Sink Socket SocketException SplayTreeMap SplayTreeSet "
-"StackTrace Stopwatch Stream String StringBuffer StringSink Symbol SystemHash "
-"Timer Type Uri UriData "
+    , // 2 types
+    "Function bool double dynamic int num void "
 
-, // 3 enum
-""
+    , // 3 class
+    "BidirectionalIterator BigInt Comparable Comparator Completer "
+    "DateTime Deprecated Directory DoubleLinkedQueue DoubleLinkedQueueEntry Duration Error Exception Expando "
+    "File FileStat FileSystemEntity FileSystemEvent Future FutureOr HasNextIterator HashMap HashSet "
+    "IOException Invocation Iterable IterableBase IterableMixin Iterator "
+    "LinkedHashMap LinkedHashSet LinkedList LinkedListEntry List ListBase ListMixin ListQueue "
+    "Map MapBase MapEntry MapMixin MapView Match Null OSError Object Pattern Platform Point Process Queue "
+    "Random RawSocket RawSocketEvent Rectangle RegExp RegExpMatch RuneIterator Runes "
+    "ServerSocket Set SetBase SetMixin Sink Socket SocketException SplayTreeMap SplayTreeSet "
+    "StackTrace Stopwatch Stream String StringBuffer StringSink Symbol SystemHash "
+    "Timer Type Uri UriData "
 
-, // 4 metadata
-"Deprecated Since deprecated override patch pragma "
+    , // 4 enum
+    ""
 
-, // 5 function
-"identical identityHashCode main print "
+    , // 5 metadata
+    "Deprecated Since deprecated override patch pragma "
 
-, NULL
+    , // 6 function
+    "identical identityHashCode main print "
+
+    , NULL
 };
 
 
@@ -53,8 +56,9 @@ EDITLEXER lexDart =
         { {SCE_DART_FUNCTION}, IDS_LEX_STR_63277, L"Function", L"fore:#A46000", L"" },
         { {MULTI_STYLE(SCE_DART_COMMENTBLOCK, SCE_DART_COMMENTLINE, 0, 0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#608060", L"" },
         { {MULTI_STYLE(SCE_DART_COMMENTBLOCKDOC, SCE_DART_COMMENTLINEDOC, 0, 0)}, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#408040", L"" },
+        { {SCE_DART_TASKMARKER}, IDS_LEX_STR_63373, L"Task Marker", L"bold; fore:#408080" },
         { {MULTI_STYLE(SCE_DART_STRING_SQ, SCE_DART_STRING_DQ, 0, 0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-        { {MULTI_STYLE(SCE_DART_TRIPLE_STRING_SQ, SCE_DART_TRIPLE_STRING_DQ, SCE_DART_TRIPLE_STRING_SQSTART, SCE_DART_TRIPLE_STRING_SQEND)}, IDS_LEX_STR_63131, L"TriQ-String", L"fore:#F08000", L"" },
+        { {MULTI_STYLE(SCE_DART_TRIPLE_STRING_SQ, SCE_DART_TRIPLE_STRING_DQ, SCE_DART_TRIPLE_STRINGSTART, SCE_DART_TRIPLE_STRINGEND)}, IDS_LEX_STR_63131, L"TriQ-String", L"fore:#F08000", L"" },
         { {MULTI_STYLE(SCE_DART_RAWSTRING_SQ, SCE_DART_RAWSTRING_DQ, SCE_DART_TRIPLE_RAWSTRING_SQ, SCE_DART_TRIPLE_RAWSTRING_DQ)}, IDS_LEX_STR_63134, L"Verbatim String", L"fore:#F08000", L"" },
         { {SCE_DART_ESCAPECHAR}, IDS_LEX_STR_63366, L"ESC Sequence", L"fore:#0080C0", L"" },
         { {SCE_DART_LABEL}, IDS_LEX_STR_63235, L"Label", L"fore:#7C5AF3", L"" },

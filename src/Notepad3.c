@@ -2066,29 +2066,36 @@ static bool _EvalTinyExpr(bool qmark)
         return false;
     }
 
-    DocPos const posCur = SciCall_GetCurrentPos();
-    DocPos const posBegin = qmark ? SciCall_PositionBefore(posCur) : posCur;
+    DocPos const posSelStart = SciCall_GetSelectionStart();
+    DocPos const posBegin = qmark ? SciCall_PositionBefore(posSelStart) : posSelStart;
+
     DocPos posBefore = SciCall_PositionBefore(posBegin);
     char chBefore = SciCall_GetCharAt(posBefore);
+
     while (IsBlankCharA(chBefore) && (posBefore > 0)) {
         posBefore = SciCall_PositionBefore(posBefore);
         chBefore = SciCall_GetCharAt(posBefore);
     }
     if (chBefore == '=') { // got "=?" or ENTER : evaluate expression trigger
-        int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posCur)) + 1;
+
+        int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posSelStart)) + 1;
         char *lineBuf = (char *)AllocMem(lineLen, HEAP_ZERO_MEMORY);
         WCHAR *lineBufW = (WCHAR *)AllocMem(lineLen * sizeof(WCHAR), HEAP_ZERO_MEMORY);
         if (lineBuf && lineBufW) {
-            DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
 
-            lineBuf[iLnCaretPos - (posCur - posBefore)] = '\0'; // exclude "=?"
+            if (posSelStart < SciCall_GetCurrentPos()) {
+                SciCall_SwapMainAnchorCaret();
+            }
+            DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
+            lineBuf[iLnCaretPos - (posSelStart - posBefore)] = '\0'; // exclude "=?"
 
             char const defchar = (char)0x24;
             MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, lineLen);
-            WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
-            StrDelChrA(lineBuf, chr_currency);
+            WideCharToMultiByte(te_cp(), (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
             FreeMem(lineBufW);
 
+            // canonicalize fetched line
+            StrDelChrA(lineBuf, chr_currency);
             const char *pBegin = lineBuf;
             while (IsBlankCharA(*pBegin)) {
                 ++pBegin;
@@ -2099,7 +2106,7 @@ static bool _EvalTinyExpr(bool qmark)
             while (*pBegin && exprErr) {
                 dExprEval = te_interp(pBegin, &exprErr);
                 // proceed to next possible expression
-                while (exprErr && !te_is_op(pBegin++)) {}
+                while (*pBegin && exprErr && !te_is_op(pBegin++)) {}
             }
             FreeMem(lineBuf);
 
@@ -2111,7 +2118,8 @@ static bool _EvalTinyExpr(bool qmark)
                 } else {
                     StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", dExprEval);
                 }
-                SciCall_SetSel(posBegin, posCur);
+                SciCall_ReplaceSel("");
+                SciCall_SetSel(posBegin, posSelStart);
                 SciCall_ReplaceSel(chExpr);
                 return true;
             }
@@ -6015,7 +6023,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
     break;
 
-    case CMD_ENTER_RTURN: {
+    case CMD_ENTER_RETURN: {
         _EvalTinyExpr(false);
         SciCall_NewLine();
     }
