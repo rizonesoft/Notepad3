@@ -39,10 +39,54 @@ BEGIN
   "#include ""../language/np3_en_us/np3_en_us.rc""\r\n"
 #elif defined(MUI_BASE_LNG_AF_ZA)
   "#include ""../language/np3_af_za/np3_af_za.rc""\r\n"
+#elif defined(MUI_BASE_LNG_BE_BY)
+  "#include ""../language/np3_be_by/np3_be_by.rc""\r\n"
 #elif defined(MUI_BASE_LNG_DE_DE)
   "#include ""../language/np3_de_de/np3_de_de.rc""\r\n"
+#elif defined(MUI_BASE_LNG_EL_GR)
+  "#include ""../language/np3_el_gr/np3_el_gr.rc""\r\n"
+#elif defined(MUI_BASE_LNG_EN_GB)
+  "#include ""../language/np3_en_gb/np3_en_gb.rc""\r\n"
+#elif defined(MUI_BASE_LNG_ES_419)
+  "#include ""../language/np3_es_419/np3_es_419.rc""\r\n"
+#elif defined(MUI_BASE_LNG_ES_ES)
+  "#include ""../language/np3_es_es/np3_es_es.rc""\r\n"
 #elif defined(MUI_BASE_LNG_FR_FR)
   "#include ""../language/np3_fr_fr/np3_fr_fr.rc""\r\n"
+#elif defined(MUI_BASE_LNG_HI_IN)
+  "#include ""../language/np3_fr_fr/np3_fr_fr.rc""\r\n"
+#elif defined(MUI_BASE_LNG_HU_HU)
+  "#include ""../language/np3_hu_hu/np3_hu_hu.rc""\r\n"
+#elif defined(MUI_BASE_LNG_ID_ID)
+  "#include ""../language/np3_id_id/np3_id_id.rc""\r\n"
+#elif defined(MUI_BASE_LNG_IT_IT)
+  "#include ""../language/np3_it_it/np3_it_it.rc""\r\n"
+#elif defined(MUI_BASE_LNG_JA_JP)
+  "#include ""../language/np3_ja_jp/np3_ja_jp.rc""\r\n"
+#elif defined(MUI_BASE_LNG_KO_KR)
+  "#include ""../language/np3_ko_kr/np3_ko_kr.rc""\r\n"
+#elif defined(MUI_BASE_LNG_NL_NL)
+  "#include ""../language/np3_nl_nl/np3_nl_nl.rc""\r\n"
+#elif defined(MUI_BASE_LNG_PL_PL)
+  "#include ""../language/np3_pl_pl/np3_pl_pl.rc""\r\n"
+#elif defined(MUI_BASE_LNG_PT_BR)
+  "#include ""../language/np3_pt_br/np3_pt_br.rc""\r\n"
+#elif defined(MUI_BASE_LNG_PT_PT)
+  "#include ""../language/np3_pr_pt/np3_pt-pt.rc""\r\n"
+#elif defined(MUI_BASE_LNG_RU_RU)
+  "#include ""../language/np3_ru_ru/np3_ru_ru.rc""\r\n"
+#elif defined(MUI_BASE_LNG_SK_SK)
+  "#include ""../language/np3_sk_sk/np3_sk_sk.rc""\r\n"
+#elif defined(MUI_BASE_LNG_SV_SE)
+  "#include ""../language/np3_sv_se/np3_sv_se.rc""\r\n"
+#elif defined(MUI_BASE_LNG_TR_TR)
+  "#include ""../language/np3_tr_tr/np3_tr_tr.rc""\r\n"
+#elif defined(MUI_BASE_LNG_VI_VN)
+  "#include ""../language/np3_vi_vn/np3_vi_vn.rc""\r\n"
+#elif defined(MUI_BASE_LNG_ZH_CN)
+  "#include ""../language/np3_zh_cn/np3_zh_cn.rc""\r\n"
+#elif defined(MUI_BASE_LNG_ZH_TW)
+  "#include ""../language/np3_zh_tw/np3_zh_tw.rc""\r\n"
 #endif
 
   "\0"
@@ -429,14 +473,59 @@ END
 // Generated from the TEXTINCLUDE 3 resource.
 //
 #include "Notepad3.ver"
+
 #if defined(MUI_BASE_LNG_EN_US)
-#include "../language/np3_en_us/np3_en_us.rc"
+  #include "../language/np3_en_us/np3_en_us.rc"
 #elif defined(MUI_BASE_LNG_AF_ZA)
-#include "../language/np3_af_za/np3_af_za.rc"
+  #include "../language/np3_af_za/np3_af_za.rc"
+#elif defined(MUI_BASE_LNG_BE_BY)
+  #include "../language/np3_be_by/np3_be_by.rc"
 #elif defined(MUI_BASE_LNG_DE_DE)
-#include "../language/np3_de_de/np3_de_de.rc"
+  #include "../language/np3_de_de/np3_de_de.rc"
+#elif defined(MUI_BASE_LNG_EL_GR)
+  #include "../language/np3_el_gr/np3_el_gr.rc"
+#elif defined(MUI_BASE_LNG_EN_GB)
+  #include "../language/np3_en_gb/np3_en_gb.rc"
+#elif defined(MUI_BASE_LNG_ES_419)
+  #include "../language/np3_es_419/np3_es_419.rc"
+#elif defined(MUI_BASE_LNG_ES_ES)
+  #include "../language/np3_es_es/np3_es_es.rc"
 #elif defined(MUI_BASE_LNG_FR_FR)
-#include "../language/np3_fr_fr/np3_fr_fr.rc"
+  #include "../language/np3_fr_fr/np3_fr_fr.rc"
+#elif defined(MUI_BASE_LNG_HI_IN)
+  #include "../language/np3_fr_fr/np3_fr_fr.rc"
+#elif defined(MUI_BASE_LNG_HU_HU)
+  #include "../language/np3_hu_hu/np3_hu_hu.rc"
+#elif defined(MUI_BASE_LNG_ID_ID)
+  #include "../language/np3_id_id/np3_id_id.rc"
+#elif defined(MUI_BASE_LNG_IT_IT)
+  #include "../language/np3_it_it/np3_it_it.rc"
+#elif defined(MUI_BASE_LNG_JA_JP)
+  #include "../language/np3_ja_jp/np3_ja_jp.rc"
+#elif defined(MUI_BASE_LNG_KO_KR)
+  #include "../language/np3_ko_kr/np3_ko_kr.rc"
+#elif defined(MUI_BASE_LNG_NL_NL)
+  #include "../language/np3_nl_nl/np3_nl_nl.rc"
+#elif defined(MUI_BASE_LNG_PL_PL)
+  #include "../language/np3_pl_pl/np3_pl_pl.rc"
+#elif defined(MUI_BASE_LNG_PT_BR)
+  #include "../language/np3_pt_br/np3_pt_br.rc"
+#elif defined(MUI_BASE_LNG_PT_PT)
+  #include "../language/np3_pr_pt/np3_pt-pt.rc"
+#elif defined(MUI_BASE_LNG_RU_RU)
+  #include "../language/np3_ru_ru/np3_ru_ru.rc"
+#elif defined(MUI_BASE_LNG_SK_SK)
+  #include "../language/np3_sk_sk/np3_sk_sk.rc"
+#elif defined(MUI_BASE_LNG_SV_SE)
+  #include "../language/np3_sv_se/np3_sv_se.rc"
+#elif defined(MUI_BASE_LNG_TR_TR)
+  #include "../language/np3_tr_tr/np3_tr_tr.rc"
+#elif defined(MUI_BASE_LNG_VI_VN)
+  #include "../language/np3_vi_vn/np3_vi_vn.rc"
+#elif defined(MUI_BASE_LNG_ZH_CN)
+  #include "../language/np3_zh_cn/np3_zh_cn.rc"
+#elif defined(MUI_BASE_LNG_ZH_TW)
+  #include "../language/np3_zh_tw/np3_zh_tw.rc"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
