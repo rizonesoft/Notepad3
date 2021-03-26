@@ -481,7 +481,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_CSV_COL_0      "Kolumna 0"
+    IDS_LEX_CSV_COL_0       "Kolumna 0"
     IDS_LEX_CSV_COL_1       "Kolumna 1"
     IDS_LEX_CSV_COL_2       "Kolumna 2"
     IDS_LEX_CSV_COL_3       "Kolumna 3"
