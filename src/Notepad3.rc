@@ -54,7 +54,7 @@ BEGIN
 #elif defined(MUI_BASE_LNG_FR_FR)
   "#include ""../language/np3_fr_fr/np3_fr_fr.rc""\r\n"
 #elif defined(MUI_BASE_LNG_HI_IN)
-  "#include ""../language/np3_fr_fr/np3_fr_fr.rc""\r\n"
+  "#include ""../language/np3_hi_in/np3_hi_in.rc""\r\n"
 #elif defined(MUI_BASE_LNG_HU_HU)
   "#include ""../language/np3_hu_hu/np3_hu_hu.rc""\r\n"
 #elif defined(MUI_BASE_LNG_ID_ID)
@@ -72,7 +72,7 @@ BEGIN
 #elif defined(MUI_BASE_LNG_PT_BR)
   "#include ""../language/np3_pt_br/np3_pt_br.rc""\r\n"
 #elif defined(MUI_BASE_LNG_PT_PT)
-  "#include ""../language/np3_pr_pt/np3_pt-pt.rc""\r\n"
+  "#include ""../language/np3_pt_pt/np3_pt_pt.rc""\r\n"
 #elif defined(MUI_BASE_LNG_RU_RU)
   "#include ""../language/np3_ru_ru/np3_ru_ru.rc""\r\n"
 #elif defined(MUI_BASE_LNG_SK_SK)
@@ -493,7 +493,7 @@ END
 #elif defined(MUI_BASE_LNG_FR_FR)
   #include "../language/np3_fr_fr/np3_fr_fr.rc"
 #elif defined(MUI_BASE_LNG_HI_IN)
-  #include "../language/np3_fr_fr/np3_fr_fr.rc"
+  #include "../language/np3_hi_in/np3_hi_in.rc"
 #elif defined(MUI_BASE_LNG_HU_HU)
   #include "../language/np3_hu_hu/np3_hu_hu.rc"
 #elif defined(MUI_BASE_LNG_ID_ID)
@@ -511,7 +511,7 @@ END
 #elif defined(MUI_BASE_LNG_PT_BR)
   #include "../language/np3_pt_br/np3_pt_br.rc"
 #elif defined(MUI_BASE_LNG_PT_PT)
-  #include "../language/np3_pr_pt/np3_pt-pt.rc"
+  #include "../language/np3_pt_pt/np3_pt_pt.rc"
 #elif defined(MUI_BASE_LNG_RU_RU)
   #include "../language/np3_ru_ru/np3_ru_ru.rc"
 #elif defined(MUI_BASE_LNG_SK_SK)
