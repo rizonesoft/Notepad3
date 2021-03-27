@@ -10,7 +10,8 @@
 #endif
 
 // ==========================================
-// 1. To build a NON MUI Notepad3, Comment-Out the following line
+// How to build a NON MUI Notepad3 version for desired Language 
+// 1. Comment-Out the following line
 #define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1
 // ------------------------------------------
 // - extent Notepad3.rc file accordingly
@@ -20,9 +21,8 @@
     // for Base-Lng in MUI env
     #define MUI_BASE_LNG_EN_US 1
 #else
-// 2. To build a NON MUI Notepad3, Comment-Out the following line
     #define MUI_BASE_LNG_EN_US 1
-// 3. And Uncommentt one of the following lines
+// 2. Uncomment one of the following lines according of the desired Language
     //#define MUI_BASE_LNG_AF_ZA 1
     //#define MUI_BASE_LNG_BE_BY 1
     //#define MUI_BASE_LNG_DE_DE 1
