@@ -209,10 +209,10 @@ BEGIN
             MENUITEM "&Indentar",                               IDM_EDIT_INDENT
             MENUITEM "&Desindentar",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Linha de comentário (Alternar)\tCtrl+Q",            IDM_EDIT_LINECOMMENT
-            //MENUITEM "Activar edição de bloco de &comentário de linha", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Linha de comentário (Alternar)\tCtrl+Q",             IDM_EDIT_LINECOMMENT
+            MENUITEM "Edição de bloco de &comentário de linha\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
-            MENUITEM "Vária&s linhas de comentário\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Vária&s linhas de comentário\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Incluir selecção"
             BEGIN

@@ -209,8 +209,8 @@ BEGIN
             MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
             MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            //MENUITEM "Sor-megjegyzés függőleges szerkesztésének engedélyezése", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",                 IDM_EDIT_LINECOMMENT
+            MENUITEM "Vonal megjegyzés bl&okk szerkesztése\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

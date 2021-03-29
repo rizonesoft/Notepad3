@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "切换行注释(&C)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
-            //MENUITEM "使用矩形编辑模式修改行注释(&O)", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "行注释块编辑(&O)\tCtrl+Alt+Q",             IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "添加块注释(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

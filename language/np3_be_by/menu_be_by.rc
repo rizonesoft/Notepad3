@@ -209,8 +209,8 @@ BEGIN
             MENUITEM "&Дадаць водступ",                    IDM_EDIT_INDENT
             MENUITEM "&Выдаліць водступ",                  IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Каментарыі (пераключыць)\tCtrl+Q",  IDM_EDIT_LINECOMMENT
-            //MENUITEM "Блокавае рэдагаванне каментарыяў",   IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Каментарыі (пераключыць)\tCtrl+Q",                IDM_EDIT_LINECOMMENT
+            MENUITEM "Блокавае рэдагаванне каментарыяў\tCtrl+Alt+Q",     IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "&Блокавы каментарый\tCtrl+Shift+Q",  IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

@@ -209,8 +209,8 @@ BEGIN
             MENUITEM "&Wcięcie",                              IDM_EDIT_INDENT
             MENUITEM "&Bez wcięcia",                          IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Komentarz liniowy (Toggle)\tCtrl+Q",   IDM_EDIT_LINECOMMENT
-            //MENUITEM "Włącz edycję wierszy bloku komentarzy", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Komentarz liniowy (Toggle)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
+            MENUITEM "Edycję wierszy bloku komentarzy\tCtrl+Alt+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "&Komentarz strumieniowy\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

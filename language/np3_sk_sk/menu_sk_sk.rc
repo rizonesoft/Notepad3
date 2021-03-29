@@ -209,8 +209,8 @@ BEGIN
             MENUITEM "&Odsadenie",                          IDM_EDIT_INDENT
             MENUITEM "Z&rušiť odsadenie",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Riadkový komentár (zap./vyp.)\tCtrl+Q",  IDM_EDIT_LINECOMMENT
-            //MENUITEM "Povoliť úpravu bloku &komentárov riadka", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Riadkový komentár (zap./vyp.)\tCtrl+Q",      IDM_EDIT_LINECOMMENT
+            MENUITEM "Úpravu bloku &komentárov riadka\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

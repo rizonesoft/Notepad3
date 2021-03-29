@@ -200,19 +200,19 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "खाली रेखाएं मिलाएं (&G)\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "रिक्त रेखाएं मिलाएं (&K)\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "खाली रेखाएं हटाएं (&R)\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "रिक्त रेखाएं हटाएं (&B)\tCtrl+Alt+B",    IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "प्रतिरूप रेखाएं मिटाएं (&O)\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "खाली रेखाएं हटाएं (&R)\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "रिक्त रेखाएं हटाएं (&B)\tCtrl+Alt+B",       IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "प्रतिरूप रेखाएं मिटाएं (&O)\tCtrl+Alt+D",    IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "चुनाव (&N)"
         BEGIN
-            MENUITEM "इंडेंट (&I)",                              IDM_EDIT_INDENT
-            MENUITEM "इंडेंट हटाएं (&U)",                         IDM_EDIT_UNINDENT
+            MENUITEM "इंडेंट (&I)",                                  IDM_EDIT_INDENT
+            MENUITEM "इंडेंट हटाएं (&U)",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "रेखा टिप्पणी (टॉगल)(&C)\tCtrl+Q",          IDM_EDIT_LINECOMMENT
-            //MENUITEM "रेखा ब्लॉक-टिप्पणी परिमार्जन समर्थ करें (&O)", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "रेखा टिप्पणी (टॉगल)(&C)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+            MENUITEM "लाइन टिप्पणी ब्लॉक संपादित करें (&O)\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
-            MENUITEM "Stream टिप्पणी (&R)\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Stream टिप्पणी (&R)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "चुनाव संलग्न करें (&E)"
             BEGIN
@@ -225,7 +225,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Backticks\tCtrl+6",            CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "इसके साथ (W)...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "इसके साथ (&W)...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "चुनाव/रेखा की प्रतिलिपि (&D)/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
