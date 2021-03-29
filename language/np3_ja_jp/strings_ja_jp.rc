@@ -102,7 +102,7 @@ BEGIN
     IDS_MUI_UNTITLED        "無題"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(読み取り専用)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<排他ロック中>"
     IDS_MUI_LOADFILE        "読込中 ""%s""..."
     IDS_MUI_SAVEFILE        "保存中 ""%s""..."
     IDS_MUI_PRINTFILE       "%i ページを印刷..."
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "ファイルが他のプログラムによって変更されました。再読み込みしますか？"
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか？"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "ファイル %s を排他ロックできませんでした !"
     IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
     IDS_MUI_SAVEDSETTINGS   "設定が保存されました。"
     IDS_MUI_CREATEINI_FAIL  "設定ファイルの作成に失敗しました。"
