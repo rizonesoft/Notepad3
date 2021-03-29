@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "내어쓰기(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "줄 주석 (전환)(&C)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
-            MENUITEM "줄 주석 블록 편집 활성화(&O)",             IDM_VIEW_EDIT_LINECOMMENT
+            //MENUITEM "줄 주석 블록 편집 활성화(&O)", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "스트림 주석(&R)\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

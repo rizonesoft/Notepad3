@@ -3386,21 +3386,14 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
 //
 //  EditToggleLineCommentsSimple()
 //
-void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
+void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart)
 {
-    UNREFERENCED_PARAMETER(hwnd);
-
-    if (Sci_IsMultiOrRectangleSelection()) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-        return;
-    }
-
     _SAVE_TARGET_RANGE_;
 
     bool const bStraightSel = SciCall_GetAnchor() <= SciCall_GetCurrentPos();
 
-    DocPos const iSelStart = SciCall_GetSelectionStart();
-    DocPos const iSelEnd = SciCall_GetSelectionEnd();
+    DocPos const iSelStart = Sci_GetSelectionStartEx();
+    DocPos const iSelEnd = Sci_GetSelectionEndEx();
 
     //const DocPos iSelBegCol = SciCall_GetColumn(iSelStart);
 
@@ -3423,13 +3416,15 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
         return;
     }
 
-    const DocLn iStartLine = SciCall_LineFromPosition(iSelStart);
-    DocLn iEndLine = SciCall_LineFromPosition(iSelEnd);
+    const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
+    DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
-    // don't consider (last) line where caret is before 1st column
-    if (iSelEnd <= SciCall_PositionFromLine(iEndLine)) {
-        if ((iEndLine - iStartLine) >= 1) { // except it is the only one
-            --iEndLine;
+    if (!Sci_IsMultiOrRectangleSelection()) {
+        // don't consider (last) line where caret is before 1st column
+        if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) {
+            if ((iLineEnd - iLineStart) >= 1) { // except it is the only one
+                --iLineEnd;
+            }
         }
     }
 
@@ -3437,7 +3432,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
 
     if (!bInsertAtStart) {
         iCommentCol = (DocPos)INT_MAX;
-        for (DocLn iLine = iStartLine; iLine <= iEndLine; iLine++) {
+        for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
             const DocPos iLineEndPos = SciCall_GetLineEndPosition(iLine);
             const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
             if (iLineIndentPos != iLineEndPos) {
@@ -3455,7 +3450,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
     int iAction = 0;
     bool const bKeepActionOf1stLine = false;
 
-    for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine) {
+    for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
 
         if (!bKeepActionOf1stLine) {
             iAction = 0;
@@ -3479,7 +3474,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
-                if (iLine == iStartLine) {
+                if (iLine == iLineStart) {
                     iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchComment;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
@@ -3497,7 +3492,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
-                if (iLine == iStartLine) {
+                if (iLine == iLineStart) {
                     iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchPrefix;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
@@ -3514,7 +3509,7 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
             case 1: {
                 DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
                 SciCall_InsertText(iPos, mszComment);
-                if (iLine == iStartLine) {
+                if (iLine == iLineStart) {
                     iSelStartOffset += (iSelStart <= iPos) ? 0 : cchComment;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
@@ -3544,9 +3539,8 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
 //
 //  EditToggleLineCommentsExtended()
 //
-void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
+void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart)
 {
-    UNREFERENCED_PARAMETER(hwnd);
     _SAVE_TARGET_RANGE_;
 
     DocPos const iSelStart = Sci_GetSelectionStartEx();
@@ -3669,19 +3663,6 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
     _RESTORE_TARGET_RANGE_;
 }
 
-
-//=============================================================================
-//
-//  EditToggleLineComments()
-//
-void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
-{
-    if (Settings.EditLineCommentBlock) {
-        EditToggleLineCommentsExtended(hwnd, pwszComment, bInsertAtStart);
-    } else {
-        EditToggleLineCommentsSimple(hwnd, pwszComment, bInsertAtStart);
-    }
-}
 
 //=============================================================================
 //

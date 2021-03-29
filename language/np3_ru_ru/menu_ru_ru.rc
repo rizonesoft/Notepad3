@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "&Удалить отступ",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "Блочное редактирование &комментариев",        IDM_VIEW_EDIT_LINECOMMENT
+            //MENUITEM "Блочное редактирование &комментариев", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

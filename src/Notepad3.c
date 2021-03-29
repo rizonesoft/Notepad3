@@ -3844,7 +3844,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
 
     CheckCmd(hmenu, IDM_VIEW_ACCELWORDNAV, Settings.AccelWordNavigation);
-    CheckCmd(hmenu, IDM_VIEW_EDIT_LINECOMMENT, Settings.EditLineCommentBlock);
 
     CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
     CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_BOOKMARKS, Settings.MarkOccurrencesBookmark);
@@ -4970,7 +4969,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR comment[8] = { L'\0' };
         bool const bAtStart = _GetLineCommentStrg(comment, COUNTOF(comment));
         if (StrIsNotEmpty(comment)) {
-            EditToggleLineComments(Globals.hwndEdit, comment, bAtStart);
+            EditToggleLineCommentsSimple(comment, bAtStart);
+        }
+    }
+    break;
+
+
+    case IDM_EDIT_LINECOMMENT_BLOCKEDIT: {
+        WCHAR comment[8] = { L'\0' };
+        bool const bAtStart = _GetLineCommentStrg(comment, COUNTOF(comment));
+        if (StrIsNotEmpty(comment)) {
+            EditToggleLineCommentsExtended(comment, bAtStart);
         }
     }
     break;
@@ -5412,10 +5421,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.AccelWordNavigation = !Settings.AccelWordNavigation;
         EditSetAccelWordNav(Globals.hwndEdit,Settings.AccelWordNavigation);
         MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-        break;
-
-    case IDM_VIEW_EDIT_LINECOMMENT:
-        Settings.EditLineCommentBlock = !Settings.EditLineCommentBlock;
         break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
