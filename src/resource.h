@@ -21,8 +21,8 @@
     // for Base-Lng in MUI env
     #define MUI_BASE_LNG_EN_US 1
 #else
-    #define MUI_BASE_LNG_EN_US 1
 // 2. Uncomment one of the following lines according to the desired Language
+    #define MUI_BASE_LNG_EN_US 1
     //#define MUI_BASE_LNG_AF_ZA 1
     //#define MUI_BASE_LNG_BE_BY 1
     //#define MUI_BASE_LNG_DE_DE 1

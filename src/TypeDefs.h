@@ -446,7 +446,6 @@ typedef struct _settings_t
     bool AutoCompleteWords;
     bool AutoCLexerKeyWords;
     bool AccelWordNavigation;
-    bool EditLineCommentBlock;
     bool ShowIndentGuides;
     bool TabsAsSpaces;
     bool TabIndents;

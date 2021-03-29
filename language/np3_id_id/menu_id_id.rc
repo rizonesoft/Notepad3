@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "&Unindent",                         IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "Line &Comment (Toggle)\tCtrl+Q",    IDM_EDIT_LINECOMMENT
-            MENUITEM "Enable Line Comment Bl&ock Edit",   IDM_VIEW_EDIT_LINECOMMENT
+            //MENUITEM "Enable Line Comment Bl&ock Edit", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "St&ream Comment\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
