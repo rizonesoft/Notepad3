@@ -90,7 +90,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "開いている文書を実行"
     IDT_VIEW_TOGGLE_VIEW     "単語一望モード"
-    IDT_VIEW_CHASING_DOCTAIL "編集制限モード"
+    IDT_VIEW_CHASING_DOCTAIL "ログ監視用モード"
     IDT_VIEW_PIN_ON_TOP      "常に手前に表示"
     IDT_GREP_WIN_TOOL        "ファイル群から検索"
 END

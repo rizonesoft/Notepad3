@@ -396,7 +396,7 @@ BEGIN
                 MENUITEM "強調&&折りたたみ",                   IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "ログ監視用モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
             MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
