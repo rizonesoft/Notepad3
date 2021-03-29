@@ -475,7 +475,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63372       "Decorator"
+    IDS_LEX_STR_63372       "デコレータ"
     IDS_LEX_STR_63373       "Task Marker"
 END
 
