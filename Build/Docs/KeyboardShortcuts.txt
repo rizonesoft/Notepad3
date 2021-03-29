@@ -112,6 +112,7 @@
       Selection
       ---------
         Ctrl+Q                Block Comment (Toggle).
+        Ctrl+Alt+Q            Line Comment Block Edit
         Ctrl+Shift+Q          Stream Comment.
         Ctrl+D                Duplicate Selection or Line.
         Alt+B                 Pad with Blanks.

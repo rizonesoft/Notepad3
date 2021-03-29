@@ -209,8 +209,8 @@ BEGIN
             MENUITEM "&Indenta",                             IDM_EDIT_INDENT
             MENUITEM "&Rimuovi indentazione",                IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Commenta riga (attiva/disattiva)\tCtrl+Q", IDM_EDIT_LINECOMMENT
-            //MENUITEM "Abilita modifica blocco commenti di linea", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Commenta riga (attiva/disattiva)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
+            MENUITEM "Modifica blocco commenti di linea\tCtrl+Alt+Q",    IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "&Commento multi-riga\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

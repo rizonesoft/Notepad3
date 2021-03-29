@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "&Réduire le Retrait",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "&Commentaire de Ligne (Alterner)\tCtrl+Q",            IDM_EDIT_LINECOMMENT
-            //MENUITEM "Activer Édition de bloc de Lignes de &Commentaires", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "Éditer bloc de Lignes de &Commentaires\tCtrl+Alt+Q",  IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "Commentaire &Multiligne\tCtrl+Shift+Q",               IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

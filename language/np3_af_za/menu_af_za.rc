@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "&Ontkeep",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "L&yn Kommentaar (Toggle)\tCtrl+Q",                IDM_EDIT_LINECOMMENT
-            MENUITEM "A&ktiveer Wysiging van reël en Kommentaarblok",   IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "Wysiging van Lyn Kommentaarblok\tCtrl+Alt+Q",     IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "&Stroom Kommentaar\tCtrl+Shift+Q",                IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
