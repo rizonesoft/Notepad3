@@ -344,7 +344,11 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
         }
     }
 
+#ifdef HAVE_DYN_LOAD_LIBS_MUI_LNGS
     g_hLngResContainer = _LoadLanguageResources(g_tchPrefLngLocName, g_iPrefLANGID);
+#else
+    g_hLngResContainer = NULL;
+#endif
 
     if (!g_hLngResContainer) { // fallback en-US (1033)
         LANGID const langID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
@@ -368,9 +372,11 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
 
     hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
 
+#ifdef HAVE_DYN_LOAD_LIBS_MUI_LNGS
     if (bPrefLngNotAvail) {
         ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
     }
+#endif
 
     while (GetMessage(&msg,NULL,0,0)) {
         if (!TranslateAccelerator(hwnd,hAcc,&msg)) {
