@@ -18,7 +18,7 @@
 #define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1
 // -----------------------------------------------------
 #ifdef HAVE_DYN_LOAD_LIBS_MUI_LNGS
-    // currently only en-US allowed for Base-Lng in MUI env
+// currently only en-US allowed for Base-Lng in MUI env
 #define MUI_BASE_LNG_EN_US 1
 #else
 // 2. Uncomment one of the following lines
@@ -51,7 +51,7 @@
 //#define MUI_BASE_LNG_ZH_TW 1
 #endif
 // -----------------------------------------------------
-// 3. extent minipath.rc file accordingly (new language)
+// 3. Extent minipath.rc file accordingly (new language)
 // -----------------------------------------------------
 
 #include "../language/common_res.h"
