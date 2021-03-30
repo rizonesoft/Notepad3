@@ -87,6 +87,8 @@ BEGIN
   "#include ""../language/np3_zh_cn/np3_zh_cn.rc""\r\n"
 #elif defined(MUI_BASE_LNG_ZH_TW)
   "#include ""../language/np3_zh_tw/np3_zh_tw.rc""\r\n"
+#else
+  "#include ""../language/np3_en_us/np3_en_us.rc""\r\n"
 #endif
 
   "\0"
@@ -527,6 +529,8 @@ END
   #include "../language/np3_zh_cn/np3_zh_cn.rc"
 #elif defined(MUI_BASE_LNG_ZH_TW)
   #include "../language/np3_zh_tw/np3_zh_tw.rc"
+#else
+  #include "../language/np3_en_us/np3_en_us.rc"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
