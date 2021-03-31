@@ -54,7 +54,7 @@
 
 // -----------------------------------------------------
 // 3. In case of a new language:
-//    Extent Notepad3.rc file accordingly
+//    Extent Minipath.rc file accordingly
 //    and the language_id mapping in ../language/common_res.h
 // -----------------------------------------------------
 

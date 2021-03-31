@@ -1,29 +1,38 @@
 ====================================================================================================
-===   How to build a NON MUI Notepad3 version for desired Language (Mono-language)               ===
+===         How to build a NON MUI Notepad3 version for desired Language (Mono-language)         ===
 ====================================================================================================
 
-Important:  Make all modifications with a text editor (not Resource-Editor), e.g. Notepad3
-----------
+Important:  Make all modifications with a text editor (not the Resource-Editor), e.g.: Notepad3
 
-  I.   Edit: ".\src\resource.h"
-             ".\minipath\src\resource.h"
-             
-       - Comment-out define "HAVE_DYN_LOAD_LIBS_MUI_LNGS" => "//#define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1"
-       - Enable next define for the desired Base Language, e.g. "#define MUI_BASE_LNG_DE_DE 1" for German
-         (Keep all other Base Languages #define in comments)
+  I.   Edit: .\src\resource.h
+             .\minipath\src\resource.h
+       - Comment-Out the following line
+           #define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1  =>  //#define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1
+       - Uncomment one of the following lines according to the desired Language
+           E.g.: for German:
+             //#define MUI_BASE_LNG_DE_DE 1  =>  #define MUI_BASE_LNG_DE_DE 1
+             (Keep all other Base Languages #define in comments)
+
+ II.   Check: .\src\Notepad3.rc
+              .\minipath\src\minipath.rc
+       - Make sure that the desired Base Language exists in the list of Language resources.
+           E.g.: for German: At the begin of the ".rc" files (the real include section)
+             #elif defined(MUI_BASE_LNG_DE_DE)
+               "#include ""../language/np3_de_de/np3_de_de.rc""\r\n"
+           E.g.: for German: At the end of the ".rc" files
+             #elif defined(MUI_BASE_LNG_DE_DE)
+               #include "../language/np3_de_de/np3_de_de.rc"
+
+III.   Check: ".\language\common_res.h"
+              ".\minipath\language\common_res.h"
+       - Make sure that the desired Base Language exists in the list of Language resources.
+           E.g.: for German:
+             #define MUI_BASE_LNG_ID MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN)
+               #elif defined(MUI_BASE_LNG_EL_GR)
 
 
- II.   Edit ".\src\Notepad3.rc":
-            ".\minipath\src\Notepad3.rc"
-            
-       - Make sure that the desired Base Language (previous #define) #includes the 
-         corresponding Language resources.
-         (At the begin of the Notepad3.rc file _AND_ at the end of this file (the real include section)
+ IV.   (Re-)Compile the Notepad3 project
 
-
-III.   (Re-)Compile the Notepad3 project
-
-
-The resulting Notepad3.exe and Minipath.exe are Mono-langue (if as #define above: German only).
+The resulting Notepad3.exe and Minipath.exe are Mono-language (if as #define above: German only).
 
 ---------------------------------------------------------------------------------------------------
