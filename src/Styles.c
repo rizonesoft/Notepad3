@@ -346,7 +346,7 @@ void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
         } else {
             Style_ResetCurrentLexer(Globals.hwndEdit);
         }
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
         UpdateUI();
     }
 }
@@ -1630,7 +1630,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         EditToggleView(Globals.hwndEdit);
     }
 
-    UpdateMarginWidth();
+    UpdateMarginWidth(true);
     UpdateStatusbar(true);
 }
 
