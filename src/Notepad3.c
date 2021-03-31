@@ -372,15 +372,15 @@ static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection);
-static void  _SplitUndoTransaction(const int iModType);
+static void  _SplitUndoTransaction();
 
 // => _BEGIN_UNDO_ACTION_
 // => _END_UNDO_ACTION_
 
 // ----------------------------------------------------------------------------
 
-static void  _DelayClearCallTip(int delay);
-static void  _DelaySplitUndoTransaction(int delay, int iModType);
+static void  _DelayClearCallTip(const int delay);
+static void  _DelaySplitUndoTransaction(const int delay);
 
 // ----------------------------------------------------------------------------
 
@@ -442,7 +442,7 @@ static int msgcmp(void* mqc1, void* mqc2)
     if ((pMQC1->cmd == pMQC2->cmd)
             //&& (pMQC1->hwnd == pMQC2->hwnd)
             && (pMQC1->wparam == pMQC2->wparam) // command
-            //&& (pMQC1->lparam == pMQC2->lparam)
+            && (pMQC1->lparam == pMQC2->lparam) // true/false
        ) {
         return FALSE;
     }
@@ -476,7 +476,6 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
         // execute now (do not use PostMessage() here)
         SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
         pmqc->delay = -1;
-        pmqc->lparam = 0;
     }
 }
 // ----------------------------------------------------------------------------
@@ -490,7 +489,8 @@ static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
   {
     if ((pMsgQCmd->hwnd == pmqc->hwnd)
       && (pMsgQCmd->cmd == pmqc->cmd)
-      && (pMsgQCmd->wparam == pmqc->wparam))
+      && (pMsgQCmd->wparam == pmqc->wparam)
+      && (pMsgQCmd->lparam == pmqc->lparam))
     {
       pmqc->delay = -1;
     }
@@ -517,7 +517,6 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
         if (pmqc->delay == 0) {
             SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
             pmqc->delay = -1;
-            pmqc->lparam = 0;
         } else if (pmqc->delay >= 0) {
             pmqc->delay -= 1;  // decrease
         }
@@ -1546,7 +1545,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     UpdateToolbar();
     UpdateStatusbar(true);
-    UpdateMarginWidth();
+    UpdateMarginWidth(true);
     UpdateMouseDWellTime();
 
     // print file immediately and quit
@@ -1632,7 +1631,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         MarkAllOccurrences(0, true);
         UpdateToolbar();
         UpdateStatusbar(true);
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
         return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
@@ -2841,7 +2840,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     UpdateToolbar();
     UpdateStatusbar(true);
-    UpdateMarginWidth();
+    UpdateMarginWidth(true);
     UpdateUI();
 
     UpdateWindowEx(hwnd);
@@ -2911,7 +2910,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     UpdateToolbar();
     UpdateStatusbar(true);
-    UpdateMarginWidth();
+    UpdateMarginWidth(true);
     UpdateTitleBar(hwnd);
 
     return FALSE;
@@ -3184,7 +3183,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         UpdateToolbar();
         UpdateStatusbar(true);
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
     }
 
     return FALSE;
@@ -4073,7 +4072,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDT_TIMER_UNDO_TRANSACTION:
-        _SplitUndoTransaction((int)lParam);
+        _SplitUndoTransaction();
         break;
 
 
@@ -5269,7 +5268,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
             Style_SetDefaultFont(Globals.hwndEdit, true);
         }
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
         UpdateUI();
         break;
 
@@ -5278,7 +5277,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
             Style_SetDefaultFont(Globals.hwndEdit, false);
         }
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
         UpdateUI();
         break;
 
@@ -5398,13 +5397,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_LINENUMBERS:
         Settings.ShowLineNumbers = !Settings.ShowLineNumbers;
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
         break;
 
 
     case IDM_VIEW_BOOKMARK_MARGIN:
         Settings.ShowBookmarkMargin = !Settings.ShowBookmarkMargin;
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
         break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
@@ -5779,7 +5778,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.Bidirectional = SciCall_GetBidirectional();
 
         if ((prevRT != Settings.RenderingTechnology) || (prevBD != Settings.Bidirectional)) {
-            UpdateMarginWidth();
+            UpdateMarginWidth(true);
         }
     }
     break;
@@ -6790,22 +6789,6 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  HandlePosChange()
-//
-void HandlePosChange()
-{
-    static DocPos prevPosition = -1;
-    DocPos const curPos = SciCall_GetCurrentPos();
-    if (curPos == prevPosition) {
-        return;
-    }
-
-    prevPosition = curPos;
-}
-
-
-//=============================================================================
-//
 //  HandleDWellStartEnd()
 //
 static DocPos prevCursorPosition = -1;
@@ -7004,12 +6987,12 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         // clear SCN_DWELLSTART visual styles
         SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
         SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-#if 0 
+
         // destroy rectangualr selection on multi-replace ???
-        SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
-        SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, RGB(0,0,0));
-#endif
-        HandlePosChange();
+        // !!! strange side-effects by following statements !!!
+        //~~~SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
+        //~~~SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, RGB(0,0,0));
+
     }
     break;
 
@@ -7403,11 +7386,12 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             }
             if (*bModified) {
                 DWORD const timeout = Settings2.UndoTransactionTimeout;
-                if (timeout != 0UL) {
+                bool const bUndoRedo = ((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO));
+                if ((timeout != 0UL) && !bUndoRedo) {
                     if (timeout > _MQ_IMMEDIATE) {
-                        _DelaySplitUndoTransaction(timeout, iModType);
+                        _DelaySplitUndoTransaction(timeout);
                     } else {
-                        _SplitUndoTransaction(iModType);
+                        _SplitUndoTransaction();
                     }
                 }
             }
@@ -7450,18 +7434,20 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_MODIFIED: {
-        int const iModType = scn->modificationType;
         /// bModified = set in _MsgNotifyLean() !
         if (bModified) {
+            int const iModType = scn->modificationType;
             if (IsMarkOccurrencesEnabled()) {
                 MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
             }
             EditUpdateVisibleIndicators();
             if (scn->linesAdded != 0) {
                 if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded > 0)) {
-                    _SplitUndoTransaction(iModType);
+                    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+                        _SplitUndoTransaction();
+                    }
                 }
-                UpdateMarginWidth();
+                UpdateMarginWidth(false);
             }
             if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
                 if (!Sci_IsMultiSelection()) {
@@ -7528,17 +7514,17 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                     }
                 }
             }
-            //~if (iUpd & SC_UPDATE_CONTENT) {
-            //~ ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-            //~ using WM_COMMAND -> SCEN_CHANGE  instead!
-            //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
-            //~~~EditUpdateVisibleIndicators(); // will lead to recursion
-            //~}
-            HandlePosChange();
+            if (iUpd & SC_UPDATE_CONTENT) {
+                UpdateMarginWidth(false);
+                //~ Style and Marker are out of scope here => using WM_COMMAND -> SCEN_CHANGE  instead!
+                //~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+                //~EditUpdateVisibleIndicators(); // will lead to recursion
+            }
             UpdateToolbar();
-            UpdateMarginWidth();
             UpdateStatusbar(false);
+
         } else if (iUpd & SC_UPDATE_V_SCROLL) {
+
             if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
                 MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
             }
@@ -7689,7 +7675,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_ZOOM:
         UpdateToolbar();
-        UpdateMarginWidth();
+        UpdateMarginWidth(true);
         break;
 
 
@@ -8399,14 +8385,20 @@ void ParseCommandLine()
 //  _DelayUpdateStatusbar()
 //
 //
-static void  _DelayUpdateStatusbar(int delay, bool bForceRedraw)
+static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0);
-    mqc.hwnd = Globals.hwndMain;
-    if (bForceRedraw) {
-        mqc.lparam = (LPARAM)bForceRedraw;
+    static CmdMessageQueue_t mqc_t = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, TRUE);
+    static CmdMessageQueue_t mqc_f = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, FALSE);
+    if (!mqc_t.hwnd || !mqc_f.hwnd) {
+        mqc_t.hwnd = Globals.hwndMain;
+        mqc_f.hwnd = Globals.hwndMain;
     }
-    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+
+    if (bForceRedraw) {
+        _MQ_AppendCmd(&mqc_t, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    } else {
+        _MQ_AppendCmd(&mqc_f, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    }
 }
 
 
@@ -8415,11 +8407,12 @@ static void  _DelayUpdateStatusbar(int delay, bool bForceRedraw)
 //  _DelayUpdateToolbar()
 //
 //
-static void  _DelayUpdateToolbar(int delay)
+static void  _DelayUpdateToolbar(const int delay)
 {
     static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0);
-    mqc.hwnd = Globals.hwndMain;
-    //mqc.lparam = (LPARAM)2nd_param;
+    if (!mqc.hwnd) {
+        mqc.hwnd = Globals.hwndMain;
+    }
     _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -8429,11 +8422,12 @@ static void  _DelayUpdateToolbar(int delay)
 //  _DelayClearCallTip()
 //
 //
-static void  _DelayClearCallTip(int delay)
+static void  _DelayClearCallTip(const int delay)
 {
     static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0);
-    mqc.hwnd = Globals.hwndMain;
-    //mqc.lparam = (LPARAM)2nd_param;
+    if (!mqc.hwnd) {
+        mqc.hwnd = Globals.hwndMain;
+    }
     _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -8443,14 +8437,13 @@ static void  _DelayClearCallTip(int delay)
 //  _DelaySplitUndoTransaction()
 //
 //
-static void  _DelaySplitUndoTransaction(int delay, int iModType)
+static void  _DelaySplitUndoTransaction(const int delay)
 {
     static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_TRANSACTION, 0);
-    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+    if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
-        mqc.lparam = (LPARAM)iModType;
-        _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
     }
+    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
@@ -8458,14 +8451,20 @@ static void  _DelaySplitUndoTransaction(int delay, int iModType)
 //
 //  MarkAllOccurrences()
 //
-void MarkAllOccurrences(int delay, bool bForceClear)
+void MarkAllOccurrences(const int delay, const bool bForceClear)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
-    mqc.hwnd = Globals.hwndMain;
-    if (bForceClear) {
-        mqc.lparam = (LPARAM)bForceClear;
+    static CmdMessageQueue_t mqc_t = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, TRUE);
+    static CmdMessageQueue_t mqc_f = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, FALSE);
+    if (!mqc_t.hwnd || !mqc_f.hwnd) {
+        mqc_t.hwnd = Globals.hwndMain;
+        mqc_f.hwnd = Globals.hwndMain;
     }
-    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+
+    if (bForceClear) {
+        _MQ_AppendCmd(&mqc_t, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    } else {
+        _MQ_AppendCmd(&mqc_f, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    }
 }
 
 
@@ -8732,7 +8731,7 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
 //  UpdateStatusbar()
 //
 //
-void UpdateStatusbar(bool bForceRedraw)
+void UpdateStatusbar(const bool bForceRedraw)
 {
     _DelayUpdateStatusbar(_MQ_FAST, bForceRedraw);
 }
@@ -9222,15 +9221,22 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 //  UpdateMarginWidth()
 //
 //
-void UpdateMarginWidth()
+void UpdateMarginWidth(const bool bForce)
 {
+    static bool bShowLnNums = false;
+    static DocLn prevLineCount = -1LL;
+
+    DocLn const currLineCount = SciCall_GetLineCount();
+
+    if (!bForce && (currLineCount == prevLineCount) && (bShowLnNums == Settings.ShowLineNumbers)) {
+        return;
+    }
+
     if (Settings.ShowLineNumbers) {
         static char chLines[32] = { '\0' };
-        StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
-
-        int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
+        StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)currLineCount);
         int const iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
-
+        int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
         if (iLineMarginWidthNow != iLineMarginWidthFit) {
             SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
         }
@@ -9239,6 +9245,8 @@ void UpdateMarginWidth()
     }
     Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
     Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
+    bShowLnNums = Settings.ShowLineNumbers; 
+    prevLineCount = currLineCount;
 }
 
 
@@ -9709,13 +9717,11 @@ static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
 //  _SplitUndoTransaction()
 //
 //
-static void _SplitUndoTransaction(const int iModType)
+static void _SplitUndoTransaction()
 {
     if (!_InUndoRedoTransaction()) {
-        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-            SciCall_BeginUndoAction();
-            SciCall_EndUndoAction();
-        }
+        SciCall_BeginUndoAction();
+        SciCall_EndUndoAction();
     }
 }
 
@@ -9858,8 +9864,8 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         s_bFileReadOnly = false;
 
         SetSavePoint();
-        UpdateMarginWidth();
 
+        UpdateMarginWidth(true);
         UpdateStatusbar(true);
         UpdateTitleBar(Globals.hwndMain);
 
@@ -10080,10 +10086,10 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         Flags.bHugeFileLoadState = false; // reset
     }
 
-    UpdateToolbar();
-    UpdateMarginWidth();
-    UpdateStatusbar(true);
     UpdateTitleBar(Globals.hwndMain);
+    UpdateToolbar();
+    UpdateMarginWidth(true);
+    UpdateStatusbar(true);
 
     return fSuccess;
 }
@@ -10143,7 +10149,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     }
 
     SetSavePoint();
-    UpdateMarginWidth();
+    UpdateMarginWidth(true);
     UpdateStatusbar(true);
 
     if (bPreserveView) {

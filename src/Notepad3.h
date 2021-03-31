@@ -122,11 +122,11 @@ void ParseCommandLine();
 void ShowZoomCallTip();
 void ShowWrapAroundCallTip(bool forwardSearch);
 
-void MarkAllOccurrences(int delay, bool bForceClear);
+void MarkAllOccurrences(const int delay, const bool bForceClear);
 void UpdateUI();
 void UpdateToolbar();
-void UpdateStatusbar(bool);
-void UpdateMarginWidth();
+void UpdateStatusbar(const bool bForceRedraw);
+void UpdateMarginWidth(const bool bForce);
 void UpdateSaveSettingsCmds();
 void UpdateMouseDWellTime();
 void UpdateTitleBar(const HWND hwnd);
@@ -141,7 +141,6 @@ bool RestoreAction(int token, DoAction doAct);
 #define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent();
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); ObserveNotifyDocChangedEvent(); } }
 
-void HandlePosChange();
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
 void HandleColorDefClicked(HWND hwnd, const DocPos position);
