@@ -515,7 +515,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     switch(umsg) {
     case WM_INITDIALOG: {
-        WCHAR wch[256];
         LOGFONT lf;
 
         if (g_hDlgIconSmall) {
@@ -540,6 +539,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         hFontTitle = CreateFontIndirect(&lf);
         SendDlgItemMessage(hwnd,IDC_VERSION,WM_SETFONT,(WPARAM)hFontTitle,TRUE);
 
+        WCHAR wch[256];
         if (GetDlgItem(hwnd,IDC_WEBPAGE) == NULL) {
             SetDlgItemText(hwnd,IDC_WEBPAGE2,VERSION_WEBPAGEDISPLAY);
             ShowWindow(GetDlgItem(hwnd,IDC_WEBPAGE2),SW_SHOWNORMAL);

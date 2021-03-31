@@ -49,9 +49,13 @@
 //#define MUI_BASE_LNG_VI_VN 1
 //#define MUI_BASE_LNG_ZH_CN 1
 //#define MUI_BASE_LNG_ZH_TW 1
+
 #endif
+
 // -----------------------------------------------------
-// 3. Extent minipath.rc file accordingly (new language)
+// 3. In case of a new language:
+//    Extent Notepad3.rc file accordingly
+//    and the language_id mapping in ../language/common_res.h
 // -----------------------------------------------------
 
 #include "../language/common_res.h"

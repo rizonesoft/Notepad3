@@ -47,12 +47,14 @@
 //#define MUI_BASE_LNG_VI_VN 1
 //#define MUI_BASE_LNG_ZH_CN 1
 //#define MUI_BASE_LNG_ZH_TW 1
-#endif
-// -----------------------------------------------------
-// 3. Extent Notepad3.rc file accordingly (new language)
-// -----------------------------------------------------
 
-// ==========================================
+#endif
+
+// -----------------------------------------------------
+// 3. In case of a new language:
+//    Extent Notepad3.rc file accordingly
+//    and the language_id mapping in ../language/common_res.h
+// -----------------------------------------------------
 
 #ifndef IDC_STATIC
 #define IDC_STATIC                     (-1)
@@ -110,6 +112,7 @@
 
 #define IDS_WARN_PREF_LNG_NOT_AVAIL     4000
 
+// ==========================================
 
 #include "../language/common_res.h"
 
