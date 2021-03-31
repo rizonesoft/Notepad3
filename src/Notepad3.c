@@ -861,6 +861,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
         SetPreferredLanguage(LoadLanguageResources());
+    #else
+        Globals.iPrefLANGID = MUI_BASE_LNG_ID;
+        SetThreadUILanguage(MUI_BASE_LNG_ID);
+        InitMUILanguage(MUI_BASE_LNG_ID);
     #endif
 
     // ----------------------------------------------------
@@ -9470,6 +9474,7 @@ static void  _SaveRedoSelection(int token)
     }
 
     if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL)) {
+
         int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
 
         pSel->selMode_redo = selMode;

@@ -283,10 +283,8 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
     // Init OLE and Common Controls
     OleInitialize(NULL);
 
-    INITCOMMONCONTROLSEX icex;
-    ZeroMemory(&icex, sizeof(INITCOMMONCONTROLSEX));
-    icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-    icex.dwICC  = ICC_WIN95_CLASSES|ICC_COOL_CLASSES|ICC_BAR_CLASSES|ICC_USEREX_CLASSES;
+    INITCOMMONCONTROLSEX icex = { sizeof(INITCOMMONCONTROLSEX) };
+    icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES | ICC_NATIVEFNTCTL_CLASS | ICC_STANDARD_CLASSES;
     InitCommonControlsEx(&icex);
 
     msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
@@ -305,8 +303,6 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
     // ----------------------------------------------------
     // MultiLingual
     //
-    BOOL bPrefLngNotAvail = FALSE;
-
     int res = 0;
     if (lstrlenW(g_tchPrefLngLocName) > 0) {
         WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
@@ -345,19 +341,21 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
     }
 
 #ifdef HAVE_DYN_LOAD_LIBS_MUI_LNGS
+    bool bPrefLngNotAvail = false;
     g_hLngResContainer = _LoadLanguageResources(g_tchPrefLngLocName, g_iPrefLANGID);
+    if (!g_hLngResContainer) { // fallback en-US (1033)
+        g_hLngResContainer = g_hInstance;
+        g_iPrefLANGID = MUI_BASE_LNG_ID;
+        bPrefLngNotAvail = true;
+    }
 #else
-    g_hLngResContainer = NULL;
+    g_hLngResContainer = g_hInstance;
+    g_iPrefLANGID = MUI_BASE_LNG_ID;
 #endif
 
-    if (!g_hLngResContainer) { // fallback en-US (1033)
-        LANGID const langID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-        g_hLngResContainer = g_hInstance;
-        InitMUILanguage(langID);
-        if (g_iPrefLANGID != langID) {
-            bPrefLngNotAvail = TRUE;
-        }
-    }
+    SetThreadUILanguage(g_iPrefLANGID);
+    InitMUILanguage(g_iPrefLANGID);
+
     // ----------------------------------------------------
 
 

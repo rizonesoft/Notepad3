@@ -281,12 +281,16 @@ void SetPreferredLanguage(LANGID iPreferredLanguageID)
 {
     int const langIdx = GetMUILanguageIndexByLangID(iPreferredLanguageID);
     if (langIdx < 0) {
-        Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US); // internal
-        SetMuiLocaleAll(MUI_LanguageDLLs[0].szLocaleName);
+        Globals.iPrefLANGID = MUI_BASE_LNG_ID; // internal
+        int const idx = GetMUILanguageIndexByLangID(MUI_BASE_LNG_ID);
+        if (idx >= 0) {
+            SetMuiLocaleAll(MUI_LanguageDLLs[idx].szLocaleName);
+        }
         return;
     }
 
     if (iPreferredLanguageID != Globals.iPrefLANGID) {
+
         Globals.iPrefLANGID = iPreferredLanguageID; // == MUI_LanguageDLLs[langIdx].LangId
 
         const WCHAR* const szLocaleName = MUI_LanguageDLLs[langIdx].szLocaleName;
