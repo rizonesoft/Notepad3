@@ -1165,10 +1165,9 @@ void LoadSettings()
     Defaults2.SciFontQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
-    Defaults2.UpdateDelayMarkAllOccurrences = 50;
-    Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences",
-            Defaults2.UpdateDelayMarkAllOccurrences),
-            USER_TIMER_MINIMUM, 10000);
+    Defaults2.UpdateDelayMarkAllOccurrences = USER_TIMER_MINIMUM << 2;
+    Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences", Defaults2.UpdateDelayMarkAllOccurrences), (USER_TIMER_MINIMUM << 1), 10000);
+
     Defaults2.DenyVirtualSpaceAccess = false;
     Settings2.DenyVirtualSpaceAccess = IniSectionGetBool(IniSecSettings2, L"DenyVirtualSpaceAccess", Defaults2.DenyVirtualSpaceAccess);
 

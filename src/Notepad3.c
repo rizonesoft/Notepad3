@@ -468,12 +468,7 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
     if (!pMsgQCmd) { return; }
     cycles = clampi(cycles, 0, _MQ_ms2cycl(60000));
 
-    if (0 == cycles) {
-        SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
-        return;
-    }
-
-    CmdMessageQueue_t *pmqc = NULL;
+    CmdMessageQueue_t* pmqc = NULL;
     DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
 
     if (!pmqc) { // NOT found, create one
@@ -484,11 +479,15 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
             DL_APPEND(MessageQueue, pmqc);
         }
     } else {
-        if (pmqc->delay > 0) {
+        if ((pmqc->delay > 0) && (cycles > 0)) {
             pmqc->delay = (pmqc->delay + cycles) >> 1; // median delay
         } else {
             pmqc->delay = cycles;
         }
+    }
+
+    if (0 == cycles) {
+        PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
     }
 }
 // ----------------------------------------------------------------------------
@@ -528,7 +527,7 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 
     DL_FOREACH(MessageQueue, pmqc) {
         if (pmqc->delay >= 0) {
-            --(pmqc->delay);
+            --(pmqc->delay);  // count down
         }
         if (pmqc->delay == 0) {
             SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
@@ -1644,7 +1643,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         } else {
             EditUpdateIndicators(0, -1, false);
         }
-        MarkAllOccurrences(0, true);
+        MarkAllOccurrences(_MQ_FAST, true);
         UpdateToolbar();
         UpdateStatusbar(true);
         UpdateMarginWidth(true);
@@ -2844,7 +2843,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
         EditToggleView(Globals.hwndEdit);
     }
 
-    MarkAllOccurrences(0, false);
+    MarkAllOccurrences(_MQ_FAST, false);
 
     if (Flags.bHugeFileLoadState) {
         EditDoVisibleStyling();
@@ -4068,7 +4067,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     switch(iLoWParam) {
     case SCEN_CHANGE:
         EditUpdateVisibleIndicators();
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
+        MarkAllOccurrences(-1, false);
         break;
 
     case IDT_TIMER_UPDATE_STATUSBAR:
@@ -5435,7 +5434,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
         Settings.AccelWordNavigation = !Settings.AccelWordNavigation;
         EditSetAccelWordNav(Globals.hwndEdit,Settings.AccelWordNavigation);
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        MarkAllOccurrences(-1, true);
         break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
@@ -5445,7 +5444,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
         if (IsMarkOccurrencesEnabled()) {
-            MarkAllOccurrences(0, true);
+            MarkAllOccurrences(_MQ_FAST, true);
         } else {
             EditClearAllOccurrenceMarkers(Globals.hwndEdit);
             Globals.iMarkOccurrencesCount = 0;
@@ -5459,13 +5458,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
         Settings.MarkOccurrencesMatchVisible = !Settings.MarkOccurrencesMatchVisible;
-        MarkAllOccurrences(0, true);
+        MarkAllOccurrences(_MQ_FAST, true);
         break;
 
     case IDM_VIEW_TOGGLE_VIEW:
         if (FocusedView.HideNonMatchedLines) {
             EditToggleView(Globals.hwndEdit);
-            MarkAllOccurrences(0, true);
+            MarkAllOccurrences(_MQ_FAST, true);
         } else {
             EditToggleView(Globals.hwndEdit);
         }
@@ -5511,25 +5510,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_CASE:
         Settings.MarkOccurrencesMatchCase = !Settings.MarkOccurrencesMatchCase;
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        MarkAllOccurrences(-1, true);
         break;
 
     case IDM_VIEW_MARKOCCUR_WNONE:
         Settings.MarkOccurrencesMatchWholeWords = false;
         Settings.MarkOccurrencesCurrentWord = false;
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        MarkAllOccurrences(-1, true);
         break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
         Settings.MarkOccurrencesMatchWholeWords = true;
         Settings.MarkOccurrencesCurrentWord = false;
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        MarkAllOccurrences(-1, true);
         break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
         Settings.MarkOccurrencesMatchWholeWords = false;
         Settings.MarkOccurrencesCurrentWord = true;
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        MarkAllOccurrences(-1, true);
         break;
 
     case IDM_VIEW_FOLDING:
@@ -6986,6 +6985,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         prevEndPosition = lastPos;
     }
     break;
+
     case SCN_DWELLEND: {
         if ((position >= prevStartPosition) && ((position <= prevEndPosition))) {
             return;    // avoid flickering
@@ -7450,7 +7450,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         if (bModified) {
             int const iModType = scn->modificationType;
             if (IsMarkOccurrencesEnabled()) {
-                MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+                MarkAllOccurrences(-1, true);
             }
             EditUpdateVisibleIndicators();
             if (scn->linesAdded != 0) {
@@ -7519,7 +7519,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                 if (IsMarkOccurrencesEnabled()) {
                     bool const bValidSel = !SciCall_IsSelectionEmpty() && !Sci_IsMultiOrRectangleSelection();
                     if (bValidSel || Settings.MarkOccurrencesCurrentWord) {
-                        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+                        MarkAllOccurrences(-1, true);
                     } else {
                         if (Globals.iMarkOccurrencesCount > 0) {
                             EditClearAllOccurrenceMarkers(Globals.hwndEdit);
@@ -7530,7 +7530,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             if (iUpd & SC_UPDATE_CONTENT) {
                 UpdateMarginWidth(false);
                 //~ Style and Marker are out of scope here => using WM_COMMAND -> SCEN_CHANGE  instead!
-                //~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+                //~MarkAllOccurrences(-1, false);
                 //~EditUpdateVisibleIndicators(); // will lead to recursion
             }
             UpdateToolbar();
@@ -7539,7 +7539,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         } else if (iUpd & SC_UPDATE_V_SCROLL) {
 
             if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
-                MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
+                MarkAllOccurrences(-1, false);
             }
             EditUpdateVisibleIndicators();
         }
@@ -8400,7 +8400,7 @@ void ParseCommandLine()
 //
 static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0);
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0LL);
     if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
     }
@@ -8416,7 +8416,7 @@ static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 //
 static void  _DelayUpdateToolbar(const int delay)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0);
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0LL);
     if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
     }
@@ -8431,7 +8431,7 @@ static void  _DelayUpdateToolbar(const int delay)
 //
 static void  _DelayClearCallTip(const int delay)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0);
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0LL);
     if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
     }
@@ -8465,7 +8465,8 @@ void MarkAllOccurrences(const int delay, const bool bForceClear)
         mqc.hwnd = Globals.hwndMain;
     }
     mqc.lparam = (LPARAM)bForceClear;
-    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
+    int const timer = (delay < 0) ? Settings2.UpdateDelayMarkAllOccurrences : delay;
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(timer));
 }
 
 
@@ -11072,7 +11073,7 @@ void UpdateMouseDWellTime()
 void ShowZoomCallTip()
 {
     int const delayClr = Settings2.ZoomTooltipTimeout;
-    if (delayClr >= (10*USER_TIMER_MINIMUM)) {
+    if (delayClr >= (_MQ_TIMER_CYCLE << 3)) {
         int const iZoomLevelPercent = SciCall_GetZoom();
 
         static char chToolTip[32] = { '\0' };
@@ -11098,7 +11099,7 @@ void ShowZoomCallTip()
 void ShowWrapAroundCallTip(bool forwardSearch)
 {
     int const delayClr = Settings2.WrapAroundTooltipTimeout;
-    if (delayClr >= (USER_TIMER_MINIMUM<<4)) {
+    if (delayClr >= (_MQ_TIMER_CYCLE << 3)) {
         WCHAR wchToolTipFmt[64] = { '\0' };
         WCHAR wchToolTip[80] = { '\0' };
         static char chToolTip[80*3] = { '\0' };
