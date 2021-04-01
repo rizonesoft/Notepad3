@@ -40,6 +40,7 @@ Current BETA/RC Version 5.21.331.(build_#) (2021-03-31)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.331.2]- Provide Mono-Language IDs.
 [.331.1]- Mono-Language compiler switch for MiniPath.
 [.325.1]- Compiler switch to allow Mono-language binary (no MUI DLL loading).
 [.324.1]- Exclusive Lock (write) Mode shown in windows title.
