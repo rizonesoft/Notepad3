@@ -146,41 +146,50 @@ static CmdMessageQueue_t* MessageQueue = NULL;
 
 static int msgcmp(void* mqc1, void* mqc2)
 {
-    CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
-    CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
+    const CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
+    const CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
 
-    if ((pMQC1->hwnd == pMQC2->hwnd)
-            && (pMQC1->cmd == pMQC2->cmd)
-            && (pMQC1->wparam == pMQC2->wparam)
-            && (pMQC1->lparam == pMQC2->lparam)) {
-        return FALSE;
+    if ((pMQC1->cmd == pMQC2->cmd) 
+        && (pMQC1->hwnd == pMQC2->hwnd) 
+        && (pMQC1->wparam == pMQC2->wparam) 
+        && (pMQC1->lparam == pMQC2->lparam)
+       ) {
+        return 0;
     }
     return 1;
 }
 // ----------------------------------------------------------------------------
 
-#define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
+#define _MQ_TIMER_CYCLE (USER_TIMER_MINIMUM << 1)
+#define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
+#define _MQ_STD (_MQ_TIMER_CYCLE << 2)
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
+    if (!pMsgQCmd) { return; }
+    cycles = clampi(cycles, 0, _MQ_ms2cycl(60000));
+
+    if (0 == cycles) {
+        SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+        return;
+    }
+
     CmdMessageQueue_t* pmqc = NULL;
     DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
 
-    if (!pmqc) { // NOT found
+    if (!pmqc) { // NOT found, create new one
         pmqc = AllocMem(sizeof(CmdMessageQueue_t), HEAP_ZERO_MEMORY);
-        pmqc->hwnd = pMsgQCmd->hwnd;
-        pmqc->cmd = pMsgQCmd->cmd;
-        pmqc->wparam = pMsgQCmd->wparam;
-        pmqc->lparam = pMsgQCmd->lparam;
-        pmqc->delay = cycles;
-        DL_APPEND(MessageQueue, pmqc);
-    }
-
-    if (cycles < 2) {
-        pmqc->delay = -1; // execute now (do not use PostMessage() here)
-        SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+        if (pmqc) {
+            *pmqc = *pMsgQCmd;
+            pmqc->delay = cycles;
+            DL_APPEND(MessageQueue, pmqc);
+        }
     } else {
-        pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
+        if (pmqc->delay > 0) {
+            pmqc->delay = (pmqc->delay + cycles) >> 1; // median delay
+        } else {
+            pmqc->delay = cycles;
+        }
     }
 }
 // ----------------------------------------------------------------------------
@@ -194,8 +203,9 @@ static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
   {
     if ((pMsgQCmd->hwnd == pmqc->hwnd)
       && (pMsgQCmd->cmd == pmqc->cmd)
-      && (pMsgQCmd->wparam == pmqc->wparam))
-    {
+      && (pMsgQCmd->wparam == pmqc->wparam)
+      && (pMsgQCmd->lparam == pmqc->lparam)
+    ) {
       pmqc->delay = -1;
     }
   }
@@ -214,14 +224,15 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(idEvent); // must be IDT_TIMER_MRKALL
     UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
 
-    CmdMessageQueue_t* pmqc;
+    CmdMessageQueue_t *pmqc;
 
     DL_FOREACH(MessageQueue, pmqc) {
+        if (pmqc->delay >= 0) {
+            --(pmqc->delay);
+        }
         if (pmqc->delay == 0) {
-            pmqc->delay = -1;
             SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
-        } else if (pmqc->delay >= 0) {
-            pmqc->delay -= 1;
+            pmqc->lparam = (LPARAM)Sci_GetDocEndPosition();
         }
     }
 }
@@ -5682,13 +5693,14 @@ static RegExResult_t _FindHasMatch(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iS
 //  _DelayMarkAll()
 //
 //
-static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
+static void  _DelayMarkAll(HWND hwnd, int delay)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
-    mqc.hwnd = hwnd;
-    mqc.lparam = (LPARAM)iStartPos;
-
-    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0LL);
+    if (!mqc.hwnd) {
+        mqc.hwnd = hwnd;
+        mqc.lparam = 0LL; // start position always 0
+    }
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
 //=============================================================================
@@ -5808,7 +5820,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
 #endif
 
-        SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
+        SetTimer(hwnd, IDT_TIMER_MRKALL, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
 
         SET_INITIAL_ANCHORS()
         s_InitialTopLine = SciCall_GetFirstVisibleLine();
@@ -5957,7 +5969,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, s_pEfrDataDlg->bMarkOccurences);
 
-        _DelayMarkAll(hwnd, 50, 0);
+        _DelayMarkAll(hwnd, _MQ_STD);
 
         PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
     }
@@ -6149,7 +6161,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
             DialogEnableControl(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
-            _DelayMarkAll(hwnd, 100, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
 
             if (!SciCall_IsSelectionEmpty()) {
                 EditEnsureSelectionVisible();
@@ -6175,7 +6187,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             s_InitialSearchStart = SciCall_GetSelectionStart();
             s_InitialTopLine = -1;  // reset
             s_pEfrDataDlg->bStateChanged = true;
-            _DelayMarkAll(hwnd, 100, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
             break;
 
 
@@ -6279,7 +6291,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
             }
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
         }
         break;
 
@@ -6312,7 +6324,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES)) {
                 DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, true);
-                _DelayMarkAll(hwnd, 50, 0);
+                _DelayMarkAll(hwnd, _MQ_STD);
             } else { // switched OFF
                 DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, false);
                 if (FocusedView.HideNonMatchedLines) {
@@ -6332,7 +6344,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     s_pEfrDataDlg->bStateChanged = true;
                     s_InitialTopLine = -1;  // reset
                     EditClearAllOccurrenceMarkers(s_pEfrDataDlg->hwnd);
-                    _DelayMarkAll(hwnd, 50, 0);
+                    _DelayMarkAll(hwnd, _MQ_STD);
                 }
             }
             break;
@@ -6351,12 +6363,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_pEfrDataDlg->bTransformBS));
             }
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
             break;
 
         case IDC_DOT_MATCH_ALL:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
             break;
 
         case IDC_WILDCARDSEARCH: {
@@ -6372,34 +6384,34 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_pEfrDataDlg->bTransformBS));
             }
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
         }
         break;
 
         case IDC_FIND_OVERLAPPING:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
             break;
 
         case IDC_FINDTRANSFORMBS: {
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
         }
         break;
 
         case IDC_FINDCASE:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
             break;
 
         case IDC_FINDWORD:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
             break;
 
         case IDC_FINDSTART:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
             break;
 
         case IDC_TRANSPARENT:
@@ -6518,7 +6530,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 DestroyWindow(hwnd);
             }
         }
-        _DelayMarkAll(hwnd, 50, 0);
+        _DelayMarkAll(hwnd, _MQ_STD);
         break;
 
 
@@ -6548,7 +6560,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
             Globals.FindReplaceMatchFoundState = FND_NOP;
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, 50, 0);
+            _DelayMarkAll(hwnd, _MQ_STD);
         }
         break;
 

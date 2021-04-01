@@ -93,6 +93,7 @@ void DbgLog(const char *fmt, ...);
 inline int min_i(const int x, const int y) _RETCMPMIN_
 inline unsigned int min_u(const unsigned int x, const unsigned int y) _RETCMPMIN_
 inline long min_l(const long x, const long y) _RETCMPMIN_
+inline long long min_ll(const long long x, const long long y) _RETCMPMIN_
 inline long min_dw(const DWORD x, const DWORD y) _RETCMPMIN_
 inline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
 inline DocPos min_p(const DocPos x, const DocPos y) _RETCMPMIN_
@@ -105,6 +106,7 @@ inline float min_f(float x, float y) _RETCMPMIN_
 inline int max_i(int x, int y) _RETCMPMAX_
 inline unsigned int max_u(unsigned int x, unsigned int y) _RETCMPMAX_
 inline long max_l(const long x, const long y) _RETCMPMAX_
+inline long long max_ll(const long long x, const long long y) _RETCMPMAX_
 inline long max_dw(const DWORD x, const DWORD y) _RETCMPMAX_
 inline size_t max_s(const size_t x, const size_t y) _RETCMPMAX_
 inline DocPos max_p(const DocPos x, const DocPos y) _RETCMPMAX_

@@ -368,14 +368,20 @@ static void CopyUndoRedoSelection(void* dst, const void* src)
 
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), InitUndoRedoSelection, CopyUndoRedoSelection, DelUndoRedoSelection };
 static UT_array* UndoRedoSelectionUTArray = NULL;
-static bool  _InUndoRedoTransaction();
+static inline bool _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection);
-static void  _SplitUndoTransaction();
-
 // => _BEGIN_UNDO_ACTION_
 // => _END_UNDO_ACTION_
+
+static inline void _SplitUndoTransaction() {
+    if (!_InUndoRedoTransaction()) {
+        SciCall_BeginUndoAction();
+        /* noop */
+        SciCall_EndUndoAction();
+    }
+}
 
 // ----------------------------------------------------------------------------
 
@@ -436,46 +442,53 @@ static CmdMessageQueue_t* MessageQueue = NULL;
 
 static int msgcmp(void* mqc1, void* mqc2)
 {
-    CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
-    CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
+    const CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
+    const CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
 
     if ((pMQC1->cmd == pMQC2->cmd)
-            //&& (pMQC1->hwnd == pMQC2->hwnd)
-            && (pMQC1->wparam == pMQC2->wparam) // command
-            && (pMQC1->lparam == pMQC2->lparam) // true/false
-       ) {
-        return FALSE;
+        && (pMQC1->hwnd == pMQC2->hwnd)
+        && (pMQC1->wparam == pMQC2->wparam) // command
+        && (pMQC1->lparam == pMQC2->lparam) // true/false
+    ) {
+        return 0; // equal
     }
-    return 1;
+    return (pMQC1->delay < pMQC2->delay) ? -1 : 1;
 }
 // ----------------------------------------------------------------------------
 
-#define _MQ_IMMEDIATE (2 * USER_TIMER_MINIMUM - 1)
-#define _MQ_FAST (USER_TIMER_MINIMUM << 2)
-#define _MQ_STD (USER_TIMER_MINIMUM << 3)
-#define _MQ_LAZY (USER_TIMER_MINIMUM << 4)
-#define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
+#define _MQ_TIMER_CYCLE (USER_TIMER_MINIMUM << 1) // 20ms cycle
+#define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
+#define _MQ_IMMEDIATE (_MQ_TIMER_CYCLE - 1)
+#define _MQ_FAST (_MQ_TIMER_CYCLE << 1)
+#define _MQ_STD (_MQ_TIMER_CYCLE << 2)
+#define _MQ_LAZY (_MQ_TIMER_CYCLE << 3)
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
-    if (!pMsgQCmd) {
+    if (!pMsgQCmd) { return; }
+    cycles = clampi(cycles, 0, _MQ_ms2cycl(60000));
+
+    if (0 == cycles) {
+        SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
         return;
     }
 
-    CmdMessageQueue_t* pmqc = NULL;
+    CmdMessageQueue_t *pmqc = NULL;
     DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
 
-    if (!pmqc) { // NOT found
-        pmqc = pMsgQCmd;
-        pmqc->delay = cycles;
-        DL_APPEND(MessageQueue, pmqc);
+    if (!pmqc) { // NOT found, create one
+        pmqc = AllocMem(sizeof(CmdMessageQueue_t), HEAP_ZERO_MEMORY);
+        if (pmqc) {
+            *pmqc = *pMsgQCmd;
+            pmqc->delay = cycles;
+            DL_APPEND(MessageQueue, pmqc);
+        }
     } else {
-        pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
-    }
-    if (pmqc->delay < 2) {
-        // execute now (do not use PostMessage() here)
-        SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
-        pmqc->delay = -1;
+        if (pmqc->delay > 0) {
+            pmqc->delay = (pmqc->delay + cycles) >> 1; // median delay
+        } else {
+            pmqc->delay = cycles;
+        }
     }
 }
 // ----------------------------------------------------------------------------
@@ -487,8 +500,8 @@ static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 
   DL_FOREACH(MessageQueue, pmqc)
   {
-    if ((pMsgQCmd->hwnd == pmqc->hwnd)
-      && (pMsgQCmd->cmd == pmqc->cmd)
+    if ((pMsgQCmd->cmd == pmqc->cmd)
+      && (pMsgQCmd->hwnd == pmqc->hwnd)
       && (pMsgQCmd->wparam == pmqc->wparam)
       && (pMsgQCmd->lparam == pmqc->lparam))
     {
@@ -514,11 +527,11 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     CmdMessageQueue_t* pmqc;
 
     DL_FOREACH(MessageQueue, pmqc) {
+        if (pmqc->delay >= 0) {
+            --(pmqc->delay);
+        }
         if (pmqc->delay == 0) {
             SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
-            pmqc->delay = -1;
-        } else if (pmqc->delay >= 0) {
-            pmqc->delay -= 1;  // decrease
         }
     }
 }
@@ -704,9 +717,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     CmdMessageQueue_t* dummy;
     DL_FOREACH_SAFE(MessageQueue, pmqc, dummy) {
         DL_DELETE(MessageQueue, pmqc);
-        //~FreeMem(pmqc); // No AllocMem Anymore
+        FreeMem(pmqc);
     }
-
     if (UndoRedoSelectionUTArray != NULL) {
         utarray_clear(UndoRedoSelectionUTArray);
         utarray_free(UndoRedoSelectionUTArray);
@@ -980,7 +992,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     HACCEL const hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
     HACCEL const hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
 
-    SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
+    SetTimer(hwnd, IDT_TIMER_MRKALL, _MQ_TIMER_CYCLE, (TIMERPROC)MQ_ExecuteNext);
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
         if (Globals.bPrefLngNotAvail) {
@@ -6559,10 +6571,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_EDIT_CUT:
         if (IsCmdEnabled(hwnd,IDM_EDIT_CUT)) {
             SendWMCommand(hwnd, IDM_EDIT_CUT);
+            //~SendWMCommand(hwnd, IDM_EDIT_CUTLINE);
         } else {
             SimpleBeep();
         }
-        //~SendWMCommand(hwnd, IDM_EDIT_CUTLINE);
         break;
 
 
@@ -7390,13 +7402,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             }
             if (*bModified) {
                 DWORD const timeout = Settings2.UndoTransactionTimeout;
-                bool const bUndoRedo = ((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO));
-                if ((timeout != 0UL) && !bUndoRedo) {
-                    if (timeout > _MQ_IMMEDIATE) {
-                        _DelaySplitUndoTransaction(timeout);
-                    } else {
-                        _SplitUndoTransaction();
-                    }
+                if (timeout != 0UL) {
+                    bool const bInUndoRedo = ((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO));
+                    _DelaySplitUndoTransaction(bInUndoRedo ? max_dw(_MQ_FAST, timeout) : timeout);
                 }
             }
         } else if (pnmh->code == SCN_SAVEPOINTREACHED) {
@@ -7447,7 +7455,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             EditUpdateVisibleIndicators();
             if (scn->linesAdded != 0) {
                 if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded > 0)) {
-                    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+                    bool const bInUndoRedo = ((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO));
+                    if (!bInUndoRedo) {
                         _SplitUndoTransaction();
                     }
                 }
@@ -8391,18 +8400,12 @@ void ParseCommandLine()
 //
 static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 {
-    static CmdMessageQueue_t mqc_t = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, TRUE);
-    static CmdMessageQueue_t mqc_f = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, FALSE);
-    if (!mqc_t.hwnd || !mqc_f.hwnd) {
-        mqc_t.hwnd = Globals.hwndMain;
-        mqc_f.hwnd = Globals.hwndMain;
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0);
+    if (!mqc.hwnd) {
+        mqc.hwnd = Globals.hwndMain;
     }
-
-    if (bForceRedraw) {
-        _MQ_AppendCmd(&mqc_t, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
-    } else {
-        _MQ_AppendCmd(&mqc_f, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
-    }
+    mqc.lparam = (LPARAM)bForceRedraw;
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
 
@@ -8417,7 +8420,7 @@ static void  _DelayUpdateToolbar(const int delay)
     if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
     }
-    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
 
@@ -8432,7 +8435,7 @@ static void  _DelayClearCallTip(const int delay)
     if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
     }
-    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
 
@@ -8447,7 +8450,7 @@ static void  _DelaySplitUndoTransaction(const int delay)
     if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
     }
-    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
 
@@ -8457,18 +8460,12 @@ static void  _DelaySplitUndoTransaction(const int delay)
 //
 void MarkAllOccurrences(const int delay, const bool bForceClear)
 {
-    static CmdMessageQueue_t mqc_t = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, TRUE);
-    static CmdMessageQueue_t mqc_f = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, FALSE);
-    if (!mqc_t.hwnd || !mqc_f.hwnd) {
-        mqc_t.hwnd = Globals.hwndMain;
-        mqc_f.hwnd = Globals.hwndMain;
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
+    if (!mqc.hwnd) {
+        mqc.hwnd = Globals.hwndMain;
     }
-
-    if (bForceClear) {
-        _MQ_AppendCmd(&mqc_t, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
-    } else {
-        _MQ_AppendCmd(&mqc_f, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
-    }
+    mqc.lparam = (LPARAM)bForceClear;
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
 
@@ -9314,7 +9311,7 @@ static volatile LONG UndoActionToken = UNDOREDO_BLOCKED; // block
 
 //=============================================================================
 
-static bool  _InUndoRedoTransaction()
+static inline bool  _InUndoRedoTransaction()
 {
     return (InterlockedOr(&UndoActionToken, 0L) != UNDOREDO_FREE);
 }
@@ -9714,20 +9711,6 @@ static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
         uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
     }
     return token;
-}
-
-
-//=============================================================================
-//
-//  _SplitUndoTransaction()
-//
-//
-static void _SplitUndoTransaction()
-{
-    if (!_InUndoRedoTransaction()) {
-        SciCall_BeginUndoAction();
-        SciCall_EndUndoAction();
-    }
 }
 
 
