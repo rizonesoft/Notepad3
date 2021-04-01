@@ -159,6 +159,75 @@ OnigSyntaxType OnigSyntaxRuby = {
 
 OnigSyntaxType*  OnigDefaultSyntax = ONIG_SYNTAX_ONIGURUMA;
 
+
+#define BB_INIT(buf,size)    bbuf_init((BBuf* )(buf), (size))
+
+#define BB_EXPAND(buf,low) do{\
+  do { (buf)->alloc *= 2; } while ((buf)->alloc < (unsigned int )low);\
+  (buf)->p = (UChar* )xrealloc((buf)->p, (buf)->alloc);\
+  if (IS_NULL((buf)->p)) return(ONIGERR_MEMORY);\
+} while (0)
+
+#define BB_ENSURE_SIZE(buf,size) do{\
+  unsigned int new_alloc = (buf)->alloc;\
+  while (new_alloc < (unsigned int )(size)) { new_alloc *= 2; }\
+  if ((buf)->alloc != new_alloc) {\
+    (buf)->p = (UChar* )xrealloc((buf)->p, new_alloc);\
+    if (IS_NULL((buf)->p)) return(ONIGERR_MEMORY);\
+    (buf)->alloc = new_alloc;\
+  }\
+} while (0)
+
+#define BB_WRITE(buf,pos,bytes,n) do{\
+  int used = (pos) + (n);\
+  if ((buf)->alloc < (unsigned int )used) BB_EXPAND((buf),used);\
+  xmemcpy((buf)->p + (pos), (bytes), (n));\
+  if ((buf)->used < (unsigned int )used) (buf)->used = used;\
+} while (0)
+
+#define BB_WRITE1(buf,pos,byte) do{\
+  int used = (pos) + 1;\
+  if ((buf)->alloc < (unsigned int )used) BB_EXPAND((buf),used);\
+  (buf)->p[(pos)] = (byte);\
+  if ((buf)->used < (unsigned int )used) (buf)->used = used;\
+} while (0)
+
+#define BB_ADD(buf,bytes,n)       BB_WRITE((buf),(buf)->used,(bytes),(n))
+#define BB_ADD1(buf,byte)         BB_WRITE1((buf),(buf)->used,(byte))
+#define BB_GET_ADD_ADDRESS(buf)   ((buf)->p + (buf)->used)
+#define BB_GET_OFFSET_POS(buf)    ((buf)->used)
+
+/* from < to */
+#define BB_MOVE_RIGHT(buf,from,to,n) do {\
+  if ((unsigned int )((to)+(n)) > (buf)->alloc) BB_EXPAND((buf),(to) + (n));\
+  xmemmove((buf)->p + (to), (buf)->p + (from), (n));\
+  if ((unsigned int )((to)+(n)) > (buf)->used) (buf)->used = (to) + (n);\
+} while (0)
+
+/* from > to */
+#define BB_MOVE_LEFT(buf,from,to,n) do {\
+  xmemmove((buf)->p + (to), (buf)->p + (from), (n));\
+} while (0)
+
+/* from > to */
+#define BB_MOVE_LEFT_REDUCE(buf,from,to) do {\
+  xmemmove((buf)->p + (to), (buf)->p + (from), (buf)->used - (from));\
+  (buf)->used -= (from - to);\
+} while (0)
+
+#define BB_INSERT(buf,pos,bytes,n) do {\
+  if (pos >= (buf)->used) {\
+    BB_WRITE(buf,pos,bytes,n);\
+  }\
+  else {\
+    BB_MOVE_RIGHT((buf),(pos),(pos) + (n),((buf)->used - (pos)));\
+    xmemcpy((buf)->p + (pos), (bytes), (n));\
+  }\
+} while (0)
+
+#define BB_GET_BYTE(buf, pos) (buf)->p[(pos)]
+
+
 typedef enum {
   CS_VALUE,
   CS_RANGE,

@@ -29,16 +29,21 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
-Master branch
+Notice (from 6.9.6)
+-------------------
+When using configure script, if you have the POSIX API enabled in an earlier version (disabled by default in 6.9.5) and you need application binary compatibility with the POSIX API, specify "--enable-binary-compatible-posix-api=yes" instead of "--enable-posix-api=yes". Starting in 6.9.6, "--enable-posix-api=yes" only supports source-level compatibility for 6.9.5 and earlier about POSIX API. (Issue #210)
+
+
+Version 6.9.7
 -------------
 * NEW API: ONIG_OPTION_CALLBACK_EACH_MATCH
 * NEW API: ONIG_OPTION_IGNORECASE_IS_ASCII
 * NEW API: ONIG_SYNTAX_PYTHON
+* Fixed some problems found by OSS-Fuzz
 
 
 Version 6.9.6
 -------------
-* When using configure script, if you have the POSIX API enabled in an earlier version (disabled by default in 6.9.5) and you need application binary compatibility with the POSIX API, specify "--enable-binary-compatible-posix-api=yes" instead of "--enable-posix-api=yes". Starting in 6.9.6, "--enable-posix-api=yes" only supports source-level compatibility for 6.9.5 and earlier about POSIX API. (Issue #210)
 * NEW: configure option --enable-binary-compatible-posix-api=[yes/no]
 * NEW API: Limiting the maximum number of calls of subexp-call
 * NEW API: ONIG_OPTION_NOT_BEGIN_STRING / NOT_END_STRING / NOT_BEGIN_POSITION
@@ -108,32 +113,6 @@ Version 6.9.0
 * NEW: add Emoji properties
 
 
-Version 6.8.2
--------------
-
-* Fix: #80 UChar in header causes issue
-* NEW API: onig_set_callout_user_data_of_match_param()  (* omission in 6.8.0)
-* add doc/CALLOUTS.API and doc/CALLOUTS.API.ja
-
-
-Version 6.8.1
--------------
-
-* Update shared library version to 5.0.0 for API incompatible changes from 6.7.1
-
-
-Version 6.8.0
--------------
-
-* Retry-limit-in-match function enabled by default
-* NEW: configure option --enable-posix-api=no  (* enabled by default)
-* NEW API: onig_search_with_param(), onig_match_with_param()
-* NEW: Callouts of contents  (?{...contents...}) (?{...}\[tag]\[X<>]) (?{{...}})
-* NEW: Callouts of name      (*name) (*name\[tag]{args...})
-* NEW: Builtin callouts  (*FAIL) (*MISMATCH) (*ERROR{n}) (*COUNT) (*MAX{n}) etc..
-* Examples of Callouts program: [callout.c](sample/callout.c), [count.c](sample/count.c), [echo.c](sample/echo.c)
-
-
 License
 -------
 
@@ -174,18 +153,17 @@ Install
 
 ### Case 3: Windows 64/32bit platform (Visual Studio)
 
-   Execute make_win.bat
+   * build library
+
+      .\make_win.bat
 
       onig_s.lib:  static link library
       onig.dll:    dynamic link library
 
-   * test (ASCII/Shift_JIS)
+   * make test programs
 
-      1. cd src
-      2. copy ..\windows\testc.c .
-      3. nmake -f Makefile.windows ctest
+      .\make_win.bat all-test
 
-   (I have checked by Visual Studio Community 2015)
 
 Alternatively, you can build and install oniguruma using [vcpkg](https://github.com/microsoft/vcpkg/) dependency manager:
 
