@@ -169,11 +169,6 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
     if (!pMsgQCmd) { return; }
     cycles = clampi(cycles, 0, _MQ_ms2cycl(60000));
 
-    if (0 == cycles) {
-        SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
-        return;
-    }
-
     CmdMessageQueue_t* pmqc = NULL;
     DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
 
@@ -185,11 +180,14 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
             DL_APPEND(MessageQueue, pmqc);
         }
     } else {
-        if (pmqc->delay > 0) {
+        if ((pmqc->delay > 0) && (cycles > 0)) {
             pmqc->delay = (pmqc->delay + cycles) >> 1; // median delay
         } else {
             pmqc->delay = cycles;
         }
+    }
+    if (0 == cycles) {
+        PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
     }
 }
 // ----------------------------------------------------------------------------
@@ -232,7 +230,6 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
         }
         if (pmqc->delay == 0) {
             SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
-            pmqc->lparam = (LPARAM)Sci_GetDocEndPosition();
         }
     }
 }
@@ -5981,6 +5978,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         return TRUE;
 
     case WM_DESTROY: {
+
+        KillTimer(hwnd, IDT_TIMER_MRKALL);
+
         _SetSearchFlags(hwnd, s_pEfrDataDlg); // sync
         CopyMemory(&(Settings.EFR_Data), s_pEfrDataDlg, sizeof(EDITFINDREPLACE));  // remember options
 
@@ -6007,7 +6007,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
 
             if (IsMarkOccurrencesEnabled()) {
-                MarkAllOccurrences(50, true);
+                MarkAllOccurrences(_MQ_STD, true);
             } else {
                 EditClearAllOccurrenceMarkers(s_pEfrDataDlg->hwnd);
                 Globals.iMarkOccurrencesCount = 0;
@@ -6032,7 +6032,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
         }
 
-        KillTimer(hwnd, IDT_TIMER_MRKALL);
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
         DeleteObject(hBrushBlue);
@@ -6178,7 +6177,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
     case WM_COMMAND: {
         if (!s_pEfrDataDlg) {
-            return false;
+            return FALSE;
         }
 
         switch (LOWORD(wParam)) {
@@ -6317,7 +6316,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
             s_pEfrDataDlg->bStateChanged = false;
         }
-        return false;
+        break;
 
         case IDC_ALL_OCCURRENCES: {
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
@@ -6637,7 +6636,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             break;
 
         default:
-            return TRUE;
+            return FALSE;
         }
 
     } // WM_COMMAND:
