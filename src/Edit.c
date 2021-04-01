@@ -199,7 +199,7 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
     if (0 == cycles) {
         PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
     }
-    DL_SORT(MessageQueue, sortcmp); // next scheduled first
+    //~DL_SORT(MessageQueue, sortcmp); // next scheduled first
 }
 // ----------------------------------------------------------------------------
 
