@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2018-2018, Troy D. Hanson   https://troydhanson.github.com/uthash/
+Copyright (c) 2018-2021, Troy D. Hanson   http://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTSTACK_H
 #define UTSTACK_H
 
-#define UTSTACK_VERSION 2.1.0
+#define UTSTACK_VERSION 2.3.0
 
 /*
  * This file contains macros to manipulate a singly-linked list as a stack.

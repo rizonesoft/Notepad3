@@ -452,7 +452,15 @@ static int msgcmp(void* mqc1, void* mqc2)
     ) {
         return 0; // equal
     }
-    return (pMQC1->delay < pMQC2->delay) ? -1 : 1;
+    return 1;
+}
+
+static int sortcmp(void *mqc1, void *mqc2) {
+
+    const CmdMessageQueue_t *const pMQC1 = (CmdMessageQueue_t *)mqc1;
+    const CmdMessageQueue_t *const pMQC2 = (CmdMessageQueue_t *)mqc2;
+
+    return (pMQC1->delay - pMQC2->delay);
 }
 // ----------------------------------------------------------------------------
 
@@ -466,6 +474,7 @@ static int msgcmp(void* mqc1, void* mqc2)
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
     if (!pMsgQCmd) { return; }
+
     cycles = clampi(cycles, 0, _MQ_ms2cycl(60000));
 
     CmdMessageQueue_t* pmqc = NULL;
@@ -485,28 +494,21 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
             pmqc->delay = cycles;
         }
     }
-
     if (0 == cycles) {
         PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
     }
+    DL_SORT(MessageQueue, sortcmp); // next scheduled first
 }
 // ----------------------------------------------------------------------------
 
-/* Not used yet
-static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
+/* not used yet
+static void _MQ_DropAll()
 {
-  CmdMessageQueue_t* pmqc;
-
-  DL_FOREACH(MessageQueue, pmqc)
-  {
-    if ((pMsgQCmd->cmd == pmqc->cmd)
-      && (pMsgQCmd->hwnd == pmqc->hwnd)
-      && (pMsgQCmd->wparam == pmqc->wparam)
-      && (pMsgQCmd->lparam == pmqc->lparam))
+    CmdMessageQueue_t *pmqc = NULL;
+    DL_FOREACH(MessageQueue, pmqc)
     {
-      pmqc->delay = -1;
+        pmqc->delay = -1;
     }
-  }
 }
 */
 // ----------------------------------------------------------------------------
@@ -524,13 +526,12 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
 
     CmdMessageQueue_t* pmqc;
-
     DL_FOREACH(MessageQueue, pmqc) {
         if (pmqc->delay >= 0) {
             --(pmqc->delay);  // count down
         }
         if (pmqc->delay == 0) {
-            SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+            PostMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
         }
     }
 }

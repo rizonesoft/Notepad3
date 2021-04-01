@@ -158,7 +158,16 @@ static int msgcmp(void* mqc1, void* mqc2)
     }
     return 1;
 }
+
+static int sortcmp(void *mqc1, void *mqc2) {
+
+    const CmdMessageQueue_t *const pMQC1 = (CmdMessageQueue_t *)mqc1;
+    const CmdMessageQueue_t *const pMQC2 = (CmdMessageQueue_t *)mqc2;
+
+    return (pMQC1->delay - pMQC2->delay);
+}
 // ----------------------------------------------------------------------------
+
 
 #define _MQ_TIMER_CYCLE (USER_TIMER_MINIMUM << 1)
 #define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
@@ -167,6 +176,7 @@ static int msgcmp(void* mqc1, void* mqc2)
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
     if (!pMsgQCmd) { return; }
+
     cycles = clampi(cycles, 0, _MQ_ms2cycl(60000));
 
     CmdMessageQueue_t* pmqc = NULL;
@@ -189,27 +199,20 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
     if (0 == cycles) {
         PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
     }
+    DL_SORT(MessageQueue, sortcmp); // next scheduled first
 }
 // ----------------------------------------------------------------------------
 
-/* unused yet
-static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
-{
-  CmdMessageQueue_t* pmqc = NULL;
-
-  DL_FOREACH(MessageQueue, pmqc)
-  {
-    if ((pMsgQCmd->hwnd == pmqc->hwnd)
-      && (pMsgQCmd->cmd == pmqc->cmd)
-      && (pMsgQCmd->wparam == pmqc->wparam)
-      && (pMsgQCmd->lparam == pmqc->lparam)
-    ) {
-      pmqc->delay = -1;
+/* not used yet
+static void _MQ_DropAll() {
+    CmdMessageQueue_t *pmqc = NULL;
+    DL_FOREACH(MessageQueue, pmqc) {
+        pmqc->delay = -1;
     }
-  }
 }
-// ----------------------------------------------------------------------------
 */
+// ----------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------
 //
@@ -223,13 +226,12 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
 
     CmdMessageQueue_t *pmqc;
-
     DL_FOREACH(MessageQueue, pmqc) {
         if (pmqc->delay >= 0) {
             --(pmqc->delay);
         }
         if (pmqc->delay == 0) {
-            SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+            PostMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
         }
     }
 }
