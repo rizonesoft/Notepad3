@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2007-2018, Troy D. Hanson   https://troydhanson.github.com/uthash/
+Copyright (c) 2007-2021, Troy D. Hanson   http://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTLIST_H
 #define UTLIST_H
 
-#define UTLIST_VERSION 2.1.0
+#define UTLIST_VERSION 2.3.0
 
 #include <assert.h>
 
@@ -438,7 +438,7 @@ do {                                                                            
 #define LL_SEARCH2(head,out,elt,cmp,next)                                                      \
 do {                                                                                           \
     LL_FOREACH2(head,out,next) {                                                               \
-      if ((cmp(out,elt)) == 0) break;                                                          \
+      if ((cmp(out,elt))==0) break;                                                            \
     }                                                                                          \
 } while (0)
 

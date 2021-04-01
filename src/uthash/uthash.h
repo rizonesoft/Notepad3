@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2018, Troy D. Hanson     https://troydhanson.github.com/uthash/
+Copyright (c) 2003-2021, Troy D. Hanson     http://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -24,11 +24,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTHASH_H
 #define UTHASH_H
 
-#define UTHASH_VERSION 2.1.0
+#define UTHASH_VERSION 2.3.0
 
 #include <string.h>   /* memcmp, memset, strlen */
 #include <stddef.h>   /* ptrdiff_t */
 #include <stdlib.h>   /* exit */
+
+#if defined(HASH_DEFINE_OWN_STDINT) && HASH_DEFINE_OWN_STDINT
+/* This codepath is provided for backward compatibility, but I plan to remove it. */
+#warning "HASH_DEFINE_OWN_STDINT is deprecated; please use HASH_NO_STDINT instead"
+typedef unsigned int uint32_t;
+typedef unsigned char uint8_t;
+#elif defined(HASH_NO_STDINT) && HASH_NO_STDINT
+#else
+#include <stdint.h>   /* uint8_t, uint32_t */
+#endif
 
 /* These macros use decltype or the earlier __typeof GNU extension.
    As decltype is only available in newer compilers (VS2010 or gcc 4.3+
@@ -62,23 +72,6 @@ do {                                                                            
 } while (0)
 #endif
 
-/* a number of the hash function use uint32_t which isn't defined on Pre VS2010 */
-#if defined(_WIN32)
-#if defined(_MSC_VER) && _MSC_VER >= 1600
-#include <stdint.h>
-#elif defined(__WATCOMC__) || defined(__MINGW32__) || defined(__CYGWIN__)
-#include <stdint.h>
-#else
-typedef unsigned int uint32_t;
-typedef unsigned char uint8_t;
-#endif
-#elif defined(__GNUC__) && !defined(__VXWORKS__)
-#include <stdint.h>
-#else
-typedef unsigned int uint32_t;
-typedef unsigned char uint8_t;
-#endif
-
 #ifndef uthash_malloc
 #define uthash_malloc(sz) malloc(sz)      /* malloc fcn                      */
 #endif
@@ -92,15 +85,12 @@ typedef unsigned char uint8_t;
 #define uthash_strlen(s) strlen(s)
 #endif
 
-#ifdef uthash_memcmp
-/* This warning will not catch programs that define uthash_memcmp AFTER including uthash.h. */
-#warning "uthash_memcmp is deprecated; please use HASH_KEYCMP instead"
-#else
-#define uthash_memcmp(a,b,n) memcmp(a,b,n)
+#ifndef HASH_FUNCTION
+#define HASH_FUNCTION(keyptr,keylen,hashv) HASH_JEN(keyptr, keylen, hashv)
 #endif
 
 #ifndef HASH_KEYCMP
-#define HASH_KEYCMP(a,b,n) uthash_memcmp(a,b,n)
+#define HASH_KEYCMP(a,b,n) memcmp(a,b,n)
 #endif
 
 #ifndef uthash_noexpand_fyi
@@ -158,7 +148,7 @@ do {                                                                            
 
 #define HASH_VALUE(keyptr,keylen,hashv)                                          \
 do {                                                                             \
-  HASH_FCN(keyptr, keylen, hashv);                                               \
+  HASH_FUNCTION(keyptr, keylen, hashv);                                          \
 } while (0)
 
 #define HASH_FIND_BYHASHVALUE(hh,head,keyptr,keylen,hashval,out)                 \
@@ -408,7 +398,7 @@ do {                                                                            
 do {                                                                             \
   IF_HASH_NONFATAL_OOM( int _ha_oomed = 0; )                                     \
   (add)->hh.hashv = (hashval);                                                   \
-  (add)->hh.key = (char*) (keyptr);                                              \
+  (add)->hh.key = (const void*) (keyptr);                                        \
   (add)->hh.keylen = (unsigned) (keylen_in);                                     \
   if (!(head)) {                                                                 \
     (add)->hh.next = NULL;                                                       \
@@ -590,13 +580,6 @@ do {                                                                            
 #define HASH_EMIT_KEY(hh,head,keyptr,fieldlen)
 #endif
 
-/* default to Jenkin's hash unless overridden e.g. DHASH_FUNCTION=HASH_SAX */
-#ifdef HASH_FUNCTION
-#define HASH_FCN HASH_FUNCTION
-#else
-#define HASH_FCN HASH_JEN
-#endif
-
 /* The Bernstein hash function, used in Perl prior to v5.6. Note (x<<5+x)=x*33. */
 #define HASH_BER(key,keylen,hashv)                                               \
 do {                                                                             \
@@ -695,7 +678,8 @@ do {                                                                            
     case 4:  _hj_i += ( (unsigned)_hj_key[3] << 24 );  /* FALLTHROUGH */         \
     case 3:  _hj_i += ( (unsigned)_hj_key[2] << 16 );  /* FALLTHROUGH */         \
     case 2:  _hj_i += ( (unsigned)_hj_key[1] << 8 );   /* FALLTHROUGH */         \
-    case 1:  _hj_i += _hj_key[0];                                                \
+    case 1:  _hj_i += _hj_key[0];                      /* FALLTHROUGH */         \
+    default: ;                                                                   \
   }                                                                              \
   HASH_JEN_MIX(_hj_i, _hj_j, hashv);                                             \
 } while (0)
@@ -743,6 +727,8 @@ do {                                                                            
     case 1: hashv += *_sfh_key;                                                  \
             hashv ^= hashv << 10;                                                \
             hashv += hashv >> 1;                                                 \
+            break;                                                               \
+    default: ;                                                                   \
   }                                                                              \
                                                                                  \
   /* Force "avalanching" of final 127 bits */                                    \
@@ -850,12 +836,12 @@ do {                                                                            
   struct UT_hash_handle *_he_thh, *_he_hh_nxt;                                   \
   UT_hash_bucket *_he_new_buckets, *_he_newbkt;                                  \
   _he_new_buckets = (UT_hash_bucket*)uthash_malloc(                              \
-           2UL * (tbl)->num_buckets * sizeof(struct UT_hash_bucket));            \
+           sizeof(struct UT_hash_bucket) * (tbl)->num_buckets * 2U);             \
   if (!_he_new_buckets) {                                                        \
     HASH_RECORD_OOM(oomed);                                                      \
   } else {                                                                       \
     uthash_bzero(_he_new_buckets,                                                \
-        2UL * (tbl)->num_buckets * sizeof(struct UT_hash_bucket));               \
+        sizeof(struct UT_hash_bucket) * (tbl)->num_buckets * 2U);                \
     (tbl)->ideal_chain_maxlen =                                                  \
        ((tbl)->num_items >> ((tbl)->log2_num_buckets+1U)) +                      \
        ((((tbl)->num_items & (((tbl)->num_buckets*2U)-1U)) != 0U) ? 1U : 0U);    \
@@ -1142,7 +1128,7 @@ typedef struct UT_hash_handle {
    void *next;                       /* next element in app order      */
    struct UT_hash_handle *hh_prev;   /* previous hh in bucket order    */
    struct UT_hash_handle *hh_next;   /* next hh in bucket order        */
-   void *key;                        /* ptr to enclosing struct's key  */
+   const void *key;                  /* ptr to enclosing struct's key  */
    unsigned keylen;                  /* enclosing struct's key len     */
    unsigned hashv;                   /* result of hash-fcn(key)        */
 } UT_hash_handle;

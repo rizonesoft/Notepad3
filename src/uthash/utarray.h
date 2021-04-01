@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008-2018, Troy D. Hanson   https://troydhanson.github.com/uthash/
+Copyright (c) 2008-2021, Troy D. Hanson   http://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTARRAY_H
 #define UTARRAY_H
 
-#define UTARRAY_VERSION 2.1.0
+#define UTARRAY_VERSION 2.3.0
 
 #include <stddef.h>  /* size_t */
 #include <string.h>  /* memset, etc */
@@ -232,12 +232,13 @@ typedef struct {
 
 /* last we pre-define a few icd for common utarrays of ints and strings */
 static void utarray_str_cpy(void *dst, const void *src) {
-  char * const *_src = (char* const *)src, **_dst = (char**)dst;
-  *_dst = (*_src == NULL) ? NULL : _strdup(*_src);
+  char *const *srcc = (char *const *)src;
+  char **dstc = (char**)dst;
+  *dstc = (*srcc == NULL) ? NULL : _strdup(*srcc);
 }
 static void utarray_str_dtor(void *elt) {
   char **eltc = (char**)elt;
-  if (*eltc != NULL) { free(*eltc); }
+  if (*eltc != NULL) free(*eltc);
 }
 static const UT_icd ut_str_icd UTARRAY_UNUSED = {sizeof(char*),NULL,utarray_str_cpy,utarray_str_dtor};
 static const UT_icd ut_int_icd UTARRAY_UNUSED = {sizeof(int),NULL,NULL,NULL};
