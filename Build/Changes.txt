@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.331.(build_#) (2021-03-31)
+Current BETA/RC Version 5.21.402.(build_#) (2021-04-02)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.402.1]- ScintillaWin horizontal mouse-wheel support.
 [.331.2]- Provide Mono-Language IDs.
 [.331.1]- Mono-Language compiler switch for MiniPath.
 [.325.1]- Compiler switch to allow Mono-language binary (no MUI DLL loading).
@@ -73,7 +74,7 @@ CHANGES:
 [.301.1]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
 [.301.1]- Update grepWinNP3 (GRE) version 2.1.6.35 (2021-03.01).
 [.311.1]- Update Lexilla Library (LEX) version 5.0.0 (2021-03-11).
-[.311.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 (2021-03-03).
+[.402.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 RC1 (2021-03-31).
 [.311.1]- Update Scintilla Library (SCI) version 5.0.0 (2021-03-11).
 
 --------------------------------------------------------
