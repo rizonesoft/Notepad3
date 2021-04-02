@@ -73,6 +73,14 @@ enum BodyEmptyType {
   BODY_MAY_BE_EMPTY_REC = 3
 };
 
+/* bytes buffer */
+typedef struct _BBuf {
+  UChar* p;
+  unsigned int used;
+  unsigned int alloc;
+} BBuf;
+
+
 struct _Node;
 
 typedef struct {

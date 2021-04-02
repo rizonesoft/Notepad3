@@ -1,4 +1,4 @@
-Callouts API  Version 6.8.2 2018/06/08
+Callouts API  Version 6.9.7 2021/03/21
 
 #include <oniguruma.h>
 
@@ -273,47 +273,50 @@ Callouts API  Version 6.8.2 2018/06/08
   Returns the callout data value/type for a callout slot indicated by
   callout_num/slot.
 
-  normal return: ONIG_NORMAL
-              1: not yet set (type is ONIG_TYPE_VOID)
-            < 0: error code
+  ONIG_NORMAL:           normal return
+  ONIG_VALUE_IS_NOT_SET: value is not set / type is ONIG_TYPE_VOID
+  < 0: error code
 
 
 # int onig_get_callout_data_by_callout_args_self(OnigCalloutArgs* args, int slot, OnigType* type, OnigValue* val)
 
   Returns self callout data value/type.
 
-  normal return: ONIG_NORMAL
-              1: not yet set (type is ONIG_TYPE_VOID)
-            < 0: error code
+  ONIG_NORMAL:           normal return
+  ONIG_VALUE_IS_NOT_SET: value is not set / type is ONIG_TYPE_VOID
+  < 0: error code
 
 
 # int onig_set_callout_data_by_callout_args(OnigCalloutArgs* args, int callout_num, int slot, OnigType type, OnigValue* val)
 
   Set the callout data value/type for a callout slot indicated by callout_num/slot.
 
-  normal return: ONIG_NORMAL
-            < 0: error code
+  ONIG_NORMAL: normal return
+          < 0: error code
 
 
 # int onig_set_callout_data_by_callout_args_self(OnigCalloutArgs* args, int slot, OnigType type, OnigValue* val)
 
   Set self callout data value/type for a callout slot indicated by slot.
 
-  normal return: ONIG_NORMAL
-            < 0: error code
+  ONIG_NORMAL: normal return
+          < 0: error code
 
 
 # int onig_get_callout_data_by_callout_args_self_dont_clear_old(OnigCalloutArgs* args, int slot, OnigType* type, OnigValue* val)
 
   This function is almost same as onig_get_callout_data_by_callout_args_self().
-  But this function doesn't clear values which set in previous failed match process.
-  Other onig_get_callout_data_xxxx() functions clear all values which set
-  in previous failed match process.
+  But this function does not clear the value set in the collation position before the current position. (dont_clear_old)
+  The other onig_get_callout_data_xxxx() function clears the value set in the collation process of the previous position.
 
   For example, Builtin callout (*TOTAL_COUNT) is implemented by using this
   function for accumulate count of all of match processes in a search process.
   Builtin callout (*COUNT) returns count in last success match process only,
   because it doesn't use this function.
+
+  ONIG_NORMAL:           normal return
+  ONIG_VALUE_IS_NOT_SET: value is not set / type is ONIG_TYPE_VOID
+  < 0: error code
 
 
 (8) Callout data (used in applications)
@@ -323,34 +326,34 @@ Callouts API  Version 6.8.2 2018/06/08
   Returns the callout data value/type for a callout slot indicated by
   callout_num/slot.
 
-  normal return: ONIG_NORMAL
-              1: not yet set (type is ONIG_TYPE_VOID)
-            < 0: error code
+  ONIG_NORMAL:           normal return
+  ONIG_VALUE_IS_NOT_SET: value is not set / type is ONIG_TYPE_VOID
+  < 0: error code
 
 
 # int onig_get_callout_data_by_tag(OnigRegex reg, OnigMatchParam* mp, const OnigUChar* tag, const OnigUChar* tag_end, int slot, OnigType* type, OnigValue* val)
 
   Returns the callout data value/type for a callout slot indicated by tag/slot.
 
-  normal return: ONIG_NORMAL
-              1: not yet set (type is ONIG_TYPE_VOID)
-            < 0: error code
+  ONIG_NORMAL:           normal return
+  ONIG_VALUE_IS_NOT_SET: value is not set / type is ONIG_TYPE_VOID
+  < 0: error code
 
 
 # int onig_set_callout_data(OnigRegex reg, OnigMatchParam* mp, int callout_num, int slot, OnigType type, OnigValue* val)
 
   Set the callout data value/type for a callout slot indicated by callout_num/slot.
 
-  normal return: ONIG_NORMAL
-            < 0: error code
+  ONIG_NORMAL: normal return
+          < 0: error code
 
 
 # int onig_set_callout_data_by_tag(OnigRegex reg, OnigMatchParam* mp, const OnigUChar* tag, const OnigUChar* tag_end, int slot, OnigType type, OnigValue* val)
 
   Set the callout data value/type for a callout slot indicated by tag/slot.
 
-  normal return: ONIG_NORMAL
-            < 0: error code
+  ONIG_NORMAL: normal return
+          < 0: error code
 
 
 # int onig_get_callout_data_dont_clear_old(OnigRegex reg, OnigMatchParam* mp, int callout_num, int slot, OnigType* type, OnigValue* val)
@@ -358,6 +361,15 @@ Callouts API  Version 6.8.2 2018/06/08
   No needs to use this function.
   It will be abolished.
 
+
+# int onig_get_callout_data_by_tag_dont_clear_old(regex_t* reg, OnigMatchParam* mp, const UChar* tag, const UChar* tag_end, int slot, OnigType* type, OnigValue* val)
+
+  Returns the callout data value/type for a callout slot indicated by tag/slot.
+  This function does not clear the value set in the collation position before the current position. (dont_clear_old)
+
+  ONIG_NORMAL:           ????
+  ONIG_VALUE_IS_NOT_SET: ?????? / ??VOID
+  < 0: ??????
 
 
 (9) Miscellaneous functions

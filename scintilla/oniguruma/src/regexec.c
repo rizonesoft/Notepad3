@@ -61,6 +61,13 @@ const OnigUChar* const _CRLF = "\r\n\0";
   (MEM_STATUS_AT((reg)->push_mem_end, (idx)) != 0 ? \
    STACK_AT(mem_end_stk[idx].i)->u.mem.pstr : mem_end_stk[idx].s)
 
+#ifdef _MSC_VER
+#define DIST_CAST(d)   (size_t )(d)
+#else
+#define DIST_CAST(d)   (d)
+#endif
+
+
 static int forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start, UChar* range, UChar** low, UChar** high);
 
 static int
@@ -83,11 +90,12 @@ struct OnigMatchParamStruct {
   unsigned long   retry_limit_in_match;
   unsigned long   retry_limit_in_search;
 #endif
+
+  void*           callout_user_data; /* used in callback each match */
 #ifdef USE_CALLOUT
   OnigCalloutFunc progress_callout_of_contents;
   OnigCalloutFunc retraction_callout_of_contents;
   int             match_at_call_counter;
-  void*           callout_user_data;
   CalloutData*    callout_data;
   int             callout_data_alloc_num;
 #endif
@@ -150,12 +158,8 @@ onig_set_retraction_callout_of_match_param(OnigMatchParam* param, OnigCalloutFun
 extern int
 onig_set_callout_user_data_of_match_param(OnigMatchParam* param, void* user_data)
 {
-#ifdef USE_CALLOUT
   param->callout_user_data = user_data;
   return ONIG_NORMAL;
-#else
-  return ONIG_NO_SUPPORT_CONFIG;
-#endif
 }
 
 
@@ -1477,11 +1481,12 @@ onig_initialize_match_param(OnigMatchParam* mp)
   mp->retry_limit_in_search = RetryLimitInSearch;
 #endif
 
+  mp->callout_user_data = 0;
+
 #ifdef USE_CALLOUT
   mp->progress_callout_of_contents   = DefaultProgressCallout;
   mp->retraction_callout_of_contents = DefaultRetractionCallout;
   mp->match_at_call_counter  = 0;
-  mp->callout_user_data      = 0;
   mp->callout_data           = 0;
   mp->callout_data_alloc_num = 0;
 #endif
@@ -1557,13 +1562,26 @@ onig_get_callout_data_dont_clear_old(regex_t* reg, OnigMatchParam* mp,
   t = d->slot[slot].type;
   if (IS_NOT_NULL(type)) *type = t;
   if (IS_NOT_NULL(val))  *val  = d->slot[slot].val;
-  return (t == ONIG_TYPE_VOID ? 1 : ONIG_NORMAL);
+  return (t == ONIG_TYPE_VOID ? ONIG_VALUE_IS_NOT_SET : ONIG_NORMAL);
 }
 
 extern int
-onig_get_callout_data_by_callout_args_self_dont_clear_old(OnigCalloutArgs* args,
-                                                          int slot, OnigType* type,
-                                                          OnigValue* val)
+onig_get_callout_data_by_tag_dont_clear_old(regex_t* reg,
+  OnigMatchParam* mp, const UChar* tag, const UChar* tag_end, int slot,
+  OnigType* type, OnigValue* val)
+{
+  int num;
+
+  num = onig_get_callout_num_by_tag(reg, tag, tag_end);
+  if (num < 0)  return num;
+  if (num == 0) return ONIGERR_INVALID_CALLOUT_TAG_NAME;
+
+  return onig_get_callout_data_dont_clear_old(reg, mp, num, slot, type, val);
+}
+
+extern int
+onig_get_callout_data_by_callout_args_self_dont_clear_old(
+  OnigCalloutArgs* args, int slot, OnigType* type, OnigValue* val)
 {
   return onig_get_callout_data_dont_clear_old(args->regex, args->msa->mp,
                                               args->num, slot, type, val);
@@ -1588,7 +1606,7 @@ onig_get_callout_data(regex_t* reg, OnigMatchParam* mp,
   t = d->slot[slot].type;
   if (IS_NOT_NULL(type)) *type = t;
   if (IS_NOT_NULL(val))  *val  = d->slot[slot].val;
-  return (t == ONIG_TYPE_VOID ? 1 : ONIG_NORMAL);
+  return (t == ONIG_TYPE_VOID ? ONIG_VALUE_IS_NOT_SET : ONIG_NORMAL);
 }
 
 extern int
@@ -4495,7 +4513,7 @@ regset_search_body_position_lead(OnigRegSet* set,
     sr[i].state = SRS_DEAD;
     if (reg->optimize != OPTIMIZE_NONE) {
       if (reg->dist_max != INFINITE_LEN) {
-        if (end - range > reg->dist_max)
+        if (DIST_CAST(end - range) > reg->dist_max)
           sch_range = (UChar* )range + reg->dist_max;
         else
           sch_range = (UChar* )end;
@@ -5158,7 +5176,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
 
   p = start;
   if (reg->dist_min != 0) {
-    if (end - p <= reg->dist_min)
+    if (DIST_CAST(end - p) <= reg->dist_min)
       return 0; /* fail */
 
     if (ONIGENC_IS_SINGLEBYTE(reg->enc)) {
@@ -5191,7 +5209,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
   }
 
   if (p && p < range) {
-    if (p - start < reg->dist_min) {
+    if (DIST_CAST(p - start) < reg->dist_min) {
     retry_gate:
       pprev = p;
       p += enclen(reg->enc, p);
@@ -5243,7 +5261,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
     }
     else {
       if (reg->dist_max != INFINITE_LEN) {
-        if (p - str < reg->dist_max) {
+        if (DIST_CAST(p - str) < reg->dist_max) {
           *low = (UChar* )str;
         }
         else {
@@ -5254,7 +5272,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
         }
       }
       /* no needs to adjust *high, *high is used as range check only */
-      if (p - str < reg->dist_min)
+      if (DIST_CAST(p - str) < reg->dist_min)
         *high = (UChar* )str;
       else
         *high = p - reg->dist_min;
@@ -5347,13 +5365,13 @@ backward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
     }
 
     if (reg->dist_max != INFINITE_LEN) {
-      if (p - str < reg->dist_max)
+      if (DIST_CAST(p - str) < reg->dist_max)
         *low = (UChar* )str;
       else
         *low = p - reg->dist_max;
 
       if (reg->dist_min != 0) {
-        if (p - str < reg->dist_min)
+        if (DIST_CAST(p - str) < reg->dist_min)
           *high = (UChar* )str;
         else
           *high = p - reg->dist_min;
@@ -5497,13 +5515,13 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
 
       if (range > start) {
         if (reg->anc_dist_max != INFINITE_LEN &&
-            min_semi_end - start > reg->anc_dist_max) {
+            DIST_CAST(min_semi_end - start) > reg->anc_dist_max) {
           start = min_semi_end - reg->anc_dist_max;
           if (start < end)
             start = onigenc_get_right_adjust_char_head(reg->enc, str, start);
         }
-        if (max_semi_end - (range - 1) < reg->anc_dist_min) {
-          if (max_semi_end - str + 1 < reg->anc_dist_min)
+        if (DIST_CAST(max_semi_end - (range - 1)) < reg->anc_dist_min) {
+          if (DIST_CAST(max_semi_end - str + 1) < reg->anc_dist_min)
             goto mismatch_no_msa;
           else
             range = max_semi_end - reg->anc_dist_min + 1;
@@ -5515,11 +5533,11 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
       }
       else {
         if (reg->anc_dist_max != INFINITE_LEN &&
-            min_semi_end - range > reg->anc_dist_max) {
+            DIST_CAST(min_semi_end - range) > reg->anc_dist_max) {
           range = min_semi_end - reg->anc_dist_max;
         }
-        if (max_semi_end - start < reg->anc_dist_min) {
-          if (max_semi_end - str < reg->anc_dist_min)
+        if (DIST_CAST(max_semi_end - start) < reg->anc_dist_min) {
+          if (DIST_CAST(max_semi_end - str) < reg->anc_dist_min)
             goto mismatch_no_msa;
           else {
             start = max_semi_end - reg->anc_dist_min;
@@ -5590,7 +5608,7 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
         if (reg->dist_max == INFINITE_LEN)
           sch_range = (UChar* )end;
         else {
-          if ((end - range) < reg->dist_max)
+          if (DIST_CAST(end - range) < reg->dist_max)
             sch_range = (UChar* )end;
           else {
             sch_range = (UChar* )range + reg->dist_max;
@@ -5666,14 +5684,14 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
       else
         adjrange = (UChar* )end;
 
-      if (end - range > reg->dist_min)
+      if (DIST_CAST(end - range) > reg->dist_min)
         min_range = range + reg->dist_min;
       else
         min_range = end;
 
       if (reg->dist_max != INFINITE_LEN) {
         do {
-          if (end - s > reg->dist_max)
+          if (DIST_CAST(end - s) > reg->dist_max)
             sch_start = s + reg->dist_max;
           else {
             sch_start = onigenc_get_prev_char_head(reg->enc, str, end);
@@ -6664,7 +6682,7 @@ onig_builtin_monitor(OnigCalloutArgs* args, void* user_data)
 
     tag_len = tag_end - tag_start;
     if (tag_len >= sizeof(buf)) tag_len = sizeof(buf) - 1;
-    for (i = 0; i < tag_len; i++) buf[i] = tag_start[i];
+    for (i = 0; i < (int )tag_len; i++) buf[i] = tag_start[i];
     buf[tag_len] = '\0';
   }
 

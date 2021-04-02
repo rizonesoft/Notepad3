@@ -68,7 +68,7 @@ m4/*.m4
 /sample/bug_fix
 /sample/regset
 /sample/scan
-/sample/each_match
+/sample/callback_each_match
 /sample/log*
 
 /harnesses/utf16*.dict

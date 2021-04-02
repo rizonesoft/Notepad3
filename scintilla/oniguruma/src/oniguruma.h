@@ -36,9 +36,9 @@ extern "C" {
 #define ONIGURUMA
 #define ONIGURUMA_VERSION_MAJOR   6
 #define ONIGURUMA_VERSION_MINOR   9
-#define ONIGURUMA_VERSION_TEENY   6
+#define ONIGURUMA_VERSION_TEENY   7
 
-#define ONIGURUMA_VERSION_INT     60906
+#define ONIGURUMA_VERSION_INT     60907
 
 #ifndef P_
 #if defined(__STDC__) || defined(_WIN32)
@@ -569,8 +569,10 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 
 /* error codes */
 #define ONIG_IS_PATTERN_ERROR(ecode)   ((ecode) <= -100 && (ecode) > -1000)
+
 /* normal return */
 #define ONIG_NORMAL                                            0
+#define ONIG_VALUE_IS_NOT_SET                                  1
 #define ONIG_MISMATCH                                         -1
 #define ONIG_NO_SUPPORT_CONFIG                                -2
 #define ONIG_ABORT                                            -3
@@ -1012,6 +1014,8 @@ ONIG_EXTERN
 int onig_get_callout_data_by_tag P_((OnigRegex reg, OnigMatchParam* mp, const OnigUChar* tag, const OnigUChar* tag_end, int slot, OnigType* type, OnigValue* val));
 ONIG_EXTERN
 int onig_set_callout_data_by_tag P_((OnigRegex reg, OnigMatchParam* mp, const OnigUChar* tag, const OnigUChar* tag_end, int slot, OnigType type, OnigValue* val));
+ONIG_EXTERN
+int onig_get_callout_data_by_tag_dont_clear_old P_((regex_t* reg, OnigMatchParam* mp, const UChar* tag, const UChar* tag_end, int slot, OnigType* type, OnigValue* val));
 
 /* used in callout functions */
 ONIG_EXTERN

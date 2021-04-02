@@ -2,8 +2,9 @@
 
 product_name = oniguruma
 
-TEST_DIR = $(ONIG_DIR)/../test
-WIN_DIR  = $(ONIG_DIR)/../windows
+TEST_DIR   = $(ONIG_DIR)/../test
+SAMPLE_DIR = $(ONIG_DIR)/../sample
+WIN_DIR    = $(ONIG_DIR)/../windows
 
 CPPFLAGS =
 CFLAGS = -O2 -nologo /W3
@@ -14,6 +15,8 @@ ARLIB_FLAGS = -nologo
 ARDLL = cl
 ARDLL_FLAGS = -nologo -LD $(LINKFLAGS) -dll
 LINKFLAGS = -link -incremental:no -pdb:none
+
+SAMPLE_CFLAGS = $(CFLAGS) /I$(ONIG_DIR)
 
 INSTALL = install -c
 CP      = copy
@@ -89,11 +92,6 @@ makeargs = $(MFLAGS) CPPFLAGS='$(CPPFLAGS)' CFLAGS='$(CFLAGS)' CC='$(CC)'
 # targets
 default: all
 
-setup:
-	$(CP) ..\win32\config.h config.h
-	$(CP) ..\win32\testc.c  testc.c
-
-
 all: $(libname) $(dllname)
 
 $(libname): $(libobjs) $(encobjs)
@@ -155,7 +153,7 @@ $(BUILD_DIR)/unicode_fold1_key.obj: $(ONIG_DIR)/unicode_fold1_key.c $(ONIG_DIR)/
 $(BUILD_DIR)/unicode_fold2_key.obj: $(ONIG_DIR)/unicode_fold2_key.c $(ONIG_DIR)/regenc.h $(BUILD_DIR)/config.h
 $(BUILD_DIR)/unicode_fold3_key.obj: $(ONIG_DIR)/unicode_fold3_key.c $(ONIG_DIR)/regenc.h $(BUILD_DIR)/config.h
 
-all-test: test_syntax test_regset test_utf8 testc testp testu
+all-test: test_syntax test_regset test_utf8 test_options test_back testc testp testu
 
 test_syntax: $(TEST_DIR)/test_syntax.c $(libname)
 	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern /utf-8 $(TEST_DIR)/test_syntax.c $(libname)
@@ -165,6 +163,12 @@ test_regset: $(TEST_DIR)/test_regset.c $(libname)
 
 test_utf8: $(TEST_DIR)/test_utf8.c $(libname)
 	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern /utf-8 $(TEST_DIR)/test_utf8.c $(libname)
+
+test_options: $(TEST_DIR)/test_options.c $(libname)
+	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern /utf-8 $(TEST_DIR)/test_options.c $(libname)
+
+test_back: $(TEST_DIR)/test_back.c $(libname)
+	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern /utf-8 $(TEST_DIR)/test_back.c $(libname)
 
 testc: $(WIN_DIR)/testc.c $(libname)
 	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern $(WIN_DIR)/testc.c $(libname)
@@ -176,14 +180,17 @@ testu: $(TEST_DIR)/testu.c $(libname)
 	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern $(TEST_DIR)/testu.c $(libname)
 
 clean:
-	del $(BUILD_DIR)\*.obj $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.exp $(BUILD_DIR)\*.dll $(BUILD_DIR)\test_regset.exe $(BUILD_DIR)\test_syntax.exe $(BUILD_DIR)\test_utf8.exe $(BUILD_DIR)\testp.exe $(BUILD_DIR)\testc.exe $(BUILD_DIR)\testu.exe
+	del $(BUILD_DIR)\*.obj $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.exp $(BUILD_DIR)\*.dll $(BUILD_DIR)\test_regset.exe $(BUILD_DIR)\test_syntax.exe $(BUILD_DIR)\test_utf8.exe $(BUILD_DIR)\test_options.exe $(BUILD_DIR)\test_back.exe $(BUILD_DIR)\testp.exe $(BUILD_DIR)\testc.exe $(BUILD_DIR)\testu.exe
 
 
 samples: all
-	$(CC) $(CFLAGS) -I. /Fe:simple  $(ONIG_DIR)\sample\simple.c  $(dlllib)
-	$(CC) $(CFLAGS) -I. /Fe:posix   $(ONIG_DIR)\sample\posix.c   $(dlllib)
-	$(CC) $(CFLAGS) -I. /Fe:names   $(ONIG_DIR)\sample\names.c   $(dlllib)
-	$(CC) $(CFLAGS) -I. /Fe:listcap $(ONIG_DIR)\sample\listcap.c $(dlllib)
-	$(CC) $(CFLAGS) -I. /Fe:sql     $(ONIG_DIR)\sample\sql.c     $(dlllib)
-	$(CC) $(CFLAGS) -I. /Fe:encode  $(ONIG_DIR)\sample\encode.c  $(dlllib)
-	$(CC) $(CFLAGS) -I. /Fe:syntax  $(ONIG_DIR)\sample\syntax.c  $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:simple  $(SAMPLE_DIR)\simple.c  $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:posix   $(SAMPLE_DIR)\posix.c   $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:names   $(SAMPLE_DIR)\names.c   $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:listcap $(SAMPLE_DIR)\listcap.c $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:sql     $(SAMPLE_DIR)\sql.c     $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:encode  $(SAMPLE_DIR)\encode.c  $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:syntax  $(SAMPLE_DIR)\syntax.c  $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:count   $(SAMPLE_DIR)\count.c   $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:regset  $(SAMPLE_DIR)\regset.c  $(dlllib)
+	$(CC) $(SAMPLE_CFLAGS) /Fe:callback_each_match $(SAMPLE_DIR)\callback_each_match.c  $(dlllib)

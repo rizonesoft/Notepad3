@@ -1,5 +1,21 @@
 History
 
+2021/04/XX: Version 6.9.7
+2021/03/31: Release Candidate 1 for Version 6.9.7
+
+2021/03/23: fix Issue 32340, 32345, 32355 in oss-fuzz
+2021/03/12: fix invalid optimization info for if-pattern (?(cond)...)
+2021/02/21: NEW API: ONIG_OPTION_CALLBACK_EACH_MATCH
+2021/02/02: fix Issue 30144 in oss-fuzz: Timeout
+2021/01/18: NEW API: ONIG_SYNTAX_PYTHON
+2020/12/20: fix Issue 28795 in oss-fuzz: Timeout
+2020/12/13: fix Issue 28554 in oss-fuzz: Timeout, check very inefficient patterns at tune_tree(NODE_CALL)
+2020/12/04: fix Issue 28259 in oss-fuzz: Timeout
+2020/12/03: fix invalid reduction of nested quantifiers (?:<expr>+?)* and (?:<expr>+?)+
+2020/12/01: fix Issue 28104 in oss-fuzz: Timeout
+2020/11/28: NEW API: ONIG_OPTION_IGNORECASE_IS_ASCII
+2020/11/07: fix Issue 27015 in oss-fuzz: Timeout
+
 2020/11/05: Version 6.9.6
 
 2020/11/01: fix Issue 26798 in oss-fuzz: Timeout
