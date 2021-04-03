@@ -3810,7 +3810,7 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
         // in any case, use the search function that uses a file iterator
         // instead of a string iterator to reduce the memory consumption
 
-        if ((type != CTextFile::Binary) || (searchFlags.bIncludeBinary) || searchFlags.bSearchAlways /* @@@|| m_bForceBinary */)
+        if ((type != CTextFile::Binary) || searchFlags.bIncludeBinary || searchFlags.bSearchAlways || searchFlags.bForceBinary)
         {
             sinfoPtr->encoding = type;
             std::string filePath = CUnicodeUtils::StdGetANSI(sinfoPtr->filePath);
@@ -3856,7 +3856,7 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
                         bFound = true;
                     }
                 }
-                if (type == CTextFile::Binary /* @@@ && !m_bReplace */)
+                if ((type == CTextFile::Binary) && !searchFlags.bReplace)
                 {
                     boost::regex expressionUtf16le = boost::regex(CUnicodeUtils::StdGetUTF8(searchStringUtf16le), ft);
                     boost::spirit::classic::file_iterator<> start(filePath.c_str());
