@@ -6,8 +6,8 @@
 // Copyright 2019 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#ifndef LEXILLACOLLECTION_H
-#define LEXILLACOLLECTION_H
+#ifndef LEXILLAACCESS_H
+#define LEXILLAACCESS_H
 
 namespace Lexilla {
  
@@ -26,6 +26,7 @@ bool Load(std::string_view sharedLibraryPaths);
 Scintilla::ILexer5 *MakeLexer(std::string_view languageName);
 
 std::vector<std::string> Lexers();
+[[deprecated]] std::string NameFromID(int identifier);
 std::vector<std::string> LibraryProperties();
 void SetProperty(const char *key, const char *value);
 

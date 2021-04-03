@@ -94,6 +94,7 @@
     <code>void <span class="name">GetLexerName</span>(unsigned int index, char *name, int buflength)</code><br />
     <code>LexerFactoryFunction <span class="name">GetLexerFactory</span>(unsigned int index)</code><br />
     <code>ILexer5 *<span class="name">CreateLexer</span>(const char *name)</code><br />
+    <code>const char *<span class="name">LexerNameFromID</span>(int identifier)</code><br />
     <code>void <span class="name">SetLibraryProperty</span>(const char *key, const char *value)</code><br />
     <code>const char *<span class="name">GetLibraryPropertyNames</span>()</code>
     </p>
@@ -116,6 +117,12 @@
     <p><span class="name">CreateLexer</span> is the main call that will create a lexer for a particular language. The returned lexer can then be
     set as the current lexer in Scintilla by calling
     <a class="seealso" href="ScintillaDoc.html#SCI_SETILEXER">SCI_SETILEXER</a>.</p>
+  
+    <p><span class="name">LexerNameFromID</span> is an optional function that returns the name for a lexer identifier.
+    <code>LexerNameFromID(SCLEX_CPP) -> "cpp"</code>.
+    This is a temporary affordance to make it easier to convert applications to using Lexilla.
+    Applications should move to using lexer names instead of IDs.
+    This function is deprecated, showing warnings with some compilers, and will be removed in a future version of Lexilla.</p>
   
     <p><span class="name">SetLibraryProperty</span> and <span class="name">GetLibraryPropertyNames</span>
     are optional functions that can be

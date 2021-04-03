@@ -429,23 +429,6 @@ LexProps.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexPython.o: \
-	../lexers/LexPython.cxx \
-	../../scintilla/include/ILexer.h \
-	../../scintilla/include/Sci_Position.h \
-	../../scintilla/include/Scintilla.h \
-	../include/SciLexer.h \
-	../lexlib/StringCopy.h \
-	../lexlib/WordList.h \
-	../lexlib/LexAccessor.h \
-	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h \
-	../lexlib/CharacterSet.h \
-	../lexlib/CharacterCategory.h \
-	../lexlib/LexerModule.h \
-	../lexlib/OptionSet.h \
-	../lexlib/SubStyles.h \
-	../lexlib/DefaultLexer.h
 LexR.o: \
 	../lexers/LexR.cxx \
 	../../scintilla/include/ILexer.h \
@@ -615,6 +598,18 @@ LexDart.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h \
+	../lexers_x/StringUtils.h \
+	../lexers_x/LexerUtils.h
+LexerUtils.o: \
+	../lexers_x/LexerUtils.cxx \
+	../../scintilla/include/Scintilla.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/ILexer.h \
+	../lexlib/LexAccessor.h \
+	../lexers_x/CharSetX.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/StyleContext.h \
+	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
 LexJSON.o: \
 	../lexers_x/LexJSON.cxx \
@@ -649,7 +644,25 @@ LexKotlin.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h \
+	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
+LexPython.o: \
+	../lexers_x/LexPython.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/StringCopy.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/CharacterCategory.h \
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/SubStyles.h \
+	../lexlib/DefaultLexer.h
 LexTOML.o: \
 	../lexers_x/LexTOML.cxx \
 	../../scintilla/include/ILexer.h \

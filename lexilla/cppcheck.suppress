@@ -23,6 +23,7 @@ passedByValue
 // Suppress most lexer warnings since the lexers are maintained by others
 redundantCondition:lexilla/lexers/LexA68k.cxx
 constParameter:lexilla/lexers/LexAbaqus.cxx
+knownConditionTrueFalse:lexilla/lexers/LexAPDL.cxx
 knownConditionTrueFalse:lexilla/lexers/LexAU3.cxx
 shadowVariable:lexilla/lexers/LexAU3.cxx
 constParameter:lexilla/lexers/LexBaan.cxx
@@ -31,6 +32,7 @@ constParameter:lexilla/lexers/LexBash.cxx
 uninitMemberVar:lexilla/lexers/LexBash.cxx
 variableScope:lexilla/lexers/LexBash.cxx
 variableScope:lexilla/lexers/LexBatch.cxx
+knownConditionTrueFalse:lexilla/lexers/LexBibTeX.cxx
 variableScope:lexilla/lexers/LexCmake.cxx
 knownConditionTrueFalse:lexilla/lexers/LexCmake.cxx
 constParameter:lexilla/lexers/LexCLW.cxx
@@ -40,6 +42,7 @@ variableScope:lexilla/lexers/LexCSS.cxx
 variableScope:lexilla/lexers/LexDataflex.cxx
 knownConditionTrueFalse:lexilla/lexers/LexECL.cxx
 variableScope:lexilla/lexers/LexErlang.cxx
+knownConditionTrueFalse:lexilla/lexers/LexErlang.cxx
 knownConditionTrueFalse:lexilla/lexers/LexEScript.cxx
 constParameter:lexilla/lexers/LexFortran.cxx
 redundantCondition:lexilla/lexers/LexFSharp.cxx
@@ -66,10 +69,10 @@ variableScope:lexilla/lexers/LexNimrod.cxx
 variableScope:lexilla/lexers/LexNsis.cxx
 knownConditionTrueFalse:lexilla/lexers/LexNsis.cxx
 variableScope:lexilla/lexers/LexOpal.cxx
-knownConditionTrueFalse:lexilla/lexers/LexOpal.cxx
 constParameter:lexilla/lexers/LexOScript.cxx
 variableScope:lexilla/lexers/LexPB.cxx
 constParameter:lexilla/lexers/LexPerl.cxx
+knownConditionTrueFalse:lexilla/lexers/LexPerl.cxx
 constParameter:lexilla/lexers/LexPython.cxx
 shadowVariable:lexilla/lexers/LexPowerPro.cxx
 knownConditionTrueFalse:lexilla/lexers/LexPowerPro.cxx
@@ -100,6 +103,7 @@ unreadVariable:lexilla/lexers/LexVHDL.cxx
 variableScope:lexilla/lexers/LexVHDL.cxx
 unreadVariable:lexilla/lexers/LexVisualProlog.cxx
 constParameter:lexilla/lexers/LexYAML.cxx
+knownConditionTrueFalse:lexilla/lexers/LexYAML.cxx
 
 // These are due to Accessor::IndentAmount not declaring the callback as taking a const.
 // Changing this could cause problems for downstream projects.
@@ -142,6 +146,3 @@ redundantAssignment:lexilla/lexers/LexCPP.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:lexilla/test/unit/catch.hpp
-// For now, suppress all test source files as, since Catch 2, cppcheck shows many warnings showing
-// it doesn't understand the REQUIRE macro
-*:lexilla/test/unit/*.cxx

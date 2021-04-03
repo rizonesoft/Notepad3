@@ -61,9 +61,18 @@ std::wstring WideStringFromUTF8(std::string_view sv) {
 
 #endif
 
+// Turn off deprecation checks as LexillaAccess deprecates its wrapper over
+// the deprecated LexerNameFromID. Thus use within LexillaAccess is intentional.
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#else
+#pragma warning(disable: 4996)
+#endif
+
 std::string directoryLoadDefault;
 std::string lastLoaded;
 std::vector<Lexilla::CreateLexerFn> fnCLs;
+std::vector<Lexilla::LexerNameFromIDFn> fnLNFIs;
 std::vector<Lexilla::GetLibraryPropertyNamesFn> fnGLPNs;
 std::vector<std::string> lexers;
 std::vector<std::string> libraryProperties;
@@ -109,6 +118,7 @@ bool Lexilla::Load(std::string_view sharedLibraryPaths) {
 	lexers.clear();
 
 	fnCLs.clear();
+	fnLNFIs.clear();
 	fnGLPNs.clear();
 	fnSLPs.clear();
 	while (!paths.empty()) {
@@ -156,6 +166,11 @@ bool Lexilla::Load(std::string_view sharedLibraryPaths) {
 				FindSymbol(lexillaDL, LEXILLA_CREATELEXER));
 			if (fnCL) {
 				fnCLs.push_back(fnCL);
+			}
+			LexerNameFromIDFn fnLNFI = FunctionPointer<LexerNameFromIDFn>(
+				FindSymbol(lexillaDL, LEXILLA_LEXERNAMEFROMID));
+			if (fnLNFI) {
+				fnLNFIs.push_back(fnLNFI);
 			}
 			GetLibraryPropertyNamesFn fnGLPN = FunctionPointer<GetLibraryPropertyNamesFn>(
 				FindSymbol(lexillaDL, LEXILLA_GETLIBRARYPROPERTYNAMES));
@@ -216,6 +231,16 @@ Scintilla::ILexer5 *Lexilla::MakeLexer(std::string_view languageName) {
 
 std::vector<std::string> Lexilla::Lexers() {
 	return lexers;
+}
+
+std::string Lexilla::NameFromID(int identifier) {
+	for (Lexilla::LexerNameFromIDFn fnLNFI : fnLNFIs) {
+		const char *name = fnLNFI(identifier);
+		if (name) {
+			return name;
+		}
+	}
+	return std::string();
 }
 
 std::vector<std::string> Lexilla::LibraryProperties() {
