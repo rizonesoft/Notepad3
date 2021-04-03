@@ -1470,118 +1470,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                                 COUNTOF(s_pLexCurrent->Styles[STY_CTRL_CHR].szValue));
 
     } else if (s_pLexCurrent->lexerID != SCLEX_NULL) {
-        // -----------------------------------------------
-        int i = 1; // don't re-apply lexer's default style
-        // -----------------------------------------------
-        while (s_pLexCurrent->Styles[i].iStyle != -1) {
-            // apply MULTI_STYLE() MACRO
-            for (int j = 0; j < 4 && (s_pLexCurrent->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
-                Style_SetStyles(hwnd, s_pLexCurrent->Styles[i].iStyle8[j], s_pLexCurrent->Styles[i].szValue, false);
-            }
 
-            if (s_pLexCurrent->lexerID == SCLEX_HTML && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
-                int iRelated[] = { SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING, SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER,
-                                   SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE, SCE_HPHP_HSTRING_VARIABLE, SCE_HPHP_COMPLEX_VARIABLE
-                                 };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd,iRelated[j],s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if (s_pLexCurrent->lexerID == SCLEX_HTML && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJ_DEFAULT) {
-                int iRelated[] = { SCE_HJ_COMMENT, SCE_HJ_COMMENTLINE, SCE_HJ_COMMENTDOC, SCE_HJ_KEYWORD, SCE_HJ_WORD, SCE_HJ_DOUBLESTRING,
-                                   SCE_HJ_SINGLESTRING, SCE_HJ_STRINGEOL, SCE_HJ_REGEX, SCE_HJ_NUMBER, SCE_HJ_SYMBOLS
-                                 };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd,iRelated[j],s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if (s_pLexCurrent->lexerID == SCLEX_HTML && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJA_DEFAULT) {
-                int iRelated[] = { SCE_HJA_COMMENT, SCE_HJA_COMMENTLINE, SCE_HJA_COMMENTDOC, SCE_HJA_KEYWORD, SCE_HJA_WORD, SCE_HJA_DOUBLESTRING,
-                                   SCE_HJA_SINGLESTRING, SCE_HJA_STRINGEOL, SCE_HJA_REGEX, SCE_HJA_NUMBER, SCE_HJA_SYMBOLS
-                                 };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd,iRelated[j],s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if (s_pLexCurrent->lexerID == SCLEX_HTML && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_HB_DEFAULT) {
-                int iRelated[] = { SCE_HB_COMMENTLINE, SCE_HB_WORD, SCE_HB_IDENTIFIER, SCE_HB_STRING, SCE_HB_STRINGEOL, SCE_HB_NUMBER };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd,iRelated[j],s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if (s_pLexCurrent->lexerID == SCLEX_HTML && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_HBA_DEFAULT) {
-                int iRelated[] = { SCE_HBA_COMMENTLINE, SCE_HBA_WORD, SCE_HBA_IDENTIFIER, SCE_HBA_STRING, SCE_HBA_STRINGEOL, SCE_HBA_NUMBER };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd,iRelated[j],s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if ((s_pLexCurrent->lexerID == SCLEX_HTML || s_pLexCurrent->lexerID == SCLEX_XML) && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_SGML_DEFAULT) {
-                int iRelated[] = { SCE_H_SGML_COMMAND, SCE_H_SGML_1ST_PARAM, SCE_H_SGML_DOUBLESTRING, SCE_H_SGML_SIMPLESTRING, SCE_H_SGML_ERROR,
-                                   SCE_H_SGML_SPECIAL, SCE_H_SGML_ENTITY, SCE_H_SGML_COMMENT, SCE_H_SGML_1ST_PARAM_COMMENT, SCE_H_SGML_BLOCK_DEFAULT
-                                 };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd,iRelated[j],s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if ((s_pLexCurrent->lexerID == SCLEX_HTML || s_pLexCurrent->lexerID == SCLEX_XML) && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
-                int iRelated[] = { SCE_HP_START, SCE_HP_DEFAULT, SCE_HP_COMMENTLINE, SCE_HP_NUMBER, SCE_HP_STRING,
-                                   SCE_HP_CHARACTER, SCE_HP_WORD, SCE_HP_TRIPLE, SCE_HP_TRIPLEDOUBLE, SCE_HP_CLASSNAME,
-                                   SCE_HP_DEFNAME, SCE_HP_OPERATOR, SCE_HP_IDENTIFIER, SCE_HPA_START, SCE_HPA_DEFAULT,
-                                   SCE_HPA_COMMENTLINE, SCE_HPA_NUMBER, SCE_HPA_STRING, SCE_HPA_CHARACTER, SCE_HPA_WORD,
-                                   SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE, SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR,
-                                   SCE_HPA_IDENTIFIER
-                                 };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd,iRelated[j],s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if (s_pLexCurrent->lexerID == SCLEX_XML && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
-                int iRelated[] = { SCE_H_SCRIPT, SCE_H_ASP, SCE_H_ASPAT, SCE_H_QUESTION,
-                                   SCE_HPHP_DEFAULT, SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING,
-                                   SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER, SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE,
-                                   SCE_HPHP_HSTRING_VARIABLE, SCE_HPHP_COMPLEX_VARIABLE, SCE_HJ_START, SCE_HJ_DEFAULT,
-                                   SCE_HJ_COMMENT, SCE_HJ_COMMENTLINE, SCE_HJ_COMMENTDOC, SCE_HJ_KEYWORD, SCE_HJ_WORD,
-                                   SCE_HJ_DOUBLESTRING, SCE_HJ_SINGLESTRING, SCE_HJ_STRINGEOL, SCE_HJ_REGEX, SCE_HJ_NUMBER,
-                                   SCE_HJ_SYMBOLS, SCE_HJA_START, SCE_HJA_DEFAULT, SCE_HJA_COMMENT, SCE_HJA_COMMENTLINE,
-                                   SCE_HJA_COMMENTDOC, SCE_HJA_KEYWORD, SCE_HJA_WORD, SCE_HJA_DOUBLESTRING, SCE_HJA_SINGLESTRING,
-                                   SCE_HJA_STRINGEOL, SCE_HJA_REGEX, SCE_HJA_NUMBER, SCE_HJA_SYMBOLS, SCE_HB_START, SCE_HB_DEFAULT,
-                                   SCE_HB_COMMENTLINE, SCE_HB_WORD, SCE_HB_IDENTIFIER, SCE_HB_STRING, SCE_HB_STRINGEOL,
-                                   SCE_HB_NUMBER, SCE_HBA_START, SCE_HBA_DEFAULT, SCE_HBA_COMMENTLINE, SCE_HBA_WORD,
-                                   SCE_HBA_IDENTIFIER, SCE_HBA_STRING, SCE_HBA_STRINGEOL, SCE_HBA_NUMBER, SCE_HP_START,
-                                   SCE_HP_DEFAULT, SCE_HP_COMMENTLINE, SCE_HP_NUMBER, SCE_HP_STRING, SCE_HP_CHARACTER, SCE_HP_WORD,
-                                   SCE_HP_TRIPLE, SCE_HP_TRIPLEDOUBLE, SCE_HP_CLASSNAME, SCE_HP_DEFNAME, SCE_HP_OPERATOR,
-                                   SCE_HP_IDENTIFIER, SCE_HPA_START, SCE_HPA_DEFAULT, SCE_HPA_COMMENTLINE, SCE_HPA_NUMBER,
-                                   SCE_HPA_STRING, SCE_HPA_CHARACTER, SCE_HPA_WORD, SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE,
-                                   SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR, SCE_HPA_IDENTIFIER
-                                 };
-
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd, iRelated[j], s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if (s_pLexCurrent->lexerID == SCLEX_CPP && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_C_COMMENT) {
-                int iRelated[] = { SCE_C_COMMENTLINE, SCE_C_COMMENTDOC, SCE_C_COMMENTLINEDOC, SCE_C_COMMENTDOCKEYWORD, SCE_C_COMMENTDOCKEYWORDERROR };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd, iRelated[j], s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-
-            if (s_pLexCurrent->lexerID == SCLEX_SQL && s_pLexCurrent->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
-                int iRelated[] = { SCE_SQL_COMMENTLINE, SCE_SQL_COMMENTDOC, SCE_SQL_COMMENTLINEDOC, SCE_SQL_COMMENTDOCKEYWORD, SCE_SQL_COMMENTDOCKEYWORDERROR };
-                for (int j = 0; j < COUNTOF(iRelated); j++) {
-                    Style_SetStyles(hwnd, iRelated[j], s_pLexCurrent->Styles[i].szValue, false);
-                }
-            }
-            ++i;
-        }
+        Style_FillRelatedStyles(hwnd, s_pLexCurrent);
     }
 
     // Lexer reserved indicator styles
@@ -1634,6 +1524,123 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     UpdateStatusbar(true);
 }
 
+
+
+//=============================================================================
+//
+//  Style_FillRelatedStyles()
+//
+void Style_FillRelatedStyles(HWND hwnd, const PEDITLEXER pLexer) {
+
+    // -----------------------------------------------
+    int i = 1; // don't re-apply lexer's default style
+    // -----------------------------------------------
+    while (pLexer->Styles[i].iStyle != -1) {
+
+        // apply MULTI_STYLE() MACRO
+        for (int j = 0; j < 4 && (pLexer->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
+            Style_SetStyles(hwnd, pLexer->Styles[i].iStyle8[j], pLexer->Styles[i].szValue, false);
+        }
+
+
+        if (pLexer->lexerID == SCLEX_HTML && pLexer->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
+            int iRelated[] = { SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING, SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER,
+                SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE, SCE_HPHP_HSTRING_VARIABLE, SCE_HPHP_COMPLEX_VARIABLE };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if (pLexer->lexerID == SCLEX_HTML && pLexer->Styles[i].iStyle8[0] == SCE_HJ_DEFAULT) {
+            int iRelated[] = { SCE_HJ_COMMENT, SCE_HJ_COMMENTLINE, SCE_HJ_COMMENTDOC, SCE_HJ_KEYWORD, SCE_HJ_WORD, SCE_HJ_DOUBLESTRING,
+                SCE_HJ_SINGLESTRING, SCE_HJ_STRINGEOL, SCE_HJ_REGEX, SCE_HJ_NUMBER, SCE_HJ_SYMBOLS };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if (pLexer->lexerID == SCLEX_HTML && pLexer->Styles[i].iStyle8[0] == SCE_HJA_DEFAULT) {
+            int iRelated[] = { SCE_HJA_COMMENT, SCE_HJA_COMMENTLINE, SCE_HJA_COMMENTDOC, SCE_HJA_KEYWORD, SCE_HJA_WORD, SCE_HJA_DOUBLESTRING,
+                SCE_HJA_SINGLESTRING, SCE_HJA_STRINGEOL, SCE_HJA_REGEX, SCE_HJA_NUMBER, SCE_HJA_SYMBOLS };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if (pLexer->lexerID == SCLEX_HTML && pLexer->Styles[i].iStyle8[0] == SCE_HB_DEFAULT) {
+            int iRelated[] = { SCE_HB_COMMENTLINE, SCE_HB_WORD, SCE_HB_IDENTIFIER, SCE_HB_STRING, SCE_HB_STRINGEOL, SCE_HB_NUMBER };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if (pLexer->lexerID == SCLEX_HTML && pLexer->Styles[i].iStyle8[0] == SCE_HBA_DEFAULT) {
+            int iRelated[] = { SCE_HBA_COMMENTLINE, SCE_HBA_WORD, SCE_HBA_IDENTIFIER, SCE_HBA_STRING, SCE_HBA_STRINGEOL, SCE_HBA_NUMBER };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if ((pLexer->lexerID == SCLEX_HTML || pLexer->lexerID == SCLEX_XML) && pLexer->Styles[i].iStyle8[0] == SCE_H_SGML_DEFAULT) {
+            int iRelated[] = { SCE_H_SGML_COMMAND, SCE_H_SGML_1ST_PARAM, SCE_H_SGML_DOUBLESTRING, SCE_H_SGML_SIMPLESTRING, SCE_H_SGML_ERROR,
+                SCE_H_SGML_SPECIAL, SCE_H_SGML_ENTITY, SCE_H_SGML_COMMENT, SCE_H_SGML_1ST_PARAM_COMMENT, SCE_H_SGML_BLOCK_DEFAULT };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if ((pLexer->lexerID == SCLEX_HTML || pLexer->lexerID == SCLEX_XML) && pLexer->Styles[i].iStyle8[0] == SCE_H_CDATA) {
+            int iRelated[] = { SCE_HP_START, SCE_HP_DEFAULT, SCE_HP_COMMENTLINE, SCE_HP_NUMBER, SCE_HP_STRING,
+                SCE_HP_CHARACTER, SCE_HP_WORD, SCE_HP_TRIPLE, SCE_HP_TRIPLEDOUBLE, SCE_HP_CLASSNAME,
+                SCE_HP_DEFNAME, SCE_HP_OPERATOR, SCE_HP_IDENTIFIER, SCE_HPA_START, SCE_HPA_DEFAULT,
+                SCE_HPA_COMMENTLINE, SCE_HPA_NUMBER, SCE_HPA_STRING, SCE_HPA_CHARACTER, SCE_HPA_WORD,
+                SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE, SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR,
+                SCE_HPA_IDENTIFIER };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if (pLexer->lexerID == SCLEX_XML && pLexer->Styles[i].iStyle8[0] == SCE_H_CDATA) {
+            int iRelated[] = { SCE_H_SCRIPT, SCE_H_ASP, SCE_H_ASPAT, SCE_H_QUESTION,
+                SCE_HPHP_DEFAULT, SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING,
+                SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER, SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE,
+                SCE_HPHP_HSTRING_VARIABLE, SCE_HPHP_COMPLEX_VARIABLE, SCE_HJ_START, SCE_HJ_DEFAULT,
+                SCE_HJ_COMMENT, SCE_HJ_COMMENTLINE, SCE_HJ_COMMENTDOC, SCE_HJ_KEYWORD, SCE_HJ_WORD,
+                SCE_HJ_DOUBLESTRING, SCE_HJ_SINGLESTRING, SCE_HJ_STRINGEOL, SCE_HJ_REGEX, SCE_HJ_NUMBER,
+                SCE_HJ_SYMBOLS, SCE_HJA_START, SCE_HJA_DEFAULT, SCE_HJA_COMMENT, SCE_HJA_COMMENTLINE,
+                SCE_HJA_COMMENTDOC, SCE_HJA_KEYWORD, SCE_HJA_WORD, SCE_HJA_DOUBLESTRING, SCE_HJA_SINGLESTRING,
+                SCE_HJA_STRINGEOL, SCE_HJA_REGEX, SCE_HJA_NUMBER, SCE_HJA_SYMBOLS, SCE_HB_START, SCE_HB_DEFAULT,
+                SCE_HB_COMMENTLINE, SCE_HB_WORD, SCE_HB_IDENTIFIER, SCE_HB_STRING, SCE_HB_STRINGEOL,
+                SCE_HB_NUMBER, SCE_HBA_START, SCE_HBA_DEFAULT, SCE_HBA_COMMENTLINE, SCE_HBA_WORD,
+                SCE_HBA_IDENTIFIER, SCE_HBA_STRING, SCE_HBA_STRINGEOL, SCE_HBA_NUMBER, SCE_HP_START,
+                SCE_HP_DEFAULT, SCE_HP_COMMENTLINE, SCE_HP_NUMBER, SCE_HP_STRING, SCE_HP_CHARACTER, SCE_HP_WORD,
+                SCE_HP_TRIPLE, SCE_HP_TRIPLEDOUBLE, SCE_HP_CLASSNAME, SCE_HP_DEFNAME, SCE_HP_OPERATOR,
+                SCE_HP_IDENTIFIER, SCE_HPA_START, SCE_HPA_DEFAULT, SCE_HPA_COMMENTLINE, SCE_HPA_NUMBER,
+                SCE_HPA_STRING, SCE_HPA_CHARACTER, SCE_HPA_WORD, SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE,
+                SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR, SCE_HPA_IDENTIFIER };
+
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if (pLexer->lexerID == SCLEX_CPP && pLexer->Styles[i].iStyle8[0] == SCE_C_STRING) {
+            int iRelated[] = { SCE_C_CHARACTER, SCE_C_STRINGEOL, SCE_C_VERBATIM, SCE_C_STRINGRAW, SCE_C_HASHQUOTEDSTRING };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+
+        if (pLexer->lexerID == SCLEX_SQL && pLexer->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
+            int iRelated[] = { SCE_SQL_COMMENTLINE, SCE_SQL_COMMENTDOC, SCE_SQL_COMMENTLINEDOC, SCE_SQL_COMMENTDOCKEYWORD, SCE_SQL_COMMENTDOCKEYWORDERROR };
+            for (int j = 0; j < COUNTOF(iRelated); j++) {
+                Style_SetStyles(hwnd, iRelated[j], pLexer->Styles[i].szValue, false);
+            }
+        }
+        ++i;
+    }
+}
 
 //=============================================================================
 //

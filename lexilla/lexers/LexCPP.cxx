@@ -1030,6 +1030,10 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 						styleBeforeDCKeyword = SCE_C_COMMENTDOC;
 						sc.SetState(SCE_C_COMMENTDOCKEYWORD|activitySet);
 					}
+				} else if ((sc.ch == '<' && sc.chNext != '/')
+							|| (sc.ch == '/' && sc.chPrev == '<')) { // XML comment style
+					styleBeforeDCKeyword = SCE_C_COMMENTDOC;
+					sc.ForwardSetState(SCE_C_COMMENTDOCKEYWORD | activitySet);
 				}
 				break;
 			case SCE_C_COMMENTLINE:
@@ -1049,6 +1053,10 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 						styleBeforeDCKeyword = SCE_C_COMMENTLINEDOC;
 						sc.SetState(SCE_C_COMMENTDOCKEYWORD|activitySet);
 					}
+				} else if ((sc.ch == '<' && sc.chNext != '/')
+							|| (sc.ch == '/' && sc.chPrev == '<')) { // XML comment style
+					styleBeforeDCKeyword = SCE_C_COMMENTLINEDOC;
+					sc.ForwardSetState(SCE_C_COMMENTDOCKEYWORD | activitySet);
 				}
 				break;
 			case SCE_C_COMMENTDOCKEYWORD:
@@ -1069,7 +1077,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					}
 					if (!(IsASpace(sc.ch) || (sc.ch == 0))) {
 						sc.ChangeState(SCE_C_COMMENTDOCKEYWORDERROR|activitySet);
-					} else if (!keywords3.InList(s + 1)) {
+					} else if (!keywords3.InList(s + 1) && !keywords3.InList(s)) {
 						int subStyleCDKW = classifierDocKeyWords.ValueFor(s+1);
 						if (subStyleCDKW >= 0) {
 							sc.ChangeState(subStyleCDKW|activitySet);
@@ -1078,6 +1086,23 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 						}
 					}
 					sc.SetState(styleBeforeDCKeyword|activitySet);
+					seenDocKeyBrace = false;
+				} else if (sc.ch == '>') {
+					char s[100];
+					if (caseSensitive) {
+						sc.GetCurrent(s, sizeof(s));
+					} else {
+						sc.GetCurrentLowered(s, sizeof(s));
+					}
+					if (!keywords3.InList(s)) {
+						int subStyleCDKW = classifierDocKeyWords.ValueFor(s + 1);
+						if (subStyleCDKW >= 0) {
+							sc.ChangeState(subStyleCDKW | activitySet);
+						} else {
+							sc.ChangeState(SCE_C_COMMENTDOCKEYWORDERROR | activitySet);
+						}
+					}
+					sc.SetState(styleBeforeDCKeyword | activitySet);
 					seenDocKeyBrace = false;
 				}
 				break;

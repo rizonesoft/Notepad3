@@ -187,7 +187,7 @@ namespace Scintilla {
             else if (ch <= 32 && len >= 3 && len < 16 && AnyOf(sc.ch, 'T', 'F', 'N', 'X')) {
                 char s[8];
                 sc.GetCurrent(s, sizeof(s));
-                marker = StrEqualsAny(s, "TODO", "FIXME", "NOTE", "XXX", "TBD")
+                marker = StrEqualsAny(s, "BUG", "FIXME", "HACK", "NOTE", "TBD", "TODO", "XXX")
                     || StrStartsWith(s, "NOLINT"); // clang-tidy: NOLINT, NOLINTNEXTLINE
             }
 

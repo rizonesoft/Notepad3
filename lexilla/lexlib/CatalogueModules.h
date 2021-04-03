@@ -39,6 +39,10 @@ public:
 		lexerCatalogue.push_back(plm);
 	}
 
+	void AddLexerModules(std::initializer_list<LexerModule *> modules) {
+		lexerCatalogue.insert(lexerCatalogue.end(), modules);
+	}
+
 	unsigned int Count() const noexcept {
 		return static_cast<unsigned int>(lexerCatalogue.size());
 	}

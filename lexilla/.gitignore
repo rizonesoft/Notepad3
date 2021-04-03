@@ -58,6 +58,7 @@ cocoa/ScintillaTest/build
 macosx/SciTest/build
 *.cppcheck
 cov-int
+*.tgz
 .vs
 meson-private
 meson-logs
