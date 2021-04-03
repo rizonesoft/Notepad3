@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2014, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2014, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -36,28 +36,28 @@ CDownloadFile::~CDownloadFile(void)
 
 bool CDownloadFile::DownloadFile(const std::wstring& url, const std::wstring& dest) const
 {
-    wchar_t        hostname[INTERNET_MAX_HOST_NAME_LENGTH] = {0};
-    wchar_t        urlpath[INTERNET_MAX_PATH_LENGTH]       = {0};
+    wchar_t        hostName[INTERNET_MAX_HOST_NAME_LENGTH] = {0};
+    wchar_t        urlPath[INTERNET_MAX_PATH_LENGTH]       = {0};
     URL_COMPONENTS urlComponents                           = {0};
     urlComponents.dwStructSize                             = sizeof(urlComponents);
-    urlComponents.lpszHostName                             = hostname;
+    urlComponents.lpszHostName                             = hostName;
     urlComponents.dwHostNameLength                         = INTERNET_MAX_HOST_NAME_LENGTH;
-    urlComponents.lpszUrlPath                              = urlpath;
+    urlComponents.lpszUrlPath                              = urlPath;
     urlComponents.dwUrlPathLength                          = INTERNET_MAX_PATH_LENGTH;
-    if (!InternetCrackUrl(url.c_str(), (DWORD)url.size(), 0, &urlComponents))
+    if (!InternetCrackUrl(url.c_str(), static_cast<DWORD>(url.size()), 0, &urlComponents))
         return GetLastError() == 0;
 
     DeleteUrlCacheEntry(url.c_str());
 
     bool      isHttps        = urlComponents.nScheme == INTERNET_SCHEME_HTTPS;
-    HINTERNET hConnectHandle = InternetConnect(hOpenHandle, hostname, urlComponents.nPort, nullptr, nullptr, isHttps ? INTERNET_SCHEME_HTTP : urlComponents.nScheme, 0, 0);
+    HINTERNET hConnectHandle = InternetConnect(hOpenHandle, hostName, urlComponents.nPort, nullptr, nullptr, isHttps ? INTERNET_SCHEME_HTTP : urlComponents.nScheme, 0, 0);
     if (!hConnectHandle)
     {
         DWORD err = GetLastError();
         CTraceToOutputDebugString::Instance()(TEXT(__FUNCTION__) L": Download of %s failed on InternetConnect: %d\n", url.c_str(), err);
         return err == 0;
     }
-    HINTERNET hResourceHandle = HttpOpenRequest(hConnectHandle, nullptr, urlpath, nullptr, nullptr, nullptr, INTERNET_FLAG_KEEP_CONNECTION | (isHttps ? INTERNET_FLAG_SECURE : 0), 0);
+    HINTERNET hResourceHandle = HttpOpenRequest(hConnectHandle, nullptr, urlPath, nullptr, nullptr, nullptr, INTERNET_FLAG_KEEP_CONNECTION | (isHttps ? INTERNET_FLAG_SECURE : 0), 0);
     if (!hResourceHandle)
     {
         DWORD err = GetLastError();
@@ -68,17 +68,17 @@ bool CDownloadFile::DownloadFile(const std::wstring& url, const std::wstring& de
 
     {
         DWORD dwError         = 0;
-        bool  httpsendrequest = false;
+        bool  httpSendRequest = false;
         do
         {
-            httpsendrequest = !!HttpSendRequest(hResourceHandle, nullptr, 0, nullptr, 0);
+            httpSendRequest = !!HttpSendRequest(hResourceHandle, nullptr, 0, nullptr, 0);
             dwError         = InternetErrorDlg(nullptr, hResourceHandle, ERROR_SUCCESS, FLAGS_ERROR_UI_FILTER_FOR_ERRORS | FLAGS_ERROR_UI_FLAGS_CHANGE_OPTIONS | FLAGS_ERROR_UI_FLAGS_GENERATE_DATA, nullptr);
         } while (dwError == ERROR_INTERNET_FORCE_RETRY);
 
-        if (!httpsendrequest)
+        if (!httpSendRequest)
         {
             DWORD err = GetLastError();
-            CTraceToOutputDebugString::Instance()(TEXT(__FUNCTION__) L": Download of %s failed: %d, %d\n", url.c_str(), httpsendrequest, err);
+            CTraceToOutputDebugString::Instance()(TEXT(__FUNCTION__) L": Download of %s failed: %d, %d\n", url.c_str(), httpSendRequest, err);
             InternetCloseHandle(hResourceHandle);
             InternetCloseHandle(hConnectHandle);
             return err == 0;
@@ -88,12 +88,12 @@ bool CDownloadFile::DownloadFile(const std::wstring& url, const std::wstring& de
     DWORD contentLength = 0;
     {
         DWORD length = sizeof(contentLength);
-        HttpQueryInfo(hResourceHandle, HTTP_QUERY_CONTENT_LENGTH | HTTP_QUERY_FLAG_NUMBER, (LPVOID)&contentLength, &length, nullptr);
+        HttpQueryInfo(hResourceHandle, HTTP_QUERY_CONTENT_LENGTH | HTTP_QUERY_FLAG_NUMBER, static_cast<LPVOID>(&contentLength), &length, nullptr);
     }
     {
         DWORD statusCode = 0;
         DWORD length     = sizeof(statusCode);
-        if (!HttpQueryInfo(hResourceHandle, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, (LPVOID)&statusCode, &length, nullptr) || statusCode != 200)
+        if (!HttpQueryInfo(hResourceHandle, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, static_cast<LPVOID>(&statusCode), &length, nullptr) || statusCode != 200)
         {
             CTraceToOutputDebugString::Instance()(TEXT(__FUNCTION__) L": Download of %s returned %d\n", url.c_str(), statusCode);
             InternetCloseHandle(hResourceHandle);
@@ -128,8 +128,8 @@ bool CDownloadFile::DownloadFile(const std::wstring& url, const std::wstring& de
         }
 
         DWORD downloaded; // size of the downloaded data
-        auto  Data = std::make_unique<wchar_t[]>(size + 1);
-        if (!InternetReadFile(hResourceHandle, (LPVOID)Data.get(), size, &downloaded))
+        auto  data = std::make_unique<wchar_t[]>(size + 1);
+        if (!InternetReadFile(hResourceHandle, static_cast<LPVOID>(data.get()), size, &downloaded))
         {
             DWORD err = GetLastError();
             CTraceToOutputDebugString::Instance()(TEXT(__FUNCTION__) L": Download of %s failed on InternetReadFile: %d\n", url.c_str(), err);
@@ -143,9 +143,9 @@ bool CDownloadFile::DownloadFile(const std::wstring& url, const std::wstring& de
             break;
         }
 
-        Data[downloaded] = '\0';
+        data[downloaded] = '\0';
         DWORD dwWritten  = 0;
-        WriteFile(hDestFile, Data.get(), downloaded, &dwWritten, nullptr);
+        WriteFile(hDestFile, data.get(), downloaded, &dwWritten, nullptr);
 
         downloadedSum += downloaded;
 

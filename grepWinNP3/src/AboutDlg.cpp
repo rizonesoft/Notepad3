@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2013, 2018, 2020 - Stefan Kueng
+// Copyright (C) 2007-2013, 2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@ CAboutDlg::CAboutDlg(HWND hParent)
 {
 }
 
-CAboutDlg::~CAboutDlg(void)
+CAboutDlg::~CAboutDlg()
 {
 }
 
@@ -97,23 +97,22 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
         {
             switch (wParam)
             {
-            case IDC_WEBLINK:
-                switch (((LPNMHDR)lParam)->code)
-                {
-                case NM_CLICK:
-                case NM_RETURN:
-                {
-                    PNMLINK pNMLink = (PNMLINK)lParam;
-                    LITEM   item = pNMLink->item;
-                    if (item.iLink == 0)
+                case IDC_WEBLINK:
+                    switch (reinterpret_cast<LPNMHDR>(lParam)->code)
                     {
-                        ShellExecute(*this, L"open", item.szUrl, nullptr, nullptr, SW_SHOW);
+                        case NM_CLICK:
+                        case NM_RETURN:
+                        {
+                            PNMLINK pNMLink = reinterpret_cast<PNMLINK>(lParam);
+                            LITEM   item    = pNMLink->item;
+                            if (item.iLink == 0)
+                            {
+                                ShellExecute(*this, L"open", item.szUrl, nullptr, nullptr, SW_SHOW);
+                            }
+                            break;
+                        }
                     }
                     break;
-                }
-                }
-                break;
-
             }
         }
         break;

@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,8 +22,7 @@
 #include <string>
 #include <vector>
 #include <ShlDisp.h>
-#include <ShlGuid.h>
-#include <ShObjIdl.h >
+#include <shobjidl.h>
 
 #include "RegHistory.h"
 
@@ -35,24 +34,17 @@ class CAutoCompleteEnum : public IEnumString
 public:
     CAutoCompleteEnum(const std::vector<std::wstring*>& vec);
     CAutoCompleteEnum(const std::vector<std::wstring>& vec);
-    ~CAutoCompleteEnum() {}
+    virtual ~CAutoCompleteEnum() {}
     //IUnknown members
-    STDMETHOD(QueryInterface)
-    (REFIID, void**);
-    STDMETHOD_(ULONG, AddRef)
-    (void);
-    STDMETHOD_(ULONG, Release)
-    (void);
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID, void**) override;
+    ULONG STDMETHODCALLTYPE   AddRef() override;
+    ULONG STDMETHODCALLTYPE   Release() override;
 
     //IEnumString members
-    STDMETHOD(Next)
-    (ULONG, LPOLESTR*, ULONG*);
-    STDMETHOD(Skip)
-    (ULONG);
-    STDMETHOD(Reset)
-    (void);
-    STDMETHOD(Clone)
-    (IEnumString**);
+    HRESULT STDMETHODCALLTYPE Next(ULONG, LPOLESTR*, ULONG*) override;
+    HRESULT STDMETHODCALLTYPE Skip(ULONG) override;
+    HRESULT STDMETHODCALLTYPE Reset() override;
+    HRESULT STDMETHODCALLTYPE Clone(IEnumString**) override;
 
     void Init(const std::vector<std::wstring*>& vec);
     void Init(const std::vector<std::wstring>& vec);
@@ -66,15 +58,16 @@ private:
 class CAutoComplete : public CRegHistory
 {
 public:
-    CAutoComplete(CSimpleIni* pIni = NULL);
-    ~CAutoComplete(void);
+    CAutoComplete(CSimpleIni* pIni = nullptr);
+    ~CAutoComplete();
 
     bool Init(HWND hEdit);
-    bool Enable(bool bEnable);
+    bool Enable(bool bEnable) const;
+    // ReSharper disable once CppHidingFunction
     bool AddEntry(LPCWSTR szText);
 
     bool  RemoveSelected();
-    void  SetOptions(DWORD dwFlags);
+    void  SetOptions(DWORD dwFlags) const;
     DWORD GetOptions() const;
 
 private:

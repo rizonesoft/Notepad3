@@ -61,9 +61,9 @@ bool CReaderWriterLockNonReentrance::_ReaderWait(DWORD dwTimeout)
     bool blCanRead;
 
     ++m_iNumOfReaderWaiting;
-    if (NULL == m_hSafeToReadEvent)
+    if (nullptr == m_hSafeToReadEvent)
     {
-        m_hSafeToReadEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+        m_hSafeToReadEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
     }
 
     if (INFINITE == dwTimeout) // INFINITE is a special value
@@ -129,7 +129,7 @@ bool CReaderWriterLockNonReentrance::_ReaderWait(DWORD dwTimeout)
     if (0 == --m_iNumOfReaderWaiting)
     {
         CloseHandle(m_hSafeToReadEvent);
-        m_hSafeToReadEvent = NULL;
+        m_hSafeToReadEvent = nullptr;
     }
 
     return blCanRead;
@@ -137,11 +137,11 @@ bool CReaderWriterLockNonReentrance::_ReaderWait(DWORD dwTimeout)
 
 void CReaderWriterLockNonReentrance::_ReaderRelease()
 {
-    INT _iNumOfReaderEntered = --m_iNumOfReaderEntered;
-    _ASSERT(0 <= _iNumOfReaderEntered);
+    INT iNumOfReaderEntered = --m_iNumOfReaderEntered;
+    _ASSERT(0 <= iNumOfReaderEntered);
 
-    if ((0 == _iNumOfReaderEntered) &&
-        (NULL != m_hSafeToWriteEvent))
+    if ((0 == iNumOfReaderEntered) &&
+        (nullptr != m_hSafeToWriteEvent))
     {
         SetEvent(m_hSafeToWriteEvent);
     }
@@ -153,15 +153,15 @@ bool CReaderWriterLockNonReentrance::_WriterWaitAndLeaveCSIfSuccess(DWORD dwTime
     _ASSERT(0 != dwTimeout);
 
     // Increase Writer-counter & reset Reader-event if necessary
-    INT _iNumOfWriter = ++m_iNumOfWriter;
-    if ((1 == _iNumOfWriter) && (NULL != m_hSafeToReadEvent))
+    INT iNumOfWriter = ++m_iNumOfWriter;
+    if ((1 == iNumOfWriter) && (nullptr != m_hSafeToReadEvent))
     {
         ResetEvent(m_hSafeToReadEvent);
     }
 
-    if (NULL == m_hSafeToWriteEvent)
+    if (nullptr == m_hSafeToWriteEvent)
     {
-        m_hSafeToWriteEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+        m_hSafeToWriteEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     }
     LeaveCS();
 
@@ -173,7 +173,7 @@ bool CReaderWriterLockNonReentrance::_WriterWaitAndLeaveCSIfSuccess(DWORD dwTime
         if (0 == --m_iNumOfWriter)
         {
             CloseHandle(m_hSafeToWriteEvent);
-            m_hSafeToWriteEvent = NULL;
+            m_hSafeToWriteEvent = nullptr;
 
             if (0 == m_iNumOfReaderEntered)
             {
@@ -243,10 +243,10 @@ void CReaderWriterLockNonReentrance::_WriterRelease(bool blDowngrade)
 
     if (0 == --m_iNumOfWriter)
     {
-        if (NULL != m_hSafeToWriteEvent)
+        if (nullptr != m_hSafeToWriteEvent)
         {
             CloseHandle(m_hSafeToWriteEvent);
-            m_hSafeToWriteEvent = NULL;
+            m_hSafeToWriteEvent = nullptr;
         }
 
         if (m_hSafeToReadEvent)
@@ -568,12 +568,12 @@ void CReaderWriterLock::GetCurrentThreadStatus(DWORD* lpdwReaderLockCounter,
 {
     const DWORD dwThreadState = GetCurrentThreadStatus();
 
-    if (NULL != lpdwReaderLockCounter)
+    if (nullptr != lpdwReaderLockCounter)
     {
         *lpdwReaderLockCounter = (dwThreadState & READER_RECURRENCE_MASK);
     }
 
-    if (NULL != lpdwWriterLockCounter)
+    if (nullptr != lpdwWriterLockCounter)
     {
         *lpdwWriterLockCounter = (dwThreadState / WRITER_RECURRENCE_UNIT);
     }

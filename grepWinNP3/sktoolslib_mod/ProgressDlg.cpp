@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -46,10 +46,8 @@ bool CProgressDlg::EnsureValid()
 {
     if (!m_bValid)
     {
-        HRESULT hr;
-
-        hr = CoCreateInstance(CLSID_ProgressDialog, nullptr, CLSCTX_INPROC_SERVER,
-                              IID_IProgressDialog, (void**)&m_pIDlg);
+        HRESULT hr = CoCreateInstance(CLSID_ProgressDialog, nullptr, CLSCTX_INPROC_SERVER,
+                                      IID_IProgressDialog, reinterpret_cast<void**>(&m_pIDlg));
 
         if (SUCCEEDED(hr))
             m_bValid = true; //instance successfully created
@@ -57,7 +55,7 @@ bool CProgressDlg::EnsureValid()
     return m_bValid;
 }
 
-void CProgressDlg::SetTitle(LPCWSTR szTitle)
+void CProgressDlg::SetTitle(LPCWSTR szTitle) const
 {
     if (m_bValid)
     {
@@ -65,7 +63,7 @@ void CProgressDlg::SetTitle(LPCWSTR szTitle)
     }
 }
 
-void CProgressDlg::SetLine(DWORD dwLine, LPCWSTR szText, bool bCompactPath /* = false */)
+void CProgressDlg::SetLine(DWORD dwLine, LPCWSTR szText, bool bCompactPath /* = false */) const
 {
     if (m_bValid)
     {
@@ -80,7 +78,7 @@ void CProgressDlg::SetCancelMsg(UINT idMessage)
 }
 #endif // _MFC_VER
 
-void CProgressDlg::SetCancelMsg(LPCWSTR szMessage)
+void CProgressDlg::SetCancelMsg(LPCWSTR szMessage) const
 {
     if (m_bValid)
     {
@@ -88,7 +86,7 @@ void CProgressDlg::SetCancelMsg(LPCWSTR szMessage)
     }
 }
 
-void CProgressDlg::SetAnimation(HINSTANCE hinst, UINT uRsrcID)
+void CProgressDlg::SetAnimation(HINSTANCE hinst, UINT uRsrcID) const
 {
     if (m_bValid)
     {
@@ -167,11 +165,10 @@ HRESULT CProgressDlg::ShowModal(HWND hWndParent)
     EnsureValid();
     if (m_bValid)
     {
-        HRESULT hr;
-        hr = m_pIDlg->StartProgressDialog(hWndParent,
-                                          nullptr,
-                                          m_dwDlgFlags | PROGDLG_MODAL,
-                                          nullptr);
+        HRESULT hr = m_pIDlg->StartProgressDialog(hWndParent,
+                                                  nullptr,
+                                                  m_dwDlgFlags | PROGDLG_MODAL,
+                                                  nullptr);
 
         if (SUCCEEDED(hr))
         {
@@ -199,7 +196,7 @@ HRESULT CProgressDlg::ShowModeless(HWND hWndParent)
             // if its parent is blocked.
             // This process finds the hwnd for the progress window and gives it a kick...
             IOleWindow* pOleWindow;
-            HRESULT     hr2 = m_pIDlg->QueryInterface(IID_IOleWindow, (LPVOID*)&pOleWindow);
+            HRESULT     hr2 = m_pIDlg->QueryInterface(IID_IOleWindow, reinterpret_cast<LPVOID*>(&pOleWindow));
             if (SUCCEEDED(hr2))
             {
                 hr2 = pOleWindow->GetWindow(&m_hWndProgDlg);
@@ -214,7 +211,7 @@ HRESULT CProgressDlg::ShowModeless(HWND hWndParent)
     return hr;
 }
 
-void CProgressDlg::SetProgress(DWORD dwProgress, DWORD dwMax)
+void CProgressDlg::SetProgress(DWORD dwProgress, DWORD dwMax) const
 {
     if (m_bValid)
     {
@@ -222,7 +219,7 @@ void CProgressDlg::SetProgress(DWORD dwProgress, DWORD dwMax)
     }
 }
 
-void CProgressDlg::SetProgress64(ULONGLONG u64Progress, ULONGLONG u64ProgressMax)
+void CProgressDlg::SetProgress64(ULONGLONG u64Progress, ULONGLONG u64ProgressMax) const
 {
     if (m_bValid)
     {
@@ -230,7 +227,7 @@ void CProgressDlg::SetProgress64(ULONGLONG u64Progress, ULONGLONG u64ProgressMax
     }
 }
 
-bool CProgressDlg::HasUserCancelled()
+bool CProgressDlg::HasUserCancelled() const
 {
     if (m_bValid)
     {
@@ -258,7 +255,7 @@ void CProgressDlg::Stop()
     }
 }
 
-void CProgressDlg::ResetTimer()
+void CProgressDlg::ResetTimer() const
 {
     if (m_bValid)
     {

@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,61 +19,58 @@
 
 #pragma once
 
-#include <specstrings.h>
-
 #define TMSCHEMA_H // this excludes the deprecated tmschema.h without dependency on _WIN32_WINNT macro
 #include <windows.h>
 #include <Uxtheme.h>
-#include <vssym32.h>
 
 class CDwmApiImpl
 {
 private:
     HINSTANCE m_hDwmApiLib;
-    BOOL      IsInitialized(void);
+    BOOL      IsInitialized() const;
 
 public:
-    CDwmApiImpl(void);
-    ~CDwmApiImpl(void);
-    BOOL    Initialize(void);
-    HRESULT DwmExtendFrameIntoClientArea(HWND hWnd, const MARGINS* pMarInset);
-    BOOL    IsDwmCompositionEnabled(void);
-    HRESULT DwmEnableComposition(UINT uCompositionAction);
+    CDwmApiImpl();
+    ~CDwmApiImpl();
+    BOOL    Initialize();
+    HRESULT DwmExtendFrameIntoClientArea(HWND hWnd, const MARGINS* pMarInset) const;
+    BOOL    IsDwmCompositionEnabled() const;
+    HRESULT DwmEnableComposition(UINT uCompositionAction) const;
 };
 
 class CUxThemeAeroImpl
 {
 private:
     HINSTANCE m_hUxThemeLib;
-    BOOL      IsInitialized(void);
+    BOOL      IsInitialized() const;
 
 public:
-    CUxThemeAeroImpl(void);
-    BOOL Initialize(void);
-    ~CUxThemeAeroImpl(void);
-    HRESULT      BufferedPaintInit(void);
-    HRESULT      BufferedPaintUnInit(void);
-    HTHEME       OpenThemeData(HWND hwnd, LPCWSTR pszClassList);
-    BOOL         DetermineGlowSize(int* piSize, LPCWSTR pszClassIdList = nullptr);
-    HRESULT      CloseThemeData(HTHEME hTheme);
-    HPAINTBUFFER BeginBufferedPaint(HDC hdcTarget, const RECT* prcTarget, BP_BUFFERFORMAT dwFormat, BP_PAINTPARAMS* pPaintParams, HDC* phdc);
-    HRESULT      EndBufferedPaint(HPAINTBUFFER hBufferedPaint, BOOL fUpdateTarget);
-    HRESULT      DrawThemeTextEx(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS* pOptions);
-    HRESULT      GetThemeInt(HTHEME hTheme, int iPartId, int iStateId, int iPropId, int* piVal);
-    HRESULT      GetThemeSysFont(HTHEME hTheme, int iFontId, LOGFONTW* plf);
-    HRESULT      BufferedPaintSetAlpha(HPAINTBUFFER hBufferedPaint, const RECT* prc, BYTE alpha);
-    HRESULT      BufferedPaintMakeOpaque_(HPAINTBUFFER hBufferedPaint, const RECT* prc);
-    HRESULT      DrawThemeBackground(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, const RECT* pRect, const RECT* pClipRect);
-    HRESULT      GetThemeBackgroundContentRect(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect);
-    HRESULT      GetThemeBackgroundExtent(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pContentRect, LPRECT pExtentRect);
-    HRESULT      GetThemeBitmap(HTHEME hTheme, int iPartId, int iStateId, int iPropId, ULONG dwFlags, HBITMAP* phBitmap);
-    HRESULT      DrawThemeParentBackground(HWND hwnd, HDC hdc, const RECT* prc);
-    BOOL         IsThemeBackgroundPartiallyTransparent(HTHEME hTheme, int iPartId, int iStateId);
-    HRESULT      DrawThemeText(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int iCharCount, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect);
-    HRESULT      GetThemeColor(HTHEME hTheme, int iPartId, int iStateId, int iPropId, COLORREF* pColor);
-    HRESULT      GetThemePartSize(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE* psz);
-    HRESULT      GetThemePosition(HTHEME hTheme, int iPartId, int iStateId, int iPropId, POINT* pPoint);
-    HRESULT      GetThemeMargins(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPRECT prc, MARGINS* pMargins);
-    HRESULT      GetThemeMetric(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, int* piVal);
-    HRESULT      GetThemeRect(HTHEME hTheme, int iPartId, int iStateId, int iPropId, LPRECT pRect);
+    CUxThemeAeroImpl();
+    BOOL Initialize();
+    ~CUxThemeAeroImpl();
+    HRESULT      BufferedPaintInit() const;
+    HRESULT      BufferedPaintUnInit() const;
+    HTHEME       OpenThemeData(HWND hwnd, LPCWSTR pszClassList) const;
+    BOOL         DetermineGlowSize(int* piSize, LPCWSTR pszClassIdList = nullptr) const;
+    HRESULT      CloseThemeData(HTHEME hTheme) const;
+    HPAINTBUFFER BeginBufferedPaint(HDC hdcTarget, const RECT* prcTarget, BP_BUFFERFORMAT dwFormat, BP_PAINTPARAMS* pPaintParams, HDC* phdc) const;
+    HRESULT      EndBufferedPaint(HPAINTBUFFER hBufferedPaint, BOOL fUpdateTarget) const;
+    HRESULT      DrawThemeTextEx(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS* pOptions) const;
+    HRESULT      GetThemeInt(HTHEME hTheme, int iPartId, int iStateId, int iPropId, int* piVal) const;
+    HRESULT      GetThemeSysFont(HTHEME hTheme, int iFontId, LOGFONTW* plf) const;
+    HRESULT      BufferedPaintSetAlpha(HPAINTBUFFER hBufferedPaint, const RECT* prc, BYTE alpha) const;
+    HRESULT      BufferedPaintMakeOpaque_(HPAINTBUFFER hBufferedPaint, const RECT* prc) const;
+    HRESULT      DrawThemeBackground(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, const RECT* pRect, const RECT* pClipRect) const;
+    HRESULT      GetThemeBackgroundContentRect(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect) const;
+    HRESULT      GetThemeBackgroundExtent(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pContentRect, LPRECT pExtentRect) const;
+    HRESULT      GetThemeBitmap(HTHEME hTheme, int iPartId, int iStateId, int iPropId, ULONG dwFlags, HBITMAP* phBitmap) const;
+    HRESULT      DrawThemeParentBackground(HWND hwnd, HDC hdc, const RECT* prc) const;
+    BOOL         IsThemeBackgroundPartiallyTransparent(HTHEME hTheme, int iPartId, int iStateId) const;
+    HRESULT      DrawThemeText(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int iCharCount, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect) const;
+    HRESULT      GetThemeColor(HTHEME hTheme, int iPartId, int iStateId, int iPropId, COLORREF* pColor) const;
+    HRESULT      GetThemePartSize(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE* psz) const;
+    HRESULT      GetThemePosition(HTHEME hTheme, int iPartId, int iStateId, int iPropId, POINT* pPoint) const;
+    HRESULT      GetThemeMargins(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPRECT prc, MARGINS* pMargins) const;
+    HRESULT      GetThemeMetric(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, int* piVal) const;
+    HRESULT      GetThemeRect(HTHEME hTheme, int iPartId, int iStateId, int iPropId, LPRECT pRect) const;
 };

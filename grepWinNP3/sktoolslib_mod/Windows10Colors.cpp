@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2018, 2020 - Stefan Kueng
+// Copyright (C) 2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,28 +28,30 @@ namespace WindowsUI = ABI::Windows::UI;
 /// Wrapper class for WinRT string reference
 class HStringRef
 {
-    HSTRING        hstr;
-    HSTRING_HEADER str_header;
+    HSTRING        m_hStr;
+    HSTRING_HEADER m_strHeader;
 
 public:
     HStringRef()
-        : hstr(nullptr)
+        : m_hStr(nullptr)
+        , m_strHeader()
     {
     }
+
     // String ref doesn't need dtor
 
     template <size_t N>
     HRESULT Set(const wchar_t (&str)[N])
     {
-        return Win10Colors::WindowsCreateStringReference(str, N - 1, &str_header, &hstr);
+        return Win10Colors::WindowsCreateStringReference(str, N - 1, &m_strHeader, &m_hStr);
     }
 
-    operator HSTRING() const { return hstr; }
+    operator HSTRING() const { return m_hStr; }
 };
 
 /// Call RoActivateInstance and query an interface
-template <typename IF>
-static HRESULT ActivateInstance(HSTRING classId, ComPtr<IF>& instance)
+template <typename If>
+static HRESULT ActivateInstance(HSTRING classId, ComPtr<If>& instance)
 {
     ComPtr<IInspectable> inspectable;
     auto                 hr = Win10Colors::RoActivateInstance(classId, &inspectable);
@@ -62,20 +64,20 @@ Win10Colors Win10Colors::instance;
 
 Win10Colors::Win10Colors()
 {
-    if (!modules_loaded)
+    if (!m_modulesLoaded)
     {
-        modules_loaded = true;
-        winrt          = LoadLibraryW(L"api-ms-win-core-winrt-l1-1-0.dll");
+        m_modulesLoaded = true;
+        winrt           = LoadLibraryW(L"api-ms-win-core-winrt-l1-1-0.dll");
         if (winrt)
         {
-            pRoActivateInstance = reinterpret_cast<pfnRoActivateInstance>(
+            pRoActivateInstance = reinterpret_cast<PfnRoActivateInstance>(
                 GetProcAddress(winrt, "RoActivateInstance"));
         }
-        winrt_string = LoadLibraryW(L"api-ms-win-core-winrt-string-l1-1-0.dll");
-        if (winrt_string)
+        m_winrtString = LoadLibraryW(L"api-ms-win-core-winrt-string-l1-1-0.dll");
+        if (m_winrtString)
         {
-            pWindowsCreateStringReference = reinterpret_cast<pfnWindowsCreateStringReference>(
-                GetProcAddress(winrt_string, "WindowsCreateStringReference"));
+            pWindowsCreateStringReference = reinterpret_cast<PfnWindowsCreateStringReference>(
+                GetProcAddress(m_winrtString, "WindowsCreateStringReference"));
         }
     }
 }
@@ -84,8 +86,8 @@ Win10Colors::~Win10Colors()
 {
     if (winrt)
         FreeLibrary(winrt);
-    if (winrt_string)
-        FreeLibrary(winrt_string);
+    if (m_winrtString)
+        FreeLibrary(m_winrtString);
 }
 
 HRESULT Win10Colors::GetAccentColor(AccentColor& color)
@@ -104,43 +106,43 @@ HRESULT Win10Colors::GetAccentColor(AccentColor& color)
     if (!settings3)
         return E_FAIL;
 
-    WindowsUI::Color ui_color;
-    hr = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Foreground, &ui_color);
+    WindowsUI::Color uiColor;
+    hr = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Foreground, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.foreground = ToRGBA(ui_color);
-    hr               = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Background, &ui_color);
+    color.foreground = ToRGBA(uiColor);
+    hr               = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Background, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.background = ToRGBA(ui_color);
-    hr               = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark3, &ui_color);
+    color.background = ToRGBA(uiColor);
+    hr               = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark3, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.darkest = ToRGBA(ui_color);
-    hr            = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark2, &ui_color);
+    color.darkest = ToRGBA(uiColor);
+    hr            = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark2, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.darker = ToRGBA(ui_color);
-    hr           = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark1, &ui_color);
+    color.darker = ToRGBA(uiColor);
+    hr           = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentDark1, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.dark = ToRGBA(ui_color);
-    hr         = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Accent, &ui_color);
+    color.dark = ToRGBA(uiColor);
+    hr         = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_Accent, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.accent = ToRGBA(ui_color);
-    hr           = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentLight1, &ui_color);
+    color.accent = ToRGBA(uiColor);
+    hr           = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentLight1, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.light = ToRGBA(ui_color);
-    hr          = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentLight2, &ui_color);
+    color.light = ToRGBA(uiColor);
+    hr          = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentLight2, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.lighter = ToRGBA(ui_color);
-    hr            = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentLight3, &ui_color);
+    color.lighter = ToRGBA(uiColor);
+    hr            = settings3->GetColorValue(WindowsUI::ViewManagement::UIColorType_AccentLight3, &uiColor);
     if (FAILED(hr))
         return hr;
-    color.lightest = ToRGBA(ui_color);
+    color.lightest = ToRGBA(uiColor);
 
     return S_OK;
 }

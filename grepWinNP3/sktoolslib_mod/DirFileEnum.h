@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017-2018, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017-2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -73,7 +73,7 @@ protected:
     /**
      * The file data returned by FindFirstFile()/FindNextFile().
      */
-    WIN32_FIND_DATA m_FindFileData;
+    WIN32_FIND_DATA m_findFileData;
 
 public:
     /**
@@ -137,7 +137,7 @@ public:
      */
     inline DWORD GetAttributes() const
     {
-        return m_FindFileData.dwFileAttributes;
+        return m_findFileData.dwFileAttributes;
     }
 
     /**
@@ -180,7 +180,7 @@ public:
      */
     inline bool IsDirectory() const
     {
-        return !!(m_FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+        return !!(m_findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
     }
 
     /**
@@ -190,10 +190,10 @@ public:
      */
     inline std::wstring GetFileName() const
     {
-        return m_FindFileData.cFileName;
+        return m_findFileData.cFileName;
     }
 
-    const WIN32_FIND_DATA* GetFileFindData() const { return &m_FindFileData; }
+    const WIN32_FIND_DATA* GetFileFindData() const { return &m_findFileData; }
 
     /*
      * Get the current file name, including the path.
@@ -204,7 +204,7 @@ public:
     {
         if (m_bFile)
             return m_sPathPrefix;
-        return m_sPathPrefix + m_FindFileData.cFileName;
+        return m_sPathPrefix + m_findFileData.cFileName;
     }
 
     /**
@@ -214,7 +214,7 @@ public:
     */
     FILETIME GetLastWriteTime() const
     {
-        return m_FindFileData.ftLastWriteTime;
+        return m_findFileData.ftLastWriteTime;
     }
 
     /**
@@ -224,7 +224,7 @@ public:
     */
     FILETIME GetCreateTime() const
     {
-        return m_FindFileData.ftCreationTime;
+        return m_findFileData.ftCreationTime;
     }
 
     /**
@@ -236,7 +236,7 @@ public:
      */
     inline bool IsDots() const
     {
-        return IsDirectory() && m_FindFileData.cFileName[0] == L'.' && ((m_FindFileData.cFileName[1] == 0) || (m_FindFileData.cFileName[1] == L'.' && m_FindFileData.cFileName[2] == 0));
+        return IsDirectory() && m_findFileData.cFileName[0] == L'.' && ((m_findFileData.cFileName[1] == 0) || (m_findFileData.cFileName[1] == L'.' && m_findFileData.cFileName[2] == 0));
     }
 };
 
@@ -298,7 +298,7 @@ public:
      *
      * \return The WIN32_FIND_DATA structure of the file or directory
      */
-    const WIN32_FIND_DATA* GetFileInfo() { return m_seStack->GetFileFindData(); }
+    const WIN32_FIND_DATA* GetFileInfo() const { return m_seStack->GetFileFindData(); }
 
     /**
      * Set a mask of file attributes to ignore. Files or directories that

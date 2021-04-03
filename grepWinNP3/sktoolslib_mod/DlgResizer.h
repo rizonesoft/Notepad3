@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,13 +21,15 @@
 
 #include <vector>
 
-#define RESIZER_TOPLEFT            0
-#define RESIZER_TOPRIGHT           1
-#define RESIZER_TOPLEFTRIGHT       2
-#define RESIZER_TOPLEFTBOTTOMRIGHT 3
-#define RESIZER_BOTTOMLEFT         4
-#define RESIZER_BOTTOMRIGHT        5
-#define RESIZER_BOTTOMLEFTRIGHT    6
+#define RESIZER_TOPLEFT             0
+#define RESIZER_TOPRIGHT            1
+#define RESIZER_TOPLEFTRIGHT        2
+#define RESIZER_TOPLEFTBOTTOMRIGHT  3
+#define RESIZER_BOTTOMLEFT          4
+#define RESIZER_BOTTOMRIGHT         5
+#define RESIZER_BOTTOMLEFTRIGHT     6
+#define RESIZER_TOPLEFTBOTTOMLEFT   7
+#define RESIZER_TOPRIGHTBOTTOMRIGHT 8
 
 struct ResizeCtrls
 {
@@ -39,8 +41,8 @@ struct ResizeCtrls
 class CDlgResizer
 {
 public:
-    CDlgResizer(void);
-    ~CDlgResizer(void);
+    CDlgResizer();
+    ~CDlgResizer();
 
     void Init(HWND hWndDlg);
     void AddControl(HWND hWndDlg, UINT ctrlId, UINT resizeType);
@@ -50,11 +52,15 @@ public:
 
     RECT* GetDlgRect() { return &m_dlgRect; }
     RECT* GetDlgRectScreen() { return &m_dlgRectScreen; }
-    void  UpdateGripPos();
-    void  UseSizeGrip(bool use) { m_useSizeGrip = use; ShowSizeGrip(m_useSizeGrip); }
+    void  UpdateGripPos() const;
+    void  UseSizeGrip(bool use)
+    {
+        m_useSizeGrip = use;
+        ShowSizeGrip(m_useSizeGrip);
+    }
 
 private:
-    void                     ShowSizeGrip(bool bShow = true);
+    void                     ShowSizeGrip(bool bShow = true) const;
     HWND                     m_hDlg;
     std::vector<ResizeCtrls> m_controls;
     RECT                     m_dlgRect;

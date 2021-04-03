@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@
 class CRegHistory
 {
 public:
-    CRegHistory(CSimpleIni* pIni = NULL);
+    CRegHistory(CSimpleIni* pIni = nullptr);
     virtual ~CRegHistory();
 
     /// Loads the history
@@ -40,6 +40,7 @@ public:
     /// Saves the history.
     bool Save() const;
     /// Adds a new string to the history list.
+    // ReSharper disable once CppHiddenFunction
     bool AddEntry(LPCWSTR szText);
     /// Removes the entry at index \c pos.
     void RemoveEntry(int pos);

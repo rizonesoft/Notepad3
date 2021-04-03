@@ -1,4 +1,4 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
 // Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
@@ -24,8 +24,8 @@
 class CUnicodeUtils
 {
 public:
-    CUnicodeUtils(void);
-    ~CUnicodeUtils(void);
+    CUnicodeUtils();
+    ~CUnicodeUtils();
 #ifdef UNICODE
     static std::string  StdGetUTF8(const std::wstring& wide, bool stopAtNull = true);
     static std::wstring StdGetUnicode(const std::string& multibyte, bool stopAtNull = true);
@@ -59,21 +59,21 @@ class UTF8Helper
 {
 public:
     // basic classification of UTF-8 bytes
-    inline static bool isSingleByte(UCHAR c) { return c < 0x80; }
-    inline static bool isPartOfMultibyte(UCHAR c) { return c >= 0x80; }
-    inline static bool isFirstOfMultibyte(UCHAR c) { return c >= 0xC2 && c < 0xF5; } // 0xF5 to 0xFD are defined by UTF-8, but are not currently valid Unicode
-    inline static bool isContinuation(UCHAR c) { return (c & 0xC0) == 0x80; }
-    inline static bool isValid(UCHAR c) { return c < 0xC0 || isFirstOfMultibyte(c); } // validates a byte, out of context
+    static bool isSingleByte(UCHAR c) { return c < 0x80; }
+    static bool isPartOfMultibyte(UCHAR c) { return c >= 0x80; }
+    static bool isFirstOfMultibyte(UCHAR c) { return c >= 0xC2 && c < 0xF5; } // 0xF5 to 0xFD are defined by UTF-8, but are not currently valid Unicode
+    static bool isContinuation(UCHAR c) { return (c & 0xC0) == 0x80; }
+    static bool isValid(UCHAR c) { return c < 0xC0 || isFirstOfMultibyte(c); } // validates a byte, out of context
 
     // number of continuation bytes for a given valid first character (0 for single byte characters)
-    inline static int continuationBytes(UCHAR c)
+    static int continuationBytes(UCHAR c)
     {
         static constexpr char len[] = {1, 1, 2, 3};
         return (c < 0xC0) ? 0 : len[(c & 0x30) >> 4];
     }
 
     // validates a full character
-    inline static bool isValid(const char* buf, int buflen)
+    static bool isValid(const char* buf, int buflen)
     {
         if (isSingleByte(buf[0]))
             return true; // single byte is valid
@@ -89,7 +89,7 @@ public:
     }
 
     // rewinds to the first byte of a multi-byte character for any valid UTF-8 (and will not rewind too much on any other input)
-    inline static int characterStart(const char* buf, int startingIndex)
+    static int characterStart(const char* buf, int startingIndex)
     {
         int charContinuationBytes = 0;
         while (charContinuationBytes < startingIndex // rewind past start of buffer?
@@ -99,7 +99,7 @@ public:
         return startingIndex - charContinuationBytes;
     }
 
-    inline static void Advance(const char* str, size_t& pos)
+    static void Advance(const char* str, size_t& pos)
     {
         if ((str[pos] & 0xE0) == 0xC0)
         {
@@ -120,11 +120,11 @@ public:
             pos++;
     }
 
-    inline static size_t UTF16PosFromUTF8Pos(const char* utf8string, size_t utf8pos)
+    static size_t UTF16PosFromUTF8Pos(const char* utf8String, size_t utf8Pos)
     {
-        size_t      utf16pos    = 0;
-        const char* pCurrentPos = utf8string;
-        const char* pFinalPos   = pCurrentPos + utf8pos;
+        size_t      utf16Pos    = 0;
+        const char* pCurrentPos = utf8String;
+        const char* pFinalPos   = pCurrentPos + utf8Pos;
         while (pCurrentPos < pFinalPos)
         {
             if (((*pCurrentPos) & 0xE0) == 0xC0)
@@ -144,9 +144,9 @@ public:
             }
             else
                 pCurrentPos++;
-            ++utf16pos;
+            ++utf16Pos;
         }
-        return utf16pos;
+        return utf16Pos;
     }
 };
 

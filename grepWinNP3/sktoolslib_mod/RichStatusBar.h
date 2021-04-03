@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2017, 2020 Stefan Kueng
+// Copyright (C) 2017, 2020-2021 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -97,7 +97,7 @@ class CRichStatusBar : public CWindow
 {
 public:
     CRichStatusBar(HINSTANCE hInst);
-    ~CRichStatusBar();
+    virtual ~CRichStatusBar();
 
     bool Init(HWND hParent, bool drawGrip);
 
@@ -117,7 +117,7 @@ public:
     void CalcWidths();
     /// sets a callback function that takes a COLORREF and returns a (modified) COLORREF.
     /// useful if you want the color to change depending on a selected theme.
-    void SetHandlerFunc(std::function<COLORREF(const COLORREF&)> themeColor) { m_ThemeColorFunc = themeColor; }
+    void SetHandlerFunc(std::function<COLORREF(const COLORREF&)> themeColor) { m_themeColorFunc = themeColor; }
     /// returns the index of the part at the specified client coordinates
     int GetPartIndexAt(const POINT& pt) const;
     /// returns a plain string without the formatting chars
@@ -131,12 +131,12 @@ protected:
 
 private:
     std::vector<CRichStatusBarItem>          m_parts;
-    std::vector<PartWidths>                  m_partwidths;
+    std::vector<PartWidths>                  m_partWidths;
     HFONT                                    m_fonts[4];
     HWND                                     m_tooltip;
-    std::function<COLORREF(const COLORREF&)> m_ThemeColorFunc;
+    std::function<COLORREF(const COLORREF&)> m_themeColorFunc;
     int                                      m_hoverPart;
     int                                      m_height;
     bool                                     m_drawGrip;
-    std::vector<AnimationVariable>           m_AnimVars;
+    std::vector<AnimationVariable>           m_animVars;
 };

@@ -24,20 +24,14 @@
 #include <functional>
 #include <memory>
 
-#ifdef UNICODE
-#    define _tcswildcmp wcswildcmp
-#else
-#    define _tcswildcmp strwildcmp
-#endif
-
 /**
- * \ingroup Utils
+ * @ingroup Utils
  * Performs a wild card compare of two strings.
- * \param wild the wild card string
- * \param string the string to compare the wild card to
- * \return TRUE if the wild card matches the string, 0 otherwise
- * \par example
- * \code
+ * @param wild the wild card string
+ * @param string the string to compare the wild card to
+ * @return TRUE if the wild card matches the string, 0 otherwise
+ * @par example
+ * @code
  * if (strwildcmp("bl?hblah.*", "bliblah.jpeg"))
  *  printf("success\n");
  * else
@@ -46,12 +40,12 @@
  *  printf("success\n");
  * else
  *  printf("not found\n");
- * \endcode
+ * @endcode
  * The output of the above code would be:
- * \code
+ * @code
  * success
  * not found
- * \endcode
+ * @endcode
  */
 int strwildcmp(const char* wild, const char* string);
 int wcswildcmp(const wchar_t* wild, const wchar_t* string);
@@ -90,7 +84,7 @@ void stringtok(Container& container, const std::wstring& in, bool trim,
         // push token
         if (j == std::wstring::npos)
         {
-            if constexpr (std::is_same_v<Container::value_type, std::wstring>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::wstring>)
             {
                 container.push_back(in.substr(i));
             }
@@ -102,7 +96,7 @@ void stringtok(Container& container, const std::wstring& in, bool trim,
         }
         else
         {
-            if constexpr (std::is_same_v<Container::value_type, std::wstring>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::wstring>)
             {
                 container.push_back(in.substr(i, j - i));
             }
@@ -142,7 +136,7 @@ void stringtokset(Container& container, const std::wstring& in, bool trim,
         // push token
         if (j == std::wstring::npos)
         {
-            if constexpr (std::is_same_v<Container::value_type, std::wstring>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::wstring>)
             {
                 container.insert(in.substr(i));
             }
@@ -154,7 +148,7 @@ void stringtokset(Container& container, const std::wstring& in, bool trim,
         }
         else
         {
-            if constexpr (std::is_same_v<Container::value_type, std::wstring>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::wstring>)
             {
                 container.insert(in.substr(i, j - i));
             }
@@ -195,7 +189,7 @@ void stringtok(Container& container, const std::string& in, bool trim,
         // push token
         if (j == std::string::npos)
         {
-            if constexpr (std::is_same_v<Container::value_type, std::string>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::string>)
             {
                 container.push_back(in.substr(i));
             }
@@ -207,7 +201,7 @@ void stringtok(Container& container, const std::string& in, bool trim,
         }
         else
         {
-            if constexpr (std::is_same_v<Container::value_type, std::string>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::string>)
             {
                 container.push_back(in.substr(i, j - i));
             }
@@ -247,7 +241,7 @@ void stringtokset(Container& container, const std::string& in, bool trim,
         // push token
         if (j == std::string::npos)
         {
-            if constexpr (std::is_same_v<Container::value_type, std::string>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::string>)
             {
                 container.insert(in.substr(i));
             }
@@ -259,7 +253,7 @@ void stringtokset(Container& container, const std::string& in, bool trim,
         }
         else
         {
-            if constexpr (std::is_same_v<Container::value_type, std::string>)
+            if constexpr (std::is_same_v<typename Container::value_type, std::string>)
             {
                 container.insert(in.substr(i, j - i));
             }
@@ -274,52 +268,54 @@ void stringtokset(Container& container, const std::string& in, bool trim,
     }
 }
 
+// ReSharper disable once CppInconsistentNaming
 template <typename T>
-std::wstring to_bit_wstring(T number, bool trim_significant_clear_bits)
+std::wstring to_bit_wstring(T number, bool trimSignificantClearBits)
 {
     // Unsigned version of type given.
     typedef typename std::make_unsigned<T>::type UT;
     UT                                           one  = 1;
     UT                                           zero = 0;
-    UT                                           unumber;
-    unumber            = UT(number);
-    const int    nbits = std::numeric_limits<UT>::digits;
+    UT                                           uNumber;
+    uNumber            = UT(number);
+    const int    nBits = std::numeric_limits<UT>::digits;
     std::wstring bs;
-    bool         seen_set_bit = false;
-    for (int bn = nbits - 1; bn >= 0; --bn)
+    bool         seenSetBit = false;
+    for (int bn = nBits - 1; bn >= 0; --bn)
     {
-        UT   mask   = one << bn;
-        bool is_set = (unumber & mask) != zero;
-        if (trim_significant_clear_bits && !seen_set_bit && !is_set)
+        UT   mask  = one << bn;
+        bool isSet = (uNumber & mask) != zero;
+        if (trimSignificantClearBits && !seenSetBit && !isSet)
             continue;
-        bs += is_set ? '1' : '0';
-        if (is_set)
-            seen_set_bit = true;
+        bs += isSet ? '1' : '0';
+        if (isSet)
+            seenSetBit = true;
     }
     return bs;
 }
 
+// ReSharper disable once CppInconsistentNaming
 template <typename T>
-std::string to_bit_string(T number, bool trim_significant_clear_bits)
+std::string to_bit_string(T number, bool trimSignificantClearBits)
 {
     // Unsigned version of type given.
     typedef typename std::make_unsigned<T>::type UT;
     UT                                           one  = 1;
     UT                                           zero = 0;
-    UT                                           unumber;
-    unumber           = UT(number);
-    const int   nbits = std::numeric_limits<UT>::digits;
+    UT                                           uNumber;
+    uNumber           = UT(number);
+    const int   nBits = std::numeric_limits<UT>::digits;
     std::string bs;
-    bool        seen_set_bit = false;
-    for (int bn = nbits - 1; bn >= 0; --bn)
+    bool        seenSetBit = false;
+    for (int bn = nBits - 1; bn >= 0; --bn)
     {
-        UT   mask   = one << bn;
-        bool is_set = (unumber & mask) != zero;
-        if (trim_significant_clear_bits && !seen_set_bit && !is_set)
+        UT   mask  = one << bn;
+        bool isSet = (uNumber & mask) != zero;
+        if (trimSignificantClearBits && !seenSetBit && !isSet)
             continue;
-        bs += is_set ? '1' : '0';
-        if (is_set)
-            seen_set_bit = true;
+        bs += isSet ? '1' : '0';
+        if (isSet)
+            seenSetBit = true;
     }
     return bs;
 }
@@ -328,10 +324,11 @@ std::string to_bit_string(T number, bool trim_significant_clear_bits)
 /// use it as the second/third argument when creating a container, e.g.:
 /// std::map< std::string, std::vector<std::string>, ci_less > myMap;
 /// std::vector<std::string, ci_less> myVector;
+// ReSharper disable once CppInconsistentNaming
 struct ci_less
 {
     // case-independent (ci) compare_less binary function
-    struct nocase_compare
+    struct NocaseCompare
     {
         bool operator()(const unsigned char& c1, const unsigned char& c2) const
         {
@@ -342,14 +339,15 @@ struct ci_less
     {
         return std::lexicographical_compare(s1.begin(), s1.end(), // source range
                                             s2.begin(), s2.end(), // dest range
-                                            nocase_compare());    // comparison
+                                            NocaseCompare());     // comparison
     }
 };
 
+// ReSharper disable once CppInconsistentNaming
 struct ci_lessW
 {
     // case-independent (ci) compare_less binary function
-    struct nocase_compare
+    struct NocaseCompare
     {
         bool operator()(const wchar_t& c1, const wchar_t& c2) const
         {
@@ -360,7 +358,7 @@ struct ci_lessW
     {
         return std::lexicographical_compare(s1.begin(), s1.end(), // source range
                                             s2.begin(), s2.end(), // dest range
-                                            nocase_compare());    // comparison
+                                            NocaseCompare());     // comparison
     }
 };
 
@@ -389,7 +387,7 @@ public:
     }
     static inline std::string& ltrim(std::string& s, const std::string& trimchars)
     {
-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [&trimchars](wint_t c) { return trimchars.find((char)c) == std::string::npos; }));
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [&trimchars](wint_t c) { return trimchars.find(static_cast<char>(c)) == std::string::npos; }));
         return s;
     }
     static inline std::string& ltrim(std::string& s, wint_t trimchar)
@@ -406,7 +404,7 @@ public:
     }
     static inline std::string& rtrim(std::string& s, const std::string& trimchars)
     {
-        s.erase(std::find_if(s.rbegin(), s.rend(), [&trimchars](wint_t c) { return trimchars.find((char)c) == std::string::npos; }).base(), s.end());
+        s.erase(std::find_if(s.rbegin(), s.rend(), [&trimchars](wint_t c) { return trimchars.find(static_cast<char>(c)) == std::string::npos; }).base(), s.end());
         return s;
     }
     static inline std::string& rtrim(std::string& s, wint_t trimchar)
@@ -497,7 +495,7 @@ public:
 
     [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]] static inline void emplace_to_lower(std::string& s)
     {
-        std::transform(s.begin(), s.end(), s.begin(), [](char c) { return (char)::tolower(c); });
+        std::transform(s.begin(), s.end(), s.begin(), [](char c) { return static_cast<char>(::tolower(c)); });
     }
 
     /// converts a string to lowercase
@@ -507,15 +505,15 @@ public:
     static inline std::wstring to_lower(const std::wstring& s)
     {
         auto len    = LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, nullptr, 0, nullptr, nullptr, 0);
-        auto outbuf = std::make_unique<wchar_t[]>(len + 1LL);
-        LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, outbuf.get(), len, nullptr, nullptr, 0);
-        return outbuf.get();
+        auto outBuf = std::make_unique<wchar_t[]>(len + 1LL);
+        LCMapStringEx(LOCALE_NAME_INVARIANT, LCMAP_LOWERCASE, s.c_str(), -1, outBuf.get(), len, nullptr, nullptr, 0);
+        return outBuf.get();
     }
 
     [[deprecated("use case insensitive string comparison instead, or the ci_less container helper")]] static inline std::string to_lower(const std::string& s)
     {
         std::string ls(s);
-        std::transform(ls.begin(), ls.end(), ls.begin(), [](char c) { return (char)::tolower(c); });
+        std::transform(ls.begin(), ls.end(), ls.begin(), [](char c) { return static_cast<char>(::tolower(c)); });
         return ls;
     }
 
@@ -532,7 +530,7 @@ public:
     //    }
     //    return it;
     //}
-    static inline size_t find_caseinsensitive(const std::wstring& haystack, const std::wstring& needle)
+    static size_t find_caseinsensitive(const std::wstring& haystack, const std::wstring& needle)
     {
         auto ret = std::wstring::npos;
         for (size_t i = 0; i < haystack.size(); ++i)

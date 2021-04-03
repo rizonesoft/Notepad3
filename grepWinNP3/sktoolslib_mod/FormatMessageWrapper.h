@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -49,8 +49,8 @@ public:
     ~CFormatMessageWrapper() { release(); }
     operator LPCWSTR() const { return buffer; }
     operator bool() const { return result != 0; }
-    bool    operator!() const { return result == 0; }
-    LPCWSTR c_str() const { return buffer; }
+    bool     operator!() const { return result == 0; }
+    LPCWSTR  c_str() const { return buffer; }
 };
 
 inline void CFormatMessageWrapper::obtainMessage(DWORD errorCode)
@@ -64,17 +64,17 @@ inline void CFormatMessageWrapper::obtainMessage(DWORD errorCode)
                            nullptr,
                            errorCode,
                            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                           (LPWSTR)&buffer,
+                           reinterpret_cast<LPWSTR>(&buffer),
                            0,
                            nullptr);
 }
 
 inline void CFormatMessageWrapper::release()
 {
-    if (buffer != 0)
+    if (buffer != nullptr)
     {
         LocalFree(buffer);
-        buffer = 0;
+        buffer = nullptr;
     }
 
     result = 0;

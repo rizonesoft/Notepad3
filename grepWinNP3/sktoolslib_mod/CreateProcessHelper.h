@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 //
 
 #pragma once
+#include <windows.h>
 
 /**
  * A helper class for invoking CreateProcess(). The lpProcessInformation
@@ -27,15 +28,15 @@
 class CCreateProcessHelper
 {
 public:
-    static bool CreateProcess(LPCWSTR               lpApplicationName,
-                              LPWSTR                lpCommandLine,
-                              LPCWSTR               lpCurrentDirectory,
-                              LPPROCESS_INFORMATION lpProcessInformation,
+    static bool CreateProcess(LPCWSTR               applicationName,
+                              LPWSTR                commandLine,
+                              LPCWSTR               currentDirectory,
+                              LPPROCESS_INFORMATION processInfo,
                               bool                  hidden          = false,
                               DWORD                 dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
-    static bool CreateProcess(LPCWSTR               lpApplicationName,
-                              LPWSTR                lpCommandLine,
-                              LPPROCESS_INFORMATION lpProcessInformation,
+    static bool CreateProcess(LPCWSTR               applicationName,
+                              LPWSTR                commandLine,
+                              LPPROCESS_INFORMATION processInformation,
                               bool                  hidden          = false,
                               DWORD                 dwCreationFlags = CREATE_UNICODE_ENVIRONMENT);
 
@@ -67,7 +68,7 @@ inline bool CCreateProcessHelper::CreateProcess(LPCWSTR applicationName,
 
     SecureZeroMemory(processInfo, sizeof(PROCESS_INFORMATION));
     const BOOL result = ::CreateProcess(applicationName,
-                                        commandLine, nullptr, nullptr, FALSE, dwCreationFlags, 0, currentDirectory,
+                                        commandLine, nullptr, nullptr, FALSE, dwCreationFlags, nullptr, currentDirectory,
                                         &startupInfo, processInfo);
     return result != 0;
 }
@@ -75,7 +76,7 @@ inline bool CCreateProcessHelper::CreateProcess(LPCWSTR applicationName,
 inline bool CCreateProcessHelper::CreateProcess(LPCWSTR applicationName,
                                                 LPWSTR commandLine, LPPROCESS_INFORMATION processInformation, bool hidden, DWORD dwCreationFlags)
 {
-    return CreateProcess(applicationName, commandLine, 0, processInformation, hidden, dwCreationFlags);
+    return CreateProcess(applicationName, commandLine, nullptr, processInformation, hidden, dwCreationFlags);
 }
 
 inline bool CCreateProcessHelper::CreateProcessDetached(LPCWSTR lpApplicationName,
@@ -93,5 +94,5 @@ inline bool CCreateProcessHelper::CreateProcessDetached(LPCWSTR lpApplicationNam
 inline bool CCreateProcessHelper::CreateProcessDetached(LPCWSTR lpApplicationName,
                                                         LPWSTR lpCommandLine, bool hidden, DWORD dwCreationFlags)
 {
-    return CreateProcessDetached(lpApplicationName, lpCommandLine, 0, hidden, dwCreationFlags);
+    return CreateProcessDetached(lpApplicationName, lpCommandLine, nullptr, hidden, dwCreationFlags);
 }

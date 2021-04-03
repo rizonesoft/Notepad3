@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
 class CGlobalAtom
 {
 public:
-    CGlobalAtom(void)
+    CGlobalAtom()
 #ifdef _WIN64
     {
         atom = GlobalAddAtom(L"_EditDoubleClick_Object_Pointer64_"
@@ -40,7 +40,7 @@ public:
                              L"\\{FDE85769-946B-45EF-866C-B1EA2F26B171}");
     }
 #endif
-    ~CGlobalAtom(void)
+    ~CGlobalAtom()
     {
         DeleteAtom(atom);
     }
@@ -53,13 +53,13 @@ static CGlobalAtom ga;
 /////////////////////////////////////////////////////////////////////////////
 // CEditDoubleClick
 
-CEditDoubleClick::CEditDoubleClick(void)
-    : m_pfnOrigCtlProc(NULL)
-    , m_ctrlId(0)
+CEditDoubleClick::CEditDoubleClick()
+    : m_ctrlId(0)
+    , m_pfnOrigCtlProc(nullptr)
 {
 }
 
-CEditDoubleClick::~CEditDoubleClick(void)
+CEditDoubleClick::~CEditDoubleClick()
 {
 }
 
@@ -70,9 +70,9 @@ BOOL CEditDoubleClick::Subclass(HWND hwndParent, UINT uiCtlId)
 
     // Subclass the existing control.
 
-    m_pfnOrigCtlProc = (WNDPROC)GetWindowLongPtr(hwndCtl, GWLP_WNDPROC);
-    SetProp(hwndCtl, PROP_OBJECT_PTR, (HANDLE)this);
-    SetWindowLongPtr(hwndCtl, GWLP_WNDPROC, (LONG_PTR)EditCtrlWinProc);
+    m_pfnOrigCtlProc = reinterpret_cast<WNDPROC>(GetWindowLongPtr(hwndCtl, GWLP_WNDPROC));
+    SetProp(hwndCtl, PROP_OBJECT_PTR, static_cast<HANDLE>(this));
+    SetWindowLongPtr(hwndCtl, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(EditCtrlWinProc));
 
     return TRUE;
 }
@@ -80,16 +80,16 @@ BOOL CEditDoubleClick::Subclass(HWND hwndParent, UINT uiCtlId)
 LRESULT CALLBACK CEditDoubleClick::EditCtrlWinProc(HWND hwnd, UINT message,
                                                    WPARAM wParam, LPARAM lParam)
 {
-    CEditDoubleClick *pCtrl = (CEditDoubleClick *)GetProp(hwnd, PROP_OBJECT_PTR);
+    CEditDoubleClick *pCtrl = static_cast<CEditDoubleClick *>(GetProp(hwnd, PROP_OBJECT_PTR));
 
     switch (message)
     {
         case WM_LBUTTONDBLCLK:
-            SendMessage(GetParent(hwnd), WM_EDITDBLCLICK, (WPARAM)pCtrl->m_ctrlId, lParam);
+            SendMessage(GetParent(hwnd), WM_EDITDBLCLICK, static_cast<WPARAM>(pCtrl->m_ctrlId), lParam);
             break;
         case WM_DESTROY:
         {
-            SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)pCtrl->m_pfnOrigCtlProc);
+            SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(pCtrl->m_pfnOrigCtlProc));
 
             RemoveProp(hwnd, PROP_OBJECT_PTR);
         }

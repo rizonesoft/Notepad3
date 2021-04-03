@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013, 2020 - Stefan Kueng
+// Copyright (C) 2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -30,19 +30,19 @@ public:
 
     void         SetIniPath(const std::wstring& p);
     std::wstring GetIniPath() const { return m_iniPath; }
-    void         Save();
+    void         Save() const;
     void         Reload();
 
-    LPCWSTR GetString(LPCWSTR section, LPCWSTR key, LPCWSTR defaultVal = nullptr);
+    LPCWSTR GetString(LPCWSTR section, LPCWSTR key, LPCWSTR defaultVal = nullptr) const;
     void    SetString(LPCWSTR section, LPCWSTR key, LPCWSTR value);
-    __int64 GetInt64(LPCWSTR section, LPCWSTR key, __int64 defaultVal);
+    __int64 GetInt64(LPCWSTR section, LPCWSTR key, __int64 defaultVal) const;
     void    SetInt64(LPCWSTR section, LPCWSTR key, __int64 value);
     void    Delete(LPCWSTR section, LPCWSTR key);
-    void    RestoreWindowPos(LPCWSTR windowname, HWND hWnd, UINT showCmd);
+    void    RestoreWindowPos(LPCWSTR windowname, HWND hWnd, UINT showCmd) const;
     void    SaveWindowPos(LPCWSTR windowname, HWND hWnd);
 
 private:
-    CSimpleIni m_IniFile;
+    CSimpleIni m_iniFile;
 
     std::wstring m_iniPath;
 };

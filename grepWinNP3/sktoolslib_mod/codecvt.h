@@ -17,42 +17,43 @@
     @file
 */
 
+#pragma once
 #include <locale>
 #pragma warning(push)
 #pragma warning(disable : 4511)
 #pragma warning(disable : 4512)
 
 /** Conversion facet that allows to use Unicode files in UCS-2 encoding */
-class ucs2_conversion
+class Ucs2Conversion
     : public std::codecvt<wchar_t, char, std::mbstate_t>
 {
 protected:
     result do_in(std::mbstate_t& state,
-                 const char* from, const char* from_end, const char*& from_next,
-                 wchar_t* to, wchar_t* to_limit, wchar_t*& to_next) const;
+                 const char* from, const char* fromEnd, const char*& fromNext,
+                 wchar_t* to, wchar_t* toLimit, wchar_t*& toNext) const override;
 
     result do_out(std::mbstate_t& state,
-                  const wchar_t* from, const wchar_t* from_end, const wchar_t*& from_next,
-                  char* to, char* to_limit, char*& to_next) const;
+                  const wchar_t* from, const wchar_t* fromEnd, const wchar_t*& fromNext,
+                  char* to, char* toLimit, char*& toNext) const override;
 
-    bool do_always_noconv() const throw() { return false; }
-    int  do_encoding() const throw() { return 2; }
+    bool do_always_noconv() const throw() override { return false; }
+    int  do_encoding() const throw() override { return 2; }
 };
 
 /** Conversion facet that allows to read Unicode files in UTF-8 encoding */
-class utf8_conversion
+class UTF8Conversion
     : public std::codecvt<wchar_t, char, std::mbstate_t>
 {
 protected:
     result do_in(std::mbstate_t& state,
-                 const char* from, const char* from_end, const char*& from_next,
-                 wchar_t* to, wchar_t* to_limit, wchar_t*& to_next) const;
+                 const char* from, const char* fromEnd, const char*& fromNext,
+                 wchar_t* to, wchar_t* toLimit, wchar_t*& toNext) const override;
 
     result do_out(std::mbstate_t& state,
-                  const wchar_t* from, const wchar_t* from_end, const wchar_t*& from_next,
-                  char* to, char* to_limit, char*& to_next) const;
+                  const wchar_t* from, const wchar_t* fromEnd, const wchar_t*& fromNext,
+                  char* to, char* toLimit, char*& toNext) const override;
 
-    bool do_always_noconv() const throw() { return false; }
-    int  do_encoding() const throw() { return 2; }
+    bool do_always_noconv() const throw() override { return false; }
+    int  do_encoding() const throw() override { return 2; }
 };
 #pragma warning(pop)

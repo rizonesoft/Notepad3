@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -38,41 +38,41 @@ public:
         , FileMatchRegex(false)
     {
     }
-    ~Bookmark() {};
 
-    std::wstring            Name;
-    std::wstring            Search;
-    std::wstring            Replace;
-    std::wstring            Path;
-    bool                    UseRegex;
-    bool                    CaseSensitive;
-    bool                    DotMatchesNewline;
-    bool                    Backup;
-    bool                    Utf8;
-    bool                    Binary;
-    bool                    IncludeSystem;
-    bool                    IncludeFolder;
-    bool                    IncludeHidden;
-    bool                    IncludeBinary;
-    std::wstring            ExcludeDirs;
-    std::wstring            FileMatch;
-    bool                    FileMatchRegex;
+    ~Bookmark(){};
 
+    std::wstring Name;
+    std::wstring Search;
+    std::wstring Replace;
+    std::wstring Path;
+    bool         UseRegex;
+    bool         CaseSensitive;
+    bool         DotMatchesNewline;
+    bool         Backup;
+    bool         Utf8;
+    bool         Binary;
+    bool         IncludeSystem;
+    bool         IncludeFolder;
+    bool         IncludeHidden;
+    bool         IncludeBinary;
+    std::wstring ExcludeDirs;
+    std::wstring FileMatch;
+    bool         FileMatchRegex;
 };
 
 class CBookmarks : public CSimpleIni
 {
 public:
-    CBookmarks(void);
-    ~CBookmarks(void);
+    CBookmarks();
+    ~CBookmarks();
 
-    void                Load();
-    void                Save();
-    void                AddBookmark(const Bookmark& bm);
-    void                RemoveBookmark(const std::wstring& name);
-    Bookmark            GetBookmark(const std::wstring& name);
+    void     Load();
+    void     Save();
+    void     AddBookmark(const Bookmark& bm);
+    void     RemoveBookmark(const std::wstring& name);
+    Bookmark GetBookmark(const std::wstring& name) const;
 
 protected:
-    std::wstring        m_iniPath;
-    TNamesDepend        m_sections;
+    std::wstring m_iniPath;
+    TNamesDepend m_sections;
 };

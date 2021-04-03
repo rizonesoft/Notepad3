@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2012-2013, 2016-2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2016-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,9 +19,8 @@
 #include "stdafx.h"
 #include "strsafe.h"
 #include "resource.h"
-#include "maxpath.h"
 #include "Settings.h"
-#include "BrowseFolder.h"
+#include "ResString.h"
 #include "DirFileEnum.h"
 #include "Theme.h"
 #include "DarkModeHelper.h"
@@ -130,7 +129,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             AddToolTip(IDC_ONLYONE, TranslatedString(hResource, IDS_ONLYONE_TT).c_str());
 
             std::wstring editorCmd = bPortable ? g_iniFile.GetValue(L"global", L"editorcmd", L"") : std::wstring(m_regEditorCmd);
-            if (editorCmd.empty()) 
+            if (editorCmd.empty())
                 editorCmd = stdEditorCmd;
 
             SetDlgItemText(hwndDlg, IDC_EDITORCMD, editorCmd.c_str());
@@ -139,9 +138,9 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             GetModuleFileName(nullptr, moduledir, MAX_PATH);
             PathRemoveFileSpec(moduledir);
 
-            std::wstring path = moduledir;
-            bool bRecurse = false;
-            bool bIsDirectory = false;
+            std::wstring path         = moduledir;
+            bool         bRecurse     = false;
+            bool         bIsDirectory = false;
 
             std::wstring  setLang;
 
@@ -216,7 +215,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
                     {
                         if ((it->second).compare(setLang) == 0)
                           langIndex = 0;
-                        m_langpaths.push_front(it->second);
+                        m_langPaths.push_front(it->second);
                         SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)sPath.c_str());
                         it = langFileMap.erase(it);
                     }
@@ -226,7 +225,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             }
 
             // build combobox
-            auto index = static_cast<int>(m_langpaths.size());
+            auto index = static_cast<int>(m_langPaths.size());
             for (const auto& lang : langFileMap)
             {
                 size_t const slashpos = lang.second.find_last_of('\\');
@@ -237,7 +236,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
                 sPath               = lang.second.substr(slashpos + 1);
                 size_t const dotpos = sPath.find_last_of('.');
                 sPath  = sPath.substr(0, dotpos);
-                m_langpaths.push_back(lang.second);
+                m_langPaths.push_back(lang.second);
                 SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)sPath.c_str());
                 ++index;
             }
@@ -245,7 +244,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             if (langIndex < 0) // configured language file not found
             {
                 langIndex = 0;
-                m_langpaths.push_front(L"");
+                m_langPaths.push_front(L"");
                 SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)0, (LPARAM)defaultLang);
             }
 
@@ -262,7 +261,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 #endif
             SendDlgItemMessage(hwndDlg, IDC_DARKMODE, BM_SETCHECK, CTheme::Instance().IsDarkTheme() ? BST_CHECKED : BST_UNCHECKED, 0);
             EnableWindow(GetDlgItem(*this, IDC_DARKMODE), CTheme::Instance().IsDarkModeAllowed());
-            SetDlgItemText(*this, IDC_NUMNULL, bPortable ? g_iniFile.GetValue(L"settings", L"nullbytes", L"0") : std::to_wstring(DWORD(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0))).c_str());
+            SetDlgItemText(*this, IDC_NUMNULL, bPortable ? g_iniFile.GetValue(L"settings", L"nullbytes", L"0") : std::to_wstring(static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0))).c_str());
 
             DWORD const nMaxWorker = std::thread::hardware_concurrency() << 2;
             SendDlgItemMessage(hwndDlg, IDC_SPIN_MAXWORKER, UDM_SETRANGE, 0, MAKELPARAM(nMaxWorker, 1));
@@ -311,12 +310,11 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
         break;
     case WM_GETMINMAXINFO:
         {
-            auto * mmi = (MINMAXINFO*)lParam;
+            MINMAXINFO* mmi       = reinterpret_cast<MINMAXINFO*>(lParam);
             mmi->ptMinTrackSize.x = m_resizer.GetDlgRectScreen()->right;
             mmi->ptMinTrackSize.y = m_resizer.GetDlgRectScreen()->bottom;
             return 0;
         }
-        break;
         case WM_CLOSE:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             break;
@@ -341,7 +339,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             else
                 m_regEditorCmd = buf.get();
             auto               langIndex = static_cast<size_t>(SendDlgItemMessage(*this, IDC_LANGUAGE, CB_GETCURSEL, 0, 0));
-            const std::wstring langpath  = (langIndex < m_langpaths.size()) ? m_langpaths[langIndex] : L"";
+            const std::wstring langPath  = (langIndex < m_langPaths.size()) ? m_langPaths[langIndex] : L"";
             if (bPortable)
             {
                 WCHAR moduledir[MAX_PATH] = {L'\0'};
@@ -349,7 +347,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 PathRemoveFileSpec(moduledir);
 
                 WCHAR absLngPath[MAX_PATH] = {L'\0'};
-                StringCchCopy(absLngPath, MAX_PATH, langpath.c_str());
+                StringCchCopy(absLngPath, MAX_PATH, langPath.c_str());
                 //~PathCanonicalize(tmp, absLngPath);
                 if (PathIsExistingFile(absLngPath))
                 {
@@ -368,16 +366,16 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 if (langIndex==0)
                     regLang.removeValue();
                 else
-                    regLang = langpath;
+                    regLang = langPath;
             }
 
             WORD fntSize = 9;
             WCHAR fontFaceName[LF_FACESIZE];
-            if (GetLocaleDefaultUIFont(langpath, fontFaceName, fntSize)) {
+            if (GetLocaleDefaultUIFont(langPath, fontFaceName, fntSize)) {
                 CTheme::Instance().SetDlgFontFaceName(fontFaceName, fntSize);
             }
 
-            CLanguage::Instance().LoadFile(langpath);
+            CLanguage::Instance().LoadFile(langPath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
 
             wchar_t worker[32] = { 0 };
@@ -399,6 +397,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             }
             else
             {
+                // ReSharper disable CppEntityAssignedButNoRead
                 CRegStdDWORD esc(L"Software\\grepWinNP3\\escclose", FALSE);
                 esc = (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED);
                 CRegStdDWORD backup(L"Software\\grepWinNP3\\backupinfolder", FALSE);
@@ -415,6 +414,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 regNumNull = _wtoi(sNumNull.c_str());
                 CRegStdDWORD regNumWorker(L"Software\\grepWinNP3\\MaxNumOfWorker", 1);
                 regNumWorker = nWorker;
+                // ReSharper restore CppEntityAssignedButNoRead
             }
             CTheme::Instance().SetDarkTheme(IsDlgButtonChecked(*this, IDC_DARKMODE) == BST_CHECKED);
         }

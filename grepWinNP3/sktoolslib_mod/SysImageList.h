@@ -1,6 +1,6 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #pragma once
 
 #include <string>
-#include <shellapi.h>
 #include <Commctrl.h>
 
 #pragma comment(lib, "shell32.lib")
@@ -57,20 +56,20 @@ public:
     /**
      * Returns the icon index for a directory.
      */
-    int GetDirIconIndex() const;
+    static int GetDirIconIndex();
     /**
      * Returns the icon index for a directory that's open (e.g. for a tree control)
      */
-    int GetDirOpenIconIndex() const;
+    static int GetDirOpenIconIndex();
     /**
      * Returns the icon index for a file which has no special icon associated.
      */
-    int GetDefaultIconIndex() const;
+    static int GetDefaultIconIndex();
     /**
      * Returns the icon index for the specified \a file. Only the file extension
      * is used to determine the file's icon.
      */
-    int GetFileIconIndex(const std::wstring& file) const;
+    static int GetFileIconIndex(const std::wstring& file);
 
     operator HIMAGELIST() const;
 
@@ -84,4 +83,5 @@ private:
  * \relates CSysImageList
  * Singleton access for CSysImageList.
  */
+// ReSharper disable once CppInconsistentNaming
 inline CSysImageList& SYS_IMAGE_LIST() { return CSysImageList::GetInstance(); }

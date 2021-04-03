@@ -44,15 +44,17 @@ using namespace Microsoft::WRL;
 
 #define ID_ABOUTBOX         0x0010
 #define ID_CLONE            0x0011
+
 #define ID_STAY_ON_TOP      0x0022
 
 #define ALPHA_OPAQUE         (255)
 
-enum ExecuteAction
+enum class ExecuteAction
 {
     None,
     Search,
-    Replace
+    Replace,
+    Capture
 };
 
 typedef struct _SearchFlags_t
@@ -91,31 +93,31 @@ public:
 
     DWORD                   SearchThread();
     DWORD                   EvaluationThread();
-    void                    SetSearchPath(const std::wstring& path) {m_searchpath = path; SearchReplace(m_searchpath, L"/", L"\\"); }
-    void                    SetSearchString(const std::wstring& search) {m_searchString = search;}
-    void                    SetFileMask(const std::wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
-    void                    SetDirExcludeRegexMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
-    void                    SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
-    void                    SetUseRegex(bool reg) { m_bUseRegex = reg; }
+    inline void             SetSearchPath(const std::wstring& path) {m_searchPath = path; SearchReplace(m_searchPath, L"/", L"\\"); }
+    inline void             SetSearchString(const std::wstring& search) { m_searchString = search; }
+    inline void             SetFileMask(const std::wstring& mask, bool reg) {m_patternRegex = mask; m_bUseRegexForPaths = reg;}
+    inline void             SetDirExcludeRegexMask(const std::wstring& mask) { m_excludeDirsPatternRegex = mask; }
+    inline void             SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
+    inline void             SetUseRegex(bool reg) { m_bUseRegex = reg; }
     void                    SetPreset(const std::wstring& preset);
 
-    void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
-    void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
-    void                    SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
-    void                    SetCreateBackupsInFolders(bool bSet) { m_bCreateBackupInFoldersC = true; m_bCreateBackupInFolders = bSet; SetCreateBackups(bSet); }
-    void                    SetUTF8(bool bSet) { m_bUTF8C = true; m_bUTF8 = bSet; m_bForceBinary = false; }
-    void                    SetBinary(bool bSet) { m_bUTF8C = true; m_bForceBinary = bSet; m_bUTF8 = false; }
-    void                    SetSize(uint64_t size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (uint64_t)-1);}
-    void                    SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
-    void                    SetIncludeHidden(bool bSet) {m_bIncludeHiddenC = true; m_bIncludeHidden = bSet;}
-    void                    SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
-    void                    SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
-    void                    SetDateLimit(int datelimit, FILETIME t1, FILETIME t2) { m_bDateLimitC = true; m_DateLimit = datelimit; m_Date1 = t1; m_Date2 = t2; }
-    void                    SetNoSaveSettings(bool nosave) { m_bNoSaveSettings = nosave; }
+    inline void             SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
+    inline void             SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
+    inline void             SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
+    inline void             SetCreateBackupsInFolders(bool bSet) { m_bCreateBackupInFoldersC = true; m_bCreateBackupInFolders = bSet; SetCreateBackups(bSet); }
+    inline void             SetUTF8(bool bSet) { m_bUTF8C = true; m_bUTF8 = bSet; m_bForceBinary = false; }
+    inline void             SetBinary(bool bSet) { m_bUTF8C = true; m_bForceBinary = bSet; m_bUTF8 = false; }
+    inline void             SetSize(uint64_t size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (uint64_t)-1);}
+    inline void             SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
+    inline void             SetIncludeHidden(bool bSet) {m_bIncludeHiddenC = true; m_bIncludeHidden = bSet;}
+    inline void             SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
+    inline void             SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
+    inline void             SetDateLimit(int datelimit, FILETIME t1, FILETIME t2) { m_bDateLimitC = true; m_dateLimit = datelimit; m_date1 = t1; m_date2 = t2; }
+    inline void             SetNoSaveSettings(bool nosave) { m_bNoSaveSettings = nosave; }
 
-    void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
-    void                    SetEndDialog() { m_endDialog = true; }
-    void                    SetShowContent() { m_showContent = true; m_showContentSet = true; }
+    inline void             SetExecute(ExecuteAction execute) { m_executeImmediately = execute; }
+    inline void             SetEndDialog() { m_endDialog = true; }
+    inline void             SetShowContent() { m_showContent = true; m_showContentSet = true; }
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
     LRESULT                 DoCommand(int id, int msg);
@@ -133,7 +135,7 @@ protected:
     void                    UpdateInfoLabel();
     bool                    SaveSettings();
     void                    SaveWndPosition();
-    void                    formatDate(wchar_t date_native[], const FILETIME& filetime, bool force_short_fmt);
+    void                    FormatDate(wchar_t date_native[], const FILETIME& filetime, bool force_short_fmt) const;
     int                     CheckRegex();
     bool                    MatchPath(LPCTSTR pathbuf);
     void                    AutoSizeAllColumns();
@@ -145,34 +147,36 @@ protected:
     bool                    IsVersionNewer(const std::wstring& sVer);
 #endif
     bool                    CloneWindow();
-private:
-    static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             MatchesCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             PathCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             EncodingCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ModifiedTimeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ExtCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
+    std::wstring            ExpandString(const std::wstring& replaceString) const;
 
-    static bool             NameCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             SizeCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             MatchesCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             PathCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             EncodingCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ModifiedTimeCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ExtCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
+private:
+    static bool NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+
+    static bool NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
 private:
     HWND                    m_hParent;
     CBookmarksDlg *         m_pBookmarksDlg;
     ComPtr<ITaskbarList3>   m_pTaskbarList;
 
-    std::wstring            m_searchpath;
+    std::wstring            m_searchPath;
     std::wstring            m_searchString;
     std::wstring            m_replaceString;
     std::vector<std::wstring> m_patterns;
-    std::wstring            m_patternregex;
-    std::wstring            m_excludedirspatternregex;
+    std::wstring            m_patternRegex;
+    std::wstring            m_excludeDirsPatternRegex;
     bool                    m_bUseRegex;
     bool                    m_bUseRegexForPaths;
     bool                    m_bAllSize;
@@ -197,15 +201,15 @@ private:
     bool                    m_bCaseSensitiveC;
     bool                    m_bDotMatchesNewline;
     bool                    m_bDotMatchesNewlineC;
-    bool                    m_bNOTSearch;
+    bool                    m_bNotSearch;
     bool                    m_bCaptureSearch;
     bool                    m_bSizeC;
     bool                    m_endDialog;
-    ExecuteAction           m_ExecuteImmediately;
-    int                     m_DateLimit;
+    ExecuteAction           m_executeImmediately;
+    int                     m_dateLimit;
     bool                    m_bDateLimitC;
-    FILETIME                m_Date1;
-    FILETIME                m_Date2;
+    FILETIME                m_date1;
+    FILETIME                m_date2;
     bool                    m_bNoSaveSettings;
 
     bool                    m_bReplace;
@@ -218,28 +222,29 @@ private:
     std::vector<CSearchInfo> m_items;
     std::vector<std::tuple<int, int>> m_listItems;
 
-    int                     m_totalitems;
+    int                     m_totalItems;
     int                     m_searchedItems;
-    int                     m_totalmatches;
+    int                     m_totalMatches;
     bool                    m_bAscending;
     std::wstring            m_resultString;
-
+    std::wstring            m_toolTipReplaceString;
+ 
     CDlgResizer             m_resizer;
     int                     m_themeCallbackId;
 
     CFileDropTarget *       m_pDropTarget;
 
-    static UINT             GREPWIN_STARTUPMSG;
+    static UINT             m_grepwinStartupmsg;
 
 #ifdef NP3_ALLOW_UPDATE
-   std::thread             m_updateCheckThread;
+   std::thread              m_updateCheckThread;
 #endif
 
-    CAutoComplete           m_AutoCompleteFilePatterns;
-    CAutoComplete           m_AutoCompleteExcludeDirsPatterns;
-    CAutoComplete           m_AutoCompleteSearchPatterns;
-    CAutoComplete           m_AutoCompleteReplacePatterns;
-    CAutoComplete           m_AutoCompleteSearchPaths;
+    CAutoComplete           m_autoCompleteFilePatterns;
+    CAutoComplete           m_autoCompleteExcludeDirsPatterns;
+    CAutoComplete           m_autoCompleteSearchPatterns;
+    CAutoComplete           m_autoCompleteReplacePatterns;
+    CAutoComplete           m_autoCompleteSearchPaths;
 
     CEditDoubleClick        m_editFilePatterns;
     CEditDoubleClick        m_editExcludeDirsPatterns;

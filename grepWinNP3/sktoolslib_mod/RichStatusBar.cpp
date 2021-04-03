@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2017-2018, 2020 Stefan Kueng
+// Copyright (C) 2017-2018, 2020-2021 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,13 +23,13 @@
 #include <deque>
 
 constexpr int border_width = 8;
-#define icon_width (GetHeight())
+#define ICON_WIDTH (GetHeight())
 
 CRichStatusBar::CRichStatusBar(HINSTANCE hInst)
     : CWindow(hInst)
     , m_fonts{nullptr}
     , m_tooltip(nullptr)
-    , m_ThemeColorFunc(nullptr)
+    , m_themeColorFunc(nullptr)
     , m_hoverPart(-1)
     , m_height(22)
     , m_drawGrip(false)
@@ -51,7 +51,7 @@ bool CRichStatusBar::Init(HWND hParent, bool drawGrip)
     wcx.style         = CS_DBLCLKS;
     wcx.hInstance     = hResource;
     wcx.lpszClassName = L"RichStatusBar_{226E35DD-FFAC-4D97-A040-B94AF5BE39EC}";
-    wcx.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);
+    wcx.hbrBackground = reinterpret_cast<HBRUSH>((COLOR_3DFACE + 1));
     wcx.hCursor       = ::LoadCursor(nullptr, IDC_ARROW);
     if (RegisterWindow(&wcx))
     {
@@ -95,21 +95,21 @@ bool CRichStatusBar::Init(HWND hParent, bool drawGrip)
 
 bool CRichStatusBar::SetPart(int index, const CRichStatusBarItem& item, bool redraw, bool replace)
 {
-    if (index >= (int)m_parts.size())
+    if (index >= static_cast<int>(m_parts.size()))
     {
-        for (auto i = (int)m_parts.size(); i <= index; ++i)
+        for (auto i = static_cast<int>(m_parts.size()); i <= index; ++i)
         {
             m_parts.push_back(std::move(CRichStatusBarItem()));
-            m_partwidths.push_back({});
-            m_AnimVars.push_back(Animator::Instance().CreateAnimationVariable(0.0, 0.0));
+            m_partWidths.push_back({});
+            m_animVars.push_back(Animator::Instance().CreateAnimationVariable(0.0, 0.0));
         }
     }
     if (index < 0)
     {
         m_parts.push_back(item);
-        m_partwidths.push_back({});
-        m_AnimVars.push_back(Animator::Instance().CreateAnimationVariable(0.0, 0.0));
-        index = (int)m_parts.size() - 1;
+        m_partWidths.push_back({});
+        m_animVars.push_back(Animator::Instance().CreateAnimationVariable(0.0, 0.0));
+        index = static_cast<int>(m_parts.size()) - 1;
     }
     else if (replace)
     {
@@ -118,8 +118,8 @@ bool CRichStatusBar::SetPart(int index, const CRichStatusBarItem& item, bool red
     else
     {
         m_parts.insert(m_parts.begin() + index - 1, item);
-        m_partwidths.insert(m_partwidths.begin() + index - 1, {});
-        m_AnimVars.insert(m_AnimVars.begin() + index - 1, Animator::Instance().CreateAnimationVariable(0.0, 1.0));
+        m_partWidths.insert(m_partWidths.begin() + index - 1, {});
+        m_animVars.insert(m_animVars.begin() + index - 1, Animator::Instance().CreateAnimationVariable(0.0, 1.0));
     }
     CalcRequestedWidths(index);
     if (redraw)
@@ -152,34 +152,31 @@ int CRichStatusBar::GetPartIndexAt(const POINT& pt) const
     RECT rect;
     GetClientRect(*this, &rect);
     int width = 0;
-    for (size_t i = 0; i < m_partwidths.size(); ++i)
+    for (size_t i = 0; i < m_partWidths.size(); ++i)
     {
         RECT rc  = rect;
         rc.left  = width;
-        rc.right = rc.left + m_partwidths[i].calculatedWidth;
+        rc.right = rc.left + m_partWidths[i].calculatedWidth;
         if (PtInRect(&rc, pt))
         {
-            return (int)i;
-            break;
+            return static_cast<int>(i);
         }
-        width += m_partwidths[i].calculatedWidth;
+        width += m_partWidths[i].calculatedWidth;
     }
     return -1;
 }
 
 void CRichStatusBar::DrawSizeGrip(HDC hdc, LPCRECT lpRect)
 {
-    HPEN  hPenFace, hPenShadow, hPenHighlight, hOldPen;
     POINT pt;
     INT   i;
 
-    const auto onedpi = CDPIAware::Instance().Scale(*this, 1);
-    const auto twodpi = CDPIAware::Instance().Scale(*this, 2);
-    pt.x              = lpRect->right - onedpi;
-    pt.y              = lpRect->bottom - onedpi;
+    const auto oneDpi = CDPIAware::Instance().Scale(*this, 1);
+    pt.x              = lpRect->right - oneDpi;
+    pt.y              = lpRect->bottom - oneDpi;
 
-    hPenFace = CreatePen(PS_SOLID, 1, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
-    hOldPen  = (HPEN)SelectObject(hdc, hPenFace);
+    HPEN hPenFace = CreatePen(PS_SOLID, 1, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
+    HPEN hOldPen  = static_cast<HPEN>(SelectObject(hdc, hPenFace));
     MoveToEx(hdc, pt.x - CDPIAware::Instance().Scale(*this, 12), pt.y, nullptr);
     LineTo(hdc, pt.x, pt.y);
     LineTo(hdc, pt.x, pt.y - CDPIAware::Instance().Scale(*this, 13));
@@ -187,7 +184,7 @@ void CRichStatusBar::DrawSizeGrip(HDC hdc, LPCRECT lpRect)
     pt.x--;
     pt.y--;
 
-    hPenShadow = CreatePen(PS_SOLID, 1, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DSHADOW)) : GetSysColor(COLOR_3DSHADOW));
+    HPEN hPenShadow = CreatePen(PS_SOLID, 1, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DSHADOW)) : GetSysColor(COLOR_3DSHADOW));
     SelectObject(hdc, hPenShadow);
     for (i = 1; i < CDPIAware::Instance().Scale(*this, 11); i += 4)
     {
@@ -198,7 +195,7 @@ void CRichStatusBar::DrawSizeGrip(HDC hdc, LPCRECT lpRect)
         LineTo(hdc, pt.x + 1, pt.y - i - 2);
     }
 
-    hPenHighlight = CreatePen(PS_SOLID, 1, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DHIGHLIGHT)) : GetSysColor(COLOR_3DHIGHLIGHT));
+    HPEN hPenHighlight = CreatePen(PS_SOLID, 1, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DHIGHLIGHT)) : GetSysColor(COLOR_3DHIGHLIGHT));
     SelectObject(hdc, hPenHighlight);
     for (i = 3; i < CDPIAware::Instance().Scale(*this, 13); i += 4)
     {
@@ -225,10 +222,10 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
 
             auto hMyMemDC   = ::CreateCompatibleDC(hdc);
             auto hBitmap    = CreateCompatibleBitmap(hdc, rect.right - rect.left, rect.bottom - rect.top);
-            auto hOldBitmap = (HBITMAP)SelectObject(hMyMemDC, hBitmap);
+            auto hOldBitmap = static_cast<HBITMAP>(SelectObject(hMyMemDC, hBitmap));
 
-            auto foreColor = m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT);
-            auto backColor = m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE);
+            auto foreColor = m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT);
+            auto backColor = m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE);
             GDIHelpers::FillSolidRect(hMyMemDC, &rect, backColor);
             if (m_drawGrip)
                 DrawSizeGrip(hMyMemDC, &rect);
@@ -236,8 +233,8 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             SetTextColor(hMyMemDC, foreColor);
             SetBkColor(hMyMemDC, backColor);
 
-            const auto onedpi = CDPIAware::Instance().Scale(*this, 1);
-            const auto twodpi = CDPIAware::Instance().Scale(*this, 2);
+            const auto oneDpi = CDPIAware::Instance().Scale(*this, 1);
+            const auto twoDpi = CDPIAware::Instance().Scale(*this, 2);
 
             RECT partRect = rect;
             int  right    = 0;
@@ -246,63 +243,63 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
                 partRect         = rect;
                 const auto& part = m_parts[i];
                 partRect.left    = right;
-                partRect.right   = partRect.left + m_partwidths[i].calculatedWidth;
+                partRect.right   = partRect.left + m_partWidths[i].calculatedWidth;
                 right            = partRect.right;
-                auto penColor    = m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_GRAYTEXT)) : GetSysColor(COLOR_GRAYTEXT);
+                auto penColor    = m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_GRAYTEXT)) : GetSysColor(COLOR_GRAYTEXT);
                 auto pen         = CreatePen(PS_SOLID, 1, penColor);
-                auto oldpen      = SelectObject(hMyMemDC, pen);
+                auto oldPen      = SelectObject(hMyMemDC, pen);
                 MoveToEx(hMyMemDC, partRect.left, partRect.top, nullptr);
                 LineTo(hMyMemDC, partRect.left, partRect.bottom);
                 LineTo(hMyMemDC, partRect.right, partRect.bottom);
                 LineTo(hMyMemDC, partRect.right, partRect.top);
                 LineTo(hMyMemDC, partRect.left, partRect.top);
-                SelectObject(hMyMemDC, oldpen);
+                SelectObject(hMyMemDC, oldPen);
                 DeleteObject(pen);
-                InflateRect(&partRect, -onedpi, -onedpi);
-                auto fraction    = Animator::GetValue(m_AnimVars[i]);
+                InflateRect(&partRect, -oneDpi, -oneDpi);
+                auto fraction    = Animator::GetValue(m_animVars[i]);
                 auto animForeClr = RGB((GetRValue(penColor) - GetRValue(backColor)) * fraction + GetRValue(backColor),
                                        (GetGValue(penColor) - GetGValue(backColor)) * fraction + GetGValue(backColor),
                                        (GetBValue(penColor) - GetBValue(backColor)) * fraction + GetBValue(backColor));
                 pen              = CreatePen(PS_SOLID, 1, animForeClr);
-                oldpen           = SelectObject(hMyMemDC, pen);
+                oldPen           = SelectObject(hMyMemDC, pen);
 
                 MoveToEx(hMyMemDC, partRect.left, partRect.top, nullptr);
                 LineTo(hMyMemDC, partRect.left, partRect.bottom);
                 LineTo(hMyMemDC, partRect.right, partRect.bottom);
                 LineTo(hMyMemDC, partRect.right, partRect.top);
                 LineTo(hMyMemDC, partRect.left, partRect.top);
-                SelectObject(hMyMemDC, oldpen);
+                SelectObject(hMyMemDC, oldPen);
                 DeleteObject(pen);
-                InflateRect(&partRect, -onedpi, -onedpi);
+                InflateRect(&partRect, -oneDpi, -oneDpi);
                 //DrawEdge(hMyMemDC, &partRect, i == m_hoverPart ? EDGE_ETCHED : BDR_SUNKENOUTER, BF_RECT | BF_MONO | BF_SOFT | BF_ADJUST);
                 int x = 0;
-                if (part.icon && !m_partwidths[i].collapsed)
+                if (part.icon && !m_partWidths[i].collapsed)
                 {
-                    RECT temprect = partRect;
-                    InflateRect(&temprect, -twodpi, -twodpi);
-                    auto cy = temprect.bottom - temprect.top;
-                    DrawIconEx(hMyMemDC, temprect.left, temprect.top, part.icon, cy, cy, 0, 0, DI_NORMAL);
-                    x = twodpi + cy;
+                    RECT tempRect = partRect;
+                    InflateRect(&tempRect, -twoDpi, -twoDpi);
+                    auto cy = tempRect.bottom - tempRect.top;
+                    DrawIconEx(hMyMemDC, tempRect.left, tempRect.top, part.icon, cy, cy, 0, nullptr, DI_NORMAL);
+                    x = twoDpi + cy;
                 }
                 partRect.left += x;
-                RECT temprect = partRect;
-                if (!m_partwidths[i].collapsed || !part.collapsedIcon)
+                RECT tempRect = partRect;
+                if (!m_partWidths[i].collapsed || !part.collapsedIcon)
                 {
-                    InflateRect(&temprect, -(border_width - twodpi), 0);
-                    auto text   = m_partwidths[i].shortened && !part.shortText.empty() ? part.shortText : part.text;
+                    InflateRect(&tempRect, -(border_width - twoDpi), 0);
+                    auto text   = m_partWidths[i].shortened && !part.shortText.empty() ? part.shortText : part.text;
                     UINT format = DT_NOPREFIX | DT_SINGLELINE | DT_VCENTER;
                     if (part.align == 1)
                         format |= DT_CENTER;
                     if (part.align == 2)
                         format |= DT_RIGHT;
-                    DrawRichText(hMyMemDC, text, temprect, format);
+                    DrawRichText(hMyMemDC, text, tempRect, format);
                 }
                 else
                 {
-                    InflateRect(&temprect, -twodpi, -twodpi);
-                    auto cy = temprect.bottom - temprect.top;
-                    DrawIconEx(hMyMemDC, temprect.left, temprect.top, part.collapsedIcon, cy, cy, 0, 0, DI_NORMAL);
-                    x = twodpi + cy;
+                    InflateRect(&tempRect, -twoDpi, -twoDpi);
+                    auto cy = tempRect.bottom - tempRect.top;
+                    DrawIconEx(hMyMemDC, tempRect.left, tempRect.top, part.collapsedIcon, cy, cy, 0, nullptr, DI_NORMAL);
+                    x = twoDpi + cy;
                 }
             }
 
@@ -316,7 +313,6 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             EndPaint(hwnd, &ps);
             return 0;
         }
-        break;
         case WM_ERASEBKGND:
             return TRUE;
         case WM_SIZE:
@@ -365,29 +361,29 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             {
                 if ((m_hoverPart >= 0) && m_parts[m_hoverPart].hoverActive)
                 {
-                    auto transHot   = Animator::Instance().CreateLinearTransition(m_AnimVars[m_hoverPart], 0.3, 1.0);
+                    auto transHot   = Animator::Instance().CreateLinearTransition(m_animVars[m_hoverPart], 0.3, 1.0);
                     auto storyBoard = Animator::Instance().CreateStoryBoard();
                     if (storyBoard && transHot)
                     {
-                        storyBoard->AddTransition(m_AnimVars[m_hoverPart].m_animVar, transHot);
-                    Animator::Instance().RunStoryBoard(storyBoard, [this]() {
-                        InvalidateRect(*this, nullptr, false);
-                    });
-                }
+                        storyBoard->AddTransition(m_animVars[m_hoverPart].m_animVar, transHot);
+                        Animator::Instance().RunStoryBoard(storyBoard, [this]() {
+                            InvalidateRect(*this, nullptr, false);
+                        });
+                    }
                     else
                         InvalidateRect(*this, nullptr, false);
                 }
                 if (oldHover >= 0)
                 {
-                    auto transHot   = Animator::Instance().CreateLinearTransition(m_AnimVars[oldHover], 0.3, 0.0);
+                    auto transHot   = Animator::Instance().CreateLinearTransition(m_animVars[oldHover], 0.3, 0.0);
                     auto storyBoard = Animator::Instance().CreateStoryBoard();
                     if (storyBoard && transHot)
                     {
-                        storyBoard->AddTransition(m_AnimVars[oldHover].m_animVar, transHot);
-                    Animator::Instance().RunStoryBoard(storyBoard, [this]() {
-                        InvalidateRect(*this, nullptr, false);
-                    });
-                }
+                        storyBoard->AddTransition(m_animVars[oldHover].m_animVar, transHot);
+                        Animator::Instance().RunStoryBoard(storyBoard, [this]() {
+                            InvalidateRect(*this, nullptr, false);
+                        });
+                    }
                     else
                         InvalidateRect(*this, nullptr, false);
                 }
@@ -403,14 +399,14 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             TrackMouseEvent(&tme);
             if (m_hoverPart >= 0)
             {
-                auto transHot   = Animator::Instance().CreateLinearTransition(m_AnimVars[m_hoverPart], 0.3, 0.0);
+                auto transHot   = Animator::Instance().CreateLinearTransition(m_animVars[m_hoverPart], 0.3, 0.0);
                 auto storyBoard = Animator::Instance().CreateStoryBoard();
                 if (storyBoard && transHot)
                 {
-                    storyBoard->AddTransition(m_AnimVars[m_hoverPart].m_animVar, transHot);
-                Animator::Instance().RunStoryBoard(storyBoard, [this]() {
-                    InvalidateRect(*this, nullptr, false);
-                });
+                    storyBoard->AddTransition(m_animVars[m_hoverPart].m_animVar, transHot);
+                    Animator::Instance().RunStoryBoard(storyBoard, [this]() {
+                        InvalidateRect(*this, nullptr, false);
+                    });
                 }
                 else
                     InvalidateRect(*this, nullptr, false);
@@ -456,8 +452,8 @@ void CRichStatusBar::CalcRequestedWidths(int index)
     }
     if (part.icon)
     {
-        w.defaultWidth += icon_width;
-        w.shortWidth += icon_width;
+        w.defaultWidth += ICON_WIDTH;
+        w.shortWidth += ICON_WIDTH;
     }
     const auto twodpi = CDPIAware::Instance().Scale(*this, 2);
     w.shortWidth += (twodpi * border_width);
@@ -467,7 +463,7 @@ void CRichStatusBar::CalcRequestedWidths(int index)
         w.defaultWidth -= part.width;
     if (part.shortWidth < 0)
         w.shortWidth -= part.shortWidth;
-    m_partwidths[index] = w;
+    m_partWidths[index] = w;
     ReleaseDC(*this, hdc);
 }
 
@@ -519,7 +515,7 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
     {
         int          xPos = 0;
         std::wstring text;
-        COLORREF     color   = (COLORREF)-1;
+        COLORREF     color   = static_cast<COLORREF>(-1);
         HFONT        font    = nullptr;
         wchar_t      command = '\0';
     };
@@ -528,8 +524,8 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
     int                font    = 0;
     auto               oldFont = SelectObject(hdc, m_fonts[font]);
 
-    SetTextColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
-    SetBkColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
+    SetTextColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
+    SetBkColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
 
     size_t                   pos       = 0;
     auto                     percPos   = text.find('%', pos);
@@ -540,11 +536,11 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
     {
         if (percPos < text.size() - 1)
         {
-            RECT temprc       = rect;
+            RECT tempRc       = rect;
             textControls.text = text.substr(pos, percPos - pos);
-            DrawText(hdc, textControls.text.c_str(), -1, &temprc, flags | DT_CALCRECT);
+            DrawText(hdc, textControls.text.c_str(), -1, &tempRc, flags | DT_CALCRECT);
             textControls.xPos = textWidth;
-            textWidth += (temprc.right - temprc.left);
+            textWidth += (tempRc.right - tempRc.left);
             tokens.push_back(textControls);
 
             pos = percPos + 1;
@@ -556,9 +552,9 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
                     textControls.text    = L"%";
                     textControls.xPos    = textWidth;
                     tokens.push_back(textControls);
-                    temprc = rect;
-                    DrawText(hdc, L"%", 1, &temprc, flags | DT_CALCRECT);
-                    textWidth += (temprc.right - temprc.left);
+                    tempRc = rect;
+                    DrawText(hdc, L"%", 1, &tempRc, flags | DT_CALCRECT);
+                    textWidth += (tempRc.right - tempRc.left);
                     ++pos;
                 }
                 break;
@@ -587,8 +583,8 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
                         auto sColor = text.substr(percPos + 2, 6);
                         auto color  = wcstoul(sColor.c_str(), nullptr, 16);
                         color       = RGB(GetBValue(color), GetGValue(color), GetRValue(color));
-                        if (m_ThemeColorFunc)
-                            color = m_ThemeColorFunc(color);
+                        if (m_themeColorFunc)
+                            color = m_themeColorFunc(color);
                         textControls.color   = color;
                         textControls.command = text[pos];
                         SetTextColor(hdc, color);
@@ -602,10 +598,10 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
                     for (auto& obj : objStack)
                         SelectObject(hdc, obj);
                     objStack.clear();
-                    SetTextColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
-                    SetBkColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
+                    SetTextColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
+                    SetBkColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
                     textControls.font    = nullptr;
-                    textControls.color   = (COLORREF)-1;
+                    textControls.color   = static_cast<COLORREF>(-1);
                     textControls.command = text[pos];
                     ++pos;
                 }
@@ -616,11 +612,11 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
             break;
         percPos = text.find('%', pos);
     }
-    RECT temprc       = rect;
+    RECT tempRc       = rect;
     textControls.text = text.substr(pos);
-    DrawText(hdc, textControls.text.c_str(), -1, &temprc, flags | DT_CALCRECT);
+    DrawText(hdc, textControls.text.c_str(), -1, &tempRc, flags | DT_CALCRECT);
     textControls.xPos = textWidth;
-    textWidth += (temprc.right - temprc.left);
+    textWidth += (tempRc.right - tempRc.left);
     tokens.push_back(textControls);
 
     for (auto& obj : objStack)
@@ -632,8 +628,8 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
     }
     else
     {
-        SetTextColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
-        SetBkColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
+        SetTextColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
+        SetBkColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
         flags &= ~DT_CALCRECT;
         if (flags & DT_CENTER)
         {
@@ -661,13 +657,13 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
                     for (auto& obj : objStack)
                         SelectObject(hdc, obj);
                     objStack.clear();
-                    SetTextColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
-                    SetBkColor(hdc, m_ThemeColorFunc ? m_ThemeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
+                    SetTextColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_WINDOWTEXT)) : GetSysColor(COLOR_WINDOWTEXT));
+                    SetBkColor(hdc, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DFACE)) : GetSysColor(COLOR_3DFACE));
                     break;
             }
-            RECT temprect = rect;
-            temprect.left += token.xPos;
-            DrawText(hdc, token.text.c_str(), -1, &temprect, flags);
+            RECT tempRect = rect;
+            tempRect.left += token.xPos;
+            DrawText(hdc, token.text.c_str(), -1, &tempRect, flags);
         }
     }
 
@@ -676,10 +672,10 @@ void CRichStatusBar::DrawRichText(HDC hdc, const std::wstring& text, RECT& rect,
 
 void CRichStatusBar::CalcWidths()
 {
-    if (m_partwidths.empty())
+    if (m_partWidths.empty())
         return;
 
-    for (auto& p : m_partwidths)
+    for (auto& p : m_partWidths)
     {
         p.calculatedWidth = 0;
         p.collapsed       = false;
@@ -695,14 +691,14 @@ void CRichStatusBar::CalcWidths()
         bAdjusted    = false;
         int total    = 0;
         int nonFixed = 0;
-        for (auto& p : m_partwidths)
+        for (auto& p : m_partWidths)
         {
             if (p.calculatedWidth == 0)
                 p.calculatedWidth = p.defaultWidth;
             if (p.shortened)
                 p.calculatedWidth = p.shortWidth;
             if (p.collapsed)
-                p.calculatedWidth = icon_width;
+                p.calculatedWidth = ICON_WIDTH;
             total += p.calculatedWidth;
             if (!p.fixed)
                 ++nonFixed;
@@ -712,7 +708,7 @@ void CRichStatusBar::CalcWidths()
             int         ext    = (maxWidth - total) / nonFixed;
             int         tWidth = 0;
             PartWidths* pPart  = nullptr;
-            for (auto& p : m_partwidths)
+            for (auto& p : m_partWidths)
             {
                 if (!p.fixed)
                 {
@@ -727,7 +723,7 @@ void CRichStatusBar::CalcWidths()
         }
         else
         {
-            for (auto it = m_partwidths.rbegin(); it != m_partwidths.rend(); ++it)
+            for (auto it = m_partWidths.rbegin(); it != m_partWidths.rend(); ++it)
             {
                 if (!it->shortened)
                 {
@@ -738,7 +734,7 @@ void CRichStatusBar::CalcWidths()
             }
             if (!bAdjusted)
             {
-                for (auto it = m_partwidths.rbegin(); it != m_partwidths.rend(); ++it)
+                for (auto it = m_partWidths.rbegin(); it != m_partWidths.rend(); ++it)
                 {
                     if (!it->collapsed && it->canCollapse)
                     {
@@ -760,25 +756,25 @@ void CRichStatusBar::CalcWidths()
     for (decltype(m_parts.size()) i = 0; i < m_parts.size(); ++i)
     {
         ti.uId = i + 1;
-        SendMessage(m_tooltip, TTM_DELTOOL, 0, (LPARAM)&ti);
+        SendMessage(m_tooltip, TTM_DELTOOL, 0, reinterpret_cast<LPARAM>(&ti));
     }
     // now add all tools
-    int startx        = 0;
+    int startX        = 0;
     ti.rect.top       = rect.top;
     ti.rect.bottom    = rect.bottom;
-    const auto twodpi = CDPIAware::Instance().Scale(*this, 2);
+    const auto twoDpi = CDPIAware::Instance().Scale(*this, 2);
     for (decltype(m_parts.size()) i = 0; i < m_parts.size(); ++i)
     {
         ti.uId        = i + 1;
-        ti.rect.left  = startx;
-        ti.rect.right = startx + m_partwidths[i].calculatedWidth;
-        startx        = ti.rect.right;
-        InflateRect(&ti.rect, -twodpi, 0);
+        ti.rect.left  = startX;
+        ti.rect.right = startX + m_partWidths[i].calculatedWidth;
+        startX        = ti.rect.right;
+        InflateRect(&ti.rect, -twoDpi, 0);
         ti.lpszText = const_cast<wchar_t*>(m_parts[i].tooltip.c_str());
         if (ti.lpszText[0])
         {
-            SendMessage(m_tooltip, TTM_ADDTOOL, 0, (LPARAM)&ti);
-            SendMessage(m_tooltip, TTM_ACTIVATE, TRUE, (LPARAM)0);
+            SendMessage(m_tooltip, TTM_ADDTOOL, 0, reinterpret_cast<LPARAM>(&ti));
+            SendMessage(m_tooltip, TTM_ACTIVATE, TRUE, static_cast<LPARAM>(0));
         }
     }
     SetWindowPos(m_tooltip, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2019-2020 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -29,12 +29,12 @@
 
 CNameDlg::CNameDlg(HWND hParent)
     : m_hParent(hParent)
-    , m_themeCallbackId(0)
     , m_bIncludePath(false)
+    , m_themeCallbackId(0)
 {
 }
 
-CNameDlg::~CNameDlg(void)
+CNameDlg::~CNameDlg()
 {
 }
 
@@ -73,12 +73,11 @@ LRESULT CNameDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
         case WM_GETMINMAXINFO:
         {
-            MINMAXINFO* mmi       = (MINMAXINFO*)lParam;
+            MINMAXINFO* mmi       = reinterpret_cast<MINMAXINFO*>(lParam);
             mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
             mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
             return 0;
         }
-        break;
         case WM_CLOSE:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             break;
@@ -98,7 +97,7 @@ LRESULT CNameDlg::DoCommand(int id, int /*msg*/)
             m_name         = buf.get();
             m_bIncludePath = IsDlgButtonChecked(*this, IDC_INCLUDEPATH);
         }
-            // fall through
+            [[fallthrough]];
         case IDCANCEL:
             EndDialog(*this, id);
             break;

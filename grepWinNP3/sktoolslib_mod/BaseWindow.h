@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2017-2018, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2017-2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +18,6 @@
 //
 
 #pragma once
-#include "ResString.h"
 
 #include <string>
 
@@ -65,7 +64,7 @@ public:
     virtual bool CreateEx(DWORD dwExStyles, DWORD dwStyles, HWND hParent = nullptr, RECT* rect = nullptr, LPCWSTR classname = nullptr, HMENU hMenu = nullptr);
 
     //void MsgLoop();
-    bool IsWindowClosed() { return bWindowClosed; };
+    bool IsWindowClosed() const { return bWindowClosed; };
 
     operator HWND() { return m_hwnd; }
     operator HWND() const { return m_hwnd; }
@@ -85,8 +84,8 @@ protected:
 
     //constructor
     CWindow(HINSTANCE hInst, CONST WNDCLASSEX* wcx = nullptr)
-        : m_hwnd(nullptr)
-        , hResource(nullptr)
+        : hResource(nullptr)
+        , m_hwnd(nullptr)
         , m_hParent(nullptr)
         , bWindowClosed(FALSE)
         , bWindowRestored(false)
@@ -95,15 +94,16 @@ protected:
     {
         hResource = hInst;
         if (wcx != nullptr)
-            RegisterWindow(wcx);
+            CWindow::RegisterWindow(wcx);
     };
+    virtual ~CWindow() = default;
 
     // the real message handler
     virtual LRESULT CALLBACK WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
 
     // returns a pointer the window (stored as the WindowLong)
-    inline static CWindow* GetObjectFromWindow(HWND hWnd)
+    static CWindow* GetObjectFromWindow(HWND hWnd)
     {
-        return (CWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+        return reinterpret_cast<CWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     }
 };

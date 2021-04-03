@@ -1,6 +1,6 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2014, 2020 - Stefan Kueng
+// Copyright (C) 2014, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -48,19 +48,19 @@ public:
      */
     std::wstring GetTempDirPath(bool bRemoveAtEnd, const std::wstring& path = std::wstring());
 
-    void AddFileToRemove(const std::wstring& file) { m_TempFileList.insert(file); }
+    void AddFileToRemove(const std::wstring& file) { m_tempFileList.insert(file); }
 
 private:
     // try to allocate an unused temp file / dir at most MAX_RETRIES times
 
     enum
     {
-        MAX_RETRIES = 100
+        Max_Retries = 100
     };
 
     // list of paths to delete when terminating the app
 
-    std::set<std::wstring> m_TempFileList;
+    std::set<std::wstring> m_tempFileList;
 
     // actual implementation
 
@@ -69,6 +69,6 @@ private:
 
     // construction / destruction
 
-    CTempFiles(void);
-    ~CTempFiles(void);
+    CTempFiles();
+    ~CTempFiles();
 };

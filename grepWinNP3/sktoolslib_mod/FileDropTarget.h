@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,47 +27,48 @@
 #include "UnicodeUtils.h"
 #include "maxpath.h"
 
+// ReSharper disable once CppInconsistentNaming
 class CIDropTarget : public IDropTarget
 {
     DWORD                     m_cRefCount;
     bool                      m_bAllowDrop;
     struct IDropTargetHelper *m_pDropTargetHelper;
-    std::vector<FORMATETC>    m_formatetc;
+    std::vector<FORMATETC>    m_formatEtc;
     FORMATETC *               m_pSupportedFrmt;
 
 protected:
     HWND m_hTargetWnd;
 
 public:
-    CIDropTarget(HWND m_hTargetWnd);
+    CIDropTarget(HWND hTargetWnd);
     virtual ~CIDropTarget();
-    void AddSuportedFormat(FORMATETC &ftetc) { m_formatetc.push_back(ftetc); }
+    void AddSuportedFormat(FORMATETC &ftetc) { m_formatEtc.push_back(ftetc); }
 
     //return values: true - release the medium. false - don't release the medium
     virtual bool OnDrop(FORMATETC *pFmtEtc, STGMEDIUM &medium, DWORD *pdwEffect) = 0;
 
-    virtual HRESULT STDMETHODCALLTYPE QueryInterface(
+    HRESULT STDMETHODCALLTYPE QueryInterface(
         REFIID riid,
-        void __RPC_FAR *__RPC_FAR *ppvObject);
-    virtual ULONG STDMETHODCALLTYPE AddRef(void) { return ++m_cRefCount; }
-    virtual ULONG STDMETHODCALLTYPE Release(void);
+        void __RPC_FAR *__RPC_FAR *ppvObject) override;
+    ULONG STDMETHODCALLTYPE AddRef() override { return ++m_cRefCount; }
+    ULONG STDMETHODCALLTYPE Release() override;
 
-    bool                              QueryDrop(DWORD grfKeyState, LPDWORD pdwEffect);
-    virtual HRESULT STDMETHODCALLTYPE DragEnter(
+    bool                      QueryDrop(DWORD grfKeyState, LPDWORD pdwEffect) const;
+    HRESULT STDMETHODCALLTYPE DragEnter(
         IDataObject __RPC_FAR *pDataObj,
         DWORD                  grfKeyState,
         POINTL                 pt,
-        DWORD __RPC_FAR *pdwEffect);
-    virtual HRESULT STDMETHODCALLTYPE DragOver(
+        DWORD __RPC_FAR *pdwEffect) override;
+    HRESULT STDMETHODCALLTYPE DragOver(
         DWORD  grfKeyState,
         POINTL pt,
-        DWORD __RPC_FAR *pdwEffect);
-    virtual HRESULT STDMETHODCALLTYPE DragLeave(void);
-    virtual HRESULT STDMETHODCALLTYPE Drop(
+        DWORD __RPC_FAR *pdwEffect) override;
+    HRESULT STDMETHODCALLTYPE DragLeave() override;
+    HRESULT STDMETHODCALLTYPE Drop(
         IDataObject __RPC_FAR *pDataObj,
         DWORD                  grfKeyState,
         POINTL                 pt,
-        DWORD __RPC_FAR *pdwEffect);
+        DWORD __RPC_FAR *pdwEffect) override;
 };
 
 class CFileDropTarget : public CIDropTarget
@@ -75,7 +76,7 @@ class CFileDropTarget : public CIDropTarget
 public:
     CFileDropTarget(HWND hTargetWnd)
         : CIDropTarget(hTargetWnd)
-        , m_hParent(NULL)
+        , m_hParent(nullptr)
         , m_concat(0)
     {
     }
@@ -86,29 +87,30 @@ public:
     {
         RegisterDragDrop(hTargetWnd, this);
         // create the supported format:
-        FORMATETC ftetc = {0};
-        ftetc.cfFormat  = CF_HDROP;
-        ftetc.dwAspect  = DVASPECT_CONTENT;
-        ftetc.lindex    = -1;
-        ftetc.tymed     = TYMED_HGLOBAL;
-        AddSuportedFormat(ftetc);
+        FORMATETC ftEtc = {0};
+        ftEtc.cfFormat  = CF_HDROP;
+        ftEtc.dwAspect  = DVASPECT_CONTENT;
+        ftEtc.lindex    = -1;
+        ftEtc.tymed     = TYMED_HGLOBAL;
+        AddSuportedFormat(ftEtc);
     }
-    void         SetMultipathConcatenate(wchar_t ch) { m_concat = ch; }
-    virtual bool OnDrop(FORMATETC *pFmtEtc, STGMEDIUM &medium, DWORD * /*pdwEffect*/)
+    void SetMultipathConcatenate(wchar_t ch) { m_concat = ch; }
+
+    bool OnDrop(FORMATETC *pFmtEtc, STGMEDIUM &medium, DWORD * /*pdwEffect*/) override
     {
         if (m_hParent && (pFmtEtc->cfFormat == CF_HDROP) && (medium.tymed == TYMED_HGLOBAL))
         {
-            HDROP hDrop = (HDROP)GlobalLock(medium.hGlobal);
-            if (hDrop != NULL)
+            HDROP hDrop = static_cast<HDROP>(GlobalLock(medium.hGlobal));
+            if (hDrop != nullptr)
             {
-                SendMessage(m_hParent, WM_DROPFILES, (WPARAM)hDrop, 0);
+                SendMessage(m_hParent, WM_DROPFILES, reinterpret_cast<WPARAM>(hDrop), 0);
             }
             GlobalUnlock(medium.hGlobal);
             return true; //let base free the medium
         }
         if (pFmtEtc->cfFormat == CF_TEXT && medium.tymed == TYMED_ISTREAM)
         {
-            if (medium.pstm != NULL)
+            if (medium.pstm != nullptr)
             {
                 const int BUF_SIZE = 10000;
                 auto      buff     = std::make_unique<char[]>(BUF_SIZE + 1);
@@ -120,7 +122,7 @@ public:
                     LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                     ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
                     std::wstring str = CUnicodeUtils::StdGetUnicode(std::string(buff.get()));
-                    ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
+                    ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(str.c_str()));
                 }
                 else
                     for (; (hr == S_OK && cbRead > 0) && SUCCEEDED(hr);)
@@ -129,7 +131,7 @@ public:
                         LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                         ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
                         std::wstring str = CUnicodeUtils::StdGetUnicode(std::string(buff.get()));
-                        ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
+                        ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(str.c_str()));
                         cbRead = 0;
                         hr     = medium.pstm->Read(buff.get(), BUF_SIZE, &cbRead);
                     }
@@ -137,7 +139,7 @@ public:
         }
         if (pFmtEtc->cfFormat == CF_UNICODETEXT && medium.tymed == TYMED_ISTREAM)
         {
-            if (medium.pstm != NULL)
+            if (medium.pstm != nullptr)
             {
                 const int BUF_SIZE = 10000;
                 auto      buff     = std::make_unique<char[]>(BUF_SIZE + 1);
@@ -148,7 +150,7 @@ public:
                     buff[cbRead] = 0;
                     LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                     ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
-                    ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)buff.get());
+                    ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(buff.get()));
                 }
                 else
                     for (; (hr == S_OK && cbRead > 0) && SUCCEEDED(hr);)
@@ -156,7 +158,7 @@ public:
                         buff[cbRead] = 0;
                         LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                         ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
-                        ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)buff.get());
+                        ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(buff.get()));
                         cbRead = 0;
                         hr     = medium.pstm->Read(buff.get(), BUF_SIZE, &cbRead);
                     }
@@ -164,35 +166,35 @@ public:
         }
         if (pFmtEtc->cfFormat == CF_TEXT && medium.tymed == TYMED_HGLOBAL)
         {
-            char *pStr = (char *)GlobalLock(medium.hGlobal);
-            if (pStr != NULL)
+            char *pStr = static_cast<char *>(GlobalLock(medium.hGlobal));
+            if (pStr != nullptr)
             {
                 LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                 ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
                 std::wstring str = CUnicodeUtils::StdGetUnicode(std::string(pStr));
-                ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
+                ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(str.c_str()));
             }
             GlobalUnlock(medium.hGlobal);
         }
         if (pFmtEtc->cfFormat == CF_UNICODETEXT && medium.tymed == TYMED_HGLOBAL)
         {
-            WCHAR *pStr = (WCHAR *)GlobalLock(medium.hGlobal);
-            if (pStr != NULL)
+            WCHAR *pStr = static_cast<WCHAR *>(GlobalLock(medium.hGlobal));
+            if (pStr != nullptr)
             {
                 LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                 ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
-                ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)pStr);
+                ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(pStr));
             }
             GlobalUnlock(medium.hGlobal);
         }
         if (pFmtEtc->cfFormat == CF_HDROP && medium.tymed == TYMED_HGLOBAL)
         {
-            HDROP hDrop = (HDROP)GlobalLock(medium.hGlobal);
-            if (hDrop != NULL)
+            HDROP hDrop = static_cast<HDROP>(GlobalLock(medium.hGlobal));
+            if (hDrop != nullptr)
             {
                 auto szFileName = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
 
-                UINT         cFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+                UINT         cFiles = DragQueryFile(hDrop, 0xFFFFFFFF, nullptr, 0);
                 std::wstring concatPaths;
                 for (UINT i = 0; i < cFiles; ++i)
                 {
@@ -204,10 +206,10 @@ public:
                         concatPaths += szFileName.get();
                     }
                     else
-                        ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)szFileName.get());
+                        ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, reinterpret_cast<LPARAM>(szFileName.get()));
                 }
                 if (!concatPaths.empty())
-                    ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)concatPaths.c_str());
+                    ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, reinterpret_cast<LPARAM>(concatPaths.c_str()));
 
                 //DragFinish(hDrop); // base class calls ReleaseStgMedium
             }

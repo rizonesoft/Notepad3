@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2013, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
 #    include <emmintrin.h>
 #endif
 
-static BOOL sse2supported = ::IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE);
+static BOOL sse2Supported = ::IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE);
 // clang-format off
 static constexpr char iri_escape_chars[256] = {
     1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1,
@@ -74,30 +74,6 @@ const char uri_autoescape_chars[256] = {
     0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-static constexpr char uri_char_validity[256] = {
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 1, 1,   1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 0, 0, 1, 0, 0,
-
-    /* 64 */
-    1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 0, 0, 0, 0, 1,
-    0, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 0, 0, 0, 1, 0,
-
-    /* 128 */
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-
-    /* 192 */
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0,
-};
 // clang-format on
 
 bool CEscapeUtils::ContainsEscapedChars(const char* psz, size_t length)
@@ -107,7 +83,7 @@ bool CEscapeUtils::ContainsEscapedChars(const char* psz, size_t length)
 
     const char* end = psz + length;
 #if defined(_M_IX86) || defined(_M_X64)
-    if (sse2supported)
+    if (sse2Supported)
     {
         __m128i mask = _mm_set_epi8('%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%', '%');
 
@@ -115,7 +91,7 @@ bool CEscapeUtils::ContainsEscapedChars(const char* psz, size_t length)
         {
             // fetch the next 16 bytes from the source
 
-            __m128i chunk = _mm_loadu_si128((const __m128i*)psz);
+            __m128i chunk = _mm_loadu_si128(reinterpret_cast<const __m128i*>(psz));
 
             // check for non-ASCII
 
@@ -162,19 +138,19 @@ char* CEscapeUtils::Unescape(char* psz)
             const char* pszHigh = nullptr;
             pszSource++;
 
-            *pszSource = (char)toupper(*pszSource);
+            *pszSource = static_cast<char>(toupper(*pszSource));
             pszHigh    = strchr(szHex, *pszSource);
 
             if (pszHigh != nullptr)
             {
                 pszSource++;
-                *pszSource         = (char)toupper(*pszSource);
+                *pszSource         = static_cast<char>(toupper(*pszSource));
                 const char* pszLow = strchr(szHex, *pszSource);
 
                 if (pszLow != nullptr)
                 {
-                    nValue = (char)(((pszHigh - szHex) << 4) +
-                                    (pszLow - szHex));
+                    nValue = static_cast<char>(((pszHigh - szHex) << 4) +
+                                               (pszLow - szHex));
                 }
             }
             else
@@ -201,39 +177,39 @@ std::string CEscapeUtils::EscapeString(const std::string& str)
     int         i;
     for (i = 0; str[i]; ++i)
     {
-        c = (unsigned char)str[i];
+        c = static_cast<unsigned char>(str[i]);
         if (iri_escape_chars[c])
         {
             // no escaping needed for that char
-            ret2 += (unsigned char)str[i];
+            ret2 += static_cast<unsigned char>(str[i]);
         }
         else
         {
             // char needs escaping
-            ret2 += CStringUtils::Format("%%%02X", (unsigned char)c);
+            ret2 += CStringUtils::Format("%%%02X", static_cast<unsigned char>(c));
         }
     }
     std::string ret;
     for (i = 0; ret2[i]; ++i)
     {
-        c = (unsigned char)ret2[i];
+        c = static_cast<unsigned char>(ret2[i]);
         if (uri_autoescape_chars[c])
         {
             if ((c == '%') && (DoesPercentNeedEscaping(ret2.substr(i).c_str())))
             {
                 // this percent sign needs escaping!
-                ret += CStringUtils::Format("%%%02X", (unsigned char)c);
+                ret += CStringUtils::Format("%%%02X", static_cast<unsigned char>(c));
             }
             else
             {
                 // no escaping needed for that char
-                ret += (unsigned char)ret2[i];
+                ret += static_cast<unsigned char>(ret2[i]);
             }
         }
         else
         {
             // char needs escaping
-            ret += CStringUtils::Format("%%%02X", (unsigned char)c);
+            ret += CStringUtils::Format("%%%02X", static_cast<unsigned char>(c));
         }
     }
     return ret;
@@ -256,7 +232,7 @@ std::string CEscapeUtils::StringUnescape(const std::string& str)
 
 std::wstring CEscapeUtils::StringUnescape(const std::wstring& str)
 {
-    int len = (int)str.size();
+    auto len = str.size();
     if (len == 0)
         return std::wstring();
     std::string stra = CUnicodeUtils::StdGetUTF8(str);

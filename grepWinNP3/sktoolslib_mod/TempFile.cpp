@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2014, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2014, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,16 +20,15 @@
 #include "TempFile.h"
 #include "StringUtils.h"
 #include "PathUtils.h"
-#include "DirFileEnum.h"
 #include "SmartHandle.h"
 
-CTempFiles::CTempFiles(void)
+CTempFiles::CTempFiles()
 {
 }
 
-CTempFiles::~CTempFiles(void)
+CTempFiles::~CTempFiles()
 {
-    for (const auto& f : m_TempFileList)
+    for (const auto& f : m_tempFileList)
         DeleteFile(f.c_str());
 }
 
@@ -42,15 +41,14 @@ CTempFiles& CTempFiles::Instance()
 std::wstring CTempFiles::ConstructTempPath(const std::wstring& path) const
 {
     DWORD len      = ::GetTempPath(0, nullptr);
-    auto  temppath = std::make_unique<wchar_t[]>(len + 1);
+    auto  tempPath = std::make_unique<wchar_t[]>(len + 1);
     auto  tempF    = std::make_unique<wchar_t[]>(len + 50);
-    ::GetTempPath(len + 1, temppath.get());
-    std::wstring tempfile;
-    std::wstring possibletempfile;
+    ::GetTempPath(len + 1, tempPath.get());
+    std::wstring tempFile;
     if (path.empty())
     {
-        ::GetTempFileName(temppath.get(), L"skt", 0, tempF.get());
-        tempfile = std::wstring(tempF.get());
+        ::GetTempFileName(tempPath.get(), L"skt", 0, tempF.get());
+        tempFile = std::wstring(tempF.get());
     }
     else
     {
@@ -64,25 +62,25 @@ std::wstring CTempFiles::ConstructTempPath(const std::wstring& path) const
             std::wstring sExt = CPathUtils::GetFileExtension(path);
             do
             {
-                possibletempfile = CStringUtils::Format(L"%s%s.svn%3.3x.tmp.%s", temppath.get(), (LPCWSTR)filename.c_str(), i, (LPCWSTR)sExt.c_str());
-                tempfile         = possibletempfile;
-                filename         = filename.substr(0, filename.size() - 1);
-            } while ((filename.size() > 4) && (tempfile.size() >= MAX_PATH));
+                std::wstring possibleTempFile = CStringUtils::Format(L"%s%s.svn%3.3x.tmp.%s", tempPath.get(), filename.c_str(), i, sExt.c_str());
+                tempFile                      = possibleTempFile;
+                filename                      = filename.substr(0, filename.size() - 1);
+            } while ((filename.size() > 4) && (tempFile.size() >= MAX_PATH));
             i++;
-        } while (PathFileExists(tempfile.c_str()));
+        } while (PathFileExists(tempFile.c_str()));
     }
 
     // caller has to actually grab the file path
 
-    return tempfile;
+    return tempFile;
 }
 
 std::wstring CTempFiles::CreateTempPath(bool bRemoveAtEnd, const std::wstring& path, bool directory)
 {
     bool succeeded = false;
-    for (int retryCount = 0; retryCount < MAX_RETRIES; ++retryCount)
+    for (int retryCount = 0; retryCount < Max_Retries; ++retryCount)
     {
-        std::wstring tempfile = ConstructTempPath(path);
+        std::wstring tempFile = ConstructTempPath(path);
 
         // now create the temp file / directory, so that subsequent calls to GetTempFile() return
         // different filenames.
@@ -90,8 +88,8 @@ std::wstring CTempFiles::CreateTempPath(bool bRemoveAtEnd, const std::wstring& p
 
         if (directory)
         {
-            DeleteFile(tempfile.c_str());
-            if (CreateDirectory(tempfile.c_str(), nullptr) == FALSE)
+            DeleteFile(tempFile.c_str());
+            if (CreateDirectory(tempFile.c_str(), nullptr) == FALSE)
             {
                 if (GetLastError() != ERROR_ALREADY_EXISTS)
                     return std::wstring();
@@ -101,7 +99,7 @@ std::wstring CTempFiles::CreateTempPath(bool bRemoveAtEnd, const std::wstring& p
         }
         else
         {
-            CAutoFile hFile = CreateFile(tempfile.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, nullptr);
+            CAutoFile hFile = CreateFile(tempFile.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, nullptr);
             if (!hFile)
             {
                 if (GetLastError() != ERROR_ALREADY_EXISTS)
@@ -118,9 +116,9 @@ std::wstring CTempFiles::CreateTempPath(bool bRemoveAtEnd, const std::wstring& p
         if (succeeded)
         {
             if (bRemoveAtEnd)
-                m_TempFileList.insert(tempfile);
+                m_tempFileList.insert(tempFile);
 
-            return tempfile;
+            return tempFile;
         }
     }
 

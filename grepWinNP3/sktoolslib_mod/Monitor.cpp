@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2020 - Stefan Kueng
+// Copyright (C) 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,14 +19,16 @@
 
 #include "stdafx.h"
 #include "Monitor.h"
+#include <vector>
+#include <algorithm>
 
 static BOOL CALLBACK MonitorEnum(HMONITOR hMon, HDC /*hdc*/, LPRECT lprcMonitor, LPARAM pData)
 {
-    MONITORINFOEX miex{};
-    miex.cbSize = sizeof(MONITORINFOEX);
-    GetMonitorInfo(hMon, &miex);
+    MONITORINFOEX miEx{};
+    miEx.cbSize = sizeof(MONITORINFOEX);
+    GetMonitorInfo(hMon, &miEx);
 
-    if (miex.dwFlags == DISPLAY_DEVICE_MIRRORING_DRIVER)
+    if (miEx.dwFlags == DISPLAY_DEVICE_MIRRORING_DRIVER)
     {
         return TRUE;
     }
@@ -39,12 +41,12 @@ static BOOL CALLBACK MonitorEnum(HMONITOR hMon, HDC /*hdc*/, LPRECT lprcMonitor,
 std::wstring GetMonitorSetupHash()
 {
     std::vector<RECT> monRects;
-    EnumDisplayMonitors(0, 0, MonitorEnum, (LPARAM)&monRects);
+    EnumDisplayMonitors(nullptr, nullptr, MonitorEnum, reinterpret_cast<LPARAM>(&monRects));
     std::sort(monRects.begin(), monRects.end(),
-        [](const RECT& a, const RECT& b) -> bool {
-            if (a.left == b.left)
-                return a.top < b.top;
-            return a.left < b.left;
-        });
+              [](const RECT& a, const RECT& b) -> bool {
+                  if (a.left == b.left)
+                      return a.top < b.top;
+                  return a.left < b.left;
+              });
     return GetHashText(monRects.data(), monRects.size() * sizeof(RECT), HashType::HashMd5);
 }

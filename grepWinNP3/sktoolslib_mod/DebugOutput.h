@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2015, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2015, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -46,12 +46,12 @@ public:
 
     bool SetLogFile(PCWSTR path)
     {
-        auto handle = CreateFile(path, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        auto handle = CreateFile(path, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
         if (handle == INVALID_HANDLE_VALUE)
             return false;
 
         // Associates a C run-time file descriptor with a file HANDLE.
-        auto fd = _open_osfhandle((intptr_t)handle, _O_BINARY | _O_TEXT);
+        auto fd = _open_osfhandle(reinterpret_cast<intptr_t>(handle), _O_BINARY | _O_TEXT);
         if (fd == -1)
         {
             CloseHandle(handle);
@@ -60,15 +60,15 @@ public:
 
         // Associates a stream with a C run-time file descriptor.
         m_fi = _fdopen(fd, "w+");
-        if (m_fi != NULL)
+        if (m_fi != nullptr)
         {
-            setvbuf(m_fi, NULL, _IONBF, 0);
+            setvbuf(m_fi, nullptr, _IONBF, 0);
             return true;
         }
         return false;
     }
     // Non Unicode output helper
-    void operator()(PCSTR pszFormat, ...)
+    void operator()(PCSTR pszFormat, ...) const
     {
         if (m_bActive)
         {
@@ -80,7 +80,7 @@ public:
     }
 
     // Unicode output helper
-    void operator()(PCWSTR pszFormat, ...)
+    void operator()(PCWSTR pszFormat, ...) const
     {
         if (m_bActive)
         {
@@ -91,7 +91,7 @@ public:
         }
     }
 
-    void Verify(bool expr, const char* function, int line, const char* msg, ...)
+    void Verify(bool expr, const char* function, int line, const char* msg, ...) const
     {
         if (!expr)
         {
@@ -127,7 +127,7 @@ public:
         }
     }
 
-    void Verify(bool expr, const char* function, int line, const wchar_t* msg, ...)
+    void Verify(bool expr, const char* function, int line, const wchar_t* msg, ...) const
     {
         if (!expr)
         {
@@ -168,7 +168,7 @@ private:
     CTraceToOutputDebugString()
         : m_fi(nullptr)
     {
-        m_LastTick = GetTickCount64();
+        m_lastTick = GetTickCount64();
         m_bActive  = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
     }
     ~CTraceToOutputDebugString()
@@ -176,13 +176,13 @@ private:
         delete m_pInstance;
     }
 
-    ULONGLONG                         m_LastTick;
+    ULONGLONG                         m_lastTick;
     bool                              m_bActive;
     FILE*                             m_fi;
     static CTraceToOutputDebugString* m_pInstance;
 
     // Non Unicode output helper
-    void TraceV(PCSTR pszFormat, va_list args)
+    void TraceV(PCSTR pszFormat, va_list args) const
     {
         // Format the output buffer
         char szBuffer[1024];
@@ -193,7 +193,7 @@ private:
     }
 
     // Unicode output helper
-    void TraceV(PCWSTR pszFormat, va_list args)
+    void TraceV(PCWSTR pszFormat, va_list args) const
     {
         wchar_t szBuffer[1024];
         _vsnwprintf_s(szBuffer, _countof(szBuffer), pszFormat, args);
@@ -207,9 +207,9 @@ private:
 #ifdef DEBUG
         return true;
 #else
-        if (GetTickCount64() - m_LastTick > 10000)
+        if (GetTickCount64() - m_lastTick > 10000)
         {
-            m_LastTick = GetTickCount64();
+            m_lastTick = GetTickCount64();
             m_bActive  = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
         }
         return m_bActive;
@@ -229,12 +229,12 @@ public:
     {
         LARGE_INTEGER endTime;
         QueryPerformanceCounter(&endTime);
-        LARGE_INTEGER Frequency;
-        QueryPerformanceFrequency(&Frequency);
+        LARGE_INTEGER frequency;
+        QueryPerformanceFrequency(&frequency);
         LARGE_INTEGER milliseconds;
         milliseconds.QuadPart = endTime.QuadPart - startTime.QuadPart;
         milliseconds.QuadPart *= 1000;
-        milliseconds.QuadPart /= Frequency.QuadPart;
+        milliseconds.QuadPart /= frequency.QuadPart;
         CTraceToOutputDebugString::Instance()(L"%s : %lld ms\n", info.c_str(), milliseconds.QuadPart);
     }
 

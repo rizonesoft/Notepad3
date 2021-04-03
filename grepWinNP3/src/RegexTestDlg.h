@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2019-2020 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #include "BaseDialog.h"
 #include "DlgResizer.h"
 #include <string>
-#include <vector>
 
 #define ID_REGEXTIMER 100
 
@@ -31,17 +30,17 @@ class CRegexTestDlg : public CDialog
 {
 public:
     CRegexTestDlg(HWND hParent);
-    ~CRegexTestDlg(void);
+    ~CRegexTestDlg();
 
     void         SetStrings(const std::wstring& search, const std::wstring& replace);
-    std::wstring GetSearchString() { return m_searchText; }
-    std::wstring GetReplaceString() { return m_replaceText; }
+    std::wstring GetSearchString() const { return m_searchText; }
+    std::wstring GetReplaceString() const { return m_replaceText; }
 
     bool bDotMatchesNewline;
     bool bCaseSensitive;
 
 protected:
-    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
     LRESULT          DoCommand(int id, int msg);
     void             DoRegex();
 

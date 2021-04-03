@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -116,7 +116,7 @@ public:
     /**
      * Reads the value for a key as a long. If the value is a string which can't be
      * converted to a number then 0 is returned.
-     * \param the key to get the value from
+     * \param the sKey to get the value from
      * \return the value converted to a long
      */
     LONG GetLongVal(LPCWSTR sKey) const;

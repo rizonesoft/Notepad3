@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2015-2018, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2015-2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -65,16 +65,14 @@ bool CWindow::RegisterWindow(CONST WNDCLASSEX* wcx)
 
 LRESULT CALLBACK CWindow::stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    CWindow* pWnd;
-
     if (uMsg == WM_NCCREATE)
     {
         // get the pointer to the window from lpCreateParams which was set in CreateWindow
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)((LPCREATESTRUCT(lParam))->lpCreateParams));
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(reinterpret_cast<LPCREATESTRUCT>(lParam)->lpCreateParams));
     }
 
     // get the pointer to the window
-    pWnd = GetObjectFromWindow(hwnd);
+    CWindow* pWnd = GetObjectFromWindow(hwnd);
 
     // if we have the pointer, go to the message handler of the window
     // else, use DefWindowProc
@@ -132,19 +130,19 @@ bool CWindow::CreateEx(DWORD dwExStyles, DWORD dwStyles, HWND hParent /* = nullp
 {
     // send the this pointer as the window creation parameter
     if (rect == nullptr)
-        m_hwnd = CreateWindowEx(dwExStyles, classname ? classname : sClassName.c_str(), sWindowTitle.c_str(), dwStyles, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hParent, hMenu, hResource, (void*)this);
+        m_hwnd = CreateWindowEx(dwExStyles, classname ? classname : sClassName.c_str(), sWindowTitle.c_str(), dwStyles, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hParent, hMenu, hResource, static_cast<void*>(this));
     else
     {
         m_hwnd = CreateWindowEx(dwExStyles, classname ? classname : sClassName.c_str(), sWindowTitle.c_str(), dwStyles, rect->left, rect->top,
                                 rect->right - rect->left, rect->bottom - rect->top, hParent, hMenu, hResource,
-                                (void*)this);
+                                static_cast<void*>(this));
     }
     m_hParent = hParent;
 
     if (!bRegisterWindowCalled)
     {
         ::SetWindowLongPtr(m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-        prevWndProc = (WNDPROC)GetWindowLongPtr(m_hwnd, GWLP_WNDPROC);
+        prevWndProc = reinterpret_cast<WNDPROC>(GetWindowLongPtr(m_hwnd, GWLP_WNDPROC));
         ::SetWindowLongPtr(m_hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(stWinMsgHandler));
     }
 
@@ -155,15 +153,15 @@ void CWindow::SetTransparency(BYTE alpha, COLORREF color /* = 0xFF000000 */)
 {
     if (alpha == 255)
     {
-        LONG_PTR exstyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
-        exstyle &= ~WS_EX_LAYERED;
-        SetWindowLongPtr(*this, GWL_EXSTYLE, exstyle);
+        LONG_PTR exStyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
+        exStyle &= ~WS_EX_LAYERED;
+        SetWindowLongPtr(*this, GWL_EXSTYLE, exStyle);
     }
     else
     {
-        LONG_PTR exstyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
-        exstyle |= WS_EX_LAYERED;
-        SetWindowLongPtr(*this, GWL_EXSTYLE, exstyle);
+        LONG_PTR exStyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
+        exStyle |= WS_EX_LAYERED;
+        SetWindowLongPtr(*this, GWL_EXSTYLE, exStyle);
     }
     COLORREF col   = color;
     DWORD    flags = LWA_ALPHA;

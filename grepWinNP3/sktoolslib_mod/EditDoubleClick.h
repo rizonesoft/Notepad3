@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
 class CEditDoubleClick
 {
 public:
-    CEditDoubleClick(void);
-    virtual ~CEditDoubleClick(void);
+    CEditDoubleClick();
+    virtual ~CEditDoubleClick();
 
     BOOL Subclass(HWND hwndParent, UINT uiCtlId);
 
@@ -35,8 +35,6 @@ private:
     UINT    m_ctrlId;
     WNDPROC m_pfnOrigCtlProc;
 
-    static LRESULT CALLBACK _HyperlinkParentProc(HWND hwnd, UINT message,
-                                                 WPARAM wParam, LPARAM lParam);
     static LRESULT CALLBACK EditCtrlWinProc(HWND hwnd, UINT message,
                                             WPARAM wParam, LPARAM lParam);
 };

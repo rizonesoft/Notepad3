@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013-2014, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2013-2014, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,9 +20,7 @@
 #pragma once
 
 #include <string>
-#include <algorithm>
 #include <functional>
-#include <memory>
 
 class CPathUtils
 {

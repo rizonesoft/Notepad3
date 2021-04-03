@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2018, 2020 - Stefan Kueng
+// Copyright (C) 2018, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -30,11 +30,11 @@ using Microsoft::WRL::ComPtr;
 HRESULT SetAppID(LPCWSTR appID)
 {
     // set the AppID
-    typedef HRESULT STDAPICALLTYPE SetCurrentProcessExplicitAppUserModelIDFN(PCWSTR AppID);
+    typedef HRESULT STDAPICALLTYPE SetCurrentProcessExplicitAppUserModelIdfn(PCWSTR appId);
     CAutoLibrary                   hShell = LoadLibraryExW(L"Shell32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (hShell)
     {
-        SetCurrentProcessExplicitAppUserModelIDFN *pfnSetCurrentProcessExplicitAppUserModelID = (SetCurrentProcessExplicitAppUserModelIDFN *)GetProcAddress(hShell, "SetCurrentProcessExplicitAppUserModelID");
+        SetCurrentProcessExplicitAppUserModelIdfn *pfnSetCurrentProcessExplicitAppUserModelID = reinterpret_cast<SetCurrentProcessExplicitAppUserModelIdfn *>(GetProcAddress(hShell, "SetCurrentProcessExplicitAppUserModelID"));
         if (pfnSetCurrentProcessExplicitAppUserModelID)
         {
             return pfnSetCurrentProcessExplicitAppUserModelID(appID);
@@ -46,12 +46,12 @@ HRESULT SetAppID(LPCWSTR appID)
 HRESULT CreateShellLink(PCWSTR pszArguments, PCWSTR pszTitle, int iconIndex, bool asAdmin, ComPtr<IShellLink> *ppsl)
 {
     ComPtr<IShellLink> psl;
-    HRESULT            hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(psl.GetAddressOf()));
+    HRESULT            hr = CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(psl.GetAddressOf()));
     if (FAILED(hr))
         return hr;
 
     WCHAR szAppPath[MAX_PATH] = {0};
-    if (GetModuleFileName(NULL, szAppPath, _countof(szAppPath)) == 0)
+    if (GetModuleFileName(nullptr, szAppPath, _countof(szAppPath)) == 0)
     {
         hr = HRESULT_FROM_WIN32(GetLastError());
         return hr;
@@ -88,11 +88,11 @@ HRESULT CreateShellLink(PCWSTR pszArguments, PCWSTR pszTitle, int iconIndex, boo
         }
     }
 
-    PROPVARIANT propvar;
-    hr = InitPropVariantFromString(pszTitle, &propvar);
+    PROPVARIANT propVar;
+    hr = InitPropVariantFromString(pszTitle, &propVar);
     if (SUCCEEDED(hr))
     {
-        hr = pps->SetValue(PKEY_Title, propvar);
+        hr = pps->SetValue(PKEY_Title, propVar);
         if (SUCCEEDED(hr))
         {
             hr = pps->Commit();
@@ -101,7 +101,7 @@ HRESULT CreateShellLink(PCWSTR pszArguments, PCWSTR pszTitle, int iconIndex, boo
                 hr = psl.As(ppsl);
             }
         }
-        PropVariantClear(&propvar);
+        PropVariantClear(&propVar);
     }
     return hr;
 }
@@ -109,16 +109,16 @@ HRESULT CreateShellLink(PCWSTR pszArguments, PCWSTR pszTitle, int iconIndex, boo
 HRESULT CreateSeparatorLink(ComPtr<IShellLink> *ppsl)
 {
     ComPtr<IPropertyStore> pps;
-    HRESULT                hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(pps.GetAddressOf()));
+    HRESULT                hr = CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(pps.GetAddressOf()));
     if (FAILED(hr))
         return hr;
 
-    PROPVARIANT propvar;
-    hr = InitPropVariantFromBoolean(TRUE, &propvar);
+    PROPVARIANT propVar;
+    hr = InitPropVariantFromBoolean(TRUE, &propVar);
     if (FAILED(hr))
         return hr;
 
-    hr = pps->SetValue(PKEY_AppUserModel_IsDestListSeparator, propvar);
+    hr = pps->SetValue(PKEY_AppUserModel_IsDestListSeparator, propVar);
     if (SUCCEEDED(hr))
     {
         hr = pps->Commit();
@@ -127,7 +127,7 @@ HRESULT CreateSeparatorLink(ComPtr<IShellLink> *ppsl)
             hr = pps.As(ppsl);
         }
     }
-    PropVariantClear(&propvar);
+    PropVariantClear(&propVar);
     return hr;
 }
 
@@ -152,7 +152,7 @@ bool IsItemInArray(IShellItem *psi, IObjectArray *poaRemoved)
 HRESULT DeleteJumpList(LPCWSTR appID)
 {
     ComPtr<ICustomDestinationList> pcdl;
-    HRESULT                        hr = CoCreateInstance(CLSID_DestinationList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(pcdl.GetAddressOf()));
+    HRESULT                        hr = CoCreateInstance(CLSID_DestinationList, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(pcdl.GetAddressOf()));
     if (SUCCEEDED(hr))
     {
         hr = pcdl->DeleteList(appID);
@@ -162,7 +162,7 @@ HRESULT DeleteJumpList(LPCWSTR appID)
 
 HRESULT SetRelaunchCommand(HWND hWnd, LPCWSTR appID, LPCWSTR commandLine, LPCWSTR dispName, LPCWSTR icon)
 {
-    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     // hWnd must be a top-level window
     while (GetParent(hWnd))
         hWnd = GetParent(hWnd);

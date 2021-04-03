@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013, 2016, 2020 Stefan Kueng
+// Copyright (C) 2013, 2016, 2020-2021 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -36,14 +36,14 @@ class ResString
 public:
     // hInst is necessary to support multiple languages with resource dlls
     inline ResString(HINSTANCE hInst, int resId)
-        : str(LoadResourceWString(hInst, resId))
+        : m_str(LoadResourceWString(hInst, resId))
     {
     }
     // Handy for when used with printf etc and to avoid explicit casts.
-    inline const wchar_t* c_str() const { return str.c_str(); }
-    inline                operator const wchar_t* const() const { return str.c_str(); }
-    inline                operator const std::wstring &() const { return str; }
+    inline const wchar_t* c_str() const { return m_str.c_str(); }
+    inline                operator const wchar_t* const() const { return m_str.c_str(); }
+    inline                operator const std::wstring &() const { return m_str; }
 
 private:
-    const std::wstring str;
+    const std::wstring m_str;
 };

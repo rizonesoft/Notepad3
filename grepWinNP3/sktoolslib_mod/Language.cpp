@@ -18,8 +18,8 @@
 //
 #include "stdafx.h"
 #include "Language.h"
-#include "codecvt.h"
 #include "StringUtils.h"
+#include "UnicodeUtils.h"
 
 #include <Commctrl.h>
 #include <Shlwapi.h>
@@ -30,6 +30,7 @@
 #include <memory>
 #include <functional>
 
+
 #define MAX_STRING_LENGTH (64 * 1024)
 
 bool CLanguage::LoadFile(const std::wstring& path)
@@ -39,12 +40,12 @@ bool CLanguage::LoadFile(const std::wstring& path)
     // revert to original language
     if (_wcsicmp(lastLangPath.c_str(), path.c_str()))
     {
-        std::map<std::wstring, std::wstring> langmap2;
-        for (const auto& item : langmap)
+        std::map<std::wstring, std::wstring> langMap2;
+        for (auto it = langmap.cbegin(); it != langmap.cend(); ++it)
         {
-            langmap2[item.second] = item.first;
+            langMap2[it->second] = it->first;
         }
-        langmap = langmap2;
+        langmap = langMap2;
     }
 
     if (!PathFileExists(path.c_str()))
@@ -52,19 +53,7 @@ bool CLanguage::LoadFile(const std::wstring& path)
 
     lastLangPath = path;
 
-#ifdef _WIN32
-    // The wchar_t version is a compiler extension, it works on Microsoft C++ compiler
-    const wchar_t* const filepath = path.c_str();
-#else
-    // since stream classes still expect the filepath in char and not wchar_t
-    // we need to convert the filepath to multibyte first
-    char filepath[MAX_PATH + 1];
-    SecureZeroMemory(filepath, sizeof(filepath));
-    WideCharToMultiByte(CP_ACP, 0, path.c_str(), -1, filepath, _countof(filepath) - 1, nullptr, nullptr);
-#endif
-
-    std::wifstream File;
-    File.imbue(std::locale(std::locale(), new utf8_conversion()));
+    std::ifstream file;
     try
     {
     }
@@ -72,21 +61,21 @@ bool CLanguage::LoadFile(const std::wstring& path)
     {
         return false;
     }
-    File.open(filepath);
-    if (!File.good())
+    file.open(path);
+    if (!file.good())
     {
         return false;
     }
-    auto  line = std::make_unique<wchar_t[]>(2 * MAX_STRING_LENGTH);
+    auto                      line = std::make_unique<char[]>(2 * MAX_STRING_LENGTH);
     std::vector<std::wstring> entry;
     do
     {
-        File.getline(line.get(), 2 * MAX_STRING_LENGTH);
+        file.getline(line.get(), 2 * MAX_STRING_LENGTH);
         if (line.get()[0] == 0)
         {
             //empty line means end of entry!
-            std::wstring msgid;
-            std::wstring msgstr;
+            std::wstring msgId;
+            std::wstring msgStr;
             int          type = 0;
             for (auto I = entry.begin(); I != entry.end(); ++I)
             {
@@ -108,18 +97,18 @@ bool CLanguage::LoadFile(const std::wstring& path)
                 if (wcsncmp(I->c_str(), L"msgid", 5) == 0)
                 {
                     //message id
-                    msgid = I->c_str();
-                    msgid = std::wstring(msgid.substr(7, msgid.size() - 8));
+                    msgId = I->c_str();
+                    msgId = std::wstring(msgId.substr(7, msgId.size() - 8));
 
-                    std::wstring s = msgid;
+                    std::wstring s = msgId;
                     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wint_t c) { return !iswspace(c); }));
                     type = 1;
                 }
                 if (wcsncmp(I->c_str(), L"msgstr", 6) == 0)
                 {
                     //message string
-                    msgstr = I->c_str();
-                    msgstr = msgstr.substr(8, msgstr.length() - 9);
+                    msgStr = I->c_str();
+                    msgStr = msgStr.substr(8, msgStr.length() - 9);
                     type   = 2;
                 }
                 if (wcsncmp(I->c_str(), L"\"", 1) == 0)
@@ -128,36 +117,37 @@ bool CLanguage::LoadFile(const std::wstring& path)
                     {
                         std::wstring temp = I->c_str();
                         temp              = temp.substr(1, temp.length() - 2);
-                        msgid += temp;
+                        msgId += temp;
                     }
                     if (type == 2)
                     {
                         std::wstring temp = I->c_str();
                         temp              = temp.substr(1, temp.length() - 2);
-                        msgstr += temp;
+                        msgStr += temp;
                     }
                 }
             }
             entry.clear();
-            SearchReplace(msgid, L"\\\"", L"\"");
-            SearchReplace(msgid, L"\\n", L"\n");
-            SearchReplace(msgid, L"\\r", L"\r");
-            SearchReplace(msgid, L"\\\\", L"\\");
-            SearchReplace(msgstr, L"\\\"", L"\"");
-            SearchReplace(msgstr, L"\\n", L"\n");
-            SearchReplace(msgstr, L"\\r", L"\r");
-            SearchReplace(msgstr, L"\\\\", L"\\");
-            if (!msgid.empty() && !msgstr.empty())
-                langmap[msgid] = msgstr;
-            msgid.clear();
-            msgstr.clear();
+            SearchReplace(msgId, L"\\\"", L"\"");
+            SearchReplace(msgId, L"\\n", L"\n");
+            SearchReplace(msgId, L"\\r", L"\r");
+            SearchReplace(msgId, L"\\\\", L"\\");
+            SearchReplace(msgStr, L"\\\"", L"\"");
+            SearchReplace(msgStr, L"\\n", L"\n");
+            SearchReplace(msgStr, L"\\r", L"\r");
+            SearchReplace(msgStr, L"\\\\", L"\\");
+            if (!msgId.empty() && !msgStr.empty())
+                langmap[msgId] = msgStr;
+            msgId.clear();
+            msgStr.clear();
         }
         else
         {
-            entry.push_back(line.get());
+            //~entry.push_back(CUnicodeUtils::StdGetUnicode(line.get()));
+            entry.push_back(UTF8ToWide(line.get()));
         }
-    } while (File.gcount() > 0);
-    File.close();
+    } while (file.gcount() > 0);
+    file.close();
 
     return true;
 }
@@ -179,9 +169,9 @@ void CLanguage::TranslateWindow(HWND hWnd)
 {
     // iterate over all windows and replace their
     // texts with the translation
-    TranslateWindowProc(hWnd, (LPARAM)&langmap);
-    EnumChildWindows(hWnd, TranslateWindowProc, (LPARAM)&langmap);
-    EnumThreadWindows(GetCurrentThreadId(), TranslateWindowProc, (LPARAM)&langmap);
+    TranslateWindowProc(hWnd, reinterpret_cast<LPARAM>(&langmap));
+    EnumChildWindows(hWnd, TranslateWindowProc, reinterpret_cast<LPARAM>(&langmap));
+    EnumThreadWindows(GetCurrentThreadId(), TranslateWindowProc, reinterpret_cast<LPARAM>(&langmap));
     HMENU hSysMenu = GetSystemMenu(hWnd, FALSE);
     if (hSysMenu)
     {
@@ -197,7 +187,7 @@ void CLanguage::TranslateMenu(HMENU hMenu)
         MENUITEMINFO mii = {0};
         mii.cbSize       = sizeof(MENUITEMINFO);
         mii.fMask        = MIIM_STRING | MIIM_SUBMENU;
-        mii.dwTypeData   = 0;
+        mii.dwTypeData   = nullptr;
         if (GetMenuItemInfo(hMenu, i, MF_BYPOSITION, &mii))
         {
             if (mii.hSubMenu)
@@ -205,11 +195,11 @@ void CLanguage::TranslateMenu(HMENU hMenu)
             if (mii.cch)
             {
                 ++mii.cch;
-                auto textbuf   = std::make_unique<wchar_t[]>(mii.cch + 1);
-                mii.dwTypeData = textbuf.get();
+                auto textBuf   = std::make_unique<wchar_t[]>(mii.cch + 1);
+                mii.dwTypeData = textBuf.get();
                 if (GetMenuItemInfo(hMenu, i, MF_BYPOSITION, &mii))
                 {
-                    auto translated = GetTranslatedString(textbuf.get());
+                    auto translated = GetTranslatedString(textBuf.get());
                     mii.fMask       = MIIM_STRING;
                     mii.dwTypeData  = const_cast<wchar_t*>(translated.c_str());
                     SetMenuItemInfo(hMenu, i, MF_BYPOSITION, &mii);
@@ -221,7 +211,7 @@ void CLanguage::TranslateMenu(HMENU hMenu)
 
 BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
 {
-    std::map<std::wstring, std::wstring>* pLangMap = (std::map<std::wstring, std::wstring>*)lParam;
+    std::map<std::wstring, std::wstring>* pLangMap = reinterpret_cast<std::map<std::wstring, std::wstring>*>(lParam);
     int                                   length   = GetWindowTextLength(hwnd);
     auto                                  text     = std::make_unique<wchar_t[]>(length + 1);
     std::wstring                          translatedString;
@@ -231,27 +221,27 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
         SetWindowText(hwnd, translatedString.c_str());
     }
 
-    wchar_t classname[1024] = {0};
-    if (GetClassName(hwnd, classname, _countof(classname)))
+    wchar_t className[1024] = {0};
+    if (GetClassName(hwnd, className, _countof(className)))
     {
-        if ((wcscmp(classname, WC_COMBOBOX) == 0) ||
-            (wcscmp(classname, WC_COMBOBOXEX) == 0))
+        if ((wcscmp(className, WC_COMBOBOX) == 0) ||
+            (wcscmp(className, WC_COMBOBOXEX) == 0))
         {
             // translate the items in the combobox
-            int nSel   = (int)SendMessage(hwnd, CB_GETCURSEL, 0, 0);
-            int nCount = (int)SendMessage(hwnd, CB_GETCOUNT, 0, 0);
+            int nSel   = static_cast<int>(SendMessage(hwnd, CB_GETCURSEL, 0, 0));
+            int nCount = static_cast<int>(SendMessage(hwnd, CB_GETCOUNT, 0, 0));
             for (int i = 0; i < nCount; ++i)
             {
-                length   = (int)SendMessage(hwnd, CB_GETLBTEXTLEN, i, 0);
+                length   = static_cast<int>(SendMessage(hwnd, CB_GETLBTEXTLEN, i, 0));
                 auto buf = std::make_unique<wchar_t[]>(length + 1);
-                SendMessage(hwnd, CB_GETLBTEXT, i, (LPARAM)buf.get());
+                SendMessage(hwnd, CB_GETLBTEXT, i, reinterpret_cast<LPARAM>(buf.get()));
                 std::wstring sTranslated = GetTranslatedString(buf.get(), pLangMap);
-                SendMessage(hwnd, CB_INSERTSTRING, i, (LPARAM)sTranslated.c_str());
+                SendMessage(hwnd, CB_INSERTSTRING, i, reinterpret_cast<LPARAM>(sTranslated.c_str()));
                 SendMessage(hwnd, CB_DELETESTRING, i + 1, 0);
             }
             SendMessage(hwnd, CB_SETCURSEL, nSel, 0);
         }
-        else if (wcscmp(classname, WC_BUTTON) == 0)
+        else if (wcscmp(className, WC_BUTTON) == 0)
         {
             LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
             if (((style & BS_GROUPBOX) == 0) &&
@@ -259,27 +249,27 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
             {
                 // adjust the width of checkbox and radio buttons
                 HDC  hDC = GetWindowDC(hwnd);
-                RECT controlrect;
-                RECT controlrectorig;
-                GetWindowRect(hwnd, &controlrect);
-                ::MapWindowPoints(nullptr, GetParent(hwnd), (LPPOINT)&controlrect, 2);
-                controlrectorig = controlrect;
+                RECT controlRect;
+                RECT controlRectOrig;
+                GetWindowRect(hwnd, &controlRect);
+                ::MapWindowPoints(nullptr, GetParent(hwnd), reinterpret_cast<LPPOINT>(&controlRect), 2);
+                controlRectOrig = controlRect;
                 if (hDC)
                 {
                     HFONT   hFont    = GetWindowFont(hwnd);
                     HGDIOBJ hOldFont = ::SelectObject(hDC, hFont);
-                    if (DrawText(hDC, translatedString.c_str(), -1, &controlrect, DT_WORDBREAK | DT_EDITCONTROL | DT_EXPANDTABS | DT_LEFT | DT_CALCRECT))
+                    if (DrawText(hDC, translatedString.c_str(), -1, &controlRect, DT_WORDBREAK | DT_EDITCONTROL | DT_EXPANDTABS | DT_LEFT | DT_CALCRECT))
                     {
                         // now we have the rectangle the control really needs
-                        if ((controlrectorig.right - controlrectorig.left) > (controlrect.right - controlrect.left))
+                        if ((controlRectOrig.right - controlRectOrig.left) > (controlRect.right - controlRect.left))
                         {
                             // we're dealing with radio buttons and check boxes,
                             // which means we have to add a little space for the checkbox
                             // the value of 3 pixels added here is necessary in case certain visual styles have
                             // been disabled. Without this, the width is calculated too short.
                             const int checkWidth  = GetSystemMetrics(SM_CXMENUCHECK) + 2 * GetSystemMetrics(SM_CXEDGE) + 3;
-                            controlrectorig.right = controlrectorig.left + (controlrect.right - controlrect.left) + checkWidth;
-                            MoveWindow(hwnd, controlrectorig.left, controlrectorig.top, controlrectorig.right - controlrectorig.left, controlrectorig.bottom - controlrectorig.top, TRUE);
+                            controlRectOrig.right = controlRectOrig.left + (controlRect.right - controlRect.left) + checkWidth;
+                            MoveWindow(hwnd, controlRectOrig.left, controlRectOrig.top, controlRectOrig.right - controlRectOrig.left, controlRectOrig.bottom - controlRectOrig.top, TRUE);
                         }
                     }
                     SelectObject(hDC, hOldFont);
@@ -287,7 +277,7 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
                 }
             }
         }
-        else if (wcscmp(classname, WC_HEADER) == 0)
+        else if (wcscmp(className, WC_HEADER) == 0)
         {
             // translate column headers in list and other controls
             int  nCount = Header_GetItemCount(hwnd);
@@ -304,7 +294,7 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
                 Header_SetItem(hwnd, i, &hdi);
             }
         }
-        else if (wcscmp(classname, WC_EDIT) == 0)
+        else if (wcscmp(className, WC_EDIT) == 0)
         {
             // translate hint texts in edit controls
             const int bufCount = 4096;
@@ -314,23 +304,23 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
             auto sTranslated = GetTranslatedString(buf.get(), pLangMap);
             Edit_SetCueBannerText(hwnd, buf.get());
         }
-        else if (wcscmp(classname, TOOLTIPS_CLASS) == 0)
+        else if (wcscmp(className, TOOLTIPS_CLASS) == 0)
         {
             const int bufCount  = 4096;
             auto      buf       = std::make_unique<wchar_t[]>(bufCount);
-            auto      toolCount = (int)SendMessage(hwnd, TTM_GETTOOLCOUNT, 0, 0);
+            auto      toolCount = static_cast<int>(SendMessage(hwnd, TTM_GETTOOLCOUNT, 0, 0));
             for (int i = 0; i < toolCount; ++i)
             {
                 SecureZeroMemory(buf.get(), bufCount * sizeof(wchar_t));
                 TOOLINFO tt = {0};
                 tt.cbSize   = sizeof(TOOLINFO);
                 tt.lpszText = buf.get();
-                SendMessage(hwnd, TTM_ENUMTOOLS, i, (LPARAM)&tt);
+                SendMessage(hwnd, TTM_ENUMTOOLS, i, reinterpret_cast<LPARAM>(&tt));
 
                 auto sTranslated = GetTranslatedString(buf.get(), pLangMap);
                 tt.lpszText      = sTranslated.data();
                 if (tt.lpszText[0])
-                    SendMessage(hwnd, TTM_SETTOOLINFO, 0, (LPARAM)&tt);
+                    SendMessage(hwnd, TTM_SETTOOLINFO, 0, reinterpret_cast<LPARAM>(&tt));
             }
         }
     }

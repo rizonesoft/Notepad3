@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,56 +20,54 @@
 #include "stdafx.h"
 #include "FileDropTarget.h"
 #include <ShlGuid.h>
-#include <ShObjIdl.h >
 
 CIDropTarget::CIDropTarget(HWND hTargetWnd)
-    : m_hTargetWnd(hTargetWnd)
-    , m_cRefCount(0)
+    : m_cRefCount(0)
     , m_bAllowDrop(false)
-    , m_pDropTargetHelper(NULL)
-    , m_pSupportedFrmt(NULL)
+    , m_pDropTargetHelper(nullptr)
+    , m_pSupportedFrmt(nullptr)
+    , m_hTargetWnd(hTargetWnd)
 {
     if (FAILED(CoCreateInstance(CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER,
-                                IID_IDropTargetHelper, (LPVOID *)&m_pDropTargetHelper)))
-        m_pDropTargetHelper = NULL;
+                                IID_IDropTargetHelper, reinterpret_cast<LPVOID *>(&m_pDropTargetHelper))))
+        m_pDropTargetHelper = nullptr;
 }
 
 CIDropTarget::~CIDropTarget()
 {
-    if (m_pDropTargetHelper != NULL)
+    if (m_pDropTargetHelper != nullptr)
     {
         m_pDropTargetHelper->Release();
-        m_pDropTargetHelper = NULL;
+        m_pDropTargetHelper = nullptr;
     }
 }
 
 HRESULT STDMETHODCALLTYPE CIDropTarget::QueryInterface(REFIID riid,
                                                        void __RPC_FAR *__RPC_FAR *ppvObject)
 {
-    *ppvObject = NULL;
+    *ppvObject = nullptr;
     if (IID_IUnknown == riid || IID_IDropTarget == riid)
         *ppvObject = this;
 
-    if (*ppvObject != NULL)
+    if (*ppvObject != nullptr)
     {
-        ((LPUNKNOWN)*ppvObject)->AddRef();
+        static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
         return S_OK;
     }
     return E_NOINTERFACE;
 }
 
-ULONG STDMETHODCALLTYPE CIDropTarget::Release(void)
+ULONG STDMETHODCALLTYPE CIDropTarget::Release()
 {
-    long nTemp;
-    nTemp = --m_cRefCount;
+    long nTemp = --m_cRefCount;
     if (nTemp == 0)
         delete this;
     return nTemp;
 }
 
-bool CIDropTarget::QueryDrop(DWORD grfKeyState, LPDWORD pdwEffect)
+bool CIDropTarget::QueryDrop(DWORD grfKeyState, LPDWORD pdwEffect) const
 {
-    DWORD dwOKEffects = *pdwEffect;
+    DWORD dwOkEffects = *pdwEffect;
 
     if (!m_bAllowDrop)
     {
@@ -84,11 +82,11 @@ bool CIDropTarget::QueryDrop(DWORD grfKeyState, LPDWORD pdwEffect)
     if (*pdwEffect == 0)
     {
         // No modifier keys used by user while dragging.
-        if (DROPEFFECT_COPY & dwOKEffects)
+        if (DROPEFFECT_COPY & dwOkEffects)
             *pdwEffect = DROPEFFECT_COPY;
-        else if (DROPEFFECT_MOVE & dwOKEffects)
+        else if (DROPEFFECT_MOVE & dwOkEffects)
             *pdwEffect = DROPEFFECT_MOVE;
-        else if (DROPEFFECT_LINK & dwOKEffects)
+        else if (DROPEFFECT_LINK & dwOkEffects)
             *pdwEffect = DROPEFFECT_LINK;
         else
         {
@@ -99,7 +97,7 @@ bool CIDropTarget::QueryDrop(DWORD grfKeyState, LPDWORD pdwEffect)
     {
         // Check if the drag source application allows the drop effect desired by user.
         // The drag source specifies this in DoDragDrop
-        if (!(*pdwEffect & dwOKEffects))
+        if (!(*pdwEffect & dwOkEffects))
             *pdwEffect = DROPEFFECT_NONE;
     }
 
@@ -112,19 +110,19 @@ HRESULT STDMETHODCALLTYPE CIDropTarget::DragEnter(
     POINTL                 pt,
     DWORD __RPC_FAR *pdwEffect)
 {
-    if (pDataObj == NULL)
+    if (pDataObj == nullptr)
         return E_INVALIDARG;
 
     if (m_pDropTargetHelper)
-        m_pDropTargetHelper->DragEnter(m_hTargetWnd, pDataObj, (LPPOINT)&pt, *pdwEffect);
+        m_pDropTargetHelper->DragEnter(m_hTargetWnd, pDataObj, reinterpret_cast<LPPOINT>(&pt), *pdwEffect);
 
-    m_pSupportedFrmt = NULL;
-    for (size_t i = 0; i < m_formatetc.size(); ++i)
+    m_pSupportedFrmt = nullptr;
+    for (size_t i = 0; i < m_formatEtc.size(); ++i)
     {
-        m_bAllowDrop = (pDataObj->QueryGetData(&m_formatetc[i]) == S_OK) ? true : false;
+        m_bAllowDrop = (pDataObj->QueryGetData(&m_formatEtc[i]) == S_OK) ? true : false;
         if (m_bAllowDrop)
         {
-            m_pSupportedFrmt = &m_formatetc[i];
+            m_pSupportedFrmt = &m_formatEtc[i];
             break;
         }
     }
@@ -139,18 +137,18 @@ HRESULT STDMETHODCALLTYPE CIDropTarget::DragOver(
     DWORD __RPC_FAR *pdwEffect)
 {
     if (m_pDropTargetHelper)
-        m_pDropTargetHelper->DragOver((LPPOINT)&pt, *pdwEffect);
+        m_pDropTargetHelper->DragOver(reinterpret_cast<LPPOINT>(&pt), *pdwEffect);
     QueryDrop(grfKeyState, pdwEffect);
     return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE CIDropTarget::DragLeave(void)
+HRESULT STDMETHODCALLTYPE CIDropTarget::DragLeave()
 {
     if (m_pDropTargetHelper)
         m_pDropTargetHelper->DragLeave();
 
     m_bAllowDrop     = false;
-    m_pSupportedFrmt = NULL;
+    m_pSupportedFrmt = nullptr;
     return S_OK;
 }
 
@@ -159,15 +157,15 @@ HRESULT STDMETHODCALLTYPE CIDropTarget::Drop(
     DWORD grfKeyState, POINTL pt,
     DWORD __RPC_FAR *pdwEffect)
 {
-    if (pDataObj == NULL)
+    if (pDataObj == nullptr)
         return E_INVALIDARG;
 
     if (m_pDropTargetHelper)
-        m_pDropTargetHelper->Drop(pDataObj, (LPPOINT)&pt, *pdwEffect);
+        m_pDropTargetHelper->Drop(pDataObj, reinterpret_cast<LPPOINT>(&pt), *pdwEffect);
 
     if (QueryDrop(grfKeyState, pdwEffect))
     {
-        if (m_bAllowDrop && m_pSupportedFrmt != NULL)
+        if (m_bAllowDrop && m_pSupportedFrmt != nullptr)
         {
             STGMEDIUM medium;
             if (pDataObj->GetData(m_pSupportedFrmt, &medium) == S_OK)
@@ -179,6 +177,6 @@ HRESULT STDMETHODCALLTYPE CIDropTarget::Drop(
     }
     m_bAllowDrop     = false;
     *pdwEffect       = DROPEFFECT_NONE;
-    m_pSupportedFrmt = NULL;
+    m_pSupportedFrmt = nullptr;
     return S_OK;
 }

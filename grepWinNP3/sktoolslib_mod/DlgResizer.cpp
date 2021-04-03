@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2016, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2016, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,13 +20,13 @@
 #include "stdafx.h"
 #include "DlgResizer.h"
 #include <cassert>
-#include <type_traits>
+#include <commctrl.h>
 
 #ifndef ComboBox_GetEditSel
 #    include <windowsx.h>
 #endif
 
-CDlgResizer::CDlgResizer(void)
+CDlgResizer::CDlgResizer()
     : m_hDlg(nullptr)
     , m_wndGrip(nullptr)
     , m_useSizeGrip(true)
@@ -37,7 +37,7 @@ CDlgResizer::CDlgResizer(void)
     m_sizeGrip      = {};
 }
 
-CDlgResizer::~CDlgResizer(void)
+CDlgResizer::~CDlgResizer()
 {
     m_controls.clear();
 }
@@ -55,22 +55,20 @@ void CDlgResizer::Init(HWND hWndDlg)
     RECT rect = {0, 0, m_sizeGrip.cx, m_sizeGrip.cy};
 
     m_wndGrip = ::CreateWindowEx(0, WC_SCROLLBAR,
-                                 (LPCWSTR) nullptr,
+                                 static_cast<LPCWSTR>(nullptr),
                                  WS_CHILD | WS_CLIPSIBLINGS | SBS_SIZEGRIP,
                                  rect.left, rect.top,
                                  rect.right - rect.left,
                                  rect.bottom - rect.top,
                                  m_hDlg,
-                                 (HMENU)0,
+                                 static_cast<HMENU>(nullptr),
                                  nullptr,
                                  nullptr);
 
     if (m_wndGrip)
     {
-        // set a triangular window region
-        HRGN rgnGrip, rgn;
-        rgn     = ::CreateRectRgn(0, 0, 1, 1);
-        rgnGrip = ::CreateRectRgnIndirect(&rect);
+        HRGN rgn     = ::CreateRectRgn(0, 0, 1, 1);
+        HRGN rgnGrip = ::CreateRectRgnIndirect(&rect);
 
         for (int y = 0; y < m_sizeGrip.cy; y++)
         {
@@ -108,7 +106,7 @@ void CDlgResizer::AddControl(HWND hWndDlg, UINT ctrlId, UINT resizeType)
 
     GetWindowRect(ctrlInfo.hWnd, &ctrlInfo.origSize);
     OffsetRect(&ctrlInfo.origSize, -ctrlInfo.origSize.left, -ctrlInfo.origSize.top);
-    MapWindowPoints(ctrlInfo.hWnd, hWndDlg, (LPPOINT)&ctrlInfo.origSize, 2);
+    MapWindowPoints(ctrlInfo.hWnd, hWndDlg, reinterpret_cast<LPPOINT>(&ctrlInfo.origSize), 2);
 
     m_controls.push_back(ctrlInfo);
 }
@@ -120,7 +118,7 @@ void CDlgResizer::DoResize(int width, int height)
         return;
 
     InvalidateRect(m_hDlg, nullptr, true);
-    HDWP hdwp = BeginDeferWindowPos((int)m_controls.size());
+    HDWP hdwp = BeginDeferWindowPos(static_cast<int>(m_controls.size()));
 
     wchar_t                               className[257]; // WNDCLASS docs say 256 is the longest class name possible.
     std::vector<std::pair<size_t, DWORD>> savedSelections;
@@ -133,67 +131,73 @@ void CDlgResizer::DoResize(int width, int height)
         // resize type event even if there was no text selected before the size event.
         // The workaround is to save the current selection state before the resize and
         // to restore that state after the resize.
-        int  status     = GetClassName(ctrlInfo.hWnd, className, (int)std::size(className));
+        int  status     = GetClassName(ctrlInfo.hWnd, className, static_cast<int>(std::size(className)));
         bool isComboBox = status > 0 && _wcsicmp(className, WC_COMBOBOX) == 0;
         if (isComboBox)
         {
             DWORD sel = ComboBox_GetEditSel(ctrlInfo.hWnd);
             savedSelections.push_back({i, sel});
         }
-        RECT newpos = ctrlInfo.origSize;
+        RECT newPos = ctrlInfo.origSize;
         switch (ctrlInfo.resizeType)
         {
             case RESIZER_TOPLEFT:
                 break; // do nothing - the original position is fine
             case RESIZER_TOPRIGHT:
-                newpos.left += (width - m_dlgRect.right);
-                newpos.right += (width - m_dlgRect.right);
+                newPos.left += (width - m_dlgRect.right);
+                newPos.right += (width - m_dlgRect.right);
                 break;
             case RESIZER_TOPLEFTRIGHT:
-                newpos.right += (width - m_dlgRect.right);
+                newPos.right += (width - m_dlgRect.right);
                 break;
             case RESIZER_TOPLEFTBOTTOMRIGHT:
-                newpos.right += (width - m_dlgRect.right);
-                newpos.bottom += (height - m_dlgRect.bottom);
+                newPos.right += (width - m_dlgRect.right);
+                newPos.bottom += (height - m_dlgRect.bottom);
                 break;
             case RESIZER_BOTTOMLEFT:
-                newpos.top += (height - m_dlgRect.bottom);
-                newpos.bottom += (height - m_dlgRect.bottom);
+                newPos.top += (height - m_dlgRect.bottom);
+                newPos.bottom += (height - m_dlgRect.bottom);
                 break;
             case RESIZER_BOTTOMRIGHT:
-                newpos.top += (height - m_dlgRect.bottom);
-                newpos.bottom += (height - m_dlgRect.bottom);
-                newpos.left += (width - m_dlgRect.right);
-                newpos.right += (width - m_dlgRect.right);
+                newPos.top += (height - m_dlgRect.bottom);
+                newPos.bottom += (height - m_dlgRect.bottom);
+                newPos.left += (width - m_dlgRect.right);
+                newPos.right += (width - m_dlgRect.right);
                 break;
             case RESIZER_BOTTOMLEFTRIGHT:
-                newpos.top += (height - m_dlgRect.bottom);
-                newpos.bottom += (height - m_dlgRect.bottom);
-                newpos.right += (width - m_dlgRect.right);
+                newPos.top += (height - m_dlgRect.bottom);
+                newPos.bottom += (height - m_dlgRect.bottom);
+                newPos.right += (width - m_dlgRect.right);
+                break;
+            case RESIZER_TOPLEFTBOTTOMLEFT:
+                newPos.bottom += (height - m_dlgRect.bottom);
+                break;
+            case RESIZER_TOPRIGHTBOTTOMRIGHT:
+                newPos.left += (width - m_dlgRect.right);
+                newPos.right += (width - m_dlgRect.right);
+                newPos.bottom += (height - m_dlgRect.bottom);
                 break;
         }
-        hdwp = DeferWindowPos(hdwp, ctrlInfo.hWnd, nullptr, newpos.left, newpos.top,
-                              newpos.right - newpos.left, newpos.bottom - newpos.top,
+        hdwp = DeferWindowPos(hdwp, ctrlInfo.hWnd, nullptr, newPos.left, newPos.top,
+                              newPos.right - newPos.left, newPos.bottom - newPos.top,
                               SWP_NOZORDER | SWP_NOACTIVATE);
     }
     EndDeferWindowPos(hdwp);
-    for (const auto& selInfo : savedSelections)
+    for (const auto& [index, sel] : savedSelections)
     {
-        size_t index    = selInfo.first;
-        DWORD  sel      = selInfo.second;
-        int    startSel = LOWORD(sel);
-        int    endSel   = HIWORD(sel);
+        int startSel = LOWORD(sel);
+        int endSel   = HIWORD(sel);
         ComboBox_SetEditSel(m_controls[index].hWnd, startSel, endSel);
     }
     UpdateGripPos();
 }
 
-void CDlgResizer::ShowSizeGrip(bool bShow)
+void CDlgResizer::ShowSizeGrip(bool bShow) const
 {
     ::ShowWindow(m_wndGrip, (bShow && m_useSizeGrip) ? SW_SHOW : SW_HIDE);
 }
 
-void CDlgResizer::UpdateGripPos()
+void CDlgResizer::UpdateGripPos() const
 {
     RECT rect;
     ::GetClientRect(m_hDlg, &rect);

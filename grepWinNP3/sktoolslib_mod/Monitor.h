@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2020 - Stefan Kueng
+// Copyright (C) 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,5 @@
 #pragma once
 #include "Hash.h"
 #include <string>
-#include <vector>
-#include <algorithm>
 
 std::wstring GetMonitorSetupHash();
