@@ -31,26 +31,26 @@ CSimpleFileFind::CSimpleFileFind(const std::wstring& sPath, LPCWSTR pPattern, FI
     std::wstring sPattern = pPattern ? pPattern : L"";
     if (pPattern == nullptr || wcscmp(pPattern, L"*.*") == 0)
     {
-        auto slashpos = sPath.find_last_of(L"\\/");
-        if (slashpos != std::wstring::npos)
+        auto slashPos = sPath.find_last_of(L"\\/");
+        if (slashPos != std::wstring::npos)
         {
-            auto lastPart = sPath.substr(slashpos + 1);
+            auto lastPart = sPath.substr(slashPos + 1);
             if (lastPart.find_first_of(L"*?") != std::wstring::npos)
             {
                 // the path contains a pattern
-                sPattern = lastPart;
-                m_sPathPrefix = sPath.substr(0, slashpos);
+                sPattern      = lastPart;
+                m_sPathPrefix = sPath.substr(0, slashPos);
             }
         }
     }
 
-    m_FindFileData = {};
+    m_findFileData = {};
     if (PathIsDirectory(m_sPathPrefix.c_str()))
     {
         // Add a trailing \ to m_sPathPrefix if it is missing.
         // Do not add one to "C:" since "C:" and "C:\" are different.
         {
-            int len = (int)m_sPathPrefix.size();
+            auto len = m_sPathPrefix.size();
             if (len != 0)
             {
                 wchar_t ch = m_sPathPrefix[len - 1];
@@ -60,12 +60,12 @@ CSimpleFileFind::CSimpleFileFind(const std::wstring& sPath, LPCWSTR pPattern, FI
                 }
             }
         }
-        m_hFindFile = ::FindFirstFileEx(std::wstring(m_sPathPrefix + sPattern).c_str(), infoLevel, &m_FindFileData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
+        m_hFindFile = ::FindFirstFileEx(std::wstring(m_sPathPrefix + sPattern).c_str(), infoLevel, &m_findFileData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
         m_bFile     = FALSE;
     }
     else
     {
-        m_hFindFile = ::FindFirstFile(m_sPathPrefix.c_str(), &m_FindFileData);
+        m_hFindFile = ::FindFirstFile(m_sPathPrefix.c_str(), &m_findFileData);
         m_bFile     = TRUE;
     }
     if (m_hFindFile == INVALID_HANDLE_VALUE)
@@ -95,7 +95,7 @@ bool CSimpleFileFind::FindNextFile()
         return (m_hFindFile != INVALID_HANDLE_VALUE);
     }
 
-    if (!::FindNextFile(m_hFindFile, &m_FindFileData))
+    if (!::FindNextFile(m_hFindFile, &m_findFileData))
     {
         m_dError = ::GetLastError();
         return false;

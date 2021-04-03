@@ -19,10 +19,10 @@
 #pragma once
 #include <Uxtheme.h>
 
-template <typename type>
+template <typename Type>
 struct CDefaultHandleNull
 {
-    static constexpr type DefaultHandle()
+    static constexpr Type DefaultHandle()
     {
         return nullptr;
     }
@@ -47,7 +47,7 @@ class CSmartHandle
 {
 public:
     CSmartHandle()
-        : m_Handle(NullType::DefaultHandle())
+        : m_handle(NullType::DefaultHandle())
     {
     }
 
@@ -62,15 +62,15 @@ public:
 
     CSmartHandle(HandleType&& h)
     {
-        m_Handle = h;
+        m_handle = h;
     }
 
-    CSmartHandle(CSmartHandle&& h)
+    CSmartHandle(CSmartHandle&& h) noexcept
     {
-        m_Handle = h.Detach();
+        m_handle = h.Detach();
     }
 
-    CSmartHandle& operator=(CSmartHandle&& h)
+    CSmartHandle& operator=(CSmartHandle&& h) noexcept
     {
         *this = h.Detach();
         return *this;
@@ -78,13 +78,13 @@ public:
 
     HandleType& operator=(HandleType&& h)
     {
-        if (m_Handle != h)
+        if (m_handle != h)
         {
             CleanUp();
-            m_Handle = h;
+            m_handle = h;
         }
 
-        return m_Handle;
+        return m_handle;
     }
 
     bool CloseHandle()
@@ -94,20 +94,20 @@ public:
 
     HandleType Detach()
     {
-        HandleType p = m_Handle;
-        m_Handle     = NullType::DefaultHandle();
+        HandleType p = m_handle;
+        m_handle     = NullType::DefaultHandle();
 
         return p;
     }
 
     operator HandleType() const
     {
-        return m_Handle;
+        return m_handle;
     }
 
     HandleType* GetPointer()
     {
-        return &m_Handle;
+        return &m_handle;
     }
 
     operator bool() const
@@ -117,14 +117,14 @@ public:
 
     bool IsValid() const
     {
-        return m_Handle != NullType::DefaultHandle();
+        return m_handle != NullType::DefaultHandle();
     }
 
     HandleType Duplicate() const
     {
         HandleType hDup = NullType::DefaultHandle();
         if (DuplicateHandle(GetCurrentProcess(),
-                            (HANDLE)m_Handle,
+                            static_cast<HANDLE>(m_handle),
                             GetCurrentProcess(),
                             &hDup,
                             0,
@@ -144,16 +144,16 @@ public:
 protected:
     bool CleanUp()
     {
-        if (m_Handle != NullType::DefaultHandle())
+        if (m_handle != NullType::DefaultHandle())
         {
-            const bool b = CloseFunction<HandleType>::Close(m_Handle);
-            m_Handle     = NullType::DefaultHandle();
+            const bool b = CloseFunction<HandleType>::Close(m_handle);
+            m_handle     = NullType::DefaultHandle();
             return b;
         }
         return false;
     }
 
-    HandleType m_Handle;
+    HandleType m_handle;
 };
 
 template <typename T>

@@ -1,0 +1,480 @@
+// Microsoft Visual C++ generated resource script.
+// encoding: CP-1252
+#include "..\resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#ifndef APSTUDIO_INVOKED
+#include "grepWin.rc2"
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_GREPWIN             ICON                    "grepWinNP3.ico"
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SEARCHDLG DIALOGEX 0, 0, 600, 339
+STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "grepWinNP3"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    LTEXT           "Press F1 for help...",IDC_HELPLABEL,362,50,104,8
+    CONTROL         "<a>about grepWinNP3...</a>",IDC_ABOUTLINK,"SysLink",LWS_RIGHT | WS_TABSTOP,486,2,87,8
+    PUSHBUTTON      "/",IDC_PATHMRU,14,20,11,12
+    EDITTEXT        IDC_SEARCHPATH,31,20,516,12,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,552,20,13,12
+    PUSHBUTTON      "Y",IDC_NEWINSTANCE,570,20,13,12
+    GROUPBOX        "Search in",IDC_GROUPSEARCHIN,7,10,587,29
+    CONTROL         "Regex search",IDC_REGEXRADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,84,50,100,10
+    CONTROL         "Text search",IDC_TEXTRADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,198,50,105,10
+    RTEXT           "",IDC_REGEXOKLABEL,476,50,98,8
+    LTEXT           "Search &for:",IDC_SEARCHFORLABEL,14,65,64,8
+    EDITTEXT        IDC_SEARCHTEXT,83,64,484,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "/",IDC_EDITMULTILINE1,572,64,13,12
+    LTEXT           "Replace with/\nCapture format:",IDC_REPLACEWITHLABEL,14,78,64,18
+    EDITTEXT        IDC_REPLACETEXT,83,81,484,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "/",IDC_EDITMULTILINE2,572,81,13,12
+    CONTROL         "Search case-sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,97,104,10
+    CONTROL         "Dot matches newline",IDC_DOTMATCHNEWLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,123,97,110,10
+    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,236,97,104,10
+    CONTROL         "Treat files as UTF-8",IDC_UTF8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,342,97,104,10
+    PUSHBUTTON      "Test regex...",IDC_TESTREGEX,14,109,60,14
+    PUSHBUTTON      "Add to Presets...",IDC_ADDTOBOOKMARKS,89,109,90,14
+    PUSHBUTTON      "Presets...",IDC_BOOKMARKS,183,109,60,14
+    CONTROL         "",IDC_UPDATELINK,"SysLink",LWS_RIGHT | NOT WS_VISIBLE | WS_TABSTOP | WS_DISABLED,262,110,292,11
+    GROUPBOX        "Search",IDC_GROUPSEARCHFOR,7,41,587,86
+    CONTROL         "All sizes",IDC_ALLSIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,139,98,10
+    CONTROL         "Size is",IDC_SIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,152,48,10
+    COMBOBOX        IDC_SIZECOMBO,65,150,73,41,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_SIZEEDIT,143,150,40,12,ES_AUTOHSCROLL,WS_EX_RIGHT
+    LTEXT           "KB",IDC_KBTEXT,186,152,9,8
+    CONTROL         "Include system items",IDC_INCLUDESYSTEM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,166,98,10
+    CONTROL         "Include hidden items",IDC_INCLUDEHIDDEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,117,166,104,10
+    CONTROL         "Include subfolders",IDC_INCLUDESUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,178,98,10
+    CONTROL         "Include binary files",IDC_INCLUDEBINARY,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,117,178,104,10
+    CONTROL         "All dates",IDC_RADIO_DATE_ALL,"Button",BS_AUTORADIOBUTTON,228,139,100,10
+    CONTROL         "Newer than",IDC_RADIO_DATE_NEWER,"Button",BS_AUTORADIOBUTTON,228,152,62,10
+    CONTROL         "Older than",IDC_RADIO_DATE_OLDER,"Button",BS_AUTORADIOBUTTON,228,165,62,10
+    CONTROL         "Between",IDC_RADIO_DATE_BETWEEN,"Button",BS_AUTORADIOBUTTON,228,178,62,10
+    CONTROL         "",IDC_DATEPICK1,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | WS_TABSTOP,291,154,56,15
+    CONTROL         "",IDC_DATEPICK2,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | NOT WS_VISIBLE | WS_TABSTOP,291,173,56,15
+    LTEXT           "Exclude dirs (Regex):",IDC_EXCLUDE_DIRS_PATTERNLABEL,350,138,104,8
+    EDITTEXT        IDC_EXCLUDEDIRSPATTERN,458,136,109,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "/",IDC_EXCLUDEDIRMRU,573,136,12,12
+    LTEXT           "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude",IDC_PATTERNLABEL,350,153,104,36
+    EDITTEXT        IDC_PATTERN,458,155,109,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "/",IDC_PATTERNMRU,573,155,12,12
+    CONTROL         "Regex match",IDC_FILEPATTERNREGEX,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,458,174,61,10
+    CONTROL         "Text match",IDC_FILEPATTERNTEXT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,524,174,68,10
+    PUSHBUTTON      "Settings...",IDC_SETTINGSBUTTON,14,197,103,14
+    PUSHBUTTON      "&Replace",IDC_REPLACE,457,198,62,14
+    CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,523,198,62,14
+    GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,128,587,65
+    CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS| LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,14,234,571,81
+    LTEXT           "",IDC_SEARCHINFOLABEL,14,321,580,8
+    GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,214,587,118
+    CONTROL         "Files",IDC_RESULTFILES,"Button",BS_AUTORADIOBUTTON | WS_GROUP,84,222,89,10
+    CONTROL         "Content",IDC_RESULTCONTENT,"Button",BS_AUTORADIOBUTTON,200,222,104,10
+    CONTROL         "",IDC_PROGRESS,"msctls_progress32",PBS_SMOOTH | PBS_SMOOTHREVERSE | PBS_MARQUEE | NOT WS_VISIBLE,130,198,310,14
+    PUSHBUTTON      ">>>",IDC_EXPORT,316,222,28,10,NOT WS_VISIBLE
+    CONTROL         "Treat files as binary",IDC_BINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,450,97,134,10
+END
+
+IDD_REGEXTEST DIALOGEX 0, 0, 401, 316
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Regex Test"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    LTEXT           "Paste text to test the regex with:",IDC_INFOLABEL,7,7,387,8
+    CONTROL         "",IDC_TEXTCONTENT,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x1084,7,17,387,89
+    LTEXT           "Regex search string:",IDC_STATIC,7,111,387,8
+    EDITTEXT        IDC_SEARCHTEXT,7,121,387,14,ES_AUTOHSCROLL
+    LTEXT           "Regex replace string:",IDC_STATIC,7,137,387,8
+    EDITTEXT        IDC_REPLACETEXT,7,148,387,14,ES_AUTOHSCROLL
+    LTEXT           "The regex search string matches:",IDC_STATIC,7,172,387,8
+    EDITTEXT        IDC_REGEXMATCH,7,185,387,50,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "The resulting text after replacing:",IDC_STATIC,7,236,387,8
+    CONTROL         "",IDC_REGEXREPLACED,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x884,7,246,387,45
+    PUSHBUTTON      "OK",IDOK,233,295,77,14
+    PUSHBUTTON      "Cancel",IDCANCEL,317,295,77,14
+END
+
+IDD_NAME DIALOGEX 0, 0, 186, 85
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Preset name"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    LTEXT           "Enter a name for the regex:",IDC_INFOLABEL,7,7,172,8
+    EDITTEXT        IDC_NAME,7,20,172,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,37,64,68,14
+    PUSHBUTTON      "Cancel",IDCANCEL,111,64,68,14
+    CONTROL         "Include search path",IDC_INCLUDEPATH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,38,172,10
+END
+
+IDD_BOOKMARKS DIALOGEX 0, 0, 240, 129
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Presets"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_BOOKMARKS,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,16,226,85
+    DEFPUSHBUTTON   "OK",IDOK,70,108,78,14
+    PUSHBUTTON      "Cancel",IDCANCEL,155,108,78,14
+    LTEXT           "Double-Click to select a preset",IDC_INFOLABEL,7,7,226,8
+END
+
+IDD_ABOUT DIALOGEX 0, 0, 230, 98
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About grepWinNP3"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,170,73,50,14
+    //~ICON            IDI_GREPWIN,IDC_STATIC,7,7,24,24,SS_CENTERIMAGE
+    LTEXT           "",IDC_VERSIONINFO,50,18,206,8
+    LTEXT           "",IDC_DATE,50,30,206,8
+    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,12,73,150,8
+    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,50,47,150,18
+END
+
+IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Dialog"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,157,114,73,14
+    PUSHBUTTON      "Cancel",IDCANCEL,237,114,73,14
+    CONTROL         "",IDC_TEXTCONTENT,"RichEdit20W",WS_VSCROLL | WS_TABSTOP | 0x1084,7,7,303,96
+END
+
+IDD_SETTINGS DIALOGEX 0, 0, 317, 239
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "grepWinNP3 Settings"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Editor",IDC_EDITORGROUP,7,7,303,78
+    LTEXT           "Command line to start an editor at a specific line:",IDC_STATIC1,13,19,288,8
+    PUSHBUTTON      "Reset",IDC_RESETDEFAULT,225,14,57,14
+    EDITTEXT        IDC_EDITORCMD,13,31,269,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,286,31,15,14
+    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string.",IDC_STATIC2,13,47,288,17
+    LTEXT           "This adds a new entry to the context menu named 'Open with Editor'",IDC_ENTRYCONTEXTMENU,13,66,288,16
+    LTEXT           "Language:",IDC_STATIC4,16,92,119,8
+    COMBOBOX        IDC_LANGUAGE,151,90,159,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary",IDC_STATIC3,16,108,240,17
+    EDITTEXT        IDC_NUMNULL,261,108,40,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Escape key closes grepWinNP3",IDC_ESCKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,128,250,10
+    CONTROL         "Create backup files in a separate folder",IDC_BACKUPINFOLDER,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,141,250,10
+    CONTROL         "Don't warn when replacing without creating backups",IDC_NOWARNINGIFNOBACKUP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,153,250,10
+    CONTROL         "Only one instance",IDC_ONLYONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,165,150,10
+    CONTROL         "Check for updates",IDC_DOUPDATECHECKS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP | WS_DISABLED,7,177,150,10
+    CONTROL         "Dark mode",IDC_DARKMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,189,157,10
+    LTEXT           "",IDC_DARKMODEINFO,17,204,180,23,WS_DISABLED
+    RTEXT           "Max # of concurrent worker",IDC_TEXT_NUMOFWORKER,156,182,107,9,0,WS_EX_RIGHT
+    EDITTEXT        IDC_MAXNUMWORKER,271,180,31,13,ES_RIGHT | ES_NUMBER | WS_GROUP,WS_EX_RIGHT
+    CONTROL         "",IDC_SPIN_MAXWORKER,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNLEFT | UDS_AUTOBUDDY | UDS_ARROWKEYS | WS_GROUP,271,180,10,13
+    DEFPUSHBUTTON   "OK",IDOK,204,220,50,13
+    PUSHBUTTON      "Cancel",IDCANCEL,260,220,50,13
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_SEARCHDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 594
+        VERTGUIDE, 14
+        VERTGUIDE, 83
+        VERTGUIDE, 117
+        VERTGUIDE, 228
+        VERTGUIDE, 282
+        VERTGUIDE, 285
+        VERTGUIDE, 344
+        VERTGUIDE, 348
+        VERTGUIDE, 458
+        VERTGUIDE, 548
+        VERTGUIDE, 594
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 332
+    END
+
+    IDD_REGEXTEST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 394
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 309
+    END
+
+    IDD_NAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 78
+    END
+
+    IDD_BOOKMARKS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 233
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 223
+        VERTGUIDE, 50
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 91
+    END
+
+    IDD_MULTILINEEDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 310
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 310
+        VERTGUIDE, 13
+        VERTGUIDE, 301
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 231
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_BKPOPUP MENU
+BEGIN
+    POPUP "Dummy"
+    BEGIN
+        MENUITEM "Remo&ve Preset",              ID_REMOVEBOOKMARK
+        MENUITEM "Re&name Preset",              ID_RENAMEBOOKMARK
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDC_GREPWIN ACCELERATORS
+BEGIN
+    VK_DELETE,      ID_REMOVEBOOKMARK,      VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HTML
+//
+
+IDR_INFODLG             HTML                    "infodlg.htm"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE           "grepWinNP3"
+    IDS_NAME                "Name"
+    IDS_SEARCHSTRING        "Search string"
+    IDS_REPLACESTRING       "Replace string"
+    IDS_NOTESTTEXTAVAILABLE "no text to test with available"
+    IDS_SEARCHSTRINGEMPTY   "search string is empty"
+    IDC_GREPWIN             "GREPWINNP3"
+    IDS_NOREPLACETEXT       "no text to replace with"
+    IDS_NOMATCH             "no match"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_PATTERN_TT          "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
+    IDS_EXCLUDEDIR_TT       "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+    IDS_SEARCHPATH_TT       "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
+    IDS_DOTMATCHNEWLINE_TT  "Newline is matched by '.'"
+    IDS_SEARCHTEXT_TT       "a regular expression used for searching. Press F1 for more info."
+    IDS_ONLYONE_TT          "reuse grepWinNP3 instances."
+    IDS_EDITMULTILINE_TT    "click to edit the text as a multiline text"
+    IDS_ABOUT               "&About grepWinNP3..."
+    IDS_LESSTHAN            "less than"
+    IDS_EQUALTO             "equal to"
+    IDS_GREATERTHAN         "greater than"
+    IDS_SEARCH              "&Search"
+    IDS_REPLACECONFIRM      "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+    IDS_ANEMPTYSTRING       "an empty string"
+    IDS_STOP                "S&top"
+    IDS_SELECTPATHTOSEARCH  "Select path to search"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_INFOLABEL           "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
+    IDS_READERROR           "read error"
+    IDS_BINARY              "binary"
+    IDS_REGEXOK             "regex ok"
+    IDS_REGEXINVALID        "invalid regex!"
+    IDS_SIZE                "Size"
+    IDS_LINE                "Line"
+    IDS_MATCHES             "Matches"
+    IDS_TEXT                "Text"
+    IDS_PATH                "Path"
+    IDS_ENCODING            "Encoding"
+    IDS_DATEMODIFIED        "Date modified"
+    IDS_SELECTEDITOR        "Select Editor Application..."
+    IDS_OPENWITHEDITOR      "Open with Editor"
+    IDS_OPENCONTAININGFOLDER "Open containing folder"
+    IDS_COPYPATH            "Copy path to clipboard"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_COPYPATHS           "Copy paths to clipboard"
+    IDS_COPYFILENAME        "Copy filename to clipboard"
+    IDS_COPYFILENAMES       "Copy filenames to clipboard"
+    IDS_COPYRESULT          "Copy text result to clipboard"
+    IDS_COPYRESULTS         "Copy text results to clipboard"
+    IDS_XMOREMATCHES        "%ld more matches"
+    IDS_CONTEXTLINE         "Line %5ld : %30s\n"
+    IDS_INFOLABELFILE       "scanning file '%s'"
+    IDS_ERR_RELATIVEPATH    "Relative paths are not allowed. Please enter an absolute path!"
+    IDS_ERR_INVALID_PATH    "Invalid path!"
+    IDS_PROGRAMS            "Programs"
+    IDS_ALLFILES            "All Files"
+    IDS_BACKUPINFOLDER_TT   "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+    IDS_SHIFT_NOTSEARCH     "hold down the shift key to find files that DO NOT contain the search string"
+    IDS_FILEEXT             "Ext"
+    IDS_DARKMODE_TT         "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERR_PATHNOTEXIST    "Path does not exist or is not accessible!"
+    IDS_INVERSESEARCH       "Inverse search (NOT searchstring)"
+    IDS_SEARCHINFOUNDFILES  "Search in found files"
+    IDS_EXPORT_TT           "Export results..."
+    IDS_EXPORTTITLE         "Export resultlist"
+    IDS_EXPORTPATHS         "include file paths"
+    IDS_EXPORTMATCHLINENUMBER "include match line numbers"
+    IDS_EXPORTMATCHLINECONTENT "include match line text"
+    IDS_UPDATEAVAILABLE     "grepWinNP3 %s is available"
+    IDS_CAPTURESEARCH       "Capture search"
+    IDS_CLONE               "Start new grepWinNP3 window"
+    IDS_NEWINSTANCE_TT      "Start new grepWinNP3 window"
+    IDS_STAY_ON_TOP         "Stay On Top"
+    IDS_REPLACEUTF8         "You have the option ""%s"" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "..\\resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""grepWin.rc2""\r\n"
+    "#endif\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

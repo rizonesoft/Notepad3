@@ -1,6 +1,6 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ public:
      * sets the title of the progress dialog box.
      * \param szTitle pointer to a NULL-terminated string that contains the dialog box title
      */
-    void SetTitle(LPCWSTR szTitle);
+    void SetTitle(LPCWSTR szTitle) const;
 
     /**
      * Displays a message.
@@ -51,7 +51,7 @@ public:
      * \remark This call should be made *after* the dialog has been shown - this allows
      * the system to measure the space available for the text, and do path compaction properly
      */
-    void SetLine(DWORD dwLine, LPCWSTR szText, bool bCompactPath = false);
+    void SetLine(DWORD dwLine, LPCWSTR szText, bool bCompactPath = false) const;
 
 #ifdef _MFC_VER
     /**
@@ -77,7 +77,7 @@ public:
      * the progress dialog box will be closed shortly. It is typically is set to
      * something like "Please wait while ...".
      */
-    void SetCancelMsg(LPCWSTR szMessage);
+    void SetCancelMsg(LPCWSTR szMessage) const;
 #ifdef _MFC_VER
     void SetCancelMsg(UINT idMessage);
     /**
@@ -91,11 +91,11 @@ public:
      * \param hinst instance handle to the module from which the avi resource should be loaded.
      * \param uRsrcID AVI resource identifier. To create this value use the MAKEINTRESOURCE macro.
      */
-    void SetAnimation(HINSTANCE hinst, UINT uRsrcID);
+    void SetAnimation(HINSTANCE hinst, UINT uRsrcID) const;
 
     /**
      * Specifies that the progress dialog should have a line indicating the time remaining to complete.
-     * \param bCalculate false to deactivate the time remaining line.
+     * \param bTime false to deactivate the time remaining line.
      */
     void SetTime(bool bTime = true);
 
@@ -112,7 +112,7 @@ public:
      * This practice ensures that the time estimates will be as accurate as possible.
      * This method should not be called after the first call to UpdateProgress().
      */
-    void ResetTimer();
+    void ResetTimer() const;
 
     /**
      * Shows the progress dialog box modal.
@@ -139,18 +139,18 @@ public:
      * \param dwProgress Application-defined value that indicates what proportion of the operation has been completed at the time the method was called
      * \param dwMax Application-defined value that specifies what value dwCompleted will have when the operation is complete
      */
-    void SetProgress(DWORD dwProgress, DWORD dwMax);
+    void SetProgress(DWORD dwProgress, DWORD dwMax) const;
     /**
      * Updates the progress dialog box with the current state of the operation.
      * \param u64Progress Application-defined value that indicates what proportion of the operation has been completed at the time the method was called
      * \param u64ProgressMax Application-defined value that specifies what value dwCompleted will have when the operation is complete
      */
-    void SetProgress64(ULONGLONG u64Progress, ULONGLONG u64ProgressMax);
+    void SetProgress64(ULONGLONG u64Progress, ULONGLONG u64ProgressMax) const;
 
     /**
      * Checks whether the user has canceled the operation.
      */
-    bool HasUserCancelled();
+    bool HasUserCancelled() const;
 
     /**
      * Checks whether this object was created successfully. If the return value is false then

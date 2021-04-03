@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2020 - Stefan Kueng
+// Copyright (C) 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +18,6 @@
 //
 
 #pragma once
-#include <iostream>
 #include <deque>
 #include <functional>
 #include <thread>
@@ -53,67 +52,67 @@ public:
     void waitForFreeSlot();
     ~ThreadPool();
 
-    unsigned int getProcessed() const { return processed; }
+    unsigned int getProcessed() const { return m_processed; }
 
 private:
-    std::vector<std::thread>          workers;
-    std::deque<std::function<void()>> tasks;
-    std::mutex                        queue_mutex;
-    std::condition_variable           cv_task;
-    std::condition_variable           cv_finished;
-    std::atomic_uint                  processed;
-    unsigned int                      busy;
-    bool                              stop;
+    std::vector<std::thread>          m_workers;
+    std::deque<std::function<void()>> m_tasks;
+    std::mutex                        m_queueMutex;
+    std::condition_variable           m_cvTask;
+    std::condition_variable           m_cvFinished;
+    std::atomic_uint                  m_processed;
+    unsigned int                      m_busy;
+    bool                              m_stop;
 
     void thread_proc();
 };
 
-ThreadPool::ThreadPool(unsigned int n)
-    : busy(0)
-    , processed(0)
-    , stop(false)
+inline ThreadPool::ThreadPool(unsigned int n)
+    : m_processed(0)
+    , m_busy(0)
+    , m_stop(false)
 {
     for (unsigned int i = 0; i < n; ++i)
-        workers.emplace_back(std::bind(&ThreadPool::thread_proc, this));
+        m_workers.emplace_back(std::bind(&ThreadPool::thread_proc, this));
 }
 
-ThreadPool::~ThreadPool()
+inline ThreadPool::~ThreadPool()
 {
     // set stop-condition
-    std::unique_lock<std::mutex> latch(queue_mutex);
-    stop = true;
-    cv_task.notify_all();
+    std::unique_lock<std::mutex> latch(m_queueMutex);
+    m_stop = true;
+    m_cvTask.notify_all();
     latch.unlock();
 
     // all threads terminate, then we're done.
-    for (auto& t : workers)
+    for (auto& t : m_workers)
         t.join();
 }
 
-void ThreadPool::thread_proc()
+inline void ThreadPool::thread_proc()
 {
     while (true)
     {
-        std::unique_lock<std::mutex> latch(queue_mutex);
-        cv_task.wait(latch, [this]() { return stop || !tasks.empty(); });
-        if (!tasks.empty())
+        std::unique_lock<std::mutex> latch(m_queueMutex);
+        m_cvTask.wait(latch, [this]() { return m_stop || !m_tasks.empty(); });
+        if (!m_tasks.empty())
         {
-            ++busy;
-            auto fn = tasks.front();
-            tasks.pop_front();
+            ++m_busy;
+            auto fn = m_tasks.front();
+            m_tasks.pop_front();
 
             // release lock. run async
             latch.unlock();
             // run function outside context
             fn();
-            ++processed;
+            ++m_processed;
 
             // lock again
             latch.lock();
-            --busy;
-            cv_finished.notify_one();
+            --m_busy;
+            m_cvFinished.notify_one();
         }
-        else if (stop)
+        else if (m_stop)
         {
             break;
         }
@@ -123,32 +122,32 @@ void ThreadPool::thread_proc()
 template <class F>
 void ThreadPool::enqueue(F&& f)
 {
-    std::unique_lock<std::mutex> lock(queue_mutex);
-    tasks.emplace_back(std::forward<F>(f));
-    cv_task.notify_one();
+    std::unique_lock<std::mutex> lock(m_queueMutex);
+    m_tasks.emplace_back(std::forward<F>(f));
+    m_cvTask.notify_one();
 }
 
 template <class F>
 void ThreadPool::enqueueWait(F&& f)
 {
     waitForFreeSlot();
-    std::unique_lock<std::mutex> lock(queue_mutex);
-    tasks.emplace_back(std::forward<F>(f));
-    cv_task.notify_one();
+    std::unique_lock<std::mutex> lock(m_queueMutex);
+    m_tasks.emplace_back(std::forward<F>(f));
+    m_cvTask.notify_one();
 }
 
 // waits until the queue is empty and all threads are idle.
-void ThreadPool::waitFinished()
+inline void ThreadPool::waitFinished()
 {
-    std::unique_lock<std::mutex> lock(queue_mutex);
-    cv_finished.wait(lock, [this]() { return tasks.empty() && (busy == 0); });
+    std::unique_lock<std::mutex> lock(m_queueMutex);
+    m_cvFinished.wait(lock, [this]() { return m_tasks.empty() && (m_busy == 0); });
 }
 
 // waits until there's at least one thread free in the pool.
-void ThreadPool::waitForFreeSlot()
+inline void ThreadPool::waitForFreeSlot()
 {
-    std::unique_lock<std::mutex> lock(queue_mutex);
-    if ((busy < workers.size()) && (tasks.size() < workers.size()))
+    std::unique_lock<std::mutex> lock(m_queueMutex);
+    if ((m_busy < m_workers.size()) && (m_tasks.size() < m_workers.size()))
         return;
-    cv_finished.wait(lock, [this]() { return ((busy < workers.size()) && (tasks.size() < workers.size())); });
+    m_cvFinished.wait(lock, [this]() { return ((m_busy < m_workers.size()) && (m_tasks.size() < m_workers.size())); });
 }

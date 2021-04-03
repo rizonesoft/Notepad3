@@ -200,6 +200,18 @@
             <td class="style4 td-left">replaced with the extension of the currently searched file</td>
         </tr>
         <tr>
+            <td class="style3">${now}</td>
+            <td class="style4 td-left">replaced with the current date and time in the locale system format</td>
+        </tr>
+        <tr>
+            <td class="style3">${now}</td>
+            <td class="style4 td-left">replaced with the current date and time with the specified format.
+            The format string must be in the format of the strftime c++ function. See <a href="https://www.cplusplus.com/reference/ctime/strftime/">https://www.cplusplus.com/reference/ctime/strftime/</a>
+            for the specs.<br/>
+            Example: ${now,%A, %B %d, %Y} would print &quot;Saturday, March 17, 2021&quot;<br/>
+            The tooltip on the replace text box shows the expanded string.</td>
+        </tr>
+        <tr>
             <td class="style3">\a</td>
             <td class="style4 td-left">Outputs the bell character: '\a'</td>
         </tr>

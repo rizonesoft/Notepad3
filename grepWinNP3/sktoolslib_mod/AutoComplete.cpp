@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,15 +20,18 @@
 #include "stdafx.h"
 #include "AutoComplete.h"
 
+#include <shlguid.h>
+#include <shobjidl.h>
+
 CAutoComplete::CAutoComplete(CSimpleIni* pIni)
-    : m_pcacs(NULL)
-    , m_pac(NULL)
-    , m_pdrop(NULL)
-    , CRegHistory(pIni)
+    : CRegHistory(pIni)
+    , m_pcacs(nullptr)
+    , m_pac(nullptr)
+    , m_pdrop(nullptr)
 {
 }
 
-CAutoComplete::~CAutoComplete(void)
+CAutoComplete::~CAutoComplete()
 {
     if (m_pac)
         m_pac->Release();
@@ -45,10 +48,10 @@ bool CAutoComplete::Init(HWND hEdit)
     if (m_pdrop)
         m_pdrop->Release();
     if (CoCreateInstance(CLSID_AutoComplete,
-                         NULL,
+                         nullptr,
                          CLSCTX_INPROC_SERVER,
                          IID_IAutoComplete2,
-                         (LPVOID*)&m_pac) == S_OK)
+                         reinterpret_cast<LPVOID*>(&m_pac)) == S_OK)
     {
         IUnknown* punkSource;
 
@@ -57,15 +60,15 @@ bool CAutoComplete::Init(HWND hEdit)
         m_pcacs = new CAutoCompleteEnum(m_arEntries);
 
         if (m_pcacs->QueryInterface(IID_IUnknown,
-                                    (void**)&punkSource) == S_OK)
+                                    reinterpret_cast<void**>(&punkSource)) == S_OK)
         {
-            if (m_pac->Init(hEdit, punkSource, NULL, NULL) == S_OK)
+            if (m_pac->Init(hEdit, punkSource, nullptr, nullptr) == S_OK)
             {
                 m_pac->Enable(TRUE);
                 m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                if (m_pac->QueryInterface(IID_IAutoCompleteDropDown, (void**)&m_pdrop) != S_OK)
+                if (m_pac->QueryInterface(IID_IAutoCompleteDropDown, reinterpret_cast<void**>(&m_pdrop)) != S_OK)
                 {
-                    m_pdrop = NULL;
+                    m_pdrop = nullptr;
                 }
                 return true;
             }
@@ -73,14 +76,14 @@ bool CAutoComplete::Init(HWND hEdit)
         else
         {
             delete m_pcacs;
-            m_pcacs = NULL;
+            m_pcacs = nullptr;
         }
     }
 
     return false;
 }
 
-bool CAutoComplete::Enable(bool bEnable)
+bool CAutoComplete::Enable(bool bEnable) const
 {
     if (m_pac)
     {
@@ -102,13 +105,13 @@ bool CAutoComplete::AddEntry(LPCWSTR szText)
 
 bool CAutoComplete::RemoveSelected()
 {
-    if (m_pdrop == NULL)
+    if (m_pdrop == nullptr)
         return false;
-    if (m_pcacs == NULL)
+    if (m_pcacs == nullptr)
         return false;
 
     DWORD  flags;
-    LPWSTR string = 0;
+    LPWSTR string = nullptr;
     if (m_pdrop->GetDropDownStatus(&flags, &string) == S_OK)
     {
         if (flags & ACDD_VISIBLE)
@@ -133,7 +136,7 @@ bool CAutoComplete::RemoveSelected()
     return true;
 }
 
-void CAutoComplete::SetOptions(DWORD dwFlags)
+void CAutoComplete::SetOptions(DWORD dwFlags) const
 {
     if (m_pac)
     {
@@ -184,26 +187,26 @@ void CAutoCompleteEnum::Init(const std::vector<std::wstring*>& vec)
 
 STDMETHODIMP CAutoCompleteEnum::QueryInterface(REFIID refiid, void** ppv)
 {
-    *ppv = NULL;
+    *ppv = nullptr;
     if (IID_IUnknown == refiid || IID_IEnumString == refiid)
         *ppv = this;
 
-    if (*ppv != NULL)
+    if (*ppv != nullptr)
     {
-        ((LPUNKNOWN)*ppv)->AddRef();
+        static_cast<LPUNKNOWN>(*ppv)->AddRef();
         return S_OK;
     }
     return E_NOINTERFACE;
 }
 
 STDMETHODIMP_(ULONG)
-CAutoCompleteEnum::AddRef(void)
+CAutoCompleteEnum::AddRef()
 {
     return ++m_cRefCount;
 }
 
 STDMETHODIMP_(ULONG)
-CAutoCompleteEnum::Release(void)
+CAutoCompleteEnum::Release()
 {
     --m_cRefCount;
     if (m_cRefCount == 0)
@@ -224,10 +227,10 @@ STDMETHODIMP CAutoCompleteEnum::Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFe
     ULONG i = 0;
     for (; i < celt; i++)
     {
-        if (m_iCur == (ULONG)m_vecStrings.size())
+        if (m_iCur == static_cast<ULONG>(m_vecStrings.size()))
             break;
 
-        rgelt[i] = (LPWSTR)::CoTaskMemAlloc((ULONG)sizeof(WCHAR) * (m_vecStrings[m_iCur].size() + 1));
+        rgelt[i] = static_cast<LPWSTR>(::CoTaskMemAlloc(static_cast<ULONG>(sizeof(WCHAR)) * (m_vecStrings[m_iCur].size() + 1)));
         wcscpy_s(rgelt[i], m_vecStrings[m_iCur].size() + 1, m_vecStrings[m_iCur].c_str());
 
         if (pceltFetched)
@@ -244,13 +247,13 @@ STDMETHODIMP CAutoCompleteEnum::Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFe
 
 STDMETHODIMP CAutoCompleteEnum::Skip(ULONG celt)
 {
-    if ((m_iCur + int(celt)) >= m_vecStrings.size())
+    if ((m_iCur + static_cast<int>(celt)) >= m_vecStrings.size())
         return S_FALSE;
     m_iCur += celt;
     return S_OK;
 }
 
-STDMETHODIMP CAutoCompleteEnum::Reset(void)
+STDMETHODIMP CAutoCompleteEnum::Reset()
 {
     m_iCur = 0;
     return S_OK;
@@ -258,7 +261,7 @@ STDMETHODIMP CAutoCompleteEnum::Reset(void)
 
 STDMETHODIMP CAutoCompleteEnum::Clone(IEnumString** ppenum)
 {
-    if (ppenum == NULL)
+    if (ppenum == nullptr)
         return E_POINTER;
 
     try

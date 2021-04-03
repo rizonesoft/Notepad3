@@ -52,15 +52,15 @@ static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
     {
         if (!sResult.empty())
             sResult += L"|";
-        size_t endpos = path.find_last_not_of(L" \"\t");
-        if (std::wstring::npos != endpos)
+        size_t endPos = path.find_last_not_of(L" \"\t");
+        if (std::wstring::npos != endPos)
         {
-            path = path.substr(0, endpos + 1);
+            path = path.substr(0, endPos + 1);
         }
-        size_t startpos = path.find_first_not_of(L" \"\t");
-        if ((startpos > 0) && (std::wstring::npos != startpos))
+        size_t startPos = path.find_first_not_of(L" \"\t");
+        if ((startPos > 0) && (std::wstring::npos != startPos))
         {
-            path = path.substr(startpos);
+            path = path.substr(startPos);
         }
         sResult += CPathUtils::GetLongPathname(path);
     }
@@ -74,24 +74,24 @@ static void RegisterContextMenu(bool bAdd)
         std::wstring sIconPath = CStringUtils::Format(L"%s,-%d", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str(), IDI_GREPWIN);
         std::wstring sExePath = CStringUtils::Format(L"%s /searchpath:\"%%1\"", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str());
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), static_cast<DWORD>((sIconPath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), static_cast<DWORD>((sIconPath.size() + 1) * sizeof(WCHAR)));
 
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), static_cast<DWORD>((sIconPath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), static_cast<DWORD>((sIconPath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), static_cast<DWORD>((sIconPath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", L"MultiSelectModel", REG_SZ, L"Player", sizeof(L"Player") + 2);
 
         sExePath = CStringUtils::Format(L"%s /searchpath:\"%%V\"", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str());
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
     }
     else
     {
@@ -107,7 +107,7 @@ static void RegisterContextMenu(bool bAdd)
 
 BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
 {
-    auto * pWnd = (HWND*)lParam;
+    HWND* pWnd          = reinterpret_cast<HWND*>(lParam);
     WCHAR buf[MAX_PATH] = {0};
     GetWindowText(hwnd, buf, _countof(buf));
     if (_wcsnicmp(buf, L"grepwinnp3 :", 12) == 0) {
@@ -149,13 +149,13 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     // explorer starts multiple grepWin instances at once. In case there's already a grepWin instance
     // running, sleep for a while to give that instance time to fully initialize
     HANDLE hReloadProtection = ::CreateMutex(nullptr, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B5}");
-    bool alreadyRunning = false;
+    bool   alreadyRunning    = false;
     if ((!hReloadProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
     {
         // An instance of grepWin is already running
         alreadyRunning = true;
     }
-    hInitProtection     = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
+    hInitProtection     = ::CreateMutex(nullptr, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
     bool initInProgress = false;
     if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
     {
@@ -168,10 +168,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
     // we need some of the common controls
-    INITCOMMONCONTROLSEX icex;
-    icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-    icex.dwICC  = ICC_LINK_CLASS | ICC_LISTVIEW_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_PROGRESS_CLASS | ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_TREEVIEW_CLASSES | ICC_UPDOWN_CLASS | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
-    InitCommonControlsEx(&icex);
+    INITCOMMONCONTROLSEX icEx;
+    icEx.dwSize = sizeof(INITCOMMONCONTROLSEX);
+    icEx.dwICC  = ICC_LINK_CLASS | ICC_LISTVIEW_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_PROGRESS_CLASS | ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_TREEVIEW_CLASSES | ICC_UPDOWN_CLASS | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
+    InitCommonControlsEx(&icEx);
 
     g_hDlgIcon128 = NULL;
     LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_GREPWIN), 128, 128, &g_hDlgIcon128);
@@ -193,15 +193,15 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         return FALSE;
     }
 
-    bool bQuit = false;
-    HWND hWnd = nullptr;
-    int timeout = 20;
+    bool bQuit   = false;
+    HWND hWnd    = nullptr;
+    int  timeout = 20;
     // find already running grepWin windows
     if (alreadyRunning && !parser.HasKey(L"new"))
     {
         do
         {
-            if (EnumWindows(windowenumerator, (LPARAM)&hWnd) != FALSE)
+            if (EnumWindows(windowenumerator, reinterpret_cast<LPARAM>(&hWnd)) != FALSE)
             {
                 // long running grepWin Window found:
                 // if a grepWin process is currently initializing,
@@ -211,7 +211,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     CloseHandle(hInitProtection);
                     Sleep(100);
                     initInProgress  = false;
-                    hInitProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
+                    hInitProtection = ::CreateMutex(nullptr, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
                     if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
                     {
                         // An instance of grepWin is still initializing
@@ -219,7 +219,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     }
                 }
                 hWnd = nullptr;
-                EnumWindows(windowenumerator, (LPARAM)&hWnd);
+                EnumWindows(windowenumerator, reinterpret_cast<LPARAM>(&hWnd));
             }
             if (alreadyRunning && (hWnd == nullptr))
                 Sleep(100);
@@ -300,7 +300,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         Gdiplus::GdiplusStartupInput gdiplusStartupInput;
         ULONG_PTR                    gdiplusToken;
         // Initialize GDI+.
-        Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+        Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
 
         if (bPortable)
         {
@@ -326,26 +326,26 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
             if (hInitProtection)
                 CloseHandle(hInitProtection);
             CAboutDlg aboutDlg(nullptr);
-            ret= (int)aboutDlg.DoModal(hInstance, IDD_ABOUT, nullptr, NULL);
+            ret = static_cast<int>(aboutDlg.DoModal(hInstance, IDD_ABOUT, nullptr, NULL));
         }
         else
         {
-            CSearchDlg   searchDlg(nullptr);
+            CSearchDlg searchDlg(nullptr);
             if (parser.HasVal(L"searchini"))
             {
-                std::wstring inipath = parser.GetVal(L"searchini");
+                std::wstring iniPath = parser.GetVal(L"searchini");
                 CSimpleIni   searchIni;
                 searchIni.SetUnicode(true);
-                searchIni.LoadFile(inipath.c_str());
+                searchIni.LoadFile(iniPath.c_str());
                 std::wstring section;
                 if (parser.HasVal(L"name"))
                     section = parser.GetVal(L"name");
 
                 if (searchIni.GetValue(section.c_str(), L"searchpath"))
                 {
-                    std::wstring spath = searchIni.GetValue(section.c_str(), L"searchpath");
-                    spath              = SanitizeSearchPaths(spath);
-                    searchDlg.SetSearchPath(spath);
+                    std::wstring sPath = searchIni.GetValue(section.c_str(), L"searchpath");
+                    sPath              = SanitizeSearchPaths(sPath);
+                    searchDlg.SetSearchPath(sPath);
                 }
                 if (searchIni.GetValue(section.c_str(), L"searchfor"))
                     searchDlg.SetSearchString(searchIni.GetValue(section.c_str(), L"searchfor"));
@@ -396,6 +396,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetExecute(ExecuteAction::Search);
                 if (searchIni.GetValue(section.c_str(), L"executereplace"))
                     searchDlg.SetExecute(ExecuteAction::Replace);
+                if (searchIni.GetValue(section.c_str(), L"executecapture"))
+                    searchDlg.SetExecute(ExecuteAction::Capture);
                 if (searchIni.GetValue(section.c_str(), L"closedialog"))
                     searchDlg.SetEndDialog();
                 if (searchIni.GetValue(section.c_str(), L"content"))
@@ -410,17 +412,17 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     auto     sDate1 = searchIni.GetValue(section.c_str(), L"date1");
                     swscanf_s(sDate1, L"%4d:%2d:%2d", &year, &month, &day);
                     SYSTEMTIME sysTime = {0};
-                    sysTime.wYear      = (WORD)year;
-                    sysTime.wMonth     = (WORD)month;
-                    sysTime.wDay       = (WORD)day;
+                    sysTime.wYear      = static_cast<WORD>(year);
+                    sysTime.wMonth     = static_cast<WORD>(month);
+                    sysTime.wDay       = static_cast<WORD>(day);
                     SystemTimeToFileTime(&sysTime, &date1);
                     if (searchIni.GetValue(section.c_str(), L"date2"))
                     {
                         auto sDate2 = searchIni.GetValue(section.c_str(), L"date2");
                         swscanf_s(sDate2, L"%4d:%2d:%2d", &year, &month, &day);
-                        sysTime.wYear  = (WORD)year;
-                        sysTime.wMonth = (WORD)month;
-                        sysTime.wDay   = (WORD)day;
+                        sysTime.wYear  = static_cast<WORD>(year);
+                        sysTime.wMonth = static_cast<WORD>(month);
+                        sysTime.wDay   = static_cast<WORD>(day);
                         SystemTimeToFileTime(&sysTime, &date2);
                     }
                     searchDlg.SetDateLimit(_wtoi(searchIni.GetValue(section.c_str(), L"datelimit")), date1, date2);
@@ -485,6 +487,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetExecute(ExecuteAction::Search);
             if (parser.HasKey(L"executereplace"))
                 searchDlg.SetExecute(ExecuteAction::Replace);
+            if (parser.HasKey(L"executecapture"))
+                searchDlg.SetExecute(ExecuteAction::Capture);
             if (parser.HasKey(L"closedialog"))
                 searchDlg.SetEndDialog();
             if (parser.HasKey(L"content"))
@@ -498,18 +502,18 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 int day = 0;
                 auto sDate1 = parser.GetVal(L"date1");
                 swscanf_s(sDate1, L"%4d:%2d:%2d", &year, &month, &day);
-                SYSTEMTIME sysTime = { 0 };
-                sysTime.wYear = (WORD)year;
-                sysTime.wMonth = (WORD)month;
-                sysTime.wDay = (WORD)day;
+                SYSTEMTIME sysTime = {0};
+                sysTime.wYear      = static_cast<WORD>(year);
+                sysTime.wMonth     = static_cast<WORD>(month);
+                sysTime.wDay       = static_cast<WORD>(day);
                 SystemTimeToFileTime(&sysTime, &date1);
                 if (parser.HasVal(L"date2"))
                 {
                     auto sDate2 = parser.GetVal(L"date2");
                     swscanf_s(sDate2, L"%4d:%2d:%2d", &year, &month, &day);
-                    sysTime.wYear = (WORD)year;
-                    sysTime.wMonth = (WORD)month;
-                    sysTime.wDay = (WORD)day;
+                    sysTime.wYear  = static_cast<WORD>(year);
+                    sysTime.wMonth = static_cast<WORD>(month);
+                    sysTime.wDay   = static_cast<WORD>(day);
                     SystemTimeToFileTime(&sysTime, &date2);
                 }
                 searchDlg.SetDateLimit(parser.GetLongVal(L"datelimit"), date1, date2);
@@ -523,15 +527,16 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 PathUnquoteSpaces(cmdLinePath.get());
                 if (PathFileExists(cmdLinePath.get()))
                 {
-                    spath = cmdLinePath.get();
-                    spath = SanitizeSearchPaths(spath);
-                    searchDlg.SetSearchPath(spath);
+                    std::wstring sPath = cmdLinePath.get();
+                    sPath              = SanitizeSearchPaths(sPath);
+                    searchDlg.SetSearchPath(sPath);
                 }
             }
             if (parser.HasKey(L"nosavesettings"))
                 searchDlg.SetNoSaveSettings(true);
 
-            ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
+            SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
+            ret = static_cast<int>(searchDlg.DoModal(hInstance, IDD_SEARCHDLG, nullptr, IDR_SEARCHDLG));
         }
         if (bPortable) {
             g_iniFile.SaveFile(g_iniPath.c_str(), true);

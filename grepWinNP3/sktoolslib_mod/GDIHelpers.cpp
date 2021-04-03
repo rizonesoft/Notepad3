@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -40,9 +40,9 @@ COLORREF GDIHelpers::Darker(COLORREF crBase, float fFactor)
     const BYTE bBlue  = GetBValue(crBase);
     const BYTE bGreen = GetGValue(crBase);
 
-    const BYTE bRedShadow   = (BYTE)(bRed * fFactor);
-    const BYTE bBlueShadow  = (BYTE)(bBlue * fFactor);
-    const BYTE bGreenShadow = (BYTE)(bGreen * fFactor);
+    const BYTE bRedShadow   = static_cast<BYTE>(bRed * fFactor);
+    const BYTE bBlueShadow  = static_cast<BYTE>(bBlue * fFactor);
+    const BYTE bGreenShadow = static_cast<BYTE>(bGreen * fFactor);
 
     return RGB(bRedShadow, bGreenShadow, bBlueShadow);
 }
@@ -57,9 +57,9 @@ COLORREF GDIHelpers::Lighter(COLORREF crBase, float fFactor)
     const BYTE bBlue  = GetBValue(crBase);
     const BYTE bGreen = GetGValue(crBase);
 
-    const BYTE bRedHilite   = (BYTE)min((int)(bRed * fFactor), 255);
-    const BYTE bBlueHilite  = (BYTE)min((int)(bBlue * fFactor), 255);
-    const BYTE bGreenHilite = (BYTE)min((int)(bGreen * fFactor), 255);
+    const BYTE bRedHilite   = static_cast<BYTE>(min((int)(bRed * fFactor), 255));
+    const BYTE bBlueHilite  = static_cast<BYTE>(min((int)(bBlue * fFactor), 255));
+    const BYTE bGreenHilite = static_cast<BYTE>(min((int)(bGreen * fFactor), 255));
 
     return RGB(bRedHilite, bGreenHilite, bBlueHilite);
 }
@@ -83,21 +83,21 @@ void GDIHelpers::FillSolidRect(HDC hDC, const RECT* rc, COLORREF clr)
 
 Gdiplus::ARGB GDIHelpers::MakeARGB(IN BYTE a, IN BYTE r, IN BYTE g, IN BYTE b)
 {
-    return (((Gdiplus::ARGB)(b) << BlueShift) |
-            ((Gdiplus::ARGB)(g) << GreenShift) |
-            ((Gdiplus::ARGB)(r) << RedShift) |
-            ((Gdiplus::ARGB)(a) << AlphaShift));
+    return ((static_cast<Gdiplus::ARGB>(b) << BlueShift) |
+            (static_cast<Gdiplus::ARGB>(g) << GreenShift) |
+            (static_cast<Gdiplus::ARGB>(r) << RedShift) |
+            (static_cast<Gdiplus::ARGB>(a) << AlphaShift));
 }
 
 COLORREF GDIHelpers::InterpolateColors(COLORREF c1, COLORREF c2, double fraction)
 {
     assert(fraction >= 0.0 && fraction <= 1.0);
-    int  r1  = (int)GetRValue(c1);
-    int  g1  = (int)GetGValue(c1);
-    int  b1  = (int)GetBValue(c1);
-    int  r2  = (int)GetRValue(c2);
-    int  g2  = (int)GetGValue(c2);
-    int  b2  = (int)GetBValue(c2);
+    int  r1  = static_cast<int>(GetRValue(c1));
+    int  g1  = static_cast<int>(GetGValue(c1));
+    int  b1  = static_cast<int>(GetBValue(c1));
+    int  r2  = static_cast<int>(GetRValue(c2));
+    int  g2  = static_cast<int>(GetGValue(c2));
+    int  b2  = static_cast<int>(GetBValue(c2));
     auto clr = RGB((r2 - r1) * fraction + r1, (g2 - g1) * fraction + g1, (b2 - b1) * fraction + b1);
 
     return clr;
@@ -124,70 +124,70 @@ void GDIHelpers::RGBToHSB(COLORREF rgb, BYTE& hue, BYTE& saturation, BYTE& brigh
     if (maxRGB)
         s = (255.0 * delta) / maxRGB;
 
-    if (BYTE(s) != 0)
+    if (static_cast<BYTE>(s) != 0)
     {
         if (r == maxRGB)
-            h = 0 + 43 * double(g - b) / delta;
+            h = 0 + 43 * static_cast<double>(g - b) / delta;
         else if (g == maxRGB)
-            h = 85 + 43 * double(b - r) / delta;
+            h = 85 + 43 * static_cast<double>(b - r) / delta;
         else if (b == maxRGB)
-            h = 171 + 43 * double(r - g) / delta;
+            h = 171 + 43 * static_cast<double>(r - g) / delta;
     }
     else
         h = 0.0;
 
-    hue        = BYTE(h);
-    saturation = BYTE(s);
-    brightness = BYTE(l);
+    hue        = static_cast<BYTE>(h);
+    saturation = static_cast<BYTE>(s);
+    brightness = static_cast<BYTE>(l);
 }
 
 void GDIHelpers::RGBtoHSL(COLORREF color, float& h, float& s, float& l)
 {
-    const float r_percent = float(GetRValue(color)) / 255;
-    const float g_percent = float(GetGValue(color)) / 255;
-    const float b_percent = float(GetBValue(color)) / 255;
+    const float rPercent = static_cast<float>(GetRValue(color)) / 255;
+    const float gPercent = static_cast<float>(GetGValue(color)) / 255;
+    const float bPercent = static_cast<float>(GetBValue(color)) / 255;
 
-    float max_color = 0;
-    if ((r_percent >= g_percent) && (r_percent >= b_percent))
-        max_color = r_percent;
-    else if ((g_percent >= r_percent) && (g_percent >= b_percent))
-        max_color = g_percent;
-    else if ((b_percent >= r_percent) && (b_percent >= g_percent))
-        max_color = b_percent;
+    float maxColor = 0;
+    if ((rPercent >= gPercent) && (rPercent >= bPercent))
+        maxColor = rPercent;
+    else if ((gPercent >= rPercent) && (gPercent >= bPercent))
+        maxColor = gPercent;
+    else if ((bPercent >= rPercent) && (bPercent >= gPercent))
+        maxColor = bPercent;
 
-    float min_color = 0;
-    if ((r_percent <= g_percent) && (r_percent <= b_percent))
-        min_color = r_percent;
-    else if ((g_percent <= r_percent) && (g_percent <= b_percent))
-        min_color = g_percent;
-    else if ((b_percent <= r_percent) && (b_percent <= g_percent))
-        min_color = b_percent;
+    float minColor = 0;
+    if ((rPercent <= gPercent) && (rPercent <= bPercent))
+        minColor = rPercent;
+    else if ((gPercent <= rPercent) && (gPercent <= bPercent))
+        minColor = gPercent;
+    else if ((bPercent <= rPercent) && (bPercent <= gPercent))
+        minColor = bPercent;
 
     float L = 0, S = 0, H = 0;
 
-    L = (max_color + min_color) / 2;
+    L = (maxColor + minColor) / 2;
 
-    if (max_color == min_color)
+    if (maxColor == minColor)
     {
         S = 0;
         H = 0;
     }
     else
     {
-        auto d = max_color - min_color;
+        auto d = maxColor - minColor;
         if (L < .50)
-            S = d / (max_color + min_color);
+            S = d / (maxColor + minColor);
         else
-            S = d / ((2.0f - max_color) - min_color);
+            S = d / ((2.0f - maxColor) - minColor);
 
-        if (max_color == r_percent)
-            H = (g_percent - b_percent) / d;
+        if (maxColor == rPercent)
+            H = (gPercent - bPercent) / d;
 
-        else if (max_color == g_percent)
-            H = 2.0f + (b_percent - r_percent) / d;
+        else if (maxColor == gPercent)
+            H = 2.0f + (bPercent - rPercent) / d;
 
-        else if (max_color == b_percent)
-            H = 4.0f + (r_percent - g_percent) / d;
+        else if (maxColor == bPercent)
+            H = 4.0f + (rPercent - gPercent) / d;
     }
     H = H * 60;
     if (H < 0)
@@ -197,7 +197,7 @@ void GDIHelpers::RGBtoHSL(COLORREF color, float& h, float& s, float& l)
     h = H;
 }
 
-static float HSLtoRGB_Subfunction(float temp1, float temp2, float temp3)
+static float hsLtoRGBSubfunction(float temp1, float temp2, float temp3)
 {
     if ((temp3 * 6) < 1)
         return (temp2 + (temp1 - temp2) * 6 * temp3) * 100;
@@ -213,7 +213,7 @@ COLORREF GDIHelpers::HSLtoRGB(float h, float s, float l)
 {
     if (s == 0)
     {
-        BYTE t = BYTE(l / 100 * 255);
+        BYTE t = static_cast<BYTE>(l / 100 * 255);
         return RGB(t, t, t);
     }
     const float L     = l / 100;
@@ -225,16 +225,16 @@ COLORREF GDIHelpers::HSLtoRGB(float h, float s, float l)
     temp3             = H + .33333f;
     if (temp3 > 1)
         temp3 -= 1;
-    const float pcr = HSLtoRGB_Subfunction(temp1, temp2, temp3);
+    const float pcr = hsLtoRGBSubfunction(temp1, temp2, temp3);
     temp3           = H;
-    const float pcg = HSLtoRGB_Subfunction(temp1, temp2, temp3);
+    const float pcg = hsLtoRGBSubfunction(temp1, temp2, temp3);
     temp3           = H - .33333f;
     if (temp3 < 0)
         temp3 += 1;
-    const float pcb = HSLtoRGB_Subfunction(temp1, temp2, temp3);
-    BYTE        r   = BYTE(pcr / 100 * 255);
-    BYTE        g   = BYTE(pcg / 100 * 255);
-    BYTE        b   = BYTE(pcb / 100 * 255);
+    const float pcb = hsLtoRGBSubfunction(temp1, temp2, temp3);
+    BYTE        r   = static_cast<BYTE>(pcr / 100 * 255);
+    BYTE        g   = static_cast<BYTE>(pcg / 100 * 255);
+    BYTE        b   = static_cast<BYTE>(pcb / 100 * 255);
     return RGB(r, g, b);
 }
 
@@ -252,7 +252,7 @@ bool GDIHelpers::ShortHexStringToCOLORREF(const std::string& s, COLORREF* clr)
         char* ep = nullptr;
         errno    = 0;
         // Must convert all digits of string.
-        v = (BYTE)strtoul(dig, &ep, 16);
+        v = static_cast<BYTE>(strtoul(dig, &ep, 16));
         if (errno == 0 && ep == &dig[1])
             v = v * 16 + v;
         else

@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2016, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2016, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,8 +20,6 @@
 #pragma once
 
 #include "AeroGlass.h"
-#include "ResString.h"
-#include <string>
 #include <memory>
 
 /**
@@ -42,6 +40,8 @@ public:
     {
         m_margins = {};
     }
+    virtual ~CDialog() = default;
+
     INT_PTR     DoModal(HINSTANCE hInstance, int resID, HWND hWndParent);
     INT_PTR     DoModal(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent);
     INT_PTR     DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel);
@@ -51,9 +51,9 @@ public:
     HWND        Create(HINSTANCE hInstance, int resID, HWND hWndParent);
     BOOL        EndDialog(HWND hDlg, INT_PTR nResult);
     void        AddToolTip(UINT ctrlID, LPCWSTR text);
-    void        AddToolTip(HWND hWnd, LPCWSTR text);
+    void        AddToolTip(HWND hWnd, LPCWSTR text) const;
     bool        IsCursorOverWindowBorder();
-    void        RefreshCursor();
+    static void RefreshCursor();
     void        ShowEditBalloon(UINT nId, LPCWSTR title, LPCWSTR text, int icon = TTI_ERROR);
     /**
      * Sets the transparency of the window.
@@ -83,7 +83,7 @@ public:
 protected:
     HINSTANCE   hResource;
     HWND        m_hwnd;
-    CDwmApiImpl m_Dwm;
+    CDwmApiImpl m_dwm;
     MARGINS     m_margins;
 
     void InitDialog(HWND hwndDlg, UINT iconID, bool bPosition = true);
@@ -100,9 +100,9 @@ protected:
     static INT_PTR CALLBACK stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     // returns a pointer the dialog (stored as the WindowLong)
-    inline static CDialog* GetObjectFromWindow(HWND hWnd)
+    static CDialog* GetObjectFromWindow(HWND hWnd)
     {
-        return (CDialog*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+        return reinterpret_cast<CDialog*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     }
 
 private:

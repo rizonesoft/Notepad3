@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -90,28 +90,27 @@ BOOL CCmdLineParser::Parse(LPCWSTR sCmdLine)
         LPCWSTR sVal = wcspbrk(sArg, m_sValueSep);
         if (sVal == nullptr)
         {
-            std::wstring Key(sArg);
-            std::transform(Key.begin(), Key.end(), Key.begin(), ::towlower);
-            m_valueMap.insert(CValsMap::value_type(Key, sEmpty));
+            std::wstring key(sArg);
+            std::transform(key.begin(), key.end(), key.begin(), ::towlower);
+            m_valueMap.insert(CValsMap::value_type(key, sEmpty));
             break;
         }
         else if (sVal[0] == L' ' || wcslen(sVal) == 1)
         {
             // cmdline ends with /Key: or a key with no value
-            std::wstring Key(sArg, (int)(sVal - sArg));
-            if (!Key.empty())
+            std::wstring key(sArg, static_cast<int>(sVal - sArg));
+            if (!key.empty())
             {
-                std::transform(Key.begin(), Key.end(), Key.begin(), ::towlower);
-                m_valueMap.insert(CValsMap::value_type(Key, sEmpty));
+                std::transform(key.begin(), key.end(), key.begin(), ::towlower);
+                m_valueMap.insert(CValsMap::value_type(key, sEmpty));
             }
             sCurrent = sVal + 1;
-            continue;
         }
         else
         {
             // key has value
-            std::wstring Key(sArg, (int)(sVal - sArg));
-            std::transform(Key.begin(), Key.end(), Key.begin(), ::towlower);
+            std::wstring key(sArg, static_cast<int>(sVal - sArg));
+            std::transform(key.begin(), key.end(), key.begin(), ::towlower);
 
             sVal = sVal + 1;
 
@@ -147,21 +146,21 @@ BOOL CCmdLineParser::Parse(LPCWSTR sCmdLine)
                 std::wstring csVal(sQuote);
                 if (hasEscapedQuotes)
                     SearchReplace(csVal, L"\\\"", L"\"");
-                if (!Key.empty())
+                if (!key.empty())
                 {
-                    m_valueMap.insert(CValsMap::value_type(Key, csVal));
+                    m_valueMap.insert(CValsMap::value_type(key, csVal));
                 }
                 break;
             }
             else
             {
                 // end quote
-                if (!Key.empty())
+                if (!key.empty())
                 {
-                    std::wstring csVal(sQuote, (int)(sEndQuote - sQuote));
+                    std::wstring csVal(sQuote, static_cast<int>(sEndQuote - sQuote));
                     if (hasEscapedQuotes)
                         SearchReplace(csVal, L"\\\"", L"\"");
-                    m_valueMap.insert(CValsMap::value_type(Key, csVal));
+                    m_valueMap.insert(CValsMap::value_type(key, csVal));
                 }
                 sCurrent = sEndQuote + 1;
                 continue;
@@ -201,7 +200,7 @@ LPCWSTR CCmdLineParser::GetVal(LPCWSTR sKey) const
 {
     CValsMap::const_iterator it = findKey(sKey);
     if (it == m_valueMap.end())
-        return 0;
+        return nullptr;
     return it->second.c_str();
 }
 

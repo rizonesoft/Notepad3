@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2013, 2020 - Stefan Kueng
+// Copyright (C) 2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -40,5 +40,5 @@ public:
 private:
     std::list<std::wstring> m_lines;
     std::wstring            m_path;
-    int                     m_maxlines;
+    int                     m_maxLines;
 };

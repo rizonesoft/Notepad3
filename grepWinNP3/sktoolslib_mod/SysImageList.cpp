@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,23 +19,24 @@
 
 #include "stdafx.h"
 #include "SysImageList.h"
+#include <shellapi.h>
 
 // Singleton constructor and destructor (private)
 
-CSysImageList* CSysImageList::instance = 0;
+CSysImageList* CSysImageList::instance = nullptr;
 
 CSysImageList::CSysImageList()
 {
     m_hSystemImageList = nullptr;
-    SHFILEINFO ssfi    = {0};
-    wchar_t    windir[MAX_PATH];
-    GetWindowsDirectory(windir, _countof(windir)); // MAX_PATH ok.
+    SHFILEINFO ssfi    = {nullptr};
+    wchar_t    winDir[MAX_PATH];
+    GetWindowsDirectory(winDir, _countof(winDir)); // MAX_PATH ok.
     m_hSystemImageList =
-        (HIMAGELIST)SHGetFileInfo(
-            windir,
+        reinterpret_cast<HIMAGELIST>(SHGetFileInfo(
+            winDir,
             0,
             &ssfi, sizeof ssfi,
-            SHGFI_SYSICONINDEX | SHGFI_SMALLICON);
+            SHGFI_SYSICONINDEX | SHGFI_SMALLICON));
 }
 
 CSysImageList::~CSysImageList()
@@ -46,7 +47,7 @@ CSysImageList::~CSysImageList()
 
 CSysImageList& CSysImageList::GetInstance()
 {
-    if (instance == 0)
+    if (instance == nullptr)
         instance = new CSysImageList;
     return *instance;
 }
@@ -54,12 +55,12 @@ CSysImageList& CSysImageList::GetInstance()
 void CSysImageList::Cleanup()
 {
     delete instance;
-    instance = 0;
+    instance = nullptr;
 }
 
 // Operations
 
-int CSysImageList::GetDirIconIndex() const
+int CSysImageList::GetDirIconIndex()
 {
     SHFILEINFO sfi;
     SecureZeroMemory(&sfi, sizeof sfi);
@@ -73,7 +74,7 @@ int CSysImageList::GetDirIconIndex() const
     return sfi.iIcon;
 }
 
-int CSysImageList::GetDirOpenIconIndex() const
+int CSysImageList::GetDirOpenIconIndex()
 {
     SHFILEINFO sfi;
     SecureZeroMemory(&sfi, sizeof sfi);
@@ -87,7 +88,7 @@ int CSysImageList::GetDirOpenIconIndex() const
     return sfi.iIcon;
 }
 
-int CSysImageList::GetDefaultIconIndex() const
+int CSysImageList::GetDefaultIconIndex()
 {
     SHFILEINFO sfi;
     SecureZeroMemory(&sfi, sizeof sfi);
@@ -101,7 +102,7 @@ int CSysImageList::GetDefaultIconIndex() const
     return sfi.iIcon;
 }
 
-int CSysImageList::GetFileIconIndex(const std::wstring& file) const
+int CSysImageList::GetFileIconIndex(const std::wstring& file)
 {
     SHFILEINFO sfi;
     SecureZeroMemory(&sfi, sizeof sfi);

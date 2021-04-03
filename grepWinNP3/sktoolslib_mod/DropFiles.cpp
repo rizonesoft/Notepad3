@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,22 +19,20 @@
 
 #include "stdafx.h"
 #include "DropFiles.h"
-#include "UnicodeUtils.h"
-#include "maxpath.h"
 
 #ifndef __IDataObjectAsyncCapability_FWD_DEFINED__
 #    define IID_IDataObjectAsyncCapability IID_IAsyncOperation
 #endif
 
-CLIPFORMAT CF_FILECONTENTS        = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_FILECONTENTS);
-CLIPFORMAT CF_FILEDESCRIPTOR      = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
-CLIPFORMAT CF_PREFERREDDROPEFFECT = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT);
+CLIPFORMAT CF_FILECONTENTS        = static_cast<CLIPFORMAT>(RegisterClipboardFormat(CFSTR_FILECONTENTS));
+CLIPFORMAT CF_FILEDESCRIPTOR      = static_cast<CLIPFORMAT>(RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR));
+CLIPFORMAT CF_PREFERREDDROPEFFECT = static_cast<CLIPFORMAT>(RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT));
 
 FileDataObject::FileDataObject(const std::vector<std::wstring>& paths)
-    : m_bInOperation(FALSE)
-    , m_bIsAsync(TRUE)
+    : m_allPaths(paths)
     , m_cRefCount(0)
-    , m_allPaths(paths)
+    , m_bInOperation(FALSE)
+    , m_bIsAsync(TRUE)
 {
 }
 
@@ -54,30 +52,28 @@ FileDataObject::~FileDataObject()
 // IUnknown
 //////////////////////////////////////////////////////////////////////////
 
-STDMETHODIMP FileDataObject::QueryInterface(REFIID riid, void** ppvObject)
+HRESULT STDMETHODCALLTYPE FileDataObject::QueryInterface(REFIID riid, void** ppvObject)
 {
-    *ppvObject = NULL;
+    *ppvObject = nullptr;
     if (IID_IUnknown == riid || IID_IDataObject == riid)
         *ppvObject = this;
     if (riid == IID_IDataObjectAsyncCapability)
-        *ppvObject = (IDataObjectAsyncCapability*)this;
+        *ppvObject = static_cast<IDataObjectAsyncCapability*>(this);
 
-    if (NULL != *ppvObject)
+    if (nullptr != *ppvObject)
     {
-        ((LPUNKNOWN)*ppvObject)->AddRef();
+        static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
         return S_OK;
     }
     return E_NOINTERFACE;
 }
 
-STDMETHODIMP_(ULONG)
-FileDataObject::AddRef(void)
+ULONG STDMETHODCALLTYPE FileDataObject::AddRef()
 {
     return ++m_cRefCount;
 }
 
-STDMETHODIMP_(ULONG)
-FileDataObject::Release(void)
+ULONG STDMETHODCALLTYPE FileDataObject::Release()
 {
     --m_cRefCount;
     if (m_cRefCount == 0)
@@ -93,30 +89,27 @@ FileDataObject::Release(void)
 //////////////////////////////////////////////////////////////////////////
 STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium)
 {
-    if (pformatetcIn == NULL || pmedium == NULL)
+    if (pformatetcIn == nullptr || pmedium == nullptr)
         return E_INVALIDARG;
-    pmedium->hGlobal = NULL;
+    pmedium->hGlobal = nullptr;
 
     if ((pformatetcIn->tymed & TYMED_HGLOBAL) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_HDROP))
     {
         UINT uBuffSize = 0;
         for (auto it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
         {
-            uBuffSize += (UINT)it->size();
+            uBuffSize += static_cast<UINT>(it->size());
             uBuffSize += 1;
         }
         uBuffSize = sizeof(DROPFILES) + sizeof(wchar_t) * (uBuffSize + 1);
 
-        HGLOBAL    hgDrop;
-        DROPFILES* pDrop;
-
         // Allocate memory from the heap for the DROPFILES struct.
-        hgDrop = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE | GMEM_ZEROINIT, uBuffSize);
-        if (NULL == hgDrop)
+        HGLOBAL hgDrop = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE | GMEM_ZEROINIT, uBuffSize);
+        if (nullptr == hgDrop)
             return E_OUTOFMEMORY;
-        pDrop = (DROPFILES*)GlobalLock(hgDrop);
+        DROPFILES* pDrop = static_cast<DROPFILES*>(GlobalLock(hgDrop));
 
-        if (NULL == pDrop)
+        if (nullptr == pDrop)
         {
             GlobalFree(hgDrop);
             return E_OUTOFMEMORY;
@@ -128,10 +121,9 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
         // indicate it contains Unicode strings.
         pDrop->fWide = TRUE;
 #endif
-        wchar_t* pszBuff;
         // Copy all the filenames into memory after
         // the end of the DROPFILES struct.
-        pszBuff = (wchar_t*)(LPBYTE(pDrop) + sizeof(DROPFILES));
+        wchar_t* pszBuff = reinterpret_cast<wchar_t*>(reinterpret_cast<LPBYTE>(pDrop) + sizeof(DROPFILES));
         for (auto it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
         {
             lstrcpy(pszBuff, it->c_str());
@@ -140,11 +132,11 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
             pszBuff++;
         }
         *pszBuff = 0;
-        pszBuff  = (wchar_t*)(LPBYTE(pDrop) + sizeof(DROPFILES));
+        pszBuff  = reinterpret_cast<wchar_t*>(reinterpret_cast<LPBYTE>(pDrop) + sizeof(DROPFILES));
         GlobalUnlock(hgDrop);
         pmedium->hGlobal        = hgDrop;
         pmedium->tymed          = TYMED_HGLOBAL;
-        pmedium->pUnkForRelease = NULL;
+        pmedium->pUnkForRelease = nullptr;
         return S_OK;
     }
     // handling CF_PREFERREDDROPEFFECT is necessary to tell the shell that it should *not* ask for the
@@ -154,7 +146,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
     else if ((pformatetcIn->tymed & TYMED_HGLOBAL) && (pformatetcIn->cfFormat == CF_PREFERREDDROPEFFECT))
     {
         HGLOBAL data   = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE | GMEM_ZEROINIT, sizeof(DWORD));
-        DWORD*  effect = (DWORD*)GlobalLock(data);
+        DWORD*  effect = static_cast<DWORD*>(GlobalLock(data));
         (*effect)      = DROPEFFECT_COPY;
         GlobalUnlock(data);
         pmedium->hGlobal = data;
@@ -183,7 +175,7 @@ STDMETHODIMP FileDataObject::GetDataHere(FORMATETC* /*pformatetc*/, STGMEDIUM* /
 
 STDMETHODIMP FileDataObject::QueryGetData(FORMATETC* pformatetc)
 {
-    if (pformatetc == NULL)
+    if (pformatetc == nullptr)
         return E_INVALIDARG;
 
     if (!(DVASPECT_CONTENT & pformatetc->dwAspect))
@@ -215,20 +207,20 @@ STDMETHODIMP FileDataObject::QueryGetData(FORMATETC* pformatetc)
 
 STDMETHODIMP FileDataObject::GetCanonicalFormatEtc(FORMATETC* /*pformatectIn*/, FORMATETC* pformatetcOut)
 {
-    if (pformatetcOut == NULL)
+    if (pformatetcOut == nullptr)
         return E_INVALIDARG;
     return DATA_S_SAMEFORMATETC;
 }
 
 STDMETHODIMP FileDataObject::SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, BOOL fRelease)
 {
-    if ((pformatetc == NULL) || (pmedium == NULL))
+    if ((pformatetc == nullptr) || (pmedium == nullptr))
         return E_INVALIDARG;
 
     FORMATETC* fetc    = new (std::nothrow) FORMATETC;
     STGMEDIUM* pStgMed = new (std::nothrow) STGMEDIUM;
 
-    if ((fetc == NULL) || (pStgMed == NULL))
+    if ((fetc == nullptr) || (pStgMed == nullptr))
     {
         delete fetc;
         delete pStgMed;
@@ -270,24 +262,12 @@ STDMETHODIMP FileDataObject::SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, 
     return S_OK;
 }
 
-STDMETHODIMP FileDataObject::EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenumFormatEtc)
+STDMETHODIMP FileDataObject::EnumFormatEtc(DWORD /*dwDirection*/, IEnumFORMATETC** ppenumFormatEtc)
 {
-    if (ppenumFormatEtc == NULL)
+    if (ppenumFormatEtc == nullptr)
         return E_POINTER;
 
-    *ppenumFormatEtc = NULL;
-    switch (dwDirection)
-    {
-        case DATADIR_GET:
-            *ppenumFormatEtc = new CSVNEnumFormatEtc(m_vecFormatEtc);
-            if (*ppenumFormatEtc == NULL)
-                return E_OUTOFMEMORY;
-            (*ppenumFormatEtc)->AddRef();
-            break;
-        default:
-            return E_NOTIMPL;
-    }
-    return S_OK;
+    return E_NOTIMPL;
 }
 
 STDMETHODIMP FileDataObject::DAdvise(FORMATETC* /*pformatetc*/, DWORD /*advf*/, IAdviseSink* /*pAdvSink*/, DWORD* /*pdwConnection*/)
@@ -310,19 +290,19 @@ void FileDataObject::CopyMedium(STGMEDIUM* pMedDest, STGMEDIUM* pMedSrc, FORMATE
     switch (pMedSrc->tymed)
     {
         case TYMED_HGLOBAL:
-            pMedDest->hGlobal = (HGLOBAL)OleDuplicateData(pMedSrc->hGlobal, pFmtSrc->cfFormat, NULL);
+            pMedDest->hGlobal = static_cast<HGLOBAL>(OleDuplicateData(pMedSrc->hGlobal, pFmtSrc->cfFormat, NULL));
             break;
         case TYMED_GDI:
-            pMedDest->hBitmap = (HBITMAP)OleDuplicateData(pMedSrc->hBitmap, pFmtSrc->cfFormat, NULL);
+            pMedDest->hBitmap = static_cast<HBITMAP>(OleDuplicateData(pMedSrc->hBitmap, pFmtSrc->cfFormat, NULL));
             break;
         case TYMED_MFPICT:
-            pMedDest->hMetaFilePict = (HMETAFILEPICT)OleDuplicateData(pMedSrc->hMetaFilePict, pFmtSrc->cfFormat, NULL);
+            pMedDest->hMetaFilePict = static_cast<HMETAFILEPICT>(OleDuplicateData(pMedSrc->hMetaFilePict, pFmtSrc->cfFormat, NULL));
             break;
         case TYMED_ENHMF:
-            pMedDest->hEnhMetaFile = (HENHMETAFILE)OleDuplicateData(pMedSrc->hEnhMetaFile, pFmtSrc->cfFormat, NULL);
+            pMedDest->hEnhMetaFile = static_cast<HENHMETAFILE>(OleDuplicateData(pMedSrc->hEnhMetaFile, pFmtSrc->cfFormat, NULL));
             break;
         case TYMED_FILE:
-            pMedSrc->lpszFileName = (LPOLESTR)OleDuplicateData(pMedSrc->lpszFileName, pFmtSrc->cfFormat, NULL);
+            pMedSrc->lpszFileName = static_cast<LPOLESTR>(OleDuplicateData(pMedSrc->lpszFileName, pFmtSrc->cfFormat, NULL));
             break;
         case TYMED_ISTREAM:
             pMedDest->pstm = pMedSrc->pstm;
@@ -337,8 +317,8 @@ void FileDataObject::CopyMedium(STGMEDIUM* pMedDest, STGMEDIUM* pMedSrc, FORMATE
             break;
     }
     pMedDest->tymed          = pMedSrc->tymed;
-    pMedDest->pUnkForRelease = NULL;
-    if (pMedSrc->pUnkForRelease != NULL)
+    pMedDest->pUnkForRelease = nullptr;
+    if (pMedSrc->pUnkForRelease != nullptr)
     {
         pMedDest->pUnkForRelease = pMedSrc->pUnkForRelease;
         pMedSrc->pUnkForRelease->AddRef();
@@ -389,158 +369,26 @@ HRESULT STDMETHODCALLTYPE FileDataObject::EndOperation(HRESULT /*hResult*/, IBin
 
 HRESULT STDMETHODCALLTYPE FileDataObject::SetDropDescription(DROPIMAGETYPE image, LPCWSTR format, LPCWSTR insert)
 {
-    if (format == NULL || insert == NULL)
+    if (format == nullptr || insert == nullptr)
         return E_INVALIDARG;
 
     FORMATETC fetc = {0};
-    fetc.cfFormat  = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_DROPDESCRIPTION);
+    fetc.cfFormat  = static_cast<CLIPFORMAT>(RegisterClipboardFormat(CFSTR_DROPDESCRIPTION));
     fetc.dwAspect  = DVASPECT_CONTENT;
     fetc.lindex    = -1;
     fetc.tymed     = TYMED_HGLOBAL;
 
     STGMEDIUM medium = {0};
     medium.hGlobal   = GlobalAlloc(GHND, sizeof(DROPDESCRIPTION));
-    if (medium.hGlobal == 0)
+    if (medium.hGlobal == nullptr)
         return E_OUTOFMEMORY;
 
-    DROPDESCRIPTION* pDropDescription = (DROPDESCRIPTION*)GlobalLock(medium.hGlobal);
+    DROPDESCRIPTION* pDropDescription = static_cast<DROPDESCRIPTION*>(GlobalLock(medium.hGlobal));
     lstrcpynW(pDropDescription->szInsert, insert, _countof(pDropDescription->szInsert));
     lstrcpynW(pDropDescription->szMessage, format, _countof(pDropDescription->szMessage));
     pDropDescription->type = image;
     GlobalUnlock(medium.hGlobal);
     return SetData(&fetc, &medium, TRUE);
-}
-
-void CSVNEnumFormatEtc::Init()
-{
-    m_formats[1].cfFormat = CF_PREFERREDDROPEFFECT;
-    m_formats[1].dwAspect = DVASPECT_CONTENT;
-    m_formats[1].lindex   = -1;
-    m_formats[1].ptd      = NULL;
-    m_formats[1].tymed    = TYMED_HGLOBAL;
-
-    m_formats[0].cfFormat = CF_HDROP;
-    m_formats[0].dwAspect = DVASPECT_CONTENT;
-    m_formats[0].lindex   = -1;
-    m_formats[0].ptd      = NULL;
-    m_formats[0].tymed    = TYMED_HGLOBAL;
-}
-
-CSVNEnumFormatEtc::CSVNEnumFormatEtc(const std::vector<FORMATETC>& vec)
-    : m_cRefCount(0)
-    , m_iCur(0)
-{
-    for (size_t i = 0; i < vec.size(); ++i)
-        m_vecFormatEtc.push_back(vec[i]);
-    Init();
-}
-
-CSVNEnumFormatEtc::CSVNEnumFormatEtc(const std::vector<FORMATETC*>& vec)
-    : m_cRefCount(0)
-    , m_iCur(0)
-{
-    for (size_t i = 0; i < vec.size(); ++i)
-        m_vecFormatEtc.push_back(*vec[i]);
-    Init();
-}
-
-STDMETHODIMP CSVNEnumFormatEtc::QueryInterface(REFIID refiid, void** ppv)
-{
-    *ppv = NULL;
-    if (IID_IUnknown == refiid || IID_IEnumFORMATETC == refiid)
-        *ppv = this;
-
-    if (*ppv != NULL)
-    {
-        ((LPUNKNOWN)*ppv)->AddRef();
-        return S_OK;
-    }
-    return E_NOINTERFACE;
-}
-
-STDMETHODIMP_(ULONG)
-CSVNEnumFormatEtc::AddRef(void)
-{
-    return ++m_cRefCount;
-}
-
-STDMETHODIMP_(ULONG)
-CSVNEnumFormatEtc::Release(void)
-{
-    --m_cRefCount;
-    if (m_cRefCount == 0)
-    {
-        delete this;
-        return 0;
-    }
-    return m_cRefCount;
-}
-
-STDMETHODIMP CSVNEnumFormatEtc::Next(ULONG celt, LPFORMATETC lpFormatEtc, ULONG* pceltFetched)
-{
-    if (celt <= 0)
-        return E_INVALIDARG;
-    if (pceltFetched == NULL && celt != 1) // pceltFetched can be NULL only for 1 item request
-        return E_POINTER;
-    if (lpFormatEtc == NULL)
-        return E_POINTER;
-
-    if (pceltFetched != NULL)
-        *pceltFetched = 0;
-
-    if (m_iCur >= DRAG_NUMFORMATS)
-        return S_FALSE;
-
-    ULONG cReturn = celt;
-
-    while (m_iCur < (DRAG_NUMFORMATS + m_vecFormatEtc.size()) && cReturn > 0)
-    {
-        if (m_iCur < DRAG_NUMFORMATS)
-            *lpFormatEtc++ = m_formats[m_iCur++];
-        else
-            *lpFormatEtc++ = m_vecFormatEtc[m_iCur++ - DRAG_NUMFORMATS];
-        --cReturn;
-    }
-
-    if (pceltFetched != NULL)
-        *pceltFetched = celt - cReturn;
-
-    return (cReturn == 0) ? S_OK : S_FALSE;
-}
-
-STDMETHODIMP CSVNEnumFormatEtc::Skip(ULONG celt)
-{
-    if ((m_iCur + int(celt)) >= (DRAG_NUMFORMATS + m_vecFormatEtc.size()))
-        return S_FALSE;
-    m_iCur += celt;
-    return S_OK;
-}
-
-STDMETHODIMP CSVNEnumFormatEtc::Reset(void)
-{
-    m_iCur = 0;
-    return S_OK;
-}
-
-STDMETHODIMP CSVNEnumFormatEtc::Clone(IEnumFORMATETC** ppCloneEnumFormatEtc)
-{
-    if (ppCloneEnumFormatEtc == NULL)
-        return E_POINTER;
-
-    try
-    {
-        CSVNEnumFormatEtc* newEnum = new CSVNEnumFormatEtc(m_vecFormatEtc);
-
-        newEnum->AddRef();
-        newEnum->m_iCur       = m_iCur;
-        *ppCloneEnumFormatEtc = newEnum;
-    }
-    catch (const std::bad_alloc&)
-    {
-        return E_OUTOFMEMORY;
-    }
-
-    return S_OK;
 }
 
 CDropFiles::CDropFiles()
@@ -556,38 +404,38 @@ void CDropFiles::AddFile(const std::wstring& sFile)
     m_arFiles.push_back(sFile);
 }
 
-size_t CDropFiles::GetCount()
+size_t CDropFiles::GetCount() const
 {
     return m_arFiles.size();
 }
 
-void CDropFiles::CreateStructure(HWND hWnd)
+void CDropFiles::CreateStructure(HWND hWnd) const
 {
-    CIDropSource* pdsrc = new (std::nothrow) CIDropSource;
-    if (pdsrc == NULL)
+    CIDropSource* pdSrc = new (std::nothrow) CIDropSource;
+    if (pdSrc == nullptr)
         return;
-    pdsrc->AddRef();
+    pdSrc->AddRef();
 
-    FileDataObject* pdobj = new FileDataObject(m_arFiles);
-    if (pdobj == NULL)
+    FileDataObject* pdObj = new FileDataObject(m_arFiles);
+    if (pdObj == nullptr)
     {
-        delete pdsrc;
+        delete pdSrc;
         return;
     }
-    pdobj->AddRef();
+    pdObj->AddRef();
 
-    CDragSourceHelper dragsrchelper;
+    CDragSourceHelper dragSrcHelper;
     POINT             pt;
     GetCursorPos(&pt);
-    dragsrchelper.InitializeFromWindow(hWnd, pt, pdobj);
+    dragSrcHelper.InitializeFromWindow(hWnd, pt, pdObj);
 
-    pdsrc->m_pIDataObj = pdobj;
-    pdsrc->m_pIDataObj->AddRef();
+    pdSrc->m_pIDataObj = pdObj;
+    pdSrc->m_pIDataObj->AddRef();
 
     DWORD dwEffect;
-    ::DoDragDrop(pdobj, pdsrc, DROPEFFECT_MOVE | DROPEFFECT_COPY, &dwEffect);
-    pdsrc->Release();
-    pdobj->Release();
+    ::DoDragDrop(pdObj, pdSrc, DROPEFFECT_MOVE | DROPEFFECT_COPY, &dwEffect);
+    pdSrc->Release();
+    pdObj->Release();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -604,19 +452,19 @@ STDMETHODIMP CIDropSource::QueryInterface(/* [in] */ REFIID        riid,
 
     if (riid == IID_IUnknown)
     {
-        *ppvObject = (IUnknown*)dynamic_cast<IDropSource*>(this);
+        *ppvObject = static_cast<IUnknown*>(dynamic_cast<IDropSource*>(this));
     }
     else if (riid == IID_IDropSource)
     {
         *ppvObject = dynamic_cast<IDropSource*>(this);
     }
-    else if ((riid == IID_IDropSourceNotify) && (pDragSourceNotify != NULL))
+    else if ((riid == IID_IDropSourceNotify) && (pDragSourceNotify != nullptr))
     {
         return pDragSourceNotify->QueryInterface(riid, ppvObject);
     }
     else
     {
-        *ppvObject = NULL;
+        *ppvObject = nullptr;
         return E_NOINTERFACE;
     }
 
@@ -624,26 +472,22 @@ STDMETHODIMP CIDropSource::QueryInterface(/* [in] */ REFIID        riid,
     return S_OK;
 }
 
-STDMETHODIMP_(ULONG)
-CIDropSource::AddRef(void)
+ULONG STDMETHODCALLTYPE CIDropSource::AddRef()
 {
     return ++m_cRefCount;
 }
 
-STDMETHODIMP_(ULONG)
-CIDropSource::Release(void)
+ULONG STDMETHODCALLTYPE CIDropSource::Release()
 {
-    long nTemp;
-    nTemp = --m_cRefCount;
+    long nTemp = --m_cRefCount;
 
     if (nTemp == 0)
         delete this;
     return nTemp;
 }
 
-STDMETHODIMP CIDropSource::QueryContinueDrag(
-    /* [in] */ BOOL  fEscapePressed,
-    /* [in] */ DWORD grfKeyState)
+HRESULT STDMETHODCALLTYPE CIDropSource::QueryContinueDrag(/* [in] */ BOOL  fEscapePressed,
+                                                          /* [in] */ DWORD grfKeyState)
 {
     if (fEscapePressed)
         return DRAGDROP_S_CANCEL;
@@ -656,13 +500,12 @@ STDMETHODIMP CIDropSource::QueryContinueDrag(
     return S_OK;
 }
 
-STDMETHODIMP CIDropSource::GiveFeedback(
-    /* [in] */ DWORD /*dwEffect*/)
+HRESULT STDMETHODCALLTYPE CIDropSource::GiveFeedback(/* [in] */ DWORD /*dwEffect*/)
 {
     if (m_pIDataObj)
     {
         FORMATETC fetc = {0};
-        fetc.cfFormat  = (CLIPFORMAT)RegisterClipboardFormat(L"DragWindow");
+        fetc.cfFormat  = static_cast<CLIPFORMAT>(RegisterClipboardFormat(L"DragWindow"));
         fetc.dwAspect  = DVASPECT_CONTENT;
         fetc.lindex    = -1;
         fetc.tymed     = TYMED_HGLOBAL;
@@ -671,7 +514,7 @@ STDMETHODIMP CIDropSource::GiveFeedback(
             STGMEDIUM medium;
             if (m_pIDataObj->GetData(&fetc, &medium) == S_OK)
             {
-                HWND hWndDragWindow = *((HWND*)GlobalLock(medium.hGlobal));
+                HWND hWndDragWindow = *static_cast<HWND*>(GlobalLock(medium.hGlobal));
                 GlobalUnlock(medium.hGlobal);
 #define WM_INVALIDATEDRAGIMAGE (WM_USER + 3)
                 SendMessage(hWndDragWindow, WM_INVALIDATEDRAGIMAGE, NULL, NULL);

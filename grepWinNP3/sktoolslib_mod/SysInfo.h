@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,22 +24,21 @@
 */
 
 #ifdef NTDDI_WINBLUE
-#    include <VersionHelpers.h>
 class SysInfo
 {
 private:
-    SysInfo(void);
-    ~SysInfo(void);
+    SysInfo();
+    ~SysInfo();
 
 public:
     static const SysInfo& Instance();
 
-    bool IsElevated() const { return isElevated; }
-    bool IsUACEnabled() const { return isUACEnabled; }
+    bool IsElevated() const { return m_isElevated; }
+    bool IsUACEnabled() const { return m_isUacEnabled; }
 
 private:
-    bool isElevated;
-    bool isUACEnabled;
+    bool m_isElevated;
+    bool m_isUacEnabled;
 };
 
 #else
@@ -47,8 +46,8 @@ private:
 class SysInfo
 {
 private:
-    SysInfo(void);
-    ~SysInfo(void);
+    SysInfo();
+    ~SysInfo();
 
 public:
     static const SysInfo& Instance();
@@ -61,13 +60,13 @@ public:
     bool  IsWin7OrLater() const { return (GetFullVersion() >= 0x0601); }
     bool  IsWin8() const { return (GetFullVersion() == 0x0602); }
     bool  IsWin8OrLater() const { return (GetFullVersion() >= 0x0602); }
-    bool  IsElevated() const { return isElevated; }
-    bool  IsUACEnabled() const { return isUACEnabled; }
+    bool  IsElevated() const { return m_isElevated; }
+    bool  IsUACEnabled() const { return m_isUacEnabled; }
 
 private:
     OSVERSIONINFOEX inf;
-    bool            isElevated;
-    bool            isUACEnabled;
+    bool            m_isElevated;
+    bool            m_isUacEnabled;
 };
 
 #endif

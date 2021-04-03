@@ -1,6 +1,6 @@
-// sktoolslib - common files for SK tools
+﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2014, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2014, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #pragma once
 
 #include "AeroGlass.h"
-#include "Registry.h"
 #include <map>
 #pragma warning(push)
 #pragma warning(disable : 4458) // declaration of 'xxx' hides class member
@@ -41,19 +40,19 @@ private:
     LRESULT                 ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 ProgressbarWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-    void DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
-    void DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width) const;
-    void FillRect(LPRECT prc, HDC hdcPaint, Gdiplus::Color clr) const;
-    int  GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture) const;
-    void PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
-    void ScreenToClient(HWND hWnd, LPRECT lprc);
-    void DrawSolidWndRectOnParent(HWND hWnd, Gdiplus::Color clr);
-    void DrawEditBorder(HWND hWnd);
-    BOOL GetEditBorderColor(HWND hWnd, COLORREF* pClr);
-    void GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia) const;
+    void        DrawFocusRect(LPRECT prcFocus, HDC hdcPaint) const;
+    void        DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width) const;
+    void        FillRect(LPRECT prc, HDC hdcPaint, Gdiplus::Color clr) const;
+    static int  GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture);
+    void        PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder) const;
+    static void ScreenToClient(HWND hWnd, LPRECT lprc);
+    void        DrawSolidWndRectOnParent(HWND hWnd, Gdiplus::Color clr) const;
+    void        DrawEditBorder(HWND hWnd) const;
+    BOOL        GetEditBorderColor(HWND hWnd, COLORREF* pClr) const;
+    static void GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia);
 
     CDwmApiImpl              m_dwm;
     CUxThemeAeroImpl         m_theme;
-    std::map<HWND, UINT_PTR> subclassedControls;
+    std::map<HWND, UINT_PTR> subClassedControls;
     ULONG_PTR                gdiplusToken;
 };

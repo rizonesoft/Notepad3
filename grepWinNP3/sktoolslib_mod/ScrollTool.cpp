@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2016-2017, 2020 Stefan Kueng
+// Copyright (C) 2016-2017, 2020-2021 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -45,12 +45,12 @@ bool CScrollTool::Init(bool bRightAligned /* = false */)
         //m_hwnd = CreateWindowEx(0, TOOLTIPS_CLASSW, nullptr, TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hParent, 0, hResource, (void *)this);
 
         wchar_t space[] = L" ";
-        ti.cbSize   = sizeof(TOOLINFO);
-        ti.uFlags   = TTF_TRACK;
-        ti.hwnd     = nullptr;
-        ti.hinst    = nullptr;
-        ti.uId      = 0;
-        ti.lpszText = space;
+        ti.cbSize       = sizeof(TOOLINFO);
+        ti.uFlags       = TTF_TRACK;
+        ti.hwnd         = nullptr;
+        ti.hinst        = nullptr;
+        ti.uId          = 0;
+        ti.lpszText     = space;
 
         // ToolTip control will cover the whole window
         ti.rect.left   = 0;
@@ -61,9 +61,9 @@ bool CScrollTool::Init(bool bRightAligned /* = false */)
         POINT point;
         ::GetCursorPos(&point);
 
-        SendMessage(*this, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
-        SendMessage(*this, TTM_TRACKPOSITION, 0, (LPARAM)(DWORD)MAKELONG(point.x, point.y));
-        SendMessage(*this, TTM_TRACKACTIVATE, true, (LPARAM)(LPTOOLINFO)&ti);
+        SendMessage(*this, TTM_ADDTOOL, 0, reinterpret_cast<LPARAM>(&ti));
+        SendMessage(*this, TTM_TRACKPOSITION, 0, static_cast<LPARAM>(MAKELONG(point.x, point.y)));
+        SendMessage(*this, TTM_TRACKACTIVATE, true, reinterpret_cast<LPARAM>(&ti));
 
         m_bRightAligned = bRightAligned;
         m_bInitCalled   = true;
@@ -93,24 +93,24 @@ void CScrollTool::SetText(LPPOINT pos, const wchar_t* fmt, ...)
     }
     va_end(marker);
 
-    SIZE textsize = {0};
+    SIZE textSize = {0};
     if (m_bRightAligned)
     {
         auto hDC = GetDC(*this);
-        GetTextExtentPoint32(hDC, s.c_str(), (int)s.length(), &textsize);
+        GetTextExtentPoint32(hDC, s.c_str(), static_cast<int>(s.length()), &textSize);
         ReleaseDC(*this, hDC);
     }
 
     ti.lpszText = const_cast<LPWSTR>(s.c_str());
-    SendMessage(*this, TTM_UPDATETIPTEXT, 0, (LPARAM)(LPTOOLINFO)&ti);
-    SendMessage(*this, TTM_TRACKPOSITION, 0, MAKELONG(pos->x - textsize.cx, pos->y));
+    SendMessage(*this, TTM_UPDATETIPTEXT, 0, reinterpret_cast<LPARAM>(&ti));
+    SendMessage(*this, TTM_TRACKPOSITION, 0, MAKELONG(pos->x - textSize.cx, pos->y));
 }
 
 void CScrollTool::Clear()
 {
     if (m_bInitCalled)
     {
-        SendMessage(*this, TTM_DELTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
+        SendMessage(*this, TTM_DELTOOL, 0, reinterpret_cast<LPARAM>(&ti));
         DestroyWindow(*this);
     }
     m_bInitCalled = false;
@@ -120,7 +120,7 @@ LONG CScrollTool::GetTextWidth(LPCWSTR szText)
 {
     SIZE textsize = {0};
     auto hDC      = GetDC(*this);
-    GetTextExtentPoint32(hDC, szText, (int)wcslen(szText), &textsize);
+    GetTextExtentPoint32(hDC, szText, static_cast<int>(wcslen(szText)), &textsize);
     ReleaseDC(*this, hDC);
     return textsize.cx;
 }

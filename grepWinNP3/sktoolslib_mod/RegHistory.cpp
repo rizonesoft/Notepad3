@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -62,7 +62,7 @@ void CRegHistory::RemoveEntry(int pos)
 
 void CRegHistory::RemoveEntry(LPCWSTR str)
 {
-    if (str == NULL)
+    if (str == nullptr)
         return;
     for (std::vector<std::wstring>::iterator it = m_arEntries.begin(); it != m_arEntries.end(); ++it)
     {
@@ -76,7 +76,7 @@ void CRegHistory::RemoveEntry(LPCWSTR str)
 
 int CRegHistory::Load(LPCWSTR lpszSection, LPCWSTR lpszKeyPrefix)
 {
-    if (lpszSection == NULL || lpszKeyPrefix == NULL || *lpszSection == '\0')
+    if (lpszSection == nullptr || lpszKeyPrefix == nullptr || *lpszSection == '\0')
         return -1;
 
     m_arEntries.clear();
@@ -107,7 +107,7 @@ int CRegHistory::Load(LPCWSTR lpszSection, LPCWSTR lpszKeyPrefix)
         }
     } while (!sText.empty() && n < m_nMaxHistoryItems);
 
-    return (int)m_arEntries.size();
+    return static_cast<int>(m_arEntries.size());
 }
 
 bool CRegHistory::Save() const
@@ -117,7 +117,7 @@ bool CRegHistory::Save() const
 
     // save history to registry
     int nMax = min((int)m_arEntries.size(), m_nMaxHistoryItems + 1);
-    for (int n = 0; n < (int)m_arEntries.size(); n++)
+    for (int n = 0; n < static_cast<int>(m_arEntries.size()); n++)
     {
         wchar_t sKey[4096] = {0};
         if (m_pIniFile)
@@ -128,6 +128,7 @@ bool CRegHistory::Save() const
         else
         {
             swprintf_s(sKey, _countof(sKey), L"%s\\%s%d", m_sSection.c_str(), m_sKeyPrefix.c_str(), n);
+            // ReSharper disable once CppEntityAssignedButNoRead
             CRegStdString regkey(sKey);
             regkey = m_arEntries[n];
         }

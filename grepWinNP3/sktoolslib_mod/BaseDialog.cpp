@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2015-2017, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2015-2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,14 +28,14 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent)
 {
     m_bPseudoModal = false;
     hResource      = hInstance;
-    return DialogBoxParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+    return DialogBoxParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, reinterpret_cast<LPARAM>(this));
 }
 
 INT_PTR CDialog::DoModal(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent)
 {
     m_bPseudoModal = false;
     hResource      = hInstance;
-    return DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+    return DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, &CDialog::stDlgFunc, reinterpret_cast<LPARAM>(this));
 }
 
 INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel)
@@ -43,7 +43,7 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT i
     m_bPseudoModal = true;
     m_bPseudoEnded = false;
     hResource      = hInstance;
-    m_hwnd         = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+    m_hwnd         = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, reinterpret_cast<LPARAM>(this));
 
     // deactivate the parent window
     if (hWndParent)
@@ -54,7 +54,7 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT i
     ::SetForegroundWindow(m_hwnd);
 
     // Main message loop:
-    MSG    msg         = {0};
+    MSG    msg         = {nullptr};
     HACCEL hAccelTable = LoadAccelerators(hResource, MAKEINTRESOURCE(idAccel));
     BOOL   bRet        = TRUE;
     while (!m_bPseudoEnded && ((bRet = GetMessage(&msg, nullptr, 0, 0)) != 0))
@@ -78,7 +78,7 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT i
         }
     }
     if (msg.message == WM_QUIT)
-        PostQuitMessage((int)msg.wParam);
+        PostQuitMessage(static_cast<int>(msg.wParam));
     // re-enable the parent window
     if (hWndParent)
         ::EnableWindow(hWndParent, TRUE);
@@ -102,16 +102,16 @@ HWND CDialog::Create(HINSTANCE hInstance, int resID, HWND hWndParent)
 {
     m_bPseudoModal = true;
     hResource      = hInstance;
-    m_hwnd         = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+    m_hwnd         = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, reinterpret_cast<LPARAM>(this));
     return m_hwnd;
 }
 
-void CDialog::ShowModeless(HINSTANCE hInstance, int resID, HWND hWndParent, bool show/* = true*/)
+void CDialog::ShowModeless(HINSTANCE hInstance, int resID, HWND hWndParent, bool show /* = true*/)
 {
     if (m_hwnd == nullptr)
     {
         hResource = hInstance;
-        m_hwnd    = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+        m_hwnd    = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, reinterpret_cast<LPARAM>(this));
     }
     if (show)
     {
@@ -120,12 +120,12 @@ void CDialog::ShowModeless(HINSTANCE hInstance, int resID, HWND hWndParent, bool
     }
 }
 
-void CDialog::ShowModeless(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent, bool show/* = true*/)
+void CDialog::ShowModeless(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWND hWndParent, bool show /* = true*/)
 {
     if (m_hwnd == nullptr)
     {
         hResource = hInstance;
-        m_hwnd    = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+        m_hwnd    = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, &CDialog::stDlgFunc, reinterpret_cast<LPARAM>(this));
     }
     if (show)
     {
@@ -136,12 +136,11 @@ void CDialog::ShowModeless(HINSTANCE hInstance, LPCDLGTEMPLATE pDlgTemplate, HWN
 
 void CDialog::InitDialog(HWND hwndDlg, UINT iconID, bool bPosition /* = true*/)
 {
-    HWND            hwndOwner;
     RECT            rc, rcDlg, rcOwner;
     WINDOWPLACEMENT placement;
     placement.length = sizeof(WINDOWPLACEMENT);
 
-    hwndOwner = ::GetParent(hwndDlg);
+    HWND hwndOwner = ::GetParent(hwndDlg);
     GetWindowPlacement(hwndOwner, &placement);
     if ((hwndOwner == nullptr) || (placement.showCmd == SW_SHOWMINIMIZED) || (placement.showCmd == SW_SHOWMINNOACTIVE))
         hwndOwner = ::GetDesktopWindow();
@@ -156,10 +155,10 @@ void CDialog::InitDialog(HWND hwndDlg, UINT iconID, bool bPosition /* = true*/)
 
     if (bPosition)
         SetWindowPos(hwndDlg, HWND_TOP, rcOwner.left + (rc.right / 2), rcOwner.top + (rc.bottom / 2), 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
-    HICON hIcon = (HICON)::LoadImage(hResource, MAKEINTRESOURCE(iconID), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
-    ::SendMessage(hwndDlg, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-    ::SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-    m_Dwm.Initialize();
+    HICON hIcon = static_cast<HICON>(::LoadImage(hResource, MAKEINTRESOURCE(iconID), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED));
+    ::SendMessage(hwndDlg, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
+    ::SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
+    m_dwm.Initialize();
     m_margins.cxLeftWidth    = 0;
     m_margins.cxRightWidth   = 0;
     m_margins.cyBottomHeight = 0;
@@ -171,23 +170,23 @@ void CDialog::AddToolTip(UINT ctrlID, LPCWSTR text)
     TOOLINFO tt;
     tt.cbSize   = sizeof(TOOLINFO);
     tt.uFlags   = TTF_IDISHWND | TTF_SUBCLASS;
-    tt.hwnd     = GetDlgItem(*this, ctrlID);
-    tt.uId      = (UINT_PTR)GetDlgItem(*this, ctrlID);
+    tt.hwnd     = text == LPSTR_TEXTCALLBACK ? *this : GetDlgItem(*this, ctrlID);
+    tt.uId      = reinterpret_cast<UINT_PTR>(GetDlgItem(*this, ctrlID));
     tt.lpszText = const_cast<LPWSTR>(text);
 
-    SendMessage(m_hToolTips, TTM_ADDTOOL, 0, (LPARAM)&tt);
+    SendMessage(m_hToolTips, TTM_ADDTOOL, 0, reinterpret_cast<LPARAM>(&tt));
 }
 
-void CDialog::AddToolTip(HWND hWnd, LPCWSTR text)
+void CDialog::AddToolTip(HWND hWnd, LPCWSTR text) const
 {
     TOOLINFO tt;
     tt.cbSize   = sizeof(TOOLINFO);
     tt.uFlags   = TTF_IDISHWND | TTF_SUBCLASS;
     tt.hwnd     = hWnd;
-    tt.uId      = (UINT_PTR)hWnd;
+    tt.uId      = reinterpret_cast<UINT_PTR>(hWnd);
     tt.lpszText = const_cast<LPWSTR>(text);
 
-    SendMessage(m_hToolTips, TTM_ADDTOOL, 0, (LPARAM)&tt);
+    SendMessage(m_hToolTips, TTM_ADDTOOL, 0, reinterpret_cast<LPARAM>(&tt));
 }
 
 INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -203,7 +202,7 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
         {
             // get the pointer to the window from lpCreateParams
             SetWindowLongPtr(hwndDlg, GWLP_USERDATA, lParam);
-            pWnd         = (CDialog*)lParam;
+            pWnd         = reinterpret_cast<CDialog*>(lParam);
             pWnd->m_hwnd = hwndDlg;
             // create the tooltip control
             pWnd->m_hToolTips = CreateWindowEx(0,
@@ -236,12 +235,12 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
                 break;
             case WM_ERASEBKGND:
             {
-                if (pWnd->m_Dwm.IsDwmCompositionEnabled())
+                if (pWnd->m_dwm.IsDwmCompositionEnabled())
                 {
                     bInDlgProc = true;
                     DefDlgProc(hwndDlg, uMsg, wParam, lParam);
                     bInDlgProc = false;
-                    HDC hdc    = (HDC)wParam;
+                    HDC hdc    = reinterpret_cast<HDC>(wParam);
                     // draw the frame margins in black
                     RECT rc;
                     GetClientRect(hwndDlg, &rc);
@@ -270,13 +269,13 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
                         rect.top    = rc.top;
                         rect.right  = rc.right;
                         rect.bottom = rc.bottom;
-                        ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rect, NULL, 0, NULL);
+                        ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rect, nullptr, 0, nullptr);
 
                         rect.left   = rc.left;
                         rect.top    = rc.bottom - pWnd->m_margins.cyBottomHeight;
                         rect.right  = rc.right;
                         rect.bottom = rc.bottom;
-                        ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rect, NULL, 0, NULL);
+                        ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rect, nullptr, 0, nullptr);
                     }
                     lRes = TRUE;
                 }
@@ -284,7 +283,7 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
             break;
             case WM_NCHITTEST:
             {
-                if (pWnd->m_Dwm.IsDwmCompositionEnabled())
+                if (pWnd->m_dwm.IsDwmCompositionEnabled())
                 {
                     POINTS pts = MAKEPOINTS(lParam);
                     POINT  pt;
@@ -292,7 +291,7 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
                     pt.y = pts.y;
                     RECT rc;
                     GetClientRect(hwndDlg, &rc);
-                    MapWindowPoints(hwndDlg, nullptr, (LPPOINT)&rc, 2);
+                    MapWindowPoints(hwndDlg, nullptr, reinterpret_cast<LPPOINT>(&rc), 2);
 
                     if (pWnd->m_margins.cxLeftWidth < 0)
                     {
@@ -336,7 +335,7 @@ bool CDialog::IsCursorOverWindowBorder()
     RECT wrc, crc;
     GetWindowRect(*this, &wrc);
     GetClientRect(*this, &crc);
-    MapWindowPoints(*this, nullptr, (LPPOINT)&crc, 2);
+    MapWindowPoints(*this, nullptr, reinterpret_cast<LPPOINT>(&crc), 2);
     DWORD pos = GetMessagePos();
     POINT pt;
     pt.x = GET_X_LPARAM(pos);
@@ -365,29 +364,29 @@ bool CDialog::DialogEnableWindow(UINT nID, bool bEnable)
 
 void CDialog::OnCompositionChanged()
 {
-    if (m_Dwm.IsDwmCompositionEnabled())
+    if (m_dwm.IsDwmCompositionEnabled())
     {
-        m_Dwm.DwmExtendFrameIntoClientArea(*this, &m_margins);
+        m_dwm.DwmExtendFrameIntoClientArea(*this, &m_margins);
     }
 }
 
 void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT rightControl, UINT botomControl)
 {
-    if (!m_Dwm.IsDwmCompositionEnabled())
+    if (!m_dwm.IsDwmCompositionEnabled())
         return;
     RECT rc, rc2;
     GetWindowRect(*this, &rc);
     GetClientRect(*this, &rc2);
-    MapWindowPoints(*this, nullptr, (LPPOINT)&rc2, 2);
+    MapWindowPoints(*this, nullptr, reinterpret_cast<LPPOINT>(&rc2), 2);
 
-    RECT rccontrol;
+    RECT rcControl;
     if (leftControl && leftControl != -1)
     {
         HWND hw = GetDlgItem(*this, leftControl);
         if (hw == nullptr)
             return;
-        ::GetWindowRect(hw, &rccontrol);
-        m_margins.cxLeftWidth = rccontrol.left - rc.left;
+        ::GetWindowRect(hw, &rcControl);
+        m_margins.cxLeftWidth = rcControl.left - rc.left;
         m_margins.cxLeftWidth -= (rc2.left - rc.left);
     }
     else
@@ -398,8 +397,8 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
         HWND hw = GetDlgItem(*this, topControl);
         if (hw == nullptr)
             return;
-        ::GetWindowRect(hw, &rccontrol);
-        m_margins.cyTopHeight = rccontrol.top - rc.top;
+        ::GetWindowRect(hw, &rcControl);
+        m_margins.cyTopHeight = rcControl.top - rc.top;
         m_margins.cyTopHeight -= (rc2.top - rc.top);
     }
     else
@@ -410,8 +409,8 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
         HWND hw = GetDlgItem(*this, rightControl);
         if (hw == nullptr)
             return;
-        ::GetWindowRect(hw, &rccontrol);
-        m_margins.cxRightWidth = rc.right - rccontrol.right;
+        ::GetWindowRect(hw, &rcControl);
+        m_margins.cxRightWidth = rc.right - rcControl.right;
         m_margins.cxRightWidth -= (rc.right - rc2.right);
     }
     else
@@ -422,8 +421,8 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
         HWND hw = GetDlgItem(*this, botomControl);
         if (hw == nullptr)
             return;
-        ::GetWindowRect(hw, &rccontrol);
-        m_margins.cyBottomHeight = rc.bottom - rccontrol.bottom;
+        ::GetWindowRect(hw, &rcControl);
+        m_margins.cyBottomHeight = rc.bottom - rcControl.bottom;
         m_margins.cyBottomHeight -= (rc.bottom - rc2.bottom);
     }
     else
@@ -439,9 +438,9 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
         m_margins.cxRightWidth   = -1;
         m_margins.cyBottomHeight = -1;
     }
-    if (m_Dwm.IsDwmCompositionEnabled())
+    if (m_dwm.IsDwmCompositionEnabled())
     {
-        m_Dwm.DwmExtendFrameIntoClientArea(*this, &m_margins);
+        m_dwm.DwmExtendFrameIntoClientArea(*this, &m_margins);
     }
 }
 
@@ -474,7 +473,7 @@ void CDialog::ShowEditBalloon(UINT nId, LPCWSTR title, LPCWSTR text, int icon /*
     ebt.pszTitle       = title;
     ebt.pszText        = text;
     ebt.ttiIcon        = icon;
-    if (!::SendMessage(GetDlgItem(*this, nId), EM_SHOWBALLOONTIP, 0, (LPARAM)&ebt))
+    if (!::SendMessage(GetDlgItem(*this, nId), EM_SHOWBALLOONTIP, 0, reinterpret_cast<LPARAM>(&ebt)))
     {
         UINT uType = MB_ICONERROR;
         switch (icon)
@@ -503,15 +502,15 @@ void CDialog::SetTransparency(BYTE alpha, COLORREF color /*= 0xFF000000*/)
 {
     if (alpha == 255)
     {
-        LONG_PTR exstyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
-        exstyle &= ~WS_EX_LAYERED;
-        SetWindowLongPtr(*this, GWL_EXSTYLE, exstyle);
+        LONG_PTR exStyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
+        exStyle &= ~WS_EX_LAYERED;
+        SetWindowLongPtr(*this, GWL_EXSTYLE, exStyle);
     }
     else
     {
-        LONG_PTR exstyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
-        exstyle |= WS_EX_LAYERED;
-        SetWindowLongPtr(*this, GWL_EXSTYLE, exstyle);
+        LONG_PTR exStyle = GetWindowLongPtr(*this, GWL_EXSTYLE);
+        exStyle |= WS_EX_LAYERED;
+        SetWindowLongPtr(*this, GWL_EXSTYLE, exStyle);
     }
     COLORREF col   = color;
     DWORD    flags = LWA_ALPHA;
@@ -545,29 +544,28 @@ RECT CDialog::AdjustControlSize(UINT nID)
     // be displayed
 
     HDC  hDC = GetWindowDC(*this);
-    RECT controlrect;
-    RECT controlrectorig;
-    GetWindowRect(hwndDlgItem, &controlrect);
-    ::MapWindowPoints(nullptr, *this, (LPPOINT)&controlrect, 2);
-    controlrectorig = controlrect;
+    RECT controlRect;
+    GetWindowRect(hwndDlgItem, &controlRect);
+    ::MapWindowPoints(nullptr, *this, reinterpret_cast<LPPOINT>(&controlRect), 2);
+    RECT controlRectOrig = controlRect;
     if (hDC)
     {
         HFONT hFont    = GetWindowFont(hwndDlgItem);
-        HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
-        if (DrawText(hDC, sControlText.get(), -1, &controlrect, DT_WORDBREAK | DT_EDITCONTROL | DT_EXPANDTABS | DT_LEFT | DT_CALCRECT))
+        HFONT hOldFont = static_cast<HFONT>(SelectObject(hDC, hFont));
+        if (DrawText(hDC, sControlText.get(), -1, &controlRect, DT_WORDBREAK | DT_EDITCONTROL | DT_EXPANDTABS | DT_LEFT | DT_CALCRECT))
         {
             // now we have the rectangle the control really needs
-            if ((controlrectorig.right - controlrectorig.left) > (controlrect.right - controlrect.left))
+            if ((controlRectOrig.right - controlRectOrig.left) > (controlRect.right - controlRect.left))
             {
                 // we're dealing with radio buttons and check boxes,
                 // which means we have to add a little space for the checkbox
                 const int checkWidth  = GetSystemMetrics(SM_CXMENUCHECK) + 2 * GetSystemMetrics(SM_CXEDGE) + 3;
-                controlrectorig.right = controlrectorig.left + (controlrect.right - controlrect.left) + checkWidth;
-                MoveWindow(hwndDlgItem, controlrectorig.left, controlrectorig.top, controlrectorig.right - controlrectorig.left, controlrectorig.bottom - controlrectorig.top, TRUE);
+                controlRectOrig.right = controlRectOrig.left + (controlRect.right - controlRect.left) + checkWidth;
+                MoveWindow(hwndDlgItem, controlRectOrig.left, controlRectOrig.top, controlRectOrig.right - controlRectOrig.left, controlRectOrig.bottom - controlRectOrig.top, TRUE);
             }
         }
         SelectObject(hDC, hOldFont);
         ReleaseDC(*this, hDC);
     }
-    return controlrectorig;
+    return controlRectOrig;
 }

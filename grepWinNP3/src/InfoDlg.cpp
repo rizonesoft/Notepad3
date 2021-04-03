@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2011-2014, 2020 - Stefan Kueng
+// Copyright (C) 2007-2009, 2011-2014, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -38,16 +38,15 @@ CInfoDlg::~CInfoDlg()
 }
 
 //Function which takes input of An HTML Resource Id
-BOOL CInfoDlg::ShowDialog(HWND hParent, UINT idAboutHTMLID, HINSTANCE hInstance)
+BOOL CInfoDlg::ShowDialog(HWND hParent, UINT idAboutHtmlid, HINSTANCE hInstance)
 {
     //Load the IE Specific MSTML Interface DKK
-    HINSTANCE hinstMSHTML = LoadLibrary(TEXT("mshtml.dll"));
+    HINSTANCE hinstMshtml = LoadLibrary(TEXT("mshtml.dll"));
     BOOL      bSuccess    = FALSE;
-    if (hinstMSHTML)
+    if (hinstMshtml)
     {
-        SHOWHTMLDIALOGEXFN *pfnShowHTMLDialog;
         //Locate The Function ShowHTMLDialog in the Loaded mshtml.dll
-        pfnShowHTMLDialog = (SHOWHTMLDIALOGEXFN *)GetProcAddress(hinstMSHTML, "ShowHTMLDialogEx");
+        SHOWHTMLDIALOGEXFN* pfnShowHTMLDialog = reinterpret_cast<SHOWHTMLDIALOGEXFN*>(GetProcAddress(hinstMshtml, "ShowHTMLDialogEx"));
         if (pfnShowHTMLDialog)
         {
             auto lpszModule = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
@@ -56,11 +55,11 @@ BOOL CInfoDlg::ShowDialog(HWND hParent, UINT idAboutHTMLID, HINSTANCE hInstance)
             {
                 //Add the IE Res protocol
                 auto strResourceURL = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
-                swprintf_s(strResourceURL.get(), MAX_PATH_NEW, L"res://%s/%u", lpszModule.get(), idAboutHTMLID);
+                swprintf_s(strResourceURL.get(), MAX_PATH_NEW, L"res://%s/%u", lpszModule.get(), idAboutHtmlid);
                 auto iLength       = wcslen(strResourceURL.get());
                 auto lpWideCharStr = std::make_unique<wchar_t[]>(iLength + 1);
                 //Attempt to Create the URL Moniker to the specified in the URL String
-                IMoniker *pmk;
+                IMoniker* pmk;
                 if (SUCCEEDED(CreateURLMoniker(NULL, strResourceURL.get(), &pmk)))
                 {
                     //Invoke the ShowHTMLDialog function by pointer
@@ -69,12 +68,12 @@ BOOL CInfoDlg::ShowDialog(HWND hParent, UINT idAboutHTMLID, HINSTANCE hInstance)
                     auto opts = CStringUtils::Format(L"dialogHeight:%dpx; dialogWidth:%dpx; resizable:yes",
                                                      CDPIAware::Instance().Scale(hParent, 600),
                                                      CDPIAware::Instance().Scale(hParent, 480));
-                    pfnShowHTMLDialog(NULL, pmk, HTMLDLG_MODELESS, NULL, opts.data(), NULL);
+                    pfnShowHTMLDialog(nullptr, pmk, HTMLDLG_MODELESS, nullptr, opts.data(), nullptr);
                     bSuccess = TRUE;
                 }
             }
         }
-        FreeLibrary(hinstMSHTML);
+        FreeLibrary(hinstMshtml);
     }
     return bSuccess;
 }

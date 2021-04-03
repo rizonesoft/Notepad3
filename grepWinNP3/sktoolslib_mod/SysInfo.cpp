@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,9 +20,11 @@
 #include "stdafx.h"
 #include "SysInfo.h"
 
-SysInfo::SysInfo(void)
-    : isElevated(false)
-    , isUACEnabled(false)
+#include <VersionHelpers.h>
+
+SysInfo::SysInfo()
+    : m_isElevated(false)
+    , m_isUacEnabled(false)
 {
 #ifndef NTDDI_WINBLUE
     SecureZeroMemory(&inf, sizeof(OSVERSIONINFOEX));
@@ -41,12 +43,12 @@ SysInfo::SysInfo(void)
 
             if (::GetTokenInformation(hToken, TokenElevation, &te, sizeof(te), &dwReturnLength))
             {
-                isElevated = (te.TokenIsElevated != 0);
+                m_isElevated = (te.TokenIsElevated != 0);
             }
             TOKEN_ELEVATION_TYPE tet = TokenElevationTypeDefault;
             if (::GetTokenInformation(hToken, TokenElevationType, &tet, sizeof(tet), &dwReturnLength))
             {
-                isUACEnabled = tet != TokenElevationTypeDefault;
+                m_isUacEnabled = tet != TokenElevationTypeDefault;
             }
             ::CloseHandle(hToken);
         }
@@ -54,11 +56,11 @@ SysInfo::SysInfo(void)
     else
     {
         // on XP, assume we're elevated...
-        isElevated = true;
+        m_isElevated = true;
     }
 }
 
-SysInfo::~SysInfo(void)
+SysInfo::~SysInfo()
 {
 }
 

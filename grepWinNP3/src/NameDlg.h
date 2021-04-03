@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2019-2020 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,14 +28,14 @@ class CNameDlg : public CDialog
 {
 public:
     CNameDlg(HWND hParent);
-    ~CNameDlg(void);
+    ~CNameDlg();
 
     std::wstring GetName() const { return m_name; }
     void         SetName(const std::wstring& n) { m_name = n; }
     bool         IncludePath() const { return m_bIncludePath; }
 
 protected:
-    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
     LRESULT          DoCommand(int id, int msg);
 
 private:

@@ -23,7 +23,8 @@
 #include "stdafx.h"
 #include "PathUtils.h"
 #include "StringUtils.h"
-#include <vector>
+#include <memory>
+#include <algorithm>
 #include <memory>
 #include <assert.h>
 #include <Shlwapi.h>
@@ -41,8 +42,8 @@ namespace
 {
 // These variables are not exposed as any path name handling probably
 // should be a function in here rather than be manipulating strings directly / inline.
-const wchar_t ThisOSPathSeparator  = L'\\';
-const wchar_t OtherOSPathSeparator = L'/';
+const wchar_t thisOsPathSeparator  = L'\\';
+const wchar_t otherOsPathSeparator = L'/';
 const wchar_t DeviceSeparator      = L':';
 
 // Check if the character given is either type of folder separator.
@@ -51,7 +52,7 @@ const wchar_t DeviceSeparator      = L':';
 // filenames first at first point of entry into a program.
 inline bool IsFolderSeparator(wchar_t c)
 {
-    return (c == ThisOSPathSeparator || c == OtherOSPathSeparator);
+    return (c == thisOsPathSeparator || c == otherOsPathSeparator);
 }
 
 } // namespace
@@ -60,7 +61,7 @@ std::wstring CPathUtils::GetLongPathname(const std::wstring& path)
 {
     if (path.empty())
         return path;
-    wchar_t      pathbufcanonicalized[MAX_PATH]; // MAX_PATH ok.
+    wchar_t      pathBufCanonicalized[MAX_PATH]; // MAX_PATH ok.
     DWORD        ret  = 0;
     std::wstring sRet = path;
     if (!PathIsURL(path.c_str()) && PathIsRelative(path.c_str()))
@@ -68,18 +69,18 @@ std::wstring CPathUtils::GetLongPathname(const std::wstring& path)
         ret = GetFullPathName(path.c_str(), 0, nullptr, nullptr);
         if (ret)
         {
-            auto pathbuf = std::make_unique<wchar_t[]>(ret + 1);
-            if ((ret = GetFullPathName(path.c_str(), ret, pathbuf.get(), nullptr)) != 0)
+            auto pathBuf = std::make_unique<wchar_t[]>(ret + 1);
+            if ((ret = GetFullPathName(path.c_str(), ret, pathBuf.get(), nullptr)) != 0)
             {
-                sRet = std::wstring(pathbuf.get(), ret);
+                sRet = std::wstring(pathBuf.get(), ret);
             }
         }
     }
-    else if (PathCanonicalize(pathbufcanonicalized, path.c_str()))
+    else if (PathCanonicalize(pathBufCanonicalized, path.c_str()))
     {
-        ret          = ::GetLongPathName(pathbufcanonicalized, nullptr, 0);
-        auto pathbuf = std::make_unique<wchar_t[]>(ret + 2);
-        ret          = ::GetLongPathName(pathbufcanonicalized, pathbuf.get(), ret + 1);
+        ret          = ::GetLongPathName(pathBufCanonicalized, nullptr, 0);
+        auto pathBuf = std::make_unique<wchar_t[]>(ret + 2);
+        ret          = ::GetLongPathName(pathBufCanonicalized, pathBuf.get(), ret + 1);
         // GetFullPathName() sometimes returns the full path with the wrong
         // case. This is not a problem on Windows since its filesystem is
         // case-insensitive. But for SVN that's a problem if the wrong case
@@ -87,34 +88,34 @@ std::wstring CPathUtils::GetLongPathname(const std::wstring& path)
         // To fix the casing of the path, we use a trick:
         // convert the path to its short form, then back to its long form.
         // That will fix the wrong casing of the path.
-        int shortret = ::GetShortPathName(pathbuf.get(), nullptr, 0);
-        if (shortret)
+        int shortRet = ::GetShortPathName(pathBuf.get(), nullptr, 0);
+        if (shortRet)
         {
-            auto shortpath = std::make_unique<wchar_t[]>(shortret + 2);
-            if (::GetShortPathName(pathbuf.get(), shortpath.get(), shortret + 1))
+            auto shortPath = std::make_unique<wchar_t[]>(shortRet + 2);
+            if (::GetShortPathName(pathBuf.get(), shortPath.get(), shortRet + 1))
             {
-                int ret2 = ::GetLongPathName(shortpath.get(), pathbuf.get(), ret + 1);
+                int ret2 = ::GetLongPathName(shortPath.get(), pathBuf.get(), ret + 1);
                 if (ret2)
-                    sRet = std::wstring(pathbuf.get(), ret2);
+                    sRet = std::wstring(pathBuf.get(), ret2);
             }
         }
     }
     else
     {
         ret          = ::GetLongPathName(path.c_str(), nullptr, 0);
-        auto pathbuf = std::make_unique<wchar_t[]>(ret + 2);
-        ret          = ::GetLongPathName(path.c_str(), pathbuf.get(), ret + 1);
-        sRet         = std::wstring(pathbuf.get(), ret);
+        auto pathBuf = std::make_unique<wchar_t[]>(ret + 2);
+        ret          = ::GetLongPathName(path.c_str(), pathBuf.get(), ret + 1);
+        sRet         = std::wstring(pathBuf.get(), ret);
         // fix the wrong casing of the path. See above for details.
-        int shortret = ::GetShortPathName(pathbuf.get(), nullptr, 0);
-        if (shortret)
+        int shortRet = ::GetShortPathName(pathBuf.get(), nullptr, 0);
+        if (shortRet)
         {
-            auto shortpath = std::make_unique<wchar_t[]>(shortret + 2);
-            if (::GetShortPathName(pathbuf.get(), shortpath.get(), shortret + 1))
+            auto shortPath = std::make_unique<wchar_t[]>(shortRet + 2);
+            if (::GetShortPathName(pathBuf.get(), shortPath.get(), shortRet + 1))
             {
-                int ret2 = ::GetLongPathName(shortpath.get(), pathbuf.get(), ret + 1);
+                int ret2 = ::GetLongPathName(shortPath.get(), pathBuf.get(), ret + 1);
                 if (ret2)
-                    sRet = std::wstring(pathbuf.get(), ret2);
+                    sRet = std::wstring(pathBuf.get(), ret2);
             }
         }
     }
@@ -140,8 +141,7 @@ std::wstring CPathUtils::AdjustForMaxPath(const std::wstring& path)
 
 std::wstring CPathUtils::GetParentDirectory(const std::wstring& path)
 {
-    static std::wstring no_parent;
-    size_t              filenameLen;
+    static std::wstring noParent;
     size_t              pathLen = path.length();
     size_t              pos;
 
@@ -150,20 +150,20 @@ std::wstring CPathUtils::GetParentDirectory(const std::wstring& path)
         --pos;
         if (IsFolderSeparator(path[pos]))
         {
-            filenameLen = pathLen - (pos + 1);
+            size_t fileNameLen = pathLen - (pos + 1);
             // If the path in it's entirety is just a root, i.e. "\", it has no parent.
-            if (pos == 0 && filenameLen == 0)
-                return no_parent;
+            if (pos == 0 && fileNameLen == 0)
+                return noParent;
             // If the path in it's entirety is server name, i.e. "\\x", it has no parent.
-            if (pos == 1 && IsFolderSeparator(path[0]) && IsFolderSeparator(path[1]) && filenameLen > 0)
-                return no_parent;
+            if (pos == 1 && IsFolderSeparator(path[0]) && IsFolderSeparator(path[1]) && fileNameLen > 0)
+                return noParent;
             // If the parent begins with a device and root, i.e. "?:\" then
             // include both in the parent.
             if (pos == 2 && path[pos - 1] == DeviceSeparator)
             {
                 // If the path is just a device i.e. not followed by a filename, it has no parent.
-                if (filenameLen == 0)
-                    return no_parent;
+                if (fileNameLen == 0)
+                    return noParent;
                 ++pos;
             }
             // In summary, return everything before the last "\" of a filename unless the
@@ -192,7 +192,7 @@ std::wstring CPathUtils::GetParentDirectory(const std::wstring& path)
         std::wstring parent = path.substr(0, pos + 1);
         return parent;
     }
-    return no_parent;
+    return noParent;
 }
 
 // Finds the last "." after the last path separator and returns
@@ -233,7 +233,7 @@ std::wstring CPathUtils::GetLongFileExtension(const std::wstring& path)
     // Start at the last character and work back stopping at the
     // first . or path separator. If we find a dot take the rest
     // after it as the extension.
-    size_t foundPos = size_t(-1);
+    size_t foundPos = static_cast<size_t>(-1);
     bool   found    = false;
     for (size_t i = path.length(); i > 0;)
     {
@@ -321,7 +321,7 @@ std::wstring CPathUtils::RemoveLongExtension(const std::wstring& path)
     // Start at the last character and work back stopping at the
     // first . or path separator. If we find a dot take the rest
     // after it as the extension.
-    size_t foundPos = size_t(-1);
+    size_t foundPos = static_cast<size_t>(-1);
     bool   found    = false;
     for (size_t i = path.length(); i > 0;)
     {
@@ -345,14 +345,14 @@ std::wstring CPathUtils::RemoveLongExtension(const std::wstring& path)
 std::wstring CPathUtils::GetModulePath(HMODULE hMod /*= nullptr*/)
 {
     DWORD                      len       = 0;
-    DWORD                      bufferlen = MAX_PATH; // MAX_PATH is not the limit here!
+    DWORD                      bufferLen = MAX_PATH; // MAX_PATH is not the limit here!
     std::unique_ptr<wchar_t[]> path;
     do
     {
-        bufferlen += MAX_PATH; // MAX_PATH is not the limit here!
-        path = std::make_unique<wchar_t[]>(bufferlen);
-        len  = GetModuleFileName(hMod, path.get(), bufferlen);
-    } while (len == bufferlen);
+        bufferLen += MAX_PATH; // MAX_PATH is not the limit here!
+        path = std::make_unique<wchar_t[]>(bufferLen);
+        len  = GetModuleFileName(hMod, path.get(), bufferLen);
+    } while (len == bufferLen);
     std::wstring sPath = path.get();
     return sPath;
 }
@@ -382,7 +382,7 @@ std::wstring CPathUtils::Append(const std::wstring& path, const std::wstring& ap
             newPath += append;
         else
         {
-            newPath += ThisOSPathSeparator;
+            newPath += thisOsPathSeparator;
             newPath += append;
         }
     }
@@ -392,22 +392,22 @@ std::wstring CPathUtils::Append(const std::wstring& path, const std::wstring& ap
 std::wstring CPathUtils::GetTempFilePath()
 {
     DWORD len      = ::GetTempPath(0, nullptr);
-    auto  temppath = std::make_unique<wchar_t[]>(len + 1);
+    auto  tempPath = std::make_unique<wchar_t[]>(len + 1);
     auto  tempF    = std::make_unique<wchar_t[]>(len + 50);
-    ::GetTempPath(len + 1, temppath.get());
-    std::wstring tempfile;
-    ::GetTempFileName(temppath.get(), TEXT("cm_"), 0, tempF.get());
-    tempfile = std::wstring(tempF.get());
+    ::GetTempPath(len + 1, tempPath.get());
+    std::wstring tempFile;
+    ::GetTempFileName(tempPath.get(), TEXT("cm_"), 0, tempF.get());
+    tempFile = std::wstring(tempF.get());
     //now create the tempfile, so that subsequent calls to GetTempFile() return
     //different filenames.
-    HANDLE hFile = CreateFile(tempfile.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, nullptr);
+    HANDLE hFile = CreateFile(tempFile.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, nullptr);
     CloseHandle(hFile);
-    return tempfile;
+    return tempFile;
 }
 
 std::wstring CPathUtils::GetVersionFromFile(const std::wstring& path)
 {
-    struct TRANSARRAY
+    struct Transarray
     {
         WORD wLanguageID;
         WORD wCharacterSet;
@@ -415,7 +415,7 @@ std::wstring CPathUtils::GetVersionFromFile(const std::wstring& path)
 
     std::wstring strReturn;
     DWORD        dwReserved   = 0;
-    DWORD        dwBufferSize = GetFileVersionInfoSize((LPWSTR)(LPCWSTR)path.c_str(), &dwReserved);
+    DWORD        dwBufferSize = GetFileVersionInfoSize(const_cast<LPWSTR>(path.c_str()), &dwReserved);
     dwReserved                = 0;
     if (dwBufferSize > 0)
     {
@@ -426,8 +426,7 @@ std::wstring CPathUtils::GetVersionFromFile(const std::wstring& path)
                  nFixedLength      = 0;
             LPCWSTR      lpVersion = nullptr;
             VOID*        lpFixedPointer;
-            TRANSARRAY*  lpTransArray;
-            std::wstring strLangProduktVersion;
+            std::wstring strLangProductVersion;
 
             GetFileVersionInfo(path.c_str(),
                                dwReserved,
@@ -439,14 +438,14 @@ std::wstring CPathUtils::GetVersionFromFile(const std::wstring& path)
                           L"\\VarFileInfo\\Translation",
                           &lpFixedPointer,
                           &nFixedLength);
-            lpTransArray = (TRANSARRAY*)lpFixedPointer;
+            Transarray* lpTransArray = static_cast<Transarray*>(lpFixedPointer);
 
-            strLangProduktVersion = CStringUtils::Format(L"\\StringFileInfo\\%04x%04x\\ProductVersion",
+            strLangProductVersion = CStringUtils::Format(L"\\StringFileInfo\\%04x%04x\\ProductVersion",
                                                          lpTransArray[0].wLanguageID, lpTransArray[0].wCharacterSet);
 
             VerQueryValue(pBuffer.get(),
-                          (LPWSTR)strLangProduktVersion.c_str(),
-                          (LPVOID*)&lpVersion,
+                          const_cast<LPWSTR>(strLangProductVersion.c_str()),
+                          reinterpret_cast<LPVOID*>(const_cast<LPWSTR*>(&lpVersion)),
                           &nInfoSize);
             if (nInfoSize && lpVersion)
                 strReturn = lpVersion;
@@ -501,7 +500,7 @@ std::wstring CPathUtils::GetCWD()
 // Change the path separators to ones appropriate for this OS.
 void CPathUtils::NormalizeFolderSeparators(std::wstring& path)
 {
-    std::replace(path.begin(), path.end(), OtherOSPathSeparator, ThisOSPathSeparator);
+    std::replace(path.begin(), path.end(), otherOsPathSeparator, thisOsPathSeparator);
 }
 
 // Path names are case insensitive, using this function is clearer
@@ -519,41 +518,41 @@ int CPathUtils::PathCompareN(const std::wstring& path1, const std::wstring& path
 
 bool CPathUtils::Unzip2Folder(LPCWSTR lpZipFile, LPCWSTR lpFolder)
 {
-    IShellDispatch* pISD;
+    IShellDispatch* pIsd;
 
-    Folder* pZippedFile  = 0L;
-    Folder* pDestination = 0L;
+    Folder* pZippedFile  = nullptr;
+    Folder* pDestination = nullptr;
 
-    long         FilesCount   = 0;
-    IDispatch*   pItem        = 0L;
-    FolderItems* pFilesInside = 0L;
+    long         filesCount   = 0;
+    IDispatch*   pItem        = nullptr;
+    FolderItems* pFilesInside = nullptr;
 
-    VARIANT Options, OutFolder, InZipFile, Item;
+    VARIANT options, outFolder, inZipFile, item;
     HRESULT hr = S_OK;
     CoInitialize(nullptr);
     try
     {
-        if (CoCreateInstance(CLSID_Shell, nullptr, CLSCTX_INPROC_SERVER, IID_IShellDispatch, (void**)&pISD) != S_OK)
+        if (CoCreateInstance(CLSID_Shell, nullptr, CLSCTX_INPROC_SERVER, IID_IShellDispatch, reinterpret_cast<void**>(&pIsd)) != S_OK)
             return false;
 
-        InZipFile.vt      = VT_BSTR;
+        inZipFile.vt      = VT_BSTR;
         _bstr_t bstr      = lpZipFile; // back reading
-        InZipFile.bstrVal = bstr.Detach();
-        hr                = pISD->NameSpace(InZipFile, &pZippedFile);
+        inZipFile.bstrVal = bstr.Detach();
+        hr                = pIsd->NameSpace(inZipFile, &pZippedFile);
         if (FAILED(hr) || !pZippedFile)
         {
-            pISD->Release();
+            pIsd->Release();
             return false;
         }
 
-        OutFolder.vt      = VT_BSTR;
+        outFolder.vt      = VT_BSTR;
         bstr              = lpFolder; // back reading
-        OutFolder.bstrVal = bstr.Detach();
-        pISD->NameSpace(OutFolder, &pDestination);
+        outFolder.bstrVal = bstr.Detach();
+        pIsd->NameSpace(outFolder, &pDestination);
         if (!pDestination)
         {
             pZippedFile->Release();
-            pISD->Release();
+            pIsd->Release();
             return false;
         }
 
@@ -562,40 +561,40 @@ bool CPathUtils::Unzip2Folder(LPCWSTR lpZipFile, LPCWSTR lpFolder)
         {
             pDestination->Release();
             pZippedFile->Release();
-            pISD->Release();
+            pIsd->Release();
             return false;
         }
 
-        pFilesInside->get_Count(&FilesCount);
-        if (FilesCount < 1)
+        pFilesInside->get_Count(&filesCount);
+        if (filesCount < 1)
         {
             pFilesInside->Release();
             pDestination->Release();
             pZippedFile->Release();
-            pISD->Release();
+            pIsd->Release();
             return true;
         }
 
-        pFilesInside->QueryInterface(IID_IDispatch, (void**)&pItem);
+        pFilesInside->QueryInterface(IID_IDispatch, reinterpret_cast<void**>(&pItem));
 
-        Item.vt       = VT_DISPATCH;
-        Item.pdispVal = pItem;
+        item.vt       = VT_DISPATCH;
+        item.pdispVal = pItem;
 
-        Options.vt   = VT_I4;
-        Options.lVal = 1024 | 512 | 16 | 4; //http://msdn.microsoft.com/en-us/library/bb787866(VS.85).aspx
+        options.vt   = VT_I4;
+        options.lVal = 1024 | 512 | 16 | 4; //http://msdn.microsoft.com/en-us/library/bb787866(VS.85).aspx
 
-        bool retval = pDestination->CopyHere(Item, Options) == S_OK;
+        bool retval = pDestination->CopyHere(item, options) == S_OK;
 
         pItem->Release();
-        pItem = 0L;
+        pItem = nullptr;
         pFilesInside->Release();
-        pFilesInside = 0L;
+        pFilesInside = nullptr;
         pDestination->Release();
-        pDestination = 0L;
+        pDestination = nullptr;
         pZippedFile->Release();
-        pZippedFile = 0L;
-        pISD->Release();
-        pISD = 0L;
+        pZippedFile = nullptr;
+        pIsd->Release();
+        pIsd = nullptr;
 
         return retval;
     }
@@ -620,7 +619,7 @@ bool CPathUtils::IsKnownExtension(const std::wstring& ext)
         sDotExt = L"." + ext;
         sExt    = sDotExt.c_str();
     }
-    HKEY hKey = 0;
+    HKEY hKey = nullptr;
     if (RegOpenKeyEx(HKEY_CLASSES_ROOT, sExt, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
     {
         // key exists
@@ -678,13 +677,13 @@ bool CPathUtils::CreateRecursiveDirectory(const std::wstring& path)
                 // some file systems (e.g. webdav mounted drives) take time until
                 // a dir is properly created. So we try a few times with a wait in between
                 // to create the sub dir after just having created the parent dir.
-                int retrycount = 5;
+                int retryCount = 5;
                 do
                 {
                     ret = CreateDirectory(path.c_str(), nullptr);
                     if (ret == FALSE)
                         Sleep(50);
-                } while (retrycount-- && (ret == FALSE));
+                } while (retryCount-- && (ret == FALSE));
             }
         }
     }
@@ -693,7 +692,7 @@ bool CPathUtils::CreateRecursiveDirectory(const std::wstring& path)
 
 // poor mans code tests
 #ifdef _DEBUG
-static class CPathTests
+[[maybe_unused]] static class CPathTests
 {
 public:
     CPathTests()
@@ -713,5 +712,5 @@ public:
         assert(!CPathUtils::PathIsChild(L"c:\\windows", L"c:\\windowsnotachild"));
         assert(!CPathUtils::PathIsChild(L"c:\\windows\\", L"c:\\windowsnotachild"));
     }
-} CPathTests;
+} cPathTests;
 #endif

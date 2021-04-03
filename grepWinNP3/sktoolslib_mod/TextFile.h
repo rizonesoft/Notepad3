@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017-2020 - Stefan Kueng
+// Copyright (C) 2012, 2017-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -29,16 +29,16 @@
 class CTextFile
 {
 public:
-    CTextFile(void);
-    ~CTextFile(void);
+    CTextFile();
+    ~CTextFile();
 
     enum UnicodeType
     {
-        AUTOTYPE,
-        BINARY,
-        ANSI,
-        UNICODE_LE,
-        UNICODE_BE,
+        AutoType,
+        Binary,
+        Ansi,
+        Unicode_Le,
+        Unicode_Be,
         UTF8
     };
 
@@ -50,7 +50,7 @@ public:
     /**
      * Saves the file contents to disk at \c path.
      */
-    bool Save(LPCWSTR path);
+    bool Save(LPCWSTR path) const;
 
     /**
      * modifies the contents of a file.
@@ -75,18 +75,18 @@ public:
      * Returns the file content as a text string.
      * \note the text string can not be modified and is to be treated read-only.
      */
-    const std::wstring& GetFileString() const { return textcontent; }
+    const std::wstring& GetFileString() const { return textContent; }
 
     /**
      * Returns a pointer to the file contents. Call GetFileLength() to get
      * the size in number of bytes of this buffer.
      */
-    LPVOID GetFileContent() { return pFileBuf.get(); }
+    LPVOID GetFileContent() const { return pFileBuf.get(); }
 
     /**
      * Returns the size of the file in bytes
      */
-    long GetFileLength() const { return filelen; }
+    long GetFileLength() const { return fileLen; }
 
     /**
      * Returns the encoding of the file
@@ -101,12 +101,12 @@ public:
     /**
      * Returns the filename without the extension (if any)
      */
-    std::wstring GetFileNameWithoutExtension();
+    std::wstring GetFileNameWithoutExtension() const;
 
     /**
      * Returns the filename extension (if any)
      */
-    std::wstring GetFileNameExtension();
+    std::wstring GetFileNameExtension() const;
 
     /**
      * Replaces the file content.
@@ -120,13 +120,13 @@ public:
      * a file to still be considered text instead of binary
      * in the encoding detection. Default is 2.
      */
-    void SetNullbyteCountForBinary(int count) { m_NullByteCount = count; }
+    void SetNullbyteCountForBinary(int count) { nullByteCount = count; }
 
 protected:
     /**
      * Tries to find out the encoding of the file (utf8, utf16, ansi)
      */
-    UnicodeType CheckUnicodeType(BYTE* pBuffer, int cb);
+    UnicodeType CheckUnicodeType(BYTE* pBuffer, int cb) const;
     /**
      * Fills an array with line information to make it faster later
      * to get the line from a char position.
@@ -135,11 +135,11 @@ protected:
 
 private:
     std::unique_ptr<BYTE[]> pFileBuf;
-    DWORD                   filelen;
-    std::wstring            textcontent;
-    std::vector<size_t>     linepositions;
+    DWORD                   fileLen;
+    std::wstring            textContent;
+    std::vector<size_t>     linePositions;
     UnicodeType             encoding;
     std::wstring            filename;
     bool                    hasBOM;
-    int                     m_NullByteCount;
+    int                     nullByteCount;
 };

@@ -21,18 +21,18 @@
 #include "UnicodeUtils.h"
 #include <memory>
 
-CUnicodeUtils::CUnicodeUtils(void)
+CUnicodeUtils::CUnicodeUtils()
 {
 }
 
-CUnicodeUtils::~CUnicodeUtils(void)
+CUnicodeUtils::~CUnicodeUtils()
 {
 }
 
 #ifdef UNICODE
 std::string CUnicodeUtils::StdGetUTF8(const std::wstring& wide, bool stopAtNull /* = true*/)
 {
-    int len = (int)wide.size();
+    int len = static_cast<int>(wide.size());
     if (len == 0)
         return std::string();
     int  size   = len * 4;
@@ -46,7 +46,7 @@ std::string CUnicodeUtils::StdGetUTF8(const std::wstring& wide, bool stopAtNull 
 
 std::string CUnicodeUtils::StdGetANSI(const std::wstring& wide, bool stopAtNull /* = true*/)
 {
-    int len = (int)wide.size();
+    int len = static_cast<int>(wide.size());
     if (len == 0)
         return std::string();
     int  size   = len * 4;
@@ -60,7 +60,7 @@ std::string CUnicodeUtils::StdGetANSI(const std::wstring& wide, bool stopAtNull 
 
 std::wstring CUnicodeUtils::StdGetUnicode(const std::string& multibyte, bool stopAtNull)
 {
-    int len = (int)multibyte.size();
+    int len = static_cast<int>(multibyte.size());
     if (len == 0)
         return std::wstring();
     int  size = len * 4;
@@ -77,7 +77,7 @@ std::string WideToMultibyte(const std::wstring& wide, bool stopAtNull /* = true*
 {
     auto narrow = std::make_unique<char[]>(wide.length() * 3 + 2);
     BOOL defaultCharUsed;
-    int  ret    = (int)WideCharToMultiByte(CP_ACP, 0, wide.c_str(), (int)wide.size(), narrow.get(), (int)wide.length() * 3 - 1, ".", &defaultCharUsed);
+    int  ret    = static_cast<int>(WideCharToMultiByte(CP_ACP, 0, wide.c_str(), static_cast<int>(wide.size()), narrow.get(), static_cast<int>(wide.length()) * 3 - 1, ".", &defaultCharUsed));
     narrow[ret] = 0;
     if (stopAtNull)
         return narrow.get();
@@ -87,7 +87,7 @@ std::string WideToMultibyte(const std::wstring& wide, bool stopAtNull /* = true*
 std::string WideToUTF8(const std::wstring& wide, bool stopAtNull /* = true*/)
 {
     auto narrow = std::make_unique<char[]>(wide.length() * 3 + 2);
-    int  ret    = (int)WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), (int)wide.size(), narrow.get(), (int)wide.length() * 3 - 1, nullptr, nullptr);
+    int  ret    = static_cast<int>(WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), static_cast<int>(wide.size()), narrow.get(), static_cast<int>(wide.length()) * 3 - 1, nullptr, nullptr));
     narrow[ret] = 0;
     if (stopAtNull)
         return narrow.get();
@@ -103,7 +103,7 @@ std::wstring MultibyteToWide(const std::string& multibyte, bool stopAtNull /* = 
     auto wide = std::make_unique<wchar_t[]>(multibyte.length() * 2 + 2);
     if (wide == nullptr)
         return std::wstring();
-    int ret   = (int)MultiByteToWideChar(CP_ACP, 0, multibyte.c_str(), (int)multibyte.size(), wide.get(), (int)length * 2 - 1);
+    int ret   = static_cast<int>(MultiByteToWideChar(CP_ACP, 0, multibyte.c_str(), static_cast<int>(multibyte.size()), wide.get(), static_cast<int>(length) * 2 - 1));
     wide[ret] = 0;
     if (stopAtNull)
         return wide.get();
@@ -119,7 +119,7 @@ std::wstring UTF8ToWide(const std::string& multibyte, bool stopAtNull /* = true*
     auto wide = std::make_unique<wchar_t[]>(length * 2 + 2);
     if (wide == nullptr)
         return std::wstring();
-    int ret   = (int)MultiByteToWideChar(CP_UTF8, 0, multibyte.c_str(), (int)multibyte.size(), wide.get(), (int)length * 2 - 1);
+    int ret   = static_cast<int>(MultiByteToWideChar(CP_UTF8, 0, multibyte.c_str(), static_cast<int>(multibyte.size()), wide.get(), static_cast<int>(length) * 2 - 1));
     wide[ret] = 0;
     if (stopAtNull)
         return wide.get();
@@ -141,6 +141,7 @@ std::string StringToUTF8(const std::string& string, bool stopAtNull /* = true*/)
 
 #pragma warning(push)
 #pragma warning(disable : 4200)
+// ReSharper disable once CppInconsistentNaming
 struct STRINGRESOURCEIMAGE
 {
     WORD  nLength;
@@ -150,11 +151,11 @@ struct STRINGRESOURCEIMAGE
 
 int LoadStringEx(HINSTANCE hInstance, UINT uID, LPWSTR lpBuffer, int nBufferMax, WORD wLanguage)
 {
-    const STRINGRESOURCEIMAGE* pImage;
-    const STRINGRESOURCEIMAGE* pImageEnd;
-    ULONG                      nResourceSize;
-    HGLOBAL                    hGlobal;
-    UINT                       iIndex;
+    STRINGRESOURCEIMAGE* pImage;
+    STRINGRESOURCEIMAGE* pImageEnd;
+    ULONG                nResourceSize;
+    HGLOBAL              hGlobal;
+    UINT                 iIndex;
 #ifndef UNICODE
     BOOL defaultCharUsed;
 #endif
@@ -174,17 +175,17 @@ int LoadStringEx(HINSTANCE hInstance, UINT uID, LPWSTR lpBuffer, int nBufferMax,
     hGlobal = LoadResource(hInstance, hResource);
     if (!hGlobal)
         return 0;
-    pImage = (const STRINGRESOURCEIMAGE*)::LockResource(hGlobal);
+    pImage = static_cast<STRINGRESOURCEIMAGE*>(::LockResource(hGlobal));
     if (!pImage)
         return 0;
 
     nResourceSize = ::SizeofResource(hInstance, hResource);
-    pImageEnd     = (const STRINGRESOURCEIMAGE*)(LPBYTE(pImage) + nResourceSize);
+    pImageEnd     = reinterpret_cast<STRINGRESOURCEIMAGE*>(reinterpret_cast<LPBYTE>(pImage) + nResourceSize);
     iIndex        = uID & 0x000f;
 
     while ((iIndex > 0) && (pImage < pImageEnd))
     {
-        pImage = (const STRINGRESOURCEIMAGE*)(LPBYTE(pImage) + (sizeof(STRINGRESOURCEIMAGE) + (pImage->nLength * sizeof(WCHAR))));
+        pImage = reinterpret_cast<STRINGRESOURCEIMAGE*>(reinterpret_cast<LPBYTE>(pImage) + (sizeof(STRINGRESOURCEIMAGE) + (pImage->nLength * sizeof(WCHAR))));
         iIndex--;
     }
     if (pImage >= pImageEnd)
@@ -195,7 +196,7 @@ int LoadStringEx(HINSTANCE hInstance, UINT uID, LPWSTR lpBuffer, int nBufferMax,
     ret = pImage->nLength;
     if (ret > nBufferMax)
         ret = nBufferMax;
-    wcsncpy_s((wchar_t*)lpBuffer, nBufferMax, pImage->achString, ret);
+    wcsncpy_s(static_cast<wchar_t*>(lpBuffer), nBufferMax, pImage->achString, ret);
     lpBuffer[ret] = 0;
 #else
     ret           = WideCharToMultiByte(CP_ACP, 0, pImage->achString, pImage->nLength, (LPSTR)lpBuffer, nBufferMax - 1, ".", &defaultCharUsed);
@@ -214,9 +215,9 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive,
         inconclusive = true;
         return CP_ACP;
     }
-    const UINT32* const pVal32 = (UINT32*)pBuffer;
-    const UINT16* const pVal16 = (UINT16*)pBuffer;
-    const UINT8* const  pVal8  = (UINT8*)pBuffer;
+    const UINT32* const pVal32 = static_cast<UINT32*>(pBuffer);
+    const UINT16* const pVal16 = static_cast<UINT16*>(pBuffer);
+    const UINT8* const  pVal8  = static_cast<UINT8*>(pBuffer);
     if (cb >= 4)
     {
         if (*pVal32 == 0x0000FEFF)
@@ -262,10 +263,10 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive,
         }
     }
     // check for illegal UTF8 sequences
-    bool bNonANSI  = false;
+    bool bNonAnsi  = false;
     int  nNeedData = 0;
     int  i         = 0;
-    int  nullcount = 0;
+    int  nullCount = 0;
     for (; i < cb; ++i)
     {
         UINT8 zChar = pVal8[i];
@@ -273,13 +274,13 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive,
         {
             if (zChar == 0)
             {
-                ++nullcount;
+                ++nullCount;
                 // count the null chars, we do not want to treat an ASCII/UTF8 file
                 // as UTF16 just because of some null chars that might be accidentally
                 // in the file.
                 // Use an arbitrary value of one fiftieth of the file length as
                 // the limit after which a file is considered UTF16.
-                if (nullcount > (cb / 50))
+                if (nullCount > (cb / 50))
                 {
                     // null-chars are not allowed for ASCII or UTF8, that means
                     // this file is most likely UTF16 encoded
@@ -298,7 +299,7 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive,
             continue;
         }
         else
-            bNonANSI = true;
+            bNonAnsi = true;
         if ((zChar & 0x40) == 0) // top bit
         {
             if (!nNeedData)
@@ -336,9 +337,9 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive,
         {
             skip = nNeedData;
             return CP_ACP;
+        }
     }
-    }
-    if (bNonANSI && nNeedData == 0)
+    if (bNonAnsi && nNeedData == 0)
         return CP_UTF8;
 
     inconclusive = true;

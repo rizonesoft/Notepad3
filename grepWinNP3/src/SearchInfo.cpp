@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2014 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2014, 2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,26 +20,26 @@
 #include "SearchInfo.h"
 
 CSearchInfo::CSearchInfo()
-    : filesize(0)
-    , readerror(false)
+    : fileSize(0)
+    , matchCount(0)
+    , encoding(CTextFile::UnicodeType::AutoType)
+    , readError(false)
     , folder(false)
-    , matchcount(0)
-    , encoding(CTextFile::UnicodeType::AUTOTYPE)
 {
-    modifiedtime.dwHighDateTime = 0;
-    modifiedtime.dwLowDateTime  = 0;
+    modifiedTime.dwHighDateTime = 0;
+    modifiedTime.dwLowDateTime  = 0;
 }
 
 CSearchInfo::CSearchInfo(const std::wstring& path)
-    : filepath(path)
-    , filesize(0)
-    , readerror(false)
+    : filePath(path)
+    , fileSize(0)
+    , matchCount(0)
+    , encoding(CTextFile::UnicodeType::AutoType)
+    , readError(false)
     , folder(false)
-    , matchcount(0)
-    , encoding(CTextFile::UnicodeType::AUTOTYPE)
 {
-    modifiedtime.dwHighDateTime = 0;
-    modifiedtime.dwLowDateTime  = 0;
+    modifiedTime.dwHighDateTime = 0;
+    modifiedTime.dwLowDateTime  = 0;
 }
 
 CSearchInfo::~CSearchInfo()

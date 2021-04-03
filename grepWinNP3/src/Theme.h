@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2020 - Stefan Kueng
+// Copyright (C) 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +18,6 @@
 //
 #pragma once
 #include "registry.h"
-#include <string>
 #include <unordered_map>
 #include <functional>
 
@@ -93,7 +92,7 @@ private:
     std::unordered_map<int, ThemeChangeCallback> m_themeChangeCallbacks;
     int                                          m_lastThemeChangeCallbackId;
     CRegStdDWORD                                 m_regDarkTheme;
-    static HBRUSH                                s_backBrush;
+    static HBRUSH                                m_sBackBrush;
     WCHAR                                        m_DlgFontFace[LF_FACESIZE];
     int                                          m_DlgFontSize;
 };

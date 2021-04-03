@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2014, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2014, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,6 +19,8 @@
 
 #include "stdafx.h"
 #include "AeroControls.h"
+#include <memory>
+#include <vssym32.h>
 
 enum ControlType
 {
@@ -50,7 +52,7 @@ AeroControlBase::AeroControlBase()
 
 AeroControlBase::~AeroControlBase()
 {
-    for (std::map<HWND, UINT_PTR>::const_iterator it = subclassedControls.begin(); it != subclassedControls.end(); ++it)
+    for (std::map<HWND, UINT_PTR>::const_iterator it = subClassedControls.begin(); it != subClassedControls.end(); ++it)
     {
         RemoveWindowSubclass(it->first, SubclassProc, it->second);
     }
@@ -67,18 +69,18 @@ bool AeroControlBase::SubclassControl(HWND hControl)
     {
         if (!wcscmp(szWndClassName, WC_STATIC))
         {
-            bRet                         = !!SetWindowSubclass(hControl, SubclassProc, Static, (DWORD_PTR)this);
-            subclassedControls[hControl] = Static;
+            bRet                         = !!SetWindowSubclass(hControl, SubclassProc, Static, reinterpret_cast<DWORD_PTR>(this));
+            subClassedControls[hControl] = Static;
         }
         if (!wcscmp(szWndClassName, WC_BUTTON))
         {
-            bRet                         = !!SetWindowSubclass(hControl, SubclassProc, Button, (DWORD_PTR)this);
-            subclassedControls[hControl] = Button;
+            bRet                         = !!SetWindowSubclass(hControl, SubclassProc, Button, reinterpret_cast<DWORD_PTR>(this));
+            subClassedControls[hControl] = Button;
         }
         if (!wcscmp(szWndClassName, PROGRESS_CLASS))
         {
-            bRet                         = !!SetWindowSubclass(hControl, SubclassProc, Progressbar, (DWORD_PTR)this);
-            subclassedControls[hControl] = Progressbar;
+            bRet                         = !!SetWindowSubclass(hControl, SubclassProc, Progressbar, reinterpret_cast<DWORD_PTR>(this));
+            subClassedControls[hControl] = Progressbar;
         }
     }
     return bRet;
@@ -86,7 +88,7 @@ bool AeroControlBase::SubclassControl(HWND hControl)
 
 LRESULT AeroControlBase::SubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uidSubclass, DWORD_PTR dwRefData)
 {
-    AeroControlBase* pThis = (AeroControlBase*)dwRefData;
+    AeroControlBase* pThis = reinterpret_cast<AeroControlBase*>(dwRefData);
     if (pThis)
     {
         if (pThis->m_dwm.IsDwmCompositionEnabled())
@@ -95,13 +97,10 @@ LRESULT AeroControlBase::SubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
             {
                 case Static:
                     return pThis->StaticWindowProc(hWnd, uMsg, wParam, lParam);
-                    break;
                 case Button:
                     return pThis->ButtonWindowProc(hWnd, uMsg, wParam, lParam);
-                    break;
                 case Progressbar:
                     return pThis->ProgressbarWindowProc(hWnd, uMsg, wParam, lParam);
-                    break;
             }
         }
     }
@@ -121,7 +120,6 @@ LRESULT AeroControlBase::StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             InvalidateRgn(hWnd, nullptr, FALSE);
             return res;
         }
-        break;
         case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -150,10 +148,10 @@ LRESULT AeroControlBase::StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                         if (dwStaticStyle == SS_ICON || dwStaticStyle == SS_BITMAP)
                         {
                             bool   bIcon   = dwStaticStyle == SS_ICON;
-                            HANDLE hBmpIco = (HANDLE)SendMessage(hWnd, STM_GETIMAGE, bIcon ? IMAGE_ICON : IMAGE_BITMAP, NULL);
+                            HANDLE hBmpIco = reinterpret_cast<HANDLE>(SendMessage(hWnd, STM_GETIMAGE, bIcon ? IMAGE_ICON : IMAGE_BITMAP, NULL));
                             if (hBmpIco)
                             {
-                                std::unique_ptr<Bitmap>       pBmp(bIcon ? new Bitmap((HICON)hBmpIco) : new Bitmap((HBITMAP)hBmpIco, nullptr));
+                                std::unique_ptr<Bitmap>       pBmp(bIcon ? new Bitmap(static_cast<HICON>(hBmpIco)) : new Bitmap(static_cast<HBITMAP>(hBmpIco), nullptr));
                                 std::unique_ptr<Graphics>     myGraphics(new Graphics(hdcPaint));
                                 std::unique_ptr<CachedBitmap> pcbmp(new CachedBitmap(pBmp.get(), myGraphics.get()));
                                 myGraphics->DrawCachedBitmap(pcbmp.get(), 0, 0);
@@ -203,22 +201,22 @@ LRESULT AeroControlBase::StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                         }
                         else
                         {
-                            DTTOPTS DttOpts   = {sizeof(DTTOPTS)};
-                            DttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;
-                            DttOpts.crText    = RGB(255, 255, 255);
-                            DttOpts.iGlowSize = 12; // Default value
+                            DTTOPTS dttOpts   = {sizeof(DTTOPTS)};
+                            dttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;
+                            dttOpts.crText    = RGB(255, 255, 255);
+                            dttOpts.iGlowSize = 12; // Default value
 
-                            m_theme.DetermineGlowSize(&DttOpts.iGlowSize);
+                            m_theme.DetermineGlowSize(&dttOpts.iGlowSize);
 
-                            HFONT hFontOld = (HFONT)SendMessage(hWnd, WM_GETFONT, 0L, 0L);
+                            HFONT hFontOld = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, 0L));
                             if (hFontOld)
-                                hFontOld = (HFONT)SelectObject(hdcPaint, hFontOld);
+                                hFontOld = static_cast<HFONT>(SelectObject(hdcPaint, hFontOld));
                             int iLen = GetWindowTextLength(hWnd);
 
                             if (iLen)
                             {
                                 iLen += 5; // 1 for terminating zero, 4 for DT_MODIFYSTRING
-                                LPWSTR szText = (LPWSTR)LocalAlloc(LPTR, sizeof(WCHAR) * iLen);
+                                LPWSTR szText = static_cast<LPWSTR>(LocalAlloc(LPTR, sizeof(WCHAR) * iLen));
                                 if (szText)
                                 {
                                     iLen = GetWindowTextW(hWnd, szText, iLen);
@@ -259,7 +257,7 @@ LRESULT AeroControlBase::StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                                             dwFlags |= DT_NOPREFIX;
 
                                         m_theme.DrawThemeTextEx(hTheme, hdcPaint, 0, 0,
-                                                                szText, -1, dwFlags, &rcClient, &DttOpts);
+                                                                szText, -1, dwFlags, &rcClient, &dttOpts);
 
                                         if (dwStyle & SS_SUNKEN || dwStyle & WS_BORDER)
                                             DrawRect(&rcClient, hdcPaint, DashStyleSolid, Color(0xFF, 0, 0, 0), 1.0);
@@ -286,11 +284,10 @@ LRESULT AeroControlBase::StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             EndPaint(hWnd, &ps);
             return 1;
         }
-        break;
         case WM_NCDESTROY:
         case WM_DESTROY:
             RemoveWindowSubclass(hWnd, SubclassProc, Static);
-            subclassedControls.erase(hWnd);
+            subClassedControls.erase(hWnd);
             break;
     }
 
@@ -309,7 +306,6 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             InvalidateRgn(hWnd, nullptr, FALSE);
             return res;
         }
-        break;
         case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -342,9 +338,9 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                         /// calculate the font height. We select the control's font
                         /// into the DC and fake a drawing operation:
                         ///
-                        HFONT hFontOld = (HFONT)SendMessage(hWnd, WM_GETFONT, 0L, 0L);
+                        HFONT hFontOld = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, 0L));
                         if (hFontOld)
-                            hFontOld = (HFONT)SelectObject(hdc, hFontOld);
+                            hFontOld = static_cast<HFONT>(SelectObject(hdc, hFontOld));
 
                         RECT  rcDraw  = rcClient;
                         DWORD dwFlags = DT_SINGLELINE;
@@ -371,9 +367,9 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                             /// now we again retrieve the font, but this time we select it into
                             /// the buffered DC:
                             ///
-                            hFontOld = (HFONT)SendMessage(hWnd, WM_GETFONT, 0L, 0L);
+                            hFontOld = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, 0L));
                             if (hFontOld)
-                                hFontOld = (HFONT)SelectObject(hdcPaint, hFontOld);
+                                hFontOld = static_cast<HFONT>(SelectObject(hdcPaint, hFontOld));
 
                             PatBlt(hdcPaint, 0, 0, RECTWIDTH(rcClient), RECTHEIGHT(rcClient), BLACKNESS);
 
@@ -382,12 +378,12 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                             int iPartId = BP_GROUPBOX;
                             int iState  = GetStateFromBtnState(dwStyle, FALSE, FALSE, 0L, iPartId, FALSE);
 
-                            DTTOPTS DttOpts   = {sizeof(DTTOPTS)};
-                            DttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;
-                            DttOpts.crText    = RGB(255, 255, 255);
-                            DttOpts.iGlowSize = 12; // Default value
+                            DTTOPTS dttOpts   = {sizeof(DTTOPTS)};
+                            dttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;
+                            dttOpts.crText    = RGB(255, 255, 255);
+                            dttOpts.iGlowSize = 12; // Default value
 
-                            m_theme.DetermineGlowSize(&DttOpts.iGlowSize);
+                            m_theme.DetermineGlowSize(&dttOpts.iGlowSize);
 
                             COLORREF cr = RGB(0x00, 0x00, 0x00);
                             GetEditBorderColor(hWnd, &cr);
@@ -415,7 +411,7 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                             if (iLen)
                             {
                                 iLen += 5; // 1 for terminating zero, 4 for DT_MODIFYSTRING
-                                LPWSTR szText = (LPWSTR)LocalAlloc(LPTR, sizeof(WCHAR) * iLen);
+                                LPWSTR szText = static_cast<LPWSTR>(LocalAlloc(LPTR, sizeof(WCHAR) * iLen));
                                 if (szText)
                                 {
                                     iLen = GetWindowTextW(hWnd, szText, iLen);
@@ -429,7 +425,7 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                                         rcDraw.left++;
                                         rcDraw.right++;
                                         m_theme.DrawThemeTextEx(hTheme, hdcPaint, iPartId, iState, szText, -1,
-                                                                dwFlags, &rcDraw, &DttOpts);
+                                                                dwFlags, &rcDraw, &dttOpts);
                                     }
 
                                     LocalFree(szText);
@@ -480,7 +476,7 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
                             iState = GetStateFromBtnState(dwStyle, bHot, bFocus, dwCheckState, iPartId, FALSE);
 
-                            int bmWidth = int(ceil(13.0 * GetDeviceCaps(hdcPaint, LOGPIXELSX) / 96.0));
+                            int bmWidth = static_cast<int>(ceil(13.0 * GetDeviceCaps(hdcPaint, LOGPIXELSX) / 96.0));
 
                             UINT uiHalfWidth = (RECTWIDTH(rcClient) - bmWidth) / 2;
 
@@ -538,22 +534,22 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                             else
                                 rc.left += bmWidth + 2 * GetSystemMetrics(SM_CXEDGE);
 
-                            DTTOPTS DttOpts   = {sizeof(DTTOPTS)};
-                            DttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;
-                            DttOpts.crText    = RGB(255, 255, 255);
-                            DttOpts.iGlowSize = 12; // Default value
+                            DTTOPTS dttOpts   = {sizeof(DTTOPTS)};
+                            dttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;
+                            dttOpts.crText    = RGB(255, 255, 255);
+                            dttOpts.iGlowSize = 12; // Default value
 
-                            m_theme.DetermineGlowSize(&DttOpts.iGlowSize);
+                            m_theme.DetermineGlowSize(&dttOpts.iGlowSize);
 
-                            HFONT hFontOld = (HFONT)SendMessage(hWnd, WM_GETFONT, 0L, 0L);
+                            HFONT hFontOld = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, 0L));
                             if (hFontOld)
-                                hFontOld = (HFONT)SelectObject(hdcPaint, hFontOld);
+                                hFontOld = static_cast<HFONT>(SelectObject(hdcPaint, hFontOld));
                             int iLen = GetWindowTextLength(hWnd);
 
                             if (iLen)
                             {
                                 iLen += 5; // 1 for terminating zero, 4 for DT_MODIFYSTRING
-                                LPWSTR szText = (LPWSTR)LocalAlloc(LPTR, sizeof(WCHAR) * iLen);
+                                LPWSTR szText = static_cast<LPWSTR>(LocalAlloc(LPTR, sizeof(WCHAR) * iLen));
                                 if (szText)
                                 {
                                     iLen = GetWindowTextW(hWnd, szText, iLen);
@@ -583,7 +579,7 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                                             dwFlags |= DT_VCENTER;
 
                                         m_theme.DrawThemeTextEx(hTheme, hdcPaint, iPartId,
-                                                                iState, szText, -1, dwFlags, &rc, &DttOpts);
+                                                                iState, szText, -1, dwFlags, &rc, &dttOpts);
 
                                         ///
                                         /// if our control has the focus, we also have to draw the focus rectangle:
@@ -680,23 +676,23 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
                             m_theme.GetThemeBackgroundContentRect(hTheme, hdcPaint, iPartId, iState, &rcPaint, &rc);
 
-                            DTTOPTS DttOpts = {sizeof(DTTOPTS)};
-                            DttOpts.dwFlags = DTT_COMPOSITED;
-                            DttOpts.crText  = RGB(255, 255, 255);
-                            DttOpts.dwFlags |= DTT_GLOWSIZE;
-                            DttOpts.iGlowSize = 12; // Default value
+                            DTTOPTS dttOpts = {sizeof(DTTOPTS)};
+                            dttOpts.dwFlags = DTT_COMPOSITED;
+                            dttOpts.crText  = RGB(255, 255, 255);
+                            dttOpts.dwFlags |= DTT_GLOWSIZE;
+                            dttOpts.iGlowSize = 12; // Default value
 
-                            m_theme.DetermineGlowSize(&DttOpts.iGlowSize);
+                            m_theme.DetermineGlowSize(&dttOpts.iGlowSize);
 
-                            HFONT hFontOld = (HFONT)SendMessage(hWnd, WM_GETFONT, 0L, 0L);
+                            HFONT hFontOld = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, 0L));
                             if (hFontOld)
-                                hFontOld = (HFONT)SelectObject(hdcPaint, hFontOld);
+                                hFontOld = static_cast<HFONT>(SelectObject(hdcPaint, hFontOld));
                             int iLen = GetWindowTextLength(hWnd);
 
                             if (iLen)
                             {
                                 iLen += 5; // 1 for terminating zero, 4 for DT_MODIFYSTRING
-                                LPWSTR szText = (LPWSTR)LocalAlloc(LPTR, sizeof(WCHAR) * iLen);
+                                LPWSTR szText = static_cast<LPWSTR>(LocalAlloc(LPTR, sizeof(WCHAR) * iLen));
                                 if (szText)
                                 {
                                     iLen = GetWindowTextW(hWnd, szText, iLen);
@@ -704,7 +700,7 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                                     {
                                         DWORD dwFlags = DT_SINGLELINE | DT_CENTER | DT_VCENTER;
                                         m_theme.DrawThemeTextEx(hTheme, hdcPaint,
-                                                                iPartId, iState, szText, -1, dwFlags, &rc, &DttOpts);
+                                                                iPartId, iState, szText, -1, dwFlags, &rc, &dttOpts);
 
                                         ///
                                         /// if our control has the focus, we also have to draw the focus rectangle:
@@ -740,11 +736,10 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             EndPaint(hWnd, &ps);
             return 0;
         }
-        break;
         case WM_DESTROY:
         case WM_NCDESTROY:
             RemoveWindowSubclass(hWnd, SubclassProc, Button);
-            subclassedControls.erase(hWnd);
+            subClassedControls.erase(hWnd);
             break;
     }
 
@@ -762,14 +757,13 @@ LRESULT AeroControlBase::ProgressbarWindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
             InvalidateRgn(hWnd, nullptr, FALSE);
             return res;
         }
-        break;
         case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC         hdc = BeginPaint(hWnd, &ps);
             RECT        rc;
             GetWindowRect(hWnd, &rc);
-            MapWindowPoints(nullptr, hWnd, (LPPOINT)&rc, 2);
+            MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
 
             if (hdc)
             {
@@ -794,11 +788,10 @@ LRESULT AeroControlBase::ProgressbarWindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
             EndPaint(hWnd, &ps);
             return 1;
         }
-        break;
         case WM_NCDESTROY:
         case WM_DESTROY:
             RemoveWindowSubclass(hWnd, SubclassProc, Static);
-            subclassedControls.erase(hWnd);
+            subClassedControls.erase(hWnd);
             break;
     }
 
@@ -814,13 +807,13 @@ void AeroControlBase::FillRect(LPRECT prc, HDC hdcPaint, Color clr) const
         auto myGraphics = std::make_unique<Graphics>(hdcPaint);
         if (myGraphics)
         {
-            myGraphics->FillRectangle(pBrush.get(), (INT)prc->left, (INT)prc->top,
-                                      INT(prc->right - 1 - prc->left), INT(prc->bottom - 1 - prc->top));
+            myGraphics->FillRectangle(pBrush.get(), static_cast<INT>(prc->left), static_cast<INT>(prc->top),
+                                      static_cast<INT>(prc->right - 1 - prc->left), static_cast<INT>(prc->bottom - 1 - prc->top));
         }
     }
 }
 
-int AeroControlBase::GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture) const
+int AeroControlBase::GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture)
 {
     int iState = 0;
     switch (iPartId)
@@ -919,16 +912,16 @@ void AeroControlBase::DrawRect(LPRECT prc, HDC hdcPaint, DashStyle dashStyle, Co
     myPen->SetDashStyle(dashStyle);
     auto myGraphics = std::make_unique<Graphics>(hdcPaint);
 
-    myGraphics->DrawRectangle(myPen.get(), (INT)prc->left, (INT)prc->top,
-                              INT(prc->right - 1 - prc->left), INT(prc->bottom - 1 - prc->top));
+    myGraphics->DrawRectangle(myPen.get(), static_cast<INT>(prc->left), static_cast<INT>(prc->top),
+                              static_cast<INT>(prc->right - 1 - prc->left), static_cast<INT>(prc->bottom - 1 - prc->top));
 }
 
-void AeroControlBase::DrawFocusRect(LPRECT prcFocus, HDC hdcPaint)
+void AeroControlBase::DrawFocusRect(LPRECT prcFocus, HDC hdcPaint) const
 {
     DrawRect(prcFocus, hdcPaint, DashStyleDot, Color(0xFF, 0, 0, 0), 1.0);
 };
 
-void AeroControlBase::PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder)
+void AeroControlBase::PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder) const
 {
     HDC hdcPaint = nullptr;
 
@@ -951,12 +944,12 @@ void AeroControlBase::PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBord
         if (bDrawBorder)
             InflateRect(prc, -1, -1);
         // Tell the control to paint itself in our memory buffer
-        SendMessage(hWnd, WM_PRINTCLIENT, (WPARAM)hdcPaint, PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_CHECKVISIBLE);
+        SendMessage(hWnd, WM_PRINTCLIENT, reinterpret_cast<WPARAM>(hdcPaint), PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_CHECKVISIBLE);
 
         if (bDrawBorder)
         {
             InflateRect(prc, 1, 1);
-            FrameRect(hdcPaint, prc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+            FrameRect(hdcPaint, prc, static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH)));
         }
 
         // Make every pixel opaque
@@ -965,7 +958,7 @@ void AeroControlBase::PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBord
     }
 }
 
-BOOL AeroControlBase::GetEditBorderColor(HWND hWnd, COLORREF* pClr)
+BOOL AeroControlBase::GetEditBorderColor(HWND hWnd, COLORREF* pClr) const
 {
     HTHEME hTheme = m_theme.OpenThemeData(hWnd, L"Edit");
     if (hTheme)
@@ -978,7 +971,7 @@ BOOL AeroControlBase::GetEditBorderColor(HWND hWnd, COLORREF* pClr)
     return FALSE;
 }
 
-void AeroControlBase::DrawEditBorder(HWND hWnd)
+void AeroControlBase::DrawEditBorder(HWND hWnd) const
 {
     LONG_PTR dwStyleEx = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
     if (!(dwStyleEx & WS_EX_CLIENTEDGE))
@@ -992,7 +985,7 @@ void AeroControlBase::DrawEditBorder(HWND hWnd)
     DrawSolidWndRectOnParent(hWnd, clr);
 }
 
-void AeroControlBase::DrawSolidWndRectOnParent(HWND hWnd, Color clr)
+void AeroControlBase::DrawSolidWndRectOnParent(HWND hWnd, Color clr) const
 {
     RECT rcWnd;
     GetWindowRect(hWnd, &rcWnd);
@@ -1026,7 +1019,7 @@ void AeroControlBase::ScreenToClient(HWND hWnd, LPRECT lprc)
     lprc->bottom = pt.y;
 }
 
-void AeroControlBase::GetRoundRectPath(GraphicsPath* pPath, const Rect& r, int dia) const
+void AeroControlBase::GetRoundRectPath(GraphicsPath* pPath, const Rect& r, int dia)
 {
     // diameter can't exceed width or height
     if (dia > r.Width)
@@ -1035,26 +1028,26 @@ void AeroControlBase::GetRoundRectPath(GraphicsPath* pPath, const Rect& r, int d
         dia = r.Height;
 
     // define a corner
-    Rect Corner(r.X, r.Y, dia, dia);
+    Rect corner(r.X, r.Y, dia, dia);
 
     // begin path
     pPath->Reset();
     pPath->StartFigure();
 
     // top left
-    pPath->AddArc(Corner, 180, 90);
+    pPath->AddArc(corner, 180, 90);
 
     // top right
-    Corner.X += (r.Width - dia - 1);
-    pPath->AddArc(Corner, 270, 90);
+    corner.X += (r.Width - dia - 1);
+    pPath->AddArc(corner, 270, 90);
 
     // bottom right
-    Corner.Y += (r.Height - dia - 1);
-    pPath->AddArc(Corner, 0, 90);
+    corner.Y += (r.Height - dia - 1);
+    pPath->AddArc(corner, 0, 90);
 
     // bottom left
-    Corner.X -= (r.Width - dia - 1);
-    pPath->AddArc(Corner, 90, 90);
+    corner.X -= (r.Width - dia - 1);
+    pPath->AddArc(corner, 90, 90);
 
     // end path
     pPath->CloseFigure();

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2012-2013, 2019-2020 - Stefan Kueng
+// Copyright (C) 2012-2013, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -31,16 +31,16 @@ class CSettingsDlg : public CDialog
 {
 public:
     CSettingsDlg(HWND hParent);
-    ~CSettingsDlg(void);
+    ~CSettingsDlg();
 
 protected:
-    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    LRESULT                 DoCommand(int id, int msg);
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+    LRESULT          DoCommand(int id, int msg);
 
 private:
     HWND                      m_hParent;
     CRegStdString             m_regEditorCmd;
-    std::deque<std::wstring>  m_langpaths;
+    std::deque<std::wstring>  m_langPaths;
     CRegStdDWORD              m_regEsc;
     int                       m_themeCallbackId;
     CDlgResizer               m_resizer;

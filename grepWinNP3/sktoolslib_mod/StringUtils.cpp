@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2017, 2019-2020 - Stefan Kueng
+// Copyright (C) 2012-2017, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -185,16 +185,16 @@ static constexpr BYTE DecLookup[] = {
 
 std::string CStringUtils::ToHexString(BYTE* pSrc, int nSrcLen)
 {
-    WORD* pwHex  = (WORD*)HexLookup;
+    WORD* pwHex  = reinterpret_cast<WORD*>(const_cast<BYTE*>(HexLookup));
     auto  dest   = std::make_unique<char[]>((nSrcLen * 2) + 1);
-    WORD* pwDest = (WORD*)dest.get();
+    WORD* pwDest = reinterpret_cast<WORD*>(dest.get());
     for (int j = 0; j < nSrcLen; j++)
     {
         *pwDest = pwHex[*pSrc];
         pwDest++;
         pSrc++;
     }
-    *((BYTE*)pwDest) = 0; // terminate the string
+    *reinterpret_cast<BYTE*>(pwDest) = 0; // terminate the string
     return std::string(dest.get());
 }
 
@@ -209,7 +209,7 @@ bool CStringUtils::FromHexString(const std::string& src, BYTE* pDest)
         int d = DecLookup[*it] << 4;
         ++it;
         d |= DecLookup[*it];
-        *pDest++ = (BYTE)d;
+        *pDest++ = static_cast<BYTE>(d);
     }
     return true;
 }
@@ -223,26 +223,26 @@ std::wstring CStringUtils::ToHexWString(BYTE* pSrc, int nSrcLen)
 std::unique_ptr<char[]> CStringUtils::Decrypt(const char* text)
 {
     DWORD dwLen = 0;
-    if (CryptStringToBinaryA(text, (DWORD)strlen(text), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
+    if (CryptStringToBinaryA(text, static_cast<DWORD>(strlen(text)), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
     auto strIn = std::make_unique<BYTE[]>(dwLen + 1);
-    if (CryptStringToBinaryA(text, (DWORD)strlen(text), CRYPT_STRING_HEX, strIn.get(), &dwLen, nullptr, nullptr) == FALSE)
+    if (CryptStringToBinaryA(text, static_cast<DWORD>(strlen(text)), CRYPT_STRING_HEX, strIn.get(), &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
-    DATA_BLOB blobin;
-    blobin.cbData     = dwLen;
-    blobin.pbData     = strIn.get();
+    DATA_BLOB blobIn;
+    blobIn.cbData     = dwLen;
+    blobIn.pbData     = strIn.get();
     LPWSTR    descr   = nullptr;
-    DATA_BLOB blobout = {0};
-    if (CryptUnprotectData(&blobin, &descr, nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobout) == FALSE)
+    DATA_BLOB blobOut = {0};
+    if (CryptUnprotectData(&blobIn, &descr, nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobOut) == FALSE)
         return nullptr;
-    SecureZeroMemory(blobin.pbData, blobin.cbData);
+    SecureZeroMemory(blobIn.pbData, blobIn.cbData);
 
-    auto result = std::make_unique<char[]>(blobout.cbData + 1);
-    strncpy_s(result.get(), blobout.cbData + 1, (const char*)blobout.pbData, blobout.cbData);
-    SecureZeroMemory(blobout.pbData, blobout.cbData);
-    LocalFree(blobout.pbData);
+    auto result = std::make_unique<char[]>(blobOut.cbData + 1);
+    strncpy_s(result.get(), blobOut.cbData + 1, reinterpret_cast<const char*>(blobOut.pbData), blobOut.cbData);
+    SecureZeroMemory(blobOut.pbData, blobOut.cbData);
+    LocalFree(blobOut.pbData);
     LocalFree(descr);
     return result;
 }
@@ -250,26 +250,26 @@ std::unique_ptr<char[]> CStringUtils::Decrypt(const char* text)
 std::unique_ptr<wchar_t[]> CStringUtils::Decrypt(const wchar_t* text)
 {
     DWORD dwLen = 0;
-    if (CryptStringToBinaryW(text, (DWORD)wcslen(text), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
+    if (CryptStringToBinaryW(text, static_cast<DWORD>(wcslen(text)), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
     auto strIn = std::make_unique<BYTE[]>(dwLen + 1);
-    if (CryptStringToBinaryW(text, (DWORD)wcslen(text), CRYPT_STRING_HEX, strIn.get(), &dwLen, nullptr, nullptr) == FALSE)
+    if (CryptStringToBinaryW(text, static_cast<DWORD>(wcslen(text)), CRYPT_STRING_HEX, strIn.get(), &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
-    DATA_BLOB blobin;
-    blobin.cbData     = dwLen;
-    blobin.pbData     = strIn.get();
+    DATA_BLOB blobIn;
+    blobIn.cbData     = dwLen;
+    blobIn.pbData     = strIn.get();
     LPWSTR    descr   = nullptr;
-    DATA_BLOB blobout = {0};
-    if (CryptUnprotectData(&blobin, &descr, nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobout) == FALSE)
+    DATA_BLOB blobOut = {0};
+    if (CryptUnprotectData(&blobIn, &descr, nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobOut) == FALSE)
         return nullptr;
-    SecureZeroMemory(blobin.pbData, blobin.cbData);
+    SecureZeroMemory(blobIn.pbData, blobIn.cbData);
 
-    auto result = std::make_unique<wchar_t[]>((blobout.cbData) / sizeof(wchar_t) + 1);
-    wcsncpy_s(result.get(), (blobout.cbData) / sizeof(wchar_t) + 1, (const wchar_t*)blobout.pbData, blobout.cbData / sizeof(wchar_t));
-    SecureZeroMemory(blobout.pbData, blobout.cbData);
-    LocalFree(blobout.pbData);
+    auto result = std::make_unique<wchar_t[]>((blobOut.cbData) / sizeof(wchar_t) + 1);
+    wcsncpy_s(result.get(), (blobOut.cbData) / sizeof(wchar_t) + 1, reinterpret_cast<const wchar_t*>(blobOut.pbData), blobOut.cbData / sizeof(wchar_t));
+    SecureZeroMemory(blobOut.pbData, blobOut.cbData);
+    LocalFree(blobOut.pbData);
     LocalFree(descr);
     return result;
 }
@@ -280,8 +280,8 @@ std::string CStringUtils::Encrypt(const char* text)
     DATA_BLOB   blobout = {0};
     std::string result;
 
-    blobin.cbData = (DWORD)strlen(text);
-    blobin.pbData = (BYTE*)(LPCSTR)text;
+    blobin.cbData = static_cast<DWORD>(strlen(text));
+    blobin.pbData = reinterpret_cast<BYTE*>(const_cast<char*>(text));
     if (CryptProtectData(&blobin, L"TSVNAuth", nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobout) == FALSE)
         return result;
     DWORD dwLen = 0;
@@ -299,21 +299,21 @@ std::string CStringUtils::Encrypt(const char* text)
 
 std::wstring CStringUtils::Encrypt(const wchar_t* text)
 {
-    DATA_BLOB    blobin  = {0};
-    DATA_BLOB    blobout = {0};
+    DATA_BLOB    blobIn  = {0};
+    DATA_BLOB    blobOut = {0};
     std::wstring result;
 
-    blobin.cbData = (DWORD)wcslen(text) * sizeof(wchar_t);
-    blobin.pbData = (BYTE*)(LPCWSTR)text;
-    if (CryptProtectData(&blobin, L"TSVNAuth", nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobout) == FALSE)
+    blobIn.cbData = static_cast<DWORD>(wcslen(text)) * sizeof(wchar_t);
+    blobIn.pbData = reinterpret_cast<BYTE*>(const_cast<wchar_t*>(text));
+    if (CryptProtectData(&blobIn, L"TSVNAuth", nullptr, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &blobOut) == FALSE)
         return result;
     DWORD dwLen = 0;
-    if (CryptBinaryToStringW(blobout.pbData, blobout.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, nullptr, &dwLen) == FALSE)
+    if (CryptBinaryToStringW(blobOut.pbData, blobOut.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, nullptr, &dwLen) == FALSE)
         return result;
     auto strOut = std::make_unique<wchar_t[]>(dwLen + 1);
-    if (CryptBinaryToStringW(blobout.pbData, blobout.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, strOut.get(), &dwLen) == FALSE)
+    if (CryptBinaryToStringW(blobOut.pbData, blobOut.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, strOut.get(), &dwLen) == FALSE)
         return result;
-    LocalFree(blobout.pbData);
+    LocalFree(blobOut.pbData);
 
     result = strOut.get();
 
@@ -386,7 +386,7 @@ bool WriteAsciiStringToClipboard(const wchar_t* sClipdata, HWND hOwningWnd)
             HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, (sLen + 1) * sizeof(wchar_t));
             if (hClipboardData)
             {
-                wchar_t* pchData = (wchar_t*)GlobalLock(hClipboardData);
+                wchar_t* pchData = static_cast<wchar_t*>(GlobalLock(hClipboardData));
                 if (pchData)
                 {
                     wcscpy_s(pchData, sLen + 1, sClipdata);
@@ -450,11 +450,11 @@ void SearchRemoveAll(std::string& str, const std::string& toremove)
     std::string::size_type pos = 0;
     for (;;)
     {
-        auto nextpos = str.find(toremove, pos);
-        if (nextpos == std::string::npos)
+        auto nextPos = str.find(toremove, pos);
+        if (nextPos == std::string::npos)
             break;
-        str.erase(nextpos, toremove.length());
-        pos = nextpos;
+        str.erase(nextPos, toremove.length());
+        pos = nextPos;
     }
 }
 
@@ -463,10 +463,10 @@ void SearchRemoveAll(std::wstring& str, const std::wstring& toremove)
     std::wstring::size_type pos = 0;
     for (;;)
     {
-        auto nextpos = str.find(toremove, pos);
-        if (nextpos == std::wstring::npos)
+        auto nextPos = str.find(toremove, pos);
+        if (nextPos == std::wstring::npos)
             break;
-        str.erase(nextpos, toremove.length());
-        pos = nextpos;
+        str.erase(nextPos, toremove.length());
+        pos = nextPos;
     }
 }

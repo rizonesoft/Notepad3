@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2012-2013, 2016, 2019-2020 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012-2013, 2016, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@ public:
     ~CBookmarksDlg(void);
 
     void         InitBookmarks();
-    std::wstring GetName() { return m_name; }
+    std::wstring GetName() const { return m_name; }
     std::wstring GetSelectedSearchString() const { return m_searchString; }
     std::wstring GetSelectedReplaceString() const { return m_replaceString; }
     std::wstring GetPath() const { return m_path; }
@@ -53,9 +53,9 @@ public:
     bool         GetSelectedFileMatchRegex() const { return m_bFileMatchRegex; }
 
 protected:
-    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
     LRESULT          DoCommand(int id, int msg);
-    void             RemoveQuotes(std::wstring& str);
+    static void      RemoveQuotes(std::wstring& str);
     void             PrepareSelected();
 
 private:

@@ -443,10 +443,10 @@
     <None Include="src\version.in" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\Resources\grepWin.rc" />
+    <Manifest Include="src\compatibility.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="src\compatibility.manifest" />
+    <ResourceCompile Include="src\Resources\grepWinNP3.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2014, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2012, 2014, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,45 +24,45 @@
 #include <Shlwapi.h>
 #include "BrowseFolder.h"
 
-BOOL         CBrowseFolder::m_bCheck  = FALSE;
-BOOL         CBrowseFolder::m_bCheck2 = FALSE;
-WNDPROC      CBrowseFolder::CBProc    = nullptr;
-HWND         CBrowseFolder::checkbox  = nullptr;
-HWND         CBrowseFolder::checkbox2 = nullptr;
-HWND         CBrowseFolder::ListView  = nullptr;
-wchar_t      CBrowseFolder::m_CheckText[200];
-wchar_t      CBrowseFolder::m_CheckText2[200];
+BOOL         CBrowseFolder::m_bCheck    = FALSE;
+BOOL         CBrowseFolder::m_bCheck2   = FALSE;
+WNDPROC      CBrowseFolder::m_cbProc    = nullptr;
+HWND         CBrowseFolder::m_checkBox  = nullptr;
+HWND         CBrowseFolder::m_checkBox2 = nullptr;
+HWND         CBrowseFolder::m_listView  = nullptr;
+wchar_t      CBrowseFolder::m_checkText[200];
+wchar_t      CBrowseFolder::m_checkText2[200];
 std::wstring CBrowseFolder::m_sDefaultPath;
-bool         CBrowseFolder::m_DisableCheckbox2WhenCheckbox1IsChecked = false;
+bool         CBrowseFolder::m_disableCheckbox2WhenCheckbox1IsChecked = false;
 
-CBrowseFolder::CBrowseFolder(void)
+CBrowseFolder::CBrowseFolder()
     : m_style(0)
     , m_root(nullptr)
 {
     SecureZeroMemory(m_displayName, sizeof(m_displayName));
     SecureZeroMemory(m_title, sizeof(m_title));
-    SecureZeroMemory(m_CheckText, sizeof(m_CheckText));
+    SecureZeroMemory(m_checkText, sizeof(m_checkText));
 }
 
-CBrowseFolder::~CBrowseFolder(void)
+CBrowseFolder::~CBrowseFolder()
 {
 }
 
 //show the dialog
-CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, LPWSTR path, size_t pathlen, LPCWSTR szDefaultPath /* = nullptr */)
+CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, LPWSTR path, size_t pathLen, LPCWSTR szDefaultPath /* = nullptr */)
 {
     std::wstring temp;
     temp = path;
     std::wstring sDefault;
     if (szDefaultPath && PathFileExists(szDefaultPath))
         sDefault = szDefaultPath;
-    CBrowseFolder::retVal ret = Show(parent, temp, sDefault);
-    wcscpy_s(path, pathlen, temp.c_str());
+    CBrowseFolder::RetVal ret = Show(parent, temp, sDefault);
+    wcscpy_s(path, pathLen, temp.c_str());
     return ret;
 }
-CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const std::wstring& sDefaultPath /* = std::wstring() */)
+CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, std::wstring& path, const std::wstring& sDefaultPath /* = std::wstring() */)
 {
-    retVal ret     = OK; //assume OK
+    RetVal ret     = RetVal::Ok; //assume OK
     m_sDefaultPath = sDefaultPath;
     if (m_sDefaultPath.empty() && !path.empty())
     {
@@ -70,11 +70,9 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
         m_sDefaultPath = path;
     }
 
-    HRESULT hr;
-
     // Create a new common open file dialog
     IFileOpenDialog* pfd = nullptr;
-    hr                   = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+    HRESULT          hr  = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
     if (SUCCEEDED(hr))
     {
         // Set the dialog as a folder picker
@@ -101,11 +99,11 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
             HMODULE hLib = LoadLibrary(L"shell32.dll");
             if (hLib)
             {
-                SHCIFPN pSHCIFPN = (SHCIFPN)GetProcAddress(hLib, "SHCreateItemFromParsingName");
-                if (pSHCIFPN)
+                SHCIFPN pShcifpn = reinterpret_cast<SHCIFPN>(GetProcAddress(hLib, "SHCreateItemFromParsingName"));
+                if (pShcifpn)
                 {
-                    IShellItem* psiDefault = 0;
-                    hr                     = pSHCIFPN(m_sDefaultPath.c_str(), nullptr, IID_PPV_ARGS(&psiDefault));
+                    IShellItem* psiDefault = nullptr;
+                    hr                     = pShcifpn(m_sDefaultPath.c_str(), nullptr, IID_PPV_ARGS(&psiDefault));
                     if (SUCCEEDED(hr))
                     {
                         hr = pfd->SetFolder(psiDefault);
@@ -116,17 +114,17 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
             }
         }
 
-        if (wcslen(m_CheckText))
+        if (wcslen(m_checkText))
         {
-            IFileDialogCustomize* pfdCustomize = 0;
+            IFileDialogCustomize* pfdCustomize = nullptr;
             hr                                 = pfd->QueryInterface(IID_PPV_ARGS(&pfdCustomize));
             if (SUCCEEDED(hr))
             {
                 pfdCustomize->StartVisualGroup(100, L"");
-                pfdCustomize->AddCheckButton(101, m_CheckText, FALSE);
-                if (wcslen(m_CheckText2))
+                pfdCustomize->AddCheckButton(101, m_checkText, FALSE);
+                if (wcslen(m_checkText2))
                 {
-                    pfdCustomize->AddCheckButton(102, m_CheckText2, FALSE);
+                    pfdCustomize->AddCheckButton(102, m_checkText2, FALSE);
                 }
                 pfdCustomize->EndVisualGroup();
                 pfdCustomize->Release();
@@ -160,17 +158,15 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
                 }
             }
             else
-                ret = CANCEL;
+                ret = RetVal::Cancel;
         }
         else
-            ret = CANCEL;
+            ret = RetVal::Cancel;
 
         pfd->Release();
     }
     else
     {
-        LPITEMIDLIST itemIDList;
-
         BROWSEINFO browseInfo;
 
         browseInfo.hwndOwner      = parent;
@@ -179,24 +175,24 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
         browseInfo.lpszTitle      = m_title;
         browseInfo.ulFlags        = m_style;
         browseInfo.lpfn           = nullptr;
-        browseInfo.lParam         = (LPARAM)this;
+        browseInfo.lParam         = reinterpret_cast<LPARAM>(this);
 
-        if ((m_CheckText[0] != '\0') || (m_sDefaultPath.size()))
+        if ((m_checkText[0] != '\0') || (m_sDefaultPath.size()))
         {
             browseInfo.lpfn = BrowseCallBackProc;
         }
 
-        itemIDList = SHBrowseForFolder(&browseInfo);
+        LPITEMIDLIST itemIDList = SHBrowseForFolder(&browseInfo);
 
         //is the dialog canceled?
         if (!itemIDList)
-            ret = CANCEL;
+            ret = RetVal::Cancel;
 
-        if (ret != CANCEL)
+        if (ret != RetVal::Cancel)
         {
             WCHAR p[MAX_PATH] = {0};
             if (!SHGetPathFromIDList(itemIDList, p)) // MAX_PATH ok. Explorer can't handle paths longer than MAX_PATH.
-                ret = NOPATH;
+                ret = RetVal::Nopath;
 
             path = p;
 
@@ -223,157 +219,156 @@ void CBrowseFolder::SetInfo(LPCWSTR title)
         wcscpy_s(m_title, title);
 }
 
-void CBrowseFolder::SetCheckBoxText(LPCWSTR checktext)
+void CBrowseFolder::SetCheckBoxText(LPCWSTR checkText) const
 {
-    if (checktext)
-        wcscpy_s(m_CheckText, checktext);
+    if (checkText)
+        wcscpy_s(m_checkText, checkText);
 }
 
-void CBrowseFolder::SetCheckBoxText2(LPCWSTR checktext)
+void CBrowseFolder::SetCheckBoxText2(LPCWSTR checkText) const
 {
-    if (checktext)
-        wcscpy_s(m_CheckText2, checktext);
+    if (checkText)
+        wcscpy_s(m_checkText2, checkText);
 }
 
-void CBrowseFolder::SetFont(HWND hwnd, LPCWSTR FontName, int FontSize)
+void CBrowseFolder::SetFont(HWND hwnd, LPCWSTR fontName, int fontSize)
 {
-    HFONT   hf;
     LOGFONT lf  = {0};
     HDC     hdc = GetDC(hwnd);
 
     GetObject(GetWindowFont(hwnd), sizeof(lf), &lf);
     lf.lfWeight = FW_REGULAR;
-    lf.lfHeight = (LONG)FontSize;
-    lstrcpyn(lf.lfFaceName, FontName, _countof(lf.lfFaceName));
-    hf = CreateFontIndirect(&lf);
+    lf.lfHeight = static_cast<LONG>(fontSize);
+    lstrcpyn(lf.lfFaceName, fontName, _countof(lf.lfFaceName));
+    HFONT hf = CreateFontIndirect(&lf);
     SetBkMode(hdc, OPAQUE);
-    SendMessage(hwnd, WM_SETFONT, (WPARAM)hf, TRUE);
+    SendMessage(hwnd, WM_SETFONT, reinterpret_cast<WPARAM>(hf), TRUE);
     ReleaseDC(hwnd, hdc);
 }
 
 int CBrowseFolder::BrowseCallBackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM /*lpData*/)
 {
-    RECT ListViewRect, Dialog;
+    RECT listViewRect, dialog;
     //Initialization callback message
     if (uMsg == BFFM_INITIALIZED)
     {
-        if (m_CheckText[0] != '\0')
+        if (m_checkText[0] != '\0')
         {
-            bool bSecondCheckbox = (m_CheckText2[0] != '\0');
+            bool bSecondCheckbox = (m_checkText2[0] != '\0');
             //Rectangles for getting the positions
-            checkbox = CreateWindowEx(0,
-                                      WC_BUTTON,
-                                      m_CheckText,
-                                      WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | BS_AUTOCHECKBOX,
-                                      0, 100, 100, 50,
-                                      hwnd,
-                                      0,
-                                      nullptr,
-                                      nullptr);
-            if (checkbox == nullptr)
+            m_checkBox = CreateWindowEx(0,
+                                        WC_BUTTON,
+                                        m_checkText,
+                                        WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | BS_AUTOCHECKBOX,
+                                        0, 100, 100, 50,
+                                        hwnd,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr);
+            if (m_checkBox == nullptr)
                 return 0;
 
             if (bSecondCheckbox)
             {
                 //Rectangles for getting the positions
-                checkbox2 = CreateWindowEx(0,
-                                           WC_BUTTON,
-                                           m_CheckText2,
-                                           WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | BS_AUTOCHECKBOX,
-                                           0, 100, 100, 50,
-                                           hwnd,
-                                           0,
-                                           nullptr,
-                                           nullptr);
-                if (checkbox2 == nullptr)
+                m_checkBox2 = CreateWindowEx(0,
+                                             WC_BUTTON,
+                                             m_checkText2,
+                                             WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | BS_AUTOCHECKBOX,
+                                             0, 100, 100, 50,
+                                             hwnd,
+                                             nullptr,
+                                             nullptr,
+                                             nullptr);
+                if (m_checkBox2 == nullptr)
                     return 0;
             }
 
-            ListView = FindWindowEx(hwnd, nullptr, WC_TREEVIEW, nullptr);
-            if (ListView == nullptr)
-                ListView = FindWindowEx(hwnd, nullptr, L"SHBrowseForFolder ShellNameSpace Control", nullptr);
+            m_listView = FindWindowEx(hwnd, nullptr, WC_TREEVIEW, nullptr);
+            if (m_listView == nullptr)
+                m_listView = FindWindowEx(hwnd, nullptr, L"SHBrowseForFolder ShellNameSpace Control", nullptr);
 
-            if (ListView == nullptr)
+            if (m_listView == nullptr)
                 return 0;
 
             //Gets the dimensions of the windows
             const int controlHeight = ::GetSystemMetrics(SM_CYMENUCHECK) + 4;
-            GetWindowRect(hwnd, &Dialog);
-            GetWindowRect(ListView, &ListViewRect);
+            GetWindowRect(hwnd, &dialog);
+            GetWindowRect(m_listView, &listViewRect);
             POINT pt;
-            pt.x = ListViewRect.left;
-            pt.y = ListViewRect.top;
+            pt.x = listViewRect.left;
+            pt.y = listViewRect.top;
             ScreenToClient(hwnd, &pt);
-            ListViewRect.top  = pt.y;
-            ListViewRect.left = pt.x;
-            pt.x              = ListViewRect.right;
-            pt.y              = ListViewRect.bottom;
+            listViewRect.top  = pt.y;
+            listViewRect.left = pt.x;
+            pt.x              = listViewRect.right;
+            pt.y              = listViewRect.bottom;
             ScreenToClient(hwnd, &pt);
-            ListViewRect.bottom = pt.y;
-            ListViewRect.right  = pt.x;
+            listViewRect.bottom = pt.y;
+            listViewRect.right  = pt.x;
             //Sets the list view controls dimensions
-            SetWindowPos(ListView, 0, ListViewRect.left,
-                         bSecondCheckbox ? ListViewRect.top + (2 * controlHeight) : ListViewRect.top + controlHeight,
-                         (ListViewRect.right - ListViewRect.left),
-                         bSecondCheckbox ? (ListViewRect.bottom - ListViewRect.top) - (2 * controlHeight) : (ListViewRect.bottom - ListViewRect.top) - controlHeight,
+            SetWindowPos(m_listView, nullptr, listViewRect.left,
+                         bSecondCheckbox ? listViewRect.top + (2 * controlHeight) : listViewRect.top + controlHeight,
+                         (listViewRect.right - listViewRect.left),
+                         bSecondCheckbox ? (listViewRect.bottom - listViewRect.top) - (2 * controlHeight) : (listViewRect.bottom - listViewRect.top) - controlHeight,
                          SWP_NOZORDER);
             //Sets the window positions of checkbox and dialog controls
-            SetWindowPos(checkbox, HWND_BOTTOM, ListViewRect.left,
-                         ListViewRect.top,
-                         (ListViewRect.right - ListViewRect.left),
+            SetWindowPos(m_checkBox, HWND_BOTTOM, listViewRect.left,
+                         listViewRect.top,
+                         (listViewRect.right - listViewRect.left),
                          controlHeight,
                          SWP_NOZORDER);
             if (bSecondCheckbox)
             {
-                SetWindowPos(checkbox2, HWND_BOTTOM, ListViewRect.left,
-                             ListViewRect.top + controlHeight,
-                             (ListViewRect.right - ListViewRect.left),
+                SetWindowPos(m_checkBox2, HWND_BOTTOM, listViewRect.left,
+                             listViewRect.top + controlHeight,
+                             (listViewRect.right - listViewRect.left),
                              controlHeight,
                              SWP_NOZORDER);
             }
             HWND label = FindWindowEx(hwnd, nullptr, WC_STATIC, nullptr);
             if (label)
             {
-                HFONT   hFont = (HFONT)::SendMessage(label, WM_GETFONT, 0, 0);
+                HFONT   hFont = reinterpret_cast<HFONT>(::SendMessage(label, WM_GETFONT, 0, 0));
                 LOGFONT lf    = {0};
                 GetObject(hFont, sizeof(lf), &lf);
                 HFONT hf2 = CreateFontIndirect(&lf);
-                ::SendMessage(checkbox, WM_SETFONT, (WPARAM)hf2, TRUE);
+                ::SendMessage(m_checkBox, WM_SETFONT, reinterpret_cast<WPARAM>(hf2), TRUE);
                 if (bSecondCheckbox)
-                    ::SendMessage(checkbox2, WM_SETFONT, (WPARAM)hf2, TRUE);
+                    ::SendMessage(m_checkBox2, WM_SETFONT, reinterpret_cast<WPARAM>(hf2), TRUE);
             }
             else
             {
                 //Sets the fonts of static controls
-                SetFont(checkbox, L"MS Sans Serif", 12);
+                SetFont(m_checkBox, L"MS Sans Serif", 12);
                 if (bSecondCheckbox)
-                    SetFont(checkbox2, L"MS Sans Serif", 12);
+                    SetFont(m_checkBox2, L"MS Sans Serif", 12);
             }
 
             // Subclass the checkbox control.
-            CBProc = (WNDPROC)SetWindowLongPtr(checkbox, GWLP_WNDPROC, (LONG_PTR)CheckBoxSubclassProc);
+            m_cbProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(m_checkBox, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(CheckBoxSubclassProc)));
             //Sets the checkbox to checked position
-            SendMessage(checkbox, BM_SETCHECK, (WPARAM)m_bCheck, 0);
+            SendMessage(m_checkBox, BM_SETCHECK, static_cast<WPARAM>(m_bCheck), 0);
             if (bSecondCheckbox)
             {
-                CBProc = (WNDPROC)SetWindowLongPtr(checkbox2, GWLP_WNDPROC, (LONG_PTR)CheckBoxSubclassProc2);
-                SendMessage(checkbox2, BM_SETCHECK, (WPARAM)m_bCheck, 0);
+                m_cbProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(m_checkBox2, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(CheckBoxSubclassProc2)));
+                SendMessage(m_checkBox2, BM_SETCHECK, static_cast<WPARAM>(m_bCheck), 0);
             }
             // send a resize message to the resized list view control. Otherwise it won't show
             // up properly until the user resizes the window!
-            SendMessage(ListView, WM_SIZE, SIZE_RESTORED, MAKELONG(ListViewRect.right - ListViewRect.left, bSecondCheckbox ? (ListViewRect.bottom - ListViewRect.top) - 40 : (ListViewRect.bottom - ListViewRect.top) - 20));
+            SendMessage(m_listView, WM_SIZE, SIZE_RESTORED, MAKELONG(listViewRect.right - listViewRect.left, bSecondCheckbox ? (listViewRect.bottom - listViewRect.top) - 40 : (listViewRect.bottom - listViewRect.top) - 20));
         }
 
         // now set the default directory
-        SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)(LPCWSTR)m_sDefaultPath.c_str());
+        SendMessage(hwnd, BFFM_SETSELECTION, TRUE, reinterpret_cast<LPARAM>(static_cast<LPCWSTR>(m_sDefaultPath.c_str())));
     }
     if (uMsg == BFFM_SELCHANGED)
     {
         // Set the status window to the currently selected path.
         wchar_t szDir[MAX_PATH];
-        if (SHGetPathFromIDList((LPITEMIDLIST)lParam, szDir))
+        if (SHGetPathFromIDList(reinterpret_cast<LPITEMIDLIST>(lParam), szDir))
         {
-            SendMessage(hwnd, BFFM_SETSTATUSTEXT, 0, (LPARAM)szDir);
+            SendMessage(hwnd, BFFM_SETSTATUSTEXT, 0, reinterpret_cast<LPARAM>(szDir));
         }
     }
 
@@ -385,15 +380,15 @@ LRESULT CBrowseFolder::CheckBoxSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
     if (uMsg == WM_LBUTTONUP)
     {
         m_bCheck = (SendMessage(hwnd, BM_GETCHECK, 0, 0) == BST_UNCHECKED);
-        if (m_bCheck && m_DisableCheckbox2WhenCheckbox1IsChecked)
+        if (m_bCheck && m_disableCheckbox2WhenCheckbox1IsChecked)
         {
-            ::EnableWindow(checkbox2, !m_bCheck);
+            ::EnableWindow(m_checkBox2, !m_bCheck);
         }
         else
-            ::EnableWindow(checkbox2, true);
+            ::EnableWindow(m_checkBox2, true);
     }
 
-    return CallWindowProc(CBProc, hwnd, uMsg,
+    return CallWindowProc(m_cbProc, hwnd, uMsg,
                           wParam, lParam);
 }
 
@@ -404,6 +399,6 @@ LRESULT CBrowseFolder::CheckBoxSubclassProc2(HWND hwnd, UINT uMsg, WPARAM wParam
         m_bCheck2 = (SendMessage(hwnd, BM_GETCHECK, 0, 0) == BST_UNCHECKED);
     }
 
-    return CallWindowProc(CBProc, hwnd, uMsg,
+    return CallWindowProc(m_cbProc, hwnd, uMsg,
                           wParam, lParam);
 }
