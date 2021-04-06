@@ -992,7 +992,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     HACCEL const hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
     HACCEL const hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
 
-    SetTimer(hwnd, IDT_TIMER_MRKALL, _MQ_TIMER_CYCLE, (TIMERPROC)MQ_ExecuteNext);
+    SetTimer(hwnd, IDT_TIMER_MRKALL, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
         if (Globals.bPrefLngNotAvail) {
@@ -4079,7 +4079,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _UpdateToolbarDelayed();
         break;
 
-    case IDT_TIMER_MAIN_MRKALL:
+    case IDT_TIMER_CALLBACK_MRKALL:
         EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
         break;
 
@@ -8461,7 +8461,7 @@ static void  _DelaySplitUndoTransaction(const int delay)
 //
 void MarkAllOccurrences(const int delay, const bool bForceClear)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CALLBACK_MRKALL, 0);
     if (!mqc.hwnd) {
         mqc.hwnd = Globals.hwndMain;
     }

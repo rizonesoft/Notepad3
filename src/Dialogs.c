@@ -4124,7 +4124,7 @@ bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo)
 void WinInfoToScreen(WININFO* pWinInfo)
 {
     if (pWinInfo) {
-        MONITORINFO mi;
+        MONITORINFO mi = { sizeof(MONITORINFO) };
         RECT rc = RectFromWinInfo(pWinInfo);
         if (GetMonitorInfoFromRect(&rc, &mi)) {
             WININFO winfo = *pWinInfo;
@@ -4142,15 +4142,14 @@ void WinInfoToScreen(WININFO* pWinInfo)
 //
 WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 {
-    WINDOWPLACEMENT wndpl = { 0 };
-    wndpl.length = sizeof(WINDOWPLACEMENT);
+    WINDOWPLACEMENT wndpl = { sizeof(WINDOWPLACEMENT) };
     GetWindowPlacement(hwnd, &wndpl);
 
     // corrections in case of aero snapped position
-    if (SW_NORMAL == wndpl.showCmd) {
+    if (SW_SHOWNORMAL == wndpl.showCmd) {
         RECT rc;
         GetWindowRect(hwnd, &rc);
-        MONITORINFO mi;
+        MONITORINFO mi = { sizeof(MONITORINFO) };
         GetMonitorInfoFromRect(&rc, &mi);
         LONG const width = rc.right - rc.left;
         LONG const height = rc.bottom - rc.top;
@@ -4170,11 +4169,40 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
     wi.zoom = SciCall_GetZoom();
 
     // set monitor info too
-    GetMonitorInfoFromRect(&(wndpl.rcNormalPosition), hMonitorInfo);
+    if (hMonitorInfo) {
+        GetMonitorInfoFromRect(&(wndpl.rcNormalPosition), hMonitorInfo);
+    }
 
     return wi;
 }
 
+
+
+//=============================================================================
+//
+//  GetWindowRectMonitor()
+//
+RECT GetWindowRectMonitor(HWND hwnd) {
+
+    WINDOWPLACEMENT wndpl = { sizeof(WINDOWPLACEMENT) };
+    GetWindowPlacement(hwnd, &wndpl);
+
+    RECT rc = { 0 };
+    GetWindowRect(hwnd, &rc);
+
+    switch (wndpl.showCmd) {
+    case SW_HIDE:
+    case SW_SHOWMINIMIZED:
+    case SW_SHOWMAXIMIZED: {
+        MONITORINFO mi = { sizeof(MONITORINFO) };
+        GetMonitorInfoFromRect(&rc, &mi);
+        return mi.rcWork;
+    }
+    default:
+        break;
+    }
+    return rc;
+}
 
 
 //=============================================================================
@@ -4837,18 +4865,17 @@ LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 //
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent)
 {
-    HMONITOR const hMonitor = MonitorFromRect(rcParent, MONITOR_DEFAULTTONEAREST);
-    MONITORINFO mi = { 0 };
-    mi.cbSize = sizeof(MONITORINFO);
-    GetMonitorInfo(hMonitor, &mi);
 
+    HMONITOR const hMonitor = MonitorFromRect(rcParent, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi = { sizeof(MONITORINFO) };
+    GetMonitorInfo(hMonitor, &mi);
     int const xMin = mi.rcWork.left;
     int const xMax = (mi.rcWork.right) - (rcDlg->right - rcDlg->left);
     int const yMin = mi.rcWork.top;
     int const yMax = (mi.rcWork.bottom) - (rcDlg->bottom - rcDlg->top);
 
-    int const x = rcParent->left + max_i(20, ((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left)) / 2);
-    int const y = rcParent->top + max_i(20, ((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top)) / 2);
+    int const x = rcParent->left + (((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left)) >> 1);
+    int const y = rcParent->top + (((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top)) >> 1);
 
     POINT ptRet = { 0, 0 };
     ptRet.x = clampi(x, xMin, xMax);
@@ -4874,23 +4901,16 @@ HWND GetParentOrDesktop(HWND hDlg)
 //
 void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
 {
-    if (!hDlg) {
-        return;
-    }
+    if (!hDlg) { return; }
 
-    HWND const hParentWnd = hDlgParent ? hDlgParent : GetParentOrDesktop(hDlg);
-
-    RECT rcDlg = {0};
+    RECT rcDlg = { 0 };
     GetWindowRect(hDlg, &rcDlg);
 
-    WININFO const winInfo = GetMyWindowPlacement(hParentWnd, NULL);
-    RECT rcParent = {0};
-    rcParent.left   = winInfo.x;
-    rcParent.top    = winInfo.y;
-    rcParent.right  = winInfo.x + winInfo.cx;
-    rcParent.bottom = winInfo.y + winInfo.cy;
+    HWND const hParentWnd = hDlgParent ? hDlgParent : GetParentOrDesktop(hDlg);
+    RECT rcParent = GetWindowRectMonitor(hParentWnd);
 
     POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
+
     SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
     SetForegroundWindow(hDlg);
 }

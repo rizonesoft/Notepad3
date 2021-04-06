@@ -78,7 +78,7 @@
 #define IDC_WEBPAGE3                    194
 
 #define IDT_TIMER_MRKALL                215
-#define IDT_TIMER_MAIN_MRKALL           218
+#define IDT_TIMER_CALLBACK_MRKALL       218
 #define IDC_CHECK_OCC                   228
 #define IDR_ACCCUSTOMSCHEMES            231
 #define IDC_DOC_MODIFIED                235
