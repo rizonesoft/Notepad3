@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.402.(build_#) (2021-04-02)
+Current BETA/RC Version 5.21.406.(build_#) (2021-04-06)
 ========================================================
 
 --------------------------------------------------------
@@ -58,6 +58,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.406.1]- C/C++ Lexer: styles and keywords (LEX).
 [.331.1]- Cleanup code: SplitUndoTransaction() on timeout resp. line-break.
 [.329.1]- Turning "Line Comment Block Edit" from option into command (Ctrl+Alt+Q).
 [.326.1]- Kotlin & Dart Lexer from Zufuliu's source.
@@ -73,14 +74,17 @@ CHANGES:
 [.301.1]- Enable Dark Mode feature for Win10 v21H1 insider beta.
 [.301.1]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
 [.301.1]- Update grepWinNP3 (GRE) version 2.1.6.35 (2021-03.01).
-[.311.1]- Update Lexilla Library (LEX) version 5.0.0 (2021-03-11).
 [.402.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 RC1 (2021-03-31).
+[.406.1]- Update Lexilla Library (LEX) version 5.0.1 (2021-04-05).
 [.311.1]- Update Scintilla Library (SCI) version 5.0.0 (2021-03-11).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.406.1]- Mark all Occurrences in case of reopened F/R dialog.
+[.406.1]- Center dialog in parent.
+[.406.1]- "grepWinNP3": fix missing search flags (GRE).
 [.326.1]- TinyExpr regresion inserting newline after equal sign.
 [.325.3]- Possible busy-loop in Kotlin and Dard Lexer.
 [.325.2]- Don't keep window top-most after returning from full-screen mode (F11 toggle).
