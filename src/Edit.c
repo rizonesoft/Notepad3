@@ -216,13 +216,13 @@ static void _MQ_DropAll() {
 
 // ----------------------------------------------------------------------------
 //
-// called by Timer(IDT_TIMER_MRKALL)
+// called by MarkAll Timer
 //
 static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
     UNREFERENCED_PARAMETER(hwnd);    // must be main wnd
     UNREFERENCED_PARAMETER(uMsg);    // must be WM_TIMER
-    UNREFERENCED_PARAMETER(idEvent); // must be IDT_TIMER_MRKALL
+    UNREFERENCED_PARAMETER(idEvent); // must be pTimerIdentifier
     UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
 
     CmdMessageQueue_t *pmqc;
@@ -231,7 +231,9 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
             --(pmqc->delay);
         }
         if (pmqc->delay == 0) {
-            PostMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+            if (IsWindow(pmqc->hwnd)) {
+                PostMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+            }
         }
     }
 }
@@ -5692,12 +5694,12 @@ static RegExResult_t _FindHasMatch(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iS
 //  _DelayMarkAll()
 //
 //
-static void  _DelayMarkAll(HWND hwnd, int delay)
+static void  _DelayMarkAll(int delay)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0LL);
-    if (!mqc.hwnd) {
-        mqc.hwnd = hwnd;
-        mqc.lparam = 0LL; // start position always 0
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CALLBACK_MRKALL, 0LL);
+    if (mqc.hwnd != Globals.hwndDlgFindReplace) {
+        mqc.hwnd = Globals.hwndDlgFindReplace;
+        //mqc.lparam = 0LL; // start position always 0
     }
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
@@ -5764,6 +5766,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static LPEDITFINDREPLACE s_pEfrDataDlg = NULL;
     static bool s_bIsReplaceDlg = false;
 
+    static UINT_PTR pTimerIdentifier = 0;
+
     static WCHAR s_tchBuf[FNDRPL_BUFFER] = { L'\0' }; // tmp working buffer
 
     static DocPos s_InitialSearchStart = 0;
@@ -5819,7 +5823,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
 #endif
 
-        SetTimer(hwnd, IDT_TIMER_MRKALL, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
+        pTimerIdentifier = SetTimer(NULL, 0, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
 
         SET_INITIAL_ANCHORS()
         s_InitialTopLine = SciCall_GetFirstVisibleLine();
@@ -5968,7 +5972,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, s_pEfrDataDlg->bMarkOccurences);
 
-        _DelayMarkAll(hwnd, _MQ_STD);
+        _DelayMarkAll(_MQ_STD);
 
         PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
     }
@@ -5981,7 +5985,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
     case WM_DESTROY: {
 
-        KillTimer(hwnd, IDT_TIMER_MRKALL);
+        KillTimer(NULL, pTimerIdentifier);
+        pTimerIdentifier = 0;
 
         _SetSearchFlags(hwnd, s_pEfrDataDlg); // sync
         CopyMemory(&(Settings.EFR_Data), s_pEfrDataDlg, sizeof(EDITFINDREPLACE));  // remember options
@@ -6162,7 +6167,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
             DialogEnableControl(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
 
             if (!SciCall_IsSelectionEmpty()) {
                 EditEnsureSelectionVisible();
@@ -6188,7 +6193,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             s_InitialSearchStart = SciCall_GetSelectionStart();
             s_InitialTopLine = -1;  // reset
             s_pEfrDataDlg->bStateChanged = true;
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
             break;
 
 
@@ -6292,11 +6297,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
             }
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
         }
         break;
 
-        case IDT_TIMER_MAIN_MRKALL: {
+        case IDT_TIMER_CALLBACK_MRKALL: {
             //DocPos const startPos = (DocPos)lParam;
             s_anyMatch = _FindHasMatch(s_pEfrDataDlg->hwnd, s_pEfrDataDlg, 0, false);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE); // coloring
@@ -6325,7 +6330,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES)) {
                 DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, true);
-                _DelayMarkAll(hwnd, _MQ_STD);
+                _DelayMarkAll(_MQ_STD);
             } else { // switched OFF
                 DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, false);
                 if (FocusedView.HideNonMatchedLines) {
@@ -6345,7 +6350,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     s_pEfrDataDlg->bStateChanged = true;
                     s_InitialTopLine = -1;  // reset
                     EditClearAllOccurrenceMarkers(s_pEfrDataDlg->hwnd);
-                    _DelayMarkAll(hwnd, _MQ_STD);
+                    _DelayMarkAll(_MQ_STD);
                 }
             }
             break;
@@ -6364,12 +6369,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_pEfrDataDlg->bTransformBS));
             }
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
             break;
 
         case IDC_DOT_MATCH_ALL:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
             break;
 
         case IDC_WILDCARDSEARCH: {
@@ -6385,34 +6390,34 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_pEfrDataDlg->bTransformBS));
             }
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
         }
         break;
 
         case IDC_FIND_OVERLAPPING:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
             break;
 
         case IDC_FINDTRANSFORMBS: {
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
         }
         break;
 
         case IDC_FINDCASE:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
             break;
 
         case IDC_FINDWORD:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
             break;
 
         case IDC_FINDSTART:
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
             break;
 
         case IDC_TRANSPARENT:
@@ -6531,7 +6536,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 DestroyWindow(hwnd);
             }
         }
-        _DelayMarkAll(hwnd, _MQ_STD);
+        _DelayMarkAll(_MQ_STD);
         break;
 
 
@@ -6561,7 +6566,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
             Globals.FindReplaceMatchFoundState = FND_NOP;
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(hwnd, _MQ_STD);
+            _DelayMarkAll(_MQ_STD);
         }
         break;
 
