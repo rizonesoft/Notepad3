@@ -4,14 +4,24 @@
 
 KEYWORDLIST KeyWords_CS =
 {
-    "abstract add alias as ascending async await base bool break by byte case catch char checked class const "
-    "continue decimal default delegate descending do double dynamic else enum equals event explicit extern "
-    "false finally fixed float for foreach from get global goto group if implicit in int interface internal "
-    "into is join let lock long namespace new null object on operator orderby out override params partial "
-    "private protected public readonly ref remove return sbyte sealed select set short sizeof stackalloc "
-    "static string struct switch this throw true try typeof uint ulong unchecked unsafe ushort using value var "
-    "virtual void volatile where while yield",
-    "", "",
+    // Primary keywords
+    "abstract as base bool break byte case catch char checked class const continue "
+    "decimal default delegate do double else enum event explicit extern "
+    "false finally fixed float for foreach goto if implicit in int interface internal is "
+    "lock long namespace new null object operator out override params private protected public "
+    "readonly record ref return sbyte sealed short sizeof stackalloc static string struct switch "
+    "this throw true try typeof uint ulong unchecked unsafe ushort using virtual void volatile while",
+    // Secondary keywords
+    "add alias ascending async await by descending dynamic equals from get global group init into join let nameof "
+    "nint notnull nuint on orderby partial remove select set unmanaged value var when where with yield", 
+    // Documentation comment keywords
+    "addindex addtogroup anchor arg attention author b brief bug c class code copyright date def defgroup deprecated dontinclude "
+    "e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception f$ f[f] file"
+    "hideinitializer htmlinclude htmlonly if image include ingroup internal invariant interface latexonly li line link "
+    "mainpage name namespace nosubgrouping note overload p page par param param[in] param[out] post pre "
+    "ref relates remarks return retval sa section see showinitializer since skip skipline struct subsection "
+    "test throw throws todo typedef union until var verbatim verbinclude version warning weakgroup",
+    // Global classes and typedefs
     "CriticalHandleMinusOneIsInvalid CriticalHandleZeroOrMinusOneIsInvalid SafeFileHandle SafeHandleMinusOneIsInvalid SafeHandleZeroOrMinusOneIsInvalid "
     "SafeMemoryMappedFileHandle SafeMemoryMappedViewHandle SafePipeHandle SafeProcessHandle SafeWaitHandle SafeX509ChainHandle "
     "AccessViolationException Action Activator AggregateException AppContext AppDomain AppDomainUnloadedException ApplicationException "
@@ -399,7 +409,13 @@ KEYWORDLIST KeyWords_CS =
     "XmlCaseOrder XmlDataType XmlSortOrder XPathDocument XPathException XPathExpression XPathItem XPathNamespaceScope XPathNavigator "
     "XPathNodeIterator XPathNodeType XPathResultType IXsltContextFunction IXsltContextVariable XslCompiledTransform XsltArgumentList "
     "XsltCompileException XsltContext XsltException XsltMessageEncounteredEventArgs XsltMessageEncounteredEventHandler XslTransform",
-    "", "", "", "", ""
+    // Preprocessor definitions
+    "DEBUG TRACE nullable NETFRAMEWORK NET48 NET472 NET471 NET47 NET462 NET461 NET46 NET452 NET451 NET45 NET40 NET35 NET20 "
+    "NETSTANDARD NETSTANDARD2_1 NETSTANDARD2_0 NETSTANDARD1_6 NETSTANDARD1_5 NETSTANDARD1_4 NETSTANDARD1_3 NETSTANDARD1_2 NETSTANDARD1_1 NETSTANDARD1_0 "
+    "NET NET5_0 NETCOREAPP NETCOREAPP3_1 NETCOREAPP3_0 NETCOREAPP2_2 NETCOREAPP2_1 NETCOREAPP2_0 NETCOREAPP1_1 NETCOREAPP1_0",
+    // Task marker and error marker keywords
+    "BUG FIXME HACK NOTE TBD TODO UNDONE XXX @@@",
+    NULL,
 };
 
 
@@ -409,18 +425,24 @@ EDITLEXER lexCS =
     &KeyWords_CS, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
         //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"C Default", L"", L"" },
-        { {SCE_C_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-        { {SCE_C_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#804000", L"" },
         { {SCE_C_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-        { {MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-        { {SCE_C_VERBATIM}, IDS_LEX_STR_63134, L"Verbatim String", L"fore:#008000", L"" },
+        { {MULTI_STYLE(SCE_C_COMMENT,SCE_C_COMMENTLINE,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+        { {SCE_C_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#804000", L"" },
+        { {SCE_C_WORD2}, IDS_LEX_STR_63260, L"Keyword 2nd", L"bold; italic; fore:#804000", L"" },
+        { {SCE_C_GLOBALCLASS}, IDS_LEX_STR_63304, L"Global Class", L"fore:#2B91AF", L"" },
+        { {SCE_C_STRING}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+        //{ {SCE_C_REGEX}, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
         { {SCE_C_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
         { {SCE_C_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
-        { {SCE_C_PREPROCESSOR}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
+        { {MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0)}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
+        { {MULTI_STYLE(SCE_C_VERBATIM,SCE_C_TRIPLEVERBATIM,0,0)}, IDS_LEX_STR_63134, L"Verbatim String", L"fore:#008000", L"" },
+        { {MULTI_STYLE(SCE_C_COMMENTDOC,SCE_C_COMMENTLINEDOC,0,0)}, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#808080", L"" },
+        { {SCE_C_COMMENTDOCKEYWORD}, IDS_LEX_STR_63371, L"Comment Doc Word", L"bold; fore:#808080", L"" },
+        { {SCE_C_COMMENTDOCKEYWORDERROR}, IDS_LEX_STR_63374, L"Comment Doc Error", L"italic; fore:#800000", L"" },
+        { {SCE_C_TASKMARKER}, IDS_LEX_STR_63373, L"Task Marker", L"bold; fore:#208080", L"" },
         //{ {SCE_C_UUID}, L"UUID", L"", L"" },
-        //{ {SCE_C_REGEX}, L"Regex", L"", L"" },
-        //{ {SCE_C_WORD}, L"Word 2", L"", L"" },
-        { {SCE_C_GLOBALCLASS}, IDS_LEX_STR_63304, L"Global Class", L"fore:#2B91AF", L"" },
+        //{ {SCE_C_USERLITERAL}, L"User Literal", L"", L"" },
+        //{ {SCE_C_ESCAPESEQUENCE}, L"Esc Seq", L"", L"" },
         EDITLEXER_SENTINEL
     }
 };

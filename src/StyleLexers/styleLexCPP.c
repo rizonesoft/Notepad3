@@ -24,7 +24,7 @@ KEYWORDLIST KeyWords_CPP =
     "__interface __leave __multiple_inheritance __nogc __noop __pin __property __raise __sealed "
     "__single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value __virtual_inheritance",
 // Documentation comment keywords
-    "addindex addtogroup anchor arg attention author b brief bug c class code date def defgroup deprecated dontinclude "
+    "addindex addtogroup anchor arg attention author b brief bug c class code copyright date def defgroup deprecated dontinclude "
     "e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception f$ f[f] file"
     "hideinitializer htmlinclude htmlonly if image include ingroup internal invariant interface latexonly li line link "
     "mainpage name namespace nosubgrouping note overload p page par param param[in] param[out] post pre "
@@ -36,7 +36,7 @@ KEYWORDLIST KeyWords_CPP =
 // Preprocessor definitions
     "DEBUG NDEBUG UNICODE _DEBUG _MSC_VER _UNICODE",
 // Task marker and error marker keywords
-    "BUG FIXME HACK NOTE TBD TODO UNDONE XXX",
+    "BUG FIXME HACK NOTE TBD TODO UNDONE XXX @@@",
     NULL,
 };
 
@@ -52,14 +52,16 @@ EDITLEXER lexCPP =
         { {SCE_C_WORD2}, IDS_LEX_STR_63260, L"Keyword 2nd", L"bold; italic; fore:#3C6CDD", L"" },
         { {SCE_C_GLOBALCLASS}, IDS_LEX_STR_63258, L"Typedefs/Classes", L"bold; italic; fore:#800000", L"" },
         { {SCE_C_STRING}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+        //{ {SCE_C_REGEX}, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
         { {SCE_C_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
         { {SCE_C_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
         { {MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0)}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
         { {MULTI_STYLE(SCE_C_VERBATIM,SCE_C_TRIPLEVERBATIM,0,0)}, IDS_LEX_STR_63134, L"Verbatim", L"fore:#B000B0", L"" },
-        { {MULTI_STYLE(SCE_C_COMMENTDOC,SCE_C_COMMENTLINEDOC,SCE_C_COMMENTDOCKEYWORD, SCE_C_COMMENTDOCKEYWORDERROR)}, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#808080", L"" },
+        { {MULTI_STYLE(SCE_C_COMMENTDOC,SCE_C_COMMENTLINEDOC,0,0)}, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#808080", L"" },
+        { {SCE_C_COMMENTDOCKEYWORD}, IDS_LEX_STR_63371, L"Comment Doc Word", L"bold; fore:#808080", L"" },
+        { {SCE_C_COMMENTDOCKEYWORDERROR}, IDS_LEX_STR_63374, L"Comment Doc Error", L"italic; fore:#800000", L"" },
         { {SCE_C_TASKMARKER}, IDS_LEX_STR_63373, L"Task Marker", L"bold; fore:#208080", L"" },
         //{ {SCE_C_UUID}, L"UUID", L"", L"" },
-        //{ {SCE_C_REGEX}, L"Regex", L"", L"" },
         //{ {SCE_C_USERLITERAL}, L"User Literal", L"", L"" },
         //{ {SCE_C_ESCAPESEQUENCE}, L"Esc Seq", L"", L"" },
         EDITLEXER_SENTINEL
