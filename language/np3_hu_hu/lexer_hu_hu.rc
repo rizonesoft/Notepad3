@@ -477,6 +477,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63372       "Dekorátor"
     IDS_LEX_STR_63373       "Feladatjelölő"
+    IDS_LEX_STR_63374       "Comment Doc Error"
 END
 
 STRINGTABLE
