@@ -102,7 +102,7 @@ BEGIN
     IDS_MUI_UNTITLED        "Névtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Csak olvasható)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<Exklúzív>"
     IDS_MUI_LOADFILE        "Betöltés: ""%s""..."
     IDS_MUI_SAVEFILE        "Mentés ""%s""..."
     IDS_MUI_PRINTFILE       "Oldal nyomtatása %i..."
