@@ -33,6 +33,11 @@
 
 // ----------------------------------------------------------------------------
 
+// === MinimizeToTray Functions - see comments in Dialogs.c  ===
+bool GetDoAnimateMinimize();
+void MinimizeWndToTray(HWND hWnd);
+void RestoreWndFromTray(HWND hWnd);
+
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
 bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool);
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam);
@@ -53,10 +58,11 @@ bool SelectDefLineEndingDlg(HWND hwnd,LPARAM piOption);
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 
-bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo);
+bool GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO *hMonitorInfo);
 void WinInfoToScreen(WININFO* pWinInfo);
 WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO * hMonitorInfo);
-void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode);
+bool GetWindowRectEx(HWND hwnd, LPRECT pRect);
+void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath);
@@ -102,6 +108,7 @@ inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme)
     }
     SetWindowLayoutRTL(hwnd, Settings.DialogsLayoutRTL);
 }
+
 
 // resize dialog directions
 typedef enum { RSZ_NONE = -1, RSZ_BOTH = 0, RSZ_ONLY_X = 1, RSZ_ONLY_Y = 2 } RSZ_DLG_DIR;

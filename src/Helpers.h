@@ -557,12 +557,6 @@ inline void SwabEx(char* src, char* dest, size_t n)
     }
 }
 
-
-//==== MinimizeToTray Functions - see comments in Helpers.c ===================
-bool GetDoAnimateMinimize(VOID);
-VOID MinimizeWndToTray(HWND hWnd);
-VOID RestoreWndFromTray(HWND hWnd);
-
 // console helper from Print.cpp
 //void RedirectIOToConsole();
 
