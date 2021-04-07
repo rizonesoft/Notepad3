@@ -241,7 +241,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "Adja meg a külső programokat és útvonalakat.",IDC_STATIC,40,15,122,8
-    LTEXT           "&Alapétrelmezett ""Gyorsnézet"" program (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "&Alapértelmezett ""Gyorsnézet"" program (Ctrl+Q):",IDC_STATIC,10,41,126,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "&Kedvencek mappa (F11):",IDC_STATIC,10,76,76,8
