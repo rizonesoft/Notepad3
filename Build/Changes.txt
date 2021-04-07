@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.406.(build_#) (2021-04-06)
+Current BETA/RC Version 5.21.407.(build_#) (2021-04-07)
 ========================================================
 
 --------------------------------------------------------
@@ -82,6 +82,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.407.1]- Center dialog in parent: for system dialog and if minimized (tray or taskbar).
 [.406.1]- Mark all Occurrences in case of reopened F/R dialog.
 [.406.1]- Center dialog in parent.
 [.406.1]- "grepWinNP3": fix missing search flags (GRE).
@@ -123,7 +124,7 @@ priority to resume "aborted" translations for these languages:
 Please, send me a PM (hpwamr51 @ gmail.com) if you are willing to help.
 --------
 [.227.1]- Chinese Traditional (zh-TW) (incomplete...).
-[.227.1]- Greek (el-GR) (incomplete...).
+[.407.1]- Greek (el-GR) (incomplete...).
 [.227.1]- Indonesian (id-ID) (incomplete...).
 [.303.1]- Spanish Latin America (es-419) (incomplete...).
 [.227.1]- Turkish (tr-TR) (incomplete...).
