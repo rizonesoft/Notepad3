@@ -94,8 +94,8 @@ Lewis Van Winkle (TinyExpr)     https://github.com/codeplea/tinyexpr
 --------------------------------------------------------------------------------
 Acknowledgments:
 ----------------
+alex-ilin               https://github.com/alex-ilin
 alexantr                https://github.com/alexantr
-AlexIljin               https://github.com/AlexIljin
 ashish12phnx            https://github.com/ashish12phnx
 bravo-hero              https://github.com/bravo-hero
 craigo-                 https://github.com/craigo-/

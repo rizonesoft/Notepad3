@@ -115,8 +115,8 @@ IDS_MUI_ABOUT_LIBS  "\
 //
 
 IDS_MUI_ABOUT_ACKNOWLEDGES  "\
+\\cf0 alex-ilin\\tab https://github.com/alex-ilin\\par\
 \\cf0 alexantr\\tab https://github.com/alexantr\\par\
-\\cf0 AlexIljin\\tab https://github.com/AlexIljin\\par\
 \\cf0 ashish12phnx\\tab https://github.com/ashish12phnx\\par\
 \\cf0 bravo-hero\\tab https://github.com/bravo-hero\\par\
 \\cf0 craigo-\\tab https://github.com/craigo-/\\par\
