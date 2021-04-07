@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Az aktuális fájl egy külső progarm által módosítva lett. Újratöltsük?"
     IDS_MUI_FILECHANGENOTIFY2 "Az aktuális fájl törölve lett. Elmentsük?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Nem tudok exklúzív zárolást szerezni erre a fájlra: ""%s""!"
     IDS_MUI_STICKYWINPOS    "A ragadós ablakpozíciók be van kapcsolva. Az új Notepad3 ablakok a jelenlegi ablakhelyzetét használják majd."
     IDS_MUI_SAVEDSETTINGS   "A jelenlegi beállítások el lettek mentve."
     IDS_MUI_CREATEINI_FAIL  "Hiba a beállításfájl létrehozásakor."
