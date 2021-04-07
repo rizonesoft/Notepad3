@@ -85,28 +85,24 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 
             // get window handles
             LPCREATESTRUCT const pCreateStruct = ((LPCBT_CREATEWND)lParam)->lpcs;
-            HWND const hParentWnd = pCreateStruct->hwndParent ? pCreateStruct->hwndParent : GetParent(hThisWnd);
+            HWND const hParentWnd = pCreateStruct->hwndParent ? pCreateStruct->hwndParent : GetParentOrDesktop(hThisWnd);
 
             if (hParentWnd) {
 
-                WININFO const winInfo = GetMyWindowPlacement(hParentWnd, NULL);
-                RECT rcParent = { 0, 0, 0, 0 };
-                rcParent.left = winInfo.x;
-                rcParent.top = winInfo.y;
-                rcParent.right = winInfo.x + winInfo.cx;
-                rcParent.bottom = winInfo.y + winInfo.cy;
-
                 // set new coordinates
                 RECT rcDlg = { 0, 0, 0, 0 };
-                rcDlg.left   = pCreateStruct->x;
-                rcDlg.top    = pCreateStruct->y;
-                rcDlg.right  = pCreateStruct->x + pCreateStruct->cx;
+                rcDlg.left = pCreateStruct->x;
+                rcDlg.top = pCreateStruct->y;
+                rcDlg.right = pCreateStruct->x + pCreateStruct->cx;
                 rcDlg.bottom = pCreateStruct->y + pCreateStruct->cy;
 
-                POINT const ptTL = GetCenterOfDlgInParent(&rcDlg, &rcParent);
+                RECT rcParent = { 0 };
+                GetWindowRectEx(hParentWnd, &rcParent);
 
-                pCreateStruct->x = ptTL.x;
-                pCreateStruct->y = ptTL.y;
+                POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
+
+                pCreateStruct->x = ptTopLeft.x;
+                pCreateStruct->y = ptTopLeft.y;
             }
 
             // we are done
@@ -515,6 +511,195 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 
     INT_PTR const answer = ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
     return MAKELONG(answer, iMode);
+}
+
+/*
+
+  MinimizeToTray - Copyright 2000 Matthew Ellis <m.t.ellis@bigfoot.com>
+
+  Changes made by flo:
+   - Commented out: #include "stdafx.h"
+   - Moved variable declaration: APPBARDATA appBarData;
+
+*/
+
+// MinimizeToTray
+//
+// A couple of routines to show how to make it produce a custom caption
+// animation to make it look like we are minimizing to and maximizing
+// from the system tray
+//
+// These routines are public domain, but it would be nice if you dropped
+// me a line if you use them!
+//
+// 1.0 29.06.2000 Initial version
+// 1.1 01.07.2000 The window retains it's place in the Z-order of windows
+//     when minimized/hidden. This means that when restored/shown, it doen't
+//     always appear as the foreground window unless we call SetForegroundWindow
+//
+// Copyright 2000 Matthew Ellis <m.t.ellis@bigfoot.com>
+/*#include "stdafx.h"*/
+
+// Odd. VC++6 winuser.h has IDANI_CAPTION defined (as well as IDANI_OPEN and
+// IDANI_CLOSE), but the Platform SDK only has IDANI_OPEN...
+
+// I don't know what IDANI_OPEN or IDANI_CLOSE do. Trying them in this code
+// produces nothing. Perhaps they were intended for window opening and closing
+// like the MAC provides...
+#ifndef IDANI_OPEN
+#define IDANI_OPEN 1
+#endif
+#ifndef IDANI_CLOSE
+#define IDANI_CLOSE 2
+#endif
+#ifndef IDANI_CAPTION
+#define IDANI_CAPTION 3
+#endif
+
+#define DEFAULT_RECT_WIDTH 150
+#define DEFAULT_RECT_HEIGHT 30
+
+// Returns the rect of where we think the system tray is. This will work for
+// all current versions of the shell. If explorer isn't running, we try our
+// best to work with a 3rd party shell. If we still can't find anything, we
+// return a rect in the lower right hand corner of the screen
+static bool GetTrayWndRect(LPRECT lpTrayRect) {
+    APPBARDATA appBarData;
+    // First, we'll use a quick hack method. We know that the taskbar is a window
+    // of class Shell_TrayWnd, and the status tray is a child of this of class
+    // TrayNotifyWnd. This provides us a window rect to minimize to. Note, however,
+    // that this is not guaranteed to work on future versions of the shell. If we
+    // use this method, make sure we have a backup!
+    HWND hShellTrayWnd = FindWindowEx(NULL, NULL, TEXT("Shell_TrayWnd"), NULL);
+    if (hShellTrayWnd) {
+        HWND hTrayNotifyWnd = FindWindowEx(hShellTrayWnd, NULL, TEXT("TrayNotifyWnd"), NULL);
+        if (hTrayNotifyWnd) {
+            GetWindowRect(hTrayNotifyWnd, lpTrayRect);
+            return true;
+        }
+    }
+
+    // OK, we failed to get the rect from the quick hack. Either explorer isn't
+    // running or it's a new version of the shell with the window class names
+    // changed (how dare Microsoft change these undocumented class names!) So, we
+    // try to find out what side of the screen the taskbar is connected to. We
+    // know that the system tray is either on the right or the bottom of the
+    // taskbar, so we can make a good guess at where to minimize to
+    /*APPBARDATA appBarData;*/
+    appBarData.cbSize = sizeof(appBarData);
+    if (SHAppBarMessage(ABM_GETTASKBARPOS, &appBarData)) {
+        // We know the edge the taskbar is connected to, so guess the rect of the
+        // system tray. Use various fudge factor to make it look good
+        switch (appBarData.uEdge) {
+        case ABE_LEFT:
+        case ABE_RIGHT:
+            // We want to minimize to the bottom of the taskbar
+            lpTrayRect->top = appBarData.rc.bottom - 100;
+            lpTrayRect->bottom = appBarData.rc.bottom - 16;
+            lpTrayRect->left = appBarData.rc.left;
+            lpTrayRect->right = appBarData.rc.right;
+            break;
+
+        case ABE_TOP:
+        case ABE_BOTTOM:
+            // We want to minimize to the right of the taskbar
+            lpTrayRect->top = appBarData.rc.top;
+            lpTrayRect->bottom = appBarData.rc.bottom;
+            lpTrayRect->left = appBarData.rc.right - 100;
+            lpTrayRect->right = appBarData.rc.right - 16;
+            break;
+        }
+
+        return true;
+    }
+
+    // Blimey, we really aren't in luck. It's possible that a third party shell
+    // is running instead of explorer. This shell might provide support for the
+    // system tray, by providing a Shell_TrayWnd window (which receives the
+    // messages for the icons) So, look for a Shell_TrayWnd window and work out
+    // the rect from that. Remember that explorer's taskbar is the Shell_TrayWnd,
+    // and stretches either the width or the height of the screen. We can't rely
+    // on the 3rd party shell's Shell_TrayWnd doing the same, in fact, we can't
+    // rely on it being any size. The best we can do is just blindly use the
+    // window rect, perhaps limiting the width and height to, say 150 square.
+    // Note that if the 3rd party shell supports the same configuraion as
+    // explorer (the icons hosted in NotifyTrayWnd, which is a child window of
+    // Shell_TrayWnd), we would already have caught it above
+    hShellTrayWnd = FindWindowEx(NULL, NULL, TEXT("Shell_TrayWnd"), NULL);
+    if (hShellTrayWnd) {
+        GetWindowRect(hShellTrayWnd, lpTrayRect);
+        if (lpTrayRect->right - lpTrayRect->left > DEFAULT_RECT_WIDTH) {
+            lpTrayRect->left = lpTrayRect->right - DEFAULT_RECT_WIDTH;
+        }
+        if (lpTrayRect->bottom - lpTrayRect->top > DEFAULT_RECT_HEIGHT) {
+            lpTrayRect->top = lpTrayRect->bottom - DEFAULT_RECT_HEIGHT;
+        }
+        return true;
+    }
+
+    // OK. Haven't found a thing. Provide a default rect based on the current work area
+    SystemParametersInfo(SPI_GETWORKAREA, 0, lpTrayRect, 0);
+    lpTrayRect->left = lpTrayRect->right - DEFAULT_RECT_WIDTH;
+    lpTrayRect->top = lpTrayRect->bottom - DEFAULT_RECT_HEIGHT;
+    return false;
+}
+
+// Check to see if the animation has been disabled
+/*static */ bool GetDoAnimateMinimize(VOID) {
+    ANIMATIONINFO ai;
+
+    ai.cbSize = sizeof(ai);
+    SystemParametersInfo(SPI_GETANIMATION, sizeof(ai), &ai, 0);
+
+    return ai.iMinAnimate ? true : false;
+}
+
+void MinimizeWndToTray(HWND hWnd) {
+    if (GetDoAnimateMinimize()) {
+
+        // Get the rect of the window. It is safe to use the rect of the whole
+        // window - DrawAnimatedRects will only draw the caption
+        RECT rcFrom;
+        GetWindowRect(hWnd, &rcFrom);
+        RECT rcTo;
+        GetTrayWndRect(&rcTo);
+
+        // Get the system to draw our animation for us
+        DrawAnimatedRects(hWnd, IDANI_CAPTION, &rcFrom, &rcTo);
+    }
+
+    // Add the tray icon. If we add it before the call to DrawAnimatedRects,
+    // the taskbar gets erased, but doesn't get redrawn until DAR finishes.
+    // This looks untidy, so call the functions in this order
+
+    // Hide the window
+    ShowWindow(hWnd, SW_HIDE);
+    Globals.bMinimizedToTray = true;
+}
+
+void RestoreWndFromTray(HWND hWnd) {
+    if (GetDoAnimateMinimize()) {
+
+        // Get the rect of the tray and the window. Note that the window rect
+        // is still valid even though the window is hidden
+        RECT rcFrom;
+        GetTrayWndRect(&rcFrom);
+        RECT rcTo;
+        GetWindowRect(hWnd, &rcTo);
+
+        // Get the system to draw our animation for us
+        DrawAnimatedRects(hWnd, IDANI_CAPTION, &rcFrom, &rcTo);
+    }
+
+    // Show the window, and make sure we're the foreground window
+    ShowWindow(hWnd, SW_SHOW);
+    SetActiveWindow(hWnd);
+    SetForegroundWindow(hWnd);
+    Globals.bMinimizedToTray = false;
+
+    // Remove the tray icon. As described above, remove the icon after the
+    // call to DrawAnimatedRects, or the taskbar will not refresh itself
+    // properly until DAR finished
 }
 
 
@@ -4093,8 +4278,8 @@ bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 //
 //  GetMonitorInfoFromRect()
 //
-bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo)
-{
+bool GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO *hMonitorInfo) {
+
     bool result = false;
     if (hMonitorInfo) {
         HMONITOR const hMonitor = MonitorFromRect(rc, MONITOR_DEFAULTTONEAREST);
@@ -4125,7 +4310,8 @@ void WinInfoToScreen(WININFO* pWinInfo)
 {
     if (pWinInfo) {
         MONITORINFO mi = { sizeof(MONITORINFO) };
-        RECT rc = RectFromWinInfo(pWinInfo);
+        RECT rc = { 0 };
+        RectFromWinInfo(pWinInfo, &rc);
         if (GetMonitorInfoFromRect(&rc, &mi)) {
             WININFO winfo = *pWinInfo;
             winfo.x += (mi.rcWork.left - mi.rcMonitor.left);
@@ -4180,28 +4366,42 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 
 //=============================================================================
 //
-//  GetWindowRectMonitor()
+//  GetWindowRectEx()
 //
-RECT GetWindowRectMonitor(HWND hwnd) {
+bool GetWindowRectEx(HWND hwnd, LPRECT pRect) {
+
+    bool bMainWndTray = false;
+    if (Globals.hwndMain == hwnd) {
+        bMainWndTray = Settings.MinimizeToTray && Globals.bMinimizedToTray;
+    }
+    bool const res = bMainWndTray ? GetTrayWndRect(pRect) : GetWindowRect(hwnd, pRect);
 
     WINDOWPLACEMENT wndpl = { sizeof(WINDOWPLACEMENT) };
     GetWindowPlacement(hwnd, &wndpl);
 
-    RECT rc = { 0 };
-    GetWindowRect(hwnd, &rc);
-
     switch (wndpl.showCmd) {
     case SW_HIDE:
     case SW_SHOWMINIMIZED:
-    case SW_SHOWMAXIMIZED: {
+        if (res) {
+            POINT pt = { 0 };
+            GetCursorPos(&pt);
+            pRect->left = pRect->right = pt.x;
+            pRect->top = pRect->bottom = pt.y;
+            return res;
+        }
+        break;
+
+    case SW_SHOWMAXIMIZED:
+    case SW_MAX: {
         MONITORINFO mi = { sizeof(MONITORINFO) };
-        GetMonitorInfoFromRect(&rc, &mi);
-        return mi.rcWork;
-    }
+        GetMonitorInfoFromRect(pRect, &mi);
+        *pRect = mi.rcWork;
+    } break;
+
     default:
         break;
     }
-    return rc;
+    return res;
 }
 
 
@@ -4209,8 +4409,8 @@ RECT GetWindowRectMonitor(HWND hwnd) {
 //
 //  FitIntoMonitorGeometry()
 //
-void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
-{
+void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode) {
+
     MONITORINFO mi;
     GetMonitorInfoFromRect(pRect, &mi);
 
@@ -4275,7 +4475,8 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 
     WININFO winfo = INIT_WININFO;
     if (pWinInfo) {
-        RECT rc = RectFromWinInfo(pWinInfo);
+        RECT rc = { 0 };
+        RectFromWinInfo(pWinInfo, &rc);
         winfo = *pWinInfo;
         FitIntoMonitorGeometry(&rc, &winfo, mode);
         if (pWinInfo->max) {
@@ -4293,7 +4494,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 
         wndpl.showCmd = SW_SHOW;
     }
-    wndpl.rcNormalPosition = RectFromWinInfo(&winfo);
+    RectFromWinInfo(&winfo, &(wndpl.rcNormalPosition));
     return wndpl;
 }
 
@@ -4907,7 +5108,8 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
     GetWindowRect(hDlg, &rcDlg);
 
     HWND const hParentWnd = hDlgParent ? hDlgParent : GetParentOrDesktop(hDlg);
-    RECT rcParent = GetWindowRectMonitor(hParentWnd);
+    RECT rcParent = { 0 };
+    GetWindowRectEx(hParentWnd, &rcParent);
 
     POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
 

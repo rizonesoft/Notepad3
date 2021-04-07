@@ -88,11 +88,9 @@ typedef struct _wi
 
 typedef enum { SCR_NORMAL = 0, SCR_FULL_SCREEN = 1 } SCREEN_MODE;
 
-inline RECT RectFromWinInfo(const WININFO* const pWinInfo)
+inline void RectFromWinInfo(const WININFO* const pWinInfo, LPRECT pRect)
 {
-    RECT rc;
-    SetRect(&rc, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy);
-    return rc;
+    SetRect(pRect, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy);
 }
 
 // ----------------------------------------------------------------------------
@@ -380,6 +378,7 @@ typedef struct _globals_t
     int       CmdLnFlag_ShellUseSystemMRU;
     int       CmdLnFlag_PrintFileAndLeave;
 
+    bool      bMinimizedToTray;
     bool      bZeroBasedColumnIndex;
     bool      bZeroBasedCharacterCount;
     int       iReplacedOccurrences;

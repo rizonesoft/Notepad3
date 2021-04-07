@@ -668,6 +668,7 @@ static void _InitGlobals()
     Globals.bDocHasInconsistentEOLs = false;
     Globals.idxLightModeTheme = 1; // Default(0), Standard(1)
     Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
+    Globals.bMinimizedToTray = false;
 
     Flags.bHugeFileLoadState = DefaultFlags.bHugeFileLoadState = false;
     Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -1121,7 +1122,8 @@ WININFO GetWinInfoByFlag(const int flagsPos)
     } else { // ( > 256) restore window, move upper left corner to Work Area
 
         MONITORINFO mi;
-        RECT const rc = RectFromWinInfo(&winfo);
+        RECT rc = { 0 };
+        RectFromWinInfo(&winfo, &rc);
         GetMonitorInfoFromRect(&rc, &mi);
         WININFO wi = winfo;
         wi.cx = wi.cy = 16; // really small
