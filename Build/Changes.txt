@@ -82,6 +82,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.407.2]- New comment doc styling for C++ lexer (used for C#, RC, JS and Java too).
 [.407.1]- Center dialog in parent: for system dialog and if minimized (tray or taskbar).
 [.406.1]- Mark all Occurrences in case of reopened F/R dialog.
 [.406.1]- Center dialog in parent.
