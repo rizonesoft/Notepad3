@@ -135,7 +135,7 @@ BEGIN
     CONTROL         "중복 검색(&O)",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "반복하지 않음(&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "교체 후 닫기(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,77,10
-    CONTROL         "발생 표시(&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,73,10
+    CONTROL         "발생 강조 표시(&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,73,10
     CONTROL         "와일드카드 검색(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,126,68,10
     CONTROL         "초점을 잃으면 투명 모드",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,156,124,10
@@ -213,9 +213,9 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "기본 줄 끝 모드(&D):",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "일관되지 않은 줄 바꿈 경고 표시.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "일관되지 않은 줄바꿈 경고 표시.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,171,10
-    CONTROL         "저장할 때 일관된 줄 바꿈 보장(&E).",IDC_CONSISTENT_EOLS,
+    CONTROL         "저장할 때 일관된 줄바꿈 보장(&E).",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,171,10
     CONTROL         "저장할 때 후행 공백 제거(&S).",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,171,10
@@ -363,8 +363,8 @@ BEGIN
     GROUPBOX        "모두 다시 들여쓰기를 합니까? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "탭(&T)",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
     CONTROL         "공백(&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,35,10
-    RTEXT           "%s 줄 w/ 불규칙 들여쓰기 깊이",IDC_INDENT_TAB_MODX,50,72,124,8
-    RTEXT           "%s 줄 w/ 불규칙 들여쓰기 깊이",IDC_INDENT_SPC_MODX,50,84,124,8
+    RTEXT           "%s 줄 폭/ 불규칙한 들여쓰기 깊이",IDC_INDENT_TAB_MODX,50,72,124,8
+    RTEXT           "%s 줄 폭/ 불규칙한 들여쓰기 깊이",IDC_INDENT_SPC_MODX,50,84,124,8
     PUSHBUTTON      "예(&Y)",IDOK,80,98,50,14
     PUSHBUTTON      "아니오(&N)",IDCANCEL,134,98,50,14
     CONTROL         "항상 이 대화 상자를 표시합니다(&A).",IDC_WARN_INCONSISTENT_INDENTS,
@@ -386,7 +386,7 @@ END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "줄 바꿈 설정"
+CAPTION "줄바꿈 설정"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     COMBOBOX        100,7,7,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -395,10 +395,10 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "확인",IDOK,83,79,50,14
     PUSHBUTTON      "취소",IDCANCEL,139,79,50,14
-    LTEXT           "들여쓰기 없음|한 글자 들여쓰기|두 글자 들여쓰기|한 단계 들여쓰기|두 단계 들여쓰기|첫 번째 하위 줄로 들여쓰기|첫 번째 하위 줄보다 한 수준 더 들여쓰기",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "줄 바꿈 전에 시각적 표시기 없음|줄 바꿈 전에 시각적 표시기 표시 (텍스트 근처)|줄 바꿈 전에 시각적 표시기 표시 (테두리 근처)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "줄 바꿈 후에 시각적 표시기 없음|줄 바꿈 후에 시각적 표시기 표시 (텍스트 근처)|줄 바꿈 후에 시각적 표시기 표시 (테두리 근처)",202,0,0,402,8,NOT WS_VISIBLE
-    LTEXT           "단어 사이에 텍스트 줄 바꿈 |모든 상형문자 사이에 텍스트 줄 바꿈",203,0,0,187,8,NOT WS_VISIBLE
+    LTEXT           "들여쓰기 줄바꿈 안함|한 글자 들여쓰기 줄바꿈|두 글자 들여쓰기 줄바꿈|한 단계 들여쓰기 줄바꿈|두 단계 들여쓰기 줄바꿈|첫 번째 하위 줄로 들여쓰기 줄바꿈|첫 번째 하위 줄보다 한 수준 더 들여쓰기 줄바꿈",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "줄바꿈 전에 시각적 표시기 없음|줄바꿈 전에 시각적 표시기 표시 (텍스트 근처)|줄바꿈 전에 시각적 표시기 표시 (테두리 근처)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "줄바꿈 후에 시각적 표시기 없음|줄바꿈 후에 시각적 표시기 표시 (텍스트 근처)|줄바꿈 후에 시각적 표시기 표시 (테두리 근처)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "단어들 사이에 텍스트 줄바꿈|모든 상형문자들 사이에 텍스트 줄바꿈",203,0,0,187,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
@@ -502,7 +502,7 @@ END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "열 바꿈"
+CAPTION "열바꿈"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "경계(&B):",IDC_STATIC,7,7,34,8
