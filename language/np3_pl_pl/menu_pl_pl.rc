@@ -262,8 +262,8 @@ BEGIN
             MENUITEM "Ścieżka systemu plików do URL",               IDM_EDIT_PATH2URL
             MENUITEM "URL do ścieżki systemu plików",               IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Odwróć ukośniki wsteczne- '\'",               IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Odwróć ukośniki- '/'",                        IDM_EDIT_INVERTSLASH
+            MENUITEM "Odwróć ukośniki wsteczne- \\",                IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Odwróć ukośniki- /",                          IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Char na Hex\tCtrl+Alt+X",                    IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex na Char\tCtrl+Alt+C",                    IDM_EDIT_HEX2CHAR
