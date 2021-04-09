@@ -331,9 +331,13 @@ msgstr "Ścieżka nie istnieje lub jest niedostępna!"
 msgid "Preset name"
 msgstr "Predefiniowana nazwa"
 
-#. Resource IDs: (1022, 132)
+#. Resource IDs: (1022)
 msgid "Presets..."
 msgstr "Predefinicje..."
+
+#. Resource IDs: (132)
+msgid "Presets"
+msgstr "Predefinicje"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help..."

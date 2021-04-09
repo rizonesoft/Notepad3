@@ -331,9 +331,13 @@ msgstr "Pad bestaat niet of is niet toegankelijk!"
 msgid "Preset name"
 msgstr "Vooringesteld naam"
 
-#. Resource IDs: (1022, 132)
+#. Resource IDs: (1022)
 msgid "Presets..."
 msgstr "Vooringesteld..."
+
+#. Resource IDs: (132)
+msgid "Presets"
+msgstr "Vooringesteld"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help..."
