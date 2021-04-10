@@ -29,7 +29,7 @@ public:
 
 class FontRealised : public FontMeasurements {
 public:
-	Font font;
+	std::shared_ptr<Font> font;
 	FontRealised() noexcept;
 	// FontRealised objects can not be copied.
 	FontRealised(const FontRealised &) = delete;
@@ -40,11 +40,11 @@ public:
 	void Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs);
 };
 
-enum IndentView {ivNone, ivReal, ivLookForward, ivLookBoth};
+enum class IndentView {none, real, lookForward, lookBoth};
 
-enum WhiteSpaceVisibility {wsInvisible=0, wsVisibleAlways=1, wsVisibleAfterIndent=2, wsVisibleOnlyInIndent=3};
+enum class WhiteSpace {invisible=0, visibleAlways=1, visibleAfterIndent=2, visibleOnlyInIndent=3};
 
-enum TabDrawMode {tdLongArrow=0, tdStrikeOut=1};
+enum class TabDrawMode {longArrow=0, strikeOut=1};
 
 typedef std::map<FontSpecification, std::unique_ptr<FontRealised>> FontMap;
 
@@ -132,7 +132,7 @@ public:
 	bool marginInside;	///< true: margin included in text view, false: separate views
 	int textStart;	///< Starting x position of text within the view
 	int zoomLevel;  /// @ 2018-09-06 Changed to a percent value
-	WhiteSpaceVisibility viewWhitespace;
+	WhiteSpace viewWhitespace;
 	TabDrawMode tabDrawMode;
 	int whitespaceSize;
 	IndentView viewIndentationGuides;
@@ -166,6 +166,9 @@ public:
 	int marginNumberPadding; // the right-side padding of the number margin
 	int ctrlCharPadding; // the padding around control character text blobs
 	int lastSegItalicsOffset; // the offset so as not to clip italic characters at EOLs
+
+	std::map<int, std::optional<ColourAlpha>> elementColours;
+	std::set<int> elementAllowsTranslucent;
 
 	// Wrapping support
 	WrapMode wrapState;
@@ -203,6 +206,9 @@ public:
 	ColourDesired WrapColour() const noexcept;
 
 	void AddMultiEdge(uptr_t wParam, sptr_t lParam);
+
+	std::optional<ColourAlpha> ElementColour(int index) const noexcept;
+	bool ElementAllowsTranslucent(int index) const noexcept;
 
 	bool SetWrapState(int wrapState_) noexcept;
 	bool SetWrapVisualFlags(int wrapVisualFlags_) noexcept;

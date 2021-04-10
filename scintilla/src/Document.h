@@ -444,7 +444,7 @@ public:
 
 	bool MatchesWordOptions(bool word, bool wordStart, Sci::Position pos, Sci::Position length) const;
 	bool HasCaseFolder() const noexcept;
-	void SetCaseFolder(CaseFolder *pcf_) noexcept;
+	void SetCaseFolder(std::unique_ptr<CaseFolder> pcf_) noexcept;
 	Sci::Position FindText(Sci::Position minPos, Sci::Position maxPos, const char *search, int flags, Sci::Position *length);
 	const char *SubstituteByPosition(const char *text, Sci::Position *length);
 	int LineCharacterIndex() const noexcept;
@@ -453,8 +453,8 @@ public:
 	Sci::Line LinesTotal() const noexcept;
 
 	void SetDefaultCharClasses(bool includeWordClass);
-	void SetCharClasses(const unsigned char *chars, CharClassify::cc newCharClass);
-	int GetCharsOfClass(CharClassify::cc characterClass, unsigned char *buffer) const;
+	void SetCharClasses(const unsigned char *chars, CharacterClass newCharClass);
+	int GetCharsOfClass(CharacterClass characterClass, unsigned char *buffer) const;
 	void SetCharacterCategoryOptimization(int countCharacters);
 	int CharacterCategoryOptimization() const noexcept;
 	void SCI_METHOD StartStyling(Sci_Position position) noexcept override;
@@ -497,7 +497,7 @@ public:
 	bool AddWatcher(DocWatcher *watcher, void *userData);
 	bool RemoveWatcher(DocWatcher *watcher, void *userData);
 
-	CharClassify::cc WordCharacterClass(unsigned int ch) const;
+	CharacterClass WordCharacterClass(unsigned int ch) const;
 	bool IsWordPartSeparator(unsigned int ch) const;
 	Sci::Position WordPartLeft(Sci::Position pos) const;
 	Sci::Position WordPartRight(Sci::Position pos) const;

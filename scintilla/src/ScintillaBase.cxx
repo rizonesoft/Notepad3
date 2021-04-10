@@ -15,9 +15,13 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <set>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "ILoader.h"
@@ -262,6 +266,14 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 	ac.Start(wMain, idAutoComplete, sel.MainCaret(), PointMainCaret(),
 				lenEntered, vs.lineHeight, IsUnicodeMode(), technology);
 
+	ListOptions options{
+		vs.ElementColour(SC_ELEMENT_LIST),
+		vs.ElementColour(SC_ELEMENT_LIST_BACK),
+		vs.ElementColour(SC_ELEMENT_LIST_SELECTED),
+		vs.ElementColour(SC_ELEMENT_LIST_SELECTED_BACK)
+	};
+	ac.lb->SetOptions(options);
+
 	const PRectangle rcClient = GetClientRectangle();
 	Point pt = LocationFromPosition(sel.MainCaret() - lenEntered);
 	PRectangle rcPopupBounds = wMain.GetMonitorRect(pt);
@@ -296,7 +308,7 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	ac.lb->SetColour(vs.styles[STYLE_DEFAULT].fore, vs.styles[STYLE_DEFAULT].back);
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-	ac.lb->SetFont(vs.styles[STYLE_DEFAULT].font);
+	ac.lb->SetFont(vs.styles[STYLE_DEFAULT].font.get());
 	const unsigned int aveCharWidth = static_cast<unsigned int>(vs.styles[STYLE_DEFAULT].aveCharWidth);
 	ac.lb->SetAverageCharWidth(aveCharWidth);
 	ac.lb->SetDelegate(this);
@@ -593,14 +605,22 @@ LexState::LexState(Document *pdoc_) noexcept : LexInterface(pdoc_) {
 
 LexState::~LexState() {
 	if (instance) {
-		instance->Release();
+		try {
+			instance->Release();
+		} catch (...) {
+			// ILexer5::Release must not throw, ignore if it does.
+		}
 		instance = nullptr;
 	}
 }
 
 void LexState::SetInstance(ILexer5 *instance_) {
 	if (instance) {
-		instance->Release();
+		try {
+			instance->Release();
+		} catch (...) {
+			// ILexer5::Release must not throw, ignore if it does.
+		}
 		instance = nullptr;
 	}
 	instance = instance_;

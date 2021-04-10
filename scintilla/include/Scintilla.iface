@@ -53,7 +53,8 @@
 ##     bool -> integer, 1=true, 0=false
 ##     position -> intptr_t position in a document
 ##     line -> intptr_t line in a document
-##     colour -> colour integer containing red, green and blue bytes.
+##     colour -> colour integer containing red, green, and blue bytes with red as least-significant and blue as most.
+##     colouralpha -> colour integer containing red, green, blue, and alpha bytes with red as least-significant and alpha as most.
 ##     string -> pointer to const character
 ##     stringresult -> pointer to character, NULL-> return size of result
 ##     cells -> pointer to array of cells, each cell containing a style byte and character byte
@@ -408,6 +409,18 @@ set void MarkerSetBack=2042(int markerNumber, colour back)
 # Set the background colour used for a particular marker number when its folding block is selected.
 set void MarkerSetBackSelected=2292(int markerNumber, colour back)
 
+# Set the foreground colour used for a particular marker number.
+set void MarkerSetForeTranslucent=2294(int markerNumber, colouralpha fore)
+
+# Set the background colour used for a particular marker number.
+set void MarkerSetBackTranslucent=2295(int markerNumber, colouralpha back)
+
+# Set the background colour used for a particular marker number when its folding block is selected.
+set void MarkerSetBackSelectedTranslucent=2296(int markerNumber, colouralpha back)
+
+# Set the width of strokes used in .01 pixels so 50  = 1/2 pixel width.
+set void MarkerSetStrokeWidth=2297(int markerNumber, int hundredths)
+
 # Enable/disable highlight for current folding block (smallest one that contains the caret)
 fun void MarkerEnableHighlight=2293(bool enabled,)
 
@@ -657,6 +670,29 @@ set void StyleSetCharacterSet=2066(int style, CharacterSet characterSet)
 # Set a style to be a hotspot or not.
 set void StyleSetHotSpot=2409(int style, bool hotspot)
 
+enu Element=SC_ELEMENT_
+val SC_ELEMENT_LIST=0
+val SC_ELEMENT_LIST_BACK=1
+val SC_ELEMENT_LIST_SELECTED=2
+val SC_ELEMENT_LIST_SELECTED_BACK=3
+
+# Set the colour of an element. Translucency (alpha) may or may not be significant
+# and this may depend on the platform. The alpha byte should commonly be 0xff for opaque.
+set void SetElementColour=2753(Element element, colouralpha colourElement)
+
+# Get the colour of an element.
+get colouralpha GetElementColour=2754(Element element,)
+
+# Use the default or platform-defined colour for an element.
+fun void ResetElementColour=2755(Element element,)
+
+# Get whether an element has been set by SetElementColour.
+# When false, a platform-defined or default colour is used.
+get bool GetElementIsSet=2756(Element element,)
+
+# Get whether an element supports translucency.
+get bool GetElementAllowsTranslucent=2757(Element element,)
+
 # Set the foreground colour of the main and additional selections and whether to use this setting.
 fun void SetSelFore=2067(bool useSetting, colour fore)
 
@@ -816,6 +852,12 @@ set void IndicSetFlags=2684(int indicator, IndicFlag flags)
 
 # Retrieve the attributes of an indicator.
 get IndicFlag IndicGetFlags=2685(int indicator,)
+
+# Set the stroke width of an indicator in hundredths of a pixel.
+set void IndicSetStrokeWidth=2751(int indicator, int hundredths)
+
+# Retrieve the stroke width of an indicator.
+get int IndicGetStrokeWidth=2752(int indicator,)
 
 # Set the foreground colour of all whitespace and whether to use this setting.
 fun void SetWhitespaceFore=2084(bool useSetting, colour fore)
@@ -2873,9 +2915,18 @@ get int EOLAnnotationGetStyle=2743(line line,)
 fun void EOLAnnotationClearAll=2744(,)
 
 enu EOLAnnotationVisible=EOLANNOTATION_
-val EOLANNOTATION_HIDDEN=0
-val EOLANNOTATION_STANDARD=1
-val EOLANNOTATION_BOXED=2
+val EOLANNOTATION_HIDDEN=0x0
+val EOLANNOTATION_STANDARD=0x1
+val EOLANNOTATION_BOXED=0x2
+val EOLANNOTATION_STADIUM=0x100
+val EOLANNOTATION_FLAT_CIRCLE=0x101
+val EOLANNOTATION_ANGLE_CIRCLE=0x102
+val EOLANNOTATION_CIRCLE_FLAT=0x110
+val EOLANNOTATION_FLATS=0x111
+val EOLANNOTATION_ANGLE_FLAT=0x112
+val EOLANNOTATION_CIRCLE_ANGLE=0x120
+val EOLANNOTATION_FLAT_ANGLE=0x121
+val EOLANNOTATION_ANGLES=0x122
 
 # Set the visibility for the end of line annotations for a view
 set void EOLAnnotationSetVisible=2745(EOLAnnotationVisible visible,)
@@ -2889,14 +2940,21 @@ set void EOLAnnotationSetStyleOffset=2747(int style,)
 # Get the start of the range of style numbers used for end of line annotations
 get int EOLAnnotationGetStyleOffset=2748(,)
 
+enu Supports=SC_SUPPORTS_
+val SC_SUPPORTS_LINE_DRAWS_FINAL=0
+val SC_SUPPORTS_PIXEL_DIVISIONS=1
+val SC_SUPPORTS_FRACTIONAL_STROKE_WIDTH=2
+val SC_SUPPORTS_TRANSLUCENT_STROKE=3
+val SC_SUPPORTS_PIXEL_MODIFICATION=4
+
+# Get whether a feature is supported
+get bool SupportsFeature=2750(Supports feature,)
+
 # Start notifying the container of all key presses and commands.
 fun void StartRecord=3001(,)
 
 # Stop notifying the container of all key presses and commands.
 fun void StopRecord=3002(,)
-
-# Set the lexing language of the document.
-set void SetLexer=4001(int lexer,)
 
 # Retrieve the lexing language of the document.
 get int GetLexer=4002(,)
@@ -2912,12 +2970,6 @@ val KEYWORDSET_MAX=8
 
 # Set up the key words used by the lexer.
 set void SetKeyWords=4005(int keyWordSet, string keyWords)
-
-# Set the lexing language of the document based on string name.
-set void SetLexerLanguage=4006(, string language)
-
-# Load a lexer library (dll / so).
-fun void LoadLexerLibrary=4007(, string path)
 
 # Retrieve a "property" value previously set with SetProperty.
 # Result is NUL-terminated.

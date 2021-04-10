@@ -40,8 +40,6 @@ protected:
 	int multiAutoCMode; /// Mode for autocompleting when multiple selections are present
 
 	LexState *DocumentLexState();
-	void SetLexer(uptr_t wParam);
-	void SetLexerLanguage(const char *languageName);
 	void Colourise(int start, int end);
 
 	ScintillaBase();

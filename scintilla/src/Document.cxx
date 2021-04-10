@@ -17,6 +17,7 @@
 #include <string_view>
 #include <vector>
 #include <forward_list>
+#include <optional>
 #include <algorithm>
 #include <memory>
 #include <chrono>
@@ -25,7 +26,7 @@
 #include <regex>
 #endif
 
-#include "Platform.h"
+#include "Debugging.h"
 
 #include "ILoader.h"
 #include "ILexer.h"
@@ -272,10 +273,10 @@ void Document::TentativeUndo() {
 			for (int step = 0; step < steps; step++) {
 				const Sci::Line prevLinesTotal = LinesTotal();
 				const Action &action = cb.GetUndoStep();
-				if (action.at == removeAction) {
+				if (action.at == ActionType::remove) {
 					NotifyModified(DocModification(
 									SC_MOD_BEFOREINSERT | SC_PERFORMED_UNDO, action));
-				} else if (action.at == containerAction) {
+				} else if (action.at == ActionType::container) {
 					DocModification dm(SC_MOD_CONTAINER | SC_PERFORMED_UNDO);
 					dm.token = action.position;
 					NotifyModified(dm);
@@ -284,15 +285,15 @@ void Document::TentativeUndo() {
 									SC_MOD_BEFOREDELETE | SC_PERFORMED_UNDO, action));
 				}
 				cb.PerformUndoStep();
-				if (action.at != containerAction) {
+				if (action.at != ActionType::container) {
 					ModifiedAt(action.position);
 				}
 
 				int modFlags = SC_PERFORMED_UNDO;
 				// With undo, an insertion action becomes a deletion notification
-				if (action.at == removeAction) {
+				if (action.at == ActionType::remove) {
 					modFlags |= SC_MOD_INSERTTEXT;
-				} else if (action.at == insertAction) {
+				} else if (action.at == ActionType::insert) {
 					modFlags |= SC_MOD_DELETETEXT;
 				}
 				if (steps > 1)
@@ -1325,10 +1326,10 @@ Sci::Position Document::Undo() {
 			for (int step = 0; step < steps; step++) {
 				const Sci::Line prevLinesTotal = LinesTotal();
 				const Action &action = cb.GetUndoStep();
-				if (action.at == removeAction) {
+				if (action.at == ActionType::remove) {
 					NotifyModified(DocModification(
 									SC_MOD_BEFOREINSERT | SC_PERFORMED_UNDO, action));
-				} else if (action.at == containerAction) {
+				} else if (action.at == ActionType::container) {
 					DocModification dm(SC_MOD_CONTAINER | SC_PERFORMED_UNDO);
 					dm.token = action.position;
 					NotifyModified(dm);
@@ -1343,14 +1344,14 @@ Sci::Position Document::Undo() {
 									SC_MOD_BEFOREDELETE | SC_PERFORMED_UNDO, action));
 				}
 				cb.PerformUndoStep();
-				if (action.at != containerAction) {
+				if (action.at != ActionType::container) {
 					ModifiedAt(action.position);
 					newPos = action.position;
 				}
 
 				int modFlags = SC_PERFORMED_UNDO;
 				// With undo, an insertion action becomes a deletion notification
-				if (action.at == removeAction) {
+				if (action.at == ActionType::remove) {
 					newPos += action.lenData;
 					modFlags |= SC_MOD_INSERTTEXT;
 					if ((coalescedRemoveLen > 0) &&
@@ -1363,7 +1364,7 @@ Sci::Position Document::Undo() {
 					}
 					prevRemoveActionPos = action.position;
 					prevRemoveActionLen = action.lenData;
-				} else if (action.at == insertAction) {
+				} else if (action.at == ActionType::insert) {
 					modFlags |= SC_MOD_DELETETEXT;
 					coalescedRemovePos = -1;
 					coalescedRemoveLen = 0;
@@ -1405,10 +1406,10 @@ Sci::Position Document::Redo() {
 			for (int step = 0; step < steps; step++) {
 				const Sci::Line prevLinesTotal = LinesTotal();
 				const Action &action = cb.GetRedoStep();
-				if (action.at == insertAction) {
+				if (action.at == ActionType::insert) {
 					NotifyModified(DocModification(
 									SC_MOD_BEFOREINSERT | SC_PERFORMED_REDO, action));
-				} else if (action.at == containerAction) {
+				} else if (action.at == ActionType::container) {
 					DocModification dm(SC_MOD_CONTAINER | SC_PERFORMED_REDO);
 					dm.token = action.position;
 					NotifyModified(dm);
@@ -1417,16 +1418,16 @@ Sci::Position Document::Redo() {
 									SC_MOD_BEFOREDELETE | SC_PERFORMED_REDO, action));
 				}
 				cb.PerformRedoStep();
-				if (action.at != containerAction) {
+				if (action.at != ActionType::container) {
 					ModifiedAt(action.position);
 					newPos = action.position;
 				}
 
 				int modFlags = SC_PERFORMED_REDO;
-				if (action.at == insertAction) {
+				if (action.at == ActionType::insert) {
 					newPos += action.lenData;
 					modFlags |= SC_MOD_INSERTTEXT;
-				} else if (action.at == removeAction) {
+				} else if (action.at == ActionType::remove) {
 					modFlags |= SC_MOD_DELETETEXT;
 				}
 				if (steps > 1)
@@ -1730,7 +1731,7 @@ Sci::Position Document::ParaDown(Sci::Position pos) const {
 		return LineEnd(line-1);
 }
 
-CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
+CharacterClass Document::WordCharacterClass(unsigned int ch) const {
 	if (dbcsCodePage && (!UTF8IsAscii(ch))) {
 		if (SC_CP_UTF8 == dbcsCodePage) {
 			// Use hard coded Unicode class
@@ -1740,7 +1741,7 @@ CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
 				// Separator, Line/Paragraph
 			case ccZl:
 			case ccZp:
-				return CharClassify::ccNewLine;
+				return CharacterClass::newLine;
 
 				// Separator, Space
 			case ccZs:
@@ -1750,7 +1751,7 @@ CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
 			case ccCs:
 			case ccCo:
 			case ccCn:
-				return CharClassify::ccSpace;
+				return CharacterClass::space;
 
 				// Letter
 			case ccLu:
@@ -1766,7 +1767,7 @@ CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
 			case ccMn:
 			case ccMc:
 			case ccMe:
-				return CharClassify::ccWord;
+				return CharacterClass::word;
 
 				// Punctuation
 			case ccPc:
@@ -1781,12 +1782,12 @@ CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
 			case ccSc:
 			case ccSk:
 			case ccSo:
-				return CharClassify::ccPunctuation;
+				return CharacterClass::punctuation;
 
 			}
 		} else {
 			// Asian DBCS
-			return CharClassify::ccWord;
+			return CharacterClass::word;
 		}
 	}
 	return charClass.GetClass(static_cast<unsigned char>(ch));
@@ -1797,7 +1798,7 @@ CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
  * Finds the start of word at pos when delta < 0 or the end of the word when delta >= 0.
  */
 Sci::Position Document::ExtendWordSelect(Sci::Position pos, int delta, bool onlyWordCharacters) const {
-	CharClassify::cc ccStart = CharClassify::ccWord;
+	CharacterClass ccStart = CharacterClass::word;
 	if (delta < 0) {
 		if (!onlyWordCharacters) {
 			const CharacterExtracted ce = CharacterBefore(pos);
@@ -1835,13 +1836,13 @@ Sci::Position Document::NextWordStart(Sci::Position pos, int delta) const {
 	if (delta < 0) {
 		while (pos > 0) {
 			const CharacterExtracted ce = CharacterBefore(pos);
-			if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
+			if (WordCharacterClass(ce.character) != CharacterClass::space)
 				break;
 			pos -= ce.widthBytes;
 		}
 		if (pos > 0) {
 			CharacterExtracted ce = CharacterBefore(pos);
-			const CharClassify::cc ccStart = WordCharacterClass(ce.character);
+			const CharacterClass ccStart = WordCharacterClass(ce.character);
 			while (pos > 0) {
 				ce = CharacterBefore(pos);
 				if (WordCharacterClass(ce.character) != ccStart)
@@ -1851,7 +1852,7 @@ Sci::Position Document::NextWordStart(Sci::Position pos, int delta) const {
 		}
 	} else {
 		CharacterExtracted ce = CharacterAfter(pos);
-		const CharClassify::cc ccStart = WordCharacterClass(ce.character);
+		const CharacterClass ccStart = WordCharacterClass(ce.character);
 		while (pos < LengthNoExcept()) {
 			ce = CharacterAfter(pos);
 			if (WordCharacterClass(ce.character) != ccStart)
@@ -1860,7 +1861,7 @@ Sci::Position Document::NextWordStart(Sci::Position pos, int delta) const {
 		}
 		while (pos < LengthNoExcept()) {
 			ce = CharacterAfter(pos);
-			if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
+			if (WordCharacterClass(ce.character) != CharacterClass::space)
 				break;
 			pos += ce.widthBytes;
 		}
@@ -1879,8 +1880,8 @@ Sci::Position Document::NextWordEnd(Sci::Position pos, int delta) const {
 	if (delta < 0) {
 		if (pos > 0) {
 			CharacterExtracted ce = CharacterBefore(pos);
-			const CharClassify::cc ccStart = WordCharacterClass(ce.character);
-			if (ccStart != CharClassify::ccSpace) {
+			const CharacterClass ccStart = WordCharacterClass(ce.character);
+			if (ccStart != CharacterClass::space) {
 				while (pos > 0) {
 					ce = CharacterBefore(pos);
 					if (WordCharacterClass(ce.character) != ccStart)
@@ -1890,7 +1891,7 @@ Sci::Position Document::NextWordEnd(Sci::Position pos, int delta) const {
 			}
 			while (pos > 0) {
 				ce = CharacterBefore(pos);
-				if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
+				if (WordCharacterClass(ce.character) != CharacterClass::space)
 					break;
 				pos -= ce.widthBytes;
 			}
@@ -1898,13 +1899,13 @@ Sci::Position Document::NextWordEnd(Sci::Position pos, int delta) const {
 	} else {
 		while (pos < LengthNoExcept()) {
 			const CharacterExtracted ce = CharacterAfter(pos);
-			if (WordCharacterClass(ce.character) != CharClassify::ccSpace)
+			if (WordCharacterClass(ce.character) != CharacterClass::space)
 				break;
 			pos += ce.widthBytes;
 		}
 		if (pos < LengthNoExcept()) {
 			CharacterExtracted ce = CharacterAfter(pos);
-			const CharClassify::cc ccStart = WordCharacterClass(ce.character);
+			const CharacterClass ccStart = WordCharacterClass(ce.character);
 			while (pos < LengthNoExcept()) {
 				ce = CharacterAfter(pos);
 				if (WordCharacterClass(ce.character) != ccStart)
@@ -1925,10 +1926,10 @@ bool Document::IsWordStartAt(Sci::Position pos) const {
 		return false;
 	if (pos > 0) {
 		const CharacterExtracted cePos = CharacterAfter(pos);
-		const CharClassify::cc ccPos = WordCharacterClass(cePos.character);
+		const CharacterClass ccPos = WordCharacterClass(cePos.character);
 		const CharacterExtracted cePrev = CharacterBefore(pos);
-		const CharClassify::cc ccPrev = WordCharacterClass(cePrev.character);
-		return (ccPos == CharClassify::ccWord || ccPos == CharClassify::ccPunctuation) &&
+		const CharacterClass ccPrev = WordCharacterClass(cePrev.character);
+		return (ccPos == CharacterClass::word || ccPos == CharacterClass::punctuation) &&
 			(ccPos != ccPrev);
 	}
 	return true;
@@ -1943,10 +1944,10 @@ bool Document::IsWordEndAt(Sci::Position pos) const {
 		return false;
 	if (pos < LengthNoExcept()) {
 		const CharacterExtracted cePos = CharacterAfter(pos);
-		const CharClassify::cc ccPos = WordCharacterClass(cePos.character);
+		const CharacterClass ccPos = WordCharacterClass(cePos.character);
 		const CharacterExtracted cePrev = CharacterBefore(pos);
-		const CharClassify::cc ccPrev = WordCharacterClass(cePrev.character);
-		return (ccPrev == CharClassify::ccWord || ccPrev == CharClassify::ccPunctuation) &&
+		const CharacterClass ccPrev = WordCharacterClass(cePrev.character);
+		return (ccPrev == CharacterClass::word || ccPrev == CharacterClass::punctuation) &&
 			(ccPrev != ccPos);
 	}
 	return true;
@@ -1970,8 +1971,8 @@ bool Document::HasCaseFolder() const noexcept {
 	return pcf != nullptr;
 }
 
-void Document::SetCaseFolder(CaseFolder *pcf_) noexcept {
-	pcf.reset(pcf_);
+void Document::SetCaseFolder(std::unique_ptr<CaseFolder> pcf_) noexcept {
+	pcf = std::move(pcf_);
 }
 
 Document::CharacterExtracted Document::ExtractCharacter(Sci::Position position) const noexcept {
@@ -2185,11 +2186,11 @@ void Document::SetDefaultCharClasses(bool includeWordClass) {
     charClass.SetDefaultCharClasses(includeWordClass);
 }
 
-void Document::SetCharClasses(const unsigned char *chars, CharClassify::cc newCharClass) {
+void Document::SetCharClasses(const unsigned char *chars, CharacterClass newCharClass) {
     charClass.SetCharClasses(chars, newCharClass);
 }
 
-int Document::GetCharsOfClass(CharClassify::cc characterClass, unsigned char *buffer) const {
+int Document::GetCharsOfClass(CharacterClass characterClass, unsigned char *buffer) const {
     return charClass.GetCharsOfClass(characterClass, buffer);
 }
 
@@ -2527,7 +2528,7 @@ static bool IsASCIIPunctuationCharacter(unsigned int ch) noexcept {
 }
 
 bool Document::IsWordPartSeparator(unsigned int ch) const {
-	return (WordCharacterClass(ch) == CharClassify::ccWord) && IsASCIIPunctuationCharacter(ch);
+	return (WordCharacterClass(ch) == CharacterClass::word) && IsASCIIPunctuationCharacter(ch);
 }
 
 Sci::Position Document::WordPartLeft(Sci::Position pos) const {

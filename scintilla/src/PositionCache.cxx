@@ -15,10 +15,14 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <set>
+#include <optional>
 #include <algorithm>
 #include <iterator>
 #include <memory>
 
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "ILoader.h"
@@ -158,7 +162,7 @@ int LineLayout::SubLineFromPosition(int posInLine, PointEnd pe) const noexcept {
 	}
 
 	for (int line = 0; line < lines; line++) {
-		if (pe & peSubLineEnd) {
+		if (FlagSet(pe, PointEnd::subLineEnd)) {
 			// Return subline not start of next
 			if (lineStarts[line + 1] <= posInLine + 1)
 				return line;
@@ -273,9 +277,9 @@ Point LineLayout::PointFromPosition(int posInLine, int lineHeight, PointEnd pe) 
 				pt.x = positions[posInLine] - positions[rangeSubLine.start];
 				if (rangeSubLine.start != 0)	// Wrapped lines may be indented
 					pt.x += wrapIndent;
-				if (pe & peSubLineEnd)	// Return end of first subline not start of next
+				if (FlagSet(pe, PointEnd::subLineEnd))	// Return end of first subline not start of next
 					break;
-			} else if ((pe & peLineEnd) && (subLine == (lines-1))) {
+			} else if (FlagSet(pe, PointEnd::lineEnd) && (subLine == (lines-1))) {
 				pt.x = positions[numCharsInLine] - positions[rangeSubLine.start];
 				if (rangeSubLine.start != 0)	// Wrapped lines may be indented
 					pt.x += wrapIndent;
@@ -341,7 +345,7 @@ XYPOSITION ScreenLine::TabWidthMinimumPixels() const noexcept {
 }
 
 const Font *ScreenLine::FontOfPosition(size_t position) const noexcept {
-	return &ll->bidiData->stylesFonts[start + position];
+	return ll->bidiData->stylesFonts[start + position].get();
 }
 
 XYPOSITION ScreenLine::RepresentationWidth(size_t position) const noexcept {
@@ -353,7 +357,7 @@ XYPOSITION ScreenLine::TabPositionAfter(XYPOSITION xPosition) const noexcept {
 }
 
 LineLayoutCache::LineLayoutCache() :
-	level(0),
+	level(Cache::none),
 	allInvalidated(false), styleClock(-1), useCount(0) {
 	Allocate(0);
 }
@@ -371,11 +375,11 @@ void LineLayoutCache::Allocate(size_t length_) {
 void LineLayoutCache::AllocateForLevel(Sci::Line linesOnScreen, Sci::Line linesInDoc) {
 	PLATFORM_ASSERT(useCount == 0);
 	size_t lengthForLevel = 0;
-	if (level == llcCaret) {
+	if (level == Cache::caret) {
 		lengthForLevel = 1;
-	} else if (level == llcPage) {
+	} else if (level == Cache::page) {
 		lengthForLevel = linesOnScreen + 1;
-	} else if (level == llcDocument) {
+	} else if (level == Cache::document) {
 		lengthForLevel = linesInDoc;
 	}
 	if (lengthForLevel > cache.size()) {
@@ -410,9 +414,9 @@ void LineLayoutCache::Invalidate(LineLayout::ValidLevel validity_) noexcept {
 	}
 }
 
-void LineLayoutCache::SetLevel(int level_) noexcept {
+void LineLayoutCache::SetLevel(Cache level_) noexcept {
 	allInvalidated = false;
-	if ((level_ != -1) && (level != level_)) {
+	if ((static_cast<int>(level_) != -1) && (level != level_)) {
 		level = level_;
 		Deallocate();
 	}
@@ -428,15 +432,15 @@ LineLayout *LineLayoutCache::Retrieve(Sci::Line lineNumber, Sci::Line lineCaret,
 	allInvalidated = false;
 	Sci::Position pos = -1;
 	LineLayout *ret = nullptr;
-	if (level == llcCaret) {
+	if (level == Cache::caret) {
 		pos = 0;
-	} else if (level == llcPage) {
+	} else if (level == Cache::page) {
 		if (lineNumber == lineCaret) {
 			pos = 0;
 		} else if (cache.size() > 1) {
 			pos = 1 + (lineNumber % (cache.size() - 1));
 		}
-	} else if (level == llcDocument) {
+	} else if (level == Cache::document) {
 		pos = lineNumber;
 	}
 	if (pos >= 0) {
@@ -490,7 +494,7 @@ static unsigned int KeyFromString(const char *charBytes, size_t len) noexcept {
 }
 
 SpecialRepresentations::SpecialRepresentations() {
-	const short none = 0;
+	constexpr short none = 0;
 	std::fill(startByteHasReprs, std::end(startByteHasReprs), none);
 }
 
@@ -537,7 +541,7 @@ bool SpecialRepresentations::Contains(const char *charBytes, size_t len) const {
 
 void SpecialRepresentations::Clear() {
 	mapReprs.clear();
-	const short none = 0;
+	constexpr short none = 0;
 	std::fill(startByteHasReprs, std::end(startByteHasReprs), none);
 }
 
@@ -554,7 +558,7 @@ void BreakFinder::Insert(Sci::Position val) {
 }
 
 BreakFinder::BreakFinder(const LineLayout *ll_, const Selection *psel, Range lineRange_, Sci::Position posLineStart_,
-	int xStart, bool breakForSelection, const Document *pdoc_, const SpecialRepresentations *preprs_, const ViewStyle *pvsDraw) :
+	XYPOSITION xStart, bool breakForSelection, const Document *pdoc_, const SpecialRepresentations *preprs_, const ViewStyle *pvsDraw) :
 	ll(ll_),
 	lineRange(lineRange_),
 	posLineStart(posLineStart_),
@@ -569,7 +573,7 @@ BreakFinder::BreakFinder(const LineLayout *ll_, const Selection *psel, Range lin
 	// Search for first visible break
 	// First find the first visible character
 	if (xStart > 0.0f)
-		nextBreak = ll->FindBefore(static_cast<XYPOSITION>(xStart), lineRange);
+		nextBreak = ll->FindBefore(xStart, lineRange);
 	// Now back to a style break
 	while ((nextBreak > lineRange.start) && (ll->styles[nextBreak] == ll->styles[nextBreak - 1])) {
 		nextBreak--;
@@ -794,7 +798,7 @@ void PositionCache::MeasureWidths(Surface *surface, const ViewStyle &vstyle, uns
 			probe = probe2;
 		}
 	}
-	FontAlias fontStyle = vstyle.styles[styleNumber].font;
+	const Font *fontStyle = vstyle.styles[styleNumber].font.get();
 	if (len > BreakFinder::lengthStartSubdivision) {
 		// Break up into segments
 		unsigned int startSegment = 0;

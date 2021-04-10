@@ -13,9 +13,13 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <set>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "Scintilla.h"
@@ -36,7 +40,6 @@ MarginStyle::MarginStyle(int style_, int width_, int mask_) noexcept :
 FontRealised::FontRealised() noexcept = default;
 
 FontRealised::~FontRealised() {
-	font.Release();
 }
 
 void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs) {
@@ -44,13 +47,13 @@ void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, cons
 	sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
 	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.stretch,  fs.italic, fs.extraFontFlag, technology, fs.characterSet);
-	font.Create(fp);
+	font = Font::Allocate(fp);
 
-	ascent = static_cast<unsigned int>(surface.Ascent(font));
-	descent = static_cast<unsigned int>(surface.Descent(font));
-	capitalHeight = surface.Ascent(font) - surface.InternalLeading(font);
-	aveCharWidth = surface.AverageCharWidth(font);
-	spaceWidth = surface.WidthText(font, " ");
+	ascent = static_cast<unsigned int>(surface.Ascent(font.get()));
+	descent = static_cast<unsigned int>(surface.Descent(font.get()));
+	capitalHeight = surface.Ascent(font.get()) - surface.InternalLeading(font.get());
+	aveCharWidth = surface.AverageCharWidth(font.get());
+	spaceWidth = surface.WidthText(font.get(), " ");
 }
 
 ViewStyle::ViewStyle() : markers(MARKER_MAX + 1), indicators(INDICATOR_MAX + 1) {
@@ -250,10 +253,10 @@ void ViewStyle::Init(size_t stylesSize_) {
 	CalculateMarginWidthAndMask();
 	textStart = marginInside ? fixedColumnWidth : leftMarginWidth;
 	zoomLevel = 100;  /// @ 20018-09-06 Changed to percent
-	viewWhitespace = wsInvisible;
-	tabDrawMode = tdLongArrow;
+	viewWhitespace = WhiteSpace::invisible;
+	tabDrawMode = TabDrawMode::longArrow;
 	whitespaceSize = 1;
-	viewIndentationGuides = ivNone;
+	viewIndentationGuides = IndentView::none;
 	viewEOL = false;
 	extraFontFlag = 0;
 	extraAscent = 0;
@@ -338,7 +341,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 		[](const Style &style) noexcept { return style.IsProtected(); });
 
 	someStylesForceCase = std::any_of(styles.cbegin(), styles.cend(),
-		[](const Style &style) noexcept { return style.caseForce != Style::caseMixed; });
+		[](const Style &style) noexcept { return style.caseForce != Style::CaseForce::mixed; });
 
 	aveCharWidth = styles[STYLE_DEFAULT].aveCharWidth;
 	spaceWidth = styles[STYLE_DEFAULT].spaceWidth;
@@ -347,7 +350,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	controlCharWidth = 0.0;
 	if (controlCharSymbol >= 32) {
 		const char cc[2] = { static_cast<char>(controlCharSymbol), '\0' };
-		controlCharWidth = surface.WidthText(styles[STYLE_CONTROLCHAR].font, cc);
+		controlCharWidth = surface.WidthText(styles[STYLE_CONTROLCHAR].font.get(), cc);
 	}
 
 	CalculateMarginWidthAndMask();
@@ -385,7 +388,7 @@ void ViewStyle::ResetDefaultStyle() {
 	        ColourDesired(0xff,0xff,0xff),
 	        Platform::DefaultFontSize() * SC_FONT_SIZE_MULTIPLIER, fontNames.Save(Platform::DefaultFont()),
 	        SC_CHARSET_DEFAULT,
-	        SC_WEIGHT_NORMAL, SC_FONT_STRETCH_NORMAL, false, false, false, false, Style::caseMixed, true, true, false);
+	        SC_WEIGHT_NORMAL, SC_FONT_STRETCH_NORMAL, false, false, false, false, Style::CaseForce::mixed, true, true, false);
 }
 
 void ViewStyle::ClearStyles() {
@@ -503,13 +506,13 @@ bool ViewStyle::SelectionBackgroundDrawn() const noexcept {
 }
 
 bool ViewStyle::WhitespaceBackgroundDrawn() const noexcept {
-	return (viewWhitespace != wsInvisible) && (whitespaceColours.back.isSet);
+	return (viewWhitespace != WhiteSpace::invisible) && (whitespaceColours.back.isSet);
 }
 
 bool ViewStyle::WhiteSpaceVisible(bool inIndent) const noexcept {
-	return (!inIndent && viewWhitespace == wsVisibleAfterIndent) ||
-		(inIndent && viewWhitespace == wsVisibleOnlyInIndent) ||
-		viewWhitespace == wsVisibleAlways;
+	return (!inIndent && viewWhitespace == WhiteSpace::visibleAfterIndent) ||
+		(inIndent && viewWhitespace == WhiteSpace::visibleOnlyInIndent) ||
+		viewWhitespace == WhiteSpace::visibleAlways;
 }
 
 ColourDesired ViewStyle::WrapColour() const noexcept {
@@ -528,6 +531,20 @@ void ViewStyle::AddMultiEdge(uptr_t wParam, sptr_t lParam) {
 				return a.column < b.column;
 			}),
 		EdgeProperties(column, lParam));
+}
+
+std::optional<ColourAlpha> ViewStyle::ElementColour(int index) const noexcept {
+	auto search = elementColours.find(index);
+	if (search != elementColours.end()) {
+		if (search->second.has_value()) {
+			return search->second;
+		}
+	}
+	return {};
+}
+
+bool ViewStyle::ElementAllowsTranslucent(int index) const noexcept {
+	return elementAllowsTranslucent.count(index) > 0;
 }
 
 bool ViewStyle::SetWrapState(int wrapState_) noexcept {

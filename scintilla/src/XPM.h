@@ -88,7 +88,7 @@ public:
 	/// Remove all images.
 	void Clear() noexcept;
 	/// Add an image.
-	void Add(int ident, RGBAImage *image);
+	void AddImage(int ident, std::unique_ptr<RGBAImage> image);
 	/// Get image by id.
 	RGBAImage *Get(int ident);
 	/// Give the largest height of the set.

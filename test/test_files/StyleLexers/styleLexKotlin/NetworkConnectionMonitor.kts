@@ -1,7 +1,8 @@
 package com.xdreamllc.ticktalk3.utils
-
+1+2+3+4+5=12345
+http://www.wki.org
 import android.app.Application
-import android.content.BroadcastReceiver
+import android.content.BroadcastReceiver import android.content.BroadcastReceiverimport android.content.BroadcastReceiver import android.content.BroadcastReceiverimport android.content.BroadcastReceiver import android.content.BroadcastReceiverimport android.content.BroadcastReceiver import android.content.BroadcastReceiverimport android.content.BroadcastReceiver import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter

@@ -16,10 +16,11 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Debugging.h"
 
 #include "Scintilla.h"
 #include "Position.h"
@@ -300,7 +301,7 @@ public:
 };
 
 Action::Action() noexcept {
-	at = startAction;
+	at = ActionType::start;
 	position = 0;
 	lenData = 0;
 	mayCoalesce = false;
@@ -308,7 +309,7 @@ Action::Action() noexcept {
 
 Action::~Action() = default;
 
-void Action::Create(actionType at_, Sci::Position position_, const char *data_, Sci::Position lenData_, bool mayCoalesce_) {
+void Action::Create(ActionType at_, Sci::Position position_, const char *data_, Sci::Position lenData_, bool mayCoalesce_) {
 	data = nullptr;
 	position = position_;
 	at = at_;
@@ -352,7 +353,7 @@ UndoHistory::UndoHistory() {
 	savePoint = 0;
 	tentativePoint = -1;
 
-	actions[currentAction].Create(startAction);
+	actions[currentAction].Create(ActionType::start);
 }
 
 UndoHistory::~UndoHistory() = default;
@@ -366,7 +367,7 @@ void UndoHistory::EnsureUndoRoom() {
 	}
 }
 
-const char *UndoHistory::AppendAction(actionType at, Sci::Position position, const char *data, Sci::Position lengthData,
+const char *UndoHistory::AppendAction(ActionType at, Sci::Position position, const char *data, Sci::Position lengthData,
 	bool &startSequence, bool mayCoalesce) {
 	EnsureUndoRoom();
 	//Platform::DebugPrintf("%% %d action %d %d %d\n", at, position, lengthData, currentAction);
@@ -382,7 +383,7 @@ const char *UndoHistory::AppendAction(actionType at, Sci::Position position, con
 			int targetAct = -1;
 			const Action *actPrevious = &(actions[currentAction + targetAct]);
 			// Container actions may forward the coalesce state of Scintilla Actions.
-			while ((actPrevious->at == containerAction) && actPrevious->mayCoalesce) {
+			while ((actPrevious->at == ActionType::container) && actPrevious->mayCoalesce) {
 				targetAct--;
 				actPrevious = &(actions[currentAction + targetAct]);
 			}
@@ -395,15 +396,15 @@ const char *UndoHistory::AppendAction(actionType at, Sci::Position position, con
 				currentAction++;
 			} else if (!mayCoalesce || !actPrevious->mayCoalesce) {
 				currentAction++;
-			} else if (at == containerAction || actions[currentAction].at == containerAction) {
+			} else if (at == ActionType::container || actions[currentAction].at == ActionType::container) {
 				;	// A coalescible containerAction
-			} else if ((at != actPrevious->at) && (actPrevious->at != startAction)) {
+			} else if ((at != actPrevious->at) && (actPrevious->at != ActionType::start)) {
 				currentAction++;
-			} else if ((at == insertAction) &&
+			} else if ((at == ActionType::insert) &&
 			           (position != (actPrevious->position + actPrevious->lenData))) {
 				// Insertions must be immediately after to coalesce
 				currentAction++;
-			} else if (at == removeAction) {
+			} else if (at == ActionType::remove) {
 				if ((lengthData == 1) || (lengthData == 2)) {
 					if ((position + lengthData) == actPrevious->position) {
 						; // Backspace -> OK
@@ -433,7 +434,7 @@ const char *UndoHistory::AppendAction(actionType at, Sci::Position position, con
 	const int actionWithData = currentAction;
 	actions[currentAction].Create(at, position, data, lengthData, mayCoalesce);
 	currentAction++;
-	actions[currentAction].Create(startAction);
+	actions[currentAction].Create(ActionType::start);
 	maxAction = currentAction;
 	return actions[actionWithData].data.get();
 }
@@ -441,9 +442,9 @@ const char *UndoHistory::AppendAction(actionType at, Sci::Position position, con
 void UndoHistory::BeginUndoAction() {
 	EnsureUndoRoom();
 	if (undoSequenceDepth == 0) {
-		if (actions[currentAction].at != startAction) {
+		if (actions[currentAction].at != ActionType::start) {
 			currentAction++;
-			actions[currentAction].Create(startAction);
+			actions[currentAction].Create(ActionType::start);
 			maxAction = currentAction;
 		}
 		actions[currentAction].mayCoalesce = false;
@@ -456,9 +457,9 @@ void UndoHistory::EndUndoAction() {
 	EnsureUndoRoom();
 	undoSequenceDepth--;
 	if (0 == undoSequenceDepth) {
-		if (actions[currentAction].at != startAction) {
+		if (actions[currentAction].at != ActionType::start) {
 			currentAction++;
-			actions[currentAction].Create(startAction);
+			actions[currentAction].Create(ActionType::start);
 			maxAction = currentAction;
 		}
 		actions[currentAction].mayCoalesce = false;
@@ -474,7 +475,7 @@ void UndoHistory::DeleteUndoHistory() {
 		actions[i].Clear();
 	maxAction = 0;
 	currentAction = 0;
-	actions[currentAction].Create(startAction);
+	actions[currentAction].Create(ActionType::start);
 	savePoint = 0;
 	tentativePoint = -1;
 }
@@ -503,7 +504,7 @@ bool UndoHistory::TentativeActive() const noexcept {
 
 int UndoHistory::TentativeSteps() noexcept {
 	// Drop any trailing startAction
-	if (actions[currentAction].at == startAction && currentAction > 0)
+	if (actions[currentAction].at == ActionType::start && currentAction > 0)
 		currentAction--;
 	if (tentativePoint >= 0)
 		return currentAction - tentativePoint;
@@ -517,12 +518,12 @@ bool UndoHistory::CanUndo() const noexcept {
 
 int UndoHistory::StartUndo() {
 	// Drop any trailing startAction
-	if (actions[currentAction].at == startAction && currentAction > 0)
+	if (actions[currentAction].at == ActionType::start && currentAction > 0)
 		currentAction--;
 
 	// Count the steps in this action
 	int act = currentAction;
-	while (actions[act].at != startAction && act > 0) {
+	while (actions[act].at != ActionType::start && act > 0) {
 		act--;
 	}
 	return currentAction - act;
@@ -542,12 +543,12 @@ bool UndoHistory::CanRedo() const noexcept {
 
 int UndoHistory::StartRedo() {
 	// Drop any leading startAction
-	if (currentAction < maxAction && actions[currentAction].at == startAction)
+	if (currentAction < maxAction && actions[currentAction].at == ActionType::start)
 		currentAction++;
 
 	// Count the steps in this action
 	int act = currentAction;
-	while (act < maxAction && actions[act].at != startAction) {
+	while (act < maxAction && actions[act].at != ActionType::start) {
 		act++;
 	}
 	return act - currentAction;
@@ -641,7 +642,7 @@ const char *CellBuffer::InsertString(Sci::Position position, const char *s, Sci:
 		if (collectingUndo) {
 			// Save into the undo/redo stack, but only the characters - not the formatting
 			// This takes up about half load time
-			data = uh.AppendAction(insertAction, position, s, insertLength, startSequence);
+			data = uh.AppendAction(ActionType::insert, position, s, insertLength, startSequence);
 		}
 
 		BasicInsertString(position, s, insertLength);
@@ -690,7 +691,7 @@ const char *CellBuffer::DeleteChars(Sci::Position position, Sci::Position delete
 			// Save into the undo/redo stack, but only the characters - not the formatting
 			// The gap would be moved to position anyway for the deletion so this doesn't cost extra
 			data = substance.RangePointer(position, deleteLength);
-			data = uh.AppendAction(removeAction, position, data, deleteLength, startSequence);
+			data = uh.AppendAction(ActionType::remove, position, data, deleteLength, startSequence);
 		}
 
 		BasicDeleteChars(position, deleteLength);
@@ -1240,7 +1241,7 @@ void CellBuffer::EndUndoAction() {
 
 void CellBuffer::AddUndoAction(Sci::Position token, bool mayCoalesce) {
 	bool startSequence;
-	uh.AppendAction(containerAction, token, nullptr, 0, startSequence, mayCoalesce);
+	uh.AppendAction(ActionType::container, token, nullptr, 0, startSequence, mayCoalesce);
 }
 
 void CellBuffer::DeleteUndoHistory() {
@@ -1261,13 +1262,13 @@ const Action &CellBuffer::GetUndoStep() const {
 
 void CellBuffer::PerformUndoStep() {
 	const Action &actionStep = uh.GetUndoStep();
-	if (actionStep.at == insertAction) {
+	if (actionStep.at == ActionType::insert) {
 		if (substance.Length() < actionStep.lenData) {
 			throw std::runtime_error(
 				"CellBuffer::PerformUndoStep: deletion must be less than document length.");
 		}
 		BasicDeleteChars(actionStep.position, actionStep.lenData);
-	} else if (actionStep.at == removeAction) {
+	} else if (actionStep.at == ActionType::remove) {
 		BasicInsertString(actionStep.position, actionStep.data.get(), actionStep.lenData);
 	}
 	uh.CompletedUndoStep();
@@ -1287,9 +1288,9 @@ const Action &CellBuffer::GetRedoStep() const {
 
 void CellBuffer::PerformRedoStep() {
 	const Action &actionStep = uh.GetRedoStep();
-	if (actionStep.at == insertAction) {
+	if (actionStep.at == ActionType::insert) {
 		BasicInsertString(actionStep.position, actionStep.data.get(), actionStep.lenData);
-	} else if (actionStep.at == removeAction) {
+	} else if (actionStep.at == ActionType::remove) {
 		BasicDeleteChars(actionStep.position, actionStep.lenData);
 	}
 	uh.CompletedRedoStep();

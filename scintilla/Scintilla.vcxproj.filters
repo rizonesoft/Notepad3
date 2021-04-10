@@ -189,6 +189,9 @@
     <ClCompile Include="oniguruma\src\regposix.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Geometry.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -320,9 +323,6 @@
     <ClInclude Include="src\ElapsedPeriod.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\IntegerRectangle.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="oniguruma\src\config.h">
       <Filter>oniguruma\src</Filter>
     </ClInclude>
@@ -351,6 +351,15 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\CharacterSet.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debugging.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
