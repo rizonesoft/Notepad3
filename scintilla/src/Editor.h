@@ -419,12 +419,10 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void ClearDocumentStyle();
 	virtual void Cut();
 	void PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Position len);
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	virtual void Copy(bool asBinary) = 0;
+	virtual void Copy() = 0;
 	virtual void CopyAllowLine();
 	virtual bool CanPaste();
-	virtual void Paste(bool asBinary) = 0;
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	virtual void Paste() = 0;
 	void Clear();
 	virtual void SelectAll();
 	virtual void Undo();
@@ -549,7 +547,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	virtual int SupportsFeature(int feature) const noexcept;
 	virtual bool PaintContains(PRectangle rc) const noexcept;
-	bool PaintContainsMargin();
+	bool PaintContainsMargin() const noexcept;
 	void CheckForChangeOutsidePaint(Range r);
 	void SetBraceHighlight(Sci::Position pos0, Sci::Position pos1, int matchStyle);
 
@@ -665,8 +663,7 @@ public:
 	AutoSurface(SurfaceID sid, Editor *ed, int technology = -1, bool printing = false) {
 		if (ed->wMain.GetID()) {
 			surf = Surface::Allocate(technology != -1 ? technology : ed->technology);
-			//~surf->Init(sid, ed->wMain.GetID(), printing);
-			surf->Init(sid, ed->wMain.GetID());
+			surf->Init(sid, ed->wMain.GetID()/* @@@, printing*/);
 			surf->SetMode(SurfaceMode(ed->CodePage(), ed->BidirectionalR2L()));
 		}
 	}

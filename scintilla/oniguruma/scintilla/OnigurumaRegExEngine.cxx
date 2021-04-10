@@ -25,6 +25,7 @@
 #define VC_EXTRALEAN 1
 #include <windows.h>
 
+#include "Geometry.h"
 #include "Platform.h"
 #include "Scintilla.h"
 #include "ILexer.h"

@@ -6049,10 +6049,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
 
     case WM_DPICHANGED: {
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+        UINT const dpi = LOWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, dpi);
     }
     return TRUE; // further processing
 
@@ -8018,10 +8016,8 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED: {
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+        UINT const dpi = LOWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, dpi);
     }
     return true;
 
@@ -8200,10 +8196,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     return true;
 
     case WM_DPICHANGED: {
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
-
+        //UINT const dpi = LOWORD(wParam);
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf = { 0 };
@@ -8215,8 +8208,8 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             }
             hFontHover = CreateFontIndirectW(&lf);
         }
-
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+        //@@@UpdateWindowLayoutForDPI(hwnd, NULL, dpi);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
     }
     return TRUE;
 
@@ -8429,7 +8422,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     return true;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return true;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -8550,7 +8543,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -8678,7 +8671,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
     return false;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return true;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -8901,7 +8894,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
     return true;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return true;
 
 #ifdef D_NP3_WIN10_DARK_MODE

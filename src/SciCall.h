@@ -461,7 +461,6 @@ DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible);
 //  Style definition
 //
 DeclareSciCallR0(GetLexer, GETLEXER, int);
-DeclareSciCallV1(SetLexer, SETLEXER, int, lexerid); // deprecated
 DeclareSciCallV01(SetILexer, SETILEXER, void*, lexerPtr); // ILexer5*
 
 DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle);

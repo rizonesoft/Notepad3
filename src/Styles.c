@@ -42,7 +42,7 @@
 extern COLORREF  g_colorCustom[16];
 
 // removed from project, not MUI language compatible with ChooseFont()
-//~bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCF);
+//~bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
 
 // ----------------------------------------------------------------------------
 
@@ -1095,15 +1095,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetILexer(CreateLexer(pLexNew->lexerName));
 
     int const iNewLexer = SciCall_GetLexer();
-    if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {
 #ifdef _DEBUG
+    if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {
         WCHAR msg[256] = { L'\0' };
         StringCchPrintf(msg, COUNTOF(msg), L"Failed to set desired Lexer (#%i), got Lexer #%i!", pLexNew->lexerID, iNewLexer);
         DbgMsgBoxLastError(msg, ERROR_DLL_INIT_FAILED);
-#endif
-        // try to use old method
-        SciCall_SetLexer(pLexNew->lexerID); // mixing lexers might cause problems
     }
+#endif
 
     // Lexer very specific styles
     Style_SetLexerSpecificProperties(pLexNew->lexerID);
@@ -1800,7 +1798,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
             if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
                 iFrameSize = 2;
             }
-            iFrameSize = max_i(1, ScaleIntToDPI_Y(hwnd, iFrameSize));
+            iFrameSize = max_i(1, ScaleIntToDPI(hwnd, iFrameSize));
             SciCall_SetCaretLineFrame(iFrameSize);
         }
 
@@ -1822,7 +1820,7 @@ static int  _GetMarkerMarginWidth(HWND hwnd)
     Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
     Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
     float const zoomPercent = (float)SciCall_GetZoom();
-    return ScaleFloatToDPI_X(hwnd, (fSize * zoomPercent) / 100.0f);
+    return ScaleFloatToDPI(hwnd, (fSize * zoomPercent) / 100.0f);
 }
 
 //=============================================================================
@@ -3495,7 +3493,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
 #else
     if (Settings.RenderingTechnology > 0) {
-        DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+        UINT const dpi = Scintilla_GetWindowDPI(hwnd);
         const WCHAR* const localName = Settings2.PreferredLanguageLocaleName;
         if (!ChooseFontDirectWrite(Globals.hwndMain, localName, dpi, &cf) || StrIsEmpty(lf.lfFaceName)) {
             return false;
@@ -4147,7 +4145,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetWindowTheme(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), L"", L"");
         }
 #endif
-        DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+        UINT const dpi = Scintilla_GetWindowDPI(hwnd);
 
         GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
@@ -4174,7 +4172,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         TreeView_SetExtendedStyle(hwndTV, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
 
-        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         TreeView_SetImageList(hwndTV,
                               (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
                                       flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
@@ -4252,12 +4250,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     return TRUE;
 
     case WM_DPICHANGED: {
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
+        UINT const dpi = LOWORD(wParam);
 
         SHFILEINFO shfi = { 0 };
-        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         TreeView_SetImageList(hwndTV,
                               (HIMAGELIST)SHGetFileInfoW(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
                                       flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
@@ -4282,7 +4278,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
         MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
 
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
     }
     return TRUE;
 
@@ -4292,16 +4288,15 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         if (hdc) {
             BeginPaint(hwnd, &ps);
 
-            DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+            UINT const dpi = Scintilla_GetWindowDPI(hwnd);
 
             int const   iconSize  = 64;
-            int const   dpiWidth  = ScaleIntByDPI(iconSize, dpi.x);
-            int const   dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
-            HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
+            int const   dpiSize  = ScaleIntByDPI(iconSize, dpi);
+            HICON const hicon = (dpiSize > 128) ? Globals.hDlgIconPrefs256 : ((dpiSize > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
             if (hicon) {
                 RECT rc = {0};
                 MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
-                DrawIconEx(hdc, rc.left + ScaleIntByDPI(10, dpi.x), rc.top + ScaleIntByDPI(20, dpi.y), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+                DrawIconEx(hdc, rc.left + ScaleIntByDPI(10, dpi), rc.top + ScaleIntByDPI(20, dpi), hicon, dpiSize, dpiSize, 0, NULL, DI_NORMAL);
             }
 
             ReleaseDC(hwnd, hdc);
@@ -4861,7 +4856,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         }
 #endif
 
-        DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+        UINT const dpi = Scintilla_GetWindowDPI(hwnd);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
         InitWindowCommon(hwndLV, true);
@@ -4869,7 +4864,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         SHFILEINFO shfi = { 0 };
 
-        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         ListView_SetImageList(hwndLV,
                               (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
                                       &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
@@ -4915,14 +4910,11 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
 
     case WM_DPICHANGED: {
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
 
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
-
+        UINT const dpi = LOWORD(wParam);
         SHFILEINFO shfi = { 0 };
-        UINT const flagIconSize = (dpi.y >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        UINT const flagIconSize = (dpi >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
         ListView_SetImageList(hwndLV,
                               (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
                                       &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),

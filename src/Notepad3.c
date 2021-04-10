@@ -867,7 +867,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     //SetProcessDPIAware(); -> .manifest
     //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
-    Scintilla_LoadDpiForWindow();
+    //~Scintilla_LoadDpiForWindow(); done in Sci::Platform_Initialize();
 
     // ----------------------------------------------------
     // MultiLingual
@@ -2416,16 +2416,14 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
     HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
     ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
 
-    DPI_T dpi = Scintilla_GetWindowDPI(hWnd);
-    if (!Settings.DpiScaleToolBar ||
-            ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI))) {
+    UINT const dpi = Scintilla_GetWindowDPI(hWnd);
+    if (!Settings.DpiScaleToolBar || (dpi == USER_DEFAULT_SCREEN_DPI)) {
         return himl; // default DPI, we are done
     }
 
-
     // Scale button icons/images
-    int const scx = ScaleIntToDPI_X(hWnd, cx);
-    int const scy = ScaleIntToDPI_Y(hWnd, cy);
+    int const scx = ScaleIntToDPI(hWnd, cx);
+    int const scy = ScaleIntToDPI(hWnd, cy);
 
     HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
 
@@ -2461,8 +2459,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     DWORD dwToolbarExStyle = TBSTYLE_EX_DOUBLEBUFFER /* | TBSTYLE_EX_HIDECLIPPEDBUTTONS */;
 
     if (Settings.ToolBarTheme < 0) { // undefined: determine High DPI screen
-        DPI_T const dpi       = Scintilla_GetWindowDPI(hwnd);
-        Settings.ToolBarTheme = (dpi.y < LargeIconDPI()) ? 0 : 1;
+        UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+        Settings.ToolBarTheme = (dpi < LargeIconDPI()) ? 0 : 1;
     }
 
     if (Globals.hwndToolbar) {
@@ -2794,15 +2792,13 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    //DPI_T dpi;
-    //dpi.x = LOWORD(wParam);
-    //dpi.y = HIWORD(wParam);
+    //UINT const dpi = LOWORD(wParam);
     UNREFERENCED_PARAMETER(wParam);
     //const RECT* const rc = (RECT*)lParam;
 
     DocPos const pos = SciCall_GetCurrentPos();
 
-    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
 
     SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
 

@@ -89,6 +89,7 @@ SRC_OBJS=\
 	$(DIR_O)\EditModel.obj \
 	$(DIR_O)\Editor.obj \
 	$(DIR_O)\EditView.obj \
+	$(DIR_O)\Geometry.obj \
 	$(DIR_O)\Indicator.obj \
 	$(DIR_O)\KeyMap.obj \
 	$(DIR_O)\LineMarker.obj \

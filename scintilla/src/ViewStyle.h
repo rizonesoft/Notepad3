@@ -96,7 +96,6 @@ public:
 	std::vector<Indicator> indicators;
 	bool indicatorsDynamic;
 	bool indicatorsSetFore;
-	bool fontsValid;
 	int technology;
 	int lineHeight;
 	int lineOverlap;
@@ -157,8 +156,8 @@ public:
 	int eolAnnotationVisible;
 	int eolAnnotationStyleOffset;
 	bool braceHighlightIndicatorSet;
-	bool braceBadLightIndicatorSet;
 	int braceHighlightIndicator;
+	bool braceBadLightIndicatorSet;
 	int braceBadLightIndicator;
 	int edgeState;
 	EdgeProperties theEdge;

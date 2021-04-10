@@ -2169,9 +2169,7 @@ void Editor::CopyAllowLine() {
 void Editor::Cut() {
 	pdoc->CheckReadOnly();
 	if (!pdoc->IsReadOnly() && !SelectionContainsProtected()) {
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		Copy(false);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		Copy();
 		ClearSelection();
 	}
 }
@@ -5205,7 +5203,7 @@ void Editor::QueueIdleWork(WorkItems items, Sci::Position upTo) {
 	workNeeded.Need(items, upTo);
 }
 
-int Editor::SupportsFeature(int feature) {
+int Editor::SupportsFeature(int feature)  const noexcept {
 	AutoSurface surface(this);
 	return surface->Supports(feature);
 }
@@ -5721,30 +5719,24 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		break;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case SCI_STYLESETBOLD:
-		vs.fontsValid = false;
 		vs.styles[wParam].weight = lParam != 0 ? SC_WEIGHT_BOLD : SC_WEIGHT_NORMAL;
 		break;
 	case SCI_STYLESETWEIGHT:
-		vs.fontsValid = false;
 		vs.styles[wParam].weight = static_cast<int>(lParam);
 		break;
 	case SCI_STYLESETSTRETCH:
-		vs.fontsValid = false;
 		vs.styles[wParam].stretch = static_cast<int>(lParam);
 		break;
 	case SCI_STYLESETITALIC:
-		vs.fontsValid = false;
 		vs.styles[wParam].italic = lParam != 0;
 		break;
 	case SCI_STYLESETEOLFILLED:
 		vs.styles[wParam].eolFilled = lParam != 0;
 		break;
 	case SCI_STYLESETSIZE:
-		vs.fontsValid = false;
 		vs.styles[wParam].size = static_cast<int>(lParam * SC_FONT_SIZE_MULTIPLIER);
 		break;
 	case SCI_STYLESETSIZEFRACTIONAL:
-		vs.fontsValid = false;
 		vs.styles[wParam].size = static_cast<int>(lParam);
 		break;
 	case SCI_STYLESETFONT:
@@ -5763,7 +5755,6 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		vs.styles[wParam].caseForce = static_cast<Style::CaseForce>(lParam);
 		break;
 	case SCI_STYLESETCHARACTERSET:
-		vs.fontsValid = false;
 		vs.styles[wParam].characterSet = static_cast<int>(lParam);
 		pdoc->SetCaseFolder(nullptr);
 		break;
@@ -5928,7 +5919,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_COPY:
-		Copy(false);
+		Copy();
 		break;
 
 	case SCI_COPYALLOWLINE:
@@ -5956,7 +5947,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_PASTE:
-		Paste(false);
+		Paste();
 		if ((caretSticky == SC_CARETSTICKY_OFF) || (caretSticky == SC_CARETSTICKY_WHITESPACE)) {
 			SetLastXChosen();
 		}
@@ -6637,9 +6628,6 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_SETFONTQUALITY:
 		vs.extraFontFlag &= ~SC_EFF_QUALITY_MASK;
 		vs.extraFontFlag |= (wParam & SC_EFF_QUALITY_MASK);
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		vs.fontsValid = false;
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		InvalidateStyleRedraw();
 		break;
 
@@ -6873,7 +6861,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return caretSticky;
 
 	case SCI_TOGGLECARETSTICKY:
-		caretSticky = !caretSticky;
+		caretSticky = caretSticky ? SC_CARETSTICKY_OFF : SC_CARETSTICKY_ON;
 		break;
 
 	case SCI_GETCOLUMN:
@@ -6957,7 +6945,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return static_cast<sptr_t>(imeIsInModeCJK);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
-  case SCI_SETBIDIRECTIONAL:
+	case SCI_SETBIDIRECTIONAL:
 		// SCI_SETBIDIRECTIONAL is implemented on platform subclasses if they support bidirectional text.
 		break;
 
@@ -7805,7 +7793,6 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			if (zoomLevel != vs.zoomLevel) {
 				vs.zoomLevel = zoomLevel;
-				vs.fontsValid = false;
 				InvalidateStyleRedraw();
 				NotifyZoom();
 			}

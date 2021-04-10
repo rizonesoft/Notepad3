@@ -6,6 +6,8 @@
 // Copyright 1998-2009 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 #pragma once
+#ifndef PLATFORM_H
+#define PLATFORM_H
 
 // PLAT_GTK = GTK+ on Linux or Win32
 // PLAT_GTK_WIN32 is defined additionally when running PLAT_GTK under Win32
@@ -74,46 +76,14 @@
 
 #endif
 
-// use __vectorcall to pass float/double arguments such as Point and PRectangle.
-#if defined(_WIN64) && defined(NDEBUG)
-	#if defined(_MSC_BUILD)
-		#define SCICALL __vectorcall
-	#elif defined(__INTEL_COMPILER_BUILD_DATE)
-		//#define SCICALL __regcall
-		#define SCICALL
-	#else
-		#define SCICALL
-	#endif
-#else
-	#define SCICALL
-#endif
-
-
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#include <memory>
-#include <vector>
-#include <string_view>
+#include <optional>
+//#include <memory>
+//#include <vector>
+//#include <string_view>
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 namespace Scintilla {
-
-// official Scintilla use dynamic_cast, which requires RTTI.
-#ifdef NDEBUG
-#define USE_RTTI	0
-#else
-#define USE_RTTI	1
-#endif
-
-template<typename DerivedPointer, class Base>
-inline DerivedPointer down_cast(Base* ptr) noexcept {
-#if USE_RTTI
-	return dynamic_cast<DerivedPointer>(ptr);
-#else
-	return static_cast<DerivedPointer>(ptr);
-#endif
-}
-
-typedef double XYACCUMULATOR;
 
 // Underlying the implementation of the platform classes are platform specific types.
 // Sometimes these need to be passed around by client code so they are defined here
@@ -125,8 +95,6 @@ typedef void *TickerID;
 typedef void *Function;
 typedef void *IdlerID;
 
-
-/**
 /**
  * Font management.
  */
@@ -198,7 +166,7 @@ public:
 
 class IScreenLineLayout {
 public:
-	virtual ~IScreenLineLayout() = default;
+	virtual ~IScreenLineLayout() noexcept = default;
 	virtual size_t PositionFromX(XYPOSITION xDistance, bool charPosition) = 0;
 	virtual XYPOSITION XFromPosition(size_t caretPosition) noexcept = 0;
 	virtual std::vector<Interval> FindRangeIntervals(size_t start, size_t end) = 0;
@@ -244,45 +212,51 @@ public:
 
 	virtual void Release() noexcept = 0;
 	virtual int Supports(int feature) noexcept=0;
-	virtual bool Initialised() const noexcept = 0;
-	virtual void PenColour(ColourDesired fore) = 0;
-	virtual int LogPixelsY() const noexcept = 0;
-	virtual int DeviceHeightFont(int points) const noexcept = 0;
-	virtual void SCICALL MoveTo(int x_, int y_) noexcept = 0;
-	virtual void SCICALL LineTo(int x_, int y_) noexcept = 0;
-	virtual void SCICALL Polygon(const Point *pts, size_t npts, ColourDesired fore, ColourDesired back) = 0;
-	virtual void SCICALL RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back) = 0;
-	virtual void SCICALL FillRectangle(PRectangle rc, ColourDesired back) = 0;
-	virtual void SCICALL FillRectangle(PRectangle rc, Surface &surfacePattern) = 0;
-	virtual void SCICALL RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back) = 0;
-	virtual void SCICALL AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
-		ColourDesired outline, int alphaOutline, int flags) = 0;
-	enum class GradientOptions {
-		leftToRight, topToBottom
-	};
-	virtual void SCICALL GradientRectangle(PRectangle rc, const std::vector<ColourStop> &stops, GradientOptions options) = 0;
-	virtual void SCICALL DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
-	virtual void SCICALL Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back) = 0;
-	virtual void SCICALL Copy(PRectangle rc, Point from, Surface &surfaceSource) = 0;
+	virtual bool Initialised()=0;
+	virtual int LogPixelsY()=0;
+	virtual int PixelDivisions()=0;
+	virtual int DeviceHeightFont(int points)=0;
+	virtual void LineDraw(Point start, Point end, Stroke stroke)=0;
+	virtual void PolyLine(const Point *pts, size_t npts, Stroke stroke)=0;
+	virtual void Polygon(const Point *pts, size_t npts, FillStroke fillStroke)=0;
+	virtual void RectangleDraw(PRectangle rc, FillStroke fillStroke)=0;
+	virtual void RectangleFrame(PRectangle rc, Stroke stroke)=0;
+	virtual void FillRectangle(PRectangle rc, Fill fill)=0;
+	virtual void FillRectangleAligned(PRectangle rc, Fill fill)=0;
+	virtual void FillRectangle(PRectangle rc, Surface &surfacePattern)=0;
+	virtual void RoundedRectangle(PRectangle rc, FillStroke fillStroke)=0;
+	virtual void AlphaRectangle(PRectangle rc, XYPOSITION cornerSize, FillStroke fillStroke)=0;
+	enum class GradientOptions { leftToRight, topToBottom };
+	virtual void GradientRectangle(PRectangle rc, const std::vector<ColourStop> &stops, GradientOptions options)=0;
+	virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
+	virtual void Ellipse(PRectangle rc, FillStroke fillStroke)=0;
+	virtual void Stadium(PRectangle rc, FillStroke fillStroke, Ends ends)=0;
+	virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource)=0;
 
 	virtual std::unique_ptr<IScreenLineLayout> Layout(const IScreenLine *screenLine) = 0;
 
-	virtual void SCICALL DrawTextNoClip(PRectangle rc, const Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
-	virtual void SCICALL DrawTextClipped(PRectangle rc, const Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
-	virtual void SCICALL DrawTextTransparent(PRectangle rc, const Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore) = 0;
-	virtual void SCICALL MeasureWidths(const Font &font_, std::string_view text, XYPOSITION *positions) = 0;
-	virtual XYPOSITION WidthText(const Font &font_, std::string_view text) = 0;
-	virtual XYPOSITION Ascent(const Font &font_) noexcept = 0;
-	virtual XYPOSITION Descent(const Font &font_) noexcept = 0;
-	virtual XYPOSITION InternalLeading(const Font &font_) noexcept = 0;
-	virtual XYPOSITION Height(const Font &font_) noexcept = 0;
-	virtual XYPOSITION AverageCharWidth(const Font &font_) = 0;
+	virtual void DrawTextNoClip(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore, ColourAlpha back) = 0;
+	virtual void DrawTextClipped(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore, ColourAlpha back) = 0;
+	virtual void DrawTextTransparent(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore) = 0;
+	virtual void MeasureWidths(const Font *font_, std::string_view text, XYPOSITION *positions) = 0;
+	virtual XYPOSITION WidthText(const Font *font_, std::string_view text) = 0;
 
-	virtual void SCICALL SetClip(PRectangle rc) noexcept = 0;
+	virtual void DrawTextNoClipUTF8(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore, ColourAlpha back) = 0;
+	virtual void DrawTextClippedUTF8(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore, ColourAlpha back) = 0;
+	virtual void DrawTextTransparentUTF8(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore) = 0;
+	virtual void MeasureWidthsUTF8(const Font *font_, std::string_view text, XYPOSITION *positions) = 0;
+	virtual XYPOSITION WidthTextUTF8(const Font *font_, std::string_view text) = 0;
+
+	virtual XYPOSITION Ascent(const Font *font_)=0;
+	virtual XYPOSITION Descent(const Font *font_)=0;
+	virtual XYPOSITION InternalLeading(const Font *font_)=0;
+	virtual XYPOSITION Height(const Font *font_)=0;
+	virtual XYPOSITION AverageCharWidth(const Font *font_)=0;
+
+	virtual void SetClip(PRectangle rc)=0;
 	virtual void PopClip()=0;
-	virtual void FlushCachedState() noexcept = 0;
+	virtual void FlushCachedState()=0;
 	virtual void FlushDrawing()=0;
-
 };
 
 /**
@@ -292,9 +266,9 @@ public:
 class Window {
 protected:
 	WindowID wid;
-
 public:
-	Window() noexcept : wid(nullptr), cursorLast(Cursor::invalid) {}
+	Window() noexcept : wid(nullptr), cursorLast(Cursor::invalid) {
+	}
 	Window(const Window &source) = delete;
 	Window(Window &&) = delete;
 	Window &operator=(WindowID wid_) noexcept {
@@ -304,28 +278,20 @@ public:
 	}
 	Window &operator=(const Window &) = delete;
 	Window &operator=(Window &&) = delete;
-	virtual ~Window();
-	WindowID GetID() const noexcept {
-		return wid;
-	}
-	bool Created() const noexcept {
-		return wid != nullptr;
-	}
+	virtual ~Window() noexcept;
+	WindowID GetID() const noexcept { return wid; }
+	bool Created() const noexcept { return wid != nullptr; }
 	void Destroy() noexcept;
-	PRectangle GetPosition() const noexcept;
-	void SCICALL SetPosition(PRectangle rc) noexcept;
-	void SCICALL SetPositionRelative(PRectangle rc, const Window *relativeTo) noexcept;
-	PRectangle GetClientPosition() const noexcept;
-	void Show(bool show = true) const noexcept;
-	void InvalidateAll() noexcept;
-	void SCICALL InvalidateRectangle(PRectangle rc) noexcept;
-	virtual void SetFont(const Font &font) noexcept;
-	enum class Cursor {
-		invalid, text, arrow, up, wait, horiz, vert, reverseArrow, hand
-	};
-	void SetCursor(Cursor curs) noexcept;
-	PRectangle SCICALL GetMonitorRect(Point pt) const noexcept;
-
+	PRectangle GetPosition() const;
+	void SetPosition(PRectangle rc);
+	void SetPositionRelative(PRectangle rc, const Window *relativeTo);
+	PRectangle GetClientPosition() const;
+	void Show(bool show=true);
+	void InvalidateAll();
+	void InvalidateRectangle(PRectangle rc);
+	enum class Cursor { invalid, text, arrow, up, wait, horizontal, vertical, reverseArrow, hand };
+	void SetCursor(Cursor curs);
+	PRectangle GetMonitorRect(Point pt);
 private:
 	Cursor cursorLast;
 };
@@ -337,15 +303,14 @@ private:
 // ScintillaBase implements IListBoxDelegate to receive ListBoxEvents from a ListBox
 
 struct ListBoxEvent {
-	enum class EventType {
-		selectionChange, doubleClick
-	} event;
-	explicit ListBoxEvent(EventType event_) noexcept : event(event_) {}
+	enum class EventType { selectionChange, doubleClick } event;
+	ListBoxEvent(EventType event_) noexcept : event(event_) {
+	}
 };
 
 class IListBoxDelegate {
 public:
-	virtual void ListNotify(ListBoxEvent *plbe) = 0;
+	virtual void ListNotify(ListBoxEvent *plbe)=0;
 };
 
 struct ListOptions {
@@ -358,29 +323,29 @@ struct ListOptions {
 class ListBox : public Window {
 public:
 	ListBox() noexcept;
-	~ListBox() override;
-	static ListBox *Allocate();
+	virtual ~ListBox() noexcept override;
+	static std::unique_ptr<ListBox> Allocate();
 
-	void SetFont(const Font &font) noexcept override = 0;
-	virtual void SetColour(ColourDesired fore, ColourDesired back) noexcept = 0;
-	virtual void SCICALL Create(Window &parent, int ctrlID, Point location, int lineHeight_, bool unicodeMode_, int technology_) noexcept = 0;
-	virtual void SetAverageCharWidth(int width) noexcept = 0;
-	virtual void SetVisibleRows(int rows) noexcept = 0;
-	virtual int GetVisibleRows() const noexcept = 0;
-	virtual PRectangle GetDesiredRect() = 0;
-	virtual int CaretFromEdge() const = 0;
-	virtual void Clear() noexcept = 0;
-	virtual void Append(const char *s, int type = -1) const noexcept = 0;
-	virtual int Length() const noexcept = 0;
-	virtual void Select(int n) = 0;
-	virtual int GetSelection() const noexcept = 0;
-	virtual int Find(const char *prefix) const noexcept = 0;
-	virtual void GetValue(int n, char *value, int len) const noexcept = 0;
-	virtual void RegisterImage(int type, const char *xpm_data) = 0;
+	virtual void SetFont(const Font *font)=0;
+	virtual void Create(Window &parent, int ctrlID, Point location, int lineHeight_, bool unicodeMode_, int technology_)=0;
+	virtual void SetAverageCharWidth(int width)=0;
+	virtual void SetVisibleRows(int rows)=0;
+	virtual int GetVisibleRows() const=0;
+	virtual PRectangle GetDesiredRect()=0;
+	virtual int CaretFromEdge()=0;
+	virtual void Clear() noexcept=0;
+	virtual void Append(char *s, int type = -1)=0;
+	virtual int Length()=0;
+	virtual void Select(int n)=0;
+	virtual int GetSelection()=0;
+	virtual int Find(const char *prefix)=0;
+	virtual std::string GetValue(int n)=0;
+	virtual void RegisterImage(int type, const char *xpm_data)=0;
 	virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) = 0;
-	virtual void ClearRegisteredImages() noexcept = 0;
-	virtual void SetDelegate(IListBoxDelegate *lbDelegate) noexcept = 0;
-	virtual void SetList(const char* list, char separator, char typesep) = 0;
+	virtual void ClearRegisteredImages()=0;
+	virtual void SetDelegate(IListBoxDelegate *lbDelegate)=0;
+	virtual void SetList(const char* list, char separator, char typesep)=0;
+	virtual void SetOptions(ListOptions options_)=0;
 };
 
 /**
@@ -390,39 +355,31 @@ class Menu {
 	MenuID mid;
 public:
 	Menu() noexcept;
-	MenuID GetID() const noexcept {
-		return mid;
-	}
-	void CreatePopUp() noexcept;
+	MenuID GetID() const noexcept { return mid; }
+	void CreatePopUp();
 	void Destroy() noexcept;
-	void SCICALL Show(Point pt, const Window &w) noexcept;
+	void Show(Point pt, const Window &w);
 };
 
 /**
- * Dynamic Library (DLL/SO/...) loading
+ * Platform namespace used to retrieve system wide parameters such as double click speed
+ * and chrome colour.
  */
-class DynamicLibrary {
-public:
-	virtual ~DynamicLibrary() = default;
+namespace Platform {
 
-	/// @return Pointer to function "name", or NULL on failure.
-	virtual Function FindFunction(const char *name) = 0;
-
-	/// @return true if the library was loaded successfully.
-	virtual bool IsValid() = 0;
-
-	/// @return An instance of a DynamicLibrary subclass with "modulePath" loaded.
-	static DynamicLibrary *Load(const char *modulePath);
-};
-
-#if defined(__clang__)
-	#if __has_feature(attribute_analyzer_noreturn)
-		#define CLANG_ANALYZER_NORETURN __attribute__((analyzer_noreturn))
-	#else
-		#define CLANG_ANALYZER_NORETURN
-	#endif
-#else
-	#define CLANG_ANALYZER_NORETURN
-#endif
+ColourDesired Chrome();
+ColourDesired ChromeHighlight();
+const char *DefaultFont();
+int DefaultFontSize();
+unsigned int DoubleClickTime();
+constexpr long LongFromTwoShorts(short a,short b) noexcept {
+	return (a) | ((b) << 16);
+}
 
 }
+
+
+
+} // namespace 
+
+#endif

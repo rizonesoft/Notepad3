@@ -19,16 +19,14 @@ extern "C" {
 // ==============================================================
 // --- needed to bind Scintilla as dynamic link library (DLL) ---
 // ==============================================================
-typedef struct _dpi_t { unsigned x;	unsigned y; } DPI_T;
-typedef struct _wrct_t { long left; long top; long right; long bottom; } WRCT_T;
-__declspec(dllexport) void  Scintilla_LoadDpiForWindow(void);
-__declspec(dllexport) int   Scintilla_RegisterClasses(void *hInstance);
-__declspec(dllexport) int   Scintilla_ReleaseResources(void);
-__declspec(dllexport) int   Scintilla_InputCodePage(void);
-__declspec(dllexport) DPI_T Scintilla_GetWindowDPI(void* hwnd);
-__declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi);
-__declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi);
-__declspec(dllexport) int   Scintilla_AdjustWindowRectForDpi(WRCT_T* lpRect, unsigned long dwStyle, unsigned long  dwExStyle, DPI_T dpi);
+typedef struct _wrct_t { long left; long top; long right; long bottom; } WRECT, *LPWRECT; // Windows RECT
+__declspec(dllexport) int       Scintilla_RegisterClasses(void *hInstance);
+__declspec(dllexport) int       Scintilla_ReleaseResources(void);
+__declspec(dllexport) int       Scintilla_InputCodePage(void);
+__declspec(dllexport) unsigned  Scintilla_GetWindowDPI(void* hwnd);
+__declspec(dllexport) int       Scintilla_GetSystemMetricsForDpi(int nIndex, unsigned dpi);
+__declspec(dllexport) int       Scintilla_GetSystemMetricsForDpi(int nIndex, unsigned dpi);
+__declspec(dllexport) int       Scintilla_AdjustWindowRectForDpi(LPWRECT lpRect, unsigned long dwStyle, unsigned long  dwExStyle, unsigned dpi);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 #ifdef __cplusplus

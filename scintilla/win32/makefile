@@ -96,6 +96,7 @@ SRC_OBJS = \
 	EditModel.o \
 	Editor.o \
 	EditView.o \
+	Geometry.o \
 	Indicator.o \
 	KeyMap.o \
 	LineMarker.o \
