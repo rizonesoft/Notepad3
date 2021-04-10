@@ -286,10 +286,10 @@ BEGIN
     IDS_LEX_STR_63220       "치환 s/re/ore/"
     IDS_LEX_STR_63221       "역따옴표"
     IDS_LEX_STR_63222       "데이터 섹션"
-    IDS_LEX_STR_63223       "Here-Doc (구분 기호)"
-    IDS_LEX_STR_63224       "Here-Doc (작은 따옴표, q)"
-    IDS_LEX_STR_63225       "Here-Doc (큰 따옴표, qq)"
-    IDS_LEX_STR_63226       "Here-Doc (역 따옴표, qx)"
+    IDS_LEX_STR_63223       "여기-문서 (구분 기호)"
+    IDS_LEX_STR_63224       "여기-문서 (작은 따옴표, q)"
+    IDS_LEX_STR_63225       "여기-문서 (큰 따옴표, qq)"
+    IDS_LEX_STR_63226       "여기-문서 (역 따옴표, qx)"
     IDS_LEX_STR_63227       "작은따옴표 문자열 (포괄적인, q)"
     IDS_LEX_STR_63228       "큰따옴표 문자열 (qq)"
     IDS_LEX_STR_63229       "역따옴표 (qx)"
@@ -476,7 +476,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63372       "데코레이터"
-    IDS_LEX_STR_63373       "Task Marker"
+    IDS_LEX_STR_63373       "작업 마커"
+    IDS_LEX_STR_63374       "주석 문서 오류"
 END
 
 STRINGTABLE
@@ -507,3 +508,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+

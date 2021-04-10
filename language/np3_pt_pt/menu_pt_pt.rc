@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "Guardar &cópia...\tCtrl+F6",                           IDM_FILE_SAVECOPY
         MENUITEM "Guardar com &data/hora original do ficheiro\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Só de leitu&ra File Attribute",                   IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",                        IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "Atributo do ficheiro Só de leitu&ra",                   IDM_FILE_READONLY
+        MENUITEM "B&loquear ficheiro (Leitura-Partilhado)",                        IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Definir palavra-passe de encr&iptação...",        IDM_SETPASS
         MENUITEM SEPARATOR
@@ -259,11 +259,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Codificar &URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Descodificar URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",               IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",               IDM_EDIT_URL2PATH
+            MENUITEM "Caminho do sistema de ficheiros para URL",               IDM_EDIT_PATH2URL
+            MENUITEM "URL para Caminho do sistema de ficheiros",               IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                    IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                        IDM_EDIT_INVERTSLASH
+            MENUITEM "Inverter barras invertidas",                    IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverter barras",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Caractere para Hex\tCtrl+Alt+X",       IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex para Caractere\tCtrl+Alt+C",       IDM_EDIT_HEX2CHAR

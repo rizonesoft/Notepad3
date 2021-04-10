@@ -401,8 +401,8 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63312       "Built-In Variables"
     IDS_LEX_STR_63313       "Variable Keyword"
-    IDS_LEX_STR_63314       "Filter"
-    IDS_LEX_STR_63315       "Plugin"
+    IDS_LEX_STR_63314       "Filtr"
+    IDS_LEX_STR_63315       "Wtyczka"
     IDS_LEX_STR_63316       "Clip Property"
     IDS_LEX_STR_63317       "Line Begin"
     IDS_LEX_STR_63318       "Strong"
@@ -414,7 +414,7 @@ BEGIN
     IDS_LEX_STR_63324       "Header 5"
     IDS_LEX_STR_63325       "Header 6"
     IDS_LEX_STR_63326       "Pre Char"
-    IDS_LEX_STR_63327       "Unordered List"
+    IDS_LEX_STR_63327       "Lista nieuporządkowana"
 END
 
 STRINGTABLE
@@ -475,8 +475,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63372       "Decorator"
-    IDS_LEX_STR_63373       "Task Marker"
+    IDS_LEX_STR_63372       "Dekorator"
+    IDS_LEX_STR_63373       "Znacznik zadań"
+    IDS_LEX_STR_63374       "Komentarz błędu Doc"
 END
 
 STRINGTABLE

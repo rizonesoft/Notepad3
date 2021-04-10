@@ -331,8 +331,12 @@ msgstr ""
 msgid "Preset name"
 msgstr ""
 
-#. Resource IDs: (1022, 132)
+#. Resource IDs: (1022)
 msgid "Presets..."
+msgstr ""
+
+#. Resource IDs: (132)
+msgid "Presets"
 msgstr ""
 
 #. Resource IDs: (1065)
