@@ -28,9 +28,9 @@
 #define NOMINMAX
 #endif
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
 #undef WINVER
-#define WINVER 0x0500
+#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
 #include <windows.h>
 #include <commctrl.h>
 #include <richedit.h>

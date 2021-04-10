@@ -31,9 +31,9 @@
 #define NOMINMAX
 #endif
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
 #undef WINVER
-#define WINVER 0x0500
+#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
 #include <windows.h>
 #include <commctrl.h>
 #include <richedit.h>
@@ -323,7 +323,9 @@ class ScintillaWin :
 	SetCoalescableTimerSig SetCoalescableTimerFn;
 
 	unsigned int linesPerScroll;	///< Intellimouse support
+	unsigned int charsPerScroll;	///< Intellimouse support
 	int wheelDelta; ///< Wheel delta from roll
+	int wheelDeltaH; ///< Wheel delta from roll
 
 	UINT dpi = USER_DEFAULT_SCREEN_DPI;
 	ReverseArrowCursor reverseArrowCursor;
@@ -533,7 +535,9 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	SetCoalescableTimerFn = nullptr;
 
 	linesPerScroll = 0;
-	wheelDelta = 0;   // Wheel delta from roll
+	charsPerScroll = 0;
+	wheelDelta = 0;    // Wheel delta from roll
+	wheelDeltaH = 0;   // Wheel delta from roll horiz.
 
 	dpi = DpiForWindow(hwnd);
 
@@ -1506,27 +1510,56 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 			break;
 		}
 
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+
 		// Don't handle datazoom.
 		// (A good idea for datazoom would be to "fold" or "unfold" details.
 		// i.e. if datazoomed out only class structures are visible, when datazooming in the control
 		// structures appear, then eventually the individual statements...)
 		if (wParam & MK_SHIFT) {
-			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+			if (vs.wrapState != WrapMode::none || charsPerScroll == 0) {
+				return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+			}
 		}
 		// Either SCROLL or ZOOM. We handle the wheel steppings calculation
 		wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
-		if (std::abs(wheelDelta) >= WHEEL_DELTA && linesPerScroll > 0) {
-			Sci::Line linesToScroll = linesPerScroll;
-			if (linesPerScroll == WHEEL_PAGESCROLL)
-				linesToScroll = LinesOnScreen() - 1;
-			if (linesToScroll == 0) {
-				linesToScroll = 1;
+		if (std::abs(wheelDelta) < WHEEL_DELTA) {
+			return 0;
+		}
+		if (wParam & MK_SHIFT) {
+			int charsToScroll = charsPerScroll;
+			const PRectangle rcText = GetTextRectangle();
+			if (charsPerScroll == WHEEL_PAGESCROLL) {
+				const int pageWidth = static_cast<int>(rcText.Width() * 2 / 3);
+				charsToScroll = pageWidth;
 			}
-			linesToScroll *= (wheelDelta / WHEEL_DELTA);
-			if (wheelDelta >= 0)
+			else {
+				charsToScroll = 1 + static_cast<int>(std::max(charsToScroll, 1) * vs.aveCharWidth);
+			}
+			charsToScroll *= (wheelDelta / WHEEL_DELTA);
+			if (wheelDelta >= 0) {
 				wheelDelta = wheelDelta % WHEEL_DELTA;
-			else
+			}
+			else {
 				wheelDelta = -(-wheelDelta % WHEEL_DELTA);
+			}
+
+			int const xPos = std::min(xOffset + charsToScroll, scrollWidth - static_cast<int>(rcText.Width()) + 1);
+			HorizontalScrollTo(xPos);
+		}
+		else if (linesPerScroll > 0) {
+			Sci::Line linesToScroll = linesPerScroll;
+			if (linesPerScroll == WHEEL_PAGESCROLL) {
+				linesToScroll = LinesOnScreen() - 1;
+			}
+			linesToScroll = std::max<Sci::Line>(linesToScroll, 1);
+			linesToScroll *= (wheelDelta / WHEEL_DELTA);
+			if (wheelDelta >= 0) {
+				wheelDelta = wheelDelta % WHEEL_DELTA;
+			}
+			else {
+				wheelDelta = -(-wheelDelta % WHEEL_DELTA);
+			}
 
 			if (wParam & MK_CONTROL) {
 				// Zoom! We play with the font sizes in the styles.
@@ -1536,12 +1569,61 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 				} else {
 					KeyCommand(SCI_ZOOMOUT);
 				}
+				// send to main window too (trigger Zoom CallTip) !
+				::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 			} else {
 				// Scroll
 				ScrollTo(topLine + linesToScroll);
 			}
 		}
 		return 0;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	case WM_MOUSEHWHEEL:
+		if (!mouseWheelCaptures) {
+			// if the mouse wheel is not captured, test if the mouse
+			// pointer is over the editor window and if not, don't
+			// handle the message but pass it on.
+			RECT rc;
+			GetWindowRect(MainHWND(), &rc);
+			const POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+			if (!PtInRect(&rc, pt)) {
+				return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+			}
+		}
+
+		wheelDeltaH += GET_WHEEL_DELTA_WPARAM(wParam);
+		if (std::abs(wheelDeltaH) < WHEEL_DELTA) {
+			return 0;
+		}
+
+		if (vs.wrapState != WrapMode::none || charsPerScroll == 0) {
+			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+		}
+		else {
+			int charsToScroll = charsPerScroll;
+			const PRectangle rcText = GetTextRectangle();
+			if (charsPerScroll == WHEEL_PAGESCROLL) {
+				const int pageWidth = static_cast<int>(rcText.Width() * 2 / 3);
+				charsToScroll = pageWidth;
+			}
+			else {
+				charsToScroll = 1 + static_cast<int>(std::max(charsToScroll, 1) * vs.aveCharWidth);
+			}
+			charsToScroll *= (wheelDeltaH / WHEEL_DELTA);
+			if (wheelDeltaH >= 0) {
+				wheelDeltaH = wheelDeltaH % WHEEL_DELTA;
+			}
+			else {
+				wheelDeltaH = -(-wheelDeltaH % WHEEL_DELTA);
+			}
+			int const xPos = std::min(xOffset + charsToScroll, scrollWidth - static_cast<int>(rcText.Width()) + 1);
+			HorizontalScrollTo(xPos);
+		}
+		return 0;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 	}
 	return 0;
 }
@@ -1936,6 +2018,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		case WM_MOUSEMOVE:
 		case WM_MOUSELEAVE:
 		case WM_MOUSEWHEEL:
+		case WM_MOUSEHWHEEL:
 			return MouseMessage(iMessage, wParam, lParam);
 
 		case WM_SETCURSOR:
@@ -3034,6 +3117,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 void ScintillaWin::GetIntelliMouseParameters() noexcept {
 	// This retrieves the number of lines per scroll as configured in the Mouse Properties sheet in Control Panel
 	::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &linesPerScroll, 0);
+	::SystemParametersInfo(SPI_GETWHEELSCROLLCHARS, 0, &charsPerScroll, 0);
 }
 
 void ScintillaWin::CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &selectedText) {
