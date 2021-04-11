@@ -1897,7 +1897,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
 
     // occurrence bookmarker
     bool const visible = Settings.MarkOccurrencesBookmark;
-    SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
+    //SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
+    SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_EMPTY);
     SciCall_MarkerSetStrokeWidth(MARKER_NP3_OCCURRENCE, strokeWidth);
     SciCall_MarkerSetForeTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(CalcContrastColor(clrBack, 100), SC_ALPHA_OPAQUE));
     SciCall_MarkerSetBackTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(clrBack, SC_ALPHA_TRANSPARENT));
