@@ -268,13 +268,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "모든 발생되는 것 표시..."
+    IDS_MUI_SB_TOGGLE_VIEW    "보기 전환..."
+    IDS_MUI_SB_REPLACE_ALL    "모두 바꾸기..."
+    IDS_MUI_SB_WRAP_LINES     "줄바꿈 줄..."
+    IDS_MUI_SB_CONV_LNBRK     "변환 줄 바꿈..."
+    IDS_MUI_SB_RECODING_DOC   "문서 기록..."
+    IDS_MUI_SB_LEXER_STYLING  "렉서 스타일링 적용..."
 END
 
 STRINGTABLE
