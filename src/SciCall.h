@@ -553,37 +553,45 @@ DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, uintptr_t, margin, COLORREF, co
 DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, uintptr_t, margin, int, cursor);
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour);
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour);
-DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag);
-DeclareSciCallR2(MarkerNumberFromLine, MARKERNUMBERFROMLINE, int, DocLn, line, int, which);
-DeclareSciCallR2(MarkerHandleFromLine, MARKERHANDLEFROMLINE, int, DocLn, line, int, which);
 
-DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text);
+DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char *, text);
 
 //=============================================================================
 //
 //  Markers
 //
 DeclareSciCallR1(MarkerGet, MARKERGET, int, DocLn, line);
-DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols);
-DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour);
-DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour);
-DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerNumber, int, alpha);
-DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber);
+DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerID, int, markerSymbols);
+DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerID, COLORREF, colour);
+DeclareSciCallV2(MarkerSetForeTranslucent, MARKERSETFORETRANSLUCENT, int, markerID, COLORALPHAREF, colouralpha);
+DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerID, COLORREF, colour);
+DeclareSciCallV2(MarkerSetBackTranslucent, MARKERSETBACKTRANSLUCENT, int, markerID, COLORALPHAREF, colouralpha);
+DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerID, COLORREF, colour);
+DeclareSciCallV2(MarkerSetBackSelectedTranslucent, MARKERSETBACKSELECTEDTRANSLUCENT, int, markerID, COLORALPHAREF, colouralpha);
+DeclareSciCallV2(MarkerSetStrokeWidth, MARKERSETSTROKEWIDTH, int, markerID, int, hundredths);
+DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag);
+//~DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerID, int, alpha); // deprecated w/ v5.0.1 ?
+DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerID);
 DeclareSciCallV2(MarkerAddSet, MARKERADDSET, DocLn, line, int, markerMask);
-DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber);
-DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber);
-DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber, int, colour);
+DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerID);
+DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerID);
 DeclareSciCallR2(MarkerNext, MARKERNEXT, DocLn, DocLn, start, int, markerMask);
 DeclareSciCallR2(MarkerPrevious, MARKERPREVIOUS, DocLn, DocLn, start, int, markerMask);
+DeclareSciCallR2(MarkerNumberFromLine, MARKERNUMBERFROMLINE, int, DocLn, line, int, which);
+DeclareSciCallR2(MarkerHandleFromLine, MARKERHANDLEFROMLINE, int, DocLn, line, int, which);
 
 //=============================================================================
 //
 //  Indicators
 //
 DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicID, int, style);
-DeclareSciCallR1(IndicGetFore, INDICGETFORE, COLORREF, int, indicID);
+DeclareSciCallR1(IndicGetStyle, INDICGETSTYLE, int, int, indicID);
 DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicID, COLORREF, colour);
+DeclareSciCallR1(IndicGetFore, INDICGETFORE, COLORREF, int, indicID);
+DeclareSciCallV2(IndicSetStrokeWidth, INDICSETSTROKEWIDTH, int, indicID, int, hundredths);
+DeclareSciCallR1(IndicGetStrokeWidth, INDICGETSTROKEWIDTH, int, int, indicID);
 DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicID, bool, under);
+DeclareSciCallR1(IndicGetUnder, INDICGETUNDER, bool, int, indicID);
 DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicID, int, style);
 DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicID, COLORREF, colour);
 DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicID, int, alpha);
@@ -689,7 +697,7 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 //~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
 #define Sci_GetDocEndPosition() SciCall_PositionAfter(SciCall_GetTextLength() - 1)
 
-#define Sci_ClampAlpha(alpha) clampi((alpha), SC_ALPHA_TRANSPARENT, /*SC_ALPHA_OPAQUE*/SC_ALPHA_NOALPHA)
+#define Sci_ClampAlpha(alpha) clampi((alpha), SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE) //~SC_ALPHA_NOALPHA
 
 // max. line length in range (incl. line-breaks)
 inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine)
