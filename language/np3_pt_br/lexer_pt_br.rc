@@ -477,7 +477,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63372       "Decorador"
     IDS_LEX_STR_63373       "Marcador de Tarefa"
-    IDS_LEX_STR_63374       "Comment Doc Error"
+    IDS_LEX_STR_63374       "Erro de Comentário de Documento"
 END
 
 STRINGTABLE
