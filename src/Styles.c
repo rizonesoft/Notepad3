@@ -1305,6 +1305,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, false); // indent guide
 
+    // TODO: @@@ DirectFunction instead of SendMsg
+
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FOREGROUND_LAYER, &rgb, false)) { // selection fore
         SendMessage(hwnd, SCI_SETSELFORE, true, rgb);
         SendMessage(hwnd, SCI_SETADDITIONALSELFORE, rgb, 0);
@@ -1882,25 +1884,32 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
     Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &bckgrnd, true);
     bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, alpha);
 
+    int strokeWidth = FW_NORMAL;
+    if (!Style_StrGetWeightValue(lpszStyle, &strokeWidth)) {
+        strokeWidth = FW_NORMAL;
+    }
+    strokeWidth >>= 2;
+
     SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_VERTICALBOOKMARK); // SC_MARK_BOOKMARK/SC_MARK_SHORTARROW
-    SciCall_MarkerSetFore(MARKER_NP3_BOOKMARK, bmkFore);
-    SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
-    SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
+    SciCall_MarkerSetStrokeWidth(MARKER_NP3_BOOKMARK, strokeWidth);
+    SciCall_MarkerSetForeTranslucent(MARKER_NP3_BOOKMARK, RGBxA(bmkFore, SC_ALPHA_OPAQUE));
+    SciCall_MarkerSetBackTranslucent(MARKER_NP3_BOOKMARK, RGBxA(bmkBack, alpha));
 
     // occurrence bookmarker
     bool const visible = Settings.MarkOccurrencesBookmark;
     SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
-    SciCall_MarkerSetFore(MARKER_NP3_OCCURRENCE, CalcContrastColor(clrBack, 100));
-    SciCall_MarkerSetAlpha(MARKER_NP3_OCCURRENCE, SC_ALPHA_TRANSPARENT);
+    SciCall_MarkerSetStrokeWidth(MARKER_NP3_OCCURRENCE, strokeWidth);
+    SciCall_MarkerSetForeTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(CalcContrastColor(clrBack, 100), SC_ALPHA_OPAQUE));
+    SciCall_MarkerSetBackTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(clrBack, SC_ALPHA_TRANSPARENT));
+    //~SciCall_MarkerSetForeSelected(MARKER_NP3_OCCURRENCE, RGB(0,0,220));
 
     // ---  WordBookMarks  ---
     COLORREF color;
     for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
         SciCall_MarkerDefine(m, (Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
         Style_StrGetColor(WordBookMarks[m], BACKGROUND_LAYER, &color, true);
-        SciCall_MarkerSetFore(m, color);
-        SciCall_MarkerSetBack(m, color);
-        SciCall_MarkerSetAlpha(m, alpha); // no margin or SC_MARK_BACKGROUND or SC_MARK_UNDERLINE
+        SciCall_MarkerSetForeTranslucent(m, RGBxA(color, SC_ALPHA_OPAQUE));
+        SciCall_MarkerSetBackTranslucent(m, RGBxA(color, alpha)); // 'alpha' no meaning for SC_MARK_BACKGROUND
     }
 
     SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
@@ -1909,7 +1918,6 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
 
 
     // ---  Code folding  ---
-
     COLORREF fldHiLight = clrFore;
     const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
     Style_StrGetColor(wchHighlightStyleStrg, FOREGROUND_LAYER, &fldHiLight, true);

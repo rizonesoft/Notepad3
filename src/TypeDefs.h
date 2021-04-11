@@ -95,6 +95,16 @@ inline void RectFromWinInfo(const WININFO* const pWinInfo, LPRECT pRect)
 
 // ----------------------------------------------------------------------------
 
+typedef int COLORALPHAREF;
+#define RGBA(r, g, b, a) ((COLORALPHAREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16) | (((DWORD)(BYTE)(a)) << 24)))
+#define RGBxA(rgb, a) ((COLORALPHAREF)(((DWORD)(rgb)&0xffffff) | (((DWORD)(BYTE)(a)) << 24)))
+#define GetRedValue(rgba) (LOBYTE(rgba))
+#define GetGreenValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
+#define GetBlueValue(rgba) (LOBYTE((rgba) >> 16))
+#define GetAlphaValue(rgba) (LOBYTE((rgba) >> 24))
+
+// ----------------------------------------------------------------------------
+
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4, SELECT_HYPERLINK = 8 } HYPERLINK_OPS;  // Hyperlink Operations
 typedef enum { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2, FWM_EXCLUSIVELOCK = 3 } FILE_WATCHING_MODE;
