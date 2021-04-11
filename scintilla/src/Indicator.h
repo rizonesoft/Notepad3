@@ -33,6 +33,7 @@ public:
 	int fillAlpha;
 	int outlineAlpha;
 	int attributes;
+	XYPOSITION strokeWidth = 1.0f;
 	Indicator() noexcept : under(false), fillAlpha(30), outlineAlpha(50), attributes(0) {
 	}
 	Indicator(int style_, ColourDesired fore_=ColourDesired(0,0,0), bool under_=false, int fillAlpha_=30, int outlineAlpha_=50) noexcept :

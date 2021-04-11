@@ -40,8 +40,6 @@ protected:
 	int multiAutoCMode; /// Mode for autocompleting when multiple selections are present
 
 	LexState *DocumentLexState();
-	void SetLexer(uptr_t wParam);
-	void SetLexerLanguage(const char *languageName);
 	void Colourise(int start, int end);
 
 	ScintillaBase();
@@ -80,11 +78,10 @@ protected:
 	void CallTipShow(Point pt, const char *defn);
 	virtual void CreateCallTipWindow(PRectangle rc) = 0;
 
-	bool ShouldDisplayPopup(Point ptInWindowCoordinates) const;
-
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #if SCI_EnablePopupMenu
 	virtual void AddToPopUp(const char *label, int cmd=0, bool enabled=true) = 0;
+	bool ShouldDisplayPopup(Point ptInWindowCoordinates) const;
 	void ContextMenu(Point pt);
 #endif
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<

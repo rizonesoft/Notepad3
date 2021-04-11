@@ -11,10 +11,11 @@
 #include <stdexcept>
 #include <string_view>
 #include <vector>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Debugging.h"
 
 #include "Scintilla.h"
 
@@ -191,14 +192,14 @@ void SelectionRange::MinimizeVirtualSpace() noexcept {
 	}
 }
 
-Selection::Selection() : mainRange(0), moveExtends(false), tentativeMain(false), selType(selStream) {
+Selection::Selection() : mainRange(0), moveExtends(false), tentativeMain(false), selType(SelTypes::stream) {
 	AddSelection(SelectionRange(SelectionPosition(0)));
 }
 
 Selection::~Selection() = default;
 
 bool Selection::IsRectangular() const noexcept {
-	return (selType == selRectangle) || (selType == selThin);
+	return (selType == SelTypes::rectangle) || (selType == SelTypes::thin);
 }
 
 Sci::Position Selection::MainCaret() const noexcept {
@@ -310,7 +311,7 @@ void Selection::MovePositions(bool insertion, Sci::Position startChange, Sci::Po
 	for (SelectionRange &range : ranges) {
 		range.MoveForInsertDelete(insertion, startChange, length);
 	}
-	if (selType == selRectangle) {
+	if (selType == SelTypes::rectangle) {
 		rangeRectangular.MoveForInsertDelete(insertion, startChange, length);
 	}
 }
@@ -421,7 +422,7 @@ void Selection::Clear() {
 	ranges.clear();
 	ranges.emplace_back();
 	mainRange = ranges.size() - 1;
-	selType = selStream;
+	selType = SelTypes::stream;
 	moveExtends = false;
 	ranges[mainRange].Reset();
 	rangeRectangular.Reset();

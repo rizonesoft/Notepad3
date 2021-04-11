@@ -227,7 +227,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 {
     static HBITMAP hIconBmp = NULL;
     static HICON   hBoxIcon = NULL;
-    static DPI_T dpi = {USER_DEFAULT_SCREEN_DPI, USER_DEFAULT_SCREEN_DPI};
+    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
 
     switch (umsg) {
     case WM_INITDIALOG: {
@@ -296,15 +296,14 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
 
     case WM_DPICHANGED: {
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
+        dpi = LOWORD(wParam);
         int const scxb = Scintilla_GetSystemMetricsForDpi(SM_CXICON, dpi);
         int const scyb = Scintilla_GetSystemMetricsForDpi(SM_CYICON, dpi);
         hIconBmp = ResampleIconToBitmap(hwnd, hIconBmp, hBoxIcon, scxb, scyb);
         if (hIconBmp) {
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
     }
     return TRUE;
 
@@ -757,7 +756,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -958,7 +957,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     static HFONT hVersionFont = NULL;
     static char pAboutResource[8192] = { '\0' };
     static char* pAboutInfo = NULL;
-    static DPI_T dpi = { 0, 0 };
+    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
     static HBRUSH hbrBkgnd = NULL;
 
     switch (umsg) {
@@ -1064,15 +1063,15 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             }
             SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
         }
-        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y > USER_DEFAULT_SCREEN_DPI));
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi > USER_DEFAULT_SCREEN_DPI));
 
         // RichEdit-Ctrl DPI-BUG: it initially uses the DPI setting of
         // the main(1) screen instead it's current parent window screen DPI
-        DPI_T const dpiPrime = Scintilla_GetWindowDPI(NULL);
-        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)dpiPrime.y);
+        UINT const dpiPrime = Scintilla_GetWindowDPI(NULL);
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi, (LPARAM)dpiPrime);
 
-        int const width  = ScaleIntByDPI(136, dpi.x);
-        int const height = ScaleIntByDPI(41, dpi.y);
+        int const width  = ScaleIntByDPI(136, dpi);
+        int const height = ScaleIntByDPI(41, dpi);
         HBITMAP   hBmp   = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_RIZBITMAP), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
         SetBitmapControlResample(hwnd, IDC_RIZONEBMP, hBmp, width, height);
         DeleteObject(hBmp);
@@ -1087,8 +1086,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         break;
 
     case WM_DPICHANGED: {
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
+        dpi = LOWORD(wParam);
+        //dpi.y = HIWORD(wParam);
 
         // render rich-edit control text again
         if (!StrIsEmptyA(pAboutResource)) {
@@ -1099,11 +1098,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             }
             SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
         }
-        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi.y > USER_DEFAULT_SCREEN_DPI));
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)(dpi > USER_DEFAULT_SCREEN_DPI));
         //~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
 
-        int const width  = ScaleIntByDPI(136, dpi.x);
-        int const height = ScaleIntByDPI(41, dpi.y);
+        int const width  = ScaleIntByDPI(136, dpi);
+        int const height = ScaleIntByDPI(41, dpi);
         HBITMAP   hBmp   = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_RIZBITMAP), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
         SetBitmapControlResample(hwnd, IDC_RIZONEBMP, hBmp, width, height);
         DeleteObject(hBmp);
@@ -1122,7 +1121,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
         }
 
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
     }
     break;
 
@@ -1179,13 +1178,13 @@ CASE_WM_CTLCOLOR_SET:
             SetMapMode(hdc, MM_TEXT);
 
             int const   iconSize  = 128;
-            int const   dpiWidth  = ScaleIntByDPI(iconSize, dpi.x);
-            int const   dpiHeight = ScaleIntByDPI(iconSize, dpi.y);
+            int const   dpiWidth  = ScaleIntByDPI(iconSize, dpi);
+            int const   dpiHeight = ScaleIntByDPI(iconSize, dpi);
             HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
             if (hicon) {
                 //RECT rc = {0};
                 //MapWindowPoints(GetDlgItem(hwnd, IDC_INFO_GROUPBOX), hwnd, (LPPOINT)&rc, 2);
-                DrawIconEx(hdc, ScaleIntByDPI(10, dpi.x), ScaleIntByDPI(10, dpi.x), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+                DrawIconEx(hdc, ScaleIntByDPI(10, dpi), ScaleIntByDPI(10, dpi), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
             }
 
             ReleaseDC(hwnd, hdc);
@@ -1305,7 +1304,7 @@ CASE_WM_CTLCOLOR_SET:
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution -> %i x %i [pix]", ResX, ResY);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI -> %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
+            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI -> %i x %i  (Scale: %i%%).", dpi, dpi, ScaleIntToDPI(hwnd, 100));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology -> '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
@@ -1370,7 +1369,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -1588,7 +1587,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -1821,7 +1820,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -2026,7 +2025,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         break;
 
 
@@ -2306,7 +2305,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
     case WM_DESTROY: {
@@ -2725,7 +2724,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -2883,7 +2882,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -3030,7 +3029,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -3174,7 +3173,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -3332,7 +3331,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -3507,7 +3506,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -3704,7 +3703,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -3934,7 +3933,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 
@@ -5128,7 +5127,7 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
         return;
     }
 
-    DPI_T const dpi = Scintilla_GetWindowDPI(hDlg);
+    UINT const dpi = Scintilla_GetWindowDPI(hDlg);
 
     RECT rcDlg;
     GetWindowRect(hDlg, &rcDlg);
@@ -5139,10 +5138,10 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 
     // return positions relative to parent window (normalized DPI)
     if (xDlg) {
-        *xDlg = MulDiv((rcDlg.left - rcParent.left), USER_DEFAULT_SCREEN_DPI, (dpi.x ? dpi.x : USER_DEFAULT_SCREEN_DPI));
+        *xDlg = MulDiv((rcDlg.left - rcParent.left), USER_DEFAULT_SCREEN_DPI, (dpi ? dpi : USER_DEFAULT_SCREEN_DPI));
     }
     if (yDlg) {
-        *yDlg = MulDiv((rcDlg.top - rcParent.top), USER_DEFAULT_SCREEN_DPI, (dpi.y ? dpi.y : USER_DEFAULT_SCREEN_DPI));
+        *yDlg = MulDiv((rcDlg.top - rcParent.top), USER_DEFAULT_SCREEN_DPI, (dpi ? dpi : USER_DEFAULT_SCREEN_DPI));
     }
 }
 
@@ -5157,7 +5156,7 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
         return;
     }
 
-    DPI_T const dpi = Scintilla_GetWindowDPI(hDlg);
+    UINT const dpi = Scintilla_GetWindowDPI(hDlg);
 
     RECT rcDlg;
     GetWindowRect(hDlg, &rcDlg);
@@ -5178,8 +5177,8 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
     int const yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
 
     // desired positions relative to parent window (normalized DPI)
-    int const x = rcParent.left + MulDiv(xDlg, dpi.x, USER_DEFAULT_SCREEN_DPI);
-    int const y = rcParent.top + MulDiv(yDlg, dpi.y, USER_DEFAULT_SCREEN_DPI);
+    int const x = rcParent.left + MulDiv(xDlg, dpi, USER_DEFAULT_SCREEN_DPI);
+    int const y = rcParent.top + MulDiv(yDlg, dpi, USER_DEFAULT_SCREEN_DPI);
 
     SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
@@ -5197,7 +5196,7 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 
 typedef struct _resizeDlg {
     int direction;
-    DPI_T dpi;
+    UINT dpi;
     int cxClient;
     int cyClient;
     int mmiPtMinX;
@@ -5222,16 +5221,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
 
     const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
 
-    WRCT_T wrc = { 0 };
-    wrc.left = rc.left;
-    wrc.top = rc.top;
-    wrc.right = rc.right;
-    wrc.bottom = rc.bottom;
-    Scintilla_AdjustWindowRectForDpi(&wrc, style, 0, pm->dpi);
-    rc.left = wrc.left;
-    rc.top = wrc.top;
-    rc.right = wrc.right;
-    rc.bottom = wrc.bottom;
+    Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, style, 0, pm->dpi);
 
     pm->mmiPtMinX = rc.right - rc.left;
     pm->mmiPtMinY = rc.bottom - rc.top;
@@ -5294,17 +5284,17 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
     const int cxClient = LOWORD(lParam);
     const int cyClient = HIWORD(lParam);
 #if NP3_ENABLE_RESIZEDLG_TEMP_FIX
-    const DPI_T dpi = Scintilla_GetWindowDPI(hwnd);
-    const DPI_T old = pm->dpi;
+    const UINT dpi = Scintilla_GetWindowDPI(hwnd);
+    const UINT old = pm->dpi;
     if (cx) {
-        *cx = cxClient - MulDiv(pm->cxClient, dpi.x, old.x);
+        *cx = cxClient - MulDiv(pm->cxClient, dpi, old);
     }
     if (cy) {
-        *cy = cyClient - MulDiv(pm->cyClient, dpi.y, old.y);
+        *cy = cyClient - MulDiv(pm->cyClient, dpi, old);
     }
     // store in original DPI.
-    pm->cxClient = MulDiv(cxClient, old.x, dpi.x);
-    pm->cyClient = MulDiv(cyClient, old.y, dpi.y);
+    pm->cxClient = MulDiv(cxClient, old, dpi);
+    pm->cyClient = MulDiv(cyClient, old, dpi);
 #else
     if (cx) {
         *cx = cxClient - pm->cxClient;
@@ -5322,20 +5312,20 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
     LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
     LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
 #if NP3_ENABLE_RESIZEDLG_TEMP_FIX
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-    DPI_T const old = pm->dpi;
+    UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+    UINT const old = pm->dpi;
 
-    lpmmi->ptMinTrackSize.x = MulDiv(pm->mmiPtMinX, dpi.x, old.x);
-    lpmmi->ptMinTrackSize.y = MulDiv(pm->mmiPtMinY, dpi.y, old.y);
+    lpmmi->ptMinTrackSize.x = MulDiv(pm->mmiPtMinX, dpi, old);
+    lpmmi->ptMinTrackSize.y = MulDiv(pm->mmiPtMinY, dpi, old);
 
     // only one direction
     switch (pm->direction) {
     case RSZ_ONLY_X:
-        lpmmi->ptMaxTrackSize.y = MulDiv(pm->mmiPtMaxY, dpi.x, old.x);
+        lpmmi->ptMaxTrackSize.y = MulDiv(pm->mmiPtMaxY, dpi, old);
         break;
 
     case RSZ_ONLY_Y:
-        lpmmi->ptMaxTrackSize.x = MulDiv(pm->mmiPtMaxX, dpi.y, old.y);
+        lpmmi->ptMaxTrackSize.x = MulDiv(pm->mmiPtMaxX, dpi, old);
         break;
     }
 #else
@@ -5392,9 +5382,9 @@ int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2)
     }
     const LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
 #if NP3_ENABLE_RESIZEDLG_TEMP_FIX
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-    int const hMinX = MulDiv(pm->attrs[0], dpi.x, pm->dpi.x);
-    int const hMinY = MulDiv(pm->attrs[1], dpi.y, pm->dpi.y);
+    UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+    int const hMinX = MulDiv(pm->attrs[0], dpi, pm->dpi);
+    int const hMinY = MulDiv(pm->attrs[1], dpi, pm->dpi);
 #else
     int const hMinX = pm->attrs[0];
     int const hMinY = pm->attrs[1];
@@ -5568,69 +5558,39 @@ void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
 {
     if (lpszText) {
-        UINT const flags = SBT_OWNERDRAW | nPart;
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)lpszText);
+        bool const bSimplSB = (nPart == SB_SIMPLEID);
+        if (bSimplSB) {
+            int aSingleSect[1] = { -1 };
+            SendMessage(hwnd, SB_SETPARTS, (WPARAM)1, (LPARAM)aSingleSect);
+        }
+        DWORD const wParam = (bSimplSB ? 0 : nPart) | SBT_OWNERDRAW;
+        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)lpszText);
     }
 }
-
 
 //=============================================================================
 //
 //  StatusSetTextID()
 //
-bool StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID)
+void StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID)
 {
-    UINT const flags = SBT_OWNERDRAW | nPart;
+    bool const bSimplSB = (nPart == SB_SIMPLEID);
+    if (bSimplSB) {
+        int aSingleSect[1] = { -1 };
+        SendMessage(hwnd, SB_SETPARTS, (WPARAM)1, (LPARAM)aSingleSect);
+    }
+    DWORD const wParam = (bSimplSB ? 0 : nPart) | SBT_OWNERDRAW;
     if (!uID) {
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)L"");
-        return TRUE;
-    }
-    WCHAR szText[256] = { L'\0' };
-    if (!GetLngString(uID, szText, COUNTOF(szText))) {
-        return FALSE;
-    }
-    return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)szText);
-}
-
-
-#if 0
-//=============================================================================
-//
-//  StatusSetText()
-//
-void StatusPartSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
-{
-    if (lpszText) {
-        BOOL const bSimpleSB = (nPart == STATUS_HELP);
-        StatusSetSimple(hwnd, bSimpleSB);
-        DWORD const wparam = (bSimpleSB ? SBT_NOBORDERS : 0) | nPart;
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, (LPARAM)lpszText);
+        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)L"");
+    } else {
+        WCHAR szText[MAX_PATH] = { L'\0' };
+        if (!GetLngString(uID, szText, COUNTOF(szText))) {
+            SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)L"");
+        } else {
+            SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)szText);
+        }
     }
 }
-
-
-//=============================================================================
-//
-//  StatusPartSetTextID()
-//
-bool StatusPartSetTextID(HWND hwnd, BYTE nPart, UINT uID)
-{
-    BOOL const bSimpleSB = (nPart == STATUS_HELP);
-    StatusSetSimple(hwnd, bSimpleSB);
-
-    DWORD const wparam = (bSimpleSB ? SBT_NOBORDERS : 0) | nPart;
-    if (!uID) {
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, 0);
-        return TRUE;
-    }
-
-    WCHAR szText[256] = { L'\0' };
-    if (!GetLngString(uID, szText, COUNTOF(szText))) {
-        return FALSE;
-    }
-    return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, (LPARAM)szText);
-}
-#endif
 
 
 //=============================================================================
@@ -5701,12 +5661,11 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
 //  GetCurrentPPI()
 //  (font size) points per inch
 //
-DPI_T GetCurrentPPI(HWND hwnd)
-{
+UINT GetCurrentPPI(HWND hwnd) {
     HDC const hDC = GetDC(hwnd);
-    DPI_T ppi = { 0, 0 };
-    ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
-    ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
+    UINT ppi = 0;
+    //ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
+    ppi = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
     ReleaseDC(hwnd, hDC);
     return ppi;
 }
@@ -5761,7 +5720,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 
     if (!bSucceed) {
         if (IsAppThemed()) {
-            unsigned const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
+            unsigned const iLogPixelsY = GetCurrentPPI(NULL) - DIALOG_FONT_SIZE_INCR;
 
             HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
             if (hTheme) {
@@ -5782,7 +5741,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
         }
 
         if (!bSucceed) {
-            unsigned const iLogPixelsY = GetCurrentPPI(NULL).y - DIALOG_FONT_SIZE_INCR;
+            unsigned const iLogPixelsY = GetCurrentPPI(NULL) - DIALOG_FONT_SIZE_INCR;
 
             NONCLIENTMETRICS ncm = { 0 };
             ncm.cbSize = sizeof(NONCLIENTMETRICS) - sizeof(ncm.iPaddedBorderWidth);
@@ -6033,12 +5992,12 @@ HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, cons
 //
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 {
-    static DPI_T dpi = { 0, 0 };
+    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
     static MENUITEMINFO mii = { 0 };
 
-    DPI_T const cur_dpi = Scintilla_GetWindowDPI(hwnd);
+    UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
 
-    if ((dpi.x != cur_dpi.x) || (dpi.y != cur_dpi.y)) {
+    if (dpi != cur_dpi) {
         dpi = cur_dpi;
         int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, dpi);
         int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, dpi);
@@ -6064,34 +6023,23 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 //
 //  UpdateWindowLayoutForDPI()
 //
-inline WRCT_T _ConvWinRectW(const RECT* pRC)
-{
-    WRCT_T wrc;
-    wrc.left   = pRC->left;
-    wrc.top    = pRC->top;
-    wrc.right  = pRC->right;
-    wrc.bottom = pRC->bottom;
-    return wrc;
-}
+void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pNewRect, const UINT adpi) {
 
-void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* prc, const DPI_T* pdpi)
-{
     UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED; //~ SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION
 
-    if (prc) {
-        SetWindowPos(hwnd, NULL, prc->left, prc->top, (prc->right - prc->left), (prc->bottom - prc->top), uWndFlags);
-        return;
+    if (pNewRect) {
+        SetWindowPos(hwnd, NULL, pNewRect->left, pNewRect->top, 
+            (pNewRect->right - pNewRect->left), (pNewRect->bottom - pNewRect->top), uWndFlags);
+    } else {
+        RECT rc = { 0 };
+        GetWindowRect(hwnd, &rc);
+        //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
+        UINT const dpi = adpi ? adpi : Scintilla_GetWindowDPI(hwnd);
+        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, uWndFlags, 0, dpi);
+        SetWindowPos(hwnd, NULL, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), uWndFlags);
     }
-
-    DPI_T const dpi = pdpi ? *pdpi : Scintilla_GetWindowDPI(hwnd);
-
-    RECT rc;
-    GetWindowRect(hwnd, &rc);
-    //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
-    WRCT_T wrc = _ConvWinRectW(prc);
-    Scintilla_AdjustWindowRectForDpi(&wrc, uWndFlags, 0, dpi);
-    SetWindowPos(hwnd, NULL, wrc.left, wrc.top, (wrc.right - wrc.left), (wrc.bottom - wrc.top), uWndFlags);
 }
+
 
 //=============================================================================
 //
@@ -6104,9 +6052,9 @@ HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height)
         BITMAP bmp = { 0 };
         if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
             if ((width <= 0) || (height <= 0)) {
-                DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-                width  = ScaleIntByDPI(bmp.bmWidth, dpi.x);
-                height = ScaleIntByDPI(bmp.bmHeight, dpi.y);
+                UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+                width  = ScaleIntByDPI(bmp.bmWidth, dpi);
+                height = ScaleIntByDPI(bmp.bmHeight, dpi);
             }
             if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) {
 #if TRUE
@@ -6153,8 +6101,8 @@ HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, b
     ncm.cbSize            = sizeof(NONCLIENTMETRICSW);
     if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncm, 0)) {
         HDC const hdcSys = GetDC(NULL);
-        DPI_T const dpiSys = Scintilla_GetWindowDPI(NULL);
-        DPI_T const dpiDlg = Scintilla_GetWindowDPI(hdlg);
+        UINT const dpiSys = Scintilla_GetWindowDPI(NULL);
+        UINT const dpiDlg = Scintilla_GetWindowDPI(hdlg);
         if (fontSize <= 0) {
             fontSize = (ncm.lfMessageFont.lfHeight < 0) ? -ncm.lfMessageFont.lfHeight : ncm.lfMessageFont.lfHeight;
             if (fontSize == 0) {
@@ -6163,7 +6111,7 @@ HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, b
         }
         fontSize <<= 10; // precision
         fontSize = MulDiv(fontSize, USER_DEFAULT_SCREEN_DPI, dpiSys.y); // correction
-        fontSize = ScaleIntByDPI(fontSize, dpiDlg.y);
+        fontSize = ScaleIntByDPI(fontSize, dpiDlg);
         ncm.lfMessageFont.lfHeight = -(MulDiv(fontSize, GetDeviceCaps(hdcSys, LOGPIXELSY), 72) >> 10);
         ncm.lfMessageFont.lfWeight = bold ? FW_BOLD : FW_NORMAL;
         HFONT const hFont = CreateFontIndirectW(&ncm.lfMessageFont);

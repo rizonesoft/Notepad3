@@ -243,6 +243,14 @@
 #define IDS_MUI_RELOADCFGSEX            15063
 #define IDS_MUI_OUT_OFF_OCCMRK          15064
 
+#define IDS_MUI_SB_MARK_ALL_OCC         15500
+#define IDS_MUI_SB_TOGGLE_VIEW          15501
+#define IDS_MUI_SB_REPLACE_ALL          15502
+#define IDS_MUI_SB_WRAP_LINES           15503
+#define IDS_MUI_SB_CONV_LNBRK           15504
+#define IDS_MUI_SB_RECODING_DOC         15505
+#define IDS_MUI_SB_LEXER_STYLING        15506
+
 #define IDR_MAINWND                     16000
 #define IDR_MAINWNDTB                   16001
 #define IDR_MAINWNDTBHOT                16002

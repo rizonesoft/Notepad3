@@ -69,8 +69,8 @@ public:
 		hr = CLSIDFromProgID(OLESTR("mshjdic.hanjadic"), &CLSID_HanjaDic);
 		if (SUCCEEDED(hr)) {
 			hr = CoCreateInstance(CLSID_HanjaDic, nullptr,
-				CLSCTX_INPROC_SERVER, IID_IHanjaDic,
-				(LPVOID *)& HJinterface);
+					CLSCTX_INPROC_SERVER, IID_IHanjaDic,
+					(LPVOID *)& HJinterface);
 			if (SUCCEEDED(hr)) {
 				hr = HJinterface->OpenMainDic();
 			}

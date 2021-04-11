@@ -57,9 +57,7 @@ static void _StatusUpdatePrintPage(int iPageNum)
     WCHAR tch[80] = { L'\0' };
     FormatLngStringW(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
     StatusSetText(Globals.hwndStatus, STATUS_HELP, tch);
-    //RedrawWindow(Globals.hwndStatus, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-    InvalidateRect(Globals.hwndStatus,NULL,TRUE);
-    //UpdateWindow(Globals.hwndStatus);
+    //InvalidateRect(Globals.hwndStatus,NULL,TRUE);
 }
 
 
@@ -93,7 +91,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
     break;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         break;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -495,9 +493,6 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         DeleteObject(fontFooter);
     }
 
-    // Reset Statusbar to default mode
-    StatusSetSimple(Globals.hwndStatus,false);
-
     // Remove wait cursor...
     {
         POINT pt;
@@ -609,7 +604,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
     break;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, 0);
         break;
 
 #ifdef D_NP3_WIN10_DARK_MODE

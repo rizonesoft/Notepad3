@@ -867,7 +867,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     //SetProcessDPIAware(); -> .manifest
     //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
-    Scintilla_LoadDpiForWindow();
+    //~Scintilla_LoadDpiForWindow(); done in Sci::Platform_Initialize();
 
     // ----------------------------------------------------
     // MultiLingual
@@ -2416,16 +2416,14 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
     HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
     ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
 
-    DPI_T dpi = Scintilla_GetWindowDPI(hWnd);
-    if (!Settings.DpiScaleToolBar ||
-            ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI))) {
+    UINT const dpi = Scintilla_GetWindowDPI(hWnd);
+    if (!Settings.DpiScaleToolBar || (dpi == USER_DEFAULT_SCREEN_DPI)) {
         return himl; // default DPI, we are done
     }
 
-
     // Scale button icons/images
-    int const scx = ScaleIntToDPI_X(hWnd, cx);
-    int const scy = ScaleIntToDPI_Y(hWnd, cy);
+    int const scx = ScaleIntToDPI(hWnd, cx);
+    int const scy = ScaleIntToDPI(hWnd, cy);
 
     HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
 
@@ -2461,8 +2459,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     DWORD dwToolbarExStyle = TBSTYLE_EX_DOUBLEBUFFER /* | TBSTYLE_EX_HIDECLIPPEDBUTTONS */;
 
     if (Settings.ToolBarTheme < 0) { // undefined: determine High DPI screen
-        DPI_T const dpi       = Scintilla_GetWindowDPI(hwnd);
-        Settings.ToolBarTheme = (dpi.y < LargeIconDPI()) ? 0 : 1;
+        UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+        Settings.ToolBarTheme = (dpi < LargeIconDPI()) ? 0 : 1;
     }
 
     if (Globals.hwndToolbar) {
@@ -2720,6 +2718,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
     InitWindowCommon(Globals.hwndStatus, true); // (!) themed = true : resize grip
 
+    // no simple status bar, to allow owner draw for dark mode
+    if (SendMessage(Globals.hwndStatus, SB_ISSIMPLE, 0, 0)) {
+        SendMessage(Globals.hwndStatus, SB_SIMPLE, FALSE, 0);
+    }
+
 #ifdef D_NP3_WIN10_DARK_MODE
     if (IsDarkModeSupported()) {
         AllowDarkModeForWindowEx(Globals.hwndStatus, CheckDarkModeEnabled());
@@ -2794,15 +2797,13 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    //DPI_T dpi;
-    //dpi.x = LOWORD(wParam);
-    //dpi.y = HIWORD(wParam);
+    //UINT const dpi = LOWORD(wParam);
     UNREFERENCED_PARAMETER(wParam);
     //const RECT* const rc = (RECT*)lParam;
 
     DocPos const pos = SciCall_GetCurrentPos();
 
-    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
 
     SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
 
@@ -4419,13 +4420,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 break;
             }
         }
-        BeginWaitCursor(true,L"Recoding...");
+        BeginWaitCursorUID(true, IDS_MUI_SB_RECODING_DOC);
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
             SetSaveNeeded();
         }
         EndWaitCursor();
         UpdateToolbar();
-        UpdateStatusbar(false);
     }
     break;
 
@@ -4461,15 +4461,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_CRLF:
     case IDM_LINEENDINGS_CR:
     case IDM_LINEENDINGS_LF: {
-        BeginWaitCursor(true,L"Line Breaks...");
-        _IGNORE_NOTIFY_CHANGE_;
+        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
         int const _eol_mode = (iLoWParam - IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
         SciCall_SetEOLMode(_eol_mode);
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
-        _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
         UpdateToolbar();
-        UpdateStatusbar(false);
     }
     break;
 
@@ -5301,10 +5298,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAP:
-        Settings.WordWrap = !Settings.WordWrap;
-        Globals.fvCurFile.bWordWrap = Settings.WordWrap;
+        Globals.fvCurFile.bWordWrap = Settings.WordWrap = !Settings.WordWrap;
+        BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_WRAP_LINES);
         _SetWrapIndentMode(Globals.hwndEdit);
         EditEnsureSelectionVisible();
+        EndWaitCursor();
         UpdateToolbar();
         break;
 
@@ -7650,7 +7648,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         DocLn const iFirstLine = SciCall_LineFromPosition(scn->position);
         DocLn const iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
         for (DocLn i = iFirstLine; i <= iLastLine; ++i) {
-            SciCall_EnsureVisible(i);
+            if (!SciCall_GetLineVisible(i)) {
+                SciCall_EnsureVisible(i);
+            }
         }
         EditUpdateVisibleIndicators();
     }
@@ -8743,7 +8743,8 @@ void UpdateStatusbar(const bool bForceRedraw)
 
 //=============================================================================
 
-const static WCHAR* const FR_StatusW[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
+const static WCHAR *const FR_StatusW[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]" };
+
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
@@ -9177,7 +9178,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         }
 
         if (cnt > 0) {
-            aStatusbarSections[cnt - 1] = -1;
+            aStatusbarSections[cnt - 1] = -1; // expand to right edge
         } else {
             aStatusbarSections[0] = -1;
             Settings.ShowStatusbar = false;
@@ -9727,11 +9728,11 @@ bool FileIO(bool fLoad, LPWSTR pszFileName, EditFileIOStatus *status,
             bool bSkipUnicodeDetect,bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
             bool bSaveCopy, bool bPreserveTimeStamp)
 {
-    WCHAR tch[MAX_PATH + 40];
-    FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
     bool fSuccess = false;
 
-    BeginWaitCursor(true,tch);
+    WCHAR tch[MAX_PATH + 40];
+    FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
+    BeginWaitCursor(true, tch);
 
     if (fLoad) {
         fSuccess = EditLoadFile(Globals.hwndEdit, pszFileName, status,
@@ -9952,8 +9953,6 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
     bool bUnknownLexer = s_flagLexerSpecified;
 
     if (fSuccess) {
-        BeginWaitCursor(true, L"Styling...");
-
         Sci_GotoPosChooseCaret(0);
 
         if (!s_IsThisAnElevatedRelaunch) {
@@ -10072,7 +10071,6 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
             SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         }
 
-        EndWaitCursor();
     } else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
         Flags.bHugeFileLoadState = false; // reset

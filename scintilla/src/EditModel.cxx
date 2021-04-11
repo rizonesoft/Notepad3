@@ -16,9 +16,13 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <set>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "ILoader.h"
@@ -63,7 +67,7 @@ EditModel::EditModel() : braces{} {
 	bracesMatchStyle = STYLE_BRACEBAD;
 	highlightGuideColumn = 0;
 	primarySelection = true;
-	imeInteraction = imeWindowed;
+	imeInteraction = IMEInteraction::windowed;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	imeIsOpen = false;
 	imeIsInModeCJK = false;

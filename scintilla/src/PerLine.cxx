@@ -13,9 +13,12 @@
 #include <string_view>
 #include <vector>
 #include <forward_list>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "Scintilla.h"

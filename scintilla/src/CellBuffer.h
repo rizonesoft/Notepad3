@@ -29,14 +29,14 @@ public:
  */
 class ILineVector;
 
-enum actionType { insertAction, removeAction, startAction, containerAction };
+enum class ActionType { insert, remove, start, container };
 
 /**
  * Actions are used to store all the information required to perform one undo/redo step.
  */
 class Action {
 public:
-	actionType at;
+	ActionType at;
 	Sci::Position position;
 	std::unique_ptr<char[]> data;
 	Sci::Position lenData;
@@ -50,7 +50,7 @@ public:
 	// Move constructor allows vector to be resized without reallocating.
 	Action(Action &&other) noexcept = default;
 	~Action();
-	void Create(actionType at_, Sci::Position position_=0, const char *data_=nullptr, Sci::Position lenData_=0, bool mayCoalesce_=true);
+	void Create(ActionType at_, Sci::Position position_=0, const char *data_=nullptr, Sci::Position lenData_=0, bool mayCoalesce_=true);
 	void Clear() noexcept;
 };
 
@@ -76,7 +76,7 @@ public:
 	void operator=(UndoHistory &&) = delete;
 	~UndoHistory();
 
-	const char *AppendAction(actionType at, Sci::Position position, const char *data, Sci::Position lengthData, bool &startSequence, bool mayCoalesce=true);
+	const char *AppendAction(ActionType at, Sci::Position position, const char *data, Sci::Position lengthData, bool &startSequence, bool mayCoalesce=true);
 
 	void BeginUndoAction();
 	void EndUndoAction();

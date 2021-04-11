@@ -155,12 +155,8 @@ void MakeBitmapButton(HWND hwnd, int nCtrlId, WORD uBmpId, int width, int height
 void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF crColor);
 void DeleteBitmapButton(HWND hwnd, int nCtrlId);
 
-
-#define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
 void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText);
-bool StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID);
-//void StatusPartSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText);
-//bool StatusPartSetTextID(HWND hwnd, BYTE nPart, UINT uID);
+void StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID);
 
 int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
 int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
@@ -181,36 +177,26 @@ inline int GetDlgCtrlHeight(HWND hwndDlg, int nCtrlId)
     return (rc.bottom - rc.top);
 }
 
-DPI_T GetCurrentPPI(HWND hwnd);
+UINT GetCurrentPPI(HWND hwnd);
 
 inline int ScaleIntByDPI(int val, unsigned dpi)
 {
     return MulDiv(val, dpi, USER_DEFAULT_SCREEN_DPI);
 }
-inline int ScaleIntToDPI_X(HWND hwnd, int val)
+inline int ScaleIntToDPI(HWND hwnd, int val)
 {
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-    return ScaleIntByDPI(val, dpi.x);
-}
-inline int ScaleIntToDPI_Y(HWND hwnd, int val)
-{
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-    return ScaleIntByDPI(val, dpi.y);
+    UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+    return ScaleIntByDPI(val, dpi);
 }
 
 inline int ScaleFloatByDPI(float fVal, unsigned dpi)
 {
     return (int)lroundf((fVal * dpi) / (float)USER_DEFAULT_SCREEN_DPI);
 }
-inline int ScaleFloatToDPI_X(HWND hwnd, float fVal)
+inline int ScaleFloatToDPI(HWND hwnd, float fVal)
 {
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-    return ScaleFloatByDPI(fVal, dpi.x);
-}
-inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal)
-{
-    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-    return ScaleFloatByDPI(fVal, dpi.y);
+    UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+    return ScaleFloatByDPI(fVal, dpi);
 }
 
 inline unsigned LargeIconDPI()
@@ -223,9 +209,9 @@ inline unsigned LargeIconDPI()
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
-void UpdateWindowLayoutForDPI(HWND hwnd, const RECT* pRC, const DPI_T* pDPI);
-//#define HandleDpiChangedMessage(hW,wP,lP) { DPI_T dpi; dpi.x = LOWORD(wP); dpi.y = HIWORD(wP); \
-//                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, &dpi); }
+void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pRC, const UINT dpi);
+//#define HandleDpiChangedMessage(hW,wP,lP) { UINT dpi; dpi = LOWORD(wP); /*dpi = HIWORD(wP);*/ \
+//                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, dpi); }
 
 #  define BMP_RESAMPLE_FILTER STOCK_FILTER_LANCZOS8
 //#define BMP_RESAMPLE_FILTER   STOCK_FILTER_QUADRATICBSPLINE

@@ -15,9 +15,13 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <set>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "ILoader.h"
@@ -262,6 +266,14 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 	ac.Start(wMain, idAutoComplete, sel.MainCaret(), PointMainCaret(),
 				lenEntered, vs.lineHeight, IsUnicodeMode(), technology);
 
+	ListOptions options{
+		vs.ElementColour(SC_ELEMENT_LIST),
+		vs.ElementColour(SC_ELEMENT_LIST_BACK),
+		vs.ElementColour(SC_ELEMENT_LIST_SELECTED),
+		vs.ElementColour(SC_ELEMENT_LIST_SELECTED_BACK)
+	};
+	ac.lb->SetOptions(options);
+
 	const PRectangle rcClient = GetClientRectangle();
 	Point pt = LocationFromPosition(sel.MainCaret() - lenEntered);
 	PRectangle rcPopupBounds = wMain.GetMonitorRect(pt);
@@ -293,10 +305,7 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 	rcac.right = rcac.left + widthLB;
 	rcac.bottom = static_cast<XYPOSITION>(std::min(static_cast<int>(rcac.top) + heightLB, static_cast<int>(rcPopupBounds.bottom)));
 	ac.lb->SetPositionRelative(rcac, &wMain);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	ac.lb->SetColour(vs.styles[STYLE_DEFAULT].fore, vs.styles[STYLE_DEFAULT].back);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-	ac.lb->SetFont(vs.styles[STYLE_DEFAULT].font);
+	ac.lb->SetFont(vs.styles[STYLE_DEFAULT].font.get());
 	const unsigned int aveCharWidth = static_cast<unsigned int>(vs.styles[STYLE_DEFAULT].aveCharWidth);
 	ac.lb->SetAverageCharWidth(aveCharWidth);
 	ac.lb->SetDelegate(this);
@@ -502,13 +511,15 @@ void ScintillaBase::CallTipClick() {
 	NotifyParent(scn);
 }
 
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if SCI_EnablePopupMenu
+
 bool ScintillaBase::ShouldDisplayPopup(Point ptInWindowCoordinates) const {
 	return (displayPopupMenu == SC_POPUP_ALL ||
 		(displayPopupMenu == SC_POPUP_TEXT && !PointInSelMargin(ptInWindowCoordinates)));
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#if SCI_EnablePopupMenu
 void ScintillaBase::ContextMenu(Point pt) {
 	if (displayPopupMenu) {
 		const bool writable = !WndProc(SCI_GETREADONLY, 0, 0);
@@ -525,8 +536,10 @@ void ScintillaBase::ContextMenu(Point pt) {
 		popup.Show(pt, wMain);
 	}
 }
+
 #endif
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 
 void ScintillaBase::CancelModes() {
 	AutoCompleteCancel();
@@ -593,14 +606,22 @@ LexState::LexState(Document *pdoc_) noexcept : LexInterface(pdoc_) {
 
 LexState::~LexState() {
 	if (instance) {
-		instance->Release();
+		try {
+			instance->Release();
+		} catch (...) {
+			// ILexer5::Release must not throw, ignore if it does.
+		}
 		instance = nullptr;
 	}
 }
 
 void LexState::SetInstance(ILexer5 *instance_) {
 	if (instance) {
-		instance->Release();
+		try {
+			instance->Release();
+		} catch (...) {
+			// ILexer5::Release must not throw, ignore if it does.
+		}
 		instance = nullptr;
 	}
 	instance = instance_;

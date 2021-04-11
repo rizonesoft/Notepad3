@@ -153,11 +153,11 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT1 ) );
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT1));
     }
-    return true;
+    return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
-        return !0;
+        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, 0);
+        return TRUE;
 
 //#define WM_CTLCOLORMSGBOX               0x0132
 //#define WM_CTLCOLOREDIT                 0x0133
@@ -352,7 +352,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     return !0;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, 0);
         return !0;
 
 #ifdef D_NP3_WIN10_DARK_MODE

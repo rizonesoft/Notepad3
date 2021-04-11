@@ -17,9 +17,13 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <set>
+#include <optional>
 #include <algorithm>
 #include <memory>
 
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "ILoader.h"
@@ -28,7 +32,6 @@
 
 #include "CharacterCategory.h"
 #include "Position.h"
-#include "IntegerRectangle.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
@@ -57,48 +60,53 @@ namespace Scintilla {
 
 void DrawWrapMarker(Surface *surface, PRectangle rcPlace,
 	bool isEndMarker, ColourDesired wrapColour) {
-	surface->PenColour(wrapColour);
 
-	const IntegerRectangle ircPlace(rcPlace);
+	const XYPOSITION extraFinalPixel = surface->Supports(SC_SUPPORTS_LINE_DRAWS_FINAL) ? 0.0f : 1.0f;
 
-	enum { xa = 1 }; // gap before start
-	const int w = ircPlace.Width() - xa - 1;
+	const PRectangle rcAligned = PixelAlignOutside(rcPlace, surface->PixelDivisions());
 
-	const bool xStraight = isEndMarker;  // x-mirrored symbol for start marker
+	const XYPOSITION widthStroke = std::floor(rcAligned.Width() / 6);
 
-	const int x0 = xStraight ? ircPlace.left : ircPlace.right - 1;
-	const int y0 = ircPlace.top;
+	constexpr XYPOSITION xa = 1; // gap before start
+	const XYPOSITION w = rcAligned.Width() - xa - widthStroke;
 
-	const int dy = ircPlace.Height() / 5;
-	const int y = ircPlace.Height() / 2 + dy;
+	// isEndMarker -> x-mirrored symbol for start marker
+
+	const XYPOSITION x0 = isEndMarker ? rcAligned.left : rcAligned.right - widthStroke;
+	const XYPOSITION y0 = rcAligned.top;
+
+	const XYPOSITION dy = std::floor(rcAligned.Height() / 5);
+	const XYPOSITION y = std::floor(rcAligned.Height() / 2) + dy;
 
 	struct Relative {
-		Surface *surface;
-		int xBase;
+		XYPOSITION xBase;
 		int xDir;
-		int yBase;
+		XYPOSITION yBase;
 		int yDir;
-		void MoveTo(int xRelative, int yRelative) {
-			surface->MoveTo(xBase + xDir * xRelative, yBase + yDir * yRelative);
-		}
-		void LineTo(int xRelative, int yRelative) {
-			surface->LineTo(xBase + xDir * xRelative, yBase + yDir * yRelative);
+		XYPOSITION halfWidth;
+		Point At(XYPOSITION xRelative, XYPOSITION yRelative) noexcept {
+			return Point(xBase + xDir * xRelative + halfWidth, yBase + yDir * yRelative + halfWidth);
 		}
 	};
-	Relative rel = { surface, x0, xStraight ? 1 : -1, y0, 1 };
+
+	Relative rel = { x0, isEndMarker ? 1 : -1, y0, 1, widthStroke / 2.0f };
 
 	// arrow head
-	rel.MoveTo(xa, y);
-	rel.LineTo(xa + 2 * w / 3, y - dy);
-	rel.MoveTo(xa, y);
-	rel.LineTo(xa + 2 * w / 3, y + dy);
+	const Point head[] = {
+		rel.At(xa + dy, y - dy),
+		rel.At(xa, y),
+		rel.At(xa + dy + extraFinalPixel, y + dy + extraFinalPixel)
+	};
+	surface->PolyLine(head, std::size(head), Stroke(wrapColour, widthStroke));
 
 	// arrow body
-	rel.MoveTo(xa, y);
-	rel.LineTo(xa + w, y);
-	rel.LineTo(xa + w, y - 2 * dy);
-	rel.LineTo(xa - 1,   // on windows lineto is exclusive endpoint, perhaps GTK not...
-		y - 2 * dy);
+	const Point body[] = {
+		rel.At(xa, y),
+		rel.At(xa + w, y),
+		rel.At(xa + w, y - 2 * dy),
+		rel.At(xa, y - 2 * dy),
+	};
+	surface->PolyLine(body, std::size(body), Stroke(wrapColour, widthStroke));
 }
 
 MarginView::MarginView() noexcept {
@@ -106,35 +114,17 @@ MarginView::MarginView() noexcept {
 	customDrawWrapMarker = nullptr;
 }
 
-void MarginView::DropGraphics(bool freeObjects) {
-	if (freeObjects) {
-		pixmapSelMargin.reset();
-		pixmapSelPattern.reset();
-		pixmapSelPatternOffset1.reset();
-	} else {
-		if (pixmapSelMargin)
-			pixmapSelMargin->Release();
-		if (pixmapSelPattern)
-			pixmapSelPattern->Release();
-		if (pixmapSelPatternOffset1)
-			pixmapSelPatternOffset1->Release();
-	}
+void MarginView::DropGraphics() noexcept {
+	pixmapSelMargin.reset();
+	pixmapSelPattern.reset();
+	pixmapSelPatternOffset1.reset();
 }
 
-void MarginView::AllocateGraphics(const ViewStyle &vsDraw) {
-	if (!pixmapSelMargin)
-		pixmapSelMargin.reset(Surface::Allocate(vsDraw.technology));
-	if (!pixmapSelPattern)
-		pixmapSelPattern.reset(Surface::Allocate(vsDraw.technology));
-	if (!pixmapSelPatternOffset1)
-		pixmapSelPatternOffset1.reset(Surface::Allocate(vsDraw.technology));
-}
-
-void MarginView::RefreshPixMaps(Surface *surfaceWindow, WindowID wid, const ViewStyle &vsDraw) {
-	if (!pixmapSelPattern->Initialised()) {
-		const int patternSize = 8;
-		pixmapSelPattern->InitPixMap(patternSize, patternSize, surfaceWindow, wid);
-		pixmapSelPatternOffset1->InitPixMap(patternSize, patternSize, surfaceWindow, wid);
+void MarginView::RefreshPixMaps(Surface *surfaceWindow, const ViewStyle &vsDraw) {
+	if (!pixmapSelPattern) {
+		constexpr int patternSize = 8;
+		pixmapSelPattern = surfaceWindow->AllocatePixMap(patternSize, patternSize);
+		pixmapSelPatternOffset1 = surfaceWindow->AllocatePixMap(patternSize, patternSize);
 		// This complex procedure is to reproduce the checkerboard dithered pattern used by windows
 		// for scroll bars and Visual Studio for its selection margin. The colour of this pattern is half
 		// way between the chrome colour and the chrome highlight colour making a nice transition
@@ -169,6 +159,8 @@ void MarginView::RefreshPixMaps(Surface *surfaceWindow, WindowID wid, const View
 				pixmapSelPatternOffset1->FillRectangle(rcPixel, colourFMFill);
 			}
 		}
+		pixmapSelPattern->FlushDrawing();
+		pixmapSelPatternOffset1->FlushDrawing();
 	}
 }
 
@@ -187,7 +179,7 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 		rcSelMargin.bottom = rc.bottom;
 
 	const Point ptOrigin = model.GetVisibleOriginInMain();
-	FontAlias fontLineNumber = vs.styles[STYLE_LINENUMBER].font;
+	const Font *fontLineNumber = vs.styles[STYLE_LINENUMBER].font.get();
 	for (size_t margin = 0; margin < vs.ms.size(); margin++) {
 		if (vs.ms[margin].width > 0) {
 
@@ -365,7 +357,7 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 
 				marks &= vs.ms[margin].mask;
 
-				PRectangle rcMarker(
+				const PRectangle rcMarker(
 					rcSelMargin.left,
 					static_cast<XYPOSITION>(yposScreen),
 					rcSelMargin.right,
@@ -398,7 +390,7 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 						const XYPOSITION xpos = rcNumber.right - width - vs.marginNumberPadding;
 						rcNumber.left = xpos;
 						DrawTextNoClipPhase(surface, rcNumber, vs.styles[STYLE_LINENUMBER],
-							rcNumber.top + vs.maxAscent, sNumber, drawAll);
+							rcNumber.top + vs.maxAscent, sNumber, DrawPhase::all);
 					} else if (vs.wrapVisualFlags & SC_WRAPVISUALFLAG_MARGIN) {
 						PRectangle rcWrapMarker = rcMarker;
 						rcWrapMarker.right -= wrapMarkerPaddingRight;
@@ -421,7 +413,7 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 								rcText.left = rcText.right - width - 3;
 							}
 							DrawStyledText(surface, vs, vs.marginStyleOffset, rcText,
-								stMargin, 0, stMargin.length, drawAll);
+								stMargin, 0, stMargin.length, DrawPhase::all);
 						} else {
 							// if we're displaying annotation lines, colour the margin to match the associated document line
 							const int annotationLines = model.pdoc->AnnotationLines(lineDoc);

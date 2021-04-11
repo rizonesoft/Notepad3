@@ -19,16 +19,14 @@ extern "C" {
 // ==============================================================
 // --- needed to bind Scintilla as dynamic link library (DLL) ---
 // ==============================================================
-typedef struct _dpi_t { unsigned x;	unsigned y; } DPI_T;
-typedef struct _wrct_t { long left; long top; long right; long bottom; } WRCT_T;
-__declspec(dllexport) void  Scintilla_LoadDpiForWindow(void);
-__declspec(dllexport) int   Scintilla_RegisterClasses(void *hInstance);
-__declspec(dllexport) int   Scintilla_ReleaseResources(void);
-__declspec(dllexport) int   Scintilla_InputCodePage(void);
-__declspec(dllexport) DPI_T Scintilla_GetWindowDPI(void* hwnd);
-__declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi);
-__declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi);
-__declspec(dllexport) int   Scintilla_AdjustWindowRectForDpi(WRCT_T* lpRect, unsigned long dwStyle, unsigned long  dwExStyle, DPI_T dpi);
+typedef struct _wrct_t { long left; long top; long right; long bottom; } WRECT, *LPWRECT; // Windows RECT
+__declspec(dllexport) int       Scintilla_RegisterClasses(void *hInstance);
+__declspec(dllexport) int       Scintilla_ReleaseResources(void);
+__declspec(dllexport) int       Scintilla_InputCodePage(void);
+__declspec(dllexport) unsigned  Scintilla_GetWindowDPI(void* hwnd);
+__declspec(dllexport) int       Scintilla_GetSystemMetricsForDpi(int nIndex, unsigned dpi);
+__declspec(dllexport) int       Scintilla_GetSystemMetricsForDpi(int nIndex, unsigned dpi);
+__declspec(dllexport) int       Scintilla_AdjustWindowRectForDpi(LPWRECT lpRect, unsigned long dwStyle, unsigned long  dwExStyle, unsigned dpi);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 #ifdef __cplusplus
@@ -179,6 +177,10 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_MARKERSETFORE 2041
 #define SCI_MARKERSETBACK 2042
 #define SCI_MARKERSETBACKSELECTED 2292
+#define SCI_MARKERSETFORETRANSLUCENT 2294
+#define SCI_MARKERSETBACKTRANSLUCENT 2295
+#define SCI_MARKERSETBACKSELECTEDTRANSLUCENT 2296
+#define SCI_MARKERSETSTROKEWIDTH 2297
 #define SCI_MARKERENABLEHIGHLIGHT 2293
 #define SCI_MARKERADD 2043
 #define SCI_MARKERDELETE 2044
@@ -288,6 +290,15 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_STYLEGETWEIGHT 2064
 #define SCI_STYLESETCHARACTERSET 2066
 #define SCI_STYLESETHOTSPOT 2409
+#define SC_ELEMENT_LIST 0
+#define SC_ELEMENT_LIST_BACK 1
+#define SC_ELEMENT_LIST_SELECTED 2
+#define SC_ELEMENT_LIST_SELECTED_BACK 3
+#define SCI_SETELEMENTCOLOUR 2753
+#define SCI_GETELEMENTCOLOUR 2754
+#define SCI_RESETELEMENTCOLOUR 2755
+#define SCI_GETELEMENTISSET 2756
+#define SCI_GETELEMENTALLOWSTRANSLUCENT 2757
 #define SCI_SETSELFORE 2067
 #define SCI_SETSELBACK 2068
 #define SCI_GETSELALPHA 2477
@@ -353,6 +364,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_INDICFLAG_VALUEFORE 1
 #define SCI_INDICSETFLAGS 2684
 #define SCI_INDICGETFLAGS 2685
+#define SCI_INDICSETSTROKEWIDTH 2751
+#define SCI_INDICGETSTROKEWIDTH 2752
 #define SCI_SETWHITESPACEFORE 2084
 #define SCI_SETWHITESPACEBACK 2085
 #define SCI_SETWHITESPACESIZE 2086
@@ -1043,16 +1056,30 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_EOLANNOTATIONSETSTYLE 2742
 #define SCI_EOLANNOTATIONGETSTYLE 2743
 #define SCI_EOLANNOTATIONCLEARALL 2744
-#define EOLANNOTATION_HIDDEN 0
-#define EOLANNOTATION_STANDARD 1
-#define EOLANNOTATION_BOXED 2
+#define EOLANNOTATION_HIDDEN 0x0
+#define EOLANNOTATION_STANDARD 0x1
+#define EOLANNOTATION_BOXED 0x2
+#define EOLANNOTATION_STADIUM 0x100
+#define EOLANNOTATION_FLAT_CIRCLE 0x101
+#define EOLANNOTATION_ANGLE_CIRCLE 0x102
+#define EOLANNOTATION_CIRCLE_FLAT 0x110
+#define EOLANNOTATION_FLATS 0x111
+#define EOLANNOTATION_ANGLE_FLAT 0x112
+#define EOLANNOTATION_CIRCLE_ANGLE 0x120
+#define EOLANNOTATION_FLAT_ANGLE 0x121
+#define EOLANNOTATION_ANGLES 0x122
 #define SCI_EOLANNOTATIONSETVISIBLE 2745
 #define SCI_EOLANNOTATIONGETVISIBLE 2746
 #define SCI_EOLANNOTATIONSETSTYLEOFFSET 2747
 #define SCI_EOLANNOTATIONGETSTYLEOFFSET 2748
+#define SC_SUPPORTS_LINE_DRAWS_FINAL 0
+#define SC_SUPPORTS_PIXEL_DIVISIONS 1
+#define SC_SUPPORTS_FRACTIONAL_STROKE_WIDTH 2
+#define SC_SUPPORTS_TRANSLUCENT_STROKE 3
+#define SC_SUPPORTS_PIXEL_MODIFICATION 4
+#define SCI_SUPPORTSFEATURE 2750
 #define SCI_STARTRECORD 3001
 #define SCI_STOPRECORD 3002
-#define SCI_SETLEXER 4001
 #define SCI_GETLEXER 4002
 #define SCI_COLOURISE 4003
 #define SCI_SETPROPERTY 4004
@@ -1060,8 +1087,6 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define KEYWORDSET_MAX 15
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCI_SETKEYWORDS 4005
-#define SCI_SETLEXERLANGUAGE 4006
-#define SCI_LOADLEXERLIBRARY 4007
 #define SCI_GETPROPERTY 4008
 #define SCI_GETPROPERTYEXPANDED 4009
 #define SCI_GETPROPERTYINT 4010

@@ -36,7 +36,7 @@ public:
 	Selection sel;
 	bool primarySelection;
 
-	enum IMEInteraction { imeWindowed, imeInline } imeInteraction;
+	enum class IMEInteraction { windowed, internal } imeInteraction;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	bool imeIsOpen;
 	bool imeIsInModeCJK;

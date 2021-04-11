@@ -383,6 +383,7 @@
     <ClCompile Include="src\EditModel.cxx" />
     <ClCompile Include="src\Editor.cxx" />
     <ClCompile Include="src\EditView.cxx" />
+    <ClCompile Include="src\Geometry.cxx" />
     <ClCompile Include="src\Indicator.cxx" />
     <ClCompile Include="src\KeyMap.cxx" />
     <ClCompile Include="src\LineMarker.cxx" />
@@ -427,6 +428,7 @@
     <ClInclude Include="src\CharClassify.h" />
     <ClInclude Include="src\ContractionState.h" />
     <ClInclude Include="src\DBCS.h" />
+    <ClInclude Include="src\Debugging.h" />
     <ClInclude Include="src\Decoration.h" />
     <ClInclude Include="src\Document.h" />
     <ClInclude Include="src\EditModel.h" />
@@ -434,13 +436,14 @@
     <ClInclude Include="src\EditView.h" />
     <ClInclude Include="src\ElapsedPeriod.h" />
     <ClInclude Include="src\FontQuality.h" />
+    <ClInclude Include="src\Geometry.h" />
     <ClInclude Include="src\Indicator.h" />
-    <ClInclude Include="src\IntegerRectangle.h" />
     <ClInclude Include="src\KeyMap.h" />
     <ClInclude Include="src\LineMarker.h" />
     <ClInclude Include="src\MarginView.h" />
     <ClInclude Include="src\Partitioning.h" />
     <ClInclude Include="src\PerLine.h" />
+    <ClInclude Include="src\Platform.h" />
     <ClInclude Include="src\Position.h" />
     <ClInclude Include="src\PositionCache.h" />
     <ClInclude Include="src\RESearch.h" />

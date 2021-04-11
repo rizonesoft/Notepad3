@@ -193,10 +193,32 @@ void ObserveNotifyDocChangedEvent();
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyDocChangedEvent();
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyDocChangedEvent(); }
 
+#define BeginWaitCursor(cond, text)           \
+    __try {                                   \
+        IgnoreNotifyDocChangedEvent();        \
+        if (cond) {                           \
+            SciCall_SetCursor(SC_CURSORWAIT); \
+            StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
+        }
 
-#define BeginWaitCursor(cond,text)   if (cond) { __try { SciCall_SetCursor(SC_CURSORWAIT);  StatusSetText(Globals.hwndStatus, STATUS_HELP, (text));
-#define EndWaitCursor()   } __finally { SciCall_SetCursor(SC_CURSORNORMAL); POINT pt;  GetCursorPos(&pt);  SetCursorPos(pt.x, pt.y);  UpdateStatusbar(true); } }
+#define BeginWaitCursorUID(cond, uid)         \
+    __try {                                   \
+        IgnoreNotifyDocChangedEvent();        \
+        if (cond) {                           \
+            SciCall_SetCursor(SC_CURSORWAIT); \
+            StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
+        }
 
+#define EndWaitCursor()                       \
+    }                                         \
+    __finally {                               \
+        ObserveNotifyDocChangedEvent();       \
+        SciCall_SetCursor(SC_CURSORNORMAL);   \
+        POINT pt;                             \
+        GetCursorPos(&pt);                    \
+        SetCursorPos(pt.x, pt.y);             \
+        UpdateStatusbar(true);                \
+    }
 
 #define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
 

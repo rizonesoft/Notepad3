@@ -141,8 +141,8 @@ class Selection {
 	bool moveExtends;
 	bool tentativeMain;
 public:
-	enum selTypes { noSel, selStream, selRectangle, selLines, selThin };
-	selTypes selType;
+	enum class SelTypes { none, stream, rectangle, lines, thin };
+	SelTypes selType;
 
 	Selection();
 	~Selection();

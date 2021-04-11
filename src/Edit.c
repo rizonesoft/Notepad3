@@ -5114,9 +5114,13 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
 
         // Ensure that the first and last lines of a selection are always unfolded
         // This needs to be done *before* the SCI_SETSEL message
-        SciCall_EnsureVisible(iAnchorLine);
         if (iAnchorLine != iCurrentLine) {
-            SciCall_EnsureVisible(iCurrentLine);
+            if (!SciCall_GetLineVisible(iAnchorLine)) {
+                SciCall_EnsureVisible(iAnchorLine);
+            }
+        }
+        if (!SciCall_GetLineVisible(iCurrentLine)) {
+            SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
         }
 
         if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
@@ -5156,14 +5160,20 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 //
 void EditEnsureSelectionVisible()
 {
+    DocPos const iCurrentPos = SciCall_GetCurrentPos();
+    DocPos const iAnchorPos = SciCall_GetAnchor();
     // Ensure that the first and last lines of a selection are always unfolded
-    DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
-    DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
+    DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
+    DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
     if (iAnchorLine != iCurrentLine) {
-        SciCall_EnsureVisible(iAnchorLine);
+        if (!SciCall_GetLineVisible(iAnchorLine)) {
+            SciCall_EnsureVisible(iAnchorLine);
+        }
     }
-    SciCall_EnsureVisible(iCurrentLine);
-    SciCall_ScrollCaret();
+    if (!SciCall_GetLineVisible(iCurrentLine)) {
+        SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
+    }
+    SciCall_ScrollRange(iAnchorPos, iCurrentPos);
 }
 
 
@@ -6049,10 +6059,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
 
     case WM_DPICHANGED: {
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+        UINT const dpi = LOWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, dpi);
     }
     return TRUE; // further processing
 
@@ -7152,7 +7160,7 @@ bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInfo)
     DocPos const end = Sci_GetDocEndPosition();
     DocPos enlargement = 0;
 
-    BeginWaitCursor(true,L"Replace all...")
+    BeginWaitCursorUID(true, IDS_MUI_SB_REPLACE_ALL);
     Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
     EndWaitCursor();
 
@@ -7256,7 +7264,8 @@ void EditClearAllBookMarks(HWND hwnd)
 void EditToggleView(HWND hwnd)
 {
     if (Settings.FocusViewMarkerMode & FVMM_FOLD) {
-        BeginWaitCursor(true, L"Toggle View...");
+
+        BeginWaitCursorUID(true, IDS_MUI_SB_TOGGLE_VIEW);
 
         FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
 
@@ -7273,6 +7282,7 @@ void EditToggleView(HWND hwnd)
         SciCall_ScrollCaret();
 
         EndWaitCursor();
+
     } else if (Settings.FocusViewMarkerMode & (FVMM_MARGIN | FVMM_LN_BACKGR)) {
         EditBookMarkLineRange(hwnd);
     }
@@ -7322,6 +7332,8 @@ int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase,
 //
 void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel)
 {
+    BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_MARK_ALL_OCC);
+
     char txtBuffer[FNDRPL_BUFFER] = { '\0' };
     char* pszText = (pszFind != NULL) ? pszFind : txtBuffer;
 
@@ -7412,6 +7424,7 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
 
         Globals.iMarkOccurrencesCount = count;
     }
+    EndWaitCursor();
 }
 
 
@@ -8018,10 +8031,8 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED: {
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+        UINT const dpi = LOWORD(wParam);
+        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, dpi);
     }
     return true;
 
@@ -8200,10 +8211,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     return true;
 
     case WM_DPICHANGED: {
-        DPI_T dpi = { 0, 0 };
-        dpi.x = LOWORD(wParam);
-        dpi.y = HIWORD(wParam);
-
+        //UINT const dpi = LOWORD(wParam);
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf = { 0 };
@@ -8215,8 +8223,8 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             }
             hFontHover = CreateFontIndirectW(&lf);
         }
-
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, &dpi);
+        //@@@UpdateWindowLayoutForDPI(hwnd, NULL, dpi);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
     }
     return TRUE;
 
@@ -8429,7 +8437,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     return true;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return true;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -8550,7 +8558,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -8678,7 +8686,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
     return false;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return true;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -8901,7 +8909,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
     return true;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
         return true;
 
 #ifdef D_NP3_WIN10_DARK_MODE

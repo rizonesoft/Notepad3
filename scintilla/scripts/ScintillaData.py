@@ -153,7 +153,7 @@ def FindPropertyDocumentation(lexFile):
             del documents[name]
     return documents
 
-def FindCredits(historyFile):
+def FindCredits(historyFile, removeLinks=True):
     credits = []
     stage = 0
     with historyFile.open(encoding="utf-8") as f:
@@ -165,7 +165,7 @@ def FindCredits(historyFile):
                 stage = 2
             if stage == 1 and l.startswith("<td>"):
                 credit = l[4:-5]
-                if "<a" in l:
+                if removeLinks and "<a" in l:
                     title, a, rest = credit.partition("<a href=")
                     urlplus, bracket, end = rest.partition(">")
                     name = end.split("<")[0]
