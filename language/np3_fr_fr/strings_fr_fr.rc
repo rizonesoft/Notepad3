@@ -268,13 +268,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Marquer toutes les occurrences..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Basculer la vue..."
+    IDS_MUI_SB_REPLACE_ALL    "Remplacer tout..."
+    IDS_MUI_SB_WRAP_LINES     "Ajuster retour de lines..."
+    IDS_MUI_SB_CONV_LNBRK     "Convertir les sauts de ligne..."
+    IDS_MUI_SB_RECODING_DOC   "Recodage du document..."
+    IDS_MUI_SB_LEXER_STYLING  "Appliquer le style du Lexer..."
 END
 
 STRINGTABLE
