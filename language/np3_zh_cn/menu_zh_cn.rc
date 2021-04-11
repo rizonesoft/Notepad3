@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "保存副本(&C)...\tCtrl+F6",                        IDM_FILE_SAVECOPY
         MENUITEM "使用原始修改时间保存(&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "只读 File Attribute(&R)",                  IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",                 IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "只读属性(&R)",                  IDM_FILE_READONLY
+        MENUITEM "使用共享锁(&L)",                 IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "设置加密口令(&Y)...",                        IDM_SETPASS
         MENUITEM SEPARATOR
@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "切换行注释(&C)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
-            MENUITEM "行注释块编辑(&O)\tCtrl+Alt+Q",             IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "使用矩形编辑模式切换行注释(&O)\tCtrl+Alt+Q",             IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "添加块注释(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
@@ -259,11 +259,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "URL 编码(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URL 解码(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",               IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",               IDM_EDIT_URL2PATH
+            MENUITEM "转换文件路径为 URL",               IDM_EDIT_PATH2URL
+            MENUITEM "转换 URL 为文件路径",               IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                    IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                        IDM_EDIT_INVERTSLASH
+            MENUITEM "调转反斜线",                    IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "调转斜线",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "转换为十六进制(&H)\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
             MENUITEM "从十六进制转换(&C)\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
