@@ -663,7 +663,7 @@ public:
 	AutoSurface(SurfaceID sid, Editor *ed, int technology = -1, bool printing = false) {
 		if (ed->wMain.GetID()) {
 			surf = Surface::Allocate(technology != -1 ? technology : ed->technology);
-			surf->Init(sid, ed->wMain.GetID()/* @@@, printing*/);
+			surf->Init(sid, ed->wMain.GetID(), printing);
 			surf->SetMode(SurfaceMode(ed->CodePage(), ed->BidirectionalR2L()));
 		}
 	}

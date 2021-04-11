@@ -18,6 +18,7 @@
 	A:visited { color: blue; }
 	A:hover { text-decoration: underline ! important; }
 	A.message { text-decoration: none; font-weight: bold; font-family: Menlo,Consolas,Bitstream Vera Sans Mono,Courier New,monospace; }
+	A.element { text-decoration: none; font-weight: bold; font-family: Menlo,Consolas,Bitstream Vera Sans Mono,Courier New,monospace; }
 	A.seealso { text-decoration: none; font-weight: bold; font-family: Menlo,Consolas,Bitstream Vera Sans Mono,Courier New,monospace; }
 	A.toc { text-decoration: none; }
 	A.jump { text-decoration: none; }
@@ -119,8 +120,11 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 1 March 2021 NH</p>
+    <p>Last edited 9 April 2021 NH</p>
 
+    <p style="background:#90F0C0">Scintilla 5 has moved the lexers from Scintilla into a new
+    <a href="Lexilla.html">Lexilla</a> project.<br />
+    There is <a class="jump" href="Scintilla5Migration.html">a guide to migrating to Lexilla</a>.</p>
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
      <a class="jump" href="ScintillaUsage.html">Some notes on using Scintilla</a>.<br />
@@ -249,6 +253,17 @@
         </tr>
 
         <tr>
+          <th align="left" id="colouralpha"><code>colouralpha</code></th>
+
+          <td>Colours are set using the RGBA format (Red, Green, Blue, Alpha).
+          This is similar to <a class="seealso" href="#colour">colour</a> but with a byte
+          of <a class="seealso" href="#colour">alpha</a> added. They are combined as:
+          red | (green &lt;&lt; 8) | (blue &lt;&lt; 16) | (alpha &lt;&lt; 24).
+          Fully opaque uses an alpha of 255. SC_ALPHA_NOALPHA is not possible for
+          colouralpha values.</td>
+        </tr>
+
+        <tr>
           <th align="left" id="alpha"><code>alpha</code></th>
 
           <td>Translucency is set using an alpha value.
@@ -268,43 +283,26 @@
       </tbody>
     </table>
 
-    <h2 class="provisional">Lexilla</h2>
+    <h2>Lexilla</h2>
 
-    <p>For Scintilla 5.0, lexers will be split off into a separate Lexilla library.
-    Scintilla will be responsible for the GUI and calling lexers with Lexilla providing the lexers.
-    To allow work towards this with Scintilla 4.x, the first stage is to allow building Lexilla but
-    also include the lexers in Scintilla.</p>
+    <p>For Scintilla 5.0, lexers have been split off into a separate <a href="Lexilla.html">Lexilla</a> library.
+    Scintilla is responsible for the GUI and calling lexers with Lexilla providing the lexers.</p>
 
     <p>Lexilla is built as both a shared library and static library and applications may choose to
     link to one or the other.</p>
 
-    <p>To build Lexilla, in the lexilla/src directory, run make (for gcc or clang)<br />
-    <code>make</code><br />
-    or nmake for MSVC<br />
-    <code>nmake -f lexilla.mak</code><br />
-    </p>
+    <p>See the <a href="LexillaDoc.html">Lexilla documentation</a> for instructions on building and using Lexilla.</p>
 
-    <p>Lexilla follows the <a class="seealso" href="#SCI_LOADLEXERLIBRARY">external lexer protocol</a>
-    so can be loaded by applications that support this.
+    <p>Lexilla follows the external lexer protocol so can be loaded by applications that support this.
     As the protocol only supports object lexers, an additional function <code>CreateLexer(const char *name)</code>
     is exposed which will create a lexer object (ILexer5 *) for any object lexer or function lexer.
     </p>
    
     <p>Lexer libraries that provide the same functions as Lexilla may provide lexers for use by Scintilla,
-    augmenting or replacing those provided by Lexilla.
-    To allow initialisation of lexer libraries, a <code>SetLibraryProperty(const char *key, const char *value)</code>
-    may optionally be implemented. For example, a lexer library that uses XML based lexer definitions may
-    be provided with a directory to search for such definitions.
-    Lexer libraries should ignore any properties that they do not understand.
-    The set of properties supported by a lexer library is specified as a '\n' separated list of property names by
-    an optional <code>const char *GetLibraryPropertyNames()</code> function.
-    </p>
+    augmenting or replacing those provided by Lexilla.</p>
 
     <p>A lexer created by Lexilla may be used in Scintilla by calling
     <a class="seealso" href="#SCI_SETILEXER">SCI_SETILEXER</a>.</p>
-
-    <p>Lexilla and its contained lexers can be tested with the TestLexers program in lexilla/test.
-    Read lexilla/test/README for information on building and using TestLexers.</p>
 
     <h2 id="MessageCategories">Contents</h2>
 
@@ -361,110 +359,114 @@
 
           <td>&cir; <a class="toc" href="#StyleDefinition">Style definition</a></td>
 
-          <td>&cir; <a class="toc" href="#CaretAndSelectionStyles">Caret, selection, and hotspot styles</a></td>
+          <td>&cir; <a class="toc" href="#ElementColours">Element colours</a></td>
 
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#CaretAndSelectionStyles">Caret, selection, and hotspot styles</a></td>
+
           <td>&cir; <a class="toc" href="#CharacterRepresentations">Character representations</a></td>
 
           <td>&cir; <a class="toc" href="#Margins">Margins</a></td>
 
-          <td>&cir; <a class="toc" href="#Annotations">Annotations</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#Annotations">Annotations</a></td>
+
           <td>&cir; <a class="toc" href="#OtherSettings">Other settings</a></td>
 
           <td>&cir; <a class="toc" href="#BraceHighlighting">Brace highlighting</a></td>
 
-          <td>&cir; <a class="toc" href="#TabsAndIndentationGuides">Tabs and Indentation
-          Guides</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#TabsAndIndentationGuides">Tabs and Indentation
+          Guides</a></td>
+
           <td>&cir; <a class="toc" href="#Markers">Markers</a></td>
 
           <td>&cir; <a class="toc" href="#Indicators">Indicators</a></td>
 
-          <td>&cir; <a class="toc" href="#Autocompletion">Autocompletion</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#Autocompletion">Autocompletion</a></td>
+
           <td>&cir; <a class="toc" href="#UserLists">User lists</a></td>
 
           <td>&cir; <a class="toc" href="#CallTips">Call tips</a></td>
 
-          <td>&cir; <a class="toc" href="#KeyboardCommands">Keyboard commands</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#KeyboardCommands">Keyboard commands</a></td>
+
           <td>&cir; <a class="toc" href="#KeyBindings">Key bindings</a></td>
 
           <td>&cir; <a class="toc" href="#PopupEditMenu">Popup edit menu</a></td>
 
-          <td>&cir; <a class="toc" href="#MacroRecording">Macro recording</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#MacroRecording">Macro recording</a></td>
+
           <td>&cir; <a class="toc" href="#Printing">Printing</a></td>
 
           <td>&cir; <a class="toc" href="#DirectAccess">Direct access</a></td>
 
-          <td>&cir; <a class="toc" href="#MultipleViews">Multiple views</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#MultipleViews">Multiple views</a></td>
+
           <td>&cir; <a class="toc" href="#BackgroundLoadSave">Background loading and saving</a></td>
 
           <td>&cir; <a class="toc" href="#Folding">Folding</a></td>
 
-          <td>&cir; <a class="toc" href="#LineWrapping">Line wrapping</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#LineWrapping">Line wrapping</a></td>
+
           <td>&cir; <a class="toc" href="#Zooming">Zooming</a></td>
 
           <td>&cir; <a class="toc" href="#LongLines">Long lines</a></td>
 
-          <td>&cir; <a class="toc" href="#Accessibility">Accessibility</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#Accessibility">Accessibility</a></td>
+
           <td>&cir; <a class="toc" href="#Lexer">Lexer</a></td>
 
           <td>&cir; <a class="toc" href="#LexerObjects">Lexer objects</a></td>
 
-          <td>&cir; <a class="toc" href="#Notifications">Notifications</a></td>
-
         </tr>
 
         <tr>
+          <td>&cir; <a class="toc" href="#Notifications">Notifications</a></td>
+
           <td>&cir; <a class="toc" href="#Images">Images</a></td>
 
           <td>&cir; <a class="toc" href="#GTK">GTK</a></td>
 
+        </tr>
+
+        <tr>
           <td>&cir; <a class="toc" href="#ProvisionalMessages"><span class="provisional">Provisional messages</span></a></td>
 
-        </tr>
-        <tr>
           <td>&cir; <a class="toc" href="#DeprecatedMessages">Deprecated messages</a></td>
 
           <td>&cir; <a class="toc" href="#EditMessagesNeverSupportedByScintilla">Edit messages never
           supported by Scintilla</a></td>
 
+        </tr>
+
+        <tr>
           <td>&cir; <a class="toc" href="#RemovedFeatures">Removed features</a></td>
 
-        </tr>
-        <tr>
           <td>&cir; <a class="toc" href="#BuildingScintilla">Building Scintilla</a></td>
 
           <td>&cir; <a class="toc" href="#EndOfLineAnnotations">End of Line Annotations</a></td>
@@ -2723,8 +2725,8 @@ struct Sci_TextToFind {
     <p>The styling messages allow you to assign styles to text. If your styling needs can be met by
     one of the standard lexers, or if you can write your own, then a lexer is probably the easiest
     way to style your document. If you choose to use the container to do the styling you can use
-    the <a class="message" href="#SCI_SETLEXER"><code>SCI_SETLEXER</code></a> command to select
-    <code>SCLEX_CONTAINER</code>, in which case the container is sent a <a class="message"
+    the <a class="message" href="#SCI_SETILEXER"><code>SCI_SETILEXER</code></a> command to select
+    <code>NULL</code>, in which case the container is sent a <a class="message"
     href="#SCN_STYLENEEDED"><code>SCN_STYLENEEDED</code></a> <a class="jump"
     href="#Notifications">notification</a> each time text needs styling for display. As another
     alternative, you might use idle time to style the document. Even if you use a lexer, you might
@@ -3209,6 +3211,92 @@ struct Sci_TextToFind {
     The cursor changes to a hand over hotspots, and the foreground, and background colours
     may change and an underline appear to indicate that these areas are sensitive to clicking.
     This may be used to allow hyperlinks to other documents.</p>
+
+    <h2 id="ElementColours">Element colours</h2>
+
+    <p>The colours of some visual elements can be changed with these methods.
+    The available elements often have a defined default colour, sometimes from the system but also from Scintilla.
+    There may be a range of colours and setting an element colour overrides these colours.</p>
+
+    <code>
+    <a class="message" href="#SCI_SETELEMENTCOLOUR">SCI_SETELEMENTCOLOUR(int element, colouralpha colourElement)</a><br />
+    <a class="message" href="#SCI_GETELEMENTCOLOUR">SCI_GETELEMENTCOLOUR(int element) &rarr; colouralpha</a><br />
+    <a class="message" href="#SCI_RESETELEMENTCOLOUR">SCI_RESETELEMENTCOLOUR(int element)</a><br />
+    <a class="message" href="#SCI_GETELEMENTISSET">SCI_GETELEMENTISSET(int element) &rarr; bool</a><br />
+    <a class="message" href="#SCI_GETELEMENTALLOWSTRANSLUCENT">SCI_GETELEMENTALLOWSTRANSLUCENT(int element) &rarr; bool</a><br />
+    </code>
+
+    <p>
+    <b id="SCI_SETELEMENTCOLOUR">SCI_SETELEMENTCOLOUR(int element, <a class="jump" href="#colouralpha">colouralpha</a> colourElement)</b><br />
+    <b id="SCI_GETELEMENTCOLOUR">SCI_GETELEMENTCOLOUR(int element) &rarr; colouralpha</b><br />
+     This changes the colour of the indicated visual element overriding any current colour.
+     If the element supports translucency, then the alpha portion of the value is used.
+     An opaque alpha value (0xff) should always be included when an opaque colour is desired as the value 0
+     is completely transparent and thus invisible.
+     </p>
+
+    <p>
+    <b id="SCI_RESETELEMENTCOLOUR">SCI_RESETELEMENTCOLOUR(int element)</b><br />
+     This removes the element colour returning to the default colour or set of colours.
+     </p>
+
+    <p>
+    <b id="SCI_GETELEMENTISSET">SCI_GETELEMENTISSET(int element) &rarr; bool</b><br />
+     Returns true when an element colour has been set. When false indicates that a default colour or set of colours is displayed.
+     </p>
+
+    <p>
+    <b id="SCI_GETELEMENTALLOWSTRANSLUCENT">SCI_GETELEMENTALLOWSTRANSLUCENT(int element) &rarr; bool</b><br />
+     Returns true when the element currently allows translucent drawing when an alpha component is included.
+     This may change based on circumstances - different platforms or graphics technologies may implement translucency
+     and newer versions of Scintilla may implement translucency for elements that did not previously support it. 
+     </p>
+     
+     <table class="standard" summary="Elements">
+      <thead align="left">
+        <tr>
+          <th><code>SC_ELEMENT_</code>*</th>
+
+          <th>Value</th>
+
+          <th>Translucent?</th>
+
+          <th>Platforms</th>
+
+          <th>Description</th>
+        </tr>
+      </thead>
+       <tbody valign="top">
+         <tr>
+           <th align="left"><code>SC_ELEMENT_LIST</code></th>
+           <td>0</td>
+           <td>Opaque</td>
+           <td>Win32</td>
+           <td>Text colour in autocompletion lists</td>
+         </tr>
+         <tr>
+           <th align="left"><code>SC_ELEMENT_LIST_BACK</code></th>
+           <td>1</td>
+           <td>Opaque</td>
+           <td>Win32</td>
+           <td>Background colour of autocompletion lists</td>
+         </tr>
+         <tr>
+           <th align="left"><code>SC_ELEMENT_LIST_SELECTED</code></th>
+           <td>2</td>
+           <td>Opaque</td>
+           <td>Win32</td>
+           <td>Text colour of selected item in autocompletion lists</td>
+         </tr>
+         <tr>
+           <th align="left"><code>SC_ELEMENT_LIST_SELECTED_BACK</code></th>
+           <td>3</td>
+           <td>Opaque</td>
+           <td>Win32</td>
+           <td>Background colour of selected item in autocompletion lists</td>
+         </tr>
+       </tbody>
+     </table>
 
     <h2 id="CaretAndSelectionStyles">Caret, selection, and hotspot styles</h2>
 
@@ -3794,11 +3882,10 @@ struct Sci_TextToFind {
      <b id="SCI_EOLANNOTATIONGETSTYLE">SCI_EOLANNOTATIONGETSTYLE(line line) &rarr; int</b><br />
      <b id="SCI_EOLANNOTATIONCLEARALL">SCI_EOLANNOTATIONCLEARALL</b><br />
      A different string may be set for each line with <code>SCI_EOLANNOTATIONSETTEXT</code>.
+     The text argument is always in UTF-8, not the document encoding.
      To clear end of line annotations call <code>SCI_EOLANNOTATIONSETTEXT</code> with a NULL pointer.
      The whole of the text EOLANNOTATION on a line may be displayed in a particular style with
-     <code>SCI_EOLANNOTATIONSETSTYLE</code> or each character may be individually styled with
-     of the corresponding text byte similar to <code>SCI_SETSTYLINGEX</code>. The text must be set first as it
-     specifies how long the end of line annotation is so how many bytes of styling to read.
+     <code>SCI_EOLANNOTATIONSETSTYLE</code>.
      Setting an end of line annotation will cause a
      <a class="message" href="#SC_MOD_CHANGEEOLANNOTATION"><code>SC_MOD_CHANGEEOLANNOTATION</code></a>
      notification to be sent.
@@ -3822,7 +3909,7 @@ struct Sci_TextToFind {
         <tr>
           <th align="left"><code>EOLANNOTATION_HIDDEN</code></th>
 
-          <td>0</td>
+          <td>0x0</td>
 
           <td>End of Line Annotations are not displayed.</td>
         </tr>
@@ -3830,7 +3917,7 @@ struct Sci_TextToFind {
         <tr>
           <th align="left"><code>EOLANNOTATION_STANDARD</code></th>
 
-          <td>1</td>
+          <td>0x1</td>
 
           <td>End of Line Annotations are drawn left justified with no adornment.</td>
         </tr>
@@ -3838,13 +3925,89 @@ struct Sci_TextToFind {
         <tr>
           <th align="left"><code>EOLANNOTATION_BOXED</code></th>
 
-          <td>2</td>
+          <td>0x2</td>
 
           <td>End of Line Annotations are indented to match the text and are surrounded by a box.</td>
         </tr>
 
+        <tr>
+          <th align="left"><code>EOLANNOTATION_STADIUM</code></th>
+
+          <td>0x100</td>
+
+          <td>Surround with a &#x25D6;stadium&#x25D7; - a rectangle with rounded ends.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_FLAT_CIRCLE</code></th>
+
+          <td>0x101</td>
+
+          <td>Surround with a |shape&#x25D7; with flat left end and curved right end.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_ANGLE_CIRCLE</code></th>
+
+          <td>0x102</td>
+
+          <td>Surround with a &#x25C4;shape&#x25D7; with angled left end and curved right end.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_CIRCLE_FLAT</code></th>
+
+          <td>0x110</td>
+
+          <td>Surround with a &#x25D6;shape| with curved left end and flat right end.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_FLATS</code></th>
+
+          <td>0x111</td>
+
+          <td>Surround with a |shape| with flat ends.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_ANGLE_FLAT</code></th>
+
+          <td>0x112</td>
+
+          <td>Surround with a &#x25C4;shape| with angled left end and flat right end.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_CIRCLE_ANGLE</code></th>
+
+          <td>0x120</td>
+
+          <td>Surround with a &#x25D6;shape&#x25B6; with curved left end and angled right end.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_FLAT_ANGLE</code></th>
+
+          <td>0x121</td>
+
+          <td>Surround with a |shape&#x25B6; with flat left end and angled right end.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>EOLANNOTATION_ANGLES</code></th>
+
+          <td>0x122</td>
+
+          <td>Surround with a &#x25C4;shape&#x25B6; with angles on each end.</td>
+        </tr>
+
       </tbody>
     </table>
+
+    <p>Different shapes available for EOL annotations.
+    Only one shape can currently be used for the whole document - this illustration was produced by trickery.</p>
+    <p><img src="StadiumVariants.png" alt="Different shapes available for EOL annotations" /></p>
 
     <p>
      <b id="SCI_EOLANNOTATIONSETSTYLEOFFSET">SCI_EOLANNOTATIONSETSTYLEOFFSET(int style)</b><br />
@@ -3852,8 +4015,7 @@ struct Sci_TextToFind {
     End of Line Annotation styles may be completely separated from standard text styles by setting a style offset. For example,
     <code>SCI_EOLANNOTATIONSETSTYLEOFFSET(512)</code> would allow the end of line  annotation styles to be numbered from
     512 up to 767 so they do not overlap styles set by lexers (or margins if margins offset is 256).
-    Each style number set with <code>SCI_EOLANNOTATIONSETSTYLE</code>
-    or <code>SCI_EOLANNOTATIONSETSTYLES</code> has the offset added before looking up the style.
+    Each style number set with <code>SCI_EOLANNOTATIONSETSTYLE</code> has the offset added before looking up the style.
     </p>
     <p>
     Always call <a class="seealso" href="#SCI_ALLOCATEEXTENDEDSTYLES">SCI_ALLOCATEEXTENDEDSTYLES</a>
@@ -3884,6 +4046,7 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_GRABFOCUS">SCI_GRABFOCUS</a><br />
      <a class="message" href="#SCI_SETFOCUS">SCI_SETFOCUS(bool focus)</a><br />
      <a class="message" href="#SCI_GETFOCUS">SCI_GETFOCUS &rarr; bool</a><br />
+     <a class="message" href="#SCI_SUPPORTSFEATURE">SCI_SUPPORTSFEATURE(int feature) &rarr; bool</a><br />
     </code>
 
     <p>To forward a message <code>(WM_XXXX, WPARAM, LPARAM)</code> to Scintilla, you can use
@@ -4041,6 +4204,52 @@ struct Sci_TextToFind {
     <p>The internal focus flag can be set with <code>SCI_SETFOCUS</code>. This is used by clients
     that have complex focus requirements such as having their own window that gets the real focus
     but with the need to indicate that Scintilla has the logical focus.</p>
+
+    <p><b id="SCI_SUPPORTSFEATURE">SCI_SUPPORTSFEATURE(int feature) &rarr; bool</b><br />
+     Different platforms support different features and <code>SCI_SUPPORTSFEATURE</code>
+     can be used to check which are currently available.
+     For example, on Win32, Direct2D supports drawing translucent lines but GDI does not so
+     <code>SCI_SUPPORTSFEATURE(SC_SUPPORTS_TRANSLUCENT_STROKE)</code>
+     will return 1 for Direct2D and 0 for GDI. Its possible that translucent line drawing will be implemented in a future
+     revision to the GDI platform layer or will be implemented on particular Windows versions.
+     This call allows applications to tailor their settings: perhaps displaying a box with translucent coloured fill on Direct2D but
+     a hollow box on GDI.</p>
+     <p>The features that can be queried are:</p>
+    <table class="standard" summary="Search flags">
+      <tbody>
+        <tr>
+          <td><code>SC_SUPPORTS_LINE_DRAWS_FINAL</code></td>
+          <td>0</td>
+          <td>Whether drawing a line draws its final position. Only false on Win32 GDI.</td>
+        </tr>
+
+        <tr>
+          <td><code>SC_SUPPORTS_PIXEL_DIVISIONS</code></td>
+          <td>1</td>
+          <td>Are logical pixels larger than physical pixels? Currently only true for macOS Cocoa with 'retina' displays.
+          When true, creating pixmaps at twice the resolution can produce clearer output with less blur.</td>
+        </tr>
+
+        <tr>
+          <td><code>SC_SUPPORTS_FRACTIONAL_STROKE_WIDTH</code></td>
+          <td>2</td>
+          <td>Can lines be drawn with fractional widths like 1.5 or 0.5 pixels?</td>
+        </tr>
+
+        <tr>
+          <td><code>SC_SUPPORTS_TRANSLUCENT_STROKE</code></td>
+          <td>3</td>
+          <td>Can translucent lines, polygons, ellipses, and text be drawn?</td>
+        </tr>
+
+        <tr>
+          <td><code>SC_SUPPORTS_PIXEL_MODIFICATION</code></td>
+          <td>4</td>
+          <td>Can individual pixels be modified? This is false for character cell platforms like curses.</td>
+        </tr>
+
+      </tbody>
+    </table>
 
     <h2 id="BraceHighlighting">Brace highlighting</h2>
     <code><a class="message" href="#SCI_BRACEHIGHLIGHT">SCI_BRACEHIGHLIGHT(position posA, position
@@ -4272,12 +4481,15 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_MARKERDEFINERGBAIMAGE">SCI_MARKERDEFINERGBAIMAGE(int markerNumber,
     const char *pixels)</a><br />
      <a class="message" href="#SCI_MARKERSYMBOLDEFINED">SCI_MARKERSYMBOLDEFINED(int markerNumber) &rarr; int</a><br />
-     <a class="message" href="#SCI_MARKERSETFORE">SCI_MARKERSETFORE(int markerNumber, colour
-    fore)</a><br />
-     <a class="message" href="#SCI_MARKERSETBACK">SCI_MARKERSETBACK(int markerNumber, colour
-    back)</a><br />
+     <a class="message" href="#SCI_MARKERSETFORE">SCI_MARKERSETFORE(int markerNumber, colour fore)</a><br />
+     <a class="message" href="#SCI_MARKERSETFORETRANSLUCENT">SCI_MARKERSETFORETRANSLUCENT(int markerNumber, colouralpha fore)</a><br />
+     <a class="message" href="#SCI_MARKERSETBACK">SCI_MARKERSETBACK(int markerNumber, colour back)</a><br />
+     <a class="message" href="#SCI_MARKERSETBACKTRANSLUCENT">SCI_MARKERSETBACKTRANSLUCENT(int markerNumber, colouralpha back)</a><br />
     <a class="message" href="#SCI_MARKERSETBACKSELECTED">SCI_MARKERSETBACKSELECTED(int markerNumber, colour
     back)</a><br />
+    <a class="message" href="#SCI_MARKERSETBACKSELECTEDTRANSLUCENT">SCI_MARKERSETBACKSELECTEDTRANSLUCENT(int markerNumber, colouralpha
+    back)</a><br />
+    <a class="message" href="#SCI_MARKERSETSTROKEWIDTH">SCI_MARKERSETSTROKEWIDTH(int markerNumber, int hundredths)</a><br />
     <a class="message" href="#SCI_MARKERENABLEHIGHLIGHT">SCI_MARKERENABLEHIGHLIGHT(bool enabled)</a><br />
      <a class="message" href="#SCI_MARKERSETALPHA">SCI_MARKERSETALPHA(int markerNumber, alpha alpha)</a><br />
      <a class="message" href="#SCI_MARKERADD">SCI_MARKERADD(line line, int markerNumber) &rarr; int</a><br />
@@ -4342,10 +4554,10 @@ struct Sci_TextToFind {
     <code>SC_MARK_TCORNER</code>,
     <code>SC_MARK_TCORNERCURVE</code>, and
     <code>SC_MARK_VLINE</code>.</p>
-    Characters can be used as markers by adding the ASCII value of the character to
-    <code>SC_MARK_CHARACTER</code> (10000). For example, to use 'A' (ASCII code 65) as marker
-    number 1 use:<br />
-    <code>SCI_MARKERDEFINE(1, SC_MARK_CHARACTER+65)</code>. <br />
+    Characters can be used as markers by adding the Unicode code point of the character to
+    <code>SC_MARK_CHARACTER</code> (10000). For example, to use '&#9637;' SQUARE WITH VERTICAL FILL
+    (Unicode code point 9637) as marker number 1 use:<br />
+    <code>SCI_MARKERDEFINE(1, SC_MARK_CHARACTER+9637)</code>. <br />
 
     <p>The marker numbers <code>SC_MARKNUM_FOLDER</code> and <code>SC_MARKNUM_FOLDEROPEN</code> are
     used for showing that a fold is present and open or closed. Any symbols may be assigned for
@@ -4491,18 +4703,30 @@ struct Sci_TextToFind {
      or <code>SC_MARK_PIXMAP</code> if defined with <code>SCI_MARKERDEFINEPIXMAP</code>
      or <code>SC_MARK_RGBAIMAGE</code> if defined with <code>SCI_MARKERDEFINERGBAIMAGE</code>.</p>
 
-    <p><b id="SCI_MARKERSETFORE">SCI_MARKERSETFORE(int markerNumber, <a class="jump" href="#colour">colour</a> fore)</b><br />
+    <p>
+     <b id="SCI_MARKERSETFORE">SCI_MARKERSETFORE(int markerNumber, <a class="jump" href="#colour">colour</a> fore)</b><br />
+     <b id="SCI_MARKERSETFORETRANSLUCENT">SCI_MARKERSETFORETRANSLUCENT(int markerNumber, <a class="jump" href="#colouralpha">colouralpha</a> fore)</b><br />
      <b id="SCI_MARKERSETBACK">SCI_MARKERSETBACK(int markerNumber, <a class="jump" href="#colour">colour</a> back)</b><br />
-     These two messages set the foreground and background colour of a marker number.<br />
+     <b id="SCI_MARKERSETBACKTRANSLUCENT">SCI_MARKERSETBACKTRANSLUCENT(int markerNumber, <a class="jump" href="#colouralpha">colouralpha</a> back)</b><br />
+     These messages set the foreground and background colour of a marker number.
+     The <code>TRANSLUCENT</code> variants can define different degrees of opacity.<br />
      <b id="SCI_MARKERSETBACKSELECTED">SCI_MARKERSETBACKSELECTED(int markerNumber, <a class="jump" href="#colour">colour</a> back)</b><br />
+     <b id="SCI_MARKERSETBACKSELECTEDTRANSLUCENT">SCI_MARKERSETBACKSELECTEDTRANSLUCENT(int markerNumber, <a class="jump" href="#colouralpha">colouralpha</a> back)</b><br />
      This message sets the highlight background colour of a marker number when its folding block is selected. The default colour is #FF0000.</p>
+
+     <p><b id="SCI_MARKERSETSTROKEWIDTH">SCI_MARKERSETSTROKEWIDTH(int markerNumber, int hundredths)</b><br />
+     This message sets the stroke width used to draw the marker in hundredths of a pixel.
+     The default value is 100 indicating a single pixel wide line.</p>
+
      <p><b id="SCI_MARKERENABLEHIGHLIGHT">SCI_MARKERENABLEHIGHLIGHT(bool enabled)</b><br />
      This message allows to enable/disable the highlight folding block when it is selected. (i.e. block that contains the caret)</p>
+
      <p><b id="SCI_MARKERSETALPHA">SCI_MARKERSETALPHA(int markerNumber,
      <a class="jump" href="#alpha">alpha</a> alpha)</b><br />
      When markers are drawn in the content area, either because there is no margin for them or
      they are of <code>SC_MARK_BACKGROUND</code> or <code>SC_MARK_UNDERLINE</code> types, they may be drawn translucently by
-     setting an alpha value.</p>
+     setting an alpha value. This is only for the content area - in margins, translucency is achieved through the <code>SCI_MARKERSET&hellip;TRANSLUCENT</code>
+     methods.</p>
 
     <p><b id="SCI_MARKERADD">SCI_MARKERADD(line line, int markerNumber) &rarr; int</b><br />
      This message adds marker number <code class="parameter">markerNumber</code> to a line. The message returns -1 if
@@ -4608,6 +4832,8 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_INDICSETFORE">SCI_INDICSETFORE(int indicator, colour
     fore)</a><br />
      <a class="message" href="#SCI_INDICGETFORE">SCI_INDICGETFORE(int indicator) &rarr; colour</a><br />
+     <a class="message" href="#SCI_INDICSETSTROKEWIDTH">SCI_INDICSETSTROKEWIDTH(int indicator, int hundredths)</a><br />
+     <a class="message" href="#SCI_INDICGETSTROKEWIDTH">SCI_INDICGETSTROKEWIDTH(int indicator) &rarr; int</a><br />
      <a class="message" href="#SCI_INDICSETALPHA">SCI_INDICSETALPHA(int indicator, alpha alpha)</a><br />
      <a class="message" href="#SCI_INDICGETALPHA">SCI_INDICGETALPHA(int indicator) &rarr; int</a><br />
      <a class="message" href="#SCI_INDICSETOUTLINEALPHA">SCI_INDICSETOUTLINEALPHA(int indicator, alpha alpha)</a><br />
@@ -4877,6 +5103,25 @@ struct Sci_TextToFind {
      <code>SCI_INDICSETFORE(1, 0xff0000);</code> (light blue)<br />
      <code>SCI_INDICSETFORE(2, 0x0000ff);</code> (light red)</p>
 
+     <a class="message" href="#SCI_INDICSETSTROKEWIDTH">SCI_INDICSETSTROKEWIDTH(int indicator, int hundredths)</a><br />
+     <a class="message" href="#SCI_INDICGETSTROKEWIDTH">SCI_INDICGETSTROKEWIDTH(int indicator) &rarr; int</a><br />
+    <p><b id="SCI_INDICSETSTROKEWIDTH">SCI_INDICSETSTROKEWIDTH(int indicator, int hundredths)</b><br />
+     <b id="SCI_INDICGETSTROKEWIDTH">SCI_INDICGETSTROKEWIDTH(int indicator) &rarr; int</b><br />
+     These two messages set and get the stroke width used to draw an indicator in hundredths of a pixel.
+     The default value is 100 indicating a width of one pixel.
+     Some indicator styles do not support setting stroke width, generally where it makes no sense (<code>INDIC_POINT</code>) or
+     wasn't simple (<code>INDIC_SQUIGGLEPIXMAP</code>).
+     The indicators supporting stroke width are:
+     <code>INDIC_PLAIN</code>, <code>INDIC_SQUIGGLE</code>, <code>INDIC_TT</code>, <code>INDIC_DIAGONAL</code>,
+     <code>INDIC_STRIKE</code>, <code>INDIC_BOX</code>, <code>INDIC_ROUNDBOX</code>, <code>INDIC_STRAIGHTBOX</code>,
+     <code>INDIC_FULLBOX</code>, <code>INDIC_DASH</code>, <code>INDIC_DOTS</code>, <code>INDIC_SQUIGGLELOW</code>.
+     </p>
+     <p>Fractional pixel widths are possible such as 50 for half a pixel wide. 
+     On many systems a half pixel value will appear as a fainter line but it allows drawing very thin lines on systems with multiple physical pixels
+     per logical pixel.
+     Half (logical) pixel lines are available on macOS with 'retina' displays,
+     see <a class="seealso" href="#SCI_SUPPORTSFEATURE">SC_SUPPORTS_PIXEL_DIVISIONS</a>.</p>
+
     <p><b id="SCI_INDICSETALPHA">SCI_INDICSETALPHA(int indicator, <a class="jump" href="#alpha">alpha</a> alpha)</b><br />
      <b id="SCI_INDICGETALPHA">SCI_INDICGETALPHA(int indicator) &rarr; int</b><br />
      These two messages set and get the alpha transparency used for drawing the
@@ -4939,8 +5184,7 @@ struct Sci_TextToFind {
     <b id="SCI_INDICATORFILLRANGE">SCI_INDICATORFILLRANGE(position start, position lengthFill)</b><br />
     <b id="SCI_INDICATORCLEARRANGE">SCI_INDICATORCLEARRANGE(position start, position lengthClear)</b><br />
     These two messages fill or clear a range for the current indicator.
-    <code>SCI_INDICATORFILLRANGE</code> fills with the
-    the current value.
+    <code>SCI_INDICATORFILLRANGE</code> fills with the current value.
     </p>
 
     <p>
@@ -5056,6 +5300,10 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_AUTOCGETMAXHEIGHT">SCI_AUTOCGETMAXHEIGHT &rarr; int</a><br />
      <a class="message" href="#SCI_AUTOCSETMAXWIDTH">SCI_AUTOCSETMAXWIDTH(int characterCount)</a><br />
      <a class="message" href="#SCI_AUTOCGETMAXWIDTH">SCI_AUTOCGETMAXWIDTH &rarr; int</a><br />
+     <a class="element" href="#SC_ELEMENT_LIST">SC_ELEMENT_LIST : colouralpha</a><br />
+     <a class="element" href="#SC_ELEMENT_LIST_BACK">SC_ELEMENT_LIST_BACK : colouralpha</a><br />
+     <a class="element" href="#SC_ELEMENT_LIST_SELECTED">SC_ELEMENT_LIST_SELECTED : colouralpha</a><br />
+     <a class="element" href="#SC_ELEMENT_LIST_SELECTED_BACK">SC_ELEMENT_LIST_SELECTED_BACK : colouralpha</a><br />
     </code>
 
     <p><b id="SCI_AUTOCSHOW">SCI_AUTOCSHOW(position lengthEntered, const char *itemList)</b><br />
@@ -5223,6 +5471,15 @@ struct Sci_TextToFind {
       Get or set the maximum width of an autocompletion list expressed as the number of characters in the longest item that will be totally visible.
       If zero (the default) then the list's width is calculated to fit the item with the most characters. Any items that cannot be fully displayed within
       the available width are indicated by the presence of ellipsis.
+     </p>
+
+    <p>
+     <b id="SC_ELEMENT_LIST">SC_ELEMENT_LIST : colouralpha</b><br />
+     <b id="SC_ELEMENT_LIST_BACK">SC_ELEMENT_LIST_BACK : colouralpha</b><br />
+     <b id="SC_ELEMENT_LIST_SELECTED">SC_ELEMENT_LIST_SELECTED : colouralpha</b><br />
+     <b id="SC_ELEMENT_LIST_SELECTED_BACK">SC_ELEMENT_LIST_SELECTED_BACK : colouralpha</b><br />
+     The colours used for autocompletion lists may be customized on Win32 using
+     <a class="message" href="#SCI_SETELEMENTCOLOUR"><code>SCI_SETELEMENTCOLOUR</code></a>.
      </p>
 
     <h2 id="UserLists">User lists</h2>
@@ -6104,7 +6361,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <p>With <code>SC_DOCUMENTOPTION_STYLES_NONE</code>, lexers are still active and may display
     indicators. Some may produce folding information althoough most require lexical styles to correctly determine folding.
-    Its often more efficient to set the null lexer <code>SCLEX_NULL</code> so no lexer is run.
+    Its often more efficient to set the null lexer <code>NULL</code> so no lexer is run.
     </p>
 
     <p class="provisional">The <code>SC_DOCUMENTOPTION_TEXT_LARGE</code> option is experimental and has not been
@@ -6112,7 +6369,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     Applications using this option should be tested to ensure the option works in their circumstances and each lexer
     included should also be tested with documents larger than 4GB.
     For many applications lexing documents larger than 4GB will be too sluggish so <code>SC_DOCUMENTOPTION_STYLES_NONE</code>
-    and the null lexer <code>SCLEX_NULL</code> can be used. Another approach is to turn on idle styling with
+    and the null lexer <code>NULL</code> can be used. Another approach is to turn on idle styling with
     <a class="seealso" href="#SCI_SETIDLESTYLING"><code>SCI_SETIDLESTYLING</code></a>.
     </p>
 
@@ -6899,7 +7156,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <br />
      <a class="message" href="#SCI_MULTIEDGEADDLINE">SCI_MULTIEDGEADDLINE(position column, colour edgeColour)</a><br />
      <a class="message" href="#SCI_MULTIEDGECLEARALL">SCI_MULTIEDGECLEARALL</a><br />
-     <a class="message" href="#SCI_GETMULTIEDGECOLUMN">SCI_GETMULTIEDGECOLUMN(int which)</a>
+     <a class="message" href="#SCI_GETMULTIEDGECOLUMN">SCI_GETMULTIEDGECOLUMN(int which) &rarr; position</a>
      <br />
     </code>
 
@@ -6978,7 +7235,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p><b id="SCI_MULTIEDGEADDLINE">SCI_MULTIEDGEADDLINE(position column,
     <a class="jump" href="#colour">colour</a> edgeColour)</b><br />
      <b id="SCI_MULTIEDGECLEARALL">SCI_MULTIEDGECLEARALL</b><br />
-     <b id="SCI_GETMULTIEDGECOLUMN">SCI_GETMULTIEDGECOLUMN(int which)</b><br />
+     <b id="SCI_GETMULTIEDGECOLUMN">SCI_GETMULTIEDGECOLUMN(int which) &rarr; position</b><br />
      <code>SCI_MULTIEDGEADDLINE</code> adds a new vertical edge to the view. The edge will be
     displayed at the given column number. The resulting edge position depends on the metric
     of a space character in <code>STYLE_DEFAULT</code>. All the edges can be cleared with
@@ -7042,27 +7299,16 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <h2 id="Lexer">Lexer</h2>
 
-    <p>If you define the symbol <code>SCI_LEXER</code> when building Scintilla, (this is sometimes
-    called the SciLexer version of Scintilla), lexing support for a wide range of programming
-    languages is included and the messages in this section are supported. If you want to set
-    styling and fold points for an unsupported language you can either do this in the container or
-    better still, write your own lexer following the pattern of one of the existing ones.</p>
+    <p>
+    To style files in different languages, different 'lexers' are used.
+    These are objects that are called by Scintilla with a range of text and some context information and which
+    then set styles and folding information for that range.
+    Lexers for Scintilla are now provided by the <a href="Lexilla.html">Lexilla</a> project.
+    Before 5.0, lexers were built into most versions of Scintilla.</p>
 
-    <p>If the symbol <code>SCI_EMPTYCATALOGUE</code> is defined when building
-    Scintilla, then no lexers are made available but other lexing support code may be present.</p>
-
-    <p>Scintilla also supports external lexers. These are DLLs (on Windows), .dylib modules (on macOS),
-    or .so modules (on GTK/Linux) that export three
-    functions: <code>GetLexerCount</code>, <code>GetLexerName</code>, and
-    <code>GetLexerFactory</code>. See <code>ExternalLexer.cxx</code> for more information.</p>
-     <a class="message" href="#SCI_SETLEXER">SCI_SETLEXER(int lexer)</a><br />
      <a class="message" href="#SCI_GETLEXER">SCI_GETLEXER &rarr; int</a><br />
-     <a class="message" href="#SCI_SETLEXERLANGUAGE">SCI_SETLEXERLANGUAGE(&lt;unused&gt;, const char
-    *language)</a><br />
      <a class="message" href="#SCI_GETLEXERLANGUAGE">SCI_GETLEXERLANGUAGE(&lt;unused&gt;, char *language) &rarr; int</a><br />
      <a class="message" href="#SCI_SETILEXER">SCI_SETILEXER(&lt;unused&gt;, pointer ilexer)</a><br />
-     <a class="message" href="#SCI_LOADLEXERLIBRARY">SCI_LOADLEXERLIBRARY(&lt;unused&gt;, const char
-    *path)</a><br />
      <a class="message" href="#SCI_COLOURISE">SCI_COLOURISE(position start, position end)</a><br />
      <a class="message" href="#SCI_CHANGELEXERSTATE">SCI_CHANGELEXERSTATE(position start, position end) &rarr; int</a><br />
      <a class="message" href="#SCI_PROPERTYNAMES">SCI_PROPERTYNAMES(&lt;unused&gt;, char *names) &rarr; int</a><br />
@@ -7091,27 +7337,17 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <a class="message" href="#SCI_TAGSOFSTYLE">SCI_TAGSOFSTYLE(int style, char *tags) &rarr; int</a><br />
      <a class="message" href="#SCI_DESCRIPTIONOFSTYLE">SCI_DESCRIPTIONOFSTYLE(int style, char *description) &rarr; int</a><br />
 
-    <p><b id="SCI_SETLEXER">SCI_SETLEXER(int lexer)</b><br />
-     <b id="SCI_GETLEXER">SCI_GETLEXER &rarr; int</b><br />
-     You can select the lexer to use with an integer code from the <code>SCLEX_*</code> enumeration
-    in <code>Scintilla.h</code>. There are two codes in this sequence that do not use lexers:
-    <code>SCLEX_NULL</code> to select no lexing action and <code>SCLEX_CONTAINER</code> which sends
-    the <code><a class="message" href="#SCN_STYLENEEDED">SCN_STYLENEEDED</a></code> notification to
-    the container whenever a range of text needs to be styled. You cannot use the
-    <code>SCLEX_AUTOMATIC</code> value; this identifies additional external lexers that Scintilla
-    assigns unused lexer numbers to.</p>
+    <p><b id="SCI_GETLEXER">SCI_GETLEXER &rarr; int</b><br />
+     You can retrieve an integer lexer ID for the current lexer from the <code>SCLEX_*</code> enumeration
+    in <code>SciLexer.h</code>. Some lexers may not have a lexer ID, just a lexer name in which case 0 is returned.</p>
 
-    <p><b id="SCI_SETLEXERLANGUAGE">SCI_SETLEXERLANGUAGE(&lt;unused&gt;, const char *language)</b><br />
-    <b id="SCI_GETLEXERLANGUAGE">SCI_GETLEXERLANGUAGE(&lt;unused&gt;, char *language NUL-terminated) &rarr; int</b><br />
-     <code>SCI_SETLEXERLANGUAGE</code> lets you select a lexer by name, and is the only method if you are using an
-    external lexer or if you have written a lexer module for a language of your own and do not wish
-    to assign it an explicit lexer number. To select an existing lexer, set <code class="parameter">language</code> to
-    match the (case sensitive) name given to the module, for example "ada" or "python", not "Ada"
-    or "Python". To locate the name for the built-in lexers, open the relevant
-    <code>Lex*.cxx</code> file and search for <code>LexerModule</code>. The third argument in the
+    <p><b id="SCI_GETLEXERLANGUAGE">SCI_GETLEXERLANGUAGE(&lt;unused&gt;, char *language NUL-terminated) &rarr; int</b><br />
+     <code>SCI_GETLEXERLANGUAGE</code>returns the name of the current lexer which must be set with <code>SCI_SETILEXER</code>.
+    To locate the name for a lexer, open the relevant
+    <code>lexilla/lexers/Lex*.cxx</code> file and search for <code>LexerModule</code>. The third argument in the
     <code>LexerModule</code> constructor is the name to use.</p>
 
-     <p class="provisional"><b id="SCI_SETILEXER">SCI_SETILEXER(&lt;unused&gt;, pointer ilexer)</b><br />
+     <p><b id="SCI_SETILEXER">SCI_SETILEXER(&lt;unused&gt;, pointer ilexer)</b><br />
      <code>SCI_SETILEXER</code> allows setting a lexer as an <code>ILexer5*</code>.
      The lexer may be implemented by an application or a shared library such as Lexilla.</p>
 
@@ -7121,13 +7357,9 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <p><code>SCI_GETLEXERLANGUAGE</code> retrieves the name of the lexer.</p>
 
-    <p><b id="SCI_LOADLEXERLIBRARY">SCI_LOADLEXERLIBRARY(&lt;unused&gt;, const char *path)</b><br />
-     Load a lexer implemented in a shared library. This is a .so file on GTK/Linux, a .dylib file on macOS, or a .DLL file on Windows.
-     </p>
-
     <p><b id="SCI_COLOURISE">SCI_COLOURISE(position start, position end)</b><br />
      This requests the current lexer or the container (if the lexer is set to
-    <code>SCLEX_CONTAINER</code>) to style the document between <code class="parameter">start</code> and
+    <code>NULL</code>) to style the document between <code class="parameter">start</code> and
     <code class="parameter">end</code>. If <code class="parameter">end</code> is -1, the document is styled from
     <code class="parameter">start</code> to the end. If the <code>"fold"</code> property is set to
     <code>"1"</code> and your lexer or container supports folding, fold levels are also set. This
@@ -7290,14 +7522,14 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <h2 id="LexerObjects">Lexer Objects</h2>
 
-    <p>Lexers are programmed as objects that implement the ILexer4 interface and that interact
+    <p>Lexers are programmed as objects that implement the ILexer5 interface and that interact
     with the document they are lexing through the IDocument interface.
     Previously lexers were defined by providing lexing and folding functions but creating an object
     to handle the interaction of a lexer with a document allows the lexer to store state information that
     can be used during lexing. For example a C++ lexer may store a set of preprocessor definitions
     or variable declarations and style these depending on their role.</p>
 
-    <p class="provisional">ILexer4 is extended with the provisional ILexer5 interface to support use of Lexilla.</p>
+    <p>ILexer4 is extended with the ILexer5 interface to support use of Lexilla.</p>
 
     <p>A set of helper classes allows older lexers defined by functions to be used in Scintilla.</p>
 <h4>ILexer4</h4>
@@ -7333,7 +7565,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 <span class="S10">};</span><br />
 </div>
 
-<h4 class="provisional">ILexer5</h4>
+<h4>ILexer5</h4>
 
 <div class="highlighted">
 <span><span class="S5">class</span><span class="S0"> </span>ILexer5<span class="S0"> </span><span class="S10">:</span><span class="S0"> </span><span class="S5">public</span><span class="S0"> </span>ILexer4<span class="S0"> </span><span class="S10">{</span><br />
@@ -7365,7 +7597,9 @@ optimisation could be to remember where a setting first affects the document and
 </p>
 
 <p><code>Version</code> returns an enumerated value specifying which version of the interface is implemented:
-<code>lvRelease4</code> for <code>ILexer4</code>. Prior to Scintilla 4.0 different values were possible.</p>
+<code>lvRelease5</code> for <code>ILexer5</code> and <code>lvRelease4</code> for <code>ILexer4</code>.
+<code>ILexer5</code> must be provided for Scintilla version 5.0 or later.
+</p>
 
 <p><code>Release</code> is called to destroy the lexer object.</p>
 
@@ -7392,12 +7626,12 @@ A set of common tags and conventions for combining them is <a  class="jump" href
 <code>DescriptionOfStyle</code> is an English description of the style like "<code>Function or method name definition</code>".
 </p>
 
-<p class="provisional"><code>GetName</code> and <code>GetIdentifier</code> may be called
+<p><code>GetName</code> and <code>GetIdentifier</code> may be called
 to discover the identity of a lexer and be used to implement
 <a class="seealso" href="#SCI_GETLEXERLANGUAGE">SCI_GETLEXERLANGUAGE</a> and
 <a class="seealso" href="#SCI_GETLEXER">SCI_GETLEXER</a>.</p>
 
-<p class="provisional"><code>PropertyGet</code> may be called
+<p><code>PropertyGet</code> may be called
 to discover the value of a property stored by a lexer and be used to implement
 <a class="seealso" href="#SCI_GETPROPERTY">SCI_GETPROPERTY</a>.</p>
 
@@ -7463,14 +7697,10 @@ The <code class="parameter">pWidth</code> argument can be NULL if the caller doe
 bytes in the character.
 </p>
 
-<p>The <code>ILexer4</code> and <code>IDocument</code>  interfaces may be
-expanded in the future with extended versions (<code>ILexer5</code>...).
+<p>The <code>ILexer5</code> and <code>IDocument</code>  interfaces may be
+expanded in the future with extended versions (<code>ILexer6</code>...).
  The <code>Version</code> method indicates which interface is
 implemented and thus which methods may be called.</p>
-
-<p>Scintilla 4 changed the definition of <code>IDocument</code> by merging the previously separate
-<code>IDocumentWithLineEnd</code> interface and
-removing the mask parameter to <code>StartStyling</code>.</p>
 
     <h2 id="Notifications">Notifications</h2>
 
@@ -7608,7 +7838,7 @@ struct SCNotification {
 
     <p><b id="SCN_STYLENEEDED">SCN_STYLENEEDED</b><br />
      If you used <code><a class="message"
-    href="#SCI_SETLEXER">SCI_SETLEXER</a>(SCLEX_CONTAINER)</code> to make the container act as the
+    href="#SCI_SETILEXER">SCI_SETILEXER</a>(NULL)</code> to make the container act as the
     lexer, you will receive this notification when Scintilla is about to display or print text that
     requires styling. You are required to style the text from the line that contains the position
     returned by <a class="seealso" href="#SCI_GETENDSTYLED"><code>SCI_GETENDSTYLED</code></a> up to

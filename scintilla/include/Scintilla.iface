@@ -1231,13 +1231,13 @@ fun void EmptyUndoBuffer=2175(,)
 fun void Undo=2176(,)
 
 # Cut the selection to the clipboard.
-fun void Cut=2177(bool asBinary,)
+fun void Cut=2177(,)
 
 # Copy the selection to the clipboard.
-fun void Copy=2178(bool asBinary,)
+fun void Copy=2178(,)
 
 # Paste the contents of the clipboard into the document replacing the selection.
-fun void Paste=2179(bool asBinary,)
+fun void Paste=2179(,)
 
 # Clear the selection.
 fun void Clear=2180(,)

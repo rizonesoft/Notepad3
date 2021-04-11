@@ -717,7 +717,9 @@ inline void Sci_ScrollChooseCaret()
 }
 inline void Sci_ScrollToLine(const DocLn line)
 {
-    SciCall_EnsureVisible(line);
+    if (!SciCall_GetLineVisible(line)) {
+        SciCall_EnsureVisible(line);
+    }
     SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line));
 }
 inline void Sci_ScrollToCurrentLine()

@@ -144,7 +144,10 @@ def checkDocumentation():
 	for api, sig in re.findall(dirPattern, docs):
 		sigApi = re.split('\W+', sig)[0]
 		sigFlat = flattenSpaces(sig)
+		sigFlat = sigFlat.replace('colouralpha ', 'xxxx ')	# Temporary to avoid next line
 		sigFlat = sigFlat.replace('alpha ', 'int ')
+		sigFlat = sigFlat.replace('xxxx ', 'colouralpha ')
+
 		sigFlat = sigFlat.replace("document *", "int ")
 		sigFlat = sigFlat.rstrip()
 		if '(' in sigFlat or api.startswith("SCI_"):
@@ -170,8 +173,11 @@ def checkDocumentation():
 		sigFlat = flattenSpaces(sig)
 		if '<a' in sigFlat	:	# Remove anchors
 			sigFlat = re.sub('<a.*>(.+)</a>', '\\1', sigFlat)
+		sigFlat = sigFlat.replace('colouralpha ', 'xxxx ')	# Temporary to avoid next line
 		sigFlat = sigFlat.replace('alpha ', 'int ')
+		sigFlat = sigFlat.replace('xxxx ', 'colouralpha ')
 		sigFlat = sigFlat.replace("document *", "int ")
+
 		sigFlat = sigFlat.replace(' NUL-terminated', '')
 		sigFlat = sigFlat.rstrip()
 		#~ sigFlat = sigFlat.replace(' NUL-terminated', '')

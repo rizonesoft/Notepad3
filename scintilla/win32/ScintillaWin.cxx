@@ -164,8 +164,8 @@ Point PointFromLParam(sptr_t lpoint) noexcept {
 	return Point::FromInts(GET_X_LPARAM(lpoint), GET_Y_LPARAM(lpoint));
 }
 
-bool KeyboardIsKeyDown(int key) noexcept {
-	return (::GetKeyState(key) & 0x80000000) != 0;
+inline bool KeyboardIsKeyDown(int key) noexcept {
+	return (::GetKeyState(key) & 0x8000) != 0;
 }
 
 constexpr bool KeyboardIsNumericKeypadFunction(uptr_t wParam, sptr_t lParam) {

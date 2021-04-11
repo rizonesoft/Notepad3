@@ -78,9 +78,6 @@
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include <optional>
-//#include <memory>
-//#include <vector>
-//#include <string_view>
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 namespace Scintilla {
@@ -105,7 +102,9 @@ struct FontParameters {
 	const char *faceName;
 	XYPOSITION size;
 	int weight;
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	int stretch;
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	bool italic;
 	int extraFontFlag;
 	int technology;
@@ -152,6 +151,7 @@ public:
 
 class IScreenLine {
 public:
+	virtual ~IScreenLine() noexcept = default;
 	virtual std::string_view Text() const noexcept = 0;
 	virtual size_t Length() const noexcept = 0;
 	virtual size_t RepresentationCount() const = 0;
@@ -197,7 +197,7 @@ public:
 	static std::unique_ptr<Surface> Allocate(int technology);
 
 	virtual void Init(WindowID wid)=0;
-	virtual void Init(SurfaceID sid, WindowID wid)=0;
+	virtual void Init(SurfaceID sid, WindowID wid, bool printing = false)=0;
 	virtual std::unique_ptr<Surface> AllocatePixMap(int width, int height)=0;
 
 	virtual void SetMode(SurfaceMode mode)=0;

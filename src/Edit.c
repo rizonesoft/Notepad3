@@ -5114,9 +5114,13 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
 
         // Ensure that the first and last lines of a selection are always unfolded
         // This needs to be done *before* the SCI_SETSEL message
-        SciCall_EnsureVisible(iAnchorLine);
         if (iAnchorLine != iCurrentLine) {
-            SciCall_EnsureVisible(iCurrentLine);
+            if (!SciCall_GetLineVisible(iAnchorLine)) {
+                SciCall_EnsureVisible(iAnchorLine);
+            }
+        }
+        if (!SciCall_GetLineVisible(iCurrentLine)) {
+            SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
         }
 
         if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
@@ -5156,14 +5160,20 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 //
 void EditEnsureSelectionVisible()
 {
+    DocPos const iCurrentPos = SciCall_GetCurrentPos();
+    DocPos const iAnchorPos = SciCall_GetAnchor();
     // Ensure that the first and last lines of a selection are always unfolded
-    DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
-    DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
+    DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
+    DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
     if (iAnchorLine != iCurrentLine) {
-        SciCall_EnsureVisible(iAnchorLine);
+        if (!SciCall_GetLineVisible(iAnchorLine)) {
+            SciCall_EnsureVisible(iAnchorLine);
+        }
     }
-    SciCall_EnsureVisible(iCurrentLine);
-    SciCall_ScrollCaret();
+    if (!SciCall_GetLineVisible(iCurrentLine)) {
+        SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
+    }
+    SciCall_ScrollRange(iAnchorPos, iCurrentPos);
 }
 
 
@@ -7150,7 +7160,7 @@ bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInfo)
     DocPos const end = Sci_GetDocEndPosition();
     DocPos enlargement = 0;
 
-    BeginWaitCursor(true,L"Replace all...")
+    BeginWaitCursorUID(true, IDS_MUI_SB_REPLACE_ALL);
     Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
     EndWaitCursor();
 
@@ -7254,7 +7264,8 @@ void EditClearAllBookMarks(HWND hwnd)
 void EditToggleView(HWND hwnd)
 {
     if (Settings.FocusViewMarkerMode & FVMM_FOLD) {
-        BeginWaitCursor(true, L"Toggle View...");
+
+        BeginWaitCursorUID(true, IDS_MUI_SB_TOGGLE_VIEW);
 
         FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
 
@@ -7271,6 +7282,7 @@ void EditToggleView(HWND hwnd)
         SciCall_ScrollCaret();
 
         EndWaitCursor();
+
     } else if (Settings.FocusViewMarkerMode & (FVMM_MARGIN | FVMM_LN_BACKGR)) {
         EditBookMarkLineRange(hwnd);
     }
@@ -7320,6 +7332,8 @@ int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase,
 //
 void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel)
 {
+    BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_MARK_ALL_OCC);
+
     char txtBuffer[FNDRPL_BUFFER] = { '\0' };
     char* pszText = (pszFind != NULL) ? pszFind : txtBuffer;
 
@@ -7410,6 +7424,7 @@ void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, 
 
         Globals.iMarkOccurrencesCount = count;
     }
+    EndWaitCursor();
 }
 
 

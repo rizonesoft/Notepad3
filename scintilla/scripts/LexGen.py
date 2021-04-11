@@ -40,7 +40,8 @@ def UpdateVersionNumbers(sci, root):
         "       Release " + sci.versionDotted)
     ReplaceREInFile(root / "doc/ScintillaDownload.html",
         r"/www.scintilla.org/([a-zA-Z]+)\d\d\d",
-        r"/www.scintilla.org/\g<1>" +  sci.version)
+        r"/www.scintilla.org/\g<1>" +  sci.version,
+        0)
     UpdateLineInFile(root / "doc/index.html",
         '          <font color="#FFCC99" size="3"> Release version',
         '          <font color="#FFCC99" size="3"> Release version ' +\

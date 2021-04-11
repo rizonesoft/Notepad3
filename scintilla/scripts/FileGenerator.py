@@ -214,8 +214,8 @@ def FindSectionInList(lines, markers):
         raise Exception("Could not find end marker " + markers[2])
     return slice(start, end)
 
-def ReplaceREInFile(path, match, replace):
+def ReplaceREInFile(path, match, replace, count=1):
     with codecs.open(path, "r", "utf-8") as f:
         contents = f.read()
-    contents = re.sub(match, replace, contents)
+    contents = re.sub(match, replace, contents, count)
     UpdateFile(path, contents)

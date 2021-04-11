@@ -5558,69 +5558,39 @@ void DeleteBitmapButton(HWND hwnd, int nCtrlId)
 void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
 {
     if (lpszText) {
-        UINT const flags = SBT_OWNERDRAW | nPart;
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)lpszText);
+        bool const bSimplSB = (nPart == SB_SIMPLEID);
+        if (bSimplSB) {
+            int aSingleSect[1] = { -1 };
+            SendMessage(hwnd, SB_SETPARTS, (WPARAM)1, (LPARAM)aSingleSect);
+        }
+        DWORD const wParam = (bSimplSB ? 0 : nPart) | SBT_OWNERDRAW;
+        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)lpszText);
     }
 }
-
 
 //=============================================================================
 //
 //  StatusSetTextID()
 //
-bool StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID)
+void StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID)
 {
-    UINT const flags = SBT_OWNERDRAW | nPart;
+    bool const bSimplSB = (nPart == SB_SIMPLEID);
+    if (bSimplSB) {
+        int aSingleSect[1] = { -1 };
+        SendMessage(hwnd, SB_SETPARTS, (WPARAM)1, (LPARAM)aSingleSect);
+    }
+    DWORD const wParam = (bSimplSB ? 0 : nPart) | SBT_OWNERDRAW;
     if (!uID) {
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)L"");
-        return TRUE;
-    }
-    WCHAR szText[256] = { L'\0' };
-    if (!GetLngString(uID, szText, COUNTOF(szText))) {
-        return FALSE;
-    }
-    return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)flags, (LPARAM)szText);
-}
-
-
-#if 0
-//=============================================================================
-//
-//  StatusSetText()
-//
-void StatusPartSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText)
-{
-    if (lpszText) {
-        BOOL const bSimpleSB = (nPart == STATUS_HELP);
-        StatusSetSimple(hwnd, bSimpleSB);
-        DWORD const wparam = (bSimpleSB ? SBT_NOBORDERS : 0) | nPart;
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, (LPARAM)lpszText);
+        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)L"");
+    } else {
+        WCHAR szText[MAX_PATH] = { L'\0' };
+        if (!GetLngString(uID, szText, COUNTOF(szText))) {
+            SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)L"");
+        } else {
+            SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)szText);
+        }
     }
 }
-
-
-//=============================================================================
-//
-//  StatusPartSetTextID()
-//
-bool StatusPartSetTextID(HWND hwnd, BYTE nPart, UINT uID)
-{
-    BOOL const bSimpleSB = (nPart == STATUS_HELP);
-    StatusSetSimple(hwnd, bSimpleSB);
-
-    DWORD const wparam = (bSimpleSB ? SBT_NOBORDERS : 0) | nPart;
-    if (!uID) {
-        SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, 0);
-        return TRUE;
-    }
-
-    WCHAR szText[256] = { L'\0' };
-    if (!GetLngString(uID, szText, COUNTOF(szText))) {
-        return FALSE;
-    }
-    return (bool)SendMessage(hwnd, SB_SETTEXT, (WPARAM)wparam, (LPARAM)szText);
-}
-#endif
 
 
 //=============================================================================

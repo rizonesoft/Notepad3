@@ -155,12 +155,8 @@ void MakeBitmapButton(HWND hwnd, int nCtrlId, WORD uBmpId, int width, int height
 void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF crColor);
 void DeleteBitmapButton(HWND hwnd, int nCtrlId);
 
-
-#define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
 void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText);
-bool StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID);
-//void StatusPartSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText);
-//bool StatusPartSetTextID(HWND hwnd, BYTE nPart, UINT uID);
+void StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID);
 
 int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
 int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);

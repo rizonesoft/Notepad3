@@ -57,9 +57,7 @@ static void _StatusUpdatePrintPage(int iPageNum)
     WCHAR tch[80] = { L'\0' };
     FormatLngStringW(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
     StatusSetText(Globals.hwndStatus, STATUS_HELP, tch);
-    //RedrawWindow(Globals.hwndStatus, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-    InvalidateRect(Globals.hwndStatus,NULL,TRUE);
-    //UpdateWindow(Globals.hwndStatus);
+    //InvalidateRect(Globals.hwndStatus,NULL,TRUE);
 }
 
 
@@ -494,9 +492,6 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     if (fontFooter) {
         DeleteObject(fontFooter);
     }
-
-    // Reset Statusbar to default mode
-    StatusSetSimple(Globals.hwndStatus,false);
 
     // Remove wait cursor...
     {

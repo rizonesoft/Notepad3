@@ -486,7 +486,7 @@ public:
 	~SurfaceGDI() noexcept override;
 
 	void Init(WindowID wid) override;
-	void Init(SurfaceID sid, WindowID wid) override;
+	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -613,12 +613,12 @@ void SurfaceGDI::Init(WindowID wid) {
 	logPixelsY = DpiForWindow(wid);
 }
 
-void SurfaceGDI::Init(SurfaceID sid, WindowID wid) {
+void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing) {
 	Release();
 	hdc = static_cast<HDC>(sid);
 	::SetTextAlign(hdc, TA_BASELINE);
 	// Windows on screen are scaled but printers are not.
-	const bool printing = ::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY;
+	//~const bool printing = ::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY;
 	logPixelsY = printing ? ::GetDeviceCaps(hdc, LOGPIXELSY) : DpiForWindow(wid);
 }
 
@@ -1329,7 +1329,7 @@ public:
 
 	void SetScale(WindowID wid) noexcept;
 	void Init(WindowID wid) override;
-	void Init(SurfaceID sid, WindowID wid) override;
+	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -1456,9 +1456,9 @@ void SurfaceD2D::Init(WindowID wid) {
 	SetScale(wid);
 }
 
-void SurfaceD2D::Init(SurfaceID sid, WindowID wid) {
+void SurfaceD2D::Init(SurfaceID sid, WindowID wid, bool /*printing*/) {
 	Release();
-	SetScale(wid);
+	SetScale(wid); // printing always using GDI
 	pRenderTarget = static_cast<ID2D1RenderTarget *>(sid);
 }
 

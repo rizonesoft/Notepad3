@@ -1081,7 +1081,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         EditToggleView(Globals.hwndEdit);
     }
 
-    _IGNORE_NOTIFY_CHANGE_;
+    BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
 
     // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
     // assert(pLexNew != s_pLexCurrent);
@@ -1094,8 +1094,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // Set Lexer
     SciCall_SetILexer(CreateLexer(pLexNew->lexerName));
 
-    int const iNewLexer = SciCall_GetLexer();
 #ifdef _DEBUG
+    int const iNewLexer = SciCall_GetLexer();
     if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {
         WCHAR msg[256] = { L'\0' };
         StringCchPrintf(msg, COUNTOF(msg), L"Failed to set desired Lexer (#%i), got Lexer #%i!", pLexNew->lexerID, iNewLexer);
@@ -1496,8 +1496,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     Style_SetInvisible(hwnd, false); // set fixed invisible style
 
-    _OBSERVE_NOTIFY_CHANGE_;
-
     SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
     SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
 
@@ -1519,7 +1517,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
 
     UpdateMarginWidth(true);
-    UpdateStatusbar(true);
+
+    EndWaitCursor();
 }
 
 

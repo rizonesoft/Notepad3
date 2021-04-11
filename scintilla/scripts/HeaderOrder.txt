@@ -42,7 +42,9 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <set>
 #include <forward_list>
+#include <optional>
 #include <algorithm>
 #include <iterator>
 #include <functional>
@@ -88,7 +90,9 @@
 
 // Non-platform-specific headers
 
-// include
+// src platform interface
+#include "Debugging.h"
+#include "Geometry.h"
 #include "Platform.h"
 
 #include "Sci_Position.h"
@@ -103,7 +107,6 @@
 
 // src
 #include "Position.h"
-#include "IntegerRectangle.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
