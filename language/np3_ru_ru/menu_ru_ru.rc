@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "Со&хранить копию...\tCtrl+F6", IDM_FILE_SAVECOPY
         MENUITEM "Сохранять исходну&ю дату/время файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Только чтение File Attribute",      IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",           IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "Атрибут &Только чтение",              IDM_FILE_READONLY
+        MENUITEM "Б&локировать файл (чтение доступно)", IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Задать парольную фразу...",          IDM_SETPASS
         MENUITEM SEPARATOR
@@ -259,11 +259,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
             MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",                         IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",                         IDM_EDIT_URL2PATH
+            MENUITEM "Системный путь в URL",                            IDM_EDIT_PATH2URL
+            MENUITEM "URL в системный путь",                            IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                              IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                                  IDM_EDIT_INVERTSLASH
+            MENUITEM "Инвертировать обратные косые черты",              IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Инвертировать прямые косые черты",                IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "Символ &в шестнадцатеричный код\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
             MENUITEM "&Шестнадцатеричный код в символ\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR

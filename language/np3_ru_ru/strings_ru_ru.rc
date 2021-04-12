@@ -102,7 +102,7 @@ BEGIN
     IDS_MUI_UNTITLED        "Безымянный"
     IDS_MUI_TITLEEXCERPT    "«%s»"
     IDS_MUI_READONLY        "(Только чтение)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<Исключительно>"
     IDS_MUI_LOADFILE        "Загрузка «%s»..."
     IDS_MUI_SAVEFILE        "Сохранение «%s»..."
     IDS_MUI_PRINTFILE       "Печать страницы %i..."
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Этот файл был изменен внешней программой. Переоткрыть его?"
     IDS_MUI_FILECHANGENOTIFY2 "Этот файл был удален. Пересохранить?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Невозможно получить исключительную блокировку для ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фиксированное положение окна включено. Любое новое окно Notepad3 будет запущено с текущими настройками положения."
     IDS_MUI_SAVEDSETTINGS   "Текущие настройки приложения были сохранены."
     IDS_MUI_CREATEINI_FAIL  "Ошибка создания конфигурационного файла."
@@ -268,13 +268,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Подсветка всех совпадений..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Переключение вида..."
+    IDS_MUI_SB_REPLACE_ALL    "Замена всего..."
+    IDS_MUI_SB_WRAP_LINES     "Перенос строк..."
+    IDS_MUI_SB_CONV_LNBRK     "Преобразование окончания строк..."
+    IDS_MUI_SB_RECODING_DOC   "Перекодирование документа..."
+    IDS_MUI_SB_LEXER_STYLING  "Применение стиля лексера..."
 END
 
 STRINGTABLE
