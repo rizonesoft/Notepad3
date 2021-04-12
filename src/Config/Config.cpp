@@ -1178,7 +1178,7 @@ void LoadSettings()
     Settings2.CurrentLineHorizontalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineHorizontalSlop", Defaults2.CurrentLineHorizontalSlop), 0, 240);
 
     Defaults2.CurrentLineVerticalSlop = 5;
-    Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 25);
+    Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 100);
 
     Defaults2.NoCopyLineOnEmptySelection = false;
     Settings2.NoCopyLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCopyLineOnEmptySelection", Defaults2.NoCopyLineOnEmptySelection);

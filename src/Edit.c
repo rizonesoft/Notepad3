@@ -2193,6 +2193,7 @@ void EditFindMatchingBrace()
     if (iMatchingBracePos != (DocPos)-1) {
         iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
         Sci_GotoPosChooseCaret(iMatchingBracePos);
+        EditEnsureSelectionVisible();
     }
 }
 
@@ -3100,6 +3101,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         }
     } else {
         Sci_GotoPosChooseCaret(iInitialPos);
+        EditEnsureSelectionVisible();
     }
 
     _END_UNDO_ACTION_;
@@ -5091,6 +5093,38 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 }
 
 
+
+//=============================================================================
+//
+//  _EnsureRangeVisible()
+//
+static void _EnsureRangeVisible(const DocPos iAnchorPos, const DocPos iCurrentPos) {
+
+    DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
+    DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
+    if (iAnchorLine != iCurrentLine) {
+        if (!SciCall_GetLineVisible(iAnchorLine)) {
+            SciCall_EnsureVisible(iAnchorLine);
+        }
+    }
+    if (!SciCall_GetLineVisible(iCurrentLine)) {
+        SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
+    }
+}
+
+
+//=============================================================================
+//
+//  EditEnsureSelectionVisible()
+//
+void EditEnsureSelectionVisible() {
+    DocPos const iAnchorPos = SciCall_GetAnchor();
+    DocPos const iCurrentPos = SciCall_GetCurrentPos();
+    _EnsureRangeVisible(iAnchorPos, iCurrentPos);
+    SciCall_ScrollRange(iAnchorPos, iCurrentPos);
+}
+
+
 //=============================================================================
 //
 //  EditSetSelectionEx()
@@ -5109,19 +5143,9 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
             iCurrentPos = Sci_GetDocEndPosition();
         }
 
-        DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
-        DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-
         // Ensure that the first and last lines of a selection are always unfolded
         // This needs to be done *before* the SCI_SETSEL message
-        if (iAnchorLine != iCurrentLine) {
-            if (!SciCall_GetLineVisible(iAnchorLine)) {
-                SciCall_EnsureVisible(iAnchorLine);
-            }
-        }
-        if (!SciCall_GetLineVisible(iCurrentLine)) {
-            SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
-        }
+        _EnsureRangeVisible(iAnchorPos, iCurrentPos);
 
         if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
             SciCall_SetRectangularSelectionAnchor(iAnchorPos);
@@ -5132,7 +5156,7 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
             if (vSpcCurrent > 0) {
                 SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
             }
-            SciCall_ScrollCaret();
+            SciCall_ScrollRange(iAnchorPos, iCurrentPos);
         } else {
             SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
         }
@@ -5151,29 +5175,6 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
     SciCall_ConvertEOLs(SciCall_GetEOLMode());
     Globals.bDocHasInconsistentEOLs = false;
     EditFixPositions(hwnd);
-}
-
-
-//=============================================================================
-//
-//  EditEnsureSelectionVisible()
-//
-void EditEnsureSelectionVisible()
-{
-    DocPos const iCurrentPos = SciCall_GetCurrentPos();
-    DocPos const iAnchorPos = SciCall_GetAnchor();
-    // Ensure that the first and last lines of a selection are always unfolded
-    DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
-    DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-    if (iAnchorLine != iCurrentLine) {
-        if (!SciCall_GetLineVisible(iAnchorLine)) {
-            SciCall_EnsureVisible(iAnchorLine);
-        }
-    }
-    if (!SciCall_GetLineVisible(iCurrentLine)) {
-        SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
-    }
-    SciCall_ScrollRange(iAnchorPos, iCurrentPos);
 }
 
 
@@ -5201,9 +5202,8 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
     // Column minimum is 1
     DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
     iNewCol = clampp((iNewCol - colOffset), 0, iLineEndPos);
-    const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
-    Sci_GotoPosChooseCaret(iNewPos);
+    Sci_GotoPosChooseCaret(SciCall_FindColumn(iNewLine, iNewCol));
 }
 
 

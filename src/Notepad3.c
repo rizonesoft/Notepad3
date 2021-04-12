@@ -567,6 +567,7 @@ static bool                  s_flagQuietCreate = false;
 static bool                  s_flagLexerSpecified = false;
 static bool                  s_flagAppIsClosing = false;
 static bool                  s_flagDisplayHelp = false;
+static int                   s_iCaretPolicyV = CARET_EVEN;
 
 //==============================================================================
 
@@ -1384,6 +1385,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // Pathname parameter
     if (s_IsThisAnElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/)) {
+
         bool bOpened = false;
 
         // Open from Directory
@@ -1430,7 +1432,9 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                     }
                 }
                 if (s_flagJumpTo) { // Jump to position
-                    EditJumpTo(s_iInitialLine,s_iInitialColumn);
+                    SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
+                    EditJumpTo(s_iInitialLine, s_iInitialColumn);
+                    SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
                 }
             }
         }
@@ -1456,7 +1460,9 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                 FileWatching.FileWatchingMode = FWM_DONT_CARE;
                 break;
             }
-            InstallFileWatching(FileWatching.FileWatchingMode != FWM_DONT_CARE);
+            if (!s_IsThisAnElevatedRelaunch) {
+                InstallFileWatching(true);
+            }
         }
     } else {
         cpi_enc_t const forcedEncoding = Encoding_Forced(CPI_GET);
@@ -1494,7 +1500,9 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
             _END_UNDO_ACTION_;
             Settings.AutoIndent = bAutoIndent2;
             if (s_flagJumpTo) {
+                SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
                 EditJumpTo(s_iInitialLine, s_iInitialColumn);
+                SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
             } else {
                 EditEnsureSelectionVisible();
             }
@@ -2017,23 +2025,12 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
         SciCall_SetMouseDWellTime(SC_TIME_FOREVER); // default
     }
 
-
-    #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
-    #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
-
-    if (Settings2.CurrentLineHorizontalSlop > 0) {
-        SciCall_SetXCaretPolicy(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE, Settings2.CurrentLineHorizontalSlop);
-    } else {
-        SciCall_SetXCaretPolicy(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE, 0);
-    }
-
-    if (Settings2.CurrentLineVerticalSlop > 0) {
-        SciCall_SetYCaretPolicy(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE, Settings2.CurrentLineVerticalSlop);
-    } else {
-        SciCall_SetYCaretPolicy(_CARET_SYMETRY, 0);
-    }
+    int const iCaretPolicy = CARET_SLOP | CARET_EVEN | CARET_STRICT;
+    s_iCaretPolicyV = (Settings2.CurrentLineVerticalSlop > 0) ? iCaretPolicy : CARET_EVEN;
+    SciCall_SetXCaretPolicy(iCaretPolicy, Settings2.CurrentLineHorizontalSlop);
+    SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
+    SciCall_SetVisiblePolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
     SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-
 
     // Tabs
     SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
@@ -3173,7 +3170,9 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             if (params->flagJumpTo) {
                 s_flagJumpTo = true;
+                SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
                 EditJumpTo(params->iInitialLine, params->iInitialColumn);
+                SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
             }
 
             if (params->flagMatchText) {
@@ -3325,7 +3324,10 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
 
+    InstallFileWatching(false); // terminate
+
     DocPos const iCurPos = SciCall_GetCurrentPos();
+
 
     if ((FileWatching.FileWatchingMode == FWM_MSGBOX) || GetDocModified()) {
         SetForegroundWindow(hwnd);
@@ -3344,14 +3346,10 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             FileRevert(Paths.CurrentFile, /*Encoding_Changed(CPI_GET)*/false);
             if (FileWatching.MonitoringLog) {
                 SciCall_SetReadOnly(FileWatching.MonitoringLog);
-                EditEnsureSelectionVisible();
             } else {
                 Sci_GotoPosChooseCaret(iCurPos);
             }
-        }
-
-        if (!isFileChangeNotifyAllowed()) {
-            InstallFileWatching(true);
+            EditEnsureSelectionVisible();
         }
 
     } else {
@@ -3359,12 +3357,15 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2));
         if ((IDOK == answer) || (IDYES == answer)) {
             FileSave(true, false, false, false, Flags.bPreserveFileModTime);
-            InstallFileWatching(true);
         } else {
-            InstallFileWatching(false); // terminate
             SetSaveNeeded();
         }
     }
+
+    if (PathIsExistingFile(Paths.CurrentFile)) {
+        InstallFileWatching(true);
+    }
+
     return TRUE;
 }
 
@@ -5997,6 +5998,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
             Sci_GotoPosChooseCaret(iCurPos);
+            EditEnsureSelectionVisible();
             skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
 
@@ -6012,6 +6014,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
             default:
                 Sci_GotoPosChooseCaret(iCurPos);
+                EditEnsureSelectionVisible();
                 break;
             }
         }
@@ -10111,9 +10114,9 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };
     StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
 
-    InstallFileWatching(false);
+    //InstallFileWatching(false);
     bool const result = FileLoad(tchFileName2, true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
-    InstallFileWatching(true);
+    //InstallFileWatching(true);
 
     if (!result) {
         return false;
@@ -10143,7 +10146,9 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     UpdateStatusbar(true);
 
     if (bPreserveView) {
+        SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
         EditJumpTo(curLineNum + 1, 0);
+        SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
     }
 
     return true;
@@ -11375,7 +11380,7 @@ void InstallFileWatching(const bool bInstall) {
                     // need to chose another mode
                     FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
                     FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;
-                    InstallFileWatching(bInstall);
+                    InstallFileWatching(true);
                 }
             }
 
