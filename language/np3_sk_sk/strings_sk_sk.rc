@@ -75,7 +75,7 @@ BEGIN
     IDT_VIEW_ZOOMIN         "Zväčšiť"
     IDT_VIEW_ZOOMOUT        "Zmenšiť"
     IDT_VIEW_SCHEME         "Výber schémy"
-    IDT_VIEW_SCHEMECONFIG   "Prispôsobenie schémy"
+    IDT_VIEW_SCHEMECONFIG   "Prispôsobiť schémy"
     IDT_FILE_EXIT           "Koniec"
     IDT_FILE_SAVEAS         "Uložiť ako"
     IDT_FILE_SAVECOPY       "Uložiť kópiu"
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Aktuálny súbor bol upravený externým programom. Znovu ho načítať?"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Nedá sa exkluzívne zamknúť súbor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna."
     IDS_MUI_SAVEDSETTINGS   "Aktuálne nastavenie programu bolo uložené."
     IDS_MUI_CREATEINI_FAIL  "Chyba pri vytváraní konfiguračného súboru."
