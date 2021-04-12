@@ -117,8 +117,6 @@ void EditToggleView(HWND hwnd);
 void EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int  EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
 void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel);
-void EditDoVisibleStyling();
-void EditDoStyling(DocPos iStartPos, DocPos iEndPos);
 void EditUpdateVisibleIndicators();
 void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly);
 void EditSetAccelWordNav(HWND hwnd,bool);

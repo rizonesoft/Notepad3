@@ -7666,50 +7666,6 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
 //=============================================================================
 //
-//  EditDoStyling()
-//
-void EditDoVisibleStyling()
-{
-    DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-    DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
-    EditDoStyling(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
-}
-
-//=============================================================================
-//
-//  EditDoStyling()
-//
-void EditDoStyling(DocPos iStartPos, DocPos iEndPos)
-{
-    static bool guard = false;  // protect against recursion by notification event SCN_STYLENEEDED
-
-    if (Flags.bHugeFileLoadState) {
-        return;
-    }
-
-    if (!guard) {
-        guard = true;
-        if (iStartPos < 0) {
-            iStartPos = SciCall_GetEndStyled();
-        } else {
-            iStartPos = SciCall_PositionFromLine(SciCall_LineFromPosition(iStartPos));
-        }
-
-        if (iEndPos < 0) {
-            Sci_ApplyLexerStyle(iStartPos, -1);
-        } else {
-            iEndPos = SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
-            if (iStartPos < iEndPos) {
-                Sci_ApplyLexerStyle(iStartPos, iEndPos);
-            }
-        }
-        guard = false;
-    }
-}
-
-
-//=============================================================================
-//
 //  EditUpdateVisibleIndicators()
 //
 void EditUpdateVisibleIndicators()
@@ -7828,8 +7784,6 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
     } else {
         _ClearIndicatorInRange(INDIC_NP3_UNICODE_POINT, -1, startPos, endPos);
     }
-
-    EditDoStyling(startPos, endPos);
 }
 
 
@@ -7846,7 +7800,7 @@ void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines)
         FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
         Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
         Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
-        Sci_ApplyLexerStyle(0, -1);
+        Sci_ColouriseAll();
         EditMarkAllOccurrences(hwnd, true);
     } else { // =====   fold lines without marker   =====
         // prepare hidden (folding) settings
@@ -9310,6 +9264,7 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
             }
         }
     }
+    Sci_ColouriseAll();
 }
 
 
