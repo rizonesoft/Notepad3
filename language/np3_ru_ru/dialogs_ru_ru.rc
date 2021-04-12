@@ -126,10 +126,10 @@ BEGIN
     LTEXT           "Заменит&ь на:",IDC_STATIC2,7,36,46,8
     CONTROL         "<a>Экранирование</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Учитывать &регистр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,83,10
     CONTROL         "Только &целые слова",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,85,10
     CONTROL         "Только &начало слов",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,83,10
     CONTROL         "&Управляющие символы",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,95,10
-    //CONTROL         "Авто&экр. упр. символов",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,102,94,10
     CONTROL         "Регулярные &выражения",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Т&очка — любой символ",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,94,10
     CONTROL         "Перекрыва&ющийся поиск",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,102,10
@@ -280,9 +280,9 @@ BEGIN
     CONTROL         "&Нет", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
     CONTROL         "&Показать сообщение", IDC_RADIO_BTN_B,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,99,10
     CONTROL         "&Автообновление", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Exclusive File Lock.", IDC_RADIO_BTN_D,"Button", BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Исключительная блокировка", IDC_RADIO_BTN_D,"Button", BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,120,10
     CONTROL         "&Сбросить при открытии нового файла", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,146,10
-    CONTROL         "&Monitoring Log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,120,10
+    CONTROL         "&Слежение за логом", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,120,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,127,24,50,14
 END

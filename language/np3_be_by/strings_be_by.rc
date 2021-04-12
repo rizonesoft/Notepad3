@@ -102,7 +102,7 @@ BEGIN
     IDS_MUI_UNTITLED        "Безыменны"
     IDS_MUI_TITLEEXCERPT    "«%s»"
     IDS_MUI_READONLY        "(Толькі чытанне)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<Выключна>"
     IDS_MUI_LOADFILE        "Ладаванне «%s»..."
     IDS_MUI_SAVEFILE        "Захаванне «%s»..."
     IDS_MUI_PRINTFILE       "Друкаванне старонкі %i..."
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Гэты файл быў зменены вонкавай праграмай. Пераадкрыць яго?"
     IDS_MUI_FILECHANGENOTIFY2 "Гэты файл быў выдалены. Захаваць нанава?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Немагчыма атрымаць выключнае блакаванне для ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фіксаваная пазіцыя акна задзейнічана. Усякае новае акно Notepad3 запусціцца з цяперашнімі наладамі пазіцыі."
     IDS_MUI_SAVEDSETTINGS   "Цяперашнія налады праграмы былі захаваны."
     IDS_MUI_CREATEINI_FAIL  "Памылка падчас стварэння файла наладаў."
@@ -268,13 +268,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Падсвечванне ўсіх супадзенняў..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Пераключэнне выгляду..."
+    IDS_MUI_SB_REPLACE_ALL    "Замена ўсяго..."
+    IDS_MUI_SB_WRAP_LINES     "Перанос радкоў..."
+    IDS_MUI_SB_CONV_LNBRK     "Пераўтварэнне канчаткаў радкоў..."
+    IDS_MUI_SB_RECODING_DOC   "Перакадаванне дакумента..."
+    IDS_MUI_SB_LEXER_STYLING  "Выкарыстанне стыля лексера..."
 END
 
 STRINGTABLE
