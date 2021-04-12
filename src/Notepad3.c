@@ -3002,16 +3002,22 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNREFERENCED_PARAMETER(lParam);
+    bool const bMsgFromSciUriDrop = (lParam != 0);
 
     WCHAR szDropStrgBuf[MAX_PATH + 40];
-    HDROP hDrop = (HDROP)wParam;
+    HDROP const hDrop = bMsgFromSciUriDrop ? NULL : (HDROP)wParam;
 
     if (IsIconic(hwnd)) {
         ShowWindow(hwnd, SW_RESTORE);
     }
 
-    DragQueryFile(hDrop, 0, szDropStrgBuf, COUNTOF(szDropStrgBuf));
+    if (hDrop) {
+        DragQueryFile(hDrop, 0, szDropStrgBuf, COUNTOF(szDropStrgBuf));
+    } else if (bMsgFromSciUriDrop) {
+        StringCchCopy(szDropStrgBuf, COUNTOF(szDropStrgBuf), (LPCWSTR)wParam);
+    } else {
+        return FALSE;
+    }
 
     if (PathIsDirectory(szDropStrgBuf)) {
         WCHAR tchFile[MAX_PATH] = { L'\0' };
@@ -3019,27 +3025,27 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
             FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
         }
     } else if (PathIsExistingFile(szDropStrgBuf)) {
-        if (Flags.bReuseWindow) {
+        if (Flags.bReuseWindow || IsKeyDown(VK_CONTROL)) {
             FileLoad(szDropStrgBuf, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
         } else {
             DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, szDropStrgBuf);
         }
     } else {
-        // delegated to SCN_URIDROPPED
         // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
-        //~InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
     }
 
-    if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
+    if (hDrop) {
+        if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
+        }
+        DragFinish(hDrop);
     }
-
-    DragFinish(hDrop);
 
     return FALSE;
 }
 
-
+#if 0
 //=============================================================================
 //
 //  DropFilesProc() - Handles DROPFILES
@@ -3082,6 +3088,7 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 
     return dwEffect;
 }
+#endif
 
 
 //=============================================================================
@@ -7699,21 +7706,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_URIDROPPED: {
-        // see WM_DROPFILES
         WCHAR szBuf[MAX_PATH + 40] = { L'\0' };
-        if (MultiByteToWideCharEx(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0) {
-            if (IsIconic(hwnd)) {
-                ShowWindow(hwnd, SW_RESTORE);
-            }
-            //SetForegroundWindow(hwnd);
-            if (PathIsDirectory(szBuf)) {
-                WCHAR tchFile[MAX_PATH];
-                if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
-                    FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
-                }
-            } else if (PathIsExistingFile(szBuf)) {
-                FileLoad(szBuf, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
-            }
+        if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, (int)COUNTOF(szBuf)) > 0) {
+            return MsgDropFiles(hwnd, (WPARAM)szBuf, 1); // (1) to identify src
         }
     }
     break;
