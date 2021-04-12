@@ -280,9 +280,9 @@ BEGIN
     CONTROL         "&Nessuna.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
     CONTROL         "&Mostra messaggio.", IDC_RADIO_BTN_B,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,99,10
     CONTROL         "&Ricarica.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Exclusive File Lock.", IDC_RADIO_BTN_D,"Button", BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "File Lock &Esclusivo.", IDC_RADIO_BTN_D,"Button", BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
     CONTROL         "&Reimposta aprendo nuovo file.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,120,10
-    CONTROL         "&Monitoring Log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,120,10
+    CONTROL         "Log di &Controllo.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,120,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,127,24,50,14
 END
