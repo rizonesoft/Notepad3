@@ -84,6 +84,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.412.1]- Lazy styling (no need for SCN_STYLENEEDED).
 [.412.1]- Caret visibility on JumpTo() after file (re-)load.
 [.412.1]- FileWatching (file change notification) in some special cases.
 [.411.2]- Mark occurrences: no additional bookmarker -> use invisible marker instead of background marker.
