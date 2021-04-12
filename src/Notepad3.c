@@ -2846,11 +2846,8 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     MarkAllOccurrences(_MQ_FAST, false);
 
-    if (Flags.bHugeFileLoadState) {
-        EditDoVisibleStyling();
-    } else {
-        EditDoStyling(0, -1);
-    }
+    SciCall_StartStyling(0);
+    Sci_ColouriseAll();
 
     EditUpdateVisibleIndicators();
 
@@ -7511,8 +7508,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
     }
     break;
 
-    case SCN_STYLENEEDED: { // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-        EditDoStyling(-1, scn->position);
+    case SCN_STYLENEEDED: { 
+        // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+        //EditUpdateIndicators(SciCall_GetEndStyled(), scn->position, false);
     }
     break;
 

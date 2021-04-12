@@ -1501,16 +1501,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
     SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
 
-    //~Sci_LexerStyleAll();
     SciCall_StartStyling(0);
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
 
     // apply lexer styles
     if (Flags.bHugeFileLoadState) {
-        SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
         EditUpdateVisibleIndicators();
     } else {
-        SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
-        EditDoStyling(0, -1);
         EditUpdateIndicators(0, -1, false);
     }
 

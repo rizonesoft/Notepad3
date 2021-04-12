@@ -23,7 +23,9 @@ public:
 		setAlpha=setLower|setUpper,
 		setAlphaNum=setAlpha|setDigits
 	};
-	CharacterSet(setBase base=setNone, const char *initialSet="", int size_=0x80, bool valueAfter_=false) {
+	CharacterSet(setBase base=setNone, const char *initialSet="", int size_=0x80, bool valueAfter_=false) 
+        : bset(nullptr) 
+    {
 		size = size_;
 		valueAfter = valueAfter_;
 		bset = new bool[size];
