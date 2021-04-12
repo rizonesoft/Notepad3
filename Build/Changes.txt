@@ -40,7 +40,6 @@ Current BETA/RC Version 5.21.411.(build_#) (2021-04-11)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.411.2]- Adapt to Scintilla v5.0.1 new translucent alpha color (marker).
 [.402.1]- ScintillaWin horizontal mouse-wheel support.
 [.331.2]- Provide Mono-Language IDs.
 [.331.1]- Mono-Language compiler switch for MiniPath.
@@ -59,6 +58,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.411.2]- Adapt to Scintilla v5.0.1 new translucent alpha color (marker).
 [.406.1]- C/C++ Lexer: styles and keywords (LEX).
 [.331.1]- Cleanup code: SplitUndoTransaction() on timeout resp. line-break.
 [.329.1]- Turning "Line Comment Block Edit" from option into command (Ctrl+Alt+Q).
@@ -83,7 +83,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.407.2]- Mark occurrences: no additional bookmarker -> use invisible marker instead of background marker.
+[.411.2]- Mark occurrences: no additional bookmarker -> use invisible marker instead of background marker.
 [.407.2]- New comment doc styling for C++ lexer (used for C#, RC, JS and Java too).
 [.407.1]- Center dialog in parent: for system dialog and if minimized (tray or taskbar).
 [.406.1]- Mark all Occurrences in case of reopened F/R dialog.

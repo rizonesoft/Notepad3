@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "Uložiť &kópiu...\tCtrl+F6",                       IDM_FILE_SAVECOPY
         MENUITEM "Uložiť s pôvodným &dátumom a časom\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Len na čítanie File Attribute",                  IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",                        IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "&Len na čítanie",					 	            IDM_FILE_READONLY
+        MENUITEM "&Zamknúť súbor (Zdieľané čítanie)",  	            IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Nastaviť šifrovanie prístupovou frázou...",       IDM_SETPASS
         MENUITEM SEPARATOR
@@ -99,14 +99,14 @@ BEGIN
         BEGIN
             POPUP "V&rátiť zo súboru ako"
             BEGIN
-                MENUITEM "&Predvolené (Nastavenie)",       CMD_RECODEDEFAULT
+                MENUITEM "&Predvolené nastavenie",	       CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",            CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
                 MENUITEM SEPARATOR
                 MENUITEM "AS&CII ako UTF-8\tCtrl+Shift+F8",        CMD_RELOADASCIIASUTF8
                 MENUITEM "&Vynútiť analýzu UCHARDET",              CMD_RELOADFORCEDETECTION
-                MENUITEM "&Ignorovať Tagy kódovania\tAlt+F8",      CMD_RELOADNOFILEVARS
+                MENUITEM "&Ignorovať kódovanie tagov\tAlt+F8",     CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
                 MENUITEM "Ďalši&e kódovania...\tF8",               IDM_ENCODING_RECODE
             END
@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "Z&rušiť odsadenie",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "&Riadkový komentár (zap./vyp.)\tCtrl+Q",      IDM_EDIT_LINECOMMENT
-            MENUITEM "Úpravu bloku &komentárov riadka\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "Úpravu bloku &komentára riadka\tCtrl+Alt+Q",  IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
@@ -251,19 +251,19 @@ BEGIN
             MENUITEM "Prvý &znak slova veľký\tCtrl+Alt+I",  IDM_EDIT_TITLECASE
             MENUITEM "V&eľký na začiatku vety\tCtrl+Alt+O", IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "&Tabify Selection\tCtrl+Shift+T",     IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntabify Selection\tCtrl+Shift+S",   IDM_EDIT_CONVERTTABS
+            MENUITEM "&Tabify výber\tCtrl+Shift+T", 	    IDM_EDIT_CONVERTSPACES
+            MENUITEM "U&ntabify výber\tCtrl+Shift+S",   	IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Ta&bify Indent\tCtrl+Alt+T",          IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Untabi&fy Indent\tCtrl+Alt+S",        IDM_EDIT_CONVERTTABS2
+            MENUITEM "Ta&bify odsadenie\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Untabi&fy odsadenie\tCtrl+Alt+S",     IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "&Kódovať URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Dekódovať URL\tCtrl+Shift+R",        IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",             IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",             IDM_EDIT_URL2PATH
+            MENUITEM "Systémová cesta súboru na URL",       IDM_EDIT_PATH2URL
+            MENUITEM "URL na systémovú cestu súboru",       IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                  IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                      IDM_EDIT_INVERTSLASH
+            MENUITEM "Invertovať opačné lomítko",           IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invertovať lomítko",                  IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "Znaky na &Hex\tCtrl+Alt+X",           IDM_EDIT_CHAR2HEX
             MENUITEM "He&x na znaky\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR
@@ -285,8 +285,8 @@ BEGIN
         BEGIN
             MENUITEM "Kopírovať &GUID do schránky\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",                  IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "&Escape C znaky\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
+            MENUITEM "&Unescape C znaky\tCtrl+Alt+R",                  IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "Zvýšiť číslo\tCtrl+Alt+NK+",                     CMD_INCREASENUM
             MENUITEM "Znížiť číslo\tCtrl+Alt+NK-",                     CMD_DECREASENUM
