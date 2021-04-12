@@ -437,7 +437,9 @@ DeclareSciCallV1(SetXOffset, SETXOFFSET, int, offset);
 DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines);
 DeclareSciCallV0(MoveCaretInsideView, MOVECARETINSIDEVIEW);
 
+DeclareSciCallV2(ShowLines, SHOWLINES, DocLn, lnStart, DocLn, lnEnd);
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn);
+DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line);
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn);
 DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line);
 DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line);
@@ -445,6 +447,23 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
 
 DeclareSciCallV1(SetHScrollbar, SETHSCROLLBAR, bool, visible);
 DeclareSciCallV1(SetVScrollbar, SETVSCROLLBAR, bool, visible);
+
+
+//=============================================================================
+//
+//  Folding
+//
+DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, level);
+DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line);
+DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags);
+DeclareSciCallV1(FoldDisplayTextSetStyle, FOLDDISPLAYTEXTSETSTYLE, int, flags);
+DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, DocLn, DocLn, line);
+DeclareSciCallR2(GetLastChild, GETLASTCHILD, DocLn, DocLn, line, int, level);
+DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, bool, DocLn, line);
+DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line);
+DeclareSciCallV1(FoldAll, FOLDALL, int, flags);
+DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line);
+DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, line);
 
 
 //=============================================================================
@@ -497,11 +516,13 @@ DeclareSciCallV2(StyleSetFont, STYLESETFONT, int, style, const char *, fontname)
 // Indentation Guides and Wraping
 //
 DeclareSciCallV1(SetWrapMode, SETWRAPMODE, int, mode);
-DeclareSciCallR0(GetWrapIndentMode, GETWRAPINDENTMODE, int);
+DeclareSciCallR0(GetWrapMode, GETWRAPMODE, int);
 DeclareSciCallV1(SetWrapIndentMode, SETWRAPINDENTMODE, int, mode);
+DeclareSciCallR0(GetWrapIndentMode, GETWRAPINDENTMODE, int);
 DeclareSciCallV1(SetWrapStartIndent, SETWRAPSTARTINDENT, int, mode);
 DeclareSciCallV1(SetWrapVisualFlags, SETWRAPVISUALFLAGS, int, opts);
 DeclareSciCallV1(SetWrapVisualFlagsLocation, SETWRAPVISUALFLAGSLOCATION, int, opts);
+DeclareSciCallR1(WrapCount, WRAPCOUNT, DocLn, DocLn, line);
 
 DeclareSciCallV1(SetEdgeMode, SETEDGEMODE, int, mode);
 DeclareSciCallR0(GetEdgeMode, GETEDGEMODE, int);
@@ -602,24 +623,6 @@ DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, Doc
 DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicID, DocPos, position);
 DeclareSciCallR2(IndicatorStart, INDICATORSTART, int, int, indicID, DocPos, position);
 DeclareSciCallR2(IndicatorEnd, INDICATOREND, int, int, indicID, DocPos, position);
-
-//=============================================================================
-//
-//  Folding
-//
-//
-DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line);
-DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, level);
-DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line);
-DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags);
-DeclareSciCallV1(FoldDisplayTextSetStyle, FOLDDISPLAYTEXTSETSTYLE, int, flags);
-DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, DocLn, DocLn, line);
-DeclareSciCallR2(GetLastChild, GETLASTCHILD, DocLn, DocLn, line, int, level);
-DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, bool, DocLn, line);
-DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line);
-DeclareSciCallV1(FoldAll, FOLDALL, int, flags);
-DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line);
-DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, line);
 
 
 //=============================================================================
