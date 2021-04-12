@@ -274,7 +274,7 @@ class LexerJSON : public DefaultLexer {
 		setKeywordJSON_LD(CharacterSet::setAlpha, ":@"),
 		setKeywordJSON(CharacterSet::setAlpha, "$_+-") {
 	}
-	virtual ~LexerJSON() {}
+    virtual ~LexerJSON() = default;
 	int SCI_METHOD Version() const override {
 		return lvRelease5;
 	}
