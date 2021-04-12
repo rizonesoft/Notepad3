@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "Salva &copia...\tCtrl+F6",                        IDM_FILE_SAVECOPY
         MENUITEM "Salva con &Data/Ora originali del file\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Sola lettu&ra File Attribute",           IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",               IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "Attributo di Sola lettu&ra",             IDM_FILE_READONLY
+        MENUITEM "&Blocca file (lettura condivisa)",   IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Imposta passphrase per crittografia...", IDM_SETPASS
         MENUITEM SEPARATOR
@@ -209,8 +209,8 @@ BEGIN
             MENUITEM "&Indenta",                             IDM_EDIT_INDENT
             MENUITEM "&Rimuovi indentazione",                IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Commenta riga (attiva/disattiva)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
-            MENUITEM "Modifica blocco commenti di linea\tCtrl+Alt+Q",    IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Commenta riga (attiva/disattiva)\tCtrl+Q", IDM_EDIT_LINECOMMENT
+            MENUITEM "Modifica &blocco commenti\tCtrl+Alt+Q",     IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
             MENUITEM "&Commento multi-riga\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
@@ -259,11 +259,11 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&URL Encode\tCtrl+Shift+E",                 IDM_EDIT_URLENCODE
             MENUITEM "URL &Decode\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",                   IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",                   IDM_EDIT_URL2PATH
+            MENUITEM "Da Percorso di File System a URL",          IDM_EDIT_PATH2URL
+            MENUITEM "Da URL a Percorso di File System",          IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                        IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                            IDM_EDIT_INVERTSLASH
+            MENUITEM "Inverti Backslashes",                       IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverti Barre",                             IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Char To Hex\tCtrl+Alt+X",                  IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex To Char\tCtrl+Alt+C",                  IDM_EDIT_HEX2CHAR
