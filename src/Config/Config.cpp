@@ -2070,7 +2070,7 @@ bool SaveWindowPositionSettings(bool bClearSettings)
     }
 
     // set current window position as ne initial window
-    WININFO const winInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
+    WININFO const winInfo = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
 
     int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
     int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);

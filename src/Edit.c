@@ -1820,7 +1820,7 @@ void EditURLEncode(const bool isPathConvert)
     if (!bStraightSel) {
         SciCall_SwapMainAnchorCaret();
     }
-    EditEnsureSelectionVisible();
+    EditScrollSelectionToView();
 
     _END_UNDO_ACTION_;
 
@@ -1906,7 +1906,7 @@ void EditURLDecode(const bool isPathConvert)
         if (!bStraightSel) {
             SciCall_SwapMainAnchorCaret();
         }
-        EditEnsureSelectionVisible();
+        EditScrollSelectionToView();
 
         _END_UNDO_ACTION_;
     }
@@ -1970,7 +1970,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     if (!bStraightSel) {
         SciCall_SwapMainAnchorCaret();
     }
-    EditEnsureSelectionVisible();
+    EditScrollSelectionToView();
     
     _END_UNDO_ACTION_;
 
@@ -2193,7 +2193,7 @@ void EditFindMatchingBrace()
     if (iMatchingBracePos != (DocPos)-1) {
         iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
         Sci_GotoPosChooseCaret(iMatchingBracePos);
-        EditEnsureSelectionVisible();
+        EditScrollSelectionToView();
     }
 }
 
@@ -3101,7 +3101,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         }
     } else {
         Sci_GotoPosChooseCaret(iInitialPos);
-        EditEnsureSelectionVisible();
+        EditScrollSelectionToView();
     }
 
     _END_UNDO_ACTION_;
@@ -3388,7 +3388,7 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
     if (!bStraightSel) {
         SciCall_SwapMainAnchorCaret();
     }
-    EditEnsureSelectionVisible();
+    EditScrollSelectionToView();
 
     _END_UNDO_ACTION_;
 
@@ -3541,7 +3541,7 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart)
     if (!bStraightSel) {
         SciCall_SwapMainAnchorCaret();
     }
-    EditEnsureSelectionVisible();
+    EditScrollSelectionToView();
 
     _END_UNDO_ACTION_;
 
@@ -3813,7 +3813,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
             const DocPos iSelEnd = SciCall_GetSelectionEnd();
 
             DocLn iStartLine = 0;
-            DocLn iEndLine = SciCall_GetLineCount() - 1;
+            DocLn iEndLine = Sci_GetLastDocLineNumber();
 
             if (iSelStart != iSelEnd) {
                 iStartLine = SciCall_LineFromPosition(iSelStart);
@@ -4238,7 +4238,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
     if (iSelStart > SciCall_PositionFromLine(iBegLine)) {
         ++iBegLine;
     }
-    if ((iSelEnd <= SciCall_PositionFromLine(iEndLine)) && (iEndLine != SciCall_GetLineCount() - 1)) {
+    if ((iSelEnd <= SciCall_PositionFromLine(iEndLine)) && (iEndLine != Sci_GetLastDocLineNumber())) {
         --iEndLine;
     }
 
@@ -5096,9 +5096,9 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
 //=============================================================================
 //
-//  _EnsureRangeVisible()
+//  _EnsurePositionsVisible()
 //
-static void _EnsureRangeVisible(const DocPos iAnchorPos, const DocPos iCurrentPos) {
+static void _EnsurePositionsVisible(const DocPos iAnchorPos, const DocPos iCurrentPos) {
 
     DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
     DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
@@ -5115,12 +5115,12 @@ static void _EnsureRangeVisible(const DocPos iAnchorPos, const DocPos iCurrentPo
 
 //=============================================================================
 //
-//  EditEnsureSelectionVisible()
+//  EditScrollSelectionToView()
 //
-void EditEnsureSelectionVisible() {
+void EditScrollSelectionToView() {
     DocPos const iAnchorPos = SciCall_GetAnchor();
     DocPos const iCurrentPos = SciCall_GetCurrentPos();
-    _EnsureRangeVisible(iAnchorPos, iCurrentPos);
+    _EnsurePositionsVisible(iAnchorPos, iCurrentPos);
     SciCall_ScrollRange(iAnchorPos, iCurrentPos);
 }
 
@@ -5145,7 +5145,7 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
 
         // Ensure that the first and last lines of a selection are always unfolded
         // This needs to be done *before* the SCI_SETSEL message
-        _EnsureRangeVisible(iAnchorPos, iCurrentPos);
+        _EnsurePositionsVisible(iAnchorPos, iCurrentPos);
 
         if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
             SciCall_SetRectangularSelectionAnchor(iAnchorPos);
@@ -5185,7 +5185,7 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
 {
     // Line maximum is iMaxLine - 1 (doc line count starts with 0)
-    DocLn const iMaxLine = SciCall_GetLineCount() - 1;
+    DocLn const iMaxLine = Sci_GetLastDocLineNumber();
 
     // jump to end with line set to -1
     if ((iNewLine < 0) || (iNewLine > iMaxLine)) {
@@ -6037,7 +6037,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 if (s_anyMatch == NO_MATCH) {
                     EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
                 } else {
-                    EditEnsureSelectionVisible();
+                    EditScrollSelectionToView();
                 }
             }
 
@@ -6178,7 +6178,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             _DelayMarkAll(_MQ_STD);
 
             if (!SciCall_IsSelectionEmpty()) {
-                EditEnsureSelectionVisible();
+                EditScrollSelectionToView();
             }
             /// don't do:  ///~SendWMCommandEx(hwnd, IDC_FINDTEXT, CBN_EDITCHANGE);
             break;
@@ -6939,7 +6939,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
         // get visible lines for update
         DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-        DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+        DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), Sci_GetLastDocLineNumber());
         DocPos const iPosStart = SciCall_PositionFromLine(iStartLine);
         DocPos const iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
@@ -6974,7 +6974,7 @@ void EditSelectionMultiSelectAll()
         if (SciCall_GetSelectionNAnchor(0) > SciCall_GetSelectionNCaret(0)) {
             SciCall_SwapMainAnchorCaret();
         }
-        EditEnsureSelectionVisible();
+        EditScrollSelectionToView();
 
         _RESTORE_TARGET_RANGE_;
     }
@@ -7671,7 +7671,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 void EditUpdateVisibleIndicators()
 {
     DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-    DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+    DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), Sci_GetLastDocLineNumber());
     EditUpdateIndicators(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), false);
 }
 
@@ -7812,7 +7812,7 @@ void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines)
         int const baseLevel = SC_FOLDLEVELBASE;
 
         DocLn const iStartLine = 0;
-        DocLn const iEndLine   = SciCall_GetLineCount() - 1;
+        DocLn const iEndLine = Sci_GetLastDocLineNumber();
 
         // 1st line
         int level = baseLevel;
@@ -9078,7 +9078,7 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
         return;
     }
 
-    DocLn const iLineMax = SciCall_GetLineCount() - 1;
+    DocLn const iLineMax = Sci_GetLastDocLineNumber();
 
     while (*p1) {
         const WCHAR* p2 = StrChr(p1, L';');
@@ -9260,7 +9260,7 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
                 }
             }
             if (fToggled) {
-                EditEnsureSelectionVisible();
+                EditScrollSelectionToView();
             }
         }
     }
