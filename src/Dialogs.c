@@ -4364,59 +4364,6 @@ bool GetWindowRectEx(HWND hwnd, LPRECT pRect) {
 
 //=============================================================================
 //
-//  GetMyWindowPlacement()
-//
-WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo, const int offset)
-{
-    RECT rc;
-    GetWindowRect(hwnd, &rc);
-
-    MONITORINFO mi = { sizeof(MONITORINFO) };
-    GetMonitorInfoFromRect(&rc, &mi);
-    
-    // set monitor info
-    if (hMonitorInfo) {
-        if (hMonitorInfo->cbSize == mi.cbSize) {
-            *hMonitorInfo = mi;
-        } else {
-            GetMonitorInfoFromRect(&rc, hMonitorInfo);
-        }
-    }
-
-    WINDOWPLACEMENT wndpl = { sizeof(WINDOWPLACEMENT) };
-    GetWindowPlacement(hwnd, &wndpl);
-
-    // corrections in case of aero snapped position
-    if (SW_SHOWNORMAL == wndpl.showCmd) {
-        LONG const width = rc.right - rc.left;
-        LONG const height = rc.bottom - rc.top;
-        rc.left -= (mi.rcWork.left - mi.rcMonitor.left);
-        rc.right = rc.left + width;
-        rc.top -= (mi.rcWork.top - mi.rcMonitor.top);
-        rc.bottom = rc.top + height;
-        wndpl.rcNormalPosition = rc;
-    }
-
-    WININFO wi = { 0 };
-    wi.x = wndpl.rcNormalPosition.left + offset;
-    wi.y = wndpl.rcNormalPosition.top + offset;
-    wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-    wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-    wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
-    wi.zoom = SciCall_GetZoom();
-
-    // check if window fits monitor
-    if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
-        wi.x = mi.rcMonitor.left;
-        wi.y = mi.rcMonitor.top;
-    }
-
-    return wi;
-}
-
-
-//=============================================================================
-//
 //  FitIntoMonitorGeometry()
 //
 void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode) {
@@ -4470,6 +4417,57 @@ void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode) {
     }
 }
 // ----------------------------------------------------------------------------
+
+
+//=============================================================================
+//
+//  GetMyWindowPlacement()
+//
+WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset) {
+    RECT rc;
+    GetWindowRect(hwnd, &rc);
+
+    MONITORINFO mi = { sizeof(MONITORINFO) };
+    GetMonitorInfoFromRect(&rc, &mi);
+
+    // set monitor info
+    if (hMonitorInfo) {
+        if (hMonitorInfo->cbSize == mi.cbSize) {
+            *hMonitorInfo = mi;
+        } else {
+            GetMonitorInfoFromRect(&rc, hMonitorInfo);
+        }
+    }
+
+    WINDOWPLACEMENT wndpl = { sizeof(WINDOWPLACEMENT) };
+    GetWindowPlacement(hwnd, &wndpl);
+
+    // corrections in case of aero snapped position
+    if (SW_SHOWNORMAL == wndpl.showCmd) {
+        LONG const width = rc.right - rc.left;
+        LONG const height = rc.bottom - rc.top;
+        rc.left -= (mi.rcWork.left - mi.rcMonitor.left);
+        rc.right = rc.left + width;
+        rc.top -= (mi.rcWork.top - mi.rcMonitor.top);
+        rc.bottom = rc.top + height;
+        wndpl.rcNormalPosition = rc;
+    }
+
+    WININFO wi = { 0 };
+    wi.x = wndpl.rcNormalPosition.left + offset;
+    wi.y = wndpl.rcNormalPosition.top + offset;
+    wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
+    wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
+    wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
+    wi.zoom = SciCall_GetZoom();
+
+    if (Settings2.LaunchInstanceFullVisible) {
+        RECT rcWi;
+        RectFromWinInfo(&wi, &rcWi);
+        FitIntoMonitorGeometry(&rcWi, &wi, SCR_NORMAL);
+    }
+    return wi;
+}
 
 
 //=============================================================================
@@ -4542,7 +4540,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WINI
     }
     StringCchCat(szParameters, COUNTOF(szParameters), Flags.bSingleFileInstance ? L" -ns" : L" -n");
 
-    WININFO const _wi = wi ? *wi : GetMyWindowPlacement(hwnd, NULL, 0);
+    WININFO const _wi = (Flags.bStickyWindowPosition ? g_IniWinInfo : 
+                         (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset)));
+
     StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.max);
     StringCchCat(szParameters, COUNTOF(szParameters), tch);
 

@@ -47,10 +47,6 @@ extern "C" {
 
 #include "DarkMode/DarkMode.h"
 
-
-extern "C" WININFO   g_IniWinInfo;
-extern "C" WININFO   g_DefWinInfo;
-
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V1;
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
 
@@ -1130,8 +1126,7 @@ void LoadSettings()
                                        Defaults2.UndoTransactionTimeout),
                                        0UL, 86400000UL);
 
-    // deprecated
-
+    // Settings2 SciDirectWriteTech deprecated
     Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
     if (Defaults.RenderingTechnology != -111) {
         if (Settings.SaveSettings) {
@@ -1144,7 +1139,7 @@ void LoadSettings()
         Defaults.RenderingTechnology = SC_TECHNOLOGY_DIRECTWRITE; // new default DirectWrite (D2D)
     }
 
-    // Settings2 deprecated
+    // Settings2 EnableBidirectionalSupport deprecated
     Defaults.Bidirectional = IniSectionGetInt(IniSecSettings2, L"EnableBidirectionalSupport", -111);
     if ((Defaults.Bidirectional != -111) && Settings.SaveSettings) {
         // cleanup
@@ -1161,6 +1156,12 @@ void LoadSettings()
         int const codePage = Scintilla_InputCodePage();
         Settings2.IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
+
+    Defaults2.LaunchInstanceWndPosOffset = 0;
+    Settings2.LaunchInstanceWndPosOffset = clampi(IniSectionGetInt(IniSecSettings2, L"LaunchInstanceWndPosOffset", Defaults2.LaunchInstanceWndPosOffset), -10000, 10000);
+
+    Defaults2.LaunchInstanceFullVisible = false;
+    Settings2.LaunchInstanceFullVisible = IniSectionGetBool(IniSecSettings2, L"LaunchInstanceFullVisible", Defaults2.LaunchInstanceFullVisible);
 
     Defaults2.SciFontQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);

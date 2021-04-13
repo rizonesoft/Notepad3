@@ -93,6 +93,9 @@ inline void RectFromWinInfo(const WININFO* const pWinInfo, LPRECT pRect)
     SetRect(pRect, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy);
 }
 
+extern WININFO g_IniWinInfo;
+extern WININFO g_DefWinInfo;
+
 // ----------------------------------------------------------------------------
 
 typedef int COLORALPHAREF;
@@ -595,7 +598,8 @@ typedef struct _settings2_t
     DWORD  UndoTransactionTimeout;
     int    IMEInteraction;
     int    SciFontQuality;
-
+    int    LaunchInstanceWndPosOffset;
+    bool   LaunchInstanceFullVisible;
     int    UpdateDelayMarkAllOccurrences;
     bool   DenyVirtualSpaceAccess;
     bool   UseOldStyleBraceMatching;
