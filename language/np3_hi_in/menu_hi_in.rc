@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "फ़ाइल में खोजें (&S)\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "नई विंडो (&N)\tAlt+N",                 IDM_FILE_NEWWINDOW
-            MENUITEM "खाली विंडो (&E)\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "व्यवस्थापक के रूप में पुनः प्रक्षेपित करें (&R)",                 IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "शब्द यात्रा त्वरित गति (&G)\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "एकल फ़ाइल अवस्था (&F)",                    IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
         MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "ESC कुंजी उपयोग (&E)"

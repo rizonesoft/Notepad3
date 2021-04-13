@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "Zoek in &bestanden\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nieuw venster\tAlt+N",               IDM_FILE_NEWWINDOW
-            MENUITEM "&Leeg venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
+            MENUITEM "&Nieuw leeg venster\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Dubbele instantie\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "He&rlancering met hoge rechten",      IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Auto &vervolledigen 'Lexer' sleutelwoorden",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Versnelde woordnavi&gatie\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "En&kel bestand instantie",                            IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Slechts één instantie per &bestand",                  IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Bestandswijziging notifi&catie...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY
         MENUITEM "Dempen Bericht &Beeps",                               IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc &toest functie"

@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Localizar em Arquivos\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nova Janela\tAlt+N",             IDM_FILE_NEWWINDOW
-            MENUITEM "Janela &Vazia\tAlt+Shift+N",      IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Recarregar como Administrador",  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Completa Automaticamente Palavras-&Chaves-Léxicas",   IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Nave&gação de Palavra Acelerada\tCtrl+Alt+A",         IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Instância de &Arquivo Única",                         IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notificação de &Mudança de Arquivo...\tAlt+F5",       IDM_VIEW_CHANGENOTIFY
         MENUITEM "Deixar Mudo Avisos &Sonoros de Mensagens",            IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Função da &Tecla Esc"

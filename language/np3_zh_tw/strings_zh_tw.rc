@@ -236,7 +236,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(zh-TW) 繁體中文翻譯 by Ghost"
+    IDS_MUI_TRANSL_AUTHOR   "(zh-TW) 繁體中文翻譯 by danfong"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
