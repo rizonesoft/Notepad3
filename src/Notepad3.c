@@ -3019,25 +3019,17 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
     HDROP const hDrop = (HDROP)wParam;
+    bool const vkCtrlDown = IsKeyDown(VK_CONTROL);
 
     WCHAR szDropFilePath[MAX_PATH + 40];
     UINT const cnt = DragQueryFile(hDrop, UINT_MAX, NULL, 0);
 
-    int const offset = 20;
-    MONITORINFO mi = { sizeof(MONITORINFO) };
-    WININFO wi = GetMyWindowPlacement(hwnd, &mi, (IsKeyDown(VK_CONTROL) ? offset : 0));
+    int const offset = Settings2.LaunchInstanceWndPosOffset;
 
     for (UINT i = 0; i < cnt; ++i) {
+        WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0));
         DragQueryFile(hDrop, i, szDropFilePath, COUNTOF(szDropFilePath));
         _OnDropOneFile(hwnd, szDropFilePath, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
-        // offset next window position
-        wi.x += offset;
-        wi.y += offset;
-        // check if window fits monitor
-        if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
-            wi.x = mi.rcMonitor.left;
-            wi.y = mi.rcMonitor.top;
-        }
     }
 
     DragFinish(hDrop);
@@ -7710,9 +7702,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_URIDROPPED: {
-        WCHAR szBuf[MAX_PATH + 40] = { L'\0' };
-        if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, (int)COUNTOF(szBuf)) > 0) {
-            return _OnDropOneFile(hwnd, szBuf, false);
+        WCHAR szFilePath[MAX_PATH + 40] = { L'\0' };
+        if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szFilePath, (int)COUNTOF(szFilePath)) > 0) {
+            return _OnDropOneFile(hwnd, szFilePath, NULL);
         }
     }
     break;
