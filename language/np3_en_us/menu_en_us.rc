@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Auto Complete Lexer-&Key-Words",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerated Word Navi&gation\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "One Instance per same &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
         MENUITEM "&Mute Message Beeps",                      IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Esc Key Function"

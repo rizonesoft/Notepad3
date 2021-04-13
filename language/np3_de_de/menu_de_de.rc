@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "&Beschleunigte Wort Navigation\tCtrl+Alt+A",  IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Eine &Instanz pro selber Datei",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Nur eine &Instanz pro Datei",                 IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
         MENUITEM "Keine Nachrichten &Beeps",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc-&Key Funktion"
