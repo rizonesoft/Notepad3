@@ -102,7 +102,7 @@ BEGIN
     IDS_MUI_UNTITLED        "Ongetiteld"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Lees Net)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<Eksklusief>"
     IDS_MUI_LOADFILE        "Laai ""%s""..."
     IDS_MUI_SAVEFILE        "Stoor ""%s""..."
     IDS_MUI_PRINTFILE       "Print Bladsy %i..."
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Die huidige lêer is gewysig deur 'n eksterne program. Herlaai?"
     IDS_MUI_FILECHANGENOTIFY2 "Die huidige lêer is verwyder. Stoor nou?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Kan nie eksklusiewe lêerslot vir ""%s"" kry nie!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Posisie is aangeskakel. Enige nuwe Notepad3-vensters sal die huidige vensterplasinginstellings gebruik."
     IDS_MUI_SAVEDSETTINGS   "Die huidige program instellings is gestoor."
     IDS_MUI_CREATEINI_FAIL  "Kon nie konfigurasielêer skep nie."
@@ -268,13 +268,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Merk Alle Voorvalle..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Wissel Beskou..."
+    IDS_MUI_SB_REPLACE_ALL    "Vervang alles..."
+    IDS_MUI_SB_WRAP_LINES     "Wrap Lyne..."
+    IDS_MUI_SB_CONV_LNBRK     "Skakel lynbreuke om..."
+    IDS_MUI_SB_RECODING_DOC   "Herkodering van Dokument..."
+    IDS_MUI_SB_LEXER_STYLING  "Pas Lexer Styling toe..."
 END
 
 STRINGTABLE

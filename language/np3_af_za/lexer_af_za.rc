@@ -475,9 +475,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63372       "Decorator"
-    IDS_LEX_STR_63373       "Task Marker"
-    IDS_LEX_STR_63374       "Comment Doc Error"
+    IDS_LEX_STR_63372       "Versierder"
+    IDS_LEX_STR_63373       "Taakmerker"
+    IDS_LEX_STR_63374       "Kommentaar Dok Vout"
 END
 
 STRINGTABLE
