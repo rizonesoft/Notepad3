@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "Nytt fönster\tAlt+N",                         IDM_FILE_NEWWINDOW
-            MENUITEM "Tomt fönster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Kör med förhöjda behörigheter",               IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Endast en instans per fil",                       IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc-tangentens funktion"

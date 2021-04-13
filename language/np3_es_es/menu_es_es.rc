@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "B&uscar en archivos\tCtrl+Shift+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
-            MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
+            MENUITEM "&Nueva ventana vacía\tAlt+N",         IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicar Instancia\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Relanzar con privilegios elevados",  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "&Navegación por palabra acelerada\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Ins&tancia de archivo único",                         IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Solo una instancia por &archivo",                     IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
         MENUITEM "Silenciar sonidos de aviso",                          IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Función de la tecla 'Esc'"

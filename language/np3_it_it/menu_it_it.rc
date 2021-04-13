@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Cerca nei file\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nuova finestra\tAlt+N",            IDM_FILE_NEWWINDOW
-            MENUITEM "&Finestra vuota\tAlt+Shift+N",      IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Rilancio con diritti elevati",     IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Completamento automatico &keywords lexer",         IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Navi&gazione accelerata delle parole\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Im&pedisci di riaprire lo stesso file",            IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
         MENUITEM "Muto Messaggio &Bips",                             IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Azione su tasto '&Esc'"

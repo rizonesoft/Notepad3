@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "在檔案中查詢(&S)...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "新視窗(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
-            MENUITEM "空視窗(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "以管理員權限重啟(&R)",                    IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "自動完成語法關鍵字(&K)",                      IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "加速單詞導覽(&G)\tCtrl+Alt+A",                IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "單一檔案進程(&F)",                            IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "檔案修改通知(&C)...\tAlt+F5",                 IDM_VIEW_CHANGENOTIFY
         MENUITEM "關閉訊息提示音(&M)",                          IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc 鍵功能(&E)"

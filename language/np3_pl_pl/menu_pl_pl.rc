@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nowe okno\tAlt+N",                  IDM_FILE_NEWWINDOW
-            MENUITEM "&Puste okno\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Notepad3 jako &Administrator",       IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Autouzupełnianie Lekserem",                       IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Jedna Instancja Pliku",                           IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Funkcja klawisza Esc"

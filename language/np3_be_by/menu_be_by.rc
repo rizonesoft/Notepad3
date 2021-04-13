@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Шукаць у файлах\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "Копі&ю акна\tAlt+N",                 IDM_FILE_NEWWINDOW
-            MENUITEM "&Пустое акно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Пераадкрыць &з павышанымі правамі",  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Cамадавяршэнне на аснове &лексемаў",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Паскораная навігацыя па слова&х\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Адзін &экзэмпляр файла",                      IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",                 IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
         MENUITEM "&Заглушыць гук паведамленняў",                IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Функцыя клавішы Esc"

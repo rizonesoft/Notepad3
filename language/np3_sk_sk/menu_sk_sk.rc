@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nové okno\tAlt+N",                   IDM_FILE_NEWWINDOW
-            MENUITEM "N&ové prázdne okno\tAlt+Shift+N",     IDM_FILE_NEWWINDOW2
+            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Spustiť s vyšším oprávnením",        IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Zrýchlená navi&gácia slov\tCtrl+Alt+A",        IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Inštancia &jedného súboru",                    IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_VIEW_CHANGENOTIFY
         MENUITEM "&Stlmiť hlásenie pípnutím",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Funkcia klávesy Esc"
