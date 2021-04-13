@@ -59,10 +59,10 @@ bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 
 bool GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO *hMonitorInfo);
-void WinInfoToScreen(WININFO* pWinInfo);
+void WinInfoToScreenCoord(WININFO* pWinInfo);
 WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset);
 bool GetWindowRectEx(HWND hwnd, LPRECT pRect);
-void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode);
+void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, bool bTopLeft);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WININFO* wi);
