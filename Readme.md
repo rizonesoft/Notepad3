@@ -356,6 +356,10 @@ See Replacing Windows Notepad for detailed explanations.
 This items are managed by Notepad3. 
 - `Menu->View->Position->Sticky Window Position` (Will remember current window position on restart, instead of last closed position (save on exit))
 
+#### `LaunchInstanceWndPosOffset=0`
+
+#### `LaunchInstanceFullVisible=0`
+
 #### `UseOldStyleBraceMatching=0`
 
 UseOldStyleBraceMatching=1 to switch back to (not recommended) old style behavior
