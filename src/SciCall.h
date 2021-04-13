@@ -57,6 +57,22 @@
 #include "Scintilla.h"
 #include "TypeDefs.h"
 
+
+//=============================================================================
+//
+//  Scintilla Window Handle
+//
+#if defined(__cplusplus)
+extern "C" HANDLE g_hndlScintilla;
+#else
+extern HANDLE g_hndlScintilla;
+#endif
+
+__forceinline void InitScintillaHandle(HWND hwnd) {
+    g_hndlScintilla = (HANDLE)SendMessage(hwnd, SCI_GETDIRECTPOINTER, 0, 0);
+}
+
+
 //=============================================================================
 //
 //  SciCall()
@@ -64,19 +80,23 @@
 #ifdef SCI_DIRECTFUNCTION_INTERFACE
 
 LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
-#define SciCall(m, w, l) Scintilla_DirectFunction(Globals.hndlScintilla, (m), (w), (l))
+#define SciCall(m, w, l) Scintilla_DirectFunction(g_hndlScintilla, (m), (w), (l))
 
 #else
 
-#define SciCall(m, w, l) SendMessage(Globals.hwndEdit, m, w, l)
+#define SciCall(m, w, l) SendMessage(g_hndlScintilla, m, w, l)
 
 #endif // SCI_DIRECTFUNCTION_INTERFACE
+
+
+//=============================================================================
 
 // SciOniguruma RegEx search
 ptrdiff_t WINAPI OnigRegExFind(const char *pchPattern, const char *pchText, 
                                const bool caseSensitive, const int eolMode, int *matchLen_out);
 
 //=============================================================================
+
 
 //=============================================================================
 //

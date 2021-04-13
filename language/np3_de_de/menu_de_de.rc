@@ -77,10 +77,10 @@ BEGIN
         END
         POPUP "&Starte"
         BEGIN
-            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH
+            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Neues Fenster\tAlt+N",               IDM_FILE_NEWWINDOW
-            MENUITEM "&Leeres Fenster\tAlt+Shift+N",        IDM_FILE_NEWWINDOW2
+            MENUITEM "&Neues Leeres Fenster\tAlt+N",        IDM_FILE_NEWWINDOW
+            MENUITEM "&Dupliziere Instanz\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Mit erhöhten &Rechten starten",       IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "&Beschleunigte Wort Navigation\tCtrl+Alt+A",  IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Eine &Instanz per Datei",                     IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Eine &Instanz pro selber Datei",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
         MENUITEM "Keine Nachrichten &Beeps",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc-&Key Funktion"
