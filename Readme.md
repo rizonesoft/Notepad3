@@ -235,7 +235,7 @@ The interval (in milliseconds) to check for external modification of the current
 Specify filters for the open and save dialogs 
 - (Example: `Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*`).
 
-#### `FileLoadWarningMB=64`
+#### `FileLoadWarningMB=4`
 
 The size limit, in megabytes, to display a warning message for large files. 
 - A value of 0 disables the warning.
