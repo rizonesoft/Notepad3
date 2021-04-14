@@ -44,7 +44,7 @@
 #pragma warning( disable : 26451 )
 // -----------------------------------------------------------------------------
 
-extern LANGID    g_iPrefLANGID;
+extern LANGID    g_iUsedLANGID;
 extern WCHAR     g_wchIniFile[MAX_PATH];
 
 //=============================================================================
@@ -145,7 +145,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dwErrID,
-        g_iPrefLANGID,
+        g_iUsedLANGID,
         (LPTSTR)&lpMsgBuf,
         0, NULL);
 
@@ -156,7 +156,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 
     if (lpDisplayBuf) {
         wsprintf((LPWSTR)lpDisplayBuf, L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, (LPWSTR)lpMsgBuf);
-        MessageBoxEx(NULL, (LPCWSTR)lpDisplayBuf, L"MiniPath - ERROR", MB_OK | MB_ICONEXCLAMATION, g_iPrefLANGID);
+        MessageBoxEx(NULL, (LPCWSTR)lpDisplayBuf, L"MiniPath - ERROR", MB_OK | MB_ICONEXCLAMATION, g_iUsedLANGID);
     }
 
     LocalFree(lpMsgBuf);
@@ -1720,7 +1720,7 @@ BOOL GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
 
 BOOL GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-    BOOL bSucceed = GetLocaleDefaultUIFont(g_iPrefLANGID, lpFaceName, wSize);
+    BOOL bSucceed = GetLocaleDefaultUIFont(g_iUsedLANGID, lpFaceName, wSize);
 
     HDC hDC = GetDC(NULL);
     int const iLogPixelsY = GetDeviceCaps(hDC, LOGPIXELSY);

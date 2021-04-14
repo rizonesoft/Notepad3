@@ -15,6 +15,7 @@
 
 #include "Helpers.h"
 
+#include <assert.h>
 #include <locale.h>
 #include <commctrl.h>
 #include <muiload.h>
@@ -27,12 +28,106 @@
 
 //=============================================================================
 
-#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+
+grepWinLng_t grepWinLangResName[] = {
+    { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), L".\\lng\\gwLng\\English (United States) [en-US].lang" },
+    { MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang" },
+    { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang" },
+    { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang" },
+    { MAKELANGID(LANG_GREEK, SUBLANG_GREEK_GREECE), L".\\lng\\gwLng\\Ελληνικά (Ελλάδα) [el-GR].lang" },
+    { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang" },
+    { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_LATIN_AMERICA), L".\\lng\\gwLng\\Español (América Latina) [es-419].lang" },
+    { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), L".\\lng\\gwLng\\Español (España) [es-ES].lang" },
+    { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), L".\\lng\\gwLng\\Français (France) [fr-FR].lang" },
+    { MAKELANGID(LANG_HINDI, SUBLANG_HINDI_INDIA), L".\\lng\\gwLng\\हिन्दी (भारत) [hi-IN].lang" },
+    { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang" },
+    { MAKELANGID(LANG_INDONESIAN, SUBLANG_INDONESIAN_INDONESIA), L".\\lng\\gwLng\\Bahasa Indonesia (Indonesia) [id-ID].lang" },
+    { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang" },
+    { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang" },
+    { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang" },
+    { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang" },
+    { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), L".\\lng\\gwLng\\Polski (Polska) [pl-PL].lang" },
+    { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), L".\\lng\\gwLng\\Português Brasileiro (Brasil) [pt-BR].lang" },
+    { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE), L".\\lng\\gwLng\\Português (Portugal) [pt-PT].lang" },
+    { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang" },
+    { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang" },
+    { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang" },
+    { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang" },
+    { MAKELANGID(LANG_VIETNAMESE, SUBLANG_VIETNAMESE_VIETNAM), L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang" },
+    { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), L".\\lng\\gwLng\\简体中文 （中国） [zh-CN].lang" },
+    { MAKELANGID(LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL), L".\\lng\\gwLng\\繁體中文 （台灣） [zh-TW].lang" }
+};
+
+int grepWinLang_CountOf() {
+    return COUNTOF(grepWinLangResName);
+};
+
+
+//=============================================================================
+//
+//  SetMuiLocaleAll
+//
+static void SetMuiLocaleAll(LPCWSTR pszLocaleStr) {
+    if (pszLocaleStr) {
+        const WCHAR *const pszLocaleCur = _wsetlocale(LC_ALL, pszLocaleStr);
+        if (pszLocaleCur && (StringCchCompareXI(pszLocaleStr, pszLocaleCur) != 0)) {
+            //const _locale_t pCurLocale = _get_current_locale();
+            _wsetlocale(LC_ALL, L""); // system standard
+#ifdef _DEBUG
+            WCHAR msg[128];
+            StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
+                pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
+            MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
+#endif
+        }
+    }
+}
+
+
+//=============================================================================
+//
+//  SetCurrentLanguage
+//
+void SetCurrentLanguage(LANGID iLanguageID) {
+
+    int const langIdx = GetMUILanguageIndexByLangID(iLanguageID);
+
+    assert((langIdx >= 0) && "Faild to get LangID!");
+
+    if (iLanguageID != Globals.iCurrentLANGID) {
+
+        Globals.iCurrentLANGID = iLanguageID; // == MUI_LanguageDLLs[langIdx].LangId
+
+        const WCHAR *const szLocaleName = MUI_LanguageDLLs[langIdx].szLocaleName;
+
+        SetThreadUILanguage(iLanguageID);
+        InitMUILanguage(iLanguageID); // MUI Language for common controls
+        SetMuiLocaleAll(szLocaleName);
+
+        const WCHAR *const SettingName = L"PreferredLanguageLocaleName";
+
+        if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0) {
+            StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
+
+            if (Globals.bCanSaveIniFile) {
+                if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
+                    IniFileSetString(Paths.IniFile, Constants.Settings2_Section, SettingName, Settings2.PreferredLanguageLocaleName);
+                } else {
+                    IniFileDelete(Paths.IniFile, Constants.Settings2_Section, SettingName, false);
+                }
+            }
+        }
+    }
+}
+
+
+//=============================================================================
+//=============================================================================
+
 
 extern prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
 extern prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
-//=============================================================================
 
 MUILANGUAGE MUI_LanguageDLLs[] = {
     { IDS_MUI_LANG_EN_US, L"en-US", L"English (United States)\t\t\t[%s]",          MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
@@ -71,46 +166,6 @@ int MuiLanguages_CountOf()
 };
 
 
-
-grepWinLng_t grepWinLangResName[] = {
-    { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),                         L".\\lng\\gwLng\\English (United States) [en-US].lang"},
-    { MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA),           L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang"},
-    { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),              L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang"},
-    { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                              L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang"},
-    { MAKELANGID(LANG_GREEK, SUBLANG_GREEK_GREECE),                         L".\\lng\\gwLng\\Ελληνικά (Ελλάδα) [el-GR].lang"},
-    { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),                         L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang"},
-    { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_LATIN_AMERICA),              L".\\lng\\gwLng\\Español (América Latina) [es-419].lang"},
-    { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),                     L".\\lng\\gwLng\\Español (España) [es-ES].lang"},
-    { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH),                              L".\\lng\\gwLng\\Français (France) [fr-FR].lang"},
-    { MAKELANGID(LANG_HINDI, SUBLANG_HINDI_INDIA),                          L".\\lng\\gwLng\\हिन्दी (भारत) [hi-IN].lang"},
-    { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY),                L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang"},
-    { MAKELANGID(LANG_INDONESIAN, SUBLANG_INDONESIAN_INDONESIA),            L".\\lng\\gwLng\\Bahasa Indonesia (Indonesia) [id-ID].lang"},
-    { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                            L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang"},
-    { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),                    L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang"},
-    { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                              L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang"},
-    { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                                L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang"},
-    { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),                       L".\\lng\\gwLng\\Polski (Polska) [pl-PL].lang"},
-    { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN),            L".\\lng\\gwLng\\Português Brasileiro (Brasil) [pt-BR].lang"},
-    { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE),                      L".\\lng\\gwLng\\Português (Portugal) [pt-PT].lang"},
-    { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),                     L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang"},
-    { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA),                     L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang"},
-    { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH),                            L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang"},
-    { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY),                     L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang"},
-    { MAKELANGID(LANG_VIETNAMESE, SUBLANG_VIETNAMESE_VIETNAM),              L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang"},
-    { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),                 L".\\lng\\gwLng\\简体中文 （中国） [zh-CN].lang"},
-    { MAKELANGID(LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL),    L".\\lng\\gwLng\\繁體中文 （台灣） [zh-TW].lang"}
-};
-
-int grepWinLang_CountOf()
-{
-    return COUNTOF(grepWinLangResName);
-};
-
-
-// ----------------------------------------------------------------------------
-
-
-
 //=============================================================================
 //
 //  GetMUILanguageIndexByLangID
@@ -126,6 +181,8 @@ int GetMUILanguageIndexByLangID(LANGID iLanguageID)
 }
 
 
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+
 //=============================================================================
 //
 //  CheckAvailableLanguages
@@ -138,15 +195,19 @@ static int _CheckAvailableLanguageDLLs()
 
     int count = 1;
     for (int lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
+
         if (IsValidLocaleName(MUI_LanguageDLLs[lng].szLocaleName)) {
+
             //WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
             //if (ResolveLocaleName(MUI_LanguageDLLs[i].szLocaleName, wchLngLocalName, LOCALE_NAME_MAX_LENGTH)) {
             //  StringCchCopy(MUI_LanguageDLLs[i].szLocaleName, COUNTOF(MUI_LanguageDLLs[i].szLocaleName), wchLngLocalName); // put back resolved name
             //}
 
             // get LANGID
-            GetLocaleInfoEx(MUI_LanguageDLLs[lng].szLocaleName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER,
-                            (LPWSTR)&(MUI_LanguageDLLs[lng].LangId), sizeof(LANGID));
+            DWORD value = MUI_BASE_LNG_ID;
+            if (GetLocaleInfoEx(MUI_LanguageDLLs[lng].szLocaleName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR)) > 0) {
+                MUI_LanguageDLLs[lng].LangId = (LANGID)value;
+            }
 
             // check for DLL
             StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].szLocaleName);
@@ -199,7 +260,6 @@ static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t ln
 }
 
 
-
 //=============================================================================
 //
 //  GetUserPreferredLanguage
@@ -214,7 +274,7 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
         res = ResolveLocaleName(pszPrefLocaleName, wchLngLocalName, COUNTOF(wchLngLocalName));
         if (res > 0) {
             // get LANGID
-            DWORD value;
+            DWORD value = MUI_BASE_LNG_ID;
             res = GetLocaleInfoEx(wchLngLocalName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR));
             if (res > 0) {
                 lngID = (LANGID)value;
@@ -234,16 +294,16 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
                 if (hr && (numLngs > 0)) {
                     // get the first
                     StringCchCopy(wchLngLocalName, COUNTOF(wchLngLocalName), pwszLngsBuffer);
+                    // TODO: deprecated
                     lngID = LANGIDFROMLCID(LocaleNameToLCID(wchLngLocalName, 0));
                     res = 1;
                 }
                 FreeMem(pwszLngsBuffer);
             }
         }
-        if (res == 0) { // last try
+        if (res == 0) { // last try (deprecated)
             lngID = GetUserDefaultUILanguage();
-            LCID const lcid = MAKELCID(lngID, SORT_DEFAULT);
-            res = LCIDToLocaleName(lcid, wchLngLocalName, COUNTOF(wchLngLocalName), 0);
+            res = LangIDToLocaleName(lngID, wchLngLocalName, COUNTOF(wchLngLocalName));
         }
     }
     if (res != 0) {
@@ -257,85 +317,32 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 
 //=============================================================================
 //
-//  SetPreferredLanguage
-//
-static void SetMuiLocaleAll(LPCWSTR pszLocaleStr)
-{
-    if (pszLocaleStr) {
-        const WCHAR* const pszLocaleCur = _wsetlocale(LC_ALL, pszLocaleStr);
-        if (pszLocaleCur && (StringCchCompareXI(pszLocaleStr, pszLocaleCur) != 0)) {
-            //const _locale_t pCurLocale = _get_current_locale();
-            _wsetlocale(LC_ALL, L""); // system standard
-#ifdef _DEBUG
-            WCHAR msg[128];
-            StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
-                            pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
-            MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
-#endif
-        }
-
-    }
-}
-
-void SetPreferredLanguage(LANGID iPreferredLanguageID)
-{
-    int const langIdx = GetMUILanguageIndexByLangID(iPreferredLanguageID);
-    if (langIdx < 0) {
-        Globals.iPrefLANGID = MUI_BASE_LNG_ID; // internal
-        int const idx = GetMUILanguageIndexByLangID(MUI_BASE_LNG_ID);
-        if (idx >= 0) {
-            SetMuiLocaleAll(MUI_LanguageDLLs[idx].szLocaleName);
-        }
-        return;
-    }
-
-    if (iPreferredLanguageID != Globals.iPrefLANGID) {
-
-        Globals.iPrefLANGID = iPreferredLanguageID; // == MUI_LanguageDLLs[langIdx].LangId
-
-        const WCHAR* const szLocaleName = MUI_LanguageDLLs[langIdx].szLocaleName;
-
-        SetMuiLocaleAll(szLocaleName);
-
-        if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0) {
-            StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
-
-            if (Globals.bCanSaveIniFile) {
-                if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
-                    IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
-                } else {
-                    IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
-                }
-            }
-        }
-    }
-}
-
-
-//=============================================================================
-//
 //  LoadLanguageResources
 //
 //
-LANGID LoadLanguageResources()
+LANGID LoadLanguageResources(LPCWSTR localeName)
 {
+    FreeLanguageResources(); // reset
+
+    int const iInternalLngIndex = max_i(0, GetMUILanguageIndexByLangID(MUI_BASE_LNG_ID));
+
     // 1st check language resources
     Globals.iAvailLngCount = _CheckAvailableLanguageDLLs();
 
     // set the appropriate fallback list
-    int iPrefLngIndex = -1;
+    int iLngIndex = -1;
     WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
     for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-        if (StringCchCompareXIW(MUI_LanguageDLLs[lng].szLocaleName, Settings2.PreferredLanguageLocaleName) == 0) {
+        if (StringCchCompareXIW(MUI_LanguageDLLs[lng].szLocaleName, localeName) == 0) {
             if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].szLocaleName);
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L";");
             }
-            iPrefLngIndex = lng;
+            iLngIndex = lng;
             break;
         }
     }
-    StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[0].szLocaleName); // en-US fallback
+    StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[iInternalLngIndex].szLocaleName); // en-US fallback
 
     // NOTES:
     // an application developer that makes the assumption the fallback list provided by the
@@ -363,35 +370,40 @@ LANGID LoadLanguageResources()
     // obtains access to the proper resource container
     // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-    HINSTANCE _hLangResourceContainer = NULL;
-    Globals.bPrefLngNotAvail = (iPrefLngIndex < 0);
-    int iUsedLngIdx = (iPrefLngIndex >= 0) ? iPrefLngIndex : 0;
+    Globals.hLngResContainer = NULL; //(!)
 
-    if ((iPrefLngIndex >= 0) && MUI_LanguageDLLs[iPrefLngIndex].bHasDLL) {
-        _hLangResourceContainer = (iPrefLngIndex == 0) ? Globals.hInstance :
-                                  LoadMUILibrary(L"lng/np3lng.dll", MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT, MUI_LanguageDLLs[iPrefLngIndex].LangId);
-        if (_hLangResourceContainer) {
-            MUI_LanguageDLLs[0].bIsActive = false;
-            MUI_LanguageDLLs[iPrefLngIndex].bIsActive = true;
-            iUsedLngIdx = iPrefLngIndex;
+    if (iLngIndex == iInternalLngIndex) {
+
+        Globals.hLngResContainer = Globals.hInstance;
+        MUI_LanguageDLLs[iInternalLngIndex].bIsActive = true;
+
+    } else if ((iLngIndex >= 0) && MUI_LanguageDLLs[iLngIndex].bHasDLL) {
+
+        Globals.hLngResContainer = LoadMUILibrary(L"lng/np3lng.dll", 
+                                                  MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT,
+                                                  MUI_LanguageDLLs[iLngIndex].LangId);
+        if (Globals.hLngResContainer) {
+            MUI_LanguageDLLs[iLngIndex].bIsActive = true;
+            MUI_LanguageDLLs[iInternalLngIndex].bIsActive = false;
+        } else {
+            //DbgMsgBoxLastError(L"LoadMUILibrary", 0);
+            iLngIndex = -1;
         }
     }
 
-    if (!_hLangResourceContainer) {
-        // fallback to ENGLISH_US
-        //MsgBoxLastError(L"LoadMUILibrary", 0);
-        Globals.bPrefLngNotAvail = (iPrefLngIndex != 0);
-        _hLangResourceContainer = Globals.hInstance;
-        MUI_LanguageDLLs[0].bIsActive = true;
-        iUsedLngIdx = 0;
+    if (!Globals.hLngResContainer || (iLngIndex < 0)) {
+        // fallback to MUI_BASE_LNG_ID
+        Globals.hLngResContainer = Globals.hInstance;
+        MUI_LanguageDLLs[iInternalLngIndex].bIsActive = true;
+        iLngIndex = iInternalLngIndex;
+
+        const WCHAR *const suprMsg = L"MsgPrefLanguageNotAvailable";
+        InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, localeName);
+        int const noMsg = IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
+        if (noMsg && Globals.bCanSaveIniFile) {
+            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[iInternalLngIndex].szLocaleName);
+        }
     }
-
-    // MUI Language for common controls
-    LANGID const langID = MUI_LanguageDLLs[iUsedLngIdx].LangId;
-    SetThreadUILanguage(langID);
-    InitMUILanguage(langID);
-
-    Globals.hLngResContainer = _hLangResourceContainer;
 
     // ===  update language dependent items  ===
 
@@ -414,7 +426,7 @@ LANGID LoadLanguageResources()
     IniFileGetString(Paths.IniFile, StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
     ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
 
-    return MUI_LanguageDLLs[iUsedLngIdx].LangId;
+    return MUI_LanguageDLLs[iLngIndex].LangId;
 }
 
 
@@ -425,14 +437,13 @@ LANGID LoadLanguageResources()
 //
 void FreeLanguageResources() {
     CloseNonModalDialogs();
+    int const iInternalLngIndex = GetMUILanguageIndexByLangID(MUI_BASE_LNG_ID);
     if (Globals.hLngResContainer != Globals.hInstance) {
-        HINSTANCE const _hLngResContainer = Globals.hLngResContainer;
+        FreeMUILibrary(Globals.hLngResContainer);
         Globals.hLngResContainer = Globals.hInstance;
-        MUI_LanguageDLLs[0].bIsActive = true;
-        FreeMUILibrary(_hLngResContainer);
     }
-    for (int i = 1; i < MuiLanguages_CountOf(); ++i) {
-        MUI_LanguageDLLs[i].bIsActive = false;
+    for (int i = 0; i < MuiLanguages_CountOf(); ++i) {
+        MUI_LanguageDLLs[i].bIsActive = (iInternalLngIndex == i);
     }
 }
 
@@ -494,14 +505,14 @@ void DynamicLanguageMenuCmd(int cmd) {
         return;
     }
     if (!MUI_LanguageDLLs[iLngIdx].bIsActive) {
+
         DestroyMenu(Globals.hMainMenu);
 
         // desired language
         LANGID const desiredLngID = MUI_LanguageDLLs[iLngIdx].LangId;
-        SetPreferredLanguage(desiredLngID);
-
-        FreeLanguageResources();
-        LoadLanguageResources();
+        LPCWSTR desiredLocaleName = MUI_LanguageDLLs[iLngIdx].szLocaleName;
+        LoadLanguageResources(desiredLocaleName);
+        SetCurrentLanguage(desiredLngID);
 
         Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
         if (!Globals.hMainMenu) {

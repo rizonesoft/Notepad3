@@ -17,13 +17,9 @@
 // 1. Comment-Out the following line
 #define HAVE_DYN_LOAD_LIBS_MUI_LNGS 1
 // -----------------------------------------------------
-#ifdef HAVE_DYN_LOAD_LIBS_MUI_LNGS
-// currently only en-US allowed for Base-Lng in MUI env
+// 2. Uncomment one of the following lines according to 
+//    the desired Language (use en-US if undefined)
 #define MUI_BASE_LNG_EN_US 1
-#else
-// 2. Uncomment one of the following lines
-//    according to the desired Language
-//#define MUI_BASE_LNG_EN_US 1
 //#define MUI_BASE_LNG_AF_ZA 1
 //#define MUI_BASE_LNG_BE_BY 1
 //#define MUI_BASE_LNG_DE_DE 1
@@ -49,8 +45,6 @@
 //#define MUI_BASE_LNG_VI_VN 1
 //#define MUI_BASE_LNG_ZH_CN 1
 //#define MUI_BASE_LNG_ZH_TW 1
-
-#endif
 
 // -----------------------------------------------------
 // 3. In case of a new language:

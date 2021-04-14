@@ -145,7 +145,7 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
     HWND const hwnd  = focus ? focus : Globals.hwndMain;
     s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
-    return MessageBoxEx(hwnd, szText, _W(SAPPNAME), uType, Globals.iPrefLANGID);
+    return MessageBoxEx(hwnd, szText, _W(SAPPNAME), uType, Globals.iCurrentLANGID);
 }
 
 
@@ -167,7 +167,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dwErrID,
-        Globals.iPrefLANGID,
+        Globals.iCurrentLANGID,
         (LPWSTR)&lpMsgBuf,
         0, NULL);
 
@@ -186,7 +186,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
             s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
             UINT uType = MB_ICONERROR | MB_TOPMOST | (Settings.DialogsLayoutRTL ? MB_RTLREADING : 0);
-            MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", uType, Globals.iPrefLANGID);
+            MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", uType, Globals.iCurrentLANGID);
 
             FreeMem(lpDisplayBuf);
         }
@@ -455,7 +455,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
                 FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                 NULL,
                 Globals.dwLastError,
-                Globals.iPrefLANGID,
+                Globals.iCurrentLANGID,
                 (LPWSTR)&lpMsgBuf, 0,
                 NULL);
 
@@ -722,7 +722,7 @@ void DisplayCmdLineHelp(HWND hwnd)
     mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
     mbp.dwContextHelpId = 0;
     mbp.lpfnMsgBoxCallback = NULL;
-    mbp.dwLanguageId = Globals.iPrefLANGID;
+    mbp.dwLanguageId = Globals.iCurrentLANGID;
 
     hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
@@ -4715,27 +4715,23 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
                 IniSectionSetString(globalSection, grepWinIniSettings[i].key, value);
             }
 
-            #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-                // get grepWin language
-                int lngIdx = -1;
-                for (int i = 0; i < grepWinLang_CountOf(); ++i) {
-                    if (grepWinLangResName[i].lngid == Globals.iPrefLANGID) {
-                        lngIdx = i;
-                        break;
-                    }
+            // get grepWin language
+            int lngIdx = -1;
+            for (int i = 0; i < grepWinLang_CountOf(); ++i) {
+                if (grepWinLangResName[i].lngid == Globals.iCurrentLANGID) {
+                    lngIdx = i;
+                    break;
                 }
-                if (lngIdx >= 0) {
-                    IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
-                    IniSectionSetString(globalSection, L"languagefile", tchTemp);
-                } else {
-                    IniSectionGetString(globalSection, L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
-                    if (StrIsEmpty(tchTemp)) {
-                        IniSectionDelete(globalSection, L"languagefile", false);
-                    }
+            }
+            if (lngIdx >= 0) {
+                IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
+                IniSectionSetString(globalSection, L"languagefile", tchTemp);
+            } else {
+                IniSectionGetString(globalSection, L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
+                if (StrIsEmpty(tchTemp)) {
+                    IniSectionDelete(globalSection, L"languagefile", false);
                 }
-            #else
-                IniSectionDelete(globalSection, L"languagefile", false);
-            #endif
+            }
 
             bool const bDarkMode = UseDarkMode(); // <- override usr ~ IniSectionGetBool(globalSection, L"darkmode", UseDarkMode());
             IniSectionSetBool(globalSection, L"darkmode", bDarkMode);
@@ -5718,7 +5714,7 @@ bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
 
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-    bool bSucceed = GetLocaleDefaultUIFont(Globals.iPrefLANGID, lpFaceName, wSize);
+    bool bSucceed = GetLocaleDefaultUIFont(Globals.iCurrentLANGID, lpFaceName, wSize);
 
     if (!bSucceed) {
         if (IsAppThemed()) {

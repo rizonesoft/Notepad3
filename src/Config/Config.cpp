@@ -1087,7 +1087,7 @@ void LoadSettings()
     // --------------------------------------------------------------------------
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        LANGID lngID = 0;
+        LANGID lngID = MUI_BASE_LNG_ID;
         Defaults2.PreferredLanguageLocaleName[0] = L'\0';
         GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
 
@@ -2007,6 +2007,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
     // ---  remove deprecated  ---
     IniSectionDelete(IniSecSettings2, L"MarkOccurrencesMaxCount", false);
+
 
     // --------------------------------------------------------------------------
     const WCHAR* const IniSecWindow = Constants.Window_Section;

@@ -630,6 +630,8 @@ static void _InitGlobals()
     ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
 
     Globals.WindowsBuildNumber = GetWindowsBuildNumber(NULL, NULL);
+    
+    Globals.hLngResContainer = NULL;
 
     Globals.hDlgIcon256   = NULL;
     Globals.hDlgIcon128   = NULL;
@@ -644,7 +646,7 @@ static void _InitGlobals()
     Globals.pMRUfind = NULL;
     Globals.pMRUreplace = NULL;
     Globals.iAvailLngCount = 1;
-    Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+    Globals.iCurrentLANGID = WORD_MAX;
     Globals.iWrapCol = 80;
 
     Globals.CmdLnFlag_PosParam = false;
@@ -875,11 +877,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // MultiLingual
     //
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        SetPreferredLanguage(LoadLanguageResources());
+        SetCurrentLanguage(LoadLanguageResources(Settings2.PreferredLanguageLocaleName));
     #else
-        Globals.iPrefLANGID = MUI_BASE_LNG_ID;
-        SetThreadUILanguage(MUI_BASE_LNG_ID);
-        InitMUILanguage(MUI_BASE_LNG_ID);
+        SetCurrentLanguage(MUI_BASE_LNG_ID);
     #endif
 
     // ----------------------------------------------------
@@ -996,17 +996,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     HACCEL const hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
 
     SetTimer(hwnd, IDT_TIMER_MRKALL, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
-
-    #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        if (Globals.bPrefLngNotAvail) {
-            const WCHAR* const suprMsg = L"MsgPrefLanguageNotAvailable";
-            InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
-            int const noMsg = IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
-            if (noMsg && Globals.bCanSaveIniFile) {
-                IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[0].szLocaleName);
-            }
-        }
-    #endif
 
     MSG msg;
     while (GetMessage(&msg,NULL,0,0)) {
