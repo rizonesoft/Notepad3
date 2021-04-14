@@ -102,7 +102,7 @@ BEGIN
     IDS_MUI_UNTITLED        "Odöpt"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(skrivskyddad)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<Exklusiv>"
     IDS_MUI_LOADFILE        "Laddar ""%s""..."
     IDS_MUI_SAVEFILE        "Sparar ""%s""..."
     IDS_MUI_PRINTFILE       "Skriver ut sida %i..."
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Aktuell fil har modifierats av ett externt program. Vill du ladda om?"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuell fil har tagits bort. Vill du spara nu?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  "Kan inte få exklusivt fillås för ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fast fönsterposition är aktiverad. Alla nya Notepad3-fönster kommer att använda aktuella fösterplaceringsinställningar."
     IDS_MUI_SAVEDSETTINGS   "Inställningarna har sparats."
     IDS_MUI_CREATEINI_FAIL  "Kunde inte skapa konfigurationsfil."
@@ -268,13 +268,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Markera alla träffar..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Växla vy..."
+    IDS_MUI_SB_REPLACE_ALL    "Ersätt alla..."
+    IDS_MUI_SB_WRAP_LINES     "Omslut rader..."
+    IDS_MUI_SB_CONV_LNBRK     "Konvertera alla radbrytningar..."
+    IDS_MUI_SB_RECODING_DOC   "Koda om dokument..."
+    IDS_MUI_SB_LEXER_STYLING  "Applicera Lexer-stil..."
 END
 
 STRINGTABLE

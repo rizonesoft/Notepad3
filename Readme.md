@@ -235,7 +235,7 @@ The interval (in milliseconds) to check for external modification of the current
 Specify filters for the open and save dialogs 
 - (Example: `Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*`).
 
-#### `FileLoadWarningMB=64`
+#### `FileLoadWarningMB=4`
 
 The size limit, in megabytes, to display a warning message for large files. 
 - A value of 0 disables the warning.
@@ -355,6 +355,10 @@ See Replacing Windows Notepad for detailed explanations.
 
 This items are managed by Notepad3. 
 - `Menu->View->Position->Sticky Window Position` (Will remember current window position on restart, instead of last closed position (save on exit))
+
+#### `LaunchInstanceWndPosOffset=0`
+
+#### `LaunchInstanceFullVisible=0`
 
 #### `UseOldStyleBraceMatching=0`
 

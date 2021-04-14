@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "Spara kopia...\tCtrl+F6",                         IDM_FILE_SAVECOPY
         MENUITEM "Spara med originaltid och datum\tCtrl+Alt+F6",    IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Skrivskyddad File Attribute",                     IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",                        IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "Skrivskyddat filattribut",                        IDM_FILE_READONLY
+        MENUITEM "&Låsfil (delad läsning)",                         IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Ange lösenfras...",                               IDM_SETPASS
         MENUITEM SEPARATOR
@@ -189,8 +189,8 @@ BEGIN
             MENUITEM "Transponera rader\tAlt+D",                    IDM_EDIT_LINETRANSPOSE
             MENUITEM "Radera rad\tCtrl+Shift+D",                    IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Radera till vänster\tCtrl+Shift+Back",        IDM_EDIT_DELETELINELEFT
-            MENUITEM "Radera till höger\tCtrl+Shift+Del",           IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Radera tecken till vänster\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
+            MENUITEM "Radera tecken till höger\tCtrl+Shift+Del",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Radbryt kolumn...\tCtrl+Shift+W",             IDM_EDIT_COLUMNWRAP
             MENUITEM "Dela rader\tCtrl+I",                          IDM_EDIT_SPLITLINES
@@ -206,7 +206,7 @@ BEGIN
         END
         POPUP "Markering"
         BEGIN
-            MENUITEM "Indrag",                                      IDM_EDIT_INDENT
+            MENUITEM "Skapa indrag",                                IDM_EDIT_INDENT
             MENUITEM "Ta bort indrag",                              IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             MENUITEM "Linjekommentar (växla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
@@ -257,20 +257,20 @@ BEGIN
             MENUITEM "Konvertera indrag till tab\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
             MENUITEM "Ta bort tab för indrag\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Koda URL\tCtrl+Shift+E",                      IDM_EDIT_URLENCODE
-            MENUITEM "Ta bort kodning för URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",                     IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",                     IDM_EDIT_URL2PATH
+            MENUITEM "URL-kodning\tCtrl+Shift+E",                      IDM_EDIT_URLENCODE
+            MENUITEM "Ta bort URL-kodning\tCtrl+Shift+R",           IDM_EDIT_URLDECODE
+            MENUITEM "Filsystemets sökväg till URL",                IDM_EDIT_PATH2URL
+            MENUITEM "URL till filsystemets sökväg",                IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                          IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                              IDM_EDIT_INVERTSLASH
+            MENUITEM "Invertera omvända snedstreck",                IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Invertera snedstreck",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "Tecken till Hex\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
             MENUITEM "Hex till tecken\tCtrl+Alt+C",                 IDM_EDIT_HEX2CHAR
         END
         POPUP "Infoga"
         BEGIN
-            MENUITEM "Ny rad över\tCtrl+Enter",                     CMD_INSERTNEWLINE
+            MENUITEM "Ny rad ovanför\tCtrl+Enter",                     CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "HTML/XML Tag...\tAlt+X",                      IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
@@ -298,7 +298,7 @@ BEGIN
             MENUITEM "Markera till föregående\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "Markera ord eller rader\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Markera alla matchninar\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Markera alla matchningar\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
             MENUITEM "Dela ångra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END

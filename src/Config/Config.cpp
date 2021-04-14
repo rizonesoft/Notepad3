@@ -1213,7 +1213,7 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
                                 Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
 
-    Defaults2.FileLoadWarningMB = 64;
+    Defaults2.FileLoadWarningMB = 4;
     Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
 
     Defaults2.OpacityLevel = 75;

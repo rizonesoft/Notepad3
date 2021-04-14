@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.413.(build_#) (2021-04-13)
+Current BETA/RC Version 5.21.414.(build_#) (2021-04-14)
 ========================================================
 
 --------------------------------------------------------
@@ -59,6 +59,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.###.#]- New size "4MB" for "FileLoadWarningMB=4" (Styling and Syntax Highlighting are switched off).
+[.413.2]- Configurable position offset on launching new instance.
 [.413.1]- Clarify menu item string (only one instance per file).
 [.413.1]- Drag-n-Drop: allow multiple files to drop.
 [.413.1]- Drag-n-Drop: replace current file (Ctrl+ for new instance).
@@ -88,6 +90,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.414.1]- Std windows behavior for cascading new instances (if configured).
+[.413.2]- Sticky Window Flag on launching new instance.
 [.413.1]- Prevent duplicate instance, if setting does not allow.
 [.412.1]- Lazy styling (no need for SCN_STYLENEEDED).
 [.412.1]- Caret visibility on JumpTo() after file (re-)load.

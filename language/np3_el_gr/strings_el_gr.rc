@@ -106,16 +106,16 @@ BEGIN
     IDS_MUI_LOADFILE        "Loading ""%s""..."
     IDS_MUI_SAVEFILE        "Saving ""%s""..."
     IDS_MUI_PRINTFILE       "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
+    IDS_MUI_SAVINGSETTINGS  "Αποθήκευση ρυθμίσεων..."
     IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_ALL      "Όλα τα αρχεία (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Εκτελέσιμα αρχεία (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Όλα τα αρχεία (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Αρχεία διαμόρφωσης (*.ini)|*.ini|Όλα τα αρχεία (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Αρχεία bitmap (*.bmp)|*.bmp|Όλα τα αρχεία (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
     IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
@@ -154,7 +154,7 @@ BEGIN
                             "Can't handle that huge file (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unknown file name extension (%s)!\nLoading data anyway?"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_INDENT_CONSISTENT  "Το αρχείο έχει μια σταθερή εσοχή!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -171,10 +171,10 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
     IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
     IDS_MUI_NOTFOUND        "The specified text was not found."
-    IDS_MUI_REPLCOUNT       "%i occurrences of the specified text have been replaced."
+    IDS_MUI_REPLCOUNT       "%i εμφανίσεις του καθορισμένου κειμένου έχουν αντικατασταθεί."
     IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
     IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
-    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
+    IDS_MUI_READONLY_SAVE   "Το ""%s"" είναι μόνο για ανάγνωση. Να αποθηκευτεί σε διαφορετικό αρχείο;"
     IDS_MUI_FILECHANGENOTIFY
                             "The current file has been modified by an external program. Reload?"
     IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
@@ -205,12 +205,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to:\n""%s""?"
+    IDS_MUI_ASK_SAVE        "Αποθήκευση των αλλαγών σε:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
     IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
     IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
-    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
-    IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
+    IDS_MUI_PRINT_HEADER    "Όνομα αρχείου, Τρέχουσα ημερομηνία και ώρα|Όνομα αρχείου, Τρέχουσα ημερομηνία|Όνομα αρχείου|Να μείνει κενό"
+    IDS_MUI_PRINT_FOOTER    "Αριθμός σελίδας|Να μείνει κενό"
     IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
     IDS_MUI_PRINT_PAGENUM   "Page %i"
 END
@@ -236,7 +236,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από τον geogeo-gr"
+    IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από geogeo-gr"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
@@ -257,7 +257,7 @@ BEGIN
     IDM_THEMES_FILE_ITEM    "&Standard"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Απαλοιφή όλων"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Clear Find History"
     IDS_MUI_CLEAR_REPL_HISTORY
