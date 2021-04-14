@@ -59,7 +59,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- Big file size limit warning to 4MB (FileLoadWarningMB=4) (syntax highlighting is switched off).
+[.###.#]- New size "4MB" for "FileLoadWarningMB=4" (Styling and Syntax Highlighting are switched off).
 [.413.2]- Configurable position offset on launching new instance.
 [.413.1]- Clarify menu item string (only one instance per file).
 [.413.1]- Drag-n-Drop: allow multiple files to drop.
