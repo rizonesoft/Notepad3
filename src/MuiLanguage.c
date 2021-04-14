@@ -236,6 +236,7 @@ static int _CheckAvailableLanguageDLLs()
         if (IsValidLocaleName(MUI_LanguageDLLs[lng].LocaleName)) {
 
 #ifdef _DEBUG
+            WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
             if (ResolveLocaleName(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName, COUNTOF(wchLngLocalName))) {
                 //~StringCchCopy(MUI_LanguageDLLs[lng].LocaleName, COUNTOF(MUI_LanguageDLLs[lng].LocaleName), wchLngLocalName); // put back resolved name
                 assert(IsSameLocale(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName) && "Problem with Locale Name of Language!");
