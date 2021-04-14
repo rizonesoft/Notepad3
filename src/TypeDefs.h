@@ -377,10 +377,7 @@ typedef struct _globals_t
     LPMRULIST pMRUreplace;
     FILEVARS  fvCurFile;
     int       iWrapCol;
-
     int       iAvailLngCount;
-    LANGID    iCurrentLANGID;
-
     bool      CmdLnFlag_PosParam;
     int       CmdLnFlag_AlwaysOnTop;
     int       CmdLnFlag_WindowPos;
@@ -411,6 +408,7 @@ typedef struct _globals_t
 
     FR_STATES FindReplaceMatchFoundState;
 
+    WCHAR CurrentLngLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
     WCHAR LightThemeName[SMALL_BUFFER];
     WCHAR DarkThemeName[SMALL_BUFFER];
 
