@@ -125,8 +125,6 @@ void SetCurrentLanguage(LANGID iLanguageID) {
 //=============================================================================
 
 
-#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-
 extern prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
 extern prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
@@ -182,6 +180,8 @@ int GetMUILanguageIndexByLangID(LANGID iLanguageID)
     return -1;
 }
 
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
 //=============================================================================
 //

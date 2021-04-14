@@ -62,8 +62,7 @@
 #include "resource.h"
 
 void SetCurrentLanguage(LANGID iLanguageID);
-
-#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+int GetMUILanguageIndexByLangID(LANGID iLanguageID);
 
 typedef struct _muilanguage {
     UINT    rid;
@@ -78,7 +77,9 @@ typedef struct _muilanguage {
 
 extern MUILANGUAGE MUI_LanguageDLLs[];
 int MuiLanguages_CountOf();
-int GetMUILanguageIndexByLangID(LANGID iLanguageID);
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+
 bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID);
 LANGID LoadLanguageResources(LPCWSTR localeName);
 void   FreeLanguageResources();
