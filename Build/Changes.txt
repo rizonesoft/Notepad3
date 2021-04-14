@@ -90,6 +90,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.414.2]- Minipath uses NP§ preferred language, if not configured.
+[.414.2]- Compiling mono-language compiler switch version.
+[.414.2]- Some minor bugs around MUI Language selection.
 [.414.1]- Std windows behavior for cascading new instances (if configured).
 [.413.2]- Sticky Window Flag on launching new instance.
 [.413.1]- Prevent duplicate instance, if setting does not allow.
