@@ -227,7 +227,6 @@ int GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName)
 //
 static int _CheckAvailableLanguageDLLs()
 {
-    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
     WCHAR wchRelPath[MAX_PATH];
     WCHAR wchAbsPath[MAX_PATH];
 
