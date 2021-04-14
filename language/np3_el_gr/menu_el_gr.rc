@@ -55,277 +55,277 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "&File"
+    POPUP "&Αρχείο"
     BEGIN
-        MENUITEM "&New\tCtrl+N",                                    IDM_FILE_NEW
-        MENUITEM "&Open...\tCtrl+O",                                IDM_FILE_OPEN
-        MENUITEM "&Save\tCtrl+S",                                   IDM_FILE_SAVE
-        MENUITEM "Save &As...\tF6",                                 IDM_FILE_SAVEAS
-        MENUITEM "Save &Copy...\tCtrl+F6",                          IDM_FILE_SAVECOPY
-        MENUITEM "Save with Original File Date/Ti&me\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Νέ&ο\tCtrl+N",                                          IDM_FILE_NEW
+        MENUITEM "Ά&νοιγμα...\tCtrl+O",                                   IDM_FILE_OPEN
+        MENUITEM "&Αποθήκευση\tCtrl+S",                                   IDM_FILE_SAVE
+        MENUITEM "Απο&θήκευση ως...\tF6",                                 IDM_FILE_SAVEAS
+        MENUITEM "Αποθήκευση αντι&γραφής...\tCtrl+F6",                    IDM_FILE_SAVECOPY
+        MENUITEM "Αποθήκευση με την αρχική &ημερομηνία/ώρα\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Read Only File Attribute",              IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",               IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "&Χαρακτηριστικό αρχείου μόνο για ανάγνωση",             IDM_FILE_READONLY
+        MENUITEM "Κ&λείδωμα αρχείου (κοινόχρηστου)",                      IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "Set Encr&yption Passphrase...",          IDM_SETPASS
+        MENUITEM "Ορισμός φράσης πρόσβασης κρ&υπτογράφησης...",           IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Path to Clipboar&d"
+        POPUP "Διαδρομή στο &πρόχειρο"
         BEGIN
-            MENUITEM "Copy &Filename only\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Directory-Path only",          IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Αντιγραφή μόνο &ονόματος αρχείου\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Αντιγραφή μόνο διαδρομής &καταλόγου",          IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Αντιγραφή &πλήρους διαδρομής\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
         END
-        POPUP "&Launch"
+        POPUP "&Εκκίνηση"
         BEGIN
-            MENUITEM "&Search in Files\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "&Αναζήτηση σε αρχεία\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",                 IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "Επανεκκίνηση με αναβαθμισμένα &δικαιώματα", IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "Execute &Document\tCtrl+L",          IDM_FILE_LAUNCH
-            MENUITEM "&Open with...\tAlt+L",               IDM_FILE_OPENWITH
-            MENUITEM "&Command...\tCtrl+R",                IDM_FILE_RUN
+            MENUITEM "Εκτέλεση ε&γγράφου\tCtrl+L",        IDM_FILE_LAUNCH
+            MENUITEM "Ά&νοιγμα με...\tAlt+L",             IDM_FILE_OPENWITH
+            MENUITEM "&Εντολή...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web Template &1\tCtrl+Shift+1",      CMD_WEBACTION1
-            MENUITEM "Web Template &2\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM "Πρότυπο web &1\tCtrl+Shift+1",      CMD_WEBACTION1
+            MENUITEM "Πρότυπο web &2\tCtrl+Shift+2",      CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Open &File Explorer",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "Άνοιγμα Ε&ξερεύνησης αρχείων",      IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Re&vert from File\tF5",                  IDM_FILE_REVERT
-        POPUP "&Encoding"
+        MENUITEM "Επανα&φορά από αρχείο\tF5",             IDM_FILE_REVERT
+        POPUP "&Κωδικοποίηση"
         BEGIN
-            POPUP "&Revert from File as"
+            POPUP "Επανα&φορά από αρχείο ως"
             BEGIN
-                MENUITEM "&Default (Setting)",             CMD_RECODEDEFAULT
-                MENUITEM "A&NSI\tCtrl+Shift+A",            CMD_RECODEANSI
-                MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
-                MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
+                MENUITEM "&Προεπιλογή (Ρύθμιση)",          CMD_RECODEDEFAULT
+                MENUITEM "&ΑΝSI\tCtrl+Shift+A",            CMD_RECODEANSI
+                MENUITEM "&ΟEM\tCtrl+Shift+O",             CMD_RECODEOEM
+                MENUITEM "G&Β18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
                 MENUITEM SEPARATOR
-                MENUITEM "ASCII as UT&F-8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
-                MENUITEM "Force U&CHARDET Analysis",       CMD_RELOADFORCEDETECTION
-                MENUITEM "&Ignore Encoding Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM "ASCII ως U&ΤF-8\tCtrl+Shift+F8",             CMD_RELOADASCIIASUTF8
+                MENUITEM "Αναγκαστική ανάλυση UCHARDET",               CMD_RELOADFORCEDETECTION
+                MENUITEM "Πα&ράβλεψη ετικετών κωδικοποίησης\tAlt+F8",  CMD_RELOADNOFILEVARS
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF8",         IDM_ENCODING_RECODE
+                MENUITEM "Περισσότερες &κωδικοποιήσεις...\tF8",        IDM_ENCODING_RECODE
             END
-            POPUP "&Set Document as"
+            POPUP "&Ορισμός εγγράφου ως"
             BEGIN
-                MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
-                MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
-                MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
-                MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
-                MENUITEM "UTF-8 with &Signature",          IDM_ENCODING_UTF8SIGN
+                MENUITEM "&ANSI",                      IDM_ENCODING_ANSI
+                MENUITEM "Unic&οde",                   IDM_ENCODING_UNICODE
+                MENUITEM "Unicode &Βig Endian",        IDM_ENCODING_UNICODEREV
+                MENUITEM "U&ΤF-8\tShift+F8",           IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 με ΒΟ&Μ",              IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+                MENUITEM "Περισσότερες &κωδικοποιήσεις...\tF9",  IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Set Encoding &Defaults...",          IDM_ENCODING_SETDEFAULT
+            MENUITEM "Ορισμός &προεπιλογών κωδικοποίησης...",    IDM_ENCODING_SETDEFAULT
         END
-        POPUP "Line Endin&gs"
+        POPUP "Κα&ταλήξεις γραμμών"
         BEGIN
-            MENUITEM "&Windows (CR+LF)",            IDM_LINEENDINGS_CRLF
-            MENUITEM "&Mac (CR)",                   IDM_LINEENDINGS_CR
-            MENUITEM "&Unix (LF)",                  IDM_LINEENDINGS_LF
+            MENUITEM "Wind&οws (CR+LF)",            IDM_LINEENDINGS_CRLF
+            MENUITEM "&Μac (CR)",                   IDM_LINEENDINGS_CR
+            MENUITEM "U&ΝΙΧ (LF)",                  IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "&Default...",                 IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "&Προεπιλογή...",              IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation...",           CMD_CHECK_INDENTATION
+        MENUITEM "Έλεγχος ε&σοχών...",              CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Page Set&up...",                  IDM_FILE_PAGESETUP
-        MENUITEM "&Print...\tCtrl+P",               IDM_FILE_PRINT
+        MENUITEM "&Διαμόρφωση σελίδας...",          IDM_FILE_PAGESETUP
+        MENUITEM "Εκτύπ&ωση...\tCtrl+P",            IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "Proper&ties...",                  IDM_FILE_PROPERTIES
-        MENUITEM "Create Des&ktop Link",            IDM_FILE_CREATELINK
+        MENUITEM "&Ιδιότητες...",                   IDM_FILE_PROPERTIES
+        MENUITEM "Σύνδεσμος στην επιφάνεια εργασίας",   IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "&Browse...\tCtrl+M",              IDM_FILE_BROWSE
-        POPUP "&Favourites"
+        MENUITEM "Εύ&ρεση...\tCtrl+M",              IDM_FILE_BROWSE
+        POPUP "Αγαπη&μένα"
         BEGIN
-            MENUITEM "&Open Favourites...\tAlt+I",    IDM_FILE_OPENFAV
-            MENUITEM "&Add Current File...\tAlt+K",   IDM_FILE_ADDTOFAV
-            MENUITEM "&Manage...\tAlt+F9",            IDM_FILE_MANAGEFAV
+            MENUITEM "Ά&νοιγμα αγαπημένων...\tAlt+I",          IDM_FILE_OPENFAV
+            MENUITEM "&Προσθήκη τρέχοντος αρχείου...\tAlt+K",  IDM_FILE_ADDTOFAV
+            MENUITEM "&Διαχείριση...\tAlt+F9",                 IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Recent (&History)...\tCtrl+Alt+H",  IDM_FILE_RECENT
+        MENUITEM "Πρόσφατα (Ιστορικό)...\tCtrl+Alt+H",  IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "E&xit\tAlt+F4",                     IDM_FILE_EXIT
+        MENUITEM "Έ&ξοδος\tAlt+F4",                     IDM_FILE_EXIT
     END
-    POPUP "&Edit"
+    POPUP "&Επεξεργασία"
     BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               IDM_EDIT_UNDO
-        MENUITEM "&Redo\tCtrl+Y",               IDM_EDIT_REDO
+        MENUITEM "Αναίρε&ση\tCtrl+Z",             IDM_EDIT_UNDO
+        MENUITEM "Επανάλη&ψη ενέργειας\tCtrl+Y",  IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                IDM_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               IDM_EDIT_COPY
-        MENUITEM "Copy &All\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "Cop&y Add\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "&Paste\tCtrl+V",              IDM_EDIT_PASTE
-        MENUITEM "S&wap\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "&Delete\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "Cl&ear Clipboard",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "&Select All\tCtrl+A",         IDM_EDIT_SELECTALL
+        MENUITEM "Α&ποκοπή\tCtrl+X",              IDM_EDIT_CUT
+        MENUITEM "Αντι&γραφή\tCtrl+C",            IDM_EDIT_COPY
+        MENUITEM "Α&ντιγραφή όλων\tAlt+C",        IDM_EDIT_COPYALL
+        MENUITEM "Προσ&θήκη αντιγραφής\tCtrl+E",  IDM_EDIT_COPYADD
+        MENUITEM "Επ&ικόλληση\tCtrl+V",           IDM_EDIT_PASTE
+        MENUITEM "Αν&τιμετάθεση\tCtrl+K",         IDM_EDIT_SWAP
+        MENUITEM "&Διαγραφή\tDel",                IDM_EDIT_CLEAR
+        MENUITEM "&Απαλοιφή πρόχειρου",           IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Επιλ&ογή όλων\tCtrl+A",         IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "W&ords"
+        POPUP "&Λέξεις"
         BEGIN
-            MENUITEM "&Complete Word\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
+            MENUITEM "&Ολοκλήρωση λέξης\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Cursor Word &Left\tCtrl+ ←",          CMD_CTRLLEFT
-            MENUITEM "Cursor Word &Right\tCtrl+ →",         CMD_CTRLRIGHT
-            MENUITEM "&Delete Word Left\tCtrl+Back",        CMD_CTRLBACK
-            MENUITEM "Delete &Word Right\tCtrl+Del",        CMD_CTRLDEL
+            MENUITEM "Δρομέας στη λέξη &αριστερά\tCtrl+ ←",    CMD_CTRLLEFT
+            MENUITEM "Δρομέας στη λέξη &δεξιά\tCtrl+ →",       CMD_CTRLRIGHT
+            MENUITEM "Δια&γραφή λέξης αριστερά\tCtrl+Back",    CMD_CTRLBACK
+            MENUITEM "Διαγ&ραφή λέξης δεξιά\tCtrl+Del",        CMD_CTRLDEL
         END
-        POPUP "&Lines"
+        POPUP "Γ&ραμμές"
         BEGIN
-            MENUITEM "Move &Up\tAlt+ ↑",                    IDM_EDIT_MOVELINEUP
-            MENUITEM "&Move Down\tAlt+ ↓",                  IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Μετακίνηση &πάνω\tAlt+ ↑",                                   IDM_EDIT_MOVELINEUP
+            MENUITEM "Μετακίνηση &κάτω\tAlt+ ↓",                                   IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "Απ&οκοπή επιλογής ή τρέχουσας γραμμής\tCtrl+X",              IDM_EDIT_CUT
+            MENUITEM "Αποκοπή ο&λόκληρης επιλεγμένης γραμμής(ών)\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
+            MENUITEM "Αντι&γραφή επιλογής ή τρέχουσας γραμμής\tCtrl+C",            IDM_EDIT_COPY
+            MENUITEM "Αντιγ&ραφή ολόκληρης επιλεγμένης γραμμής(ών)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Duplicate Line/Selection\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Transpose Lines\tAlt+D",             IDM_EDIT_LINETRANSPOSE
-            MENUITEM "D&elete Line\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
+            MENUITEM "Α&ντίγραφο γραμμής / επιλογής\tCtrl+D",                      IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Αντιμετά&θεση γραμμών\tAlt+D",                               IDM_EDIT_LINETRANSPOSE
+            MENUITEM "&Διαγραφή γραμμής\tCtrl+Shift+D",                            IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Delete Li&ne Left\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT
-            MENUITEM "Delete Line Rig&ht\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Διαγραφή γραμμής &αριστερά\tCtrl+Shift+Back",                IDM_EDIT_DELETELINELEFT
+            MENUITEM "Διαγραφή γραμμής δε&ξιά\tCtrl+Shift+Del",                    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Column &Wrap...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Join Lines\tCtrl+J",                 IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
+            MENUITEM "Αναδίπλ&ωση στήλης...\tCtrl+Shift+W",                        IDM_EDIT_COLUMNWRAP
+            MENUITEM "Δια&χωρισμός γραμμών\tCtrl+I",                               IDM_EDIT_SPLITLINES
+            MENUITEM "&Σύνδεση γραμμών\tCtrl+J",                                   IDM_EDIT_JOINLINES
+            MENUITEM "Σ&υγχώνευση γραμμών\tCtrl+Alt+J",                            IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Διατήρηση παραγρά&φων\tCtrl+Shift+J",                        IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Mer&ge Empty Lines\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Merge Blan&k Lines\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Empty Lines\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Remove &Blank Lines\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Συγχών&ευση κενών γραμμών\tAlt+Y",                           IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Συγχώνευσ&η γραμμών με διαστήματα\tCtrl+Alt+Y",              IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "Κα&τάργηση κενών γραμμών\tAlt+R",                            IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Κατάργηση γρα&μμών με διαστήματα\tCtrl+Alt+B",               IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Κατάργηση δ&ιπλότυπων γραμμών\tCtrl+Alt+D",                  IDM_EDIT_REMOVEDUPLICATELINES
         END
-        POPUP "Selectio&n"
+        POPUP "&Επιλογή"
         BEGIN
-            MENUITEM "&Indent",                              IDM_EDIT_INDENT
-            MENUITEM "&Unindent",                            IDM_EDIT_UNINDENT
+            MENUITEM "&Εσοχή",                                          IDM_EDIT_INDENT
+            MENUITEM "&Κατάργηση εσοχής",                               IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Line &Comment (Toggle)\tCtrl+Q",       IDM_EDIT_LINECOMMENT
-            MENUITEM "Line Comment Bl&ock Edit\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            MENUITEM "&Σχόλιο γραμμής (εναλλαγή)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
+            MENUITEM "Επεξεργάσιμο &τμήμα σχολίου γραμμής\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             MENUITEM SEPARATOR
-            MENUITEM "St&ream Comment\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Σχόλιο &πολλαπλών γραμμών\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            POPUP "&Enclose Selection"
+            POPUP "Εισα&γωγή επιλογής σε"
             BEGIN
-                MENUITEM "&Single Quotes\tCtrl+1",        CMD_STRINGIFY
-                MENUITEM "&Double Quotes\tCtrl+2",        CMD_STRINGIFY2
+                MENUITEM "&Μονά εισαγωγικά\tCtrl+1",      CMD_STRINGIFY
+                MENUITEM "&Διπλά εισαγωγικά\tCtrl+2",     CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                   CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                   CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",            CMD_EMBRACE4
+                MENUITEM "&Βαρείες\tCtrl+6",              CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&With...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Προσαρμογή...\tAlt+Q",         IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicate Selection/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Α&ντίγραφο γραμμής / επιλογής\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Pad With Blanks\tAlt+B",           IDM_EDIT_PADWITHSPACES
-            MENUITEM "Strip &First Character\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Strip &Last Character\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Strip &Trailing Blanks\tAlt+W",     IDM_EDIT_TRIMLINES
-            MENUITEM "Compress &Blanks\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Σ&υμπλήρωση με κενά\tAlt+B",                IDM_EDIT_PADWITHSPACES
+            MENUITEM "Αφαίρεση π&ρώτου χαρακτήρα\tAlt+Z",         IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Αφαίρεση τε&λευταίου χαρακτήρα\tAlt+U",     IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Αφαίρεση κενών στο τέλ&ος\tAlt+W",          IDM_EDIT_TRIMLINES
+            MENUITEM "Συ&μπίεση κενών\tCtrl+Alt+P",               IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Modify Lines...\tAlt+M",           IDM_EDIT_MODIFYLINES
-            MENUITEM "&Align Lines...\tAlt+J",            IDM_EDIT_ALIGN
-            MENUITEM "&Sort Lines...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM "Τροποποίηση γρ&αμμών...\tAlt+M",            IDM_EDIT_MODIFYLINES
+            MENUITEM "Στοί&χιση γραμμών...\tAlt+J",               IDM_EDIT_ALIGN
+            MENUITEM "Τα&ξινόμηση γραμμών...\tAlt+O",             IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "Μετάβασ&η στην αρχή της επιλογής\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Μετά&βαση στο τέλος της επιλογής\tCtrl+.",  CMD_JUMP2SELEND
         END
-        POPUP "Con&vert"
+        POPUP "&Μετατροπή"
         BEGIN
-            MENUITEM "&Uppercase\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Lowercase\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "&Κεφαλαία\tCtrl+Shift+U",                     IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "&Πεζά\tCtrl+U",                               IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "&Invert Case\tCtrl+Alt+U",          IDM_EDIT_INVERTCASE
-            MENUITEM "&Title Case\tCtrl+Alt+I",           IDM_EDIT_TITLECASE
-            MENUITEM "&Sentence Case\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
+            MENUITEM "&Αντιστροφή πεζών-κεφαλαίων\tCtrl+Alt+U",     IDM_EDIT_INVERTCASE
+            MENUITEM "Κεφαλαίο σε κά&θε λέξη\tCtrl+Alt+I",          IDM_EDIT_TITLECASE
+            MENUITEM "Κεφαλαία-πεζά π&ρότασης\tCtrl+Alt+O",         IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "T&abify Selection\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntabify Selection\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "Μετατροπή &διαστημάτων επιλογής σε στηλοθέτες\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
+            MENUITEM "Μετατροπή &στηλοθετών επιλογής σε διαστήματα\tCtrl+Shift+S",  IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Ta&bify Indent\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Untabi&fy Indent\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
+            MENUITEM "Μετατροπή διαστημάτων εσο&χής σε στηλοθέτες\tCtrl+Alt+T",     IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Μετατροπή στηλοθετών εσ&οχής σε διαστήματα\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "URL &Encode\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",         IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",           IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",           IDM_EDIT_URL2PATH
+            MENUITEM "Κ&ωδικοποίηση URL\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
+            MENUITEM "&Αποκωδικοποίηση URL\tCtrl+Shift+R",      IDM_EDIT_URLDECODE
+            MENUITEM "Διαδρομή συστήματος αρχείων σε URL",      IDM_EDIT_PATH2URL
+            MENUITEM "URL σε διαδρομή συστήματος αρχείων",      IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                    IDM_EDIT_INVERTSLASH
+            MENUITEM "Αντιστροφή ανάστροφων καθέτων",           IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Αντιστροφή καθέτων",                      IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "Char To &Hex\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
-            MENUITEM "Hex To &Char\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
+            MENUITEM "Χαρακ&τήρες σε δεκαεξαδικά\tCtrl+Alt+X",  IDM_EDIT_CHAR2HEX
+            MENUITEM "Δεκαε&ξαδικοί σε χαρακτήρες\tCtrl+Alt+C", IDM_EDIT_HEX2CHAR
         END
-        POPUP "&Insert"
+        POPUP "Εισαγ&ωγή"
         BEGIN
-            MENUITEM "&New Line Above\tCtrl+Enter",           CMD_INSERTNEWLINE
+            MENUITEM "&Νέα γραμμή επάνω\tCtrl+Enter",                   CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
-            MENUITEM "HT&ML/XML Tag...\tAlt+X",               IDM_EDIT_INSERT_TAG
+            MENUITEM "Ετικέτα HT&ΜL/XML...\tAlt+X",                     IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Encoding Identifier\tCtrl+F8",         IDM_EDIT_INSERT_ENCODING
+            MENUITEM "Αναγνωριστικό &κωδικοποίησης\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "Time/Date (&Short Form)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Time/Date (&Long Form)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Current &Timestamp",                    CMD_INSERT_TIMESTAMP
-            MENUITEM "&Update Timestamps\tShift+F5",          CMD_UPDATE_TIMESTAMPS
+            MENUITEM "Ώρα / Ημερομηνία (&Σύντομη μορφή)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Ώρα / Ημερομηνία (&Πλήρης μορφή)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "Τρέχουσα &χρονοσήμανση",                          CMD_INSERT_TIMESTAMP
+            MENUITEM "&Ενημέρωση χρονοσημάνσεων\tShift+F5",             CMD_UPDATE_TIMESTAMPS
         END
-        POPUP "&Miscellaneous"
+        POPUP "&Διάφορα"
         BEGIN
-            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+            MENUITEM "Αντιγραφή GU&ΙD στο πρόχειρο\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "&Escape C Chars\tCtrl+Alt+E",                          IDM_EDIT_ESCAPECCHARS
+            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",                        IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "&Increase Number\tCtrl+Alt+NK+",             CMD_INCREASENUM
-            MENUITEM "&Decrease Number\tCtrl+Alt+NK-",             CMD_DECREASENUM
+            MENUITEM "Αύ&ξηση αριθμού\tCtrl+Alt+NK+",                        CMD_INCREASENUM
+            MENUITEM "&Μείωση αριθμού\tCtrl+Alt+NK-",                        CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Find Matching Brace\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Select To &Matching Brace\tCtrl+Shift+B",    IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Εύρεση αντίστοιχου αγκίστρου\tCtrl+B",                IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Επιλογή μέχρι το &αντίστοιχο άγκιστρο\tCtrl+Shift+B",  IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Select To &Next\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
-            MENUITEM "Select To &Previous\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
+            MENUITEM "Επιλογή μέχρι το επό&μενο\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
+            MENUITEM "Επιλογή μέχρι το π&ροηγούμενο\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",            IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Επιλογή &λέξης ή γραμμών\tCtrl+Spc",                   IDM_EDIT_SELECTWORD
+            MENUITEM "Π&ολλαπλή επιλογή όλων των συμφωνιών\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
-        END
-        MENUITEM SEPARATOR
-        POPUP "Boo&kmarks"
-        BEGIN
-            MENUITEM "&Toggle\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
-            MENUITEM SEPARATOR
-            MENUITEM "Goto &Next\tF2",              BME_EDIT_BOOKMARKNEXT
-            MENUITEM "Goto &Previous\tShift+F2",    BME_EDIT_BOOKMARKPREV
-            MENUITEM SEPARATOR
-            MENUITEM "&Clear All\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
+            MENUITEM "&Νέα λειτουργία αναίρεσης σε κάθε αλλαγή γραμμής",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
-        POPUP "Sea&rch"
+        POPUP "Σελιδοδεί&κτες"
         BEGIN
-            MENUITEM "&Find...\tCtrl+F",                        IDM_EDIT_FIND
-            MENUITEM "S&ave Find Text\tAlt+F3",                 IDM_EDIT_SAVEFIND
-            MENUITEM "Find &Next\tF3",                          IDM_EDIT_FINDNEXT
-            MENUITEM "Find &Previous\tShift+F3",                IDM_EDIT_FINDPREV
-            MENUITEM "Find Ne&xt Selected\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "Find Pre&vious Selected\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "&Replace...\tCtrl+H",                     IDM_EDIT_REPLACE
-            MENUITEM "R&eplace Next\tF4",                       IDM_EDIT_REPLACENEXT
-            MENUITEM "&Goto...\tCtrl+G",                        IDM_EDIT_GOTOLINE
+            MENUITEM "Ενα&λλαγή\tCtrl+F2",                   BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "&Search in Files\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
+            MENUITEM "Μετάβαση στο &επόμενο\tF2",            BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Μετάβαση στο &προηγούμενο\tShift+F2",  BME_EDIT_BOOKMARKPREV
+            MENUITEM SEPARATOR
+            MENUITEM "&Απαλοιφή όλων\tAlt+F2",               BME_EDIT_BOOKMARKCLEAR
+        END
+        MENUITEM SEPARATOR
+        POPUP "Ανα&ζήτηση"
+        BEGIN
+            MENUITEM "&Εύρεση...\tCtrl+F",                        IDM_EDIT_FIND
+            MENUITEM "Απο&θήκευση κειμένου αναζήτησης\tAlt+F3",                 IDM_EDIT_SAVEFIND
+            MENUITEM "Εύρε&ση επόμενου\tF3",                          IDM_EDIT_FINDNEXT
+            MENUITEM "Εύρεση &προηγούμενου\tShift+F3",                IDM_EDIT_FINDPREV
+            MENUITEM "Εύρεση επό&μενου επιλεγμένου\tCtrl+F3",            CMD_FINDNEXTSEL
+            MENUITEM "Εύρεση π&ροηγούμενου επιλεγμένου\tCtrl+Shift+F3",  CMD_FINDPREVSEL
+            MENUITEM "&Αντικατάσταση...\tCtrl+H",                     IDM_EDIT_REPLACE
+            MENUITEM "Αντι&κατάσταση επόμενου\tF4",                       IDM_EDIT_REPLACENEXT
+            MENUITEM "Μετά&βαση...\tCtrl+G",                        IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "Ανα&ζήτηση σε αρχεία\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&View"
