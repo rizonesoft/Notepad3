@@ -38,11 +38,7 @@
 
 
 //=============================================================================
-//
-//  ErrorMessage()
-//
-//  L"Title\nMessage Text"
-//
+
 extern HWND    hwndMain;
 extern HICON   g_hDlgIconSmall;
 extern LANGID  g_iUsedLANGID;

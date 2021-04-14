@@ -916,7 +916,6 @@ void LoadFlags()
 
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
         const WCHAR* const PrefLngLocName = L"PreferredLanguageLocaleName";
-
         if (!IniSectionGetString(Settings_Section2, PrefLngLocName, L"", g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) {
             // try to fetch Locale Name from Notepad3.ini
             IniFileGetString(g_wchNP3IniFile, Settings_Section2, PrefLngLocName, L"", g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
@@ -1213,20 +1212,6 @@ void SaveSettings(BOOL bSaveSettingsNow)
 
         // cleanup
         IniSectionDelete(Settings_Section, L"WriteTest", FALSE);
-
-#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        // ===  prevents "Preferred Language not available" next time  ===
-
-        const WCHAR* const Section2_Section = L"Settings2";
-        const WCHAR* const PrefLngLocName = L"PreferredLanguageLocaleName";
-        if (!IniSectionGetString(Section2_Section, PrefLngLocName, L"", wchTmp, COUNTOF(wchTmp))) {
-            // try fetch Locale Name from Notepad3.ini
-            IniFileGetString(g_wchNP3IniFile, Section2_Section, PrefLngLocName, L"", wchTmp, COUNTOF(wchTmp));
-            if (!StrEqual(wchTmp, g_tchPrefLngLocName)) {
-                IniSectionSetString(Section2_Section, PrefLngLocName, g_tchPrefLngLocName);
-            }
-        }
-#endif
 
         // ===  SaveSettingsNow(): query current Window Dimensions  ===
         if (bSaveSettingsNow) {

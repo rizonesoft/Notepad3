@@ -238,8 +238,13 @@ static HMODULE _LoadLanguageResources(const WCHAR* localeName, LANGID const lang
     if (!hLangResourceContainer)
     {
         ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, localeName);
-        // prevent (if saved) Error Dialog on next start
         LangIDToLocaleName(MUI_BASE_LNG_ID, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+
+        // ===  prevents "Preferred Language not available" next time  ===
+        if (StrIsNotEmpty(g_wchIniFile)) {
+            IniFileSetString(g_wchIniFile, L"Settings2", L"PreferredLanguageLocaleName", g_tchPrefLngLocName);
+        }
+
         return LangResourceInternalFallback();
     }
 
@@ -337,7 +342,6 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
 
     if (res == 0) { // No preferred language defined or retrievable, try to get User UI Language
 
-        //~GetUserDefaultLocaleName(&g_tchPrefLngLocName[0], COUNTOF(g_tchPrefLngLocName));
         ULONG numLngs = 0;
         ULONG cchLngsBuffer = 0;
         BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
