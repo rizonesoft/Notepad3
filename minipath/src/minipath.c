@@ -37,16 +37,9 @@ SETTINGS_T Settings;
 SETTINGS_T Defaults;
 SETTINGS2_T Settings2;
 
-WCHAR     g_wchIniFile[MAX_PATH];
-WCHAR     g_wchIniFile2[MAX_PATH];
-WCHAR     g_wchNP3IniFile[MAX_PATH];
-
 //HICON     g_hDlgIcon128 = NULL;
 HICON     g_hDlgIconBig = NULL;
 HICON     g_hDlgIconSmall = NULL;
-
-WCHAR     g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
-LANGID    g_iPrefLANGID;
 
 HBRUSH    g_hbrDarkModeBkgBrush = NULL;
 HBRUSH    g_hbrDarkModeBtnFcBrush = NULL;
@@ -120,15 +113,18 @@ WCHAR szDDETopic[256] = L"";
 
 BOOL bHasQuickview = FALSE;
 
-UINT16    g_uWinVer;
+UINT16 g_uWinVer;
 
 HINSTANCE            g_hInstance = NULL;
 HMODULE              g_hLngResContainer = NULL;
 
-WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
-LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-// 'en-US' internal default
-static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE el-GR en-GB es-419 es-ES fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW";
+LANGID               g_iUsedLANGID = MUI_BASE_LNG_ID;
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1] = { L'\0' };
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE el-GR en-GB en-US es-419 es-ES fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW";
+#endif
+
 
 
 //=============================================================================
@@ -183,17 +179,31 @@ static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
     return rtnVal;
 }
 
+// fallback to buildin MUI_BASE_LNG_ID
+inline HMODULE LangResourceInternalFallback() {
+    g_iUsedLANGID = MUI_BASE_LNG_ID;
+    SetThreadUILanguage(MUI_BASE_LNG_ID);
+    InitMUILanguage(MUI_BASE_LNG_ID);
+    return g_hInstance;
+}
 
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 //=============================================================================
 //
 //  _LoadLanguageResources
 //
-//
-static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
+
+inline int LangIDToLocaleName(const LANGID lngID, LPWSTR lpName_out, size_t cchName) {
+    LCID const lcid = MAKELCID(lngID, SORT_DEFAULT);
+    return LCIDToLocaleName(lcid, lpName_out, (int)cchName, 0);
+}
+
+static HMODULE _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
 {
-    BOOL bLngAvailable = (StrStrIW(g_tchAvailableLanguages, localeName) != NULL);
-    if (!bLngAvailable) {
-        return NULL;
+    BOOL const bLngAvailable = (StrStrIW(g_tchAvailableLanguages, localeName) != NULL);
+
+    if (!bLngAvailable || (MUI_BASE_LNG_ID == langID)) {
+        return LangResourceInternalFallback();
     }
 
     WCHAR tchAvailLngs[512] = { L'\0' };
@@ -201,7 +211,7 @@ static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID
     WCHAR tchUserLangMultiStrg[512] = { L'\0' };
     if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, 512)) {
         GetLastErrorToMsgBox(L"Trying to load Language resource!", ERROR_MUI_INVALID_LOCALE_NAME);
-        return NULL;
+        return LangResourceInternalFallback();
     }
 
     // set the appropriate fallback list
@@ -209,7 +219,7 @@ static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID
     // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
     if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
         GetLastErrorToMsgBox(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
-        return NULL;
+        return LangResourceInternalFallback();
     }
     SetThreadUILanguage(langID);
 
@@ -225,18 +235,22 @@ static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID
     // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
     HMODULE const hLangResourceContainer = LoadMUILibraryW(L"lng/mplng.dll", MUI_LANGUAGE_NAME, langID);
+    if (!hLangResourceContainer)
+    {
+        ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, localeName);
+        // prevent (if saved) Error Dialog on next start
+        LangIDToLocaleName(MUI_BASE_LNG_ID, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+        return LangResourceInternalFallback();
+    }
 
     // MUI Language for common controls
     InitMUILanguage(langID);
-
-    //if (!hLangResourceContainer)
-    //{
-    //  GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
-    //  return NULL;
-    //}
-
+    g_iUsedLANGID = langID;
     return hLangResourceContainer;
+
+
 }
+#endif
 
 
 //=============================================================================
@@ -303,61 +317,58 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
     // ----------------------------------------------------
     // MultiLingual
     //
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
     int res = 0;
-    if (lstrlenW(g_tchPrefLngLocName) > 0) {
+    LANGID iPrefLANGID = MUI_BASE_LNG_ID;
+
+    if (StrIsNotEmpty(g_tchPrefLngLocName)) {
         WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
         res = ResolveLocaleName(g_tchPrefLngLocName, wchLngLocalName, LOCALE_NAME_MAX_LENGTH);
         if (res > 0) {
             StringCchCopy(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), wchLngLocalName); // put back resolved name
+            // get LANGID
+            DWORD value = MUI_BASE_LNG_ID;
+            res = GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR));
+            if (res > 0) {
+                iPrefLANGID = (LANGID)value;
+            }
         }
-        // get LANGID
-        g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-        res = GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&g_iPrefLANGID, sizeof(LANGID));
     }
 
     if (res == 0) { // No preferred language defined or retrievable, try to get User UI Language
+
         //~GetUserDefaultLocaleName(&g_tchPrefLngLocName[0], COUNTOF(g_tchPrefLngLocName));
         ULONG numLngs = 0;
-        DWORD cchLngsBuffer = 0;
+        ULONG cchLngsBuffer = 0;
         BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
         if (hr) {
-            WCHAR* pwszLngsBuffer = LocalAlloc(LPTR, (cchLngsBuffer + 2) * sizeof(WCHAR));
+            WCHAR* const pwszLngsBuffer = LocalAlloc(LPTR, (cchLngsBuffer + 2) * sizeof(WCHAR));
             if (pwszLngsBuffer) {
                 hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer);
                 if (hr && (numLngs > 0)) {
-                    // get the first
+                    // get the first one
                     StringCchCopy(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), pwszLngsBuffer);
-                    g_iPrefLANGID = LANGIDFROMLCID(LocaleNameToLCID(g_tchPrefLngLocName, 0));
+                    iPrefLANGID = LANGIDFROMLCID(LocaleNameToLCID(g_tchPrefLngLocName, 0));
                     res = 1;
                 }
                 LocalFree(pwszLngsBuffer);
             }
         }
         if (res == 0) { // last try
-            g_iPrefLANGID = GetUserDefaultUILanguage();
-            LCID const lcid = MAKELCID(g_iPrefLANGID, SORT_DEFAULT);
-            res = LCIDToLocaleName(lcid, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), 0);
+            iPrefLANGID = GetUserDefaultUILanguage();
+            res = LangIDToLocaleName(iPrefLANGID, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
         }
     }
 
-#ifdef HAVE_DYN_LOAD_LIBS_MUI_LNGS
-    bool bPrefLngNotAvail = false;
-    g_hLngResContainer = _LoadLanguageResources(g_tchPrefLngLocName, g_iPrefLANGID);
-    if (!g_hLngResContainer) { // fallback en-US (1033)
-        g_hLngResContainer = g_hInstance;
-        g_iPrefLANGID = MUI_BASE_LNG_ID;
-        bPrefLngNotAvail = true;
-    }
+    g_hLngResContainer = _LoadLanguageResources(g_tchPrefLngLocName, iPrefLANGID);   
+
 #else
-    g_hLngResContainer = g_hInstance;
-    g_iPrefLANGID = MUI_BASE_LNG_ID;
+
+    g_hLngResContainer = LangResourceInternalFallback();
+
 #endif
 
-    SetThreadUILanguage(g_iPrefLANGID);
-    InitMUILanguage(g_iPrefLANGID);
-
     // ----------------------------------------------------
-
 
     if (!InitApplication(hInstance)) {
         return FALSE;
@@ -370,12 +381,6 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
 
     hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
 
-#ifdef HAVE_DYN_LOAD_LIBS_MUI_LNGS
-    if (bPrefLngNotAvail) {
-        ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
-    }
-#endif
-
     while (GetMessage(&msg,NULL,0,0)) {
         if (!TranslateAccelerator(hwnd,hAcc,&msg)) {
             TranslateMessage(&msg);
@@ -383,6 +388,9 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
         }
     }
 
+    if (g_hLngResContainer != g_hInstance) {
+        FreeMUILibrary(g_hLngResContainer);
+    }
     OleUninitialize();
 
     return(int)(msg.wParam);

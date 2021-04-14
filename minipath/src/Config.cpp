@@ -31,8 +31,10 @@ extern "C" WCHAR     g_wchIniFile[MAX_PATH];
 extern "C" WCHAR     g_wchIniFile2[MAX_PATH];
 extern "C" WCHAR     g_wchNP3IniFile[MAX_PATH];
 
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 extern "C" WCHAR     g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
-extern "C" LANGID    g_iPrefLANGID;
+#endif
+extern "C" LANGID    g_iUsedLANGID;
 
 
 //=============================================================================
@@ -912,12 +914,14 @@ void LoadFlags()
 
         const WCHAR* const Settings_Section2 = L"Settings2";
 
-        if (!IniSectionGetString(Settings_Section2, L"PreferredLanguageLocaleName", L"",
-                                 g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) {
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+        const WCHAR* const PrefLngLocName = L"PreferredLanguageLocaleName";
+
+        if (!IniSectionGetString(Settings_Section2, PrefLngLocName, L"", g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) {
             // try to fetch Locale Name from Notepad3.ini
-            IniFileGetString(g_wchNP3IniFile, L"Settings2", L"PreferredLanguageLocaleName", L"",
-                             g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+            IniFileGetString(g_wchNP3IniFile, Settings_Section2, PrefLngLocName, L"", g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
         }
+#endif
 
         if (!flagNoReuseWindow) {
 
@@ -1134,7 +1138,7 @@ void LoadSettings()
 
 void SaveSettings(BOOL bSaveSettingsNow)
 {
-    WCHAR wchTmp[MAX_PATH];
+    WCHAR wchTmp[MAX_PATH] = { L'\0' };
 
     if (StrIsEmpty(g_wchIniFile)) {
         return;
@@ -1210,10 +1214,21 @@ void SaveSettings(BOOL bSaveSettingsNow)
         // cleanup
         IniSectionDelete(Settings_Section, L"WriteTest", FALSE);
 
-        /*
-          SaveSettingsNow(): query Window Dimensions
-        */
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+        // ===  prevents "Preferred Language not available" next time  ===
 
+        const WCHAR* const Section2_Section = L"Settings2";
+        const WCHAR* const PrefLngLocName = L"PreferredLanguageLocaleName";
+        if (!IniSectionGetString(Section2_Section, PrefLngLocName, L"", wchTmp, COUNTOF(wchTmp))) {
+            // try fetch Locale Name from Notepad3.ini
+            IniFileGetString(g_wchNP3IniFile, Section2_Section, PrefLngLocName, L"", wchTmp, COUNTOF(wchTmp));
+            if (!StrEqual(wchTmp, g_tchPrefLngLocName)) {
+                IniSectionSetString(Section2_Section, PrefLngLocName, g_tchPrefLngLocName);
+            }
+        }
+#endif
+
+        // ===  SaveSettingsNow(): query current Window Dimensions  ===
         if (bSaveSettingsNow) {
             WINDOWPLACEMENT wndpl;
             ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));

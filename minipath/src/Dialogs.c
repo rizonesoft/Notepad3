@@ -45,7 +45,7 @@
 //
 extern HWND    hwndMain;
 extern HICON   g_hDlgIconSmall;
-extern LANGID  g_iPrefLANGID;
+extern LANGID  g_iUsedLANGID;
 
 
 //=============================================================================
@@ -2775,7 +2775,7 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...)
     HWND focus = GetFocus();
     HWND hwnd = focus ? focus : hwndMain;
 
-    return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLANGID);
+    return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iUsedLANGID);
 }
 
 
@@ -2797,7 +2797,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dwErrID,
-        g_iPrefLANGID,
+        g_iUsedLANGID,
         (LPTSTR)&lpMsgBuf,
         0, NULL);
 
@@ -2815,7 +2815,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
             HWND focus = GetFocus();
             HWND hwnd = focus ? focus : hwndMain;
 
-            MessageBoxEx(hwnd, lpDisplayBuf, L"MiniPath - ERROR", MB_ICONERROR, g_iPrefLANGID);
+            MessageBoxEx(hwnd, lpDisplayBuf, L"MiniPath - ERROR", MB_ICONERROR, g_iUsedLANGID);
 
             LocalFree(lpDisplayBuf);
         }

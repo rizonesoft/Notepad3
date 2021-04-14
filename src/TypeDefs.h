@@ -346,8 +346,6 @@ typedef struct _globals_t
     HINSTANCE hLngResContainer;
     DWORD     WindowsBuildNumber;
     bool      bCanSaveIniFile;
-    int       iAvailLngCount;
-    bool      bPrefLngNotAvail;
     HWND      hwndMain;
     HANDLE    hndlProcessHeap;
     HWND      hwndEdit;
@@ -374,12 +372,14 @@ typedef struct _globals_t
     HWND      hwndDlgCustomizeSchemes;
     int       iDefaultCharSet;
     cpi_enc_t DOSEncoding;
-    LANGID    iPrefLANGID;
     LPMRULIST pFileMRU;
     LPMRULIST pMRUfind;
     LPMRULIST pMRUreplace;
     FILEVARS  fvCurFile;
     int       iWrapCol;
+
+    int       iAvailLngCount;
+    LANGID    iCurrentLANGID;
 
     bool      CmdLnFlag_PosParam;
     int       CmdLnFlag_AlwaysOnTop;
