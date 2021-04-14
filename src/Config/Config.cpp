@@ -1087,9 +1087,9 @@ void LoadSettings()
     // --------------------------------------------------------------------------
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        LANGID lngID = MUI_BASE_LNG_ID;
+
         Defaults2.PreferredLanguageLocaleName[0] = L'\0';
-        GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
+        GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName));
 
         IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
                                     Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));

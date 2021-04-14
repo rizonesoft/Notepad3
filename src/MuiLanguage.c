@@ -29,33 +29,58 @@
 //=============================================================================
 
 
+//=============================================================================
+//
+//  GetMUILanguageIndexByLocaleName
+//  deprecated LANGID (!!!)
+//
+LANGID GetLangIdByLocaleName(LPCWSTR pLocaleName) {
+
+    if (StrIsNotEmpty(pLocaleName)) {
+        WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
+        int res = ResolveLocaleName(pLocaleName, wchLngLocalName, COUNTOF(wchLngLocalName));
+        if (res > 0) {
+            // get LANGID
+            DWORD value = 0;
+            res = GetLocaleInfoEx(wchLngLocalName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR));
+            if (res > 0) {
+                return (LANGID)value;
+            }
+        }
+    }
+    return 1033; // (!) en-US, not MUI_BASE_LNG_ID
+}
+//=============================================================================
+//=============================================================================
+
+
 grepWinLng_t grepWinLangResName[] = {
-    { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), L".\\lng\\gwLng\\English (United States) [en-US].lang" },
-    { MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang" },
-    { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang" },
-    { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang" },
-    { MAKELANGID(LANG_GREEK, SUBLANG_GREEK_GREECE), L".\\lng\\gwLng\\Ελληνικά (Ελλάδα) [el-GR].lang" },
-    { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang" },
-    { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_LATIN_AMERICA), L".\\lng\\gwLng\\Español (América Latina) [es-419].lang" },
-    { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), L".\\lng\\gwLng\\Español (España) [es-ES].lang" },
-    { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), L".\\lng\\gwLng\\Français (France) [fr-FR].lang" },
-    { MAKELANGID(LANG_HINDI, SUBLANG_HINDI_INDIA), L".\\lng\\gwLng\\हिन्दी (भारत) [hi-IN].lang" },
-    { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang" },
-    { MAKELANGID(LANG_INDONESIAN, SUBLANG_INDONESIAN_INDONESIA), L".\\lng\\gwLng\\Bahasa Indonesia (Indonesia) [id-ID].lang" },
-    { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang" },
-    { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang" },
-    { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang" },
-    { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang" },
-    { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), L".\\lng\\gwLng\\Polski (Polska) [pl-PL].lang" },
-    { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), L".\\lng\\gwLng\\Português Brasileiro (Brasil) [pt-BR].lang" },
-    { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE), L".\\lng\\gwLng\\Português (Portugal) [pt-PT].lang" },
-    { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang" },
-    { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang" },
-    { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang" },
-    { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang" },
-    { MAKELANGID(LANG_VIETNAMESE, SUBLANG_VIETNAMESE_VIETNAM), L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang" },
-    { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), L".\\lng\\gwLng\\简体中文 （中国） [zh-CN].lang" },
-    { MAKELANGID(LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL), L".\\lng\\gwLng\\繁體中文 （台灣） [zh-TW].lang" }
+    { L"en-US",  L".\\lng\\gwLng\\English (United States) [en-US].lang" },
+    { L"af-ZA",  L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang" },
+    { L"be-BY",  L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang" },
+    { L"de-DE",  L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang" },
+    { L"el-GR",  L".\\lng\\gwLng\\Ελληνικά (Ελλάδα) [el-GR].lang" },
+    { L"en-GB",  L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang" },
+    { L"es-419", L".\\lng\\gwLng\\Español (América Latina) [es-419].lang" },
+    { L"es-ES",  L".\\lng\\gwLng\\Español (España) [es-ES].lang" },
+    { L"fr-FR",  L".\\lng\\gwLng\\Français (France) [fr-FR].lang" },
+    { L"hi-IN",  L".\\lng\\gwLng\\हिन्दी (भारत) [hi-IN].lang" },
+    { L"hu-HU",  L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang" },
+    { L"id-ID",  L".\\lng\\gwLng\\Bahasa Indonesia (Indonesia) [id-ID].lang" },
+    { L"it-IT",  L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang" },
+    { L"ja-JP",  L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang" },
+    { L"ko-KR",  L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang" },
+    { L"nl-NL",  L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang" },
+    { L"pl-PL",  L".\\lng\\gwLng\\Polski (Polska) [pl-PL].lang" },
+    { L"pt-BR",  L".\\lng\\gwLng\\Português Brasileiro (Brasil) [pt-BR].lang" },
+    { L"pt-PT",  L".\\lng\\gwLng\\Português (Portugal) [pt-PT].lang" },
+    { L"ru-RU",  L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang" },
+    { L"sk-SK",  L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang" },
+    { L"sv-SE",  L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang" },
+    { L"tr-TR",  L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang" },
+    { L"vi-VN",  L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang" },
+    { L"zh-CN",  L".\\lng\\gwLng\\简体中文 （中国） [zh-CN].lang" },
+    { L"zh-TW",  L".\\lng\\gwLng\\繁體中文 （台灣） [zh-TW].lang" }
 };
 
 int grepWinLang_CountOf() {
@@ -86,28 +111,40 @@ static void SetMuiLocaleAll(LPCWSTR pszLocaleStr) {
 
 //=============================================================================
 //
-//  SetCurrentLanguage
+//  SetMuiLanguage
 //
-void SetCurrentLanguage(LANGID iLanguageID) {
+void SetMuiLanguage(const int muiLngIndex) {
 
-    int const langIdx = GetMUILanguageIndexByLangID(iLanguageID);
+    const WCHAR *pLocaleName = MUI_BASE_LNG_ID;
+    if ((muiLngIndex >= 0) || (muiLngIndex < MuiLanguages_CountOf())) {
+        pLocaleName = MUI_LanguageDLLs[muiLngIndex].LocaleName;
+    }
 
-    assert((langIdx >= 0) && "Faild to get LangID!");
+    if (!IsSameLocale(pLocaleName, Globals.CurrentLngLocaleName)) {
 
-    if (iLanguageID != Globals.iCurrentLANGID) {
+        // == MUI_LanguageDLLs[langIdx].LocaleName
+        StringCchCopy(Globals.CurrentLngLocaleName, COUNTOF(Globals.CurrentLngLocaleName), pLocaleName);
 
-        Globals.iCurrentLANGID = iLanguageID; // == MUI_LanguageDLLs[langIdx].LangId
+        SetMuiLocaleAll(pLocaleName);
 
-        const WCHAR *const szLocaleName = MUI_LanguageDLLs[langIdx].szLocaleName;
+        WCHAR wchLanguagesBuffer[LOCALE_NAME_MAX_LENGTH * 2 + 3];
+        ZeroMemory(wchLanguagesBuffer, (LOCALE_NAME_MAX_LENGTH * 2 + 3) * sizeof(WCHAR));
+        StringCchCopy(wchLanguagesBuffer, LOCALE_NAME_MAX_LENGTH, pLocaleName);
+        size_t const next = StringCchLen(pLocaleName, 0) + 1;
+        StringCchCopy(&(wchLanguagesBuffer[next]), LOCALE_NAME_MAX_LENGTH, MUI_BASE_LNG_ID);
+        ULONG cnt = 2;
+        SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, wchLanguagesBuffer, &cnt);
 
-        SetThreadUILanguage(iLanguageID);
-        InitMUILanguage(iLanguageID); // MUI Language for common controls
-        SetMuiLocaleAll(szLocaleName);
+        // deprecated:
+        LANGID const langID = GetLangIdByLocaleName(pLocaleName);
+        SetThreadUILanguage(langID);
+        InitMUILanguage(langID); // MUI Language for common controls
 
         const WCHAR *const SettingName = L"PreferredLanguageLocaleName";
 
-        if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0) {
-            StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
+        if (!IsSameLocale(Settings2.PreferredLanguageLocaleName, pLocaleName)) {
+
+            StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), pLocaleName);
 
             if (Globals.bCanSaveIniFile) {
                 if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
@@ -130,33 +167,33 @@ extern prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
 
 MUILANGUAGE MUI_LanguageDLLs[] = {
-    { IDS_MUI_LANG_EN_US, L"en-US", L"English (United States)\t\t\t[%s]",          MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
+    { IDS_MUI_LANG_EN_US,  L"en-US",   L"English (United States)\t\t\t[%s]",       true, false },
     // ----------------------------
-    { IDS_MUI_LANG_AF_ZA, L"af-ZA", L"Afrikaans (Suid-Afrika)\t\t\t[%s]",          MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), false, false },
-    { IDS_MUI_LANG_BE_BY, L"be-BY", L"Беларуская (Беларусь)\t\t\t[%s]",            MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), false, false },
-    { IDS_MUI_LANG_DE_DE, L"de-DE", L"Deutsch (Deutschland)\t\t\t[%s]",            MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
-    { IDS_MUI_LANG_EL_GR, L"el-GR", L"Ελληνικά (Ελλάδα)\t\t\t[%s]",                MAKELANGID(LANG_GREEK, SUBLANG_GREEK_GREECE), false, false },
-    { IDS_MUI_LANG_EN_GB, L"en-GB", L"English (United Kingdom)\t\t\t[%s]",         MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
-    { IDS_MUI_LANG_ES_419, L"es-419", L"Español (América Latina)\t\t\t[%s]",       MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_LATIN_AMERICA), false, false },
-    { IDS_MUI_LANG_ES_ES, L"es-ES", L"Español (España)\t\t\t[%s]",                 MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
-    { IDS_MUI_LANG_FR_FR, L"fr-FR", L"Français (France)\t\t\t[%s]",                MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
-    { IDS_MUI_LANG_HI_IN, L"hi-IN", L"हिन्दी (भारत)\t\t\t[%s]",                       MAKELANGID(LANG_HINDI, SUBLANG_HINDI_INDIA), false, false },
-    { IDS_MUI_LANG_HU_HU, L"hu-HU", L"Magyar (Magyarország)\t\t\t[%s]",            MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
-    { IDS_MUI_LANG_ID_ID, L"id-ID", L"Bahasa Indonesia (Indonesia)\t\t\t[%s]",     MAKELANGID(LANG_INDONESIAN, SUBLANG_INDONESIAN_INDONESIA), false, false },
-    { IDS_MUI_LANG_IT_IT, L"it-IT", L"Italiano (Italia)\t\t\t[%s]",                MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
-    { IDS_MUI_LANG_JP_JP, L"ja-JP", L"日本語 （日本）\t\t\t[%s]",                   MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
-    { IDS_MUI_LANG_KO_KR, L"ko-KR", L"한국어 (대한민국)\t\t\t[%s]",                 MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
-    { IDS_MUI_LANG_NL_NL, L"nl-NL", L"Nederlands (Nederland)\t\t\t[%s]",           MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
-    { IDS_MUI_LANG_PL_PL, L"pl-PL", L"Polski (Polska)\t\t\t[%s]",                  MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), false, false },
-    { IDS_MUI_LANG_PT_BR, L"pt-BR", L"Português Brasileiro (Brasil)\t\t\t[%s]",    MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
-    { IDS_MUI_LANG_PT_PT, L"pt-PT", L"Português (Portugal)\t\t\t[%s]",             MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE), false, false },
-    { IDS_MUI_LANG_RU_RU, L"ru-RU", L"Русский (Pоссия)\t\t\t[%s]",                 MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
-    { IDS_MUI_LANG_SK_SK, L"sk-SK", L"Slovenčina (Slovensko)\t\t\t[%s]",           MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), false, false },
-    { IDS_MUI_LANG_SV_SE, L"sv-SE", L"Svenska (Sverige)\t\t\t[%s]",                MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), false, false },
-    { IDS_MUI_LANG_TR_TR, L"tr-TR", L"Türkçe (Türkiye)\t\t\t[%s]",                 MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), false, false },
-    { IDS_MUI_LANG_VI_VN, L"vi-VN", L"Tiếng Việt (Việt Nam)\t\t\t[%s]",            MAKELANGID(LANG_VIETNAMESE, SUBLANG_VIETNAMESE_VIETNAM), false, false },
-    { IDS_MUI_LANG_ZH_CN, L"zh-CN", L"简体中文 （中国）\t\t\t[%s]",                 MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false},
-    { IDS_MUI_LANG_ZH_TW, L"zh-TW", L"繁體中文 （台灣）\t\t\t[%s]",                 MAKELANGID(LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL), false, false}
+    { IDS_MUI_LANG_AF_ZA,  L"af-ZA",   L"Afrikaans (Suid-Afrika)\t\t\t[%s]",       false, false },
+    { IDS_MUI_LANG_BE_BY,  L"be-BY",   L"Беларуская (Беларусь)\t\t\t[%s]",         false, false },
+    { IDS_MUI_LANG_DE_DE,  L"de-DE",   L"Deutsch (Deutschland)\t\t\t[%s]",         false, false },
+    { IDS_MUI_LANG_EL_GR,  L"el-GR",   L"Ελληνικά (Ελλάδα)\t\t\t[%s]",             false, false },
+    { IDS_MUI_LANG_EN_GB,  L"en-GB",   L"English (United Kingdom)\t\t\t[%s]",      false, false },
+    { IDS_MUI_LANG_ES_419, L"es-419",  L"Español (América Latina)\t\t\t[%s]",      false, false },
+    { IDS_MUI_LANG_ES_ES,  L"es-ES",   L"Español (España)\t\t\t[%s]",              false, false },
+    { IDS_MUI_LANG_FR_FR,  L"fr-FR",   L"Français (France)\t\t\t[%s]",             false, false },
+    { IDS_MUI_LANG_HI_IN,  L"hi-IN",   L"हिन्दी (भारत)\t\t\t[%s]",                    false, false },
+    { IDS_MUI_LANG_HU_HU,  L"hu-HU",   L"Magyar (Magyarország)\t\t\t[%s]",         false, false },
+    { IDS_MUI_LANG_ID_ID,  L"id-ID",   L"Bahasa Indonesia (Indonesia)\t\t\t[%s]",  false, false },
+    { IDS_MUI_LANG_IT_IT,  L"it-IT",   L"Italiano (Italia)\t\t\t[%s]",             false, false },
+    { IDS_MUI_LANG_JP_JP,  L"ja-JP",   L"日本語 （日本）\t\t\t[%s]",                false, false },
+    { IDS_MUI_LANG_KO_KR,  L"ko-KR",   L"한국어 (대한민국)\t\t\t[%s]",              false, false },
+    { IDS_MUI_LANG_NL_NL,  L"nl-NL",   L"Nederlands (Nederland)\t\t\t[%s]",        false, false },
+    { IDS_MUI_LANG_PL_PL,  L"pl-PL",   L"Polski (Polska)\t\t\t[%s]",               false, false },
+    { IDS_MUI_LANG_PT_BR,  L"pt-BR",   L"Português Brasileiro (Brasil)\t\t\t[%s]", false, false },
+    { IDS_MUI_LANG_PT_PT,  L"pt-PT",   L"Português (Portugal)\t\t\t[%s]",          false, false },
+    { IDS_MUI_LANG_RU_RU,  L"ru-RU",   L"Русский (Pоссия)\t\t\t[%s]",              false, false },
+    { IDS_MUI_LANG_SK_SK,  L"sk-SK",   L"Slovenčina (Slovensko)\t\t\t[%s]",        false, false },
+    { IDS_MUI_LANG_SV_SE,  L"sv-SE",   L"Svenska (Sverige)\t\t\t[%s]",             false, false },
+    { IDS_MUI_LANG_TR_TR,  L"tr-TR",   L"Türkçe (Türkiye)\t\t\t[%s]",              false, false },
+    { IDS_MUI_LANG_VI_VN,  L"vi-VN",   L"Tiếng Việt (Việt Nam)\t\t\t[%s]",         false, false },
+    { IDS_MUI_LANG_ZH_CN,  L"zh-CN",   L"简体中文 （中国）\t\t\t[%s]",              false, false },
+    { IDS_MUI_LANG_ZH_TW,  L"zh-TW",   L"繁體中文 （台灣）\t\t\t[%s]",              false, false }
 };
 
 //NUM_OF_MUI_LANGUAGES
@@ -166,14 +203,15 @@ int MuiLanguages_CountOf()
 };
 
 
+
 //=============================================================================
 //
-//  GetMUILanguageIndexByLangID
+//  GetMUILanguageIndexByLocaleName
 //
-int GetMUILanguageIndexByLangID(LANGID iLanguageID)
+int GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName)
 {
     for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-        if (MUI_LanguageDLLs[lng].LangId == iLanguageID) {
+        if (StringCchCompareXI(pLocaleName, MUI_LanguageDLLs[lng].LocaleName) == 0) {
             return lng;
         }
     }
@@ -187,30 +225,25 @@ int GetMUILanguageIndexByLangID(LANGID iLanguageID)
 //
 //  CheckAvailableLanguages
 //
-//
 static int _CheckAvailableLanguageDLLs()
 {
+    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
     WCHAR wchRelPath[MAX_PATH];
     WCHAR wchAbsPath[MAX_PATH];
 
     int count = 1;
     for (int lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
 
-        if (IsValidLocaleName(MUI_LanguageDLLs[lng].szLocaleName)) {
+        if (IsValidLocaleName(MUI_LanguageDLLs[lng].LocaleName)) {
 
-            //WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
-            //if (ResolveLocaleName(MUI_LanguageDLLs[i].szLocaleName, wchLngLocalName, LOCALE_NAME_MAX_LENGTH)) {
-            //  StringCchCopy(MUI_LanguageDLLs[i].szLocaleName, COUNTOF(MUI_LanguageDLLs[i].szLocaleName), wchLngLocalName); // put back resolved name
-            //}
-
-            // get LANGID
-            DWORD value = MUI_BASE_LNG_ID;
-            if (GetLocaleInfoEx(MUI_LanguageDLLs[lng].szLocaleName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR)) > 0) {
-                MUI_LanguageDLLs[lng].LangId = (LANGID)value;
+#ifdef _DEBUG
+            if (ResolveLocaleName(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName, COUNTOF(wchLngLocalName))) {
+                //~StringCchCopy(MUI_LanguageDLLs[lng].LocaleName, COUNTOF(MUI_LanguageDLLs[lng].LocaleName), wchLngLocalName); // put back resolved name
+                assert(IsSameLocale(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName) && "Problem with Locale Name of Language!");
             }
-
+#endif
             // check for DLL
-            StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].szLocaleName);
+            StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
             PathAbsoluteFromApp(wchRelPath, wchAbsPath, COUNTOF(wchAbsPath), false);
             bool const bAvail = PathIsExistingFile(wchAbsPath);
             MUI_LanguageDLLs[lng].bHasDLL = bAvail;
@@ -263,52 +296,38 @@ static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t ln
 //=============================================================================
 //
 //  GetUserPreferredLanguage
+//  ~~~ GetUserDefaultLocaleName(pszPrefLocaleName_out, int cchBuffer);
 //
-bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID)
+bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer)
 {
+    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
+
+    ULONG numLngs = 0;
+    DWORD cchLngsBuffer = 0;
+    BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
     int res = 0;
-    LANGID lngID = *pLangID;
-    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH+1];
-
-    if (StrIsNotEmpty(pszPrefLocaleName)) {
-        res = ResolveLocaleName(pszPrefLocaleName, wchLngLocalName, COUNTOF(wchLngLocalName));
-        if (res > 0) {
-            // get LANGID
-            DWORD value = MUI_BASE_LNG_ID;
-            res = GetLocaleInfoEx(wchLngLocalName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR));
-            if (res > 0) {
-                lngID = (LANGID)value;
+    if (hr) {
+        WCHAR *pwszLngsBuffer = AllocMem((cchLngsBuffer + 2) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (pwszLngsBuffer) {
+            hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer);
+            if (hr && (numLngs > 0)) {
+                // get the first
+                StringCchCopy(wchLngLocalName, COUNTOF(wchLngLocalName), pwszLngsBuffer);
+                res = 1;
             }
+            FreeMem(pwszLngsBuffer);
         }
     }
-
-    if (res == 0) { // No preferred language defined or retrievable, try to get User UI Language
-        //~GetUserDefaultLocaleName(pszPrefLocaleName, cchBuffer);
-        ULONG numLngs = 0;
-        DWORD cchLngsBuffer = 0;
-        BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
-        if (hr) {
-            WCHAR* pwszLngsBuffer = AllocMem((cchLngsBuffer + 2) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-            if (pwszLngsBuffer) {
-                hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer);
-                if (hr && (numLngs > 0)) {
-                    // get the first
-                    StringCchCopy(wchLngLocalName, COUNTOF(wchLngLocalName), pwszLngsBuffer);
-                    // TODO: deprecated
-                    lngID = LANGIDFROMLCID(LocaleNameToLCID(wchLngLocalName, 0));
-                    res = 1;
-                }
-                FreeMem(pwszLngsBuffer);
-            }
-        }
-        if (res == 0) { // last try (deprecated)
-            lngID = GetUserDefaultUILanguage();
-            res = LangIDToLocaleName(lngID, wchLngLocalName, COUNTOF(wchLngLocalName));
-        }
+    // deprecated:
+    //~if (res == 0) { // last try
+    //~    res = LangIDToLocaleName(GetUserDefaultUILanguage(), wchLngLocalName, COUNTOF(wchLngLocalName));
+    //~}
+    if (res == 0) { // last try @@@ debug it:
+        res = GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, (LPWSTR)wchLngLocalName, COUNTOF(wchLngLocalName));
     }
+
     if (res != 0) {
-        *pLangID = lngID;
-        StringCchCopy(pszPrefLocaleName, cchBuffer, wchLngLocalName);
+        StringCchCopy(pszPrefLocaleName_out, cchBuffer, wchLngLocalName);
         return true;
     }
     return false;
@@ -318,13 +337,13 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 //=============================================================================
 //
 //  LoadLanguageResources
+//  return MUI_LanguageDLLs index
 //
-//
-LANGID LoadLanguageResources(LPCWSTR localeName)
-{
+int LoadLanguageResources(LPCWSTR pLocaleName) {
+
     FreeLanguageResources(); // reset
 
-    int const iInternalLngIndex = max_i(0, GetMUILanguageIndexByLangID(MUI_BASE_LNG_ID));
+    int const iInternalLngIndex = max_i(0, GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID));
 
     // 1st check language resources
     Globals.iAvailLngCount = _CheckAvailableLanguageDLLs();
@@ -333,16 +352,16 @@ LANGID LoadLanguageResources(LPCWSTR localeName)
     int iLngIndex = -1;
     WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
     for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-        if (StringCchCompareXIW(MUI_LanguageDLLs[lng].szLocaleName, localeName) == 0) {
+        if (StringCchCompareXIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
             if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
-                StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].szLocaleName);
+                StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].LocaleName);
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L";");
             }
             iLngIndex = lng;
             break;
         }
     }
-    StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[iInternalLngIndex].szLocaleName); // en-US fallback
+    StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[iInternalLngIndex].LocaleName); // en-US fallback
 
     // NOTES:
     // an application developer that makes the assumption the fallback list provided by the
@@ -379,9 +398,9 @@ LANGID LoadLanguageResources(LPCWSTR localeName)
 
     } else if ((iLngIndex >= 0) && MUI_LanguageDLLs[iLngIndex].bHasDLL) {
 
-        Globals.hLngResContainer = LoadMUILibrary(L"lng/np3lng.dll", 
-                                                  MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT,
-                                                  MUI_LanguageDLLs[iLngIndex].LangId);
+        LANGID const langID = GetLangIdByLocaleName(MUI_LanguageDLLs[iLngIndex].LocaleName);
+        Globals.hLngResContainer = LoadMUILibrary(L"lng/np3lng.dll", MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT, langID);
+
         if (Globals.hLngResContainer) {
             MUI_LanguageDLLs[iLngIndex].bIsActive = true;
             MUI_LanguageDLLs[iInternalLngIndex].bIsActive = false;
@@ -398,10 +417,10 @@ LANGID LoadLanguageResources(LPCWSTR localeName)
         iLngIndex = iInternalLngIndex;
 
         const WCHAR *const suprMsg = L"MsgPrefLanguageNotAvailable";
-        InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, localeName);
+        InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, pLocaleName);
         int const noMsg = IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
         if (noMsg && Globals.bCanSaveIniFile) {
-            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[iInternalLngIndex].szLocaleName);
+            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[iInternalLngIndex].LocaleName);
         }
     }
 
@@ -426,7 +445,7 @@ LANGID LoadLanguageResources(LPCWSTR localeName)
     IniFileGetString(Paths.IniFile, StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
     ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
 
-    return MUI_LanguageDLLs[iLngIndex].LangId;
+    return iLngIndex;
 }
 
 
@@ -437,7 +456,7 @@ LANGID LoadLanguageResources(LPCWSTR localeName)
 //
 void FreeLanguageResources() {
     CloseNonModalDialogs();
-    int const iInternalLngIndex = GetMUILanguageIndexByLangID(MUI_BASE_LNG_ID);
+    int const iInternalLngIndex = GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID);
     if (Globals.hLngResContainer != Globals.hInstance) {
         FreeMUILibrary(Globals.hLngResContainer);
         Globals.hLngResContainer = Globals.hInstance;
@@ -473,8 +492,8 @@ bool InsertLanguageMenu(HMENU hMenuBar) {
     WCHAR wchMenuItemStrg[196] = { L'\0' };
     for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
         if (MUI_LanguageDLLs[lng].bHasDLL) {
-            StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].szMenuItem);
-            StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
+            StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].MenuItem);
+            StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].LocaleName);
             AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
         }
     }
@@ -509,10 +528,8 @@ void DynamicLanguageMenuCmd(int cmd) {
         DestroyMenu(Globals.hMainMenu);
 
         // desired language
-        LANGID const desiredLngID = MUI_LanguageDLLs[iLngIdx].LangId;
-        LPCWSTR desiredLocaleName = MUI_LanguageDLLs[iLngIdx].szLocaleName;
-        LoadLanguageResources(desiredLocaleName);
-        SetCurrentLanguage(desiredLngID);
+        LPCWSTR desiredLocaleName = MUI_LanguageDLLs[iLngIdx].LocaleName;
+        SetMuiLanguage(LoadLanguageResources(desiredLocaleName));
 
         Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
         if (!Globals.hMainMenu) {

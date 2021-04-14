@@ -61,15 +61,22 @@
 
 #include "resource.h"
 
-void SetCurrentLanguage(LANGID iLanguageID);
-int GetMUILanguageIndexByLangID(LANGID iLanguageID);
+// ============================================================================
+// deprecated LCID/LANGID (!)  try to eliminate in future
+// ----------------------------------------------------------------------------
+LANGID GetLangIdByLocaleName(LPCWSTR pLocaleName);
+
+inline int LangIDToLocaleName(const LANGID lngID, LPWSTR lpName_out, size_t cchName) {
+    LCID const lcid = MAKELCID(lngID, SORT_DEFAULT);
+    return LCIDToLocaleName(lcid, lpName_out, (int)cchName, 0);
+}
+// ============================================================================
+
 
 typedef struct _muilanguage {
     UINT    rid;
-    const WCHAR* szLocaleName;
-    const WCHAR* szMenuItem;
-    // !!! WARNING:  LCID/LANGID is DEPRECATED
-    LANGID  LangId;
+    const WCHAR* const LocaleName;
+    const WCHAR* const MenuItem;
     bool    bHasDLL;
     bool    bIsActive;
 
@@ -78,19 +85,28 @@ typedef struct _muilanguage {
 extern MUILANGUAGE MUI_LanguageDLLs[];
 int MuiLanguages_CountOf();
 
+int GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName);
+void SetMuiLanguage(const int muiLngIndex);
+
+inline bool IsSameLocale(const WCHAR *ln1, const WCHAR *ln2) {
+    return (StringCchCompareXI(ln1, ln2) == 0);
+}
+
+// ============================================================================
+
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
-bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID);
-LANGID LoadLanguageResources(LPCWSTR localeName);
-void   FreeLanguageResources();
+bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer);
+int  LoadLanguageResources(LPCWSTR localeName);
+void FreeLanguageResources();
 bool InsertLanguageMenu(HMENU hMenuBar);
 void DynamicLanguageMenuCmd(int cmd);
 
 #endif // HAVE_DYN_LOAD_LIBS_MUI_LNGS
 
 typedef struct _gwlang_ini {
-    const LANGID lngid;
-    const WCHAR *const filename;
+    const WCHAR* const localename;
+    const WCHAR* const filename;
 } grepWinLng_t;
 
 extern grepWinLng_t grepWinLangResName[];
@@ -105,12 +121,6 @@ int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
 #define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
 #define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
 #define GetLngStringW2MB(id,pb,cb) LoadLngStringW2MB((id),(pb),(cb))
-
-// TODO: deprecated
-inline int LangIDToLocaleName(const LANGID lngID, LPWSTR lpName_out, size_t cchName) {
-    LCID const lcid = MAKELCID(lngID, SORT_DEFAULT);
-    return LCIDToLocaleName(lcid, lpName_out, (int)cchName, 0);
-}
 
 
 #endif //_NP3_MUI_LANGUAGE_H_

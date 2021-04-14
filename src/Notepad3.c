@@ -646,7 +646,6 @@ static void _InitGlobals()
     Globals.pMRUfind = NULL;
     Globals.pMRUreplace = NULL;
     Globals.iAvailLngCount = 1;
-    Globals.iCurrentLANGID = WORD_MAX;
     Globals.iWrapCol = 80;
 
     Globals.CmdLnFlag_PosParam = false;
@@ -876,11 +875,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // ----------------------------------------------------
     // MultiLingual
     //
-    #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        SetCurrentLanguage(LoadLanguageResources(Settings2.PreferredLanguageLocaleName));
-    #else
-        SetCurrentLanguage(MUI_BASE_LNG_ID);
-    #endif
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+    SetMuiLanguage(LoadLanguageResources(Settings2.PreferredLanguageLocaleName));
+#else
+    SetMuiLanguage(GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID));
+#endif
 
     // ----------------------------------------------------
 

@@ -145,7 +145,7 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
     HWND const hwnd  = focus ? focus : Globals.hwndMain;
     s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
-    return MessageBoxEx(hwnd, szText, _W(SAPPNAME), uType, Globals.iCurrentLANGID);
+    return MessageBoxEx(hwnd, szText, _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
 }
 
 
@@ -167,7 +167,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dwErrID,
-        Globals.iCurrentLANGID,
+        GetLangIdByLocaleName(Globals.CurrentLngLocaleName),
         (LPWSTR)&lpMsgBuf,
         0, NULL);
 
@@ -186,7 +186,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
             s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
             UINT uType = MB_ICONERROR | MB_TOPMOST | (Settings.DialogsLayoutRTL ? MB_RTLREADING : 0);
-            MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", uType, Globals.iCurrentLANGID);
+            MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
 
             FreeMem(lpDisplayBuf);
         }
@@ -455,7 +455,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
                 FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                 NULL,
                 Globals.dwLastError,
-                Globals.iCurrentLANGID,
+                GetLangIdByLocaleName(Globals.CurrentLngLocaleName),
                 (LPWSTR)&lpMsgBuf, 0,
                 NULL);
 
@@ -722,7 +722,7 @@ void DisplayCmdLineHelp(HWND hwnd)
     mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
     mbp.dwContextHelpId = 0;
     mbp.lpfnMsgBoxCallback = NULL;
-    mbp.dwLanguageId = Globals.iCurrentLANGID;
+    mbp.dwLanguageId = GetLangIdByLocaleName(Globals.CurrentLngLocaleName);
 
     hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
@@ -1283,7 +1283,7 @@ CASE_WM_CTLCOLOR_SET:
             #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
             for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
                 if (MUI_LanguageDLLs[lng].bIsActive) {
-                    StringCchCopy(wchBuf, COUNTOF(wchBuf), MUI_LanguageDLLs[lng].szLocaleName);
+                    StringCchCopy(wchBuf, COUNTOF(wchBuf), MUI_LanguageDLLs[lng].LocaleName);
                     break;
                 }
             }
@@ -4718,7 +4718,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             // get grepWin language
             int lngIdx = -1;
             for (int i = 0; i < grepWinLang_CountOf(); ++i) {
-                if (grepWinLangResName[i].lngid == Globals.iCurrentLANGID) {
+                if (IsSameLocale(grepWinLangResName[i].localename, Globals.CurrentLngLocaleName)) {
                     lngIdx = i;
                     break;
                 }
@@ -5714,7 +5714,9 @@ bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
 
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-    bool bSucceed = GetLocaleDefaultUIFont(Globals.iCurrentLANGID, lpFaceName, wSize);
+    // deprecated:
+    LANGID const langID = GetLangIdByLocaleName(Globals.CurrentLngLocaleName);
+    bool bSucceed = GetLocaleDefaultUIFont(langID, lpFaceName, wSize);
 
     if (!bSucceed) {
         if (IsAppThemed()) {
