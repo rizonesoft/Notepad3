@@ -88,7 +88,7 @@ typedef struct _wi
 
 typedef enum { SCR_NORMAL = 0, SCR_FULL_SCREEN = 1 } SCREEN_MODE;
 
-inline void RectFromWinInfo(const WININFO* const pWinInfo, LPRECT pRect)
+__forceinline void RectFromWinInfo(const WININFO* const pWinInfo, LPRECT pRect)
 {
     SetRect(pRect, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy);
 }

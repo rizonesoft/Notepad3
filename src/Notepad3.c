@@ -1129,7 +1129,7 @@ WININFO GetWinInfoByFlag(const int flagsPos)
         GetMonitorInfoFromRect(&rc, &mi);
         WININFO wi = winfo;
         wi.cx = wi.cy = 16; // really small
-        FitIntoMonitorGeometry(&(mi.rcWork), &wi, SCR_NORMAL);
+        FitIntoMonitorGeometry(&(mi.rcWork), &wi, SCR_NORMAL, false);
         winfo.x = wi.x;
         winfo.y = wi.y;
     }
@@ -1332,7 +1332,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // get monitor coordinates from g_IniWinInfo
     WININFO srcninfo = g_IniWinInfo;
-    WinInfoToScreen(&srcninfo);
+    WinInfoToScreenCoord(&srcninfo);
 
     Globals.hwndMain = CreateWindowEx(
                            0,
@@ -10812,6 +10812,7 @@ bool RelaunchMultiInst()
 {
 
     if (Flags.MultiFileArg && (s_cFileList > 1)) {
+
         LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
         size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
         LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
