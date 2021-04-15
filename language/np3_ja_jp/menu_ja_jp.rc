@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "白紙の新規ウィンドウ(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "インスタンスを複製(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "管理者権限で再起動(&R)",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -453,7 +453,7 @@ BEGIN
         MENUITEM "予約語を自動補完(&K)",                          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "ファイルごとに単一インスタンス(&F)",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
         MENUITEM "メッセージの効果音をミュート(&M)",                  IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&E)"
