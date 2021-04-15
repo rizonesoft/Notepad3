@@ -645,7 +645,7 @@ static void _InitGlobals()
     Globals.pFileMRU = NULL;
     Globals.pMRUfind = NULL;
     Globals.pMRUreplace = NULL;
-    Globals.iAvailLngCount = 1;
+    Globals.uAvailLngCount = 1;
     Globals.iWrapCol = 80;
 
     Globals.CmdLnFlag_PosParam = false;
@@ -4019,9 +4019,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-            //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
-            CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
+        for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+            //EnableCmd(hmenu, GetMUILngResourceID(lng), ExistMUILanguageDLL(lng));
+            CheckCmd(hmenu, GetMUILngResourceID(lng), IsMUILanguageActive(lng));
         }
     #endif
 
@@ -4039,7 +4039,7 @@ static   WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
 
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    int const iLoWParam = LOWORD(wParam);
+    unsigned const iLoWParam = (unsigned)LOWORD(wParam);
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
     bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));

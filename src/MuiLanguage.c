@@ -83,9 +83,50 @@ grepWinLng_t grepWinLangResName[] = {
     { L"zh-TW",  L".\\lng\\gwLng\\繁體中文 （台灣） [zh-TW].lang" }
 };
 
-int grepWinLang_CountOf() {
+unsigned grepWinLang_CountOf() {
     return COUNTOF(grepWinLangResName);
 };
+
+
+//=============================================================================
+//
+//  _LngStrToMultiLngStr
+//
+//
+static bool _LngStrToMultiLngStr(LPWSTR const pLngStr, LPWSTR pLngMultiStr, size_t cchLngMultiStrCnt) {
+
+    bool rtnVal = true;
+
+    size_t strLen = StringCchLenW(pLngStr, 0);
+
+    if ((strLen > 0) && pLngMultiStr && (cchLngMultiStrCnt > 0)) {
+
+        WCHAR *lngMultiStrPtr = pLngMultiStr;
+        WCHAR *last = pLngStr + (Has_UTF16_LE_BOM((char *)pLngStr, (strLen * sizeof(WCHAR))) ? 1 : 0);
+        while (last && rtnVal) {
+            // make sure you validate the user input
+            WCHAR *next = StrNextTok(last, L",; :");
+            if (next) {
+                *next = L'\0';
+            }
+            strLen = StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
+            if (strLen && IsValidLocaleName(last)) {
+                lngMultiStrPtr[0] = L'\0';
+                rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (cchLngMultiStrCnt - (lngMultiStrPtr - pLngMultiStr)), last));
+                lngMultiStrPtr += strLen + 1;
+            }
+            last = (next ? next + 1 : next);
+        }
+        // make sure there is a double null term for the multi-string
+        if (rtnVal && (cchLngMultiStrCnt - (lngMultiStrPtr - pLngMultiStr))) {
+            lngMultiStrPtr[0] = L'\0';
+        } else { // fail and guard anyone whom might use the multi-string
+            lngMultiStrPtr[0] = L'\0';
+            lngMultiStrPtr[1] = L'\0';
+        }
+    }
+    return rtnVal;
+}
 
 
 //=============================================================================
@@ -113,10 +154,10 @@ static void SetMuiLocaleAll(LPCWSTR pszLocaleStr) {
 //
 //  SetMuiLanguage
 //
-void SetMuiLanguage(const int muiLngIndex) {
+void SetMuiLanguage(const unsigned muiLngIndex) {
 
     const WCHAR *pLocaleName = MUI_BASE_LNG_ID;
-    if ((muiLngIndex >= 0) || (muiLngIndex < MuiLanguages_CountOf())) {
+    if (muiLngIndex < MuiLanguages_CountOf()) {
         pLocaleName = MUI_LanguageDLLs[muiLngIndex].LocaleName;
     }
 
@@ -127,11 +168,10 @@ void SetMuiLanguage(const int muiLngIndex) {
 
         SetMuiLocaleAll(pLocaleName);
 
-        WCHAR wchLanguagesBuffer[LOCALE_NAME_MAX_LENGTH * 2 + 3];
-        ZeroMemory(wchLanguagesBuffer, (LOCALE_NAME_MAX_LENGTH * 2 + 3) * sizeof(WCHAR));
-        StringCchCopy(wchLanguagesBuffer, LOCALE_NAME_MAX_LENGTH, pLocaleName);
-        size_t const next = StringCchLen(pLocaleName, 0) + 1;
-        StringCchCopy(&(wchLanguagesBuffer[next]), LOCALE_NAME_MAX_LENGTH, MUI_BASE_LNG_ID);
+        WCHAR wchLanguagesList[(LOCALE_NAME_MAX_LENGTH + 1) * 2 + 4] = { L'\0' };
+        WCHAR wchLanguagesBuffer[(LOCALE_NAME_MAX_LENGTH + 1) * 2 + 4] = { L'\0' };
+        StringCchPrintf(wchLanguagesList, COUNTOF(wchLanguagesList), L"%s;%s", pLocaleName, MUI_BASE_LNG_ID);
+        _LngStrToMultiLngStr(wchLanguagesList, wchLanguagesBuffer, COUNTOF(wchLanguagesBuffer));
         ULONG cnt = 2;
         SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, wchLanguagesBuffer, &cnt);
 
@@ -197,9 +237,9 @@ MUILANGUAGE MUI_LanguageDLLs[] = {
 };
 
 //NUM_OF_MUI_LANGUAGES
-int MuiLanguages_CountOf()
+unsigned MuiLanguages_CountOf()
 {
-    return COUNTOF(MUI_LanguageDLLs);
+    return (unsigned)COUNTOF(MUI_LanguageDLLs);
 };
 
 
@@ -208,14 +248,14 @@ int MuiLanguages_CountOf()
 //
 //  GetMUILanguageIndexByLocaleName
 //
-int GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName)
-{
-    for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+unsigned GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName) {
+
+    for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
         if (StringCchCompareXI(pLocaleName, MUI_LanguageDLLs[lng].LocaleName) == 0) {
             return lng;
         }
     }
-    return -1;
+    return 0;
 }
 
 
@@ -225,13 +265,14 @@ int GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName)
 //
 //  CheckAvailableLanguages
 //
-static int _CheckAvailableLanguageDLLs()
+static unsigned _CheckAvailableLanguageDLLs()
 {
     WCHAR wchRelPath[MAX_PATH];
     WCHAR wchAbsPath[MAX_PATH];
 
-    int count = 1;
-    for (int lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
+    unsigned count = 1; // internal instance always available
+
+    for (unsigned lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
 
         if (IsValidLocaleName(MUI_LanguageDLLs[lng].LocaleName)) {
 
@@ -256,81 +297,35 @@ static int _CheckAvailableLanguageDLLs()
 
 //=============================================================================
 //
-//  _LngStrToMultiLngStr
-//
-//
-static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
-{
-    bool rtnVal = true;
-
-    size_t strLen = StringCchLenW(pLngStr, 0);
-
-    if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
-        WCHAR* lngMultiStrPtr = pLngMultiStr;
-        WCHAR* last = pLngStr + (Has_UTF16_LE_BOM((char*)pLngStr, (strLen * sizeof(WCHAR))) ? 1 : 0);
-        while (last && rtnVal) {
-            // make sure you validate the user input
-            WCHAR* next = StrNextTok(last, L",; :");
-            if (next) {
-                *next = L'\0';
-            }
-            strLen = StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
-            if (strLen && IsValidLocaleName(last)) {
-                lngMultiStrPtr[0] = L'\0';
-                rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr)), last));
-                lngMultiStrPtr += strLen + 1;
-            }
-            last = (next ? next + 1 : next);
-        }
-        if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) { // make sure there is a double null term for the multi-string
-            lngMultiStrPtr[0] = L'\0';
-        } else { // fail and guard anyone whom might use the multi-string
-            lngMultiStrPtr[0] = L'\0';
-            lngMultiStrPtr[1] = L'\0';
-        }
-    }
-    return rtnVal;
-}
-
-
-//=============================================================================
-//
 //  GetUserPreferredLanguage
 //  ~~~ GetUserDefaultLocaleName(pszPrefLocaleName_out, int cchBuffer);
 //
 bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer)
 {
-    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
-
     ULONG numLngs = 0;
     DWORD cchLngsBuffer = 0;
-    BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
-    int res = 0;
-    if (hr) {
-        WCHAR *pwszLngsBuffer = AllocMem((cchLngsBuffer + 2) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1] = { L'\0' };
+    if (GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer)) {
+        WCHAR * const pwszLngsBuffer = AllocMem((cchLngsBuffer + 2) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
         if (pwszLngsBuffer) {
-            hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer);
-            if (hr && (numLngs > 0)) {
-                // get the first
+            if (GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer) && (numLngs > 0)) {
+                // get the first (list ordered by preference)
                 StringCchCopy(wchLngLocalName, COUNTOF(wchLngLocalName), pwszLngsBuffer);
-                res = 1;
+            } else {
+                numLngs = 0;
             }
             FreeMem(pwszLngsBuffer);
+        } else {
+            numLngs = 0;
         }
     }
-    // deprecated:
-    //~if (res == 0) { // last try
-    //~    res = LangIDToLocaleName(GetUserDefaultUILanguage(), wchLngLocalName, COUNTOF(wchLngLocalName));
-    //~}
-    if (res == 0) { // last try @@@ debug it:
-        res = GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, (LPWSTR)wchLngLocalName, COUNTOF(wchLngLocalName));
+    if (!numLngs) { // last try
+        numLngs = GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, (LPWSTR)wchLngLocalName, COUNTOF(wchLngLocalName)) > 1 ? 1 : 0;
     }
-
-    if (res != 0) {
+    if (numLngs) {
         StringCchCopy(pszPrefLocaleName_out, cchBuffer, wchLngLocalName);
-        return true;
     }
-    return false;
+    return numLngs;
 }
 
 
@@ -339,19 +334,20 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer)
 //  LoadLanguageResources
 //  return MUI_LanguageDLLs index
 //
-int LoadLanguageResources(LPCWSTR pLocaleName) {
+unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
 
     FreeLanguageResources(); // reset
+    Globals.hLngResContainer = NULL; // (!) unlink from instance resources
 
-    int const iInternalLngIndex = max_i(0, GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID));
+    unsigned const iInternalLngIndex = max_u(0, GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID));
 
     // 1st check language resources
-    Globals.iAvailLngCount = _CheckAvailableLanguageDLLs();
+    Globals.uAvailLngCount = _CheckAvailableLanguageDLLs();
 
     // set the appropriate fallback list
-    int iLngIndex = -1;
+    unsigned iLngIndex = MuiLanguages_CountOf();
     WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
-    for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+    for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
         if (StringCchCompareXIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
             if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].LocaleName);
@@ -381,15 +377,9 @@ int LoadLanguageResources(LPCWSTR pLocaleName) {
     if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
         DbgMsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
     }
-    //~else {
-    //~  SetThreadPreferredUILanguages(0, L"\0\0", &langCount); // clear
-    //~  SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount);
-    //~}
 
     // obtains access to the proper resource container
     // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
-
-    Globals.hLngResContainer = NULL; //(!)
 
     if (iLngIndex == iInternalLngIndex) {
 
@@ -406,11 +396,11 @@ int LoadLanguageResources(LPCWSTR pLocaleName) {
             MUI_LanguageDLLs[iInternalLngIndex].bIsActive = false;
         } else {
             //DbgMsgBoxLastError(L"LoadMUILibrary", 0);
-            iLngIndex = -1;
+            iLngIndex = MuiLanguages_CountOf(); // not found
         }
     }
 
-    if (!Globals.hLngResContainer || (iLngIndex < 0)) {
+    if (!Globals.hLngResContainer || (iLngIndex >= MuiLanguages_CountOf())) {
         // fallback to MUI_BASE_LNG_ID
         Globals.hLngResContainer = Globals.hInstance;
         MUI_LanguageDLLs[iInternalLngIndex].bIsActive = true;
@@ -455,13 +445,14 @@ int LoadLanguageResources(LPCWSTR pLocaleName) {
 //
 //
 void FreeLanguageResources() {
+
     CloseNonModalDialogs();
-    int const iInternalLngIndex = GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID);
+    unsigned const iInternalLngIndex = GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID);
     if (Globals.hLngResContainer != Globals.hInstance) {
         FreeMUILibrary(Globals.hLngResContainer);
         Globals.hLngResContainer = Globals.hInstance;
     }
-    for (int i = 0; i < MuiLanguages_CountOf(); ++i) {
+    for (unsigned i = 0; i < MuiLanguages_CountOf(); ++i) {
         MUI_LanguageDLLs[i].bIsActive = (iInternalLngIndex == i);
     }
 }
@@ -478,7 +469,7 @@ static HMENU s_hmenuLanguage = NULL;
 bool InsertLanguageMenu(HMENU hMenuBar) {
 
     // check, if we need a language switching menu
-    if (Globals.iAvailLngCount < 2) {
+    if (Globals.uAvailLngCount < 2) {
         Settings.PreferredLocale4DateFmt = false;
         return false;
     }
@@ -490,7 +481,7 @@ bool InsertLanguageMenu(HMENU hMenuBar) {
 
     WCHAR wchMenuItemFmt[128] = { L'\0' };
     WCHAR wchMenuItemStrg[196] = { L'\0' };
-    for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+    for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
         if (MUI_LanguageDLLs[lng].bHasDLL) {
             StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].MenuItem);
             StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].LocaleName);
@@ -518,9 +509,10 @@ bool InsertLanguageMenu(HMENU hMenuBar) {
 //
 void DynamicLanguageMenuCmd(int cmd) {
 
-    int const iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
-
-    if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
+    // consecutive resource IDs
+    unsigned const iLngIdx = (unsigned)((cmd >= IDS_MUI_LANG_EN_US) ? 
+                             (cmd - IDS_MUI_LANG_EN_US) : MuiLanguages_CountOf()); 
+    if (iLngIdx >= MuiLanguages_CountOf()) {
         return;
     }
     if (!MUI_LanguageDLLs[iLngIdx].bIsActive) {
@@ -554,7 +546,7 @@ void DynamicLanguageMenuCmd(int cmd) {
 int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax)
 {
     const int nLen = LoadStringW(Globals.hLngResContainer, uID, lpBuffer, nBufferMax);
-    return (nLen != 0) ? nLen : LoadStringW(Globals.hInstance, uID, lpBuffer, nBufferMax);
+    return (nLen ? nLen : LoadStringW(Globals.hInstance, uID, lpBuffer, nBufferMax));
 }
 
 //=============================================================================
@@ -620,8 +612,6 @@ int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
     }
     return 0;
 }
-
-
 
 
 //=============================================================================

@@ -566,11 +566,28 @@
     </table>
     <h2>Releases</h2>
     <h3>
+       <a href="https://www.scintilla.org/lexilla502.zip">Release 5.0.2</a>
+    </h3>
+    <ul>
+	<li>
+	Released 9 April 2021.
+	</li>
+	<li>
+	Fix assertion in cpp lexer handling of preprocessor.
+	Empty preprocessor statement '#' caused preprocessor history to be stored on incorrect line number.
+	Dangling #else or #elif without corresponding #if led to inconsistent state.
+	Change treatment of empty preprocessor statement to set subsequent line end characters in
+	preprocessor style as this is more consistent with other preprocessor directives and avoids
+	differences between \n and \r\n line ends.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2245/">Bug #2245</a>.
+	</li>
+    </ul>
+    <h3>
        <a href="https://www.scintilla.org/lexilla501.zip">Release 5.0.1</a>
     </h3>
     <ul>
 	<li>
-	Released 5 March 2021.
+	Released 9 April 2021.
 	</li>
 	<li>
 	Add LexerNameFromID function to Lexilla protocol as optional and temporary to
