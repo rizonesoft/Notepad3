@@ -373,8 +373,8 @@ static inline bool _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection);
-// => _BEGIN_UNDO_ACTION_
-// => _END_UNDO_ACTION_
+// => UndoTransActionBegin();
+// => EndUndoTransAction();
 
 static inline void _SplitUndoTransaction() {
     if (!_InUndoRedoTransaction()) {
@@ -1480,13 +1480,13 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
             bool bAutoIndent2 = Settings.AutoIndent;
             Settings.AutoIndent = 0;
             EditJumpTo(-1, 0);
-            _BEGIN_UNDO_ACTION_;
+            UndoTransActionBegin();
             if (!Sci_IsDocEmpty()) {
                 SciCall_NewLine();
             }
             SciCall_Paste();
             SciCall_NewLine();
-            _END_UNDO_ACTION_;
+            EndUndoTransAction();
             Settings.AutoIndent = bAutoIndent2;
             if (s_flagJumpTo) {
                 SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
@@ -4493,7 +4493,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         if (SciCall_IsSelectionEmpty()) {
             EditDeleteMarkerInSelection();
-            SciCall_LineCut();
+            EditCutLines(Globals.hwndEdit);
         } else {
             EditDeleteMarkerInSelection();
             SciCall_Cut();
@@ -5973,11 +5973,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             s_bCallTipEscDisabled = true;
             --skipLevel;
         } else if (s_bInMultiEditMode) {
-            //~_BEGIN_UNDO_ACTION_;
+            //~UndoTransActionBegin();
             SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
             SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
             SciCall_ClearSelections();
-            //~_END_UNDO_ACTION_;
+            //~EndUndoTransAction();
             SciCall_GotoPos(iCurPos);
             s_bInMultiEditMode = false;
             --skipLevel;
@@ -6018,7 +6018,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_INSERTNEWLINE: {
-        _BEGIN_UNDO_ACTION_;
+        UndoTransActionBegin();
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
         if (iLine <= 0) {
@@ -6029,7 +6029,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_GotoPos(SciCall_GetLineEndPosition(iLine - 1));
             SciCall_NewLine();
         }
-        _END_UNDO_ACTION_;
+        EndUndoTransAction();
     }
     break;
 
@@ -6049,10 +6049,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CLEAR:
     case IDM_EDIT_CLEAR:
-        ///~_BEGIN_UNDO_ACTION_;
+        ///~UndoTransActionBegin();
         EditDeleteMarkerInSelection();
         SciCall_Clear();
-        ///~_END_UNDO_ACTION_;
+        ///~EndUndoTransAction();
         break;
 
 
@@ -6115,9 +6115,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if (iPos != iAnchor) {
-            _BEGIN_UNDO_ACTION_;
+            UndoTransActionBegin();
             SciCall_SetSel(iPos, iPos);
-            _END_UNDO_ACTION_;
+            EndUndoTransAction();
         } else {
             if (iPos == iStartPos) {
                 SciCall_DeleteBack();
@@ -6139,9 +6139,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         const DocPos iEndPos = SciCall_GetLineEndPosition(iLine);
 
         if (iPos != iAnchor) {
-            _BEGIN_UNDO_ACTION_;
+            UndoTransActionBegin();
             SciCall_SetSel(iPos, iPos);
-            _END_UNDO_ACTION_;
+            EndUndoTransAction();
         } else {
             if (iStartPos != iEndPos) {
                 SciCall_DelWordRight();
@@ -9920,10 +9920,10 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         }
         if (bReload && !FileWatching.MonitoringLog) {
             Sci_GotoPosChooseCaret(0);
-            _BEGIN_UNDO_ACTION_;
+            UndoTransActionBegin();
             fSuccess = FileIO(true, szFilePath, &fioStatus,
                               bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload, false, false);
-            _END_UNDO_ACTION_;
+            EndUndoTransAction();
         } else {
             fSuccess = FileIO(true, szFilePath, &fioStatus,
                               bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !s_IsThisAnElevatedRelaunch, false, false);
@@ -9986,12 +9986,12 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
             SciCall_GetText(COUNTOF(tchLog), tchLog);
             if (StringCchCompareXA(tchLog,".LOG") == 0) {
                 SciCall_DocumentEnd();
-                _BEGIN_UNDO_ACTION_;
+                UndoTransActionBegin();
                 SciCall_NewLine();
                 SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
                 SciCall_DocumentEnd();
                 SciCall_NewLine();
-                _END_UNDO_ACTION_;
+                EndUndoTransAction();
                 SciCall_ScrollToEnd();
             }
         }
@@ -11113,13 +11113,13 @@ void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
             bool bAutoIndent2 = Settings.AutoIndent;
             Settings.AutoIndent = 0;
             EditJumpTo(-1, 0);
-            _BEGIN_UNDO_ACTION_;
+            UndoTransActionBegin();
             if (!Sci_IsDocEmpty()) {
                 SciCall_NewLine();
             }
             SciCall_Paste();
             SciCall_NewLine();
-            _END_UNDO_ACTION_;
+            EndUndoTransAction();
             EditScrollSelectionToView();
             Settings.AutoIndent = bAutoIndent2;
         }
