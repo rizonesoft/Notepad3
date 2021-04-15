@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.414.(build_#) (2021-04-14)
+Current BETA/RC Version 5.21.415.(build_#) (2021-04-15)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.415.1]- Cut lines for rectangular and multi selection.
 [.412.1]- Use 'Ctrl+' key to force dropping files into new instance (Ctrl+ for new instance).
 [.402.1]- ScintillaWin horizontal mouse-wheel support.
 [.331.2]- Provide Mono-Language IDs.
@@ -59,7 +60,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- New size "4MB" for "FileLoadWarningMB=4" (Styling and Syntax Highlighting are switched off).
+[.415.1]- Cpp-Lexer fix merged from Lexilla (5b92f7219a9fe9fb0ae4c5cc19f57c39185e4074.
+[.414.1]- New size "4MB" for "FileLoadWarningMB=4" (Styling and Syntax Highlighting are switched off).
 [.413.2]- Configurable position offset on launching new instance.
 [.413.1]- Clarify menu item string (only one instance per file).
 [.413.1]- Drag-n-Drop: allow multiple files to drop.
@@ -83,13 +85,14 @@ CHANGES:
 [.301.1]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
 [.411.1]- Update grepWinNP3 (GRE) version 2.1.7.36 (2021-04.07).
 [.402.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 RC1 (2021-03-31).
-[.406.1]- Update Lexilla Library (LEX) version 5.0.1 (2021-04-05).
+[.415.1]- Update Lexilla Library (LEX) version 5.0.1 (2021-04-09).
 [.411.1]- Update Scintilla Library (SCI) version 5.0.1 (2021-04-09).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.415.1]- Small correction to Line Cut feature (thin selection).
 [.414.2]- Minipath uses NP§ preferred language, if not configured.
 [.414.2]- Compiling mono-language compiler switch version.
 [.414.2]- Some minor bugs around MUI Language selection.
