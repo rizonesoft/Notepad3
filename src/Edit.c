@@ -2755,6 +2755,106 @@ bool EditSetCaretToSelectionEnd()
 
 //=============================================================================
 //
+//  EditCutLines()
+//
+
+static int utsort_ln(const void *a, const void *b) {
+    DocLn _a = *(const DocLn*)a;
+    DocLn _b = *(const DocLn*)b;
+    return (_a < _b) ? -1 : ((_a > _b) ? 1 : 0);
+}
+
+void EditCutLines(HWND hwnd) {
+
+    if (!Sci_IsMultiOrRectangleSelection()) {
+        
+        _BEGIN_UNDO_ACTION_;
+        SciCall_LineCut();
+        _END_UNDO_ACTION_;
+    
+    } else {
+
+        DocPos const iRestorePos = Sci_GetLineStartPosition(SciCall_GetSelectionStart());
+        bool const bSelRectangle = SciCall_IsSelectionRectangle();
+
+        UT_icd docln_icd = { sizeof(DocLn), NULL, NULL, NULL };
+        UT_array *lines;
+        utarray_new(lines, &docln_icd);
+        
+        DocLn const ln_init = -1;
+        utarray_push_back(lines, &ln_init); // first elem to compare
+
+        DocPosU const selCount = SciCall_GetSelections();
+
+        if (bSelRectangle) {
+
+            DocLn const seln_beg = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+            DocLn const seln_end = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+
+            EditCopyRangeAppend(hwnd, SciCall_PositionFromLine(seln_beg), SciCall_PositionFromLine(seln_end + 1), false);
+
+            // add all lines in between
+            for (DocLn l = seln_beg; l <= seln_end; ++l) {
+                utarray_push_back(lines, &l);
+            }
+
+        } else {
+
+            for (DocPosU s = 0; s < selCount; ++s) {
+
+                DocLn const seln_beg = SciCall_LineFromPosition(SciCall_GetSelectionNStart(s));
+                DocLn const seln_end = SciCall_LineFromPosition(SciCall_GetSelectionNEnd(s));
+                DocLn const last_ln = (DocLn)utarray_back(lines);
+                if (seln_beg != last_ln) {
+                    utarray_push_back(lines, &seln_beg);
+                }
+                // add all lines in between
+                for (DocLn l = seln_beg + 1; l <= seln_end; ++l) {
+                    utarray_push_back(lines, &l);
+                }
+            }
+            utarray_sort(lines, utsort_ln);
+
+        }
+
+        // prepare appending
+        if ((utarray_len(lines) > 1) && !bSelRectangle) {
+            EditClearClipboard(hwnd);
+        }
+
+        DocLn* pLn = NULL;
+        pLn = (DocLn*)utarray_next(lines, pLn); // initial item
+        DocLn prevLn = pLn ? *pLn : -1;
+        DocLn delCnt = 0;
+
+        _BEGIN_UNDO_ACTION_;
+
+        while ((pLn = (DocLn *)utarray_next(lines, pLn)) != NULL) {
+            if (prevLn != *pLn) {
+                DocLn const del_ln = *pLn - delCnt;
+                DocPos const posLn = SciCall_PositionFromLine(del_ln);
+                if (!bSelRectangle) {
+                    EditCopyRangeAppend(hwnd, posLn, SciCall_GetLineEndPosition(del_ln), true);
+                }
+                SciCall_SetAnchor(posLn);
+                SciCall_SetCurrentPos(posLn);
+                SciCall_LineDelete();
+                ++delCnt;
+                prevLn = *pLn;
+            }
+        }
+
+        _END_UNDO_ACTION_;
+
+        utarray_free(lines);
+
+        Sci_GotoPosChooseCaret(iRestorePos);
+    }
+}
+
+
+//=============================================================================
+//
 //  EditModifyLines()
 //
 void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
@@ -3114,6 +3214,11 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 //
 void EditAlignText(int nMode)
 {
+    if (Sci_IsMultiOrRectangleSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        return;
+    }
+
     _SAVE_TARGET_RANGE_;
 
     DocPos iCurPos = SciCall_GetCurrentPos();
@@ -3128,11 +3233,6 @@ void EditAlignText(int nMode)
 
     DocPos const iCurCol = SciCall_GetColumn(iCurPos);
     DocPos const iAnchorCol = SciCall_GetColumn(iAnchorPos);
-
-    if (Sci_IsMultiOrRectangleSelection()) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-        return;
-    }
 
     if (iLineEnd <= iLineStart) {
         return;
@@ -3745,6 +3845,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
     __try {
 
         if (Sci_IsMultiOrRectangleSelection() && !SciCall_IsSelectionEmpty()) {
+
             DocPos const selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
             DocPos const selCaretMainPos = SciCall_GetRectangularSelectionCaret();
 
@@ -4056,6 +4157,7 @@ void EditCompressBlanks()
     const DocLn iLineEnd = SciCall_LineFromPosition(iSelEndPos);
 
     if (SciCall_IsSelectionRectangle()) {
+
         if (bIsSelEmpty) {
             return;
         }
