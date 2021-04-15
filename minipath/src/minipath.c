@@ -117,11 +117,9 @@ UINT16 g_uWinVer;
 
 HINSTANCE            g_hInstance = NULL;
 HMODULE              g_hLngResContainer = NULL;
-
-LANGID               g_iUsedLANGID = MUI_BASE_LNG_ID;
+WCHAR                g_UsedLngLocaleName[LOCALE_NAME_MAX_LENGTH] = { L'\0' };
 
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1] = { L'\0' };
 static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE el-GR en-GB en-US es-419 es-ES fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW";
 #endif
 
@@ -141,18 +139,51 @@ int flagPosParam        = 0;
 
 
 
+// ============================================================================
+// deprecated LCID/LANGID (!)  try to eliminate in future
+// ----------------------------------------------------------------------------
+
+inline int LangIDToLocaleName(const LANGID lngID, LPWSTR lpName_out, size_t cchName) {
+    LCID const lcid = MAKELCID(lngID, SORT_DEFAULT);
+    return LCIDToLocaleName(lcid, lpName_out, (int)cchName, 0);
+}
+
+// ----------------------------------------------------------------------------
+//
+//  GetMUILanguageIndexByLocaleName
+//
+LANGID GetLangIdByLocaleName(LPCWSTR pLocaleName) {
+
+    if (StrIsNotEmpty(pLocaleName)) {
+        WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
+        int res = ResolveLocaleName(pLocaleName, wchLngLocalName, COUNTOF(wchLngLocalName));
+        if (res > 0) {
+            // get LANGID
+            DWORD value = 0;
+            res = GetLocaleInfoEx(wchLngLocalName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR));
+            if (res > 0) {
+                return (LANGID)value;
+            }
+        }
+    }
+    return 1033; // (!) en-US, maybe not MUI_BASE_LNG_ID
+}
+// ============================================================================
+
+
 //=============================================================================
 //
 //  _LngStrToMultiLngStr
 //
 //
-static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
-{
-    BOOL rtnVal = TRUE;
+static BOOL _LngStrToMultiLngStr(LPWSTR const pLngStr, LPWSTR pLngMultiStr, size_t cchLngMultiStrCnt) {
 
-    size_t strLen = (size_t)lstrlen(pLngStr);
+    bool rtnVal = true;
 
-    if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
+    size_t strLen = wcsnlen_s(pLngStr, STRSAFE_MAX_CCH);
+
+    if ((strLen > 0) && pLngMultiStr && (cchLngMultiStrCnt > 0)) {
+
         WCHAR* lngMultiStrPtr = pLngMultiStr;
         WCHAR* last = pLngStr + (Has_UTF16_BOM(pLngStr) ? 1 : 0);
         while (last && rtnVal) {
@@ -161,17 +192,19 @@ static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
             if (next) {
                 *next = L'\0';
             }
-            strLen = (size_t)lstrlen(last);
-            if ((strLen > 0) && IsValidLocaleName(last)) {
+            strLen = wcsnlen_s(last, LOCALE_NAME_MAX_LENGTH);
+            if (strLen && IsValidLocaleName(last)) {
                 lngMultiStrPtr[0] = L'\0';
-                rtnVal &= (lstrcat(lngMultiStrPtr, last) != NULL);
+                rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (cchLngMultiStrCnt - (lngMultiStrPtr - pLngMultiStr)), last));
                 lngMultiStrPtr += strLen + 1;
             }
             last = (next ? next + 1 : next);
         }
-        if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) { // make sure there is a double null term for the multi-string
+        // make sure there is a double null term for the multi-string
+        if (rtnVal && (cchLngMultiStrCnt - (lngMultiStrPtr - pLngMultiStr))) {
             lngMultiStrPtr[0] = L'\0';
-        } else { // fail and guard anyone whom might use the multi-string
+        }
+        else { // fail and guard anyone whom might use the multi-string
             lngMultiStrPtr[0] = L'\0';
             lngMultiStrPtr[1] = L'\0';
         }
@@ -179,30 +212,68 @@ static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
     return rtnVal;
 }
 
+
 // fallback to buildin MUI_BASE_LNG_ID
 inline HMODULE LangResourceInternalFallback() {
-    g_iUsedLANGID = MUI_BASE_LNG_ID;
-    SetThreadUILanguage(MUI_BASE_LNG_ID);
-    InitMUILanguage(MUI_BASE_LNG_ID);
+    StringCchCopy(g_UsedLngLocaleName, COUNTOF(g_UsedLngLocaleName), MUI_BASE_LNG_ID);
+    LANGID const langID = GetLangIdByLocaleName(MUI_BASE_LNG_ID);
+    SetThreadUILanguage(langID);
+    InitMUILanguage(langID);
     return g_hInstance;
 }
 
+
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+
+//=============================================================================
+//
+//  GetUserPreferredLanguage
+//  ~~~ GetUserDefaultLocaleName(pszPrefLocaleName_out, int cchBuffer);
+//
+BOOL GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer)
+{
+    ULONG numLngs = 0;
+    DWORD cchLngsBuffer = 0;
+    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH] = { L'\0' };
+    if (GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer)) {
+        WCHAR* const pwszLngsBuffer = LocalAlloc(LPTR, (cchLngsBuffer + 2) * sizeof(WCHAR));
+        if (pwszLngsBuffer) {
+            if (GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer) && (numLngs > 0)) {
+                // get the first (list ordered by preference)
+                StringCchCopy(wchLngLocalName, COUNTOF(wchLngLocalName), pwszLngsBuffer);
+            }
+            else {
+                numLngs = 0;
+            }
+            LocalFree(pwszLngsBuffer);
+        }
+        else {
+            numLngs = 0;
+        }
+    }
+    if (!numLngs) { // last try
+        numLngs = GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, (LPWSTR)wchLngLocalName, COUNTOF(wchLngLocalName)) > 1 ? 1 : 0;
+    }
+    if (numLngs) {
+        StringCchCopy(pszPrefLocaleName_out, cchBuffer, wchLngLocalName);
+    }
+    return numLngs;
+}
+
 //=============================================================================
 //
 //  _LoadLanguageResources
 //
-
-inline int LangIDToLocaleName(const LANGID lngID, LPWSTR lpName_out, size_t cchName) {
-    LCID const lcid = MAKELCID(lngID, SORT_DEFAULT);
-    return LCIDToLocaleName(lcid, lpName_out, (int)cchName, 0);
-}
-
-static HMODULE _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
+static HMODULE _LoadLanguageResources(const WCHAR* localeName)
 {
-    BOOL const bLngAvailable = (StrStrIW(g_tchAvailableLanguages, localeName) != NULL);
+    BOOL const bLngAvailable = (StrStrI(g_tchAvailableLanguages, localeName) != NULL);
 
-    if (!bLngAvailable || (MUI_BASE_LNG_ID == langID)) {
+    if (!bLngAvailable) {
+        // ===  prevents "Preferred Language not available" next time  ===
+        ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, localeName);
+        if (StrIsNotEmpty(g_wchIniFile)) {
+            IniFileSetString(g_wchIniFile, L"Settings2", L"PreferredLanguageLocaleName", MUI_BASE_LNG_ID);
+        }
         return LangResourceInternalFallback();
     }
 
@@ -210,7 +281,9 @@ static HMODULE _LoadLanguageResources(const WCHAR* localeName, LANGID const lang
     StringCchCopyW(tchAvailLngs, 512, g_tchAvailableLanguages);
     WCHAR tchUserLangMultiStrg[512] = { L'\0' };
     if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, 512)) {
-        GetLastErrorToMsgBox(L"Trying to load Language resource!", ERROR_MUI_INVALID_LOCALE_NAME);
+#ifdef _DEBUG
+        MsgBoxLastError(L"Trying to load Language resource!", ERROR_MUI_INVALID_LOCALE_NAME);
+#endif
         return LangResourceInternalFallback();
     }
 
@@ -218,9 +291,14 @@ static HMODULE _LoadLanguageResources(const WCHAR* localeName, LANGID const lang
     DWORD langCount = 0;
     // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
     if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
-        GetLastErrorToMsgBox(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
+#ifdef _DEBUG
+        MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
+#endif
         return LangResourceInternalFallback();
     }
+    
+    // deprecated:
+    LANGID const langID = GetLangIdByLocaleName(localeName);
     SetThreadUILanguage(langID);
 
     // NOTES:
@@ -234,28 +312,25 @@ static HMODULE _LoadLanguageResources(const WCHAR* localeName, LANGID const lang
     // obtains access to the proper resource container
     // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-    HMODULE const hLangResourceContainer = LoadMUILibraryW(L"lng/mplng.dll", MUI_LANGUAGE_NAME, langID);
-    if (!hLangResourceContainer)
-    {
-        ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, localeName);
-        LangIDToLocaleName(MUI_BASE_LNG_ID, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+    bool const bIsInternalLng = (lstrcmp(localeName, MUI_BASE_LNG_ID)  == 0);
 
+    HMODULE const hLangResourceContainer = bIsInternalLng ? g_hInstance : LoadMUILibraryW(L"lng/mplng.dll", MUI_LANGUAGE_NAME, langID);
+
+    if (!hLangResourceContainer) {
         // ===  prevents "Preferred Language not available" next time  ===
+        ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, localeName);
         if (StrIsNotEmpty(g_wchIniFile)) {
-            IniFileSetString(g_wchIniFile, L"Settings2", L"PreferredLanguageLocaleName", g_tchPrefLngLocName);
+            IniFileSetString(g_wchIniFile, L"Settings2", L"PreferredLanguageLocaleName", MUI_BASE_LNG_ID);
         }
-
         return LangResourceInternalFallback();
     }
 
     // MUI Language for common controls
     InitMUILanguage(langID);
-    g_iUsedLANGID = langID;
     return hLangResourceContainer;
-
-
 }
-#endif
+
+#endif  // HAVE_DYN_LOAD_LIBS_MUI_LNGS
 
 
 //=============================================================================
@@ -300,7 +375,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
     }
 
     // Init OLE and Common Controls
-    OleInitialize(NULL);
+    (void)OleInitialize(NULL);
 
     INITCOMMONCONTROLSEX icex = { sizeof(INITCOMMONCONTROLSEX) };
     icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES | ICC_NATIVEFNTCTL_CLASS | ICC_STANDARD_CLASSES;
@@ -323,48 +398,8 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
     // MultiLingual
     //
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-    int res = 0;
-    LANGID iPrefLANGID = MUI_BASE_LNG_ID;
 
-    if (StrIsNotEmpty(g_tchPrefLngLocName)) {
-        WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
-        res = ResolveLocaleName(g_tchPrefLngLocName, wchLngLocalName, LOCALE_NAME_MAX_LENGTH);
-        if (res > 0) {
-            StringCchCopy(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), wchLngLocalName); // put back resolved name
-            // get LANGID
-            DWORD value = MUI_BASE_LNG_ID;
-            res = GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&value, sizeof(value) / sizeof(WCHAR));
-            if (res > 0) {
-                iPrefLANGID = (LANGID)value;
-            }
-        }
-    }
-
-    if (res == 0) { // No preferred language defined or retrievable, try to get User UI Language
-
-        ULONG numLngs = 0;
-        ULONG cchLngsBuffer = 0;
-        BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
-        if (hr) {
-            WCHAR* const pwszLngsBuffer = LocalAlloc(LPTR, (cchLngsBuffer + 2) * sizeof(WCHAR));
-            if (pwszLngsBuffer) {
-                hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer);
-                if (hr && (numLngs > 0)) {
-                    // get the first one
-                    StringCchCopy(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), pwszLngsBuffer);
-                    iPrefLANGID = LANGIDFROMLCID(LocaleNameToLCID(g_tchPrefLngLocName, 0));
-                    res = 1;
-                }
-                LocalFree(pwszLngsBuffer);
-            }
-        }
-        if (res == 0) { // last try
-            iPrefLANGID = GetUserDefaultUILanguage();
-            res = LangIDToLocaleName(iPrefLANGID, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
-        }
-    }
-
-    g_hLngResContainer = _LoadLanguageResources(g_tchPrefLngLocName, iPrefLANGID);   
+    g_hLngResContainer = _LoadLanguageResources(g_UsedLngLocaleName);
 
 #else
 
@@ -850,11 +885,13 @@ CASE_WM_CTLCOLOR_SET:
 
         if (pcds->dwData == DATA_MINIPATH_PATHARG) {
             LPWSTR lpsz = LocalAlloc(LPTR,pcds->cbData);
-            CopyMemory(lpsz,pcds->lpData,pcds->cbData);
+            if (lpsz) {
+                CopyMemory(lpsz, pcds->lpData, pcds->cbData);
 
-            DisplayPath(lpsz,IDS_ERR_CMDLINE);
+                DisplayPath(lpsz, IDS_ERR_CMDLINE);
 
-            LocalFree(lpsz);
+                LocalFree(lpsz);
+            }
         }
     }
     return TRUE;
@@ -1890,8 +1927,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_QUICKVIEW: {
         DLITEM dli;
-        WCHAR szParam[MAX_PATH] = L"";
-        WCHAR szTmp[MAX_PATH];
+        WCHAR szParam[MAX_PATH] = { L'\0' };
+        WCHAR szTmp[MAX_PATH] = { L'\0' };
 
         if (!DirList_IsFileSelected(hwndDirList)) {
             MessageBeep(0);
@@ -1995,7 +2032,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
                            NULL);
 
         if (hFile != INVALID_HANDLE_VALUE) {
-            SHFILEINFO shfi;
+            SHFILEINFO shfi = { 0 };
 
             CloseHandle(hFile);
 
@@ -2977,9 +3014,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case TBN_GETBUTTONINFO: {
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd)) {
-                WCHAR tch[256];
+                WCHAR tch[256] = { L'\0' };
                 GetLngString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
-                lstrcpyn(((LPTBNOTIFY)lParam)->pszText,tch,((LPTBNOTIFY)lParam)->cchText);
+                StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, COUNTOF(tch));
                 CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
                 return TRUE;
             }
@@ -3028,14 +3065,13 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
     default:
         switch(pnmh->code) {
         case TTN_NEEDTEXT: {
-            WCHAR tch[256];
-
+            WCHAR tch[256] = { L'\0' };
             if (((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND) {
                 PathCompactPathEx(((LPTOOLTIPTEXT)lParam)->szText, Settings.szCurDir,
                                   COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),0);
             } else {
                 GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
-                lstrcpyn(((LPTOOLTIPTEXT)lParam)->szText,tch,80);
+                StringCchCopyN(((LPTOOLTIPTEXT)lParam)->szText, 80, tch, COUNTOF(tch));
             }
         }
         break;
@@ -3071,7 +3107,7 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 
         GetCurrentDirectory(COUNTOF(szTest),szTest);
         if (!PathFileExists(szTest)) {
-            GetWindowsDirectory(szWinDir,COUNTOF(szWinDir));
+            (void)GetWindowsDirectory(szWinDir,COUNTOF(szWinDir));
             SetCurrentDirectory(szWinDir);
             ErrorMessage(2,IDS_ERR_CD);
         }
@@ -3174,7 +3210,7 @@ void ParseCommandLine()
     lp2 = LocalAlloc(LPTR,sizeof(WCHAR)*(lstrlen(lpCmdLine) + 1));
 
     // Start with 2nd argument
-    ExtractFirstArgument(lpCmdLine,lp1,lp2);
+    ExtractFirstArgument(lpCmdLine, lp1, lp2);
 
     while (ExtractFirstArgument(lp2,lp1,lp2)) {
 
@@ -3351,7 +3387,7 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
     if (!PathGetLnkPath(pszLnkFile,szTmp,COUNTOF(szTmp))) {
         // Select lnk-file if target is not available
         if (PathIsExistingFile(pszLnkFile)) {
-            SHFILEINFO shfi;
+            SHFILEINFO shfi = { 0 };
 
             lstrcpy(szTmp,pszLnkFile);
             PathRemoveFileSpec(szTmp);
@@ -3390,7 +3426,7 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
 
         else { // dwAttr & FILE_ATTRIBUTE_DIRECTORY
             int  i;
-            SHFILEINFO  shfi;
+            SHFILEINFO  shfi = { 0 };
             LV_FINDINFO lvfi;
 
             // Current file is ShellLink, get dir and desc
@@ -3430,7 +3466,7 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
     else {
         // Select lnk-file if target is not available
         if (PathIsExistingFile(pszLnkFile)) {
-            SHFILEINFO shfi;
+            SHFILEINFO shfi = { 0 };
 
             lstrcpy(szTmp,pszLnkFile);
             PathRemoveFileSpec(szTmp);
@@ -3758,8 +3794,8 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         }
     } else {
         LPWSTR lpParam;
-        WCHAR  szParam[MAX_PATH] = L"";
-        WCHAR  szTmp[MAX_PATH];
+        WCHAR  szParam[MAX_PATH] = { L'\0' };
+        WCHAR  szTmp[MAX_PATH] = { L'\0' };
 
         if ((eUseTargetApplication != UTA_UNDEFINED) &&
                 (eTargetApplicationMode == TAM_SEND_DDE_MSG) &&

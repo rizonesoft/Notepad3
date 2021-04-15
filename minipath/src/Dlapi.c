@@ -57,11 +57,13 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 {
-    HIMAGELIST hil;
-    SHFILEINFO shfi;
+    HIMAGELIST hil = { 0 };
+    SHFILEINFO shfi = { 0 };
 
     // Allocate DirListData Property
     LPDLDATA lpdl = (LPVOID)GlobalAlloc(GPTR,sizeof(DLDATA));
+    if (!lpdl) { return FALSE; }
+
     SetProp(hwnd,pDirListProp,(HANDLE)lpdl);
 
     // Setup dl
@@ -219,7 +221,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     ULONG dwAttributes = 0;
 
     DL_FILTER dlf;
-    SHFILEINFO shfi;
+    SHFILEINFO shfi = { 0 };
 
     LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
 
@@ -326,21 +328,22 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                             if (DirList_MatchFilter(lpsf,pidlEntry,&dlf)) {
 
                                 lplvid = CoTaskMemAlloc(sizeof(LV_ITEMDATA));
+                                if (lplvid) {
+                                    lplvid->pidl = pidlEntry;
+                                    lplvid->lpsf = lpsf;
 
-                                lplvid->pidl = pidlEntry;
-                                lplvid->lpsf = lpsf;
+                                    lpsf->lpVtbl->AddRef(lpsf);
 
-                                lpsf->lpVtbl->AddRef(lpsf);
+                                    lvi.lParam = (LPARAM)lplvid;
 
-                                lvi.lParam = (LPARAM)lplvid;
+                                    // Setup default Icon - Folder or File
+                                    lvi.iImage = (dwAttributes & SFGAO_FOLDER) ?
+                                        lpdl->iDefIconFolder : lpdl->iDefIconFile;
 
-                                // Setup default Icon - Folder or File
-                                lvi.iImage = (dwAttributes & SFGAO_FOLDER) ?
-                                             lpdl->iDefIconFolder : lpdl->iDefIconFile;
+                                    ListView_InsertItem(hwnd, &lvi);
 
-                                ListView_InsertItem(hwnd,&lvi);
-
-                                lvi.iItem++;
+                                    lvi.iItem++;
+                                }
 
                             }
 
@@ -422,7 +425,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
     hwnd = lpdl->hwnd;
     iMaxItem = ListView_GetItemCount(hwnd);
 
-    CoInitialize(NULL);
+    (void)CoInitialize(NULL);
 
     // Get IShellIcon
     lpdl->lpsf->lpVtbl->QueryInterface(lpdl->lpsf,&IID_IShellIcon,&lpshi);
@@ -433,7 +436,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
         lvi.mask  = LVIF_PARAM;
         if (ListView_GetItem(hwnd,&lvi)) {
 
-            SHFILEINFO shfi;
+            SHFILEINFO shfi = { 0 };
             LPITEMIDLIST pidl;
             DWORD dwAttributes = SFGAO_LINK | SFGAO_SHARE;
 
@@ -962,7 +965,7 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 #define LVIS_FLAGS LVIS_SELECTED|LVIS_FOCUSED
 
     WCHAR szShortPath[MAX_PATH];
-    SHFILEINFO  shfi;
+    SHFILEINFO  shfi = { 0 };
 
     LV_FINDINFO lvfi;
     DLITEM dli;
@@ -978,7 +981,7 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
     if (StrIsEmpty(lpszDisplayName)) {
         SHGetFileInfo(lpszFullPath,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
     } else {
-        lstrcpyn(shfi.szDisplayName,lpszDisplayName,MAX_PATH);
+        StringCchCopyN(shfi.szDisplayName, COUNTOF(shfi.szDisplayName), lpszDisplayName, MAX_PATH);
     }
 
     lvfi.flags = LVFI_STRING;
@@ -1016,7 +1019,7 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,BOOL bExcludeFilt
     ZeroMemory(pdlf,sizeof(DL_FILTER));
 
     if (lpszFileSpec) {
-        lstrcpyn(pdlf->tFilterBuf, lpszFileSpec, (DL_FILTER_BUFSIZE - 1));
+        StringCchCopyN(pdlf->tFilterBuf, COUNTOF(pdlf->tFilterBuf), lpszFileSpec, (DL_FILTER_BUFSIZE - 1));
     }
 
     pdlf->bExcludeFilter = bExcludeFilter;
@@ -1217,39 +1220,41 @@ int DriveBox_Fill(HWND hwnd)
                                                   di.dwDescriptionId <= SHDID_COMPUTER_OTHER)) {
 
                                 lpdcid = CoTaskMemAlloc(sizeof(DC_ITEMDATA));
+                                if (lpdcid) {
+                                    //lpdcid->pidl = IL_Copy(pidlEntry);
+                                    lpdcid->pidl = pidlEntry;
+                                    lpdcid->lpsf = lpsf;
 
-                                //lpdcid->pidl = IL_Copy(pidlEntry);
-                                lpdcid->pidl = pidlEntry;
-                                lpdcid->lpsf = lpsf;
+                                    lpsf->lpVtbl->AddRef(lpsf);
 
-                                lpsf->lpVtbl->AddRef(lpsf);
+                                    // Insert sorted ...
+                                    {
+                                        COMBOBOXEXITEM cbei2;
+                                        LPDC_ITEMDATA lpdcid2;
+                                        cbei2.mask = CBEIF_LPARAM;
+                                        cbei2.iItem = 0;
 
-                                // Insert sorted ...
-                                {
-                                    COMBOBOXEXITEM cbei2;
-                                    LPDC_ITEMDATA lpdcid2;
-                                    cbei2.mask = CBEIF_LPARAM;
-                                    cbei2.iItem = 0;
+                                        while ((SendMessage(hwnd, CBEM_GETITEM, 0, (LPARAM)&cbei2))) {
+                                            lpdcid2 = (LPDC_ITEMDATA)cbei2.lParam;
+                                            HRESULT hr2 = (lpdcid->lpsf->lpVtbl->CompareIDs(
+                                                lpdcid->lpsf,
+                                                0,
+                                                lpdcid->pidl,
+                                                lpdcid2->pidl));
 
-                                    while ((SendMessage(hwnd,CBEM_GETITEM,0,(LPARAM)&cbei2))) {
-                                        lpdcid2 = (LPDC_ITEMDATA)cbei2.lParam;
-                                        HRESULT hr2 = (lpdcid->lpsf->lpVtbl->CompareIDs(
-                                                           lpdcid->lpsf,
-                                                           0,
-                                                           lpdcid->pidl,
-                                                           lpdcid2->pidl));
-
-                                        if ((short)(SCODE_CODE(GetScode(hr2))) < 0) {
-                                            break;
-                                        } else {
-                                            cbei2.iItem++;
+                                            if ((short)(SCODE_CODE(GetScode(hr2))) < 0) {
+                                                break;
+                                            }
+                                            else {
+                                                cbei2.iItem++;
+                                            }
                                         }
+
+                                        cbei.iItem = cbei2.iItem;
+                                        cbei.lParam = (LPARAM)lpdcid;
+                                        SendMessage(hwnd, CBEM_INSERTITEM, 0, (LPARAM)&cbei);
+
                                     }
-
-                                    cbei.iItem = cbei2.iItem;
-                                    cbei.lParam = (LPARAM)lpdcid;
-                                    SendMessage(hwnd,CBEM_INSERTITEM,0,(LPARAM)&cbei);
-
                                 }
 
                             }
@@ -1467,7 +1472,7 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
 
     NMCOMBOBOXEX *lpnmcbe;
     LPDC_ITEMDATA lpdcid;
-    SHFILEINFO shfi;
+    SHFILEINFO shfi = { 0 };
     WCHAR szTemp[256];
 
     lpnmcbe = (LPVOID)lParam;
@@ -1535,13 +1540,14 @@ LPITEMIDLIST IL_Create(LPCITEMIDLIST pidl1,UINT cb1,
     pidl = CoTaskMemAlloc(cb1 + cb2);
 
     // Init new ITEMIDLIST
-    if (pidl1) {
+    if (pidl && pidl1) {
         CopyMemory(pidl,pidl1,cb1);
     }
 
     // pidl2 can't be NULL here
-    CopyMemory((LPBYTE)pidl + cb1,pidl2,cb2);
-
+    if (pidl) {
+        CopyMemory((LPBYTE)pidl + cb1, pidl2, cb2);
+    }
     return pidl;
 
 }

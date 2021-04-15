@@ -72,7 +72,6 @@ void DialogAdminExe(HWND hwnd,bool);
 
 int  MessageBoxLng(UINT uType, UINT uidMsg, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
-DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
 LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 #define INFOBOX_ANSW(_R_) LOWORD(_R_)

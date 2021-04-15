@@ -102,7 +102,7 @@ static bool _LngStrToMultiLngStr(LPWSTR const pLngStr, LPWSTR pLngMultiStr, size
     if ((strLen > 0) && pLngMultiStr && (cchLngMultiStrCnt > 0)) {
 
         WCHAR *lngMultiStrPtr = pLngMultiStr;
-        WCHAR *last = pLngStr + (Has_UTF16_LE_BOM((char *)pLngStr, (strLen * sizeof(WCHAR))) ? 1 : 0);
+        WCHAR *last = pLngStr + (Has_UTF16_BOM((char *)pLngStr, (strLen * sizeof(WCHAR))) ? 1 : 0);
         while (last && rtnVal) {
             // make sure you validate the user input
             WCHAR *next = StrNextTok(last, L",; :");
@@ -375,7 +375,9 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
     // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
     SetProcessPreferredUILanguages(0, L"\0\0", &langCount); // clear
     if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
-        DbgMsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
+#ifdef _DEBUG
+        MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
+#endif
     }
 
     // obtains access to the proper resource container
@@ -395,7 +397,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
             MUI_LanguageDLLs[iLngIndex].bIsActive = true;
             MUI_LanguageDLLs[iInternalLngIndex].bIsActive = false;
         } else {
-            //DbgMsgBoxLastError(L"LoadMUILibrary", 0);
+            //MsgBoxLastError(L"LoadMUILibrary", 0);
             iLngIndex = MuiLanguages_CountOf(); // not found
         }
     }

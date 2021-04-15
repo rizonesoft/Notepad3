@@ -195,21 +195,6 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
     return dwErrID;
 }
 
-
-DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
-{
-#ifdef _DEBUG
-    if (!dwErrID) {
-        dwErrID = GetLastError();
-    }
-    return MsgBoxLastError(lpszMessage, dwErrID);
-#else
-    UNREFERENCED_PARAMETER(lpszMessage);
-    return dwErrID;
-#endif
-}
-
-
 //=============================================================================
 //
 //  _InfoBoxLngDlgProc()

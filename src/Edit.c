@@ -370,7 +370,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
     if (bClearUndoHistory) {
         UndoRedoRecordingStop();
     }
-    _IGNORE_NOTIFY_CHANGE_;
+    DocChangeTransactionBegin();
     SciCall_Cancel();
     if (SciCall_GetReadOnly()) {
         SciCall_SetReadOnly(false);
@@ -379,13 +379,13 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
     EditClearAllOccurrenceMarkers(hwnd);
     SciCall_SetScrollWidth(1);
     SciCall_SetXOffset(0);
-    _OBSERVE_NOTIFY_CHANGE_;
+    EndDocChangeTransaction();
 
     FileVars_Apply(&Globals.fvCurFile);
 
-    _IGNORE_NOTIFY_CHANGE_;
+    DocChangeTransactionBegin();
     EditSetDocumentBuffer(lpstrText, lenText);
-    _OBSERVE_NOTIFY_CHANGE_;
+    EndDocChangeTransaction();
 
     Sci_GotoPosChooseCaret(0);
 
@@ -3794,7 +3794,7 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
 
     DocPos spcCount = 0;
 
-    _IGNORE_NOTIFY_CHANGE_;
+    DocChangeTransactionBegin();
 
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
 
@@ -3820,7 +3820,7 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
         spcCount += iPadLen;
     }
 
-    _OBSERVE_NOTIFY_CHANGE_;
+    EndDocChangeTransaction();
 
     _RESTORE_TARGET_RANGE_;
 
@@ -3839,7 +3839,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
         return;
     }
 
-    _IGNORE_NOTIFY_CHANGE_;
+    DocChangeTransactionBegin();
 
     int const token = (!bNoUndoGroup ? BeginUndoAction() : -1);
     __try {
@@ -3943,7 +3943,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
             EndUndoAction(token);
         }
     }
-    _OBSERVE_NOTIFY_CHANGE_;
+    EndDocChangeTransaction();
 }
 
 
@@ -4551,7 +4551,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
 
     if (bDelete) {
 
-        _IGNORE_NOTIFY_CHANGE_;
+        DocChangeTransactionBegin();
         SciCall_BeginUndoAction();
 
         line = 0;
@@ -4571,7 +4571,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
         }
 
         SciCall_EndUndoAction();
-        _OBSERVE_NOTIFY_CHANGE_;
+        EndDocChangeTransaction();
     }
 
     SciCall_GotoLine(min_ln(curLn, Sci_GetLastDocLineNumber()));
@@ -7035,7 +7035,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
     int const searchFlags = GetMarkAllOccSearchFlags();
 
-    _IGNORE_NOTIFY_CHANGE_;
+    DocChangeTransactionBegin();
 
     if (Settings.MarkOccurrencesMatchVisible) {
 
@@ -7052,7 +7052,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
         EditMarkAll(NULL, searchFlags, 0, Sci_GetDocEndPosition(), false);
     }
 
-    _OBSERVE_NOTIFY_CHANGE_;
+    EndDocChangeTransaction();
 }
 
 
@@ -7098,9 +7098,9 @@ void EditSelectionMultiSelectAllEx(CLPCEDITFINDREPLACE edFndRpl)
         efr.fuFlags = GetMarkAllOccSearchFlags();
     }
 
-    _IGNORE_NOTIFY_CHANGE_;
+    DocChangeTransactionBegin();
     EditMarkAll(efr.szFind, efr.fuFlags, 0, Sci_GetDocEndPosition(), true);
-    _OBSERVE_NOTIFY_CHANGE_;
+    EndDocChangeTransaction();
 }
 
 
@@ -7327,14 +7327,14 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
     UNREFERENCED_PARAMETER(hwnd);
     Globals.iMarkOccurrencesCount = 0;
 
-    _IGNORE_NOTIFY_CHANGE_;
+    DocChangeTransactionBegin();
 
     SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
     SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCURRENCE);
 
-    _OBSERVE_NOTIFY_CHANGE_;
+    EndDocChangeTransaction();
 }
 
 

@@ -30,12 +30,7 @@ extern "C" HWND      hwndMain;
 extern "C" WCHAR     g_wchIniFile[MAX_PATH];
 extern "C" WCHAR     g_wchIniFile2[MAX_PATH];
 extern "C" WCHAR     g_wchNP3IniFile[MAX_PATH];
-
-#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-extern "C" WCHAR     g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
-#endif
-extern "C" LANGID    g_iUsedLANGID;
-
+extern "C" WCHAR     g_UsedLngLocaleName[LOCALE_NAME_MAX_LENGTH];
 
 //=============================================================================
 //
@@ -916,10 +911,14 @@ void LoadFlags()
 
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
         const WCHAR* const PrefLngLocName = L"PreferredLanguageLocaleName";
-        if (!IniSectionGetString(Settings_Section2, PrefLngLocName, L"", g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) {
+        if (!IniSectionGetString(Settings_Section2, PrefLngLocName, L"", g_UsedLngLocaleName, LOCALE_NAME_MAX_LENGTH)) {
             // try to fetch Locale Name from Notepad3.ini
-            IniFileGetString(g_wchNP3IniFile, Settings_Section2, PrefLngLocName, L"", g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+            WCHAR wchUserPrefUILng[LOCALE_NAME_MAX_LENGTH];
+            GetUserPreferredLanguage(wchUserPrefUILng, COUNTOF(wchUserPrefUILng));
+            IniFileGetString(g_wchNP3IniFile, Settings_Section2, PrefLngLocName, wchUserPrefUILng, g_UsedLngLocaleName, LOCALE_NAME_MAX_LENGTH);
         }
+#else
+        StringCchCopy(g_UsedLngLocaleName, COUNTOF(g_UsedLngLocaleName), MUI_BASE_LNG_ID);
 #endif
 
         if (!flagNoReuseWindow) {

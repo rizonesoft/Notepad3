@@ -41,8 +41,7 @@
 
 extern HWND    hwndMain;
 extern HICON   g_hDlgIconSmall;
-extern LANGID  g_iUsedLANGID;
-
+extern WCHAR   g_UsedLngLocaleName[LOCALE_NAME_MAX_LENGTH];
 
 //=============================================================================
 //
@@ -1572,7 +1571,7 @@ BOOL RenameFileDlg(HWND hwnd)
         lstrcpy(tchDestination,szFullDestination);
 
         if (SHFileOperation(&shfos) == 0) { // success, select renamed item
-            SHFILEINFO shfi;
+            SHFILEINFO shfi = { 0 };
             // refresh directory view
             SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
             // get new display name
@@ -2148,11 +2147,11 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
 
             // resolve links and get short path name
             if (!(PathIsLnkFile(lpdliParam->szFileName) &&
-                    PathGetLnkPath(lpdliParam->szFileName,szParam,COUNTOF(szParam)))) {
+                    PathGetLnkPath(lpdliParam->szFileName, szParam, COUNTOF(szParam)))) {
                 lstrcpy(szParam,lpdliParam->szFileName);
             }
 
-            GetShortPathName(szParam,szParam,sizeof(WCHAR)*COUNTOF(szParam));
+            GetShortPathNameW(szParam , szParam, COUNTOF(szParam));
 
             ShellExecuteEx(&sei);
 
@@ -2375,7 +2374,7 @@ INT_PTR CALLBACK FindWinDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                     }
 
                     if (GetDlgItemText(hwnd,IDC_WINCLASS,tch,COUNTOF(tch))) {
-                        lstrcpyn(pTargetWndClassBuf,tch,256);
+                        StringCchCopyN(pTargetWndClassBuf, 256, tch, COUNTOF(tch));
                     }
                 }
 
@@ -2415,7 +2414,7 @@ extern WCHAR szDDETopic[256];
 INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
-    static WCHAR szTargetWndClass[256];
+    static WCHAR szTargetWndClass[256] = { L'\0' };
 
     switch(umsg) {
 
@@ -2480,7 +2479,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             CheckRadioButton(hwnd,IDC_LAUNCH,IDC_TARGET,IDC_LAUNCH);
         }
 
-        lstrcpy(wch, szTargetApplication);
+        StringCchCopy(wch, COUNTOF(wch), szTargetApplication);
         PathQuoteSpaces(wch);
         if (StrIsNotEmpty(szTargetApplicationParams)) {
             StrCatBuff(wch,L" ",COUNTOF(wch));
@@ -2493,7 +2492,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             CheckRadioButton(hwnd,IDC_ALWAYSRUN,IDC_USEDDE,IDC_ALWAYSRUN + i);
         }
 
-        lstrcpy(szTargetWndClass, szTargetApplicationWndClass);
+        StringCchCopy(szTargetWndClass, COUNTOF(szTargetWndClass), szTargetApplicationWndClass);
 
         SetDlgItemText(hwnd,IDC_DDEMSG, szDDEMsg);
         SetDlgItemText(hwnd,IDC_DDEAPP, szDDEApp);
@@ -2684,7 +2683,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                     }
 
                     if (BST_CHECKED == IsDlgButtonChecked(hwnd, IDC_SENDDROPMSG) && !i) {
-                        lstrcpy(szTargetApplicationWndClass, szTargetWndClass);
+                        StringCchCopy(szTargetApplicationWndClass, COUNTOF(szTargetApplicationWndClass), szTargetWndClass);
                         IniSectionSetString(TargetApp_Section, L"TargetApplicationWndClass", szTargetApplicationWndClass);
                     } else {
                         lstrcpy(szTargetApplicationWndClass, L"");
@@ -2742,8 +2741,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 //
 //  ErrorMessage()
 //
-int ErrorMessage(int iLevel, UINT uIdMsg, ...)
-{
+int ErrorMessage(int iLevel, UINT uIdMsg, ...) {
 
     WCHAR szText[256 * 2] = { L'\0' };
     WCHAR szTitle[256 * 2] = { L'\0' };
@@ -2771,7 +2769,9 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...)
     HWND focus = GetFocus();
     HWND hwnd = focus ? focus : hwndMain;
 
-    return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iUsedLANGID);
+    // deprecated:
+    LANGID const langID = GetLangIdByLocaleName(g_UsedLngLocaleName);
+    return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, langID);
 }
 
 
@@ -2786,6 +2786,9 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
         dwErrID = GetLastError();
     }
 
+    // deprecated:
+    LANGID const langID = GetLangIdByLocaleName(g_UsedLngLocaleName);
+
     LPVOID lpMsgBuf = NULL;
     FormatMessage(
         FORMAT_MESSAGE_ALLOCATE_BUFFER |
@@ -2793,7 +2796,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dwErrID,
-        g_iUsedLANGID,
+        langID,
         (LPTSTR)&lpMsgBuf,
         0, NULL);
 
@@ -2811,7 +2814,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
             HWND focus = GetFocus();
             HWND hwnd = focus ? focus : hwndMain;
 
-            MessageBoxEx(hwnd, lpDisplayBuf, L"MiniPath - ERROR", MB_ICONERROR, g_iUsedLANGID);
+            MessageBoxEx(hwnd, lpDisplayBuf, L"MiniPath - ERROR", MB_ICONERROR, langID);
 
             LocalFree(lpDisplayBuf);
         }
@@ -2819,17 +2822,5 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
     }
     return dwErrID;
 }
-
-
-DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
-{
-#ifdef _DEBUG
-    return MsgBoxLastError(lpszMessage, dwErrID);
-#else
-    UNUSED(lpszMessage);
-    return dwErrID;
-#endif
-}
-
 
 // End of Dialogs.c

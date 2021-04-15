@@ -187,11 +187,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
+// ----------------------------------------------------------------------------
 
 void IgnoreNotifyDocChangedEvent();
 void ObserveNotifyDocChangedEvent();
-#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyDocChangedEvent();
-#define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyDocChangedEvent(); }
+#define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent();
+#define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); }
+
+// ----------------------------------------------------------------------------
 
 #define BeginWaitCursor(cond, text)           \
     __try {                                   \
@@ -220,7 +223,11 @@ void ObserveNotifyDocChangedEvent();
         UpdateStatusbar(true);                \
     }
 
+// ----------------------------------------------------------------------------
+
 #define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
+
+// ----------------------------------------------------------------------------
 
 #endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   ///

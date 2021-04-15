@@ -44,8 +44,8 @@
 #pragma warning( disable : 26451 )
 // -----------------------------------------------------------------------------
 
-extern LANGID    g_iUsedLANGID;
 extern WCHAR     g_wchIniFile[MAX_PATH];
+extern WCHAR     g_UsedLngLocaleName[LOCALE_NAME_MAX_LENGTH];
 
 //=============================================================================
 //
@@ -124,45 +124,6 @@ int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
     } else {
         return 0;
     }
-}
-
-
-//=============================================================================
-//
-//  GetLastErrorToMsgBox()
-//
-DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
-{
-    // Retrieve the system error message for the last-error code
-    if (!dwErrID) {
-        dwErrID = GetLastError();
-    }
-
-    LPVOID lpMsgBuf;
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM |
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        dwErrID,
-        g_iUsedLANGID,
-        (LPTSTR)&lpMsgBuf,
-        0, NULL);
-
-    // Display the error message and exit the process
-
-    LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-                          ((SIZE_T)lstrlen((LPCWSTR)lpMsgBuf) + (SIZE_T)lstrlen((LPCWSTR)lpszFunction) + 80) * sizeof(WCHAR));
-
-    if (lpDisplayBuf) {
-        wsprintf((LPWSTR)lpDisplayBuf, L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, (LPWSTR)lpMsgBuf);
-        MessageBoxEx(NULL, (LPCWSTR)lpDisplayBuf, L"MiniPath - ERROR", MB_OK | MB_ICONEXCLAMATION, g_iUsedLANGID);
-    }
-
-    LocalFree(lpMsgBuf);
-    LocalFree(lpDisplayBuf);
-
-    return dwErrID;
 }
 
 
@@ -555,10 +516,10 @@ int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptb
     ZeroMemory(tchButtons,COUNTOF(tchButtons)*sizeof(tchButtons[0]));
     (void)lstrcpyn(tchButtons,lpszButtons,COUNTOF(tchButtons)-2);
     TrimStringW(tchButtons);
-    WCHAR *p = StrStr(tchButtons, L"  ");
+    WCHAR *p = wcsstr(tchButtons, L"  ");
     while (p) {
         MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
-        p = StrStr(tchButtons, L"  ");
+        p = wcsstr(tchButtons, L"  ");
     }
     c = (int)SendMessage(hwnd,TB_BUTTONCOUNT,0,0);
     for (i = 0; i < c; i++) {
@@ -1275,7 +1236,7 @@ BOOL ExecDDECommand(LPCWSTR lpszCmdLine,
     }
 
     (void)lstrcpyn(lpszDDEMsgBuf,lpszDDEMsg,COUNTOF(lpszDDEMsgBuf));
-    pSubst = StrStr(lpszDDEMsgBuf, L"%1");
+    pSubst = wcsstr(lpszDDEMsgBuf, L"%1");
     if (pSubst) {
         *(pSubst+1) = L's';
     }
@@ -1720,7 +1681,10 @@ BOOL GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
 
 BOOL GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-    BOOL bSucceed = GetLocaleDefaultUIFont(g_iUsedLANGID, lpFaceName, wSize);
+    // deprecated:
+    LANGID const langID = GetLangIdByLocaleName(g_UsedLngLocaleName);
+
+    BOOL bSucceed = GetLocaleDefaultUIFont(langID, lpFaceName, wSize);
 
     HDC hDC = GetDC(NULL);
     int const iLogPixelsY = GetDeviceCaps(hDC, LOGPIXELSY);
