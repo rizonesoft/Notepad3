@@ -3722,7 +3722,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
     EnableCmd(hmenu, IDM_EDIT_DUPLINEORSELECTION, !ro);
     EnableCmd(hmenu, IDM_EDIT_LINETRANSPOSE, !ro);
-    EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro && !mrs);
+    EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro);
     EnableCmd(hmenu, IDM_EDIT_COPYLINE, !mrs);
     EnableCmd(hmenu, IDM_EDIT_DELETELINE, !ro);
 
@@ -4485,32 +4485,30 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_CUT: {
-        if (s_flagPasteBoard) {
-            s_bLastCopyFromMe = true;
-        }
-        if (SciCall_IsSelectionEmpty()) {
-            if (!Settings2.NoCutLineOnEmptySelection) {
-                EditDeleteMarkerInSelection();
-                SciCall_LineCut();
-            }
-        } else {
-            EditDeleteMarkerInSelection();
-            SciCall_Cut();
-        }
-    }
-    break;
-
-
-    case IDM_EDIT_CUTLINE: {
-        if (Sci_IsMultiOrRectangleSelection()) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        if (SciCall_IsSelectionEmpty() && Settings2.NoCutLineOnEmptySelection) {
             break;
         }
         if (s_flagPasteBoard) {
             s_bLastCopyFromMe = true;
         }
+        if (SciCall_IsSelectionEmpty()) {
+            EditDeleteMarkerInSelection();
+            SciCall_LineCut();
+        } else {
+            EditDeleteMarkerInSelection();
+            SciCall_Cut();
+        }        
+    } 
+    break;
+
+
+    case IDM_EDIT_CUTLINE: {
+        if (s_flagPasteBoard) {
+            s_bLastCopyFromMe = true;
+        }
+        // explicit(!): ignore (SciCall_IsSelectionEmpty()) && Settings2.NoCutLineOnEmptySelection) 
         EditDeleteMarkerInSelection();
-        SciCall_LineCut();
+        EditCutLines(Globals.hwndEdit);
     }
     break;
 
