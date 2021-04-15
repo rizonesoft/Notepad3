@@ -138,8 +138,8 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent();
-#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); ObserveNotifyDocChangedEvent(); } }
+#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent();
+#define EndUndoTransAction()    } __finally { EndUndoAction(_token_); ObserveNotifyDocChangedEvent(); } }
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
