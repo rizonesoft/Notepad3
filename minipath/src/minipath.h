@@ -14,6 +14,8 @@
 *                                                                             *
 *******************************************************************************/
 
+#include "resource.h"
+
 //==== Main Window ============================================================
 #define WC_MINIPATH L"MiniPath"
 
@@ -192,5 +194,12 @@ LRESULT MsgCommand(HWND,WPARAM,LPARAM);
 LRESULT MsgNotify(HWND,WPARAM,LPARAM);
 LRESULT MsgDrawItem(HWND, WPARAM, LPARAM);
 
+
+// deprecated
+LANGID GetLangIdByLocaleName(LPCWSTR pLocaleName);
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+BOOL GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer);
+#endif
 
 ///   End of minipath.h   \\\

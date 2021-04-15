@@ -47,7 +47,6 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 int  ErrorMessage(int, UINT, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
-DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
 #define SetExplorerTheme(hwnd) SetWindowTheme((hwnd), L"Explorer", NULL)
 

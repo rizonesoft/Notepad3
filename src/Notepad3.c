@@ -109,6 +109,7 @@ WCHAR     g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 int       g_flagMatchText = 0;
 
 // ------------------------------------
+
 static bool      s_bIsProcessElevated = false;
 static bool      s_bIsUserInAdminGroup = false;
 static bool      s_bIsRunAsAdmin = false;
@@ -775,12 +776,17 @@ void InvalidParameterHandler(const wchar_t* expression,
                              uintptr_t      pReserved)
 {
     UNREFERENCED_PARAMETER(expression);
+    UNREFERENCED_PARAMETER(function);
+    UNREFERENCED_PARAMETER(file);
+    UNREFERENCED_PARAMETER(line);
     UNREFERENCED_PARAMETER(pReserved);
+#ifdef _DEBUG
     WCHAR msg[256];
     StringCchPrintf(msg, COUNTOF(msg),
                     L"Invalid Parameter in function '%s()' - File:'%s' Line:%i !",
                     function, file, line);
-    DbgMsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
+    MsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
+#endif
 }
 
 
@@ -4468,18 +4474,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_UNDO:
         if (SciCall_CanUndo()) {
-            _IGNORE_NOTIFY_CHANGE_;
+            DocChangeTransactionBegin();
             SciCall_Undo();
-            _OBSERVE_NOTIFY_CHANGE_;
+            EndDocChangeTransaction();
         }
         break;
 
 
     case IDM_EDIT_REDO:
         if (SciCall_CanRedo()) {
-            _IGNORE_NOTIFY_CHANGE_;
+            DocChangeTransactionBegin();
             SciCall_Redo();
-            _OBSERVE_NOTIFY_CHANGE_;
+            EndDocChangeTransaction();
         }
         break;
 
@@ -10946,7 +10952,9 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
             SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
             SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
         }
-        SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        if (hwnd) {
+            SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        }
         s_bPrevFullScreenFlag = false;
     } else { // full screen mode
         s_bPrevShowMenubar = Settings.ShowMenubar;
@@ -11161,7 +11169,7 @@ static inline bool IsCurrentFileChanged() {
 
 static DWORD s_dwFileChangeNotifyTime = 0UL;
 
-static inline void NotifyChangeEvent(const bool bCheckChg) {
+static inline void NotifyFileChangeEvent(const bool bCheckChg) {
     if (isFileChangeNotifyAllowed()) {
         if (!bCheckChg || IsCurrentFileChanged()) {
             disableFileChangeNotify();
@@ -11207,7 +11215,7 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
 
                 case WAIT_OBJECT_0:
                     // Check if the changes affect the current file
-                    NotifyChangeEvent(true);
+                    NotifyFileChangeEvent(true);
                     FindNextChangeNotification(*pChangeHandle);
                     break;
 
@@ -11243,15 +11251,15 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     if (s_dwFileChangeNotifyTime == 0UL) {
         // FWM_MSGBOX (polling: FileWatching.FileCheckInverval)
         // Directory-Observer is not notified for continously updated (log-)files
-        NotifyChangeEvent(true);
+        NotifyFileChangeEvent(true);
     } else if ((GetTickCount() - s_dwFileChangeNotifyTime) > FileWatching.AutoReloadTimeout) {
         // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
         if (FileWatching.MonitoringLog) {
             // monitoring: reload only on change
-            NotifyChangeEvent(true);
+            NotifyFileChangeEvent(true);
         } else {
-            // unconditional reload ??? -> NotifyChangeEvent(false);
-            NotifyChangeEvent(true);
+            // unconditional reload ??? -> NotifyFileChangeEvent(false);
+            NotifyFileChangeEvent(true);
         }
     }
 }

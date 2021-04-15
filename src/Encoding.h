@@ -122,8 +122,9 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch);
 
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
+bool Has_UTF16_BOM(const char *pBuf, size_t cnt);
 
-inline bool IsUTF8Signature(const char* p)
+    inline bool IsUTF8Signature(const char* p)
 {
     return ((p[0] == '\xEF') && (p[1] == '\xBB') && (p[2] == '\xBF'));
 }

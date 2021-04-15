@@ -82,8 +82,6 @@ int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
 int FormatLngStringW(LPWSTR, int, UINT, ...);
 int FormatLngStringA(LPSTR, int, UINT, ...);
 
-DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
-
 void PathRelativeToApp(LPWSTR,LPWSTR,int,BOOL,BOOL,BOOL);
 void PathAbsoluteFromApp(LPWSTR,LPWSTR,int,BOOL);
 

@@ -714,6 +714,13 @@ bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
     //~return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
     return ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0); // don't rely on result ok
 }
+// ----------------------------------------------------------------------------
+
+bool Has_UTF16_BOM(const char* pBuf, size_t cnt)
+{
+    return (Has_UTF16_LE_BOM(pBuf, cnt) || Has_UTF16_BE_BOM(pBuf, cnt));
+}
+
 // ============================================================================
 
 #if 0
