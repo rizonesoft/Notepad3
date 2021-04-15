@@ -83,10 +83,26 @@ typedef struct _muilanguage {
 } MUILANGUAGE, *PMUILANGUAGE;
 
 extern MUILANGUAGE MUI_LanguageDLLs[];
-int MuiLanguages_CountOf();
+unsigned MuiLanguages_CountOf();
 
-int GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName);
-void SetMuiLanguage(const int muiLngIndex);
+void SetMuiLanguage(const unsigned muiLngIndex);
+unsigned GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName);
+
+inline UINT GetMUILngResourceID(const unsigned idx) {
+    return (idx < MuiLanguages_CountOf()) ? MUI_LanguageDLLs[idx].rid : 0;
+}
+
+inline const WCHAR* GetMUILocaleNameByIndex(const unsigned idx) {
+    return (idx < MuiLanguages_CountOf()) ? MUI_LanguageDLLs[idx].LocaleName : NULL;
+}
+
+inline bool IsMUILanguageActive(const unsigned idx) {
+    return (idx < MuiLanguages_CountOf()) ? MUI_LanguageDLLs[idx].bIsActive : false;
+}
+
+inline bool ExistMUILanguageDLL(const unsigned idx) {
+    return (idx < MuiLanguages_CountOf()) ? MUI_LanguageDLLs[idx].bHasDLL : false;
+}
 
 inline bool IsSameLocale(const WCHAR *ln1, const WCHAR *ln2) {
     return (StringCchCompareXI(ln1, ln2) == 0);
@@ -97,7 +113,7 @@ inline bool IsSameLocale(const WCHAR *ln1, const WCHAR *ln2) {
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
 bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer);
-int  LoadLanguageResources(LPCWSTR localeName);
+unsigned LoadLanguageResources(LPCWSTR localeName);
 void FreeLanguageResources();
 bool InsertLanguageMenu(HMENU hMenuBar);
 void DynamicLanguageMenuCmd(int cmd);
@@ -110,7 +126,7 @@ typedef struct _gwlang_ini {
 } grepWinLng_t;
 
 extern grepWinLng_t grepWinLangResName[];
-int grepWinLang_CountOf();
+unsigned grepWinLang_CountOf();
 
 int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);

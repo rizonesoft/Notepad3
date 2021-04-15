@@ -8165,7 +8165,6 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     return true;
 
     case WM_DPICHANGED: {
-        //UINT const dpi = LOWORD(wParam);
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf = { 0 };
@@ -8177,7 +8176,8 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             }
             hFontHover = CreateFontIndirectW(&lf);
         }
-        //@@@UpdateWindowLayoutForDPI(hwnd, NULL, dpi);
+        //~UINT const dpi = LOWORD(wParam);
+        //~UpdateWindowLayoutForDPI(hwnd, NULL, dpi);
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
     }
     return TRUE;

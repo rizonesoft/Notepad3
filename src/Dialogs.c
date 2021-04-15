@@ -1281,9 +1281,9 @@ CASE_WM_CTLCOLOR_SET:
                 StringCchCopy(wchBuf, COUNTOF(wchBuf), L"fr-FR");
             #endif
             #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-            for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-                if (MUI_LanguageDLLs[lng].bIsActive) {
-                    StringCchCopy(wchBuf, COUNTOF(wchBuf), MUI_LanguageDLLs[lng].LocaleName);
+                for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+                if (IsMUILanguageActive(lng)) {
+                    StringCchCopy(wchBuf, COUNTOF(wchBuf), GetMUILocaleNameByIndex(lng));
                     break;
                 }
             }
@@ -4717,7 +4717,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
             // get grepWin language
             int lngIdx = -1;
-            for (int i = 0; i < grepWinLang_CountOf(); ++i) {
+            for (unsigned i = 0; i < grepWinLang_CountOf(); ++i) {
                 if (IsSameLocale(grepWinLangResName[i].localename, Globals.CurrentLngLocaleName)) {
                     lngIdx = i;
                     break;

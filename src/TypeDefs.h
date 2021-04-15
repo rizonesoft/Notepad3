@@ -377,7 +377,7 @@ typedef struct _globals_t
     LPMRULIST pMRUreplace;
     FILEVARS  fvCurFile;
     int       iWrapCol;
-    int       iAvailLngCount;
+    unsigned  uAvailLngCount;
     bool      CmdLnFlag_PosParam;
     int       CmdLnFlag_AlwaysOnTop;
     int       CmdLnFlag_WindowPos;
