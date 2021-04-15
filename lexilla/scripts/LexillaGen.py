@@ -115,7 +115,8 @@ def RegenerateAll(rootDirectory):
         "#define VERSION_WORDS " + versionCommad)
     ReplaceREInFile(docDir / "LexillaDownload.html",
         r"/www.scintilla.org/([a-zA-Z]+)\d\d\d",
-        r"/www.scintilla.org/\g<1>" +  version)
+        r"/www.scintilla.org/\g<1>" +  version,
+        0)
 
     pathMain = lexillaDir / "doc" / "Lexilla.html"
     UpdateLineInFile(pathMain,
@@ -128,6 +129,9 @@ def RegenerateAll(rootDirectory):
     UpdateLineInFile(pathMain,
         '    <meta name="Date.Modified"',
         '    <meta name="Date.Modified" content="' + lex.dateModified + '" />')
+    UpdateLineInFile(lexillaDir / "doc" / "LexillaHistory.html",
+        '	Released ',
+        '	Released ' + lex.dmyModified + '.')
 
     lexillaXcode = lexillaDir / "src" / "Lexilla"
     lexillaXcodeProject = lexillaXcode / "Lexilla.xcodeproj" / "project.pbxproj"
