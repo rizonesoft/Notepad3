@@ -68,7 +68,7 @@ grepWinLng_t grepWinLangResName[] = {
     { L"hu-HU",  L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang" },
     { L"id-ID",  L".\\lng\\gwLng\\Bahasa Indonesia (Indonesia) [id-ID].lang" },
     { L"it-IT",  L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang" },
-    { L"ja-JP",  L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang" },
+    { L"ja-JP",  L".\\lng\\gwLng\\日本語 (日本) [ja-JP].lang" },
     { L"ko-KR",  L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang" },
     { L"nl-NL",  L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang" },
     { L"pl-PL",  L".\\lng\\gwLng\\Polski (Polska) [pl-PL].lang" },
@@ -79,8 +79,8 @@ grepWinLng_t grepWinLangResName[] = {
     { L"sv-SE",  L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang" },
     { L"tr-TR",  L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang" },
     { L"vi-VN",  L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang" },
-    { L"zh-CN",  L".\\lng\\gwLng\\简体中文 （中国） [zh-CN].lang" },
-    { L"zh-TW",  L".\\lng\\gwLng\\繁體中文 （台灣） [zh-TW].lang" }
+    { L"zh-CN",  L".\\lng\\gwLng\\简体中文 (中国) [zh-CN].lang" },
+    { L"zh-TW",  L".\\lng\\gwLng\\繁體中文 (台灣) [zh-TW].lang" }
 };
 
 unsigned grepWinLang_CountOf() {
