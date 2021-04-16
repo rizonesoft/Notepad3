@@ -431,9 +431,9 @@
     <None Include="translationsNP3\Русский (Pоссия) [ru-RU].lang" />
     <None Include="translationsNP3\हिन्दी (भारत) [hi-IN].lang" />
     <None Include="translationsNP3\한국어 (대한민국) [ko-KR].lang" />
-    <None Include="translationsNP3\日本語 （日本） [ja-JP].lang" />
-    <None Include="translationsNP3\简体中文 （中国） [zh-CN].lang" />
-    <None Include="translationsNP3\繁體中文 （台灣） [zh-TW].lang" />
+    <None Include="translationsNP3\日本語 (日本) [ja-JP].lang" />
+    <None Include="translationsNP3\简体中文 (中国) [zh-CN].lang" />
+    <None Include="translationsNP3\繁體中文 (台灣) [zh-TW]" />
     <None Include="version.build.in" />
     <None Include="versioninfo.build" />
     <None Include="src\Resources\grepWinNP3.ico" />
