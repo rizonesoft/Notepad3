@@ -262,8 +262,8 @@ BEGIN
                             "Suchen-Historie löschen"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Ersetzen-Historie löschen"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around Fund von Oben  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around Fund von Unten  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around Fund von Oben"
+    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around Fund von Unten"
 END
 
 STRINGTABLE

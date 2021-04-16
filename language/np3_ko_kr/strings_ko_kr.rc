@@ -262,8 +262,8 @@ BEGIN
                             "찾기 내역 지우기"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "바꾸기 내역 지우기"
-    IDS_MUI_WRAPSEARCH_FWD  "%s 위부터 반올림"
-    IDS_MUI_WRAPSEARCH_BCK  "%s 아래부터 반올림"
+    IDS_MUI_WRAPSEARCH_FWD  "위부터 반올림"
+    IDS_MUI_WRAPSEARCH_BCK  "아래부터 반올림"
 END
 
 STRINGTABLE

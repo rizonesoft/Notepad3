@@ -262,8 +262,8 @@ BEGIN
                             "清除查找历史"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "清除替换历史"
-    IDS_MUI_WRAPSEARCH_FWD  "从顶部循环找到  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "从底部循环找到  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "从顶部循环找到"
+    IDS_MUI_WRAPSEARCH_BCK  "从底部循环找到"
 END
 
 STRINGTABLE

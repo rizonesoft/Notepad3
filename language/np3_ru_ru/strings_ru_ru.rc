@@ -262,8 +262,8 @@ BEGIN
                             "Очистить историю поиска"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Очистить историю замен"
-    IDS_MUI_WRAPSEARCH_FWD  "Совпадение в начале  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Совпадение в конце  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Совпадение в начале"
+    IDS_MUI_WRAPSEARCH_BCK  "Совпадение в конце"
 END
 
 STRINGTABLE

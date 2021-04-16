@@ -262,8 +262,8 @@ BEGIN
                             "Wyczyść Znajdź Historię"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Wyczyść Zamień Historię"
-    IDS_MUI_WRAPSEARCH_FWD  "Zawijaj pasujące od góry  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Zawijaj pasujące od spodu  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Zawijaj pasujące od góry"
+    IDS_MUI_WRAPSEARCH_BCK  "Zawijaj pasujące od spodu"
 END
 
 STRINGTABLE

@@ -262,8 +262,8 @@ BEGIN
                             "Wis zoekgeschiedenis"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Wis vervanggeschiedenis"
-    IDS_MUI_WRAPSEARCH_FWD  "Loop match vanaf de bovenkant  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Loop match vanaf de onderkant  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Loop match vanaf de bovenkant"
+    IDS_MUI_WRAPSEARCH_BCK  "Loop match vanaf de onderkant"
 END
 
 STRINGTABLE

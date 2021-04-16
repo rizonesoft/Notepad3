@@ -262,8 +262,8 @@ BEGIN
                             "Rensa sökhistorik"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Rensa ersättningshistorik"
-    IDS_MUI_WRAPSEARCH_FWD  "Omslut sökning från början %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Omslut sökning från slutet %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Omslut sökning från början"
+    IDS_MUI_WRAPSEARCH_BCK  "Omslut sökning från slutet"
 END
 
 STRINGTABLE

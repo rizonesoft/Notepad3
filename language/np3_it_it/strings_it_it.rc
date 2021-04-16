@@ -262,8 +262,8 @@ BEGIN
                             "Pulisci Cronologia Ricerche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Pulisci Cronologia Sostituzioni"
-    IDS_MUI_WRAPSEARCH_FWD  "Corrispondenza Wrap-Around dall'inizio  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Corrispondenza Wrap-Around dalla fine  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Corrispondenza Wrap-Around dall'inizio"
+    IDS_MUI_WRAPSEARCH_BCK  "Corrispondenza Wrap-Around dalla fine"
 END
 
 STRINGTABLE

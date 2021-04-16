@@ -262,8 +262,8 @@ BEGIN
                             "Clear Find History"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Clear Replace History"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
+    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
 END
 
 STRINGTABLE
