@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.415.(build_#) (2021-04-15)
+Current BETA/RC Version 5.21.416.(build_#) (2021-04-16)
 ========================================================
 
 --------------------------------------------------------
@@ -60,7 +60,10 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.416.1]- Save bookmarks in file history in case of "Save as...".
+[.416.1]- Minimize usage of deprecated LCID/LANGID for MiniPath.
 [.415.1]- Cpp-Lexer fix merged from Lexilla (5b92f7219a9fe9fb0ae4c5cc19f57c39185e4074.
+[.414.2]- Minimize usage of deprecated LCID/LANGID for Notepad3.
 [.414.1]- New size "4MB" for "FileLoadWarningMB=4" (Styling and Syntax Highlighting are switched off).
 [.413.2]- Configurable position offset on launching new instance.
 [.413.1]- Clarify menu item string (only one instance per file).
@@ -92,6 +95,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.416.1]- Save Schema config in case of inifile from scratch.
 [.415.1]- Small correction to Line Cut feature (thin selection).
 [.414.2]- Minipath uses NP§ preferred language, if not configured.
 [.414.2]- Compiling mono-language compiler switch version.
