@@ -95,6 +95,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.416.2]- Workaround Scintilla text-rendering bug, if line-number margin width set to 0 (so use 1 instead).
 [.416.1]- Save Schema config in case of inifile from scratch.
 [.415.1]- Small correction to Line Cut feature (thin selection).
 [.414.2]- Minipath uses NP§ preferred language, if not configured.
