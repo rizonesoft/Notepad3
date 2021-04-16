@@ -1,5 +1,5 @@
 ====================================================================================================
-===         How to build a NON MUI Notepad3 version for desired Language (Mono-language)         ===
+==  How to build a NON MUI Notepad3 version for desired Language (Mono-language)   -  15/04/2021  ==
 ====================================================================================================
 
 Important:  Make all modifications with a text editor (not the Resource-Editor), e.g.: Notepad3
@@ -25,14 +25,11 @@ Important:  Make all modifications with a text editor (not the Resource-Editor),
                #include "../language/np3_de_de/np3_de_de.rc"
 
 III.   Check: ".\language\common_res.h"
+              ".\minipath\language\common_res.h"
        - Make sure that the desired Base Language exists in the list of Language resources.
            E.g.: for German:
              #elif defined(MUI_BASE_LNG_DE_DE)
                #define MUI_BASE_LNG_ID L"de-DE"
-       Check: ".\minipath\language\common_res.h"
-           E.g.: for German:
-             #define MUI_BASE_LNG_ID MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN)
-               #elif defined(MUI_BASE_LNG_EL_GR)
 
 
  IV.   (Re-)Compile the Notepad3 project
