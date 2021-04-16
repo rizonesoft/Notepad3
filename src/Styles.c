@@ -1501,8 +1501,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
     SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
 
-    SciCall_StartStyling(0);
     SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    SciCall_StartStyling(0);
 
     // apply lexer styles
     if (Flags.bHugeFileLoadState) {
@@ -1848,6 +1848,12 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
 {
     Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle, false); // line numbers
 
+    COLORREF clrFore;
+    if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &clrFore, true)) {
+        clrFore = GetModeTextColor(UseDarkMode());
+    }
+    SciCall_StyleSetFore(STYLE_LINENUMBER, clrFore);
+
     COLORREF clrBack;
     if (!Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack, false)) {
         clrBack = GetModeBtnfaceColor(UseDarkMode());
@@ -1856,9 +1862,6 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
     SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); /// false: allow selection drag
     //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
-
-    COLORREF clrFore;
-    Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &clrFore, true);
 
     // CallTips
     SciCall_CallTipSetFore(clrFore);
@@ -1920,8 +1923,6 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
     const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
     Style_StrGetColor(wchHighlightStyleStrg, FOREGROUND_LAYER, &fldHiLight, true);
 
-    SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
-    SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
     SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
 

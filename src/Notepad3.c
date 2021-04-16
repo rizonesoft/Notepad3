@@ -1885,7 +1885,11 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetPhasesDraw(SC_PHASES_MULTIPLE);
     //~SciCall_SetLayoutCache(SC_CACHE_DOCUMENT); // memory consumption !
     SciCall_SetLayoutCache(SC_CACHE_PAGE);
-    SciCall_SetPositionCache(2048);  // default = 1024
+
+    // Idle Styling (very large text)
+    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view
+    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_AFTERVISIBLE);
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
 
     // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED:
     // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER,
@@ -1902,9 +1906,15 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetModEventMask(evtMask1 | evtMask2);
     SciCall_SetCommandEvents(false); // speedup folding
 
+    SciCall_StyleSetCharacterSet(SC_CHARSET_DEFAULT);
     SciCall_SetCodePage(SC_CP_UTF8); // fixed internal UTF-8 (Sci:default)
 
     SciCall_SetMargins(NUMBER_OF_MARGINS);
+    SciCall_SetMarginTypeN(MARGIN_SCI_LINENUM, SC_MARGIN_NUMBER);
+    SciCall_SetMarginTypeN(MARGIN_SCI_BOOKMRK, SC_MARGIN_SYMBOL);
+    SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
+    SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
+
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     SciCall_SetPasteConvertEndings(true);
     SciCall_UsePopUp(SC_POPUP_TEXT);
@@ -1920,11 +1930,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
     SciCall_SetAdditionalCaretsBlink(true);
     SciCall_SetAdditionalCaretsVisible(true);
-
-    // Idle Styling (very large text)
-    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_AFTERVISIBLE);
-    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
-    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view
 
     // assign command keys
     SciCall_AssignCmdKey(SCK_NEXT + (SCMOD_CTRL << 16), SCI_PARADOWN);
@@ -9233,7 +9238,8 @@ void UpdateMarginWidth(const bool bForce)
             SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
         }
     } else {
-        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
+        // TODO: SCI Bug if set to 0 (=invisible), workaround use 1px 
+        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 1);
     }
     Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
     Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));

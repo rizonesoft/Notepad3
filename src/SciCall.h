@@ -164,6 +164,7 @@ DeclareSciCallV1(SetModEventMask, SETMODEVENTMASK, int, mask);
 DeclareSciCallV1(SetCommandEvents, SETCOMMANDEVENTS, bool, flag);
 // Code Page
 DeclareSciCallV1(SetCodePage, SETCODEPAGE, int, cp);
+DeclareSciCallV1(StyleSetCharacterSet, STYLESETCHARACTERSET, int, cs);
 // Divers
 DeclareSciCallV1(SetMargins, SETMARGINS, int, nmarg);
 DeclareSciCallV1(SetPasteConvertEndings, SETPASTECONVERTENDINGS, bool, flag);
