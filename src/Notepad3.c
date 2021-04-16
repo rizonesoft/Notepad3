@@ -9239,7 +9239,7 @@ void UpdateMarginWidth(const bool bForce)
         }
     } else {
         // TODO: SCI Bug if set to 0 (=invisible), workaround use 1px 
-        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 1);
+        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, +1);
     }
     Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
     Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
@@ -11109,7 +11109,8 @@ void ShowWrapAroundCallTip(bool forwardSearch)
         } else {
             GetLngString(IDS_MUI_WRAPSEARCH_BCK, wchToolTipFmt, COUNTOF(wchToolTipFmt));
         }
-        StringCchPrintf(wchToolTip, COUNTOF(wchToolTip), wchToolTipFmt, FR_StatusW[Globals.FindReplaceMatchFoundState]);
+        //StringCchPrintf(wchToolTip, COUNTOF(wchToolTip), wchToolTipFmt, FR_StatusW[Globals.FindReplaceMatchFoundState]);
+        StringCchPrintf(wchToolTip, COUNTOF(wchToolTip), wchToolTipFmt, L"");
         WideCharToMultiByte(Encoding_SciCP, 0, wchToolTip, -1, chToolTip, (int)COUNTOF(chToolTip), NULL, NULL);
         SciCall_CallTipShow(SciCall_GetCurrentPos(), chToolTip);
         _DelayClearCallTip(delayClr);
