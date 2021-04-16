@@ -2157,15 +2157,12 @@ bool SaveAllSettings(bool bForceSaveSettings)
         }
     }
 
+    Style_ToIniSection(bForceSaveSettings);
     Style_FileExtToIniSection(bForceSaveSettings);
-
-    if (GetModeThemeIndex() == 1) {
-        Style_SaveSettings(bForceSaveSettings);
-    }
 
     ok = CloseSettingsFile(true, bOpenedByMe); // reset/clear cache
 
-    // separate INI files for Style-Themes
+    // maybe separate INI files for Style-Themes
     if (GetModeThemeIndex() >= 2) {
         Style_SaveSettings(bForceSaveSettings);
     }
