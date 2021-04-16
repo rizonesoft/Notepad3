@@ -10358,6 +10358,9 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL)) {
 
             if (!bSaveCopy) {
+                if (bSaveAs) {
+                    SaveAllSettings(false); // session on old file ends, save side-by-side settings
+                }
                 InstallFileWatching(false);
             }
             fSuccess = FileIO(false, tchFile, &fioStatus, true, true, false, true, bSaveCopy, bPreserveTimeStamp);
