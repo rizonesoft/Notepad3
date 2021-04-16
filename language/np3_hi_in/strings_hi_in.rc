@@ -262,8 +262,8 @@ BEGIN
                             "ढूँढी हुई फ़ाइलों की जानकारी हटाएं"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "बदलाव की जानकारी हटाएं"
-    IDS_MUI_WRAPSEARCH_FWD  "मिलान के चारों ओर ऊपर से लपेटें  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "मिलान के चारों ओर नीचे से लपेटें  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "मिलान के चारों ओर ऊपर से लपेटें"
+    IDS_MUI_WRAPSEARCH_BCK  "मिलान के चारों ओर नीचे से लपेटें"
 END
 
 STRINGTABLE

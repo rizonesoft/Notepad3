@@ -262,8 +262,8 @@ BEGIN
                             "Vymazať históriu vyhľadávania"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vymazať históriu nahradenia"
-    IDS_MUI_WRAPSEARCH_FWD  "Zvinovať %s zvrchu"
-    IDS_MUI_WRAPSEARCH_BCK  "Zvinovať %s zospodu"
+    IDS_MUI_WRAPSEARCH_FWD  "Zvinovať zvrchu"
+    IDS_MUI_WRAPSEARCH_BCK  "Zvinovať zospodu"
 END
 
 STRINGTABLE

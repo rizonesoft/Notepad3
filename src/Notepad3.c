@@ -11101,16 +11101,14 @@ void ShowWrapAroundCallTip(bool forwardSearch)
 {
     int const delayClr = Settings2.WrapAroundTooltipTimeout;
     if (delayClr >= (_MQ_TIMER_CYCLE << 3)) {
-        WCHAR wchToolTipFmt[64] = { '\0' };
         WCHAR wchToolTip[80] = { '\0' };
         static char chToolTip[80*3] = { '\0' };
         if (forwardSearch) {
-            GetLngString(IDS_MUI_WRAPSEARCH_FWD, wchToolTipFmt, COUNTOF(wchToolTipFmt));
+            GetLngString(IDS_MUI_WRAPSEARCH_FWD, wchToolTip, COUNTOF(wchToolTip));
         } else {
-            GetLngString(IDS_MUI_WRAPSEARCH_BCK, wchToolTipFmt, COUNTOF(wchToolTipFmt));
+            GetLngString(IDS_MUI_WRAPSEARCH_BCK, wchToolTip, COUNTOF(wchToolTip));
         }
-        //StringCchPrintf(wchToolTip, COUNTOF(wchToolTip), wchToolTipFmt, FR_StatusW[Globals.FindReplaceMatchFoundState]);
-        StringCchPrintf(wchToolTip, COUNTOF(wchToolTip), wchToolTipFmt, L"");
+        //StringCchCat(wchToolTip, COUNTOF(wchToolTip), FR_StatusW[Globals.FindReplaceMatchFoundState]);
         WideCharToMultiByte(Encoding_SciCP, 0, wchToolTip, -1, chToolTip, (int)COUNTOF(chToolTip), NULL, NULL);
         SciCall_CallTipShow(SciCall_GetCurrentPos(), chToolTip);
         _DelayClearCallTip(delayClr);

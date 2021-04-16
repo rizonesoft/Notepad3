@@ -262,8 +262,8 @@ BEGIN
                             "Limpar Histórico Localizar"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar Histórico Substituir"
-    IDS_MUI_WRAPSEARCH_FWD  "Pesquisa circular - correspondência a partir do início  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Pesquisa circular - correspondência a partir do final  %s"
+    IDS_MUI_WRAPSEARCH_FWD  "Pesquisa circular - correspondência a partir do início"
+    IDS_MUI_WRAPSEARCH_BCK  "Pesquisa circular - correspondência a partir do final"
 END
 
 STRINGTABLE
