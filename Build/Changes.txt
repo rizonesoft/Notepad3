@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.416.(build_#) (2021-04-16)
+Current BETA/RC Version 5.21.417.(build_#) (2021-04-17)
 ========================================================
 
 --------------------------------------------------------
@@ -60,6 +60,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.417.1]- Remove short-note from wrap around match tooltip.
 [.416.1]- Save bookmarks in file history in case of "Save as...".
 [.416.1]- Minimize usage of deprecated LCID/LANGID for MiniPath.
 [.415.1]- Cpp-Lexer fix merged from Lexilla (5b92f7219a9fe9fb0ae4c5cc19f57c39185e4074.
@@ -146,7 +147,7 @@ TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- .
 [.227.1]- Chinese Traditional (zh-TW) (incomplete...).
-[.407.1]- Greek (el-GR) (incomplete...).
+[.417.1]- Greek (el-GR) (in progress...).
 [.303.1]- Portuguese Brazilian (pt-BR).
 --------
 For our Notepad3 translation projects, we are looking for motivated volunteers, with a 
