@@ -604,6 +604,7 @@
     <ClCompile Include="crypto\rijndael-alg-fst.c" />
     <ClCompile Include="crypto\rijndael-api-fst.c" />
     <ClCompile Include="crypto\sha-256.c" />
+    <ClCompile Include="StyleLexers\EditLexer.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
     <ClCompile Include="StyleLexers\styleLexKotlin.c" />
     <ClCompile Include="tinyexpr\tinyexpr.c" />

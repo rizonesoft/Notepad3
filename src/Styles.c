@@ -881,113 +881,6 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
 //=============================================================================
 //
-//  Style_SetFoldingAvailability()
-//
-void Style_SetFoldingAvailability(PEDITLEXER pLexer)
-{
-    switch (pLexer->lexerID) {
-    case SCLEX_NULL:
-    case SCLEX_CONTAINER:
-    case SCLEX_BATCH:
-    case SCLEX_CONF:
-    case SCLEX_MAKEFILE:
-    case SCLEX_MARKDOWN:
-        FocusedView.CodeFoldingAvailable = false;
-        break;
-    default:
-        FocusedView.CodeFoldingAvailable = true;
-        break;
-    }
-}
-
-
-//=============================================================================
-//
-//  Style_SetFoldingProperties()
-//
-void Style_SetFoldingProperties(bool active)
-{
-    if (active) {
-        SciCall_SetProperty("fold", "1");
-        SciCall_SetProperty("fold.comment", "1");
-        SciCall_SetProperty("fold.compact", "0");
-        SciCall_SetProperty("fold.foldsyntaxbased", "1");
-
-        SciCall_SetProperty("fold.html", "1");
-        SciCall_SetProperty("fold.preprocessor", "1");
-        SciCall_SetProperty("fold.cpp.comment.explicit", "0");
-    } else {
-        SciCall_SetProperty("fold", "0");
-    }
-}
-
-
-//=============================================================================
-//
-//  Style_SetFoldingFocusedView()
-//
-void Style_SetFoldingFocusedView()
-{
-    SciCall_SetProperty("fold", "0"); // disable folding by lexers
-    SciCall_SetProperty("fold.comment", "1");
-    SciCall_SetProperty("fold.compact", "0");
-}
-
-
-//=============================================================================
-//
-//  void Style_SetLexerSpecificProperties()
-//
-void Style_SetLexerSpecificProperties(const int lexerId)
-{
-    switch (lexerId) {
-    case SCLEX_CPP:
-        SciCall_SetProperty("styling.within.preprocessor", "1");
-        SciCall_SetProperty("lexer.cpp.track.preprocessor", "0");
-        SciCall_SetProperty("lexer.cpp.update.preprocessor", "0");
-        break;
-
-    case SCLEX_PASCAL:
-        SciCall_SetProperty("lexer.pascal.smart.highlighting", "1");
-        break;
-
-    case SCLEX_SQL:
-        SciCall_SetProperty("sql.backslash.escapes", "1");
-        SciCall_SetProperty("lexer.sql.backticks.identifier", "1");
-        SciCall_SetProperty("lexer.sql.numbersign.comment", Settings2.LexerSQLNumberSignAsComment ? "1" : "0");
-        break;
-
-    case SCLEX_NSIS:
-        SciCall_SetProperty("nsis.ignorecase", "1");
-        break;
-
-    case SCLEX_CSS:
-        SciCall_SetProperty("lexer.css.scss.language", "1");
-        SciCall_SetProperty("lexer.css.less.language", "1");
-        break;
-
-    case SCLEX_JSON:
-        SciCall_SetProperty("json.allow.comments", "1");
-        SciCall_SetProperty("json.escape.sequence", "1");
-        break;
-
-    case SCLEX_PYTHON:
-        SciCall_SetProperty("tab.timmy.whinge.level", "1");
-        SciCall_SetProperty("lexer.python.strings.f", "1");
-        break;
-
-    case SCLEX_XML:
-        SciCall_SetProperty("lexer.xml.allow.scripts", "1");
-        break;
-
-    default:
-        break;
-    }
-}
-
-
-//=============================================================================
-//
 //  Style_StrGetAttributeEx()
 //
 // zufuliu: parse a style attribute separated by ';'
@@ -1104,11 +997,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 #endif
 
     // Lexer very specific styles
-    Style_SetLexerSpecificProperties(pLexNew->lexerID);
+    Lexer_SetLexerSpecificProperties(pLexNew->lexerID);
 
     // Code folding
-    Style_SetFoldingAvailability(pLexNew);
-    Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+    Lexer_SetFoldingAvailability(pLexNew);
+    Lexer_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
 
     // Add KeyWord Lists
     for (int i = 0;  i <= KEYWORDSET_MAX;  ++i) {
