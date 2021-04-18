@@ -69,7 +69,7 @@ static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING
 // ------------------------------------
 // --- Onigmo Engine Simple Options ---
 // ------------------------------------
-static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode eolMode,
+static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   const bool caseSensitive, const bool forwardSearch, const int searchFlags = 0)
 {
   // fixed options
@@ -126,7 +126,7 @@ class OnigurumaRegExEngine : public RegexSearchBase
 {
 public:
 
-  explicit OnigurumaRegExEngine(CharClassify* charClassTable)
+  explicit OnigurumaRegExEngine(CharClassify* /*charClassTable*/)
     : m_OnigSyntax(*ONIG_SYNTAX_DEFAULT)
     , m_CmplOptions(ONIG_OPTION_DEFAULT)
     , m_RegExpr(nullptr)
@@ -505,7 +505,7 @@ void OnigurumaRegExEngine::regexFindAndReplace(std::string& inputStr_inout, cons
 
 
 
-std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions)
+std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& /*rxOptions*/)
 {
   std::string	tmpStr;
   bool bUseTmpStrg = false;

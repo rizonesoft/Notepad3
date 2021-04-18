@@ -142,6 +142,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -167,6 +168,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -197,6 +199,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -226,6 +229,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -259,6 +263,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -286,6 +291,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -310,7 +316,6 @@
     <ClCompile Include="sktoolslib_mod\BaseWindow.cpp" />
     <ClCompile Include="sktoolslib_mod\BrowseFolder.cpp" />
     <ClCompile Include="sktoolslib_mod\CmdLineParser.cpp" />
-    <ClCompile Include="sktoolslib_mod\codecvt.cpp" />
     <ClCompile Include="sktoolslib_mod\DarkModeHelper.cpp" />
     <ClCompile Include="sktoolslib_mod\DebugOutput.cpp" />
     <ClCompile Include="sktoolslib_mod\DirFileEnum.cpp" />
@@ -358,7 +363,6 @@
     <ClInclude Include="sktoolslib_mod\BaseWindow.h" />
     <ClInclude Include="sktoolslib_mod\BrowseFolder.h" />
     <ClInclude Include="sktoolslib_mod\CmdLineParser.h" />
-    <ClInclude Include="sktoolslib_mod\codecvt.h" />
     <ClInclude Include="sktoolslib_mod\DarkModeHelper.h" />
     <ClInclude Include="sktoolslib_mod\DebugOutput.h" />
     <ClInclude Include="sktoolslib_mod\DirFileEnum.h" />
