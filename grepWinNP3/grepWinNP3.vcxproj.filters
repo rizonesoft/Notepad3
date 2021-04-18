@@ -72,12 +72,6 @@
     <ClCompile Include="src\Theme.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sktoolslib_mod\AeroControls.cpp">
-      <Filter>sktoolslib_mod</Filter>
-    </ClCompile>
-    <ClCompile Include="sktoolslib_mod\AeroGlass.cpp">
-      <Filter>sktoolslib_mod</Filter>
-    </ClCompile>
     <ClCompile Include="sktoolslib_mod\AutoComplete.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
@@ -91,9 +85,6 @@
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
     <ClCompile Include="sktoolslib_mod\CmdLineParser.cpp">
-      <Filter>sktoolslib_mod</Filter>
-    </ClCompile>
-    <ClCompile Include="sktoolslib_mod\codecvt.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
     <ClCompile Include="sktoolslib_mod\DebugOutput.cpp">
@@ -159,6 +150,12 @@
     <ClCompile Include="sktoolslib_mod\hyperlink.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
+    <ClCompile Include="sktoolslib_mod\AeroControls.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\AeroGlass.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AboutDlg.h">
@@ -212,12 +209,6 @@
     <ClInclude Include="src\Theme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sktoolslib_mod\AeroControls.h">
-      <Filter>sktoolslib_mod</Filter>
-    </ClInclude>
-    <ClInclude Include="sktoolslib_mod\AeroGlass.h">
-      <Filter>sktoolslib_mod</Filter>
-    </ClInclude>
     <ClInclude Include="sktoolslib_mod\AutoComplete.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
@@ -231,9 +222,6 @@
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
     <ClInclude Include="sktoolslib_mod\CmdLineParser.h">
-      <Filter>sktoolslib_mod</Filter>
-    </ClInclude>
-    <ClInclude Include="sktoolslib_mod\codecvt.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
     <ClInclude Include="sktoolslib_mod\DebugOutput.h">
@@ -312,6 +300,12 @@
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
     <ClInclude Include="sktoolslib_mod\hyperlink.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\AeroControls.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\AeroGlass.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
   </ItemGroup>

@@ -252,7 +252,7 @@ constexpr int GetStateByColumn(const int col) noexcept
     case 9:
         return SCE_CSV_COLUMN_9;
     default:
-        return SCE_CSV_COLUMN_0;
+        break;
     }
     return SCE_CSV_COLUMN_0;
 }
@@ -410,7 +410,7 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
 
 
 
-void SCI_METHOD LexerCSV::Fold(Sci_PositionU startPos, Sci_Position length, int, IDocument* pAccess)
+void SCI_METHOD LexerCSV::Fold(Sci_PositionU /*startPos*/, Sci_Position /*length*/, int, IDocument* /*pAccess*/)
 {
     return;
 }

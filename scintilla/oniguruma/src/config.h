@@ -96,4 +96,8 @@
 #define DLEXT ".so"
 #define DLEXT2 ".dll"
 
+#ifdef _WIN32_WINNT
+#pragma warning(disable: 4057 4100 4131 4201 4244 4245 4389 4456 4701 4703)
+#endif
+
 #endif //_ONIGURUMA_CONFIG_H_

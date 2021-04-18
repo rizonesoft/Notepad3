@@ -175,7 +175,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;SCI_EMPTYCATALOGUE;ONIG_STATIC;USE_POSIX_API;USE_BINARY_COMPATIBLE_POSIX_API;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <OmitFramePointers />
       <StringPooling>true</StringPooling>
@@ -185,6 +185,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -203,7 +204,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;SCI_EMPTYCATALOGUE;ONIG_STATIC;USE_POSIX_API;USE_BINARY_COMPATIBLE_POSIX_API;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Precise</FloatingPointModel>
@@ -211,6 +212,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableEnhancedInstructionSet />
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
@@ -231,7 +233,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;SCI_EMPTYCATALOGUE;ONIG_STATIC;USE_POSIX_API;USE_BINARY_COMPATIBLE_POSIX_API;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Precise</FloatingPointModel>
@@ -244,6 +246,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -264,7 +267,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;SCI_EMPTYCATALOGUE;ONIG_STATIC;USE_POSIX_API;USE_BINARY_COMPATIBLE_POSIX_API;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <OmitFramePointers>
       </OmitFramePointers>
@@ -274,6 +277,7 @@
       <StringPooling>true</StringPooling>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -292,7 +296,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;SCI_EMPTYCATALOGUE;ONIG_STATIC;USE_POSIX_API;USE_BINARY_COMPATIBLE_POSIX_API;SCI_LEXER;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <FloatingPointModel>Precise</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -306,6 +310,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <TargetMachine>
@@ -325,7 +330,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;SCI_EMPTYCATALOGUE;ONIG_STATIC;USE_POSIX_API;USE_BINARY_COMPATIBLE_POSIX_API;SCI_LEXER;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <FloatingPointModel>Precise</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -334,6 +339,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <EnableEnhancedInstructionSet />
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>

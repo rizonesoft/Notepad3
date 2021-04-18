@@ -1872,7 +1872,7 @@ bool CSearchDlg::AddFoundEntry(const CSearchInfo* pInfo, bool bOnlyListControl)
     {
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
         bool fileList     = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        auto count        = ListView_GetItemCount(hListControl);
+        auto count        = static_cast<size_t>(ListView_GetItemCount(hListControl));
         if (count != (fileList ? m_items.size() : m_listItems.size()))
             ListView_SetItemCountEx(hListControl, fileList ? m_items.size() : m_listItems.size(), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL);
     }

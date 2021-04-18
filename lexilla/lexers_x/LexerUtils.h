@@ -110,7 +110,7 @@ namespace Scintilla {
         if (!ignoreCurrent && !IsWhiteSpace(sc.ch)) {
             return sc.ch;
         }
-        if (sc.currentPos + 1 == sc.lineStartNext) {
+        if (sc.currentPos + 1 == static_cast<Sci_PositionU>(sc.lineStartNext)) {
             return '\0';
         }
         if (!IsWhiteSpace(sc.chNext)) {

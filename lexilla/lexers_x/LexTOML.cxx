@@ -710,7 +710,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             }
             else if (sc.ch == '}')
             {
-                auto p = static_cast<Sci_Position>(sc.currentPos);
+                //auto p = static_cast<Sci_Position>(sc.currentPos);
                 if (!_isQuoted(inSQuotedKey, inDQuotedKey))
                 {
                     if (bInInlBracket)
@@ -725,7 +725,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             }
             else if (sc.ch == '{')
             {
-                auto p = static_cast<Sci_Position>(sc.currentPos);
+                //auto p = static_cast<Sci_Position>(sc.currentPos);
                 if (!_isQuoted(inSQuotedKey, inDQuotedKey))
                 {
                     if (bInInlBracket)
