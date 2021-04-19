@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.417.(build_#) (2021-04-17)
+Current BETA/RC Version 5.21.419.(build_#) (2021-04-19)
 ========================================================
 
 --------------------------------------------------------
@@ -60,6 +60,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.419.1]- Move some Lexer related functions to other module.
+[.419.1]- Enable compiler warnings level 4 and issue "Warnings as Errors" (for Lexilla, Scintilla, grepWinNP3).
 [.417.1]- Remove short-note from wrap around match tooltip.
 [.416.1]- Save bookmarks in file history in case of "Save as...".
 [.416.1]- Minimize usage of deprecated LCID/LANGID for MiniPath.
@@ -96,6 +98,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.419.1]- Apply provided Scintilla patch.
+[.419.1]- Stream comment for .AU3 files.
+[.419.1]- "grepWinNP3": fix compiler warning Release Win32 (GRE).
 [.416.2]- Workaround Scintilla text-rendering bug, if line-number margin width set to 0 (so use 1 instead).
 [.416.1]- Save Schema config in case of inifile from scratch.
 [.415.1]- Small correction to Line Cut feature (thin selection).
