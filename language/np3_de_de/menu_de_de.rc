@@ -206,13 +206,18 @@ BEGIN
         END
         POPUP "&Selektion"
         BEGIN
-            MENUITEM "&Text Einrückung",                            IDM_EDIT_INDENT
-            MENUITEM "Text &Rückzug",                               IDM_EDIT_UNINDENT
+            MENUITEM "&Text Einrückung",                         IDM_EDIT_INDENT
+            MENUITEM "Text &Rückzug",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Zeilenkommentar (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "&Erweiterter Zeilenkommentar\tCtrl+Alt+Q",    IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            POPUP "&Zeilenkommentar"
+            BEGIN
+                MENUITEM "&Toggle\tCtrl+Q",                      IDM_EDIT_LINECOMMENT
+                MENUITEM "&Einfügen\tCtrl+Alt+Q",                IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "Ent&fernen)\tCtrl+Alt+Shift+Q",        IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Bearbeitung\tAlt+Shift+Q",            IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "&Mehrzeilenkommentar\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
+            MENUITEM "&Mehrzeilenkommentar\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Umschließe Selektion"
             BEGIN
