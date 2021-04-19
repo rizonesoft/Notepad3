@@ -914,16 +914,51 @@ static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t
 
 #define Style_StrGetAttribute(lpszStyle, name)  Style_StrGetAttributeEx((lpszStyle), (name), StringCchLen((name),0))
 
-// font weight
-#define Style_StrGetAttrThin(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"thin")
-#define Style_StrGetAttrExtraLight(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"extralight")
-#define Style_StrGetAttrLight(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"light")
-#define Style_StrGetAttrNormal(lpszStyle)       Style_StrGetAttribute((lpszStyle), L"normal")
-#define Style_StrGetAttrMedium(lpszStyle)       Style_StrGetAttribute((lpszStyle), L"medium")
-#define Style_StrGetAttrSemiBold(lpszStyle)     Style_StrGetAttribute((lpszStyle), L"semibold")
-#define Style_StrGetAttrBold(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"bold")
-#define Style_StrGetAttrExtraBold(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"extrabold")
-#define Style_StrGetAttrHeavy(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"heavy")
+// Font Weights
+typedef enum _np3_fw {
+    NP3_FW_DONT_CARE = FW_DONTCARE,    //   0
+    NP3_FW_THIN = FW_THIN,             // 100
+    NP3_FW_EXTRALIGHT = FW_EXTRALIGHT, // 200 (also ULTRALIGHT)
+    NP3_FW_LIGHT = FW_LIGHT,           // 300
+    NP3_FW_SEMILIGHT = 350,            // 350
+    NP3_FW_REGULAR = FW_REGULAR,       // 400 (also NORMAL)
+    NP2_FW_RETINA = 450,               // 450
+    NP3_FW_MEDIUM = FW_MEDIUM,         // 500
+    NP3_FW_SEMIBOLD = FW_SEMIBOLD,     // 600 (also DEMIBOLD)
+    NP3_FW_BOLD = FW_BOLD,             // 700
+    NP3_FW_EXTRABOLD = FW_EXTRABOLD,   // 800 (also ULTRABLOD)
+    NP3_FW_HEAVY = FW_HEAVY,           // 900 (also BLACK)
+    NP3_FW_EXTRABLACK = 950            // 950 (also ULTRABLACK)
+} NP3_FONT_WEIGHT;
+
+
+static const WCHAR *const FontWeightArray[] = {
+    L"thin",       //  0
+    L"extralight", //  1
+    L"light",      //  2
+    L"semilight",  //  3
+    L"regular",    //  4
+    L"retina",     //  5
+    L"medium",     //  6
+    L"semibold",   //  7
+    L"bold",       //  8
+    L"extrabold",  //  9
+    L"heavy",      // 10
+    L"extrablack"  // 11
+};
+
+#define Style_StrGetAttrThin(lpszStyle)       Style_StrGetAttribute((lpszStyle), FontWeightArray[0])
+#define Style_StrGetAttrExtraLight(lpszStyle) Style_StrGetAttribute((lpszStyle), FontWeightArray[1])
+#define Style_StrGetAttrLight(lpszStyle)      Style_StrGetAttribute((lpszStyle), FontWeightArray[2])
+#define Style_StrGetAttrSemiLight(lpszStyle)  Style_StrGetAttribute((lpszStyle), FontWeightArray[3])
+#define Style_StrGetAttrRegular(lpszStyle)    Style_StrGetAttribute((lpszStyle), FontWeightArray[4])
+#define Style_StrGetAttrRetina(lpszStyle)     Style_StrGetAttribute((lpszStyle), FontWeightArray[5])
+#define Style_StrGetAttrMedium(lpszStyle)     Style_StrGetAttribute((lpszStyle), FontWeightArray[6])
+#define Style_StrGetAttrSemiBold(lpszStyle)   Style_StrGetAttribute((lpszStyle), FontWeightArray[7])
+#define Style_StrGetAttrBold(lpszStyle)       Style_StrGetAttribute((lpszStyle), FontWeightArray[8])
+#define Style_StrGetAttrExtraBold(lpszStyle)  Style_StrGetAttribute((lpszStyle), FontWeightArray[9])
+#define Style_StrGetAttrHeavy(lpszStyle)      Style_StrGetAttribute((lpszStyle), FontWeightArray[10])
+#define Style_StrGetAttrExtraBlack(lpszStyle) Style_StrGetAttribute((lpszStyle), FontWeightArray[11])
 
 #if USE_FONT_STRETCH
 // font stretch
@@ -1777,9 +1812,9 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
     Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &bckgrnd, true);
     bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, alpha);
 
-    int strokeWidth = FW_NORMAL;
+    int strokeWidth = NP3_FW_DONT_CARE;
     if (!Style_StrGetWeightValue(lpszStyle, &strokeWidth)) {
-        strokeWidth = FW_NORMAL;
+        strokeWidth = NP3_FW_REGULAR;
     }
     strokeWidth >>= 2;
 
@@ -2674,32 +2709,38 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 //
 bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* weight)
 {
-    int iFontWeight = -1;
+    int iFontWeight = NP3_FW_DONT_CARE;
 
     if (Style_StrGetAttrThin(lpszWeight)) {
-        iFontWeight = FW_THIN;
+        iFontWeight = NP3_FW_THIN;
     } else if (Style_StrGetAttrExtraLight(lpszWeight)) {
-        iFontWeight = FW_EXTRALIGHT;
+        iFontWeight = NP3_FW_EXTRALIGHT;
     } else if (Style_StrGetAttrLight(lpszWeight)) {
-        iFontWeight = FW_LIGHT;
-    } else if (Style_StrGetAttrNormal(lpszWeight)) {
-        iFontWeight = FW_NORMAL;
+        iFontWeight = NP3_FW_LIGHT;
+    } else if (Style_StrGetAttrSemiLight(lpszWeight)) {
+        iFontWeight = NP3_FW_SEMILIGHT;
+    } else if (Style_StrGetAttrRegular(lpszWeight)) {
+        iFontWeight = NP3_FW_REGULAR;
+    } else if (Style_StrGetAttrRetina(lpszWeight)) {
+        iFontWeight = NP2_FW_RETINA;
     } else if (Style_StrGetAttrMedium(lpszWeight)) {
-        iFontWeight = FW_MEDIUM;
+        iFontWeight = NP3_FW_MEDIUM;
     } else if (Style_StrGetAttrSemiBold(lpszWeight)) {
-        iFontWeight = FW_SEMIBOLD;
+        iFontWeight = NP3_FW_SEMIBOLD;
     } else if (Style_StrGetAttrBold(lpszWeight)) {
-        iFontWeight = FW_BOLD;
+        iFontWeight = NP3_FW_BOLD;
     } else if (Style_StrGetAttrExtraBold(lpszWeight)) {
-        iFontWeight = FW_EXTRABOLD;
+        iFontWeight = NP3_FW_EXTRABOLD;
     } else if (Style_StrGetAttrHeavy(lpszWeight)) {
-        iFontWeight = FW_HEAVY;
+        iFontWeight = NP3_FW_HEAVY;
+    } else if (Style_StrGetAttrExtraBlack(lpszWeight)) {
+        iFontWeight = NP3_FW_EXTRABLACK;
     }
 
-    if (iFontWeight >= 0) {
+    if (iFontWeight > NP3_FW_DONT_CARE) {
         *weight = iFontWeight;
     }
-    return ((iFontWeight < 0) ? false : true);
+    return ((iFontWeight <= NP3_FW_DONT_CARE) ? false : true);
 }
 
 
@@ -2709,28 +2750,39 @@ bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* weight)
 //
 void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
 {
-    if (fontWeight <= FW_THIN) {
-        StringCchCat(lpszWeight, cchSize, L"; thin");
-    } else if (fontWeight <= FW_EXTRALIGHT) {
-        StringCchCat(lpszWeight, cchSize, L"; extralight");
-    } else if (fontWeight <= FW_LIGHT) {
-        StringCchCat(lpszWeight, cchSize, L"; light");
-    } else if (fontWeight <= FW_NORMAL) {
-        //~StringCchCat(lpszWeight, cchSize, L"; normal");
-        //StringCchCat(lpszWeight, cchSize, L""); // std
-    } else if (fontWeight <= FW_MEDIUM) {
-        //~StringCchCat(lpszWeight, cchSize, L"; medium");
-        //StringCchCat(lpszWeight, cchSize, L""); // std
-    } else if (fontWeight <= FW_SEMIBOLD) {
-        StringCchCat(lpszWeight, cchSize, L"; semibold");
-    } else if (fontWeight <= FW_BOLD) {
-        StringCchCat(lpszWeight, cchSize, L"; bold");
-    } else if (fontWeight <= FW_EXTRABOLD) {
-        StringCchCat(lpszWeight, cchSize, L"; extrabold");
-    } else { // (fontWeight >= FW_HEAVY)
-        StringCchCat(lpszWeight, cchSize, L"; heavy");
+    const WCHAR * pFontWeight = NULL;
+    if (fontWeight <= NP3_FW_THIN) {
+        pFontWeight = FontWeightArray[0];
+    } else if (fontWeight <= NP3_FW_EXTRALIGHT) {
+        pFontWeight = FontWeightArray[1];
+    } else if (fontWeight <= NP3_FW_LIGHT) {
+        pFontWeight = FontWeightArray[2];
+    } else if (fontWeight <= NP3_FW_SEMILIGHT) {
+        pFontWeight = FontWeightArray[3];
+    } else if (fontWeight <= NP3_FW_REGULAR) {
+        //pFontWeight = FontWeightArray[4]; // default
+    } else if (fontWeight <= NP2_FW_RETINA) {
+        pFontWeight = FontWeightArray[5];
+    } else if (fontWeight <= NP3_FW_MEDIUM) {
+        pFontWeight = FontWeightArray[6];
+    } else if (fontWeight <= NP3_FW_SEMIBOLD) {
+        pFontWeight = FontWeightArray[7];
+    } else if (fontWeight <= NP3_FW_BOLD) {
+        pFontWeight = FontWeightArray[8];
+    } else if (fontWeight <= NP3_FW_EXTRABOLD) {
+        pFontWeight = FontWeightArray[9];
+    } else if (fontWeight <= NP3_FW_HEAVY) {
+        pFontWeight = FontWeightArray[10];
+    } else { // (fontWeight >= NP3_FW_EXTRABLACK)
+        pFontWeight = FontWeightArray[11];
+    }
+
+    if (pFontWeight) {
+        StringCchCat(lpszWeight, cchSize, L"; ");
+        StringCchCat(lpszWeight, cchSize, pFontWeight);
     }
 }
+
 
 #if USE_FONT_STRETCH
 //=============================================================================
@@ -3006,27 +3058,37 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
             }
         }
 
+        const WCHAR *pFontWeight = NULL;
         if (Style_StrGetAttrThin(lpszStyleSrc) && !Style_StrGetAttrThin(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; thin");
+            pFontWeight = FontWeightArray[0];
         } else if (Style_StrGetAttrExtraLight(lpszStyleSrc) && !Style_StrGetAttrExtraLight(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extralight");
+            pFontWeight = FontWeightArray[1];
         } else if (Style_StrGetAttrLight(lpszStyleSrc) && !Style_StrGetAttrLight(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; light");
-        } else if (Style_StrGetAttrNormal(lpszStyleSrc) && !Style_StrGetAttrNormal(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
+            pFontWeight = FontWeightArray[2];
+        } else if (Style_StrGetAttrSemiLight(lpszStyleSrc) && !Style_StrGetAttrSemiLight(lpszStyleDest)) {
+            pFontWeight = FontWeightArray[3];
+        } else if (Style_StrGetAttrRegular(lpszStyleSrc) && !Style_StrGetAttrRegular(lpszStyleDest)) {
+            //pFontWeight = FontWeightArray[4];
+        } else if (Style_StrGetAttrRetina(lpszStyleSrc) && !Style_StrGetAttrRetina(lpszStyleDest)) {
+            pFontWeight = FontWeightArray[5];
         } else if (Style_StrGetAttrMedium(lpszStyleSrc) && !Style_StrGetAttrMedium(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; medium");
+            pFontWeight = FontWeightArray[6];
         } else if (Style_StrGetAttrSemiBold(lpszStyleSrc) && !Style_StrGetAttrSemiBold(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; semibold");
+            pFontWeight = FontWeightArray[7];
         } else if (Style_StrGetAttrBold(lpszStyleSrc) && !Style_StrGetAttrBold(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; bold");
+            pFontWeight = FontWeightArray[8];
         } else if (Style_StrGetAttrExtraBold(lpszStyleSrc) && !Style_StrGetAttrExtraBold(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extrabold");
+            pFontWeight = FontWeightArray[9];
         } else if (Style_StrGetAttrHeavy(lpszStyleSrc) && !Style_StrGetAttrHeavy(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; heavy");
+            pFontWeight = FontWeightArray[10];
+        } else if (Style_StrGetAttrExtraBlack(lpszStyleSrc) && !Style_StrGetAttrExtraBlack(lpszStyleDest)) {
+            pFontWeight = FontWeightArray[11];
         }
-        //else
-        //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; regular");  // -> default
+        if (pFontWeight) {
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), pFontWeight);
+        }
+
 
         if (Style_StrGetAttrItalic(lpszStyleSrc) && !Style_StrGetAttrItalic(lpszStyleDest)) {
             StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
@@ -3245,7 +3307,7 @@ CASE_WM_CTLCOLOR_SET:
     default:
         break;
     }
-    return FALSE;	// Allow the default handler a chance to process
+    return 0;	// Allow the default handler a chance to process
 }
 
 //=============================================================================
@@ -3296,7 +3358,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     ReleaseDC(hwnd, hdc);
 
     // Font Weight
-    int iFontWeight = FW_NORMAL;
+    int iFontWeight = NP3_FW_REGULAR;
     Style_StrGetWeightValue(lpszStyle, &iFontWeight);
 
 #if USE_FONT_STRETCH
@@ -3357,7 +3419,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     cf.nFontType = SCREEN_FONTTYPE;
     cf.lpszStyle = flagUseStyle ? szStyleStrg : NULL;
 
-    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK | CF_FORCEFONTEXIST | flagUseStyle; //~ CF_USESTYLE | CF_NOSCRIPTSEL
+    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK | CF_SCREENFONTS | flagUseStyle; //~ CF_USESTYLE | CF_NOSCRIPTSEL
 
     cf.Flags |= (SciCall_GetTechnology() != SC_TECHNOLOGY_DEFAULT) ? CF_SCALABLEONLY : 0;
     cf.Flags |= bWithEffects ? CF_EFFECTS : 0;

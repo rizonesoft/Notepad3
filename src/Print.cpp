@@ -288,7 +288,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     int footerLineHeight = MulDiv(7,ptDpi.y, 72);
     HFONT fontFooter = CreateFont(footerLineHeight,
                                   0, 0, 0,
-                                  FW_NORMAL,
+                                  FW_REGULAR,
                                   0,
                                   0,
                                   0, 0, 0,
