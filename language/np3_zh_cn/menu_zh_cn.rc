@@ -209,8 +209,13 @@ BEGIN
             MENUITEM "增加缩进(&I)",                           IDM_EDIT_INDENT
             MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "切换行注释(&C)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
-            MENUITEM "使用矩形编辑模式切换行注释(&O)\tCtrl+Alt+Q",             IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            POPUP "Line &Comment"
+            BEGIN
+                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            END
             MENUITEM SEPARATOR
             MENUITEM "添加块注释(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

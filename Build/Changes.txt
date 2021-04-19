@@ -40,6 +40,7 @@ Current BETA/RC Version 5.21.419.(build_#) (2021-04-19)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.419.2]- Line Comment Add/Remove commands, additonal to existing Toggle.
 [.415.1]- Cut lines for rectangular and multi selection.
 [.412.1]- Use 'Ctrl+' key to force dropping files into new instance (Ctrl+ for new instance).
 [.402.1]- ScintillaWin horizontal mouse-wheel support.
@@ -60,6 +61,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.419.2]- Comment BockEdit shortcut changed (Ctl+Alt+Q => Alt+Shift+Q).
+[.419.2]- Comment has separate popup menu (Edit -> Selection).
 [.419.1]- Move some Lexer related functions to other module.
 [.419.1]- Enable compiler warnings level 4 and issue "Warnings as Errors" (for Lexilla, Scintilla, grepWinNP3).
 [.417.1]- Remove short-note from wrap around match tooltip.
@@ -144,6 +147,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
+[.419.2]- Removing the font-style string for font selection.
 [.411.1]- Remove deprecated WinXP support (no horiz. mouse wheel).
 [.311.1]- Obsolete SCI_LEXER preproc symbol / no need to link lexers in Scintilla.
 

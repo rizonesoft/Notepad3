@@ -209,8 +209,13 @@ BEGIN
             MENUITEM "&Aumentar la sangría",                            IDM_EDIT_INDENT
             MENUITEM "&Reducir la sangría",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Comentario de línea (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-            MENUITEM "Editar bloque de &comentario de línea\tCtrl+Alt+Q",   IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            POPUP "&Comentario de línea"
+            BEGIN
+                MENUITEM "&Toggle\tCtrl+Q",                             IDM_EDIT_LINECOMMENT
+                MENUITEM "&Add\tCtrl+Alt+Q",                            IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Eliminar\tCtrl+Alt+Shift+Q",                 IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Editar bloque de comentario\tAlt+Shift+Q",   IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            END
             MENUITEM SEPARATOR
             MENUITEM "Comentario &multilíneas\tCtrl+Shift+Q",               IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts for Notepad3 ***              date: 2021/03/09
+*** Keyboard Shortcuts for Notepad3 ***              date: 2021-04-19
 ---------------------------------------------------------------------
 
 
@@ -111,8 +111,6 @@
 
       Selection
       ---------
-        Ctrl+Q                Block Comment (Toggle).
-        Ctrl+Alt+Q            Line Comment Block Edit
         Ctrl+Shift+Q          Stream Comment.
         Ctrl+D                Duplicate Selection or Line.
         Alt+B                 Pad with Blanks.
@@ -128,6 +126,13 @@
         Tab                   Indent Selected Block.
         Shift+Tab             Unindent Selected Block.
         Ctrl+Tab              Insert Tabulator.
+
+          Line Comment
+          ------------
+            Ctrl+Q                Toggle.
+            Ctrl+Alt+Q            Add.
+            Ctrl+Alt+Shift+Q      Remove.
+            Alt+Shift+Q           Block Edit.
 
           Enclose Selection
           ------------------
