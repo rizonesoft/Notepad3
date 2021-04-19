@@ -3269,8 +3269,14 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
 
     // font style
+    DWORD flagUseStyle = 0; // = CF_USESTYLE; ~ don't use 
+    // NOTE:  To globalize your application, you should specify the style by using 
+    // the lfWeight and lfItalic members of the LOGFONT structure pointed to by lpLogFont.
+    // The style name may change depending on the system user interface language.
     WCHAR szStyleStrg[LF_FULLFACESIZE] = { L'\0' };
-    Style_StrGetFontStyle(lpszStyle, szStyleStrg, COUNTOF(szStyleStrg));
+    if (flagUseStyle) {
+        Style_StrGetFontStyle(lpszStyle, szStyleStrg, COUNTOF(szStyleStrg));
+    }
 
     int iCharSet = SC_CHARSET_DEFAULT;
     Style_StrGetCharSet(lpszStyle, &iCharSet);
@@ -3326,7 +3332,6 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     // --------------------------------------------------------------------------
 
     LOGFONT lf = { 0 };
-    StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
     lf.lfCharSet = (BYTE)iCharSet;
     lf.lfHeight = iFontHeight;
     lf.lfWidth = iFontStretch;
@@ -3335,6 +3340,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     lf.lfUnderline = (BYTE)(BOOL)bIsUnderline;
     lf.lfStrikeOut = (BYTE)(BOOL)bIsStrikeout;
     lf.lfQuality = (BYTE)iQuality;
+    StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
     //~lf.lfClipPrecision = (BYTE)CLIP_DEFAULT_PRECIS;
     //~lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 
@@ -3349,9 +3355,9 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     cf.lpLogFont = &lf;
     cf.iPointSize = (INT)float2int(fFontSize * 10.0f);
     cf.nFontType = SCREEN_FONTTYPE;
-    cf.lpszStyle = szStyleStrg;
+    cf.lpszStyle = flagUseStyle ? szStyleStrg : NULL;
 
-    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK | CF_FORCEFONTEXIST; //~ CF_USESTYLE | CF_NOSCRIPTSEL
+    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK | CF_FORCEFONTEXIST | flagUseStyle; //~ CF_USESTYLE | CF_NOSCRIPTSEL
 
     cf.Flags |= (SciCall_GetTechnology() != SC_TECHNOLOGY_DEFAULT) ? CF_SCALABLEONLY : 0;
     cf.Flags |= bWithEffects ? CF_EFFECTS : 0;
@@ -3430,7 +3436,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
         }
     }
 
-    if (StrIsNotEmpty(cf.lpszStyle)) {
+    if (flagUseStyle && StrIsNotEmpty(cf.lpszStyle)) {
         if (StrStr(lpszStyle, L"fstyle:")) {
             StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; fstyle:");
             StringCchCat(szNewStyle, COUNTOF(szNewStyle), cf.lpszStyle);
