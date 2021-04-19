@@ -9090,8 +9090,7 @@ void UpdateMarginWidth(const bool bForce)
             SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
         }
     } else {
-        // TODO: SCI Bug if set to 0 (=invisible), workaround use 1px 
-        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, +1);
+        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
     }
     Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
     Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
