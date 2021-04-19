@@ -40,6 +40,7 @@ Current BETA/RC Version 5.21.419.(build_#) (2021-04-19)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.419.3]- add font weights retina(450), semi-light(350) and extra-black(950).
 [.419.2]- Line Comment Add/Remove commands, additonal to existing Toggle.
 [.415.1]- Cut lines for rectangular and multi selection.
 [.412.1]- Use 'Ctrl+' key to force dropping files into new instance (Ctrl+ for new instance).
