@@ -30,7 +30,6 @@
 #include "crypto/crypto.h"
 #include "uthash/utarray.h"
 #include "uthash/utlist.h"
-//#include "uthash/utstring.h"
 #include "tinyexpr/tinyexpr.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"
@@ -39,7 +38,6 @@
 #include "DarkMode/DarkMode.h"
 
 #include "SciCall.h"
-//#include "SciLexer.h"
 
 #include "Edit.h"
 
@@ -7898,9 +7896,9 @@ void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines)
     if (!bHideLines) {
         // reset
         SciCall_FoldAll(EXPAND);
-        Style_SetFoldingAvailability(Style_GetCurrentLexerPtr());
+        Lexer_SetFoldingAvailability(Style_GetCurrentLexerPtr());
         FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
-        Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+        Lexer_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
         Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
         Sci_ColouriseAll();
         EditMarkAllOccurrences(hwnd, true);
@@ -7908,7 +7906,7 @@ void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines)
         // prepare hidden (folding) settings
         FocusedView.CodeFoldingAvailable = true;
         FocusedView.ShowCodeFolding      = true;
-        Style_SetFoldingFocusedView();
+        Lexer_SetFoldingFocusedView();
         Style_SetFolding(hwnd, true);
 
         int const baseLevel = SC_FOLDLEVELBASE;

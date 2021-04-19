@@ -47,9 +47,6 @@ bool   Style_InsertThemesMenu(HMENU hMenuBar);
 void   Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx);
 
 float  Style_GetCurrentFontSize();
-void   Style_SetFoldingAvailability(PEDITLEXER pLexer);
-void   Style_SetFoldingProperties(bool active);
-void   Style_SetFoldingFocusedView();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
 void   Style_FillRelatedStyles(HWND hwnd, const PEDITLEXER pLexer);
 void   Style_SetUrlHotSpot(HWND hwnd);

@@ -166,3 +166,12 @@ extern EDITLEXER lexYAML;          // YAML
 "variant wend when while with withevents writeonly xor"
 
 // -----------------------------------------------------------------------------
+
+void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen);
+bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen);
+void Lexer_SetFoldingAvailability(PEDITLEXER pLexer);
+void Lexer_SetFoldingProperties(bool active);
+void Lexer_SetFoldingFocusedView();
+void Lexer_SetLexerSpecificProperties(const int lexerId);
+
+// -----------------------------------------------------------------------------
