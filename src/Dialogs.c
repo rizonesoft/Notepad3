@@ -6098,7 +6098,7 @@ HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, b
         fontSize = MulDiv(fontSize, USER_DEFAULT_SCREEN_DPI, dpiSys.y); // correction
         fontSize = ScaleIntByDPI(fontSize, dpiDlg);
         ncm.lfMessageFont.lfHeight = -(MulDiv(fontSize, GetDeviceCaps(hdcSys, LOGPIXELSY), 72) >> 10);
-        ncm.lfMessageFont.lfWeight = bold ? FW_BOLD : FW_NORMAL;
+        ncm.lfMessageFont.lfWeight = bold ? FW_BOLD : FW_REGULAR;
         HFONT const hFont = CreateFontIndirectW(&ncm.lfMessageFont);
         if (idDlgItem > 0) {
             SendDlgItemMessageW(hdlg, idDlgItem, WM_SETFONT, (WPARAM)hFont, true);

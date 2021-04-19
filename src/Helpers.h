@@ -829,7 +829,7 @@ inline bool IsReadOnly(const DWORD dwFileAttr)
 
 inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc)
 {
-    return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
+    return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
 }
 
 // ----------------------------------------------------------------------------
