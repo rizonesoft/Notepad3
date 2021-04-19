@@ -3646,6 +3646,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     WCHAR cmnt[8];
     Lexer_GetLineCommentStrg(cmnt, COUNTOF(cmnt));
     EnableCmd(hmenu, IDM_EDIT_LINECOMMENT, StrIsNotEmpty(cmnt) && !ro);
+    EnableCmd(hmenu, IDM_EDIT_LINECOMMENT_ADD, StrIsNotEmpty(cmnt) && !ro);
+    EnableCmd(hmenu, IDM_EDIT_LINECOMMENT_REMOVE, StrIsNotEmpty(cmnt) && !ro);
+    EnableCmd(hmenu, IDM_EDIT_LINECOMMENT_BLOCKEDIT, StrIsNotEmpty(cmnt) && !ro);
 
     Lexer_GetStreamCommentStrgs(cmnt, cmnt, COUNTOF(cmnt));
     EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT, StrIsNotEmpty(cmnt) && !ro);
@@ -4830,11 +4833,23 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     break;
 
 
-    case IDM_EDIT_LINECOMMENT: {
+    case IDM_EDIT_LINECOMMENT:
+    case IDM_EDIT_LINECOMMENT_ADD:
+    case IDM_EDIT_LINECOMMENT_REMOVE: {
         WCHAR comment[8] = { L'\0' };
         bool const bAtStart = Lexer_GetLineCommentStrg(comment, COUNTOF(comment));
         if (StrIsNotEmpty(comment)) {
-            EditToggleLineCommentsSimple(comment, bAtStart);
+            switch (iLoWParam) {
+            case IDM_EDIT_LINECOMMENT_ADD:
+                EditToggleLineCommentsSimple(comment, bAtStart, LNC_ADD);
+                break;
+            case IDM_EDIT_LINECOMMENT_REMOVE:
+                EditToggleLineCommentsSimple(comment, bAtStart, LNC_REMOVE);
+                break;
+            default:
+                EditToggleLineCommentsSimple(comment, bAtStart, LNC_TOGGLE);
+                break;
+            }
         }
     }
     break;

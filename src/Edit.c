@@ -3498,8 +3498,8 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
 //
 //  EditToggleLineCommentsSimple()
 //
-void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart)
-{
+void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCmtMode_t mode) {
+
     _SAVE_TARGET_RANGE_;
 
     bool const bStraightSel = SciCall_GetAnchor() <= SciCall_GetCurrentPos();
@@ -3559,78 +3559,54 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart)
 
     UndoTransActionBegin();
 
-    int iAction = 0;
-    bool const bKeepActionOf1stLine = false;
-
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
-
-        if (!bKeepActionOf1stLine) {
-            iAction = 0;
-        }
 
         DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if (iIndentPos == SciCall_GetLineEndPosition(iLine)) {
             // don't set comment char on "empty" (white-space only) lines
-            //~iAction = 1;
+            //~iAction = LNC_ADD;
             continue;
         }
 
         const char* tchBuf = SciCall_GetRangePointer(iIndentPos, cchComment + 1);
-        if (StrCmpNA(tchBuf, mszComment, (int)cchComment) == 0) {
-            // remove comment chars incl. Postfix
-            DocPos const iSelPos = iIndentPos + cchComment;
-            switch (iAction) {
-            case 0:
-                iAction = 2;
-            case 2:
+        bool const bHasLnCmnt = (StrCmpNA(tchBuf, mszComment, (int)cchComment) == 0);
+        bool const bHasPrefix = (StrCmpNA(tchBuf, mszPrefix, (int)cchPrefix) == 0);
+        int iAction = (mode == LNC_TOGGLE) ? ((bHasLnCmnt || bHasPrefix) ? LNC_REMOVE : LNC_ADD) : mode;
+
+        switch (iAction) {
+        case LNC_ADD: {
+            DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
+            SciCall_InsertText(iPos, mszComment);
+            if (iLine == iLineStart) {
+                iSelStartOffset += (iSelStart <= iPos) ? 0 : cchComment;
+            }
+            DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
+            iSelEndOffset += (movedSelEnd <= iPos) ? 0 : cchComment;
+        }
+        break;
+
+        case LNC_REMOVE: {
+            if (bHasLnCmnt || bHasPrefix) {
+                // remove comment chars (incl. Postfix)
+                DocPos const cch = bHasLnCmnt ? cchComment : cchPrefix;
+                DocPos const iSelPos = iIndentPos + cch;
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
                 SciCall_ReplaceTarget(-1, "");
                 if (iLine == iLineStart) {
-                    iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchComment;
+                    iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos)
+                                                                                             : cch;
                 }
                 DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
-                iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchComment;
-                break;
-            case 1:
-                break;
+                iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos)
+                                                                                          : cch;
             }
-        } else if (StrCmpNA(tchBuf, mszPrefix, (int)cchPrefix) == 0) {
-            // remove pure comment chars
-            DocPos const iSelPos = iIndentPos + cchPrefix;
-            switch (iAction) {
-            case 0:
-                iAction = 2;
-            case 2:
-                SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(-1, "");
-                if (iLine == iLineStart) {
-                    iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos) : cchPrefix;
-                }
-                DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
-                iSelEndOffset -= (movedSelEnd < iIndentPos) ? 0 : (movedSelEnd < iSelPos) ? (movedSelEnd - iIndentPos) : cchPrefix;
-                break;
-            case 1:
-                break;
-            }
-        } else {
-            // set comment chars at indent pos
-            switch (iAction) {
-            case 0:
-                iAction = 1;
-            case 1: {
-                DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
-                SciCall_InsertText(iPos, mszComment);
-                if (iLine == iLineStart) {
-                    iSelStartOffset += (iSelStart <= iPos) ? 0 : cchComment;
-                }
-                DocPos const movedSelEnd = iSelEnd + iSelEndOffset;
-                iSelEndOffset += (movedSelEnd <= iPos) ? 0 : cchComment;
-            }
+        }
+        break;
+
+        default:
+        case LNC_TOGGLE:
             break;
-            case 2:
-                break;
-            }
         }
     }
 
