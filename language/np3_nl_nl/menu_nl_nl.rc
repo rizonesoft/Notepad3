@@ -209,8 +209,13 @@ BEGIN
             MENUITEM "&Inspringen",                                  IDM_EDIT_INDENT
             MENUITEM "Teru&gspringen",                               IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",            IDM_EDIT_LINECOMMENT
-            MENUITEM "Lijn &commentaarblok bewerken\tCtrl+Alt+Q",    IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            POPUP "Lijn commentaar"
+            BEGIN
+                MENUITEM "&Toggle\tCtrl+Q",                         IDM_EDIT_LINECOMMENT
+                MENUITEM "&Toevoegen\tCtrl+Alt+Q",                  IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Verwijderen\tCtrl+Alt+Shift+Q",          IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "Commentaarblok &bewerken\tAlt+Shift+Q",   IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            END
             MENUITEM SEPARATOR
             MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

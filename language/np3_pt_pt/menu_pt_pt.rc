@@ -209,8 +209,13 @@ BEGIN
             MENUITEM "&Indentar",                               IDM_EDIT_INDENT
             MENUITEM "&Desindentar",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Linha de comentário (Alternar)\tCtrl+Q",             IDM_EDIT_LINECOMMENT
-            MENUITEM "Edição de bloco de &comentário de linha\tCtrl+Alt+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            POPUP "Line &Comment"
+            BEGIN
+                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            END
             MENUITEM SEPARATOR
             MENUITEM "Vária&s linhas de comentário\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

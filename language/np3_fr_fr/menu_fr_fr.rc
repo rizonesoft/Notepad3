@@ -209,10 +209,15 @@ BEGIN
             MENUITEM "&Mettre en Retrait",                              IDM_EDIT_INDENT
             MENUITEM "&Réduire le Retrait",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Commentaire de Ligne (Alterner)\tCtrl+Q",            IDM_EDIT_LINECOMMENT
-            MENUITEM "Éditer bloc de Lignes de &Commentaires\tCtrl+Alt+Q",  IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            POPUP "&Commentaire de Ligne"
+            BEGIN
+                MENUITEM "&Alterner\tCtrl+Q",                           IDM_EDIT_LINECOMMENT
+                MENUITEM "&Ajouter\tCtrl+Alt+Q",                        IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Supprimer\tCtrl+Alt+Shift+Q",                IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Éditer Bloc de Commentaire\tAlt+Shift+Q",    IDM_EDIT_LINECOMMENT_BLOCKEDIT
+            END
             MENUITEM SEPARATOR
-            MENUITEM "Commentaire &Multiligne\tCtrl+Shift+Q",               IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Commentaire &Multiligne\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Entourer la Sélection"
             BEGIN
