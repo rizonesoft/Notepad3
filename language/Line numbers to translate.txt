@@ -1,0 +1,35 @@
+====================================================================================================
+==                                                                                                ==
+==  This .txt file is intended for Translators to communicate to them the Line Mumbers of the     ==
+==  "Added/Modified" items in the Resource files ("xx_yy.rc" and "grepWinNP3.lang").              ==
+==                                                                                                ==
+==                                                                     Last update:   20/04/2021  ==
+====================================================================================================
+
+March 2021:     Line numbers to translate_2021-03.png:  https://workupload.com/file/MrtH6U2RhKC
+
+April 2021:     Line numbers to translate_2021-04.png:  https://workupload.com/file/E7jnk9g7jKr
+
+May 2021:       Line numbers to translate_2021-05.png:  
+
+June 2021:      Line numbers to translate_2021-06.png:  
+
+July 2021:      Line numbers to translate_2021-07.png:  
+
+August 2021:    Line numbers to translate_2021-08.png:  
+
+September 2021: Line numbers to translate_2021-09.png:  
+
+October 2021:   Line numbers to translate_2021-10.png:  
+
+November 2021:  Line numbers to translate_2021-11.png:  
+
+December 2021:  Line numbers to translate_2021-12.png:  
+
+
+Comments and suggestions are welcome... 😃
+
+If you have any difficulties or questions, do not hesitate to contact me.
+
+hpwamr - MUI Coordinator
+---------------------------------------------------------------------------------------------------
