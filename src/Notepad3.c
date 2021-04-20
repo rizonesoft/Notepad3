@@ -4393,7 +4393,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 }
             }
         } else {
-            SciCall_Copy();
+            EditCopyMultiSelection(Globals.hwndEdit);
         }
     }
     break;

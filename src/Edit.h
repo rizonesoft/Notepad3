@@ -66,6 +66,7 @@ void EditMoveDown(HWND hwnd);
 bool EditSetCaretToSelectionStart();
 bool EditSetCaretToSelectionEnd();
 void EditCutLines(HWND hwnd);
+void EditCopyMultiSelection(HWND hwnd);
 void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend);
 void EditIndentBlock(HWND hwnd,int cmd, bool bFormatIndentation, bool bForceAll);
 void EditAlignText(int nMode);

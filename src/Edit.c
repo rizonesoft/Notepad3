@@ -2853,6 +2853,27 @@ void EditCutLines(HWND hwnd) {
 
 //=============================================================================
 //
+//  EditCopyMultiSelection()
+//
+void EditCopyMultiSelection(HWND hwnd) {
+
+    if (SciCall_IsSelectionEmpty()) {
+        return;
+    }
+    if (Sci_IsMultiSelection()) {
+        EditClearClipboard(hwnd);
+        DocPosU const selCount = SciCall_GetSelections();
+        for (DocPosU s = 0; s < selCount; ++s) {
+            EditCopyRangeAppend(hwnd, SciCall_GetSelectionNStart(s), SciCall_GetSelectionNEnd(s), true);
+        }
+    } else {
+        SciCall_Copy();
+    }
+}
+
+
+//=============================================================================
+//
 //  EditModifyLines()
 //
 void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
