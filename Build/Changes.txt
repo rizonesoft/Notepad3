@@ -66,6 +66,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.420.2]- Custom Font Selection Dialog.
 [.419.2]- Comment BockEdit shortcut changed (Ctl+Alt+Q => Alt+Shift+Q).
 [.419.2]- Comment has separate popup menu (Edit -> Selection).
 [.419.1]- Move some Lexer related functions to other module.
@@ -106,6 +107,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.420.2]- Bug retrieving Font SIze for Common Default vs. Lexer Specific.
+[.420.2]- Font Name handling retrieved from Common-Default vs. Lexer-Specific.
 [.420.1]- Copy multi-selection to clipboard: separate each match by line-break.
 [.419.1]- Apply provided Scintilla patch.
 [.419.1]- Stream comment for .AU3 files.
