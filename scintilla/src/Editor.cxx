@@ -4291,8 +4291,9 @@ void Editor::SetDragPosition(SelectionPosition newPos) {
 			CaretPolicy(CARET_SLOP | CARET_STRICT | CARET_EVEN, slop_x),
 			CaretPolicy(CARET_SLOP | CARET_STRICT | CARET_EVEN, slop_y)
 		};
-		MovedCaret(newPos, posDrag, true, dragCaretPolicies);
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		MovedCaret(newPos, posDrag, true, dragCaretPolicies);
+
 		caret.on = true;
 		FineTickerCancel(TickReason::caret);
 		if ((caret.active) && (caret.period > 0) && (newPos.Position() < 0))
@@ -4918,12 +4919,12 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 				DisplayCursor(Window::Cursor::hand);
 				SetHotSpotRange(&pt);
 			} else {
-				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 				if (hoverIndicatorPos != Sci::invalidPosition)
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 					if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::Cursor::hand); }
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				else
 					DisplayCursor(Window::Cursor::text);
-				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				SetHotSpotRange(nullptr);
 			}
 		}
@@ -5717,15 +5718,11 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 	case SCI_STYLESETBACK:
 		vs.styles[wParam].back = ColourDesired(static_cast<int>(lParam));
 		break;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case SCI_STYLESETBOLD:
 		vs.styles[wParam].weight = lParam != 0 ? SC_WEIGHT_BOLD : SC_WEIGHT_NORMAL;
 		break;
 	case SCI_STYLESETWEIGHT:
 		vs.styles[wParam].weight = static_cast<int>(lParam);
-		break;
-	case SCI_STYLESETSTRETCH:
-		vs.styles[wParam].stretch = static_cast<int>(lParam);
 		break;
 	case SCI_STYLESETITALIC:
 		vs.styles[wParam].italic = lParam != 0;
@@ -5747,10 +5744,12 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 	case SCI_STYLESETUNDERLINE:
 		vs.styles[wParam].underline = lParam != 0;
 		break;
-		// Added strike style, 2020-05-31
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	// Added strike style, 2020-05-31
 	case SCI_STYLESETSTRIKE:
 		vs.styles[wParam].strike = lParam != 0;
 		break;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case SCI_STYLESETCASE:
 		vs.styles[wParam].caseForce = static_cast<Style::CaseForce>(lParam);
 		break;
@@ -5758,7 +5757,6 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		vs.styles[wParam].characterSet = static_cast<int>(lParam);
 		pdoc->SetCaseFolder(nullptr);
 		break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case SCI_STYLESETVISIBLE:
 		vs.styles[wParam].visible = lParam != 0;
 		break;
@@ -5783,10 +5781,6 @@ sptr_t Editor::StyleGetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPar
 		return vs.styles[wParam].weight > SC_WEIGHT_NORMAL;
 	case SCI_STYLEGETWEIGHT:
 		return vs.styles[wParam].weight;
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case SCI_STYLEGETSTRETCH:
-		return vs.styles[wParam].stretch;
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case SCI_STYLEGETITALIC:
 		return vs.styles[wParam].italic ? 1 : 0;
 	case SCI_STYLEGETEOLFILLED:
@@ -6861,7 +6855,9 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return caretSticky;
 
 	case SCI_TOGGLECARETSTICKY:
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		caretSticky = caretSticky ? SC_CARETSTICKY_OFF : SC_CARETSTICKY_ON;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		break;
 
 	case SCI_GETCOLUMN:
@@ -7194,14 +7190,15 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_STYLESETBACK:
 	case SCI_STYLESETBOLD:
 	case SCI_STYLESETWEIGHT:
-	case SCI_STYLESETSTRETCH:
 	case SCI_STYLESETITALIC:
 	case SCI_STYLESETEOLFILLED:
 	case SCI_STYLESETSIZE:
 	case SCI_STYLESETSIZEFRACTIONAL:
 	case SCI_STYLESETFONT:
 	case SCI_STYLESETUNDERLINE:
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case SCI_STYLESETSTRIKE:
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case SCI_STYLESETCASE:
 	case SCI_STYLESETCHARACTERSET:
 	case SCI_STYLESETVISIBLE:
@@ -7214,14 +7211,15 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_STYLEGETBACK:
 	case SCI_STYLEGETBOLD:
 	case SCI_STYLEGETWEIGHT:
-	case SCI_STYLEGETSTRETCH:
 	case SCI_STYLEGETITALIC:
 	case SCI_STYLEGETEOLFILLED:
 	case SCI_STYLEGETSIZE:
 	case SCI_STYLEGETSIZEFRACTIONAL:
 	case SCI_STYLEGETFONT:
 	case SCI_STYLEGETUNDERLINE:
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case SCI_STYLEGETSTRIKE:
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case SCI_STYLEGETCASE:
 	case SCI_STYLEGETCHARACTERSET:
 	case SCI_STYLEGETVISIBLE:

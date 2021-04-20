@@ -46,7 +46,7 @@ void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, cons
 	PLATFORM_ASSERT(fs.fontName);
 	sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
-	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.stretch,  fs.italic, fs.extraFontFlag, technology, fs.characterSet);
+	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.italic, fs.extraFontFlag, technology, fs.characterSet);
 	font = Font::Allocate(fp);
 
 	ascent = static_cast<unsigned int>(surface.Ascent(font.get()));
@@ -376,7 +376,7 @@ void ViewStyle::ResetDefaultStyle() {
 	        ColourDesired(0xff,0xff,0xff),
 	        Platform::DefaultFontSize() * SC_FONT_SIZE_MULTIPLIER, fontNames.Save(Platform::DefaultFont()),
 	        SC_CHARSET_DEFAULT,
-	        SC_WEIGHT_NORMAL, SC_FONT_STRETCH_NORMAL, false, false, false, false, Style::CaseForce::mixed, true, true, false);
+	        SC_WEIGHT_NORMAL, false, false, false, false, Style::CaseForce::mixed, true, true, false);
 }
 
 void ViewStyle::ClearStyles() {

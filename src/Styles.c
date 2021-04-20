@@ -881,12 +881,12 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
 //=============================================================================
 //
-//  Style_StrGetAttributeEx()
+//  Style_StrHasAttribute()
 //
 // zufuliu: parse a style attribute separated by ';'
-// e.g.: 'bold', 'bold;', '; bold' and '; bold;'
+// e.g.: 'bold', ' bold;', '; bold ' and '; bold;'
 //
-static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t keyLen)
+static bool Style_StrHasAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t keyLen)
 {
     LPCWSTR p = StrStrI(lpszStyle, key);
     while (p) {
@@ -912,83 +912,78 @@ static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t
     return false;
 }
 
-#define Style_StrGetAttribute(lpszStyle, name)  Style_StrGetAttributeEx((lpszStyle), (name), StringCchLen((name),0))
+static __forceinline bool Style_StrHasAttribute(LPCWSTR lpszStyle, LPCWSTR name) {
+    return Style_StrHasAttributeEx(lpszStyle, name, StringCchLen(name, 0));
+}
 
 // Font Weights
-typedef enum _np3_fw {
-    NP3_FW_DONT_CARE = FW_DONTCARE,    //   0
-    NP3_FW_THIN = FW_THIN,             // 100
-    NP3_FW_EXTRALIGHT = FW_EXTRALIGHT, // 200 (also ULTRALIGHT)
-    NP3_FW_LIGHT = FW_LIGHT,           // 300
-    NP3_FW_SEMILIGHT = 350,            // 350
-    NP3_FW_REGULAR = FW_REGULAR,       // 400 (also NORMAL)
-    NP2_FW_RETINA = 450,               // 450
-    NP3_FW_MEDIUM = FW_MEDIUM,         // 500
-    NP3_FW_SEMIBOLD = FW_SEMIBOLD,     // 600 (also DEMIBOLD)
-    NP3_FW_BOLD = FW_BOLD,             // 700
-    NP3_FW_EXTRABOLD = FW_EXTRABOLD,   // 800 (also ULTRABLOD)
-    NP3_FW_HEAVY = FW_HEAVY,           // 900 (also BLACK)
-    NP3_FW_EXTRABLACK = 950            // 950 (also ULTRABLACK)
-} NP3_FONT_WEIGHT;
+typedef struct _fntwght {
+    LPCWSTR const wname;
+    int const weight;
+} FONTWEIGHT_T;
 
-
-static const WCHAR *const FontWeightArray[] = {
-    L"thin",       //  0
-    L"extralight", //  1
-    L"light",      //  2
-    L"semilight",  //  3
-    L"regular",    //  4
-    L"retina",     //  5
-    L"medium",     //  6
-    L"semibold",   //  7
-    L"bold",       //  8
-    L"extrabold",  //  9
-    L"heavy",      // 10
-    L"extrablack"  // 11
+static const FONTWEIGHT_T FontWeights[] = {
+    { L"thin",        FW_THIN       }, //  0
+    { L"semithin",    150           }, //  1
+    { L"extralight",  FW_EXTRALIGHT }, //  2
+    { L"lighter",     250           }, //  3
+    { L"light",       FW_LIGHT      }, //  4
+    { L"book",        350           }, //  5
+    { L"text",        375           }, //  6
+    { L"regular",     FW_REGULAR    }, //  7
+    { L"retina",      450           }, //  8
+    { L"medium",      FW_MEDIUM     }, //  9
+    { L"extramedium", 550           }, // 10
+    { L"semibold",    FW_SEMIBOLD   }, // 11
+    { L"dark",        650           }, // 12
+    { L"bold",        FW_BOLD       }, // 13
+    { L"bolder",      750           }, // 14
+    { L"extrabold",   FW_EXTRABOLD  }, // 15
+    { L"semiheavy",   850           }, // 16
+    { L"heavy",       FW_HEAVY      }, // 17
+    { L"extrablack",  950           }, // 18
+    { L"ultradark",   1000          }, // 19
 };
 
-#define Style_StrGetAttrThin(lpszStyle)       Style_StrGetAttribute((lpszStyle), FontWeightArray[0])
-#define Style_StrGetAttrExtraLight(lpszStyle) Style_StrGetAttribute((lpszStyle), FontWeightArray[1])
-#define Style_StrGetAttrLight(lpszStyle)      Style_StrGetAttribute((lpszStyle), FontWeightArray[2])
-#define Style_StrGetAttrSemiLight(lpszStyle)  Style_StrGetAttribute((lpszStyle), FontWeightArray[3])
-#define Style_StrGetAttrRegular(lpszStyle)    Style_StrGetAttribute((lpszStyle), FontWeightArray[4])
-#define Style_StrGetAttrRetina(lpszStyle)     Style_StrGetAttribute((lpszStyle), FontWeightArray[5])
-#define Style_StrGetAttrMedium(lpszStyle)     Style_StrGetAttribute((lpszStyle), FontWeightArray[6])
-#define Style_StrGetAttrSemiBold(lpszStyle)   Style_StrGetAttribute((lpszStyle), FontWeightArray[7])
-#define Style_StrGetAttrBold(lpszStyle)       Style_StrGetAttribute((lpszStyle), FontWeightArray[8])
-#define Style_StrGetAttrExtraBold(lpszStyle)  Style_StrGetAttribute((lpszStyle), FontWeightArray[9])
-#define Style_StrGetAttrHeavy(lpszStyle)      Style_StrGetAttribute((lpszStyle), FontWeightArray[10])
-#define Style_StrGetAttrExtraBlack(lpszStyle) Style_StrGetAttribute((lpszStyle), FontWeightArray[11])
+typedef enum _fw_idx {
+    FW_IDX_THIN = 0,
+    FW_IDX_SEMITHIN,
+    FW_IDX_EXTRALIGHT,
+    FW_IDX_LIGHTER,
+    FW_IDX_LIGHT,
+    FW_IDX_BOOK,
+    FW_IDX_TEXT,
+    FW_IDX_REGULAR,
+    FW_IDX_RETINA,
+    FW_IDX_MEDIUM,
+    FW_IDX_EXTRAMEDIUM,
+    FW_IDX_SEMIBOLD,
+    FW_IDX_DARK,
+    FW_IDX_BOLD,
+    FW_IDX_BOLDER,
+    FW_IDX_EXTRABOLD,
+    FW_IDX_SEMIHEAVY,
+    FW_IDX_HEAVY,
+    FW_IDX_EXTRABLACK,
+    FW_IDX_ULTRADARK
+} FW_IDX;
 
-#if USE_FONT_STRETCH
-// font stretch
-#define Style_StrGetAttrUltraCondensed(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"ultracondensed")
-#define Style_StrGetAttrExtraCondensed(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"extracondensed")
-#define Style_StrGetAttrCondensed(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"condensed")
-#define Style_StrGetAttrSemiCondensed(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"semicondensed")
-#define Style_StrGetAttrNormalStretch(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"normalstretch")
-#define Style_StrGetAttrMediumStretch(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"mediumstretch")
-#define Style_StrGetAttrSemiExpanded(lpszStyle)     Style_StrGetAttribute((lpszStyle), L"semiexpanded")
-#define Style_StrGetAttrExpanded(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"expanded")
-#define Style_StrGetAttrExtraExpanded(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"extraexpanded")
-#define Style_StrGetAttrUltraExpanded(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"ultraexpanded")
-#endif
 
 //// font quality
-//#define Style_StrGetAttrNone(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"none")
-//#define Style_StrGetAttrStdType(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"standard")
-//#define Style_StrGetAttrClearType(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"cleartype")
+//#define Style_StrHasAttrNone(lpszStyle)         Style_StrHasAttribute((lpszStyle), L"none")
+//#define Style_StrHasAttrStdType(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"standard")
+//#define Style_StrHasAttrClearType(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"cleartype")
 
 // font effects
-#define Style_StrGetAttrItalic(lpszStyle)       Style_StrGetAttribute((lpszStyle), L"italic")
-#define Style_StrGetAttrUnderline(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"underline")
-#define Style_StrGetAttrStrikeOut(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"strikeout")
-#define Style_StrGetAttrEOLFilled(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"eolfilled")
+#define Style_StrHasAttrItalic(lpszStyle)       Style_StrHasAttribute((lpszStyle), L"italic")
+#define Style_StrHasAttrUnderline(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"underline")
+#define Style_StrHasAttrStrikeOut(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"strikeout")
+#define Style_StrHasAttrEOLFilled(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"eolfilled")
 
 // caret style
-#define Style_StrGetAttrOvrBlck(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"ovrblck")
-#define Style_StrGetAttrBlock(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"block")
-#define Style_StrGetAttrNoBlink(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"noblink")
+#define Style_StrHasAttrOvrBlck(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"ovrblck")
+#define Style_StrHasAttrBlock(lpszStyle)        Style_StrHasAttribute((lpszStyle), L"block")
+#define Style_StrHasAttrNoBlink(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"noblink")
 
 
 //=============================================================================
@@ -1256,7 +1251,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, SC_ALPHA_OPAQUE*2/3, 0);
     }
 
-    if (Style_StrGetAttrEOLFilled(pCurrentStandard->Styles[STY_SEL_TXT].szValue)) { // selection eolfilled
+    if (Style_StrHasAttrEOLFilled(pCurrentStandard->Styles[STY_SEL_TXT].szValue)) { // selection eolfilled
         SendMessage(hwnd, SCI_SETSELEOLFILLED, 1, 0);
     } else {
         SendMessage(hwnd, SCI_SETSELEOLFILLED, 0, 0);
@@ -1812,9 +1807,9 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
     Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &bckgrnd, true);
     bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, alpha);
 
-    int strokeWidth = NP3_FW_DONT_CARE;
+    int strokeWidth = FW_DONTCARE;
     if (!Style_StrGetWeightValue(lpszStyle, &strokeWidth)) {
-        strokeWidth = NP3_FW_REGULAR;
+        strokeWidth = FontWeights[FW_IDX_REGULAR].weight;
     }
     strokeWidth >>= 2;
 
@@ -1990,7 +1985,7 @@ PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
         }
     } else if (StrIsNotEmpty(lpszMatch)) {
         for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
-            if (Style_StrGetAttribute(g_pLexArray[iLex]->szExtensions, lpszMatch)) {
+            if (Style_StrHasAttribute(g_pLexArray[iLex]->szExtensions, lpszMatch)) {
                 return g_pLexArray[iLex];
             }
         }
@@ -2709,38 +2704,18 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 //
 bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* weight)
 {
-    int iFontWeight = NP3_FW_DONT_CARE;
-
-    if (Style_StrGetAttrThin(lpszWeight)) {
-        iFontWeight = NP3_FW_THIN;
-    } else if (Style_StrGetAttrExtraLight(lpszWeight)) {
-        iFontWeight = NP3_FW_EXTRALIGHT;
-    } else if (Style_StrGetAttrLight(lpszWeight)) {
-        iFontWeight = NP3_FW_LIGHT;
-    } else if (Style_StrGetAttrSemiLight(lpszWeight)) {
-        iFontWeight = NP3_FW_SEMILIGHT;
-    } else if (Style_StrGetAttrRegular(lpszWeight)) {
-        iFontWeight = NP3_FW_REGULAR;
-    } else if (Style_StrGetAttrRetina(lpszWeight)) {
-        iFontWeight = NP2_FW_RETINA;
-    } else if (Style_StrGetAttrMedium(lpszWeight)) {
-        iFontWeight = NP3_FW_MEDIUM;
-    } else if (Style_StrGetAttrSemiBold(lpszWeight)) {
-        iFontWeight = NP3_FW_SEMIBOLD;
-    } else if (Style_StrGetAttrBold(lpszWeight)) {
-        iFontWeight = NP3_FW_BOLD;
-    } else if (Style_StrGetAttrExtraBold(lpszWeight)) {
-        iFontWeight = NP3_FW_EXTRABOLD;
-    } else if (Style_StrGetAttrHeavy(lpszWeight)) {
-        iFontWeight = NP3_FW_HEAVY;
-    } else if (Style_StrGetAttrExtraBlack(lpszWeight)) {
-        iFontWeight = NP3_FW_EXTRABLACK;
+    int fontWeight = FW_DONTCARE;
+    for (int i = FW_IDX_THIN; i <= FW_IDX_ULTRADARK; ++i) {
+        if (Style_StrHasAttribute(lpszWeight, FontWeights[i].wname)) {
+            fontWeight = FontWeights[i].weight;
+            break;
+        }
     }
-
-    if (iFontWeight > NP3_FW_DONT_CARE) {
-        *weight = iFontWeight;
+    bool const bFoundFW = (fontWeight > FW_DONTCARE);
+    if (bFoundFW) {
+        *weight = fontWeight;
     }
-    return ((iFontWeight <= NP3_FW_DONT_CARE) ? false : true);
+    return bFoundFW;
 }
 
 
@@ -2751,107 +2726,19 @@ bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* weight)
 void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
 {
     const WCHAR * pFontWeight = NULL;
-    if (fontWeight <= NP3_FW_THIN) {
-        pFontWeight = FontWeightArray[0];
-    } else if (fontWeight <= NP3_FW_EXTRALIGHT) {
-        pFontWeight = FontWeightArray[1];
-    } else if (fontWeight <= NP3_FW_LIGHT) {
-        pFontWeight = FontWeightArray[2];
-    } else if (fontWeight <= NP3_FW_SEMILIGHT) {
-        pFontWeight = FontWeightArray[3];
-    } else if (fontWeight <= NP3_FW_REGULAR) {
-        //pFontWeight = FontWeightArray[4]; // default
-    } else if (fontWeight <= NP2_FW_RETINA) {
-        pFontWeight = FontWeightArray[5];
-    } else if (fontWeight <= NP3_FW_MEDIUM) {
-        pFontWeight = FontWeightArray[6];
-    } else if (fontWeight <= NP3_FW_SEMIBOLD) {
-        pFontWeight = FontWeightArray[7];
-    } else if (fontWeight <= NP3_FW_BOLD) {
-        pFontWeight = FontWeightArray[8];
-    } else if (fontWeight <= NP3_FW_EXTRABOLD) {
-        pFontWeight = FontWeightArray[9];
-    } else if (fontWeight <= NP3_FW_HEAVY) {
-        pFontWeight = FontWeightArray[10];
-    } else { // (fontWeight >= NP3_FW_EXTRABLACK)
-        pFontWeight = FontWeightArray[11];
+    int i;
+    for (i = FW_IDX_THIN; i <= FW_IDX_ULTRADARK; ++i) {
+        if (fontWeight <= FontWeights[i].weight) {
+            pFontWeight = FontWeights[i].wname;
+            break;
+        }
     }
-
-    if (pFontWeight) {
+    if (pFontWeight && (i != FW_IDX_REGULAR)) {
         StringCchCat(lpszWeight, cchSize, L"; ");
         StringCchCat(lpszWeight, cchSize, pFontWeight);
     }
 }
 
-
-#if USE_FONT_STRETCH
-//=============================================================================
-//
-//  Style_StrGetStretchValue()
-//
-bool Style_StrGetStretchValue(LPCWSTR lpszStretch, int* stretch)
-{
-    int iFontStretch = FONT_STRETCH_UNDEFINED;
-
-    if (Style_StrGetAttrUltraCondensed(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_ULTRA_CONDENSED;
-    } else if (Style_StrGetAttrExtraCondensed(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_EXTRA_CONDENSED;
-    } else if (Style_StrGetAttrCondensed(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_CONDENSED;
-    } else if (Style_StrGetAttrSemiCondensed(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_SEMI_CONDENSED;
-    } else if (Style_StrGetAttrNormalStretch(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_NORMAL;
-    } else if (Style_StrGetAttrMediumStretch(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_MEDIUM;
-    } else if (Style_StrGetAttrSemiExpanded(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_SEMI_EXPANDED;
-    } else if (Style_StrGetAttrExpanded(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_EXPANDED;
-    } else if (Style_StrGetAttrExtraExpanded(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_EXTRA_EXPANDED;
-    } else if (Style_StrGetAttrUltraExpanded(lpszStretch)) {
-        iFontStretch = FONT_STRETCH_ULTRA_EXPANDED;
-    }
-
-    if (iFontStretch > FONT_STRETCH_UNDEFINED) {
-        *stretch = iFontStretch;
-    }
-    return ((iFontStretch <= FONT_STRETCH_UNDEFINED) ? false : true);
-}
-
-//=============================================================================
-//
-//  Style_AppendStretchStr()
-//
-void Style_AppendStretchStr(LPWSTR lpszStretch, int cchSize, int fontStretch)
-{
-    if (fontStretch <= FONT_STRETCH_ULTRA_CONDENSED) {
-        StringCchCat(lpszStretch, cchSize, L"; ultracondensed");
-    } else if (fontStretch <= FONT_STRETCH_EXTRA_CONDENSED) {
-        StringCchCat(lpszStretch, cchSize, L"; extracondensed");
-    } else if (fontStretch <= FONT_STRETCH_CONDENSED) {
-        StringCchCat(lpszStretch, cchSize, L"; condensed");
-    } else if (fontStretch <= FONT_STRETCH_SEMI_CONDENSED) {
-        StringCchCat(lpszStretch, cchSize, L"; semicondensed");
-    } else if (fontStretch <= FONT_STRETCH_NORMAL) {
-        //~StringCchCat(lpszStretch, cchSize, L"; normalstretch");
-        //StringCchCat(lpszStretch, cchSize, L""); // std
-    } else if (fontStretch <= FONT_STRETCH_MEDIUM) {
-        //~StringCchCat(lpszStretch, cchSize, L"; mediumstretch");
-        //StringCchCat(lpszStretch, cchSize, L""); // std
-    } else if (fontStretch <= FONT_STRETCH_SEMI_EXPANDED) {
-        StringCchCat(lpszStretch, cchSize, L"; semiexpanded");
-    } else if (fontStretch <= FONT_STRETCH_EXPANDED) {
-        StringCchCat(lpszStretch, cchSize, L"; expanded");
-    } else if (fontStretch <= FONT_STRETCH_EXTRA_EXPANDED) {
-        StringCchCat(lpszStretch, cchSize, L"; extraexpanded");
-    } else { // (fontStretch >= FONT_STRETCH_ULTRA_EXPANDED)
-        StringCchCat(lpszStretch, cchSize, L"; ultraexpanded");
-    }
-}
-#endif
 
 //=============================================================================
 //
@@ -2998,7 +2885,7 @@ bool Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
 {
     if (*idx < 0) { // retrieve indicator style from string
         for (int i = COUNTOF(IndicatorTypes) - 1;  0 <= i;  --i) {
-            if (Style_StrGetAttribute(lpszStyle, IndicatorTypes[i])) {
+            if (Style_StrHasAttribute(lpszStyle, IndicatorTypes[i])) {
                 *idx = i;
                 return true;
             }
@@ -3059,47 +2946,29 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
         }
 
         const WCHAR *pFontWeight = NULL;
-        if (Style_StrGetAttrThin(lpszStyleSrc) && !Style_StrGetAttrThin(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[0];
-        } else if (Style_StrGetAttrExtraLight(lpszStyleSrc) && !Style_StrGetAttrExtraLight(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[1];
-        } else if (Style_StrGetAttrLight(lpszStyleSrc) && !Style_StrGetAttrLight(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[2];
-        } else if (Style_StrGetAttrSemiLight(lpszStyleSrc) && !Style_StrGetAttrSemiLight(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[3];
-        } else if (Style_StrGetAttrRegular(lpszStyleSrc) && !Style_StrGetAttrRegular(lpszStyleDest)) {
-            //pFontWeight = FontWeightArray[4];
-        } else if (Style_StrGetAttrRetina(lpszStyleSrc) && !Style_StrGetAttrRetina(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[5];
-        } else if (Style_StrGetAttrMedium(lpszStyleSrc) && !Style_StrGetAttrMedium(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[6];
-        } else if (Style_StrGetAttrSemiBold(lpszStyleSrc) && !Style_StrGetAttrSemiBold(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[7];
-        } else if (Style_StrGetAttrBold(lpszStyleSrc) && !Style_StrGetAttrBold(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[8];
-        } else if (Style_StrGetAttrExtraBold(lpszStyleSrc) && !Style_StrGetAttrExtraBold(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[9];
-        } else if (Style_StrGetAttrHeavy(lpszStyleSrc) && !Style_StrGetAttrHeavy(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[10];
-        } else if (Style_StrGetAttrExtraBlack(lpszStyleSrc) && !Style_StrGetAttrExtraBlack(lpszStyleDest)) {
-            pFontWeight = FontWeightArray[11];
+        int idx;
+        for (idx = FW_IDX_THIN; idx <= FW_IDX_ULTRADARK; ++idx) {
+            if (Style_StrHasAttribute(lpszStyleSrc, FontWeights[idx].wname) &&
+                !Style_StrHasAttribute(lpszStyleDest, FontWeights[idx].wname)) {
+                pFontWeight = FontWeights[idx].wname;
+                break;
+            }
         }
-        if (pFontWeight) {
+        if (pFontWeight && (idx != FW_IDX_REGULAR)) {
             StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
             StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), pFontWeight);
         }
 
-
-        if (Style_StrGetAttrItalic(lpszStyleSrc) && !Style_StrGetAttrItalic(lpszStyleDest)) {
+        if (Style_StrHasAttrItalic(lpszStyleSrc) && !Style_StrHasAttrItalic(lpszStyleDest)) {
             StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
         }
 
         // ---------  Effects  ---------
-        if (Style_StrGetAttrUnderline(lpszStyleSrc) && !Style_StrGetAttrUnderline(lpszStyleDest)) {
+        if (Style_StrHasAttrUnderline(lpszStyleSrc) && !Style_StrHasAttrUnderline(lpszStyleDest)) {
             StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; underline");
         }
 
-        if (Style_StrGetAttrStrikeOut(lpszStyleSrc) && !Style_StrGetAttrStrikeOut(lpszStyleDest)) {
+        if (Style_StrHasAttrStrikeOut(lpszStyleSrc) && !Style_StrHasAttrStrikeOut(lpszStyleDest)) {
             StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
         }
 
@@ -3160,7 +3029,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
         }
     }
 
-    if (Style_StrGetAttrEOLFilled(lpszStyleSrc) && !Style_StrGetAttrEOLFilled(lpszStyleDest)) {
+    if (Style_StrHasAttrEOLFilled(lpszStyleSrc) && !Style_StrHasAttrEOLFilled(lpszStyleDest)) {
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; eolfilled");
     }
 
@@ -3202,15 +3071,15 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     }
 
     // --------   other style settings   --------
-    if (Style_StrGetAttrOvrBlck(lpszStyleSrc) && !Style_StrGetAttrOvrBlck(lpszStyleDest)) {
+    if (Style_StrHasAttrOvrBlck(lpszStyleSrc) && !Style_StrHasAttrOvrBlck(lpszStyleDest)) {
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ovrblck");
     }
 
-    if (Style_StrGetAttrBlock(lpszStyleSrc) && !Style_StrGetAttrBlock(lpszStyleDest)) {
+    if (Style_StrHasAttrBlock(lpszStyleSrc) && !Style_StrHasAttrBlock(lpszStyleDest)) {
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; block");
     }
 
-    if (Style_StrGetAttrNoBlink(lpszStyleSrc) && !Style_StrGetAttrNoBlink(lpszStyleDest)) {
+    if (Style_StrHasAttrNoBlink(lpszStyleSrc) && !Style_StrHasAttrNoBlink(lpszStyleDest)) {
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; noblink");
     }
 
@@ -3358,21 +3227,13 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     ReleaseDC(hwnd, hdc);
 
     // Font Weight
-    int iFontWeight = NP3_FW_REGULAR;
+    int iFontWeight = FontWeights[FW_IDX_REGULAR].weight;
     Style_StrGetWeightValue(lpszStyle, &iFontWeight);
 
-#if USE_FONT_STRETCH
-    int iFontStretch = FONT_STRETCH_NORMAL;
-    if (!Style_StrGetStretchValue(lpszStyle, &iFontWeight)) {
-        iFontStretch = FONT_STRETCH_NORMAL;
-    }
-#else
-    int const iFontStretch = 0;
-#endif
-
-    bool bIsItalic = Style_StrGetAttrItalic(lpszStyle);
-    bool bIsUnderline = Style_StrGetAttrUnderline(lpszStyle);
-    bool bIsStrikeout = Style_StrGetAttrStrikeOut(lpszStyle);
+    int const iFontStretch = 0; // with calculated autom.
+    bool bIsItalic = Style_StrHasAttrItalic(lpszStyle);
+    bool bIsUnderline = Style_StrHasAttrUnderline(lpszStyle);
+    bool bIsStrikeout = Style_StrHasAttrStrikeOut(lpszStyle);
 
     int iQuality = Settings2.SciFontQuality;
     switch (iQuality) {
@@ -3512,26 +3373,12 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
         WCHAR check[64] = { L'\0' };
         Style_AppendWeightStr(check, COUNTOF(check), lf.lfWeight);
         StrTrim(check, L" ;");
-        if (Style_StrGetAttribute(lpszStyle, check)) {
+        if (Style_StrHasAttribute(lpszStyle, check)) {
             Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
         }
     } else {
         Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
     }
-
-#if USE_FONT_STRETCH
-    // font stretch
-    if (lf.lfWidth == 0) {
-        WCHAR check[64] = { L'\0' };
-        Style_AppendStretchStr(check, COUNTOF(check), /*lf.lfWidth*/ iFontStretch);
-        StrTrim(check, L" ;");
-        if (Style_StrGetAttribute(lpszStyle, check)) {
-            Style_AppendStretchStr(szNewStyle, COUNTOF(szNewStyle), /*lf.lfWidth*/ iFontStretch);
-        }
-    } else {
-        Style_AppendStretchStr(szNewStyle, COUNTOF(szNewStyle), /*lf.lfWidth*/ FONT_STRETCH_NORMAL);
-    }
-#endif
 
     float fNewFontSize = (float)(cf.iPointSize < 10 ? 10 : cf.iPointSize) / 10.0f;
 
@@ -3597,7 +3444,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
     if (lf.lfItalic) {
         if (bIsItalic) {
-            if (Style_StrGetAttrItalic(lpszStyle)) {
+            if (Style_StrHasAttrItalic(lpszStyle)) {
                 StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; italic");
             }
         } else {
@@ -3608,7 +3455,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     if (bWithEffects) {
         if (lf.lfUnderline) {
             if (bIsUnderline) {
-                if (Style_StrGetAttrUnderline(lpszStyle)) {
+                if (Style_StrHasAttrUnderline(lpszStyle)) {
                     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; underline");
                 }
             } else {
@@ -3618,7 +3465,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
         if (lf.lfStrikeOut) {
             if (bIsStrikeout) {
-                if (Style_StrGetAttrStrikeOut(lpszStyle)) {
+                if (Style_StrHasAttrStrikeOut(lpszStyle)) {
                     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; strikeout");
                 }
             } else {
@@ -3812,35 +3659,26 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
         SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)SC_WEIGHT_NORMAL);
     }
 
-#if USE_FONT_STRETCH
-    // Stretch
-    if (Style_StrGetStretchValue(lpszStyle, &iValue)) {
-        SendMessage(hwnd, SCI_STYLESETSTRETCH, iStyle, (LPARAM)iValue);
-    } else if (bInitDefault) {
-        SendMessage(hwnd, SCI_STYLESETSTRETCH, iStyle, (LPARAM)FONT_STRETCH_NORMAL);
-    }
-#endif
-
     // Italic
-    if (Style_StrGetAttrItalic(lpszStyle)) {
+    if (Style_StrHasAttrItalic(lpszStyle)) {
         SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)false);
     }
     // Underline
-    if (Style_StrGetAttrUnderline(lpszStyle)) {
+    if (Style_StrHasAttrUnderline(lpszStyle)) {
         SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)false);
     }
     // StrikeOut
-    if (Style_StrGetAttrStrikeOut(lpszStyle)) {
+    if (Style_StrHasAttrStrikeOut(lpszStyle)) {
         SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)false);
     }
     // EOL Filled
-    if (Style_StrGetAttrEOLFilled(lpszStyle)) {
+    if (Style_StrHasAttrEOLFilled(lpszStyle)) {
         SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)false);

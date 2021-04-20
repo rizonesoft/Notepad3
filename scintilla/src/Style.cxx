@@ -23,9 +23,6 @@ using namespace Scintilla;
 bool FontSpecification::operator==(const FontSpecification &other) const noexcept {
 	return fontName == other.fontName &&
 	       weight == other.weight &&
-	       // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	       stretch == other.stretch &&
-	       // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	       italic == other.italic &&
 	       size == other.size &&
 	       characterSet == other.characterSet &&
@@ -37,10 +34,6 @@ bool FontSpecification::operator<(const FontSpecification &other) const noexcept
 		return fontName < other.fontName;
 	if (weight != other.weight)
 		return weight < other.weight;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	if (stretch != other.stretch)
-		return stretch < other.stretch;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	if (italic != other.italic)
 		return italic == false;
 	if (size != other.size)
@@ -65,21 +58,20 @@ void FontMeasurements::ClearMeasurements() noexcept {
 	sizeZoomed = 2;
 }
 
-Style::Style() {
+Style::Style() : FontSpecification() {
 	Clear(ColourDesired(0, 0, 0), ColourDesired(0xff, 0xff, 0xff),
 	      Platform::DefaultFontSize() * SC_FONT_SIZE_MULTIPLIER, nullptr, SC_CHARSET_DEFAULT,
-	      SC_WEIGHT_NORMAL, SC_FONT_STRETCH_NORMAL, false, false, false, false, CaseForce::mixed, true, true, false);
+	      SC_WEIGHT_NORMAL, false, false, false, false, CaseForce::mixed, true, true, false);
 }
 
-Style::Style(const Style &source) noexcept : FontMeasurements() {
+Style::Style(const Style &source) noexcept : FontSpecification(), FontMeasurements() {
 	Clear(ColourDesired(0, 0, 0), ColourDesired(0xff, 0xff, 0xff),
 	      0, nullptr, 0,
-	      SC_WEIGHT_NORMAL, SC_FONT_STRETCH_NORMAL,  false, false, false, false, CaseForce::mixed, true, true, false);
+	      SC_WEIGHT_NORMAL, false, false, false, false, CaseForce::mixed, true, true, false);
 	fore = source.fore;
 	back = source.back;
 	characterSet = source.characterSet;
 	weight = source.weight;
-	stretch = source.stretch;
 	italic = source.italic;
 	size = source.size;
 	fontName = source.fontName;
@@ -99,12 +91,11 @@ Style &Style::operator=(const Style &source) noexcept {
 		return * this;
 	Clear(ColourDesired(0, 0, 0), ColourDesired(0xff, 0xff, 0xff),
 	      0, nullptr, SC_CHARSET_DEFAULT,
-	      SC_WEIGHT_NORMAL, SC_FONT_STRETCH_NORMAL, false, false, false, false, CaseForce::mixed, true, true, false);
+	      SC_WEIGHT_NORMAL, false, false, false, false, CaseForce::mixed, true, true, false);
 	fore = source.fore;
 	back = source.back;
 	characterSet = source.characterSet;
 	weight = source.weight;
-	stretch = source.stretch;
 	italic = source.italic;
 	size = source.size;
 	fontName = source.fontName;
@@ -119,14 +110,13 @@ Style &Style::operator=(const Style &source) noexcept {
 
 void Style::Clear(ColourDesired fore_, ColourDesired back_, int size_,
         const char *fontName_, int characterSet_,
-        int weight_, int stretch_, bool italic_, bool eolFilled_,
+        int weight_, bool italic_, bool eolFilled_,
         bool underline_, bool strike_, CaseForce caseForce_,
         bool visible_, bool changeable_, bool hotspot_) noexcept {
 	fore = fore_;
 	back = back_;
 	characterSet = characterSet_;
 	weight = weight_;
-	stretch = stretch_;
 	italic = italic_;
 	size = size_;
 	fontName = fontName_;
@@ -149,7 +139,6 @@ void Style::ClearTo(const Style &source) noexcept {
 	    source.fontName,
 	    source.characterSet,
 	    source.weight,
-	    source.stretch,
 	    source.italic,
 	    source.eolFilled,
 	    source.underline,

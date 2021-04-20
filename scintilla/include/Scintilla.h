@@ -258,9 +258,6 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCI_STYLESETSTRIKE 3501
 #define SCI_STYLEGETSTRIKE 3502
-#define SCI_STYLESETSTRETCH 3503
-#define SCI_STYLEGETSTRETCH 3504
-#define SC_FONT_STRETCH_NORMAL 5
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SC_CASE_MIXED 0
 #define SC_CASE_UPPER 1
