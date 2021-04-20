@@ -102,9 +102,6 @@ struct FontParameters {
 	const char *faceName;
 	XYPOSITION size;
 	int weight;
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	int stretch;
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	bool italic;
 	int extraFontFlag;
 	int technology;
@@ -115,7 +112,6 @@ struct FontParameters {
 		const char *faceName_,
 		XYPOSITION size_=10,
 		int weight_=400,
-		int stretch_=5,
 		bool italic_=false,
 		int extraFontFlag_=0,
 		int technology_=0,
@@ -125,7 +121,6 @@ struct FontParameters {
 		faceName(faceName_),
 		size(size_),
 		weight(weight_),
-		stretch(stretch_),
 		italic(italic_),
 		extraFontFlag(extraFontFlag_),
 		technology(technology_),
@@ -377,8 +372,6 @@ constexpr long LongFromTwoShorts(short a,short b) noexcept {
 }
 
 }
-
-
 
 } // namespace 
 

@@ -309,13 +309,13 @@ struct FontDirectWrite : public FontWin {
 		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
 		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
 		const DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
+
 		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFace.c_str(), nullptr,
 			static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
 			style,
 			DWRITE_FONT_STRETCH_NORMAL, fHeight, wsLocale.c_str(), &pTextFormat);
 		if (SUCCEEDED(hr)) {
 			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
-
 			IDWriteTextLayout *pTextLayout = nullptr;
 			hr = pIDWriteFactory->CreateTextLayout(L"X", 1, pTextFormat,
 					100.0f, 100.0f, &pTextLayout);
