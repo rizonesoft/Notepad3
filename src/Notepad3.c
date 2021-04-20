@@ -5146,17 +5146,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_FONT:
-        if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-            Style_SetDefaultFont(Globals.hwndEdit, true);
-        }
-        UpdateMarginWidth(true);
-        UpdateUI();
-        break;
-
-
     case IDM_VIEW_CURRENTSCHEME:
         if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-            Style_SetDefaultFont(Globals.hwndEdit, false);
+            Style_SetDefaultFont(Globals.hwndEdit, (iLoWParam == IDM_VIEW_FONT));
         }
         UpdateMarginWidth(true);
         UpdateUI();
