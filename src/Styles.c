@@ -2512,13 +2512,26 @@ bool Style_StrGetFontName(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
         while (*p == L' ') {
             ++p;
         }
-        StringCchCopyN(lpszFont, cchFont, p, cchFont);
+        StringCchCopy(lpszFont, cchFont, p);
         if ((p = StrChr(lpszFont, L';')) != NULL) {
             *p = L'\0';
         }
         TrimSpcW(lpszFont);
+
         if (StringCchCompareXI(lpszFont, L"Default") == 0) {
-            StringCchCopyN(lpszFont, cchFont, IsFontAvailable(L"Consolas") ? L"Consolas" : L"Lucida Console", cchFont);
+            // Microsoft's Coding Fonts only
+            const WCHAR *const FontPrio[3] = { L"Cascadia Code", L"Consolas", L"Lucida Console" };
+            bool found = false;
+            for (int i = 0; i < COUNTOF(FontPrio); ++i) {
+                if (IsFontAvailable(FontPrio[i])) {
+                    StringCchCopy(lpszFont, cchFont, FontPrio[i]);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                StringCchCopy(lpszFont, cchFont, L"Courier New");
+            }
         }
         return true;
     }
@@ -3192,17 +3205,22 @@ CASE_WM_CTLCOLOR_SET:
 bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerName, LPCWSTR sStyleName,
     bool bGlobalDefaultStyle, bool bCurrentDefaultStyle,
     bool bWithEffects, bool bPreserveStyles) {
-    
+
     // Map lpszStyle to LOGFONT
     const WCHAR *const defaultFontTemplate = L"font:Default";
     WCHAR wchDefaultFontName[LF_FULLFACESIZE] = { L'\0' };
     Style_StrGetFontName(defaultFontTemplate, wchDefaultFontName, COUNTOF(wchDefaultFontName));
 
+    // current common default font name setting
+    WCHAR wchCurrCommonFontName[LF_FULLFACESIZE] = { L'\0' };
+    if (!Style_StrGetFontName(GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue, wchCurrCommonFontName, COUNTOF(wchCurrCommonFontName))) {
+        StringCchCopy(wchCurrCommonFontName, COUNTOF(wchCurrCommonFontName), wchDefaultFontName);
+    }
+
+    // specified font name
     WCHAR wchFontName[LF_FULLFACESIZE] = { L'\0' };
     if (!Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
-        if (!Style_StrGetFontName(GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue, wchFontName, COUNTOF(wchFontName))) {
-            StringCchCopy(wchFontName, COUNTOF(wchFontName), wchDefaultFontName);
-        }
+        StringCchCopy(wchFontName, COUNTOF(wchFontName), wchCurrCommonFontName);
     }
 
     // font style
@@ -3281,7 +3299,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     // --------------------------------------------------------------------------
 
     // Init cf
-    CHOOSEFONT cf = { sizeof(CHOOSEFONT) };  // cf.lStructSize = sizeof(CHOOSEFONT);
+    CHOOSEFONT cf = { sizeof(CHOOSEFONT) }; // cf.lStructSize = sizeof(CHOOSEFONT);
     cf.hwndOwner = hwnd;
     cf.hInstance = Globals.hLngResContainer; // Globals.hInstance;
 
@@ -3289,7 +3307,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     cf.rgbColors = fgColor;
 
     // --- FLAGS ---
-    cf.Flags = 0LL;  // | CF_NOSCRIPTSEL
+    cf.Flags = 0LL; // | CF_NOSCRIPTSEL
 
     cf.Flags |= bWithEffects ? CF_EFFECTS : 0;
     cf.Flags |= (SciCall_GetTechnology() != SC_TECHNOLOGY_DEFAULT) ? CF_SCALABLEONLY : 0;
@@ -3301,7 +3319,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 
     // font style (
     cf.Flags |= flagUseStyle; //~ CF_USESTYLE
-    cf.lpszStyle = NULL; //~flagUseStyle ? szStyleStrg : NULL;
+    cf.lpszStyle = NULL;      //~flagUseStyle ? szStyleStrg : NULL;
 
     // use logfont struct
     cf.Flags |= CF_INITTOLOGFONTSTRUCT;
@@ -3353,7 +3371,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 
     if (Settings.RenderingTechnology > 0) {
         UINT const dpi = Scintilla_GetWindowDPI(hwnd);
-        const WCHAR* const localName = Settings2.PreferredLanguageLocaleName;
+        const WCHAR *const localName = Settings2.PreferredLanguageLocaleName;
         if (!ChooseFontDirectWrite(Globals.hwndMain, localName, dpi, &cf) || StrIsEmpty(lf.lfFaceName)) {
             return false;
         }
@@ -3376,16 +3394,36 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     if (StrIsEmpty(lf.lfFaceName)) {
         if (bGlobalDefaultStyle) {
             StringCchCopy(szNewStyle, COUNTOF(szNewStyle), defaultFontTemplate);
-        } // else empty
+        } else if (bCurrentDefaultStyle) {
+            StringCchCopy(szNewStyle, COUNTOF(szNewStyle), wchCurrCommonFontName);
+        }
     } else {
-        if (StringCchCompareX(lf.lfFaceName, wchDefaultFontName) == 0) {
+        if (StringCchCompareX(lf.lfFaceName, wchCurrCommonFontName) == 0) {
             if (bGlobalDefaultStyle) {
-                StringCchCopy(szNewStyle, COUNTOF(szNewStyle), defaultFontTemplate);
-            } // else empty
+                if (StringCchCompareX(lf.lfFaceName, wchDefaultFontName) == 0) {
+                    StringCchCopy(szNewStyle, COUNTOF(szNewStyle), defaultFontTemplate);
+                } else {
+                    StringCchPrintf(szNewStyle, COUNTOF(szNewStyle), L"font:%s", lf.lfFaceName);
+                }
+            } else if (bCurrentDefaultStyle) {
+                // empty: inheritance default (!)
+            } else {
+                StringCchPrintf(szNewStyle, COUNTOF(szNewStyle), L"font:%s", lf.lfFaceName);
+            }
         } else {
-            StringCchPrintf(szNewStyle, COUNTOF(szNewStyle), L"font:%s", lf.lfFaceName);
+            // no default, no inheritance, just new font name
+            if (bGlobalDefaultStyle) {
+                if (StringCchCompareX(lf.lfFaceName, wchDefaultFontName) == 0) {
+                    StringCchCopy(szNewStyle, COUNTOF(szNewStyle), defaultFontTemplate);
+                } else {
+                    StringCchPrintf(szNewStyle, COUNTOF(szNewStyle), L"font:%s", lf.lfFaceName);
+                }
+            } else {
+                StringCchPrintf(szNewStyle, COUNTOF(szNewStyle), L"font:%s", lf.lfFaceName);
+            }
         }
     }
+
 
     //~if (flagUseStyle && StrIsNotEmpty(cf.lpszStyle)) {
     //~    if (StrStr(lpszStyle, L"fstyle:")) {
