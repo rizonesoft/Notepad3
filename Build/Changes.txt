@@ -33,14 +33,18 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.419.(build_#) (2021-04-19)
+Current BETA/RC Version 5.21.420.(build_#) (2021-04-20)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.419.3]- add font weights retina(450), semi-light(350) and extra-black(950).
+[.420.1]- TXT file for Translators to comunicate Line Mumbers of the "Added/Modified" strings.
+[.420.1]- Code Color for the "Change date" of the "Added/Modified" strings to translate".
+[.420.1]- More intermediate font weight constants added.
+[.420.1]- Remove useless font stretch handling.
+[.419.3]- Add font weights retina(450), semi-light(350) and extra-black(950).
 [.419.2]- Line Comment Add/Remove commands, additonal to existing Toggle.
 [.415.1]- Cut lines for rectangular and multi selection.
 [.412.1]- Use 'Ctrl+' key to force dropping files into new instance (Ctrl+ for new instance).
@@ -102,6 +106,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.420.1]- Copy multi-selection to clipboard: separate each match by line-break.
 [.419.1]- Apply provided Scintilla patch.
 [.419.1]- Stream comment for .AU3 files.
 [.419.1]- "grepWinNP3": fix compiler warning Release Win32 (GRE).
@@ -148,6 +153,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
+[.420.1]- Remove useless font stretch handling.
 [.419.2]- Removing the font-style string for font selection.
 [.411.1]- Remove deprecated WinXP support (no horiz. mouse wheel).
 [.311.1]- Obsolete SCI_LEXER preproc symbol / no need to link lexers in Scintilla.
