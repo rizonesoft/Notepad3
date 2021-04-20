@@ -2747,8 +2747,12 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
 bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, bool useDefault)
 {
     bool const bFGLayer = (layer == FOREGROUND_LAYER);
-    const WCHAR *const pItem = bFGLayer ? L"fore:" : L"back:";
+    if (useDefault) {
+        *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
+        return true;
+    }
 
+    const WCHAR *const pItem = bFGLayer ? L"fore:" : L"back:";
     WCHAR *p = StrStr(lpszStyle, pItem);
     if (p) {
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
@@ -2768,10 +2772,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, bool
             return true;
         }
     }
-    if (useDefault) {
-        *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
-    }
-    return useDefault;
+    return false;
 }
 
 
@@ -3093,15 +3094,17 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
 static  WCHAR FontSelTitle[128];
 
 static INT_PTR CALLBACK Style_FontDialogHook(
-    HWND hdlg,      // handle to the dialog box window
-    UINT uiMsg,     // message identifier
-    WPARAM wParam,  // message parameter
-    LPARAM lParam   // message parameter
-)
-{
+    HWND hdlg,     // handle to the dialog box window
+    UINT uiMsg,    // message identifier
+    WPARAM wParam, // message parameter
+    LPARAM lParam  // message parameter
+) {
     UNREFERENCED_PARAMETER(wParam);
+
     switch (uiMsg) {
+
     case WM_INITDIALOG: {
+
         if (Globals.hDlgIconSmall) {
             SendMessage(hdlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
         }
@@ -3110,7 +3113,7 @@ static INT_PTR CALLBACK Style_FontDialogHook(
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-        //#define IDCS_COMBOX1 0x3E8
+//#define IDCS_COMBOX1 0x3E8
 #define IDCS_STRKOUT 0x410
 #define IDCS_UNDERLN 0x411
 #define IDCS_EFFECTS 0x430
@@ -3130,18 +3133,21 @@ static INT_PTR CALLBACK Style_FontDialogHook(
 #endif
 
         const CHOOSEFONT* const pChooseFont = ((CHOOSEFONT*)lParam);
-
-        if (pChooseFont->lCustData) {
-            SetWindowText(hdlg, (WCHAR*)pChooseFont->lCustData);
+        if (pChooseFont) {
+            SendMessage(hdlg, WM_CHOOSEFONT_SETFLAGS, 0, (LPARAM)pChooseFont->Flags);
+            if (pChooseFont->lCustData) {
+                SetWindowText(hdlg, (WCHAR *)pChooseFont->lCustData);
+            }
+            const LOGFONT *const pLogFont = ((LOGFONT *)pChooseFont->lpLogFont);
+            if (pLogFont) {
+                // fill font name selector
+                SendMessage(hdlg, WM_CHOOSEFONT_SETLOGFONT, 0, (LPARAM)pLogFont);
+            }
         }
-        //~else {
-        //~  // HACK: to get the full font name instead of font family name
-        //~  // [see: ChooseFontDirectWrite() PostProcessing]
-        //~  SendMessage(hdlg, WM_CHOOSEFONT_GETLOGFONT, 0, (LPARAM)pChooseFont->lpLogFont);
-        //~  PostMessage(hdlg, WM_CLOSE, 0, 0);
-        //~}
+        PostMessage(hdlg, WM_THEMECHANGED, 0, 0);
     }
     break;
+
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
@@ -3167,8 +3173,8 @@ CASE_WM_CTLCOLOR_SET:
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
                 SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
             }
-            UpdateWindowEx(hdlg);
         }
+        UpdateWindowEx(hdlg);
         break;
 
 #endif
@@ -3183,25 +3189,25 @@ CASE_WM_CTLCOLOR_SET:
 //
 //  Style_SelectFont()
 //
-bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerName, LPCWSTR sStyleName,
-                      bool bGlobalDefaultStyle, bool bCurrentDefaultStyle,
-                      bool bWithEffects, bool bPreserveStyles)
-{
+bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerName, LPCWSTR sStyleName,
+    bool bGlobalDefaultStyle, bool bCurrentDefaultStyle,
+    bool bWithEffects, bool bPreserveStyles) {
     // Map lpszStyle to LOGFONT
+    const WCHAR *const defaultFontTemplate = L"font:Default";
 
     WCHAR wchDefaultFontName[LF_FULLFACESIZE] = { L'\0' };
-    Style_StrGetFontName(L"font:Default", wchDefaultFontName, COUNTOF(wchDefaultFontName));
+    Style_StrGetFontName(defaultFontTemplate, wchDefaultFontName, COUNTOF(wchDefaultFontName));
 
     WCHAR wchFontName[LF_FULLFACESIZE] = { L'\0' };
     if (!Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
         if (!Style_StrGetFontName(GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue, wchFontName, COUNTOF(wchFontName))) {
-            Style_StrGetFontName(L"font:Default", wchFontName, COUNTOF(wchFontName));
+            StringCchCopy(wchFontName, COUNTOF(wchFontName), wchDefaultFontName);
         }
     }
 
     // font style
-    DWORD flagUseStyle = 0; // = CF_USESTYLE; ~ don't use 
-    // NOTE:  To globalize your application, you should specify the style by using 
+    DWORD const flagUseStyle = 0; // = CF_USESTYLE; ~ don't use
+    // NOTE:  To globalize your application, you should specify the style by using
     // the lfWeight and lfItalic members of the LOGFONT structure pointed to by lpLogFont.
     // The style name may change depending on the system user interface language.
     WCHAR szStyleStrg[LF_FULLFACESIZE] = { L'\0' };
@@ -3215,8 +3221,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     // is "size:" definition relative ?
     bool const bRelFontSize = (!StrStr(lpszStyle, L"size:") || StrStr(lpszStyle, L"size:+") || StrStr(lpszStyle, L"size:-"));
 
-    float const fBaseFontSize = (bGlobalDefaultStyle ? GLOBAL_INITIAL_FONTSIZE :
-                                 (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
+    //float const fBaseFontSize = (bGlobalDefaultStyle ? GLOBAL_INITIAL_FONTSIZE : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
+    float const fBaseFontSize = GLOBAL_INITIAL_FONTSIZE;
 
     // Font Height
     float fFontSize = fBaseFontSize;
@@ -3252,6 +3258,11 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
         break;
     }
 
+    COLORREF fgColor = 0L;
+    if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &fgColor, false)) {
+        Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &fgColor, true);
+    }
+
     // --------------------------------------------------------------------------
 
     LOGFONT lf = { 0 };
@@ -3263,36 +3274,55 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     lf.lfUnderline = (BYTE)(BOOL)bIsUnderline;
     lf.lfStrikeOut = (BYTE)(BOOL)bIsStrikeout;
     lf.lfQuality = (BYTE)iQuality;
-    StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
     //~lf.lfClipPrecision = (BYTE)CLIP_DEFAULT_PRECIS;
     //~lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 
-    COLORREF color = 0L;
-    Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &color, true);
+    StringCchCopy(lf.lfFaceName, LF_FACESIZE, wchFontName);
+
+    // --------------------------------------------------------------------------
 
     // Init cf
-    CHOOSEFONT cf = { sizeof(CHOOSEFONT) };
+    CHOOSEFONT cf = { sizeof(CHOOSEFONT) };  // cf.lStructSize = sizeof(CHOOSEFONT);
     cf.hwndOwner = hwnd;
-    cf.hInstance = Globals.hInstance; // ChooseFontDirectWrite
-    cf.rgbColors = color;
-    cf.lpLogFont = &lf;
+    cf.hInstance = Globals.hLngResContainer; // Globals.hInstance;
+
     cf.iPointSize = (INT)float2int(fFontSize * 10.0f);
-    cf.nFontType = SCREEN_FONTTYPE;
-    cf.lpszStyle = flagUseStyle ? szStyleStrg : NULL;
+    cf.rgbColors = fgColor;
 
-    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK | CF_SCREENFONTS | flagUseStyle; //~ CF_USESTYLE | CF_NOSCRIPTSEL
+    // --- FLAGS ---
+    cf.Flags = 0LL;  // | CF_NOSCRIPTSEL
 
-    cf.Flags |= (SciCall_GetTechnology() != SC_TECHNOLOGY_DEFAULT) ? CF_SCALABLEONLY : 0;
     cf.Flags |= bWithEffects ? CF_EFFECTS : 0;
+    cf.Flags |= (SciCall_GetTechnology() != SC_TECHNOLOGY_DEFAULT) ? CF_SCALABLEONLY : 0;
     cf.Flags |= IsKeyDown(VK_SHIFT) ? CF_FIXEDPITCHONLY : 0;
 
-    // CF_LIMITSIZE
-    //cf.nSizeMin = 4;
-    //cf.nSizeMax = 128;
+    // screen fonts
+    cf.Flags |= CF_SCREENFONTS;
+    cf.nFontType = SCREEN_FONTTYPE;
+
+    // font style (
+    cf.Flags |= flagUseStyle; //~ CF_USESTYLE
+    cf.lpszStyle = flagUseStyle ? szStyleStrg : NULL;
+
+    // use logfont struct
+    cf.Flags |= CF_INITTOLOGFONTSTRUCT;
+    cf.lpLogFont = (LPLOGFONT)&lf;
+
+    // Font size limits
+    cf.Flags |= CF_LIMITSIZE;
+    cf.nSizeMin = 4;
+    cf.nSizeMax = 128;
 
     // custom hook for title bar
-    cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
+    cf.Flags |= CF_ENABLEHOOK;
+    cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook; // Register the callback
     cf.lCustData = (LPARAM)FontSelTitle;
+
+    // Font.dlg resource template
+    cf.Flags |= CF_ENABLETEMPLATE;
+    cf.lpTemplateName = MAKEINTRESOURCEW(IDD_MUI_SYSFONT_WITHLINK);
+
+    // ------------------------------------------------------------------------
 
     if (bGlobalDefaultStyle) {
         if (bRelFontSize) {
@@ -3314,12 +3344,14 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
         }
     }
 
+#if TRUE
     // ---  open systems Font Selection dialog  ---
-#if 1
-    if (!ChooseFont(&cf) || StrIsEmpty(lf.lfFaceName)) {
+    if (!ChooseFont(&cf)) {
         return false;
     }
+
 #else
+
     if (Settings.RenderingTechnology > 0) {
         UINT const dpi = Scintilla_GetWindowDPI(hwnd);
         const WCHAR* const localName = Settings2.PreferredLanguageLocaleName;
@@ -3331,43 +3363,40 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
         cf.lCustData = (LPARAM)NULL;
         ChooseFont(&cf);
     } else {
-        if (!ChooseFont(&cf) || StrIsEmpty(lf.lfFaceName)) {
+        if (!ChooseFont(&cf)) {
             return false;
         }
     }
+
 #endif
 
     // ---  map back to lpszStyle  ---
 
     WCHAR szNewStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-    if (StrStr(lpszStyle, L"font:")) {
-        StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"font:");
+    if (StrIsEmpty(lf.lfFaceName)) {
+        if (bGlobalDefaultStyle) {
+            StringCchCopy(szNewStyle, COUNTOF(szNewStyle), defaultFontTemplate);
+        } // else empty
+    } else {
         if (StringCchCompareX(lf.lfFaceName, wchDefaultFontName) == 0) {
-            StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"Default");
+            if (bGlobalDefaultStyle) {
+                StringCchCopy(szNewStyle, COUNTOF(szNewStyle), defaultFontTemplate);
+            } // else empty
         } else {
-            StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
-        }
-    } else { // no font in source specified,
-        if (lstrcmpW(lf.lfFaceName, wchFontName) != 0) {
-            StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"font:");
-            if (StringCchCompareX(lf.lfFaceName, wchDefaultFontName) == 0) {
-                StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"Default");
-            } else {
-                StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
-            }
+            StringCchPrintf(szNewStyle, COUNTOF(szNewStyle), L"font:%s", lf.lfFaceName);
         }
     }
 
-    if (flagUseStyle && StrIsNotEmpty(cf.lpszStyle)) {
-        if (StrStr(lpszStyle, L"fstyle:")) {
-            StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; fstyle:");
-            StringCchCat(szNewStyle, COUNTOF(szNewStyle), cf.lpszStyle);
-        } else { // no font style in source specified,
-            StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; fstyle:");
-            StringCchCat(szNewStyle, COUNTOF(szNewStyle), cf.lpszStyle);
-        }
-    }
+    //~if (flagUseStyle && StrIsNotEmpty(cf.lpszStyle)) {
+    //~    if (StrStr(lpszStyle, L"fstyle:")) {
+    //~        StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; fstyle:");
+    //~        StringCchCat(szNewStyle, COUNTOF(szNewStyle), cf.lpszStyle);
+    //~    } else { // no font style in source specified,
+    //~        StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; fstyle:");
+    //~        StringCchCat(szNewStyle, COUNTOF(szNewStyle), cf.lpszStyle);
+    //~    }
+    //~}
 
     if (lf.lfWeight == iFontWeight) {
         WCHAR check[64] = { L'\0' };
@@ -3475,7 +3504,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
         // ---  save colors  ---
         WCHAR newColor[64] = { L'\0' };
-        if (cf.rgbColors == color) {
+        if (cf.rgbColors == fgColor) {
             if (StrStr(lpszStyle, L"fore:")) {
                 Style_PrintfCchColor(newColor, COUNTOF(newColor), L"; ", FOREGROUND_LAYER, cf.rgbColors);
                 StringCchCat(szNewStyle, COUNTOF(szNewStyle), newColor);
@@ -3485,8 +3514,9 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
             StringCchCat(szNewStyle, COUNTOF(szNewStyle), newColor);
         }
         // copy background
-        if (Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &color, false)) {
-            Style_PrintfCchColor(newColor, COUNTOF(newColor), L"; ", BACKGROUND_LAYER, color);
+        COLORREF bgColor = 0L;
+        if (Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &bgColor, false)) {
+            Style_PrintfCchColor(newColor, COUNTOF(newColor), L"; ", BACKGROUND_LAYER, bgColor);
             StringCchCat(szNewStyle, COUNTOF(szNewStyle), newColor);
         }
     }
@@ -3498,7 +3528,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
 
     StrTrim(szNewStyle, L" ;");
-    StringCchCopyN(lpszStyle, cchStyle, szNewStyle, COUNTOF(szNewStyle));
+    StringCchCopy(lpszStyle, cchStyle, szNewStyle);
     return true;
 }
 

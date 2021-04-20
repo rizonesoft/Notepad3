@@ -312,6 +312,8 @@
 #define IDD_MUI_ALIGN                   17035
 #define IDD_MUI_CMDLINEHELP             17037
 
+#define IDD_MUI_SYSFONT_WITHLINK        17038
+
 #define IDC_COMMANDLINE                 18000
 #define IDC_SEARCHEXE                   18001
 #define IDC_FINDTEXT                    18002
