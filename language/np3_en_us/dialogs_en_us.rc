@@ -692,7 +692,6 @@ BEGIN
 END
 
 
-
 //
 // Font Dialog with Syslink (copied from Font.dlg)
 //
@@ -746,7 +745,6 @@ BEGIN
     PUSHBUTTON      "&Apply", psh3, 92, 215, 45, 14, WS_GROUP
     PUSHBUTTON      "&Help", pshHelp, 43, 215, 45, 14, WS_GROUP
 END
-
 
 
 
