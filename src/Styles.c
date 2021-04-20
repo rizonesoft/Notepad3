@@ -3192,9 +3192,9 @@ CASE_WM_CTLCOLOR_SET:
 bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerName, LPCWSTR sStyleName,
     bool bGlobalDefaultStyle, bool bCurrentDefaultStyle,
     bool bWithEffects, bool bPreserveStyles) {
+    
     // Map lpszStyle to LOGFONT
     const WCHAR *const defaultFontTemplate = L"font:Default";
-
     WCHAR wchDefaultFontName[LF_FULLFACESIZE] = { L'\0' };
     Style_StrGetFontName(defaultFontTemplate, wchDefaultFontName, COUNTOF(wchDefaultFontName));
 
@@ -3210,10 +3210,10 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     // NOTE:  To globalize your application, you should specify the style by using
     // the lfWeight and lfItalic members of the LOGFONT structure pointed to by lpLogFont.
     // The style name may change depending on the system user interface language.
-    WCHAR szStyleStrg[LF_FULLFACESIZE] = { L'\0' };
-    if (flagUseStyle) {
-        Style_StrGetFontStyle(lpszStyle, szStyleStrg, COUNTOF(szStyleStrg));
-    }
+    //~WCHAR szStyleStrg[LF_FULLFACESIZE] = { L'\0' };
+    //~if (flagUseStyle) {
+    //~    Style_StrGetFontStyle(lpszStyle, szStyleStrg, COUNTOF(szStyleStrg));
+    //~}
 
     int iCharSet = SC_CHARSET_DEFAULT;
     Style_StrGetCharSet(lpszStyle, &iCharSet);
@@ -3221,8 +3221,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     // is "size:" definition relative ?
     bool const bRelFontSize = (!StrStr(lpszStyle, L"size:") || StrStr(lpszStyle, L"size:+") || StrStr(lpszStyle, L"size:-"));
 
-    //float const fBaseFontSize = (bGlobalDefaultStyle ? GLOBAL_INITIAL_FONTSIZE : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
-    float const fBaseFontSize = GLOBAL_INITIAL_FONTSIZE;
+    float const fBaseFontSize = (bGlobalDefaultStyle ? GLOBAL_INITIAL_FONTSIZE : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
     // Font Height
     float fFontSize = fBaseFontSize;
@@ -3302,7 +3301,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 
     // font style (
     cf.Flags |= flagUseStyle; //~ CF_USESTYLE
-    cf.lpszStyle = flagUseStyle ? szStyleStrg : NULL;
+    cf.lpszStyle = NULL; //~flagUseStyle ? szStyleStrg : NULL;
 
     // use logfont struct
     cf.Flags |= CF_INITTOLOGFONTSTRUCT;
