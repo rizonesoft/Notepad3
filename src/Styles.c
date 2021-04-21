@@ -137,6 +137,74 @@ static bool s_bAutoSelect = true;
 static int  s_cxStyleSelectDlg = STYLESELECTDLG_X;
 static int  s_cyStyleSelectDlg = STYLESELECTDLG_Y;
 
+//=============================================================================
+
+// Font Weights
+typedef struct _fntwght {
+    LPCWSTR const wname;
+    int const weight;
+} FONTWEIGHT_T;
+
+static const FONTWEIGHT_T FontWeights[] = {
+    { L"thin",        FW_THIN },       //  0
+    { L"semithin",    150 },           //  1
+    { L"extralight",  FW_EXTRALIGHT }, //  2
+    { L"lighter",     250 },           //  3
+    { L"light",       FW_LIGHT },      //  4
+    { L"book",        350 },           //  5
+    { L"text",        375 },           //  6
+    { L"regular",     FW_REGULAR },    //  7
+    { L"thick",       425 },           //  8
+    { L"retina",      450 },           //  9
+    { L"medium",      FW_MEDIUM },     // 10
+    { L"extramedium", 550 },           // 11
+    { L"semibold",    FW_SEMIBOLD },   // 12
+    { L"dark",        650 },           // 13
+    { L"bold",        FW_BOLD },       // 14
+    { L"bolder",      750 },           // 15
+    { L"extrabold",   FW_EXTRABOLD },  // 16
+    { L"semiheavy",   850 },           // 17
+    { L"heavy",       FW_HEAVY },      // 18
+    { L"extrablack",  950 },           // 19
+    { L"ultradark",   1000 },          // 20
+};
+
+typedef enum {
+    FW_IDX_THIN = 0,
+    FW_IDX_SEMITHIN,
+    FW_IDX_EXTRALIGHT,
+    FW_IDX_LIGHTER,
+    FW_IDX_LIGHT,
+    FW_IDX_BOOK,
+    FW_IDX_TEXT,
+    FW_IDX_REGULAR,
+    FW_IDX_THICK,
+    FW_IDX_RETINA,
+    FW_IDX_MEDIUM,
+    FW_IDX_EXTRAMEDIUM,
+    FW_IDX_SEMIBOLD,
+    FW_IDX_DARK,
+    FW_IDX_BOLD,
+    FW_IDX_BOLDER,
+    FW_IDX_EXTRABOLD,
+    FW_IDX_SEMIHEAVY,
+    FW_IDX_HEAVY,
+    FW_IDX_EXTRABLACK,
+    FW_IDX_ULTRADARK
+} FW_IDX;
+
+//// font quality
+//#define Style_StrHasAttrNone(lpszStyle)         Style_StrHasAttribute((lpszStyle), L"none")
+//#define Style_StrHasAttrStdType(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"standard")
+//#define Style_StrHasAttrClearType(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"cleartype")
+
+// font effects
+static const WCHAR *const FontEffects[] = { L"italic", L"underline", L"strikeout", L"eolfilled" };
+typedef enum { FE_ITALIC = 0, FE_UNDERLINE, FE_STRIKEOUT, FE_EOLFILLED } FE_IDX;
+
+// caret style
+static const WCHAR *const CaretStyle[] = { L"ovrblck", L"block", L"noblink", };
+typedef enum { CS_OVRBLCK = 0, CS_BLOCK, CS_NOBLINK, } CS_IDX;
 
 //=============================================================================
 
@@ -916,75 +984,6 @@ static __forceinline bool Style_StrHasAttribute(LPCWSTR lpszStyle, LPCWSTR name)
     return Style_StrHasAttributeEx(lpszStyle, name, StringCchLen(name, 0));
 }
 
-// Font Weights
-typedef struct _fntwght {
-    LPCWSTR const wname;
-    int const weight;
-} FONTWEIGHT_T;
-
-static const FONTWEIGHT_T FontWeights[] = {
-    { L"thin",        FW_THIN       }, //  0
-    { L"semithin",    150           }, //  1
-    { L"extralight",  FW_EXTRALIGHT }, //  2
-    { L"lighter",     250           }, //  3
-    { L"light",       FW_LIGHT      }, //  4
-    { L"book",        350           }, //  5
-    { L"text",        375           }, //  6
-    { L"regular",     FW_REGULAR    }, //  7
-    { L"retina",      450           }, //  8
-    { L"medium",      FW_MEDIUM     }, //  9
-    { L"extramedium", 550           }, // 10
-    { L"semibold",    FW_SEMIBOLD   }, // 11
-    { L"dark",        650           }, // 12
-    { L"bold",        FW_BOLD       }, // 13
-    { L"bolder",      750           }, // 14
-    { L"extrabold",   FW_EXTRABOLD  }, // 15
-    { L"semiheavy",   850           }, // 16
-    { L"heavy",       FW_HEAVY      }, // 17
-    { L"extrablack",  950           }, // 18
-    { L"ultradark",   1000          }, // 19
-};
-
-typedef enum _fw_idx {
-    FW_IDX_THIN = 0,
-    FW_IDX_SEMITHIN,
-    FW_IDX_EXTRALIGHT,
-    FW_IDX_LIGHTER,
-    FW_IDX_LIGHT,
-    FW_IDX_BOOK,
-    FW_IDX_TEXT,
-    FW_IDX_REGULAR,
-    FW_IDX_RETINA,
-    FW_IDX_MEDIUM,
-    FW_IDX_EXTRAMEDIUM,
-    FW_IDX_SEMIBOLD,
-    FW_IDX_DARK,
-    FW_IDX_BOLD,
-    FW_IDX_BOLDER,
-    FW_IDX_EXTRABOLD,
-    FW_IDX_SEMIHEAVY,
-    FW_IDX_HEAVY,
-    FW_IDX_EXTRABLACK,
-    FW_IDX_ULTRADARK
-} FW_IDX;
-
-
-//// font quality
-//#define Style_StrHasAttrNone(lpszStyle)         Style_StrHasAttribute((lpszStyle), L"none")
-//#define Style_StrHasAttrStdType(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"standard")
-//#define Style_StrHasAttrClearType(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"cleartype")
-
-// font effects
-#define Style_StrHasAttrItalic(lpszStyle)       Style_StrHasAttribute((lpszStyle), L"italic")
-#define Style_StrHasAttrUnderline(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"underline")
-#define Style_StrHasAttrStrikeOut(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"strikeout")
-#define Style_StrHasAttrEOLFilled(lpszStyle)    Style_StrHasAttribute((lpszStyle), L"eolfilled")
-
-// caret style
-#define Style_StrHasAttrOvrBlck(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"ovrblck")
-#define Style_StrHasAttrBlock(lpszStyle)        Style_StrHasAttribute((lpszStyle), L"block")
-#define Style_StrHasAttrNoBlink(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"noblink")
-
 
 //=============================================================================
 //
@@ -1251,7 +1250,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, SC_ALPHA_OPAQUE*2/3, 0);
     }
 
-    if (Style_StrHasAttrEOLFilled(pCurrentStandard->Styles[STY_SEL_TXT].szValue)) { // selection eolfilled
+    if (Style_StrHasAttribute(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FontEffects[FE_EOLFILLED])) { // selection eolfilled
         SendMessage(hwnd, SCI_SETSELEOLFILLED, 1, 0);
     } else {
         SendMessage(hwnd, SCI_SETSELEOLFILLED, 0, 0);
@@ -2760,10 +2759,6 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
 bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, bool useDefault)
 {
     bool const bFGLayer = (layer == FOREGROUND_LAYER);
-    if (useDefault) {
-        *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
-        return true;
-    }
 
     const WCHAR *const pItem = bFGLayer ? L"fore:" : L"back:";
     WCHAR *p = StrStr(lpszStyle, pItem);
@@ -2784,6 +2779,11 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, bool
             *rgb = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
             return true;
         }
+    }
+    // no colordef found - use default as fallback ?
+    if (useDefault) {
+        *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
+        return true;
     }
     return false;
 }
@@ -2973,17 +2973,22 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
             StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), pFontWeight);
         }
 
-        if (Style_StrHasAttrItalic(lpszStyleSrc) && !Style_StrHasAttrItalic(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
+        if (Style_StrHasAttribute(lpszStyleSrc, FontEffects[FE_ITALIC]) && 
+            !Style_StrHasAttribute(lpszStyleDest, FontEffects[FE_ITALIC])) {
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), FontEffects[FE_ITALIC]);
         }
 
-        // ---------  Effects  ---------
-        if (Style_StrHasAttrUnderline(lpszStyleSrc) && !Style_StrHasAttrUnderline(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; underline");
+        if (Style_StrHasAttribute(lpszStyleSrc, FontEffects[FE_UNDERLINE]) && 
+            !Style_StrHasAttribute(lpszStyleDest, FontEffects[FE_UNDERLINE])) {
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), FontEffects[FE_UNDERLINE]);
         }
 
-        if (Style_StrHasAttrStrikeOut(lpszStyleSrc) && !Style_StrHasAttrStrikeOut(lpszStyleDest)) {
-            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
+        if (Style_StrHasAttribute(lpszStyleSrc, FontEffects[FE_STRIKEOUT]) && 
+            !Style_StrHasAttribute(lpszStyleDest, FontEffects[FE_STRIKEOUT])) {
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+            StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), FontEffects[FE_STRIKEOUT]);
         }
 
         if (StrStr(lpszStyleSrc, L"fore:") && !StrStr(lpszStyleDest, L"fore:")) { // foreground
@@ -3043,8 +3048,10 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
         }
     }
 
-    if (Style_StrHasAttrEOLFilled(lpszStyleSrc) && !Style_StrHasAttrEOLFilled(lpszStyleDest)) {
-        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; eolfilled");
+    if (Style_StrHasAttribute(lpszStyleSrc, FontEffects[FE_EOLFILLED]) && 
+        !Style_StrHasAttribute(lpszStyleDest, FontEffects[FE_EOLFILLED])) {
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), FontEffects[FE_EOLFILLED]);
     }
 
     if (Style_StrGetCase(lpszStyleSrc, &iValue) && !StrStr(lpszStyleDest, L"case:")) {
@@ -3085,16 +3092,22 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     }
 
     // --------   other style settings   --------
-    if (Style_StrHasAttrOvrBlck(lpszStyleSrc) && !Style_StrHasAttrOvrBlck(lpszStyleDest)) {
-        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ovrblck");
+    if (Style_StrHasAttribute(lpszStyleSrc, CaretStyle[CS_OVRBLCK]) && 
+        !Style_StrHasAttribute(lpszStyleDest, CaretStyle[CS_OVRBLCK])) {
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), CaretStyle[CS_OVRBLCK]);
     }
 
-    if (Style_StrHasAttrBlock(lpszStyleSrc) && !Style_StrHasAttrBlock(lpszStyleDest)) {
-        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; block");
+    if (Style_StrHasAttribute(lpszStyleSrc, CaretStyle[CS_BLOCK]) && 
+        !Style_StrHasAttribute(lpszStyleDest, CaretStyle[CS_BLOCK])) {
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), CaretStyle[CS_BLOCK]);
     }
 
-    if (Style_StrHasAttrNoBlink(lpszStyleSrc) && !Style_StrHasAttrNoBlink(lpszStyleDest)) {
-        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; noblink");
+    if (Style_StrHasAttribute(lpszStyleSrc, CaretStyle[CS_NOBLINK]) && 
+        !Style_StrHasAttribute(lpszStyleDest, CaretStyle[CS_NOBLINK])) {
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ");
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), CaretStyle[CS_NOBLINK]);
     }
 
     StrTrim(szTmpStyle, L" ;");
@@ -3254,9 +3267,9 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     Style_StrGetWeightValue(lpszStyle, &iFontWeight);
 
     int const iFontStretch = 0; // with calculated autom.
-    bool bIsItalic = Style_StrHasAttrItalic(lpszStyle);
-    bool bIsUnderline = Style_StrHasAttrUnderline(lpszStyle);
-    bool bIsStrikeout = Style_StrHasAttrStrikeOut(lpszStyle);
+    bool bIsItalic = Style_StrHasAttribute(lpszStyle, FontEffects[FE_ITALIC]);
+    bool bIsUnderline = Style_StrHasAttribute(lpszStyle, FontEffects[FE_UNDERLINE]);
+    bool bIsStrikeout = Style_StrHasAttribute(lpszStyle, FontEffects[FE_STRIKEOUT]);
 
     int iQuality = Settings2.SciFontQuality;
     switch (iQuality) {
@@ -3276,9 +3289,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     }
 
     COLORREF fgColor = 0L;
-    if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &fgColor, false)) {
-        Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &fgColor, true);
-    }
+    Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &fgColor, true);
 
     // --------------------------------------------------------------------------
 
@@ -3424,7 +3435,6 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
         }
     }
 
-
     //~if (flagUseStyle && StrIsNotEmpty(cf.lpszStyle)) {
     //~    if (StrStr(lpszStyle, L"fstyle:")) {
     //~        StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; fstyle:");
@@ -3510,8 +3520,9 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 
     if (lf.lfItalic) {
         if (bIsItalic) {
-            if (Style_StrHasAttrItalic(lpszStyle)) {
-                StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; italic");
+            if (Style_StrHasAttribute(lpszStyle, FontEffects[FE_ITALIC])) {
+                StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
+                StringCchCat(szNewStyle, COUNTOF(szNewStyle), FontEffects[FE_ITALIC]);
             }
         } else {
             StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; italic");
@@ -3521,21 +3532,25 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     if (bWithEffects) {
         if (lf.lfUnderline) {
             if (bIsUnderline) {
-                if (Style_StrHasAttrUnderline(lpszStyle)) {
-                    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; underline");
+                if (Style_StrHasAttribute(lpszStyle, FontEffects[FE_UNDERLINE])) {
+                    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
+                    StringCchCat(szNewStyle, COUNTOF(szNewStyle), FontEffects[FE_UNDERLINE]);
                 }
             } else {
-                StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; underline");
+                StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
+                StringCchCat(szNewStyle, COUNTOF(szNewStyle), FontEffects[FE_UNDERLINE]);
             }
         }
 
         if (lf.lfStrikeOut) {
             if (bIsStrikeout) {
-                if (Style_StrHasAttrStrikeOut(lpszStyle)) {
-                    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; strikeout");
+                if (Style_StrHasAttribute(lpszStyle, FontEffects[FE_STRIKEOUT])) {
+                    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
+                    StringCchCat(szNewStyle, COUNTOF(szNewStyle), FontEffects[FE_STRIKEOUT]);
                 }
             } else {
-                StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; strikeout");
+                StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
+                StringCchCat(szNewStyle, COUNTOF(szNewStyle), FontEffects[FE_STRIKEOUT]);
             }
         }
 
@@ -3727,25 +3742,25 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     }
 
     // Italic
-    if (Style_StrHasAttrItalic(lpszStyle)) {
+    if (Style_StrHasAttribute(lpszStyle, FontEffects[FE_ITALIC])) {
         SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)false);
     }
     // Underline
-    if (Style_StrHasAttrUnderline(lpszStyle)) {
+    if (Style_StrHasAttribute(lpszStyle, FontEffects[FE_UNDERLINE])) {
         SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)false);
     }
     // StrikeOut
-    if (Style_StrHasAttrStrikeOut(lpszStyle)) {
+    if (Style_StrHasAttribute(lpszStyle, FontEffects[FE_STRIKEOUT])) {
         SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)false);
     }
     // EOL Filled
-    if (Style_StrHasAttrEOLFilled(lpszStyle)) {
+    if (Style_StrHasAttribute(lpszStyle, FontEffects[FE_EOLFILLED])) {
         SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)true);
     } else if (bInitDefault) {
         SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)false);
