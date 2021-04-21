@@ -5977,15 +5977,15 @@ HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, cons
 //
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 {
-    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
+    static UINT dpi = 0; // (!) initially, to force first calculation 
     static MENUITEMINFO mii = { 0 };
 
     UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
 
     if (dpi != cur_dpi) {
-        dpi = cur_dpi;
-        int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, dpi);
-        int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, dpi);
+
+        int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, cur_dpi);
+        int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, cur_dpi);
 
         if (!mii.cbSize) {
             mii.cbSize = sizeof(MENUITEMINFO);
@@ -5996,10 +5996,11 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
         if (mii.hbmpItem) {
             DeleteObject(mii.hbmpItem);
         }
-
         mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, scx, scy);
 
         SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
+
+        dpi = cur_dpi;
     }
 }
 
