@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.420.(build_#) (2021-04-20)
+Current BETA/RC Version 5.21.421.(build_#) (2021-04-21)
 ========================================================
 
 --------------------------------------------------------
@@ -66,6 +66,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.421.1]- Prefer "Cascadia Code" font over "Consolas" font for default if installed (ligatures).
 [.420.2]- Custom Font Selection Dialog.
 [.419.2]- Comment BockEdit shortcut changed (Ctl+Alt+Q => Alt+Shift+Q).
 [.419.2]- Comment has separate popup menu (Edit -> Selection).
@@ -107,6 +108,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.421.1]- Correcting regression for icon scaling.
+[.421.1]- Rendering of "Relaunch Elevated" menu icon.
+[.421.1]- Regression on schema color definition.
+[.421.1]- Another bug retrieving Font SIze for Common Default vs. Lexer Specific.
 [.420.2]- Bug retrieving Font SIze for Common Default vs. Lexer Specific.
 [.420.2]- Font Name handling retrieved from Common-Default vs. Lexer-Specific.
 [.420.1]- Copy multi-selection to clipboard: separate each match by line-break.
