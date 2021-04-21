@@ -58,7 +58,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Acerca de Notepad3"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,330,266,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,330,266,50,14
     EDITTEXT        IDC_VERSION,84,10,220,24, ES_CENTER | ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
     LTEXT           "Scintilla Versión Biblioteca:",IDC_SCI_VERSION,84,34,219,8
     LTEXT           "Compilado con:",IDC_COMPILER,84,45,218,8
@@ -79,7 +79,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Ayuda de la línea de comando"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
+    DEFPUSHBUTTON   "Aceptar",IDOK,239,187,55,16
     EDITTEXT        IDC_CMDLINEHELP,15,7,278,176,ES_MULTILINE | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
 END
 
@@ -163,7 +163,7 @@ BEGIN
     LTEXT           "Teclee el nombre de un programa, carpeta, documento o recurso de Internet, y Windows lo abrirá para usted.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Examinar...",IDC_SEARCHEXE,163,69,55,16
-    DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
+    DEFPUSHBUTTON   "Aceptar",IDOK,47,69,55,16
     PUSHBUTTON      "Cancelar",IDCANCEL,105,69,55,16
 END
 
@@ -175,7 +175,7 @@ BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
     LTEXT           "Cliquear aquí para especificar la carpeta \ncon enlaces a sus aplicaciones favoritas.",IDC_OPENWITHDESCR,26,83,162,18
-    DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
@@ -202,7 +202,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,180,10
     CONTROL         "Habilitar la detección &UNICODE.",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
-    DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,87,151,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,140,151,50,14
 END
 
@@ -219,7 +219,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
     CONTROL         "&Elimine los espacios en blanco finales al guardar.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
-    DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,139,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,139,24,50,14
 END
 
@@ -252,7 +252,7 @@ BEGIN
     EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
     LTEXT           "&Columna:",IDC_COLUMN_TEXT,7,40,101,8
     EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,58,74,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,58,74,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,7,74,50,14
 END
 
@@ -267,7 +267,7 @@ BEGIN
     CONTROL         "&Recordar patrón de búsqueda.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,120,10
     CONTROL         "Eliminar", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
-    DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
+    DEFPUSHBUTTON   "Aceptar",IDOK,154,139,50,14,WS_DISABLED
     PUSHBUTTON      "Cerrar",IDCANCEL,212,139,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
@@ -283,7 +283,7 @@ BEGIN
     CONTROL         "&Bloquear de archivo exclusivo.", IDC_RADIO_BTN_D,"Button", BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,140,10
     CONTROL         "&Restablecer si se abre un nuevo archivo.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,150,10
     CONTROL         "&Monitoreo de Log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,120,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
 END
 
@@ -297,7 +297,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,155,10
     CONTROL         "Selección &automática por extensión de archivo.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,155,10
-    DEFPUSHBUTTON   "OK",IDOK,53,173,50,14,WS_DISABLED
+    DEFPUSHBUTTON   "Aceptar",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,173,50,14
 END
 
@@ -320,7 +320,7 @@ BEGIN
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
     PUSHBUTTON      "&Importar...",IDC_IMPORT,181,232,50,14
     PUSHBUTTON      "E&xportar...",IDC_EXPORT,237,232,50,14
-    DEFPUSHBUTTON   "OK",IDOK,355,232,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,355,232,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,410,232,50,14
     GROUPBOX        "Información",IDC_INFO_GROUPBOX,181,7,280,127
     CTEXT           "-",IDC_TITLE,240,20,180,24,SS_CENTERIMAGE
@@ -344,7 +344,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     CONTROL         "&Autodetectar tabulación o espacio de sangría.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
-    DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,117,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,117,27,50,14
 END
 
@@ -380,7 +380,7 @@ BEGIN
     EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
     CONTROL         "Mostrar la lín&ea de borde.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
     CONTROL         "Cambiar el color de fondo.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
-    DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,166,34,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,222,34,50,14
 END
 
@@ -393,7 +393,7 @@ BEGIN
     COMBOBOX        101,7,24,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        102,7,41,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,83,79,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,139,79,50,14
     LTEXT           "Sin ajuste de sangría|Ajustar sangría por 1 carácter|Ajustar sangría por 2 caracteres|Ajustar sangría por 1 nivel|Ajustar sangría por 2 niveles|Ajustar sangría como primera línea secundaria|Ajustar sangría 1 nivel más que la primera línea secundaria",200,0,0,615,8,NOT WS_VISIBLE
     LTEXT           "Sin indicador antes del avance de línea|Mostrar indicador antes del avance de línea (cerca texto)|Mostrar indicador antes del avance de línea (cerca bordes)",201,0,0,418,8,NOT WS_VISIBLE
@@ -435,7 +435,7 @@ BEGIN
     LTEXT           "&Nivel (10% a 500%):",IDC_STATIC6,248,188,92,8
     EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
     CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
-    DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
+    DEFPUSHBUTTON   "Aceptar",IDOK,190,237,50,14,WS_GROUP
     PUSHBUTTON      "Cancelar",IDCANCEL,244,237,50,14
     PUSHBUTTON      "&Imprimir...",IDC_PRINTER,298,237,50,14
     GROUPBOX        "Vista previa",IDC_STATIC2,240,8,108,157
@@ -452,7 +452,7 @@ BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
     LTEXT           "Cliquear aquí para especificar la carpeta con enlaces a sus archivos favoritos.",IDC_FAVORITESDESCR,26,83,142,18
-    DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
@@ -464,7 +464,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Teclee el nombre del nuevo elemento favorito:",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
+    DEFPUSHBUTTON   "Aceptar",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,115,45,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,45,10,10
 END
@@ -475,7 +475,7 @@ CAPTION "Encriptación de archivos"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Frase de Contraseña", IDC_STATIC, 7, 7, 297, 108
-    DEFPUSHBUTTON   "OK",IDOK,245,98,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,245,98,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,184,98,50,14
     CONTROL         "Establecer una nueva Clave",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,100,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
@@ -492,7 +492,7 @@ CAPTION "Descifrar de archivos"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Frase de Contraseña", IDC_STATIC, 8, 6, 283, 69
-    DEFPUSHBUTTON   "OK",IDOK,233,58,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,233,58,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "Descifrar utilizando la Clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,125,10
@@ -507,7 +507,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Límite:",IDC_STATIC,7,7,34,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,73,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,73,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,73,24,50,14
 END
 
@@ -520,7 +520,7 @@ BEGIN
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "&Sufijo de línea:",IDC_STATIC2,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
@@ -544,7 +544,7 @@ BEGIN
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
     LTEXT           "X veces",IDC_STATIC3,148,50,24,8
-    DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
 END
 
@@ -557,7 +557,7 @@ BEGIN
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "Insertar después selección:",IDC_STATIC2,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
 END
 
@@ -569,7 +569,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    DEFPUSHBUTTON   "&OK",IDOK,187,50,50,14
+    DEFPUSHBUTTON   "&Aceptar",IDOK,187,50,50,14
     CONTROL         "&No mostrar este mensaje otra vez.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
@@ -596,7 +596,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    DEFPUSHBUTTON   "&OK",IDOK,131,50,50,14
+    DEFPUSHBUTTON   "&Aceptar",IDOK,131,50,50,14
     PUSHBUTTON      "&Cancelar",IDCANCEL,187,50,50,14
     CONTROL         "&No mostrar este mensaje otra vez.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
@@ -649,7 +649,7 @@ BEGIN
     CONTROL         "Comparación lógica de &números.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10
     CONTROL         "Comparación &lexicográfica.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,120,10
     CONTROL         "Ordenación &columna (selección rectangular).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,150,10
-    DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,128,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,128,24,50,14
 END
 
@@ -660,7 +660,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Seleccionar codificación fuente para recargar:",IDC_STATIC,7,7,155,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
-    DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
+    DEFPUSHBUTTON   "Aceptar",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,114,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
 END
@@ -672,7 +672,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "S&eleccionar la codificación del documento actual:",IDC_STATIC,7,7,150,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
-    DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
+    DEFPUSHBUTTON   "Aceptar",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,114,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
 END
@@ -687,7 +687,7 @@ BEGIN
     CONTROL         "&Centro.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
     CONTROL         "&Justificado.",103,"Button",BS_AUTORADIOBUTTON,7,43,50,10
     CONTROL         "Justificado (Modo de &párrafo).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
 END
 
@@ -697,53 +697,53 @@ END
 //
 IDD_MUI_SYSFONT_WITHLINK DIALOGEX 13, 54, 243, 234
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Font"
+CAPTION "Fuente"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Font:", stc1, 7, 7, 98, 9
+    LTEXT           "&Fuente:", stc1, 7, 7, 98, 9
     COMBOBOX        cmb1, 7, 16, 98, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "Font st&yle:", stc2, 114, 7, 74, 9
+    LTEXT           "&Estilo de fuente:", stc2, 114, 7, 74, 9
     COMBOBOX        cmb2, 114, 16, 74, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "&Size:", stc3, 198, 7, 36, 9
+    LTEXT           "Ta&maño:", stc3, 198, 7, 36, 9
     COMBOBOX        cmb3, 198, 16, 36, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    GROUPBOX        "Effects", grp1, 7, 97, 98, 76, WS_GROUP
-    AUTOCHECKBOX    "Stri&keout", chx1, 13, 111, 90, 10, WS_TABSTOP
-    AUTOCHECKBOX    "&Underline", chx2, 13, 127, 90, 10
+    GROUPBOX        "Efectos", grp1, 7, 97, 98, 76, WS_GROUP
+    AUTOCHECKBOX    "&Tachado", chx1, 13, 111, 90, 10, WS_TABSTOP
+    AUTOCHECKBOX    "&Subrayado", chx2, 13, 127, 90, 10
 
     LTEXT           "&Color:", stc4, 13, 144, 89, 9
     COMBOBOX        cmb4, 13, 155, 85, 100,
     CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL |
     CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    GROUPBOX        "Sample", grp2, 114, 97, 120, 43, WS_GROUP
+    GROUPBOX        "Muestra", grp2, 114, 97, 120, 43, WS_GROUP
     CTEXT           "AaBbYyZz", stc5, 116, 106, 117, 33,
     SS_NOPREFIX | NOT WS_VISIBLE
     LTEXT           "", stc6, 7, 178, 227, 20, SS_NOPREFIX | NOT WS_GROUP
 
-    LTEXT           "Sc&ript:", stc7, 114, 145, 118, 9
+    LTEXT           "&Script:", stc7, 114, 145, 118, 9
     COMBOBOX        cmb5, 114, 155, 120, 30, CBS_DROPDOWNLIST |
     CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_HASSTRINGS |
     WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    CONTROL         "<A>Show more fonts</A>", IDC_MANAGE_LINK, "SysLink",
+    CONTROL         "<A>Mostrar más fuentes</A>", IDC_MANAGE_LINK, "SysLink",
     WS_TABSTOP, 7, 199, 227, 9
 
-    DEFPUSHBUTTON   "OK", IDOK, 141, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "Cancel", IDCANCEL, 190, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Apply", psh3, 92, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Help", pshHelp, 43, 215, 45, 14, WS_GROUP
+    DEFPUSHBUTTON   "Aceptar", IDOK, 141, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "Cancelar", IDCANCEL, 190, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "&Aplicar", psh3, 92, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "&Ayuda", pshHelp, 43, 215, 45, 14, WS_GROUP
 END
 
 
