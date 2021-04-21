@@ -206,18 +206,18 @@ BEGIN
         END
         POPUP "&Επιλογή"
         BEGIN
-            MENUITEM "&Εσοχή",                                          IDM_EDIT_INDENT
-            MENUITEM "&Κατάργηση εσοχής",                               IDM_EDIT_UNINDENT
+            MENUITEM "&Εσοχή",                                      IDM_EDIT_INDENT
+            MENUITEM "&Κατάργηση εσοχής",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "&Σχόλιο γραμμής"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "Ενα&λλαγή\tCtrl+Q",                       IDM_EDIT_LINECOMMENT
+                MENUITEM "&Προσθήκη\tCtrl+Alt+Q",                   IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Κατάργηση\tCtrl+Alt+Shift+Q",            IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Επεξεργασία τμήματος\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Σχόλιο &πολλαπλών γραμμών\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Σχόλιο &πολλαπλών γραμμών\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "Εισα&γωγή επιλογής σε"
             BEGIN
