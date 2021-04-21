@@ -2259,7 +2259,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
         return -1LL;
     }
 
-    Style_SetDefaultLexer(Globals.hwndEdit);
+    //~ Style_SetDefaultLexer(Globals.hwndEdit); -- done by WM_THEMECHANGED
 
     Encoding_Current(Settings.DefaultEncoding);
 
@@ -5533,13 +5533,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SendWMSize(hwnd, NULL);
         break;
 
+    case IDM_VIEW_CUSTOMIZETB:
+        SendMessage(Globals.hwndToolbar,TB_CUSTOMIZE,0,0);
+        break;
+
     case IDM_VIEW_TOGGLETB:
         Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
         SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
-        break;
-
-    case IDM_VIEW_CUSTOMIZETB:
-        SendMessage(Globals.hwndToolbar,TB_CUSTOMIZE,0,0);
         break;
 
     case IDM_VIEW_LOADTHEMETB:

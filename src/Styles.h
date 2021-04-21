@@ -82,10 +82,10 @@ bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bo
 bool   Style_StrGetCase(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);
-void   Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc,LPWSTR lpszStyleDest,int cchSizeDest,bool);
+void   Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc,LPWSTR lpszStyleDest,int cchSizeDest);
 bool   Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,LPCWSTR sLexerName,LPCWSTR sStyleName,bool,bool,bool,bool);
 bool   Style_SelectColor(HWND hwnd,bool,LPWSTR lpszStyle,int cchStyle,bool);
-void   Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle,bool);
+void   Style_SetStyles(HWND hwnd,const int iStyle,LPCWSTR lpszStyle);
 bool   Style_IsCurLexerStandard();
 float  Style_GetBaseFontSize();
 void   Style_SetMultiEdgeLine(const int colVec[], const size_t count);
