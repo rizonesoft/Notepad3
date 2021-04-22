@@ -37,7 +37,9 @@ public:
 	FontRealised &operator=(const FontRealised &) = delete;
 	FontRealised &operator=(FontRealised &&) = delete;
 	virtual ~FontRealised() noexcept = default;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	void Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs, const char *localeName);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 };
 
 enum class IndentView {none, real, lookForward, lookBoth};
@@ -96,7 +98,9 @@ public:
 	std::vector<Indicator> indicators;
 	bool indicatorsDynamic;
 	bool indicatorsSetFore;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	bool fontsValid;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	int technology;
 	int lineHeight;
 	int lineOverlap;
@@ -131,7 +135,9 @@ public:
 	int fixedColumnWidth;	///< Total width of margins
 	bool marginInside;	///< true: margin included in text view, false: separate views
 	int textStart;	///< Starting x position of text within the view
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	int zoomLevel;  /// @ 2018-09-06 Changed to a percent value
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	WhiteSpace viewWhitespace;
 	TabDrawMode tabDrawMode;
 	int whitespaceSize;
@@ -176,7 +182,6 @@ public:
 	int wrapVisualFlagsLocation;
 	int wrapVisualStartIndent;
 	int wrapIndentMode; // SC_WRAPINDENT_FIXED, _SAME, _INDENT
-
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	std::string localeName;
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<

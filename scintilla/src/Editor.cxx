@@ -1825,10 +1825,14 @@ Sci::Position Editor::FormatRange(bool draw, const Sci_RangeToFormat *pfr) {
 	if (!pfr)
 		return 0;
 
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	AutoSurface surface(pfr->hdc, this, SC_TECHNOLOGY_DEFAULT, true);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	if (!surface)
 		return 0;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	AutoSurface surfaceMeasure(pfr->hdcTarget, this, SC_TECHNOLOGY_DEFAULT, true);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	if (!surfaceMeasure) {
 		return 0;
 	}

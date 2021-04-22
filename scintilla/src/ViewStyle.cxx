@@ -37,13 +37,13 @@ MarginStyle::MarginStyle(int style_, int width_, int mask_) noexcept :
 	style(style_), width(width_), mask(mask_), sensitive(false), cursor(SC_CURSORREVERSEARROW) {
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs, const char *localeName) {
 	PLATFORM_ASSERT(fs.fontName);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
 	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.italic, fs.extraFontFlag, technology, fs.characterSet, localeName);
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	font = Font::Allocate(fp);
 
 	ascent = static_cast<unsigned int>(surface.Ascent(font.get()));
@@ -282,39 +282,47 @@ void ViewStyle::Init(size_t stylesSize_) {
 	wrapVisualFlagsLocation = 0;
 	wrapVisualStartIndent = 0;
 	wrapIndentMode = SC_WRAPINDENT_FIXED;
-
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	localeName = localeNameDefault;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void ViewStyle::Refresh(Surface &surface, int tabInChars) {
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	if (!fontsValid) {
 		fontsValid = true;
-		fonts.clear();
+
+fonts.clear();
+
+		// Apply the extra font flag which controls text drawing quality to each style.
+		for (Style &style : styles) {
+			style.extraFontFlag = extraFontFlag;
+		}
+	
+		// Create a FontRealised object for each unique font in the styles.
+		CreateAndAddFont(styles[STYLE_DEFAULT]);
+		for (const Style &style : styles) {
+			CreateAndAddFont(style);
+		}
+	
+		// Ask platform to allocate each unique font.
+		for (auto &font : fonts) {
+			font.second->Realise(surface, zoomLevel, technology, font.first, localeName.c_str());
+		}
+	
+		// Set the platform font handle and measurements for each style.
+		for (Style &style : styles) {
+			const FontRealised *fr = Find(style);
+			style.Copy(fr->font, *fr);
+		}
+
+		aveCharWidth = styles[STYLE_DEFAULT].aveCharWidth;
+		spaceWidth = styles[STYLE_DEFAULT].spaceWidth;
 	}
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 	selbar = Platform::Chrome();
 	selbarlight = Platform::ChromeHighlight();
-
-	// Apply the extra font flag which controls text drawing quality to each style.
-	for (Style &style : styles) {
-		style.extraFontFlag = extraFontFlag;
-	}
-
-	// Create a FontRealised object for each unique font in the styles.
-	CreateAndAddFont(styles[STYLE_DEFAULT]);
-	for (const Style &style : styles) {
-		CreateAndAddFont(style);
-	}
-
-	// Ask platform to allocate each unique font.
-	for (auto &font : fonts) {
-		font.second->Realise(surface, zoomLevel, technology, font.first, localeName.c_str());
-	}
-
-	// Set the platform font handle and measurements for each style.
-	for (Style &style : styles) {
-		const FontRealised *fr = Find(style);
-		style.Copy(fr->font, *fr);
-	}
 
 	indicatorsDynamic = std::any_of(indicators.cbegin(), indicators.cend(),
 		[](const Indicator &indicator) noexcept { return indicator.IsDynamic(); });
@@ -328,7 +336,9 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	maxAscent += extraAscent;
 	maxDescent += extraDescent;
 	lineHeight = maxAscent + maxDescent;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	lineOverlap = std::clamp(lineHeight / 10, 2, lineHeight);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	someStylesProtected = std::any_of(styles.cbegin(), styles.cend(),
 		[](const Style &style) noexcept { return style.IsProtected(); });
@@ -336,9 +346,10 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	someStylesForceCase = std::any_of(styles.cbegin(), styles.cend(),
 		[](const Style &style) noexcept { return style.caseForce != Style::CaseForce::mixed; });
 
-	aveCharWidth = styles[STYLE_DEFAULT].aveCharWidth;
-	spaceWidth = styles[STYLE_DEFAULT].spaceWidth;
-	tabWidth = spaceWidth * tabInChars;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	//~tabWidth = spaceWidth * tabInChars;
+	tabWidth = aveCharWidth * tabInChars;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	controlCharWidth = 0.0;
 	if (controlCharSymbol >= 32) {
@@ -388,6 +399,7 @@ void ViewStyle::ClearStyles() {
 		}
 	}
 	styles[STYLE_LINENUMBER].back = Platform::Chrome();
+
 	// Set call tip fore/back to match the values previously set for call tips
 	styles[STYLE_CALLTIP].back = ColourDesired(0xff, 0xff, 0xff);
 	styles[STYLE_CALLTIP].fore = ColourDesired(0x80, 0x80, 0x80);
@@ -398,10 +410,12 @@ void ViewStyle::SetStyleFontName(int styleIndex, const char *name) {
 	styles[styleIndex].fontName = fontNames.Save(name);
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 void ViewStyle::SetFontLocaleName(const char *name) {
 	fontsValid = false;
 	localeName = name;
 }
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 bool ViewStyle::ProtectionActive() const noexcept {
 	return someStylesProtected;
