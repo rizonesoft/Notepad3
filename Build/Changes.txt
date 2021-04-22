@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.421.(build_#) (2021-04-21)
+Current BETA/RC Version 5.21.422.(build_#) (2021-04-22)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.422.1]- Support Scintilla's new feature: indicator stroke width.
 [.420.1]- TXT file for Translators to comunicate Line Mumbers of the "Added/Modified" strings.
 [.420.1]- Code Color for the "Change date" of the "Added/Modified" strings to translate".
 [.420.1]- More intermediate font weight constants added.
@@ -66,6 +67,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.422.1]- Code cleanup for Font and Style Selection.
 [.421.1]- Prefer "Cascadia Code" font over "Consolas" font for default if installed (ligatures).
 [.420.2]- Custom Font Selection Dialog.
 [.419.2]- Comment BockEdit shortcut changed (Ctl+Alt+Q => Alt+Shift+Q).
