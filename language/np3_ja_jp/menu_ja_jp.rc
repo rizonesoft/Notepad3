@@ -67,7 +67,7 @@ BEGIN
         MENUITEM "読み取り専用(&R)",            IDM_FILE_READONLY
         MENUITEM "ロック(読み取り共有)(&L)",                 IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "暗号化パスワードの設定(&Y)...",                 IDM_SETPASS
+        MENUITEM "暗号化パスワード設定(&Y)...",                 IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "パスをクリップボードへ(&D)"
         BEGIN
@@ -209,7 +209,7 @@ BEGIN
             MENUITEM "インデント(&I)\tTab",                      IDM_EDIT_INDENT
             MENUITEM "逆インデント(&U)\tShift+Tab",              IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "行コメント(&)"
+            POPUP "行コメント(&C)"
             BEGIN
                 MENUITEM "切り替え(&T)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
                 MENUITEM "追加(&A)\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
