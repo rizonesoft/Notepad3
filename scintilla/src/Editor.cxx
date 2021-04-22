@@ -7232,6 +7232,17 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		InvalidateStyleRedraw();
 		break;
 
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	case SCI_SETFONTLOCALE:
+		if (lParam != 0) {
+			vs.SetFontLocaleName(CharPtrFromSPtr(lParam));
+		}
+		break;
+
+	case SCI_GETFONTLOCALE:
+		return StringResult(lParam, vs.localeName.c_str());
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 	case SCI_SETELEMENTCOLOUR:
 		vs.elementColours[static_cast<int>(wParam)] = ColourAlpha(static_cast<int>(lParam));
 		break;

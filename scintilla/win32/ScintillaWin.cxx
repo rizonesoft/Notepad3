@@ -3003,9 +3003,9 @@ void ScintillaWin::ImeStartComposition() {
 			// The logfont for the IME is recreated here.
 			const int styleHere = pdoc->StyleIndexAt(sel.MainCaret());
 			LOGFONTW lf = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, L""};
-			int sizeZoomed = vs.styles[styleHere].size + vs.zoomLevel * SC_FONT_SIZE_MULTIPLIER;
-			if (sizeZoomed <= 2 * SC_FONT_SIZE_MULTIPLIER)	// Hangs if sizeZoomed <= 1
-				sizeZoomed = 2 * SC_FONT_SIZE_MULTIPLIER;
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+			int sizeZoomed = GetFontSizeZoomed(vs.styles[styleHere].size, vs.zoomLevel);
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			// The negative is to allow for leading
 			lf.lfHeight = -::MulDiv(sizeZoomed, dpi, 72*SC_FONT_SIZE_MULTIPLIER);
 			lf.lfWeight = vs.styles[styleHere].weight;

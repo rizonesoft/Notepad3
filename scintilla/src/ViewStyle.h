@@ -30,14 +30,14 @@ public:
 class FontRealised : public FontMeasurements {
 public:
 	std::shared_ptr<Font> font;
-	FontRealised() noexcept;
+	FontRealised() noexcept = default;
 	// FontRealised objects can not be copied.
 	FontRealised(const FontRealised &) = delete;
 	FontRealised(FontRealised &&) = delete;
 	FontRealised &operator=(const FontRealised &) = delete;
 	FontRealised &operator=(FontRealised &&) = delete;
-	virtual ~FontRealised();
-	void Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs);
+	virtual ~FontRealised() noexcept = default;
+	void Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs, const char *localeName);
 };
 
 enum class IndentView {none, real, lookForward, lookBoth};
@@ -96,6 +96,7 @@ public:
 	std::vector<Indicator> indicators;
 	bool indicatorsDynamic;
 	bool indicatorsSetFore;
+	bool fontsValid;
 	int technology;
 	int lineHeight;
 	int lineOverlap;
@@ -176,6 +177,10 @@ public:
 	int wrapVisualStartIndent;
 	int wrapIndentMode; // SC_WRAPINDENT_FIXED, _SAME, _INDENT
 
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	std::string localeName;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 	ViewStyle();
 	ViewStyle(const ViewStyle &source);
 	ViewStyle(ViewStyle &&) = delete;
@@ -192,6 +197,9 @@ public:
 	void ResetDefaultStyle();
 	void ClearStyles();
 	void SetStyleFontName(int styleIndex, const char *name);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	void SetFontLocaleName(const char *name);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	bool ProtectionActive() const noexcept;
 	int ExternalMarginWidth() const noexcept;
 	int MarginFromLocation(Point pt) const noexcept;
@@ -230,7 +238,7 @@ public:
 private:
 	void AllocStyles(size_t sizeNew);
 	void CreateAndAddFont(const FontSpecification &fs);
-	FontRealised *Find(const FontSpecification &fs);
+	FontRealised *Find(const FontSpecification &fs) const;
 	void FindMaxAscentDescent();
 };
 

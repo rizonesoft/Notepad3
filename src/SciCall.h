@@ -534,6 +534,7 @@ DeclareSciCallV2(StyleSetFont, STYLESETFONT, int, style, const char*, fontname);
 DeclareSciCallV2(StyleSetWeight, STYLESETWEIGHT, int, style, int, weight);
 DeclareSciCallV2(StyleSetItalic, STYLESETITALIC, int, style, bool, oblique);
 DeclareSciCallV1(SetFontQuality, SETFONTQUALITY, int, qual);
+DeclareSciCallV01(SetFontLocale, SETFONTLOCALE, const char*, localeName);
 
 //=============================================================================
 //

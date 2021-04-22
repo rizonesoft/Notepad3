@@ -1102,6 +1102,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
     // assert(pLexNew != s_pLexCurrent);
 
+    char localeNameA[LOCALE_NAME_MAX_LENGTH] = { '\0' };
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+    WideCharToMultiByte(CP_UTF8, 0, Settings2.PreferredLanguageLocaleName, -1, localeNameA, COUNTOF(localeNameA), NULL, NULL);
+#else
+    WideCharToMultiByte(CP_UTF8, 0, MUI_BASE_LNG_ID, -1, localeNameA, COUNTOF(localeNameA), NULL, NULL);
+#endif
+
     // first set standard lexer's default values
     const PEDITLEXER pCurrentStandard = (IsLexerStandard(pLexNew)) ? pLexNew : GetCurrentStdLexer();
 
@@ -1158,6 +1165,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     // apply default settings
     Style_SetStyles(hwnd, STYLE_DEFAULT, mergedDefaultStyles);
+
+    SciCall_SetFontLocale(localeNameA);
 
     // Broadcast STYLE_DEFAULT as base style to all other styles
     SciCall_StyleClearAll();
