@@ -3281,6 +3281,8 @@ static INT_PTR CALLBACK Style_FontDialogHook(
 ) {
     UNREFERENCED_PARAMETER(wParam);
 
+    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
+
     switch (uiMsg) {
 
     case WM_INITDIALOG: {
@@ -3293,24 +3295,17 @@ static INT_PTR CALLBACK Style_FontDialogHook(
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-//#define IDCS_COMBOX1 0x3E8
-#define IDCS_STRKOUT 0x410
-#define IDCS_UNDERLN 0x411
-#define IDCS_EFFECTS 0x430
-#define IDCS_SAMPLE  0x431
-#define IDCS_EXMPBOX 0x444
-#define IDCS_EXMPTXT 0x445
-
         if (UseDarkMode()) {
             SetExplorerTheme(GetDlgItem(hdlg, IDOK));
             SetExplorerTheme(GetDlgItem(hdlg, IDCANCEL));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDCS_STRKOUT, IDCS_UNDERLN, IDCS_EFFECTS, IDCS_SAMPLE, IDCS_EXMPBOX, IDCS_EXMPTXT, IDC_STATIC };
+            int const ctl[] = { grp1, grp2, chx1, chx2, cmb1, cmb2, cmb3, cmb4, cmb5, stc1, stc2, stc3, stc4, stc5, stc6, stc7 };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
         }
 #endif
+        dpi = Scintilla_GetWindowDPI(hdlg);
 
         const CHOOSEFONT* const pChooseFont = ((CHOOSEFONT*)lParam);
         if (pChooseFont) {
@@ -3330,6 +3325,8 @@ static INT_PTR CALLBACK Style_FontDialogHook(
         //~  SendMessage(hdlg, WM_CHOOSEFONT_GETLOGFONT, 0, (LPARAM)pChooseFont->lpLogFont);
         //~  PostMessage(hdlg, WM_CLOSE, 0, 0);
         //~}
+
+        CenterDlgInParent(hdlg, NULL);
 
         PostMessage(hdlg, WM_THEMECHANGED, 0, 0);
     }
@@ -3353,7 +3350,6 @@ CASE_WM_CTLCOLOR_SET:
             bool const darkModeEnabled = CheckDarkModeEnabled();
             AllowDarkModeForWindowEx(hdlg, darkModeEnabled);
             RefreshTitleBarThemeColor(hdlg);
-
             int const buttons[] = { IDOK, IDCANCEL };
             for (int id = 0; id < COUNTOF(buttons); ++id) {
                 HWND const hBtn = GetDlgItem(hdlg, buttons[id]);
@@ -3365,6 +3361,19 @@ CASE_WM_CTLCOLOR_SET:
         break;
 
 #endif
+
+    case WM_DPICHANGED:
+        dpi = LOWORD(wParam);
+        //dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, 0);
+        int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+            //HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
+            HFONT const hFont = 0;
+            SendMessage(GetDlgItem(hdlg, ctl[i]), WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
+        }
+        return TRUE;
+
 
     default:
         break;

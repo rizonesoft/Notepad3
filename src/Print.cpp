@@ -79,7 +79,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
             SetExplorerTheme(GetDlgItem(hwnd, IDOK));
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             SetExplorerTheme(GetDlgItem(hwnd, 0x401));
-            int const ctl[] = { 0x410, 0x420, 0x421, 0x422, 0x430, 0x431, 0x433, 0x473, IDC_STATIC };
+            int const ctl[] = { chx1, rad1, rad2, rad3, grp1, grp2, grp4, cmb4 };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
@@ -532,7 +532,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
             SetExplorerTheme(GetDlgItem(hwnd, IDOK));
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_PRINTER));
-            int const ctl[] = { 30, 31, 32, 33, 34, 0x471, 0x472, 1037, 1038, 1056, 1057, 1072, 1073, 1074, 1075, 1076, 1089, 1090,
+            int const ctl[] = { 30, 31, 32, 33, 34, cmb2, cmb3, 1037, 1038, 1056, 1057, 1072, 1073, 1074, 1075, 1076, 1089, 1090,
                                 IDC_STATIC, IDC_STATIC2, IDC_STATIC3, IDC_STATIC4, IDC_STATIC5, IDC_STATIC6
                               };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
