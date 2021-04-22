@@ -679,23 +679,30 @@ bool VerifyContrast(COLORREF cr1,COLORREF cr2)
 //  IsFontAvailable()
 //  Test if a certain font is installed on the system
 //
-static int CALLBACK EnumFontsProc(CONST LOGFONT *plf,CONST TEXTMETRIC *ptm,DWORD FontType,LPARAM lParam)
-{
+static int CALLBACK EnumFontFamExProcFound(CONST LOGFONT *plf, CONST TEXTMETRIC *ptm, DWORD FontType, LPARAM lParam) {
+
     UNREFERENCED_PARAMETER(plf);
     UNREFERENCED_PARAMETER(ptm);
     UNREFERENCED_PARAMETER(FontType);
-    *((PBOOL)lParam) = true;
-    return 0;
+    *((bool*)lParam) = true;
+    return 0; // stop further enumerating
 }
 
-bool IsFontAvailable(LPCWSTR lpszFontName)
-{
-    BOOL fFound = FALSE;
-    HDC const hDC = GetDC(NULL);
-    EnumFonts(hDC,lpszFontName,EnumFontsProc,(LPARAM)&fFound);
-    ReleaseDC(NULL,hDC);
+bool IsFontAvailable(LPCWSTR lpszFontName) {
+
+    bool fFound = FALSE;
+
+    LOGFONT lf = { 0 };
+    StringCchCopy(lf.lfFaceName, LF_FACESIZE, lpszFontName);
+    lf.lfCharSet = DEFAULT_CHARSET;
+
+    HDC hDC = GetDC(NULL);
+    EnumFontFamiliesEx(hDC, &lf, EnumFontFamExProcFound, (LPARAM)&fFound, 0);
+    ReleaseDC(NULL, hDC);
+
     return fFound;
 }
+
 
 
 //=============================================================================
@@ -2378,7 +2385,7 @@ size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
 //=============================================================================
 //
 //  Char2FloatW()
-//  Locale indpendant simple character to tloat conversion
+//  Locale indpendant simple character to float conversion
 //
 bool Char2FloatW(WCHAR* wnumber, float* fresult)
 {
