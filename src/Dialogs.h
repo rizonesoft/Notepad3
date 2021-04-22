@@ -19,6 +19,9 @@
 
 #include <math.h>
 #include <uxtheme.h>
+
+#include "win/dlgs.h"   // Windows Dialog API infos
+
 #include "TypeDefs.h"
 #include "Scintilla.h"
 

@@ -587,6 +587,9 @@
     <ClInclude Include="uchardet\uchardet\src\prmem.h">
       <Filter>Source Files\uchardet</Filter>
     </ClInclude>
+    <ClInclude Include="win\dlgs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">

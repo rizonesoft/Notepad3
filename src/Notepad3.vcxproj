@@ -823,6 +823,7 @@
     <ClInclude Include="TypeDefs.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="VersionEx.h" />
+    <ClInclude Include="win\dlgs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Build\Notepad3.ini" />
