@@ -744,6 +744,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     Scintilla_ReleaseResources();
 
     OleUninitialize();
+    CoUninitialize();
 
     if (bIsInitialized) {
         //~UnregisterClass(s_ToolbarWndClassName, Globals.hInstance);
@@ -859,6 +860,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
     }
 
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
     (void)OleInitialize(NULL);
 
     INITCOMMONCONTROLSEX icex = { sizeof(INITCOMMONCONTROLSEX) };

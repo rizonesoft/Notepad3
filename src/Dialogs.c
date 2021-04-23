@@ -2132,20 +2132,18 @@ typedef struct tagIconThreadInfo {
 
 DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 {
+    BackgroundWorker *worker = (BackgroundWorker *)lpParam;
+
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
     WCHAR tch[MAX_PATH] = { L'\0' };
     DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
 
-    LPICONTHREADINFO lpit = (LPICONTHREADINFO)lpParam;
-    ResetEvent(lpit->hTerminatedThread);
-
-    HWND hwnd = lpit->hwnd;
+    HWND hwnd = worker->hwnd;
     int iMaxItem = ListView_GetItemCount(hwnd);
 
-    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
-
     int iItem = 0;
-    while (iItem < iMaxItem && WaitForSingleObject(lpit->hExitThread,0) != WAIT_OBJECT_0) {
+    while (iItem < iMaxItem && BackgroundWorker_Continue(worker)) {
 
         LV_ITEM lvi = { 0 };
         lvi.mask = LVIF_TEXT;
@@ -2205,12 +2203,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
     }
 
     CoUninitialize();
-
-    SetEvent(lpit->hTerminatedThread);
-    lpit->hThread = NULL;
-
-    ExitThread(0);
-    //return(0);
+    return 0;
 }
 
 #define IDC_FILEMRU_UPDATE_VIEW (WM_USER+1)
@@ -2238,6 +2231,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
             }
         }
 #endif
+
         // sync with other instances
         if (Settings.SaveRecentFiles && Globals.bCanSaveIniFile) {
             if (MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs)) {
@@ -2249,19 +2243,14 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         InitWindowCommon(hwndLV, true);
         InitListView(hwndLV); // DarkMode
 
-        SHFILEINFO shfi = { 0 };
-        LVCOLUMN lvc = {LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0};
+		BackgroundWorker *worker = (BackgroundWorker *)GlobalAlloc(GPTR, sizeof(BackgroundWorker));
+        SetProp(hwnd, L"it", (HANDLE)worker);
+        BackgroundWorker_Init(worker, hwndLV);
 
-        LPICONTHREADINFO lpit = (LPICONTHREADINFO)AllocMem(sizeof(ICONTHREADINFO), HEAP_ZERO_MEMORY);
-        if (lpit) {
-            SetProp(hwnd, L"it", (HANDLE)lpit);
-            lpit->hwnd              = hwndLV;
-            lpit->hThread           = NULL;
-            lpit->hExitThread       = CreateEvent(NULL, true, false, NULL);
-            lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
-        }
         ResizeDlg_Init(hwnd, Settings.FileMRUDlgSizeX, Settings.FileMRUDlgSizeY, IDC_RESIZEGRIP);
 
+        SHFILEINFO shfi = { 0 };
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         ListView_SetImageList(hwndLV,
                               (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
@@ -2289,25 +2278,11 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     }
     return TRUE;
 
-    case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
-        return TRUE;
-
     case WM_DESTROY: {
-        LPICONTHREADINFO lpit = (LPVOID)GetProp(hwnd, L"it");
-        SetEvent(lpit->hExitThread);
-        while (WaitForSingleObject(lpit->hTerminatedThread, 0) != WAIT_OBJECT_0) {
-            MSG msg;
-            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
-        CloseHandle(lpit->hExitThread);
-        CloseHandle(lpit->hTerminatedThread);
-        lpit->hThread = NULL;
+        BackgroundWorker *worker = (BackgroundWorker *)GetProp(hwnd, L"it");
+        BackgroundWorker_Destroy(worker);
         RemoveProp(hwnd, L"it");
-        FreeMem(lpit);
+        GlobalFree(worker);
 
         if (Settings.SaveRecentFiles) {
             MRU_Save(Globals.pFileMRU); // last instance on save wins
@@ -2337,6 +2312,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         ListView_SetColumnWidth(hwndLV, 0, LVSCW_AUTOSIZE_USEHEADER);
     }
     return TRUE;
+
+    case WM_DPICHANGED:
+        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, 0);
+        return TRUE;
 
     case WM_GETMINMAXINFO:
         ResizeDlg_GetMinMaxInfo(hwnd, lParam);
@@ -2505,18 +2484,9 @@ CASE_WM_CTLCOLOR_SET:
 
         switch (LOWORD(wParam)) {
         case IDC_FILEMRU_UPDATE_VIEW: {
-            LPICONTHREADINFO lpit = (LPVOID)GetProp(hwnd, L"it");
-            SetEvent(lpit->hExitThread);
-            while (WaitForSingleObject(lpit->hTerminatedThread, 0) != WAIT_OBJECT_0) {
-                MSG msg;
-                if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-                    TranslateMessage(&msg);
-                    DispatchMessage(&msg);
-                }
-            }
-            ResetEvent(lpit->hExitThread);
-            SetEvent(lpit->hTerminatedThread);
-            lpit->hThread = NULL;
+
+			BackgroundWorker *worker = (BackgroundWorker *)GetProp(hwnd, L"it");
+            BackgroundWorker_Cancel(worker);
 
             ListView_DeleteAllItems(hwndLV);
 
@@ -2526,7 +2496,6 @@ CASE_WM_CTLCOLOR_SET:
             SHFILEINFO shfi = { 0 };
             SHGetFileInfo(L"Icon", FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO),
                           SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
-
             lvi.iImage = shfi.iIcon;
 
             WCHAR tch[MAX_PATH] = { L'\0' };
@@ -2552,12 +2521,10 @@ CASE_WM_CTLCOLOR_SET:
                 //  ListView_SetItemState(hwndLV, idx + 1, LVIS_SELECTED, LVIS_SELECTED);
                 //}
             }
-
-            DWORD dwtid;
-            lpit->hThread = CreateThread(NULL, 0, FileMRUIconThread, (LPVOID)lpit, 0, &dwtid);
-
             DialogEnableControl(hwnd, IDOK, (cnt > 0));
             DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
+
+            worker->workerThread = CreateThread(NULL, 0, FileMRUIconThread, (LPVOID)worker, 0, NULL);
         }
         break;
 
@@ -6024,6 +5991,7 @@ void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pNewRect, const UINT adpi) 
         Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, uWndFlags, 0, dpi);
         SetWindowPos(hwnd, NULL, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), uWndFlags);
     }
+    RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
 }
 
 

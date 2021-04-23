@@ -568,6 +568,41 @@ bool IsRunAsAdmin()
     return (bool)fIsRunAsAdmin;
 }
 
+//=============================================================================
+
+
+void BackgroundWorker_Init(BackgroundWorker *worker, HWND hwnd) {
+    worker->hwnd = hwnd;
+    worker->eventCancel = CreateEvent(NULL, TRUE, FALSE, NULL);
+    worker->workerThread = NULL;
+}
+
+void BackgroundWorker_Stop(BackgroundWorker *worker) {
+    SetEvent(worker->eventCancel);
+    HANDLE workerThread = worker->workerThread;
+    if (workerThread) {
+        worker->workerThread = NULL;
+        while (WaitForSingleObject(workerThread, 0) != WAIT_OBJECT_0) {
+            MSG msg;
+            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        CloseHandle(workerThread);
+    }
+}
+
+void BackgroundWorker_Cancel(BackgroundWorker *worker) {
+    BackgroundWorker_Stop(worker);
+    ResetEvent(worker->eventCancel);
+}
+
+void BackgroundWorker_Destroy(BackgroundWorker *worker) {
+    BackgroundWorker_Stop(worker);
+    CloseHandle(worker->eventCancel);
+}
+
 
 //=============================================================================
 //

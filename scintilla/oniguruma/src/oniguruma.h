@@ -742,7 +742,7 @@ typedef struct {
   OnigCaseFoldType   case_fold_flag;
 } OnigCompileInfo;
 
-typedef int (*OnigCallbackEachMatchFunc)(const UChar* str, const UChar* end, const UChar* match_start, OnigRegion* region, void* user_data);
+typedef int (*OnigCallbackEachMatchFunc)(const OnigUChar* str, const OnigUChar* end, const OnigUChar* match_start, OnigRegion* region, void* user_data);
 
 
 /* types for callout */
@@ -1015,7 +1015,7 @@ int onig_get_callout_data_by_tag P_((OnigRegex reg, OnigMatchParam* mp, const On
 ONIG_EXTERN
 int onig_set_callout_data_by_tag P_((OnigRegex reg, OnigMatchParam* mp, const OnigUChar* tag, const OnigUChar* tag_end, int slot, OnigType type, OnigValue* val));
 ONIG_EXTERN
-int onig_get_callout_data_by_tag_dont_clear_old P_((regex_t* reg, OnigMatchParam* mp, const UChar* tag, const UChar* tag_end, int slot, OnigType* type, OnigValue* val));
+int onig_get_callout_data_by_tag_dont_clear_old P_((regex_t* reg, OnigMatchParam* mp, const OnigUChar* tag, const OnigUChar* tag_end, int slot, OnigType* type, OnigValue* val));
 
 /* used in callout functions */
 ONIG_EXTERN

@@ -31,16 +31,13 @@
 
 typedef struct tagDLDATA { // dl
 
-    HWND hwnd;                 // HWND of ListView Control
+	BackgroundWorker worker;   // where HWND is ListView Control
     UINT cbidl;                // Size of pidl
     LPITEMIDLIST  pidl;        // Directory Id
     LPSHELLFOLDER lpsf;        // IShellFolder Interface to pidl
     int iDefIconFolder;        // Default Folder Icon
     int iDefIconFile;          // Default File Icon
     bool bNoFadeHidden;        // Flag passed from GetDispInfo()
-    HANDLE hThread;            // Thread Handle
-    HANDLE hExitThread;        // Flag is set when Icon Thread should terminate
-    HANDLE hTerminatedThread;  // Flag is set when Icon Thread has terminated
 
     WCHAR szPath[MAX_PATH];    // Pathname to Directory Id
 
@@ -62,24 +59,22 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 {
     UNREFERENCED_PARAMETER(pszHeader);
 
-    HIMAGELIST hil;
-    SHFILEINFO shfi = { 0 };
-
     // Allocate DirListData Property
-    LPDLDATA lpdl = (LPDLDATA)AllocMem(sizeof(DLDATA),HEAP_ZERO_MEMORY);
+    LPDLDATA lpdl = (LPDLDATA)GlobalAlloc(GPTR, sizeof(DLDATA));
     if (lpdl) {
         SetProp(hwnd, pDirListProp, (HANDLE)lpdl);
 
         // Setup dl
-        lpdl->hwnd = hwnd;
+        BackgroundWorker_Init(&lpdl->worker, hwnd);
         lpdl->cbidl = 0;
         lpdl->pidl = NULL;
         lpdl->lpsf = NULL;
         StringCchCopy(lpdl->szPath, COUNTOF(lpdl->szPath), L"");
 
         // Add Imagelists
-        hil = (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
-                                        SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
+        SHFILEINFO shfi = { 0 };
+        HIMAGELIST hil = (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
+                                                            SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 
         ListView_SetImageList(hwnd, hil, LVSIL_SMALL);
 
@@ -99,10 +94,6 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 
         lpdl->iDefIconFolder = 0;
         lpdl->iDefIconFile = 0;
-
-        // Icon thread control
-        lpdl->hExitThread = CreateEvent(NULL, true, false, NULL);
-        lpdl->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
     }
 
     return true;
@@ -117,11 +108,9 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 //
 bool DirList_Destroy(HWND hwnd)
 {
-    LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
-    // Release multithreading objects
-    DirList_TerminateIconThread(hwnd);
-    CloseHandle(lpdl->hExitThread);
-    CloseHandle(lpdl->hTerminatedThread);
+    LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd, pDirListProp);
+
+    BackgroundWorker_Destroy(&lpdl->worker);
 
     if (lpdl->pidl) {
         CoTaskMemFree((LPVOID)lpdl->pidl);
@@ -131,7 +120,7 @@ bool DirList_Destroy(HWND hwnd)
     }
     // Free DirListData Property
     RemoveProp(hwnd,pDirListProp);
-    FreeMem(lpdl);
+    GlobalFree(lpdl);
 
     return false;
 }
@@ -143,57 +132,12 @@ bool DirList_Destroy(HWND hwnd)
 //
 //  Start thread to extract file icons in the background
 //
-bool DirList_StartIconThread(HWND hwnd)
+void DirList_StartIconThread(HWND hwnd)
 {
-    DWORD dwtid;
-    LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
+    LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd, pDirListProp);
 
-    DirList_TerminateIconThread(hwnd);
-
-    ResetEvent(lpdl->hExitThread);
-    //ResetEvent(lpdl->hTerminatedThread);
-
-    lpdl->hThread = CreateThread(NULL, 0, DirList_IconThread, (LPVOID)lpdl, 0, &dwtid);
-
-    if (lpdl->hThread == NULL) {
-        ResetEvent(lpdl->hExitThread);
-        SetEvent(lpdl->hTerminatedThread);
-        return false;
-    }
-    return true;
-}
-
-
-//=============================================================================
-//
-//  DirList_TerminateIconThread()
-//
-//  Terminate Icon Thread and reset multithreading control structures
-//
-bool DirList_TerminateIconThread(HWND hwnd)
-{
-    LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd,pDirListProp);
-
-    if (!lpdl->hThread) {
-        return false;
-    }
-
-    SetEvent(lpdl->hExitThread);
-
-    //WaitForSingleObject(lpdl->hTerminatedThread,INFINITE);
-    while (WaitForSingleObject(lpdl->hTerminatedThread,0) != WAIT_OBJECT_0) {
-        MSG msg;
-        if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
-
-    ResetEvent(lpdl->hExitThread);
-    SetEvent(lpdl->hTerminatedThread);
-    lpdl->hThread = NULL;
-
-    return true;
+    BackgroundWorker_Cancel(&lpdl->worker);
+    lpdl->worker.workerThread = CreateThread(NULL, 0, DirList_IconThread, (LPVOID)lpdl, 0, NULL);
 }
 
 
@@ -208,23 +152,9 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                  int iSortFlags,bool fSortRev)
 {
 
+    LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd, pDirListProp);
+
     WCHAR wszDir[MAX_PATH] = { L'\0' };
-
-    LPSHELLFOLDER lpsfDesktop = NULL;
-    LPSHELLFOLDER lpsf = NULL;
-
-    LPITEMIDLIST  pidl = NULL;
-    LPITEMIDLIST  pidlEntry = NULL;
-
-    LPENUMIDLIST  lpe = NULL;
-
-    ULONG chParsed = 0;
-    ULONG dwAttributes = 0;
-
-    // First of all terminate running icon thread
-    DirList_TerminateIconThread(hwnd);
-
-    LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd,pDirListProp);
 
     // Initialize default icons
     SHFILEINFO shfi = { 0 };
@@ -235,6 +165,9 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     SHGetFileInfo(L"Icon",FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
                   SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
     lpdl->iDefIconFile = shfi.iIcon;
+
+  	// First of all terminate running icon thread
+    BackgroundWorker_Cancel(&lpdl->worker);
 
     // A Directory is strongly required
     if (!lpszDir || !*lpszDir) {
@@ -269,9 +202,14 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     StringCchCopy(wszDir,COUNTOF(wszDir),lpszDir);
 
     // Get Desktop Folder
+    LPSHELLFOLDER lpsf = NULL;
+    LPSHELLFOLDER lpsfDesktop = NULL;
     if (NOERROR == SHGetDesktopFolder(&lpsfDesktop)) {
 
         // Convert wszDir into a pidl
+        ULONG chParsed = 0;
+        LPITEMIDLIST pidl = NULL;
+        ULONG dwAttributes = 0;
         if (NOERROR == lpsfDesktop->lpVtbl->ParseDisplayName(
                     lpsfDesktop,
                     hwnd,
@@ -294,6 +232,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
             {
 
                 // Create an Enumeration object for lpsf
+                LPENUMIDLIST lpe = NULL;
                 if (NOERROR == lpsf->lpVtbl->EnumObjects(
                             lpsf,
                             hwnd,
@@ -303,6 +242,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                 {
 
                     // Enumerate the contents of lpsf
+                    LPITEMIDLIST pidlEntry = NULL;
                     while (NOERROR == lpe->lpVtbl->Next(
                                 lpe,
                                 1,
@@ -370,6 +310,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     }
 
     // Set lpdl
+    LPITEMIDLIST pidl = NULL;
     lpdl->cbidl = IL_GetSize(pidl);
     lpdl->pidl = pidl;
     lpdl->lpsf = lpsf;
@@ -397,31 +338,25 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
 //
 DWORD WINAPI DirList_IconThread(LPVOID lpParam)
 {
-    if (!lpParam) {
-        return(0);
-    }
-
     LPDLDATA lpdl = (LPDLDATA)lpParam;
-    ResetEvent(lpdl->hTerminatedThread);
+    BackgroundWorker *worker = &lpdl->worker;
 
     // Exit immediately if DirList_Fill() hasn't been called
     if (!(lpdl->lpsf)) {
-        SetEvent(lpdl->hTerminatedThread);
-        ExitThread(0);
-        //return(0);
+        return(0);
     }
 
-    HWND hwnd = lpdl->hwnd;
-    int iMaxItem = ListView_GetItemCount(hwnd);
-
     (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+
+    HWND hwnd = worker->hwnd;
+    int iMaxItem = ListView_GetItemCount(hwnd);
 
     // Get IShellIcon
     IShellIcon* lpshi = NULL;
     lpdl->lpsf->lpVtbl->QueryInterface(lpdl->lpsf,&IID_IShellIcon, (void**)&lpshi);
 
     int iItem = 0;
-    while (iItem < iMaxItem && WaitForSingleObject(lpdl->hExitThread,0) != WAIT_OBJECT_0) {
+    while (iItem < iMaxItem && BackgroundWorker_Continue(worker)) {
 
         LV_ITEM lvi = { 0 };
 
@@ -500,10 +435,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
     }
 
     CoUninitialize();
-
-    SetEvent(lpdl->hTerminatedThread);
-    ExitThread(0);
-    //return(0);
+    return 0;
 }
 
 
@@ -516,6 +448,8 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
 //
 bool DirList_GetDispInfo(HWND hwnd,LPARAM lParam,bool bNoFadeHidden)
 {
+    UNREFERENCED_PARAMETER(hwnd);
+    UNREFERENCED_PARAMETER(bNoFadeHidden);
 
     LV_DISPINFO *lpdi = (LPVOID)lParam;
 
@@ -533,9 +467,6 @@ bool DirList_GetDispInfo(HWND hwnd,LPARAM lParam,bool bNoFadeHidden)
 
     // Set values
     lpdi->item.mask |= LVIF_DI_SETITEM;
-
-    UNREFERENCED_PARAMETER(hwnd);
-    UNREFERENCED_PARAMETER(bNoFadeHidden);
 
     return true;
 }

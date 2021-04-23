@@ -367,9 +367,9 @@ Callouts API  Version 6.9.7 2021/03/21
   Returns the callout data value/type for a callout slot indicated by tag/slot.
   This function does not clear the value set in the collation position before the current position. (dont_clear_old)
 
-  ONIG_NORMAL:           ????
-  ONIG_VALUE_IS_NOT_SET: ?????? / ??VOID
-  < 0: ??????
+  ONIG_NORMAL:           正常終了
+  ONIG_VALUE_IS_NOT_SET: 値が未セット / 型がVOID
+  < 0: エラーコード
 
 
 (9) Miscellaneous functions

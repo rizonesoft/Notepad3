@@ -4813,20 +4813,6 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     return TRUE;
 
 
-    case WM_DPICHANGED: {
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
-
-        UINT const dpi = LOWORD(wParam);
-        SHFILEINFO shfi = { 0 };
-        UINT const flagIconSize = (dpi >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
-        ListView_SetImageList(hwndLV,
-                              (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
-                                      &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
-                              LVSIL_SMALL);
-    }
-    return TRUE;
-
-
     case WM_DESTROY:
         return TRUE;
 
@@ -4837,6 +4823,21 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     return TRUE;
 
 
+    case WM_DPICHANGED: {
+
+        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, 0);
+
+        UINT const dpi = LOWORD(wParam);
+        SHFILEINFO shfi = { 0 };
+        UINT const flagIconSize = (dpi >= LargeIconDPI()) ? SHGFI_LARGEICON : SHGFI_SMALLICON;
+        ListView_SetImageList(hwndLV,
+            (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY,
+                &shfi, sizeof(SHFILEINFO), flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+            LVSIL_SMALL);
+    }
+        return TRUE;
+
+  
     case WM_GETMINMAXINFO:
         return TRUE;
 

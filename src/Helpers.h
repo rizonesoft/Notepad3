@@ -355,6 +355,18 @@ bool IsProcessElevated();
 bool IsUserInAdminGroup();
 bool IsRunAsAdmin();
 
+typedef struct BackgroundWorker {
+    HWND hwnd;
+    HANDLE eventCancel;
+    HANDLE workerThread;
+} BackgroundWorker;
+
+void BackgroundWorker_Init(BackgroundWorker *worker, HWND hwnd);
+void BackgroundWorker_Cancel(BackgroundWorker *worker);
+void BackgroundWorker_Destroy(BackgroundWorker *worker);
+#define BackgroundWorker_Continue(worker) \
+    (WaitForSingleObject((worker)->eventCancel, 0) != WAIT_OBJECT_0)
+
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);
 bool BitmapGrayScale(HBITMAP hbmp);
