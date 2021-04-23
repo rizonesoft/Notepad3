@@ -6826,8 +6826,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 //
 HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace)
 {
-    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
-
     lpefr->hwnd = hwnd;
     HWND hDlg = CreateThemedDialogParam(Globals.hLngResContainer,
                                         (bReplace) ? MAKEINTRESOURCEW(IDD_MUI_REPLACE) : MAKEINTRESOURCEW(IDD_MUI_FIND),
@@ -6838,7 +6836,6 @@ HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace)
     if (IS_VALID_HANDLE(hDlg)) {
         ShowWindow(hDlg, SW_SHOW);
     }
-    CoUninitialize();
     return hDlg;
 }
 

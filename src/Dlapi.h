@@ -46,12 +46,7 @@ bool DirList_Destroy(HWND hwnd);
 
 //==== DlStartIconThread() ====================================================
 
-bool DirList_StartIconThread(HWND hwnd);
-
-
-//==== DlTerminateIconThread() ================================================
-
-bool DirList_TerminateIconThread(HWND hwnd);
+void DirList_StartIconThread(HWND hwnd);
 
 
 //==== DlFill() ===============================================================
