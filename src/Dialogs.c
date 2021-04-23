@@ -2134,6 +2134,8 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 {
     BackgroundWorker *worker = (BackgroundWorker *)lpParam;
 
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+
     WCHAR tch[MAX_PATH] = { L'\0' };
     DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
 
@@ -2200,6 +2202,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
         iItem++;
     }
 
+    CoUninitialize();
     return 0;
 }
 

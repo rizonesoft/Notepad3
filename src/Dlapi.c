@@ -346,6 +346,8 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
         return(0);
     }
 
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+
     HWND hwnd = worker->hwnd;
     int iMaxItem = ListView_GetItemCount(hwnd);
 
@@ -432,6 +434,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
         lpshi->lpVtbl->Release(lpshi);
     }
 
+    CoUninitialize();
     return 0;
 }
 
