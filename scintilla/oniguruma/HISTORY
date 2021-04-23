@@ -1,6 +1,10 @@
 History
 
-2021/04/XX: Version 6.9.7
+2021/04/15: Version 6.9.7 revised 1
+
+2021/04/14: fix: replace UChar to OnigUChar in oniguruma.h
+
+2021/04/14: Version 6.9.7
 2021/03/31: Release Candidate 1 for Version 6.9.7
 
 2021/03/23: fix Issue 32340, 32345, 32355 in oss-fuzz
