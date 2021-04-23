@@ -361,9 +361,8 @@ struct FontDirectWrite : public FontWin {
 		const std::wstring wsFace = WStringFromUTF8(fp.faceName);
 		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
 		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
-		DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
-
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
 		std::wstring wsFamily;
 		DWRITE_FONT_WEIGHT weight = static_cast<DWRITE_FONT_WEIGHT>(fp.weight);
 		DWRITE_FONT_STRETCH stretch = DWRITE_FONT_STRETCH_NORMAL;
@@ -379,11 +378,10 @@ struct FontDirectWrite : public FontWin {
 		//	static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
 		//	style,
 		//	DWRITE_FONT_STRETCH_NORMAL, fHeight, wsLocale.c_str(), &pTextFormat);
-
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 		if (SUCCEEDED(hr)) {
 			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+
 			IDWriteTextLayout *pTextLayout = nullptr;
 			hr = pIDWriteFactory->CreateTextLayout(L"X", 1, pTextFormat,
 					100.0f, 100.0f, &pTextLayout);
@@ -511,12 +509,14 @@ int SystemMetricsForDpi(int nIndex, UINT dpi) noexcept {
 	return value;
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, UINT dpi)  noexcept {
 	if (fnAdjustWindowRectExForDpi) {
 		return fnAdjustWindowRectExForDpi(lpRect, dwStyle, FALSE, dwExStyle, dpi);
 	}
 	return ::AdjustWindowRectEx(lpRect, dwStyle, FALSE, dwExStyle);
 }
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 class SurfaceGDI : public Surface {
 	SurfaceMode mode;
@@ -554,7 +554,9 @@ public:
 	~SurfaceGDI() noexcept override;
 
 	void Init(WindowID wid) override;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -681,7 +683,9 @@ void SurfaceGDI::Init(WindowID wid) {
 	logPixelsY = DpiForWindow(wid);
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing) {
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	Release();
 	hdc = static_cast<HDC>(sid);
 	::SetTextAlign(hdc, TA_BASELINE);
@@ -1397,7 +1401,9 @@ public:
 
 	void SetScale(WindowID wid) noexcept;
 	void Init(WindowID wid) override;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -1429,7 +1435,9 @@ public:
 
 	std::unique_ptr<IScreenLineLayout> Layout(const IScreenLine *screenLine) override;
 
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	void DrawTextCommon(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, int codePageOverride, UINT fuOptions);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	void DrawTextNoClip(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore, ColourAlpha back) override;
 	void DrawTextClipped(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, ColourAlpha fore, ColourAlpha back) override;
@@ -1524,11 +1532,13 @@ void SurfaceD2D::Init(WindowID wid) {
 	SetScale(wid);
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 void SurfaceD2D::Init(SurfaceID sid, WindowID wid, bool /*printing*/) {
 	Release();
 	SetScale(wid); // printing always using GDI
 	pRenderTarget = static_cast<ID2D1RenderTarget *>(sid);
 }
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 std::unique_ptr<Surface> SurfaceD2D::AllocatePixMap(int width, int height) {
 	return std::make_unique<SurfaceD2D>(pRenderTarget, width, height, mode, logPixelsY);
@@ -2378,7 +2388,9 @@ std::unique_ptr<IScreenLineLayout> SurfaceD2D::Layout(const IScreenLine *screenL
 	return std::make_unique<ScreenLineLayout>(screenLine);
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 void SurfaceD2D::DrawTextCommon(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, int codePageOverride, UINT fuOptions) {
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	SetFont(font_);
 
 	// Use Unicode calls
@@ -2416,7 +2428,9 @@ void SurfaceD2D::DrawTextNoClip(PRectangle rc, const Font *font_, XYPOSITION yba
 	if (pRenderTarget) {
 		FillRectangleAligned(rc, back);
 		D2DPenColourAlpha(fore);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		DrawTextCommon(rc, font_, ybase, text, 0, ETO_OPAQUE);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
 }
 
@@ -2425,7 +2439,9 @@ void SurfaceD2D::DrawTextClipped(PRectangle rc, const Font *font_, XYPOSITION yb
 	if (pRenderTarget) {
 		FillRectangleAligned(rc, back);
 		D2DPenColourAlpha(fore);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		DrawTextCommon(rc, font_, ybase, text, 0, ETO_OPAQUE | ETO_CLIPPED);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
 }
 
@@ -2436,7 +2452,9 @@ void SurfaceD2D::DrawTextTransparent(PRectangle rc, const Font *font_, XYPOSITIO
 		if (ch != ' ') {
 			if (pRenderTarget) {
 				D2DPenColourAlpha(fore);
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 				DrawTextCommon(rc, font_, ybase, text, 0, 0);
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			}
 			return;
 		}
@@ -3953,7 +3971,9 @@ void Platform_Finalise(bool fromDllMain) noexcept {
 	if (!fromDllMain) {
 		ReleaseUnknown(defaultRenderingParams);
 		ReleaseUnknown(customClearTypeRenderingParams);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		ReleaseUnknown(gdiInterop);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		ReleaseUnknown(pIDWriteFactory);
 		ReleaseUnknown(pD2DFactory);
 		if (hDLLDWrite) {

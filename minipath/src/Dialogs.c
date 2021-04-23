@@ -431,6 +431,14 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     return TRUE;
 
 
+    case WM_DPICHANGED: {
+        const RECT* rect = (RECT*)lParam;
+        SetWindowPos(hwnd, NULL, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+        RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
+    }
+    return TRUE;
+
+
     case WM_GETMINMAXINFO: {
         LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
         lpmmi->ptMinTrackSize.x = mmiPtMinX;
@@ -1724,6 +1732,12 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
     }
     return TRUE;
 
+    case WM_DPICHANGED: {
+        const RECT* rect = (RECT*)lParam;
+        SetWindowPos(hwnd, NULL, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+        RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
+    }
+    return TRUE;
 
     case WM_GETMINMAXINFO: {
         LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
@@ -1999,6 +2013,12 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
     }
     return TRUE;
 
+    case WM_DPICHANGED: {
+        const RECT* rect = (RECT*)lParam;
+        SetWindowPos(hwnd, NULL, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+        RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
+    }
+    return TRUE;
 
     case WM_GETMINMAXINFO: {
         LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;

@@ -835,6 +835,14 @@ CASE_WM_CTLCOLOR_SET:
         break;
 
 
+    case WM_DPICHANGED: {
+            const RECT* rect = (RECT*)lParam;
+            SetWindowPos(hwnd, NULL, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+            RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
+        }
+        return TRUE;
+
+
     case WM_SETFOCUS:
         SetFocus(GetDlgItem(hwnd, nIdFocus));
         break;
@@ -2406,13 +2414,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TOOLBAR:
-        if (Settings.bShowToolbar) {
-            ShowWindow(hwndReBar,SW_HIDE);
-            Settings.bShowToolbar = 0;
-        } else {
-            ShowWindow(hwndReBar,SW_SHOW);
-            Settings.bShowToolbar = 1;
-        }
+        Settings.bShowToolbar = !Settings.bShowToolbar;
+        ShowWindow(hwndReBar, Settings.bShowToolbar ? SW_SHOW : SW_HIDE);
         SendWMSize(hwnd);
         break;
 
