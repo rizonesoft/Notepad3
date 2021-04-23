@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.422.(build_#) (2021-04-22)
+Current BETA/RC Version 5.21.423.(build_#) (2021-04-23)
 ========================================================
 
 --------------------------------------------------------
@@ -67,6 +67,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.423.1]- IconThread code refactoring.
 [.422.1]- Code cleanup for Font and Style Selection.
 [.421.1]- Prefer "Cascadia Code" font over "Consolas" font for default if installed (ligatures).
 [.420.2]- Custom Font Selection Dialog.
@@ -102,7 +103,7 @@ CHANGES:
 [.301.1]- Enable Dark Mode feature for Win10 v21H1 insider beta.
 [.301.1]- EOL-Mode: status-bar double-click : inverted cyclic change rotation CRLF -> LF -> CR.
 [.411.1]- Update grepWinNP3 (GRE) version 2.1.7.36 (2021-04.07).
-[.402.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 RC1 (2021-03-31).
+[.423.1]- Update Oniguruma Regex (ONI) engine version 6.9.7 RC1 (2021-04-15).
 [.415.1]- Update Lexilla Library (LEX) version 5.0.1 (2021-04-09).
 [.411.1]- Update Scintilla Library (SCI) version 5.0.1 (2021-04-09).
 
@@ -110,6 +111,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.423.1]- Add thread COM initializations.
+[.423.1]- Adding DPI awareness to MiniPath (correct toolbar handling still open point).
+[.423.1]- minor corrections for customized font selection dialog (dark-mode and dpi-awareness).
+[.423.1]- DWRITE font allocation needs to font.family, not font.face name (Scintilla fix).
 [.421.1]- Correcting regression for icon scaling.
 [.421.1]- Rendering of "Relaunch Elevated" menu icon.
 [.421.1]- Regression on schema color definition.
