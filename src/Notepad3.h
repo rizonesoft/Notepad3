@@ -128,7 +128,7 @@ void UpdateToolbar();
 void UpdateStatusbar(const bool bForceRedraw);
 void UpdateMarginWidth(const bool bForce);
 void UpdateSaveSettingsCmds();
-void UpdateMouseDWellTime();
+void ResetMouseDWellTime();
 void UpdateTitleBar(const HWND hwnd);
 
 void UndoRedoRecordingStart();

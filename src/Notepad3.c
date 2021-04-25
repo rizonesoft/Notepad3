@@ -122,11 +122,6 @@ static HWND      s_hwndNextCBChain = NULL;
 
 static WCHAR     s_wchTmpFilePath[MAX_PATH] = { L'\0' };
 
-static WCHAR     s_wchPrefixSelection[256] = { L'\0' };
-static WCHAR     s_wchAppendSelection[256] = { L'\0' };
-static WCHAR     s_wchPrefixLines[256] = { L'\0' };
-static WCHAR     s_wchAppendLines[256] = { L'\0' };
-
 static int       s_WinCurrentWidth = 0;
 
 #define FILE_LIST_SIZE 32
@@ -1568,7 +1563,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     UpdateToolbar();
     UpdateStatusbar(true);
     UpdateMarginWidth(true);
-    UpdateMouseDWellTime();
+    ResetMouseDWellTime();
 
     // print file immediately and quit
     if (Globals.CmdLnFlag_PrintFileAndLeave) {
@@ -1977,11 +1972,11 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_IndicSetUnder(INDIC_NP3_COLOR_DEF, true);
     SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT); // reset on hover
     SciCall_IndicSetOutlineAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_OPAQUE);
-    SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF, INDIC_ROUNDBOX); // Hover
+    SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF, INDIC_HIDDEN);         // initially hidden, INDIC_FULLBOX on hover
     SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, RGB(0x00, 0x00, 0x00)); // recalc on hover
 
     SciCall_IndicSetStyle(INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN); // invisible
-    SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);
+    SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN); // initially hidden, INDIC_TEXTFORE on hover
     SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF_T, RGB(0x00, 0x00, 0x00));
 
     SciCall_IndicSetStyle(INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/);
@@ -2011,11 +2006,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetCaretSticky(SC_CARETSTICKY_OFF);
     //SciCall_SetCaretSticky(SC_CARETSTICKY_WHITESPACE);
 
-    if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled()) {
-        SciCall_SetMouseDWellTime(100);
-    } else {
-        SciCall_SetMouseDWellTime(SC_TIME_FOREVER); // default
-    }
+    ResetMouseDWellTime();
 
     int const iCaretPolicy = CARET_SLOP | CARET_EVEN | CARET_STRICT;
     s_iCaretPolicyV = (Settings2.CurrentLineVerticalSlop > 0) ? iCaretPolicy : CARET_EVEN;
@@ -4593,11 +4584,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SciCall_EditToggleOverType();
         break;
 
-    case IDM_EDIT_ENCLOSESELECTION:
-        if (EditEncloseSelectionDlg(hwnd,s_wchPrefixSelection,s_wchAppendSelection)) {
-            EditEncloseSelection(s_wchPrefixSelection,s_wchAppendSelection);
+    case IDM_EDIT_ENCLOSESELECTION: {
+        ENCLOSESELDATA data = { 0 };
+        if (EditEncloseSelectionDlg(hwnd, &data)) {
+            EditEncloseSelection(data.pwsz1, data.pwsz2);
         }
-        break;
+    }
+    break;
 
 
     case IDM_EDIT_PADWITHSPACES:
@@ -4669,11 +4662,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
-    case IDM_EDIT_MODIFYLINES:
-        if (EditModifyLinesDlg(hwnd,s_wchPrefixLines,s_wchAppendLines)) {
-            EditModifyLines(s_wchPrefixLines,s_wchAppendLines);
+    case IDM_EDIT_MODIFYLINES: {
+        ENCLOSESELDATA data = { 0 };
+        if (EditModifyLinesDlg(hwnd, &data)) {
+            EditModifyLines(&data);
         }
-        break;
+    }
+    break;
 
 
     case IDM_EDIT_ALIGN:
@@ -4764,12 +4759,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_INSERT_TAG: {
-        WCHAR wszOpen[256] = { L'\0' };
-        WCHAR wszClose[256] = { L'\0' };
+        ENCLOSESELDATA data = { 0 };
         UINT repeat = 1;
-        if (EditInsertTagDlg(hwnd, wszOpen, wszClose, &repeat)) {
+        if (EditInsertTagDlg(hwnd, &data, &repeat)) {
             while (repeat > 0) {
-                EditEncloseSelection(wszOpen, wszClose);
+                EditEncloseSelection(data.pwsz1, data.pwsz2);
                 --repeat;
             }
         }
@@ -4868,11 +4862,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_STREAMCOMMENT: {
-        WCHAR cmnt_beg[8] = { L'\0' };
-        WCHAR cmnt_end[8] = { L'\0' };
-        Lexer_GetStreamCommentStrgs(cmnt_beg, cmnt_end, COUNTOF(cmnt_beg));
-        if (StrIsNotEmpty(cmnt_beg)) {
-            EditEncloseSelection(cmnt_beg, cmnt_end);
+        ENCLOSESELDATA data = { 0 };
+        Lexer_GetStreamCommentStrgs(data.pwsz1, data.pwsz2, ENCLDATA_SIZE);
+        if (StrIsNotEmpty(data.pwsz1)) {
+            EditEncloseSelection(data.pwsz1, data.pwsz2);
         }
     }
     break;
@@ -5450,7 +5443,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SHOW_HYPLNK_CALLTIP:
         Settings.ShowHypLnkToolTip = !Settings.ShowHypLnkToolTip;
-        UpdateMouseDWellTime();
+        ResetMouseDWellTime();
         break;
 
     case IDM_VIEW_COLORDEFHOTSPOTS:
@@ -5459,14 +5452,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_COLOR_BGRA: {
         Settings.ColorDefHotspot = iLoWParam - IDM_VIEW_COLORDEFHOTSPOTS;
         EditUpdateVisibleIndicators();
-        UpdateMouseDWellTime();
+        ResetMouseDWellTime();
     }
     break;
 
     case IDM_VIEW_UNICODE_POINTS:
         Settings.HighlightUnicodePoints = !Settings.HighlightUnicodePoints;
         EditUpdateVisibleIndicators();
-        UpdateMouseDWellTime();
+        ResetMouseDWellTime();
         break;
 
     case IDM_VIEW_ZOOMIN: {
@@ -6680,6 +6673,7 @@ static DocPos prevCursorPosition = -1;
 
 // ----------------------------------------------------------------------------
 
+
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
     static DocPos prevStartPosition = -1;
@@ -6701,6 +6695,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
     switch (uid) {
     case SCN_DWELLSTART: {
+
         if (position < 0) {
             SciCall_CallTipCancel();
             prevCursorPosition = -1;
@@ -6764,29 +6759,70 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         // WebLinks and Color Refs are ASCII only - No need for UTF-8 conversion here
 
         if (INDIC_NP3_HYPERLINK == indicator_id) {
+
             if (!s_bCallTipEscDisabled) {
-                char chText[MIDSZ_BUFFER] = { '\0' };
-                // No need for UTF-8 conversion here and
-                StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
-                StrTrimA(chText, " \t\n\r");
-                if (StrIsEmptyA(chText)) {
-                    break;
+
+                const char * const pUrlBegin = SciCall_GetRangePointer(firstPos, length);
+
+                char chScheme[32] = { '\0' };
+                for (unsigned i = 0; i < COUNTOF(chScheme); ++i) {
+                    chScheme[i] = pUrlBegin[i];
+                    if (!pUrlBegin[i] || pUrlBegin[i] == ':') {
+                        break;
+                    }
                 }
 
-                CHAR chCalltipAdd[LARGE_BUFFER] = { L'\0' };
-                if (StrStrIA(chText, "file:") == chText) {
-                    GetLngStringW2MB(IDS_MUI_URL_OPEN_FILE, chCalltipAdd, COUNTOF(chCalltipAdd));
-                } else {
-                    GetLngStringW2MB(IDS_MUI_URL_OPEN_BROWSER, chCalltipAdd, COUNTOF(chCalltipAdd));
+                CHAR chCallTip[MIDSZ_BUFFER] = { L'\0' };
+
+                if (StrStrIA(chScheme, "file:") == chScheme) {
+
+                    WCHAR wchUrl[INTERNET_MAX_URL_LENGTH] = { L'\0' };
+                    WCHAR wchPath[MAX_PATH] = { L'\0' };
+
+                    int const cchUrl = MultiByteToWideChar(Encoding_SciCP, 0, pUrlBegin, (int)length, wchUrl, COUNTOF(wchUrl));
+                    wchUrl[cchUrl] = L'\0';
+                    StrTrim(wchUrl, L" \r\n\t");
+
+                    DWORD cchPath = MAX_PATH;
+                    if (FAILED(PathCreateFromUrl(wchUrl, wchPath, &cchPath, 0))) {
+                        const char *p = &pUrlBegin[CONSTSTRGLEN("file://")];
+                        while (p && (*p == '/')) { ++p; }
+                        StringCchCopyN(wchPath, COUNTOF(wchPath), wchUrl, length); // no op
+                        //cchPath = (DWORD)StringCchLen(wchFilePath, MAX_PATH);
+                    }
+                    //NormalizePathEx(wchPath, COUNTOF(wchPath), true, false);
+
+                    bool found = true;
+                    if (PathIsExistingFile(wchPath)) {
+                        GetLngStringW2MB(IDS_MUI_URL_FILE_EXISTS, chCallTip, (int)(COUNTOF(chCallTip) >> 1));
+                    } else if (PathIsDirectory(wchPath)) {
+                        GetLngStringW2MB(IDS_MUI_URL_DIR_EXISTS, chCallTip, (int)(COUNTOF(chCallTip) >> 1));
+                    } else {
+                        found = false;
+                        GetLngStringW2MB(IDS_MUI_URL_PATH_NOT_FOUND, chCallTip, (int)(COUNTOF(chCallTip) >> 1));
+                    }
+                    if (found) {
+                        size_t cch = StringCchLenA(chCallTip, COUNTOF(chCallTip));
+                        GetLngStringW2MB(IDS_MUI_URL_OPEN_FILE, &(chCallTip[cch]), (int)(COUNTOF(chCallTip) - cch));
+                    }
+
+                } else { // Web URL
+
+                    StringCchCopyNA(chCallTip, COUNTOF(chCallTip) >> 1, pUrlBegin, length);
+                    size_t const cch = StringCchLenA(chCallTip, COUNTOF(chCallTip) >> 1);
+                    GetLngStringW2MB(IDS_MUI_URL_OPEN_BROWSER, &(chCallTip[cch]), (int)(COUNTOF(chCallTip) - cch));
+
                 }
-                char chCallTip[HUGE_BUFFER] = { '\0' };
-                StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
-                StringCchCatA(chCallTip, COUNTOF(chCallTip), chCalltipAdd);
-                //SciCall_CallTipSetPosition(true);
-                SciCall_CallTipShow(position, chCallTip);
-                SciCall_CallTipSetHlt(0, (int)length);
+
+                if (!StrIsEmptyA(chCallTip)) {
+                    //SciCall_CallTipSetPosition(true);
+                    SciCall_CallTipShow(position, chCallTip);
+                    SciCall_CallTipSetHlt(0, (int)length);
+                }
             }
+
         } else if (INDIC_NP3_COLOR_DEF == indicator_id) {
+
             char chText[MICRO_BUFFER] = { '\0' };
             // Color Refs are ASCII only - No need for UTF-8 conversion here
             StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
@@ -6824,8 +6860,14 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
                 SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, Sci_ClampAlpha(alpha));
                 SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
+
+                SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF, INDIC_FULLBOX);
+                SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);
+
             }
+
         } else if (INDIC_NP3_UNICODE_POINT == indicator_id) {
+
             if (!s_bCallTipEscDisabled) {
                 char chHex2Char[MIDSZ_BUFFER] = {'\0'};
                 // No need for UTF-8 conversion here and
@@ -6867,11 +6909,14 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
         SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
-        // destroy rectangualr selection on multi-replace ???
-        // !!! strange side-effects by following statements !!!
+        // hide color of color definition
+        SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF, INDIC_HIDDEN);   // hide box
+        SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF_T, INDIC_HIDDEN); // hide txt
+
+        //~ this will destroy rectangular selection on multi-replace ???
+        //~ !!! strange side-effects using following statements !!!
         //~~~SciCall_IndicSetAlpha(INDIC_NP3_COLOR_DEF, SC_ALPHA_TRANSPARENT);
         //~~~SciCall_IndicSetFore(INDIC_NP3_COLOR_DEF, RGB(0,0,0));
-
     }
     break;
 
@@ -6905,14 +6950,14 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
             return false;
         }
 
-        const char *pszText = (const char *)SciCall_GetRangePointer(firstPos, length);
+        const char * const pszText = SciCall_GetRangePointer(firstPos, length);
 
         WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
         ptrdiff_t const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)length, szTextW, COUNTOF(szTextW));
         szTextW[cchTextW] = L'\0';
         StrTrim(szTextW, L" \r\n\t");
 
-        const WCHAR *chkPreFix = L"file://";
+        const WCHAR* const chkPreFix = L"file://";
         size_t const lenPfx = StringCchLenW(chkPreFix, 0);
 
         if (operation & SELECT_HYPERLINK) {
@@ -6944,17 +6989,19 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                 PathCreateFromUrl(szTextW, szUnEscW, &dCch, 0);
                 szUnEscW[min_u(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
 
-                WCHAR *const szFileName = szUnEscW;
+                WCHAR * const szFileName = szUnEscW;
                 StrTrim(szFileName, L"/");
 
                 PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szUnEscW) - lenPfx));
-                if (PathIsDirectory(szFileName)) {
+
+                if (PathIsExistingFile(szFileName)) {
+                    FileLoad(szFileName, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+                }
+                else if (PathIsDirectory(szFileName)) {
                     WCHAR tchFile[MAX_PATH] = { L'\0' };
                     if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName)) {
                         FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
                     }
-                } else {
-                    FileLoad(szFileName, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
                 }
                 bHandled = true;
 
@@ -6966,7 +7013,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     // ShellExecuteEx() will handle file-system path correctly for "file://" protocol
                     StringCchCopy(szUnEscW, COUNTOF(szUnEscW), chkPreFix);
                     dCch -= (DWORD)lenPfx;
-                    PathCreateFromUrl(szTextW, &(szUnEscW[lenPfx]), &dCch, 0);
+                    PathCreateFromUrl(szTextW, &szUnEscW[lenPfx], &dCch, 0);
                 } else {
                     UrlUnescapeEx(szTextW, szUnEscW, &dCch);
                 }
@@ -10108,7 +10155,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
         SetSavePoint();
     } else {
         Globals.dwLastError = GetLastError();
-        if (PathFileExists(szTempFileName)) {
+        if (PathIsExistingFile(szTempFileName)) {
             DeleteFile(szTempFileName);
         }
         Flags.bDoRelaunchElevated = false;
@@ -10915,12 +10962,12 @@ void SetNotifyIconTitle(HWND hwnd)
 
 //=============================================================================
 //
-//  UpdateMouseDWellTime()
+//  ResetMouseDWellTime()
 //
-void UpdateMouseDWellTime()
+void ResetMouseDWellTime()
 {
     if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints) {
-        SciCall_SetMouseDWellTime(100);
+        SciCall_SetMouseDWellTime(USER_TIMER_MINIMUM << 4);
     } else {
         Sci_DisableMouseDWellNotification();
     }

@@ -317,6 +317,14 @@ typedef enum
 
 // --------------------------------------------------------------------------
 
+#define ENCLDATA_SIZE 256
+typedef struct _encloseselectiondata {
+    WCHAR pwsz1[ENCLDATA_SIZE];
+    WCHAR pwsz2[ENCLDATA_SIZE];
+} ENCLOSESELDATA, *PENCLOSESELDATA;
+
+// --------------------------------------------------------------------------
+
 #define SC_NP3_CURSORHAND 8
 
 //=============================================================================

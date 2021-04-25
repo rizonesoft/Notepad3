@@ -4763,6 +4763,9 @@ void Editor::SetHoverIndicatorPosition(Sci::Position position) {
 		}
 	}
 	if (hoverIndicatorPosPrev != hoverIndicatorPos) {
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		TickFor(TickReason::dwell); // trigger SCN_DWELLSTART
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		Redraw();
 	}
 }

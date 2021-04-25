@@ -1748,7 +1748,6 @@ void EditSentenceCase(HWND hwnd)
 }
 
 
-
 //=============================================================================
 //
 //  EditURLEncode()
@@ -1783,7 +1782,7 @@ void EditURLEncode(const bool isPathConvert)
         return;
     }
 
-    LPWSTR const pszEscapedW = (LPWSTR)AllocMem(cchEscaped * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pszEscapedW = (LPWSTR)AllocMem(max_s(cchEscaped, MAX_PATH) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszEscapedW == NULL) {
         FreeMem(pszEscaped);
         return;
@@ -2876,8 +2875,8 @@ void EditCopyMultiSelection(HWND hwnd) {
 //
 //  EditModifyLines()
 //
-void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
-{
+void EditModifyLines(const PENCLOSESELDATA pEnclData) {
+
     if (Sci_IsMultiOrRectangleSelection()) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
         return;
@@ -2891,11 +2890,11 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
     DocPos iSelStart = SciCall_GetSelectionStart();
     DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-    if (StrIsNotEmpty(pwszPrefix)) {
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pwszPrefix, -1, mszPrefix1, COUNTOF(mszPrefix1), NULL, NULL);
+    if (StrIsNotEmpty(pEnclData->pwsz1)) {
+        WideCharToMultiByteEx(Encoding_SciCP, 0, pEnclData->pwsz1, -1, mszPrefix1, COUNTOF(mszPrefix1), NULL, NULL);
     }
-    if (StrIsNotEmpty(pwszAppend)) {
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pwszAppend, -1, mszAppend1, COUNTOF(mszAppend1), NULL, NULL);
+    if (StrIsNotEmpty(pEnclData->pwsz2)) {
+        WideCharToMultiByteEx(Encoding_SciCP, 0, pEnclData->pwsz2, -1, mszAppend1, COUNTOF(mszAppend1), NULL, NULL);
     }
 
     DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
@@ -3074,7 +3073,7 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
 
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
 
-        if (StrIsNotEmpty(pwszPrefix)) {
+        if (StrIsNotEmpty(pEnclData->pwsz1)) {
 
             char mszInsert[512 * 3] = { '\0' };
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszPrefix1);
@@ -3093,7 +3092,7 @@ void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
             SciCall_ReplaceTarget(-1, mszInsert);
         }
 
-        if (StrIsNotEmpty(pwszAppend)) {
+        if (StrIsNotEmpty(pEnclData->pwsz2)) {
 
             char mszInsert[512 * 3] = { '\0' };
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszAppend1);
@@ -3464,8 +3463,8 @@ void EditAlignText(int nMode)
 //
 //  EditEncloseSelection()
 //
-void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
-{
+void EditEncloseSelection(LPCWSTR pszOpen, LPCWSTR pszClose) {
+
     if (Sci_IsMultiOrRectangleSelection()) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
         return;
@@ -3473,18 +3472,18 @@ void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
 
     _SAVE_TARGET_RANGE_;
 
-    char  mszOpen[256 * 3] = { '\0' };
-    char  mszClose[256 * 3] = { '\0' };
+    char  mszOpen[ENCLDATA_SIZE * 3] = { '\0' };
+    char mszClose[ENCLDATA_SIZE * 3] = { '\0' };
 
     bool const bStraightSel = (SciCall_GetCurrentPos() >= SciCall_GetAnchor());
     DocPos const iSelStart = SciCall_GetSelectionStart();
     DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
-    if (StrIsNotEmpty(pwszOpen)) {
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pwszOpen, -1, mszOpen, COUNTOF(mszOpen), NULL, NULL);
+    if (StrIsNotEmpty(pszOpen)) {
+        WideCharToMultiByteEx(Encoding_SciCP, 0, pszOpen, -1, mszOpen, COUNTOF(mszOpen), NULL, NULL);
     }
-    if (StrIsNotEmpty(pwszClose)) {
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pwszClose, -1, mszClose, COUNTOF(mszClose), NULL, NULL);
+    if (StrIsNotEmpty(pszClose)) {
+        WideCharToMultiByteEx(Encoding_SciCP, 0, pszClose, -1, mszClose, COUNTOF(mszClose), NULL, NULL);
     }
     DocPos const iLenOpen = (DocPos)StringCchLenA(mszOpen, COUNTOF(mszOpen));
     DocPos const iLenClose = (DocPos)StringCchLenA(mszClose, COUNTOF(mszClose));
@@ -8198,15 +8197,10 @@ bool EditLinenumDlg(HWND hwnd)
 //  Controls: 100 Input
 //            101 Input
 //
-typedef struct _modlinesdata {
-    LPWSTR pwsz1;
-    LPWSTR pwsz2;
-} MODLINESDATA, *PMODLINESDATA;
-
-
-static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    static PMODLINESDATA pdata;
+
+    static PENCLOSESELDATA pData;
 
     static unsigned id_hover = 0;
     static unsigned id_capture = 0;
@@ -8249,11 +8243,11 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         if (!hCursorHover) {
             hCursorHover = LoadCursor(Globals.hInstance, IDC_ARROW);
         }
-        pdata = (PMODLINESDATA)lParam;
-        SetDlgItemTextW(hwnd,100,pdata->pwsz1);
-        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,255,0);
-        SetDlgItemTextW(hwnd,101,pdata->pwsz2);
-        SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
+        pData = (PENCLOSESELDATA)lParam;
+        SetDlgItemTextW(hwnd,100,pData->pwsz1);
+        SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
+        SetDlgItemTextW(hwnd,101,pData->pwsz2);
+        SendDlgItemMessage(hwnd, 101, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
         CenterDlgInParent(hwnd, NULL);
     }
     return true;
@@ -8410,8 +8404,8 @@ CASE_WM_CTLCOLOR_SET: {
     case WM_COMMAND:
         switch(LOWORD(wParam)) {
         case IDOK: {
-            GetDlgItemTextW(hwnd,100,pdata->pwsz1,256);
-            GetDlgItemTextW(hwnd,101,pdata->pwsz2,256);
+            GetDlgItemTextW(hwnd, 100, pData->pwsz1, ENCLDATA_SIZE);
+            GetDlgItemTextW(hwnd, 101, pData->pwsz2, ENCLDATA_SIZE);
             EndDialog(hwnd,IDOK);
         }
         break;
@@ -8429,20 +8423,16 @@ CASE_WM_CTLCOLOR_SET: {
 //
 //  EditModifyLinesDlg()
 //
-bool EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2)
-{
+bool EditModifyLinesDlg(HWND hwnd, PENCLOSESELDATA pEnclData) {
 
     INT_PTR iResult;
-    MODLINESDATA data = { 0 };
-    data.pwsz1 = pwsz1;
-    data.pwsz2 = pwsz2;
 
     iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCEW(IDD_MUI_MODIFYLINES),
-                  hwnd,
-                  EditModifyLinesDlgProc,
-                  (LPARAM)&data);
+        Globals.hLngResContainer,
+        MAKEINTRESOURCEW(IDD_MUI_MODIFYLINES),
+        hwnd,
+        EditModifyLinesDlgProc,
+        (LPARAM)pEnclData);
 
     return (iResult == IDOK) ? true : false;
 
@@ -8575,18 +8565,13 @@ bool EditAlignDlg(HWND hwnd,int *piAlignMode)
 //  Controls: 100 Input
 //            101 Input
 //
-typedef struct _encloseselectiondata {
-    LPWSTR pwsz1;
-    LPWSTR pwsz2;
-} ENCLOSESELDATA, *PENCLOSESELDATA;
-
-
-static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    static PENCLOSESELDATA pdata;
+    static PENCLOSESELDATA pData;
+
     switch(umsg) {
     case WM_INITDIALOG: {
-        pdata = (PENCLOSESELDATA)lParam;
+        pData = (PENCLOSESELDATA)lParam;
         SetDialogIconNP3(hwnd);
         InitWindowCommon(hwnd, true);
 
@@ -8597,10 +8582,10 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
         }
 #endif
-        SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 255, 0);
-        SetDlgItemTextW(hwnd,100,pdata->pwsz1);
-        SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
-        SetDlgItemTextW(hwnd,101,pdata->pwsz2);
+        SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
+        SetDlgItemTextW(hwnd, 100, pData->pwsz1);
+        SendDlgItemMessage(hwnd, 101, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
+        SetDlgItemTextW(hwnd, 101, pData->pwsz2);
         CenterDlgInParent(hwnd, NULL);
     }
     return TRUE;
@@ -8642,8 +8627,8 @@ CASE_WM_CTLCOLOR_SET:
     case WM_COMMAND:
         switch(LOWORD(wParam)) {
         case IDOK: {
-            GetDlgItemTextW(hwnd,100,pdata->pwsz1,256);
-            GetDlgItemTextW(hwnd,101,pdata->pwsz2,256);
+            GetDlgItemTextW(hwnd, 100, pData->pwsz1, ENCLDATA_SIZE);
+            GetDlgItemTextW(hwnd, 101, pData->pwsz2, ENCLDATA_SIZE);
             EndDialog(hwnd,IDOK);
         }
         break;
@@ -8661,20 +8646,16 @@ CASE_WM_CTLCOLOR_SET:
 //
 //  EditEncloseSelectionDlg()
 //
-bool EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
-{
+bool EditEncloseSelectionDlg(HWND hwnd, PENCLOSESELDATA pEnclData) {
 
     INT_PTR iResult;
-    ENCLOSESELDATA data = { 0 };
-    data.pwsz1 = pwszOpen;
-    data.pwsz2 = pwszClose;
 
     iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCEW(IDD_MUI_ENCLOSESELECTION),
-                  hwnd,
-                  EditEncloseSelectionDlgProc,
-                  (LPARAM)&data);
+        Globals.hLngResContainer,
+        MAKEINTRESOURCEW(IDD_MUI_ENCLOSESELECTION),
+        hwnd,
+        EditEncloseSelectionDlgProc,
+        (LPARAM)pEnclData);
 
     return (iResult == IDOK) ? true : false;
 
@@ -8698,13 +8679,11 @@ typedef struct _tagsdata {
 
 static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-    static PTAGSDATA pdata;
-    static WCHAR wchOpenTagStrg[256] = { L'\0' };
-    static WCHAR wchCloseTagStrg[256] = { L'\0' };
+    static PTAGSDATA pData;
 
     switch(umsg) {
     case WM_INITDIALOG: {
-        pdata = (PTAGSDATA)lParam;
+        pData = (PTAGSDATA)lParam;
         SetDialogIconNP3(hwnd);
         InitWindowCommon(hwnd, true);
 
@@ -8715,20 +8694,20 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
         }
 #endif
-        if (!wchOpenTagStrg[0]) {
-            StringCchCopy(wchOpenTagStrg, COUNTOF(wchOpenTagStrg), L"<tag>");
+        if (StrIsEmpty(pData->pwsz1)) {
+            StringCchCopy(pData->pwsz1, ENCLDATA_SIZE, L"<tag>");
         }
-        if (!wchCloseTagStrg[0]) {
-            StringCchCopy(wchCloseTagStrg, COUNTOF(wchCloseTagStrg), L"</tag>");
+        if (StrIsEmpty(pData->pwsz2)) {
+            StringCchCopy(pData->pwsz2, ENCLDATA_SIZE, L"</tag>");
         }
-        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT, COUNTOF(wchOpenTagStrg)-1,0);
-        SetDlgItemTextW(hwnd,100, wchOpenTagStrg);
-        SendDlgItemMessage(hwnd,101,EM_LIMITTEXT, COUNTOF(wchCloseTagStrg)-1,0);
-        SetDlgItemTextW(hwnd,101, wchCloseTagStrg);
-        pdata->repeat = 1;
-        SetDlgItemInt(hwnd, 102, pdata->repeat, FALSE);
+        SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
+        SetDlgItemTextW(hwnd, 100, pData->pwsz1);
+        SendDlgItemMessage(hwnd, 101, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
+        SetDlgItemTextW(hwnd, 101, pData->pwsz2);
+        pData->repeat = 1;
+        SetDlgItemInt(hwnd, 102, pData->repeat, FALSE);
         SetFocus(GetDlgItem(hwnd,100));
-        PostMessageW(GetDlgItem(hwnd,100),EM_SETSEL,1,(LPARAM)(StringCchLen(wchOpenTagStrg,0)-1));
+        PostMessageW(GetDlgItem(hwnd, 100), EM_SETSEL, 1, (LPARAM)(StringCchLen(pData->pwsz1, 0) - 1));
         CenterDlgInParent(hwnd, NULL);
     }
     return false;
@@ -8772,14 +8751,14 @@ CASE_WM_CTLCOLOR_SET:
         case 100: {
             if (HIWORD(wParam) == EN_CHANGE) {
                 bool bClear = true;
-                GetDlgItemTextW(hwnd,100,wchOpenTagStrg, COUNTOF(wchOpenTagStrg));
-                if (StringCchLenW(wchOpenTagStrg,COUNTOF(wchOpenTagStrg)) >= 3) {
+                GetDlgItemTextW(hwnd, 100, pData->pwsz1, ENCLDATA_SIZE);
+                if (StringCchLenW(pData->pwsz1, ENCLDATA_SIZE) >= 3) {
 
-                    if (wchOpenTagStrg[0] == L'<') {
-                        WCHAR wchIns[COUNTOF(wchCloseTagStrg)] = { L'\0' };
+                    if ((pData->pwsz1)[0] == L'<') {
+                        WCHAR wchIns[ENCLDATA_SIZE] = { L'\0' };
                         StringCchCopy(wchIns, COUNTOF(wchIns), L"</");
                         int  cchIns = 2;
-                        const WCHAR* pwCur = &wchOpenTagStrg[1];
+                        const WCHAR *pwCur = &((pData->pwsz1)[1]);
                         while (
                             *pwCur &&
                             *pwCur != L'<' &&
@@ -8823,14 +8802,12 @@ CASE_WM_CTLCOLOR_SET:
         }
         break;
         case IDOK: {
-            GetDlgItemTextW(hwnd, 100, wchOpenTagStrg, COUNTOF(wchOpenTagStrg));
-            GetDlgItemTextW(hwnd, 101, wchCloseTagStrg, COUNTOF(wchCloseTagStrg));
-            StringCchCopy(pdata->pwsz1, 256, wchOpenTagStrg);
-            StringCchCopy(pdata->pwsz2, 256, wchCloseTagStrg);
+            GetDlgItemTextW(hwnd, 100, pData->pwsz1, ENCLDATA_SIZE);
+            GetDlgItemTextW(hwnd, 101, pData->pwsz2, ENCLDATA_SIZE);
             BOOL fTranslated = FALSE;
             UINT const iTimes = GetDlgItemInt(hwnd, 102, &fTranslated, FALSE);
             if (fTranslated) {
-                pdata->repeat = clampu(iTimes, 1, UINT_MAX);
+                pData->repeat = clampu(iTimes, 1, UINT_MAX);
             }
             EndDialog(hwnd,IDOK);
         }
@@ -8849,13 +8826,13 @@ CASE_WM_CTLCOLOR_SET:
 //
 //  EditInsertTagDlg()
 //
-bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose, UINT* pRepeat)
+bool EditInsertTagDlg(HWND hwnd, PENCLOSESELDATA pEnclData, UINT* pRepeat)
 {
 
     INT_PTR iResult = 0;
     TAGSDATA data = { 0 };
-    data.pwsz1 = pwszOpen;
-    data.pwsz2 = pwszClose;
+    data.pwsz1 = pEnclData->pwsz1;
+    data.pwsz2 = pEnclData->pwsz2;
     data.repeat = 1;
 
     iResult = ThemedDialogBoxParam(
