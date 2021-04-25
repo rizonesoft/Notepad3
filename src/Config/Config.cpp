@@ -952,7 +952,7 @@ extern "C" bool TestIniFile()
 
     NormalizePathEx(pszIniFilePath, pathBufCount, true, false);
 
-    if (!PathFileExists(pszIniFilePath) || PathIsDirectory(pszIniFilePath)) {
+    if (!PathIsExistingFile(pszIniFilePath)) {
         StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), pszIniFilePath);
         StringCchCopy(pszIniFilePath, pathBufCount, L"");
         return false;
@@ -1439,9 +1439,9 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, false);
     GET_INT_VALUE_FROM_INISECTION(ColorDefHotspot, 2, 0, 3);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
-    GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
     GET_BOOL_VALUE_FROM_INISECTION(HighlightUnicodePoints, true);
 
     GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);

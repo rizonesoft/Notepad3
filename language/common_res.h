@@ -242,6 +242,9 @@
 #define IDS_MUI_RELOADSETTINGS          15062
 #define IDS_MUI_RELOADCFGSEX            15063
 #define IDS_MUI_OUT_OFF_OCCMRK          15064
+#define IDS_MUI_URL_DIR_EXISTS          15065
+#define IDS_MUI_URL_FILE_EXISTS         15066
+#define IDS_MUI_URL_PATH_NOT_FOUND      15067
 
 #define IDS_MUI_SB_MARK_ALL_OCC         15500
 #define IDS_MUI_SB_TOGGLE_VIEW          15501
