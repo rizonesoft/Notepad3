@@ -196,6 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "शैली सेटिंग ""%s"" को निर्यात करने में त्रुटि."
     IDS_MUI_REGEX_INVALID    "सामान्य व्यंजक मूल्यांकन करने में त्रुटि। व्यंजक अवैध है!"
     IDS_MUI_DROP_NO_FILE     "प्राप्त हुआ फ़ाईलनाम वैध नहीं है.\nअगर 32-बिट एपलिकेशन से ड्रॉप कर रहे है,\nतो कृपया Notepad3 की औज़ार पट्टी पर ड्रैग और ड्रॉप करें."
+    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
+    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "URL specified path not found!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + फ़ाईल खोलने के लिए क्लिक करें."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + ब्राउज़र में लिंक खोलने के लिए क्लिक करें."
     IDS_MUI_INF_PRSVFILEMODTM

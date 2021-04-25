@@ -196,6 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Błąd podczas eksportowania ustawień styu do ""%s""."
     IDS_MUI_REGEX_INVALID    "Błąd podczas oceny regularnego wyrażenia. Wyrażenie jest nieuzasadnione!"
     IDS_MUI_DROP_NO_FILE     "Nie rozpoznano żadnej sensownej nazwy pliku.\nJeśli upuścisz aplikację 32-bitową,\nprzeciągnij i upuść do paska narzędzi Notepad3'a."
+    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
+    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "URL specified path not found!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyć plik."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyć link w przeglądarce."
     IDS_MUI_INF_PRSVFILEMODTM
