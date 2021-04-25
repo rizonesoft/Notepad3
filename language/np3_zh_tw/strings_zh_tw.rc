@@ -196,6 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "匯出樣式設定到檔案「%s」時遇到錯誤。"
     IDS_MUI_REGEX_INVALID    "正規表示式無效。"
     IDS_MUI_DROP_NO_FILE     "未能獲取檔名。\n\n如果從 32 位應用程式拖放檔案，請拖放到 Notepad3 的工具欄上。"
+    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
+    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "URL specified path not found!"
     IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同時點選以打開檔案。"
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同時點選以在瀏覽器中打開鏈接。"
     IDS_MUI_INF_PRSVFILEMODTM

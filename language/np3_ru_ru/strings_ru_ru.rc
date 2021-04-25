@@ -196,6 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Ошибка экспорта настроек стилей в «%s»."
     IDS_MUI_REGEX_INVALID    "Ошибка обработки регулярного выражения. Выражение недействительно!"
     IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла. \nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3."
+    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
+    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "URL specified path not found!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click, чтобы открыть файл."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, чтобы открыть ссылку в браузере."
     IDS_MUI_INF_PRSVFILEMODTM

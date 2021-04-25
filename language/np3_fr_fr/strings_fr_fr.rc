@@ -196,6 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Erreur d'exportation des paramètres de style vers ""%s""."
     IDS_MUI_REGEX_INVALID    "Erreur lors de l'évaluation de l'expression régulière. L'expression est invalide !"
     IDS_MUI_DROP_NO_FILE     "Aucun nom de fichier valide récupéré.\nSi une application 32 bits est utilisée,\nessayer de faire glisser le fichier sur la barre d'outils de Notepad3."
+    IDS_MUI_URL_DIR_EXISTS   "Répertoire spécifié par l'URL existe!"
+    IDS_MUI_URL_FILE_EXISTS  "Fichier spécifié par l'URL existe!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "Chemin spécifié par l'URL introuvable!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Clic pour ouvrir le fichier."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Clic pour ouvrir le lien dans le navigateur."
     IDS_MUI_INF_PRSVFILEMODTM

@@ -196,6 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Fout bij het exporteren van stijl instellingen naar ""%s""."
     IDS_MUI_REGEX_INVALID    "Fout bij het evalueren van reguliere expressie. Expressie is ongeldig!"
     IDS_MUI_DROP_NO_FILE     "Geen geldige bestandsnaam opgehaald.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
+    IDS_MUI_URL_DIR_EXISTS   "URL opgegeven map bestaat!"
+    IDS_MUI_URL_FILE_EXISTS  "URL opgegeven bestand bestaat!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "URL opgegeven pad niet gevonden!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik om het bestand te openen."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik om de link in de browser te openen."
     IDS_MUI_INF_PRSVFILEMODTM

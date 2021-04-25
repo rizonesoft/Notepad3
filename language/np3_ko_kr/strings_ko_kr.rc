@@ -196,6 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""으로 내보내는 중 오류가 발생하였습니다."
     IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 동안 오류가 발생했습니다. 표현식이 잘못되었습니다!"
     IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다. \n32 비트 응용 프로그램에서 드롭하는 경우 \nNotepad3의 도구 모음으로 끌어서 놓으십시오."
+    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
+    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "URL specified path not found!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt+클릭하여 파일을 엽니다."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl+클릭하여 탐색기에서 링크를 엽니다."
     IDS_MUI_INF_PRSVFILEMODTM
