@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
   <assemblyIdentity
-    name="$APPNAME$"
+    name="Rizonesoft.$APPNAME$"
     processorArchitecture="*"
     version="$VERSION$"
     type="win32"

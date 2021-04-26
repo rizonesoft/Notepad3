@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
   <description>Notepad3</description>
+  <msix xmlns="urn:schemas-microsoft-com:msix.v1"
+        publisher="CN=Rizonesoft"
+        packageName="RizonesoftNotepad3"
+        applicationId="RizonesoftNotepad3"/>
   <dependency>
     <dependentAssembly>
       <assemblyIdentity
@@ -36,7 +40,10 @@
     <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
       <dpiAwareness>PerMonitorV2,PerMonitor</dpiAwareness>
     </asmv3:windowsSettings>
-    <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2017/WindowsSettings">
+    <asmv3:windowsSettings xmlns:ws2="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
+      <ws2:longPathAware>false</ws2:longPathAware>
+    </asmv3:windowsSettings>
+	<asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2017/WindowsSettings">
       <gdiScaling>false</gdiScaling>
     </asmv3:windowsSettings>
   </asmv3:application>
