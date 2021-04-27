@@ -590,6 +590,9 @@
     <ClInclude Include="win\dlgs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="win\ColorDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">

@@ -2857,7 +2857,6 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     int x = 0;
     int y = 0;
-
     int cx = GET_X_LPARAM(lParam);
     int cy = GET_Y_LPARAM(lParam);
 
@@ -6774,6 +6773,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
                 CHAR chCallTip[MIDSZ_BUFFER] = { L'\0' };
 
+                size_t cch = 0;
                 if (StrStrIA(chScheme, "file:") == chScheme) {
 
                     WCHAR wchUrl[INTERNET_MAX_URL_LENGTH] = { L'\0' };
@@ -6787,7 +6787,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     if (FAILED(PathCreateFromUrl(wchUrl, wchPath, &cchPath, 0))) {
                         const char *p = &pUrlBegin[CONSTSTRGLEN("file://")];
                         while (p && (*p == '/')) { ++p; }
-                        StringCchCopyN(wchPath, COUNTOF(wchPath), wchUrl, length); // no op
+                        StringCchCopyN(wchPath, COUNTOF(wchPath), wchUrl, cchUrl); // no op
                         //cchPath = (DWORD)StringCchLen(wchFilePath, MAX_PATH);
                     }
                     //NormalizePathEx(wchPath, COUNTOF(wchPath), true, false);
@@ -6802,22 +6802,23 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                         GetLngStringW2MB(IDS_MUI_URL_PATH_NOT_FOUND, chCallTip, (int)(COUNTOF(chCallTip) >> 1));
                     }
                     if (found) {
-                        size_t cch = StringCchLenA(chCallTip, COUNTOF(chCallTip));
-                        GetLngStringW2MB(IDS_MUI_URL_OPEN_FILE, &(chCallTip[cch]), (int)(COUNTOF(chCallTip) - cch));
+                        cch = StringCchLenA(chCallTip, COUNTOF(chCallTip));
+                        GetLngStringW2MB(IDS_MUI_URL_OPEN_FILE, &chCallTip[cch], (int)(COUNTOF(chCallTip) - cch));
                     }
 
                 } else { // Web URL
 
                     StringCchCopyNA(chCallTip, COUNTOF(chCallTip) >> 1, pUrlBegin, length);
-                    size_t const cch = StringCchLenA(chCallTip, COUNTOF(chCallTip) >> 1);
-                    GetLngStringW2MB(IDS_MUI_URL_OPEN_BROWSER, &(chCallTip[cch]), (int)(COUNTOF(chCallTip) - cch));
+                    cch = StringCchLenA(chCallTip, COUNTOF(chCallTip) >> 1);
+                    GetLngStringW2MB(IDS_MUI_URL_OPEN_BROWSER, &chCallTip[cch], (int)(COUNTOF(chCallTip) - cch));
 
                 }
 
                 if (!StrIsEmptyA(chCallTip)) {
                     //SciCall_CallTipSetPosition(true);
+                    // first show, then set highlight range
                     SciCall_CallTipShow(position, chCallTip);
-                    SciCall_CallTipSetHlt(0, (int)length);
+                    SciCall_CallTipSetHlt(0, (int)cch);
                 }
             }
 
@@ -6863,7 +6864,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
                 SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF, INDIC_FULLBOX);
                 SciCall_IndicSetHoverStyle(INDIC_NP3_COLOR_DEF_T, INDIC_TEXTFORE);
-
             }
 
         } else if (INDIC_NP3_UNICODE_POINT == indicator_id) {
@@ -6880,6 +6880,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                 }
 
                 //SciCall_CallTipSetPosition(true);
+                // first show, then set highlight range
                 SciCall_CallTipShow(position, chHex2Char);
                 SciCall_CallTipSetHlt(0, (int)length);
             }
@@ -7096,9 +7097,18 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
         CHOOSECOLOR cc = { sizeof(CHOOSECOLOR) };
         cc.hwndOwner = hwnd;
         cc.rgbResult = rgbCur;
-        cc.lpCustColors = g_colorCustom;
-        //cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
+        cc.lpCustColors = &g_colorCustom[0];
         cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR;
+
+        // custom hook
+        cc.Flags |= CC_ENABLEHOOK;
+        cc.lpfnHook = (LPCCHOOKPROC)ColorDialogHookProc;
+        WININFO const wi = GetMyWindowPlacement(Globals.hwndEdit, NULL, 0);
+        int const offset = float2int(Style_GetCurrentFontSize()) << 1;
+        POINT pt = { 0L, 0L };
+        pt.x = wi.x + SciCall_PointXFromPosition(SciCall_GetCurrentPos()) + offset;
+        pt.y = wi.y + SciCall_PointYFromPosition(SciCall_GetCurrentPos()) + offset;
+        cc.lCustData = (LPARAM)&pt;
 
         if (!ChooseColor(&cc)) {
             return;

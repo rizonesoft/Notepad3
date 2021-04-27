@@ -22,7 +22,7 @@ EDITLEXER lexStandard =
         /* 11 */ { {_STYLE_GETSTYLEID(STY_X_LN_SPACE)}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:2", L"" },
         /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#00DC00; alpha:100", L"" },
         /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"fore:#3399FF; alpha:60; alpha2:60; indic_roundbox", L"" },
-        /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"fore:#0000FF; back:#0000BF; indic_plain", L"" },
+        /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"fore:#0000E0; back:#0060B0; indic_plain", L"" },
         /* 15 */ { {_STYLE_GETSTYLEID(STY_UNICODE_HOTSPOT)}, IDS_LEX_STR_63367, L"Unicode-Point Hover", L"fore:#00FA00; alpha:60; alpha2:180; indic_compositionthick", L""},
         /* 16 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63354, L"Multi Edit Indicator", L"fore:#FFA000; alpha:60; alpha2:180; indic_roundbox", L"" },
         /* 17 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
@@ -35,8 +35,8 @@ EDITLEXER lexStandard2nd =
 {
     SCLEX_NULL, "null", IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
     &KeyWords_NULL,{
-        /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New", L"" },
-        /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Courier New; size:-2; fore:#008080", L"" },
+        /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Consolas", L"" },
+        /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"size:-1; fore:#008080", L"" },
         /*  2 */ { {STYLE_BRACELIGHT}, IDS_LEX_2ND_BRACE, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
         /*  3 */ { {STYLE_BRACEBAD}, IDS_LEX_2ND_BRACE_FAIL, L"2nd Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:220; indic_roundbox", L"" },
         /*  4 */ { {STYLE_CONTROLCHAR}, IDS_LEX_2ND_CTRL_CHAR, L"2nd Control Characters (Font)", L"size:-1", L"" },

@@ -290,9 +290,9 @@ void ViewStyle::Init(size_t stylesSize_) {
 void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	if (!fontsValid) {
-		fontsValid = true;
 
-fonts.clear();
+		fontsValid = true;
+		fonts.clear();
 
 		// Apply the extra font flag which controls text drawing quality to each style.
 		for (Style &style : styles) {

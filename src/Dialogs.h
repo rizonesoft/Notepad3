@@ -20,7 +20,7 @@
 #include <math.h>
 #include <uxtheme.h>
 
-#include "win/dlgs.h"   // Windows Dialog API infos
+#include "win/dlgs.h" // Windows Dialog API infos
 
 #include "TypeDefs.h"
 #include "Scintilla.h"
@@ -282,6 +282,12 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 #define ThemedDialogBox(hInstance,lpTemplate,hWndParent,lpDialogFunc) ThemedDialogBoxParam(hInstance,lpTemplate,hWndParent,lpDialogFunc,0)
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 HWND    CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
+
+// --- Hook Procedures for Std-System Dialogs ---------------------------------
+
+extern WCHAR FontSelTitle[128];
+INT_PTR CALLBACK FontDialogHookProc(HWND hdlg, UINT uiMsg, WPARAM wParam, LPARAM lParam); // LPCFHOOKPROC
+INT_PTR CALLBACK ColorDialogHookProc(HWND hdlg, UINT uiMsg, WPARAM wParam, LPARAM lParam); // LPCCHOOKPROC
 
 // ----------------------------------------------------------------------------
 

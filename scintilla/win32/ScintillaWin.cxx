@@ -1928,6 +1928,7 @@ sptr_t ScintillaWin::SciMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 #endif
 				technology = technologyNew;
 				// Invalidate all cached information including layout.
+				vs.fontsValid = false;
 				DropGraphics();
 				InvalidateStyleRedraw();
 			}
@@ -2061,6 +2062,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 		case WM_DPICHANGED:
 			dpi = HIWORD(wParam);
+			vs.fontsValid = false;
 			InvalidateStyleRedraw();
 			break;
 
@@ -2068,6 +2070,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				const UINT dpiNow = DpiForWindow(wMain.GetID());
 				if (dpi != dpiNow) {
 					dpi = dpiNow;
+					vs.fontsValid = false;
 					InvalidateStyleRedraw();
 				}
 			}

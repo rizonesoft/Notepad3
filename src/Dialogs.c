@@ -43,6 +43,7 @@
 
 #include "SciCall.h"
 
+//#include "win/ColorDlg.h" // Color Dialog API infos
 #include "Dialogs.h"
 
 //=============================================================================
@@ -6042,6 +6043,221 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
     GetClientRect(hwnd, &wndrc);
     return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
 }
+
+
+
+//=============================================================================
+//
+//  FontDialogHookProc()
+//
+WCHAR FontSelTitle[128];
+
+INT_PTR CALLBACK FontDialogHookProc(
+    HWND hdlg,     // handle to the dialog box window
+    UINT uiMsg,    // message identifier
+    WPARAM wParam, // message parameter
+    LPARAM lParam  // message parameter
+) {
+    UNREFERENCED_PARAMETER(wParam);
+
+    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
+
+    switch (uiMsg) {
+
+    case WM_INITDIALOG: {
+
+        if (Globals.hDlgIconSmall) {
+            SendMessage(hdlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
+        }
+
+        InitWindowCommon(hdlg, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+        if (UseDarkMode()) {
+            SetExplorerTheme(GetDlgItem(hdlg, IDOK));
+            SetExplorerTheme(GetDlgItem(hdlg, IDCANCEL));
+            //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+            int const ctl[] = { grp1, grp2, chx1, chx2, cmb1, cmb2, cmb3, cmb4, cmb5, stc1, stc2, stc3, stc4, stc5, stc6, stc7 };
+            for (int i = 0; i < COUNTOF(ctl); ++i) {
+                SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+            }
+        }
+#endif
+        dpi = Scintilla_GetWindowDPI(hdlg);
+
+        const CHOOSEFONT *const pChooseFont = ((CHOOSEFONT *)lParam);
+        if (pChooseFont) {
+            SendMessage(hdlg, WM_CHOOSEFONT_SETFLAGS, 0, (LPARAM)pChooseFont->Flags);
+            if (pChooseFont->lCustData) {
+                SetWindowText(hdlg, (WCHAR *)pChooseFont->lCustData);
+            }
+            const LOGFONT *const pLogFont = ((LOGFONT *)pChooseFont->lpLogFont);
+            if (pLogFont) {
+                // fill font name selector
+                SendMessage(hdlg, WM_CHOOSEFONT_SETLOGFONT, 0, (LPARAM)pLogFont);
+            }
+        }
+        //~else {
+        //~  // HACK: to get the full font name instead of font family name
+        //~  // [see: ChooseFontDirectWrite() PostProcessing]
+        //~  SendMessage(hdlg, WM_CHOOSEFONT_GETLOGFONT, 0, (LPARAM)pChooseFont->lpLogFont);
+        //~  PostMessage(hdlg, WM_CLOSE, 0, 0);
+        //~}
+
+        CenterDlgInParent(hdlg, NULL);
+
+        PostMessage(hdlg, WM_THEMECHANGED, 0, 0);
+    } break;
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
+        return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
+        break;
+
+    case WM_SETTINGCHANGE:
+        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+            SendMessage(hdlg, WM_THEMECHANGED, 0, 0);
+        }
+        break;
+
+    case WM_THEMECHANGED:
+        if (IsDarkModeSupported()) {
+            bool const darkModeEnabled = CheckDarkModeEnabled();
+            AllowDarkModeForWindowEx(hdlg, darkModeEnabled);
+            RefreshTitleBarThemeColor(hdlg);
+            int const buttons[] = { IDOK, IDCANCEL };
+            for (int id = 0; id < COUNTOF(buttons); ++id) {
+                HWND const hBtn = GetDlgItem(hdlg, buttons[id]);
+                AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
+                SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+            }
+        }
+        UpdateWindowEx(hdlg);
+        break;
+
+#endif
+
+    case WM_DPICHANGED:
+        dpi = LOWORD(wParam);
+        //dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hdlg, (RECT *)lParam, 0);
+        int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+            //HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
+            HFONT const hFont = 0;
+            SendMessage(GetDlgItem(hdlg, ctl[i]), WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
+        }
+        return TRUE;
+
+    default:
+        break;
+    }
+    return 0; // Allow the default handler a chance to process
+}
+
+
+
+//=============================================================================
+//
+//  ColorDialogHookProc()
+//
+INT_PTR CALLBACK ColorDialogHookProc(
+    HWND hdlg,     // handle to the dialog box window
+    UINT uiMsg,    // message identifier
+    WPARAM wParam, // message parameter
+    LPARAM lParam  // message parameter
+) {
+    UNREFERENCED_PARAMETER(wParam);
+
+    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
+
+    switch (uiMsg) {
+
+    case WM_INITDIALOG: {
+
+        if (Globals.hDlgIconSmall) {
+            SendMessage(hdlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
+        }
+
+        InitWindowCommon(hdlg, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+        if (UseDarkMode()) {
+            SetExplorerTheme(GetDlgItem(hdlg, IDOK));
+            SetExplorerTheme(GetDlgItem(hdlg, IDCANCEL));
+            //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+            int const ctl[] = { IDC_STATIC };
+            for (int i = 0; i < COUNTOF(ctl); ++i) {
+                SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+            }
+        }
+#endif
+        dpi = Scintilla_GetWindowDPI(hdlg);
+
+        const CHOOSECOLOR *const pChooseColor = ((CHOOSECOLOR *)lParam);
+        if (pChooseColor && pChooseColor->lCustData) {
+            POINT const pt = *(POINT*)pChooseColor->lCustData;
+            SetWindowPos(hdlg, NULL, pt.x, pt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+            SetForegroundWindow(hdlg);
+        } else {
+            CenterDlgInParent(hdlg, NULL);
+        }
+
+        PostMessage(hdlg, WM_THEMECHANGED, 0, 0);
+    } 
+    break;
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
+        return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
+        break;
+
+    case WM_SETTINGCHANGE:
+        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+            SendMessage(hdlg, WM_THEMECHANGED, 0, 0);
+        }
+        break;
+
+    case WM_THEMECHANGED:
+        if (IsDarkModeSupported()) {
+            bool const darkModeEnabled = CheckDarkModeEnabled();
+            AllowDarkModeForWindowEx(hdlg, darkModeEnabled);
+            RefreshTitleBarThemeColor(hdlg);
+            int const buttons[] = { /*COLOR_MIX,*/ IDOK, IDCANCEL };
+            for (int id = 0; id < COUNTOF(buttons); ++id) {
+                HWND const hBtn = GetDlgItem(hdlg, buttons[id]);
+                AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
+                SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+            }
+        }
+        UpdateWindowEx(hdlg);
+        break;
+
+#endif
+
+    case WM_DPICHANGED:
+        dpi = LOWORD(wParam);
+        //dpi.y = HIWORD(wParam);
+        UpdateWindowLayoutForDPI(hdlg, (RECT *)lParam, 0);
+        //int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
+        //for (int i = 0; i < COUNTOF(ctl); ++i) {
+        //    //HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
+        //    HFONT const hFont = 0;
+        //    SendMessage(GetDlgItem(hdlg, ctl[i]), WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
+        //}
+        return TRUE;
+
+    default:
+        break;
+    }
+    return 0; // Allow the default handler a chance to process
+}
+
 
 
 #if FALSE

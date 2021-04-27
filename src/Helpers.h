@@ -90,94 +90,81 @@ void DbgLog(const char *fmt, ...);
 // min/max
 #define _min_(x,y) (((x) > (y)) ? (y) : (x))
 #define _RETCMPMIN_  { return (x > y) ? y : x; }
-inline int min_i(const int x, const int y) _RETCMPMIN_
-inline unsigned int min_u(const unsigned int x, const unsigned int y) _RETCMPMIN_
-inline long min_l(const long x, const long y) _RETCMPMIN_
-inline long long min_ll(const long long x, const long long y) _RETCMPMIN_
-inline long min_dw(const DWORD x, const DWORD y) _RETCMPMIN_
-inline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
-inline DocPos min_p(const DocPos x, const DocPos y) _RETCMPMIN_
-inline DocLn min_ln(const DocLn x, const DocLn y) _RETCMPMIN_
-inline DocPosCR min_cr(const DocPosCR x, const DocPosCR y) _RETCMPMIN_
-inline float min_f(float x, float y) _RETCMPMIN_
+__forceinline int min_i(const int x, const int y) _RETCMPMIN_
+__forceinline unsigned int min_u(const unsigned int x, const unsigned int y) _RETCMPMIN_
+__forceinline long min_l(const long x, const long y) _RETCMPMIN_
+__forceinline long long min_ll(const long long x, const long long y) _RETCMPMIN_
+__forceinline long min_dw(const DWORD x, const DWORD y) _RETCMPMIN_
+__forceinline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
+__forceinline DocPos min_p(const DocPos x, const DocPos y) _RETCMPMIN_
+__forceinline DocLn min_ln(const DocLn x, const DocLn y) _RETCMPMIN_
+__forceinline DocPosCR min_cr(const DocPosCR x, const DocPosCR y) _RETCMPMIN_
+__forceinline float min_f(float x, float y) _RETCMPMIN_
 
 #define _max_(x,y) (((x) < (y)) ? (y) : (x))
 #define _RETCMPMAX_  { return (x < y) ? y : x; }
-inline int max_i(int x, int y) _RETCMPMAX_
-inline unsigned int max_u(unsigned int x, unsigned int y) _RETCMPMAX_
-inline long max_l(const long x, const long y) _RETCMPMAX_
-inline long long max_ll(const long long x, const long long y) _RETCMPMAX_
-inline long max_dw(const DWORD x, const DWORD y) _RETCMPMAX_
-inline size_t max_s(const size_t x, const size_t y) _RETCMPMAX_
-inline DocPos max_p(const DocPos x, const DocPos y) _RETCMPMAX_
-inline DocLn max_ln(const DocLn x, const DocLn y) _RETCMPMAX_
-inline DocPosCR max_cr(const DocPosCR x, const DocPosCR y) _RETCMPMAX_
-inline float max_f(float x, float y) _RETCMPMAX_
+__forceinline int max_i(int x, int y) _RETCMPMAX_
+__forceinline unsigned int max_u(unsigned int x, unsigned int y) _RETCMPMAX_
+__forceinline long max_l(const long x, const long y) _RETCMPMAX_
+__forceinline long long max_ll(const long long x, const long long y) _RETCMPMAX_
+__forceinline long max_dw(const DWORD x, const DWORD y) _RETCMPMAX_
+__forceinline size_t max_s(const size_t x, const size_t y) _RETCMPMAX_
+__forceinline DocPos max_p(const DocPos x, const DocPos y) _RETCMPMAX_
+__forceinline DocLn max_ln(const DocLn x, const DocLn y) _RETCMPMAX_
+__forceinline DocPosCR max_cr(const DocPosCR x, const DocPosCR y) _RETCMPMAX_
+__forceinline float max_f(float x, float y) _RETCMPMAX_
 
-inline DocPos abs_p(const DocPos x)
-{
+__forceinline DocPos abs_p(const DocPos x) {
     return (x >= 0LL) ? x : (0LL - x);
 }
 
 // swap
-inline void swapi(int* a, int* b)
-{
+__forceinline void swapi(int *a, int *b) {
     int t = *a;
     *a = *b;
     *b = t;
 }
-inline void swapos(DocPos* a, DocPos* b)
-{
+__forceinline void swapos(DocPos *a, DocPos *b) {
     DocPos t = *a;
     *a = *b;
     *b = t;
 }
 
 // clamp
-inline int clampi(int x, int lower, int upper)
-{
+__forceinline int clampi(int x, int lower, int upper) {
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline unsigned clampu(unsigned x, unsigned lower, unsigned upper)
-{
+__forceinline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline unsigned clampul(unsigned long x, unsigned long lower, unsigned long upper)
-{
+__forceinline unsigned clampul(unsigned long x, unsigned long lower, unsigned long upper) {
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline DocPos clampp(DocPos x, DocPos lower, DocPos upper)
-{
+__forceinline DocPos clampp(DocPos x, DocPos lower, DocPos upper) {
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper)
-{
+__forceinline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper) {
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-inline int float2int(const float f)
-{
+__forceinline int float2int(const float f) {
     return (int)lroundf(f);
 }
-inline float Round10th(const float f)
-{
+__forceinline float Round10th(const float f) {
     return (float)float2int(f * 10.0f) / 10;
 }
-inline bool HasNonZeroFraction(const float f)
-{
+__forceinline bool HasNonZeroFraction(const float f) {
     return ((float2int(f * 10.0f) % 10) != 0);
 }
 
-inline bool IsKeyDown(int key)
-{
+__forceinline bool IsKeyDown(int key) {
     return (((GetKeyState(key) >> 8) & 0xff) != 0);
 }
-inline bool IsAsyncKeyDown(int key)
-{
+__forceinline bool IsAsyncKeyDown(int key) {
     return (((GetAsyncKeyState(key) >> 8) & 0xff) != 0);
 }
 
@@ -185,8 +172,7 @@ inline bool IsAsyncKeyDown(int key)
 
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
 
-inline COLORREF CalcContrastColor(COLORREF rgb, int alpha)
-{
+__forceinline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
 
     bool const mask = RGB_SUB(MulDiv(rgb >> 0, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
                       RGB_SUB(MulDiv(rgb >> 8, alpha, SC_ALPHA_OPAQUE) & SC_ALPHA_OPAQUE, 0x80) <= 0x20 &&
@@ -194,6 +180,15 @@ inline COLORREF CalcContrastColor(COLORREF rgb, int alpha)
 
     return mask ? ((0x7F7F7F + rgb)) & 0xFFFFFF : (rgb ^ 0xFFFFFF);
 }
+
+
+__forceinline COLORREF AdjustColor(COLORREF rgb, int amount) {
+
+    return RGB(clampu(GetRValue(rgb) + amount, 0, 0xFF),
+               clampu(GetGValue(rgb) + amount, 0, 0xFF),
+               clampu(GetBValue(rgb) + amount, 0, 0xFF));
+}
+
 
 // ----------------------------------------------------------------------------
 
@@ -207,12 +202,10 @@ inline COLORREF CalcContrastColor(COLORREF rgb, int alpha)
 
 //==== StrIs(Not)Empty() =============================================
 
-inline bool StrIsEmptyA(LPCSTR s)
-{
+__forceinline bool StrIsEmptyA(LPCSTR s) {
     return (!s || (*s == '\0'));
 }
-inline bool StrIsEmptyW(LPCWSTR s)
-{
+__forceinline bool StrIsEmptyW(LPCWSTR s) {
     return (!s || (*s == L'\0'));
 }
 
@@ -309,10 +302,6 @@ inline INT_PTR SetDarkModeCtlColors(const HDC hdc, const bool bDarkMode)
 void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 
 // ----------------------------------------------------------------------------
-
-#define RGB_GET_R(color)    ((BYTE)((0xFF)&(color)))
-#define RGB_GET_G(color)    ((BYTE)(((0xFF<<8)&(color))>>8))
-#define RGB_GET_B(color)    ((BYTE)(((0xFF<<16)&(color))>>16))
 
 #define GET_X_LPARAM(lp)    ((int)(short)LOWORD(lp))  // windowsx.h
 #define GET_Y_LPARAM(lp)    ((int)(short)HIWORD(lp))  // windowsx.h
