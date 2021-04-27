@@ -270,7 +270,7 @@ BEGIN
             MENUITEM "Αντιστροφή ανάστροφων καθέτων",           IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Αντιστροφή καθέτων",                      IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "Χαρακ&τήρες σε δεκαεξαδικά\tCtrl+Alt+X",  IDM_EDIT_CHAR2HEX
+            MENUITEM "Χαρακ&τήρες σε δεκαεξαδικούς\tCtrl+Alt+X",  IDM_EDIT_CHAR2HEX
             MENUITEM "Δεκαε&ξαδικοί σε χαρακτήρες\tCtrl+Alt+C", IDM_EDIT_HEX2CHAR
         END
         POPUP "Εισαγ&ωγή"
