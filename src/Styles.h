@@ -82,7 +82,7 @@ void   Style_AppendSizeAttribute(LPWSTR lpszSize, int cchSize, const float fFont
 bool   Style_StrGetWeightValue(LPCWSTR lpszWeight, int *weight);
 void   Style_AppendWeightAttribute(LPWSTR lpszWeight, int cchSize, int fontWeight);
 bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bool useDefault);
-bool   Style_StrGetStrokeWidth(int indicID, LPCWSTR lpszStyle, int *piStrokeWidth);
+bool   Style_StrGetStrokeWidth(HWND hwnd, int indicID, LPCWSTR lpszStyle, int *piStrokeWidth);
 bool   Style_StrGetCase(LPCWSTR lpszStyle, int *i);
 bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);

@@ -5726,21 +5726,26 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		vs.styles[wParam].back = ColourDesired(static_cast<int>(lParam));
 		break;
 	case SCI_STYLESETBOLD:
+		vs.fontsValid = false;
 		vs.styles[wParam].weight = lParam != 0 ? SC_WEIGHT_BOLD : SC_WEIGHT_NORMAL;
 		break;
 	case SCI_STYLESETWEIGHT:
+		vs.fontsValid = false;
 		vs.styles[wParam].weight = static_cast<int>(lParam);
 		break;
 	case SCI_STYLESETITALIC:
+		vs.fontsValid = false;
 		vs.styles[wParam].italic = lParam != 0;
 		break;
 	case SCI_STYLESETEOLFILLED:
 		vs.styles[wParam].eolFilled = lParam != 0;
 		break;
 	case SCI_STYLESETSIZE:
+		vs.fontsValid = false;
 		vs.styles[wParam].size = static_cast<int>(lParam * SC_FONT_SIZE_MULTIPLIER);
 		break;
 	case SCI_STYLESETSIZEFRACTIONAL:
+		vs.fontsValid = false;
 		vs.styles[wParam].size = static_cast<int>(lParam);
 		break;
 	case SCI_STYLESETFONT:
@@ -5761,6 +5766,7 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		vs.styles[wParam].caseForce = static_cast<Style::CaseForce>(lParam);
 		break;
 	case SCI_STYLESETCHARACTERSET:
+		vs.fontsValid = false;
 		vs.styles[wParam].characterSet = static_cast<int>(lParam);
 		pdoc->SetCaseFolder(nullptr);
 		break;
@@ -6629,6 +6635,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_SETFONTQUALITY:
 		vs.extraFontFlag &= ~SC_EFF_QUALITY_MASK;
 		vs.extraFontFlag |= (wParam & SC_EFF_QUALITY_MASK);
+		vs.fontsValid = false;
 		InvalidateStyleRedraw();
 		break;
 
@@ -7809,6 +7816,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			if (zoomLevel != vs.zoomLevel) {
 				vs.zoomLevel = zoomLevel;
+				vs.fontsValid = false;
 				InvalidateStyleRedraw();
 				NotifyZoom();
 			}

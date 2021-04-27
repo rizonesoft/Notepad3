@@ -416,6 +416,7 @@ inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf)
 //
 
 DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour);
+DeclareSciCallV1(CallTipSetForeHlt, CALLTIPSETFOREHLT, COLORREF, colour);
 DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour);
 DeclareSciCallV1(CallTipSetPosition, CALLTIPSETPOSITION, bool, above);
 DeclareSciCallR0(CallTipPosStart, CALLTIPPOSSTART, DocPos);

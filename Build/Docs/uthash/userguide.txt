@@ -5,7 +5,7 @@ v2.1.0, December 2018
 
 To download uthash, follow this link back to the
 https://github.com/troydhanson/uthash[GitHub project page].
-Back to my https://troydhanson.github.io/[other projects].
+Back to my http://troydhanson.github.io/[other projects].
 
 A hash in C
 -----------

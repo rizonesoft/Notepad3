@@ -612,7 +612,6 @@ float Style_GetCurrentFontSize()
 int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 {
     alpha = clampi(alpha, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
-
     return (int)RGB(
                (0xFF - alpha) * (int)GetRValue(rgbBack) / 0xFF + alpha * (int)GetRValue(rgbFore) / 0xFF,
                (0xFF - alpha) * (int)GetGValue(rgbBack) / 0xFF + alpha * (int)GetGValue(rgbFore) / 0xFF,
@@ -1210,7 +1209,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
         SciCall_IndicSetStyle(INDIC_NP3_MATCH_BRACE, iValue);
 
-        if (Style_StrGetStrokeWidth(INDIC_NP3_MATCH_BRACE, pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue)) {
+        if (Style_StrGetStrokeWidth(hwnd, INDIC_NP3_MATCH_BRACE, pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue)) {
             SciCall_IndicSetStrokeWidth(INDIC_NP3_MATCH_BRACE, iValue);
         }
     }
@@ -1238,7 +1237,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
         SciCall_IndicSetStyle(INDIC_NP3_BAD_BRACE, iValue);
 
-        if (Style_StrGetStrokeWidth(INDIC_NP3_BAD_BRACE, pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue)) {
+        if (Style_StrGetStrokeWidth(hwnd, INDIC_NP3_BAD_BRACE, pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue)) {
             SciCall_IndicSetStrokeWidth(INDIC_NP3_BAD_BRACE, iValue);
         }
     }
@@ -1274,7 +1273,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     SciCall_IndicSetStyle(INDIC_NP3_MARK_OCCURANCE, iValue);
 
-    if (Style_StrGetStrokeWidth(INDIC_NP3_MARK_OCCURANCE, pCurrentStandard->Styles[STY_MARK_OCC].szValue, &iValue)) {
+    if (Style_StrGetStrokeWidth(hwnd, INDIC_NP3_MARK_OCCURANCE, pCurrentStandard->Styles[STY_MARK_OCC].szValue, &iValue)) {
         SciCall_IndicSetStrokeWidth(INDIC_NP3_MARK_OCCURANCE, iValue);
     }
 
@@ -1287,7 +1286,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     //SciCall_IndicSetFore(INDIC_NP3_UNICODE_POINT, RGB(0x00, 0x00, 0xF0));
     SciCall_IndicSetStyle(INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN); // simple underline
 
-    if (Style_StrGetStrokeWidth(INDIC_NP3_UNICODE_POINT, pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue)) {
+    if (Style_StrGetStrokeWidth(hwnd, INDIC_NP3_UNICODE_POINT, pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue)) {
         SciCall_IndicSetStrokeWidth(INDIC_NP3_UNICODE_POINT, iValue);
     }
 
@@ -1331,7 +1330,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     SciCall_IndicSetStyle(INDIC_NP3_MULTI_EDIT, iValue);
 
-    if (Style_StrGetStrokeWidth(INDIC_NP3_MULTI_EDIT, pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue)) {
+    if (Style_StrGetStrokeWidth(hwnd, INDIC_NP3_MULTI_EDIT, pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue)) {
         SciCall_IndicSetStrokeWidth(INDIC_NP3_MULTI_EDIT, iValue);
     }
 
@@ -1710,20 +1709,24 @@ void Style_SetUrlHotSpot(HWND hwnd)
         StringCchCatW(lpszStyleHotSpot, cCount, wchSpecificStyle);
     }
 
-    COLORREF activeFG = RGB(0x00, 0x00, 0xFF);
-    Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &activeFG, true);
-    COLORREF inactiveFG = RGB(0x00, 0x00, 0xBF);
-    if (!Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG, false)) {
-        inactiveFG = (COLORREF)((activeFG * 75 + 50) / 100);
-    }
+    COLORREF activeFG = RGB(0x00, 0x00, 0xE0);
+    Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &activeFG, false);
+
+    COLORREF inactiveFG = RGB(0x00, 0x60, 0xB0);
+    Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG, false);
 
     int iValue = 40;
     if (Style_StrGetAlpha(lpszStyleHotSpot, &iValue, true)) {
         SciCall_IndicSetAlpha(INDIC_NP3_HYPERLINK_U, iValue);
+    } else {
+        SciCall_IndicSetAlpha(INDIC_NP3_HYPERLINK_U, SC_ALPHA_OPAQUE);
     }
+
     iValue = 80;
     if (Style_StrGetAlpha(lpszStyleHotSpot, &iValue, false)) {
         SciCall_IndicSetOutlineAlpha(INDIC_NP3_HYPERLINK_U, iValue);
+    } else {
+        SciCall_IndicSetOutlineAlpha(INDIC_NP3_HYPERLINK_U, SC_ALPHA_OPAQUE);
     }
 
     // normal (fix)
@@ -1829,6 +1832,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
     SciCall_SetCaretLineVisibleAlways(false);
 
     if (iHiLitCurLn > 0) {
+
         bool const backgrColor = (iHiLitCurLn == 1);
 
         LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
@@ -1896,45 +1900,51 @@ void Style_SetBookmark(HWND hwnd, bool bShowMargin)
 //
 //  Style_SetMargin()
 //
-void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
+void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBER
 {
     Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle); // line numbers
 
-    COLORREF clrFore;
-    if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &clrFore, true)) {
-        clrFore = GetModeTextColor(UseDarkMode());
-    }
-    SciCall_StyleSetFore(STYLE_LINENUMBER, clrFore);
+    COLORREF colorRead; // 
 
-    COLORREF clrBack;
-    if (!Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack, false)) {
-        clrBack = GetModeBtnfaceColor(UseDarkMode());
+    // foreground
+    if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &colorRead, false)) {
+        colorRead = GetModeTextColor(UseDarkMode());
     }
-    SciCall_StyleSetBack(STYLE_LINENUMBER, clrBack);
-    SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
-    SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); /// false: allow selection drag
-    //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
+    COLORREF const clrLineNumFore = colorRead;
+    SciCall_StyleSetFore(STYLE_LINENUMBER, clrLineNumFore);
+
+    // background
+    if (!Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &colorRead, false)) {
+        colorRead = GetModeBtnfaceColor(UseDarkMode());
+    }
+    COLORREF const clrMarginBack = colorRead;
+
+    SciCall_StyleSetBack(STYLE_LINENUMBER, clrMarginBack);
+    SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrMarginBack);
+    //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrLineNumBack);
+    SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); /// (!) false: allow selection drag
+
 
     // CallTips
-    SciCall_CallTipSetFore(clrFore);
-    SciCall_CallTipSetBack(clrBack);
+    SciCall_CallTipSetBack(clrMarginBack);
+    SciCall_CallTipSetFore(AdjustColor(clrMarginBack, IsDarkModeStandardTheme() ? 120 : -120));
+    SciCall_CallTipSetForeHlt(clrLineNumFore);
+
 
     // ---  Bookmarks  ---
-    COLORREF bmkFore = clrFore;
-    COLORREF bmkBack = clrBack;
-
     const WCHAR* const wchBookMarkStyleStrg = GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue;
 
-    Style_StrGetColor(wchBookMarkStyleStrg, FOREGROUND_LAYER, &bmkFore, true);
-    Style_StrGetColor(wchBookMarkStyleStrg, BACKGROUND_LAYER, &bmkBack, true);
+    colorRead = clrLineNumFore;
+    Style_StrGetColor(wchBookMarkStyleStrg, FOREGROUND_LAYER, &colorRead, false);
 
+    COLORREF const clrBookMarkFore = colorRead;
+
+    colorRead = clrMarginBack;
+    Style_StrGetColor(wchBookMarkStyleStrg, BACKGROUND_LAYER, &colorRead, false);
     // adjust background color by alpha in case of show margin
-    int alpha = 20;
+    int alpha = SC_ALPHA_OPAQUE;
     Style_StrGetAlpha(wchBookMarkStyleStrg, &alpha, true);
-
-    COLORREF bckgrnd = clrBack;
-    Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &bckgrnd, true);
-    bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, alpha);
+    COLORREF const clrBookMarkBack = Style_RgbAlpha(colorRead, clrMarginBack, alpha);
 
     int strokeWidth = FW_DONTCARE;
     if (!Style_StrGetWeightValue(lpszStyle, &strokeWidth)) {
@@ -1944,16 +1954,16 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
 
     SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_VERTICALBOOKMARK); // SC_MARK_BOOKMARK/SC_MARK_SHORTARROW
     SciCall_MarkerSetStrokeWidth(MARKER_NP3_BOOKMARK, strokeWidth);
-    SciCall_MarkerSetForeTranslucent(MARKER_NP3_BOOKMARK, RGBxA(bmkFore, SC_ALPHA_OPAQUE));
-    SciCall_MarkerSetBackTranslucent(MARKER_NP3_BOOKMARK, RGBxA(bmkBack, alpha));
+    SciCall_MarkerSetForeTranslucent(MARKER_NP3_BOOKMARK, RGBxA(clrBookMarkFore, SC_ALPHA_OPAQUE));
+    SciCall_MarkerSetBackTranslucent(MARKER_NP3_BOOKMARK, RGBxA(clrBookMarkBack, alpha));
 
     // occurrence bookmarker
     bool const visible = Settings.MarkOccurrencesBookmark;
     //SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
     SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_EMPTY);
     SciCall_MarkerSetStrokeWidth(MARKER_NP3_OCCURRENCE, strokeWidth);
-    SciCall_MarkerSetForeTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(CalcContrastColor(clrBack, 100), SC_ALPHA_OPAQUE));
-    SciCall_MarkerSetBackTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(clrBack, SC_ALPHA_TRANSPARENT));
+    SciCall_MarkerSetForeTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(CalcContrastColor(clrMarginBack, 100), SC_ALPHA_OPAQUE));
+    SciCall_MarkerSetBackTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(clrMarginBack, SC_ALPHA_TRANSPARENT));
     //~SciCall_MarkerSetForeSelected(MARKER_NP3_OCCURRENCE, RGB(0,0,220));
 
     // ---  WordBookMarks  ---
@@ -1965,17 +1975,17 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
         SciCall_MarkerSetBackTranslucent(m, RGBxA(color, alpha)); // 'alpha' no meaning for SC_MARK_BACKGROUND
     }
 
-    SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
+    SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrMarginBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_BOOKMRK, true);
     SciCall_SetMarginCursorN(MARGIN_SCI_BOOKMRK, SC_NP3_CURSORHAND);
 
 
     // ---  Code folding  ---
-    COLORREF fldHiLight = clrFore;
+    COLORREF fldHiLight = clrLineNumFore;
     const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
     Style_StrGetColor(wchHighlightStyleStrg, FOREGROUND_LAYER, &fldHiLight, true);
 
-    SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrBack);
+    SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrMarginBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
 
     int fldStyleMrk = SC_CASE_LOWER;
@@ -2009,14 +2019,14 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) // iStyle = STYLE_LINENUMBER
     };
 
     for (int i = 0; i < COUNTOF(FoldMarkerID); ++i) {
-        SciCall_MarkerSetFore(FoldMarkerID[i], bmkBack); // (!)
-        SciCall_MarkerSetBack(FoldMarkerID[i], bmkFore); // (!)
+        SciCall_MarkerSetFore(FoldMarkerID[i], clrBookMarkBack); // (!)
+        SciCall_MarkerSetBack(FoldMarkerID[i], clrBookMarkFore); // (!)
         SciCall_MarkerSetBackSelected(FoldMarkerID[i], fldHiLight);
     }
     SciCall_MarkerEnableHighlight(true); // highlight folding block
 
-    SciCall_SetFoldMarginColour(true, clrBack);    // background
-    SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
+    SciCall_SetFoldMarginColour(true, clrMarginBack); // background
+    SciCall_SetFoldMarginHiColour(true, clrMarginBack); // (!)
     //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
 
     int fldStyleLn = 0;
@@ -2589,7 +2599,7 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
             if (StrIsNotEmpty(append)) {
                 StringCchCat(filterDef, COUNTOF(filterDef), L";");
             } else {
-                StringCchCopy(lpszDefExt, cchExt, ext); // first found ext is default
+                StringCchCopy(lpszDefExt, cchExt, ext); // first bIsDefined ext is default
             }
             StringCchPrintf(append, COUNTOF(append), L"*.%s", ext);
             StringCchCat(filterDef, COUNTOF(filterDef), append);
@@ -2924,10 +2934,10 @@ void Style_AppendWeightAttribute(LPWSTR lpszWeight, int cchSize, int fontWeight)
 //
 //  Style_StrGetColor()
 //
-bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, bool useDefault)
-{
-    bool const bFGLayer = (layer == FOREGROUND_LAYER);
+bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bool useDefault) {
 
+    bool const bFGLayer = (layer == FOREGROUND_LAYER);
+    bool bIsDefined = false;
     const WCHAR *const pItem = bFGLayer ? L"fore:" : L"back:";
     WCHAR *p = StrStr(lpszStyle, pItem);
     if (p) {
@@ -2945,15 +2955,15 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, bool
         unsigned int iValue = 0;
         if (swscanf_s(tch, L"%x", &iValue) == 1) {
             *rgb = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
-            return true;
+            bIsDefined = true;
         }
     }
-    // no colordef found - use default as fallback ?
-    if (useDefault) {
+    // no colordef bIsDefined - use default as fallback ?
+    if (!bIsDefined && useDefault) {
         *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
-        return true;
+        bIsDefined = true;
     }
-    return false;
+    return bIsDefined;
 }
 
 
@@ -2988,12 +2998,13 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st)
 //
 //  Style_StrGetStrokeWidth()
 //
-bool Style_StrGetStrokeWidth(int indicID, LPCWSTR lpszStyle, int *piStrokeWidth)
+bool Style_StrGetStrokeWidth(HWND hwnd, int indicID, LPCWSTR lpszStyle, int *piStrokeWidth)
 {
     if (HasIndicStyleStrokeWidth(SciCall_IndicGetStyle(indicID))) {
         int iStrkWdth = 1;
         if (Style_StrGetSizeInt(lpszStyle, &iStrkWdth)) {
-            *piStrokeWidth = clampi(iStrkWdth, 0, 16) * 100;
+            iStrkWdth = ScaleIntToDPI(hwnd, iStrkWdth * 100);
+            *piStrokeWidth = clampi(iStrkWdth, 100, 64000);
             return true;
         }
     }
@@ -3279,116 +3290,6 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
 
 //=============================================================================
 
-/// Callback to set the font dialog's title
-static  WCHAR FontSelTitle[128];
-
-static INT_PTR CALLBACK Style_FontDialogHook(
-    HWND hdlg,     // handle to the dialog box window
-    UINT uiMsg,    // message identifier
-    WPARAM wParam, // message parameter
-    LPARAM lParam  // message parameter
-) {
-    UNREFERENCED_PARAMETER(wParam);
-
-    static UINT dpi = USER_DEFAULT_SCREEN_DPI;
-
-    switch (uiMsg) {
-
-    case WM_INITDIALOG: {
-
-        if (Globals.hDlgIconSmall) {
-            SendMessage(hdlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
-        }
-
-        InitWindowCommon(hdlg, true);
-
-#ifdef D_NP3_WIN10_DARK_MODE
-
-        if (UseDarkMode()) {
-            SetExplorerTheme(GetDlgItem(hdlg, IDOK));
-            SetExplorerTheme(GetDlgItem(hdlg, IDCANCEL));
-            //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { grp1, grp2, chx1, chx2, cmb1, cmb2, cmb3, cmb4, cmb5, stc1, stc2, stc3, stc4, stc5, stc6, stc7 };
-            for (int i = 0; i < COUNTOF(ctl); ++i) {
-                SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
-            }
-        }
-#endif
-        dpi = Scintilla_GetWindowDPI(hdlg);
-
-        const CHOOSEFONT* const pChooseFont = ((CHOOSEFONT*)lParam);
-        if (pChooseFont) {
-            SendMessage(hdlg, WM_CHOOSEFONT_SETFLAGS, 0, (LPARAM)pChooseFont->Flags);
-            if (pChooseFont->lCustData) {
-                SetWindowText(hdlg, (WCHAR *)pChooseFont->lCustData);
-            }
-            const LOGFONT *const pLogFont = ((LOGFONT *)pChooseFont->lpLogFont);
-            if (pLogFont) {
-                // fill font name selector
-                SendMessage(hdlg, WM_CHOOSEFONT_SETLOGFONT, 0, (LPARAM)pLogFont);
-            }
-        }
-        //~else {
-        //~  // HACK: to get the full font name instead of font family name
-        //~  // [see: ChooseFontDirectWrite() PostProcessing]
-        //~  SendMessage(hdlg, WM_CHOOSEFONT_GETLOGFONT, 0, (LPARAM)pChooseFont->lpLogFont);
-        //~  PostMessage(hdlg, WM_CLOSE, 0, 0);
-        //~}
-
-        CenterDlgInParent(hdlg, NULL);
-
-        PostMessage(hdlg, WM_THEMECHANGED, 0, 0);
-    }
-    break;
-
-
-#ifdef D_NP3_WIN10_DARK_MODE
-
-CASE_WM_CTLCOLOR_SET:
-    return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
-    break;
-
-    case WM_SETTINGCHANGE:
-        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
-            SendMessage(hdlg, WM_THEMECHANGED, 0, 0);
-        }
-        break;
-
-    case WM_THEMECHANGED:
-        if (IsDarkModeSupported()) {
-            bool const darkModeEnabled = CheckDarkModeEnabled();
-            AllowDarkModeForWindowEx(hdlg, darkModeEnabled);
-            RefreshTitleBarThemeColor(hdlg);
-            int const buttons[] = { IDOK, IDCANCEL };
-            for (int id = 0; id < COUNTOF(buttons); ++id) {
-                HWND const hBtn = GetDlgItem(hdlg, buttons[id]);
-                AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
-                SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
-            }
-        }
-        UpdateWindowEx(hdlg);
-        break;
-
-#endif
-
-    case WM_DPICHANGED:
-        dpi = LOWORD(wParam);
-        //dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, 0);
-        int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
-        for (int i = 0; i < COUNTOF(ctl); ++i) {
-            //HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
-            HFONT const hFont = 0;
-            SendMessage(GetDlgItem(hdlg, ctl[i]), WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
-        }
-        return TRUE;
-
-
-    default:
-        break;
-    }
-    return 0;	// Allow the default handler a chance to process
-}
 
 //=============================================================================
 //
@@ -3510,7 +3411,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 
     // custom hook for title bar
     cf.Flags |= CF_ENABLEHOOK;
-    cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook; // Register the callback
+    cf.lpfnHook = (LPCFHOOKPROC)FontDialogHookProc; // Register the callback
     cf.lCustData = (LPARAM)FontSelTitle;
 
     // Font.dlg resource template
@@ -3625,8 +3526,14 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
     CHOOSECOLOR cc = { sizeof(CHOOSECOLOR) };
     cc.hwndOwner = hwnd;
     cc.rgbResult = dRGBResult;
-    cc.lpCustColors = g_colorCustom;
+    cc.lpCustColors = &g_colorCustom[0];
     cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
+
+    // custom hook
+    cc.Flags |= CC_ENABLEHOOK;
+    cc.lpfnHook = (LPCCHOOKPROC)ColorDialogHookProc;
+    cc.lCustData = (LPARAM)NULL;
+
     if (!ChooseColor(&cc)) {
         return false;
     }

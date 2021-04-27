@@ -746,8 +746,7 @@ BOOL PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
         if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf))) {
             WORD wsz[MAX_PATH];
 
-            /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,
-                                pszLnkFile,-1,wsz,MAX_PATH);*/
+            /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,pszLnkFile,-1,wsz,MAX_PATH);*/
             lstrcpy(wsz,pszLnkFile);
 
             if (SUCCEEDED(ppf->lpVtbl->Load(ppf,wsz,STGM_READ))) {
@@ -848,8 +847,7 @@ BOOL PathCreateLnk(LPCWSTR pszLnkDir,LPCWSTR pszPath)
         if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf))) {
             WORD wsz[MAX_PATH];
 
-            /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,
-                                tchLnkFileName,-1,wsz,MAX_PATH);*/
+            /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
             lstrcpy(wsz,tchLnkFileName);
 
             if (NOERROR == psl->lpVtbl->SetPath(psl,pszPath) &&

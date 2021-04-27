@@ -56,7 +56,7 @@ Version 1.9.8 (2013-03-10)
 * `HASH_REPLACE` now in uthash (thanks, Nick Vatamaniuc!)
 * fixed clang warnings (thanks wynnw!)
 * fixed `utarray_insert` when inserting past array end (thanks Rob Willett!)
-* you can now find https://troydhanson.github.com/uthash/[uthash on GitHub]
+* you can now find http://troydhanson.github.com/uthash/[uthash on GitHub]
 * there's a https://groups.google.com/d/forum/uthash[uthash Google Group]
 * uthash has been downloaded 29,000+ times since 2006 on SourceForge
 
@@ -196,7 +196,7 @@ Version 1.5 (2009-02-19)
   This change made HASH_FIND about 13% faster and enabled reader concurrency.
 * made link:license.html[BSD license] terms even more permissive
 * added link:userguide.pdf[PDF version] of User Guide
-* added https://troydhanson.wordpress.com/feed/[update news] image:rss.png[(RSS)]
+* added http://troydhanson.wordpress.com/feed/[update news] image:rss.png[(RSS)]
 
 Version 1.4 (2008-09-23)
 --------------------------

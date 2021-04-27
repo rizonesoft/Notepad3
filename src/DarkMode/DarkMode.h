@@ -59,6 +59,7 @@ inline bool CheckDarkModeEnabled()
 
 #define UseDarkMode() (IsDarkModeSupported() && CheckDarkModeEnabled())
 #define GetModeThemeIndex() (UseDarkMode() ? Globals.idxDarkModeTheme : Globals.idxLightModeTheme)
+#define IsDarkModeStandardTheme() (UseDarkMode() && (Globals.idxDarkModeTheme < 2))
 
 #ifdef __cplusplus
 }
