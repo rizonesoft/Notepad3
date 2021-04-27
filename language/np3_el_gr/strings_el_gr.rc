@@ -55,59 +55,59 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "New"
-    IDT_FILE_OPEN           "Open"
-    IDT_FILE_BROWSE         "Browse"
-    IDT_FILE_SAVE           "Save"
-    IDT_FILE_RECENT         "History"
-    IDT_EDIT_UNDO           "Undo"
-    IDT_EDIT_REDO           "Redo"
-    IDT_EDIT_CUT            "Cut"
-    IDT_EDIT_COPY           "Copy"
+    IDT_FILE_NEW            "Νέο"
+    IDT_FILE_OPEN           "Άνοιγμα"
+    IDT_FILE_BROWSE         "Εύρεση"
+    IDT_FILE_SAVE           "Αποθήκευση"
+    IDT_FILE_RECENT         "Ιστορικό"
+    IDT_EDIT_UNDO           "Αναίρεση"
+    IDT_EDIT_REDO           "Επανάληψη ενέργειας"
+    IDT_EDIT_CUT            "Αποκοπή"
+    IDT_EDIT_COPY           "Αντιγραφή"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_FIND           "Find"
-    IDT_EDIT_REPLACE        "Replace"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Exit"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Delete"
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favourites"
-    IDT_FILE_ADDTOFAV       "Add to Favourites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+    IDT_EDIT_PASTE          "Επικόλληση"
+    IDT_EDIT_FIND           "Αναζήτηση"
+    IDT_EDIT_REPLACE        "Αντικατάσταση"
+    IDT_VIEW_WORDWRAP       "Αναδίπλωση λέξεων"
+    IDT_VIEW_ZOOMIN         "Μεγέθυνση"
+    IDT_VIEW_ZOOMOUT        "Σμίκρυνση"
+    IDT_VIEW_SCHEME         "Επιλογή συνδυασμού"
+    IDT_VIEW_SCHEMECONFIG   "Προσαρμογή συνδυασμών"
+    IDT_FILE_EXIT           "Έξοδος"
+    IDT_FILE_SAVEAS         "Αποθήκευση ως"
+    IDT_FILE_SAVECOPY       "Αποθήκευση αντιγράφου"
+    IDT_EDIT_CLEAR          "Διαγραφή"
+    IDT_FILE_PRINT          "Εκτύπωση"
+    IDT_FILE_OPENFAV        "Αγαπημένα"
+    IDT_FILE_ADDTOFAV       "Προσθήκη στα αγαπημένα"
+    IDT_VIEW_TOGGLEFOLDS    "Εναλλαγή διπλώσεων"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW     "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
-    IDT_VIEW_PIN_ON_TOP      "Always On Top"
-    IDT_GREP_WIN_TOOL        "Search in Files"
+    IDT_FILE_LAUNCH          "Εκτέλεση εγγράφου"
+    IDT_VIEW_TOGGLE_VIEW     "Εστιασμένη προβολή"
+    IDT_VIEW_CHASING_DOCTAIL "Καταγραφή εποπτείας"
+    IDT_VIEW_PIN_ON_TOP      "Πάντα στην κορυφή"
+    IDT_GREP_WIN_TOOL        "Αναζήτηση σε αρχεία"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s : Elevated"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s : Clipboard"
-    IDS_MUI_UNTITLED        "Untitled"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Αναβαθμισμένα δικαιώματα"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Πρόχειρο"
+    IDS_MUI_UNTITLED        "Ανώνυμο"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
-    IDS_MUI_LOADFILE        "Loading ""%s""..."
-    IDS_MUI_SAVEFILE        "Saving ""%s""..."
-    IDS_MUI_PRINTFILE       "Printing page %i..."
+    IDS_MUI_READONLY        "(Μόνο για ανάγνωση)"
+    IDS_MUI_FILELOCKED      "<Αποκλειστικά>"
+    IDS_MUI_LOADFILE        "Φόρτωση ""%s""..."
+    IDS_MUI_SAVEFILE        "Αποθήκευση ""%s""..."
+    IDS_MUI_PRINTFILE       "Εκτύπωση σελίδας %i..."
     IDS_MUI_SAVINGSETTINGS  "Αποθήκευση ρυθμίσεων..."
-    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+    IDS_MUI_LINKDESCRIPTION "Επεξεργασία με Notepad3"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Εκτελέσιμα αρχεία (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Όλα τα αρχεία (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Αρχεία διαμόρφωσης (*.ini)|*.ini|Όλα τα αρχεία (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Αρχεία bitmap (*.bmp)|*.bmp|Όλα τα αρχεία (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
+    IDS_MUI_OPENWITH        "Επιλέξτε τον κατάλογο με συνδέσμους προς τις αγαπημένες σας εφαρμογές."
+    IDS_MUI_FAVORITES       "Επιλέξτε τον κατάλογο με συνδέσμους προς τα αγαπημένα σας αρχεία."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
@@ -168,9 +168,9 @@ BEGIN
     IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
     IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
     IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
-    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
-    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
-    IDS_MUI_NOTFOUND        "The specified text was not found."
+    IDS_MUI_FIND_WRAPFW     "Η αναζήτηση έφτασε στο τέλος του εγγράφου. Επανεκκίνηση της αναζήτησης από την αρχή."
+    IDS_MUI_FIND_WRAPRE     "Η αναζήτηση έφτασε στην αρχή του εγγράφου. Επανεκκίνηση της αναζήτησης από το τέλος."
+    IDS_MUI_NOTFOUND        "Το καθορισμένο κείμενο δεν βρέθηκε."
     IDS_MUI_REPLCOUNT       "%i εμφανίσεις του καθορισμένου κειμένου έχουν αντικατασταθεί."
     IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
     IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
@@ -211,7 +211,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Αποθήκευση των αλλαγών σε:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
-    IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
+    IDS_MUI_ASK_RECODE      "Η επανακωδικοποίηση απαιτεί επαναφόρτωση του αρχείου από το δίσκο. Οι μη αποθηκευμένες αλλαγές θα χαθούν!"
     IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
     IDS_MUI_PRINT_HEADER    "Όνομα αρχείου, Τρέχουσα ημερομηνία και ώρα|Όνομα αρχείου, Τρέχουσα ημερομηνία|Όνομα αρχείου|Να μείνει κενό"
     IDS_MUI_PRINT_FOOTER    "Αριθμός σελίδας|Να μείνει κενό"
@@ -229,24 +229,24 @@ BEGIN
     IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
     IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
     IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect.\nRetry another Passphrase?"
+    IDS_MUI_PASS_FAILURE    "Η φράση πρόσβασης είναι εσφαλμένη.\nΕπανάληψη με άλλη φράση πρόσβασης;"
     IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
-    IDS_MUI_STY_BASESTD     "BASE (Default Style):"
-    IDS_MUI_STY_BASE2ND     "BASE (2nd Default Style):"
-    IDS_MUI_STY_LEXDEF      "%s - Default Style:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
-    IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
+    IDS_MUI_STY_BASESTD     "ΒΑΣΙΚΟ (Προεπιλεγμένο στυλ):"
+    IDS_MUI_STY_BASE2ND     "ΒΑΣΙΚΟ (2ο προεπιλεγμένο στυλ):"
+    IDS_MUI_STY_LEXDEF      "%s - Προεπιλεγμένο στυλ:"
+    IDS_MUI_STY_LEXSTYLE    "Στυλ για %s:"
+    IDS_MUI_TITLE_RELBASE   " +++ ΒΑΣΙΚΟ (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από geogeo-gr"
-    IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
-    IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
+    IDS_MUI_TITLE_FIXBASE   " ΒΑΣΙΚΟ (%s)"
+    IDS_MUI_TITLE_RELCUR    " +++ %s: Στυλ %s +++"
+    IDS_MUI_TITLE_FIXCUR    " %s: Στυλ %s"
+    IDS_MUI_TITLE_RELARB    " +++ Στυλ '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    " Στυλ '%s' (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "Συσχετισμένες επεκτάσεις ονομάτων αρχείων:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Line (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "Column (1 - %ti):"
@@ -254,11 +254,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "&Language"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
-    IDM_THEMES_DEFAULT      "&Factory Default"
-    IDM_THEMES_FILE_ITEM    "&Standard"
+    IDS_MUI_MENU_LANGUAGE   "&Γλώσσα"
+    IDS_USE_LOCALE_DATEFMT  "Μορφή &ημερομηνίας βάσει γλώσσας"
+    IDS_MUI_MENU_THEMES     "&Συλλογή συνδυασμών"
+    IDM_THEMES_DEFAULT      "&Προεπιλεγμένη"
+    IDM_THEMES_FILE_ITEM    "&Τυπική"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Απαλοιφή όλων"
@@ -266,8 +266,8 @@ BEGIN
                             "Clear Find History"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Clear Replace History"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
+    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
+    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
 END
 
 STRINGTABLE
@@ -327,13 +327,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
-Style format:\r\n\
+Οι επεκτάσεις ονομάτων αρχείων πρέπει να χωρίζονται με ';'\r\n\
+Χρήση του \\<regex>; για ορισμό μοτίβου αντιστοίχισης σε όνομα αρχείου:\r\n\
+   \\xyz$;   => ονόματα αρχείων(όνομα+επέκτ.) με 'xyz' σαν τελευτ. χαρακτήρες.\r\n\r\n\
+Μορφή στυλ:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop.\
+Οι ιδιότητες στυλ μπορούν να οριστούν με αντιγραφή ή μεταφορά & απόθεση.\
 "
 
 END
