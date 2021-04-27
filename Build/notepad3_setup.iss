@@ -291,6 +291,7 @@ Type: dirifempty; Name: {app}
 [Code]
 const
   IFEO = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe';
+  APPH = 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Notepad3.exe';
 
 function InitializeSetup: Boolean;
 begin
@@ -435,6 +436,8 @@ begin
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
+  RegWriteStringValue(HKLM, APPH, '', ExpandConstant('{app}\Notepad3.exe'));
+  RegWriteStringValue(HKLM, APPH, 'Path', ExpandConstant('{app}'));
 end;
 
 
@@ -452,6 +455,9 @@ begin
   RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
+  RegDeleteValue(HKLM, APPH, 'Path');
+  RegDeleteValue(HKLM, APPH, '');
+  RegDeleteKeyIfEmpty(HKLM, APPH);
 end;
 
 

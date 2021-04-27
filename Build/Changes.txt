@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.425.(build_#) (2021-04-25)
+Current BETA/RC Version 5.21.427.(build_#) (2021-04-27)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.426.1]- Prepare Application Manifest for to grant Identity for non-package desktop apps.
 [.425.1]- Add file/dir exists/not-found to hyperlink tooltip (if file-url).
 [.422.1]- Support Scintilla's new feature: indicator stroke width.
 [.420.1]- TXT file for Translators to comunicate Line Mumbers of the "Added/Modified" strings.
@@ -68,6 +69,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.427.1]- Color selection dialog: NP3 icon, positioning and dark-mode.
+[.427.1]- Adjust standard colors for URL Hyperlink (better standard dark-mode visual).
 [.425.1]- New default for hyperlink tooltip is OFF.
 [.425.1]- Immediate indicator hover response (colordef-hotspot, hyperlink-tooltip, hex-code-tooltip).
 [.422.1]- Code cleanup for Font and Style Selection.
@@ -113,6 +116,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.427.1]- Minor fixes around font redrawing.
 [.423.1]- Add thread COM initializations.
 [.423.1]- Adding DPI awareness to MiniPath (correct toolbar handling still open point).
 [.423.1]- minor corrections for customized font selection dialog (dark-mode and dpi-awareness).
