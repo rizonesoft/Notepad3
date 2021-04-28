@@ -264,6 +264,8 @@
 #define IDR_MAINWNDTB2HOT               16005
 #define IDR_MAINWNDTB2DIS               16006
 
+#define IDR_STD_DARKMODE_THEME          16050
+
 #define IDI_MUI_RUN                     16100
 #define IDI_MUI_STYLES                  16101
 
@@ -550,7 +552,8 @@
 
 #define IDS_MUI_MENU_THEMES             37000
 #define IDM_THEMES_DEFAULT              37001
-#define IDM_THEMES_FILE_ITEM            37002
+#define IDM_THEMES_RESOURCES            37002
+#define IDM_THEMES_FILE_ITEM            37003
 /// !!! dont use IDs until           ...37100
 
 #define IDM_FILE_NEW                    40000

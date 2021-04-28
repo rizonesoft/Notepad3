@@ -263,6 +263,25 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
 }
 
 
+extern "C" bool CopyToIniFileCache(LPCSTR lpIniFileResourceUTF8)
+{
+    if (StrIsEmptyA(lpIniFileResourceUTF8)) {
+        return false;
+    }
+
+    ResetIniFileCache();
+
+    s_INI.SetSpaces(s_bSetSpaces);
+    s_INI.SetMultiLine(s_bUseMultiLine);
+
+    // should be UTF-8 with BOM (!)
+    s_bIniFileCacheLoaded = SI_Success(s_INI.LoadData(lpIniFileResourceUTF8));
+    //~s_INI.SetUnicode(true); ~ already set
+
+    return s_bIniFileCacheLoaded;
+}
+
+
 extern "C" bool IsIniFileCached()
 {
     return s_bIniFileCacheLoaded;
@@ -2045,13 +2064,13 @@ static bool _SaveSettings(bool bForceSaveSettings)
         Style_ToIniSection(Globals.bIniFileFromScratch); // Scintilla Styles
     }
 
-    if (Globals.idxLightModeTheme <= 1) {
+    if (Globals.idxLightModeTheme == Theme_FactoryLightMode) {
         IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
     } else {
         IniSectionSetString(IniSecStyles, L"ThemeFileName", Globals.LightThemeName);
     }
 
-    if (Globals.idxDarkModeTheme <= 1) {
+    if (Globals.idxDarkModeTheme == Theme_FactoryDarkMode) {
         IniSectionDelete(IniSecStyles, L"DarkThemeFileName", false);
     } else {
         IniSectionSetString(IniSecStyles, L"DarkThemeFileName", Globals.DarkThemeName);

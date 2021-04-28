@@ -109,7 +109,6 @@ IDR_MAINWND             ICON                    "Notepad3.ico"
 //
 // Bitmap
 //
-
 IDR_MAINWNDTB           BITMAP                  "Toolbar.bmp"
 IDR_MAINWNDTBHOT        BITMAP                  "ToolbarHot.bmp"
 IDR_MAINWNDTBDIS        BITMAP                  "ToolbarDisabled.bmp"
@@ -121,6 +120,12 @@ IDB_NEXT                BITMAP                  "Next.bmp"
 IDB_PREV                BITMAP                  "Prev.bmp"
 IDB_PICK                BITMAP                  "Pick.bmp"
 IDB_ENCODING            BITMAP                  "Encoding.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Theme Dark Mode (UTF-8)
+//
+IDR_STD_DARKMODE_THEME  RCDATA                   "StdDarkModeScheme.ini"
 
 
 /////////////////////////////////////////////////////////////////////////////

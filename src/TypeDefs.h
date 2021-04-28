@@ -406,6 +406,8 @@ typedef struct _globals_t
     bool      bFindReplCopySelOrClip;
     bool      bReplaceInitialized;
     bool      bDocHasInconsistentEOLs;
+
+    char *    pStdDarkModeIniStyles;
     unsigned  idxLightModeTheme;
     unsigned  idxDarkModeTheme;
 

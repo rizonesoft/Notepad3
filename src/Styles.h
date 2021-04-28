@@ -31,11 +31,16 @@
 #define NUMLEXERS 53
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
+#define Theme_FactoryLightMode (0U)
+#define Theme_FactoryDarkMode  (1U)
+#define Theme_CustomizedMode   (2U)
+
 void   Style_Load();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportTheme(const unsigned iThemeIdx);
 void   Style_LoadLexerFileExtensions();
 bool   Style_ImportFromFile(const WCHAR* szFile);
+bool   Style_ImportFromBinaryBlob(LPCSTR szCharResorce);
 void   Style_SaveSettings(bool bForceSaveSettings);
 bool   Style_Export(HWND hwnd);
 void   Style_FileExtToIniSection(bool bForceAll);

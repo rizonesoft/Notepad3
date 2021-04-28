@@ -664,8 +664,9 @@ static void _InitGlobals()
     Globals.bReplaceInitialized = false;
     Globals.FindReplaceMatchFoundState = FND_NOP;
     Globals.bDocHasInconsistentEOLs = false;
-    Globals.idxLightModeTheme = 1; // Default(0), Standard(1)
-    Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
+    Globals.pStdDarkModeIniStyles = NULL;
+    Globals.idxLightModeTheme = Theme_FactoryLightMode;
+    Globals.idxDarkModeTheme = Theme_FactoryDarkMode;
     Globals.bMinimizedToTray = false;
 
     Flags.bHugeFileLoadState = DefaultFlags.bHugeFileLoadState = false;
@@ -710,6 +711,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
     if (hwnd) {
         KillTimer(hwnd, IDT_TIMER_MRKALL);
+    }
+
+    if (Globals.pStdDarkModeIniStyles) {
+        FreeMem(Globals.pStdDarkModeIniStyles);
+        Globals.pStdDarkModeIniStyles = NULL;
     }
 
     CmdMessageQueue_t* pmqc = NULL;
@@ -783,7 +789,6 @@ void InvalidParameterHandler(const wchar_t* expression,
     MsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
 #endif
 }
-
 
 
 //=============================================================================
@@ -868,7 +873,20 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
 #endif
 
+    HRSRC const hRes = FindResourceEx(hInstance, RT_RCDATA, MAKEINTRESOURCE(IDR_STD_DARKMODE_THEME), 
+                                                            MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+    HGLOBAL const hMem = LoadResource(hInstance, hRes);
+    DWORD const size = SizeofResource(hInstance, hRes);
+    const char * const resText = (const char *)LockResource(hMem);
+    Globals.pStdDarkModeIniStyles = (char *)AllocMem((size + 1), 0);
+    if (Globals.pStdDarkModeIniStyles) {
+        memcpy(Globals.pStdDarkModeIniStyles, resText, size);
+        Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
+    }
+    FreeResource(hMem);
+
     Style_ImportTheme(GetModeThemeIndex());
+
 
     //SetProcessDPIAware(); -> .manifest
     //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
