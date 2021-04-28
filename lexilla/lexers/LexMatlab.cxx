@@ -44,7 +44,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 static bool IsMatlabCommentChar(int c) {
 	return (c == '%') ;

@@ -22,7 +22,7 @@
 #include "LexerBase.h"
 #include "LexerSimple.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 LexerSimple::LexerSimple(const LexerModule *module_) :
 	LexerBase(module_->LexClasses(), module_->NamedStyles()),
@@ -38,13 +38,13 @@ const char * SCI_METHOD LexerSimple::DescribeWordListSets() {
 	return wordLists.c_str();
 }
 
-void SCI_METHOD LexerSimple::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerSimple::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) {
 	Accessor astyler(pAccess, &props);
 	module->Lex(startPos, lengthDoc, initStyle, keyWordLists, astyler);
 	astyler.Flush();
 }
 
-void SCI_METHOD LexerSimple::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerSimple::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) {
 	if (props.GetInt("fold")) {
 		Accessor astyler(pAccess, &props);
 		module->Fold(startPos, lengthDoc, initStyle, keyWordLists, astyler);

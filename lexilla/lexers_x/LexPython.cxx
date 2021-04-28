@@ -30,6 +30,7 @@
 #include "SubStyles.h"
 #include "DefaultLexer.h"
 
+using namespace Lexilla;
 using namespace Scintilla;
 
 namespace {

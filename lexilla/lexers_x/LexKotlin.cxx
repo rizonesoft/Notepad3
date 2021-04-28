@@ -29,7 +29,9 @@
 #include "LexerUtils.h"
 
 
+using namespace Lexilla;
 using namespace Scintilla;
+
 
 namespace
 {

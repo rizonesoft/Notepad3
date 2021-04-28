@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace Scintilla {
+namespace Lexilla {
 
 template <size_t N>
 constexpr size_t CStrLen([[maybe_unused]] const char (&s)[N]) noexcept {

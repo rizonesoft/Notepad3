@@ -25,6 +25,7 @@
 #include "SciXLexer.h"
 
 
+using namespace Lexilla;
 using namespace Scintilla;
 
 namespace

@@ -26,6 +26,7 @@
 #include "SciXLexer.h"
 
 
+using namespace Lexilla;
 using namespace Scintilla;
 
 namespace
@@ -279,7 +280,7 @@ static bool IsDateTimeStr(StyleContext& sc, const CharacterSet& validCh, const C
     {
         int const ch = sc.GetRelative(i);
 
-        if (!Scintilla::IsADigit(ch) && !validCh.Contains(ch) && (ch != '.'))
+        if (!Lexilla::IsADigit(ch) && !validCh.Contains(ch) && (ch != '.'))
         {
             if (valEnd.Contains(ch))
             {
@@ -311,7 +312,7 @@ static bool IsLookAheadLineEmpty(StyleContext& sc)
     while (++i < posRelEnd)
     {
         int const ch = sc.GetRelative(i);
-        if (!Scintilla::IsASpace(ch))
+        if (!Lexilla::IsASpace(ch))
         {
             if (IsCommentChar(ch))
             {

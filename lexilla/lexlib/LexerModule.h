@@ -8,7 +8,7 @@
 #ifndef LEXERMODULE_H
 #define LEXERMODULE_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 class Accessor;
 class WordList;
@@ -16,7 +16,7 @@ struct LexicalClass;
 
 typedef void (*LexerFunction)(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
                   WordList *keywordlists[], Accessor &styler);
-typedef ILexer5 *(*LexerFactoryFunction)();
+typedef Scintilla::ILexer5 *(*LexerFactoryFunction)();
 
 /**
  * A LexerModule is responsible for lexing and folding a particular language.
@@ -57,7 +57,7 @@ public:
 	const LexicalClass *LexClasses() const noexcept;
 	size_t NamedStyles() const noexcept;
 
-	ILexer5 *Create() const;
+	Scintilla::ILexer5 *Create() const;
 
 	void Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
                   WordList *keywordlists[], Accessor &styler) const;

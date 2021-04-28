@@ -23,7 +23,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 //XXX Identical to Perl, put in common area
 static inline bool isEOLChar(char ch) {

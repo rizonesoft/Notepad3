@@ -9,7 +9,7 @@
 #ifndef STRINGCOPY_H
 #define STRINGCOPY_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 // Safer version of string copy functions like strcpy, wcsncpy, etc.
 // Instantiate over fixed length strings of both char and wchar_t.

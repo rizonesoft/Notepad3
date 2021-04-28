@@ -23,7 +23,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 static bool Is0To9(char ch) {
 	return (ch >= '0') && (ch <= '9');

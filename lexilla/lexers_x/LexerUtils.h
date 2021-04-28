@@ -4,7 +4,7 @@
 
 #include "CharSetX.h"
 
-namespace Scintilla {
+namespace Lexilla {
 
 
 // TODO: change packed line state to NestedStateStack (convert lexer to class).

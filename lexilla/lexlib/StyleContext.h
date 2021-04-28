@@ -8,7 +8,7 @@
 #ifndef STYLECONTEXT_H
 #define STYLECONTEXT_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 // All languages handled so far can treat all characters >= 0x80 as one class
 // which just continues the current token or starts an identifier if in default.
@@ -16,7 +16,7 @@ namespace Scintilla {
 // syntactically significant. UTF-8 avoids this as all trail bytes are >= 0x80
 class StyleContext {
 	LexAccessor &styler;
-	IDocument *multiByteAccess;
+	Scintilla::IDocument *multiByteAccess;
 	Sci_PositionU endPos;
 	Sci_PositionU lengthDocument;
 

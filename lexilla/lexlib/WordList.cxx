@@ -14,7 +14,7 @@
 
 #include "WordList.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 /**
  * Creates an array that points into each word in the string and puts \0 terminators
