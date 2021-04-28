@@ -7096,6 +7096,7 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
 
         CHOOSECOLOR cc = { sizeof(CHOOSECOLOR) };
         cc.hwndOwner = hwnd;
+        cc.hInstance = (HWND)Globals.hLngResContainer; // Globals.hInstance;
         cc.rgbResult = rgbCur;
         cc.lpCustColors = &g_colorCustom[0];
         cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR;
@@ -7109,6 +7110,10 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
         pt.x = wi.x + SciCall_PointXFromPosition(SciCall_GetCurrentPos()) + offset;
         pt.y = wi.y + SciCall_PointYFromPosition(SciCall_GetCurrentPos()) + offset;
         cc.lCustData = (LPARAM)&pt;
+
+        // Color.dlg resource template
+        cc.Flags |= CC_ENABLETEMPLATE | CC_ENABLETEMPLATEHANDLE;
+        cc.lpTemplateName = MAKEINTRESOURCEW(IDD_MUI_SYSCOLOR_DLG);
 
         if (!ChooseColor(&cc)) {
             return;

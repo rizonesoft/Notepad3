@@ -5,6 +5,8 @@
 #ifndef _COMMON_RES_H_
 #define _COMMON_RES_H_
 
+#include "ColorDlg.h"
+
 // undefined Sub-Language
 #define SUBLANG_SPANISH_LATIN_AMERICA 0x16
 
@@ -316,6 +318,7 @@
 #define IDD_MUI_CMDLINEHELP             17037
 
 #define IDD_MUI_SYSFONT_WITHLINK        17038
+#define IDD_MUI_SYSCOLOR_DLG            17039
 
 #define IDC_COMMANDLINE                 18000
 #define IDC_SEARCHEXE                   18001

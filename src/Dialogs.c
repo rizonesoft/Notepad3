@@ -43,7 +43,6 @@
 
 #include "SciCall.h"
 
-//#include "win/ColorDlg.h" // Color Dialog API infos
 #include "Dialogs.h"
 
 //=============================================================================
@@ -5232,30 +5231,32 @@ void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame)
 void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
 {
     PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
-    const int cxClient = LOWORD(lParam);
-    const int cyClient = HIWORD(lParam);
+    if (pm) {
+        const int cxClient = LOWORD(lParam);
+        const int cyClient = HIWORD(lParam);
 #if NP3_ENABLE_RESIZEDLG_TEMP_FIX
-    const UINT dpi = Scintilla_GetWindowDPI(hwnd);
-    const UINT old = pm->dpi;
-    if (cx) {
-        *cx = cxClient - MulDiv(pm->cxClient, dpi, old);
-    }
-    if (cy) {
-        *cy = cyClient - MulDiv(pm->cyClient, dpi, old);
-    }
-    // store in original DPI.
-    pm->cxClient = MulDiv(cxClient, old, dpi);
-    pm->cyClient = MulDiv(cyClient, old, dpi);
+        const UINT dpi = Scintilla_GetWindowDPI(hwnd);
+        const UINT old = pm->dpi;
+        if (cx) {
+            *cx = cxClient - MulDiv(pm->cxClient, dpi, old);
+        }
+        if (cy) {
+            *cy = cyClient - MulDiv(pm->cyClient, dpi, old);
+        }
+        // store in original DPI.
+        pm->cxClient = MulDiv(cxClient, old, dpi);
+        pm->cyClient = MulDiv(cyClient, old, dpi);
 #else
-    if (cx) {
-        *cx = cxClient - pm->cxClient;
-    }
-    if (cy) {
-        *cy = cyClient - pm->cyClient;
-    }
-    pm->cxClient = cxClient;
-    pm->cyClient = cyClient;
+        if (cx) {
+            *cx = cxClient - pm->cxClient;
+        }
+        if (cy) {
+            *cy = cyClient - pm->cyClient;
+        }
+        pm->cxClient = cxClient;
+        pm->cyClient = cyClient;
 #endif
+    }
 }
 
 void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
@@ -6080,7 +6081,7 @@ INT_PTR CALLBACK FontDialogHookProc(
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
             int const ctl[] = { grp1, grp2, chx1, chx2, cmb1, cmb2, cmb3, cmb4, cmb5, stc1, stc2, stc3, stc4, stc5, stc6, stc7 };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
-                SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+                SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme
             }
         }
 #endif
@@ -6145,8 +6146,7 @@ INT_PTR CALLBACK FontDialogHookProc(
         UpdateWindowLayoutForDPI(hdlg, (RECT *)lParam, 0);
         int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
-            //HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
-            HFONT const hFont = 0;
+            HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
             SendMessage(GetDlgItem(hdlg, ctl[i]), WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
         }
         return TRUE;
@@ -6188,10 +6188,12 @@ INT_PTR CALLBACK ColorDialogHookProc(
         if (UseDarkMode()) {
             SetExplorerTheme(GetDlgItem(hdlg, IDOK));
             SetExplorerTheme(GetDlgItem(hdlg, IDCANCEL));
+            SetExplorerTheme(GetDlgItem(hdlg, COLOR_ADD));
+            SetExplorerTheme(GetDlgItem(hdlg, COLOR_MIX));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDC_STATIC };
+            int const ctl[] = { COLOR_RAINBOW, COLOR_LUMSCROLL, COLOR_CURRENT, IDC_STATIC };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
-                SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+                SetWindowTheme(GetDlgItem(hdlg, ctl[i]), L"", L""); // remove theme
             }
         }
 #endif
@@ -6228,7 +6230,7 @@ INT_PTR CALLBACK ColorDialogHookProc(
             bool const darkModeEnabled = CheckDarkModeEnabled();
             AllowDarkModeForWindowEx(hdlg, darkModeEnabled);
             RefreshTitleBarThemeColor(hdlg);
-            int const buttons[] = { /*COLOR_MIX,*/ IDOK, IDCANCEL };
+            int const buttons[] = { IDOK, IDCANCEL };
             for (int id = 0; id < COUNTOF(buttons); ++id) {
                 HWND const hBtn = GetDlgItem(hdlg, buttons[id]);
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
@@ -6244,12 +6246,11 @@ INT_PTR CALLBACK ColorDialogHookProc(
         dpi = LOWORD(wParam);
         //dpi.y = HIWORD(wParam);
         UpdateWindowLayoutForDPI(hdlg, (RECT *)lParam, 0);
-        //int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
-        //for (int i = 0; i < COUNTOF(ctl); ++i) {
-        //    //HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
-        //    HFONT const hFont = 0;
-        //    SendMessage(GetDlgItem(hdlg, ctl[i]), WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
-        //}
+        int const ctl[] = { COLOR_ADD, COLOR_MIX, IDOK, IDCANCEL };
+        for (int i = 0; i < COUNTOF(ctl); ++i) {
+            HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
+            SendMessage(GetDlgItem(hdlg, ctl[i]), WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
+        }
         return TRUE;
 
     default:
