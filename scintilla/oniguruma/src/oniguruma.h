@@ -34,11 +34,11 @@ extern "C" {
 #endif
 
 #define ONIGURUMA
-#define ONIGURUMA_VERSION_MAJOR   6
-#define ONIGURUMA_VERSION_MINOR   9
-#define ONIGURUMA_VERSION_TEENY   7
+#define ONIGURUMA_VERSION_MAJOR   7
+#define ONIGURUMA_VERSION_MINOR   0
+#define ONIGURUMA_VERSION_TEENY   0
 
-#define ONIGURUMA_VERSION_INT     60907
+#define ONIGURUMA_VERSION_INT     70000
 
 #ifndef P_
 #if defined(__STDC__) || defined(_WIN32)
@@ -80,12 +80,16 @@ extern "C" {
 #define UChar OnigUChar
 #endif
 
-typedef int            OnigPosition;  // extent
-
 typedef unsigned int   OnigCodePoint;
 typedef unsigned char  OnigUChar;
 typedef unsigned int   OnigCtype;
 typedef unsigned int   OnigLen;
+
+#ifndef ONIG_NO_STANDARD_C_HEADERS
+#include <stddef.h>  /* for ptrdiff_t */
+#endif
+
+typedef ptrdiff_t  OnigPos;
 
 #define ONIG_INFINITE_DISTANCE  ~((OnigLen )0)
 
@@ -671,8 +675,8 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 
 typedef struct OnigCaptureTreeNodeStruct {
   int group;   /* group number */
-  int beg;
-  int end;
+  OnigPos beg;
+  OnigPos end;
   int allocated;
   int num_childs;
   struct OnigCaptureTreeNodeStruct** childs;
@@ -682,8 +686,8 @@ typedef struct OnigCaptureTreeNodeStruct {
 struct re_registers {
   int  allocated;
   int  num_regs;
-  int* beg;
-  int* end;
+  OnigPos* beg;
+  OnigPos* end;
   /* extended */
   OnigCaptureTreeNode* history_root;  /* capture history tree root */
 };
@@ -816,9 +820,9 @@ int onig_initialize P_((OnigEncoding encodings[], int number_of_encodings));
 ONIG_EXTERN
 int onig_init P_((void));
 ONIG_EXTERN
-int ONIG_VARIADIC_FUNC_ATTR onig_error_code_to_str PV_((OnigUChar* s, int err_code, ...));
+int ONIG_VARIADIC_FUNC_ATTR onig_error_code_to_str PV_((OnigUChar* s, OnigPos err_code, ...));
 ONIG_EXTERN
-int onig_is_error_code_needs_param PV_((int code));
+int onig_is_error_code_needs_param PV_((OnigPos code));
 ONIG_EXTERN
 void onig_set_warn_func P_((OnigWarnFunc f));
 ONIG_EXTERN
@@ -835,15 +839,15 @@ void onig_free P_((OnigRegex));
 ONIG_EXTERN
 void onig_free_body P_((OnigRegex));
 ONIG_EXTERN
-int onig_scan(OnigRegex reg, const OnigUChar* str, const OnigUChar* end, OnigRegion* region, OnigOptionType option, int (*scan_callback)(int, int, OnigRegion*, void*), void* callback_arg);
+int onig_scan(OnigRegex reg, const OnigUChar* str, const OnigUChar* end, OnigRegion* region, OnigOptionType option, int (*scan_callback)(int, OnigPos, OnigRegion*, void*), void* callback_arg);
 ONIG_EXTERN
-int onig_search P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegion* region, OnigOptionType option));
+OnigPos onig_search P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegion* region, OnigOptionType option));
 ONIG_EXTERN
-int onig_search_with_param P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegion* region, OnigOptionType option, OnigMatchParam* mp));
+OnigPos onig_search_with_param P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegion* region, OnigOptionType option, OnigMatchParam* mp));
 ONIG_EXTERN
-int onig_match P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* at, OnigRegion* region, OnigOptionType option));
+OnigPos onig_match P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* at, OnigRegion* region, OnigOptionType option));
 ONIG_EXTERN
-int onig_match_with_param P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* at, OnigRegion* region, OnigOptionType option, OnigMatchParam* mp));
+OnigPos onig_match_with_param P_((OnigRegex, const OnigUChar* str, const OnigUChar* end, const OnigUChar* at, OnigRegion* region, OnigOptionType option, OnigMatchParam* mp));
 
 ONIG_EXTERN
 int onig_regset_new P_((OnigRegSet** rset, int n, regex_t* regs[]));
@@ -860,9 +864,9 @@ regex_t* onig_regset_get_regex P_((OnigRegSet* set, int at));
 ONIG_EXTERN
 OnigRegion* onig_regset_get_region P_((OnigRegSet* set, int at));
 ONIG_EXTERN
-int onig_regset_search P_((OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegSetLead lead, OnigOptionType option, int* rmatch_pos));
+int onig_regset_search P_((OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegSetLead lead, OnigOptionType option, OnigPos* rmatch_pos));
 ONIG_EXTERN
-int onig_regset_search_with_param P_((OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range,  OnigRegSetLead lead, OnigOptionType option, OnigMatchParam* mps[], int* rmatch_pos));
+int onig_regset_search_with_param P_((OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range,  OnigRegSetLead lead, OnigOptionType option, OnigMatchParam* mps[], OnigPos* rmatch_pos));
 
 ONIG_EXTERN
 OnigRegion* onig_region_new P_((void));

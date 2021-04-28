@@ -128,7 +128,7 @@ contains requires
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 static void GetRangeLowered(Sci_PositionU start,
 		Sci_PositionU end,

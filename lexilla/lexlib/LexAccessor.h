@@ -8,13 +8,13 @@
 #ifndef LEXACCESSOR_H
 #define LEXACCESSOR_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 enum class EncodingType { eightBit, unicode, dbcs };
 
 class LexAccessor {
 private:
-	IDocument *pAccess;
+	Scintilla::IDocument *pAccess;
 	enum {extremePosition=0x7FFFFFFF};
 	/** @a bufferSize is a trade off between time taken to copy the characters
 	 * and retrieval overhead.
@@ -48,7 +48,7 @@ private:
 	}
 
 public:
-	explicit LexAccessor(IDocument *pAccess_) :
+	explicit LexAccessor(Scintilla::IDocument *pAccess_) :
 		pAccess(pAccess_), startPos(extremePosition), endPos(0),
 		codePage(pAccess->CodePage()),
 		encodingType(EncodingType::eightBit),
@@ -77,7 +77,7 @@ public:
 		}
 		return buf[position - startPos];
 	}
-	IDocument *MultiByteAccess() const noexcept {
+	Scintilla::IDocument *MultiByteAccess() const noexcept {
 		return pAccess;
 	}
 	/** Safe version of operator[], returning a defined value for invalid position. */

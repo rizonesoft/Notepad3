@@ -10,6 +10,7 @@
 #include <cstring>
 
 #include <stdexcept>
+#include <string>
 #include <string_view>
 #include <vector>
 #include <map>
@@ -37,13 +38,12 @@ MarginStyle::MarginStyle(int style_, int width_, int mask_) noexcept :
 	style(style_), width(width_), mask(mask_), sensitive(false), cursor(SC_CURSORREVERSEARROW) {
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs, const char *localeName) {
 	PLATFORM_ASSERT(fs.fontName);
 	sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
-	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.italic, fs.extraFontFlag, technology, fs.characterSet, localeName);
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight,
+		fs.italic, fs.extraFontFlag, technology, fs.characterSet, localeName);
 	font = Font::Allocate(fp);
 
 	ascent = static_cast<unsigned int>(surface.Ascent(font.get()));
@@ -146,6 +146,8 @@ ViewStyle::ViewStyle(const ViewStyle &source) : markers(MARKER_MAX + 1), indicat
 	wrapVisualFlagsLocation = source.wrapVisualFlagsLocation;
 	wrapVisualStartIndent = source.wrapVisualStartIndent;
 	wrapIndentMode = source.wrapIndentMode;
+
+	localeName = source.localeName;
 }
 
 ViewStyle::~ViewStyle() {
@@ -282,9 +284,8 @@ void ViewStyle::Init(size_t stylesSize_) {
 	wrapVisualFlagsLocation = 0;
 	wrapVisualStartIndent = 0;
 	wrapIndentMode = SC_WRAPINDENT_FIXED;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+
 	localeName = localeNameDefault;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void ViewStyle::Refresh(Surface &surface, int tabInChars) {
@@ -410,12 +411,10 @@ void ViewStyle::SetStyleFontName(int styleIndex, const char *name) {
 	styles[styleIndex].fontName = fontNames.Save(name);
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 void ViewStyle::SetFontLocaleName(const char *name) {
 	fontsValid = false;
 	localeName = name;
 }
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 bool ViewStyle::ProtectionActive() const noexcept {
 	return someStylesProtected;

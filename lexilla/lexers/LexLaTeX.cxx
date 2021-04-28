@@ -30,6 +30,7 @@
 #include "LexerBase.h"
 
 using namespace Scintilla;
+using namespace Lexilla;
 
 using namespace std;
 

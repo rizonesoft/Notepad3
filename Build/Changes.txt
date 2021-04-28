@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.427.(build_#) (2021-04-27)
+Current BETA/RC Version 5.21.428.(build_#) (2021-04-28)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.428.1]- Custom ChooseColor resource definition.
 [.426.1]- Prepare Application Manifest for to grant Identity for non-package desktop apps.
 [.425.1]- Add file/dir exists/not-found to hyperlink tooltip (if file-url).
 [.422.1]- Support Scintilla's new feature: indicator stroke width.

@@ -52,7 +52,7 @@ constexpr int abs_i(const int i) noexcept
 }
 
 constexpr bool IsWordCharEx(int ch) noexcept {
-    return Scintilla::iswordchar(ch) || ch >= 0x80;
+    return Lexilla::iswordchar(ch) || ch >= 0x80;
 }
 
 constexpr bool IsABlankOrTab(const int ch) noexcept
@@ -94,7 +94,7 @@ constexpr bool IsLineEndUTF8(const unsigned char ch0,
 }
 
 constexpr bool IsIdentifierChar(int ch) noexcept {
-    return Scintilla::IsAlphaNumeric(ch) || ch == '_';
+    return Lexilla::IsAlphaNumeric(ch) || ch == '_';
 }
 
 constexpr bool IsIdentifierCharEx(int ch) noexcept {
@@ -109,14 +109,14 @@ constexpr bool IsIdentifierStartEx(int ch) noexcept {
     return IsIdentifierStart(ch) || ch >= 0x80;
 }
 
-constexpr int IsNumber(const Scintilla::StyleContext& sc)
+constexpr int IsNumber(const Lexilla::StyleContext& sc)
 {
     return  ((sc.ch >= '0') && (sc.ch <= '9')) ||
             (((sc.ch == '+') || (sc.ch == '-')) && ((sc.chNext >= '0') && (sc.chNext <= '9')));
 }
 
 constexpr bool IsNumberStart(int ch, int chNext) noexcept {
-    return Scintilla::IsADigit(ch) || (ch == '.' && Scintilla::IsADigit(chNext));
+    return Lexilla::IsADigit(ch) || (ch == '.' && Lexilla::IsADigit(chNext));
 }
 
 constexpr bool IsNumberContinue(int chPrev, int ch, int chNext) noexcept {
@@ -139,17 +139,17 @@ constexpr bool IsDecimalNumberEx(int chPrev, int ch, int chNext) noexcept {
 }
 
 
-constexpr int IsNumHex(const Scintilla::StyleContext& sc) noexcept
+constexpr int IsNumHex(const Lexilla::StyleContext& sc) noexcept
 {
     return (sc.ch == '0') && (sc.chNext == 'x') || (sc.chNext == 'X');
 }
 
-constexpr int IsNumBinary(const Scintilla::StyleContext& sc) noexcept
+constexpr int IsNumBinary(const Lexilla::StyleContext& sc) noexcept
 {
     return (sc.ch == '0') && (sc.chNext == 'b') || (sc.chNext == 'B');
 }
 
-constexpr int IsNumOctal(const Scintilla::StyleContext& sc)
+constexpr int IsNumOctal(const Lexilla::StyleContext& sc)
 {
     return (sc.ch == '0') && (sc.chNext == 'o') || (sc.chNext == 'O');
 }
@@ -163,9 +163,9 @@ constexpr bool IsJumpLabelNextChar(int chNext) noexcept {
     return AnyOf(chNext, '\0', '/', 'f', 'w', 'd', 'i', 's', 'r');
 }
 
-inline int IsNumExponent(const Scintilla::StyleContext& sc)
+inline int IsNumExponent(const Lexilla::StyleContext& sc)
 {
-    return Scintilla::IsADigit(sc.ch) && ((sc.chNext == 'e') || (sc.chNext == 'E'));
+    return Lexilla::IsADigit(sc.ch) && ((sc.chNext == 'e') || (sc.chNext == 'E'));
 }
 
 inline void TrimIdentifier(const char* input, char* output)

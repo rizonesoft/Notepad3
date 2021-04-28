@@ -28,7 +28,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 static void ColouriseVHDLDoc(
   Sci_PositionU startPos,

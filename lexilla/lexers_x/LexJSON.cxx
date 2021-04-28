@@ -30,6 +30,7 @@
 #include "CharSetX.h"
 #include "SciXLexer.h"
 
+using namespace Lexilla;
 using namespace Scintilla;
 
 static const char *const JSONWordListDesc[] = {

@@ -69,7 +69,7 @@
 
     <h1>Lexilla Documentation</h1>
 
-    <p>Last edited 5 March 2021 NH</p>
+    <p>Last edited 21 April 2021 NH</p>
 
     <h2>Introduction</h2>
 
@@ -95,8 +95,9 @@
     <code>LexerFactoryFunction <span class="name">GetLexerFactory</span>(unsigned int index)</code><br />
     <code>ILexer5 *<span class="name">CreateLexer</span>(const char *name)</code><br />
     <code>const char *<span class="name">LexerNameFromID</span>(int identifier)</code><br />
+    <code>const char *<span class="name">GetLibraryPropertyNames</span>()</code><br />
     <code>void <span class="name">SetLibraryProperty</span>(const char *key, const char *value)</code><br />
-    <code>const char *<span class="name">GetLibraryPropertyNames</span>()</code>
+    <code>const char *<span class="name">GetNameSpace</span>()</code>
     </p>
   
     <p><span class="name">ILexer5</span> is defined by Scintilla in include/ILexer.h as the interface provided by lexers which is called by Scintilla.
@@ -119,7 +120,7 @@
     <a class="seealso" href="ScintillaDoc.html#SCI_SETILEXER">SCI_SETILEXER</a>.</p>
   
     <p><span class="name">LexerNameFromID</span> is an optional function that returns the name for a lexer identifier.
-    <code>LexerNameFromID(SCLEX_CPP) -> "cpp"</code>.
+    <code>LexerNameFromID(SCLEX_CPP) &rarr; "cpp"</code>.
     This is a temporary affordance to make it easier to convert applications to using Lexilla.
     Applications should move to using lexer names instead of IDs.
     This function is deprecated, showing warnings with some compilers, and will be removed in a future version of Lexilla.</p>
@@ -133,6 +134,11 @@
     If a library implements SetLibraryProperty then it may also provide a set of valid property names with
     GetLibraryPropertyNames that can then be used by the application to define configuration file property
     names or user interface elements for options dialogs.</p>
+  
+    <p><span class="name">GetNameSpace</span> is an optional function that returns a namespace string
+    that can be used to disambiguate lexers with the same name from different providers.
+    If Lexilla and XMLLexers both provide a "cpp" lexer than a request for "cpp" may be satisfied by either but "xmllexers.cpp"
+    unambiguously refers to the "cpp" lexer from XMLLexers.</p>
   
     <h2>Building Lexilla</h2>
 

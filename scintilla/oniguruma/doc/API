@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.7  2021/03/03
+Oniguruma API  Version 7.0.0  2021/04/26
 
 #include <oniguruma.h>
 
@@ -20,7 +20,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
   error:  error code < 0
 
 
-# int onig_error_code_to_str(UChar* err_buf, int err_code, ...)
+# int onig_error_code_to_str(UChar* err_buf, OnigPos err_code, ...)
 
   Get error message string.
   If this function is used for onig_new(),
@@ -322,8 +322,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
 
 
 
-# int onig_search(regex_t* reg, const UChar* str, const UChar* end, const UChar* start,
-                   const UChar* range, OnigRegion* region, OnigOptionType option)
+# OnigPos onig_search(regex_t* reg, const UChar* str, const UChar* end, const UChar* start, const UChar* range, OnigRegion* region, OnigOptionType option)
 
   Search string and return search result and matching region.
   Do not pass invalid byte string in the regex character encoding.
@@ -367,9 +366,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
       will be shared with callout.
 
 
-# int onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
-                   const UChar* start, const UChar* range, OnigRegion* region,
-                   OnigOptionType option, OnigMatchParam* mp)
+# OnigPos onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end, const UChar* start, const UChar* range, OnigRegion* region, OnigOptionType option, OnigMatchParam* mp)
 
   Search string and return search result and matching region.
   Do not pass invalid byte string in the regex character encoding.
@@ -379,8 +376,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
   8 mp: match parameter values (match_stack_limit, retry_limit_in_match, retry_limit_in_search)
 
 
-# int onig_match(regex_t* reg, const UChar* str, const UChar* end, const UChar* at,
-                 OnigRegion* region, OnigOptionType option)
+# OnigPos onig_match(regex_t* reg, const UChar* str, const UChar* end, const UChar* at, OnigRegion* region, OnigOptionType option)
 
   Match string and return result and matching region.
   Do not pass invalid byte string in the regex character encoding.
@@ -409,9 +405,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
     ONIG_OPTION_CALLBACK_EACH_MATCH Call back for all successful matches.
 
 
-# int onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end,
-                            const UChar* at, OnigRegion* region,
-                            OnigOptionType option, OnigMatchParam* mp)
+# OnigPos onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end, const UChar* at, OnigRegion* region, OnigOptionType option, OnigMatchParam* mp)
 
   Match string and return result and matching region.
   Do not pass invalid byte string in the regex character encoding.
@@ -423,7 +417,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
 
 # int onig_scan(regex_t* reg, const UChar* str, const UChar* end,
                 OnigRegion* region, OnigOptionType option,
-                int (*scan_callback)(int, int, OnigRegion*, void*),
+                int (*scan_callback)(int, OnigPos, OnigRegion*, void*),
                 void* callback_arg)
 
   Scan string and callback with matching region.
@@ -525,7 +519,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
   2 at:  index of regex array (zero origin)
 
 
-# int onig_regset_search(OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegSetLead lead, OnigOptionType option, int* rmatch_pos)
+# int onig_regset_search(OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range, OnigRegSetLead lead, OnigOptionType option, OnigPos* rmatch_pos)
 
   Perform a search with regset.
 
@@ -558,7 +552,7 @@ Oniguruma API  Version 6.9.7  2021/03/03
     In most cases, ONIG_REGSET_POSITION_LEAD seems to be faster.
 
 
-# int onig_regset_search_with_param(OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range,  OnigRegSetLead lead, OnigOptionType option, OnigMatchParam* mps[], int* rmatch_pos)
+# int onig_regset_search_with_param(OnigRegSet* set, const OnigUChar* str, const OnigUChar* end, const OnigUChar* start, const OnigUChar* range,  OnigRegSetLead lead, OnigOptionType option, OnigMatchParam* mps[], OnigPos* rmatch_pos)
 
   Perform a search with regset and match-params.
 

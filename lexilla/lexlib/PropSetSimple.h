@@ -8,7 +8,7 @@
 #ifndef PROPSETSIMPLE_H
 #define PROPSETSIMPLE_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 class PropSetSimple {
 	void *impl;

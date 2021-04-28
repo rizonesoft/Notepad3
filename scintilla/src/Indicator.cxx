@@ -74,17 +74,19 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 
 			const int width = std::min(4000, static_cast<int>(rcSquiggle.Width()));
 			RGBAImage image(width, 3, 1.0, nullptr);
-			enum { alphaFull = 0xff, alphaSide = 0x2f, alphaSide2=0x5f };
+			constexpr unsigned int alphaFull = 0xff;
+			constexpr unsigned int alphaSide = 0x2f;
+			constexpr unsigned int alphaSide2 = 0x5f;
 			for (int x = 0; x < width; x++) {
 				if (x%2) {
 					// Two halfway columns have a full pixel in middle flanked by light pixels
-					image.SetPixel(x, 0, sacDraw.fore, alphaSide);
-					image.SetPixel(x, 1, sacDraw.fore, alphaFull);
-					image.SetPixel(x, 2, sacDraw.fore, alphaSide);
+					image.SetPixel(x, 0, ColourAlpha(sacDraw.fore, alphaSide));
+					image.SetPixel(x, 1, ColourAlpha(sacDraw.fore, alphaFull));
+					image.SetPixel(x, 2, ColourAlpha(sacDraw.fore, alphaSide));
 				} else {
 					// Extreme columns have a full pixel at bottom or top and a mid-tone pixel in centre
-					image.SetPixel(x, (x % 4) ? 0 : 2, sacDraw.fore, alphaFull);
-					image.SetPixel(x, 1, sacDraw.fore, alphaSide2);
+					image.SetPixel(x, (x % 4) ? 0 : 2, ColourAlpha(sacDraw.fore, alphaFull));
+					image.SetPixel(x, 1, ColourAlpha(sacDraw.fore, alphaSide2));
 				}
 			}
 			surface->DrawRGBAImage(rcSquiggle, image.GetWidth(), image.GetHeight(), image.Pixels());
@@ -207,13 +209,13 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 			// Draw horizontal lines top and bottom
 			for (int x=0; x<width; x++) {
 				for (int y = 0; y< height; y += height - 1) {
-					image.SetPixel(x, y, sacDraw.fore, ((x + y) % 2) ? outlineAlpha : fillAlpha);
+					image.SetPixel(x, y, ColourAlpha(sacDraw.fore, ((x + y) % 2) ? outlineAlpha : fillAlpha));
 				}
 			}
 			// Draw vertical lines left and right
 			for (int y = 1; y<height; y++) {
 				for (int x=0; x<width; x += width-1) {
-					image.SetPixel(x, y, sacDraw.fore, ((x + y) % 2) ? outlineAlpha : fillAlpha);
+					image.SetPixel(x, y, ColourAlpha(sacDraw.fore, ((x + y) % 2) ? outlineAlpha : fillAlpha));
 				}
 			}
 			surface->DrawRGBAImage(rcBox, image.GetWidth(), image.GetHeight(), image.Pixels());

@@ -35,7 +35,7 @@
 #include "regint.h"
 
 extern UChar*
-onig_error_code_to_format(int code)
+onig_error_code_to_format(OnigPos code)
 {
   char *p;
 
@@ -268,7 +268,7 @@ static int to_ascii(OnigEncoding enc, UChar *s, UChar *end,
 
 
 extern int
-onig_is_error_code_needs_param(int code)
+onig_is_error_code_needs_param(OnigPos code)
 {
   switch (code) {
   case ONIGERR_UNDEFINED_NAME_REFERENCE:
@@ -288,7 +288,7 @@ onig_is_error_code_needs_param(int code)
 #define MAX_ERROR_PAR_LEN   30
 
 extern int ONIG_VARIADIC_FUNC_ATTR
-onig_error_code_to_str(UChar* s, int code, ...)
+onig_error_code_to_str(UChar* s, OnigPos code, ...)
 {
   UChar *p, *q;
   OnigErrorInfo* einfo;

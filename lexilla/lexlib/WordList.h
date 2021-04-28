@@ -8,7 +8,7 @@
 #ifndef WORDLIST_H
 #define WORDLIST_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 /**
  */

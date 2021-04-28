@@ -30,6 +30,7 @@
 #include "DefaultLexer.h"
 
 using namespace Scintilla;
+using namespace Lexilla;
 
 // Info for HERE document handling from perldata.pod (reformatted):
 // ----------------------------------------------------------------

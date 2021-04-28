@@ -455,9 +455,7 @@ begin
   RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
-  RegDeleteValue(HKLM, APPH, 'Path');
-  RegDeleteValue(HKLM, APPH, '');
-  RegDeleteKeyIfEmpty(HKLM, APPH);
+  RegDeleteKeyIncludingSubkeys(HKLM, APPH);
 end;
 
 

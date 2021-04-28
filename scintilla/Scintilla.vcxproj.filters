@@ -183,12 +183,6 @@
     <ClCompile Include="src\CharacterSet.cxx">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="oniguruma\src\regposerr.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regposix.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Geometry.cxx">
       <Filter>src</Filter>
     </ClCompile>
@@ -342,9 +336,6 @@
       <Filter>oniguruma\src</Filter>
     </ClInclude>
     <ClInclude Include="oniguruma\src\st.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
-    <ClInclude Include="oniguruma\src\onigposix.h">
       <Filter>oniguruma\src</Filter>
     </ClInclude>
     <ClInclude Include="src\CharacterCategory.h">

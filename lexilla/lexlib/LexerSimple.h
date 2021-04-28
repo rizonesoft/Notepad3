@@ -8,7 +8,7 @@
 #ifndef LEXERSIMPLE_H
 #define LEXERSIMPLE_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 // A simple lexer with no state
 class LexerSimple : public LexerBase {
@@ -17,8 +17,8 @@ class LexerSimple : public LexerBase {
 public:
 	explicit LexerSimple(const LexerModule *module_);
 	const char * SCI_METHOD DescribeWordListSets() override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) override;
 	// ILexer5 methods
 	const char * SCI_METHOD GetName() override;
 	int SCI_METHOD  GetIdentifier() override;

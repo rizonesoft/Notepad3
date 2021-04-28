@@ -20,7 +20,7 @@
 #include "LexerBase.h"
 #include "LexerNoExceptions.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 Sci_Position SCI_METHOD LexerNoExceptions::PropertySet(const char *key, const char *val) {
 	try {
@@ -40,7 +40,7 @@ Sci_Position SCI_METHOD LexerNoExceptions::WordListSet(int n, const char *wl) {
 	return -1;
 }
 
-void SCI_METHOD LexerNoExceptions::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerNoExceptions::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) {
 	try {
 		Accessor astyler(pAccess, &props);
 		Lexer(startPos, lengthDoc, initStyle, pAccess, astyler);
@@ -50,7 +50,7 @@ void SCI_METHOD LexerNoExceptions::Lex(Sci_PositionU startPos, Sci_Position leng
 		pAccess->SetErrorStatus(SC_STATUS_FAILURE);
 	}
 }
-void SCI_METHOD LexerNoExceptions::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) {
+void SCI_METHOD LexerNoExceptions::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) {
 	try {
 		Accessor astyler(pAccess, &props);
 		Folder(startPos, lengthDoc, initStyle, pAccess, astyler);
