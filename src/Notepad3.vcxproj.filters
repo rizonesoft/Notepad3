@@ -590,7 +590,7 @@
     <ClInclude Include="win\dlgs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="win\ColorDlg.h">
+    <ClInclude Include="..\language\ColorDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

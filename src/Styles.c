@@ -3525,6 +3525,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 
     CHOOSECOLOR cc = { sizeof(CHOOSECOLOR) };
     cc.hwndOwner = hwnd;
+    cc.hInstance = (HWND)Globals.hLngResContainer; // Globals.hInstance;
     cc.rgbResult = dRGBResult;
     cc.lpCustColors = &g_colorCustom[0];
     cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
@@ -3533,6 +3534,10 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
     cc.Flags |= CC_ENABLEHOOK;
     cc.lpfnHook = (LPCCHOOKPROC)ColorDialogHookProc;
     cc.lCustData = (LPARAM)NULL;
+
+    // Color.dlg resource template
+    cc.Flags |= CC_ENABLETEMPLATE | CC_ENABLETEMPLATEHANDLE;
+    cc.lpTemplateName = MAKEINTRESOURCEW(IDD_MUI_SYSCOLOR_DLG);
 
     if (!ChooseColor(&cc)) {
         return false;

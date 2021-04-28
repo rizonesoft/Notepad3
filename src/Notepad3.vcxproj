@@ -752,6 +752,7 @@
     <ClCompile Include="Styles.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\language\ColorDlg.h" />
     <ClInclude Include="crypto\crypto.h" />
     <ClInclude Include="crypto\rijndael-alg-fst.h" />
     <ClInclude Include="crypto\rijndael-api-fst.h" />
@@ -823,7 +824,6 @@
     <ClInclude Include="TypeDefs.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="VersionEx.h" />
-    <ClInclude Include="win\ColorDlg.h" />
     <ClInclude Include="win\dlgs.h" />
   </ItemGroup>
   <ItemGroup>
