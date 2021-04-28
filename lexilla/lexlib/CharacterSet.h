@@ -8,7 +8,7 @@
 #ifndef CHARACTERSET_H
 #define CHARACTERSET_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 class CharacterSet {
 	int size;

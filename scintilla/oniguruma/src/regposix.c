@@ -66,7 +66,7 @@ typedef struct {
 } O2PERR;
 
 static int
-onig2posix_error_code(int code)
+onig2posix_error_code(OnigPos code)
 {
   static const O2PERR o2p[] = {
     { ONIG_MISMATCH,                                      REG_NOMATCH },
@@ -147,11 +147,13 @@ onig2posix_error_code(int code)
   };
 
   int i;
+  int icode;
 
   if (code >= 0) return 0;
 
+  icode = (int )code;
   for (i = 0; i < (int )(sizeof(o2p) / sizeof(o2p[0])); i++) {
-    if (code == o2p[i].onig_err)
+    if (icode == o2p[i].onig_err)
       return o2p[i].posix_err;
   }
 
@@ -197,6 +199,7 @@ onig_posix_regexec(onig_posix_regex_t* reg, const char* str, size_t nmatch,
                    onig_posix_regmatch_t pmatch[], int posix_options)
 {
   int r, i, len;
+  OnigPos pos;
   UChar* end;
   onig_posix_regmatch_t* pm;
   OnigOptionType options;
@@ -221,22 +224,22 @@ onig_posix_regexec(onig_posix_regex_t* reg, const char* str, size_t nmatch,
 
   ENC_STRING_LEN(ONIG_C(reg)->enc, str, len);
   end = (UChar* )(str + len);
-  r = onig_search(ONIG_C(reg), (UChar* )str, end, (UChar* )str, end,
-                  (OnigRegion* )pm, options);
+  pos = onig_search(ONIG_C(reg), (UChar* )str, end, (UChar* )str, end,
+                    (OnigRegion* )pm, options);
 
-  if (r >= 0) {
+  if (pos >= 0) {
     r = 0; /* Match */
     if (pm != pmatch && pm != NULL) {
       xmemcpy(pmatch, pm, sizeof(onig_posix_regmatch_t) * nmatch);
     }
   }
-  else if (r == ONIG_MISMATCH) {
+  else if (pos == ONIG_MISMATCH) {
     r = REG_NOMATCH;
     for (i = 0; i < (int )nmatch; i++)
       pmatch[i].rm_so = pmatch[i].rm_eo = ONIG_REGION_NOTPOS;
   }
   else {
-    r = onig2posix_error_code(r);
+    r = onig2posix_error_code(pos);
   }
 
   if (pm != pmatch && pm != NULL)

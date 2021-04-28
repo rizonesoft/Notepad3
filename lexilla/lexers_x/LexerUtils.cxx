@@ -13,10 +13,9 @@
 #include "StringUtils.h"
 #include "LexerUtils.h"
 
-//using namespace Scintilla;
+//using namespace Lexilla;
 
-
-namespace Scintilla {
+namespace Lexilla {
 
 
     void BacktrackToStart(const LexAccessor& styler, int stateMask, Sci_PositionU& startPos, Sci_Position& lengthDoc, int& initStyle) noexcept {

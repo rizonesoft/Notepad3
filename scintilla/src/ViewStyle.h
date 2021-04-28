@@ -37,9 +37,7 @@ public:
 	FontRealised &operator=(const FontRealised &) = delete;
 	FontRealised &operator=(FontRealised &&) = delete;
 	virtual ~FontRealised() noexcept = default;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	void Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs, const char *localeName);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 };
 
 enum class IndentView {none, real, lookForward, lookBoth};
@@ -182,9 +180,8 @@ public:
 	int wrapVisualFlagsLocation;
 	int wrapVisualStartIndent;
 	int wrapIndentMode; // SC_WRAPINDENT_FIXED, _SAME, _INDENT
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+
 	std::string localeName;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	ViewStyle();
 	ViewStyle(const ViewStyle &source);
@@ -202,9 +199,7 @@ public:
 	void ResetDefaultStyle();
 	void ClearStyles();
 	void SetStyleFontName(int styleIndex, const char *name);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	void SetFontLocaleName(const char *name);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	bool ProtectionActive() const noexcept;
 	int ExternalMarginWidth() const noexcept;
 	int MarginFromLocation(Point pt) const noexcept;

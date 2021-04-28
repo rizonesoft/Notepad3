@@ -20,7 +20,7 @@
 #include "LexerModule.h"
 #include "LexerBase.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 static const char styleSubable[] = { 0 };
 
@@ -44,7 +44,7 @@ void SCI_METHOD LexerBase::Release() {
 }
 
 int SCI_METHOD LexerBase::Version() const {
-	return lvRelease5;
+	return Scintilla::lvRelease5;
 }
 
 const char * SCI_METHOD LexerBase::PropertyNames() {

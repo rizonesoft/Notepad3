@@ -483,6 +483,7 @@ void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 		CodePage(),
 		vs.styles[ctStyle].characterSet,
 		vs.technology,
+		vs.localeName.c_str(),
 		wMain);
 	// If the call-tip window would be out of the client
 	// space

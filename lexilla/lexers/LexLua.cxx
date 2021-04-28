@@ -28,7 +28,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
 // Test for [=[ ... ]=] delimiters, returns 0 if it's only a [ or ],
 // return 1 for [[ or ]], returns >=2 for [=[ or ]=] and so on.

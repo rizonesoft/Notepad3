@@ -8,10 +8,10 @@
 #ifndef LEXERBASE_H
 #define LEXERBASE_H
 
-namespace Scintilla {
+namespace Lexilla {
 
 // A simple lexer with no state
-class LexerBase : public ILexer5 {
+class LexerBase : public Scintilla::ILexer5 {
 protected:
 	const LexicalClass *lexClasses;
 	size_t nClasses;
@@ -29,8 +29,8 @@ public:
 	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
 	const char * SCI_METHOD DescribeWordListSets() override;
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override = 0;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override = 0;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) override = 0;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, Scintilla::IDocument *pAccess) override = 0;
 	void * SCI_METHOD PrivateCall(int operation, void *pointer) override;
 	int SCI_METHOD LineEndTypesSupported() override;
 	int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override;

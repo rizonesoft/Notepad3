@@ -131,6 +131,14 @@ int main(int argc, char *argv[]) {
 			} else {
 				printf("Set property not supported.\n");
 			}
+
+			GetNameSpaceFn libraryNameSpace = (GetLibraryPropertyNamesFn)FindSymbol(lexillaLibrary, LEXILLA_GETNAMESPACE);
+			if (libraryNameSpace) {
+				const char *nameSpace = libraryNameSpace();
+				printf("Name space '%s'.\n", nameSpace);
+			} else {
+				printf("Name space not supported.\n");
+			}
 		}
 	}
 }

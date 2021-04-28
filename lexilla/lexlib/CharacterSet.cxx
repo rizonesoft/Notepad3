@@ -11,9 +11,9 @@
 
 #include "CharacterSet.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
-namespace Scintilla {
+namespace Lexilla {
 
 int CompareCaseInsensitive(const char *a, const char *b) noexcept {
 	while (*a && *b) {

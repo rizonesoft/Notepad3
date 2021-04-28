@@ -17,9 +17,9 @@
 #include "LexAccessor.h"
 #include "Accessor.h"
 
-using namespace Scintilla;
+using namespace Lexilla;
 
-Accessor::Accessor(IDocument *pAccess_, PropSetSimple *pprops_) : LexAccessor(pAccess_), pprops(pprops_) {
+Accessor::Accessor(Scintilla::IDocument *pAccess_, PropSetSimple *pprops_) : LexAccessor(pAccess_), pprops(pprops_) {
 }
 
 int Accessor::GetPropertyInt(const char *key, int defaultValue) const {

@@ -29,7 +29,9 @@
 #include "SciXLexer.h"
 
 
+using namespace Lexilla;
 using namespace Scintilla;
+
 
 // Options used for LexerRust
 struct OptionsAHKL

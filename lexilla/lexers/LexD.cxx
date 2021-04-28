@@ -30,6 +30,7 @@
 #include "DefaultLexer.h"
 
 using namespace Scintilla;
+using namespace Lexilla;
 
 /* Nested comments require keeping the value of the nesting level for every
    position in the document.  But since scintilla always styles line by line,

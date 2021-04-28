@@ -42,6 +42,7 @@ style.simple.1=fore:#FF0000
 #include "LexerBase.h"
 
 using namespace Scintilla;
+using namespace Lexilla;
 
 class LexerSimple : public LexerBase {
 public:
@@ -111,6 +112,10 @@ EXPORT_FUNCTION Scintilla::ILexer5* CALLING_CONVENTION CreateLexer(const char *n
 		return LexerSimple::LexerFactorySimple();
 	}
 	return nullptr;
+}
+
+EXPORT_FUNCTION const char * CALLING_CONVENTION GetNameSpace() {
+	return "example";
 }
 
 }
