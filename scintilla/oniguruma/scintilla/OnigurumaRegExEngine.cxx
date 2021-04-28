@@ -42,7 +42,7 @@
 #ifdef ONIG_ESCAPE_UCHAR_COLLISION
 #undef ONIG_ESCAPE_UCHAR_COLLISION
 #endif
-#include "../oniguruma/src/oniguruma.h"   // Oniguruma - Regular Expression Engine (v6.9.2)
+#include "../oniguruma/src/oniguruma.h"   // Oniguruma - Regular Expression Engine
 // ---------------------------------------------------------------
 
 #define UCharPtr(pchar) reinterpret_cast<OnigUChar*>(pchar)
@@ -76,10 +76,11 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   onigOptions = ONIG_OPTION_DEFAULT;
 
   // Notepad3 forced options
+  ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_POSIX_REGION);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_SINGLELINE);
-  ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_FIND_LONGEST);
 
   //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
@@ -137,6 +138,7 @@ public:
   {
     m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
     onig_initialize(s_UsedEncodingsTypes, _ARRAYSIZE(s_UsedEncodingsTypes));
+    ///onig_set_default_syntax(ONIG_SYNTAX_ONIGURUMA); // std is: ONIG_SYNTAX_ONIGURUMA
     onig_region_init(&m_Region);
   }
 
@@ -322,7 +324,7 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
   auto const rangeBegPtr = UCharCPtr(doc->RangePointer(rangeBeg, rangeLen));
   auto const rangeEndPtr = UCharCPtr(doc->RangePointer(rangeEnd, 0));
 
-  OnigPosition result = ONIG_MISMATCH;
+  OnigPos result = ONIG_MISMATCH;
   try {
     onig_region_free(&m_Region, 0);  /* 1:free self, 0:free contents only */
     onig_region_init(&m_Region);
@@ -693,11 +695,11 @@ public:
     onig_end();
   }
 
-  OnigPosition Find(const OnigUChar *pattern, const OnigUChar *document, const bool caseSensitive, int *matchLen_out = nullptr);
+  OnigPos Find(const OnigUChar *pattern, const OnigUChar *document, const bool caseSensitive, int *matchLen_out = nullptr);
 
-  const OnigPosition GetMatchPos() const { return m_MatchPos; };
-  const OnigPosition GetMatchLen() const { return m_MatchLen; };
-  const OnigRegion& GetRegion() const { return m_Region; };
+  constexpr OnigPos GetMatchPos() const { return m_MatchPos; };
+  constexpr OnigPos GetMatchLen() const { return m_MatchLen; };
+  const OnigRegion & GetRegion() const { return m_Region; };
 
 private:
 
@@ -713,23 +715,23 @@ private:
 
   OnigUChar       m_ErrorInfo[ONIG_MAX_ERROR_MESSAGE_LEN];
 
-  OnigPosition    m_MatchPos;
-  OnigPosition    m_MatchLen;
+  OnigPos         m_MatchPos;
+  OnigPos         m_MatchLen;
 
 };
 // ============================================================================
 
 
-OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* document, const bool caseSensitive, int* matchLen_out /*=nullptr*/)
+OnigPos SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* document, const bool caseSensitive, int* matchLen_out /*=nullptr*/)
 {
-  auto const patternLen = (pattern) ? OnigPosition(_mbslen(pattern)) : 0;
+  auto const patternLen = (pattern) ? OnigPos(_mbslen(pattern)) : 0;
   if (patternLen == 0) {
-    return OnigPosition(-1);
+    return OnigPos(-1);
   }
 
-  auto const stringLen = (document) ? OnigPosition(_mbslen(document)) : 0;
+  auto const stringLen = (document) ? OnigPos(_mbslen(document)) : 0;
   if (stringLen == 0) {
-    return OnigPosition(-1);
+    return OnigPos(-1);
   }
 
   // init search options
@@ -748,7 +750,7 @@ OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* 
 
     if (res != ONIG_NORMAL) {
       //onig_error_code_to_str(m_ErrorInfo, res, &einfo);
-      return OnigPosition(-111);
+      return OnigPos(-111);
     }
 
     onig_region_free(&m_Region, 0);
@@ -760,16 +762,16 @@ OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* 
     const UChar* rangeEnd = strgEnd;
 
     // start search
-    OnigPosition result = onig_search(m_RegExpr, strgBeg, strgEnd,
+    OnigPos result = onig_search(m_RegExpr, strgBeg, strgEnd,
       rangeBeg, rangeEnd, &m_Region, m_Options);
 
     if (result < ONIG_MISMATCH) {
       //onig_error_code_to_str(m_ErrorInfo, result);
-      return OnigPosition(-3);
+      return OnigPos(-3);
     }
 
-    m_MatchPos = OnigPosition(ONIG_MISMATCH); // not found
-    m_MatchLen = OnigPosition(0);
+    m_MatchPos = OnigPos(ONIG_MISMATCH); // not found
+    m_MatchLen = OnigPos(0);
 
     if (result >= 0) // found
     {
@@ -787,12 +789,12 @@ OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* 
     {
       //onig_error_code_to_str(m_ErrorInfo, result);
       m_MatchPos = result;
-      m_MatchLen = OnigPosition(0);
+      m_MatchLen = OnigPos(0);
     }
   }
   catch (...) {
     // -1 is normally used for not found, -666 is used here for exception
-    return OnigPosition(-666);
+    return OnigPos(-666);
   }
 
   if (matchLen_out) {
