@@ -120,7 +120,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 9 April 2021 NH</p>
+    <p>Last edited 20 April 2021 NH</p>
 
     <p style="background:#90F0C0">Scintilla 5 has moved the lexers from Scintilla into a new
     <a href="Lexilla.html">Lexilla</a> project.<br />
@@ -2970,6 +2970,9 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_STYLESETHOTSPOT">SCI_STYLESETHOTSPOT(int style, bool
     hotspot)</a><br />
     <a class="message" href="#SCI_STYLEGETHOTSPOT">SCI_STYLEGETHOTSPOT(int style) &rarr; bool</a><br />
+    <a class="message" href="#SCI_SETFONTLOCALE">SCI_SETFONTLOCALE(&lt;unused&gt;, const char
+    *fontName)</a><br />
+    <a class="message" href="#SCI_GETFONTLOCALE">SCI_GETFONTLOCALE(&lt;unused&gt;, char *fontName) &rarr; int</a><br />
     </code>
 
     <p><b id="SCI_STYLERESETDEFAULT">SCI_STYLERESETDEFAULT</b><br />
@@ -3297,6 +3300,15 @@ struct Sci_TextToFind {
          </tr>
        </tbody>
      </table>
+
+    <p><b id="SCI_SETFONTLOCALE">SCI_SETFONTLOCALE(&lt;unused&gt;, const char *localeName)</b><br />
+    <b id="SCI_GETFONTLOCALE">SCI_GETFONTLOCALE(&lt;unused&gt;, char *localeName NUL-terminated) &rarr; int</b><br />
+     These messages set the locale used for font selection with language-dependent glyphs.
+     It may, depending on platform and other circumstances influence the display of text, so setting "zh-Hant" may result in traditional
+     Chinese display and "zh-Hans" may result in simplified Chinese display.
+     It is currently only implemented for Win32 using DirectWrite where the value is passed as the localeName argument to CreateTextFormat.
+     The default value is US English "en-us".
+    </p>
 
     <h2 id="CaretAndSelectionStyles">Caret, selection, and hotspot styles</h2>
 
@@ -4121,7 +4133,11 @@ struct Sci_TextToFind {
     <code>SC_TECHNOLOGY_DIRECTWRITEDC</code> differs from
     <code>SC_TECHNOLOGY_DIRECTWRITE</code> by using DirectWrite to draw into a GDI DC.
     Since Direct2D buffers drawing, Scintilla's buffering can be turned off with
-    <code>SCI_SETBUFFEREDDRAW(0)</code>.</p>
+    <code>SCI_SETBUFFEREDDRAW(0)</code>.
+    When using DirectWrite, you can use
+    <a class="message" href="#SCI_SETFONTLOCALE"><code>SCI_SETFONTLOCALE</code></a>
+    to set an appropriate font locale to draw text with expected language-dependent glyphs.
+    </p>
 
     <p><b id="SCI_SETFONTQUALITY">SCI_SETFONTQUALITY(int fontQuality)</b><br />
      <b id="SCI_GETFONTQUALITY">SCI_GETFONTQUALITY &rarr; int</b><br />

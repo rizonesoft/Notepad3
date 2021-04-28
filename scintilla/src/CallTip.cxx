@@ -272,7 +272,9 @@ void CallTip::MouseClick(Point pt) noexcept {
 PRectangle CallTip::CallTipStart(Sci::Position pos, Point pt, int textHeight, const char *defn,
                                  const char *faceName, int size,
                                  int codePage_, int characterSet,
-								 int technology, const Window &wParent) {
+                                 int technology,
+                                 const char *localeName,
+                                 const Window &wParent) {
 	clickPlace = 0;
 	val = defn;
 	codePage = codePage_;
@@ -283,7 +285,8 @@ PRectangle CallTip::CallTipStart(Sci::Position pos, Point pt, int textHeight, co
 	inCallTipMode = true;
 	posStartCallTip = pos;
 	const XYPOSITION deviceHeight = static_cast<XYPOSITION>(surfaceMeasure->DeviceHeightFont(size));
-	const FontParameters fp(faceName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, SC_WEIGHT_NORMAL, false, 0, technology, characterSet);
+	const FontParameters fp(faceName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, SC_WEIGHT_NORMAL,
+		false, 0, technology, characterSet, localeName);
 	font = Font::Allocate(fp);
 	// Look for multiple lines in the text
 	// Only support \n here - simply means container must avoid \r!

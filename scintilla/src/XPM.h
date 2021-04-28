@@ -18,9 +18,9 @@ class XPM {
 	int width=1;
 	int nColours=1;
 	std::vector<unsigned char> pixels;
-	ColourDesired colourCodeTable[256];
+	ColourAlpha colourCodeTable[256];
 	char codeTransparent=' ';
-	ColourDesired ColourFromCode(int ch) const noexcept;
+	ColourAlpha ColourFromCode(int ch) const noexcept;
 	void FillRun(Surface *surface, int code, int startX, int y, int x) const;
 public:
 	explicit XPM(const char *textForm);
@@ -36,7 +36,7 @@ public:
 	void Draw(Surface *surface, const PRectangle &rc);
 	int GetHeight() const noexcept { return height; }
 	int GetWidth() const noexcept { return width; }
-	void PixelAt(int x, int y, ColourDesired &colour, bool &transparent) const noexcept;
+	ColourAlpha PixelAt(int x, int y) const noexcept;
 private:
 	static std::vector<const char *>LinesFormFromTextForm(const char *textForm);
 };
@@ -65,7 +65,7 @@ public:
 	float GetScaledWidth() const noexcept { return width / scale; }
 	int CountBytes() const noexcept;
 	const unsigned char *Pixels() const noexcept;
-	void SetPixel(int x, int y, ColourDesired colour, int alpha) noexcept;
+	void SetPixel(int x, int y, ColourAlpha colour) noexcept;
 	static void BGRAFromRGBA(unsigned char *pixelsBGRA, const unsigned char *pixelsRGBA, size_t count) noexcept;
 };
 

@@ -72,7 +72,8 @@ public:
 	/// Setup the calltip and return a rectangle of the area required.
 	PRectangle CallTipStart(Sci::Position pos, Point pt, int textHeight, const char *defn,
 		const char *faceName, int size, int codePage_,
-		int characterSet, int technology, const Window &wParent);
+		int characterSet, int technology, const char *localeName,
+		const Window &wParent);
 
 	void CallTipCancel();
 
