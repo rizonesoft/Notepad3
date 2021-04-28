@@ -3483,6 +3483,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;
     }
 
+    bool const dm = UseDarkMode();
     bool const si = Flags.bSingleFileInstance;
     bool const cf = StrIsNotEmpty(Paths.CurrentFile);
     bool const sav = Globals.bCanSaveIniFile;
@@ -3827,6 +3828,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
     CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
     CheckCmd(hmenu, IDM_VIEW_TRANSPARENT, Settings.TransparentMode);
+
+    EnableCmd(hmenu, IDM_THEMES_DEFAULT, !dm);
+    EnableCmd(hmenu, IDM_THEMES_RESOURCES, dm);
 
     bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
     //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);

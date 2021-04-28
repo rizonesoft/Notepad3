@@ -412,12 +412,6 @@ static inline void AppendStyle(LPWSTR lpszStyleDest, size_t cchSizeDest, LPCWSTR
 //
 static HMENU s_hmenuThemes = NULL;
 
-static void _EnableFactoryModes(HMENU hMenuBar) {
-    EnableCmd(hMenuBar, Theme_Files[Theme_FactoryLightMode].rid, !UseDarkMode());
-    EnableCmd(hMenuBar, Theme_Files[Theme_FactoryDarkMode].rid, UseDarkMode());
-}
-
-
 bool Style_InsertThemesMenu(HMENU hMenuBar)
 {
     if (s_hmenuThemes) {
@@ -450,8 +444,6 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
 
     unsigned const iTheme = GetModeThemeIndex();
     CheckCmd(hMenuBar, Theme_Files[iTheme].rid, true);
-
-    _EnableFactoryModes(hMenuBar);
 
     if ((iTheme >= Theme_CustomizedMode) && StrIsEmpty(Theme_Files[iTheme].szFilePath)) {
         EnableCmd(hMenuBar, Theme_Files[iTheme].rid, false);
@@ -511,8 +503,6 @@ void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
             StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName), Theme_Files[iThemeIdx].szName);
             Globals.idxLightModeTheme = iThemeIdx;
         }
-
-        _EnableFactoryModes(Globals.hMainMenu);
 
         _EnableSchemeConfig(iThemeIdx >= Theme_CustomizedMode);
         CheckCmd(Globals.hMainMenu, Theme_Files[iThemeIdx].rid, true);
