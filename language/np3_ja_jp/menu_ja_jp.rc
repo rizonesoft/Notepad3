@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII を UTF-8として開く(&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
                 MENUITEM "強制的に UCHARDET で解析(&C)",              CMD_RELOADFORCEDETECTION
-                MENUITEM "文字コードを無視(&I)\tAlt+F8",                 CMD_RELOADNOFILEVARS
+                MENUITEM "文字コードを無視(&I)\tAlt+F8",                 CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "ほかの文字コード(&M)...\tF8",             IDM_ENCODING_RECODE
             END

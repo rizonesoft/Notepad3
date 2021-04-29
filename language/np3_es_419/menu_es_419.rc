@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII como UT&F-8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
                 MENUITEM "Forzar a análisis U&CHARDET",         CMD_RELOADFORCEDETECTION
-                MENUITEM "&Ignorar Codificación Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM "&Ignorar Codificación Tags\tAlt+F8",  CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "&Más Codificaciones...\tF8",          IDM_ENCODING_RECODE
             END

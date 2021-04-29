@@ -953,9 +953,9 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
 //
 static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 {
-    bool bDisableFileVar = false;
+    bool bDisableFileVar = Flags.NoFileVariables;
 
-    if (!Flags.NoFileVariables) {
+    if (!bDisableFileVar) {
         int i;
         if (FileVars_ParseInt(buffer, "enable-local-variables", &i) && (!i)) {
             bDisableFileVar = true;
@@ -986,37 +986,40 @@ static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
                 lpfv->bWordWrap = (i) ? false : true;
                 lpfv->mask |= FV_WORDWRAP;
             }
-        }
 
-        char columns[SMALL_BUFFER];
-        if (FileVars_ParseStr(buffer, "fill-column", columns, COUNTOF(columns))) {
-            NormalizeColumnVector(columns, lpfv->wchMultiEdgeLines, COUNTOF(lpfv->wchMultiEdgeLines));
-            lpfv->mask |= FV_LONGLINESLIMIT;
+            char columns[SMALL_BUFFER];
+            if (FileVars_ParseStr(buffer, "fill-column", columns, COUNTOF(columns))) {
+                NormalizeColumnVector(columns, lpfv->wchMultiEdgeLines, COUNTOF(lpfv->wchMultiEdgeLines));
+                lpfv->mask |= FV_LONGLINESLIMIT;
+            }
+
+            if (FileVars_ParseStr(buffer, "mode", lpfv->chMode, COUNTOF(lpfv->chMode))) {
+                lpfv->mask |= FV_MODE;
+            }
         }
     }
 
-    // Unicode Sig
-    bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
+    // ========  Encoding Tags  ========
 
-    if (!bHasSignature && !Settings.NoEncodingTags && !bDisableFileVar) {
+    if (!Settings.NoEncodingTags) {
 
-        if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
-            lpfv->mask |= FV_ENCODING;
-        } else if (FileVars_ParseStr(buffer, "encoding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
-            lpfv->mask |= FV_ENCODING;
-        } else if (FileVars_ParseStr(buffer, "charset", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
-            lpfv->mask |= FV_ENCODING;
+        bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
+
+        // Signature override Encoding Tag
+        if (!bHasSignature) {
+            if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
+                lpfv->mask |= FV_ENCODING;
+            } else if (FileVars_ParseStr(buffer, "encoding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
+                lpfv->mask |= FV_ENCODING;
+            } else if (FileVars_ParseStr(buffer, "charset", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
+                lpfv->mask |= FV_ENCODING;
+            }
         }
     }
     if (lpfv->mask & FV_ENCODING) {
         lpfv->iEncoding = Encoding_MatchA(lpfv->chEncoding);
     }
 
-    if (!Flags.NoFileVariables && !bDisableFileVar) {
-        if (FileVars_ParseStr(buffer, "mode", lpfv->chMode, COUNTOF(lpfv->chMode))) {
-            lpfv->mask |= FV_MODE;
-        }
-    }
 }
 
 //=============================================================================

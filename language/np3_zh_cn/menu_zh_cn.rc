@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "重载 ASCII 为 UTF-8(&F)\tCtrl+Shift+F8",   CMD_RELOADASCIIASUTF8
                 MENUITEM "强制 UCHARDET 分析(&C)",              CMD_RELOADFORCEDETECTION
-                MENUITEM "忽略编码标记(&I)\tAlt+F8",                  CMD_RELOADNOFILEVARS
+                MENUITEM "忽略编码标记(&I)\tAlt+F8",                  CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "更多编码(&M)...\tF8",         IDM_ENCODING_RECODE
             END

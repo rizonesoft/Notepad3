@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "重新載入 ASCII 為 UTF-8(&F)\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
                 MENUITEM "Force UCHARDET Analysis(&C)",                  CMD_RELOADFORCEDETECTION
-                MENUITEM "忽略編碼標記(&I)\tAlt+F8",                      CMD_RELOADNOFILEVARS
+                MENUITEM "忽略編碼標記(&I)\tAlt+F8",                      CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "More Encodings(&M)...\tF8",         IDM_ENCODING_RECODE
             END

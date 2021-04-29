@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII를 UTF-8로 (&F)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
                 MENUITEM "강제 UCHARDET 분석(&C)",          CMD_RELOADFORCEDETECTION
-                MENUITEM "인코딩 태그 무시(&I)\tAlt+F8",          CMD_RELOADNOFILEVARS
+                MENUITEM "인코딩 태그 무시(&I)\tAlt+F8",          CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "더 많은 인코딩(&M)...\tF8",         IDM_ENCODING_RECODE
             END
