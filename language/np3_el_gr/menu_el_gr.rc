@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII ως U&ΤF-8\tCtrl+Shift+F8",             CMD_RELOADASCIIASUTF8
                 MENUITEM "Αναγκαστική ανάλυση UCHARDET",               CMD_RELOADFORCEDETECTION
-                MENUITEM "Πα&ράβλεψη ετικετών κωδικοποίησης\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM "Πα&ράβλεψη ετικετών κωδικοποίησης\tAlt+F8",  CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "Περισσότερες &κωδικοποιήσεις...\tF8",        IDM_ENCODING_RECODE
             END

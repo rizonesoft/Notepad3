@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "Переоткрыть в ASCII &как UTF-8\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
                 MENUITEM "Форсировать U&CHARDET анализ",                   CMD_RELOADFORCEDETECTION
-                MENUITEM "Игнорировать &теги кодировки\tAlt+F8",           CMD_RELOADNOFILEVARS
+                MENUITEM "Игнорировать &теги кодировки\tAlt+F8",           CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "&Еще кодировки...\tF8",              IDM_ENCODING_RECODE
             END
