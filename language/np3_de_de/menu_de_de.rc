@@ -94,7 +94,8 @@ BEGIN
             MENUITEM "Öffne Datei-&Explorer",               IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Datei erneut laden\tF5",                    IDM_FILE_REVERT
+        MENUITEM "&Datei erneut laden\tF5",                 IDM_FILE_REVERT
+        MENUITEM "Ignoriere File-Variablen",                CMD_IGNORE_FILE_VARS
         POPUP "&Codierung"
         BEGIN
             POPUP "&Datei erneut laden als"
@@ -106,7 +107,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",     CMD_RELOADASCIIASUTF8
                 MENUITEM "Erzwinge UCHARDET Analyse",           CMD_RELOADFORCEDETECTION
-                MENUITEM "Ignoriere Codierungs &Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM "Ignoriere Codierungs &Tags\tAlt+F8",  CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "Mehr &Codierungen...\tF8",            IDM_ENCODING_RECODE
             END

@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "Пераадкрыць у ASCII я&к UTF-8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
                 MENUITEM "Прымусіць U&CHARDET аналіз",                   CMD_RELOADFORCEDETECTION
-                MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8",             CMD_RELOADNOFILEVARS
+                MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8",             CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "&Больш кадовак...\tF8",              IDM_ENCODING_RECODE
             END

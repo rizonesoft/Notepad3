@@ -3489,7 +3489,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, cf);
     EnableCmd(hmenu, CMD_RECODEANSI, cf);
     EnableCmd(hmenu, CMD_RECODEOEM, cf);
-    EnableCmd(hmenu, CMD_RELOADNOFILEVARS, cf);
+    EnableCmd(hmenu, CMD_RELOADNOENCODETAGS, cf);
     EnableCmd(hmenu, CMD_RECODEDEFAULT, cf);
     EnableCmd(hmenu, CMD_RECODEGB18030, cf);
 
@@ -3499,6 +3499,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetUACIcon(hwnd, hmenu, IDM_FILE_LAUNCH_ELEVATED);
     CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsProcessElevated);
     EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsProcessElevated);
+
+    CheckCmd(hmenu, CMD_IGNORE_FILE_VARS, Flags.NoFileVariables);
 
     EnableCmd(hmenu, IDM_FILE_PROPERTIES, cf);
     EnableCmd(hmenu, IDM_FILE_CREATELINK, cf);
@@ -6077,19 +6079,29 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
     break;
 
-    case CMD_RELOADNOFILEVARS: {
+
+    case CMD_RELOADNOENCODETAGS: {
         if (StrIsNotEmpty(Paths.CurrentFile)) {
-            bool const _fNoFileVariables = Flags.NoFileVariables;
             bool const _bNoEncodingTags = Settings.NoEncodingTags;
-            Flags.NoFileVariables = true;
             Settings.NoEncodingTags = true;
             StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Paths.CurrentFile);
             FileLoad(tchMaxPathBuffer, false, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
-            Flags.NoFileVariables = _fNoFileVariables;
             Settings.NoEncodingTags = _bNoEncodingTags;
         }
     }
     break;
+
+
+    case CMD_IGNORE_FILE_VARS:
+        Flags.NoFileVariables = !Flags.NoFileVariables;
+        if (Globals.bCanSaveIniFile) {
+            if (Flags.NoFileVariables != DefaultFlags.NoFileVariables) {
+                IniFileSetInt(Paths.IniFile, Constants.Settings2_Section, L"NoFileVariables", Flags.NoFileVariables);
+            } else {
+                IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"NoFileVariables", false);
+            }
+        }
+        break;
 
 
     case CMD_LEXDEFAULT:

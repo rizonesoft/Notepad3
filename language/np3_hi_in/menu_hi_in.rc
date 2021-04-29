@@ -106,7 +106,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "ASCII को UT&F-8 के रूप में (&F)\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
                 MENUITEM "UCHARDET विश्लेषण लागू करें (&C)",       CMD_RELOADFORCEDETECTION
-                MENUITEM "एन्कोडिंग टैग्स अनदेखा करें (&I)\tAlt+F8",  CMD_RELOADNOFILEVARS
+                MENUITEM "एन्कोडिंग टैग्स अनदेखा करें (&I)\tAlt+F8",  CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
                 MENUITEM "अन्य एन्कोडिंग विकल्प (&M)...\tF8",         IDM_ENCODING_RECODE
             END
