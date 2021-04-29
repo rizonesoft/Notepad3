@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Herladen uit Bestand\tF5",               IDM_FILE_REVERT
+        MENUITEM "&Bestandsvariabelen negeren",             CMD_IGNORE_FILE_VARS
         POPUP "&Encodering"
         BEGIN
             POPUP "&Herladen uit Bestand als"

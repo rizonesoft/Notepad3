@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Återgå till filens version\tF5",                  IDM_FILE_REVERT
+        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
         POPUP "Teckenkodning"
         BEGIN
             POPUP "Återgå till filversion som"

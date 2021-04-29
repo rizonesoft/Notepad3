@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Перезагрузить файл\tF5",                 IDM_FILE_REVERT
+        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
         POPUP "Ко&дировка"
         BEGIN
             POPUP "&Перезагрузить файл как"

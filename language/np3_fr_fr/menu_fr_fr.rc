@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Rec&harger le Fichier\tF5",                       IDM_FILE_REVERT
+        MENUITEM "&Ignorer les Variables de Fichier",               CMD_IGNORE_FILE_VARS
         POPUP "Encoda&ge"
         BEGIN
             POPUP "&Recharger le Fichier comme"
