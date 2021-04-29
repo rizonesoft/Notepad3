@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Vrátiť zo súboru\tF5",                   IDM_FILE_REVERT
+        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
         POPUP "&Kódovanie"
         BEGIN
             POPUP "V&rátiť zo súboru ako"

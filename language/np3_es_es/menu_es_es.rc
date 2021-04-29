@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Recargar de archivo\tF5",                IDM_FILE_REVERT
+        MENUITEM "&Ignorar variables de archivo",           CMD_IGNORE_FILE_VARS
         POPUP "C&odificación"
         BEGIN
             POPUP "&Revertir de archivo como"
