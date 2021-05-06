@@ -263,6 +263,9 @@ BEGIN
             MENUITEM "转换行首空格为制表符(&B)\tCtrl+Alt+T",    IDM_EDIT_CONVERTSPACES2
             MENUITEM "转换行首制表符为空格(&F)\tCtrl+Alt+S",    IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
+            MENUITEM SEPARATOR
             MENUITEM "URL 编码(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URL 解码(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
             MENUITEM "转换文件路径为 URL",               IDM_EDIT_PATH2URL

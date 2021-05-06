@@ -263,6 +263,9 @@ BEGIN
             MENUITEM "Μετατροπή διαστημάτων εσο&χής σε στηλοθέτες\tCtrl+Alt+T",     IDM_EDIT_CONVERTSPACES2
             MENUITEM "Μετατροπή στηλοθετών εσ&οχής σε διαστήματα\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
+            MENUITEM SEPARATOR
             MENUITEM "Κ&ωδικοποίηση URL\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
             MENUITEM "&Αποκωδικοποίηση URL\tCtrl+Shift+R",      IDM_EDIT_URLDECODE
             MENUITEM "Διαδρομή συστήματος αρχείων σε URL",      IDM_EDIT_PATH2URL
