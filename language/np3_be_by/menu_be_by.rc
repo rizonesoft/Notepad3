@@ -263,6 +263,9 @@ BEGIN
             MENUITEM "Т&абуляцыя замест прабелаў у водступах\tCtrl+Alt+T",   IDM_EDIT_CONVERTSPACES2
             MENUITEM "Пра&белы замест табуляцыі ў водступах\tCtrl+Alt+S",    IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
+            MENUITEM SEPARATOR
             MENUITEM "Ка&даваць URL\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
             MENUITEM "Д&экадаваць URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
             MENUITEM "Сістэмны шлях у URL",                             IDM_EDIT_PATH2URL

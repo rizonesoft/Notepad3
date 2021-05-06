@@ -263,6 +263,9 @@ BEGIN
             MENUITEM "Ta&bular la sangría\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
             MENUITEM "Destabular la &sangría\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Codificar",                               IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decodificar",                             IDM_EDIT_BASE64DECODE
+            MENUITEM SEPARATOR
             MENUITEM "&Codificar URL\tCtrl+Shift+E",                    IDM_EDIT_URLENCODE
             MENUITEM "D&ecodificar URL\tCtrl+Shift+R",                  IDM_EDIT_URLDECODE
             MENUITEM "Ruta sistema-archivos como URL",                  IDM_EDIT_PATH2URL

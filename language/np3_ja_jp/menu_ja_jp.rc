@@ -263,6 +263,9 @@ BEGIN
             MENUITEM "インデントをタブに\tCtrl+Alt+T",               IDM_EDIT_CONVERTSPACES2
             MENUITEM "インデントを空白に\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
+            MENUITEM SEPARATOR
             MENUITEM "URLエンコード(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URLデコード(&D)\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
             MENUITEM "ファイルシステムのパスをURLへ",                IDM_EDIT_PATH2URL

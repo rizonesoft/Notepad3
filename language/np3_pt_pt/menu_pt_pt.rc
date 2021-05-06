@@ -263,6 +263,9 @@ BEGIN
             MENUITEM "Ta&bular indentação\tCtrl+Alt+T",                  IDM_EDIT_CONVERTSPACES2
             MENUITEM "Remover tabulação da indentação\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
+            MENUITEM SEPARATOR
             MENUITEM "Codificar &URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Descodificar URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
             MENUITEM "Caminho do sistema de ficheiros para URL",               IDM_EDIT_PATH2URL

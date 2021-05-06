@@ -263,6 +263,9 @@ BEGIN
             MENUITEM "들여쓰기 탭 지정(&B)\tCtrl+Alt+T",           IDM_EDIT_CONVERTSPACES2
             MENUITEM "들여쓰기 탭 해제(&F)\tCtrl+Alt+S",           IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
+            MENUITEM SEPARATOR
             MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
             MENUITEM "URL에 대한 파일 시스템 경로",                   IDM_EDIT_PATH2URL
