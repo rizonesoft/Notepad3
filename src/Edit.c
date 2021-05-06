@@ -1980,6 +1980,56 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
 
 //=============================================================================
 //
+//  EditBase64Code()
+//
+void EditBase64Code(HWND hwnd, const bool bEncode) {
+
+    UNREFERENCED_PARAMETER(hwnd);
+
+    if (SciCall_IsSelectionEmpty()) {
+        return;
+    }
+    if (Sci_IsMultiOrRectangleSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        return;
+    }
+
+    _SAVE_TARGET_RANGE_;
+
+    DocPos const iSelStart = SciCall_GetSelectionStart();
+    //DocPos const iSelEnd = SciCall_GetSelectionEnd();
+    size_t const iSelSize = SciCall_GetSelText(NULL) - 1; // w/o terminating zero
+    bool const bStraightSel = (SciCall_GetAnchor() <= SciCall_GetCurrentPos());
+
+    const unsigned char *pchText = (unsigned char *)SciCall_GetRangePointer(iSelStart, (DocPos)iSelSize);
+
+    size_t coded_size = 0;
+    char *const pBase64CodedTxt = (char *)(bEncode ? Encoding_Base64Encode(pchText, iSelSize, &coded_size) : 
+                                                     Encoding_Base64Decode(pchText, iSelSize, &coded_size));
+
+    UndoTransActionBegin();
+
+    SciCall_TargetFromSelection();
+    DocPos const len = SciCall_ReplaceTarget((DocPos)coded_size, pBase64CodedTxt);
+
+    SciCall_SetSelectionStart(iSelStart);
+    SciCall_SetSelectionEnd(iSelStart + len);
+    if (!bStraightSel) {
+        SciCall_SwapMainAnchorCaret();
+    }
+    EditScrollSelectionToView();
+
+    EndUndoTransAction();
+
+    _RESTORE_TARGET_RANGE_;
+
+    FreeMem(pBase64CodedTxt);
+}
+
+
+
+//=============================================================================
+//
 //  EditEscapeCChars()
 //
 void EditEscapeCChars(HWND hwnd) {
