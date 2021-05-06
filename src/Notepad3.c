@@ -4272,6 +4272,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         BeginWaitCursorUID(true, IDS_MUI_SB_RECODING_DOC);
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
+            UpdateMarginWidth(true);
             SetSaveNeeded();
         }
         EndWaitCursor();
