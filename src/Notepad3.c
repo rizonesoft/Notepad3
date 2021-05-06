@@ -3624,6 +3624,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     EnableCmd(hmenu, IDM_EDIT_URLENCODE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_URLDECODE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_BASE64ENCODE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_BASE64DECODE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_PATH2URL, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_URL2PATH, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_INVERTBACKSLASH, !se && !ro);
@@ -4272,6 +4274,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         BeginWaitCursorUID(true, IDS_MUI_SB_RECODING_DOC);
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
+            UpdateMarginWidth(true);
             SetSaveNeeded();
         }
         EndWaitCursor();
@@ -4879,6 +4882,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_URLDECODE: {
         EditURLDecode(false);
+    } break;
+
+
+    case IDM_EDIT_BASE64ENCODE: {
+        EditBase64Code(Globals.hwndEdit, true);
+    }
+    break;
+
+    case IDM_EDIT_BASE64DECODE: {
+        EditBase64Code(Globals.hwndEdit, false);
     } break;
 
 

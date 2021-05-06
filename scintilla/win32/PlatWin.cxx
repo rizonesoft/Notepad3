@@ -242,6 +242,7 @@ constexpr BYTE Win32MapFontQuality(int extraFontFlag) noexcept {
 }
 
 #if defined(USE_D2D)
+
 constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(int extraFontFlag) noexcept {
 	switch (extraFontFlag & SC_EFF_QUALITY_MASK) {
 
@@ -259,13 +260,14 @@ constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(int extraFontFlag) noexc
 	}
 }
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-bool GetDWriteFontProperties(const LOGFONTW& lf, std::wstring& wsFamily,
+bool GetDWriteFontProperties(const LOGFONTW& lf, std::wstring& wsFamily, const std::wstring& wsLocale,
 	DWRITE_FONT_WEIGHT& weight, DWRITE_FONT_STYLE& style, DWRITE_FONT_STRETCH& stretch) {
 	bool success = false;
 	if (gdiInterop) {
 		IDWriteFont* font = nullptr;
 		HRESULT hr = gdiInterop->CreateFontFromLOGFONT(&lf, &font);
 		if (SUCCEEDED(hr)) {
+
 			weight = font->GetWeight();
 			style = font->GetStyle();
 			stretch = font->GetStretch();
@@ -278,29 +280,29 @@ bool GetDWriteFontProperties(const LOGFONTW& lf, std::wstring& wsFamily,
 				if (SUCCEEDED(hr)) {
 					UINT32 index = 0;
 					BOOL exists = false;
-					names->FindLocaleName(L"en-US", &index, &exists);
+					names->FindLocaleName(wsLocale.c_str(), &index, &exists);
+					if (!exists) {
+						names->FindLocaleName(L"en-US", &index, &exists); // fallback en-US
+					}
 					if (!exists) {
 						index = 0;
 					}
-
 					UINT32 length = 0;
 					names->GetStringLength(index, &length);
-
 					wsFamily.resize(length + 1);
 					names->GetString(index, wsFamily.data(), length + 1);
 
 					ReleaseUnknown(names);
-					success = wsFamily[0] != L'\0';
+					success = (wsFamily[0] != L'\0');
 				}
-
 				ReleaseUnknown(family);
 			}
-
 			ReleaseUnknown(font);
 		}
 	}
 	return success;
 }
+
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #endif
 
@@ -323,7 +325,7 @@ void SetLogFont(LOGFONTW &lf, const char *faceName, int characterSet, XYPOSITION
 struct FontGDI : public FontWin {
 	HFONT hfont = {};
 	FontGDI(const FontParameters &fp) {
-		LOGFONTW lf;
+		LOGFONTW lf = { 0 };
 		SetLogFont(lf, fp.faceName, fp.characterSet, fp.size, fp.weight, fp.italic, fp.extraFontFlag);
 		hfont = ::CreateFontIndirectW(&lf);
 	}
@@ -366,9 +368,9 @@ struct FontDirectWrite : public FontWin {
 		std::wstring wsFamily;
 		DWRITE_FONT_WEIGHT weight = static_cast<DWRITE_FONT_WEIGHT>(fp.weight);
 		DWRITE_FONT_STRETCH stretch = DWRITE_FONT_STRETCH_NORMAL;
-		LOGFONTW lf;
+		LOGFONTW lf = { 0 };
 		SetLogFont(lf, fp.faceName, fp.characterSet, fp.size, fp.weight, fp.italic, fp.extraFontFlag);
-		if (!GetDWriteFontProperties(lf, wsFamily, weight, style, stretch)) {
+		if (!GetDWriteFontProperties(lf, wsFamily, wsLocale, weight, style, stretch)) {
 			wsFamily = WStringFromUTF8(fp.faceName);
 		}
 		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFamily.c_str(), nullptr,

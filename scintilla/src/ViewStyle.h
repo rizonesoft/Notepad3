@@ -96,9 +96,6 @@ public:
 	std::vector<Indicator> indicators;
 	bool indicatorsDynamic;
 	bool indicatorsSetFore;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	bool fontsValid;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	int technology;
 	int lineHeight;
 	int lineOverlap;
