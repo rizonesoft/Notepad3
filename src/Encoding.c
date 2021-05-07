@@ -980,6 +980,132 @@ bool IsValidUTF8(const char* pTest, size_t nLength)
 
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// https://stackoverflow.com/questions/342409/how-do-i-base64-encode-decode-in-c
+// ----------------------------------------------------------------------------
+
+ /**
+ * Base64 encoding/decoding (RFC1341)
+ * Copyright (c) 2005, Jouni Malinen <j@w1.fi>
+ *
+ * This software may be distributed under the terms of the BSD license.
+ * base64_encode - Base64 encode
+ * @src: Data to be encoded
+ * @len: Length of the data to be encoded
+ * @out_len: Pointer to output length variable, or %NULL if not used
+ * Returns: Allocated buffer of out_len bytes of encoded data,
+ * or %NULL on failure
+ *
+ * Caller is responsible for freeing the returned buffer. Returned buffer is
+ * nul terminated to make it easier to use as a C string. The nul terminator is
+ * not included in out_len.
+ */
+
+static const unsigned char _Base64Table[65] =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+unsigned char * Encoding_Base64Encode(const unsigned char *src, size_t len, size_t *out_len) {
+
+    unsigned char *out, *pos;
+    const unsigned char *end, *in;
+    size_t olen;
+
+    olen = len * 4 / 3 + 4; /* 3-byte blocks to 4-byte */
+    olen++;                 /* nul termination */
+    if (olen < len) {
+        return NULL; /* integer overflow */
+    }
+    out = AllocMem(olen, HEAP_ZERO_MEMORY);
+    if (!out) {
+        return NULL;
+    }
+
+    end = src + len;
+    in = src;
+    pos = out;
+    while (end - in >= 3) {
+        *pos++ = _Base64Table[in[0] >> 2];
+        *pos++ = _Base64Table[((in[0] & 0x03) << 4) | (in[1] >> 4)];
+        *pos++ = _Base64Table[((in[1] & 0x0F) << 2) | (in[2] >> 6)];
+        *pos++ = _Base64Table[in[2] & 0x3F];
+        in += 3;
+    }
+
+    if (end - in) {
+        *pos++ = _Base64Table[in[0] >> 2];
+        if (end - in == 1) {
+            *pos++ = _Base64Table[(in[0] & 0x03) << 4];
+            *pos++ = '=';
+        } else {
+            *pos++ = _Base64Table[((in[0] & 0x03) << 4) | (in[1] >> 4)];
+            *pos++ = _Base64Table[(in[1] & 0x0F) << 2];
+        }
+        *pos++ = '=';
+    }
+    *pos = '\0';
+    if (out_len) {
+        *out_len = pos - out;
+    }
+    return out;
+}
+
+
+// ----------------------------------------------------------------------------
+// https://stackoverflow.com/questions/180947/base64-decode-snippet-in-c/13935718
+// ----------------------------------------------------------------------------
+// Decoder by Polfosol
+// ----------------------------------------------------------------------------
+
+static const unsigned char _Base64Index[256] = { 
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 62, 63, 62, 62, 63,
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61,  0,  0,  0,  0,  0,  0,
+     0,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,  0,  0,  0,  0, 63,
+     0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
+
+
+unsigned char * Encoding_Base64Decode(const unsigned char *src, const size_t len, size_t *out_len) {
+
+	const unsigned char *p = src;
+    int const pad = len > 0 && (len % 4 || p[len - 1] == '=');
+
+    size_t const L = ((len + 3) / 4 - pad) * 4;
+    size_t const olen = L / 4 * 3 + pad;
+    
+    unsigned char * out = AllocMem(olen, HEAP_ZERO_MEMORY);
+    if (!out) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < L; i += 4) {
+        unsigned const n = _Base64Index[p[i]] << 18 | 
+                           _Base64Index[p[i + 1]] << 12 | 
+                           _Base64Index[p[i + 2]] << 6 | 
+                           _Base64Index[p[i + 3]];
+        out[j++] = (unsigned char)(n >> 16);
+        out[j++] = (unsigned char)(n >> 8 & 0xFF);
+        out[j++] = (unsigned char)(n & 0xFF);
+    }
+    if (pad) {
+        unsigned n = _Base64Index[p[L]] << 18 | _Base64Index[p[L + 1]] << 12;
+        out[j++] = (unsigned char)(n >> 16);
+        if (len > L + 2 && p[L + 2] != '=') {
+            n |= _Base64Index[p[L + 2]] << 6;
+            out[j++] = (unsigned char)(n >> 8 & 0xFF);
+        }
+    }
+    if (out_len) {
+        *out_len = j;
+    }
+    return out;
+}
+
+// ============================================================================
+
 
 
 

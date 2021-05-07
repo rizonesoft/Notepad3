@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Перазагрузіць файл\tF5",                 IDM_FILE_REVERT
+        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
         POPUP "Кадо&ўка"
         BEGIN
             POPUP "&Перазагрузіць файл як"
@@ -261,6 +262,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Т&абуляцыя замест прабелаў у водступах\tCtrl+Alt+T",   IDM_EDIT_CONVERTSPACES2
             MENUITEM "Пра&белы замест табуляцыі ў водступах\tCtrl+Alt+S",    IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
             MENUITEM SEPARATOR
             MENUITEM "Ка&даваць URL\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
             MENUITEM "Д&экадаваць URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE

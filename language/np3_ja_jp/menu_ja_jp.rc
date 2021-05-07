@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "ファイルを読み直し(&V)\tF5",                  IDM_FILE_REVERT
+        MENUITEM "ファイル変数を無視(&I)",                      CMD_IGNORE_FILE_VARS
         POPUP "文字コード(&E)"
         BEGIN
             POPUP "文字コード指定しファイル読み直し(&R)"
@@ -261,6 +262,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "インデントをタブに\tCtrl+Alt+T",               IDM_EDIT_CONVERTSPACES2
             MENUITEM "インデントを空白に\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
             MENUITEM SEPARATOR
             MENUITEM "URLエンコード(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URLデコード(&D)\tCtrl+Shift+R",             IDM_EDIT_URLDECODE

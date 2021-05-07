@@ -289,41 +289,32 @@ void ViewStyle::Init(size_t stylesSize_) {
 }
 
 void ViewStyle::Refresh(Surface &surface, int tabInChars) {
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	if (!fontsValid) {
-
-		fontsValid = true;
-		fonts.clear();
-
-		// Apply the extra font flag which controls text drawing quality to each style.
-		for (Style &style : styles) {
-			style.extraFontFlag = extraFontFlag;
-		}
-	
-		// Create a FontRealised object for each unique font in the styles.
-		CreateAndAddFont(styles[STYLE_DEFAULT]);
-		for (const Style &style : styles) {
-			CreateAndAddFont(style);
-		}
-	
-		// Ask platform to allocate each unique font.
-		for (auto &font : fonts) {
-			font.second->Realise(surface, zoomLevel, technology, font.first, localeName.c_str());
-		}
-	
-		// Set the platform font handle and measurements for each style.
-		for (Style &style : styles) {
-			const FontRealised *fr = Find(style);
-			style.Copy(fr->font, *fr);
-		}
-
-		aveCharWidth = styles[STYLE_DEFAULT].aveCharWidth;
-		spaceWidth = styles[STYLE_DEFAULT].spaceWidth;
-	}
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	fonts.clear();
 
 	selbar = Platform::Chrome();
 	selbarlight = Platform::ChromeHighlight();
+
+	// Apply the extra font flag which controls text drawing quality to each style.
+	for (Style &style : styles) {
+		style.extraFontFlag = extraFontFlag;
+	}
+
+	// Create a FontRealised object for each unique font in the styles.
+	CreateAndAddFont(styles[STYLE_DEFAULT]);
+	for (const Style &style : styles) {
+		CreateAndAddFont(style);
+	}
+
+	// Ask platform to allocate each unique font.
+	for (auto &font : fonts) {
+		font.second->Realise(surface, zoomLevel, technology, font.first, localeName.c_str());
+	}
+
+	// Set the platform font handle and measurements for each style.
+	for (Style &style : styles) {
+		const FontRealised *fr = Find(style);
+		style.Copy(fr->font, *fr);
+	}
 
 	indicatorsDynamic = std::any_of(indicators.cbegin(), indicators.cend(),
 		[](const Indicator &indicator) noexcept { return indicator.IsDynamic(); });
@@ -383,7 +374,6 @@ void ViewStyle::EnsureStyle(size_t index) {
 }
 
 void ViewStyle::ResetDefaultStyle() {
-	fontsValid = false;
 	styles[STYLE_DEFAULT].Clear(ColourDesired(0,0,0),
 	        ColourDesired(0xff,0xff,0xff),
 	        Platform::DefaultFontSize() * SC_FONT_SIZE_MULTIPLIER, fontNames.Save(Platform::DefaultFont()),
@@ -392,7 +382,6 @@ void ViewStyle::ResetDefaultStyle() {
 }
 
 void ViewStyle::ClearStyles() {
-	fontsValid = false;
 	// Reset all styles to be like the default style
 	for (size_t i=0; i<styles.size(); i++) {
 		if (i != STYLE_DEFAULT) {
@@ -407,12 +396,10 @@ void ViewStyle::ClearStyles() {
 }
 
 void ViewStyle::SetStyleFontName(int styleIndex, const char *name) {
-  fontsValid = false;
 	styles[styleIndex].fontName = fontNames.Save(name);
 }
 
 void ViewStyle::SetFontLocaleName(const char *name) {
-	fontsValid = false;
 	localeName = name;
 }
 
@@ -632,7 +619,6 @@ bool ViewStyle::ZoomIn() noexcept {
 		level = std::min(level, SC_MAX_ZOOM_LEVEL);
 		if (level != zoomLevel) {
 			zoomLevel = level;
-			fontsValid = false;
 			return true;
 		}
 	}
@@ -651,7 +637,6 @@ bool ViewStyle::ZoomOut() noexcept {
 		level = std::max(level, SC_MIN_ZOOM_LEVEL);
 		if (level != zoomLevel) {
 			zoomLevel = level;
-			fontsValid = false;
 			return true;
 		}
 	}
@@ -660,7 +645,6 @@ bool ViewStyle::ZoomOut() noexcept {
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ViewStyle::AllocStyles(size_t sizeNew) {
-	fontsValid = false;
 	size_t i=styles.size();
 	styles.resize(sizeNew);
 	if (styles.size() > STYLE_DEFAULT) {

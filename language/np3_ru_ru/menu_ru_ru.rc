@@ -95,6 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Перезагрузить файл\tF5",                 IDM_FILE_REVERT
+        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
         POPUP "Ко&дировка"
         BEGIN
             POPUP "&Перезагрузить файл как"
@@ -261,6 +262,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Т&абуляции вместо пробелов в отступах\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
             MENUITEM "Про&белы вместо табуляции в отступах\tCtrl+Alt+S",        IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
             MENUITEM SEPARATOR
             MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
             MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE

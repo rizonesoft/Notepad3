@@ -208,6 +208,11 @@ ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size
 const WCHAR* Encoding_GetTitleInfo();
 //const char*  Encoding_GetTitleInfoA();
 
+// ----------------------------------------------------------------------------
+
+unsigned char * Encoding_Base64Encode(const unsigned char *src, const size_t len, size_t *out_len);
+unsigned char * Encoding_Base64Decode(const unsigned char *src, const size_t len, size_t *out_len);
+
 // --------------------------------------------------------------------------------------------------------------------------------
 
 #endif //_NP3_ENCODING_H_

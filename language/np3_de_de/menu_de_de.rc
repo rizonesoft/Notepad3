@@ -263,6 +263,10 @@ BEGIN
             MENUITEM "Mittels Tabulatoren einrücken\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
             MENUITEM "Mittels Leerzeichen einrücken\tCtrl+Alt+S",        IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
+            MENUITEM "Base&64 Codierung",                                IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Decodierung",                              IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 Decodiere als ...",                         IDM_EDIT_B64DECODESEL
+            MENUITEM SEPARATOR
             MENUITEM "&URL Codierung\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
             MENUITEM "URL Decodierung\tCtrl+Shift+R",                    IDM_EDIT_URLDECODE
             MENUITEM "Datei-System Pfad als URL",                        IDM_EDIT_PATH2URL
