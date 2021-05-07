@@ -395,6 +395,34 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 }
 
 
+//=============================================================================
+//
+//  EditReInterpretText()
+//  memory ownership transfered to caller
+//
+static LPCH EditReInterpretText(LPCCH pchSource, const int szSrc, cpi_enc_t fromCP, cpi_enc_t asCP, int *plen_out) {
+
+    int cmbch = 0;
+    LPCH pchConvText = NULL;
+
+    int cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, NULL, 0);
+    WCHAR *pwchText = (WCHAR *)AllocMem((cwch + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    if (pwchText) {
+        cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, pwchText, cwch);
+        cmbch = WideCharToMultiByte(Encoding_GetCodePage(asCP), 0, pwchText, cwch, NULL, 0, NULL, NULL);
+        pchConvText = (LPCH)AllocMem(cmbch + 1, HEAP_ZERO_MEMORY);
+        if (pchConvText) {
+            cmbch = WideCharToMultiByte(Encoding_GetCodePage(asCP), 0, pwchText, cwch, pchConvText, cmbch, NULL, NULL);
+        } else {
+            cmbch = 0;
+        }
+        FreeMem(pwchText);
+    }
+    if (plen_out) {
+        *plen_out = cmbch;
+    }
+    return pchConvText;
+}
 
 //=============================================================================
 //
@@ -416,25 +444,20 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
         return false;
     }
 
-    const DocPos chBufSize = length * 5 + 2;
-    char*        pchText   = AllocMem(chBufSize, HEAP_ZERO_MEMORY);
+    WCHAR *pwchText = AllocMem((length + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
-    struct Sci_TextRange tr = {{0, -1}, NULL};
-    tr.lpstrText            = pchText;
-    DocPos const rlength    = SciCall_GetTextRange(&tr);
-
-    const DocPos wchBufSize = rlength * 3 + 2;
-    WCHAR*       pwchText   = AllocMem(wchBufSize, HEAP_ZERO_MEMORY);
+    DocPos const chBufSize = length * 5 + 2;
+    char *pchText = AllocMem(chBufSize, HEAP_ZERO_MEMORY);
 
     // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
     const UINT cpDst = Encoding_GetCodePage(encDest);
 
     // get text as wide char
-    ptrdiff_t cbwText = MultiByteToWideCharEx(Encoding_SciCP, 0, pchText, length, pwchText, wchBufSize);
+    ptrdiff_t cbwText = MultiByteToWideCharEx(Encoding_SciCP, 0, SciCall_GetCharacterPointer(), length, pwchText, length);
     // convert wide char to destination multibyte
     ptrdiff_t cbText = WideCharToMultiByteEx(cpDst, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
     // re-code to wide char
-    cbwText = MultiByteToWideCharEx(cpDst, 0, pchText, cbText, pwchText, wchBufSize);
+    cbwText = MultiByteToWideCharEx(cpDst, 0, pchText, cbText, pwchText, length);
     // convert to Scintilla format
     cbText = WideCharToMultiByteEx(Encoding_SciCP, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
 
@@ -2002,27 +2025,14 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     bool const bStraightSel = (SciCall_GetAnchor() <= SciCall_GetCurrentPos());
 
     size_t iSelSize = SciCall_GetSelText(NULL) - 1; // w/o terminating zero
-    unsigned char * pchText = (unsigned char *)SciCall_GetRangePointer(iSelStart, (DocPos)iSelSize);
+    char * pchText = (char *)SciCall_GetRangePointer(iSelStart, (DocPos)iSelSize);
     bool bAllocatedText = false;
 
     if (bEncode && (codePage != Encoding_SciCP)) {
-        // TODO: convert to WCHAR, convert to cpi encoding, encode base64
-        WCHAR * wchText = (WCHAR *)AllocMem((iSelSize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY); // should be large enough
-        if (wchText) {
-            int const cwchTxt = MultiByteToWideChar(Encoding_SciCP, 0, (LPCCH)pchText, (int)iSelSize, wchText, (int)iSelSize);
-            // allocate conversion buffer for desired encoding
-            int const cmbchTxt = WideCharToMultiByte(codePage, 0, wchText, cwchTxt, NULL, 0, NULL, NULL);
-            pchText = (unsigned char *)AllocMem(cmbchTxt + 1, HEAP_ZERO_MEMORY);
-            if (pchText) {
-                iSelSize = (size_t)WideCharToMultiByte(codePage, 0, wchText, cwchTxt, (LPCH)pchText, cmbchTxt, NULL, NULL);
-                bAllocatedText = true;
-            } else {
-                iSelSize = 0ULL;
-            }
-            FreeMem(wchText);
-        } else {
-            iSelSize = 0ULL;
-        }
+        int new_size = 0;
+        pchText = (char *)EditReInterpretText(pchText, (int)iSelSize, Enc_SciCPI, cpi, &new_size);
+        bAllocatedText = true;
+        iSelSize = (size_t)new_size;
     }
     if (iSelSize == 0) {
         if (bAllocatedText) {
@@ -2032,8 +2042,8 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     }
 
     size_t base64Size = 0;
-    char * pBase64CodedTxt = (char *)(bEncode ? Encoding_Base64Encode(pchText, iSelSize, &base64Size) : 
-                                                Encoding_Base64Decode(pchText, iSelSize, &base64Size));
+    char * pBase64CodedTxt = (char *)(bEncode ? Encoding_Base64Encode((unsigned char *)pchText, iSelSize, &base64Size) : 
+                                                Encoding_Base64Decode((unsigned char *)pchText, iSelSize, &base64Size));
 
     if (bAllocatedText) {
         FreeMem(pchText);
@@ -2041,22 +2051,11 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
 
     if (bDecode && (codePage != Encoding_SciCP)) {
         // don't care if input is really a valid Base64 encoded byte-stream
-        WCHAR *wchText = (WCHAR *)AllocMem((base64Size + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY); // should be large enough
-        if (wchText) {
-            int const cwchTxt = MultiByteToWideChar(codePage, 0, pBase64CodedTxt, (int)base64Size, wchText, (int)base64Size);
-            // convert to SCI Encoding (UTF-8)
-            int const cmbchTxt = WideCharToMultiByte(Encoding_SciCP, 0, wchText, cwchTxt, NULL, 0, NULL, NULL);
-            FreeMem(pBase64CodedTxt);
-            pBase64CodedTxt = (char *)AllocMem(cmbchTxt + 1, HEAP_ZERO_MEMORY);
-            if (pBase64CodedTxt) {
-                base64Size = (size_t)WideCharToMultiByte(Encoding_SciCP, 0, wchText, cwchTxt, pBase64CodedTxt, cmbchTxt, NULL, NULL);
-            } else {
-                base64Size = 0ULL;
-            }
-            FreeMem(wchText);
-        } else {
-            base64Size = 0ULL;
-        }
+        int new_size = 0;
+        char * const pReInterpret = (char *)EditReInterpretText(pBase64CodedTxt, (int)base64Size, cpi, Enc_SciCPI, &new_size);
+        FreeMem(pBase64CodedTxt);
+        pBase64CodedTxt = pReInterpret;
+        base64Size = (size_t)new_size;
     }
 
     _SAVE_TARGET_RANGE_;

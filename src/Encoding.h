@@ -112,7 +112,8 @@ bool       Encoding_IsEXTERNAL_8BIT(const cpi_enc_t iEncoding);
 bool       Encoding_IsRECODE(const cpi_enc_t iEncoding);
 
 // Scintilla related
-#define Encoding_SciCP  CP_UTF8
+#define Encoding_SciCP   CP_UTF8
+#define Enc_SciCPI       CPI_UTF8
 
 void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding);
 const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding);
