@@ -1981,8 +1981,9 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
 //=============================================================================
 //
 //  EditBase64Code()
+//  Base64 encoding is within 7-bit-ASCII identical to UTF-8 code-page
 //
-void EditBase64Code(HWND hwnd, const bool bEncode) {
+void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
 
     UNREFERENCED_PARAMETER(hwnd);
 
@@ -1993,24 +1994,79 @@ void EditBase64Code(HWND hwnd, const bool bEncode) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
         return;
     }
-
-    _SAVE_TARGET_RANGE_;
+    bool const bDecode = !bEncode;
+    UINT const codePage = Encoding_GetCodePage(cpi);
 
     DocPos const iSelStart = SciCall_GetSelectionStart();
     //DocPos const iSelEnd = SciCall_GetSelectionEnd();
-    size_t const iSelSize = SciCall_GetSelText(NULL) - 1; // w/o terminating zero
     bool const bStraightSel = (SciCall_GetAnchor() <= SciCall_GetCurrentPos());
 
-    const unsigned char *pchText = (unsigned char *)SciCall_GetRangePointer(iSelStart, (DocPos)iSelSize);
+    size_t iSelSize = SciCall_GetSelText(NULL) - 1; // w/o terminating zero
+    unsigned char * pchText = (unsigned char *)SciCall_GetRangePointer(iSelStart, (DocPos)iSelSize);
+    bool bAllocatedText = false;
 
-    size_t coded_size = 0;
-    char *const pBase64CodedTxt = (char *)(bEncode ? Encoding_Base64Encode(pchText, iSelSize, &coded_size) : 
-                                                     Encoding_Base64Decode(pchText, iSelSize, &coded_size));
+    if (bEncode && (codePage != Encoding_SciCP)) {
+        // TODO: convert to WCHAR, convert to cpi encoding, encode base64
+        WCHAR * wchText = (WCHAR *)AllocMem((iSelSize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY); // should be large enough
+        if (wchText) {
+            int const cwchTxt = MultiByteToWideChar(Encoding_SciCP, 0, (LPCCH)pchText, (int)iSelSize, wchText, (int)iSelSize);
+            // allocate conversion buffer for desired encoding
+            int const cmbchTxt = WideCharToMultiByte(codePage, 0, wchText, cwchTxt, NULL, 0, NULL, NULL);
+            pchText = (unsigned char *)AllocMem(cmbchTxt + 1, HEAP_ZERO_MEMORY);
+            if (pchText) {
+                iSelSize = (size_t)WideCharToMultiByte(codePage, 0, wchText, cwchTxt, (LPCH)pchText, cmbchTxt, NULL, NULL);
+                bAllocatedText = true;
+            } else {
+                iSelSize = 0ULL;
+            }
+            FreeMem(wchText);
+        } else {
+            iSelSize = 0ULL;
+        }
+    }
+    if (iSelSize == 0) {
+        if (bAllocatedText) {
+            FreeMem(pchText);
+        }
+        return;
+    }
+
+    size_t base64Size = 0;
+    char * pBase64CodedTxt = (char *)(bEncode ? Encoding_Base64Encode(pchText, iSelSize, &base64Size) : 
+                                                Encoding_Base64Decode(pchText, iSelSize, &base64Size));
+
+    if (bAllocatedText) {
+        FreeMem(pchText);
+    }
+
+    if (bDecode && (codePage != Encoding_SciCP)) {
+        // don't care if input is really a valid Base64 encoded byte-stream
+        WCHAR *wchText = (WCHAR *)AllocMem((base64Size + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY); // should be large enough
+        if (wchText) {
+            int const cwchTxt = MultiByteToWideChar(codePage, 0, pBase64CodedTxt, (int)base64Size, wchText, (int)base64Size);
+            // convert to SCI Encoding (UTF-8)
+            int const cmbchTxt = WideCharToMultiByte(Encoding_SciCP, 0, wchText, cwchTxt, NULL, 0, NULL, NULL);
+            FreeMem(pBase64CodedTxt);
+            pBase64CodedTxt = (char *)AllocMem(cmbchTxt + 1, HEAP_ZERO_MEMORY);
+            if (pBase64CodedTxt) {
+                base64Size = (size_t)WideCharToMultiByte(Encoding_SciCP, 0, wchText, cwchTxt, pBase64CodedTxt, cmbchTxt, NULL, NULL);
+            } else {
+                base64Size = 0ULL;
+            }
+            FreeMem(wchText);
+        } else {
+            base64Size = 0ULL;
+        }
+    }
+
+    _SAVE_TARGET_RANGE_;
 
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
-    DocPos const len = SciCall_ReplaceTarget((DocPos)coded_size, pBase64CodedTxt);
+
+    DocPos const len = (base64Size ? SciCall_ReplaceTarget(base64Size, pBase64CodedTxt) : SciCall_ReplaceTarget(0, ""));
+    FreeMem(pBase64CodedTxt);
 
     SciCall_SetSelectionStart(iSelStart);
     SciCall_SetSelectionEnd(iSelStart + len);
@@ -2023,7 +2079,6 @@ void EditBase64Code(HWND hwnd, const bool bEncode) {
 
     _RESTORE_TARGET_RANGE_;
 
-    FreeMem(pBase64CodedTxt);
 }
 
 

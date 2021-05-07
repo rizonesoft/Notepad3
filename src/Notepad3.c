@@ -3626,6 +3626,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_URLDECODE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_BASE64ENCODE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_BASE64DECODE, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_B64DECODESEL, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_PATH2URL, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_URL2PATH, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_INVERTBACKSLASH, !se && !ro);
@@ -4882,17 +4883,28 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_URLDECODE: {
         EditURLDecode(false);
-    } break;
+    } 
+    break;
 
 
     case IDM_EDIT_BASE64ENCODE: {
-        EditBase64Code(Globals.hwndEdit, true);
+        EditBase64Code(Globals.hwndEdit, true, Encoding_GetCurrent());
     }
     break;
 
     case IDM_EDIT_BASE64DECODE: {
-        EditBase64Code(Globals.hwndEdit, false);
-    } break;
+        EditBase64Code(Globals.hwndEdit, false, Encoding_GetCurrent());
+    }
+    break;
+
+    case IDM_EDIT_B64DECODESEL: {
+        cpi_enc_t iEncoding = Encoding_GetCurrent();
+        if (!SelectEncodingDlg(hwnd, &iEncoding)) {
+            break; // no selection
+        }
+        EditBase64Code(Globals.hwndEdit, false, iEncoding);
+    }
+    break;
 
 
     case IDM_EDIT_URL2PATH: {
