@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.506.(build_#) (2021-06-06)
+Current BETA/RC Version 5.21.511.(build_#) (2021-05-11)
 ========================================================
 
 --------------------------------------------------------
@@ -120,6 +120,11 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.511.1]- Space-width, avgchar-width and tab-width calculation.
+[.511.1]- Scintilla missing recalculation of space width (to get correct tab width for indentation).
+[.511.1]- Revert to Scintilla std  tabwidth calculation on font changes.
+[.511.1]- Preserve "2nd Common Base" styling state across restarts.
+[.511.1]- Default style settings should not be written to .ini-file.
 [.429.1]- Handling of "File Vars" vs. "Encoding Tags".
 [.427.1]- Minor fixes around font redrawing.
 [.423.1]- Add thread COM initializations.
