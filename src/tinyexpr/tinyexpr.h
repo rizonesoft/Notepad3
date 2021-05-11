@@ -108,6 +108,7 @@ void te_free(te_expr *n);
 /* ANSI codepage of te operators */
 inline unsigned te_cp() { return 1252U; }
 
+/* invalid default char for conversion */
 inline unsigned te_invalid_chr() { return '#'; }
 
 /* check for operator or special character. */
