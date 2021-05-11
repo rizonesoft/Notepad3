@@ -338,10 +338,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	someStylesForceCase = std::any_of(styles.cbegin(), styles.cend(),
 		[](const Style &style) noexcept { return style.caseForce != Style::CaseForce::mixed; });
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~tabWidth = spaceWidth * tabInChars;
-	tabWidth = aveCharWidth * tabInChars;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	tabWidth = spaceWidth * tabInChars;
 
 	controlCharWidth = 0.0;
 	if (controlCharSymbol >= 32) {
