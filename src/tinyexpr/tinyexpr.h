@@ -108,6 +108,8 @@ void te_free(te_expr *n);
 /* ANSI codepage of te operators */
 inline unsigned te_cp() { return 1252U; }
 
+inline unsigned te_invalid_chr() { return '#'; }
+
 /* check for operator or special character. */
 inline int te_is_op(const char* const expr) {
     if (!expr)

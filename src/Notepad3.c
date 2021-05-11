@@ -209,7 +209,7 @@ static const int NUMTOOLBITMAPS = 30;
 
 // ----------------------------------------------------------------------------
 
-const char chr_currency[6] = { '$', 0x80, 0xA2, 0xA3, 0xA5, '\0' }; // "$€¢£¥"
+const char chr_currency[6] = { '$', 0x80, 0xA2, 0xA3, 0xA5, '\0' }; // "$€¢£¥" CP-1252
 
 // ----------------------------------------------------------------------------
 
@@ -2104,10 +2104,13 @@ static bool _EvalTinyExpr(bool qmark)
             DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
             lineBuf[iLnCaretPos - (posSelStart - posBefore)] = '\0'; // exclude "=?"
 
-            char const defchar = (char)0x24;
+            char const defchar = (char)te_invalid_chr();
             MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, lineLen);
-            WideCharToMultiByte(te_cp(), (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
+            int const len = WideCharToMultiByte(te_cp(), (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
             FreeMem(lineBufW);
+            if (!len) {
+                return false;
+            }
 
             // canonicalize fetched line
             StrDelChrA(lineBuf, chr_currency);
