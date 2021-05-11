@@ -2096,17 +2096,17 @@ static bool _EvalTinyExpr(bool qmark)
 
             // canonicalize fetched line
             StrDelChrA(lineBuf, chr_currency);
-            const char *pBegin = lineBuf;
-            while (IsBlankCharA(*pBegin)) {
-                ++pBegin;
+            const char *p = lineBuf;
+            while (IsBlankCharA(*p)) {
+                ++p;
             }
 
             double dExprEval = 0.0;
             te_xint_t exprErr = 1;
-            while (*pBegin && exprErr) {
-                dExprEval = te_interp(pBegin, &exprErr);
+            while (*p && exprErr) {
+                dExprEval = te_interp(p, &exprErr);
                 // proceed to next possible expression
-                while (*pBegin && exprErr && !te_is_op(pBegin++)) {}
+                while (*++p && exprErr && !(te_is_num(p) || te_is_op(p))) {}
             }
             FreeMem(lineBuf);
 
