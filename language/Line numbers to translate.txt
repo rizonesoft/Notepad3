@@ -1,16 +1,20 @@
-====================================================================================================
-==                                                                                                ==
-==  This .txt file is intended for Translators to communicate to them the Line Mumbers of the     ==
-==  "Added/Modified" items in the Resource files ("xx_yy.rc" and "grepWinNP3.lang").              ==
-==                                                                                                ==
-==                                                      Latest update:  "May 2021" on 2021-05-06  ==
-====================================================================================================
+==========================================================================================================
+==                                                                                                      ==
+==   This ".txt" file is intended for "Translators" to communicate to them the "Line Numbers" of the    ==
+==   "Added or Modified" elements in the Resource files ("filename_xx_yy.rc" and "grepWinNP3.lang").    ==
+==                                                                                                      ==
+==                                                             Last update:  "May 2021" on 2021-05-07   ==
+==========================================================================================================
 
-March 2021:   Line numbers to translate_2021-03.png - https://workupload.com/file/MrtH6U2RhKC
+January 2022: Line numbers to translate_2022-01.png - 
 
-April 2021:   Line numbers to translate_2021-04.png - https://workupload.com/file/jcbdVpEBCfr  (updated)
+Fbruary 2022: Line numbers to translate_2022-02.png - 
 
-May 2021:     Line numbers to translate_2021-05.png - https://workupload.com/file/fW35WNxMa5y  (updated)
+March 2021:   Line numbers to translate_2021-03.png - https://workupload.com/file/MrtH6U2RhKC (2021-03-31)
+
+April 2021:   Line numbers to translate_2021-04.png - https://workupload.com/file/jcbdVpEBCfr (2021-04-29)
+
+May 2021:     Line numbers to translate_2021-05.png - https://workupload.com/file/B3Gq4QFHERL (2021-05-07)
 
 June 2021:    Line numbers to translate_2021-06.png - 
 
@@ -32,4 +36,4 @@ Comments and suggestions are welcome... 😃
 If you have any difficulties or questions, do not hesitate to contact me.
 
 hpwamr - MUI Coordinator
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------

@@ -53,7 +53,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] = {
     &lexStandard,      // Default Text
     &lexStandard2nd,   // 2nd Default Text
     &lexTEXT,          // Pure Text Files (Constants.StdDefaultLexerID = 2)
-    &lexANSI,          // ANSI Files
+    &lexANSI,          // ANSI Files (ASCII Art)
     &lexCONF,          // Apache Config Files
     &lexASM,           // Assembly Script
     &lexAHKL,          // AutoHotkey L Script
@@ -978,8 +978,7 @@ void Style_ToIniSection(bool bForceAll)
     const WCHAR* const IniSecStyles = Constants.Styles_Section;
 
     // auto select
-    bool const bUse2ndSty = Style_GetUse2ndDefault();
-    SAVE_STYLE_IF_NOT_EQ_DEFAULT(Bool, Use2ndDefaultStyle, bUse2ndSty, false);
+    SAVE_STYLE_IF_NOT_EQ_DEFAULT(Bool, Use2ndDefaultStyle, Style_GetUse2ndDefault(), false);
 
     // default scheme
     SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, DefaultScheme, s_iDefaultLexer, Constants.StdDefaultLexerID);
@@ -1150,8 +1149,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     // first set standard lexer's default values
     const PEDITLEXER pCurrentStandard = (IsLexerStandard(pLexNew)) ? pLexNew : GetCurrentStdLexer();
-
-    Style_SetUse2ndDefault(pCurrentStandard == &lexStandard2nd); // sync if forced
 
     // Set Lexer
     SciCall_SetILexer(CreateLexer(pLexNew->lexerName));
@@ -2491,7 +2488,7 @@ void Style_SetLexerFromID(HWND hwnd,int id)
 void Style_ToggleUse2ndDefault(HWND hwnd)
 {
     bool const use2ndDefStyle = Style_GetUse2ndDefault();
-    Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
+    Style_SetUse2ndDefault(!use2ndDefStyle); // swap
     if (IsLexerStandard(s_pLexCurrent)) {
         s_pLexCurrent = GetCurrentStdLexer(); // sync
     }
@@ -3242,16 +3239,16 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
 
-    // ---------  Special Styles  ---------
-
     int iFontQuality = Settings2.SciFontQuality;
     if (Style_StrGetFontQuality(lpszStyleDest, tch, COUNTOF(tch), &iFontQuality)) {
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), L"smoothing:");
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    } else if (Style_StrGetFontQuality(lpszStyleSrc, tch, COUNTOF(tch), &iFontQuality)) {
+    } else if (!bIsFontDefInDestination && Style_StrGetFontQuality(lpszStyleSrc, tch, COUNTOF(tch), &iFontQuality)) {
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), L"smoothing:");
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
+
+    // ---------  Special Styles  ---------
 
     if (Style_StrHasAttribute(lpszStyleDest, FontEffects[FE_EOLFILLED])) {
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), FontEffects[FE_EOLFILLED]);

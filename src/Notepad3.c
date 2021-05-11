@@ -9096,7 +9096,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // ------------------------------------------------------
 
     if (g_iStatusbarVisible[STATUS_2ND_DEF]) {
-        static bool s_bUse2ndDefault = -1;
+        static bool s_bUse2ndDefault = true;
         bool const bUse2ndDefault = Style_GetUse2ndDefault();
         if (bForceRedraw || (s_bUse2ndDefault != bUse2ndDefault)) {
             if (bUse2ndDefault)

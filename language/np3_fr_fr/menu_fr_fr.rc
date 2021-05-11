@@ -265,6 +265,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Base&64 Encodage",                                IDM_EDIT_BASE64ENCODE
             MENUITEM "Base6&4 Décodage",                                IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 Décodage comme ...",                       IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "&URL Encodage\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
             MENUITEM "URL &Décodage\tCtrl+Shift+R",                     IDM_EDIT_URLDECODE

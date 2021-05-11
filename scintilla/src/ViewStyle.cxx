@@ -339,9 +339,9 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 		[](const Style &style) noexcept { return style.caseForce != Style::CaseForce::mixed; });
 
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~tabWidth = spaceWidth * tabInChars;
-	tabWidth = aveCharWidth * tabInChars;
+	spaceWidth = surface.WidthText(styles[STYLE_DEFAULT].font.get(), " ");
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	tabWidth = spaceWidth * tabInChars;
 
 	controlCharWidth = 0.0;
 	if (controlCharSymbol >= 32) {
