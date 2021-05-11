@@ -338,9 +338,8 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	someStylesForceCase = std::any_of(styles.cbegin(), styles.cend(),
 		[](const Style &style) noexcept { return style.caseForce != Style::CaseForce::mixed; });
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	spaceWidth = surface.WidthText(styles[STYLE_DEFAULT].font.get(), " ");
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	aveCharWidth = styles[STYLE_DEFAULT].aveCharWidth;
+	spaceWidth = styles[STYLE_DEFAULT].spaceWidth;
 	tabWidth = spaceWidth * tabInChars;
 
 	controlCharWidth = 0.0;
