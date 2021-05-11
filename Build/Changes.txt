@@ -120,6 +120,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.511.2]- TinyExpr: expr need not start with blank.
+[.511.2]- TinyExpr: UTF-8 to ANSI-CP-1252 conversion should yield invalid characters instead of blank or currency.
 [.511.1]- Space-width, avgchar-width and tab-width calculation.
 [.511.1]- Scintilla missing recalculation of space width (to get correct tab width for indentation).
 [.511.1]- Revert to Scintilla std  tabwidth calculation on font changes.
