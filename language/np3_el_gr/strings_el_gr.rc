@@ -342,25 +342,25 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset161 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Ανάπτυξη:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'c1\\'ed\\'dc\\'f0\\'f4\\'f5\\'ee\\'e7\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Συνεισφέροντες:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'d3\\'f5\\'ed\\'e5\\'e9\\'f3\\'f6\\'dd\\'f1\\'ef\\'ed\\'f4\\'e5\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Βιβλιοθήκες:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / \\f1\\'c2\\'e9\\'e2\\'eb\\'e9\\'ef\\'e8\\'de\\'ea\\'e5\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Ευχαριστίες:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'c5\\'f5\\'f7\\'e1\\'f1\\'e9\\'f3\\'f4\\'df\\'e5\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Πόροι:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'d0\\'fc\\'f1\\'ef\\'e9\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 Άδειες χρήσης:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'a2\\'e4\\'e5\\'e9\\'e5\\'f2 \\'f7\\'f1\\'de\\'f3\\'e7\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 
 END
