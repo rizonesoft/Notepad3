@@ -50,7 +50,7 @@ extern "C" {
 
 typedef struct te_expr {
     int type;
-    union {double value; const double *bound; const void *function;};
+    union {double value; const double * bound; const void * function;};
 #if defined(TINYEXPR_USE_STATIC_MEMORY)
     void *parameters[TINYEXPR_MAX_PARAMETERS];
 #else
@@ -84,7 +84,7 @@ typedef struct te_variable {
 /* Cleans internal static memory and supporting variables. */
 void te_expr_clean_up(void);
 /* Returns memory usage for static memory test. */
-void te_expr_memory_usage(unsigned int *count, unsigned int *count_max, unsigned int *free_error_count);
+void te_expr_memory_usage(unsigned int *count, unsigned int * count_max, unsigned int * free_error_count);
 #endif
 
 /* Parses the input expression, evaluates it, and frees it. */
@@ -93,7 +93,7 @@ double te_interp(const char *expression, te_xint_t* error);
 
 /* Parses the input expression and binds variables. */
 /* Returns NULL on error. */
-te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, te_xint_t* error);
+te_expr *te_compile(const char * expression, const te_variable * variables, int var_count, te_xint_t * error);
 
 /* Evaluates the expression. */
 double te_eval(const te_expr *n);
@@ -111,12 +111,15 @@ inline unsigned te_cp() { return 1252U; }
 /* invalid default char for conversion */
 inline unsigned te_invalid_chr() { return '#'; }
 
+/* invalid default char for conversion */
+inline unsigned te_is_num(const char * const pch) { return (pch && (*pch > 47) && (*pch < 58)); }
+
 /* check for operator or special character. */
-inline int te_is_op(const char* const expr) {
+inline int te_is_op(const char * const expr) {
     if (!expr)
         return !0;
     switch (*expr) {
-    case 0:
+    case '\0':
     case '+':
     case '-':
     case '*':

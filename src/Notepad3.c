@@ -407,9 +407,12 @@ static __forceinline bool CheckNotifyDocChangedEvent()
     return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
 }
 
-void IgnoreNotifyDocChangedEvent()
+void IgnoreNotifyDocChangedEvent(const bool bStealthMode)
 {
     InterlockedIncrement(&iNotifyChangeStackCounter);
+    if (bStealthMode) {
+        SciCall_SetModEventMask(SCI_MODEVENTMASK_NONE);
+    }
 }
 
 void ObserveNotifyDocChangedEvent()
@@ -418,6 +421,7 @@ void ObserveNotifyDocChangedEvent()
         InterlockedDecrement(&iNotifyChangeStackCounter);
     }
     if (CheckNotifyDocChangedEvent()) {
+        SciCall_SetModEventMask(SCI_MODEVENTMASK_FULL);
         EditUpdateVisibleIndicators();
         UpdateStatusbar(false);
     }
@@ -1905,19 +1909,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_AFTERVISIBLE);
     SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
 
-    // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED:
-    // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER,
-    // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER,
-    // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
-    //
-    ///~ int const evtMask = SC_MODEVENTMASKALL; (!) - don't listen to all events (SC_MOD_CHANGESTYLE) => RECURSON!
-    ///~ SciCall_SetModEventMask(evtMask);
-    ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE;
-    /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
-    //
-    int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO;
-    int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
-    SciCall_SetModEventMask(evtMask1 | evtMask2);
+    SciCall_SetModEventMask(SCI_MODEVENTMASK_FULL);
     SciCall_SetCommandEvents(false); // speedup folding
 
     SciCall_StyleSetCharacterSet(SC_CHARSET_DEFAULT);
@@ -2114,17 +2106,17 @@ static bool _EvalTinyExpr(bool qmark)
 
             // canonicalize fetched line
             StrDelChrA(lineBuf, chr_currency);
-            const char *pBegin = lineBuf;
-            while (IsBlankCharA(*pBegin)) {
-                ++pBegin;
+            const char *p = lineBuf;
+            while (IsBlankCharA(*p)) {
+                ++p;
             }
 
             double dExprEval = 0.0;
             te_xint_t exprErr = 1;
-            while (*pBegin && exprErr) {
-                dExprEval = te_interp(pBegin, &exprErr);
+            while (*p && exprErr) {
+                dExprEval = te_interp(p, &exprErr);
                 // proceed to next possible expression
-                while (*pBegin && exprErr && !te_is_op(pBegin++)) {}
+                while (*++p && exprErr && !(te_is_num(p) || te_is_op(p))) {}
             }
             FreeMem(lineBuf);
 
@@ -9708,6 +9700,7 @@ bool FileIO(bool fLoad, LPWSTR pszFileName, EditFileIOStatus *status,
 
     WCHAR tch[MAX_PATH + 40];
     FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
+    
     BeginWaitCursor(true, tch);
 
     if (fLoad) {
@@ -10022,7 +10015,9 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
 
         if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath)) {
             if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
+                IgnoreNotifyDocChangedEvent(true);
                 SciCall_ConvertEOLs(fioStatus.iEOLMode);
+                ObserveNotifyDocChangedEvent();
                 Globals.bDocHasInconsistentEOLs = false;
             }
             SciCall_SetEOLMode(fioStatus.iEOLMode);
