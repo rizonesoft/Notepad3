@@ -138,7 +138,7 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent();
+#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(false);
 #define EndUndoTransAction()    } __finally { EndUndoAction(_token_); ObserveNotifyDocChangedEvent(); } }
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
@@ -189,16 +189,17 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 // ----------------------------------------------------------------------------
 
-void IgnoreNotifyDocChangedEvent();
+void IgnoreNotifyDocChangedEvent(const bool bStealthMode);
 void ObserveNotifyDocChangedEvent();
-#define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent();
+
+#define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent(false);
 #define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); }
 
 // ----------------------------------------------------------------------------
 
 #define BeginWaitCursor(cond, text)           \
     __try {                                   \
-        IgnoreNotifyDocChangedEvent();        \
+        IgnoreNotifyDocChangedEvent(true);    \
         if (cond) {                           \
             SciCall_SetCursor(SC_CURSORWAIT); \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
@@ -206,7 +207,7 @@ void ObserveNotifyDocChangedEvent();
 
 #define BeginWaitCursorUID(cond, uid)         \
     __try {                                   \
-        IgnoreNotifyDocChangedEvent();        \
+        IgnoreNotifyDocChangedEvent(true);    \
         if (cond) {                           \
             SciCall_SetCursor(SC_CURSORWAIT); \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \

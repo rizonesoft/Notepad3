@@ -5372,7 +5372,10 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
 //
 void EditEnsureConsistentLineEndings(HWND hwnd)
 {
+    IgnoreNotifyDocChangedEvent(true);
     SciCall_ConvertEOLs(SciCall_GetEOLMode());
+    ObserveNotifyDocChangedEvent();
+
     Globals.bDocHasInconsistentEOLs = false;
     EditFixPositions(hwnd);
 }
