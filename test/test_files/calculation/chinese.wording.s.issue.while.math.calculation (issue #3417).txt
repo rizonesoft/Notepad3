@@ -1,0 +1,18 @@
+tip:
+"箱" in Chinese: means "box" in English;
+
+==========================================================wrong start==========================================================
+1箱6*3=48(the program regard it as 16*3=48, which is not expected;)
+1box6*3=3(the program regard it as 1*3=3, while not the same as above, also is not expected;)
+
+1箱:6*3=0.5(don't know why it's wrong with this format)
+1箱: 6*3=0.5(don't know why it's wrong with this format)
+==========================================================wrong end==========================================================
+
+==========================================================correct start==========================================================
+1箱 6*3=18
+1box 6*3=18
+1box:6*3=18(as above, this version of Chinese is expected to be correct)
+1box: 6*3=18(as above, this version of Chinese is expected to be correct)
+
+==========================================================correct end==========================================================
