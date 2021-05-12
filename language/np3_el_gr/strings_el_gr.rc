@@ -254,7 +254,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "&Γλώσσα / Language"
+    IDS_MUI_MENU_LANGUAGE   "&Γλώσσα"
     IDS_USE_LOCALE_DATEFMT  "Μορφή &ημερομηνίας βάσει γλώσσας"
     IDS_MUI_MENU_THEMES     "&Συλλογή συνδυασμών"
     IDM_THEMES_DEFAULT      "&Προεπιλεγμένη"
