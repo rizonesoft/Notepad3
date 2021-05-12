@@ -72,7 +72,6 @@ void   Style_SetIndentGuides(HWND hwnd,bool);
 void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch);
 bool   Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt, int cchExt, bool bSaveAs);
 bool   Style_StrGetFontName(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont);
-bool   Style_StrGetFontStyle(LPCWSTR lpszStyle,LPWSTR lpszFontStyle,int cchFontStyle);
 bool   Style_StrGetFontQuality(LPCWSTR lpszStyle, LPWSTR lpszQuality, int cchQuality, int *iSciQuality_out);
 bool   Style_StrGetCharSet(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i);
