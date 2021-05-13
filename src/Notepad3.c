@@ -4310,8 +4310,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_CRLF:
     case IDM_LINEENDINGS_CR:
     case IDM_LINEENDINGS_LF: {
-        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
         int const _eol_mode = (iLoWParam - IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
+        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
         SciCall_SetEOLMode(_eol_mode);
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         EndWaitCursor();
@@ -4542,25 +4542,35 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_INDENT:
+        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
+        EndUndoTransAction();
         break;
 
     case IDM_EDIT_UNINDENT:
+        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
+        EndUndoTransAction();
         break;
 
     case CMD_TAB:
+        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        EndUndoTransAction();
         break;
 
     case CMD_BACKTAB:
+        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
+        EndUndoTransAction();
         break;
 
     case CMD_CTRLTAB:
         SciCall_SetUseTabs(true);
         SciCall_SetTabIndents(false);
+        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        EndUndoTransAction();
         SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
         SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         break;
@@ -4594,7 +4604,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_PADWITHSPACES:
-        EditPadWithSpaces(Globals.hwndEdit, false, false);
+        UndoTransActionBegin();
+        EditPadWithSpaces(Globals.hwndEdit, false);
+        EndUndoTransAction();
         break;
 
 
@@ -7324,11 +7336,15 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
     static int _mod_insdel_token = -1;
+
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
         if (pnmh->code == SCN_MODIFIED) {
-            *bModified = true;
             int const iModType = scn->modificationType;
+            if ((iModType & SC_MULTISTEPUNDOREDO) && !(iModType & SC_LASTSTEPINUNDOREDO)) {
+                return TRUE;
+            }
+            *bModified = true;
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0)) {
@@ -9545,7 +9561,6 @@ bool RestoreAction(int token, DoAction doAct)
                 PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0);
             }
 
-
             int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
 
             PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
@@ -9604,7 +9619,7 @@ bool RestoreAction(int token, DoAction doAct)
                 break;
             }
         }
-        PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
+        PostMessage(hwndedit, SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
         PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     }
     return true;
@@ -9721,7 +9736,9 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
     //bool const hasIrregularIndentDepth = (status->indentCount[I_TAB_MOD_X] > 0) || (status->indentCount[I_SPC_MOD_X] > 0);
 
     if (hasTabOrSpaceIndent || hasMixedIndents /*|| hasIrregularIndentDepth */) {
+
         if (WarnIndentationDlg(Globals.hwndMain, status)) {
+
             bool const useTabs = SciCall_GetUseTabs();
             SciCall_SetUseTabs(status->iGlobalIndent == I_TAB_LN);
             bool const tabIndents = SciCall_GetTabIndents();
@@ -9729,12 +9746,17 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
             bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
             SciCall_SetBackSpaceUnIndents(true);
 
+            UndoTransActionBegin();
             EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
             EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
+            EndUndoTransAction();
 
             SciCall_SetUseTabs(useTabs);
             SciCall_SetTabIndents(tabIndents);
             SciCall_SetBackSpaceUnIndents(backSpcUnindents);
+
+            Sci_GotoPosChooseCaret(0);
+
         } else {
             status->iGlobalIndent = I_MIX_LN;
             return false;
@@ -9816,8 +9838,9 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         }
         Flags.bSettingsFileSoftLocked = false;
         UpdateSaveSettingsCmds();
-        COND_SHOW_ZOOM_CALLTIP();
-
+        if (SciCall_GetZoom() != 100) {
+            ShowZoomCallTip();
+        }
         return true;
     }
 
@@ -9973,7 +9996,9 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         // consistent settings file handling (if loaded in editor)
         Flags.bSettingsFileSoftLocked = (StringCchCompareXIW(Paths.CurrentFile, Paths.IniFile) == 0);
         UpdateSaveSettingsCmds();
-        COND_SHOW_ZOOM_CALLTIP();
+        if (SciCall_GetZoom() != 100) {
+            ShowZoomCallTip();
+        }
 
         // Show warning: Unicode file loaded as ANSI
         if (fioStatus.bUnicodeErr) {
