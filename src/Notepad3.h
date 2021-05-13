@@ -138,9 +138,6 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(false);
-#define EndUndoTransAction()    } __finally { EndUndoAction(_token_); ObserveNotifyDocChangedEvent(); } }
-
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
 void HandleColorDefClicked(HWND hwnd, const DocPos position);
@@ -192,8 +189,18 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 void IgnoreNotifyDocChangedEvent(const bool bStealthMode);
 void ObserveNotifyDocChangedEvent();
 
-#define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent(false);
-#define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); }
+// ----------------------------------------------------------------------------
+
+#define DocChangeTransactionBegin() \
+    __try {                         \
+        SciCall_BeginUndoAction();  \
+        IgnoreNotifyDocChangedEvent(false);
+#define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); SciCall_EndUndoAction(); }
+
+// ----------------------------------------------------------------------------
+
+#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(true);
+#define EndUndoTransAction()    } __finally { ObserveNotifyDocChangedEvent(); EndUndoAction(_token_); } }
 
 // ----------------------------------------------------------------------------
 
@@ -225,8 +232,6 @@ void ObserveNotifyDocChangedEvent();
     }
 
 // ----------------------------------------------------------------------------
-
-#define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
 
 // ----------------------------------------------------------------------------
 
