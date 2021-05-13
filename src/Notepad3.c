@@ -9746,18 +9746,17 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
             bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
             SciCall_SetBackSpaceUnIndents(true);
 
-            DocPos const iCurPos = SciCall_GetCurrentPos();
-
             UndoTransActionBegin();
             EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
             EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
             EndUndoTransAction();
 
-            Sci_GotoPosChooseCaret(iCurPos);
-
             SciCall_SetUseTabs(useTabs);
             SciCall_SetTabIndents(tabIndents);
             SciCall_SetBackSpaceUnIndents(backSpcUnindents);
+
+            Sci_GotoPosChooseCaret(0);
+
         } else {
             status->iGlobalIndent = I_MIX_LN;
             return false;
