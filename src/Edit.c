@@ -1431,7 +1431,9 @@ bool EditSaveFile(
 
     // ensure consistent line endings
     if (Settings.FixLineEndings) {
+        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
         EditEnsureConsistentLineEndings(hwnd);
+        EndWaitCursor();
     }
 
     // strip trailing blanks
@@ -3255,11 +3257,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 
     //~~~UndoTransActionBegin(); ~ do outside
 
-    DocPos const iInitialPos = SciCall_GetCurrentPos();
-    
     if (bForceAll) {
         SciCall_SelectAll();
-        SciCall_SwapMainAnchorCaret();
     }
 
     DocPos const iCurPos = SciCall_GetCurrentPos();
@@ -3323,9 +3322,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
             }
             EditSetSelectionEx(SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent, -1, -1);
         }
-        //EditScrollSelectionToView();
     } else {
-        Sci_GotoPosChooseCaret(iInitialPos);
+        Sci_ScrollChooseCaret();
     }
 
     //~~~EndUndoTransAction();  ~ do outside
@@ -5362,10 +5360,7 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
 //
 void EditEnsureConsistentLineEndings(HWND hwnd)
 {
-    IgnoreNotifyDocChangedEvent(true);
     SciCall_ConvertEOLs(SciCall_GetEOLMode());
-    ObserveNotifyDocChangedEvent();
-
     Globals.bDocHasInconsistentEOLs = false;
     EditFixPositions(hwnd);
 }

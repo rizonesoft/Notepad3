@@ -4310,8 +4310,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_CRLF:
     case IDM_LINEENDINGS_CR:
     case IDM_LINEENDINGS_LF: {
-        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
         int const _eol_mode = (iLoWParam - IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
+        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
         SciCall_SetEOLMode(_eol_mode);
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         EndWaitCursor();
@@ -9561,7 +9561,6 @@ bool RestoreAction(int token, DoAction doAct)
                 PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0);
             }
 
-
             int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
 
             PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
@@ -9620,7 +9619,7 @@ bool RestoreAction(int token, DoAction doAct)
                 break;
             }
         }
-        PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
+        PostMessage(hwndedit, SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
         PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     }
     return true;

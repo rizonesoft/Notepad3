@@ -191,10 +191,7 @@ void ObserveNotifyDocChangedEvent();
 
 // ----------------------------------------------------------------------------
 
-#define DocChangeTransactionBegin() \
-    __try {                         \
-        SciCall_BeginUndoAction();  \
-        IgnoreNotifyDocChangedEvent(false);
+#define DocChangeTransactionBegin()  __try { SciCall_BeginUndoAction(); IgnoreNotifyDocChangedEvent(false);
 #define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); SciCall_EndUndoAction(); }
 
 // ----------------------------------------------------------------------------
