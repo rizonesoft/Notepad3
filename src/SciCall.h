@@ -160,6 +160,7 @@ DeclareSciCallV1(SetLayoutCache, SETLAYOUTCACHE, int, cache);
 DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int);
 DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache);
 // Event Masks
+DeclareSciCallR0(GetModEventMask, GETMODEVENTMASK, int);
 DeclareSciCallV1(SetModEventMask, SETMODEVENTMASK, int, mask);
 DeclareSciCallV1(SetCommandEvents, SETCOMMANDEVENTS, bool, flag);
 // Code Page
@@ -757,7 +758,7 @@ inline void Sci_ScrollToLine(const DocLn line)
     if (!SciCall_GetLineVisible(line)) {
         SciCall_EnsureVisible(line);
     }
-    SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line));
+    SciCall_ScrollRange(SciCall_GetLineEndPosition(line), SciCall_PositionFromLine(line));
 }
 inline void Sci_ScrollToCurrentLine()
 {

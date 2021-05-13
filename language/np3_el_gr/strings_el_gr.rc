@@ -118,119 +118,119 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "Αρχεία bitmap (*.bmp)|*.bmp|Όλα τα αρχεία (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Επιλέξτε τον κατάλογο με συνδέσμους προς τις αγαπημένες σας εφαρμογές."
     IDS_MUI_FAVORITES       "Επιλέξτε τον κατάλογο με συνδέσμους προς τα αγαπημένα σας αρχεία."
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDS_MUI_BACKSLASHHELP   "Μετασχηματισμοί ανάστροφης καθέτου\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tΑλλαγή σελίδας (FF, Ascii 12)\n\\n\tΝέα γραμμή (LF, Ascii 10)\n\\r\tΑλλαγή παραγράφου (CR, Ascii 13)\n\\t\tΟριζόντια εσοχή (HT, Ascii 9)\n\\v\tΚάθετη εσοχή (VT, Ascii 11)\n\\0oo\tΟκταδική τιμή\n\\u####\tΔεκαεξαδική τιμή\n\\xhh\tΔεκαεξαδική τιμή\n\\\\\tΑνάστροφη κάθετος"
+    IDS_MUI_REGEXPHELP      "Σύνταξη συμφωνίας RegExp (Πολλές γραμμές)\n\n.\tΣυμφωνία με οποιονδήποτε χαρακτήρα\n^\tΚενή συμβολοσειρά αμέσως μετά τη Νέα γραμμή\n$\tΚενή συμβ/σειρά αμέσως πριν το Τέλος της γραμμής\n\\<\tΈναρξη μιας λέξης\n\\>\tΤέλος μιας λέξης\n\\b\tΌριο λέξης\n[...]\tΈνα σύνολο χαρακτήρων ([abc]) ή ένα εύρος ([a-z])\n[^...]\tΧαρακτήρες ΕΚΤΟΣ του συνόλου ή του εύρους\n\\d\tΟποιοδήποτε δεκαδικό ψηφίο\n\\D\tΟποιοσδήποτε μη αριθμητικός χαρακτήρας\n\\s\tΟποιοσδήποτε κενός χαρακτήρας\n\\S\tΜη κενός χαρακτήρας\n\\w\tΟποιοσδήποτε χαρακτήρας σε ""λέξη""\n\\W\tΟποιοσδήποτε χαρακτήρας ""εκτός λέξης""\n\\x\tΧαρακτήρας διαφυγής με διαφορετική ιδιαίτερη σημασία\n\\xHH\tΧαρακτήρας με δεκαεξαδικό κωδικό ΗΗ\n?\tΣυμφωνίες που προηγούνται 0 ή 1 φορά\n*\tΣυμφωνίες που προηγούνται 0 ή παραπάνω φορές\n+\tΣυμφωνίες που προηγούνται 1 ή παραπάνω φορές\n*? ή +?\tΜη διευρυμ. συμφωνία των ποσοδεικτών ""?"" και ""+""\n(\tΑρχή μιας περιοχής\n)\tΤέλος μιας περιοχής\n\\n\tΑναφέρεται σε μια περιοχή κατά την αντικατάσταση (το n είναι 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Αναζήτηση με μπαλαντέρ\n\n*\tΣυμφωνία με κανέναν ή περισσότερους χαρακτήρες.\n?\tΣυμφωνία ακριβώς με έναν χαρακτήρα. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
-    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
+    IDS_MUI_ERR_LOADFILE    "Σφάλμα φόρτωσης του ""%s""."
+    IDS_MUI_ERR_SAVEFILE    "Σφάλμα αποθήκευσης του ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Σφάλμα '%s'. Αιτία:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "Δεν βρέθηκε το πρόσθετο περιήγησης αρχείων.\nΜπορείτε να κάνετε λήψη του πρόσθετου περιήγησης αρχείων MiniPath από https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "Δεν βρέθηκε το πρόσθετο αναζήτησης αρχείων.\nΜπορείτε να κάνετε λήψη του πρόσθετου αναζήτησης αρχείων grepWinNP3 από https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "Δεν υπάρχει πρόσβαση στο επιλεγμένο αρχείο!\nΘέλετε να το καταργήσετε από τη λίστα;"
+    IDS_MUI_ERR_CREATELINK  "Σφάλμα κατά τη δημιουργία συνδέσμου στην επιφάνεια εργασίας."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
-    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+                            "Το τρέχον παράθυρο του Notepad3 είναι απασχολημένο ή έχει ενεργό παράθυρο διαλόγου.\nΘέλετε να ανοίξετε ένα άλλο παράθυρο του Notepad3;"
+    IDS_MUI_ERR_ENCODINGNA  "Οι πίνακες μετατροπής κωδικοσελίδας για την επιλεγμένη κωδικοποίηση δεν είναι διαθέσιμοι στο σύστημά σας."
+    IDS_MUI_ERR_UNICODE     "Σφάλμα κατά τη μετατροπή αυτού του Unicode αρχείου.\nΤα δεδομένα θα χαθούν εάν αποθηκευτεί το αρχείο!"
+    IDS_MUI_ERR_BITMAP      "Σφάλμα φόρτωσης της εικόνας bitmap ""%s"".\nΑπαιτούμενες διαστάσεις: %i x %i (πλάτος >= %i x ύψος)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error elevating user rights!"
+                            "Σφάλμα αναβάθμισης των δικαιωμάτων χρήστη!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
-    IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
+    IDS_MUI_ERR_UNICODE2    "Ορισμένοι χαρακτήρες στο τρέχον κείμενο δεν υποστηρίζονται από την επιλεγμένη κωδικοποίηση και ενδέχεται να αντικατασταθούν από προεπιλεγμένα σύμβολα κράτησης θέσης κατά την αποθήκευση. Συνιστάται να επιλέξετε μια άλλη κωδικοποίηση αρχείων. Συνέχεια;"
+    IDS_MUI_ERR_DROP        "Μόνο ένα αρχείο μπορεί να απορριφθεί κάθε φορά"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
+                            "Δεν είναι δυνατή η αποθήκευση του αρχείου ""%s"" επειδή μπορεί να προστατεύεται.\n\nΘέλετε να εκκινήσετε το %s με Αυξημένα δικαιώματα;"
+    IDS_MUI_ERR_ADMINEXE    "Δεν βρέθηκε εκτελέσιμο διαχειριστή.\nΔείτε στην ιστοσελίδα https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Are you sure you want to open this large file?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Είστε βέβαιος ότι θέλετε να ανοίξετε αυτό το μεγάλο αρχείο;\n\t(μέγεθος: %s >= %s)!\n(Το Στυλ και η Επισήμανση σύνταξης δεν θα εφαρμοστούν!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "Can't handle that huge file (size: %s)!"
+                            "Δεν είναι δυνατός ο χειρισμός αυτού του τεράστιου αρχείου (μέγεθος: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Unknown file name extension (%s)!\nLoading data anyway?"
+                            "Άγνωστη επέκταση ονόματος αρχείου (%s)!\nΦόρτωση δεδομένων οπωσδήποτε;"
     IDS_MUI_INDENT_CONSISTENT  "Το αρχείο έχει μια σταθερή εσοχή!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_EOLMODENAME_CR     "Παλαιό Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "Θέλετε να γίνει ομαλοποίηση όλων των καταλήξεων γραμμών σε '%s';"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
-    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
+    IDS_MUI_SELRECT         "Αυτή η λειτουργία δεν μπορεί να εκτελεστεί σε ορθογώνια επιλογή."
+    IDS_MUI_SELMULTI        "Αυτή η λειτουργία δεν μπορεί να εκτελεστεί σε πολλαπλή επιλογή."
+    IDS_MUI_SELRECTORMULTI  "Αυτή η λειτουργία δεν μπορεί να εκτελεστεί σε ορθογώνια ή πολλαπλή επιλογή."
+    IDS_MUI_BUFFERTOOSMALL  "Αυτή η λειτουργία δεν μπορεί να εκτελεστεί (οι γραμμές είναι πολύ μεγάλες)."
     IDS_MUI_FIND_WRAPFW     "Η αναζήτηση έφτασε στο τέλος του εγγράφου. Επανεκκίνηση της αναζήτησης από την αρχή."
     IDS_MUI_FIND_WRAPRE     "Η αναζήτηση έφτασε στην αρχή του εγγράφου. Επανεκκίνηση της αναζήτησης από το τέλος."
     IDS_MUI_NOTFOUND        "Το καθορισμένο κείμενο δεν βρέθηκε."
     IDS_MUI_REPLCOUNT       "%i εμφανίσεις του καθορισμένου κειμένου έχουν αντικατασταθεί."
-    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
+    IDS_MUI_ASK_ENCODING    "Η εναλλαγή κωδικοποίησης αρχείου από μία κωδικοποίηση σε άλλη μπορεί να αντικαταστήσει το μη υποστηριζόμενο κείμενο με προεπιλεγμένους χαρακτήρες και το ιστορικό αναίρεσης θα απαλειφθεί. Συνέχεια;"
+    IDS_MUI_ASK_ENCODING2   "Πρόκειται να αλλάξετε την κωδικοποίηση ενός κενού αρχείου. Σημειώστε ότι αυτό θα διαγράψει το ιστορικό αναίρεσης, καθώς δεν μπορεί να συγχρονιστεί με τη νέα κωδικοποίηση. Συνέχεια;"
     IDS_MUI_READONLY_SAVE   "Το ""%s"" είναι μόνο για ανάγνωση. Να αποθηκευτεί σε διαφορετικό αρχείο;"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program. Reload?"
-    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
+                            "Το τρέχον αρχείο έχει τροποποιηθεί από ένα εξωτερικό πρόγραμμα. Να φορτωθεί ξανά;"
+    IDS_MUI_FILECHANGENOTIFY2 "Το τρέχον αρχείο έχει διαγραφεί. Να γίνει αποθήκευση τώρα;"
+    IDS_MUI_FILELOCK_ERROR  "Δεν είναι δυνατή η απόκτηση αποκλειστικού κλειδώματος αρχείου για το ""%s""!"
+    IDS_MUI_STICKYWINPOS    "Το καρφίτσωμα θέσης παραθύρου είναι ενεργοποιημένο. Τυχόν νέα παράθυρα του Notepad3 θα χρησιμοποιούν τις τρέχουσες ρυθμίσεις θέσης παραθύρου."
+    IDS_MUI_SAVEDSETTINGS   "Οι τρέχουσες ρυθμίσεις προγράμματος έχουν αποθηκευτεί."
+    IDS_MUI_CREATEINI_FAIL  "Σφάλμα κατά τη δημιουργία του αρχείου διαμόρφωσης."
+    IDS_MUI_WRITEINI_FAIL   "Σφάλμα κατά την εγγραφή των ρυθμίσεων στο αρχείο διαμόρφωσης."
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "Το αρχείο διαμόρφωσης είναι μόνο για ανάγνωση. Παράβλεψη και παράκαμψη των ρυθμίσεων;"
     IDS_MUI_SETTINGSNOTSAVED
-                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+                            "Δεν βρέθηκε υπάρχον αρχείο διαμόρφωσης.\nΓια να διατηρήσετε τις τροποποιήσεις του στυλ σας, αποθηκεύστε τις ρυθμίσεις τώρα (F7) ή επιστρέψτε στη διαμόρφωση συνδυασμούς (Ctrl+F12) και εξαγάγετε τα στυλ σας."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by program relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
-    IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_RELOADSETTINGS   "Ενεργοποίηση των αποθηκευμένων ρυθμίσεων με επανεκκίνηση του προγράμματος;\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Συνεχίζοντας χωρίς επανεκκίνηση, οι αποθηκευμένες ρυθμίσεις δεν θα εφαρμοστούν και θα αντικατασταθούν από τις εσωτερικές ρυθμίσεις στην έξοδο του προγράμματος!"
+    IDS_MUI_EXPORT_FAIL      "Σφάλμα κατά την εξαγωγή των ρυθμίσεων στυλ στο ""%s""."
+    IDS_MUI_REGEX_INVALID    "Σφάλμα κατά την αξιολόγηση της κανονικής έκφρασης. Η έκφραση δεν είναι έγκυρη!"
+    IDS_MUI_DROP_NO_FILE     "Δεν ανακτήθηκε έγκυρο όνομα αρχείου.\nΕάν χρησιμοποιείται μια εφαρμογή 32-bit,\nκάντε μεταφορά κι απόθεση στη γραμμή εργαλείων του Notepad3."
+    IDS_MUI_URL_DIR_EXISTS   "Υπάρχει καθορισμένος κατάλογος διευθύνσεων URL!"
+    IDS_MUI_URL_FILE_EXISTS  "Υπάρχει καθορισμένο αρχείο διευθύνσεων URL!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+                             "Η καθορισμένη διαδρομή URL δεν βρέθηκε!"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Κλικ για άνοιγμα του αρχείου."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Κλικ για άνοιγμα του συνδέσμου στον περιηγητή."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
+                             "Η διατήρηση της αρχικής χρονοσήμανσης μεταβολής του αρχείου είναι ενεργοποιημένη.\nΑυτή η επιλογή θα παραμείνει για αυτή την σύνοδο!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Δεν υπάρχουν άλλοι δείκτες εμφάνισης (Σελιδοδείκτης/Επισήμανση)!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Αποθήκευση των αλλαγών σε:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
+    IDS_MUI_ASK_REVERT      "Επαναφορά του αρχείου στην τελευταία αποθηκευμένη κατάσταση;"
     IDS_MUI_ASK_RECODE      "Η επανακωδικοποίηση απαιτεί επαναφόρτωση του αρχείου από το δίσκο. Οι μη αποθηκευμένες αλλαγές θα χαθούν!"
-    IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
+    IDS_MUI_ASK_CREATE      "Το ""%s"" δεν βρέθηκε.\nΘέλετε να δημιουργήσετε αυτό το αρχείο;"
     IDS_MUI_PRINT_HEADER    "Όνομα αρχείου, Τρέχουσα ημερομηνία και ώρα|Όνομα αρχείου, Τρέχουσα ημερομηνία|Όνομα αρχείου|Να μείνει κενό"
     IDS_MUI_PRINT_FOOTER    "Αριθμός σελίδας|Να μείνει κενό"
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
-    IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_PRINT_COLOR     "Κανονική|Αντιστροφή φωτός (σκούρο φόντο)|Μαύρο σε λευκό|Έγχρωμο σε λευκό|Έγχρωμο σε λευκό (εκτός αρίθμησης γραμμών)|Χρώματα οθόνης"
+    IDS_MUI_PRINT_PAGENUM   "Σελίδα %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed."
-    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "A shortcut to the current file has been created in the favourites directory."
-    IDS_MUI_FAV_FAILURE     "The shortcut to the current file could not be created.\nMake sure there's no other file with the same name."
-    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified."
-    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
+    IDS_MUI_PRINT_EMPTY     "Αυτό το έγγραφο δεν περιέχει κάποιο κείμενο για εκτύπωση."
+    IDS_MUI_PRINT_ERROR     "Σφάλμα κατά την εκτύπωση του ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "Μια συντόμευση για το τρέχον αρχείο έχει δημιουργηθεί στον κατάλογο αγαπημένων."
+    IDS_MUI_FAV_FAILURE     "Δεν ήταν δυνατή η δημιουργία συντόμευσης για το τρέχον αρχείο.\nΒεβαιωθείτε ότι δεν υπάρχει άλλο αρχείο με το ίδιο όνομα."
+    IDS_MUI_READONLY_MODIFY "Δεν ήταν δυνατή η τροποποίηση των χαρακτηριστικών του ""%s""."
+    IDS_MUI_SAVEPOS         "&Αποθήκευση θέσης\tCtrl+S"
+    IDS_MUI_RESETPOS        "&Επαναφορά θέσης\tCtrl+R"
+    IDS_MUI_PREVIEW         "&Προεπισκόπηση ρυθμίσεων\tCtrl+P"
     IDS_MUI_PASS_FAILURE    "Η φράση πρόσβασης είναι εσφαλμένη.\nΕπανάληψη με άλλη φράση πρόσβασης;"
-    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
+    IDS_MUI_NOPASS          "Η αποκρυπτογράφηση ακυρώθηκε!\nΑνάγνωση των κρυπτογραφημένων ανεπεξέργαστων δεδομένων;"
     IDS_MUI_STY_BASESTD     "ΒΑΣΙΚΟ (Προεπιλεγμένο στυλ):"
     IDS_MUI_STY_BASE2ND     "ΒΑΣΙΚΟ (2ο προεπιλεγμένο στυλ):"
     IDS_MUI_STY_LEXDEF      "%s - Προεπιλεγμένο στυλ:"
@@ -247,9 +247,9 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Στυλ '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Στυλ '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Συσχετισμένες επεκτάσεις ονομάτων αρχείων:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Line (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %ti):"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Συμφωνία μηδενικού μήκους"
+    IDS_MUI_GOTO_LINE       "Γραμμή (1 - %ti):"
+    IDS_MUI_GOTO_COLUMN     "Στήλη (1 - %ti):"
 END
 
 STRINGTABLE
@@ -263,22 +263,22 @@ BEGIN
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Απαλοιφή όλων"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Απαλοιφή ιστορικού αναζήτησης"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top  %s"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom  %s"
+                            "Απαλοιφή ιστορικού αντικατάστασης"
+    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
+    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Σήμανση όλων των εμφανίσεων..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Εναλλαγή προβολής..."
+    IDS_MUI_SB_REPLACE_ALL    "Αντικατάσταση όλων..."
+    IDS_MUI_SB_WRAP_LINES     "Αναδίπλωση γραμμών..."
+    IDS_MUI_SB_CONV_LNBRK     "Μετατροπή αλλαγών γραμμών..."
     IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_LEXER_STYLING  "Εφαρμογή στυλ του Lexer..."
 END
 
 STRINGTABLE
@@ -342,25 +342,25 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset161 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'c1\\'ed\\'dc\\'f0\\'f4\\'f5\\'ee\\'e7\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Contributors:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'d3\\'f5\\'ed\\'e5\\'e9\\'f3\\'f6\\'dd\\'f1\\'ef\\'ed\\'f4\\'e5\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Libraries:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / \\f1\\'c2\\'e9\\'e2\\'eb\\'e9\\'ef\\'e8\\'de\\'ea\\'e5\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Acknowledgments:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'c5\\'f5\\'f7\\'e1\\'f1\\'e9\\'f3\\'f4\\'df\\'e5\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Resources:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'d0\\'fc\\'f1\\'ef\\'e9\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 Licences:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'a2\\'e4\\'e5\\'e9\\'e5\\'f2 \\'f7\\'f1\\'de\\'f3\\'e7\\'f2\\f0 :\\ul0\\b0\\fs18\\par\
 "
 
 END

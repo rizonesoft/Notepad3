@@ -75,7 +75,7 @@ void EditEncloseSelection(LPCWSTR pszOpen, LPCWSTR pszClose);
 typedef enum _lncmntmode { LNC_TOGGLE, LNC_ADD, LNC_REMOVE } LnCmtMode_t;
 void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCmtMode_t mode);
 void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart);
-void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup);
+void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty);
 void EditStripFirstCharacter(HWND hwnd);
 void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlanksOnly);
 void EditCompressBlanks();

@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Επανα&φορά από αρχείο\tF5",             IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "Παρά&βλεψη μεταβλητών του αρχείου",     CMD_IGNORE_FILE_VARS
         POPUP "&Κωδικοποίηση"
         BEGIN
             POPUP "Επανα&φορά από αρχείο ως"
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "Μετατροπή διαστημάτων εσο&χής σε στηλοθέτες\tCtrl+Alt+T",     IDM_EDIT_CONVERTSPACES2
             MENUITEM "Μετατροπή στηλοθετών εσ&οχής σε διαστήματα\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage ...",     IDM_EDIT_B64DECODESEL
+            MENUITEM "Κωδικοποίηση Base&64",                          IDM_EDIT_BASE64ENCODE
+            MENUITEM "Αποκωδικοποίηση Base6&4",                       IDM_EDIT_BASE64DECODE
+            MENUITEM "Αποκωδικοποίηση Base64 σε κωδικοσελίδα...",     IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "Κ&ωδικοποίηση URL\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
             MENUITEM "&Αποκωδικοποίηση URL\tCtrl+Shift+R",      IDM_EDIT_URLDECODE
