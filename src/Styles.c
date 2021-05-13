@@ -1002,7 +1002,8 @@ void Style_ToIniSection(bool bForceAll)
     }
     // ----------------------------------------------------------------
 
-    WCHAR wchCurrStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+    WCHAR wchCurrentStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+    WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
 
@@ -1013,14 +1014,17 @@ void Style_ToIniSection(bool bForceAll)
 
             LPCWSTR const pszName = g_pLexArray[iLexer]->Styles[i].pszName;
             LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[i].szValue;
-            LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault; // normalized by 
+            LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
 
-            // normalize value for comparison
-            wchCurrStyle[0] = L'\0'; // empty
-            Style_CopyStyles_IfNotDefined(pszValue, wchCurrStyle, COUNTOF(wchCurrStyle));
+            // normalize values for comparison
+            wchCurrentStyle[0] = L'\0'; // empty
+            Style_CopyStyles_IfNotDefined(pszValue, wchCurrentStyle, COUNTOF(wchCurrentStyle));
 
-            if (bForceAllNotFromScratch || (StringCchCompareX(wchCurrStyle, pszDefault) != 0)) {
-                IniSectionSetString(Lexer_Section, pszName, wchCurrStyle);
+            wchDefaultStyle[0] = L'\0'; // empty
+            Style_CopyStyles_IfNotDefined(pszDefault, wchDefaultStyle, COUNTOF(wchDefaultStyle));
+
+            if (bForceAllNotFromScratch || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
+                IniSectionSetString(Lexer_Section, pszName, wchCurrentStyle);
             } else {
                 IniSectionDelete(Lexer_Section, pszName, false);
             }
@@ -3145,9 +3149,6 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
     // ---------   Font settings   ---------
-
-    //~WCHAR wchDefaultCodeFontName[LF_FACESIZE] = { L'\0' };
-    //~Style_StrGetFontName(L"font:$Code", wchDefaultCodeFontName, COUNTOF(wchDefaultCodeFontName)); // resolve
 
     bool bIsFontDefInDestination = false;
 
