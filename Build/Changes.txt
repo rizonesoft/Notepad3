@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.512.(build_#) (2021-05-12)
+Current BETA/RC Version 5.21.513.(build_#) (2021-05-13)
 ========================================================
 
 --------------------------------------------------------
@@ -71,6 +71,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.513.1]- Canonicalize style section of .ini-settings.
 [.512.1]- Keep found initial common base default font in .ini.
 [.507.1]- Base64 Decoding: select source code-page for decoding.
 [.507.1]- Base64: default Encoding/Decoding based on current code-page
@@ -121,6 +122,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.513.1]- Go to doc begin after global indentation change.
+[.513.1]- Minor enhancements for selection scroll to view.
+[.513.1]- Optimized handling of multi-step undo/redo notifications.
 [.512.1]- Slow line-break toggle.
 [.511.2]- TinyExpr: expr need not start with blank.
 [.511.2]- TinyExpr: UTF-8 to ANSI-CP-1252 conversion should yield invalid characters instead of blank or currency.
