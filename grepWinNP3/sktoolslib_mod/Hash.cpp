@@ -22,7 +22,7 @@
 #include <vector>
 #include <Wincrypt.h>
 
-std::wstring GetHashText(const void* data, const size_t dataSize, HashType hashType)
+std::wstring GetHashText(const void* data, size_t dataSize, HashType hashType)
 {
     HCRYPTPROV hProv = NULL;
 

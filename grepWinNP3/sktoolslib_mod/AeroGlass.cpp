@@ -30,9 +30,9 @@
 #    define IsWindows10OrGreater()    (IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WIN10), LOBYTE(_WIN32_WINNT_WIN10), 0))
 #endif
 
-typedef HRESULT(__stdcall* DWM_EXTEND_FRAME_INTO_CLIENT_AREA)(HWND, const MARGINS*);
-typedef HRESULT(__stdcall* DWM_IS_COMPOSITION_ENABLED)(BOOL* pfEnabled);
-typedef HRESULT(__stdcall* DWM_ENABLE_COMPOSITION)(UINT uCompositionAction);
+using DWM_EXTEND_FRAME_INTO_CLIENT_AREA = HRESULT(__stdcall* )(HWND, const MARGINS*);
+using DWM_IS_COMPOSITION_ENABLED = HRESULT(__stdcall* )(BOOL* pfEnabled);
+using DWM_ENABLE_COMPOSITION = HRESULT(__stdcall* )(UINT uCompositionAction);
 
 CDwmApiImpl::CDwmApiImpl()
     : m_hDwmApiLib(nullptr)
@@ -132,28 +132,28 @@ BOOL CUxThemeAeroImpl::Initialize()
     return IsInitialized();
 }
 
-typedef HRESULT(__stdcall* BUFFERED_PAINT_INIT)();
-typedef HTHEME(__stdcall* OPEN_THEME_DATA)(HWND hwnd, LPCWSTR pszClassList);
-typedef HRESULT(__stdcall* CLOSE_THEME_DATA)(HTHEME hTheme);
-typedef HPAINTBUFFER(__stdcall* BEGIN_BUFFERED_PAINT)(HDC hdcTarget, const RECT* prcTarget, BP_BUFFERFORMAT dwFormat, BP_PAINTPARAMS* pPaintParams, HDC* phdc);
-typedef HRESULT(__stdcall* END_BUFFERED_PAINT)(HPAINTBUFFER hBufferedPaint, BOOL fUpdateTarget);
-typedef HRESULT(__stdcall* DRAW_THEME_TEXT_EX)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS* pOptions);
-typedef HRESULT(__stdcall* GET_THEME_INT)(HTHEME hTheme, int iPartId, int iStateId, int iPropId, int* piVal);
-typedef HRESULT(__stdcall* GET_THEME_SYS_FONT)(HTHEME hTheme, int iFontId, LOGFONTW* plf);
-typedef HRESULT(__stdcall* BUFFERED_PAINT_SET_ALPHA)(HPAINTBUFFER hBufferedPaint, const RECT* prc, BYTE alpha);
-typedef HRESULT(__stdcall* DRAW_THEME_BACKGROUND)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, const RECT* pRect, const RECT* pClipRect);
-typedef HRESULT(__stdcall* GET_THEME_BKG_CONTENT_RECT)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect);
-typedef HRESULT(__stdcall* GET_THEME_BKG_CONTENT_EXTENT)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pContentRect, LPRECT pExtentRect);
-typedef HRESULT(__stdcall* GET_THEME_BITMAP)(HTHEME hTheme, int iPartId, int iStateId, int iPropId, ULONG dwFlags, HBITMAP* phBitmap);
-typedef HRESULT(__stdcall* DRAW_THEME_PARENT_BACKGROUND)(HWND hwnd, HDC hdc, const RECT* prc);
-typedef BOOL(__stdcall* IS_THEME_BACKGROUND_PARTIALLY_TRANSPARENT)(HTHEME hTheme, int iPartId, int iStateId);
-typedef HRESULT(__stdcall* DRAW_THEME_TEXT)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int iCharCount, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect);
-typedef HRESULT(__stdcall* GET_THEME_COLOR)(HTHEME hTheme, int iPartId, int iStateId, int iPropId, COLORREF* pColor);
-typedef HRESULT(__stdcall* GET_THEME_PART_SIZE)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE* psz);
-typedef HRESULT(__stdcall* GET_THEME_POSITION)(HTHEME hTheme, int iPartId, int iStateId, int iPropId, POINT* pPoint);
-typedef HRESULT(__stdcall* GET_THEME_MARGINS)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPRECT prc, MARGINS* pMargins);
-typedef HRESULT(__stdcall* GET_THEME_METRIC)(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, int* piVal);
-typedef HRESULT(__stdcall* GET_THEME_RECT)(HTHEME hTheme, int iPartId, int iStateId, int iPropId, LPRECT pRect);
+using BUFFERED_PAINT_INIT = HRESULT(__stdcall* )();
+using OPEN_THEME_DATA = HTHEME(__stdcall* )(HWND hwnd, LPCWSTR pszClassList);
+using CLOSE_THEME_DATA = HRESULT(__stdcall* )(HTHEME hTheme);
+using BEGIN_BUFFERED_PAINT = HPAINTBUFFER(__stdcall* )(HDC hdcTarget, const RECT* prcTarget, BP_BUFFERFORMAT dwFormat, BP_PAINTPARAMS* pPaintParams, HDC* phdc);
+using END_BUFFERED_PAINT = HRESULT(__stdcall* )(HPAINTBUFFER hBufferedPaint, BOOL fUpdateTarget);
+using DRAW_THEME_TEXT_EX = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS* pOptions);
+using GET_THEME_INT = HRESULT(__stdcall* )(HTHEME hTheme, int iPartId, int iStateId, int iPropId, int* piVal);
+using GET_THEME_SYS_FONT = HRESULT(__stdcall* )(HTHEME hTheme, int iFontId, LOGFONTW* plf);
+using BUFFERED_PAINT_SET_ALPHA = HRESULT(__stdcall* )(HPAINTBUFFER hBufferedPaint, const RECT* prc, BYTE alpha);
+using DRAW_THEME_BACKGROUND = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, const RECT* pRect, const RECT* pClipRect);
+using GET_THEME_BKG_CONTENT_RECT = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect);
+using GET_THEME_BKG_CONTENT_EXTENT = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pContentRect, LPRECT pExtentRect);
+using GET_THEME_BITMAP = HRESULT(__stdcall* )(HTHEME hTheme, int iPartId, int iStateId, int iPropId, ULONG dwFlags, HBITMAP* phBitmap);
+using DRAW_THEME_PARENT_BACKGROUND = HRESULT(__stdcall* )(HWND hwnd, HDC hdc, const RECT* prc);
+using IS_THEME_BACKGROUND_PARTIALLY_TRANSPARENT = BOOL(__stdcall* )(HTHEME hTheme, int iPartId, int iStateId);
+using DRAW_THEME_TEXT = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int iCharCount, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect);
+using GET_THEME_COLOR = HRESULT(__stdcall* )(HTHEME hTheme, int iPartId, int iStateId, int iPropId, COLORREF* pColor);
+using GET_THEME_PART_SIZE = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE* psz);
+using GET_THEME_POSITION = HRESULT(__stdcall* )(HTHEME hTheme, int iPartId, int iStateId, int iPropId, POINT* pPoint);
+using GET_THEME_MARGINS = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPRECT prc, MARGINS* pMargins);
+using GET_THEME_METRIC = HRESULT(__stdcall* )(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, int* piVal);
+using GET_THEME_RECT = HRESULT(__stdcall* )(HTHEME hTheme, int iPartId, int iStateId, int iPropId, LPRECT pRect);
 
 BOOL CUxThemeAeroImpl::IsInitialized() const
 {
