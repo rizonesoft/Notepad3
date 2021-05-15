@@ -71,7 +71,7 @@ constexpr bool CheckBuildNumber(DWORD buildNumber)
     case 18363: // Win10 v1909
     case 19041: // Win10 v2004
     case 19042: // Win10 v20H2
-    case 19043: // Win10 v21H1 Insider Beta Channel [2021-03-15]
+    case 19043: // Win10 v21H1 Insider Beta and Release Preview Channels [2021-04-28]
     // unknown, if working with these version(s) :-O
     case 21382: // Win10 v21H2 Insider Dev Channel [2021-05-11]
         return true;
