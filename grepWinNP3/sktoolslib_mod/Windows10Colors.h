@@ -37,7 +37,7 @@ public:
      * RGBA color. Red is in the LSB, Alpha in the MSB.
      * You can use GetRValue() et al to access individual components.
      */
-    typedef DWORD RGBA;
+    using RGBA = DWORD;
 
     /// Accent color shades
     struct AccentColor
@@ -109,9 +109,9 @@ private:
     HMODULE            winrt           = nullptr;
     HMODULE            m_winrtString   = nullptr;
 
-    typedef HRESULT(STDAPICALLTYPE* PfnWindowsCreateStringReference)(
+    using PfnWindowsCreateStringReference = HRESULT(STDAPICALLTYPE* )(
         PCWSTR sourceString, UINT32 length, HSTRING_HEADER* hStringHeader, HSTRING* string);
     PfnWindowsCreateStringReference pWindowsCreateStringReference = nullptr;
-    typedef HRESULT(WINAPI* PfnRoActivateInstance)(HSTRING activatableClassId, IInspectable** instance);
+    using PfnRoActivateInstance = HRESULT(WINAPI* )(HSTRING activatableClassId, IInspectable** instance);
     PfnRoActivateInstance pRoActivateInstance = nullptr;
 };

@@ -28,7 +28,7 @@ class CNameDlg : public CDialog
 {
 public:
     CNameDlg(HWND hParent);
-    ~CNameDlg();
+    ~CNameDlg() override;
 
     std::wstring GetName() const { return m_name; }
     void         SetName(const std::wstring& n) { m_name = n; }

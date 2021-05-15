@@ -149,6 +149,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>shlwapi.lib;Urlmon.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -174,6 +175,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>shlwapi.lib;Urlmon.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -209,6 +211,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>shlwapi.lib;Urlmon.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -239,6 +242,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>shlwapi.lib;Urlmon.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -272,6 +276,7 @@
       <SetChecksum>true</SetChecksum>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>shlwapi.lib;Urlmon.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -300,6 +305,7 @@
       <SetChecksum>true</SetChecksum>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>shlwapi.lib;Urlmon.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -455,16 +461,16 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-    <Import Project="..\packages\boost.1.75.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.75.0.0\build\boost.targets')" />
-    <Import Project="..\packages\boost_iostreams-vc142.1.75.0.0\build\boost_iostreams-vc142.targets" Condition="Exists('..\packages\boost_iostreams-vc142.1.75.0.0\build\boost_iostreams-vc142.targets')" />
-    <Import Project="..\packages\boost_regex-vc142.1.75.0.0\build\boost_regex-vc142.targets" Condition="Exists('..\packages\boost_regex-vc142.1.75.0.0\build\boost_regex-vc142.targets')" />
+    <Import Project="..\packages\boost.1.76.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.76.0.0\build\boost.targets')" />
+    <Import Project="..\packages\boost_iostreams-vc142.1.76.0.0\build\boost_iostreams-vc142.targets" Condition="Exists('..\packages\boost_iostreams-vc142.1.76.0.0\build\boost_iostreams-vc142.targets')" />
+    <Import Project="..\packages\boost_regex-vc142.1.76.0.0\build\boost_regex-vc142.targets" Condition="Exists('..\packages\boost_regex-vc142.1.76.0.0\build\boost_regex-vc142.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\boost.1.75.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.75.0.0\build\boost.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_iostreams-vc142.1.75.0.0\build\boost_iostreams-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams-vc142.1.75.0.0\build\boost_iostreams-vc142.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_regex-vc142.1.75.0.0\build\boost_regex-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc142.1.75.0.0\build\boost_regex-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.76.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.76.0.0\build\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_iostreams-vc142.1.76.0.0\build\boost_iostreams-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams-vc142.1.76.0.0\build\boost_iostreams-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_regex-vc142.1.76.0.0\build\boost_regex-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc142.1.76.0.0\build\boost_regex-vc142.targets'))" />
   </Target>
 </Project>

@@ -30,7 +30,7 @@ class CMultiLineEditDlg : public CDialog
 {
 public:
     CMultiLineEditDlg(HWND hParent);
-    ~CMultiLineEditDlg();
+    ~CMultiLineEditDlg() override;
 
     void         SetString(const std::wstring& search) { m_regexText = search; }
     std::wstring GetSearchString() const { return m_regexText; }

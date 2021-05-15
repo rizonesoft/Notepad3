@@ -94,7 +94,7 @@ public:
 
     /// used in subclass templates to specify the correct string type
 
-    typedef S StringT;
+    using StringT = S;
 
 protected:
     //members
@@ -311,7 +311,7 @@ public:
      * Make the value type accessible to others.
      */
 
-    typedef T ValueT;
+    using ValueT = T;
 
     /**
      * Constructor.
@@ -1056,8 +1056,8 @@ typedef CKeyList<CRegString> CRegStringList;
 #    endif
 #endif
 
-typedef CRegDWORDCommon<CRegStdBase>  CRegStdDWORD;
-typedef CRegStringCommon<CRegStdBase> CRegStdString;
+using CRegStdDWORD = CRegDWORDCommon<CRegStdBase>;
+using CRegStdString = CRegStringCommon<CRegStdBase>;
 
 #ifdef _MAP_
 typedef CKeyList<CRegStdDWORD>  CRegStdDWORDList;

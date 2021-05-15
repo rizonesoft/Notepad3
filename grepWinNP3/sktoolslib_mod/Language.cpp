@@ -53,6 +53,9 @@ bool CLanguage::LoadFile(const std::wstring& path)
 
     lastLangPath = path;
 
+    // since stream classes still expect the filepath in char and not wchar_t
+    // we need to convert the filepath to multibyte first
+
     std::ifstream file;
     try
     {

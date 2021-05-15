@@ -234,9 +234,9 @@
 #endif
 
 #ifdef SI_CONVERT_WIN32
-#ifndef VC_EXTRALEAN
-#define VC_EXTRALEAN 1
-#endif
+//#ifndef VC_EXTRALEAN
+//#define VC_EXTRALEAN 1
+//#endif
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif

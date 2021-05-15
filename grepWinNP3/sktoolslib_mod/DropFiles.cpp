@@ -132,7 +132,6 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
             pszBuff++;
         }
         *pszBuff = 0;
-        pszBuff  = reinterpret_cast<wchar_t*>(reinterpret_cast<LPBYTE>(pDrop) + sizeof(DROPFILES));
         GlobalUnlock(hgDrop);
         pmedium->hGlobal        = hgDrop;
         pmedium->tymed          = TYMED_HGLOBAL;
@@ -262,12 +261,24 @@ STDMETHODIMP FileDataObject::SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, 
     return S_OK;
 }
 
-STDMETHODIMP FileDataObject::EnumFormatEtc(DWORD /*dwDirection*/, IEnumFORMATETC** ppenumFormatEtc)
+STDMETHODIMP FileDataObject::EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenumFormatEtc)
 {
     if (ppenumFormatEtc == nullptr)
         return E_POINTER;
 
-    return E_NOTIMPL;
+    *ppenumFormatEtc = nullptr;
+    switch (dwDirection)
+    {
+        case DATADIR_GET:
+            *ppenumFormatEtc = new CEnumFormatEtcHelper(m_vecFormatEtc);
+            if (*ppenumFormatEtc == nullptr)
+                return E_OUTOFMEMORY;
+            (*ppenumFormatEtc)->AddRef();
+            break;
+        default:
+            return E_NOTIMPL;
+    }
+    return S_OK;
 }
 
 STDMETHODIMP FileDataObject::DAdvise(FORMATETC* /*pformatetc*/, DWORD /*advf*/, IAdviseSink* /*pAdvSink*/, DWORD* /*pdwConnection*/)
@@ -389,6 +400,136 @@ HRESULT STDMETHODCALLTYPE FileDataObject::SetDropDescription(DROPIMAGETYPE image
     pDropDescription->type = image;
     GlobalUnlock(medium.hGlobal);
     return SetData(&fetc, &medium, TRUE);
+}
+
+void CEnumFormatEtcHelper::Init()
+{
+    m_formats[1].cfFormat = CF_PREFERREDDROPEFFECT;
+    m_formats[1].dwAspect = DVASPECT_CONTENT;
+    m_formats[1].lindex   = -1;
+    m_formats[1].ptd      = nullptr;
+    m_formats[1].tymed    = TYMED_HGLOBAL;
+
+    m_formats[0].cfFormat = CF_HDROP;
+    m_formats[0].dwAspect = DVASPECT_CONTENT;
+    m_formats[0].lindex   = -1;
+    m_formats[0].ptd      = nullptr;
+    m_formats[0].tymed    = TYMED_HGLOBAL;
+}
+
+CEnumFormatEtcHelper::CEnumFormatEtcHelper(const std::vector<FORMATETC>& vec)
+    : m_cRefCount(0)
+    , m_iCur(0)
+{
+    for (size_t i = 0; i < vec.size(); ++i)
+        m_vecFormatEtc.push_back(vec[i]);
+    Init();
+}
+
+CEnumFormatEtcHelper::CEnumFormatEtcHelper(const std::vector<FORMATETC*>& vec)
+    : m_cRefCount(0)
+    , m_iCur(0)
+{
+    for (size_t i = 0; i < vec.size(); ++i)
+        m_vecFormatEtc.push_back(*vec[i]);
+    Init();
+}
+
+STDMETHODIMP CEnumFormatEtcHelper::QueryInterface(REFIID refiid, void** ppv)
+{
+    *ppv = nullptr;
+    if (IID_IUnknown == refiid || IID_IEnumFORMATETC == refiid)
+        *ppv = this;
+
+    if (*ppv != nullptr)
+    {
+        static_cast<LPUNKNOWN>(*ppv)->AddRef();
+        return S_OK;
+    }
+    return E_NOINTERFACE;
+}
+
+ULONG STDMETHODCALLTYPE CEnumFormatEtcHelper::AddRef()
+{
+    return ++m_cRefCount;
+}
+
+ULONG STDMETHODCALLTYPE CEnumFormatEtcHelper::Release()
+{
+    --m_cRefCount;
+    if (m_cRefCount == 0)
+    {
+        delete this;
+        return 0;
+    }
+    return m_cRefCount;
+}
+
+STDMETHODIMP CEnumFormatEtcHelper::Next(ULONG celt, LPFORMATETC lpFormatEtc, ULONG* pceltFetched)
+{
+    if (celt <= 0)
+        return E_INVALIDARG;
+    if (pceltFetched == nullptr && celt != 1) // pceltFetched can be NULL only for 1 item request
+        return E_POINTER;
+    if (lpFormatEtc == nullptr)
+        return E_POINTER;
+
+    if (pceltFetched != nullptr)
+        *pceltFetched = 0;
+
+    if (m_iCur >= DRAG_NUMFORMATS)
+        return S_FALSE;
+
+    ULONG cReturn = celt;
+
+    while (m_iCur < (DRAG_NUMFORMATS + m_vecFormatEtc.size()) && cReturn > 0)
+    {
+        if (m_iCur < DRAG_NUMFORMATS)
+            *lpFormatEtc++ = m_formats[m_iCur++];
+        else
+            *lpFormatEtc++ = m_vecFormatEtc[m_iCur++ - DRAG_NUMFORMATS];
+        --cReturn;
+    }
+
+    if (pceltFetched != nullptr)
+        *pceltFetched = celt - cReturn;
+
+    return (cReturn == 0) ? S_OK : S_FALSE;
+}
+
+STDMETHODIMP CEnumFormatEtcHelper::Skip(ULONG celt)
+{
+    if ((m_iCur + static_cast<int>(celt)) >= (DRAG_NUMFORMATS + m_vecFormatEtc.size()))
+        return S_FALSE;
+    m_iCur += celt;
+    return S_OK;
+}
+
+STDMETHODIMP CEnumFormatEtcHelper::Reset()
+{
+    m_iCur = 0;
+    return S_OK;
+}
+
+STDMETHODIMP CEnumFormatEtcHelper::Clone(IEnumFORMATETC** ppCloneEnumFormatEtc)
+{
+    if (ppCloneEnumFormatEtc == nullptr)
+        return E_POINTER;
+
+    try
+    {
+        CEnumFormatEtcHelper* newEnum = new CEnumFormatEtcHelper(m_vecFormatEtc);
+
+        newEnum->AddRef();
+        newEnum->m_iCur       = m_iCur;
+        *ppCloneEnumFormatEtc = newEnum;
+    }
+    catch (const std::bad_alloc&)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    return S_OK;
 }
 
 CDropFiles::CDropFiles()

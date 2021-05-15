@@ -147,6 +147,7 @@
       <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <CETCompat>true</CETCompat>
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -210,6 +211,7 @@
       <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <CETCompat>true</CETCompat>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -276,6 +278,7 @@
       </ManifestFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <CETCompat>true</CETCompat>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -312,6 +315,7 @@
       <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <CETCompat>true</CETCompat>
     </Link>
     <ClCompile>
     </ClCompile>
@@ -350,6 +354,7 @@
       <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <CETCompat>true</CETCompat>
     </Link>
     <ClCompile>
     </ClCompile>
@@ -394,6 +399,7 @@
       </ManifestFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
+      <CETCompat>true</CETCompat>
     </Link>
     <ClCompile />
     <ClCompile>

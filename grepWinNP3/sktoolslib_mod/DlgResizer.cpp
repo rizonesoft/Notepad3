@@ -118,28 +118,28 @@ void CDlgResizer::DoResize(int width, int height)
         return;
 
     InvalidateRect(m_hDlg, nullptr, true);
-    HDWP hdwp = BeginDeferWindowPos(static_cast<int>(m_controls.size()));
+    HDWP hDwp = BeginDeferWindowPos(static_cast<int>(m_controls.size()));
 
-    wchar_t                               className[257]; // WNDCLASS docs say 256 is the longest class name possible.
     std::vector<std::pair<size_t, DWORD>> savedSelections;
     for (size_t i = 0; i < m_controls.size(); ++i)
     {
-        const auto& ctrlInfo = m_controls[i];
+        wchar_t className[257];
+        const auto& [hWnd, resizeType, origSize] = m_controls[i];
         // Work around a bug in the standard combo box control that causes it to
         // incorrectly change the selection status after resizing. Without this
         // fix sometimes the combo box will show selected text after a WM_SIZE
         // resize type event even if there was no text selected before the size event.
         // The workaround is to save the current selection state before the resize and
         // to restore that state after the resize.
-        int  status     = GetClassName(ctrlInfo.hWnd, className, static_cast<int>(std::size(className)));
+        int  status     = GetClassName(hWnd, className, static_cast<int>(std::size(className)));
         bool isComboBox = status > 0 && _wcsicmp(className, WC_COMBOBOX) == 0;
         if (isComboBox)
         {
-            DWORD sel = ComboBox_GetEditSel(ctrlInfo.hWnd);
+            DWORD sel = ComboBox_GetEditSel(hWnd);
             savedSelections.push_back({i, sel});
         }
-        RECT newPos = ctrlInfo.origSize;
-        switch (ctrlInfo.resizeType)
+        RECT newPos = origSize;
+        switch (resizeType)
         {
             case RESIZER_TOPLEFT:
                 break; // do nothing - the original position is fine
@@ -178,11 +178,11 @@ void CDlgResizer::DoResize(int width, int height)
                 newPos.bottom += (height - m_dlgRect.bottom);
                 break;
         }
-        hdwp = DeferWindowPos(hdwp, ctrlInfo.hWnd, nullptr, newPos.left, newPos.top,
+        hDwp = DeferWindowPos(hDwp, hWnd, nullptr, newPos.left, newPos.top,
                               newPos.right - newPos.left, newPos.bottom - newPos.top,
                               SWP_NOZORDER | SWP_NOACTIVATE);
     }
-    EndDeferWindowPos(hdwp);
+    EndDeferWindowPos(hDwp);
     for (const auto& [index, sel] : savedSelections)
     {
         int startSel = LOWORD(sel);

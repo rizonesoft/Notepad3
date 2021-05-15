@@ -31,7 +31,7 @@ class CBookmarksDlg : public CDialog
 {
 public:
     CBookmarksDlg(HWND hParent);
-    ~CBookmarksDlg(void);
+    ~CBookmarksDlg() override;
 
     void         InitBookmarks();
     std::wstring GetName() const { return m_name; }

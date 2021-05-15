@@ -30,7 +30,7 @@ using Microsoft::WRL::ComPtr;
 HRESULT SetAppID(LPCWSTR appID)
 {
     // set the AppID
-    typedef HRESULT STDAPICALLTYPE SetCurrentProcessExplicitAppUserModelIdfn(PCWSTR appId);
+    using SetCurrentProcessExplicitAppUserModelIdfn = HRESULT STDAPICALLTYPE(PCWSTR appId);
     CAutoLibrary                   hShell = LoadLibraryExW(L"Shell32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (hShell)
     {

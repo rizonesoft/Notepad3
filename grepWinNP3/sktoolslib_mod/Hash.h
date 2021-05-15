@@ -28,4 +28,4 @@ enum class HashType
     HashSha256
 };
 
-std::wstring GetHashText(const void* data, const size_t dataSize, HashType hashType);
+std::wstring GetHashText(const void* data, size_t dataSize, HashType hashType);

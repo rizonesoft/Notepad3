@@ -94,7 +94,7 @@ CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
         // set the default folder
         if (SUCCEEDED(hr))
         {
-            typedef HRESULT(WINAPI * SHCIFPN)(PCWSTR pszPath, IBindCtx * pbc, REFIID riid, void** ppv);
+            using SHCIFPN = HRESULT(WINAPI * )(PCWSTR pszPath, IBindCtx * pbc, REFIID riid, void** ppv);
 
             HMODULE hLib = LoadLibrary(L"shell32.dll");
             if (hLib)

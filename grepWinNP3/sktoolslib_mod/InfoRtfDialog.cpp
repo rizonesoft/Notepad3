@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2020 - Stefan Kueng
+// Copyright (C) 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,49 +23,54 @@
 
 CInfoRtfDialog::CInfoRtfDialog()
     : m_hParent(nullptr)
+    , m_hwndRichEdit(nullptr)
     , m_rtfId(0)
     , m_iconId(0)
-    , m_hwndRichEdit(nullptr)
 {
     m_richEditLib = LoadLibrary(TEXT("Msftedit.dll"));
 }
 
-CInfoRtfDialog::~CInfoRtfDialog(void)
+CInfoRtfDialog::~CInfoRtfDialog()
 {
 }
 
 INT_PTR CInfoRtfDialog::DoModal(HINSTANCE hInstance, HWND hParent, const std::string& dlgTitle, UINT rtfId, const std::wstring& resType, UINT iconId, int width, int height)
+{
+    return DoModal(hInstance, hParent, dlgTitle, rtfId, resType, iconId, 10, 10, width, height);
+}
+
+INT_PTR CInfoRtfDialog::DoModal(HINSTANCE hInstance, HWND hParent, const std::string& dlgTitle, UINT rtfId, const std::wstring& resType, UINT iconId, int x, int y, int width, int height)
 {
     m_hParent    = hParent;
     m_rtfId      = rtfId;
     m_rtfResType = resType;
     m_iconId     = iconId;
 
-    auto hgbl = GlobalAlloc(GMEM_ZEROINIT, 1024);
-    OnOutOfScope(GlobalFree(hgbl));
-    if (!hgbl)
+    auto hGbl = GlobalAlloc(GMEM_ZEROINIT, 1024);
+    OnOutOfScope(GlobalFree(hGbl));
+    if (!hGbl)
         return -1;
 
-    auto lpdt = (LPDLGTEMPLATE)GlobalLock(hgbl);
+    auto lpDt = static_cast<LPDLGTEMPLATE>(GlobalLock(hGbl));
 
     // Define a dialog box.
 
-    lpdt->style = WS_POPUP | WS_BORDER | WS_SYSMENU | DS_MODALFRAME | WS_CAPTION | WS_SIZEBOX;
-    lpdt->cdit  = 0; // Number of controls
-    lpdt->x     = 10;
-    lpdt->y     = 10;
-    lpdt->cx    = (short)width;
-    lpdt->cy    = (short)height;
+    lpDt->style = WS_POPUP | WS_BORDER | WS_SYSMENU | DS_MODALFRAME | WS_CAPTION | WS_SIZEBOX;
+    lpDt->cdit  = 0; // Number of controls
+    lpDt->x     = static_cast<SHORT>(x);
+    lpDt->y     = static_cast<SHORT>(y);
+    lpDt->cx    = static_cast<short>(width);
+    lpDt->cy    = static_cast<short>(height);
 
-    auto lpw = (LPWORD)(lpdt + 1);
+    auto lpw = reinterpret_cast<LPWORD>(lpDt + 1);
     *lpw++   = 0; // No menu
     *lpw++   = 0; // Predefined dialog box class (by default)
 
-    auto lpwsz = (LPWSTR)lpw;
-    auto nchar = 1 + MultiByteToWideChar(CP_UTF8, 0, dlgTitle.c_str(), -1, lpwsz, 50);
+    auto lpWsz = reinterpret_cast<LPWSTR>(lpw);
+    auto nchar = 1 + MultiByteToWideChar(CP_UTF8, 0, dlgTitle.c_str(), -1, lpWsz, 50);
     lpw += nchar;
-    GlobalUnlock(hgbl);
-    return __super::DoModal(hInstance, lpdt, hParent);
+    GlobalUnlock(hGbl);
+    return __super::DoModal(hInstance, lpDt, hParent);
 }
 
 void CInfoRtfDialog::ShowModeless(HINSTANCE hInstance, HWND hParent, const std::string& dlgTitle, UINT rtfId, const std::wstring& resType, UINT iconId, int width, int height)
@@ -75,31 +80,31 @@ void CInfoRtfDialog::ShowModeless(HINSTANCE hInstance, HWND hParent, const std::
     m_rtfResType = resType;
     m_iconId     = iconId;
 
-    auto hgbl = GlobalAlloc(GMEM_ZEROINIT, 1024);
-    OnOutOfScope(GlobalFree(hgbl));
-    if (!hgbl)
+    auto hGbl = GlobalAlloc(GMEM_ZEROINIT, 1024);
+    OnOutOfScope(GlobalFree(hGbl));
+    if (!hGbl)
         return;
 
-    auto lpdt = (LPDLGTEMPLATE)GlobalLock(hgbl);
+    auto lpDt = static_cast<LPDLGTEMPLATE>(GlobalLock(hGbl));
 
     // Define a dialog box.
 
-    lpdt->style = WS_POPUP | WS_BORDER | WS_SYSMENU | DS_MODALFRAME | WS_CAPTION | WS_SIZEBOX;
-    lpdt->cdit  = 0; // Number of controls
-    lpdt->x     = 10;
-    lpdt->y     = 10;
-    lpdt->cx    = (short)width;
-    lpdt->cy    = (short)height;
+    lpDt->style = WS_POPUP | WS_BORDER | WS_SYSMENU | DS_MODALFRAME | WS_CAPTION | WS_SIZEBOX;
+    lpDt->cdit  = 0; // Number of controls
+    lpDt->x     = 10;
+    lpDt->y     = 10;
+    lpDt->cx    = static_cast<short>(width);
+    lpDt->cy    = static_cast<short>(height);
 
-    auto lpw = (LPWORD)(lpdt + 1);
+    auto lpw = reinterpret_cast<LPWORD>(lpDt + 1);
     *lpw++   = 0; // No menu
     *lpw++   = 0; // Predefined dialog box class (by default)
 
-    auto lpwsz = (LPWSTR)lpw;
-    auto nchar = 1 + MultiByteToWideChar(CP_UTF8, 0, dlgTitle.c_str(), -1, lpwsz, 50);
+    auto lpWsz = reinterpret_cast<LPWSTR>(lpw);
+    auto nchar = 1 + MultiByteToWideChar(CP_UTF8, 0, dlgTitle.c_str(), -1, lpWsz, 50);
     lpw += nchar;
-    GlobalUnlock(hgbl);
-    __super::ShowModeless(hInstance, lpdt, hParent);
+    GlobalUnlock(hGbl);
+    __super::ShowModeless(hInstance, lpDt, hParent);
 }
 
 LRESULT CInfoRtfDialog::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -122,22 +127,22 @@ LRESULT CInfoRtfDialog::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
                 auto hResourceLoaded = LoadResource(hResource, hRes);
                 if (hResourceLoaded)
                 {
-                    auto lpResLock = (const char*)LockResource(hResourceLoaded);
-                    auto reslen    = SizeofResource(hResource, hRes);
-                    if (reslen)
+                    auto lpResLock = static_cast<const char*>(LockResource(hResourceLoaded));
+                    auto resLen    = SizeofResource(hResource, hRes);
+                    if (resLen)
                     {
                         SETTEXTEX stt = {0};
                         stt.codepage  = CP_UTF8;
                         stt.flags     = ST_DEFAULT | ST_NEWCHARS;
-                        SendMessage(m_hwndRichEdit, EM_SETTEXTEX, (WPARAM)&stt, (LPARAM)lpResLock);
+                        SendMessage(m_hwndRichEdit, EM_SETTEXTEX, reinterpret_cast<WPARAM>(&stt), reinterpret_cast<LPARAM>(lpResLock));
                         SetFocus(m_hwndRichEdit);
-                        SendMessage(m_hwndRichEdit, EM_SETSEL, (WPARAM)-1, (LPARAM)0);
-                        SendMessage(m_hwndRichEdit, EM_SETREADONLY, (WPARAM)1, (LPARAM) nullptr);
+                        SendMessage(m_hwndRichEdit, EM_SETSEL, static_cast<WPARAM>(-1), static_cast<LPARAM>(0));
+                        SendMessage(m_hwndRichEdit, EM_SETREADONLY, static_cast<WPARAM>(1), reinterpret_cast<LPARAM>(nullptr));
                     }
                 }
             }
 
-            return (INT_PTR)TRUE;
+            return static_cast<INT_PTR>(TRUE);
         }
         case WM_SIZE:
         {
@@ -154,9 +159,9 @@ LRESULT CInfoRtfDialog::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
                     CloseWindow(m_hwndRichEdit);
                     DestroyWindow(m_hwndRichEdit);
                     EndDialog(*this, LOWORD(wParam));
-                    return (INT_PTR)TRUE;
+                    return static_cast<INT_PTR>(TRUE);
             }
             break;
     }
-    return (INT_PTR)FALSE;
+    return static_cast<INT_PTR>(FALSE);
 }
