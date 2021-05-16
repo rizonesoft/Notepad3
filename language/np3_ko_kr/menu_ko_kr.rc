@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "파일에서 되돌리기(&V)\tF5",                  IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "파일 Var 무시&I)",                      CMD_IGNORE_FILE_VARS
         POPUP "인코딩(&E)"
         BEGIN
             POPUP "파일에서 다음으로 되돌리기(&R)"
@@ -210,12 +210,12 @@ BEGIN
             MENUITEM "들여쓰기(&I)",                           IDM_EDIT_INDENT
             MENUITEM "내어쓰기(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "줄 주석(&C)"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "전환(&T)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "추가(&A)\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "제거(&R)\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "편집 차단(&B)\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "스트림 주석(&R)\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "들여쓰기 탭 지정(&B)\tCtrl+Alt+T",           IDM_EDIT_CONVERTSPACES2
             MENUITEM "들여쓰기 탭 해제(&F)\tCtrl+Alt+S",           IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage ...",     IDM_EDIT_B64DECODESEL
+            MENUITEM "Base&64 인코딩",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 디코딩",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 코드 페이지로 디코딩 ...",     IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
@@ -333,7 +333,7 @@ BEGIN
             MENUITEM "이전 선택 찾기(&V)\tCtrl+Shift+F3",         CMD_FINDPREVSEL
             MENUITEM "바꾸기(&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
             MENUITEM "다음 바꾸기(&E)\tF4",                      IDM_EDIT_REPLACENEXT
-            MENUITEM "가기(&G)...\tCtrl+G",                  IDM_EDIT_GOTOLINE
+            MENUITEM "이동(&G)...\tCtrl+G",                  IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
             MENUITEM "파일에서 검색(&S)\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
         END
