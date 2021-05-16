@@ -317,11 +317,11 @@ Notepad3 \t[/?] [...[Κωδικοποίηση]] [...[Λειτουργία κατ
 /vd\tΕκτύπωση αρχείου (άνοιγμα διαλόγου εκτυπωτή).\r\n\
 /y\tΑναζήτηση στο περιβάλλον PATH σε περίπτωση σχετικού ονόματος\r\n\tαρχείου.\r\n\
 /z\tΜετάβαση στο επόμενο (χρησιμοποιείται για αντικατάσταση\r\n\tτου Notepad μέσω του μητρώου).\r\n\r\n\
-Examples:\r\n\
+Παραδείγματα:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Άνοιγμα νέου αρχείου: ""Test.txt"" Κωδικοποίηση=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print the file: ""Test.txt"" immediately.\
+ \t... Εκτύπωση του αρχείου: ""Test.txt"" άμεσα.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
