@@ -30,7 +30,7 @@ class CRegexTestDlg : public CDialog
 {
 public:
     CRegexTestDlg(HWND hParent);
-    ~CRegexTestDlg();
+    ~CRegexTestDlg() override;
 
     void         SetStrings(const std::wstring& search, const std::wstring& replace);
     std::wstring GetSearchString() const { return m_searchText; }

@@ -97,18 +97,18 @@ private:
     DarkModeHelper();
     ~DarkModeHelper();
 
-    typedef void(WINAPI* AllowDarkModeForAppFpn)(BOOL allow);
-    typedef PreferredAppMode(WINAPI* SetPreferredAppModeFpn)(PreferredAppMode appMode);
-    typedef void(WINAPI* AllowDarkModeForWindowFpn)(HWND hwnd, BOOL allow);
-    typedef BOOL(WINAPI* ShouldAppsUseDarkModeFpn)();
-    typedef BOOL(WINAPI* IsDarkModeAllowedForWindowFpn)(HWND hwnd);
-    typedef BOOL(WINAPI* IsDarkModeAllowedForAppFpn)();
-    typedef BOOL(WINAPI* ShouldSystemUseDarkModeFpn)();
-    typedef void(WINAPI* RefreshImmersiveColorPolicyStateFn)();
-    typedef BOOL(WINAPI* GetIsImmersiveColorUsingHighContrastFn)(IMMERSIVE_HC_CACHE_MODE mode);
-    typedef void(WINAPI* FlushMenuThemesFn)();
-    typedef HTHEME(WINAPI* OpenNcThemeDataFpn)(HWND hWnd, LPCWSTR pszClassList);
-    typedef BOOL(WINAPI* SetWindowCompositionAttributeFpn)(HWND hwnd, WINDOWCOMPOSITIONATTRIBDATA* data);
+    using AllowDarkModeForAppFpn = void(WINAPI* )(BOOL allow);
+    using SetPreferredAppModeFpn = PreferredAppMode(WINAPI* )(PreferredAppMode appMode);
+    using AllowDarkModeForWindowFpn = void(WINAPI* )(HWND hwnd, BOOL allow);
+    using ShouldAppsUseDarkModeFpn = BOOL(WINAPI* )();
+    using IsDarkModeAllowedForWindowFpn = BOOL(WINAPI* )(HWND hwnd);
+    using IsDarkModeAllowedForAppFpn = BOOL(WINAPI* )();
+    using ShouldSystemUseDarkModeFpn = BOOL(WINAPI* )();
+    using RefreshImmersiveColorPolicyStateFn = void(WINAPI* )();
+    using GetIsImmersiveColorUsingHighContrastFn = BOOL(WINAPI* )(IMMERSIVE_HC_CACHE_MODE mode);
+    using FlushMenuThemesFn = void(WINAPI* )();
+    using OpenNcThemeDataFpn = HTHEME(WINAPI* )(HWND hWnd, LPCWSTR pszClassList);
+    using SetWindowCompositionAttributeFpn = BOOL(WINAPI* )(HWND hwnd, WINDOWCOMPOSITIONATTRIBDATA* data);
 
     AllowDarkModeForAppFpn                 m_pAllowDarkModeForApp                  = nullptr;
     SetPreferredAppModeFpn                 m_pSetPreferredAppMode                  = nullptr;

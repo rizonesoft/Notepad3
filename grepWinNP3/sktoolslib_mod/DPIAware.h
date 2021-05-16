@@ -160,10 +160,10 @@ private:
     }
 
 private:
-    typedef UINT STDAPICALLTYPE GetDpiForWindowFn(HWND hWnd);
-    typedef UINT STDAPICALLTYPE GetDpiForSystemFn();
-    typedef UINT STDAPICALLTYPE GetSystemMetricsForDpiFn(int nIndex, UINT dpi);
-    typedef UINT STDAPICALLTYPE SystemParametersInfoForDpiFn(UINT uiAction, UINT uiParam, PVOID pvParam, UINT fWinIni, UINT dpi);
+    using GetDpiForWindowFn = UINT STDAPICALLTYPE(HWND hWnd);
+    using GetDpiForSystemFn = UINT STDAPICALLTYPE();
+    using GetSystemMetricsForDpiFn = UINT STDAPICALLTYPE(int nIndex, UINT dpi);
+    using SystemParametersInfoForDpiFn = UINT STDAPICALLTYPE(UINT uiAction, UINT uiParam, PVOID pvParam, UINT fWinIni, UINT dpi);
 
     GetDpiForWindowFn *           pfnGetDpiForWindow;
     GetDpiForSystemFn *           pfnGetDpiForSystem;

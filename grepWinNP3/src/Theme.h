@@ -21,7 +21,7 @@
 #include <unordered_map>
 #include <functional>
 
-using ThemeChangeCallback = std::function<void(void)>;
+using ThemeChangeCallback = std::function<void()>;
 
 /**
  * Singleton to handle Theme related methods.

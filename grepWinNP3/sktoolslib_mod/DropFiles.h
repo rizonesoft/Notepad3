@@ -162,18 +162,15 @@ public:
         }
     }
     //IUnknown
-    HRESULT STDMETHODCALLTYPE QueryInterface(
-        /* [in] */ REFIID        riid,
-        /* [iid_is][out] */ void __RPC_FAR* __RPC_FAR* ppvObject) override;
-    ULONG STDMETHODCALLTYPE AddRef() override;
-    ULONG STDMETHODCALLTYPE Release() override;
+    HRESULT STDMETHODCALLTYPE QueryInterface(/* [in] */ REFIID        riid,
+                                             /* [iid_is][out] */ void __RPC_FAR* __RPC_FAR* ppvObject) override;
+    ULONG STDMETHODCALLTYPE   AddRef() override;
+    ULONG STDMETHODCALLTYPE   Release() override;
     //IDropSource
-    HRESULT STDMETHODCALLTYPE QueryContinueDrag(
-        /* [in] */ BOOL  fEscapePressed,
-        /* [in] */ DWORD grfKeyState) override;
+    HRESULT STDMETHODCALLTYPE QueryContinueDrag(/* [in] */ BOOL  fEscapePressed,
+                                                /* [in] */ DWORD grfKeyState) override;
 
-    HRESULT STDMETHODCALLTYPE GiveFeedback(
-        /* [in] */ DWORD dwEffect) override;
+    HRESULT STDMETHODCALLTYPE GiveFeedback(/* [in] */ DWORD dwEffect) override;
 };
 
 extern CLIPFORMAT CF_FILECONTENTS;
@@ -230,6 +227,36 @@ private:
     BOOL                      m_bIsAsync;
     std::vector<FORMATETC*>   m_vecFormatEtc;
     std::vector<STGMEDIUM*>   m_vecStgMedium;
+};
+
+/**
+* Helper class for the FileDataObject class: implements the enumerator
+* for the supported clipboard formats of the FileDataObject class.
+*/
+class CEnumFormatEtcHelper : public IEnumFORMATETC
+{
+public:
+    CEnumFormatEtcHelper(const std::vector<FORMATETC*>& vec);
+    CEnumFormatEtcHelper(const std::vector<FORMATETC>& vec);
+    virtual ~CEnumFormatEtcHelper() = default;
+    //IUnknown members
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID, void**) override;
+    ULONG STDMETHODCALLTYPE   AddRef() override;
+    ULONG STDMETHODCALLTYPE   Release() override;
+
+    //IEnumFORMATETC members
+    HRESULT STDMETHODCALLTYPE Next(ULONG, LPFORMATETC, ULONG*) override;
+    HRESULT STDMETHODCALLTYPE Skip(ULONG) override;
+    HRESULT STDMETHODCALLTYPE Reset() override;
+    HRESULT STDMETHODCALLTYPE Clone(IEnumFORMATETC**) override;
+
+private:
+    void Init();
+
+    std::vector<FORMATETC> m_vecFormatEtc;
+    FORMATETC              m_formats[DRAG_NUMFORMATS];
+    ULONG                  m_cRefCount;
+    size_t                 m_iCur;
 };
 
 class CDragSourceHelper

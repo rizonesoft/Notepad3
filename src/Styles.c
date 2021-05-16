@@ -2684,37 +2684,55 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
 
 //=============================================================================
 
+static WCHAR _DefaultCodingFont[LF_FACESIZE] = { L"\0" }; // session static
+
 static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont) {
+
+    if (StrIsNotEmpty(_DefaultCodingFont)) {
+        StringCchCopy(pwchFontName, cchFont, _DefaultCodingFont);
+        return true;
+    }
 
     LPCWSTR const FontNamePrioList[] = {
         L"Cascadia Code",
         L"Fira Code",
+        L"Roboto Mono",
+        L"Source Code Pro",
         L"DejaVu Sans Mono",
         L"Consolas",
         L"Lucida Console"
     };
-    bool found = false;
-    for (int i = 0; i < COUNTOF(FontNamePrioList); ++i) {
+    unsigned const countof = COUNTOF(FontNamePrioList);
+
+    unsigned i = 0;
+    for ( ; i < countof; ++i) {
         LPCWSTR const fontName = FontNamePrioList[i];
         if (IsFontAvailable(fontName)) {
             StringCchCopy(pwchFontName, cchFont, fontName);
-            found = true;
             break;
         }
     }
-    if (!found) {
+    if (i >= countof) {
         StringCchCopy(pwchFontName, cchFont, L"Courier New"); // fallback
     }
-    return found;
+    StringCchCopy(_DefaultCodingFont, COUNTOF(_DefaultCodingFont), pwchFontName);
+
+    return (i < countof);
 }
 
+
+static WORD _wDTFSize = 9;
+static WCHAR _DefaultTextFont[LF_FACESIZE] = { L"\0" }; // session static
 
 static inline unsigned GetDefaultTextFont(LPWSTR pwchFontName) {
-    WORD wSize = (WORD)LF_FACESIZE;
-    GetThemedDialogFont(pwchFontName, &wSize);
-    return wSize;
+    if (StrIsNotEmpty(_DefaultTextFont)) {
+        StringCchCopy(pwchFontName, LF_FACESIZE, _DefaultTextFont);
+        return _wDTFSize;
+    }
+    GetThemedDialogFont(pwchFontName, &_wDTFSize);
+    StringCchCopy(_DefaultTextFont, COUNTOF(_DefaultTextFont), pwchFontName);
+    return _wDTFSize;
 }
-
 
 //=============================================================================
 //

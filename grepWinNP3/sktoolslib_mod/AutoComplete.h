@@ -59,7 +59,7 @@ class CAutoComplete : public CRegHistory
 {
 public:
     CAutoComplete(CSimpleIni* pIni = nullptr);
-    ~CAutoComplete();
+    ~CAutoComplete() override;
 
     bool Init(HWND hEdit);
     bool Enable(bool bEnable) const;

@@ -273,7 +273,7 @@ template <typename T>
 std::wstring to_bit_wstring(T number, bool trimSignificantClearBits)
 {
     // Unsigned version of type given.
-    typedef typename std::make_unsigned<T>::type UT;
+    using UT = typename std::make_unsigned<T>::type;
     UT                                           one  = 1;
     UT                                           zero = 0;
     UT                                           uNumber;
@@ -299,7 +299,7 @@ template <typename T>
 std::string to_bit_string(T number, bool trimSignificantClearBits)
 {
     // Unsigned version of type given.
-    typedef typename std::make_unsigned<T>::type UT;
+    using UT = typename std::make_unsigned<T>::type;
     UT                                           one  = 1;
     UT                                           zero = 0;
     UT                                           uNumber;

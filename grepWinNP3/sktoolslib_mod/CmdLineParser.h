@@ -52,8 +52,8 @@
 class CCmdLineParser
 {
 public:
-    typedef std::map<std::wstring, std::wstring> CValsMap;
-    typedef CValsMap::const_iterator             ITERPOS;
+    using CValsMap = std::map<std::wstring, std::wstring>;
+    using ITERPOS = CValsMap::const_iterator;
 
     /**
      * Creates a CCmdLineParser object and parses the parameters in.
