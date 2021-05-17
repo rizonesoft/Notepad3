@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Błąd podczas eksportowania ustawień styu do ""%s""."
     IDS_MUI_REGEX_INVALID    "Błąd podczas oceny regularnego wyrażenia. Wyrażenie jest nieuzasadnione!"
     IDS_MUI_DROP_NO_FILE     "Nie rozpoznano żadnej sensownej nazwy pliku.\nJeśli upuścisz aplikację 32-bitową,\nprzeciągnij i upuść do paska narzędzi Notepad3'a."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "URL określony katalog istnieje!"
+    IDS_MUI_URL_FILE_EXISTS  "URL określony plik istnieje!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "URL nie znaleziono określonej ścieżki!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyć plik."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyć link w przeglądarce."
     IDS_MUI_INF_PRSVFILEMODTM
@@ -272,13 +272,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Zaznacz wszystkie przykłady..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Przełącz widok..."
+    IDS_MUI_SB_REPLACE_ALL    "Zamień wszystko..."
+    IDS_MUI_SB_WRAP_LINES     "Zawiń linie..."
+    IDS_MUI_SB_CONV_LNBRK     "Konwertuj podziały wierszy..."
+    IDS_MUI_SB_RECODING_DOC   "Ponowne kodowanie dokumentu..."
+    IDS_MUI_SB_LEXER_STYLING  "Zastosuj stylizację Lexera..."
 END
 
 STRINGTABLE
@@ -291,7 +291,7 @@ Notepad3 \t[/?] [...[Kodowanie]] [...[Tryb końca wiersza]] [/e] [/g] [/m] [/l]\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
-Options:\r\n\
+Opcje:\r\n\
 /?\tDispay this help message.\r\n\
 ...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\tLine ending mode (/crlf, /cr, /lf).\r\n\
