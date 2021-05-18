@@ -2,7 +2,7 @@
   regenc.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -130,6 +130,108 @@ onig_initialize_encoding(OnigEncoding enc)
   }
 
   return 0;
+}
+
+extern int
+onig_enc_len(OnigEncoding enc, const UChar* p, const UChar* end)
+{
+  return ONIGENC_MBC_ENC_LEN(enc, p);
+}
+
+extern int
+onigenc_is_undef(OnigEncoding enc)
+{
+  return ONIGENC_IS_UNDEF(enc);
+}
+
+extern int
+onigenc_is_singlebyte(OnigEncoding enc)
+{
+  return ONIGENC_IS_SINGLEBYTE(enc);
+}
+
+extern int
+onigenc_is_mbc_head(OnigEncoding enc, UChar* p)
+{
+  return ONIGENC_IS_MBC_HEAD(enc, p);
+}
+
+extern int
+onigenc_is_mbc_ascii(UChar* p)
+{
+  return ONIGENC_IS_MBC_ASCII(p);
+}
+
+extern int
+onigenc_is_code_ascii(OnigCodePoint code)
+{
+  return ONIGENC_IS_CODE_ASCII(code);
+}
+
+extern int
+onigenc_is_mbc_word(OnigEncoding enc, UChar* s, UChar* end)
+{
+  return ONIGENC_IS_MBC_WORD(enc, s, end);
+}
+
+extern const char*
+onigenc_name(OnigEncoding enc)
+{
+  return ONIGENC_NAME(enc);
+}
+
+extern int
+onigenc_is_allowed_reverse_match(OnigEncoding enc, UChar* s, UChar* end)
+{
+  return ONIGENC_IS_ALLOWED_REVERSE_MATCH(enc, s, end);
+}
+
+extern int
+onigenc_mbc_maxlen(OnigEncoding enc)
+{
+  return ONIGENC_MBC_MAXLEN(enc);
+}
+
+extern int
+onigenc_mbc_minlen(OnigEncoding enc)
+{
+  return ONIGENC_MBC_MINLEN(enc);
+}
+
+extern int
+onigenc_is_mbc_newline(OnigEncoding enc, UChar* p, UChar* end)
+{
+  return ONIGENC_IS_MBC_NEWLINE(enc, p, end);
+}
+
+extern OnigCodePoint
+onigenc_mbc_to_code(OnigEncoding enc, UChar* p, UChar* end)
+{
+  return ONIGENC_MBC_TO_CODE(enc, p, end);
+}
+
+extern int
+onigenc_code_to_mbclen(OnigEncoding enc, OnigCodePoint code)
+{
+  return ONIGENC_CODE_TO_MBCLEN(enc, code);
+}
+
+extern int
+onigenc_code_to_mbc(OnigEncoding enc, OnigCodePoint code, UChar buf[])
+{
+  return ONIGENC_CODE_TO_MBC(enc, code, buf);
+}
+
+extern int
+onigenc_property_name_to_ctype(OnigEncoding enc, UChar* p, UChar* end)
+{
+  return ONIGENC_PROPERTY_NAME_TO_CTYPE(enc, p, end);
+}
+
+extern int
+onigenc_is_code_ctype(OnigEncoding enc, OnigCodePoint code, int ctype)
+{
+  return ONIGENC_IS_CODE_CTYPE(enc, code, ctype);
 }
 
 extern OnigEncoding
