@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "फ़ाइल में खोजें (&S)\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "ख़ाली नई विंडो  (&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "अवस्था का प्रतिरूप  (&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "व्यवस्थापक के रूप में पुनः प्रक्षेपित करें (&R)",                 IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "फ़ाइल को वापस लाएं (&V)\tF5",                  IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "File-Vars को नज़रअंदाज़ करें  (&I)",                      CMD_IGNORE_FILE_VARS
         POPUP "एन्कोडिंग (&E)"
         BEGIN
             POPUP "इस प्रकार से फ़ाइल में वापस लाएं (&R)"
@@ -212,10 +212,10 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "Line &Comment"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "टॉगल  (&T)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "जोड़ें  (&A)\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "हटाएँ  (&R)\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "ब्लॉक सम्पादित करें  (&B)\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "Stream टिप्पणी (&R)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
@@ -265,7 +265,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
             MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage ...",     IDM_EDIT_B64DECODESEL
+            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL एन्कोड (&E)\tCtrl+Shift+E",           IDM_EDIT_URLENCODE
             MENUITEM "URL डिकोड (&D)\tCtrl+Shift+R",           IDM_EDIT_URLDECODE

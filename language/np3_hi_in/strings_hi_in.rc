@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "शैली सेटिंग ""%s"" को निर्यात करने में त्रुटि."
     IDS_MUI_REGEX_INVALID    "सामान्य व्यंजक मूल्यांकन करने में त्रुटि। व्यंजक अवैध है!"
     IDS_MUI_DROP_NO_FILE     "प्राप्त हुआ फ़ाईलनाम वैध नहीं है.\nअगर 32-बिट एपलिकेशन से ड्रॉप कर रहे है,\nतो कृपया Notepad3 की औज़ार पट्टी पर ड्रैग और ड्रॉप करें."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "URL निर्दिष्ट निदेशिका मौजूद है!"
+    IDS_MUI_URL_FILE_EXISTS  "URL निर्दिष्ट फ़ाईल मौजूद है!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "URL निर्दिष्ट स्थान मौजूद नहीं है!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + फ़ाईल खोलने के लिए क्लिक करें."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + ब्राउज़र में लिंक खोलने के लिए क्लिक करें."
     IDS_MUI_INF_PRSVFILEMODTM
@@ -272,13 +272,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "सभी मौजूदगी चिन्हित करें..."
+    IDS_MUI_SB_TOGGLE_VIEW    "दृश्य टॉगल करें..."
+    IDS_MUI_SB_REPLACE_ALL    "सारा बदलें..."
+    IDS_MUI_SB_WRAP_LINES     "पंक्ति लपेटें..."
+    IDS_MUI_SB_CONV_LNBRK     "Line Breaks परिवर्तित करें..."
+    IDS_MUI_SB_RECODING_DOC   "दस्तावेज़ रिकोड किया जा रहा है..."
+    IDS_MUI_SB_LEXER_STYLING  "Lexer Styling लागू करें..."
 END
 
 STRINGTABLE
