@@ -263,12 +263,12 @@ BEGIN
             MENUITEM "Indentazione: Spazi -> Ta&b\tCtrl+Alt+T",   IDM_EDIT_CONVERTSPACES2
             MENUITEM "Indentazione: Tab -> Spa&zi\tCtrl+Alt+S",   IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Codifica Base&64",                          IDM_EDIT_BASE64ENCODE
+            MENUITEM "Decodifica Base6&4",                        IDM_EDIT_BASE64DECODE
+            MENUITEM "Decodifica Base64 a codepage...",           IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",                 IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
+            MENUITEM "Codifica &URL\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
+            MENUITEM "&Decodifica URL\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
             MENUITEM "Da Percorso di File System a URL",          IDM_EDIT_PATH2URL
             MENUITEM "Da URL a Percorso di File System",          IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
