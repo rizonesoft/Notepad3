@@ -79,10 +79,10 @@ BEGIN
         BEGIN
             MENUITEM "&Cerca nei file\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "&Nuova finestra vuota\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplica istanza\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Rilancio con diritti elevati",     IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Rilancia con diritti elevati",     IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Esegui &documento\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Apri con...\tAlt+L",               IDM_FILE_OPENWITH
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Ri&pristina dal File\tF5",                 IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "&Ignora File-Vars",                      CMD_IGNORE_FILE_VARS
         POPUP "&Codifica"
         BEGIN
             POPUP "&Ripristina dal File come"
@@ -210,11 +210,11 @@ BEGIN
             MENUITEM "&Indenta",                             IDM_EDIT_INDENT
             MENUITEM "&Rimuovi indentazione",                IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "&Commento riga"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Commuta\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "&Aggiungi\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Rimuovi\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
