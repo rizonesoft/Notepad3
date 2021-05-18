@@ -1,34 +1,34 @@
-==========================================================================================================
-==                                                                                                      ==
-==   This ".txt" file is intended for "Translators" to communicate to them the "Line Numbers" of the    ==
-==   "Added or Modified" elements in the Resource files ("filename_xx_yy.rc" and "grepWinNP3.lang").    ==
-==                                                                                                      ==
-==                                                             Last update:  "May 2021" on 2021-05-07   ==
-==========================================================================================================
+========================================================================================================
+==                                                                                                    ==
+==  This ".txt" file is intended for "Translators" to communicate to them the "Line numbers" of the   ==
+==  "Added or Modified" items in the "Resource" files ("filename_xx_yy.rc" and "grepWinNP3.lang").    ==
+==                                                                                                    ==
+==                                                           Last update:  "May 2021" on 2021-05-18   ==
+========================================================================================================
 
-January 2022: Line numbers to translate_2022-01.png - 
+January 2022:   Line numbers to translate_2022-01 - 
 
-Fbruary 2022: Line numbers to translate_2022-02.png - 
+February 2022:  Line numbers to translate_2022-02 - 
 
-March 2021:   Line numbers to translate_2021-03.png - https://workupload.com/file/MrtH6U2RhKC (2021-03-31)
+March 2021:     Line numbers to translate_2021-03 - https://workupload.com/file/MrtH6U2RhKC (2021-03-31)
 
-April 2021:   Line numbers to translate_2021-04.png - https://workupload.com/file/jcbdVpEBCfr (2021-04-29)
+April 2021:     Line numbers to translate_2021-04 - https://workupload.com/file/jcbdVpEBCfr (2021-04-29)
 
-May 2021:     Line numbers to translate_2021-05.png - https://workupload.com/file/B3Gq4QFHERL (2021-05-07)
+May 2021:       Line numbers to translate_2021-05 - https://workupload.com/file/9herVXcC9ED (2021-05-18)
 
-June 2021:    Line numbers to translate_2021-06.png - 
+June 2021:      Line numbers to translate_2021-06 - 
 
-July 2021:    Line numbers to translate_2021-07.png - 
+July 2021:      Line numbers to translate_2021-07 - 
 
-August 2021:  Line numbers to translate_2021-08.png - 
+August 2021:    Line numbers to translate_2021-08 - 
 
-Sept. 2021:   Line numbers to translate_2021-09.png - 
+September 2021: Line numbers to translate_2021-09 - 
 
-October 2021: Line numbers to translate_2021-10.png - 
+October 2021:   Line numbers to translate_2021-10 - 
 
-Novemb. 2021: Line numbers to translate_2021-11.png - 
+November 2021:  Line numbers to translate_2021-11 - 
 
-Decemb. 2021: Line numbers to translate_2021-12.png - 
+December 2021:  Line numbers to translate_2021-12 - 
 
 
 Comments and suggestions are welcome... 😃
@@ -36,4 +36,4 @@ Comments and suggestions are welcome... 😃
 If you have any difficulties or questions, do not hesitate to contact me.
 
 hpwamr - MUI Coordinator
-----------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
