@@ -221,7 +221,7 @@ MUILANGUAGE MUI_LanguageDLLs[] = {
     { IDS_MUI_LANG_HU_HU,  L"hu-HU",   L"Magyar (Magyarország)\t\t\t[%s]",         false, false },
     { IDS_MUI_LANG_ID_ID,  L"id-ID",   L"Bahasa Indonesia (Indonesia)\t\t\t[%s]",  false, false },
     { IDS_MUI_LANG_IT_IT,  L"it-IT",   L"Italiano (Italia)\t\t\t[%s]",             false, false },
-    { IDS_MUI_LANG_JP_JP,  L"ja-JP",   L"日本語 （日本）\t\t\t[%s]",                false, false },
+    { IDS_MUI_LANG_JP_JP,  L"ja-JP",   L"日本語 (日本)\t\t\t[%s]",                  false, false },
     { IDS_MUI_LANG_KO_KR,  L"ko-KR",   L"한국어 (대한민국)\t\t\t[%s]",              false, false },
     { IDS_MUI_LANG_NL_NL,  L"nl-NL",   L"Nederlands (Nederland)\t\t\t[%s]",        false, false },
     { IDS_MUI_LANG_PL_PL,  L"pl-PL",   L"Polski (Polska)\t\t\t[%s]",               false, false },
@@ -232,8 +232,8 @@ MUILANGUAGE MUI_LanguageDLLs[] = {
     { IDS_MUI_LANG_SV_SE,  L"sv-SE",   L"Svenska (Sverige)\t\t\t[%s]",             false, false },
     { IDS_MUI_LANG_TR_TR,  L"tr-TR",   L"Türkçe (Türkiye)\t\t\t[%s]",              false, false },
     { IDS_MUI_LANG_VI_VN,  L"vi-VN",   L"Tiếng Việt (Việt Nam)\t\t\t[%s]",         false, false },
-    { IDS_MUI_LANG_ZH_CN,  L"zh-CN",   L"简体中文 （中国）\t\t\t[%s]",              false, false },
-    { IDS_MUI_LANG_ZH_TW,  L"zh-TW",   L"繁體中文 （台灣）\t\t\t[%s]",              false, false }
+    { IDS_MUI_LANG_ZH_CN,  L"zh-CN",   L"简体中文 (中国)\t\t\t[%s]",                false, false },
+    { IDS_MUI_LANG_ZH_TW,  L"zh-TW",   L"繁體中文 (台灣)\t\t\t[%s]",                false, false }
 };
 
 //NUM_OF_MUI_LANGUAGES
