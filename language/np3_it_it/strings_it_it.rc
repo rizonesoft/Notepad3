@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su ""%s""."
     IDS_MUI_REGEX_INVALID    "Errore nella valutazione della regular expression. La RegExp non è valida!"
     IDS_MUI_DROP_NO_FILE     "Nessun nomefile valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "La cartella specificata nella URL esiste!"
+    IDS_MUI_URL_FILE_EXISTS  "Il file specificato nella URL esiste!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "Il percorso specificato nella URL non è stato trovato!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click per aprire il file."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click per aprire il link nel browser."
     IDS_MUI_INF_PRSVFILEMODTM
@@ -272,13 +272,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Contrassegna tutte le occorrenze..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Commuta visualizzazione..."
+    IDS_MUI_SB_REPLACE_ALL    "Sostituisci tutto..."
+    IDS_MUI_SB_WRAP_LINES     "A capo automatico..."
+    IDS_MUI_SB_CONV_LNBRK     "Converti interruzioni di linea..."
+    IDS_MUI_SB_RECODING_DOC   "Ricodifica documento..."
+    IDS_MUI_SB_LEXER_STYLING  "Applica Lexer Styling..."
 END
 
 STRINGTABLE
