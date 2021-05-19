@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "&Nowe puste okno\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Kopia przykładu\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Notepad3 jako &Administrator",       IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Powróć z pliku\tF5",                     IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "&Ignoruj zmienność plików",                      CMD_IGNORE_FILE_VARS
         POPUP "&Kodowanie"
         BEGIN
             POPUP "&Powróć z pliku jako"
@@ -210,12 +210,12 @@ BEGIN
             MENUITEM "&Wcięcie",                              IDM_EDIT_INDENT
             MENUITEM "&Bez wcięcia",                          IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "Komentarz liniowy"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "&Przełącz\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "&Dodaj\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Usuń\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Blokuj edycję\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "&Komentarz strumieniowy\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "Wcięcia tabulatorami\tCtrl+Alt+T",            IDM_EDIT_CONVERTSPACES2
             MENUITEM "Wcięcia spacjami\tCtrl+Alt+S",                IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage ...",     IDM_EDIT_B64DECODESEL
+            MENUITEM "Koduj Base&64",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Dekoduj Base6&4",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Koduj Base64 do strony kodowej...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "&Koduj URL\tCtrl+Shift+E",                    IDM_EDIT_URLENCODE
             MENUITEM "Dekoduj URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
@@ -449,7 +449,7 @@ BEGIN
         MENUITEM "&Domyślna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
         MENUITEM "Domyślna &czcionka bieżącego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Tryb ciemny Windowsa",                               IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Tryb ciemny okna",                               IDM_VIEW_WIN_DARK_MODE
         END
     POPUP "&Ustawienia"
     BEGIN
