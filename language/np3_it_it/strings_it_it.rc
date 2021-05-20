@@ -235,17 +235,17 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "BASE (2° Stile di Default):"
     IDS_MUI_STY_LEXDEF      "%s - Stile di Default:"
     IDS_MUI_STY_LEXSTYLE    "Stile di %s:"
-    IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(it-IT) Traduzione italiana di RaffaeleBianc0"
-    IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: Stile %s +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: Stile %s"
-    IDS_MUI_TITLE_RELARB    " +++ Stile '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Stile '%s' (%s)"
+    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: Stile %s +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: Stile %s"
+    IDS_MUI_TITLE_RELARB    "+++ Stile '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Stile '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Estensioni associate:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Riga (1 - %ti):"

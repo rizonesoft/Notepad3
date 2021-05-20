@@ -719,7 +719,7 @@ BEGIN
     CBS_OWNERDRAWFIXED
 
     GROUPBOX        "प्रभाव", grp1, 7, 97, 98, 76, WS_GROUP
-    AUTOCHECKBOX    "Stri&keout", chx1, 13, 111, 90, 10, WS_TABSTOP
+    AUTOCHECKBOX    "स्ट्राइक-आउट (&K)", chx1, 13, 111, 90, 10, WS_TABSTOP
     AUTOCHECKBOX    "रेखांकित करें (&U)", chx2, 13, 127, 90, 10
 
     LTEXT           "रंग: (&C)", stc4, 13, 144, 89, 9
@@ -784,7 +784,7 @@ BEGIN
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
     RTEXT           "रंग", COLOR_SOLID_LEFT, 152, 151, 20, 9
-    LTEXT           "|S&olid", COLOR_SOLID_RIGHT, 172, 151, 20, 9
+    LTEXT           "|ठोस (&O)", COLOR_SOLID_RIGHT, 172, 151, 20, 9
 
     RTEXT           "छटा: (&E)", COLOR_HUEACCEL, 194, 126, 20, 9
     EDITTEXT, COLOR_HUE, 216, 124, 18, 12, WS_GROUP | WS_TABSTOP

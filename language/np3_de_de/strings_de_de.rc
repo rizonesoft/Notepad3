@@ -235,17 +235,17 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "BASIS (2nd Standard Stil):"
     IDS_MUI_STY_LEXDEF      "%s - Standard Stil:"
     IDS_MUI_STY_LEXSTYLE    "%s's Stil:"
-    IDS_MUI_TITLE_RELBASE   " +++ BASIS (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ BASIS (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(de-DE) Deutsche Übersetzung von RaiKoHoff"
-    IDS_MUI_TITLE_FIXBASE   " BASIS (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Stil +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s Stil"
-    IDS_MUI_TITLE_RELARB    " +++ Stil '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Stil '%s' (%s)"
+    IDS_MUI_TITLE_FIXBASE   "BASIS (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Stil +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s Stil"
+    IDS_MUI_TITLE_RELARB    "+++ Stil '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Stil '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Zugeordnete Dateitypen:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Null-Längen-Fund"
     IDS_MUI_GOTO_LINE       "Zeile (1 - %ti):"

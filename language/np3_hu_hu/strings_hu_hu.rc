@@ -235,17 +235,17 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "BASE (2. alap stílus):"
     IDS_MUI_STY_LEXDEF      "%s - Alapértelmezett stílus:"
     IDS_MUI_STY_LEXSTYLE    "%s's  Stílus:"
-    IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(hu-HU) Magyar fordítás: xsak"
-    IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
-    IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
+    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
+    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Hozzárendelt kiterjesztések:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Nulla hosszú egyezés"
     IDS_MUI_GOTO_LINE       "Sor (1 - %ti):"
