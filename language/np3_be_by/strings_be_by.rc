@@ -235,16 +235,16 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "БАЗАВЫ (прадвызначаны стыль другой схемы):"
     IDS_MUI_STY_LEXDEF      "%s - прадвызначаны стыль:"
     IDS_MUI_STY_LEXSTYLE    "Стыль %s:"
-    IDS_MUI_TITLE_RELBASE   " +++ БАЗАВЫ (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ БАЗАВЫ (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(be-BY) Пераклад: alexantr"
     IDS_MUI_TITLE_FIXBASE   "БАЗАВЫ (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ Стыль %s: %s +++"
+    IDS_MUI_TITLE_RELCUR    "+++ Стыль %s: %s +++"
     IDS_MUI_TITLE_FIXCUR    "Стыль %s: %s"
-    IDS_MUI_TITLE_RELARB    " +++ Стыль '%s' (%s) +++"
+    IDS_MUI_TITLE_RELARB    "+++ Стыль '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    "Стыль '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Звязаныя пашырэнні файлаў:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Супадзенне нулявой даўжыні"
