@@ -235,17 +235,17 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "ΒΑΣΙΚΟ (2ο προεπιλεγμένο στυλ):"
     IDS_MUI_STY_LEXDEF      "%s - Προεπιλεγμένο στυλ:"
     IDS_MUI_STY_LEXSTYLE    "Στυλ για %s:"
-    IDS_MUI_TITLE_RELBASE   " +++ ΒΑΣΙΚΟ (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ ΒΑΣΙΚΟ (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από geogeo-gr"
-    IDS_MUI_TITLE_FIXBASE   " ΒΑΣΙΚΟ (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: Στυλ %s +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: Στυλ %s"
-    IDS_MUI_TITLE_RELARB    " +++ Στυλ '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Στυλ '%s' (%s)"
+    IDS_MUI_TITLE_FIXBASE   "ΒΑΣΙΚΟ (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: Στυλ %s +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: Στυλ %s"
+    IDS_MUI_TITLE_RELARB    "+++ Στυλ '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Στυλ '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Συσχετισμένες επεκτάσεις ονομάτων αρχείων:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Συμφωνία μηδενικού μήκους"
     IDS_MUI_GOTO_LINE       "Γραμμή (1 - %ti):"

@@ -235,17 +235,17 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "BASE (दूसरी डिफ़ॉल्ट शैली):"
     IDS_MUI_STY_LEXDEF      "%s - डिफ़ॉल्ट शैली:"
     IDS_MUI_STY_LEXSTYLE    "%s's शैली:"
-    IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(hi-IN) हिंदी अनुवाद ashish12phnx द्वारा"
-    IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
-    IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
+    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
+    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "संबंधित फ़ाईलनाम के प्रकार:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "रेखा (1 - %ti):"

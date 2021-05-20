@@ -235,17 +235,17 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "ベース (標準配色2):"
     IDS_MUI_STY_LEXDEF      "%s - 標準配色:"
     IDS_MUI_STY_LEXSTYLE    "%sのスタイル:"
-    IDS_MUI_TITLE_RELBASE   " +++ ベース (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ ベース (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(ja-JP) 日本語翻訳 maboroshin"
     IDS_MUI_TITLE_FIXBASE   "ベース (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %sのスタイル +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %sのスタイル"
-    IDS_MUI_TITLE_RELARB    " +++ %s - %s +++"
-    IDS_MUI_TITLE_FIXARB    " %s のスタイル (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %sのスタイル +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %sのスタイル"
+    IDS_MUI_TITLE_RELARB    "+++ %s - %s +++"
+    IDS_MUI_TITLE_FIXARB    "%s のスタイル (%s)"
     IDS_MUI_ASSOCIATED_EXT  "関連付けるファイル拡張子:"
     IDS_MUI_ZERO_LEN_MATCH  "^ 空文字列に一致"
     IDS_MUI_GOTO_LINE       "行 (1 - %ti):"

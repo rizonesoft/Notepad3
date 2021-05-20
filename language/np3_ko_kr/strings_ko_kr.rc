@@ -235,17 +235,17 @@ BEGIN
     IDS_MUI_STY_BASE2ND     "BASE (두 번째 기본 스타일):"
     IDS_MUI_STY_LEXDEF      "%s - 기본 스타일:"
     IDS_MUI_STY_LEXSTYLE    "%s - 스타일:"
-    IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역: VenusGirl"
-    IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s - 스타일 +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s - 스타일"
-    IDS_MUI_TITLE_RELARB    " +++ 스타일 '%s' - (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " 스타일 '%s' - (%s)"
+    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s - 스타일 +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s - 스타일"
+    IDS_MUI_TITLE_RELARB    "+++ 스타일 '%s' - (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "스타일 '%s' - (%s)"
     IDS_MUI_ASSOCIATED_EXT  "연결된 파일 이름 확장자:"
     IDS_MUI_ZERO_LEN_MATCH  "^ 제로 길이 일치"
     IDS_MUI_GOTO_LINE       "행 (1 - %ti):"
