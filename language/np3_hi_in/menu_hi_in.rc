@@ -507,7 +507,7 @@ BEGIN
             POPUP "RTL ख़ाका (GDI) (&T)"
             BEGIN
                 MENUITEM "क्षेत्रफल परिमार्जित करें (&E)",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM " अन्य डायलॉग (&O)",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "अन्य डायलॉग (&O)",              IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "दाएं-बाएं (&B)"
             BEGIN
