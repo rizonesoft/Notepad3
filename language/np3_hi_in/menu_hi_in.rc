@@ -210,7 +210,7 @@ BEGIN
             MENUITEM "इंडेंट (&I)",                                  IDM_EDIT_INDENT
             MENUITEM "इंडेंट हटाएं (&U)",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "पंक्ति टिप्पणी (&C)"
             BEGIN
                 MENUITEM "टॉगल  (&T)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
                 MENUITEM "जोड़ें  (&A)\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
@@ -263,17 +263,17 @@ BEGIN
             MENUITEM "इंडेंट Tabify करें (&A)\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
             MENUITEM "इंडेंट Untabify करें (&F)\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "बेस-64 एनकोड (&64)",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "बेस-64 डीकोड (6&4)",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "बेस-64 डीकोड टू कोडपेज...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL एन्कोड (&E)\tCtrl+Shift+E",           IDM_EDIT_URLENCODE
             MENUITEM "URL डिकोड (&D)\tCtrl+Shift+R",           IDM_EDIT_URLDECODE
-            MENUITEM "File System Path to URL",                IDM_EDIT_PATH2URL
-            MENUITEM "URL to File System Path",                IDM_EDIT_URL2PATH
+            MENUITEM "फ़ाइल सिस्टम पथ टू URL",                IDM_EDIT_PATH2URL
+            MENUITEM "URL टू फ़ाइल सिस्टम पथ",                IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                     IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                         IDM_EDIT_INVERTSLASH
+            MENUITEM "Backslashes इन्वर्ट करें",                     IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Slashes इन्वर्ट करें",                         IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "Char से Hex में (&H)\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
             MENUITEM "Hex से Char में (&C)\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
