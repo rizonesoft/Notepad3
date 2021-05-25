@@ -49,7 +49,7 @@ extern COLORREF  g_colorCustom[16];
 // This array holds all the lexers...
 // Don't forget to change the number of the lexer for HTML and XML
 // in Notepad2.c ParseCommandLine() if you change this array!
-static PEDITLEXER g_pLexArray[NUMLEXERS] = {
+static PEDITLEXER g_pLexArray[] = {
     &lexStandard,      // Default Text
     &lexStandard2nd,   // 2nd Default Text
     &lexTEXT,          // Pure Text Files (Constants.StdDefaultLexerID = 2)
@@ -76,6 +76,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] = {
     &lexJAVA,          // Java Source Code
     &lexJS,            // JavaScript
     &lexJSON,          // JSON
+    &lexJulia,         // Julia
     &lexKotlin,        // Kotlin
     &lexLATEX,         // LaTeX Files
     &lexLUA,           // Lua Script
@@ -104,6 +105,10 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] = {
     &lexXML,           // XML Document
     &lexYAML,          // YAML
 };
+
+int Style_NumOfLexers() {
+    return COUNTOF(g_pLexArray);
+}
 
 
 // Currently used lexer
@@ -3940,7 +3945,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static HBRUSH     hbrBack = { 0 };
     static bool       bIsStyleSelected = false;
     static bool       bWarnedNoIniFile = false;
-    static WCHAR*     Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
+    static WCHAR      *Style_StylesBackup[COUNTOF(g_pLexArray) * AVG_NUM_OF_STYLES_PER_LEXER];
 
     static WCHAR      tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
 
@@ -3978,7 +3983,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
 
         // Backup Styles
-        ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
+        ZeroMemory(&Style_StylesBackup, COUNTOF(g_pLexArray) * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
             Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->szExtensions);

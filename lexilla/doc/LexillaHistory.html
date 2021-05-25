@@ -562,6 +562,9 @@
 	<td>Derek Brown</td>
       </tr><tr>
 	<td>Robert Di Pardo</td>
+	<td>riQQ</td>
+	<td>YX Hao</td>
+	<td>Bertrand Lacoste</td>
     </tr>
     </table>
     <h2>Releases</h2>
@@ -576,8 +579,25 @@
 	Add namespace feature with GetNameSpace function.
 	</li>
 	<li>
+	Add Julia lexer.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1380/">Feature #1380</a>.
+	</li>
+	<li>
 	Fix transition to comment for --> inside JavaScript string.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2207/">Bug #2207</a>.
+	</li>
+	<li>
+	Fix variable expansion in Batch.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/4">Issue #4</a>.
+	</li>
+	<li>
+	Fix empty link titles in Markdown.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2235/">Bug #2235</a>.
+	Also fix detection of whether the previous line had content which treated '\n' and '\r\n' line endings differently.
+	</li>
+	<li>
+	Remove nested comment and long string support as these were removed from Lua.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2205/">Bug #2205</a>.
 	</li>
 	<li>
 	Update to Unicode 13.
@@ -585,6 +605,10 @@
 	</li>
 	<li>
 	AddStaticLexerModule function adds a static lexer to Lexilla's list.
+	</li>
+	<li>
+	On Win32 enable hardware-enforced stack protection.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1405/">Feature #1405</a>.
 	</li>
     </ul>
     <h3>

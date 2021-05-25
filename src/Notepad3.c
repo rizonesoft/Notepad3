@@ -1551,7 +1551,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         if (s_lpSchemeArg) {
             Style_SetLexerFromName(Globals.hwndEdit,Paths.CurrentFile,s_lpSchemeArg);
             LocalFree(s_lpSchemeArg);  // StrDup()
-        } else if ((s_iInitialLexer >= 0) && (s_iInitialLexer < NUMLEXERS)) {
+        } else if ((s_iInitialLexer >= 0) && (s_iInitialLexer < Style_NumOfLexers())) {
             Style_SetLexerFromID(Globals.hwndEdit, s_iInitialLexer);
         }
         s_flagLexerSpecified = false;
@@ -3138,7 +3138,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
                             StringCchCopy(wchExt, COUNTOF(wchExt), L".");
                             StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData, 0) + 1, 31);
                             Style_SetLexerFromName(Globals.hwndEdit, &params->wchData, wchExt);
-                        } else if (params->iInitialLexer >= 0 && params->iInitialLexer < NUMLEXERS) {
+                        } else if (params->iInitialLexer >= 0 && params->iInitialLexer < Style_NumOfLexers()) {
                             Style_SetLexerFromID(Globals.hwndEdit, params->iInitialLexer);
                         }
                     }

@@ -158,6 +158,7 @@
 		F6224FEE88B39060046EEBB0 /* LexerUtils.cxx in Sources */ = {isa = PBXBuildFile; fileRef = B70142AEAD02FCCC38C95437 /* LexerUtils.cxx */; };
 		20734B2BAC0066B302C5F572 /* LexKotlin.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 4B244DD685C45BD626DFCBFA /* LexKotlin.cxx */; };
 		173A4B628003CD6778153F13 /* LexTOML.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 8FE446A1AD4BC789488C9865 /* LexTOML.cxx */; };
+		98684028BA6245805B2034D1 /* LexJulia.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9AA44B1D90573293F9570B5E /* LexJulia.cxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -314,6 +315,7 @@
 		B70142AEAD02FCCC38C95437 /* LexerUtils.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexerUtils.cxx; path = ../../lexers/LexerUtils.cxx; sourceTree = SOURCE_ROOT; };
 		4B244DD685C45BD626DFCBFA /* LexKotlin.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexKotlin.cxx; path = ../../lexers/LexKotlin.cxx; sourceTree = SOURCE_ROOT; };
 		8FE446A1AD4BC789488C9865 /* LexTOML.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexTOML.cxx; path = ../../lexers/LexTOML.cxx; sourceTree = SOURCE_ROOT; };
+		9AA44B1D90573293F9570B5E /* LexJulia.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexJulia.cxx; path = ../../lexers/LexJulia.cxx; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -413,6 +415,7 @@
 				28BA72EA24E34D9300272C2D /* LexIndent.cxx */,
 				28BA730524E34D9400272C2D /* LexInno.cxx */,
 				28BA733024E34D9600272C2D /* LexJSON.cxx */,
+				9AA44B1D90573293F9570B5E /* LexJulia.cxx */,
 				28BA731124E34D9500272C2D /* LexKix.cxx */,
 				4B244DD685C45BD626DFCBFA /* LexKotlin.cxx */,
 				28BA72F824E34D9300272C2D /* LexKVIrc.cxx */,
@@ -736,6 +739,7 @@
 				F6224FEE88B39060046EEBB0 /* LexerUtils.cxx in Sources */,
 				20734B2BAC0066B302C5F572 /* LexKotlin.cxx in Sources */,
 				173A4B628003CD6778153F13 /* LexTOML.cxx in Sources */,
+				98684028BA6245805B2034D1 /* LexJulia.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
