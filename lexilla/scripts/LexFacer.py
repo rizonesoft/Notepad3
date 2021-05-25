@@ -9,8 +9,7 @@ import os, pathlib, sys
 sys.path.append(os.path.join("..", "..", "scintilla", "scripts"))
 
 import Face
-
-from FileGenerator import UpdateFile, Generate, Regenerate, UpdateLineInFile, lineEnd
+import FileGenerator
 
 def printLexHFile(f):
 	out = []
@@ -21,10 +20,10 @@ def printLexHFile(f):
 				out.append("#define " + name + " " + v["Value"])
 	return out
 
-def RegenerateAll(root, showMaxID):
+def RegenerateAll(root, _showMaxID):
 	f = Face.Face()
 	f.ReadFromFile(root / "include/LexicalStyles.iface")
-	Regenerate(root / "include/SciLexer.h", "/* ", printLexHFile(f))
+	FileGenerator.Regenerate(root / "include/SciLexer.h", "/* ", printLexHFile(f))
 
 if __name__ == "__main__":
 	RegenerateAll(pathlib.Path(__file__).resolve().parent.parent, True)

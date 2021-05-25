@@ -173,7 +173,7 @@ def FindCredits(historyFile):
                 credit = l[4:-5]
                 if "<a" in l:
                     title, a, rest = credit.partition("<a href=")
-                    urlplus, bracket, end = rest.partition(">")
+                    urlplus, _bracket, end = rest.partition(">")
                     name = end.split("<")[0]
                     url = urlplus[1:-1]
                     credit = title.strip()

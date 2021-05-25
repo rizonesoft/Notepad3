@@ -953,6 +953,7 @@
 #define IDS_LEX_PRISM_CSV               63050
 #define IDS_LEX_DART_SRC                63051
 #define IDS_LEX_KOTLIN_SRC              63052
+#define IDS_LEX_JULIA_SCR               63053
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101

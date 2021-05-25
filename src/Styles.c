@@ -27,6 +27,8 @@
 #include "Lexilla.h"
 #include "lexers_x/SciXLexer.h"
 
+#include "uthash/utarray.h"
+
 #include "Edit.h"
 #include "Dialogs.h"
 #include "Encoding.h"
@@ -49,7 +51,7 @@ extern COLORREF  g_colorCustom[16];
 // This array holds all the lexers...
 // Don't forget to change the number of the lexer for HTML and XML
 // in Notepad2.c ParseCommandLine() if you change this array!
-static PEDITLEXER g_pLexArray[NUMLEXERS] = {
+static PEDITLEXER g_pLexArray[] = {
     &lexStandard,      // Default Text
     &lexStandard2nd,   // 2nd Default Text
     &lexTEXT,          // Pure Text Files (Constants.StdDefaultLexerID = 2)
@@ -76,6 +78,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] = {
     &lexJAVA,          // Java Source Code
     &lexJS,            // JavaScript
     &lexJSON,          // JSON
+    &lexJulia,         // Julia
     &lexKotlin,        // Kotlin
     &lexLATEX,         // LaTeX Files
     &lexLUA,           // Lua Script
@@ -104,6 +107,10 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] = {
     &lexXML,           // XML Document
     &lexYAML,          // YAML
 };
+
+int Style_NumOfLexers() {
+    return COUNTOF(g_pLexArray);
+}
 
 
 // Currently used lexer
@@ -3968,6 +3975,19 @@ static void _UpdateTitleText(HWND hwnd)
 }
 
 
+static void _style_copy(void* _dst, const void* _src) {
+    LPCWSTR const * src = (LPWSTR const *)_src;
+    LPCWSTR * dst = (LPWSTR *)_dst;
+    *dst = *src ? StrDup(*src) : NULL;
+}
+
+static void _style_dtor(void *_elt) {
+    LPWSTR * const elt = (LPWSTR *)_elt;
+    if (*elt) { LocalFree(*elt); }
+}
+
+static UT_icd _style_icd = { sizeof(LPWSTR), NULL, _style_copy, _style_dtor };
+
 INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     static HWND       hwndTV;
@@ -3980,9 +4000,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static HBRUSH     hbrBack = { 0 };
     static bool       bIsStyleSelected = false;
     static bool       bWarnedNoIniFile = false;
-    static WCHAR*     Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
 
     static WCHAR      tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
+    static UT_array  *pStylesBackup = NULL;
 
     switch (umsg) {
     case WM_INITDIALOG: {
@@ -3992,6 +4012,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         InitWindowCommon(hwnd, true);
 
         _UpdateTitleText(hwnd);
+
+        if (pStylesBackup) {
+            utarray_free(pStylesBackup);
+            pStylesBackup = NULL;
+        }
+        utarray_new(pStylesBackup, &_style_icd);
 
 #ifdef D_NP3_WIN10_DARK_MODE
         if (UseDarkMode()) {
@@ -4018,14 +4044,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
 
         // Backup Styles
-        ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
-        int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-            Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->szExtensions);
-            int i                     = 0;
+            LPCWSTR const pExt = g_pLexArray[iLexer]->szExtensions;
+            utarray_push_back(pStylesBackup, &pExt);
+            int i = 0;
             while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-                Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->Styles[i].szValue);
-                ++i;
+                LPCWSTR const pVal = g_pLexArray[iLexer]->Styles[i++].szValue;
+                utarray_push_back(pStylesBackup, &pVal);
             }
         }
 
@@ -4222,23 +4247,11 @@ CASE_WM_CTLCOLOR_SET:
         DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
 
         // free old backup
-        int cnt = 0;
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-            if (Style_StylesBackup[cnt]) {
-                LocalFree(Style_StylesBackup[cnt]); // StrDup()
-                Style_StylesBackup[cnt] = NULL;
-            }
-            ++cnt;
-            int i = 0;
-            while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-                if (Style_StylesBackup[cnt]) {
-                    LocalFree(Style_StylesBackup[cnt]); // StrDup()
-                    Style_StylesBackup[cnt] = NULL;
-                }
-                ++cnt;
-                ++i;
-            }
+        if (pStylesBackup) {
+            utarray_free(pStylesBackup);
+            pStylesBackup = NULL;
         }
+
         if (hFontTitle) {
             DeleteObject(hFontTitle);
             hFontTitle = NULL;
@@ -4618,19 +4631,18 @@ CASE_WM_CTLCOLOR_SET:
                 _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
                 // Restore Styles from Backup
-                int cnt = 0;
+                LPWSTR * pStyle = (LPWSTR*)utarray_front(pStylesBackup);
                 for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-                    StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), Style_StylesBackup[cnt]);
-
-                    ++cnt;
+                    StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), *pStyle);
+                    pStyle = (LPWSTR*)utarray_next(pStylesBackup, (void*)pStyle);
                     int i = 0;
-                    while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+                    while (pStyle && (g_pLexArray[iLexer]->Styles[i].iStyle != -1)) {
                         // normalize
                         tchTmpBuffer[0] = L'\0'; // clear
-                        Style_CopyStyles_IfNotDefined(Style_StylesBackup[cnt], tchTmpBuffer, COUNTOF(tchTmpBuffer));
+                        Style_CopyStyles_IfNotDefined(*pStyle, tchTmpBuffer, COUNTOF(tchTmpBuffer));
                         StringCchCopy(g_pLexArray[iLexer]->Styles[i].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), tchTmpBuffer);
-                        ++cnt;
                         ++i;
+                        pStyle = (LPWSTR*)utarray_next(pStylesBackup, (void*)pStyle);
                     }
                 }
                 Style_ResetCurrentLexer(Globals.hwndEdit);
