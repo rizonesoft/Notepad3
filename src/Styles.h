@@ -28,8 +28,8 @@
 #define NUMBER_OF_MARGINS  3
 
 // Number of Lexers in pLexArray
-#define NUMLEXERS 53
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
+int    Style_NumOfLexers();
 
 void   Style_Load();
 bool   Style_Import(HWND hwnd);

@@ -174,7 +174,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -248,7 +248,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -624,6 +624,7 @@
     <ClCompile Include="crypto\sha-256.c" />
     <ClCompile Include="StyleLexers\EditLexer.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
+    <ClCompile Include="StyleLexers\styleLexJulia.c" />
     <ClCompile Include="StyleLexers\styleLexKotlin.c" />
     <ClCompile Include="tinyexpr\tinyexpr.c" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
