@@ -500,6 +500,14 @@ static void ColouriseBatchDoc(
 						styler.ColourTo(startLine + offset - 1 - (wbl - 3), SCE_BAT_IDENTIFIER);
 						// Reset Offset to re-process remainder of word
 						offset -= (wbl - 3);
+					// escaped %
+					} else if (
+						(wbl > 1) &&
+						(wordBuffer[1] == '%')) {
+
+						// Reset Offset to re-process remainder of word
+						styler.ColourTo(startLine + offset - 1 - (wbl - 2), SCE_BAT_DEFAULT);
+						offset -= (wbl - 2);
 					}
 				// Check for Environment Variable (!x...!)
 				} else if (wordBuffer[0] == '!') {
