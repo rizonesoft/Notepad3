@@ -33,14 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.525.(build_#) (2021-05-25)
+Current BETA/RC Version 5.21.526.(build_#) (2021-05-26)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.525.1]- Add "Julia" lexer (new in Lexilla).
+[.525.1]- Add "Julia" lexer (new in Lexilla) (LEX).
 [.506.1]- Base64 Encoding/Decoding.
 [.428.1]- Custom ChooseColor resource definition.
 [.426.1]- Prepare Application Manifest for to grant Identity for non-package desktop apps.
@@ -72,7 +72,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.525.1]- Update Lexilla Lib (bug fixes for Lexer: Markdown, Cmd/Batch).
+[.526.1]- Batch-Lexer + patching Markdown-Lexer (eolfilled header lines) (LEX).
+[.526.1]- Scheme-Dlg: dynamic (alloc) Style-Backup handling.
+[.525.1]- Update Lexilla Lib (bug fixes for Lexer: Markdown, Cmd/Batch) (LEX).
 [.515.1]- "grepWinNP3" based on current grepWin ver (boost v1.76 , upd: sktoolslib).
 [.515.1]- Add some more coding fonts to prefer over Consolas (if installed).
 [.515.1]- Linker: hardware-enforced stack-protection.
