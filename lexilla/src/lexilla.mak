@@ -92,7 +92,6 @@ LEX_OBJS=\
 	$(DIR_O)\LexLaTeX.obj \
 	$(DIR_O)\LexLua.obj \
 	$(DIR_O)\LexMake.obj \
-	$(DIR_O)\LexMarkdown.obj \
 	$(DIR_O)\LexMatlab.obj \
 	$(DIR_O)\LexNim.obj \
 	$(DIR_O)\LexNsis.obj \
@@ -116,6 +115,7 @@ LEX_OBJS=\
 	$(DIR_O)\LexerUtils.obj \
 	$(DIR_O)\LexJSON.obj \
 	$(DIR_O)\LexKotlin.obj \
+	$(DIR_O)\LexMarkdown.obj \
 	$(DIR_O)\LexPython.obj \
 	$(DIR_O)\LexTOML.obj \
 
