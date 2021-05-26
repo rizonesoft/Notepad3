@@ -77,10 +77,10 @@ BEGIN
         END
         POPUP "In&dítás"
         BEGIN
-            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "&Új üres ablak\tAlt+N",              IDM_FILE_NEWWINDOW
+            MENUITEM "&Példány duplikálás\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Emelt szinten indítás",             IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Visszaállás fájlból\tF5",               IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "Fájl&változások kihagyása",                      CMD_IGNORE_FILE_VARS
         POPUP "&Kódolás"
         BEGIN
             POPUP "Visszaállás fájlból másként&"
@@ -210,12 +210,12 @@ BEGIN
             MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
             MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "S&or megjegyzés"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "&Váltás\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
+                MENUITEM "&Hozzáadás\tCtrl+Alt+Q",           IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Eltávolítás\tCtrl+Alt+Shift+Q",   IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Blokk szerkesztése\tAlt+Shift+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "Behúzás Tab&ulátorrá\tCtrl+Alt+T",           IDM_EDIT_CONVERTSPACES2
             MENUITEM "Behúzás Tab-m&entes\tCtrl+Alt+S",            IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base&64 kódolás",                   IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 dekódolás",                 IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 dekódolás kódlapra...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "&URL bekódolás\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "U&RL kikódolás\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
