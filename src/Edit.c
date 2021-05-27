@@ -5442,196 +5442,194 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 //
 static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 {
-    if (lpefr) {
-        if (hwnd) {
-            char szBuf[FNDRPL_BUFFER] = { '\0' };
-            bool bIsFindDlg = (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE) == NULL);
+    if (hwnd && lpefr) {
 
-            ComboBox_GetTextW2MB(hwnd, IDC_FINDTEXT, szBuf, COUNTOF(szBuf));
-            if (StringCchCompareXA(szBuf, lpefr->szFind) != 0) {
-                StringCchCopyA(lpefr->szFind, COUNTOF(lpefr->szFind), szBuf);
+        char szBuf[FNDRPL_BUFFER] = { '\0' };
+        bool bIsFindDlg = (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE) == NULL);
+
+        ComboBox_GetTextW2MB(hwnd, IDC_FINDTEXT, szBuf, COUNTOF(szBuf));
+        if (StringCchCompareXA(szBuf, lpefr->szFind) != 0) {
+            StringCchCopyA(lpefr->szFind, COUNTOF(lpefr->szFind), szBuf);
+            lpefr->bStateChanged = true;
+        }
+
+        ComboBox_GetTextW2MB(hwnd, IDC_REPLACETEXT, szBuf, COUNTOF(szBuf));
+        if (StringCchCompareXA(szBuf, lpefr->szReplace) != 0) {
+            StringCchCopyA(lpefr->szReplace, COUNTOF(lpefr->szReplace), szBuf);
+            lpefr->bStateChanged = true;
+        }
+
+        bool bIsFlagSet = ((lpefr->fuFlags & SCFIND_MATCHCASE) != 0);
+        if (IsButtonChecked(hwnd, IDC_FINDCASE)) {
+            if (!bIsFlagSet) {
+                lpefr->fuFlags |= SCFIND_MATCHCASE;
                 lpefr->bStateChanged = true;
             }
-
-            ComboBox_GetTextW2MB(hwnd, IDC_REPLACETEXT, szBuf, COUNTOF(szBuf));
-            if (StringCchCompareXA(szBuf, lpefr->szReplace) != 0) {
-                StringCchCopyA(lpefr->szReplace, COUNTOF(lpefr->szReplace), szBuf);
+        } else {
+            if (bIsFlagSet) {
+                lpefr->fuFlags &= ~(SCFIND_MATCHCASE);
                 lpefr->bStateChanged = true;
             }
+        }
 
+        bIsFlagSet = ((lpefr->fuFlags & SCFIND_WHOLEWORD) != 0);
+        if (IsButtonChecked(hwnd, IDC_FINDWORD)) {
+            if (!bIsFlagSet) {
+                lpefr->fuFlags |= SCFIND_WHOLEWORD;
+                lpefr->bStateChanged = true;
+            }
+        } else {
+            if (bIsFlagSet) {
+                lpefr->fuFlags &= ~(SCFIND_WHOLEWORD);
+                lpefr->bStateChanged = true;
+            }
+        }
 
-            bool bIsFlagSet = ((lpefr->fuFlags & SCFIND_MATCHCASE) != 0);
-            if (IsButtonChecked(hwnd, IDC_FINDCASE)) {
+        bIsFlagSet = ((lpefr->fuFlags & SCFIND_WORDSTART) != 0);
+        if (IsButtonChecked(hwnd, IDC_FINDSTART)) {
+            if (!bIsFlagSet) {
+                lpefr->fuFlags |= SCFIND_WORDSTART;
+                lpefr->bStateChanged = true;
+            }
+        } else {
+            if (bIsFlagSet) {
+                lpefr->fuFlags &= ~(SCFIND_WORDSTART);
+                lpefr->bStateChanged = true;
+            }
+        }
+
+        bIsFlagSet = lpefr->bRegExprSearch;
+        if (IsButtonChecked(hwnd, IDC_FINDREGEXP)) {
+            if (!bIsFlagSet) {
+                lpefr->bRegExprSearch = true;
+                lpefr->fuFlags |= SCFIND_REGEXP;
+                lpefr->bStateChanged = true;
+            }
+        } else {
+            if (bIsFlagSet) {
+                lpefr->bRegExprSearch = false;
+                lpefr->fuFlags &= ~SCFIND_REGEXP;
+                lpefr->bStateChanged = true;
+            }
+        }
+
+        if (IsDialogControlEnabled(hwnd, IDC_DOT_MATCH_ALL)) {
+            bIsFlagSet = ((lpefr->fuFlags & SCFIND_DOT_MATCH_ALL) != 0);
+            if (IsButtonChecked(hwnd, IDC_DOT_MATCH_ALL)) {
                 if (!bIsFlagSet) {
-                    lpefr->fuFlags |= SCFIND_MATCHCASE;
+                    lpefr->fuFlags |= SCFIND_DOT_MATCH_ALL;
                     lpefr->bStateChanged = true;
                 }
             } else {
                 if (bIsFlagSet) {
-                    lpefr->fuFlags &= ~(SCFIND_MATCHCASE);
+                    lpefr->fuFlags &= ~SCFIND_DOT_MATCH_ALL;
                     lpefr->bStateChanged = true;
                 }
             }
+        }
 
-            bIsFlagSet = ((lpefr->fuFlags & SCFIND_WHOLEWORD) != 0);
-            if (IsButtonChecked(hwnd, IDC_FINDWORD)) {
-                if (!bIsFlagSet) {
-                    lpefr->fuFlags |= SCFIND_WHOLEWORD;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->fuFlags &= ~(SCFIND_WHOLEWORD);
-                    lpefr->bStateChanged = true;
-                }
+        // force consistency
+        if (lpefr->bRegExprSearch) {
+            CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
+        }
+        bIsFlagSet = lpefr->bWildcardSearch;
+        if (IsButtonChecked(hwnd, IDC_WILDCARDSEARCH)) {
+            if (!bIsFlagSet) {
+                lpefr->bWildcardSearch = true;
+                lpefr->fuFlags |= SCFIND_REGEXP; // Wildcard search based on RegExpr
+                lpefr->bStateChanged = true;
             }
-
-            bIsFlagSet = ((lpefr->fuFlags & SCFIND_WORDSTART) != 0);
-            if (IsButtonChecked(hwnd, IDC_FINDSTART)) {
-                if (!bIsFlagSet) {
-                    lpefr->fuFlags |= SCFIND_WORDSTART;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->fuFlags &= ~(SCFIND_WORDSTART);
-                    lpefr->bStateChanged = true;
-                }
-            }
-
-            bIsFlagSet = lpefr->bRegExprSearch;
-            if (IsButtonChecked(hwnd, IDC_FINDREGEXP)) {
-                if (!bIsFlagSet) {
-                    lpefr->bRegExprSearch = true;
-                    lpefr->fuFlags |= SCFIND_REGEXP;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->bRegExprSearch = false;
+        } else {
+            if (bIsFlagSet) {
+                lpefr->bWildcardSearch = false;
+                if (!(lpefr->bRegExprSearch)) {
                     lpefr->fuFlags &= ~SCFIND_REGEXP;
-                    lpefr->bStateChanged = true;
                 }
+                lpefr->bStateChanged = true;
             }
+        }
 
-            if (IsDialogControlEnabled(hwnd, IDC_DOT_MATCH_ALL)) {
-                bIsFlagSet = ((lpefr->fuFlags & SCFIND_DOT_MATCH_ALL) != 0);
-                if (IsButtonChecked(hwnd, IDC_DOT_MATCH_ALL)) {
-                    if (!bIsFlagSet) {
-                        lpefr->fuFlags |= SCFIND_DOT_MATCH_ALL;
-                        lpefr->bStateChanged = true;
-                    }
-                } else {
-                    if (bIsFlagSet) {
-                        lpefr->fuFlags &= ~SCFIND_DOT_MATCH_ALL;
-                        lpefr->bStateChanged = true;
-                    }
-                }
+        bIsFlagSet = lpefr->bOverlappingFind;
+        if (IsButtonChecked(hwnd, IDC_FIND_OVERLAPPING)) {
+            if (!bIsFlagSet) {
+                lpefr->bOverlappingFind = true;
+                lpefr->bStateChanged = false; // no effect on state
             }
+        } else {
+            if (bIsFlagSet) {
+                lpefr->bOverlappingFind = false;
+                lpefr->bStateChanged = false; // no effect on state
+            }
+        }
 
-            // force consistency
-            if (lpefr->bRegExprSearch) {
-                CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
+        bIsFlagSet = lpefr->bNoFindWrap;
+        if (IsButtonChecked(hwnd, IDC_NOWRAP)) {
+            if (!bIsFlagSet) {
+                lpefr->bNoFindWrap = true;
+                lpefr->bStateChanged = true;
             }
-            bIsFlagSet = lpefr->bWildcardSearch;
-            if (IsButtonChecked(hwnd, IDC_WILDCARDSEARCH)) {
+        } else {
+            if (bIsFlagSet) {
+                lpefr->bNoFindWrap = false;
+                lpefr->bStateChanged = true;
+            }
+        }
+
+        bIsFlagSet = lpefr->bMarkOccurences;
+        if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES)) {
+            if (!bIsFlagSet) {
+                lpefr->bMarkOccurences = true;
+                lpefr->bStateChanged = true;
+            }
+        } else {
+            if (bIsFlagSet) {
+                lpefr->bMarkOccurences = false;
+                lpefr->bStateChanged = true;
+            }
+        }
+
+        if (IsDialogControlEnabled(hwnd, IDC_FINDTRANSFORMBS)) {
+            bIsFlagSet = lpefr->bTransformBS;
+            if (IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS)) {
                 if (!bIsFlagSet) {
-                    lpefr->bWildcardSearch = true;
-                    lpefr->fuFlags |= SCFIND_REGEXP;  // Wildcard search based on RegExpr
+                    lpefr->bTransformBS = true;
                     lpefr->bStateChanged = true;
                 }
             } else {
                 if (bIsFlagSet) {
-                    lpefr->bWildcardSearch = false;
-                    if (!(lpefr->bRegExprSearch)) {
-                        lpefr->fuFlags &= ~SCFIND_REGEXP;
-                    }
+                    lpefr->bTransformBS = false;
                     lpefr->bStateChanged = true;
                 }
             }
+        }
 
-            bIsFlagSet = lpefr->bOverlappingFind;
-            if (IsButtonChecked(hwnd, IDC_FIND_OVERLAPPING)) {
+        if (bIsFindDlg) {
+            bIsFlagSet = lpefr->bFindClose;
+            if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
                 if (!bIsFlagSet) {
-                    lpefr->bOverlappingFind = true;
-                    lpefr->bStateChanged = false; // no effect on state
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->bOverlappingFind = false;
-                    lpefr->bStateChanged = false; // no effect on state
-                }
-            }
-
-            bIsFlagSet = lpefr->bNoFindWrap;
-            if (IsButtonChecked(hwnd, IDC_NOWRAP)) {
-                if (!bIsFlagSet) {
-                    lpefr->bNoFindWrap = true;
+                    lpefr->bFindClose = true;
                     lpefr->bStateChanged = true;
                 }
             } else {
                 if (bIsFlagSet) {
-                    lpefr->bNoFindWrap = false;
+                    lpefr->bFindClose = false;
                     lpefr->bStateChanged = true;
                 }
             }
-
-            bIsFlagSet = lpefr->bMarkOccurences;
-            if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES)) {
+        } else { // replace close
+            bIsFlagSet = lpefr->bReplaceClose;
+            if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
                 if (!bIsFlagSet) {
-                    lpefr->bMarkOccurences = true;
+                    lpefr->bReplaceClose = true;
                     lpefr->bStateChanged = true;
                 }
             } else {
                 if (bIsFlagSet) {
-                    lpefr->bMarkOccurences = false;
+                    lpefr->bReplaceClose = false;
                     lpefr->bStateChanged = true;
                 }
             }
-
-            if (IsDialogControlEnabled(hwnd, IDC_FINDTRANSFORMBS)) {
-                bIsFlagSet = lpefr->bTransformBS;
-                if (IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS)) {
-                    if (!bIsFlagSet) {
-                        lpefr->bTransformBS = true;
-                        lpefr->bStateChanged = true;
-                    }
-                } else {
-                    if (bIsFlagSet) {
-                        lpefr->bTransformBS = false;
-                        lpefr->bStateChanged = true;
-                    }
-                }
-            }
-
-            if (bIsFindDlg) {
-                bIsFlagSet = lpefr->bFindClose;
-                if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
-                    if (!bIsFlagSet) {
-                        lpefr->bFindClose = true;
-                        lpefr->bStateChanged = true;
-                    }
-                } else {
-                    if (bIsFlagSet) {
-                        lpefr->bFindClose = false;
-                        lpefr->bStateChanged = true;
-                    }
-                }
-            } else { // replace close
-                bIsFlagSet = lpefr->bReplaceClose;
-                if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
-                    if (!bIsFlagSet) {
-                        lpefr->bReplaceClose = true;
-                        lpefr->bStateChanged = true;
-                    }
-                } else {
-                    if (bIsFlagSet) {
-                        lpefr->bReplaceClose = false;
-                        lpefr->bStateChanged = true;
-                    }
-                }
-            }
-        } // if hwnd
+        }
     }
 }
 
@@ -5892,6 +5890,29 @@ static void _ShowZeroLengthCallTip(DocPos iPosition)
     char chZeroLenCT[80] = { '\0' };
     GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, chZeroLenCT, COUNTOF(chZeroLenCT));
     SciCall_CallTipShow(iPosition, chZeroLenCT);
+}
+
+
+//=============================================================================
+//
+//  _EnableFRDlgCtrls()
+//
+static bool _EnableFRDlgCtrls(HWND hwnd) {
+
+    //bool const bEmptyFnd = (ComboBox_GetTextLengthEx(hwnd, IDC_FINDTEXT) == 0 || ComboBox_GetCurSelEx(hwnd, IDC_FINDTEXT) != CB_ERR);
+    //bool const bEmptyRpl = (ComboBox_GetTextLengthEx(hwnd, IDC_REPLACETEXT) == 0 || ComboBox_GetCurSelEx(hwnd, IDC_REPLACETEXT) != CB_ERR);
+    bool const bEmptyFnd = ComboBox_GetTextLengthEx(hwnd, IDC_FINDTEXT) == 0;
+    bool const bEmptyRpl = ComboBox_GetTextLengthEx(hwnd, IDC_REPLACETEXT) == 0;
+    bool const bEmptySel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
+
+    DialogEnableControl(hwnd, IDOK, !bEmptyFnd);
+    DialogEnableControl(hwnd, IDC_FINDPREV, !bEmptyFnd);
+    DialogEnableControl(hwnd, IDC_REPLACE, !bEmptyFnd);
+    DialogEnableControl(hwnd, IDC_REPLACEALL, !bEmptyFnd);
+    DialogEnableControl(hwnd, IDC_REPLACEINSEL, !bEmptyFnd && !bEmptySel);
+    DialogEnableControl(hwnd, IDC_SWAPSTRG, !bEmptyFnd || !bEmptyRpl);
+
+    return !bEmptyFnd;
 }
 
 
@@ -6339,79 +6360,88 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         case IDC_FINDTEXT:
         case IDC_REPLACETEXT: {
 
-            bool bPatternChanged = false;
+            bool bFndPatternChanged = s_pEfrDataDlg->bStateChanged;
+
+            switch (HIWORD(wParam)) {
+
+            case CBN_CLOSEUP: {
+                LONG lSelEnd = 0;
+                SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETEDITSEL, 0, (LPARAM)&lSelEnd);
+                SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETEDITSEL, 0, MAKELPARAM(lSelEnd, lSelEnd));
+            }
+            break;
+
+            case CBN_EDITUPDATE:
+                if (SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETDROPPEDSTATE, 0, 0)) {
+                    //~SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETCURSEL, (WPARAM)-1, 0); // clear
+                    SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SHOWDROPDOWN, 0, 0); // hide
+                }
+                break;
+
+            case CBN_SELCHANGE: {
+                LRESULT const cursel = SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETCURSEL, 0, 0);
+                if (cursel != CB_ERR) {
+                    SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETCURSEL, (WPARAM)cursel, 0);
+                }
+            }
+            // [fallthrough]
+            case CBN_SELENDOK:
+            case CBN_EDITCHANGE:
+                bFndPatternChanged = (LOWORD(wParam) == IDC_FINDTEXT);
+                LPSTR const buffer = bFndPatternChanged ? s_pEfrDataDlg->szFind : s_pEfrDataDlg->szReplace;
+                ComboBox_GetTextW2MB(hwnd, LOWORD(wParam), buffer, FNDRPL_BUFFER);
+                if (bFndPatternChanged) {
+                    SetFindPatternMB(s_pEfrDataDlg->szFind);
+                }
+                break;
+
+            case CBN_KILLFOCUS:
+            case CBN_SELENDCANCEL:
+            default:
+                break;
+            }
+
             if (Globals.bFindReplCopySelOrClip) {
-                char* lpszSelection = NULL;
+                char *lpszSelection = NULL;
                 DocPos const cchSelection = SciCall_GetSelText(NULL);
                 if ((cchSelection > 1) && (LOWORD(wParam) != IDC_REPLACETEXT)) {
                     lpszSelection = AllocMem(cchSelection + 1, HEAP_ZERO_MEMORY);
                     SciCall_GetSelText(lpszSelection);
                 } else { // (cchSelection <= 1)
                     // nothing is selected in the editor:
-                    // if first time you bring up find/replace dialog,
-                    // use most recent search pattern to find box
                     lpszSelection = AllocMem(FNDRPL_BUFFER, HEAP_ZERO_MEMORY);
                     if (lpszSelection) {
+                        // if first time you bring up find/replace dialog,
+                        // use most recent search pattern to find box
+                        // in case of no history: paste clipboard
                         _EditGetFindStrg(Globals.hwndEdit, s_pEfrDataDlg, lpszSelection, SizeOfMem(lpszSelection));
                     }
                 }
-
                 if (lpszSelection) {
                     ComboBox_SetTextMB2W(hwnd, IDC_FINDTEXT, lpszSelection);
                     FreeMem(lpszSelection);
                     lpszSelection = NULL;
-                    bPatternChanged = true;
+                    bFndPatternChanged = true;
                 }
-                s_InitialTopLine = -1;  // reset
+                s_InitialTopLine = -1; // reset
                 s_anyMatch = NO_MATCH;
                 Globals.bFindReplCopySelOrClip = false;
 
             } // Globals.bFindReplCopySelOrClip
 
-            switch (HIWORD(wParam)) {
-            case CBN_CLOSEUP:
-            case CBN_EDITCHANGE:
-                bPatternChanged = (LOWORD(wParam) == IDC_FINDTEXT);
-                break;
-            default:
-                break;
+            // ------------------------
+            if (!bFndPatternChanged) {
+                break; // return
             }
+            // ------------------------
 
-            if (!bPatternChanged) {
-                break;
-            }
-
-            bool const bEmptyFnd = (ComboBox_GetTextLenth(hwnd, IDC_FINDTEXT) ||
-                                    CB_ERR != SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_GETCURSEL, 0, 0));
-
-            bool const bEmptyRpl = (ComboBox_GetTextLenth(hwnd, IDC_REPLACETEXT) ||
-                                    CB_ERR != SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_GETCURSEL, 0, 0));
-
-            bool const bEmptySel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
-
-            DialogEnableControl(hwnd, IDOK, bEmptyFnd);
-            DialogEnableControl(hwnd, IDC_FINDPREV, bEmptyFnd);
-            DialogEnableControl(hwnd, IDC_REPLACE, bEmptyFnd);
-            DialogEnableControl(hwnd, IDC_REPLACEALL, bEmptyFnd);
-            DialogEnableControl(hwnd, IDC_REPLACEINSEL, bEmptyFnd && bEmptySel);
-            DialogEnableControl(hwnd, IDC_SWAPSTRG, bEmptyFnd || bEmptyRpl);
-
-            if (!bEmptyFnd) {
+            if (_EnableFRDlgCtrls(hwnd)) {
                 s_anyMatch = NO_MATCH;
                 EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
             }
 
-            if (HIWORD(wParam) == CBN_CLOSEUP) {
-                LONG lSelEnd = 0;
-                SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETEDITSEL, 0, (LPARAM)&lSelEnd);
-                SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETEDITSEL, 0, MAKELPARAM(lSelEnd, lSelEnd));
-            }
-
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
-
-            if (StrIsEmptyA(s_pEfrDataDlg->szFind)) {
-                SetFindPattern(L"");
-            }
+            SetFindPatternMB(s_pEfrDataDlg->szFind);
 
             DocPos start = s_InitialSearchStart;
             DocPos end = Sci_GetDocEndPosition();
@@ -6581,16 +6611,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 CopyMemory(&s_efrSave, s_pEfrDataDlg, sizeof(EDITFINDREPLACE));
             }
 
-            if (!s_bSwitchedFindReplace &&
-                    !ComboBox_GetTextW2MB(hwnd, IDC_FINDTEXT, s_pEfrDataDlg->szFind, COUNTOF(s_pEfrDataDlg->szFind))) {
-                DialogEnableControl(hwnd, IDOK, false);
-                DialogEnableControl(hwnd, IDC_FINDPREV, false);
-                DialogEnableControl(hwnd, IDC_REPLACE, false);
-                DialogEnableControl(hwnd, IDC_REPLACEALL, false);
-                DialogEnableControl(hwnd, IDC_REPLACEINSEL, false);
-                if (!ComboBox_GetTextW2MB(hwnd, IDC_REPLACETEXT, s_pEfrDataDlg->szReplace, COUNTOF(s_pEfrDataDlg->szReplace))) {
-                    DialogEnableControl(hwnd, IDC_SWAPSTRG, false);
-                }
+            if (!s_bSwitchedFindReplace && !_EnableFRDlgCtrls(hwnd)) {
                 return true;
             }
 
