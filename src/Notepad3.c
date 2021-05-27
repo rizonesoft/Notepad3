@@ -1159,7 +1159,7 @@ void SetFindPattern(LPCWSTR wchFindPattern)
 //
 void SetFindPatternMB(LPCSTR chFindPattern)
 {
-    MultiByteToWideCharEx(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
+    MultiByteToWideChar(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, (int)COUNTOF(sCurrentFindPattern));
 }
 
 
