@@ -469,7 +469,7 @@ BEGIN
     IDS_LEX_STR_63367       "Unicode-Point Hover"
     IDS_LEX_STR_63368       "2nd Unicode-Point Hover"
     IDS_LEX_STR_63369       "Interface"
-    IDS_LEX_STR_63370       "Annotation"
+    IDS_LEX_STR_63370       "Annotáció"
     IDS_LEX_STR_63371       "Comment Doc Word"
 END
 

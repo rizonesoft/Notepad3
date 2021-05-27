@@ -53,7 +53,7 @@
 
 using namespace Lexilla;
 
-static inline bool IsNewline(const int ch) {
+constexpr bool IsNewline(const int ch) {
     return (ch == '\n' || ch == '\r');
 }
 
@@ -135,34 +135,43 @@ static bool HasPrevLineContent(StyleContext &sc) {
     return false;
 }
 
-static bool AtTermStart(StyleContext &sc) {
+constexpr bool AtTermStart(StyleContext &sc) {
     return sc.currentPos == 0 || sc.chPrev == 0 || isspacechar(sc.chPrev);
 }
 
-static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
+static bool IsValidHrule(const Sci_PositionU endPos, StyleContext& sc) {
     int count = 1;
     Sci_PositionU i = 0;
     for (;;) {
         ++i;
-        int c = sc.GetRelative(i);
-        if (c == sc.ch)
+        int const ch = sc.GetRelative(i);
+        if (ch == sc.ch)
             ++count;
         // hit a terminating character
-        else if (!IsASpaceOrTab(c) || sc.currentPos + i == endPos) {
+        else if (!IsASpaceOrTab(ch) || (sc.currentPos + i) == endPos) {
             // Are we a valid HRULE
-            if ((IsNewline(c) || sc.currentPos + i == endPos) &&
-                    count >= 3 && !HasPrevLineContent(sc)) {
+            if ((IsNewline(ch) || (sc.currentPos + i) == endPos) &&
+                count >= 3 && !HasPrevLineContent(sc)) {
                 sc.SetState(SCE_MARKDOWN_HRULE);
                 sc.Forward(i);
-                sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+                //@@@sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+                sc.SetState(SCE_MARKDOWN_DEFAULT);
                 return true;
             }
             else {
                 sc.SetState(SCE_MARKDOWN_DEFAULT);
-		return false;
+                return false;
             }
         }
     }
+}
+
+constexpr bool IsInHeaderState(const int state) {
+    return (
+        state == SCE_MARKDOWN_HEADER1 || state == SCE_MARKDOWN_HEADER2 ||
+        state == SCE_MARKDOWN_HEADER3 || state == SCE_MARKDOWN_HEADER4 ||
+        state == SCE_MARKDOWN_HEADER5 || state == SCE_MARKDOWN_HEADER6
+        );
 }
 
 static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
@@ -178,16 +187,21 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
     StyleContext sc(startPos, length, initStyle, styler);
 
     while (sc.More()) {
+
         // Skip past escaped characters
         if (sc.ch == '\\') {
             sc.Forward();
             continue;
         }
 
-        // A blockquotes resets the line semantics
-        if (sc.state == SCE_MARKDOWN_BLOCKQUOTE)
+        if (IsInHeaderState(sc.state) && sc.atLineStart) {
             sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+        }
 
+        // A blockquotes resets the line semantics
+        if (sc.state == SCE_MARKDOWN_BLOCKQUOTE) {
+            sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+        }
         // Conditional state-based actions
         if (sc.state == SCE_MARKDOWN_CODE2) {
             if (sc.Match("``") && sc.GetRelative(-2) != ' ') {
@@ -263,24 +277,36 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
         }
         else if (sc.state == SCE_MARKDOWN_LINE_BEGIN) {
             // Header
-            if (sc.Match("######"))
+            if (sc.Match("######")) {
                 SetStateAndZoom(SCE_MARKDOWN_HEADER6, 6, '#', sc);
-            else if (sc.Match("#####"))
+                freezeCursor = true;
+            }
+            else if (sc.Match("#####")) {
                 SetStateAndZoom(SCE_MARKDOWN_HEADER5, 5, '#', sc);
-            else if (sc.Match("####"))
-                SetStateAndZoom(SCE_MARKDOWN_HEADER4, 4, '#', sc);
-            else if (sc.Match("###"))
+                freezeCursor = true;
+            }
+            else if (sc.Match("####")) {
+                SetStateAndZoom(SCE_MARKDOWN_HEADER4, 4, '#', sc);           
+                freezeCursor = true;
+            }
+            else if (sc.Match("###")) {
                 SetStateAndZoom(SCE_MARKDOWN_HEADER3, 3, '#', sc);
-            else if (sc.Match("##"))
+                freezeCursor = true;
+            }
+            else if (sc.Match("##")) {
                 SetStateAndZoom(SCE_MARKDOWN_HEADER2, 2, '#', sc);
+                freezeCursor = true;
+            }
             else if (sc.Match("#")) {
                 // Catch the special case of an unordered list
                 if (sc.chNext == '.' && IsASpaceOrTab(sc.GetRelative(2))) {
                     precharCount = 0;
                     sc.SetState(SCE_MARKDOWN_PRECHAR);
                 }
-                else
+                else {
                     SetStateAndZoom(SCE_MARKDOWN_HEADER1, 1, '#', sc);
+                    freezeCursor = true;
+                }
             }
             // Code block
             else if (sc.Match("~~~")) {
@@ -303,20 +329,22 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
                     sc.SetState(SCE_MARKDOWN_PRECHAR);
                 }
             }
-            else if (IsNewline(sc.ch))
-                sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+            else if (sc.atLineEnd) {
+                sc.ForwardSetState(SCE_MARKDOWN_LINE_BEGIN);
+                freezeCursor = true;
+            }
             else {
                 precharCount = 0;
                 sc.SetState(SCE_MARKDOWN_PRECHAR);
             }
         }
 
-        // The header lasts until the newline
-        else if (sc.state == SCE_MARKDOWN_HEADER1 || sc.state == SCE_MARKDOWN_HEADER2 ||
-                sc.state == SCE_MARKDOWN_HEADER3 || sc.state == SCE_MARKDOWN_HEADER4 ||
-                sc.state == SCE_MARKDOWN_HEADER5 || sc.state == SCE_MARKDOWN_HEADER6) {
-            if (IsNewline(sc.ch))
-                sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+        // The header lasts beyond the newline (eolfilled)
+        else if (IsInHeaderState(sc.state)) {
+            if (sc.atLineEnd) {
+                sc.ForwardSetState(SCE_MARKDOWN_LINE_BEGIN);
+                freezeCursor = true;
+            }
         }
 
         // New state only within the initial whitespace
@@ -427,14 +455,16 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
                 sc.Forward();
             }
             // Beginning of line
-            else if (IsNewline(sc.ch)) {
-                sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+            else if (sc.atLineEnd) {
+                sc.ForwardSetState(SCE_MARKDOWN_LINE_BEGIN);
+                freezeCursor = true;
             }
         }
         // Advance if not holding back the cursor for this iteration.
         if (!freezeCursor)
             sc.Forward();
-        freezeCursor = false;
+        else
+            freezeCursor = false;
     }
     sc.Complete();
 }

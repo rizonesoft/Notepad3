@@ -89,10 +89,11 @@ void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLeve
 void SetWindowLayoutRTL(HWND hwnd, bool bRTL);
 void SetWindowReadingRTL(HWND hwnd, bool bRTL);
 
-UINT ComboBox_GetTextLenth(HWND hDlg, int nIDDlgItem);
+UINT ComboBox_GetTextLengthEx(HWND hDlg, int nIDDlgItem);
+UINT ComboBox_GetCurSelEx(HWND hDlg, int nIDDlgItem);
 UINT ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount);
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
-LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString);
+//void ComboBox_AddStringMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent);
 HWND GetParentOrDesktop(HWND hDlg);
