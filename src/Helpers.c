@@ -213,32 +213,38 @@ static void _GetTrueWindowsVersion()
 #endif
 
 // ----------------------------------------------------------------------------
-// https://docs.microsoft.com/en-us/windows/release-information/
+// https://docs.microsoft.com/en-US/windows/release-health/release-information
 // ----------------------------------------------------------------------------
-static DWORD _Win10BuildToReleaseId(DWORD build)
-{
-    if (build >= 19042) {
-        return 2009;
-    } else if (build >= 19041) {
-        return 2004;
-    } else if (build >= 18363) {
-        return 1909;
-    } else if (build >= 18362) {
-        return 1903;
-    } else if (build >= 17763) {
-        return 1809;
-    } else if (build >= 17134) {
-        return 1803;
-    } else if (build >= 16299) {
-        return 1709;
-    } else if (build >= 15063) {
-        return 1809;
-    } else if (build >= 14393) {
-        return 1607;
-    } else if (build >= 10586) {
-        return 1511;
+    static LPCWSTR _Win10BuildToReleaseId(DWORD build) {
+
+    static LPCWSTR _wchpReleaseID = L"1507"; // <= 10240
+
+    if (build > 19043) {
+        _wchpReleaseID = L"21H2 [Insdr]";
+    } else if (build > 19042) {
+        _wchpReleaseID = L"21H1";
+    } else if (build > 19041) {
+        _wchpReleaseID = L"20H2";
+    } else if (build > 18363) {
+        _wchpReleaseID = L"2004";
+    } else if (build > 18362) {
+        _wchpReleaseID = L"1909";
+    } else if (build > 17763) {
+        _wchpReleaseID = L"1903 [EoS]";
+    } else if (build > 17134) {
+        _wchpReleaseID = L"1809";
+    } else if (build > 16299) {
+        _wchpReleaseID = L"1803 [EoS]";
+    } else if (build > 15063) {
+        _wchpReleaseID = L"1709 [EoS]";
+    } else if (build > 14393) {
+        _wchpReleaseID = L"1703 [EoS]";
+    } else if (build > 10586) {
+        _wchpReleaseID = L"1607";
+    } else if (build > 10240) {
+        _wchpReleaseID = L"1511 [EoS]";
     }
-    return 0; // 10240
+    return _wchpReleaseID;
 }
 // ----------------------------------------------------------------------------
 
@@ -262,7 +268,7 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 
     if (IsWindows10OrGreater()) {
         WCHAR win10ver[80] = { L'\0' };
-        StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)",
+        StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %s (Build %lu)",
                         _Win10BuildToReleaseId(Globals.WindowsBuildNumber), Globals.WindowsBuildNumber);
         StringCchCat(szVersionStr, cchVersionStr, win10ver);
     }
