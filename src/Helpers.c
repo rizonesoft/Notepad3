@@ -215,31 +215,34 @@ static void _GetTrueWindowsVersion()
 // ----------------------------------------------------------------------------
 // https://docs.microsoft.com/en-US/windows/release-health/release-information
 // ----------------------------------------------------------------------------
-static LPCWSTR _Win10BuildToReleaseId(DWORD build)
-{
-    static LPCWSTR _wchpReleaseID = L"1507";  // 10240
-    if (build >= 19043) {
+    static LPCWSTR _Win10BuildToReleaseId(DWORD build) {
+
+    static LPCWSTR _wchpReleaseID = L"1507"; // <= 10240
+
+    if (build > 19043) {
+        _wchpReleaseID = L"21H2 [Insdr]";
+    } else if (build > 19042) {
         _wchpReleaseID = L"21H1";
-    } else if (build >= 19042) {
+    } else if (build > 19041) {
         _wchpReleaseID = L"20H2";
-    } else if (build >= 19041) {
+    } else if (build > 18363) {
         _wchpReleaseID = L"2004";
-    } else if (build >= 18363) {
+    } else if (build > 18362) {
         _wchpReleaseID = L"1909";
-    } else if (build >= 18362) {
-        _wchpReleaseID = L"1903 (EoS)";
-    } else if (build >= 17763) {
+    } else if (build > 17763) {
+        _wchpReleaseID = L"1903 [EoS]";
+    } else if (build > 17134) {
         _wchpReleaseID = L"1809";
-    } else if (build >= 17134) {
-        _wchpReleaseID = L"1803 (EoS)";
-    } else if (build >= 16299) {
-        _wchpReleaseID = L"1709 (EoS)";
-    } else if (build >= 15063) {
-        _wchpReleaseID = L"1703 (EoS)";
-    } else if (build >= 14393) {
+    } else if (build > 16299) {
+        _wchpReleaseID = L"1803 [EoS]";
+    } else if (build > 15063) {
+        _wchpReleaseID = L"1709 [EoS]";
+    } else if (build > 14393) {
+        _wchpReleaseID = L"1703 [EoS]";
+    } else if (build > 10586) {
         _wchpReleaseID = L"1607";
-    } else if (build >= 10586) {
-        _wchpReleaseID = L"1511 (EoS)";
+    } else if (build > 10240) {
+        _wchpReleaseID = L"1511 [EoS]";
     }
     return _wchpReleaseID;
 }
