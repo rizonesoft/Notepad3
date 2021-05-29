@@ -213,11 +213,15 @@ static void _GetTrueWindowsVersion()
 #endif
 
 // ----------------------------------------------------------------------------
-// https://docs.microsoft.com/en-us/windows/release-information/
+// https://docs.microsoft.com/en-us/windows/release-health/release-information
 // ----------------------------------------------------------------------------
 static DWORD _Win10BuildToReleaseId(DWORD build)
 {
-    if (build >= 19042) {
+    if (build >= 21390) {
+        return 2109;
+    } else if (build >= 19043) {
+        return 2104;
+    } else if (build >= 19042) {
         return 2009;
     } else if (build >= 19041) {
         return 2004;

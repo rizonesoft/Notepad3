@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.527.(build_#) (2021-05-27)
+Current BETA/RC Version 5.21.529.(build_#) (2021-05-29)
 ========================================================
 
 --------------------------------------------------------
@@ -72,6 +72,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.529.1]- Improved Julia Lexer (LEX).
 [.526.1]- Batch-Lexer + patching Markdown-Lexer (eolfilled header lines) (LEX).
 [.526.1]- Scheme-Dlg: dynamic (alloc) Style-Backup handling.
 [.525.1]- Update Lexilla Lib (bug fixes for Lexer: Markdown, Cmd/Batch) (LEX).
