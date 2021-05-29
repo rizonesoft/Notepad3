@@ -5899,11 +5899,9 @@ static void _ShowZeroLengthCallTip(DocPos iPosition)
 //
 static bool _EnableFRDlgCtrls(HWND hwnd) {
 
-    //bool const bEmptyFnd = (ComboBox_GetTextLengthEx(hwnd, IDC_FINDTEXT) == 0 || ComboBox_GetCurSelEx(hwnd, IDC_FINDTEXT) != CB_ERR);
-    //bool const bEmptyRpl = (ComboBox_GetTextLengthEx(hwnd, IDC_REPLACETEXT) == 0 || ComboBox_GetCurSelEx(hwnd, IDC_REPLACETEXT) != CB_ERR);
-    bool const bEmptyFnd = ComboBox_GetTextLengthEx(hwnd, IDC_FINDTEXT) == 0;
-    bool const bEmptyRpl = ComboBox_GetTextLengthEx(hwnd, IDC_REPLACETEXT) == 0;
-    bool const bEmptySel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
+    bool const bEmptyFnd = ComboBox_GetTextLengthEx(hwnd, IDC_FINDTEXT) == 0 /*|| ComboBox_GetCurSelEx(hwnd, IDC_FINDTEXT) != CB_ERR)*/;
+    bool const bEmptyRpl = ComboBox_GetTextLengthEx(hwnd, IDC_REPLACETEXT) == 0 /*|| ComboBox_GetCurSelEx(hwnd, IDC_REPLACETEXT) != CB_ERR)*/;
+    bool const bEmptySel = (SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
 
     DialogEnableControl(hwnd, IDOK, !bEmptyFnd);
     DialogEnableControl(hwnd, IDC_FINDPREV, !bEmptyFnd);
