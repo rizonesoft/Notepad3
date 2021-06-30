@@ -83,9 +83,11 @@
 #define IDS_CLONE                       170
 #define IDS_NEWINSTANCE_TT              171
 #define IDS_REPLACEUTF8                 172
+//#define IDS_INFOLABELSEL                173
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
+//#define IDC_WHOLEWORDS                  1003
 #define IDC_REGEXOKLABEL                1004
 #define IDC_ALLSIZERADIO                1005
 #define IDC_SIZERADIO                   1006
