@@ -55,7 +55,7 @@ msgstr "&Keresés"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Egész szó"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "Keresés %ld fájlban, kihagyva %ld fájl. Lett %ld találat %ld fájlba
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Keresés %ld fájlban, kihagyva %ld db. Van %ld találat %ld fájlban. %ld eredmény kiválasztva."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
