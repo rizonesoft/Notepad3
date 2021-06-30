@@ -53,6 +53,10 @@ msgstr "&Remplacer"
 msgid "&Search"
 msgstr "Re&chercher"
 
+#. Resource IDs: (1003)
+msgid "&Whole word"
+msgstr "&Mot entier"
+
 #. Resource IDs: (1013)
 msgid "..."
 msgstr "..."
@@ -423,6 +427,11 @@ msgstr "Motif de recherche"
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
 msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s)."
+
+#. Resource IDs: (173)
+#, c-format
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
+msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s) %ld résultats sélectionnés."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

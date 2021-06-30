@@ -53,6 +53,10 @@ msgstr "Ersätt"
 msgid "&Search"
 msgstr "Sök"
 
+#. Resource IDs: (1003)
+msgid "&Whole word"
+msgstr ""
+
 #. Resource IDs: (1013)
 msgid "..."
 msgstr "..."
@@ -423,6 +427,11 @@ msgstr "Sök sträng"
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
 msgstr "Sök %ld filer, hoppade över %ld filer. Hittade %ld träffar i %ld filer."
+
+#. Resource IDs: (173)
+#, c-format
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
+msgstr ""
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
