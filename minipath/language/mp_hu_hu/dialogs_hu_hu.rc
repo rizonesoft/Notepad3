@@ -202,7 +202,7 @@ BEGIN
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Csak olvasható attribútum törlése a mentett fájlokról.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
-    CONTROL         "Másoláshor átne&vezés, ha a név egyezik.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Másoláskor átne&vezés, ha a név egyezik.",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
     CONTROL         "&Törölt fájlok mozgatása a Lomtárba.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
