@@ -55,7 +55,7 @@ msgstr "검색(&S)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "전체 단어(&W)"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "%ld개 파일을 검색하고 %ld개 파일을 건너뛰었습니다. %l
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld 파일을 검색하여 %ld 파일을 건너뜁니다. %ld 파일에서 %ld 일치 항목을 찾았습니다. %ld 결과가 선택되었습니다."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
