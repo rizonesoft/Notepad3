@@ -73,7 +73,7 @@ static void RegisterContextMenu(bool bAdd)
     {
         std::wstring sIconPath = CStringUtils::Format(L"%s,-%d", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str(), IDI_GREPWIN);
         std::wstring sExePath = CStringUtils::Format(L"%s /searchpath:\"%%1\"", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str());
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3\0", sizeof(L"search with grepWinNP3\0"));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), static_cast<DWORD>((sIconPath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
@@ -88,7 +88,7 @@ static void RegisterContextMenu(bool bAdd)
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", nullptr, REG_SZ, L"search with grepWinNP3", sizeof(L"search with grepWinNP3") + 2);
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", L"Icon", REG_SZ, sIconPath.c_str(), static_cast<DWORD>((sIconPath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", L"MultiSelectModel", REG_SZ, L"Player", sizeof(L"Player") + 2);
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWinNP3", L"MultiSelectModel", REG_SZ, L"Player\0", sizeof(L"Player\0") + 2);
 
         sExePath = CStringUtils::Format(L"%s /searchpath:\"%%V\"", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str());
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWinNP3\\Command", nullptr, REG_SZ, sExePath.c_str(), static_cast<DWORD>((sExePath.size() + 1) * sizeof(WCHAR)));
@@ -103,9 +103,7 @@ static void RegisterContextMenu(bool bAdd)
     }
 }
 
-
-
-BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
+BOOL CALLBACK windowEnumerator(__in HWND hwnd, __in LPARAM lParam)
 {
     HWND* pWnd          = reinterpret_cast<HWND*>(lParam);
     WCHAR buf[MAX_PATH] = {0};
@@ -201,7 +199,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     {
         do
         {
-            if (EnumWindows(windowenumerator, reinterpret_cast<LPARAM>(&hWnd)) != FALSE)
+            if (EnumWindows(windowEnumerator, reinterpret_cast<LPARAM>(&hWnd)) != FALSE)
             {
                 // long running grepWin Window found:
                 // if a grepWin process is currently initializing,
@@ -219,7 +217,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     }
                 }
                 hWnd = nullptr;
-                EnumWindows(windowenumerator, reinterpret_cast<LPARAM>(&hWnd));
+                EnumWindows(windowEnumerator, reinterpret_cast<LPARAM>(&hWnd));
             }
             if (alreadyRunning && (hWnd == nullptr))
                 Sleep(100);
@@ -368,6 +366,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetMatchesNewline(_wcsicmp(searchIni.GetValue(section.c_str(), L"n"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"k"))
                     searchDlg.SetCreateBackups(_wcsicmp(searchIni.GetValue(section.c_str(), L"k"), L"yes") == 0);
+                if (searchIni.GetValue(section.c_str(), L"wholewords"))
+                    searchDlg.SetWholeWords(_wcsicmp(searchIni.GetValue(section.c_str(), L"wholewords"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"utf8"))
                     searchDlg.SetUTF8(_wcsicmp(searchIni.GetValue(section.c_str(), L"utf8"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"binary"))
@@ -458,7 +458,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
             if (parser.HasVal(L"n"))
                 searchDlg.SetMatchesNewline(_wcsicmp(parser.GetVal(L"n"), L"yes")==0);
             if (parser.HasVal(L"k"))
-                searchDlg.SetCreateBackups(_wcsicmp(parser.GetVal(L"k"), L"yes")==0);
+                searchDlg.SetCreateBackups(_wcsicmp(parser.GetVal(L"k"), L"yes") == 0);
+            if (parser.HasVal(L"wholewords"))
+                searchDlg.SetWholeWords(_wcsicmp(parser.GetVal(L"wholewords"), L"yes") == 0);
+            else if (parser.HasKey(L"wholewords"))
+                searchDlg.SetWholeWords(true);
             if (parser.HasVal(L"utf8"))
                 searchDlg.SetUTF8(_wcsicmp(parser.GetVal(L"utf8"), L"yes")==0);
             if (parser.HasVal(L"binary"))
