@@ -28,9 +28,6 @@ noExplicitConstructor
 // MarginView access to all bits is safe and is better defined in later versions of C++
 shiftTooManyBitsSigned:scintilla/src/MarginView.cxx
 
-// This is safe as it C++20 defines integers as 2's complement
-integerOverflow:scintilla\src\MarginView.cxx
-
 // DLL entry points are unused inside Scintilla
 unusedFunction:scintilla\win32\ScintillaDLL.cxx
 

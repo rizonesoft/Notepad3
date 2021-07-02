@@ -20,16 +20,18 @@
 #include <algorithm>
 #include <memory>
 
+#include "ScintillaTypes.h"
+#include "ScintillaMessages.h"
+
 #include "Debugging.h"
 #include "Geometry.h"
 #include "Platform.h"
-
-#include "Scintilla.h"
 
 #include "Position.h"
 #include "CallTip.h"
 
 using namespace Scintilla;
+using namespace Scintilla::Internal;
 
 size_t Chunk::Length() const noexcept {
 	return end - start;
@@ -54,15 +56,15 @@ CallTip::CallTip() noexcept {
 
 #ifdef __APPLE__
 	// proper apple colours for the default
-	colourBG = ColourDesired(0xff, 0xff, 0xc6);
-	colourUnSel = ColourDesired(0, 0, 0);
+	colourBG = ColourRGBA(0xff, 0xff, 0xc6);
+	colourUnSel = ColourRGBA(0, 0, 0);
 #else
-	colourBG = ColourDesired(0xff, 0xff, 0xff);
-	colourUnSel = ColourDesired(0x80, 0x80, 0x80);
+	colourBG = ColourRGBA(0xff, 0xff, 0xff);
+	colourUnSel = ColourRGBA(0x80, 0x80, 0x80);
 #endif
-	colourSel = ColourDesired(0, 0, 0x80);
-	colourShade = ColourDesired(0, 0, 0);
-	colourLight = ColourDesired(0xc0, 0xc0, 0xc0);
+	colourSel = ColourRGBA(0, 0, 0x80);
+	colourShade = ColourRGBA(0, 0, 0);
+	colourLight = ColourRGBA(0xc0, 0xc0, 0xc0);
 	codePage = 0;
 	clickPlace = 0;
 }
@@ -93,7 +95,7 @@ constexpr bool IsArrowCharacter(char ch) noexcept {
 	return (ch == 0) || (ch == '\001') || (ch == '\002');
 }
 
-void DrawArrow(Scintilla::Surface *surface, const PRectangle &rc, bool upArrow, ColourDesired colourBG, ColourDesired colourUnSel) {
+void DrawArrow(Surface *surface, const PRectangle &rc, bool upArrow, ColourRGBA colourBG, ColourRGBA colourUnSel) {
 	surface->FillRectangle(rc, colourBG);
 	const PRectangle rcClientInner = Clamp(rc.Inset(1), Edge::right, rc.right - 2);
 	surface->FillRectangle(rcClientInner, colourUnSel);
@@ -271,8 +273,8 @@ void CallTip::MouseClick(Point pt) noexcept {
 
 PRectangle CallTip::CallTipStart(Sci::Position pos, Point pt, int textHeight, const char *defn,
                                  const char *faceName, int size,
-                                 int codePage_, int characterSet,
-                                 int technology,
+                                 int codePage_, CharacterSet characterSet,
+                                 Technology technology,
                                  const char *localeName,
                                  const Window &wParent) {
 	clickPlace = 0;
@@ -285,8 +287,8 @@ PRectangle CallTip::CallTipStart(Sci::Position pos, Point pt, int textHeight, co
 	inCallTipMode = true;
 	posStartCallTip = pos;
 	const XYPOSITION deviceHeight = static_cast<XYPOSITION>(surfaceMeasure->DeviceHeightFont(size));
-	const FontParameters fp(faceName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, SC_WEIGHT_NORMAL,
-		false, 0, technology, characterSet, localeName);
+	const FontParameters fp(faceName, deviceHeight / FontSizeMultiplier, FontWeight::Normal,
+		false, FontQuality::QualityDefault, technology, characterSet, localeName);
 	font = Font::Allocate(fp);
 	// Look for multiple lines in the text
 	// Only support \n here - simply means container must avoid \r!
@@ -330,7 +332,7 @@ void CallTip::SetHighlight(size_t start, size_t end) {
 }
 
 // Set the tab size (sizes > 0 enable the use of tabs). This also enables the
-// use of the STYLE_CALLTIP.
+// use of the StyleCallTip.
 void CallTip::SetTabSize(int tabSz) noexcept {
 	tabSize = tabSz;
 	useStyleCallTip = true;
@@ -348,7 +350,7 @@ bool CallTip::UseStyleCallTip() const noexcept {
 
 // It might be better to have two access functions for this and to use
 // them for all settings of colours.
-void CallTip::SetForeBack(const ColourDesired &fore, const ColourDesired &back) noexcept {
+void CallTip::SetForeBack(const ColourRGBA &fore, const ColourRGBA &back) noexcept {
 	colourBG = back;
 	colourUnSel = fore;
 }

@@ -1,110 +1,14 @@
 // Scintilla source code edit control
-/** @file CharacterSet.h
- ** Encapsulates a set of characters. Used to test if a character is within a set.
+/** @file CharacterType.h
+ ** Tests for character type and case-insensitive comparisons.
  **/
 // Copyright 2007 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#ifndef CHARACTERSET_H
-#define CHARACTERSET_H
+#ifndef CHARACTERTYPE_H
+#define CHARACTERTYPE_H
 
-namespace Scintilla {
-
-class CharacterSet {
-	int size;
-	bool valueAfter;
-	bool *bset;
-public:
-	enum setBase {
-		setNone=0,
-		setLower=1,
-		setUpper=2,
-		setDigits=4,
-		setAlpha=setLower|setUpper,
-		setAlphaNum=setAlpha|setDigits
-	};
-	CharacterSet(setBase base=setNone, const char *initialSet="", int size_=0x80, bool valueAfter_=false) {
-		size = size_;
-		valueAfter = valueAfter_;
-		bset = new bool[size];
-		for (int i=0; i < size; i++) {
-			bset[i] = false;
-		}
-		AddString(initialSet);
-		if (base & setLower)
-			AddString("abcdefghijklmnopqrstuvwxyz");
-		if (base & setUpper)
-			AddString("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		if (base & setDigits)
-			AddString("0123456789");
-	}
-	CharacterSet(const CharacterSet &other) {
-		size = other.size;
-		valueAfter = other.valueAfter;
-		bset = new bool[size];
-		for (int i=0; i < size; i++) {
-			bset[i] = other.bset[i];
-		}
-	}
-	CharacterSet(CharacterSet &&other) noexcept {
-		size = other.size;
-		valueAfter = other.valueAfter;
-		bset = other.bset;
-		other.size = 0;
-		other.bset = nullptr;
-	}
-	CharacterSet &operator=(const CharacterSet &other) {
-		if (this != &other) {
-			bool *bsetNew = new bool[other.size];
-			for (int i = 0; i < other.size; i++) {
-				bsetNew[i] = other.bset[i];
-			}
-			delete[]bset;
-			size = other.size;
-			valueAfter = other.valueAfter;
-			bset = bsetNew;
-		}
-		return *this;
-	}
-	CharacterSet &operator=(CharacterSet &&other) noexcept {
-		if (this != &other) {
-			delete []bset;
-			size = other.size;
-			valueAfter = other.valueAfter;
-			bset = other.bset;
-			other.size = 0;
-			other.bset = nullptr;
-		}
-		return *this;
-	}
-	~CharacterSet() {
-		delete []bset;
-		bset = nullptr;
-		size = 0;
-	}
-	void Add(int val) {
-		assert(val >= 0);
-		assert(val < size);
-		bset[val] = true;
-	}
-	void AddString(const char *setToAdd) {
-		for (const char *cp=setToAdd; *cp; cp++) {
-			const unsigned char uch = *cp;
-			assert(uch < size);
-			bset[uch] = true;
-		}
-	}
-	bool Contains(int val) const noexcept {
-		assert(val >= 0);
-		if (val < 0) return false;
-		return (val < size) ? bset[val] : valueAfter;
-	}
-	bool Contains(char ch) const noexcept {
-		// Overload char as char may be signed
-		const unsigned char uch = ch;
-		return Contains(uch);
-	}
-};
+namespace Scintilla::Internal {
 
 // Functions for classifying characters
 

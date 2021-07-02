@@ -150,7 +150,7 @@ def UpdateLineInPlistFile(path, key, value):
             elif ls.startswith("<string>"):
                 if keyCurrent == key:
                     start, tag, rest = l.partition("<string>")
-                    val, etag, end = rest.partition("</string>")
+                    _val, etag, end = rest.partition("</string>")
                     l = start + tag + value + etag + end
             lines.append(l)
     contents = "".join(lines)

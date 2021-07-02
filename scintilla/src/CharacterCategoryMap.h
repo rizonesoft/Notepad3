@@ -1,14 +1,16 @@
 // Scintilla source code edit control
-/** @file CharacterCategory.h
+/** @file CharacterCategoryMap.h
  ** Returns the Unicode general category of a character.
+ ** Similar code to Lexilla's lexilla/lexlib/CharacterCategory.h but renamed
+ ** to avoid problems with builds that statically include both Scintilla and Lexilla.
  **/
 // Copyright 2013 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#ifndef CHARACTERCATEGORY_H
-#define CHARACTERCATEGORY_H
+#ifndef CHARACTERCATEGORYMAP_H
+#define CHARACTERCATEGORYMAP_H
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 enum CharacterCategory {
 	ccLu, ccLl, ccLt, ccLm, ccLo,

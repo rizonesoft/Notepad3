@@ -14,7 +14,7 @@
 #include "UniConversion.h"
 #include "HanjaDic.h"
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 namespace HanjaDict {
 
@@ -80,7 +80,12 @@ public:
 	~HanjaDic() {
 		if (SUCCEEDED(hr)) {
 			hr = HJinterface->CloseMainDic();
-			HJinterface->Release();
+			try {
+				// This can never fail but IUnknown::Release is not marked noexcept.
+				HJinterface->Release();
+			} catch (...) {
+				// Ignore any exception
+			}
 		}
 	}
 

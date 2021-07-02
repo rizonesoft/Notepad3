@@ -559,6 +559,8 @@
       </tr><tr>
 	<td>cshnik</td>
 	<td>Petko Georgiev</td>
+	<td>YX Hao</td>
+	<td>Damiano Lombardi</td>
     </tr>
     </table>
     <p>
@@ -571,6 +573,68 @@
       </li>
     </ul>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla503.zip">Release 5.0.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 2 June 2021.
+	</li>
+	<li>
+	A more type-safe binding of Scintilla's API that can be used from C++ is implemented in the
+	ScintillaTypes.h, ScintillaMessages.h, and ScintillaStructures.h headers.
+	</li>
+	<li>
+	Change the way that selections and carets are drawn to use the element APIs.
+	The selection background colour may default to use platform APIs to discover global
+	or user settings and may change in response to those settings changing.
+	The SCI_SETSELECTIONLAYER method defines whether the selection background is drawn
+	translucently over or under text or opaquely underneath other drawing.
+	</li>
+	<li>
+	Change caret line drawing to use SC_ELEMENT_CARET_LINE_BACK element and
+	SCI_SETCARETLINELAYER method.
+	Older caret line APIs SCI_SETCARETLINEVISIBLE, SCI_SETCARETLINEBACK,
+	SCI_SETCARETLINEBACKALPHA now discouraged.
+	</li>
+	<li>
+	Add SCI_MARKERSETLAYER to define layer on which to draw content area markers.
+	This replaces the use of SC_ALPHA_NOALPHA for markers.
+	</li>
+	<li>
+	Add SCI_GETELEMENTBASECOLOUR to return the default values for element colours.
+	</li>
+	<li>
+	Add SC_ELEMENT_WHITE_SPACE to set the colour of visible whitespace including translucency.
+	</li>
+	<li>
+	Add elements for hot spots SC_ELEMENT_HOT_SPOT_ACTIVE and
+	SC_ELEMENT_HOT_SPOT_ACTIVE_BACK.
+	</li>
+	<li>
+	Make idle actions wrapping and background styling smoother by
+	measuring per-byte instead of per-line and allowing just one line to be
+	processed in a time slice.
+	Very long lines will not distort estimation	or block interaction as much.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1373/">Feature #1373</a>.
+	</li>
+	<li>
+	On GTK 3 with Wayland, fix primary selection.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2227/">Bug #2227</a>.
+	</li>
+	<li>
+	Update to Unicode 13.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1379/">Feature #1379</a>.
+	</li>
+	<li>
+	Include modifiers in SCN_INDICATORRELEASE notification.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2254/">Bug #2254</a>.
+	</li>
+	<li>
+	On Win32 enable hardware-enforced stack protection.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1405/">Feature #1405</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla502.zip">Release 5.0.2</a>
     </h3>
