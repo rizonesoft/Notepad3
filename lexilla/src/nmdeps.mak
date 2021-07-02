@@ -283,6 +283,7 @@ $(DIR_O)/LexJulia.obj: \
 	../../scintilla/include/Sci_Position.h \
 	../../scintilla/include/Scintilla.h \
 	../include/SciLexer.h \
+	../lexlib/StringCopy.h \
 	../lexlib/PropSetSimple.h \
 	../lexlib/WordList.h \
 	../lexlib/LexAccessor.h \

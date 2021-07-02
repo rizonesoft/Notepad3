@@ -33,6 +33,9 @@
 #include <assert.h>
 #include <ctype.h>
 
+#include <string>
+#include <string_view>
+
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
@@ -185,7 +188,7 @@ static void ColouriseMatlabOctaveDoc(
  				}
 			}
 		} else if (sc.state == SCE_MATLAB_DOUBLEQUOTESTRING) {
-			if (sc.ch == '\\') {
+			if (sc.ch == '\\' && !ismatlab) {
 				if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
 					sc.Forward();
 				}

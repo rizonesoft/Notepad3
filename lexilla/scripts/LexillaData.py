@@ -47,16 +47,24 @@ def FindModules(lexFile):
     modules = []
     partLine = ""
     with lexFile.open(encoding=neutralEncoding) as f:
+        lineNum = 0
         for l in f.readlines():
+            lineNum += 1
             l = l.rstrip()
             if partLine or l.startswith("LexerModule"):
                 if ")" in l:
                     l = partLine + l
+                    original = l
                     l = l.replace("(", " ")
                     l = l.replace(")", " ")
                     l = l.replace(",", " ")
                     parts = l.split()
-                    modules.append([parts[1], parts[2], parts[4][1:-1]])
+                    lexerName = parts[4]
+                    if not (lexerName.startswith('"') and lexerName.endswith('"')):
+                        print(f"{lexFile}:{lineNum}: Bad LexerModule statement:\n{original}")
+                        exit(1)
+                    lexerName = lexerName.strip('"')
+                    modules.append([parts[1], parts[2], lexerName])
                     partLine = ""
                 else:
                     partLine = partLine + l

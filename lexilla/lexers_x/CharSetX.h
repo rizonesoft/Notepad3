@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "CharacterSet.h"
 #include "StyleContext.h"
+#include "CharacterSet.h"
 
 namespace sci {
 
@@ -19,11 +19,6 @@ namespace sci {
     }
 }
 
-
-template <typename T, typename... Args>
-constexpr bool AnyOf(T t, Args... args) noexcept {
-    return ((t == args) || ...);
-}
 
 #if defined(_INC_STRING)
 template <typename... Args>
@@ -125,7 +120,7 @@ constexpr bool IsNumberContinue(int chPrev, int ch, int chNext) noexcept {
 }
 
 constexpr bool IsNumberContinueEx(int chPrev, int ch, int chNext) noexcept {
-    return ((ch == '+' || ch == '-') && AnyOf(chPrev, 'e', 'E', 'p', 'P'))
+    return ((ch == '+' || ch == '-') && Lexilla::AnyOf(chPrev, 'e', 'E', 'p', 'P'))
         || (ch == '.' && chNext != '.');
 }
 
@@ -160,7 +155,7 @@ constexpr int IsNumOctal(const Lexilla::StyleContext& sc)
 constexpr bool IsJumpLabelNextChar(int chNext) noexcept {
     // own line, comment, for, foreach, while, do, if, switch, repeat
     // TODO: match each word exactly like HighlightTaskMarker().
-    return AnyOf(chNext, '\0', '/', 'f', 'w', 'd', 'i', 's', 'r');
+    return Lexilla::AnyOf(chNext, '\0', '/', 'f', 'w', 'd', 'i', 's', 'r');
 }
 
 inline int IsNumExponent(const Lexilla::StyleContext& sc)

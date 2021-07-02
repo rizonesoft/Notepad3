@@ -263,8 +263,6 @@ constexpr int GetStateByColumn(const int col) noexcept
 void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess)
 {
     PropSetSimple props;
-    props.SetMultiple(osCSV.PropertyNames());
-
     Accessor styler(pAccess, &props);
 
     // 2 passes:  1st pass: smart delimiter detection,   2nd pass: do styling

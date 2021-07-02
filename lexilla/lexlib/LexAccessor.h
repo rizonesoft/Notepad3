@@ -92,7 +92,10 @@ public:
 		return buf[position - startPos];
 	}
 	bool IsLeadByte(char ch) const {
-		return pAccess->IsDBCSLeadByte(ch);
+		return
+			(static_cast<unsigned char>(ch) >= 0x80) &&	// non-ASCII
+			(encodingType == EncodingType::dbcs) &&		// IsDBCSLeadByte only for DBCS
+			pAccess->IsDBCSLeadByte(ch);
 	}
 	EncodingType Encoding() const noexcept {
 		return encodingType;
