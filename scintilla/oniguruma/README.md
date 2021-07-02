@@ -7,6 +7,9 @@
 Oniguruma
 =========
 
+**For a long time, Oniguruma has been under attack on Google search.** [(Issue #234)](https://github.com/kkos/oniguruma/issues/234)
+
+
 https://github.com/kkos/oniguruma
 
 Oniguruma is a modern and flexible regular expressions library. It
@@ -247,7 +250,6 @@ Source Files
 |regcomp.c          |compiling and optimization functions                    |
 |regenc.c           |character encodings framework                           |
 |regerror.c         |error message function                                  |
-|regext.c           |extended API functions (deluxe version API)             |
 |regexec.c          |search and match functions                              |
 |regparse.c         |parsing functions.                                      |
 |regsyntax.c        |pattern syntax functions and built-in syntax definitions|

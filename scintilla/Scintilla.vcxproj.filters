@@ -123,9 +123,6 @@
     <ClCompile Include="oniguruma\src\mktable.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
-    <ClCompile Include="oniguruma\src\onig_init.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
     <ClCompile Include="oniguruma\src\regcomp.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
@@ -136,9 +133,6 @@
       <Filter>oniguruma\src</Filter>
     </ClCompile>
     <ClCompile Include="oniguruma\src\regexec.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regext.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
     <ClCompile Include="oniguruma\src\reggnu.c">

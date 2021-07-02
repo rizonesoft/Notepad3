@@ -359,12 +359,10 @@
   <ItemGroup>
     <ClCompile Include="oniguruma\src\ascii.c" />
     <ClCompile Include="oniguruma\src\mktable.c" />
-    <ClCompile Include="oniguruma\src\onig_init.c" />
     <ClCompile Include="oniguruma\src\regcomp.c" />
     <ClCompile Include="oniguruma\src\regenc.c" />
     <ClCompile Include="oniguruma\src\regerror.c" />
     <ClCompile Include="oniguruma\src\regexec.c" />
-    <ClCompile Include="oniguruma\src\regext.c" />
     <ClCompile Include="oniguruma\src\reggnu.c" />
     <ClCompile Include="oniguruma\src\regparse.c" />
     <ClCompile Include="oniguruma\src\regsyntax.c" />
