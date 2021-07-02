@@ -10,7 +10,7 @@
 #ifndef CASECONVERT_H
 #define CASECONVERT_H
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 enum class CaseConversion {
 	fold,

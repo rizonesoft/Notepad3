@@ -383,8 +383,8 @@
     <ClCompile Include="src\CaseConvert.cxx" />
     <ClCompile Include="src\CaseFolder.cxx" />
     <ClCompile Include="src\CellBuffer.cxx" />
-    <ClCompile Include="src\CharacterCategory.cxx" />
-    <ClCompile Include="src\CharacterSet.cxx" />
+    <ClCompile Include="src\CharacterCategoryMap.cxx" />
+    <ClCompile Include="src\CharacterType.cxx" />
     <ClCompile Include="src\CharClassify.cxx" />
     <ClCompile Include="src\ContractionState.cxx" />
     <ClCompile Include="src\DBCS.cxx" />
@@ -414,6 +414,9 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ScintillaMessages.h" />
+    <ClInclude Include="include\ScintillaStructures.h" />
+    <ClInclude Include="include\ScintillaTypes.h" />
     <ClInclude Include="oniguruma\src\config.h" />
     <ClInclude Include="oniguruma\src\oniggnu.h" />
     <ClInclude Include="oniguruma\src\oniguruma.h" />
@@ -432,8 +435,8 @@
     <ClInclude Include="src\CaseConvert.h" />
     <ClInclude Include="src\CaseFolder.h" />
     <ClInclude Include="src\CellBuffer.h" />
-    <ClInclude Include="src\CharacterCategory.h" />
-    <ClInclude Include="src\CharacterSet.h" />
+    <ClInclude Include="src\CharacterCategoryMap.h" />
+    <ClInclude Include="src\CharacterType.h" />
     <ClInclude Include="src\CharClassify.h" />
     <ClInclude Include="src\ContractionState.h" />
     <ClInclude Include="src\DBCS.h" />
@@ -469,6 +472,9 @@
     <ClInclude Include="src\XPM.h" />
     <ClInclude Include="win32\PlatWin.h" />
     <ClInclude Include="win32\ScintillaWin.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Scintilla.iface" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

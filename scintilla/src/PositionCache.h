@@ -8,7 +8,7 @@
 #ifndef POSITIONCACHE_H
 #define POSITIONCACHE_H
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 inline constexpr bool IsEOLChar(int ch) noexcept {
 	return (ch == '\r') || (ch == '\n');
@@ -61,7 +61,6 @@ private:
 	int lenLineStarts;
 	/// Drawing is only performed for @a maxLineLength characters on each line.
 	Sci::Line lineNumber;
-	bool inCache;
 public:
 	enum { wrapWidthInfinite = 0x7ffffff };
 
@@ -88,7 +87,7 @@ public:
 	int lines;
 	XYPOSITION wrapIndent; // In pixels
 
-	explicit LineLayout(int maxLineLength_);
+	LineLayout(Sci::Line lineNumber_, int maxLineLength_);
 	// Deleted so LineLayout objects can not be copied.
 	LineLayout(const LineLayout &) = delete;
 	LineLayout(LineLayout &&) = delete;
@@ -99,6 +98,8 @@ public:
 	void EnsureBidiData();
 	void Free() noexcept;
 	void Invalidate(ValidLevel validity_) noexcept;
+	Sci::Line LineNumber() const noexcept;
+	bool CanHold(Sci::Line lineDoc, int lineLength_) const noexcept;
 	int LineStart(int line) const noexcept;
 	int LineLength(int line) const noexcept;
 	enum class Scope { visibleOnly, includeEnd };
@@ -150,19 +151,12 @@ struct ScreenLine : public IScreenLine {
  */
 class LineLayoutCache {
 public:
-	enum class Cache {
-		none = SC_CACHE_NONE,
-		caret = SC_CACHE_CARET,
-		page = SC_CACHE_PAGE,
-		document = SC_CACHE_DOCUMENT
-	};
 private:
-	Cache level;
-	std::vector<std::unique_ptr<LineLayout>>cache;
+	Scintilla::LineCache level;
+	std::vector<std::shared_ptr<LineLayout>>cache;
 	bool allInvalidated;
 	int styleClock;
-	int useCount;
-	void Allocate(size_t length_);
+	size_t EntryForLine(Sci::Line line) const noexcept;
 	void AllocateForLevel(Sci::Line linesOnScreen, Sci::Line linesInDoc);
 public:
 	LineLayoutCache();
@@ -174,11 +168,10 @@ public:
 	virtual ~LineLayoutCache();
 	void Deallocate() noexcept;
 	void Invalidate(LineLayout::ValidLevel validity_) noexcept;
-	void SetLevel(Cache level_) noexcept;
-	Cache GetLevel() const noexcept { return level; }
-	LineLayout *Retrieve(Sci::Line lineNumber, Sci::Line lineCaret, int maxChars, int styleClock_,
+	void SetLevel(Scintilla::LineCache level_) noexcept;
+	Scintilla::LineCache GetLevel() const noexcept { return level; }
+	std::shared_ptr<LineLayout> Retrieve(Sci::Line lineNumber, Sci::Line lineCaret, int maxChars, int styleClock_,
 		Sci::Line linesOnScreen, Sci::Line linesInDoc);
-	void Dispose(LineLayout *ll) noexcept;
 };
 
 class PositionCacheEntry {

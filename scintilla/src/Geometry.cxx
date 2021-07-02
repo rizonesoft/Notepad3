@@ -11,7 +11,7 @@
 
 #include "Geometry.h"
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 PRectangle Clamp(PRectangle rc, Edge edge, XYPOSITION position) noexcept {
 	switch (edge) {

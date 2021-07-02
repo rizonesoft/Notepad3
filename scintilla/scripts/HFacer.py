@@ -6,8 +6,7 @@
 
 import pathlib
 import Face
-
-from FileGenerator import UpdateFile, Generate, Regenerate, UpdateLineInFile, lineEnd
+import FileGenerator
 
 def printHFile(f):
 	out = []
@@ -35,7 +34,7 @@ def printHFile(f):
 def RegenerateAll(root, showMaxID):
 	f = Face.Face()
 	f.ReadFromFile(root / "include/Scintilla.iface")
-	Regenerate(root / "include/Scintilla.h", "/* ", printHFile(f))
+	FileGenerator.Regenerate(root / "include/Scintilla.h", "/* ", printHFile(f))
 	if showMaxID:
 		valueSet = set(int(x) for x in f.values if int(x) < 3000)
 		maximumID = max(valueSet)

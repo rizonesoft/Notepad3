@@ -11,8 +11,7 @@
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include <memory>
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 /// A split vector of integers with a method for adding a value to all elements
 /// in a range.

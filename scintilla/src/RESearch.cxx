@@ -212,7 +212,7 @@
 #include "CharClassify.h"
 #include "RESearch.h"
 
-using namespace Scintilla;
+using namespace Scintilla::Internal;
 
 #define OKP     1
 #define NOP     0

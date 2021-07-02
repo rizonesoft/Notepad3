@@ -8,22 +8,22 @@
 #ifndef STYLE_H
 #define STYLE_H
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 struct FontSpecification {
 	const char *fontName;
-	int weight;
+	Scintilla::FontWeight weight;
 	bool italic;
 	int size;
-	int characterSet;
-	int extraFontFlag;
+	Scintilla::CharacterSet characterSet;
+	Scintilla::FontQuality extraFontFlag;
 	FontSpecification() noexcept :
 		fontName(nullptr),
-		weight(SC_WEIGHT_NORMAL),
+		weight(Scintilla::FontWeight::Normal),
 		italic(false),
-		size(10 * SC_FONT_SIZE_MULTIPLIER),
-		characterSet(0),
-		extraFontFlag(0) {
+		size(10 * Scintilla::FontSizeMultiplier),
+		characterSet(Scintilla::CharacterSet::Ansi),
+		extraFontFlag(Scintilla::FontQuality::QualityDefault) {
 	}
 	bool operator==(const FontSpecification &other) const noexcept;
 	bool operator<(const FontSpecification &other) const noexcept;
@@ -44,8 +44,8 @@ struct FontMeasurements {
  */
 class Style : public FontSpecification, public FontMeasurements {
 public:
-	ColourDesired fore;
-	ColourDesired back;
+	ColourRGBA fore;
+	ColourRGBA back;
 	bool eolFilled;
 	bool underline;
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
@@ -65,10 +65,10 @@ public:
 	~Style();
 	Style &operator=(const Style &source) noexcept;
 	Style &operator=(Style &&) = delete;
-	void Clear(ColourDesired fore_, ColourDesired back_,
+	void Clear(ColourRGBA fore_, ColourRGBA back_,
 	           int size_,
-	           const char *fontName_, int characterSet_,
-	           int weight_, bool italic_, bool eolFilled_,
+	           const char *fontName_, Scintilla::CharacterSet characterSet_,
+	           Scintilla::FontWeight weight_, bool italic_, bool eolFilled_,
 	           // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	           bool underline_, bool strike_, CaseForce caseForce_,
 	           // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<

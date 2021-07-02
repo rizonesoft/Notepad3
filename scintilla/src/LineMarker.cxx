@@ -18,17 +18,19 @@
 #include <iterator>
 #include <memory>
 
+#include "ScintillaTypes.h"
+
 #include "Debugging.h"
 #include "Geometry.h"
-#include "Platform.h"
 
-#include "Scintilla.h"
+#include "Platform.h"
 
 #include "XPM.h"
 #include "LineMarker.h"
 #include "UniConversion.h"
 
 using namespace Scintilla;
+using namespace Scintilla::Internal;
 
 LineMarker::LineMarker(const LineMarker &other) {
 	// Defined to avoid pxpm and image being blindly copied, not as a complete copy constructor.
@@ -37,6 +39,7 @@ LineMarker::LineMarker(const LineMarker &other) {
 	back = other.back;
 	backSelected = other.backSelected;
 	strokeWidth = other.strokeWidth;
+	layer = other.layer;
 	alpha = other.alpha;
 	if (other.pxpm)
 		pxpm = std::make_unique<XPM>(*other.pxpm);
@@ -57,6 +60,7 @@ LineMarker &LineMarker::operator=(const LineMarker &other) {
 		back = other.back;
 		backSelected = other.backSelected;
 		strokeWidth = other.strokeWidth;
+		layer = other.layer;
 		alpha = other.alpha;
 		if (other.pxpm)
 			pxpm = std::make_unique<XPM>(*other.pxpm);
@@ -71,19 +75,23 @@ LineMarker &LineMarker::operator=(const LineMarker &other) {
 	return *this;
 }
 
+ColourRGBA LineMarker::BackWithAlpha() const noexcept {
+	return ColourRGBA(back, static_cast<int>(alpha));
+}
+
 void LineMarker::SetXPM(const char *textForm) {
 	pxpm = std::make_unique<XPM>(textForm);
-	markType = SC_MARK_PIXMAP;
+	markType = MarkerSymbol::Pixmap;
 }
 
 void LineMarker::SetXPM(const char *const *linesForm) {
 	pxpm = std::make_unique<XPM>(linesForm);
-	markType = SC_MARK_PIXMAP;
+	markType = MarkerSymbol::Pixmap;
 }
 
 void LineMarker::SetRGBAImage(Point sizeRGBAImage, float scale, const unsigned char *pixelsRGBAImage) {
 	image = std::make_unique<RGBAImage>(static_cast<int>(sizeRGBAImage.x), static_cast<int>(sizeRGBAImage.y), scale, pixelsRGBAImage);
-	markType = SC_MARK_RGBAIMAGE;
+	markType = MarkerSymbol::RgbaImage;
 }
 
 namespace {
@@ -92,7 +100,7 @@ enum class Expansion { Minus, Plus };
 enum class Shape { Square, Circle };
 
 void DrawSymbol(Surface *surface, Shape shape, Expansion expansion, PRectangle rcSymbol, XYPOSITION widthStroke,
-	ColourAlpha colourFill, ColourAlpha colourFrame, ColourAlpha colourFrameRight, ColourAlpha colourExpansion) {
+	ColourRGBA colourFill, ColourRGBA colourFrame, ColourRGBA colourFrameRight, ColourRGBA colourExpansion) {
 
 	const FillStroke fillStroke(colourFill, colourFrame, widthStroke);
 	const PRectangle rcSymbolLeft = Side(rcSymbol, Edge::left, (rcSymbol.Width() + widthStroke) / 2.0f);
@@ -131,7 +139,7 @@ void DrawSymbol(Surface *surface, Shape shape, Expansion expansion, PRectangle r
 	}
 }
 
-void DrawTail(Surface *surface, XYPOSITION leftLine, XYPOSITION rightTail, XYPOSITION centreY, XYPOSITION widthSymbolStroke, ColourAlpha fill) {
+void DrawTail(Surface *surface, XYPOSITION leftLine, XYPOSITION rightTail, XYPOSITION centreY, XYPOSITION widthSymbolStroke, ColourRGBA fill) {
 	const XYPOSITION slopeLength = 2.0f + widthSymbolStroke;
 	const XYPOSITION strokeTop = centreY + slopeLength;
 	const XYPOSITION halfWidth = widthSymbolStroke / 2.0f;
@@ -152,9 +160,9 @@ void LineMarker::DrawFoldingMark(Surface *surface, const PRectangle &rcWhole, Fo
 	// Assume: edges of rcWhole are integers.
 	// Code can only really handle integer strokeWidth.
 
-	ColourAlpha colourHead = back;
-	ColourAlpha colourBody = back;
-	ColourAlpha colourTail = back;
+	ColourRGBA colourHead = back;
+	ColourRGBA colourBody = back;
+	ColourRGBA colourTail = back;
 
 	switch (part) {
 	case FoldPart::head:
@@ -217,96 +225,99 @@ void LineMarker::DrawFoldingMark(Surface *surface, const PRectangle &rcWhole, Fo
 
 	switch (markType) {
 
-	case SC_MARK_VLINE:
+	case MarkerSymbol::VLine:
 		surface->FillRectangle(rcVLine, colourBody);
 		break;
 
-	case SC_MARK_LCORNER:
+	case MarkerSymbol::LCorner:
 		surface->FillRectangle(Clamp(rcVLine, Edge::bottom, centre.y + 1.0f), colourTail);
 		surface->FillRectangle(rcStick, colourTail);
 		break;
 
-	case SC_MARK_TCORNER:
+	case MarkerSymbol::TCorner:
 		surface->FillRectangle(Clamp(rcVLine, Edge::bottom, centre.y + 1.0f), colourBody);
 		surface->FillRectangle(Clamp(rcVLine, Edge::top, centre.y + 1.0f), colourHead);
 		surface->FillRectangle(rcStick, colourTail);
 		break;
 
 	// CORNERCURVE cases divide slightly lower than CORNER to accommodate the curve
-	case SC_MARK_LCORNERCURVE:
+	case MarkerSymbol::LCornerCurve:
 		surface->FillRectangle(Clamp(rcVLine, Edge::bottom, centre.y), colourTail);
 		DrawTail(surface, leftLine, rcWhole.right - 1.0f, centre.y - widthStroke,
 			widthStroke, colourTail);
 		break;
 
-	case SC_MARK_TCORNERCURVE:
+	case MarkerSymbol::TCornerCurve:
 		surface->FillRectangle(Clamp(rcVLine, Edge::bottom, centre.y), colourBody);
 		surface->FillRectangle(Clamp(rcVLine, Edge::top, centre.y), colourHead);
 		DrawTail(surface, leftLine, rcWhole.right - 1.0f, centre.y - widthStroke,
 			widthStroke, colourTail);
 		break;
 
-	case SC_MARK_BOXPLUS:
+	case MarkerSymbol::BoxPlus:
 		DrawSymbol(surface, Shape::Square, Expansion::Plus, rcSymbol, widthStroke,
 			fore, colourHead, colourHead, colourTail);
 		break;
 
-	case SC_MARK_BOXPLUSCONNECTED: {
-			const ColourAlpha colourBelow = (part == FoldPart::headWithTail) ? colourTail : colourBody;
+	case MarkerSymbol::BoxPlusConnected: {
+			const ColourRGBA colourBelow = (part == FoldPart::headWithTail) ? colourTail : colourBody;
 			surface->FillRectangle(rcBelowSymbol, colourBelow);
 			surface->FillRectangle(rcAboveSymbol, colourBody);
 
-			const ColourAlpha colourRight = (part == FoldPart::body) ? colourTail : colourHead;
+			const ColourRGBA colourRight = (part == FoldPart::body) ? colourTail : colourHead;
 			DrawSymbol(surface, Shape::Square, Expansion::Plus, rcSymbol, widthStroke,
 				fore, colourHead, colourRight, colourTail);
 		}
 		break;
 
-	case SC_MARK_BOXMINUS:
+	case MarkerSymbol::BoxMinus:
 		surface->FillRectangle(rcBelowSymbol, colourHead);
 		DrawSymbol(surface, Shape::Square, Expansion::Minus, rcSymbol, widthStroke,
 			fore, colourHead, colourHead, colourTail);
 		break;
 
-	case SC_MARK_BOXMINUSCONNECTED: {
+	case MarkerSymbol::BoxMinusConnected: {
 			surface->FillRectangle(rcBelowSymbol, colourHead);
 			surface->FillRectangle(rcAboveSymbol, colourBody);
 
-			const ColourAlpha colourRight = (part == FoldPart::body) ? colourTail : colourHead;
+			const ColourRGBA colourRight = (part == FoldPart::body) ? colourTail : colourHead;
 			DrawSymbol(surface, Shape::Square, Expansion::Minus, rcSymbol, widthStroke,
 				fore, colourHead, colourRight, colourTail);
 		}
 		break;
 
-	case SC_MARK_CIRCLEPLUS:
+	case MarkerSymbol::CirclePlus:
 		DrawSymbol(surface, Shape::Circle, Expansion::Plus, rcSymbol, widthStroke,
 			fore, colourHead, colourHead, colourTail);
 		break;
 
-	case SC_MARK_CIRCLEPLUSCONNECTED: {
-			const ColourAlpha colourBelow = (part == FoldPart::headWithTail) ? colourTail : colourBody;
+	case MarkerSymbol::CirclePlusConnected: {
+			const ColourRGBA colourBelow = (part == FoldPart::headWithTail) ? colourTail : colourBody;
 			surface->FillRectangle(rcBelowSymbol, colourBelow);
 			surface->FillRectangle(rcAboveSymbol, colourBody);
 
-			const ColourAlpha colourRight = (part == FoldPart::body) ? colourTail : colourHead;
+			const ColourRGBA colourRight = (part == FoldPart::body) ? colourTail : colourHead;
 			DrawSymbol(surface, Shape::Circle, Expansion::Plus, rcSymbol, widthStroke,
 				fore, colourHead, colourRight, colourTail);
 		}
 		break;
 
-	case SC_MARK_CIRCLEMINUS:
+	case MarkerSymbol::CircleMinus:
 		surface->FillRectangle(rcBelowSymbol, colourHead);
 		DrawSymbol(surface, Shape::Circle, Expansion::Minus, rcSymbol, widthStroke,
 			fore, colourHead, colourHead, colourTail);
 		break;
 
-	case SC_MARK_CIRCLEMINUSCONNECTED: {
+	case MarkerSymbol::CircleMinusConnected: {
 			surface->FillRectangle(rcBelowSymbol, colourHead);
 			surface->FillRectangle(rcAboveSymbol, colourBody);
-			const ColourAlpha colourRight = (part == FoldPart::body) ? colourTail : colourHead;
+			const ColourRGBA colourRight = (part == FoldPart::body) ? colourTail : colourHead;
 			DrawSymbol(surface, Shape::Circle, Expansion::Minus, rcSymbol, widthStroke,
 				fore, colourHead, colourRight, colourTail);
 		}
+		break;
+
+	default:
 		break;
 
 	}
@@ -321,7 +332,7 @@ void LineMarker::AlignedPolygon(Surface *surface, const Point *pts, size_t npts)
 	surface->Polygon(points.data(), std::size(points), FillStroke(back, fore, strokeWidth));
 }
 
-void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *fontForCharacter, FoldPart part, int marginStyle) const {
+void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *fontForCharacter, FoldPart part, MarginType marginStyle) const {
 	// This is to satisfy the changed API - eventually the stroke width will be exposed to clients
 
 	if (customDraw) {
@@ -329,11 +340,11 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		return;
 	}
 
-	if ((markType == SC_MARK_PIXMAP) && (pxpm)) {
+	if ((markType == MarkerSymbol::Pixmap) && (pxpm)) {
 		pxpm->Draw(surface, rcWhole);
 		return;
 	}
-	if ((markType == SC_MARK_RGBAIMAGE) && (image)) {
+	if ((markType == MarkerSymbol::RgbaImage) && (image)) {
 		// Make rectangle just large enough to fit image centred on centre of rcWhole
 		PRectangle rcImage;
 		rcImage.top = ((rcWhole.top + rcWhole.bottom) - image->GetScaledHeight()) / 2;
@@ -344,7 +355,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		return;
 	}
 
-	if ((markType >= SC_MARK_VLINE) && markType <= (SC_MARK_CIRCLEMINUSCONNECTED)) {
+	if ((markType >= MarkerSymbol::VLine) && markType <= (MarkerSymbol::CircleMinusConnected)) {
 		DrawFoldingMark(surface, rcWhole, part);
 		return;
 	}
@@ -360,13 +371,13 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 	const XYPOSITION dimOn2 = std::floor(minDim / 2);
 	const XYPOSITION dimOn4 = std::floor(minDim / 4);
 	const XYPOSITION armSize = dimOn2 - 2;
-	if (marginStyle == SC_MARGIN_NUMBER || marginStyle == SC_MARGIN_TEXT || marginStyle == SC_MARGIN_RTEXT) {
+	if (marginStyle == MarginType::Number || marginStyle == MarginType::Text || marginStyle == MarginType::RText) {
 		// On textual margins move marker to the left to try to avoid overlapping the text
 		centreX = rcWhole.left + dimOn2 + 1;
 	}
 
 	switch (markType) {
-	case SC_MARK_ROUNDRECT: {
+	case MarkerSymbol::RoundRect: {
 			PRectangle rcRounded = rc;
 			rcRounded.left = rc.left + 1;
 			rcRounded.right = rc.right - 1;
@@ -374,7 +385,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_CIRCLE: {
+	case MarkerSymbol::Circle: {
 			const PRectangle rcCircle = PRectangle(
 							    centreX - dimOn2,
 							    centreY - dimOn2,
@@ -384,7 +395,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_ARROW: {
+	case MarkerSymbol::Arrow: {
 			Point pts[] = {
 				Point(centreX - dimOn4, centreY - dimOn2),
 				Point(centreX - dimOn4, centreY + dimOn2),
@@ -394,7 +405,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_ARROWDOWN: {
+	case MarkerSymbol::ArrowDown: {
 			Point pts[] = {
 				Point(centreX - dimOn2, centreY - dimOn4),
 				Point(centreX + dimOn2, centreY - dimOn4),
@@ -404,7 +415,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_PLUS: {
+	case MarkerSymbol::Plus: {
 			Point pts[] = {
 				Point(centreX - armSize, centreY - 1),
 				Point(centreX - 1, centreY - 1),
@@ -423,7 +434,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_MINUS: {
+	case MarkerSymbol::Minus: {
 			Point pts[] = {
 				Point(centreX - armSize, centreY - 1),
 				Point(centreX + armSize, centreY - 1),
@@ -434,7 +445,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_SMALLRECT: {
+	case MarkerSymbol::SmallRect: {
 			PRectangle rcSmall;
 			rcSmall.left = rc.left + 1;
 			rcSmall.top = rc.top + 2;
@@ -444,14 +455,14 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_EMPTY:
-	case SC_MARK_BACKGROUND:
-	case SC_MARK_UNDERLINE:
-	case SC_MARK_AVAILABLE:
+	case MarkerSymbol::Empty:
+	case MarkerSymbol::Background:
+	case MarkerSymbol::Underline:
+	case MarkerSymbol::Available:
 		// An invisible marker so don't draw anything
 		break;
 
-	case SC_MARK_DOTDOTDOT: {
+	case MarkerSymbol::DotDotDot: {
 			XYPOSITION right = static_cast<XYPOSITION>(centreX - 6);
 			for (int b = 0; b < 3; b++) {
 				const PRectangle rcBlob(right, rc.bottom - 4, right + 2, rc.bottom - 2);
@@ -461,7 +472,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_ARROWS: {
+	case MarkerSymbol::Arrows: {
 			XYPOSITION right = centreX - 4.0f + strokeWidth / 2.0f;
 			const XYPOSITION midY = centreY + strokeWidth / 2.0f;
 			const XYPOSITION armLength = std::round(dimOn2 - strokeWidth);
@@ -477,7 +488,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_SHORTARROW: {
+	case MarkerSymbol::ShortArrow: {
 			Point pts[] = {
 				Point(centreX, centreY + dimOn2),
 				Point(centreX + dimOn2, centreY),
@@ -492,18 +503,18 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_FULLRECT:
+	case MarkerSymbol::FullRect:
 		surface->FillRectangle(rcWhole, back);
 		break;
 
-	case SC_MARK_LEFTRECT: {
+	case MarkerSymbol::LeftRect: {
 			PRectangle rcLeft = rcWhole;
 			rcLeft.right = rcLeft.left + 4;
 			surface->FillRectangle(rcLeft, back);
 		}
 		break;
 
-	case SC_MARK_BOOKMARK: {
+	case MarkerSymbol::Bookmark: {
 			const XYPOSITION halfHeight = std::floor(minDim / 3);
 			Point pts[] = {
 				Point(rcWhole.left, centreY - halfHeight),
@@ -516,7 +527,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		}
 		break;
 
-	case SC_MARK_VERTICALBOOKMARK: {
+	case MarkerSymbol::VerticalBookmark: {
 			const XYPOSITION halfWidth = std::floor(minDim / 3);
 			Point pts[] = {
 				Point(centreX - halfWidth, centreY - dimOn2),
@@ -530,9 +541,10 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 		break;
 
 	default:
-		if (markType >= SC_MARK_CHARACTER) {
+		if (markType >= MarkerSymbol::Character) {
 			char character[UTF8MaxBytes + 1];
-			UTF8FromUTF32Character(markType - SC_MARK_CHARACTER, character);
+			const int uch = static_cast<int>(markType) - static_cast<int>(MarkerSymbol::Character);
+			UTF8FromUTF32Character(uch, character);
 			const XYPOSITION width = surface->WidthTextUTF8(fontForCharacter, character);
 			PRectangle rcText = rc;
 			rcText.left += (rc.Width() - width) / 2;
@@ -540,7 +552,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 			surface->DrawTextNoClipUTF8(rcText, fontForCharacter, rcText.bottom - 2,
 						 character, fore, back);
 		} else {
-			// treat as SC_MARK_FULLRECT
+			// treat as MarkerSymbol::FullRect
 			surface->FillRectangle(rcWhole, back);
 		}
 		break;

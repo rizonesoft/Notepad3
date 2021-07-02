@@ -17,12 +17,10 @@
 
 #include "Debugging.h"
 
-#include "Scintilla.h"
-
 #include "Position.h"
 #include "Selection.h"
 
-using namespace Scintilla;
+using namespace Scintilla::Internal;
 
 void SelectionPosition::MoveForInsertDelete(bool insertion, Sci::Position startChange, Sci::Position length, bool moveForEqual) noexcept {
 	if (insertion) {
@@ -391,20 +389,24 @@ void Selection::CommitTentative() noexcept {
 	tentativeMain = false;
 }
 
-int Selection::CharacterInSelection(Sci::Position posCharacter) const noexcept {
-	for (size_t i=0; i<ranges.size(); i++) {
-		if (ranges[i].ContainsCharacter(posCharacter))
-			return i == mainRange ? 1 : 2;
-	}
-	return 0;
+InSelection Selection::RangeType(size_t r) const noexcept {
+	return r == Main() ? InSelection::inMain : InSelection::inAdditional;
 }
 
-int Selection::InSelectionForEOL(Sci::Position pos) const noexcept {
+InSelection Selection::CharacterInSelection(Sci::Position posCharacter) const noexcept {
+	for (size_t i=0; i<ranges.size(); i++) {
+		if (ranges[i].ContainsCharacter(posCharacter))
+			return RangeType(i);
+	}
+	return InSelection::inNone;
+}
+
+InSelection Selection::InSelectionForEOL(Sci::Position pos) const noexcept {
 	for (size_t i=0; i<ranges.size(); i++) {
 		if (!ranges[i].Empty() && (pos > ranges[i].Start().Position()) && (pos <= ranges[i].End().Position()))
-			return i == mainRange ? 1 : 2;
+			return RangeType(i);
 	}
-	return 0;
+	return InSelection::inNone;
 }
 
 Sci::Position Selection::VirtualSpaceFor(Sci::Position pos) const noexcept {
