@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.529.(build_#) (2021-05-29)
+Current BETA/RC Version 5.21.702.(build_#) (2021-07-02)
 ========================================================
 
 --------------------------------------------------------
@@ -126,10 +126,10 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.515.1]- Update grepWinNP3 (GRE) version 2.1.7.37 (2021-05.14).
-[.525.1]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-05-17).
-[.429.1]- Update Lexilla Library (LEX) version 5.0.2 (2021-04-23).
-[.429.1]- Update Scintilla Library (SCI) version 5.0.2 (2021-04-23).
+[.702.5]- Update grepWinNP3 (GRE) version 2.1.8.38 (2021-07.02).
+[.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
+[.702.5]- Update Lexilla Library (LEX) version 5.1.0 (2021-06-23).
+[.702.5]- Update Scintilla Library (SCI) version 5.1.0 (2021-06-23).
 
 --------------------------------------------------------
 FIXES:
