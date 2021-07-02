@@ -114,7 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\LexicalStyles.iface" />
-    <None Include="src\lexers_x\SciX.iface" />
+    <None Include="lexers_x\SciX.iface" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

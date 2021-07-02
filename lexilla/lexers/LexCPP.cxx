@@ -12,10 +12,12 @@
 
 #include <utility>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <map>
 #include <algorithm>
 #include <iterator>
+#include <functional>
 
 #include "ILexer.h"
 #include "Scintilla.h"
@@ -542,7 +544,7 @@ class LexerCPP : public ILexer5 {
 public:
 	explicit LexerCPP(bool caseSensitive_) :
 		caseSensitive(caseSensitive_),
-		setWord(CharacterSet::setAlphaNum, "._", 0x80, true),
+		setWord(CharacterSet::setAlphaNum, "._", true),
 		setNegationOp(CharacterSet::setNone, "!"),
 		setAddOp(CharacterSet::setNone, "+-"),
 		setMultOp(CharacterSet::setNone, "*/%"),
@@ -696,7 +698,7 @@ public:
 Sci_Position SCI_METHOD LexerCPP::PropertySet(const char *key, const char *val) {
 	if (osCPP.PropertySet(&options, key, val)) {
 		if (strcmp(key, "lexer.cpp.allow.dollars") == 0) {
-			setWord = CharacterSet(CharacterSet::setAlphaNum, "._", 0x80, true);
+			setWord = CharacterSet(CharacterSet::setAlphaNum, "._", true);
 			if (options.identifiersAllowDollars) {
 				setWord.Add('$');
 			}
@@ -778,7 +780,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 
 	CharacterSet setDoxygen(CharacterSet::setAlpha, "$@\\&<>#{}[]");
 
-	setWordStart = CharacterSet(CharacterSet::setAlpha, "_", 0x80, true);
+	setWordStart = CharacterSet(CharacterSet::setAlpha, "_", true);
 
 	CharacterSet setInvalidRawFirst(CharacterSet::setNone, " )\\\t\v\f\n");
 

@@ -378,8 +378,6 @@ constexpr bool _isQuoted(const bool q1, const bool q2) noexcept
 void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess)
 {
     PropSetSimple props;
-    props.SetMultiple(osTOML.PropertyNames());
-
     Accessor styler(pAccess, &props);
     StyleContext sc(startPos, length, initStyle, styler);
 
@@ -998,8 +996,6 @@ void SCI_METHOD LexerTOML::Fold(Sci_PositionU startPos, Sci_Position length, int
     if (!options.fold) { return; }
 
     PropSetSimple props;
-    props.SetMultiple(osTOML.PropertyNames());
-
     Accessor styler(pAccess, &props);
 
     //const Sci_Position docLines = styler.GetLine(styler.Length());

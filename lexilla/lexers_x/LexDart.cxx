@@ -306,8 +306,6 @@ constexpr bool IsSpaceEquiv(int state) noexcept {
 void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument* pAccess)
 {
     PropSetSimple props;
-    props.SetMultiple(osDart.PropertyNames());
-
     Accessor styler(pAccess, &props);
     StyleContext sc(startPos, lengthDoc, initStyle, styler);
 
@@ -676,8 +674,6 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
     if (!options.fold) { return; }
 
     PropSetSimple props;
-    props.SetMultiple(osDart.PropertyNames());
-
     Accessor styler(pAccess, &props);
 
     //const int foldComment = styler.GetPropertyInt("fold.comment", 1);

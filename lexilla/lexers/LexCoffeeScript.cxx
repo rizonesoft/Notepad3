@@ -14,6 +14,9 @@
 #include <assert.h>
 #include <ctype.h>
 
+#include <string>
+#include <string_view>
+
 #include <algorithm>
 
 #include "ILexer.h"

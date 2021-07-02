@@ -232,8 +232,6 @@ Sci_Position SCI_METHOD LexerAHKL::WordListSet(int n, const char *wl)
 void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess)
 {
     PropSetSimple props;
-    props.SetMultiple(osAHKL.PropertyNames());
-
     Accessor styler(pAccess, &props);
     StyleContext sc(startPos, lengthDoc, initStyle, styler);
 
@@ -752,8 +750,6 @@ void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
     if (!options.fold) { return; }
 
     PropSetSimple props;
-    props.SetMultiple(osAHKL.PropertyNames());
-
     Accessor styler(pAccess, &props);
 
     bool const foldComment = options.foldComment; //props.GetInt("fold.comment") != 0;

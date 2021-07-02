@@ -12,6 +12,9 @@
 #include <assert.h>
 #include <ctype.h>
 
+#include <string>
+#include <string_view>
+
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
@@ -33,6 +36,14 @@ static const char * const yamlWordListDesc[] = {
 static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 	return (styler[i] == '\n') ||
 		((styler[i] == '\r') && (styler.SafeGetCharAt(i + 1) != '\n'));
+}
+
+/**
+ * Check for space, tab, line feed, or carriage return.
+ * See YAML 1.2 spec sections 5.4. Line Break Characters and 5.5. White Space Characters.
+ */
+static constexpr bool IsWhiteSpaceOrEOL(char ch) noexcept {
+	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
 }
 
 static unsigned int SpaceCount(char* lineBuffer) {
@@ -121,9 +132,7 @@ static void ColouriseYAMLLine(
 			styler.ColourTo(startLine + i - 1, SCE_YAML_DEFAULT);
 			styler.ColourTo(endPos, SCE_YAML_COMMENT);
 			return;
-		//} else if (lineBuffer[i] == ':' && !bInQuotes) {
-		} else if (lineBuffer[i] == ':' && !bInQuotes &&
-			       (((i+1) < lengthLine) && isspacechar(lineBuffer[i+1]))) {
+		} else if (lineBuffer[i] == ':' && !bInQuotes && (IsWhiteSpaceOrEOL(lineBuffer[i + 1]) || i == lengthLine - 1)) {
 			styler.ColourTo(startLine + i - 1, SCE_YAML_IDENTIFIER);
 			styler.ColourTo(startLine + i, SCE_YAML_OPERATOR);
 			// Non-folding scalar
