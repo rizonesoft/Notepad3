@@ -414,6 +414,7 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ScintillaCall.h" />
     <ClInclude Include="include\ScintillaMessages.h" />
     <ClInclude Include="include\ScintillaStructures.h" />
     <ClInclude Include="include\ScintillaTypes.h" />

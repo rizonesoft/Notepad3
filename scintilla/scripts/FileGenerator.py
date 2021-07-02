@@ -167,6 +167,8 @@ def UpdateLineInFile(path, linePrefix, lineReplace):
                 updated = True
             else:
                 lines.append(l)
+    if not updated:
+        print(f"{path}:0: Can't find '{linePrefix}'")
     contents = lineEnd.join(lines) + lineEnd
     UpdateFile(path, contents)
 

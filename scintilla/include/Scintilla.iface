@@ -93,6 +93,9 @@ val INVALID_POSITION=-1
 val SCI_START=2000
 val SCI_OPTIONAL_START=3000
 val SCI_LEXER_START=4000
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+val SCI_DEV_USER_DEFINED=6000
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Add text to the document at current position.
 fun void AddText=2001(position length, string text)
@@ -298,10 +301,10 @@ get IMEInteraction GetIMEInteraction=2678(,)
 # Choose to display the IME in a window or inline.
 set void SetIMEInteraction=2679(IMEInteraction imeInteraction,)
 
-
-get bool GetIsIMEOpen=6003(,)
-get bool GetIsIMEModeCJK=6004(,)
-
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+get bool IsIMEOpen=6003(,)
+get bool IsIMEModeCJK=6004(,)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu Alpha=SC_ALPHA_
 val SC_ALPHA_TRANSPARENT=0
@@ -317,11 +320,6 @@ val SC_CURSORWAIT=4
 val SC_CURSORREVERSEARROW=7
 
 ali SC_CURSORREVERSEARROW=REVERSE_ARROW
-
-# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=2900(,)
-get bool IsIMEModeCJK=2901(,)
-# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu MarkerSymbol=SC_MARK_
 val MARKER_MAX=31
@@ -609,8 +607,10 @@ fun void StyleResetDefault=2058(,)
 # Set a style to be underlined or not.
 set void StyleSetUnderline=2059(int style, bool underline)
 
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 # Set a style to be underlined or not.
 set void StyleSetStrike=6001(int style, bool strike)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu CaseVisible=SC_CASE_
 val SC_CASE_MIXED=0
@@ -644,8 +644,10 @@ get bool StyleGetEOLFilled=2487(int style,)
 # Get is a style underlined or not.
 get bool StyleGetUnderline=2488(int style,)
 
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 # Get is a style underlined or not.
 get bool StyleGetStrike=6002(int style,)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Get is a style mixed case, or to force upper or lower case.
 get CaseVisible StyleGetCase=2489(int style,)
@@ -1314,6 +1316,9 @@ get position GetTextLength=2183(,)
 
 # Retrieve a pointer to a function that processes messages for this Scintilla.
 get pointer GetDirectFunction=2184(,)
+
+# Retrieve a pointer to a function that processes messages for this Scintilla and returns status.
+get pointer GetDirectStatusFunction=2772(,)
 
 # Retrieve a pointer value to use as the first argument when calling
 # the function returned by GetDirectFunction.
@@ -2072,7 +2077,7 @@ get bool SelectionIsRectangle=2372(,)
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 # 2018-09-06 change zoom level and print magnification to percent value
 val SC_MIN_ZOOM_LEVEL=10
-val SC_MAX_ZOOM_LEVEL=500
+val SC_MAX_ZOOM_LEVEL=1000
 # <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Set the zoom level. This number of points is added to the size of all fonts.
@@ -2463,6 +2468,9 @@ set void SetPasteConvertEndings=2467(bool convert,)
 
 # Get convert-on-paste setting
 get bool GetPasteConvertEndings=2468(,)
+
+# Replace the selection with text like a rectangular paste.
+fun void ReplaceRectangular=2771(position length, string text)
 
 # Duplicate the selection. If selection empty duplicate the line containing the caret.
 fun void SelectionDuplicate=2469(,)
@@ -2961,6 +2969,27 @@ get int GetRepresentation=2666(string encodedCharacter, stringresult representat
 # Remove a character representation.
 fun void ClearRepresentation=2667(string encodedCharacter,)
 
+# Clear representations to default.
+fun void ClearAllRepresentations=2770(,)
+
+# Can draw representations in various ways
+enu RepresentationAppearance=SC_REPRESENTATION
+val SC_REPRESENTATION_PLAIN=0
+val SC_REPRESENTATION_BLOB=1
+val SC_REPRESENTATION_COLOUR=0x10
+
+# Set the appearance of a representation.
+set void SetRepresentationAppearance=2766(string encodedCharacter, RepresentationAppearance appearance)
+
+# Get the appearance of a representation.
+get RepresentationAppearance GetRepresentationAppearance=2767(string encodedCharacter,)
+
+# Set the colour of a representation.
+set void SetRepresentationColour=2768(string encodedCharacter, colouralpha colour)
+
+# Get the colour of a representation.
+get colouralpha GetRepresentationColour=2769(string encodedCharacter,)
+
 # Set the end of line annotation text for a line
 set void EOLAnnotationSetText=2740(line line, string text)
 
@@ -3048,7 +3077,7 @@ fun void Colourise=4003(position start, position end)
 set void SetProperty=4004(string key, string value)
 
 # Maximum value of keywordSet parameter of SetKeyWords.
-val KEYWORDSET_MAX=8
+val KEYWORDSET_MAX=15
 
 # Set up the key words used by the lexer.
 set void SetKeyWords=4005(int keyWordSet, string keyWords)

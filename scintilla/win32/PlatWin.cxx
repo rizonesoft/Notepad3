@@ -31,6 +31,7 @@
 #define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
 #undef WINVER
 #define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <richedit.h>
@@ -3890,11 +3891,11 @@ void Menu::Show(Point pt, const Window &w) {
 }
 
 ColourRGBA Platform::Chrome() {
-	return ColourRGBA::FromRGB(::GetSysColor(COLOR_3DFACE));
+	return ColourRGBA::FromRGB(static_cast<int>(::GetSysColor(COLOR_3DFACE)));
 }
 
 ColourRGBA Platform::ChromeHighlight() {
-	return ColourRGBA::FromRGB(::GetSysColor(COLOR_3DHIGHLIGHT));
+	return ColourRGBA::FromRGB(static_cast<int>(::GetSysColor(COLOR_3DHIGHLIGHT)));
 }
 
 const char *Platform::DefaultFont() {

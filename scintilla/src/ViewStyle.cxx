@@ -590,7 +590,7 @@ bool ViewStyle::SetElementColour(Element element, ColourRGBA colour) {
 
 bool ViewStyle::SetElementColourOptional(Element element, uptr_t wParam, sptr_t lParam) {
 	if (wParam) {
-		return SetElementColour(element, ColourRGBA::FromRGB(static_cast<int>(lParam)));
+		return SetElementColour(element, ColourRGBA::FromIpRGB(lParam));
 	} else {
 		return ResetElement(element);
 	}

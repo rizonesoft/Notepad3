@@ -542,7 +542,7 @@ void LineMarker::Draw(Surface *surface, const PRectangle &rcWhole, const Font *f
 
 	default:
 		if (markType >= MarkerSymbol::Character) {
-			char character[UTF8MaxBytes + 1];
+			char character[UTF8MaxBytes + 1] {};
 			const int uch = static_cast<int>(markType) - static_cast<int>(MarkerSymbol::Character);
 			UTF8FromUTF32Character(uch, character);
 			const XYPOSITION width = surface->WidthTextUTF8(fontForCharacter, character);

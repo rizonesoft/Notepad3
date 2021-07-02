@@ -370,7 +370,7 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 						if (lineDoc >= 0) {
 							sNumber = std::to_string(lineDoc + 1);
 						}
-						if (static_cast<int>(model.foldFlags) & static_cast<int>(FoldFlag::LevelNumbers | FoldFlag::LineState)) {
+						if (FlagSet(model.foldFlags, (FoldFlag::LevelNumbers | FoldFlag::LineState))) {
 							char number[100] = "";
 							if (FlagSet(model.foldFlags, FoldFlag::LevelNumbers)) {
 								const FoldLevel lev = model.pdoc->GetFoldLevel(lineDoc);
