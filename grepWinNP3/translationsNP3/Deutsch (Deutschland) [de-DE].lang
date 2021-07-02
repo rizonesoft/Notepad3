@@ -55,7 +55,7 @@ msgstr "&Suchen"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "Ganzes &Wort"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "Gesucht %ld Dateien, übersprungen %ld Dateien. Gefunden %ld Übereinsti
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Dateien durchsucht %ld, übersprungen %ld. Treffer %ld in %ld Dateien. %ld Ergebnisse ausgewählt."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
