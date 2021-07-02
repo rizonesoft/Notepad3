@@ -29,6 +29,7 @@ public:
         , CaseSensitive(false)
         , DotMatchesNewline(false)
         , Backup(false)
+        , WholeWords(false)
         , Utf8(false)
         , Binary(false)
         , IncludeSystem(false)
@@ -49,6 +50,7 @@ public:
     bool         CaseSensitive;
     bool         DotMatchesNewline;
     bool         Backup;
+    bool         WholeWords;
     bool         Utf8;
     bool         Binary;
     bool         IncludeSystem;

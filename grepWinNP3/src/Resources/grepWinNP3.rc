@@ -53,15 +53,16 @@ STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_
 CAPTION "grepWinNP3"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Press F1 for help...",IDC_HELPLABEL,362,50,104,8
+    LTEXT           "Press F1 for help...",IDC_HELPLABEL,400,50,100,8
     CONTROL         "<a>about grepWinNP3...</a>",IDC_ABOUTLINK,"SysLink",LWS_RIGHT | WS_TABSTOP,486,2,87,8
     PUSHBUTTON      "/",IDC_PATHMRU,14,20,11,12
     EDITTEXT        IDC_SEARCHPATH,31,20,516,12,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
     PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,552,20,13,12
     PUSHBUTTON      "Y",IDC_NEWINSTANCE,570,20,13,12
     GROUPBOX        "Search in",IDC_GROUPSEARCHIN,7,10,587,29
-    CONTROL         "Regex search",IDC_REGEXRADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,84,50,100,10
-    CONTROL         "Text search",IDC_TEXTRADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,198,50,105,10
+    CONTROL         "Regex search",IDC_REGEXRADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,84,50,90,10
+    CONTROL         "Text search",IDC_TEXTRADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,180,50,90,10
+    CONTROL         "&Whole word",IDC_WHOLEWORDS,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP, 274,50,90,10
     RTEXT           "",IDC_REGEXOKLABEL,476,50,98,8
     LTEXT           "Search &for:",IDC_SEARCHFORLABEL,14,65,64,8
     EDITTEXT        IDC_SEARCHTEXT,83,64,484,12,ES_AUTOHSCROLL
@@ -105,7 +106,7 @@ BEGIN
     PUSHBUTTON      "&Replace",IDC_REPLACE,457,198,62,14
     CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,523,198,62,14
     GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,128,587,65
-    CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS| LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,14,234,571,81
+    CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,14,234,571,81
     LTEXT           "",IDC_SEARCHINFOLABEL,14,321,580,8
     GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,214,587,118
     CONTROL         "Files",IDC_RESULTFILES,"Button",BS_AUTORADIOBUTTON | WS_GROUP,84,222,89,10
@@ -422,6 +423,7 @@ BEGIN
     IDS_NEWINSTANCE_TT      "Start new grepWinNP3 window"
     IDS_STAY_ON_TOP         "Stay On Top"
     IDS_REPLACEUTF8         "You have the option ""%s"" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+    IDS_INFOLABELSEL        "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
 END
 
 #endif    // Neutral resources

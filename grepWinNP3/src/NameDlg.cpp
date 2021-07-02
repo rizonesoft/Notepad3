@@ -101,6 +101,8 @@ LRESULT CNameDlg::DoCommand(int id, int /*msg*/)
         case IDCANCEL:
             EndDialog(*this, id);
             break;
+        default:
+            break;
     }
     return 1;
 }

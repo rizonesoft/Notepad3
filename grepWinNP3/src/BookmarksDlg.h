@@ -42,6 +42,7 @@ public:
     bool         GetSelectedSearchCase() const { return m_bCaseSensitive; }
     bool         GetSelectedDotMatchNewline() const { return m_bDotMatchesNewline; }
     bool         GetSelectedBackup() const { return m_bBackup; }
+    bool         GetSelectedWholeWords() const { return m_bWholeWords; }
     bool         GetSelectedTreatAsUtf8() const { return m_bUtf8; }
     bool         GetSelectedTreatAsBinary() const { return m_bForceBinary; }
     bool         GetSelectedIncludeSystem() const { return m_bIncludeSystem; }
@@ -70,6 +71,7 @@ private:
     bool         m_bCaseSensitive;
     bool         m_bDotMatchesNewline;
     bool         m_bBackup;
+    bool         m_bWholeWords;
     bool         m_bUtf8;
     bool         m_bForceBinary;
     bool         m_bIncludeSystem;

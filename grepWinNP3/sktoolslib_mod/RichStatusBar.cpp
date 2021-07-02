@@ -361,7 +361,7 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             {
                 if ((m_hoverPart >= 0) && m_parts[m_hoverPart].hoverActive)
                 {
-                    auto transHot   = Animator::Instance().CreateLinearTransition(m_animVars[m_hoverPart], 0.3, 1.0);
+                    auto transHot   = Animator::Instance().CreateSmoothStopTransition(m_animVars[m_hoverPart], 0.3, 1.0);
                     auto storyBoard = Animator::Instance().CreateStoryBoard();
                     if (storyBoard && transHot)
                     {
@@ -375,7 +375,7 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
                 }
                 if (oldHover >= 0)
                 {
-                    auto transHot   = Animator::Instance().CreateLinearTransition(m_animVars[oldHover], 0.3, 0.0);
+                    auto transHot   = Animator::Instance().CreateSmoothStopTransition(m_animVars[oldHover], 0.3, 0.0);
                     auto storyBoard = Animator::Instance().CreateStoryBoard();
                     if (storyBoard && transHot)
                     {
@@ -399,7 +399,7 @@ LRESULT CRichStatusBar::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             TrackMouseEvent(&tme);
             if (m_hoverPart >= 0)
             {
-                auto transHot   = Animator::Instance().CreateLinearTransition(m_animVars[m_hoverPart], 0.3, 0.0);
+                auto transHot   = Animator::Instance().CreateSmoothStopTransition(m_animVars[m_hoverPart], 0.3, 0.0);
                 auto storyBoard = Animator::Instance().CreateStoryBoard();
                 if (storyBoard && transHot)
                 {

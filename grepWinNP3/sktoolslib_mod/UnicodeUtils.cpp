@@ -151,15 +151,15 @@ struct STRINGRESOURCEIMAGE
 
 int LoadStringEx(HINSTANCE hInstance, UINT uID, LPWSTR lpBuffer, int nBufferMax, WORD wLanguage)
 {
-    STRINGRESOURCEIMAGE* pImage;
-    STRINGRESOURCEIMAGE* pImageEnd;
-    ULONG                nResourceSize;
-    HGLOBAL              hGlobal;
-    UINT                 iIndex;
+    STRINGRESOURCEIMAGE* pImage        = nullptr;
+    STRINGRESOURCEIMAGE* pImageEnd     = nullptr;
+    ULONG                nResourceSize = 0;
+    HGLOBAL              hGlobal       = nullptr;
+    UINT                 iIndex        = 0;
 #ifndef UNICODE
     BOOL defaultCharUsed;
 #endif
-    int ret;
+    int ret = 0;
 
     if (lpBuffer == nullptr)
         return 0;
@@ -234,9 +234,13 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive,
     // scan the whole buffer for a 0x00000000 sequence
     // if found, we assume a binary file
     int nDwords = cb / 4;
+    int nullCount = 0;
+    int maxNull   = max(1, nDwords / 256);
     for (int i = 0; i < nDwords; ++i)
     {
         if (0x00000000 == pVal32[i])
+            ++nullCount;
+        if (nullCount > maxNull)
             return -1;
     }
     if (*pVal16 == 0xFEFF)
@@ -266,7 +270,7 @@ int GetCodepageFromBuf(LPVOID pBuffer, int cb, bool& hasBOM, bool& inconclusive,
     bool bNonAnsi  = false;
     int  nNeedData = 0;
     int  i         = 0;
-    int  nullCount = 0;
+    nullCount = 0;
     for (; i < cb; ++i)
     {
         UINT8 zChar = pVal8[i];
