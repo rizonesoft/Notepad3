@@ -525,21 +525,20 @@ static bool IsSubordinate(FoldLevel levelStart, FoldLevel levelTry) noexcept {
 }
 
 Sci::Line Document::GetLastChild(Sci::Line lineParent, std::optional<FoldLevel> level, Sci::Line lastLine) {
-	if (!level)
-		level = LevelNumberPart(GetFoldLevel(lineParent));
+	const FoldLevel levelStart = LevelNumberPart(level ? *level : GetFoldLevel(lineParent));
 	const Sci::Line maxLine = LinesTotal();
 	const Sci::Line lookLastLine = (lastLine != -1) ? std::min(LinesTotal() - 1, lastLine) : -1;
 	Sci::Line lineMaxSubord = lineParent;
 	while (lineMaxSubord < maxLine - 1) {
 		EnsureStyledTo(LineStart(lineMaxSubord + 2));
-		if (!IsSubordinate(*level, GetFoldLevel(lineMaxSubord + 1)))
+		if (!IsSubordinate(levelStart, GetFoldLevel(lineMaxSubord + 1)))
 			break;
 		if ((lookLastLine != -1) && (lineMaxSubord >= lookLastLine) && !LevelIsWhitespace(GetFoldLevel(lineMaxSubord)))
 			break;
 		lineMaxSubord++;
 	}
 	if (lineMaxSubord > lineParent) {
-		if (level > LevelNumberPart(GetFoldLevel(lineMaxSubord + 1))) {
+		if (levelStart > LevelNumberPart(GetFoldLevel(lineMaxSubord + 1))) {
 			// Have chewed up some whitespace that belongs to a parent so seek back
 			if (LevelIsWhitespace(GetFoldLevel(lineMaxSubord))) {
 				lineMaxSubord--;

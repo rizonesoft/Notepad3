@@ -128,7 +128,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 28 May 2021 NH</p>
+    <p>Last edited 17 June 2021 NH</p>
 
     <p style="background:#90F0C0">Scintilla 5 has moved the lexers from Scintilla into a new
     <a href="Lexilla.html">Lexilla</a> project.<br />
@@ -182,9 +182,12 @@
     Scintilla's facilities.</p>
 
     <p>There is a more type-safe binding of this API that can be used from C++.
-    It is implemented in the ScintillaTypes.h, ScintillaMessages.h, and ScintillaStructures.h headers.
-    SciTE contains (in src) a ScintillaCall module that can help further and will, in the future, be
-    moved into Scintilla.
+    It is implemented in the ScintillaTypes.h, ScintillaMessages.h, ScintillaStructures.h, and ScintillaCall.h headers
+    and call/ScintillaCall.cxx.
+    The ScintillaTypes.h, ScintillaMessages.h, and ScintillaStructures.h headers can be used without ScintillaCall
+    but ScintillaCall makes it easier to use the other headers by wrapping the messages in methods
+    which also avoids much type casting.
+    ScintillaCall throws Scintilla::Failure exceptions when a call fails.
     </p>
 
     <p>In the descriptions that follow, the messages are described as function calls with zero, one
@@ -1107,6 +1110,7 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_COPYALLOWLINE">SCI_COPYALLOWLINE</a><br />
      <a class="message" href="#SCI_SETPASTECONVERTENDINGS">SCI_SETPASTECONVERTENDINGS(bool convert)</a><br />
      <a class="message" href="#SCI_GETPASTECONVERTENDINGS">SCI_GETPASTECONVERTENDINGS &rarr; bool</a><br />
+     <a class="message" href="#SCI_REPLACERECTANGULAR">SCI_REPLACERECTANGULAR(position length, const char *text)</a><br />
     </code>
 
     <p><b id="SCI_CUT">SCI_CUT</b><br />
@@ -1146,6 +1150,11 @@ struct Sci_TextToFind {
      end of line mode as set with
      <a class="seealso" href="#SCI_SETEOLMODE">SCI_SETEOLMODE</a>.
      Defaults to true.</p>
+
+    <p><b id="SCI_REPLACERECTANGULAR">SCI_REPLACERECTANGULAR(position length, const char *text)</b><br/>
+      Replaces the selected text or empty selection with the given text.
+      The insertion is performed similarly to rectangular pastes: new lines in the given text are interpreted as
+      moving to the next line without inserting new lines unless at the end of the document.</p>
 
     <h2 id="ErrorHandling">Error handling</h2>
 
@@ -1872,7 +1881,7 @@ struct Sci_TextToFind {
      <b id="SCI_GETSELECTIONNENDVIRTUALSPACE">SCI_GETSELECTIONNENDVIRTUALSPACE(int selection) &rarr; position</b><br />
      Set or query the start and end position of each already existing selection.
      Query the virtual space at start and end of each selection.
-     Mostly of use to query each range for its text. The selection parameter is zero-based. </p>
+     Mostly of use to query each range for its text. The <code class="parameter">selection</code> parameter is zero-based. </p>
 
     <p>
      <b id="SCI_SETRECTANGULARSELECTIONCARET">SCI_SETRECTANGULARSELECTIONCARET(position caret)</b><br />
@@ -2262,7 +2271,7 @@ struct Sci_TextToFind {
     <p><b id="SCI_SETVISIBLEPOLICY">SCI_SETVISIBLEPOLICY(int visiblePolicy, int visibleSlop)</b><br />
      This determines how the vertical positioning is determined when <a class="message"
     href="#SCI_ENSUREVISIBLEENFORCEPOLICY"><code>SCI_ENSUREVISIBLEENFORCEPOLICY</code></a> is
-    called. It takes <code>VISIBLE_SLOP</code> and <code>VISIBLE_STRICT</code> flags for the policy
+    called. It takes <code>VISIBLE_SLOP</code> and <code>VISIBLE_STRICT</code> flags for the <code class="parameter">visiblePolicy</code>
     parameter. It is similar in operation to <a class="message"
     href="#SCI_SETYCARETPOLICY"><code>SCI_SETYCARETPOLICY(int caretPolicy, int
     caretSlop)</code></a>.</p>
@@ -2699,9 +2708,9 @@ struct Sci_TextToFind {
      <code>SCI_SETWORDCHARS(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")</code>;</p>
 
     <p><b id="SCI_GETWORDCHARS">SCI_GETWORDCHARS(&lt;unused&gt;, char *characters) &rarr; int</b><br />
-     This fills the characters parameter with all the characters included in words.
-     The characters parameter must be large enough to hold all of the characters.
-     If the characters parameter is 0 then the length that should be allocated
+     This fills the <code class="parameter">characters</code> parameter with all the characters included in words.
+     The <code class="parameter">characters</code> parameter must be large enough to hold all of the characters.
+     If the <code class="parameter">characters</code> parameter is 0 then the length that should be allocated
      to store the entire set is returned.</p>
 
     <p>For multi-byte encodings, this API will not return meaningful values for 0x80 and above.</p>
@@ -2731,7 +2740,7 @@ struct Sci_TextToFind {
     <b id="SCI_GETCHARACTERCATEGORYOPTIMIZATION">SCI_GETCHARACTERCATEGORYOPTIMIZATION &rarr; int</b><br />
       Optimize speed of character category features like determining whether a character is a space or number at the expense of memory.
       Mostly used for Unicode documents.
-      The countCharacters parameter determines how many character starting from 0 are added to a look-up table with one byte used for each character.
+      The <code class="parameter">countCharacters</code> parameter determines how many character starting from 0 are added to a look-up table with one byte used for each character.
       It is reasonable to cover the set of characters likely to be used in a document so 0x100 for simple Roman text,
       0x1000 to cover most simple alphabets, 0x10000 to cover most of East Asian languages, and 0x110000 to cover all possible characters.
     </p>
@@ -3583,7 +3592,7 @@ struct Sci_TextToFind {
         </tr>
 
         <tr>
-          <th align="left"><code>SC_LAYER_UNDER_TEXT</code>.</th>
+          <th align="left"><code>SC_LAYER_UNDER_TEXT</code></th>
 
           <td>1</td>
 
@@ -3664,7 +3673,7 @@ struct Sci_TextToFind {
         </tr>
 
         <tr>
-          <th align="left"><code>SC_LAYER_UNDER_TEXT</code>.</th>
+          <th align="left"><code>SC_LAYER_UNDER_TEXT</code></th>
 
           <td>1</td>
 
@@ -3842,7 +3851,12 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_SETREPRESENTATION">SCI_SETREPRESENTATION(const char *encodedCharacter, const char *representation)</a><br />
      <a class="message" href="#SCI_GETREPRESENTATION">SCI_GETREPRESENTATION(const char *encodedCharacter, char *representation) &rarr; int</a><br />
      <a class="message" href="#SCI_CLEARREPRESENTATION">SCI_CLEARREPRESENTATION(const char *encodedCharacter)</a><br />
-    <a class="message" href="#SCI_SETCONTROLCHARSYMBOL">SCI_SETCONTROLCHARSYMBOL(int symbol)</a><br />
+     <a class="message" href="#SCI_CLEARALLREPRESENTATIONS">SCI_CLEARALLREPRESENTATIONS</a><br />
+     <a class="message" href="#SCI_SETREPRESENTATIONAPPEARANCE">SCI_SETREPRESENTATIONAPPEARANCE(const char *encodedCharacter, int appearance)</a><br />
+     <a class="message" href="#SCI_GETREPRESENTATIONAPPEARANCE">SCI_GETREPRESENTATIONAPPEARANCE(const char *encodedCharacter) &rarr; int</a><br />
+     <a class="message" href="#SCI_SETREPRESENTATIONCOLOUR">SCI_SETREPRESENTATIONCOLOUR(const char *encodedCharacter, colouralpha colour)</a><br />
+     <a class="message" href="#SCI_GETREPRESENTATIONCOLOUR">SCI_GETREPRESENTATIONCOLOUR(const char *encodedCharacter) &rarr; colouralpha</a><br />
+     <a class="message" href="#SCI_SETCONTROLCHARSYMBOL">SCI_SETCONTROLCHARSYMBOL(int symbol)</a><br />
      <a class="message" href="#SCI_GETCONTROLCHARSYMBOL">SCI_GETCONTROLCHARSYMBOL &rarr; int</a><br />
     </code>
 
@@ -3850,17 +3864,66 @@ struct Sci_TextToFind {
      <b id="SCI_GETREPRESENTATION">SCI_GETREPRESENTATION(const char *encodedCharacter, char *representation NUL-terminated) &rarr; int</b><br />
      <b id="SCI_CLEARREPRESENTATION">SCI_CLEARREPRESENTATION(const char *encodedCharacter)</b><br />
     Any character, including those normally displayed  as mnemonics may be represented by a
-    string inverted in a rounded rectangle.</p>
+    Unicode string inverted in a rounded rectangle.</p>
 
     <p>For example, the Ohm sign &#x2126; U+2126 looks very similar to the Greek Omega character &#x3a9; U+03C9 so,
     for the UTF-8 encoding, to distinguish the Ohm sign as "U+2126 &#x2126;" this call could be made:
     <code>SCI_SETREPRESENTATION("\xe2\x84\xa6", "U+2126 \xe2\x84\xa6")</code></p>
 
-    <p>The encodedCharacter parameter is a NUL-terminated string of the bytes for one character in the
+    <p>The <code class="parameter">encodedCharacter</code> parameter is a NUL-terminated string of the bytes for one character in the
     current encoding. This can not be used to set a representation for multiple-character strings. </p>
 
-    <p>The NUL (0) character is a special case since the encodedCharacter parameter is NUL terminated, the NUL
+    <p>The <code class="parameter">representation</code> parameter is a NUL-terminated UTF-8 string with a maximum length of 200 bytes.</p>
+
+    <p>One exception to the single character restriction is that the two character sequence "\r\n" (Carriage Return + Line Feed)
+    can have a representation that is visible in line end viewing (<a class="seealso" href="#SCI_SETVIEWEOL">SCI_SETVIEWEOL</a>) mode.
+    If there is no representation for "\r\n" then the individual '\r' and '\n' representations will be seen.</p>
+
+    <p>The NUL (0) character is a special case since the <code class="parameter">encodedCharacter</code> parameter is NUL terminated, the NUL
     character is specified as an empty string.</p>
+
+    <p><b id="SCI_CLEARALLREPRESENTATIONS">SCI_CLEARALLREPRESENTATIONS</b><br />
+    Reset representations to defaults with <code>SCI_CLEARALLREPRESENTATIONS</code>.</p>
+
+    <p><b id="SCI_SETREPRESENTATIONAPPEARANCE">SCI_SETREPRESENTATIONAPPEARANCE(const char *encodedCharacter, int appearance)</b><br />
+     <b id="SCI_GETREPRESENTATIONAPPEARANCE">SCI_GETREPRESENTATIONAPPEARANCE(const char *encodedCharacter) &rarr; int</b><br />
+    The appearance may be changed using these flags. If a colour is set and the appearance is set without
+    <code>SC_REPRESENTATION_COLOUR</code> then the representation will show in the colour of the underlying text.</p>
+
+    <table class="standard" summary="Layer">
+      <tbody valign="top">
+        <tr>
+          <th align="left"><code>SC_REPRESENTATION_PLAIN</code></th>
+
+          <td>0</td>
+
+          <td>Draw the representation text with no decorations.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>SC_REPRESENTATION_BLOB</code></th>
+
+          <td>1</td>
+
+          <td>Draw the representation text inverted in a rounded rectangle. This is the default appearance.</td>
+        </tr>
+
+        <tr class="section">
+          <th align="left"><code>SC_REPRESENTATION_COLOUR</code></th>
+
+          <td>0x10</td>
+
+          <td>Draw the representation in the colour set with <a class="seealso" href="#SCI_SETREPRESENTATIONCOLOUR">SCI_SETREPRESENTATIONCOLOUR</a>
+	  instead of in the colour of the style of the text being represented.</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+
+    <p><b id="SCI_SETREPRESENTATIONCOLOUR">SCI_SETREPRESENTATIONCOLOUR(const char *encodedCharacter, colouralpha colour)</b><br />
+     <b id="SCI_GETREPRESENTATIONCOLOUR">SCI_GETREPRESENTATIONCOLOUR(const char *encodedCharacter) &rarr; colouralpha</b><br />
+    The colour and translucency of a representation may be set.</p>
 
     <p><b id="SCI_SETCONTROLCHARSYMBOL">SCI_SETCONTROLCHARSYMBOL(int symbol)</b><br />
      <b id="SCI_GETCONTROLCHARSYMBOL">SCI_GETCONTROLCHARSYMBOL &rarr; int</b><br />
@@ -5081,7 +5144,7 @@ struct Sci_TextToFind {
         </tr>
 
         <tr>
-          <th align="left"><code>SC_LAYER_UNDER_TEXT</code>.</th>
+          <th align="left"><code>SC_LAYER_UNDER_TEXT</code></th>
 
           <td>1</td>
 
@@ -6594,7 +6657,9 @@ struct Sci_RangeToFormat {
      <code>SC_WRAP_CHAR</code> is not supported for printing.</p>
 
     <h2 id="DirectAccess">Direct access</h2>
-    <code><a class="message" href="#SCI_GETDIRECTFUNCTION">SCI_GETDIRECTFUNCTION &rarr; pointer</a><br />
+    <code>
+     <a class="message" href="#SCI_GETDIRECTFUNCTION">SCI_GETDIRECTFUNCTION &rarr; pointer</a><br />
+     <a class="message" href="#SCI_GETDIRECTSTATUSFUNCTION">SCI_GETDIRECTSTATUSFUNCTION &rarr; pointer</a><br />
      <a class="message" href="#SCI_GETDIRECTPOINTER">SCI_GETDIRECTPOINTER &rarr; pointer</a><br />
      <a class="message" href="#SCI_GETCHARACTERPOINTER">SCI_GETCHARACTERPOINTER &rarr; pointer</a><br />
      <a class="message" href="#SCI_GETRANGEPOINTER">SCI_GETRANGEPOINTER(position start, position lengthRange) &rarr; pointer</a><br />
@@ -6617,7 +6682,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 }
 </pre>
 
-    <p><code>SciFnDirect</code>, <code>sptr_t</code> and <code>uptr_t</code> are declared in
+    <p><code>SciFnDirect</code>, <code>SciFnDirectStatus</code>, <code>sptr_t</code> and <code>uptr_t</code> are declared in
     <code>Scintilla.h</code>. <code class="parameter">hSciWnd</code> is the window handle returned when you created
     the Scintilla window.</p>
 
@@ -6625,9 +6690,9 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     to the native thread of the Scintilla window in which case <code>SendMessage(hSciWnd, SCI_*,
     wParam, lParam)</code> should be used to synchronize with the window's thread.</p>
 
-    <p>This feature also works on GTK but has no significant impact on speed.</p>
+    <p>This feature also works on other platforms but has less impact on speed.</p>
 
-    <p>From version 1.47 on Windows, Scintilla exports a function called
+    <p>On Windows, Scintilla exports a function called
     <code>Scintilla_DirectFunction</code> that can be used the same as the function returned by
     <code>SCI_GETDIRECTFUNCTION</code>. This saves you the call to
     <code>SCI_GETDIRECTFUNCTION</code> and the need to call Scintilla indirectly via the function
@@ -6637,6 +6702,12 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      This message returns the address of the function to call to handle Scintilla messages without
     the overhead of passing through the Windows messaging system. You need only call this once,
     regardless of the number of Scintilla windows you create.</p>
+
+    <p><b id="SCI_GETDIRECTSTATUSFUNCTION">SCI_GETDIRECTSTATUSFUNCTION &rarr; pointer</b><br />
+     This is similar to <code>SCI_GETDIRECTFUNCTION</code> but the returned function
+     is of type <code>SciFnDirectStatus</code> which also returns the status to the caller through a
+     pointer to an int.
+     This saves performing an extra call to retrieve the status in many situations so can be faster.</p>
 
     <p><b id="SCI_GETDIRECTPOINTER">SCI_GETDIRECTPOINTER &rarr; pointer</b><br />
      This returns a pointer to data that identifies which Scintilla window is in use. You must call
@@ -8889,7 +8960,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
         <tr>
           <td align="left"><code>listType</code></td>
 
-          <td align="left">This is set to the <code>listType</code> parameter from the <a
+          <td align="left">This is set to the <code class="parameter">listType</code> parameter from the <a
           class="message" href="#SCI_USERLISTSHOW"><code>SCI_USERLISTSHOW</code></a> message that
           initiated the list.</td>
         </tr>
@@ -9146,7 +9217,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
         <tr>
           <td align="left"><code>listType</code></td>
 
-          <td align="left">This is set to the <code>listType</code> parameter from the <a
+          <td align="left">This is set to the <code class="parameter">listType</code> parameter from the <a
           class="message" href="#SCI_USERLISTSHOW"><code>SCI_USERLISTSHOW</code></a> message
 	  or 0 for an autocompletion.</td>
         </tr>

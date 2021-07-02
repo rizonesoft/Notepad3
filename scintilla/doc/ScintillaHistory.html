@@ -563,16 +563,45 @@
 	<td>Damiano Lombardi</td>
     </tr>
     </table>
-    <p>
-       Images used in GTK version
-    </p>
-    <ul>
-      <li>
-        <a href="http://sourceforge.net/projects/icon-collection/">
-        Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
-      </li>
-    </ul>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla504.zip">Release 5.1.0</a>
+    </h3>
+    <ul>
+	<li>
+	Released 23 June 2021.
+	</li>
+	<li>
+	This is a stable release. Interfaces with lexers and between platform-independent code
+	and platform layers should remain compatible through 5.x releases.
+	</li>
+	<li>
+	Add SciFnDirectStatus, a direct access function which also returns status.
+	It can be retrieved with SCI_GETDIRECTSTATUSFUNCTION.
+	This can avoid calling SCI_GETSTATUS after every API to determine failure so can
+	improve performance.
+	</li>
+	<li>
+	Add more type-safe wrappers to the API.
+	These are defined in include/ScintillaCall.h and implemented in call/ScintillaCall.cxx.
+	ScintillaCall throws Scintilla::Failure exceptions when a call fails.
+	</li>
+	<li>
+	Add APIs for setting appearance (traditional blob or plain text) and colour of representations
+	and support setting a representation for the "\r\n" line end sequence.
+	</li>
+	<li>
+	Add SCI_PASTERECTANGULAR to insert text like a rectangular paste.
+	</li>
+	<li>
+	Fixed bug with SCI_GETLASTCHILD.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2260/">Bug #2260</a>.
+	</li>
+	<li>
+	Fixed gcc link-time-optimization (LTO) compilation.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2259/">Bug #2259</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla503.zip">Release 5.0.3</a>
     </h3>

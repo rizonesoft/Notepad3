@@ -47,7 +47,7 @@ typedef std::map<FontSpecification, std::unique_ptr<FontRealised>> FontMap;
 
 inline std::optional<ColourRGBA> OptionalColour(Scintilla::uptr_t wParam, Scintilla::sptr_t lParam) {
 	if (wParam) {
-		return ColourRGBA::FromRGB(static_cast<int>(lParam));
+		return ColourRGBA::FromIpRGB(lParam);
 	} else {
 		return {};
 	}
@@ -104,7 +104,7 @@ struct EdgeProperties {
 		column(column_), colour(colour_) {
 	}
 	EdgeProperties(Scintilla::uptr_t wParam, Scintilla::sptr_t lParam) noexcept :
-		column(static_cast<int>(wParam)), colour(ColourRGBA::FromRGB(static_cast<int>(lParam))) {
+		column(static_cast<int>(wParam)), colour(ColourRGBA::FromIpRGB(lParam)) {
 	}
 };
 

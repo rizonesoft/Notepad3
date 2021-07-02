@@ -362,6 +362,9 @@
     <ClInclude Include="src\CharacterType.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="include\ScintillaCall.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Scintilla.iface">

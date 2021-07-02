@@ -41,8 +41,16 @@ def RegenerateAll(root, showMaxID):
 		print("Maximum ID is %d" % maximumID)
 		#~ valuesUnused = sorted(x for x in range(2001,maximumID) if x not in valueSet)
 		#~ print("\nUnused values")
+		#~ valueToName = {}
+		#~ for name, feature in f.features.items():
+			#~ try:
+				#~ value = int(feature["Value"])
+				#~ valueToName[value] = name
+			#~ except ValueError:
+				#~ pass
 		#~ for v in valuesUnused:
-			#~ print(v)
+			#~ prev = valueToName.get(v-1, "") 
+			#~ print(v, prev)
 
 if __name__ == "__main__":
 	RegenerateAll(pathlib.Path(__file__).resolve().parent.parent, True)

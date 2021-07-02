@@ -34,6 +34,7 @@
 #define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
 #undef WINVER
 #define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <richedit.h>
@@ -372,6 +373,8 @@ class ScintillaWin :
 
 	static sptr_t DirectFunction(
 		    sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam);
+	static sptr_t DirectStatusFunction(
+		    sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam, int *pStatus);
 	static LRESULT PASCAL SWndProc(
 		    HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
 	static LRESULT PASCAL CTWndProc(
@@ -1781,7 +1784,7 @@ sptr_t ScintillaWin::EditMessage(unsigned int iMessage, uptr_t wParam, sptr_t lP
 	switch (iMessage) {
 
 	case EM_LINEFROMCHAR:
-		if (static_cast<Sci::Position>(wParam) < 0) {
+		if (PositionFromUPtr(wParam) < 0) {
 			wParam = SelectionStart().Position();
 		}
 		return pdoc->LineFromPosition(wParam);
@@ -1884,6 +1887,9 @@ sptr_t ScintillaWin::SciMessage(Message iMessage, uptr_t wParam, sptr_t lParam) 
 	switch (iMessage) {
 	case Message::GetDirectFunction:
 		return reinterpret_cast<sptr_t>(DirectFunction);
+
+	case Message::GetDirectStatusFunction:
+		return reinterpret_cast<sptr_t>(DirectStatusFunction);
 
 	case Message::GetDirectPointer:
 		return reinterpret_cast<sptr_t>(this);
@@ -2130,6 +2136,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		iMessage = SciMessageFromEM(msg);
 		switch (iMessage) {
 		case Message::GetDirectFunction:
+		case Message::GetDirectStatusFunction:
 		case Message::GetDirectPointer:
 		case Message::GrabFocus:
 		case Message::SetTechnology:
@@ -2273,7 +2280,7 @@ void ScintillaWin::UpdateBaseElements() {
 	};
 	bool changed = false;
 	for (const ElementToIndex &ei : eti) {
-		changed = vs.SetElementBase(ei.element, ColourRGBA::FromRGB(::GetSysColor(ei.nIndex))) || changed;
+		changed = vs.SetElementBase(ei.element, ColourRGBA::FromRGB(static_cast<int>(::GetSysColor(ei.nIndex)))) || changed;
 	}
 	if (changed) {
 		Redraw();
@@ -3652,8 +3659,18 @@ LRESULT PASCAL ScintillaWin::CTWndProc(
 
 sptr_t ScintillaWin::DirectFunction(
     sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam) {
-	PLATFORM_ASSERT(::GetCurrentThreadId() == ::GetWindowThreadProcessId(reinterpret_cast<ScintillaWin *>(ptr)->MainHWND(), nullptr));
-	return reinterpret_cast<ScintillaWin *>(ptr)->WndProc(static_cast<Message>(iMessage), wParam, lParam);
+	ScintillaWin *sci = reinterpret_cast<ScintillaWin *>(ptr);
+	PLATFORM_ASSERT(::GetCurrentThreadId() == ::GetWindowThreadProcessId(sci->MainHWND(), nullptr));
+	return sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
+}
+
+sptr_t ScintillaWin::DirectStatusFunction(
+    sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam, int *pStatus) {
+	ScintillaWin *sci = reinterpret_cast<ScintillaWin *>(ptr);
+	PLATFORM_ASSERT(::GetCurrentThreadId() == ::GetWindowThreadProcessId(sci->MainHWND(), nullptr));
+	const sptr_t returnValue = sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
+	*pStatus = static_cast<int>(sci->errorStatus);
+	return returnValue;
 }
 
 namespace Scintilla::Internal {

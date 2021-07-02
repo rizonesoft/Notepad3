@@ -368,6 +368,10 @@ constexpr bool IsControlCharacter(int ch) noexcept {
 	return (ch >= 0 && ch < ' ') || (ch == 127);
 }
 
+bool ViewIsASCII(std::string_view text) {
+	return std::all_of(text.cbegin(), text.cend(), IsASCII);
+}
+
 }
 
 /**
@@ -475,10 +479,20 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 						representationWidth = NextTabstopPos(line, x, vstyle.tabWidth) - ll->positions[ts.start];
 					} else {
 						if (representationWidth <= 0.0) {
-							XYPOSITION positionsRepr[256];	// Should expand when needed
-							posCache.MeasureWidths(surface, vstyle, StyleControlChar, ts.representation->stringRep.c_str(),
-								static_cast<unsigned int>(ts.representation->stringRep.length()), positionsRepr, model.pdoc);
-							representationWidth = positionsRepr[ts.representation->stringRep.length() - 1] + vstyle.ctrlCharPadding;
+							assert(ts.representation->stringRep.length() <= Representation::maxLength);
+							XYPOSITION positionsRepr[Representation::maxLength+1];
+							// ts.representation->stringRep is UTF-8 which only matches cache if document is UTF-8
+							// or it only contains ASCII which is a subset of all currently supported encodings.
+							if ((CpUtf8 == model.pdoc->dbcsCodePage) || ViewIsASCII(ts.representation->stringRep)) {
+								posCache.MeasureWidths(surface, vstyle, StyleControlChar, ts.representation->stringRep,
+									positionsRepr);
+							} else {
+								surface->MeasureWidthsUTF8(vstyle.styles[StyleControlChar].font.get(), ts.representation->stringRep, positionsRepr);
+							}
+							representationWidth = positionsRepr[ts.representation->stringRep.length() - 1];
+							if (FlagSet(ts.representation->appearance, RepresentationAppearance::Blob)) {
+								representationWidth += vstyle.ctrlCharPadding;
+							}
 						}
 					}
 					for (int ii = 0; ii < ts.length; ii++)
@@ -488,8 +502,8 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 						// Over half the segments are single characters and of these about half are space characters.
 						ll->positions[ts.start + 1] = vstyle.styles[ll->styles[ts.start]].spaceWidth;
 					} else {
-						posCache.MeasureWidths(surface, vstyle, ll->styles[ts.start], &ll->chars[ts.start],
-							ts.length, &ll->positions[ts.start + 1], model.pdoc);
+						posCache.MeasureWidths(surface, vstyle, ll->styles[ts.start],
+							std::string_view(&ll->chars[ts.start], ts.length), &ll->positions[ts.start + 1]);
 					}
 				}
 				lastSegItalics = (!ts.representation) && ((ll->chars[ts.end() - 1] != ' ') && vstyle.styles[ll->styles[ts.start]].italic);
@@ -609,7 +623,7 @@ void EditView::UpdateBidiData(const EditModel &model, const ViewStyle &vstyle, L
 
 		for (int charsInLine = 0; charsInLine < ll->numCharsInLine; charsInLine++) {
 			const int charWidth = UTF8DrawBytes(reinterpret_cast<unsigned char *>(&ll->chars[charsInLine]), ll->numCharsInLine - charsInLine);
-			const Representation *repr = model.reprs.RepresentationFromCharacter(&ll->chars[charsInLine], charWidth);
+			const Representation *repr = model.reprs.RepresentationFromCharacter(std::string_view(&ll->chars[charsInLine], charWidth));
 
 			ll->bidiData->widthReprs[charsInLine] = 0.0f;
 			if (repr && ll->chars[charsInLine] != '\t') {
@@ -913,7 +927,7 @@ static void DrawTextBlob(Surface *surface, const ViewStyle &vsDraw, PRectangle r
 	PRectangle rcChar = rcCChar;
 	rcChar.left++;
 	rcChar.right--;
-	surface->DrawTextClipped(rcChar, ctrlCharsFont,
+	surface->DrawTextClippedUTF8(rcChar, ctrlCharsFont,
 		rcSegment.top + vsDraw.maxAscent, text,
 		textBack, textFore);
 }
@@ -1002,29 +1016,41 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 	// Draw the [CR], [LF], or [CR][LF] blobs if visible line ends are on
 	XYPOSITION blobsWidth = 0;
 	if (lastSubLine) {
-		for (Sci::Position eolPos = ll->numCharsBeforeEOL; eolPos<ll->numCharsInLine; eolPos++) {
-			rcSegment.left = xStart + ll->positions[eolPos] - static_cast<XYPOSITION>(subLineStart)+virtualSpace;
-			rcSegment.right = xStart + ll->positions[eolPos + 1] - static_cast<XYPOSITION>(subLineStart)+virtualSpace;
-			blobsWidth += rcSegment.Width();
-			char hexits[4] = "";
-			const char *ctrlChar;
-			const unsigned char chEOL = ll->chars[eolPos];
+		for (Sci::Position eolPos = ll->numCharsBeforeEOL; eolPos<ll->numCharsInLine;) {
 			const int styleMain = ll->styles[eolPos];
-			const ColourRGBA textBack = TextBackground(model, vsDraw, ll, background, eolInSelection, false, styleMain, eolPos);
-			if (UTF8IsAscii(chEOL)) {
-				ctrlChar = ControlCharacterString(chEOL);
+			const std::optional<ColourRGBA> selectionFore = SelectionForeground(model, vsDraw, eolInSelection);
+			ColourRGBA textFore = selectionFore.value_or(vsDraw.styles[styleMain].fore);
+			char hexits[4] = "";
+			std::string_view ctrlChar;
+			Sci::Position widthBytes = 1;
+			RepresentationAppearance appearance = RepresentationAppearance::Blob;
+			const Representation *repr = model.reprs.RepresentationFromCharacter(std::string_view(&ll->chars[eolPos], ll->numCharsInLine - eolPos));
+			if (repr) {
+				// Representation of whole text
+				widthBytes = ll->numCharsInLine - eolPos;
 			} else {
-				const Representation *repr = model.reprs.RepresentationFromCharacter(&ll->chars[eolPos], ll->numCharsInLine - eolPos);
-				if (repr) {
-					ctrlChar = repr->stringRep.c_str();
-					eolPos = ll->numCharsInLine;
+				repr = model.reprs.RepresentationFromCharacter(std::string_view(&ll->chars[eolPos], 1));
+			}
+			if (repr) {
+				ctrlChar = repr->stringRep;
+				appearance = repr->appearance;
+				if (FlagSet(appearance, RepresentationAppearance::Colour)) {
+					textFore = repr->colour;
+				}
+			} else {
+				const unsigned char chEOL = ll->chars[eolPos];
+				if (UTF8IsAscii(chEOL)) {
+					ctrlChar = ControlCharacterString(chEOL);
 				} else {
 					sprintf(hexits, "x%2X", chEOL);
 					ctrlChar = hexits;
 				}
 			}
-			const std::optional<ColourRGBA> selectionFore = SelectionForeground(model, vsDraw, eolInSelection);
-			const ColourRGBA textFore = selectionFore.value_or(vsDraw.styles[styleMain].fore);
+
+			rcSegment.left = xStart + ll->positions[eolPos] - static_cast<XYPOSITION>(subLineStart)+virtualSpace;
+			rcSegment.right = xStart + ll->positions[eolPos + widthBytes] - static_cast<XYPOSITION>(subLineStart)+virtualSpace;
+			blobsWidth += rcSegment.Width();
+			const ColourRGBA textBack = TextBackground(model, vsDraw, ll, background, eolInSelection, false, styleMain, eolPos);
 			if (eolInSelection && (line < model.pdoc->LinesTotal() - 1)) {
 				if (vsDraw.selection.layer == Layer::Base) {
 					surface->FillRectangleAligned(rcSegment, Fill(selectionBack.Opaque()));
@@ -1040,10 +1066,16 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 				surface->FillRectangleAligned(rcSegment, selectionBack);
 				blobText = textBack.MixedWith(selectionBack, selectionBack.GetAlphaComponent());
 			}
-			DrawTextBlob(surface, vsDraw, rcSegment, ctrlChar, blobText, textFore, phasesDraw == PhasesDraw::One);
+			if (FlagSet(appearance, RepresentationAppearance::Blob)) {
+				DrawTextBlob(surface, vsDraw, rcSegment, ctrlChar, blobText, textFore, phasesDraw == PhasesDraw::One);
+			} else {
+				surface->DrawTextTransparentUTF8(rcSegment, vsDraw.styles[StyleControlChar].font.get(),
+					rcSegment.top + vsDraw.maxAscent, ctrlChar, textFore);
+			}
 			if (drawEOLSelection && (vsDraw.selection.layer == Layer::OverText)) {
 				surface->FillRectangleAligned(rcSegment, selectionBack);
 			}
+			eolPos += widthBytes;
 		}
 	}
 
@@ -2021,8 +2053,16 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 							rcSegment.top + vsDraw.maxAscent,
 							cc, textBack, textFore);
 					} else {
-						DrawTextBlob(surface, vsDraw, rcSegment, ts.representation->stringRep,
-							textBack, textFore, phasesDraw == PhasesDraw::One);
+						if (FlagSet(ts.representation->appearance, RepresentationAppearance::Colour)) {
+							textFore = ts.representation->colour;
+						}
+						if (FlagSet(ts.representation->appearance, RepresentationAppearance::Blob)) {
+							DrawTextBlob(surface, vsDraw, rcSegment, ts.representation->stringRep,
+								textBack, textFore, phasesDraw == PhasesDraw::One);
+						} else {
+							surface->DrawTextTransparentUTF8(rcSegment, vsDraw.styles[StyleControlChar].font.get(),
+								rcSegment.top + vsDraw.maxAscent, ts.representation->stringRep, textFore);
+						}
 					}
 				}
 			} else {

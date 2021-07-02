@@ -180,6 +180,10 @@ public:
 		return ColourRGBA(co_ | (0xffu << 24));
 	}
 
+	static constexpr ColourRGBA FromIpRGB(intptr_t co_) noexcept {
+		return ColourRGBA(static_cast<int>(co_) | (0xffu << 24));
+	}
+
 	constexpr ColourRGBA WithoutAlpha() const noexcept {
 		return ColourRGBA(co & 0xffffff);
 	}
