@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.702.(build_#) (2021-07-02)
+Current BETA/RC Version 5.21.703.(build_#) (2021-07-03)
 ========================================================
 
 --------------------------------------------------------
@@ -72,6 +72,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.703.1]- Enable Dark Mode feature for Win11 v21H2 Insider beta.
 [.529.2]- Win10 Release-ID as string (allows 20H2 or 21H1).
 [.529.1]- Improved Julia Lexer (LEX).
 [.526.1]- Batch-Lexer + patching Markdown-Lexer (eolfilled header lines) (LEX).
