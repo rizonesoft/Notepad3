@@ -55,10 +55,10 @@ END
 
 IDD_ABOUT DIALOGEX 0, 0, 227, 110
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "MiniPath"
+CAPTION "關於 MiniPath"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,170,90,50,14
+    DEFPUSHBUTTON   "確定",IDOK,170,90,50,14
     ICON            IDI_MINIPATH,IDC_STATIC,7,7,48,48,SS_ICON|SS_REALSIZECONTROL,WS_EX_TRANSPARENT
     LTEXT           "",IDC_VERSION,65,7,175,12
     LTEXT           "",IDC_COPYRIGHT,65,23,175,8
@@ -72,223 +72,223 @@ END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Run"
+CAPTION "執行"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Enter the name of an executable program file,\na folder or a document to open.",IDC_STATIC,35,7,188,17
+    LTEXT           "輸入 MiniPath 要開啟的可執行檔、資料夾或文件名稱。",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
-    DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,167,64,50,14
+    DEFPUSHBUTTON   "確定",IDOK,112,64,50,14
+    PUSHBUTTON      "取消",IDCANCEL,167,64,50,14
 END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Open with..."
+CAPTION "開啟方式..."
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Click here to specify the directory with links to your favourite applications.",IDC_OPENWITHDESCR,26,83,132,18
-    DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,108,108,50,14
+    LTEXT           "按一下此處設定用於連結到您常用應用程式的目錄。",IDC_OPENWITHDESCR,26,83,132,18
+    DEFPUSHBUTTON   "確定",IDOK,52,108,50,14
+    PUSHBUTTON      "取消",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
 IDD_GOTO DIALOGEX 0, 0, 224, 87
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Goto"
+CAPTION "移至"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Enter the name of a file or directory to open,\nor select a recently visited directory from the list.",IDC_STATIC,35,7,182,17
+    LTEXT           "輸入要開啟的檔案或目錄名稱，或從清單中選擇最近使用過的目錄。",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,167,66,50,14
+    DEFPUSHBUTTON   "確定",IDOK,112,66,50,14,WS_DISABLED
+    PUSHBUTTON      "取消",IDCANCEL,167,66,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 185, 87
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "File Filter"
+CAPTION "檔案篩選"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Specify a new file &filter. Separate multiple filters by ;",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
-    CONTROL         "&Exclude files matching the filter.",IDC_NEGFILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
-    DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,127,58,50,14
+    LTEXT           "指定新的檔案篩選。分隔多個篩選依(&f)",IDC_STATIC,7,7,170,23
+    EDITTEXT        IDC_FILTER,6,36,153,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,163,36,13,13
+    CONTROL         "排除符合篩選的檔案(&E)",IDC_NEGFILTER,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,54,118,10
+    DEFPUSHBUTTON   "確定",IDOK,72,68,50,14
+    PUSHBUTTON      "取消",IDCANCEL,127,68,50,14
 END
 
-IDD_RENAME DIALOGEX 0, 0, 172, 74
+IDD_RENAME DIALOGEX 0, 0, 201, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Rename"
+CAPTION "重新命名"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Current:",IDC_STATIC,7,9,28,8
-    EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&New:",IDC_STATIC,7,26,18,8
-    EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,59,53,50,14,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,115,53,50,14
+    LTEXT           "目前名稱(&C):",IDC_STATIC,7,9,59,8
+    EDITTEXT        IDC_OLDNAME,66,6,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
+    LTEXT           "新名稱(&N):",IDC_STATIC,7,26,59,8
+    EDITTEXT        IDC_NEWNAME,66,24,126,13,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "確定",IDOK,84,54,50,14,WS_DISABLED
+    PUSHBUTTON      "取消",IDCANCEL,140,54,50,14
 END
 
 IDD_NEWDIR DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "New Directory"
+CAPTION "新增目錄"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Enter the name for the new directory:",IDC_STATIC,7,7,158,8
+    LTEXT           "輸入新目錄的名稱:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,115,45,50,14
+    DEFPUSHBUTTON   "確定",IDOK,59,45,50,14,WS_DISABLED
+    PUSHBUTTON      "取消",IDCANCEL,115,45,50,14
 END
 
 IDD_COPYMOVE DIALOGEX 0, 0, 230, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Copy/Move"
+CAPTION "複製/移動"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Source:",IDC_STATIC,7,7,26,8
+    LTEXT           "來源檔案:",IDC_STATIC,7,7,77,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&Destination:",IDC_STATIC,7,37,40,8
+    LTEXT           "目的檔案(&D):",IDC_STATIC,7,37,85,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
-    LTEXT           "Action:",IDC_STATIC,7,66,24,8
-    CONTROL         "&Copy",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "&Move",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
-    DEFPUSHBUTTON   "OK",IDOK,117,74,50,14,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,173,74,50,14
+    LTEXT           "動作:",IDC_STATIC,7,66,24,8
+    CONTROL         "複製(&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,55,10
+    CONTROL         "移動(&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,55,10
+    DEFPUSHBUTTON   "確定",IDOK,117,74,50,14,WS_DISABLED
+    PUSHBUTTON      "取消",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
 END
 
 IDPP_GENERAL DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "General"
+CAPTION "一般"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Specify general program settings for MiniPath.",IDC_STATIC,40,15,153,8
-    CONTROL         "&Allow only single mouse-click to open objects.",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
-    CONTROL         "&Enable track selection.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "Enable &full row selection.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
-    CONTROL         "Always a&ctivate target window when a file is opened.",IDC_FOCUSEDIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
+    LTEXT           "指定 MiniPath 的一般程式設定。",IDC_STATIC,40,15,153,8
+    CONTROL         "僅允許按一下開啟物件(&A)",IDC_SINGLECLICK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,194,10
+    CONTROL         "啟用滑鼠滑過時選擇(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,194,10
+    CONTROL         "啟用整列選擇(&f)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,194,10
+    CONTROL         "開啟檔案後切換到目標視窗(&c)",IDC_FOCUSEDIT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,194,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "&Keep MiniPath window always on top.",IDC_ALWAYSONTOP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "&Minimise to system tray (click to reactivate).",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
-    CONTROL         "&Try to reuse existing window when MiniPath is started.",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
+    CONTROL         "保持 MiniPath 視窗最上層顯示(&K)",IDC_ALWAYSONTOP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,194,10
+    CONTROL         "最小化到系統匣(按一下以重新啟動)(&M)",IDC_MINIMIZETOTRAY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,194,10
+    CONTROL         "嘗試在 MiniPath 啟動時重新使用現有視窗(&T)",IDC_REUSEWINDOW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,194,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Save settings on exit.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "結束時儲存設定(&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,194,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Advanced"
+CAPTION "進階"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Specify advanced program settings for MiniPath.",IDC_STATIC,40,15,160,8
-    CONTROL         "&Use startup directory:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "Most &recently used.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         """&Favourites"" folder.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    LTEXT           "指定 MiniPath 的進階程式設定",IDC_STATIC,40,15,160,8
+    CONTROL         "使用啟動目錄(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
+    CONTROL         "最近使用(&r)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,110,10
+    CONTROL         "常用資料夾(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,110,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Clear read-only attribute of saved files.",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
-    CONTROL         "Rename copied files on &name collisions.",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
-    CONTROL         "&Move deleted files to the recycle bin.",IDC_USERECYCLEBIN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
-    CONTROL         "&Don't confirm file delete (not recommended).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+    CONTROL         "清除儲存檔案的唯讀屬性(&C)",IDC_CLEARREADONLY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,200,10
+    CONTROL         "在名稱衝突時重新命名複製的檔案(&n)",IDC_RENAMEONCOLLISION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,200,10
+    CONTROL         "將刪除的檔案移至資源回收筒(&M)",IDC_USERECYCLEBIN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,200,10
+    CONTROL         "不確認檔案刪除 (不建議)(&D)",IDC_NOCONFIRMDELETE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Enable ""&Esc"" key to...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Minimise &window.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "E&xit MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "當按 Esc 鍵時(&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,86,10
+    CONTROL         "最小化視窗(&w)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,110,10
+    CONTROL         "結束 MiniPath(&x)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,110,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Items"
+CAPTION "項目"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Appearance of items in directory list.",IDC_STATIC,40,15,118,8
-    GROUPBOX        "Colours",IDC_STATIC,10,41,205,134
-    LTEXT           "Use this text colour when NO FILTER is set:",IDC_STATIC,20,54,136,8
-    CONTROL         "Default &windows colour.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "Custom &colour:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
-    EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Pick Colour...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Use this text colour when a FILTER IS ACTIVE:",IDC_STATIC,20,105,146,8
-    CONTROL         "D&efault windows colour.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
-    CONTROL         "C&ustom colour:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
-    EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Pick Colour...",IDC_COLOR_PICK2,120,130,50,14
+    ICON            IDI_ITEMS,IDC_STATIC,10,10,20,20
+    LTEXT           "目錄清單中的項目外觀。",IDC_STATIC,40,15,118,8
+    GROUPBOX        "顏色",IDC_STATIC,10,41,205,134
+    LTEXT           "當篩選未啟用時，使用此文字顏色:",IDC_STATIC,20,54,172,8
+    CONTROL         "系統預設顏色(&w)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "自訂顏色(&c):",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,82,10
+    EDITTEXT        IDC_COLOR_SAMP1,109,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "挑選顏色...",IDC_COLOR_PICK1,143,80,67,14
+    LTEXT           "當篩選啟用時，使用此文字顏色:",IDC_STATIC,20,105,172,8
+    CONTROL         "系統預設顏色(&e)",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "自訂顏色(&u):",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,82,10
+    EDITTEXT        IDC_COLOR_SAMP2,110,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "挑選顏色...",IDC_COLOR_PICK2,144,130,66,14
 END
 
 IDPP_PROG DIALOGEX 0, 0, 226, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Locations"
+CAPTION "位置"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Specify external programs and paths.",IDC_STATIC,40,15,122,8
-    LTEXT           "&Default ""Quick View"" program (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "指定外部程式和路徑。",IDC_STATIC,40,15,122,8
+    LTEXT           "預設「快速檢視」程式 (Ctrl+Q)(&D):",IDC_STATIC,10,41,200,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "&Favourites Folder (F11):",IDC_STATIC,10,76,76,8
+    LTEXT           "常用資料夾 (F11)(&F):",IDC_STATIC,10,76,200,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
 IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Target Application"
+CAPTION "目標應用程式"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Don't use any specific target application, simply launch the selected file.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
-    CONTROL         "Use the following target application:",IDC_TARGET,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Specify the action if the target application is already running:",IDC_STATIC,7,64,196,8
+    CONTROL         "不要使用任何指定的目標應用程式，只需啟動選定的檔案。",IDC_LAUNCH,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,251,10
+    CONTROL         "使用下面的目標應用程式:",IDC_TARGET,
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,251,10
+    LTEXT           "如果目標應用程式已在執行，請指定操作:",IDC_STATIC,7,64,251,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
-    LTEXT           "Message:",IDC_STATIC,20,120,32,8
-    CONTROL         "None, run target application each time a file is opened.",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
-    CONTROL         "Send a file open message to target application window:",IDC_SENDDROPMSG,
+    LTEXT           "訊息:",IDC_STATIC,20,120,52,8
+    CONTROL         "每次開啟檔案時執行目標應用程式。",IDC_ALWAYSRUN,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,251,10
+    CONTROL         "發送檔案開啟訊息給目標應用程式視窗:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
-    CONTROL         "Execute the following DDE command:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Application:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Find Window...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "Topic:",IDC_STATIC,198,120,20,8
+    CONTROL         "執行下面的 DDE 命令:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,251,10
+    LTEXT           "應用程式:",IDC_STATIC,128,120,38,8
+    PUSHBUTTON      "尋找視窗...",IDC_FINDWIN,204,91,60,14
+    LTEXT           "主題:",IDC_STATIC,198,120,36,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,214,159,50,14
+    DEFPUSHBUTTON   "確定",IDOK,160,159,50,14
+    PUSHBUTTON      "取消",IDCANCEL,214,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Find Window"
+CAPTION "尋找視窗"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Drag the crosshair over the window you would like to select as the new target, or press Esc to cancel.",IDC_STATIC,35,7,168,22
+    LTEXT           "將交叉線拖曳到要選擇為新目標的視窗上，或按 Esc 取消。",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
-    DEFPUSHBUTTON   "OK",IDOK,99,64,50,14,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,153,64,50,14
+    DEFPUSHBUTTON   "確定",IDOK,99,64,50,14,WS_DISABLED
+    PUSHBUTTON      "取消",IDCANCEL,153,64,50,14
 END
 
 
@@ -336,15 +336,15 @@ BEGIN
     IDD_FILTER, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 177
+        RIGHTMARGIN, 178
         TOPMARGIN, 7
-        BOTTOMMARGIN, 71
+        BOTTOMMARGIN, 79
     END
 
     IDD_RENAME, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 165
+        RIGHTMARGIN, 194
         TOPMARGIN, 7
         BOTTOMMARGIN, 67
     END
