@@ -16,10 +16,6 @@
 //source:test/*.cxx
 //source:test/unit/*.cxx
 
-// Exclude LexCaml.cxx as it tries to build both as a normal and external lexer
-// uses Windows.h and a no-longer-present Scintilla header.
-//exclude:LexCaml.cxx
-
 // C standard library
 #include <stdlib.h>
 #include <string.h>
@@ -43,6 +39,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <optional>
 #include <initializer_list>
 #include <algorithm>
 #include <iterator>

@@ -53,6 +53,10 @@ msgstr "&Substituir"
 msgid "&Search"
 msgstr "&Procurar"
 
+#. Resource IDs: (1003)
+msgid "&Whole word"
+msgstr ""
+
 #. Resource IDs: (1013)
 msgid "..."
 msgstr "..."
@@ -423,6 +427,11 @@ msgstr "Procurar cadeia"
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
 msgstr "%ld ficheiros procurados, %ld ficheiros ignorados. Encontradas %ld correspondências em %ld ficheiros."
+
+#. Resource IDs: (173)
+#, c-format
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
+msgstr ""
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

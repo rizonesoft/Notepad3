@@ -2632,7 +2632,7 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
     if (!lpstrText || (lenText == 0)) {
         SciCall_SetDocPointer(0);
     } else {
-#if TRUE
+#if FALSE
         ILoader* const pDocLoad = reinterpret_cast<ILoader*>(SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1, docOptions));
 
         if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {

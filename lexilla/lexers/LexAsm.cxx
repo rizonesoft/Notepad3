@@ -17,8 +17,10 @@
 #include <ctype.h>
 
 #include <string>
+#include <string_view>
 #include <map>
 #include <set>
+#include <functional>
 
 #include "ILexer.h"
 #include "Scintilla.h"

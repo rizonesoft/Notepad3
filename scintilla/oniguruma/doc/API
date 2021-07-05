@@ -1,4 +1,4 @@
-Oniguruma API  Version 7.0.0  2021/04/26
+Oniguruma API  Version 7.0.0  2021/06/23
 
 #include <oniguruma.h>
 
@@ -8,8 +8,6 @@ Oniguruma API  Version 7.0.0  2021/04/26
   Initialize library.
 
   You have to call it explicitly.
-
-  * onig_init() is deprecated.
 
   arguments
   1 use_encodings:         array of encodings used in application.
@@ -173,54 +171,6 @@ Oniguruma API  Version 7.0.0  2021/04/26
   return value
   normal: ONIG_NORMAL == 0
   error:  error code < 0
-
-
-# int onig_new_deluxe(regex_t** reg, const UChar* pattern, const UChar* pattern_end,
-                      OnigCompileInfo* ci, OnigErrorInfo* einfo)
-
-  This function is deprecated, and it does not allow the case where
-  the encoding of pattern and target is different.
-
-  Create a regex object.
-  This function is deluxe version of onig_new().
-
-  return value
-  normal: ONIG_NORMAL == 0
-  error:  error code < 0
-
-  arguments
-  1 reg:         return address of regex object.
-  2 pattern:     regex pattern string.
-  3 pattern_end: terminate address of pattern. (pattern + pattern length)
-  4 ci:          compile time info.
-
-    ci->num_of_elements: number of elements in ci. (current version: 5)
-    ci->pattern_enc:     pattern string character encoding.
-    ci->target_enc:      target string character encoding.
-    ci->syntax:          address of pattern syntax definition.
-    ci->option:          compile time option.
-    ci->case_fold_flag:  character matching case fold bit flag for
-                         ONIG_OPTION_IGNORECASE mode.
-
-       ONIGENC_CASE_FOLD_MIN:           minimum
-       ONIGENC_CASE_FOLD_DEFAULT:       minimum
-                                        onig_set_default_case_fold_flag()
-
-  5 err_info:    address for return optional error info.
-                 Use this value as 3rd argument of onig_error_code_to_str().
-
-
-  Different character encoding combination is allowed for
-  the following cases only.
-
-    pattern_enc: ASCII, ISO_8859_1
-    target_enc:  UTF16_BE, UTF16_LE, UTF32_BE, UTF32_LE
-
-    pattern_enc: UTF16_BE/LE
-    target_enc:  UTF16_LE/BE
-
-    pattern_enc: UTF32_BE/LE
-    target_enc:  UTF32_LE/BE
 
 
 # void onig_free(regex_t* reg)
@@ -700,15 +650,6 @@ Oniguruma API  Version 7.0.0  2021/04/26
   1 reg:     regex object.
 
 
-# OnigCaseFoldType onig_get_case_fold_flag(regex_t* reg)
-
-  Return the case_fold_flag of the regex object.
-  This function is deprecated.
-
-  arguments
-  1 reg:     regex object.
-
-
 # int onig_number_of_captures(regex_t* reg)
 
   Return the number of capture group in the pattern.
@@ -927,20 +868,6 @@ Oniguruma API  Version 7.0.0  2021/04/26
           ONIG_META_CHAR_ANYCHAR_ANYTIME
 
   3 code: meta character or ONIG_INEFFECTIVE_META_CHAR.
-
-
-# OnigCaseFoldType onig_get_default_case_fold_flag()
-
-  Get default case fold flag.
-  This function is deprecated.
-
-
-# int onig_set_default_case_fold_flag(OnigCaseFoldType case_fold_flag)
-
-  Set default case fold flag.
-  This function is deprecated.
-
-  1 case_fold_flag: case fold flag
 
 
 # unsigned int onig_get_match_stack_limit_size(void)

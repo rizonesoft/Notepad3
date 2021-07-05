@@ -3535,9 +3535,10 @@ scan_number(UChar** src, const UChar* end, OnigEncoding enc)
 {
   int num, val;
   OnigCodePoint c;
-  UChar* p = *src;
+  UChar* p;
   PFETCH_READY;
 
+  p = *src;
   num = 0;
   while (! PEND) {
     PFETCH(c);
@@ -3565,9 +3566,10 @@ scan_hexadecimal_number(UChar** src, UChar* end, int minlen, int maxlen,
   OnigCodePoint c;
   unsigned int val;
   int n;
-  UChar* p = *src;
+  UChar* p;
   PFETCH_READY;
 
+  p = *src;
   code = 0;
   n = 0;
   while (! PEND && n < maxlen) {
@@ -3602,9 +3604,10 @@ scan_octal_number(UChar** src, UChar* end, int minlen, int maxlen,
   OnigCodePoint c;
   unsigned int val;
   int n;
-  UChar* p = *src;
+  UChar* p;
   PFETCH_READY;
 
+  p = *src;
   code = 0;
   n = 0;
   while (! PEND && n < maxlen) {
@@ -3777,9 +3780,10 @@ get_next_code_point(UChar** src, UChar* end, int base, OnigEncoding enc, int in_
 {
   int r;
   OnigCodePoint c;
-  UChar* p = *src;
+  UChar* p;
   PFETCH_READY;
 
+  p = *src;
   while (! PEND) {
     PFETCH(c);
     if (! IS_CODE_POINT_DIVIDE(c)) {
@@ -4545,13 +4549,17 @@ ptoken_init(PToken* tok)
 static int
 fetch_interval(UChar** src, UChar* end, PToken* tok, ParseEnv* env)
 {
-  int low, up, syn_allow, non_low = 0;
-  int r = 0;
+  int low, up, syn_allow, non_low;
+  int r;
   OnigCodePoint c;
-  OnigEncoding enc = env->enc;
-  UChar* p = *src;
+  OnigEncoding enc;
+  UChar* p;
   PFETCH_READY;
 
+  p = *src;
+  r = 0;
+  non_low = 0;
+  enc = env->enc;
   syn_allow = IS_SYNTAX_BV(env->syntax, ONIG_SYN_ALLOW_INVALID_INTERVAL);
 
   if (PEND) {
@@ -4769,13 +4777,16 @@ fetch_name_with_level(OnigCodePoint start_code, UChar** src, UChar* end,
   int r, sign, exist_level;
   int digit_count;
   OnigCodePoint end_code;
-  OnigCodePoint c = 0;
-  OnigEncoding enc = env->enc;
+  OnigCodePoint c;
+  OnigEncoding enc;
   UChar *name_end;
   UChar *pnum_head;
-  UChar *p = *src;
+  UChar *p;
   PFETCH_READY;
 
+  p = *src;
+  c = 0;
+  enc = env->enc;
   *rback_num = 0;
   exist_level = 0;
   *num_type = IS_NOT_NUM;
@@ -5132,12 +5143,15 @@ fetch_token_cc(PToken* tok, UChar** src, UChar* end, ParseEnv* env, int state)
   OnigCodePoint code;
   OnigCodePoint c, c2;
   int mindigits, maxdigits;
-  OnigSyntaxType* syn = env->syntax;
-  OnigEncoding enc = env->enc;
+  OnigSyntaxType* syn;
+  OnigEncoding enc;
   UChar* prev;
-  UChar* p = *src;
+  UChar* p;
   PFETCH_READY;
 
+  p = *src;
+  enc = env->enc;
+  syn = env->syntax;
   if (tok->code_point_continue != 0) {
     r = get_next_code_point(&p, end, tok->base_num, enc, TRUE, &code);
     if (r == 1) {
@@ -5422,11 +5436,11 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ParseEnv* env)
   OnigSyntaxType* syn;
   UChar* p;
 
+  PFETCH_READY;
+
   enc = env->enc;
   syn = env->syntax;
   p = *src;
-
-  PFETCH_READY;
 
   if (tok->code_point_continue != 0) {
     r = get_next_code_point(&p, end, tok->base_num, enc, FALSE, &code);
@@ -7667,11 +7681,12 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
   OnigOptionType option;
   OnigCodePoint c;
   int list_capture;
-  OnigEncoding enc = env->enc;
-
-  UChar* p = *src;
+  OnigEncoding enc;
+  UChar* p;
   PFETCH_READY;
 
+  p = *src;
+  enc = env->enc;
   *np = NULL;
   if (PEND) return ONIGERR_END_PATTERN_WITH_UNMATCHED_PARENTHESIS;
 

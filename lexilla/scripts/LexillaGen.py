@@ -120,8 +120,8 @@ def RegenerateAll(rootDirectory):
 
     pathMain = lexillaDir / "doc" / "Lexilla.html"
     UpdateLineInFile(pathMain,
-        '          <font color="#FFCC99" size="3"> Release version',
-        '          <font color="#FFCC99" size="3"> Release version ' + \
+        '          <font color="#FFCC99" size="3">Release version',
+        '          <font color="#FFCC99" size="3">Release version ' + \
         versionDotted + '<br />')
     UpdateLineInFile(pathMain,
         '           Site last modified',

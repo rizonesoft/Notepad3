@@ -103,7 +103,7 @@ re_alloc_pattern(regex_t** reg)
   if (IS_NULL(*reg)) return ONIGERR_MEMORY;
 
   return onig_reg_init(*reg, ONIG_OPTION_DEFAULT,
-                       ONIGENC_CASE_FOLD_DEFAULT,
+                       ONIGENC_CASE_FOLD_MIN,
                        OnigEncDefaultCharEncoding,
                        OnigDefaultSyntax);
 }

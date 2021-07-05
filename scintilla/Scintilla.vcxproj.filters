@@ -123,9 +123,6 @@
     <ClCompile Include="oniguruma\src\mktable.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
-    <ClCompile Include="oniguruma\src\onig_init.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
     <ClCompile Include="oniguruma\src\regcomp.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
@@ -136,9 +133,6 @@
       <Filter>oniguruma\src</Filter>
     </ClCompile>
     <ClCompile Include="oniguruma\src\regexec.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regext.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
     <ClCompile Include="oniguruma\src\reggnu.c">
@@ -177,13 +171,13 @@
     <ClCompile Include="oniguruma\src\utf8.c">
       <Filter>oniguruma\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\CharacterCategory.cxx">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CharacterSet.cxx">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Geometry.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterCategoryMap.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterType.cxx">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -338,12 +332,6 @@
     <ClInclude Include="oniguruma\src\st.h">
       <Filter>oniguruma\src</Filter>
     </ClInclude>
-    <ClInclude Include="src\CharacterCategory.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CharacterSet.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\Debugging.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -353,5 +341,28 @@
     <ClInclude Include="src\Platform.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="include\ScintillaMessages.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaStructures.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterCategoryMap.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterType.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaCall.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Scintilla.iface">
+      <Filter>include</Filter>
+    </None>
   </ItemGroup>
 </Project>

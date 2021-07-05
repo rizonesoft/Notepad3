@@ -23,7 +23,6 @@ passedByValue
 // Suppress most lexer warnings since the lexers are maintained by others
 redundantCondition:lexilla/lexers/LexA68k.cxx
 constParameter:lexilla/lexers/LexAbaqus.cxx
-knownConditionTrueFalse:lexilla/lexers/LexAPDL.cxx
 knownConditionTrueFalse:lexilla/lexers/LexAU3.cxx
 shadowVariable:lexilla/lexers/LexAU3.cxx
 constParameter:lexilla/lexers/LexBaan.cxx
@@ -33,8 +32,6 @@ uninitMemberVar:lexilla/lexers/LexBash.cxx
 variableScope:lexilla/lexers/LexBash.cxx
 variableScope:lexilla/lexers/LexBatch.cxx
 knownConditionTrueFalse:lexilla/lexers/LexBatch.cxx
-knownConditionTrueFalse:lexilla/lexers/LexBibTeX.cxx
-constStatement:lexilla/lexers/LexCaml.cxx
 variableScope:lexilla/lexers/LexCmake.cxx
 knownConditionTrueFalse:lexilla/lexers/LexCmake.cxx
 constParameter:lexilla/lexers/LexCLW.cxx
@@ -86,8 +83,6 @@ constParameter:lexilla/lexers/LexRaku.cxx
 variableScope:lexilla/lexers/LexRaku.cxx
 redundantInitialization:lexilla/lexers/LexRegistry.cxx
 constParameter:lexilla/lexers/LexRuby.cxx
-variableScope:lexilla/lexers/LexRuby.cxx
-uninitMemberVar:lexilla/lexers/LexRuby.cxx
 constParameter:lexilla/lexers/LexRust.cxx
 constParameter:lexilla/lexers/LexScriptol.cxx
 variableScope:lexilla/lexers/LexSpecman.cxx
@@ -108,11 +103,9 @@ unreadVariable:lexilla/lexers/LexVHDL.cxx
 variableScope:lexilla/lexers/LexVHDL.cxx
 unreadVariable:lexilla/lexers/LexVisualProlog.cxx
 constParameter:lexilla/lexers/LexYAML.cxx
-knownConditionTrueFalse:lexilla/lexers/LexYAML.cxx
 
 // These are due to Accessor::IndentAmount not declaring the callback as taking a const.
 // Changing this could cause problems for downstream projects.
-constParameterCallback:lexilla/lexers/LexAsn1.cxx
 constParameterCallback:lexilla/lexers/LexEiffel.cxx
 constParameterCallback:lexilla/lexers/LexPython.cxx
 constParameterCallback:lexilla/lexers/LexScriptol.cxx

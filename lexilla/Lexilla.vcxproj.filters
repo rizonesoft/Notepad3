@@ -276,7 +276,7 @@
     <None Include="include\LexicalStyles.iface">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="src\lexers_x\SciX.iface">
+    <None Include="lexers_x\SciX.iface">
       <Filter>lexers_x</Filter>
     </None>
   </ItemGroup>

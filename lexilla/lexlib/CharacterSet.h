@@ -10,10 +10,10 @@
 
 namespace Lexilla {
 
-class CharacterSet {
-	int size;
-	bool valueAfter;
-	bool *bset;
+template<int N>
+class CharacterSetArray {
+	unsigned char bset[(N-1)/8 + 1] = {};
+	bool valueAfter = false;
 public:
 	enum setBase {
 		setNone=0,
@@ -23,15 +23,8 @@ public:
 		setAlpha=setLower|setUpper,
 		setAlphaNum=setAlpha|setDigits
 	};
-	CharacterSet(setBase base=setNone, const char *initialSet="", int size_=0x80, bool valueAfter_=false) 
-        : bset(nullptr) 
-    {
-		size = size_;
+	CharacterSetArray(setBase base=setNone, const char *initialSet="", bool valueAfter_=false) noexcept {
 		valueAfter = valueAfter_;
-		bset = new bool[size];
-		for (int i=0; i < size; i++) {
-			bset[i] = false;
-		}
 		AddString(initialSet);
 		if (base & setLower)
 			AddString("abcdefghijklmnopqrstuvwxyz");
@@ -40,66 +33,28 @@ public:
 		if (base & setDigits)
 			AddString("0123456789");
 	}
-	CharacterSet(const CharacterSet &other) {
-		size = other.size;
-		valueAfter = other.valueAfter;
-		bset = new bool[size];
-		for (int i=0; i < size; i++) {
-			bset[i] = other.bset[i];
-		}
+	// For compatibility with previous version but should not be used in new code.
+	CharacterSetArray(setBase base, const char *initialSet, [[maybe_unused]]int size_, bool valueAfter_=false) noexcept :
+		CharacterSetArray(base, initialSet, valueAfter_) {
+		assert(size_ == N);
 	}
-	CharacterSet(CharacterSet &&other) noexcept {
-		size = other.size;
-		valueAfter = other.valueAfter;
-		bset = other.bset;
-		other.size = 0;
-		other.bset = nullptr;
-	}
-	CharacterSet &operator=(const CharacterSet &other) {
-		if (this != &other) {
-			bool *bsetNew = new bool[other.size];
-			for (int i = 0; i < other.size; i++) {
-				bsetNew[i] = other.bset[i];
-			}
-			delete[]bset;
-			size = other.size;
-			valueAfter = other.valueAfter;
-			bset = bsetNew;
-		}
-		return *this;
-	}
-	CharacterSet &operator=(CharacterSet &&other) noexcept {
-		if (this != &other) {
-			delete []bset;
-			size = other.size;
-			valueAfter = other.valueAfter;
-			bset = other.bset;
-			other.size = 0;
-			other.bset = nullptr;
-		}
-		return *this;
-	}
-	~CharacterSet() {
-		delete []bset;
-		bset = nullptr;
-		size = 0;
-	}
-	void Add(int val) {
+	void Add(int val) noexcept {
 		assert(val >= 0);
-		assert(val < size);
-		bset[val] = true;
+		assert(val < N);
+		bset[val >> 3] |= 1 << (val & 7);
 	}
-	void AddString(const char *setToAdd) {
+	void AddString(const char *setToAdd) noexcept {
 		for (const char *cp=setToAdd; *cp; cp++) {
 			const unsigned char uch = *cp;
-			assert(uch < size);
-			bset[uch] = true;
+			assert(uch < N);
+			Add(uch);
 		}
 	}
 	bool Contains(int val) const noexcept {
 		assert(val >= 0);
 		if (val < 0) return false;
-		return (val < size) ? bset[val] : valueAfter;
+		if (val >= N) return valueAfter;
+		return bset[val >> 3] & (1 << (val & 7));
 	}
 	bool Contains(char ch) const noexcept {
 		// Overload char as char may be signed
@@ -108,7 +63,23 @@ public:
 	}
 };
 
+using CharacterSet = CharacterSetArray<0x80>;
+
 // Functions for classifying characters
+
+template <typename T, typename... Args>
+constexpr bool AnyOf(T t, Args... args) noexcept {
+#if defined(__clang__)
+	static_assert(__is_integral(T));
+#endif
+	return ((t == args) || ...);
+}
+
+// prevent pointer without <type_traits>
+template <typename T, typename... Args>
+constexpr void AnyOf([[maybe_unused]] T *t, [[maybe_unused]] Args... args) noexcept {}
+template <typename T, typename... Args>
+constexpr void AnyOf([[maybe_unused]] const T *t, [[maybe_unused]] Args... args) noexcept {}
 
 constexpr bool IsASpace(int ch) noexcept {
     return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));

@@ -5,13 +5,14 @@
 // Copyright 2020 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
+#include <cstdint>
 #include <cmath>
 
 #include <algorithm>
 
 #include "Geometry.h"
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 PRectangle Clamp(PRectangle rc, Edge edge, XYPOSITION position) noexcept {
 	switch (edge) {

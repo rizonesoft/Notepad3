@@ -54,84 +54,84 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "Back"
-    IDT_HISTORY_FORWARD     "Forward"
-    IDT_UPDIR               "Upper Directory"
-    IDT_ROOT                "Root Directory"
-    IDT_VIEW_FAVORITES      "Favourites"
-    IDT_FILE_PREV           "Previous File"
-    IDT_FILE_NEXT           "Next File"
-    IDT_FILE_RUN            "Run"
-    IDT_FILE_QUICKVIEW      "Quickview"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_COPYMOVE       "Copy/Move"
-    IDT_FILE_DELETE         "Delete"
-    IDT_FILE_DELETE2        "Delete (No Recycle)"
-    IDT_VIEW_FILTER         "Filter"
+    IDT_HISTORY_BACK        "上一步"
+    IDT_HISTORY_FORWARD     "下一步"
+    IDT_UPDIR               "移至上層目錄"
+    IDT_ROOT                "移至根目錄"
+    IDT_VIEW_FAVORITES      "移至常用"
+    IDT_FILE_PREV           "上一個檔案"
+    IDT_FILE_NEXT           "下一個檔案"
+    IDT_FILE_RUN            "執行"
+    IDT_FILE_QUICKVIEW      "快速檢視"
+    IDT_FILE_SAVEAS         "另存新檔"
+    IDT_FILE_COPYMOVE       "複製/移動"
+    IDT_FILE_DELETE         "刪除"
+    IDT_FILE_DELETE2        "永久刪除"
+    IDT_VIEW_FILTER         "篩選"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s Object(s)"
-    IDS_NUMFILES2           "%s Object(s) | Filter"
-    IDS_SAVEFILE            "Saving ""%s""..."
-    IDS_OPEN_FILE_WITH      "Open with %s"
+    IDS_NUMFILES            "%s 個物件"
+    IDS_NUMFILES2           "%s 個物件 | 篩選已啟用"
+    IDS_SAVEFILE            "正在儲存 ""%s""..."
+    IDS_OPEN_FILE_WITH      "用 %s 開啟"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Directory Access Error\nNo access to specified directory.\nCheck the disk or the network connection."
-    IDS_ERR_FILE            "File Access Error\nNo access to ""%s"".\nThe file may be used by another application.\nCheck the disk or the network connection."
-    IDS_ERR_NEW             "File Access Error\nFile could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_NEWDIR          "Directory Access Error\nDirectory could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_SAVEAS1         "File Save Error\nError saving ""%s"".\nProbably an already existing file is write-protected."
-    IDS_ERR_SAVEAS2         "File Save Error\nError removing read-only attribute of saved file."
-    IDS_ERR_CMDLINE         "MiniPath\nError accessing file or directory specified in command line."
-    IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
-    IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
-    IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
-    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
-    IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
-    IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
-    IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
-    IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box.\nDo you want to open another MiniPath window?"
+    IDS_ERR_CD              "目錄存取錯誤\n無法存取指定目錄。\n檢查磁碟或網路連線。"
+    IDS_ERR_FILE            "檔案存取錯誤\n無法存取 ""%s""。\n該檔可能被其他應用程式使用。\n檢查磁碟或網路連線。"
+    IDS_ERR_NEW             "檔案存取錯誤\n無法建立檔案。\n檢查磁碟或網路連線。"
+    IDS_ERR_NEWDIR          "目錄存取錯誤\n無法建立目錄。\n檢查磁碟或網路連線。"
+    IDS_ERR_SAVEAS1         "檔案儲存錯誤\n無法儲存 ""%s""。\n可能已存在的檔案受防寫保護。"
+    IDS_ERR_SAVEAS2         "檔案儲存錯誤\n無法移除已儲存檔案的唯讀屬性。"
+    IDS_ERR_CMDLINE         "MiniPath\n無法存取命令列中指定的檔案或目錄。"
+    IDS_ERR_STARTUPDIR      "MiniPath\n無法存取「啟動」目錄。"
+    IDS_ERR_DROP1           "MiniPath\n無法存取拖放的檔案或目錄。"
+    IDS_ERR_DROP2           "MiniPath\n一次僅能拖放單一檔案或目錄。"
+    IDS_ERR_FAVORITES       "常用\n無法存取「常用」資料夾。\n請在「選項」對話方塊中指定有效目錄。"
+    IDS_ERR_LNK_GETPATH     "連結錯誤\n連結物件沒有有效的檔案系統路徑可用。\n可能連結未指定檔案或目錄。"
+    IDS_ERR_LNK_NOACCESS    "連結錯誤\n無法存取連結物件的檔案系統路徑。\n檢查磁碟或網路連線。"
+    IDS_ERR_CREATELINK      "連結錯誤\n無法建立指定連結。\n可能目的地目錄有防寫保護。"
+    IDS_ERR_FILTER          "檔案篩選錯誤\n未指定其他篩選。\n有關更多檔案，請參閱 MiniPath 讀我檔案。"
+    IDS_ERR_PREVWINDISABLED "MiniPath\n現有 MiniPath 視窗忙碌或有使用中對話方塊。\n您要開啟另一個 MiniPath 視窗嗎?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box.\nWould you like to open a new window?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed.\nYou will also have to find a target window if the appropriate option is enabled."
-    IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file."
-    IDS_ERR_INICREATE       "Save Settings\nError creating configuration file."
-    IDS_ERR_INIWRITE        "Save Settings\nSettings not saved!\nNo write access to configuration file."
+    IDS_ERR_TARGETDISABLED  "MiniPath\n現有目標視窗忙碌或有使用中對話方塊。\n您要開啟新視窗嗎?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\n請確定填寫所有必填欄位。\n如果啟用了適當的選項，您還必須找到目標視窗。"
+    IDS_ERR_INIOPEN         "MiniPath\n無法存取 MiniPath 設定檔。"
+    IDS_ERR_INICREATE       "儲存設定\n無法建立設定檔。"
+    IDS_ERR_INIWRITE        "儲存設定\n設定未儲存!\n無法寫入設定檔。"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "Find Executable"
-    IDS_GETQUICKVIEWER      "Find Quickview"
-    IDS_GETTARGET           "Find Editor"
-    IDS_NEWFILE             "New File"
-    IDS_FILTER_ALL          "All files (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Select a new directory."
-    IDS_FAVORITES           "Specify the ""Favourites"" directory."
+    IDS_SEARCHEXE           "尋找可執行檔"
+    IDS_GETQUICKVIEWER      "尋找快速檢視"
+    IDS_GETTARGET           "尋找編輯器"
+    IDS_NEWFILE             "新增檔案"
+    IDS_FILTER_ALL          "所有檔案 (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "可執行檔 (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\n所有檔案 (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "選擇新目錄。"
+    IDS_FAVORITES           "指定「常用」目錄。"
 END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "&Keep on Top"
-    SC_ABOUT                "&Info..."
+    SC_ALWAYSONTOP          "顯示在最上層(&K)"
+    SC_ABOUT                "資訊(&I)..."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Select the directory with links to your favourite applications."
-    IDS_COPYMOVE            "Select a destination directory."
-    IDS_CREATELINK          "Select a destination directory for the new link."
-    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
+    IDS_OPENWITH            "選擇連結到您常用應用程式的目錄。"
+    IDS_COPYMOVE            "選擇目的地目錄。"
+    IDS_CREATELINK          "為新連結選擇目的地目錄。"
+    IDS_SAVESETTINGS        "儲存設定\n目前程式設定已儲存。"
     IDS_MUI_TRANSL_AUTHOR   "(zh-TW) 繁體中文翻譯 by danfong"
 END
 

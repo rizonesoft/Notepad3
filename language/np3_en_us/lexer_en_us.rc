@@ -479,6 +479,7 @@ BEGIN
     IDS_LEX_STR_63372       "Decorator"
     IDS_LEX_STR_63373       "Task Marker"
     IDS_LEX_STR_63374       "Comment Doc Error"
+    IDS_LEX_STR_63375       "Type Operator"
 END
 
 STRINGTABLE

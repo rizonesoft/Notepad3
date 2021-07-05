@@ -77,8 +77,10 @@
 
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1929)
-        #if (_MSC_FULL_VER >= 192930037)
-            #define VER_CPL     MS Visual C++ 2019 v16.10.0
+        #if (_MSC_FULL_VER >= 192930038)
+            #define VER_CPL     MS Visual C++ 2019 v16.10.3
+        #elif (_MSC_FULL_VER >= 192930037)
+            #define VER_CPL     MS Visual C++ 2019 v16.10.(0-2)
         #endif
     #elif (_MSC_VER == 1928)
         #if (_MSC_FULL_VER >= 192829915)

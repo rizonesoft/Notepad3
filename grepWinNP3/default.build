@@ -209,7 +209,7 @@
     </exec>
   </target>
 
-  <target name="setup" depends="grepWin">
+  <target name="setup" depends="grepWinNP3,pot">
     <description>
       Uses WiX to create an msi installer file.
     </description>

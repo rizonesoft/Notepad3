@@ -14,9 +14,12 @@
 #include <cassert>
 #include <cctype>
 #include <cstdio>
+
 #include <string>
+#include <string_view>
 #include <vector>
 #include <map>
+#include <functional>
 
 #include "ILexer.h"
 #include "Scintilla.h"

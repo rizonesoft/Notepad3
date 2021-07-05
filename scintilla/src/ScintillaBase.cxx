@@ -20,15 +20,17 @@
 #include <algorithm>
 #include <memory>
 
+#include "ScintillaTypes.h"
+#include "ScintillaMessages.h"
+#include "ScintillaStructures.h"
+#include "ILoader.h"
+#include "ILexer.h"
+
 #include "Debugging.h"
 #include "Geometry.h"
 #include "Platform.h"
 
-#include "ILoader.h"
-#include "ILexer.h"
-#include "Scintilla.h"
-
-#include "CharacterCategory.h"
+#include "CharacterCategoryMap.h"
 
 #include "Position.h"
 #include "UniqueString.h"
@@ -57,12 +59,13 @@
 #include "ScintillaBase.h"
 
 using namespace Scintilla;
+using namespace Scintilla::Internal;
 
 ScintillaBase::ScintillaBase() {
-	displayPopupMenu = SC_POPUP_ALL;
+	displayPopupMenu = PopUp::All;
 	listType = 0;
 	maxListWidth = 0;
-	multiAutoCMode = SC_MULTIAUTOC_ONCE;
+	multiAutoCMode = MultiAutoComplete::Once;
 }
 
 ScintillaBase::~ScintillaBase() {
@@ -71,10 +74,6 @@ ScintillaBase::~ScintillaBase() {
 void ScintillaBase::Finalise() {
 	Editor::Finalise();
 	popup.Destroy();
-}
-
-void ScintillaBase::AddCharUTF(const char *s, unsigned int len, bool /*treatAsDBCS*/) {
-	InsertCharacter(std::string_view(s, len), CharacterSource::directInput);
 }
 
 void ScintillaBase::InsertCharacter(std::string_view sv, CharacterSource charSource) {
@@ -105,78 +104,75 @@ void ScintillaBase::Command(int cmdId) {
 		break;
 
 	case idcmdUndo:
-		WndProc(SCI_UNDO, 0, 0);
+		WndProc(Message::Undo, 0, 0);
 		break;
 
 	case idcmdRedo:
-		WndProc(SCI_REDO, 0, 0);
+		WndProc(Message::Redo, 0, 0);
 		break;
 
 	case idcmdCut:
-		WndProc(SCI_CUT, 0, 0);
+		WndProc(Message::Cut, 0, 0);
 		break;
 
 	case idcmdCopy:
-		WndProc(SCI_COPY, 0, 0);
+		WndProc(Message::Copy, 0, 0);
 		break;
 
 	case idcmdPaste:
-		WndProc(SCI_PASTE, 0, 0);
+		WndProc(Message::Paste, 0, 0);
 		break;
 
 	case idcmdDelete:
-		WndProc(SCI_CLEAR, 0, 0);
+		WndProc(Message::Clear, 0, 0);
 		break;
 
 	case idcmdSelectAll:
-		WndProc(SCI_SELECTALL, 0, 0);
+		WndProc(Message::SelectAll, 0, 0);
 		break;
 	}
 }
 
-int ScintillaBase::KeyCommand(unsigned int iMessage) {
+int ScintillaBase::KeyCommand(Message iMessage) {
 	// Most key commands cancel autocompletion mode
 	if (ac.Active()) {
 		switch (iMessage) {
 			// Except for these
-		case SCI_LINEDOWN:
+		case Message::LineDown:
 			AutoCompleteMove(1);
 			return 0;
-		case SCI_LINEUP:
+		case Message::LineUp:
 			AutoCompleteMove(-1);
 			return 0;
-		case SCI_PAGEDOWN:
+		case Message::PageDown:
 			AutoCompleteMove(ac.lb->GetVisibleRows());
 			return 0;
-		case SCI_PAGEUP:
+		case Message::PageUp:
 			AutoCompleteMove(-ac.lb->GetVisibleRows());
 			return 0;
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		case SCI_VCHOME:
-		case SCI_HOMEWRAP:
-		case SCI_VCHOMEWRAP:
+		case Message::VCHome:
+		case Message::HomeWrap:
 			AutoCompleteMove(-10000);
 			return 0;
-		case SCI_LINEEND:
-		case SCI_LINEENDWRAP:
+		case Message::LineEnd:
+		case Message::LineEndWrap:
 			AutoCompleteMove(10000);
 			return 0;
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-		case SCI_DELETEBACK:
+		case Message::DeleteBack:
 			DelCharBack(true);
 			AutoCompleteCharacterDeleted();
 			EnsureCaretVisible();
 			return 0;
-		case SCI_DELETEBACKNOTLINE:
+		case Message::DeleteBackNotLine:
 			DelCharBack(false);
 			AutoCompleteCharacterDeleted();
 			EnsureCaretVisible();
 			return 0;
-		case SCI_TAB:
-			AutoCompleteCompleted(0, SC_AC_TAB);
+		case Message::Tab:
+			AutoCompleteCompleted(0, CompletionMethods::Tab);
 			return 0;
-		case SCI_NEWLINE:
-			AutoCompleteCompleted(0, SC_AC_NEWLINE);
+		case Message::NewLine:
+			AutoCompleteCompleted(0, CompletionMethods::Newline);
 			return 0;
 
 		default:
@@ -186,17 +182,17 @@ int ScintillaBase::KeyCommand(unsigned int iMessage) {
 
 	if (ct.inCallTipMode) {
 		if (
-		    (iMessage != SCI_CHARLEFT) &&
-		    (iMessage != SCI_CHARLEFTEXTEND) &&
-		    (iMessage != SCI_CHARRIGHT) &&
-		    (iMessage != SCI_CHARRIGHTEXTEND) &&
-		    (iMessage != SCI_EDITTOGGLEOVERTYPE) &&
-		    (iMessage != SCI_DELETEBACK) &&
-		    (iMessage != SCI_DELETEBACKNOTLINE)
+		    (iMessage != Message::CharLeft) &&
+		    (iMessage != Message::CharLeftExtend) &&
+		    (iMessage != Message::CharRight) &&
+		    (iMessage != Message::CharRightExtend) &&
+		    (iMessage != Message::EditToggleOvertype) &&
+		    (iMessage != Message::DeleteBack) &&
+		    (iMessage != Message::DeleteBackNotLine)
 		) {
 			ct.CallTipCancel();
 		}
-		if ((iMessage == SCI_DELETEBACK) || (iMessage == SCI_DELETEBACKNOTLINE)) {
+		if ((iMessage == Message::DeleteBack) || (iMessage == Message::DeleteBackNotLine)) {
 			if (sel.MainCaret() <= ct.posStartCallTip) {
 				ct.CallTipCancel();
 			}
@@ -211,19 +207,19 @@ void ScintillaBase::ListNotify(ListBoxEvent *plbe) {
 		AutoCompleteSelection();
 		break;
 	case ListBoxEvent::EventType::doubleClick:
-		AutoCompleteCompleted(0, SC_AC_DOUBLECLICK);
+		AutoCompleteCompleted(0, CompletionMethods::DoubleClick);
 		break;
 	}
 }
 
 void ScintillaBase::AutoCompleteInsert(Sci::Position startPos, Sci::Position removeLen, const char *text, Sci::Position textLen) {
 	UndoGroup ug(pdoc);
-	if (multiAutoCMode == SC_MULTIAUTOC_ONCE) {
+	if (multiAutoCMode == MultiAutoComplete::Once) {
 		pdoc->DeleteChars(startPos, removeLen);
 		const Sci::Position lengthInserted = pdoc->InsertString(startPos, text, textLen);
 		SetEmptySelection(startPos + lengthInserted);
 	} else {
-		// SC_MULTIAUTOC_EACH
+		// MultiAutoComplete::Each
 		for (size_t r=0; r<sel.Count(); r++) {
 			if (!RangeContainsProtected(sel.Range(r).Start().Position(),
 				sel.Range(r).End().Position())) {
@@ -267,10 +263,10 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 				lenEntered, vs.lineHeight, IsUnicodeMode(), technology);
 
 	ListOptions options{
-		vs.ElementColour(SC_ELEMENT_LIST),
-		vs.ElementColour(SC_ELEMENT_LIST_BACK),
-		vs.ElementColour(SC_ELEMENT_LIST_SELECTED),
-		vs.ElementColour(SC_ELEMENT_LIST_SELECTED_BACK)
+		vs.ElementColour(Element::List),
+		vs.ElementColour(Element::ListBack),
+		vs.ElementColour(Element::ListSelected),
+		vs.ElementColour(Element::ListSelectedBack)
 	};
 	ac.lb->SetOptions(options);
 
@@ -305,8 +301,8 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 	rcac.right = rcac.left + widthLB;
 	rcac.bottom = static_cast<XYPOSITION>(std::min(static_cast<int>(rcac.top) + heightLB, static_cast<int>(rcPopupBounds.bottom)));
 	ac.lb->SetPositionRelative(rcac, &wMain);
-	ac.lb->SetFont(vs.styles[STYLE_DEFAULT].font.get());
-	const unsigned int aveCharWidth = static_cast<unsigned int>(vs.styles[STYLE_DEFAULT].aveCharWidth);
+	ac.lb->SetFont(vs.styles[StyleDefault].font.get());
+	const int aveCharWidth = static_cast<int>(vs.styles[StyleDefault].aveCharWidth);
 	ac.lb->SetAverageCharWidth(aveCharWidth);
 	ac.lb->SetDelegate(this);
 
@@ -317,7 +313,7 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 	const int heightAlloced = static_cast<int>(rcList.bottom - rcList.top);
 	widthLB = std::max(widthLB, static_cast<int>(rcList.right - rcList.left));
 	if (maxListWidth != 0)
-		widthLB = std::min(widthLB, static_cast<int>(aveCharWidth)*maxListWidth);
+		widthLB = std::min(widthLB, aveCharWidth*maxListWidth);
 	// Make an allowance for large strings in list
 	rcList.left = pt.x - ac.lb->CaretFromEdge();
 	rcList.right = rcList.left + widthLB;
@@ -337,8 +333,8 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 
 void ScintillaBase::AutoCompleteCancel() {
 	if (ac.Active()) {
-		SCNotification scn = {};
-		scn.nmhdr.code = SCN_AUTOCCANCELLED;
+		NotificationData scn = {};
+		scn.nmhdr.code = Notification::AutoCCancelled;
 		scn.wParam = 0;
 		scn.listType = 0;
 		NotifyParent(scn);
@@ -362,9 +358,9 @@ void ScintillaBase::AutoCompleteSelection() {
 		selected = ac.GetValue(item);
 	}
 
-	SCNotification scn = {};
-	scn.nmhdr.code = SCN_AUTOCSELECTIONCHANGE;
-	scn.message = 0;
+	NotificationData scn = {};
+	scn.nmhdr.code = Notification::AutoCSelectionChange;
+	scn.message = static_cast<Message>(0);
 	scn.wParam = listType;
 	scn.listType = listType;
 	const Sci::Position firstPos = ac.posStart - ac.startLen;
@@ -376,7 +372,7 @@ void ScintillaBase::AutoCompleteSelection() {
 
 void ScintillaBase::AutoCompleteCharacterAdded(char ch) {
 	if (ac.IsFillUpChar(ch)) {
-		AutoCompleteCompleted(ch, SC_AC_FILLUP);
+		AutoCompleteCompleted(ch, CompletionMethods::FillUp);
 	} else if (ac.IsStopChar(ch)) {
 		AutoCompleteCancel();
 	} else {
@@ -392,14 +388,14 @@ void ScintillaBase::AutoCompleteCharacterDeleted() {
 	} else {
 		AutoCompleteMoveToCurrentWord();
 	}
-	SCNotification scn = {};
-	scn.nmhdr.code = SCN_AUTOCCHARDELETED;
+	NotificationData scn = {};
+	scn.nmhdr.code = Notification::AutoCCharDeleted;
 	scn.wParam = 0;
 	scn.listType = 0;
 	NotifyParent(scn);
 }
 
-void ScintillaBase::AutoCompleteCompleted(char ch, unsigned int completionMethod) {
+void ScintillaBase::AutoCompleteCompleted(char ch, CompletionMethods completionMethod) {
 	const int item = ac.GetSelection();
 	if (item == -1) {
 		AutoCompleteCancel();
@@ -409,9 +405,9 @@ void ScintillaBase::AutoCompleteCompleted(char ch, unsigned int completionMethod
 
 	ac.Show(false);
 
-	SCNotification scn = {};
-	scn.nmhdr.code = listType > 0 ? SCN_USERLISTSELECTION : SCN_AUTOCSELECTION;
-	scn.message = 0;
+	NotificationData scn = {};
+	scn.nmhdr.code = listType > 0 ? Notification::UserListSelection : Notification::AutoCSelection;
+	scn.message = static_cast<Message>(0);
 	scn.ch = ch;
 	scn.listCompletionMethod = completionMethod;
 	scn.wParam = listType;
@@ -437,7 +433,7 @@ void ScintillaBase::AutoCompleteCompleted(char ch, unsigned int completionMethod
 	AutoCompleteInsert(firstPos, endPos - firstPos, selected.c_str(), selected.length());
 	SetLastXChosen();
 
-	scn.nmhdr.code = SCN_AUTOCCOMPLETED;
+	scn.nmhdr.code = Notification::AutoCCompleted;
 	NotifyParent(scn);
 
 }
@@ -465,12 +461,12 @@ int ScintillaBase::AutoCompleteGetCurrentText(char *buffer) const {
 
 void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 	ac.Cancel();
-	// If container knows about STYLE_CALLTIP then use it in place of the
-	// STYLE_DEFAULT for the face name, size and character set. Also use it
+	// If container knows about StyleCallTip then use it in place of the
+	// StyleDefault for the face name, size and character set. Also use it
 	// for the foreground and background colour.
-	const int ctStyle = ct.UseStyleCallTip() ? STYLE_CALLTIP : STYLE_DEFAULT;
+	const int ctStyle = ct.UseStyleCallTip() ? StyleCallTip : StyleDefault;
 	if (ct.UseStyleCallTip()) {
-		ct.SetForeBack(vs.styles[STYLE_CALLTIP].fore, vs.styles[STYLE_CALLTIP].back);
+		ct.SetForeBack(vs.styles[StyleCallTip].fore, vs.styles[StyleCallTip].back);
 	}
 	if (wMargin.Created()) {
 		pt = pt + GetVisibleOriginInMain();
@@ -506,8 +502,8 @@ void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 }
 
 void ScintillaBase::CallTipClick() {
-	SCNotification scn = {};
-	scn.nmhdr.code = SCN_CALLTIPCLICK;
+	NotificationData scn = {};
+	scn.nmhdr.code = Notification::CallTipClick;
 	scn.position = ct.clickPlace;
 	NotifyParent(scn);
 }
@@ -517,20 +513,20 @@ void ScintillaBase::CallTipClick() {
 #if SCI_EnablePopupMenu
 
 bool ScintillaBase::ShouldDisplayPopup(Point ptInWindowCoordinates) const {
-	return (displayPopupMenu == SC_POPUP_ALL ||
-		(displayPopupMenu == SC_POPUP_TEXT && !PointInSelMargin(ptInWindowCoordinates)));
+	return (displayPopupMenu == PopUp::All ||
+		(displayPopupMenu == PopUp::Text && !PointInSelMargin(ptInWindowCoordinates)));
 }
 
 void ScintillaBase::ContextMenu(Point pt) {
-	if (displayPopupMenu) {
-		const bool writable = !WndProc(SCI_GETREADONLY, 0, 0);
+	if (displayPopupMenu != PopUp::Never) {
+		const bool writable = !WndProc(Message::GetReadOnly, 0, 0);
 		popup.CreatePopUp();
 		AddToPopUp("Undo", idcmdUndo, writable && pdoc->CanUndo());
 		AddToPopUp("Redo", idcmdRedo, writable && pdoc->CanRedo());
 		AddToPopUp("");
 		AddToPopUp("Cut", idcmdCut, writable && !sel.Empty());
 		AddToPopUp("Copy", idcmdCopy, !sel.Empty());
-		AddToPopUp("Paste", idcmdPaste, writable && WndProc(SCI_CANPASTE, 0, 0));
+		AddToPopUp("Paste", idcmdPaste, writable && WndProc(Message::CanPaste, 0, 0));
 		AddToPopUp("Delete", idcmdDelete, writable && !sel.Empty());
 		AddToPopUp("");
 		AddToPopUp("Select All", idcmdSelectAll);
@@ -548,17 +544,17 @@ void ScintillaBase::CancelModes() {
 	Editor::CancelModes();
 }
 
-void ScintillaBase::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) {
+void ScintillaBase::ButtonDownWithModifiers(Point pt, unsigned int curTime, KeyMod modifiers) {
 	CancelModes();
 	Editor::ButtonDownWithModifiers(pt, curTime, modifiers);
 }
 
-void ScintillaBase::RightButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) {
+void ScintillaBase::RightButtonDownWithModifiers(Point pt, unsigned int curTime, KeyMod modifiers) {
 	CancelModes();
 	Editor::RightButtonDownWithModifiers(pt, curTime, modifiers);
 }
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 class LexState : public LexInterface {
 public:
@@ -577,14 +573,14 @@ public:
 	const char *GetName() const;
 	void *PrivateCall(int operation, void *pointer);
 	const char *PropertyNames();
-	int PropertyType(const char *name);
+	TypeProperty PropertyType(const char *name);
 	const char *DescribeProperty(const char *name);
 	void PropSet(const char *key, const char *val);
 	const char *PropGet(const char *key) const;
 	int PropGetInt(const char *key, int defaultValue=0) const;
 	size_t PropGetExpanded(const char *key, char *result) const;
 
-	int LineEndTypesSupported() override;
+	LineEndType LineEndTypesSupported() override;
 	int AllocateSubStyles(int styleBase, int numberStyles);
 	int SubStylesStart(int styleBase);
 	int SubStylesLength(int styleBase);
@@ -683,11 +679,11 @@ const char *LexState::PropertyNames() {
 	}
 }
 
-int LexState::PropertyType(const char *name) {
+TypeProperty LexState::PropertyType(const char *name) {
 	if (instance) {
-		return instance->PropertyType(name);
+		return static_cast<TypeProperty>(instance->PropertyType(name));
 	} else {
-		return SC_TYPE_BOOLEAN;
+		return TypeProperty::Boolean;
 	}
 }
 
@@ -740,11 +736,11 @@ size_t LexState::PropGetExpanded(const char *key, char *result) const {
 	return 0;
 }
 
-int LexState::LineEndTypesSupported() {
+LineEndType LexState::LineEndTypesSupported() {
 	if (instance) {
-		return instance->LineEndTypesSupported();
+		return static_cast<LineEndType>(instance->LineEndTypesSupported());
 	}
-	return 0;
+	return LineEndType::Default;
 }
 
 int LexState::AllocateSubStyles(int styleBase, int numberStyles) {
@@ -857,241 +853,241 @@ void ScintillaBase::NotifyLexerChanged(Document *, void *) {
 	vs.EnsureStyle(0xff);
 }
 
-sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
+sptr_t ScintillaBase::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	switch (iMessage) {
-	case SCI_AUTOCSHOW:
+	case Message::AutoCShow:
 		listType = 0;
-		AutoCompleteStart(static_cast<Sci::Position>(wParam), ConstCharPtrFromSPtr(lParam));
+		AutoCompleteStart(PositionFromUPtr(wParam), ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_AUTOCCANCEL:
+	case Message::AutoCCancel:
 		ac.Cancel();
 		break;
 
-	case SCI_AUTOCACTIVE:
+	case Message::AutoCActive:
 		return ac.Active();
 
-	case SCI_AUTOCPOSSTART:
+	case Message::AutoCPosStart:
 		return ac.posStart;
 
-	case SCI_AUTOCCOMPLETE:
-		AutoCompleteCompleted(0, SC_AC_COMMAND);
+	case Message::AutoCComplete:
+		AutoCompleteCompleted(0, CompletionMethods::Command);
 		break;
 
-	case SCI_AUTOCSETSEPARATOR:
+	case Message::AutoCSetSeparator:
 		ac.SetSeparator(static_cast<char>(wParam));
 		break;
 
-	case SCI_AUTOCGETSEPARATOR:
+	case Message::AutoCGetSeparator:
 		return ac.GetSeparator();
 
-	case SCI_AUTOCSTOPS:
+	case Message::AutoCStops:
 		ac.SetStopChars(ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_AUTOCSELECT:
+	case Message::AutoCSelect:
 		ac.Select(ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_AUTOCGETCURRENT:
+	case Message::AutoCGetCurrent:
 		return AutoCompleteGetCurrent();
 
-	case SCI_AUTOCGETCURRENTTEXT:
+	case Message::AutoCGetCurrentText:
 		return AutoCompleteGetCurrentText(CharPtrFromSPtr(lParam));
 
-	case SCI_AUTOCSETCANCELATSTART:
+	case Message::AutoCSetCancelAtStart:
 		ac.cancelAtStartPos = wParam != 0;
 		break;
 
-	case SCI_AUTOCGETCANCELATSTART:
+	case Message::AutoCGetCancelAtStart:
 		return ac.cancelAtStartPos;
 
-	case SCI_AUTOCSETFILLUPS:
+	case Message::AutoCSetFillUps:
 		ac.SetFillUpChars(ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_AUTOCSETCHOOSESINGLE:
+	case Message::AutoCSetChooseSingle:
 		ac.chooseSingle = wParam != 0;
 		break;
 
-	case SCI_AUTOCGETCHOOSESINGLE:
+	case Message::AutoCGetChooseSingle:
 		return ac.chooseSingle;
 
-	case SCI_AUTOCSETIGNORECASE:
+	case Message::AutoCSetIgnoreCase:
 		ac.ignoreCase = wParam != 0;
 		break;
 
-	case SCI_AUTOCGETIGNORECASE:
+	case Message::AutoCGetIgnoreCase:
 		return ac.ignoreCase;
 
-	case SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR:
-		ac.ignoreCaseBehaviour = static_cast<unsigned int>(wParam);
+	case Message::AutoCSetCaseInsensitiveBehaviour:
+		ac.ignoreCaseBehaviour = static_cast<CaseInsensitiveBehaviour>(wParam);
 		break;
 
-	case SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR:
-		return ac.ignoreCaseBehaviour;
+	case Message::AutoCGetCaseInsensitiveBehaviour:
+		return static_cast<sptr_t>(ac.ignoreCaseBehaviour);
 
-	case SCI_AUTOCSETMULTI:
-		multiAutoCMode = static_cast<int>(wParam);
+	case Message::AutoCSetMulti:
+		multiAutoCMode = static_cast<MultiAutoComplete>(wParam);
 		break;
 
-	case SCI_AUTOCGETMULTI:
-		return multiAutoCMode;
+	case Message::AutoCGetMulti:
+		return static_cast<sptr_t>(multiAutoCMode);
 
-	case SCI_AUTOCSETORDER:
-		ac.autoSort = static_cast<int>(wParam);
+	case Message::AutoCSetOrder:
+		ac.autoSort = static_cast<Ordering>(wParam);
 		break;
 
-	case SCI_AUTOCGETORDER:
-		return ac.autoSort;
+	case Message::AutoCGetOrder:
+		return static_cast<sptr_t>(ac.autoSort);
 
-	case SCI_USERLISTSHOW:
+	case Message::UserListShow:
 		listType = static_cast<int>(wParam);
 		AutoCompleteStart(0, ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_AUTOCSETAUTOHIDE:
+	case Message::AutoCSetAutoHide:
 		ac.autoHide = wParam != 0;
 		break;
 
-	case SCI_AUTOCGETAUTOHIDE:
+	case Message::AutoCGetAutoHide:
 		return ac.autoHide;
 
-	case SCI_AUTOCSETDROPRESTOFWORD:
+	case Message::AutoCSetDropRestOfWord:
 		ac.dropRestOfWord = wParam != 0;
 		break;
 
-	case SCI_AUTOCGETDROPRESTOFWORD:
+	case Message::AutoCGetDropRestOfWord:
 		return ac.dropRestOfWord;
 
-	case SCI_AUTOCSETMAXHEIGHT:
+	case Message::AutoCSetMaxHeight:
 		ac.lb->SetVisibleRows(static_cast<int>(wParam));
 		break;
 
-	case SCI_AUTOCGETMAXHEIGHT:
+	case Message::AutoCGetMaxHeight:
 		return ac.lb->GetVisibleRows();
 
-	case SCI_AUTOCSETMAXWIDTH:
+	case Message::AutoCSetMaxWidth:
 		maxListWidth = static_cast<int>(wParam);
 		break;
 
-	case SCI_AUTOCGETMAXWIDTH:
+	case Message::AutoCGetMaxWidth:
 		return maxListWidth;
 
-	case SCI_REGISTERIMAGE:
+	case Message::RegisterImage:
 		ac.lb->RegisterImage(static_cast<int>(wParam), ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_REGISTERRGBAIMAGE:
+	case Message::RegisterRGBAImage:
 		ac.lb->RegisterRGBAImage(static_cast<int>(wParam), static_cast<int>(sizeRGBAImage.x), static_cast<int>(sizeRGBAImage.y),
 			ConstUCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_CLEARREGISTEREDIMAGES:
+	case Message::ClearRegisteredImages:
 		ac.lb->ClearRegisteredImages();
 		break;
 
-	case SCI_AUTOCSETTYPESEPARATOR:
+	case Message::AutoCSetTypeSeparator:
 		ac.SetTypesep(static_cast<char>(wParam));
 		break;
 
-	case SCI_AUTOCGETTYPESEPARATOR:
+	case Message::AutoCGetTypeSeparator:
 		return ac.GetTypesep();
 
-	case SCI_CALLTIPSHOW:
+	case Message::CallTipShow:
 		CallTipShow(LocationFromPosition(wParam),
 			ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_CALLTIPCANCEL:
+	case Message::CallTipCancel:
 		ct.CallTipCancel();
 		break;
 
-	case SCI_CALLTIPACTIVE:
+	case Message::CallTipActive:
 		return ct.inCallTipMode;
 
-	case SCI_CALLTIPPOSSTART:
+	case Message::CallTipPosStart:
 		return ct.posStartCallTip;
 
-	case SCI_CALLTIPSETPOSSTART:
+	case Message::CallTipSetPosStart:
 		ct.posStartCallTip = wParam;
 		break;
 
-	case SCI_CALLTIPSETHLT:
+	case Message::CallTipSetHlt:
 		ct.SetHighlight(wParam, lParam);
 		break;
 
-	case SCI_CALLTIPSETBACK:
-		ct.colourBG = ColourDesired(static_cast<int>(wParam));
-		vs.styles[STYLE_CALLTIP].back = ct.colourBG;
+	case Message::CallTipSetBack:
+		ct.colourBG = ColourRGBA::FromIpRGB(SPtrFromUPtr(wParam));
+		vs.styles[StyleCallTip].back = ct.colourBG;
 		InvalidateStyleRedraw();
 		break;
 
-	case SCI_CALLTIPSETFORE:
-		ct.colourUnSel = ColourDesired(static_cast<int>(wParam));
-		vs.styles[STYLE_CALLTIP].fore = ct.colourUnSel;
+	case Message::CallTipSetFore:
+		ct.colourUnSel = ColourRGBA::FromIpRGB(SPtrFromUPtr(wParam));
+		vs.styles[StyleCallTip].fore = ct.colourUnSel;
 		InvalidateStyleRedraw();
 		break;
 
-	case SCI_CALLTIPSETFOREHLT:
-		ct.colourSel = ColourDesired(static_cast<int>(wParam));
+	case Message::CallTipSetForeHlt:
+		ct.colourSel = ColourRGBA::FromIpRGB(SPtrFromUPtr(wParam));
 		InvalidateStyleRedraw();
 		break;
 
-	case SCI_CALLTIPUSESTYLE:
+	case Message::CallTipUseStyle:
 		ct.SetTabSize(static_cast<int>(wParam));
 		InvalidateStyleRedraw();
 		break;
 
-	case SCI_CALLTIPSETPOSITION:
+	case Message::CallTipSetPosition:
 		ct.SetPosition(wParam != 0);
 		InvalidateStyleRedraw();
 		break;
 
-	case SCI_USEPOPUP:
-		displayPopupMenu = static_cast<int>(wParam);
+	case Message::UsePopUp:
+		displayPopupMenu = static_cast<PopUp>(wParam);
 		break;
 
-	case SCI_GETLEXER:
+	case Message::GetLexer:
 		return DocumentLexState()->GetIdentifier();
 
-	case SCI_SETILEXER:
+	case Message::SetILexer:
 		DocumentLexState()->SetInstance(static_cast<ILexer5 *>(PtrFromSPtr(lParam)));
 		return 0;
 
-	case SCI_COLOURISE:
+	case Message::Colourise:
 		if (DocumentLexState()->UseContainerLexing()) {
-			pdoc->ModifiedAt(static_cast<Sci::Position>(wParam));
+			pdoc->ModifiedAt(PositionFromUPtr(wParam));
 			NotifyStyleToNeeded((lParam == -1) ? pdoc->Length() : lParam);
 		} else {
-			DocumentLexState()->Colourise(static_cast<Sci::Position>(wParam), lParam);
+			DocumentLexState()->Colourise(PositionFromUPtr(wParam), lParam);
 		}
 		Redraw();
 		break;
 
-	case SCI_SETPROPERTY:
+	case Message::SetProperty:
 		DocumentLexState()->PropSet(ConstCharPtrFromUPtr(wParam),
 		          ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_GETPROPERTY:
+	case Message::GetProperty:
 		return StringResult(lParam, DocumentLexState()->PropGet(ConstCharPtrFromUPtr(wParam)));
 
-	case SCI_GETPROPERTYEXPANDED:
+	case Message::GetPropertyExpanded:
 		return DocumentLexState()->PropGetExpanded(ConstCharPtrFromUPtr(wParam),
 			CharPtrFromSPtr(lParam));
 
-	case SCI_GETPROPERTYINT:
+	case Message::GetPropertyInt:
 		return DocumentLexState()->PropGetInt(ConstCharPtrFromUPtr(wParam), static_cast<int>(lParam));
 
-	case SCI_SETKEYWORDS:
+	case Message::SetKeyWords:
 		DocumentLexState()->SetWordList(static_cast<int>(wParam), ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_GETLEXERLANGUAGE:
+	case Message::GetLexerLanguage:
 		return StringResult(lParam, DocumentLexState()->GetName());
 
-	case SCI_PRIVATELEXERCALL:
+	case Message::PrivateLexerCall:
 		return reinterpret_cast<sptr_t>(
 			DocumentLexState()->PrivateCall(static_cast<int>(wParam), PtrFromSPtr(lParam)));
 
@@ -1100,64 +1096,64 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 		return 8;
 #endif
 
-	case SCI_PROPERTYNAMES:
+	case Message::PropertyNames:
 		return StringResult(lParam, DocumentLexState()->PropertyNames());
 
-	case SCI_PROPERTYTYPE:
-		return DocumentLexState()->PropertyType(ConstCharPtrFromUPtr(wParam));
+	case Message::PropertyType:
+		return static_cast<sptr_t>(DocumentLexState()->PropertyType(ConstCharPtrFromUPtr(wParam)));
 
-	case SCI_DESCRIBEPROPERTY:
+	case Message::DescribeProperty:
 		return StringResult(lParam,
 				    DocumentLexState()->DescribeProperty(ConstCharPtrFromUPtr(wParam)));
 
-	case SCI_DESCRIBEKEYWORDSETS:
+	case Message::DescribeKeyWordSets:
 		return StringResult(lParam, DocumentLexState()->DescribeWordListSets());
 
-	case SCI_GETLINEENDTYPESSUPPORTED:
-		return DocumentLexState()->LineEndTypesSupported();
+	case Message::GetLineEndTypesSupported:
+		return static_cast<sptr_t>(DocumentLexState()->LineEndTypesSupported());
 
-	case SCI_ALLOCATESUBSTYLES:
+	case Message::AllocateSubStyles:
 		return DocumentLexState()->AllocateSubStyles(static_cast<int>(wParam), static_cast<int>(lParam));
 
-	case SCI_GETSUBSTYLESSTART:
+	case Message::GetSubStylesStart:
 		return DocumentLexState()->SubStylesStart(static_cast<int>(wParam));
 
-	case SCI_GETSUBSTYLESLENGTH:
+	case Message::GetSubStylesLength:
 		return DocumentLexState()->SubStylesLength(static_cast<int>(wParam));
 
-	case SCI_GETSTYLEFROMSUBSTYLE:
+	case Message::GetStyleFromSubStyle:
 		return DocumentLexState()->StyleFromSubStyle(static_cast<int>(wParam));
 
-	case SCI_GETPRIMARYSTYLEFROMSTYLE:
+	case Message::GetPrimaryStyleFromStyle:
 		return DocumentLexState()->PrimaryStyleFromStyle(static_cast<int>(wParam));
 
-	case SCI_FREESUBSTYLES:
+	case Message::FreeSubStyles:
 		DocumentLexState()->FreeSubStyles();
 		break;
 
-	case SCI_SETIDENTIFIERS:
+	case Message::SetIdentifiers:
 		DocumentLexState()->SetIdentifiers(static_cast<int>(wParam),
 						   ConstCharPtrFromSPtr(lParam));
 		break;
 
-	case SCI_DISTANCETOSECONDARYSTYLES:
+	case Message::DistanceToSecondaryStyles:
 		return DocumentLexState()->DistanceToSecondaryStyles();
 
-	case SCI_GETSUBSTYLEBASES:
+	case Message::GetSubStyleBases:
 		return StringResult(lParam, DocumentLexState()->GetSubStyleBases());
 
-	case SCI_GETNAMEDSTYLES:
+	case Message::GetNamedStyles:
 		return DocumentLexState()->NamedStyles();
 
-	case SCI_NAMEOFSTYLE:
+	case Message::NameOfStyle:
 		return StringResult(lParam, DocumentLexState()->
 				    NameOfStyle(static_cast<int>(wParam)));
 
-	case SCI_TAGSOFSTYLE:
+	case Message::TagsOfStyle:
 		return StringResult(lParam, DocumentLexState()->
 				    TagsOfStyle(static_cast<int>(wParam)));
 
-	case SCI_DESCRIPTIONOFSTYLE:
+	case Message::DescriptionOfStyle:
 		return StringResult(lParam, DocumentLexState()->
 				    DescriptionOfStyle(static_cast<int>(wParam)));
 

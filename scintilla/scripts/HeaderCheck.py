@@ -51,10 +51,8 @@ def CheckFiles(headerOrderTxt):
     orderedPaths = [p for p in sorted(filePaths) if not ExcludeName(str(p), excludes)]
     allIncs = set()
     for f in orderedPaths:
-        print("   File ", f.relative_to(root))
+        #~ print("   File ", f.relative_to(root))
         incs = ExtractHeaders(f)
-        #~ print("\n".join(incs))
-        news = set(incs) - set(headerOrder)
         allIncs = allIncs.union(set(incs))
 
         m = 0

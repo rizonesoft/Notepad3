@@ -11,9 +11,12 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <ctype.h>
+
 #include <string>
+#include <string_view>
 #include <map>
 #include <set>
+#include <functional>
 
 #include "ILexer.h"
 #include "Scintilla.h"
@@ -865,8 +868,8 @@ public:
 		DefaultLexer(
 			isXml_ ? "xml" : (isPHPScript_ ? "phpscript" : "hypertext"),
 			isXml_ ? SCLEX_XML : (isPHPScript_ ? SCLEX_PHPSCRIPT : SCLEX_HTML),
-			isXml_ ? lexicalClassesHTML : lexicalClassesXML,
-			isXml_ ? std::size(lexicalClassesHTML) : std::size(lexicalClassesXML)),
+			isXml_ ?  lexicalClassesXML : lexicalClassesHTML,
+			isXml_ ?  std::size(lexicalClassesXML) : std::size(lexicalClassesHTML)),
 		isXml(isXml_),
 		isPHPScript(isPHPScript_),
 		osHTML(isPHPScript_),
@@ -1029,9 +1032,9 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	const bool allowScripts = options.allowScripts;
 	const bool isMako = options.isMako;
 	const bool isDjango = options.isDjango;
-	const CharacterSet setHTMLWord(CharacterSet::setAlphaNum, ".-_:!#", 0x80, true);
-	const CharacterSet setTagContinue(CharacterSet::setAlphaNum, ".-_:!#[", 0x80, true);
-	const CharacterSet setAttributeContinue(CharacterSet::setAlphaNum, ".-_:!#/", 0x80, true);
+	const CharacterSet setHTMLWord(CharacterSet::setAlphaNum, ".-_:!#", true);
+	const CharacterSet setTagContinue(CharacterSet::setAlphaNum, ".-_:!#[", true);
+	const CharacterSet setAttributeContinue(CharacterSet::setAlphaNum, ".-_:!#/", true);
 	// TODO: also handle + and - (except if they're part of ++ or --) and return keywords
 	const CharacterSet setOKBeforeJSRE(CharacterSet::setNone, "([{=,:;!%^&*|?~");
 
@@ -1393,6 +1396,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				i += 2; // place as if it was the second next char treated
 				visibleChars += 2;
 				state = SCE_H_ASPAT;
+				scriptLanguage = eScriptVBS;
 			} else if ((chNext2 == '-') && (styler.SafeGetCharAt(i + 3) == '-')) {
 				styler.ColourTo(i + 3, SCE_H_ASP);
 				state = SCE_H_XCCOMMENT;
@@ -1408,8 +1412,8 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				}
 
 				state = StateForScript(aspScript);
+				scriptLanguage = aspScript;
 			}
-			scriptLanguage = eScriptVBS;
 			styler.ColourTo(i, SCE_H_ASP);
 			// fold whole script
 			if (foldHTMLPreprocessor)

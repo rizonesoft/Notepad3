@@ -298,8 +298,6 @@ constexpr bool IsCommentTagPrev(int chPrev) noexcept {
 void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument* pAccess)
 {
     PropSetSimple props;
-    props.SetMultiple(osKotlin.PropertyNames());
-
     Accessor styler(pAccess, &props);
     StyleContext sc(startPos, lengthDoc, initStyle, styler);
 
@@ -656,8 +654,6 @@ void SCI_METHOD LexerKotlin::Fold(Sci_PositionU startPos, Sci_Position lengthDoc
     if (!options.fold) { return; }
 
     PropSetSimple props;
-    props.SetMultiple(osKotlin.PropertyNames());
-
     Accessor styler(pAccess, &props);
 
     //const int foldComment = styler.GetPropertyInt("fold.comment", 1);

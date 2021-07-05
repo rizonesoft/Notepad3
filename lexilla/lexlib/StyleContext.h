@@ -44,6 +44,7 @@ public:
 	Sci_PositionU currentPos;
 	Sci_Position currentLine;
 	Sci_Position lineDocEnd;
+	Sci_Position lineEnd;
 	Sci_Position lineStartNext;
 	bool atLineStart;
 	bool atLineEnd;
@@ -64,6 +65,7 @@ public:
 		offsetRelative(0),
 		currentPos(startPos),
 		currentLine(-1),
+		lineEnd(-1),
 		lineStartNext(-1),
 		atLineEnd(false),
 		state(initStyle & chMask), // Mask off all bits which aren't in the chMask.
@@ -78,6 +80,7 @@ public:
 		styler.StartAt(startPos /*, chMask*/);
 		styler.StartSegment(startPos);
 		currentLine = styler.GetLine(startPos);
+		lineEnd = styler.LineEnd(currentLine);
 		lineStartNext = styler.LineStart(currentLine+1);
 		lengthDocument = static_cast<Sci_PositionU>(styler.Length());
 		if (endPos == lengthDocument)
@@ -108,6 +111,7 @@ public:
 			atLineStart = atLineEnd;
 			if (atLineStart) {
 				currentLine++;
+				lineEnd = styler.LineEnd(currentLine);
 				lineStartNext = styler.LineStart(currentLine+1);
 			}
 			chPrev = ch;
@@ -178,6 +182,9 @@ public:
 			// fast version for single byte encodings
 			return static_cast<unsigned char>(styler.SafeGetCharAt(currentPos + n, 0));
 		}
+	}
+	bool MatchLineEnd() const noexcept {
+		return static_cast<Sci_Position>(currentPos) == lineEnd;
 	}
 	bool Match(char ch0) const {
 		return ch == static_cast<unsigned char>(ch0);

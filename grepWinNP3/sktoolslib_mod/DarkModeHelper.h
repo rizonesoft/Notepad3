@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2019-2021 - Stefan Kueng
 
@@ -17,7 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
-#include <uxtheme.h>
+#include <Uxtheme.h>
 
 /// helper class for the Windows 10 dark mode
 /// note: we use undocumented APIs here, so be careful!

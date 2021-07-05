@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.529.(build_#) (2021-05-29)
+Current BETA/RC Version 5.21.703.(build_#) (2021-07-03)
 ========================================================
 
 --------------------------------------------------------
@@ -72,6 +72,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.703.1]- Enable Dark Mode feature for Win11 v21H2 Insider beta.
 [.529.2]- Win10 Release-ID as string (allows 20H2 or 21H1).
 [.529.1]- Improved Julia Lexer (LEX).
 [.526.1]- Batch-Lexer + patching Markdown-Lexer (eolfilled header lines) (LEX).
@@ -126,10 +127,10 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.515.1]- Update grepWinNP3 (GRE) version 2.1.7.37 (2021-05.14).
-[.525.1]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-05-17).
-[.429.1]- Update Lexilla Library (LEX) version 5.0.2 (2021-04-23).
-[.429.1]- Update Scintilla Library (SCI) version 5.0.2 (2021-04-23).
+[.702.5]- Update grepWinNP3 (GRE) version 2.1.8.38 (2021-07.02).
+[.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
+[.702.5]- Update Lexilla Library (LEX) version 5.1.0 (2021-06-23).
+[.702.5]- Update Scintilla Library (SCI) version 5.1.0 (2021-06-23).
 
 --------------------------------------------------------
 FIXES:

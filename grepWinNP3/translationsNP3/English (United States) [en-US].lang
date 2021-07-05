@@ -53,6 +53,10 @@ msgstr ""
 msgid "&Search"
 msgstr ""
 
+#. Resource IDs: (1003)
+msgid "&Whole word"
+msgstr ""
+
 #. Resource IDs: (1013)
 msgid "..."
 msgstr "..."
@@ -422,6 +426,11 @@ msgstr ""
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
+msgstr ""
+
+#. Resource IDs: (173)
+#, c-format
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
 msgstr ""
 
 #. Resource IDs: (140)

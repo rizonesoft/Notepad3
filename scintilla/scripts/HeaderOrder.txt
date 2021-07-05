@@ -90,22 +90,26 @@
 
 // Non-platform-specific headers
 
+// Exported headers
+
+#include "Sci_Position.h"
+#include "ScintillaTypes.h"
+#include "ScintillaMessages.h"
+#include "ScintillaStructures.h"
+#include "ILoader.h"
+#include "ILexer.h"
+
 // src platform interface
 #include "Debugging.h"
 #include "Geometry.h"
 #include "Platform.h"
 
-#include "Sci_Position.h"
-#include "ILoader.h"
-#include "ILexer.h"
 #include "Scintilla.h"
 #include "ScintillaWidget.h"
 
-// lexlib
-#include "CharacterSet.h"
-#include "CharacterCategory.h"
-
 // src
+#include "CharacterType.h"
+#include "CharacterCategoryMap.h"
 #include "Position.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
@@ -132,7 +136,6 @@
 #include "DBCS.h"
 #include "Selection.h"
 #include "PositionCache.h"
-#include "FontQuality.h"
 #include "EditModel.h"
 #include "MarginView.h"
 #include "EditView.h"

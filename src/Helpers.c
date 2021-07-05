@@ -30,6 +30,7 @@
 #include "Notepad3.h"
 #include "Dialogs.h"
 #include "Config/Config.h"
+#include "DarkMode/DarkMode.h"
 
 #include "Scintilla.h"
 
@@ -214,10 +215,13 @@ static void _GetTrueWindowsVersion()
 
 // ----------------------------------------------------------------------------
 // https://docs.microsoft.com/en-US/windows/release-health/release-information
+// https://docs.microsoft.com/en-US/windows-insider/active-dev-branch
 // ----------------------------------------------------------------------------
-    static LPCWSTR _Win10BuildToReleaseId(DWORD build) {
+static LPCWSTR _Win10BuildToReleaseId() {
 
     static LPCWSTR _wchpReleaseID = L"1507"; // <= 10240
+
+    DWORD const build = GetWindowsBuildNumber(NULL, NULL);
 
     if (build > 19043) {
         _wchpReleaseID = L"21H2 [Insdr]";
@@ -252,8 +256,11 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 {
     StringCchCopy(szVersionStr, cchVersionStr, L"OS Version: Windows ");
 
+    DWORD const build = GetWindowsBuildNumber(NULL, NULL);
+
     if (IsWindows10OrGreater()) {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2016 " : L"10 ");
+        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? ((build >= 17134) ? L"Server 2019 " : L"Server 2016 ") :
+                                                                      ((build >= 22000) ? L"11 " : L"10 "));          
     } else if (IsWindows8Point1OrGreater()) {
         StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 R2 " : L"8.1");
     } else if (IsWindows8OrGreater()) {
@@ -269,7 +276,7 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
     if (IsWindows10OrGreater()) {
         WCHAR win10ver[80] = { L'\0' };
         StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %s (Build %lu)",
-                        _Win10BuildToReleaseId(Globals.WindowsBuildNumber), Globals.WindowsBuildNumber);
+                        _Win10BuildToReleaseId(), GetWindowsBuildNumber(NULL, NULL));
         StringCchCat(szVersionStr, cchVersionStr, win10ver);
     }
 }
