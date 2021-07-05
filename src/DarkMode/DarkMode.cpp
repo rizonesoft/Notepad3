@@ -62,22 +62,28 @@ DWORD const kSystemLibraryLoadFlags = (IsWindows8Point1OrGreater() ||
 
 // ============================================================================
 
+// https://docs.microsoft.com/en-US/windows-insider/active-dev-branch
 
 constexpr bool CheckBuildNumber(DWORD buildNumber)
 {
     switch (buildNumber) {
-    case 17763: // Win10 v1809
-    case 18362: // Win10 v1903
-    case 18363: // Win10 v1909
-    case 19041: // Win10 v2004
-    case 19042: // Win10 v20H2
-    case 19043: // Win10 v21H1
-    // unknown, if working with these version(s) :-O
-    case 21390: // Win10 v21H2 Insider Dev and Preview Channels [2021-05-21]
-    case 22000: // Win11 v21H2 Insider Dev and Preview Channels [2021-06-28]
+    case 17763: // Win10 v1809 (released)
+    case 18362: // Win10 v1903 (released)
+    case 18363: // Win10 v1909 (released)
+    case 19041: // Win10 v2004 (released)
+    case 19042: // Win10 v20H2 (released)
+    case 19043: // Win10 v21H1 (released)
         return true;
     default:
-        // not supported
+        // Insider Dev and Preview Channels
+       
+        if (buildNumber <= 21390)       // Win10 v21H2 [2021-05-21]
+            return true;
+        else if (buildNumber <= 22000)  // Win11 v21H2 [2021-06-28]
+            return true;
+
+        // unknown, if working with these version(s) :-O
+        // in doubt vote for not supported
         break;
     }
     return false;
