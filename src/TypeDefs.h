@@ -352,7 +352,6 @@ typedef struct _globals_t
     HINSTANCE hInstance;
     HINSTANCE hPrevInst;
     HINSTANCE hLngResContainer;
-    DWORD     WindowsBuildNumber;
     bool      bCanSaveIniFile;
     HWND      hwndMain;
     HANDLE    hndlProcessHeap;

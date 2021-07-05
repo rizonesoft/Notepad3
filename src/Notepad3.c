@@ -628,8 +628,6 @@ static void _InitGlobals()
 
     ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
 
-    Globals.WindowsBuildNumber = GetWindowsBuildNumber(NULL, NULL);
-    
     Globals.hLngResContainer = NULL;
 
     Globals.hDlgIcon256   = NULL;
