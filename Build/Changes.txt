@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.703.(build_#) (2021-07-03)
+Current BETA/RC Version 5.21.707.(build_#) (2021-07-07)
 ========================================================
 
 --------------------------------------------------------
@@ -136,6 +136,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.707.1]- Distinguish Win10 vs. Win11 using build number (>=22000).
 [.529.2]- F/R Dialog regression: allow replace in selection (if selection not empty).
 [.527.1]- Correct handling of F/R dialog pattern combo-box dropdown list.
 [.527.1]- Minor fixes Markdown-Lexer.
@@ -219,8 +220,8 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- .
-[.227.1]- Chinese Traditional (zh-TW) (incomplete...).
-[.417.1]- Greek (el-GR) (in progress...).
+[.707.1]- Chinese Traditional (zh-TW).
+[.417.1]- Greek (el-GR).
 [.303.1]- Portuguese Brazilian (pt-BR).
 --------
 For our Notepad3 translation projects, we are looking for motivated volunteers, with a 
