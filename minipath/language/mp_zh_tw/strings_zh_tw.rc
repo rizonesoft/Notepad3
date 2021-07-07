@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "選擇目的地目錄。"
     IDS_CREATELINK          "為新連結選擇目的地目錄。"
     IDS_SAVESETTINGS        "儲存設定\n目前程式設定已儲存。"
-    IDS_MUI_TRANSL_AUTHOR   "(zh-TW) 繁體中文翻譯 by danfong"
+    IDS_MUI_TRANSL_AUTHOR   "(zh-TW) 正體中文翻譯 by 謝慶憲 danfong"
 END
 
 
