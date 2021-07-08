@@ -55,7 +55,7 @@ msgstr "検索(&S)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "単語全体(&W)"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -426,11 +426,11 @@ msgstr "検索文字列"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "%ld 個のファイルを検索, %ld 個のファイルをスキップ - %ld か所の一致 %ld 個のファイル中"
+msgstr "検索済み %ldファイル, 省略 %ldファイル. %ldか所の一致 %ld個のファイル中."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
+msgid "検索済み %ldファイル, 省略 %ldファイル. %ldか所の一致 %ld個のファイル中. %ld項目の結果を選択"
 msgstr ""
 
 #. Resource IDs: (140)

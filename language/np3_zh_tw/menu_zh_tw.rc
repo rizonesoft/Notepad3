@@ -263,17 +263,17 @@ BEGIN
             MENUITEM "轉換行首空格為 TAB(&B)\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
             MENUITEM "轉換行首 TAB 為空格(&F)\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base64 編碼(&6)",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base64 解碼(&4)",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 解碼為字碼頁...",             IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL 編碼(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URL 解碼(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
             MENUITEM "轉換檔案路徑為 URL",               IDM_EDIT_PATH2URL
-            MENUITEM "轉換 URL 為檔案路徑",               IDM_EDIT_URL2PATH
+            MENUITEM "轉換 URL 為檔案路徑",              IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "反轉反斜線",                    IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "反轉斜線",                        IDM_EDIT_INVERTSLASH
+            MENUITEM "反轉反斜線",                       IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "反轉斜線",                         IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "轉換為 16 進制(&H)\tCtrl+Alt+X",           IDM_EDIT_CHAR2HEX
             MENUITEM "從 16 進制轉換(&C)\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR
