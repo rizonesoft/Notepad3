@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Seiten-Nummerierung|Frei lassen"
     IDS_MUI_PRINT_COLOR     "Normal|Invertiere (dunkler Hintergrund)|Schwarz auf Weiss|Farbig auf Weiss|Farbig auf Weiss (außer Zeilennummerierung)|Bildschirmfarben"
     IDS_MUI_PRINT_PAGENUM   "Seite %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "Diese Aktion wird die Stilanpassungen des Farb-Modes auf Fabrikeinstellungen zurücksetzen und die Schemakonfiguration auf Standard .ini wechseln!"
 END
 
 STRINGTABLE

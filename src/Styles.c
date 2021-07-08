@@ -467,16 +467,13 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
 //
 //  Style_DynamicThemesMenuCmd() - Handles IDS_MUI_MENU_THEMES messages
 //
-//
 // 
-
-void Style_DynamicThemesMenuCmd(int cmd)
+bool Style_DynamicThemesMenuCmd(int cmd)
 {
-    int const iThemeIdx = (int)(cmd - IDM_THEMES_STD_CFG); // consecutive IDs, -1 for factory reset
-    unsigned const iMaxIndex = ThemesItems_MaxIndex();
+    int const iThemeIdx = clampi(cmd - IDM_THEMES_STD_CFG, -1, ThemeItems_CountOf() - 1);  // consecutive IDs, -1 for factory reset
 
-    if ((iThemeIdx > (int)iMaxIndex) || (iThemeIdx == (int)Globals.uCurrentThemeIndex)) {
-        return;
+    if (iThemeIdx == (int)Globals.uCurrentThemeIndex) {
+        return true;
     }
 
     if (Settings.SaveSettings) {
@@ -495,11 +492,12 @@ void Style_DynamicThemesMenuCmd(int cmd)
     bool const result = Style_ImportTheme(iThemeIdx); // -1: factory reset
 
     if (result) {
-        unsigned const iTheme = (unsigned)clampi(iThemeIdx, 0, (int)ThemeItems_CountOf() - 1);
-        Globals.uCurrentThemeIndex = iTheme;
-        StringCchCopy(Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName), Theme_Files[iTheme].szName);
 
-        CheckMenuRadioItem(Globals.hMainMenu, IDM_THEMES_STD_CFG, Theme_Files[iMaxIndex].rid, IDM_THEMES_STD_CFG + iTheme, MF_BYCOMMAND);
+        Globals.uCurrentThemeIndex = (unsigned)clampi(iThemeIdx, 0, (int)ThemeItems_CountOf() - 1);
+        StringCchCopy(Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName), Theme_Files[Globals.uCurrentThemeIndex].szName);
+
+        CheckMenuRadioItem(Globals.hMainMenu, IDM_THEMES_STD_CFG, Theme_Files[ThemesItems_MaxIndex()].rid, 
+                                              IDM_THEMES_STD_CFG + Globals.uCurrentThemeIndex, MF_BYCOMMAND);
 
         if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
             SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
@@ -509,6 +507,7 @@ void Style_DynamicThemesMenuCmd(int cmd)
         UpdateMarginWidth(true);
         UpdateUI();
     }
+    return result;
 }
 
 
@@ -713,34 +712,30 @@ void Style_LoadLexerFileExtensions()
 
 //=============================================================================
 //
-//  Style_ImportFromBinaryBlob()
+//  _Styles_ReadFromIniCache()
 //
-static void _Styles_ReadFromIniCache(bool const bFactoryReset) {
+static void _Styles_ReadFromIniCache() {
 
-    if (bFactoryReset) {
-        for (int i = 0; i < 16; i++) {
-            g_colorCustom[i] = s_colorDefault[i];
-        }
-    } else {
-        const WCHAR *const CustomColors_Section = L"Custom Colors";
-
-        WCHAR tch[32] = { L'\0' };
-        for (int i = 0; i < 16; i++) {
-            WCHAR wch[32] = { L'\0' };
-            StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-            int itok = 0;
-            if (IniSectionGetString(CustomColors_Section, tch, L"", wch, COUNTOF(wch))) {
-                if (wch[0] == L'#') {
-                    unsigned int irgb;
-                    itok = swscanf_s(CharNext(wch), L"%x", &irgb);
-                    if (itok == 1) {
-                        g_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
-                    }
+    for (int i = 0; i < 16; i++) {
+        g_colorCustom[i] = s_colorDefault[i]; // reset
+    }
+    const WCHAR *const CustomColors_Section = L"Custom Colors";
+    WCHAR tch[32] = { L'\0' };
+    for (int i = 0; i < 16; i++) {
+        WCHAR wch[32] = { L'\0' };
+        StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+        int itok = 0;
+        if (IniSectionGetString(CustomColors_Section, tch, L"", wch, COUNTOF(wch))) {
+            if (wch[0] == L'#') {
+                unsigned int irgb;
+                itok = swscanf_s(CharNext(wch), L"%x", &irgb);
+                if (itok == 1) {
+                    g_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
                 }
             }
-            if (itok != 1) {
-                g_colorCustom[i] = s_colorDefault[i];
-            }
+        }
+        if (itok != 1) {
+            g_colorCustom[i] = s_colorDefault[i];
         }
     }
 
@@ -783,32 +778,13 @@ static void _Styles_ReadFromIniCache(bool const bFactoryReset) {
 
 //=============================================================================
 //
-//  Style_ImportFromBinaryBlob()
-//  szCharResorce : zero(0) terminated char resource string
-//
-bool Style_ImportFromBinaryBlob(LPCSTR szCharResorce) 
-{
-    bool bFactoryReset = StrIsEmptyA(szCharResorce) ? true : false;
-
-    bool const result = bFactoryReset ? ResetIniFileCache() : CopyToIniFileCache(szCharResorce);
-    if (result) {
-        _Styles_ReadFromIniCache(bFactoryReset);
-    }
-    return result;
-}
-
-
-//=============================================================================
-//
 //  Style_ImportFromFile()
 //
 bool Style_ImportFromFile(const WCHAR* szFile)
 {
-    bool bFactoryReset = StrIsEmpty(szFile) ? true : false;
-
+    bool const bHaveFileResource = StrIsNotEmpty(szFile);
     bool bIsStdIniFile = false;
-
-    if (!bFactoryReset) {
+    if (bHaveFileResource) {
         WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
         StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
         NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
@@ -818,11 +794,12 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     }
 
     bool bOpendByMe = false;
-    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) :
-                        (bFactoryReset ? ResetIniFileCache() : LoadIniFileCache(szFile));
-    if (result) {
-        _Styles_ReadFromIniCache(bFactoryReset);
+    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : 
+        (bHaveFileResource ? LoadIniFileCache(szFile) : 
+            (UseDarkMode() ? CopyToIniFileCache(Globals.pStdDarkModeIniStyles) : ResetIniFileCache()));
 
+    if (result) {
+        _Styles_ReadFromIniCache();
         CloseSettingsFile(false, bOpendByMe);
     }
     return result;
@@ -834,13 +811,10 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 //  Style_ImportTheme()
 //
 bool Style_ImportTheme(const int iThemeIdx) {
+
     switch (iThemeIdx) {
     case -1:
-        if (!UseDarkMode()) {
-            return Style_ImportFromFile(L"");
-        } else {
-            return Style_ImportFromBinaryBlob(Globals.pStdDarkModeIniStyles);
-        }
+        return Style_ImportFromFile(NULL);
     default:
         if ((iThemeIdx >= 0) && (iThemeIdx < (int)ThemeItems_CountOf()) && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath)) {
             return Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
@@ -1112,10 +1086,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         EditToggleView(Globals.hwndEdit);
     }
 
-    BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
+    //~ ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
+    //~ assert(pLexNew != s_pLexCurrent);
 
-    // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
-    // assert(pLexNew != s_pLexCurrent);
+    BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
 
     char localeNameA[LOCALE_NAME_MAX_LENGTH] = { '\0' };
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
@@ -4844,7 +4818,7 @@ CASE_WM_CTLCOLOR_SET:
 
 
         case IDOK: {
-            LVITEM lvi;
+            LVITEM lvi = {0};
             lvi.mask = LVIF_PARAM;
             lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
             if (ListView_GetItem(hwndLV, &lvi)) {

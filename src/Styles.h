@@ -34,7 +34,6 @@ bool   Style_Import(HWND hwnd);
 bool   Style_ImportTheme(const int iThemeIdx);  // -1 => Factory Reset
 void   Style_LoadLexerFileExtensions();
 bool   Style_ImportFromFile(const WCHAR* szFile);
-bool   Style_ImportFromBinaryBlob(LPCSTR szCharResorce);
 void   Style_SaveSettings(bool bForceSaveSettings);
 bool   Style_Export(HWND hwnd);
 void   Style_FileExtToIniSection(bool bForceAll);
@@ -43,7 +42,7 @@ bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 
 unsigned ThemeItems_CountOf();
 bool   Style_InsertThemesMenu(HMENU hMenuBar);
-void   Style_DynamicThemesMenuCmd(int cmd);
+bool   Style_DynamicThemesMenuCmd(int cmd);
 
 float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);

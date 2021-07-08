@@ -3928,6 +3928,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_FACTORY_RESET) && (iLoWParam < (int)(IDM_THEMES_FACTORY_RESET + ThemeItems_CountOf())));
     if (bIsThemesMenuCmd) {
+        if (iLoWParam == IDM_THEMES_FACTORY_RESET) {
+            if (INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET)) != IDOK) {
+                return FALSE;
+            }
+        }
         Style_DynamicThemesMenuCmd(iLoWParam);
         return FALSE;
     }
@@ -5726,6 +5731,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WIN_DARK_MODE: {
 
+        if (INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET)) != IDOK) {
+           break;
+        }
+
         Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode; // toggle
 
         // hide/show bright menu strip on switching
@@ -5734,10 +5743,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         Defaults.ShowMenubar = !Settings.WinThemeDarkMode; // (!) need for saving
 
-        Globals.uCurrentThemeIndex = 0;
-        Settings.CurrentThemeName[0] = L'\0';
         SetDarkMode(Settings.WinThemeDarkMode);
+
         Style_DynamicThemesMenuCmd(IDM_THEMES_FACTORY_RESET);
+
+
 
         if (IsWindow(Globals.hwndDlgFindReplace)) {
             //~SendMessage(Globals.hwndDlgFindReplace, WM_THEMECHANGED, 0, 0); ~ (!) incomplete update
@@ -8727,7 +8737,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         return;
     }
 
-    static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
+    static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT] = { L'\0' };
 
     // ------------------------------------------------------
     // common calculations
@@ -9627,12 +9637,16 @@ bool RestoreAction(int token, DoAction doAct)
             case SC_SEL_LINES:
             case SC_SEL_STREAM:
             default:
-                PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                if (pPosAnchor && pPosCur) {
+                    PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                }
                 PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
                 break;
             }
         }
-        PostMessage(hwndedit, SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
+        if (pPosAnchor && pPosCur) {
+            PostMessage(hwndedit, SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
+        }
         PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     }
     return true;
@@ -11289,6 +11303,9 @@ void InstallFileWatching(const bool bInstall) {
 
     bool const bTerminate = !bInstall || !bWatchFile || !bFileExists;
 
+#pragma warning(push)
+#pragma warning(disable:6258)
+
     // Terminate previous watching
     if (bTerminate) {
 
@@ -11315,6 +11332,8 @@ void InstallFileWatching(const bool bInstall) {
             _hObserverThread = INVALID_HANDLE_VALUE;
         }
     }
+
+#pragma warning(pop)
 
     if (bInstall) {
 

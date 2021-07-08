@@ -2168,7 +2168,9 @@ bool SaveAllSettings(bool bForceSaveSettings)
         }
     }
 
-    Style_ToIniSection(bForceSaveSettings);
+    if (Globals.uCurrentThemeIndex == 0) {
+        Style_ToIniSection(bForceSaveSettings);
+    }
     Style_FileExtToIniSection(bForceSaveSettings);
 
     ok = CloseSettingsFile(true, bOpenedByMe); // reset/clear cache
