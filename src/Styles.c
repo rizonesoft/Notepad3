@@ -303,9 +303,7 @@ static inline bool HasIndicStyleStrokeWidth(const int indicStyle) {
 //=============================================================================
 
 THEMEFILES Theme_Files[] = {
-    { 0, L"Factory Light Mode", L"" },
-    { 0, L"Factory Dark Mode", L"" },
-    { 0, L"Customized Mode", L"" },
+    { 0, L"Standard Config", L"" },
     { 0, L"", L"" },
     { 0, L"", L"" },
     { 0, L"", L"" },
@@ -337,25 +335,27 @@ unsigned ThemeItems_CountOf()
     return COUNTOF(Theme_Files);
 }
 
+unsigned ThemesItems_MaxIndex()
+{
+    for (unsigned i = 1; i < ThemeItems_CountOf(); ++i) {
+        if (Theme_Files[i].rid == 0) {
+            return (i - 1);
+        }
+    }
+    return (ThemeItems_CountOf() - 1);
+}
+
+
 static void _FillThemesMenuTable()
 {
     WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
 
-    Theme_Files[Theme_FactoryLightMode].rid = IDM_THEMES_DEFAULT; // factory default
-    Theme_Files[Theme_FactoryDarkMode].rid = IDM_THEMES_RESOURCES;
-    Theme_Files[Theme_CustomizedMode].rid = IDM_THEMES_FILE_ITEM; // NP3.ini settings
-
-    // find "themes" sub-dir (side-by-side to Notepad3.ini)
-    StringCchCopy(Theme_Files[Theme_FactoryLightMode].szFilePath, COUNTOF(Theme_Files[Theme_FactoryLightMode].szFilePath), L"");
-    StringCchCopy(Theme_Files[Theme_FactoryDarkMode].szFilePath, COUNTOF(Theme_Files[Theme_FactoryDarkMode].szFilePath), L"");
-
+    Globals.uCurrentThemeIndex = 0;
+    Theme_Files[Globals.uCurrentThemeIndex].rid = IDM_THEMES_STD_CFG; // NP3.ini settings
     if (StrIsNotEmpty(Paths.IniFile)) {
         StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFile);
         // names are filled by Style_InsertThemesMenu()
-        StringCchCopy(Theme_Files[Theme_CustomizedMode].szFilePath, COUNTOF(Theme_Files[Theme_CustomizedMode].szFilePath), Paths.IniFile);
-        //PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
-        //PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"NP3DMStyle.ini");
-        //StringCchCopy(Theme_Files[Theme_CustomizedMode].szFilePath, COUNTOF(Theme_Files[ThemeItem_DarkMode].szFilePath), tchThemeDir); // @@@ ToDo: where to store changes
+        StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), Paths.IniFile);
     } else if (StrIsNotEmpty(Paths.IniFileDefault)) {
         StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFileDefault);
     }
@@ -364,9 +364,7 @@ static void _FillThemesMenuTable()
         PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
     }
 
-
-    unsigned iTheme = Theme_CustomizedMode + 1;
-
+    unsigned iTheme = 1;
     if (PathIsDirectory(tchThemeDir)) {
         WCHAR tchThemePath[MAX_PATH] = { L'\0' };
         StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
@@ -377,13 +375,16 @@ static void _FillThemesMenuTable()
         HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
         if (IS_VALID_HANDLE(hFindFile)) {
             // ---  fill table by directory entries  ---
-            for (iTheme = Theme_CustomizedMode + 1; iTheme < ThemeItems_CountOf(); ++iTheme) {
-                Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_DEFAULT);
+            for (iTheme = 1; iTheme < ThemeItems_CountOf(); ++iTheme) {
+
+                Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_STD_CFG);
 
                 StringCchCopy(tchThemePath, COUNTOF(tchThemePath), PathFindFileName(FindFileData.cFileName));
                 PathRemoveExtension(tchThemePath);
                 StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), tchThemePath);
-
+                if (StringCchCompareXI(Theme_Files[iTheme].szName, Settings.CurrentThemeName) == 0) {
+                    Globals.uCurrentThemeIndex = iTheme;
+                }
                 StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
                 PathCchAppend(tchThemePath, COUNTOF(tchThemePath), FindFileData.cFileName);
                 StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), tchThemePath);
@@ -421,22 +422,23 @@ static HMENU s_hmenuThemes = NULL;
 
 bool Style_InsertThemesMenu(HMENU hMenuBar)
 {
+
     if (s_hmenuThemes) {
         DestroyMenu(s_hmenuThemes);
     }
     s_hmenuThemes = CreatePopupMenu();
     //int const pos = GetMenuItemCount(hMenuBar) - 2;
 
-    GetLngString(Theme_Files[Theme_FactoryLightMode].rid, Theme_Files[Theme_FactoryLightMode].szName, COUNTOF(Theme_Files[Theme_FactoryLightMode].szName));
-    GetLngString(Theme_Files[Theme_FactoryDarkMode].rid, Theme_Files[Theme_FactoryDarkMode].szName, COUNTOF(Theme_Files[Theme_FactoryDarkMode].szName));
-    GetLngString(Theme_Files[Theme_CustomizedMode].rid, Theme_Files[Theme_CustomizedMode].szName, COUNTOF(Theme_Files[Theme_CustomizedMode].szName));
+    WCHAR tchThemeName[SMALL_BUFFER] = { L'\0' };
+    GetLngString(IDM_THEMES_FACTORY_RESET, tchThemeName, COUNTOF(tchThemeName));
+    AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, IDM_THEMES_FACTORY_RESET, tchThemeName);
+    AppendMenu(s_hmenuThemes, MF_SEPARATOR, 0, 0);
 
+    UINT iMaxRID = 0;
     for (unsigned i = 0; i < ThemeItems_CountOf(); ++i) {
-        if (i == (Theme_CustomizedMode + 1)) {
-            AppendMenu(s_hmenuThemes, MF_SEPARATOR, 0, 0);
-        }
         if (Theme_Files[i].rid > 0) {
-            AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szName);
+            iMaxRID = Theme_Files[i].rid;
+            AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, iMaxRID, Theme_Files[i].szName);
         } else {
             break; // done
         }
@@ -449,10 +451,11 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
     //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
     bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
 
-    unsigned const iTheme = GetModeThemeIndex();
-    CheckCmd(hMenuBar, Theme_Files[iTheme].rid, true);
+    unsigned const iTheme = Globals.uCurrentThemeIndex;
 
-    if ((iTheme >= Theme_CustomizedMode) && StrIsEmpty(Theme_Files[iTheme].szFilePath)) {
+    CheckMenuRadioItem(hMenuBar, IDM_THEMES_STD_CFG, iMaxRID, IDM_THEMES_STD_CFG + iTheme, MF_BYCOMMAND);
+
+    if (StrIsEmpty(Theme_Files[iTheme].szFilePath)) {
         EnableCmd(hMenuBar, Theme_Files[iTheme].rid, false);
     }
 
@@ -465,54 +468,38 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
 //  Style_DynamicThemesMenuCmd() - Handles IDS_MUI_MENU_THEMES messages
 //
 //
-static void _EnableSchemeConfig(const bool bEnable)
-{
-    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_SCHEMECONFIG, bEnable);
-    EnableTool(Globals.hwndToolbar, IDT_VIEW_SCHEMECONFIG, bEnable);
-}
+// 
 
-
-void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
+void Style_DynamicThemesMenuCmd(int cmd)
 {
-    unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
-    if (iThemeIdx >= ThemeItems_CountOf()) {
+    int const iThemeIdx = (int)(cmd - IDM_THEMES_STD_CFG); // consecutive IDs, -1 for factory reset
+    unsigned const iMaxIndex = ThemesItems_MaxIndex();
+
+    if ((iThemeIdx > (int)iMaxIndex) || (iThemeIdx == (int)Globals.uCurrentThemeIndex)) {
         return;
     }
-
-    if (iThemeIdx == iCurThemeIdx) {
-        return;
-    }
-
-    CheckCmd(Globals.hMainMenu, Theme_Files[iCurThemeIdx].rid, false);
 
     if (Settings.SaveSettings) {
-        if (iCurThemeIdx <= Theme_FactoryDarkMode) {
-            // hard-coded internal/factory defaults
-        } else if (iCurThemeIdx == Theme_CustomizedMode) {
+        if (Globals.uCurrentThemeIndex == 0) {
             if (!Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
                 if (Globals.bCanSaveIniFile) {
                     Style_ExportToFile(Paths.IniFile, Globals.bIniFileFromScratch);
                 }
             }
-        } else if (PathIsExistingFile(Theme_Files[iCurThemeIdx].szFilePath)) {
-            Style_ExportToFile(Theme_Files[iCurThemeIdx].szFilePath, false);
+        } else if (PathIsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath)) {
+            Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, false);
         }
     }
 
-    bool const result = Style_ImportTheme(iThemeIdx);
+    bool const result = Style_ImportTheme(iThemeIdx); // -1: factory reset
 
     if (result) {
-        if (UseDarkMode()) {
-            StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName), Theme_Files[iThemeIdx].szName);
-            Globals.idxDarkModeTheme = iThemeIdx;
-        } else {
-            StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName), Theme_Files[iThemeIdx].szName);
-            Globals.idxLightModeTheme = iThemeIdx;
-        }
+        unsigned const iTheme = (unsigned)clampi(iThemeIdx, 0, (int)ThemeItems_CountOf() - 1);
+        Globals.uCurrentThemeIndex = iTheme;
+        StringCchCopy(Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName), Theme_Files[iTheme].szName);
 
-        _EnableSchemeConfig(iThemeIdx >= Theme_CustomizedMode);
-        CheckCmd(Globals.hMainMenu, Theme_Files[iThemeIdx].rid, true);
+        CheckMenuRadioItem(Globals.hMainMenu, IDM_THEMES_STD_CFG, Theme_Files[iMaxIndex].rid, IDM_THEMES_STD_CFG + iTheme, MF_BYCOMMAND);
 
         if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
             SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
@@ -644,34 +631,8 @@ void Style_Load()
     }
 
     _FillThemesMenuTable();
-
-    unsigned iTheme = Theme_CustomizedMode;
-    if (StrIsNotEmpty(Globals.LightThemeName)) {
-        for (; iTheme < ThemeItems_CountOf(); ++iTheme) {
-            if (StringCchCompareXI(Globals.LightThemeName, Theme_Files[iTheme].szName) == 0) {
-                break;
-            }
-        }
-    }
-    Globals.idxLightModeTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : Theme_FactoryLightMode;
-    StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName),
-                  Theme_Files[Globals.idxLightModeTheme].szName);
-
-    iTheme = Theme_CustomizedMode;
-    if (StrIsNotEmpty(Globals.DarkThemeName)) {
-        for (; iTheme < ThemeItems_CountOf(); ++iTheme) {
-            if (StringCchCompareXI(Globals.DarkThemeName, Theme_Files[iTheme].szName) == 0) {
-                break;
-            }
-        }
-    }
-    Globals.idxDarkModeTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : Theme_FactoryDarkMode;
-    StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName),
-                  Theme_Files[Globals.idxDarkModeTheme].szName);
-
     Style_LoadLexerFileExtensions();
-
-    Style_ImportTheme(GetModeThemeIndex());
+    Style_ImportTheme(Globals.uCurrentThemeIndex);
 }
 
 
@@ -872,14 +833,16 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 //
 //  Style_ImportTheme()
 //
-bool Style_ImportTheme(const unsigned iThemeIdx) {
+bool Style_ImportTheme(const int iThemeIdx) {
     switch (iThemeIdx) {
-    case Theme_FactoryLightMode:
-        return Style_ImportFromFile(L"");
-    case Theme_FactoryDarkMode:
-        return Style_ImportFromBinaryBlob(Globals.pStdDarkModeIniStyles);
+    case -1:
+        if (!UseDarkMode()) {
+            return Style_ImportFromFile(L"");
+        } else {
+            return Style_ImportFromBinaryBlob(Globals.pStdDarkModeIniStyles);
+        }
     default:
-        if (iThemeIdx < ThemeItems_CountOf() && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath)) {
+        if ((iThemeIdx >= 0) && (iThemeIdx < (int)ThemeItems_CountOf()) && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath)) {
             return Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
         }
         break;
@@ -895,7 +858,7 @@ bool Style_ImportTheme(const unsigned iThemeIdx) {
 void Style_SaveSettings(bool bForceSaveSettings)
 {
     if (Settings.SaveSettings || bForceSaveSettings) {
-        Style_ExportToFile(Theme_Files[GetModeThemeIndex()].szFilePath, Globals.bIniFileFromScratch);
+        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, Globals.bIniFileFromScratch);
     }
 }
 
@@ -1052,7 +1015,7 @@ void Style_ToIniSection(bool bForceAll)
 bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
     if (StrIsEmpty(szFile)) {
-        if (GetModeThemeIndex() != 0) {
+        if (Globals.uCurrentThemeIndex != 0) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
         }
         return false;
@@ -3962,9 +3925,8 @@ static void _UpdateTitleText(HWND hwnd)
     if (StrIsEmpty(s_OrigTitle)) {
         GetWindowText(hwnd, s_OrigTitle, COUNTOF(s_OrigTitle));
     }
-    unsigned const iTheme = max_u(1, GetModeThemeIndex());
     WCHAR scheme[96] = { L'\0' };
-    StringCchCopy(scheme, COUNTOF(scheme), Theme_Files[iTheme].szName);
+    StringCchCopy(scheme, COUNTOF(scheme), Theme_Files[Globals.uCurrentThemeIndex].szName);
     StrDelChr(scheme, L"&"); // rm hotkey mark
     PWCHAR const e = StrChr(scheme, L' ');
     if (e) {
@@ -4614,7 +4576,7 @@ CASE_WM_CTLCOLOR_SET:
         case IDOK: {
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-            unsigned const iTheme = GetModeThemeIndex();
+            unsigned const iTheme = Globals.uCurrentThemeIndex;
             if ((iTheme > 0) && (!bWarnedNoIniFile && StrIsEmpty(Theme_Files[iTheme].szFilePath))) {
                 InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
                 bWarnedNoIniFile = true;

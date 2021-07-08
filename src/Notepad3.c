@@ -667,9 +667,8 @@ static void _InitGlobals()
     Globals.FindReplaceMatchFoundState = FND_NOP;
     Globals.bDocHasInconsistentEOLs = false;
     Globals.pStdDarkModeIniStyles = NULL;
-    Globals.idxLightModeTheme = Theme_FactoryLightMode;
-    Globals.idxDarkModeTheme = Theme_FactoryDarkMode;
     Globals.bMinimizedToTray = false;
+    Globals.uCurrentThemeIndex = 0;
 
     Flags.bHugeFileLoadState = DefaultFlags.bHugeFileLoadState = false;
     Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -887,8 +886,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     }
     FreeResource(hMem);
 
-    Style_ImportTheme(GetModeThemeIndex());
-
+    Style_ImportTheme(Globals.uCurrentThemeIndex);
 
     //SetProcessDPIAware(); -> .manifest
     //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
@@ -3476,7 +3474,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;
     }
 
-    bool const dm = UseDarkMode();
+    //bool const dm = UseDarkMode();
     bool const si = Flags.bSingleFileInstance;
     bool const cf = StrIsNotEmpty(Paths.CurrentFile);
     bool const sav = Globals.bCanSaveIniFile;
@@ -3827,9 +3825,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
     CheckCmd(hmenu, IDM_VIEW_TRANSPARENT, Settings.TransparentMode);
 
-    EnableCmd(hmenu, IDM_THEMES_DEFAULT, !dm);
-    EnableCmd(hmenu, IDM_THEMES_RESOURCES, dm);
-
     bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
     //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);
 
@@ -3931,9 +3926,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
     #endif
 
-    bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
+    bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_FACTORY_RESET) && (iLoWParam < (int)(IDM_THEMES_FACTORY_RESET + ThemeItems_CountOf())));
     if (bIsThemesMenuCmd) {
-        Style_DynamicThemesMenuCmd(iLoWParam, GetModeThemeIndex());
+        Style_DynamicThemesMenuCmd(iLoWParam);
         return FALSE;
     }
 
@@ -5730,7 +5725,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case IDM_VIEW_WIN_DARK_MODE: {
-        unsigned const iCurTheme = GetModeThemeIndex();
 
         Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode; // toggle
 
@@ -5740,9 +5734,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         Defaults.ShowMenubar = !Settings.WinThemeDarkMode; // (!) need for saving
 
+        Globals.uCurrentThemeIndex = 0;
+        Settings.CurrentThemeName[0] = L'\0';
         SetDarkMode(Settings.WinThemeDarkMode);
-
-        Style_DynamicThemesMenuCmd(GetModeThemeIndex() + IDM_THEMES_DEFAULT, iCurTheme);
+        Style_DynamicThemesMenuCmd(IDM_THEMES_FACTORY_RESET);
 
         if (IsWindow(Globals.hwndDlgFindReplace)) {
             //~SendMessage(Globals.hwndDlgFindReplace, WM_THEMECHANGED, 0, 0); ~ (!) incomplete update

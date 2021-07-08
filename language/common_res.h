@@ -552,9 +552,8 @@
 #define IDS_USE_LOCALE_DATEFMT          34700
 
 #define IDS_MUI_MENU_THEMES             37000
-#define IDM_THEMES_DEFAULT              37001
-#define IDM_THEMES_RESOURCES            37002
-#define IDM_THEMES_FILE_ITEM            37003
+#define IDM_THEMES_FACTORY_RESET        37001
+#define IDM_THEMES_STD_CFG              37002
 /// !!! dont use IDs until           ...37100
 
 #define IDM_FILE_NEW                    40000
