@@ -13,9 +13,6 @@ useStlAlgorithm
 // Some non-explicit constructors are used for conversions or are private to lexers
 noExplicitConstructor
 
-// The styler parameter is not const as LexAccessor::operator[] is not const
-constParameter:lexilla/lexlib/StyleContext.cxx
-
 // The performance cost of by-value passing is often small and using a reference decreases
 // code legibility.
 passedByValue

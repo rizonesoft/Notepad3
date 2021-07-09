@@ -266,6 +266,9 @@
     <ClCompile Include="lexers_x\LexMarkdown.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
+    <ClCompile Include="lexlib\LexAccessor.cxx">
+      <Filter>lexlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\LexillaVersion.rc">

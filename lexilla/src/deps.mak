@@ -33,6 +33,12 @@ DefaultLexer.o: \
 	../lexlib/Accessor.h \
 	../lexlib/LexerModule.h \
 	../lexlib/DefaultLexer.h
+LexAccessor.o: \
+	../lexlib/LexAccessor.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/CharacterSet.h
 LexerBase.o: \
 	../lexlib/LexerBase.cxx \
 	../../scintilla/include/ILexer.h \
@@ -612,8 +618,8 @@ LexerUtils.o: \
 	../../scintilla/include/ILexer.h \
 	../lexlib/LexAccessor.h \
 	../lexers_x/CharSetX.h \
-	../lexlib/CharacterSet.h \
 	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
 LexJSON.o: \
