@@ -108,6 +108,15 @@ public:
 		}
 		return true;
 	}
+	bool MatchIgnoreCase(Sci_Position pos, const char *s);
+
+	// Get first len - 1 characters in range [startPos_, endPos_).
+	void GetRange(Sci_PositionU startPos_, Sci_PositionU endPos_, char *s, Sci_PositionU len);
+	void GetRangeLowered(Sci_PositionU startPos_, Sci_PositionU endPos_, char *s, Sci_PositionU len);
+	// Get all characters in range [startPos_, endPos_).
+	std::string GetRange(Sci_PositionU startPos_, Sci_PositionU endPos_);
+	std::string GetRangeLowered(Sci_PositionU startPos_, Sci_PositionU endPos_);
+
 	char StyleAt(Sci_Position position) const {
 		return pAccess->StyleAt(position);
 	}

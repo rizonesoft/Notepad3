@@ -114,6 +114,7 @@ LEX_OBJS=\
 	$(DIR_O)\LexDart.obj \
 	$(DIR_O)\LexerUtils.obj \
 	$(DIR_O)\LexJSON.obj \
+	$(DIR_O)\LexKix.obj \
 	$(DIR_O)\LexKotlin.obj \
 	$(DIR_O)\LexMarkdown.obj \
 	$(DIR_O)\LexPython.obj \
@@ -127,6 +128,7 @@ LEXLIB_OBJS=\
 	$(DIR_O)\CharacterCategory.obj \
 	$(DIR_O)\CharacterSet.obj \
 	$(DIR_O)\DefaultLexer.obj \
+	$(DIR_O)\LexAccessor.obj \
 	$(DIR_O)\LexerBase.obj \
 	$(DIR_O)\LexerModule.obj \
 	$(DIR_O)\LexerSimple.obj \

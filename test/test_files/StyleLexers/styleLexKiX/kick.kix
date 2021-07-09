@@ -1,0 +1,109 @@
+;  KICK.KIX
+;
+;  KiXtart Sample script displaying all available macros
+;
+;  Note :  This code sample is provided for demonstration purposes only.
+;          Microsoft makes no warranty, either express or implied,
+;          as to its usability in any given situation.
+;
+;   Copyright (C) 2001 Ruud van Velsen.
+;   All rights reserved.
+;
+
+break on
+AT( 1,30) "User Info"
+
+$Items = "WUSERID","USERID","LDOMAIN","FULLNAME","COMMENT","PRIV","PWAGE","MAXPWAGE","LONGHOMEDIR","HOMEDIR","HOMEDRIVE","HOMESHR","LANROOT","SID","PRIMARYGROUP","LSERVER","RSERVER","USERLANG"
+
+$Values = @WUSERID, @USERID, @LDOMAIN, @FULLNAME, @COMMENT, @PRIV, @PWAGE, @MAXPWAGE, @LONGHOMEDIR, @HOMEDIR, @HOMEDRIVE, @HOMESHR, @LANROOT, @SID, @PRIMARYGROUP, @LSERVER, @RSERVER, @USERLANG
+
+Disp( "User Information", $Items, $Values )
+
+
+ 
+:GROUPMEM
+$Page = 1
+$Count = 0
+$Y = EnumGroup($Count)
+
+While Len($Y)
+   Cls
+   color b/n
+   Box(0,0,24,79,grid)
+
+   Color y+/n
+   At( 1,30) "Group Membership - Page " + $Page
+
+   color g/n
+   At ( 3, 5 ) "Groups"
+
+   $Line = 3
+   Color w+/n
+   While Len($Y)
+      At ($Line,19) $Y
+
+      $Count = $Count + 1
+      $Y = EnumGroup($Count)
+
+      If Len($Y)
+         $Line = $Line + 1
+      Endif
+
+      If $Line = 22
+         Goto ExitLoop
+      Endif
+   Loop
+   :ExitLoop
+
+   Color y+/n
+   At (23,32) "<any key to continue>"
+   Get $x
+
+   $Page = $Page + 1
+Loop
+
+
+
+
+; Display network and OS stuff
+
+
+$Items = "LM","WKSTA","ADDRESS","DOMAIN","LDRIVE","RAS", "LOGONMODE", "", "PRODUCTTYPE", "BUILD", "CSD", "KIX", "DOS", "PRODUCTSUITE", "INWIN"
+
+$Values = @LM, @WKSTA, @ADDRESS, @DOMAIN, @LDRIVE, @RAS, @LOGONMODE, "", @PRODUCTTYPE, @BUILD,  @CSD, @KIX, @DOS, @PRODUCTSUITE, @INWIN
+
+Disp( "Network & OS Information", $Items, $Values )
+
+
+; Display misc stuff
+
+$Items = "CPU", "CURDIR", "SCRIPTDIR", "SCRIPTNAME", "STARTDIR", "SYSLANG", "DATE", "TIME", "DAY", "MDAYNO", "WDAYNO", "YDAYNO", "MONTH", "MONTHNO", "YEAR"
+
+$Values = @CPU + " / " + @MHZ, @CURDIR, @SCRIPTDIR, @SCRIPTNAME, @STARTDIR, @SYSLANG, @DATE, @TIME + "." + @MSECS, @DAY, @MDAYNO, @WDAYNO, @YDAYNO, @MONTH, @MONTHNO, @YEAR
+
+Disp( "Miscellaneous Information", $Items, $Values )
+
+
+
+Function Disp( $Title, $ItemsToDisplay, $ValuesToDisplay )
+
+Color b/n
+Box(0,0,24,79,grid)
+
+$Count = 0
+Color y+/n
+At( 1,30) $Title
+
+For Each $Item in $ItemsToDisplay
+   Color g/n
+   At( $Count+3, 5 ) $Item
+   Color w+/n
+   At( $Count+3, 19) $ValuesToDisplay[ $Count ]
+   $Count = $Count + 1
+Next
+
+Color y+/n
+At(23,32) "<any key to continue>"
+Get $x
+
+EndFunction

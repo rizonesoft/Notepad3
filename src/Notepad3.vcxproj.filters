@@ -417,6 +417,9 @@
     <ClCompile Include="StyleLexers\styleLexJulia.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexKiX.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">

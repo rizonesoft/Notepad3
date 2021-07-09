@@ -1,0 +1,397 @@
+;  TEST.kix
+;
+;  Note :  This code sample is provided for demonstration purposes only.
+;          Microsoft makes no warranty, either express or implied,
+;          as to its usability in any given situation.
+;
+;   Copyright (C) 2001 Ruud van Velsen.
+;   All rights reserved.
+;
+
+break ON
+DIM $Menu[12]
+
+$Menu = "a.  demo Play" ,
+        "b.  demo Sleep",
+        "c.  demo box / big / color",
+        "d.  display standard Macro's",
+        "e.  display LAN Macro's",
+        "f.  demo Env / Shell",
+        "g.  demo Use",
+        "h.  Call RECUR",
+        "i.  demo Loop",
+        "j.  test I/O funcs",
+        "k.  shell %COMSPEC%",
+        "l.  enumerate local drives using WMI",
+        "m.  run SendKeys test"
+
+:start
+while 1
+   cls
+   color g+/n
+   $count = 0
+   For Each $Item in $Menu
+      at ( 6+$count,10) $Menu[$count]
+      $count=$count+1
+   Next
+
+   color w/n
+   at (8+$Count,10) "Enter a-m or 'Q' to quit"
+   do
+      get $jump
+   until $jump = 'Q' or ($jump >= 'a' and $jump <= 'm')
+
+   ;
+   ; this is just a superfluous 'select' to demo its use
+   ;
+   select
+      case $jump = 'a'
+           gosub "sub_a"
+
+      case $jump = 'b'
+           gosub "sub_b"
+
+      case $jump = 'q'
+           exit 0
+
+      case 1   ; any other value : just gosub to the relevant routine
+           gosub "Sub_" + $jump
+
+   endselect
+loop
+
+
+:Sub_a        ; Play
+
+cls
+? "Demo Play..."
+? "Demo 1 : KiXtart will play JBOND.SPK after you press a key..." get $x
+if exist("jbond.spk")
+   play file "jbond.spk"
+else
+   if exist(@ldrive+"jbond.spk")
+      play file @ldrive+"jbond.spk"
+   else
+      ? "Sorry, JBOND.SPK appears to be missing."
+      ? "However, I'll play the first few notes from memory :-)"
+
+      PLAY " 0g256t 0g8d247f 4d165f 247f 8d262f 4d165f 262f 8d277f 4d165f
+             277f   8d262f   4d165f 262f 8d247f 4d165f 247f 8d262f 4d165f
+             262f   8d277f   4d165f 277f 8d262f "
+   endif
+endif
+?
+? "Demo 2 : KiXtart will play CHIMES.WAV after you press a key..." get $x
+if exist("chimes.wav")
+   play file "chimes.wav"
+else
+   if exist(@ldrive+"chimes.wav")
+      play file @ldrive+"chimes.wav"
+   else
+      ? "Sorry, CHIMES.WAV appears to be missing."
+   endif
+endif
+at (23,0) "<anykey> to continue..." get $x
+return
+
+:Sub_b
+cls
+
+? "Demo 1 : KiXtart will sleep 3 seconds after you press a key..."
+get $x
+? "(Start time : @time)"
+sleep 3
+? "(End   time : @time)"
+
+? "Demo 2 : KiXtart will sleep 10 seconds after you press a key..."
+get $x
+? "(Start time : @time)"
+sleep 10
+? "(End   time : @time)"
+
+at (23,0) "<anykey> to continue..." get $x
+return
+
+:Sub_c
+cls
+color w/n at(0, 1) '"single"'    color b/n BOX(1, 0,4, 8,single)
+color w/n at(0,12) '"double"'    color g/n BOX(1,11,4,19,double)
+color w/n at(0,23) '"grid"'      color c/n BOX(1,22,4,30,grid)
+color w/n at(0,34) '"full"'      color r/n BOX(1,33,4,41, full)
+color w/n at(0,46) '""'          color m/n BOX(1,44,4,52, "")
+color w/n at(0,54) '"abcdefgh "' color y/n BOX(1,55,4,63,"abcdefgh ")
+color w/n at(0,66) '"abcdefghi"' color w/n BOX(1,67,4,75,"abcdefghi")
+
+color w+/n at ( 6, 0) big "BIG big"
+color g+/n at (11,62) small "SMALL small"
+
+color w/n at (15,0) "b/n" color b/n at (15,7) "X" color w/n at (15,15) "b+/n" color b+/n at (15,22) "X"
+color w/n at (16,0) "g/n" color g/n at (16,7) "X" color w/n at (16,15) "g+/n" color g+/n at (16,22) "X"
+color w/n at (17,0) "c/n" color c/n at (17,7) "X" color w/n at (17,15) "c+/n" color c+/n at (17,22) "X"
+color w/n at (18,0) "r/n" color r/n at (18,7) "X" color w/n at (18,15) "r+/n" color r+/n at (18,22) "X"
+color w/n at (19,0) "m/n" color m/n at (19,7) "X" color w/n at (19,15) "m+/n" color m+/n at (19,22) "X"
+color w/n at (20,0) "y/n" color y/n at (20,7) "X" color w/n at (20,15) "y+/n" color y+/n at (20,22) "X"
+color w/n at (21,0) "w/n" color w/n at (21,7) "X" color w/n at (21,15) "w+/n" color w+/n at (21,22) "X"
+
+color w/n
+at (23,0) "<anykey> to continue..." get $x
+return
+
+:Sub_d
+cls
+color g+/n
+"Display standard macro's..."
+color g/n
+at ( 3,1)  "DATE"
+at ( 4,1)  "TIME"
+at ( 5,1)  "DAY"
+at ( 6,1)  "MDAYNO"
+at ( 7,1)  "WDAYNO"
+at ( 8,1)  "YDAYNO"
+at ( 9,1)  "MONTH"
+at (10,1)  "MONTHNO"
+at (11,1)  "YEAR"
+at (12,1)  "DOS"
+at (13,1)  "KIX"
+at (14,1)  "RAS"
+
+color w+/n
+at ( 3,12)  @DATE
+at ( 4,12)  @TIME
+at ( 5,12)  @DAY
+at ( 6,12)  @MDAYNO
+at ( 7,12)  @WDAYNO
+at ( 8,12)  @YDAYNO
+at ( 9,12)  @MONTH
+at (10,12)  @MONTHNO
+at (11,12)  @YEAR
+at (12,12)  @DOS
+at (13,12)  @KIX
+at (14,12)  @RAS
+color w/n
+at (23,0) "<anykey> to continue..." get $x
+return
+
+:Sub_e
+cls
+color g+/n
+"Display LAN macro's..."
+color g/n
+at ( 3,1)  "ADDRESS"
+at ( 4,1)  "COMMENT"
+at ( 5,1)  "DOMAIN"
+at ( 6,1)  "FULLNAME"
+at ( 7,1)  "HOMEDRIVE"
+at ( 8,1)  "LONGHOMEDIR"
+at ( 9,1)  "HOMEDIR"
+at (10,1)  "HOMESHR"
+at (11,1)  "LANROOT"
+at (12,1)  "LDOMAIN"
+at (13,1)  "LDRIVE"
+at (14,1)  "LM"
+at (15,1)  "LSERVER"
+at (16,1)  "MAXPWAGE"
+at (17,1)  "PRIV"
+at (18,1)  "PWAGE"
+at (19,1)  "USERID"
+at (20,1)  "WKSTA"
+color w+/n
+at ( 3,12)  @ADDRESS
+at ( 4,12)  @COMMENT
+at ( 5,12)  @DOMAIN
+at ( 6,12)  @FULLNAME
+at ( 7,12)  @HOMEDRIVE
+at ( 8,12)  @LONGHOMEDIR
+at ( 9,12)  @HOMEDIR
+at (10,12)  @HOMESHR
+at (11,12)  @LANROOT
+at (12,12)  @LDOMAIN
+at (13,12)  @LDRIVE
+at (14,12)  @LM
+at (15,12)  @LSERVER
+at (16,12)  @MAXPWAGE
+at (17,12)  @PRIV
+at (18,12)  @PWAGE
+at (19,12)  @USERID
+at (20,12)  @WKSTA
+color w/n
+at (23,0) "<anykey> to continue..." get $x
+return
+
+:Sub_f
+cls
+? "Test : 'Environment vars. / Shell'"
+setl "Kixtest="
+? "Please verify Kixtest= variable is empty / absent, then press anykey"
+? ?
+shell "%comspec% /c set"
+get $x
+cls
+setl "Kixtest=tsetxiK"
+if @error
+   ? "Hmmm, apparently, there aren't enough bytes available in the environment.."
+   ? "press <anykey> to return to menu..." get $x
+else
+   ? "Please verify PREsence of the Kixtest= variable, then press anykey"
+   ? ?
+   shell "%comspec% /c set"
+   get $x
+   setl "Kixtest="
+endif
+return
+
+:Sub_g
+cls
+? "Test : USE (LIST)"
+use list
+? "Verify V: isn't redirected, then press"
+? "anykey to redirect V: to '@@LSERVER\NETLOGON'"
+get $x
+use v: /d
+use v: "@lserver\netlogon"
+if @error
+   ? "Ohoh, redirect failed with errorcode : " + @error
+else
+   use list
+   ? "Verify that V: is indeed redirected,"
+   ? "then press anykey to remove the redirection"
+   get $x
+   use v: /d
+   use list
+   ? "Verify that V: is no longer redirected"
+endif
+? "press anykey to return to the menu"
+get $x
+return
+
+
+:Sub_h
+cls
+? "Test : CALL command. Press anykey to CALL RECUR.kix."
+cls
+? "Press anykey for next level or 'Q' to quit"
+Call "RECUR.kix"
+? "Returned to main script. Press anykey to return to the menu" get $x
+return
+
+
+:Sub_i
+cls
+Call "FLY.kix"
+? "Returned to main script. Press anykey to return to the menu" get $x
+return
+
+
+:Sub_j
+cls
+color g+/n
+? "Press anykey to start test (open FLY.kix, READ & display lines, CLOSE.." get $x
+$result = 1
+if exist("@LDRIVE\fly.kix")
+   $result = open( 1 , "@LDRIVE\FLY.kix" )
+else
+   if exist("fly.kix")
+      $result = open( 1 , "FLY.kix" )
+   else
+      BEEP
+      ? "Sorry, FLY.kix appears to be missing."
+   endif
+endif
+
+if $result = 0
+   $line = readline( 1 )
+   while @ERROR = 0
+         color w/n
+         ? "Line read : ["
+         color w+/n
+         $line
+         color w/n
+         "]"
+         $line = readline( 1 )
+   loop
+   $result = close( 1 )
+else
+   BEEP
+   ? "Sorry, failed to open FLY.kix, errorcode : [" + @ERROR + "]"
+endif
+
+color g+/n
+? "Test completed. Press anykey to return to the menu..." get $x
+color w/n
+return
+
+
+
+:Sub_k
+cls
+color g+/n
+? "Press anykey to SHELL %COMSPEC%..." get $x
+
+SHELL %COMSPEC%
+IF @ERROR <> 0
+   BEEP
+   ? "SHELL failed with errorcode : [" + @ERROR + "]"
+endif
+
+color g+/n
+? "Test completed. Press anykey to return to the menu..." get $x
+color w/n
+return
+
+
+:Sub_l
+cls
+color g+/n
+
+$Drives = GetObject("winmgmts:").ExecQuery("select Name,DriveType from Win32_LogicalDisk")
+
+if @error <> 0
+   ? @error + " / " @serror
+else
+   for each $Drive in $Drives
+
+       $result = $Drive.Name + " ("
+       select
+          case $Drive.DriveType = 0
+               $result = $result + "Unknown"
+          case $Drive.DriveType = 1
+               $result = $result + "No Root Directory"
+          case $Drive.DriveType = 2
+               $result = $result + "Removable Disk"
+          case $Drive.DriveType = 3
+               $result = $result + "Logical Disk"
+          case $Drive.DriveType = 4
+               $result = $result + "Network Drive"
+          case $Drive.DriveType = 5
+               $result = $result + "Compact Disk"
+          case $Drive.DriveType = 6
+               $result = $result + "RAM Disk"
+       endselect
+       $result = $result + ")"
+
+       ? $result
+   next
+endif
+
+$Drives = 0
+
+? "Test completed. Press anykey to return to the menu..." get $x
+color w/n
+return
+
+
+
+:Sub_m
+
+Cls
+
+Run("Notepad.exe")
+Sleep(1)
+$nul = SetFocus("Untitled – Notepad")
+
+
+$nul = SendKeys("This is a test of the SendKeys function{ENTER 2}")
+$nul = SendKeys("This line should contain the date and time: {F5}{ENTER 2}")
+$nul = SendKeys("Test performed using " + @KIX + " on " + @PRODUCTTYPE + "{ENTER 2}")
+
+return

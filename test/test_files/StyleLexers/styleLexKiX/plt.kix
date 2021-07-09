@@ -1,0 +1,267 @@
+;
+; Sample script demonstrating how to make use of Active Directory Printer
+; Location Tracking in a KiXtart script.
+;
+; Script created by Ruud van Velsen and Michael Murgolo.
+;
+; Using the script, you can determine the location of the local system,
+; find printqueues in that location and connect to an appropriate queue or
+; allow the user to select a queue.
+;
+; This sample script simply displays any printqueues it finds. To adapt the
+; script to your environment, search for the lines starting with ">>>" and
+; add your own code.
+;
+;
+Break On
+
+; We need the DNS name of our domain
+;
+$SI = CreateObject( "ADSystemInfo")
+$MyDomain = $SI.DomainDNSName
+? "Domain      : " + $MyDomain
+
+
+; Note that we can't know which IP address is the 'primary' one, so we
+; loop through all adapters WMI returns to us and try to find a
+; location in AD for each of them.
+;
+
+$IPConfigSet = GetObject("winmgmts:").ExecQuery("select IPAddress,DNSServerSearchOrder from Win32_NetworkAdapterConfiguration where IPEnabled=TRUE")
+
+If @ERROR DispFatalError( "Failed to retrieve IP information!" ) Endif
+
+For Each $IPConfig In $IPConfigSet
+
+
+   ; Note: the check for DNSServerSearchOrder makes sure that we use an adapter that
+   ;       actually has a DNS server config'd. This improves the chance of finding
+   ;       the correct IP-address.
+   ;
+   $Dnss = $IPConfig.DNSServerSearchOrder
+   $Ips  = $IPConfig.IPAddress
+
+   If VartypeName( $Dnss ) <> "Null" And VartypeName( $IPs ) <> "Null"
+
+      $MyIP = $IPs[0]
+
+      ? "IP address " + $i + " : " + $MyIP
+
+      ; Find the location of the subnet matching our IP address
+      ;
+
+      $MyLocation = FindLocationForIP( @SITE, $MyIP, $MyDomain )
+      If Len( $MyLocation )
+         Chr(9) + "(location : " + $MyLocation + ")"
+
+
+         ; Now search and display any printqueues in our location
+         ;
+
+         FindPrintQInLocation( $MyLocation, $MyDomain )
+      Else
+         Chr(9) + "(No matching location found.)"
+      Endif
+   Endif
+Next
+
+? "Completed finding printers."
+
+Exit 0
+
+;End Of Main Script ============================================================================
+
+
+
+; FindLocationForIP
+;
+; 1 Query AD for the subnets linked to the local site
+; 2 Match IP address with the subnets
+; 3 Return the 'location' attribute of the matching subnet
+;
+Function FindLocationForIP( $Site, $IP, $Domain )
+
+   Dim $Dse, $configurationNC, $MyConnection, $SiteDn, $SearchDn, $QueryString, $SubnetRecordSet
+   Dim $SubnetParts, $MatchingBits, $BestMatch
+
+
+   $FindLocationForIP = ""
+
+   ; Sites and subnets live beneath the configuration container, so we need the name of that
+   ;
+   $Dse = GetObject( "LDAP://" + $Domain + "/RootDSE" )
+   $configurationNC = $Dse.Get("configurationNamingContext" )
+
+
+   $MyConnection = CreateObject("ADODB.Connection")
+   If @ERROR DispFatalError("Failed to create ADO object.") Endif
+
+   $MyConnection.Provider = "ADsDSOObject"
+
+   $MyConnection.Open( "ADS Provider" )
+   If @ERROR DispFatalError("Failed to open ADO object.") Endif
+
+
+   ; build query for subnets linked to the sitename we received as input
+   ;
+   $SiteDn = "CN=" + $Site + ",CN=Sites," + $ConfigurationNC
+
+   $SearchDn = "LDAP://CN=Subnets,CN=Sites," + $ConfigurationNC
+   $QueryString = "<" + $SearchDn + ">;(&(objectclass=subnet)(siteobject=" + $SiteDN + "));cn,location;SubTree"
+
+   $SubnetsRecordSet = $MyConnection.Execute($QueryString, , -1)
+   If @ERROR <> 0
+      DispFatalError("Failed to query for subnets.")
+   Endif
+
+
+   ; Loop thru all subnets that were returned, trying to find the one with the most matching bits
+   ;
+   While Not $SubnetsRecordSet.EOF
+
+      ; 1st field in recordset is the CN of the subnet, something like "10.10.10.0/24"
+      ;
+      ; Split this into the subnet string and the 'bits' part
+      ;
+      $SubnetParts = Split( $SubnetsRecordSet.Fields(0), "/" )
+
+      $MatchingBits = MatchIPWithSubnet( $IP, $SubnetParts[0], Val($SubnetParts[1]) )
+      If $MatchingBits > $BestMatch
+         $BestMatch = $MatchingBits
+
+         $FindLocationForIP = "" + $SubnetsRecordSet.Fields(1)
+      Endif
+
+      $SubnetsRecordSet.MoveNext
+
+   Loop
+
+EndFunction
+
+
+; MatchIPWithSubnet
+;
+; See if an IP address matches a subnetmask
+; If it matches, return the number of matching bits
+;
+Function MatchIPWithSubnet( $IP, $Subnet, $Bits )
+
+   Dim $SubnetOctets, $IPOctets, $i, $Mask, $RemainingBits
+
+   $MatchIPWithSubnet = 0
+
+   $SubnetOctets = Split( $Subnet, "." )
+   $IPOctets = Split( $IP, "." )
+
+   For $i = 1 To 4
+      If $i * 8 > $Bits
+         Goto MatchRemainder
+      Else
+         If $SubnetOctets[$i-1] <> $IPOctets[$i-1]
+            Return
+         Else
+            If $i * 8 = $Bits
+               $MatchIPWithSubnet = $Bits
+               Return
+            Endif
+         Endif
+      Endif
+   Next
+
+   :MatchRemainder
+
+   $i = $i-1
+   $Mask = &80,&C0,&E0,&F0,&F8,&FC,&FE
+
+   $RemainingBits = ($Bits - ($i * 8) - 1)
+
+   If Val( $SubnetOctets[$i] ) = ( Val( $IPOctets[$i] ) & $Mask[ $RemainingBits ] )
+      $MatchIPWithSubnet = $Bits
+   Endif
+
+EndFunction
+
+
+; FindPrintQInLocation
+;
+; Query AD for printqueues with a matching location attribute
+;
+Function FindPrintQInLocation( $Location, $Domain )
+
+   Dim $MyConnection, $QueryString, $PrintQRecordSet, $PrintQAttributes
+
+
+   $MyConnection = CreateObject("ADODB.Connection")
+   If @ERROR DispFatalError("Failed to create ADO object.") Endif
+
+   $MyConnection.Provider = "ADsDSOObject"
+
+   $MyConnection.Open( "ADS Provider" )
+   If @ERROR DispFatalError("Failed to open ADO object.") Endif
+
+
+   ; build query for printq's with matching location
+   ;
+   ; >>> NOTE THIS SCRIPT QUERIES FOR ANY LOCATIONS STARTING WITH THE LOCATION-
+   ; >>> STRING WE RECV'D AS INPUT (not just an exact match). YOU MAY HAVE TO
+   ; >>> ADJUST THIS TO THE LOCATION-NAMING SCHEME IN YOUR ENVIRONMENT
+   ;
+
+   If Right( $Location , 1 ) = "/"
+      $Location = Left( $Location , Len( $Location ) - 1 )
+   Endif
+
+
+   ; >>> IF NECESSARY, YOU CAN RETRIEVE MORE ATTRIBUTES FROM ACTIVE DIRECTORY
+   ; >>> BY ADDING THEM IN THE NEXT LINE
+   ; >>>
+   ; >>> Relevant attributes include: drivername, location, description, name
+
+   $PrintQAttributes = "printername,uncname"
+
+
+   $QueryString = "<LDAP://" + $Domain +
+                  ">;(&(objectclass=printqueue)(location=" + $Location + "*));" +
+                  $PrintQAttributes + ";SubTree"
+
+   $PrintQRecordSet = $MyConnection.Execute($QueryString, , -1)
+   If @ERROR <> 0
+      DispFatalError("Failed to query for printqueues.")
+   Endif
+
+
+   ;
+   ; >>> THIS IS WHERE YOU ADD CODE APPROPRIATE TO YOUR ENVIRONMENT
+   ; >>>
+   ; >>> THIS SAMPLE SCRIPT SIMPLY LOOPS THROUGH THE SET OF PRINTQUEUES
+   ; >>> AND DISPLAYS THEM. YOU CAN ADD CODE TO ASK THE USER TO SELECT A
+   ; >>> SPECIFIC QUEUE, OR CODE THAT AUTOMAGICALLY DETERMINES THE
+   ; >>> APPROPRIATE PRINTQUEUE FOR THE CURRENT USER BASED ON THE ATTRIBUTES
+   ; >>> YOU RETRIEVED FROM ACTIVE DIRECTORY.
+   ;
+
+   ?? "Printqueues in " + $Location + " : "
+
+   While Not $PrintQRecordSet.EOF
+
+      ?  $PrintQRecordSet.Fields(0) + Chr(9) + $PrintQRecordSet.Fields(1)
+
+      $PrintQRecordSet.MoveNext
+
+   Loop
+
+   ;
+   ; >>> END OF CUSTOM CODE
+   ;
+
+EndFunction
+
+
+
+Function DispFatalError( $ErrMsg )
+
+? $ErrMsg
+
+Quit 1
+
+EndFunction

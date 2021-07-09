@@ -79,6 +79,7 @@ static PEDITLEXER g_pLexArray[] = {
     &lexJS,            // JavaScript
     &lexJSON,          // JSON
     &lexJulia,         // Julia
+    &lexKiX,           // KiX
     &lexKotlin,        // Kotlin
     &lexLATEX,         // LaTeX Files
     &lexLUA,           // Lua Script

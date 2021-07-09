@@ -1,0 +1,51 @@
+;  KIXTART.SCR
+;
+;  KiXtart sample default logon script
+;
+;  Note :  This code sample is provided for demonstration purposes only.
+;          Microsoft makes no warranty, either express or implied,
+;          as to its usability in any given situation.
+;
+;   Copyright (C) 2001 Ruud van Velsen.
+;   All rights reserved.
+;
+CLS
+
+Color r+/n
+big                             ; Display in BIG character mode
+at (2,8)   "Hello,"
+at (12,10) @userid
+sleep 3                         ; Wait for 3 secs (or key)
+
+small
+Color b+/n
+BOX (0,0,24,79,GRID)            ; 'background grid'
+Color b/n
+BOX (8,21,18,61,Å)              ; 'shadow' of the box
+Color g+/n
+BOX (7,20,17,60,FULL)
+
+Color w+/n
+AT ( 9,25) "Userid       : "    ; display some text strings
+AT (10,25) "Full name    : "
+AT (11,25) "Privilege    : "
+AT (12,25) "Workstation  : "
+AT (13,25) "Domain       : "
+AT (14,25) "Logon Server : "
+
+Color y+/n
+AT ( 9,40) @userid              ; ...and some macro's
+AT (10,40) @fullname
+AT (11,40) @priv
+AT (12,40) @wksta
+AT (13,40) @domain
+AT (14,40) @lserver
+
+Color w/n
+AT (16,25) "Press anykey to continue."
+if exist( @ldrive+"\jbond.spk")
+   play file @ldrive+"\jbond.spk"       
+else
+   get $x
+endif
+exit

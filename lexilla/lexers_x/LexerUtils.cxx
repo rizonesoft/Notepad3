@@ -1,7 +1,7 @@
 // encoding: UTF-8
 
 #include <cassert>
-#include <string.h>
+#include <string>
 
 #include "Scintilla.h"
 
