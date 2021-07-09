@@ -127,6 +127,7 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Dart 原始碼"
     IDS_LEX_KOTLIN_SRC      "Kotlin 原始碼"
+    IDS_LEX_KIX_SCR         "KiXtart Script"
 END
 
 STRINGTABLE

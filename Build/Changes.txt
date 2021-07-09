@@ -40,6 +40,7 @@ Current BETA/RC Version 5.21.709.(build_#) (2021-07-09)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.709.2]- Add "KiXtart" lexer (new in Lexilla) (LEX)..
 [.709.1]- Integrating style theme "Sombra" as factory default Dark-Mode theme.
 [.525.1]- Add "Julia" lexer (new in Lexilla) (LEX).
 [.506.1]- Base64 Encoding/Decoding.
@@ -130,7 +131,7 @@ CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
 [.702.5]- Update grepWinNP3 (GRE) version 2.1.8.38 (2021-07.02).
 [.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
-[.702.5]- Update Lexilla Library (LEX) version 5.1.0 (2021-06-23).
+[.709.2]- Update Lexilla Library (LEX) version 5.1.0+ (2021-07-09).
 [.702.5]- Update Scintilla Library (SCI) version 5.1.0 (2021-06-23).
 
 --------------------------------------------------------

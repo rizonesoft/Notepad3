@@ -129,7 +129,7 @@ BEGIN
     IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
     IDS_LEX_JULIA_SCR       "Julia Script"
     IDS_LEX_KIX_SCR         "KiXtart Script"
-    END
+END
 
 STRINGTABLE
 BEGIN
