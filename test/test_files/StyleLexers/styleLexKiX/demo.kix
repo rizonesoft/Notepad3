@@ -1,0 +1,76 @@
+;  DEMO.SCR
+;
+;  KiXtart demonstration script of registry functions.
+;
+;  24-Aug-1995
+;
+;  Note :  This code sample is provided for demonstration purposes only.
+;          Microsoft makes no warranty, either express or implied,
+;          as to its usability in any given situation.
+;
+
+cls                                   ; clear the screen
+color w+/n
+
+? "START"
+
+:start
+if existkey( "HKEY_CURRENT_USER\KiX32" ) <> "0"
+   if addkey( "HKEY_CURRENT_USER\KiX32" ) = 0
+      color g+/n
+      ? "OK, added KiX32 key."
+      if addkey( "HKEY_CURRENT_USER\KiX32\one" ) = 0 AND
+         addkey( "HKEY_CURRENT_USER\KiX32\two" ) = 0 AND
+         addkey( "HKEY_CURRENT_USER\KiX32\three") = 0
+         ? "...and some subkeys..."
+         if writevalue( "HKEY_CURRENT_USER\KiX32\one" , "value1" , "Text" , "REG_SZ" ) = 0 AND
+            writevalue( "HKEY_CURRENT_USER\KiX32\one" , "value2" , "line1|line2(with a || in it)|line3|" , "REG_MULTI_SZ" )  = 0 AND
+            writevalue( "HKEY_CURRENT_USER\KiX32\one" , "value3" , "0a12defa0b" , "REG_BINARY" ) = 0 AND
+            writevalue( "HKEY_CURRENT_USER\KiX32\one" , "value4" , "123456789" , "REG_DWORD" )  = 0
+            ? "...and now even some values..."
+            ? "Please check the result with REGEDT32."
+            ? ? "End of demo : press <anykey> to delete the key again."
+            get $x
+            $result = deltree("HKEY_CURRENT_USER\KiX32")
+            goto end
+         else
+            ? "Hmm, WriteValue failed with returncode : " + @error
+         endif
+      else
+         ? "Hmm, AddKey failed with returncode : " + @error
+      endif
+   else
+      ? "Hmm, AddKey failed with returncode : " + @error
+      end
+   endif
+else
+   ? "Huh ?. Key already exists ?!?."
+   ? "Do you want me to delete it  (Y/N) ?."
+
+   :loop
+   GET $Input
+   if $Input = "Y"
+      if Deltree( "HKEY_CURRENT_USER\KiX32" )= 0
+         ? "OK, Key deleted......"
+         goto start
+      else
+         ? "Hmmm, somehow the delete failed : " + $RC
+         exit
+      endif
+   else
+      if $Input = "N"
+         ? "OK, then I'll just quit."
+         goto end
+      else
+         goto loop     ; wrong key, try again
+      endif
+   endif
+endif
+
+:end
+
+color w+/n
+
+? ? "END"
+
+color w/n

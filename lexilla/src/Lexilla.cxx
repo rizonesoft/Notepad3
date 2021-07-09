@@ -49,6 +49,7 @@ extern LexerModule lmHTML;
 extern LexerModule lmInno;
 extern LexerModule lmJSON;
 extern LexerModule lmJulia;
+extern LexerModule lmKix;
 extern LexerModule lmKotlin;
 extern LexerModule lmLatex;
 extern LexerModule lmLua;
@@ -114,6 +115,7 @@ void AddEachLexer() {
 		&lmInno,
 		&lmJSON,
 		&lmJulia,
+		&lmKix,
 		&lmKotlin,
 		&lmLatex,
 		&lmLua,

@@ -637,6 +637,18 @@ LexJSON.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
+LexKix.o: \
+	../lexers_x/LexKix.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h
 LexKotlin.o: \
 	../lexers_x/LexKotlin.cxx \
 	../../scintilla/include/ILexer.h \

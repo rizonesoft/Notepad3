@@ -625,6 +625,7 @@
     <ClCompile Include="StyleLexers\EditLexer.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
     <ClCompile Include="StyleLexers\styleLexJulia.c" />
+    <ClCompile Include="StyleLexers\styleLexKiX.c" />
     <ClCompile Include="StyleLexers\styleLexKotlin.c" />
     <ClCompile Include="tinyexpr\tinyexpr.c" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
