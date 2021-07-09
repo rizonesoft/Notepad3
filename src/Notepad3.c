@@ -885,6 +885,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
     }
     FreeResource(hMem);
+    Style_ImportTheme(-1);
 
     Style_ImportTheme(Globals.uCurrentThemeIndex);
 
@@ -5746,8 +5747,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetDarkMode(Settings.WinThemeDarkMode);
 
         Style_DynamicThemesMenuCmd(IDM_THEMES_FACTORY_RESET);
-
-
 
         if (IsWindow(Globals.hwndDlgFindReplace)) {
             //~SendMessage(Globals.hwndDlgFindReplace, WM_THEMECHANGED, 0, 0); ~ (!) incomplete update

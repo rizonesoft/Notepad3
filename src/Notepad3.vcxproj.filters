@@ -656,6 +656,9 @@
     <None Include="uchardet\uchardet\src\Big5Freq.tab">
       <Filter>Source Files\uchardet\LangModels</Filter>
     </None>
+    <None Include="..\res\StdDarkModeScheme.ini">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico">
