@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.707.(build_#) (2021-07-07)
+Current BETA/RC Version 5.21.709.(build_#) (2021-07-09)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.709.1]- Integrating style theme "Sombra" as factory default Dark-Mode theme.
 [.525.1]- Add "Julia" lexer (new in Lexilla) (LEX).
 [.506.1]- Base64 Encoding/Decoding.
 [.428.1]- Custom ChooseColor resource definition.
