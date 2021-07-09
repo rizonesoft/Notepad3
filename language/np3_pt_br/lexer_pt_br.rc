@@ -127,7 +127,7 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Código Fonte Dart"
     IDS_LEX_KOTLIN_SRC      "Código Fonte Kotlin"
-    IDS_LEX_KIX_SCR         "KiXtart Script"
+    IDS_LEX_KIX_SCR         "Script KiXtart"
 END
 
 STRINGTABLE
