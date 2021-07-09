@@ -405,8 +405,9 @@ typedef struct _globals_t
     bool      bFindReplCopySelOrClip;
     bool      bReplaceInitialized;
     bool      bDocHasInconsistentEOLs;
-    unsigned  idxLightModeTheme;
-    unsigned  idxDarkModeTheme;
+
+    unsigned  uCurrentThemeIndex;
+    char *    pStdDarkModeIniStyles;
 
 #ifdef D_NP3_WIN10_DARK_MODE
     HBRUSH hbrDarkModeBkgBrush;
@@ -416,8 +417,6 @@ typedef struct _globals_t
     FR_STATES FindReplaceMatchFoundState;
 
     WCHAR CurrentLngLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
-    WCHAR LightThemeName[SMALL_BUFFER];
-    WCHAR DarkThemeName[SMALL_BUFFER];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -548,6 +547,7 @@ typedef struct _settings_t
     WCHAR FavoritesDir[MAX_PATH];
     WCHAR ToolbarButtons[MIDSZ_BUFFER];
     WCHAR MultiEdgeLines[MIDSZ_BUFFER];
+    WCHAR CurrentThemeName[MINI_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 

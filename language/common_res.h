@@ -158,6 +158,7 @@
 #define IDS_MUI_EOLMODENAME_LF          13022
 #define IDS_MUI_WARN_NORMALIZE_EOLS     13023
 #define IDS_MUI_INF_PRSVFILEMODTM       13024
+#define IDS_MUI_WARN_STYLE_RESET        13025
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001
@@ -263,6 +264,8 @@
 #define IDR_MAINWNDTB2                  16004
 #define IDR_MAINWNDTB2HOT               16005
 #define IDR_MAINWNDTB2DIS               16006
+
+#define IDR_STD_DARKMODE_THEME          16050
 
 #define IDI_MUI_RUN                     16100
 #define IDI_MUI_STYLES                  16101
@@ -550,8 +553,8 @@
 #define IDS_USE_LOCALE_DATEFMT          34700
 
 #define IDS_MUI_MENU_THEMES             37000
-#define IDM_THEMES_DEFAULT              37001
-#define IDM_THEMES_FILE_ITEM            37002
+#define IDM_THEMES_FACTORY_RESET        37001
+#define IDM_THEMES_STD_CFG              37002
 /// !!! dont use IDs until           ...37100
 
 #define IDM_FILE_NEW                    40000

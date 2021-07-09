@@ -666,9 +666,9 @@ static void _InitGlobals()
     Globals.bReplaceInitialized = false;
     Globals.FindReplaceMatchFoundState = FND_NOP;
     Globals.bDocHasInconsistentEOLs = false;
-    Globals.idxLightModeTheme = 1; // Default(0), Standard(1)
-    Globals.idxDarkModeTheme = 1;  // buildin Standard(1)
+    Globals.pStdDarkModeIniStyles = NULL;
     Globals.bMinimizedToTray = false;
+    Globals.uCurrentThemeIndex = 0;
 
     Flags.bHugeFileLoadState = DefaultFlags.bHugeFileLoadState = false;
     Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -712,6 +712,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
     if (hwnd) {
         KillTimer(hwnd, IDT_TIMER_MRKALL);
+    }
+
+    if (Globals.pStdDarkModeIniStyles) {
+        FreeMem(Globals.pStdDarkModeIniStyles);
+        Globals.pStdDarkModeIniStyles = NULL;
     }
 
     CmdMessageQueue_t* pmqc = NULL;
@@ -785,7 +790,6 @@ void InvalidParameterHandler(const wchar_t* expression,
     MsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
 #endif
 }
-
 
 
 //=============================================================================
@@ -870,7 +874,20 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
 #endif
 
-    Style_ImportTheme(GetModeThemeIndex());
+    HRSRC const hRes = FindResourceEx(hInstance, RT_RCDATA, MAKEINTRESOURCE(IDR_STD_DARKMODE_THEME), 
+                                                            MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+    HGLOBAL const hMem = LoadResource(hInstance, hRes);
+    DWORD const size = SizeofResource(hInstance, hRes);
+    const char * const resText = (const char *)LockResource(hMem);
+    Globals.pStdDarkModeIniStyles = (char *)AllocMem((size + 1), 0);
+    if (Globals.pStdDarkModeIniStyles) {
+        memcpy(Globals.pStdDarkModeIniStyles, resText, size);
+        Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
+    }
+    FreeResource(hMem);
+    Style_ImportTheme(-1);
+
+    Style_ImportTheme(Globals.uCurrentThemeIndex);
 
     //SetProcessDPIAware(); -> .manifest
     //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
@@ -3458,6 +3475,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;
     }
 
+    //bool const dm = UseDarkMode();
     bool const si = Flags.bSingleFileInstance;
     bool const cf = StrIsNotEmpty(Paths.CurrentFile);
     bool const sav = Globals.bCanSaveIniFile;
@@ -3909,9 +3927,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
     #endif
 
-    bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
+    bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_FACTORY_RESET) && (iLoWParam < (int)(IDM_THEMES_FACTORY_RESET + ThemeItems_CountOf())));
     if (bIsThemesMenuCmd) {
-        Style_DynamicThemesMenuCmd(iLoWParam, GetModeThemeIndex());
+        if (iLoWParam == IDM_THEMES_FACTORY_RESET) {
+            if (INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET)) != IDOK) {
+                return FALSE;
+            }
+        }
+        Style_DynamicThemesMenuCmd(iLoWParam);
         return FALSE;
     }
 
@@ -5708,7 +5731,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 #ifdef D_NP3_WIN10_DARK_MODE
 
     case IDM_VIEW_WIN_DARK_MODE: {
-        unsigned const iCurTheme = GetModeThemeIndex();
+
+        if (INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET)) != IDOK) {
+           break;
+        }
 
         Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode; // toggle
 
@@ -5720,7 +5746,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         SetDarkMode(Settings.WinThemeDarkMode);
 
-        Style_DynamicThemesMenuCmd(GetModeThemeIndex() + IDM_THEMES_DEFAULT, iCurTheme);
+        Style_DynamicThemesMenuCmd(IDM_THEMES_FACTORY_RESET);
 
         if (IsWindow(Globals.hwndDlgFindReplace)) {
             //~SendMessage(Globals.hwndDlgFindReplace, WM_THEMECHANGED, 0, 0); ~ (!) incomplete update
@@ -8710,7 +8736,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         return;
     }
 
-    static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
+    static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT] = { L'\0' };
 
     // ------------------------------------------------------
     // common calculations
@@ -9610,12 +9636,16 @@ bool RestoreAction(int token, DoAction doAct)
             case SC_SEL_LINES:
             case SC_SEL_STREAM:
             default:
-                PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                if (pPosAnchor && pPosCur) {
+                    PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                }
                 PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
                 break;
             }
         }
-        PostMessage(hwndedit, SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
+        if (pPosAnchor && pPosCur) {
+            PostMessage(hwndedit, SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
+        }
         PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     }
     return true;
@@ -11272,6 +11302,9 @@ void InstallFileWatching(const bool bInstall) {
 
     bool const bTerminate = !bInstall || !bWatchFile || !bFileExists;
 
+#pragma warning(push)
+#pragma warning(disable:6258)
+
     // Terminate previous watching
     if (bTerminate) {
 
@@ -11298,6 +11331,8 @@ void InstallFileWatching(const bool bInstall) {
             _hObserverThread = INVALID_HANDLE_VALUE;
         }
     }
+
+#pragma warning(pop)
 
     if (bInstall) {
 

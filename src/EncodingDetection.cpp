@@ -253,7 +253,7 @@ extern "C" const char* Encoding_GetTitleInfoA()
 #define ENC_PARSE_NAM_UTF16LE              ",UTF-16LE,UTF-16,utf16,utf16le,unicode,"
 #define ENC_PARSE_NAM_UTF16BE              ",UTF-16BE,utf16be,unicodebe,"
 #define ENC_PARSE_NAM_UTF8                 ",UTF-8,utf8,"
-#define ENC_PARSE_NAM_UTF8SIG              ",UTF-8-SIG,utf8sig,"
+#define ENC_PARSE_NAM_UTF8SIG              ",UTF-8-SIG,utf8sig,UTF-8-BOM,utf8bom,"
 #define ENC_PARSE_NAM_UTF7                 ",UTF-7,utf7,"
 #define ENC_PARSE_NAM_DOS_720              ",DOS-720,dos720,"
 #define ENC_PARSE_NAM_ISO_8859_6           ",ISO-8859-6,iso88596,arabic,csisolatinarabic,ecma114,isoir127,"
@@ -1266,7 +1266,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     // --- 1st check for force encodings ---
 
     LPCWSTR lpszExt = PathFindExtension(pszFile);
-    bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
+    bool const bNfoDizDetected = (lpszExt && ((StringCchCompareXI(lpszExt, L".nfo") == 0) || (StringCchCompareXI(lpszExt, L".diz") == 0)));
 
     encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
 

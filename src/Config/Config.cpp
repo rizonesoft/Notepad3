@@ -263,6 +263,25 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
 }
 
 
+extern "C" bool CopyToIniFileCache(LPCSTR lpIniFileResourceUTF8)
+{
+    if (StrIsEmptyA(lpIniFileResourceUTF8)) {
+        return false;
+    }
+
+    ResetIniFileCache();
+
+    s_INI.SetSpaces(s_bSetSpaces);
+    s_INI.SetMultiLine(s_bUseMultiLine);
+
+    // should be UTF-8 with BOM (!)
+    s_bIniFileCacheLoaded = SI_Success(s_INI.LoadData(lpIniFileResourceUTF8));
+    //~s_INI.SetUnicode(true); ~ already set
+
+    return s_bIniFileCacheLoaded;
+}
+
+
 extern "C" bool IsIniFileCached()
 {
     return s_bIniFileCacheLoaded;
@@ -1709,9 +1728,6 @@ void LoadSettings()
 
     // ------------------------------------------------------------------------
 
-    IniSectionGetStringNoQuotes(Constants.Styles_Section, L"ThemeFileName", L"", Globals.LightThemeName, COUNTOF(Globals.LightThemeName));
-    IniSectionGetStringNoQuotes(Constants.Styles_Section, L"DarkThemeFileName", L"", Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName));
-
     // define scintilla internal codepage
     int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
 
@@ -1736,6 +1752,10 @@ void LoadSettings()
 
     CloseSettingsFile(bDirtyFlag, true); // keep cached
 
+    // --------------------------------------------------------------------------
+    const WCHAR *const IniSecStyles = Constants.Styles_Section;
+    // --------------------------------------------------------------------------
+    IniSectionGetString(IniSecStyles, L"ThemeFileName", L"", Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName));
     Style_Load(); // Scintilla Styles from .ini
 
     ResetIniFileCache(); // clear cache
@@ -1843,13 +1863,13 @@ static bool _SaveSettings(bool bForceSaveSettings)
     }
 
     WCHAR wchTmp[MAX_PATH] = { L'\0' };
-    if (StringCchCompareXIW(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
+    if (StringCchCompareXI(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
         PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"OpenWithDir", wchTmp);
     } else {
         IniSectionDelete(IniSecSettings, L"OpenWithDir", false);
     }
-    if (StringCchCompareXIW(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
+    if (StringCchCompareXI(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
         PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"Favorites", wchTmp);
     } else {
@@ -2040,21 +2060,12 @@ static bool _SaveSettings(bool bForceSaveSettings)
     const WCHAR* const IniSecStyles = Constants.Styles_Section;
     // --------------------------------------------------------------------------
 
-    if (GetModeThemeIndex() == 1) {
+    if (Globals.uCurrentThemeIndex == 0) {
+        IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
         Style_FileExtToIniSection(Globals.bIniFileFromScratch);
         Style_ToIniSection(Globals.bIniFileFromScratch); // Scintilla Styles
-    }
-
-    if (Globals.idxLightModeTheme <= 1) {
-        IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
     } else {
-        IniSectionSetString(IniSecStyles, L"ThemeFileName", Globals.LightThemeName);
-    }
-
-    if (Globals.idxDarkModeTheme <= 1) {
-        IniSectionDelete(IniSecStyles, L"DarkThemeFileName", false);
-    } else {
-        IniSectionSetString(IniSecStyles, L"DarkThemeFileName", Globals.DarkThemeName);
+        IniSectionSetString(IniSecStyles, L"ThemeFileName", Settings.CurrentThemeName);
     }
 
     return true;
@@ -2157,13 +2168,15 @@ bool SaveAllSettings(bool bForceSaveSettings)
         }
     }
 
-    Style_ToIniSection(bForceSaveSettings);
+    if (Globals.uCurrentThemeIndex == 0) {
+        Style_ToIniSection(bForceSaveSettings);
+    }
     Style_FileExtToIniSection(bForceSaveSettings);
 
     ok = CloseSettingsFile(true, bOpenedByMe); // reset/clear cache
 
     // maybe separate INI files for Style-Themes
-    if (GetModeThemeIndex() >= 2) {
+    if (Globals.uCurrentThemeIndex > 0) {
         Style_SaveSettings(bForceSaveSettings);
     }
 
