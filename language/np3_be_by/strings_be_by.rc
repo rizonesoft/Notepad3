@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Памылка экспарту наладаў стыляў «%s»."
     IDS_MUI_REGEX_INVALID    "Памылка апрацоўкі рэгулярнага выразу. Выраз несапраўдны!"
     IDS_MUI_DROP_NO_FILE     "Не выйшла атрымаць імя файла. \nКалі перацягваеце з 32-бітнай праграмы,\nперацягніце на паліцу прыладаў Notepad3."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "Азначаная ва URL дырэкторыя існуе!"
+    IDS_MUI_URL_FILE_EXISTS  "Азначаны ва URL файл існуе!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "Азначаны ва URL шлях не знойдзены!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click, каб адкрыць файл."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, каб адкрыць спасылку ў браўзеры."
     IDS_MUI_INF_PRSVFILEMODTM
@@ -266,7 +266,7 @@ BEGIN
                             "Ачысціць гісторыю пошука"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Ачысціць гісторыю замен"
-    IDS_MUI_WRAPSEARCH_FWD  "Супадзенне ў пачаткуs"
+    IDS_MUI_WRAPSEARCH_FWD  "Супадзенне ў пачатку"
     IDS_MUI_WRAPSEARCH_BCK  "Супадзенне ў канцы"
 END
 
