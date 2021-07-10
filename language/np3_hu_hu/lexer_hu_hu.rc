@@ -69,7 +69,7 @@ BEGIN
     IDS_LEX_PRISM_CSV       "CSV Prism"
     IDS_LEX_CPP_SRC         "C/C++ forráskód"
     IDS_LEX_CSHARP_SRC      "C# forráskód"
-    IDS_LEX_RESOURCE_SCR    "Resource Script"
+    IDS_LEX_RESOURCE_SCR    "Resource szkript"
     IDS_LEX_MAKEFILES       "Makefile-ok"
 END
 
@@ -78,39 +78,39 @@ BEGIN
     IDS_LEX_VB_SCR          "VBScript"
     IDS_LEX_VIS_BAS         "Visual Basic"
     IDS_LEX_J_SCR           "JavaScript"
-    IDS_LEX_JAVA_SRC        "Java Source Code"
-    IDS_LEX_PASCAL_SRC      "Pascal Source Code"
-    IDS_LEX_ASM_SCR         "Assembly Script"
-    IDS_LEX_PERL_SCR        "Perl Script"
+    IDS_LEX_JAVA_SRC        "Java forráskód"
+    IDS_LEX_PASCAL_SRC      "Pascal forráskód"
+    IDS_LEX_ASM_SCR         "Assembly szkript"
+    IDS_LEX_PERL_SCR        "Perl szkript"
     IDS_LEX_CONF            "Konfigurációs fájl"
     IDS_LEX_BATCH           "Batch fájlok"
     IDS_LEX_DIFF            "Diff fájlok"
     IDS_LEX_SQL             "SQL lekérdezés"
-    IDS_LEX_PYTHON          "Python script"
+    IDS_LEX_PYTHON          "Python szkript"
     IDS_LEX_APC_CFG         "Apache konfigurációs fájl"
-    IDS_LEX_PWRSHELL        "PowerShell Script"
+    IDS_LEX_PWRSHELL        "PowerShell szkript"
     IDS_LEX_D_SRC           "D forráskód"
     IDS_LEX_GO_SRC          "Go forráskód"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_AWK_SCR         "Awk Script"
+    IDS_LEX_AWK_SCR         "Awk szkript"
     IDS_LEX_ANSI_ART        "ANSI Art"
-    IDS_LEX_SHELL_SCR       "Shell Script"
+    IDS_LEX_SHELL_SCR       "Shell szkript"
     IDS_LEX_REG_FILES       "Registry fájl"
     IDS_LEX_VHDL            "VHDL"
     IDS_LEX_JSON            "JSON"
     IDS_LEX_NSIS            "NSIS"
-    IDS_LEX_INNO            "Inno Setup Script"
-    IDS_LEX_RUBY            "Ruby Script"
-    IDS_LEX_LUA             "Lua Script"
-    IDS_LEX_TCL             "Tcl Script"
-    IDS_LEX_AUTOIT3         "AutoIt3 Script"
+    IDS_LEX_INNO            "Inno Setup szkript"
+    IDS_LEX_RUBY            "Ruby szkript"
+    IDS_LEX_LUA             "Lua szkript"
+    IDS_LEX_TCL             "Tcl szkript"
+    IDS_LEX_AUTOIT3         "AutoIt3 szkript"
     IDS_LEX_LATEX           "LaTeX fájlok"
-    IDS_LEX_AHK             "AutoHotkey Script"
-    IDS_LEX_CMAKE           "Cmake Script"
-    IDS_LEX_AVI_SYNTH       "AviSynth Script"
+    IDS_LEX_AHK             "AutoHotkey szkript"
+    IDS_LEX_CMAKE           "Cmake szkript"
+    IDS_LEX_AVI_SYNTH       "AviSynth szkript"
 END
 
 STRINGTABLE
@@ -122,12 +122,12 @@ BEGIN
     IDS_LEX_NIM_SRC         "Nim forráskód"
     IDS_LEX_R_STAT          "R-S-SPlus statisztika kód"
     IDS_LEX_RUST_SRC        "Rust forráskód"
-    IDS_LEX_AHKL            "AutoHotkey_L Script"
+    IDS_LEX_AHKL            "AutoHotkey_L szkript"
     IDS_LEX_TEXT_FILES      "Szövegfájlok"
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Dart forráskód"
     IDS_LEX_KOTLIN_SRC      "Kotlin forráskód"
-    IDS_LEX_KIX_SCR         "KiXtart Script"
+    IDS_LEX_KIX_SCR         "KiXtart szkript"
 END
 
 STRINGTABLE
@@ -193,7 +193,7 @@ BEGIN
     IDS_LEX_STR_63146       "ASP kezdő elem"
     IDS_LEX_STR_63147       "CDATA"
     IDS_LEX_STR_63148       "PHP kezdő elem"
-    IDS_LEX_STR_63149       "PHP alapértlmezett"
+    IDS_LEX_STR_63149       "PHP alapértelmezett"
     IDS_LEX_STR_63150       "PHP szöveg"
     IDS_LEX_STR_63151       "PHP egyszerű szöveg"
 END
@@ -260,7 +260,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63200       "ismeretlen tulajdonság"
+    IDS_LEX_STR_63200       "Ismeretlen tulajdonság"
     IDS_LEX_STR_63201       "Érték"
     IDS_LEX_STR_63202       "Fontos"
     IDS_LEX_STR_63203       "Direktíva"
@@ -414,7 +414,7 @@ BEGIN
     IDS_LEX_STR_63323       "Fejlés 4"
     IDS_LEX_STR_63324       "Fejlés 5"
     IDS_LEX_STR_63325       "Fejlés 6"
-    IDS_LEX_STR_63326       "Pre Char"
+    IDS_LEX_STR_63326       "Pre kar."
     IDS_LEX_STR_63327       "Rendezetlen lista"
 END
 
@@ -448,8 +448,8 @@ BEGIN
     IDS_LEX_STR_63349       "Gyorsbill."
     IDS_LEX_STR_63350       "HotString"
     IDS_LEX_STR_63351       "HotStringOption"
-    IDS_LEX_STR_63352       "Inline-IME Color"
-    IDS_LEX_STR_63353       "2nd Inline-IME Color"
+    IDS_LEX_STR_63352       "Inline-IME szín"
+    IDS_LEX_STR_63353       "2nd Inline-IME szín"
     IDS_LEX_STR_63354       "Többszörös szerkesztés jelzése"
     IDS_LEX_STR_63355       "2. többszörös szerkesztés jelzése"
     IDS_LEX_STR_63356       "Dátum-Idő"
