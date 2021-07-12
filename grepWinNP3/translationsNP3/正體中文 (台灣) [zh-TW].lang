@@ -220,7 +220,7 @@ msgstr "副檔名"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "檔案名稱符合:\n使用 '|' 來分隔多個文字符合模式，在前面加上 '-' 來排除(&d)"
+msgstr "檔案名稱符合:\n使用 '|' 來分隔多個文字符合模式，在前面加上 '-' 來排除(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -353,7 +353,7 @@ msgstr "程式"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "重新命名預先設定(&n)"
+msgstr "重新命名預先設定(&N)"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
@@ -381,7 +381,7 @@ msgstr "不允許使用相對路徑。請輸入一個絕對路徑!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "移除預先設定(&v)"
+msgstr "移除預先設定(&V)"
 
 #. Resource IDs: (106)
 msgid "Replace string"
@@ -393,7 +393,7 @@ msgstr "替換為/\n擷取格式:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "停止(&t)"
+msgstr "停止(&T)"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
@@ -401,7 +401,7 @@ msgstr "搜尋"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "搜尋(&f):"
+msgstr "搜尋(&F):"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"

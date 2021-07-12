@@ -107,7 +107,7 @@ BEGIN
     DEFPUSHBUTTON   "找下一個(&F)",IDOK,211,7,55,14
     PUSHBUTTON      "找上一個(&P)",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "關閉",IDCANCEL,211,111,55,14
-    CONTROL         "<a>切換到「替換」 (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,115,74,10
+    CONTROL         "<a>切換到「替換」 (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,115,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,97,14,10
@@ -706,7 +706,7 @@ BEGIN
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "字型樣式(&y):", stc2, 114, 7, 74, 9
+    LTEXT           "字型樣式(&Y):", stc2, 114, 7, 74, 9
     COMBOBOX        cmb2, 114, 16, 74, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
@@ -719,7 +719,7 @@ BEGIN
     CBS_OWNERDRAWFIXED
 
     GROUPBOX        "效果", grp1, 7, 97, 98, 76, WS_GROUP
-    AUTOCHECKBOX    "刪除線(&k)", chx1, 13, 111, 90, 10, WS_TABSTOP
+    AUTOCHECKBOX    "刪除線(&K)", chx1, 13, 111, 90, 10, WS_TABSTOP
     AUTOCHECKBOX    "底線(&U)", chx2, 13, 127, 90, 10
 
     LTEXT           "顏色(&C):", stc4, 13, 144, 89, 9
@@ -732,7 +732,7 @@ BEGIN
     SS_NOPREFIX | NOT WS_VISIBLE
     LTEXT           "", stc6, 7, 178, 227, 20, SS_NOPREFIX | NOT WS_GROUP
 
-    LTEXT           "腳本(&r):", stc7, 114, 145, 118, 9
+    LTEXT           "腳本(&R):", stc7, 114, 145, 118, 9
     COMBOBOX        cmb5, 114, 155, 120, 30, CBS_DROPDOWNLIST |
     CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_HASSTRINGS |
     WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -784,9 +784,9 @@ BEGIN
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
     RTEXT           "顏色", COLOR_SOLID_LEFT, 152, 151, 20, 9
-    LTEXT           "|單色(&o)", COLOR_SOLID_RIGHT, 172, 151, 20, 9
+    LTEXT           "|單色(&O)", COLOR_SOLID_RIGHT, 172, 151, 20, 9
 
-    RTEXT           "色調(&e):", COLOR_HUEACCEL, 194, 126, 20, 9
+    RTEXT           "色調(&E):", COLOR_HUEACCEL, 194, 126, 20, 9
     EDITTEXT, COLOR_HUE, 216, 124, 18, 12, WS_GROUP | WS_TABSTOP
 
     RTEXT           "飽和度(&S):", COLOR_SATACCEL, 194, 140, 20, 9
@@ -801,7 +801,7 @@ BEGIN
     RTEXT           "綠色(&G):", COLOR_GREENACCEL, 243, 140, 24, 9
     EDITTEXT, COLOR_GREEN, 269, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "藍色(&u):", COLOR_BLUEACCEL, 243, 154, 24, 9
+    RTEXT           "藍色(&U):", COLOR_BLUEACCEL, 243, 154, 24, 9
     EDITTEXT, COLOR_BLUE, 269, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
     PUSHBUTTON      "加入自訂顏色(&A)", COLOR_ADD, 152, 166, 142, 14,
