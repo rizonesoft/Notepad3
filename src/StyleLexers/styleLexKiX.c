@@ -30,7 +30,7 @@ KEYWORDLIST KeyWords_KiX =
 
 EDITLEXER lexKiX =
 {
-    SCLEX_KIX, "kix", IDS_LEX_KIX_SCR, L"KiX Config", L"kix", L"",
+    SCLEX_KIX, "kix", IDS_LEX_KIX_SCR, L"KiXtart Script", L"kix", L"",
     &KeyWords_KiX, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
         //{ {SCE_KIX_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
