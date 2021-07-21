@@ -482,7 +482,7 @@ bool Style_DynamicThemesMenuCmd(int cmd)
             if (!Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
                 if (Globals.bCanSaveIniFile) {
-                    Style_ExportToFile(Paths.IniFile, Globals.bIniFileFromScratch);
+                    Style_ExportToFile(Paths.IniFile, false);
                 }
             }
         } else if (PathIsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath)) {
@@ -619,25 +619,6 @@ int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 
 //=============================================================================
 //
-//  Style_Load()
-//
-void Style_Load()
-{
-    _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
-    _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
-
-    for (int i = 0; i < 16; ++i) {
-        g_colorCustom[i] = s_colorDefault[i];
-    }
-
-    _FillThemesMenuTable();
-    Style_LoadLexerFileExtensions();
-    Style_ImportTheme(Globals.uCurrentThemeIndex);
-}
-
-
-//=============================================================================
-//
 //  Style_Import()
 //
 bool Style_Import(HWND hwnd)
@@ -668,9 +649,9 @@ bool Style_Import(HWND hwnd)
 
 //=============================================================================
 //
-//   Style_LoadLexerFileExtensions()
+//   _LoadLexerFileExtensions()
 //
-void Style_LoadLexerFileExtensions()
+static void _LoadLexerFileExtensions()
 {
     bool bOpendByMe;
     OpenSettingsFile(&bOpendByMe);
@@ -709,6 +690,23 @@ void Style_LoadLexerFileExtensions()
     CloseSettingsFile(false, bOpendByMe);
 }
 
+
+//=============================================================================
+//
+//  Style_Load()
+//
+void Style_Load() {
+    _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
+    _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
+
+    for (int i = 0; i < 16; ++i) {
+        g_colorCustom[i] = s_colorDefault[i];
+    }
+
+    _FillThemesMenuTable();
+    _LoadLexerFileExtensions();
+    Style_ImportTheme(Globals.uCurrentThemeIndex);
+}
 
 
 //=============================================================================
@@ -833,7 +831,7 @@ bool Style_ImportTheme(const int iThemeIdx) {
 void Style_SaveSettings(bool bForceSaveSettings)
 {
     if (Settings.SaveSettings || bForceSaveSettings) {
-        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, Globals.bIniFileFromScratch);
+        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, false);
     }
 }
 
@@ -878,6 +876,7 @@ bool Style_Export(HWND hwnd)
 void Style_FileExtToIniSection(bool bForceAll)
 {
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+
         LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
 
         if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0)) {
@@ -903,15 +902,13 @@ void Style_FileExtToIniSection(bool bForceAll)
 
 void Style_ToIniSection(bool bForceAll)
 {
-    bool const bForceAllNotFromScratch = (bForceAll && !Globals.bIniFileFromScratch);
-
     // Custom colors
     const WCHAR* const CustomColors_Section = L"Custom Colors";
 
     for (int i = 0; i < 16; i++) {
         WCHAR tch[32] = { L'\0' };
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-        if ((g_colorCustom[i] != s_colorDefault[i]) || bForceAllNotFromScratch) {
+        if ((g_colorCustom[i] != s_colorDefault[i]) || bForceAll) {
             WCHAR wch[32] = { L'\0' };
             StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
                             (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
@@ -968,7 +965,7 @@ void Style_ToIniSection(bool bForceAll)
             wchDefaultStyle[0] = L'\0'; // empty
             Style_CopyStyles_IfNotDefined(pszDefault, wchDefaultStyle, COUNTOF(wchDefaultStyle));
 
-            if (bForceAllNotFromScratch || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
+            if (bForceAll || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
                 IniSectionSetString(Lexer_Section, pszName, wchCurrentStyle);
             } else {
                 IniSectionDelete(Lexer_Section, pszName, false);
@@ -1006,8 +1003,8 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
         bool bOpendByMe;
         if (OpenSettingsFile(&bOpendByMe)) {
-            Style_FileExtToIniSection(bForceAll);
             Style_ToIniSection(bForceAll);
+            Style_FileExtToIniSection(bForceAll);
             ok = CloseSettingsFile(true, bOpendByMe);
         }
     } else {
@@ -1022,6 +1019,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
             }
             if (LoadIniFileCache(szFilePathNorm)) {
                 Style_ToIniSection(bForceAll);
+                Style_FileExtToIniSection(bForceAll);
                 ok = SaveIniFileCache(szFilePathNorm);
                 ResetIniFileCache();
             }
