@@ -482,7 +482,7 @@ bool Style_DynamicThemesMenuCmd(int cmd)
             if (!Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
                 if (Globals.bCanSaveIniFile) {
-                    Style_ExportToFile(Paths.IniFile, Globals.bIniFileFromScratch);
+                    Style_ExportToFile(Paths.IniFile, false);
                 }
             }
         } else if (PathIsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath)) {
@@ -831,7 +831,7 @@ bool Style_ImportTheme(const int iThemeIdx) {
 void Style_SaveSettings(bool bForceSaveSettings)
 {
     if (Settings.SaveSettings || bForceSaveSettings) {
-        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, Globals.bIniFileFromScratch);
+        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, false);
     }
 }
 
@@ -902,15 +902,13 @@ void Style_FileExtToIniSection(bool bForceAll)
 
 void Style_ToIniSection(bool bForceAll)
 {
-    bool const bForceAllNotFromScratch = (bForceAll && !Globals.bIniFileFromScratch);
-
     // Custom colors
     const WCHAR* const CustomColors_Section = L"Custom Colors";
 
     for (int i = 0; i < 16; i++) {
         WCHAR tch[32] = { L'\0' };
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-        if ((g_colorCustom[i] != s_colorDefault[i]) || bForceAllNotFromScratch) {
+        if ((g_colorCustom[i] != s_colorDefault[i]) || bForceAll) {
             WCHAR wch[32] = { L'\0' };
             StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
                             (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
@@ -967,7 +965,7 @@ void Style_ToIniSection(bool bForceAll)
             wchDefaultStyle[0] = L'\0'; // empty
             Style_CopyStyles_IfNotDefined(pszDefault, wchDefaultStyle, COUNTOF(wchDefaultStyle));
 
-            if (bForceAllNotFromScratch || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
+            if (bForceAll || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
                 IniSectionSetString(Lexer_Section, pszName, wchCurrentStyle);
             } else {
                 IniSectionDelete(Lexer_Section, pszName, false);

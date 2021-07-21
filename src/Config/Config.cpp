@@ -2062,7 +2062,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
     if (Globals.uCurrentThemeIndex == 0) {
         IniSectionDelete(IniSecStyles, L"ThemeFileName", false);
-        Style_ToIniSection(Globals.bIniFileFromScratch); // Scintilla Styles
+        Style_ToIniSection(false); // Scintilla Styles
         Style_FileExtToIniSection(false);
     } else {
         IniSectionSetString(IniSecStyles, L"ThemeFileName", Settings.CurrentThemeName);
