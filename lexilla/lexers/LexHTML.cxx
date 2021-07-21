@@ -535,7 +535,7 @@ bool isPHPStringState(int state) {
 Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Position i, const Sci_Position lengthDoc, Accessor &styler, bool &isSimpleString) {
 	Sci_Position j;
 	const Sci_Position beginning = i - 1;
-	bool isValidSimpleString = false;
+	bool isQuoted = false;
 
 	while (i < lengthDoc && (styler[i] == ' ' || styler[i] == '\t'))
 		i++;
@@ -543,10 +543,11 @@ Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Positio
 	const char chNext = styler.SafeGetCharAt(i + 1);
 	phpStringDelimiter.clear();
 	if (!IsPhpWordStart(ch)) {
-		if (ch == '\'' && IsPhpWordStart(chNext)) {
+		if ((ch == '\'' || ch == '\"') && IsPhpWordStart(chNext)) {
+			isSimpleString = ch == '\'';
+			isQuoted = true;
 			i++;
 			ch = chNext;
-			isSimpleString = true;
 		} else {
 			return beginning;
 		}
@@ -554,9 +555,9 @@ Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Positio
 	phpStringDelimiter.push_back(ch);
 	i++;
 	for (j = i; j < lengthDoc && !isLineEnd(styler[j]); j++) {
-		if (!IsPhpWordChar(styler[j])) {
-			if (isSimpleString && (styler[j] == '\'') && isLineEnd(styler.SafeGetCharAt(j + 1))) {
-				isValidSimpleString = true;
+		if (!IsPhpWordChar(styler[j]) && isQuoted) {
+			if (((isSimpleString && styler[j] == '\'') || (!isSimpleString && styler[j] == '\"')) && isLineEnd(styler.SafeGetCharAt(j + 1))) {
+				isQuoted = false;
 				j++;
 				break;
 			} else {
@@ -566,7 +567,7 @@ Sci_Position FindPhpStringDelimiter(std::string &phpStringDelimiter, Sci_Positio
 		}
 		phpStringDelimiter.push_back(styler[j]);
 	}
-	if (isSimpleString && !isValidSimpleString) {
+	if (isQuoted) {
 		phpStringDelimiter.clear();
 		return beginning;
 	}
@@ -2280,7 +2281,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				} else if (ch == '/' && chNext == '/') {
 					i++;
 					state = SCE_HPHP_COMMENTLINE;
-				} else if (ch == '#') {
+				} else if (ch == '#' && chNext != '[') {
 					state = SCE_HPHP_COMMENTLINE;
 				} else if (ch == '\"') {
 					state = SCE_HPHP_HSTRING;
@@ -2307,7 +2308,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		case SCE_HPHP_NUMBER:
 			// recognize bases 8,10 or 16 integers OR floating-point numbers
 			if (!IsADigit(ch)
-				&& strchr(".xXabcdefABCDEF", ch) == NULL
+				&& strchr(".xXabcdefABCDEF_", ch) == NULL
 				&& ((ch != '-' && ch != '+') || (chPrev != 'e' && chPrev != 'E'))) {
 				styler.ColourTo(i - 1, SCE_HPHP_NUMBER);
 				if (IsOperator(ch))
@@ -2349,13 +2350,10 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				if (phpStringDelimiter == "\"") {
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;
-				} else if (isLineEnd(chPrev)) {
+				} else if (lineStartVisibleChars == 1) {
 					const int psdLength = static_cast<int>(phpStringDelimiter.length());
-					const char chAfterPsd = styler.SafeGetCharAt(i + psdLength);
-					const char chAfterPsd2 = styler.SafeGetCharAt(i + psdLength + 1);
-					if (isLineEnd(chAfterPsd) ||
-						(chAfterPsd == ';' && isLineEnd(chAfterPsd2))) {
-							i += (((i + psdLength) < lengthDoc) ? psdLength : lengthDoc) - 1;
+					if (!IsPhpWordChar(styler.SafeGetCharAt(i + psdLength))) {
+						i += (((i + psdLength) < lengthDoc) ? psdLength : lengthDoc) - 1;
 						styler.ColourTo(i, StateToPrint);
 						state = SCE_HPHP_DEFAULT;
 						if (foldHeredoc) levelCurrent--;
@@ -2372,12 +2370,9 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;
 				}
-			} else if (isLineEnd(chPrev) && styler.Match(i, phpStringDelimiter.c_str())) {
+			} else if (lineStartVisibleChars == 1 && styler.Match(i, phpStringDelimiter.c_str())) {
 				const int psdLength = static_cast<int>(phpStringDelimiter.length());
-				const char chAfterPsd = styler.SafeGetCharAt(i + psdLength);
-				const char chAfterPsd2 = styler.SafeGetCharAt(i + psdLength + 1);
-				if (isLineEnd(chAfterPsd) ||
-				(chAfterPsd == ';' && isLineEnd(chAfterPsd2))) {
+				if (!IsPhpWordChar(styler.SafeGetCharAt(i + psdLength))) {
 					i += (((i + psdLength) < lengthDoc) ? psdLength : lengthDoc) - 1;
 					styler.ColourTo(i, StateToPrint);
 					state = SCE_HPHP_DEFAULT;
@@ -2410,7 +2405,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			} else if (ch == '/' && chNext == '/') {
 				i++;
 				state = SCE_HPHP_COMMENTLINE;
-			} else if (ch == '#') {
+			} else if (ch == '#' && chNext != '[') {
 				state = SCE_HPHP_COMMENTLINE;
 			} else if (ch == '\"') {
 				state = SCE_HPHP_HSTRING;
