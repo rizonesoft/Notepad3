@@ -57,7 +57,7 @@
 using namespace Lexilla;
 
 constexpr bool IsNewline(const int ch) {
-    return (ch == '\n' || ch == '\r');
+    return (ch == '\n' || ch == '\r' || ch == '\0');
 }
 
 // True if can follow ch down to the end with possibly trailing whitespace
