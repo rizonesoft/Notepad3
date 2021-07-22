@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.721.(build_#) (2021-07-21)
+Current BETA/RC Version 5.21.722.(build_#) (2021-07-22)
 ========================================================
 
 --------------------------------------------------------
@@ -140,6 +140,9 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.722.1]- Fixing "infinite" loop in Markdown Lexer.
+[.722.1]- Forced file ext written to scheme export.
+[.722.1]- File-ext writing to stxle .ini files only on export.
 [.707.1]- Distinguish Win10 vs. Win11 using build number (>=22000).
 [.529.2]- F/R Dialog regression: allow replace in selection (if selection not empty).
 [.527.1]- Correct handling of F/R dialog pattern combo-box dropdown list.
