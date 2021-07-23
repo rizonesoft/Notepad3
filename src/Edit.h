@@ -90,9 +90,10 @@ void EditJoinLinesEx(bool,bool);
 void EditSortLines(HWND hwnd,int iSortFlags);
 
 void EditJumpTo(DocLn iNewLine, DocPos iNewCol);
+void EditScrollSelectionToView();
+void EditSetAndScrollSelection(DocPos iSelStart, DocPos iSelEnd, bool bStraightSel);
 void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void EditFixPositions();
-void EditScrollSelectionToView();
 void EditEnsureConsistentLineEndings(HWND hwnd);
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 

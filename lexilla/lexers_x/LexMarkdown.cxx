@@ -57,7 +57,7 @@
 using namespace Lexilla;
 
 constexpr bool IsNewline(const int ch) {
-    return (ch == '\n' || ch == '\r' || ch == '\0');
+    return (ch == '\n' || ch == '\r' || ch == '\0'); // sc.GetRelative(i) returns '\0' if out of range
 }
 
 // True if can follow ch down to the end with possibly trailing whitespace
