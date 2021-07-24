@@ -758,4 +758,13 @@ typedef struct _themeFiles
 
 // ----------------------------------------------------------------------------
 
+#define SET_FCT_GUARD(RET) {         \
+    static bool _fctguard = false;   \
+    if (_fctguard) { return (RET); } \
+    { _fctguard = true;
+
+#define RESET_FCT_GUARD()  } _fctguard = false; }
+
+// ----------------------------------------------------------------------------
+
 //=============================================================================

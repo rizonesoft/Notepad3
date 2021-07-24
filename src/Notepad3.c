@@ -386,17 +386,14 @@ static void  _DelaySplitUndoTransaction(const int delay);
 
 // ----------------------------------------------------------------------------
 
-static HANDLE s_hEventNotifyFileChanged = INVALID_HANDLE_VALUE;
-
-static __forceinline bool isFileChangeNotifyAllowed() {
-    return (WaitForSingleObject(s_hEventNotifyFileChanged, 0) == WAIT_OBJECT_0);
+#if 0
+static HANDLE s_hEvent = INVALID_HANDLE_VALUE;
+// SetEvent(s_hEvent);
+// ResetEvent(s_hEvent);
+static __forceinline bool IsEventSignaled() {
+    return (WaitForSingleObject(s_hEvent, 0) == WAIT_OBJECT_0);
 }
-static __forceinline void disableFileChangeNotify() {
-    ResetEvent(s_hEventNotifyFileChanged);
-}
-static __forceinline void enableFileChangeNotify() {
-    SetEvent(s_hEventNotifyFileChanged);
-}
+#endif
 
 // ----------------------------------------------------------------------------
 
@@ -879,7 +876,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     HGLOBAL const hMem = LoadResource(hInstance, hRes);
     DWORD const size = SizeofResource(hInstance, hRes);
     const char * const resText = (const char *)LockResource(hMem);
-    Globals.pStdDarkModeIniStyles = (char *)AllocMem((size + 1), 0);
+    Globals.pStdDarkModeIniStyles = (char *)AllocMem(((size_t)size + 1), 0);
     if (Globals.pStdDarkModeIniStyles) {
         memcpy(Globals.pStdDarkModeIniStyles, resText, size);
         Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
@@ -1365,11 +1362,11 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
 
-    // manual reset und initially signaled (TRUE , TRUE)
-    s_hEventNotifyFileChanged = CreateEvent(NULL, TRUE, TRUE, NULL);
-
     SetDialogIconNP3(Globals.hwndMain);
     InitWindowCommon(Globals.hwndMain, true);
+
+    // manual reset und initially not signaled (TRUE , FALSE)
+    // s_hEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
     if (Settings.TransparentMode) {
         SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
@@ -1521,7 +1518,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // Encoding
     if (s_flagSetEncoding != CPI_NONE) {
-        SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
+        SendMessage(Globals.hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
         s_flagSetEncoding = CPI_NONE;
     }
 
@@ -1700,8 +1697,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY:
         return MsgNotify(hwnd, wParam, lParam);
 
-    case WM_CHANGENOTIFY:
-        return MsgChangeNotify(hwnd, wParam, lParam);
+    case WM_FILECHANGEDNOTIFY:
+        return MsgFileChangeNotify(hwnd, wParam, lParam);
 
     //case WM_PARENTNOTIFY:
     //  if (iLoWParam & WM_DESTROY) {
@@ -2727,7 +2724,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 //
 //  MsgEndSession() - Handle WM_ENDSESSION,WM_DESTROY
 //
-//
 LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(wParam);
@@ -2761,9 +2757,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         // Remove tray icon if necessary
         ShowNotifyIcon(hwnd, false);
 
-        if (IS_VALID_HANDLE(s_hEventNotifyFileChanged)) {
-            CloseHandle(s_hEventNotifyFileChanged);
-        }
+        //if (IS_VALID_HANDLE(s_hEvent)) {
+        //    CloseHandle(s_hEvent);
+        //}
 
         bShutdownOK = true;
     }
@@ -3315,17 +3311,18 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  MsgChangeNotify() - Handles WM_CHANGENOTIFY
+//  MsgFileChangeNotify() - Handles WM_FILECHANGEDNOTIFY
 //
-LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
+    
+    SET_FCT_GUARD(TRUE);
 
     InstallFileWatching(false); // terminate
 
     DocPos const iCurPos = SciCall_GetCurrentPos();
-
 
     if ((FileWatching.FileWatchingMode == FWM_MSGBOX) || GetDocModified()) {
         SetForegroundWindow(hwnd);
@@ -3364,6 +3361,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         InstallFileWatching(true);
     }
 
+    RESET_FCT_GUARD();
     return TRUE;
 }
 
@@ -11167,7 +11165,7 @@ void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 
 static WIN32_FIND_DATA s_fdCurFile = { 0 };
 
-static inline bool IsCurrentFileChanged() {
+static inline bool HasCurrentFileChanged() {
     if (StrIsEmpty(Paths.CurrentFile)) {
         return false;
     }
@@ -11185,26 +11183,53 @@ static inline bool IsCurrentFileChanged() {
 
 static DWORD s_dwFileChangeNotifyTime = 0UL;
 
-static inline void NotifyFileChangeEvent(const bool bCheckChg) {
-    if (isFileChangeNotifyAllowed()) {
-        if (!bCheckChg || IsCurrentFileChanged()) {
-            disableFileChangeNotify();
-            KillTimer(NULL, ID_WATCHTIMER);
-            PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
-        }
+static inline void NotifyIfFileHasChanged(const bool forcedNotify) {
+    
+    if (forcedNotify || HasCurrentFileChanged()) {
+        PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
     }
-    // reset AutoReloadTimeout interval
-    if (s_dwFileChangeNotifyTime) {
-        s_dwFileChangeNotifyTime = GetTickCount();
+    // reset Timeout interval
+    s_dwFileChangeNotifyTime = GetTickCount();
+}
+// ----------------------------------------------------------------------------
+
+
+static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+
+    UNREFERENCED_PARAMETER(dwTime);
+    UNREFERENCED_PARAMETER(idEvent);
+    UNREFERENCED_PARAMETER(uMsg);
+    UNREFERENCED_PARAMETER(hwnd);
+
+    DWORD const diff = GetTickCount() - s_dwFileChangeNotifyTime;
+
+    //if (HasDirChanged()) {
+    //    ResetEventDirChanged();
+    //    NotifyIfFileHasChanged(false);
+    //} else 
+    if (diff > Settings2.FileCheckInverval) {
+        // FWM_MSGBOX (polling: FileWatching.FileCheckInverval)
+        // Directory-Observer is not notified for continously updated (log-)files
+        NotifyIfFileHasChanged(false);
+    } else if (diff > FileWatching.AutoReloadTimeout) {
+        // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
+        if (FileWatching.MonitoringLog) {
+            // monitoring: reload only on change
+            NotifyIfFileHasChanged(false);
+        } else {
+            // unconditional reload
+            NotifyIfFileHasChanged(false);
+        }
     }
 }
 // ----------------------------------------------------------------------------
 
 
-static DWORD const dwObservingTimeout = 240UL; // then check for done
+DWORD const dwObservingTimeout = 250UL; // then check for done
 static HANDLE s_hEventObserverDone = INVALID_HANDLE_VALUE;
 
 static unsigned __stdcall FileChangeObserver(void * pArg) {
+
 
     if (!pArg) {
         _endthreadex(0);
@@ -11230,8 +11255,9 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
                     break;
 
                 case WAIT_OBJECT_0:
-                    // Check if the changes affect the current file
-                    NotifyFileChangeEvent(true);
+                    if (HasCurrentFileChanged()) {
+                        PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
+                    }
                     FindNextChangeNotification(*pChangeHandle);
                     break;
 
@@ -11257,31 +11283,6 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
 // ----------------------------------------------------------------------------
 
 
-static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
-
-    UNREFERENCED_PARAMETER(dwTime);
-    UNREFERENCED_PARAMETER(idEvent);
-    UNREFERENCED_PARAMETER(uMsg);
-    UNREFERENCED_PARAMETER(hwnd);
-
-    if (s_dwFileChangeNotifyTime == 0UL) {
-        // FWM_MSGBOX (polling: FileWatching.FileCheckInverval)
-        // Directory-Observer is not notified for continously updated (log-)files
-        NotifyFileChangeEvent(true);
-    } else if ((GetTickCount() - s_dwFileChangeNotifyTime) > FileWatching.AutoReloadTimeout) {
-        // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
-        if (FileWatching.MonitoringLog) {
-            // monitoring: reload only on change
-            NotifyFileChangeEvent(true);
-        } else {
-            // unconditional reload ??? -> NotifyFileChangeEvent(false);
-            NotifyFileChangeEvent(true);
-        }
-    }
-}
-// ----------------------------------------------------------------------------
-
-
 void InstallFileWatching(const bool bInstall) {
 
     static HANDLE _hChangeHandle = INVALID_HANDLE_VALUE;    // observer
@@ -11291,8 +11292,6 @@ void InstallFileWatching(const bool bInstall) {
     bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsExistingFile(Paths.CurrentFile);
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
     bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
-
-    disableFileChangeNotify();
 
     // always release exclusive file lock in any case
     if (IS_VALID_HANDLE(_hCurrFileHandle)) {
@@ -11308,12 +11307,12 @@ void InstallFileWatching(const bool bInstall) {
     // Terminate previous watching
     if (bTerminate) {
 
-        KillTimer(NULL, ID_WATCHTIMER);
+        KillTimer(Globals.hwndMain, ID_WATCHTIMER);
 
         if (IS_VALID_HANDLE(_hObserverThread)) {
             if (IS_VALID_HANDLE(s_hEventObserverDone)) {
                 DWORD const wait = SignalObjectAndWait(s_hEventObserverDone, _hObserverThread,
-                    /*INFINITE*/ (dwObservingTimeout << 3), FALSE);
+                    /*INFINITE*/ (dwObservingTimeout << 1), FALSE);
                 if (wait == WAIT_OBJECT_0) {
                     CloseHandle(_hObserverThread); // ok
                 }
@@ -11360,8 +11359,7 @@ void InstallFileWatching(const bool bInstall) {
             }
 
             s_dwFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
-            SetTimer(NULL, ID_WATCHTIMER, min_dw(Settings2.FileCheckInverval, FileWatching.AutoReloadTimeout), WatchTimerProc);
-            enableFileChangeNotify();
+            SetTimer(Globals.hwndMain, ID_WATCHTIMER, min_dw(Settings2.FileCheckInverval, FileWatching.AutoReloadTimeout), WatchTimerProc);
 
         } else if (bExclusiveLock) {
 
