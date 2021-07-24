@@ -2227,7 +2227,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 #if (NTDDI_VERSION >= NTDDI_WIN8)
     UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
 #else
-    char* outBuffer = AllocMem(*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
+    char *outBuffer = AllocMem((size_t)*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
     if (!outBuffer) {
         return;
     }

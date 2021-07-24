@@ -87,8 +87,8 @@ typedef enum {
 
 
 //==== Notifications ==========================================================
-#define WM_TRAYMESSAGE    WM_USER          // Callback Message from System Tray
-#define WM_CHANGENOTIFY  (WM_USER+1)       // Change Notifications
+#define WM_TRAYMESSAGE         WM_USER          // Callback Message from System Tray
+#define WM_FILECHANGEDNOTIFY  (WM_USER+1)       // Change Notifications
 //#define WM_CHANGENOTIFYCLEAR (WM_USER+2)
 
 //==== Timer ==================================================================
@@ -178,7 +178,7 @@ LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam);
 LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam);
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
-LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 

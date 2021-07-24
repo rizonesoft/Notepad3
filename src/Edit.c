@@ -406,11 +406,11 @@ static LPCH EditReInterpretText(LPCCH pchSource, const int szSrc, cpi_enc_t from
     LPCH pchConvText = NULL;
 
     int cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, NULL, 0);
-    WCHAR *pwchText = (WCHAR *)AllocMem((cwch + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR *pwchText = (WCHAR *)AllocMem(((size_t)cwch + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pwchText) {
         cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, pwchText, cwch);
         cmbch = WideCharToMultiByte(Encoding_GetCodePage(asCP), 0, pwchText, cwch, NULL, 0, NULL, NULL);
-        pchConvText = (LPCH)AllocMem(cmbch + 1, HEAP_ZERO_MEMORY);
+        pchConvText = (LPCH)AllocMem((size_t)cmbch + 1, HEAP_ZERO_MEMORY);
         if (pchConvText) {
             cmbch = WideCharToMultiByte(Encoding_GetCodePage(asCP), 0, pwchText, cwch, pchConvText, cmbch, NULL, NULL);
         } else {
@@ -1946,7 +1946,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     const char *pchText = SciCall_GetRangePointer(iSelStart, iSelSize);
 
     int const reqsize = MultiByteToWideChar(Encoding_SciCP, 0, pchText, (int)iSelSize, NULL, 0);
-    LPWSTR const pwchText = AllocMem((reqsize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pwchText = AllocMem(((size_t)reqsize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pwchText == NULL) {
         return;
     }
@@ -1955,7 +1955,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     StrReplChr(pwchText, chSearch, chReplace);
 
     int const cchRepl = WideCharToMultiByte(Encoding_SciCP, 0, pwchText, reqsize, NULL, 0, NULL, NULL);
-    char * const pchReplace = (char *)AllocMem((cchRepl + 1), HEAP_ZERO_MEMORY);
+    char *const pchReplace = (char *)AllocMem(((size_t)cchRepl + 1), HEAP_ZERO_MEMORY);
     if (pchReplace == NULL) {
         FreeMem(pwchText);
         return;
@@ -5978,7 +5978,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
 #endif
 
-        pTimerIdentifier = SetTimer(NULL, 0, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
+        pTimerIdentifier = SetTimer(hwnd, 0, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
 
         SET_INITIAL_ANCHORS()
         s_InitialTopLine = SciCall_GetFirstVisibleLine();
@@ -6140,7 +6140,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
     case WM_DESTROY: {
 
-        KillTimer(NULL, pTimerIdentifier);
+        KillTimer(hwnd, pTimerIdentifier);
         pTimerIdentifier = 0;
 
         _SetSearchFlags(hwnd, s_pEfrDataDlg); // sync
