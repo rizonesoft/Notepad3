@@ -20,6 +20,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 /**
  * \ingroup Utils
@@ -61,6 +62,7 @@ public:
      */
     CBrowseFolder::RetVal Show(HWND parent, std::wstring& path, const std::wstring& sDefaultPath = std::wstring());
     CBrowseFolder::RetVal Show(HWND parent, LPWSTR path, size_t pathLen, LPCWSTR szDefaultPath = nullptr);
+    CBrowseFolder::RetVal Show(HWND parent, std::vector<std::wstring>& paths, std::wstring sDefaultPath = {});
 
     /**
      * If this is set to true, then the second checkbox gets disabled as soon as the first

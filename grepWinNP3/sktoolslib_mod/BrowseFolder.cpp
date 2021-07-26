@@ -60,6 +60,121 @@ CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, LPWSTR path, size_t pathL
     wcscpy_s(path, pathLen, temp.c_str());
     return ret;
 }
+CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, std::vector<std::wstring>& paths, std::wstring sDefaultPath)
+{
+    RetVal ret     = RetVal::Ok; //assume OK
+    m_sDefaultPath = sDefaultPath;
+    if (m_sDefaultPath.empty() && !paths.empty())
+    {
+        // if the result path already contains a path, use that as the default path
+        m_sDefaultPath = paths[0];
+    }
+    if (!PathFileExists(m_sDefaultPath.c_str()))
+        m_sDefaultPath.clear();
+    paths.clear();
+
+    // Create a new common open file dialog
+    IFileOpenDialog* pfd = nullptr;
+    HRESULT          hr  = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+    if (SUCCEEDED(hr))
+    {
+        // Set the dialog as a folder picker
+        DWORD dwOptions;
+        if (SUCCEEDED(hr = pfd->GetOptions(&dwOptions)))
+        {
+            hr = pfd->SetOptions(dwOptions | FOS_ALLOWMULTISELECT | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST);
+        }
+
+        // Set a title
+        if (SUCCEEDED(hr))
+        {
+            wchar_t* nl = wcschr(m_title, '\n');
+            if (nl)
+                *nl = 0;
+            pfd->SetTitle(m_title);
+        }
+
+        // set the default folder
+        if (SUCCEEDED(hr) && !m_sDefaultPath.empty())
+        {
+            IShellItem* psiDefault = nullptr;
+            hr                     = SHCreateItemFromParsingName(m_sDefaultPath.c_str(), nullptr, IID_PPV_ARGS(&psiDefault));
+            if (SUCCEEDED(hr))
+            {
+                hr = pfd->SetFolder(psiDefault);
+                psiDefault->Release();
+            }
+        }
+    }
+
+    if (wcslen(m_checkText))
+    {
+        IFileDialogCustomize* pfdCustomize = nullptr;
+        hr                                 = pfd->QueryInterface(IID_PPV_ARGS(&pfdCustomize));
+        if (SUCCEEDED(hr))
+        {
+            pfdCustomize->StartVisualGroup(100, L"");
+            pfdCustomize->AddCheckButton(101, m_checkText, FALSE);
+            if (wcslen(m_checkText2))
+            {
+                pfdCustomize->AddCheckButton(102, m_checkText2, FALSE);
+            }
+            pfdCustomize->EndVisualGroup();
+            pfdCustomize->Release();
+        }
+    }
+
+    // Show the open file dialog
+    if (SUCCEEDED(hr) && SUCCEEDED(hr = pfd->Show(parent)))
+    {
+        IShellItemArray* psiResults = nullptr;
+        hr                          = pfd->GetResults(&psiResults);
+        // Get the selection from the user
+        if (SUCCEEDED(hr))
+        {
+            DWORD resultCount = 0;
+            hr                = psiResults->GetCount(&resultCount);
+            if (SUCCEEDED(hr))
+            {
+                for (DWORD i = 0; i < resultCount; ++i)
+                {
+                    IShellItem* psiResult = nullptr;
+                    hr                    = psiResults->GetItemAt(i, &psiResult);
+                    if (SUCCEEDED(hr))
+                    {
+                        PWSTR pszPath = nullptr;
+                        hr            = psiResult->GetDisplayName(SIGDN_FILESYSPATH, &pszPath);
+                        if (SUCCEEDED(hr))
+                        {
+                            paths.push_back(pszPath);
+                            CoTaskMemFree(pszPath);
+                        }
+                        psiResult->Release();
+
+                        IFileDialogCustomize* pfdCustomize;
+                        hr = pfd->QueryInterface(IID_PPV_ARGS(&pfdCustomize));
+                        if (SUCCEEDED(hr))
+                        {
+                            pfdCustomize->GetCheckButtonState(101, &m_bCheck);
+                            pfdCustomize->GetCheckButtonState(102, &m_bCheck2);
+                            pfdCustomize->Release();
+                        }
+                    }
+                }
+                psiResults->Release();
+            }
+        }
+        else
+            ret = RetVal::Cancel;
+    }
+    else
+        ret = RetVal::Cancel;
+
+    pfd->Release();
+
+    return ret;
+}
+
 CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, std::wstring& path, const std::wstring& sDefaultPath /* = std::wstring() */)
 {
     RetVal ret     = RetVal::Ok; //assume OK
@@ -94,7 +209,7 @@ CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
         // set the default folder
         if (SUCCEEDED(hr))
         {
-            using SHCIFPN = HRESULT(WINAPI * )(PCWSTR pszPath, IBindCtx * pbc, REFIID riid, void** ppv);
+            using SHCIFPN = HRESULT(WINAPI*)(PCWSTR pszPath, IBindCtx * pbc, REFIID riid, void** ppv);
 
             HMODULE hLib = LoadLibrary(L"shell32.dll");
             if (hLib)
@@ -248,7 +363,7 @@ void CBrowseFolder::SetFont(HWND hwnd, LPCWSTR fontName, int fontSize)
 
 int CBrowseFolder::BrowseCallBackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM /*lpData*/)
 {
-    RECT listViewRect, dialog;
+    RECT listViewRect{}, dialog{};
     //Initialization callback message
     if (uMsg == BFFM_INITIALIZED)
     {
@@ -365,7 +480,7 @@ int CBrowseFolder::BrowseCallBackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARA
     if (uMsg == BFFM_SELCHANGED)
     {
         // Set the status window to the currently selected path.
-        wchar_t szDir[MAX_PATH];
+        wchar_t szDir[MAX_PATH]{};
         if (SHGetPathFromIDList(reinterpret_cast<LPITEMIDLIST>(lParam), szDir))
         {
             SendMessage(hwnd, BFFM_SETSTATUSTEXT, 0, reinterpret_cast<LPARAM>(szDir));
