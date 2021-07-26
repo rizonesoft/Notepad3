@@ -6,13 +6,13 @@
 
 //#pragma message(__LOC__"Run the NAnt script to get proper version info")
 
-#define FILEVER         2, 1, 8, 38
-#define PRODUCTVER      2, 1, 8, 38
-#define STRFILEVER      "2.1.8.38\0"
-#define STRPRODUCTVER   "2.1.8.38\0"
+#define FILEVER         2, 1, 8, 39
+#define PRODUCTVER      2, 1, 8, 39
+#define STRFILEVER      "2.1.8.39\0"
+#define STRPRODUCTVER   "2.1.8.39\0"
 
 #define GREPWIN_VERMAJOR     2
 #define GREPWIN_VERMINOR     1
 #define GREPWIN_VERMICRO     8
-#define GREPWIN_VERBUILD     38
-#define GREPWIN_VERDATE      "2021-07-02"
+#define GREPWIN_VERBUILD     39
+#define GREPWIN_VERDATE      "2021-07-26"

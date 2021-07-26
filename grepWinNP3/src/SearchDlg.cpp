@@ -1303,13 +1303,22 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 break;
             }
 
-            auto pathBuf = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
-            wcscpy_s(pathBuf.get(), MAX_PATH_NEW, path.get());
-            browse.SetInfo(TranslatedString(hResource, IDS_SELECTPATHTOSEARCH).c_str());
-            if (browse.Show(*this, pathBuf.get(), MAX_PATH_NEW, m_searchPath.c_str()) == CBrowseFolder::RetVal::Ok)
+            std::vector<std::wstring> paths;
+            if (browse.Show(*this, paths, m_searchPath) == CBrowseFolder::RetVal::Ok)
             {
-                SetDlgItemText(*this, IDC_SEARCHPATH, pathBuf.get());
-                m_searchPath = pathBuf.get();
+                std::wstring pathString;
+                for (const auto& selPath : paths)
+                {
+                    if (pathString.empty())
+                        pathString = selPath;
+                    else
+                    {
+                        pathString += L"|";
+                        pathString += selPath;
+                    }
+                }
+                SetDlgItemText(*this, IDC_SEARCHPATH, pathString.c_str());
+                m_searchPath = pathString;
             }
         }
         break;
