@@ -172,6 +172,13 @@ void DrawStyledText(Surface *surface, const ViewStyle &vs, int styleOffset, PRec
 	}
 }
 
+void Hexits(char *hexits, int ch) noexcept {
+	hexits[0] = 'x';
+	hexits[1] = "0123456789ABCDEF"[ch / 0x10];
+	hexits[2] = "0123456789ABCDEF"[ch % 0x10];
+	hexits[3] = 0;
+}
+
 }
 
 EditView::EditView() {
@@ -1042,7 +1049,7 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 				if (UTF8IsAscii(chEOL)) {
 					ctrlChar = ControlCharacterString(chEOL);
 				} else {
-					sprintf(hexits, "x%2X", chEOL);
+					Hexits(hexits, chEOL);
 					ctrlChar = hexits;
 				}
 			}

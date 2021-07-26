@@ -41,13 +41,13 @@ else
 DEL = rm -f
 endif
 
-vpath %.h ../src ../include ../lexlib
-vpath %.cxx ../src ../lexlib ../lexers
+vpath %.h ../src ../include
+vpath %.cxx ../src
 
 LDFLAGS=-shared -static -mwindows
 LIBS=-lgdi32 -luser32 -limm32 -lole32 -luuid -loleaut32 -lmsimg32 $(LIBSMINGW)
 
-INCLUDES=-I ../include -I ../src -I../lexlib
+INCLUDES=-I ../include -I ../src
 
 BASE_FLAGS += $(WARNINGS)
 
@@ -112,14 +112,6 @@ SRC_OBJS = \
 	ViewStyle.o \
 	XPM.o
 
-# Required by libraries and DLLs that include lexing
-SCILEX_OBJS=\
-	$(SRC_OBJS) \
-	HanjaDic.o \
-	PlatWin.o \
-	ScintillaBaseL.o \
-	ScintillaWin.o
-
 COMPONENT_OBJS = \
 	$(SRC_OBJS) \
 	HanjaDic.o \
@@ -138,15 +130,6 @@ $(LIBSCI): $(COMPONENT_OBJS)
 
 # Automatically generate dependencies for most files with "make deps"
 include deps.mak
-
-ScintillaBaseL.o:
-	$(CXX) $(CXX_ALL_FLAGS) $(CXXFLAGS) -D SCI_LEXER -c $< -o $@
-
-Catalogue.o: Catalogue.cxx
-	$(CXX) $(CXX_ALL_FLAGS) $(CXXFLAGS) -D SCI_LEXER -D SCI_EMPTYCATALOGUE -c $< -o $@
-
-CatalogueL.o: Catalogue.cxx
-	$(CXX) $(CXX_ALL_FLAGS) $(CXXFLAGS) -D SCI_LEXER -c $< -o $@
 
 ScintRes.o:	ScintRes.rc
 	$(WINDRES) ScintRes.rc $@
