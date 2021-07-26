@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.722.(build_#) (2021-07-22)
+Current BETA/RC Version 5.21.724.(build_#) (2021-07-24)
 ========================================================
 
 --------------------------------------------------------
@@ -140,6 +140,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.724.1]- Remove multiple file Notification, if current file has been deleted.
+[.723.1]- F/R-Dlg: show match while typing protected characters.
 [.722.1]- Fixing "infinite" loop in Markdown Lexer.
 [.722.1]- Forced file ext written to scheme export.
 [.722.1]- File-ext writing to stxle .ini files only on export.
