@@ -161,6 +161,7 @@ inline int te_is_op(const char * const expr) {
 
 #ifdef __cplusplus
 }
+#else
 #endif
 
 #endif /*__TINYEXPR_H__*/

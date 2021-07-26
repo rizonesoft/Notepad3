@@ -333,9 +333,9 @@ public:
 	int SCI_METHOD CodePage() const noexcept override;
 	bool SCI_METHOD IsDBCSLeadByte(char ch) const noexcept override;
 	bool IsDBCSLeadByteNoExcept(char ch) const noexcept;
-	bool IsDBCSLeadByteInvalid(char ch) const noexcept;
-	bool IsDBCSTrailByteInvalid(char ch) const noexcept;
+	bool IsDBCSTrailByteNoExcept(char ch) const noexcept;
 	int DBCSDrawBytes(std::string_view text) const noexcept;
+	bool IsDBCSDualByteAt(Sci::Position pos) const noexcept;
 	int SafeSegment(const char *text, int length, int lengthSegment) const noexcept;
 	EncodingFamily CodePageFamily() const noexcept;
 
@@ -449,6 +449,7 @@ public:
 	void AllocateLineCharacterIndex(Scintilla::LineCharacterIndexType lineCharacterIndex);
 	void ReleaseLineCharacterIndex(Scintilla::LineCharacterIndexType lineCharacterIndex);
 	Sci::Line LinesTotal() const noexcept;
+	void AllocateLines(Sci::Line lines);
 
 	void SetDefaultCharClasses(bool includeWordClass);
 	void SetCharClasses(const unsigned char *chars, CharacterClass newCharClass);

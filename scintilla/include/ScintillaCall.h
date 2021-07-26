@@ -278,6 +278,8 @@ public:
 	void UserListShow(int listType, const char *itemList);
 	void AutoCSetAutoHide(bool autoHide);
 	bool AutoCGetAutoHide();
+	void AutoCSetOptions(Scintilla::AutoCompleteOption options);
+	Scintilla::AutoCompleteOption AutoCGetOptions();
 	void AutoCSetDropRestOfWord(bool dropRestOfWord);
 	bool AutoCGetDropRestOfWord();
 	void RegisterImage(int type, const char *xpmData);
@@ -324,6 +326,7 @@ public:
 	Position GetLine(Line line, char *text);
 	std::string GetLine(Line line);
 	Line LineCount();
+	void AllocateLines(Line lines);
 	void SetMarginLeft(int pixelWidth);
 	int MarginLeft();
 	void SetMarginRight(int pixelWidth);
