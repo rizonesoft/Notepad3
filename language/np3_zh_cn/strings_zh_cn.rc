@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "页码|留空"
     IDS_MUI_PRINT_COLOR     "标准|反色（暗色背景）|白底黑字|白底彩字|白底彩字（除行号以外）|和屏幕颜色相同"
     IDS_MUI_PRINT_PAGENUM   "第 %i 页"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE

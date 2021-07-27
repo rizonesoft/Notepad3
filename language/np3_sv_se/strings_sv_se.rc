@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Sidnummer|Lämna tom"
     IDS_MUI_PRINT_COLOR     "Normal|Mörk (Inverterade färger)|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
     IDS_MUI_PRINT_PAGENUM   "Sida %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE

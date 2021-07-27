@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Numero di pagina|Lascia vuoto"
     IDS_MUI_PRINT_COLOR     "Normale|Inverti (sfondo scuro)|Nero su bianco|Colore su bianco|Colore su bianco (tranne i numeri di riga)|Colori a schermo"
     IDS_MUI_PRINT_PAGENUM   "Pagina %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE

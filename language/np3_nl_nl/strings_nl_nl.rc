@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Paginanummer|Leeg laten"
     IDS_MUI_PRINT_COLOR     "Normaal|Omkeren (donkere achtergrond)|Zwart op wit|Kleur op wit|Kleur op wit (behalve lijn nummers)|Schermkleuren"
     IDS_MUI_PRINT_PAGENUM   "Pagina %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "Deze actie zal de stijl terugzetten naar de fabrieksinstellingen van de gewenste kleurmodus en het actieve themabestand overschakelen naar standaard config .ini!"
 END
 
 STRINGTABLE
