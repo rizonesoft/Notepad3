@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Нумар старонкі|Пакінуць пустым"
     IDS_MUI_PRINT_COLOR     "Звычайны|Інвертаваць (цёмны фон)|Чорнае на белым|Каляровае на белым|Каляровае на белым (акрамя нумароў радкоў)|Колеры экрана"
     IDS_MUI_PRINT_PAGENUM   "Старонка %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE

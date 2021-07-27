@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Numer strony|Pozostaw czysty"
     IDS_MUI_PRINT_COLOR     "Normalny|Odwróć jasne (ciemne tło)|Czarny na biały|Kolorowy na biały|Kolorowy na biały (z wyjątkiem numerów wierszy)|Kolory ekranu"
     IDS_MUI_PRINT_PAGENUM   "Strona %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE
