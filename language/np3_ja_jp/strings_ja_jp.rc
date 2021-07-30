@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "通常|明るさの反転 (暗い背景)|白背景に黒|白背景にカラー|白背景にカラー (行番号以外)|モニタ上の色"
     IDS_MUI_PRINT_PAGENUM   "%i ページ"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "この操作は、配色設定をそのカラーモードの初期値へと初期化し、テーマファイルを標準の .ini ファイルに切り替えます!"
 END
 
 STRINGTABLE
