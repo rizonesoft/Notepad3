@@ -41,7 +41,7 @@ bool CloseSettingsFile(bool bSaveChanges, bool keepCached);
 // ----------------------------------------------------------------------------
 
 bool LoadIniFileCache(LPCWSTR lpIniFilePath);
-bool CopyToIniFileCache(LPCSTR lpIniFileResourceUTF8);
+bool CopyToIniFileCache(LPCSTR lpIniFileResource);
 bool IsIniFileCached();
 bool SaveIniFileCache(LPCWSTR lpIniFilePath);
 bool ResetIniFileCache();

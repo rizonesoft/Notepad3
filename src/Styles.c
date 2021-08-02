@@ -119,7 +119,7 @@ static PEDITLEXER s_pLexCurrent = &lexStandard;
 static int s_iDefaultLexer = 2; // (Constants.StdDefaultLexerID) Pure Text Files
 
 
-const COLORREF s_colorDefault[16] = {
+const COLORREF s_colorLightDefault[16] = {
     RGB(0x00, 0x00, 0x00),
     RGB(0x0A, 0x24, 0x6A),
     RGB(0x3A, 0x6E, 0xA5),
@@ -136,6 +136,25 @@ const COLORREF s_colorDefault[16] = {
     RGB(0xC8, 0x00, 0x00),
     RGB(0xB0, 0x00, 0xB0),
     RGB(0xB2, 0x8B, 0x40)
+};
+
+const COLORREF s_colorDarkDefault[16] = {
+    RGB(0xDE, 0xDE, 0xDE),
+    RGB(0xB5, 0xE2, 0xF5),
+    RGB(0xA2, 0xC5, 0xD4),
+    RGB(0x89, 0xAC, 0xEC),
+    RGB(0x71, 0xF8, 0xAD),
+    RGB(0xB2, 0xD7, 0x66),
+    RGB(0xD8, 0xF7, 0x66),
+    RGB(0xF6, 0xB0, 0x5B),
+    RGB(0x14, 0x14, 0x14),
+    RGB(0x27, 0x27, 0x02),
+    RGB(0x59, 0x4A, 0x05),
+    RGB(0xF2, 0xB4, 0x0D),
+    RGB(0xF2, 0x45, 0x0D),
+    RGB(0xF5, 0x3D, 0x3E),
+    RGB(0xF6, 0x53, 0xF6),
+    RGB(0xBE, 0x94, 0x50)
 };
 
 static bool s_bAutoSelect = true;
@@ -700,7 +719,7 @@ void Style_Load() {
     _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
 
     for (int i = 0; i < 16; ++i) {
-        g_colorCustom[i] = s_colorDefault[i];
+        g_colorCustom[i] = UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i];
     }
 
     _FillThemesMenuTable();
@@ -716,7 +735,7 @@ void Style_Load() {
 static void _Styles_ReadFromIniCache() {
 
     for (int i = 0; i < 16; i++) {
-        g_colorCustom[i] = s_colorDefault[i]; // reset
+        g_colorCustom[i] = UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]; // reset
     }
     const WCHAR *const CustomColors_Section = L"Custom Colors";
     WCHAR tch[32] = { L'\0' };
@@ -734,7 +753,7 @@ static void _Styles_ReadFromIniCache() {
             }
         }
         if (itok != 1) {
-            g_colorCustom[i] = s_colorDefault[i];
+            g_colorCustom[i] = UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i];
         }
     }
 
@@ -794,8 +813,8 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 
     bool bOpendByMe = false;
     bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : 
-        (bHaveFileResource ? LoadIniFileCache(szFile) : 
-            (UseDarkMode() ? CopyToIniFileCache(Globals.pStdDarkModeIniStyles) : ResetIniFileCache()));
+                       (bHaveFileResource ? LoadIniFileCache(szFile) : 
+                       (UseDarkMode() ? CopyToIniFileCache(Globals.pStdDarkModeIniStyles) : ResetIniFileCache()));
 
     if (result) {
         _Styles_ReadFromIniCache();
@@ -908,7 +927,7 @@ void Style_ToIniSection(bool bForceAll)
     for (int i = 0; i < 16; i++) {
         WCHAR tch[32] = { L'\0' };
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-        if ((g_colorCustom[i] != s_colorDefault[i]) || bForceAll) {
+        if ((g_colorCustom[i] != (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i])) || bForceAll) {
             WCHAR wch[32] = { L'\0' };
             StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
                             (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
@@ -944,8 +963,27 @@ void Style_ToIniSection(bool bForceAll)
     }
     // ----------------------------------------------------------------
 
+    WCHAR wchTempStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
     WCHAR wchCurrentStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
     WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+    // prepare INI file cache with defaults
+    if (!bForceAll) {
+        if (UseDarkMode()) {
+            CopyToIniFileCache(Globals.pStdDarkModeIniStyles);
+        } else {
+            for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+                LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+                unsigned i = 0;
+                while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+                    LPCWSTR const pszName = g_pLexArray[iLexer]->Styles[i].pszName;
+                    LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
+                    IniSectionSetString(Lexer_Section, pszName, pszDefault);
+                    ++i;
+                }
+            }
+        }
+    }
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
 
@@ -956,17 +994,24 @@ void Style_ToIniSection(bool bForceAll)
 
             LPCWSTR const pszName = g_pLexArray[iLexer]->Styles[i].pszName;
             LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[i].szValue;
-            LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
 
             // normalize values for comparison
             wchCurrentStyle[0] = L'\0'; // empty
             Style_CopyStyles_IfNotDefined(pszValue, wchCurrentStyle, COUNTOF(wchCurrentStyle));
 
-            wchDefaultStyle[0] = L'\0'; // empty
-            Style_CopyStyles_IfNotDefined(pszDefault, wchDefaultStyle, COUNTOF(wchDefaultStyle));
-
+            if (!bForceAll) {
+                LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
+                wchTempStyle[0] = L'\0'; // empty
+                IniSectionGetString(Lexer_Section, pszName, pszDefault, wchTempStyle, COUNTOF(wchTempStyle));
+                wchDefaultStyle[0] = L'\0'; // empty
+                Style_CopyStyles_IfNotDefined(wchTempStyle, wchDefaultStyle, COUNTOF(wchDefaultStyle));
+            }
             if (bForceAll || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
-                IniSectionSetString(Lexer_Section, pszName, wchCurrentStyle);
+                if (StrIsNotEmpty(wchCurrentStyle)) {
+                    IniSectionSetString(Lexer_Section, pszName, wchCurrentStyle);
+                } else {
+                    IniSectionDelete(Lexer_Section, pszName, false);
+                }
             } else {
                 IniSectionDelete(Lexer_Section, pszName, false);
             }
@@ -1017,6 +1062,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
                     CloseHandle(hFile); // done
                 }
             }
+            ResetIniFileCache();
             if (LoadIniFileCache(szFilePathNorm)) {
                 Style_ToIniSection(bForceAll);
                 Style_FileExtToIniSection(bForceAll);

@@ -243,8 +243,6 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
         return false;
     }
 
-    ResetIniFileCache();
-
     s_INI.SetSpaces(s_bSetSpaces);
     s_INI.SetMultiLine(s_bUseMultiLine);
 
@@ -263,20 +261,17 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
 }
 
 
-extern "C" bool CopyToIniFileCache(LPCSTR lpIniFileResourceUTF8)
+extern "C" bool CopyToIniFileCache(LPCSTR lpIniFileResource)
 {
-    if (StrIsEmptyA(lpIniFileResourceUTF8)) {
+    if (StrIsEmptyA(lpIniFileResource)) {
         return false;
     }
-
-    ResetIniFileCache();
 
     s_INI.SetSpaces(s_bSetSpaces);
     s_INI.SetMultiLine(s_bUseMultiLine);
 
-    // should be UTF-8 with BOM (!)
-    s_bIniFileCacheLoaded = SI_Success(s_INI.LoadData(lpIniFileResourceUTF8));
-    //~s_INI.SetUnicode(true); ~ already set
+    // should be UTF-8 or CP-437
+    s_bIniFileCacheLoaded = SI_Success(s_INI.LoadData(lpIniFileResource));
 
     return s_bIniFileCacheLoaded;
 }
@@ -322,6 +317,7 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
         Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
 
         if (!IsIniFileCached()) {
+            ResetIniFileCache();
             LoadIniFileCache(Paths.IniFile);
             if (keepCached != NULL) {
                 *keepCached = false;
@@ -1906,7 +1902,11 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLineMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLinesLimit);
     if (StringCchCompareX(Settings.MultiEdgeLines, Defaults.MultiEdgeLines) != 0) {
-        IniSectionSetString(IniSecSettings, L"MultiEdgeLines", Settings.MultiEdgeLines);
+        if (StrIsNotEmpty(Settings.MultiEdgeLines)) {
+            IniSectionSetString(IniSecSettings, L"MultiEdgeLines", Settings.MultiEdgeLines);
+        } else {
+            IniSectionDelete(IniSecSettings, L"MultiEdgeLines", false);
+        }
     } else {
         IniSectionDelete(IniSecSettings, L"MultiEdgeLines", false);
     }
@@ -1993,7 +1993,11 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
     Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
     if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) != 0) {
-        IniSectionSetString(IniSecSettings, L"ToolbarButtons", Settings.ToolbarButtons);
+        if (StrIsNotEmpty(Settings.ToolbarButtons)) {
+            IniSectionSetString(IniSecSettings, L"ToolbarButtons", Settings.ToolbarButtons);
+        } else {
+            IniSectionDelete(IniSecSettings, L"ToolbarButtons", false);
+        }
     } else {
         IniSectionDelete(IniSecSettings, L"ToolbarButtons", false);
     }
@@ -2169,9 +2173,9 @@ bool SaveAllSettings(bool bForceSaveSettings)
     }
 
     if (Globals.uCurrentThemeIndex == 0) {
-        Style_ToIniSection(bForceSaveSettings);
+        Style_ToIniSection(false);
     }
-    Style_FileExtToIniSection(bForceSaveSettings);
+    Style_FileExtToIniSection(false);
 
     ok = CloseSettingsFile(true, bOpenedByMe); // reset/clear cache
 
