@@ -293,7 +293,7 @@ CAPTION "Színkiemelés kiválasztása"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
-    CONTROL         "E színkiemelés beállítás &alapértelmezetté.",IDC_DEFAULTSCHEME,
+    CONTROL         "&Alapértelmezett színkiemelés",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,135,10
     CONTROL         "Fájlnév &kit. alapján automatikusan.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,127,10
@@ -336,13 +336,13 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,70,7,30,14,ES_AUTOHSCROLL
     LTEXT           "&Behúzás mérete:",IDC_STATIC2,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,70,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "&Szóközök Tab helyett.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab &gomb újraformázza a behúzásokat.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "&Backspace újraformázza a behúzásokat.",IDC_BACKTAB_INDENTS,
+    CONTROL         "&Szóközök Tab helyett",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Tab &gomb újraformázza a behúzásokat",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "&Backspace újraformázza a behúzásokat",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Figyelmeztetés inkonzisztens behúzásnál.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Figyelmeztetés inkonzisztens behúzásnál",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Automatikus Tab vagy szóköz felismerés.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Automatikus Tab vagy szóköz felismerés",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,117,27,50,14
@@ -720,7 +720,7 @@ BEGIN
 
     GROUPBOX        "Effektusok", grp1, 7, 97, 98, 76, WS_GROUP
     AUTOCHECKBOX    "Át&húzott", chx1, 13, 111, 90, 10, WS_TABSTOP
-    AUTOCHECKBOX    "&Aláhúzom", chx2, 13, 127, 90, 10
+    AUTOCHECKBOX    "&Aláhúzott", chx2, 13, 127, 90, 10
 
     LTEXT           "&Szín:", stc4, 13, 144, 89, 9
     COMBOBOX        cmb4, 13, 155, 85, 100,
