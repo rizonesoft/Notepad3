@@ -220,7 +220,7 @@ msgstr "Kit."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Illeszkedő fájlnevek:\nKülönböző illeszkedési minták elválasztásához: '|', előtt a '-' jel a kihagyáshoz"
+msgstr "Illeszkedő fájlnevek:\nKülönböző illeszkedési minták elválasztásához: '|', a '-' jel előtte a kihagyáshoz"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -409,7 +409,7 @@ msgstr "Kisbetű/nagybetű számít"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Keresés ebben"
+msgstr "Keresés itt:"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
