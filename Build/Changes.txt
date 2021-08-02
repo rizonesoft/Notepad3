@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.726.(build_#) (2021-07-26)
+Current BETA/RC Version 5.21.802.(build_#) (2021-08-02)
 ========================================================
 
 --------------------------------------------------------
@@ -75,6 +75,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.802.1]- Default FileWatchingMode from "don't care" to "notify by MsgBox".
 [.721.1]- Adapded "Sombra" Dark Mode default color scheme.
 [.721.1]- Rename "KiX Config" to "KiXtart Script".
 [.703.1]- Enable Dark Mode feature for Win11 v21H2 Insider beta.
@@ -134,7 +135,7 @@ CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
 [.726.1]- Update grepWinNP3 (GRE) version 2.1.8.39 (2021-07-26).
 [.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
-[.726.1]- Update Lexilla Library (LEX) version 5.1.1 (2021-07-26).
+[.802.1]- Update Lexilla Library (LEX) version 5.1.2 (2021-07-26).
 [.726.1]- Update Scintilla Library (SCI) version 5.1.1 (2021-07-26).
 
 --------------------------------------------------------
@@ -250,7 +251,7 @@ with a priority to take over "(incomplete...)" translation projects:
 - Ukrainian (uk-UA)
 - Vietnamese (vi-VN) (incomplete...)
 - etc...
-Please, send me a PM (mailto:hpwamr51 @ gmail.com)) if you are willing to help. 🤔
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
 --------------------------------------------------------
 
 
