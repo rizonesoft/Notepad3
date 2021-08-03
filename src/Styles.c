@@ -140,22 +140,23 @@ const COLORREF s_colorLightDefault[16] = {
 
 const COLORREF s_colorDarkDefault[16] = {
     RGB(0xDE, 0xDE, 0xDE),
-    RGB(0xB5, 0xE2, 0xF5),
-    RGB(0xA2, 0xC5, 0xD4),
-    RGB(0x89, 0xAC, 0xEC),
+    RGB(0xB4, 0xE1, 0xF5),
+    RGB(0xA1, 0xC3, 0xD3),
+    RGB(0x89, 0xAB, 0xEC),
     RGB(0x71, 0xF8, 0xAD),
-    RGB(0xB2, 0xD7, 0x66),
+    RGB(0xB1, 0xD7, 0x65),
     RGB(0xD8, 0xF7, 0x66),
-    RGB(0xF6, 0xB0, 0x5B),
+    RGB(0xF6, 0xB0, 0x5A),
     RGB(0x14, 0x14, 0x14),
     RGB(0x27, 0x27, 0x02),
-    RGB(0x59, 0x4A, 0x05),
-    RGB(0xF2, 0xB4, 0x0D),
-    RGB(0xF2, 0x45, 0x0D),
-    RGB(0xF5, 0x3D, 0x3E),
-    RGB(0xF6, 0x53, 0xF6),
-    RGB(0xBE, 0x94, 0x50)
+    RGB(0x54, 0x46, 0x04),
+    RGB(0xF2, 0xB5, 0x0D),
+    RGB(0xF2, 0x46, 0x0D),
+    RGB(0xF5, 0x3C, 0x3D),
+    RGB(0xF6, 0x51, 0xF6),
+    RGB(0xBE, 0x94, 0x4E)
 };
+
 
 static bool s_bAutoSelect = true;
 
@@ -509,11 +510,12 @@ bool Style_DynamicThemesMenuCmd(int cmd)
         }
     }
 
+    ResetIniFileCache();
     bool const result = Style_ImportTheme(iThemeIdx); // -1: factory reset
 
     if (result) {
 
-        Globals.uCurrentThemeIndex = (unsigned)clampi(iThemeIdx, 0, (int)ThemeItems_CountOf() - 1);
+        Globals.uCurrentThemeIndex = clampi(iThemeIdx, 0, (int)ThemeItems_CountOf() - 1);
         StringCchCopy(Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName), Theme_Files[Globals.uCurrentThemeIndex].szName);
 
         CheckMenuRadioItem(Globals.hMainMenu, IDM_THEMES_STD_CFG, Theme_Files[ThemesItems_MaxIndex()].rid, 
@@ -715,27 +717,99 @@ static void _LoadLexerFileExtensions()
 //  Style_Load()
 //
 void Style_Load() {
+
     _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
     _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
 
     for (int i = 0; i < 16; ++i) {
-        g_colorCustom[i] = UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i];
+        g_colorCustom[i] = (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]);
     }
 
     _FillThemesMenuTable();
     _LoadLexerFileExtensions();
-    Style_ImportTheme(Globals.uCurrentThemeIndex);
+
+    Style_ImportFromFile(Paths.IniFile);
 }
 
 
 //=============================================================================
 //
-//  _Styles_ReadFromIniCache()
+//  _DefaultsToTmpCache()
 //
-static void _Styles_ReadFromIniCache() {
+static void _DefaultsToTmpCache() {
+
+    ResetTmpCache();
+
+    if (UseDarkMode()) {
+
+        WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+        CopyToTmpCache(Globals.pStdDarkModeIniStyles);
+
+        // need to set default color if not defined
+        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+
+            LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+            LPCWSTR const pszDfltName = g_pLexArray[iLexer]->Styles[0].pszName;
+
+            wchDefaultStyle[0] = L'\0'; // empty
+            TmpCacheGetString(Lexer_Section, pszDfltName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+
+            COLORREF rgb;
+            WCHAR wchColor[32];
+            if (!Style_StrGetColor(wchDefaultStyle, FOREGROUND_LAYER, &rgb, false)) {
+                Style_PrintfCchColor(wchColor, COUNTOF(wchColor), L"; ", FOREGROUND_LAYER, rgbDarkTxtColorRef);
+                StringCchCat(wchDefaultStyle, COUNTOF(wchDefaultStyle), wchColor);
+            }
+            if (!Style_StrGetColor(wchDefaultStyle, BACKGROUND_LAYER, &rgb, false)) {
+                Style_PrintfCchColor(wchColor, COUNTOF(wchColor), L"; ", BACKGROUND_LAYER, rgbDarkBkgColorRef);
+                StringCchCat(wchDefaultStyle, COUNTOF(wchDefaultStyle), wchColor);
+            }
+            TmpCacheSetString(Lexer_Section, pszDfltName, wchDefaultStyle);
+        }
+
+    } else {
+
+        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+            LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+            unsigned i = 0;
+            while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+                LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+                LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
+                TmpCacheSetString(Lexer_Section, pszKeyName, pszDefault);
+                ++i;
+            }
+        }
+    }
+}
+
+static bool _CopyTmpCacheToIniFileCache() {
+
+    WCHAR wchStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+        LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+        unsigned i = 0;
+        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+            wchStyle[0] = L'\0';
+            TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchStyle, COUNTOF(wchStyle));
+            IniSectionSetString(Lexer_Section, pszKeyName, wchStyle);
+            ++i;
+        }
+    }
+    return true;
+}
+
+
+//=============================================================================
+//
+//  _ReadFromIniCache()
+//
+static void _ReadFromIniCache() {
 
     for (int i = 0; i < 16; i++) {
-        g_colorCustom[i] = UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]; // reset
+        g_colorCustom[i] = (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]); // reset
     }
     const WCHAR *const CustomColors_Section = L"Custom Colors";
     WCHAR tch[32] = { L'\0' };
@@ -753,7 +827,7 @@ static void _Styles_ReadFromIniCache() {
             }
         }
         if (itok != 1) {
-            g_colorCustom[i] = UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i];
+            g_colorCustom[i] = (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]);
         }
     }
 
@@ -774,6 +848,10 @@ static void _Styles_ReadFromIniCache() {
     s_cyStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
 
     // Lexer
+    WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+    _DefaultsToTmpCache();
+
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
         LPCWSTR Lexer_Section = g_pLexArray[iLexer]->pszName;
@@ -784,13 +862,18 @@ static void _Styles_ReadFromIniCache() {
 
         unsigned i = 0;
         while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-            IniSectionGetString(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName,
-                g_pLexArray[iLexer]->Styles[i].pszDefault,
+            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+
+            wchDefaultStyle[0] = L'\0';
+            TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+            IniSectionGetString(Lexer_Section, pszKeyName, wchDefaultStyle,
                 g_pLexArray[iLexer]->Styles[i].szValue,
                 COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue));
             ++i;
         }
     }
+
+    ResetTmpCache();
 }
 
 
@@ -812,12 +895,9 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     }
 
     bool bOpendByMe = false;
-    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : 
-                       (bHaveFileResource ? LoadIniFileCache(szFile) : 
-                       (UseDarkMode() ? CopyToIniFileCache(Globals.pStdDarkModeIniStyles) : ResetIniFileCache()));
-
+    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : (bHaveFileResource ? LoadIniFileCache(szFile) : true);
     if (result) {
-        _Styles_ReadFromIniCache();
+        _ReadFromIniCache();
         CloseSettingsFile(false, bOpendByMe);
     }
     return result;
@@ -909,6 +989,21 @@ void Style_FileExtToIniSection(bool bForceAll)
 
 //=============================================================================
 //
+//  Style_CanonicalSectionToIniCache()
+//  create canonical order of lexer sections
+//
+void Style_CanonicalSectionToIniCache() {
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        IniSectionClear(g_pLexArray[iLexer]->pszName, true);
+    }
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        IniSectionSetString(g_pLexArray[iLexer]->pszName, NULL, NULL);
+    }
+}
+
+
+//=============================================================================
+//
 //  Style_ToIniSection()
 //
 
@@ -919,7 +1014,7 @@ void Style_FileExtToIniSection(bool bForceAll)
     IniSectionDelete(IniSecStyles, _W(_STRG(VARNAME)), false);           \
   }
 
-void Style_ToIniSection(bool bForceAll)
+bool Style_ToIniSection(bool bForceAll)
 {
     // Custom colors
     const WCHAR* const CustomColors_Section = L"Custom Colors";
@@ -929,8 +1024,7 @@ void Style_ToIniSection(bool bForceAll)
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
         if ((g_colorCustom[i] != (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i])) || bForceAll) {
             WCHAR wch[32] = { L'\0' };
-            StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
-                            (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
+            ColorToHtmlCode(g_colorCustom[i], wch, COUNTOF(wch));
             IniSectionSetString(CustomColors_Section, tch, wch);
         } else {
             IniSectionDelete(CustomColors_Section, tch, false);
@@ -952,38 +1046,15 @@ void Style_ToIniSection(bool bForceAll)
     SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, SelectDlgSizeX, s_cxStyleSelectDlg, STYLESELECTDLG_X);
     SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, SelectDlgSizeY, s_cyStyleSelectDlg, STYLESELECTDLG_Y);
 
-    // create canonical order of lexer sections
     if (bForceAll || Globals.bIniFileFromScratch) {
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-            IniSectionClear(g_pLexArray[iLexer]->pszName, true);
-        }
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-            IniSectionSetString(g_pLexArray[iLexer]->pszName, NULL, NULL);
-        }
+        Style_CanonicalSectionToIniCache();
     }
-    // ----------------------------------------------------------------
 
-    WCHAR wchTempStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
     WCHAR wchCurrentStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
     WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-    // prepare INI file cache with defaults
-    if (!bForceAll) {
-        if (UseDarkMode()) {
-            CopyToIniFileCache(Globals.pStdDarkModeIniStyles);
-        } else {
-            for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-                LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
-                unsigned i = 0;
-                while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-                    LPCWSTR const pszName = g_pLexArray[iLexer]->Styles[i].pszName;
-                    LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
-                    IniSectionSetString(Lexer_Section, pszName, pszDefault);
-                    ++i;
-                }
-            }
-        }
-    }
+    // prepare tmp cache with defaults
+    _DefaultsToTmpCache();
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
 
@@ -992,36 +1063,38 @@ void Style_ToIniSection(bool bForceAll)
         unsigned i = 0;
         while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
 
-            LPCWSTR const pszName = g_pLexArray[iLexer]->Styles[i].pszName;
-            LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[i].szValue;
+            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
 
             // normalize values for comparison
-            wchCurrentStyle[0] = L'\0'; // empty
+            wchCurrentStyle[0] = L'\0';
+            TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchCurrentStyle, COUNTOF(wchCurrentStyle));
+            wchDefaultStyle[0] = L'\0';
+            Style_CopyStyles_IfNotDefined(wchCurrentStyle, wchDefaultStyle, COUNTOF(wchDefaultStyle));
+
+            wchCurrentStyle[0] = L'\0';
+            LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[i].szValue;
             Style_CopyStyles_IfNotDefined(pszValue, wchCurrentStyle, COUNTOF(wchCurrentStyle));
 
-            if (!bForceAll) {
-                LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
-                wchTempStyle[0] = L'\0'; // empty
-                IniSectionGetString(Lexer_Section, pszName, pszDefault, wchTempStyle, COUNTOF(wchTempStyle));
-                wchDefaultStyle[0] = L'\0'; // empty
-                Style_CopyStyles_IfNotDefined(wchTempStyle, wchDefaultStyle, COUNTOF(wchDefaultStyle));
-            }
             if (bForceAll || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
-                if (StrIsNotEmpty(wchCurrentStyle)) {
-                    IniSectionSetString(Lexer_Section, pszName, wchCurrentStyle);
+                if (bForceAll || StrIsNotEmpty(wchCurrentStyle)) {
+                    IniSectionSetString(Lexer_Section, pszKeyName, wchCurrentStyle);
                 } else {
-                    IniSectionDelete(Lexer_Section, pszName, false);
+                    IniSectionDelete(Lexer_Section, pszKeyName, false);
                 }
             } else {
-                IniSectionDelete(Lexer_Section, pszName, false);
+                IniSectionDelete(Lexer_Section, pszKeyName, false);
             }
             ++i;
         }
     }
 
+    ResetTmpCache();
+
     // cleanup old (< v4) stuff
     IniSectionDelete(L"Default Text", NULL, true);
     IniSectionDelete(L"2nd Default Text", NULL, true);
+
+    return true;
 }
 
 
@@ -1046,7 +1119,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
     // special handling of standard .ini-file
     if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
-        bool bOpendByMe;
+        bool bOpendByMe = false;
         if (OpenSettingsFile(&bOpendByMe)) {
             Style_ToIniSection(bForceAll);
             Style_FileExtToIniSection(bForceAll);
@@ -3020,7 +3093,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bool
     // no colordef bIsDefined - use default as fallback ?
     if (!bIsDefined && useDefault) {
         *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
-        bIsDefined = true;
+        //~bIsDefined = true;
     }
     return bIsDefined;
 }
@@ -3229,7 +3302,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     if (Style_StrGetColor(lpszStyleDest, FOREGROUND_LAYER, &dColor, false)) {
         Style_PrintfCchColor(tch, COUNTOF(tch), L"; ", FOREGROUND_LAYER, dColor);
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    } else if (!bIsFontDefInDestination && Style_StrGetColor(lpszStyleSrc, FOREGROUND_LAYER, &dColor, false)) {
+    } else if (Style_StrGetColor(lpszStyleSrc, FOREGROUND_LAYER, &dColor, false)) {
         Style_PrintfCchColor(tch, COUNTOF(tch), L"; ", FOREGROUND_LAYER, dColor);
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
@@ -4515,12 +4588,16 @@ CASE_WM_CTLCOLOR_SET:
             break;
 
         case IDC_STYLEDEFAULT: {
-            SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
+            WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            _DefaultsToTmpCache();
+            TmpCacheGetString(pCurrentLexer->pszName, pCurrentStyle->pszName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+            SetDlgItemText(hwnd, IDC_STYLEEDIT, wchDefaultStyle);
             if (!bIsStyleSelected) {
                 SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->pszDefExt);
             }
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
             PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+            ResetTmpCache();
         }
         break;
 

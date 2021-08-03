@@ -226,6 +226,37 @@ bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 
 // ============================================================================
 
+static CSimpleIni s_TMPINI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+
+extern "C" bool CopyToTmpCache(LPCSTR lpIniFileResource) {
+    if (StrIsEmptyA(lpIniFileResource)) {
+        return false;
+    }
+    // should be UTF-8 or CP-437
+    return SI_Success(s_TMPINI.LoadData(lpIniFileResource));
+}
+
+extern "C" size_t TmpCacheGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
+    LPWSTR lpReturnedString, size_t cchReturnedString) {
+    bool bHasMultiple = false;
+    StringCchCopyW(lpReturnedString, cchReturnedString,
+        s_TMPINI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
+    //assert(!bHasMultiple);
+    return StringCchLenW(lpReturnedString, cchReturnedString);
+}
+
+extern "C" bool TmpCacheSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString) {
+    SI_Error const rc = s_TMPINI.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
+    return SI_Success(rc);
+}
+
+extern "C" bool ResetTmpCache() {
+    s_TMPINI.Reset();
+    return true;
+}
+
+// ============================================================================
+
 static bool s_bIniFileCacheLoaded = false;
 static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
@@ -256,22 +287,6 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
     s_bIniFileCacheLoaded = SI_Success(s_INI.LoadFile(hIniFile));
 
     ReleaseFileLock(hIniFile, ovrLpd);
-
-    return s_bIniFileCacheLoaded;
-}
-
-
-extern "C" bool CopyToIniFileCache(LPCSTR lpIniFileResource)
-{
-    if (StrIsEmptyA(lpIniFileResource)) {
-        return false;
-    }
-
-    s_INI.SetSpaces(s_bSetSpaces);
-    s_INI.SetMultiLine(s_bUseMultiLine);
-
-    // should be UTF-8 or CP-437
-    s_bIniFileCacheLoaded = SI_Success(s_INI.LoadData(lpIniFileResource));
 
     return s_bIniFileCacheLoaded;
 }
@@ -1042,8 +1057,9 @@ void LoadSettings()
     CFG_VERSION const _ver = StrIsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
     bool bDirtyFlag = false; // do we have to save the file on done
-
-    OpenSettingsFile(NULL);
+    
+    bool bOpendByMe = false;
+    OpenSettingsFile(&bOpendByMe);
 
     // --------------------------------------------------------------------------
     const WCHAR *const IniSecSettings = Constants.Settings_Section;
@@ -1752,9 +1768,10 @@ void LoadSettings()
     const WCHAR *const IniSecStyles = Constants.Styles_Section;
     // --------------------------------------------------------------------------
     IniSectionGetString(IniSecStyles, L"ThemeFileName", L"", Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName));
+    
     Style_Load(); // Scintilla Styles from .ini
 
-    ResetIniFileCache(); // clear cache
+    CloseSettingsFile(true, bOpendByMe);
 }
 //=============================================================================
 
@@ -2172,6 +2189,9 @@ bool SaveAllSettings(bool bForceSaveSettings)
         }
     }
 
+    if (Globals.bIniFileFromScratch) {
+        Style_CanonicalSectionToIniCache();
+    }
     if (Globals.uCurrentThemeIndex == 0) {
         Style_ToIniSection(false);
     }
@@ -2479,7 +2499,7 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 {
     if (pmru) {
-        bool bOpendByMe;
+        bool bOpendByMe = false;
         OpenSettingsFile(&bOpendByMe);
 
         int n = 0;
@@ -2531,7 +2551,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 void MRU_Save(LPMRULIST pmru)
 {
     if (pmru) {
-        bool bOpendByMe;
+        bool bOpendByMe = false;
         OpenSettingsFile(&bOpendByMe);
 
         if (IsIniFileCached()) {

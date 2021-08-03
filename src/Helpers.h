@@ -190,6 +190,10 @@ __forceinline COLORREF AdjustColor(COLORREF rgb, int amount) {
 }
 
 
+__forceinline void ColorToHtmlCode(COLORREF rgb, LPWSTR strg, size_t count) {
+    StringCchPrintf(strg, count, L"#%02X%02X%02X", (int)GetRValue(rgb), (int)GetGValue(rgb), (int)GetBValue(rgb));
+}
+
 // ----------------------------------------------------------------------------
 
 #define SendWMCommandEx(hwnd, id, hi)  SendMessage((hwnd), WM_COMMAND, MAKEWPARAM((id), (hi)), 0)
