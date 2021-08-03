@@ -882,8 +882,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
     }
     FreeResource(hMem);
-    Style_ImportTheme(-1);
 
+    Style_ImportTheme(-1); // init (!)
     Style_ImportTheme(Globals.uCurrentThemeIndex);
 
     //SetProcessDPIAware(); -> .manifest
@@ -1013,6 +1013,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     HACCEL const hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
 
     SetTimer(hwnd, IDT_TIMER_MRKALL, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
+
+    // clear caches
+    ResetTmpCache();
+    ResetIniFileCache();
 
     MSG msg;
     while (GetMessage(&msg,NULL,0,0)) {

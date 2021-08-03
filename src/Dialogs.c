@@ -4657,6 +4657,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             PathAppend(tchIniFilePath, gwIniFileName);
         }
 
+        ResetIniFileCache();
         if (CreateIniFile(tchIniFilePath, NULL) && LoadIniFileCache(tchIniFilePath)) {
             // preserve [global] user settings from last call
             const WCHAR* const globalSection = L"global";

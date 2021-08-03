@@ -40,8 +40,15 @@ bool CloseSettingsFile(bool bSaveChanges, bool keepCached);
 
 // ----------------------------------------------------------------------------
 
+bool CopyToTmpCache(LPCSTR lpIniFileResource);
+size_t TmpCacheGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
+    LPWSTR lpReturnedString, size_t cchReturnedString);
+bool TmpCacheSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
+bool ResetTmpCache();
+
+// ----------------------------------------------------------------------------
+
 bool LoadIniFileCache(LPCWSTR lpIniFilePath);
-bool CopyToIniFileCache(LPCSTR lpIniFileResourceUTF8);
 bool IsIniFileCached();
 bool SaveIniFileCache(LPCWSTR lpIniFilePath);
 bool ResetIniFileCache();
