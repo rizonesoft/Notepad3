@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.802.(build_#) (2021-08-02)
+Current BETA/RC Version 5.21.803.(build_#) (2021-08-03)
 ========================================================
 
 --------------------------------------------------------
@@ -75,6 +75,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.803.1]- New Sombra scheme as default Dark Mode coloring theme.
+[.803.1]- Optimized default style handling for settings file (Dark Mode).
+[.803.1]- Adapted other Dark Mode Theme Files.
 [.802.1]- Default FileWatchingMode from "don't care" to "notify by MsgBox".
 [.721.1]- Adapded "Sombra" Dark Mode default color scheme.
 [.721.1]- Rename "KiX Config" to "KiXtart Script".

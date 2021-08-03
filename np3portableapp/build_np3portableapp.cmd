@@ -48,7 +48,7 @@ set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\Porta
 
 call :RESOLVEPATH NP3_DISTRIB_DIR %SCRIPT_DIR%..\Build
 call :RESOLVEPATH NP3_DOC_DIR %SCRIPT_DIR%..\Build\Docs
-call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\themes
+call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\Themes
 call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v142
 call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v142
 
@@ -141,8 +141,8 @@ copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\setting
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
 
 :: Copy all current "Themes" files
-del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes\*.*"
-xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes" /C /V /I /S /Y
+del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes\*.*"
+xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes" /C /V /I /S /Y
 
 :: Copy all current "lng" files
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
