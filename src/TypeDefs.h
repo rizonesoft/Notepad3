@@ -124,8 +124,9 @@ typedef enum
     CFG_VER_0002 = 2,  /// LongLine Marker Off by default
     CFG_VER_0003 = 3,  /// SimpleIni UTF-8 BOM
     CFG_VER_0004 = 4,  /// Text Files lexer vs. Default Text => (2nd) Common Style
+    CFG_VER_0005 = 5,  /// FileWatchingMode numbering changed
 
-    CFG_VER_CURRENT = CFG_VER_0004
+    CFG_VER_CURRENT = CFG_VER_0005
 
 } CFG_VERSION;
 
