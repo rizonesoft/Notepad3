@@ -541,6 +541,7 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 
 static WIN32_FIND_DATA s_fdCurFile = { 0 };
 static HANDLE s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
+static HANDLE s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
 
 static inline bool HasCurrentFileChanged() {
 
@@ -550,6 +551,7 @@ static inline bool HasCurrentFileChanged() {
     WIN32_FIND_DATA fdUpdated = { 0 };
     if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
         SetEvent(s_hEventFileChangedExt);
+        SetEvent(s_hEventFileDeletedExt);
         return true; // The current file has been removed
     }
     bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
@@ -565,6 +567,7 @@ static inline bool HasCurrentFileChanged() {
 static inline void ResetFileObservationData(const bool bResetEvt) {
     if (bResetEvt) {
         ResetEvent(s_hEventFileChangedExt);
+        ResetEvent(s_hEventFileDeletedExt);
     }
     if (StrIsNotEmpty(Paths.CurrentFile)) {
         if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &s_fdCurFile)) {
@@ -575,6 +578,9 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
 
 static inline bool IsFileChangedFlagSet() {
     return (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
+}
+static inline bool IsFileDeletedFlagSet() {
+    return (WaitForSingleObject(s_hEventFileDeletedExt, 0) != WAIT_TIMEOUT);
 }
 
 //=============================================================================
@@ -626,7 +632,6 @@ static inline void SetSaveNeeded()
 {
     if (!s_DocNeedSaving) {
         s_DocNeedSaving = true;
-        HasCurrentFileChanged();
         UpdateToolbar();
         UpdateTitleBar(Globals.hwndMain);
     }
@@ -774,6 +779,10 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     if (IS_VALID_HANDLE(s_hEventFileChangedExt)) {
         CloseHandle(s_hEventFileChangedExt);
         s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
+    }
+    if (IS_VALID_HANDLE(s_hEventFileDeletedExt)) {
+        CloseHandle(s_hEventFileDeletedExt);
+        s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
     }
 
     // -------------------------------
@@ -1419,6 +1428,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // manual (no automatic) reset & initial state: not signaled (TRUE, FALSE)
     s_hEventFileChangedExt = CreateEvent(NULL, TRUE, FALSE, NULL);
+    s_hEventFileDeletedExt = CreateEvent(NULL, TRUE, FALSE, NULL);
 
     if (Settings.TransparentMode) {
         SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
@@ -1505,18 +1515,15 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
             case FWM_NO_INIT:
                 FileWatching.FileWatchingMode = Settings.FileWatchingMode;
                 break;
-            case FWM_MSGBOX:
-                FileWatching.FileWatchingMode = FWM_MSGBOX;
-                break;
-            case FWM_AUTORELOAD:
-                FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-                break;
-            case FWM_EXCLUSIVELOCK:
-                FileWatching.FileWatchingMode = FWM_EXCLUSIVELOCK;
-                break;
             case FWM_DONT_CARE:
+            case FWM_INDICATORSILENT:
+            case FWM_MSGBOX:
+            case FWM_AUTORELOAD:
+            case FWM_EXCLUSIVELOCK:
+                FileWatching.FileWatchingMode = s_flagChangeNotify;
+                break;
             default:
-                FileWatching.FileWatchingMode = FWM_DONT_CARE;
+                FileWatching.FileWatchingMode = FWM_MSGBOX;
                 break;
             }
             if (!s_IsThisAnElevatedRelaunch) {
@@ -3385,8 +3392,12 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         bool bRevertFile = ((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !GetDocModified());
 
         if (!bRevertFile) {
-            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
-            bRevertFile = ((IDOK == answer) || (IDYES == answer));
+            if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
+                WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
+                bRevertFile = ((IDOK == answer) || (IDYES == answer));
+            } else {
+                // FWM_INDICATORSILENT: nothing todo here
+            }
         }
 
         if (bRevertFile) {
@@ -3401,10 +3412,15 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     } else {
 
-        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2));
-        if ((IDOK == answer) || (IDYES == answer)) {
-            FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+        if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2));
+            if ((IDOK == answer) || (IDYES == answer)) {
+                FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+            } else {
+                SetSaveNeeded();
+            }
         } else {
+            // FWM_INDICATORSILENT: nothing todo here
             SetSaveNeeded();
         }
     }
@@ -9321,7 +9337,7 @@ void UpdateTitleBar(const HWND hwnd)
 
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
             s_flagPasteBoard, s_bIsProcessElevated, GetDocModified(),
-            bFileLocked, IsFileChangedFlagSet(), s_bFileReadOnly, s_wchTitleExcerpt);
+            bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), s_bFileReadOnly, s_wchTitleExcerpt);
     }
     PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
     PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
@@ -9854,6 +9870,7 @@ static inline void _ResetFileWatchingMode() {
         PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
     }
     FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    ResetFileObservationData(true);
 }
 
 
@@ -10525,6 +10542,10 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     if (fSuccess) {
         ResetFileObservationData(true);
     }
+
+    UpdateToolbar();
+    UpdateTitleBar(Globals.hwndMain);
+
     return fSuccess;
 }
 
@@ -11095,8 +11116,9 @@ void SetNotifyIconTitle(HWND hwnd)
 {
     NOTIFYICONDATA nid = { sizeof(NOTIFYICONDATA) };
     nid.hWnd = hwnd;
-    //nid.uID = 0;
+    nid.uID = 0;
     nid.uFlags = NIF_TIP;
+    nid.szTip[0] = L'\0';
 
     WCHAR tchTitle[256] = { L'\0' };
     if (StrIsNotEmpty(s_wchTitleExcerpt)) {
@@ -11110,15 +11132,18 @@ void SetNotifyIconTitle(HWND hwnd)
     } else {
         GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
     }
-    if (IsFileChangedFlagSet()) {
-        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"@ ");
-    } else {
-        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"");
-    }
     if (GetDocModified()) {
-        StringCchCat(nid.szTip, COUNTOF(nid.szTip), L"* ");
+        StringCchCat(nid.szTip, COUNTOF(nid.szTip), DOCMODDIFYD);
     } 
-    StringCchCat(nid.szTip,COUNTOF(nid.szTip),tchTitle);
+    if (IsFileChangedFlagSet()) {
+        if (IsFileDeletedFlagSet()) {
+            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileDeletedIndicator, 3);
+        } else {
+            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileChangedIndicator, 3);
+        }
+        StringCchCat(nid.szTip, COUNTOF(nid.szTip), L" ");
+    }
+    StringCchCat(nid.szTip, COUNTOF(nid.szTip), tchTitle);
 
     Shell_NotifyIcon(NIM_MODIFY,&nid);
 }
