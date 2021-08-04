@@ -626,7 +626,6 @@ static inline void SetSaveNeeded()
 {
     if (!s_DocNeedSaving) {
         s_DocNeedSaving = true;
-        HasCurrentFileChanged();
         UpdateToolbar();
         UpdateTitleBar(Globals.hwndMain);
     }
@@ -1505,18 +1504,15 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
             case FWM_NO_INIT:
                 FileWatching.FileWatchingMode = Settings.FileWatchingMode;
                 break;
-            case FWM_MSGBOX:
-                FileWatching.FileWatchingMode = FWM_MSGBOX;
-                break;
-            case FWM_AUTORELOAD:
-                FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-                break;
-            case FWM_EXCLUSIVELOCK:
-                FileWatching.FileWatchingMode = FWM_EXCLUSIVELOCK;
-                break;
             case FWM_DONT_CARE:
+            case FWM_MSGBOX:
+            case FWM_AUTORELOAD:
+            case FWM_EXCLUSIVELOCK:
+            case FWM_INDICATORSILENT:
+                FileWatching.FileWatchingMode = s_flagChangeNotify;
+                break;
             default:
-                FileWatching.FileWatchingMode = FWM_DONT_CARE;
+                FileWatching.FileWatchingMode = FWM_MSGBOX;
                 break;
             }
             if (!s_IsThisAnElevatedRelaunch) {
@@ -3385,8 +3381,12 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         bool bRevertFile = ((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !GetDocModified());
 
         if (!bRevertFile) {
-            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
-            bRevertFile = ((IDOK == answer) || (IDYES == answer));
+            if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
+                WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
+                bRevertFile = ((IDOK == answer) || (IDYES == answer));
+            } else {
+                // FWM_INDICATORSILENT: nothing todo here
+            }
         }
 
         if (bRevertFile) {
@@ -9854,6 +9854,7 @@ static inline void _ResetFileWatchingMode() {
         PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
     }
     FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    ResetFileObservationData(true);
 }
 
 
@@ -10525,6 +10526,10 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     if (fSuccess) {
         ResetFileObservationData(true);
     }
+
+    UpdateToolbar();
+    UpdateTitleBar(Globals.hwndMain);
+
     return fSuccess;
 }
 
@@ -11095,8 +11100,9 @@ void SetNotifyIconTitle(HWND hwnd)
 {
     NOTIFYICONDATA nid = { sizeof(NOTIFYICONDATA) };
     nid.hWnd = hwnd;
-    //nid.uID = 0;
+    nid.uID = 0;
     nid.uFlags = NIF_TIP;
+    nid.szTip[0] = L'\0';
 
     WCHAR tchTitle[256] = { L'\0' };
     if (StrIsNotEmpty(s_wchTitleExcerpt)) {
@@ -11110,15 +11116,13 @@ void SetNotifyIconTitle(HWND hwnd)
     } else {
         GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
     }
-    if (IsFileChangedFlagSet()) {
-        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"@ ");
-    } else {
-        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"");
-    }
     if (GetDocModified()) {
-        StringCchCat(nid.szTip, COUNTOF(nid.szTip), L"* ");
+        StringCchCat(nid.szTip, COUNTOF(nid.szTip), DOCMODDIFYD);
     } 
-    StringCchCat(nid.szTip,COUNTOF(nid.szTip),tchTitle);
+    if (IsFileChangedFlagSet()) {
+        StringCchCat(nid.szTip, COUNTOF(nid.szTip), DSKFILECHGD);
+    }
+    StringCchCat(nid.szTip, COUNTOF(nid.szTip), tchTitle);
 
     Shell_NotifyIcon(NIM_MODIFY,&nid);
 }
