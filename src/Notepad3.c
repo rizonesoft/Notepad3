@@ -543,6 +543,7 @@ static WIN32_FIND_DATA s_fdCurFile = { 0 };
 static HANDLE s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
 
 static inline bool HasCurrentFileChanged() {
+
     if (StrIsEmpty(Paths.CurrentFile)) {
         return false;
     }
@@ -561,6 +562,20 @@ static inline bool HasCurrentFileChanged() {
     return changed;
 }
 
+static inline void ResetFileOservationData(const bool bResetEvt) {
+    if (bResetEvt) {
+        ResetEvent(s_hEventFileChangedExt);
+    }
+    if (StrIsNotEmpty(Paths.CurrentFile)) {
+        if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &s_fdCurFile)) {
+            ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
+        }
+    }
+}
+
+static inline bool IsFileChangedFlagSet() {
+    return (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
+}
 
 //=============================================================================
 //
@@ -607,14 +622,13 @@ static void  _UpdateToolbarDelayed();
 //
 static bool s_DocNeedSaving = false; // dirty-flag
 
-static void SetSaveNeeded()
+static inline void SetSaveNeeded()
 {
     if (!s_DocNeedSaving) {
         s_DocNeedSaving = true;
+        UpdateToolbar();
         UpdateTitleBar(Globals.hwndMain);
     }
-    UpdateToolbar();
-
     if (IsWindow(Globals.hwndDlgFindReplace)) {
         PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
     }
@@ -626,7 +640,7 @@ void SetSavePoint()
         SciCall_SetSavePoint();
     }
     s_DocNeedSaving = false;
-    ResetEvent(s_hEventFileChangedExt);
+    ResetFileOservationData(true);
     UpdateToolbar();
     UpdateTitleBar(Globals.hwndMain);
 }
@@ -9304,11 +9318,10 @@ void UpdateTitleBar(const HWND hwnd)
     if (hwnd == Globals.hwndMain) {
 
         bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
-        bool const bFileChanged = (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
 
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
             s_flagPasteBoard, s_bIsProcessElevated, GetDocModified(),
-            bFileLocked, bFileChanged, s_bFileReadOnly, s_wchTitleExcerpt);
+            bFileLocked, IsFileChangedFlagSet(), s_bFileReadOnly, s_wchTitleExcerpt);
     }
     PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
     PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
@@ -9905,7 +9918,7 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
         }
-        ResetEvent(s_hEventFileChangedExt);
+        ResetFileOservationData(true);
         return true;
     }
 
@@ -10116,7 +10129,7 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
     }
 
     if (fSuccess) {
-        ResetEvent(s_hEventFileChangedExt);
+        ResetFileOservationData(true);
     }
 
     UpdateTitleBar(Globals.hwndMain);
@@ -10355,7 +10368,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
             }
             Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
-        ResetEvent(s_hEventFileChangedExt);
+        ResetFileOservationData(true);
         return true;
     }
 
@@ -11368,9 +11381,7 @@ void InstallFileWatching(const bool bInstall) {
             if (!IS_VALID_HANDLE(_hObserverThread)) {
 
                 // Save data of current file
-                if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &s_fdCurFile)) {
-                    ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
-                }
+                ResetFileOservationData(false);
 
                 WCHAR tchDirectory[MAX_PATH] = { L'\0' };
                 StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
