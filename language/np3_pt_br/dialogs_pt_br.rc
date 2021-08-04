@@ -278,7 +278,7 @@ CAPTION "Notificação de Mudança de Arquivo"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "&Nenhuma.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Indicator (silent).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "&Indicador (silencioso).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "&Mostrar mensagem.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "Recarregar &automaticamente.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,120,10
     CONTROL         "Bloqueio de Arquivo &Exclusivo.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
