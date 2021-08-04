@@ -1516,10 +1516,10 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                 FileWatching.FileWatchingMode = Settings.FileWatchingMode;
                 break;
             case FWM_DONT_CARE:
+            case FWM_INDICATORSILENT:
             case FWM_MSGBOX:
             case FWM_AUTORELOAD:
             case FWM_EXCLUSIVELOCK:
-            case FWM_INDICATORSILENT:
                 FileWatching.FileWatchingMode = s_flagChangeNotify;
                 break;
             default:
