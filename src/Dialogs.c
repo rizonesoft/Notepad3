@@ -4836,7 +4836,6 @@ void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
     StringCchCat(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
-static const WCHAR *pszFChg = DSKFILECHGD;
 static const WCHAR *pszMod = DOCMODDIFYD;
 static const WCHAR *pszSep  = L" - ";
 static WCHAR s_wchCachedFile[MAX_PATH] = { L'\0' };
@@ -4846,7 +4845,7 @@ static WCHAR s_wchCachedDisplayName[MAX_PATH] = { L'\0' };
 
 void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat, 
                     bool bPasteBoard, bool bIsElevated, bool bModified,
-                    bool bFileLocked, bool bFileChanged, bool bReadOnly, LPCWSTR lpszExcerpt) {
+                    bool bFileLocked, bool bFileChanged, bool bFileDeleted, bool bReadOnly, LPCWSTR lpszExcerpt) {
 
     if (s_bFreezeAppTitle) {
         return;
@@ -4873,7 +4872,12 @@ void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
         StringCchCat(szTitle, COUNTOF(szTitle), pszMod);
     }
     if (bFileChanged) {
-        StringCchCat(szTitle, COUNTOF(szTitle), pszFChg);
+        if (bFileDeleted) {
+            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileDeletedIndicator, 3);
+        } else {
+            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileChangedIndicator, 3);
+        }
+        StringCchCat(szTitle, COUNTOF(szTitle), L" ");
     }
     if (StrIsNotEmpty(lpszExcerpt)) {
 

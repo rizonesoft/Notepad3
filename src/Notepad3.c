@@ -541,6 +541,7 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 
 static WIN32_FIND_DATA s_fdCurFile = { 0 };
 static HANDLE s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
+static HANDLE s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
 
 static inline bool HasCurrentFileChanged() {
 
@@ -550,6 +551,7 @@ static inline bool HasCurrentFileChanged() {
     WIN32_FIND_DATA fdUpdated = { 0 };
     if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
         SetEvent(s_hEventFileChangedExt);
+        SetEvent(s_hEventFileDeletedExt);
         return true; // The current file has been removed
     }
     bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
@@ -565,6 +567,7 @@ static inline bool HasCurrentFileChanged() {
 static inline void ResetFileObservationData(const bool bResetEvt) {
     if (bResetEvt) {
         ResetEvent(s_hEventFileChangedExt);
+        ResetEvent(s_hEventFileDeletedExt);
     }
     if (StrIsNotEmpty(Paths.CurrentFile)) {
         if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &s_fdCurFile)) {
@@ -575,6 +578,9 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
 
 static inline bool IsFileChangedFlagSet() {
     return (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
+}
+static inline bool IsFileDeletedFlagSet() {
+    return (WaitForSingleObject(s_hEventFileDeletedExt, 0) != WAIT_TIMEOUT);
 }
 
 //=============================================================================
@@ -773,6 +779,10 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     if (IS_VALID_HANDLE(s_hEventFileChangedExt)) {
         CloseHandle(s_hEventFileChangedExt);
         s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
+    }
+    if (IS_VALID_HANDLE(s_hEventFileDeletedExt)) {
+        CloseHandle(s_hEventFileDeletedExt);
+        s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
     }
 
     // -------------------------------
@@ -1418,6 +1428,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // manual (no automatic) reset & initial state: not signaled (TRUE, FALSE)
     s_hEventFileChangedExt = CreateEvent(NULL, TRUE, FALSE, NULL);
+    s_hEventFileDeletedExt = CreateEvent(NULL, TRUE, FALSE, NULL);
 
     if (Settings.TransparentMode) {
         SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
@@ -3401,10 +3412,15 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     } else {
 
-        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2));
-        if ((IDOK == answer) || (IDYES == answer)) {
-            FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+        if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2));
+            if ((IDOK == answer) || (IDYES == answer)) {
+                FileSave(true, false, false, false, Flags.bPreserveFileModTime);
+            } else {
+                SetSaveNeeded();
+            }
         } else {
+            // FWM_INDICATORSILENT: nothing todo here
             SetSaveNeeded();
         }
     }
@@ -9321,7 +9337,7 @@ void UpdateTitleBar(const HWND hwnd)
 
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
             s_flagPasteBoard, s_bIsProcessElevated, GetDocModified(),
-            bFileLocked, IsFileChangedFlagSet(), s_bFileReadOnly, s_wchTitleExcerpt);
+            bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), s_bFileReadOnly, s_wchTitleExcerpt);
     }
     PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
     PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
@@ -11120,7 +11136,12 @@ void SetNotifyIconTitle(HWND hwnd)
         StringCchCat(nid.szTip, COUNTOF(nid.szTip), DOCMODDIFYD);
     } 
     if (IsFileChangedFlagSet()) {
-        StringCchCat(nid.szTip, COUNTOF(nid.szTip), DSKFILECHGD);
+        if (IsFileDeletedFlagSet()) {
+            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileDeletedIndicator, 3);
+        } else {
+            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileChangedIndicator, 3);
+        }
+        StringCchCat(nid.szTip, COUNTOF(nid.szTip), L" ");
     }
     StringCchCat(nid.szTip, COUNTOF(nid.szTip), tchTitle);
 

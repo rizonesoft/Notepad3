@@ -69,7 +69,6 @@ typedef DocPos         DocLn;   // Sci::Line
 #define DOCPOSFMTA "%ti"
 #define DOCPOSFMTW L"%ti"
 #define DOCMODDIFYD L"* "
-#define DSKFILECHGD L"[@] "
 
 // --------------------------------------------------------------------------
 
@@ -628,6 +627,9 @@ typedef struct _settings2_t
     COLORREF DarkModeBtnFaceColor;
     COLORREF DarkModeTxtColor;
 #endif
+
+    WCHAR FileChangedIndicator[4];
+    WCHAR FileDeletedIndicator[4];
 
     WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
     WCHAR DefaultExtension[MINI_BUFFER];

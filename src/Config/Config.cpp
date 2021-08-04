@@ -1152,6 +1152,15 @@ void LoadSettings()
                                           250UL, 300000UL);
     FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
 
+
+    StringCchCopy(Defaults2.FileChangedIndicator, COUNTOF(Defaults2.FileChangedIndicator), L"[@]");
+    IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", Defaults2.FileChangedIndicator, 
+                                 Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
+
+    StringCchCopy(Defaults2.FileDeletedIndicator, COUNTOF(Defaults2.FileDeletedIndicator), L"[X]");
+    IniSectionGetString(IniSecSettings2, L"FileDeletedIndicator", Defaults2.FileDeletedIndicator, 
+                                 Settings2.FileDeletedIndicator, COUNTOF(Settings2.FileDeletedIndicator));
+
     Defaults2.UndoTransactionTimeout = 0UL;
     Settings2.UndoTransactionTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"UndoTransactionTimeout",
                                        Defaults2.UndoTransactionTimeout),
