@@ -562,7 +562,7 @@ static inline bool HasCurrentFileChanged() {
     return changed;
 }
 
-static inline void ResetFileOservationData(const bool bResetEvt) {
+static inline void ResetFileObservationData(const bool bResetEvt) {
     if (bResetEvt) {
         ResetEvent(s_hEventFileChangedExt);
     }
@@ -640,7 +640,7 @@ void SetSavePoint()
         SciCall_SetSavePoint();
     }
     s_DocNeedSaving = false;
-    ResetFileOservationData(true);
+    ResetFileObservationData(true);
     UpdateToolbar();
     UpdateTitleBar(Globals.hwndMain);
 }
@@ -9918,7 +9918,7 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
         }
-        ResetFileOservationData(true);
+        ResetFileObservationData(true);
         return true;
     }
 
@@ -10129,7 +10129,7 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
     }
 
     if (fSuccess) {
-        ResetFileOservationData(true);
+        ResetFileObservationData(true);
     }
 
     UpdateTitleBar(Globals.hwndMain);
@@ -10368,7 +10368,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
             }
             Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
-        ResetFileOservationData(true);
+        ResetFileObservationData(true);
         return true;
     }
 
@@ -11381,7 +11381,7 @@ void InstallFileWatching(const bool bInstall) {
             if (!IS_VALID_HANDLE(_hObserverThread)) {
 
                 // Save data of current file
-                ResetFileOservationData(false);
+                ResetFileObservationData(false);
 
                 WCHAR tchDirectory[MAX_PATH] = { L'\0' };
                 StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
