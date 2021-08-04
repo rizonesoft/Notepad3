@@ -2892,7 +2892,7 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
     if (p) {
         p += CONSTSTRGLEN(L"charset:");
         int iValue = 0;
-        if (Char2IntW(p, &iValue)) {
+        if (Char2Int(p, &iValue)) {
             *i = max_i(SC_CHARSET_ANSI, iValue);
             return true;
         }
@@ -2910,7 +2910,7 @@ bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
     WCHAR *p = StrStr(lpszStyle, L"size:");
     if (p) {
         p += CONSTSTRGLEN(L"size:");
-        return Char2IntW(p, i);
+        return Char2Int(p, i);
     }
     return false;
 }
@@ -2941,7 +2941,7 @@ bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
         TrimSpcW(tch);
 
         float fValue = 0.0;
-        if (Char2FloatW(tch, &fValue)) {
+        if (Char2Float(tch, &fValue)) {
             if (fSign != 0) {
                 // relative size calculation
                 float const base = *f; // base is input
@@ -2973,7 +2973,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle, LPWSTR lpszSize, int cchSize)
         TrimSpcW(tch);
 
         float fValue = 0.0f;
-        if (Char2FloatW(tch, &fValue)) {
+        if (Char2Float(tch, &fValue)) {
             WCHAR wchFloatVal[64];
             fValue = (float)fabs(fValue);
             bool const isZero = (fValue == 0.0f);

@@ -6917,6 +6917,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     wchUrl[cchUrl] = L'\0';
                     StrTrim(wchUrl, L" \r\n\t");
 
+                    SplitFilePathLineNum(wchPath, NULL);
+
                     DWORD cchPath = MAX_PATH;
                     if (FAILED(PathCreateFromUrl(wchUrl, wchPath, &cchPath, 0))) {
                         const char *p = &pUrlBegin[CONSTSTRGLEN("file://")];
@@ -6924,8 +6926,9 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                         StringCchCopyN(wchPath, COUNTOF(wchPath), wchUrl, cchUrl); // no op
                         //cchPath = (DWORD)StringCchLen(wchFilePath, MAX_PATH);
                     }
-                    //NormalizePathEx(wchPath, COUNTOF(wchPath), true, false);
 
+                    //NormalizePathEx(wchPath, COUNTOF(wchPath), true, false);
+ 
                     bool found = true;
                     if (PathIsExistingFile(wchPath)) {
                         GetLngStringW2MB(IDS_MUI_URL_FILE_EXISTS, chCallTip, (int)(COUNTOF(chCallTip) >> 1));
@@ -7119,6 +7122,9 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
             WCHAR szUnEscW[INTERNET_MAX_URL_LENGTH + 1];
             DWORD dCch = COUNTOF(szUnEscW);
 
+            int lineNum = -1;
+            SplitFilePathLineNum(szTextW, &lineNum);
+
             if ((operation & OPEN_WITH_NOTEPAD3) && UrlIsFileUrl(szTextW)) {
 
                 PathCreateFromUrl(szTextW, szUnEscW, &dCch, 0);
@@ -7129,14 +7135,20 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
                 PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szUnEscW) - lenPfx));
 
+                bool success = false;
                 if (PathIsExistingFile(szFileName)) {
-                    FileLoad(szFileName, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+                    success = FileLoad(szFileName, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
                 }
                 else if (PathIsDirectory(szFileName)) {
                     WCHAR tchFile[MAX_PATH] = { L'\0' };
                     if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName)) {
-                        FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+                        success = FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
                     }
+                }
+                if (success && (lineNum >= 0)) {
+                    lineNum = clampi(lineNum - 1, 0, INT_MAX);
+                    //~SciCall_GotoLine((DocLn)lineNum);
+                    PostMessage(Globals.hwndEdit, SCI_GOTOLINE, (WPARAM)lineNum, 0);
                 }
                 bHandled = true;
 

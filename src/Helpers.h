@@ -170,6 +170,16 @@ __forceinline bool IsAsyncKeyDown(int key) {
 
 // ----------------------------------------------------------------------------
 
+inline bool Char2Int(LPCWSTR str, int *value) {
+    LPWSTR end;
+    *value = (int)wcstol(str, &end, 10);
+    return (str != end);
+}
+bool Char2Float(WCHAR *wnumber, float *fresult);
+void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
+
+// ----------------------------------------------------------------------------
+
 #define RGB_SUB(X, Y) (((X) > (Y)) ? ((X) - (Y)) : ((Y) - (X)))
 
 __forceinline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
@@ -415,7 +425,7 @@ bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath);
 DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
 void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
 DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
-
+void  SplitFilePathLineNum(LPWSTR lpszPath, int *lineNum);
 
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
@@ -780,15 +790,6 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
 size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int iMin, int iMax, int iDefault, bool ordered);
 size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount);
-
-inline bool Char2IntW(LPCWSTR str, int* value)
-{
-    LPWSTR end;
-    *value = (int)wcstol(str, &end, 10);
-    return (str != end);
-}
-bool Char2FloatW(WCHAR* wnumber, float* fresult);
-void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
 #define MAX_ESCAPE_HEX_DIGIT 4
 int Hex2Char(char* ch, int cnt);
