@@ -766,6 +766,19 @@ static void _DefaultsToTmpCache() {
                 StringCchCat(wchDefaultStyle, COUNTOF(wchDefaultStyle), wchColor);
             }
             TmpCacheSetString(Lexer_Section, pszDfltName, wchDefaultStyle);
+
+            // in case of "pStdDarkModeIniStyles" is incomplete (new Lexer, etc.)
+            unsigned i = 1;
+            while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+                LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+                LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
+                wchDefaultStyle[0] = L'\0'; // empty
+                TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+                if (StrIsEmpty(wchDefaultStyle) && StrIsNotEmpty(pszDefault)) {
+                    TmpCacheSetString(Lexer_Section, pszKeyName, pszDefault);
+                }
+                ++i;
+            }
         }
 
     } else {

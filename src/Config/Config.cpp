@@ -1554,9 +1554,16 @@ void LoadSettings()
     Defaults.PrintMargin.bottom = _margin;
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
+    if (Globals.iCfgVersionRead < CFG_VER_0005) {
+        int const fwm_mode = IniSectionGetInt(IniSecSettings, L"FileWatchingMode", -1);
+        if (fwm_mode > (int)FWM_DONT_CARE) {
+            IniSectionSetInt(IniSecSettings, L"FileWatchingMode", fwm_mode + 1);
+        }
+    }
+    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_MSGBOX, FWM_DONT_CARE, FWM_EXCLUSIVELOCK);
+
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
     GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
-    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_MSGBOX, FWM_DONT_CARE, FWM_EXCLUSIVELOCK);
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
