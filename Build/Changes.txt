@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.803.(build_#) (2021-08-03)
+Current BETA/RC Version 5.21.804.(build_#) (2021-08-04)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.804.1]- File on disk changed notification in title bar.
 [.726.1]- "grepWinNP3" (current grepWin dev) allow multiple search paths (GRE).
 [.709.2]- Add "KiXtart" lexer (new in Lexilla) (LEX).
 [.709.1]- Integrating style theme "Sombra" as factory default Dark-Mode theme.
@@ -75,6 +76,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.804.1]- Minor changed regarding file changed indicator.
 [.803.1]- New Sombra scheme as default Dark Mode coloring theme.
 [.803.1]- Optimized default style handling for settings file (Dark Mode).
 [.803.1]- Adapted other Dark Mode Theme Files.
@@ -145,6 +147,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.804.1]- File change notification in Title Bar.
+[.804.1]- Trigger reset file changed on disc flag.
 [.724.1]- Remove multiple file Notification, if current file has been deleted.
 [.723.1]- F/R-Dlg: show match while typing protected characters.
 [.722.1]- Fixing "infinite" loop in Markdown Lexer.
