@@ -536,6 +536,34 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 
 //=============================================================================
 //
+// HasCurrentFileChanged
+//
+
+static WIN32_FIND_DATA s_fdCurFile = { 0 };
+static HANDLE s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
+
+static inline bool HasCurrentFileChanged() {
+    if (StrIsEmpty(Paths.CurrentFile)) {
+        return false;
+    }
+    WIN32_FIND_DATA fdUpdated = { 0 };
+    if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
+        SetEvent(s_hEventFileChangedExt);
+        return true; // The current file has been removed
+    }
+    bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
+                         //~|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
+                         || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
+                         || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
+    if (changed) {
+        SetEvent(s_hEventFileChangedExt);
+    }
+    return changed;
+}
+
+
+//=============================================================================
+//
 // InvalidateStyleRedraw
 //
 static inline void InvalidateStyleRedraw()
@@ -726,6 +754,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         utarray_clear(UndoRedoSelectionUTArray);
         utarray_free(UndoRedoSelectionUTArray);
         UndoRedoSelectionUTArray = NULL;
+    }
+
+    if (IS_VALID_HANDLE(s_hEventFileChangedExt)) {
+        CloseHandle(s_hEventFileChangedExt);
+        s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
     }
 
     // -------------------------------
@@ -1369,8 +1402,8 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     SetDialogIconNP3(Globals.hwndMain);
     InitWindowCommon(Globals.hwndMain, true);
 
-    // manual reset und initially not signaled (TRUE , FALSE)
-    // s_hEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
+    // manual (no automatic) reset & initial state: not signaled (TRUE, FALSE)
+    s_hEventFileChangedExt = CreateEvent(NULL, TRUE, FALSE, NULL);
 
     if (Settings.TransparentMode) {
         SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
@@ -9268,11 +9301,13 @@ void UpdateSaveSettingsCmds()
 void UpdateTitleBar(const HWND hwnd)
 {
     if (hwnd == Globals.hwndMain) {
+
         bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
+        bool const bFileChanged = (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
 
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
-                       s_flagPasteBoard, s_bIsProcessElevated, GetDocModified(),
-                       bFileLocked, s_bFileReadOnly, s_wchTitleExcerpt);
+            s_flagPasteBoard, s_bIsProcessElevated, GetDocModified(),
+            bFileLocked, bFileChanged, s_bFileReadOnly, s_wchTitleExcerpt);
     }
     PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
     PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
@@ -9745,6 +9780,10 @@ bool FileIO(bool fLoad, LPWSTR pszFileName, EditFileIOStatus *status,
     }
 
     s_bFileReadOnly = IsReadOnly(GetFileAttributes(pszFileName));
+
+    if (fSuccess) {
+        ResetEvent(s_hEventFileChangedExt);
+    }
 
     EndWaitCursor();
 
@@ -11166,24 +11205,6 @@ void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 //  InstallFileWatching()
 //
 //=============================================================================
-
-static WIN32_FIND_DATA s_fdCurFile = { 0 };
-
-static inline bool HasCurrentFileChanged() {
-    if (StrIsEmpty(Paths.CurrentFile)) {
-        return false;
-    }
-    WIN32_FIND_DATA fdUpdated = { 0 };
-    if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
-        return true; // The current file has been removed
-    }
-    bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
-                         //~|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
-                         || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime) 
-                         || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
-    return changed;
-}
-// ----------------------------------------------------------------------------
 
 static DWORD s_dwFileChangeNotifyTime = 0UL;
 
