@@ -626,6 +626,7 @@ static inline void SetSaveNeeded()
 {
     if (!s_DocNeedSaving) {
         s_DocNeedSaving = true;
+        HasCurrentFileChanged();
         UpdateToolbar();
         UpdateTitleBar(Globals.hwndMain);
     }
@@ -640,15 +641,14 @@ void SetSavePoint()
         SciCall_SetSavePoint();
     }
     s_DocNeedSaving = false;
-    ResetFileObservationData(true);
     UpdateToolbar();
     UpdateTitleBar(Globals.hwndMain);
 }
 
 inline static bool GetDocModified()
 {
-    if (SciCall_GetModify() && !s_DocNeedSaving) {
-        SetSaveNeeded();
+    if ((SciCall_GetModify() && !s_DocNeedSaving)) { 
+        SetSaveNeeded(); 
     }
     return s_DocNeedSaving;
 }
@@ -8526,7 +8526,7 @@ static void  _UpdateToolbarDelayed()
     }
 
     EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Paths.CurrentFile));
-    EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() /*&& !bReadOnly*/);
+    EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() || IsFileChangedFlagSet() /*&& !bReadOnly*/);
     EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
     CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
@@ -10167,44 +10167,45 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };
     StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
 
-    //InstallFileWatching(false);
+    //~InstallFileWatching(false);
     bool const result = FileLoad(tchFileName2, true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
-    //InstallFileWatching(true);
+    //~InstallFileWatching(true);
 
-    if (!result) {
-        return false;
-    }
+    if (result) {
 
-    if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-        if (bIsAtDocEnd || FileWatching.MonitoringLog) {
-            bPreserveView = false;
-            SciCall_DocumentEnd();
-            EditScrollSelectionToView();
+        if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
+            if (bIsAtDocEnd || FileWatching.MonitoringLog) {
+                bPreserveView = false;
+                SciCall_DocumentEnd();
+                EditScrollSelectionToView();
+            }
         }
-    }
 
-    if (SciCall_GetTextLength() >= 4) {
-        char tch[5] = { '\0','\0','\0','\0','\0' };
-        SciCall_GetText(COUNTOF(tch), tch);
-        if (StringCchCompareXA(tch, ".LOG") == 0) {
-            SciCall_ClearSelections();
-            bPreserveView = false;
-            SciCall_DocumentEnd();
-            EditScrollSelectionToView();
+        if (SciCall_GetTextLength() >= 4) {
+            char tch[5] = { '\0', '\0', '\0', '\0', '\0' };
+            SciCall_GetText(COUNTOF(tch), tch);
+            if (StringCchCompareXA(tch, ".LOG") == 0) {
+                SciCall_ClearSelections();
+                bPreserveView = false;
+                SciCall_DocumentEnd();
+                EditScrollSelectionToView();
+            }
+        }
+  
+        if (bPreserveView) {
+            SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
+            EditJumpTo(curLineNum + 1, 0);
+            SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
         }
     }
 
     SetSavePoint();
     UpdateMarginWidth(true);
     UpdateStatusbar(true);
+    UpdateToolbar();
+    UpdateTitleBar(Globals.hwndMain);
 
-    if (bPreserveView) {
-        SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
-        EditJumpTo(curLineNum + 1, 0);
-        SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
-    }
-
-    return true;
+    return result;
 }
 
 
@@ -10355,7 +10356,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 #endif
 
 
-    if (!bSaveAlways && (!GetDocModified() || bIsEmptyNewFile) && !bSaveAs) {
+    if (!bSaveAlways && (!GetDocModified() || IsFileChangedFlagSet() || bIsEmptyNewFile) && !bSaveAs) {
         int idx;
         if (MRU_FindFile(Globals.pFileMRU, Paths.CurrentFile, &idx)) {
             Globals.pFileMRU->iEncoding[idx]   = Encoding_GetCurrent();
@@ -10520,6 +10521,9 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
                 MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Paths.CurrentFile);
             }
         }
+    }
+    if (fSuccess) {
+        ResetFileObservationData(true);
     }
     return fSuccess;
 }
@@ -11087,7 +11091,6 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
 //
 //  SetNotifyIconTitle()
 //
-//
 void SetNotifyIconTitle(HWND hwnd)
 {
     NOTIFYICONDATA nid = { sizeof(NOTIFYICONDATA) };
@@ -11107,11 +11110,14 @@ void SetNotifyIconTitle(HWND hwnd)
     } else {
         GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
     }
-    if (GetDocModified()) {
-        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"* ");
+    if (IsFileChangedFlagSet()) {
+        StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"@ ");
     } else {
         StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"");
     }
+    if (GetDocModified()) {
+        StringCchCat(nid.szTip, COUNTOF(nid.szTip), L"* ");
+    } 
     StringCchCat(nid.szTip,COUNTOF(nid.szTip),tchTitle);
 
     Shell_NotifyIcon(NIM_MODIFY,&nid);
