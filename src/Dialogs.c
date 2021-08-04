@@ -4829,8 +4829,9 @@ void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
     StringCchCat(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
-static const WCHAR *pszSep = L" - ";
-static const WCHAR *pszMod = L"* ";
+static const WCHAR *pszFChg = L"@ ";
+static const WCHAR *pszMod  = L"* ";
+static const WCHAR *pszSep  = L" - ";
 static WCHAR s_wchCachedFile[MAX_PATH] = { L'\0' };
 static WCHAR s_wchCachedDisplayName[MAX_PATH] = { L'\0' };
 
@@ -4838,7 +4839,7 @@ static WCHAR s_wchCachedDisplayName[MAX_PATH] = { L'\0' };
 
 void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat, 
                     bool bPasteBoard, bool bIsElevated, bool bModified,
-                    bool bFileLocked, bool bReadOnly, LPCWSTR lpszExcerpt) {
+                    bool bFileLocked, bool bFileChanged, bool bReadOnly, LPCWSTR lpszExcerpt) {
 
     if (s_bFreezeAppTitle) {
         return;
@@ -4861,16 +4862,22 @@ void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
 
     WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
 
+    if (bFileChanged) {
+        StringCchCat(szTitle, COUNTOF(szTitle), pszFChg);
+    }
     if (bModified) {
         StringCchCat(szTitle, COUNTOF(szTitle), pszMod);
     }
     if (StrIsNotEmpty(lpszExcerpt)) {
+
         WCHAR szExcrptFmt[32] = { L'\0' };
         WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
         GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
         StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
         StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
+
     } else if (StrIsNotEmpty(lpszFile)) {
+
         if ((iFormat < 2) && !PathIsRoot(lpszFile)) {
             if (StringCchCompareN(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile, MAX_PATH) != 0) {
                 StringCchCopy(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile);
