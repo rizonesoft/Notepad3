@@ -626,6 +626,7 @@ void SetSavePoint()
         SciCall_SetSavePoint();
     }
     s_DocNeedSaving = false;
+    ResetEvent(s_hEventFileChangedExt);
     UpdateToolbar();
     UpdateTitleBar(Globals.hwndMain);
 }
@@ -9781,10 +9782,6 @@ bool FileIO(bool fLoad, LPWSTR pszFileName, EditFileIOStatus *status,
 
     s_bFileReadOnly = IsReadOnly(GetFileAttributes(pszFileName));
 
-    if (fSuccess) {
-        ResetEvent(s_hEventFileChangedExt);
-    }
-
     EndWaitCursor();
 
     return(fSuccess);
@@ -9908,6 +9905,7 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
         }
+        ResetEvent(s_hEventFileChangedExt);
         return true;
     }
 
@@ -10115,6 +10113,10 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
     } else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
         Flags.bHugeFileLoadState = false; // reset
+    }
+
+    if (fSuccess) {
+        ResetEvent(s_hEventFileChangedExt);
     }
 
     UpdateTitleBar(Globals.hwndMain);
@@ -10353,6 +10355,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
             }
             Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
+        ResetEvent(s_hEventFileChangedExt);
         return true;
     }
 
@@ -11417,7 +11420,6 @@ void InstallFileWatching(const bool bInstall) {
             if (bPrevReadOnlyAttrib && !s_bFileReadOnly) {
                 SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
             }
-
         }
     }
     UpdateTitleBar(Globals.hwndMain);
