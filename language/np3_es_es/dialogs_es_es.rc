@@ -272,17 +272,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 
-IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 91
+IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 103
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Notificación de cambio de archivo"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "&Nada.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Mostrar mensaje.", IDC_RADIO_BTN_B,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,99,10
-    CONTROL         "&Auto-recarga.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Bloquear de archivo exclusivo.", IDC_RADIO_BTN_D,"Button", BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,140,10
-    CONTROL         "&Restablecer si se abre un nuevo archivo.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,150,10
-    CONTROL         "&Monitoreo de Log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,120,10
+    CONTROL         "&Indicador (silencioso).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "&Mostrar mensaje.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Auto-recarga.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Bloquear de archivo exclusivo.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,140,10
+    CONTROL         "&Restablecer si se abre un nuevo archivo.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,150,10
+    CONTROL         "&Monitoreo de Log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     DEFPUSHBUTTON   "Aceptar",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
 END
@@ -905,7 +906,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 177
         TOPMARGIN, 7
-        BOTTOMMARGIN, 84
+        BOTTOMMARGIN, 96
     END
 
     IDD_MUI_STYLESELECT, DIALOG
