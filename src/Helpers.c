@@ -1541,27 +1541,26 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
 //
 //  SplitFilePathLineNum()
 //
-void SplitFilePathLineNum(LPWSTR lpszPath, int * lineNum) {
+bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum) {
 
     LPWSTR const lpszSplit = StrRChr(lpszPath, NULL, L':');
     
+    bool res = false;
     if (lpszSplit) {
         char chLnNumber[128];
         char const defchar = (char)0x24;
         WideCharToMultiByte(CP_ACP, (WC_COMPOSITECHECK | WC_DISCARDNS), &lpszSplit[1], -1, chLnNumber, COUNTOF(chLnNumber), &defchar, NULL);
-        te_xint_t iExprError = 0;
+        te_xint_t iExprError = true;
         int const ln = (int)te_interp(chLnNumber, &iExprError);
-        if (iExprError == 0) {
+        if (!iExprError) {
+            res = true;
             lpszSplit[0] = L'\0'; // split
             if (lineNum) {
                 *lineNum = ln;
             }
         }
-    } else {
-        if (lineNum) {
-            *lineNum = -1; // not found
-        }
     }
+    return res;
 }
 
 
