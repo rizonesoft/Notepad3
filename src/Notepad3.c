@@ -543,6 +543,13 @@ static WIN32_FIND_DATA s_fdCurFile = { 0 };
 static HANDLE s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
 static HANDLE s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
 
+static inline bool IsFileChangedFlagSet() {
+    return (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
+}
+static inline bool IsFileDeletedFlagSet() {
+    return (WaitForSingleObject(s_hEventFileDeletedExt, 0) != WAIT_TIMEOUT);
+}
+
 static inline bool HasCurrentFileChanged() {
 
     if (StrIsEmpty(Paths.CurrentFile)) {
@@ -550,10 +557,19 @@ static inline bool HasCurrentFileChanged() {
     }
     WIN32_FIND_DATA fdUpdated = { 0 };
     if (!GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
+        if (IsFileDeletedFlagSet()) {
+            return false;
+        } else {
+            SetEvent(s_hEventFileChangedExt);
+            SetEvent(s_hEventFileDeletedExt);
+            return true; // The current file has been removed
+        }
+    } else if (IsFileDeletedFlagSet()) {
         SetEvent(s_hEventFileChangedExt);
-        SetEvent(s_hEventFileDeletedExt);
-        return true; // The current file has been removed
+        ResetEvent(s_hEventFileDeletedExt);
+        return true; // The current file has been restored
     }
+
     bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
                          //~|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
                          || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
@@ -576,12 +592,6 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
     }
 }
 
-static inline bool IsFileChangedFlagSet() {
-    return (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
-}
-static inline bool IsFileDeletedFlagSet() {
-    return (WaitForSingleObject(s_hEventFileDeletedExt, 0) != WAIT_TIMEOUT);
-}
 
 //=============================================================================
 //
@@ -3425,9 +3435,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
     }
 
-    if (PathIsExistingFile(Paths.CurrentFile)) {
-        InstallFileWatching(true);
-    }
+    InstallFileWatching(true);
 
     RESET_FCT_GUARD();
     return TRUE;
@@ -4108,7 +4116,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_LOCK_SHARE_READ:
-        InstallFileWatching(false);
+        InstallFileWatching(false); // terminate
         if (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK) {
             FileWatching.FileWatchingMode = Settings.FileWatchingMode;
         } else {
@@ -10196,7 +10204,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };
     StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
 
-    //~InstallFileWatching(false);
+    //~InstallFileWatching(false); // terminate
     bool const result = FileLoad(tchFileName2, true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
     //~InstallFileWatching(true);
 
@@ -10462,7 +10470,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
                 if (bSaveAs) {
                     SaveAllSettings(false); // session on old file ends, save side-by-side settings
                 }
-                InstallFileWatching(false);
+                InstallFileWatching(false); // terminate
             }
             fSuccess = FileIO(false, tchFile, &fioStatus, true, true, false, true, bSaveCopy, bPreserveTimeStamp);
             
@@ -10484,7 +10492,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
             return false;
         }
     } else {
-        InstallFileWatching(false);
+        InstallFileWatching(false); // terminate
         fSuccess = FileIO(false, Paths.CurrentFile, &fioStatus, true, true, false, true, false, bPreserveTimeStamp);
     }
 
@@ -11373,7 +11381,11 @@ void InstallFileWatching(const bool bInstall) {
     static HANDLE _hObserverThread = INVALID_HANDLE_VALUE;
     static HANDLE _hCurrFileHandle = INVALID_HANDLE_VALUE;  // exclusive lock
 
-    bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsExistingFile(Paths.CurrentFile);
+    WCHAR tchDirectory[MAX_PATH] = { L'\0' };
+    StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
+    PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
+
+    bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsDirectory(tchDirectory); //~ && PathIsExistingFile(Paths.CurrentFile);
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
     bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
 
@@ -11424,11 +11436,7 @@ void InstallFileWatching(const bool bInstall) {
             if (!IS_VALID_HANDLE(_hObserverThread)) {
 
                 // Save data of current file
-                ResetFileObservationData(false);
-
-                WCHAR tchDirectory[MAX_PATH] = { L'\0' };
-                StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
-                PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
+                ResetFileObservationData(false); // (!) false
 
                 assert(!IS_VALID_HANDLE(_hChangeHandle) && "ChangeHandle not properly closed!");
 
