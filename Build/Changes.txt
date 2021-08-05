@@ -33,13 +33,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.804.(build_#) (2021-08-04)
+Current BETA/RC Version 5.21.805.(build_#) (2021-08-05)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.805.1]- File change notification, if removed current file is recreated.
+[.805.1]- Allow definition of line number for file:/// URL (separator is ':' ).
 [.804.2]- File change notification Dlg: add "Indicator (silent) option.
 [.804.2]- Configurable File Change/Deleted indicators.
 [.804.1]- File on disk changed notification in title bar.
@@ -149,6 +151,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.805.1]- File URL tooltip.
 [.804.1]- Incomplete default Dark Mode Scheme.
 [.804.1]- Config version dependent "FileWatchingMode" settings value.
 [.804.1]- File change notification in Title Bar.
