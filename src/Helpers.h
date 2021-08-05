@@ -425,7 +425,7 @@ bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath);
 DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
 void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
 DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
-void  SplitFilePathLineNum(LPWSTR lpszPath, int *lineNum);
+bool  SplitFilePathLineNum(LPWSTR lpszPath, int *lineNum);
 
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);

@@ -6919,14 +6919,15 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                 if (StrStrIA(chScheme, "file:") == chScheme) {
 
                     WCHAR wchUrl[INTERNET_MAX_URL_LENGTH] = { L'\0' };
-                    WCHAR wchPath[MAX_PATH] = { L'\0' };
 
                     int const cchUrl = MultiByteToWideChar(Encoding_SciCP, 0, pUrlBegin, (int)length, wchUrl, COUNTOF(wchUrl));
                     wchUrl[cchUrl] = L'\0';
                     StrTrim(wchUrl, L" \r\n\t");
 
-                    SplitFilePathLineNum(wchPath, NULL);
+                    int ln = -1;
+                    SplitFilePathLineNum(wchUrl, &ln);
 
+                    WCHAR wchPath[MAX_PATH] = { L'\0' };
                     DWORD cchPath = MAX_PATH;
                     if (FAILED(PathCreateFromUrl(wchUrl, wchPath, &cchPath, 0))) {
                         const char *p = &pUrlBegin[CONSTSTRGLEN("file://")];
