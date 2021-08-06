@@ -110,7 +110,7 @@ typedef int COLORALPHAREF;
 // ----------------------------------------------------------------------------
 
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
-typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4, SELECT_HYPERLINK = 8 } HYPERLINK_OPS;  // Hyperlink Operations
+typedef enum { OPEN_WITH_BROWSER = 1, OPEN_IN_NOTEPAD3 = (1<<1), OPEN_NEW_NOTEPAD3 = (1<<2), COPY_HYPERLINK = (1<<3), SELECT_HYPERLINK = (1<<4) } HYPERLINK_OPS;  // Hyperlink Operations
 typedef enum { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_INDICATORSILENT = 1, FWM_MSGBOX = 2, FWM_AUTORELOAD = 3, FWM_EXCLUSIVELOCK = 4 } FILE_WATCHING_MODE;
 typedef enum { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 
