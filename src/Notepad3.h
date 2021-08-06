@@ -107,6 +107,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
 WININFO GetFactoryDefaultWndPos(const int flagsPos);
 WININFO GetWinInfoByFlag(const int flagsPos);
 bool ActivatePrevInst();
+bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath);
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs);
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);

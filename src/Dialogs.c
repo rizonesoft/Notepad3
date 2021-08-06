@@ -1472,7 +1472,7 @@ CASE_WM_CTLCOLOR_SET:
                 }
 
                 SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-                //sei.fMask = 0;
+                sei.fMask = SEE_MASK_DEFAULT;
                 sei.hwnd = hwnd;
                 sei.lpVerb = NULL;
                 sei.lpFile = arg1;
@@ -1736,7 +1736,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
         }
 
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-        //sei.fMask = 0;
+        sei.fMask = SEE_MASK_DEFAULT;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
         sei.lpFile = dliOpenWith.szFileName;
