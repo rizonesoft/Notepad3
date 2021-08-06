@@ -6482,7 +6482,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_OPEN_HYPERLINK:
-        HandleHotSpotURLClicked(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3));
+        HandleHotSpotURLClicked(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_IN_NOTEPAD3));
         break;
 
     case CMD_FOLDJUMPDOWN:
@@ -7134,7 +7134,9 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
             SplitFilePathLineNum(szTextW, &lineNum);
             lineNum = clampi(lineNum, 0, INT_MAX);
 
-            if ((operation & OPEN_WITH_NOTEPAD3) && UrlIsFileUrl(szTextW)) {
+            if (((operation & OPEN_IN_NOTEPAD3) || (operation & OPEN_NEW_NOTEPAD3)) && UrlIsFileUrl(szTextW)) {
+
+                bool const bReuseWindow = Flags.bReuseWindow && !(operation & OPEN_NEW_NOTEPAD3);
 
                 PathCreateFromUrl(szTextW, szUnEscW, &dCch, 0);
                 szUnEscW[min_u(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
@@ -7146,7 +7148,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
                 bool success = false;
                 if (PathIsExistingFile(szFilePath)) {
-                    if (Flags.bReuseWindow) {
+                    if (bReuseWindow) {
                         success = FileLoad(szFilePath, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
                     } else {
                         WCHAR wchParams[64];
@@ -7155,7 +7157,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     }
                 }
                 else if (PathIsDirectory(szFilePath)) {
-                    if (Flags.bReuseWindow) {
+                    if (bReuseWindow) {
                         WCHAR tchFile[MAX_PATH] = { L'\0' };
                         if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFilePath)) {
                             success = FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
@@ -7166,7 +7168,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                         success = LaunchNewInstance(Globals.hwndMain, wchParams, szFilePath);
                     }
                 }
-                if (Flags.bReuseWindow && success && (lineNum >= 0)) {
+                if (bReuseWindow && success && (lineNum >= 0)) {
                     lineNum = clampi(lineNum - 1, 0, INT_MAX);
                     //~SciCall_GotoLine((DocLn)lineNum);
                     PostMessage(Globals.hwndEdit, SCI_GOTOLINE, (WPARAM)lineNum, 0);
@@ -7673,10 +7675,14 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_INDICATORRELEASE: {
         if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, scn->position) > 0) {
-            if (_s_indic_click_modifiers & SCMOD_CTRL) {
-                HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER);
-            } else if (_s_indic_click_modifiers & SCMOD_ALT) {
-                HandleHotSpotURLClicked(scn->position, OPEN_WITH_NOTEPAD3); // if applicable (file://)
+            if (_s_indic_click_modifiers & SCMOD_ALT ) {
+                if (_s_indic_click_modifiers & SCMOD_CTRL) {
+                    HandleHotSpotURLClicked(scn->position, OPEN_NEW_NOTEPAD3);
+                } else {
+                    HandleHotSpotURLClicked(scn->position, OPEN_IN_NOTEPAD3);
+                }
+            } else if (_s_indic_click_modifiers & SCMOD_CTRL) {
+                HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER); // if applicable (file://)
             }
         } else if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, scn->position) > 0) {
             if (_s_indic_click_modifiers & SCMOD_ALT) {
