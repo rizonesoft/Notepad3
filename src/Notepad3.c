@@ -4159,7 +4159,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         PathCchRemoveFileSpec(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer));
 
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-        //sei.fMask = 0;
+        sei.fMask = SEE_MASK_DEFAULT;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
         sei.lpFile = Paths.CurrentFile;
@@ -4301,7 +4301,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_MANAGEFAV: {
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-        //sei.fMask = 0;
+        sei.fMask = SEE_MASK_DEFAULT;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
         sei.lpFile = Settings.FavoritesDir;
@@ -6924,8 +6924,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     wchUrl[cchUrl] = L'\0';
                     StrTrim(wchUrl, L" \r\n\t");
 
-                    int ln = -1;
-                    SplitFilePathLineNum(wchUrl, &ln);
+                    SplitFilePathLineNum(wchUrl, NULL); // cut off possible linenum spec
 
                     WCHAR wchPath[MAX_PATH] = { L'\0' };
                     DWORD cchPath = MAX_PATH;
@@ -7133,28 +7132,41 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
             int lineNum = -1;
             SplitFilePathLineNum(szTextW, &lineNum);
+            lineNum = clampi(lineNum, 0, INT_MAX);
 
             if ((operation & OPEN_WITH_NOTEPAD3) && UrlIsFileUrl(szTextW)) {
 
                 PathCreateFromUrl(szTextW, szUnEscW, &dCch, 0);
                 szUnEscW[min_u(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
 
-                WCHAR * const szFileName = szUnEscW;
-                StrTrim(szFileName, L"/");
+                WCHAR * const szFilePath = szUnEscW;
+                StrTrim(szFilePath, L"/");
 
-                PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szUnEscW) - lenPfx));
+                PathCanonicalizeEx(szFilePath, (DWORD)(COUNTOF(szUnEscW) - lenPfx));
 
                 bool success = false;
-                if (PathIsExistingFile(szFileName)) {
-                    success = FileLoad(szFileName, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
-                }
-                else if (PathIsDirectory(szFileName)) {
-                    WCHAR tchFile[MAX_PATH] = { L'\0' };
-                    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName)) {
-                        success = FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+                if (PathIsExistingFile(szFilePath)) {
+                    if (Flags.bReuseWindow) {
+                        success = FileLoad(szFilePath, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+                    } else {
+                        WCHAR wchParams[64];
+                        StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s /g %i", Flags.bSingleFileInstance ? L"/ns" : L"/n", lineNum);
+                        success = LaunchNewInstance(Globals.hwndMain, wchParams, szFilePath);
                     }
                 }
-                if (success && (lineNum >= 0)) {
+                else if (PathIsDirectory(szFilePath)) {
+                    if (Flags.bReuseWindow) {
+                        WCHAR tchFile[MAX_PATH] = { L'\0' };
+                        if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFilePath)) {
+                            success = FileLoad(tchFile, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+                        }
+                    } else {
+                        WCHAR wchParams[64];
+                        StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s", Flags.bSingleFileInstance ? L"/ns" : L"/n");
+                        success = LaunchNewInstance(Globals.hwndMain, wchParams, szFilePath);
+                    }
+                }
+                if (Flags.bReuseWindow && success && (lineNum >= 0)) {
                     lineNum = clampi(lineNum - 1, 0, INT_MAX);
                     //~SciCall_GotoLine((DocLn)lineNum);
                     PostMessage(Globals.hwndEdit, SCI_GOTOLINE, (WPARAM)lineNum, 0);
@@ -10912,6 +10924,37 @@ bool ActivatePrevInst()
         return ((IDOK == answer) || (IDYES == answer)) ? false : true;;
     }
     return false;
+}
+
+
+//=============================================================================
+//
+//  LaunchNewInstance()
+//
+//
+bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
+{
+    WCHAR lpExe[MAX_PATH];
+    GetModuleFileName(NULL, lpExe, COUNTOF(lpExe)); // full path
+    PathCanonicalizeEx(lpExe, COUNTOF(lpExe));
+
+    WCHAR wchDir[MAX_PATH] = { L'\0' };
+    if (StrIsNotEmpty(lpszFilePath)) {
+        StringCchCopy(wchDir, COUNTOF(wchDir), lpszFilePath);
+        PathCchRemoveFileSpec(wchDir, COUNTOF(wchDir));
+    }
+    WCHAR wchParams[MAX_PATH * 2];
+    StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s \"%s\"", lpszParameter, lpszFilePath);
+
+    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+    sei.fMask = SEE_MASK_DEFAULT;
+    sei.hwnd = hwnd;
+    sei.lpVerb = NULL;
+    sei.lpFile = lpExe;
+    sei.lpParameters = wchParams;
+    sei.lpDirectory = StrIsNotEmpty(wchDir) ? wchDir : Paths.WorkingDirectory;
+    sei.nShow = SW_NORMAL;
+    return ShellExecuteExW(&sei);
 }
 
 
