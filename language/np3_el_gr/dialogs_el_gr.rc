@@ -97,7 +97,6 @@ BEGIN
     CONTROL         "&Μετασχ. ανάστρ. καθέτων",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,96,10
     CONTROL         "&Αναζ. κανονικής έκφρασης",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "Η &τελεία ταιριάζει σε όλα",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
-    CONTROL         "Αναζ. επικάλυ&ψης",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "Χωρίς επανέναρ&ξη",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "&Κλείσιμο μετά την εύρεση",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,87,10
     CONTROL         "Σήμανση εμ&φανίσεων",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,77,10
@@ -132,7 +131,6 @@ BEGIN
     CONTROL         "&Μετασχ. ανάστρ. καθέτων",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,100,10
     CONTROL         "&Αναζ. κανονικής έκφρασης",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Η &τελεία ταιριάζει σε όλα",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,90,10
-    CONTROL         "Αναζ. επικάλυ&ψης",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "Χωρίς επανέναρ&ξη",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "&Κλείσιμο μετά αντικ/ση",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,87,10
     CONTROL         "Σήμανση εμ&φανίσεων",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,77,10

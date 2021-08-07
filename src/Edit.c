@@ -5534,19 +5534,6 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
             }
         }
 
-        bIsFlagSet = lpefr->bOverlappingFind;
-        if (IsButtonChecked(hwnd, IDC_FIND_OVERLAPPING)) {
-            if (!bIsFlagSet) {
-                lpefr->bOverlappingFind = true;
-                lpefr->bStateChanged = false; // no effect on state
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->bOverlappingFind = false;
-                lpefr->bStateChanged = false; // no effect on state
-            }
-        }
-
         bIsFlagSet = lpefr->bNoFindWrap;
         if (IsButtonChecked(hwnd, IDC_NOWRAP)) {
             if (!bIsFlagSet) {
@@ -5968,7 +5955,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 SetExplorerTheme(GetDlgItem(hwnd, ctlx[i]));
             }
             int const ctl[] = { IDC_FINDCASE, IDC_FINDWORD, IDC_FINDSTART, IDC_FINDTRANSFORMBS, IDC_FINDESCCTRLCHR, IDC_REPLESCCTRLCHR,
-                                IDC_FINDREGEXP, IDC_DOT_MATCH_ALL, IDC_FIND_OVERLAPPING, IDC_NOWRAP, IDC_FINDCLOSE,
+                                IDC_FINDREGEXP, IDC_DOT_MATCH_ALL, IDC_NOWRAP, IDC_FINDCLOSE,
                                 IDC_ALL_OCCURRENCES, IDC_WILDCARDSEARCH, IDC_TRANSPARENT, IDC_STATIC, IDC_STATIC2
                               };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
@@ -6059,8 +6046,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         // transform BS handled by regex (wildcard search based on):
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_pEfrDataDlg->bTransformBS || s_pEfrDataDlg->bRegExprSearch || s_pEfrDataDlg->bWildcardSearch));
         DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, !(s_pEfrDataDlg->bRegExprSearch || s_pEfrDataDlg->bWildcardSearch));
-
-        CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, SetBtn(s_pEfrDataDlg->bOverlappingFind));
 
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, SetBtn(s_pEfrDataDlg->bMarkOccurences));
         if (!s_pEfrDataDlg->bMarkOccurences) {
@@ -6564,11 +6549,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
         break;
 
-        case IDC_FIND_OVERLAPPING:
-            _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(_MQ_STD);
-            break;
-
         case IDC_FINDTRANSFORMBS: {
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
             _DelayMarkAll(_MQ_STD);
@@ -6794,7 +6774,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
             CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_UNCHECKED);
             CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
-            CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, BST_UNCHECKED);
             CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_UNCHECKED);
             PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_FINDTEXT)), 1);
             break;
@@ -7251,6 +7230,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     }
     int const sFlags = (int)(lpefr->fuFlags);
     bool const bIsRegExpr = (sFlags & SCFIND_REGEXP);
+    bool const bRegexStartOfLine = bIsRegExpr && (szFind[0] == '^');
 
     // SCI_REPLACETARGET or SCI_REPLACETARGETRE
     int iReplaceMsg = SCI_REPLACETARGET;
@@ -7274,10 +7254,15 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     int iCount = 0;
     UndoTransActionBegin();
     while ((iPos >= 0LL) && (start <= iEndPos)) {
+        DocLn const lnCnt = bRegexStartOfLine ? SciCall_GetLineCount() : 0;
         SciCall_SetTargetRange(iPos, end);
         DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
         ++iCount;
+        // start next search behind replacement
         iStartPos = SciCall_GetTargetEnd();
+        if (bRegexStartOfLine && (Sci_GetLineStartPosition(iStartPos) == iStartPos) && (SciCall_GetLineCount() == lnCnt)) {
+            iStartPos = SciCall_PositionAfter(iStartPos);
+        }
         iEndPos += replLen - (end - iPos);
         start = iStartPos;
         end   = iEndPos;

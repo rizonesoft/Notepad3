@@ -1312,7 +1312,6 @@ static void SetFindReplaceData()
         if (g_flagMatchText & 32) {
             s_FindReplaceData.bTransformBS = true;
         }
-        s_FindReplaceData.bOverlappingFind = false;
         s_FindReplaceData.bRegExprSearch = (s_FindReplaceData.fuFlags & SCFIND_REGEXP);
         s_FindReplaceData.bWildcardSearch = false;
         s_FindReplaceData.bReplaceClose = false;
