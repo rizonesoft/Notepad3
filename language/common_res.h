@@ -442,13 +442,12 @@
 #define IDC_INDENT_SPC_MODX             18116
 #define IDC_ADDFAV_FILES                18117
 #define IDC_INFO_GROUPBOX               18118
-#define IDC_FIND_OVERLAPPING            18119
-#define IDC_MULTIEDGELINE               18120
-#define IDC_SHOWEDGELINE                18121
-#define IDC_BACKGRDCOLOR                18122
-#define IDC_CLEAR_LIST                  18123
-#define IDC_FINDESCCTRLCHR              18124
-#define IDC_REPLESCCTRLCHR              18125
+#define IDC_MULTIEDGELINE               18119
+#define IDC_SHOWEDGELINE                18120
+#define IDC_BACKGRDCOLOR                18121
+#define IDC_CLEAR_LIST                  18122
+#define IDC_FINDESCCTRLCHR              18123
+#define IDC_REPLESCCTRLCHR              18124
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201

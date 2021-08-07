@@ -97,7 +97,6 @@ BEGIN
     CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
     CONTROL         "Regular &expression search",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "Dot &matches all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
-    CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "&Don't wrap around",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "C&lose after find",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,65,10
     CONTROL         "Mar&k Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,73,10
@@ -132,7 +131,6 @@ BEGIN
     CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "Regular &expression search",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Dot &matches all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
-    CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "&Don't wrap around",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "C&lose after replace",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,77,10
     CONTROL         "Mar&k Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,73,10

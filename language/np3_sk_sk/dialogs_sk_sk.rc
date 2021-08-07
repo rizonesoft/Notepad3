@@ -97,7 +97,6 @@ BEGIN
     CONTROL         "Trans&form. spätné lomítko",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,94,10
     CONTROL         "Re&gulárne výrazy",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "&Bodka na všetky výsledky",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,95,10
-    CONTROL         "&Prekryť hľadanie",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,84,10
     CONTROL         "N&eotáčať hľadanie",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "&Zatvoriť po hľadaní",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,74,10
     CONTROL         "&Označiť výskyty",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,73,10
@@ -132,7 +131,6 @@ BEGIN
     CONTROL         "Trans&form. spätné lomítko",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,94,10
     CONTROL         "Re&gulárne výrazy",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "&Bodka na všetky výsledky",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,95,10
-    CONTROL         "&Prekryť hľadanie",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,69,10
     CONTROL         "N&eotáčať hľadanie",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "Z&atvoriť po hľadaní",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,77,10
     CONTROL         "&Označiť výskyty",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,73,10
