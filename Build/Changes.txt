@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.806.(build_#) (2021-08-06)
+Current BETA/RC Version 5.21.807.(build_#) (2021-08-07)
 ========================================================
 
 --------------------------------------------------------
@@ -152,6 +152,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.807.1]- RegEx line begin pattern stuck after zero-length replacement.
 [.806.1]- Launching file URL (Alt+Click) with respect to flags "Reuse Window" and "Only one Instance per File".
 [.805.1]- File URL tooltip.
 [.804.1]- Incomplete default Dark Mode Scheme.
@@ -237,6 +238,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
+[.807.1]- Remove deprecated (no sensible use case) "overlapping find" option.
 [.506.1]- "fontsValid" extension (closer to default scintilla code base).
 [.420.1]- Remove useless font stretch handling.
 [.419.2]- Removing the font-style string for font selection.
