@@ -239,7 +239,7 @@ extern "C" bool CopyToTmpCache(LPCSTR lpIniFileResource) {
 extern "C" size_t TmpCacheGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
     LPWSTR lpReturnedString, size_t cchReturnedString) {
     bool bHasMultiple = false;
-    StringCchCopyW(lpReturnedString, cchReturnedString,
+    StringCchCopy(lpReturnedString, cchReturnedString,
         s_TMPINI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
     return StringCchLenW(lpReturnedString, cchReturnedString);
@@ -382,7 +382,7 @@ extern "C" size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, 
                                       LPWSTR lpReturnedString, size_t cchReturnedString)
 {
     bool bHasMultiple = false;
-    StringCchCopyW(lpReturnedString, cchReturnedString,
+    StringCchCopy(lpReturnedString, cchReturnedString,
                    s_INI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
     return StringCchLenW(lpReturnedString, cchReturnedString);
@@ -394,7 +394,7 @@ extern "C" size_t IniSectionGetStringNoQuotes(LPCWSTR lpSectionName, LPCWSTR lpK
                                               LPWSTR lpReturnedString, size_t cchReturnedString)
 {
     bool bHasMultiple = false;
-    StringCchCopyW(lpReturnedString, cchReturnedString,
+    StringCchCopy(lpReturnedString, cchReturnedString,
                    s_INI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
     StrTrim(lpReturnedString, L"\"'");
@@ -545,7 +545,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
                                    LPWSTR lpReturnedString, size_t cchReturnedString)
 {
     if (StrIsEmpty(lpFilePath)) {
-        StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
+        StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
         return StringCchLenW(lpReturnedString, cchReturnedString);
     }
 
@@ -554,7 +554,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
     OVERLAPPED ovrLpd = { 0 };
     HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
-        StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
+        StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
         return StringCchLenW(lpReturnedString, cchReturnedString);
     }
 
@@ -563,10 +563,10 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
     if (SI_Success(rc)) {
         bool bHasMultiple = false;
-        StringCchCopyW(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
+        StringCchCopy(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
         //assert(!bHasMultiple);
     } else {
-        StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
+        StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
     }
     return StringCchLenW(lpReturnedString, cchReturnedString);
 }
@@ -1119,52 +1119,35 @@ void LoadSettings()
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
-        Defaults2.PreferredLanguageLocaleName[0] = L'\0';
-        GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName));
+        Default_PreferredLanguageLocaleName[0] = L'\0';
+        GetUserPreferredLanguage(Default_PreferredLanguageLocaleName, LOCALE_NAME_MAX_LENGTH);
 
-        IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
+        IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Default_PreferredLanguageLocaleName,
                                     Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
     #endif
 
     // --------------------------------------------------------------------------
 
-    StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultExtension", Defaults2.DefaultExtension,
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultExtension", L"txt",
                                 Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
     StrTrim(Settings2.DefaultExtension, L" \t.");
 
-    Defaults2.DefaultDirectory[0] = L'\0';
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", Defaults2.DefaultDirectory,
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"",
                                 Settings2.DefaultDirectory, COUNTOF(Settings2.DefaultDirectory));
 
-    Defaults2.FileDlgFilters[0] = L'\0';
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", Defaults2.FileDlgFilters,
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"",
                                 Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);
 
-    Defaults2.FileCheckInverval = 2000UL;
-    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval",
-                                          Defaults2.FileCheckInverval),
-                                          250UL, 300000UL);
+    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 2000UL), 250UL, 300000UL);
 
-    Defaults2.AutoReloadTimeout = 2000UL;
-    Settings2.AutoReloadTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout",
-                                          Defaults2.AutoReloadTimeout),
-                                          250UL, 300000UL);
+    Settings2.AutoReloadTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", 2000UL), 250UL, 300000UL);
     FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
 
+    IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
 
-    StringCchCopy(Defaults2.FileChangedIndicator, COUNTOF(Defaults2.FileChangedIndicator), L"[@]");
-    IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", Defaults2.FileChangedIndicator, 
-                                 Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
+    IniSectionGetString(IniSecSettings2, L"FileDeletedIndicator", L"[X]", Settings2.FileDeletedIndicator, COUNTOF(Settings2.FileDeletedIndicator));
 
-    StringCchCopy(Defaults2.FileDeletedIndicator, COUNTOF(Defaults2.FileDeletedIndicator), L"[X]");
-    IniSectionGetString(IniSecSettings2, L"FileDeletedIndicator", Defaults2.FileDeletedIndicator, 
-                                 Settings2.FileDeletedIndicator, COUNTOF(Settings2.FileDeletedIndicator));
-
-    Defaults2.UndoTransactionTimeout = 0UL;
-    Settings2.UndoTransactionTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"UndoTransactionTimeout",
-                                       Defaults2.UndoTransactionTimeout),
-                                       0UL, 86400000UL);
+    Settings2.UndoTransactionTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"UndoTransactionTimeout", 0UL), 0UL, 86400000UL);
 
     // Settings2 SciDirectWriteTech deprecated
     Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
@@ -1188,8 +1171,7 @@ void LoadSettings()
     }
     Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : SC_BIDIRECTIONAL_DISABLED;
 
-    Defaults2.IMEInteraction = -1;
-    Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings2, L"IMEInteraction", Defaults2.IMEInteraction), -1, SC_IME_INLINE);
+    Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings2, L"IMEInteraction", -1), -1, SC_IME_INLINE);
     // Korean IME use inline mode by default
     if (Settings2.IMEInteraction == -1) { // auto detection once
         // ScintillaWin::KoreanIME()
@@ -1197,147 +1179,94 @@ void LoadSettings()
         Settings2.IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
 
-    Defaults2.LaunchInstanceWndPosOffset = 0;
-    Settings2.LaunchInstanceWndPosOffset = clampi(IniSectionGetInt(IniSecSettings2, L"LaunchInstanceWndPosOffset", Defaults2.LaunchInstanceWndPosOffset), -10000, 10000);
+    Settings2.LaunchInstanceWndPosOffset = clampi(IniSectionGetInt(IniSecSettings2, L"LaunchInstanceWndPosOffset", 0), -10000, 10000);
 
-    Defaults2.LaunchInstanceFullVisible = false;
-    Settings2.LaunchInstanceFullVisible = IniSectionGetBool(IniSecSettings2, L"LaunchInstanceFullVisible", Defaults2.LaunchInstanceFullVisible);
+    Settings2.LaunchInstanceFullVisible = IniSectionGetBool(IniSecSettings2, L"LaunchInstanceFullVisible", false);
 
-    Defaults2.SciFontQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
-    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
+    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", SC_EFF_QUALITY_LCD_OPTIMIZED), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
-    Defaults2.UpdateDelayMarkAllOccurrences = USER_TIMER_MINIMUM << 2;
-    Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences", Defaults2.UpdateDelayMarkAllOccurrences), (USER_TIMER_MINIMUM << 1), 10000);
+    Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences", USER_TIMER_MINIMUM << 2), (USER_TIMER_MINIMUM << 1), 10000);
 
-    Defaults2.DenyVirtualSpaceAccess = false;
-    Settings2.DenyVirtualSpaceAccess = IniSectionGetBool(IniSecSettings2, L"DenyVirtualSpaceAccess", Defaults2.DenyVirtualSpaceAccess);
+    Settings2.DenyVirtualSpaceAccess = IniSectionGetBool(IniSecSettings2, L"DenyVirtualSpaceAccess", false);
 
-    Defaults2.UseOldStyleBraceMatching = false;
-    Settings2.UseOldStyleBraceMatching = IniSectionGetBool(IniSecSettings2, L"UseOldStyleBraceMatching", Defaults2.UseOldStyleBraceMatching);
+    Settings2.UseOldStyleBraceMatching = IniSectionGetBool(IniSecSettings2, L"UseOldStyleBraceMatching", false);
 
-    Defaults2.CurrentLineHorizontalSlop = 40;
-    Settings2.CurrentLineHorizontalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineHorizontalSlop", Defaults2.CurrentLineHorizontalSlop), 0, 240);
+    Settings2.CurrentLineHorizontalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineHorizontalSlop", 40), 0, 240);
 
-    Defaults2.CurrentLineVerticalSlop = 5;
-    Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 100);
+    Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineVerticalSlop", 5), 0, 100);
 
-    Defaults2.NoCopyLineOnEmptySelection = false;
-    Settings2.NoCopyLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCopyLineOnEmptySelection", Defaults2.NoCopyLineOnEmptySelection);
+    Settings2.NoCopyLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCopyLineOnEmptySelection", false);
 
-    Defaults2.NoCutLineOnEmptySelection = false;
-    Settings2.NoCutLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCutLineOnEmptySelection", Defaults2.NoCutLineOnEmptySelection);
+    Settings2.NoCutLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCutLineOnEmptySelection", false);
 
-    int const iARCLdef = 92;
-    Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
-    int const iARCLset = clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100);
+    int const iARCLset = clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", 92), 0, 100);
     Settings2.AnalyzeReliableConfidenceLevel = (float)iARCLset / 100.0f;
 
-    int const iAnsiCPBonusDef = 33;
-    Defaults2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusDef / 100.0f;
-    int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", iAnsiCPBonusDef), 0, 100);
+    int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
 
-    /* ~~~
-      int const iRCEDCMdef = 85;
-      Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
-      int const iRCEDCMset = clampi(IniSectionGetInt(Settings2_Section, L"ReliableCEDConfidenceMapping", iRCEDCMdef), 0, 100);
-      Settings2.ReliableCEDConfidenceMapping = (float)iRCEDCMset / 100.0f;
-
-      int const iURCEDCMdef = 20;
-      Defaults2.UnReliableCEDConfidenceMapping = (float)iURCEDCMdef / 100.0f;
-      int const iURCEDCMset = clampi(IniSectionGetInt(Settings2_Section, L"UnReliableCEDConfidenceMapping", iURCEDCMdef), 0, iRCEDCMset);
-      Settings2.UnReliableCEDConfidenceMapping = (float)iURCEDCMset / 100.0f;
-      ~~~ */
-
-    Defaults2.AdministrationTool[0] = L'\0';
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"AdministrationTool.exe", L"",
                                 Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
 
-    Defaults2.FileLoadWarningMB = 4;
-    Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
+    Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", 4), 0, 2048);
 
-    Defaults2.OpacityLevel = 75;
-    Settings2.OpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"OpacityLevel", Defaults2.OpacityLevel), 10, 100);
+    Settings2.OpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"OpacityLevel", 75), 10, 100);
 
-    Defaults2.FindReplaceOpacityLevel = 50;
-    Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"FindReplaceOpacityLevel", Defaults2.FindReplaceOpacityLevel), 10, 100);
+    Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"FindReplaceOpacityLevel", 50), 10, 100);
 
-    Defaults2.FileBrowserPath[0] = L'\0';
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"filebrowser.exe", L"", Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
 
-    Defaults2.GrepWinPath[0] = L'\0';
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"grepWin.exe", Defaults2.GrepWinPath, Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"grepWin.exe", L"", Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
 
-    StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
     if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
-        IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
+        IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", _W("Rizonesoft." SAPPNAME), Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
     }
-    Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"ExtendedWhiteSpaceChars", Defaults2.ExtendedWhiteSpaceChars,
+    IniSectionGetString(IniSecSettings2, L"ExtendedWhiteSpaceChars", L"",
                         Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
 
-    Defaults2.AutoCompleteWordCharSet[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"AutoCompleteWordCharSet", Defaults2.AutoCompleteWordCharSet,
-                        Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet));
+    IniSectionGetString(IniSecSettings2, L"AutoCompleteWordCharSet", L"", Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet));
 
-    Defaults2.AutoCompleteFillUpChars[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"AutoCompleteFillUpChars", Defaults2.AutoCompleteFillUpChars,
-                        Settings2.AutoCompleteFillUpChars, COUNTOF(Settings2.AutoCompleteFillUpChars));
+    IniSectionGetString(IniSecSettings2, L"AutoCompleteFillUpChars", L"", Settings2.AutoCompleteFillUpChars, COUNTOF(Settings2.AutoCompleteFillUpChars));
 
-    Defaults2.LineCommentPostfixStrg[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", Defaults2.LineCommentPostfixStrg,
-                        Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
+    IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", L"",  Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
     StrTrim(Settings2.LineCommentPostfixStrg, L"\"'");
 
-    Defaults2.DateTimeFormat[0] = L'\0'; // empty to get <locale date-time format>
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DateTimeFormat", L"", Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
 
-    Defaults2.DateTimeLongFormat[0] = L'\0'; // empty to get <locale date-time format>
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DateTimeLongFormat", Defaults2.DateTimeLongFormat, Settings2.DateTimeLongFormat, COUNTOF(Settings2.DateTimeLongFormat));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DateTimeLongFormat", L"", Settings2.DateTimeLongFormat, COUNTOF(Settings2.DateTimeLongFormat));
 
-    StringCchCopyW(Defaults2.TimeStampRegEx, COUNTOF(Defaults2.TimeStampRegEx), L"\\$Date:[^\\$]+\\$");
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"TimeStampRegEx", Defaults2.TimeStampRegEx, Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"TimeStampRegEx", L"\\$Date:[^\\$]+\\$", Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
 
-    StringCchCopyW(Defaults2.TimeStampFormat, COUNTOF(Defaults2.TimeStampFormat), L"$Date: %s $");
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"TimeStampFormat", Defaults2.TimeStampFormat, Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"TimeStampFormat", L"$Date: %s $", Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
 
-    StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate1", L"https://google.com/search?q=%s", Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
+    //~GetMenuStringW(Globals.hCtxMenu, CMD_WEBACTION1, WebTmpl1MenuName, COUNTOF(WebTmpl1MenuName), MF_BYCOMMAND))
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl1MenuName", L"", Settings2.WebTmpl1MenuName, COUNTOF(Settings2.WebTmpl1MenuName));
 
-    //~GetMenuStringW(Globals.hCtxMenu, CMD_WEBACTION1, Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), MF_BYCOMMAND))
-    StringCchCopyW(Defaults2.WebTmpl1MenuName, COUNTOF(Defaults2.WebTmpl1MenuName), L""); // use resource string
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl1MenuName", Defaults2.WebTmpl1MenuName, Settings2.WebTmpl1MenuName, COUNTOF(Settings2.WebTmpl1MenuName));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate2", L"https://en.wikipedia.org/w/index.php?search=%s", Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+    //~GetMenuStringW(Globals.hMainMenu, CMD_WEBACTION2, WebTmpl2MenuName, COUNTOF(WebTmpl2MenuName), MF_BYCOMMAND))
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl2MenuName", L"", Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
 
-    StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+    Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", true);
 
-    //~GetMenuStringW(Globals.hMainMenu, CMD_WEBACTION2, Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), MF_BYCOMMAND))
-    StringCchCopyW(Defaults2.WebTmpl2MenuName, COUNTOF(Defaults2.WebTmpl2MenuName), L""); // use resource string
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl2MenuName", Defaults2.WebTmpl2MenuName, Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
+    Settings2.ExitOnESCSkipLevel = clampi(IniSectionGetInt(IniSecSettings2, L"ExitOnESCSkipLevel", Default_ExitOnESCSkipLevel), 0, 2);
 
-    Defaults2.LexerSQLNumberSignAsComment = true;
-    Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
+    Settings2.ZoomTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"ZoomTooltipTimeout", 3200), 0, 10000);
 
-    Defaults2.ExitOnESCSkipLevel = 2;
-    Settings2.ExitOnESCSkipLevel = clampi(IniSectionGetInt(IniSecSettings2, L"ExitOnESCSkipLevel", Defaults2.ExitOnESCSkipLevel), 0, 2);
+    Settings2.WrapAroundTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"WrapAroundTooltipTimeout", 2000), 0, 10000);
 
-    Defaults2.ZoomTooltipTimeout = 3200;
-    Settings2.ZoomTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"ZoomTooltipTimeout", Defaults2.ZoomTooltipTimeout), 0, 10000);
+    Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", 150), 100, 1000);
 
-    Defaults2.WrapAroundTooltipTimeout = 2000;
-    Settings2.WrapAroundTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"WrapAroundTooltipTimeout", Defaults2.WrapAroundTooltipTimeout), 0, 10000);
-
-    Defaults2.LargeIconScalePrecent = 150;
-    Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", Defaults2.LargeIconScalePrecent), 100, 1000);
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLWithApp", L"", Settings2.HyperlinkShellExURLWithApp, COUNTOF(Settings2.HyperlinkShellExURLWithApp));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLCmdLnArgs", URLPLACEHLDR, Settings2.HyperlinkShellExURLCmdLnArgs, COUNTOF(Settings2.HyperlinkShellExURLCmdLnArgs));
 
     const static WCHAR *const allowedVerbs[7] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
-    StringCchCopyW(Defaults2.HyperlinkFileProtocolVerb, COUNTOF(Defaults2.HyperlinkFileProtocolVerb), L"");
-    StringCchCopyW(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), Defaults2.HyperlinkFileProtocolVerb);
     WCHAR cfgVerb[MICRO_BUFFER] = { L'\0' };
+    Settings2.HyperlinkFileProtocolVerb[0] = L'\0';
     IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkFileProtocolVerb", L"", cfgVerb, COUNTOF(cfgVerb));
     for (int i = 0; i < 7; ++i) {
         if (StrStr(cfgVerb, allowedVerbs[i])) {
-            StringCchCopyW(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), cfgVerb);
+            StringCchCopy(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), cfgVerb);
             break;
         }
     }
@@ -1348,13 +1277,12 @@ void LoadSettings()
     WCHAR color[32] = { L'\0' };
     WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
 
-    Defaults2.DarkModeBkgColor = rgbDarkBkgColorRef;
-    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBkgColor);
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", rgbDarkBkgColorRef);
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeBkgColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
-        Settings2.DarkModeBkgColor = Defaults2.DarkModeBkgColor;
+        Settings2.DarkModeBkgColor = rgbDarkBkgColorRef;
     }
 
     if (Globals.hbrDarkModeBkgBrush) {
@@ -1365,23 +1293,21 @@ void LoadSettings()
     }
     Globals.hbrDarkModeBkgBrush = CreateSolidBrush(Settings2.DarkModeBkgColor);
 
-    Defaults2.DarkModeBtnFaceColor = rgbDarkBtnFcColorRef;
-    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeBtnFaceColor);
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", rgbDarkBtnFcColorRef);
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBtnFaceColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeBtnFaceColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
-        Settings2.DarkModeBtnFaceColor = Defaults2.DarkModeBtnFaceColor;
+        Settings2.DarkModeBtnFaceColor = rgbDarkBtnFcColorRef;
     }
     Globals.hbrDarkModeBtnFcBrush = CreateSolidBrush(Settings2.DarkModeBtnFaceColor);
 
-    Defaults2.DarkModeTxtColor = rgbDarkTxtColorRef;
-    StringCchPrintf(color, COUNTOF(color), L"%#08x", Defaults2.DarkModeTxtColor);
+    StringCchPrintf(color, COUNTOF(color), L"%#08x", rgbDarkTxtColorRef);
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
     if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
         Settings2.DarkModeTxtColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
-        Settings2.DarkModeTxtColor = Defaults2.DarkModeTxtColor;
+        Settings2.DarkModeTxtColor = rgbDarkTxtColorRef;
     }
 
 #endif
@@ -1587,7 +1513,7 @@ void LoadSettings()
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
     // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
-    StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
+    StringCchCopy(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
     IniSectionGetStringNoQuotes(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -1677,8 +1603,7 @@ void LoadSettings()
     // startup window  (ignore window position if /p was specified)
     // --------------------------------------------------------------
 
-    Defaults2.DefaultWindowPosition[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"DefaultWindowPosition", Defaults2.DefaultWindowPosition,
+    IniSectionGetString(IniSecSettings2, L"DefaultWindowPosition", L"",
                         Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
 
     bool const bExplicitDefaultWinPos = StrIsNotEmpty(Settings2.DefaultWindowPosition);

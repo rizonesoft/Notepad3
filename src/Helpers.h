@@ -67,6 +67,11 @@ inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
     return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
+inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
+{
+    return HeapReAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
+}
+
 inline bool FreeMem(LPVOID lpMemory)
 {
     return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
@@ -451,6 +456,9 @@ inline bool TrimSpcW(LPWSTR lpString)
 #else
 #define TrimSpc TrimSpcA
 #endif
+
+// return memory ownership: use FreeMem() to delete returned string
+LPWSTR StrReplaceAll(LPCWSTR str, LPCWSTR from, LPCWSTR to);
 
 bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len);
 
