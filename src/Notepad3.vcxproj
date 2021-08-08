@@ -625,6 +625,7 @@
     <ClCompile Include="StyleLexers\EditLexer.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
     <ClCompile Include="StyleLexers\styleLexJulia.c" />
+    <ClCompile Include="StyleLexers\styleLexKiX.c" />
     <ClCompile Include="StyleLexers\styleLexKotlin.c" />
     <ClCompile Include="tinyexpr\tinyexpr.c" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
@@ -854,6 +855,7 @@
     <None Include="..\res\Pick.bmp" />
     <None Include="..\res\Prev.bmp" />
     <None Include="..\res\Run.ico" />
+    <None Include="..\res\StdDarkModeScheme.ini" />
     <None Include="..\res\Styles.ico" />
     <None Include="..\res\Toolbar.bmp" />
     <None Include="uchardet\uchardet\src\Big5Freq.tab" />

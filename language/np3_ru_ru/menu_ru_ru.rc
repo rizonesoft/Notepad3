@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Искать в файлах\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "&Новое пустое окно\tAlt+N",          IDM_FILE_NEWWINDOW
+            MENUITEM "Копия &экземпляра\tAlt+Shift+N",     IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть &с повышенными правами", IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Перезагрузить файл\tF5",                 IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "&Игнорировать переменные в файлах",      CMD_IGNORE_FILE_VARS
         POPUP "Ко&дировка"
         BEGIN
             POPUP "&Перезагрузить файл как"
@@ -210,12 +210,12 @@ BEGIN
             MENUITEM "&Добавить отступ",                  IDM_EDIT_INDENT
             MENUITEM "&Удалить отступ",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "Однострочный &комментарий"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "&Переключить\tCtrl+Q",                    IDM_EDIT_LINECOMMENT
+                MENUITEM "&Добавить\tCtrl+Alt+Q",                   IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Удалить\tCtrl+Alt+Shift+Q",              IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Блочное редактирование\tAlt+Shift+Q",    IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "Т&абуляции вместо пробелов в отступах\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
             MENUITEM "Про&белы вместо табуляции в отступах\tCtrl+Alt+S",        IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Кодировать Base&64",                      IDM_EDIT_BASE64ENCODE
+            MENUITEM "Декодировать Base6&4",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Декодировать Base64 в кодировку...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
             MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
@@ -463,7 +463,7 @@ BEGIN
         MENUITEM "Автозавершение на основе &лексем",            IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Ускоренная нави&гация по словам\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Только один &экземпляр на файл",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
         MENUITEM "Заглу&шить звук уведомлений",                 IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Функция клавиши Esc"

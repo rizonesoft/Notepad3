@@ -417,6 +417,9 @@
     <ClCompile Include="StyleLexers\styleLexJulia.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexKiX.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">
@@ -655,6 +658,9 @@
     </None>
     <None Include="uchardet\uchardet\src\Big5Freq.tab">
       <Filter>Source Files\uchardet\LangModels</Filter>
+    </None>
+    <None Include="..\res\StdDarkModeScheme.ini">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

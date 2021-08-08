@@ -68,6 +68,7 @@ typedef Sci_PositionCR DocPosCR;
 typedef DocPos         DocLn;   // Sci::Line
 #define DOCPOSFMTA "%ti"
 #define DOCPOSFMTW L"%ti"
+#define DOCMODDIFYD L"* "
 
 // --------------------------------------------------------------------------
 
@@ -109,8 +110,8 @@ typedef int COLORALPHAREF;
 // ----------------------------------------------------------------------------
 
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
-typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4, SELECT_HYPERLINK = 8 } HYPERLINK_OPS;  // Hyperlink Operations
-typedef enum { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2, FWM_EXCLUSIVELOCK = 3 } FILE_WATCHING_MODE;
+typedef enum { OPEN_WITH_BROWSER = 1, OPEN_IN_NOTEPAD3 = (1<<1), OPEN_NEW_NOTEPAD3 = (1<<2), COPY_HYPERLINK = (1<<3), SELECT_HYPERLINK = (1<<4) } HYPERLINK_OPS;  // Hyperlink Operations
+typedef enum { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_INDICATORSILENT = 1, FWM_MSGBOX = 2, FWM_AUTORELOAD = 3, FWM_EXCLUSIVELOCK = 4 } FILE_WATCHING_MODE;
 typedef enum { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 
 // ----------------------------------------------------------------------------
@@ -123,8 +124,9 @@ typedef enum
     CFG_VER_0002 = 2,  /// LongLine Marker Off by default
     CFG_VER_0003 = 3,  /// SimpleIni UTF-8 BOM
     CFG_VER_0004 = 4,  /// Text Files lexer vs. Default Text => (2nd) Common Style
+    CFG_VER_0005 = 5,  /// FileWatchingMode numbering changed
 
-    CFG_VER_CURRENT = CFG_VER_0004
+    CFG_VER_CURRENT = CFG_VER_0005
 
 } CFG_VERSION;
 
@@ -204,7 +206,6 @@ typedef struct _editfindreplace
     bool bTransformBS;
     bool bFindClose;
     bool bReplaceClose;
-    bool bOverlappingFind;
     bool bNoFindWrap;
     bool bRegExprSearch;
     bool bWildcardSearch;
@@ -220,7 +221,7 @@ typedef struct _editfindreplace
 //typedef const EDITFINDREPLACE* CLPEDITFINDREPLACE;
 typedef const EDITFINDREPLACE* const CLPCEDITFINDREPLACE;
 
-#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, false, true, NULL, "", "" }
+#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, "", "" }
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
@@ -268,9 +269,9 @@ typedef struct _cmq
 #define rgbRedColorRef       (RGB(255, 170, 170))
 #define rgbGreenColorRef     (RGB(170, 255, 170))
 #define rgbBlueColorRef      (RGB(170, 200, 255))
-#define rgbDarkBkgColorRef   (RGB(0x1F, 0x1F, 0x1F))
 #define rgbDarkBtnFcColorRef (RGB(0x33, 0x33, 0x33))
-#define rgbDarkTxtColorRef   (RGB(0xEF, 0xEF, 0xEF))
+#define rgbDarkTxtColorRef   (RGB(0xDE, 0xDE, 0xDE))
+#define rgbDarkBkgColorRef   (RGB(0x14, 0x14, 0x14))
 
 // --------------------------------------------------------------------------
 
@@ -352,7 +353,6 @@ typedef struct _globals_t
     HINSTANCE hInstance;
     HINSTANCE hPrevInst;
     HINSTANCE hLngResContainer;
-    DWORD     WindowsBuildNumber;
     bool      bCanSaveIniFile;
     HWND      hwndMain;
     HANDLE    hndlProcessHeap;
@@ -407,9 +407,8 @@ typedef struct _globals_t
     bool      bReplaceInitialized;
     bool      bDocHasInconsistentEOLs;
 
+    unsigned  uCurrentThemeIndex;
     char *    pStdDarkModeIniStyles;
-    unsigned  idxLightModeTheme;
-    unsigned  idxDarkModeTheme;
 
 #ifdef D_NP3_WIN10_DARK_MODE
     HBRUSH hbrDarkModeBkgBrush;
@@ -419,8 +418,6 @@ typedef struct _globals_t
     FR_STATES FindReplaceMatchFoundState;
 
     WCHAR CurrentLngLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
-    WCHAR LightThemeName[SMALL_BUFFER];
-    WCHAR DarkThemeName[SMALL_BUFFER];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -551,6 +548,7 @@ typedef struct _settings_t
     WCHAR FavoritesDir[MAX_PATH];
     WCHAR ToolbarButtons[MIDSZ_BUFFER];
     WCHAR MultiEdgeLines[MIDSZ_BUFFER];
+    WCHAR CurrentThemeName[MINI_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 
@@ -629,6 +627,9 @@ typedef struct _settings2_t
     COLORREF DarkModeBtnFaceColor;
     COLORREF DarkModeTxtColor;
 #endif
+
+    WCHAR FileChangedIndicator[4];
+    WCHAR FileDeletedIndicator[4];
 
     WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
     WCHAR DefaultExtension[MINI_BUFFER];
@@ -758,6 +759,15 @@ typedef struct _themeFiles
 #define INTERNET_MAX_URL_LENGTH         (INTERNET_MAX_SCHEME_LENGTH \
                                         + sizeof("://") \
                                         + INTERNET_MAX_PATH_LENGTH)
+
+// ----------------------------------------------------------------------------
+
+#define SET_FCT_GUARD(RET) {         \
+    static bool _fctguard = false;   \
+    if (_fctguard) { return (RET); } \
+    { _fctguard = true;
+
+#define RESET_FCT_GUARD()  } _fctguard = false; }
 
 // ----------------------------------------------------------------------------
 

@@ -128,6 +128,7 @@ BEGIN
     IDS_LEX_DART_SRC        "Dart Source Code"
     IDS_LEX_KOTLIN_SRC      "Kotlin Source Code"
     IDS_LEX_JULIA_SCR       "Julia Script"
+    IDS_LEX_KIX_SCR         "KiXtart Script"
 END
 
 STRINGTABLE
@@ -479,7 +480,8 @@ BEGIN
     IDS_LEX_STR_63372       "Decorator"
     IDS_LEX_STR_63373       "Task Marker"
     IDS_LEX_STR_63374       "Comment Doc Error"
-END
+    IDS_LEX_STR_63375       "Type Operator"
+    END
 
 STRINGTABLE
 BEGIN

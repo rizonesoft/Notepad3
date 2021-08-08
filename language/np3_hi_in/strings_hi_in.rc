@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "प्रष्ठ संख्या|रिक्त छोड़ें"
     IDS_MUI_PRINT_COLOR     "सामान्य|प्रकाश उलट करें (गहरे रंग की पृष्ठभूमि)|सफेद पर काला|सफ़ेद पर रंगा हुआ|सफ़ेद पर रंगा हुआ (रेखा संख्या छोड़ कर)|स्क्रीन के रंग"
     IDS_MUI_PRINT_PAGENUM   "प्रष्ठ %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE
@@ -257,8 +259,8 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "भाषा (&L)"
     IDS_USE_LOCALE_DATEFMT  "दिनांक प्रारूप को भाषा अनुसार स्थापित करें (&D)"
     IDS_MUI_MENU_THEMES     "स्कीम संग्रह (&S)"
-    IDM_THEMES_DEFAULT      "फैक्ट्री डिफ़ॉल्ट (&F)"
-    IDM_THEMES_FILE_ITEM    "सामान्य (&S)"
+    IDM_THEMES_FACTORY_RESET "फैक्ट्री डिफ़ॉल्ट (&F)"
+    IDM_THEMES_STD_CFG       "सामान्य (&S)"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "सारा साफ करें"

@@ -34,6 +34,7 @@ __pycache__
 *.sdf
 gtk/*.plist
 win32/*.plist
+*.nativecodeanalysis.xml
 *.opt
 *.plg
 *.pbxbtree
@@ -66,3 +67,4 @@ build.ninja
 .ninja*
 compile_commands.json
 .vscode/
+VTune Profiler Results/

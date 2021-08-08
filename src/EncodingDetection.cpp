@@ -1266,7 +1266,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     // --- 1st check for force encodings ---
 
     LPCWSTR lpszExt = PathFindExtension(pszFile);
-    bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
+    bool const bNfoDizDetected = (lpszExt && ((StringCchCompareXI(lpszExt, L".nfo") == 0) || (StringCchCompareXI(lpszExt, L".diz") == 0)));
 
     encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
 

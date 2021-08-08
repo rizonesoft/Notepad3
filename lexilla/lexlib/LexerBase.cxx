@@ -9,6 +9,9 @@
 #include <cassert>
 #include <cstring>
 
+#include <string>
+#include <string_view>
+
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
@@ -60,9 +63,7 @@ const char * SCI_METHOD LexerBase::DescribeProperty(const char *) {
 }
 
 Sci_Position SCI_METHOD LexerBase::PropertySet(const char *key, const char *val) {
-	const char *valOld = props.Get(key);
-	if (strcmp(val, valOld) != 0) {
-		props.Set(key, val, strlen(key), strlen(val));
+	if (props.Set(key, val)) {
 		return 0;
 	} else {
 		return -1;

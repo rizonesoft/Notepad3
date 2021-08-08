@@ -100,6 +100,7 @@ ashish12phnx            https://github.com/ashish12phnx
 bravo-hero              https://github.com/bravo-hero
 craigo-                 https://github.com/craigo-/
 Crane70                 https://github.com/Crane70
+danfong                 https://github.com/danfong
 engelhro                https://github.com/engelhro
 geogeo-gr               https://github.com/geogeo-gr
 Hexaae                  https://github.com/Hexaae

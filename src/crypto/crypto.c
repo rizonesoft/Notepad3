@@ -618,7 +618,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
         AES_keyInstance fileEncode;		// encryption key for the file
         AES_cipherInstance fileCypher;	// cypher for the file, including the IV
         DWORD PREAMBLE_written = 0;
-        BYTE precodedata[AES_MAX_IV_SIZE * 2 + KEY_BYTES * 2 + PREAMBLE_SIZE];
+        BYTE precodedata[AES_MAX_IV_SIZE * 2 + KEY_BYTES * 2 + PREAMBLE_SIZE] = { 0 };
         long precode_size = AES_MAX_IV_SIZE + PREAMBLE_SIZE; //precode in standard file format
         long *PREAMBLE_data = (long *)precodedata;
         PREAMBLE_data[0] = PREAMBLE;

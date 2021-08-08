@@ -158,6 +158,7 @@
 #define IDS_MUI_EOLMODENAME_LF          13022
 #define IDS_MUI_WARN_NORMALIZE_EOLS     13023
 #define IDS_MUI_INF_PRSVFILEMODTM       13024
+#define IDS_MUI_WARN_STYLE_RESET        13025
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001
@@ -441,13 +442,12 @@
 #define IDC_INDENT_SPC_MODX             18116
 #define IDC_ADDFAV_FILES                18117
 #define IDC_INFO_GROUPBOX               18118
-#define IDC_FIND_OVERLAPPING            18119
-#define IDC_MULTIEDGELINE               18120
-#define IDC_SHOWEDGELINE                18121
-#define IDC_BACKGRDCOLOR                18122
-#define IDC_CLEAR_LIST                  18123
-#define IDC_FINDESCCTRLCHR              18124
-#define IDC_REPLESCCTRLCHR              18125
+#define IDC_MULTIEDGELINE               18119
+#define IDC_SHOWEDGELINE                18120
+#define IDC_BACKGRDCOLOR                18121
+#define IDC_CLEAR_LIST                  18122
+#define IDC_FINDESCCTRLCHR              18123
+#define IDC_REPLESCCTRLCHR              18124
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201
@@ -552,9 +552,8 @@
 #define IDS_USE_LOCALE_DATEFMT          34700
 
 #define IDS_MUI_MENU_THEMES             37000
-#define IDM_THEMES_DEFAULT              37001
-#define IDM_THEMES_RESOURCES            37002
-#define IDM_THEMES_FILE_ITEM            37003
+#define IDM_THEMES_FACTORY_RESET        37001
+#define IDM_THEMES_STD_CFG              37002
 /// !!! dont use IDs until           ...37100
 
 #define IDM_FILE_NEW                    40000
@@ -954,6 +953,7 @@
 #define IDS_LEX_DART_SRC                63051
 #define IDS_LEX_KOTLIN_SRC              63052
 #define IDS_LEX_JULIA_SCR               63053
+#define IDS_LEX_KIX_SCR                 63054
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101
@@ -1231,6 +1231,7 @@
 #define IDS_LEX_STR_63372               63372
 #define IDS_LEX_STR_63373               63373
 #define IDS_LEX_STR_63374               63374
+#define IDS_LEX_STR_63375               63375
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401

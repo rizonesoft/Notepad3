@@ -33,6 +33,12 @@ DefaultLexer.o: \
 	../lexlib/Accessor.h \
 	../lexlib/LexerModule.h \
 	../lexlib/DefaultLexer.h
+LexAccessor.o: \
+	../lexlib/LexAccessor.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/CharacterSet.h
 LexerBase.o: \
 	../lexlib/LexerBase.cxx \
 	../../scintilla/include/ILexer.h \
@@ -283,6 +289,7 @@ LexJulia.o: \
 	../../scintilla/include/Sci_Position.h \
 	../../scintilla/include/Scintilla.h \
 	../include/SciLexer.h \
+	../lexlib/StringCopy.h \
 	../lexlib/PropSetSimple.h \
 	../lexlib/WordList.h \
 	../lexlib/LexAccessor.h \
@@ -611,8 +618,8 @@ LexerUtils.o: \
 	../../scintilla/include/ILexer.h \
 	../lexlib/LexAccessor.h \
 	../lexers_x/CharSetX.h \
-	../lexlib/CharacterSet.h \
 	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
 LexJSON.o: \
@@ -630,6 +637,18 @@ LexJSON.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
+LexKix.o: \
+	../lexers_x/LexKix.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h
 LexKotlin.o: \
 	../lexers_x/LexKotlin.cxx \
 	../../scintilla/include/ILexer.h \

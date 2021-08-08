@@ -81,8 +81,8 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 #define INFOBOX_MODE(_R_) HIWORD(_R_)
 
 void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
-                    bool bPasteBoard, bool bIsElevated, bool bModified,
-                    bool bFileLocked, bool bReadOnly, LPCWSTR lpszExcerpt);
+    bool bPasteBoard, bool bIsElevated, bool bModified,
+    bool bFileLocked, bool bFileChanged, bool bFileDeleted, bool bReadOnly, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);

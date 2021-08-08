@@ -1472,7 +1472,7 @@ CASE_WM_CTLCOLOR_SET:
                 }
 
                 SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-                //sei.fMask = 0;
+                sei.fMask = SEE_MASK_DEFAULT;
                 sei.hwnd = hwnd;
                 sei.lpVerb = NULL;
                 sei.lpFile = arg1;
@@ -1736,7 +1736,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
         }
 
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-        //sei.fMask = 0;
+        sei.fMask = SEE_MASK_DEFAULT;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
         sei.lpFile = dliOpenWith.szFileName;
@@ -2626,8 +2626,10 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //  ChangeNotifyDlgProc()
 //
 //  Controls: IDC_RADIO_BTN_A Radio Button (None)
-//            IDC_RADIO_BTN_B Radio Button (Display Message)
-//            IDC_RADIO_BTN_C Radio Button (Auto-Reload)
+//            IDC_RADIO_BTN_B Radio Button (Indicator Silent)
+//            IDC_RADIO_BTN_C Radio Button (Display Message)
+//            IDC_RADIO_BTN_D Radio Button (Auto-Reload)
+//            IDC_RADIO_BTN_E Radio Button (Exclusive Lock)
 //            IDC_CHECK_BOX_A Check Box    (Reset on New)
 //            IDC_CHECK_BOX_B Check Box    (Monitoring Log)
 //
@@ -2648,7 +2650,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
             SetExplorerTheme(GetDlgItem(hwnd, IDOK));
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_RADIO_BTN_D, IDC_CHECK_BOX_A, IDC_CHECK_BOX_B, -1 };
+            int const ctl[] = { IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_RADIO_BTN_D, IDC_RADIO_BTN_E, IDC_CHECK_BOX_A, IDC_CHECK_BOX_B, -1 };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
@@ -2661,15 +2663,16 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
         CheckDlgButton(hwnd, IDC_CHECK_BOX_B, SetBtn(FileWatching.MonitoringLog));
 
         if (FileWatching.MonitoringLog) {
-            CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_C);
+            CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_C);
             EnableItem(hwnd, IDC_RADIO_BTN_A, FALSE);
             EnableItem(hwnd, IDC_RADIO_BTN_B, FALSE);
             EnableItem(hwnd, IDC_RADIO_BTN_C, FALSE);
             EnableItem(hwnd, IDC_RADIO_BTN_D, FALSE);
+            EnableItem(hwnd, IDC_RADIO_BTN_E, FALSE);
             EnableItem(hwnd, IDC_CHECK_BOX_A, FALSE);
         } else {
             s_FWM = FileWatching.FileWatchingMode;
-            CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_A + s_FWM);
+            CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_A + s_FWM);
         }
         CenterDlgInParent(hwnd, NULL);
     }
@@ -2697,7 +2700,7 @@ CASE_WM_CTLCOLOR_SET:
             AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
             RefreshTitleBarThemeColor(hwnd);
 
-            int const buttons[] = { IDOK, IDCANCEL, IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_CHECK_BOX_A, IDC_CHECK_BOX_B };
+            int const buttons[] = { IDOK, IDCANCEL, IDC_RADIO_BTN_A, IDC_RADIO_BTN_B, IDC_RADIO_BTN_C, IDC_RADIO_BTN_D, IDC_RADIO_BTN_E, IDC_CHECK_BOX_A, IDC_CHECK_BOX_B };
             for (int id = 0; id < COUNTOF(buttons); ++id) {
                 HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
@@ -2714,7 +2717,7 @@ CASE_WM_CTLCOLOR_SET:
 
         case IDC_CHECK_BOX_A:
             if (!IsButtonChecked(hwnd, IDC_CHECK_BOX_A)) {
-                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_A + s_FWM);
+                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_A + s_FWM);
             }
             break;
 
@@ -2722,18 +2725,20 @@ CASE_WM_CTLCOLOR_SET:
         case IDC_CHECK_BOX_B:
             FileWatching.MonitoringLog = IsButtonChecked(hwnd, IDC_CHECK_BOX_B);
             if (FileWatching.MonitoringLog) {
-                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_C);
+                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_C);
                 EnableItem(hwnd, IDC_RADIO_BTN_A, FALSE);
                 EnableItem(hwnd, IDC_RADIO_BTN_B, FALSE);
                 EnableItem(hwnd, IDC_RADIO_BTN_C, FALSE);
                 EnableItem(hwnd, IDC_RADIO_BTN_D, FALSE);
+                EnableItem(hwnd, IDC_RADIO_BTN_E, FALSE);
                 EnableItem(hwnd, IDC_CHECK_BOX_A, FALSE);
             } else {
-                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_D, IDC_RADIO_BTN_A + s_FWM);
+                CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_A + s_FWM);
                 EnableItem(hwnd, IDC_RADIO_BTN_A, TRUE);
                 EnableItem(hwnd, IDC_RADIO_BTN_B, TRUE);
                 EnableItem(hwnd, IDC_RADIO_BTN_C, TRUE);
                 EnableItem(hwnd, IDC_RADIO_BTN_D, TRUE);
+                EnableItem(hwnd, IDC_RADIO_BTN_E, TRUE);
                 EnableItem(hwnd, IDC_CHECK_BOX_A, TRUE);
             }
             break;
@@ -2750,10 +2755,12 @@ CASE_WM_CTLCOLOR_SET:
             if (IsButtonChecked(hwnd, IDC_RADIO_BTN_A)) {
                 s_FWM = FWM_DONT_CARE;
             } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_B)) {
-                s_FWM = FWM_MSGBOX;
+                s_FWM = FWM_INDICATORSILENT;
             } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_C)) {
-                s_FWM = FWM_AUTORELOAD;
+                s_FWM = FWM_MSGBOX;
             } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_D)) {
+                s_FWM = FWM_AUTORELOAD;
+            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_E)) {
                 s_FWM = FWM_EXCLUSIVELOCK;
             }
 
@@ -4657,6 +4664,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             PathAppend(tchIniFilePath, gwIniFileName);
         }
 
+        ResetIniFileCache();
         if (CreateIniFile(tchIniFilePath, NULL) && LoadIniFileCache(tchIniFilePath)) {
             // preserve [global] user settings from last call
             const WCHAR* const globalSection = L"global";
@@ -4828,8 +4836,8 @@ void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
     StringCchCat(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
-static const WCHAR *pszSep = L" - ";
-static const WCHAR *pszMod = L"* ";
+static const WCHAR *pszMod = DOCMODDIFYD;
+static const WCHAR *pszSep  = L" - ";
 static WCHAR s_wchCachedFile[MAX_PATH] = { L'\0' };
 static WCHAR s_wchCachedDisplayName[MAX_PATH] = { L'\0' };
 
@@ -4837,7 +4845,7 @@ static WCHAR s_wchCachedDisplayName[MAX_PATH] = { L'\0' };
 
 void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat, 
                     bool bPasteBoard, bool bIsElevated, bool bModified,
-                    bool bFileLocked, bool bReadOnly, LPCWSTR lpszExcerpt) {
+                    bool bFileLocked, bool bFileChanged, bool bFileDeleted, bool bReadOnly, LPCWSTR lpszExcerpt) {
 
     if (s_bFreezeAppTitle) {
         return;
@@ -4863,13 +4871,24 @@ void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
     if (bModified) {
         StringCchCat(szTitle, COUNTOF(szTitle), pszMod);
     }
+    if (bFileChanged) {
+        if (bFileDeleted) {
+            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileDeletedIndicator, 3);
+        } else {
+            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileChangedIndicator, 3);
+        }
+        StringCchCat(szTitle, COUNTOF(szTitle), L" ");
+    }
     if (StrIsNotEmpty(lpszExcerpt)) {
+
         WCHAR szExcrptFmt[32] = { L'\0' };
         WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
         GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
         StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
         StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
+
     } else if (StrIsNotEmpty(lpszFile)) {
+
         if ((iFormat < 2) && !PathIsRoot(lpszFile)) {
             if (StringCchCompareN(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile, MAX_PATH) != 0) {
                 StringCchCopy(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile);

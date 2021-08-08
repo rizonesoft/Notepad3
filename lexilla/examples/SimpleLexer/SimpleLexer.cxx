@@ -27,6 +27,8 @@ style.simple.1=fore:#FF0000
 #include <string.h>
 #include <assert.h>
 
+#include <string_view>
+
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"

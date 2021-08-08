@@ -92,6 +92,7 @@
     <ClCompile Include="lexers_x\LexDart.cxx" />
     <ClCompile Include="lexers_x\LexerUtils.cxx" />
     <ClCompile Include="lexers_x\LexJSON.cxx" />
+    <ClCompile Include="lexers_x\LexKix.cxx" />
     <ClCompile Include="lexers_x\LexKotlin.cxx" />
     <ClCompile Include="lexers_x\LexMarkdown.cxx" />
     <ClCompile Include="lexers_x\LexPython.cxx" />
@@ -100,6 +101,7 @@
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
     <ClCompile Include="lexlib\CharacterSet.cxx" />
     <ClCompile Include="lexlib\DefaultLexer.cxx" />
+    <ClCompile Include="lexlib\LexAccessor.cxx" />
     <ClCompile Include="lexlib\LexerBase.cxx" />
     <ClCompile Include="lexlib\LexerModule.cxx" />
     <ClCompile Include="lexlib\LexerNoExceptions.cxx" />
@@ -114,7 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\LexicalStyles.iface" />
-    <None Include="src\lexers_x\SciX.iface" />
+    <None Include="lexers_x\SciX.iface" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

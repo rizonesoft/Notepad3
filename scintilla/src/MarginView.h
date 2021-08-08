@@ -8,11 +8,11 @@
 #ifndef MARGINVIEW_H
 #define MARGINVIEW_H
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
-void DrawWrapMarker(Surface *surface, PRectangle rcPlace, bool isEndMarker, ColourDesired wrapColour);
+void DrawWrapMarker(Surface *surface, PRectangle rcPlace, bool isEndMarker, ColourRGBA wrapColour);
 
-typedef void (*DrawWrapMarkerFn)(Surface *surface, PRectangle rcPlace, bool isEndMarker, ColourDesired wrapColour);
+typedef void (*DrawWrapMarkerFn)(Surface *surface, PRectangle rcPlace, bool isEndMarker, ColourRGBA wrapColour);
 
 /**
 * MarginView draws the margins.

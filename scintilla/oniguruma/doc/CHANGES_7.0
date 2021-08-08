@@ -1,4 +1,4 @@
-CHANGES_7.0       2021/05/17
+CHANGES_7.0       2021/06/23
 
 The changes from 6.9 to 7.0 are shown below.
 
@@ -14,7 +14,7 @@ The changes from 6.9 to 7.0 are shown below.
 
     + Move the definition of OnigEncodingType structure from oniguruma.h to regenc.h
 
-    + Removed from oniguruma.h
+    + Removed macros from oniguruma.h
       ONIGENC_IS_MBC_WORD_ASCII()
       ONIGENC_MBC_CASE_FOLD()
       ONIGENC_LEFT_ADJUST_CHAR_HEAD()
@@ -45,13 +45,19 @@ The changes from 6.9 to 7.0 are shown below.
       ONIGENC_CODE_TO_MBC()    -> onigenc_code_to_mbc()
       ONIGENC_IS_CODE_CTYPE()  -> onigenc_is_code_ctype()
 
+    + Removed deprecated functions
+      onig_init()
+      onig_new_deluxe()
+      onig_get_case_fold_flag()
+      onig_get_default_case_fold_flag()
+      onig_set_default_case_fold_flag()
+
 
 * Will change
 
     + Increase the size of the ONIG_SYN_OP/OP2_XXX flag area.
     + Improve the API of syntax-op.
       (Eliminate the distinction between OP and OP2)
-    + Eliminate deprecated functions.
     + update LTVERSION
 
 

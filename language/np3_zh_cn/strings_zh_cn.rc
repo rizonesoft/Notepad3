@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "页码|留空"
     IDS_MUI_PRINT_COLOR     "标准|反色（暗色背景）|白底黑字|白底彩字|白底彩字（除行号以外）|和屏幕颜色相同"
     IDS_MUI_PRINT_PAGENUM   "第 %i 页"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE
@@ -257,8 +259,8 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "语言(&L)"
     IDS_USE_LOCALE_DATEFMT  "使用本地化的日期格式(&D)"
     IDS_MUI_MENU_THEMES     "语法高亮方案集(&S)"
-    IDM_THEMES_DEFAULT      "工厂默认(&F)"
-    IDM_THEMES_FILE_ITEM    "标准 (&S)"  // Keep blank space before (&S)
+    IDM_THEMES_FACTORY_RESET "工厂默认(&F)"
+    IDM_THEMES_STD_CFG       "标准 (&S)"  // Keep blank space before (&S)
     IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,选定  ,字节  ,选行  ,匹配  ,,,,,,,字符  ,改写  ,求值  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "清除全部"

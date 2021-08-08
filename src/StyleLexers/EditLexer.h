@@ -114,6 +114,7 @@ extern EDITLEXER lexJAVA;          // Java Source Code
 extern EDITLEXER lexJS;            // JavaScript
 extern EDITLEXER lexJSON;          // JSON
 extern EDITLEXER lexJulia;         // Julia
+extern EDITLEXER lexKiX;           // KiX
 extern EDITLEXER lexKotlin;        // Kotlin
 extern EDITLEXER lexLATEX;         // LaTeX Files
 extern EDITLEXER lexLUA;           // Lua Script

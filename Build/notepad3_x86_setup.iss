@@ -73,7 +73,6 @@ Name: en; MessagesFile: compiler:Default.isl
 
 
 [Messages]
-;BeveledLabel     ={#app_name} {#app_version}  -  Compiled with VC2015
 SetupAppTitle    =Setup - {#app_name}
 SetupWindowTitle =Setup - {#app_name}
 
@@ -124,7 +123,6 @@ Source: Notepad3.ini;                                               DestDir: {us
 Source: minipath.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3;         Flags: onlyifdoesntexist uninsneveruninstall
 Source: themes\Dark.ini;                                            DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
 Source: themes\Obsidian.ini;                                        DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
-Source: themes\Sombra.ini;                                          DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
 Source: {#bindir}\Release_x86_v142\lng\mplng.dll;                   DestDir: {app}\lng;                                 Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\np3lng.dll;                  DestDir: {app}\lng;                                 Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                           Flags: ignoreversion
@@ -211,6 +209,7 @@ Type: files;      Name: {userdesktop}\{#app_name}.lnk;   Check: not WizardIsTask
 Type: files;      Name: {commondesktop}\{#app_name}.lnk; Check: not WizardIsTaskSelected('desktopicon\common') and IsUpgrade()
 Type: files;      Name: {userstartmenu}\{#app_name}.lnk; Check: not WizardIsTaskSelected('startup_icon')       and IsUpgrade()
 Type: files;      Name: {#quick_launch}\{#app_name}.lnk; Check: not WizardIsTaskSelected('quicklaunchicon')    and IsUpgrade(); OnlyBelowVersion: 6.01
+Type: files;      Name: {userappdata}\Rizonesoft\Notepad3\themes\Sombra.ini
 Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\Readme.txt
 Type: files;      Name: {app}\minipath.ini

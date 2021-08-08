@@ -27,9 +27,12 @@ SUBSYSTEM=-SUBSYSTEM:WINDOWS,5.02
 !ELSE
 SUBSYSTEM=-SUBSYSTEM:WINDOWS,5.01
 !ENDIF
-!ELSEIFDEF ARM64
+!ELSE
+CETCOMPAT=-CETCOMPAT
+!IFDEF ARM64
 ADD_DEFINE=-D_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1
 SUBSYSTEM=-SUBSYSTEM:WINDOWS,10.00
+!ENDIF
 !ENDIF
 
 CRTFLAGS=-D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1 -D_CRT_SECURE_NO_DEPRECATE=1 -D_SCL_SECURE_NO_WARNINGS=1 $(ADD_DEFINE)
@@ -37,7 +40,7 @@ CXXFLAGS=-Zi -TP -MP -W4 -EHsc -std:c++17 $(CRTFLAGS)
 CXXDEBUG=-Od -MTd -DDEBUG
 CXXNDEBUG=-O1 -MT -DNDEBUG -GL
 NAME=-Fo
-LDFLAGS=-OPT:REF -LTCG -IGNORE:4197 -DEBUG $(SUBSYSTEM)
+LDFLAGS=-OPT:REF -LTCG -IGNORE:4197 -DEBUG $(SUBSYSTEM) $(CETCOMPAT)
 LDDEBUG=
 LIBS=KERNEL32.lib USER32.lib GDI32.lib IMM32.lib OLE32.lib OLEAUT32.lib MSIMG32.lib
 NOLOGO=-nologo
@@ -59,7 +62,7 @@ LDFLAGS=$(LDDEBUG) $(LDFLAGS)
 CXXFLAGS=$(CXXFLAGS) $(CXXNDEBUG)
 !ENDIF
 
-INCLUDES=-I../include -I../src -I../lexlib
+INCLUDES=-I../include -I../src
 CXXFLAGS=$(CXXFLAGS) $(INCLUDES)
 
 all:	$(COMPONENT) $(LIBSCI)
@@ -67,7 +70,7 @@ all:	$(COMPONENT) $(LIBSCI)
 clean:
 	-del /q $(DIR_O)\*.obj $(DIR_O)\*.pdb $(DIR_O)\*.asm $(COMPONENT) \
 	$(DIR_O)\*.res $(DIR_BIN)\*.map $(DIR_BIN)\*.exp $(DIR_BIN)\*.pdb \
-	$(DIR_BIN)\Scintilla.lib $(DIR_BIN)\SciLexer.lib $(LIBSCI)
+	$(DIR_BIN)\Scintilla.lib $(LIBSCI)
 
 depend:
 	pyw DepGen.py
@@ -79,8 +82,8 @@ SRC_OBJS=\
 	$(DIR_O)\CaseConvert.obj \
 	$(DIR_O)\CaseFolder.obj \
 	$(DIR_O)\CellBuffer.obj \
-	$(DIR_O)\CharacterCategory.obj \
-	$(DIR_O)\CharacterSet.obj \
+	$(DIR_O)\CharacterCategoryMap.obj \
+	$(DIR_O)\CharacterType.obj \
 	$(DIR_O)\CharClassify.obj \
 	$(DIR_O)\ContractionState.obj \
 	$(DIR_O)\DBCS.obj \
@@ -105,28 +108,6 @@ SRC_OBJS=\
 	$(DIR_O)\ViewStyle.obj \
 	$(DIR_O)\XPM.obj
 
-# Required by lexers
-LEXLIB_OBJS = \
-	$(DIR_O)\Accessor.obj \
-	$(DIR_O)\CatalogueL.obj \
-	$(DIR_O)\ExternalLexer.obj \
-	$(DIR_O)\DefaultLexer.obj \
-	$(DIR_O)\LexerBase.obj \
-	$(DIR_O)\LexerModule.obj \
-	$(DIR_O)\LexerSimple.obj \
-	$(DIR_O)\StyleContext.obj \
-	$(DIR_O)\WordList.obj
-
-# Required by libraries and DLLs that include lexing
-SCILEX_OBJS = \
-	$(SRC_OBJS) \
-	$(LEXLIB_OBJS) \
-	$(LEX_OBJS) \
-	$(DIR_O)\HanjaDic.obj \
-	$(DIR_O)\PlatWin.obj \
-	$(DIR_O)\ScintillaBaseL.obj \
-	$(DIR_O)\ScintillaWin.obj
-
 COMPONENT_OBJS = \
 	$(DIR_O)\HanjaDic.obj \
 	$(DIR_O)\PlatWin.obj \
@@ -148,22 +129,8 @@ $(LIBSCI): $(COMPONENT_OBJS)
 
 {..\src}.cxx{$(DIR_O)}.obj::
 	$(CXX) $(CXXFLAGS) -c $(NAME)$(DIR_O)\ $<
-{..\lexlib}.cxx{$(DIR_O)}.obj::
-	$(CXX) $(CXXFLAGS) -c $(NAME)$(DIR_O)\ $<
-{..\lexers}.cxx{$(DIR_O)}.obj::
-	$(CXX) $(CXXFLAGS) -c $(NAME)$(DIR_O)\ $<
 {.}.cxx{$(DIR_O)}.obj::
 	$(CXX) $(CXXFLAGS) -c $(NAME)$(DIR_O)\ $<
-
-# Some source files are compiled into more than one object because of different conditional compilation
-$(DIR_O)\ScintillaBaseL.obj: ..\src\ScintillaBase.cxx
-	$(CXX) $(CXXFLAGS) -DSCI_LEXER -c $(NAME)$@ ..\src\ScintillaBase.cxx
-
-$(DIR_O)\CatalogueL.obj: ..\src\Catalogue.cxx
-	$(CXX) $(CXXFLAGS) -DSCI_LEXER -c $(NAME)$@ ..\src\Catalogue.cxx
-
-$(DIR_O)\Catalogue.obj: ..\src\Catalogue.cxx
-	$(CXX) $(CXXFLAGS) -DSCI_LEXER -DSCI_EMPTYCATALOGUE -c $(NAME)$@ ..\src\Catalogue.cxx
 
 # Dependencies
 

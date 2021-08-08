@@ -12,7 +12,7 @@
 #include "CaseFolder.h"
 #include "CaseConvert.h"
 
-using namespace Scintilla;
+using namespace Scintilla::Internal;
 
 CaseFolder::~CaseFolder() = default;
 

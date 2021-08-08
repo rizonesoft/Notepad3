@@ -266,6 +266,12 @@
     <ClCompile Include="lexers_x\LexMarkdown.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
+    <ClCompile Include="lexlib\LexAccessor.cxx">
+      <Filter>lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexKix.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\LexillaVersion.rc">
@@ -276,7 +282,7 @@
     <None Include="include\LexicalStyles.iface">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="src\lexers_x\SciX.iface">
+    <None Include="lexers_x\SciX.iface">
       <Filter>lexers_x</Filter>
     </None>
   </ItemGroup>

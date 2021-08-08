@@ -33,13 +33,22 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.529.(build_#) (2021-05-29)
+Current BETA/RC Version 5.21.807.(build_#) (2021-08-07)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.805.1]- File URL forced to open in new window by (Ctrl+Alt+Click).
+[.805.1]- File change notification, if removed current file is recreated.
+[.805.1]- Allow definition of line number for file:/// URL (separator is ':' ).
+[.804.2]- File change notification Dlg: add "Indicator (silent) option.
+[.804.2]- Configurable File Change/Deleted indicators.
+[.804.1]- File on disk changed notification in title bar.
+[.726.1]- "grepWinNP3" (current grepWin dev) allow multiple search paths (GRE).
+[.709.2]- Add "KiXtart" lexer (new in Lexilla) (LEX).
+[.709.1]- Integrating style theme "Sombra" as factory default Dark-Mode theme.
 [.525.1]- Add "Julia" lexer (new in Lexilla) (LEX).
 [.506.1]- Base64 Encoding/Decoding.
 [.428.1]- Custom ChooseColor resource definition.
@@ -72,6 +81,14 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.804.1]- Minor changed regarding file changed indicator.
+[.803.1]- New Sombra scheme as default Dark Mode coloring theme.
+[.803.1]- Optimized default style handling for settings file (Dark Mode).
+[.803.1]- Adapted other Dark Mode Theme Files.
+[.802.1]- Default FileWatchingMode from "don't care" to "notify by MsgBox".
+[.721.1]- Adapded "Sombra" Dark Mode default color scheme.
+[.721.1]- Rename "KiX Config" to "KiXtart Script".
+[.703.1]- Enable Dark Mode feature for Win11 v21H2 Insider beta.
 [.529.2]- Win10 Release-ID as string (allows 20H2 or 21H1).
 [.529.1]- Improved Julia Lexer (LEX).
 [.526.1]- Batch-Lexer + patching Markdown-Lexer (eolfilled header lines) (LEX).
@@ -126,15 +143,28 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.515.1]- Update grepWinNP3 (GRE) version 2.1.7.37 (2021-05.14).
-[.525.1]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-05-17).
-[.429.1]- Update Lexilla Library (LEX) version 5.0.2 (2021-04-23).
-[.429.1]- Update Scintilla Library (SCI) version 5.0.2 (2021-04-23).
+[.726.1]- Update grepWinNP3 (GRE) version 2.1.8.39 (2021-07-26).
+[.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
+[.802.1]- Update Lexilla Library (LEX) version 5.1.2 (2021-07-26).
+[.726.1]- Update Scintilla Library (SCI) version 5.1.1 (2021-07-26).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.807.1]- RegEx line begin pattern stuck after zero-length replacement.
+[.806.1]- Launching file URL (Alt+Click) with respect to flags "Reuse Window" and "Only one Instance per File".
+[.805.1]- File URL tooltip.
+[.804.1]- Incomplete default Dark Mode Scheme.
+[.804.1]- Config version dependent "FileWatchingMode" settings value.
+[.804.1]- File change notification in Title Bar.
+[.804.1]- Trigger reset file changed on disc flag.
+[.724.1]- Remove multiple file Notification, if current file has been deleted.
+[.723.1]- F/R-Dlg: show match while typing protected characters.
+[.722.1]- Fixing "infinite" loop in Markdown Lexer.
+[.722.1]- Forced file ext written to scheme export.
+[.722.1]- File-ext writing to stxle .ini files only on export.
+[.707.1]- Distinguish Win10 vs. Win11 using build number (>=22000).
 [.529.2]- F/R Dialog regression: allow replace in selection (if selection not empty).
 [.527.1]- Correct handling of F/R dialog pattern combo-box dropdown list.
 [.527.1]- Minor fixes Markdown-Lexer.
@@ -208,6 +238,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
+[.807.1]- Remove deprecated (no sensible use case) "overlapping find" option.
 [.506.1]- "fontsValid" extension (closer to default scintilla code base).
 [.420.1]- Remove useless font stretch handling.
 [.419.2]- Removing the font-style string for font selection.
@@ -218,18 +249,28 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- .
-[.227.1]- Chinese Traditional (zh-TW) (incomplete...).
-[.417.1]- Greek (el-GR) (in progress...).
+[.707.1]- Chinese Traditional (zh-TW).
+[.417.1]- Greek (el-GR).
 [.303.1]- Portuguese Brazilian (pt-BR).
---------
-For our Notepad3 translation projects, we are looking for motivated volunteers, with a 
-priority to resume "aborted" translations for these languages:
-Please, send me a PM (hpwamr51 @ gmail.com) if you are willing to help.
---------
-[.227.1]- Indonesian (id-ID) (incomplete...).
-[.303.1]- Spanish Latin America (es-419) (incomplete...).
-[.227.1]- Turkish (tr-TR) (incomplete...).
-[.227.1]- Vietnamese (vi-VN) (incomplete...).
+
+--------------------------------------------------------
+Hello everybody ! 😀
+For our "Notepad3 Translation Projects", we are looking for motivated volunteers for many languages, 
+with a priority to take over "(incomplete...)" translation projects:
+- Bulgarian (bg-BG)
+- Czech (cs-CZ)
+- Finnish (fi-FI)
+- Indonesian (id-ID) (incomplete...)
+- Irish (ga-IE)
+- Norwegian (nb-NO)
+- Romanian (ro-RO)
+- Spanish Latin America (es-419) (incomplete...)
+- Turkish (tr-TR) (incomplete...)
+- Ukrainian (uk-UA)
+- Vietnamese (vi-VN) (incomplete...)
+- etc...
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
+--------------------------------------------------------
 
 
 ========================================================

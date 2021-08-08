@@ -8,12 +8,12 @@
 #ifndef EDITVIEW_H
 #define EDITVIEW_H
 
-namespace Scintilla {
+namespace Scintilla::Internal {
 
 struct PrintParameters {
 	int magnification;     /// @ 2018-09-06 Changed to a percent value
-	int colourMode;
-	WrapMode wrapState;
+	Scintilla::PrintOption colourMode;
+	Scintilla::Wrap wrapState;
 	PrintParameters() noexcept;
 };
 
@@ -40,6 +40,7 @@ void DrawTextNoClipPhase(Surface *surface, PRectangle rc, const Style &style, XY
 	std::string_view text, DrawPhase phase);
 void DrawStyledText(Surface *surface, const ViewStyle &vs, int styleOffset, PRectangle rcText,
 	const StyledText &st, size_t start, size_t length, DrawPhase phase);
+void Hexits(char *hexits, int ch) noexcept;
 
 typedef void (*DrawTabArrowFn)(Surface *surface, PRectangle rcTab, int ymid,
 	const ViewStyle &vsDraw, Stroke stroke);
@@ -66,8 +67,7 @@ public:
 	* In multiPhaseDraw mode, drawing is performed in multiple phases with each phase drawing
 	* one feature over the whole drawing area, instead of within one line. This allows text to
 	* overlap from one line to the next. */
-	enum class PhasesDraw { one, two, multiple };
-	PhasesDraw phasesDraw;
+	Scintilla::PhasesDraw phasesDraw;
 
 	int lineWidthMaxSeen;
 
@@ -113,8 +113,8 @@ public:
 	void DropGraphics() noexcept;
 	void RefreshPixMaps(Surface *surfaceWindow, const ViewStyle &vsDraw);
 
-	LineLayout *RetrieveLineLayout(Sci::Line lineNumber, const EditModel &model);
-	void LayoutLine(const EditModel &model, Sci::Line line, Surface *surface, const ViewStyle &vstyle,
+	std::shared_ptr<LineLayout> RetrieveLineLayout(Sci::Line lineNumber, const EditModel &model);
+	void LayoutLine(const EditModel &model, Surface *surface, const ViewStyle &vstyle,
 		LineLayout *ll, int width = LineLayout::wrapWidthInfinite);
 
 	static void UpdateBidiData(const EditModel &model, const ViewStyle &vstyle, LineLayout *ll);
@@ -131,7 +131,7 @@ public:
 	void DrawIndentGuide(Surface *surface, Sci::Line lineVisible, int lineHeight, XYPOSITION start, PRectangle rcSegment, bool highlight);
 	void DrawEOL(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll, PRectangle rcLine,
 		Sci::Line line, Sci::Position lineEnd, int xStart, int subLine, XYACCUMULATOR subLineStart,
-		ColourOptional background);
+		std::optional<ColourRGBA> background);
 	void DrawFoldDisplayText(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 		Sci::Line line, int xStart, PRectangle rcLine, int subLine, XYACCUMULATOR subLineStart, DrawPhase phase);
 	void DrawEOLAnnotationText(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
@@ -142,10 +142,10 @@ public:
 		int xStart, PRectangle rcLine, int subLine) const;
 	void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll, PRectangle rcLine,
 		Range lineRange, Sci::Position posLineStart, int xStart,
-		int subLine, ColourOptional background) const;
+		int subLine, std::optional<ColourRGBA> background) const;
 	void DrawForeground(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll, Sci::Line lineVisible,
 		PRectangle rcLine, Range lineRange, Sci::Position posLineStart, int xStart,
-		int subLine, ColourOptional background);
+		int subLine, std::optional<ColourRGBA> background);
 	void DrawIndentGuidesOverEmpty(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 		Sci::Line line, Sci::Line lineVisible, PRectangle rcLine, int xStart, int subLine);
 	void DrawLine(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll, Sci::Line line,
@@ -154,36 +154,8 @@ public:
 		const ViewStyle &vsDraw);
 	void FillLineRemainder(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 		Sci::Line line, PRectangle rcArea, int subLine) const;
-	Sci::Position FormatRange(bool draw, const Sci_RangeToFormat *pfr, Surface *surface, Surface *surfaceMeasure,
+	Sci::Position FormatRange(bool draw, const Scintilla::RangeToFormat *pfr, Surface *surface, Surface *surfaceMeasure,
 		const EditModel &model, const ViewStyle &vs);
-};
-
-/**
-* Convenience class to ensure LineLayout objects are always disposed.
-*/
-class AutoLineLayout {
-	LineLayoutCache &llc;
-	LineLayout *ll;
-public:
-	AutoLineLayout(LineLayoutCache &llc_, LineLayout *ll_) noexcept : llc(llc_), ll(ll_) {}
-	AutoLineLayout(const AutoLineLayout &) = delete;
-	AutoLineLayout(AutoLineLayout &&) = delete;
-	AutoLineLayout &operator=(const AutoLineLayout &) = delete;
-	AutoLineLayout &operator=(AutoLineLayout &&) = delete;
-	~AutoLineLayout() noexcept {
-		llc.Dispose(ll);
-		ll = nullptr;
-	}
-	LineLayout *operator->() const noexcept {
-		return ll;
-	}
-	operator LineLayout *() const noexcept {
-		return ll;
-	}
-	void Set(LineLayout *ll_) noexcept {
-		llc.Dispose(ll);
-		ll = ll_;
-	}
 };
 
 }

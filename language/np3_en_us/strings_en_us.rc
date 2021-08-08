@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
     IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Color on white|Color on white (except line numbers)|Screen Colors"
     IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired color mode and switch active theme file to standard config .ini!"
 END
 
 STRINGTABLE
@@ -257,9 +259,8 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Language"
     IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
     IDS_MUI_MENU_THEMES     "&Scheme Collection"
-    IDM_THEMES_DEFAULT      "&Factory Scheme Light"
-    IDM_THEMES_RESOURCES    "&Factory Scheme Dark"
-    IDM_THEMES_FILE_ITEM    "&Standard Scheme"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_STD_CFG       "&Standard Config"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Clear All"

@@ -104,7 +104,6 @@ ONIG_EXTERN OnigCaseFoldType OnigDefaultCaseFoldFlag;
 #define INTERNAL_ONIGENC_CASE_FOLD_MULTI_CHAR   (1<<30)
 
 #define ONIGENC_CASE_FOLD_MIN      INTERNAL_ONIGENC_CASE_FOLD_MULTI_CHAR
-#define ONIGENC_CASE_FOLD_DEFAULT  OnigDefaultCaseFoldFlag
 
 
 #define ONIGENC_MAX_COMP_CASE_FOLD_CODE_LEN       3
@@ -781,7 +780,6 @@ typedef struct OnigMatchParamStruct OnigMatchParam;
 
 ONIG_EXTERN
 int onig_initialize P_((OnigEncoding encodings[], int number_of_encodings));
-/* onig_init(): deprecated function. Use onig_initialize(). */
 ONIG_EXTERN
 int onig_init P_((void));
 ONIG_EXTERN
@@ -797,8 +795,6 @@ int onig_new P_((OnigRegex*, const OnigUChar* pattern, const OnigUChar* pattern_
 ONIG_EXTERN
 int  onig_reg_init P_((OnigRegex reg, OnigOptionType option, OnigCaseFoldType case_fold_flag, OnigEncoding enc, OnigSyntaxType* syntax));
 int onig_new_without_alloc P_((OnigRegex, const OnigUChar* pattern, const OnigUChar* pattern_end, OnigOptionType option, OnigEncoding enc, OnigSyntaxType* syntax, OnigErrorInfo* einfo));
-ONIG_EXTERN
-int onig_new_deluxe P_((OnigRegex* reg, const OnigUChar* pattern, const OnigUChar* pattern_end, OnigCompileInfo* ci, OnigErrorInfo* einfo));
 ONIG_EXTERN
 void onig_free P_((OnigRegex));
 ONIG_EXTERN
@@ -870,8 +866,6 @@ OnigEncoding onig_get_encoding P_((OnigRegex reg));
 ONIG_EXTERN
 OnigOptionType onig_get_options P_((OnigRegex reg));
 ONIG_EXTERN
-OnigCaseFoldType onig_get_case_fold_flag P_((OnigRegex reg));
-ONIG_EXTERN
 OnigSyntaxType* onig_get_syntax P_((OnigRegex reg));
 ONIG_EXTERN
 int onig_set_default_syntax P_((OnigSyntaxType* syntax));
@@ -897,10 +891,6 @@ ONIG_EXTERN
 int onig_set_meta_char P_((OnigSyntaxType* syntax, unsigned int what, OnigCodePoint code));
 ONIG_EXTERN
 void onig_copy_encoding P_((OnigEncoding to, OnigEncoding from));
-ONIG_EXTERN
-OnigCaseFoldType onig_get_default_case_fold_flag P_((void));
-ONIG_EXTERN
-int onig_set_default_case_fold_flag P_((OnigCaseFoldType case_fold_flag));
 ONIG_EXTERN
 unsigned int onig_get_match_stack_limit_size P_((void));
 ONIG_EXTERN

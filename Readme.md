@@ -230,6 +230,10 @@ This allows to do much more powerful searches and replaces in Files.
 The interval (in milliseconds) to check for external modification of the currently opened file. 
 - Defaults is 2000 ms.
 
+#### `FileChangedIndicator=[@]`
+
+#### `FileDeletedIndicator=[X]`
+
 #### `FileDlgFilters=`
 
 Specify filters for the open and save dialogs 

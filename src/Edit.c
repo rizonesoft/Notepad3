@@ -406,11 +406,11 @@ static LPCH EditReInterpretText(LPCCH pchSource, const int szSrc, cpi_enc_t from
     LPCH pchConvText = NULL;
 
     int cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, NULL, 0);
-    WCHAR *pwchText = (WCHAR *)AllocMem((cwch + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR *pwchText = (WCHAR *)AllocMem(((size_t)cwch + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pwchText) {
         cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, pwchText, cwch);
         cmbch = WideCharToMultiByte(Encoding_GetCodePage(asCP), 0, pwchText, cwch, NULL, 0, NULL, NULL);
-        pchConvText = (LPCH)AllocMem(cmbch + 1, HEAP_ZERO_MEMORY);
+        pchConvText = (LPCH)AllocMem((size_t)cmbch + 1, HEAP_ZERO_MEMORY);
         if (pchConvText) {
             cmbch = WideCharToMultiByte(Encoding_GetCodePage(asCP), 0, pwchText, cwch, pchConvText, cmbch, NULL, NULL);
         } else {
@@ -1835,12 +1835,7 @@ void EditURLEncode(const bool isPathConvert)
     SciCall_TargetFromSelection();
     SciCall_ReplaceTarget(cchEscapedEnc, pszEscaped);
 
-    SciCall_SetSelectionStart(iSelStart);
-    SciCall_SetSelectionEnd(iSelStart + cchEscapedEnc);
-    if (!bStraightSel) {
-        SciCall_SwapMainAnchorCaret();
-    }
-    EditScrollSelectionToView();
+    EditSetAndScrollSelection(iSelStart, iSelStart + cchEscapedEnc, bStraightSel);
 
     EndUndoTransAction();
 
@@ -1917,12 +1912,7 @@ void EditURLDecode(const bool isPathConvert)
         SciCall_TargetFromSelection();
         SciCall_ReplaceTarget(cchUnescapedDec, pszUnescaped);
 
-        SciCall_SetSelectionStart(iSelStart);
-        SciCall_SetSelectionEnd(iSelStart + cchUnescapedDec);
-        if (!bStraightSel) {
-            SciCall_SwapMainAnchorCaret();
-        }
-        EditScrollSelectionToView();
+        EditSetAndScrollSelection(iSelStart, iSelStart + cchUnescapedDec, bStraightSel);
 
         EndUndoTransAction();
     }
@@ -1956,7 +1946,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     const char *pchText = SciCall_GetRangePointer(iSelStart, iSelSize);
 
     int const reqsize = MultiByteToWideChar(Encoding_SciCP, 0, pchText, (int)iSelSize, NULL, 0);
-    LPWSTR const pwchText = AllocMem((reqsize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pwchText = AllocMem(((size_t)reqsize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pwchText == NULL) {
         return;
     }
@@ -1965,7 +1955,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     StrReplChr(pwchText, chSearch, chReplace);
 
     int const cchRepl = WideCharToMultiByte(Encoding_SciCP, 0, pwchText, reqsize, NULL, 0, NULL, NULL);
-    char * const pchReplace = (char *)AllocMem((cchRepl + 1), HEAP_ZERO_MEMORY);
+    char *const pchReplace = (char *)AllocMem(((size_t)cchRepl + 1), HEAP_ZERO_MEMORY);
     if (pchReplace == NULL) {
         FreeMem(pwchText);
         return;
@@ -1977,12 +1967,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     SciCall_TargetFromSelection();
     SciCall_ReplaceTarget(cchRepl, pchReplace);
 
-    SciCall_SetSelectionStart(iSelStart);
-    SciCall_SetSelectionEnd(iSelEnd);
-    if (!bStraightSel) {
-        SciCall_SwapMainAnchorCaret();
-    }
-    EditScrollSelectionToView();
+    EditSetAndScrollSelection(iSelStart, iSelEnd, bStraightSel);
     
     EndUndoTransAction();
 
@@ -2055,12 +2040,7 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     DocPos const len = (base64Size ? SciCall_ReplaceTarget(base64Size, pBase64CodedTxt) : SciCall_ReplaceTarget(0, ""));
     FreeMem(pBase64CodedTxt);
 
-    SciCall_SetSelectionStart(iSelStart);
-    SciCall_SetSelectionEnd(iSelStart + len);
-    if (!bStraightSel) {
-        SciCall_SwapMainAnchorCaret();
-    }
-    EditScrollSelectionToView();
+    EditSetAndScrollSelection(iSelStart, iSelStart + len, bStraightSel);
 
     EndUndoTransAction();
 
@@ -3575,12 +3555,7 @@ void EditEncloseSelection(LPCWSTR pszOpen, LPCWSTR pszClose) {
     }
 
     // Move selection
-    SciCall_SetSelectionStart(iSelStart + iLenOpen);
-    SciCall_SetSelectionEnd(iSelEnd + iLenOpen);
-    if (!bStraightSel) {
-        SciCall_SwapMainAnchorCaret();
-    }
-    EditScrollSelectionToView();
+    EditSetAndScrollSelection(iSelStart + iLenOpen, iSelEnd + iLenOpen, bStraightSel);
 
     EndUndoTransAction();
 
@@ -3701,12 +3676,7 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCm
         }
     }
 
-    SciCall_SetSelectionStart(iSelStart + iSelStartOffset);
-    SciCall_SetSelectionEnd(iSelEnd + iSelEndOffset);
-    if (!bStraightSel) {
-        SciCall_SwapMainAnchorCaret();
-    }
-    EditScrollSelectionToView();
+    EditSetAndScrollSelection(iSelStart + iSelStartOffset, iSelEnd + iSelEndOffset, bStraightSel);
 
     EndUndoTransAction();
 
@@ -5258,6 +5228,21 @@ void EditScrollSelectionToView() {
 
 //=============================================================================
 //
+//  EditSetAndScrollSelection()
+//
+void EditSetAndScrollSelection(DocPos iSelStart, DocPos iSelEnd, bool bStraightSel)
+{
+    SciCall_SetSelectionStart(iSelStart);
+    SciCall_SetSelectionEnd(iSelEnd);
+    if (!bStraightSel) {
+        SciCall_SwapMainAnchorCaret();
+    }
+    EditScrollSelectionToView();
+}
+
+
+//=============================================================================
+//
 //  EditSetSelectionEx()
 //
 void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent)
@@ -5549,19 +5534,6 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
             }
         }
 
-        bIsFlagSet = lpefr->bOverlappingFind;
-        if (IsButtonChecked(hwnd, IDC_FIND_OVERLAPPING)) {
-            if (!bIsFlagSet) {
-                lpefr->bOverlappingFind = true;
-                lpefr->bStateChanged = false; // no effect on state
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->bOverlappingFind = false;
-                lpefr->bStateChanged = false; // no effect on state
-            }
-        }
-
         bIsFlagSet = lpefr->bNoFindWrap;
         if (IsButtonChecked(hwnd, IDC_NOWRAP)) {
             if (!bIsFlagSet) {
@@ -5646,27 +5618,37 @@ static void  _EscapeWildcards(char* szFind2, size_t cch, LPEDITFINDREPLACE lpefr
 
         lpefr->fuFlags |= SCFIND_REGEXP;
 
+        bool bEsc = false;
         while ((iSource < cch) && (szFind2[iSource] != '\0')) {
             char c = szFind2[iSource];
-            if (c == '*') {
+            if (c == '*' && !bEsc) {
                 szWildcardEscaped[iDest++] = '.';
-            } else if (c == '?') {
+            } else if (c == '?' && !bEsc) {
                 c = '.';
-            } else {
-                if (c == '^' ||
-                        c == '$' ||
-                        c == '(' ||
-                        c == ')' ||
-                        c == '[' ||
-                        c == ']' ||
-                        c == '{' ||
-                        c == '}' ||
-                        c == '.' ||
-                        c == '+' ||
-                        c == '|' ||
-                        c == '\\') {
+            } else if (c == '\\' && !bEsc) {
+                bEsc = true;
+            }
+            else if (
+                (  c == '^'
+                || c == '$'
+                || c == '('
+                || c == ')'
+                || c == '['
+                || c == ']'
+                || c == '{'
+                || c == '}'
+                //~|| c == '.'
+                || c == '+'
+                || c == '|'
+                ) ) {
+                if (!bEsc) {
                     szWildcardEscaped[iDest++] = '\\';
+                } else {
+                    bEsc = false;
                 }
+            } else if (bEsc) {
+                szWildcardEscaped[iDest++] = '\\';
+                bEsc = false;
             }
             szWildcardEscaped[iDest++] = c;
             ++iSource;
@@ -5716,12 +5698,12 @@ static size_t _EditGetFindStrg(HWND hwnd, LPEDITFINDREPLACE lpefr, LPSTR szFind,
     // ensure to F/R-dialog data structure consistency
     StringCchCopyA(lpefr->szFind, COUNTOF(lpefr->szFind), szFind);
 
+    if (!StrIsEmptyA(szFind) && lpefr->bWildcardSearch) {
+        _EscapeWildcards(szFind, cchCnt, lpefr);
+    }
     bool const bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
     if (lpefr->bTransformBS || bIsRegEx) {
         TransformBackslashes(szFind, bIsRegEx, Encoding_SciCP, NULL);
-    }
-    if (!StrIsEmptyA(szFind) && (lpefr->bWildcardSearch)) {
-        _EscapeWildcards(szFind, cchCnt, lpefr);
     }
 
     return StringCchLenA(szFind, cchCnt);
@@ -5973,7 +5955,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 SetExplorerTheme(GetDlgItem(hwnd, ctlx[i]));
             }
             int const ctl[] = { IDC_FINDCASE, IDC_FINDWORD, IDC_FINDSTART, IDC_FINDTRANSFORMBS, IDC_FINDESCCTRLCHR, IDC_REPLESCCTRLCHR,
-                                IDC_FINDREGEXP, IDC_DOT_MATCH_ALL, IDC_FIND_OVERLAPPING, IDC_NOWRAP, IDC_FINDCLOSE,
+                                IDC_FINDREGEXP, IDC_DOT_MATCH_ALL, IDC_NOWRAP, IDC_FINDCLOSE,
                                 IDC_ALL_OCCURRENCES, IDC_WILDCARDSEARCH, IDC_TRANSPARENT, IDC_STATIC, IDC_STATIC2
                               };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
@@ -5983,7 +5965,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
 #endif
 
-        pTimerIdentifier = SetTimer(NULL, 0, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
+        pTimerIdentifier = SetTimer(hwnd, 0, _MQ_TIMER_CYCLE, MQ_ExecuteNext);
 
         SET_INITIAL_ANCHORS()
         s_InitialTopLine = SciCall_GetFirstVisibleLine();
@@ -6065,8 +6047,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_pEfrDataDlg->bTransformBS || s_pEfrDataDlg->bRegExprSearch || s_pEfrDataDlg->bWildcardSearch));
         DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, !(s_pEfrDataDlg->bRegExprSearch || s_pEfrDataDlg->bWildcardSearch));
 
-        CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, SetBtn(s_pEfrDataDlg->bOverlappingFind));
-
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, SetBtn(s_pEfrDataDlg->bMarkOccurences));
         if (!s_pEfrDataDlg->bMarkOccurences) {
             EditClearAllOccurrenceMarkers(s_pEfrDataDlg->hwnd);
@@ -6145,7 +6125,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
     case WM_DESTROY: {
 
-        KillTimer(NULL, pTimerIdentifier);
+        KillTimer(hwnd, pTimerIdentifier);
         pTimerIdentifier = 0;
 
         _SetSearchFlags(hwnd, s_pEfrDataDlg); // sync
@@ -6431,15 +6411,23 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             if (!bFndPatternChanged) {
                 break; // return
             }
+
+            _SetSearchFlags(hwnd, s_pEfrDataDlg);
+            SetFindPatternMB(s_pEfrDataDlg->szFind);
+
+            if (s_pEfrDataDlg->bWildcardSearch) {
+                _EscapeWildcards(s_pEfrDataDlg->szFind, COUNTOF(s_pEfrDataDlg->szFind), s_pEfrDataDlg);
+            }
+            bool const bIsRegex = (s_pEfrDataDlg->fuFlags & SCFIND_REGEXP);
+            if (s_pEfrDataDlg->bTransformBS || bIsRegex) {
+                TransformBackslashes(s_pEfrDataDlg->szFind, bIsRegex, Encoding_SciCP, NULL);
+            }
             // ------------------------
 
             if (_EnableFRDlgCtrls(hwnd)) {
                 s_anyMatch = NO_MATCH;
                 EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
             }
-
-            _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            SetFindPatternMB(s_pEfrDataDlg->szFind);
 
             DocPos start = s_InitialSearchStart;
             DocPos end = Sci_GetDocEndPosition();
@@ -6458,7 +6446,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 if (s_bIsReplaceDlg) {
                     SciCall_ScrollRange(s_InitialAnchorPos, s_InitialCaretPos);
                 } else {
-                    EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+                    EditSetSelectionEx(end, iPos, -1, -1);
                 }
                 if (s_InitialTopLine >= 0) {
                     SciCall_SetFirstVisibleLine(s_InitialTopLine);
@@ -6560,11 +6548,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             _DelayMarkAll(_MQ_STD);
         }
         break;
-
-        case IDC_FIND_OVERLAPPING:
-            _SetSearchFlags(hwnd, s_pEfrDataDlg);
-            _DelayMarkAll(_MQ_STD);
-            break;
 
         case IDC_FINDTRANSFORMBS: {
             _SetSearchFlags(hwnd, s_pEfrDataDlg);
@@ -6791,7 +6774,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
             CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_UNCHECKED);
             CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
-            CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, BST_UNCHECKED);
             CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_UNCHECKED);
             PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_FINDTEXT)), 1);
             break;
@@ -7248,6 +7230,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     }
     int const sFlags = (int)(lpefr->fuFlags);
     bool const bIsRegExpr = (sFlags & SCFIND_REGEXP);
+    bool const bRegexStartOfLine = bIsRegExpr && (szFind[0] == '^');
 
     // SCI_REPLACETARGET or SCI_REPLACETARGETRE
     int iReplaceMsg = SCI_REPLACETARGET;
@@ -7271,10 +7254,15 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     int iCount = 0;
     UndoTransActionBegin();
     while ((iPos >= 0LL) && (start <= iEndPos)) {
+        DocLn const lnCnt = bRegexStartOfLine ? SciCall_GetLineCount() : 0;
         SciCall_SetTargetRange(iPos, end);
         DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
         ++iCount;
+        // start next search behind replacement
         iStartPos = SciCall_GetTargetEnd();
+        if (bRegexStartOfLine && (Sci_GetLineStartPosition(iStartPos) == iStartPos) && (SciCall_GetLineCount() == lnCnt)) {
+            iStartPos = SciCall_PositionAfter(iStartPos);
+        }
         iEndPos += replLen - (end - iPos);
         start = iStartPos;
         end   = iEndPos;

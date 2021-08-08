@@ -79,6 +79,7 @@ static PEDITLEXER g_pLexArray[] = {
     &lexJS,            // JavaScript
     &lexJSON,          // JSON
     &lexJulia,         // Julia
+    &lexKiX,           // KiX
     &lexKotlin,        // Kotlin
     &lexLATEX,         // LaTeX Files
     &lexLUA,           // Lua Script
@@ -118,7 +119,7 @@ static PEDITLEXER s_pLexCurrent = &lexStandard;
 static int s_iDefaultLexer = 2; // (Constants.StdDefaultLexerID) Pure Text Files
 
 
-const COLORREF s_colorDefault[16] = {
+const COLORREF s_colorLightDefault[16] = {
     RGB(0x00, 0x00, 0x00),
     RGB(0x0A, 0x24, 0x6A),
     RGB(0x3A, 0x6E, 0xA5),
@@ -136,6 +137,26 @@ const COLORREF s_colorDefault[16] = {
     RGB(0xB0, 0x00, 0xB0),
     RGB(0xB2, 0x8B, 0x40)
 };
+
+const COLORREF s_colorDarkDefault[16] = {
+    RGB(0xDE, 0xDE, 0xDE),
+    RGB(0xB4, 0xE1, 0xF5),
+    RGB(0xA1, 0xC3, 0xD3),
+    RGB(0x89, 0xAB, 0xEC),
+    RGB(0x71, 0xF8, 0xAD),
+    RGB(0xB1, 0xD7, 0x65),
+    RGB(0xD8, 0xF7, 0x66),
+    RGB(0xF6, 0xB0, 0x5A),
+    RGB(0x14, 0x14, 0x14),
+    RGB(0x27, 0x27, 0x02),
+    RGB(0x54, 0x46, 0x04),
+    RGB(0xF2, 0xB5, 0x0D),
+    RGB(0xF2, 0x46, 0x0D),
+    RGB(0xF5, 0x3C, 0x3D),
+    RGB(0xF6, 0x51, 0xF6),
+    RGB(0xBE, 0x94, 0x4E)
+};
+
 
 static bool s_bAutoSelect = true;
 
@@ -303,9 +324,7 @@ static inline bool HasIndicStyleStrokeWidth(const int indicStyle) {
 //=============================================================================
 
 THEMEFILES Theme_Files[] = {
-    { 0, L"Factory Light Mode", L"" },
-    { 0, L"Factory Dark Mode", L"" },
-    { 0, L"Customized Mode", L"" },
+    { 0, L"Standard Config", L"" },
     { 0, L"", L"" },
     { 0, L"", L"" },
     { 0, L"", L"" },
@@ -337,25 +356,27 @@ unsigned ThemeItems_CountOf()
     return COUNTOF(Theme_Files);
 }
 
+unsigned ThemesItems_MaxIndex()
+{
+    for (unsigned i = 1; i < ThemeItems_CountOf(); ++i) {
+        if (Theme_Files[i].rid == 0) {
+            return (i - 1);
+        }
+    }
+    return (ThemeItems_CountOf() - 1);
+}
+
+
 static void _FillThemesMenuTable()
 {
     WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
 
-    Theme_Files[Theme_FactoryLightMode].rid = IDM_THEMES_DEFAULT; // factory default
-    Theme_Files[Theme_FactoryDarkMode].rid = IDM_THEMES_RESOURCES;
-    Theme_Files[Theme_CustomizedMode].rid = IDM_THEMES_FILE_ITEM; // NP3.ini settings
-
-    // find "themes" sub-dir (side-by-side to Notepad3.ini)
-    StringCchCopy(Theme_Files[Theme_FactoryLightMode].szFilePath, COUNTOF(Theme_Files[Theme_FactoryLightMode].szFilePath), L"");
-    StringCchCopy(Theme_Files[Theme_FactoryDarkMode].szFilePath, COUNTOF(Theme_Files[Theme_FactoryDarkMode].szFilePath), L"");
-
+    Globals.uCurrentThemeIndex = 0;
+    Theme_Files[Globals.uCurrentThemeIndex].rid = IDM_THEMES_STD_CFG; // NP3.ini settings
     if (StrIsNotEmpty(Paths.IniFile)) {
         StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFile);
         // names are filled by Style_InsertThemesMenu()
-        StringCchCopy(Theme_Files[Theme_CustomizedMode].szFilePath, COUNTOF(Theme_Files[Theme_CustomizedMode].szFilePath), Paths.IniFile);
-        //PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
-        //PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"NP3DMStyle.ini");
-        //StringCchCopy(Theme_Files[Theme_CustomizedMode].szFilePath, COUNTOF(Theme_Files[ThemeItem_DarkMode].szFilePath), tchThemeDir); // @@@ ToDo: where to store changes
+        StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), Paths.IniFile);
     } else if (StrIsNotEmpty(Paths.IniFileDefault)) {
         StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFileDefault);
     }
@@ -364,9 +385,7 @@ static void _FillThemesMenuTable()
         PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
     }
 
-
-    unsigned iTheme = Theme_CustomizedMode + 1;
-
+    unsigned iTheme = 1;
     if (PathIsDirectory(tchThemeDir)) {
         WCHAR tchThemePath[MAX_PATH] = { L'\0' };
         StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
@@ -377,13 +396,16 @@ static void _FillThemesMenuTable()
         HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
         if (IS_VALID_HANDLE(hFindFile)) {
             // ---  fill table by directory entries  ---
-            for (iTheme = Theme_CustomizedMode + 1; iTheme < ThemeItems_CountOf(); ++iTheme) {
-                Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_DEFAULT);
+            for (iTheme = 1; iTheme < ThemeItems_CountOf(); ++iTheme) {
+
+                Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_STD_CFG);
 
                 StringCchCopy(tchThemePath, COUNTOF(tchThemePath), PathFindFileName(FindFileData.cFileName));
                 PathRemoveExtension(tchThemePath);
                 StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), tchThemePath);
-
+                if (StringCchCompareXI(Theme_Files[iTheme].szName, Settings.CurrentThemeName) == 0) {
+                    Globals.uCurrentThemeIndex = iTheme;
+                }
                 StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
                 PathCchAppend(tchThemePath, COUNTOF(tchThemePath), FindFileData.cFileName);
                 StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), tchThemePath);
@@ -421,22 +443,23 @@ static HMENU s_hmenuThemes = NULL;
 
 bool Style_InsertThemesMenu(HMENU hMenuBar)
 {
+
     if (s_hmenuThemes) {
         DestroyMenu(s_hmenuThemes);
     }
     s_hmenuThemes = CreatePopupMenu();
     //int const pos = GetMenuItemCount(hMenuBar) - 2;
 
-    GetLngString(Theme_Files[Theme_FactoryLightMode].rid, Theme_Files[Theme_FactoryLightMode].szName, COUNTOF(Theme_Files[Theme_FactoryLightMode].szName));
-    GetLngString(Theme_Files[Theme_FactoryDarkMode].rid, Theme_Files[Theme_FactoryDarkMode].szName, COUNTOF(Theme_Files[Theme_FactoryDarkMode].szName));
-    GetLngString(Theme_Files[Theme_CustomizedMode].rid, Theme_Files[Theme_CustomizedMode].szName, COUNTOF(Theme_Files[Theme_CustomizedMode].szName));
+    WCHAR tchThemeName[SMALL_BUFFER] = { L'\0' };
+    GetLngString(IDM_THEMES_FACTORY_RESET, tchThemeName, COUNTOF(tchThemeName));
+    AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, IDM_THEMES_FACTORY_RESET, tchThemeName);
+    AppendMenu(s_hmenuThemes, MF_SEPARATOR, 0, 0);
 
+    UINT iMaxRID = 0;
     for (unsigned i = 0; i < ThemeItems_CountOf(); ++i) {
-        if (i == (Theme_CustomizedMode + 1)) {
-            AppendMenu(s_hmenuThemes, MF_SEPARATOR, 0, 0);
-        }
         if (Theme_Files[i].rid > 0) {
-            AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szName);
+            iMaxRID = Theme_Files[i].rid;
+            AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, iMaxRID, Theme_Files[i].szName);
         } else {
             break; // done
         }
@@ -449,10 +472,11 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
     //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
     bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
 
-    unsigned const iTheme = GetModeThemeIndex();
-    CheckCmd(hMenuBar, Theme_Files[iTheme].rid, true);
+    unsigned const iTheme = Globals.uCurrentThemeIndex;
 
-    if ((iTheme >= Theme_CustomizedMode) && StrIsEmpty(Theme_Files[iTheme].szFilePath)) {
+    CheckMenuRadioItem(hMenuBar, IDM_THEMES_STD_CFG, iMaxRID, IDM_THEMES_STD_CFG + iTheme, MF_BYCOMMAND);
+
+    if (StrIsEmpty(Theme_Files[iTheme].szFilePath)) {
         EnableCmd(hMenuBar, Theme_Files[iTheme].rid, false);
     }
 
@@ -464,55 +488,38 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
 //
 //  Style_DynamicThemesMenuCmd() - Handles IDS_MUI_MENU_THEMES messages
 //
-//
-static void _EnableSchemeConfig(const bool bEnable)
+// 
+bool Style_DynamicThemesMenuCmd(int cmd)
 {
-    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_SCHEMECONFIG, bEnable);
-    EnableTool(Globals.hwndToolbar, IDT_VIEW_SCHEMECONFIG, bEnable);
-}
+    int const iThemeIdx = clampi(cmd - IDM_THEMES_STD_CFG, -1, ThemeItems_CountOf() - 1);  // consecutive IDs, -1 for factory reset
 
-
-void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
-{
-    unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
-    if (iThemeIdx >= ThemeItems_CountOf()) {
-        return;
+    if (iThemeIdx == (int)Globals.uCurrentThemeIndex) {
+        return true;
     }
-
-    if (iThemeIdx == iCurThemeIdx) {
-        return;
-    }
-
-    CheckCmd(Globals.hMainMenu, Theme_Files[iCurThemeIdx].rid, false);
 
     if (Settings.SaveSettings) {
-        if (iCurThemeIdx <= Theme_FactoryDarkMode) {
-            // hard-coded internal/factory defaults
-        } else if (iCurThemeIdx == Theme_CustomizedMode) {
+        if (Globals.uCurrentThemeIndex == 0) {
             if (!Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
                 if (Globals.bCanSaveIniFile) {
-                    Style_ExportToFile(Paths.IniFile, Globals.bIniFileFromScratch);
+                    Style_ExportToFile(Paths.IniFile, false);
                 }
             }
-        } else if (PathIsExistingFile(Theme_Files[iCurThemeIdx].szFilePath)) {
-            Style_ExportToFile(Theme_Files[iCurThemeIdx].szFilePath, false);
+        } else if (PathIsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath)) {
+            Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, false);
         }
     }
 
-    bool const result = Style_ImportTheme(iThemeIdx);
+    ResetIniFileCache();
+    bool const result = Style_ImportTheme(iThemeIdx); // -1: factory reset
 
     if (result) {
-        if (UseDarkMode()) {
-            StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName), Theme_Files[iThemeIdx].szName);
-            Globals.idxDarkModeTheme = iThemeIdx;
-        } else {
-            StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName), Theme_Files[iThemeIdx].szName);
-            Globals.idxLightModeTheme = iThemeIdx;
-        }
 
-        _EnableSchemeConfig(iThemeIdx >= Theme_CustomizedMode);
-        CheckCmd(Globals.hMainMenu, Theme_Files[iThemeIdx].rid, true);
+        Globals.uCurrentThemeIndex = clampi(iThemeIdx, 0, (int)ThemeItems_CountOf() - 1);
+        StringCchCopy(Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName), Theme_Files[Globals.uCurrentThemeIndex].szName);
+
+        CheckMenuRadioItem(Globals.hMainMenu, IDM_THEMES_STD_CFG, Theme_Files[ThemesItems_MaxIndex()].rid, 
+                                              IDM_THEMES_STD_CFG + Globals.uCurrentThemeIndex, MF_BYCOMMAND);
 
         if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
             SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
@@ -522,6 +529,7 @@ void Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx)
         UpdateMarginWidth(true);
         UpdateUI();
     }
+    return result;
 }
 
 
@@ -632,51 +640,6 @@ int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 
 //=============================================================================
 //
-//  Style_Load()
-//
-void Style_Load()
-{
-    _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
-    _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
-
-    for (int i = 0; i < 16; ++i) {
-        g_colorCustom[i] = s_colorDefault[i];
-    }
-
-    _FillThemesMenuTable();
-
-    unsigned iTheme = Theme_CustomizedMode;
-    if (StrIsNotEmpty(Globals.LightThemeName)) {
-        for (; iTheme < ThemeItems_CountOf(); ++iTheme) {
-            if (StringCchCompareXI(Globals.LightThemeName, Theme_Files[iTheme].szName) == 0) {
-                break;
-            }
-        }
-    }
-    Globals.idxLightModeTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : Theme_FactoryLightMode;
-    StringCchCopy(Globals.LightThemeName, COUNTOF(Globals.LightThemeName),
-                  Theme_Files[Globals.idxLightModeTheme].szName);
-
-    iTheme = Theme_CustomizedMode;
-    if (StrIsNotEmpty(Globals.DarkThemeName)) {
-        for (; iTheme < ThemeItems_CountOf(); ++iTheme) {
-            if (StringCchCompareXI(Globals.DarkThemeName, Theme_Files[iTheme].szName) == 0) {
-                break;
-            }
-        }
-    }
-    Globals.idxDarkModeTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : Theme_FactoryDarkMode;
-    StringCchCopy(Globals.DarkThemeName, COUNTOF(Globals.DarkThemeName),
-                  Theme_Files[Globals.idxDarkModeTheme].szName);
-
-    Style_LoadLexerFileExtensions();
-
-    Style_ImportTheme(GetModeThemeIndex());
-}
-
-
-//=============================================================================
-//
 //  Style_Import()
 //
 bool Style_Import(HWND hwnd)
@@ -707,9 +670,9 @@ bool Style_Import(HWND hwnd)
 
 //=============================================================================
 //
-//   Style_LoadLexerFileExtensions()
+//   _LoadLexerFileExtensions()
 //
-void Style_LoadLexerFileExtensions()
+static void _LoadLexerFileExtensions()
 {
     bool bOpendByMe;
     OpenSettingsFile(&bOpendByMe);
@@ -749,37 +712,135 @@ void Style_LoadLexerFileExtensions()
 }
 
 
+//=============================================================================
+//
+//  Style_Load()
+//
+void Style_Load() {
+
+    _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
+    _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
+
+    for (int i = 0; i < 16; ++i) {
+        g_colorCustom[i] = (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]);
+    }
+
+    _FillThemesMenuTable();
+    _LoadLexerFileExtensions();
+
+    Style_ImportFromFile(Paths.IniFile);
+}
+
 
 //=============================================================================
 //
-//  Style_ImportFromBinaryBlob()
+//  _DefaultsToTmpCache()
 //
-static void _Styles_ReadFromIniCache(bool const bFactoryReset) {
+static void _DefaultsToTmpCache() {
 
-    if (bFactoryReset) {
-        for (int i = 0; i < 16; i++) {
-            g_colorCustom[i] = s_colorDefault[i];
+    ResetTmpCache();
+
+    if (UseDarkMode()) {
+
+        WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+        CopyToTmpCache(Globals.pStdDarkModeIniStyles);
+
+        // need to set default color if not defined
+        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+
+            LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+            LPCWSTR const pszDfltName = g_pLexArray[iLexer]->Styles[0].pszName;
+
+            wchDefaultStyle[0] = L'\0'; // empty
+            TmpCacheGetString(Lexer_Section, pszDfltName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+
+            COLORREF rgb;
+            WCHAR wchColor[32];
+            if (!Style_StrGetColor(wchDefaultStyle, FOREGROUND_LAYER, &rgb, false)) {
+                Style_PrintfCchColor(wchColor, COUNTOF(wchColor), L"; ", FOREGROUND_LAYER, rgbDarkTxtColorRef);
+                StringCchCat(wchDefaultStyle, COUNTOF(wchDefaultStyle), wchColor);
+            }
+            if (!Style_StrGetColor(wchDefaultStyle, BACKGROUND_LAYER, &rgb, false)) {
+                Style_PrintfCchColor(wchColor, COUNTOF(wchColor), L"; ", BACKGROUND_LAYER, rgbDarkBkgColorRef);
+                StringCchCat(wchDefaultStyle, COUNTOF(wchDefaultStyle), wchColor);
+            }
+            TmpCacheSetString(Lexer_Section, pszDfltName, wchDefaultStyle);
+
+            // in case of "pStdDarkModeIniStyles" is incomplete (new Lexer, etc.)
+            unsigned i = 1;
+            while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+                LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+                LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
+                wchDefaultStyle[0] = L'\0'; // empty
+                TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+                if (StrIsEmpty(wchDefaultStyle) && StrIsNotEmpty(pszDefault)) {
+                    TmpCacheSetString(Lexer_Section, pszKeyName, pszDefault);
+                }
+                ++i;
+            }
         }
-    } else {
-        const WCHAR *const CustomColors_Section = L"Custom Colors";
 
-        WCHAR tch[32] = { L'\0' };
-        for (int i = 0; i < 16; i++) {
-            WCHAR wch[32] = { L'\0' };
-            StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-            int itok = 0;
-            if (IniSectionGetString(CustomColors_Section, tch, L"", wch, COUNTOF(wch))) {
-                if (wch[0] == L'#') {
-                    unsigned int irgb;
-                    itok = swscanf_s(CharNext(wch), L"%x", &irgb);
-                    if (itok == 1) {
-                        g_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
-                    }
+    } else {
+
+        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+            LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+            unsigned i = 0;
+            while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+                LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+                LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
+                TmpCacheSetString(Lexer_Section, pszKeyName, pszDefault);
+                ++i;
+            }
+        }
+    }
+}
+
+static bool _CopyTmpCacheToIniFileCache() {
+
+    WCHAR wchStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+        LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+        unsigned i = 0;
+        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+            wchStyle[0] = L'\0';
+            TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchStyle, COUNTOF(wchStyle));
+            IniSectionSetString(Lexer_Section, pszKeyName, wchStyle);
+            ++i;
+        }
+    }
+    return true;
+}
+
+
+//=============================================================================
+//
+//  _ReadFromIniCache()
+//
+static void _ReadFromIniCache() {
+
+    for (int i = 0; i < 16; i++) {
+        g_colorCustom[i] = (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]); // reset
+    }
+    const WCHAR *const CustomColors_Section = L"Custom Colors";
+    WCHAR tch[32] = { L'\0' };
+    for (int i = 0; i < 16; i++) {
+        WCHAR wch[32] = { L'\0' };
+        StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+        int itok = 0;
+        if (IniSectionGetString(CustomColors_Section, tch, L"", wch, COUNTOF(wch))) {
+            if (wch[0] == L'#') {
+                unsigned int irgb;
+                itok = swscanf_s(CharNext(wch), L"%x", &irgb);
+                if (itok == 1) {
+                    g_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
                 }
             }
-            if (itok != 1) {
-                g_colorCustom[i] = s_colorDefault[i];
-            }
+        }
+        if (itok != 1) {
+            g_colorCustom[i] = (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i]);
         }
     }
 
@@ -800,6 +861,10 @@ static void _Styles_ReadFromIniCache(bool const bFactoryReset) {
     s_cyStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
 
     // Lexer
+    WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+    _DefaultsToTmpCache();
+
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
         LPCWSTR Lexer_Section = g_pLexArray[iLexer]->pszName;
@@ -810,30 +875,18 @@ static void _Styles_ReadFromIniCache(bool const bFactoryReset) {
 
         unsigned i = 0;
         while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-            IniSectionGetString(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName,
-                g_pLexArray[iLexer]->Styles[i].pszDefault,
+            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+
+            wchDefaultStyle[0] = L'\0';
+            TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+            IniSectionGetString(Lexer_Section, pszKeyName, wchDefaultStyle,
                 g_pLexArray[iLexer]->Styles[i].szValue,
                 COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue));
             ++i;
         }
     }
-}
 
-
-//=============================================================================
-//
-//  Style_ImportFromBinaryBlob()
-//  szCharResorce : zero(0) terminated char resource string
-//
-bool Style_ImportFromBinaryBlob(LPCSTR szCharResorce) 
-{
-    bool bFactoryReset = StrIsEmptyA(szCharResorce) ? true : false;
-
-    bool const result = bFactoryReset ? ResetIniFileCache() : CopyToIniFileCache(szCharResorce);
-    if (result) {
-        _Styles_ReadFromIniCache(bFactoryReset);
-    }
-    return result;
+    ResetTmpCache();
 }
 
 
@@ -843,11 +896,9 @@ bool Style_ImportFromBinaryBlob(LPCSTR szCharResorce)
 //
 bool Style_ImportFromFile(const WCHAR* szFile)
 {
-    bool bFactoryReset = StrIsEmpty(szFile) ? true : false;
-
+    bool const bHaveFileResource = StrIsNotEmpty(szFile);
     bool bIsStdIniFile = false;
-
-    if (!bFactoryReset) {
+    if (bHaveFileResource) {
         WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
         StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
         NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
@@ -857,11 +908,9 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     }
 
     bool bOpendByMe = false;
-    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) :
-                        (bFactoryReset ? ResetIniFileCache() : LoadIniFileCache(szFile));
+    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : (bHaveFileResource ? LoadIniFileCache(szFile) : true);
     if (result) {
-        _Styles_ReadFromIniCache(bFactoryReset);
-
+        _ReadFromIniCache();
         CloseSettingsFile(false, bOpendByMe);
     }
     return result;
@@ -872,14 +921,13 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 //
 //  Style_ImportTheme()
 //
-bool Style_ImportTheme(const unsigned iThemeIdx) {
+bool Style_ImportTheme(const int iThemeIdx) {
+
     switch (iThemeIdx) {
-    case Theme_FactoryLightMode:
-        return Style_ImportFromFile(L"");
-    case Theme_FactoryDarkMode:
-        return Style_ImportFromBinaryBlob(Globals.pStdDarkModeIniStyles);
+    case -1:
+        return Style_ImportFromFile(NULL);
     default:
-        if (iThemeIdx < ThemeItems_CountOf() && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath)) {
+        if ((iThemeIdx >= 0) && (iThemeIdx < (int)ThemeItems_CountOf()) && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath)) {
             return Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
         }
         break;
@@ -895,7 +943,7 @@ bool Style_ImportTheme(const unsigned iThemeIdx) {
 void Style_SaveSettings(bool bForceSaveSettings)
 {
     if (Settings.SaveSettings || bForceSaveSettings) {
-        Style_ExportToFile(Theme_Files[GetModeThemeIndex()].szFilePath, Globals.bIniFileFromScratch);
+        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, false);
     }
 }
 
@@ -940,6 +988,7 @@ bool Style_Export(HWND hwnd)
 void Style_FileExtToIniSection(bool bForceAll)
 {
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+
         LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
 
         if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0)) {
@@ -947,6 +996,21 @@ void Style_FileExtToIniSection(bool bForceAll)
         } else {
             IniSectionDelete(Lexer_Section, L"FileNameExtensions", false);
         }
+    }
+}
+
+
+//=============================================================================
+//
+//  Style_CanonicalSectionToIniCache()
+//  create canonical order of lexer sections
+//
+void Style_CanonicalSectionToIniCache() {
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        IniSectionClear(g_pLexArray[iLexer]->pszName, true);
+    }
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        IniSectionSetString(g_pLexArray[iLexer]->pszName, NULL, NULL);
     }
 }
 
@@ -963,20 +1027,17 @@ void Style_FileExtToIniSection(bool bForceAll)
     IniSectionDelete(IniSecStyles, _W(_STRG(VARNAME)), false);           \
   }
 
-void Style_ToIniSection(bool bForceAll)
+bool Style_ToIniSection(bool bForceAll)
 {
-    bool const bForceAllNotFromScratch = (bForceAll && !Globals.bIniFileFromScratch);
-
     // Custom colors
     const WCHAR* const CustomColors_Section = L"Custom Colors";
 
     for (int i = 0; i < 16; i++) {
         WCHAR tch[32] = { L'\0' };
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-        if ((g_colorCustom[i] != s_colorDefault[i]) || bForceAllNotFromScratch) {
+        if ((g_colorCustom[i] != (UseDarkMode() ? s_colorDarkDefault[i] : s_colorLightDefault[i])) || bForceAll) {
             WCHAR wch[32] = { L'\0' };
-            StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
-                            (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
+            ColorToHtmlCode(g_colorCustom[i], wch, COUNTOF(wch));
             IniSectionSetString(CustomColors_Section, tch, wch);
         } else {
             IniSectionDelete(CustomColors_Section, tch, false);
@@ -998,19 +1059,15 @@ void Style_ToIniSection(bool bForceAll)
     SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, SelectDlgSizeX, s_cxStyleSelectDlg, STYLESELECTDLG_X);
     SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, SelectDlgSizeY, s_cyStyleSelectDlg, STYLESELECTDLG_Y);
 
-    // create canonical order of lexer sections
     if (bForceAll || Globals.bIniFileFromScratch) {
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-            IniSectionClear(g_pLexArray[iLexer]->pszName, true);
-        }
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-            IniSectionSetString(g_pLexArray[iLexer]->pszName, NULL, NULL);
-        }
+        Style_CanonicalSectionToIniCache();
     }
-    // ----------------------------------------------------------------
 
     WCHAR wchCurrentStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
     WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+    // prepare tmp cache with defaults
+    _DefaultsToTmpCache();
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
 
@@ -1019,29 +1076,38 @@ void Style_ToIniSection(bool bForceAll)
         unsigned i = 0;
         while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
 
-            LPCWSTR const pszName = g_pLexArray[iLexer]->Styles[i].pszName;
-            LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[i].szValue;
-            LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
+            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
 
             // normalize values for comparison
-            wchCurrentStyle[0] = L'\0'; // empty
+            wchCurrentStyle[0] = L'\0';
+            TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchCurrentStyle, COUNTOF(wchCurrentStyle));
+            wchDefaultStyle[0] = L'\0';
+            Style_CopyStyles_IfNotDefined(wchCurrentStyle, wchDefaultStyle, COUNTOF(wchDefaultStyle));
+
+            wchCurrentStyle[0] = L'\0';
+            LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[i].szValue;
             Style_CopyStyles_IfNotDefined(pszValue, wchCurrentStyle, COUNTOF(wchCurrentStyle));
 
-            wchDefaultStyle[0] = L'\0'; // empty
-            Style_CopyStyles_IfNotDefined(pszDefault, wchDefaultStyle, COUNTOF(wchDefaultStyle));
-
-            if (bForceAllNotFromScratch || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
-                IniSectionSetString(Lexer_Section, pszName, wchCurrentStyle);
+            if (bForceAll || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
+                if (bForceAll || StrIsNotEmpty(wchCurrentStyle)) {
+                    IniSectionSetString(Lexer_Section, pszKeyName, wchCurrentStyle);
+                } else {
+                    IniSectionDelete(Lexer_Section, pszKeyName, false);
+                }
             } else {
-                IniSectionDelete(Lexer_Section, pszName, false);
+                IniSectionDelete(Lexer_Section, pszKeyName, false);
             }
             ++i;
         }
     }
 
+    ResetTmpCache();
+
     // cleanup old (< v4) stuff
     IniSectionDelete(L"Default Text", NULL, true);
     IniSectionDelete(L"2nd Default Text", NULL, true);
+
+    return true;
 }
 
 
@@ -1052,7 +1118,7 @@ void Style_ToIniSection(bool bForceAll)
 bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
     if (StrIsEmpty(szFile)) {
-        if (GetModeThemeIndex() != 0) {
+        if (Globals.uCurrentThemeIndex != 0) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
         }
         return false;
@@ -1066,10 +1132,10 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
     // special handling of standard .ini-file
     if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
-        bool bOpendByMe;
+        bool bOpendByMe = false;
         if (OpenSettingsFile(&bOpendByMe)) {
-            Style_FileExtToIniSection(bForceAll);
             Style_ToIniSection(bForceAll);
+            Style_FileExtToIniSection(bForceAll);
             ok = CloseSettingsFile(true, bOpendByMe);
         }
     } else {
@@ -1082,8 +1148,10 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
                     CloseHandle(hFile); // done
                 }
             }
+            ResetIniFileCache();
             if (LoadIniFileCache(szFilePathNorm)) {
                 Style_ToIniSection(bForceAll);
+                Style_FileExtToIniSection(bForceAll);
                 ok = SaveIniFileCache(szFilePathNorm);
                 ResetIniFileCache();
             }
@@ -1149,10 +1217,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         EditToggleView(Globals.hwndEdit);
     }
 
-    BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
+    //~ ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
+    //~ assert(pLexNew != s_pLexCurrent);
 
-    // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
-    // assert(pLexNew != s_pLexCurrent);
+    BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
 
     char localeNameA[LOCALE_NAME_MAX_LENGTH] = { '\0' };
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
@@ -2824,7 +2892,7 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
     if (p) {
         p += CONSTSTRGLEN(L"charset:");
         int iValue = 0;
-        if (Char2IntW(p, &iValue)) {
+        if (Char2Int(p, &iValue)) {
             *i = max_i(SC_CHARSET_ANSI, iValue);
             return true;
         }
@@ -2842,7 +2910,7 @@ bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
     WCHAR *p = StrStr(lpszStyle, L"size:");
     if (p) {
         p += CONSTSTRGLEN(L"size:");
-        return Char2IntW(p, i);
+        return Char2Int(p, i);
     }
     return false;
 }
@@ -2873,7 +2941,7 @@ bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
         TrimSpcW(tch);
 
         float fValue = 0.0;
-        if (Char2FloatW(tch, &fValue)) {
+        if (Char2Float(tch, &fValue)) {
             if (fSign != 0) {
                 // relative size calculation
                 float const base = *f; // base is input
@@ -2905,7 +2973,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle, LPWSTR lpszSize, int cchSize)
         TrimSpcW(tch);
 
         float fValue = 0.0f;
-        if (Char2FloatW(tch, &fValue)) {
+        if (Char2Float(tch, &fValue)) {
             WCHAR wchFloatVal[64];
             fValue = (float)fabs(fValue);
             bool const isZero = (fValue == 0.0f);
@@ -3038,7 +3106,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bool
     // no colordef bIsDefined - use default as fallback ?
     if (!bIsDefined && useDefault) {
         *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
-        bIsDefined = true;
+        //~bIsDefined = true;
     }
     return bIsDefined;
 }
@@ -3247,7 +3315,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     if (Style_StrGetColor(lpszStyleDest, FOREGROUND_LAYER, &dColor, false)) {
         Style_PrintfCchColor(tch, COUNTOF(tch), L"; ", FOREGROUND_LAYER, dColor);
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    } else if (!bIsFontDefInDestination && Style_StrGetColor(lpszStyleSrc, FOREGROUND_LAYER, &dColor, false)) {
+    } else if (Style_StrGetColor(lpszStyleSrc, FOREGROUND_LAYER, &dColor, false)) {
         Style_PrintfCchColor(tch, COUNTOF(tch), L"; ", FOREGROUND_LAYER, dColor);
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
@@ -3962,9 +4030,8 @@ static void _UpdateTitleText(HWND hwnd)
     if (StrIsEmpty(s_OrigTitle)) {
         GetWindowText(hwnd, s_OrigTitle, COUNTOF(s_OrigTitle));
     }
-    unsigned const iTheme = max_u(1, GetModeThemeIndex());
     WCHAR scheme[96] = { L'\0' };
-    StringCchCopy(scheme, COUNTOF(scheme), Theme_Files[iTheme].szName);
+    StringCchCopy(scheme, COUNTOF(scheme), Theme_Files[Globals.uCurrentThemeIndex].szName);
     StrDelChr(scheme, L"&"); // rm hotkey mark
     PWCHAR const e = StrChr(scheme, L' ');
     if (e) {
@@ -4534,12 +4601,16 @@ CASE_WM_CTLCOLOR_SET:
             break;
 
         case IDC_STYLEDEFAULT: {
-            SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
+            WCHAR wchDefaultStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            _DefaultsToTmpCache();
+            TmpCacheGetString(pCurrentLexer->pszName, pCurrentStyle->pszName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+            SetDlgItemText(hwnd, IDC_STYLEEDIT, wchDefaultStyle);
             if (!bIsStyleSelected) {
                 SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->pszDefExt);
             }
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
             PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+            ResetTmpCache();
         }
         break;
 
@@ -4614,7 +4685,7 @@ CASE_WM_CTLCOLOR_SET:
         case IDOK: {
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-            unsigned const iTheme = GetModeThemeIndex();
+            unsigned const iTheme = Globals.uCurrentThemeIndex;
             if ((iTheme > 0) && (!bWarnedNoIniFile && StrIsEmpty(Theme_Files[iTheme].szFilePath))) {
                 InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
                 bWarnedNoIniFile = true;
@@ -4882,7 +4953,7 @@ CASE_WM_CTLCOLOR_SET:
 
 
         case IDOK: {
-            LVITEM lvi;
+            LVITEM lvi = {0};
             lvi.mask = LVIF_PARAM;
             lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
             if (ListView_GetItem(hwndLV, &lvi)) {

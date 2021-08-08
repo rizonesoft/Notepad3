@@ -29,25 +29,20 @@
 
 int    Style_NumOfLexers();  // Number of Lexers in pLexArray
 
-#define Theme_FactoryLightMode (0U)
-#define Theme_FactoryDarkMode  (1U)
-#define Theme_CustomizedMode   (2U)
-
 void   Style_Load();
 bool   Style_Import(HWND hwnd);
-bool   Style_ImportTheme(const unsigned iThemeIdx);
-void   Style_LoadLexerFileExtensions();
+bool   Style_ImportTheme(const int iThemeIdx);  // -1 => Factory Reset
 bool   Style_ImportFromFile(const WCHAR* szFile);
-bool   Style_ImportFromBinaryBlob(LPCSTR szCharResorce);
 void   Style_SaveSettings(bool bForceSaveSettings);
 bool   Style_Export(HWND hwnd);
 void   Style_FileExtToIniSection(bool bForceAll);
-void   Style_ToIniSection(bool bForceAll);
+void   Style_CanonicalSectionToIniCache();
+bool   Style_ToIniSection(bool bForceAll);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 
 unsigned ThemeItems_CountOf();
 bool   Style_InsertThemesMenu(HMENU hMenuBar);
-void   Style_DynamicThemesMenuCmd(int cmd, unsigned iCurThemeIdx);
+bool   Style_DynamicThemesMenuCmd(int cmd);
 
 float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);

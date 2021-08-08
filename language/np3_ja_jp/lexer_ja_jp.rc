@@ -125,8 +125,9 @@ BEGIN
     IDS_LEX_AHKL            "AutoHotkey_Lスクリプト"
     IDS_LEX_TEXT_FILES      "テキストファイル"
     IDS_LEX_TOML_CFG        "TOML"
-    IDS_LEX_DART_SRC        "Dart ソースコード"
-    IDS_LEX_KOTLIN_SRC      "Kotlin ソースコード"
+    IDS_LEX_DART_SRC        "Dartソースコード"
+    IDS_LEX_KOTLIN_SRC      "Kotlinソースコード"
+    IDS_LEX_KIX_SCR         "KiXtartスクリプト"
 END
 
 STRINGTABLE

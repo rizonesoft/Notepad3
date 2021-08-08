@@ -45,86 +45,8 @@ typedef struct {
   int min_is_sure;
 } MinMaxCharLen;
 
-OnigCaseFoldType OnigDefaultCaseFoldFlag = ONIGENC_CASE_FOLD_MIN;
 
 static OnigLen node_min_byte_len(Node* node, ParseEnv* env);
-
-#if 0
-typedef struct {
-  int  n;
-  int  alloc;
-  int* v;
-} int_stack;
-
-static int
-make_int_stack(int_stack** rs, int init_size)
-{
-  int_stack* s;
-  int* v;
-
-  *rs = 0;
-
-  s = xmalloc(sizeof(*s));
-  if (IS_NULL(s)) return ONIGERR_MEMORY;
-
-  v = (int* )xmalloc(sizeof(int) * init_size);
-  if (IS_NULL(v)) {
-    xfree(s);
-    return ONIGERR_MEMORY;
-  }
-
-  s->n = 0;
-  s->alloc = init_size;
-  s->v = v;
-
-  *rs = s;
-  return ONIG_NORMAL;
-}
-
-static void
-free_int_stack(int_stack* s)
-{
-  if (IS_NOT_NULL(s)) {
-    if (IS_NOT_NULL(s->v))
-      xfree(s->v);
-    xfree(s);
-  }
-}
-
-static int
-int_stack_push(int_stack* s, int v)
-{
-  if (s->n >= s->alloc) {
-    int new_size = s->alloc * 2;
-    int* nv = (int* )xrealloc(s->v, sizeof(int) * new_size);
-    if (IS_NULL(nv)) return ONIGERR_MEMORY;
-
-    s->alloc = new_size;
-    s->v = nv;
-  }
-
-  s->v[s->n] = v;
-  s->n++;
-  return ONIG_NORMAL;
-}
-
-static int
-int_stack_pop(int_stack* s)
-{
-  int v;
-
-#ifdef ONIG_DEBUG
-  if (s->n <= 0) {
-    fprintf(DBGFP, "int_stack_pop: fail empty. %p\n", s);
-    return 0;
-  }
-#endif
-
-  v = s->v[s->n];
-  s->n--;
-  return v;
-}
-#endif
 
 static int
 ops_init(regex_t* reg, int init_alloc_size)
@@ -385,19 +307,6 @@ ops_make_string_pool(regex_t* reg)
 
   reg->string_pool     = pool;
   reg->string_pool_end = pool + size;
-  return 0;
-}
-
-extern OnigCaseFoldType
-onig_get_default_case_fold_flag(void)
-{
-  return OnigDefaultCaseFoldFlag;
-}
-
-extern int
-onig_set_default_case_fold_flag(OnigCaseFoldType case_fold_flag)
-{
-  OnigDefaultCaseFoldFlag = case_fold_flag;
   return 0;
 }
 
@@ -7667,7 +7576,7 @@ onig_new_without_alloc(regex_t* reg,
 {
   int r;
 
-  r = onig_reg_init(reg, option, ONIGENC_CASE_FOLD_DEFAULT, enc, syntax);
+  r = onig_reg_init(reg, option, ONIGENC_CASE_FOLD_MIN, enc, syntax);
   if (r != 0) return r;
 
   r = onig_compile(reg, pattern, pattern_end, einfo);
@@ -7684,7 +7593,7 @@ onig_new(regex_t** reg, const UChar* pattern, const UChar* pattern_end,
   *reg = (regex_t* )xmalloc(sizeof(regex_t));
   if (IS_NULL(*reg)) return ONIGERR_MEMORY;
 
-  r = onig_reg_init(*reg, option, ONIGENC_CASE_FOLD_DEFAULT, enc, syntax);
+  r = onig_reg_init(*reg, option, ONIGENC_CASE_FOLD_MIN, enc, syntax);
   if (r != 0) {
     xfree(*reg);
     *reg = NULL;
@@ -8130,7 +8039,7 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
   reg = (regex_t* )xmalloc(sizeof(regex_t));
   if (IS_NULL(reg)) return ONIGERR_MEMORY;
 
-  r = onig_reg_init(reg, option, ONIGENC_CASE_FOLD_DEFAULT, enc, syntax);
+  r = onig_reg_init(reg, option, ONIGENC_CASE_FOLD_MIN, enc, syntax);
   if (r != 0) {
     xfree(reg);
     return r;
@@ -8161,9 +8070,15 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
 
   r = detect_can_be_slow(root, &count, 0, calls);
   if (r == 0) {
-    int n = count.prec_read + count.look_behind
-          + count.backref + count.backref_with_level + count.call
-          + count.anychar_reluctant_many;
+    int n;
+
+    n = count.prec_read + count.look_behind
+      + count.backref + count.backref_with_level + count.call
+      + count.anychar_reluctant_many;
+
+    if (count.max_empty_check_nest_level > 2)
+      n += count.max_empty_check_nest_level - 2;
+
     if (count.heavy_element != 0)
       n += count.heavy_element << 8;
 
@@ -8177,6 +8092,7 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
     fprintf(DBGFP, "  backref_with_level: %d\n", count.backref_with_level);
     fprintf(DBGFP, "  call:               %d\n", count.call);
     fprintf(DBGFP, "  any_reluctant_many: %d\n", count.anychar_reluctant_many);
+    fprintf(DBGFP, "  max_empty_check_nest_level: %d\n", count.max_empty_check_nest_level);
     fprintf(DBGFP, "  heavy_element:      %d\n", count.heavy_element);
     fprintf(DBGFP, "  r:                  %d\n", r);
     fprintf(DBGFP, "\n");

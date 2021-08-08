@@ -67,7 +67,7 @@ public:
 	friend class CatalogueModules;
 };
 
-inline int Maximum(int a, int b) noexcept {
+constexpr int Maximum(int a, int b) noexcept {
 	return (a > b) ? a : b;
 }
 

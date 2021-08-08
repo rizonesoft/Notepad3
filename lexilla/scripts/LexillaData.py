@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # ScintillaData.py - implemented 2013 by Neil Hodgson neilh@scintilla.org
 # Released to the public domain.
+# encoding: cp437
 
 # Common code used by Scintilla and SciTE for source file regeneration.
 # The ScintillaData object exposes information about Scintilla as properties:
@@ -41,22 +42,30 @@ sys.path.append(str(thisPath.parent.parent.parent / "scintilla" / "scripts"))
 
 import FileGenerator
 
-neutralEncoding = "latin_1"
+neutralEncoding = "cp437"	# Each byte value is valid in cp437
 
 def FindModules(lexFile):
     modules = []
     partLine = ""
     with lexFile.open(encoding=neutralEncoding) as f:
+        lineNum = 0
         for l in f.readlines():
+            lineNum += 1
             l = l.rstrip()
             if partLine or l.startswith("LexerModule"):
                 if ")" in l:
                     l = partLine + l
+                    original = l
                     l = l.replace("(", " ")
                     l = l.replace(")", " ")
                     l = l.replace(",", " ")
                     parts = l.split()
-                    modules.append([parts[1], parts[2], parts[4][1:-1]])
+                    lexerName = parts[4]
+                    if not (lexerName.startswith('"') and lexerName.endswith('"')):
+                        print(f"{lexFile}:{lineNum}: Bad LexerModule statement:\n{original}")
+                        exit(1)
+                    lexerName = lexerName.strip('"')
+                    modules.append([parts[1], parts[2], lexerName])
                     partLine = ""
                 else:
                     partLine = partLine + l

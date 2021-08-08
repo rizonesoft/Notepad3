@@ -145,7 +145,9 @@ DWORD CRegBaseCommon<S>::removeKey()
 
     HKEY hKey = nullptr;
     RegOpenKeyEx(m_base, GetPlainString(m_path), 0, KEY_WRITE | m_sam, &hKey);
-    return SHDeleteKey(m_base, GetPlainString(m_path));
+    auto ret = SHDeleteKey(m_base, GetPlainString(m_path));
+    RegCloseKey(hKey);
+    return ret;
 }
 
 template <class S>
@@ -156,7 +158,9 @@ LONG CRegBaseCommon<S>::removeValue()
 
     HKEY hKey = nullptr;
     RegOpenKeyEx(m_base, GetPlainString(m_path), 0, KEY_WRITE | m_sam, &hKey);
-    return RegDeleteValue(hKey, GetPlainString(m_key));
+    auto ret = RegDeleteValue(hKey, GetPlainString(m_key));
+    RegCloseKey(hKey);
+    return ret;
 }
 
 /**
@@ -354,7 +358,7 @@ public:
      * Data access.
      */
 
-    operator const T&();
+                                    operator const T&();
     virtual CRegTypedBase<T, Base>& operator=(const T& rhs);
 };
 
@@ -709,8 +713,8 @@ CRegStringCommon<Base>::CRegStringCommon(DWORD lookupInterval, const typename Ba
 template <class Base>
 void CRegStringCommon<Base>::InternalRead(HKEY hKey, typename Base::StringT& value)
 {
-    DWORD size      = 0;
-    DWORD type      = 0;
+    DWORD size        = 0;
+    DWORD type        = 0;
     Base::m_lastError = RegQueryValueEx(hKey, Base::GetPlainString(Base::m_key), nullptr, &type, nullptr, &size);
 
     if (Base::m_lastError == ERROR_SUCCESS)
@@ -806,8 +810,8 @@ public:
         CRegTypedBase<CRect, CRegBase>::operator=(rhs);
         return *this;
     }
-    operator LPCRECT() { return (LPCRECT)(CRect) * this; }
-    operator LPRECT() { return (LPRECT)(CRect) * this; }
+              operator LPCRECT() { return (LPCRECT)(CRect) * this; }
+              operator LPRECT() { return (LPRECT)(CRect) * this; }
     CRegRect& operator+=(POINT r) { return *this = (CRect) * this + r; }
     CRegRect& operator+=(SIZE r) { return *this = (CRect) * this + r; }
     CRegRect& operator+=(LPCRECT r) { return *this = (CRect) * this + r; }

@@ -217,6 +217,8 @@ BEGIN
     IDS_MUI_PRINT_FOOTER    "Numéro de page|Laisser vide"
     IDS_MUI_PRINT_COLOR     "Normal|Inversion (fond sombre)|Noir sur blanc|Couleur sur blanc|Couleur sur blanc (excepté numéros de ligne)|Couleurs d'écran"
     IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "Cette action réinitialisera le style aux paramètres d'usine du mode de couleur souhaité et basculera le fichier de thème actif vers la configuration standard .ini !"
 END
 
 STRINGTABLE
@@ -257,8 +259,8 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Langue"
     IDS_USE_LOCALE_DATEFMT  "Langue définit Format &Date"
     IDS_MUI_MENU_THEMES     "&Collection de Modèles"
-    IDM_THEMES_DEFAULT      "Par &Défaut"
-    IDM_THEMES_FILE_ITEM    "&Standard"
+    IDM_THEMES_FACTORY_RESET "Par &Défaut"
+    IDM_THEMES_STD_CFG       "&Standard"
     IDS_MUI_STATUSBAR_PREFIXES "Lgn  ,Col  ,Sel  ,Sb  ,SLgn  ,Occ  ,,,,,,,Car  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Effacer tout"

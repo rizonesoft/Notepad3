@@ -93,6 +93,9 @@ val INVALID_POSITION=-1
 val SCI_START=2000
 val SCI_OPTIONAL_START=3000
 val SCI_LEXER_START=4000
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+val SCI_DEV_USER_DEFINED=6000
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Add text to the document at current position.
 fun void AddText=2001(position length, string text)
@@ -298,6 +301,11 @@ get IMEInteraction GetIMEInteraction=2678(,)
 # Choose to display the IME in a window or inline.
 set void SetIMEInteraction=2679(IMEInteraction imeInteraction,)
 
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+get bool IsIMEOpen=6003(,)
+get bool IsIMEModeCJK=6004(,)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 enu Alpha=SC_ALPHA_
 val SC_ALPHA_TRANSPARENT=0
 val SC_ALPHA_OPAQUE=255
@@ -312,11 +320,6 @@ val SC_CURSORWAIT=4
 val SC_CURSORREVERSEARROW=7
 
 ali SC_CURSORREVERSEARROW=REVERSE_ARROW
-
-# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=2900(,)
-get bool IsIMEModeCJK=2901(,)
-# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu MarkerSymbol=SC_MARK_
 val MARKER_MAX=31
@@ -458,6 +461,12 @@ fun void MarkerAddSet=2466(line line, int markerSet)
 # Set the alpha used for a marker that is drawn in the text area, not the margin.
 set void MarkerSetAlpha=2476(int markerNumber, Alpha alpha)
 
+# Get the layer used for a marker that is drawn in the text area, not the margin.
+get Layer MarkerGetLayer=2734(int markerNumber,)
+
+# Set the layer used for a marker that is drawn in the text area, not the margin.
+set void MarkerSetLayer=2735(int markerNumber, Layer layer)
+
 val SC_MAX_MARGIN=4
 
 enu MarginType=SC_MARGIN_
@@ -598,6 +607,11 @@ fun void StyleResetDefault=2058(,)
 # Set a style to be underlined or not.
 set void StyleSetUnderline=2059(int style, bool underline)
 
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+# Set a style to be underlined or not.
+set void StyleSetStrike=6001(int style, bool strike)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 enu CaseVisible=SC_CASE_
 val SC_CASE_MIXED=0
 val SC_CASE_UPPER=1
@@ -629,6 +643,11 @@ get bool StyleGetEOLFilled=2487(int style,)
 
 # Get is a style underlined or not.
 get bool StyleGetUnderline=2488(int style,)
+
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+# Get is a style underlined or not.
+get bool StyleGetStrike=6002(int style,)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Get is a style mixed case, or to force upper or lower case.
 get CaseVisible StyleGetCase=2489(int style,)
@@ -681,6 +700,21 @@ val SC_ELEMENT_LIST=0
 val SC_ELEMENT_LIST_BACK=1
 val SC_ELEMENT_LIST_SELECTED=2
 val SC_ELEMENT_LIST_SELECTED_BACK=3
+val SC_ELEMENT_SELECTION_TEXT=10
+val SC_ELEMENT_SELECTION_BACK=11
+val SC_ELEMENT_SELECTION_ADDITIONAL_TEXT=12
+val SC_ELEMENT_SELECTION_ADDITIONAL_BACK=13
+val SC_ELEMENT_SELECTION_SECONDARY_TEXT=14
+val SC_ELEMENT_SELECTION_SECONDARY_BACK=15
+val SC_ELEMENT_SELECTION_INACTIVE_TEXT=16
+val SC_ELEMENT_SELECTION_INACTIVE_BACK=17
+val SC_ELEMENT_CARET=40
+val SC_ELEMENT_CARET_ADDITIONAL=41
+val SC_ELEMENT_CARET_LINE_BACK=50
+val SC_ELEMENT_WHITE_SPACE=60
+val SC_ELEMENT_WHITE_SPACE_BACK=61
+val SC_ELEMENT_HOT_SPOT_ACTIVE=70
+val SC_ELEMENT_HOT_SPOT_ACTIVE_BACK=71
 
 # Set the colour of an element. Translucency (alpha) may or may not be significant
 # and this may depend on the platform. The alpha byte should commonly be 0xff for opaque.
@@ -699,6 +733,9 @@ get bool GetElementIsSet=2756(Element element,)
 # Get whether an element supports translucency.
 get bool GetElementAllowsTranslucent=2757(Element element,)
 
+# Get the colour of an element.
+get colouralpha GetElementBaseColour=2758(Element element,)
+
 # Set the foreground colour of the main and additional selections and whether to use this setting.
 fun void SetSelFore=2067(bool useSetting, colour fore)
 
@@ -716,6 +753,23 @@ get bool GetSelEOLFilled=2479(,)
 
 # Set the selection to have its end of line filled or not.
 set void SetSelEOLFilled=2480(bool filled,)
+
+enu Layer=SC_LAYER_
+val SC_LAYER_BASE=0
+val SC_LAYER_UNDER_TEXT=1
+val SC_LAYER_OVER_TEXT=2
+
+# Get the layer for drawing selections
+get Layer GetSelectionLayer=2762(,)
+
+# Set the layer for drawing selections: either opaquely on base layer or translucently over text
+set void SetSelectionLayer=2763(Layer layer,)
+
+# Get the layer of the background of the line containing the caret.
+get Layer GetCaretLineLayer=2764(,)
+
+# Set the layer of the background of the line containing the caret.
+set void SetCaretLineLayer=2765(Layer layer,)
 
 # Set the foreground colour of the caret.
 set void SetCaretFore=2069(colour fore,)
@@ -849,6 +903,7 @@ val SC_INDICVALUEBIT=0x1000000
 val SC_INDICVALUEMASK=0xFFFFFF
 
 enu IndicFlag=SC_INDICFLAG_
+val SC_INDICFLAG_NONE=0
 val SC_INDICFLAG_VALUEFORE=1
 
 ali SC_INDICFLAG_VALUEFORE=VALUE_FORE
@@ -971,6 +1026,18 @@ set void AutoCSetAutoHide=2118(bool autoHide,)
 
 # Retrieve whether or not autocompletion is hidden automatically when nothing matches.
 get bool AutoCGetAutoHide=2119(,)
+
+# Define option flags for autocompletion lists
+enu AutoCompleteOption=SC_AUTOCOMPLETE_
+val SC_AUTOCOMPLETE_NORMAL=0
+# Win32 specific:
+val SC_AUTOCOMPLETE_FIXED_SIZE=1
+
+# Set autocompletion options.
+set void AutoCSetOptions=2638(AutoCompleteOption options,)
+
+# Retrieve autocompletion options.
+get AutoCompleteOption AutoCGetOptions=2639(,)
 
 # Set whether or not autocompletion deletes any word characters
 # after the inserted text upon completion.
@@ -1162,6 +1229,9 @@ fun position GetLine=2153(line line, stringresult text)
 # Returns the number of lines in the document. There is always at least one.
 get line GetLineCount=2154(,)
 
+# Enlarge the number of lines allocated.
+set void AllocateLines=2089(line lines,)
+
 # Sets the size in pixels of the left margin.
 set void SetMarginLeft=2155(, int pixelWidth)
 
@@ -1261,6 +1331,9 @@ get position GetTextLength=2183(,)
 
 # Retrieve a pointer to a function that processes messages for this Scintilla.
 get pointer GetDirectFunction=2184(,)
+
+# Retrieve a pointer to a function that processes messages for this Scintilla and returns status.
+get pointer GetDirectStatusFunction=2772(,)
 
 # Retrieve a pointer value to use as the first argument when calling
 # the function returned by GetDirectFunction.
@@ -1383,6 +1456,7 @@ fun line DocLineFromVisible=2221(line displayLine,)
 fun line WrapCount=2235(line docLine,)
 
 enu FoldLevel=SC_FOLDLEVEL
+val SC_FOLDLEVELNONE=0x0
 val SC_FOLDLEVELBASE=0x400
 val SC_FOLDLEVELWHITEFLAG=0x1000
 val SC_FOLDLEVELHEADERFLAG=0x2000
@@ -1468,6 +1542,7 @@ fun void FoldAll=2662(FoldAction action,)
 fun void EnsureVisible=2232(line line,)
 
 enu AutomaticFold=SC_AUTOMATICFOLD_
+val SC_AUTOMATICFOLD_NONE=0x0000
 val SC_AUTOMATICFOLD_SHOW=0x0001
 val SC_AUTOMATICFOLD_CLICK=0x0002
 val SC_AUTOMATICFOLD_CHANGE=0x0004
@@ -1479,6 +1554,7 @@ set void SetAutomaticFold=2663(AutomaticFold automaticFold,)
 get AutomaticFold GetAutomaticFold=2664(,)
 
 enu FoldFlag=SC_FOLDFLAG_
+val SC_FOLDFLAG_NONE=0x0000
 val SC_FOLDFLAG_LINEBEFORE_EXPANDED=0x0002
 val SC_FOLDFLAG_LINEBEFORE_CONTRACTED=0x0004
 val SC_FOLDFLAG_LINEAFTER_EXPANDED=0x0008
@@ -2016,7 +2092,7 @@ get bool SelectionIsRectangle=2372(,)
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 # 2018-09-06 change zoom level and print magnification to percent value
 val SC_MIN_ZOOM_LEVEL=10
-val SC_MAX_ZOOM_LEVEL=500
+val SC_MAX_ZOOM_LEVEL=1000
 # <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Set the zoom level. This number of points is added to the size of all fonts.
@@ -2407,6 +2483,9 @@ set void SetPasteConvertEndings=2467(bool convert,)
 
 # Get convert-on-paste setting
 get bool GetPasteConvertEndings=2468(,)
+
+# Replace the selection with text like a rectangular paste.
+fun void ReplaceRectangular=2771(position length, string text)
 
 # Duplicate the selection. If selection empty duplicate the line containing the caret.
 fun void SelectionDuplicate=2469(,)
@@ -2898,12 +2977,33 @@ get LineEndType GetLineEndTypesActive=2658(,)
 # Set the way a character is drawn.
 set void SetRepresentation=2665(string encodedCharacter, string representation)
 
-# Set the way a character is drawn.
+# Get the way a character is drawn.
 # Result is NUL-terminated.
 get int GetRepresentation=2666(string encodedCharacter, stringresult representation)
 
 # Remove a character representation.
 fun void ClearRepresentation=2667(string encodedCharacter,)
+
+# Clear representations to default.
+fun void ClearAllRepresentations=2770(,)
+
+# Can draw representations in various ways
+enu RepresentationAppearance=SC_REPRESENTATION
+val SC_REPRESENTATION_PLAIN=0
+val SC_REPRESENTATION_BLOB=1
+val SC_REPRESENTATION_COLOUR=0x10
+
+# Set the appearance of a representation.
+set void SetRepresentationAppearance=2766(string encodedCharacter, RepresentationAppearance appearance)
+
+# Get the appearance of a representation.
+get RepresentationAppearance GetRepresentationAppearance=2767(string encodedCharacter,)
+
+# Set the colour of a representation.
+set void SetRepresentationColour=2768(string encodedCharacter, colouralpha colour)
+
+# Get the colour of a representation.
+get colouralpha GetRepresentationColour=2769(string encodedCharacter,)
 
 # Set the end of line annotation text for a line
 set void EOLAnnotationSetText=2740(line line, string text)
@@ -2956,6 +3056,26 @@ val SC_SUPPORTS_PIXEL_MODIFICATION=4
 # Get whether a feature is supported
 get bool SupportsFeature=2750(Supports feature,)
 
+enu LineCharacterIndexType=SC_LINECHARACTERINDEX_
+val SC_LINECHARACTERINDEX_NONE=0
+val SC_LINECHARACTERINDEX_UTF32=1
+val SC_LINECHARACTERINDEX_UTF16=2
+
+# Retrieve line character index state.
+get LineCharacterIndexType GetLineCharacterIndex=2710(,)
+
+# Request line character index be created or its use count increased.
+fun void AllocateLineCharacterIndex=2711(LineCharacterIndexType lineCharacterIndex,)
+
+# Decrease use count of line character index and remove if 0.
+fun void ReleaseLineCharacterIndex=2712(LineCharacterIndexType lineCharacterIndex,)
+
+# Retrieve the document line containing a position measured in index units.
+fun line LineFromIndexPosition=2713(position pos, LineCharacterIndexType lineCharacterIndex)
+
+# Retrieve the position measured in index units at the start of a document line.
+fun position IndexPositionFromLine=2714(line line, LineCharacterIndexType lineCharacterIndex)
+
 # Start notifying the container of all key presses and commands.
 fun void StartRecord=3001(,)
 
@@ -2972,7 +3092,7 @@ fun void Colourise=4003(position start, position end)
 set void SetProperty=4004(string key, string value)
 
 # Maximum value of keywordSet parameter of SetKeyWords.
-val KEYWORDSET_MAX=8
+val KEYWORDSET_MAX=15
 
 # Set up the key words used by the lexer.
 set void SetKeyWords=4005(int keyWordSet, string keyWords)
@@ -3122,6 +3242,7 @@ ali SC_MOD_CHANGEEOLANNOTATION=CHANGE_E_O_L_ANNOTATION
 ali SC_MODEVENTMASKALL=EVENT_MASK_ALL
 
 enu Update=SC_UPDATE_
+val SC_UPDATE_NONE=0x0
 val SC_UPDATE_CONTENT=0x1
 val SC_UPDATE_SELECTION=0x2
 val SC_UPDATE_V_SCROLL=0x4
@@ -3131,6 +3252,7 @@ val SC_UPDATE_H_SCROLL=0x8
 # and should have had exactly the same values as the EN_* constants.
 # Unfortunately the SETFOCUS and KILLFOCUS are flipped over from EN_*
 # As clients depend on these constants, this will not be changed.
+enu FocusChange=SCEN_
 val SCEN_CHANGE=768
 val SCEN_SETFOCUS=512
 val SCEN_KILLFOCUS=256
@@ -3238,26 +3360,6 @@ get Bidirectional GetBidirectional=2708(,)
 
 # Set bidirectional text display state.
 set void SetBidirectional=2709(Bidirectional bidirectional,)
-
-enu LineCharacterIndexType=SC_LINECHARACTERINDEX_
-val SC_LINECHARACTERINDEX_NONE=0
-val SC_LINECHARACTERINDEX_UTF32=1
-val SC_LINECHARACTERINDEX_UTF16=2
-
-# Retrieve line character index state.
-get LineCharacterIndexType GetLineCharacterIndex=2710(,)
-
-# Request line character index be created or its use count increased.
-fun void AllocateLineCharacterIndex=2711(LineCharacterIndexType lineCharacterIndex,)
-
-# Decrease use count of line character index and remove if 0.
-fun void ReleaseLineCharacterIndex=2712(LineCharacterIndexType lineCharacterIndex,)
-
-# Retrieve the document line containing a position measured in index units.
-fun line LineFromIndexPosition=2713(position pos, LineCharacterIndexType lineCharacterIndex)
-
-# Retrieve the position measured in index units at the start of a document line.
-fun position IndexPositionFromLine=2714(line line, LineCharacterIndexType lineCharacterIndex)
 
 cat Deprecated
 

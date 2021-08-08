@@ -83,7 +83,7 @@ BEGIN
     EDITTEXT        IDC_CMDLINEHELP,15,7,278,176,ES_MULTILINE | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
 END
 
-IDD_MUI_FIND DIALOGEX 0, 0, 313, 154
+IDD_MUI_FIND DIALOGEX 0, 0, 313, 142
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Знайсці тэкст"
 FONT 9, "Segoe UI", 0, 0, 0x0
@@ -97,25 +97,24 @@ BEGIN
     CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,79,10
     CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,84,10
     CONTROL         "Кр&опка — любы сімвал",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,93,10
-    CONTROL         "Пошук &з перакрыццём",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,92,10
-    CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,69,10
-    CONTROL         "&Закрыць пасля пошуку",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,94,10
-    CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,99,10
-    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,97,63,10
+    CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,69,10
+    CONTROL         "&Закрыць пасля пошуку",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,94,10
+    CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,99,10
+    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,63,10
     CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,127,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,127,10
     DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
     PUSHBUTTON      "&Папярэдняе",IDC_FINDPREV,246,23,60,14
-    PUSHBUTTON      "Закрыць",IDCANCEL,246,111,60,14
-    CONTROL         "<a>Замяніць (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,115,74,10
+    PUSHBUTTON      "Закрыць",IDCANCEL,246,99,60,14
+    CONTROL         "<a>Замяніць (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,97,14,10
-    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,142,299,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "&Факусаванне",IDC_TOGGLE_VISIBILITY,246,77,60,14
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,85,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,299,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "&Факусаванне",IDC_TOGGLE_VISIBILITY,246,65,60,14
 END
 
-IDD_MUI_REPLACE DIALOGEX 0, 0, 313, 180
+IDD_MUI_REPLACE DIALOGEX 0, 0, 313, 168
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Замяніць тэкст"
 FONT 9, "Segoe UI", 0, 0, 0x0
@@ -132,13 +131,12 @@ BEGIN
     CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,79,10
     CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,84,10
     CONTROL         "Кр&опка — любы сімвал",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,93,10
-    CONTROL         "Пошук &з перакрыццём",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,92,10
-    CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,69,10
-    CONTROL         "&Закрыць пасля замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,93,10
-    CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,114,99,10
-    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,126,67,10
+    CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,69,10
+    CONTROL         "&Закрыць пасля замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,93,10
+    CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,99,10
+    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,114,67,10
     CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,156,127,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,127,10
     DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
     PUSHBUTTON      "&Папярэдняе",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "За&мяніць",IDC_REPLACE,246,43,60,14
@@ -146,12 +144,12 @@ BEGIN
     PUSHBUTTON      "Замяніць у&сё",IDC_REPLACEALL,246,75,60,14
     PUSHBUTTON      "Памяняць месцамі",IDC_SWAPSTRG,156,32,73,12
     PUSHBUTTON      "Закрыць",IDCANCEL,246,126,60,14
-    CONTROL         "<a>Знайсці (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,142,74,10
+    CONTROL         "<a>Знайсці (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,126,14,10
-    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,168,299,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "&Факусаванне",IDC_TOGGLE_VISIBILITY,246,106,60,14
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,114,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,299,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "&Факусаванне",IDC_TOGGLE_VISIBILITY,246,94,60,14
 END
 
 IDD_MUI_RUN DIALOGEX 0, 0, 235, 96
@@ -272,17 +270,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 
-IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 91
+IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 103
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Паведамленне аб змяненні файла"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "&Няма", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Паказаць паведамленне", IDC_RADIO_BTN_B,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,99,10
-    CONTROL         "&Аўтаабнаўленне", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Выключнае блакаванне", IDC_RADIO_BTN_D,"Button", BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
-    CONTROL         "&Скінуць падчас адкрыцця новага файла", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,153,10
-    CONTROL         "&Назіранне за логам", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,120,10
+    CONTROL         "&Indicator (silent).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "&Паказаць паведамленне", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Аўтаабнаўленне", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Выключнае блакаванне", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
+    CONTROL         "&Скінуць падчас адкрыцця новага файла", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,153,10
+    CONTROL         "&Назіранне за логам", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Скасаваць",IDCANCEL,127,24,50,14
 END
@@ -697,53 +696,53 @@ END
 //
 IDD_MUI_SYSFONT_WITHLINK DIALOGEX 13, 54, 243, 234
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Font"
+CAPTION "Шрыфт"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Font:", stc1, 7, 7, 98, 9
+    LTEXT           "&Шрыфт:", stc1, 7, 7, 98, 9
     COMBOBOX        cmb1, 7, 16, 98, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "Font st&yle:", stc2, 114, 7, 74, 9
+    LTEXT           "&Стыль шрыфту:", stc2, 114, 7, 74, 9
     COMBOBOX        cmb2, 114, 16, 74, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "&Size:", stc3, 198, 7, 36, 9
+    LTEXT           "&Памер:", stc3, 198, 7, 36, 9
     COMBOBOX        cmb3, 198, 16, 36, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    GROUPBOX        "Effects", grp1, 7, 97, 98, 76, WS_GROUP
-    AUTOCHECKBOX    "Stri&keout", chx1, 13, 111, 90, 10, WS_TABSTOP
-    AUTOCHECKBOX    "&Underline", chx2, 13, 127, 90, 10
+    GROUPBOX        "Эфекты", grp1, 7, 97, 98, 76, WS_GROUP
+    AUTOCHECKBOX    "&Закрэслены", chx1, 13, 111, 90, 10, WS_TABSTOP
+    AUTOCHECKBOX    "Падкр&эслены", chx2, 13, 127, 90, 10
 
-    LTEXT           "&Color:", stc4, 13, 144, 89, 9
+    LTEXT           "&Колер:", stc4, 13, 144, 89, 9
     COMBOBOX        cmb4, 13, 155, 85, 100,
     CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL |
     CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    GROUPBOX        "Sample", grp2, 114, 97, 120, 43, WS_GROUP
+    GROUPBOX        "Узор", grp2, 114, 97, 120, 43, WS_GROUP
     CTEXT           "AaBbYyZz", stc5, 116, 106, 117, 33,
     SS_NOPREFIX | NOT WS_VISIBLE
     LTEXT           "", stc6, 7, 178, 227, 20, SS_NOPREFIX | NOT WS_GROUP
 
-    LTEXT           "Sc&ript:", stc7, 114, 145, 118, 9
+    LTEXT           "&Набор сімвалаў:", stc7, 114, 145, 118, 9
     COMBOBOX        cmb5, 114, 155, 120, 30, CBS_DROPDOWNLIST |
     CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_HASSTRINGS |
     WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    CONTROL         "<A>Show more fonts</A>", IDC_MANAGE_LINK, "SysLink",
+    CONTROL         "<A>Паказаць іншыя шрыфты</A>", IDC_MANAGE_LINK, "SysLink",
     WS_TABSTOP, 7, 199, 227, 9
 
     DEFPUSHBUTTON   "OK", IDOK, 141, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "Cancel", IDCANCEL, 190, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Apply", psh3, 92, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Help", pshHelp, 43, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "Скасаваць", IDCANCEL, 190, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "&Ужыць", psh3, 92, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "&Дапамога", pshHelp, 43, 215, 45, 14, WS_GROUP
 END
 
 
@@ -751,60 +750,60 @@ END
 //  ChooseColor Dialog  (copied from Color.dlg).
 //
 
-IDD_MUI_SYSCOLOR_DLG DIALOGEX LOADONCALL MOVEABLE DISCARDABLE 2, 0, 298, 184
+IDD_MUI_SYSCOLOR_DLG DIALOGEX LOADONCALL MOVEABLE DISCARDABLE 2, 0, 338, 184
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Choose Color"
+CAPTION "Выбар колеру"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Basic colors:", -1, 4, 4, 140, 9
+    LTEXT           "&Асноўныя колеры:", -1, 4, 4, 140, 9
     CONTROL         "", COLOR_BOX1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 14, 140, 86
 
-    LTEXT           "&Custom colors:", -1, 4, 106, 140, 9
+    LTEXT           "Дада&тковыя колеры:", -1, 4, 106, 140, 9
     CONTROL         "", COLOR_CUSTOM1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "&Define Custom Colors >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "&Вызначыць колер >>" COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
     DEFPUSHBUTTON   "OK", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP
-    PUSHBUTTON      "Cancel", IDCANCEL, 52, 166, 44, 14, WS_GROUP | WS_TABSTOP
-    PUSHBUTTON      "&Help", pshHelp, 100, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON      "Скасаваць", IDCANCEL, 52, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON      "&Дапамога", pshHelp, 100, 166, 44, 14, WS_GROUP | WS_TABSTOP
 
     CONTROL         "", COLOR_RAINBOW, "static",
-    SS_SIMPLE | WS_CHILD, 152, 4, 118, 116
+    SS_SIMPLE | WS_CHILD, 152, 4, 158, 116
 
     CONTROL         "", COLOR_LUMSCROLL, "static",
-    SS_SIMPLE | WS_CHILD, 280, 4, 8, 116
+    SS_SIMPLE | WS_CHILD, 320, 4, 8, 116
 
     CONTROL         "", COLOR_CURRENT, "static",
-    SS_SIMPLE | WS_CHILD, 152, 124, 40, 26
+    SS_SIMPLE | WS_CHILD, 152, 124, 50, 26
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
-    RTEXT           "Color", COLOR_SOLID_LEFT, 152, 151, 20, 9
-    LTEXT           "|S&olid", COLOR_SOLID_RIGHT, 172, 151, 20, 9
+    RTEXT           "Колер", COLOR_SOLID_LEFT, 152, 151, 20, 9
+    LTEXT           "|&Заліванне", COLOR_SOLID_RIGHT, 172, 151, 35, 9
 
-    RTEXT           "Hu&e:", COLOR_HUEACCEL, 194, 126, 20, 9
-    EDITTEXT, COLOR_HUE, 216, 124, 18, 12, WS_GROUP | WS_TABSTOP
+    RTEXT           "Адце&нне:", COLOR_HUEACCEL, 214, 126, 33, 9
+    EDITTEXT, COLOR_HUE, 249, 124, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Sat:", COLOR_SATACCEL, 194, 140, 20, 9
-    EDITTEXT, COLOR_SAT, 216, 138, 18, 12, WS_GROUP | WS_TABSTOP
+    RTEXT           "&Кантраст:", COLOR_SATACCEL, 214, 140, 33, 9
+    EDITTEXT, COLOR_SAT, 249, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Lum:", COLOR_LUMACCEL, 194, 154, 20, 9
-    EDITTEXT, COLOR_LUM, 216, 152, 18, 12, WS_GROUP | WS_TABSTOP
+    RTEXT           "&Яркасць:", COLOR_LUMACCEL, 214, 154, 33, 9
+    EDITTEXT, COLOR_LUM, 249, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Red:", COLOR_REDACCEL, 243, 126, 24, 9
-    EDITTEXT, COLOR_RED, 269, 124, 18, 12, WS_GROUP | WS_TABSTOP
+    RTEXT           "&Чырвоны:", COLOR_REDACCEL, 270, 126, 37, 9
+    EDITTEXT, COLOR_RED, 309, 124, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Green:", COLOR_GREENACCEL, 243, 140, 24, 9
-    EDITTEXT, COLOR_GREEN, 269, 138, 18, 12, WS_GROUP | WS_TABSTOP
+    RTEXT           "Зял&ёны:", COLOR_GREENACCEL, 270, 140, 37, 9
+    EDITTEXT, COLOR_GREEN, 309, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "Bl&ue:", COLOR_BLUEACCEL, 243, 154, 24, 9
-    EDITTEXT, COLOR_BLUE, 269, 152, 18, 12, WS_GROUP | WS_TABSTOP
+    RTEXT           "&Сіні:", COLOR_BLUEACCEL, 270, 154, 37, 9
+    EDITTEXT, COLOR_BLUE, 309, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
-    PUSHBUTTON      "&Add to Custom Colors", COLOR_ADD, 152, 166, 142, 14,
+    PUSHBUTTON      "Дадац&ь у набор", COLOR_ADD, 152, 166, 182, 14,
     WS_GROUP | WS_TABSTOP
 END
 
@@ -905,7 +904,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 177
         TOPMARGIN, 7
-        BOTTOMMARGIN, 84
+        BOTTOMMARGIN, 96
     END
 
     IDD_MUI_STYLESELECT, DIALOG

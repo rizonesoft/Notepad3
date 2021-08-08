@@ -28,6 +28,7 @@
 #include "Geometry.h"
 #include "Platform.h"
 #include "Scintilla.h"
+#include "ScintillaTypes.h"
 #include "ILexer.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
@@ -36,6 +37,7 @@
 #include "RunStyles.h"
 #include "Decoration.h"
 #include "CharClassify.h"
+#include "CharacterCategoryMap.h"
 #include "Document.h"
 
 // ---------------------------------------------------------------
@@ -49,6 +51,7 @@
 #define UCharCPtr(pchar) reinterpret_cast<const OnigUChar*>(pchar)
 
 using namespace Scintilla;
+using namespace Scintilla::Internal;
 
 #define SciPos(pos)     static_cast<Sci::Position>(pos)
 #define SciLn(line)     static_cast<Sci::Line>(line)
@@ -70,7 +73,8 @@ static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING
 // --- Onigmo Engine Simple Options ---
 // ------------------------------------
 static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
-  const bool caseSensitive, const bool forwardSearch, const int searchFlags = 0)
+  const bool caseSensitive, const bool forwardSearch,
+  const FindOption searchFlags = FindOption::None)
 {
   // fixed options
   onigOptions = ONIG_OPTION_DEFAULT;
@@ -96,7 +100,9 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   //    break;
   //}
 
-  if (searchFlags & SCFIND_DOT_MATCH_ALL) {
+  bool const bDotMatchesAll = FlagSet(searchFlags, FindOption::DotMatchAll);
+
+  if (bDotMatchesAll) {
     ONIG_OPTION_ON(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
     ONIG_OPTION_ON(onigOptions, ONIG_OPTION_MULTILINE);
   }
@@ -150,7 +156,7 @@ public:
   }
 
   Sci::Position FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
-                         bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position* length) override;
+      bool caseSensitive, bool word, bool wordStart, Scintilla::FindOption searchFlags, Sci::Position *length) override;
 
   const char* SubstituteByPosition(Document* doc, const char* text, Sci::Position* length) override;
 
@@ -158,7 +164,7 @@ public:
 
 private:
 
-  std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions);
+  std::string &translateRegExpr(std::string &regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType &rxOptions);
 
   std::string& convertReplExpr(std::string& replStr);
 
@@ -185,7 +191,7 @@ public:
 // ============================================================================
 
 
-RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
+RegexSearchBase *Scintilla::Internal::CreateRegexSearch(CharClassify *charClassTable)
 {
   return new OnigurumaRegExEngine(charClassTable);
 }
@@ -258,7 +264,7 @@ static void replaceAll(std::string& source, const std::string& from, const std::
  * Has not been tested with backwards DBCS searches yet.
  */
 Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
-                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
+                                             bool caseSensitive, bool word, bool wordStart, Scintilla::FindOption searchFlags, Sci::Position *length)
 {
   if (!(pattern && (strlen(pattern) > 0))) {
     *length = 0;
@@ -507,7 +513,7 @@ void OnigurumaRegExEngine::regexFindAndReplace(std::string& inputStr_inout, cons
 
 
 
-std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& /*rxOptions*/)
+std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType& /*rxOptions*/)
 {
   std::string	tmpStr;
   bool bUseTmpStrg = false;
@@ -538,12 +544,12 @@ std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, boo
 
   // EOL modes
   switch (eolMode) {
-  case SC_EOL_LF:
-  case SC_EOL_CR:
+  case EndOfLine::Lf:
+  case EndOfLine::Cr:
     //ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
     break;
 
-  case SC_EOL_CRLF:
+  case EndOfLine::CrLf:
     //ONIG_OPTION_ON(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
     break;
   }

@@ -565,15 +565,114 @@
 	<td>riQQ</td>
 	<td>YX Hao</td>
 	<td>Bertrand Lacoste</td>
+      </tr><tr>
+	<td>Ivan Ustûžanin</td>
     </tr>
     </table>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/lexilla512.zip">Release 5.1.2</a>
+    </h3>
+    <ul>
+	<li>
+	Released 26 July 2021.
+	</li>
+	<li>
+	Allow F# triple-quoted strings to interpolate string literals.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/21">Issue #21</a>.
+	</li>
+    <ul>
+    <h3>
+       <a href="https://www.scintilla.org/lexilla511.zip">Release 5.1.1</a>
+    </h3>
+    <ul>
+	<li>
+	Released 26 July 2021.
+	</li>
+	<li>
+	On 32-bit Win32 using Visual C++ projects, stop exported functions ending with @n causing failures with GetProcAddress.
+	</li>
+	<li>
+	Fixed crash when calling TagsOfStyle on C++ lexer after allocating substyles.
+	</li>
+	<li>
+	Fixed folding for Julia which could be inconsistent depending on range folded.
+	Added SCE_JULIA_KEYWORD4 and SCE_JULIA_TYPEOPERATOR lexical styles and
+	changed keyword set 4 from "Raw string literals" to "Built in functions".
+	Property lexer.julia.string.interpolation removed.
+	Updated set of characters for identifiers.
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/13">Pull request #13</a>.
+	</li>
+	<li>
+	Fixed Markdown emphasis spans to only be recognized when closed in same paragraph.
+	<a href="https://sourceforge.net/p/scintilla/bugs/1216/">Bug #1216</a>.
+	</li>
+	<li>
+	Fixed Markdown code block to terminate when end marker is indented.
+	Display all of end marker in code block style.
+	Only recognize inline code when closed in same paragraph.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2247/">Bug #2247</a>.
+	</li>
+	<li>
+	Fixed Matlab to not allow escape sequences in double-quoted strings.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/18">Issue #18</a>.
+	</li>
+	<li>
+	Support flexible heredoc and nowdoc syntax for PHP.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/19">Issue #19</a>.
+	</li>
+	<li>
+	Enabled '_' digit separator in numbers for PHP.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/19">Issue #19</a>.
+	</li>
+	<li>
+	Stop styling attributes as comments for PHP.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/19">Issue #19</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/lexilla510.zip">Release 5.1.0</a>
+    </h3>
+    <ul>
+	<li>
+	Released 23 June 2021.
+	</li>
+	<li>
+	This is a stable release. The Lexilla protocol should remain compatible through 5.x releases.
+	</li>
+	<li>
+	Fixed bugs with styling Erlang by handling \n and \r\n line endings consistently.
+	</li>
+	<li>
+	Fixed folding for F# open statements and for strings that contain comment prefixes.
+	</li>
+	<li>
+	Format specifiers lexed in F# strings.
+	</li>
+	<li>
+	Fixed folding for ASP files where scripts were treated inconsistently when '&lt;%' was included
+	or not included in range examined.
+	</li>
+	<li>
+	Fixed folding of Raku heredocs that start with "q:to" or "qq:to".
+	</li>
+	<li>
+	Fixed folding at end of Ruby files where these is no final new line.
+	</li>
+	<li>
+	Made folding of Tcl files more consistent by always treating completely empty lines as whitespace.
+	</li>
+	<li>
+	Fixed styling of "a:b" with no spaces in YAML as a single piece of text instead of a key-value pair.
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/15">Pull request #15</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/lexilla503.zip">Release 5.0.3</a>
     </h3>
     <ul>
 	<li>
-	Released 23 April 2021.
+	Released 2 June 2021.
 	</li>
 	<li>
 	Add namespace feature with GetNameSpace function.

@@ -30,6 +30,12 @@
 #include "Notepad3.h"
 #include "Dialogs.h"
 #include "Config/Config.h"
+#include "DarkMode/DarkMode.h"
+
+#pragma warning(push)
+#pragma warning(disable : 4201) // union/struct w/o name
+#include "tinyexpr/tinyexpr.h"
+#pragma warning(pop)
 
 #include "Scintilla.h"
 
@@ -214,10 +220,13 @@ static void _GetTrueWindowsVersion()
 
 // ----------------------------------------------------------------------------
 // https://docs.microsoft.com/en-US/windows/release-health/release-information
+// https://docs.microsoft.com/en-US/windows-insider/active-dev-branch
 // ----------------------------------------------------------------------------
-    static LPCWSTR _Win10BuildToReleaseId(DWORD build) {
+static LPCWSTR _Win10BuildToReleaseId() {
 
     static LPCWSTR _wchpReleaseID = L"1507"; // <= 10240
+
+    DWORD const build = GetWindowsBuildNumber(NULL, NULL);
 
     if (build > 19043) {
         _wchpReleaseID = L"21H2 [Insdr]";
@@ -252,8 +261,11 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 {
     StringCchCopy(szVersionStr, cchVersionStr, L"OS Version: Windows ");
 
+    DWORD const build = GetWindowsBuildNumber(NULL, NULL);
+
     if (IsWindows10OrGreater()) {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2016 " : L"10 ");
+        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? ((build >= 17134) ? L"Server 2019 " : L"Server 2016 ") :
+                                                                      ((build >= 22000) ? L"11 " : L"10 "));          
     } else if (IsWindows8Point1OrGreater()) {
         StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 R2 " : L"8.1");
     } else if (IsWindows8OrGreater()) {
@@ -269,7 +281,7 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
     if (IsWindows10OrGreater()) {
         WCHAR win10ver[80] = { L'\0' };
         StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %s (Build %lu)",
-                        _Win10BuildToReleaseId(Globals.WindowsBuildNumber), Globals.WindowsBuildNumber);
+                        _Win10BuildToReleaseId(), GetWindowsBuildNumber(NULL, NULL));
         StringCchCat(szVersionStr, cchVersionStr, win10ver);
     }
 }
@@ -1384,7 +1396,6 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc)
 //
 //  PathCanonicalizeEx()
 //
-//
 bool PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath)
 {
     WCHAR filePath[MAX_PATH] = { L'\0' };
@@ -1406,7 +1417,6 @@ bool PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath)
 //=============================================================================
 //
 //  GetLongPathNameEx()
-//
 //
 DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer)
 {
@@ -1524,6 +1534,33 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
     }
 
     return (DWORD)StringCchLen(lpszPath, cchBuffer);
+}
+
+
+//=============================================================================
+//
+//  SplitFilePathLineNum()
+//
+bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum) {
+
+    LPWSTR const lpszSplit = StrRChr(lpszPath, NULL, L':');
+    
+    bool res = false;
+    if (lpszSplit) {
+        char chLnNumber[128];
+        char const defchar = (char)0x24;
+        WideCharToMultiByte(CP_ACP, (WC_COMPOSITECHECK | WC_DISCARDNS), &lpszSplit[1], -1, chLnNumber, COUNTOF(chLnNumber), &defchar, NULL);
+        te_xint_t iExprError = true;
+        int const ln = (int)te_interp(chLnNumber, &iExprError);
+        if (!iExprError) {
+            res = true;
+            lpszSplit[0] = L'\0'; // split
+            if (lineNum) {
+                *lineNum = ln;
+            }
+        }
+    }
+    return res;
 }
 
 
@@ -2220,7 +2257,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 #if (NTDDI_VERSION >= NTDDI_WIN8)
     UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
 #else
-    char* outBuffer = AllocMem(*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
+    char *outBuffer = AllocMem((size_t)*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
     if (!outBuffer) {
         return;
     }
@@ -2425,10 +2462,10 @@ size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
 
 //=============================================================================
 //
-//  Char2FloatW()
+//  Char2Float()
 //  Locale indpendant simple character to float conversion
 //
-bool Char2FloatW(WCHAR* wnumber, float* fresult)
+bool Char2Float(WCHAR* wnumber, float* fresult)
 {
     if (!wnumber || !fresult) {
         return false;
@@ -2473,7 +2510,7 @@ bool Char2FloatW(WCHAR* wnumber, float* fresult)
     if (wnumber[i] == L'e' || wnumber[i] == L'E') {
         ++i;
         float fexp = 0.0f;
-        if (Char2FloatW(&(wnumber[i]), &fexp)) {
+        if (Char2Float(&(wnumber[i]), &fexp)) {
             exponent = powf(10, fexp);
         }
     }
