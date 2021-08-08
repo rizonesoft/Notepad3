@@ -69,6 +69,7 @@ typedef DocPos         DocLn;   // Sci::Line
 #define DOCPOSFMTA "%ti"
 #define DOCPOSFMTW L"%ti"
 #define DOCMODDIFYD L"* "
+#define URLPLACEHLDR L"${URL}"
 
 // --------------------------------------------------------------------------
 
@@ -631,7 +632,6 @@ typedef struct _settings2_t
     WCHAR FileChangedIndicator[4];
     WCHAR FileDeletedIndicator[4];
 
-    WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
     WCHAR DefaultExtension[MINI_BUFFER];
     WCHAR DefaultDirectory[MAX_PATH];
     WCHAR FileDlgFilters[XHUGE_BUFFER];
@@ -655,12 +655,20 @@ typedef struct _settings2_t
     WCHAR WebTmpl2MenuName[MICRO_BUFFER];
     WCHAR AdministrationTool[MAX_PATH];
     WCHAR DefaultWindowPosition[MINI_BUFFER];
+
+    WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
+
+    WCHAR HyperlinkShellExURLWithApp[MAX_PATH];
+    WCHAR HyperlinkShellExURLCmdLnArgs[MAX_PATH*2];
     WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
 } SETTINGS2_T, *PSETTINGS2_T;
 
+#define Default_ExitOnESCSkipLevel 2
+
 extern SETTINGS2_T Settings2;
-extern SETTINGS2_T Defaults2;
+extern WCHAR Default_PreferredLanguageLocaleName[];
+
 
 //=============================================================================
 

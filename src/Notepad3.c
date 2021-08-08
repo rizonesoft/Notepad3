@@ -83,7 +83,6 @@ GLOBALS_T   Globals;
 SETTINGS_T  Settings;
 SETTINGS_T  Defaults;
 SETTINGS2_T Settings2;
-SETTINGS2_T Defaults2;
 
 FOCUSEDVIEW_T FocusedView;
 FILEWATCHING_T FileWatching;
@@ -97,6 +96,7 @@ COLORREF  g_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
 prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
+int       g_flagMatchText = 0;
 bool      g_iStatusbarVisible[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 int       g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 int       g_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
@@ -105,7 +105,8 @@ WCHAR     g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR     g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR     g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-int       g_flagMatchText = 0;
+WCHAR     Default_PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
+
 
 // ------------------------------------
 
@@ -677,7 +678,6 @@ static void _InitGlobals()
     ZeroMemory(&Globals, sizeof(GLOBALS_T));
     ZeroMemory(&Defaults, sizeof(SETTINGS_T));
     ZeroMemory(&Settings, sizeof(SETTINGS_T));
-    ZeroMemory(&Defaults2, sizeof(SETTINGS2_T));
     ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
     ZeroMemory(&Flags, sizeof(FLAGS_T));
 
@@ -5981,7 +5981,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
             Sci_GotoPosChooseCaret(iCurPos);
             EditScrollSelectionToView();
-            skipLevel -= Defaults2.ExitOnESCSkipLevel;
+            skipLevel -= Default_ExitOnESCSkipLevel;
         }
 
         if ((skipLevel < 0) || (skipLevel == Settings2.ExitOnESCSkipLevel)) {
@@ -7174,38 +7174,61 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                 }
                 bHandled = true;
 
-            } else if (operation & OPEN_WITH_BROWSER) { 
+            } else if (operation & OPEN_WITH_BROWSER) {  // open in web browser or associated application
                 
-                // open in web browser or associated application
-                
+                WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+
                 if (UrlIsFileUrl(szTextW)) {
                     // ShellExecuteEx() will handle file-system path correctly for "file://" protocol
                     StringCchCopy(szUnEscW, COUNTOF(szUnEscW), chkPreFix);
                     dCch -= (DWORD)lenPfx;
                     PathCreateFromUrl(szTextW, &szUnEscW[lenPfx], &dCch, 0);
+                    StringCchCopy(wchDirectory, COUNTOF(wchDirectory), szUnEscW);
+                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
                 } else {
                     UrlUnescapeEx(szTextW, szUnEscW, &dCch);
                 }
-
-                WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-                if (StrIsNotEmpty(Paths.CurrentFile)) {
+                if (StrIsEmpty(wchDirectory) && StrIsNotEmpty(Paths.CurrentFile)) {
                     StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Paths.CurrentFile);
                     PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
                 }
 
-                const WCHAR *const lpVerb = StrIsEmpty(Settings2.HyperlinkFileProtocolVerb) ? NULL : Settings2.HyperlinkFileProtocolVerb;
-
                 SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-                sei.fMask = SEE_MASK_NOZONECHECKS;
-                sei.hwnd = NULL;
-                sei.lpVerb = lpVerb;
-                sei.lpFile = szUnEscW;
-                sei.lpParameters = NULL;
-                sei.lpDirectory = wchDirectory;
-                sei.nShow = SW_SHOWNORMAL;
-                ShellExecuteEx(&sei);
 
-                bHandled = true;
+                if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp)) {
+
+                    WCHAR lpParams[MAX_PATH + INTERNET_MAX_URL_LENGTH] = { L'\0' };
+                    LPWSTR const _params = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, szUnEscW);
+                    if (StrIsNotEmpty(_params)) {
+                        StringCchCopy(lpParams, COUNTOF(lpParams), _params);
+                    } else {
+                        StringCchCopy(lpParams, COUNTOF(lpParams), szUnEscW);
+                    }
+                    FreeMem(_params);
+
+                    sei.fMask = SEE_MASK_DEFAULT;
+                    sei.hwnd = NULL;
+                    sei.lpVerb = NULL;
+                    sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
+                    sei.lpParameters = lpParams;
+                    sei.lpDirectory = wchDirectory;
+                    sei.nShow = SW_SHOWNORMAL;
+
+                } else {
+
+                    const WCHAR *const lpVerb = StrIsEmpty(Settings2.HyperlinkFileProtocolVerb) ? NULL : Settings2.HyperlinkFileProtocolVerb;
+
+                    sei.fMask = SEE_MASK_NOZONECHECKS;
+                    sei.hwnd = NULL;
+                    sei.lpVerb = lpVerb;
+                    sei.lpFile = szUnEscW;
+                    sei.lpParameters = NULL;
+                    sei.lpDirectory = wchDirectory;
+                    sei.nShow = SW_SHOWNORMAL;
+                }
+
+                bHandled = ShellExecuteEx(&sei);
+
             }
         }
     }

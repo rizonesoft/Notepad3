@@ -2770,6 +2770,7 @@ static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont) {
 
     LPCWSTR const FontNamePrioList[] = {
         L"Cascadia Code",
+        L"Cascadia Mono",
         L"Fira Code",
         L"Roboto Mono",
         L"Source Code Pro",
