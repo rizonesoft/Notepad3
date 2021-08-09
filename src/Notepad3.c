@@ -7493,11 +7493,18 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0)) {
-                        if (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) {
+                        bool const bIsSelEmpty = !SciCall_IsSelectionEmpty();
+                        bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
+                        if (bIsSelEmpty || bIsMultiRectSel) {
                             int const tok = _SaveUndoSelection();
-                            if (tok >= 0) {
-                                _mod_insdel_token = tok;
-                            }
+                            _mod_insdel_token = (tok >= 0) ? tok : _mod_insdel_token;
+                        }
+                        // TODO: @@@ Find reason for why this NOP workaround is needed:
+                        if (bIsSelEmpty && bIsMultiRectSel) {
+                            // need to trigger SCI:InvalidateCaret()
+                            bool const bAddSelTyping = SciCall_GetAdditionalSelectionTyping();
+                            //~SciCall_SetAdditionalSelectionTyping(!bAddSelTyping); // v5.1.1: no check for change, so:
+                            SciCall_SetAdditionalSelectionTyping(bAddSelTyping);
                         }
                     }
                 }
@@ -7848,9 +7855,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UNREFERENCED_PARAMETER(wParam);
     LRESULT result = FALSE;
 
-    static bool _guard = false;
-    if (_guard) { return result; }
-    _guard = true;
+    SET_FCT_GUARD(result)
 
     const SCNotification* const scn = (SCNotification*)lParam;
 
@@ -8067,7 +8072,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         break;
     }
 
-    _guard = false; // reset
+    RESET_FCT_GUARD();
 
     return result;
 }
