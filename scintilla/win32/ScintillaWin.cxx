@@ -3746,6 +3746,13 @@ sptr_t SCI_METHOD Scintilla_DirectFunction(
 	ScintillaWin * sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
 	return sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
 }
+extern "C"
+sptr_t SCI_METHOD Scintilla_DirectStatusFunction(
+	ScintillaWin * sci, UINT iMessage, uptr_t wParam, sptr_t lParam, int* pStatus) {
+	const sptr_t returnValue = sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
+	*pStatus = static_cast<int>(sci->errorStatus);
+	return returnValue;
+}
 #endif
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }

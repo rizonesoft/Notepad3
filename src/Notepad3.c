@@ -2054,7 +2054,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_IndicSetStyle(INDIC_NP3_UNICODE_POINT, INDIC_COMPOSITIONTHIN /*INDIC_HIDDEN*/);
     //SciCall_IndicSetUnder(INDIC_NP3_UNICODE_POINT, false);
     SciCall_IndicSetAlpha(INDIC_NP3_UNICODE_POINT, SC_ALPHA_TRANSPARENT);
-    SciCall_IndicSetOutlineAlpha(INDIC_NP3_UNICODE_POINT, SC_ALPHA_NOALPHA);
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_UNICODE_POINT, SC_ALPHA_OPAQUE);
     SciCall_IndicSetHoverStyle(INDIC_NP3_UNICODE_POINT, INDIC_ROUNDBOX);
     //SciCall_IndicSetHoverFore(INDIC_NP3_UNICODE_POINT, RGB(0xE0, 0xE0, 0xE0);
 
@@ -6803,16 +6803,6 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //  HandleDWellStartEnd()
 //
 static DocPos prevCursorPosition = -1;
-
-#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >>  8) & SC_ALPHA_OPAQUE, (X) & SC_ALPHA_OPAQUE))
-#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 8) & SC_ALPHA_OPAQUE))
-#define BGRA_TO_COLREF(X) (RGB(((X) >>  8) & SC_ALPHA_OPAQUE, ((X) >> 16) & SC_ALPHA_OPAQUE, ((X) >> 24) & SC_ALPHA_OPAQUE))
-#define ARGB_GET_ALPHA(A) (((A) >> 24) & SC_ALPHA_OPAQUE)
-#define RGBA_GET_ALPHA(A) ((A) & SC_ALPHA_OPAQUE)
-#define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
-
-// ----------------------------------------------------------------------------
-
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
