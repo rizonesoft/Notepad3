@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.807.(build_#) (2021-08-07)
+Current BETA/RC Version 5.21.809.(build_#) (2021-08-09)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.809.1]- Configure app to open hyperlink (instead of default browser).
 [.805.1]- File URL forced to open in new window by (Ctrl+Alt+Click).
 [.805.1]- File change notification, if removed current file is recreated.
 [.805.1]- Allow definition of line number for file:/// URL (separator is ':' ).
