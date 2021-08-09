@@ -456,9 +456,22 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 #### `DarkModeTxtColor=0xEFEFEF`
 
+#### `HyperlinkShellExURLWithApp=""`
+
+- If not defined or empty the default behavior on `Ctrl+Click` URL is done:
+- The URL-String is send to OS via ShellExecute(), which will try open the URL using the registered protocol (e.g. http:// or file://) - in most cases the default browser resp. the file, if extension is known.
+- If defined, e.g. "`D:\PortableApps\GoogleChromePortable\GoogleChromePortable.exe`", this application will be started on `Ctrl+Click`.
+
+#### `HyperlinkShellExURLCmdLnArgs="${URL}"`
+
+- (use ${URL} as place holder for clicked Hyperlink URL string)
+- Defining the argument/parameter string for the above application (only taken into account if  `HyperlinkShellExURLWithApp` is defined). 
+- If not defined, empty or set to "${URL}", the argument for the app will be the URL-String clicked.
+You can specify more command line parameter for the app here. The token `${URL}` within the string will be replaced by the URL-String clicked. E.g. `HyperlinkShellExURLCmdLnArgs="--incognito "${URL}""` will start the Chrome-Browser (see `HyperlinkShellExURLWithApp`) in "incognito mode" trying to open the clicked URL.
+
 #### `HyperlinkFileProtocolVerb=""`
 
-- `(ShellExecuteEx()::lpVerb` (""=default, "edit", "explore", "find", "open", "print", "properties", "runas")`
+- `ShellExecuteEx()::lpVerb (""=default, "edit", "explore", "find", "open", "print", "properties", "runas")`
 
 
 ## **`[Statusbar Settings]`**
