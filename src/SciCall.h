@@ -57,7 +57,6 @@
 #include "Scintilla.h"
 #include "TypeDefs.h"
 
-
 //=============================================================================
 //
 //  Scintilla Window Handle
@@ -81,6 +80,9 @@ __forceinline void InitScintillaHandle(HWND hwnd) {
 
 LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 #define SciCall(m, w, l) Scintilla_DirectFunction(g_hndlScintilla, (m), (w), (l))
+
+LRESULT WINAPI Scintilla_DirectStatusFunction(HANDLE, UINT, WPARAM, LPARAM, LPINT);
+#define SciCallEx(m, w, l, i) Scintilla_DirectStatusFunction(g_hndlScintilla, (m), (w), (l), (i))
 
 #else
 
@@ -176,17 +178,10 @@ DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option);
 DeclareSciCallR0(GetAdditionalSelectionTyping, GETADDITIONALSELECTIONTYPING, bool);
 DeclareSciCallV1(SetAdditionalSelectionTyping, SETADDITIONALSELECTIONTYPING, bool, flag);
 DeclareSciCallV1(SetMouseSelectionRectangularSwitch, SETMOUSESELECTIONRECTANGULARSWITCH, bool, flag);
-// Caret
-DeclareSciCallV1(SetCaretFore, SETCARETFORE, int, color);
-DeclareSciCallV1(SetAdditionalCaretFore, SETADDITIONALCARETFORE, int, color);
-DeclareSciCallV1(SetAdditionalCaretsBlink, SETADDITIONALCARETSBLINK, bool, flag);
-DeclareSciCallV1(SetAdditionalCaretsVisible, SETADDITIONALCARETSVISIBLE, bool, flag);
 
+DeclareSciCallV1(SetCaretLineLayer, SETCARETLINELAYER, int, layer);
 DeclareSciCallV1(SetCaretLineFrame, SETCARETLINEFRAME, int, frm);
-DeclareSciCallV1(SetCaretLineVisible, SETCARETLINEVISIBLE, bool, flag);
 DeclareSciCallV1(SetCaretLineVisibleAlways, SETCARETLINEVISIBLEALWAYS, bool, flag);
-DeclareSciCallV1(SetCaretLineBack, SETCARETLINEBACK, COLORREF, colour);
-DeclareSciCallV1(SetCaretLineBackAlpha, SETCARETLINEBACKALPHA, int, alpha);
 
 DeclareSciCallV1(SetAutomaticFold, SETAUTOMATICFOLD, int, option);
 
@@ -207,6 +202,16 @@ DeclareSciCallV01(AddRefDocument, ADDREFDOCUMENT, sptr_t, pdoc);
 DeclareSciCallV01(ReleaseDocument, RELEASEDOCUMENT, sptr_t, pdoc);
 DeclareSciCallR0(GetDocumentOptions, GETDOCUMENTOPTIONS, int);
 
+// Element Colors
+DeclareSciCallV2(SetElementColour, SETELEMENTCOLOUR, int, element, COLORALPHAREF, colourElement);
+DeclareSciCallR1(GetElementColour, GETELEMENTCOLOUR, COLORALPHAREF, int, element);
+DeclareSciCallR1(GetElementBaseColour, GETELEMENTBASECOLOUR, COLORALPHAREF, int, element);
+DeclareSciCallV1(ResetElementColour, RESETELEMENTCOLOUR, int, element);
+//SCI_GETELEMENTISSET(int element) → bool 
+//SCI_GETELEMENTALLOWSTRANSLUCENT(int element) → bool 
+//SCI_GETELEMENTBASECOLOUR(int element) → colouralpha
+
+
 //  Selection, positions and information
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool);
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag);
@@ -222,6 +227,8 @@ DeclareSciCallR0(GetFocus, GETFOCUS, bool);
 DeclareSciCallR0(GetPasteConvertEndings, GETPASTECONVERTENDINGS, bool);
 DeclareSciCallR0(GetOverType, GETOVERTYPE, bool);
 
+DeclareSciCallV1(SetSelectionLayer, SETSELECTIONLAYER, int, layer);
+DeclareSciCallR0(GetSelectionLayer, GETSELECTIONLAYER, int);
 
 DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position);
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos);
@@ -339,6 +346,8 @@ DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text);
 DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange);
 DeclareSciCallV0(UpperCase, UPPERCASE);
 DeclareSciCallV0(LowerCase, LOWERCASE);
+DeclareSciCallV2(ReplaceRectangular, REPLACERECTANGULAR, DocPos, length, const char *, text);
+
 
 //DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text);  // WideCharToMultiByteEx(Encoding_SciCP);
 // SCI_ENCODEDFROMUTF8 - no need, internal CP is UTF8 always (fixed const for Notepad3);
@@ -523,8 +532,6 @@ DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos);
 
 DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, style);
 DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, style, bool, hotspot);
-DeclareSciCallV2(SetHotspotActiveFore, SETHOTSPOTACTIVEFORE, bool, useSetting, int, colour);
-DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, int, colour);
 DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline);
 DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline);
 
@@ -538,6 +545,11 @@ DeclareSciCallV2(StyleSetItalic, STYLESETITALIC, int, style, bool, oblique);
 DeclareSciCallV1(SetFontQuality, SETFONTQUALITY, int, qual);
 DeclareSciCallV01(SetFontLocale, SETFONTLOCALE, const char*, localeName);
 
+DeclareSciCallV1(SetSelEOLFilled, SETSELEOLFILLED, bool, filled);
+DeclareSciCallV1(SetWhiteSpaceSize, SETWHITESPACESIZE, int, size);
+DeclareSciCallR0(GetWhiteSpaceSize, GETWHITESPACESIZE, int);
+
+
 //=============================================================================
 //
 // Indentation Guides and Wraping
@@ -550,6 +562,7 @@ DeclareSciCallV1(SetWrapStartIndent, SETWRAPSTARTINDENT, int, mode);
 DeclareSciCallV1(SetWrapVisualFlags, SETWRAPVISUALFLAGS, int, opts);
 DeclareSciCallV1(SetWrapVisualFlagsLocation, SETWRAPVISUALFLAGSLOCATION, int, opts);
 DeclareSciCallR1(WrapCount, WRAPCOUNT, DocLn, DocLn, line);
+DeclareSciCallR0(GetIndentationGuides, GETINDENTATIONGUIDES, int);
 
 DeclareSciCallV1(SetEdgeMode, SETEDGEMODE, int, mode);
 DeclareSciCallR0(GetEdgeMode, GETEDGEMODE, int);
@@ -618,7 +631,8 @@ DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerID, CO
 DeclareSciCallV2(MarkerSetBackSelectedTranslucent, MARKERSETBACKSELECTEDTRANSLUCENT, int, markerID, COLORALPHAREF, colouralpha);
 DeclareSciCallV2(MarkerSetStrokeWidth, MARKERSETSTROKEWIDTH, int, markerID, int, hundredths);
 DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag);
-//~DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerID, int, alpha); // deprecated w/ v5.0.1 ?
+DeclareSciCallV2(MarkerSetLayer, MARKERSETLAYER, int, markerID, int, layer);
+DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerID, int, alpha);
 DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerID);
 DeclareSciCallV2(MarkerAddSet, MARKERADDSET, DocLn, line, int, markerMask);
 DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerID);
@@ -663,10 +677,15 @@ DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos);
 
 //=============================================================================
 //
-//  Cursor
+//  Cursor, Caret
 //
 DeclareSciCallV1(SetCursor, SETCURSOR, int, flags);
 
+DeclareSciCallV1(SetCaretStyle, SETCARETSTYLE, int, style);
+DeclareSciCallV1(SetCaretWidth, SETCARETWIDTH, int, pixel);
+DeclareSciCallV1(SetCaretPeriod, SETCARETPERIOD, int, msec);
+DeclareSciCallV1(SetAdditionalCaretsBlink, SETADDITIONALCARETSBLINK, bool, flag);
+DeclareSciCallV1(SetAdditionalCaretsVisible, SETADDITIONALCARETSVISIBLE, bool, flag);
 
 //=============================================================================
 //

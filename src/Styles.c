@@ -1300,6 +1300,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // margin (line number, bookmarks, folding) style
     Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].szValue);
 
+    bool bFlag;
     int iValue;
     COLORREF dColor;
     WCHAR wchSpecificStyle[128] = { L'\0' };
@@ -1471,51 +1472,40 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue); // indent guide
 
-    // TODO: @@@ DirectFunction instead of SendMsg
 
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FOREGROUND_LAYER, &rgb, false)) { // selection fore
-        SendMessage(hwnd, SCI_SETSELFORE, true, rgb);
-        SendMessage(hwnd, SCI_SETADDITIONALSELFORE, rgb, 0);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
     } else {
-        SendMessage(hwnd, SCI_SETSELFORE, 0, 0);
-        SendMessage(hwnd, SCI_SETADDITIONALSELFORE, 0, 0);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGBxA(0, SC_ALPHA_OPAQUE));
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGBxA(0, SC_ALPHA_OPAQUE));
     }
 
     rgb = RGB(0xC0, 0xC0, 0xC0);
     Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, true); // selection back
-    SendMessage(hwnd, SCI_SETSELBACK, true, rgb);
-    SendMessage(hwnd, SCI_SETADDITIONALSELBACK, rgb, 0);
+    iValue = SC_ALPHA_OPAQUE;
+    Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true);
+    SciCall_SetSelectionLayer(SC_LAYER_UNDER_TEXT);
+    SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, RGBxA(rgb, iValue));
+    SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, RGBxA(rgb, iValue*2/3));
 
-    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true)) { // selection alpha
-        SendMessage(hwnd, SCI_SETSELALPHA, iValue, 0);
-        SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, iValue*2/3, 0);
-    } else {
-        SendMessage(hwnd, SCI_SETSELALPHA, SC_ALPHA_NOALPHA, 0);
-        SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, SC_ALPHA_OPAQUE*2/3, 0);
-    }
+    // selection eolfilled
+    bFlag = Style_StrHasAttribute(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FontEffects[FE_EOLFILLED]);
+    SciCall_SetSelEOLFilled(bFlag);
 
-    if (Style_StrHasAttribute(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FontEffects[FE_EOLFILLED])) { // selection eolfilled
-        SendMessage(hwnd, SCI_SETSELEOLFILLED, 1, 0);
-    } else {
-        SendMessage(hwnd, SCI_SETSELEOLFILLED, 0, 0);
-    }
+    // whitespace colors
+    rgb = RGB(0, 0, 0);
+    Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, false);
+    SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE, RGBxA(rgb, SC_ALPHA_OPAQUE/2));
 
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, false)) { // whitespace fore
-        SendMessage(hwnd, SCI_SETWHITESPACEFORE, true, rgb);
-    } else {
-        SendMessage(hwnd, SCI_SETWHITESPACEFORE, 0, 0);
-    }
-
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb, false)) { // whitespace back
-        SendMessage(hwnd, SCI_SETWHITESPACEBACK, true, rgb);
-    } else {
-        SendMessage(hwnd, SCI_SETWHITESPACEBACK, 0, 0);    // use a default value...
-    }
+    Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb, true);
+    SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE_BACK, RGBxA(rgb, SC_ALPHA_OPAQUE));
 
     // whitespace dot size
-    iValue = 1;
-    float fValue = 1.0;
+    iValue = 4;
+    float fValue = 4.0;
     if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) {
+
         iValue = clampi(float2int(fValue), 0, 12);
 
         WCHAR tch[32] = { L'\0' };
@@ -1538,7 +1528,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                          COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), tch);
         }
     }
-    SendMessage(hwnd, SCI_SETWHITESPACESIZE, iValue, 0);
+    SciCall_SetWhiteSpaceSize(iValue);
 
     // current line background
     Style_HighlightCurrentLine(hwnd, Settings.HighlightCurrentLine);
@@ -1555,9 +1545,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"block")) {
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
-        SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovrstrk_mode), 0);
+        SciCall_SetCaretStyle(CARETSTYLE_BLOCK | ovrstrk_mode);
     } else {
-        SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_LINE | ovrstrk_mode), 0);
+        SciCall_SetCaretStyle(CARETSTYLE_LINE | ovrstrk_mode);
 
         iValue = 1;
         fValue = 1.0f;  // default caret width
@@ -1565,7 +1555,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
             iValue = clampi(float2int(fValue), 1, 3); // don't allow invisible 0
         }
-        SendMessage(hwnd, SCI_SETCARETWIDTH, iValue, 0);
+        SciCall_SetCaretWidth(iValue);
 
         if (iValue != 1) {
             StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
@@ -1577,13 +1567,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
 
     if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
-        SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)0,0);
-        SendMessage(hwnd, SCI_SETADDITIONALCARETSBLINK, false, 0);
+        SciCall_SetCaretPeriod(0);
+        SciCall_SetAdditionalCaretsBlink(false);
         StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),L"; noblink");
     } else {
         const UINT uCaretBlinkTime = GetCaretBlinkTime();
-        SendMessage(hwnd, SCI_SETCARETPERIOD, (WPARAM)uCaretBlinkTime, 0);
-        SendMessage(hwnd, SCI_SETADDITIONALCARETSBLINK, ((uCaretBlinkTime != 0) ? true : false), 0);
+        SciCall_SetCaretPeriod(uCaretBlinkTime);
+        SciCall_SetAdditionalCaretsBlink(uCaretBlinkTime != 0);
     }
     // caret fore
     if (!Style_StrGetColor(pCurrentStandard->Styles[STY_CARET].szValue, FOREGROUND_LAYER, &rgb, false)) {
@@ -1596,8 +1586,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if (!VerifyContrast(rgb, SciCall_StyleGetBack(0))) {
         rgb = SciCall_StyleGetFore(0);
     }
-    SciCall_SetCaretFore(rgb);
-    SciCall_SetAdditionalCaretFore(RGB(240, 0, 0));
+
+    SciCall_SetElementColour(SC_ELEMENT_CARET, RGBxA(rgb, SC_ALPHA_OPAQUE));
+    SciCall_SetElementColour(SC_ELEMENT_CARET_ADDITIONAL, RGBxA(RGB(220, 0, 0), SC_ALPHA_OPAQUE));
 
     StrTrim(wchSpecificStyle, L" ;");
     StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
@@ -1610,7 +1601,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue,
                             COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue));
 
-    if (SendMessage(hwnd, SCI_GETINDENTATIONGUIDES, 0, 0) != SC_IV_NONE) {
+    if (SciCall_GetIndentationGuides() != SC_IV_NONE) {
         Style_SetIndentGuides(hwnd, true);
     }
 
@@ -1947,24 +1938,20 @@ void Style_SetMultiEdgeLine(const int colVec[], const size_t count)
 void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 {
     SciCall_SetCaretLineFrame(0);
-    SciCall_SetCaretLineVisible(false);
     SciCall_SetCaretLineVisibleAlways(false);
+
+    int alpha = SC_ALPHA_OPAQUE;
+    bool const backgrColor = (iHiLitCurLn == 1);
+    LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
+
+    COLORREF rgb;
+    if (!Style_StrGetColor(szValue, (backgrColor ? BACKGROUND_LAYER : FOREGROUND_LAYER), &rgb, false)) {
+        rgb = (backgrColor ? RGB(0xFF, 0xFF, 0x00) : RGB(0xC2, 0xC0, 0xC3));
+    }
 
     if (iHiLitCurLn > 0) {
 
-        bool const backgrColor = (iHiLitCurLn == 1);
-
-        LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
-
-        COLORREF rgb;
-        if (!Style_StrGetColor(szValue, (backgrColor ? BACKGROUND_LAYER : FOREGROUND_LAYER), &rgb, false)) {
-            rgb = (backgrColor ? RGB(0xFF, 0xFF, 0x00) : RGB(0xC2, 0xC0, 0xC3));
-        }
-
-        int alpha = SC_ALPHA_TRANSPARENT;
-        if (!Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, true)) {
-            alpha = SC_ALPHA_NOALPHA;
-        }
+        Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, true);
 
         if (!backgrColor) {
             int iFrameSize = 0;
@@ -1975,11 +1962,13 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
             SciCall_SetCaretLineFrame(iFrameSize);
         }
 
-        SciCall_SetCaretLineBack(rgb);
-        SciCall_SetCaretLineBackAlpha(alpha);
-        SciCall_SetCaretLineVisibleAlways(true);
-        SciCall_SetCaretLineVisible(true);
+    } else {
+        alpha = SC_ALPHA_TRANSPARENT;
     }
+
+    SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);
+    SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, RGBxA(rgb, alpha));
+    SciCall_SetCaretLineVisibleAlways(iHiLitCurLn > 0);
 }
 
 

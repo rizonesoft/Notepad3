@@ -99,14 +99,23 @@ extern WININFO g_IniWinInfo;
 extern WININFO g_DefWinInfo;
 
 // ----------------------------------------------------------------------------
-
+// see windef.h  and wingdi.h
+//-typedef DWORD COLORREF;
 typedef int COLORALPHAREF;
+//-#define RGB(r, g, b) ((COLORREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
 #define RGBA(r, g, b, a) ((COLORALPHAREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16) | (((DWORD)(BYTE)(a)) << 24)))
 #define RGBxA(rgb, a) ((COLORALPHAREF)(((DWORD)(rgb)&0xffffff) | (((DWORD)(BYTE)(a)) << 24)))
-#define GetRedValue(rgba) (LOBYTE(rgba))
-#define GetGreenValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
-#define GetBlueValue(rgba) (LOBYTE((rgba) >> 16))
-#define GetAlphaValue(rgba) (LOBYTE((rgba) >> 24))
+//-#define GetRValue(rgba) (LOBYTE(rgba))                 
+//-#define GetGValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
+//-#define GetBValue(rgba) (LOBYTE((rgba) >> 16))
+#define GetAValue(rgba) (LOBYTE((rgba) >> 24))
+
+#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & 0xff, ((X) >> 8) & 0xff, (X)&0xff))
+#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & 0xff, ((X) >> 16) & 0xff, ((X) >> 8) & 0xff))
+#define BGRA_TO_COLREF(X) (RGB(((X) >> 8) & 0xff, ((X) >> 16) & 0xff, ((X) >> 24) & 0xff))
+#define ARGB_GET_ALPHA(A) (((A) >> 24) & 0xff)
+#define RGBA_GET_ALPHA(A) ((A)&0xff)
+#define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
 
 // ----------------------------------------------------------------------------
 
