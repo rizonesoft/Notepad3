@@ -1502,8 +1502,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE_BACK, RGBxA(rgb, SC_ALPHA_OPAQUE));
 
     // whitespace dot size
-    iValue = 4;
-    float fValue = 4.0;
+    iValue = 2;
+    float fValue = 2.0;
     if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) {
 
         iValue = clampi(float2int(fValue), 0, 12);
