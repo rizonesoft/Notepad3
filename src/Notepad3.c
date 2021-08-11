@@ -1958,9 +1958,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetBidirectional(Settings.Bidirectional);  // experimental
     Settings.Bidirectional = SciCall_GetBidirectional();
 
-    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-    // There are some older platforms and unusual modes where buffering may still be useful
-    SciCall_SetBufferedDraw(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT);
     //~SciCall_SetPhasesDraw(SC_PHASES_TWO); // (= default)
     SciCall_SetPhasesDraw(SC_PHASES_MULTIPLE);
     //~SciCall_SetLayoutCache(SC_CACHE_DOCUMENT); // memory consumption !
@@ -5767,7 +5764,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.RenderingTechnology = (iLoWParam - IDM_SET_RENDER_TECH_GDI);
         SciCall_SetTechnology(Settings.RenderingTechnology);
         Settings.RenderingTechnology = SciCall_GetTechnology();
-        SciCall_SetBufferedDraw(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT);
 
         int const prevBD = Settings.Bidirectional;
         SciCall_SetBidirectional(Settings.Bidirectional);
