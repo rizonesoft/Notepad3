@@ -2060,14 +2060,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_IndicSetAlpha(INDIC_NP3_MULTI_EDIT, 60);
     SciCall_IndicSetOutlineAlpha(INDIC_NP3_MULTI_EDIT, 180);
 
-    //SciCall_IndicSetStyle();
-    //SciCall_IndicSetUnder();
-    //SciCall_IndicSetFore();
-    //SciCall_IndicSetAlpha();
-    //SciCall_IndicSetOutlineAlpha();
-    //SciCall_IndicSetHoverStyle();
-    //SciCall_IndicSetHoverFore();
-
     // No SC_AUTOMATICFOLD_CLICK, performed by
     SciCall_SetAutomaticFold(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE);
 

@@ -4,6 +4,10 @@
 # Implemented 2000 by Neil Hodgson neilh@scintilla.org
 # Requires Python 3.6 or later
 
+import os, sys
+_this_dir = os.path.dirname(__file__)
+if _this_dir not in sys.path:    sys.path.append(_this_dir)
+
 import pathlib
 import Face
 import FileGenerator
