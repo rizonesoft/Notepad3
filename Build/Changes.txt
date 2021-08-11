@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.810.(build_#) (2021-08-10)
+Current BETA/RC Version 5.21.811.(build_#) (2021-08-11)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.811.1]- Add support for "Notepad3 Replacement" for Windows 11 Insider Preview (22000.120).
 [.809.1]- Configure app to open hyperlink (instead of default browser).
 [.805.1]- File URL forced to open in new window by (Ctrl+Alt+Click).
 [.805.1]- File change notification, if removed current file is recreated.
@@ -82,6 +83,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.811.1]- MUI base language definition moved to solution's preprocessors (C/C++ & RC) defines.
 [.810.1]- Some refactorings and code cleanup.
 [.804.1]- Minor changed regarding file changed indicator.
 [.803.1]- New Sombra scheme as default Dark Mode coloring theme.
