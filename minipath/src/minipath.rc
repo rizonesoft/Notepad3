@@ -86,7 +86,7 @@ BEGIN
 #elif defined(MUI_BASE_LNG_ZH_TW)
   "#include ""../language/mp_zh_tw/mp_zh_tw.rc""\r\n"
 #else
-  "#include ""../language/mp_en_us/mp_en_us.rc""\r\n"
+#error "No MUI Base Language defined - Please set Preprocessor Define accordingly!"
 #endif
 
   "\0"
@@ -275,7 +275,7 @@ END
 #elif defined(MUI_BASE_LNG_ZH_TW)
   #include "../language/mp_zh_tw/mp_zh_tw.rc"
 #else
-  #include "../language/mp_en_us/mp_en_us.rc"
+#error "No MUI Base Language defined - Please set Preprocessor Define accordingly!"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
