@@ -1258,13 +1258,7 @@ CASE_WM_CTLCOLOR_SET:
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? L"\n- Process is elevated." : L"\n- Process is not elevated"));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ? L"\n- User is in Admin-Group." : L"\n- User is not in Admin-Group"));
 
-            #if defined(MUI_BASE_LNG_EN_US)
-                StringCchCopy(wchBuf, COUNTOF(wchBuf), L"en-US");
-            #elif defined(MUI_BASE_LNG_DE_DE)
-                StringCchCopy(wchBuf, COUNTOF(wchBuf), L"de-DE");
-            #elif defined(MUI_BASE_LNG_FR_FR)
-                StringCchCopy(wchBuf, COUNTOF(wchBuf), L"fr-FR");
-            #endif
+            StringCchCopy(wchBuf, COUNTOF(wchBuf), MUI_BASE_LNG_ID);
             #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
                 for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
                 if (IsMUILanguageActive(lng)) {

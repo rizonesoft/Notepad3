@@ -61,7 +61,7 @@
 #elif defined(MUI_BASE_LNG_ZH_TW)
 #define MUI_BASE_LNG_ID L"zh-TW"
 #else
-#define MUI_BASE_LNG_ID L"en-US"
+#define MUI_BASE_LNG_ID L"noDef"
 #endif
 
 // ==========================================
