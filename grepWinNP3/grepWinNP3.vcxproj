@@ -158,6 +158,12 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>src\last</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)translationsNP3\*.lang" "..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lng\gwLng\*" /V /Q /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy language resorces to build directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -185,6 +191,12 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>src\last</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)translationsNP3\*.lang" "..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lng\gwLng\*" /V /Q /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy language resorces to build directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -222,6 +234,12 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>src\last</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)translationsNP3\*.lang" "..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lng\gwLng\*" /V /Q /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy language resorces to build directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
     <ClCompile>
@@ -254,6 +272,12 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>src\last</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)translationsNP3\*.lang" "..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lng\gwLng\*" /V /Q /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy language resorces to build directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -289,6 +313,12 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>src\last</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)translationsNP3\*.lang" "..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lng\gwLng\*" /V /Q /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy language resorces to build directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
     <ClCompile>
@@ -319,6 +349,12 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>src\last</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)translationsNP3\*.lang" "..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lng\gwLng\*" /V /Q /Y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy language resorces to build directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="sktoolslib_mod\AeroControls.cpp" />

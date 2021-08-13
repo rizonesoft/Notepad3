@@ -1958,9 +1958,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetBidirectional(Settings.Bidirectional);  // experimental
     Settings.Bidirectional = SciCall_GetBidirectional();
 
-    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-    // There are some older platforms and unusual modes where buffering may still be useful
-    SciCall_SetBufferedDraw(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT);
     //~SciCall_SetPhasesDraw(SC_PHASES_TWO); // (= default)
     SciCall_SetPhasesDraw(SC_PHASES_MULTIPLE);
     //~SciCall_SetLayoutCache(SC_CACHE_DOCUMENT); // memory consumption !
@@ -2062,14 +2059,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_IndicSetFore(INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
     SciCall_IndicSetAlpha(INDIC_NP3_MULTI_EDIT, 60);
     SciCall_IndicSetOutlineAlpha(INDIC_NP3_MULTI_EDIT, 180);
-
-    //SciCall_IndicSetStyle();
-    //SciCall_IndicSetUnder();
-    //SciCall_IndicSetFore();
-    //SciCall_IndicSetAlpha();
-    //SciCall_IndicSetOutlineAlpha();
-    //SciCall_IndicSetHoverStyle();
-    //SciCall_IndicSetHoverFore();
 
     // No SC_AUTOMATICFOLD_CLICK, performed by
     SciCall_SetAutomaticFold(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE);
@@ -5767,7 +5756,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.RenderingTechnology = (iLoWParam - IDM_SET_RENDER_TECH_GDI);
         SciCall_SetTechnology(Settings.RenderingTechnology);
         Settings.RenderingTechnology = SciCall_GetTechnology();
-        SciCall_SetBufferedDraw(Settings.RenderingTechnology == SC_TECHNOLOGY_DEFAULT);
 
         int const prevBD = Settings.Bidirectional;
         SciCall_SetBidirectional(Settings.Bidirectional);
