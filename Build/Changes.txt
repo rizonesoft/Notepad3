@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.811.(build_#) (2021-08-11)
+Current BETA/RC Version 5.21.813.(build_#) (2021-08-13)
 ========================================================
 
 --------------------------------------------------------
@@ -83,6 +83,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.811.1]- Scintilla Python generator methods for embeddable Python (SCI).
 [.811.1]- MUI base language definition moved to solution's preprocessors (C/C++ & RC) defines.
 [.810.1]- Some refactorings and code cleanup.
 [.804.1]- Minor changed regarding file changed indicator.
@@ -156,6 +157,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.813.1]- "grepWinNP3" project: post build step - xcopy .lang files to desired build output dir (GRE).
+[.813.1]- Remove obsolete (by SCI Lib v5.1.1) settings.
 [.809.2]- Size of visible whitespace style.
 [.809.2]- Workaround for additional selection typing.
 [.807.1]- RegEx line begin pattern stuck after zero-length replacement.
