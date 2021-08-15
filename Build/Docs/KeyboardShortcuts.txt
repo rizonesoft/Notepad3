@@ -30,6 +30,11 @@
                               Minimize or Exit Notepad3 (optionally, if no state).
     Shift+Esc                 Save file and Exit Notepad3.
 
+      Path to Clipboard
+      -----------------
+        Ctrl+F9               Copy Filename Only to Clipboard.
+        Ctrl+Shift+F9         Copy Full Path to Clipboard.
+
       Launch
       ------
         Ctrl+Shift+F          Search in Files.
@@ -185,8 +190,6 @@
         Ctrl+Shift+Space      Multi-Select All Matches.
         Alt+Shift+Arrows      Rectangular Selection.
         Alt+Shift+Left Mouse  Rectangular Selection.
-        Ctrl+F9               Copy Filename Only to Clipboard.
-        Ctrl+Shift+F9         Copy Full Path to Clipboard.
 
       Bookmarks
       ---------

@@ -40,7 +40,7 @@ Current BETA/RC Version 5.21.813.(build_#) (2021-08-13)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.811.1]- Add support for "Notepad3 Replacement" for Windows 11 Insider Preview (22000.120).
+[.811.1]- Add "Notepad3 Replacement" for Windows 11 Insider Preview (ext: .inf, .ini, .log, .ps1, .psd1, .psm1, .scp, .txt, .wtx).
 [.809.1]- Configure app to open hyperlink (instead of default browser).
 [.805.1]- File URL forced to open in new window by (Ctrl+Alt+Click).
 [.805.1]- File change notification, if removed current file is recreated.

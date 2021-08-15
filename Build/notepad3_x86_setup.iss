@@ -112,7 +112,6 @@ Source: "{#bindir}\Release_x86_v142\grepWinNP3.exe"; DestDir: "{app}"; Flags: ig
 Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Readme.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\grepWinNP3\translationsNP3\*.lang"; DestDir: "{app}\lng\gwLng"; Flags: ignoreversion
 Source: "Notepad3.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "minipath.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "Themes\Dark.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: ignoreversion uninsneveruninstall
@@ -120,6 +119,7 @@ Source: "Themes\Obsidian.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Theme
 Source: "Themes\Sombra.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: ignoreversion uninsneveruninstall
 Source: "{#bindir}\Release_x86_v142\lng\mplng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v142\lng\np3lng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
+Source: "{#bindir}\Release_x86_v142\lng\gwLng\*.lang"; DestDir: "{app}\lng\gwLng"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v142\lng\af-ZA\mplng.dll.mui"; DestDir: "{app}\lng\af-ZA"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v142\lng\af-ZA\np3lng.dll.mui"; DestDir: "{app}\lng\af-ZA"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v142\lng\be-BY\mplng.dll.mui"; DestDir: "{app}\lng\be-BY"; Flags: ignoreversion
