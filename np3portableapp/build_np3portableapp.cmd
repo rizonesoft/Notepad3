@@ -166,7 +166,7 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" (
 ) else (
 	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
 )
-copy /B "%NP3_GREPWIN_DIR%\translationsNP3\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
+copy /B "%NP3_WIN32_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
 copy /B "%NP3_WIN32_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
@@ -174,28 +174,8 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
 ) else (
 	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
 )
-copy /B "%NP3_GREPWIN_DIR%\translationsNP3\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
+copy /B "%NP3_X64_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-
-:: ---------------------------------------------------------------------------------------------------
-
-goto :SKIP_DLL
-
-:: Only for "Notepad3Portable_DLL" version
-:: Copy all current "Scintilla.dll" files
-if exist %NP3_WIN32_DIR%\Scintilla.dll (
-    copy /B "%NP3_WIN32_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-) else (
-    echo. \x86\Scintilla.dll does not exist
-)
-
-if exist %NP3_X64_DIR%\Scintilla.dll (
-    copy /B "%NP3_X64_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-) else (
-    echo. \x64\Scintilla.dll does not exist
-)
-
-:SKIP_DLL
 
 :: ---------------------------------------------------------------------------------------------------
 
