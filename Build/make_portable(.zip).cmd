@@ -90,14 +90,14 @@ FOR %%A IN ("..\License.txt" "..\Readme.txt" "..\grepWinNP3\grepWinLicense.txt" 
 
 SET "LNG=%TEMP_NAME%\lng"
 SET "GRP=%TEMP_NAME%\lng\gwLng\"
-SET "THEMES=%TEMP_NAME%\themes"
+SET "THEMES=%TEMP_NAME%\Themes"
 SET "DOCS=%TEMP_NAME%\Docs"
 IF NOT EXIST %LNG% MD %LNG%
 IF NOT EXIST %THEMES% MD %THEMES%
 IF NOT EXIST %DOCS% MD %DOCS%
 XCOPY /E /Y /V "..\%1\lng" "%LNG%" /EXCLUDE:Ignore.txt
-XCOPY /E /Y /V "..\grepWinNP3\translationsNP3" "%GRP%"
-XCOPY /E /Y /V "themes" "%THEMES%"
+XCOPY /E /Y /V "..\%1\lng\gwLng\" "%GRP%"
+XCOPY /E /Y /V "Themes" "%THEMES%"
 XCOPY /E /Y /V "Docs" "%DOCS%"
 COPY /Y /V "Changes.txt" "%DOCS%"
 
@@ -107,7 +107,7 @@ IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mcu=on -mx=7^
  "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "grepWinLicense.txt" "Readme.txt"^
- "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "themes" "Docs">NUL
+ "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "Themes" "Docs">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"
