@@ -33,15 +33,17 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.816.(build_#) (2021-08-16)
+Current BETA/RC Version 5.21.818.(build_#) (2021-08-18)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- Add Configuration (Properties) Lexer: add style setting for Key (of Key-Value pair).
-[.811.1]- Add "Notepad3 Replacement" for Windows 11 Insider Preview (ext: .inf, .ini, .log, .ps1, .psd1, .psm1, .scp, .txt, .wtx).
+[.816.1]- Add Configuration (Properties) Lexer: add style setting for Key (of Key-Value pair).
+[.811.1]- Add "Notepad3 Replacement" on Windows 11 Insider Preview which works almost like with Windows 10:
+          - Open (ext: .inf, .ini, .log, .ps1, .psd1, .psm1, .scp, .txt, .wtx, .compositefont, .css, .sct, .wsc).
+          - Edit (ext: .bat, .cmd, .jse, .reg, .text, .vbe, .wsf).
 [.809.1]- Configure app to open hyperlink (instead of default browser).
 [.805.1]- File URL forced to open in new window by (Ctrl+Alt+Click).
 [.805.1]- File change notification, if removed current file is recreated.
