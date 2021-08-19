@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "Κανονική|Αντιστροφή φωτός (σκούρο φόντο)|Μαύρο σε λευκό|Έγχρωμο σε λευκό|Έγχρωμο σε λευκό (εκτός αρίθμησης γραμμών)|Χρώματα οθόνης"
     IDS_MUI_PRINT_PAGENUM   "Σελίδα %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Αυτή η ενέργεια θα επαναφέρει το στυλ στις εργοστασιακές ρυθμίσεις της επιθυμητής λειτουργίας χρώματος και θα αλλάξει το ενεργό αρχείο θέματος στο τυπικό .ini ρύθμισης παραμέτρων!"
 END
 
 STRINGTABLE
