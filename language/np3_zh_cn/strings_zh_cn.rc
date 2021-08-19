@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "导出样式设置到文件“%s”时遇到错误。"
     IDS_MUI_REGEX_INVALID    "正则表达式无效。"
     IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "URL 指定的目录已存在。"
+    IDS_MUI_URL_FILE_EXISTS  "URL 指定的文件已存在。"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "URL 指定的路径不存在。"
     IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件。"
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接。"
     IDS_MUI_INF_PRSVFILEMODTM
@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "标准|反色（暗色背景）|白底黑字|白底彩字|白底彩字（除行号以外）|和屏幕颜色相同"
     IDS_MUI_PRINT_PAGENUM   "第 %i 页"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "该操作将会把颜色样式重置为出厂设置，并将活动的主题文件切换为标准的 .INI 配置文件。"
 END
 
 STRINGTABLE
@@ -274,13 +274,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "标记全部匹配..."
+    IDS_MUI_SB_TOGGLE_VIEW    "切换视图..."
+    IDS_MUI_SB_REPLACE_ALL    "替换全部..."
+    IDS_MUI_SB_WRAP_LINES     "自动换行..."
+    IDS_MUI_SB_CONV_LNBRK     "转换换行符..."
+    IDS_MUI_SB_RECODING_DOC   "转换文档编码..."
+    IDS_MUI_SB_LEXER_STYLING  "应用词法样式..."
 END
 
 STRINGTABLE

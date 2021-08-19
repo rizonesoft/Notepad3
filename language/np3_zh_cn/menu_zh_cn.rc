@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "新建空窗口(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "复制实例(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "以管理员权限重启(&R)",                    IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "从文件恢复(&V)\tF5",                  IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "忽略文件变量(&I)",                      CMD_IGNORE_FILE_VARS
         POPUP "编码(&E)"
         BEGIN
             POPUP "从文件恢复为(&R)"
@@ -210,12 +210,12 @@ BEGIN
             MENUITEM "增加缩进(&I)",                           IDM_EDIT_INDENT
             MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "行注释(&C)"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "切换(&T)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "增加(&A)\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "删除(&R)\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "矩形编辑(&B)\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "添加块注释(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "转换行首空格为制表符(&B)\tCtrl+Alt+T",    IDM_EDIT_CONVERTSPACES2
             MENUITEM "转换行首制表符为空格(&F)\tCtrl+Alt+S",    IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base64 编码(&6)",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base64 解码(&4)",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 解码为代码页...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL 编码(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URL 解码(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
@@ -463,7 +463,7 @@ BEGIN
         MENUITEM "自动补全语法关键字(&K)",                      IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "加速单词导航(&G)\tCtrl+Alt+A",                IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "对每个文件仅允许单个实例(&F)",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_VIEW_CHANGENOTIFY
         MENUITEM "关闭消息提示音(&M)",                          IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc 键功能(&E)"

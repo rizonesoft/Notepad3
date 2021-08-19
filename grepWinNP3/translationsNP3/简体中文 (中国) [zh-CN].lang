@@ -54,7 +54,7 @@ msgid "&Search"
 msgstr "查找(&S)"
 
 #. Resource IDs: (1003)
-msgid "&Whole word"
+msgid "全词匹配(&W)"
 msgstr ""
 
 #. Resource IDs: (1013)
@@ -431,7 +431,7 @@ msgstr "已查找 %ld 个文件，已跳过 %ld 个文件。已找到 %ld 个匹
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "已查找 %ld 个文件，已跳过 %ld 个文件。已找到 %ld 个匹配（在 %ld 个文件中）。已选择 %ld 个结果。"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
