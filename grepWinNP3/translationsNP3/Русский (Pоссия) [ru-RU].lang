@@ -55,7 +55,7 @@ msgstr "&Поиск"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Всё слово"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "Найдено %ld файлов, пропущено %ld файлов. И
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Найдено %ld файлов, пропущено %ld файлов. Имеется %ld совпадений в %ld файлах. %ld результатов выбрано."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
