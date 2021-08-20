@@ -487,8 +487,8 @@ msgstr "Behandel lêers as binêre"
 
 #. Resource IDs: (172)
 #, c-format
-msgid "U het die opsie \"%s\" geaktiveer.\r\nAs u dit vervang, kan hierdie opsie lei tot beskadigde lêers.\r\nWil u in elk geval voortgaan?"
-msgstr ""
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr "U het die opsie \"%s\" geaktiveer.\r\nAs u dit vervang, kan hierdie opsie lei tot beskadigde lêers.\r\nWil u in elk geval voortgaan?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -597,8 +597,8 @@ msgid "search string is empty"
 msgstr "soekstring is leeg"
 
 #. Resource IDs: (170, 171)
-msgid "Begin nuwe grepWinNP3-venster"
-msgstr ""
+msgid "Start new grepWinNP3 window"
+msgstr "Begin nuwe grepWinNP3-venster"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
@@ -629,6 +629,6 @@ msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Dit voeg 'n nuwe inskrywing by die konteksmenu met die naam 'Open met Editor'"
 
 #. Resource IDs: (3006)
-msgid "Bly Bo"
-msgstr ""
+msgid "Stay On Top"
+msgstr "Bly Bo"
 

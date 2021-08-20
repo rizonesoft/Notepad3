@@ -54,8 +54,8 @@ msgid "&Search"
 msgstr "查找(&S)"
 
 #. Resource IDs: (1003)
-msgid "全词匹配(&W)"
-msgstr ""
+msgid "&Whole word"
+msgstr "全词匹配(&W)"
 
 #. Resource IDs: (1013)
 msgid "..."
