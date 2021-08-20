@@ -36,10 +36,8 @@ constParameter:lexilla/lexers/LexCoffeeScript.cxx
 constParameter:lexilla/lexers/LexCPP.cxx
 variableScope:lexilla/lexers/LexCSS.cxx
 variableScope:lexilla/lexers/LexDataflex.cxx
-knownConditionTrueFalse:lexilla/lexers/LexECL.cxx
 variableScope:lexilla/lexers/LexErlang.cxx
 knownConditionTrueFalse:lexilla/lexers/LexErlang.cxx
-knownConditionTrueFalse:lexilla/lexers/LexEScript.cxx
 constParameter:lexilla/lexers/LexFortran.cxx
 redundantCondition:lexilla/lexers/LexFSharp.cxx
 knownConditionTrueFalse:lexilla/lexers/LexFSharp.cxx
@@ -91,9 +89,7 @@ constParameter:lexilla/lexers/LexTADS3.cxx
 invalidscanf:lexilla/lexers/LexTCMD.cxx
 constParameter:lexilla/lexers/LexTeX.cxx
 variableScope:lexilla/lexers/LexTeX.cxx
-knownConditionTrueFalse:lexilla/lexers/LexTxt2tags.cxx
 constParameter:lexilla/lexers/LexVerilog.cxx
-knownConditionTrueFalse:lexilla/lexers/LexVerilog.cxx
 constParameter:lexilla/lexers/LexVHDL.cxx
 shadowVariable:lexilla/lexers/LexVHDL.cxx
 unreadVariable:lexilla/lexers/LexVHDL.cxx
@@ -141,3 +137,6 @@ redundantAssignment:lexilla/lexers/LexCPP.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:lexilla/test/unit/catch.hpp
+// cppcheck gives up inside catch.hpp
+*:lexilla/test/unit/UnitTester.cxx
+*:lexilla/test/unit/unitTest.cxx

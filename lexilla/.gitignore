@@ -22,7 +22,7 @@ __pycache__
 *.suo
 *.aps
 *.sln
-*.vcxproj.*
+*.vcxproj.user
 *.idb
 *.bsc
 *.intermediate.manifest
