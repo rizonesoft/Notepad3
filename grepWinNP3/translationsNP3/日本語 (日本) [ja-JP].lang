@@ -430,8 +430,8 @@ msgstr "検索済み %ldファイル, 省略 %ldファイル. %ldか所の一致
 
 #. Resource IDs: (173)
 #, c-format
-msgid "検索済み %ldファイル, 省略 %ldファイル. %ldか所の一致 %ld個のファイル中. %ld項目の結果を選択"
-msgstr ""
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
+msgstr "検索済み %ldファイル, 省略 %ldファイル. %ldか所の一致 %ld個のファイル中. %ld項目の結果を選択"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
