@@ -144,6 +144,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
@@ -178,6 +179,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
@@ -217,6 +219,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -255,6 +258,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -297,6 +301,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -333,6 +338,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
