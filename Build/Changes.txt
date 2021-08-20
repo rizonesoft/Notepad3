@@ -86,6 +86,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.811.1]- Current Lexilla dev (chg: HTML(PHP) Lexer) (LEX).
 [.811.1]- Scintilla Python generator methods for embeddable Python (SCI).
 [.811.1]- MUI base language definition moved to solution's preprocessors (C/C++ & RC) defines.
 [.810.1]- Some refactorings and code cleanup.
