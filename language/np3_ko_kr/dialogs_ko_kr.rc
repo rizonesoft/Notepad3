@@ -276,7 +276,7 @@ CAPTION "파일 변경 알림"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "안함(&N).", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Indicator (silent).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "표시기 (침묵)(&I).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "메시지 표시(&D).", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "자동 새로 고침(&A).", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
     CONTROL         "배타적 파일 잠금(&E).", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
@@ -752,25 +752,25 @@ END
 
 IDD_MUI_SYSCOLOR_DLG DIALOGEX LOADONCALL MOVEABLE DISCARDABLE 2, 0, 298, 184
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Choose Color"
+CAPTION "색상 선택"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Basic colors:", -1, 4, 4, 140, 9
+    LTEXT           "기본 색상(&B):", -1, 4, 4, 140, 9
     CONTROL         "", COLOR_BOX1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 14, 140, 86
 
-    LTEXT           "&Custom colors:", -1, 4, 106, 140, 9
+    LTEXT           "사용자 지정 색상(&C):", -1, 4, 106, 140, 9
     CONTROL         "", COLOR_CUSTOM1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "&Define Custom Colors >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "사용자 지정 색상 정의(&D) >>" COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
-    DEFPUSHBUTTON   "OK", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP
-    PUSHBUTTON      "Cancel", IDCANCEL, 52, 166, 44, 14, WS_GROUP | WS_TABSTOP
-    PUSHBUTTON      "&Help", pshHelp, 100, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    DEFPUSHBUTTON   "확인", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON      "취소", IDCANCEL, 52, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON      "도움말(&H)", pshHelp, 100, 166, 44, 14, WS_GROUP | WS_TABSTOP
 
     CONTROL         "", COLOR_RAINBOW, "static",
     SS_SIMPLE | WS_CHILD, 152, 4, 118, 116
@@ -782,28 +782,28 @@ BEGIN
     SS_SIMPLE | WS_CHILD, 152, 124, 40, 26
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
-    RTEXT           "Color", COLOR_SOLID_LEFT, 152, 151, 20, 9
-    LTEXT           "|S&olid", COLOR_SOLID_RIGHT, 172, 151, 20, 9
+    RTEXT           "색상", COLOR_SOLID_LEFT, 152, 151, 20, 9
+    LTEXT           "|솔리드(&O)", COLOR_SOLID_RIGHT, 172, 151, 20, 9
 
-    RTEXT           "Hu&e:", COLOR_HUEACCEL, 194, 126, 20, 9
+    RTEXT           "색조(&E):", COLOR_HUEACCEL, 194, 126, 20, 9
     EDITTEXT, COLOR_HUE, 216, 124, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Sat:", COLOR_SATACCEL, 194, 140, 20, 9
+    RTEXT           "채도(&S):", COLOR_SATACCEL, 194, 140, 20, 9
     EDITTEXT, COLOR_SAT, 216, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Lum:", COLOR_LUMACCEL, 194, 154, 20, 9
+    RTEXT           "발광(&L):", COLOR_LUMACCEL, 194, 154, 20, 9
     EDITTEXT, COLOR_LUM, 216, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Red:", COLOR_REDACCEL, 243, 126, 24, 9
+    RTEXT           "빨강(&R):", COLOR_REDACCEL, 243, 126, 24, 9
     EDITTEXT, COLOR_RED, 269, 124, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Green:", COLOR_GREENACCEL, 243, 140, 24, 9
+    RTEXT           "녹색(&G):", COLOR_GREENACCEL, 243, 140, 24, 9
     EDITTEXT, COLOR_GREEN, 269, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "Bl&ue:", COLOR_BLUEACCEL, 243, 154, 24, 9
+    RTEXT           "파랑(&U):", COLOR_BLUEACCEL, 243, 154, 24, 9
     EDITTEXT, COLOR_BLUE, 269, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
-    PUSHBUTTON      "&Add to Custom Colors", COLOR_ADD, 152, 166, 142, 14,
+    PUSHBUTTON      "사용자 지정 색상에 추가(&A)", COLOR_ADD, 152, 166, 142, 14,
     WS_GROUP | WS_TABSTOP
 END
 
