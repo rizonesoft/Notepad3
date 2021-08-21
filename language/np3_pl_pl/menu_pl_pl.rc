@@ -463,7 +463,7 @@ BEGIN
         MENUITEM "Autouzupełnianie Lekserem",                       IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Tylko jedna istancja pliku",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Funkcja klawisza Esc"

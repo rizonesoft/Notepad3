@@ -55,7 +55,7 @@ msgstr "&Szukaj"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "Całe słowo"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "Wyszukano plików: %ld, pominięto plików: %ld. Znaleziono %ld dopasowa
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Przeszukano %ld plików, pominięto %ld plików. Znaleziono %ld dopasowań w %ld plikach. Zaznaczono %ld wyników"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

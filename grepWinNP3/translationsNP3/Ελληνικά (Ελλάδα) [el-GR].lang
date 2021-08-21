@@ -55,7 +55,7 @@ msgstr "&Αναζήτηση"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Ταίριασμα όλης της λέξης"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -345,7 +345,7 @@ msgstr "Προκαθορισμένες ρυθμίσεις"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help..."
-msgstr "Πατήστε F1 για βοήθεια..."
+msgstr "F1 για βοήθεια..."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -431,7 +431,7 @@ msgstr "Αναζητήθηκαν %ld αρχεία, αγνοήθηκαν %ld αρ
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Αναζητήθηκαν %ld αρχεία, αγνοήθηκαν %ld αρχεία. Βρέθηκαν %ld συμφωνίες σε %ld αρχεία. Επιλέχθηκαν %ld αποτελέσματα."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
