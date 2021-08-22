@@ -214,6 +214,11 @@
 # pragma warning (disable: 4127 4503 4702 4786)
 #endif
 
+// workaround for invalid (false positive) assertion SI_ASSERT(hFile != INVALID_HANDLE_VALUE) 
+#ifndef _WIN64
+# undef INVALID_HANDLE_VALUE
+# define INVALID_HANDLE_VALUE ((HANDLE)INTPTR_MAX)
+#endif
 
 // Defines the conversion classes for different libraries. Before including
 // SimpleIni.h, set the converter that you wish you use by defining one of the
@@ -300,14 +305,14 @@ enum class SI_Error : int {
 #if defined(_WIN32)
 # define SI_HAS_WIDE_FILE
 # define SI_USE_LOCKING_WIDE_FILE
-# define SI_WCHAR_T     wchar_t 
+# define SI_WCHAR_T     wchar_t
 #elif defined(SI_CONVERT_ICU)
 # define SI_HAS_WIDE_FILE
 # define SI_WCHAR_T     UChar
 #endif
 
 #ifndef IS_VALID_HANDLE
-#define IS_VALID_HANDLE(HNDL) (((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE)) ? true : false)
+#define IS_VALID_HANDLE(HNDL) ((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE))
 #endif
 
 // ---------------------------------------------------------------------------
