@@ -214,12 +214,6 @@
 # pragma warning (disable: 4127 4503 4702 4786)
 #endif
 
-// workaround for invalid (false positive) assertion SI_ASSERT(hFile != INVALID_HANDLE_VALUE) 
-#ifndef _WIN64
-# undef INVALID_HANDLE_VALUE
-# define INVALID_HANDLE_VALUE ((HANDLE)INTPTR_MAX)
-#endif
-
 // Defines the conversion classes for different libraries. Before including
 // SimpleIni.h, set the converter that you wish you use by defining one of the
 // following symbols.
@@ -1449,9 +1443,10 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
       GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
       nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
+    //~SI_ASSERT(hFile != INVALID_HANDLE_VALUE); // maybe .ini does not exist: allowed here
 
-    if (!IS_VALID_HANDLE(hFile)) {
+    if (!IS_VALID_HANDLE(hFile))
+    {
       return SI_Error::SI_FILE;
     }
 
