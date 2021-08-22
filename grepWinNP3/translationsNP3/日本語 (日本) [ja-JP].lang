@@ -516,7 +516,7 @@ msgstr "等しい"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "以下より大きい"
+msgstr "超過"
 
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
@@ -553,7 +553,7 @@ msgstr "正規表現が無効です!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "以下より小さい"
+msgstr "未満"
 
 #. Resource IDs: (111)
 msgid "no match"
