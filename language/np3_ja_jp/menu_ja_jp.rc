@@ -265,7 +265,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Base64 エンコード(&6)",                    IDM_EDIT_BASE64ENCODE
             MENUITEM "Base64 デコード(&4)",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 文字コードへデコード...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base64 を文字コードへデコード...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URLエンコード(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URLデコード(&D)\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
