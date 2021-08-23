@@ -1117,8 +1117,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 //
 WININFO GetFactoryDefaultWndPos(const int flagsPos)
 {
+    HWND const hwnd = GetDesktopWindow();
     RECT rc;
-    GetWindowRect(GetDesktopWindow(), &rc);
+    GetWindowRect(hwnd, &rc);
     MONITORINFO mi;
     GetMonitorInfoFromRect(&rc, &mi);
     WININFO winfo = INIT_WININFO;
@@ -1128,6 +1129,7 @@ WININFO GetFactoryDefaultWndPos(const int flagsPos)
     winfo.x = (flagsPos == 3) ? mi.rcMonitor.left : winfo.cx;
     winfo.max = 0;
     winfo.zoom = 100;
+    winfo.dpi = Scintilla_GetWindowDPI(hwnd);
     return winfo;
 }
 // ----------------------------------------------------------------------------
@@ -1155,8 +1157,9 @@ WININFO GetWinInfoByFlag(const int flagsPos)
     } else if (flagsPos == 3) {
         winfo = GetFactoryDefaultWndPos(flagsPos);
     } else if ((flagsPos >= 4) && (flagsPos < 256)) {
+        HWND const hwnd = GetDesktopWindow();
         RECT rc;
-        GetWindowRect(GetDesktopWindow(), &rc);
+        GetWindowRect(hwnd, &rc);
         MONITORINFO mi;
         GetMonitorInfoFromRect(&rc, &mi);
 
@@ -1198,11 +1201,13 @@ WININFO GetWinInfoByFlag(const int flagsPos)
             winfo.max = true;
             winfo.zoom = 100;
         }
+        winfo.dpi = Scintilla_GetWindowDPI(hwnd);
+
     } else { // ( > 256) restore window, move upper left corner to Work Area
 
-        MONITORINFO mi;
         RECT rc = { 0 };
         RectFromWinInfo(&winfo, &rc);
+        MONITORINFO mi;
         GetMonitorInfoFromRect(&rc, &mi);
         WININFO wi = winfo;
         wi.cx = wi.cy = 16; // really small
@@ -1424,12 +1429,10 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                            hInstance,
                            NULL);
 
+    SnapToWinInfoPos(Globals.hwndMain, g_IniWinInfo, SCR_NORMAL);
+
     if (g_IniWinInfo.max) {
         nCmdShow = SW_SHOWMAXIMIZED;
-    }
-
-    if (Settings.AlwaysOnTop) {
-        SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
 
     SetDialogIconNP3(Globals.hwndMain);
@@ -6436,7 +6439,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_FULLSCRWINPOS: {
-        WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
+        WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
         SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN);
     }
     break;
@@ -11122,6 +11125,12 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
             WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
             if (GetDoAnimateMinimize()) {
                 DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+            }
+            if (hwnd) {
+                UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+                if (dpi != winInfo.dpi) {
+                    RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, dpi);
+                }
             }
             SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
             SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
