@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.822.(build_#) (2021-08-22)
+Current BETA/RC Version 5.21.824.(build_#) (2021-08-24)
 ========================================================
 
 --------------------------------------------------------
@@ -161,6 +161,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.824.1]- Sync status bar font size on system font size change.
+[.824.1]- Restore previous window position while DPI scaling changed meanwhile.
 [.822.1]- Missing .ini must not have an assertion failure, allowed case here.
 [.820.1]- Specify "/utf-8" compiler option for "Scintilla, Lexilla and grepWinNP3" projects.
 [.813.1]- "grepWinNP3" project: post build step - xcopy .lang files to desired build output dir (GRE).
