@@ -1637,13 +1637,14 @@ void LoadSettings()
     if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
 
         WININFO winInfo = g_IniWinInfo;
-        WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
+        WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64], tchDPI[64];
         StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
         StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
         StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
         StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
         StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
         StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
+        StringCchPrintf(tchDPI, COUNTOF(tchDPI), L"%ix%i DPI", ResX, ResY);
 
         winInfo.x = IniSectionGetInt(IniSecWindow, tchPosX, g_IniWinInfo.x);
         winInfo.y = IniSectionGetInt(IniSecWindow, tchPosY, g_IniWinInfo.y);
@@ -1655,6 +1656,7 @@ void LoadSettings()
             winInfo.zoom = (winInfo.zoom + 10) * 10;
         }
         winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+        winInfo.dpi = IniSectionGetInt(IniSecWindow, tchDPI, g_IniWinInfo.dpi);
 
         if ((winInfo.x == CW_USEDEFAULT) || (winInfo.y == CW_USEDEFAULT) ||
                 (winInfo.cx == CW_USEDEFAULT) || (winInfo.cy == CW_USEDEFAULT)) {
@@ -2046,13 +2048,14 @@ bool SaveWindowPositionSettings(bool bClearSettings)
 
     int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
     int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
+    WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64], tchDPI[64];
     StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
     StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
     StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
     StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
     StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
-    StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
+    StringCchPrintf(tchDPI, COUNTOF(tchDPI), L"%ix%i DPI", ResX, ResY);
+    StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
     if (bClearSettings) {
         IniSectionDelete(Constants.Window_Section, tchPosX, false);
@@ -2061,6 +2064,7 @@ bool SaveWindowPositionSettings(bool bClearSettings)
         IniSectionDelete(Constants.Window_Section, tchSizeY, false);
         IniSectionDelete(Constants.Window_Section, tchMaximized, false);
         IniSectionDelete(Constants.Window_Section, tchZoom, false);
+        IniSectionDelete(Constants.Window_Section, tchDPI, false);
     } else {
         // overwrite last saved window position
         IniSectionSetInt(Constants.Window_Section, tchPosX, winInfo.x);
@@ -2068,7 +2072,9 @@ bool SaveWindowPositionSettings(bool bClearSettings)
         IniSectionSetInt(Constants.Window_Section, tchSizeX, winInfo.cx);
         IniSectionSetInt(Constants.Window_Section, tchSizeY, winInfo.cy);
         IniSectionSetBool(Constants.Window_Section, tchMaximized, winInfo.max);
+        IniSectionSetBool(Constants.Window_Section, tchMaximized, winInfo.max);
         IniSectionSetInt(Constants.Window_Section, tchZoom, winInfo.zoom);
+        IniSectionSetInt(Constants.Window_Section, tchDPI, winInfo.dpi);
         // set current window position as new initial window
         g_IniWinInfo = winInfo;
     }

@@ -1117,8 +1117,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 //
 WININFO GetFactoryDefaultWndPos(const int flagsPos)
 {
+    HWND const hwnd = GetDesktopWindow();
     RECT rc;
-    GetWindowRect(GetDesktopWindow(), &rc);
+    GetWindowRect(hwnd, &rc);
     MONITORINFO mi;
     GetMonitorInfoFromRect(&rc, &mi);
     WININFO winfo = INIT_WININFO;
@@ -1128,6 +1129,7 @@ WININFO GetFactoryDefaultWndPos(const int flagsPos)
     winfo.x = (flagsPos == 3) ? mi.rcMonitor.left : winfo.cx;
     winfo.max = 0;
     winfo.zoom = 100;
+    winfo.dpi = Scintilla_GetWindowDPI(hwnd);
     return winfo;
 }
 // ----------------------------------------------------------------------------
@@ -1155,8 +1157,9 @@ WININFO GetWinInfoByFlag(const int flagsPos)
     } else if (flagsPos == 3) {
         winfo = GetFactoryDefaultWndPos(flagsPos);
     } else if ((flagsPos >= 4) && (flagsPos < 256)) {
+        HWND const hwnd = GetDesktopWindow();
         RECT rc;
-        GetWindowRect(GetDesktopWindow(), &rc);
+        GetWindowRect(hwnd, &rc);
         MONITORINFO mi;
         GetMonitorInfoFromRect(&rc, &mi);
 
@@ -1198,11 +1201,13 @@ WININFO GetWinInfoByFlag(const int flagsPos)
             winfo.max = true;
             winfo.zoom = 100;
         }
+        winfo.dpi = Scintilla_GetWindowDPI(hwnd);
+
     } else { // ( > 256) restore window, move upper left corner to Work Area
 
-        MONITORINFO mi;
         RECT rc = { 0 };
         RectFromWinInfo(&winfo, &rc);
+        MONITORINFO mi;
         GetMonitorInfoFromRect(&rc, &mi);
         WININFO wi = winfo;
         wi.cx = wi.cy = 16; // really small
@@ -1214,6 +1219,26 @@ WININFO GetWinInfoByFlag(const int flagsPos)
     return winfo;
 }
 
+
+//=============================================================================
+//
+//  _StatusCalcPaneSizeh()
+//
+static SIZE _StatusCalcPaneSize(HWND hwnd, LPCWSTR lpsz) {
+    HDC const hdc = GetDC(hwnd);
+    HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd, WM_GETFONT, 0, 0);
+    HGDIOBJ const hfold = SelectObject(hdc, hfont);
+    int const mmode = SetMapMode(hdc, MM_TEXT);
+
+    SIZE size = { 0L, 0L };
+    GetTextExtentPoint32(hdc, lpsz, (int)StringCchLenW(lpsz, 0), &size);
+
+    SetMapMode(hdc, mmode);
+    SelectObject(hdc, hfold);
+    ReleaseDC(hwnd, hdc);
+
+    return size;
+}
 
 
 //=============================================================================
@@ -1424,12 +1449,10 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                            hInstance,
                            NULL);
 
+    SnapToWinInfoPos(Globals.hwndMain, g_IniWinInfo, SCR_NORMAL);
+
     if (g_IniWinInfo.max) {
         nCmdShow = SW_SHOWMAXIMIZED;
-    }
-
-    if (Settings.AlwaysOnTop) {
-        SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
 
     SetDialogIconNP3(Globals.hwndMain);
@@ -1712,6 +1735,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_ENDSESSION:
         return MsgEndSession(hwnd, umsg, wParam, lParam);
 
+    case WM_SYSCOLORCHANGE:
+        // update Scintilla colors
+        SendMessage(Globals.hwndEdit, WM_SYSCOLORCHANGE, wParam, lParam);
+        // [[FallThrough]]
+
     // Reinitialize theme-dependent values and resize windows
     case WM_THEMECHANGED:
         return MsgThemeChanged(hwnd, wParam, lParam);
@@ -1722,18 +1750,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         return MsgSize(hwnd, wParam, lParam);
 
-    // update Scintilla colors
-    case WM_SYSCOLORCHANGE:
-        Style_ResetCurrentLexer(Globals.hwndEdit);
-        UpdateUI();
-        SendMessage(Globals.hwndEdit, WM_SYSCOLORCHANGE, wParam, lParam);
-        break;
 
 #ifdef D_NP3_WIN10_DARK_MODE
     case WM_SETTINGCHANGE: {
         if (IsColorSchemeChangeMessage(lParam)) {
             RefreshTitleBarThemeColor(hwnd);
-            SendMessage(Globals.hwndEdit, WM_THEMECHANGED, 0, 0);
+            PostMessage(Globals.hwndEdit, WM_THEMECHANGED, 0, 0);
         }
     }
     break;
@@ -2735,11 +2757,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     s_cyReBar = (rc.bottom - rc.top);
     s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;  // (!) frame color is same as INITIAL title-bar ???
 
-
     // -------------------
     // Create Statusbar
     // -------------------
-    DWORD const dwStatusbarStyle = SBT_NOBORDERS | (Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS));
+    DWORD const dwStatusbarStyle = SBT_NOBORDERS | SBT_OWNERDRAW |
+        (Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS));
 
     if (Globals.hwndStatus) {
         DestroyWindow(Globals.hwndStatus);
@@ -2747,15 +2769,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
     //~Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
     Globals.hwndStatus = CreateWindowEx(
-                             WS_EX_COMPOSITED,          // => double-buffering avoids flickering
-                             STATUSCLASSNAME,           // name of status bar class
-                             (PCTSTR)NULL,              // no text when first created
-                             dwStatusbarStyle,          // creates a visible child window
-                             0, 0, 0, 0,                // ignores size and position
-                             hwnd,                      // handle to parent window
-                             (HMENU)IDC_STATUSBAR,      // child window identifier
-                             hInstance,                 // handle to application instance
-                             NULL);                     // no window creation data
+        WS_EX_COMPOSITED,     // => double-buffering avoids flickering
+        STATUSCLASSNAME,      // name of status bar class
+        (PCTSTR)NULL,         // no text when first created
+        dwStatusbarStyle,     // creates a visible child window
+        0, 0, 0, 0,           // ignores size and position
+        hwnd,                 // handle to parent window
+        (HMENU)IDC_STATUSBAR, // child window identifier
+        hInstance,            // handle to application instance
+        NULL);                // no window creation data
 
     InitWindowCommon(Globals.hwndStatus, true); // (!) themed = true : resize grip
 
@@ -6409,7 +6431,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_COPYPATHNAME: {
-
         WCHAR *pszCopy;
         WCHAR tchUntitled[32] = { L'\0' };
         if (StrIsNotEmpty(Paths.CurrentFile)) {
@@ -6436,7 +6457,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_FULLSCRWINPOS: {
-        WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
+        WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
         SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN);
     }
     break;
@@ -8628,28 +8649,6 @@ static void  _UpdateToolbarDelayed()
 
 //=============================================================================
 //
-//  _StatusCalcPaneWidth()
-//
-static LONG  _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
-{
-    HDC const hdc = GetDC(hwnd);
-    HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd, WM_GETFONT, 0, 0);
-    HGDIOBJ const hfold = SelectObject(hdc, hfont);
-    int const mmode = SetMapMode(hdc, MM_TEXT);
-
-    SIZE size = { 0L, 0L };
-    GetTextExtentPoint32(hdc, lpsz, (int)StringCchLenW(lpsz,0), &size);
-
-    SetMapMode(hdc, mmode);
-    SelectObject(hdc, hfold);
-    ReleaseDC(hwnd, hdc);
-
-    return (size.cx + 8L);
-}
-
-
-//=============================================================================
-//
 //  _CalculateStatusbarSections
 //  vSectionWidth[] must be pre-filled with -1
 //
@@ -8673,7 +8672,8 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
         if (g_iStatusbarVisible[i]) {
             if (g_iStatusbarWidthSpec[i] == 0) { // dynamic optimized
-                vSectionWidth[i] = _StatusCalcPaneWidth(Globals.hwndStatus, tchStatusBar[i]);
+                SIZE const size = _StatusCalcPaneSize(Globals.hwndStatus, tchStatusBar[i]);
+                vSectionWidth[i] = (size.cx + 8L);
             } else if (g_iStatusbarWidthSpec[i] < -1) { // fixed pixel count
                 vSectionWidth[i] = -(g_iStatusbarWidthSpec[i]);
             }
@@ -8701,7 +8701,8 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
     int iTotalMinWidth = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
         if (bIsPropSection[i]) {
-            int const iMinWidth = _StatusCalcPaneWidth(Globals.hwndStatus, tchStatusBar[i]);
+            SIZE const size = _StatusCalcPaneSize(Globals.hwndStatus, tchStatusBar[i]);
+            int const iMinWidth = (size.cx + 8L);
             vMinWidth[i] = iMinWidth;
             iTotalMinWidth += iMinWidth;
         }
@@ -9278,8 +9279,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             Settings.ShowStatusbar = false;
         }
 
-        SendMessage(Globals.hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
+        SIZE const size = _StatusCalcPaneSize(Globals.hwndStatus, L"X");
+        SendMessage(Globals.hwndStatus, SB_SETMINHEIGHT, MAKEWPARAM(size.cy + 2, 0), 0);
 
+        SendMessage(Globals.hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
         cnt = 0;
         for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
             int const id = g_vSBSOrder[i];
@@ -9287,6 +9290,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                 StatusSetText(Globals.hwndStatus, cnt++, tchStatusBar[id]);
             }
         }
+
+        PostMessage(Globals.hwndStatus, WM_SIZE, 0, 0);
     }
     // --------------------------------------------------------------------------
 
@@ -11122,6 +11127,12 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
             WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
             if (GetDoAnimateMinimize()) {
                 DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+            }
+            if (hwnd) {
+                UINT const dpi = Scintilla_GetWindowDPI(hwnd);
+                if (dpi != winInfo.dpi) {
+                    RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, dpi);
+                }
             }
             SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
             SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings

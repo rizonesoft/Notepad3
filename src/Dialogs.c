@@ -4225,6 +4225,23 @@ bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 }
 
 
+//=============================================================================
+//
+//  RelAdjustRectForDPI()
+//
+//
+void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
+    float const scale = (float)newDPI / (float)(oldDPI != 0 ? oldDPI : 1);
+    LONG const oldWidth = (rc->right - rc->left);
+    LONG const oldHeight = (rc->bottom - rc->top);
+    LONG const newWidth = lroundf((float)oldWidth * scale);
+    LONG const newHeight = lroundf((float)oldHeight * scale);
+    rc->left -= (newWidth - oldWidth) >> 1;
+    rc->right = rc->left + newWidth;
+    rc->top -= (newHeight - oldHeight) >> 1;
+    rc->bottom = rc->top + newHeight;
+}
+
 
 //=============================================================================
 //
@@ -4251,7 +4268,6 @@ bool GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO *hMonitorInfo) {
     return result;
 }
 // ----------------------------------------------------------------------------
-
 
 
 //=============================================================================
@@ -4329,6 +4345,7 @@ void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, b
         pWinInfo->cx = (mi.rcMonitor.right - mi.rcMonitor.left);
         pWinInfo->cy = (mi.rcMonitor.bottom - mi.rcMonitor.top);
         pWinInfo->max = true;
+        //~pWinInfo->dpi = Scintilla_GetWindowDPI(hwnd); // don't change
     } else {
         WININFO wi = *pWinInfo;
         WinInfoToScreenCoord(&wi);
@@ -4369,6 +4386,7 @@ void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, b
         pWinInfo->y = wi.y - (mi.rcWork.top - mi.rcMonitor.top);
         pWinInfo->cx = wi.cx;
         pWinInfo->cy = wi.cy;
+        //~pWinInfo->dpi = Scintilla_GetWindowDPI(hwnd); // don't change
     }
 }
 // ----------------------------------------------------------------------------
@@ -4415,6 +4433,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
     wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
     wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
     wi.zoom = SciCall_GetZoom();
+    wi.dpi = Scintilla_GetWindowDPI(hwnd);
 
     if (Settings2.LaunchInstanceFullVisible) {
         RECT rci;
@@ -4440,6 +4459,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
     if (pWinInfo) {
         RECT rc = { 0 };
         RectFromWinInfo(pWinInfo, &rc);
+
         winfo = *pWinInfo;
         FitIntoMonitorGeometry(&rc, &winfo, mode, false);
         if (pWinInfo->max) {

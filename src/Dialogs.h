@@ -61,6 +61,7 @@ bool SelectDefLineEndingDlg(HWND hwnd,LPARAM piOption);
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 
+void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI);
 bool GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO *hMonitorInfo);
 void WinInfoToScreenCoord(WININFO* pWinInfo);
 WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset);

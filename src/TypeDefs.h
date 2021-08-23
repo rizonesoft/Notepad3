@@ -84,9 +84,10 @@ typedef struct _wi
     int cy;
     bool max;
     int zoom;
+    UINT dpi;
 } WININFO;
 
-#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, false, 100 }
+#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, false, 100, USER_DEFAULT_SCREEN_DPI }
 
 typedef enum { SCR_NORMAL = 0, SCR_FULL_SCREEN = 1 } SCREEN_MODE;
 
