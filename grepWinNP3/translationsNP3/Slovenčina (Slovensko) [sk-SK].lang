@@ -55,7 +55,7 @@ msgstr "&Hľadať"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Celé slovo"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "Prehľadané %ld súborov, vynechané %ld súborov. Našlo sa %ld výsky
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Hľadané súbory %ld, preskočené súbory %ld. Nájdené %ld zhody v %ld súboroch. %ld výsledky vybrané."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
