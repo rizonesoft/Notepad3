@@ -55,7 +55,7 @@ msgstr "&Cerca"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "Parola &Intera"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "Cercati %ld file, saltati %ld file. Trovate %ld corrispondenze in %ld fi
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Cercati %ld file, saltati %ld file. Trovate %ld corrispondenze in %ld file. %ld risultati selezionati."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
