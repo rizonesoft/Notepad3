@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "&Nové prázdne okno\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Duplicitná inštancia\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Spustiť s vyšším oprávnením",        IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Vrátiť zo súboru\tF5",                   IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "&Ignorovať varovanie",                      CMD_IGNORE_FILE_VARS
         POPUP "&Kódovanie"
         BEGIN
             POPUP "V&rátiť zo súboru ako"
@@ -210,12 +210,12 @@ BEGIN
             MENUITEM "&Odsadenie",                          IDM_EDIT_INDENT
             MENUITEM "Z&rušiť odsadenie",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "Riadok &komentára"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "Pr&epnúť\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "&Pridať\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Odstrániť\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Blokovať úpravy\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
@@ -229,7 +229,7 @@ BEGIN
                 MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",              CMD_EMBRACE4
+                MENUITEM "``\tCtrl+6",      		    CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "&Pridať vlastné znaky...\tAlt+Q", IDM_EDIT_ENCLOSESELECTION
             END
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "Ta&bify odsadenie\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
             MENUITEM "Untabi&fy odsadenie\tCtrl+Alt+S",     IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base&64 Kódovanie",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 Dekódovanie",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 Dekódovanie kódovej stránky...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "&Kódovať URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Dekódovať URL\tCtrl+Shift+R",        IDM_EDIT_URLDECODE
@@ -463,7 +463,7 @@ BEGIN
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Zrýchlená navi&gácia slov\tCtrl+Alt+A",        IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "&Iba jedna inštancia na súbor",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_VIEW_CHANGENOTIFY
         MENUITEM "&Stlmiť hlásenie pípnutím",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Funkcia klávesy Esc"

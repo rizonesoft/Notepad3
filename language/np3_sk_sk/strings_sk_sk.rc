@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Chyba pri exportovaní nastavenia štýlu do ""%s""."
     IDS_MUI_REGEX_INVALID    "Chyba pri vyhodnocovaní regulárneho výrazu. Výraz je neplatný!"
     IDS_MUI_DROP_NO_FILE     "Nebol získaný žiadny platný názov súboru.\nAk sa spúšťa 32-bitová aplikácia,\npresuňte myšou na panel nástrojov programu Notepad3."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "URL zadaný adresár existuje!"
+    IDS_MUI_URL_FILE_EXISTS  "URL zadaný súbor existuje!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "URL zadaná cesta nebola nájdená!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + kliknutím otvoríte súbor."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + kliknutím otvoríte prepojenie."
     IDS_MUI_INF_PRSVFILEMODTM
@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "Normálne|Inverzne (tmavé pozadie)|Čiernobiele| Farebne | Farebne (okrem čísel riadkov)|Farby obrazovky"
     IDS_MUI_PRINT_PAGENUM   "Strana %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Táto akcia obnoví štýl na predvolené nastavenia požadovaného farebného režimu a prepne súbor INI aktívnej témy na štandardnú konfiguráciu!"
 END
 
 STRINGTABLE
@@ -274,13 +274,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Označiť všetky výskyty..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Prepnúť zobrazenie..."
+    IDS_MUI_SB_REPLACE_ALL    "Nahradiť všetko..."
+    IDS_MUI_SB_WRAP_LINES     "Zalomiť riadky..."
+    IDS_MUI_SB_CONV_LNBRK     "Konvertovať zalomenie riadkov..."
+    IDS_MUI_SB_RECODING_DOC   "Prekódovať dokument..."
+    IDS_MUI_SB_LEXER_STYLING  "Použiť Lexer štýl..."
 END
 
 STRINGTABLE
