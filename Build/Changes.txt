@@ -86,6 +86,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.825.2]- Non themed app: edit-window frame visibility.
 [.811.1]- Current Lexilla dev (chg: HTML(PHP) Lexer) (LEX).
 [.811.1]- Scintilla Python generator methods for embeddable Python (SCI).
 [.811.1]- MUI base language definition moved to solution's preprocessors (C/C++ & RC) defines.
@@ -161,6 +162,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.825.2]- Caret change to hand over hyperlink only if ctrl is pressed.
 [.825.1]- Some minor corrections on visual appearance.
 [.824.1]- Sync status bar font size on system font size change.
 [.824.1]- Restore previous window position while DPI scaling changed meanwhile.
