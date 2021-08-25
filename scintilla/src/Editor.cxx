@@ -3968,12 +3968,6 @@ int Editor::KeyDefault(Keys, KeyMod) {
 
 int Editor::KeyDownWithModifiers(Keys key, KeyMod modifiers, bool *consumed) {
 	DwellEnd(false);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	const bool ctrl = FlagSet(modifiers, KeyMod::Ctrl);
-	const bool alt = FlagSet(modifiers, KeyMod::Alt);
-	if (hoverIndicatorPos != Sci::invalidPosition)
-		if (ctrl || alt) { DisplayCursor(Window::Cursor::hand); }
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const Message msg = kmap.Find(key, modifiers);
 	if (msg != static_cast<Message>(0)) {
 		if (consumed)
@@ -4557,10 +4551,6 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, KeyMod modi
 	const bool ctrl = FlagSet(modifiers, KeyMod::Ctrl);
 	const bool shift = FlagSet(modifiers, KeyMod::Shift);
 	const bool alt = FlagSet(modifiers, KeyMod::Alt);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	if (hoverIndicatorPos != Sci::invalidPosition)
-		if (ctrl || alt) { DisplayCursor(Window::Cursor::hand); }
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	SelectionPosition newPos = SPositionFromLocation(pt, false, false, AllowVirtualSpace(virtualSpaceOptions, alt));
 	newPos = MovePositionOutsideChar(newPos, sel.MainCaret() - newPos.Position());
 	SelectionPosition newCharPos = SPositionFromLocation(pt, false, true, false);
@@ -4929,15 +4919,16 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, KeyMod modifiers) {
 				DisplayCursor(Window::Cursor::hand);
 				SetHotSpotRange(&pt);
 			} else {
+				if (hoverIndicatorPos != Sci::invalidPosition)
 				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-				if (hoverIndicatorPos != Sci::invalidPosition) {
+				{
 					const bool ctrl = FlagSet(modifiers, KeyMod::Ctrl);
 					const bool alt = FlagSet(modifiers, KeyMod::Alt);
-					if (ctrl || alt) { DisplayCursor(Window::Cursor::hand); }
-				} 
+					DisplayCursor(ctrl ? Window::Cursor::hand : (alt ? Window::Cursor::arrow : Window::Cursor::text));
+				}
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				else
 					DisplayCursor(Window::Cursor::text);
-				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				SetHotSpotRange(nullptr);
 			}
 		}

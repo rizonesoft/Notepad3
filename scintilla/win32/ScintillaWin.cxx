@@ -1425,7 +1425,11 @@ Window::Cursor ScintillaWin::ContextCursor(Point pt) {
 		} else if (hoverIndicatorPos != Sci::invalidPosition) {
 			const Sci::Position pos = PositionFromLocation(pt, true, true);
 			if (pos != Sci::invalidPosition) {
-				return Window::Cursor::hand;
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+				const bool altDown = KeyboardIsKeyDown(VK_MENU);
+				const bool ctrlDown = KeyboardIsKeyDown(VK_CONTROL);
+				return ctrlDown ? Window::Cursor::hand : (altDown ? Window::Cursor::arrow : Window::Cursor::text);
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			}
 		}
 	}

@@ -2236,6 +2236,7 @@ static void _InitEditWndFrame()
         if (!IsWindowsVistaOrGreater()) {
 
             SetWindowPos(s_hwndEditFrame, Globals.hwndEdit, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+            ShowWindow(s_hwndEditFrame, SW_SHOWNORMAL);
 
             RECT rc, rc2;
             GetClientRect(s_hwndEditFrame, &rc);
@@ -2292,7 +2293,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
         WS_EX_CLIENTEDGE,
         WC_LISTVIEW,
         NULL,
-        WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE,
+        WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
         0, 0, 8, 8,
         hwnd,
         (HMENU)IDC_EDITFRAME,

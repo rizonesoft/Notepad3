@@ -399,7 +399,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         if (printPage) {
 
             // Show wait cursor...
-            SendMessage(Globals.hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORWAIT, 0);
+            SciCall_SetCursor(SC_CURSORWAIT);
 
             // Display current page number in Statusbar
             _StatusUpdatePrintPage(pageNum);
@@ -496,7 +496,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     // Remove wait cursor...
     {
         POINT pt;
-        SendMessage(Globals.hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORNORMAL, 0);
+        SciCall_SetCursor(SC_CURSORNORMAL);
         GetCursorPos(&pt);
         SetCursorPos(pt.x, pt.y);
     }
