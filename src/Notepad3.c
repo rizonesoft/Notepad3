@@ -5594,6 +5594,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_HYPERLINKHOTSPOTS:
         Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
         EditUpdateVisibleIndicators();
+        ResetMouseDWellTime();
         break;
 
     case IDM_VIEW_SHOW_HYPLNK_CALLTIP:
@@ -6830,7 +6831,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 static DocPos prevCursorPosition = -1;
 
-void HandleDWellStartEnd(const DocPos position, const UINT uid)
+void HandleDWellStartEnd(const DocPos position, const int modifiers, const UINT uid)
 {
     static DocPos prevStartPosition = -1;
     static DocPos prevEndPosition = -1;
@@ -6878,7 +6879,11 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         }
 
         switch (indicator_id) {
+
         case INDIC_NP3_HYPERLINK:
+            if (modifiers & SCMOD_CTRL) {
+                SciCall_SetCursor(SC_NP3_CURSORHAND);
+            }
             if (!Settings.ShowHypLnkToolTip || SciCall_CallTipActive()) {
                 return;
             }
@@ -6905,8 +6910,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
         if ((position < prevStartPosition) || (position > prevEndPosition)) {
             s_bCallTipEscDisabled = false;
         }
-
-        //SciCall_SetCursor(SC_NP3_CURSORHAND);
 
         DocPos const firstPos = SciCall_IndicatorStart(indicator_id, position);
         DocPos const lastPos = SciCall_IndicatorEnd(indicator_id, position);
@@ -7579,6 +7582,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
     LRESULT resMN = _MsgNotifyLean(scn, &bModified);
 
     switch (pnmh->code) {
+    // not send
+    //~ case SCN_KEY:
+    
     // unused:
     case SCN_HOTSPOTCLICK:
     case SCN_HOTSPOTDOUBLECLICK:
@@ -7692,7 +7698,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_DWELLSTART:
     case SCN_DWELLEND: {
-        HandleDWellStartEnd(scn->position, pnmh->code);
+        HandleDWellStartEnd(scn->position, scn->modifiers, pnmh->code);
     }
     break;
 
@@ -11258,7 +11264,7 @@ void SetNotifyIconTitle(HWND hwnd)
 //
 void ResetMouseDWellTime()
 {
-    if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints) {
+    if (Settings.HyperlinkHotspot || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints) {
         SciCall_SetMouseDWellTime(USER_TIMER_MINIMUM << 4);
     } else {
         Sci_DisableMouseDWellNotification();
