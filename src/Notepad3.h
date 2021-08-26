@@ -139,7 +139,7 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-void HandleDWellStartEnd(const DocPos position, const UINT uid);
+void HandleDWellStartEnd(const DocPos position, const int modifiers, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
 void HandleColorDefClicked(HWND hwnd, const DocPos position);
 
