@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.825.(build_#) (2021-08-25)
+Current BETA/RC Version 5.21.826.(build_#) (2021-08-26)
 ========================================================
 
 --------------------------------------------------------
@@ -162,6 +162,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.826.1]- Show hand cursor on hyperlink after dwell time (if ctrl key pressed).
 [.825.2]- Caret change to hand over hyperlink only if ctrl is pressed.
 [.825.1]- Some minor corrections on visual appearance.
 [.824.1]- Sync status bar font size on system font size change.
