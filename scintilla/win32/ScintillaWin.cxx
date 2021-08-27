@@ -1593,15 +1593,18 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 				wheelDelta = -(-wheelDelta % WHEEL_DELTA);
 			}
 
-			if (wParam & MK_CONTROL) {
-				// Zoom! We play with the font sizes in the styles.
-				// Number of steps/line is ignored, we just care if sizing up or down
-				if (linesToScroll < 0) {
-					KeyCommand(Message::ZoomIn);
-				} else {
-					KeyCommand(Message::ZoomOut);
+			if (wParam & (MK_CONTROL | MK_RBUTTON)) {
+				if (wParam & (MK_CONTROL)) {
+					// Zoom! We play with the font sizes in the styles.
+					// Number of steps/line is ignored, we just care if sizing up or down
+					if (linesToScroll < 0) {
+						KeyCommand(Message::ZoomIn);
+					}
+					else {
+						KeyCommand(Message::ZoomOut);
+					}
 				}
-				// send to main window too (trigger Zoom CallTip) !
+				// send to main window (trigger zoom callTip or undo/redo history) !
 				::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 			} else {
 				// Scroll
