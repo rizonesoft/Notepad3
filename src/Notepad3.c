@@ -1792,6 +1792,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY:
         return MsgNotify(hwnd, wParam, lParam);
 
+    //~case WM_KEYDOWN:
+    //~    return MsgKeyDown(hwnd, wParam, lParam);
+
     case WM_FILECHANGEDNOTIFY:
         return MsgFileChangeNotify(hwnd, wParam, lParam);
 
@@ -4004,6 +4007,28 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     return FALSE;
 }
+
+
+#if 0
+//=============================================================================
+//
+//  MsgKeyDown() - Handles WM_KEYDOWN event
+//  ~~~  no event from Scintilla  ~~~
+//
+//
+LRESULT MsgKeyDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(hwnd);
+    UNREFERENCED_PARAMETER(wParam);
+    UNREFERENCED_PARAMETER(lParam);
+
+    if (IsKeyDown(VK_CONTROL)) {
+        SciCall_SetCursor(SC_NP3_CURSORHAND);
+    }
+    return FALSE;
+}
+#endif
+
 
 //=============================================================================
 //
@@ -6831,7 +6856,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 static DocPos prevCursorPosition = -1;
 
-void HandleDWellStartEnd(const DocPos position, const int modifiers, const UINT uid)
+void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
     static DocPos prevStartPosition = -1;
     static DocPos prevEndPosition = -1;
@@ -6881,9 +6906,6 @@ void HandleDWellStartEnd(const DocPos position, const int modifiers, const UINT 
         switch (indicator_id) {
 
         case INDIC_NP3_HYPERLINK:
-            if (modifiers & SCMOD_CTRL) {
-                SciCall_SetCursor(SC_NP3_CURSORHAND);
-            }
             if (!Settings.ShowHypLnkToolTip || SciCall_CallTipActive()) {
                 return;
             }
@@ -7503,7 +7525,10 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
 
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
-        if (pnmh->code == SCN_MODIFIED) {
+
+        switch (pnmh->code) {
+
+        case SCN_MODIFIED: {
             int const iModType = scn->modificationType;
             if ((iModType & SC_MULTISTEPUNDOREDO) && !(iModType & SC_LASTSTEPINUNDOREDO)) {
                 return TRUE;
@@ -7551,15 +7576,26 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                     _DelaySplitUndoTransaction(bInUndoRedo ? max_dw(_MQ_FAST, timeout) : timeout);
                 }
             }
-        } else if (pnmh->code == SCN_SAVEPOINTREACHED) {
+        } break;
+
+        case SCN_SAVEPOINTREACHED: {
             SetSavePoint();
-        } else if (pnmh->code == SCN_SAVEPOINTLEFT) {
+        } break;
+
+        case SCN_SAVEPOINTLEFT: {
             SetSaveNeeded();
-        } else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
+        } break;
+
+        case SCN_MODIFYATTEMPTRO: {
             if (FocusedView.HideNonMatchedLines) {
                 EditToggleView(Globals.hwndEdit);
             }
-        }
+        } break;
+
+        default:
+            break;
+
+        } // switch
         return TRUE;
     }
     return FALSE;
@@ -7698,7 +7734,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_DWELLSTART:
     case SCN_DWELLEND: {
-        HandleDWellStartEnd(scn->position, scn->modifiers, pnmh->code);
+        HandleDWellStartEnd(scn->position, pnmh->code);
     }
     break;
 
@@ -11264,7 +11300,7 @@ void SetNotifyIconTitle(HWND hwnd)
 //
 void ResetMouseDWellTime()
 {
-    if (Settings.HyperlinkHotspot || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints) {
+    if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints) {
         SciCall_SetMouseDWellTime(USER_TIMER_MINIMUM << 4);
     } else {
         Sci_DisableMouseDWellNotification();
