@@ -1654,7 +1654,7 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 			HorizontalScrollTo(xPos);
 		}
 		return 0;
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	}
 	return 0;
@@ -1685,6 +1685,15 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 									     altDown),
 							     &lastKeyDownConsumed);
 			if (!ret && !lastKeyDownConsumed) {
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+				if (hoverIndicatorPos != Sci::invalidPosition) {
+					POINT pt;
+					if (::GetCursorPos(&pt)) {
+						::ScreenToClient(MainHWND(), &pt);
+						DisplayCursor(ContextCursor(PointFromPOINT(pt)));
+					}
+				}
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 			}
 			break;

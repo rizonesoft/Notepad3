@@ -6445,8 +6445,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             } else {
                 if (s_bIsReplaceDlg) {
                     SciCall_ScrollRange(s_InitialAnchorPos, s_InitialCaretPos);
-                } else {
-                    EditSetSelectionEx(end, iPos, -1, -1);
                 }
                 if (s_InitialTopLine >= 0) {
                     SciCall_SetFirstVisibleLine(s_InitialTopLine);

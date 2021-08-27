@@ -337,7 +337,8 @@ typedef struct _encloseselectiondata {
 
 // --------------------------------------------------------------------------
 
-#define SC_NP3_CURSORHAND 8
+#define SC_NP3_CURSORARROW 2
+#define SC_NP3_CURSORHAND  8
 
 //=============================================================================
 

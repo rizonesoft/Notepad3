@@ -139,7 +139,7 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-void HandleDWellStartEnd(const DocPos position, const int modifiers, const UINT uid);
+void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
 void HandleColorDefClicked(HWND hwnd, const DocPos position);
 
@@ -181,6 +181,7 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam);
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam);
+//~LRESULT MsgKeyDown(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
