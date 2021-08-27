@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "प्रतिलिपि सहेजें (&C)...\tCtrl+F6",                          IDM_FILE_SAVECOPY
         MENUITEM "मूल प्रति के दिनाँक/समय में सहेजें (&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "केवल पढ़ने योग्य File Attribute (&R)",             IDM_FILE_READONLY
-        MENUITEM "&Lock File (Read-Shared)",                      IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "केवल पढ़ने योग्य फ़ाइल गुण (&R)",             IDM_FILE_READONLY
+        MENUITEM "फ़ाइल लॉक करें (साझे में पढ़ने योग्य) (&L)",                      IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "एन्क्रिप्शन पासफ्रेज़ तैयार करें (&Y)...",                 IDM_SETPASS
         MENUITEM SEPARATOR
@@ -463,7 +463,7 @@ BEGIN
         MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "शब्द यात्रा त्वरित गति (&G)\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
         MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "ESC कुंजी उपयोग (&E)"
