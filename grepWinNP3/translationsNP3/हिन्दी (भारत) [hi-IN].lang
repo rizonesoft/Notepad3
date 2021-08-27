@@ -55,7 +55,7 @@ msgstr "खोज (&S)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "पूरा शब्द (&W)"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "%ld फ़ाइलें खोजीं, %ld फ़ाइलें छोड़
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld फ़ाइलें खोजीं, %ld फ़ाइलें छोड़ीं। %ld फ़ाइलों में %ld मिलान नतीजे मिले, %ld नतीजे चुने"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
