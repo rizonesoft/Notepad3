@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "सामान्य|प्रकाश उलट करें (गहरे रंग की पृष्ठभूमि)|सफेद पर काला|सफ़ेद पर रंगा हुआ|सफ़ेद पर रंगा हुआ (रेखा संख्या छोड़ कर)|स्क्रीन के रंग"
     IDS_MUI_PRINT_PAGENUM   "प्रष्ठ %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "यह क्रिया शैली को डिफ़ॉल्ट स्वरूप के वांछित रंग प्रकार में वापस ले आएगी और चालू थीम को मानक कॉन्फिग .ini में बदल देगी!"
 END
 
 STRINGTABLE
@@ -233,23 +233,23 @@ BEGIN
     IDS_MUI_PREVIEW         "सेटिंग्स पूर्वावलोकन (&P)\tCtrl+P"
     IDS_MUI_PASS_FAILURE    "यह पासफ्रेज़ गलत है.\nअन्य पासफ्रेज़ कोशिश करें?"
     IDS_MUI_NOPASS          "डिक्रिप्ट रद्द कर दिया गया!\n एनक्रिप्ट किया हुआ कच्चा डेटा पढ़ें?"
-    IDS_MUI_STY_BASESTD     "BASE (डिफ़ॉल्ट शैली):"
-    IDS_MUI_STY_BASE2ND     "BASE (दूसरी डिफ़ॉल्ट शैली):"
+    IDS_MUI_STY_BASESTD     "बेस (डिफ़ॉल्ट शैली):"
+    IDS_MUI_STY_BASE2ND     "बेस (दूसरी डिफ़ॉल्ट शैली):"
     IDS_MUI_STY_LEXDEF      "%s - डिफ़ॉल्ट शैली:"
     IDS_MUI_STY_LEXSTYLE    "%s's शैली:"
-    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
+    IDS_MUI_TITLE_RELBASE   "+++ बेस (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(hi-IN) हिंदी अनुवाद ashish12phnx द्वारा"
-    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
-    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
+    IDS_MUI_TITLE_FIXBASE   "बेस (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s शैली +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s शैली"
+    IDS_MUI_TITLE_RELARB    "+++ शैली '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "शैली '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "संबंधित फ़ाईलनाम के प्रकार:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length मिलान"
     IDS_MUI_GOTO_LINE       "रेखा (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "खंड (1 - %ti):"
 END
