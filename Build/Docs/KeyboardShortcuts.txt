@@ -189,7 +189,8 @@
         Ctrl+Space            Select Word or Lines.
         Ctrl+Shift+Space      Multi-Select All Matches.
         Alt+Shift+Arrows      Rectangular Selection.
-        Alt+Shift+Left Mouse  Rectangular Selection.
+        Alt+Left Mouse        Rectangular Selection.
+        Ctrl+Left Mouse       On hovering color indicator → Open color selection.
 
       Bookmarks
       ---------
