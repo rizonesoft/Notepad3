@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.827.(build_#) (2021-08-27)
+Current BETA/RC Version 5.21.828.(build_#) (2021-08-28)
 ========================================================
 
 --------------------------------------------------------
@@ -162,6 +162,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.828.1]- Open color selection on Ctrl+Left mouse click on color indicator too.
+[.828.1]- Change cursor hand on Ctrl key-Up.
 [.827.1]- Broken "scroll undo/redo history via mouse (RMB+WHEEL)" feature.
 [.827.1]- Don't jump on initial F/R Dialog on empty clipboard.
 [.827.1]- Cursor hand on ctrl-keydown hover hyperlink.
@@ -262,6 +264,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
+[.828.1]- Open color selection on Alt+Left mouse click on color indicator.
 [.807.1]- Remove deprecated (no sensible use case) "overlapping find" option.
 [.506.1]- "fontsValid" extension (closer to default scintilla code base).
 [.420.1]- Remove useless font stretch handling.

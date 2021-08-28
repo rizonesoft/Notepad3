@@ -7772,7 +7772,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                 HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER); // if applicable (file://)
             }
         } else if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, scn->position) > 0) {
-            if (_s_indic_click_modifiers & SCMOD_ALT) {
+            if (_s_indic_click_modifiers & SCMOD_CTRL) {
                 HandleColorDefClicked(Globals.hwndEdit, scn->position);
             }
         }
