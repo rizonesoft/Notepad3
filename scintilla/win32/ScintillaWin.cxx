@@ -1704,6 +1704,15 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 
 	case WM_KEYUP:
 		//Platform::DebugPrintf("S keyup %d %x %x\n",iMessage, wParam, lParam);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (hoverIndicatorPos != Sci::invalidPosition) {
+			POINT pt;
+			if (::GetCursorPos(&pt)) {
+				::ScreenToClient(MainHWND(), &pt);
+				DisplayCursor(ContextCursor(PointFromPOINT(pt)));
+			}
+		}
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 	case WM_CHAR:
