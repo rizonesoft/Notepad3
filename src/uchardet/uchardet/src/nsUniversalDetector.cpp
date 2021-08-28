@@ -389,7 +389,7 @@ void nsUniversalDetector::DataEnd()
   case eEscAscii:
     break;
   default:
-    ;
+    break;
   }
   return;
 }

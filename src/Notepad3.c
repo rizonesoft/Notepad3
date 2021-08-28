@@ -11245,7 +11245,7 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
     nid.hIcon = hIcon;
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip), _W(SAPPNAME));
 
-    if(bAdd) {
+    if (bAdd) {
         Shell_NotifyIcon(NIM_ADD,&nid);
     } else {
         Shell_NotifyIcon(NIM_DELETE,&nid);

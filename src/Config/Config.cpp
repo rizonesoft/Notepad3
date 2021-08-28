@@ -43,6 +43,7 @@ extern "C" {
 #include "Encoding.h"
 #include "Notepad3.h"
 #include "MuiLanguage.h"
+#include "DynStrg.h"
 }
 
 #include "DarkMode/DarkMode.h"
@@ -164,16 +165,16 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
     if (IS_VALID_HANDLE(hFile)) {
         bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
         if (!bLocked) {
-            wchar_t msg[MAX_PATH + 128] = { 0 };
-            StringCchPrintf(msg, ARRAYSIZE(msg),
-                            L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
-            MsgBoxLastError(msg, 0);
+            HSTRINGW msg = StrgCreate();
+            StrgFormat(msg, L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
+            MsgBoxLastError(StrgGet(msg), 0);
+            StrgDestroy(msg);
         }
     } else {
-        wchar_t msg[MAX_PATH + 128] = { 0 };
-        StringCchPrintf(msg, ARRAYSIZE(msg),
-                        L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
-        MsgBoxLastError(msg, 0);
+        HSTRINGW msg = StrgCreate();
+        StrgFormat(msg, L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
+        MsgBoxLastError(StrgGet(msg), 0);
+        StrgDestroy(msg);
     }
     return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
@@ -197,16 +198,16 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
     if (IS_VALID_HANDLE(hFile)) {
         bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
         if (!bLocked) {
-            wchar_t msg[MAX_PATH + 128] = { 0 };
-            StringCchPrintf(msg, ARRAYSIZE(msg),
-                            L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
-            MsgBoxLastError(msg, 0);
+            HSTRINGW msg = StrgCreate();
+            StrgFormat(msg, L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
+            MsgBoxLastError(StrgGet(msg), 0);
+            StrgDestroy(msg);
         }
     } else {
-        wchar_t msg[MAX_PATH + 128] = { 0 };
-        StringCchPrintf(msg, ARRAYSIZE(msg),
-                        L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
-        MsgBoxLastError(msg, 0);
+        HSTRINGW msg = StrgCreate();
+        StrgFormat(msg, L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
+        MsgBoxLastError(StrgGet(msg), 0);
+        StrgDestroy(msg);
     }
     return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
@@ -837,53 +838,56 @@ extern "C" void ClearDestinationsOnRecentDocs()
 //
 static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
 {
-    WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
-    ExpandEnvironmentStrings(lpszFile, tchFileExpanded, COUNTOF(tchFileExpanded));
+    WCHAR wchFileExpanded[MAX_PATH] = { L'\0' };
+    ExpandEnvironmentStrings(lpszFile, wchFileExpanded, COUNTOF(wchFileExpanded));
 
-    if (PathIsRelative(tchFileExpanded)) {
+    bool result = false;
+    if (PathIsRelative(wchFileExpanded)) {
         WCHAR tchBuild[MAX_PATH] = { L'\0' };
         // program directory
         StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
-        StringCchCopy(PathFindFileName(tchBuild), COUNTOF(tchBuild), tchFileExpanded);
+        StringCchCopy(PathFindFileName(tchBuild), COUNTOF(tchBuild), wchFileExpanded);
         if (PathIsExistingFile(tchBuild)) {
             StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-            return true;
+            result = true;
         }
-        // sub directory (.\np3\)
-        StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
-        PathCchRemoveFileSpec(tchBuild, COUNTOF(tchBuild));
-        StringCchCat(tchBuild, COUNTOF(tchBuild), L"\\np3\\");
-        StringCchCat(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-        if (PathIsExistingFile(tchBuild)) {
-            StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-            return true;
-        }
-        // Application Data (%APPDATA%)
-        if (GetKnownFolderPath(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
-            PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
+        if (!result) {
+            // sub directory (.\np3\)
+            StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
+            PathCchRemoveFileSpec(tchBuild, COUNTOF(tchBuild));
+            StringCchCat(tchBuild, COUNTOF(tchBuild), L"\\np3\\");
+            StringCchCat(tchBuild, COUNTOF(tchBuild), wchFileExpanded);
             if (PathIsExistingFile(tchBuild)) {
                 StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-                return true;
+                result = true;
             }
-        }
-        // Home (%HOMEPATH%) user's profile dir
-        if (GetKnownFolderPath(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
-            PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-            if (PathIsExistingFile(tchBuild)) {
-                StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-                return true;
+            // Application Data (%APPDATA%)
+            if (!result && GetKnownFolderPath(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
+                PathCchAppend(tchBuild, COUNTOF(tchBuild), wchFileExpanded);
+                if (PathIsExistingFile(tchBuild)) {
+                    StringCchCopy(lpszFile, MAX_PATH, tchBuild);
+                    result = true;
+                }
             }
+            // Home (%HOMEPATH%) user's profile dir
+            if (!result && GetKnownFolderPath(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
+                PathCchAppend(tchBuild, COUNTOF(tchBuild), wchFileExpanded);
+                if (PathIsExistingFile(tchBuild)) {
+                    StringCchCopy(lpszFile, MAX_PATH, tchBuild);
+                    result = true;
+                }
+            }
+            //~// in general search path
+            //~if (!result && SearchPath(NULL,tchFileExpanded,L".ini",COUNTOF(tchBuild),tchBuild,NULL)) {
+            //~  StringCchCopy(lpszFile,MAX_PATH,tchBuild);
+            //~  return true;
+            //~}
         }
-        //~// in general search path
-        //~if (SearchPath(NULL,tchFileExpanded,L".ini",COUNTOF(tchBuild),tchBuild,NULL)) {
-        //~  StringCchCopy(lpszFile,MAX_PATH,tchBuild);
-        //~  return true;
-        //~}
-    } else if (PathIsExistingFile(tchFileExpanded)) {
-        StringCchCopy(lpszFile, MAX_PATH, tchFileExpanded);
-        return true;
+    } else if (PathIsExistingFile(wchFileExpanded)) {
+        StringCchCopy(lpszFile, MAX_PATH, wchFileExpanded);
+        result = true;
     }
-    return false;
+    return result;
 }
 // ============================================================================
 
@@ -1014,10 +1018,10 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
             if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile); // done
             } else {
-                wchar_t msg[MAX_PATH + 128] = { 0 };
-                StringCchPrintf(msg, ARRAYSIZE(msg),
-                                L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", pszIniFilePath);
-                MsgBoxLastError(msg, 0);
+                HSTRINGW msg = StrgCreate();
+                StrgFormat(msg, L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", pszIniFilePath);
+                MsgBoxLastError(StrgGet(msg), 0);
+                StrgDestroy(msg);
             }
         } else {
             HANDLE hFile = CreateFile(pszIniFilePath,
@@ -1029,10 +1033,10 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
             } else {
-                wchar_t msg[MAX_PATH + 128] = { 0 };
-                StringCchPrintf(msg, ARRAYSIZE(msg),
-                                L"CreateIniFile(%s): FAILED TO READ FILESIZE!", pszIniFilePath);
-                MsgBoxLastError(msg, 0);
+                HSTRINGW msg = StrgCreate();
+                StrgFormat(msg, L"CreateIniFile(%s): FAILED TO READ FILESIZE!", pszIniFilePath);
+                MsgBoxLastError(StrgGet(msg), 0);
+                StrgDestroy(msg);
                 dwFileSize = INVALID_FILE_SIZE;
             }
         }

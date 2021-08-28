@@ -967,7 +967,7 @@ bool PathIsLnkFile(LPCWSTR pszPath)
     if (StringCchCompareXI(PathFindExtension(pszPath), L".lnk") != 0) {
         return false;
     }
-    return PathGetLnkPath(pszPath,tchResPath,COUNTOF(tchResPath));
+    return PathGetLnkPath(pszPath, tchResPath, COUNTOF(tchResPath));
 }
 
 
