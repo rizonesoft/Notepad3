@@ -17,6 +17,14 @@
 
 #define STRAPI __stdcall
 
+
+__forceinline size_t StrlenW(const wchar_t* p)
+{
+    return (!p) ? 0 : wcslen(p);
+}
+// ----------------------------------------------------------------------------
+
+
 /**************************************************/
 /*                                                */
 /*          DYNAMIC WIDE CHAR C STRING            */
@@ -24,7 +32,7 @@
 /**************************************************/
 DECLARE_HANDLE(HSTRINGW);
 
-#define STRINGW_INVALID_SIZE  ((size_t)-1)
+#define STRINGW_INVALID_IDX  ((size_t)-1)
 
 HSTRINGW STRAPI          StrgCreate();
 void STRAPI              StrgDestroy(HSTRINGW hstr);
@@ -74,7 +82,7 @@ void STRAPI              StrgFormat(HSTRINGW hstr, const wchar_t* fmt, ...);
 // use for PathLib Only !
 #ifdef NP3_PATH_LIB_IMPLEMENTATION
 
-wchar_t* STRAPI StrgAccessMaxPathBuf(HSTRINGW hstr, size_t min_len);
+wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len);
 void STRAPI StrgSanitize(HSTRINGW hstr);  // correct strg length after buffer access
 
 #endif

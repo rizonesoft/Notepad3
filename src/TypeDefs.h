@@ -745,7 +745,7 @@ typedef struct _themeFiles
 
 // ---------   common defines   --------
 
-#define IS_VALID_HANDLE(HNDL) (((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE)) ? true : false)
+#define IS_VALID_HANDLE(HNDL) ((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE))
 
 #define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"
 

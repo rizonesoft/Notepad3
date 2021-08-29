@@ -414,22 +414,7 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
 
 bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead);
 bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten);
-void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
-bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
-void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
-void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
 
-bool PathIsLnkFile(LPCWSTR pszPath);
-bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath);
-bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath);
-bool PathCreateDeskLnk(LPCWSTR pszDocument);
-bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir);
-
-void  ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc);
-bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath);
-DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
-void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
-DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
 bool  SplitFilePathLineNum(LPWSTR lpszPath, int *lineNum);
 
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);

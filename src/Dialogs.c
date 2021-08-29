@@ -1463,7 +1463,7 @@ CASE_WM_CTLCOLOR_SET:
 
                 if (StrIsNotEmpty(Paths.CurrentFile)) {
                     StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Paths.CurrentFile);
-                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                    PathRemoveFileSpec(wchDirectory);
                 }
 
                 SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
@@ -1727,7 +1727,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 
         if (StrIsNotEmpty(Paths.CurrentFile)) {
             StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Paths.CurrentFile);
-            PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+            PathRemoveFileSpec(wchDirectory);
         }
 
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
@@ -4649,7 +4649,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
     if (PathIsRelative(tchExeFile)) {
         StringCchCopy(tchTemp, COUNTOF(tchTemp), tchNotepad3Path);
-        PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
+        PathRemoveFileSpec(tchTemp);
         PathAppend(tchTemp, tchExeFile);
         if (PathIsExistingFile(tchTemp)) {
             StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
@@ -4662,7 +4662,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
     if (PathIsExistingFile(tchExeFile)) {
         StringCchCopy(tchGrepWinDir, COUNTOF(tchGrepWinDir), tchExeFile);
-        PathCchRemoveFileSpec(tchGrepWinDir, COUNTOF(tchGrepWinDir));
+        PathRemoveFileSpec(tchGrepWinDir);
         // relative Notepad3 path (for grepWin's EditorCmd)
         if (PathRelativePathTo(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchNotepad3Path, FILE_ATTRIBUTE_NORMAL)) {
             StringCchCopy(tchNotepad3Path, COUNTOF(tchNotepad3Path), tchTemp);
@@ -4739,7 +4739,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             WCHAR tchSearchDir[MAX_PATH] = { L'\0' };
             if (StrIsNotEmpty(Paths.CurrentFile)) {
                 StringCchCopy(tchSearchDir, COUNTOF(tchSearchDir), Paths.CurrentFile);
-                PathCchRemoveFileSpec(tchSearchDir, COUNTOF(tchSearchDir));
+                PathRemoveFileSpec(tchSearchDir);
             } else {
                 StringCchCopy(tchSearchDir, COUNTOF(tchSearchDir), Paths.WorkingDirectory);
             }
@@ -4803,7 +4803,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
         // try Notepad3's dir path
         PathGetAppDirectory(tchExePath, COUNTOF(tchExePath));
-        PathCchAppend(tchExePath, COUNTOF(tchExePath), tchExe);
+        PathAppend(tchExePath, tchExe);
     }
 
     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
@@ -4913,7 +4913,7 @@ void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
             if (iFormat == 1) {
                 WCHAR tchPath[MAX_PATH] = { L'\0' };
                 StringCchCopy(tchPath, COUNTOF(tchPath), s_wchCachedFile);
-                PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
+                PathRemoveFileSpec(tchPath);
                 StringCchCat(szTitle, COUNTOF(szTitle), L" [");
                 StringCchCat(szTitle, COUNTOF(szTitle), tchPath);
                 StringCchCat(szTitle, COUNTOF(szTitle), L"]");

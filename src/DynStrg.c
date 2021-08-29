@@ -25,6 +25,8 @@ typedef struct tagSTRINGW
 
 } STRINGW;
 
+// ----------------------------------------------------------------------------
+
 /**************************************************/
 /*                                                */
 /*          HEAP ALLOC                           */
@@ -56,6 +58,8 @@ __forceinline size_t SizeOfMemStrg(LPCVOID lpMemory) {
     return (lpMemory ? HeapSize(s_hndlProcessHeap, 0, lpMemory) : 0);
 }
 
+// ----------------------------------------------------------------------------
+
 
 /**************************************************/
 /*                                                */
@@ -70,10 +74,6 @@ __forceinline STRINGW* ToWStrg(HSTRINGW hstr)
     return (STRINGW*)hstr;
 }
 
-__forceinline size_t StrlenW(const wchar_t *p) { 
-    return (!p) ? 0 : wcslen(p); 
-}
-
 #define limit_len(len) (((len) < STRINGW_MAX_CCH) ? (len) : (STRINGW_MAX_CCH - 1))
 
 inline static void * AllocBuffer(size_t len, size_t char_size, BOOL bZeroMem) {
@@ -82,6 +82,7 @@ inline static void * AllocBuffer(size_t len, size_t char_size, BOOL bZeroMem) {
     }
     return AllocMemStrg(limit_len(len) * char_size, bZeroMem ? HEAP_ZERO_MEMORY : 0);
 }
+// ----------------------------------------------------------------------------
 
 inline static void * ReAllocBuffer(void* pdata, size_t len, size_t char_size, BOOL bZeroMem) {
     if (!s_hndlProcessHeap) {
@@ -89,6 +90,7 @@ inline static void * ReAllocBuffer(void* pdata, size_t len, size_t char_size, BO
     }
     return ReAllocMemStrg(pdata, limit_len(len) * char_size, bZeroMem ? HEAP_ZERO_MEMORY : 0);
 }
+// ----------------------------------------------------------------------------
 
 inline static void FreeBuffer(wchar_t * pstr) {
     if (!s_hndlProcessHeap) {
@@ -96,6 +98,7 @@ inline static void FreeBuffer(wchar_t * pstr) {
     }
     FreeMemStrg(pstr);
 }
+// ----------------------------------------------------------------------------
 
 inline static void FreeBufferW(STRINGW* pstr) {
     if (!pstr->data) {
@@ -106,6 +109,7 @@ inline static void FreeBufferW(STRINGW* pstr) {
     pstr->alloc_length = 0;
     pstr->data_length = 0;
 }
+// ----------------------------------------------------------------------------
 
 static void AllocW(STRINGW* pstr, size_t len)
 {
@@ -116,9 +120,9 @@ static void AllocW(STRINGW* pstr, size_t len)
         len = limit_len(len);
         size_t const alloc_len = len + 1;
         if (!pstr->data) {
-            pstr->data = AllocBuffer(alloc_len, sizeof(wchar_t), TRUE);
+            pstr->data = AllocBuffer(alloc_len, sizeof(wchar_t), FALSE);
         } else if (len >= pstr->alloc_length) {
-            pstr->data = ReAllocBuffer(pstr->data, alloc_len, sizeof(wchar_t), TRUE);
+            pstr->data = ReAllocBuffer(pstr->data, alloc_len, sizeof(wchar_t), FALSE);
         }
         if (pstr->data) // init
         {
@@ -129,6 +133,7 @@ static void AllocW(STRINGW* pstr, size_t len)
         }
     }
 }
+// ----------------------------------------------------------------------------
 
 static void AllocCopyW(STRINGW* pstr, STRINGW* pDest, size_t copy_len, size_t copy_index, size_t extra_len)
 {
@@ -141,6 +146,7 @@ static void AllocCopyW(STRINGW* pstr, STRINGW* pDest, size_t copy_len, size_t co
         pDest->data_length = (size_t)(endptr - pDest->data);
     }
 }
+// ----------------------------------------------------------------------------
 
 static void CopyW(STRINGW *pstr, size_t len, const wchar_t *p) {
     if (pstr->data) {
@@ -149,17 +155,19 @@ static void CopyW(STRINGW *pstr, size_t len, const wchar_t *p) {
         pstr->data_length = (size_t)(endptr - pstr->data);
     }
 }
+// ----------------------------------------------------------------------------
 
 static void SetCopyW(STRINGW* pstr, size_t len, const wchar_t* p)
 {
     AllocW(pstr, len);
     CopyW(pstr, len, p);
 }
+// ----------------------------------------------------------------------------
 
 static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
 {
     size_t old_len = StrlenW(pstr->data);
-    wchar_t* ptr = AllocBuffer(old_len + 1, sizeof(wchar_t), TRUE);
+    wchar_t* ptr = AllocBuffer(old_len + 1, sizeof(wchar_t), FALSE);
     if (ptr)
     {
         wchar_t *endptr = NULL;
@@ -168,6 +176,7 @@ static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
     }
     return ptr;
 }
+// ----------------------------------------------------------------------------
 
 static void FreeUnusedData(STRINGW *pstr)
 {
@@ -183,6 +192,7 @@ static void FreeUnusedData(STRINGW *pstr)
         pstr->data_length = old_len;
     }
 }
+// ----------------------------------------------------------------------------
 
 static void CopyConcatW(STRINGW *pstr, size_t len1, const wchar_t *p1, size_t len2, const wchar_t *p2)
 {
@@ -195,6 +205,7 @@ static void CopyConcatW(STRINGW *pstr, size_t len1, const wchar_t *p1, size_t le
         pstr->data_length = new_len;
     }
 }
+// ----------------------------------------------------------------------------
 
 static void ConcatW(STRINGW* pstr, size_t len, const wchar_t* p)
 {
@@ -221,6 +232,7 @@ static void ConcatW(STRINGW* pstr, size_t len, const wchar_t* p)
         pstr->data_length = new_len;
     }
 }
+// ----------------------------------------------------------------------------
 
 
 static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
@@ -306,7 +318,7 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
 
         case L's':
         case L'S': {
-            wchar_t *next_arg = va_arg(args, wchar_t *);
+            wchar_t* next_arg = va_arg(args, wchar_t*);
             if (next_arg == NULL)
                 item_len = 6;
             else {
@@ -317,7 +329,7 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
 
         case L's' | 0x20000:
         case L'S' | 0x20000: {
-            wchar_t *next_arg = va_arg(args, wchar_t *);
+            wchar_t* next_arg = va_arg(args, wchar_t*);
             if (next_arg == NULL)
                 item_len = 6;
             else {
@@ -381,6 +393,7 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
     pstr->data_length = (size_t)(endptr - pstr->data);
     va_end(orig_list);
 }
+// ----------------------------------------------------------------------------
 
 
 /**************************************************/
@@ -396,6 +409,7 @@ HSTRINGW STRAPI StrgCreate()
         return NULL;
     return (HSTRINGW)pstr;
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgDestroy(HSTRINGW hstr)
@@ -406,6 +420,7 @@ void STRAPI StrgDestroy(HSTRINGW hstr)
     FreeBufferW(pstr);
     FreeBuffer((wchar_t*)pstr);
 }
+// ----------------------------------------------------------------------------
 
 
 int STRAPI StrgSet(HSTRINGW hstr, const wchar_t* str)
@@ -416,6 +431,7 @@ int STRAPI StrgSet(HSTRINGW hstr, const wchar_t* str)
     SetCopyW(pstr, StrlenW(str), str);
     return  (pstr->data == NULL) ? 0 : 1; 
 }
+// ----------------------------------------------------------------------------
 
 
 const wchar_t* STRAPI StrgGet(HSTRINGW hstr)
@@ -425,6 +441,7 @@ const wchar_t* STRAPI StrgGet(HSTRINGW hstr)
         return NULL;
     return pstr->data;
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgGetLength(HSTRINGW hstr)
@@ -434,6 +451,7 @@ size_t STRAPI StrgGetLength(HSTRINGW hstr)
         return 0;
     return pstr->data_length;
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgGetAllocLength(HSTRINGW hstr)
@@ -443,12 +461,14 @@ size_t STRAPI StrgGetAllocLength(HSTRINGW hstr)
         return 0;
     return pstr->alloc_length;
 }
+// ----------------------------------------------------------------------------
 
 
 int STRAPI StrgIsEmpty(HSTRINGW hstr) 
 { 
     return StrgGetLength(hstr) == 0;
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgFreeExtra(HSTRINGW hstr)
@@ -458,6 +478,7 @@ void STRAPI StrgFreeExtra(HSTRINGW hstr)
         return;
     FreeUnusedData(pstr);
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgEmpty(HSTRINGW hstr)
@@ -467,6 +488,7 @@ void STRAPI StrgEmpty(HSTRINGW hstr)
         return;
     FreeBufferW(pstr);
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgSetAt(HSTRINGW hstr, size_t index, wchar_t ch)
@@ -481,6 +503,7 @@ void STRAPI StrgSetAt(HSTRINGW hstr, size_t index, wchar_t ch)
     }
     pstr->data[index] = ch;
 }
+// ----------------------------------------------------------------------------
 
 
 wchar_t STRAPI StrgGetAt(HSTRINGW hstr, size_t index)
@@ -495,6 +518,7 @@ wchar_t STRAPI StrgGetAt(HSTRINGW hstr, size_t index)
     }
     return pstr->data[index];
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgCat(HSTRINGW hstr, const wchar_t* str)
@@ -504,13 +528,14 @@ void STRAPI StrgCat(HSTRINGW hstr, const wchar_t* str)
         return;
     ConcatW(pstr, StrlenW(str), str);
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, const wchar_t* str)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
-        return STRINGW_INVALID_SIZE;
+        return STRINGW_INVALID_IDX;
 
     size_t const ins_len = StrlenW(str);
     size_t new_len = pstr->data_length;
@@ -537,6 +562,7 @@ size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, const wchar_t* str)
 
     return new_len;
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, wchar_t c)
@@ -562,6 +588,7 @@ size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, wchar_t c)
     pstr->data_length = new_len;
     return new_len;
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgReplace(HSTRINGW hstr, const wchar_t* pOld, const wchar_t* pNew)
@@ -623,12 +650,14 @@ size_t STRAPI StrgReplace(HSTRINGW hstr, const wchar_t* pOld, const wchar_t* pNe
 
     return count;
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgRemove(HSTRINGW hstr, const wchar_t *str)
 {
     return StrgReplace(hstr, str, L"");
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgReplaceCh(HSTRINGW hstr, wchar_t chOld, wchar_t chNew)
@@ -654,6 +683,7 @@ size_t STRAPI StrgReplaceCh(HSTRINGW hstr, wchar_t chOld, wchar_t chNew)
     }
     return count;
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgRemoveCh(HSTRINGW hstr, wchar_t chRemove)
@@ -682,6 +712,7 @@ size_t STRAPI StrgRemoveCh(HSTRINGW hstr, wchar_t chRemove)
 
     return count;
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgDelete(HSTRINGW hstr, size_t index, size_t count)
@@ -700,6 +731,7 @@ size_t STRAPI StrgDelete(HSTRINGW hstr, size_t index, size_t count)
 
     return new_len;
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgToUpper(HSTRINGW hstr)
@@ -709,6 +741,7 @@ void STRAPI StrgToUpper(HSTRINGW hstr)
         return;
     _wcsupr_s(pstr->data, pstr->data_length);
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgToLower(HSTRINGW hstr)
@@ -718,6 +751,7 @@ void STRAPI StrgToLower(HSTRINGW hstr)
         return;
     _wcslwr_s(pstr->data, pstr->data_length);
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgReverse(HSTRINGW hstr)
@@ -727,6 +761,7 @@ void STRAPI StrgReverse(HSTRINGW hstr)
         return;
     _wcsrev(pstr->data);
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgTrimRight(HSTRINGW hstr)
@@ -756,6 +791,7 @@ void STRAPI StrgTrimRight(HSTRINGW hstr)
         pstr->data_length = end - pstr->data;
     }
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgTrimLeft(HSTRINGW hstr)
@@ -776,6 +812,7 @@ void STRAPI StrgTrimLeft(HSTRINGW hstr)
         pstr->data_length = data_length;
     }
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgTrim(HSTRINGW hstr)
@@ -783,59 +820,64 @@ void STRAPI StrgTrim(HSTRINGW hstr)
     StrgTrimRight(hstr);
     StrgTrimLeft(hstr);
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgFind(HSTRINGW hstr, const wchar_t* sub, size_t start)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
-        return STRINGW_INVALID_SIZE;
+        return STRINGW_INVALID_IDX;
 
     if (start > pstr->data_length)
-        return STRINGW_INVALID_SIZE;
+        return STRINGW_INVALID_IDX;
 
     wchar_t * str = wcsstr(pstr->data + start, sub);
 
-    return (str == NULL) ? STRINGW_INVALID_SIZE : (size_t)(str - pstr->data);
+    return (str == NULL) ? STRINGW_INVALID_IDX : (size_t)(str - pstr->data);
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgFindCh(HSTRINGW hstr, wchar_t ch, size_t start)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
-        return STRINGW_INVALID_SIZE;
+        return STRINGW_INVALID_IDX;
 
     if (start >= pstr->data_length)
-        return STRINGW_INVALID_SIZE;
+        return STRINGW_INVALID_IDX;
 
     wchar_t * p = wcschr(pstr->data + start, ch);
 
-    return (p == NULL) ? STRINGW_INVALID_SIZE : (size_t)(p - pstr->data);
+    return (p == NULL) ? STRINGW_INVALID_IDX : (size_t)(p - pstr->data);
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgReverseFind(HSTRINGW hstr, wchar_t ch)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
-        return STRINGW_INVALID_SIZE;
+        return STRINGW_INVALID_IDX;
 
     wchar_t * p = wcsrchr(pstr->data, ch);
 
-    return (p == NULL) ? STRINGW_INVALID_SIZE : (size_t)(p - pstr->data);
+    return (p == NULL) ? STRINGW_INVALID_IDX : (size_t)(p - pstr->data);
 }
+// ----------------------------------------------------------------------------
 
 
 size_t STRAPI StrgFindOneOf(HSTRINGW hstr, const wchar_t* char_set)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
-        return STRINGW_INVALID_SIZE;
+        return STRINGW_INVALID_IDX;
 
     wchar_t * p = wcspbrk(pstr->data, char_set);
-    return (p == NULL) ? STRINGW_INVALID_SIZE : (size_t)(p - pstr->data);
+    return (p == NULL) ? STRINGW_INVALID_IDX : (size_t)(p - pstr->data);
 }
+// ----------------------------------------------------------------------------
 
 
 HSTRINGW STRAPI StrgCopy(HSTRINGW hstr)
@@ -850,6 +892,7 @@ HSTRINGW STRAPI StrgCopy(HSTRINGW hstr)
     SetCopyW(pCopy, pstr->data_length, pstr->data);
     return hCopy;
 }
+// ----------------------------------------------------------------------------
 
 
 HSTRINGW STRAPI StrgMid(HSTRINGW hstr, size_t start, size_t count)
@@ -876,6 +919,7 @@ HSTRINGW STRAPI StrgMid(HSTRINGW hstr, size_t start, size_t count)
     }
     return hCopy;
 }
+// ----------------------------------------------------------------------------
 
 
 HSTRINGW STRAPI StrgLeft(HSTRINGW hstr, size_t count)
@@ -894,6 +938,7 @@ HSTRINGW STRAPI StrgLeft(HSTRINGW hstr, size_t count)
     }
     return hCopy;
 }
+// ----------------------------------------------------------------------------
 
 
 HSTRINGW STRAPI StrgRight(HSTRINGW hstr, size_t count)
@@ -912,6 +957,7 @@ HSTRINGW STRAPI StrgRight(HSTRINGW hstr, size_t count)
     }
     return hCopy;
 }
+// ----------------------------------------------------------------------------
 
 
 void STRAPI StrgFormat(HSTRINGW hstr, const wchar_t* fmt, ...)
@@ -924,13 +970,13 @@ void STRAPI StrgFormat(HSTRINGW hstr, const wchar_t* fmt, ...)
     FormatW(hstr, fmt, args);
     va_end(args);
 }
-
 // --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 // Only for PathLib: ensure buffer size is at least MAX_PATH
 // NP3_PATH_LIB_IMPLEMENTATION
 
-wchar_t* STRAPI StrgAccessMaxPathBuf(HSTRINGW hstr, size_t min_len)
+wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -945,6 +991,7 @@ wchar_t* STRAPI StrgAccessMaxPathBuf(HSTRINGW hstr, size_t min_len)
     }
     return pstr->data;
 }
+// ----------------------------------------------------------------------------
 
 void STRAPI StrgSanitize(HSTRINGW hstr)
 {

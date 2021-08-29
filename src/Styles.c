@@ -382,15 +382,15 @@ static void _FillThemesMenuTable()
         StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFileDefault);
     }
     if (StrIsNotEmpty(tchThemeDir)) {
-        PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
-        PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
+        PathRemoveFileSpec(tchThemeDir);
+        PathAppend(tchThemeDir, L"themes");
     }
 
     unsigned iTheme = 1;
     if (PathIsDirectory(tchThemeDir)) {
         WCHAR tchThemePath[MAX_PATH] = { L'\0' };
         StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
-        PathCchAppend(tchThemePath, COUNTOF(tchThemePath), L"*.ini");
+        PathAppend(tchThemePath, L"*.ini");
 
         WIN32_FIND_DATA FindFileData;
         ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
@@ -408,7 +408,7 @@ static void _FillThemesMenuTable()
                     Globals.uCurrentThemeIndex = iTheme;
                 }
                 StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
-                PathCchAppend(tchThemePath, COUNTOF(tchThemePath), FindFileData.cFileName);
+                PathAppend(tchThemePath, FindFileData.cFileName);
                 StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), tchThemePath);
 
                 if (!FindNextFile(hFindFile, &FindFileData)) {
@@ -902,7 +902,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     if (bHaveFileResource) {
         WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
         StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
-        NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
+        NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Paths.WorkingDirectory, true, false);
         if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
             bIsStdIniFile = true;
         }
@@ -1127,7 +1127,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
     WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
     StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
-    NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
+    NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Paths.WorkingDirectory, true, false);
 
     bool ok = false;
 

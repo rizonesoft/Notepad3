@@ -881,7 +881,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     if (!GetCurrentDirectory(COUNTOF(Paths.WorkingDirectory), Paths.WorkingDirectory)) {
         StringCchCopy(Paths.WorkingDirectory, COUNTOF(Paths.WorkingDirectory), wchAppDir);
     }
-
     // Don't keep working directory locked
     SetCurrentDirectory(wchAppDir);
 
@@ -4209,7 +4208,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
         }
         StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Paths.CurrentFile);
-        PathCchRemoveFileSpec(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer));
+        PathRemoveFileSpec(tchMaxPathBuffer);
 
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
         sei.fMask = SEE_MASK_DEFAULT;
@@ -4318,7 +4317,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (StrIsEmpty(Paths.CurrentFile)) {
             break;
         }
-        if (!PathCreateDeskLnk(Paths.CurrentFile)) {
+        WCHAR tchDescription[128] = { L'\0' };
+        GetLngString(IDS_MUI_LINKDESCRIPTION, tchDescription, COUNTOF(tchDescription));
+        if (!PathCreateDeskLnk(Paths.CurrentFile, tchDescription)) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_CREATELINK);
         }
     }
@@ -4959,7 +4960,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 pszInsert = szDisplayName;
             } else if (iLoWParam == IDM_EDIT_INSERT_DIRNAME) {
                 StringCchCopy(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile);
-                PathCchRemoveFileSpec(szDisplayName, COUNTOF(szDisplayName));
+                PathRemoveFileSpec(szDisplayName);
                 pszInsert = szDisplayName;
             } else {
                 pszInsert = Paths.CurrentFile;
@@ -6354,7 +6355,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 WCHAR wchDirectory[MAX_PATH] = { L'\0' };
                 if (StrIsNotEmpty(Paths.CurrentFile)) {
                     StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Paths.CurrentFile);
-                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                    PathRemoveFileSpec(wchDirectory);
                 }
 
                 SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
@@ -6976,7 +6977,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                         //cchPath = (DWORD)StringCchLen(wchFilePath, MAX_PATH);
                     }
 
-                    //NormalizePathEx(wchPath, COUNTOF(wchPath), true, false);
+                    //NormalizePathEx(wchPath, COUNTOF(wchPath), Paths.WorkingDirectory, true, false);
  
                     bool found = true;
                     if (PathIsExistingFile(wchPath)) {
@@ -7226,13 +7227,13 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     dCch -= (DWORD)lenPfx;
                     PathCreateFromUrl(szTextW, &szUnEscW[lenPfx], &dCch, 0);
                     StringCchCopy(wchDirectory, COUNTOF(wchDirectory), szUnEscW);
-                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                    PathRemoveFileSpec(wchDirectory);
                 } else {
                     UrlUnescapeEx(szTextW, szUnEscW, &dCch);
                 }
                 if (StrIsEmpty(wchDirectory) && StrIsNotEmpty(Paths.CurrentFile)) {
                     StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Paths.CurrentFile);
-                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                    PathRemoveFileSpec(wchDirectory);
                 }
 
                 SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
@@ -8230,7 +8231,7 @@ void ParseCommandLine()
                     StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
                                    lp1 + CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG));
                     TrimSpcW(s_wchTmpFilePath);
-                    NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, Flags.bSearchPathIfRelative);
+                    NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
                     s_IsThisAnElevatedRelaunch = true;
                 }
 
@@ -8266,7 +8267,7 @@ void ParseCommandLine()
                         } else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
                             StringCchCopyN(Paths.IniFile, COUNTOF(Paths.IniFile), lp1, len);
                             TrimSpcW(Paths.IniFile);
-                            NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), true, false);
+                            NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), Paths.WorkingDirectory, true, false);
                         }
                         break;
 
@@ -8544,7 +8545,7 @@ void ParseCommandLine()
                         WCHAR wchPath[MAX_PATH] = { L'\0' };
                         StringCchCopy(wchPath, COUNTOF(wchPath), Paths.WorkingDirectory);
                         PathStripToRoot(wchPath);
-                        PathCchAppend(wchPath, COUNTOF(wchPath), s_lpFileArg);
+                        PathAppend(wchPath, s_lpFileArg);
                         StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), wchPath);
                     }
                     StrTrim(s_lpFileArg, L" \"");
@@ -10057,11 +10058,11 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
     } else {
         StringCchCopy(szFilePath, COUNTOF(szFilePath), lpszFile);
     }
-    NormalizePathEx(szFilePath, COUNTOF(szFilePath), true, Flags.bSearchPathIfRelative);
+    NormalizePathEx(szFilePath, COUNTOF(szFilePath), Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
     // change current directory to prevent directory lock on another path
     if (SUCCEEDED(StringCchCopy(szFolder, COUNTOF(szFolder), szFilePath))) {
-        if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder)))) {
+        if (PathRemoveFileSpec(szFolder)) {
             SetCurrentDirectory(szFolder);
         }
     }
@@ -10548,7 +10549,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         if (bSaveCopy && StrIsNotEmpty(_tchLastSaveCopyDir)) {
             StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), _tchLastSaveCopyDir);
             StringCchCopy(tchFile, COUNTOF(tchFile), _tchLastSaveCopyDir);
-            PathCchAppend(tchFile, COUNTOF(tchFile), PathFindFileName(Paths.CurrentFile));
+            PathAppend(tchFile, PathFindFileName(Paths.CurrentFile));
         } else {
             StringCchCopy(tchFile, COUNTOF(tchFile), Paths.CurrentFile);
         }
@@ -10574,7 +10575,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
                     Style_SetLexerFromFile(Globals.hwndEdit, Paths.CurrentFile);
                 } else {
                     StringCchCopy(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir), tchFile);
-                    PathCchRemoveFileSpec(_tchLastSaveCopyDir, COUNTOF(_tchLastSaveCopyDir));
+                    PathRemoveFileSpec(_tchLastSaveCopyDir);
                 }
             }
         } else {
@@ -10668,7 +10669,7 @@ static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
     if (StrIsEmpty(lpstrInitialDir)) {
         if (StrIsNotEmpty(Paths.CurrentFile)) {
             StringCchCopy(lpstrInitialDir, cchInitialDir, Paths.CurrentFile);
-            PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
+            PathRemoveFileSpec(lpstrInitialDir);
         } else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
             ExpandEnvironmentStrings(Settings2.DefaultDirectory, lpstrInitialDir, cchInitialDir);
         } else {
@@ -10679,14 +10680,14 @@ static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
         if (PathIsRelative(lpstrInitialDir)) {
             WCHAR tchModule[MAX_PATH] = { L'\0' };
             PathGetAppDirectory(tchModule, COUNTOF(tchModule));
-            PathCchAppend(tchModule, COUNTOF(tchModule), lpstrInitialDir);
+            PathAppend(tchModule, lpstrInitialDir);
             StringCchCopy(lpstrInitialDir, cchInitialDir, tchModule);
         }
     }
     if (StrIsNotEmpty(lpstrInitialDir)) {
         if (PathFileExists(lpstrInitialDir)) {
             if (!PathIsDirectory(lpstrInitialDir)) {
-                PathCchRemoveFileSpec(lpstrInitialDir, cchInitialDir);
+                PathRemoveFileSpec(lpstrInitialDir);
             }
         } else {
             StringCchCopy(lpstrInitialDir, cchInitialDir, L""); // clear
@@ -10843,7 +10844,7 @@ bool ActivatePrevInst()
 
     if (Flags.bSingleFileInstance && StrIsNotEmpty(s_lpFileArg)) {
 
-        NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, Flags.bSearchPathIfRelative);
+        NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
         EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -11017,7 +11018,7 @@ bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
     WCHAR wchDir[MAX_PATH] = { L'\0' };
     if (StrIsNotEmpty(lpszFilePath)) {
         StringCchCopy(wchDir, COUNTOF(wchDir), lpszFilePath);
-        PathCchRemoveFileSpec(wchDir, COUNTOF(wchDir));
+        PathRemoveFileSpec(wchDir);
     }
     WCHAR wchParams[MAX_PATH * 2];
     StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s \"%s\"", lpszParameter, lpszFilePath);
@@ -11509,7 +11510,7 @@ void InstallFileWatching(const bool bInstall) {
 
     WCHAR tchDirectory[MAX_PATH] = { L'\0' };
     StringCchCopy(tchDirectory, COUNTOF(tchDirectory), Paths.CurrentFile);
-    PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
+    PathRemoveFileSpec(tchDirectory);
 
     bool const bFileExists = StrIsNotEmpty(Paths.CurrentFile) && PathIsDirectory(tchDirectory); //~ && PathIsExistingFile(Paths.CurrentFile);
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
