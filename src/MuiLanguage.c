@@ -20,6 +20,7 @@
 #include <commctrl.h>
 #include <muiload.h>
 
+#include "PathLib.h"
 #include "Dialogs.h"
 #include "Encoding.h"
 #include "Config/Config.h"

@@ -21,9 +21,10 @@
 #if !defined(NTDDI_VERSION)
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
+
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
+//#define NOMINMAX 1
 #include <windows.h>
 
 #include <strsafe.h>
@@ -44,6 +45,7 @@ extern "C" {
 #include "Notepad3.h"
 #include "MuiLanguage.h"
 #include "DynStrg.h"
+#include "PathLib.h"
 }
 
 #include "DarkMode/DarkMode.h"
@@ -838,15 +840,17 @@ extern "C" void ClearDestinationsOnRecentDocs()
 //
 static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
 {
-    WCHAR wchFileExpanded[MAX_PATH] = { L'\0' };
-    ExpandEnvironmentStrings(lpszFile, wchFileExpanded, COUNTOF(wchFileExpanded));
+    HPATHL hPathExpanded = Path_Allocate(lpszFile);
+    Path_ExpandEnvStrings(hPathExpanded);
+
+    const bool bIsMaxPath = (Path_GetLength(hPathExpanded) <= MAX_PATH);
 
     bool result = false;
-    if (PathIsRelative(wchFileExpanded)) {
+    if (bIsMaxPath && PathIsRelative(Path_Get(hPathExpanded))) {
         WCHAR tchBuild[MAX_PATH] = { L'\0' };
-        // program directory
+        // program directory 
         StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
-        StringCchCopy(PathFindFileName(tchBuild), COUNTOF(tchBuild), wchFileExpanded);
+        StringCchCopy(PathFindFileName(tchBuild), COUNTOF(tchBuild), Path_Get(hPathExpanded));
         if (PathIsExistingFile(tchBuild)) {
             StringCchCopy(lpszFile, MAX_PATH, tchBuild);
             result = true;
@@ -856,14 +860,14 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
             StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
             PathCchRemoveFileSpec(tchBuild, COUNTOF(tchBuild));
             StringCchCat(tchBuild, COUNTOF(tchBuild), L"\\np3\\");
-            StringCchCat(tchBuild, COUNTOF(tchBuild), wchFileExpanded);
+            StringCchCat(tchBuild, COUNTOF(tchBuild), Path_Get(hPathExpanded));
             if (PathIsExistingFile(tchBuild)) {
                 StringCchCopy(lpszFile, MAX_PATH, tchBuild);
                 result = true;
             }
             // Application Data (%APPDATA%)
             if (!result && GetKnownFolderPath(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
-                PathCchAppend(tchBuild, COUNTOF(tchBuild), wchFileExpanded);
+                PathCchAppend(tchBuild, COUNTOF(tchBuild), Path_Get(hPathExpanded));
                 if (PathIsExistingFile(tchBuild)) {
                     StringCchCopy(lpszFile, MAX_PATH, tchBuild);
                     result = true;
@@ -871,7 +875,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
             }
             // Home (%HOMEPATH%) user's profile dir
             if (!result && GetKnownFolderPath(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
-                PathCchAppend(tchBuild, COUNTOF(tchBuild), wchFileExpanded);
+                PathCchAppend(tchBuild, COUNTOF(tchBuild), Path_Get(hPathExpanded));
                 if (PathIsExistingFile(tchBuild)) {
                     StringCchCopy(lpszFile, MAX_PATH, tchBuild);
                     result = true;
@@ -883,10 +887,12 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
             //~  return true;
             //~}
         }
-    } else if (PathIsExistingFile(wchFileExpanded)) {
-        StringCchCopy(lpszFile, MAX_PATH, wchFileExpanded);
+    }
+    else if (Path_IsExistingFile(hPathExpanded)) {
+        StringCchCopy(lpszFile, MAX_PATH, Path_Get(hPathExpanded));
         result = true;
     }
+    Path_Release(hPathExpanded);
     return result;
 }
 // ============================================================================

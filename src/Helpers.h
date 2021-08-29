@@ -807,42 +807,7 @@ void CloseApplication();
 
 // ----------------------------------------------------------------------------
 
-inline bool PathIsExistingFile(LPCWSTR pszPath)
-{
-    return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
-}
-
-// including <pathcch.h> and linking against pathcch.lib
-// api-ms-win-core-path-l1-1-0.dll  library : Minimum supported client is Windows 8 :-/
-// so switch back to previous (deprecated) methods:
-inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathAppend(p,a) ? S_OK : E_FAIL);
-}
-inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathCanonicalize(p,a) ? S_OK : E_FAIL);
-}
-inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathRenameExtension(p,a) ? S_OK : E_FAIL);
-}
-inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathRemoveFileSpec(p) ? S_OK : E_FAIL);
-}
-
-inline bool IsReadOnly(const DWORD dwFileAttr)
-{
-    return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
-}
-
-inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc)
-{
+inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
     return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
 }
 

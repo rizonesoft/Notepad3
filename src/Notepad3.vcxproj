@@ -623,6 +623,7 @@
     <ClCompile Include="crypto\rijndael-api-fst.c" />
     <ClCompile Include="crypto\sha-256.c" />
     <ClCompile Include="DynStrg.c" />
+    <ClCompile Include="PathLib.c" />
     <ClCompile Include="StyleLexers\EditLexer.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
     <ClCompile Include="StyleLexers\styleLexJulia.c" />
@@ -780,6 +781,7 @@
     <ClInclude Include="crypto\sha-256.h" />
     <ClInclude Include="..\language\common_res.h" />
     <ClInclude Include="DynStrg.h" />
+    <ClInclude Include="PathLib.h" />
     <ClInclude Include="tinyexpr\tinyexpr.h" />
     <ClInclude Include="uchardet\uchardet\src\CharDistribution.h" />
     <ClInclude Include="uchardet\uchardet\src\JpCntx.h" />

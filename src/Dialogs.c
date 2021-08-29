@@ -30,6 +30,7 @@
 #include <richedit.h>
 #pragma warning( pop )
 
+#include "PathLib.h"
 #include "Edit.h"
 #include "Dlapi.h"
 #include "Version.h"

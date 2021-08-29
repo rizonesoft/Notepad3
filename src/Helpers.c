@@ -23,8 +23,7 @@
 #include <ctype.h>
 #include <wchar.h>
 
-//#include <pathcch.h>
-
+#include "PathLib.h"
 #include "Edit.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"
@@ -1625,8 +1624,8 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
                     StringCchCopy(lpszPath, cchBuffer, p);
                 }
             }
+            CloseHandle(hFile);
         }
-        CloseHandle(hFile);
     }
 
     return (DWORD)StringCchLen(lpszPath, cchBuffer);

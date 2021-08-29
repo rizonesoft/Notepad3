@@ -28,6 +28,7 @@
 #include <process.h>
 //#include <pathcch.h>
 
+#include "PathLib.h"
 #include "Edit.h"
 #include "Styles.h"
 #include "Dialogs.h"

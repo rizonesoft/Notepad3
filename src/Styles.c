@@ -29,6 +29,7 @@
 
 #include "uthash/utarray.h"
 
+#include "PathLib.h"
 #include "Edit.h"
 #include "Dialogs.h"
 #include "Encoding.h"
