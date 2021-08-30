@@ -98,6 +98,8 @@ inline static void FreeBuffer(wchar_t * pstr) {
     }
     FreeMemStrg(pstr);
 }
+
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 inline static void FreeBufferW(STRINGW* pstr) {
@@ -984,8 +986,7 @@ wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len)
 
     if (pstr->alloc_length <= min_len) {
         size_t   old_len = 0;
-        wchar_t* pOld = CopyOldDataW(pstr, &old_len);
-        FreeBufferW(pstr);
+        wchar_t* const pOld = CopyOldDataW(pstr, &old_len);
         SetCopyW(pstr, min_len, pOld);
         FreeBuffer(pOld);
     }
@@ -998,10 +999,12 @@ void STRAPI StrgSanitize(HSTRINGW hstr)
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
         return;
-    // ensure buffer limit
+
+    // ensure buffer limits
+    pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
     ptrdiff_t const len = (ptrdiff_t)pstr->alloc_length - 1;
     if (len > 0) {
-        pstr->data[len] = L'\0';
+        pstr->data[len] = L'\0'; // terminating zero
     }
     pstr->data_length = StrlenW(pstr->data);
 }

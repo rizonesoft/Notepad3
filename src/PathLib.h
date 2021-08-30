@@ -5,6 +5,8 @@
 #define PATHCCH_NO_DEPRECATE 1
 ///#include <pathcch.h>
 
+#include "DynStrg.h"
+
 
 /**************************************************/
 /*             Declared in WINNT.H                */
@@ -41,6 +43,7 @@ bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, const wchar_t* ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth);
 bool PTHAPI            Path_IsExistingFile(HPATHL hpth);
+void PTHAPI            Path_GetModuleFileName(HPATHL hpth_out);
 
 // -------------------------------------------------------
 
@@ -69,12 +72,32 @@ inline bool PathIsExistingFile(LPCWSTR pszPath)
     return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
 }
 
+
+
+// ============================================================================
+// Duplicates for INTERMEDIATE DEV
+// ============================================================================
+
+void PTHAPI ExpandEnvironmentStrg(HSTRINGW hstr);
+void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
+
+DWORD PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out);
+DWORD PTHAPI GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
+
+bool PTHAPI Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
+bool PTHAPI PathGetKnownFolder(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchOut);
+
+bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out);
+bool PTHAPI PathCanonicalizeEx(LPWSTR lpszPath, size_t cchPath);
+
+void PTHAPI Path_GetAppDirectory(HPATHL hpth_out);
+void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
+
+
 // ============================================================================
 // Some Old MAX_PATH stuff
 // ============================================================================
 
-bool PTHAPI   GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
-void PTHAPI   PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
 void PTHAPI   PathRelativeToApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool, bool, bool);
 void PTHAPI   PathAbsoluteFromApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool);
 
@@ -84,9 +107,6 @@ bool PTHAPI   PathIsLnkToDirectory(LPCWSTR pszPath, LPWSTR pszResPath, int cchRe
 bool PTHAPI   PathCreateDeskLnk(LPCWSTR pszDocument, LPCWSTR pszDescription);
 bool PTHAPI   PathCreateFavLnk(LPCWSTR pszName, LPCWSTR pszTarget, LPCWSTR pszDir);
 
-void PTHAPI   ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
-bool PTHAPI   PathCanonicalizeEx(LPWSTR lpszPath, size_t cchPath);
-DWORD PTHAPI  GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
 void PTHAPI   PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
 DWORD PTHAPI  NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, LPCWSTR lpszWorkDir, bool bRealPath, bool bSearchPathIfRelative);
 

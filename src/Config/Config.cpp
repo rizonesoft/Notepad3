@@ -866,7 +866,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
                 result = true;
             }
             // Application Data (%APPDATA%)
-            if (!result && GetKnownFolderPath(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
+            if (!result && PathGetKnownFolder(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
                 PathAppend(tchBuild, Path_Get(hPathExpanded));
                 if (PathIsExistingFile(tchBuild)) {
                     StringCchCopy(lpszFile, MAX_PATH, tchBuild);
@@ -874,7 +874,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
                 }
             }
             // Home (%HOMEPATH%) user's profile dir
-            if (!result && GetKnownFolderPath(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
+            if (!result && PathGetKnownFolder(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
                 PathAppend(tchBuild, Path_Get(hPathExpanded));
                 if (PathIsExistingFile(tchBuild)) {
                     StringCchCopy(lpszFile, MAX_PATH, tchBuild);
@@ -1364,12 +1364,12 @@ void LoadSettings()
     Defaults.EFR_Data.fuFlags = 0;
     Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
-    GetKnownFolderPath(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
+    PathGetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
         PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
     }
 
-    GetKnownFolderPath(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
+    PathGetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
         PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
     }
