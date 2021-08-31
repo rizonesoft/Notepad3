@@ -475,6 +475,7 @@ bool PTHAPI Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth)
     HPATHL hprfx_pth = Path_Allocate(NULL);
     HPATHL hsrch_pth = Path_Allocate(NULL);
 
+    // TODO: need normalize here ???
     Path_Canonicalize(hprfx_pth, hprefix);
     Path_Canonicalize(hsrch_pth, hpth);
 
@@ -486,6 +487,36 @@ bool PTHAPI Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth)
 
     return res;
 }
+// ----------------------------------------------------------------------------
+
+
+size_t PTHAPI Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2, HPATHL hpfx_out)
+{
+    HSTRINGW hpth1_str = ToHStrgW(hpth1);
+    HSTRINGW hpth2_str = ToHStrgW(hpth2);
+
+    size_t ovl_cnt = min_s(StrgGetLength(hpth1_str), StrgGetLength(hpth2_str));
+
+    HSTRINGW hout_str = ToHStrgW(hpfx_out);
+    bool const cpy_out = (hout_str != NULL);
+    wchar_t* const out_buf = cpy_out ? StrgWriteAccessBuf(hout_str, ovl_cnt + 1) : NULL;
+
+    const wchar_t* p1 = StrgGet(hpth1_str);
+    const wchar_t* p2 = StrgGet(hpth2_str);
+
+    size_t cnt = 0;
+    while (p1 && p2 && (*p1 == *p2) && (cnt < ovl_cnt)) {
+        if (cpy_out) {
+            out_buf[cnt] = *p1;
+        }
+        ++cnt; ++p1; ++p2;
+    }
+    if (cpy_out) {
+        out_buf[cnt] = L'\0';
+    }
+    return cnt;
+}
+// ----------------------------------------------------------------------------
 
 
 // ============================================================================
@@ -865,8 +896,8 @@ void PTHAPI PathAbsoluteFromApp(LPWSTR lpszSrc, LPWSTR lpszDest, const size_t cc
 //  PathRelativeToApp()
 // Need LongPath Impl of:
 // - PathRelativePathTo()
-// - PathCommonPrefix()
 // - PathUnExpandEnvStrings()
+// - GetWindowsDirectoryW()
 //
 #if 0
 void PTHAPI Path_RelativeToApp(const HPATHL hpth_in, HPATHL hpth_out,
@@ -890,7 +921,10 @@ void PTHAPI Path_RelativeToApp(const HPATHL hpth_in, HPATHL hpth_out,
     {
         Path_Reset(hpth_out, PATH_CSIDL_MYDOCUMENTS);
         Path_Append(hpth_out, hpth_in);
-        ...???
+        //...???
+    }
+    else if (_Path_IsRelative(hpth_in) || Path_CommonPrefix(happdir_pth, wchWinDir, NULL)) {
+        Path_Reset(hpth_out, PathGet(hpth_in));
     }
 
 
