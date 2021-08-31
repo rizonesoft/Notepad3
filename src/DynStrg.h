@@ -63,9 +63,9 @@ void STRAPI              StrgToUpper(HSTRINGW hstr);
 void STRAPI              StrgToLower(HSTRINGW hstr);
 void STRAPI              StrgReverse(HSTRINGW hstr);
 
-void STRAPI              StrgTrimRight(HSTRINGW hstr);
-void STRAPI              StrgTrimLeft(HSTRINGW hstr);
-void STRAPI              StrgTrim(HSTRINGW hstr);
+void STRAPI              StrgTrimRight(HSTRINGW hstr, const wchar_t wch);
+void STRAPI              StrgTrimLeft(HSTRINGW hstr, const wchar_t wch);
+void STRAPI              StrgTrim(HSTRINGW hstr, const wchar_t wch);
 
 size_t STRAPI            StrgFind(HSTRINGW hstr, const wchar_t* sub, size_t start);
 size_t STRAPI            StrgFindCh(HSTRINGW hstr, wchar_t wch, size_t start);

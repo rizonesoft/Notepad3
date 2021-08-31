@@ -723,15 +723,14 @@ size_t STRAPI StrgDelete(HSTRINGW hstr, size_t index, size_t count)
     if (!pstr)
         return 0;
 
-    size_t const new_len = pstr->data_length;
-    if (count > 0 && index < new_len)
+    size_t const len = pstr->data_length;
+    if (count > 0 && index < len)
     {
-        size_t copy = new_len - (index + count) + 1;
-        memcpy(pstr->data + index, pstr->data + index + count, copy * sizeof(wchar_t));
-        pstr->data_length = new_len - count;
+        size_t copy = len - (index + count) + 1;
+        memcpy(pstr->data + index, pstr->data + index + count, (copy * sizeof(wchar_t)));
+        pstr->data_length = len - count;
     }
-
-    return new_len;
+    return len;
 }
 // ----------------------------------------------------------------------------
 
@@ -766,7 +765,7 @@ void STRAPI StrgReverse(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-void STRAPI StrgTrimRight(HSTRINGW hstr)
+void STRAPI StrgTrimRight(HSTRINGW hstr, const wchar_t wch)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -777,7 +776,7 @@ void STRAPI StrgTrimRight(HSTRINGW hstr)
 
     while (*start != L'\0')
     {
-        if (isspace(*start))
+        if (isspace(*start) || (wch ? (*start == wch) : 0))
         {
             if (end == NULL)
                 end = start;
@@ -796,7 +795,7 @@ void STRAPI StrgTrimRight(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-void STRAPI StrgTrimLeft(HSTRINGW hstr)
+void STRAPI StrgTrimLeft(HSTRINGW hstr, const wchar_t wch)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -804,7 +803,7 @@ void STRAPI StrgTrimLeft(HSTRINGW hstr)
 
     wchar_t * start = pstr->data;
 
-    while (isspace(*start))
+    while (isspace(*start) || (wch ? (*start == wch) : 0))
         start++;
 
     if (start != pstr->data)
@@ -817,10 +816,10 @@ void STRAPI StrgTrimLeft(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-void STRAPI StrgTrim(HSTRINGW hstr)
+void STRAPI StrgTrim(HSTRINGW hstr, const wchar_t wch)
 {
-    StrgTrimRight(hstr);
-    StrgTrimLeft(hstr);
+    StrgTrimRight(hstr, wch);
+    StrgTrimLeft(hstr, wch);
 }
 // ----------------------------------------------------------------------------
 

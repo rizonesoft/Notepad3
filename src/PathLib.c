@@ -135,6 +135,9 @@
 #define COUNTOF(ar) ARRAYSIZE(ar)
 #define CONSTSTRGLEN(s) (COUNTOF(s) - 1)
 
+const wchar_t* const PATHUNC_PREFIX = L"UNC\\";
+#define PATHUNC_PREFIX_LEN (COUNTOF(PATHLONG_PREFIX) - 1)
+
 const wchar_t* const PATHLONG_PREFIX = L"\\\\?\\";
 #define PATHLONG_PREFIX_LEN (COUNTOF(PATHLONG_PREFIX) - 1)
 
@@ -155,19 +158,17 @@ __forceinline bool StrIsEmptyW(LPCWSTR s)
 //inline size_t StringCchLenA(LPCSTR s, size_t n) {
 //  n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n));
 //}
-inline size_t StringCchLenA(LPCSTR s, size_t n)
+__forceinline size_t StringCchLenA(LPCSTR s, const size_t n)
 {
-    n = (n ? n : STRSAFE_MAX_CCH);
-    return (s ? strnlen_s(s, n) : 0LL);
+    return (s ? strnlen_s(s, (n ? n : STRSAFE_MAX_CCH)) : 0LL);
 }
 
 //inline size_t StringCchLenW(LPCWSTR s, size_t n) {
 //  n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n));
 //}
-inline size_t StringCchLenW(LPCWSTR s, size_t n)
+__forceinline size_t StringCchLenW(LPCWSTR s, const size_t n)
 {
-    n = (n ? n : STRSAFE_MAX_CCH);
-    return (s ? wcsnlen_s(s, n) : 0LL);
+    return (s ? wcsnlen_s(s, (n ? n : STRSAFE_MAX_CCH)) : 0LL);
 }
 
 #if defined(UNICODE) || defined(_UNICODE)
@@ -178,8 +179,11 @@ inline size_t StringCchLenW(LPCWSTR s, size_t n)
 
 // ----------------------------------------------------------------------------
 
+#define PathGet(HPTH) StrgGet((HSTRINGW)HPTH)
 
-static bool OptInRemoveMaxPathLimit()
+// ----------------------------------------------------------------------------
+
+static bool HasOptInToRemoveMaxPathLimit()
 {
     static int s_MaxPathLimitRemoved = -1;
 
@@ -211,7 +215,6 @@ static bool OptInRemoveMaxPathLimit()
 }
 // ----------------------------------------------------------------------------
 
-
 __forceinline HSTRINGW ToHStrgW(HPATHL hpth)
 {
     if (!hpth)
@@ -219,6 +222,25 @@ __forceinline HSTRINGW ToHStrgW(HPATHL hpth)
     return (HSTRINGW)hpth;
 }
 // ----------------------------------------------------------------------------
+
+
+inline static void PrependLongPathPrefix(HPATHL hpth_in_out, bool bForce)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // inplace
+    if (!hstr_io)
+        return;
+
+    if (bForce || !HasOptInToRemoveMaxPathLimit()) {
+        if (bForce || (StrgGetLength(hstr_io) >= MAX_PATH)) {
+            if (StrgFind(hstr_io, PATHLONG_PREFIX, 0) != 0) {
+                StrgInsert(hstr_io, 0, PATHLONG_PREFIX);
+            }
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 
 
 /**************************************************/
@@ -273,7 +295,7 @@ bool PTHAPI Path_Append(HPATHL hpth, HPATHL hmore)
     if (!hmore_len) {
         return true;
     }
-    LPCWSTR wmore = Path_Get(hmore);
+    LPCWSTR wmore = PathGet(hmore);
 
     LPWSTR       wbuf = StrgWriteAccessBuf(hstr, hstr_len + hmore_len + PATHLONG_PREFIX_LEN + 8);
     size_t const cch = StrgGetAllocLength(hstr);
@@ -301,7 +323,7 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_out, HPATHL hpth_in)
     if (!hstr_out)
         return false;
 
-    LPCWSTR wbuf_in = Path_Get(hpth_in);
+    LPCWSTR wbuf_in = PathGet(hpth_in);
 
     LPWSTR wbuf_out = StrgWriteAccessBuf(hstr_out, Path_GetLength(hpth_in) + PATHLONG_PREFIX_LEN + 8);
     size_t const cch_out = StrgGetAllocLength(hstr_out);
@@ -330,12 +352,30 @@ bool PTHAPI Path_RemoveFileSpec(HPATHL hpth)
     LPWSTR wbuf = StrgWriteAccessBuf(hstr, hstr_len);
     size_t cch = StrgGetAllocLength(hstr);
 
-    bool const bOK = SUCCEEDED(PathCchRemoveFileSpec(wbuf, cch));
+    bool const res = SUCCEEDED(PathCchRemoveFileSpec(wbuf, cch));
     StrgSanitize(hstr);
 
-    return bOK;
+    return res;
 }
 // ----------------------------------------------------------------------------
+
+
+
+bool PTHAPI Path_StripPath(HPATHL hpth)  // get filename only
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr)
+        return false;
+
+    size_t const cnt = StrgReverseFind(hstr, L'\\');
+    if (cnt != STRINGW_INVALID_IDX) {
+        StrgDelete(hstr, 0, cnt + 1);
+        return true;
+    }
+    return false;
+}
+// ----------------------------------------------------------------------------
+
 
 
 bool PTHAPI Path_RenameExtension(HPATHL hpth, const wchar_t* ext)
@@ -369,21 +409,16 @@ void PTHAPI Path_ExpandEnvStrings(HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-bool PTHAPI Path_IsExistingFile(HPATHL hpth)
+bool PTHAPI Path_IsExistingFile(const HPATHL hpth)
 {
     HSTRINGW hstr = ToHStrgW(hpth);
     if (!hstr)
         return false;
 
-    HSTRINGW hxpth = StrgCopy(hstr);
-    if (!OptInRemoveMaxPathLimit()) {
-        if (StrgFind(hxpth, PATHLONG_PREFIX, 0) != 0) {
-            StrgInsert(hxpth, 0, PATHLONG_PREFIX);
-        }
-    }
-    LPCWSTR expth_buf = StrgWriteAccessBuf(hxpth, 1);
-
-    DWORD const dwFileAttrib = GetFileAttributesW(expth_buf);
+    HPATHL hxpth = Path_Allocate(StrgGet(hstr));
+    PrependLongPathPrefix(hxpth, false);
+    DWORD const dwFileAttrib = GetFileAttributesW(PathGet(hxpth));
+    Path_Release(hxpth);
 
     ///bool const  bAccessOK = (dwFileAttrib != INVALID_FILE_ATTRIBUTES);
     ///if (!bAccessOK) {
@@ -466,6 +501,8 @@ DWORD PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out)
     if (!hstr_io)
         return 0UL;
 
+    PrependLongPathPrefix(hpth_in_out, false); // TODO: check or true ?
+
     DWORD const    len = (size_t)GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
     wchar_t* const buf = StrgWriteAccessBuf(hstr_io, (size_t)len);
 
@@ -487,7 +524,7 @@ DWORD PTHAPI GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer)
     HPATHL      hpth = Path_Allocate(lpszPath);
     DWORD const dwRet = Path_GetLongPathNameEx(hpth);
     if (dwRet) {
-        StringCchCopyW(lpszPath, cchBuffer, Path_Get(hpth));
+        StringCchCopyW(lpszPath, cchBuffer, PathGet(hpth));
     }
     Path_Release(hpth);
     return dwRet;
@@ -519,7 +556,7 @@ bool PTHAPI PathGetKnownFolder(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t c
     HPATHL     hpth = Path_Allocate(NULL);
     bool const res = Path_GetKnownFolder(rfid, hpth);
     if (res) {
-        StringCchCopyW(lpOutPath, cchOut, Path_Get(hpth));
+        StringCchCopyW(lpOutPath, cchOut, PathGet(hpth));
     }
     Path_Release(hpth);
     return res;
@@ -583,6 +620,7 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out)
        res = Path_Canonicalize(hpth_in_out, pth_cpy);
        Path_Release(pth_cpy);
    }
+   PrependLongPathPrefix(hpth_in_out, false);
    return res;
 }
 
@@ -591,12 +629,108 @@ bool PTHAPI PathCanonicalizeEx(LPWSTR lpszPath, size_t cchPath)
     HPATHL   hpth = Path_Allocate(lpszPath);
     bool const res = Path_CanonicalizeEx(hpth);
     if (res) {
-        StringCchCopyW(lpszPath, cchPath, Path_Get(hpth));
+        StringCchCopyW(lpszPath, cchPath, PathGet(hpth));
     }
     Path_Release(hpth);
     return res;
 }
 
+
+//=============================================================================
+//
+//  NormalizePathEx()
+//
+size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, bool bRealPath, bool bSearchPathIfRelative)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // inplace hpth_in_out
+    if (!hstr_io)
+        return false;
+
+    ExpandEnvironmentStrg(hstr_io);
+
+    // strg beg/end: clear spaces and quote s
+    StrgTrim(hstr_io, L'"');
+    StrgTrim(hstr_io, L'\'');
+
+    if (_PathIsRelative(hpth_in_out)) {
+        HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_wrkdir));
+        Path_Append(hsrch_pth, hpth_in_out);
+        if (bSearchPathIfRelative) {
+            if (!Path_IsExistingFile(hsrch_pth)) {
+                Path_StripPath(hsrch_pth);
+                HSTRINGW hsrch_str = StrgCreate();
+                wchar_t* const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
+                if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
+                    Path_Reset(hpth_in_out, buf);
+                    //PrependLongPathPrefix(hpth_in_out, false);
+                }
+                else {
+                    Path_Reset(hpth_in_out, PathGet(hsrch_pth));
+                }
+                StrgDestroy(hsrch_str);
+            }
+        }
+        Path_Release(hsrch_pth);
+    }
+
+    Path_GetLongPathNameEx(hpth_in_out);
+    Path_CanonicalizeEx(hpth_in_out);
+
+    // TODO: ...
+    //if (Path_IsLnkFile(hpth_in_out)) {
+    //    Path_GetLnkPath(hpth_in_out);
+    //}
+
+    if (bRealPath) {
+        // get real path name (by zufuliu)
+        const wchar_t* const path_io = PathGet(hpth_in_out);
+        HANDLE const   hFile = CreateFileW(path_io, // file to open
+            GENERIC_READ,                                       // open for reading
+            FILE_SHARE_READ | FILE_SHARE_WRITE,                 // share anyway
+            NULL,                                               // default security
+            OPEN_EXISTING,                                      // existing file only
+            FILE_ATTRIBUTE_NORMAL,                              // normal file
+            NULL);                                              // no attr. template
+
+        if (IS_VALID_HANDLE(hFile)) {
+
+            HSTRINGW       hstr = StrgCreate();
+            wchar_t* const buf = StrgWriteAccessBuf(hstr, PATHLONG_MAX_CCH);
+
+            if (GetFinalPathNameByHandleW(hFile, buf, PATHLONG_MAX_CCH, FILE_NAME_OPENED) > 0) {
+                StrgSanitize(hstr);
+                // remove prefix
+                if (wcslen(buf) < MAX_PATH) {
+                    if (wcsncmp(buf, PATHLONG_PREFIX, PATHLONG_PREFIX_LEN) == 0) {
+                        WCHAR* ptr = buf + 4;
+                        if (wcsncmp(ptr, PATHUNC_PREFIX, PATHUNC_PREFIX_LEN) == 0) {
+                            ptr += 2;
+                            *ptr = L'\\';
+                        }
+                        Path_Reset(hpth_in_out, ptr);
+                    }
+                }
+            }
+            CloseHandle(hFile);
+            StrgDestroy(hstr);
+        }
+    }
+    return Path_GetLength(hpth_in_out);
+}
+
+size_t PTHAPI NormalizePathEx(LPWSTR lpszPath, DWORD cchPath, LPCWSTR lpszWorkDir, bool bRealPath, bool bSearchPathIfRelative)
+{
+    HPATHL hpth = Path_Allocate(lpszPath);
+    HPATHL const hwrk = Path_Allocate(lpszWorkDir);
+
+    size_t len = Path_NormalizeEx(hpth, hwrk, bRealPath, bSearchPathIfRelative);
+    if (len) {
+        StringCchCopyW(lpszPath, cchPath, PathGet(hpth));
+    }
+    Path_Release(hpth);
+    Path_Release(hwrk);
+    return len;
+}
 
 
 //=============================================================================
@@ -616,7 +750,7 @@ void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest)
 {
     HPATHL hpth = Path_Allocate(NULL);
     Path_GetAppDirectory(hpth);
-    const wchar_t* buf = Path_Get(hpth);
+    const wchar_t* buf = PathGet(hpth);
     if (buf) {
         StringCchCopyW(lpszDest, cchDest, buf);
     }
@@ -626,10 +760,55 @@ void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest)
 
 
 
+
 // ============================================================================
 // Some Old MAX_PATH stuff
 // TODO: refactor to DynStrg parameter
 // ============================================================================
+
+
+//=============================================================================
+//
+//  _SHGetFileInfoEx()
+//
+//  Return a default name when the file has been removed, and always append
+//  a filename extension
+//
+static DWORD_PTR _SHGetFileInfoEx(LPCWSTR pszPath, DWORD dwFileAttributes,
+    SHFILEINFO* psfi, UINT cbFileInfo, UINT uFlags)
+{
+    if (PathIsExistingFile(pszPath)) {
+        DWORD_PTR dw = SHGetFileInfo(pszPath, dwFileAttributes, psfi, cbFileInfo, uFlags);
+        if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH)) {
+            StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
+        }
+        return (dw);
+    }
+
+    DWORD_PTR dw = SHGetFileInfo(pszPath, FILE_ATTRIBUTE_NORMAL, psfi, cbFileInfo, uFlags | SHGFI_USEFILEATTRIBUTES);
+    if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH)) {
+        StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
+    }
+    return (dw);
+}
+
+//=============================================================================
+//
+//  PathResolveDisplayName()
+//
+void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath)
+{
+    SHFILEINFO shfi;
+    UINT const shfi_size = (UINT)sizeof(SHFILEINFO);
+    ZeroMemory(&shfi, shfi_size);
+    if (_SHGetFileInfoEx(lpszSourcePath, FILE_ATTRIBUTE_NORMAL, &shfi, shfi_size, SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES)) {
+        StringCchCopy(lpszDestPath, cchDestBuffer, shfi.szDisplayName);
+    }
+    else {
+        StringCchCopy(lpszDestPath, cchDestBuffer, PathFindFileName(lpszSourcePath));
+    }
+}
+
 
 
 //=============================================================================
@@ -959,141 +1138,30 @@ bool PTHAPI PathCreateFavLnk(LPCWSTR pszName, LPCWSTR pszTarget, LPCWSTR pszDir)
 }
 
 
-//=============================================================================
-//
-//  _SHGetFileInfoEx()
-//
-//  Return a default name when the file has been removed, and always append
-//  a filename extension
-//
-static DWORD_PTR _SHGetFileInfoEx(LPCWSTR pszPath, DWORD dwFileAttributes,
-    SHFILEINFO* psfi, UINT cbFileInfo, UINT uFlags)
-{
-    if (PathIsExistingFile(pszPath)) {
-        DWORD_PTR dw = SHGetFileInfo(pszPath, dwFileAttributes, psfi, cbFileInfo, uFlags);
-        if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH)) {
-            StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
-        }
-        return (dw);
-    }
-
-    DWORD_PTR dw = SHGetFileInfo(pszPath, FILE_ATTRIBUTE_NORMAL, psfi, cbFileInfo, uFlags | SHGFI_USEFILEATTRIBUTES);
-    if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH)) {
-        StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
-    }
-    return (dw);
-}
-
-//=============================================================================
-//
-//  PathResolveDisplayName()
-//
-void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath)
-{
-    SHFILEINFO shfi;
-    UINT const shfi_size = (UINT)sizeof(SHFILEINFO);
-    ZeroMemory(&shfi, shfi_size);
-    if (_SHGetFileInfoEx(lpszSourcePath, FILE_ATTRIBUTE_NORMAL, &shfi, shfi_size, SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES)) {
-        StringCchCopy(lpszDestPath, cchDestBuffer, shfi.szDisplayName);
-    }
-    else {
-        StringCchCopy(lpszDestPath, cchDestBuffer, PathFindFileName(lpszSourcePath));
-    }
-}
-
-
-//=============================================================================
-//
-//  NormalizePathEx()
-//
-DWORD PTHAPI NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, LPCWSTR lpszWorkDir, bool bRealPath, bool bSearchPathIfRelative)
-{
-    WCHAR tmpFilePath[MAX_PATH] = { L'\0' };
-    StringCchCopyN(tmpFilePath, COUNTOF(tmpFilePath), lpszPath, cchBuffer);
-    ExpandEnvironmentStringsEx(tmpFilePath, COUNTOF(tmpFilePath));
-
-    PathUnquoteSpaces(tmpFilePath);
-
-    if (PathIsRelative(tmpFilePath)) {
-        StringCchCopy(lpszPath, cchBuffer, lpszWorkDir);
-        PathAppend(lpszPath, tmpFilePath);
-        if (bSearchPathIfRelative) {
-            if (!PathIsExistingFile(lpszPath)) {
-                PathStripPath(tmpFilePath);
-                if (SearchPath(NULL, tmpFilePath, NULL, cchBuffer, lpszPath, NULL) == 0) {
-                    StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
-                }
-            }
-        }
-    }
-    else {
-        StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
-    }
-
-    PathCanonicalizeEx(lpszPath, cchBuffer);
-    GetLongPathNameEx(lpszPath, cchBuffer);
-
-    if (PathIsLnkFile(lpszPath)) {
-        PathGetLnkPath(lpszPath, lpszPath, cchBuffer);
-    }
-
-    if (bRealPath) {
-        // get real path name (by zufuliu)
-        HANDLE hFile = CreateFile(lpszPath,     // file to open
-            GENERIC_READ,                       // open for reading
-            FILE_SHARE_READ | FILE_SHARE_WRITE, // share anyway
-            NULL,                               // default security
-            OPEN_EXISTING,                      // existing file only
-            FILE_ATTRIBUTE_NORMAL,              // normal file
-            NULL);                              // no attr. template
-
-        if (IS_VALID_HANDLE(hFile)) {
-            if (GetFinalPathNameByHandleW(hFile, tmpFilePath,
-                    COUNTOF(tmpFilePath), FILE_NAME_OPENED) > 0) {
-                if (StrCmpN(tmpFilePath, L"\\\\?\\", 4) == 0) {
-                    WCHAR* p = tmpFilePath + 4;
-                    if (StrCmpN(p, L"UNC\\", 4) == 0) {
-                        p += 2;
-                        *p = L'\\';
-                    }
-                    StringCchCopy(lpszPath, cchBuffer, p);
-                }
-            }
-            CloseHandle(hFile);
-        }
-    }
-
-    return (DWORD)StringCchLen(lpszPath, cchBuffer);
-}
-
-
-
-
 // ============================================================================
+// deprecated (intermediate only)
 // ============================================================================
-
 
 const wchar_t* PTHAPI Path_Get(HPATHL hpth)
 {
-    HSTRINGW hstr = ToHStrgW(hpth);
-    return StrgGet(hstr);
+    return StrgGet((HSTRINGW)hpth);
 }
 // ----------------------------------------------------------------------------
 
 size_t PTHAPI Path_GetBufCount(HPATHL hpth)
 {
-    HSTRINGW hstr = ToHStrgW(hpth);
-    return StrgGetAllocLength(hstr);
+    return StrgGetAllocLength((HSTRINGW)hpth);
 }
 // ----------------------------------------------------------------------------
-
 
 // get wchar buffer with at least MAX_PATH size
 // TODO: get rid of this intermediate state handler
-wchar_t *PTHAPI Path_AccessBuf(HPATHL hpth, size_t len)
+wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len)
 {
-    HSTRINGW hstr = ToHStrgW(hpth);
-    return StrgWriteAccessBuf(hstr, max(len, MAX_PATH));
+    return StrgWriteAccessBuf((HSTRINGW)hpth, max(len, MAX_PATH));
 }
-// ----------------------------------------------------------------------------
+
+
+// ============================================================================
+// ============================================================================
 
