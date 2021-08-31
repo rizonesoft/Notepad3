@@ -268,8 +268,8 @@ unsigned GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName) {
 //
 static unsigned _CheckAvailableLanguageDLLs()
 {
-    WCHAR wchRelPath[MAX_PATH];
-    WCHAR wchAbsPath[MAX_PATH];
+    WCHAR wchRelPath[MAX_PATH] = { L'\0' };
+    WCHAR wchAbsPath[MAX_PATH] = { L'\0' };
 
     unsigned count = 1; // internal instance always available
 

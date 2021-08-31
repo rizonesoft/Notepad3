@@ -1,5 +1,6 @@
 /****************************************************************/
 
+#define NOMINMAX
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
@@ -24,6 +25,23 @@ typedef struct tagSTRINGW
     size_t    alloc_length;
 
 } STRINGW;
+
+// ----------------------------------------------------------------------------
+
+// min/max
+#define _min_(x, y) (((x) > (y)) ? (y) : (x))
+#define _RETCMPMIN_             \
+    {                           \
+        return (x > y) ? y : x; \
+    }
+__forceinline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
+
+#define _max_(x, y) (((x) < (y)) ? (y) : (x))
+#define _RETCMPMAX_             \
+    {                           \
+        return (x < y) ? y : x; \
+    }
+    __forceinline size_t max_s(const size_t x, const size_t y) _RETCMPMAX_
 
 // ----------------------------------------------------------------------------
 
@@ -128,7 +146,8 @@ static void AllocW(STRINGW* pstr, size_t len)
         }
         if (pstr->data) // init
         {
-            pstr->alloc_length = alloc_len;
+            pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
+            assert(alloc_len != (pstr->alloc_length * sizeof(wchar_t)));
             pstr->data_length = 0;
             pstr->data[len] = L'\0';
             pstr->data[0] = L'\0';
@@ -168,12 +187,12 @@ static void SetCopyW(STRINGW* pstr, size_t len, const wchar_t* p)
 
 static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
 {
-    size_t old_len = StrlenW(pstr->data);
-    wchar_t* ptr = AllocBuffer(old_len + 1, sizeof(wchar_t), FALSE);
+    size_t const old_siz = StrlenW(pstr->data) + 1;
+    wchar_t* const ptr = AllocBuffer(old_siz, sizeof(wchar_t), FALSE);
     if (ptr)
     {
         wchar_t *endptr = NULL;
-        StringCchCopyNExW(ptr, old_len + 1, pstr->data, old_len, &endptr, NULL, STR_CCH_FLAGS);
+        StringCchCopyNExW(ptr, old_siz, pstr->data, old_siz, &endptr, NULL, STR_CCH_FLAGS);
         *outLen = (size_t)(endptr - pstr->data);
     }
     return ptr;
@@ -190,8 +209,8 @@ static void FreeUnusedData(STRINGW *pstr)
 
         FreeBufferW(pstr);
         pstr->data = p;
-        pstr->alloc_length = old_len + 1;
-        pstr->data_length = old_len;
+        pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
+        pstr->data_length = StrlenW(pstr->data);
     }
 }
 // ----------------------------------------------------------------------------
@@ -409,6 +428,7 @@ HSTRINGW STRAPI StrgCreate()
     STRINGW *pstr = AllocBuffer(sizeof(STRINGW), 1, TRUE);
     if (!pstr)
         return NULL;
+    pstr->data = NULL;
     return (HSTRINGW)pstr;
 }
 // ----------------------------------------------------------------------------
@@ -436,7 +456,7 @@ int STRAPI StrgSet(HSTRINGW hstr, const wchar_t* str)
 // ----------------------------------------------------------------------------
 
 
-const wchar_t* STRAPI StrgGet(HSTRINGW hstr)
+const wchar_t* STRAPI StrgGet(const HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -446,7 +466,7 @@ const wchar_t* STRAPI StrgGet(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgGetLength(HSTRINGW hstr)
+size_t STRAPI StrgGetLength(const HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -456,7 +476,7 @@ size_t STRAPI StrgGetLength(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgGetAllocLength(HSTRINGW hstr)
+size_t STRAPI StrgGetAllocLength(const HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -466,7 +486,7 @@ size_t STRAPI StrgGetAllocLength(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-int STRAPI StrgIsEmpty(HSTRINGW hstr) 
+int STRAPI StrgIsEmpty(const HSTRINGW hstr)
 { 
     return StrgGetLength(hstr) == 0;
 }
@@ -483,7 +503,7 @@ void STRAPI StrgFreeExtra(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-void STRAPI StrgEmpty(HSTRINGW hstr)
+void STRAPI StrgEmpty(const HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -493,7 +513,7 @@ void STRAPI StrgEmpty(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-void STRAPI StrgSetAt(HSTRINGW hstr, size_t index, wchar_t ch)
+void STRAPI StrgSetAt(HSTRINGW hstr, const size_t index, const wchar_t ch)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -508,7 +528,7 @@ void STRAPI StrgSetAt(HSTRINGW hstr, size_t index, wchar_t ch)
 // ----------------------------------------------------------------------------
 
 
-wchar_t STRAPI StrgGetAt(HSTRINGW hstr, size_t index)
+wchar_t STRAPI StrgGetAt(const HSTRINGW hstr, const size_t index)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -544,20 +564,19 @@ size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, const wchar_t* str)
 
     if (ins_len > 0)
     {
-        if (index > new_len)
+        if (index > new_len) {
             index = new_len;
-
+        }
         new_len += ins_len;
 
-        if (pstr->alloc_length <= new_len)
-        {
-            size_t old_len = 0;
-            wchar_t *pOld = CopyOldDataW(pstr, &old_len);
-            FreeBufferW(pstr);
-            SetCopyW(pstr, new_len, pOld);
-            FreeBuffer(pOld);
+        if (pstr->alloc_length <= new_len) {
+            size_t         old_len = 0;
+            wchar_t* const pold_data = CopyOldDataW(pstr, &old_len);
+            SetCopyW(pstr, new_len, pold_data);
+            FreeBuffer(pold_data);
         }
-        memcpy(pstr->data + index + ins_len, pstr->data + index, (new_len - index - ins_len + 1) * sizeof(wchar_t));
+
+        memmove(pstr->data + index + ins_len, pstr->data + index, (new_len - index - ins_len + 1) * sizeof(wchar_t));
         memcpy(pstr->data + index, str, ins_len * sizeof(wchar_t));
         pstr->data_length = new_len;
     }
@@ -567,7 +586,7 @@ size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, const wchar_t* str)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, wchar_t c)
+size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, const wchar_t c)
 {
     STRINGW *pstr = ToWStrg(hstr);
     if (!pstr)
@@ -627,7 +646,6 @@ size_t STRAPI StrgReplace(HSTRINGW hstr, const wchar_t* pOld, const wchar_t* pNe
         if (pstr->alloc_length <= new_len)
         {
             wchar_t *pOldData = CopyOldDataW(pstr, &old_len);
-            FreeBufferW(pstr);
             SetCopyW(pstr, new_len, pOld);
             FreeBuffer(pOldData);
         }
@@ -662,7 +680,7 @@ size_t STRAPI StrgRemove(HSTRINGW hstr, const wchar_t *str)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgReplaceCh(HSTRINGW hstr, wchar_t chOld, wchar_t chNew)
+size_t STRAPI StrgReplaceCh(HSTRINGW hstr, const wchar_t chOld, const wchar_t chNew)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -688,7 +706,7 @@ size_t STRAPI StrgReplaceCh(HSTRINGW hstr, wchar_t chOld, wchar_t chNew)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgRemoveCh(HSTRINGW hstr, wchar_t chRemove)
+size_t STRAPI StrgRemoveCh(HSTRINGW hstr, const wchar_t chRemove)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -717,7 +735,7 @@ size_t STRAPI StrgRemoveCh(HSTRINGW hstr, wchar_t chRemove)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgDelete(HSTRINGW hstr, size_t index, size_t count)
+size_t STRAPI StrgDelete(HSTRINGW hstr, const size_t index, size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -726,6 +744,7 @@ size_t STRAPI StrgDelete(HSTRINGW hstr, size_t index, size_t count)
     size_t const len = pstr->data_length;
     if (count > 0 && index < len)
     {
+        count = min_s(count, (len - index));
         size_t copy = len - (index + count) + 1;
         memcpy(pstr->data + index, pstr->data + index + count, (copy * sizeof(wchar_t)));
         pstr->data_length = len - count;
@@ -824,7 +843,7 @@ void STRAPI StrgTrim(HSTRINGW hstr, const wchar_t wch)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgFind(HSTRINGW hstr, const wchar_t* sub, size_t start)
+size_t STRAPI StrgFind(const HSTRINGW hstr, const wchar_t* sub, const size_t start)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -840,7 +859,7 @@ size_t STRAPI StrgFind(HSTRINGW hstr, const wchar_t* sub, size_t start)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgFindCh(HSTRINGW hstr, wchar_t ch, size_t start)
+size_t STRAPI StrgFindCh(const HSTRINGW hstr, const wchar_t ch, const size_t start)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -856,7 +875,7 @@ size_t STRAPI StrgFindCh(HSTRINGW hstr, wchar_t ch, size_t start)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgReverseFind(HSTRINGW hstr, wchar_t ch)
+size_t STRAPI StrgReverseFind(const HSTRINGW hstr, wchar_t ch)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -869,7 +888,7 @@ size_t STRAPI StrgReverseFind(HSTRINGW hstr, wchar_t ch)
 // ----------------------------------------------------------------------------
 
 
-size_t STRAPI StrgFindOneOf(HSTRINGW hstr, const wchar_t* char_set)
+size_t STRAPI StrgFindOneOf(const HSTRINGW hstr, const wchar_t* char_set)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -881,7 +900,7 @@ size_t STRAPI StrgFindOneOf(HSTRINGW hstr, const wchar_t* char_set)
 // ----------------------------------------------------------------------------
 
 
-HSTRINGW STRAPI StrgCopy(HSTRINGW hstr)
+HSTRINGW STRAPI StrgCopy(const HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -896,7 +915,7 @@ HSTRINGW STRAPI StrgCopy(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-HSTRINGW STRAPI StrgMid(HSTRINGW hstr, size_t start, size_t count)
+HSTRINGW STRAPI StrgMid(HSTRINGW hstr, const size_t start, size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -923,7 +942,7 @@ HSTRINGW STRAPI StrgMid(HSTRINGW hstr, size_t start, size_t count)
 // ----------------------------------------------------------------------------
 
 
-HSTRINGW STRAPI StrgLeft(HSTRINGW hstr, size_t count)
+HSTRINGW STRAPI StrgLeft(HSTRINGW hstr, const size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -942,7 +961,7 @@ HSTRINGW STRAPI StrgLeft(HSTRINGW hstr, size_t count)
 // ----------------------------------------------------------------------------
 
 
-HSTRINGW STRAPI StrgRight(HSTRINGW hstr, size_t count)
+HSTRINGW STRAPI StrgRight(HSTRINGW hstr, const size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)

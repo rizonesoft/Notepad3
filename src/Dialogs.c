@@ -4854,7 +4854,7 @@ void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
 static const WCHAR *pszMod = DOCMODDIFYD;
 static const WCHAR *pszSep  = L" - ";
 static WCHAR s_wchCachedFile[MAX_PATH] = { L'\0' };
-static WCHAR s_wchCachedDisplayName[MAX_PATH] = { L'\0' };
+static WCHAR s_wchCachedDisplayName[80] = { L'\0' };
 
 // ----------------------------------------------------------------------------
 
@@ -4907,7 +4907,7 @@ void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
         if ((iFormat < 2) && !PathIsRoot(lpszFile)) {
             if (StringCchCompareN(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile, MAX_PATH) != 0) {
                 StringCchCopy(s_wchCachedFile, COUNTOF(s_wchCachedFile), lpszFile);
-                PathGetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_wchCachedFile);
+                PathGetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_wchCachedFile, szUntitled);
             }
             StringCchCat(szTitle, COUNTOF(szTitle), s_wchCachedDisplayName);
             if (iFormat == 1) {

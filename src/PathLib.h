@@ -38,12 +38,13 @@ void PTHAPI            Path_Release(HPATHL hstr);
 int PTHAPI             Path_Reset(HPATHL hpth, const wchar_t* path);
 size_t PTHAPI          Path_GetLength(HPATHL hpth);
 bool PTHAPI            Path_Append(HPATHL hpth, HPATHL hmore);
-bool PTHAPI            Path_Canonicalize(HPATHL hpth_out, HPATHL hpth_in);
+bool PTHAPI            Path_Canonicalize(HPATHL hpth_out, const HPATHL hpth_in);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, const wchar_t* ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth);
 bool PTHAPI            Path_IsExistingFile(const HPATHL hpth);
 void PTHAPI            Path_GetModuleFileName(HPATHL hpth_out);
+bool PTHAPI            Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth);
 
 // -------------------------------------------------------
 
@@ -84,8 +85,8 @@ inline bool PathIsExistingFile(LPCWSTR pszPath)
 void PTHAPI ExpandEnvironmentStrg(HSTRINGW hstr);
 void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
 
-DWORD PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out);
-DWORD PTHAPI GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
+size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out);
+size_t PTHAPI GetLongPathNameEx(LPWSTR lpszPath, const size_t cchBuffer);
 
 bool PTHAPI Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
 bool PTHAPI PathGetKnownFolder(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchOut);
@@ -94,20 +95,24 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out);
 bool PTHAPI PathCanonicalizeEx(LPWSTR lpszPath, size_t cchPath);
 
 size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, bool bRealPath, bool bSearchPathIfRelative);
-size_t PTHAPI NormalizePathEx(LPWSTR lpszPath, DWORD cchPath, LPCWSTR lpszWorkDir, bool bRealPath, bool bSearchPathIfRelative);
+size_t PTHAPI NormalizePathEx(LPWSTR lpszPath, size_t cchPath, LPCWSTR lpszWorkDir, bool bRealPath, bool bSearchPathIfRelative);
 
 void PTHAPI Path_GetAppDirectory(HPATHL hpth_out);
-void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
+void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, size_t cchDest);
+
+void PTHAPI Path_AbsoluteFromApp(const HPATHL hpth_in, HPATHL hpth_out, bool bExpandEnv);
+void PTHAPI PathAbsoluteFromApp(LPWSTR lpszSrc, LPWSTR lpszDest, const size_t cchDest, bool bExpandEnv);
+
+void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffer, const HPATHL hpth_in, const wchar_t* repl);
+void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, const size_t cchDestBuffer, LPCWSTR lpszSourcePath, const wchar_t* repl);
+
 
 
 // ============================================================================
 // Some Old MAX_PATH stuff
 // ============================================================================
 
-void PTHAPI   PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
-
 void PTHAPI   PathRelativeToApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool, bool, bool);
-void PTHAPI   PathAbsoluteFromApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool);
 
 bool PTHAPI   PathIsLnkFile(LPCWSTR pszPath);
 bool PTHAPI   PathGetLnkPath(LPCWSTR pszLnkFile, LPWSTR pszResPath, int cchResPath);

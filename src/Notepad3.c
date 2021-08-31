@@ -1680,15 +1680,16 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     // print file immediately and quit
     if (Globals.CmdLnFlag_PrintFileAndLeave) {
         WCHAR *pszTitle;
-        WCHAR tchUntitled[32] = { L'\0' };
         WCHAR tchPageFmt[32] = { L'\0' };
-        WCHAR szDisplayName[MAX_PATH];
+        WCHAR szDisplayName[80];
+
+        WCHAR tchUntitled[32] = { L'\0' };
+        GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
 
         if (StrIsNotEmpty(Paths.CurrentFile)) {
-            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile);
+            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, tchUntitled);
             pszTitle = szDisplayName;
         } else {
-            GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
             pszTitle = tchUntitled;
         }
 
@@ -4277,15 +4278,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_PRINT: {
         WCHAR *pszTitle;
-        WCHAR tchUntitled[32] = { L'\0' };
         WCHAR tchPageFmt[32] = { L'\0' };
-        WCHAR szDisplayName[MAX_PATH];
+        WCHAR szDisplayName[80];
+
+        WCHAR tchUntitled[32] = { L'\0' };
+        GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
 
         if (StrIsNotEmpty(Paths.CurrentFile)) {
-            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile);
+            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, tchUntitled);
             pszTitle = szDisplayName;
         } else {
-            GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
             pszTitle = tchUntitled;
         }
 
@@ -4346,8 +4348,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_ADDTOFAV:
         if (StrIsNotEmpty(Paths.CurrentFile)) {
-            WCHAR szDisplayName[MAX_PATH];
-            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile);
+            WCHAR szDisplayName[80];
+            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, L"");
             AddToFavDlg(hwnd, szDisplayName, Paths.CurrentFile);
         }
         break;
@@ -4952,16 +4954,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INSERT_PATHNAME: {
         WCHAR *pszInsert;
         WCHAR tchUntitled[32];
-        WCHAR szDisplayName[MAX_PATH];
+        WCHAR szBaseFileName[MAX_PATH];
 
         if (StrIsNotEmpty(Paths.CurrentFile)) {
             if (iLoWParam == IDM_EDIT_INSERT_FILENAME) {
-                PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile);
-                pszInsert = szDisplayName;
+                StringCchCopy(szBaseFileName, COUNTOF(szBaseFileName), Paths.CurrentFile);
+                PathStripPath(szBaseFileName);
+                pszInsert = szBaseFileName;
             } else if (iLoWParam == IDM_EDIT_INSERT_DIRNAME) {
-                StringCchCopy(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile);
-                PathRemoveFileSpec(szDisplayName);
-                pszInsert = szDisplayName;
+                StringCchCopy(szBaseFileName, COUNTOF(szBaseFileName), Paths.CurrentFile);
+                PathRemoveFileSpec(szBaseFileName);
+                pszInsert = szBaseFileName;
             } else {
                 pszInsert = Paths.CurrentFile;
             }
@@ -11267,15 +11270,16 @@ void SetNotifyIconTitle(HWND hwnd)
     nid.uFlags = NIF_TIP;
     nid.szTip[0] = L'\0';
 
-    WCHAR tchTitle[256] = { L'\0' };
+    WCHAR tchTitle[128] = { L'\0' };
     if (StrIsNotEmpty(s_wchTitleExcerpt)) {
         WCHAR tchFormat[32] = { L'\0' };
         GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
         StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);
     } else if (StrIsNotEmpty(Paths.CurrentFile)) {
-        WCHAR szDisplayName[MAX_PATH];
-        PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile);
-        PathCompactPathEx(tchTitle,szDisplayName,COUNTOF(tchTitle)-4,0);
+        WCHAR szBaseFileName[MAX_PATH];
+        StringCchCopy(szBaseFileName, COUNTOF(szBaseFileName), Paths.CurrentFile);
+        PathStripPath(szBaseFileName);
+        PathCompactPathEx(tchTitle, szBaseFileName, COUNTOF(tchTitle) - 4, 0);
     } else {
         GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
     }
