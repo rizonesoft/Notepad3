@@ -466,6 +466,13 @@ const wchar_t* STRAPI StrgGet(const HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
+int STRAPI StrgIsEmpty(const HSTRINGW hstr)
+{
+    return (StrgGetLength(hstr) == 0);
+}
+// ----------------------------------------------------------------------------
+
+
 size_t STRAPI StrgGetLength(const HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
@@ -482,13 +489,6 @@ size_t STRAPI StrgGetAllocLength(const HSTRINGW hstr)
     if (!pstr)
         return 0;
     return pstr->alloc_length;
-}
-// ----------------------------------------------------------------------------
-
-
-int STRAPI StrgIsEmpty(const HSTRINGW hstr)
-{ 
-    return StrgGetLength(hstr) == 0;
 }
 // ----------------------------------------------------------------------------
 

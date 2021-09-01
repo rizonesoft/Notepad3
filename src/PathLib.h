@@ -39,10 +39,10 @@ int PTHAPI             Path_Reset(HPATHL hpth, const wchar_t* path);
 size_t PTHAPI          Path_GetLength(HPATHL hpth);
 bool PTHAPI            Path_Append(HPATHL hpth, HPATHL hmore);
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_out, const HPATHL hpth_in);
+bool PTHAPI            Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, const wchar_t* ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth);
-bool PTHAPI            Path_IsExistingFile(const HPATHL hpth);
 void PTHAPI            Path_GetModuleFileName(HPATHL hpth_out);
 bool PTHAPI            Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth);
 
@@ -62,25 +62,28 @@ wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len);
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-inline bool IsReadOnly(const DWORD dwFileAttr)
+__forceinline bool IsReadOnly(const DWORD dwFileAttr)
 {
     return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
 }
 
-inline bool IsExistingFile(const DWORD dwFileAttr)
+__forceinline bool IsExistingFile(const DWORD dwFileAttr)
 {
     return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && !(dwFileAttr & FILE_ATTRIBUTE_DIRECTORY));
 }
 
-inline bool PathIsExistingFile(LPCWSTR pszPath)
+__forceinline bool IsExistingDirectory(const DWORD dwFileAttr)
 {
-    return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
+    return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 
 // ============================================================================
 // Duplicates for INTERMEDIATE DEV
 // ============================================================================
+
+bool PTHAPI Path_IsExistingFile(const HPATHL hpth);
+bool PTHAPI PathIsExistingFile(LPCWSTR pszPath);
 
 void PTHAPI ExpandEnvironmentStrg(HSTRINGW hstr);
 void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);

@@ -368,6 +368,27 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_out, const HPATHL hpth_in)
 // ----------------------------------------------------------------------------
 
 
+bool PTHAPI Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out)
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr)
+        return false;
+
+    //PrependLongPathPrefix(hpth, false);
+
+    wchar_t const buffer[1024] = { L'\0' };
+    const wchar_t* server_name = (server_name_out ? buffer : NULL);
+
+    bool const res = PathIsUNCEx(PathGet(hpth), &server_name);
+
+    if (server_name) {
+        StrgSet(server_name_out, server_name);
+    }
+    return res;
+}
+// ----------------------------------------------------------------------------
+
+
 bool PTHAPI Path_RemoveFileSpec(HPATHL hpth)
 {
     HSTRINGW hstr = ToHStrgW(hpth);
@@ -389,7 +410,6 @@ bool PTHAPI Path_RemoveFileSpec(HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-
 bool PTHAPI Path_StripPath(HPATHL hpth)  // get filename only
 {
     HSTRINGW hstr = ToHStrgW(hpth);
@@ -404,7 +424,6 @@ bool PTHAPI Path_StripPath(HPATHL hpth)  // get filename only
     return false;
 }
 // ----------------------------------------------------------------------------
-
 
 
 bool PTHAPI Path_RenameExtension(HPATHL hpth, const wchar_t* ext)
@@ -425,7 +444,6 @@ bool PTHAPI Path_RenameExtension(HPATHL hpth, const wchar_t* ext)
 
     return bOK;
 }
-
 // ----------------------------------------------------------------------------
 
 
@@ -436,38 +454,6 @@ void PTHAPI Path_ExpandEnvStrings(HPATHL hpth)
         return;
     
     ExpandEnvironmentStrg(hstr);
-}
-// ----------------------------------------------------------------------------
-
-
-bool PTHAPI Path_IsExistingFile(const HPATHL hpth)
-{
-    HSTRINGW hstr = ToHStrgW(hpth);
-    if (!hstr)
-        return false;
-
-    HPATHL hxpth = Path_Allocate(StrgGet(hstr));
-    PrependLongPathPrefix(hxpth, false);
-    DWORD const dwFileAttrib = GetFileAttributesW(PathGet(hxpth));
-    Path_Release(hxpth);
-
-    ///bool const  bAccessOK = (dwFileAttrib != INVALID_FILE_ATTRIBUTES);
-    ///if (!bAccessOK) {
-    ///    DWORD const dwError = GetLastError();
-    ///    switch (dwError) {
-    ///    case ERROR_FILE_NOT_FOUND:
-    ///        break;
-    ///    case ERROR_PATH_NOT_FOUND:
-    ///        break;
-    ///    case ERROR_ACCESS_DENIED:
-    ///        break;
-    ///    default:
-    ///        break;
-    ///    }
-    ///}
-    ///bool const bIsDirectory = (dwFileAttrib & FILE_ATTRIBUTE_DIRECTORY);
-
-    return IsExistingFile(dwFileAttrib);
 }
 // ----------------------------------------------------------------------------
 
@@ -535,6 +521,51 @@ size_t PTHAPI Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2, HPATHL h
 // ============================================================================
 // Old Stuff in INTERMEDIATE DEV state
 // ============================================================================
+
+
+//=============================================================================
+//
+//  PathIsExistingFile()
+//
+bool PTHAPI Path_IsExistingFile(const HPATHL hpth)
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr)
+        return false;
+
+    HPATHL hxpth = Path_Allocate(StrgGet(hstr));
+    PrependLongPathPrefix(hxpth, false);
+    DWORD const dwFileAttrib = GetFileAttributesW(PathGet(hxpth));
+    Path_Release(hxpth);
+
+    ///bool const  bAccessOK = (dwFileAttrib != INVALID_FILE_ATTRIBUTES);
+    ///if (!bAccessOK) {
+    ///    DWORD const dwError = GetLastError();
+    ///    switch (dwError) {
+    ///    case ERROR_FILE_NOT_FOUND:
+    ///        break;
+    ///    case ERROR_PATH_NOT_FOUND:
+    ///        break;
+    ///    case ERROR_ACCESS_DENIED:
+    ///        break;
+    ///    default:
+    ///        break;
+    ///    }
+    ///}
+    ///bool const bIsDirectory = (dwFileAttrib & FILE_ATTRIBUTE_DIRECTORY);
+
+    return IsExistingFile(dwFileAttrib);
+}
+
+
+bool PTHAPI PathIsExistingFile(LPCWSTR pszPath)
+{
+    //return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
+    HPATHL const hpth = Path_Allocate(pszPath);
+    bool const   res = Path_IsExistingFile(hpth);
+    Path_Release(hpth);
+    return res;
+}
 
 
 //=============================================================================

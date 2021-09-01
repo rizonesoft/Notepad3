@@ -37,9 +37,9 @@ DECLARE_HANDLE(HSTRINGW);
 HSTRINGW STRAPI          StrgCreate();
 void STRAPI              StrgDestroy(HSTRINGW hstr);
 
+int STRAPI               StrgIsEmpty(const HSTRINGW hstr);
 size_t STRAPI            StrgGetLength(const HSTRINGW hstr);
 size_t STRAPI            StrgGetAllocLength(const HSTRINGW hstr);
-int STRAPI               StrgIsEmpty(const HSTRINGW hstr);
 
 void STRAPI              StrgFreeExtra(HSTRINGW hstr);
 void STRAPI              StrgEmpty(HSTRINGW hstr);
