@@ -100,8 +100,8 @@ size_t PTHAPI NormalizePathEx(LPWSTR lpszPath, size_t cchPath, LPCWSTR lpszWorkD
 void PTHAPI Path_GetAppDirectory(HPATHL hpth_out);
 void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, size_t cchDest);
 
-void PTHAPI Path_AbsoluteFromApp(const HPATHL hpth_in, HPATHL hpth_out, bool bExpandEnv);
-void PTHAPI PathAbsoluteFromApp(LPWSTR lpszSrc, LPWSTR lpszDest, const size_t cchDest, bool bExpandEnv);
+void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv);
+void PTHAPI PathAbsoluteFromApp(LPWSTR lpszPath, const size_t cchPath, bool bExpandEnv);
 
 void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffer, const HPATHL hpth_in, const wchar_t* repl);
 void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, const size_t cchDestBuffer, LPCWSTR lpszSourcePath, const wchar_t* repl);

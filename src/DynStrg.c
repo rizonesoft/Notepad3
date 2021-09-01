@@ -131,7 +131,7 @@ inline static void FreeBufferW(STRINGW* pstr) {
 }
 // ----------------------------------------------------------------------------
 
-static void AllocW(STRINGW* pstr, size_t len)
+static void ReAllocW(STRINGW* pstr, size_t len)
 {
     if (len == 0)
         FreeBufferW(pstr);
@@ -161,7 +161,7 @@ static void AllocCopyW(STRINGW* pstr, STRINGW* pDest, size_t copy_len, size_t co
     size_t new_len = copy_len + extra_len;
     if (new_len > 0)
     {
-        AllocW(pDest, new_len);
+        ReAllocW(pDest, new_len);
         wchar_t * endptr = NULL;
         StringCchCopyNExW(pDest->data, pDest->alloc_length, pstr->data + copy_index, copy_len, &endptr, NULL, STR_CCH_FLAGS);
         pDest->data_length = (size_t)(endptr - pDest->data);
@@ -180,7 +180,7 @@ static void CopyW(STRINGW *pstr, size_t len, const wchar_t *p) {
 
 static void SetCopyW(STRINGW* pstr, size_t len, const wchar_t* p)
 {
-    AllocW(pstr, len);
+    ReAllocW(pstr, len);
     CopyW(pstr, len, p);
 }
 // ----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ static void CopyConcatW(STRINGW *pstr, size_t len1, const wchar_t *p1, size_t le
     size_t const new_len = len1 + len2;
     if (new_len != 0)
     {
-        AllocW(pstr, new_len);
+        ReAllocW(pstr, new_len);
         StringCchCopyNW(pstr->data, pstr->alloc_length, p1, len1);
         StringCchCatNW(pstr->data, pstr->alloc_length, p2, len2);
         pstr->data_length = new_len;
@@ -407,7 +407,7 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
         max_len += item_len;
     }
 
-    AllocW(pstr, max_len);
+    ReAllocW(pstr, max_len);
 
     wchar_t* endptr = NULL;
     StringCchVPrintfExW(pstr->data, pstr->alloc_length, &endptr, NULL, STR_CCH_FLAGS, fmt, orig_list);

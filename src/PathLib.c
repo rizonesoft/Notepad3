@@ -156,6 +156,22 @@ const wchar_t* const PATH_CSIDL_MYDOCUMENTS = L"%CSIDL:MYDOCUMENTS%";
 
 #define IS_VALID_HANDLE(HNDL) ((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE))
 
+// ----------------------------------------------------------------------------
+//
+// HPATHL == HSTRINGW  w/o typedef
+//
+__forceinline HSTRINGW ToHStrgW(HPATHL hpth)
+{
+    if (!hpth)
+        return NULL;
+    return (HSTRINGW)hpth;
+}
+
+#define PathGet(HPTH) StrgGet((HSTRINGW)HPTH)
+
+// ----------------------------------------------------------------------------
+
+
 //==== StrSafe extensions =======================================================
 
 __forceinline bool StrIsEmptyW(LPCWSTR s)
@@ -187,7 +203,7 @@ __forceinline size_t StringCchLenW(LPCWSTR s, const size_t n)
 
 // ----------------------------------------------------------------------------
 
-// min/max
+// typesafe min/max
 #define _min_(x,y) (((x) > (y)) ? (y) : (x))
 #define _RETCMPMIN_  { return (x > y) ? y : x; }
 __forceinline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
@@ -198,9 +214,6 @@ __forceinline size_t max_s(const size_t x, const size_t y) _RETCMPMAX_
 
 // ----------------------------------------------------------------------------
 
-#define PathGet(HPTH) StrgGet((HSTRINGW)HPTH)
-
-// ----------------------------------------------------------------------------
 
 static bool HasOptInToRemoveMaxPathLimit()
 {
@@ -231,14 +244,6 @@ static bool HasOptInToRemoveMaxPathLimit()
         break;
     }
     return false;
-}
-// ----------------------------------------------------------------------------
-
-__forceinline HSTRINGW ToHStrgW(HPATHL hpth)
-{
-    if (!hpth)
-        return NULL;
-    return (HSTRINGW)hpth;
 }
 // ----------------------------------------------------------------------------
 
@@ -316,6 +321,8 @@ bool PTHAPI Path_Append(HPATHL hpth, HPATHL hmore)
     }
     LPCWSTR wmore = PathGet(hmore);
 
+    PrependLongPathPrefix(hpth, false);
+
     LPWSTR       wbuf = StrgWriteAccessBuf(hstr, hstr_len + hmore_len + PATHLONG_PREFIX_LEN + 8);
     size_t const cch = StrgGetAllocLength(hstr);
 
@@ -336,13 +343,14 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_out, const HPATHL hpth_in)
     if (!hstr_out)
         return false;
 
-    LPWSTR wbuf_out = StrgWriteAccessBuf(hstr_out, Path_GetLength(hpth_in) + PATHLONG_PREFIX_LEN + 8);
-    size_t const cch_out = StrgGetAllocLength(hstr_out);
-
     DWORD const dwFlags = PATHCCH_ALLOW_LONG_PATHS;
     //  Windows 10, version 1703:
     //  PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS | PATHCCH_ENSURE_IS_EXTENDED_LENGTH_PATH
     //  PATHCCH_ENSURE_TRAILING_SLASH
+    PrependLongPathPrefix(hpth_out, false);
+
+    LPWSTR       wbuf_out = StrgWriteAccessBuf(hstr_out, Path_GetLength(hpth_in) + PATHLONG_PREFIX_LEN + 8);
+    size_t const cch_out = StrgGetAllocLength(hstr_out);
 
     // PathCchCanonicalizeEx() does not convert forward slashes (/) into back slashes (\).
     // With untrusted input, this function by itself, cannot be used to convert
@@ -351,6 +359,7 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_out, const HPATHL hpth_in)
     // using this function.
     HSTRINGW hstr_in = ToHStrgW(hpth_in);
     StrgReplaceCh(hstr_in, L'/', L'\\');
+    PathCchRemoveBackslashEx(wbuf_out, cch_out, NULL, NULL);
     bool const res = SUCCEEDED(PathCchCanonicalizeEx(wbuf_out, cch_out, StrgGet(hstr_in), dwFlags));
     StrgSanitize(hstr_out);
 
@@ -365,6 +374,8 @@ bool PTHAPI Path_RemoveFileSpec(HPATHL hpth)
     if (!hstr)
         return false;
     
+    PrependLongPathPrefix(hpth, false);
+
     size_t const hstr_len = StrgGetLength(hstr);
 
     LPWSTR wbuf = StrgWriteAccessBuf(hstr, hstr_len);
@@ -402,6 +413,8 @@ bool PTHAPI Path_RenameExtension(HPATHL hpth, const wchar_t* ext)
     if (!hstr)
         return false;
     
+    PrependLongPathPrefix(hpth, false);
+
     size_t const hstr_len = StrgGetLength(hstr);
 
     LPWSTR wbuf = StrgWriteAccessBuf(hstr, hstr_len + 64);
@@ -828,23 +841,17 @@ void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, size_t cchDest)
 //
 //  PathAbsoluteFromApp()
 //
-void PTHAPI Path_AbsoluteFromApp(const HPATHL hpth_in, HPATHL hpth_out, bool bExpandEnv)
+void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
 {
-    HSTRINGW hstr_out = ToHStrgW(hpth_out); // inplace hpth_in_out
-    if (!hstr_out) {
+    HSTRINGW hstr_in_out = ToHStrgW(hpth_in_out); // inplace hpth_in_out
+    if (!hstr_in_out) {
         return;
     }
 
-    HSTRINGW hstr_in = ToHStrgW(hpth_in); // inplace hpth_in_out
-    if (!hstr_in) {
-        StrgEmpty(hstr_out);
-        return;
-    }
-
-    HPATHL htmp_pth = Path_Allocate(StrgGet(hstr_in));
+    HPATHL   htmp_pth = Path_Allocate(PathGet(hpth_in_out));
     HSTRINGW htmp_str = ToHStrgW(htmp_pth); // inplace hpth_in_out
-    
-    if (StrgFind(hstr_in, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
+
+    if (StrgFind(hstr_in_out, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
         HPATHL hfld_pth = Path_Allocate(NULL);
         Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth);
         StrgReplace(htmp_str, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
@@ -856,15 +863,15 @@ void PTHAPI Path_AbsoluteFromApp(const HPATHL hpth_in, HPATHL hpth_out, bool bEx
     }
 
     if (_Path_IsRelative(htmp_pth)) {
-        Path_GetAppDirectory(hpth_out);
-        Path_Append(hpth_out, htmp_pth);
+        Path_GetAppDirectory(hpth_in_out);
+        Path_Append(hpth_in_out, htmp_pth);
     }
     else {
-        Path_Reset(hpth_out, PathGet(htmp_pth));
+        Path_Reset(hpth_in_out, PathGet(htmp_pth));
     }
     Path_Release(htmp_pth);
 
-    Path_CanonicalizeEx(hpth_out);
+    Path_CanonicalizeEx(hpth_in_out);
 
     // TODO:
     //if (PathGetDriveNumber(wchResult) != -1) {
@@ -872,22 +879,12 @@ void PTHAPI Path_AbsoluteFromApp(const HPATHL hpth_in, HPATHL hpth_out, bool bEx
     //}
 }
 
-void PTHAPI PathAbsoluteFromApp(LPWSTR lpszSrc, LPWSTR lpszDest, const size_t cchDest, bool bExpandEnv)
+void PTHAPI PathAbsoluteFromApp(LPWSTR lpszPath, const size_t cchPath, bool bExpandEnv)
 {
-    HPATHL hpth_in = Path_Allocate(lpszSrc);
-    HPATHL hpth_out = Path_Allocate(NULL);
-
-    Path_AbsoluteFromApp(hpth_in, hpth_out, bExpandEnv);
-
-    if (lpszDest == NULL || lpszSrc == lpszDest) {
-        StringCchCopyW(lpszSrc, ((cchDest == 0) ? PATHLONG_MAX_CCH : cchDest), PathGet(hpth_out));
-    }
-    else {
-        StringCchCopyW(lpszDest, ((cchDest == 0) ? PATHLONG_MAX_CCH : cchDest), PathGet(hpth_out));
-    }
-
-    Path_Release(hpth_out);
-    Path_Release(hpth_in);
+    HPATHL hpth_in_out = Path_Allocate(lpszPath);
+    Path_AbsoluteFromApp(hpth_in_out, bExpandEnv);
+    StringCchCopyW(lpszPath, ((cchPath == 0) ? PATHLONG_MAX_CCH : cchPath), PathGet(hpth_in_out));
+    Path_Release(hpth_in_out);
 }
 
 
@@ -897,76 +894,88 @@ void PTHAPI PathAbsoluteFromApp(LPWSTR lpszSrc, LPWSTR lpszDest, const size_t cc
 // Need LongPath Impl of:
 // - PathRelativePathTo()
 // - PathUnExpandEnvStrings()
-// - GetWindowsDirectoryW()
 //
 #if 0
-void PTHAPI Path_RelativeToApp(const HPATHL hpth_in, HPATHL hpth_out,
-    bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs)
+
+static bool Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to)
 {
+
+
+}
+
+// TODO: fill dummy here
+static bool Path_UnExpandEnvStrings(const HPATHL hpth_in, HPATHL hpth_out)
+{
+    if (!hpth_in || !hpth_out) {
+        return false;
+    }
+    Path_Reset(hpth_out, PathGet(hpth_in)); // dummy: no expand, just copy
+    return true;
+}
+
+
+void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs)
+{
+    if (!hpth_in_out) {
+        return;
+    }
+
     HPATHL happdir_pth = Path_Allocate(NULL);
     Path_GetAppDirectory(happdir_pth);
 
-    HPATHL husrfiles_pth = Path_Allocate(NULL);
-    Path_GetKnownFolder(&FOLDERID_Documents, husrfiles_pth);
+    HPATHL husrdoc_pth = Path_Allocate(NULL);
+    Path_GetKnownFolder(&FOLDERID_Documents, husrdoc_pth);
 
-    (void)GetWindowsDirectoryW(wchWinDir, COUNTOF(wchWinDir));
+    HPATHL hprgs_pth = Path_Allocate(NULL);
+#ifdef _WIN64
+    Path_GetKnownFolder(&FOLDERID_ProgramFiles, hprgs_pth);
+#else
+    Path_GetKnownFolder(&FOLDERID_ProgramFilesX86, hprgs_pth);
+#endif
+    //~HPATHL hwindows_pth = Path_Allocate(NULL);
+    //~Path_GetKnownFolder(&FOLDERID_Windows, hwindows_pth); // deprecated
+
+    HPATHL htmp_pth = Path_Allocate(NULL);
+    HPATHL hres_pth = Path_Allocate(NULL);
 
     DWORD dwAttrTo = (bSrcIsFile) ? FILE_ATTRIBUTE_NORMAL : FILE_ATTRIBUTE_DIRECTORY;
-
     if (bUnexpandMyDocs &&
-        !_Path_IsRelative(hpth_in) &&
-        !Path_IsPrefix(husrfiles_pth, happdir_pth) &&
-        Path_IsPrefix(husrfiles_pth, hpth_in) &&
-        Path_RelativePathTo(hpth_in, husrfiles_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in, dwAttrTo))
+        !_Path_IsRelative(hpth_in_out) &&
+        !Path_IsPrefix(husrdoc_pth, happdir_pth) &&
+        Path_IsPrefix(husrdoc_pth, hpth_in_out) &&
+        Path_RelativePathTo(htmp_pth, husrdoc_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo))
     {
-        Path_Reset(hpth_out, PATH_CSIDL_MYDOCUMENTS);
-        Path_Append(hpth_out, hpth_in);
-        //...???
+        Path_Reset(hres_pth, PATH_CSIDL_MYDOCUMENTS);
+        Path_Append(hres_pth, htmp_pth);
     }
-    else if (_Path_IsRelative(hpth_in) || Path_CommonPrefix(happdir_pth, wchWinDir, NULL)) {
-        Path_Reset(hpth_out, PathGet(hpth_in));
-    }
-
-
-
-    if (bUnexpandMyDocs &&
-        !PathIsRelative(lpszSrc) &&
-        !PathIsPrefix(wchUserFiles, wchAppDir) &&
-        PathIsPrefix(wchUserFiles, lpszSrc) &&
-        PathRelativePathTo(wchPath, wchUserFiles, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo)) {
-        StringCchCopy(wchUserFiles, COUNTOF(wchUserFiles), L"%CSIDL:MYDOCUMENTS%");
-        PathAppend(wchUserFiles, wchPath);
-        StringCchCopy(wchPath, COUNTOF(wchPath), wchUserFiles);
-    }
-    else if (PathIsRelative(lpszSrc) || PathCommonPrefix(wchAppDir, wchWinDir, NULL)) {
-        StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
+    else if (_Path_IsRelative(hpth_in_out) || Path_CommonPrefix(happdir_pth, hprgs_pth, NULL)) {
+        Path_Reset(hres_pth, PathGet(hpth_in_out));
     }
     else {
-        if (!PathRelativePathTo(wchPath, wchAppDir, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo)) {
-            StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
+        if (!Path_RelativePathTo(hres_pth, happdir_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
+            Path_Reset(hres_pth, PathGet(hpth_in_out));
         }
     }
+    // -> result in 'hres_pth'
 
-    if (bUnexpandEnv) {
-        if (!PathUnExpandEnvStrings(wchPath, wchResult, COUNTOF(wchResult))) {
-            StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
-        }
-    }
-    else {
-        StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
-    }
-    int cchLen = (cchDest == 0) ? MAX_PATH : cchDest;
-    if (lpszDest == NULL || lpszSrc == lpszDest) {
-        StringCchCopyN(lpszSrc, cchLen, wchResult, cchLen);
-    }
-    else {
-        StringCchCopyN(lpszDest, cchLen, wchResult, cchLen);
+    if (!bUnexpandEnv || !Path_UnExpandEnvStrings(hres_pth, hpth_in_out)) {
+        Path_Reset(hpth_in_out, PathGet(hres_pth));
     }
 
-
-    Path_Release(husrfiles_pth);
+    Path_Release(htmp_pth);
+    Path_Release(hprgs_pth);
+    Path_Release(husrdoc_pth);
     Path_Release(happdir_pth);
 }
+
+void PTHAPI PathRelativeToApp(LPWSTR lpszPath, const size_t cchPath, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs)
+{
+    HPATHL hpth_in_out = Path_Allocate(lpszPath);
+    Path_RelativeToApp(hpth_in_out, bSrcIsFile, bUnexpandEnv, bUnexpandMyDocs);
+    StringCchCopyW(lpszPath, ((cchPath == 0) ? PATHLONG_MAX_CCH : cchPath), PathGet(hpth_in_out));
+    Path_Release(hpth_in_out);
+}
+
 #endif
 
 
@@ -982,14 +991,15 @@ void PTHAPI PathRelativeToApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool
 
     PathGetAppDirectory(wchAppDir, COUNTOF(wchAppDir));
 
-    (void)GetWindowsDirectory(wchWinDir, COUNTOF(wchWinDir));
+    PathGetKnownFolder(&FOLDERID_Windows, wchWinDir, COUNTOF(wchWinDir));  // deprecated ???
     PathGetKnownFolder(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
     if (bUnexpandMyDocs &&
         !PathIsRelative(lpszSrc) &&
         !PathIsPrefix(wchUserFiles, wchAppDir) &&
         PathIsPrefix(wchUserFiles, lpszSrc) &&
-        PathRelativePathTo(wchPath, wchUserFiles, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo)) {
+        PathRelativePathToW(wchPath, wchUserFiles, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo))
+    {
         StringCchCopy(wchUserFiles, COUNTOF(wchUserFiles), L"%CSIDL:MYDOCUMENTS%");
         PathAppend(wchUserFiles, wchPath);
         StringCchCopy(wchPath, COUNTOF(wchPath), wchUserFiles);

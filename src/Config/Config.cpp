@@ -1366,12 +1366,12 @@ void LoadSettings()
 
     PathGetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
-        PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
+        PathAbsoluteFromApp(Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir), true);
     }
 
     PathGetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
-        PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
+        PathAbsoluteFromApp(Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir), true);
     }
 
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
@@ -2316,7 +2316,8 @@ bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
                 *iIndex = i;
                 return true;
             }
-            PathAbsoluteFromApp(pmru->pszItems[i], wchItem, COUNTOF(wchItem), true);
+            StringCchCopy(wchItem, COUNTOF(wchItem), pmru->pszItems[i]);
+            PathAbsoluteFromApp(wchItem, COUNTOF(wchItem), true);
             if (StringCchCompareXI(wchItem, pszFile) == 0) {
                 *iIndex = i;
                 return true;
@@ -2561,7 +2562,8 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
                 for (int i = pmru->iSize - 1; i >= 0; i--) {
                     if (pmru->pszItems[i]) {
                         WCHAR wchItem[MAX_PATH] = { L'\0' };
-                        PathAbsoluteFromApp(pmru->pszItems[i], wchItem, COUNTOF(wchItem), true);
+                        StringCchCopy(wchItem, COUNTOF(wchItem), pmru->pszItems[i]);
+                        PathAbsoluteFromApp(wchItem, COUNTOF(wchItem), true);
                         MRU_AddFile(pmruBase, wchItem, bRelativePath, bUnexpandMyDocs,
                                     pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
                     }

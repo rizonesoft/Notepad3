@@ -268,7 +268,6 @@ unsigned GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName) {
 //
 static unsigned _CheckAvailableLanguageDLLs()
 {
-    WCHAR wchRelPath[MAX_PATH] = { L'\0' };
     WCHAR wchAbsPath[MAX_PATH] = { L'\0' };
 
     unsigned count = 1; // internal instance always available
@@ -285,8 +284,8 @@ static unsigned _CheckAvailableLanguageDLLs()
             }
 #endif
             // check for DLL
-            StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
-            PathAbsoluteFromApp(wchRelPath, wchAbsPath, COUNTOF(wchAbsPath), false);
+            StringCchPrintf(wchAbsPath, COUNTOF(wchAbsPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
+            PathAbsoluteFromApp(wchAbsPath, COUNTOF(wchAbsPath), false);
             bool const bAvail = PathIsExistingFile(wchAbsPath);
             MUI_LanguageDLLs[lng].bHasDLL = bAvail;
             count += bAvail ? 1 : 0;
