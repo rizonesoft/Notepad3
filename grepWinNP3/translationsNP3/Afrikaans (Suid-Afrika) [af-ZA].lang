@@ -54,7 +54,7 @@ msgid "&Search"
 msgstr "&Soek"
 
 #. Resource IDs: (1003)
-msgid "&Whole word"
+msgid "&Hele woord"
 msgstr ""
 
 #. Resource IDs: (1013)
@@ -431,7 +431,7 @@ msgstr "%ld lêers deursoek, %ld lêers oorgeslaan. %ld ooreenstem met %ld lêer
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Het %ld lêers gesoek, %ld lêers oorgeslaan. %ld -ooreenkomste gevind in %ld -lêers. %ld resultate gekies."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
