@@ -32,5 +32,4 @@ Cpp11BracedListStyle: false
 FixNamespaceComments: false
 SortIncludes: false
 UseTab: Never
-
 ---
