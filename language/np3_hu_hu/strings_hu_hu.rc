@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "Rendes|Színek invertálása (sötét háttér)|Fekete a fehéren|Szín a fehéren|Szín a fehéren (kivéve a sorszámok)|Képernyő színei"
     IDS_MUI_PRINT_PAGENUM   "%i oldal"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Ez a művelet visszaállítja a színeket a gyári színmód beállítására és az aktuális témafájlt a standard konfigurációs .ini-re!"
 END
 
 STRINGTABLE
