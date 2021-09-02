@@ -142,6 +142,9 @@ const wchar_t* const PATHLONG_PREFIX = L"\\\\?\\";
 const wchar_t* const PATHUNC_PREFIX = L"UNC\\";
 #define PATHUNC_PREFIX_LEN (COUNTOF(PATHUNC_PREFIX) - 1)
 
+const wchar_t* const PATHPARENT_PREFIX = L"..\\";
+#define PATHPARENT_PREFIX_LEN (COUNTOF(PATHPARENT_PREFIX) - 1)
+
 const wchar_t* const PATHDSPL_INFIX = L" ... ";
 #define PATHDSPL_INFIX_LEN (COUNTOF(PATHDSPL_INFIX) - 1)
 
@@ -248,7 +251,7 @@ static bool HasOptInToRemoveMaxPathLimit()
 // ----------------------------------------------------------------------------
 
 
-inline static void PrependLongPathPrefix(HPATHL hpth_in_out, bool bForce)
+static void PrependLongPathPrefix(HPATHL hpth_in_out, bool bForce)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // inplace
     if (!hstr_io)
@@ -261,6 +264,50 @@ inline static void PrependLongPathPrefix(HPATHL hpth_in_out, bool bForce)
             }
         }
     }
+}
+
+// ----------------------------------------------------------------------------
+
+static void _UnExpandEnvStrgs(HSTRINGW hstr_in_out)
+{
+    if (!hstr_in_out) {
+        return;
+    }
+    const wchar_t* env_var_list[] = {
+        L"ALLUSERSPROFILE",
+        L"APPDATA",
+        L"TEMP",
+        L"LOCALAPPDATA=",
+        L"USERPROFILE",
+        L"COMPUTERNAME",
+        L"ProgramFiles",
+        L"SystemRoot",
+        L"SystemDrive"
+    };
+    size_t const env_var_cnt = COUNTOF(env_var_list);
+    wchar_t      var_strg[64] = { L'\0' };
+
+    HSTRINGW htmp_str = StrgCreate();
+
+    for (size_t i = 0; i < env_var_cnt; ++i) {
+
+        DWORD const len = GetEnvironmentVariableW(env_var_list[i], NULL, 0);
+        if (len > 0) {
+            wchar_t* buf = StrgWriteAccessBuf(htmp_str, len);
+            if (buf) {
+                GetEnvironmentVariableW(env_var_list[i], buf, len);
+                size_t const hstr_len = StrgGetLength(hstr_in_out);
+                if (hstr_len >= len) {
+                    size_t const idx = StrgFind(hstr_in_out, buf, 0);
+                    if (idx < len) {
+                        StringCchPrintfW(var_strg, COUNTOF(var_strg), L"%%%s%%", env_var_list[i]);
+                        StrgReplace(hstr_in_out, buf, var_strg);
+                    }
+                }
+            }
+        }
+    }
+    StrgDestroy(htmp_str);
 }
 
 // ----------------------------------------------------------------------------
@@ -453,7 +500,18 @@ void PTHAPI Path_ExpandEnvStrings(HPATHL hpth)
     if (!hstr)
         return;
     
-    ExpandEnvironmentStrg(hstr);
+    ExpandEnvironmentStrgs(hstr);
+}
+// ----------------------------------------------------------------------------
+
+
+void PTHAPI Path_UnExpandEnvStrings(HPATHL hpth)
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr)
+        return;
+    
+    _UnExpandEnvStrgs(hstr);
 }
 // ----------------------------------------------------------------------------
 
@@ -572,8 +630,12 @@ bool PTHAPI PathIsExistingFile(LPCWSTR pszPath)
 //
 //  ExpandEnvironmentStringsEx()
 //
-void PTHAPI ExpandEnvironmentStrg(HSTRINGW hstr_in_out)
+void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out)
 {
+    if (!hstr_in_out) {
+        return;
+    }
+
     HSTRINGW const hstr_cpy = StrgCopy(hstr_in_out); // no inplace substitution possible
 
     size_t const min_len = ExpandEnvironmentStringsW(StrgGet(hstr_in_out), NULL, 0);
@@ -590,7 +652,7 @@ void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc)
 {
     HSTRINGW hstr = StrgCreate();
     StrgSet(hstr, lpSrc);
-    ExpandEnvironmentStrg(hstr);
+    ExpandEnvironmentStrgs(hstr);
     const wchar_t* buf = StrgGet(hstr);
     if (buf) {
         StringCchCopyW(lpSrc, cchSrc, buf);
@@ -602,6 +664,7 @@ void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc)
 //=============================================================================
 //
 //  _Path_IsRelative()
+//  TODO: make LongPath version instead of slicing MAX_PATH
 //
 static bool _Path_IsRelative(const HPATHL hpth)
 {
@@ -629,6 +692,90 @@ static bool _Path_IsRelative(const HPATHL hpth)
     StrgDestroy(cpy);
     return res;
 }
+
+
+//=============================================================================
+//
+//  _Path_RelativePathTo()
+//  TODO: make LongPath version instead of slicing MAX_PATH
+//
+static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to)
+{
+    UNREFERENCED_PARAMETER(attr_from);
+    UNREFERENCED_PARAMETER(attr_to);
+
+    if (!hrecv || !hfrom || !hto) {
+        return false;
+    }
+    HSTRINGW hrecv_str = ToHStrgW(hrecv);
+
+    // get first diff
+    const wchar_t* hfrom_buf = PathGet(hfrom);
+    const wchar_t* hto_buf = PathGet(hto);
+    size_t const   hfrom_len = StrlenW(hfrom_buf);
+    size_t const   hto_len = StrlenW(hto_buf);
+    size_t const   max_cmp = min_s(hfrom_len, hto_len);
+    size_t         i = 0;
+    for (i = 0; i < max_cmp; ++i) {
+        if (_wcsnicmp(&hfrom_buf[i], &hto_buf[i], 1) != 0) {
+            break;
+        }
+    }
+
+    if (i <= 1) {
+        // can't create a 'RelativePathTo'
+        return false;
+    }
+
+    if ((max_cmp < i) || (hto_len < hfrom_len)) {
+
+        // back to prev sync point
+        const wchar_t* const pbs = wcsrchr(&hfrom_buf[i-1], L'\\');
+        const wchar_t* const pfs = wcsrchr(&hfrom_buf[i-1], L'/');
+        const wchar_t* p = (pbs ? (pfs ? ((pbs > pfs) ? pbs : pfs) : pbs) : pfs);
+        if (!p) {
+            const wchar_t* const pcl = wcsrchr(&hfrom_buf[i], L':');
+            if (!pcl) {
+                return false; // no sync point
+            }
+            p = pcl;
+        }
+        // count dirs from-path to sync point
+        size_t dir_cnt = 0;
+        size_t ch_cnt = 0;
+        for (const wchar_t* q = p; *q != L'\0'; ++q, ++ch_cnt) {
+            if ((*q == L'\\') || (*q == L'/')) {
+                ++dir_cnt;
+            }
+        }
+
+        //
+        //  TODO: consider attr_from/attr_to
+        //
+        // or FILE_ATTRIBUTE_DIRECTORY
+        if (attr_to & FILE_ATTRIBUTE_NORMAL) {
+        }
+        if (attr_from & FILE_ATTRIBUTE_NORMAL) {
+        }
+
+        // prepare buffer for prefix "..\" x dir_cnt
+        StrgEmpty(hrecv_str); // init
+        size_t const   len = (PATHPARENT_PREFIX_LEN * dir_cnt) + ch_cnt + 0;
+        wchar_t* const out_buf = StrgWriteAccessBuf(hrecv_str, len);
+        for (size_t d = 0; d < dir_cnt; ++d) {
+            StringCchCatW(out_buf, len, PATHPARENT_PREFIX);
+        }
+        // copy rest of from-path (excluding first seperator)
+        StringCchCatW(out_buf, len, &p[1]); 
+    }
+    else {
+        // relative from path is current dir, so:
+        //~StrgEmpty(hrecv_str);
+        StrgSet(hrecv_str, L".\\");
+    }
+    return true;
+}
+
 
 
 //=============================================================================
@@ -712,7 +859,7 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out)
     if (!hstr_io)
         return false;
 
-   ExpandEnvironmentStrg(hstr_io); // inplace hpth_in_out
+   ExpandEnvironmentStrgs(hstr_io); // inplace hpth_in_out
 
    bool res = false;
    if (_Path_IsRelative(hpth_in_out)) {
@@ -756,7 +903,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     if (!hstr_io)
         return false;
 
-    ExpandEnvironmentStrg(hstr_io);
+    ExpandEnvironmentStrgs(hstr_io);
 
     // strg beg/end: clear spaces and quote s
     StrgTrim(hstr_io, L'"');
@@ -928,23 +1075,6 @@ void PTHAPI PathAbsoluteFromApp(LPWSTR lpszPath, const size_t cchPath, bool bExp
 //
 #if 0
 
-static bool Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to)
-{
-
-
-}
-
-// TODO: fill dummy here
-static bool Path_UnExpandEnvStrings(const HPATHL hpth_in, HPATHL hpth_out)
-{
-    if (!hpth_in || !hpth_out) {
-        return false;
-    }
-    Path_Reset(hpth_out, PathGet(hpth_in)); // dummy: no expand, just copy
-    return true;
-}
-
-
 void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs)
 {
     if (!hpth_in_out) {
@@ -967,30 +1097,26 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
     //~Path_GetKnownFolder(&FOLDERID_Windows, hwindows_pth); // deprecated
 
     HPATHL htmp_pth = Path_Allocate(NULL);
-    HPATHL hres_pth = Path_Allocate(NULL);
 
     DWORD dwAttrTo = (bSrcIsFile) ? FILE_ATTRIBUTE_NORMAL : FILE_ATTRIBUTE_DIRECTORY;
     if (bUnexpandMyDocs &&
         !_Path_IsRelative(hpth_in_out) &&
         !Path_IsPrefix(husrdoc_pth, happdir_pth) &&
         Path_IsPrefix(husrdoc_pth, hpth_in_out) &&
-        Path_RelativePathTo(htmp_pth, husrdoc_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo))
+        _Path_RelativePathTo(htmp_pth, husrdoc_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo))
     {
-        Path_Reset(hres_pth, PATH_CSIDL_MYDOCUMENTS);
-        Path_Append(hres_pth, htmp_pth);
+        Path_Reset(hpth_in_out, PATH_CSIDL_MYDOCUMENTS);
+        Path_Append(hpth_in_out, htmp_pth);
     }
-    else if (_Path_IsRelative(hpth_in_out) || Path_CommonPrefix(happdir_pth, hprgs_pth, NULL)) {
-        Path_Reset(hres_pth, PathGet(hpth_in_out));
-    }
-    else {
-        if (!Path_RelativePathTo(hres_pth, happdir_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
-            Path_Reset(hres_pth, PathGet(hpth_in_out));
+    else if (!_Path_IsRelative(hpth_in_out) && !Path_CommonPrefix(happdir_pth, hprgs_pth, NULL))
+    {
+        if (_Path_RelativePathTo(htmp_pth, happdir_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
+            Path_Reset(hpth_in_out, PathGet(htmp_pth));
         }
     }
-    // -> result in 'hres_pth'
 
-    if (!bUnexpandEnv || !Path_UnExpandEnvStrings(hres_pth, hpth_in_out)) {
-        Path_Reset(hpth_in_out, PathGet(hres_pth));
+    if (bUnexpandEnv) {
+        Path_UnExpandEnvStrings(hpth_in_out);
     }
 
     Path_Release(htmp_pth);
@@ -1007,11 +1133,9 @@ void PTHAPI PathRelativeToApp(LPWSTR lpszPath, const size_t cchPath, bool bSrcIs
     Path_Release(hpth_in_out);
 }
 
-#endif
+#else
 
-
-
-void PTHAPI PathRelativeToApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs)
+void PTHAPI PathRelativeToApp(LPWSTR lpszPath, const size_t cchPath, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs)
 {
     WCHAR wchAppDir[MAX_PATH] = { L'\0' };
     WCHAR wchWinDir[MAX_PATH] = { L'\0' };
@@ -1026,41 +1150,33 @@ void PTHAPI PathRelativeToApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool
     PathGetKnownFolder(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
     if (bUnexpandMyDocs &&
-        !PathIsRelative(lpszSrc) &&
+        !PathIsRelative(lpszPath) &&
         !PathIsPrefix(wchUserFiles, wchAppDir) &&
-        PathIsPrefix(wchUserFiles, lpszSrc) &&
-        PathRelativePathToW(wchPath, wchUserFiles, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo))
+        PathIsPrefix(wchUserFiles, lpszPath) &&
+        PathRelativePathToW(wchPath, wchUserFiles, FILE_ATTRIBUTE_DIRECTORY, lpszPath, dwAttrTo))
     {
         StringCchCopy(wchUserFiles, COUNTOF(wchUserFiles), L"%CSIDL:MYDOCUMENTS%");
         PathAppend(wchUserFiles, wchPath);
         StringCchCopy(wchPath, COUNTOF(wchPath), wchUserFiles);
     }
-    else if (PathIsRelative(lpszSrc) || PathCommonPrefix(wchAppDir, wchWinDir, NULL)) {
-        StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
+    else if (PathIsRelative(lpszPath) || PathCommonPrefix(wchAppDir, wchWinDir, NULL)) {
+        StringCchCopyN(wchPath, COUNTOF(wchPath), lpszPath, COUNTOF(wchPath));
     }
     else {
-        if (!PathRelativePathTo(wchPath, wchAppDir, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo)) {
-            StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
+        if (!PathRelativePathTo(wchPath, wchAppDir, FILE_ATTRIBUTE_DIRECTORY, lpszPath, dwAttrTo)) {
+            StringCchCopyN(wchPath, COUNTOF(wchPath), lpszPath, COUNTOF(wchPath));
         }
     }
 
-    if (bUnexpandEnv) {
-        if (!PathUnExpandEnvStrings(wchPath, wchResult, COUNTOF(wchResult))) {
-            StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
-        }
-    }
-    else {
+    if (!bUnexpandEnv || !PathUnExpandEnvStrings(wchPath, wchResult, COUNTOF(wchResult))) {
         StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
     }
-    int cchLen = (cchDest == 0) ? MAX_PATH : cchDest;
-    if (lpszDest == NULL || lpszSrc == lpszDest) {
-        StringCchCopyN(lpszSrc, cchLen, wchResult, cchLen);
-    }
-    else {
-        StringCchCopyN(lpszDest, cchLen, wchResult, cchLen);
-    }
+
+    size_t cchLen = (cchPath == 0) ? MAX_PATH : cchPath;
+    StringCchCopyN(lpszPath, cchLen, wchResult, cchLen);
 }
 
+#endif
 
 
 //=============================================================================

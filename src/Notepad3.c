@@ -2393,7 +2393,8 @@ bool SelectExternalToolBar(HWND hwnd)
             StringCchCat(szFile, COUNTOF(szFile), L" ");
             StringCchCat(szFile, COUNTOF(szFile), szArg2);
         }
-        PathRelativeToApp(szFile, g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), true,true, true);
+        StringCchCopy(g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), szFile);
+        PathRelativeToApp(g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap), true,true, true);
         if (Globals.bCanSaveIniFile) {
             IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapDefault", g_tchToolbarBitmap);
         }
@@ -2405,7 +2406,8 @@ bool SelectExternalToolBar(HWND hwnd)
         StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
         if (Globals.bCanSaveIniFile) {
             if (PathIsExistingFile(szFile)) {
-                PathRelativeToApp(szFile, g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), true, true, true);
+                StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), szFile);
+                PathRelativeToApp(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), true, true, true);
                 IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapHot", g_tchToolbarBitmapHot);
             } else {
                 StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");
@@ -2418,7 +2420,8 @@ bool SelectExternalToolBar(HWND hwnd)
         StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
         if (Globals.bCanSaveIniFile) {
             if (PathIsExistingFile(szFile)) {
-                PathRelativeToApp(szFile, g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), true, true, true);
+                StringCchCopy(g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), szFile);
+                PathRelativeToApp(g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmapDisabled), true, true, true);
                 IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapDisabled", g_tchToolbarBitmapDisabled);
             } else {
                 StringCchCopy(g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmapHot), L"");

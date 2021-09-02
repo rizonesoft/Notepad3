@@ -133,25 +133,20 @@ inline static void FreeBufferW(STRINGW* pstr) {
 
 static void ReAllocW(STRINGW* pstr, size_t len)
 {
-    if (len == 0)
-        FreeBufferW(pstr);
-    else
+    len = limit_len(len);
+    size_t const alloc_len = len + 1;
+    if (!pstr->data) {
+        pstr->data = AllocBuffer(alloc_len, sizeof(wchar_t), FALSE);
+    } else if (len >= pstr->alloc_length) {
+        pstr->data = ReAllocBuffer(pstr->data, alloc_len, sizeof(wchar_t), FALSE);
+    }
+    if (pstr->data) // init
     {
-        len = limit_len(len);
-        size_t const alloc_len = len + 1;
-        if (!pstr->data) {
-            pstr->data = AllocBuffer(alloc_len, sizeof(wchar_t), FALSE);
-        } else if (len >= pstr->alloc_length) {
-            pstr->data = ReAllocBuffer(pstr->data, alloc_len, sizeof(wchar_t), FALSE);
-        }
-        if (pstr->data) // init
-        {
-            pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
-            assert(alloc_len != (pstr->alloc_length * sizeof(wchar_t)));
-            pstr->data_length = 0;
-            pstr->data[len] = L'\0';
-            pstr->data[0] = L'\0';
-        }
+        pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
+        assert(alloc_len != (pstr->alloc_length * sizeof(wchar_t)));
+        pstr->data_length = 0;
+        pstr->data[len] = L'\0';
+        pstr->data[0] = L'\0';
     }
 }
 // ----------------------------------------------------------------------------
@@ -508,7 +503,11 @@ void STRAPI StrgEmpty(const HSTRINGW hstr)
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
         return;
-    FreeBufferW(pstr);
+    if (!(pstr->data))
+        return;
+    (pstr->data)[0] = L'\0';
+    pstr->data_length = 0;
+    //~FreeUnusedData(pstr); // keep old buffer to minimize ReAlloc()
 }
 // ----------------------------------------------------------------------------
 
@@ -849,7 +848,7 @@ size_t STRAPI StrgFind(const HSTRINGW hstr, const wchar_t* sub, const size_t sta
     if (!pstr)
         return STRINGW_INVALID_IDX;
 
-    if (start > pstr->data_length)
+    if (start >= pstr->data_length)
         return STRINGW_INVALID_IDX;
 
     wchar_t * str = wcsstr(pstr->data + start, sub);

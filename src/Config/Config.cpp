@@ -1826,13 +1826,15 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
     WCHAR wchTmp[MAX_PATH] = { L'\0' };
     if (StringCchCompareXI(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
-        PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
+        StringCchCopy(wchTmp, COUNTOF(wchTmp), Settings.OpenWithDir);
+        PathRelativeToApp(wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"OpenWithDir", wchTmp);
     } else {
         IniSectionDelete(IniSecSettings, L"OpenWithDir", false);
     }
     if (StringCchCompareXI(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
-        PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
+        StringCchCopy(wchTmp, COUNTOF(wchTmp), Settings.FavoritesDir);
+        PathRelativeToApp(wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"Favorites", wchTmp);
     } else {
         IniSectionDelete(IniSecSettings, L"Favorites", false);
@@ -2349,7 +2351,8 @@ bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexp
         }
         if (bRelativePath) {
             WCHAR wchFile[MAX_PATH] = { L'\0' };
-            PathRelativeToApp(pszFile, wchFile, COUNTOF(wchFile), true, true, bUnexpandMyDocs);
+            StringCchCopy(wchFile, COUNTOF(wchFile), pszFile);
+            PathRelativeToApp(wchFile, COUNTOF(wchFile), true, true, bUnexpandMyDocs);
             pmru->pszItems[0] = StrDup(wchFile);  // LocalAlloc()
         } else {
             pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()

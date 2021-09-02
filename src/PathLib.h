@@ -85,7 +85,7 @@ __forceinline bool IsExistingDirectory(const DWORD dwFileAttr)
 bool PTHAPI Path_IsExistingFile(const HPATHL hpth);
 bool PTHAPI PathIsExistingFile(LPCWSTR pszPath);
 
-void PTHAPI ExpandEnvironmentStrg(HSTRINGW hstr);
+void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr);
 void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
 
 size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out);
@@ -109,13 +109,12 @@ void PTHAPI PathAbsoluteFromApp(LPWSTR lpszPath, const size_t cchPath, bool bExp
 void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffer, const HPATHL hpth_in, const wchar_t* repl);
 void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, const size_t cchDestBuffer, LPCWSTR lpszSourcePath, const wchar_t* repl);
 
-
+void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
+void PTHAPI PathRelativeToApp(LPWSTR lpszPath, size_t cchPath, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
 
 // ============================================================================
 // Some Old MAX_PATH stuff
 // ============================================================================
-
-void PTHAPI   PathRelativeToApp(LPWSTR lpszSrc, LPWSTR lpszDest, int cchDest, bool, bool, bool);
 
 bool PTHAPI   PathIsLnkFile(LPCWSTR pszPath);
 bool PTHAPI   PathGetLnkPath(LPCWSTR pszLnkFile, LPWSTR pszResPath, int cchResPath);
