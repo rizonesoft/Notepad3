@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.828.(build_#) (2021-08-28)
+Current BETA/RC Version 5.21.903.(build_#) (2021-09-03)
 ========================================================
 
 --------------------------------------------------------
@@ -157,6 +157,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.903.1]- Broken relative paths in file history selection.
 [.828.1]- Open color selection on Ctrl+Left mouse click on color indicator too.
 [.828.1]- Change cursor hand on Ctrl key-Up.
 [.827.1]- Broken "scroll undo/redo history via mouse (RMB+WHEEL)" feature.
