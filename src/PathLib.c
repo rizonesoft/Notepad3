@@ -818,8 +818,16 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
 
     // check for root prefix
     const wchar_t* r = hfrom_buf;
-    bool const     has_root = SUCCEEDED(PathCchSkipRoot(hfrom_buf, &r));
-    if (has_root) {
+    bool const     root_f = SUCCEEDED(PathCchSkipRoot(hfrom_buf, &r));
+    const wchar_t* s = hto_buf;
+    bool const     root_t = SUCCEEDED(PathCchSkipRoot(hto_buf, &s));
+    size_t const   lenf = (r - hfrom_buf);
+    size_t const   lent = (s - hto_buf);
+
+    bool const     same_root = root_f && root_t && (lenf == lent) && (_wcsnicmp(hfrom_buf, hto_buf, lenf) == 0);
+
+    if (same_root) {
+
         // back to prev sync point
         const wchar_t* p = &hfrom_buf[i];
         while (p > r) {
@@ -858,11 +866,14 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         // copy rest of to-path (excluding first seperator)
         StringCchCatW(out_buf, len, &hto_buf[prefix]);
     }
+    else {
+        StrgSet(hrecv_str, hto_buf);
+    }
 
     Path_Release(hto_cpy);
     Path_Release(hfrom_cpy);
 
-    return has_root;
+    return (same_root);
 }
 
 

@@ -945,7 +945,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     const char * const resText = (const char *)LockResource(hMem);
     Globals.pStdDarkModeIniStyles = (char *)AllocMem(((size_t)size + 1), 0);
     if (Globals.pStdDarkModeIniStyles) {
-        memcpy(Globals.pStdDarkModeIniStyles, resText, size);
+        memcpy_s(Globals.pStdDarkModeIniStyles, size + 1, resText, size);
         Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
     }
     FreeResource(hMem);

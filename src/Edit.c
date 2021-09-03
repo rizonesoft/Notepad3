@@ -4517,7 +4517,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
                             DocPos const lnBeg = SciCall_PositionFromLine(line);
                             DocPos const lnLen = SciCall_LineLength(line); // incl line-breaks
                             const char *const pszLine = SciCall_GetRangePointer(lnBeg, lnLen);
-                            memcpy(p, pszLine, lnLen);
+                            memcpy_s(p, lnLen, pszLine, lnLen);
                             p += lnLen;
                         }
                         ++line; // next

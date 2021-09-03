@@ -16,8 +16,6 @@
 
 #define STRINGW_MAX_CCH   STRSAFE_MAX_CCH
 
-const DWORD STR_CCH_FLAGS = 0UL | STRSAFE_FILL_BEHIND_NULL | STRSAFE_IGNORE_NULLS | STRSAFE_NULL_ON_FAILURE;
-
 typedef struct tagSTRINGW
 {
     wchar_t*  data;
@@ -157,18 +155,16 @@ static void AllocCopyW(STRINGW* pstr, STRINGW* pDest, size_t copy_len, size_t co
     if (new_len > 0)
     {
         ReAllocW(pDest, new_len);
-        wchar_t * endptr = NULL;
-        StringCchCopyNExW(pDest->data, pDest->alloc_length, pstr->data + copy_index, copy_len, &endptr, NULL, STR_CCH_FLAGS);
-        pDest->data_length = (size_t)(endptr - pDest->data);
+        StringCchCopyNW(pDest->data, pDest->alloc_length, pstr->data + copy_index, copy_len);
+        pDest->data_length = wcslen(pstr->data);
     }
 }
 // ----------------------------------------------------------------------------
 
-static void CopyW(STRINGW *pstr, size_t len, const wchar_t *p) {
+static void CopyW(STRINGW* pstr, size_t len, const wchar_t *str) {
     if (pstr->data) {
-        wchar_t *endptr = NULL;
-        StringCchCopyNExW(pstr->data, pstr->alloc_length, p, len, &endptr, NULL, STR_CCH_FLAGS);
-        pstr->data_length = (size_t)(endptr - pstr->data);
+        StringCchCopyNW(pstr->data, pstr->alloc_length, str, len);
+        pstr->data_length = wcslen(pstr->data);
     }
 }
 // ----------------------------------------------------------------------------
@@ -184,11 +180,9 @@ static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
 {
     size_t const old_siz = StrlenW(pstr->data) + 1;
     wchar_t* const ptr = AllocBuffer(old_siz, sizeof(wchar_t), FALSE);
-    if (ptr)
-    {
-        wchar_t *endptr = NULL;
-        StringCchCopyNExW(ptr, old_siz, pstr->data, old_siz, &endptr, NULL, STR_CCH_FLAGS);
-        *outLen = (size_t)(endptr - pstr->data);
+    if (ptr) {
+        StringCchCopyW(ptr, old_siz, pstr->data ? pstr->data : L"");
+        *outLen = wcslen(ptr);
     }
     return ptr;
 }
@@ -404,9 +398,8 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
 
     ReAllocW(pstr, max_len);
 
-    wchar_t* endptr = NULL;
-    StringCchVPrintfExW(pstr->data, pstr->alloc_length, &endptr, NULL, STR_CCH_FLAGS, fmt, orig_list);
-    pstr->data_length = (size_t)(endptr - pstr->data);
+    StringCchVPrintfW(pstr->data, pstr->alloc_length, fmt, orig_list);
+    pstr->data_length = wcslen(pstr->data);
     va_end(orig_list);
 }
 // ----------------------------------------------------------------------------
@@ -584,12 +577,11 @@ size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, const wchar_t* str)
             SetCopyW(pstr, new_len, pold_data);
             FreeBuffer(pold_data);
         }
-
-        memmove(pstr->data + index + ins_len, pstr->data + index, (new_len - index - ins_len + 1) * sizeof(wchar_t));
-        memcpy(pstr->data + index, str, ins_len * sizeof(wchar_t));
-        pstr->data_length = new_len;
+        wmemmove_s((pstr->data + index + ins_len), (pstr->alloc_length - index - ins_len),
+                   (pstr->data + index), (new_len - index - ins_len + 1));
+        wmemcpy_s((pstr->data + index), (pstr->alloc_length - index), str, ins_len);
+        pstr->data_length = wcslen(pstr->data);
     }
-
     return new_len;
 }
 // ----------------------------------------------------------------------------
@@ -613,9 +605,10 @@ size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, const wchar_t c)
         SetCopyW(pstr, new_len, pOld);
         FreeBuffer(pOld);
     }
-    memcpy(pstr->data + index + 1, pstr->data + index, (new_len - index) * sizeof(wchar_t));
+    wmemmove_s((pstr->data + index + 1), (pstr->alloc_length - index - 1),
+               (pstr->data + index), (new_len - index));
     pstr->data[index] = c;
-    pstr->data_length = new_len;
+    pstr->data_length = wcslen(pstr->data);
     return new_len;
 }
 // ----------------------------------------------------------------------------
@@ -666,15 +659,15 @@ size_t STRAPI StrgReplace(HSTRINGW hstr, const wchar_t* pOld, const wchar_t* pNe
             while((target = wcsstr(start, pOld)) != NULL)
             {
                 size_t bal = old_len - (target - pstr->data + src_len);
-                memmove(target + repl_len, target + src_len, bal * sizeof(wchar_t));
-                memcpy(target, pNew, repl_len * sizeof(wchar_t));
+                wmemmove_s(target + repl_len, (pstr->alloc_length - (target - pstr->data) - repl_len), target + src_len, bal);
+                wmemcpy_s(target, (pstr->alloc_length - (target - pstr->data)), pNew, repl_len);
                 start = target + repl_len;
                 start[bal] = L'\0';
                 old_len += (repl_len - src_len);
             }
             start += wcslen(start) + 1;
         }
-        pstr->data_length = new_len;
+        pstr->data_length = wcslen(pstr->data);
     }
 
     return count;
@@ -755,7 +748,8 @@ size_t STRAPI StrgDelete(HSTRINGW hstr, const size_t index, size_t count)
     {
         count = min_s(count, (len - index));
         size_t copy = len - (index + count) + 1;
-        memcpy(pstr->data + index, pstr->data + index + count, (copy * sizeof(wchar_t)));
+        wmemmove_s((pstr->data + index), (pstr->alloc_length - index),
+                   (pstr->data + index + count), copy);
         pstr->data_length = len - count;
     }
     return len;

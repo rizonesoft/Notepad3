@@ -921,12 +921,12 @@ static DWORD CALLBACK _LoadRtfCallback(
 
     if (len < cb) {
         *pcb = len;
-        memcpy(pbBuff, (LPCSTR)*pstr, *pcb);
+        memcpy_s(pbBuff, cb, (LPCSTR)*pstr, *pcb);
         *pstr += len;
         //*pstr = '\0';
     } else {
         *pcb = cb;
-        memcpy(pbBuff, (LPCSTR)*pstr, *pcb);
+        memcpy_s(pbBuff, cb, (LPCSTR)*pstr, *pcb);
         *pstr += cb;
     }
     return FALSE;
