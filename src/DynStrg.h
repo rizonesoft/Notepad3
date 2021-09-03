@@ -41,8 +41,9 @@ int STRAPI               StrgIsEmpty(const HSTRINGW hstr);
 size_t STRAPI            StrgGetLength(const HSTRINGW hstr);
 size_t STRAPI            StrgGetAllocLength(const HSTRINGW hstr);
 
-void STRAPI              StrgFreeExtra(HSTRINGW hstr);
-void STRAPI              StrgEmpty(HSTRINGW hstr);
+void STRAPI              StrgFree(HSTRINGW hstr);        // NULL PTR 
+void STRAPI              StrgFreeExtra(HSTRINGW hstr);   // optimize mem
+void STRAPI              StrgEmpty(const HSTRINGW hstr); // -> L""  
 
 int STRAPI               StrgSet(HSTRINGW hstr, const wchar_t* str);
 const wchar_t* STRAPI    StrgGet(const HSTRINGW hstr);

@@ -2496,7 +2496,6 @@ CASE_WM_CTLCOLOR_SET:
             WCHAR tch[MAX_PATH] = { L'\0' };
             for (int i = 0; i < MRU_Count(Globals.pFileMRU); i++) {
                 MRU_Enum(Globals.pFileMRU, i, tch, COUNTOF(tch));
-                PathAbsoluteFromApp(tch, COUNTOF(tch), true);
                 //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_ADDSTRING,0,(LPARAM)tch); }
                 //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_SETCARETINDEX,0,false);
                 lvi.iItem   = i;
@@ -2547,6 +2546,7 @@ CASE_WM_CTLCOLOR_SET:
                 ListView_GetItem(hwndLV, &lvi);
 
                 PathUnquoteSpaces(tchFileName);
+                PathAbsoluteFromApp(tchFileName, COUNTOF(tchFileName), true);
 
                 if (!PathIsExistingFile(tchFileName) || (LOWORD(wParam) == IDC_REMOVE)) {
                     // don't remove myself

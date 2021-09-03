@@ -194,7 +194,7 @@ static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
 }
 // ----------------------------------------------------------------------------
 
-static void FreeUnusedData(STRINGW *pstr)
+static void FreeUnusedData(STRINGW* pstr)
 {
     if ((pstr->data_length + 1) != pstr->alloc_length) {
         size_t old_len = 0;
@@ -488,6 +488,16 @@ size_t STRAPI StrgGetAllocLength(const HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
+void STRAPI StrgFree(HSTRINGW hstr)
+{
+    STRINGW* pstr = ToWStrg(hstr);
+    if (!pstr)
+        return;
+    FreeBufferW(pstr);
+}
+// ----------------------------------------------------------------------------
+
+
 void STRAPI StrgFreeExtra(HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
@@ -507,7 +517,7 @@ void STRAPI StrgEmpty(const HSTRINGW hstr)
         return;
     (pstr->data)[0] = L'\0';
     pstr->data_length = 0;
-    //~FreeUnusedData(pstr); // keep old buffer to minimize ReAlloc()
+    FreeUnusedData(pstr); // keep old buffer to minimize ReAlloc()
 }
 // ----------------------------------------------------------------------------
 
