@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "Normale|Omkeerlig (donker agtergrond)|Swart op wit|Kleur op wit|Kleur op wit (behalwe lynnommers)|Skermkleure"
     IDS_MUI_PRINT_PAGENUM   "Bladsy %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Hierdie aksie sal die styl terugstel na die fabrieksinstellings van die gewenste kleurmodus en die aktiewe temalêer oorskakel na die standaard config .ini!"
 END
 
 STRINGTABLE
