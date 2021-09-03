@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Erro ao exportar as definições de estilo para ""%s""."
     IDS_MUI_REGEX_INVALID    "Erro a avaliar expressão regular. A expressão é inválida!"
     IDS_MUI_DROP_NO_FILE     "Nenhum nome de ficheiro válido recuperado.\nSe for proveniente de um programa 32-bit,\narraste e largue na barra de ferramentas do Notepad3."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "Pasta especificada da URL já existe!"
+    IDS_MUI_URL_FILE_EXISTS  "Ficheiro especificado da URL já existe!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "Caminho especificado da URL não encontrado!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Clique para abrir o ficheiro."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Clique para abrir a ligação no navegador."
     IDS_MUI_INF_PRSVFILEMODTM
@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "Normal|Inverter luz (fundo escuro)|Preto em branco|Cor em branco|Cor em branco (excepto números de linha)|Cores do ecrã"
     IDS_MUI_PRINT_PAGENUM   "Página %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Esta acção vai repor o estilo para os padrões originais do modo de cor desejado e mudar o ficheiro de tema activo para o config .ini padrão!"
 END
 
 STRINGTABLE
@@ -274,13 +274,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Marcar todas as ocorrências..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Alternar Vista..."
+    IDS_MUI_SB_REPLACE_ALL    "Substituir tudo..."
+    IDS_MUI_SB_WRAP_LINES     "Quebrar linhas..."
+    IDS_MUI_SB_CONV_LNBRK     "Converter quebras de linha..."
+    IDS_MUI_SB_RECODING_DOC   "A Recodificar Documento..."
+    IDS_MUI_SB_LEXER_STYLING  "Aplicar estilo de Lexer..."
 END
 
 STRINGTABLE

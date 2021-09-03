@@ -55,7 +55,7 @@ msgstr "&Procurar"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "Palavra completa"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -431,7 +431,7 @@ msgstr "%ld ficheiros procurados, %ld ficheiros ignorados. Encontradas %ld corre
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld ficheiros procurados, %ld ficheiros ignorados. Encontradas %ld correspondências em %ld ficheiros. %ld resultados seleccionados."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

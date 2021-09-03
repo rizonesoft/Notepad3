@@ -44,13 +44,12 @@ NEW:
 [.811.1]- Add "Notepad3 Replacement" on Windows 11 Insider Preview which works almost like with Windows 10:
           - Open (ext: .inf, .ini, .log, .ps1, .psd1, .psm1, .scp, .txt, .wtx, .compositefont, .css, .sct, .wsc).
           - Edit (ext: .bat, .cmd, .jse, .reg, .text, .vbe, .wsf).
-[.809.1]- Configure app to open hyperlink (instead of default browser).
+[.809.1]- Configure other application to open hyperlink (instead of default browser).
 [.805.1]- File URL forced to open in new window by (Ctrl+Alt+Click).
 [.805.1]- File change notification, if removed current file is recreated.
 [.805.1]- Allow definition of line number for file:/// URL (separator is ':' ).
 [.804.2]- File change notification Dlg: add "Indicator (silent) option.
-[.804.2]- Configurable File Change/Deleted indicators.
-[.804.1]- File on disk changed notification in title bar.
+[.804.2]- Configurable File on disk Change/Deleted indicators for title bar.
 [.726.1]- "grepWinNP3" (current grepWin dev) allow multiple search paths (GRE).
 [.709.2]- Add "KiXtart" lexer (new in Lexilla) (LEX).
 [.709.1]- Integrating style theme "Sombra" as factory default Dark-Mode theme.
@@ -75,7 +74,6 @@ NEW:
 [.324.1]- Exclusive Lock (write) Mode shown in windows title.
 [.323.1]- Menu item for excusive File Locking (write, shared read).
 [.323.1]- Decorator styling for Python files.
-[.321.1]- Experimental DarkMode support for Win10 Insider 21Hx Dev-Preview.
 [.321.1]- Exclusive File Lock option.
 [.301.1]- About Dlg: version info for split-off Lexilla component.
 [.301.1]- About Dlg: Copy-Ver-Info-Btn : add Dark-Mode information.
@@ -90,9 +88,6 @@ CHANGES:
 [.811.1]- Current Lexilla dev (chg: HTML(PHP) Lexer) (LEX).
 [.811.1]- Scintilla Python generator methods for embeddable Python (SCI).
 [.811.1]- MUI base language definition moved to solution's preprocessors (C/C++ & RC) defines.
-[.810.1]- Some refactorings and code cleanup.
-[.804.1]- Minor changed regarding file changed indicator.
-[.803.1]- New Sombra scheme as default Dark Mode coloring theme.
 [.803.1]- Optimized default style handling for settings file (Dark Mode).
 [.803.1]- Adapted other Dark Mode Theme Files.
 [.802.1]- Default FileWatchingMode from "don't care" to "notify by MsgBox".
@@ -181,7 +176,6 @@ FIXES:
 [.807.1]- RegEx line begin pattern stuck after zero-length replacement.
 [.806.1]- Launching file URL (Alt+Click) with respect to flags "Reuse Window" and "Only one Instance per File".
 [.805.1]- File URL tooltip.
-[.804.1]- Incomplete default Dark Mode Scheme.
 [.804.1]- Config version dependent "FileWatchingMode" settings value.
 [.804.1]- File change notification in Title Bar.
 [.804.1]- Trigger reset file changed on disc flag.
@@ -224,9 +218,8 @@ FIXES:
 [.416.2]- Workaround Scintilla text-rendering bug, if line-number margin width set to 0 (so use 1 instead).
 [.416.1]- Save Schema config in case of inifile from scratch.
 [.415.1]- Small correction to Line Cut feature (thin selection).
-[.414.2]- Minipath uses NP§ preferred language, if not configured.
+[.414.2]- Minipath uses NP3 preferred language, if not configured.
 [.414.2]- Compiling mono-language compiler switch version.
-[.414.2]- Some minor bugs around MUI Language selection.
 [.414.1]- Std windows behavior for cascading new instances (if configured).
 [.413.2]- Sticky Window Flag on launching new instance.
 [.413.1]- Prevent duplicate instance, if setting does not allow.
@@ -240,7 +233,7 @@ FIXES:
 [.406.1]- Center dialog in parent.
 [.406.1]- "grepWinNP3": fix missing search flags (GRE).
 [.326.1]- TinyExpr regresion inserting newline after equal sign.
-[.325.3]- Possible busy-loop in Kotlin and Dard Lexer.
+[.325.3]- Possible busy-loop in Kotlin and Dart Lexer.
 [.325.2]- Don't keep window top-most after returning from full-screen mode (F11 toggle).
 [.325.1]- Compiler switch to allow mono language binary.
 [.324.1]- Read-Only-Attribute cooperating with Exclusive-Write-Lock.
