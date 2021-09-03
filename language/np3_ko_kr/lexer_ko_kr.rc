@@ -480,7 +480,7 @@ BEGIN
     IDS_LEX_STR_63372       "데코레이터"
     IDS_LEX_STR_63373       "작업 마커"
     IDS_LEX_STR_63374       "주석 문서 오류"
-    IDS_LEX_STR_63375       "Type Operator"
+    IDS_LEX_STR_63375       "유형 연산자"
 END
 
 STRINGTABLE
