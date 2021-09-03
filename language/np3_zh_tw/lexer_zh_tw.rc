@@ -127,7 +127,8 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Dart 原始碼"
     IDS_LEX_KOTLIN_SRC      "Kotlin 原始碼"
-    IDS_LEX_KIX_SCR         "KiXtart Script"
+    IDS_LEX_JULIA_SCR       "Julia 腳本"
+    IDS_LEX_KIX_SCR         "KiXtart 腳本"
 END
 
 STRINGTABLE
@@ -263,14 +264,14 @@ BEGIN
     IDS_LEX_STR_63200       "未知屬性"
     IDS_LEX_STR_63201       "數值"
     IDS_LEX_STR_63202       "重要"
-    IDS_LEX_STR_63203       "Directive"
-    IDS_LEX_STR_63204       "Target"
-    IDS_LEX_STR_63205       "Inline Asm"
-    IDS_LEX_STR_63206       "CPU Instruction"
-    IDS_LEX_STR_63207       "FPU Instruction"
-    IDS_LEX_STR_63208       "Register"
-    IDS_LEX_STR_63209       "Directive Operand"
-    IDS_LEX_STR_63210       "Extended Instruction"
+    IDS_LEX_STR_63203       "指示詞"
+    IDS_LEX_STR_63204       "目標"
+    IDS_LEX_STR_63205       "內嵌組譯"
+    IDS_LEX_STR_63206       "CPU 指令"
+    IDS_LEX_STR_63207       "FPU 指令"
+    IDS_LEX_STR_63208       "登錄"
+    IDS_LEX_STR_63209       "指令操作"
+    IDS_LEX_STR_63210       "延伸指令"
     IDS_LEX_STR_63211       "String Double Quoted"
     IDS_LEX_STR_63212       "String Single Quoted"
     IDS_LEX_STR_63213       "POD (Common)"
@@ -333,7 +334,7 @@ BEGIN
     IDS_LEX_STR_63258       "Typedefs/Classes"
     IDS_LEX_STR_63259       "Comment Doc"
     IDS_LEX_STR_63260       "Keyword 2nd"
-    IDS_LEX_STR_63261       "Error"
+    IDS_LEX_STR_63261       "錯誤"
     IDS_LEX_STR_63262       "標記發生次數 (指示器)"
     IDS_LEX_STR_63263       "第二標記發生次數 (指示器)"
 END
@@ -479,6 +480,7 @@ BEGIN
     IDS_LEX_STR_63372       "Decorator"
     IDS_LEX_STR_63373       "Task Marker"
     IDS_LEX_STR_63374       "Comment Doc Error"
+    IDS_LEX_STR_63375       "Type Operator"
 END
 
 STRINGTABLE

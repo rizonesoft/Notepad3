@@ -127,6 +127,7 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Dart forráskód"
     IDS_LEX_KOTLIN_SRC      "Kotlin forráskód"
+    IDS_LEX_JULIA_SCR       "Julia Script"
     IDS_LEX_KIX_SCR         "KiXtart szkript"
 END
 
@@ -479,6 +480,7 @@ BEGIN
     IDS_LEX_STR_63372       "Dekorátor"
     IDS_LEX_STR_63373       "Feladatjelölő"
     IDS_LEX_STR_63374       "Comment Doc Error"
+    IDS_LEX_STR_63375       "Type Operator"
 END
 
 STRINGTABLE

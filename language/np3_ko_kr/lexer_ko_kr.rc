@@ -127,6 +127,7 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Dart 소스 코드"
     IDS_LEX_KOTLIN_SRC      "Kotlin 소스 코드"
+    IDS_LEX_JULIA_SCR       "Julia Script"
     IDS_LEX_KIX_SCR         "KiXtart 스크립트"
 END
 
@@ -479,6 +480,7 @@ BEGIN
     IDS_LEX_STR_63372       "데코레이터"
     IDS_LEX_STR_63373       "작업 마커"
     IDS_LEX_STR_63374       "주석 문서 오류"
+    IDS_LEX_STR_63375       "Type Operator"
 END
 
 STRINGTABLE
