@@ -8,12 +8,28 @@ TabWidth: 4
 Language: Cpp
 AccessModifierOffset: -2
 AlignAfterOpenBracket: DontAlign
+AlignConsecutiveDeclarations: true
+PointerAlignment: Left
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: true
 ColumnLimit: 0
+#BraceWrapping:
+#  AfterClass:      true
+#  AfterControlStatement: true
+#  AfterEnum:       false
+#  AfterFunction:   true
+#  AfterNamespace:  false
+#  AfterObjCDeclaration: true
+#  AfterStruct:     true
+#  AfterUnion:      true
+#  BeforeCatch:     true
+#  BeforeElse:      false
+#  IndentBraces:    false
+#BreakBeforeBraces: Custom
+BreakBeforeBraces: Stroustrup
+#BreakBeforeBraces: Allman
 Cpp11BracedListStyle: false
 FixNamespaceComments: false
 SortIncludes: false
 UseTab: Never
-
 ---

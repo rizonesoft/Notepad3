@@ -1625,8 +1625,8 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
                     StringCchCopy(lpszPath, cchBuffer, p);
                 }
             }
+            CloseHandle(hFile);
         }
-        CloseHandle(hFile);
     }
 
     return (DWORD)StringCchLen(lpszPath, cchBuffer);
