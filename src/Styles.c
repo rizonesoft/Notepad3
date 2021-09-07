@@ -1478,17 +1478,22 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
         SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
     } else {
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGBxA(0, SC_ALPHA_OPAQUE));
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGBxA(0, SC_ALPHA_OPAQUE));
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_TEXT);
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT);
     }
 
     rgb = RGB(0xC0, 0xC0, 0xC0);
-    Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, true); // selection back
-    iValue = SC_ALPHA_OPAQUE;
-    Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true);
-    SciCall_SetSelectionLayer(SC_LAYER_UNDER_TEXT);
-    SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, RGBxA(rgb, iValue));
-    SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, RGBxA(rgb, iValue*2/3));
+    SciCall_SetSelectionLayer(SC_LAYER_UNDER_TEXT); // selection back
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, true)) { 
+        iValue = SC_ALPHA_OPAQUE;
+        Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, RGBxA(rgb, iValue));
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, RGBxA(rgb, iValue * 2 / 3));
+    }
+    else {
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_BACK);
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK);
+    }
 
     // selection eolfilled
     bFlag = Style_StrHasAttribute(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FontEffects[FE_EOLFILLED]);
@@ -1496,11 +1501,24 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     // whitespace colors
     rgb = RGB(0, 0, 0);
-    Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, false);
-    SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE, RGBxA(rgb, SC_ALPHA_OPAQUE/2));
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, false)) {
+        iValue = SC_ALPHA_OPAQUE;
+        Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, true);
+        SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE, RGBxA(rgb, iValue));
+    }
+    else {
+        SciCall_ResetElementColour(SC_ELEMENT_WHITE_SPACE);
+    }
 
-    Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb, true);
-    SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE_BACK, RGBxA(rgb, SC_ALPHA_OPAQUE));
+    rgb = RGB(0, 0, 0);
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb, true)) {
+        //iValue = SC_ALPHA_TRANSPARENT;
+        //~Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, false); ~ always opaque, no translucency possible in Win32
+        SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE_BACK, RGBxA(rgb, SC_ALPHA_OPAQUE));
+    }
+    else {
+        SciCall_ResetElementColour(SC_ELEMENT_WHITE_SPACE_BACK);
+    }
 
     // whitespace dot size
     iValue = 2;

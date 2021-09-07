@@ -104,8 +104,8 @@ extern WININFO g_DefWinInfo;
 //-typedef DWORD COLORREF;
 typedef int COLORALPHAREF;
 //-#define RGB(r, g, b) ((COLORREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
-#define RGBA(r, g, b, a) ((COLORALPHAREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16) | (((DWORD)(BYTE)(a)) << 24)))
-#define RGBxA(rgb, a) ((COLORALPHAREF)(((DWORD)(rgb)&0xffffff) | (((DWORD)(BYTE)(a)) << 24)))
+#define RGBA(r, g, b, a) ((COLORALPHAREF)(((BYTE)(((r)&0xff)) | ((WORD)((BYTE)((g)&0xff)) << 8)) | (((DWORD)(BYTE)((b)&0xff)) << 16) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
+#define RGBxA(rgb, a) ((COLORALPHAREF)(((DWORD)((rgb)&0xffffff)) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
 //-#define GetRValue(rgba) (LOBYTE(rgba))                 
 //-#define GetGValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
 //-#define GetBValue(rgba) (LOBYTE((rgba) >> 16))
