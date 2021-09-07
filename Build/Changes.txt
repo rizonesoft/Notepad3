@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.905.(build_#) (2021-09-05)
+Current BETA/RC Version 5.21.907.(build_#) (2021-09-07)
 ========================================================
 
 --------------------------------------------------------
@@ -60,13 +60,13 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.907.1]- Reset background color for "visible whitespace" if not defined.
 
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
-[.90x.1]- Remove Old and deprecated Notepad3 icons.
+[.907.1]- Remove Old and deprecated Notepad3 icons.
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
