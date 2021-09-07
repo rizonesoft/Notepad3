@@ -153,7 +153,6 @@ const wchar_t* const PATH_CSIDL_MYDOCUMENTS = L"%CSIDL:MYDOCUMENTS%";
 #define PATH_CSIDL_MYDOCUMENTS_LEN (COUNTOF(PATH_CSIDL_MYDOCUMENTS) - 1)
 
 
-#define PATHLONG_MAX_CCH   PATHCCH_MAX_CCH
 // TODO: ...
 #define limit_len(len) (((len) < PATHLONG_MAX_CCH) ? (len) : (PATHLONG_MAX_CCH - 1))
 
@@ -462,6 +461,16 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_in_out)
     Path_Release(hpth_cpy);
 
     return res;
+}
+// ----------------------------------------------------------------------------
+
+
+bool PTHAPI Path_IsNotEmpty(const HPATHL hpth)
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr)
+        return false;
+    return !StrgIsEmpty(hstr);
 }
 // ----------------------------------------------------------------------------
 

@@ -7,6 +7,8 @@
 
 #include "DynStrg.h"
 
+// PATHCCH_MAX_CCH: (0x7FFF + 1 for NULL terminator)
+#define PATHLONG_MAX_CCH 0x8000 
 
 /**************************************************/
 /*             Declared in WINNT.H                */
@@ -39,6 +41,7 @@ size_t PTHAPI          Path_GetLength(HPATHL hpth);
 HPATHL PTHAPI          Path_Copy(const HPATHL hpth);
 bool PTHAPI            Path_Append(HPATHL hpth, HPATHL hmore);
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
+bool PTHAPI            Path_IsNotEmpty(const HPATHL hpth);
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out);
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth);

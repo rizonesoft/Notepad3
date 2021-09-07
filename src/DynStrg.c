@@ -460,7 +460,14 @@ const wchar_t* STRAPI StrgGet(const HSTRINGW hstr)
 
 int STRAPI StrgIsEmpty(const HSTRINGW hstr)
 {
-    return (StrgGetLength(hstr) == 0);
+    STRINGW* pstr = ToWStrg(hstr);
+    if (!pstr)
+        return !0;
+
+    int const res = !(pstr->data) || ((pstr->data)[0] == L'\0') ? !0 : 0;
+
+    assert(pstr->data_length != (size_t)res);
+    return res;
 }
 // ----------------------------------------------------------------------------
 
@@ -845,7 +852,7 @@ void STRAPI StrgTrimLeft(HSTRINGW hstr, const wchar_t wch)
     if (start != pstr->data)
     {
         size_t data_length = pstr->data_length - (start - pstr->data);
-        memmove(pstr->data, start, (data_length + 1) * sizeof(wchar_t));
+        wmemmove_s(pstr->data, pstr->alloc_length, start, (data_length + 1));
         pstr->data_length = data_length;
     }
 }

@@ -57,9 +57,9 @@ extern "C" bool      g_iStatusbarVisible[STATUS_SECTOR_COUNT];
 extern "C" int       g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
 extern "C" int       g_vSBSOrder[STATUS_SECTOR_COUNT];
 
-extern "C" WCHAR     g_tchToolbarBitmap[MAX_PATH];
-extern "C" WCHAR     g_tchToolbarBitmapHot[MAX_PATH];
-extern "C" WCHAR     g_tchToolbarBitmapDisabled[MAX_PATH];
+extern "C" HPATHL    g_tchToolbarBitmap;
+extern "C" HPATHL    g_tchToolbarBitmapHot;
+extern "C" HPATHL    g_tchToolbarBitmapDisabled;
 
 extern "C"           THEMEFILES Theme_Files[];
 
@@ -1065,6 +1065,8 @@ void LoadSettings()
 {
     CFG_VERSION const _ver = StrIsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
+    wchar_t* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
+
     bool bDirtyFlag = false; // do we have to save the file on done
     
     bool bOpendByMe = false;
@@ -1586,9 +1588,12 @@ void LoadSettings()
     const WCHAR *const ToolbarImg_Section = L"Toolbar Images";
     // --------------------------------------------------------------------------
 
-    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapDefault", L"", g_tchToolbarBitmap, COUNTOF(g_tchToolbarBitmap));
-    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapHot", L"", g_tchToolbarBitmapHot, COUNTOF(g_tchToolbarBitmap));
-    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapDisabled", L"", g_tchToolbarBitmapDisabled, COUNTOF(g_tchToolbarBitmap));
+    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapDefault", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    Path_Reset(g_tchToolbarBitmap, pPathBuffer);
+    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapHot", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    Path_Reset(g_tchToolbarBitmapHot, pPathBuffer);
+    IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapDisabled", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    Path_Reset(g_tchToolbarBitmapDisabled, pPathBuffer);
 
     // --------------------------------------------------------------------------
     const WCHAR *const IniSecWindow = Constants.Window_Section;
@@ -1602,7 +1607,7 @@ void LoadSettings()
 
     Defaults.ToolBarTheme = -1;
     Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
-    Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(g_tchToolbarBitmap) ? 1 : 2);
+    Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, Path_IsNotEmpty(g_tchToolbarBitmap) ? 2 : 1);
 
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
     Defaults.DpiScaleToolBar = false;
@@ -1722,6 +1727,8 @@ void LoadSettings()
     Style_Load(); // Scintilla Styles from .ini
 
     CloseSettingsFile(true, bOpendByMe);
+
+    FreeMem(pPathBuffer);
 }
 //=============================================================================
 
