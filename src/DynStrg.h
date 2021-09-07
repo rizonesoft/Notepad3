@@ -34,7 +34,7 @@ DECLARE_HANDLE(HSTRINGW);
 
 #define STRINGW_INVALID_IDX  ((size_t)-1)
 
-HSTRINGW STRAPI          StrgCreate();
+HSTRINGW STRAPI          StrgCreate(const wchar_t* str);
 void STRAPI              StrgDestroy(HSTRINGW hstr);
 
 int STRAPI               StrgIsEmpty(const HSTRINGW hstr);
@@ -45,10 +45,11 @@ void STRAPI              StrgFree(HSTRINGW hstr);        // NULL PTR
 void STRAPI              StrgFreeExtra(HSTRINGW hstr);   // optimize mem
 void STRAPI              StrgEmpty(const HSTRINGW hstr); // -> L""  
 
-int STRAPI               StrgSet(HSTRINGW hstr, const wchar_t* str);
+int STRAPI               StrgReset(HSTRINGW hstr, const wchar_t* str);
 const wchar_t* STRAPI    StrgGet(const HSTRINGW hstr);
 void STRAPI              StrgSetAt(HSTRINGW hstr, const size_t index, const wchar_t ch);
 wchar_t STRAPI           StrgGetAt(const HSTRINGW hstr, const size_t index);
+HSTRINGW STRAPI          StrgCopy(const HSTRINGW hstr);
 void STRAPI              StrgCat(HSTRINGW hstr, const wchar_t* str); /* concatenate */
 size_t STRAPI            StrgInsert(HSTRINGW hstr, const size_t index, const wchar_t* str);
 size_t STRAPI            StrgInsertCh(HSTRINGW hstr, size_t index, const wchar_t c);
@@ -58,7 +59,6 @@ size_t STRAPI            StrgReplaceCh(HSTRINGW hstr, const wchar_t chOld, const
 size_t STRAPI            StrgRemoveCh(HSTRINGW hstr, const wchar_t chRemove);
 size_t STRAPI            StrgDelete(HSTRINGW hstr, const size_t index, size_t count);
 
-HSTRINGW STRAPI          StrgCopy(const HSTRINGW hstr);
 
 void STRAPI              StrgToUpper(HSTRINGW hstr);
 void STRAPI              StrgToLower(HSTRINGW hstr);

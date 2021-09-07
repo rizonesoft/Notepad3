@@ -26,14 +26,6 @@
 
 DECLARE_HANDLE(HPATHL);
 
-
-inline const wchar_t* PTHAPI_DEBUG_PATH(const HPATHL hpth)
-{
-    const wchar_t* _buf = StrgGet((HSTRINGW)hpth);
-    return _buf;
-};
-
-
 /**************************************************/
 /*                                                */
 /*          DYNAMIC WIDCHAR LONG PATH             */

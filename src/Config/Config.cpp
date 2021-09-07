@@ -167,13 +167,13 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
     if (IS_VALID_HANDLE(hFile)) {
         bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
         if (!bLocked) {
-            HSTRINGW msg = StrgCreate();
+            HSTRINGW msg = StrgCreate(NULL);
             StrgFormat(msg, L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
             MsgBoxLastError(StrgGet(msg), 0);
             StrgDestroy(msg);
         }
     } else {
-        HSTRINGW msg = StrgCreate();
+        HSTRINGW msg = StrgCreate(NULL);
         StrgFormat(msg, L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
         MsgBoxLastError(StrgGet(msg), 0);
         StrgDestroy(msg);
@@ -200,13 +200,13 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
     if (IS_VALID_HANDLE(hFile)) {
         bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
         if (!bLocked) {
-            HSTRINGW msg = StrgCreate();
+            HSTRINGW msg = StrgCreate(NULL);
             StrgFormat(msg, L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
             MsgBoxLastError(StrgGet(msg), 0);
             StrgDestroy(msg);
         }
     } else {
-        HSTRINGW msg = StrgCreate();
+        HSTRINGW msg = StrgCreate(NULL);
         StrgFormat(msg, L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
         MsgBoxLastError(StrgGet(msg), 0);
         StrgDestroy(msg);
@@ -1023,7 +1023,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
             if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile); // done
             } else {
-                HSTRINGW msg = StrgCreate();
+                HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", pszIniFilePath);
                 MsgBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
@@ -1038,7 +1038,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
             } else {
-                HSTRINGW msg = StrgCreate();
+                HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILED TO READ FILESIZE!", pszIniFilePath);
                 MsgBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);

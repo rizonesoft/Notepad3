@@ -277,18 +277,20 @@ static void _UnExpandEnvStrgs(HSTRINGW hstr_in_out)
     const wchar_t* env_var_list[] = {
         L"ALLUSERSPROFILE",
         L"APPDATA",
+        L"LOCALAPPDATA",
+        L"CommonProgramFiles",
         L"TEMP",
-        L"LOCALAPPDATA=",
         L"USERPROFILE",
         L"COMPUTERNAME",
         L"ProgramFiles",
         L"SystemRoot",
-        L"SystemDrive"
+        L"windir",
+        L"OneDrive"
     };
     size_t const env_var_cnt = COUNTOF(env_var_list);
     wchar_t      var_strg[64] = { L'\0' };
 
-    HSTRINGW htmp_str = StrgCreate();
+    HSTRINGW htmp_str = StrgCreate(NULL);
 
     for (size_t i = 0; i < env_var_cnt; ++i) {
 
@@ -363,11 +365,7 @@ __forceinline static bool _IsRootPath(const HPATHL hpth)
 
 HPATHL PTHAPI Path_Allocate(const wchar_t* path)
 {
-    HSTRINGW hstr = StrgCreate();
-    if (path) {
-        StrgSet(hstr, path);
-    }
-    return (HPATHL)hstr;
+    return (HPATHL)StrgCreate(path);
 }
 // ----------------------------------------------------------------------------
 
@@ -381,7 +379,7 @@ void PTHAPI Path_Release(HPATHL hpth)
 
 int PTHAPI Path_Reset(HPATHL hpth_in_out, const wchar_t* path)
 {
-    return (path ? StrgSet(ToHStrgW(hpth_in_out), path) : 0);
+    return (path ? StrgReset(ToHStrgW(hpth_in_out), path) : 0);
 }
 // ----------------------------------------------------------------------------
 
@@ -482,7 +480,7 @@ bool PTHAPI Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out)
     bool const res = PathIsUNCEx(PathGet(hpth), &server_name);
 
     if (server_name) {
-        StrgSet(server_name_out, server_name);
+        StrgReset(server_name_out, server_name);
     }
     return res;
 }
@@ -718,8 +716,7 @@ void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out)
 
 void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc)
 {
-    HSTRINGW hstr = StrgCreate();
-    StrgSet(hstr, lpSrc);
+    HSTRINGW hstr = StrgCreate(lpSrc);
     ExpandEnvironmentStrgs(hstr);
     const wchar_t* buf = StrgGet(hstr);
     if (buf) {
@@ -867,7 +864,7 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         StringCchCatW(out_buf, len, &hto_buf[prefix]);
     }
     else {
-        StrgSet(hrecv_str, hto_buf);
+        StrgReset(hrecv_str, hto_buf);
     }
 
     Path_Release(hto_cpy);
@@ -929,7 +926,7 @@ bool PTHAPI Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out)
     //(KF_FLAG_DEFAULT_PATH | KF_FLAG_NOT_PARENT_RELATIVE | KF_FLAG_NO_ALIAS);
     HRESULT const hr = SHGetKnownFolderPath(rfid, dwFlags, NULL, &pszPath);
     if (SUCCEEDED(hr) && pszPath) {
-        StrgSet(hstr_out, pszPath);
+        StrgReset(hstr_out, pszPath);
         CoTaskMemFree(pszPath);
         return true;
     }
@@ -1014,7 +1011,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
         if (bSearchPathIfRelative) {
             if (!Path_IsExistingFile(hsrch_pth)) {
                 Path_StripPath(hsrch_pth);
-                HSTRINGW hsrch_str = StrgCreate();
+                HSTRINGW       hsrch_str = StrgCreate(NULL);
                 wchar_t* const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
                 if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
                     Path_Reset(hpth_in_out, buf);
@@ -1050,7 +1047,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
 
         if (IS_VALID_HANDLE(hFile)) {
 
-            HSTRINGW       hstr = StrgCreate();
+            HSTRINGW       hstr = StrgCreate(NULL);
             wchar_t* const buf = StrgWriteAccessBuf(hstr, PATHLONG_MAX_CCH);
 
             if (GetFinalPathNameByHandleW(hFile, buf, PATHLONG_MAX_CCH, FILE_NAME_OPENED) > 0) {
