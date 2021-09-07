@@ -207,10 +207,8 @@ DeclareSciCallV2(SetElementColour, SETELEMENTCOLOUR, int, element, COLORALPHAREF
 DeclareSciCallR1(GetElementColour, GETELEMENTCOLOUR, COLORALPHAREF, int, element);
 DeclareSciCallR1(GetElementBaseColour, GETELEMENTBASECOLOUR, COLORALPHAREF, int, element);
 DeclareSciCallV1(ResetElementColour, RESETELEMENTCOLOUR, int, element);
-//SCI_GETELEMENTISSET(int element) → bool 
-//SCI_GETELEMENTALLOWSTRANSLUCENT(int element) → bool 
-//SCI_GETELEMENTBASECOLOUR(int element) → colouralpha
-
+DeclareSciCallR1(GetElementIsSet, GETELEMENTISSET, bool, int, element);
+DeclareSciCallR1(GetElementAllowsTranslucent, GETELEMENTALLOWSTRANSLUCENT, bool, int, element);
 
 //  Selection, positions and information
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool);
