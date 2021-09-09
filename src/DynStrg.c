@@ -512,7 +512,7 @@ void STRAPI StrgFreeExtra(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-void STRAPI StrgEmpty(const HSTRINGW hstr)
+void STRAPI StrgEmpty(const HSTRINGW hstr, bool truncate)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
@@ -521,7 +521,9 @@ void STRAPI StrgEmpty(const HSTRINGW hstr)
         return;
     (pstr->data)[0] = L'\0';
     pstr->data_length = 0;
-    FreeUnusedData(pstr); // keep old buffer to minimize ReAlloc()
+    if (truncate) {
+        FreeUnusedData(pstr);
+    }
 }
 // ----------------------------------------------------------------------------
 
@@ -562,6 +564,29 @@ HSTRINGW STRAPI StrgCopy(const HSTRINGW hstr)
     if (!pstr)
         return NULL;
     return StrgCreate(StrgGet(hstr));
+}
+// ----------------------------------------------------------------------------
+
+
+void STRAPI StrgSwap(HSTRINGW hstr1, HSTRINGW hstr2)
+{
+    STRINGW* pstr1 = ToWStrg(hstr1);
+    STRINGW* pstr2 = ToWStrg(hstr2);
+    assert((pstr1 != NULL) && (pstr2 != NULL));
+    if (!pstr1 || !pstr2)
+        return;
+    
+    wchar_t* const ptmp_data = pstr1->data;
+    size_t const   tmp_data_len = pstr1->data_length;
+    size_t const   tmp_alloc_len = pstr1->alloc_length;
+
+    pstr1->data = pstr2->data;
+    pstr1->data_length = pstr2->data_length;
+    pstr1->alloc_length = pstr2->alloc_length;
+
+    pstr2->data = ptmp_data;
+    pstr2->data_length = tmp_data_len;
+    pstr2->alloc_length = tmp_alloc_len;
 }
 // ----------------------------------------------------------------------------
 

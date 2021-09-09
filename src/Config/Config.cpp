@@ -2338,7 +2338,35 @@ bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
 }
 
 
-bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
+bool MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex)
+{
+    *iIndex = 0;
+    if (pmru) {
+        WCHAR wchItem[MAX_PATH] = { L'\0' };
+        int i = 0;
+        for (i = 0; i < pmru->iSize; ++i) {
+            if (pmru->pszItems[i] == NULL) {
+                *iIndex = i;
+                return false;
+            }
+            if (StringCchCompareXI(pmru->pszItems[i], Path_Get(hpth)) == 0) {
+                *iIndex = i;
+                return true;
+            }
+            StringCchCopy(wchItem, COUNTOF(wchItem), pmru->pszItems[i]);
+            PathAbsoluteFromApp(wchItem, COUNTOF(wchItem), true);
+            if (StringCchCompareXI(wchItem, Path_Get(hpth)) == 0) {
+                *iIndex = i;
+                return true;
+            }
+        }
+        *iIndex = i;
+    }
+    return false;
+}
+
+// TODO: §§§ MAX_PATH limit §§§ @@@!
+bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
                  cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
     if (pmru) {

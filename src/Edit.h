@@ -37,7 +37,7 @@ bool EditSwapClipboard(HWND hwnd,bool);
 bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
 void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
 void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
-bool EditLoadFile(HWND hwnd, LPWSTR pszFile, EditFileIOStatus *const status,
+bool EditLoadFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus *const status,
                   bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection, bool bClearUndoHistory);
 bool EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus *status, bool bSaveCopy, bool bPreserveTimeStamp);
 

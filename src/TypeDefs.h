@@ -49,6 +49,23 @@
 // no Analyze warning "prefer: enum class"
 #pragma warning(disable : 26812)
 
+/**************************************************/
+/*             Declared in WINNT.H                */
+/*                                                */
+/*  Provides bottom line type safety in function  */
+/*  calls instead of using void* pointer          */
+/**************************************************/
+#ifndef DECLARE_HANDLE
+#define DECLARE_HANDLE(name) \
+    struct name##__ {        \
+        int unused;          \
+    };                       \
+    typedef struct name##__* name
+#endif
+
+DECLARE_HANDLE(HSTRINGW);
+DECLARE_HANDLE(HPATHL);
+
 //
 // TODO:
 // SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
@@ -439,7 +456,7 @@ extern GLOBALS_T Globals;
 
 typedef struct _paths_t {
     
-    WCHAR  CurrentFile[MAX_PATH];
+    HPATHL CurrentFile;
     WCHAR  WorkingDirectory[MAX_PATH];
     WCHAR  IniFile[MAX_PATH];
     WCHAR  IniFileDefault[MAX_PATH];

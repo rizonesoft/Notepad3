@@ -1250,7 +1250,7 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //
 //  GetFileEncoding()
 //
-extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+extern "C" ENC_DET_T Encoding_DetectEncoding(LPCWSTR pszFile, const char* lpData, const size_t cbData,
         cpi_enc_t iAnalyzeHint,
         bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {

@@ -2321,9 +2321,9 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 
 //=============================================================================
 //
-//  Style_SetLexerFromFile()
+//  Style_SetLexerFromFile()  TODO: §§§ MAX_PATH limit §§§ @@@!
 //
-bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
+bool Style_SetLexerFromFile(HWND hwnd, LPCWSTR lpszFile)
 {
     if (Flags.bHugeFileLoadState) {
         Style_SetDefaultLexer(hwnd);
@@ -2501,7 +2501,7 @@ bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile)
 
 //=============================================================================
 //
-//  Style_SetLexerFromName()
+//  Style_SetLexerFromName() TODO: §§§ MAX_PATH limit §§§ @@@!
 //
 void Style_SetLexerFromName(HWND hwnd, LPCWSTR lpszFile, LPCWSTR lpszName)
 {
@@ -2697,7 +2697,7 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
 {
     ZeroMemory(lpszFilter, cchFilter * sizeof(WCHAR));
 
-    LPCWSTR curExt = PathFindExtension(Paths.CurrentFile);
+    LPCWSTR curExt = Path_FindExtension(Paths.CurrentFile);
     if (StrIsNotEmpty(curExt)) {
         curExt += 1;
     }

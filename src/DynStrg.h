@@ -1,19 +1,7 @@
 /****************************************************************/
 #pragma once
 
-/**************************************************/
-/*             Declared in WINNT.H                */
-/*                                                */
-/*  Provides bottom line type safety in function  */
-/*  calls instead of using void* pointer          */
-/**************************************************/
-#ifndef DECLARE_HANDLE
-#define DECLARE_HANDLE(name) \
-    struct name##__ {        \
-        int unused;          \
-    };                       \
-    typedef struct name##__ *name
-#endif
+#include "TypeDefs.h"
 
 #define STRAPI __stdcall
 
@@ -30,7 +18,6 @@ __forceinline size_t StrlenW(const wchar_t* p)
 /*          DYNAMIC WIDE CHAR C STRING            */
 /*                                                */
 /**************************************************/
-DECLARE_HANDLE(HSTRINGW);
 
 #define STRINGW_INVALID_IDX  ((size_t)-1)
 
@@ -43,13 +30,14 @@ size_t STRAPI            StrgGetAllocLength(const HSTRINGW hstr);
 
 void STRAPI              StrgFree(HSTRINGW hstr);        // NULL PTR 
 void STRAPI              StrgFreeExtra(HSTRINGW hstr);   // optimize mem
-void STRAPI              StrgEmpty(const HSTRINGW hstr); // -> L""  
+void STRAPI              StrgEmpty(const HSTRINGW hstr, bool truncate); // -> L""  
 
 int STRAPI               StrgReset(HSTRINGW hstr, const wchar_t* str);
 const wchar_t* STRAPI    StrgGet(const HSTRINGW hstr);
 void STRAPI              StrgSetAt(HSTRINGW hstr, const size_t index, const wchar_t ch);
 wchar_t STRAPI           StrgGetAt(const HSTRINGW hstr, const size_t index);
 HSTRINGW STRAPI          StrgCopy(const HSTRINGW hstr);
+void STRAPI              StrgSwap(HSTRINGW hstr1, HSTRINGW hstr2); // ensure not NULL
 void STRAPI              StrgCat(HSTRINGW hstr, const wchar_t* str); /* concatenate */
 size_t STRAPI            StrgInsert(HSTRINGW hstr, const size_t index, const wchar_t* str);
 size_t STRAPI            StrgInsertCh(HSTRINGW hstr, size_t index, const wchar_t c);
@@ -83,7 +71,7 @@ void STRAPI              StrgFormat(HSTRINGW hstr, const wchar_t* fmt, ...);
 // use for PathLib Only !
 #ifdef NP3_PATH_LIB_IMPLEMENTATION
 
-wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len);
+wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len); //min_len = 0   for not resizing buffer
 void STRAPI StrgSanitize(HSTRINGW hstr);  // correct strg length after buffer access
 
 #endif

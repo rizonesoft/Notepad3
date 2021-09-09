@@ -153,7 +153,7 @@ void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 
-bool FileIO(bool fLoad, LPWSTR pszFileName, EditFileIOStatus * status,
+bool FileIO(bool fLoad, LPCWSTR pszFileName, EditFileIOStatus * status,
             bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
             bool bSaveCopy, bool bPreserveTimeStamp);
 bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,

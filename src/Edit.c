@@ -1068,7 +1068,7 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
 //
 bool EditLoadFile(
     HWND hwnd,
-    LPWSTR pszFile,
+    LPCWSTR pszFile,
     EditFileIOStatus* const status,
     bool bSkipUTFDetection,
     bool bSkipANSICPDetection,
