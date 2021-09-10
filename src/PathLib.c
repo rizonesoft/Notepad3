@@ -107,6 +107,7 @@
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <assert.h>
+#include <wchar.h>
 #include <processenv.h>
 #include <stdbool.h>
 #include <strsafe.h>
@@ -343,6 +344,134 @@ static void _UnExpandEnvStrgs(HSTRINGW hstr_in_out)
 
 // ----------------------------------------------------------------------------
 
+
+static bool _PathCanonicalize(HSTRINGW hstr_in_out)
+{
+    if (!hstr_in_out) {
+        return false;
+    }
+
+    wchar_t* const path = StrgWriteAccessBuf(hstr_in_out, 0);
+    size_t const   cch = StrgGetAllocLength(hstr_in_out);
+
+    // Replace forward slashes with backslashes
+    _PathFixBackslashes(path);
+
+    // Move back to the beginning of the string
+    size_t i = 0;
+    size_t j = 0;
+    size_t k = 0;
+
+    // Parse the entire string
+    do {
+        // Backslash separator found?
+        if (path[i] == L'\\' || path[i] == L'\0') {
+            // "." element found?
+            if ((i - j) == 1 && !wcsncmp(path + j, L".", 1)) {
+                // Check whether the pathname is empty?
+                if (k == 0) {
+                    if (path[i] == L'\0') {
+                        path[k++] = L'.';
+                    }
+                    else if (path[i] == L'\\' && path[i + 1] == L'\0') {
+                        path[k++] = L'.';
+                        path[k++] = L'\\';
+                    }
+                }
+                else if (k > 1) {
+                    // Remove the final slash if necessary
+                    if (path[i] == L'\0')
+                        k--;
+                }
+            }
+            // ".." element found?
+            else if ((i - j) == 2 && !wcsncmp(path + j, L"..", 2)) {
+                // Check whether the pathname is empty?
+                if (k == 0) {
+                    path[k++] = L'.';
+                    path[k++] = L'.';
+
+                    // Append a slash if necessary
+                    if (path[i] == L'\\')
+                        path[k++] = L'\\';
+                }
+                else if (k > 1) {
+                    // Search the path for the previous slash
+                    for (j = 1; j < k; j++) {
+                        if (path[k - j - 1] == L'\\')
+                            break;
+                    }
+
+                    // Backslash separator found?
+                    if (j < k) {
+                        if (!wcsncmp(path + k - j, L"..", 2)) {
+                            path[k++] = L'.';
+                            path[k++] = L'.';
+                        }
+                        else {
+                            k = k - j - 1;
+                        }
+
+                        // Append a slash if necessary
+                        if (k == 0 && path[0] == L'\\')
+                            path[k++] = L'\\';
+                        else if (path[i] == L'\\')
+                            path[k++] = L'\\';
+                    }
+                    // No slash separator found?
+                    else {
+                        if (k == 3 && !wcsncmp(path, L"..", 2)) {
+                            path[k++] = L'.';
+                            path[k++] = L'.';
+
+                            // Append a slash if necessary
+                            if (path[i] == L'\\')
+                                path[k++] = L'\\';
+                        }
+                        else if (path[i] == L'\0') {
+                            k = 0;
+                            path[k++] = L'.';
+                        }
+                        else if (path[i] == L'\\' && path[i + 1] == L'\0') {
+                            k = 0;
+                            path[k++] = L'.';
+                            path[k++] = L'\\';
+                        }
+                        else {
+                            k = 0;
+                        }
+                    }
+                }
+            }
+            else {
+                // Copy directory name
+                wmemmove_s(path + k, cch - k, path + j, i - j);
+
+                // Advance write pointer
+                k += (i - j);
+
+                // Append a slash if necessary
+                if (path[i] == L'\\')
+                    path[k++] = L'\\';
+            }
+
+            // Move to the next token
+            while (path[i] == L'\\')
+                i++;
+            j = i;
+        }
+
+    } while (path[i++] != L'\0');
+
+    // Properly terminate the string with a NULL character
+    path[k] = '\0';
+
+    return true;
+}
+// ----------------------------------------------------------------------------
+
+
+
 // Determines whether a path string refers to the root of a volume.
 //
 //  Path                      PathCchIsRoot() 
@@ -488,22 +617,27 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_in_out)
     HPATHL hpth_cpy = Path_Allocate(PathGet(hpth_in_out));
     HSTRINGW hstr_cpy = ToHStrgW(hpth_cpy);
 
-    // PathCchCanonicalizeEx() does not convert forward slashes (/) into back slashes (\).
+    //~ PathCchCanonicalizeEx() does not convert forward slashes (/) into back slashes (\).
     //~StrgReplaceCh(hstr_cpy, L'/', L'\\');
-    _PathFixBackslashes(StrgGet(hstr_cpy));
+    //~_PathFixBackslashes(StrgGet(hstr_cpy));
+    // but static _PathCanonicalize() does!
+
+    // remove quotes
+    StrgTrim(hstr_cpy, L'"');
 
     // canonicalize prefix
     PrependLongPathPrefix(hpth_cpy, false);
 
     // internal buffer access
-    LPWSTR       wbuf_out = StrgWriteAccessBuf(hstr_cpy, 0);
-    size_t const cch_out = StrgGetAllocLength(hstr_cpy);
+    //~LPWSTR       wbuf_out = StrgWriteAccessBuf(hstr_cpy, 0);
+    //~size_t const cch_out = StrgGetAllocLength(hstr_cpy);
+    //~DWORD const dwFlags = PATHCCH_ALLOW_LONG_PATHS;
+    //~//  Windows 10, version 1703:
+    //~//  PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS | PATHCCH_ENSURE_IS_EXTENDED_LENGTH_PATH
+    //~//  PATHCCH_ENSURE_TRAILING_SLASH
+    //~bool const res = SUCCEEDED(PathCchCanonicalizeEx(wbuf_out, cch_out, PathGet(hpth_in_out), dwFlags));
 
-    DWORD const dwFlags = PATHCCH_ALLOW_LONG_PATHS;
-    //  Windows 10, version 1703:
-    //  PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS | PATHCCH_ENSURE_IS_EXTENDED_LENGTH_PATH
-    //  PATHCCH_ENSURE_TRAILING_SLASH
-    bool const res = SUCCEEDED(PathCchCanonicalizeEx(wbuf_out, cch_out, PathGet(hpth_in_out), dwFlags));
+    bool const res = _PathCanonicalize(hstr_cpy);
     StrgSanitize(hstr_cpy);
 
     Path_Swap(hpth_in_out, hpth_cpy);
