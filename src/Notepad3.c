@@ -6320,6 +6320,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_WEBACTION1:
     case CMD_WEBACTION2: {
+
         StringCchCopyW(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer),
                        (iLoWParam == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
 
@@ -6329,6 +6330,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             size_t const cchSelection = EditGetSelectedText(wszSelection, HUGE_BUFFER);
 
             if (1 < cchSelection) {
+
+                WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+                if (StrIsNotEmpty(Paths.CurrentFile)) {
+                    StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Paths.CurrentFile);
+                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                }
+
                 // Check lpszSelection and truncate bad WCHARs
                 WCHAR* lpsz = StrChr(wszSelection, L'\r');
                 if (lpsz) {
@@ -6345,28 +6353,38 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                     *lpsz = L'\0';
                 }
 
-                int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
-                LPWSTR lpszCommand = AllocMem(sizeof(WCHAR) * cmdsz, HEAP_ZERO_MEMORY);
-                StringCchPrintf(lpszCommand, cmdsz, tchMaxPathBuffer, wszSelection);
-                ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
+                DWORD const cchHypLink = (INTERNET_MAX_URL_LENGTH + MAX_PATH);
+                LPWSTR       lpHypLink = AllocMem(cchHypLink * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+                StringCchPrintf(lpHypLink, cchHypLink, tchMaxPathBuffer, wszSelection);
+                ExpandEnvironmentStringsEx(lpHypLink, cchHypLink);
 
-                WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-                if (StrIsNotEmpty(Paths.CurrentFile)) {
-                    StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Paths.CurrentFile);
-                    PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+                if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp))
+                {
+                    LPWSTR const lpParams = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, lpHypLink);
+
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+                    sei.fMask = SEE_MASK_DEFAULT;
+                    sei.hwnd = NULL;
+                    sei.lpVerb = NULL;
+                    sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
+                    sei.lpParameters = lpParams;
+                    sei.lpDirectory = wchDirectory;
+                    sei.nShow = SW_SHOWNORMAL;
+                    ShellExecuteEx(&sei);
+                    FreeMem(lpParams);
                 }
-
-                SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-                sei.fMask = SEE_MASK_NOZONECHECKS;
-                sei.hwnd = NULL;
-                sei.lpVerb = NULL;
-                sei.lpFile = lpszCommand;
-                sei.lpParameters = NULL;
-                sei.lpDirectory = wchDirectory;
-                sei.nShow = SW_SHOWNORMAL;
-                ShellExecuteEx(&sei);
-
-                FreeMem(lpszCommand);
+                else {
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+                    sei.fMask = SEE_MASK_NOZONECHECKS;
+                    sei.hwnd = NULL;
+                    sei.lpVerb = NULL;
+                    sei.lpFile = lpHypLink;
+                    sei.lpParameters = NULL;
+                    sei.lpDirectory = wchDirectory;
+                    sei.nShow = SW_SHOWNORMAL;
+                    ShellExecuteEx(&sei);
+                }
+                FreeMem(lpHypLink);
             }
         }
     }
@@ -7234,31 +7252,27 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
                 }
 
-                SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-
                 if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp)) {
 
-                    WCHAR lpParams[MAX_PATH + INTERNET_MAX_URL_LENGTH] = { L'\0' };
-                    LPWSTR const _params = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, szUnEscW);
-                    if (StrIsNotEmpty(_params)) {
-                        StringCchCopy(lpParams, COUNTOF(lpParams), _params);
-                    } else {
-                        StringCchCopy(lpParams, COUNTOF(lpParams), szUnEscW);
-                    }
-                    FreeMem(_params);
+                    LPWSTR const lpParams = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, szUnEscW);
 
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_DEFAULT;
                     sei.hwnd = NULL;
                     sei.lpVerb = NULL;
                     sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
-                    sei.lpParameters = lpParams;
+                    sei.lpParameters = StrIsNotEmpty(lpParams) ? lpParams : szUnEscW;
                     sei.lpDirectory = wchDirectory;
                     sei.nShow = SW_SHOWNORMAL;
+
+                    bHandled = ShellExecuteEx(&sei);
+                    FreeMem(lpParams);
 
                 } else {
 
                     const WCHAR *const lpVerb = StrIsEmpty(Settings2.HyperlinkFileProtocolVerb) ? NULL : Settings2.HyperlinkFileProtocolVerb;
 
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_NOZONECHECKS;
                     sei.hwnd = NULL;
                     sei.lpVerb = lpVerb;
@@ -7266,10 +7280,8 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     sei.lpParameters = NULL;
                     sei.lpDirectory = wchDirectory;
                     sei.nShow = SW_SHOWNORMAL;
+                    bHandled = ShellExecuteEx(&sei);
                 }
-
-                bHandled = ShellExecuteEx(&sei);
-
             }
         }
     }

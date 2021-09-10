@@ -670,7 +670,7 @@ typedef struct _settings2_t
     WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
 
     WCHAR HyperlinkShellExURLWithApp[MAX_PATH];
-    WCHAR HyperlinkShellExURLCmdLnArgs[MAX_PATH*2];
+    WCHAR HyperlinkShellExURLCmdLnArgs[MAX_PATH];
     WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
 } SETTINGS2_T, *PSETTINGS2_T;
