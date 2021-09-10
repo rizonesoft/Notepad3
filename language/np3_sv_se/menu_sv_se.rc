@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&New Empty Window\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "Nytt tomt fönster\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "Duplicera denna instans\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Kör med förhöjda behörigheter",               IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Återgå till filens version\tF5",                  IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "Ignorera filvariabler",                      CMD_IGNORE_FILE_VARS
         POPUP "Teckenkodning"
         BEGIN
             POPUP "Återgå till filversion som"
@@ -210,12 +210,12 @@ BEGIN
             MENUITEM "Skapa indrag",                                IDM_EDIT_INDENT
             MENUITEM "Ta bort indrag",                              IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Line &Comment"
+            POPUP "Radkommentar"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-                MENUITEM "&Add\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Remove\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "Växla\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "Lägg till\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "Ta bort\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "Blockredigering\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "Strömkommentar\tCtrl+Shift+Q",                IDM_EDIT_STREAMCOMMENT
@@ -263,9 +263,9 @@ BEGIN
             MENUITEM "Konvertera indrag till tab\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
             MENUITEM "Ta bort tab för indrag\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base&64-koda",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4-avkoda",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64-avkoda till kodsida...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL-kodning\tCtrl+Shift+E",                      IDM_EDIT_URLENCODE
             MENUITEM "Ta bort URL-kodning\tCtrl+Shift+R",           IDM_EDIT_URLDECODE
@@ -463,7 +463,7 @@ BEGIN
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Bara en instans per fil",              IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc-tangentens funktion"
