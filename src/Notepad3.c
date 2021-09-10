@@ -6361,6 +6361,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             size_t const cchSelection = EditGetSelectedText(wszSelection, HUGE_BUFFER);
 
             if (1 < cchSelection) {
+
+                HPATHL hdir = Path_Copy(Paths.CurrentFile);
+                Path_RemoveFileSpec(hdir);
+
                 // Check lpszSelection and truncate bad WCHARs
                 WCHAR* lpsz = StrChr(wszSelection, L'\r');
                 if (lpsz) {
@@ -6377,29 +6381,39 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                     *lpsz = L'\0';
                 }
 
-                // TODO: §§§ MAX_PATH limit §§§ @@@!
-                int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
-                LPWSTR lpszCommand = AllocMem(sizeof(WCHAR) * cmdsz, HEAP_ZERO_MEMORY);
-                StringCchPrintf(lpszCommand, cmdsz, tchMaxPathBuffer, wszSelection);
-                ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
-                
-                HPATHL hdir = Path_Copy(Paths.CurrentFile);
-                if (Path_IsNotEmpty(Paths.CurrentFile)) {
-                    Path_RemoveFileSpec(hdir);
+                DWORD const cchHypLink = (INTERNET_MAX_URL_LENGTH + MAX_PATH);
+                LPWSTR       lpHypLink = AllocMem(cchHypLink * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+                StringCchPrintf(lpHypLink, cchHypLink, tchMaxPathBuffer, wszSelection);
+                ExpandEnvironmentStringsEx(lpHypLink, cchHypLink);
+
+                if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp))
+                {
+                    LPWSTR const lpParams = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, lpHypLink);
+
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+                    sei.fMask = SEE_MASK_DEFAULT;
+                    sei.hwnd = NULL;
+                    sei.lpVerb = NULL;
+                    sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
+                    sei.lpParameters = lpParams;
+                    sei.lpDirectory = Path_Get(hdir);
+                    sei.nShow = SW_SHOWNORMAL;
+                    ShellExecuteEx(&sei);
+                    FreeMem(lpParams);
                 }
-
-                SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-                sei.fMask = SEE_MASK_NOZONECHECKS;
-                sei.hwnd = NULL;
-                sei.lpVerb = NULL;
-                sei.lpFile = lpszCommand;
-                sei.lpParameters = NULL;
-                sei.lpDirectory = Path_Get(hdir);
-                sei.nShow = SW_SHOWNORMAL;
-                ShellExecuteEx(&sei);
-
+                else {
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+                    sei.fMask = SEE_MASK_NOZONECHECKS;
+                    sei.hwnd = NULL;
+                    sei.lpVerb = NULL;
+                    sei.lpFile = lpHypLink;
+                    sei.lpParameters = NULL;
+                    sei.lpDirectory = Path_Get(hdir);
+                    sei.nShow = SW_SHOWNORMAL;
+                    ShellExecuteEx(&sei);
+                }
+                FreeMem(lpHypLink);
                 Path_Release(hdir);
-                FreeMem(lpszCommand);
             }
         }
     }
@@ -7269,31 +7283,27 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     Path_Release(hdir);
                 }
 
-                SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-
                 if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp)) {
 
-                    WCHAR lpParams[MAX_PATH + INTERNET_MAX_URL_LENGTH] = { L'\0' };
-                    LPWSTR const _params = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, szUnEscW);
-                    if (StrIsNotEmpty(_params)) {
-                        StringCchCopy(lpParams, COUNTOF(lpParams), _params);
-                    } else {
-                        StringCchCopy(lpParams, COUNTOF(lpParams), szUnEscW);
-                    }
-                    FreeMem(_params);
+                    LPWSTR const lpParams = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, szUnEscW);
 
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_DEFAULT;
                     sei.hwnd = NULL;
                     sei.lpVerb = NULL;
                     sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
-                    sei.lpParameters = lpParams;
+                    sei.lpParameters = StrIsNotEmpty(lpParams) ? lpParams : szUnEscW;
                     sei.lpDirectory = wchDirectory;
                     sei.nShow = SW_SHOWNORMAL;
+
+                    bHandled = ShellExecuteEx(&sei);
+                    FreeMem(lpParams);
 
                 } else {
 
                     const WCHAR *const lpVerb = StrIsEmpty(Settings2.HyperlinkFileProtocolVerb) ? NULL : Settings2.HyperlinkFileProtocolVerb;
 
+                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_NOZONECHECKS;
                     sei.hwnd = NULL;
                     sei.lpVerb = lpVerb;
@@ -7301,10 +7311,8 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     sei.lpParameters = NULL;
                     sei.lpDirectory = wchDirectory;
                     sei.nShow = SW_SHOWNORMAL;
+                    bHandled = ShellExecuteEx(&sei);
                 }
-
-                bHandled = ShellExecuteEx(&sei);
-
             }
         }
     }
