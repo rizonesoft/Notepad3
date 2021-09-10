@@ -1102,24 +1102,17 @@ static bool _Path_IsRelative(const HPATHL hpth)
         return false; // cant be relative
     }
 
-    HSTRINGW cpy = StrgCopy(hstr);
-
     bool res = false;
-    if (StrgGetLength(cpy) >= MAX_PATH) {
+    if (StrgGetLength(hstr) >= MAX_PATH) {
         // hack for MAX_PATH limit
-        wchar_t* const buf = (wchar_t* const)StrgGet(cpy);
-        buf[MAX_PATH] = L'\0';
-        size_t const idx = StrgReverseFind(cpy, L'\\');
-        if (idx != STRINGW_INVALID_IDX) {
-            buf[idx] = L'\0';
-            res = PathIsRelativeW(StrgGet(cpy));
-        }
+        wchar_t const wch = StrgGetAt(hstr, MAX_PATH);
+        StrgSetAt(hstr, MAX_PATH, L'\0');
+        res = PathIsRelativeW(StrgGet(hstr));
+        StrgSetAt(hstr, MAX_PATH, wch);
     }
     else {
-        res = PathIsRelativeW(StrgGet(cpy));
+        res = PathIsRelativeW(StrgGet(hstr));
     }
-
-    StrgDestroy(cpy);
     return res;
 }
 
