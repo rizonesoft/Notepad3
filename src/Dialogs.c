@@ -4922,12 +4922,12 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
     }
     else if (Path_IsNotEmpty(pthFilePath)) {
 
-        if ((iFormat < 2) && !Path_IsRoot(pthFilePath)) {
+        if (iFormat < 2) {
             if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath) != 0) {
                 Path_Reset(s_pthCachedFilePath, Path_Get(pthFilePath));
                 Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled);
             }
-            StringCchCat(szTitle, COUNTOF(szTitle), Path_FindFileName(s_pthCachedFilePath, NULL));
+            StringCchCat(szTitle, COUNTOF(szTitle), Path_FindFileName(s_pthCachedFilePath));
             if (iFormat == 1) {
                 HPATHL hdir = Path_Copy(s_pthCachedFilePath);
                 if (Path_IsNotEmpty(hdir)) {

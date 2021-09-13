@@ -4988,7 +4988,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INSERT_PATHNAME: {
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
             if (iLoWParam == IDM_EDIT_INSERT_FILENAME) {
-                HPATHL hfilename = Path_Allocate(Path_FindFileName(Paths.CurrentFile, NULL));
+                HPATHL hfilename = Path_Allocate(Path_FindFileName(Paths.CurrentFile));
                 SetClipboardText(hwnd, Path_Get(hfilename), Path_GetLength(hfilename));
                 Path_Release(hfilename);
             }
@@ -10552,7 +10552,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         // File or "Untitled" ...
         WCHAR tch[MAX_PATH] = { L'\0' };
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
-            StringCchCopy(tch, COUNTOF(tch), Path_FindFileName(Paths.CurrentFile, NULL));  // eq. PathStripPath(tch);
+            StringCchCopy(tch, COUNTOF(tch), Path_FindFileName(Paths.CurrentFile));  // eq. PathStripPath(tch);
         } else {
             GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
         }
@@ -10578,7 +10578,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         s_bFileReadOnly = IsReadOnly(Path_GetFileAttributes(Paths.CurrentFile));
         if (s_bFileReadOnly) {
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
-                                   InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Path_FindFileName(Paths.CurrentFile, NULL)) :
+                                   InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Path_FindFileName(Paths.CurrentFile)) :
                                    MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_READONLY_SAVE, Path_Get(Paths.CurrentFile));
             if ((IDOK == answer) || (IDYES == answer)) {
                 bSaveAs = true;
@@ -10599,7 +10599,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         if (bSaveCopy && StrIsNotEmpty(_tchLastSaveCopyDir)) {
             StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), _tchLastSaveCopyDir);
             StringCchCopy(tchFile, COUNTOF(tchFile), _tchLastSaveCopyDir);
-            PathAppend(tchFile, Path_FindFileName(Paths.CurrentFile, NULL));
+            PathAppend(tchFile, Path_FindFileName(Paths.CurrentFile));
         } else {
             StringCchCopy(tchFile, COUNTOF(tchFile), Path_Get(Paths.CurrentFile));
         }
@@ -10673,7 +10673,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
     } else if (!fioStatus.bCancelDataLoss) {
 
-        LPCWSTR const currentFileName = Path_FindFileName(Paths.CurrentFile, NULL);
+        LPCWSTR const currentFileName = Path_FindFileName(Paths.CurrentFile);
 
         if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED)) {
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
@@ -11330,7 +11330,7 @@ void SetNotifyIconTitle(HWND hwnd)
         StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);
     }
     else if (Path_IsNotEmpty(Paths.CurrentFile)) {
-        HPATHL hfilename = Path_Allocate(Path_FindFileName(Paths.CurrentFile, NULL));
+        HPATHL hfilename = Path_Allocate(Path_FindFileName(Paths.CurrentFile));
         StringCchCopy(tchTitle, COUNTOF(tchTitle), Path_Get(hfilename));
         Path_Release(hfilename);
     } else {
@@ -11654,7 +11654,7 @@ void InstallFileWatching(const bool bInstall) {
                 Globals.dwLastError = GetLastError();
 
                 if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
-                    //InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, Path_FindFileName(Paths.CurrentFile, NULL));
+                    //InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, Path_FindFileName(Paths.CurrentFile));
                     WCHAR wchDisplayName[256];
                     Path_GetDisplayName(wchDisplayName, COUNTOF(wchDisplayName), Paths.CurrentFile, L"");
                     InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, wchDisplayName);

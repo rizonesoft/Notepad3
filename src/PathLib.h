@@ -50,7 +50,6 @@ bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
 inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty(hpth); };
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out);
-bool PTHAPI            Path_IsRoot(const HPATHL hpth);
 int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2);
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
@@ -60,10 +59,11 @@ void PTHAPI            Path_UnExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_GetModuleFilePath(HPATHL hpth_out);
 bool PTHAPI            Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth);
 size_t PTHAPI          Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2, HPATHL hpfx_out);
-const wchar_t* PTHAPI  Path_FindFileName(const HPATHL hpth, size_t* idx_out);
+const wchar_t* PTHAPI  Path_FindFileName(const HPATHL hpth);
 const wchar_t* PTHAPI  Path_FindExtension(const HPATHL hpth);
 bool PTHAPI            Path_QuoteSpaces(HPATHL hpth_in_out);
 int PTHAPI             Path_GetDriveNumber(const HPATHL hpth);
+wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
 
@@ -113,7 +113,7 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv);
 void PTHAPI PathAbsoluteFromApp(LPWSTR lpszPath, const size_t cchPath, bool bExpandEnv);
 
 void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffer, const HPATHL hpth, const wchar_t* repl);
-void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, const size_t cchDestBuffer, LPCWSTR lpszSourcePath, const wchar_t* repl);
+///void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, const size_t cchDestBuffer, LPCWSTR lpszSourcePath, const wchar_t* repl);
 
 void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
 void PTHAPI PathRelativeToApp(LPWSTR lpszPath, size_t cchPath, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);

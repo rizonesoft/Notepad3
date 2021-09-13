@@ -272,6 +272,7 @@ static unsigned _CheckAvailableLanguageDLLs()
 
     unsigned count = 1; // internal instance always available
 
+
     for (unsigned lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
 
         if (IsValidLocaleName(MUI_LanguageDLLs[lng].LocaleName)) {
