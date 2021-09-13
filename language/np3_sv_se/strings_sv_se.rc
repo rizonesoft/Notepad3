@@ -196,10 +196,10 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s""."
     IDS_MUI_REGEX_INVALID    "Fel vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
     IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_DIR_EXISTS   "Angiven URL-mapp existerar redan!"
+    IDS_MUI_URL_FILE_EXISTS  "Angiven URL-fil existerar redan!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "Angiven URL-sökväg existerar redan!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka för att öppna fil."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren."
     IDS_MUI_INF_PRSVFILEMODTM
@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "Normal|Mörk (Inverterade färger)|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
     IDS_MUI_PRINT_PAGENUM   "Sida %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Denna åtgård kommer att återställa stilen till förvalt färgläge och ändra aktiv temafail config.ini!"
 END
 
 STRINGTABLE
