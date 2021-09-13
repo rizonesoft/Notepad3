@@ -4431,8 +4431,8 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
     wi.y = wndpl.rcNormalPosition.top + offset;
     wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
     wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-    wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
-    wi.zoom = SciCall_GetZoom();
+    wi.max = (hwnd ? IsZoomed(hwnd) : false) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
+    wi.zoom = hwnd ? SciCall_GetZoom() : 100;
     wi.dpi = Scintilla_GetWindowDPI(hwnd);
 
     if (Settings2.LaunchInstanceFullVisible) {
