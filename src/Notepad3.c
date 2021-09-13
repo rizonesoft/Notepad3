@@ -754,6 +754,8 @@ static void _InitGlobals()
     FileWatching.flagChangeNotify = FWM_DONT_CARE;
     FileWatching.FileWatchingMode = FWM_DONT_CARE;
     FileWatching.MonitoringLog = false;
+
+    g_IniWinInfo = GetFactoryDefaultWndPos(2);
 }
 
 
@@ -1452,6 +1454,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         hInstance,
         NULL);
 
+    g_IniWinInfo.dpi = Scintilla_GetWindowDPI(hwndMain); // correct dpi
     SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL);
 
     if (g_IniWinInfo.max) {
