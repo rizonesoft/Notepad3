@@ -757,9 +757,11 @@ static void _InitGlobals()
     FileWatching.FileWatchingMode = FWM_DONT_CARE;
     FileWatching.MonitoringLog = false;
 
-
-
     Paths.CurrentFile = Path_Allocate(NULL);
+
+    // --- unstructured globals ---
+
+    g_IniWinInfo = GetFactoryDefaultWndPos(2);
 
     g_tchToolbarBitmap = Path_Allocate(NULL);
     g_tchToolbarBitmapHot = Path_Allocate(NULL);
@@ -1475,6 +1477,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         hInstance,
         NULL);
 
+    g_IniWinInfo.dpi = Scintilla_GetWindowDPI(hwndMain); // correct dpi
     SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL);
 
     if (g_IniWinInfo.max) {
