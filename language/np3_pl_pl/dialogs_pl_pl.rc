@@ -353,8 +353,8 @@ CAPTION "Nierówne akapity"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statystyki: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Czyste[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "Tabs[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Czyste[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "Mieszane[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s linia(e)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s linia(e)",IDC_INDENT_SUM_SPC,84,30,52,8

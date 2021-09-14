@@ -353,8 +353,8 @@ CAPTION "Ασυνεπής εσοχή"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Στατιστικά: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Εσοχές[%i]:",IDC_INDENT_WIDTH_TAB,54,18,36,8
-    LTEXT           "Κενά[%i]:",IDC_INDENT_WIDTH_SPC,54,30,36,8
+    LTEXT           "Εσοχές[%s]:",IDC_INDENT_WIDTH_TAB,54,18,36,8
+    LTEXT           "Κενά[%s]:",IDC_INDENT_WIDTH_SPC,54,30,36,8
     LTEXT           "Μεικτά[x]:",IDC_STATIC3,54,42,36,8
     RTEXT           "%s γραμμή(ές)",IDC_INDENT_SUM_TAB,91,18,52,8
     RTEXT           "%s γραμμή(ές)",IDC_INDENT_SUM_SPC,91,30,52,8

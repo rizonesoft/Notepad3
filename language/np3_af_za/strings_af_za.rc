@@ -171,7 +171,7 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "Het die einde van die dokument bereik en begin die soektog weer vanaf die begin."
     IDS_MUI_FIND_WRAPRE     "Het die begin van die dokument bereik en begin die soektog weer vanaf die einde."
     IDS_MUI_NOTFOUND        "Die gespesifiseerde teks is nie gevind nie."
-    IDS_MUI_REPLCOUNT       "%i voorkomste van die gespesifiseerde teks is vervang."
+    IDS_MUI_REPLCOUNT       "%s voorkomste van die gespesifiseerde teks is vervang."
     IDS_MUI_ASK_ENCODING    "As u die lêer kodering van een kodering na 'n ander skuif, kan u nie-ondersteunde teks vervang met verstek karakters, en die ongedaan geskiedenis sal skoongemaak word. Gaan aan?"
     IDS_MUI_ASK_ENCODING2   "Jy is op die punt om die kodering van 'n leÃ« lêer te verander. Let daarop dat dit die geskiedenis ongedaan maak, aangesien dit nie met die nuwe enkodering gesinkroniseer kan word nie. Gaan aan?"
     IDS_MUI_READONLY_SAVE   """%s"" is beskermd. Stoor na 'n ander lêer?"

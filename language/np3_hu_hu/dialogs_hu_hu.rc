@@ -353,8 +353,8 @@ CAPTION "Inkonzisztens behúzások"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statisztika: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabulátorok[%i]:",IDC_INDENT_WIDTH_TAB,34,18,50,8
-    LTEXT           "Üres karakterek[%i]:",IDC_INDENT_WIDTH_SPC,34,30,60,8
+    LTEXT           "Tabulátorok[%s]:",IDC_INDENT_WIDTH_TAB,34,18,50,8
+    LTEXT           "Üres karakterek[%s]:",IDC_INDENT_WIDTH_SPC,34,30,60,8
     LTEXT           "Vegyes[x]:",IDC_STATIC3,34,42,30,8
     RTEXT           "%s sor(ok)",IDC_INDENT_SUM_SPC,104,30,52,8
     RTEXT           "%s sor(ok)",IDC_INDENT_SUM_TAB,104,18,52,8

@@ -353,8 +353,8 @@ CAPTION "Indentação Inconsistente"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Estatísticas: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Abas[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Vazio[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "Abas[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Vazio[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "Misturado[x]:",IDC_STATIC3,39,42,40,8
     RTEXT           "%s linha(s)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s linha(s)",IDC_INDENT_SUM_SPC,84,30,52,8

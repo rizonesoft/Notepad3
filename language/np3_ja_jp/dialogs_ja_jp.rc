@@ -353,8 +353,8 @@ CAPTION "一貫性のないインデント"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "統計: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "タブ[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "空白[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "タブ[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "空白[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "混合[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s 行",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s 行",IDC_INDENT_SUM_SPC,84,30,52,8
