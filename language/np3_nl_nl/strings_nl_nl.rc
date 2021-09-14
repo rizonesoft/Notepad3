@@ -171,7 +171,7 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "Het einde van het document is bereikt, hestart de zoekopdracht aan het begin."
     IDS_MUI_FIND_WRAPRE     "Het einde van het document is bereikt, herstart de zoekopdracht aan het einde.."
     IDS_MUI_NOTFOUND        "De opgegeven tekst is niet gevonden."
-    IDS_MUI_REPLCOUNT       "%i voorvallen van de opgegeven tekst zijn vervangen."
+    IDS_MUI_REPLCOUNT       "%s voorvallen van de opgegeven tekst zijn vervangen."
     IDS_MUI_ASK_ENCODING    "Het omschakelen van de bestandscodering van de ene naar de andere codering kan de niet-ondersteunde tekst vervangen door standaardtekens en de geschiedenis van het ongedaan maken zal worden gewist. Doorgaan?"
     IDS_MUI_ASK_ENCODING2   "U staat op het punt de codering van een leeg bestand te wijzigen. Merk op dat dit de geschiedenis van het ongedaan maken zal wissen, omdat deze niet kan worden gesynchroniseerd met de nieuwe codering. Doorgaan?"
     IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Sla op in een ander bestand?"

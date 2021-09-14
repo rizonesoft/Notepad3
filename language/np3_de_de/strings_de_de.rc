@@ -171,7 +171,7 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "Das Ende des Dokumentes wurde erreicht, Vorwärtssuche vom Anfang her weiter führen."
     IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, Rückwärtssuche vom Ende her weiter führen."
     IDS_MUI_NOTFOUND        "Der gegebene Suchbegriff wurde nicht gefunden."
-    IDS_MUI_REPLCOUNT       "%i Fundstellen des gegebenen Suchbegriffs wurden ersetzt."
+    IDS_MUI_REPLCOUNT       "%s Fundstellen des gegebenen Suchbegriffs wurden ersetzt."
     IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Historie gelöscht wird. Weiter machen?"
     IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
     IDS_MUI_READONLY_SAVE   """%s"" ist schreibgeschützt. Dokument unter einem anderen Dateipfad speichern?"

@@ -171,7 +171,7 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "文書の最後に到達しました。先頭から検索しますか？"
     IDS_MUI_FIND_WRAPRE     "文書の先頭に到達しました。終端から検索しますか？"
     IDS_MUI_NOTFOUND        "指定された文字列は見つかりませんでした。"
-    IDS_MUI_REPLCOUNT       "%i か所の指定の文字列を置換しました。"
+    IDS_MUI_REPLCOUNT       "%s か所の指定の文字列を置換しました。"
     IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴もリセットされます。\n変換を続行しますか？"
     IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴もリセットされます。変更を続行しますか？"
     IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか？"

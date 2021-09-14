@@ -4108,14 +4108,18 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         WCHAR wch[128];
         WCHAR tchFmt[128];
-        WCHAR tchCnt[32];
+        WCHAR tchCnt[64];
 
+        StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", Globals.fvCurFile.iTabWidth);
+        FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
         GetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, tchFmt, COUNTOF(tchFmt));
-        StringCchPrintf(wch, COUNTOF(wch), tchFmt, Globals.fvCurFile.iTabWidth);
+        StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
         SetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, wch);
 
+        StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", Globals.fvCurFile.iIndentWidth);
+        FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
         GetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, tchFmt, COUNTOF(tchFmt));
-        StringCchPrintf(wch, COUNTOF(wch), tchFmt, Globals.fvCurFile.iIndentWidth);
+        StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
         SetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, wch);
 
         StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_TAB_LN]);
