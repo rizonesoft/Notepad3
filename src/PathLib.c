@@ -90,6 +90,18 @@
 // - GetCompressedFileSizeW
 // - GetFinalPathNameByHandleW
 //
+// 
+// Additional helpers (<stdlib.h> oder <wchar.h>)
+// 
+// wchar_t *_wfullpath(wchar_t *absPath, const wchar_t *relPath, size_t maxLength);
+// 
+// errno_t _wmakepath_s(wchar_t *path, size_t sizeInWords, 
+//         const wchar_t *drive, const wchar_t *dir, const wchar_t *fname, const wchar_t *ext);
+// 
+// errno_t _wsplitpath_s(const wchar_t * path, wchar_t * drive, size_t driveNumberOfElements,
+//         wchar_t *dir, size_t dirNumberOfElements, wchar_t * fname, size_t nameNumberOfElements,
+//         wchar_t * ext, size_t extNumberOfElements);
+// 
 // ============================================================================
 
 #if !defined(WINVER)
@@ -113,8 +125,9 @@
 #include <strsafe.h>
 #include <fileapi.h>
 
-#define PATHCCH_NO_DEPRECATE 1  // <- get rid of this!
-#include <pathcch.h>
+//~ Win8.1+ only:
+//~#define PATHCCH_NO_DEPRECATE 1  // <- get rid of this!
+//~#include <pathcch.h>
 
 // get rid of this:
 #include <shlobj.h>
@@ -125,8 +138,9 @@
 #define NP3_PATH_LIB_IMPLEMENTATION 1
 #include "PathLib.h"
 
+//~ Win8.1+ only:
+//~#pragma comment(linker, "/defaultlib:Pathcch")
 
-#pragma comment(linker, "/defaultlib:Pathcch")
 
 
 /**************************************************/
@@ -138,11 +152,19 @@
 #define COUNTOF(ar) ARRAYSIZE(ar)
 #define CONSTSTRGLEN(s) (COUNTOF(s) - 1)
 
+const wchar_t* const PATHUNC_PREFIX1 = L"\\\\?\\UNC\\";
+const wchar_t* const PATHUNC_PREFIX2 = L"\\\\.\\UNC\\";
+#define PATHUNC_PREFIX_LEN (COUNTOF(PATHUNC_PREFIX1) - 1)
+
+// TODO: ???
+//const wchar_t* const VOLUME_PREFIX = L"\\\\?\\Volume{";
+//#define PATHUNC_PREFIX_LEN (COUNTOF(VOLUME_PREFIX) - 1)
+
 const wchar_t* const PATHLONG_PREFIX = L"\\\\?\\";
 #define PATHLONG_PREFIX_LEN (COUNTOF(PATHLONG_PREFIX) - 1)
 
-const wchar_t* const PATHUNC_PREFIX = L"UNC\\";
-#define PATHUNC_PREFIX_LEN (COUNTOF(PATHUNC_PREFIX) - 1)
+const wchar_t* const NETSHARE_PREFIX = L"\\\\";
+#define NETSHARE_PREFIX_LEN (COUNTOF(NETSHARE_PREFIX) - 1)
 
 const wchar_t* const PATHPARENT_PREFIX = L"..\\";
 #define PATHPARENT_PREFIX_LEN (COUNTOF(PATHPARENT_PREFIX) - 1)
@@ -283,7 +305,7 @@ static bool HasOptInToRemoveMaxPathLimit()
 
 static void PrependLongPathPrefix(HPATHL hpth_in_out, bool bForce)
 {
-    HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // inplace
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // in place
     if (!hstr_io)
         return;
 
@@ -367,7 +389,7 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
         // Backslash separator found?
         if (path[i] == L'\\' || path[i] == L'\0') {
             // "." element found?
-            if ((i - j) == 1 && !wcsncmp(path + j, L".", 1)) {
+            if ((i - j) == 1 && wcsncmp(path + j, L".", 1) == 0) {
                 // Check whether the pathname is empty?
                 if (k == 0) {
                     if (path[i] == L'\0') {
@@ -385,7 +407,7 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
                 }
             }
             // ".." element found?
-            else if ((i - j) == 2 && !wcsncmp(path + j, L"..", 2)) {
+            else if ((i - j) == 2 && wcsncmp(path + j, L"..", 2) == 0) {
                 // Check whether the pathname is empty?
                 if (k == 0) {
                     path[k++] = L'.';
@@ -404,7 +426,7 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
 
                     // Backslash separator found?
                     if (j < k) {
-                        if (!wcsncmp(path + k - j, L"..", 2)) {
+                        if (wcsncmp(path + k - j, L"..", 2) == 0) {
                             path[k++] = L'.';
                             path[k++] = L'.';
                         }
@@ -420,7 +442,7 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
                     }
                     // No slash separator found?
                     else {
-                        if (k == 3 && !wcsncmp(path, L"..", 2)) {
+                        if (k == 3 && wcsncmp(path, L"..", 2) == 0) {
                             path[k++] = L'.';
                             path[k++] = L'.';
 
@@ -505,6 +527,61 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
 //  ""                            FALSE          ==
 // ----------------------------------------------------------
 //
+
+static const wchar_t* _Path_IsValidUNC(const HPATHL hpth, bool* isUNC_out)
+{
+    if (!hpth) {
+        return NULL; // false
+    }
+
+    if (Path_GetLength(hpth) == 0) {
+        return PathGet(hpth);
+    }
+
+    const wchar_t* start = PathGet(hpth);
+    const wchar_t* const endz = start + Path_GetLength(hpth); // terminating zero (L'\0')
+
+    bool isUncOrNetShare = false;
+
+    if ((wcsncmp(PathGet(hpth), PATHUNC_PREFIX1, PATHUNC_PREFIX_LEN) == 0) ||
+        (wcsncmp(PathGet(hpth), PATHUNC_PREFIX2, PATHUNC_PREFIX_LEN) == 0)) {
+        start += PATHUNC_PREFIX_LEN;
+        isUncOrNetShare = true;
+    }
+
+    if (wcsncmp(PathGet(hpth), PATHLONG_PREFIX, PATHLONG_PREFIX_LEN) == 0) {
+        start += PATHLONG_PREFIX_LEN;
+    }
+
+    if (wcsncmp(start, NETSHARE_PREFIX, NETSHARE_PREFIX_LEN) == 0) {
+        start += NETSHARE_PREFIX_LEN;
+        isUncOrNetShare = true;
+    }
+
+    // check for valid net-server prefix
+    //     \\<server-name>\<share>\...
+    if (isUncOrNetShare) {
+
+        // skip <server-name>
+        const wchar_t* nextbs = wcschr(start, L'\\');
+        isUncOrNetShare = (nextbs && (nextbs > start));
+        start = isUncOrNetShare ? (nextbs + 1) : endz;
+
+        // skip <share-name>
+        nextbs = wcschr(start, L'\\');
+        isUncOrNetShare = (nextbs && (nextbs > start));
+        start = isUncOrNetShare ? (nextbs + 1) : endz;
+    }
+
+    if (isUNC_out) {
+        *isUNC_out = isUncOrNetShare;
+    }
+
+    return start;
+}
+// ----------------------------------------------------------------------------
+
+#if 0
 __forceinline const wchar_t* _Path_SkipRoot(const HPATHL hpth)
 {
     const wchar_t* path = NULL;
@@ -513,6 +590,37 @@ __forceinline const wchar_t* _Path_SkipRoot(const HPATHL hpth)
         return path; // *root == L'\0'  =>  PathCchIsRoot()==TRUE
     }
     return PathGet(hpth);
+}
+#endif
+
+//
+// needs converted forward slashes
+//
+static const wchar_t* _Path_SkipRoot(const HPATHL hpth)
+{
+    if (!hpth) {
+        assert(hpth);
+        return NULL; // false
+    }
+
+    if (Path_GetLength(hpth) == 0) {
+        return PathGet(hpth);
+    }
+
+    bool                 isUncOrNetShare = false;
+    const wchar_t*       start = _Path_IsValidUNC(hpth, &isUncOrNetShare);
+    const wchar_t* const endz = start + Path_GetLength(hpth); // terminating zero (L'\0')
+
+    if (*start && (*(start + 1) == L':')) { // has drive letter
+        start += 2;
+        if ((*start == L'\\') && !isUncOrNetShare) {
+            return (start + 1);
+        }
+        return endz; // invalid root
+    }
+
+    // anything else ?
+    return start;
 }
 // ----------------------------------------------------------------------------
 
@@ -672,7 +780,7 @@ bool PTHAPI Path_IsEmpty(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-bool PTHAPI Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out)
+bool PTHAPI Path_IsValidUNC(const HPATHL hpth)
 {
     HSTRINGW hstr = ToHStrgW(hpth);
     if (!hstr)
@@ -680,15 +788,10 @@ bool PTHAPI Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out)
 
     //PrependLongPathPrefix(hpth, false);
 
-    wchar_t const buffer[1024] = { L'\0' };
-    const wchar_t* server_name = (server_name_out ? buffer : NULL);
+    bool isUncOrNetShare = false;
+    _Path_IsValidUNC(hpth, &isUncOrNetShare);
 
-    bool const res = PathIsUNCEx(PathGet(hpth), &server_name);
-
-    if (server_name) {
-        StrgReset(server_name_out, server_name);
-    }
-    return res;
+    return isUncOrNetShare;
 }
 // ----------------------------------------------------------------------------
 
@@ -956,9 +1059,7 @@ const wchar_t* PTHAPI Path_FindFileName(const HPATHL hpth)
             if (plbs >= plfs) {
                 return (plbs + 1);
             }
-            else {
-                return (plfs + 1);
-            }
+            return (plfs + 1);
         }
         else if (plbs) {
             return (plbs + 1);
@@ -1452,7 +1553,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     //}
 
     if (bRealPath) {
-        // get real path name (by zufuliu)
+        // get real path name (based on version developed by zufuliu)
         const wchar_t* const path_io = PathGet(hpth_in_out);
         HANDLE const   hFile = CreateFileW(path_io, // file to open
             GENERIC_READ,                                       // open for reading
@@ -1469,17 +1570,19 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
 
             if (GetFinalPathNameByHandleW(hFile, buf, PATHLONG_MAX_CCH, FILE_NAME_OPENED) > 0) {
                 StrgSanitize(hstr);
+                WCHAR* ptr = buf;
                 // remove prefix
                 if (wcslen(buf) < MAX_PATH) {
-                    if (wcsncmp(buf, PATHLONG_PREFIX, PATHLONG_PREFIX_LEN) == 0) {
-                        WCHAR* ptr = buf + 4;
-                        if (wcsncmp(ptr, PATHUNC_PREFIX, PATHUNC_PREFIX_LEN) == 0) {
-                            ptr += 2;
-                            *ptr = L'\\';
-                        }
-                        Path_Reset(hpth_in_out, ptr);
+                    if ((wcsncmp(ptr, PATHUNC_PREFIX1, PATHUNC_PREFIX_LEN) == 0) ||
+                        (wcsncmp(ptr, PATHUNC_PREFIX2, PATHUNC_PREFIX_LEN) == 0)) {
+                        ptr += 6;
+                        *ptr = L'\\';
+                    }
+                    else if (wcsncmp(buf, PATHLONG_PREFIX, PATHLONG_PREFIX_LEN) == 0) {
+                        ptr += 4;
                     }
                 }
+                Path_Reset(hpth_in_out, ptr);
             }
             CloseHandle(hFile);
             StrgDestroy(hstr);
@@ -1487,6 +1590,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     }
     return Path_GetLength(hpth_in_out);
 }
+
 
 size_t PTHAPI NormalizePathEx(LPWSTR lpszPath, size_t cchPath, LPCWSTR lpszWorkDir, bool bRealPath, bool bSearchPathIfRelative)
 {

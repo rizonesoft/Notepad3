@@ -49,7 +49,7 @@ void PTHAPI            Path_Swap(HPATHL hpth1, HPATHL hpth2);
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
 inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty(hpth); };
-bool PTHAPI            Path_IsValidUNC(const HPATHL hpth, HSTRINGW server_name_out);
+bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
 int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2);
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
