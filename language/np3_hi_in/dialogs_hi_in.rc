@@ -353,8 +353,8 @@ CAPTION "असंगत इडेंटेशन"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "आँकड़े: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "टैब[%i]: ",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "रिक्त[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "टैब[%s]: ",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "रिक्त[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "मिश्रित[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s रेखा/रेखाएं",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s रेखा/रेखाएं",IDC_INDENT_SUM_SPC,84,30,52,8

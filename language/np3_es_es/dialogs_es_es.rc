@@ -353,8 +353,8 @@ CAPTION "Sangría inconsistente"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Estadística: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabul.[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Blancos[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "Tabul.[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Blancos[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "Mixto[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s línea(s)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s línea(s)",IDC_INDENT_SUM_SPC,84,30,52,8

@@ -353,8 +353,8 @@ CAPTION "Inconsistente inspringing"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistieken: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Blancos[%i]:",IDC_INDENT_WIDTH_SPC,54,30,35,8
+    LTEXT           "Tabs[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Blancos[%s]:",IDC_INDENT_WIDTH_SPC,54,30,35,8
     LTEXT           "Gemengd[x]:",IDC_STATIC3,54,42,40,8,SS_LEFT
     RTEXT           "%s lijn(en)",IDC_INDENT_SUM_TAB,96,18,52,8
     RTEXT           "%s lijn(en)",IDC_INDENT_SUM_SPC,96,30,52,8

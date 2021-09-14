@@ -353,8 +353,8 @@ CAPTION "Inkonsekvent indrag"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistik: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabulator[%i]:",IDC_INDENT_WIDTH_TAB,45,18,45,8
-    LTEXT           "Mellanslag[%i]:",IDC_INDENT_WIDTH_SPC,40,30,45,8
+    LTEXT           "Tabulator[%s]:",IDC_INDENT_WIDTH_TAB,45,18,45,8
+    LTEXT           "Mellanslag[%s]:",IDC_INDENT_WIDTH_SPC,40,30,45,8
     LTEXT           "Blandad[x]:",IDC_STATIC3,48,42,45,8,SS_LEFT
     RTEXT           "%s rad(er)",IDC_INDENT_SUM_TAB,84,18,50,8
     RTEXT           "%s rad(er)",IDC_INDENT_SUM_SPC,84,30,50,8

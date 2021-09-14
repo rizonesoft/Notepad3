@@ -171,7 +171,7 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "Raggiunta la fine del documento, la ricerca riprende dall'inizio."
     IDS_MUI_FIND_WRAPRE     "Raggiunto l'inizio del documento, la ricerca riprende dalla fine."
     IDS_MUI_NOTFOUND        "Il testo specificato non è stato trovato."
-    IDS_MUI_REPLCOUNT       "%i occorrenze del testo specificato sono state sostituite."
+    IDS_MUI_REPLCOUNT       "%s occorrenze del testo specificato sono state sostituite."
     IDS_MUI_ASK_ENCODING    "Cambiare l'encoding del file potrebbe sostituire testo non supportato con un carattere di default, e la cronologia delle modifiche (undo) sarà svuotata. Continuare?"
     IDS_MUI_ASK_ENCODING2   "Stai per cambiare l'encoding di un file vuoto. Questo cancellerà la cronologia delle modifiche (undo), perché non può essere sincronizzata con il nuovo encoding. Continuare?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"

@@ -353,8 +353,8 @@ CAPTION "Разные отступы"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Статистика по строкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
-    LTEXT           "Табуляция[%i]:",IDC_INDENT_WIDTH_TAB,40,18,55,8
-    LTEXT           "Пробелы[%i]:",IDC_INDENT_WIDTH_SPC,42,30,55,8
+    LTEXT           "Табуляция[%s]:",IDC_INDENT_WIDTH_TAB,40,18,55,8
+    LTEXT           "Пробелы[%s]:",IDC_INDENT_WIDTH_SPC,42,30,55,8
     LTEXT           "Смешанные[x]:",IDC_STATIC3,33,42,55,8
     RTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     RTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8

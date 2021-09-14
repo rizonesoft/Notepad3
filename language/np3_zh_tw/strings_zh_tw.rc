@@ -171,7 +171,7 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "已到達檔案結尾，將從開頭開始重新尋找。"
     IDS_MUI_FIND_WRAPRE     "已到達檔案開頭，將從結尾開始重新尋找。"
     IDS_MUI_NOTFOUND        "沒有找到指定的文字。"
-    IDS_MUI_REPLCOUNT       "已完成 %i 處替換。"
+    IDS_MUI_REPLCOUNT       "已完成 %s 處替換。"
     IDS_MUI_ASK_ENCODING    "切換檔案編碼可能導致部分無法表示的字元被替換為其它字元，並且該操作會清空取消歷程記錄。是否繼續？"
     IDS_MUI_ASK_ENCODING2   "切換檔案編碼會清空取消歷程記錄。是否繼續？"
     IDS_MUI_READONLY_SAVE   """%s"" 是唯讀。是否嘗試使用其它名字儲存？"

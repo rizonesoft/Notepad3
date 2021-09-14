@@ -353,8 +353,8 @@ CAPTION "Nekonzistentné odsadenie"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Štatistika",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabulátory[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Prázdne[%i]:",IDC_INDENT_WIDTH_SPC,54,30,34,8
+    LTEXT           "Tabulátory[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Prázdne[%s]:",IDC_INDENT_WIDTH_SPC,54,30,34,8
     LTEXT           "Zmiešané[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s riadok(y)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s riadok(y)",IDC_INDENT_SUM_SPC,88,30,48,8
