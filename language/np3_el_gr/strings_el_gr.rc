@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "Στυλ '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Συσχετισμένες επεκτάσεις ονομάτων αρχείων:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Συμφωνία μηδενικού μήκους"
-    IDS_MUI_GOTO_LINE       "Γραμμή (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Στήλη (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Γραμμή (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Στήλη (1 - %s):"
 END
 
 STRINGTABLE
