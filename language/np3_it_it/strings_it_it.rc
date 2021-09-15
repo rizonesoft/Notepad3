@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "Stile '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Estensioni associate:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Riga (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Colonna (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Riga (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Colonna (1 - %s):"
 END
 
 STRINGTABLE

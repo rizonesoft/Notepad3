@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "Štýl '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Priradené prípony súborov:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zhoda s nulovou dĺžkou"
-    IDS_MUI_GOTO_LINE       "Riadok (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Stĺpec (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Riadok (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Stĺpec (1 - %s):"
 END
 
 STRINGTABLE

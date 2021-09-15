@@ -2170,8 +2170,10 @@ int Hex2Char(char* ch, int cnt)
 }
 
 
-
 #ifdef WC2MB_EX
+
+TODO:  how to avoid Code-Point truncation/splitting
+
 //=============================================================================
 //
 //  WideCharToMultiByteEx()
@@ -2224,6 +2226,9 @@ ptrdiff_t WideCharToMultiByteEx(
 #endif
 
 #ifdef MB2WC_EX
+
+TODO:  how to avoid Code-Point truncation/splitting
+
 //=============================================================================
 //
 //  MultiByteToWideCharEx()

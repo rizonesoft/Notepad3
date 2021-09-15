@@ -1105,7 +1105,7 @@ bool EditLoadFile(
     bool const okay = GetFileSizeEx(hFile, &liFileSize);
     //DWORD const fileSizeMB = (DWORD)liFileSize.HighPart * (DWORD_MAX >> 20) + (liFileSize.LowPart >> 20);
 
-    bool const bLargerThan2GB = okay && ((liFileSize.HighPart > 0) || (liFileSize.LowPart >= (DWORD)INT32_MAX));
+    bool const bLargerThan2GB = okay && ((liFileSize.HighPart > 0) || (liFileSize.LowPart >= (DWORD)INT32_MAX)); // 'int'
 
     if (!okay || bLargerThan2GB) {
         if (!okay) {
@@ -1117,12 +1117,14 @@ bool EditLoadFile(
             // can only handle ASCII/UTF-8 of this size
             Encoding_Forced(CPI_UTF8);
             // @@@ TODO: Scintilla can't handle files larger than 4GB :-( yet (2020-02-25)
-            bool const bFileTooBig = (liFileSize.HighPart > 0); // > DWORD_MAX
+            // bool const bFileTooBig = (liFileSize.HighPart > 0); // > DWORD_MAX
+            bool const bFileTooBig = bLargerThan2GB; // limitation: WideCharToMultiByte() / MultiByteToWideChar()
 #else
             bool const bFileTooBig = true; // _WIN32: file size < 2GB only
 #endif
+
             if (bFileTooBig) {
-                // refuse to handle file in 32-bit
+                // refuse to handle files of that size
                 WCHAR sizeStr[64] = { L'\0' };
                 StrFormatByteSize((LONGLONG)liFileSize.QuadPart, sizeStr, COUNTOF(sizeStr));
                 InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, sizeStr);
@@ -8094,12 +8096,17 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         DocPos const iCurColumn = SciCall_GetColumn(SciCall_GetCurrentPos()) + 1;
         DocPos const iLineEndPos = Sci_GetNetLineLength(iCurLine);
 
+        WCHAR wchNum[64];
         WCHAR wchLineCaption[96];
         WCHAR wchColumnCaption[96];
-        FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE,
-                         (int)clampp(iMaxLnNum, 0, INT_MAX));
-        FormatLngStringW(wchColumnCaption, COUNTOF(wchColumnCaption), IDS_MUI_GOTO_COLUMN,
-                         (int)clampp(max_p(iLineEndPos, (DocPos)Settings.LongLinesLimit), 0, INT_MAX));
+        StringCchPrintf(wchNum, COUNTOF(wchNum), DOCPOSFMTW, clampp(iMaxLnNum, 0, INT32_MAX));
+        FormatNumberStr(wchNum, COUNTOF(wchNum), 0);
+        FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE, wchNum);
+
+        StringCchPrintf(wchNum, COUNTOF(wchNum), DOCPOSFMTW, clampp(max_p(iLineEndPos, (DocPos)Settings.LongLinesLimit), 0, INT32_MAX));
+        FormatNumberStr(wchNum, COUNTOF(wchNum), 0);
+        FormatLngStringW(wchColumnCaption, COUNTOF(wchColumnCaption), IDS_MUI_GOTO_COLUMN, wchNum);
+
         SetDlgItemText(hwnd, IDC_LINE_TEXT, wchLineCaption);
         SetDlgItemText(hwnd, IDC_COLUMN_TEXT, wchColumnCaption);
 

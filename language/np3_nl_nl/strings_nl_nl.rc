@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "Stijl '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Bijbehorende bestandsextensies:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte Match"
-    IDS_MUI_GOTO_LINE       "Lijn (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Kolom (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Lijn (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Kolom (1 - %s):"
 END
 
 STRINGTABLE

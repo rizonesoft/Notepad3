@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "शैली '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "संबंधित फ़ाईलनाम के प्रकार:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length मिलान"
-    IDS_MUI_GOTO_LINE       "रेखा (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "खंड (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "रेखा (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "खंड (1 - %s):"
 END
 
 STRINGTABLE
