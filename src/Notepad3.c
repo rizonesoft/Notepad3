@@ -758,6 +758,8 @@ static void _InitGlobals()
     FileWatching.MonitoringLog = false;
 
     Paths.CurrentFile = Path_Allocate(NULL);
+    Paths.ModuleDirectory = Path_Allocate(NULL);
+    Paths.WorkingDirectory = Path_Allocate(NULL);
 
     // --- unstructured globals ---
 
@@ -847,6 +849,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     // ---  free allocated memory  ---
 
     Path_Release(Paths.CurrentFile);
+    Path_Release(Paths.ModuleDirectory);
+    Path_Release(Paths.WorkingDirectory);
 
     Path_Release(g_tchToolbarBitmapDisabled);
     Path_Release(g_tchToolbarBitmapHot);
@@ -900,14 +904,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Globals.hPrevInst = hPrevInstance;
     Globals.hndlProcessHeap = GetProcessHeap();
 
-    WCHAR wchAppDir[MAX_PATH] = { L'\0' };
-    PathGetAppDirectory(wchAppDir, COUNTOF(wchAppDir));
+    Path_GetAppDirectory(Paths.ModuleDirectory);
 
-    if (!GetCurrentDirectory(COUNTOF(Paths.WorkingDirectory), Paths.WorkingDirectory)) {
-        StringCchCopy(Paths.WorkingDirectory, COUNTOF(Paths.WorkingDirectory), wchAppDir);
+    if (!Path_GetCurrentDirectory(Paths.WorkingDirectory)) {
+        Path_Reset(Paths.WorkingDirectory, Path_Get(Paths.ModuleDirectory));
     }
     // Don't keep working directory locked
-    SetCurrentDirectory(wchAppDir);
+    SetCurrentDirectoryW(Path_Get(Paths.ModuleDirectory));
 
     SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
@@ -4264,7 +4267,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         PIDLIST_ABSOLUTE pidl = NULL;
         DWORD rfg = 0;
         // TODO: §§§ MAX_PATH limit §§§ @@@!
-        SHILCreateFromPath(Path_IsEmpty(Paths.CurrentFile) ? Paths.WorkingDirectory : Path_Get(Paths.CurrentFile), &pidl, &rfg);
+        SHILCreateFromPath(Path_IsNotEmpty(Paths.CurrentFile) ? Path_Get(Paths.CurrentFile) : Path_Get(Paths.WorkingDirectory), &pidl, &rfg);
         if (pidl) {
             SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
             ILFree(pidl);
@@ -7024,7 +7027,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                         //cchPath = (DWORD)StringCchLen(wchFilePath, MAX_PATH);
                     }
 
-                    //NormalizePathEx(wchPath, COUNTOF(wchPath), Paths.WorkingDirectory, true, false);
+                    //NormalizePathEx(wchPath, COUNTOF(wchPath), Path_Get(Paths.WorkingDirectory), true, false);
  
                     bool found = true;
                     if (PathIsExistingFile(wchPath)) {
@@ -8275,7 +8278,7 @@ void ParseCommandLine()
                     StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
                                    lp1 + CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG));
                     TrimSpcW(s_wchTmpFilePath);
-                    NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
+                    NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), Path_Get(Paths.ModuleDirectory), true, Flags.bSearchPathIfRelative);
                     s_IsThisAnElevatedRelaunch = true;
                 }
 
@@ -8311,7 +8314,7 @@ void ParseCommandLine()
                         } else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
                             StringCchCopyN(Paths.IniFile, COUNTOF(Paths.IniFile), lp1, len);
                             TrimSpcW(Paths.IniFile);
-                            NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), Paths.WorkingDirectory, true, false);
+                            NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), Path_Get(Paths.ModuleDirectory), true, false);
                         }
                         break;
 
@@ -8585,11 +8588,11 @@ void ParseCommandLine()
                     Path_Reset(s_pthArgFilePath, lp3);
                     Path_Canonicalize(s_pthArgFilePath);
 
-                    // §§§ @@@ TODO: Normalze ???
+                    // §§§ @@@ TODO: Normalize ???
                     //if (!Path_IsRelative(s_pthArgFilePath) && !Path_IsValidUNC(s_pthArgFilePath, NULL) &&
-                    //    Path_GetDriveNumber(s_pthArgFilePath) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) {
+                    //    Path_GetDriveNumber(s_pthArgFilePath) == -1 /*&& Path_GetDriveNumber(Paths.WorkingDirectory) != -1*/) {
                     //    WCHAR wchPath[MAX_PATH] = { L'\0' };
-                    //    StringCchCopy(wchPath, COUNTOF(wchPath), Paths.WorkingDirectory);
+                    //    StringCchCopy(wchPath, COUNTOF(wchPath), Path_Get(Paths.WorkingDirectory));
                     //    PathStripToRoot(wchPath);
                     //    PathAppend(wchPath, s_lpFileArg);
                     //    StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), wchPath);
@@ -10106,7 +10109,7 @@ bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
     } else {
         StringCchCopy(szFilePath, COUNTOF(szFilePath), lpszFile);
     }
-    NormalizePathEx(szFilePath, COUNTOF(szFilePath), Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
+    NormalizePathEx(szFilePath, COUNTOF(szFilePath), Path_Get(Paths.WorkingDirectory), true, Flags.bSearchPathIfRelative);
 
     // change current directory to prevent directory lock on another path
     if (SUCCEEDED(StringCchCopy(szFolder, COUNTOF(szFolder), szFilePath))) {
@@ -10724,7 +10727,7 @@ static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
         } else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
             ExpandEnvironmentStrings(Settings2.DefaultDirectory, lpstrInitialDir, cchInitialDir);
         } else {
-            StringCchCopy(lpstrInitialDir, cchInitialDir, Paths.WorkingDirectory);
+            StringCchCopy(lpstrInitialDir, cchInitialDir, Path_Get(Paths.WorkingDirectory));
         }
     }
     if (StrIsNotEmpty(lpstrInitialDir)) {
@@ -10895,12 +10898,7 @@ bool ActivatePrevInst()
 
     if (Flags.bSingleFileInstance && Path_IsNotEmpty(s_pthArgFilePath)) {
 
-        HPATHL hwrkdir_path = Path_Allocate(Paths.WorkingDirectory);
-
-        Path_NormalizeEx(s_pthArgFilePath, hwrkdir_path, true, Flags.bSearchPathIfRelative);
-
-        Path_Release(hwrkdir_path);
-
+        Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
         EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -11085,7 +11083,7 @@ bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
     sei.lpVerb = NULL;
     sei.lpFile = lpExe;
     sei.lpParameters = wchParams;
-    sei.lpDirectory = StrIsNotEmpty(wchDir) ? wchDir : Paths.WorkingDirectory;
+    sei.lpDirectory = StrIsNotEmpty(wchDir) ? wchDir : Path_Get(Paths.WorkingDirectory);
     sei.nShow = SW_NORMAL;
     return ShellExecuteExW(&sei);
 }
@@ -11126,7 +11124,7 @@ bool RelaunchMultiInst()
 
             STARTUPINFO si = { sizeof(STARTUPINFO) };
             PROCESS_INFORMATION pi = { 0 };
-            CreateProcess(NULL, lpCmdLineNew, NULL, NULL, false, CREATE_NEW_PROCESS_GROUP, NULL, Paths.WorkingDirectory, &si, &pi);
+            CreateProcessW(NULL, lpCmdLineNew, NULL, NULL, false, CREATE_NEW_PROCESS_GROUP, NULL, Path_Get(Paths.WorkingDirectory), &si, &pi);
 
             // don't wait for it to finish.
             //::WaitForSingleObject(pi.hProcess, INFINITE);
@@ -11201,7 +11199,7 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
         sei.lpVerb = L"runas";
         sei.lpFile = lpExe;
         sei.lpParameters = szArguments;
-        sei.lpDirectory = Paths.WorkingDirectory;
+        sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
         sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
         return ShellExecuteEx(&sei);
     }

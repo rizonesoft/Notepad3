@@ -543,18 +543,18 @@ static const wchar_t* _Path_IsValidUNC(const HPATHL hpth, bool* isUNC_out)
 
     bool isUncOrNetShare = false;
 
-    if ((wcsncmp(PathGet(hpth), PATHUNC_PREFIX1, PATHUNC_PREFIX_LEN) == 0) ||
-        (wcsncmp(PathGet(hpth), PATHUNC_PREFIX2, PATHUNC_PREFIX_LEN) == 0)) {
-        start += PATHUNC_PREFIX_LEN;
+    if ((wcsstr(start, PATHUNC_PREFIX1) == start) ||
+        (wcsstr(start, PATHUNC_PREFIX2) == start)) {
+        start += (PATHUNC_PREFIX_LEN + 1);
         isUncOrNetShare = true;
     }
 
-    if (wcsncmp(PathGet(hpth), PATHLONG_PREFIX, PATHLONG_PREFIX_LEN) == 0) {
-        start += PATHLONG_PREFIX_LEN;
+    if (wcsstr(start, PATHLONG_PREFIX) == start) {
+        start += (PATHLONG_PREFIX_LEN + 1);
     }
 
-    if (wcsncmp(start, NETSHARE_PREFIX, NETSHARE_PREFIX_LEN) == 0) {
-        start += NETSHARE_PREFIX_LEN;
+    if (wcsstr(start, NETSHARE_PREFIX) == start) {
+        start += (NETSHARE_PREFIX_LEN + 1);
         isUncOrNetShare = true;
     }
 
@@ -1131,6 +1131,36 @@ bool PTHAPI Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes)
 // ----------------------------------------------------------------------------
 
 
+bool PTHAPI Path_GetCurrentDirectory(HPATHL hpth_out)
+{
+    static HPATHL wrk_path = NULL;
+
+    HSTRINGW hstr = ToHStrgW(hpth_out);
+    if (!hstr) {
+        if (wrk_path) {
+            Path_Release(wrk_path);
+            wrk_path = NULL;
+        }
+        else {
+            assert(hstr != NULL);
+        }
+        return true;
+    }
+
+    if (!wrk_path) {
+        wrk_path = Path_Allocate(NULL);
+        HSTRINGW const hwrk_str = ToHStrgW(wrk_path);
+        wchar_t* const buf = StrgWriteAccessBuf(hwrk_str, PATHLONG_MAX_CCH);
+        GetCurrentDirectoryW(PATHLONG_MAX_CCH, buf);
+        StrgSanitize(hwrk_str);
+        StrgFreeExtra(hwrk_str);
+    }
+
+    Path_Reset(hpth_out, PathGet(wrk_path));
+    return (Path_GetLength(wrk_path) != 0);
+}
+// ----------------------------------------------------------------------------
+
 
 
 // ============================================================================
@@ -1573,13 +1603,13 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
                 WCHAR* ptr = buf;
                 // remove prefix
                 if (wcslen(buf) < MAX_PATH) {
-                    if ((wcsncmp(ptr, PATHUNC_PREFIX1, PATHUNC_PREFIX_LEN) == 0) ||
-                        (wcsncmp(ptr, PATHUNC_PREFIX2, PATHUNC_PREFIX_LEN) == 0)) {
-                        ptr += 6;
+                    if ((wcsstr(ptr, PATHUNC_PREFIX1) == ptr) ||
+                        (wcsstr(ptr, PATHUNC_PREFIX2) == ptr)) {
+                        ptr += (PATHUNC_PREFIX_LEN - 1);
                         *ptr = L'\\';
                     }
-                    else if (wcsncmp(buf, PATHLONG_PREFIX, PATHLONG_PREFIX_LEN) == 0) {
-                        ptr += 4;
+                    else if (wcsstr(ptr, PATHLONG_PREFIX) == ptr) {
+                        ptr += (PATHLONG_PREFIX_LEN + 1);
                     }
                 }
                 Path_Reset(hpth_in_out, ptr);

@@ -902,7 +902,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     if (bHaveFileResource) {
         WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
         StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
-        NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Paths.WorkingDirectory, true, false);
+        NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Path_Get(Paths.ModuleDirectory), true, false);
         if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
             bIsStdIniFile = true;
         }
@@ -1127,7 +1127,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
     WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
     StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
-    NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Paths.WorkingDirectory, true, false);
+    NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Path_Get(Paths.ModuleDirectory), true, false);
 
     bool ok = false;
 

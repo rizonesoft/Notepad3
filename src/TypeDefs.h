@@ -457,7 +457,8 @@ extern GLOBALS_T Globals;
 typedef struct _paths_t {
     
     HPATHL CurrentFile;
-    WCHAR  WorkingDirectory[MAX_PATH];
+    HPATHL ModuleDirectory;
+    HPATHL WorkingDirectory;
     WCHAR  IniFile[MAX_PATH];
     WCHAR  IniFileDefault[MAX_PATH];
 

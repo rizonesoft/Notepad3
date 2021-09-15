@@ -836,9 +836,9 @@ extern "C" void ClearDestinationsOnRecentDocs()
 
 //=============================================================================
 //
-//  _CheckIniFile()
+//  _CheckAndSetIniFile()
 //
-static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
+static bool _CheckAndSetIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
 {
     HPATHL hPathExpanded = Path_Allocate(lpszFile);
     Path_ExpandEnvStrings(hPathExpanded);
@@ -902,7 +902,7 @@ static bool _HandleIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWST
 {
     WCHAR wchPath[MAX_PATH] = { L'\0' };
     if (PathIsExistingFile(lpszFile) && IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", wchPath, COUNTOF(wchPath))) {
-        if (!_CheckIniFile(wchPath, lpszModule)) {
+        if (!_CheckAndSetIniFile(wchPath, lpszModule)) {
             PathCanonicalizeEx(wchPath, COUNTOF(wchPath));
         }
         StringCchCopy(lpszFile, MAX_PATH, wchPath);
@@ -917,38 +917,46 @@ extern "C" bool FindIniFile()
 {
     bool bFound = false;
 
+    HPATHL hmod_pth = Path_Allocate(NULL);
+    Path_GetModuleFilePath(hmod_pth);
+
+    HPATHL hdir_pth = Path_Allocate(Path_Get(hmod_pth));
+    Path_RemoveFileSpec(hdir_pth);
+    
+    SetEnvironmentVariableW(NOTEPAD3_MODULE_DIR_ENV_VAR, Path_Get(hdir_pth));
+
+
     WCHAR tchModule[MAX_PATH] = { L'\0' };
-    GetModuleFileName(NULL, tchModule, COUNTOF(tchModule));
-    PathCanonicalizeEx(tchModule, COUNTOF(tchModule));
+    StringCchCopyW(tchModule, COUNTOF(tchModule), Path_Get(hmod_pth));
 
-    // set env path to module dir
     WCHAR wchIniFilePath[MAX_PATH] = { L'\0' };
-    StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), tchModule);
-    PathRemoveFileSpec(wchIniFilePath);
+    StringCchCopyW(wchIniFilePath, COUNTOF(wchIniFilePath), Path_Get(hdir_pth));
 
-    SetEnvironmentVariable(NOTEPAD3_MODULE_DIR_ENV_VAR, wchIniFilePath);
+    Path_Release(hdir_pth);
+    Path_Release(hmod_pth);
+
 
     if (StrIsNotEmpty(Paths.IniFile)) {
-        if (_wcsicmp(Paths.IniFile, L"*?") == 0) {
+        if (wcscmp(Paths.IniFile, L"*?") == 0) {
             return bFound;
         }
         PathCanonicalizeEx(Paths.IniFile, COUNTOF(Paths.IniFile));
-        bFound = _CheckIniFile(wchIniFilePath, tchModule);
+        bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
     } else {
         StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), PathFindFileName(tchModule));
         PathRenameExtension(wchIniFilePath, L".ini");
-        bFound = _CheckIniFile(wchIniFilePath, tchModule);
+        bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
 
         if (!bFound) {
             StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), _W(SAPPNAME) L".ini");
-            bFound = _CheckIniFile(wchIniFilePath, tchModule);
+            bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
         }
 
         if (bFound) {
             // allow two redirections: administrator -> user -> custom
             if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule)) { // 1st
                 _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule);  // 2nd
-                bFound = _CheckIniFile(wchIniFilePath, tchModule);
+                bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
             }
             StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), wchIniFilePath);
         } else { // force default name
@@ -957,7 +965,7 @@ extern "C" bool FindIniFile()
         }
     }
 
-    NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), Paths.WorkingDirectory, true, false);
+    NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), Path_Get(Paths.ModuleDirectory), true, false);
 
     return bFound;
 }
@@ -989,7 +997,7 @@ extern "C" bool TestIniFile()
         }
     }
 
-    NormalizePathEx(pszIniFilePath, pathBufCount, Paths.WorkingDirectory, true, false);
+    NormalizePathEx(pszIniFilePath, pathBufCount, Path_Get(Paths.ModuleDirectory), true, false);
 
     if (!PathIsExistingFile(pszIniFilePath)) {
         StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), pszIniFilePath);

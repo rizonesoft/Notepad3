@@ -4545,7 +4545,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WINI
     sei.lpVerb = NULL;
     sei.lpFile = szModuleName;
     sei.lpParameters = szParameters;
-    sei.lpDirectory = Paths.WorkingDirectory;
+    sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
     sei.nShow = SW_SHOWNORMAL;
     ShellExecuteEx(&sei);
 }
@@ -4752,7 +4752,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
                 Path_RemoveFileSpec(pthSearchDir);
             }
             else {
-                pthSearchDir = Path_Allocate(Paths.WorkingDirectory);
+                pthSearchDir = Path_Copy(Paths.WorkingDirectory);
             }
             IniSectionSetString(globalSection, L"searchpath", Path_Get(pthSearchDir));
             Path_Release(pthSearchDir);
@@ -4825,7 +4825,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     sei.lpVerb = NULL;
     sei.lpFile = tchExePath;
     sei.lpParameters = NULL; // tchParam;
-    sei.lpDirectory = Paths.WorkingDirectory;
+    sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
     sei.nShow = SW_SHOWNORMAL;
 
     if (bExecInstaller) {

@@ -66,6 +66,7 @@ int PTHAPI             Path_GetDriveNumber(const HPATHL hpth);
 wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
+bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
 
 
 // -------------------------------------------------------
