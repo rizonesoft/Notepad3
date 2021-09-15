@@ -460,7 +460,7 @@ typedef struct _paths_t {
     HPATHL ModuleDirectory;
     HPATHL WorkingDirectory;
     WCHAR  IniFile[MAX_PATH];
-    WCHAR  IniFileDefault[MAX_PATH];
+    HPATHL IniFileDefault;
 
 } PATHS_T, *PPATHS_T;
 
@@ -755,7 +755,7 @@ typedef struct _themeFiles
 {
     UINT    rid;
     WCHAR   szName[MINI_BUFFER];
-    WCHAR   szFilePath[MAX_PATH];
+    HPATHL  hStyleFilePath;
 
 } THEMEFILES, * PTHEMEFILES;
 

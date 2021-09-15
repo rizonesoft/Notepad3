@@ -977,8 +977,9 @@ extern "C" bool TestIniFile()
     LPWSTR const pszIniFilePath = Paths.IniFile;
     size_t const pathBufCount = COUNTOF(Paths.IniFile);
 
+
     if (StringCchCompareXI(pszIniFilePath, L"*?") == 0) {
-        StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), L"");
+        Path_Empty(Paths.IniFileDefault, false);
         StringCchCopy(pszIniFilePath, pathBufCount, L"");
         return false;
     }
@@ -1000,7 +1001,7 @@ extern "C" bool TestIniFile()
     NormalizePathEx(pszIniFilePath, pathBufCount, Path_Get(Paths.ModuleDirectory), true, false);
 
     if (!PathIsExistingFile(pszIniFilePath)) {
-        StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), pszIniFilePath);
+        Path_Reset(Paths.IniFileDefault, pszIniFilePath);
         StringCchCopy(pszIniFilePath, pathBufCount, L"");
         return false;
     }
@@ -2188,13 +2189,13 @@ void CmdSaveSettingsNow()
 {
     bool bCreateFailure = false;
     if (StrIsEmpty(Paths.IniFile)) {
-        if (StrIsNotEmpty(Paths.IniFileDefault)) {
-            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), Paths.IniFileDefault);
+        if (Path_IsNotEmpty(Paths.IniFileDefault)) {
+            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), Path_Get(Paths.IniFileDefault));
             DWORD dwFileSize        = 0UL;
             Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, &dwFileSize);
             if (Globals.bCanSaveIniFile) {
                 Globals.bIniFileFromScratch = (dwFileSize == 0UL);
-                StringCchCopy(Paths.IniFileDefault, COUNTOF(Paths.IniFileDefault), L"");
+                Path_Empty(Paths.IniFileDefault, false);
             } else {
                 StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), L"");
                 Globals.bCanSaveIniFile = false;

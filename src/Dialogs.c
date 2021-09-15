@@ -4680,7 +4680,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
         // grepWin INI-File
         const WCHAR* const gwIniFileName = L"grepWinNP3.ini";
-        StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), StrIsNotEmpty(Paths.IniFile) ? Paths.IniFile : Paths.IniFileDefault);
+        StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), StrIsNotEmpty(Paths.IniFile) ? Paths.IniFile : Path_Get(Paths.IniFileDefault));
 
         PathRemoveFileSpec(tchIniFilePath);
         PathAppend(tchIniFilePath, gwIniFileName);

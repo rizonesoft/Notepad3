@@ -325,36 +325,54 @@ static inline bool HasIndicStyleStrokeWidth(const int indicStyle) {
 //=============================================================================
 
 THEMEFILES Theme_Files[] = {
-    { 0, L"Standard Config", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" },
-    { 0, L"", L"" }
+    { 0, L"Standard Config", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL },
+    { 0, L"", NULL }
 };
 
 unsigned ThemeItems_CountOf()
 {
     return COUNTOF(Theme_Files);
+}
+
+void ThemesItems_Init()
+{
+    for (unsigned i = 1; i < ThemeItems_CountOf(); ++i) {
+        if (Theme_Files[i].hStyleFilePath == NULL) {
+            Theme_Files[i].hStyleFilePath = Path_Allocate(NULL);
+        }
+    }
+}
+
+void ThemesItems_Release()
+{
+    for (unsigned i = 1; i < ThemeItems_CountOf(); ++i) {
+        if (Theme_Files[i].hStyleFilePath != NULL) {
+            Path_Release(Theme_Files[i].hStyleFilePath);
+        }
+    }
 }
 
 unsigned ThemesItems_MaxIndex()
@@ -377,9 +395,10 @@ static void _FillThemesMenuTable()
     if (StrIsNotEmpty(Paths.IniFile)) {
         StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFile);
         // names are filled by Style_InsertThemesMenu()
-        StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), Paths.IniFile);
-    } else if (StrIsNotEmpty(Paths.IniFileDefault)) {
-        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFileDefault);
+        Path_Reset(Theme_Files[0].hStyleFilePath, Paths.IniFile);
+    }
+    else if (Path_IsNotEmpty(Paths.IniFileDefault)) {
+        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Path_Get(Paths.IniFileDefault));
     }
     if (StrIsNotEmpty(tchThemeDir)) {
         PathRemoveFileSpec(tchThemeDir);
@@ -409,8 +428,7 @@ static void _FillThemesMenuTable()
                 }
                 StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
                 PathAppend(tchThemePath, FindFileData.cFileName);
-                StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), tchThemePath);
-
+                Path_Reset(Theme_Files[iTheme].hStyleFilePath, tchThemePath);
                 if (!FindNextFile(hFindFile, &FindFileData)) {
                     break;
                 }
@@ -422,7 +440,7 @@ static void _FillThemesMenuTable()
     for (++iTheme; iTheme < ThemeItems_CountOf(); ++iTheme) {
         Theme_Files[iTheme].rid = 0;   // no themes available
         Theme_Files[iTheme].szName[0] = L'\0';
-        Theme_Files[iTheme].szFilePath[0] = L'\0';
+        Path_Empty(Theme_Files[iTheme].hStyleFilePath, true);
     }
 }
 
@@ -477,7 +495,7 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
 
     CheckMenuRadioItem(hMenuBar, IDM_THEMES_STD_CFG, iMaxRID, IDM_THEMES_STD_CFG + iTheme, MF_BYCOMMAND);
 
-    if (StrIsEmpty(Theme_Files[iTheme].szFilePath)) {
+    if (Path_IsEmpty(Theme_Files[iTheme].hStyleFilePath)) {
         EnableCmd(hMenuBar, Theme_Files[iTheme].rid, false);
     }
 
@@ -506,8 +524,8 @@ bool Style_DynamicThemesMenuCmd(int cmd)
                     Style_ExportToFile(Paths.IniFile, false);
                 }
             }
-        } else if (PathIsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath)) {
-            Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, false);
+        } else if (Path_IsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath)) {
+            Style_ExportToFile(Path_Get(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath), false);
         }
     }
 
@@ -928,8 +946,8 @@ bool Style_ImportTheme(const int iThemeIdx) {
     case -1:
         return Style_ImportFromFile(NULL);
     default:
-        if ((iThemeIdx >= 0) && (iThemeIdx < (int)ThemeItems_CountOf()) && PathIsExistingFile(Theme_Files[iThemeIdx].szFilePath)) {
-            return Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
+        if ((iThemeIdx >= 0) && (iThemeIdx < (int)ThemeItems_CountOf()) && Path_IsExistingFile(Theme_Files[iThemeIdx].hStyleFilePath)) {
+            return Style_ImportFromFile(Path_Get(Theme_Files[iThemeIdx].hStyleFilePath));
         }
         break;
     }
@@ -944,7 +962,7 @@ bool Style_ImportTheme(const int iThemeIdx) {
 void Style_SaveSettings(bool bForceSaveSettings)
 {
     if (Settings.SaveSettings || bForceSaveSettings) {
-        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].szFilePath, false);
+        Style_ExportToFile(Path_Get(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath), false);
     }
 }
 
@@ -4695,7 +4713,7 @@ CASE_WM_CTLCOLOR_SET:
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
             unsigned const iTheme = Globals.uCurrentThemeIndex;
-            if ((iTheme > 0) && (!bWarnedNoIniFile && StrIsEmpty(Theme_Files[iTheme].szFilePath))) {
+            if ((iTheme > 0) && (!bWarnedNoIniFile && Path_IsEmpty(Theme_Files[iTheme].hStyleFilePath))) {
                 InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
                 bWarnedNoIniFile = true;
             }

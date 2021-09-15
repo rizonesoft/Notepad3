@@ -761,8 +761,10 @@ static void _InitGlobals()
     Paths.ModuleDirectory = Path_Allocate(NULL);
     Paths.WorkingDirectory = Path_Allocate(NULL);
 
-    // --- unstructured globals ---
+    Paths.IniFileDefault = Path_Allocate(NULL);
 
+    // --- unstructured globals ---
+    
     g_IniWinInfo = GetFactoryDefaultWndPos(2);
 
     g_tchToolbarBitmap = Path_Allocate(NULL);
@@ -770,6 +772,8 @@ static void _InitGlobals()
     g_tchToolbarBitmapDisabled = Path_Allocate(NULL);
 
     // --- static locals ---
+
+    ThemesItems_Init();
 
     s_pthArgFilePath = Path_Allocate(NULL);
 }
@@ -851,12 +855,15 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     Path_Release(Paths.CurrentFile);
     Path_Release(Paths.ModuleDirectory);
     Path_Release(Paths.WorkingDirectory);
+    Path_Release(Paths.IniFileDefault);
 
     Path_Release(g_tchToolbarBitmapDisabled);
     Path_Release(g_tchToolbarBitmapHot);
     Path_Release(g_tchToolbarBitmap);
 
     Path_Release(s_pthArgFilePath);
+
+    ThemesItems_Release();
 }
 
 
@@ -9475,7 +9482,7 @@ void UpdateSaveSettingsCmds()
 {
     bool const bSoftLocked = Flags.bSettingsFileSoftLocked;
     bool const bHaveIniFile = StrIsNotEmpty(Paths.IniFile);
-    bool const bHaveFallbackIniFile = StrIsNotEmpty(Paths.IniFileDefault);
+    bool const bHaveFallbackIniFile = Path_IsNotEmpty(Paths.IniFileDefault);
     CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !bSoftLocked);
     EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !bSoftLocked);
     EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (bHaveIniFile || bHaveFallbackIniFile) && !bSoftLocked);

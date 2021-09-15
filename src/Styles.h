@@ -41,8 +41,10 @@ bool   Style_ToIniSection(bool bForceAll);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 
 unsigned ThemeItems_CountOf();
-bool   Style_InsertThemesMenu(HMENU hMenuBar);
-bool   Style_DynamicThemesMenuCmd(int cmd);
+void     ThemesItems_Init();
+void     ThemesItems_Release();
+bool     Style_InsertThemesMenu(HMENU hMenuBar);
+bool     Style_DynamicThemesMenuCmd(int cmd);
 
 float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
