@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "Stil '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Zugeordnete Dateitypen:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Null-Längen-Fund"
-    IDS_MUI_GOTO_LINE       "Zeile (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Spalte (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Zeile (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Spalte (1 - %s):"
 END
 
 STRINGTABLE

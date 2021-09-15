@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "Stílus '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Hozzárendelt kiterjesztések:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Nulla hosszú egyezés"
-    IDS_MUI_GOTO_LINE       "Sor (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Oszlop (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Sor (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Oszlop (1 - %s):"
 END
 
 STRINGTABLE

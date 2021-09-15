@@ -250,8 +250,8 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "stil '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Associerade filnamnstillägg:"
     IDS_MUI_ZERO_LEN_MATCH  "^ nolllängdsträff"
-    IDS_MUI_GOTO_LINE       "Rad (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Kolumn (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Rad (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Kolumn (1 - %s):"
 END
 
 STRINGTABLE
