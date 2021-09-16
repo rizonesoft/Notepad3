@@ -9047,7 +9047,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                 DocPos const iSel = Flags.bHugeFileLoadState ? (iSelEnd - iSelStart) : SciCall_CountCharacters(iSelStart, iSelEnd);
                 StringCchPrintf(tchSel, COUNTOF(tchSel), DOCPOSFMTW, iSel);
                 FormatNumberStr(tchSel, COUNTOF(tchSel), 0);
-                StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
+                StrFormatByteSizeEx((ULONGLONG)(iSelEnd - iSelStart), SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT, tchSelB, COUNTOF(tchSelB));
             } else if (bIsMultiSelection) {
                 StringCchPrintf(tchSel, COUNTOF(tchSel), L"# " DOCPOSFMTW, SciCall_GetSelections());
                 tchSelB[0] = L'0';
@@ -9221,7 +9221,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         DocPos const iTextLength = SciCall_GetTextLength();
         if (bForceRedraw || (s_iTextLength != iTextLength)) {
             static WCHAR tchBytes[32] = { L'\0' };
-            StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
+            StrFormatByteSizeEx((ULONGLONG)iTextLength, SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT, tchBytes, COUNTOF(tchBytes));
 
             StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
                             g_mxSBPrefix[STATUS_DOCSIZE], tchBytes, g_mxSBPostfix[STATUS_DOCSIZE]);

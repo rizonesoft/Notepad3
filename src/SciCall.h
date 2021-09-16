@@ -438,6 +438,7 @@ DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool);
 DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE);
 DeclareSciCallV0(AutoCCancel, AUTOCCANCEL);
 DeclareSciCallV0(ClearRegisteredImages, CLEARREGISTEREDIMAGES);
+DeclareSciCallV1(AutoCSetOptions, AUTOCSETOPTIONS, int, options);
 DeclareSciCallV1(AutoCSetIgnoreCase, AUTOCSETIGNORECASE, bool, flag);
 DeclareSciCallV1(AutoCSetCaseInsensitiveBehaviour, AUTOCSETCASEINSENSITIVEBEHAVIOUR, int, options);
 DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator);
