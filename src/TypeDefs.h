@@ -14,10 +14,10 @@
 *******************************************************************************/
 
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
 #endif
 #ifndef WINVER
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
 #endif
 #ifndef NTDDI_VERSION
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
