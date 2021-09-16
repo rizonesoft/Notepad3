@@ -344,7 +344,7 @@ CASE_WM_CTLCOLOR_SET:
         case IDTRYAGAIN:
         case IDCONTINUE:
             if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
-                IniFileSetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
+                IniFileSetInt(Path_Get(Paths.IniFile), Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
             }
         case IDNO:
         case IDABORT:
@@ -378,7 +378,7 @@ CASE_WM_CTLCOLOR_SET:
 
 LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-    int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
+    int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Path_Get(Paths.IniFile), Constants.SectionSuppressedMessages, lpstrSetting, 0);
 
     if (Settings.DialogsLayoutRTL) {
         uType |= MB_RTLREADING;
@@ -398,7 +398,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 
     default:
         if (Globals.bCanSaveIniFile) {
-            IniFileDelete(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
+            IniFileDelete(Path_Get(Paths.IniFile), Constants.SectionSuppressedMessages, lpstrSetting, false);
         }
         break;
     }
@@ -4516,9 +4516,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WINI
     StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
     StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
-    if (StrIsNotEmpty(Paths.IniFile)) {
+    if (Path_IsNotEmpty(Paths.IniFile)) {
         StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
-        StringCchCat(szParameters, COUNTOF(szParameters), Paths.IniFile);
+        StringCchCat(szParameters, COUNTOF(szParameters), Path_Get(Paths.IniFile));  //TODO: §§§ MAX_PATH limit §§§ @@@!
         StringCchCat(szParameters, COUNTOF(szParameters), L"\"");
     } else {
         StringCchCat(szParameters, COUNTOF(szParameters), L"0");
@@ -4642,12 +4642,13 @@ static grepWin_t grepWinIniSettings[13] = {
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 {
     WCHAR tchTemp[MAX_PATH] = { L'\0' };
-    WCHAR tchNotepad3Path[MAX_PATH] = { L'\0' };
     WCHAR tchExeFile[MAX_PATH] = { L'\0' };
     WCHAR tchOptions[MAX_PATH] = { L'\0' };
 
-    GetModuleFileName(NULL, tchNotepad3Path, COUNTOF(tchNotepad3Path));
-    PathCanonicalizeEx(tchNotepad3Path, COUNTOF(tchNotepad3Path));
+    HPATHL hNotepad3Path = Path_Allocate(NULL);
+    Path_GetModuleFilePath(hNotepad3Path);
+    //Path_CanonicalizeEx(hNotepad3Path);
+    HPATHL hgrepwin_ini_pth = Path_Copy(Paths.IniFile);
 
     // find grepWin executable (side-by-side .ini file)
     if (StrIsNotEmpty(Settings2.GrepWinPath)) {
@@ -4658,7 +4659,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileSearchGrepWin);
     }
     if (PathIsRelative(tchExeFile)) {
-        StringCchCopy(tchTemp, COUNTOF(tchTemp), tchNotepad3Path);
+        StringCchCopy(tchTemp, COUNTOF(tchTemp), Path_Get(hNotepad3Path));
         PathRemoveFileSpec(tchTemp);
         PathAppend(tchTemp, tchExeFile);
         if (PathIsExistingFile(tchTemp)) {
@@ -4667,30 +4668,32 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
 
     // working (grepWinNP3.ini) directory
-    WCHAR tchGrepWinDir[MAX_PATH] = { L'\0' };
-    WCHAR tchIniFilePath[MAX_PATH] = { L'\0' };
+    HPATHL hTemp = Path_Allocate(NULL);
+    HPATHL hGrepWinDir = Path_Allocate(tchExeFile);
+    Path_RemoveFileSpec(hGrepWinDir);
 
     if (PathIsExistingFile(tchExeFile)) {
-        StringCchCopy(tchGrepWinDir, COUNTOF(tchGrepWinDir), tchExeFile);
-        PathRemoveFileSpec(tchGrepWinDir);
+
         // relative Notepad3 path (for grepWin's EditorCmd)
-        if (PathRelativePathTo(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchNotepad3Path, FILE_ATTRIBUTE_NORMAL)) {
-            StringCchCopy(tchNotepad3Path, COUNTOF(tchNotepad3Path), tchTemp);
+        if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hNotepad3Path, FILE_ATTRIBUTE_NORMAL)) {
+            Path_Swap(hNotepad3Path, hTemp);
         }
 
         // grepWin INI-File
-        const WCHAR* const gwIniFileName = L"grepWinNP3.ini";
-        StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), StrIsNotEmpty(Paths.IniFile) ? Paths.IniFile : Path_Get(Paths.IniFileDefault));
+        HPATHL hIniFileName = Path_Allocate(L"grepWinNP3.ini");
+        if (Path_IsEmpty(hgrepwin_ini_pth)) {
+            Path_Reset(hgrepwin_ini_pth, Path_Get(Paths.IniFileDefault));
+        }
+        Path_RemoveFileSpec(hgrepwin_ini_pth);
+        Path_Append(hgrepwin_ini_pth, hIniFileName);
 
-        PathRemoveFileSpec(tchIniFilePath);
-        PathAppend(tchIniFilePath, gwIniFileName);
-        if (PathIsRelative(tchIniFilePath)) {
-            StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
-            PathAppend(tchIniFilePath, gwIniFileName);
+        if (Path_IsRelative(hgrepwin_ini_pth)) {
+            Path_Reset(hgrepwin_ini_pth, Path_Get(hGrepWinDir));
+            Path_Append(hgrepwin_ini_pth, hIniFileName);
         }
 
         ResetIniFileCache();
-        if (CreateIniFile(tchIniFilePath, NULL) && LoadIniFileCache(tchIniFilePath)) {
+        if (CreateIniFile(hgrepwin_ini_pth, NULL) && LoadIniFileCache(Path_Get(hgrepwin_ini_pth))) {
             // preserve [global] user settings from last call
             const WCHAR* const globalSection = L"global";
 
@@ -4721,7 +4724,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             bool const bDarkMode = UseDarkMode(); // <- override usr ~ IniSectionGetBool(globalSection, L"darkmode", UseDarkMode());
             IniSectionSetBool(globalSection, L"darkmode", bDarkMode);
 
-            StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", tchNotepad3Path);
+            StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", Path_Get(hNotepad3Path));
             IniSectionSetString(globalSection, L"editorcmd", tchTemp);
 
             long const iOpacity = IniSectionGetLong(globalSection, L"OpacityNoFocus", Settings2.FindReplaceOpacityLevel);
@@ -4760,21 +4763,22 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             // search pattern
             IniSectionSetString(globalSection, L"searchfor", searchPattern);
 
-            SaveIniFileCache(tchIniFilePath);
+            SaveIniFileCache(Path_Get(hgrepwin_ini_pth));
             ResetIniFileCache();
 
         }
+        Path_Release(hIniFileName);
     }
 
     // grepWin arguments
     WCHAR tchParams[2*MAX_PATH] = { L'\0' };
 
-    if (PathIsExistingFile(tchIniFilePath)) {
+    if (Path_IsExistingFile(hgrepwin_ini_pth)) {
         // relative grepWinNP3.ini path (for shorter cmdline)
-        if (PathRelativePathTo(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchIniFilePath, FILE_ATTRIBUTE_NORMAL)) {
-            StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchTemp);
+        if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hgrepwin_ini_pth, FILE_ATTRIBUTE_NORMAL)) {
+            Path_Swap(hgrepwin_ini_pth, hTemp);
         }
-        StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s /inipath:\"%s\"", tchOptions, tchIniFilePath);
+        StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s /inipath:\"%s\"", tchOptions, Path_Get(hgrepwin_ini_pth));
     } else {
         StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s", tchOptions);
     }
@@ -4788,13 +4792,18 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     sei.lpVerb = NULL;
     sei.lpFile = tchExeFile;
     sei.lpParameters = tchParams;
-    sei.lpDirectory = tchGrepWinDir;
+    sei.lpDirectory = Path_Get(hGrepWinDir);
     sei.nShow = SW_SHOWNORMAL;
     ShellExecuteEx(&sei);
 
     if ((INT_PTR)sei.hInstApp < 32) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
     }
+
+    Path_Release(hgrepwin_ini_pth);
+    Path_Release(hGrepWinDir);
+    Path_Release(hNotepad3Path);
+    Path_Release(hTemp);
 }
 
 

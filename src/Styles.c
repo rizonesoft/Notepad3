@@ -388,53 +388,64 @@ unsigned ThemesItems_MaxIndex()
 
 static void _FillThemesMenuTable()
 {
-    WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
-
     Globals.uCurrentThemeIndex = 0;
     Theme_Files[Globals.uCurrentThemeIndex].rid = IDM_THEMES_STD_CFG; // NP3.ini settings
-    if (StrIsNotEmpty(Paths.IniFile)) {
-        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Paths.IniFile);
+
+    HPATHL hThemesDir = Path_Copy(Paths.IniFile);
+    HPATHL hThemesSubDir = Path_Allocate(L"themes");
+
+    if (Path_IsEmpty(hThemesDir)) {
+        Path_Reset(hThemesDir, Path_Get(Paths.IniFileDefault));
+    }
+
+    if (Path_IsNotEmpty(hThemesDir)) {
+
         // names are filled by Style_InsertThemesMenu()
-        Path_Reset(Theme_Files[0].hStyleFilePath, Paths.IniFile);
-    }
-    else if (Path_IsNotEmpty(Paths.IniFileDefault)) {
-        StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Path_Get(Paths.IniFileDefault));
-    }
-    if (StrIsNotEmpty(tchThemeDir)) {
-        PathRemoveFileSpec(tchThemeDir);
-        PathAppend(tchThemeDir, L"themes");
+        Path_Reset(Theme_Files[0].hStyleFilePath, Path_Get(hThemesDir));
+    
+        Path_RemoveFileSpec(hThemesDir);
+        Path_Append(hThemesDir, hThemesSubDir);
     }
 
     unsigned iTheme = 1;
-    if (PathIsDirectory(tchThemeDir)) {
-        WCHAR tchThemePath[MAX_PATH] = { L'\0' };
-        StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
-        PathAppend(tchThemePath, L"*.ini");
+    if (Path_IsExistingDirectory(hThemesDir)) {
+
+        HPATHL hThemePath = Path_Copy(hThemesDir);
+        HPATHL hThemePathExt = Path_Allocate(L"*.ini");
+        Path_Append(hThemePath, hThemePathExt);
 
         WIN32_FIND_DATA FindFileData;
         ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
-        HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
+        HANDLE hFindFile = FindFirstFileW(Path_Get(hThemePath), &FindFileData);
         if (IS_VALID_HANDLE(hFindFile)) {
             // ---  fill table by directory entries  ---
+            WCHAR wchFileName[MINI_BUFFER] = { L'\0' };
             for (iTheme = 1; iTheme < ThemeItems_CountOf(); ++iTheme) {
 
                 Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_STD_CFG);
 
-                StringCchCopy(tchThemePath, COUNTOF(tchThemePath), PathFindFileName(FindFileData.cFileName));
-                PathRemoveExtension(tchThemePath);
-                StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), tchThemePath);
+                // TODO: §§§ @@@ check for LongPath §§§ @@@
+                StringCchCopy(wchFileName, COUNTOF(wchFileName), PathFindFileNameW(FindFileData.cFileName));
+                PathRemoveExtensionW(wchFileName);
+                StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), wchFileName);
+
                 if (StringCchCompareXI(Theme_Files[iTheme].szName, Settings.CurrentThemeName) == 0) {
                     Globals.uCurrentThemeIndex = iTheme;
                 }
-                StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
-                PathAppend(tchThemePath, FindFileData.cFileName);
-                Path_Reset(Theme_Files[iTheme].hStyleFilePath, tchThemePath);
-                if (!FindNextFile(hFindFile, &FindFileData)) {
+
+                Path_Reset(hThemePath, Path_Get(hThemesDir));
+                Path_Reset(hThemePathExt, FindFileData.cFileName);
+                Path_Append(hThemePath, hThemePathExt);
+                Path_Swap(Theme_Files[iTheme].hStyleFilePath, hThemePath);
+
+                if (!FindNextFileW(hFindFile, &FindFileData)) {
                     break;
                 }
             }
             FindClose(hFindFile);
         }
+        Path_Release(hThemePathExt);
+        Path_Release(hThemePath);
     }
 
     for (++iTheme; iTheme < ThemeItems_CountOf(); ++iTheme) {
@@ -442,6 +453,9 @@ static void _FillThemesMenuTable()
         Theme_Files[iTheme].szName[0] = L'\0';
         Path_Empty(Theme_Files[iTheme].hStyleFilePath, true);
     }
+
+    Path_Release(hThemesSubDir);
+    Path_Release(hThemesDir);
 }
 
 //=============================================================================
@@ -521,7 +535,7 @@ bool Style_DynamicThemesMenuCmd(int cmd)
             if (!Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
                 if (Globals.bCanSaveIniFile) {
-                    Style_ExportToFile(Paths.IniFile, false);
+                    Style_ExportToFile(Path_Get(Paths.IniFile), false);
                 }
             }
         } else if (Path_IsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath)) {
@@ -747,7 +761,7 @@ void Style_Load() {
     _FillThemesMenuTable();
     _LoadLexerFileExtensions();
 
-    Style_ImportFromFile(Paths.IniFile);
+    Style_ImportFromFile(Path_Get(Paths.IniFile));
 }
 
 
@@ -921,7 +935,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
         StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
         NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Path_Get(Paths.ModuleDirectory), true, false);
-        if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
+        if (StringCchCompareXI(szFilePathNorm, Path_Get(Paths.IniFile)) == 0) {
             bIsStdIniFile = true;
         }
     }
@@ -1150,7 +1164,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     bool ok = false;
 
     // special handling of standard .ini-file
-    if (StringCchCompareXI(szFilePathNorm, Paths.IniFile) == 0) {
+    if (StringCchCompareXI(szFilePathNorm, Path_Get(Paths.IniFile)) == 0) {
         bool bOpendByMe = false;
         if (OpenSettingsFile(&bOpendByMe)) {
             Style_ToIniSection(bForceAll);

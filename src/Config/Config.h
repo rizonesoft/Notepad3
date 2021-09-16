@@ -22,14 +22,15 @@ extern "C" {
 #endif
 
 #include "TypeDefs.h"
+#include "PathLib.h"
 #include "Helpers.h"
 
 //==== Ini-File Handling =============================================
 
 bool FindIniFile();
 bool TestIniFile();
-bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights);
-bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out);
+bool CanAccessPath(const HPATHL hpth, DWORD genericAccessRights);
+bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out);
 void LoadSettings();
 bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);

@@ -45,7 +45,6 @@ extern "C" {
 #include "Notepad3.h"
 #include "MuiLanguage.h"
 #include "DynStrg.h"
-#include "PathLib.h"
 }
 
 #include "DarkMode/DarkMode.h"
@@ -96,10 +95,9 @@ constexpr bool SI_Success(const SI_Error rc) noexcept
 // ============================================================================
 
 
-bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
+bool CanAccessPath(const HPATHL hpth, DWORD genericAccessRights)
 {
-    bool bRet = false;
-    if (StrIsEmpty(lpIniFilePath)) {
+    if (Path_IsEmpty(hpth)) {
         return false;
     }
     DWORD                      length  = 0;
@@ -107,15 +105,16 @@ bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
 
     // check for read-only file attribute
     if (genericAccessRights & GENERIC_WRITE) {
-        if (IsReadOnly(GetFileAttributes(lpIniFilePath))) {
+        if (IsReadOnly(Path_GetFileAttributes(hpth))) {
             return false;
         }
     }
 
+    bool bRet = false;
     // check security tokens
-    if (!::GetFileSecurity(lpIniFilePath, secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
+    if (!::GetFileSecurityW(Path_Get(hpth), secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
         PSECURITY_DESCRIPTOR security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
-        if (security && ::GetFileSecurity(lpIniFilePath, secInfo, security, length, &length)) {
+        if (security && ::GetFileSecurityW(Path_Get(hpth), secInfo, security, length, &length)) {
             HANDLE hToken = NULL;
             if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &hToken)) {
                 HANDLE hImpersonatedToken = NULL;
@@ -331,12 +330,13 @@ extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
 //
 extern "C" bool OpenSettingsFile(bool* keepCached)
 {
-    if (StrIsNotEmpty(Paths.IniFile)) {
+    if (Path_IsNotEmpty(Paths.IniFile)) {
+
         Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
 
         if (!IsIniFileCached()) {
             ResetIniFileCache();
-            LoadIniFileCache(Paths.IniFile);
+            LoadIniFileCache(Path_Get(Paths.IniFile));
             if (keepCached != NULL) {
                 *keepCached = false;
             }
@@ -360,7 +360,7 @@ extern "C" bool CloseSettingsFile(bool bSaveChanges, bool keepCached)
         if (!IsIniFileCached()) {
             return false;
         }
-        bool const bSaved = bSaveChanges ? SaveIniFileCache(Paths.IniFile) : false;
+        bool const bSaved = bSaveChanges ? SaveIniFileCache(Path_Get(Paths.IniFile)) : false;
         if (!keepCached) {
             ResetIniFileCache();
         }
@@ -838,77 +838,115 @@ extern "C" void ClearDestinationsOnRecentDocs()
 //
 //  _CheckAndSetIniFile()
 //
-static bool _CheckAndSetIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
+static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 {
-    HPATHL hPathExpanded = Path_Allocate(lpszFile);
-    Path_ExpandEnvStrings(hPathExpanded);
-
-    const bool bIsMaxPath = (Path_GetLength(hPathExpanded) <= MAX_PATH);
+    HPATHL hPathEx = Path_Copy(hpth_in_out);
+    Path_ExpandEnvStrings(hPathEx);
 
     bool result = false;
-    if (bIsMaxPath && PathIsRelative(Path_Get(hPathExpanded))) {
-        WCHAR tchBuild[MAX_PATH] = { L'\0' };
-        // program directory 
-        StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
-        StringCchCopy(PathFindFileName(tchBuild), COUNTOF(tchBuild), Path_Get(hPathExpanded));
-        if (PathIsExistingFile(tchBuild)) {
-            StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-            result = true;
-        }
-        if (!result) {
-            // sub directory (.\np3\)
-            StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
-            PathRemoveFileSpec(tchBuild);
-            StringCchCat(tchBuild, COUNTOF(tchBuild), L"\\np3\\");
-            StringCchCat(tchBuild, COUNTOF(tchBuild), Path_Get(hPathExpanded));
-            if (PathIsExistingFile(tchBuild)) {
-                StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-                result = true;
-            }
-            // Application Data (%APPDATA%)
-            if (!result && PathGetKnownFolder(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
-                PathAppend(tchBuild, Path_Get(hPathExpanded));
-                if (PathIsExistingFile(tchBuild)) {
-                    StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-                    result = true;
-                }
-            }
-            // Home (%HOMEPATH%) user's profile dir
-            if (!result && PathGetKnownFolder(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
-                PathAppend(tchBuild, Path_Get(hPathExpanded));
-                if (PathIsExistingFile(tchBuild)) {
-                    StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-                    result = true;
-                }
-            }
-            //~// in general search path
-            //~if (!result && SearchPath(NULL,tchFileExpanded,L".ini",COUNTOF(tchBuild),tchBuild,NULL)) {
-            //~  StringCchCopy(lpszFile,MAX_PATH,tchBuild);
-            //~  return true;
-            //~}
-        }
+    if (Path_IsRelative(hPathEx)) {
+        //Path_RelativeToApp(hPathEx, true, false, true); // already expanded
+        Path_RelativeToApp(hPathEx, false, false, true);
+        result = Path_IsExistingFile(hPathEx);
     }
-    else if (Path_IsExistingFile(hPathExpanded)) {
-        StringCchCopy(lpszFile, MAX_PATH, Path_Get(hPathExpanded));
+    else if (Path_IsExistingFile(hPathEx)) {
         result = true;
     }
-    Path_Release(hPathExpanded);
+
+    // ---  Alternate Search Paths  ---
+
+    if (!result) {
+        // sub directory (.\np3\)
+        Path_Reset(hPathEx, _W(SAPPNAME) L".ini");
+        HPATHL hmodpth = Path_Allocate(NULL);
+        Path_GetAppDirectory(hmodpth);
+        HPATHL hnp3 = Path_Allocate(L"./np3/");
+        Path_Append(hmodpth, hnp3);
+        Path_Append(hmodpth, hPathEx);
+        result = Path_IsExistingFile(hmodpth);
+        if (result) {
+            Path_Swap(hPathEx, hmodpth);
+            result = true;
+        }
+        Path_Release(hnp3);
+        Path_Release(hmodpth);
+    }
+
+    if (!result) {
+        // Application Data (%APPDATA%)
+        Path_Reset(hPathEx, Path_Get(hpth_in_out));
+        HPATHL happdata = Path_Allocate(NULL);
+        if (Path_GetKnownFolder(FOLDERID_RoamingAppData, happdata)) {
+            Path_Append(happdata, hPathEx);
+            result = Path_IsExistingFile(happdata);
+            if (result) {
+                Path_Swap(hPathEx, happdata);
+                result = true;
+            }
+        }
+        Path_Release(happdata);
+    }
+
+    if (!result) {
+        // Home (%HOMEPATH%) user's profile dir
+        Path_Reset(hPathEx, Path_Get(hpth_in_out));
+        HPATHL hprofile = Path_Allocate(NULL);
+        if (Path_GetKnownFolder(FOLDERID_Profile, hprofile)) {
+            Path_Append(hprofile, hPathEx);
+            result = Path_IsExistingFile(hprofile);
+            if (result) {
+                Path_Swap(hPathEx, hprofile);
+                result = true;
+            }
+        }
+        Path_Release(hprofile);
+    }
+
+#if 0
+    if (!result) {
+        // in general search path
+        Path_Reset(hPathEx, Path_Get(hpth_in_out));
+        Path_ExpandEnvStrings(hPathEx);
+        HPATHL hsearchpth = Path_Allocate(NULL);
+        wchar_t* const buf = Path_WriteAccessBuf(hsearchpth, PATHLONG_MAX_CCH);
+        if (SearchPathW(NULL, Path_Get(hPathEx), L".ini", PATHLONG_MAX_CCH, buf, NULL)) {
+            Path_Sanitize(hsearchpth);
+            Path_Swap(hPathEx, hsearchpth);
+            result = true;
+        }
+        Path_Release(hsearchpth);
+    }
+#endif
+    
+    if (result) {
+        Path_Swap(hpth_in_out, hPathEx);
+    }
+
+    Path_Release(hPathEx);
     return result;
 }
 // ============================================================================
 
 
-static bool _HandleIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
+static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPATHL hpth_in_out)
 {
-    WCHAR wchPath[MAX_PATH] = { L'\0' };
-    if (PathIsExistingFile(lpszFile) && IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", wchPath, COUNTOF(wchPath))) {
-        if (!_CheckAndSetIniFile(wchPath, lpszModule)) {
-            PathCanonicalizeEx(wchPath, COUNTOF(wchPath));
+    bool result = false;
+    if (Path_IsExistingFile(hpth_in_out)) {
+        HPATHL hredirect = Path_Allocate(NULL);
+        wchar_t* const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
+        if (IniFileGetString(Path_Get(hpth_in_out), lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
+            Path_Sanitize(hredirect);
+            if (_CheckAndSetIniFile(hredirect)) {
+                Path_Swap(hpth_in_out, hredirect);
+            }
+            else {
+                Path_CanonicalizeEx(hpth_in_out);
+            }
+            result = true;
         }
-        StringCchCopy(lpszFile, MAX_PATH, wchPath);
-        return true;  // try to use redirection path
+        Path_Release(hredirect);
     }
-    return false;
+    return result;
 }
 // ============================================================================
 
@@ -925,47 +963,47 @@ extern "C" bool FindIniFile()
     
     SetEnvironmentVariableW(NOTEPAD3_MODULE_DIR_ENV_VAR, Path_Get(hdir_pth));
 
-
-    WCHAR tchModule[MAX_PATH] = { L'\0' };
-    StringCchCopyW(tchModule, COUNTOF(tchModule), Path_Get(hmod_pth));
-
-    WCHAR wchIniFilePath[MAX_PATH] = { L'\0' };
-    StringCchCopyW(wchIniFilePath, COUNTOF(wchIniFilePath), Path_Get(hdir_pth));
-
     Path_Release(hdir_pth);
     Path_Release(hmod_pth);
 
 
-    if (StrIsNotEmpty(Paths.IniFile)) {
-        if (wcscmp(Paths.IniFile, L"*?") == 0) {
+    if (Path_IsNotEmpty(Paths.IniFile)) {
+        if (wcscmp(Path_Get(Paths.IniFile), L"*?") == 0) {
             return bFound;
         }
-        PathCanonicalizeEx(Paths.IniFile, COUNTOF(Paths.IniFile));
-        bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
+        Path_CanonicalizeEx(Paths.IniFile);
+        bFound = _CheckAndSetIniFile(Paths.IniFile);
     } else {
-        StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), PathFindFileName(tchModule));
-        PathRenameExtension(wchIniFilePath, L".ini");
-        bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
+        // Notepad3.ini
+        Path_GetModuleFilePath(Paths.IniFile);
+        Path_RenameExtension(Paths.IniFile, L".ini");
+        bFound = _CheckAndSetIniFile(Paths.IniFile);
 
         if (!bFound) {
-            StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), _W(SAPPNAME) L".ini");
-            bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
+            Path_GetAppDirectory(Paths.IniFile);
+            HPATHL hfilename = Path_Allocate(_W(SAPPNAME) L".ini");
+            Path_Append(Paths.IniFile, hfilename);
+            bFound = _CheckAndSetIniFile(Paths.IniFile);
+            Path_Release(hfilename);
         }
 
         if (bFound) {
             // allow two redirections: administrator -> user -> custom
-            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule)) { // 1st
-                _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule);  // 2nd
-                bFound = _CheckAndSetIniFile(wchIniFilePath, tchModule);
+            // 1st:
+            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile)) {
+                // 2nd:
+                _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile);  
+                bFound = _CheckAndSetIniFile(Paths.IniFile);
             }
-            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), wchIniFilePath);
+
         } else { // force default name
-            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), tchModule);
-            PathRenameExtension(Paths.IniFile, L".ini");
+
+            Path_GetModuleFilePath(Paths.IniFile);
+            Path_RenameExtension(Paths.IniFile, L".ini");
         }
     }
 
-    NormalizePathEx(Paths.IniFile, COUNTOF(Paths.IniFile), Path_Get(Paths.ModuleDirectory), true, false);
+    Path_NormalizeEx(Paths.IniFile, Paths.ModuleDirectory, true, false);
 
     return bFound;
 }
@@ -974,35 +1012,17 @@ extern "C" bool FindIniFile()
 
 extern "C" bool TestIniFile()
 {
-    LPWSTR const pszIniFilePath = Paths.IniFile;
-    size_t const pathBufCount = COUNTOF(Paths.IniFile);
-
-
-    if (StringCchCompareXI(pszIniFilePath, L"*?") == 0) {
+    if (wcscmp(Path_Get(Paths.IniFile), L"*?") == 0) {
         Path_Empty(Paths.IniFileDefault, false);
-        StringCchCopy(pszIniFilePath, pathBufCount, L"");
+        Path_Empty(Paths.IniFile, false);
         return false;
     }
 
-    if (PathIsDirectory(pszIniFilePath) || *CharPrev(pszIniFilePath, StrEnd(pszIniFilePath, pathBufCount)) == L'\\') {
-        WCHAR wchModule[MAX_PATH] = { L'\0' };
-        GetModuleFileName(NULL, wchModule, COUNTOF(wchModule));
-        PathAppend(pszIniFilePath, PathFindFileName(wchModule));
-        PathRenameExtension(pszIniFilePath, L".ini");
-        if (!PathIsExistingFile(pszIniFilePath)) {
-            StringCchCopy(PathFindFileName(pszIniFilePath), pathBufCount, _W(SAPPNAME) L".ini");
-            if (!PathIsExistingFile(pszIniFilePath)) {
-                StringCchCopy(PathFindFileName(pszIniFilePath), pathBufCount, PathFindFileName(wchModule));
-                PathRenameExtension(pszIniFilePath, L".ini");
-            }
-        }
-    }
+    Path_NormalizeEx(Paths.IniFile, Paths.ModuleDirectory, true, false);
 
-    NormalizePathEx(pszIniFilePath, pathBufCount, Path_Get(Paths.ModuleDirectory), true, false);
-
-    if (!PathIsExistingFile(pszIniFilePath)) {
-        Path_Reset(Paths.IniFileDefault, pszIniFilePath);
-        StringCchCopy(pszIniFilePath, pathBufCount, L"");
+    if (!Path_IsExistingFile(Paths.IniFile)) {
+        Path_Reset(Paths.IniFileDefault, Path_Get(Paths.IniFile));
+        Path_Empty(Paths.IniFile, false);
         return false;
     }
 
@@ -1011,44 +1031,48 @@ extern "C" bool TestIniFile()
 //=============================================================================
 
 
-extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
+extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
 {
-    if (StrIsNotEmpty(pszIniFilePath)) {
-        WCHAR* pwchTail = StrRChrW(pszIniFilePath, NULL, L'\\');
+    if (Path_IsNotEmpty(hini_pth)) {
 
-        if (pwchTail) {
-            *pwchTail = L'\0';
-            SHCreateDirectoryEx(NULL, pszIniFilePath, NULL);
-            *pwchTail = L'\\';
+        HPATHL hdir_path = Path_Copy(hini_pth);
+        Path_RemoveFileSpec(hdir_path);
+        if (Path_IsNotEmpty(hdir_path)) {
+            CreateDirectoryW(Path_Get(hdir_path), NULL);
         }
+        Path_Release(hdir_path);
 
         DWORD dwFileSize = 0UL;
 
-        if (!PathIsExistingFile(pszIniFilePath)) {
-            HANDLE hFile = CreateFile(pszIniFilePath,
-                                      GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
-                                      CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (!Path_IsExistingFile(hini_pth)) {
+            HANDLE hFile = CreateFileW(Path_Get(hini_pth),
+                                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                                       CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
             if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile); // done
             } else {
+                WCHAR fileName[128];
+                Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, L"");
                 HSTRINGW msg = StrgCreate(NULL);
-                StrgFormat(msg, L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", pszIniFilePath);
+                StrgFormat(msg, L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", fileName);
                 MsgBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
             }
         } else {
-            HANDLE hFile = CreateFile(pszIniFilePath,
-                                      GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
-                                      OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+            HANDLE hFile = CreateFileW(Path_Get(hini_pth),
+                                       GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
             if (IS_VALID_HANDLE(hFile)) {
                 DWORD dwFSHigh = 0UL;
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
             } else {
+                WCHAR fileName[128];
+                Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, L"");
                 HSTRINGW msg = StrgCreate(NULL);
-                StrgFormat(msg, L"CreateIniFile(%s): FAILED TO READ FILESIZE!", pszIniFilePath);
+                StrgFormat(msg, L"CreateIniFile(%s): FAILED TO READ FILESIZE!", fileName);
                 MsgBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
                 dwFileSize = INVALID_FILE_SIZE;
@@ -1072,7 +1096,7 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 //
 void LoadSettings()
 {
-    CFG_VERSION const _ver = StrIsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
+    CFG_VERSION const _ver = Path_IsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
     wchar_t* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
 
@@ -1089,7 +1113,7 @@ void LoadSettings()
     // prerequisites
     Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", _ver);
 
-    Defaults.SaveSettings = StrIsNotEmpty(Paths.IniFile);
+    Defaults.SaveSettings = Path_IsNotEmpty(Paths.IniFile);
     Settings.SaveSettings = Defaults.SaveSettings && IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
 
     // ---  first set "hard coded" .ini-Settings  ---
@@ -2188,16 +2212,16 @@ bool SaveAllSettings(bool bForceSaveSettings)
 void CmdSaveSettingsNow()
 {
     bool bCreateFailure = false;
-    if (StrIsEmpty(Paths.IniFile)) {
+    if (Path_IsEmpty(Paths.IniFile)) {
         if (Path_IsNotEmpty(Paths.IniFileDefault)) {
-            StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), Path_Get(Paths.IniFileDefault));
+            Path_Reset(Paths.IniFile, Path_Get(Paths.IniFileDefault));
             DWORD dwFileSize        = 0UL;
             Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, &dwFileSize);
             if (Globals.bCanSaveIniFile) {
                 Globals.bIniFileFromScratch = (dwFileSize == 0UL);
                 Path_Empty(Paths.IniFileDefault, false);
             } else {
-                StringCchCopy(Paths.IniFile, COUNTOF(Paths.IniFile), L"");
+                Path_Empty(Paths.IniFile, false);
                 Globals.bCanSaveIniFile = false;
                 bCreateFailure          = true;
             }
@@ -2211,7 +2235,7 @@ void CmdSaveSettingsNow()
     }
     DWORD dwFileAttributes = 0;
     if (!Globals.bCanSaveIniFile) {
-        dwFileAttributes = GetFileAttributes(Paths.IniFile);
+        dwFileAttributes = Path_GetFileAttributes(Paths.IniFile);
         if (dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
             return;
@@ -2219,7 +2243,7 @@ void CmdSaveSettingsNow()
         if (dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
             WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_INIFILE_READONLY));
             if ((IDOK == answer) || (IDYES == answer)) {
-                SetFileAttributes(Paths.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
+                Path_SetFileAttributes(Paths.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
                 Globals.bCanSaveIniFile = CanAccessPath(Paths.IniFile, GENERIC_WRITE);
             }
         } else {
@@ -2229,7 +2253,7 @@ void CmdSaveSettingsNow()
     if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
         InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
         if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES)) {
-            SetFileAttributes(Paths.IniFile, dwFileAttributes); // reset
+            Path_SetFileAttributes(Paths.IniFile, dwFileAttributes); // reset
         }
         Globals.bCanSaveIniFile = CanAccessPath(Paths.IniFile, GENERIC_WRITE);
     } else {

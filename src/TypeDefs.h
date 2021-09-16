@@ -241,8 +241,8 @@ typedef struct _editfindreplace
     bool bHideNonMatchedLines;
     bool bStateChanged;
     HWND hwnd;
-    char szFind[FNDRPL_BUFFER];
-    char szReplace[FNDRPL_BUFFER];
+    char chFindPattern[FNDRPL_BUFFER];
+    char chReplaceTemplate[FNDRPL_BUFFER];
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE;
 
@@ -459,7 +459,7 @@ typedef struct _paths_t {
     HPATHL CurrentFile;
     HPATHL ModuleDirectory;
     HPATHL WorkingDirectory;
-    WCHAR  IniFile[MAX_PATH];
+    HPATHL IniFile;
     HPATHL IniFileDefault;
 
 } PATHS_T, *PPATHS_T;

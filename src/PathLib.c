@@ -528,6 +528,16 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
 // ----------------------------------------------------------
 //
 
+static const wchar_t* _Path_SkipLPPrefix(const HPATHL hpth)
+{
+    const wchar_t* start = PathGet(hpth);
+    if (wcsstr(start, PATHLONG_PREFIX) == start) {
+        start += (PATHLONG_PREFIX_LEN + 1);
+    }
+    return start;
+}
+
+
 static const wchar_t* _Path_IsValidUNC(const HPATHL hpth, bool* isUNC_out)
 {
     if (!hpth) {
@@ -541,6 +551,7 @@ static const wchar_t* _Path_IsValidUNC(const HPATHL hpth, bool* isUNC_out)
     const wchar_t* start = PathGet(hpth);
     const wchar_t* const endz = start + Path_GetLength(hpth); // terminating zero (L'\0')
 
+
     bool isUncOrNetShare = false;
 
     if ((wcsstr(start, PATHUNC_PREFIX1) == start) ||
@@ -549,6 +560,7 @@ static const wchar_t* _Path_IsValidUNC(const HPATHL hpth, bool* isUNC_out)
         isUncOrNetShare = true;
     }
 
+    /// _Path_SkipLPPrefix()
     if (wcsstr(start, PATHLONG_PREFIX) == start) {
         start += (PATHLONG_PREFIX_LEN + 1);
     }
@@ -625,6 +637,34 @@ static const wchar_t* _Path_SkipRoot(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
+//=============================================================================
+//
+//  _Path_IsRelative()
+//  TODO: make LongPath version instead of slicing MAX_PATH
+//
+static bool _Path_IsRelative(const HPATHL hpth)
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr)
+        return true; // empty is relative
+
+    const wchar_t* const skip = _Path_SkipLPPrefix(hpth);
+
+    bool res = false;
+    if (StrgGetLength(hstr) >= MAX_PATH) {
+        // hack for MAX_PATH limit
+        wchar_t const wch = StrgGetAt(hstr, MAX_PATH);
+        StrgSetAt(hstr, MAX_PATH, L'\0');
+        res = PathIsRelativeW(skip);
+        StrgSetAt(hstr, MAX_PATH, wch);
+    }
+    else {
+        res = PathIsRelativeW(skip);
+    }
+    return res;
+}
+// ----------------------------------------------------------------------------
+
 
 
 /**************************************************/
@@ -687,12 +727,14 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, const HPATHL hmore)
         return true;
     }
 
-    LPWSTR       wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + PATHLONG_PREFIX_LEN + 2);
+    const wchar_t* const wchm = PathGet(hmore);
+    wchar_t* const       wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + PATHLONG_PREFIX_LEN + 2);
     size_t const cch = StrgGetAllocLength(hstr_io);
 
     // append directory separator
     if (hstr_len > 0) {
-        if ((wbuf[hstr_len - 1] != L'/') && (wbuf[hstr_len - 1] != L'\\')) {
+        if (((wbuf[hstr_len - 1] != L'/') && (wbuf[hstr_len - 1] != L'\\')) &&
+            ((wchm[0] != L'/') && (wchm[0] != L'\\'))) {
             wbuf[hstr_len] = L'\\';
             wbuf[hstr_len + 1] = L'\0';
         }
@@ -705,7 +747,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, const HPATHL hmore)
     StringCchCatW(wbuf, cch, PathGet(hmore));
     StrgSanitize(hstr_io);
 
-    PrependLongPathPrefix(hpth_in_out, false);
+    Path_Canonicalize(hpth_in_out);
 
     return true;
 }
@@ -966,6 +1008,13 @@ void PTHAPI Path_GetModuleFilePath(HPATHL hpth_out)
 // ----------------------------------------------------------------------------
 
 
+bool PTHAPI Path_IsRelative(const HPATHL hpath)
+{
+    return _Path_IsRelative(hpath);
+}
+// ----------------------------------------------------------------------------
+
+
 bool PTHAPI Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth)
 {
     HPATHL hprfx_pth = Path_Allocate(PathGet(hprefix));
@@ -1162,7 +1211,6 @@ bool PTHAPI Path_GetCurrentDirectory(HPATHL hpth_out)
 // ----------------------------------------------------------------------------
 
 
-
 // ============================================================================
 // Old Stuff in INTERMEDIATE DEV state
 // ============================================================================
@@ -1282,37 +1330,6 @@ void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc)
 
 //=============================================================================
 //
-//  _Path_IsRelative()
-//  TODO: make LongPath version instead of slicing MAX_PATH
-//
-static bool _Path_IsRelative(const HPATHL hpth)
-{
-    HSTRINGW hstr = ToHStrgW(hpth);
-    if (!hstr)
-        return true; // empty is relative
-
-    const wchar_t* skip = _Path_SkipRoot(hpth);
-    if (skip != PathGet(hpth)) {
-        return false; // can't be relative
-    }
-
-    bool res = false;
-    if (StrgGetLength(hstr) >= MAX_PATH) {
-        // hack for MAX_PATH limit
-        wchar_t const wch = StrgGetAt(hstr, MAX_PATH);
-        StrgSetAt(hstr, MAX_PATH, L'\0');
-        res = PathIsRelativeW(StrgGet(hstr));
-        StrgSetAt(hstr, MAX_PATH, wch);
-    }
-    else {
-        res = PathIsRelativeW(StrgGet(hstr));
-    }
-    return res;
-}
-
-
-//=============================================================================
-//
 //  _Path_RelativePathTo()
 //  TODO: make LongPath version instead of slicing MAX_PATH
 //
@@ -1419,6 +1436,11 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     Path_Release(hfrom_cpy);
 
     return (same_root);
+}
+
+bool PTHAPI Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to)
+{
+    return _Path_RelativePathTo(hrecv, hfrom, attr_from, hto, attr_to);
 }
 
 
@@ -2142,6 +2164,11 @@ wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len)
     return StrgWriteAccessBuf((HSTRINGW)hpth, max(len, MAX_PATH));
 }
 
+void PTHAPI Path_Sanitize(HPATHL hpth)
+{
+    StrgSanitize((HSTRINGW)hpth);
+    StrgFreeExtra((HSTRINGW)hpth);
+}
 
 // ============================================================================
 // ============================================================================

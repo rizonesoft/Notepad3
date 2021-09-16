@@ -57,6 +57,7 @@ bool PTHAPI            Path_RenameExtension(HPATHL hpth, const wchar_t* ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_UnExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_GetModuleFilePath(HPATHL hpth_out);
+bool PTHAPI            Path_IsRelative(const HPATHL hpath);
 bool PTHAPI            Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth);
 size_t PTHAPI          Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2, HPATHL hpfx_out);
 const wchar_t* PTHAPI  Path_FindFileName(const HPATHL hpth);
@@ -67,7 +68,6 @@ wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
-
 
 // -------------------------------------------------------
 
@@ -81,7 +81,7 @@ size_t PTHAPI         Path_GetBufCount(HPATHL hpth);
 // get wchar buffer with at least MAX_PATH size
 // TODO: get rid of this intermediate state handler
 wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len);
-
+void PTHAPI     Path_Sanitize(HPATHL hpth);
 
 // ============================================================================
 // Duplicates for INTERMEDIATE DEV
@@ -94,6 +94,8 @@ bool PTHAPI PathIsExistingFile(LPCWSTR pszPath);
 
 void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr);
 void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
+
+bool PTHAPI Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to);
 
 size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out);
 size_t PTHAPI GetLongPathNameEx(LPWSTR lpszPath, const size_t cchBuffer);
@@ -118,6 +120,7 @@ void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffe
 
 void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
 void PTHAPI PathRelativeToApp(LPWSTR lpszPath, size_t cchPath, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
+
 
 // ============================================================================
 // Some Old MAX_PATH stuff, currently long paths is truncated to MAXPATH !!!
