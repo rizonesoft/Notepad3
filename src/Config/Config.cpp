@@ -955,16 +955,10 @@ extern "C" bool FindIniFile()
 {
     bool bFound = false;
 
-    HPATHL hmod_pth = Path_Allocate(NULL);
-    Path_GetModuleFilePath(hmod_pth);
-
-    HPATHL hdir_pth = Path_Allocate(Path_Get(hmod_pth));
-    Path_RemoveFileSpec(hdir_pth);
-    
+    HPATHL hdir_pth = Path_Allocate(NULL);
+    Path_GetAppDirectory(hdir_pth);
     SetEnvironmentVariableW(NOTEPAD3_MODULE_DIR_ENV_VAR, Path_Get(hdir_pth));
-
     Path_Release(hdir_pth);
-    Path_Release(hmod_pth);
 
 
     if (Path_IsNotEmpty(Paths.IniFile)) {

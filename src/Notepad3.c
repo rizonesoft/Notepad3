@@ -7277,24 +7277,21 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
             } else if (operation & OPEN_WITH_BROWSER) {  // open in web browser or associated application
                 
-                // TODO: §§§ MAX_PATH limit §§§ @@@!
-                WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+                HPATHL hDirectory = Path_Allocate(NULL);
 
                 if (UrlIsFileUrl(szTextW)) {
                     // ShellExecuteEx() will handle file-system path correctly for "file://" protocol
                     StringCchCopy(szUnEscW, COUNTOF(szUnEscW), chkPreFix);
                     dCch -= (DWORD)lenPfx;
                     PathCreateFromUrl(szTextW, &szUnEscW[lenPfx], &dCch, 0);
-                    StringCchCopy(wchDirectory, COUNTOF(wchDirectory), szUnEscW);
-                    PathRemoveFileSpec(wchDirectory);
+                    Path_Reset(hDirectory, szUnEscW);
+                    Path_RemoveFileSpec(hDirectory);
                 } else {
                     UrlUnescapeEx(szTextW, szUnEscW, &dCch);
                 }
-                if (StrIsEmpty(wchDirectory) && Path_IsNotEmpty(Paths.CurrentFile)) {
-                    HPATHL hdir = Path_Copy(Paths.CurrentFile);
-                    Path_RemoveFileSpec(hdir);
-                    StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Path_Get(hdir));
-                    Path_Release(hdir);
+                if (Path_IsEmpty(hDirectory) && Path_IsNotEmpty(Paths.CurrentFile)) {
+                    Path_Reset(hDirectory, Path_Get(Paths.CurrentFile));
+                    Path_RemoveFileSpec(hDirectory);
                 }
 
                 if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp)) {
@@ -7307,7 +7304,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     sei.lpVerb = NULL;
                     sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
                     sei.lpParameters = StrIsNotEmpty(lpParams) ? lpParams : szUnEscW;
-                    sei.lpDirectory = wchDirectory;
+                    sei.lpDirectory = Path_Get(hDirectory);
                     sei.nShow = SW_SHOWNORMAL;
 
                     bHandled = ShellExecuteEx(&sei);
@@ -7323,10 +7320,12 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     sei.lpVerb = lpVerb;
                     sei.lpFile = szUnEscW;
                     sei.lpParameters = NULL;
-                    sei.lpDirectory = wchDirectory;
+                    sei.lpDirectory = Path_Get(hDirectory);
                     sei.nShow = SW_SHOWNORMAL;
                     bHandled = ShellExecuteEx(&sei);
                 }
+
+                Path_Release(hDirectory);
             }
         }
     }
@@ -11330,9 +11329,9 @@ void SetNotifyIconTitle(HWND hwnd)
     nid.uFlags = NIF_TIP;
     nid.szTip[0] = L'\0';
 
-    WCHAR tchTitle[128] = { L'\0' };
+    WCHAR tchTitle[256] = { L'\0' };
     if (StrIsNotEmpty(s_wchTitleExcerpt)) {
-        WCHAR tchFormat[32] = { L'\0' };
+        WCHAR tchFormat[128] = { L'\0' };
         GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
         StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);
     }

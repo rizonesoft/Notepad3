@@ -4558,35 +4558,49 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WINI
 //
 void DialogFileBrowse(HWND hwnd)
 {
-    WCHAR tchTemp[MAX_PATH] = { L'\0' };
-    WCHAR tchParam[MAX_PATH] = { L'\0' };
-    WCHAR tchExeFile[MAX_PATH] = { L'\0' };
-
-    if (StrIsNotEmpty(Settings2.FileBrowserPath)) {
-        ExtractFirstArgument(Settings2.FileBrowserPath, tchExeFile, tchParam, COUNTOF(tchExeFile));
-        ExpandEnvironmentStringsEx(tchExeFile, COUNTOF(tchExeFile));
-    }
-    if (StrStrI(tchExeFile, L"explorer.exe") && StrIsEmpty(tchParam)) {
-        SendWMCommand(hwnd, IDM_FILE_EXPLORE_DIR);
+    wchar_t* const param_buf = AllocMem((PATHLONG_MAX_CCH + 1) * sizeof(wchar_t), HEAP_ZERO_MEMORY);
+    if (!param_buf) {
         return;
     }
-    if (StrIsEmpty(tchExeFile)) {
-        StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
+
+    HPATHL hExeFile = Path_Allocate(NULL);
+    wchar_t* const pth_buf = Path_WriteAccessBuf(hExeFile, PATHLONG_MAX_CCH);
+
+    if (StrIsNotEmpty(Settings2.FileBrowserPath)) {
+        ExtractFirstArgument(Settings2.FileBrowserPath, pth_buf, param_buf, PATHLONG_MAX_CCH);
+        Path_ExpandEnvStrings(hExeFile);
     }
-    if (PathIsRelative(tchExeFile)) {
-        PathGetAppDirectory(tchTemp, COUNTOF(tchTemp));
-        PathAppend(tchTemp, tchExeFile);
-        if (PathIsExistingFile(tchTemp)) {
-            StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
+    Path_Sanitize(hExeFile);
+
+    if (StrStrIW(Path_Get(hExeFile), L"explorer.exe") && StrIsEmpty(param_buf)) {
+        SendWMCommand(hwnd, IDM_FILE_EXPLORE_DIR);
+        Path_Release(hExeFile);
+        FreeMem(param_buf);
+        return;
+    }
+
+    if (Path_IsEmpty(hExeFile)) {
+        Path_Reset(hExeFile, Constants.FileBrowserMiniPath);
+    }
+
+    if (Path_IsRelative(hExeFile)) {
+        HPATHL hTemp = Path_Allocate(NULL);
+        Path_GetAppDirectory(hTemp);
+        Path_Append(hTemp, hExeFile);
+        if (Path_IsExistingFile(hTemp)) {
+            Path_Swap(hExeFile, hTemp);
         }
+        Path_Release(hTemp);
     }
-    if (StrIsNotEmpty(tchParam) && Path_IsNotEmpty(Paths.CurrentFile)) {
-        StringCchCat(tchParam, COUNTOF(tchParam), L" ");
+
+    if (StrIsNotEmpty(param_buf) && Path_IsNotEmpty(Paths.CurrentFile)) {
+        StringCchCat(param_buf, PATHLONG_MAX_CCH, L" ");
     }
+
     if (Path_IsNotEmpty(Paths.CurrentFile)) {
         HPATHL pthTmp = Path_Copy(Paths.CurrentFile);
         Path_QuoteSpaces(pthTmp);
-        StringCchCat(tchParam, COUNTOF(tchParam), Path_Get(pthTmp));
+        StringCchCat(param_buf, PATHLONG_MAX_CCH, Path_Get(pthTmp));
         Path_Release(pthTmp);
     }
 
@@ -4594,8 +4608,8 @@ void DialogFileBrowse(HWND hwnd)
     sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
     sei.hwnd = hwnd;
     sei.lpVerb = NULL;
-    sei.lpFile = tchExeFile;
-    sei.lpParameters = tchParam;
+    sei.lpFile = Path_Get(hExeFile);
+    sei.lpParameters = param_buf;
     sei.lpDirectory = NULL;
     sei.nShow = SW_SHOWNORMAL;
     ShellExecuteEx(&sei);
@@ -4603,6 +4617,9 @@ void DialogFileBrowse(HWND hwnd)
     if ((INT_PTR)sei.hInstApp < 32) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BROWSE);
     }
+
+    Path_Release(hExeFile);
+    FreeMem(param_buf);
 }
 
 
@@ -4771,7 +4788,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
 
     // grepWin arguments
-    WCHAR tchParams[2*MAX_PATH] = { L'\0' };
+    WCHAR tchParams[MAX_PATH<<2] = { L'\0' };
 
     if (Path_IsExistingFile(hgrepwin_ini_pth)) {
         // relative grepWinNP3.ini path (for shorter cmdline)

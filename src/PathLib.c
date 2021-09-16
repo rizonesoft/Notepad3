@@ -729,7 +729,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, const HPATHL hmore)
 
     const wchar_t* const wchm = PathGet(hmore);
     wchar_t* const       wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + PATHLONG_PREFIX_LEN + 2);
-    size_t const cch = StrgGetAllocLength(hstr_io);
+    size_t const         cch = StrgGetAllocLength(hstr_io);
 
     // append directory separator
     if (hstr_len > 0) {
@@ -744,7 +744,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, const HPATHL hmore)
     //    wbuf[1] = L'\0';
     //}
 
-    StringCchCatW(wbuf, cch, PathGet(hmore));
+    StringCchCatW(wbuf, cch, wchm);
     StrgSanitize(hstr_io);
 
     Path_Canonicalize(hpth_in_out);
@@ -1531,8 +1531,7 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out)
    if (_Path_IsRelative(hpth_in_out))
    {
        HPATHL hmod_pth = Path_Allocate(NULL);
-       Path_GetModuleFilePath(hmod_pth);
-       Path_RemoveFileSpec(hmod_pth);
+       Path_GetAppDirectory(hmod_pth);
        Path_Append(hmod_pth, hpth_in_out);
        res = Path_Canonicalize(hmod_pth);
        Path_Swap(hpth_in_out, hmod_pth);
@@ -1682,7 +1681,6 @@ void PTHAPI Path_GetAppDirectory(HPATHL hpth_out)
         happdir_path = Path_Allocate(NULL);
         Path_GetModuleFilePath(happdir_path);
         Path_RemoveFileSpec(happdir_path);
-        Path_Canonicalize(happdir_path);
     }
 
     Path_Reset(hpth_out, PathGet(happdir_path));
