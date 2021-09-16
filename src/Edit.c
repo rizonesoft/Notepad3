@@ -7676,7 +7676,10 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
     PWLIST pListHead = NULL;
 
+    // --------------------------------------------------------------------------
     if (Settings.AutoCompleteWords || (autoInsert && !Settings.AutoCLexerKeyWords)) {
+    // --------------------------------------------------------------------------
+
         struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
         ft.lpstrText = pRoot;
         ft.chrg.cpMax = (DocPosCR)iDocEndPos;
@@ -7716,10 +7719,11 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         FreeMem(pwlNewWord);
         pwlNewWord = NULL;
     }
+
     // --------------------------------------------------------------------------
-    if (Settings.AutoCLexerKeyWords || (autoInsert && !Settings.AutoCompleteWords))
-        // --------------------------------------------------------------------------
-    {
+    if (Settings.AutoCLexerKeyWords || (autoInsert && !Settings.AutoCompleteWords)) {
+    // --------------------------------------------------------------------------
+
         PKEYWORDLIST const pKeyWordList = Style_GetCurrentLexerPtr()->pKeyWords;
 
         PWLIST pwlNewWord = NULL;
