@@ -1122,11 +1122,10 @@ bool EditLoadFile(
 #else
             bool const bFileTooBig = true; // _WIN32: file size < 2GB only
 #endif
-
             if (bFileTooBig) {
                 // refuse to handle files of that size
                 WCHAR sizeStr[64] = { L'\0' };
-                StrFormatByteSize((LONGLONG)liFileSize.QuadPart, sizeStr, COUNTOF(sizeStr));
+                StrFormatByteSizeEx(liFileSize.QuadPart, SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT, sizeStr, COUNTOF(sizeStr));
                 InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, sizeStr);
                 CloseHandle(hFile);
                 Encoding_Forced(CPI_NONE);
@@ -1142,9 +1141,9 @@ bool EditLoadFile(
     size_t const fileSizeWarning = (size_t)Settings2.FileLoadWarningMB << 20;
     if ((fileSizeWarning != 0ULL) && (fileSizeWarning <= fileSize)) {
         WCHAR sizeStr[64] = { L'\0' };
-        StrFormatByteSize((LONGLONG)liFileSize.QuadPart, sizeStr, COUNTOF(sizeStr));
+        StrFormatByteSizeEx(liFileSize.QuadPart, SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT, sizeStr, COUNTOF(sizeStr));
         WCHAR sizeWarnStr[64] = { L'\0' };
-        StrFormatByteSize((LONGLONG)fileSizeWarning, sizeWarnStr, COUNTOF(sizeWarnStr));
+        StrFormatByteSizeEx(fileSizeWarning, SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT, sizeWarnStr, COUNTOF(sizeWarnStr));
         Flags.bHugeFileLoadState = true;
         if (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr)) != IDYES) {
             CloseHandle(hFile);
@@ -7760,16 +7759,21 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     // --------------------------------------------------------------------------
 
     if (iNumWords > 0) {
+
         const char* const sep = " ";
         SciCall_AutoCCancel();
         SciCall_ClearRegisteredImages();
-
+        
+        SciCall_AutoCSetOptions(SC_AUTOCOMPLETE_FIXED_SIZE);
         SciCall_AutoCSetSeperator(sep[0]);
         SciCall_AutoCSetIgnoreCase(true);
         //~SciCall_AutoCSetCaseInsensitiveBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
         SciCall_AutoCSetChooseSingle(autoInsert);
         SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
         SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
+
+        SciCall_SetElementColour(SC_ELEMENT_LIST, RGBxA(GetModeTextColor(UseDarkMode()), SC_ALPHA_OPAQUE));
+        SciCall_SetElementColour(SC_ELEMENT_LIST_BACK, RGBxA(GetModeBkColor(UseDarkMode()), SC_ALPHA_OPAQUE));
 
         ++iWListSize; // zero termination
         char* const pList = AllocMem(iWListSize + 1, HEAP_ZERO_MEMORY);
