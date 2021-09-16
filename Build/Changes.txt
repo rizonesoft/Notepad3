@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.915.(build_#) (2021-09-15)
+Current BETA/RC Version 5.21.916.(build_#) (2021-09-16)
 ========================================================
 
 --------------------------------------------------------
@@ -46,6 +46,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.916.1]- Use "round nearest displayed digit" method for estimated file size display
 [.915.1]- Limit file size: 2GB (Until WideCharToMultiByte() / MultiByteToWideChar() INT32_MAX issues are clarified).
 
 --------------------------------------------------------
@@ -60,6 +61,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.915.1]- Dark mode aware auto-completion-list-box.
 [.915.1]- Goto-Dialog: digit grouping of line/column numbers.
 [.914.1]- Digit grouping for replace occurrences result dialog.
 [.914.1]- Better hyperlink style in dark themes "Dark" and "Obsidian".
