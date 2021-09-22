@@ -43,6 +43,8 @@
 #include <stdbool.h>
 #endif
 
+#include "uthash/utstring.h"
+
 #include "Sci_Position.h"
 #include "Scintilla.h"
 
@@ -241,26 +243,51 @@ typedef struct _editfindreplace
     bool bHideNonMatchedLines;
     bool bStateChanged;
     HWND hwnd;
-    char chFindPattern[FNDRPL_BUFFER];
-    char chReplaceTemplate[FNDRPL_BUFFER];
+    UT_string* chFindPattern; //[FNDRPL_BUFFER];
+    UT_string* chReplaceTemplate; //[FNDRPL_BUFFER];
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE;
 
-//typedef const EDITFINDREPLACE* CLPEDITFINDREPLACE;
 typedef const EDITFINDREPLACE* const CLPCEDITFINDREPLACE;
 
-#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, "", "" }
+#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, NULL, NULL }
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
+inline static void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src)
+{
+    dst->fuFlags = src->fuFlags;
+    dst->bTransformBS = src->bTransformBS;
+    dst->bFindClose = src->bFindClose;
+    dst->bReplaceClose = src->bReplaceClose;
+    dst->bNoFindWrap = src->bNoFindWrap;
+    dst->bRegExprSearch = src->bRegExprSearch;
+    dst->bWildcardSearch = src->bWildcardSearch;
+    dst->bMarkOccurences = src->bMarkOccurences;
+    dst->bHideNonMatchedLines = src->bHideNonMatchedLines;
+    dst->bStateChanged = src->bStateChanged;
+    dst->hwnd = src->hwnd;
+    utstring_renew(dst->chFindPattern);
+    utstring_bincpy(dst->chFindPattern, utstring_body(src->chFindPattern), utstring_len(src->chFindPattern));
+    utstring_renew(dst->chReplaceTemplate);
+    utstring_bincpy(dst->chReplaceTemplate, utstring_body(src->chReplaceTemplate), utstring_len(src->chReplaceTemplate));
+}
+
+inline static void ReleaseEFR(LPEDITFINDREPLACE efr)
+{
+    utstring_free(efr->chFindPattern);
+    efr->chFindPattern = NULL;
+    utstring_free(efr->chReplaceTemplate);
+    efr->chReplaceTemplate = NULL;
+}
 // --------------------------------------------------------------------------
 
 #define MRU_MAXITEMS    32
 #define MRU_ITEMSFILE   32
 #define MRU_ITEMSFNDRPL 16
-#define MRU_NOCASE    1
-#define MRU_UTF8      2
-#define MRU_BMRK_SIZE 512
+#define MRU_NOCASE       1
+#define MRU_UTF8         2
+#define MRU_BMRK_SIZE  512
 
 typedef struct _mrulist
 {

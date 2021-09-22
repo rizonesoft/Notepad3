@@ -35,6 +35,7 @@
 #include "crypto/crypto.h"
 #include "uthash/utarray.h"
 #include "uthash/utlist.h"
+#include "uthash/utstring.h"
 #include "tinyexpr/tinyexpr.h"
 #include "Encoding.h"
 #include "VersionEx.h"
@@ -220,6 +221,10 @@ const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 
 
 //=============================================================================
 // static method declarations
+
+// current find pattern
+static UT_string* s_utCurrentFindPattern = NULL;
+
 
 // undo / redo  selections
 
@@ -749,6 +754,11 @@ static void _InitGlobals()
 
     Flags.bSettingsFileSoftLocked = DefaultFlags.bSettingsFileSoftLocked = false;
 
+    utstring_new(Settings.EFR_Data.chFindPattern);
+    utstring_new(Settings.EFR_Data.chReplaceTemplate);
+    utstring_new(Defaults.EFR_Data.chFindPattern);
+    utstring_new(Defaults.EFR_Data.chReplaceTemplate);
+
     FocusedView.HideNonMatchedLines = false;
     FocusedView.CodeFoldingAvailable = false;
     FocusedView.ShowCodeFolding = true;
@@ -774,8 +784,10 @@ static void _InitGlobals()
     // --- static locals ---
 
     ThemesItems_Init();
+    utstring_new(s_utCurrentFindPattern);
 
     s_pthArgFilePath = Path_Allocate(NULL);
+    
 }
 
 
@@ -852,6 +864,9 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     // ---  free allocated memory  ---
 
+    ReleaseEFR(&(Defaults.EFR_Data));
+    ReleaseEFR(&(Settings.EFR_Data));
+
     Path_Release(Paths.CurrentFile);
     Path_Release(Paths.ModuleDirectory);
     Path_Release(Paths.WorkingDirectory);
@@ -863,6 +878,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     Path_Release(g_tchToolbarBitmap);
 
     Path_Release(s_pthArgFilePath);
+
+    utstring_free(s_utCurrentFindPattern);
 
     ThemesItems_Release();
 }
@@ -1282,11 +1299,19 @@ static SIZE _StatusCalcTextSize(HWND hwnd, LPCWSTR lpsz)
 //
 //  Set/Get FindPattern()
 //
-static WCHAR sCurrentFindPattern[FNDRPL_BUFFER] = { L'\0' };
 
 bool IsFindPatternEmpty()
 {
-    return  StrIsEmpty(sCurrentFindPattern);
+    return utstring_is_empty(s_utCurrentFindPattern);
+}
+
+//=============================================================================
+//
+//  GetFindPatternMB()
+//
+LPCSTR GetFindPatternMB()
+{
+    return utstring_body(s_utCurrentFindPattern);
 }
 
 //=============================================================================
@@ -1295,7 +1320,7 @@ bool IsFindPatternEmpty()
 //
 void SetFindPattern(LPCWSTR wchFindPattern)
 {
-    StringCchCopy(sCurrentFindPattern, COUNTOF(sCurrentFindPattern), (wchFindPattern ? wchFindPattern : L""));
+    utstring_setw(s_utCurrentFindPattern, wchFindPattern);
 }
 
 //=============================================================================
@@ -1304,9 +1329,9 @@ void SetFindPattern(LPCWSTR wchFindPattern)
 //
 void SetFindPatternMB(LPCSTR chFindPattern)
 {
-    MultiByteToWideChar(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, (int)COUNTOF(sCurrentFindPattern));
+    utstring_clear(s_utCurrentFindPattern);
+    utstring_bincpy(s_utCurrentFindPattern, chFindPattern, strlen(chFindPattern));
 }
-
 
 //=============================================================================
 //
@@ -1314,17 +1339,16 @@ void SetFindPatternMB(LPCSTR chFindPattern)
 //
 size_t LengthOfFindPattern()
 {
-    return StringCchLen(sCurrentFindPattern, 0);
+    return utstring_getw(s_utCurrentFindPattern, NULL, 0) - 1;
 }
-
 
 //=============================================================================
 //
-//  GetFindPattern()
+//  LengthOfFindPatternMB()
 //
-LPCWSTR GetFindPattern()
+size_t LengthOfFindPatternMB()
 {
-    return sCurrentFindPattern;
+    return utstring_len(s_utCurrentFindPattern);
 }
 
 
@@ -1334,7 +1358,7 @@ LPCWSTR GetFindPattern()
 //
 void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
 {
-    StringCchCopy(wchFindPattern, bufferCount, sCurrentFindPattern);
+    utstring_getw(s_utCurrentFindPattern, wchFindPattern, bufferCount);
 }
 
 //=============================================================================
@@ -1343,10 +1367,13 @@ void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
 //
 void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
 {
-    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
+    StringCchCopyA(chFindPattern, bufferCount, utstring_body(s_utCurrentFindPattern));
 }
 
+// ----------------------------------------------------------------------------
+
 static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
+
 
 //=============================================================================
 //
@@ -1354,11 +1381,12 @@ static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
 //
 static void SetFindReplaceData()
 {
-    s_FindReplaceData = Settings.EFR_Data; // reset
+    // reset
+    DuplicateEFR(&s_FindReplaceData, &(Settings.EFR_Data));
 
     if (!IsFindPatternEmpty()) {
-        CopyFindPatternMB(s_FindReplaceData.chFindPattern, COUNTOF(s_FindReplaceData.chFindPattern));
-        CopyFindPatternMB(Settings.EFR_Data.chFindPattern, COUNTOF(Settings.EFR_Data.chFindPattern));
+        utstring_clear(Settings.EFR_Data.chFindPattern);
+        utstring_bincpy(Settings.EFR_Data.chFindPattern, utstring_body(s_utCurrentFindPattern), utstring_len(s_utCurrentFindPattern));
     }
 
     if (g_flagMatchText) { // cmd line
@@ -5262,7 +5290,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         SetFindReplaceData(); // s_FindReplaceData
 
-        if (IsFindPatternEmpty() && !StrIsEmptyA(s_FindReplaceData.chFindPattern)) {
+        if (IsFindPatternEmpty() && !utstring_is_empty(s_FindReplaceData.chFindPattern)) {
             if (iLoWParam != IDM_EDIT_REPLACENEXT) {
                 SendWMCommand(hwnd, IDM_EDIT_FIND);
             } else {
@@ -5314,9 +5342,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_FINDPREVSEL:
     case IDM_EDIT_SAVEFIND: {
         if (SetCurrentSelAsFindReplaceData()) {
-
-            MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
-
+            WCHAR buf[8192];
+            CopyFindPattern(buf, COUNTOF(buf));
+            MRU_Add(Globals.pMRUfind, buf, 0, -1, -1, NULL);
             s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
             s_FindReplaceData.bTransformBS = false;
 
@@ -10955,7 +10983,7 @@ bool ActivatePrevInst()
 
                 params->flagMatchText = g_flagMatchText;
                 if (!IsFindPatternEmpty()) {
-                    StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
+                    CopyFindPattern(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1));
                 }
 
                 cds.dwData = DATA_NOTEPAD3_PARAMS;
@@ -11044,7 +11072,7 @@ bool ActivatePrevInst()
 
                 params->flagMatchText = g_flagMatchText;
                 if (!IsFindPatternEmpty()) {
-                    StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
+                    CopyFindPattern(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1));
                 }
 
                 cds.dwData = DATA_NOTEPAD3_PARAMS;

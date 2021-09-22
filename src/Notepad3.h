@@ -143,13 +143,14 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
 void HandleColorDefClicked(HWND hwnd, const DocPos position);
 
-bool IsFindPatternEmpty();
-void SetFindPattern(LPCWSTR wchFindPattern);
-void SetFindPatternMB(LPCSTR chFindPattern);
+bool   IsFindPatternEmpty();
+LPCSTR GetFindPatternMB();
+void   SetFindPattern(LPCWSTR wchFindPattern);
+void   SetFindPatternMB(LPCSTR chFindPattern);
 size_t LengthOfFindPattern();
-LPCWSTR GetFindPattern();
-void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
-void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
+size_t LengthOfFindPatternMB();
+void   CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
+void   CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 
