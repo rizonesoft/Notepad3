@@ -1557,47 +1557,47 @@ void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplac
 }
 
 
-void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
+#if 0
+void TransformMetaChars(char* pszInput, size_t cch, bool bRegEx, int iEOLMode)
 {
     if (!bRegEx) {
         return;
     }
-
-    char buffer[FNDRPL_BUFFER + 1] = { '\0' };
-    char* s = pszInput;
-    char* o = buffer;
-    while (*s) {
-        if ((s[0] != '\\') && (s[1] == '$')) {
-            *o = *s;
-            ++o;
-            ++s;
-            switch (iEOLMode) {
-            case SC_EOL_LF:
-                *o = '\n';
-                break;
-            case SC_EOL_CR:
-                *o = '\r';
-                break;
-            case SC_EOL_CRLF:
-            default:
-                *o = '\r';
-                ++o;
-                *o = '\n';
-                break;
+    char* buffer = AllocMem((cch << 1) * sizeof(char), HEAP_ZERO_MEMORY);
+    if (buffer) {
+        char* s = pszInput;
+        char* o = buffer;
+        while (*s) {
+            if ((s[0] != '\\') && (s[1] == '$')) {
+                *o++ = *s++;
+                switch (iEOLMode) {
+                case SC_EOL_LF:
+                    *o++ = '\n';
+                    break;
+                case SC_EOL_CR:
+                    *o++ = '\r';
+                    break;
+                case SC_EOL_CRLF:
+                default:
+                    *o++ = '\r';
+                    *o++ = '\n';
+                    break;
+                }
+                ++s; // skip $
             }
-            ++s; // skip $
-        } else {
-            *o = *s;
+            else {
+                *o++ = *s;
+            }
+            if (*s) {
+                ++s;
+            }
         }
-        ++o;
-        if (*s) {
-            ++s;
-        }
+        *o = '\0';
+        StringCchCopyA(pszInput, cch, buffer);
+        FreeMem(buffer);
     }
-    *o = '\0';
-    StringCchCopyA(pszInput, FNDRPL_BUFFER, buffer);
 }
-
+#endif
 
 //=============================================================================
 //

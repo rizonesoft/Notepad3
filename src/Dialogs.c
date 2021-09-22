@@ -5106,9 +5106,11 @@ void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 #if 0
 void ComboBox_AddStringMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 {
-	WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-	MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
-	ComboBox_AddString(GetDlgItem(hDlg, nIDDlgItem), wsz);
+    int const len = MultiByteToWideChar(CP_UTF8, 0, lpString, -1, NULL, 0) + 1;
+    wchar_t* const buf = AllocMem(len * sizeof(wchar_t), HEAP_ZERO_MEMORY);
+	MultiByteToWideChar(CP_UTF8, 0, lpString, -1, buf, len);
+	ComboBox_AddString(GetDlgItem(hDlg, nIDDlgItem), buf);
+    FreeMem(buf);
 }
 #endif
 

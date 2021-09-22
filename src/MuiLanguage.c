@@ -268,10 +268,9 @@ unsigned GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName) {
 //
 static unsigned _CheckAvailableLanguageDLLs()
 {
-    WCHAR wchAbsPath[MAX_PATH] = { L'\0' };
-
     unsigned count = 1; // internal instance always available
 
+    HPATHL hpth = Path_Allocate(NULL);
 
     for (unsigned lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
 
@@ -285,13 +284,16 @@ static unsigned _CheckAvailableLanguageDLLs()
             }
 #endif
             // check for DLL
-            StringCchPrintf(wchAbsPath, COUNTOF(wchAbsPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
-            PathAbsoluteFromApp(wchAbsPath, COUNTOF(wchAbsPath), false);
-            bool const bAvail = PathIsExistingFile(wchAbsPath);
+            WCHAR wchRelPath[SMALL_BUFFER] = { L'\0' };
+            StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
+            Path_Reset(hpth, wchRelPath);
+            Path_AbsoluteFromApp(hpth, false);
+            bool const bAvail = Path_IsExistingFile(hpth);
             MUI_LanguageDLLs[lng].bHasDLL = bAvail;
             count += bAvail ? 1 : 0;
         }
     }
+    Path_Release(hpth);
     return count;
 }
 

@@ -473,7 +473,7 @@ size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 size_t UnSlashCtrlW(LPWSTR pchInOut);
 
 void TransformBackslashes(char *pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
-void TransformMetaChars(char *pszInput, bool bRegEx, int iEOLMode);
+//void TransformMetaChars(char *pszInput, size_t cch, bool bRegEx, int iEOLMode);
 
 
 //==== Large Text Conversion ==================================================
@@ -487,7 +487,7 @@ ptrdiff_t WideCharToMultiByteEx(
     LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar);
 #else
 
-__inline ptrdiff_t WideCharToMultiByteEx(
+__forceinline ptrdiff_t WideCharToMultiByteEx(
     UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
     LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar)
 {
@@ -504,7 +504,7 @@ ptrdiff_t MultiByteToWideCharEx(
     LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
 #else
 
-__inline ptrdiff_t MultiByteToWideCharEx(
+__forceinline ptrdiff_t MultiByteToWideCharEx(
     UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
     LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
 {

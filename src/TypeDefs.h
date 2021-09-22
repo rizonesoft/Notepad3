@@ -241,8 +241,8 @@ typedef struct _editfindreplace
     bool bHideNonMatchedLines;
     bool bStateChanged;
     HWND hwnd;
-    HSTRINGW chFindPattern; //[FNDRPL_BUFFER];
-    HSTRINGW chReplaceTemplate; //[FNDRPL_BUFFER];
+    HSTRINGW chFindPattern;
+    HSTRINGW chReplaceTemplate;
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE;
 
