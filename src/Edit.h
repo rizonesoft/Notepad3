@@ -21,6 +21,9 @@
 #include "SciCall.h"
 #include "TypeDefs.h"
 
+void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src);
+void ReleaseEFR(LPEDITFINDREPLACE efr);
+
 void EditInitializeSciCtrl(HWND);
 void EditReplaceSelection(const char* text, bool bForceSel);
 void EditInitWordDelimiter(HWND hwnd);

@@ -11,6 +11,7 @@
 #include <stdarg.h>
 #include <heapapi.h>
 #include <strsafe.h>
+#include <stringapiset.h>
 
 #include "DynStrg.h"
 
@@ -803,6 +804,27 @@ size_t STRAPI StrgDelete(HSTRINGW hstr, const size_t index, size_t count)
 // ----------------------------------------------------------------------------
 
 
+int STRAPI StrgGetAsUTF8(const HSTRINGW hstr, char* chStrg, int cch)
+{
+    return WideCharToMultiByte(CP_UTF8, 0, StrgGet(hstr), -1, chStrg, cch, NULL, NULL);
+}
+// ----------------------------------------------------------------------------
+
+
+int STRAPI StrgResetFromUTF8(HSTRINGW hstr, const char* str)
+{
+    STRINGW* pstr = ToWStrg(hstr);
+    if (!pstr || !str)
+        return -1;
+    int const len = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0) + 1;
+    ReAllocW(pstr, len);
+    int const res = MultiByteToWideChar(CP_UTF8, 0, str, -1, pstr->data, (int)pstr->alloc_length);
+    pstr->data_length = StrlenW(pstr->data);
+    return res;
+}
+// ----------------------------------------------------------------------------
+
+
 void STRAPI StrgToUpper(HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
@@ -1024,11 +1046,9 @@ void STRAPI StrgFormat(HSTRINGW hstr, const wchar_t* fmt, ...)
     FormatW(hstr, fmt, args);
     va_end(args);
 }
-// --------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-// Only for PathLib: ensure buffer size is at least MAX_PATH
-// NP3_PATH_LIB_IMPLEMENTATION
+// ############################################################################
 
 wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len)
 {
@@ -1060,5 +1080,6 @@ void STRAPI StrgSanitize(HSTRINGW hstr)
     }
     pstr->data_length = StrlenW(pstr->data);
 }
-
 // --------------------------------------------------------------------------
+
+// ############################################################################

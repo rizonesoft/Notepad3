@@ -134,8 +134,6 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 
-
-#define NP3_PATH_LIB_IMPLEMENTATION 1
 #include "PathLib.h"
 
 //~ Win8.1+ only:
@@ -358,6 +356,7 @@ static void _UnExpandEnvStrgs(HSTRINGW hstr_in_out)
                         StrgReplace(hstr_in_out, buf, var_strg);
                     }
                 }
+                StrgSanitize(htmp_str);
             }
         }
     }
@@ -487,6 +486,8 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
 
     // Properly terminate the string with a NULL character
     path[k] = '\0';
+
+    StrgSanitize(hstr_in_out);
 
     return true;
 }
@@ -796,6 +797,7 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_in_out)
     //~//  PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS | PATHCCH_ENSURE_IS_EXTENDED_LENGTH_PATH
     //~//  PATHCCH_ENSURE_TRAILING_SLASH
     //~bool const res = SUCCEEDED(PathXCchCanonicalizeEx(wbuf_out, cch_out, PathGet(hpth_in_out), dwFlags));
+    //~StrgSanitize(hstr_cpy);
 
     bool const res = _PathCanonicalize(hstr_cpy);
     StrgSanitize(hstr_cpy);
@@ -1058,6 +1060,7 @@ size_t PTHAPI Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2, HPATHL h
     if (cpy_out) {
         out_buf[cnt] = L'\0';
     }
+    StrgSanitize(hout_str);
     return cnt;
 }
 // ----------------------------------------------------------------------------
@@ -1084,6 +1087,7 @@ const wchar_t* PTHAPI Path_FindExtension(const HPATHL hpth)
     const wchar_t* pfile = Path_FindFileName(hpth);
     wchar_t* const pdot = pfile ? wcschr(pfile, L'.') : NULL;
 
+    StrgSanitize(hstr);
     return pdot ? pdot : &wbuf[StrgGetLength(hstr)];
 }
 // ----------------------------------------------------------------------------
@@ -1431,6 +1435,7 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     else {
         Path_Swap(hrecv, hto_cpy);
     }
+    StrgSanitize(hrecv_str);
 
     Path_Release(hto_cpy);
     Path_Release(hfrom_cpy);
@@ -1583,10 +1588,12 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
                 HSTRINGW       hsrch_str = StrgCreate(NULL);
                 wchar_t* const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
                 if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
+                    //StrgSanitize(hsrch_str);
                     Path_Reset(hpth_in_out, buf);
                     //PrependLongPathPrefix(hpth_in_out, false);
                 }
                 else {
+                    StrgSanitize(hsrch_str);
                     Path_Swap(hpth_in_out, hsrch_pth);
                 }
                 StrgDestroy(hsrch_str);

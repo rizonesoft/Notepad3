@@ -4503,6 +4503,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WINI
 		return;
 	}
 
+
 	WCHAR szModuleName[MAX_PATH] = { L'\0' };
 	GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
 	PathCanonicalizeEx(szModuleName, COUNTOF(szModuleName));
@@ -5063,20 +5064,34 @@ UINT ComboBox_GetCurSelEx(HWND hDlg, int nIDDlgItem) {
 	return (UINT)ComboBox_GetCurSel(GetDlgItem(hDlg, nIDDlgItem));
 }
 
+int ComboBox_GetTextHW(HWND hDlg, int nIDDlgItem, HSTRINGW hstr)
+{
+    HWND const hwndCtl = GetDlgItem(hDlg, nIDDlgItem);
+    int const  len = ComboBox_GetTextLength(hwndCtl) + 1;
+    wchar_t* const buf = StrgWriteAccessBuf(hstr, len);
+    int const      idx = ComboBox_GetCurSel(hwndCtl);
+    if (idx >= 0) {
+        ComboBox_GetLBText(hwndCtl, ComboBox_GetCurSel(hwndCtl), buf);
+    }
+    else {
+        ComboBox_GetText(hwndCtl, buf, len);
+    }
+    StrgSanitize(hstr);
+    return (int)StrgGetLength(hstr);
+}
+
 int ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, size_t cch)
 {
-	HWND const hwndCtl = GetDlgItem(hDlg, nIDDlgItem);
-    int const len = ComboBox_GetTextLength(hwndCtl) + 1;
-    wchar_t* const buf = AllocMem(len * sizeof(wchar_t), HEAP_ZERO_MEMORY);
-    int const idx = ComboBox_GetCurSel(hwndCtl);
-	if (idx >= 0) {
-    	ComboBox_GetLBText(hwndCtl, ComboBox_GetCurSel(hwndCtl), buf);
-	} else {
-        ComboBox_GetText(hwndCtl, buf, len);
-	}
-    WideCharToMultiByte(CP_UTF8, 0, buf, -1, lpString, (int)cch, NULL, NULL);
-    FreeMem(buf);
+    HSTRINGW hstr = StrgCreate(NULL);
+    ComboBox_GetTextHW(hDlg, nIDDlgItem, hstr);
+    int const len = StrgGetAsUTF8(hstr, lpString, (int)cch);
+    StrgDestroy(hstr);
     return len;
+}
+
+void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr)
+{
+    ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), StrgGet(hstr));
 }
 
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)

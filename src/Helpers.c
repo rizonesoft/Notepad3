@@ -1057,7 +1057,7 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
         }
     }
     TrimSpcW(lpArg1);
-    UnSlashChar(lpArg1, L'"');
+    UnSlashCharW(lpArg1, L'"');
 
     if (lpArg2) {
         TrimSpcW(lpArg2);
@@ -1487,7 +1487,7 @@ size_t UnSlashCtrlW(LPWSTR pchInOut)
 //=============================================================================
 
 
-size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch)
+size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch)
 {
     LPCWSTR const sStart = pchInOut;
 
@@ -1607,7 +1607,7 @@ void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
 int Hex2Char(char* ch, int cnt)
 {
     int cch = 0;
-    WCHAR* wch = (WCHAR*)AllocMem(cnt * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR* const wch = AllocMem(cnt * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (wch) {
         int ci  = 0;
         char* p = ch;

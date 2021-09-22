@@ -2392,7 +2392,6 @@ bool MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex)
     return false;
 }
 
-// TODO: §§§ MAX_PATH limit §§§ @@@!
 bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
                  cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
@@ -2412,18 +2411,18 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
             pmru->pszBookMarks[i] = pmru->pszBookMarks[i - 1];
         }
         if (bRelativePath) {
-            WCHAR wchFile[MAX_PATH] = { L'\0' };
-            StringCchCopy(wchFile, COUNTOF(wchFile), pszFile);
-            PathRelativeToApp(wchFile, COUNTOF(wchFile), true, true, bUnexpandMyDocs);
-            pmru->pszItems[0] = StrDup(wchFile);  // LocalAlloc()
+            HPATHL const hpth = Path_Allocate(pszFile);
+            Path_RelativeToApp(hpth, true, true, bUnexpandMyDocs);
+            pmru->pszItems[0] = StrDupW(Path_Get(hpth));  // LocalAlloc()
+            Path_Release(hpth);
         } else {
-            pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
+            pmru->pszItems[0] = StrDupW(pszFile);  // LocalAlloc()
         }
 
         pmru->iEncoding[0] = iEnc;
         pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
         pmru->iSelAnchPos[0] = (Settings.PreserveCaretPos ? iSelAnc : -1);
-        pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
+        pmru->pszBookMarks[0] = (pszBookMarks ? StrDupW(pszBookMarks) : NULL);  // LocalAlloc()
 
         if (!bAlreadyInList) {
             AddFilePathToRecentDocs(pszFile);

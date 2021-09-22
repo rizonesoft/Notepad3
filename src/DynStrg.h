@@ -25,6 +25,7 @@ HSTRINGW STRAPI          StrgCreate(const wchar_t* str);
 void STRAPI              StrgDestroy(HSTRINGW hstr);
 
 int STRAPI               StrgIsEmpty(const HSTRINGW hstr);
+inline int STRAPI        StrgIsNotEmpty(const HSTRINGW hstr) { return !StrgIsEmpty(hstr); };
 size_t STRAPI            StrgGetLength(const HSTRINGW hstr);
 size_t STRAPI            StrgGetAllocLength(const HSTRINGW hstr);
 
@@ -47,6 +48,9 @@ size_t STRAPI            StrgReplaceCh(HSTRINGW hstr, const wchar_t chOld, const
 size_t STRAPI            StrgRemoveCh(HSTRINGW hstr, const wchar_t chRemove);
 size_t STRAPI            StrgDelete(HSTRINGW hstr, const size_t index, size_t count);
 
+int STRAPI               StrgGetAsUTF8(const HSTRINGW hstr, char* chStrg, int cch);
+int STRAPI               StrgResetFromUTF8(HSTRINGW hstr, const char* str);
+inline int STRAPI        StrgLengthAsUTF8(const HSTRINGW hstr) { return StrgGetAsUTF8(hstr, NULL, 0); };
 
 void STRAPI              StrgToUpper(HSTRINGW hstr);
 void STRAPI              StrgToLower(HSTRINGW hstr);
@@ -68,10 +72,6 @@ HSTRINGW STRAPI          StrgRight(HSTRINGW hstr, const size_t count);
 void STRAPI              StrgFormat(HSTRINGW hstr, const wchar_t* fmt, ...);
 
 
-// use for PathLib Only !
-#ifdef NP3_PATH_LIB_IMPLEMENTATION
-
+// use together - may consistency issues if not (!)
 wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len); //min_len = 0   for not resizing buffer
-void STRAPI StrgSanitize(HSTRINGW hstr);  // correct strg length after buffer access
-
-#endif
+void STRAPI StrgSanitize(HSTRINGW hstr);  // correct string length after buffer access

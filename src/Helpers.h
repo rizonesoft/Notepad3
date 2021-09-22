@@ -467,7 +467,7 @@ UINT CodePageFromCharSet(const UINT uCharSet);
 //==== UnSlash Functions ======================================================
 
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
-size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch);
+size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch);
 
 size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 size_t UnSlashCtrlW(LPWSTR pchInOut);
