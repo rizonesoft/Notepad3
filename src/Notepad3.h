@@ -83,6 +83,7 @@ typedef enum {
 #define IDC_FILENAME     (0xFB05)
 #define IDC_REUSELOCK    (0xFB06)
 #define IDC_MARGIN       (0xFB07)
+#define IDC_NCAREA       (0xFB08)
 
 
 

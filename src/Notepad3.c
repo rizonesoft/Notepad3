@@ -1780,6 +1780,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         return MsgCopyData(hwnd, wParam, lParam);
 
     case WM_CONTEXTMENU:
+    case WM_NCRBUTTONDOWN:
         MsgContextMenu(hwnd, umsg, wParam, lParam);
         break;
 
@@ -3311,9 +3312,16 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     bool const bMargin = (SCN_MARGINRIGHTCLICK == umsg);
-    int const nID = bMargin ? IDC_MARGIN : GetDlgCtrlID((HWND)wParam);
+    bool const bNCArea = (WM_NCRBUTTONDOWN == umsg);
 
-    if ((nID != IDC_MARGIN) && (nID != IDC_EDIT) && (nID != IDC_STATUSBAR) && (nID != IDC_REBAR) && (nID != IDC_TOOLBAR)) {
+    int const nID = bMargin ? IDC_MARGIN : (bNCArea ? IDC_NCAREA : GetDlgCtrlID((HWND)wParam));
+
+    if ((nID != IDC_MARGIN) && 
+        (nID != IDC_EDIT) && 
+        (nID != IDC_STATUSBAR) && 
+        (nID != IDC_REBAR) && 
+        (nID != IDC_TOOLBAR) && 
+        (nID != IDC_NCAREA)) {
         return DefWindowProc(hwnd, umsg, wParam, lParam);
     }
 
@@ -3323,16 +3331,27 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         return FALSE;
     }
 
-    HMENU const hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
-    //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
-
     POINT pt = { 0, 0 };
     pt.x = (int)((short)LOWORD(bMargin ? wParam : lParam));
     pt.y = (int)((short)HIWORD(bMargin ? wParam : lParam));
-#define IS_CTX_PT_VALID(P) (((P).x != -1 || (P).y != -1))
+    #define IS_CTX_PT_VALID(P) (((P).x != -1 || (P).y != -1))
 
-    typedef enum { MNU_NONE = -1, MNU_EDIT = 0, MNU_BAR = 1, MNU_MARGIN = 2, MNU_TRAY = 3 } mnu_t;
+    if (nID == IDC_NCAREA) { // only valid for Menu Bar
+        if (!IS_CTX_PT_VALID(pt)) {
+            GetCursorPos(&pt);
+        }
+        MENUBARINFO mbi = { sizeof(MENUBARINFO) };
+        GetMenuBarInfo(hwnd, OBJID_MENU, 0, &mbi);
+        if (pt.y < mbi.rcBar.top || pt.y > mbi.rcBar.bottom) {
+            return DefWindowProc(hwnd, umsg, wParam, lParam);
+        }
+    }
+
+    typedef enum { MNU_NONE = -1, MNU_EDIT = 0, MNU_BAR, MNU_MARGIN, MNU_TRAY, MNU_NCAREA } mnu_t;
     mnu_t imenu = MNU_NONE;
+
+    HMENU const hMenuCtx = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+    //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
 
     switch (nID) {
     case IDC_EDIT: {
@@ -3342,13 +3361,14 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             DocPos const iCurrentPos = SciCall_GetCurrentPos();
             pt.x = (LONG)SciCall_PointXFromPosition(iCurrentPos);
             pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
-        } else {
+        }
+        else {
             ScreenToClient(Globals.hwndEdit, &pt);
         }
 
         DocPos const iCurrentPos = SciCall_PositionFromPoint(pt.x, pt.y);
-        DocLn const curLn = SciCall_LineFromPosition(iCurrentPos);
-        int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
+        DocLn const  curLn = SciCall_LineFromPosition(iCurrentPos);
+        int const    bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
         imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? MNU_MARGIN : MNU_EDIT;
 
         if (imenu == MNU_EDIT) {
@@ -3363,8 +3383,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         // back to screen coordinates for menu display
         ClientToScreen(Globals.hwndEdit, &pt);
-    }
-    break;
+    } break;
 
     case IDC_TOOLBAR:
     case IDC_STATUSBAR:
@@ -3373,8 +3392,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             GetCursorPos(&pt);
         }
         imenu = MNU_BAR;
-    }
-    break;
+    } break;
 
     case IDC_MARGIN: {
         if (!IS_CTX_PT_VALID(pt)) {
@@ -3382,7 +3400,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
 
         DocLn const curLn = Sci_GetCurrentLineNumber();
-        int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
+        int const   bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
         EnableCmd(hMenuCtx, IDM_EDIT_CLEAR_MARKER, bitmask);
         EnableCmd(hMenuCtx, IDM_EDIT_CUT_MARKED, bitmask);
         EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
@@ -3398,8 +3416,17 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         default:
             break;
         }
-    }
-    break;
+    } break;
+
+    case IDC_NCAREA: {
+        if (!IS_CTX_PT_VALID(pt)) {
+            GetCursorPos(&pt);
+        }
+        imenu = MNU_BAR;
+    } break;
+
+    default:
+        break;
     }
 
     if (imenu != MNU_NONE) {
