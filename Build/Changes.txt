@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.916.(build_#) (2021-09-16)
+Current BETA/RC Version 5.21.923.(build_#) (2021-09-23)
 ========================================================
 
 --------------------------------------------------------
@@ -46,16 +46,17 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.916.1]- Use "round nearest displayed digit" method for estimated file size display
+[.923.1]- Add context menu for Menubar.
+[.916.1]- Use "round nearest displayed digit" method for estimated file size display.
 [.915.1]- Limit file size: 2GB (Until WideCharToMultiByte() / MultiByteToWideChar() INT32_MAX issues are clarified).
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.726.1]- Update grepWinNP3 (GRE) version 2.1.8.39 (2021-07-26).
-[.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
 [.802.1]- Update Lexilla Library (LEX) version 5.1.2 (2021-07-26).
 [.726.1]- Update Scintilla Library (SCI) version 5.1.1 (2021-07-26).
+[.726.1]- Update grepWinNP3 (GRE) version 2.1.8.39 (2021-07-26).
+[.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
 
 --------------------------------------------------------
 FIXES:
@@ -215,10 +216,10 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.726.1]- Update grepWinNP3 (GRE) version 2.1.8.39 (2021-07-26).
-[.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
 [.802.1]- Update Lexilla Library (LEX) version 5.1.2 (2021-07-26).
 [.726.1]- Update Scintilla Library (SCI) version 5.1.1 (2021-07-26).
+[.726.1]- Update grepWinNP3 (GRE) version 2.1.8.39 (2021-07-26).
+[.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
 
 --------------------------------------------------------
 FIXES:
