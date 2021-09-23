@@ -932,12 +932,12 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     bool const bHaveFileResource = StrIsNotEmpty(szFile);
     bool bIsStdIniFile = false;
     if (bHaveFileResource) {
-        WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
-        StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
-        NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Path_Get(Paths.ModuleDirectory), true, false);
-        if (StringCchCompareXI(szFilePathNorm, Path_Get(Paths.IniFile)) == 0) {
+        HPATHL hpth = Path_Allocate(szFile);
+        Path_NormalizeEx(hpth, Paths.ModuleDirectory, true, false);
+        if (StringCchCompareXI(Path_Get(hpth), Path_Get(Paths.IniFile)) == 0) {
             bIsStdIniFile = true;
         }
+        Path_Release(hpth);
     }
 
     bool bOpendByMe = false;
@@ -1157,14 +1157,13 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
         return false;
     }
 
-    WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
-    StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
-    NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), Path_Get(Paths.ModuleDirectory), true, false);
+    HPATHL hpth = Path_Allocate(szFile);
+    Path_NormalizeEx(hpth, Paths.ModuleDirectory, true, false);
 
     bool ok = false;
 
     // special handling of standard .ini-file
-    if (StringCchCompareXI(szFilePathNorm, Path_Get(Paths.IniFile)) == 0) {
+    if (StringCchCompareXI(Path_Get(hpth), Path_Get(Paths.IniFile)) == 0) {
         bool bOpendByMe = false;
         if (OpenSettingsFile(&bOpendByMe)) {
             Style_ToIniSection(bForceAll);
@@ -1172,9 +1171,9 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
             ok = CloseSettingsFile(true, bOpendByMe);
         }
     } else {
-        if (StrIsNotEmpty(szFilePathNorm)) {
-            if (!PathIsExistingFile(szFilePathNorm)) {
-                HANDLE hFile = CreateFile(szFilePathNorm,
+        if (Path_IsNotEmpty(hpth)) {
+            if (!Path_IsExistingFile(hpth)) {
+                HANDLE hFile = CreateFile(Path_Get(hpth),
                                           GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
                 if (IS_VALID_HANDLE(hFile)) {
@@ -1182,14 +1181,15 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
                 }
             }
             ResetIniFileCache();
-            if (LoadIniFileCache(szFilePathNorm)) {
+            if (LoadIniFileCache(Path_Get(hpth))) {
                 Style_ToIniSection(bForceAll);
                 Style_FileExtToIniSection(bForceAll);
-                ok = SaveIniFileCache(szFilePathNorm);
+                ok = SaveIniFileCache(Path_Get(hpth));
                 ResetIniFileCache();
             }
         }
     }
+    Path_Release(hpth);
     return ok;
 }
 
@@ -2299,6 +2299,7 @@ PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
 PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
 {
     if (StrIsNotEmpty(lpszFileName)) {
+
         char chFilePath[MAX_PATH << 1] = { '\0' };
         WideCharToMultiByteEx(CP_UTF8, 0, lpszFileName, -1, chFilePath, COUNTOF(chFilePath), NULL, NULL);
 

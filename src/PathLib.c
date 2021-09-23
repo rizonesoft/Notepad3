@@ -104,15 +104,16 @@
 // 
 // ============================================================================
 
-#if !defined(WINVER)
-#define WINVER 0x602 /*_WIN32_WINNT_WIN8*/
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0601 /*_WIN32_WINNT_WIN7*/
 #endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x602 /*_WIN32_WINNT_WIN8*/
+#ifndef WINVER
+#define WINVER 0x0601 /*_WIN32_WINNT_WIN7*/
 #endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06020000 /*NTDDI_WIN7*/
+#ifndef NTDDI_VERSION
+#define NTDDI_VERSION 0x06010000 /*NTDDI_WIN7*/
 #endif
+
 
 #define NOMINMAX
 #define VC_EXTRALEAN 1
@@ -125,10 +126,6 @@
 #include <strsafe.h>
 #include <fileapi.h>
 
-//~ Win8.1+ only:
-//~#define PATHCCH_NO_DEPRECATE 1  // <- get rid of this!
-//~#include <pathcch.h>
-
 // get rid of this:
 #include <shlobj.h>
 #include <shellapi.h>
@@ -136,9 +133,11 @@
 
 #include "PathLib.h"
 
-//~ Win8.1+ only:
-//~#pragma comment(linker, "/defaultlib:Pathcch")
 
+//~ Win8.1+ only:
+//~#define PATHCCH_NO_DEPRECATE 1  // <- get rid of this!
+//~#include <pathcch.h>
+//~#pragma comment(linker, "/defaultlib:Pathcch")
 
 
 /**************************************************/
