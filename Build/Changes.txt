@@ -46,7 +46,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.923.1]- Add context menu for Menubar.
+[.923.2]- Enable context menu for Statusbar.
+[.923.1]- Enable context menu for Menubar.
 [.916.1]- Use "round nearest displayed digit" method for estimated file size display.
 [.915.1]- Limit file size: 2GB (Until WideCharToMultiByte() / MultiByteToWideChar() INT32_MAX issues are clarified).
 
