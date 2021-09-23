@@ -3363,16 +3363,16 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    bool const bMargin = (SCN_MARGINRIGHTCLICK == umsg);
-    bool const bNCArea = (WM_NCRBUTTONDOWN == umsg);
+    bool const bMargin  = (SCN_MARGINRIGHTCLICK == umsg);
+    bool const bNCArea  = (WM_NCRBUTTONDOWN == umsg);
 
     int const nID = bMargin ? IDC_MARGIN : (bNCArea ? IDC_NCAREA : GetDlgCtrlID((HWND)wParam));
 
     if ((nID != IDC_MARGIN) && 
         (nID != IDC_EDIT) && 
-        (nID != IDC_STATUSBAR) && 
         (nID != IDC_REBAR) && 
         (nID != IDC_TOOLBAR) && 
+        (nID != IDC_STATUSBAR) &&
         (nID != IDC_NCAREA)) {
         return DefWindowProc(hwnd, umsg, wParam, lParam);
     }
@@ -3409,7 +3409,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDC_EDIT: {
 
         if (!IS_CTX_PT_VALID(pt)) {
-            // caused by keypoard near caret pos
+            // caused by keyboard near caret pos
             DocPos const iCurrentPos = SciCall_GetCurrentPos();
             pt.x = (LONG)SciCall_PointXFromPosition(iCurrentPos);
             pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
@@ -3439,7 +3439,8 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDC_TOOLBAR:
     case IDC_STATUSBAR:
-    case IDC_REBAR: {
+    case IDC_REBAR:
+    case IDC_NCAREA: {
         if (!IS_CTX_PT_VALID(pt)) {
             GetCursorPos(&pt);
         }
@@ -3468,13 +3469,6 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         default:
             break;
         }
-    } break;
-
-    case IDC_NCAREA: {
-        if (!IS_CTX_PT_VALID(pt)) {
-            GetCursorPos(&pt);
-        }
-        imenu = MNU_BAR;
     } break;
 
     default:
@@ -8196,6 +8190,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+        case NM_RCLICK: {
+            POINT pt = { 0, 0 };
+            GetCursorPos(&pt);
+            MsgContextMenu(hwnd, 0, (WPARAM)Globals.hwndStatus, MAKELPARAM(pt.x, pt.y));
+        } break;
 
         default:
             break;
