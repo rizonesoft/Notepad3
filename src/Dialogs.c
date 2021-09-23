@@ -4502,8 +4502,6 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WINI
 	if (bSaveOnRunTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
 		return;
 	}
-
-
 	WCHAR szModuleName[MAX_PATH] = { L'\0' };
 	GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
 	PathCanonicalizeEx(szModuleName, COUNTOF(szModuleName));

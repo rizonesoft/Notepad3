@@ -1099,7 +1099,7 @@ const wchar_t* PTHAPI Path_FindFileName(const HPATHL hpth)
         return NULL;
 
     const wchar_t* pstart = _Path_SkipRoot(hpth);
-    if (*pstart == L'\0') {
+    if (!pstart  || *pstart == L'\0') {
         return pstart;
     }
 

@@ -67,8 +67,8 @@ __forceinline LPVOID ReAllocMemStrg(LPVOID lpMem, size_t numBytes, DWORD dwFlags
     return HeapReAlloc(s_hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
 }
 
-__forceinline BOOL FreeMemStrg(LPVOID lpMemory) {
-    return (lpMemory ? HeapFree(s_hndlProcessHeap, 0, lpMemory) : TRUE);
+__forceinline bool FreeMemStrg(LPVOID lpMemory) {
+    return (lpMemory ? HeapFree(s_hndlProcessHeap, 0, lpMemory) : true);
 }
 
 __forceinline size_t SizeOfMemStrg(LPCVOID lpMemory) {
@@ -93,7 +93,7 @@ __forceinline STRINGW* ToWStrg(HSTRINGW hstr)
 
 #define limit_len(len) (((len) < STRINGW_MAX_CCH) ? (len) : (STRINGW_MAX_CCH - 1))
 
-inline static void * AllocBuffer(size_t len, size_t char_size, BOOL bZeroMem) {
+inline static void * AllocBuffer(size_t len, size_t char_size, bool bZeroMem) {
     if (!s_hndlProcessHeap) {
         s_hndlProcessHeap = GetProcessHeap();
     }
@@ -101,11 +101,12 @@ inline static void * AllocBuffer(size_t len, size_t char_size, BOOL bZeroMem) {
 }
 // ----------------------------------------------------------------------------
 
-inline static void * ReAllocBuffer(void* pdata, size_t len, size_t char_size, BOOL bZeroMem) {
+inline static void * ReAllocBuffer(void* pdata, size_t len, size_t char_size, bool bZeroMem, bool bInPlace) {
     if (!s_hndlProcessHeap) {
         s_hndlProcessHeap = GetProcessHeap();
     }
-    return ReAllocMemStrg(pdata, limit_len(len) * char_size, bZeroMem ? HEAP_ZERO_MEMORY : 0);
+    DWORD const dwFlags = (bZeroMem ? HEAP_ZERO_MEMORY : 0) | (bInPlace ? HEAP_REALLOC_IN_PLACE_ONLY : 0);
+    return ReAllocMemStrg(pdata, limit_len(len) * char_size, dwFlags);
 }
 // ----------------------------------------------------------------------------
 
@@ -130,22 +131,31 @@ inline static void FreeBufferW(STRINGW* pstr) {
 }
 // ----------------------------------------------------------------------------
 
-static void ReAllocW(STRINGW* pstr, size_t len)
+static void ReAllocW(STRINGW* pstr, size_t len, bool bZeroMem)
 {
     len = limit_len(len);
     size_t const alloc_len = len + 1;
     if (!pstr->data) {
-        pstr->data = AllocBuffer(alloc_len, sizeof(wchar_t), FALSE);
-    } else if (len >= pstr->alloc_length) {
-        pstr->data = ReAllocBuffer(pstr->data, alloc_len, sizeof(wchar_t), FALSE);
+        pstr->data = AllocBuffer(alloc_len, sizeof(wchar_t), bZeroMem);
+        if (pstr->data) { // init
+            pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
+            assert(alloc_len != (pstr->alloc_length * sizeof(wchar_t)));
+            pstr->data_length = 0;
+            pstr->data[len] = L'\0';
+            pstr->data[0] = L'\0';
+        }
     }
-    if (pstr->data) // init
-    {
+    else if (pstr->alloc_length < alloc_len) {
+        pstr->data = ReAllocBuffer(pstr->data, alloc_len, sizeof(wchar_t), bZeroMem, FALSE);
         pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
         assert(alloc_len != (pstr->alloc_length * sizeof(wchar_t)));
-        pstr->data_length = 0;
-        pstr->data[len] = L'\0';
-        pstr->data[0] = L'\0';
+        /// original memory block is moved, so data_length is not touched
+        pstr->data[pstr->data_length] = L'\0'; // ensure terminating zero
+    }
+    else {
+        if (bZeroMem) {
+            ZeroMemory(&(pstr->data[pstr->data_length]), (pstr->alloc_length - pstr->data_length) * sizeof(wchar_t));
+        }
     }
 }
 // ----------------------------------------------------------------------------
@@ -153,29 +163,27 @@ static void ReAllocW(STRINGW* pstr, size_t len)
 static void AllocCopyW(STRINGW* pstr, STRINGW* pDest, size_t copy_len, size_t copy_index, size_t extra_len)
 {
     size_t new_len = copy_len + extra_len;
-    if (new_len > 0)
+    if (0 < new_len)
     {
-        ReAllocW(pDest, new_len);
+        ReAllocW(pDest, new_len, true);
         StringCchCopyNW(pDest->data, pDest->alloc_length, pstr->data + copy_index, copy_len);
-        pDest->data_length = wcslen(pstr->data);
-    }
-}
-// ----------------------------------------------------------------------------
-
-static void CopyW(STRINGW* pstr, size_t len, const wchar_t *str) {
-    if (pstr->data) {
-        StringCchCopyNW(pstr->data, pstr->alloc_length, str, len);
-        pstr->data_length = wcslen(pstr->data);
+        pDest->data_length = StrlenW(pstr->data);
     }
 }
 // ----------------------------------------------------------------------------
 
 static void SetCopyW(STRINGW* pstr, size_t len, const wchar_t* p)
 {
-    ReAllocW(pstr, len);
-    CopyW(pstr, len, p);
+    ReAllocW(pstr, len, false);
+    if (pstr->data) {
+        StringCchCopyNW(pstr->data, pstr->alloc_length, p, len);
+        pstr->data_length = StrlenW(pstr->data);
+    }
 }
 // ----------------------------------------------------------------------------
+
+#if 0
+//~ replaced by ReAllocW()
 
 static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
 {
@@ -185,35 +193,29 @@ static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
         StringCchCopyW(ptr, old_siz, pstr->data ? pstr->data : L"");
         *outLen = wcslen(ptr);
     }
-    return ptr;
+    return ptr; // transfer ownership
 }
+#endif
 // ----------------------------------------------------------------------------
+
 
 static void FreeUnusedData(STRINGW* pstr)
 {
-    if ((pstr->data_length + 1) != pstr->alloc_length) {
-        size_t old_len = 0;
-        wchar_t *p = CopyOldDataW(pstr, &old_len);
-        if (!p)
-            return;
-
-        FreeBufferW(pstr);
-        pstr->data = p;
-        pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
-        pstr->data_length = StrlenW(pstr->data);
-    }
+    size_t const new_len = pstr->data_length + 1;
+    pstr->data = ReAllocBuffer(pstr->data, new_len, sizeof(wchar_t), FALSE, TRUE);
+    pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
+    pstr->data_length = StrlenW(pstr->data);
 }
 // ----------------------------------------------------------------------------
 
 static void CopyConcatW(STRINGW *pstr, size_t len1, const wchar_t *p1, size_t len2, const wchar_t *p2)
 {
     size_t const new_len = len1 + len2;
-    if (new_len != 0)
-    {
-        ReAllocW(pstr, new_len);
+    if (0 < new_len) {
+        ReAllocW(pstr, new_len, false);
         StringCchCopyNW(pstr->data, pstr->alloc_length, p1, len1);
         StringCchCatNW(pstr->data, pstr->alloc_length, p2, len2);
-        pstr->data_length = new_len;
+        pstr->data_length = StrlenW(pstr->data);
     }
 }
 // ----------------------------------------------------------------------------
@@ -224,24 +226,11 @@ static void ConcatW(STRINGW* pstr, size_t len, const wchar_t* p)
         return;
 
     size_t const new_len = pstr->data_length + len;
-    if (new_len >= pstr->alloc_length)
-    {
-        /* need to grow buffer */
-        size_t old_len = 0;
-        wchar_t *pOld = CopyOldDataW(pstr, &old_len);
-        if (!pOld)
-            return;
-
-        FreeBufferW(pstr);
-        CopyConcatW(pstr, old_len, pOld, len, p);
-        FreeBuffer(pOld);
+    if (pstr->alloc_length <= new_len) {
+        ReAllocW(pstr, new_len, true); // copies old data
     }
-    else
-    {
-        /* buffer is sufficiently long enough */
-        StringCchCatNW(pstr->data, pstr->alloc_length, p, len);
-        pstr->data_length = new_len;
-    }
+    StringCchCatNW(pstr->data, pstr->alloc_length, p, len);
+    pstr->data_length = StrlenW(pstr->data);
 }
 // ----------------------------------------------------------------------------
 
@@ -397,10 +386,10 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
         max_len += item_len;
     }
 
-    ReAllocW(pstr, max_len);
+    ReAllocW(pstr, max_len, false);
 
     StringCchVPrintfW(pstr->data, pstr->alloc_length, fmt, orig_list);
-    pstr->data_length = wcslen(pstr->data);
+    pstr->data_length = StrlenW(pstr->data);
     va_end(orig_list);
 }
 // ----------------------------------------------------------------------------
@@ -619,15 +608,12 @@ size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, const wchar_t* str)
         new_len += ins_len;
 
         if (pstr->alloc_length <= new_len) {
-            size_t         old_len = 0;
-            wchar_t* const pold_data = CopyOldDataW(pstr, &old_len);
-            SetCopyW(pstr, new_len, pold_data);
-            FreeBuffer(pold_data);
+            ReAllocW(pstr, new_len, true);
         }
         wmemmove_s((pstr->data + index + ins_len), (pstr->alloc_length - index - ins_len),
                    (pstr->data + index), (new_len - index - ins_len + 1));
         wmemcpy_s((pstr->data + index), (pstr->alloc_length - index), str, ins_len);
-        pstr->data_length = wcslen(pstr->data);
+        pstr->data_length = StrlenW(pstr->data);
     }
     return new_len;
 }
@@ -644,18 +630,13 @@ size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, const wchar_t c)
     if (index >= new_len)
         index = new_len - 1;
 
-    if (pstr->alloc_length <= new_len)
-    {
-        size_t old_len = 0;
-        wchar_t *pOld = CopyOldDataW(pstr, &old_len);
-        FreeBufferW(pstr);
-        SetCopyW(pstr, new_len, pOld);
-        FreeBuffer(pOld);
+    if (pstr->alloc_length <= new_len) {
+        ReAllocW(pstr, new_len, true);
     }
     wmemmove_s((pstr->data + index + 1), (pstr->alloc_length - index - 1),
                (pstr->data + index), (new_len - index));
     pstr->data[index] = c;
-    pstr->data_length = wcslen(pstr->data);
+    pstr->data_length = StrlenW(pstr->data);
     return new_len;
 }
 // ----------------------------------------------------------------------------
@@ -692,11 +673,8 @@ size_t STRAPI StrgReplace(HSTRINGW hstr, const wchar_t* pOld, const wchar_t* pNe
         size_t old_len = pstr->data_length;
         size_t const new_len =  old_len + (repl_len - src_len) * count;
 
-        if (pstr->alloc_length <= new_len)
-        {
-            wchar_t *pOldData = CopyOldDataW(pstr, &old_len);
-            SetCopyW(pstr, new_len, pOldData);
-            FreeBuffer(pOldData);
+        if (pstr->alloc_length <= new_len) {
+            ReAllocW(pstr, new_len, true);
         }
         start = pstr->data;
         end = pstr->data + pstr->data_length;
@@ -714,7 +692,7 @@ size_t STRAPI StrgReplace(HSTRINGW hstr, const wchar_t* pOld, const wchar_t* pNe
             }
             start += wcslen(start) + 1;
         }
-        pstr->data_length = wcslen(pstr->data);
+        pstr->data_length = StrlenW(pstr->data);
     }
 
     return count;
@@ -817,7 +795,7 @@ int STRAPI StrgResetFromUTF8(HSTRINGW hstr, const char* str)
     if (!pstr || !str)
         return -1;
     int const len = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0) + 1;
-    ReAllocW(pstr, len);
+    ReAllocW(pstr, len, true);
     int const res = MultiByteToWideChar(CP_UTF8, 0, str, -1, pstr->data, (int)pstr->alloc_length);
     pstr->data_length = StrlenW(pstr->data);
     return res;
@@ -1057,10 +1035,7 @@ wchar_t* STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len)
         return NULL;
 
     if (pstr->alloc_length <= min_len) {
-        size_t   old_len = 0;
-        wchar_t* const pOld = CopyOldDataW(pstr, &old_len);
-        SetCopyW(pstr, min_len, pOld);
-        FreeBuffer(pOld);
+        ReAllocW(pstr, min_len, true);
     }
     return pstr->data;
 }
@@ -1071,7 +1046,6 @@ void STRAPI StrgSanitize(HSTRINGW hstr)
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
         return;
-
     // ensure buffer limits
     pstr->alloc_length = (SizeOfMemStrg(pstr->data) / sizeof(wchar_t));
     ptrdiff_t const len = (ptrdiff_t)pstr->alloc_length - 1;

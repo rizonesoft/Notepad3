@@ -69,7 +69,17 @@ inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 
 inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
 {
-    return HeapReAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
+    if (lpMem) {
+        size_t const memSize = HeapSize(Globals.hndlProcessHeap, 0, lpMem);
+        if (memSize >= numBytes) {
+            if (dwFlags & HEAP_ZERO_MEMORY) {
+                ZeroMemory(lpMem, memSize);
+            }
+            return lpMem;
+        }
+        return HeapReAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
+    }
+    return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
 inline bool FreeMem(LPVOID lpMemory)

@@ -6,13 +6,6 @@
 #define STRAPI __stdcall
 
 
-__forceinline size_t StrlenW(const wchar_t* p)
-{
-    return (!p) ? 0 : wcslen(p);
-}
-// ----------------------------------------------------------------------------
-
-
 /**************************************************/
 /*                                                */
 /*          DYNAMIC WIDE CHAR C STRING            */
@@ -20,6 +13,8 @@ __forceinline size_t StrlenW(const wchar_t* p)
 /**************************************************/
 
 #define STRINGW_INVALID_IDX  ((size_t)-1)
+
+__forceinline size_t     StrlenW(const wchar_t* p) { return (!p) ? 0 : wcslen(p); }
 
 HSTRINGW STRAPI          StrgCreate(const wchar_t* str);
 void STRAPI              StrgDestroy(HSTRINGW hstr);
