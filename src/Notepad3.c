@@ -7508,49 +7508,48 @@ static void _HandleAutoIndent(int const charAdded)
 //
 static void  _HandleAutoCloseTags()
 {
-    ///int lexerID = SciCall_GetLexer();
+    ///int const lexerID = SciCall_GetLexer();
     ///if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
-    DocPos const maxSearchBackward = 4096;
-    {
-        DocPos const iCurPos = SciCall_GetCurrentPos();
-        DocPos const iHelper = iCurPos - maxSearchBackward;
-        DocPos const iStartPos = max_p(0, iHelper);
-        DocPos const iSize = iCurPos - iStartPos;
+    DocPos const maxSearchBackward = 8192;
+    DocPos const iCurPos = SciCall_GetCurrentPos();
+    DocPos const iHelper = iCurPos - maxSearchBackward;
+    DocPos const iStartPos = max_p(0, iHelper);
+    DocPos const iSize = iCurPos - iStartPos;
 
-        if (iSize >= 3) {
-            const char* pBegin = SciCall_GetRangePointer(iStartPos, iSize);
+    if (iSize >= 3) {
 
-            if (pBegin[iSize - 2] != '/') {
-                const char* pCur = &pBegin[iSize - 2];
-                while (pCur > pBegin && *pCur != '<' && *pCur != '>') {
-                    --pCur;
+        const char* const pBegin = SciCall_GetRangePointer(iStartPos, iSize);
+
+        if (pBegin[iSize - 2] != '/') {
+            const char* pCur = &pBegin[iSize - 2];
+            while (pCur > pBegin && *pCur != '<' && *pCur != '>') {
+                --pCur;
+            }
+
+            int  cchIns = 2;
+            char replaceBuf[SMALL_BUFFER];
+            StringCchCopyA(replaceBuf, COUNTOF(replaceBuf), "</");
+
+            if (*pCur == '<') {
+                ++pCur;
+                while ((StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) && (cchIns < (COUNTOF(replaceBuf) - 2))) {
+                    replaceBuf[cchIns++] = *pCur++;
                 }
+            }
+            replaceBuf[cchIns++] = '>';
+            replaceBuf[cchIns] = '\0';
 
-                int  cchIns = 2;
-                char replaceBuf[FNDRPL_BUFFER+2];
-                StringCchCopyA(replaceBuf, FNDRPL_BUFFER, "</");
-                if (*pCur == '<') {
-                    ++pCur;
-                    while ((StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) && (cchIns < (FNDRPL_BUFFER-2))) {
-                        replaceBuf[cchIns++] = *pCur;
-                        ++pCur;
-                    }
-                }
-                replaceBuf[cchIns++] = '>';
-                replaceBuf[cchIns] = '\0';
+            // except tags w/o closing tags
+            const char* const nonClosingTags[9] = { "</base>", "</bgsound>", "</br>", "</embed>", "</hr>", "</img>", "</input>", "</link>", "</meta>" };
+            int const         cntCount = COUNTOF(nonClosingTags);
 
-                // except tags w/o closing tags
-                const char* const nonClosingTags[9] = { "</base>", "</bgsound>", "</br>", "</embed>", "</hr>", "</img>", "</input>", "</link>", "</meta>" };
-                int const cntCount = COUNTOF(nonClosingTags);
-
-                bool isNonClosingTag = false;
-                for (int i = 0; ((i < cntCount) && !isNonClosingTag); ++i) {
-                    isNonClosingTag = (StringCchCompareXIA(replaceBuf, nonClosingTags[i]) == 0);
-                }
-                if ((cchIns > 3) && !isNonClosingTag) {
-                    EditReplaceSelection(replaceBuf,false);
-                    SciCall_SetSel(iCurPos,iCurPos);
-                }
+            bool isNonClosingTag = false;
+            for (int i = 0; ((i < cntCount) && !isNonClosingTag); ++i) {
+                isNonClosingTag = (StringCchCompareXIA(replaceBuf, nonClosingTags[i]) == 0);
+            }
+            if ((cchIns > 3) && !isNonClosingTag) {
+                EditReplaceSelection(replaceBuf, false);
+                SciCall_SetSel(iCurPos, iCurPos);
             }
         }
     }

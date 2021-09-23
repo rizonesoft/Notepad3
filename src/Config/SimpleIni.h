@@ -280,10 +280,6 @@ enum class SI_Error : int {
 #define SI_UTF16LE_SIGNATURE   "\xFF\xFE"
 #define SI_UTF16BE_SIGNATURE   "\xFE\xFF"
 
-#ifndef MAX_PATH
-#define MAX_PATH   260
-#endif
-
 #ifdef _WIN32
 # define SI_NEWLINE_A   "\r\n"
 # define SI_NEWLINE_W   L"\r\n"

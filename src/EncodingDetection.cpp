@@ -54,7 +54,7 @@ extern "C" void Style_SetMultiEdgeLine(const int colVec[], const size_t count);
 
 //=============================================================================
 
-static WCHAR wchEncodingInfo[MAX_PATH] = { L'\0' };
+static WCHAR wchEncodingInfo[MIDSZ_BUFFER] = { L'\0' };
 
 static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo);
 
@@ -65,7 +65,7 @@ extern "C" const WCHAR* Encoding_GetTitleInfo()
 
 extern "C" const char* Encoding_GetTitleInfoA()
 {
-    static char chEncodingInfo[MAX_PATH] = { '\0' };
+    static char chEncodingInfo[MIDSZ_BUFFER] = { '\0' };
     ::WideCharToMultiByte(CP_ACP, 0, wchEncodingInfo, -1, chEncodingInfo, (int)COUNTOF(chEncodingInfo), NULL, NULL);
     return chEncodingInfo;
 }

@@ -1858,21 +1858,22 @@ static bool _SaveSettings(bool bForceSaveSettings)
         IniSectionDelete(IniSecSettings, L"efrData_fuFlags", false);
     }
 
-    WCHAR wchTmp[MAX_PATH] = { L'\0' };
+    HPATHL hpth = Path_Allocate(NULL);
     if (StringCchCompareXI(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
-        StringCchCopy(wchTmp, COUNTOF(wchTmp), Settings.OpenWithDir);
-        PathRelativeToApp(wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
-        IniSectionSetString(IniSecSettings, L"OpenWithDir", wchTmp);
+        Path_Reset(hpth, Settings.OpenWithDir);
+        Path_RelativeToApp(hpth, false, true, Flags.PortableMyDocs);
+        IniSectionSetString(IniSecSettings, L"OpenWithDir", Path_Get(hpth));
     } else {
         IniSectionDelete(IniSecSettings, L"OpenWithDir", false);
     }
     if (StringCchCompareXI(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
-        StringCchCopy(wchTmp, COUNTOF(wchTmp), Settings.FavoritesDir);
-        PathRelativeToApp(wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
-        IniSectionSetString(IniSecSettings, L"Favorites", wchTmp);
+        Path_Reset(hpth, Settings.FavoritesDir);
+        Path_RelativeToApp(hpth, false, true, Flags.PortableMyDocs);
+        IniSectionSetString(IniSecSettings, L"Favorites", Path_Get(hpth));
     } else {
         IniSectionDelete(IniSecSettings, L"Favorites", false);
     }
+    Path_Release(hpth);
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PathNameFormat);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WordWrap);
@@ -2340,56 +2341,58 @@ bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos
 bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
 {
     *iIndex = 0;
+    bool res = false;
     if (pmru) {
-        WCHAR wchItem[MAX_PATH] = { L'\0' };
-        int i = 0;
+        HPATHL hpth = Path_Allocate(NULL);
+        int    i = 0;
         for (i = 0; i < pmru->iSize; ++i) {
             if (pmru->pszItems[i] == NULL) {
-                *iIndex = i;
-                return false;
+                break;
             }
             if (StringCchCompareXI(pmru->pszItems[i], pszFile) == 0) {
-                *iIndex = i;
-                return true;
+                res = true;
+                break;
             }
-            StringCchCopy(wchItem, COUNTOF(wchItem), pmru->pszItems[i]);
-            PathAbsoluteFromApp(wchItem, COUNTOF(wchItem), true);
-            if (StringCchCompareXI(wchItem, pszFile) == 0) {
-                *iIndex = i;
-                return true;
+            Path_Reset(hpth, pmru->pszItems[i]);
+            Path_AbsoluteFromApp(hpth, true);
+            if (StringCchCompareXI(Path_Get(hpth), pszFile) == 0) {
+                res = true;
+                break;
             }
         }
         *iIndex = i;
+        Path_Release(hpth);
     }
-    return false;
+    return res;
 }
 
 
 bool MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex)
 {
     *iIndex = 0;
+    bool res = false;
     if (pmru) {
-        WCHAR wchItem[MAX_PATH] = { L'\0' };
-        int i = 0;
+        HPATHL hcmp = Path_Allocate(NULL);
+        int    i = 0;
         for (i = 0; i < pmru->iSize; ++i) {
             if (pmru->pszItems[i] == NULL) {
-                *iIndex = i;
-                return false;
+                break;
             }
             if (StringCchCompareXI(pmru->pszItems[i], Path_Get(hpth)) == 0) {
-                *iIndex = i;
-                return true;
+                res = true;
+                break;
             }
-            StringCchCopy(wchItem, COUNTOF(wchItem), pmru->pszItems[i]);
-            PathAbsoluteFromApp(wchItem, COUNTOF(wchItem), true);
-            if (StringCchCompareXI(wchItem, Path_Get(hpth)) == 0) {
-                *iIndex = i;
-                return true;
+            Path_Reset(hcmp, pmru->pszItems[i]);
+            Path_AbsoluteFromApp(hcmp, true);
+            if (StringCchCompareXI(Path_Get(hcmp), Path_Get(hpth)) == 0) {
+                res = true;
+                break;
             }
         }
         *iIndex = i;
+        Path_Release(hcmp);
     }
-    return false;
+    return res;
 }
 
 bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
@@ -2623,16 +2626,18 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
             MRU_Load(pmruBase, bAddFiles);
 
             if (bAddFiles) {
+                HPATHL hpth = Path_Allocate(NULL);
                 for (int i = pmru->iSize - 1; i >= 0; i--) {
                     if (pmru->pszItems[i]) {
-                        WCHAR wchItem[MAX_PATH] = { L'\0' };
-                        StringCchCopy(wchItem, COUNTOF(wchItem), pmru->pszItems[i]);
-                        PathAbsoluteFromApp(wchItem, COUNTOF(wchItem), true);
-                        MRU_AddFile(pmruBase, wchItem, bRelativePath, bUnexpandMyDocs,
+                        Path_Reset(hpth, pmru->pszItems[i]);
+                        Path_AbsoluteFromApp(hpth, true);
+                        MRU_AddFile(pmruBase, Path_Get(hpth), bRelativePath, bUnexpandMyDocs,
                                     pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
                     }
                 }
-            } else {
+                Path_Release(hpth);
+            }
+            else {
                 for (int i = pmru->iSize - 1; i >= 0; i--) {
                     if (pmru->pszItems[i])
                         MRU_Add(pmruBase, pmru->pszItems[i],
