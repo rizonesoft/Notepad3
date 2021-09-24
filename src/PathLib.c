@@ -766,6 +766,16 @@ void PTHAPI Path_Swap(HPATHL hpth1, HPATHL hpth2)
 // ----------------------------------------------------------------------------
 
 
+void PTHAPI Path_FreeExtra(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
+        return;
+    StrgFreeExtra(hstr_io);
+}
+// ----------------------------------------------------------------------------
+
+
 // With untrusted input, this function by itself, cannot be used to convert
 // paths into a form that can be compared with other paths for sub-path or identity.
 // Callers that need that ability should convert forward to back slashes before
@@ -1852,13 +1862,73 @@ void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffe
     Path_Release(hfnam_pth);
 }
 
-
-
-
 // ============================================================================
 // Some Old MAX_PATH stuff
 // TODO: refactor to DynStrg parameter
 // ============================================================================
+
+
+//=============================================================================
+//
+//  Path_BrowseDirectory()
+//
+
+static int CALLBACK BFFCallBack(HWND hwnd, UINT umsg, LPARAM lParam, LPARAM lpData)
+{
+    UNREFERENCED_PARAMETER(lParam);
+    switch (umsg) {
+    case BFFM_INITIALIZED:
+        SetDialogIconNP3(hwnd);
+        //~InitWindowCommon(hwnd, true);
+        SendMessage(hwnd, BFFM_SETSELECTION, true, lpData);
+        break;
+    case BFFM_VALIDATEFAILED:
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+
+bool PTHAPI Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle)
+{
+    if (!hpth_in_out)
+        return false;
+
+    HPATHL hbase_dir = Path_Allocate(NULL);
+    if (!hbase || Path_IsEmpty(hbase)) {
+        Path_GetCurrentDirectory(hbase_dir);
+    }
+    else {
+        Path_Reset(hbase_dir, Path_Get(hbase));
+    }
+
+    WCHAR szDisplayName[MAX_PATH];
+    StringCchCopyW(szDisplayName, COUNTOF(szDisplayName), Path_Get(hpth_in_out));
+
+    BROWSEINFOW bi = { 0 };
+    bi.hwndOwner = hwndParent;
+    bi.pidlRoot = NULL;
+    bi.pszDisplayName = szDisplayName;
+    bi.lpszTitle = lpszTitle;
+    bi.ulFlags = BIF_RETURNONLYFSDIRS | (bNewDialogStyle ? (BIF_NEWDIALOGSTYLE | BIF_USENEWUI) : 0);
+    bi.lpfn = &BFFCallBack;
+    bi.lParam = (LPARAM)Path_Get(hbase_dir);
+    bi.iImage = 0;
+
+    LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
+
+    Path_Release(hbase_dir);
+
+    if (pidl) {
+        SHGetPathFromIDListW(pidl, szDisplayName);
+        Path_Reset(hpth_in_out, szDisplayName);
+        CoTaskMemFree(pidl);
+        return TRUE;
+    }
+    return FALSE;
+}
 
 
 
@@ -2138,11 +2208,6 @@ bool PTHAPI PathCreateFavLnk(LPCWSTR pszName, LPCWSTR pszTarget, LPCWSTR pszDir)
 
     return (bSucceeded);
 }
-
-
-
-
-
 
 
 // ============================================================================

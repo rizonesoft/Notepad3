@@ -105,7 +105,7 @@ inline bool ExistMUILanguageDLL(const unsigned idx) {
 }
 
 inline bool IsSameLocale(const WCHAR *ln1, const WCHAR *ln2) {
-    return (StringCchCompareXI(ln1, ln2) == 0);
+    return (((ln1 && ln2) ? _wcsicmp(ln1, ln2) : -1) == 0);
 }
 
 // ============================================================================

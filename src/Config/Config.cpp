@@ -1399,15 +1399,21 @@ void LoadSettings()
     Defaults.EFR_Data.fuFlags = 0;
     Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
-    PathGetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
-    if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
-        PathAbsoluteFromApp(Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir), true);
+    Path_GetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir);
+    wchar_t* const wchOpenWithDir = Path_WriteAccessBuf(Settings.OpenWithDir, PATHLONG_MAX_CCH);
+    if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Path_Get(Defaults.OpenWithDir), wchOpenWithDir, PATHLONG_MAX_CCH)) {
+        Path_Sanitize(Settings.OpenWithDir);
+        Path_AbsoluteFromApp(Settings.OpenWithDir, true);
     }
+    //~Path_FreeExtra(Settings.OpenWithDir); ~ already done
 
-    PathGetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
-    if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
-        PathAbsoluteFromApp(Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir), true);
+    Path_GetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir);
+    wchar_t* const wchFavoritesDir = Path_WriteAccessBuf(Settings.FavoritesDir, PATHLONG_MAX_CCH);
+    if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Path_Get(Defaults.FavoritesDir), wchFavoritesDir, PATHLONG_MAX_CCH)) {
+        Path_Sanitize(Settings.FavoritesDir);
+        Path_AbsoluteFromApp(Settings.FavoritesDir, true);
     }
+    //~Path_FreeExtra(Settings.FavoritesDir); ~ already done
 
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
@@ -1865,15 +1871,15 @@ static bool _SaveSettings(bool bForceSaveSettings)
     }
 
     HPATHL hpth = Path_Allocate(NULL);
-    if (StringCchCompareXI(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
-        Path_Reset(hpth, Settings.OpenWithDir);
+    if (StringCchCompareXI(Path_Get(Settings.OpenWithDir), Path_Get(Defaults.OpenWithDir)) != 0) {
+        Path_Reset(hpth, Path_Get(Settings.OpenWithDir));
         Path_RelativeToApp(hpth, false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"OpenWithDir", Path_Get(hpth));
     } else {
         IniSectionDelete(IniSecSettings, L"OpenWithDir", false);
     }
-    if (StringCchCompareXI(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
-        Path_Reset(hpth, Settings.FavoritesDir);
+    if (StringCchCompareXI(Path_Get(Settings.FavoritesDir), Path_Get(Defaults.FavoritesDir)) != 0) {
+        Path_Reset(hpth, Path_Get(Settings.FavoritesDir));
         Path_RelativeToApp(hpth, false, true, Flags.PortableMyDocs);
         IniSectionSetString(IniSecSettings, L"Favorites", Path_Get(hpth));
     } else {

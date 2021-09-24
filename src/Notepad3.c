@@ -44,6 +44,13 @@
 #include "DarkMode/DarkMode.h"
 #include "StyleLexers/EditLexer.h"
 
+#if defined(DEBUG) || defined(_DEBUG)
+    #if defined(WIN32) && !defined(_WIN64)
+        #pragma comment(linker, "/defaultlib:clang_rt.asan-i386.lib")
+    #endif // _WIN64
+#endif // DEBUG
+
+
 // ============================================================================
 //
 //   Local and global Variables for Notepad3.c
@@ -758,6 +765,11 @@ static void _InitGlobals()
     Defaults.EFR_Data.chFindPattern = StrgCreate(NULL);
     Defaults.EFR_Data.chReplaceTemplate = StrgCreate(NULL);
 
+    Settings.OpenWithDir = Path_Allocate(NULL);
+    Defaults.OpenWithDir = Path_Allocate(NULL);
+    Settings.FavoritesDir = Path_Allocate(NULL);
+    Defaults.FavoritesDir = Path_Allocate(NULL);
+
     FocusedView.HideNonMatchedLines = false;
     FocusedView.CodeFoldingAvailable = false;
     FocusedView.ShowCodeFolding = true;
@@ -862,6 +874,12 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     }
 
     // ---  free allocated memory  ---
+
+
+    Path_Release(Settings.FavoritesDir);
+    Path_Release(Defaults.FavoritesDir);
+    Path_Release(Settings.OpenWithDir);
+    Path_Release(Defaults.OpenWithDir);
 
     ReleaseEFR(&(Defaults.EFR_Data));
     ReleaseEFR(&(Settings.EFR_Data));
@@ -4442,7 +4460,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         sei.fMask = SEE_MASK_DEFAULT;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = Settings.FavoritesDir;
+        sei.lpFile = Path_Get(Settings.FavoritesDir);
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;

@@ -574,8 +574,8 @@ typedef struct _settings_t
 
     RECT PrintMargin;
     EDITFINDREPLACE EFR_Data;
-    WCHAR OpenWithDir[MAX_PATH];
-    WCHAR FavoritesDir[MAX_PATH];
+    HPATHL OpenWithDir;
+    HPATHL FavoritesDir;
     WCHAR ToolbarButtons[MIDSZ_BUFFER];
     WCHAR MultiEdgeLines[MIDSZ_BUFFER];
     WCHAR CurrentThemeName[MINI_BUFFER];
@@ -804,6 +804,18 @@ typedef struct _themeFiles
     { _fctguard = true;
 
 #define RESET_FCT_GUARD()  } _fctguard = false; }
+
+// ----------------------------------------------------------------------------
+
+inline void SetDialogIconNP3(HWND hwnd)
+{
+    if (Globals.hDlgIconSmall) {
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
+    }
+    if (Globals.hDlgIconBig) {
+        SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
+    }
+}
 
 // ----------------------------------------------------------------------------
 

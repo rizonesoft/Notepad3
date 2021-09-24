@@ -801,63 +801,6 @@ INT_PTR DisplayCmdLineHelp(HWND hwnd)
 
 #endif
 
-//=============================================================================
-//
-//  BFFCallBack()
-//
-int CALLBACK BFFCallBack(HWND hwnd, UINT umsg, LPARAM lParam, LPARAM lpData)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (umsg) {
-	case BFFM_INITIALIZED:
-		SetDialogIconNP3(hwnd);
-		//~InitWindowCommon(hwnd, true);
-		SendMessage(hwnd, BFFM_SETSELECTION, true, lpData);
-		break;
-	case BFFM_VALIDATEFAILED:
-		break;
-	default:
-		break;
-	}
-	return 0;
-}
-
-
-//=============================================================================
-//
-//  GetDirectory()
-//
-bool GetDirectory(HWND hwndParent, int uiTitle, LPWSTR pszFolder, LPCWSTR pszBase, bool bNewDialogStyle)
-{
-	WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
-	GetLngString(uiTitle, szTitle, COUNTOF(szTitle));
-
-	WCHAR szBase[MAX_PATH] = { L'\0' };
-	if (!pszBase || !*pszBase) {
-		GetCurrentDirectory(MAX_PATH, szBase);
-	} else {
-		StringCchCopyN(szBase, COUNTOF(szBase), pszBase, MAX_PATH);
-	}
-
-	BROWSEINFO bi = { 0 };
-	bi.hwndOwner = hwndParent;
-	bi.pidlRoot = NULL;
-	bi.pszDisplayName = pszFolder;
-	bi.lpszTitle = szTitle;
-	bi.ulFlags = BIF_RETURNONLYFSDIRS | (bNewDialogStyle ? (BIF_NEWDIALOGSTYLE | BIF_USENEWUI) : 0);
-	bi.lpfn = &BFFCallBack;
-	bi.lParam = (LPARAM)szBase;
-	bi.iImage = 0;
-
-	LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-	if (pidl) {
-		SHGetPathFromIDList(pidl,pszFolder);
-		CoTaskMemFree(pidl);
-		return TRUE;
-	}
-	return FALSE;
-}
-
 
 /*
 //=============================================================================
@@ -1558,7 +1501,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 		ListView_SetExtendedListViewStyle(hwndLV, /*LVS_EX_FULLROWSELECT|*/ LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
 		ListView_InsertColumn(hwndLV, 0, &lvc);
 		DirList_Init(hwndLV, NULL);
-		DirList_Fill(hwndLV, Settings.OpenWithDir, DL_ALLOBJECTS, NULL, false, Flags.NoFadeHidden, DS_NAME, false);
+        DirList_Fill(hwndLV, Path_Get(Settings.OpenWithDir), DL_ALLOBJECTS, NULL, false, Flags.NoFadeHidden, DS_NAME, false);
 		DirList_StartIconThread(hwndLV);
 		ListView_SetItemState(hwndLV, 0, LVIS_FOCUSED, LVIS_FOCUSED);
 
@@ -1673,8 +1616,10 @@ CASE_WM_CTLCOLOR_SET:
 		switch(LOWORD(wParam)) {
 
 		case IDC_GETOPENWITHDIR: {
-			if (GetDirectory(hwnd,IDS_MUI_OPENWITH,Settings.OpenWithDir,Settings.OpenWithDir,true)) {
-				DirList_Fill(hwndLV, Settings.OpenWithDir, DL_ALLOBJECTS, NULL, false, Flags.NoFadeHidden, DS_NAME, false);
+            WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
+            GetLngString(IDS_MUI_OPENWITH, szTitle, COUNTOF(szTitle));
+            if (Path_BrowseDirectory(hwnd, szTitle, Settings.OpenWithDir, Settings.OpenWithDir, true)) {
+                DirList_Fill(hwndLV, Path_Get(Settings.OpenWithDir), DL_ALLOBJECTS, NULL, false, Flags.NoFadeHidden, DS_NAME, false);
 				DirList_StartIconThread(hwndLV);
 				ListView_EnsureVisible(hwndLV, 0, false);
 				ListView_SetItemState(hwndLV, 0, LVIS_FOCUSED, LVIS_FOCUSED);
@@ -1682,7 +1627,6 @@ CASE_WM_CTLCOLOR_SET:
 			PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(hwndLV), 1);
 		}
 		break;
-
 
 		case IDOK: {
 			LPDLITEM lpdli = (LPDLITEM)GetWindowLongPtr(hwnd,DWLP_USER);
@@ -1697,7 +1641,6 @@ CASE_WM_CTLCOLOR_SET:
 			}
 		}
 		break;
-
 
 		case IDCANCEL:
 			EndDialog(hwnd,IDCANCEL);
@@ -1793,7 +1736,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 		ListView_SetExtendedListViewStyle(hwndLV,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
 		ListView_InsertColumn(hwndLV,0,&lvc);
 		DirList_Init(hwndLV,NULL);
-		DirList_Fill(hwndLV,Settings.FavoritesDir,DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
+        DirList_Fill(hwndLV,Path_Get(Settings.FavoritesDir),DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
 		DirList_StartIconThread(hwndLV);
 		ListView_SetItemState(hwndLV,0,LVIS_FOCUSED,LVIS_FOCUSED);
 
@@ -1908,8 +1851,10 @@ CASE_WM_CTLCOLOR_SET:
 		switch(LOWORD(wParam)) {
 
 		case IDC_GETFAVORITESDIR: {
-			if (GetDirectory(hwnd,IDS_MUI_FAVORITES,Settings.FavoritesDir,Settings.FavoritesDir,true)) {
-				DirList_Fill(hwndLV,Settings.FavoritesDir,DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
+            WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
+            GetLngString(IDS_MUI_FAVORITES, szTitle, COUNTOF(szTitle));
+            if (Path_BrowseDirectory(hwnd, szTitle, Settings.FavoritesDir, Settings.FavoritesDir, true)) {
+                DirList_Fill(hwndLV,Path_Get(Settings.FavoritesDir),DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
 				DirList_StartIconThread(hwndLV);
 				ListView_EnsureVisible(hwndLV,0,false);
 				ListView_SetItemState(hwndLV,0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -1917,7 +1862,6 @@ CASE_WM_CTLCOLOR_SET:
 			PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(hwndLV),1);
 		}
 		break;
-
 
 		case IDOK: {
 			LPDLITEM lpdli = (LPDLITEM)GetWindowLongPtr(hwnd,DWLP_USER);
@@ -1932,7 +1876,6 @@ CASE_WM_CTLCOLOR_SET:
 			}
 		}
 		break;
-
 
 		case IDCANCEL:
 			EndDialog(hwnd,IDCANCEL);
@@ -2106,7 +2049,7 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 				  AddToFavDlgProc,(LPARAM)pszName);
 
 	if (iResult == IDOK) {
-		if (!PathCreateFavLnk(pszName,lpszTarget,Settings.FavoritesDir)) {
+        if (!PathCreateFavLnk(pszName,lpszTarget,Path_Get(Settings.FavoritesDir))) {
 			InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
 			return FALSE;
 		}

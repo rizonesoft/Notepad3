@@ -45,6 +45,7 @@ size_t PTHAPI          Path_GetLength(HPATHL hpth);
 HPATHL PTHAPI          Path_Copy(const HPATHL hpth);
 bool PTHAPI            Path_Append(HPATHL hpth, HPATHL hmore);
 void PTHAPI            Path_Swap(HPATHL hpth1, HPATHL hpth2);
+void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out);
 
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
@@ -70,6 +71,9 @@ bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
 
 // -------------------------------------------------------
+// get wchar buffer with at least MAX_PATH size
+wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len);
+void PTHAPI     Path_Sanitize(HPATHL hpth);
 
 // ----------------------------------------------------------------------------
 // deprecated (intermediate only)
@@ -77,11 +81,6 @@ bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
 
 const wchar_t* PTHAPI Path_Get(HPATHL hpth);
 size_t PTHAPI         Path_GetBufCount(HPATHL hpth);
-
-// get wchar buffer with at least MAX_PATH size
-// TODO: get rid of this intermediate state handler
-wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len);
-void PTHAPI     Path_Sanitize(HPATHL hpth);
 
 // ============================================================================
 // Duplicates for INTERMEDIATE DEV
@@ -127,6 +126,8 @@ void PTHAPI PathRelativeToApp(LPWSTR lpszPath, size_t cchPath, bool bSrcIsFile, 
 //                          TODO: §§§ MAX_PATH limit §§§ @@@!
 // ============================================================================
 
+bool PTHAPI   Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle);
+
 bool PTHAPI   PathIsLnkFile(LPCWSTR pszPath);
 bool PTHAPI   Path_IsLnkFile(const HPATHL hpth);
 
@@ -139,7 +140,6 @@ bool PTHAPI   Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);
 bool PTHAPI   PathCreateDeskLnk(LPCWSTR pszDocument, LPCWSTR pszDescription);
 bool PTHAPI   PathCreateFavLnk(LPCWSTR pszName, LPCWSTR pszTarget, LPCWSTR pszDir);
 
-
-// ============================================================================
+    // ============================================================================
 // ============================================================================
 
