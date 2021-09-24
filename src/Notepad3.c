@@ -5757,12 +5757,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SendWMCommand(hwnd, IDM_FILE_REVERT);
             _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-            FileWatching.AutoReloadTimeout = 250UL;
+            FileWatching.FileCheckInverval = 250UL;
             UndoRedoRecordingStop();
             SciCall_SetEndAtLastLine(false);
         } else {
             FileWatching.FileWatchingMode = _saveChgNotify;
-            FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
+            FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
             UndoRedoRecordingStart();
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
         }
@@ -11513,7 +11513,8 @@ static inline void NotifyIfFileHasChanged(const bool forcedNotify) {
 }
 // ----------------------------------------------------------------------------
 
-
+// FWM_MSGBOX (polling: FileWatching.FileCheckInverval)
+// FWM_AUTORELOAD (also FileWatching.MonitoringLog)
 static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 
     UNREFERENCED_PARAMETER(dwTime);
@@ -11523,23 +11524,9 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 
     DWORD const diff = GetTickCount() - s_dwFileChangeNotifyTime;
 
-    //if (HasDirChanged()) {
-    //    ResetEventDirChanged();
-    //    NotifyIfFileHasChanged(false);
-    //} else 
+    // Directory-Observer is not notified for continously updated (log-)files
     if (diff > Settings2.FileCheckInverval) {
-        // FWM_MSGBOX (polling: FileWatching.FileCheckInverval)
-        // Directory-Observer is not notified for continously updated (log-)files
-        NotifyIfFileHasChanged(false);
-    } else if (diff > FileWatching.AutoReloadTimeout) {
-        // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
-        if (FileWatching.MonitoringLog) {
-            // monitoring: reload only on change
-            NotifyIfFileHasChanged(false);
-        } else {
-            // unconditional reload
-            NotifyIfFileHasChanged(false);
-        }
+        NotifyIfFileHasChanged(/*FileWatching.MonitoringLog*/ false);
     }
 }
 // ----------------------------------------------------------------------------
@@ -11676,7 +11663,12 @@ void InstallFileWatching(const bool bInstall) {
             }
 
             s_dwFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
-            SetTimer(Globals.hwndMain, ID_WATCHTIMER, min_dw(Settings2.FileCheckInverval, FileWatching.AutoReloadTimeout), WatchTimerProc);
+            if (FileWatching.FileCheckInverval > 0) {
+                SetTimer(Globals.hwndMain, ID_WATCHTIMER, FileWatching.FileCheckInverval, WatchTimerProc);
+            }
+            else {
+                KillTimer(Globals.hwndMain, ID_WATCHTIMER);
+            }
 
         } else if (bExclusiveLock) {
 
