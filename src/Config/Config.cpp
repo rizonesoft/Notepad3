@@ -1138,10 +1138,16 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"",
                                 Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);
 
-    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 2000UL), 250UL, 300000UL);
-
-    Settings2.AutoReloadTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", 2000UL), 250UL, 300000UL);
-    FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
+    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0), 0, 86400000<<2); // max: 48h
+    // handle deprecated old "AutoReloadTimeout"
+    int const autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
+    unsigned int const fci = max_u(250, (autoReload > 0) ? max_u(autoReload, Settings2.FileCheckInverval) : Settings2.FileCheckInverval);
+    if ((Settings2.FileCheckInverval > 0) && (fci != Settings2.FileCheckInverval)) {
+        Settings2.FileCheckInverval = fci;
+        IniSectionSetInt(IniSecSettings2, L"FileCheckInverval", Settings2.FileCheckInverval);
+        bDirtyFlag = true;
+    }
+    FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
 
@@ -1988,6 +1994,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
     // ---  remove deprecated  ---
     IniSectionDelete(IniSecSettings2, L"MarkOccurrencesMaxCount", false);
+    IniSectionDelete(IniSecSettings2, L"AutoReloadTimeout", false);
 
 
     // --------------------------------------------------------------------------
