@@ -1252,7 +1252,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Lexer_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
 
     // Add KeyWord Lists
-    for (int i = 0;  i <= KEYWORDSET_MAX;  ++i) {
+    for (int i = 0; i <= KEYWORDSET_MAX; ++i) {
         const char* pKeyWordList = pLexNew->pKeyWords->pszKeyWords[i];
         SciCall_SetKeywords(i, (pKeyWordList ? pKeyWordList : ""));
     }
@@ -1291,7 +1291,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     if (IsLexerStandard(pLexNew)) {
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, true);
-    } else {
+    }
+    else {
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
     }
 
@@ -1300,15 +1301,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // margin (line number, bookmarks, folding) style
     Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].szValue);
 
-    bool bFlag;
-    int iValue;
+    bool     bFlag;
+    int      iValue;
     COLORREF dColor;
-    WCHAR wchSpecificStyle[128] = { L'\0' };
+
+    WCHAR    wch[64] = { L'\0' };
+    WCHAR    wchSpecificStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
     if (Settings2.UseOldStyleBraceMatching) {
         Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
-                        pCurrentStandard->Styles[STY_BRACE_OK].szValue); // brace light
-    } else {
+            pCurrentStandard->Styles[STY_BRACE_OK].szValue); // brace light
+    }
+    else {
         if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_OK].szValue, FOREGROUND_LAYER, &dColor, false)) {
             SciCall_IndicSetFore(INDIC_NP3_MATCH_BRACE, dColor);
         }
@@ -1335,8 +1339,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     if (Settings2.UseOldStyleBraceMatching) {
         Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
-                        pCurrentStandard->Styles[STY_BRACE_BAD].szValue); // brace bad
-    } else {
+            pCurrentStandard->Styles[STY_BRACE_BAD].szValue); // brace bad
+    }
+    else {
         if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, FOREGROUND_LAYER, &dColor, false)) {
             SciCall_IndicSetFore(INDIC_NP3_BAD_BRACE, dColor);
         }
@@ -1397,7 +1402,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_IndicSetStrokeWidth(INDIC_NP3_MARK_OCCURANCE, iValue);
     }
 
-
     // --------------------------------------------------------------
     // COLOR definitions (INDIC_NP3_COLOR_DEF) are not configurable
     // --------------------------------------------------------------
@@ -1454,11 +1458,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_IndicSetStrokeWidth(INDIC_NP3_MULTI_EDIT, iValue);
     }
 
-    // Inline-IME Color
-    #define _SC_INDIC_IME_INPUT     (INDIC_IME + 0)
-    #define _SC_INDIC_IME_TARGET    (INDIC_IME + 1)
-    #define _SC_INDIC_IME_CONVERTED (INDIC_IME + 2)
-    #define _SC_INDIC_IME_UNKNOWN    INDIC_IME_MAX
+// Inline-IME Color
+#define _SC_INDIC_IME_INPUT (INDIC_IME + 0)
+#define _SC_INDIC_IME_TARGET (INDIC_IME + 1)
+#define _SC_INDIC_IME_CONVERTED (INDIC_IME + 2)
+#define _SC_INDIC_IME_UNKNOWN INDIC_IME_MAX
 
     COLORREF rgb = RGB(0xFF, 0xA0, 0x00);
     Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &rgb, true); // IME foregr
@@ -1472,18 +1476,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue); // indent guide
 
-
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FOREGROUND_LAYER, &rgb, false)) { // selection fore
         SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
         SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
-    } else {
+    }
+    else {
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_TEXT);
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT);
     }
 
     rgb = RGB(0xC0, 0xC0, 0xC0);
     SciCall_SetSelectionLayer(SC_LAYER_UNDER_TEXT); // selection back
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, true)) { 
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, true)) {
         iValue = SC_ALPHA_OPAQUE;
         Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true);
         SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, RGBxA(rgb, iValue));
@@ -1498,11 +1502,30 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     bFlag = Style_StrHasAttribute(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FontEffects[FE_EOLFILLED]);
     SciCall_SetSelEOLFilled(bFlag);
 
+
+    // whitespace dot size
+    wchSpecificStyle[0] = L'\0'; // empty
+
+    iValue = 2;
+    float fValue = 2.0;
+
+    if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) {
+        iValue = clampi(float2int(fValue), 0, 12);
+    }
+    SciCall_SetWhiteSpaceSize(iValue);
+    StringCchPrintf(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"size:%i", iValue);
+
     // whitespace colors
     rgb = RGB(0, 0, 0);
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, false)) {
+        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgb);
+        StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
+
         iValue = SC_ALPHA_OPAQUE;
         Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, true);
+        StringCchPrintf(wch, COUNTOF(wch), L"; alpha:%i", iValue);
+        StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
+
         SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE, RGBxA(rgb, iValue));
     }
     else {
@@ -1511,42 +1534,24 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     rgb = RGB(0, 0, 0);
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb, true)) {
+        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgb);
+        StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
+
         //iValue = SC_ALPHA_TRANSPARENT;
         //~Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, false); ~ always opaque, no translucency possible in Win32
+        //~StringCchPrintf(wch, COUNTOF(wch), L"; alpha2:%i", iValue);
+        //~StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
+
         SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE_BACK, RGBxA(rgb, SC_ALPHA_OPAQUE));
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_WHITE_SPACE_BACK);
     }
 
-    // whitespace dot size
-    iValue = 2;
-    float fValue = 2.0;
-    if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) {
+    StrTrim(wchSpecificStyle, L" ;");
+    StringCchCopy(pCurrentStandard->Styles[STY_WHITESPACE].szValue,
+        COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), wchSpecificStyle);
 
-        iValue = clampi(float2int(fValue), 0, 12);
-
-        WCHAR tch[32] = { L'\0' };
-        WCHAR wchStyle[BUFSIZE_STYLE_VALUE];
-        StringCchCopyN(wchStyle, COUNTOF(wchStyle), pCurrentStandard->Styles[STY_WHITESPACE].szValue,
-                       COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue));
-
-        StringCchPrintf(pCurrentStandard->Styles[STY_WHITESPACE].szValue,
-                        COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), L"size:%i", iValue);
-
-        if (Style_StrGetColor(wchStyle, FOREGROUND_LAYER, &rgb, false)) {
-            Style_PrintfCchColor(tch, COUNTOF(tch), L"; ", FOREGROUND_LAYER, rgb);
-            StringCchCat(pCurrentStandard->Styles[STY_WHITESPACE].szValue,
-                         COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), tch);
-        }
-
-        if (Style_StrGetColor(wchStyle, BACKGROUND_LAYER, &rgb, false)) {
-            Style_PrintfCchColor(tch, COUNTOF(tch), L"; ", BACKGROUND_LAYER, rgb);
-            StringCchCat(pCurrentStandard->Styles[STY_WHITESPACE].szValue,
-                         COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), tch);
-        }
-    }
-    SciCall_SetWhiteSpaceSize(iValue);
 
     // current line background
     Style_HighlightCurrentLine(hwnd, Settings.HighlightCurrentLine);
@@ -1558,8 +1563,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetUrlHotSpot(hwnd);
 
     // caret style and width
-    int const ovrstrk_mode = (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrblck")) ?
-                             CARETSTYLE_OVERSTRIKE_BLOCK : CARETSTYLE_OVERSTRIKE_BAR;
+    wchSpecificStyle[0] = L'\0';
+    int const ovrstrk_mode = (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrblck")) ? CARETSTYLE_OVERSTRIKE_BLOCK : CARETSTYLE_OVERSTRIKE_BAR;
 
     if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"block")) {
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
@@ -1569,7 +1574,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
         iValue = 1;
         fValue = 1.0f;  // default caret width
-        WCHAR wch[32] = { L'\0' };
         if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
             iValue = clampi(float2int(fValue), 1, 3); // don't allow invisible 0
         }
@@ -1597,7 +1601,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if (!Style_StrGetColor(pCurrentStandard->Styles[STY_CARET].szValue, FOREGROUND_LAYER, &rgb, false)) {
         rgb = GetModeTextColor(UseDarkMode());
     } else {
-        WCHAR wch[32] = { L'\0' };
         Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgb);
         StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
     }
