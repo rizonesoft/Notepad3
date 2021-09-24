@@ -139,11 +139,6 @@ Chinese Traditional/Taiwan (zh-TW)
 
 #### `IMEInteraction=0`
 
-#### `AutoReloadTimeout=2000`
-
-The timeout (in milliseconds) to wait before automatically reloading modified files. 
-- The default value of 2000 ms usually prevents read/write conflicts.
-
 #### `DateTimeFormat=`
 
 - (-> (Locale dependent short format)
@@ -225,10 +220,10 @@ This allows to do much more powerful searches and replaces in Files.
 - or from "Edit --> Search --> Search in Files"
 - or simply with "`Ctrl+Shift+F`"
 
-#### `FileCheckInverval=2000`
+#### `FileCheckInverval=0`
 
 The interval (in milliseconds) to check for external modification of the currently opened file. 
-- Defaults is 2000 ms.
+- Defaults is 0 ms.
 
 #### `FileChangedIndicator=[@]`
 
