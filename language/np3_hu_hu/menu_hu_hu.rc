@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "S&orok"
         BEGIN
-            MENUITEM "Mozgatás &fel\tCtrl+Shift+ ↑",        IDM_EDIT_MOVELINEUP
-            MENUITEM "Mozgatás l&e\tCtrl+Shift+ ↓",         IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mozgatás &fel\tAlt+ ↑",                  IDM_EDIT_MOVELINEUP
+            MENUITEM "Mozgatás l&e\tAlt+ ↓",                   IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Kijelölés vagy a&ktuális sor kivágása\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Kijelölés &sorainak kivágása\tCtrl+Shift+X",         IDM_EDIT_CUTLINE

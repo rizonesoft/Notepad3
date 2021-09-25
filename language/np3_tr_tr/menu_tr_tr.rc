@@ -162,7 +162,7 @@ BEGIN
         MENUITEM "Tümünü &Kopyala\tAlt+C",            IDM_EDIT_COPYALL
         MENUITEM "Tümü&nü Yapıştır\tCtrl+E",          IDM_EDIT_COPYADD
         MENUITEM "&Yapıştır\tCtrl+V",                 IDM_EDIT_PASTE
-        MENUITEM "D&eğiştir\tCtrl+K",                     IDM_EDIT_SWAP
+        MENUITEM "D&eğiştir\tCtrl+K",                 IDM_EDIT_SWAP
         MENUITEM "&Sil\tDel",                         IDM_EDIT_CLEAR
         MENUITEM "&Panoyu Temizle",                   IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "&Tümünü Seç\tCtrl+A",               IDM_EDIT_SELECTALL
@@ -181,13 +181,13 @@ BEGIN
             MENUITEM "Yukarı &Taşı\tAlt+ ↑",                          IDM_EDIT_MOVELINEUP
             MENUITEM "&Ağaşı Taşı\tAlt+ ↓",                           IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Seçimi yada Geçerli Satırı K&es\tCtrl+X",            IDM_EDIT_CUT
-            MENUITEM "T&üm Satır(ları) Kes\tCtrl+Shift+X",              IDM_EDIT_CUTLINE
-            MENUITEM "&Seçimi veya Geçerli Satırı Kopyala\tCtrl+C",   IDM_EDIT_COPY
-            MENUITEM "Seçili Olan Tüm Satırları &Kopyala\tCtrl+Shift+C",   IDM_EDIT_COPYLINE
+            MENUITEM "Seçimi yada Geçerli Satırı K&es\tCtrl+X",          IDM_EDIT_CUT
+            MENUITEM "T&üm Satır(ları) Kes\tCtrl+Shift+X",               IDM_EDIT_CUTLINE
+            MENUITEM "&Seçimi veya Geçerli Satırı Kopyala\tCtrl+C",      IDM_EDIT_COPY
+            MENUITEM "Seçili Olan Tüm Satırları &Kopyala\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "Seçimi/Satırı &Çoğalt\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "Satırları &Değiştir\tAlt+D",             IDM_EDIT_LINETRANSPOSE
+            MENUITEM "Seçimi/Satırı &Çoğalt\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Satırları &Değiştir\tAlt+D",         IDM_EDIT_LINETRANSPOSE
             MENUITEM "Satırı S&il\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "İmlecin Sol Tarafını Sil\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT

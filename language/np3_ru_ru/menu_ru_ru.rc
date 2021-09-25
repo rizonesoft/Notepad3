@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "Строки"
         BEGIN
-            MENUITEM "Перейти &выше\tCtrl+Shift ↑",                 IDM_EDIT_MOVELINEUP
-            MENUITEM "Перейти &ниже\tCtrl+Shift+ ↓",                IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Перейти &выше\tAlt+ ↑",                       IDM_EDIT_MOVELINEUP
+            MENUITEM "Перейти &ниже\tAlt+ ↓",                       IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Вырезать в&ыделение или строку\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Вырезать &строки с выделением\tCtrl+Shift+X", IDM_EDIT_CUTLINE

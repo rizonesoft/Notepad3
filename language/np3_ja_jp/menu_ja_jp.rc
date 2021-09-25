@@ -169,7 +169,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "単語(&O)"
         BEGIN
-            MENUITEM "単語補完(&C)\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
+            MENUITEM "単語補完(&C)\tCtrl+Alt+Enter",         IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
             MENUITEM "カーソルを単語の左へ(&L)\tCtrl+ ←",         CMD_CTRLLEFT
             MENUITEM "カーソルを単語の右へ(&R)\tCtrl+ →",         CMD_CTRLRIGHT
@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "行(&L)"
         BEGIN
-            MENUITEM "上へ移動(&U)\tCtrl+Shift+ ↑",            IDM_EDIT_MOVELINEUP
-            MENUITEM "下へ移動(&M)\tCtrl+Shift+ ↓",            IDM_EDIT_MOVELINEDOWN
+            MENUITEM "上へ移動(&U)\tAlt+ ↑",                   IDM_EDIT_MOVELINEUP
+            MENUITEM "下へ移動(&M)\tAlt+ ↓",                   IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "切り取り/選択範囲か行(&I)\tCtrl+X",        IDM_EDIT_CUT
             MENUITEM "切り取り/選択範囲の行全体(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE

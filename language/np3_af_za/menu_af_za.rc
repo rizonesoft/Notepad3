@@ -178,12 +178,12 @@ BEGIN
         END
         POPUP "&Lyne"
         BEGIN
-            MENUITEM "Skuif &Op\tCtrl+Shift+ ↑",             IDM_EDIT_MOVELINEUP
-            MENUITEM "Skuif &Af\tCtrl+Shiftt+ ↓",            IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Skuif &Op\tAlt+ ↑",                   IDM_EDIT_MOVELINEUP
+            MENUITEM "Skuif &Af\tAlt+ ↓",                   IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Sny Seleks&ie of Huidige Lyn\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Sny Seleksie Hele &Lyn(e)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Kopieer Seleksie of Huidige Lyn\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Sny Seleks&ie of Huidige Lyn\tCtrl+X",        IDM_EDIT_CUT
+            MENUITEM "Sny Seleksie Hele &Lyn(e)\tCtrl+Shift+X",     IDM_EDIT_CUTLINE
+            MENUITEM "&Kopieer Seleksie of Huidige Lyn\tCtrl+C",    IDM_EDIT_COPY
             MENUITEM "Kopiee&r Seleksie Hele Lyn(e)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
             MENUITEM "&Dupliseer Lyn/Selection\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION

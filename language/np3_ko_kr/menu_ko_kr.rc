@@ -173,25 +173,25 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "단어 왼쪽으로 커서 이동(&L)\tCtrl+ ←",        CMD_CTRLLEFT
             MENUITEM "단어 오른쪽으로 커서 이동(&R)\tCtrl+ →",      CMD_CTRLRIGHT
-            MENUITEM "왼쪽 단어 삭제(&D)\tCtrl+Back",               CMD_CTRLBACK
-            MENUITEM "오른쪽 단어 삭제(&W)\tCtrl+Del",              CMD_CTRLDEL
+            MENUITEM "왼쪽 단어 삭제(&D)\tCtrl+Back",              CMD_CTRLBACK
+            MENUITEM "오른쪽 단어 삭제(&W)\tCtrl+Del",             CMD_CTRLDEL
         END
         POPUP "줄(&I)"
         BEGIN
-            MENUITEM "위로 이동(&U)\tCtrl+Shift+ ↑",                IDM_EDIT_MOVELINEUP
-            MENUITEM "아래로 이동(&M)\tCtrl+Shift+ ↓",              IDM_EDIT_MOVELINEDOWN
+            MENUITEM "위로 이동(&U)\tAlt+ ↑",                      IDM_EDIT_MOVELINEUP
+            MENUITEM "아래로 이동(&M)\tAlt+ ↓",                    IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "선택 또는 현재 줄 잘라내기(&I)\tCtrl+X",  IDM_EDIT_CUT
-            MENUITEM "전체 선택 줄 잘라내기(&L)\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
-            MENUITEM "선택 또는 현재 줄 복사(&C)\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "선택 전체 줄 복사(&W)\tCtrl+Shift+C",   IDM_EDIT_COPYLINE
+            MENUITEM "선택 또는 현재 줄 잘라내기(&I)\tCtrl+X",   IDM_EDIT_CUT
+            MENUITEM "전체 선택 줄 잘라내기(&L)\tCtrl+Shift+X", IDM_EDIT_CUTLINE
+            MENUITEM "선택 또는 현재 줄 복사(&C)\tCtrl+C",      IDM_EDIT_COPY
+            MENUITEM "선택 전체 줄 복사(&W)\tCtrl+Shift+C",    IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
             MENUITEM "줄/선택 복제(&D)\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "줄 바꾸기(&T)\tAlt+D",                  IDM_EDIT_LINETRANSPOSE
-            MENUITEM "줄 삭제(&E)\tCtrl+Shift+D",                  IDM_EDIT_DELETELINE
+            MENUITEM "줄 바꾸기(&T)\tAlt+D",                   IDM_EDIT_LINETRANSPOSE
+            MENUITEM "줄 삭제(&E)\tCtrl+Shift+D",              IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "왼쪽 줄 삭제(&N)\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
-            MENUITEM "오른쪽 줄 삭제(&H)\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
+            MENUITEM "오른쪽 줄 삭제(&H)\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "열 바꿈(&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "줄 분할(&S)\tCtrl+I",                IDM_EDIT_SPLITLINES

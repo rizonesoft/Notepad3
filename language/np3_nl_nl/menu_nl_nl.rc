@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "&Lijnen"
         BEGIN
-            MENUITEM "Naar &boven verplaatsen\tCtrl+Shift+ ↑",      IDM_EDIT_MOVELINEUP
-            MENUITEM "&Naar beneden verplaatsen\tCtrl+Shift+ ↓",    IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Naar &boven verplaatsen\tAlt+ ↑",             IDM_EDIT_MOVELINEUP
+            MENUITEM "&Naar beneden verplaatsen\tAlt+ ↓",           IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Knipen select&ie of huidige lijn\tCtrl+X",          IDM_EDIT_CUT
             MENUITEM "Knipen de hele &lijn(en)selectie\tCtrl+Shift+X",    IDM_EDIT_CUTLINE
