@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "&Wiersze"
         BEGIN
-            MENUITEM "Przenieś w górę\tCtrl+Shift+ ↑",            IDM_EDIT_MOVELINEUP
-            MENUITEM "&Przenieś w dół\tCtrl+Shift+ ↓",            IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Przenieś w górę\tAlt+ ↑",                   IDM_EDIT_MOVELINEUP
+            MENUITEM "&Przenieś w dół\tAlt+ ↓",                   IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Wytnij wybór lub bieżący wiersz\tCtrl+X",   IDM_EDIT_CUT
             MENUITEM "Wytnij cały wiersz wyboru\tCtrl+Shift+X",   IDM_EDIT_CUTLINE

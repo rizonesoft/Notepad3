@@ -169,7 +169,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&alabras"
         BEGIN
-            MENUITEM "&Completar palabra\tCtrl+Alt+Enter",             IDM_EDIT_COMPLETEWORD
+            MENUITEM "&Completar palabra\tCtrl+Alt+Enter",              IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
             MENUITEM "Cursor a la izquierda de la pa&labra\tCtrl+ ←",   CMD_CTRLLEFT
             MENUITEM "Cu&rsor a la derecha de la palabra\tCtrl+ →",     CMD_CTRLRIGHT
@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "Lí&neas"
         BEGIN
-            MENUITEM "Mover &hacia arriba\tCtrl+Shift+ ↑",              IDM_EDIT_MOVELINEUP
-            MENUITEM "&Mover hacia abajo\tCtrl+Shift+ ↓",               IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mover &hacia arriba\tAlt+ ↑",                     IDM_EDIT_MOVELINEUP
+            MENUITEM "&Mover hacia abajo\tAlt+ ↓",                      IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Cortar selecc&ión o línea actual\tCtrl+X",                 IDM_EDIT_CUT
             MENUITEM "Cortar selección de &línea(s) completa(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -191,7 +191,7 @@ BEGIN
             MENUITEM "&Eliminar la línea\tCtrl+Shift+D",                IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Eliminar la línea a la izquierda\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
-            MENUITEM "Eliminar la línea a la derecha\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Eliminar la línea a la derecha\tCtrl+Shift+Del",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Columna &ajustada...\tCtrl+Shift+W",              IDM_EDIT_COLUMNWRAP
             MENUITEM "Corta&r las líneas\tCtrl+I",                      IDM_EDIT_SPLITLINES

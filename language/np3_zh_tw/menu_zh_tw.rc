@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "行(&L)"
         BEGIN
-            MENUITEM "上移一行(&U)\tAlt+↑",                IDM_EDIT_MOVELINEUP
-            MENUITEM "下移一行(&M)\tAlt+↓",                IDM_EDIT_MOVELINEDOWN
+            MENUITEM "上移一行(&U)\tAlt+ ↑",                IDM_EDIT_MOVELINEUP
+            MENUITEM "下移一行(&M)\tAlt+ ↓",                IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "剪下選取區域或目前行(&I)\tCtrl+X",               IDM_EDIT_CUT
             MENUITEM "剪下選取區域所在整行或目前行(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -388,11 +388,11 @@ BEGIN
             MENUITEM "啟用摺疊(&F)",                         IDM_VIEW_FOLDING
             MENUITEM "切換摺疊(&T)\tCtrl+Alt+F",             IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "跳到下一折疊點(&N)\tAlt++",            CMD_FOLDJUMPDOWN
-            MENUITEM "跳到上一折疊點(&P)\tAlt+-",            CMD_FOLDJUMPUP
+            MENUITEM "跳到下一折疊點(&N)\tAlt+ +",            CMD_FOLDJUMPDOWN
+            MENUITEM "跳到上一折疊點(&P)\tAlt+ –",            CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "摺疊(&C)\tAlt+←",                     CMD_FOLDCOLLAPSE
-            MENUITEM "展開(&E)\tAlt+→",                     CMD_FOLDEXPAND
+            MENUITEM "摺疊(&C)\tAlt+ ←",                     CMD_FOLDCOLLAPSE
+            MENUITEM "展開(&E)\tAlt+ →",                     CMD_FOLDEXPAND
         END
         POPUP "顯示(&D)"
         BEGIN
