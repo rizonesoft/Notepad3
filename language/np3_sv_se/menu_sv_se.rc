@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "Rader"
         BEGIN
-            MENUITEM "Flytta upp\tCtrl+Shift+ ↑",                   IDM_EDIT_MOVELINEUP
-            MENUITEM "Flytta ner\tCtrl+Shift+ ↓",                   IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Flytta upp\tAlt+ ↑",                          IDM_EDIT_MOVELINEUP
+            MENUITEM "Flytta ner\tAlt+ ↓",                          IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Klipp ut markering eller rad\tCtrl+X",                IDM_EDIT_CUT
             MENUITEM "Klipp ut markering eller hela rader\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
@@ -246,7 +246,7 @@ BEGIN
             MENUITEM "Sortera rader...\tAlt+O",                     IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
             MENUITEM "Hoppa till början av markeringen\tCtrl+,",    CMD_JUMP2SELSTART
-            MENUITEM "Hoppa till slutet av markeringen\tCtrl+,",    CMD_JUMP2SELEND
+            MENUITEM "Hoppa till slutet av markeringen\tCtrl+.",    CMD_JUMP2SELEND
         END
         POPUP "Konvertera"
         BEGIN

@@ -178,13 +178,13 @@ BEGIN
         END
         POPUP "&Righe"
         BEGIN
-            MENUITEM "Sposta &su\tCtrl+Shift+ ↑",         IDM_EDIT_MOVELINEUP
-            MENUITEM "Sposta &giù\tCtrl+Shift+ ↓",        IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Sposta &su\tAlt+ ↑",                IDM_EDIT_MOVELINEUP
+            MENUITEM "Sposta &giù\tAlt+ ↓",               IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "&Taglia selezione o riga corrente\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Taglia righe intere\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Taglia selezione o riga corrente\tCtrl+X",    IDM_EDIT_CUT
+            MENUITEM "Taglia righe intere\tCtrl+Shift+X",            IDM_EDIT_CUTLINE
             MENUITEM "&Copia selezione o riga corrente\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Copia righe intere\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "Copia righe intere\tCtrl+Shift+C",             IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
             MENUITEM "&Duplica riga/selezione\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Trasponi righe\tAlt+D",            IDM_EDIT_LINETRANSPOSE

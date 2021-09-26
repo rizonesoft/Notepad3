@@ -4182,7 +4182,6 @@ bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 //
 //  RelAdjustRectForDPI()
 //
-//
 void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
 	float const scale = (float)newDPI / (float)(oldDPI != 0 ? oldDPI : 1);
 	LONG const oldWidth = (rc->right - rc->left);
@@ -4193,6 +4192,23 @@ void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
 	rc->right = rc->left + newWidth;
 	rc->top -= (newHeight - oldHeight) >> 1;
 	rc->bottom = rc->top + newHeight;
+}
+
+
+//=============================================================================
+//
+//  MapRectClientToWndCoords()
+//
+void MapRectClientToWndCoords(HWND hwnd, RECT* rc)
+{
+    // map to screen (left-top as point)
+    MapWindowPoints(hwnd, NULL, (POINT*)rc, 1);
+
+    RECT scrc;
+    GetWindowRect(hwnd, &scrc);
+
+    // map to window coords by substracting the window coord origin in screen coords.
+    OffsetRect(rc, -scrc.left, -scrc.top);
 }
 
 

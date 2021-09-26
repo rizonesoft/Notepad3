@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "Радкі"
         BEGIN
-            MENUITEM "Перайсці &вышэй\tCtrl+Shift+ ↑",     IDM_EDIT_MOVELINEUP
-            MENUITEM "Перайсці &ніжэй\tCtrl+Shift+ ↓",     IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Перайсці &вышэй\tAlt+ ↑",             IDM_EDIT_MOVELINEUP
+            MENUITEM "Перайсці &ніжэй\tAlt+ ↓",             IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Выразаць вылучэнне &альбо радок\tCtrl+X",     IDM_EDIT_CUT
             MENUITEM "Выразаць радкі &з вылучэннем\tCtrl+Shift+X",  IDM_EDIT_CUTLINE

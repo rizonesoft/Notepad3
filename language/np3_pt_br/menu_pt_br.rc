@@ -178,8 +178,8 @@ BEGIN
         END
         POPUP "&Linhas"
         BEGIN
-            MENUITEM "Mover para &Cima\tCtrl+Shift+ ↑",        IDM_EDIT_MOVELINEUP
-            MENUITEM "&Mover para Baixo\tCtrl+Shift+ ↓",       IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mover para &Cima\tAlt+ ↑",               IDM_EDIT_MOVELINEUP
+            MENUITEM "&Mover para Baixo\tAlt+ ↓",              IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Recortar Seleç&ão ou Linha Atual\tCtrl+X",                    IDM_EDIT_CUT
             MENUITEM "Recortar Seleção da(s) &Linha(s) Inteira(s)\tCtrl+Shift+X",   IDM_EDIT_CUTLINE

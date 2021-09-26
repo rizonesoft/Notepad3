@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <process.h>
-//#include <pathcch.h>
+#include <vsstyle.h>
 
 #include "PathLib.h"
 #include "Edit.h"
@@ -1943,6 +1943,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
         break;
 
+    case WM_UAHINITMENU:
+    case WM_UAHDRAWMENU:
+    case WM_UAHDRAWMENUITEM:
+    case WM_UAHDESTROYWINDOW:
+    case WM_UAHMEASUREMENUITEM:
+    case WM_UAHNCPAINTMENUPOPUP: 
+        return MsgUahMenuBar(hwnd, umsg, wParam, lParam);
+
     default:
         if (umsg == s_msgTaskbarCreated) {
             if (!IsWindowVisible(hwnd)) {
@@ -2301,6 +2309,8 @@ static void _InitEditWndFrame()
     s_cyEditFrame = 0;
 
     s_bIsAppThemed = IsAppThemed();
+
+    InitWindowCommon(s_hwndEditFrame, true);
 
     if (s_bIsAppThemed) {
 
@@ -6957,6 +6967,160 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     default:
         break;
     }
+    return DefWindowProc(hwnd, umsg, wParam, lParam);
+}
+
+
+//=============================================================================
+//
+//  MsgUahMenuBar() - Handles WM_UAH... commands
+//  https://github.com/adzm/win32-custom-menubar-aero-theme
+//  https://stackoverflow.com/questions/57177310/how-to-paint-over-white-line-between-menu-bar-and-client-area-of-window
+//
+
+#if 0
+inline static RECT GetNonclientMenuBorderRect(HWND hwnd)
+{
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    MapRectClientToWndCoords(hwnd, &rc);
+    rc.top = rc.bottom + 1;
+    rc.bottom += 2;
+    return rc;
+}
+#endif
+
+
+LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+    static HTHEME s_darkMenuTheme = NULL;
+
+    switch (umsg) {
+
+    case WM_UAHINITMENU: {
+        if (!s_darkMenuTheme) {
+            s_darkMenuTheme = OpenThemeData(hwnd, L"Menu");
+        }
+    } break;
+
+    case WM_UAHDESTROYWINDOW: {
+        if (s_darkMenuTheme) {
+            CloseThemeData(s_darkMenuTheme);
+            s_darkMenuTheme = NULL;
+        }
+    } break;
+
+    case WM_UAHDRAWMENU: {
+
+        if (!UseDarkMode()) {
+            break;
+        }
+
+        UAHMENU* const pUDM = (UAHMENU*)lParam;
+        RECT           rc = { 0 };
+
+        // get the menubar rect
+        MENUBARINFO mbi = { sizeof(mbi) };
+        GetMenuBarInfo(hwnd, OBJID_MENU, 0, &mbi);
+
+        RECT rcWindow;
+        GetWindowRect(hwnd, &rcWindow);
+
+        // the rcBar is offset by the window rect
+        rc = mbi.rcBar;
+        OffsetRect(&rc, -rcWindow.left, -rcWindow.top);
+        // fill line below bar
+        //~rc.bottom += 2;
+        FillRect(pUDM->hdc, &rc, Globals.hbrDarkModeBkgBrush);
+
+        return TRUE;
+    }
+
+
+    case WM_UAHDRAWMENUITEM: {
+
+        if (!UseDarkMode()) {
+            break;
+        }
+
+        UAHDRAWMENUITEM* pUDMI = (UAHDRAWMENUITEM*)lParam;
+
+        HBRUSH* pbrBackground = &Globals.hbrDarkModeBkgBrush;
+
+        // get the menu item string
+        wchar_t      menuString[256] = { 0 };
+        MENUITEMINFO mii = { sizeof(mii), MIIM_STRING };
+        {
+            mii.dwTypeData = menuString;
+            mii.cch = (sizeof(menuString) / 2) - 1;
+
+            GetMenuItemInfo(pUDMI->um.hmenu, pUDMI->umi.iPosition, TRUE, &mii);
+        }
+
+        // get the item state for drawing
+
+        DWORD dwFlags = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
+
+        int iTextStateID = 0;
+        int iBackgroundStateID = 0;
+        {
+            if ((pUDMI->dis.itemState & ODS_INACTIVE) | (pUDMI->dis.itemState & ODS_DEFAULT)) {
+                // normal display
+                iTextStateID = MPI_NORMAL;
+                iBackgroundStateID = MPI_NORMAL;
+            }
+            if (pUDMI->dis.itemState & ODS_HOTLIGHT) {
+                // hot tracking
+                iTextStateID = MPI_HOT;
+                iBackgroundStateID = MPI_HOT;
+                pbrBackground = &Globals.hbrDarkModeBkgHotBrush;
+            }
+            if (pUDMI->dis.itemState & ODS_SELECTED) {
+                // clicked -- MENU_POPUPITEM has no state for this, though MENU_BARITEM does
+                iTextStateID = MPI_HOT;
+                iBackgroundStateID = MPI_HOT;
+                pbrBackground = &Globals.hbrDarkModeBkgSelBrush;
+            }
+            if ((pUDMI->dis.itemState & ODS_GRAYED) || (pUDMI->dis.itemState & ODS_DISABLED)) {
+                // disabled / grey text
+                iTextStateID = MPI_DISABLED;
+                iBackgroundStateID = MPI_DISABLED;
+            }
+            if (pUDMI->dis.itemState & ODS_NOACCEL) {
+                dwFlags |= DT_HIDEPREFIX;
+            }
+        }
+
+        DTTOPTS opts = { sizeof(opts), DTT_TEXTCOLOR, iTextStateID != MPI_DISABLED ? Settings2.DarkModeTxtColor : RGB(0x80, 0x80, 0x80) };
+
+        FillRect(pUDMI->um.hdc, &pUDMI->dis.rcItem, *pbrBackground);
+        DrawThemeTextEx(s_darkMenuTheme, pUDMI->um.hdc, MENU_BARITEM, MBI_NORMAL, menuString, mii.cch, dwFlags, &pUDMI->dis.rcItem, &opts);
+
+        return TRUE;
+
+    } break;
+
+    case WM_UAHMEASUREMENUITEM: {
+
+        // allow the default window procedure to handle the message
+        // since we don't really care about changing the width
+        //LRESULT const res = DefWindowProc(hwnd, umsg, wParam, lParam);
+
+        // but we can modify it here to make it 1/3rd wider and higher for example
+        //UAHMEASUREMENUITEM* const pMmi = (UAHMEASUREMENUITEM*)lParam;
+        //pMmi->mis.itemWidth = (pMmi->mis.itemWidth * 4) / 3;
+        //pMmi->mis.itemHeight = (pMmi->mis.itemHeight * 4) / 3;
+
+        //return res;
+
+    } break;
+
+    // don't care
+    case WM_UAHNCPAINTMENUPOPUP:
+    default:
+        break;
+    }
+
     return DefWindowProc(hwnd, umsg, wParam, lParam);
 }
 

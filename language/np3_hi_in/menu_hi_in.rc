@@ -171,27 +171,27 @@ BEGIN
         BEGIN
             MENUITEM "पूरा शब्द (&C)\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "कर्सर को शब्द के बाएं ले जाएं (&L)\tCtrl+ ←",          CMD_CTRLLEFT
+            MENUITEM "कर्सर को शब्द के बाएं ले जाएं (&L)\tCtrl+ ←",         CMD_CTRLLEFT
             MENUITEM "कर्सर को शब्द के दाएं ले जाएं (&R)\tCtrl+ →",         CMD_CTRLRIGHT
             MENUITEM "बायाँ शब्द मिटाएं (&D)\tCtrl+Back",        CMD_CTRLBACK
-            MENUITEM "दायाँ शब्द मिटाएं (&W)\tCtrl+Del",        CMD_CTRLDEL
+            MENUITEM "दायाँ शब्द मिटाएं (&W)\tCtrl+Del",         CMD_CTRLDEL
         END
         POPUP "रेखाएं (&L)"
         BEGIN
             MENUITEM "ऊपर लाएं (&U)\tAlt+ ↑",                    IDM_EDIT_MOVELINEUP
-            MENUITEM "नीचे लाएं (&M)\tAlt+ ↓",                  IDM_EDIT_MOVELINEDOWN
+            MENUITEM "नीचे लाएं (&M)\tAlt+ ↓",                     IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "चुना हुआ या चालू रेखा काटें (&I)\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "चुनी हुई पूरी रेखाएं काटें (&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "चुनी हुई पूरी रेखाएं काटें (&L)\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
             MENUITEM "चुना हुआ या चालू रेखा कॉपी करें (&C)\tCtrl+C",     IDM_EDIT_COPY
             MENUITEM "चुनी हुई सारी रेखाएं कॉपी करें (&Y)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "रेखा/चुनाव की प्रतिलिपि (&D)\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "रेखाओं के क्रम की अदला बदली करें (&T)\tAlt+D",             IDM_EDIT_LINETRANSPOSE
-            MENUITEM "रेखा हटाएं (&E)\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
+            MENUITEM "रेखा/चुनाव की प्रतिलिपि (&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "रेखाओं के क्रम की अदला बदली करें (&T)\tAlt+D",   IDM_EDIT_LINETRANSPOSE
+            MENUITEM "रेखा हटाएं (&E)\tCtrl+Shift+D",                IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "बाईं रेखा मिटाएं (&N)\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT
-            MENUITEM "दाईं रेखा मिटाएं (&H)\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
+            MENUITEM "दाईं रेखा मिटाएं (&H)\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "स्तम्भ लपेटें (&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "रेखाएं तोड़ें (&S)\tCtrl+I",                IDM_EDIT_SPLITLINES

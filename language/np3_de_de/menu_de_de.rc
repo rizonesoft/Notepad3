@@ -182,7 +182,7 @@ BEGIN
             MENUITEM "&Runter schieben\tAlt+ ↓",                 IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Selekt&ion oder aktuelle Zeile ausschneiden\tCtrl+X", IDM_EDIT_CUT
-            MENUITEM "Ganze &Zeilen ausschneiden\tCtrl+Shift+X", IDM_EDIT_CUTLINE
+            MENUITEM "Ganze &Zeilen ausschneiden\tCtrl+Shift+X",       IDM_EDIT_CUTLINE
             MENUITEM "&Kopiere Selektion oder aktuelle Zeile\tCtrl+C", IDM_EDIT_COPY
             MENUITEM "Kopiere &ganze Zeilen\tCtrl+Shift+C",      IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
