@@ -61,12 +61,13 @@ bool SelectDefLineEndingDlg(HWND hwnd,LPARAM piOption);
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 
-void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI);
-bool GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO *hMonitorInfo);
-void WinInfoToScreenCoord(WININFO* pWinInfo);
-WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset);
-bool GetWindowRectEx(HWND hwnd, LPRECT pRect);
-void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, bool bTopLeft);
+void            RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI);
+void            MapRectClientToWndCoords(HWND hwnd, LPRECT rc);
+bool            GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO* hMonitorInfo);
+void            WinInfoToScreenCoord(WININFO* pWinInfo);
+WININFO         GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo, const int offset);
+bool            GetWindowRectEx(HWND hwnd, LPRECT pRect);
+void            FitIntoMonitorGeometry(LPRECT pRect, WININFO* pWinInfo, SCREEN_MODE mode, bool bTopLeft);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WININFO* wi);

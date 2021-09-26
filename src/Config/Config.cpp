@@ -1316,6 +1316,9 @@ void LoadSettings()
         Settings2.DarkModeTxtColor = rgbDarkTxtColorRef;
     }
 
+    Globals.hbrDarkModeBkgHotBrush = CreateSolidBrush(Settings2.DarkModeBtnFaceColor);
+    Globals.hbrDarkModeBkgSelBrush = CreateSolidBrush(Settings2.DarkModeBtnFaceColor);
+
 #endif
 
     // --------------------------------------------------------------------------
