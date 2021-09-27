@@ -245,16 +245,13 @@ static void ConcatW(STRINGW* pstr, size_t len, const wchar_t* p)
 // ----------------------------------------------------------------------------
 
 
-static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
+static void FormatW(STRINGW* pstr, const wchar_t* fmt, va_list args)
 {
-    STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
-        return;
-
     va_list orig_list = args;
 
     size_t max_len = 0;
     const wchar_t * p;
+
     for (p = fmt; *p != L'\0'; p = _wcsinc(p)) {
         size_t item_len = 0, width = 0, prec = 0, modif = 0;
         if (*p != L'%' || *(p = _wcsinc(p)) == L'%') {
@@ -328,8 +325,8 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
 
         case L's':
         case L'S': {
-            wchar_t* next_arg = va_arg(args, wchar_t*);
-            if (next_arg == NULL)
+            wchar_t* const next_arg = va_arg(args, wchar_t*);
+            if (!next_arg)
                 item_len = 6;
             else {
                 item_len = wcslen(next_arg);
@@ -339,8 +336,8 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
 
         case L's' | 0x20000:
         case L'S' | 0x20000: {
-            wchar_t* next_arg = va_arg(args, wchar_t*);
-            if (next_arg == NULL)
+            wchar_t* const next_arg = va_arg(args, wchar_t*);
+            if (!next_arg)
                 item_len = 6;
             else {
                 item_len = wcslen(next_arg);
@@ -400,6 +397,7 @@ static void FormatW(HSTRINGW hstr, const wchar_t* fmt, va_list args)
 
     StringCchVPrintfW(pstr->data, pstr->alloc_length, fmt, orig_list);
     pstr->data_length = StrlenW(pstr->data);
+
     va_end(orig_list);
 }
 // ----------------------------------------------------------------------------
@@ -1031,7 +1029,7 @@ void STRAPI StrgFormat(HSTRINGW hstr, const wchar_t* fmt, ...)
         return;
     va_list args;
     va_start(args, fmt);
-    FormatW(hstr, fmt, args);
+    FormatW(pstr, fmt, args);
     va_end(args);
 }
 // ----------------------------------------------------------------------------

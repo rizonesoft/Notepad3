@@ -1260,9 +1260,13 @@ void LoadSettings()
 
     Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"FindReplaceOpacityLevel", 50), 10, 100);
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"filebrowser.exe", L"", Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"filebrowser.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    Path_Reset(Settings2.FileBrowserPath, pPathBuffer);
+    Path_ExpandEnvironmentStrings(Settings2.FileBrowserPath);
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"grepWin.exe", L"", Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"grepWin.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    Path_Reset(Settings2.GrepWinPath, pPathBuffer);
+    Path_ExpandEnvironmentStrings(Settings2.GrepWinPath);
 
     if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
         IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", _W("Rizonesoft." SAPPNAME), Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));

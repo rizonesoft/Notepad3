@@ -663,6 +663,8 @@ typedef struct _settings2_t
 #endif
 
     HPATHL DefaultDirectory;
+    HPATHL FileBrowserPath;
+    HPATHL GrepWinPath;
 
     WCHAR FileChangedIndicator[4];
     WCHAR FileDeletedIndicator[4];
@@ -670,8 +672,6 @@ typedef struct _settings2_t
     WCHAR DefaultExtension[MINI_BUFFER];
     WCHAR FileDlgFilters[XHUGE_BUFFER];
 
-    WCHAR FileBrowserPath[MAX_PATH];
-    WCHAR GrepWinPath[MAX_PATH];
     WCHAR AppUserModelID[SMALL_BUFFER];
     WCHAR AutoCompleteFillUpChars[MINI_BUFFER];
     WCHAR LineCommentPostfixStrg[MINI_BUFFER];

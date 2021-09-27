@@ -4524,8 +4524,8 @@ void DialogFileBrowse(HWND hwnd)
 	HPATHL hExeFile = Path_Allocate(NULL);
 	wchar_t* const pth_buf = Path_WriteAccessBuf(hExeFile, PATHLONG_MAX_CCH);
 
-	if (StrIsNotEmpty(Settings2.FileBrowserPath)) {
-		ExtractFirstArgument(Settings2.FileBrowserPath, pth_buf, param_buf, PATHLONG_MAX_CCH);
+	if (Path_IsNotEmpty(Settings2.FileBrowserPath)) {
+		ExtractFirstArgument(Path_Get(Settings2.FileBrowserPath), pth_buf, param_buf, PATHLONG_MAX_CCH);
 		Path_ExpandEnvStrings(hExeFile);
 	}
 	Path_Sanitize(hExeFile);
@@ -4616,59 +4616,57 @@ static grepWin_t grepWinIniSettings[13] = {
 //
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 {
-	WCHAR tchTemp[MAX_PATH] = { L'\0' };
-	WCHAR tchExeFile[MAX_PATH] = { L'\0' };
-	WCHAR tchOptions[MAX_PATH] = { L'\0' };
+    HPATHL hGrepWinIniPath = Path_Copy(Paths.IniFile);
 
-	HPATHL hNotepad3Path = Path_Allocate(NULL);
-	Path_GetModuleFilePath(hNotepad3Path);
-	//Path_CanonicalizeEx(hNotepad3Path);
-	HPATHL hgrepwin_ini_pth = Path_Copy(Paths.IniFile);
+    HPATHL         hExeFilePath = Path_Allocate(Path_Get(Settings2.GrepWinPath));
+    wchar_t* const exe_pth_buf = Path_WriteAccessBuf(hExeFilePath, PATHLONG_MAX_CCH);
 
-	// find grepWin executable (side-by-side .ini file)
-	if (StrIsNotEmpty(Settings2.GrepWinPath)) {
-		ExtractFirstArgument(Settings2.GrepWinPath, tchExeFile, tchOptions, COUNTOF(tchExeFile));
-		ExpandEnvironmentStringsEx(tchExeFile, COUNTOF(tchExeFile));
+    HSTRINGW hstrOptions = StrgCreate(NULL);
+    wchar_t* const options_buf = StrgWriteAccessBuf(hstrOptions, PATHLONG_MAX_CCH);
+
+    // find grepWin executable (side-by-side .ini file)
+    if (Path_IsNotEmpty(hExeFilePath)) {
+        ExtractFirstArgument(Path_Get(Settings2.GrepWinPath), exe_pth_buf, options_buf, PATHLONG_MAX_CCH);
+        StrgSanitize(hstrOptions);
+        Path_Sanitize(hExeFilePath);
 	}
-	if (StrIsEmpty(tchExeFile)) {
-		StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileSearchGrepWin);
+    if (Path_IsEmpty(hExeFilePath)) {
+        Path_Reset(hExeFilePath, Constants.FileSearchGrepWin);
 	}
-	if (PathIsRelative(tchExeFile)) {
-		StringCchCopy(tchTemp, COUNTOF(tchTemp), Path_Get(hNotepad3Path));
-		PathRemoveFileSpec(tchTemp);
-		PathAppend(tchTemp, tchExeFile);
-		if (PathIsExistingFile(tchTemp)) {
-			StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
-		}
+    if (Path_IsRelative(hExeFilePath)) {
+        Path_AbsoluteFromApp(hExeFilePath, false);
 	}
 
 	// working (grepWinNP3.ini) directory
 	HPATHL hTemp = Path_Allocate(NULL);
-	HPATHL hGrepWinDir = Path_Allocate(tchExeFile);
+    HPATHL hGrepWinDir = Path_Allocate(Path_Get(hExeFilePath));
 	Path_RemoveFileSpec(hGrepWinDir);
 
-	if (PathIsExistingFile(tchExeFile)) {
+	if (Path_IsExistingFile(hExeFilePath)) {
 
-		// relative Notepad3 path (for grepWin's EditorCmd)
+	    HPATHL hNotepad3Path = Path_Allocate(NULL);
+        //Path_CanonicalizeEx(hNotepad3Path);
+        Path_GetModuleFilePath(hNotepad3Path);
+        // relative Notepad3 path (for grepWin's EditorCmd)
 		if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hNotepad3Path, FILE_ATTRIBUTE_NORMAL)) {
 			Path_Swap(hNotepad3Path, hTemp);
 		}
 
 		// grepWin INI-File
 		HPATHL hIniFileName = Path_Allocate(L"grepWinNP3.ini");
-		if (Path_IsEmpty(hgrepwin_ini_pth)) {
-			Path_Reset(hgrepwin_ini_pth, Path_Get(Paths.IniFileDefault));
+		if (Path_IsEmpty(hGrepWinIniPath)) {
+			Path_Reset(hGrepWinIniPath, Path_Get(Paths.IniFileDefault));
 		}
-		Path_RemoveFileSpec(hgrepwin_ini_pth);
-		Path_Append(hgrepwin_ini_pth, hIniFileName);
+		Path_RemoveFileSpec(hGrepWinIniPath);
+		Path_Append(hGrepWinIniPath, hIniFileName);
 
-		if (Path_IsRelative(hgrepwin_ini_pth)) {
-			Path_Reset(hgrepwin_ini_pth, Path_Get(hGrepWinDir));
-			Path_Append(hgrepwin_ini_pth, hIniFileName);
+		if (Path_IsRelative(hGrepWinIniPath)) {
+			Path_Reset(hGrepWinIniPath, Path_Get(hGrepWinDir));
+			Path_Append(hGrepWinIniPath, hIniFileName);
 		}
 
 		ResetIniFileCache();
-		if (CreateIniFile(hgrepwin_ini_pth, NULL) && LoadIniFileCache(Path_Get(hgrepwin_ini_pth))) {
+		if (CreateIniFile(hGrepWinIniPath, NULL) && LoadIniFileCache(Path_Get(hGrepWinIniPath))) {
 			// preserve [global] user settings from last call
 			const WCHAR* const globalSection = L"global";
 
@@ -4686,6 +4684,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 					break;
 				}
 			}
+
+            WCHAR tchTemp[MAX_PATH] = { L'\0' };
 			if (lngIdx >= 0) {
 				IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
 				IniSectionSetString(globalSection, L"languagefile", tchTemp);
@@ -4738,35 +4738,36 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 			// search pattern
 			IniSectionSetString(globalSection, L"searchfor", searchPattern);
 
-			SaveIniFileCache(Path_Get(hgrepwin_ini_pth));
+			SaveIniFileCache(Path_Get(hGrepWinIniPath));
 			ResetIniFileCache();
 
 		}
+        Path_Release(hNotepad3Path);
 		Path_Release(hIniFileName);
 	}
 
 	// grepWin arguments
-	WCHAR tchParams[MAX_PATH<<2] = { L'\0' };
-
-	if (Path_IsExistingFile(hgrepwin_ini_pth)) {
+    HSTRINGW hstrParams = StrgCreate(NULL);
+	if (Path_IsExistingFile(hGrepWinIniPath)) {
 		// relative grepWinNP3.ini path (for shorter cmdline)
-		if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hgrepwin_ini_pth, FILE_ATTRIBUTE_NORMAL)) {
-			Path_Swap(hgrepwin_ini_pth, hTemp);
+		if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hGrepWinIniPath, FILE_ATTRIBUTE_NORMAL)) {
+			Path_Swap(hGrepWinIniPath, hTemp);
 		}
-		StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s /inipath:\"%s\"", tchOptions, Path_Get(hgrepwin_ini_pth));
-	} else {
-		StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s", tchOptions);
+        StrgFormat(hstrParams, L"/portable /content %s /inipath:\"%s\"", StrgGet(hstrOptions), Path_Get(hGrepWinIniPath));
+    } else {
+        StrgFormat(hstrParams, L"/portable /content %s", StrgGet(hstrOptions));
 	}
 	//if (StrIsNotEmpty(searchPattern)) {
 	//  SetClipboardText(Globals.hwndMain, searchPattern, StringCchLen(searchPattern, 0));
 	//}
+    StrgDestroy(hstrOptions);
 
 	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 	sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
 	sei.hwnd = hwnd;
 	sei.lpVerb = NULL;
-	sei.lpFile = tchExeFile;
-	sei.lpParameters = tchParams;
+    sei.lpFile = Path_Get(hExeFilePath);
+    sei.lpParameters = StrgGet(hstrParams);
 	sei.lpDirectory = Path_Get(hGrepWinDir);
 	sei.nShow = SW_SHOWNORMAL;
 	ShellExecuteEx(&sei);
@@ -4775,10 +4776,12 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 		InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
 	}
 
-	Path_Release(hgrepwin_ini_pth);
+    StrgDestroy(hstrParams);
+
+	Path_Release(hGrepWinIniPath);
 	Path_Release(hGrepWinDir);
-	Path_Release(hNotepad3Path);
 	Path_Release(hTemp);
+    Path_Release(hExeFilePath);
 }
 
 

@@ -771,6 +771,8 @@ static void _InitGlobals()
     Defaults.FavoritesDir = Path_Allocate(NULL);
 
     Settings2.DefaultDirectory = Path_Allocate(NULL);
+    Settings2.FileBrowserPath = Path_Allocate(NULL);
+    Settings2.GrepWinPath = Path_Allocate(NULL);
 
     FocusedView.HideNonMatchedLines = false;
     FocusedView.CodeFoldingAvailable = false;
@@ -877,6 +879,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     // ---  free allocated memory  ---
 
+    Path_Release(Settings2.GrepWinPath);
+    Path_Release(Settings2.FileBrowserPath);
     Path_Release(Settings2.DefaultDirectory);
 
     Path_Release(Settings.FavoritesDir);
