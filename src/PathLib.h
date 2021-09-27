@@ -93,6 +93,7 @@ bool PTHAPI PathIsExistingFile(LPCWSTR pszPath);
 
 void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr);
 void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
+void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
 
 bool PTHAPI Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to);
 

@@ -1170,8 +1170,10 @@ void LoadSettings()
                                 Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
     StrTrim(Settings2.DefaultExtension, L" \t.");
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"",
-                                Settings2.DefaultDirectory, COUNTOF(Settings2.DefaultDirectory));
+
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
+    Path_ExpandEnvironmentStrings(Settings2.DefaultDirectory);
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"",
                                 Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);

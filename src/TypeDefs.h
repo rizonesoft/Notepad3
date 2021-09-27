@@ -662,11 +662,12 @@ typedef struct _settings2_t
     COLORREF DarkModeTxtColor;
 #endif
 
+    HPATHL DefaultDirectory;
+
     WCHAR FileChangedIndicator[4];
     WCHAR FileDeletedIndicator[4];
 
     WCHAR DefaultExtension[MINI_BUFFER];
-    WCHAR DefaultDirectory[MAX_PATH];
     WCHAR FileDlgFilters[XHUGE_BUFFER];
 
     WCHAR FileBrowserPath[MAX_PATH];

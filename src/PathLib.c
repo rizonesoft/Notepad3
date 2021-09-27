@@ -1309,7 +1309,7 @@ bool PTHAPI PathIsExistingFile(LPCWSTR pszPath)
 
 //=============================================================================
 //
-//  ExpandEnvironmentStringsEx()
+//  (Path_)ExpandEnvironmentStrings()
 //
 void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out)
 {
@@ -1338,6 +1338,14 @@ void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc)
         StringCchCopyW(lpSrc, cchSrc, buf);
     }
     StrgDestroy(hstr);
+}
+
+void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
+        return;
+    ExpandEnvironmentStrgs(hstr_io);
 }
 
 

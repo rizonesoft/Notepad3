@@ -770,6 +770,8 @@ static void _InitGlobals()
     Settings.FavoritesDir = Path_Allocate(NULL);
     Defaults.FavoritesDir = Path_Allocate(NULL);
 
+    Settings2.DefaultDirectory = Path_Allocate(NULL);
+
     FocusedView.HideNonMatchedLines = false;
     FocusedView.CodeFoldingAvailable = false;
     FocusedView.ShowCodeFolding = true;
@@ -875,6 +877,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     // ---  free allocated memory  ---
 
+    Path_Release(Settings2.DefaultDirectory);
 
     Path_Release(Settings.FavoritesDir);
     Path_Release(Defaults.FavoritesDir);
@@ -10943,37 +10946,38 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
 //=============================================================================
 //
-//  _CanonicalizeInitialDir()  TODO: §§§ MAX_PATH limit §§§ @@@!
-//                                   use Path_NormalizeEx() here ?
+//  _CanonicalizeInitialDir()  TODO: use Path_NormalizeEx() here ?
 //
-static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
+static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
 {
-    if (StrIsEmpty(lpstrInitialDir)) {
+    if (Path_IsEmpty(hpth_in_out)) {
+
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
-            StringCchCopy(lpstrInitialDir, cchInitialDir, Path_Get(Paths.CurrentFile));
-            PathRemoveFileSpec(lpstrInitialDir);
-        } else if (StrIsNotEmpty(Settings2.DefaultDirectory)) {
-            ExpandEnvironmentStrings(Settings2.DefaultDirectory, lpstrInitialDir, cchInitialDir);
+            Path_Reset(hpth_in_out, Path_Get(Paths.CurrentFile));
+            Path_RemoveFileSpec(hpth_in_out);
+        } else if (Path_IsNotEmpty(Settings2.DefaultDirectory)) {
+            Path_Reset(hpth_in_out, Path_Get(Settings2.DefaultDirectory));
         } else {
-            StringCchCopy(lpstrInitialDir, cchInitialDir, Path_Get(Paths.WorkingDirectory));
+            Path_Reset(hpth_in_out, Path_Get(Paths.WorkingDirectory));
+        }
+        Path_CanonicalizeEx(hpth_in_out);
+    }
+    else { // Path_IsNotEmpty(hpth_in_out)
+
+        if (Path_IsRelative(hpth_in_out)) {
+            Path_AbsoluteFromApp(hpth_in_out, true);
+            //~ already Path_CanonicalizeEx(hpth_in_out);
+        }
+        else {
+            Path_CanonicalizeEx(hpth_in_out);
+        }
+        if (!Path_IsExistingDirectory(hpth_in_out)) {
+            Path_RemoveFileSpec(hpth_in_out);
         }
     }
-    if (StrIsNotEmpty(lpstrInitialDir)) {
-        if (PathIsRelative(lpstrInitialDir)) {
-            WCHAR tchModule[MAX_PATH] = { L'\0' };
-            PathGetAppDirectory(tchModule, COUNTOF(tchModule));
-            PathAppend(tchModule, lpstrInitialDir);
-            StringCchCopy(lpstrInitialDir, cchInitialDir, tchModule);
-        }
-    }
-    if (StrIsNotEmpty(lpstrInitialDir)) {
-        if (PathFileExists(lpstrInitialDir)) {
-            if (!PathIsDirectory(lpstrInitialDir)) {
-                PathRemoveFileSpec(lpstrInitialDir);
-            }
-        } else {
-            StringCchCopy(lpstrInitialDir, cchInitialDir, L""); // clear
-        }
+    // finally: directory exists ?
+    if (!Path_IsExistingDirectory(hpth_in_out)) {
+        Path_Empty(hpth_in_out, false);
     }
 }
 
@@ -10983,6 +10987,10 @@ static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
 //  OpenFileDlg()
 //  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
 //  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
+//
+// TODO: §§§ MAX_PATH limit §§§ @@@!
+//       Replace GetOpenFileNameW() by Common Item Dialog: IFileOpenDialog()
+//       https://docs.microsoft.com/en-us/windows/win32/shell/common-file-dialog
 //
 bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialDir)
 {
@@ -10994,18 +11002,15 @@ bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
     WCHAR szDefExt[64] = { L'\0' };
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
-    WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-    if (lpstrInitialDir != NULL) {
-        StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
-        _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
-    }
+    HPATHL hpth_dir = Path_Allocate(lpstrInitialDir);
+    _CanonicalizeInitialDir(hpth_dir);
 
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     ofn.hwndOwner = hwnd;
     ofn.hInstance = Globals.hInstance;
     ofn.lpstrFilter = szFilter;
     ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-    ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
+    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
     ofn.lpstrFile = lpstrFile;
     ofn.nMaxFile = cchFile;
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
@@ -11013,7 +11018,9 @@ bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
                 OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
     ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
-    return GetOpenFileName(&ofn);
+    Path_Release(hpth_dir);
+
+    return GetOpenFileNameW(&ofn);
 }
 
 
@@ -11033,18 +11040,15 @@ bool SaveFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
     WCHAR szDefExt[64] = { L'\0' };
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
 
-    WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-    if (lpstrInitialDir) {
-        StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
-        _CanonicalizeInitialDir(tchInitialDir, COUNTOF(tchInitialDir));
-    }
+    HPATHL hpth_dir = Path_Allocate(lpstrInitialDir);
+    _CanonicalizeInitialDir(hpth_dir);
 
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     ofn.hwndOwner = hwnd;
     ofn.hInstance = Globals.hInstance;
     ofn.lpstrFilter = szFilter;
     ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-    ofn.lpstrInitialDir = StrIsNotEmpty(tchInitialDir) ? tchInitialDir : NULL;
+    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
     ofn.lpstrFile = lpstrFile;
     ofn.nMaxFile = cchFile;
     ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
@@ -11052,7 +11056,9 @@ bool SaveFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
                 OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
-    return GetSaveFileName(&ofn);
+    Path_Release(hpth_dir);
+
+    return GetSaveFileNameW(&ofn);
 }
 
 
