@@ -1541,7 +1541,6 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         SetWindowTransparentMode(hwndMain, true, Settings2.OpacityLevel);
     }
 
-    SetMenu(hwndMain, Globals.hMainMenu);
     SetMenu(hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(hwndMain);
 
@@ -1953,6 +1952,16 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_UAHMEASUREMENUITEM:
     case WM_UAHNCPAINTMENUPOPUP: 
         return MsgUahMenuBar(hwnd, umsg, wParam, lParam);
+
+    case WM_NCACTIVATE:
+    case WM_NCPAINT: {
+        LRESULT const res = DefWindowProc(hwnd, umsg, wParam, lParam);
+        if (UseDarkMode()) {
+            // handle dark menu bottom line
+            MsgUahMenuBar(hwnd, umsg, wParam, lParam);
+        }
+        return res;
+    }
 
     default:
         if (umsg == s_msgTaskbarCreated) {
@@ -5976,13 +5985,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
 
         Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode; // toggle
-
-        // hide/show bright menu strip on switching
-        if (Settings.ShowMenubar == Defaults.ShowMenubar) {
-            Settings.ShowMenubar = !Settings.WinThemeDarkMode;
-        }
-        Defaults.ShowMenubar = !Settings.WinThemeDarkMode; // (!) need for saving
-
         SetDarkMode(Settings.WinThemeDarkMode);
 
         Style_DynamicThemesMenuCmd(IDM_THEMES_FACTORY_RESET);
@@ -7035,6 +7037,38 @@ LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         // fill line below bar
         //~rc.bottom += 2;
         FillRect(pUDM->hdc, &rc, Globals.hbrDarkModeBkgBrush);
+
+        return TRUE;
+    }
+
+
+    case WM_NCACTIVATE:
+    case WM_NCPAINT: {
+        // get rid of annoying menu-bar bottom line
+        // (only called if in dark mode)
+
+        MENUBARINFO mbi = { sizeof(mbi) };
+        if (!GetMenuBarInfo(hwnd, OBJID_MENU, 0, &mbi)) {
+            return FALSE;
+        }
+
+        RECT rcClient = { 0 };
+        GetClientRect(hwnd, &rcClient);
+        MapWindowPoints(hwnd, NULL, (POINT*)&rcClient, 2);
+
+        RECT rcWindow = { 0 };
+        GetWindowRect(hwnd, &rcWindow);
+
+        OffsetRect(&rcClient, -rcWindow.left, -rcWindow.top);
+
+        // the rcBar is offset by the window rect
+        RECT rcAnnoyingLine = rcClient;
+        rcAnnoyingLine.bottom = rcAnnoyingLine.top;
+        rcAnnoyingLine.top -= 1;
+
+        HDC const hdc = GetWindowDC(hwnd);
+        FillRect(hdc, &rcAnnoyingLine, Globals.hbrDarkModeBtnFcBrush); // Globals.hbrDarkModeBkgBrush
+        ReleaseDC(hwnd, hdc);
 
         return TRUE;
     }

@@ -4202,7 +4202,7 @@ void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
 void MapRectClientToWndCoords(HWND hwnd, RECT* rc)
 {
     // map to screen (left-top as point)
-    MapWindowPoints(hwnd, NULL, (POINT*)rc, 1);
+    MapWindowPoints(hwnd, NULL, (POINT*)rc, 2);
 
     RECT scrc;
     GetWindowRect(hwnd, &scrc);
