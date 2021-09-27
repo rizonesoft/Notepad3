@@ -1525,11 +1525,7 @@ void LoadSettings()
     StringCchCopy(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
     IniSectionGetStringNoQuotes(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
-#ifdef D_NP3_WIN10_DARK_MODE
-    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, !Settings.WinThemeDarkMode);
-#else
-    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true); // DarkMode switch
-#endif
+    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
 
