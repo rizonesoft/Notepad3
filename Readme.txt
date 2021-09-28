@@ -119,6 +119,7 @@ RaffaeleBianc0          https://github.com/RaffaeleBianc0
 RaiKoHoff               https://github.com/RaiKoHoff
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
+Stephan-P               https://github.com/Stephan-P
 ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
 VenusGirl               https://github.com/VenusGirl
 xsak                    https://github.com/xsak
