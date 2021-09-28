@@ -93,7 +93,7 @@ __forceinline STRINGW* ToWStrg(HSTRINGW hstr)
 
 #define limit_len(len) (((len) < STRINGW_MAX_CCH) ? (len) : (STRINGW_MAX_CCH - 1))
 
-inline static void * AllocBuffer(size_t len, bool bZeroMem) {
+inline static void * AllocBuffer(const size_t len, bool bZeroMem) {
     if (!s_hndlProcessHeap) {
         s_hndlProcessHeap = GetProcessHeap();
     }
@@ -101,7 +101,7 @@ inline static void * AllocBuffer(size_t len, bool bZeroMem) {
 }
 // ----------------------------------------------------------------------------
 
-inline static void * ReAllocBuffer(void* pdata, size_t len, bool bZeroMem, bool bInPlace) {
+inline static void * ReAllocBuffer(void* pdata, const size_t len, bool bZeroMem, bool bInPlace) {
     if (!s_hndlProcessHeap) {
         s_hndlProcessHeap = GetProcessHeap();
     }
@@ -145,8 +145,8 @@ static void ReAllocW(STRINGW* pstr, size_t len, bool bZeroMem)
             pstr->alloc_length = LengthOfBuffer(pstr->data);
             assert(alloc_len != (pstr->alloc_length * sizeof(wchar_t)));
             pstr->data_length = 0;
-            pstr->data[len] = L'\0';
-            pstr->data[0] = L'\0';
+            pstr->data[len] = L'\0'; // ensure terminating zero
+            pstr->data[0] = L'\0'; // ensure empty
         }
         else {
             pstr->alloc_length = 0;
@@ -174,7 +174,7 @@ static void AllocCopyW(STRINGW* pstr, STRINGW* pDest, size_t copy_len, size_t co
     if (0 < new_len)
     {
         ReAllocW(pDest, new_len, true);
-        StringCchCopyNW(pDest->data, pDest->alloc_length, pstr->data + copy_index, copy_len);
+        StringCchCopyNW(pDest->data, pDest->alloc_length, (pstr->data + copy_index), copy_len);
         pDest->data_length = StrlenW(pstr->data);
     }
 }
@@ -211,7 +211,7 @@ static void FreeUnusedData(STRINGW* pstr)
 {
     size_t const new_alloc_len = pstr->data_length + 1;
     if (pstr->alloc_length > new_alloc_len) {
-        pstr->data = ReAllocBuffer(pstr->data, new_alloc_len, false, true);
+        pstr->data = ReAllocBuffer(pstr->data, new_alloc_len, true, true);
         pstr->alloc_length = LengthOfBuffer(pstr->data);
         pstr->data_length = StrlenW(pstr->data);
     }
@@ -222,7 +222,7 @@ static void CopyConcatW(STRINGW *pstr, size_t len1, const wchar_t *p1, size_t le
 {
     size_t const new_len = len1 + len2;
     if (0 < new_len) {
-        ReAllocW(pstr, new_len, false);
+        ReAllocW(pstr, new_len, true);
         StringCchCopyNW(pstr->data, pstr->alloc_length, p1, len1);
         StringCchCatNW(pstr->data, pstr->alloc_length, p2, len2);
         pstr->data_length = StrlenW(pstr->data);
@@ -393,7 +393,7 @@ static void FormatW(STRINGW* pstr, const wchar_t* fmt, va_list args)
         max_len += item_len;
     }
 
-    ReAllocW(pstr, max_len, false);
+    ReAllocW(pstr, max_len, true);
 
     StringCchVPrintfW(pstr->data, pstr->alloc_length, fmt, orig_list);
     pstr->data_length = StrlenW(pstr->data);
@@ -1056,9 +1056,9 @@ void STRAPI StrgSanitize(HSTRINGW hstr)
         return;
     // ensure buffer limits
     pstr->alloc_length = LengthOfBuffer(pstr->data);
-    ptrdiff_t const len = (ptrdiff_t)pstr->alloc_length - 1;
-    if (len >= 0) {
-        pstr->data[len] = L'\0'; // terminating zero
+    ptrdiff_t const end = (ptrdiff_t)pstr->alloc_length - 1;
+    if (end >= 0) {
+        pstr->data[end] = L'\0'; // terminating zero
     }
     pstr->data_length = StrlenW(pstr->data);
 }

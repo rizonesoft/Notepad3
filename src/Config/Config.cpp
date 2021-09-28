@@ -1251,9 +1251,6 @@ void LoadSettings()
     int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"AdministrationTool.exe", L"",
-                                Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
-
     Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", 4), 0, 2048);
 
     Settings2.OpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"OpacityLevel", 75), 10, 100);
@@ -1267,6 +1264,10 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"grepWin.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
     Path_Reset(Settings2.GrepWinPath, pPathBuffer);
     Path_ExpandEnvironmentStrings(Settings2.GrepWinPath);
+
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"AdministrationTool.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    Path_Reset(Settings2.AdministrationTool, pPathBuffer);
+    Path_ExpandEnvironmentStrings(Settings2.AdministrationTool);
 
     if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
         IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", _W("Rizonesoft." SAPPNAME), Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
@@ -1289,11 +1290,13 @@ void LoadSettings()
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"TimeStampFormat", L"$Date: %s $", Settings2.TimeStampFormat, COUNTOF(Settings2.TimeStampFormat));
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate1", L"https://google.com/search?q=%s", Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate1", L"https://google.com/search?q=%s", pPathBuffer, PATHLONG_MAX_CCH);
+    StrgReset(Settings2.WebTemplate1, pPathBuffer);
     //~GetMenuStringW(Globals.hCtxMenu, CMD_WEBACTION1, WebTmpl1MenuName, COUNTOF(WebTmpl1MenuName), MF_BYCOMMAND))
     IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl1MenuName", L"", Settings2.WebTmpl1MenuName, COUNTOF(Settings2.WebTmpl1MenuName));
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate2", L"https://en.wikipedia.org/w/index.php?search=%s", Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate2", L"https://en.wikipedia.org/w/index.php?search=%s", pPathBuffer, PATHLONG_MAX_CCH);
+    StrgReset(Settings2.WebTemplate2, pPathBuffer);
     //~GetMenuStringW(Globals.hMainMenu, CMD_WEBACTION2, WebTmpl2MenuName, COUNTOF(WebTmpl2MenuName), MF_BYCOMMAND))
     IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl2MenuName", L"", Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
 
@@ -1307,8 +1310,10 @@ void LoadSettings()
 
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", 150), 100, 1000);
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLWithApp", L"", Settings2.HyperlinkShellExURLWithApp, COUNTOF(Settings2.HyperlinkShellExURLWithApp));
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLCmdLnArgs", URLPLACEHLDR, Settings2.HyperlinkShellExURLCmdLnArgs, COUNTOF(Settings2.HyperlinkShellExURLCmdLnArgs));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLWithApp", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    StrgReset(Settings2.HyperlinkShellExURLWithApp, pPathBuffer);
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLCmdLnArgs", URLPLACEHLDR, pPathBuffer, PATHLONG_MAX_CCH);
+    StrgReset(Settings2.HyperlinkShellExURLCmdLnArgs, pPathBuffer);
 
     const static WCHAR *const allowedVerbs[7] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
     WCHAR cfgVerb[MICRO_BUFFER] = { L'\0' };

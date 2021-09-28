@@ -665,6 +665,12 @@ typedef struct _settings2_t
     HPATHL DefaultDirectory;
     HPATHL FileBrowserPath;
     HPATHL GrepWinPath;
+    HPATHL AdministrationTool;
+
+    HSTRINGW WebTemplate1;
+    HSTRINGW WebTemplate2;
+    HSTRINGW HyperlinkShellExURLWithApp;
+    HSTRINGW HyperlinkShellExURLCmdLnArgs;
 
     WCHAR FileChangedIndicator[4];
     WCHAR FileDeletedIndicator[4];
@@ -683,17 +689,12 @@ typedef struct _settings2_t
     WCHAR TimeStampRegEx[SMALL_BUFFER];
     WCHAR TimeStampFormat[SMALL_BUFFER];
 
-    WCHAR WebTemplate1[MAX_PATH];
     WCHAR WebTmpl1MenuName[MICRO_BUFFER];
-    WCHAR WebTemplate2[MAX_PATH];
     WCHAR WebTmpl2MenuName[MICRO_BUFFER];
-    WCHAR AdministrationTool[MAX_PATH];
     WCHAR DefaultWindowPosition[MINI_BUFFER];
 
     WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
 
-    WCHAR HyperlinkShellExURLWithApp[MAX_PATH];
-    WCHAR HyperlinkShellExURLCmdLnArgs[MAX_PATH];
     WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
 } SETTINGS2_T, *PSETTINGS2_T;

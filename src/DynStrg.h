@@ -12,7 +12,8 @@
 /*                                                */
 /**************************************************/
 
-#define STRINGW_INVALID_IDX  ((size_t)-1)
+#define STRINGW_MAX_URL_LENGTH   INTERNET_MAX_URL_LENGTH 
+#define STRINGW_INVALID_IDX      ((size_t)-1)
 
 __forceinline size_t     StrlenW(const wchar_t* p) { return (!p) ? 0 : wcslen(p); }
 

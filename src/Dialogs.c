@@ -4792,25 +4792,24 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 //
 void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 {
-	WCHAR tchExe[MAX_PATH];
-
-	StringCchCopyW(tchExe, COUNTOF(tchExe), Settings2.AdministrationTool);
-	if (bExecInstaller && StrIsEmpty(tchExe)) {
+    if (bExecInstaller && Path_IsEmpty(Settings2.AdministrationTool)) {
 		return;
 	}
 
-	WCHAR tchExePath[MAX_PATH];
-	if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
+    HPATHL hexe_pth = Path_Allocate(NULL);
+    wchar_t* const exe_buf = Path_WriteAccessBuf(hexe_pth, PATHLONG_MAX_CCH);
+    if (!SearchPathW(NULL, Path_Get(Settings2.AdministrationTool), L".exe", PATHLONG_MAX_CCH, exe_buf, NULL)) {
 		// try Notepad3's dir path
-		PathGetAppDirectory(tchExePath, COUNTOF(tchExePath));
-		PathAppend(tchExePath, tchExe);
+        Path_GetAppDirectory(hexe_pth);
+        Path_Append(hexe_pth, Settings2.AdministrationTool);
 	}
+    Path_Sanitize(hexe_pth);
 
 	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 	sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
 	sei.hwnd = hwnd;
 	sei.lpVerb = NULL;
-	sei.lpFile = tchExePath;
+    sei.lpFile = Path_Get(hexe_pth);
 	sei.lpParameters = NULL; // tchParam;
 	sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
 	sei.nShow = SW_SHOWNORMAL;
@@ -4828,6 +4827,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 		sei.lpFile = VERSION_UPDATE_CHECK;
 		ShellExecuteEx(&sei);
 	}
+    Path_Release(hexe_pth);
 }
 
 // ============================================================================

@@ -773,6 +773,12 @@ static void _InitGlobals()
     Settings2.DefaultDirectory = Path_Allocate(NULL);
     Settings2.FileBrowserPath = Path_Allocate(NULL);
     Settings2.GrepWinPath = Path_Allocate(NULL);
+    Settings2.AdministrationTool = Path_Allocate(NULL);
+
+    Settings2.WebTemplate1 = StrgCreate(NULL);
+    Settings2.WebTemplate2 = StrgCreate(NULL);
+    Settings2.HyperlinkShellExURLWithApp = StrgCreate(NULL);
+    Settings2.HyperlinkShellExURLCmdLnArgs = StrgCreate(NULL);
 
     FocusedView.HideNonMatchedLines = false;
     FocusedView.CodeFoldingAvailable = false;
@@ -879,6 +885,12 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     // ---  free allocated memory  ---
 
+    StrgDestroy(Settings2.HyperlinkShellExURLCmdLnArgs);
+    StrgDestroy(Settings2.HyperlinkShellExURLWithApp);
+    StrgDestroy(Settings2.WebTemplate2);
+    StrgDestroy(Settings2.WebTemplate1);
+
+    Path_Release(Settings2.AdministrationTool);
     Path_Release(Settings2.GrepWinPath);
     Path_Release(Settings2.FileBrowserPath);
     Path_Release(Settings2.DefaultDirectory);
@@ -4113,7 +4125,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel && !bIsHLink);
     EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel && !bIsHLink);
 
-    i = (int)StrIsNotEmpty(Settings2.AdministrationTool);
+    i = (int)Path_IsNotEmpty(Settings2.AdministrationTool);
     EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
@@ -6433,16 +6445,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_WEBACTION1:
     case CMD_WEBACTION2: {
 
-        // TODO: §§§ MAX_PATH limit §§§ @@@!
-        WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
+        const wchar_t* const wchWebTemplate = ((iLoWParam == CMD_WEBACTION1) ? StrgGet(Settings2.WebTemplate1) : StrgGet(Settings2.WebTemplate2));
 
-        StringCchCopyW(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer),
-                       (iLoWParam == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
+        if (StrIsNotEmpty(wchWebTemplate)) {
 
-        if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
-
-            WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
-            size_t const cchSelection = EditGetSelectedText(wszSelection, HUGE_BUFFER);
+            WCHAR        wszSelection[STRINGW_MAX_URL_LENGTH + 1] = { L'\0' };
+            size_t const cchSelection = EditGetSelectedText(wszSelection, COUNTOF(wszSelection));
 
             if (1 < cchSelection) {
 
@@ -6465,38 +6473,39 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                     *lpsz = L'\0';
                 }
 
-                DWORD const cchHypLink = (INTERNET_MAX_URL_LENGTH + MAX_PATH);
-                LPWSTR       lpHypLink = AllocMem(cchHypLink * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-                StringCchPrintf(lpHypLink, cchHypLink, tchMaxPathBuffer, wszSelection);
-                ExpandEnvironmentStringsEx(lpHypLink, cchHypLink);
+                HSTRINGW hstr_hyplnk = StrgCreate(NULL);
+                StrgFormat(hstr_hyplnk, wchWebTemplate, wszSelection);
+                ExpandEnvironmentStrgs(hstr_hyplnk);
 
-                if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp))
+                if (StrgIsNotEmpty(Settings2.HyperlinkShellExURLWithApp))
                 {
-                    LPWSTR const lpParams = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, lpHypLink);
+                    HSTRINGW hstr_params = StrgCopy(Settings2.HyperlinkShellExURLCmdLnArgs);
+                    StrgReplace(hstr_params, URLPLACEHLDR, StrgGet(hstr_hyplnk));
 
                     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_DEFAULT;
                     sei.hwnd = NULL;
                     sei.lpVerb = NULL;
-                    sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
-                    sei.lpParameters = lpParams;
+                    sei.lpFile = StrgGet(Settings2.HyperlinkShellExURLWithApp);
+                    sei.lpParameters = StrgGet(hstr_params);
                     sei.lpDirectory = Path_Get(hdir);
                     sei.nShow = SW_SHOWNORMAL;
                     ShellExecuteEx(&sei);
-                    FreeMem(lpParams);
+
+                    StrgDestroy(hstr_params);
                 }
                 else {
                     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_NOZONECHECKS;
                     sei.hwnd = NULL;
                     sei.lpVerb = NULL;
-                    sei.lpFile = lpHypLink;
+                    sei.lpFile = StrgGet(hstr_hyplnk);
                     sei.lpParameters = NULL;
                     sei.lpDirectory = Path_Get(hdir);
                     sei.nShow = SW_SHOWNORMAL;
                     ShellExecuteEx(&sei);
                 }
-                FreeMem(lpHypLink);
+                StrgDestroy(hstr_hyplnk);
                 Path_Release(hdir);
             }
         }
@@ -7550,21 +7559,22 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     Path_RemoveFileSpec(hDirectory);
                 }
 
-                if (StrIsNotEmpty(Settings2.HyperlinkShellExURLWithApp)) {
+                if (StrgIsNotEmpty(Settings2.HyperlinkShellExURLWithApp)) {
 
-                    LPWSTR const lpParams = StrReplaceAll(Settings2.HyperlinkShellExURLCmdLnArgs, URLPLACEHLDR, szUnEscW);
+                    HSTRINGW hstr_params = StrgCopy(Settings2.HyperlinkShellExURLCmdLnArgs);
+                    StrgReplace(hstr_params, URLPLACEHLDR, szUnEscW);
 
                     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_DEFAULT;
                     sei.hwnd = NULL;
                     sei.lpVerb = NULL;
-                    sei.lpFile = Settings2.HyperlinkShellExURLWithApp;
-                    sei.lpParameters = StrIsNotEmpty(lpParams) ? lpParams : szUnEscW;
+                    sei.lpFile = StrgGet(Settings2.HyperlinkShellExURLWithApp);
+                    sei.lpParameters = StrgIsNotEmpty(hstr_params) ? StrgGet(hstr_params) : szUnEscW;
                     sei.lpDirectory = Path_Get(hDirectory);
                     sei.nShow = SW_SHOWNORMAL;
-
                     bHandled = ShellExecuteEx(&sei);
-                    FreeMem(lpParams);
+
+                    StrgDestroy(hstr_params);
 
                 } else {
 
