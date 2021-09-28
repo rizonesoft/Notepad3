@@ -103,8 +103,8 @@ BEGIN
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
     CONTROL         "Transparante modus bij verlies van focus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,134,10
-    DEFPUSHBUTTON   "Zoeken vori&ge",IDOK,211,7,55,14
-    PUSHBUTTON      "Zoeken vori&ge",IDC_FINDPREV,211,24,55,14
+    DEFPUSHBUTTON   "Zoeken vo&rige",IDOK,211,7,55,14
+    PUSHBUTTON      "Zoeken vo&lgende",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Sluiten",IDCANCEL,211,99,55,14
     CONTROL         "<a>Ga naar vervangen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,103,85,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
