@@ -779,6 +779,7 @@ static void _InitGlobals()
     Settings2.WebTemplate2 = StrgCreate(NULL);
     Settings2.HyperlinkShellExURLWithApp = StrgCreate(NULL);
     Settings2.HyperlinkShellExURLCmdLnArgs = StrgCreate(NULL);
+    Settings2.FileDlgFilters = StrgCreate(NULL);
 
     FocusedView.HideNonMatchedLines = false;
     FocusedView.CodeFoldingAvailable = false;
@@ -885,6 +886,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     // ---  free allocated memory  ---
 
+    StrgDestroy(Settings2.FileDlgFilters);
     StrgDestroy(Settings2.HyperlinkShellExURLCmdLnArgs);
     StrgDestroy(Settings2.HyperlinkShellExURLWithApp);
     StrgDestroy(Settings2.WebTemplate2);
@@ -7506,6 +7508,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                 PathCreateFromUrl(szTextW, szUnEscW, &dCch, 0);
                 szUnEscW[min_u(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
 
+                // TODO: §§§ @@@ LongPath handling (MAX_PATH) !!!
                 WCHAR * const szFilePath = szUnEscW;
                 StrTrim(szFilePath, L"/");
 
@@ -11046,7 +11049,7 @@ bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
         return false;
     }
 
-    WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 1];
+    WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 2];
     WCHAR szDefExt[64] = { L'\0' };
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 

@@ -1170,13 +1170,12 @@ void LoadSettings()
                                 Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
     StrTrim(Settings2.DefaultExtension, L" \t.");
 
-
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"", pPathBuffer, PATHLONG_MAX_CCH);
     Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
     Path_ExpandEnvironmentStrings(Settings2.DefaultDirectory);
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"",
-                                Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
     Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0), 0, 86400000<<2); // max: 48h
     // handle deprecated old "AutoReloadTimeout"

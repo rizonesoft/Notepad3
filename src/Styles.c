@@ -2788,8 +2788,8 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
         StringCchCat(lpszFilter, cchFilter, L"|");
     }
 
-    if (StrIsNotEmpty(Settings2.FileDlgFilters)) {
-        StringCchCat(lpszFilter, cchFilter, Settings2.FileDlgFilters);
+    if (StrgIsNotEmpty(Settings2.FileDlgFilters)) {
+        StringCchCat(lpszFilter, cchFilter, StrgGet(Settings2.FileDlgFilters));
         StringCchCat(lpszFilter, cchFilter, L"|");
     }
 

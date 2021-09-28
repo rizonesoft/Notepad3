@@ -671,12 +671,12 @@ typedef struct _settings2_t
     HSTRINGW WebTemplate2;
     HSTRINGW HyperlinkShellExURLWithApp;
     HSTRINGW HyperlinkShellExURLCmdLnArgs;
+    HSTRINGW FileDlgFilters;
 
     WCHAR FileChangedIndicator[4];
     WCHAR FileDeletedIndicator[4];
 
     WCHAR DefaultExtension[MINI_BUFFER];
-    WCHAR FileDlgFilters[XHUGE_BUFFER];
 
     WCHAR AppUserModelID[SMALL_BUFFER];
     WCHAR AutoCompleteFillUpChars[MINI_BUFFER];
