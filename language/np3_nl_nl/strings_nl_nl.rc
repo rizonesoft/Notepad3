@@ -105,7 +105,7 @@ BEGIN
     IDS_MUI_FILELOCKED      "<vergrendeld>"
     IDS_MUI_LOADFILE        "Laden ""%s""..."
     IDS_MUI_SAVEFILE        "Opslaan ""%s""..."
-    IDS_MUI_PRINTFILE       "Afdrukken pagina %i..."
+    IDS_MUI_PRINTFILE       "Pagina afdrukken %i..."
     IDS_MUI_SAVINGSETTINGS  "Instellingen opslaan..."
     IDS_MUI_LINKDESCRIPTION "Bewerken met Notepad3"
 END
@@ -113,14 +113,14 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Alle bestanden (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Uitvoerbare bestanden (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Uitvoerbare bestanden (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Alle bestanden (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Configuratiebestanden (*.ini)|*.ini|Alle bestanden (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bitmapbestanden (*.bmp)|*.bmp|Alle bestanden (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Selecteer de map met koppelingen naar uw favoriete applicaties."
-    IDS_MUI_FAVORITES       "Selecteer de map met koppelingen naar uw favoriete bestanden."
-    IDS_MUI_BACKSLASHHELP   "Backslash transformaties\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_OPENWITH        "Selecteer de map met koppelingen naar jouw favoriete applicaties."
+    IDS_MUI_FAVORITES       "Selecteer de map met koppelingen naar jouw favoriete bestanden."
+    IDS_MUI_BACKSLASHHELP   "Backslash-transformaties\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Zoeken met joker\n\n*\tMatches met nul of meer tekens.\n?\tmet precies één karakter. "
+    IDS_MUI_WILDCARDHELP    "Zoeken met joker\n\n*\tOvereenkomsten met nul of meer tekens.\n?\tmet precies één teken. "
 END
 
 STRINGTABLE
@@ -130,11 +130,11 @@ BEGIN
     IDS_MUI_ERR_DLG_FORMAT  "Fout '%s', oorzaak:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Geen plugin voor bestandsbrowser gevonden.\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com."
     IDS_MUI_ERR_GREPWIN     "Geen plugin voor het zoeken naar bestanden gevonden.\nDe plug-in grepWinNP3 voor het zoeken naar bestanden kan worden gedownload van https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "Geen toegang tot het geselecteerde bestand!\nWilt u het uit de lijst verwijderen?"
+    IDS_MUI_ERR_MRUDLG      "Geen toegang tot het geselecteerde bestand!\nWil je het uit de lijst verwijderen?"
     IDS_MUI_ERR_CREATELINK  "Fout bij het aanmaken van de bureaubladkoppeling."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Het huidige Notepad3-venster is bezet of heeft een actief dialoogvenster.\nWilt u een ander Notepad3-venster openen?"
-    IDS_MUI_ERR_ENCODINGNA  "Codepage conversietabellen voor de geselecteerde codering zijn niet beschikbaar op uw systeem."
+                            "Het huidige Notepad3-venster is bezet of heeft een actief dialoogvenster.\nWil je een ander Notepad3-venster openen?"
+    IDS_MUI_ERR_ENCODINGNA  "Codepage-conversietabellen voor de geselecteerde codering zijn niet beschikbaar op jouw systeem."
     IDS_MUI_ERR_UNICODE     "Fout bij het converteren van dit Unicode-bestand.\nGegevens gaan verloren als het bestand wordt opgeslagen!"
     IDS_MUI_ERR_BITMAP      "Fout bij laden van bitmap ""%s"".\nDimensies nodig: %i x %i (breedte >= %i x hoogte)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
@@ -143,15 +143,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Bepaalde tekens in de huidige tekst worden niet ondersteund door de geselecteerde codering en kunnen worden vervangen door standaardplaatshouders bij het opslaan. Het wordt aanbevolen om een andere bestandscodering te kiezen. Doorgaan?"
-    IDS_MUI_ERR_DROP        "Er kan slechts één bestand tegelijkertijd worden gedeponeerd!"
+    IDS_MUI_ERR_UNICODE2    "Bepaalde tekens in de huidige tekst worden niet ondersteund door de geselecteerde codering en kunnen bij het opslaan worden vervangen door standaard plaatshouders. Het wordt aanbevolen om een andere bestandscodering te kiezen. Doorgaan?"
+    IDS_MUI_ERR_DROP        "Er kan slechts één bestand tegelijkertijd worden gesleept!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Het bestand ""%s"" kan niet worden opgeslagen en kan worden beveiligd.\n\nWilt u %s met verhoogde gebruikersrechten starten?"
+                            "Het bestand ""%s"" kan niet worden opgeslagen en is mogelijk beveiligd.\n\nWil je %s met verhoogde gebruikersrechten starten?"
     IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Weet je zeker dat je dit grote bestand wilt openen?\n\t(grootte: %s >= %s)!\n(Styling en syntax highlighting wordt niet toegepast!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "Kan dat enorme bestand niet aan (grootte: %s)!"
+                            "Kan dit enorme bestand niet aan (grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende bestandsnaamextensie (%s)!\nGegevens toch laden?"
     IDS_MUI_INDENT_CONSISTENT  "Het bestand heeft een consistente inspringing!"
@@ -159,7 +159,7 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Wilt u dat alle regeleinden genormaliseerd worden als '%s'?"
+                            "Wil je dat alle regeleinden genormaliseerd worden tot '%s'?"
 END
 
 STRINGTABLE
@@ -168,34 +168,34 @@ BEGIN
     IDS_MUI_SELMULTI        "Deze bewerking kan niet worden uitgevoerd in een meervoudige selectie."
     IDS_MUI_SELRECTORMULTI  "Deze bewerking kan niet worden uitgevoerd in een rechthoekige of meervoudige selectie."
     IDS_MUI_BUFFERTOOSMALL  "Deze bewerking kan niet worden uitgevoerd (regels te lang)."
-    IDS_MUI_FIND_WRAPFW     "Het einde van het document is bereikt, hestart de zoekopdracht aan het begin."
-    IDS_MUI_FIND_WRAPRE     "Het begin van het document is bereikt, herstart de zoekopdracht aan het einde."
+    IDS_MUI_FIND_WRAPFW     "Het einde van het document is bereikt, zoekopdracht start opnieuw vanaf begin."
+    IDS_MUI_FIND_WRAPRE     "Het begin van het document is bereikt, zoekopdracht start opnieuw vanaf einde."
     IDS_MUI_NOTFOUND        "De opgegeven tekst is niet gevonden."
     IDS_MUI_REPLCOUNT       "%s voorvallen van de opgegeven tekst zijn vervangen."
-    IDS_MUI_ASK_ENCODING    "Het omschakelen van de bestandscodering van de ene naar de andere codering kan de niet-ondersteunde tekst vervangen door standaardtekens en de geschiedenis van het ongedaan maken zal worden gewist. Doorgaan?"
-    IDS_MUI_ASK_ENCODING2   "U staat op het punt de codering van een leeg bestand te wijzigen. Merk op dat dit de geschiedenis van het ongedaan maken zal wissen, omdat deze niet kan worden gesynchroniseerd met de nieuwe codering. Doorgaan?"
-    IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Opslaan in een ander bestand?"
+    IDS_MUI_ASK_ENCODING    "Bij het omzetten van de ene naar de andere codering kan niet-ondersteunde tekst worden vervangen door standaardtekens. Dit kan niet ongedaan worden. Doorgaan?"
+    IDS_MUI_ASK_ENCODING2   "U staat op het punt de codering van een leeg bestand te wijzigen. Dit kan niet ongedaan worden. Doorgaan?"
+    IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Opslaan als een ander bestand?"
     IDS_MUI_FILECHANGENOTIFY
                            "Het huidige bestand is gewijzigd door een extern programma. Opnieuw laden?"
     IDS_MUI_FILECHANGENOTIFY2 "Het huidige bestand is verwijderd. Nu opslaan?"
     IDS_MUI_FILELOCK_ERROR  "Kan geen exclusieve bestandsvergrendeling verkrijgen voor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Kleverige vensterpositie is ingeschakeld. Alle nieuwe Notepad3 vensters gebruiken de huidige instellingen voor vensterplaatsing."
     IDS_MUI_SAVEDSETTINGS   "De huidige programmainstellingen zijn opgeslagen."
-    IDS_MUI_CREATEINI_FAIL  "Fout bij het maken van het configuratiebestand."
+    IDS_MUI_CREATEINI_FAIL  "Fout bij het aanmaken van het configuratiebestand."
     IDS_MUI_WRITEINI_FAIL   "Fout bij het schrijven van instellingen naar het configuratiebestand."
     IDS_MUI_INIFILE_READONLY
                             "Configuratiebestand is schrijfbeveiligd - negeren en instellingen overschrijven?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Geen bestaand configuratiebestand gevonden.\nOm de stijlwijzigingen te behouden, slaat u de instellingen nu op (F7) of gaat u terug naar de schemaconfiguratie (Ctrl+F12) en exporteert u uw stijlen."
+                            "Geen bestaand configuratiebestand gevonden.\nOm de stijlwijzigingen te behouden, sla je de instellingen nu op (F7) of ga je terug naar de schema-instellingen (Ctrl+F12) en exporteer je je stijlen."
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "De huidige instellingen activeren door opnieuw te starten?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "Als u doorgaat zonder opnieuw te starten, worden opgeslagen instellingen niet toegepast en worden deze bij het afsluiten van het programma overschreven door interne instellingen!"
+    IDS_MUI_RELOADCFGSEX     "Als je doorgaat zonder opnieuw te starten, worden opgeslagen instellingen niet toegepast en worden deze bij het afsluiten van het programma overschreven door interne instellingen!"
     IDS_MUI_EXPORT_FAIL      "Fout bij het exporteren van stijlinstellingen naar ""%s""."
-    IDS_MUI_REGEX_INVALID    "Fout bij het evalueren van reguliere expressie. Expressie is ongeldig!"
-    IDS_MUI_DROP_NO_FILE     "Geen geldige bestandsnaam.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
+    IDS_MUI_REGEX_INVALID    "Fout bij het evalueren van reguliere expressie. Ongeldige expressie!"
+    IDS_MUI_DROP_NO_FILE     "Ongeldige bestandsnaam.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
     IDS_MUI_URL_DIR_EXISTS   "URL opgegeven map bestaat!"
     IDS_MUI_URL_FILE_EXISTS  "URL opgegeven bestand bestaat!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -203,22 +203,22 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik om het bestand te openen."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik om de link in de browser te openen."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Tijdstempel originele bestandswijziging behouden ingeschakeld.\nDeze optie blijft voor deze sessie!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Er zijn geen andere voorval markeringen (Bladwijzer/Markeer)!"
+                             "Tijdstempel originele bestandswijziging behouden.\nDeze optie blijft gedurende deze sessie actief!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Er zijn geen andere markeringen van voorvallen (Bladwijzer/Markering)!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Wijzigingen opslaan in:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "Herladen naar de laatst opgeslagen staat?"
+    IDS_MUI_ASK_REVERT      "Laatst opgeslagen toestand opnieuw laden?"
     IDS_MUI_ASK_RECODE      "Voor hercoderen moet het bestand opnieuw van de schijf worden geladen, niet-opgeslagen wijzigingen gaan verloren!"
-    IDS_MUI_ASK_CREATE      """%s"" niet gevonden.\nWilt u dit bestand aanmaken??"
+    IDS_MUI_ASK_CREATE      """%s"" niet gevonden.\nWil je dit bestand aanmaken??"
     IDS_MUI_PRINT_HEADER    "Bestandsnaam, huidige datum en tijd|Bestandsnaam, huidige datum|Bestandsnaam|Leeg laten"
     IDS_MUI_PRINT_FOOTER    "Paginanummer|Leeg laten"
-    IDS_MUI_PRINT_COLOR     "Normaal|Negatief (donkere achtergrond)|Zwart op wit|Kleur op wit|Kleur op wit (behalve lijnnummers)|Schermkleuren"
+    IDS_MUI_PRINT_COLOR     "Normaal|Negatief (donkere achtergrond)|Zwart op wit|Kleur op wit|Kleur op wit (behalve regelnummers)|Schermkleuren"
     IDS_MUI_PRINT_PAGENUM   "Pagina %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "Deze actie zal de stijl terugzetten naar de fabrieksinstellingen van de gewenste kleurmodus en het actieve themabestand overschakelen naar standaard config .ini!"
+                            "Deze actie zal de stijl terugzetten naar de standaardinstellingen van de gewenste kleurmodus en het actieve themabestand schakelen naar standaard config.ini!"
 END
 
 STRINGTABLE
@@ -230,8 +230,8 @@ BEGIN
     IDS_MUI_READONLY_MODIFY "De attributen van ""%s"" konden niet worden aangepast."
     IDS_MUI_SAVEPOS         "&Positie opslaan\tCtrl+S"
     IDS_MUI_RESETPOS        "&Positie herstellen\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Voorbeeld instellingen\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "De wachtwoordzin is incorrect.\nProbeer opnieuw een wachtwoordzin?"
+    IDS_MUI_PREVIEW         "&Voorbeeld-instellingen\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "De wachtwoordzin is incorrect.\nAndere wachtwoordzin proberen?"
     IDS_MUI_NOPASS          "Decodering afgebroken!\Gecodeerde onbewerkte gegevens laden?"
     IDS_MUI_STY_BASESTD     "BASE (Standaardstijl):"
     IDS_MUI_STY_BASE2ND     "BASE (2de standaardstijl):"
@@ -249,17 +249,17 @@ BEGIN
     IDS_MUI_TITLE_RELARB    "+++ Stijl '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    "Stijl '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Bijbehorende bestandsextensies:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte Match"
-    IDS_MUI_GOTO_LINE       "Lijn (1 - %s):"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte Overeenkomst"
+    IDS_MUI_GOTO_LINE       "Regel (1 - %s):"
     IDS_MUI_GOTO_COLUMN     "Kolom (1 - %s):"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
-    IDS_USE_LOCALE_DATEFMT  "Taal definieert &Datumformaat"
-    IDS_MUI_MENU_THEMES     "&Schema-collectie"
-    IDM_THEMES_FACTORY_RESET "&Fabrieksinstelling"
+    IDS_USE_LOCALE_DATEFMT  "&Datumformaat naar taal"
+    IDS_MUI_MENU_THEMES     "&Schema's"
+    IDM_THEMES_FACTORY_RESET "&Standaardinstelling"
     IDM_THEMES_STD_CFG       "&Standaard"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
@@ -267,9 +267,9 @@ BEGIN
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Zoekgeschiedenis wissen"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Wis vervanggeschiedenis"
-    IDS_MUI_WRAPSEARCH_FWD  "Loop match vanaf de bovenkant"
-    IDS_MUI_WRAPSEARCH_BCK  "Loop match vanaf de onderkant"
+                            "Vervanggeschiedenis wissen"
+    IDS_MUI_WRAPSEARCH_FWD  "Verderzoeken vanaf de bovenkant"
+    IDS_MUI_WRAPSEARCH_BCK  "Verderzoeken vanaf de onderkant"
 END
 
 STRINGTABLE
@@ -277,8 +277,8 @@ BEGIN
     IDS_MUI_SB_MARK_ALL_OCC   "Alle voorvallen markeren..."
     IDS_MUI_SB_TOGGLE_VIEW    "Weergave wisselen..."
     IDS_MUI_SB_REPLACE_ALL    "Alles vervangen..."
-    IDS_MUI_SB_WRAP_LINES     "Wikkelen lijnen..."
-    IDS_MUI_SB_CONV_LNBRK     "Lijnonderbrekingen converteren..."
+    IDS_MUI_SB_WRAP_LINES     "Regelterugloop..."
+    IDS_MUI_SB_CONV_LNBRK     "Regeleindes converteren..."
     IDS_MUI_SB_RECODING_DOC   "Document hercoderen..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer Styling toepassen..."
 END
@@ -287,25 +287,25 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Gebruik:\r\n\
-Notepad3 \t[/?] [...[Codering]] [...[Lijn ending modus]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [...[Codering]] [...[Regeleinde-modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[schijf:][pad]bestand[...]]\r\n\r\n\
 bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\tspaties standaard.\r\n\
 +\tAccepteer meerdere bestandsargumenten (met\r\n\taanhalingstekens spaties).\r\n\
 -\tAccepteer argument voor een enkel bestand (zonder\r\n\taanhalingstekens).\r\n\r\n\
 Opties:\r\n\
-/?\tTonen dit help-bericht.\r\n\
+/?\tDit help-bericht weergeven.\r\n\
 ...\tCodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tLijn ending modus (/crlf, /cr, /lf).\r\n\
-/e\tBestandsbron codering.\r\n\
+...\tRegeleinde-modus (/crlf, /cr, /lf).\r\n\
+/e\tCodering bronbestand.\r\n\
 /g\tSpring naar de opgegeven positie (/g -1 einde van het bestand).\r\n\
-/m\tMatch met opgegeven tekst (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-herlaad van gewijzigde bestanden.\r\n\
-/q\tForceer het maken van nieuwe bestanden zonder prompt.\r\n\
+/m\tZoek opgegeven tekst (/m- last, /mr regex, /mb backslash).\r\n\
+/l\tAuto-herladen van gewijzigde bestanden.\r\n\
+/q\tForceer het aanmaken van nieuwe bestanden zonder prompt.\r\n\
 /s\tSelecteer opgegeven syntaxisschema.\r\n\
 /d\tSelecteer standaardtekstschema.\r\n\
 /h\tSelecteer Web Source Code-schema.\r\n\
-/x\tSelecteer XML-document schema.\r\n\
+/x\tSelecteer XML-documentschema.\r\n\
 /c\tOpen een nieuw venster en plak inhoud van klembord.\r\n\
 /b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
 /n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
@@ -314,28 +314,28 @@ Opties:\r\n\
 \tof /p <links>,<top>,<breedte>,<hoogte>,<max>    [alle gehele getallen].\r\n\
 /t\tStel de titel van het venster in.\r\n\
 /i\tStart als systeemvakpictogram.\r\n\
-/o\tHoud het venster bovenop.\r\n\
+/o\tVenster bovenop houden.\r\n\
 /f\tGeef een ini-bestand op (/f0 geen ini-bestand).\r\n\
 /u\tUitvoeren met verhoogde rechten.\r\n\
 /v\tBestand direct afdrukken en afsluiten.\r\n\
-/vd\tBestand afdrukken (open printerdialoog).\r\n\
+/vd\tBestand afdrukken (via printerdialoog).\r\n\
 /y\tZoekomgeving PAD in geval van relatieve bestandsnaam.\r\n\
 /z\tVolgende overslaan (bruikbaar voor het register-gebaseerde\r\n\tNotepad vervanging).\r\n\r\n\
 Voorbeelden:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open een nieuw bestand: ""Test.txt"" Codering=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Nieuw bestand openen: ""Test.txt"" Codering=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print het bestand: ""Test.txt"" onmiddellijk.\
+ \t... Bestand direct afdrukken: ""Test.txt"".\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Bestandsextensies moeten gescheiden door ';'\r\n\
-gebruiken \\<regex>; om een overeenkomstig bestandsnaam patroon te definiëren:\r\n\
+gebruik \\<regex>; om een overeenkomstig bestandsnaam patroon te definiëren:\r\n\
    \\xyz$;   => bestandsnamen(basename+ext) met 'xyz' als laatste tekens.\r\n\r\n\
-Stijl formaat:\r\n\
+Stijl-formaat:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Kopieer formaat: gebruik 'kopiëren en plakken' of 'slepen en neerzetten'.\
+Opmaak kopiëren: gebruik 'kopiëren en plakken' of 'slepen en neerzetten'.\
 "
 
 END
@@ -356,10 +356,10 @@ IDS_MUI_ABOUT_RTF_2  "\
 \\cf0 \\fs20\\b1\\ul1 Open Source / Bibliotheken:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Dankbetuiging:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Met dank aan:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Hulpmiddelen:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Bronnen:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
 \\cf0 \\fs20\\b1\\ul1 Licenties:\\ul0\\b0\\fs18\\par\
@@ -381,4 +381,5 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
 
