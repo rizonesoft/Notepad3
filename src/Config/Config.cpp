@@ -857,7 +857,7 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 
     if (!result) {
         // sub directory (.\np3\)
-        Path_Reset(hPathEx, _W(SAPPNAME) L".ini");
+        Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         HPATHL hmodpth = Path_Allocate(NULL);
         Path_GetAppDirectory(hmodpth);
         HPATHL hnp3 = Path_Allocate(L"./np3/");
@@ -874,7 +874,7 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 
     if (!result) {
         // Application Data (%APPDATA%)
-        Path_Reset(hPathEx, Path_Get(hpth_in_out));
+        Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         HPATHL happdata = Path_Allocate(NULL);
         if (Path_GetKnownFolder(FOLDERID_RoamingAppData, happdata)) {
             Path_Append(happdata, hPathEx);
@@ -889,7 +889,7 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 
     if (!result) {
         // Home (%HOMEPATH%) user's profile dir
-        Path_Reset(hPathEx, Path_Get(hpth_in_out));
+        Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         HPATHL hprofile = Path_Allocate(NULL);
         if (Path_GetKnownFolder(FOLDERID_Profile, hprofile)) {
             Path_Append(hprofile, hPathEx);
@@ -905,7 +905,7 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 #if 0
     if (!result) {
         // in general search path
-        Path_Reset(hPathEx, Path_Get(hpth_in_out));
+        Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         Path_ExpandEnvStrings(hPathEx);
         HPATHL hsearchpth = Path_Allocate(NULL);
         wchar_t* const buf = Path_WriteAccessBuf(hsearchpth, PATHLONG_MAX_CCH);

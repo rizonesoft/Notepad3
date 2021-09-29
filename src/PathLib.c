@@ -149,28 +149,23 @@
 #define COUNTOF(ar) ARRAYSIZE(ar)
 #define CONSTSTRGLEN(s) (COUNTOF(s) - 1)
 
+// -------------------------------------------------
+
 const wchar_t* const PATHUNC_PREFIX1 = L"\\\\?\\UNC\\";
 const wchar_t* const PATHUNC_PREFIX2 = L"\\\\.\\UNC\\";
-#define PATHUNC_PREFIX_LEN (COUNTOF(PATHUNC_PREFIX1) - 1)
 
 // TODO: ???
 //const wchar_t* const VOLUME_PREFIX = L"\\\\?\\Volume{";
-//#define PATHUNC_PREFIX_LEN (COUNTOF(VOLUME_PREFIX) - 1)
 
 const wchar_t* const PATHLONG_PREFIX = L"\\\\?\\";
-#define PATHLONG_PREFIX_LEN (COUNTOF(PATHLONG_PREFIX) - 1)
 
 const wchar_t* const NETSHARE_PREFIX = L"\\\\";
-#define NETSHARE_PREFIX_LEN (COUNTOF(NETSHARE_PREFIX) - 1)
 
 const wchar_t* const PATHPARENT_PREFIX = L"..\\";
-#define PATHPARENT_PREFIX_LEN (COUNTOF(PATHPARENT_PREFIX) - 1)
 
 const wchar_t* const PATHDSPL_INFIX = L" ... ";
-#define PATHDSPL_INFIX_LEN (COUNTOF(PATHDSPL_INFIX) - 1)
 
 const wchar_t* const PATH_CSIDL_MYDOCUMENTS = L"%CSIDL:MYDOCUMENTS%";
-#define PATH_CSIDL_MYDOCUMENTS_LEN (COUNTOF(PATH_CSIDL_MYDOCUMENTS) - 1)
 
 
 // TODO: ...
@@ -532,7 +527,7 @@ static const wchar_t* _Path_SkipLPPrefix(const HPATHL hpth)
 {
     const wchar_t* start = PathGet(hpth);
     if (wcsstr(start, PATHLONG_PREFIX) == start) {
-        start += (PATHLONG_PREFIX_LEN + 1);
+        start += wcslen(PATHLONG_PREFIX) + 1;
     }
     return start;
 }
@@ -556,17 +551,17 @@ static const wchar_t* _Path_IsValidUNC(const HPATHL hpth, bool* isUNC_out)
 
     if ((wcsstr(start, PATHUNC_PREFIX1) == start) ||
         (wcsstr(start, PATHUNC_PREFIX2) == start)) {
-        start += (PATHUNC_PREFIX_LEN + 1);
+        start += wcslen(PATHUNC_PREFIX1) + 1;
         isUncOrNetShare = true;
     }
 
     /// _Path_SkipLPPrefix()
     if (wcsstr(start, PATHLONG_PREFIX) == start) {
-        start += (PATHLONG_PREFIX_LEN + 1);
+        start += wcslen(PATHLONG_PREFIX) + 1;
     }
 
     if (wcsstr(start, NETSHARE_PREFIX) == start) {
-        start += (NETSHARE_PREFIX_LEN + 1);
+        start += wcslen(NETSHARE_PREFIX) + 1;
         isUncOrNetShare = true;
     }
 
@@ -728,7 +723,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, const HPATHL hmore)
     }
 
     const wchar_t* const wchm = PathGet(hmore);
-    wchar_t* const       wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + PATHLONG_PREFIX_LEN + 2);
+    wchar_t* const       wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + wcslen(PATHLONG_PREFIX) + 2);
     size_t const         cch = StrgGetAllocLength(hstr_io);
 
     // append directory separator
@@ -789,6 +784,9 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_in_out)
 
     HPATHL hpth_cpy = Path_Allocate(PathGet(hpth_in_out));
     HSTRINGW hstr_cpy = ToHStrgW(hpth_cpy);
+
+    wchar_t* const buf = StrgWriteAccessBuf(hstr_cpy, 0);
+    if (buf) {}
 
     //~ PathXCchCanonicalizeEx() does not convert forward slashes (/) into back slashes (\).
     //~StrgReplaceCh(hstr_cpy, L'/', L'\\');
@@ -1437,7 +1435,7 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         // prepare buffer for prefix "..\" x dir_cnt
 
         size_t const   alloc_add = wcslen(&hto_buf[prefix]) + 1;
-        size_t const   len = (PATHPARENT_PREFIX_LEN * dir_cnt) + alloc_add;
+        size_t const   len = (wcslen(PATHPARENT_PREFIX) * dir_cnt) + alloc_add;
         wchar_t* const out_buf = StrgWriteAccessBuf(hrecv_str, len);
         for (size_t d = 0; d < dir_cnt; ++d) {
             StringCchCatW(out_buf, len, PATHPARENT_PREFIX);
@@ -1605,9 +1603,9 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
                 HSTRINGW       hsrch_str = StrgCreate(NULL);
                 wchar_t* const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
                 if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
-                    //StrgSanitize(hsrch_str);
+                    //~StrgSanitize(hsrch_str);
                     Path_Reset(hpth_in_out, buf);
-                    //PrependLongPathPrefix(hpth_in_out, false);
+                    //~PrependLongPathPrefix(hpth_in_out, false);
                 }
                 else {
                     StrgSanitize(hsrch_str);
@@ -1645,16 +1643,16 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
 
             if (GetFinalPathNameByHandleW(hFile, buf, PATHLONG_MAX_CCH, FILE_NAME_OPENED) > 0) {
                 StrgSanitize(hstr);
-                WCHAR* ptr = buf;
+                wchar_t* ptr = buf;
                 // remove prefix
-                if (wcslen(buf) < MAX_PATH) {
+                if ((wcslen(buf) < MAX_PATH) || HasOptInToRemoveMaxPathLimit()) {
                     if ((wcsstr(ptr, PATHUNC_PREFIX1) == ptr) ||
                         (wcsstr(ptr, PATHUNC_PREFIX2) == ptr)) {
-                        ptr += (PATHUNC_PREFIX_LEN - 1);
+                        ptr += (wcslen(PATHUNC_PREFIX1) - 1);
                         *ptr = L'\\';
                     }
                     else if (wcsstr(ptr, PATHLONG_PREFIX) == ptr) {
-                        ptr += (PATHLONG_PREFIX_LEN + 1);
+                        ptr += wcslen(PATHLONG_PREFIX);
                     }
                 }
                 Path_Reset(hpth_in_out, ptr);
@@ -1858,8 +1856,8 @@ void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffe
         // Explorer like display name ???
         HPATHL   hpart_pth = Path_Allocate(PathGet(hfnam_pth));
         HSTRINGW hpart_str = ToHStrgW(hpart_pth);
-        size_t const split_idx = (cchDestBuffer >> 1) - PATHDSPL_INFIX_LEN;
-        StrgDelete(hpart_str, split_idx, (fnam_len - cchDestBuffer + (PATHDSPL_INFIX_LEN << 1)));
+        size_t const split_idx = (cchDestBuffer >> 1) - wcslen(PATHDSPL_INFIX);
+        StrgDelete(hpart_str, split_idx, (fnam_len - cchDestBuffer + (wcslen(PATHDSPL_INFIX) << 1)));
         StrgInsert(hpart_str, split_idx, PATHDSPL_INFIX);
         StringCchCopyW(lpszDestPath, cchDestBuffer, StrgGet(hpart_str));
         Path_Release(hpart_pth);

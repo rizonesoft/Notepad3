@@ -11183,6 +11183,8 @@ bool ActivatePrevInst()
 
     if (Flags.bSingleFileInstance && Path_IsNotEmpty(s_pthArgFilePath)) {
 
+        wchar_t* const buf = Path_WriteAccessBuf(s_pthArgFilePath, 0);
+        if (buf){}
         Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
         EnumWindows(EnumWndProc2,(LPARAM)&hwnd);

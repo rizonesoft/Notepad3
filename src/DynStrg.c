@@ -84,14 +84,9 @@ __forceinline size_t SizeOfMemStrg(LPCVOID lpMemory) {
 /*                                                */
 /**************************************************/
 
-__forceinline STRINGW* ToWStrg(HSTRINGW hstr)
-{
-    if (!hstr)
-        return NULL;
-    return (STRINGW*)hstr;
-}
-
 #define limit_len(len) (((len) < STRINGW_MAX_CCH) ? (len) : (STRINGW_MAX_CCH - 1))
+
+__forceinline STRINGW* ToWStrg(HSTRINGW hstr) { return (STRINGW*)hstr; }
 
 inline static void * AllocBuffer(const size_t len, bool bZeroMem) {
     if (!s_hndlProcessHeap) {

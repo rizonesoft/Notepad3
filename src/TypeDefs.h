@@ -58,7 +58,7 @@
 #ifndef DECLARE_HANDLE
 #define DECLARE_HANDLE(name) \
     struct name##__ {        \
-        int unused;          \
+        ptrdiff_t unused;    \
     };                       \
     typedef struct name##__* name
 #endif
