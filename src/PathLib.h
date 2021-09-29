@@ -1,7 +1,21 @@
-/****************************************************************/
+// encoding: UTF-8
+/******************************************************************************
+*                                                                             *
+*                                                                             *
+* Notepad3                                                                    *
+*                                                                             *
+* PathLib.h                                                                   *
+*   Definition for dynamic wide char Long Path handling                       *
+*   Based on DynStrg module                                                   *
+*                                                                             *
+*                                                  (c) Rizonesoft 2021        *
+*                                                    https://rizonesoft.com   *
+*                                                                             *
+*                                                                             *
+*******************************************************************************/
 #pragma once
 
-// comment out PATHCCH_NO_DEPRECATE to show deprcated API
+// comment out PATHCCH_NO_DEPRECATE to show deprecated API
 #define PATHCCH_NO_DEPRECATE 1
 ///#include <pathcch.h>
 
@@ -141,6 +155,6 @@ bool PTHAPI   Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);
 bool PTHAPI   PathCreateDeskLnk(LPCWSTR pszDocument, LPCWSTR pszDescription);
 bool PTHAPI   PathCreateFavLnk(LPCWSTR pszName, LPCWSTR pszTarget, LPCWSTR pszDir);
 
-    // ============================================================================
+// ============================================================================
 // ============================================================================
 

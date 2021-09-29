@@ -1,10 +1,25 @@
-/****************************************************************/
+// encoding: UTF-8
+/******************************************************************************
+*                                                                             *
+*                                                                             *
+* Notepad3                                                                    *
+*                                                                             *
+* DynStrg.h                                                                   *
+*   Definitions for dynamic wide char string handling                         *
+*   Based on code from                                                        *
+*   https://www.codeproject.com/Articles/1259074/C-Language-Dynamic-String    *
+*   by steveb (MIT license)                                                   *
+*                                                                             *
+*                                                  (c) Rizonesoft 2021        *
+*                                                    https://rizonesoft.com   *
+*                                                                             *
+*                                                                             *
+*******************************************************************************/
 #pragma once
 
 #include "TypeDefs.h"
 
 #define STRAPI __stdcall
-
 
 /**************************************************/
 /*                                                */

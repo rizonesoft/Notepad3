@@ -1,4 +1,20 @@
-/****************************************************************/
+// encoding: UTF-8
+/******************************************************************************
+*                                                                             *
+*                                                                             *
+* Notepad3                                                                    *
+*                                                                             *
+* DynStrg.c                                                                   *
+*   Implementation for dynamic wide char string handling                      *
+*   Based on code from                                                        *
+*   https://www.codeproject.com/Articles/1259074/C-Language-Dynamic-String    *
+*   by steveb (MIT license)                                                   *
+*                                                                             *
+*                                                  (c) Rizonesoft 2021        *
+*                                                    https://rizonesoft.com   *
+*                                                                             *
+*                                                                             *
+*******************************************************************************/
 
 #define NOMINMAX
 #define VC_EXTRALEAN 1
