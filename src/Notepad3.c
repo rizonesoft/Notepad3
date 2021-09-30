@@ -3703,7 +3703,6 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
 //
 //  MsgInitMenu() - Handles WM_INITMENU
 //
-//
 LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
@@ -3716,7 +3715,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //bool const dm = UseDarkMode();
     bool const si = Flags.bSingleFileInstance;
     bool const cf = Path_IsNotEmpty(Paths.CurrentFile);
-    bool const sav = Globals.bCanSaveIniFile;
     bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
     bool const lck = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK); // file write lock
     bool const faro = s_bFileReadOnly;                                     // file attrib read-only
@@ -3726,6 +3724,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const te = Sci_IsDocEmpty();
     bool const mls = Sci_IsSelectionMultiLine();
     //bool const lfl = Flags.bHugeFileLoadState;
+
+    //~bool const sav = Globals.bCanSaveIniFile; ~ done by UpdateSaveSettingsCmds()
 
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
@@ -4053,12 +4053,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
 
     CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, Flags.bReuseWindow);
-    EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, sav);
     CheckCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, Flags.bSingleFileInstance);
-    EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, sav);
     CheckCmd(hmenu, IDM_VIEW_STICKYWINPOS, Flags.bStickyWindowPosition);
-    EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, sav);
-    EnableCmd(hmenu, CMD_SAVEASDEFWINPOS, sav);
 
     CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
     CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
@@ -4092,11 +4088,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //~EnableCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, !faro);
 
     CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
-    EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, sav);
     CheckCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
-    EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles && sav);
     CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
-    EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, sav);
 
     CheckCmd(hmenu, IDM_VIEW_EVALTINYEXPRONSEL, Settings.EvalTinyExprOnSelection);
 
@@ -9758,10 +9751,26 @@ void UpdateSaveSettingsCmds()
     bool const bSoftLocked = Flags.bSettingsFileSoftLocked;
     bool const bHaveIniFile = Path_IsNotEmpty(Paths.IniFile);
     bool const bHaveFallbackIniFile = Path_IsNotEmpty(Paths.IniFileDefault);
-    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !bSoftLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !bSoftLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (bHaveIniFile || bHaveFallbackIniFile) && !bSoftLocked);
-    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, bHaveIniFile && !bSoftLocked);
+    bool const bCurrFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
+
+    bool const bCanSav = Globals.bCanSaveIniFile = !(bSoftLocked && bCurrFileLocked) && CanAccessPath(Paths.IniFile, GENERIC_WRITE);
+
+    HMENU const hmenu = Globals.hMainMenu;
+
+    CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !bSoftLocked);
+
+    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, bCanSav && !bSoftLocked);
+    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, (bHaveIniFile || bHaveFallbackIniFile) && !bSoftLocked);
+    EnableCmd(hmenu, CMD_OPENINIFILE, bHaveIniFile && !bSoftLocked);
+
+    EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, bCanSav);
+    EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, bCanSav);
+    EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, bCanSav);
+    EnableCmd(hmenu, CMD_SAVEASDEFWINPOS, bCanSav);
+    EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, bCanSav);
+    EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles && bCanSav);
+    EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, bCanSav);
+
     DrawMenuBar(Globals.hwndMain);
 }
 
@@ -11947,9 +11956,9 @@ void InstallFileWatching(const bool bInstall) {
             }
         }
     }
-
     Path_Release(hdir_pth);
-
+    
+    UpdateSaveSettingsCmds(); // (!) reflection
     UpdateTitleBar(Globals.hwndMain);
     UpdateToolbar();
 }
