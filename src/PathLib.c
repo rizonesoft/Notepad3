@@ -697,9 +697,9 @@ void PTHAPI Path_Release(HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-void PTHAPI Path_Empty(HPATHL hpth, bool truncate)
+void PTHAPI Path_Empty(HPATHL hpth_in_out, bool truncate)
 {
-    StrgEmpty(ToHStrgW(hpth), truncate);
+    StrgEmpty(ToHStrgW(hpth_in_out), truncate);
 }
 // ----------------------------------------------------------------------------
 
@@ -776,12 +776,12 @@ void PTHAPI Path_Swap(HPATHL hpth1, HPATHL hpth2)
 // ----------------------------------------------------------------------------
 
 
-void PTHAPI Path_FreeExtra(HPATHL hpth_in_out)
+void PTHAPI Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
         return;
-    StrgFreeExtra(hstr_io);
+    StrgFreeExtra(hstr_io, keep_length);
 }
 // ----------------------------------------------------------------------------
 
@@ -1024,7 +1024,7 @@ void PTHAPI Path_GetModuleFilePath(HPATHL hpth_out)
         wchar_t* const buf = StrgWriteAccessBuf(hmod_str, PATHLONG_MAX_CCH);
         GetModuleFileNameW(NULL, buf, PATHLONG_MAX_CCH);
         StrgSanitize(hmod_str);
-        StrgFreeExtra(hmod_str);
+        StrgFreeExtra(hmod_str, 0);
     }
 
     Path_Reset(hpth_out, PathGet(mod_path));
@@ -1228,7 +1228,7 @@ bool PTHAPI Path_GetCurrentDirectory(HPATHL hpth_out)
         wchar_t* const buf = StrgWriteAccessBuf(hwrk_str, PATHLONG_MAX_CCH);
         GetCurrentDirectoryW(PATHLONG_MAX_CCH, buf);
         StrgSanitize(hwrk_str);
-        StrgFreeExtra(hwrk_str);
+        StrgFreeExtra(hwrk_str, 0);
     }
 
     Path_Reset(hpth_out, PathGet(wrk_path));
@@ -2257,7 +2257,7 @@ wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len)
 void PTHAPI Path_Sanitize(HPATHL hpth)
 {
     StrgSanitize((HSTRINGW)hpth);
-    StrgFreeExtra((HSTRINGW)hpth);
+    StrgFreeExtra((HSTRINGW)hpth, MAX_PATH);
 }
 
 // ============================================================================

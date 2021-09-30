@@ -1248,7 +1248,7 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 
 //=============================================================================
 //
-//  GetFileEncoding()
+//  GetFileEncoding()  TODO: §§§ @@@ MAX_PATH
 //
 extern "C" ENC_DET_T Encoding_DetectEncoding(LPCWSTR pszFile, const char* lpData, const size_t cbData,
         cpi_enc_t iAnalyzeHint,

@@ -59,7 +59,7 @@ size_t PTHAPI          Path_GetLength(HPATHL hpth);
 HPATHL PTHAPI          Path_Copy(const HPATHL hpth);
 bool PTHAPI            Path_Append(HPATHL hpth, HPATHL hmore);
 void PTHAPI            Path_Swap(HPATHL hpth1, HPATHL hpth2);
-void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out);
+void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length);
 
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);

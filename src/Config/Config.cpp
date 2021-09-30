@@ -1418,7 +1418,7 @@ void LoadSettings()
         Path_Sanitize(Settings.OpenWithDir);
         Path_AbsoluteFromApp(Settings.OpenWithDir, true);
     }
-    //~Path_FreeExtra(Settings.OpenWithDir); ~ already done
+    //~Path_FreeExtra(Settings.OpenWithDir, 0); ~ already done
 
     Path_GetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir);
     wchar_t* const wchFavoritesDir = Path_WriteAccessBuf(Settings.FavoritesDir, PATHLONG_MAX_CCH);
@@ -1426,7 +1426,7 @@ void LoadSettings()
         Path_Sanitize(Settings.FavoritesDir);
         Path_AbsoluteFromApp(Settings.FavoritesDir, true);
     }
-    //~Path_FreeExtra(Settings.FavoritesDir); ~ already done
+    //~Path_FreeExtra(Settings.FavoritesDir, 0); ~ already done
 
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);

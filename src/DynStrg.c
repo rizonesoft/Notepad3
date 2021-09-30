@@ -218,14 +218,15 @@ static wchar_t* CopyOldDataW(STRINGW* pstr, size_t* outLen)
 // ----------------------------------------------------------------------------
 
 
-static void FreeUnusedData(STRINGW* pstr)
+static void FreeUnusedData(STRINGW* pstr, size_t keep_length)
 {
-    size_t const new_alloc_len = pstr->data_length + 1;
-    if (pstr->alloc_length > new_alloc_len) {
+    size_t const new_alloc_len = max_s(keep_length + 1, pstr->data_length + 1);
+    if ((pstr->alloc_length > new_alloc_len) ) {
         pstr->data = ReAllocBuffer(pstr->data, new_alloc_len, true, true);
         pstr->alloc_length = LengthOfBuffer(pstr->data);
         pstr->data_length = StrlenW(pstr->data);
     }
+    // else: not reserve memory up to keep_length if shorter
 }
 // ----------------------------------------------------------------------------
 
@@ -511,12 +512,12 @@ void STRAPI StrgFree(HSTRINGW hstr)
 // ----------------------------------------------------------------------------
 
 
-void STRAPI StrgFreeExtra(HSTRINGW hstr)
+void STRAPI StrgFreeExtra(HSTRINGW hstr, size_t keep_length)
 {
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
         return;
-    FreeUnusedData(pstr);
+    FreeUnusedData(pstr, keep_length);
 }
 // ----------------------------------------------------------------------------
 
@@ -526,12 +527,14 @@ void STRAPI StrgEmpty(const HSTRINGW hstr, bool truncate)
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
         return;
-    if (!(pstr->data))
+    if (!(pstr->data)) {
+        ReAllocW(pstr, 0, true);
         return;
+    }
     (pstr->data)[0] = L'\0';
     pstr->data_length = 0;
     if (truncate) {
-        FreeUnusedData(pstr);
+        FreeUnusedData(pstr, 0);
     }
 }
 // ----------------------------------------------------------------------------

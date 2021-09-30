@@ -1111,7 +1111,7 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
 //
 bool EditLoadFile(
     HWND hwnd,
-    LPCWSTR pszFile,
+    const HPATHL hfile_pth,
     EditFileIOStatus* const status,
     bool bSkipUTFDetection,
     bool bSkipANSICPDetection,
@@ -1127,7 +1127,7 @@ bool EditLoadFile(
     status->bEncryptedRaw = false;
     Flags.bHugeFileLoadState = false;
 
-    HANDLE const hFile = CreateFile(pszFile,
+    HANDLE const hFile = CreateFileW(Path_Get(hfile_pth),
                                     GENERIC_READ,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                                     NULL,
@@ -1197,8 +1197,8 @@ bool EditLoadFile(
 
     // check for unknown file/extension
     status->bUnknownExt = false;
-    if (!Style_HasLexerForExt(pszFile)) {
-        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, PathFindFileName(pszFile)));
+    if (!Style_HasLexerForExt(Path_Get(hfile_pth))) {
+        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, Path_FindFileName(hfile_pth)));
         if (!((IDOK == answer) || (IDYES == answer))) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
@@ -1274,7 +1274,7 @@ bool EditLoadFile(
 
     // --------------------------------------------------------------------------
 
-    ENC_DET_T const encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData,
+    ENC_DET_T const encDetection = Encoding_DetectEncoding(Path_Get(hfile_pth), lpData, cbData,
                                    Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_PREFERRED_ENCODING,
                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
@@ -1420,7 +1420,7 @@ bool EditLoadFile(
 //
 bool EditSaveFile(
     HWND hwnd,
-    LPCWSTR pszFile,
+    const HPATHL hfile_pth,
     EditFileIOStatus * const status,
     bool bSaveCopy,
     bool bPreserveTimeStamp)
@@ -1434,28 +1434,28 @@ bool EditSaveFile(
     ///~ (!) FILE_FLAG_NO_BUFFERING needs sector-size aligned buffer layout
     DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL | /*FILE_FLAG_NO_BUFFERING |*/ FILE_FLAG_WRITE_THROUGH;
 
-    HANDLE hFile = CreateFile(pszFile,
-                                GENERIC_WRITE,
-                                FILE_SHARE_READ | FILE_SHARE_WRITE,
-                                NULL,
-                                OPEN_ALWAYS,
-                                dwWriteAttributes,
-                                NULL);
+    HANDLE hFile = CreateFileW(Path_Get(hfile_pth),
+                               GENERIC_WRITE,
+                               FILE_SHARE_READ | FILE_SHARE_WRITE,
+                               NULL,
+                               OPEN_ALWAYS,
+                               dwWriteAttributes,
+                               NULL);
 
     Globals.dwLastError = GetLastError();
 
     // failure could be due to missing attributes (2k/XP)
     if (!IS_VALID_HANDLE(hFile)) {
-        DWORD dwSpecialAttributes = GetFileAttributes(pszFile);
+        DWORD dwSpecialAttributes = Path_GetFileAttributes(hfile_pth);
         if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
             dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
-            hFile = CreateFile(pszFile,
-                                       GENERIC_WRITE,
-                                       FILE_SHARE_READ|FILE_SHARE_WRITE,
-                                       NULL,
-                                       OPEN_ALWAYS,
-                                       dwWriteAttributes | dwSpecialAttributes,
-                                       NULL);
+            hFile = CreateFileW(Path_Get(hfile_pth),
+                                GENERIC_WRITE,
+                                FILE_SHARE_READ|FILE_SHARE_WRITE,
+                                NULL,
+                                OPEN_ALWAYS,
+                                dwWriteAttributes | dwSpecialAttributes,
+                                NULL);
 
             Globals.dwLastError = GetLastError();
         }

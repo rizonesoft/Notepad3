@@ -41,7 +41,7 @@ size_t STRAPI            StrgGetLength(const HSTRINGW hstr);
 size_t STRAPI            StrgGetAllocLength(const HSTRINGW hstr);
 
 void STRAPI              StrgFree(HSTRINGW hstr);        // NULL PTR 
-void STRAPI              StrgFreeExtra(HSTRINGW hstr);   // optimize mem
+void STRAPI              StrgFreeExtra(HSTRINGW hstr, size_t keep_length); // shrink not below keep_len
 void STRAPI              StrgEmpty(const HSTRINGW hstr, bool truncate); // -> L""  
 
 int STRAPI               StrgReset(HSTRINGW hstr, const wchar_t* str);
