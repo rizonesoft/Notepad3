@@ -2503,6 +2503,7 @@ bool SelectExternalToolBar(HWND hwnd)
                 | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
 
     if (GetOpenFileName(&ofn)) {
+        //Path_Sanitize(hfile_pth);
         PathQuoteSpaces(szFile);
         if (StrIsNotEmpty(szArg2)) {
             StringCchCat(szFile, COUNTOF(szFile), L" ");
@@ -11080,7 +11081,7 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     }
 
     WCHAR szDefExt[64] = { L'\0' };
-    WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 1];
+    WCHAR szFilter[EXTENTIONS_FILTER_BUFFER];
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
     HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
@@ -11095,13 +11096,14 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
     ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
     ofn.lpstrFile = file_buf;
-    ofn.nMaxFile = PATHLONG_MAX_CCH;
+    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
                 OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
                 OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
     ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
     bool const res = GetOpenFileNameW(&ofn);
+    Path_Sanitize(hfile_pth_io);
 
     Path_Release(hpth_dir);
     Path_FreeExtra(hfile_pth_io, MAX_PATH);
@@ -11123,7 +11125,7 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     }
 
     WCHAR szDefExt[64] = { L'\0' };
-    WCHAR szFilter[BUFZIZE_STYLE_EXTENTIONS << 1];
+    WCHAR szFilter[EXTENTIONS_FILTER_BUFFER];
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
 
     HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
@@ -11138,13 +11140,14 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
     ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
     ofn.lpstrFile = file_buf;
-    ofn.nMaxFile = PATHLONG_MAX_CCH;
+    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
     ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
                 /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
                 OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
     bool const res = GetSaveFileNameW(&ofn);
+    Path_Sanitize(hfile_pth_io);
 
     Path_Release(hpth_dir);
     Path_FreeExtra(hfile_pth_io, MAX_PATH);

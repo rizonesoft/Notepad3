@@ -2257,7 +2257,6 @@ wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len)
 void PTHAPI Path_Sanitize(HPATHL hpth)
 {
     StrgSanitize((HSTRINGW)hpth);
-    StrgFreeExtra((HSTRINGW)hpth, MAX_PATH);
 }
 
 // ============================================================================

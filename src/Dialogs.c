@@ -1283,8 +1283,8 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 #endif
 
 		// MakeBitmapButton(hwnd,IDC_SEARCHEXE,IDB_OPEN, -1, -1);
-		SendDlgItemMessage(hwnd, IDC_COMMANDLINE, EM_LIMITTEXT, MAX_PATH - 1, 0);
-		SetDlgItemText(hwnd, IDC_COMMANDLINE, (LPCWSTR)lParam); //TODO: §§§ MAX_PATH limit §§§ @@@!
+        SendDlgItemMessage(hwnd, IDC_COMMANDLINE, EM_LIMITTEXT, CMDLN_LENGTH_LIMIT - 1, 0);
+		SetDlgItemText(hwnd, IDC_COMMANDLINE, (LPCWSTR)lParam);
 		SHAutoComplete(GetDlgItem(hwnd, IDC_COMMANDLINE), SHACF_FILESYSTEM);
 
 		CenterDlgInParent(hwnd, NULL);
@@ -1337,71 +1337,100 @@ CASE_WM_CTLCOLOR_SET:
 		switch (LOWORD(wParam)) {
 
 		case IDC_SEARCHEXE: {
-			WCHAR szArgs[MAX_PATH] = { L'\0' };
-			WCHAR szArg2[MAX_PATH] = { L'\0' };
-			WCHAR szFile[MAX_PATH] = { L'\0' };
-			WCHAR szFilter[MAX_PATH] = { L'\0' };
 
-			GetDlgItemText(hwnd, IDC_COMMANDLINE, szArgs, COUNTOF(szArgs));
-			ExpandEnvironmentStringsEx(szArgs, COUNTOF(szArgs));
-			ExtractFirstArgument(szArgs, szFile, szArg2, MAX_PATH);
+            HPATHL hfile_pth = Path_Allocate(NULL);
+            wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
 
-			GetLngString(IDS_MUI_FILTER_EXE, szFilter, COUNTOF(szFilter));
-			PrepareFilterStr(szFilter);
+            HSTRINGW hargs_str = StrgCreate(NULL);
+            wchar_t* const args_buf = StrgWriteAccessBuf(hargs_str, CMDLN_LENGTH_LIMIT);
+            HSTRINGW hargs2_str = StrgCreate(NULL);
+            wchar_t* const args2_buf = StrgWriteAccessBuf(hargs2_str, StrgGetAllocLength(hargs_str));
+
+            HSTRINGW hflt_str = StrgCreate(NULL);
+            wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
+
+			GetDlgItemText(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str));
+            StrgSanitize(hargs_str);
+            ExpandEnvironmentStrgs(hargs_str);
+
+            ExtractFirstArgument(args_buf, file_buf, args2_buf, CMDLN_LENGTH_LIMIT);
+            Path_Sanitize(hfile_pth);
+            StrgSanitize(hargs2_str);
+
+			GetLngString(IDS_MUI_FILTER_EXE, flt_buf, (int)StrgGetAllocLength(hflt_str));
+            StrgSanitize(hflt_str);
+
+            PrepareFilterStr(flt_buf);
 
 			OPENFILENAME ofn = { 0 };
 			ofn.lStructSize = sizeof(OPENFILENAME);
 			ofn.hwndOwner = hwnd;
-			ofn.lpstrFilter = szFilter;
-			ofn.lpstrFile = szFile;
-			ofn.nMaxFile = COUNTOF(szFile);
+            ofn.lpstrFilter = StrgGet(hflt_str);
+            ofn.lpstrFile = file_buf;
+            ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
 			ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
 						| OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
 
 			if (GetOpenFileName(&ofn)) {
-				PathQuoteSpaces(szFile);
-				if (StrIsNotEmpty(szArg2)) {
-					StringCchCat(szFile, COUNTOF(szFile), L" ");
-					StringCchCat(szFile, COUNTOF(szFile), szArg2);
+                Path_Sanitize(hfile_pth);
+                Path_QuoteSpaces(hfile_pth);
+                StrgReset(hargs_str, Path_Get(hfile_pth));
+                if (StrgIsNotEmpty(hargs2_str)) {
+                    StrgCat(hargs_str, L" ");
+                    StrgCat(hargs_str, StrgGet(hargs2_str));
 				}
-				SetDlgItemText(hwnd, IDC_COMMANDLINE, szFile);
+                SetDlgItemText(hwnd, IDC_COMMANDLINE, StrgGet(hargs_str));
 			}
 			PostMessage(hwnd, WM_NEXTDLGCTL, 1, 0);
+
+            StrgDestroy(hflt_str);
+            StrgDestroy(hargs2_str);
+            StrgDestroy(hargs_str);
+            Path_Release(hfile_pth);
 		}
 		break;
 
 
 		case IDC_COMMANDLINE: {
 			bool bEnableOK = false;
-			WCHAR args[MAX_PATH] = { L'\0' };
+            HSTRINGW       hargs_str = StrgCreate(NULL);
+            wchar_t* const args_buf = StrgWriteAccessBuf(hargs_str, CMDLN_LENGTH_LIMIT);
 
-			if (GetDlgItemText(hwnd, IDC_COMMANDLINE, args, MAX_PATH)) {
-				if (ExtractFirstArgument(args, args, NULL, MAX_PATH)) {
-					if (StrIsNotEmpty(args)) {
+			if (GetDlgItemText(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str))) {
+                StrgSanitize(hargs_str);
+                if (ExtractFirstArgument(args_buf, args_buf, NULL, (int)StrgGetAllocLength(hargs_str))) {
+                    StrgSanitize(hargs_str);
+                    if (StrgIsNotEmpty(hargs_str)) {
 						bEnableOK = true;
 					}
 				}
 			}
 			DialogEnableControl(hwnd, IDOK, bEnableOK);
+            StrgDestroy(hargs_str);
 		}
 		break;
 
 
 		case IDOK: {
-			WCHAR arg1[MAX_PATH] = { L'\0' };
-			WCHAR arg2[MAX_PATH] = { L'\0' };
+            HPATHL         hfile_pth = Path_Allocate(NULL);
+            wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+            HSTRINGW       hargs_str = StrgCreate(NULL);
+            wchar_t* const args_buf = StrgWriteAccessBuf(hargs_str, CMDLN_LENGTH_LIMIT);
 
-			if (GetDlgItemText(hwnd, IDC_COMMANDLINE, arg1, MAX_PATH)) {
+			if (GetDlgItemText(hwnd, IDC_COMMANDLINE, file_buf, (int)Path_GetBufCount(hfile_pth))) {
+                Path_Sanitize(hfile_pth);
 
 				bool bQuickExit = false;
 
-				ExpandEnvironmentStringsEx(arg1, COUNTOF(arg1));
-				ExtractFirstArgument(arg1, arg1, arg2, MAX_PATH);
+				Path_ExpandEnvironmentStrings(hfile_pth);
+                ExtractFirstArgument(file_buf, file_buf, args_buf, (int)Path_GetBufCount(hfile_pth));
+                Path_Sanitize(hfile_pth);
+                StrgSanitize(hargs_str);
 
-				if (StringCchCompareNI(arg1, COUNTOF(arg1), _W(SAPPNAME), CONSTSTRGLEN(_W(SAPPNAME))) == 0 ||
-					StringCchCompareNI(arg1, COUNTOF(arg1), _W(SAPPNAME) L".exe", CONSTSTRGLEN(_W(SAPPNAME) L".exe")) == 0) {
-					GetModuleFileName(NULL, arg1, COUNTOF(arg1));
-					PathCanonicalizeEx(arg1, COUNTOF(arg1));
+				if (StringCchCompareXI(file_buf, _W(SAPPNAME)) == 0 ||
+                    StringCchCompareXI(file_buf, _W(SAPPNAME) L".exe") == 0) {
+                    Path_GetModuleFilePath(hfile_pth);
+                    Path_CanonicalizeEx(hfile_pth);
 					bQuickExit = true;
 				}
 
@@ -1415,8 +1444,8 @@ CASE_WM_CTLCOLOR_SET:
 				sei.fMask = SEE_MASK_DEFAULT;
 				sei.hwnd = hwnd;
 				sei.lpVerb = NULL;
-				sei.lpFile = arg1;
-				sei.lpParameters = arg2;
+                sei.lpFile = Path_Get(hfile_pth);
+                sei.lpParameters = StrgGet(hargs_str);
 				sei.lpDirectory = Path_Get(pthDirectory);
 				sei.nShow = SW_SHOWNORMAL;
 
@@ -1437,7 +1466,9 @@ CASE_WM_CTLCOLOR_SET:
 				}
 				Path_Release(pthDirectory);
 			}
-		}
+            StrgDestroy(hargs_str);
+            Path_Release(hfile_pth);
+        }
 		break;
 
 
@@ -4526,9 +4557,9 @@ void DialogFileBrowse(HWND hwnd)
 
 	if (Path_IsNotEmpty(Settings2.FileBrowserPath)) {
 		ExtractFirstArgument(Path_Get(Settings2.FileBrowserPath), pth_buf, param_buf, PATHLONG_MAX_CCH);
-		Path_ExpandEnvStrings(hExeFile);
-	}
-	Path_Sanitize(hExeFile);
+    	Path_Sanitize(hExeFile);
+        Path_ExpandEnvStrings(hExeFile);
+    }
 
 	if (StrStrIW(Path_Get(hExeFile), L"explorer.exe") && StrIsEmpty(param_buf)) {
 		SendWMCommand(hwnd, IDM_FILE_EXPLORE_DIR);

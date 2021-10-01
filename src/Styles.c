@@ -695,6 +695,7 @@ bool Style_Import(HWND hwnd)
     bool result = false;
 
     if (GetOpenFileName(&ofn)) {
+        //Path_Sanitize(hfile_pth_io);
         result = Style_ImportFromFile(szFile);
     }
     return result;
@@ -1004,6 +1005,7 @@ bool Style_Export(HWND hwnd)
 
     bool ok = false;
     if (GetSaveFileName(&ofn)) {
+        //Path_Sanitize(hfile_pth_io);
         ok = Style_ExportToFile(szFile, true);
         if (!ok) {
             InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, PathFindFileName(szFile));
@@ -2741,7 +2743,7 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
     WCHAR filterAll[80] = { L'\0' };
     GetLngString(IDS_MUI_FILTER_ALL, filterAll, COUNTOF(filterAll));
 
-    WCHAR filterDef[BUFZIZE_STYLE_EXTENTIONS << 1] = { L'\0' };
+    WCHAR  filterDef[EXTENTIONS_FILTER_BUFFER] = { L'\0' };
     WCHAR ext[64] = { L'\0' };
     WCHAR append[80] = { L'\0' };
     bool bCurExtIncl = false;
@@ -3929,7 +3931,7 @@ void Style_GetStyleDisplayName(PEDITSTYLE pStyle, LPWSTR lpszName, int cchName)
 //
 int Style_GetLexerIconId(PEDITLEXER plex)
 {
-    WCHAR pszFile[MAX_PATH + BUFZIZE_STYLE_EXTENTIONS];
+    WCHAR pszFile[MAX_PATH + STYLE_EXTENTIONS_BUFFER];
 
     LPCWSTR pszExtensions;
     if (StrIsNotEmpty(plex->szExtensions)) {
@@ -4041,10 +4043,10 @@ static bool  _ApplyDialogItemText(HWND hwnd,
 
     bool bChgNfy = false;
 
-    WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
+    WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER)] = { L'\0' };
     GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf));
     // normalize
-    WCHAR szBufNorm[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
+    WCHAR szBufNorm[max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER)] = { L'\0' };
     Style_CopyStyles_IfNotDefined(szBuf, szBufNorm, COUNTOF(szBufNorm));
 
     if (StringCchCompareXI(szBufNorm, pDlgStyle->szValue) != 0) {
@@ -4113,7 +4115,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static bool       bIsStyleSelected = false;
     static bool       bWarnedNoIniFile = false;
 
-    static WCHAR      tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
+    static WCHAR      tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER)] = {L'\0'};
     static UT_array  *pStylesBackup = NULL;
 
     switch (umsg) {
@@ -4213,7 +4215,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
         iCurStyleIdx  = STY_DEFAULT;
 
-        SendDlgItemMessage(hwnd, IDC_STYLEEDIT, EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS) - 1, 0);
+        SendDlgItemMessage(hwnd, IDC_STYLEEDIT, EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER) - 1, 0);
 
         MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
         MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
@@ -4544,7 +4546,7 @@ CASE_WM_CTLCOLOR_SET:
             //ImageList_EndDrag();
             HTREEITEM htiTarget = TreeView_GetDropHilight(hwndTV);
             if (htiTarget) {
-                WCHAR tchCopy[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
+                WCHAR tchCopy[max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER)] = {L'\0'};
                 TreeView_SelectDropTarget(hwndTV, NULL);
                 GetDlgItemText(hwnd, IDC_STYLEEDIT, tchCopy, COUNTOF(tchCopy));
                 TreeView_Select(hwndTV, htiTarget, TVGN_CARET);
@@ -4661,7 +4663,7 @@ CASE_WM_CTLCOLOR_SET:
 
         case IDC_STYLEEDIT: {
             if (HIWORD(wParam) == EN_CHANGE) {
-                WCHAR tch[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
+                WCHAR tch[max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER)] = {L'\0'};
 
                 GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
 

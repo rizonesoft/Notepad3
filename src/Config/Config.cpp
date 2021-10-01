@@ -911,6 +911,7 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
         wchar_t* const buf = Path_WriteAccessBuf(hsearchpth, PATHLONG_MAX_CCH);
         if (SearchPathW(NULL, Path_Get(hPathEx), L".ini", PATHLONG_MAX_CCH, buf, NULL)) {
             Path_Sanitize(hsearchpth);
+            Path_FreeExtra(hsearchpth, MAX_PATH);
             Path_Swap(hPathEx, hsearchpth);
             result = true;
         }
@@ -936,6 +937,7 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
         wchar_t* const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
         if (IniFileGetString(Path_Get(hpth_in_out), lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
             Path_Sanitize(hredirect);
+            Path_FreeExtra(hredirect, MAX_PATH);
             if (_CheckAndSetIniFile(hredirect)) {
                 Path_Swap(hpth_in_out, hredirect);
             }
@@ -1174,7 +1176,7 @@ void LoadSettings()
     Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
     Path_ExpandEnvironmentStrings(Settings2.DefaultDirectory);
 
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, PATHLONG_MAX_CCH);
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
     Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0), 0, 86400000<<2); // max: 48h
@@ -1416,6 +1418,7 @@ void LoadSettings()
     wchar_t* const wchOpenWithDir = Path_WriteAccessBuf(Settings.OpenWithDir, PATHLONG_MAX_CCH);
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Path_Get(Defaults.OpenWithDir), wchOpenWithDir, PATHLONG_MAX_CCH)) {
         Path_Sanitize(Settings.OpenWithDir);
+        Path_FreeExtra(Settings.OpenWithDir, 0);
         Path_AbsoluteFromApp(Settings.OpenWithDir, true);
     }
     //~Path_FreeExtra(Settings.OpenWithDir, 0); ~ already done
@@ -1424,6 +1427,7 @@ void LoadSettings()
     wchar_t* const wchFavoritesDir = Path_WriteAccessBuf(Settings.FavoritesDir, PATHLONG_MAX_CCH);
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Path_Get(Defaults.FavoritesDir), wchFavoritesDir, PATHLONG_MAX_CCH)) {
         Path_Sanitize(Settings.FavoritesDir);
+        Path_FreeExtra(Settings.FavoritesDir, 0);
         Path_AbsoluteFromApp(Settings.FavoritesDir, true);
     }
     //~Path_FreeExtra(Settings.FavoritesDir, 0); ~ already done
