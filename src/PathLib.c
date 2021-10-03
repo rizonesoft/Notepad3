@@ -1148,13 +1148,13 @@ const wchar_t* PTHAPI Path_FindFileName(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-bool PTHAPI Path_QuoteSpaces(HPATHL hpth_in_out)
+bool PTHAPI Path_QuoteSpaces(HPATHL hpth_in_out, bool bForceQuotes)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
         return false;
 
-    bool const found = (StrgFindCh(hstr_io, L' ', 0) != STRINGW_INVALID_IDX);
+    bool const found = bForceQuotes ? true : (StrgFindCh(hstr_io, L' ', 0) != STRINGW_INVALID_IDX);
     if (found) {
         if (StrgGetAt(hstr_io, 0) != L'"') {
             StrgInsert(hstr_io, 0, L"\"");

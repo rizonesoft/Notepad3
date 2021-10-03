@@ -3200,33 +3200,28 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  _OnDropOneFile()
 //
-// TODO: §§§ @@@ MAX_PATH
-static LRESULT _OnDropOneFile(HWND hwnd, LPCWSTR szFilePath, WININFO* wi) {
-
+static LRESULT _OnDropOneFile(HWND hwnd, HPATHL hFilePath, WININFO* wi)
+{
     if (IsIconic(hwnd)) {
         ShowWindow(hwnd, SW_RESTORE);
     }
 
-    HPATHL hfile_pth = Path_Allocate(szFilePath);
-
-    if (Path_IsExistingDirectory(hfile_pth)) {
-        if (OpenFileDlg(Globals.hwndMain, hfile_pth, hfile_pth)) {
-            FileLoad(hfile_pth, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+    if (Path_IsExistingDirectory(hFilePath)) {
+        if (OpenFileDlg(Globals.hwndMain, hFilePath, hFilePath)) {
+            FileLoad(hFilePath, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
         }
     }
-    else if (PathIsExistingFile(szFilePath)) {
+    else if (Path_IsExistingFile(hFilePath)) {
         //~ ignore Flags.bReuseWindow
         if (IsKeyDown(VK_CONTROL) || wi) {
-            DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, szFilePath, wi);
+            DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, hFilePath, wi);
         } else { 
-            FileLoad(hfile_pth, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
+            FileLoad(hFilePath, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
         }
     } else {
         // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
     }
-
-    Path_Release(hfile_pth);
     return FALSE;
 }
 
@@ -3241,18 +3236,20 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HDROP const hDrop = (HDROP)wParam;
     bool const vkCtrlDown = IsKeyDown(VK_CONTROL);
 
-    WCHAR szDropFilePath[MAX_PATH + 40];
+    HPATHL hdrop_pth = Path_Allocate(NULL);
+    wchar_t* const drop_buf = Path_WriteAccessBuf(hdrop_pth, STRINGW_MAX_URL_LENGTH);
     UINT const cnt = DragQueryFile(hDrop, UINT_MAX, NULL, 0);
 
     int const offset = Settings2.LaunchInstanceWndPosOffset;
 
     for (UINT i = 0; i < cnt; ++i) {
         WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0));
-        DragQueryFile(hDrop, i, szDropFilePath, COUNTOF(szDropFilePath));
-        _OnDropOneFile(hwnd, szDropFilePath, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
+        DragQueryFile(hDrop, i, drop_buf, (UINT)Path_GetBufCount(hdrop_pth));
+        _OnDropOneFile(hwnd, hdrop_pth, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
     }
 
     DragFinish(hDrop);
+    Path_Release(hdrop_pth);
     return 0;
 }
 
@@ -4338,8 +4335,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2: {
         SaveAllSettings(false);
-        LPCWSTR lpcwFilePath = (iLoWParam == IDM_FILE_NEWWINDOW2) ? Path_Get(Paths.CurrentFile) : NULL;
-        DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, lpcwFilePath, NULL);
+        HPATHL hpth = (iLoWParam == IDM_FILE_NEWWINDOW2) ? Paths.CurrentFile : NULL;
+        DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, hpth, NULL);
     }
     break;
 
@@ -4405,7 +4402,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
         }
         HPATHL hcpy = Path_Copy(Paths.CurrentFile);
-        Path_QuoteSpaces(hcpy);
+        Path_QuoteSpaces(hcpy, false);
         RunDlg(hwnd, Path_Get(hcpy));
         Path_Release(hcpy);
     }
@@ -8219,12 +8216,14 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_URIDROPPED: {
-        WCHAR szFilePath[MAX_PATH + 40] = { L'\0' };
-        if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szFilePath, (int)COUNTOF(szFilePath)) > 0) {
-            return _OnDropOneFile(hwnd, szFilePath, NULL);
-        }
+        HPATHL hfile_pth = Path_Allocate(NULL);
+        wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, STRINGW_MAX_URL_LENGTH);
+        int const cnt = MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, file_buf, (int)Path_GetBufCount(hfile_pth));
+        LRESULT const result = (cnt > 0) ? _OnDropOneFile(hwnd, hfile_pth, NULL) : FALSE;
+        Path_Release(hfile_pth);
+        return result;
     }
-    break;
+
 
     default:
         return FALSE;
@@ -10983,7 +10982,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
                 answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L""));
             }
             if ((IDOK == answer) || (IDYES == answer)) {
-                DialogNewWindow(Globals.hwndMain, false, Path_Get(Paths.CurrentFile), NULL);
+                DialogNewWindow(Globals.hwndMain, false, Paths.CurrentFile, NULL);
                 CloseApplication();
             }
         }

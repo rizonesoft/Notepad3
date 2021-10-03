@@ -69,7 +69,7 @@ bool            GetWindowRectEx(HWND hwnd, LPRECT pRect);
 void            FitIntoMonitorGeometry(LPRECT pRect, WININFO* pWinInfo, SCREEN_MODE mode, bool bTopLeft);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
-void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WININFO* wi);
+void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi);
 void DialogFileBrowse(HWND hwnd);
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);

@@ -937,7 +937,7 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
         wchar_t* const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
         if (IniFileGetString(Path_Get(hpth_in_out), lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
             Path_Sanitize(hredirect);
-            Path_FreeExtra(hredirect, MAX_PATH);
+            Path_FreeExtra(hredirect, 0);
             if (_CheckAndSetIniFile(hredirect)) {
                 Path_Swap(hpth_in_out, hredirect);
             }

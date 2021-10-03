@@ -1373,7 +1373,7 @@ CASE_WM_CTLCOLOR_SET:
 
 			if (GetOpenFileName(&ofn)) {
                 Path_Sanitize(hfile_pth);
-                Path_QuoteSpaces(hfile_pth);
+                Path_QuoteSpaces(hfile_pth, true);
                 StrgReset(hargs_str, Path_Get(hfile_pth));
                 if (StrgIsNotEmpty(hargs2_str)) {
                     StrgCat(hargs_str, L" ");
@@ -4484,59 +4484,59 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 
 //=============================================================================
 //
-//  DialogNewWindow()  TODO: §§§ MAX_PATH limit §§§ @@@!
+//  DialogNewWindow()
 //
 //
-void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WININFO* wi) {
-
+void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi)
+{
 	if (bSaveOnRunTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
 		return;
 	}
-	WCHAR szModuleName[MAX_PATH] = { L'\0' };
-	GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
-	PathCanonicalizeEx(szModuleName, COUNTOF(szModuleName));
+    WCHAR wch[80] = { L'\0' };
 
-	WCHAR tch[64] = { L'\0' };
-	WCHAR szParameters[2 * MAX_PATH + 64] = { L'\0' };
-	StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
-	StringCchCopy(szParameters, COUNTOF(szParameters), tch);
+    HPATHL hmod_pth = Path_Allocate(NULL);
+    Path_GetModuleFilePath(hmod_pth);
+    Path_CanonicalizeEx(hmod_pth);
 
-	StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU ? 1 : 0));
-	StringCchCat(szParameters, COUNTOF(szParameters), tch);
-
-	StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
+	StringCchPrintf(wch, COUNTOF(wch), L"\"-appid=%s\"", Settings2.AppUserModelID);
+    HSTRINGW hparam_str = StrgCreate(wch);
+	StringCchPrintf(wch, COUNTOF(wch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU ? 1 : 0));
+    StrgCat(hparam_str, wch);
 	if (Path_IsNotEmpty(Paths.IniFile)) {
-		StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
-		StringCchCat(szParameters, COUNTOF(szParameters), Path_Get(Paths.IniFile));  //TODO: §§§ MAX_PATH limit §§§ @@@!
-		StringCchCat(szParameters, COUNTOF(szParameters), L"\"");
+        HPATHL hini_path = Path_Copy(Paths.IniFile);
+        Path_QuoteSpaces(hini_path, true);
+        StrgCat(hparam_str, L" -f ");
+        StrgCat(hparam_str, Path_Get(hini_path));
+        Path_Release(hini_path);
 	} else {
-		StringCchCat(szParameters, COUNTOF(szParameters), L"0");
+        StrgCat(hparam_str, L" -f0");
 	}
-	StringCchCat(szParameters, COUNTOF(szParameters), Flags.bSingleFileInstance ? L" -ns" : L" -n");
+    StrgCat(hparam_str, Flags.bSingleFileInstance ? L" -ns" : L" -n");
 
 	WININFO const _wi = (Flags.bStickyWindowPosition ? g_IniWinInfo : 
 						 (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset)));
 
-	StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.max);
-	StringCchCat(szParameters, COUNTOF(szParameters), tch);
+	StringCchPrintf(wch, COUNTOF(wch), L" -pos %i,%i,%i,%i,%i ", _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.max);
+    StrgCat(hparam_str, wch);
 
-	if (StrIsNotEmpty(lpcwFilePath)) {
-		WCHAR szFileName[MAX_PATH] = { L'\0' };
-		StringCchCopy(szFileName, COUNTOF(szFileName), lpcwFilePath);
-		PathQuoteSpaces(szFileName);
-		StringCchCat(szParameters, COUNTOF(szParameters), L" ");
-		StringCchCat(szParameters, COUNTOF(szParameters), szFileName);
+	if (Path_IsNotEmpty(hFilePath)) {
+        HPATHL hfile_pth = Path_Copy(hFilePath);
+        Path_QuoteSpaces(hfile_pth, true);
+        StrgCat(hparam_str, Path_Get(hfile_pth));
+        Path_Release(hfile_pth);
 	}
 
 	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 	sei.fMask = SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
 	sei.hwnd = hwnd;
 	sei.lpVerb = NULL;
-	sei.lpFile = szModuleName;
-	sei.lpParameters = szParameters;
+	sei.lpFile = Path_Get(hmod_pth);
+    sei.lpParameters = StrgGet(hparam_str);
 	sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
 	sei.nShow = SW_SHOWNORMAL;
 	ShellExecuteEx(&sei);
+
+    StrgDestroy(hparam_str);
 }
 
 
@@ -4588,7 +4588,7 @@ void DialogFileBrowse(HWND hwnd)
 
 	if (Path_IsNotEmpty(Paths.CurrentFile)) {
 		HPATHL pthTmp = Path_Copy(Paths.CurrentFile);
-		Path_QuoteSpaces(pthTmp);
+		Path_QuoteSpaces(pthTmp, true);
 		StringCchCat(param_buf, PATHLONG_MAX_CCH, Path_Get(pthTmp));
 		Path_Release(pthTmp);
 	}
@@ -4872,7 +4872,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 //
 bool s_bFreezeAppTitle = false; // extern visible
 
-static WCHAR s_wchAdditionalTitleInfo[MAX_PATH] = { L'\0' };
+static WCHAR s_wchAdditionalTitleInfo[MIDSZ_BUFFER] = { L'\0' };
 
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
 	StringCchCopy(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
@@ -5292,7 +5292,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
 	SetWindowStyle(hwnd, style);
 	SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
-	WCHAR wch[MAX_PATH];
+	WCHAR wch[MIDSZ_BUFFER];
 	GetMenuString(GetSystemMenu(GetParent(hwnd), FALSE), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
 	InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
 	InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
@@ -5631,7 +5631,7 @@ void StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID)
 	if (!uID) {
 		SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)L"");
 	} else {
-		WCHAR szText[MAX_PATH] = { L'\0' };
+		WCHAR szText[MIDSZ_BUFFER] = { L'\0' };
 		if (!GetLngString(uID, szText, COUNTOF(szText))) {
 			SendMessage(hwnd, SB_SETTEXT, (WPARAM)wParam, (LPARAM)L"");
 		} else {
