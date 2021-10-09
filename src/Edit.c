@@ -1197,7 +1197,7 @@ bool EditLoadFile(
 
     // check for unknown file/extension
     status->bUnknownExt = false;
-    if (!Style_HasLexerForExt(Path_Get(hfile_pth))) {
+    if (!Style_HasLexerForExt(hfile_pth)) {
         WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, Path_FindFileName(hfile_pth)));
         if (!((IDOK == answer) || (IDYES == answer))) {
             CloseHandle(hFile);
@@ -1274,7 +1274,7 @@ bool EditLoadFile(
 
     // --------------------------------------------------------------------------
 
-    ENC_DET_T const encDetection = Encoding_DetectEncoding(Path_Get(hfile_pth), lpData, cbData,
+    ENC_DET_T const encDetection = Encoding_DetectEncoding(hfile_pth, lpData, cbData,
                                    Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_PREFERRED_ENCODING,
                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 

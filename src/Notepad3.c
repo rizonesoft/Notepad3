@@ -1605,7 +1605,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                         Path_Empty(Paths.CurrentFile, false);
                     }
                     if (!s_flagLexerSpecified) {
-                        Style_SetLexerFromFile(Globals.hwndEdit, Path_Get(Paths.CurrentFile));
+                        Style_SetLexerFromFile(Globals.hwndEdit, Paths.CurrentFile);
                     }
 
                     // check for temp file and delete
@@ -1749,7 +1749,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     // check if a lexer was specified from the command line
     if (s_flagLexerSpecified) {
         if (s_lpSchemeArg) {
-            Style_SetLexerFromName(Globals.hwndEdit, Path_Get(Paths.CurrentFile),s_lpSchemeArg);
+            Style_SetLexerFromName(Globals.hwndEdit, Paths.CurrentFile, s_lpSchemeArg);
             LocalFree(s_lpSchemeArg);  // StrDup()
         } else if ((s_iInitialLexer >= 0) && (s_iInitialLexer < Style_NumOfLexers())) {
             Style_SetLexerFromID(Globals.hwndEdit, s_iInitialLexer);
@@ -2498,11 +2498,12 @@ bool SelectExternalToolBar(HWND hwnd)
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = szFilter;
     ofn.lpstrFile = szFile;
+    ofn.lpstrDefExt = L"bmp";
     ofn.nMaxFile = COUNTOF(szFile);
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
                 | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
 
-    if (GetOpenFileName(&ofn)) {
+    if (GetOpenFileNameW(&ofn)) {
         //Path_Sanitize(hfile_pth);
         PathQuoteSpaces(szFile);
         if (StrIsNotEmpty(szArg2)) {
@@ -3318,7 +3319,10 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (pcds->dwData == DATA_NOTEPAD3_PARAMS) {
         LPnp3params params = AllocMem(pcds->cbData, HEAP_ZERO_MEMORY);
         if (params) {
+
             CopyMemory(params, pcds->lpData, pcds->cbData);
+
+            HPATHL hfile_pth = Path_Allocate(&params->wchData);
 
             if (params->flagLexerSpecified) {
                 s_flagLexerSpecified = true;
@@ -3331,7 +3335,6 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 bool bOpened = false;
                 Encoding_Forced(params->flagSetEncoding);
 
-                HPATHL hfile_pth = Path_Allocate(&params->wchData);
                 if (Path_IsExistingDirectory(hfile_pth)) {
                     if (OpenFileDlg(Globals.hwndMain, hfile_pth, hfile_pth)) {
                         bOpened = FileLoad(hfile_pth, false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
@@ -3368,20 +3371,19 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
                         if (params->iInitialLexer < 0) {
                             WCHAR wchExt[32] = { L'\0' };
                             StringCchCopy(wchExt, COUNTOF(wchExt), L".");
-                            StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData, 0) + 1, 31);
-                            Style_SetLexerFromName(Globals.hwndEdit, &params->wchData, wchExt);
+                            StringCchCopyN(CharNextW(wchExt), 32, StrEnd(Path_Get(hfile_pth), 0) + 1, 31);
+                            Style_SetLexerFromName(Globals.hwndEdit, hfile_pth, wchExt);
                         } else if (params->iInitialLexer >= 0 && params->iInitialLexer < Style_NumOfLexers()) {
                             Style_SetLexerFromID(Globals.hwndEdit, params->iInitialLexer);
                         }
                     }
 
                     if (params->flagTitleExcerpt) {
-                        StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), StrEnd(&params->wchData, 0) + 1, COUNTOF(s_wchTitleExcerpt));
+                        StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), StrEnd(Path_Get(hfile_pth), 0) + 1, COUNTOF(s_wchTitleExcerpt));
                     }
                 }
                 // reset
                 Encoding_Forced(CPI_NONE);
-                Path_Release(hfile_pth);
             }
 
             if (params->flagJumpTo) {
@@ -3393,7 +3395,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             if (params->flagMatchText) {
                 g_flagMatchText = params->flagMatchText;
-                SetFindPattern(StrEnd(&params->wchData, 0) + 1);
+                SetFindPattern(StrEndW(Path_Get(hfile_pth), 0) + 1);
                 SetFindReplaceData(); // s_FindReplaceData
 
                 if (g_flagMatchText & 2) {
@@ -3412,6 +3414,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             s_flagLexerSpecified = false;
             s_flagQuietCreate = false;
 
+            Path_Release(hfile_pth);
             FreeMem(params);
         }
 
@@ -4487,9 +4490,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_OPENFAV:
         if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-            HPATHL         hfile_pth = Path_Allocate(NULL);
-            wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, PATHLONG_MAX_CCH);
-            if (FavoritesDlg(hwnd, file_buf, Path_GetBufCount(hfile_pth))) {
+            HPATHL hfile_pth = Path_Allocate(NULL);
+            if (FavoritesDlg(hwnd, hfile_pth)) {
                 if (Path_IsLnkToDirectory(hfile_pth, NULL)) {
                     Path_GetLnkPath(hfile_pth, hfile_pth);
                 }
@@ -10534,7 +10536,7 @@ bool FileLoad(const HPATHL hfile_pth, bool bDontSave, bool bNew, bool bReload,
         }
 
         if (!s_flagLexerSpecified) { // flagLexerSpecified will be cleared
-            bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Path_Get(Paths.CurrentFile));
+            bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Paths.CurrentFile);
         }
         SciCall_SetEOLMode(fioStatus.iEOLMode);
         Encoding_Current(fioStatus.iEncoding); // load may change encoding
@@ -10612,7 +10614,7 @@ bool FileLoad(const HPATHL hfile_pth, bool bDontSave, bool bNew, bool bReload,
 
         bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
 
-        if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, Path_Get(Paths.CurrentFile))) {
+        if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
                 IgnoreNotifyDocChangedEvent(true);
                 SciCall_ConvertEOLs(fioStatus.iEOLMode);
@@ -10628,7 +10630,7 @@ bool FileLoad(const HPATHL hfile_pth, bool bDontSave, bool bNew, bool bReload,
 
         bool const bCheckIndent = bCheckFile && !Flags.bHugeFileLoadState && Settings.WarnInconsistentIndents;
 
-        if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, Path_Get(Paths.CurrentFile))) {
+        if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
             ConsistentIndentationCheck(&fioStatus);
         }
@@ -10964,7 +10966,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
                     if (!s_flagKeepTitleExcerpt) {
                         StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
                     }
-                    Style_SetLexerFromFile(Globals.hwndEdit, Path_Get(Paths.CurrentFile));
+                    Style_SetLexerFromFile(Globals.hwndEdit, Paths.CurrentFile);
                 } else {
                     Path_Swap(_hpthLastSaveCopyDir, hfile_pth);
                     Path_RemoveFileSpec(_hpthLastSaveCopyDir);
@@ -11105,6 +11107,8 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
 //
 bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
 {
+    UNREFERENCED_PARAMETER(hwnd);
+
     if (!hfile_pth_io) {
         return false;
     }
@@ -11118,6 +11122,7 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
 
     wchar_t* file_buf = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
 
+#if 1
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     ofn.hwndOwner = hwnd;
     ofn.hInstance = Globals.hInstance;
@@ -11132,6 +11137,18 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
     bool const res = GetOpenFileNameW(&ofn);
+
+#else
+    bool             res = false;
+    PIDLIST_ABSOLUTE pidl;
+    if (SUCCEEDED(SHParseDisplayName(file_buf, 0, &pidl, 0, 0))) {
+        ITEMIDLIST    idNull = { 0 };
+        LPCITEMIDLIST pidlNull[1] = { &idNull };
+        res = SUCCEEDED(SHOpenFolderAndSelectItems(pidl, 1, pidlNull, 0));
+        ILFree(pidl);
+    }
+#endif
+
     Path_Sanitize(hfile_pth_io);
 
     Path_Release(hpth_dir);

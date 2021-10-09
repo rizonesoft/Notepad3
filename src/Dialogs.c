@@ -1948,9 +1948,9 @@ CASE_WM_CTLCOLOR_SET:
 
 //=============================================================================
 //
-//  FavoritesDlg()   MAX_PATH
+//  FavoritesDlg()
 //
-bool FavoritesDlg(HWND hwnd, LPWSTR lpstrFile, size_t cch)
+bool FavoritesDlg(HWND hwnd, HPATHL hpath_in_out)
 {
 	DLITEM dliFavorite = { 0 };
 	dliFavorite.mask = DLI_FILENAME;
@@ -1964,7 +1964,8 @@ bool FavoritesDlg(HWND hwnd, LPWSTR lpstrFile, size_t cch)
     bool res = false;
 	if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
 									 hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite)) {
-        StringCchCopyW(lpstrFile, cch, dliFavorite.pthFileName);
+        Path_Sanitize(hpthFileName);
+        Path_Swap(hpath_in_out, hpthFileName);
         res = true;
 	}
 

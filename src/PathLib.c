@@ -2097,8 +2097,10 @@ bool PTHAPI PathIsLnkToDirectory(LPCWSTR pszPath, LPWSTR pszResPath, int cchResP
         WCHAR tchResPath[MAX_PATH] = { L'\0' };
         if (PathGetLnkPath(pszPath, tchResPath, sizeof(WCHAR) * COUNTOF(tchResPath))) {
             if (PathIsDirectory(tchResPath)) {
-                StringCchCopyN(pszResPath, cchResPath, tchResPath, COUNTOF(tchResPath));
-                return (true);
+                if (pszResPath) {
+                    StringCchCopyN(pszResPath, cchResPath, tchResPath, COUNTOF(tchResPath));
+                }
+                return true;
             }
         }
     }
@@ -2109,18 +2111,22 @@ bool PTHAPI PathIsLnkToDirectory(LPCWSTR pszPath, LPWSTR pszResPath, int cchResP
 bool PTHAPI Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out)
 {
     HSTRINGW hstr_lnk = ToHStrgW(hlnk_pth); // inplace hpth_in_out
-    if (!hstr_lnk || !hpth_out) {
+    if (!hstr_lnk) {
         return false;
     }
 
     WCHAR wchLnkPath[MAX_PATH] = { L'\0' };
     StringCchCopy(wchLnkPath, COUNTOF(wchLnkPath), StrgGet(hstr_lnk));
 
-    WCHAR      wchOutPath[MAX_PATH] = { L'\0' };
-    bool const res = PathIsLnkToDirectory(wchLnkPath, wchOutPath, COUNTOF(wchOutPath));
-
-    Path_Reset(hpth_out, wchOutPath);
-
+    bool res = false;
+    if (hpth_out) {
+        WCHAR wchOutPath[MAX_PATH] = { L'\0' };
+        res = PathIsLnkToDirectory(wchLnkPath, wchOutPath, COUNTOF(wchOutPath));
+        Path_Reset(hpth_out, wchOutPath);
+    }
+    else {
+        res = PathIsLnkToDirectory(wchLnkPath, NULL, 0);
+    }
     return res;
 }
 

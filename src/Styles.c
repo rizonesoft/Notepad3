@@ -677,27 +677,35 @@ int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 //
 bool Style_Import(HWND hwnd)
 {
-    WCHAR szFile[MAX_PATH] = { L'\0' };
-    WCHAR szFilter[MAX_PATH] = { L'\0' };
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    GetLngString(IDS_MUI_FILTER_INI, szFilter, COUNTOF(szFilter));
-    PrepareFilterStr(szFilter);
+    HPATHL         hfile_pth = Path_Allocate(NULL);
+    wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
 
-    ofn.lStructSize = sizeof(OPENFILENAME);
+    HSTRINGW       hflt_str = StrgCreate(NULL);
+    wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
+
+    GetLngString(IDS_MUI_FILTER_INI, flt_buf, (int)StrgGetAllocLength(hflt_str));
+    StrgSanitize(hflt_str);
+
+    PrepareFilterStr(flt_buf);
+
+    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = szFilter;
-    ofn.lpstrFile = szFile;
+    ofn.lpstrFilter = StrgGet(hflt_str);
+    ofn.lpstrFile = file_buf;
     ofn.lpstrDefExt = L"ini";
-    ofn.nMaxFile = COUNTOF(szFile);
+    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
                 | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
 
     bool result = false;
 
-    if (GetOpenFileName(&ofn)) {
-        //Path_Sanitize(hfile_pth_io);
-        result = Style_ImportFromFile(szFile);
+    if (GetOpenFileNameW(&ofn)) {
+        Path_Sanitize(hfile_pth);
+        result = Style_ImportFromFile(file_buf);
     }
+
+    StrgDestroy(hflt_str);
+    Path_Release(hfile_pth);
     return result;
 }
 
@@ -988,30 +996,39 @@ void Style_SaveSettings(bool bForceSaveSettings)
 //
 bool Style_Export(HWND hwnd)
 {
-    WCHAR szFile[MAX_PATH] = { L'\0' };
-    WCHAR szFilter[256] = { L'\0' };
+    HPATHL         hfile_pth = Path_Allocate(NULL);
+    wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+
+    HSTRINGW       hflt_str = StrgCreate(NULL);
+    wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
+
+    GetLngString(IDS_MUI_FILTER_INI, flt_buf, (int)StrgGetAllocLength(hflt_str));
+    StrgSanitize(hflt_str);
+
+    PrepareFilterStr(flt_buf);
+
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
-    PrepareFilterStr(szFilter);
-
-    ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = szFilter;
-    ofn.lpstrFile = szFile;
+    ofn.lpstrFilter = StrgGet(hflt_str);
+    ofn.lpstrFile = file_buf;
     ofn.lpstrDefExt = L"ini";
-    ofn.nMaxFile = COUNTOF(szFile);
+    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
     ofn.Flags = /*OFN_FILEMUSTEXIST |*/ OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                                        | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
+                | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
 
-    bool ok = false;
-    if (GetSaveFileName(&ofn)) {
-        //Path_Sanitize(hfile_pth_io);
-        ok = Style_ExportToFile(szFile, true);
-        if (!ok) {
-            InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, PathFindFileName(szFile));
+    bool result = false;
+
+    if (GetSaveFileNameW(&ofn)) {
+        Path_Sanitize(hfile_pth);
+        result = Style_ExportToFile(file_buf, true);
+        if (!result) {
+            InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, Path_FindFileName(hfile_pth));
         }
     }
-    return ok;
+
+    StrgDestroy(hflt_str);
+    Path_Release(hfile_pth);
+    return result;
 }
 
 
@@ -2305,7 +2322,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
 {
     if (StrIsNotEmpty(lpszFileName)) {
 
-        char chFilePath[MAX_PATH << 1] = { '\0' };
+        char chFilePath[XHUGE_BUFFER] = { '\0' };
         WideCharToMultiByteEx(CP_UTF8, 0, lpszFileName, -1, chFilePath, COUNTOF(chFilePath), NULL, NULL);
 
         for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
@@ -2319,7 +2336,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
                         e = f + StringCchLen(f, 0);
                     }
                     ++f; // exclude '\'
-                    char regexpat[MAX_PATH] = { '\0' };
+                    char regexpat[HUGE_BUFFER] = { '\0' };
                     WideCharToMultiByteEx(CP_UTF8, 0, f, (int)(e-f), regexpat, COUNTOF(regexpat), NULL, NULL);
 
                     if (OnigRegExFind(regexpat, chFilePath, false, SciCall_GetEOLMode(), NULL) >= 0) {
@@ -2338,10 +2355,10 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
 //
 //  Style_HasLexerForExt()
 //
-bool Style_HasLexerForExt(LPCWSTR lpszFile)
+bool Style_HasLexerForExt(const HPATHL hpath)
 {
     bool bFound = false;
-    LPCWSTR lpszExt = PathFindExtension(lpszFile);
+    LPCWSTR lpszExt = Path_FindExtension(hpath);
     if (StrIsNotEmpty(lpszExt)) {
         if (*lpszExt == L'.') {
             ++lpszExt;
@@ -2350,8 +2367,8 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
             bFound = true;
         }
     }
-    if (!bFound && StrIsNotEmpty(lpszFile)) {
-        bFound = Style_RegExMatchLexer(PathFindFileName(lpszFile));
+    if (!bFound && Path_IsNotEmpty(hpath)) {
+        bFound = Style_RegExMatchLexer(Path_FindFileName(hpath));
     }
     return bFound;
 }
@@ -2359,17 +2376,17 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 
 //=============================================================================
 //
-//  Style_SetLexerFromFile()  TODO: §§§ MAX_PATH limit §§§ @@@!
+//  Style_SetLexerFromFile()
 //
-bool Style_SetLexerFromFile(HWND hwnd, LPCWSTR lpszFile)
+bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
 {
     if (Flags.bHugeFileLoadState) {
         Style_SetDefaultLexer(hwnd);
         return true;
     }
 
-    LPCWSTR lpszExt = PathFindExtension(lpszFile);
-    bool  bFound = false;
+    LPCWSTR    lpszExt = Path_FindExtension(hpath);
+    bool       bFound = false;
     PEDITLEXER pLexNew = NULL;
     PEDITLEXER pLexSniffed = NULL;
 
@@ -2410,10 +2427,10 @@ bool Style_SetLexerFromFile(HWND hwnd, LPCWSTR lpszFile)
         }
     }
 
-    LPCWSTR lpszFileName = PathFindFileName(lpszFile);
+    LPCWSTR lpszFileName = Path_FindFileName(hpath);
 
     // check for filename regex match
-    if (!bFound && s_bAutoSelect && StrIsNotEmpty(lpszFile)) {
+    if (!bFound && s_bAutoSelect && Path_IsNotEmpty(hpath)) {
         pLexSniffed = Style_RegExMatchLexer(lpszFileName);
         if (pLexSniffed) {
             pLexNew = pLexSniffed;
@@ -2421,7 +2438,7 @@ bool Style_SetLexerFromFile(HWND hwnd, LPCWSTR lpszFile)
         }
     }
 
-    if (!bFound && s_bAutoSelect && (StrIsNotEmpty(lpszFile) && *lpszExt)) {
+    if (!bFound && s_bAutoSelect && (Path_IsNotEmpty(hpath) && *lpszExt)) {
         if (*lpszExt == L'.') {
             ++lpszExt;
         }
@@ -2487,7 +2504,7 @@ bool Style_SetLexerFromFile(HWND hwnd, LPCWSTR lpszFile)
 //
 //  Style_MaybeBinaryFile()
 //
-bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile)
+bool Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath)
 {
     UNREFERENCED_PARAMETER(hwnd);
 #if 0
@@ -2522,13 +2539,14 @@ bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile)
     size_t const _min = 5ULL;
     size_t const _max = 6ULL;
 
-    WCHAR lpszExt[16] = { L'\0' };
-    StringCchCopy(lpszExt, COUNTOF(lpszExt), L"|");
-    StringCchCopy(lpszExt, COUNTOF(lpszExt), PathFindExtension(lpszFile));
+    WCHAR lpszExt[32] = { L'\0' };
+    StringCchCopyW(lpszExt, COUNTOF(lpszExt), L"|");
+    StringCchCopyW(lpszExt, COUNTOF(lpszExt), Path_FindExtension(hpath));
     StringCchCat(lpszExt, COUNTOF(lpszExt), L"|");
-    size_t const len = StringCchLen(lpszExt,MAX_PATH);
+
+    size_t const len = StringCchLenW(lpszExt, COUNTOF(lpszExt));
     if (len < _min || len > _max) {
-        if (StrStrI(binaryExt, lpszExt)) {
+        if (StrStrIW(binaryExt, lpszExt)) {
             return true;
         }
     }
@@ -2539,9 +2557,9 @@ bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile)
 
 //=============================================================================
 //
-//  Style_SetLexerFromName() TODO: §§§ MAX_PATH limit §§§ @@@!
+//  Style_SetLexerFromName()
 //
-void Style_SetLexerFromName(HWND hwnd, LPCWSTR lpszFile, LPCWSTR lpszName)
+void Style_SetLexerFromName(HWND hwnd, const HPATHL hpath, LPCWSTR lpszName)
 {
     PEDITLEXER pLexNew = Style_MatchLexer(lpszName, false);
     if (pLexNew) {
@@ -2551,7 +2569,7 @@ void Style_SetLexerFromName(HWND hwnd, LPCWSTR lpszFile, LPCWSTR lpszName)
         if (pLexNew) {
             Style_SetLexer(hwnd, pLexNew);
         } else {
-            Style_SetLexerFromFile(hwnd, lpszFile);
+            Style_SetLexerFromFile(hwnd, hpath);
         }
     }
 }
@@ -3931,18 +3949,13 @@ void Style_GetStyleDisplayName(PEDITSTYLE pStyle, LPWSTR lpszName, int cchName)
 //
 int Style_GetLexerIconId(PEDITLEXER plex)
 {
-    WCHAR pszFile[MAX_PATH + STYLE_EXTENTIONS_BUFFER];
+    WCHAR pszFile[STYLE_EXTENTIONS_BUFFER << 1];
 
-    LPCWSTR pszExtensions;
-    if (StrIsNotEmpty(plex->szExtensions)) {
-        pszExtensions = plex->szExtensions;
-    } else {
-        pszExtensions = plex->pszDefExt;
-    }
-    StringCchCopy(pszFile,COUNTOF(pszFile),L"*.");
-    StringCchCat(pszFile,COUNTOF(pszFile),pszExtensions);
+    LPCWSTR pszExtensions = StrIsNotEmpty(plex->szExtensions) ? plex->szExtensions : plex->pszDefExt;
+    StringCchCopy(pszFile, COUNTOF(pszFile), L"*.");
+    StringCchCat(pszFile, COUNTOF(pszFile), pszExtensions);
 
-    WCHAR *p = StrChr(pszFile, L';');
+    WCHAR *p = StrChrW(pszFile, L';');
     if (p) {
         *p = L'\0';
     }

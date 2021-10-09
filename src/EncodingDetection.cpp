@@ -36,6 +36,7 @@
 
 extern "C" {
 #include "Helpers.h"
+#include "PathLib.h"
 #include "Encoding.h"
 #include "SciCall.h"
 }
@@ -1248,9 +1249,9 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 
 //=============================================================================
 //
-//  GetFileEncoding()  TODO: §§§ @@@ MAX_PATH
+//  GetFileEncoding()
 //
-extern "C" ENC_DET_T Encoding_DetectEncoding(LPCWSTR pszFile, const char* lpData, const size_t cbData,
+extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
         cpi_enc_t iAnalyzeHint,
         bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
@@ -1265,7 +1266,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPCWSTR pszFile, const char* lpData
 
     // --- 1st check for force encodings ---
 
-    LPCWSTR lpszExt = PathFindExtension(pszFile);
+    LPCWSTR    lpszExt = Path_FindExtension(hpath);
     bool const bNfoDizDetected = (lpszExt && ((StringCchCompareXI(lpszExt, L".nfo") == 0) || (StringCchCompareXI(lpszExt, L".diz") == 0)));
 
     encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
