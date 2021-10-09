@@ -4,7 +4,7 @@
 
 KEYWORDLIST KeyWords_SQL =
 {
-// Keywords
+// Keywords (keywords1)
     "abort accessible account action active add admin after against aggregate algorithm all allocate alter "
     "always analyse analyze and any apply as asc ascii asensitive at attach audit authorization authors "
     "auto_increment autoextend_size autoincrement avg avg_row_length backup before begin between binlog block "
@@ -67,24 +67,22 @@ KEYWORDLIST KeyWords_SQL =
     "use_frm user user_resources using utc_date utc_time utc_timestamp vacuum validation value values "
     "variables vcpu view virtual visible wait warnings week weight_string when whenever where while window "
     "with within without work wrapper write x509 xa xid xml xor year_month zerofill",
-// Database Objects
+// Database Objects (keywords2)
     "",
-// PLDoc
+// PLDoc (kw_pldoc)
     "",
-// SQL*Plus
+// SQL*Plus (kw_sqlplus)
     "",
-// User Keywords 1
+// User Keywords 1 (kw_user1)
     "bigint binary bit blob bool boolean byte char character clob date datetime day dec decimal double enum "
     "fixed float float4 float8 hour int int1 int2 int3 int4 int8 integer json long mediumint minute month "
     "native nchar numeric nvarchar real second serial signed smallint text time timestamp tinyint unsigned "
     "varbinary varchar varcharacter varying year",
-// (MySQL)
+// (MySQL) (kw_user2)
     "geomcollection geometry geometrycollection linestring longblob longtext mediumblob mediumtext "
     "multilinestring multipoint multipolygon point polygon tinyblob tinytext",
-// User Keywords 2
-    ""
 // User Keywords 3
-    "",
+    ""
 // User Keywords 4
     "",
     NULL,
@@ -97,14 +95,14 @@ EDITLEXER lexSQL =
     &KeyWords_SQL, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
         //{ {SCE_SQL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {SCE_SQL_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#505050", L"" },
-        { {SCE_SQL_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#800080", L"" },
+        { {SCE_SQL_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008080", L"" },
+        { {SCE_SQL_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#3E3EFF", L"" },
         { {SCE_SQL_USER1}, IDS_LEX_STR_63286, L"Value Type", L"bold; fore:#000080", L"" },
-        { {MULTI_STYLE(SCE_SQL_STRING,SCE_SQL_CHARACTER,0,0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000; back:#FFF1A8", L"" },
-        { {SCE_SQL_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"fore:#800080", L"" },
-        { {SCE_SQL_QUOTEDIDENTIFIER}, IDS_LEX_STR_63243, L"Quoted Identifier", L"fore:#800080; back:#FFCCFF", L"" },
-        { {SCE_SQL_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
-        { {SCE_SQL_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#800080", L"" },
+        { {MULTI_STYLE(SCE_SQL_STRING,SCE_SQL_CHARACTER,0,0)}, IDS_LEX_STR_63131, L"String", L"fore:#808080", L"" },
+        { {SCE_SQL_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"fore:#000000", L"" },
+        { {SCE_SQL_QUOTEDIDENTIFIER}, IDS_LEX_STR_63243, L"Quoted Identifier", L"fore:#000080; back:#FFFFE2", L"" },
+        { {SCE_SQL_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#A200A2", L"" },
+        { {SCE_SQL_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#FF8000", L"" },
         EDITLEXER_SENTINEL
     }
 };

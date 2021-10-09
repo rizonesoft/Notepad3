@@ -219,9 +219,12 @@ void Lexer_SetLexerSpecificProperties(const int lexerId) {
         break;
 
     case SCLEX_SQL:
+        SciCall_SetProperty("fold.sql.at.else", "1");
+        //SciCall_SetProperty("fold.sql.only.begin", "1");
         SciCall_SetProperty("sql.backslash.escapes", "1");
         SciCall_SetProperty("lexer.sql.backticks.identifier", "1");
         SciCall_SetProperty("lexer.sql.numbersign.comment", Settings2.LexerSQLNumberSignAsComment ? "1" : "0");
+        //SciCall_SetProperty("lexer.sql.allow.dotted.word", "0");
         break;
 
     case SCLEX_NSIS:
