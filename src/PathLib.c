@@ -91,6 +91,7 @@
 // - GetFileAttributesW
 // - GetFileAttributesExW
 // - SetFileAttributesW
+// - GetShortPathNameW
 // - GetFullPathNameW
 // - GetLongPathNameW
 // - MoveFileW
@@ -104,7 +105,6 @@
 // - FindNextStreamW
 // - GetCompressedFileSizeW
 // - GetFinalPathNameByHandleW
-//
 // 
 // Additional helpers (<stdlib.h> oder <wchar.h>)
 // 
@@ -1237,6 +1237,65 @@ bool PTHAPI Path_GetCurrentDirectory(HPATHL hpth_out)
 // ----------------------------------------------------------------------------
 
 
+size_t PTHAPI Path_ToShortPathName(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
+        return 0;
+    
+    DWORD const _len = GetShortPathNameW(StrgGet(hstr_io), NULL, 0);
+    if (!_len)
+        return false;
+
+    wchar_t* const buf = StrgWriteAccessBuf(hstr_io, _len);
+    
+    DWORD const len = GetShortPathNameW(buf, buf, (DWORD)StrgGetAllocLength(hstr_io));
+    StrgSanitize(hstr_io);
+
+    return len;
+}
+// ----------------------------------------------------------------------------
+
+
+size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
+        return 0;
+
+    PrependLongPathPrefix(hpth_in_out, false); // TODO: check or true ?
+
+    DWORD const    len = GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
+    wchar_t* const buf = StrgWriteAccessBuf(hstr_io, len);
+
+    size_t const res = (size_t)GetLongPathNameW(buf, buf, len);
+    StrgSanitize(hstr_io);
+
+    if (res > 2ULL) {
+        wchar_t* const pos = wcschr(buf, L':');
+        if (pos && (pos > buf)) {
+            CharUpperBuffW(pos - 1, 1);
+        }
+    }
+    return res;
+}
+
+#if 0
+size_t PTHAPI GetLongPathNameEx(LPWSTR lpszPath, const size_t cchBuffer)
+{
+    HPATHL      hpth = Path_Allocate(lpszPath);
+    size_t const res = Path_GetLongPathNameEx(hpth);
+    if (res) {
+        StringCchCopyW(lpszPath, cchBuffer, PathGet(hpth));
+    }
+    Path_Release(hpth);
+    return res;
+}
+#endif
+
+// ----------------------------------------------------------------------------
+
+
 // ============================================================================
 // Old Stuff in INTERMEDIATE DEV state
 // ============================================================================
@@ -1476,45 +1535,6 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
 bool PTHAPI Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to)
 {
     return _Path_RelativePathTo(hrecv, hfrom, attr_from, hto, attr_to);
-}
-
-
-//=============================================================================
-//
-//  GetLongPathNameEx()
-//
-size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out)
-{
-    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
-    if (!hstr_io)
-        return 0UL;
-
-    PrependLongPathPrefix(hpth_in_out, false); // TODO: check or true ?
-
-    DWORD const    len = (size_t)GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
-    wchar_t* const buf = StrgWriteAccessBuf(hstr_io, (size_t)len);
-
-    size_t const res = (size_t)GetLongPathNameW(buf, buf, len);
-    StrgSanitize(hstr_io);
-
-    if (res > 2ULL) {
-        wchar_t* const pos = wcschr(buf, L':');
-        if (pos && (pos > buf)) {
-            CharUpperBuffW(pos - 1, 1);
-        }
-    }
-    return res;
-}
-
-size_t PTHAPI GetLongPathNameEx(LPWSTR lpszPath, const size_t cchBuffer)
-{
-    HPATHL      hpth = Path_Allocate(lpszPath);
-    size_t const res = Path_GetLongPathNameEx(hpth);
-    if (res) {
-        StringCchCopyW(lpszPath, cchBuffer, PathGet(hpth));
-    }
-    Path_Release(hpth);
-    return res;
 }
 
 

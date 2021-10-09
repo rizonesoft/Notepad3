@@ -21,6 +21,7 @@
 #include <shlwapi.h>
 #include <string.h>
 
+#include "PathLib.h"
 #include "Dlapi.h"
 
 
@@ -603,13 +604,13 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
     if (lpdli->mask & DLI_FILENAME)
 
         IL_GetDisplayName(lplvid->lpsf,lplvid->pidl,SHGDN_FORPARSING,
-                          lpdli->szFileName,MAX_PATH);
+            lpdli->pthFileName, PATHLONG_MAX_CCH);
 
     // Displayname
     if (lpdli->mask & DLI_DISPNAME)
 
         IL_GetDisplayName(lplvid->lpsf,lplvid->pidl,SHGDN_INFOLDER,
-                          lpdli->szDisplayName,MAX_PATH);
+            lpdli->strDisplayName, INTERNET_MAX_URL_LENGTH);
 
     // Type (File / Directory)
     if (lpdli->mask & DLI_TYPE) {
@@ -795,14 +796,14 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
         return false;
     }
 
-    WCHAR szShortPath[MAX_PATH] = { L'\0' };
-    GetShortPathName(lpszFullPath, szShortPath, MAX_PATH);
+    HPATHL hshort_pth = Path_Allocate(lpszFullPath);
+    Path_ToShortPathName(hshort_pth);
 
     SHFILEINFO shfi = { 0 };
     if (StrIsEmpty(lpszDisplayName)) {
-        SHGetFileInfo(lpszFullPath, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
+        SHGetFileInfoW(lpszFullPath, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
     } else {
-        StringCchCopyN(shfi.szDisplayName, COUNTOF(shfi.szDisplayName), lpszDisplayName, MAX_PATH);
+        StringCchCopy(shfi.szDisplayName, COUNTOF(shfi.szDisplayName), lpszDisplayName);
     }
     LV_FINDINFO lvfi = { 0 };
     lvfi.flags = LVFI_STRING;
@@ -811,23 +812,32 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
     DLITEM dli = { 0 };
     dli.mask = DLI_ALL;
 
+    HPATHL hpthFileName = Path_Allocate(NULL);
+    dli.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
+
+    HSTRINGW hstrDisplayName = StrgCreate(NULL);
+    dli.strDisplayName = StrgWriteAccessBuf(hstrDisplayName, INTERNET_MAX_URL_LENGTH);
+
     int i = -1;
+    bool res = false;
     while ((i = ListView_FindItem(hwnd, i, &lvfi)) != -1) {
 
         DirList_GetItem(hwnd,i,&dli);
-        GetShortPathName(dli.szFileName,dli.szFileName,MAX_PATH);
+        GetShortPathNameW(dli.pthFileName, dli.pthFileName, (DWORD)Path_GetBufCount(hpthFileName));
 
-        if (!StringCchCompareNI(dli.szFileName,COUNTOF(dli.szFileName),szShortPath,COUNTOF(szShortPath))) {
+        if (StringCchCompareXI(dli.pthFileName, Path_Get(hshort_pth)) == 0) {
             ListView_SetItemState(hwnd,i,LVIS_FLAGS,LVIS_FLAGS);
             ListView_EnsureVisible(hwnd,i,false);
-
-            return true;
+            res = true;
+            break;
         }
 
     }
 
-    return false;
-
+    StrgDestroy(hstrDisplayName);
+    Path_Release(hpthFileName);
+    Path_Release(hshort_pth);
+    return res;
 }
 
 

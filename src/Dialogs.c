@@ -1440,6 +1440,9 @@ CASE_WM_CTLCOLOR_SET:
 					Path_RemoveFileSpec(pthDirectory);
 				}
 
+                Path_ToShortPathName(hfile_pth);
+                Path_ToShortPathName(pthDirectory);
+
 				SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 				sei.fMask = SEE_MASK_DEFAULT;
 				sei.hwnd = hwnd;
@@ -1452,11 +1455,11 @@ CASE_WM_CTLCOLOR_SET:
 				if (bQuickExit) {
 					sei.fMask |= SEE_MASK_NOZONECHECKS;
 					EndDialog(hwnd, IDOK);
-					ShellExecuteEx(&sei);
+					ShellExecuteExW(&sei);
 				}
 
 				else {
-					if (ShellExecuteEx(&sei)) {
+					if (ShellExecuteExW(&sei)) {
 						EndDialog(hwnd, IDOK);
 					}
 
@@ -1688,47 +1691,67 @@ CASE_WM_CTLCOLOR_SET:
 
 //=============================================================================
 //
-//  OpenWithDlg()  TODO: §§§ MAX_PATH limit §§§ @@@!
+//  OpenWithDlg()
 //
-bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
+bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
 {
 	bool result = false;
 
 	DLITEM dliOpenWith = { 0 };
 	dliOpenWith.mask = DLI_FILENAME;
 
+    HPATHL hpthFileName = Path_Allocate(NULL);
+    dliOpenWith.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
+
+    HSTRINGW hstrDisplayName = StrgCreate(NULL);
+    dliOpenWith.strDisplayName = StrgWriteAccessBuf(hstrDisplayName, INTERNET_MAX_URL_LENGTH);
+
 	if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
 									 hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith)) {
-		WCHAR szParam[MAX_PATH] = { L'\0' };
 
-		HPATHL pthDirectory = NULL;
+        StrgSanitize(hstrDisplayName);
+        Path_Sanitize(hpthFileName);
+
+        HPATHL hpthParams = Path_Allocate(NULL);
+        wchar_t* const params_buf = Path_WriteAccessBuf(hpthParams, PATHLONG_MAX_CCH);
+
+		HPATHL hpthDirectory = NULL;
 		if (Path_IsNotEmpty(Paths.CurrentFile)) {
-			pthDirectory = Path_Copy(Paths.CurrentFile);
-			Path_RemoveFileSpec(pthDirectory);
+			hpthDirectory = Path_Copy(Paths.CurrentFile);
+			Path_RemoveFileSpec(hpthDirectory);
 		}
-
-		SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-		sei.fMask = SEE_MASK_DEFAULT;
-		sei.hwnd = hwnd;
-		sei.lpVerb = NULL;
-		sei.lpFile = dliOpenWith.szFileName;
-		sei.lpParameters = szParam;
-		sei.lpDirectory = Path_Get(pthDirectory);
-		sei.nShow = SW_SHOWNORMAL;
+        //else {
+        //    pthDirectory = Path_Allocate(NULL);
+        //}
 
 		// resolve links and get short path name
-		if (!(PathIsLnkFile(lpstrFile) && PathGetLnkPath(lpstrFile, szParam, COUNTOF(szParam)))) {
-			StringCchCopy(szParam, COUNTOF(szParam), lpstrFile);
+        if (!(PathIsLnkFile(lpstrFile) && PathGetLnkPath(lpstrFile, params_buf, (int)Path_GetBufCount(hpthParams)))) {
+            StringCchCopy(params_buf, Path_GetBufCount(hpthParams), lpstrFile);
 		}
-		//GetShortPathName(szParam,szParam,sizeof(WCHAR)*COUNTOF(szParam));
-		PathQuoteSpaces(szParam);
-		result = ShellExecuteEx(&sei);
+        Path_Sanitize(hpthParams);
+        Path_ToShortPathName(hpthParams);
+        Path_QuoteSpaces(hpthParams, true);
 
-		Path_Release(pthDirectory);
-	}
+        Path_ToShortPathName(hpthFileName);
+        Path_ToShortPathName(hpthDirectory);
 
-	return result;
+		SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+        sei.fMask = SEE_MASK_DEFAULT;
+        sei.hwnd = hwnd;
+        sei.lpVerb = NULL;
+        sei.lpFile = Path_Get(hpthFileName);
+        sei.lpParameters = Path_Get(hpthParams);
+        sei.lpDirectory = Path_Get(hpthDirectory);
+        sei.nShow = SW_SHOWNORMAL;
+		result = ShellExecuteExW(&sei);
 
+		Path_Release(hpthDirectory);
+        Path_Release(hpthParams);
+    }
+
+    StrgDestroy(hstrDisplayName);
+    Path_Release(hpthFileName);
+    return result;
 }
 
 
@@ -1925,20 +1948,29 @@ CASE_WM_CTLCOLOR_SET:
 
 //=============================================================================
 //
-//  FavoritesDlg()
+//  FavoritesDlg()   MAX_PATH
 //
-bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
+bool FavoritesDlg(HWND hwnd, LPWSTR lpstrFile, size_t cch)
 {
-
 	DLITEM dliFavorite = { 0 };
 	dliFavorite.mask = DLI_FILENAME;
 
+    HPATHL hpthFileName = Path_Allocate(NULL);
+    dliFavorite.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
+
+    HSTRINGW hstrDisplayName = StrgCreate(NULL);
+    dliFavorite.strDisplayName = StrgWriteAccessBuf(hstrDisplayName, INTERNET_MAX_URL_LENGTH);
+
+    bool res = false;
 	if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
 									 hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite)) {
-		StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
-		return TRUE;
+        StringCchCopyW(lpstrFile, cch, dliFavorite.pthFileName);
+        res = true;
 	}
-	return FALSE;
+
+    StrgDestroy(hstrDisplayName);
+    Path_Release(hpthFileName);
+	return res;
 }
 
 
@@ -4521,10 +4553,15 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WI
 
 	if (Path_IsNotEmpty(hFilePath)) {
         HPATHL hfile_pth = Path_Copy(hFilePath);
+        Path_ToShortPathName(hfile_pth);
         Path_QuoteSpaces(hfile_pth, true);
         StrgCat(hparam_str, Path_Get(hfile_pth));
         Path_Release(hfile_pth);
 	}
+
+    HPATHL hwrkd_pth = Path_Copy(Paths.WorkingDirectory);
+    Path_ToShortPathName(hwrkd_pth);
+    Path_ToShortPathName(hmod_pth);
 
 	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 	sei.fMask = SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
@@ -4532,11 +4569,13 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WI
 	sei.lpVerb = NULL;
 	sei.lpFile = Path_Get(hmod_pth);
     sei.lpParameters = StrgGet(hparam_str);
-	sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
+    sei.lpDirectory = Path_Get(hwrkd_pth);
 	sei.nShow = SW_SHOWNORMAL;
-	ShellExecuteEx(&sei);
+	ShellExecuteExW(&sei);
 
+    Path_Release(hwrkd_pth);
     StrgDestroy(hparam_str);
+    Path_Release(hmod_pth);
 }
 
 
@@ -4582,16 +4621,15 @@ void DialogFileBrowse(HWND hwnd)
 		Path_Release(hTemp);
 	}
 
-	if (StrIsNotEmpty(param_buf) && Path_IsNotEmpty(Paths.CurrentFile)) {
-		StringCchCat(param_buf, PATHLONG_MAX_CCH, L" ");
-	}
-
 	if (Path_IsNotEmpty(Paths.CurrentFile)) {
 		HPATHL pthTmp = Path_Copy(Paths.CurrentFile);
+        Path_ToShortPathName(pthTmp);
 		Path_QuoteSpaces(pthTmp, true);
 		StringCchCat(param_buf, PATHLONG_MAX_CCH, Path_Get(pthTmp));
 		Path_Release(pthTmp);
 	}
+
+    Path_ToShortPathName(hExeFile);
 
 	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 	sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
@@ -4601,7 +4639,7 @@ void DialogFileBrowse(HWND hwnd)
 	sei.lpParameters = param_buf;
 	sei.lpDirectory = NULL;
 	sei.nShow = SW_SHOWNORMAL;
-	ShellExecuteEx(&sei);
+	ShellExecuteExW(&sei);
 
 	if ((INT_PTR)sei.hInstApp < 32) {
 		InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BROWSE);
@@ -4784,6 +4822,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 		if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hGrepWinIniPath, FILE_ATTRIBUTE_NORMAL)) {
 			Path_Swap(hGrepWinIniPath, hTemp);
 		}
+        Path_ToShortPathName(hGrepWinIniPath);
         StrgFormat(hstrParams, L"/portable /content %s /inipath:\"%s\"", StrgGet(hstrOptions), Path_Get(hGrepWinIniPath));
     } else {
         StrgFormat(hstrParams, L"/portable /content %s", StrgGet(hstrOptions));
@@ -4793,6 +4832,9 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 	//}
     StrgDestroy(hstrOptions);
 
+    Path_ToShortPathName(hExeFilePath);
+    Path_ToShortPathName(hGrepWinDir);
+
 	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 	sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
 	sei.hwnd = hwnd;
@@ -4801,7 +4843,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     sei.lpParameters = StrgGet(hstrParams);
 	sei.lpDirectory = Path_Get(hGrepWinDir);
 	sei.nShow = SW_SHOWNORMAL;
-	ShellExecuteEx(&sei);
+	ShellExecuteExW(&sei);
 
 	if ((INT_PTR)sei.hInstApp < 32) {
 		InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
@@ -4836,28 +4878,35 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 	}
     Path_Sanitize(hexe_pth);
 
+
+    HPATHL hwrkd_pth = Path_Copy(Paths.WorkingDirectory);
+    Path_ToShortPathName(hwrkd_pth);
+    Path_ToShortPathName(hexe_pth);
+
 	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
 	sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
 	sei.hwnd = hwnd;
 	sei.lpVerb = NULL;
     sei.lpFile = Path_Get(hexe_pth);
 	sei.lpParameters = NULL; // tchParam;
-	sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
+    sei.lpDirectory = Path_Get(hwrkd_pth);
 	sei.nShow = SW_SHOWNORMAL;
 
 	if (bExecInstaller) {
-		ShellExecuteEx(&sei);
+		ShellExecuteExW(&sei);
 		if ((INT_PTR)sei.hInstApp < 32) {
 			WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE));
 			if ((IDOK == answer) || (IDYES == answer)) {
 				sei.lpFile = VERSION_UPDATE_CHECK;
-				ShellExecuteEx(&sei);
+				ShellExecuteExW(&sei);
 			}
 		}
 	} else {
 		sei.lpFile = VERSION_UPDATE_CHECK;
-		ShellExecuteEx(&sei);
+		ShellExecuteExW(&sei);
 	}
+
+    Path_Release(hwrkd_pth);
     Path_Release(hexe_pth);
 }
 

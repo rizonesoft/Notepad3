@@ -4349,20 +4349,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
         }
 
+        HPATHL hfile = Path_Copy(Paths.CurrentFile);
+        Path_ToShortPathName(hfile);
+ 
         HPATHL hdir = Path_Copy(Paths.CurrentFile); 
         Path_RemoveFileSpec(hdir);
+        Path_ToShortPathName(hdir);
 
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
         sei.fMask = SEE_MASK_DEFAULT;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = Path_Get(Paths.CurrentFile);
+        sei.lpFile = Path_Get(hfile);
         sei.lpParameters = NULL;
         sei.lpDirectory = Path_Get(hdir);
         sei.nShow = SW_SHOWNORMAL;
-        ShellExecuteEx(&sei);
+        ShellExecuteExW(&sei);
 
         Path_Release(hdir);
+        Path_Release(hfile);
     }
     break;
 
@@ -4449,13 +4454,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
         }
 
+        HPATHL hfile = Path_Copy(Paths.CurrentFile);
+        Path_ToShortPathName(hfile);
+
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
         sei.fMask = SEE_MASK_INVOKEIDLIST;
         sei.hwnd = hwnd;
         sei.lpVerb = L"properties";
-        sei.lpFile = Path_Get(Paths.CurrentFile); // TODO: §§§ MAX_PATH limit §§§ @@@!
+        sei.lpFile = Path_Get(hfile);
+        sei.lpParameters = NULL;
+        sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
-        ShellExecuteEx(&sei);
+        ShellExecuteExW(&sei);
+
+        Path_Release(hfile);
     }
     break;
 
@@ -4476,8 +4488,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_OPENFAV:
         if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
             HPATHL         hfile_pth = Path_Allocate(NULL);
-            wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, MAX_PATH); // TODO: §§§ @@@ MAX_PATH
-            if (FavoritesDlg(hwnd, file_buf)) {
+            wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, PATHLONG_MAX_CCH);
+            if (FavoritesDlg(hwnd, file_buf, Path_GetBufCount(hfile_pth))) {
                 if (Path_IsLnkToDirectory(hfile_pth, NULL)) {
                     Path_GetLnkPath(hfile_pth, hfile_pth);
                 }
@@ -4504,16 +4516,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_MANAGEFAV: {
+
+        HPATHL hfile = Path_Copy(Settings.FavoritesDir);
+        Path_ToShortPathName(hfile);
+
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
         sei.fMask = SEE_MASK_DEFAULT;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = Path_Get(Settings.FavoritesDir);
+        sei.lpFile = Path_Get(hfile);
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
         // Run favorites directory
-        ShellExecuteEx(&sei);
+        ShellExecuteExW(&sei);
+
+        Path_Release(hfile);
     }
     break;
 
@@ -6489,22 +6507,28 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 StrgFormat(hstr_hyplnk, wchWebTemplate, wszSelection);
                 ExpandEnvironmentStrgs(hstr_hyplnk);
 
+                Path_ToShortPathName(hdir);
+
                 if (StrgIsNotEmpty(Settings2.HyperlinkShellExURLWithApp))
                 {
                     HSTRINGW hstr_params = StrgCopy(Settings2.HyperlinkShellExURLCmdLnArgs);
                     StrgReplace(hstr_params, URLPLACEHLDR, StrgGet(hstr_hyplnk));
 
+                    HPATHL hfile = Path_Allocate(StrgGet(Settings2.HyperlinkShellExURLWithApp));
+                    Path_ToShortPathName(hfile);
+
                     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_DEFAULT;
                     sei.hwnd = NULL;
                     sei.lpVerb = NULL;
-                    sei.lpFile = StrgGet(Settings2.HyperlinkShellExURLWithApp);
+                    sei.lpFile = Path_Get(hfile);
                     sei.lpParameters = StrgGet(hstr_params);
                     sei.lpDirectory = Path_Get(hdir);
                     sei.nShow = SW_SHOWNORMAL;
-                    ShellExecuteEx(&sei);
+                    ShellExecuteExW(&sei);
 
                     StrgDestroy(hstr_params);
+                    Path_Release(hfile);
                 }
                 else {
                     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
@@ -6515,7 +6539,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                     sei.lpParameters = NULL;
                     sei.lpDirectory = Path_Get(hdir);
                     sei.nShow = SW_SHOWNORMAL;
-                    ShellExecuteEx(&sei);
+                    ShellExecuteExW(&sei);
                 }
                 StrgDestroy(hstr_hyplnk);
                 Path_Release(hdir);
@@ -7556,7 +7580,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                 HPATHL hDirectory = Path_Allocate(NULL);
 
                 if (UrlIsFileUrl(szTextW)) {
-                    // ShellExecuteEx() will handle file-system path correctly for "file://" protocol
+                    // ShellExecuteExW() will handle file-system path correctly for "file://" protocol
                     StringCchCopy(szUnEscW, COUNTOF(szUnEscW), chkPreFix);
                     dCch -= (DWORD)lenPfx;
                     PathCreateFromUrl(szTextW, &szUnEscW[lenPfx], &dCch, 0);
@@ -7570,22 +7594,28 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     Path_RemoveFileSpec(hDirectory);
                 }
 
+                Path_ToShortPathName(hDirectory);
+
                 if (StrgIsNotEmpty(Settings2.HyperlinkShellExURLWithApp)) {
 
                     HSTRINGW hstr_params = StrgCopy(Settings2.HyperlinkShellExURLCmdLnArgs);
                     StrgReplace(hstr_params, URLPLACEHLDR, szUnEscW);
 
+                    HPATHL hfile = Path_Allocate(StrgGet(Settings2.HyperlinkShellExURLWithApp));
+                    Path_ToShortPathName(hfile);
+
                     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
                     sei.fMask = SEE_MASK_DEFAULT;
                     sei.hwnd = NULL;
                     sei.lpVerb = NULL;
-                    sei.lpFile = StrgGet(Settings2.HyperlinkShellExURLWithApp);
+                    sei.lpFile = Path_Get(hfile);
                     sei.lpParameters = StrgIsNotEmpty(hstr_params) ? StrgGet(hstr_params) : szUnEscW;
                     sei.lpDirectory = Path_Get(hDirectory);
                     sei.nShow = SW_SHOWNORMAL;
-                    bHandled = ShellExecuteEx(&sei);
+                    bHandled = ShellExecuteExW(&sei);
 
                     StrgDestroy(hstr_params);
+                    Path_Release(hfile);
 
                 } else {
 
@@ -7599,7 +7629,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                     sei.lpParameters = NULL;
                     sei.lpDirectory = Path_Get(hDirectory);
                     sei.nShow = SW_SHOWNORMAL;
-                    bHandled = ShellExecuteEx(&sei);
+                    bHandled = ShellExecuteExW(&sei);
                 }
 
                 Path_Release(hDirectory);
@@ -11491,50 +11521,68 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
         return false; // reject initial RelaunchElevated() try
     }
 
-    STARTUPINFO si = { sizeof(STARTUPINFO) };
-    GetStartupInfo(&si);
+    LPCWSTR      lpCmdLine = GetCommandLine();
+    size_t const wlen = StringCchLenW(lpCmdLine, 0) + 2ULL;
 
-    // TODO: §§§ @@@ MAX_PATH and args limit
+    HPATHL hfile = Path_Allocate(NULL);
+    wchar_t* const fbuf = Path_WriteAccessBuf(hfile, PATHLONG_MAX_CCH);
 
-    WCHAR lpExe[MAX_PATH] = { L'\0' };
-    WCHAR szOrigArgs[4096] = { L'\0' };
+    HSTRINGW hstrOrigArgs = StrgCreate(NULL);
+    wchar_t* const arg_buf = StrgWriteAccessBuf(hstrOrigArgs, CMDLN_LENGTH_LIMIT);
 
-    LPWSTR lpCmdLine = GetCommandLine();
-    size_t wlen = StringCchLenW(lpCmdLine, 0) + 2UL;
-    ExtractFirstArgument(lpCmdLine, lpExe, szOrigArgs, (int)wlen);
-    // override
-    GetModuleFileName(NULL, lpExe, COUNTOF(lpExe)); // full path
-    PathCanonicalizeEx(lpExe, COUNTOF(lpExe));
-    if (lpNewCmdLnArgs) {
-        StringCchCopy(szOrigArgs, COUNTOF(szOrigArgs), lpNewCmdLnArgs);
+    ExtractFirstArgument(lpCmdLine, fbuf, arg_buf, min_i((int)wlen, CMDLN_LENGTH_LIMIT));
+    // overrides:
+    Path_GetModuleFilePath(hfile);
+    Path_CanonicalizeEx(hfile);
+    if (StrIsNotEmpty(lpNewCmdLnArgs)) {
+        StringCchCopy(arg_buf, StrgGetAllocLength(hstrOrigArgs), lpNewCmdLnArgs);
     }
-    size_t const len = StringCchLen(szOrigArgs, 0);
-    szOrigArgs[len] = L' '; // add a space
-    szOrigArgs[len+1] = L'\0'; // ensure termination
+    StrgSanitize(hstrOrigArgs);
+    StrgCat(hstrOrigArgs, L" ");
     // remove relaunch elevated, we are doing this here already
-    StrCutI(szOrigArgs, L"/u ");
-    StrCutI(szOrigArgs, L"-u ");
+    StrCutIW(arg_buf, L"/u ");
+    StrCutIW(arg_buf, L"-u ");
+    StrgSanitize(hstrOrigArgs);
 
-    WCHAR szArguments[2032] = { L'\0' };
-    if (StrStrI(szOrigArgs, L"/f ") || StrStrI(szOrigArgs, L"-f ") || Path_IsEmpty(Paths.IniFile)) {
-        StringCchCopy(szArguments, COUNTOF(szArguments), szOrigArgs);
-    } else {
-        StringCchPrintf(szArguments, COUNTOF(szArguments), L"/f \"%s\" %s", Path_Get(Paths.IniFile), szOrigArgs);
+    if (!(StrStrIW(arg_buf, L"/f ") || StrStrIW(arg_buf, L"-f ") || Path_IsEmpty(Paths.IniFile))) {
+
+        WCHAR  wchIniPath[CMDLN_LENGTH_LIMIT] = { L'\0' };
+
+        HPATHL hini = Path_Copy(Paths.IniFile);
+        Path_ToShortPathName(hini);
+        StringCchPrintf(wchIniPath, COUNTOF(wchIniPath), L"/f \"%s\" ", Path_Get(hini));
+        Path_Release(hini);
+        
+        StrgInsert(hstrOrigArgs, 0, wchIniPath);
     }
 
-    if (StrIsNotEmpty(szArguments)) {
+    bool res = false;
+    if (StrgIsNotEmpty(hstrOrigArgs)) {
+
+        STARTUPINFO si = { sizeof(STARTUPINFO) };
+        GetStartupInfo(&si);
+
+        HPATHL hdir = Path_Copy(Paths.WorkingDirectory);
+        Path_ToShortPathName(hdir);
+        Path_ToShortPathName(hfile);
+
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
         sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_UNICODE | SEE_MASK_HMONITOR | SEE_MASK_NOZONECHECKS | SEE_MASK_WAITFORINPUTIDLE;
         sei.hwnd = GetForegroundWindow();
         sei.hMonitor = MonitorFromWindow(sei.hwnd, MONITOR_DEFAULTTONEAREST);
         sei.lpVerb = L"runas";
-        sei.lpFile = lpExe;
-        sei.lpParameters = szArguments;
-        sei.lpDirectory = Path_Get(Paths.WorkingDirectory);
+        sei.lpFile = Path_Get(hfile);
+        sei.lpParameters = StrgGet(hstrOrigArgs);
+        sei.lpDirectory = Path_Get(hdir);
         sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
-        return ShellExecuteEx(&sei);
+        res = ShellExecuteExW(&sei);
+
+        Path_Release(hdir);
     }
-    return false;
+
+    StrgDestroy(hstrOrigArgs);
+    Path_Release(hfile);
+    return res;
 }
 
 

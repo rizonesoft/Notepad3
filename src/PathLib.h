@@ -83,6 +83,8 @@ wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
+size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);
+size_t PTHAPI          Path_GetLongPathNameEx(HPATHL hpth_in_out);
 
 // -------------------------------------------------------
 // get wchar buffer with at least MAX_PATH size
@@ -110,9 +112,6 @@ void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
 void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
 
 bool PTHAPI Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to);
-
-size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out);
-size_t PTHAPI GetLongPathNameEx(LPWSTR lpszPath, const size_t cchBuffer);
 
 bool PTHAPI Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
 bool PTHAPI PathGetKnownFolder(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchOut);

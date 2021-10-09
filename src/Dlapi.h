@@ -98,8 +98,8 @@ bool DirList_Sort(HWND hwnd,int lFlags,bool);
 typedef struct tagDLITEM { // dli
 
     UINT mask;
-    WCHAR szFileName[MAX_PATH];
-    WCHAR szDisplayName[MAX_PATH];
+    wchar_t* pthFileName;
+    wchar_t* strDisplayName;
     int  ntype;
 
 } DLITEM, *LPDLITEM;
