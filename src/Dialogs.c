@@ -1430,7 +1430,6 @@ CASE_WM_CTLCOLOR_SET:
 				if (StringCchCompareXI(file_buf, _W(SAPPNAME)) == 0 ||
                     StringCchCompareXI(file_buf, _W(SAPPNAME) L".exe") == 0) {
                     Path_GetModuleFilePath(hfile_pth);
-                    Path_CanonicalizeEx(hfile_pth);
 					bQuickExit = true;
 				}
 
@@ -1510,6 +1509,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 	switch(umsg) {
 	case WM_INITDIALOG: {
+
 		SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
 		SetDialogIconNP3(hwnd);
 
@@ -1700,20 +1700,20 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
 	DLITEM dliOpenWith = { 0 };
 	dliOpenWith.mask = DLI_FILENAME;
 
-    HPATHL hpthFileName = Path_Allocate(NULL);
+    HPATHL hpthFileName = Path_Allocate(lpstrFile);
     dliOpenWith.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
 
-    HSTRINGW hstrDisplayName = StrgCreate(NULL);
-    dliOpenWith.strDisplayName = StrgWriteAccessBuf(hstrDisplayName, INTERNET_MAX_URL_LENGTH);
+    WCHAR chDispayName[MAX_PATH];
+    Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, L"");
+    dliOpenWith.strDisplayName = chDispayName;
 
 	if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
 									 hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith)) {
 
-        StrgSanitize(hstrDisplayName);
         Path_Sanitize(hpthFileName);
-
-        HPATHL hpthParams = Path_Allocate(NULL);
-        wchar_t* const params_buf = Path_WriteAccessBuf(hpthParams, PATHLONG_MAX_CCH);
+        if (Path_IsLnkFile(hpthFileName)) {
+            Path_GetLnkPath(hpthFileName, hpthFileName);
+        }
 
 		HPATHL hpthDirectory = NULL;
 		if (Path_IsNotEmpty(Paths.CurrentFile)) {
@@ -1724,10 +1724,11 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
         //    pthDirectory = Path_Allocate(NULL);
         //}
 
-		// resolve links and get short path name
-        if (!(PathIsLnkFile(lpstrFile) && PathGetLnkPath(lpstrFile, params_buf, (int)Path_GetBufCount(hpthParams)))) {
-            StringCchCopy(params_buf, Path_GetBufCount(hpthParams), lpstrFile);
-		}
+        HPATHL hpthParams = Path_Allocate(lpstrFile);
+        // resolve links and get short path name
+        if (Path_IsLnkFile(hpthParams)) {
+            Path_GetLnkPath(hpthParams, hpthParams);
+        }
         Path_Sanitize(hpthParams);
         Path_ToShortPathName(hpthParams);
         Path_QuoteSpaces(hpthParams, true);
@@ -1749,7 +1750,6 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
         Path_Release(hpthParams);
     }
 
-    StrgDestroy(hstrDisplayName);
     Path_Release(hpthFileName);
     return result;
 }
@@ -1986,9 +1986,10 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 	switch (umsg) {
 
 	case WM_INITDIALOG: {
-		SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-		SetDialogIconNP3(hwnd);
 
+		SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+		
+        SetDialogIconNP3(hwnd);
 		InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -2002,9 +2003,10 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 		ResizeDlg_InitX(hwnd, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP);
 
-		LPCWSTR const pszName = (LPCWSTR)lParam;
-		SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, MAX_PATH - 1, 0);
-		SetDlgItemText(hwnd, IDC_ADDFAV_FILES, pszName);
+        LPCWSTR wchNamePth = (LPCWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
+
+        SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, INTERNET_MAX_URL_LENGTH, 0); // max
+        SetDlgItemTextW(hwnd, IDC_ADDFAV_FILES, wchNamePth);
 
 		CenterDlgInParent(hwnd, NULL);
 	}
@@ -2073,13 +2075,14 @@ CASE_WM_CTLCOLOR_SET:
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
+
 		case IDC_ADDFAV_FILES:
 			DialogEnableControl(hwnd, IDOK, GetWindowTextLength(GetDlgItem(hwnd, IDC_ADDFAV_FILES)));
 			break;
 
 		case IDOK: {
-			LPWSTR pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
-			GetDlgItemText(hwnd, IDC_ADDFAV_FILES, pszName, MAX_PATH - 1);
+            LPWSTR wchNamePth = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
+            GetDlgItemText(hwnd, IDC_ADDFAV_FILES, wchNamePth, INTERNET_MAX_URL_LENGTH);
 			EndDialog(hwnd, IDOK);
 		}
 		break;
@@ -2096,31 +2099,28 @@ CASE_WM_CTLCOLOR_SET:
 
 //=============================================================================
 //
-//  AddToFavDlg()   TODO: §§§ MAX_PATH limit §§§ @@@!
+//  AddToFavDlg()
 //
-bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
+bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
 {
+    WCHAR szDisplayName[INTERNET_MAX_URL_LENGTH];
+    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hTargetPth, L"");
 
-	INT_PTR iResult;
-
-	WCHAR pszName[MAX_PATH] = { L'\0' };
-	StringCchCopy(pszName,COUNTOF(pszName),lpszName);
-
-	iResult = ThemedDialogBoxParam(
-				  Globals.hLngResContainer,
-				  MAKEINTRESOURCE(IDD_MUI_ADDTOFAV),
-				  hwnd,
-				  AddToFavDlgProc,(LPARAM)pszName);
+	INT_PTR const iResult = ThemedDialogBoxParam(
+        Globals.hLngResContainer,
+        MAKEINTRESOURCE(IDD_MUI_ADDTOFAV),
+        hwnd,
+        AddToFavDlgProc, (LPARAM)szDisplayName);
 
 	if (iResult == IDOK) {
-        if (!PathCreateFavLnk(pszName,lpszTarget,Path_Get(Settings.FavoritesDir))) {
+        if (!Path_CreateFavLnk(szDisplayName, hTargetPth, Settings.FavoritesDir)) {
 			InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
-			return FALSE;
+			return false;
 		}
 		InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_FAV_SUCCESS);
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -4529,7 +4529,6 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WI
 
     HPATHL hmod_pth = Path_Allocate(NULL);
     Path_GetModuleFilePath(hmod_pth);
-    Path_CanonicalizeEx(hmod_pth);
 
 	StringCchPrintf(wch, COUNTOF(wch), L"\"-appid=%s\"", Settings2.AppUserModelID);
     HSTRINGW hparam_str = StrgCreate(wch);
@@ -4615,7 +4614,7 @@ void DialogFileBrowse(HWND hwnd)
 	if (Path_IsRelative(hExeFile)) {
 		HPATHL hTemp = Path_Allocate(NULL);
 		Path_GetAppDirectory(hTemp);
-		Path_Append(hTemp, hExeFile);
+		Path_Append(hTemp, Path_Get(hExeFile));
 		if (Path_IsExistingFile(hTemp)) {
 			Path_Swap(hExeFile, hTemp);
 		}
@@ -4715,7 +4714,6 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 	if (Path_IsExistingFile(hExeFilePath)) {
 
 	    HPATHL hNotepad3Path = Path_Allocate(NULL);
-        //Path_CanonicalizeEx(hNotepad3Path);
         Path_GetModuleFilePath(hNotepad3Path);
         // relative Notepad3 path (for grepWin's EditorCmd)
 		if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hNotepad3Path, FILE_ATTRIBUTE_NORMAL)) {
@@ -4723,16 +4721,16 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 		}
 
 		// grepWin INI-File
-		HPATHL hIniFileName = Path_Allocate(L"grepWinNP3.ini");
+		LPCWSTR wchIniFileName = L"grepWinNP3.ini";
 		if (Path_IsEmpty(hGrepWinIniPath)) {
 			Path_Reset(hGrepWinIniPath, Path_Get(Paths.IniFileDefault));
 		}
 		Path_RemoveFileSpec(hGrepWinIniPath);
-		Path_Append(hGrepWinIniPath, hIniFileName);
+        Path_Append(hGrepWinIniPath, wchIniFileName);
 
 		if (Path_IsRelative(hGrepWinIniPath)) {
 			Path_Reset(hGrepWinIniPath, Path_Get(hGrepWinDir));
-			Path_Append(hGrepWinIniPath, hIniFileName);
+            Path_Append(hGrepWinIniPath, wchIniFileName);
 		}
 
 		ResetIniFileCache();
@@ -4813,7 +4811,6 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
 		}
         Path_Release(hNotepad3Path);
-		Path_Release(hIniFileName);
 	}
 
 	// grepWin arguments
@@ -4875,7 +4872,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     if (!SearchPathW(NULL, Path_Get(Settings2.AdministrationTool), L".exe", PATHLONG_MAX_CCH, exe_buf, NULL)) {
 		// try Notepad3's dir path
         Path_GetAppDirectory(hexe_pth);
-        Path_Append(hexe_pth, Settings2.AdministrationTool);
+        Path_Append(hexe_pth, Path_Get(Settings2.AdministrationTool));
 	}
     Path_Sanitize(hexe_pth);
 

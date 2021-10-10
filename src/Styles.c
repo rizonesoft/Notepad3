@@ -392,7 +392,6 @@ static void _FillThemesMenuTable()
     Theme_Files[Globals.uCurrentThemeIndex].rid = IDM_THEMES_STD_CFG; // NP3.ini settings
 
     HPATHL hThemesDir = Path_Copy(Paths.IniFile);
-    HPATHL hThemesSubDir = Path_Allocate(L"themes");
 
     if (Path_IsEmpty(hThemesDir)) {
         Path_Reset(hThemesDir, Path_Get(Paths.IniFileDefault));
@@ -404,15 +403,14 @@ static void _FillThemesMenuTable()
         Path_Reset(Theme_Files[0].hStyleFilePath, Path_Get(hThemesDir));
     
         Path_RemoveFileSpec(hThemesDir);
-        Path_Append(hThemesDir, hThemesSubDir);
+        Path_Append(hThemesDir, L"themes");
     }
 
     unsigned iTheme = 1;
     if (Path_IsExistingDirectory(hThemesDir)) {
 
         HPATHL hThemePath = Path_Copy(hThemesDir);
-        HPATHL hThemePathExt = Path_Allocate(L"*.ini");
-        Path_Append(hThemePath, hThemePathExt);
+        Path_Append(hThemePath, L"*.ini");
 
         WIN32_FIND_DATA FindFileData;
         ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
@@ -424,7 +422,7 @@ static void _FillThemesMenuTable()
 
                 Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_STD_CFG);
 
-                // TODO: §§§ @@@ check for LongPath §§§ @@@
+                // TODO: §§§ @@@ check for LongPath MAX_PATH §§§ @@@
                 StringCchCopy(wchFileName, COUNTOF(wchFileName), PathFindFileNameW(FindFileData.cFileName));
                 PathRemoveExtensionW(wchFileName);
                 StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), wchFileName);
@@ -434,8 +432,7 @@ static void _FillThemesMenuTable()
                 }
 
                 Path_Reset(hThemePath, Path_Get(hThemesDir));
-                Path_Reset(hThemePathExt, FindFileData.cFileName);
-                Path_Append(hThemePath, hThemePathExt);
+                Path_Append(hThemePath, FindFileData.cFileName);
                 Path_Swap(Theme_Files[iTheme].hStyleFilePath, hThemePath);
 
                 if (!FindNextFileW(hFindFile, &FindFileData)) {
@@ -444,7 +441,6 @@ static void _FillThemesMenuTable()
             }
             FindClose(hFindFile);
         }
-        Path_Release(hThemePathExt);
         Path_Release(hThemePath);
     }
 
@@ -454,7 +450,6 @@ static void _FillThemesMenuTable()
         Path_Empty(Theme_Files[iTheme].hStyleFilePath, true);
     }
 
-    Path_Release(hThemesSubDir);
     Path_Release(hThemesDir);
 }
 

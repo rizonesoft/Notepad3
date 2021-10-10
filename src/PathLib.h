@@ -57,7 +57,7 @@ void PTHAPI            Path_Empty(HPATHL hpth, bool truncate);
 int PTHAPI             Path_Reset(HPATHL hpth, const wchar_t* path);
 size_t PTHAPI          Path_GetLength(HPATHL hpth);
 HPATHL PTHAPI          Path_Copy(const HPATHL hpth);
-bool PTHAPI            Path_Append(HPATHL hpth, HPATHL hmore);
+bool PTHAPI            Path_Append(HPATHL hpth, const wchar_t* more);
 void PTHAPI            Path_Swap(HPATHL hpth1, HPATHL hpth2);
 void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length);
 
@@ -65,6 +65,8 @@ bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
 inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty(hpth); };
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
+bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
+
 int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2);
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
@@ -72,6 +74,7 @@ bool PTHAPI            Path_RenameExtension(HPATHL hpth, const wchar_t* ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_UnExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_GetModuleFilePath(HPATHL hpth_out);
+void PTHAPI            Path_GetAppDirectory(HPATHL hpth_out);
 bool PTHAPI            Path_IsRelative(const HPATHL hpath);
 bool PTHAPI            Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth);
 size_t PTHAPI          Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2, HPATHL hpfx_out);
@@ -86,23 +89,31 @@ bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
 size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);
 size_t PTHAPI          Path_GetLongPathNameEx(HPATHL hpth_in_out);
 
-// -------------------------------------------------------
-// get wchar buffer with at least MAX_PATH size
-wchar_t* PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len);
-void PTHAPI     Path_Sanitize(HPATHL hpth);
+void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl);
+bool PTHAPI            Path_GetLnkPath(const HPATHL hLnkFilePth, HPATHL hResPath_out);
+bool PTHAPI            Path_IsLnkFile(const HPATHL hpth);
+bool PTHAPI            Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);
+bool PTHAPI            Path_CreateFavLnk(LPCWSTR lpszDisplayName, const HPATHL hTargetPth, const HPATHL hDirPth);
+bool PTHAPI            Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescription);
+bool PTHAPI            Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle);
+bool PTHAPI            Path_CanonicalizeEx(HPATHL hpth_in_out);
+size_t PTHAPI          Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, bool bRealPath, bool bSearchPathIfRelative);
+bool PTHAPI            Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to);
+void PTHAPI            Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
+bool PTHAPI            Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
 
 // ----------------------------------------------------------------------------
-// deprecated (intermediate only)
+// try to minimize use of:
 // ----------------------------------------------------------------------------
-
 const wchar_t* PTHAPI Path_Get(HPATHL hpth);
 size_t PTHAPI         Path_GetBufCount(HPATHL hpth);
+wchar_t* PTHAPI       Path_WriteAccessBuf(HPATHL hpth, size_t len);
+void PTHAPI           Path_Sanitize(HPATHL hpth);
+
 
 // ============================================================================
 // Duplicates for INTERMEDIATE DEV
 // ============================================================================
-
-bool PTHAPI Path_IsExistingDirectory(const HPATHL hpth);
 
 bool PTHAPI Path_IsExistingFile(const HPATHL hpth);
 bool PTHAPI PathIsExistingFile(LPCWSTR pszPath);
@@ -111,48 +122,8 @@ void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr);
 void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
 void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
 
-bool PTHAPI Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to);
-
-bool PTHAPI Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
-bool PTHAPI PathGetKnownFolder(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchOut);
-
-bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out);
-bool PTHAPI PathCanonicalizeEx(LPWSTR lpszPath, size_t cchPath);
-
-size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, bool bRealPath, bool bSearchPathIfRelative);
-size_t PTHAPI NormalizePathEx(LPWSTR lpszPath, size_t cchPath, LPCWSTR lpszWorkDir, bool bRealPath, bool bSearchPathIfRelative);
-
-void PTHAPI Path_GetAppDirectory(HPATHL hpth_out);
-void PTHAPI PathGetAppDirectory(LPWSTR lpszDest, size_t cchDest);
-
 void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv);
 void PTHAPI PathAbsoluteFromApp(LPWSTR lpszPath, const size_t cchPath, bool bExpandEnv);
-
-void PTHAPI Path_GetDisplayName(wchar_t* lpszDestPath, const size_t cchDestBuffer, const HPATHL hpth, const wchar_t* repl);
-///void PTHAPI PathGetDisplayName(LPWSTR lpszDestPath, const size_t cchDestBuffer, LPCWSTR lpszSourcePath, const wchar_t* repl);
-
-void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
-void PTHAPI PathRelativeToApp(LPWSTR lpszPath, size_t cchPath, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
-
-
-// ============================================================================
-// Some Old MAX_PATH stuff, currently long paths is truncated to MAXPATH !!!
-//                          TODO: §§§ MAX_PATH limit §§§ @@@!
-// ============================================================================
-
-bool PTHAPI   Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle);
-
-bool PTHAPI   PathIsLnkFile(LPCWSTR pszPath);
-bool PTHAPI   Path_IsLnkFile(const HPATHL hpth);
-
-bool PTHAPI   PathGetLnkPath(LPCWSTR pszLnkFile, LPWSTR pszResPath, int cchResPath);
-bool PTHAPI   Path_GetLnkPath(const HPATHL hlnk_pth, HPATHL hpth_out);
-
-bool PTHAPI   PathIsLnkToDirectory(LPCWSTR pszPath, LPWSTR pszResPath, int cchResPath);
-bool PTHAPI   Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);
-
-bool PTHAPI   PathCreateDeskLnk(LPCWSTR pszDocument, LPCWSTR pszDescription);
-bool PTHAPI   PathCreateFavLnk(LPCWSTR pszName, LPCWSTR pszTarget, LPCWSTR pszDir);
 
 // ============================================================================
 // ============================================================================

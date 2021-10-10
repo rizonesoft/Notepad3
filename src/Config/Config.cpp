@@ -855,29 +855,27 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 
     // ---  Alternate Search Paths  ---
 
+    const wchar_t* wchMore = Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini";
+
     if (!result) {
         // sub directory (.\np3\)
-        Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         HPATHL hmodpth = Path_Allocate(NULL);
         Path_GetAppDirectory(hmodpth);
-        HPATHL hnp3 = Path_Allocate(L"./np3/");
-        Path_Append(hmodpth, hnp3);
-        Path_Append(hmodpth, hPathEx);
+        Path_Append(hmodpth, L"./np3/");
+        Path_Append(hmodpth, wchMore);
         result = Path_IsExistingFile(hmodpth);
         if (result) {
             Path_Swap(hPathEx, hmodpth);
             result = true;
         }
-        Path_Release(hnp3);
         Path_Release(hmodpth);
     }
 
     if (!result) {
         // Application Data (%APPDATA%)
-        Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         HPATHL happdata = Path_Allocate(NULL);
         if (Path_GetKnownFolder(FOLDERID_RoamingAppData, happdata)) {
-            Path_Append(happdata, hPathEx);
+            Path_Append(happdata, wchMore);
             result = Path_IsExistingFile(happdata);
             if (result) {
                 Path_Swap(hPathEx, happdata);
@@ -889,10 +887,9 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 
     if (!result) {
         // Home (%HOMEPATH%) user's profile dir
-        Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         HPATHL hprofile = Path_Allocate(NULL);
         if (Path_GetKnownFolder(FOLDERID_Profile, hprofile)) {
-            Path_Append(hprofile, hPathEx);
+            Path_Append(hprofile, wchMore);
             result = Path_IsExistingFile(hprofile);
             if (result) {
                 Path_Swap(hPathEx, hprofile);
@@ -962,7 +959,6 @@ extern "C" bool FindIniFile()
     SetEnvironmentVariableW(NOTEPAD3_MODULE_DIR_ENV_VAR, Path_Get(hdir_pth));
     Path_Release(hdir_pth);
 
-
     if (Path_IsNotEmpty(Paths.IniFile)) {
         if (wcscmp(Path_Get(Paths.IniFile), L"*?") == 0) {
             return bFound;
@@ -977,10 +973,8 @@ extern "C" bool FindIniFile()
 
         if (!bFound) {
             Path_GetAppDirectory(Paths.IniFile);
-            HPATHL hfilename = Path_Allocate(_W(SAPPNAME) L".ini");
-            Path_Append(Paths.IniFile, hfilename);
+            Path_Append(Paths.IniFile, _W(SAPPNAME) L".ini");
             bFound = _CheckAndSetIniFile(Paths.IniFile);
-            Path_Release(hfilename);
         }
 
         if (bFound) {

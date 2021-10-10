@@ -2561,33 +2561,36 @@ bool SelectExternalToolBar(HWND hwnd)
 //
 static HBITMAP LoadBitmapFile(LPCWSTR path)
 {
-    WCHAR szTmp[MAX_PATH];
-    if (PathIsRelative(path)) {
-        PathGetAppDirectory(szTmp, COUNTOF(szTmp));
-        PathAppend(szTmp, path);
-        path = szTmp;
-    }
-    if (!PathIsExistingFile(path)) {
-        return NULL;
+    HPATHL hpath = Path_Allocate(path);
+    if (Path_IsRelative(hpath)) {
+        Path_GetAppDirectory(hpath);
+        Path_Append(hpath, path);
     }
 
-    HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    HBITMAP hbmp = NULL;
 
-    bool bDimOK = false;
-    int height = 16;
-    if (hbmp) {
-        BITMAP bmp = { 0 };
-        GetObject(hbmp, sizeof(BITMAP), &bmp);
-        height = bmp.bmHeight;
-        bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
-    }
-    if (!bDimOK) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, path, (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
+    if (Path_IsExistingFile(hpath)) {
+
+        hbmp = (HBITMAP)LoadImage(NULL, Path_Get(hpath), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+        bool bDimOK = false;
+        int  height = 16;
         if (hbmp) {
-            DeleteObject(hbmp);
+            BITMAP bmp = { 0 };
+            GetObject(hbmp, sizeof(BITMAP), &bmp);
+            height = bmp.bmHeight;
+            bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
         }
-        hbmp = NULL;
+        if (!bDimOK) {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, path,
+                (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
+            if (hbmp) {
+                DeleteObject(hbmp);
+            }
+            hbmp = NULL;
+        }
     }
+
+    Path_Release(hpath);
     return hbmp;
 }
 
@@ -4481,7 +4484,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR tchDescription[128] = { L'\0' };
         GetLngString(IDS_MUI_LINKDESCRIPTION, tchDescription, COUNTOF(tchDescription));
 
-        if (!PathCreateDeskLnk(Path_Get(Paths.CurrentFile), tchDescription)) {
+        if (!Path_CreateDeskLnk(Paths.CurrentFile, tchDescription)) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_CREATELINK);
         }
     }
@@ -4492,7 +4495,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
             HPATHL hfile_pth = Path_Allocate(NULL);
             if (FavoritesDlg(hwnd, hfile_pth)) {
-                if (Path_IsLnkToDirectory(hfile_pth, NULL)) {
+                if (Path_IsLnkFile(hfile_pth)) {
                     Path_GetLnkPath(hfile_pth, hfile_pth);
                 }
                 if (Path_IsExistingDirectory(hfile_pth)) {
@@ -4510,9 +4513,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_ADDTOFAV:
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
-            WCHAR szDisplayName[80];
-            Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, L"");
-            AddToFavDlg(hwnd, szDisplayName, Path_Get(Paths.CurrentFile));
+            AddToFavDlg(hwnd, Paths.CurrentFile);
         }
         break;
 
@@ -7329,21 +7330,23 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
                     SplitFilePathLineNum(wchUrl, NULL); // cut off possible linenum spec
 
-                    WCHAR wchPath[MAX_PATH] = { L'\0' };
-                    DWORD cchPath = MAX_PATH;
-                    if (FAILED(PathCreateFromUrl(wchUrl, wchPath, &cchPath, 0))) {
+                    HPATHL       hurl_pth = Path_Allocate(NULL);
+                    DWORD        cchPath = MAX_PATH << 1;
+                    LPWSTR const url_buf = Path_WriteAccessBuf(hurl_pth, cchPath);
+
+                    if (FAILED(PathCreateFromUrlW(wchUrl, url_buf, &cchPath, 0))) {
                         const char *p = &pUrlBegin[CONSTSTRGLEN("file://")];
                         while (p && (*p == '/')) { ++p; }
-                        StringCchCopyN(wchPath, COUNTOF(wchPath), wchUrl, cchUrl); // no op
-                        //cchPath = (DWORD)StringCchLen(wchFilePath, MAX_PATH);
+                        StringCchCopyN(url_buf, Path_GetBufCount(hurl_pth), wchUrl, cchUrl); // no op
+                        cchPath = (DWORD)Path_GetLength(hurl_pth);
                     }
-
-                    //NormalizePathEx(wchPath, COUNTOF(wchPath), Path_Get(Paths.WorkingDirectory), true, false);
+                    Path_Sanitize(hurl_pth);
+                    Path_NormalizeEx(hurl_pth, Paths.WorkingDirectory, true, false);
  
                     bool found = true;
-                    if (PathIsExistingFile(wchPath)) {
+                    if (Path_IsExistingFile(hurl_pth)) {
                         GetLngStringW2MB(IDS_MUI_URL_FILE_EXISTS, chCallTip, (int)(COUNTOF(chCallTip) >> 1));
-                    } else if (PathIsDirectory(wchPath)) {
+                    } else if (Path_IsExistingDirectory(hurl_pth)) {
                         GetLngStringW2MB(IDS_MUI_URL_DIR_EXISTS, chCallTip, (int)(COUNTOF(chCallTip) >> 1));
                     } else {
                         found = false;
@@ -7353,6 +7356,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                         cch = StringCchLenA(chCallTip, COUNTOF(chCallTip));
                         GetLngStringW2MB(IDS_MUI_URL_OPEN_FILE, &chCallTip[cch], (int)(COUNTOF(chCallTip) - cch));
                     }
+                    Path_Release(hurl_pth);
 
                 } else { // Web URL
 
@@ -10941,9 +10945,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         if (bSaveCopy && Path_IsNotEmpty(_hpthLastSaveCopyDir)) {
             Path_Reset(hdir_pth, Path_Get(_hpthLastSaveCopyDir));
             Path_Reset(hfile_pth, Path_Get(_hpthLastSaveCopyDir));
-            HPATHL hmore = Path_Allocate(Path_FindFileName(Paths.CurrentFile));
-            Path_Append(hfile_pth, hmore);
-            Path_Release(hmore);
+            Path_Append(hfile_pth, Path_FindFileName(Paths.CurrentFile));
         } else {
             Path_Reset(hfile_pth, Path_Get(Paths.CurrentFile));
         }
@@ -11441,27 +11443,40 @@ bool ActivatePrevInst()
 //
 bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
 {
-    WCHAR lpExe[MAX_PATH];
-    GetModuleFileName(NULL, lpExe, COUNTOF(lpExe)); // full path
-    PathCanonicalizeEx(lpExe, COUNTOF(lpExe));
+    HPATHL hexe_pth = Path_Allocate(NULL);
+    Path_GetModuleFilePath(hexe_pth);
 
-    WCHAR wchDir[MAX_PATH] = { L'\0' };
-    if (StrIsNotEmpty(lpszFilePath)) {
-        StringCchCopy(wchDir, COUNTOF(wchDir), lpszFilePath);
-        PathRemoveFileSpec(wchDir);
+    HSTRINGW     hstrParams = StrgCreate(lpszParameter);
+    LPWSTR const params_buf = StrgWriteAccessBuf(hstrParams, CMDLN_LENGTH_LIMIT);
+
+    HPATHL hdir_pth = Path_Allocate(lpszFilePath);
+    if (Path_IsEmpty(hdir_pth)) {
+        Path_Reset(hdir_pth, Path_Get(Paths.WorkingDirectory));
     }
-    WCHAR wchParams[MAX_PATH * 2];
-    StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s \"%s\"", lpszParameter, lpszFilePath);
+    else {
+        StringCchPrintf(params_buf, StrgGetAllocLength(hstrParams),
+            L"%s \"%s\"", lpszParameter, lpszFilePath);
+        Path_RemoveFileSpec(hdir_pth);
+    }
+
+    Path_ToShortPathName(hdir_pth);
+    Path_ToShortPathName(hexe_pth);
 
     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
     sei.fMask = SEE_MASK_DEFAULT;
     sei.hwnd = hwnd;
     sei.lpVerb = NULL;
-    sei.lpFile = lpExe;
-    sei.lpParameters = wchParams;
-    sei.lpDirectory = StrIsNotEmpty(wchDir) ? wchDir : Path_Get(Paths.WorkingDirectory);
+    sei.lpFile = Path_Get(hexe_pth);
+    sei.lpParameters = StrgGet(hstrParams);
+    sei.lpDirectory = Path_Get(hdir_pth);
     sei.nShow = SW_NORMAL;
-    return ShellExecuteExW(&sei);
+
+    bool const res = ShellExecuteExW(&sei);
+
+    Path_Release(hdir_pth);
+    StrgDestroy(hstrParams);
+    Path_Release(hexe_pth);
+    return res;
 }
 
 
@@ -11527,7 +11542,7 @@ bool RelaunchMultiInst()
 
 //=============================================================================
 //
-//  RelaunchElevated()  // TODO: §§§ @@@ MAX_PATH and args limit
+//  RelaunchElevated()
 //
 //
 bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
@@ -11550,7 +11565,6 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
     ExtractFirstArgument(lpCmdLine, fbuf, arg_buf, min_i((int)wlen, CMDLN_LENGTH_LIMIT));
     // overrides:
     Path_GetModuleFilePath(hfile);
-    Path_CanonicalizeEx(hfile);
     if (StrIsNotEmpty(lpNewCmdLnArgs)) {
         StringCchCopy(arg_buf, StrgGetAllocLength(hstrOrigArgs), lpNewCmdLnArgs);
     }
@@ -11561,16 +11575,15 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
     StrCutIW(arg_buf, L"-u ");
     StrgSanitize(hstrOrigArgs);
 
-    if (!(StrStrIW(arg_buf, L"/f ") || StrStrIW(arg_buf, L"-f ") || Path_IsEmpty(Paths.IniFile))) {
-
-        WCHAR  wchIniPath[CMDLN_LENGTH_LIMIT] = { L'\0' };
-
+    if (!(StrStrIW(arg_buf, L"/f ") || StrStrIW(arg_buf, L"-f ") || Path_IsEmpty(Paths.IniFile)))
+    {
         HPATHL hini = Path_Copy(Paths.IniFile);
         Path_ToShortPathName(hini);
-        StringCchPrintf(wchIniPath, COUNTOF(wchIniPath), L"/f \"%s\" ", Path_Get(hini));
+        HSTRINGW hipa_str = StrgCreate(NULL);
+        StrgFormat(hipa_str, L"/f \"%s\" ", Path_Get(hini));
         Path_Release(hini);
-        
-        StrgInsert(hstrOrigArgs, 0, wchIniPath);
+        StrgInsert(hstrOrigArgs, 0, StrgGet(hipa_str));
+        StrgDestroy(hipa_str);
     }
 
     bool res = false;

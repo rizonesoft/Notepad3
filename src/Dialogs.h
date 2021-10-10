@@ -46,7 +46,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam);
 INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault);
 bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile);
 bool FavoritesDlg(HWND hwnd, HPATHL hpath_in_out);
-bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget);
+bool AddToFavDlg(HWND hwnd, HPATHL hTargetPth);
 bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile);
 bool ChangeNotifyDlg(HWND hwnd);
 bool ColumnWrapDlg(HWND hwnd,UINT uidDlg,UINT * iNumber);
