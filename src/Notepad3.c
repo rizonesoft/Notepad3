@@ -2482,14 +2482,19 @@ bool SelectExternalToolBar(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
 
-    WCHAR szArgs[MAX_PATH] = { L'\0' };
     WCHAR szArg2[MAX_PATH] = { L'\0' };
     WCHAR szFile[MAX_PATH] = { L'\0' };
     WCHAR szFilter[MAX_PATH] = { L'\0' };
 
-    GetDlgItemText(hwnd, IDC_COMMANDLINE, szArgs, COUNTOF(szArgs));
-    ExpandEnvironmentStringsEx(szArgs, COUNTOF(szArgs));
-    ExtractFirstArgument(szArgs, szFile, szArg2, MAX_PATH);
+    HSTRINGW    hargs_str = StrgCreate(NULL);
+    DWORD const  len = (DWORD)SendDlgItemMessageW(hwnd, IDC_COMMANDLINE, EM_GETLIMITTEXT, 0, 0);
+    LPWSTR const args_buf = StrgWriteAccessBuf(hargs_str, len);
+    GetDlgItemTextW(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str));
+    StrgSanitize(hargs_str);
+
+    ExpandEnvironmentStrgs(hargs_str);
+    ExtractFirstArgument(StrgGet(hargs_str), szFile, szArg2, MAX_PATH);
+    StrgDestroy(hargs_str);
 
     GetLngString(IDS_MUI_FILTER_BITMAP, szFilter, COUNTOF(szFilter));
     PrepareFilterStr(szFilter);

@@ -1678,7 +1678,7 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out)
     if (!hstr_io)
         return false;
 
-    ExpandEnvironmentStrgs(hstr_io); // inplace hpth_in_out
+    ExpandEnvironmentStrgs(hstr_io);
 
     bool res = false;
     if (_Path_IsRelative(hpth_in_out)) {
@@ -1980,6 +1980,35 @@ bool PTHAPI Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out)
 // ----------------------------------------------------------------------------
 
 
+//=============================================================================
+//
+//  (Path_)ExpandEnvironmentStrings()
+//
+void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out)
+{
+    if (!hstr_in_out) {
+        return;
+    }
+    size_t const min_len = ExpandEnvironmentStringsW(StrgGet(hstr_in_out), NULL, 0);
+    LPWSTR       buf_io = StrgWriteAccessBuf(hstr_in_out, min_len);
+    DWORD const  cch_io = (DWORD)StrgGetAllocLength(hstr_in_out);
+
+    HSTRINGW const hstr_cpy = StrgCopy(hstr_in_out); // (!) no inplace substitution possible
+
+    if (ExpandEnvironmentStringsW(StrgGet(hstr_cpy), buf_io, cch_io)) {
+        StrgSanitize(hstr_in_out);
+    }
+    StrgDestroy(hstr_cpy);
+}
+
+void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
+        return;
+    ExpandEnvironmentStrgs(hstr_io);
+}
+// ----------------------------------------------------------------------------
 
 
 // ============================================================================
@@ -2028,48 +2057,6 @@ bool PTHAPI PathIsExistingFile(LPCWSTR pszPath)
     bool const   res = Path_IsExistingFile(hpth);
     Path_Release(hpth);
     return res;
-}
-
-
-//=============================================================================
-//
-//  (Path_)ExpandEnvironmentStrings()
-//
-void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out)
-{
-    if (!hstr_in_out) {
-        return;
-    }
-
-    HSTRINGW const hstr_cpy = StrgCopy(hstr_in_out); // no inplace substitution possible
-
-    size_t const min_len = ExpandEnvironmentStringsW(StrgGet(hstr_in_out), NULL, 0);
-    LPWSTR       buf_io = StrgWriteAccessBuf(hstr_in_out, min_len);
-    DWORD const  cch_io = (DWORD)StrgGetAllocLength(hstr_in_out);
-
-    if (ExpandEnvironmentStringsW(StrgGet(hstr_cpy), buf_io, cch_io)) {
-        StrgSanitize(hstr_in_out);
-    }
-    StrgDestroy(hstr_cpy);
-}
-
-void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc)
-{
-    HSTRINGW hstr = StrgCreate(lpSrc);
-    ExpandEnvironmentStrgs(hstr);
-    const wchar_t* buf = StrgGet(hstr);
-    if (buf) {
-        StringCchCopyW(lpSrc, cchSrc, buf);
-    }
-    StrgDestroy(hstr);
-}
-
-void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out)
-{
-    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
-    if (!hstr_io)
-        return;
-    ExpandEnvironmentStrgs(hstr_io);
 }
 
 

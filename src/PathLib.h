@@ -102,13 +102,16 @@ bool PTHAPI            Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWO
 void PTHAPI            Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
 bool PTHAPI            Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
 
+void PTHAPI            ExpandEnvironmentStrgs(HSTRINGW hstr);
+void PTHAPI            Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
+
 // ----------------------------------------------------------------------------
 // try to minimize use of:
 // ----------------------------------------------------------------------------
-const wchar_t* PTHAPI Path_Get(HPATHL hpth);
-size_t PTHAPI         Path_GetBufCount(HPATHL hpth);
-wchar_t* PTHAPI       Path_WriteAccessBuf(HPATHL hpth, size_t len);
-void PTHAPI           Path_Sanitize(HPATHL hpth);
+const wchar_t* PTHAPI  Path_Get(HPATHL hpth);
+size_t PTHAPI          Path_GetBufCount(HPATHL hpth);
+wchar_t* PTHAPI        Path_WriteAccessBuf(HPATHL hpth, size_t len);
+void PTHAPI            Path_Sanitize(HPATHL hpth);
 
 
 // ============================================================================
@@ -117,10 +120,6 @@ void PTHAPI           Path_Sanitize(HPATHL hpth);
 
 bool PTHAPI Path_IsExistingFile(const HPATHL hpth);
 bool PTHAPI PathIsExistingFile(LPCWSTR pszPath);
-
-void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr);
-void PTHAPI ExpandEnvironmentStringsEx(LPWSTR lpSrc, size_t cchSrc);
-void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
 
 void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv);
 void PTHAPI PathAbsoluteFromApp(LPWSTR lpszPath, const size_t cchPath, bool bExpandEnv);
