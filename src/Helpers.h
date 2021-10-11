@@ -377,9 +377,10 @@ typedef struct BackgroundWorker {
     HWND hwnd;
     HANDLE eventCancel;
     HANDLE workerThread;
+    HPATHL hFilePath; // PATHLONG_MAX_CCH
 } BackgroundWorker;
 
-void BackgroundWorker_Init(BackgroundWorker *worker, HWND hwnd);
+void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath);
 void BackgroundWorker_Cancel(BackgroundWorker *worker);
 void BackgroundWorker_Destroy(BackgroundWorker *worker);
 #define BackgroundWorker_Continue(worker) \

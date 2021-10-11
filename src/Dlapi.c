@@ -39,8 +39,7 @@ typedef struct tagDLDATA { // dl
     int iDefIconFolder;        // Default Folder Icon
     int iDefIconFile;          // Default File Icon
     bool bNoFadeHidden;        // Flag passed from GetDispInfo()
-
-    WCHAR szPath[MAX_PATH];    // Pathname to Directory Id
+    HPATHL hDirectoryPath;     // Pathname to Directory Id
 
 } DLDATA, *LPDLDATA;
 
@@ -56,7 +55,7 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 //  Initializes the DLDATA structure and sets up the listview control
 //
-bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
+bool DirList_Init(HWND hwnd,LPCWSTR pszHeader, HPATHL hFilePath)
 {
     UNREFERENCED_PARAMETER(pszHeader);
 
@@ -64,13 +63,13 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
     LPDLDATA lpdl = (LPDLDATA)GlobalAlloc(GPTR, sizeof(DLDATA));
     if (lpdl) {
         SetProp(hwnd, pDirListProp, (HANDLE)lpdl);
-
         // Setup dl
-        BackgroundWorker_Init(&lpdl->worker, hwnd);
+        BackgroundWorker_Init(&lpdl->worker, hwnd, NULL);
         lpdl->cbidl = 0;
         lpdl->pidl = NULL;
         lpdl->lpsf = NULL;
-        StringCchCopy(lpdl->szPath, COUNTOF(lpdl->szPath), L"");
+        lpdl->hDirectoryPath = hFilePath;
+        Path_Empty(lpdl->hDirectoryPath, false);
 
         // Add Imagelists
         SHFILEINFO shfi = { 0 };
@@ -152,10 +151,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                  bool bExcludeFilter,bool bNoFadeHidden,
                  int iSortFlags,bool fSortRev)
 {
-
     LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd, pDirListProp);
-
-    WCHAR wszDir[MAX_PATH] = { L'\0' };
 
     // Initialize default icons
     SHFILEINFO shfi = { 0 };
@@ -174,7 +170,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     if (!lpszDir || !*lpszDir) {
         return(-1);
     }
-    StringCchCopyN(lpdl->szPath, COUNTOF(lpdl->szPath), lpszDir, MAX_PATH);
+    Path_Reset(lpdl->hDirectoryPath, lpszDir);
 
     // Init ListView
     SendMessage(hwnd,WM_SETREDRAW,0,0);
@@ -200,7 +196,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                         -1,
                         wszDir,
                         MAX_PATH);*/
-    StringCchCopy(wszDir,COUNTOF(wszDir),lpszDir);
+    LPWSTR const wchDir = Path_WriteAccessBuf(lpdl->hDirectoryPath, 0);
 
     // Get Desktop Folder
     LPSHELLFOLDER lpsf = NULL;
@@ -215,7 +211,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                     lpsfDesktop,
                     hwnd,
                     NULL,
-                    wszDir,
+                    wchDir,
                     &chParsed,
                     &pidl,
                     &dwAttributes))
@@ -649,25 +645,18 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
 //
 int DirList_GetItemEx(HWND hwnd,int iItem,LPWIN32_FIND_DATA pfd)
 {
-
     LV_ITEM lvi;
     LPLV_ITEMDATA lplvid;
 
-
     if (iItem == -1) {
-
         if (ListView_GetSelectedCount(hwnd))
-
         {
             iItem = ListView_GetNextItem(hwnd,-1,LVNI_ALL | LVNI_SELECTED);
         }
-
         else
-
         {
             return(-1);
         }
-
     }
 
     lvi.mask = LVIF_PARAM;
@@ -698,7 +687,6 @@ int DirList_GetItemEx(HWND hwnd,int iItem,LPWIN32_FIND_DATA pfd)
 //
 bool DirList_PropertyDlg(HWND hwnd,int iItem)
 {
-
     LV_ITEM lvi;
     LPLV_ITEMDATA lplvid;
     LPCONTEXTMENU lpcm;
@@ -711,7 +699,6 @@ bool DirList_PropertyDlg(HWND hwnd,int iItem)
         if (ListView_GetSelectedCount(hwnd)) {
             iItem = ListView_GetNextItem(hwnd,-1,LVNI_ALL | LVNI_SELECTED);
         }
-
         else {
             return false;
         }
@@ -747,21 +734,16 @@ bool DirList_PropertyDlg(HWND hwnd,int iItem)
         if (NOERROR != lpcm->lpVtbl->InvokeCommand(lpcm,&cmi)) {
             bSuccess = false;
         }
-
         lpcm->lpVtbl->Release(lpcm);
-
     }
-
     else {
         bSuccess = false;
     }
-
     return(bSuccess);
-
 }
 
 
-
+#if 0
 //=============================================================================
 //
 //  DirList_GetLongPathName()
@@ -778,7 +760,7 @@ bool DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath,int length)
     }
     return false;
 }
-
+#endif
 
 
 //=============================================================================
@@ -925,7 +907,7 @@ bool DirList_MatchFilter(LPSHELLFOLDER lpsf,LPCITEMIDLIST pidl,PDL_FILTER pdlf)
 }
 
 
-
+#if 0
 //==== DriveBox ===============================================================
 
 //=============================================================================
@@ -1277,14 +1259,12 @@ LRESULT DriveBox_DeleteItem(HWND hwnd,LPARAM lParam)
 
 }
 
-
 //=============================================================================
 //
 //  DriveBox_GetDispInfo
 //
 LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
 {
-
     NMCOMBOBOXEX *lpnmcbe;
     LPDC_ITEMDATA lpdcid;
     SHFILEINFO shfi = { 0 };
@@ -1314,12 +1294,15 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
             attr = FILE_ATTRIBUTE_NORMAL;
         }
 
-        WCHAR szTemp[MAX_PATH] = { L'\0' };
-        IL_GetDisplayName(lpdcid->lpsf,lpdcid->pidl,SHGDN_FORPARSING,szTemp,MAX_PATH);
-        SHGetFileInfo(szTemp,attr,&shfi,sizeof(SHFILEINFO),
-                      SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
+        HPATHL hFilePath = Path_Allocate(NULL);
+        LPWSTR const wchFileBuf = Path_WriteAccessBuf(hFilePath, PATHLONG_MAX_CCH);
+        IL_GetDisplayName(lpdcid->lpsf, lpdcid->pidl, SHGDN_FORPARSING, wchFileBuf, (int)Path_GetBufCount(hFilePath));
+        Path_Sanitize(hFilePath);
+        SHGetFileInfoW(wchFileBuf, attr, &shfi, sizeof(SHFILEINFO),
+                       SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
         lpnmcbe->ceItem.iImage = shfi.iIcon;
         lpnmcbe->ceItem.iSelectedImage = shfi.iIcon;
+        Path_Release(hFilePath);
     }
 
     // Set values
@@ -1330,6 +1313,7 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
     return true;
 }
 
+#endif
 
 
 //==== ItemID =================================================================

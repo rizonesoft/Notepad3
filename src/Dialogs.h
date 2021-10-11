@@ -47,7 +47,7 @@ INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault);
 bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile);
 bool FavoritesDlg(HWND hwnd, HPATHL hpath_in_out);
 bool AddToFavDlg(HWND hwnd, HPATHL hTargetPth);
-bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile);
+bool FileMRUDlg(HWND hwnd, HPATHL hFilePath_out);
 bool ChangeNotifyDlg(HWND hwnd);
 bool ColumnWrapDlg(HWND hwnd,UINT uidDlg,UINT * iNumber);
 bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int * iNumber);

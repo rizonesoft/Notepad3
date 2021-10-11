@@ -81,6 +81,7 @@ size_t PTHAPI          Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2,
 const wchar_t* PTHAPI  Path_FindFileName(const HPATHL hpth);
 const wchar_t* PTHAPI  Path_FindExtension(const HPATHL hpth);
 bool PTHAPI            Path_QuoteSpaces(HPATHL hpth_in_out, bool bForceQuotes);
+void PTHAPI            Path_UnQuoteSpaces(HPATHL hpth_in_out);
 int PTHAPI             Path_GetDriveNumber(const HPATHL hpth);
 wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);

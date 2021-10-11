@@ -589,10 +589,12 @@ bool IsRunAsAdmin()
 //=============================================================================
 
 
-void BackgroundWorker_Init(BackgroundWorker *worker, HWND hwnd) {
+void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath)
+{
     worker->hwnd = hwnd;
     worker->eventCancel = CreateEvent(NULL, TRUE, FALSE, NULL);
     worker->workerThread = NULL;
+    worker->hFilePath = hFilePath;
 }
 
 void BackgroundWorker_Stop(BackgroundWorker *worker) {

@@ -4547,9 +4547,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_RECENT:
         if (MRU_Count(Globals.pFileMRU) > 0) {
             if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-                HPATHL hfile_pth = Path_Allocate(L"");
-                wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, MAX_PATH); // TODO: §§§ @@@ MAX_PATH
-                if (FileMRUDlg(hwnd, file_buf)) {
+                HPATHL hfile_pth = Path_Allocate(NULL);
+                if (FileMRUDlg(hwnd, hfile_pth)) {
                     FileLoad(hfile_pth, true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false);
                 }
                 Path_Release(hfile_pth);

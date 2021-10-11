@@ -1506,6 +1506,7 @@ INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 	static HWND hwndLV = NULL;
+    static HPATHL hFilePath = NULL;
 
 	switch(umsg) {
 	case WM_INITDIALOG: {
@@ -1514,6 +1515,9 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 		SetDialogIconNP3(hwnd);
 
 		InitWindowCommon(hwnd, true);
+
+        hFilePath = Path_Allocate(NULL);
+        Path_WriteAccessBuf(hFilePath, PATHLONG_MAX_CCH); // reserve buffer
 
 #ifdef D_NP3_WIN10_DARK_MODE
 		if (UseDarkMode()) {
@@ -1534,7 +1538,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 		ListView_SetExtendedListViewStyle(hwndLV, /*LVS_EX_FULLROWSELECT|*/ LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
 		ListView_InsertColumn(hwndLV, 0, &lvc);
-		DirList_Init(hwndLV, NULL);
+        DirList_Init(hwndLV, NULL, hFilePath);
         DirList_Fill(hwndLV, Path_Get(Settings.OpenWithDir), DL_ALLOBJECTS, NULL, false, Flags.NoFadeHidden, DS_NAME, false);
 		DirList_StartIconThread(hwndLV);
 		ListView_SetItemState(hwndLV, 0, LVIS_FOCUSED, LVIS_FOCUSED);
@@ -1555,6 +1559,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 		DirList_Destroy(hwndLV);
 		hwndLV = NULL;
 		DeleteBitmapButton(hwnd,IDC_GETOPENWITHDIR);
+        Path_Release(hFilePath);
 		ResizeDlg_Destroy(hwnd,&Settings.OpenWithDlgSizeX,&Settings.OpenWithDlgSizeY);
 		return FALSE;
 
@@ -1703,7 +1708,7 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
     HPATHL hpthFileName = Path_Allocate(lpstrFile);
     dliOpenWith.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
 
-    WCHAR chDispayName[MAX_PATH];
+    WCHAR chDispayName[128];
     Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, L"");
     dliOpenWith.strDisplayName = chDispayName;
 
@@ -1762,6 +1767,7 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
 static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 	static HWND hwndLV = NULL;
+    static HPATHL hFilePath = NULL;
 
 	switch(umsg) {
 	case WM_INITDIALOG: {
@@ -1769,6 +1775,9 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 		SetDialogIconNP3(hwnd);
 
 		InitWindowCommon(hwnd, true);
+
+        hFilePath = Path_Allocate(NULL);
+        Path_WriteAccessBuf(hFilePath, PATHLONG_MAX_CCH); // reserve buffer
 
 #ifdef D_NP3_WIN10_DARK_MODE
 		if (UseDarkMode()) {
@@ -1789,7 +1798,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 		ListView_SetExtendedListViewStyle(hwndLV,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
 		ListView_InsertColumn(hwndLV,0,&lvc);
-		DirList_Init(hwndLV,NULL);
+        DirList_Init(hwndLV, NULL, hFilePath);
         DirList_Fill(hwndLV,Path_Get(Settings.FavoritesDir),DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
 		DirList_StartIconThread(hwndLV);
 		ListView_SetItemState(hwndLV,0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -1810,6 +1819,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 		DirList_Destroy(hwndLV);
 		hwndLV = NULL;
 		DeleteBitmapButton(hwnd,IDC_GETFAVORITESDIR);
+        Path_Release(hFilePath);
 		ResizeDlg_Destroy(hwnd,&Settings.FavoritesDlgSizeX,&Settings.FavoritesDlgSizeY);
 		return FALSE;
 
@@ -2143,7 +2153,6 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 
 	(void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
-	WCHAR tch[MAX_PATH] = { L'\0' };
 	DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
 
 	HWND hwnd = worker->hwnd;
@@ -2154,22 +2163,23 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 
 		LV_ITEM lvi = { 0 };
 		lvi.mask = LVIF_TEXT;
-		lvi.pszText = tch;
-		lvi.cchTextMax = COUNTOF(tch);
+        lvi.pszText = Path_WriteAccessBuf(worker->hFilePath, 0);
+        lvi.cchTextMax = (int)Path_GetBufCount(worker->hFilePath);
 		lvi.iItem = iItem;
 
 		SHFILEINFO shfi = { 0 };
 
 		if (ListView_GetItem(hwnd,&lvi)) {
+            Path_Sanitize(worker->hFilePath);
 			DWORD dwAttr = 0;
-			if (PathIsUNC(tch) || !PathIsExistingFile(tch)) {
+            if (Path_IsValidUNC(worker->hFilePath) || !Path_IsExistingFile(worker->hFilePath)) {
 				dwFlags |= SHGFI_USEFILEATTRIBUTES;
 				dwAttr = FILE_ATTRIBUTE_NORMAL;
 				shfi.dwAttributes = 0;
-				SHGetFileInfo(PathFindFileName(tch),dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                SHGetFileInfoW(Path_FindFileName(worker->hFilePath), dwAttr, &shfi, sizeof(SHFILEINFO), dwFlags);
 			} else {
 				shfi.dwAttributes = SFGAO_LINK | SFGAO_SHARE;
-				SHGetFileInfo(tch,dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
+                SHGetFileInfoW(Path_Get(worker->hFilePath), dwAttr, &shfi, sizeof(SHFILEINFO), dwFlags);
 			}
 
 			lvi.mask = LVIF_IMAGE;
@@ -2189,10 +2199,10 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 				lvi.state |= INDEXTOOVERLAYMASK(1);
 			}
 
-			if (PathIsUNC(tch)) {
+			if (Path_IsValidUNC(worker->hFilePath)) {
 				dwAttr = FILE_ATTRIBUTE_NORMAL;
 			} else {
-				dwAttr = GetFileAttributes(tch);
+                dwAttr = GetFileAttributesW(Path_Get(worker->hFilePath));
 			}
 
 			if (!Flags.NoFadeHidden &&
@@ -2218,6 +2228,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
 	static HWND hwndLV = NULL;
+    static HPATHL hFilePath = NULL;
 
 	switch (umsg) {
 	case WM_INITDIALOG: {
@@ -2225,6 +2236,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 		SetDialogIconNP3(hwnd);
 
 		InitWindowCommon(hwnd, true);
+
+        hFilePath = Path_Allocate(NULL);
+        Path_WriteAccessBuf(hFilePath, PATHLONG_MAX_CCH); // reserve buffer
 
 #ifdef D_NP3_WIN10_DARK_MODE
 		if (UseDarkMode()) {
@@ -2252,7 +2266,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
 		BackgroundWorker *worker = (BackgroundWorker *)GlobalAlloc(GPTR, sizeof(BackgroundWorker));
 		SetProp(hwnd, L"it", (HANDLE)worker);
-		BackgroundWorker_Init(worker, hwndLV);
+        BackgroundWorker_Init(worker, hwndLV, hFilePath);
 
 		ResizeDlg_Init(hwnd, Settings.FileMRUDlgSizeX, Settings.FileMRUDlgSizeY, IDC_RESIZEGRIP);
 
@@ -2298,6 +2312,8 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 		Settings.SaveRecentFiles  = IsButtonChecked(hwnd, IDC_SAVEMRU);
 		Settings.SaveFindReplace  = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
 		Settings.PreserveCaretPos = IsButtonChecked(hwnd, IDC_PRESERVECARET);
+
+        Path_Release(hFilePath);
 
 		ResizeDlg_Destroy(hwnd, &Settings.FileMRUDlgSizeX, &Settings.FileMRUDlgSizeY);
 	}
@@ -2402,65 +2418,7 @@ CASE_WM_CTLCOLOR_SET:
 					break;
 
 				case LVN_GETDISPINFO: {
-					/*
-					LV_DISPINFO *lpdi = (LPVOID)lParam;
-
-					if (lpdi->item.mask & LVIF_IMAGE) {
-
-					  WCHAR tch[MAX_PATH] = { L'\0' };
-					  LV_ITEM lvi = { 0 };
-					  SHFILEINFO shfi = { 0 };
-					  DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
-					  DWORD dwAttr  = 0;
-
-					  lvi.mask = LVIF_TEXT;
-					  lvi.pszText = tch;
-					  lvi.cchTextMax = COUNTOF(tch);
-					  lvi.iItem = lpdi->item.iItem;
-
-					  ListView_GetItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
-
-					  if (!PathIsExistingFile(tch)) {
-						dwFlags |= SHGFI_USEFILEATTRIBUTES;
-						dwAttr = FILE_ATTRIBUTE_NORMAL;
-						shfi.dwAttributes = 0;
-						SHGetFileInfo(PathFindFileName(tch),dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
-					  }
-
-					  else {
-						shfi.dwAttributes = SFGAO_LINK | SFGAO_SHARE;
-						SHGetFileInfo(tch,dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
-					  }
-
-					  lpdi->item.iImage = shfi.iIcon;
-					  lpdi->item.mask |= LVIF_DI_SETITEM;
-
-					  lpdi->item.stateMask = 0;
-					  lpdi->item.state = 0;
-
-					  if (shfi.dwAttributes & SFGAO_LINK) {
-						lpdi->item.mask |= LVIF_STATE;
-						lpdi->item.stateMask |= LVIS_OVERLAYMASK;
-						lpdi->item.state |= INDEXTOOVERLAYMASK(2);
-					  }
-
-					  if (shfi.dwAttributes & SFGAO_SHARE) {
-						lpdi->item.mask |= LVIF_STATE;
-						lpdi->item.stateMask |= LVIS_OVERLAYMASK;
-						lpdi->item.state |= INDEXTOOVERLAYMASK(1);
-					  }
-
-					  dwAttr = GetFileAttributes(tch);
-
-					  if (!Flags.NoFadeHidden &&
-						  dwAttr != INVALID_FILE_ATTRIBUTES &&
-						  dwAttr & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
-						lpdi->item.mask |= LVIF_STATE;
-						lpdi->item.stateMask |= LVIS_CUT;
-						lpdi->item.state |= LVIS_CUT;
-					  }
-					}
-					*/
+                    // done by BackgroundWorker FileMRUIconThread()
 				}
 				break;
 
@@ -2492,7 +2450,7 @@ CASE_WM_CTLCOLOR_SET:
 		switch (LOWORD(wParam)) {
 		case IDC_FILEMRU_UPDATE_VIEW: {
 
-			BackgroundWorker *worker = (BackgroundWorker *)GetProp(hwnd, L"it");
+			BackgroundWorker* worker = (BackgroundWorker*)GetProp(hwnd, L"it");
 			BackgroundWorker_Cancel(worker);
 
 			ListView_DeleteAllItems(hwndLV);
@@ -2505,13 +2463,17 @@ CASE_WM_CTLCOLOR_SET:
 						  SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 			lvi.iImage = shfi.iIcon;
 
-			WCHAR tch[MAX_PATH] = { L'\0' };
+            LPWSTR const szFileBuf = Path_WriteAccessBuf(hFilePath, 0);
+            int const    cchFileBuf = (int)Path_GetBufCount(hFilePath);
+
 			for (int i = 0; i < MRU_Count(Globals.pFileMRU); i++) {
-				MRU_Enum(Globals.pFileMRU, i, tch, COUNTOF(tch));
+                MRU_Enum(Globals.pFileMRU, i, szFileBuf, cchFileBuf);
+                Path_Sanitize(hFilePath);
 				//  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_ADDSTRING,0,(LPARAM)tch); }
 				//  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_SETCARETINDEX,0,false);
 				lvi.iItem   = i;
-				lvi.pszText = tch;
+                lvi.pszText = Path_WriteAccessBuf(hFilePath, 0);
+                lvi.cchTextMax = (int)Path_GetBufCount(hFilePath);
 				ListView_InsertItem(hwndLV, &lvi);
 			}
 
@@ -2545,22 +2507,21 @@ CASE_WM_CTLCOLOR_SET:
 
 		case IDOK:
 		case IDC_REMOVE: {
-			WCHAR tchFileName[MAX_PATH] = {L'\0'};
 
 			if (ListView_GetSelectedCount(hwndLV)) {
 
 				LV_ITEM lvi = { 0 };
 				lvi.mask = LVIF_TEXT;
-				lvi.pszText = tchFileName;
-				lvi.cchTextMax = COUNTOF(tchFileName);
-				lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+                lvi.pszText = Path_WriteAccessBuf(hFilePath, 0);
+                lvi.cchTextMax = (int)Path_GetBufCount(hFilePath);
+                lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
 
 				ListView_GetItem(hwndLV, &lvi);
 
-				PathUnquoteSpaces(tchFileName);
-				PathAbsoluteFromApp(tchFileName, COUNTOF(tchFileName), true);
+				Path_UnQuoteSpaces(hFilePath);
+                Path_AbsoluteFromApp(hFilePath, true);
 
-				if (!PathIsExistingFile(tchFileName) || (LOWORD(wParam) == IDC_REMOVE)) {
+				if (!Path_IsExistingFile(hFilePath) || (LOWORD(wParam) == IDC_REMOVE)) {
 					// don't remove myself
 					int iCur = 0;
 					if (!MRU_FindPath(Globals.pFileMRU, Paths.CurrentFile, &iCur)) {
@@ -2579,7 +2540,8 @@ CASE_WM_CTLCOLOR_SET:
 						//  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
 					}
 				} else { // file to load
-					StringCchCopy((LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER), MAX_PATH, tchFileName);
+                    HPATHL hFilePathOut = (HPATHL)GetWindowLongPtr(hwnd, DWLP_USER);
+                    Path_Reset(hFilePathOut, Path_Get(hFilePath)); // (!) no Path_Swap() here
 					EndDialog(hwnd, IDOK);
 				}
 
@@ -2618,13 +2580,10 @@ CASE_WM_CTLCOLOR_SET:
 //  FileMRUDlg()
 //
 //
-bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
+bool FileMRUDlg(HWND hwnd, HPATHL hFilePath_out)
 {
-	if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_FILEMRU),
-									 hwnd, FileMRUDlgProc, (LPARAM)lpstrFile)) {
-		return TRUE;
-	}
-	return FALSE;
+    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_FILEMRU),
+                        hwnd, FileMRUDlgProc, (LPARAM)hFilePath_out));
 }
 
 
@@ -4753,13 +4712,15 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 				}
 			}
 
-            WCHAR tchTemp[MAX_PATH] = { L'\0' };
+            HPATHL hLngFilePath = Path_Allocate(NULL);
+            LPWSTR wchLngPathBuf = Path_WriteAccessBuf(hLngFilePath, PATHLONG_MAX_CCH);
+
 			if (lngIdx >= 0) {
-				IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
-				IniSectionSetString(globalSection, L"languagefile", tchTemp);
+                IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, wchLngPathBuf, Path_GetBufCount(hLngFilePath));
+                IniSectionSetString(globalSection, L"languagefile", wchLngPathBuf);
 			} else {
-				IniSectionGetString(globalSection, L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
-				if (StrIsEmpty(tchTemp)) {
+                IniSectionGetString(globalSection, L"languagefile", L"", wchLngPathBuf, Path_GetBufCount(hLngFilePath));
+                if (Path_IsEmpty(hLngFilePath)) {
 					IniSectionDelete(globalSection, L"languagefile", false);
 				}
 			}
@@ -4767,8 +4728,10 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 			bool const bDarkMode = UseDarkMode(); // <- override usr ~ IniSectionGetBool(globalSection, L"darkmode", UseDarkMode());
 			IniSectionSetBool(globalSection, L"darkmode", bDarkMode);
 
-			StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", Path_Get(hNotepad3Path));
-			IniSectionSetString(globalSection, L"editorcmd", tchTemp);
+			StringCchPrintf(wchLngPathBuf, Path_GetBufCount(hLngFilePath), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", Path_Get(hNotepad3Path));
+            IniSectionSetString(globalSection, L"editorcmd", wchLngPathBuf);
+
+            Path_Release(hLngFilePath);
 
 			long const iOpacity = IniSectionGetLong(globalSection, L"OpacityNoFocus", Settings2.FindReplaceOpacityLevel);
 			IniSectionSetLong(globalSection, L"OpacityNoFocus", iOpacity);

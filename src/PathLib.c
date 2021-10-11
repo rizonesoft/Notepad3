@@ -1230,6 +1230,18 @@ bool PTHAPI Path_QuoteSpaces(HPATHL hpth_in_out, bool bForceQuotes)
 // ----------------------------------------------------------------------------
 
 
+void PTHAPI Path_UnQuoteSpaces(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
+        return;
+
+    StrgTrimLeft(hstr_io, L'"');
+    StrgTrimRight(hstr_io, L'"');
+}
+// ----------------------------------------------------------------------------
+
+
 int PTHAPI Path_GetDriveNumber(const HPATHL hpth)
 {
     int      res = -1;

@@ -36,7 +36,7 @@ typedef struct tagLV_ITEMDATA { // lvid
 
 //==== DlInit() ===============================================================
 
-bool DirList_Init(HWND hwnd,LPCWSTR pszHeader);
+bool DirList_Init(HWND hwnd, LPCWSTR pszHeader, HPATHL hFilePath);
 
 
 //==== DlDestroy() ============================================================
@@ -119,7 +119,7 @@ bool DirList_PropertyDlg(HWND hwnd,int iItem);
 
 //==== DlGetLongPathName() ====================================================
 
-bool DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath,int length);
+//bool DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath,int length);
 
 //==== DlSelectItem() =========================================================
 
@@ -144,14 +144,14 @@ bool DirList_MatchFilter(LPSHELLFOLDER lpsf,LPCITEMIDLIST pidl,PDL_FILTER pdlf);
 
 //==== DriveBox ===============================================================
 
-bool DriveBox_Init(HWND hwnd);
-int  DriveBox_Fill(HWND hwnd);
-bool DriveBox_GetSelDrive(HWND hwnd,LPWSTR lpszDrive,int nDrive,bool);
-bool DriveBox_SelectDrive(HWND hwnd,LPCWSTR lpszPath);
-bool DriveBox_PropertyDlg(HWND hwnd);
+//bool DriveBox_Init(HWND hwnd);
+//int  DriveBox_Fill(HWND hwnd);
+//bool DriveBox_GetSelDrive(HWND hwnd,LPWSTR lpszDrive,int nDrive,bool);
+//bool DriveBox_SelectDrive(HWND hwnd,LPCWSTR lpszPath);
+//bool DriveBox_PropertyDlg(HWND hwnd);
 
-LRESULT DriveBox_DeleteItem(HWND hwnd,LPARAM lParam);
-LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam);
+//LRESULT DriveBox_DeleteItem(HWND hwnd,LPARAM lParam);
+//LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam);
 
 
 
