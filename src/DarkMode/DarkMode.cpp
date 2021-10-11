@@ -64,28 +64,53 @@ DWORD const kSystemLibraryLoadFlags = (IsWindows8Point1OrGreater() ||
 
 // https://docs.microsoft.com/en-US/windows-insider/active-dev-branch
 
-constexpr bool CheckBuildNumber(DWORD buildNumber)
+constexpr bool CheckBuildNumber(DWORD major, DWORD minor, DWORD buildNumber)
 {
-    switch (buildNumber) {
-    case 17763: // Win10 v1809 (released)
-    case 18362: // Win10 v1903 (released)
-    case 18363: // Win10 v1909 (released)
-    case 19041: // Win10 v2004 (released)
-    case 19042: // Win10 v20H2 (released)
-    case 19043: // Win10 v21H1 (released)
-        return true;
-    default:
-        // Insider Dev and Preview Channels
-       
-        if (buildNumber <= 21390)       // Win10 v21H2 [2021-05-21]
-            return true;
-        else if (buildNumber <= 22000)  // Win11 v21H2 [2021-06-28]
-            return true;
+    // ignore "minor" build number
+    UNREFERENCED_PARAMETER(minor);
 
-        // unknown, if working with these version(s) :-O
-        // in doubt vote for not supported
+    switch (major) {
+
+    // --- Win10 ---
+    case 10: {
+        switch (buildNumber) {
+        case 17763: // Win10 v1809 (released)
+        case 18362: // Win10 v1903 (released)
+        case 18363: // Win10 v1909 (released)
+        case 19041: // Win10 v2004 (released)
+        case 19042: // Win10 v20H2 (released)
+        case 19043: // Win10 v21H1 (released)
+            return true;
+        default:
+            break;
+        }
+    } //[fallthrough]
+
+    // Win10 Insider Preview may have valid higher build numbers on major = 10
+
+    // --- Win11 ---
+    case 11: {
+        switch (buildNumber) {
+        case 22000: // Win11 v21H2 (released) [2021-10-04]
+            return true;
+        default:
+            break;
+        }
+    } break;
+
+    default:
         break;
     }
+
+    // Insider Dev and Preview Channels (tested but NOT released Win versions)
+
+    if (buildNumber <= 21999)  // Win10 v21H2 [2021-05-21] - WIN10 Insider future will not change this ???
+        return true;
+    else if (buildNumber >= 22000 && buildNumber <= 22471) // Win11 v21H2 [2021-06-28]
+        return true;
+
+    // unknown, not tested if working with these version(s) :-O
+    // in doubt vote for not supported
     return false;
 }
 
@@ -349,7 +374,7 @@ extern "C" void SetDarkMode(bool bEnableDarkMode)
     DWORD const buildNumber = GetWindowsBuildNumber(&major, &minor);
     if (buildNumber) {
         // undocumented function addresses are only valid for this WinVer build numbers
-        if ((major == 10) && (minor == 0) && CheckBuildNumber(buildNumber)) {
+        if (CheckBuildNumber(major, minor, buildNumber)) {
             if (!bUxThemeDllLoaded) {
                 __try {
                     __HrLoadAllImportsForDll("UxTheme.dll"); // Case sensitive
