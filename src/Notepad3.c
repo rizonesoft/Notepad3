@@ -5151,14 +5151,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INSERT_GUID: {
         GUID guid;
         if (SUCCEEDED(CoCreateGuid(&guid))) {
-            WCHAR wchBuf[256] = { L'\0' };
+            WCHAR wchBuf[128] = { L'\0' };
             if (StringFromGUID2(&guid, wchBuf, COUNTOF(wchBuf))) {
                 StrTrim(wchBuf, L"{}");
-                //char chMaxPathBuffer[MAX_PATH] = { '\0' };
-                //if (WideCharToMultiByteEx(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
-                //  EditReplaceSelection(chMaxPathBuffer, false);
-                //}
                 SetClipboardText(hwnd, wchBuf, StringCchLen(wchBuf, 0));
+                //char chGuidBuffer[128] = { '\0' };
+                //if (WideCharToMultiByte(Encoding_SciCP, 0, wchBuf, -1, chGuidBuffer, (int)COUNTOF(chGuidBuffer), NULL, NULL)) {
+                //    EditReplaceSelection(chGuidBuffer, false);
+                //}
             }
         }
     }
@@ -7335,7 +7335,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     SplitFilePathLineNum(wchUrl, NULL); // cut off possible linenum spec
 
                     HPATHL       hurl_pth = Path_Allocate(NULL);
-                    DWORD        cchPath = MAX_PATH << 1;
+                    DWORD        cchPath = INTERNET_MAX_URL_LENGTH;
                     LPWSTR const url_buf = Path_WriteAccessBuf(hurl_pth, cchPath);
 
                     if (FAILED(PathCreateFromUrlW(wchUrl, url_buf, &cchPath, 0))) {
@@ -7549,8 +7549,8 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
                 bool const bReuseWindow = Flags.bReuseWindow && !(operation & OPEN_NEW_NOTEPAD3);
 
-                PathCreateFromUrl(szTextW, szUnEscW, &dCch, 0);
-                szUnEscW[min_u(MAX_PATH, INTERNET_MAX_URL_LENGTH)] = L'\0'; // limit length
+                PathCreateFromUrlW(szTextW, szUnEscW, &dCch, 0);
+                szUnEscW[INTERNET_MAX_URL_LENGTH] = L'\0'; // limit length
                 StrTrim(szUnEscW, L"/");
 
                 HPATHL hfile_pth = Path_Allocate(szUnEscW);
@@ -8642,7 +8642,7 @@ void ParseCommandLine()
                         if (*(lp1 + 1) == L'0' || *CharUpper(lp1 + 1) == L'O') {
                             Path_Reset(Paths.IniFile, L"*?");
                         } else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            WCHAR wchPath[MAX_PATH << 2];
+                            WCHAR wchPath[INTERNET_MAX_URL_LENGTH];
                             StringCchCopyN(wchPath, COUNTOF(wchPath), lp1, len);
                             Path_Reset(Paths.IniFile, wchPath);
                             Path_NormalizeEx(Paths.IniFile, Paths.ModuleDirectory, true, false);
@@ -8904,7 +8904,7 @@ void ParseCommandLine()
             }
             // pathname
             else {
-                LPWSTR lpFileBuf = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
+                LPWSTR lpFileBuf = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
                 if (lpFileBuf) {
                     size_t const fileArgLen = StringCchLenW(lp3, len);
                     s_cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - fileArgLen);
@@ -8919,7 +8919,7 @@ void ParseCommandLine()
                     Path_Reset(s_pthArgFilePath, lp3);
                     Path_Canonicalize(s_pthArgFilePath);
 
-                    // §§§ @@@ TODO: Normalize ???
+                    // §§§ @@@ TODO: Normalize MAX_PATH ???
                     //if (!Path_IsRelative(s_pthArgFilePath) && !Path_IsValidUNC(s_pthArgFilePath, NULL) &&
                     //    Path_GetDriveNumber(s_pthArgFilePath) == -1 /*&& Path_GetDriveNumber(Paths.WorkingDirectory) != -1*/) {
                     //    WCHAR wchPath[MAX_PATH] = { L'\0' };
@@ -10290,10 +10290,12 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
 {
     bool fSuccess = false;
 
-    WCHAR tch[MAX_PATH + 40];
-    FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, Path_FindFileName(hfile_pth));
+    WCHAR wchFName[64];
+    Path_GetDisplayName(wchFName, COUNTOF(wchFName), hfile_pth, L"...");
+    WCHAR wchMsg[128];
+    FormatLngStringW(wchMsg, COUNTOF(wchMsg), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, wchFName);
     
-    BeginWaitCursor(true, tch);
+    BeginWaitCursor(true, wchMsg);
 
     if (fLoad) {
         fSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status,
@@ -10897,16 +10899,16 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
     if (bAsk) {
         // File or "Untitled" ...
-        WCHAR tch[MAX_PATH] = { L'\0' };
+        WCHAR wchFileName[128] = { L'\0' };
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
-            StringCchCopy(tch, COUNTOF(tch), Path_FindFileName(Paths.CurrentFile));  // eq. PathStripPath(tch);
+            Path_GetDisplayName(wchFileName, COUNTOF(wchFileName), Paths.CurrentFile, L"...");
         } else {
-            GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
+            GetLngString(IDS_MUI_UNTITLED, wchFileName, COUNTOF(wchFileName));
         }
 
         INT_PTR const answer = (Settings.MuteMessageBeep) ?
-                               InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch) :
-                               MessageBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch);
+                               InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, wchFileName) :
+                               MessageBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, wchFileName);
         switch (answer)
             //switch ()
         {
@@ -11158,7 +11160,7 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     Path_Sanitize(hfile_pth_io);
 
     Path_Release(hpth_dir);
-    Path_FreeExtra(hfile_pth_io, MAX_PATH);
+    Path_FreeExtra(hfile_pth_io, MAX_PATH_EXPLICIT);
 
     return res;
 }
@@ -11202,7 +11204,7 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     Path_Sanitize(hfile_pth_io);
 
     Path_Release(hpth_dir);
-    Path_FreeExtra(hfile_pth_io, MAX_PATH);
+    Path_FreeExtra(hfile_pth_io, MAX_PATH_EXPLICIT);
 
     return res;
 }
@@ -11253,10 +11255,10 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
                     bContinue = FALSE;
                 }
 
-                WCHAR tchFileName[MAX_PATH] = { L'\0' };
-                GetDlgItemText(hwnd, IDC_FILENAME, tchFileName, COUNTOF(tchFileName));
+                WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
+                GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
 
-                if (StringCchCompareXI(tchFileName, Path_Get(s_pthArgFilePath)) == 0) {
+                if (StringCchCompareXI(wchFileName, Path_Get(s_pthArgFilePath)) == 0) {
                     *(HWND*)lParam = hwnd;
                 } else {
                     bContinue = TRUE;

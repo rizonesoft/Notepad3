@@ -905,10 +905,10 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
         Path_Reset(hPathEx, Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini");
         Path_ExpandEnvStrings(hPathEx);
         HPATHL hsearchpth = Path_Allocate(NULL);
-        wchar_t* const buf = Path_WriteAccessBuf(hsearchpth, PATHLONG_MAX_CCH);
+        LPWSTR const buf = Path_WriteAccessBuf(hsearchpth, PATHLONG_MAX_CCH);
         if (SearchPathW(NULL, Path_Get(hPathEx), L".ini", PATHLONG_MAX_CCH, buf, NULL)) {
             Path_Sanitize(hsearchpth);
-            Path_FreeExtra(hsearchpth, MAX_PATH);
+            Path_FreeExtra(hsearchpth, MAX_PATH_EXPLICIT);
             Path_Swap(hPathEx, hsearchpth);
             result = true;
         }
@@ -931,7 +931,7 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
     bool result = false;
     if (Path_IsExistingFile(hpth_in_out)) {
         HPATHL hredirect = Path_Allocate(NULL);
-        wchar_t* const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
+        LPWSTR const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
         if (IniFileGetString(Path_Get(hpth_in_out), lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
             Path_Sanitize(hredirect);
             Path_FreeExtra(hredirect, 0);
@@ -1409,7 +1409,7 @@ void LoadSettings()
     Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
     Path_GetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir);
-    wchar_t* const wchOpenWithDir = Path_WriteAccessBuf(Settings.OpenWithDir, PATHLONG_MAX_CCH);
+    LPWSTR const wchOpenWithDir = Path_WriteAccessBuf(Settings.OpenWithDir, PATHLONG_MAX_CCH);
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Path_Get(Defaults.OpenWithDir), wchOpenWithDir, PATHLONG_MAX_CCH)) {
         Path_Sanitize(Settings.OpenWithDir);
         Path_FreeExtra(Settings.OpenWithDir, 0);
@@ -1418,7 +1418,7 @@ void LoadSettings()
     //~Path_FreeExtra(Settings.OpenWithDir, 0); ~ already done
 
     Path_GetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir);
-    wchar_t* const wchFavoritesDir = Path_WriteAccessBuf(Settings.FavoritesDir, PATHLONG_MAX_CCH);
+    LPWSTR const wchFavoritesDir = Path_WriteAccessBuf(Settings.FavoritesDir, PATHLONG_MAX_CCH);
     if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Path_Get(Defaults.FavoritesDir), wchFavoritesDir, PATHLONG_MAX_CCH)) {
         Path_Sanitize(Settings.FavoritesDir);
         Path_FreeExtra(Settings.FavoritesDir, 0);

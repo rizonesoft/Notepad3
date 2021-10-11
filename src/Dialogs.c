@@ -1339,15 +1339,15 @@ CASE_WM_CTLCOLOR_SET:
 		case IDC_SEARCHEXE: {
 
             HPATHL hfile_pth = Path_Allocate(NULL);
-            wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+            LPWSTR const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
 
             HSTRINGW hargs_str = StrgCreate(NULL);
-            wchar_t* const args_buf = StrgWriteAccessBuf(hargs_str, CMDLN_LENGTH_LIMIT);
+            LPWSTR const  args_buf = StrgWriteAccessBuf(hargs_str, CMDLN_LENGTH_LIMIT);
             HSTRINGW hargs2_str = StrgCreate(NULL);
-            wchar_t* const args2_buf = StrgWriteAccessBuf(hargs2_str, StrgGetAllocLength(hargs_str));
+            LPWSTR const args2_buf = StrgWriteAccessBuf(hargs2_str, StrgGetAllocLength(hargs_str));
 
             HSTRINGW hflt_str = StrgCreate(NULL);
-            wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
+            LPWSTR const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
 
 			GetDlgItemText(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str));
             StrgSanitize(hargs_str);

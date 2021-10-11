@@ -186,7 +186,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     lvi.iItem = 0;
     lvi.iSubItem = 0;
     lvi.pszText = LPSTR_TEXTCALLBACK;
-    lvi.cchTextMax = MAX_PATH;
+    lvi.cchTextMax = MAX_PATH_EXPLICIT;
     lvi.iImage = I_IMAGECALLBACK;
 
     // Convert Directory to a UNICODE string
@@ -195,7 +195,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                         lpszDir,
                         -1,
                         wszDir,
-                        MAX_PATH);*/
+                        MAX_PATH_EXPLICIT);*/
     LPWSTR const wchDir = Path_WriteAccessBuf(lpdl->hDirectoryPath, 0);
 
     // Get Desktop Folder
@@ -752,13 +752,18 @@ bool DirList_PropertyDlg(HWND hwnd,int iItem)
 //
 bool DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath,int length)
 {
-    WCHAR tch[MAX_PATH] = { L'\0' };
+    HPATHL       hpth = Path_Allocate(NULL);
+    LPWSTR const pth_buf = Path_WriteAccessBuf(hpth, PATHLONG_MAX_CCH);
+
     LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
-    if (SHGetPathFromIDList(lpdl->pidl,tch)) {
-        StringCchCopy(lpszLongPath,length,tch);
-        return true;
+    bool     res = false;
+    if (SHGetPathFromIDListW(lpdl->pidl, pth_buf)) {
+        Path_Sanitize(hpth);
+        StringCchCopyW(lpszLongPath, length, pth_buf);
+        res = true;
     }
-    return false;
+    Path_Release(hpth);
+    return res;
 }
 #endif
 
@@ -967,7 +972,7 @@ int DriveBox_Fill(HWND hwnd)
     COMBOBOXEXITEM cbei = { 0 };
     cbei.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE | CBEIF_LPARAM;
     cbei.pszText = LPSTR_TEXTCALLBACK;
-    cbei.cchTextMax = MAX_PATH;
+    cbei.cchTextMax = MAX_PATH_EXPLICIT;
     cbei.iImage = I_IMAGECALLBACK;
     cbei.iSelectedImage = I_IMAGECALLBACK;
 

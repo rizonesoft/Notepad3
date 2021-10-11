@@ -27,8 +27,23 @@
 // PATHCCH_MAX_CCH: (0x7FFF + 1 for NULL terminator)
 #define PATHLONG_MAX_CCH 0x8000 
 
+// TODO: §§§ @@@ check for LongPath MAX_PATH §§§ @@@
+// - explicitly use MAX_PATH vs. PATHLONG_MAX_CCH
+#define MAX_PATH_EXPLICIT  MAX_PATH
+
 // ----------------------------------------------------------------------------
+__forceinline size_t max_sz(const size_t x, const size_t y) { return (x < y) ? y : x; }
 // ----------------------------------------------------------------------------
+
+__forceinline LPCWSTR PTHAPI Path_Get(HPATHL hpth)
+{
+    return StrgGet((HSTRINGW)hpth);
+}
+
+__forceinline size_t PTHAPI Path_GetBufCount(HPATHL hpth)
+{
+    return StrgGetAllocLength((HSTRINGW)hpth);
+}
 
 __forceinline bool IsReadOnly(const DWORD dwFileAttr)
 {
@@ -45,19 +60,38 @@ __forceinline bool IsExistingDirectory(const DWORD dwFileAttr)
     return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_DIRECTORY));
 }
 
+// ----------------------------------------------------------------------------
+
+// get wchar buffer with at least MAX_PATH_EXPLICIT size to minimize reallocations
+// execept for len = 0, where no reallocation (except buffer is NULL) is done
+__forceinline LPWSTR PTHAPI Path_WriteAccessBuf(HPATHL hpth, size_t len)
+{
+    return StrgWriteAccessBuf((HSTRINGW)hpth, len ? max_sz(len, MAX_PATH_EXPLICIT) : 0);
+}
+
+__forceinline void PTHAPI Path_Sanitize(HPATHL hpth)
+{
+    StrgSanitize((HSTRINGW)hpth);
+}
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+
+
 /**************************************************/
 /*                                                */
 /*          DYNAMIC WIDCHAR LONG PATH             */
 /*                                                */
 /**************************************************/
 
-HPATHL PTHAPI          Path_Allocate(const wchar_t* path);
+HPATHL PTHAPI          Path_Allocate(LPCWSTR path);
 void PTHAPI            Path_Release(HPATHL hstr);
 void PTHAPI            Path_Empty(HPATHL hpth, bool truncate);
-int PTHAPI             Path_Reset(HPATHL hpth, const wchar_t* path);
+int PTHAPI             Path_Reset(HPATHL hpth, LPCWSTR path);
 size_t PTHAPI          Path_GetLength(HPATHL hpth);
 HPATHL PTHAPI          Path_Copy(const HPATHL hpth);
-bool PTHAPI            Path_Append(HPATHL hpth, const wchar_t* more);
+bool PTHAPI            Path_Append(HPATHL hpth, LPCWSTR more);
 void PTHAPI            Path_Swap(HPATHL hpth1, HPATHL hpth2);
 void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length);
 
@@ -70,7 +104,7 @@ bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2);
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
-bool PTHAPI            Path_RenameExtension(HPATHL hpth, const wchar_t* ext);
+bool PTHAPI            Path_RenameExtension(HPATHL hpth, LPCWSTR ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_UnExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_GetModuleFilePath(HPATHL hpth_out);
@@ -78,8 +112,8 @@ void PTHAPI            Path_GetAppDirectory(HPATHL hpth_out);
 bool PTHAPI            Path_IsRelative(const HPATHL hpath);
 bool PTHAPI            Path_IsPrefix(const HPATHL hprefix, const HPATHL hpth);
 size_t PTHAPI          Path_CommonPrefix(const HPATHL hpth1, const HPATHL hpth2, HPATHL hpfx_out);
-const wchar_t* PTHAPI  Path_FindFileName(const HPATHL hpth);
-const wchar_t* PTHAPI  Path_FindExtension(const HPATHL hpth);
+LPCWSTR PTHAPI  Path_FindFileName(const HPATHL hpth);
+LPCWSTR PTHAPI  Path_FindExtension(const HPATHL hpth);
 bool PTHAPI            Path_QuoteSpaces(HPATHL hpth_in_out, bool bForceQuotes);
 void PTHAPI            Path_UnQuoteSpaces(HPATHL hpth_in_out);
 int PTHAPI             Path_GetDriveNumber(const HPATHL hpth);
@@ -105,14 +139,6 @@ bool PTHAPI            Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_ou
 
 void PTHAPI            ExpandEnvironmentStrgs(HSTRINGW hstr);
 void PTHAPI            Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
-
-// ----------------------------------------------------------------------------
-// try to minimize use of:
-// ----------------------------------------------------------------------------
-const wchar_t* PTHAPI  Path_Get(HPATHL hpth);
-size_t PTHAPI          Path_GetBufCount(HPATHL hpth);
-wchar_t* PTHAPI        Path_WriteAccessBuf(HPATHL hpth, size_t len);
-void PTHAPI            Path_Sanitize(HPATHL hpth);
 
 
 // ============================================================================
