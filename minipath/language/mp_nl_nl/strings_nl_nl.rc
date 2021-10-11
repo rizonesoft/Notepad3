@@ -64,17 +64,17 @@ BEGIN
     IDT_FILE_RUN            "Uitvoeren"
     IDT_FILE_QUICKVIEW      "Voorbeeld"
     IDT_FILE_SAVEAS         "Opslaan als"
-    IDT_FILE_COPYMOVE       "Kopiëren/&Verplaatsen"
+    IDT_FILE_COPYMOVE       "Kopiëren/&verplaatsen"
     IDT_FILE_DELETE         "Verwijderen"
-    IDT_FILE_DELETE2        "Verwijderen (Permanent)"
+    IDT_FILE_DELETE2        "Verwijderen (permanent)"
     IDT_VIEW_FILTER         "Filter"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s Object(s)"
-    IDS_NUMFILES2           "%s Object(s) | Filter"
+    IDS_NUMFILES            "%s Object(en)"
+    IDS_NUMFILES2           "%s Object(en) | Filter"
     IDS_SAVEFILE            "Opslaan ""%s""..."
     IDS_OPEN_FILE_WITH      "Openen met %s"
 END
@@ -92,9 +92,9 @@ BEGIN
     IDS_ERR_DROP1           "MiniPath\nGeen toegang tot verwijderde bestand of map."
     IDS_ERR_DROP2           "MiniPath\nEr kan slechts één bestand of map tegelijk worden verwijderd."
     IDS_ERR_FAVORITES       "Favorieten\nGeen toegang tot de map ""Favorieten"".\nGeef een geldige map op in het dialoogvenster ""Opties""."
-    IDS_ERR_LNK_GETPATH     "Link Error\nGeen geldig bestandssysteempad beschikbaar voor gekoppeld object.\nWaarschijnlijk verwijst de koppeling niet naar een bestand of directory."
-    IDS_ERR_LNK_NOACCESS    "Link Error\nGeen toegang tot bestandssysteempad van gekoppeld object.\nControleer de schijf of de netwerkverbinding."
-    IDS_ERR_CREATELINK      "Link Error\nFout bij het maken van de opgegeven koppeling.\nWaarschijnlijk is de doelmap tegen schrijven beveiligd."
+    IDS_ERR_LNK_GETPATH     "Koppelingsfout\nGeen geldig bestandssysteempad beschikbaar voor gekoppeld object.\nWaarschijnlijk verwijst de koppeling niet naar een bestand of directory."
+    IDS_ERR_LNK_NOACCESS    "Koppelingsfout\nGeen toegang tot bestandssysteempad van gekoppeld object.\nControleer de schijf of de netwerkverbinding."
+    IDS_ERR_CREATELINK      "Koppelingsfout\nFout bij het maken van de opgegeven koppeling.\nWaarschijnlijk is de doelmap tegen schrijven beveiligd."
     IDS_ERR_FILTER          "Bestandsfilterfout\nGeen extra filters opgegeven.\nRaadpleeg het leesmij-bestand van MiniPath voor meer informatie."
     IDS_ERR_PREVWINDISABLED "MiniPath\nHet bestaande MiniPath-venster is bezet of heeft een actief dialoogvenster.\nWil je een ander MiniPath-venster openen?"
 END
