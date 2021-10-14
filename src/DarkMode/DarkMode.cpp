@@ -62,56 +62,32 @@ DWORD const kSystemLibraryLoadFlags = (IsWindows8Point1OrGreater() ||
 
 // ============================================================================
 
+// https://docs.microsoft.com/en-us/windows-insider/flight-hub/
 // https://docs.microsoft.com/en-US/windows-insider/active-dev-branch
 
-constexpr bool CheckBuildNumber(DWORD major, DWORD minor, DWORD buildNumber)
+// ----------------------------------------------------------------------------
+
+static bool CheckLoadLibrary(DWORD major, DWORD minor, DWORD buildNumber)
 {
     // ignore "minor" build number
     UNREFERENCED_PARAMETER(minor);
 
-    switch (major) {
+    if (major < 10 || buildNumber < 17763) // Win10 v1809 (released)
+        return false;        // NOT WORKING
 
-    // --- Win10 ---
-    case 10: {
-        switch (buildNumber) {
-        case 17763: // Win10 v1809 (released)
-        case 18362: // Win10 v1903 (released)
-        case 18363: // Win10 v1909 (released)
-        case 19041: // Win10 v2004 (released)
-        case 19042: // Win10 v20H2 (released)
-        case 19043: // Win10 v21H1 (released)
-            return true;
-        default:
-            break;
+    // keep reentrant for (!)
+    static bool bUxThemeDllLoaded = false;
+
+    if (!bUxThemeDllLoaded) {
+        __try {
+            HRESULT const res = __HrLoadAllImportsForDll("UxTheme.dll"); // Case sensitive
+            bUxThemeDllLoaded = (res == NO_ERROR);
         }
-    } //[fallthrough]
-
-    // Win10 Insider Preview may have valid higher build numbers on major = 10
-
-    // --- Win11 ---
-    case 11: {
-        switch (buildNumber) {
-        case 22000: // Win11 v21H2 (released) [2021-10-04]
-            return true;
-        default:
-            break;
+        __except (GetExceptionCode() == VcppException(ERROR_SEVERITY_ERROR, ERROR_PROC_NOT_FOUND) ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
+            bUxThemeDllLoaded = false;
         }
-    } break;
-
-    default:
-        break;
     }
-
-    // Insider Dev and Preview Channels (tested but NOT released Win versions)
-
-    if (buildNumber <= 21999)  // Win10 v21H2 [2021-05-21] - WIN10 Insider future will not change this ???
-        return true;
-    else if (buildNumber >= 22000 && buildNumber <= 22471) // Win11 v21H2 [2021-06-28]
-        return true;
-
-    // unknown, not tested if working with these version(s) :-O
-    // in doubt vote for not supported
-    return false;
+    return bUxThemeDllLoaded;
 }
 
 // ============================================================================
@@ -365,27 +341,13 @@ static void FixDarkScrollBar(bool bDarkMode)
 
 extern "C" void SetDarkMode(bool bEnableDarkMode)
 {
-    // keep reentrant (!)
-    static bool bUxThemeDllLoaded = false;
-
     s_UserSetDarkMode = bEnableDarkMode;
 
     DWORD major, minor;
     DWORD const buildNumber = GetWindowsBuildNumber(&major, &minor);
     if (buildNumber) {
         // undocumented function addresses are only valid for this WinVer build numbers
-        if (CheckBuildNumber(major, minor, buildNumber)) {
-            if (!bUxThemeDllLoaded) {
-                __try {
-                    __HrLoadAllImportsForDll("UxTheme.dll"); // Case sensitive
-                    bUxThemeDllLoaded = true;
-                } __except (GetExceptionCode() == VcppException(ERROR_SEVERITY_ERROR, ERROR_PROC_NOT_FOUND) ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-                    bUxThemeDllLoaded = false;
-                }
-                if (!bUxThemeDllLoaded) {
-                    return;
-                }
-            }
+        if (CheckLoadLibrary(major, minor, buildNumber)) {
 
             AllowDarkModeForApp(s_UserSetDarkMode);
 
