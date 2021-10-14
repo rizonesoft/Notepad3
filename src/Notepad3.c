@@ -2482,53 +2482,64 @@ bool SelectExternalToolBar(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
 
-    WCHAR szArg2[MAX_PATH] = { L'\0' };
-    WCHAR szFile[MAX_PATH] = { L'\0' };
-    WCHAR szFilter[MAX_PATH] = { L'\0' };
-
     HSTRINGW    hargs_str = StrgCreate(NULL);
     DWORD const  len = (DWORD)SendDlgItemMessageW(hwnd, IDC_COMMANDLINE, EM_GETLIMITTEXT, 0, 0);
-    LPWSTR const args_buf = StrgWriteAccessBuf(hargs_str, len);
+    LPWSTR const args_buf = StrgWriteAccessBuf(hargs_str, len ? len : CMDLN_LENGTH_LIMIT);
     GetDlgItemTextW(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str));
     StrgSanitize(hargs_str);
 
-    ExpandEnvironmentStrgs(hargs_str);
-    ExtractFirstArgument(StrgGet(hargs_str), szFile, szArg2, MAX_PATH);
-    StrgDestroy(hargs_str);
+    HPATHL hfile_pth = Path_Allocate(NULL);
+    Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
 
-    GetLngString(IDS_MUI_FILTER_BITMAP, szFilter, COUNTOF(szFilter));
-    PrepareFilterStr(szFilter);
+    HSTRINGW     hargs2_str = StrgCreate(NULL);
+    LPWSTR const args2_buf = StrgWriteAccessBuf(hargs2_str, CMDLN_LENGTH_LIMIT >> 1);
+
+    ExpandEnvironmentStrgs(hargs_str);
+    ExtractFirstArgument(StrgGet(hargs_str), Path_WriteAccessBuf(hfile_pth, 0), args2_buf, CMDLN_LENGTH_LIMIT >> 1);
+    Path_Sanitize(hfile_pth);
+    StrgSanitize(hargs2_str);
+
+    WCHAR wchFilter[MIDSZ_BUFFER] = { L'\0' };
+    GetLngString(IDS_MUI_FILTER_BITMAP, wchFilter, COUNTOF(wchFilter));
+    PrepareFilterStr(wchFilter);
 
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = szFilter;
-    ofn.lpstrFile = szFile;
+    ofn.lpstrFilter = wchFilter;
+    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth, 0);
     ofn.lpstrDefExt = L"bmp";
-    ofn.nMaxFile = COUNTOF(szFile);
+    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
                 | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
 
     if (GetOpenFileNameW(&ofn)) {
-        //Path_Sanitize(hfile_pth);
-        PathQuoteSpaces(szFile);
-        if (StrIsNotEmpty(szArg2)) {
-            StringCchCat(szFile, COUNTOF(szFile), L" ");
-            StringCchCat(szFile, COUNTOF(szFile), szArg2);
+        Path_Sanitize(hfile_pth);
+        if (StrgIsNotEmpty(hargs2_str)) {
+            Path_QuoteSpaces(hfile_pth, false);
+            StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), L" ");
+            StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), StrgGet(hargs2_str));
         }
-        Path_Reset(g_tchToolbarBitmap, szFile);
+        Path_Reset(g_tchToolbarBitmap, Path_Get(hfile_pth));
         Path_RelativeToApp(g_tchToolbarBitmap, true, true, true);
         if (Globals.bCanSaveIniFile) {
             IniFileSetString(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDefault", Path_Get(g_tchToolbarBitmap));
         }
     }
 
+    StrgDestroy(hargs2_str);
+    StrgDestroy(hargs_str);
+
+    bool res = false;
+
     if (Path_IsNotEmpty(g_tchToolbarBitmap)) {
-        StringCchCopy(szFile, COUNTOF(szFile), Path_Get(g_tchToolbarBitmap));
-        PathRemoveExtension(szFile);
-        StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
+
+        Path_Reset(hfile_pth, Path_Get(g_tchToolbarBitmap));
+        Path_AbsoluteFromApp(hfile_pth, false);
+        Path_RenameExtension(hfile_pth, NULL); // remove
+        StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), L"Hot.bmp");
         if (Globals.bCanSaveIniFile) {
-            if (PathIsExistingFile(szFile)) {
-                Path_Reset(g_tchToolbarBitmapHot, szFile);
+            if (Path_IsExistingFile(hfile_pth)) {
+                Path_Reset(g_tchToolbarBitmapHot, Path_Get(hfile_pth));
                 Path_RelativeToApp(g_tchToolbarBitmapHot, true, true, true);
                 IniFileSetString(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapHot", Path_Get(g_tchToolbarBitmapHot));
             } else {
@@ -2537,12 +2548,13 @@ bool SelectExternalToolBar(HWND hwnd)
             }
         }
 
-        StringCchCopy(szFile, COUNTOF(szFile), Path_Get(g_tchToolbarBitmap));
-        PathRemoveExtension(szFile);
-        StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
+        Path_Reset(hfile_pth, Path_Get(g_tchToolbarBitmap));
+        Path_AbsoluteFromApp(hfile_pth, false);
+        Path_RenameExtension(hfile_pth, NULL); // remove
+        StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), L"Disabled.bmp");
         if (Globals.bCanSaveIniFile) {
-            if (PathIsExistingFile(szFile)) {
-                Path_Reset(g_tchToolbarBitmapDisabled, szFile);
+            if (Path_IsExistingFile(hfile_pth)) {
+                Path_Reset(g_tchToolbarBitmapDisabled, Path_Get(hfile_pth));
                 Path_RelativeToApp(g_tchToolbarBitmapDisabled, true, true, true);
                 IniFileSetString(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDisabled", Path_Get(g_tchToolbarBitmapDisabled));
             } else {
@@ -2550,13 +2562,18 @@ bool SelectExternalToolBar(HWND hwnd)
                 IniFileDelete(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDisabled", false);
             }
         }
+
         Settings.ToolBarTheme = 2;
-        return true;
+        res = true;
+
     } else {
         IniFileDelete(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapHot", false);
         IniFileDelete(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDisabled", false);
     }
-    return false;
+
+    Path_Release(hfile_pth);
+
+    return res;
 }
 
 
@@ -10799,10 +10816,10 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
     StrgFormat(hstr_args, L"%s/pos %i,%i,%i,%i,%i /g %i,%i %s",
                wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, lpArgs);
 
-    WCHAR wchTempFileName[MAX_PATH + 1] = { L'\0' };
-    WCHAR wchTempPathBuffer[MAX_PATH + 1] = { L'\0' };
-    // MAX_PATH okay for GetTempPathW() and GetTempFileNameW()
-    if (GetTempPathW(MAX_PATH, wchTempPathBuffer) && GetTempFileNameW(wchTempPathBuffer, L"NP3", 0, wchTempFileName)) {
+    WCHAR wchTempFileName[MAX_PATH_EXPLICIT + 1] = { L'\0' };
+    WCHAR wchTempPathBuffer[MAX_PATH_EXPLICIT + 1] = { L'\0' };
+    // MAX_PATH_EXPLICIT is okay for GetTempPathW() and GetTempFileNameW()
+    if (GetTempPathW(MAX_PATH_EXPLICIT, wchTempPathBuffer) && GetTempFileNameW(wchTempPathBuffer, L"NP3", 0, wchTempFileName)) {
 
         HPATHL htmp_pth = Path_Allocate(wchTempFileName);
         // replace possible unknown extension
@@ -10824,7 +10841,6 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
         }
 
         Path_Release(htmp_pth);
-
         FreeMem(lpExe);
         FreeMem(lpArgs);
     }

@@ -983,27 +983,25 @@ bool PTHAPI Path_RenameExtension(HPATHL hpth_in_out, LPCWSTR ext)
         return false;
     
     size_t const ext_len = (ext ? wcslen(ext) : 0);
-    if (!ext_len) {
-        return false;
-    }
-    bool const hasdot = (ext[0] == L'.');
+    bool const   hasdot = (ext_len && (ext[0] == L'.'));
 
     size_t const hstr_len = StrgGetLength(hstr_io);
 
     LPWSTR wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + ext_len + 1);
     size_t cch = StrgGetAllocLength(hstr_io);
 
-    ///bool const bOK = SUCCEEDED(PathXCchRenameExtension(wbuf, cch, (ext ? ext : L"")));
     LPWSTR const pdot = (LPWSTR)Path_FindExtension(hpth_in_out);
     if (pdot) {
         *pdot = L'\0';
     }
-    if (hasdot) {
-        StringCchCatW(wbuf, cch, ext);
-    }
-    else {
-        StringCchCatW(wbuf, cch, L".");
-        StringCchCatW(wbuf, cch, ext);
+    if (ext_len) {
+        if (hasdot) {
+            StringCchCatW(wbuf, cch, ext);
+        }
+        else {
+            StringCchCatW(wbuf, cch, L".");
+            StringCchCatW(wbuf, cch, ext);
+        }
     }
     StrgSanitize(hstr_io);
 
@@ -1427,7 +1425,8 @@ bool PTHAPI Path_GetLnkPath(const HPATHL hLnkFilePth, HPATHL hResPath_out)
 
             HPATHL       hres_pth = Path_Allocate(NULL);
             LPWSTR const res_buf = Path_WriteAccessBuf(hres_pth, PATHLONG_MAX_CCH);
-            /*MultiByteToWideCharEx(CP_ACP,MB_PRECOMPOSED,pszLnkFile,-1,wsz,MAX_PATH);*/
+
+            /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,pszLnkFile,-1,wsz,MAX_PATH_EXPLICIT);*/
 
             WIN32_FIND_DATA fd = { 0 };
             if (SUCCEEDED(ppf->lpVtbl->Load(ppf, Path_Get(hLnkFilePth), STGM_READ))) {
