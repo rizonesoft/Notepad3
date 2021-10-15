@@ -51,6 +51,16 @@
 using namespace Scintilla;
 using namespace Scintilla::Internal;
 
+LexInterface::LexInterface(Document *pdoc_) noexcept : pdoc(pdoc_), performingStyle(false) {
+}
+
+LexInterface::~LexInterface() noexcept = default;
+
+void LexInterface::SetInstance(ILexer5 *instance_) {
+	instance.reset(instance_);
+	pdoc->LexerChanged();
+}
+
 void LexInterface::Colourise(Sci::Position start, Sci::Position end) {
 	if (pdoc && instance && !performingStyle) {
 		// Protect against reentrance, which may occur, for example, when
@@ -84,6 +94,10 @@ LineEndType LexInterface::LineEndTypesSupported() {
 		return static_cast<LineEndType>(instance->LineEndTypesSupported());
 	}
 	return LineEndType::Default;
+}
+
+bool LexInterface::UseContainerLexing() const noexcept {
+	return !instance;
 }
 
 ActionDuration::ActionDuration(double duration_, double minDuration_, double maxDuration_) noexcept :
@@ -2067,7 +2081,7 @@ Sci::Position Document::FindText(Sci::Position minPos, Sci::Position maxPos, con
 			const unsigned char charStartSearch =  search[0];
 			if (forward && ((0 == dbcsCodePage) || (CpUtf8 == dbcsCodePage && !UTF8IsTrailByte(charStartSearch)))) {
 				// This is a fast case where there is no need to test byte values to iterate
-				// so becomes the equivalent of a memchr+memcmp loop. 
+				// so becomes the equivalent of a memchr+memcmp loop.
 				// UTF-8 search will not be self-synchronizing when starts with trail byte
 				const std::string_view suffix(search + 1, lengthFind - 1);
 				while (pos < endSearch) {
@@ -2798,11 +2812,6 @@ Sci::Position Document::BraceMatch(Sci::Position position, Sci::Position /*maxRe
 class BuiltinRegex : public RegexSearchBase {
 public:
 	explicit BuiltinRegex(CharClassify *charClassTable) : search(charClassTable) {}
-	BuiltinRegex(const BuiltinRegex &) = delete;
-	BuiltinRegex(BuiltinRegex &&) = delete;
-	BuiltinRegex &operator=(const BuiltinRegex &) = delete;
-	BuiltinRegex &operator=(BuiltinRegex &&) = delete;
-	~BuiltinRegex() override = default;
 
 	Sci::Position FindText(Document *doc, Sci::Position minPos, Sci::Position maxPos, const char *s,
                         bool caseSensitive, bool word, bool wordStart, FindOption flags,
@@ -3199,7 +3208,7 @@ bool MatchOnLines(const Document *doc, const Regex &regexp, const RESearchRange 
 	}
 #endif
 	if (matched) {
-		for (size_t co = 0; co < match.size(); co++) {
+		for (size_t co = 0; co < match.size() && co < RESearch::MAXTAG; co++) {
 			search.bopat[co] = match[co].first.Pos();
 			search.eopat[co] = match[co].second.PosRoundUp();
 			const Sci::Position lenMatch = search.eopat[co] - search.bopat[co];

@@ -695,6 +695,12 @@ set void StyleSetCharacterSet=2066(int style, CharacterSet characterSet)
 # Set a style to be a hotspot or not.
 set void StyleSetHotSpot=2409(int style, bool hotspot)
 
+# Indicate that a style may be monospaced over ASCII graphics characters which enables optimizations.
+set void StyleSetCheckMonospaced=2254(int style, bool checkMonospaced)
+
+# Get whether a style may be monospaced.
+get bool StyleGetCheckMonospaced=2255(int style,)
+
 enu Element=SC_ELEMENT_
 val SC_ELEMENT_LIST=0
 val SC_ELEMENT_LIST_BACK=1
@@ -715,6 +721,8 @@ val SC_ELEMENT_WHITE_SPACE=60
 val SC_ELEMENT_WHITE_SPACE_BACK=61
 val SC_ELEMENT_HOT_SPOT_ACTIVE=70
 val SC_ELEMENT_HOT_SPOT_ACTIVE_BACK=71
+val SC_ELEMENT_FOLD_LINE=80
+val SC_ELEMENT_HIDDEN_LINE=81
 
 # Set the colour of an element. Translucency (alpha) may or may not be significant
 # and this may depend on the platform. The alpha byte should commonly be 0xff for opaque.
@@ -770,6 +778,12 @@ get Layer GetCaretLineLayer=2764(,)
 
 # Set the layer of the background of the line containing the caret.
 set void SetCaretLineLayer=2765(Layer layer,)
+
+# Get only highlighting subline instead of whole line.
+get bool GetCaretLineHighlightSubLine=2773(,)
+
+# Set only highlighting subline instead of whole line.
+set void SetCaretLineHighlightSubLine=2774(bool subLine,)
 
 # Set the foreground colour of the caret.
 set void SetCaretFore=2069(colour fore,)

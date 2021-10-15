@@ -563,9 +563,78 @@
 	<td>Damiano Lombardi</td>
       </tr><tr>
 	<td>Michael Neuroth</td>
+	<td>Arne Scheffler</td>
     </tr>
     </table>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla513.zip">Release 5.1.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 29 September 2021.
+	</li>
+	<li>
+	Fix bug with SCI_STYLESETCHECKMONOSPACED on Cocoa that led to incorrect
+	layout with overlapping text.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla512.zip">Release 5.1.2</a>
+    </h3>
+    <ul>
+	<li>
+	Released 23 September 2021.
+	</li>
+	<li>
+	Add SCI_STYLESETCHECKMONOSPACED which can be used to optimize fonts that are monospaced
+	over the ASCII graphics characters.
+	</li>
+	<li>
+	Add SC_ELEMENT_FOLD_LINE to set the colour of fold lines.
+	Add SC_ELEMENT_HIDDEN_LINE to show where lines are hidden.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1241/">Feature #1241</a>,
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/382/">Feature #382</a>,
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/203/">Feature #203</a>.
+	</li>
+	<li>
+	Add SCI_SETCARETLINEHIGHLIGHTSUBLINE to highlight just the subline containing the caret instead of
+	the whole document line.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/841/">Feature #841</a>.
+	</li>
+	<li>
+	Allow SCI_HIDELINES to hide the first line or all lines which can be useful for filtered views.
+	</li>
+	<li>
+	Make negative settings for extra ascent and descent safer by ensuring calculated ascent and thus
+	line height is at least 1 pixel.
+	</li>
+	<li>
+	Fix display of fold lines when wrapped so they are only drawn once per line, not on each subline.
+	</li>
+	<li>
+	Fix crash with too many subexpressions in regular expression search with SCFIND_CXX11REGEX.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2281/">Bug #2281</a>.
+	</li>
+	<li>
+	On GTK, fix the line spacing so that underscores and accents are visible for some fonts such as
+	DejaVu Sans Mono 10.
+	</li>
+	<li>
+	On GTK, respond to changes in system font scaling by clearing any cached layout data.
+	</li>
+	<li>
+	On Cocoa, fix memory leak caused by circular references.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2268/">Bug #2268</a>.
+	</li>
+	<li>
+	On Cocoa, fix disabling horizontal scrollbar in non-wrapping mode.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2271/">Bug #2271</a>.
+	</li>
+	<li>
+	On Cocoa, ensure cursor and background images are loaded.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla511.zip">Release 5.1.1</a>
     </h3>

@@ -79,6 +79,12 @@ public:
 		}
 	}
 
+	// Deleted so HanjaDic objects can not be copied.
+	HanjaDic(const HanjaDic &) = delete;
+	HanjaDic(HanjaDic &&) = delete;
+	HanjaDic &operator=(const HanjaDic &) = delete;
+	HanjaDic &operator=(HanjaDic &&) = delete;
+
 	~HanjaDic() {
 		if (SUCCEEDED(hr)) {
 			hr = HJinterface->CloseMainDic();

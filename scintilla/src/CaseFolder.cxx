@@ -14,15 +14,14 @@
 
 using namespace Scintilla::Internal;
 
-CaseFolder::~CaseFolder() = default;
+CaseFolder::~CaseFolder() {
+}
 
 CaseFolderTable::CaseFolderTable() noexcept : mapping{}  {
 	for (size_t iChar=0; iChar<sizeof(mapping); iChar++) {
 		mapping[iChar] = static_cast<char>(iChar);
 	}
 }
-
-CaseFolderTable::~CaseFolderTable() = default;
 
 size_t CaseFolderTable::Fold(char *folded, size_t sizeFolded, const char *mixed, size_t lenMixed) {
 	if (lenMixed > sizeFolded) {

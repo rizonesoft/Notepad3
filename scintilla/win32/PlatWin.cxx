@@ -937,18 +937,6 @@ void DIBSection::SetSymmetric(LONG x, LONG y, DWORD value) noexcept {
 	SetPixel(xSymmetric, ySymmetric, value);
 }
 
-constexpr unsigned int Proportional(unsigned char a, unsigned char b, XYPOSITION t) noexcept {
-	return static_cast<unsigned int>(a + t * (b - a));
-}
-
-ColourRGBA Proportional(ColourRGBA a, ColourRGBA b, XYPOSITION t) noexcept {
-	return ColourRGBA(
-		Proportional(a.GetRed(), b.GetRed(), t),
-		Proportional(a.GetGreen(), b.GetGreen(), t),
-		Proportional(a.GetBlue(), b.GetBlue(), t),
-		Proportional(a.GetAlpha(), b.GetAlpha(), t));
-}
-
 ColourRGBA GradientValue(const std::vector<ColourStop> &stops, XYPOSITION proportion) noexcept {
 	for (size_t stop = 0; stop < stops.size() - 1; stop++) {
 		// Loop through each pair of stops
@@ -957,7 +945,7 @@ ColourRGBA GradientValue(const std::vector<ColourStop> &stops, XYPOSITION propor
 		if ((proportion >= positionStart) && (proportion <= positionEnd)) {
 			const XYPOSITION proportionInPair = (proportion - positionStart) /
 				(positionEnd - positionStart);
-			return Proportional(stops[stop].colour, stops[stop + 1].colour, proportionInPair);
+			return stops[stop].colour.MixedWith(stops[stop + 1].colour, proportionInPair);
 		}
 	}
 	// Loop should always find a value
