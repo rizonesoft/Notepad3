@@ -128,8 +128,8 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Fout bij laden ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Fout bij opslaan ""%s""."
     IDS_MUI_ERR_DLG_FORMAT  "Fout '%s', oorzaak:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Geen plugin voor bestandsbrowser gevonden.\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "Geen plugin voor het zoeken naar bestanden gevonden.\nDe plug-in grepWinNP3 voor het zoeken naar bestanden kan worden gedownload van https://rizonesoft.com."
+    IDS_MUI_ERR_BROWSE      "Geen bestandsbrowser-plugin gevonden.\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "Geen plugin voor het doorzoeken van bestanden gevonden.\nDe plug-in grepWinNP3 voor het doorzoeken van bestanden kan worden gedownload van https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Geen toegang tot het geselecteerde bestand!\nWil je het uit de lijst verwijderen?"
     IDS_MUI_ERR_CREATELINK  "Fout bij het aanmaken van de bureaubladkoppeling."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -147,17 +147,17 @@ BEGIN
     IDS_MUI_ERR_DROP        "Er kan slechts één bestand tegelijkertijd worden gesleept!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Het bestand ""%s"" kan niet worden opgeslagen en is mogelijk beveiligd.\n\nWil je %s met verhoogde gebruikersrechten starten?"
-    IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com?"
+    IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nWebsite https://rizonesoft.com openen?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Weet je zeker dat je dit grote bestand wilt openen?\n\t(grootte: %s >= %s)!\n(Styling en syntax highlighting wordt niet toegepast!)"
+                            "Weet je zeker dat je dit grote bestand wilt openen?\n\t(grootte: %s >= %s)!\n(Geen Styling en syntax highlighting mogelijk!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "Kan dit enorme bestand niet aan (grootte: %s)!"
+                            "Dit bestand is echt te groot (grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende bestandsnaamextensie (%s)!\nGegevens toch laden?"
     IDS_MUI_INDENT_CONSISTENT  "Het bestand heeft een consistente inspringing!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_EOLMODENAME_CR     "Oude Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
                             "Wil je dat alle regeleinden genormaliseerd worden tot '%s'?"
 END
@@ -167,13 +167,13 @@ BEGIN
     IDS_MUI_SELRECT         "Deze bewerking kan niet worden uitgevoerd in een rechthoekige selectie."
     IDS_MUI_SELMULTI        "Deze bewerking kan niet worden uitgevoerd in een meervoudige selectie."
     IDS_MUI_SELRECTORMULTI  "Deze bewerking kan niet worden uitgevoerd in een rechthoekige of meervoudige selectie."
-    IDS_MUI_BUFFERTOOSMALL  "Deze bewerking kan niet worden uitgevoerd (regels te lang)."
-    IDS_MUI_FIND_WRAPFW     "Het einde van het document is bereikt, zoekopdracht start opnieuw vanaf begin."
-    IDS_MUI_FIND_WRAPRE     "Het begin van het document is bereikt, zoekopdracht start opnieuw vanaf einde."
+    IDS_MUI_BUFFERTOOSMALL  "Deze bewerking kan niet worden uitgevoerd (te lange regels)."
+    IDS_MUI_FIND_WRAPFW     "Het einde van het document is bereikt, zoekopdracht voortzetten vanaf begin."
+    IDS_MUI_FIND_WRAPRE     "Het begin van het document is bereikt, zoekopdracht voortzetten vanaf einde."
     IDS_MUI_NOTFOUND        "De opgegeven tekst is niet gevonden."
     IDS_MUI_REPLCOUNT       "%s voorvallen van de opgegeven tekst zijn vervangen."
     IDS_MUI_ASK_ENCODING    "Bij het omzetten van de ene naar de andere codering kan niet-ondersteunde tekst worden vervangen door standaardtekens. Dit kan niet ongedaan worden. Doorgaan?"
-    IDS_MUI_ASK_ENCODING2   "U staat op het punt de codering van een leeg bestand te wijzigen. Dit kan niet ongedaan worden. Doorgaan?"
+    IDS_MUI_ASK_ENCODING2   "Je staat op het punt de codering van een leeg bestand te wijzigen. Dit kan niet ongedaan worden. Doorgaan?"
     IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Opslaan als een ander bestand?"
     IDS_MUI_FILECHANGENOTIFY
                            "Het huidige bestand is gewijzigd door een extern programma. Opnieuw laden?"
@@ -268,8 +268,8 @@ BEGIN
                             "Zoekgeschiedenis wissen"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vervanggeschiedenis wissen"
-    IDS_MUI_WRAPSEARCH_FWD  "Verderzoeken vanaf de bovenkant"
-    IDS_MUI_WRAPSEARCH_BCK  "Verderzoeken vanaf de onderkant"
+    IDS_MUI_WRAPSEARCH_FWD  "Zoekopdracht bovenaan voortzetten"
+    IDS_MUI_WRAPSEARCH_BCK  "Zoekopdracht onderaan voorzetten"
 END
 
 STRINGTABLE
@@ -294,14 +294,14 @@ bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\tspaties stan
 +\tAccepteer meerdere bestandsargumenten (met\r\n\taanhalingstekens spaties).\r\n\
 -\tAccepteer argument voor een enkel bestand (zonder\r\n\taanhalingstekens).\r\n\r\n\
 Opties:\r\n\
-/?\tDit help-bericht weergeven.\r\n\
+/?\tDeze gebruiksaanwijzing weergeven.\r\n\
 ...\tCodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\tRegeleinde-modus (/crlf, /cr, /lf).\r\n\
 /e\tCodering bronbestand.\r\n\
 /g\tSpring naar de opgegeven positie (/g -1 einde van het bestand).\r\n\
 /m\tZoek opgegeven tekst (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-herladen van gewijzigde bestanden.\r\n\
-/q\tForceer het aanmaken van nieuwe bestanden zonder prompt.\r\n\
+/l\tGewijzigde bestanden automatisch opnieuw laden.\r\n\
+/q\tAanmaak van nieuwe bestanden zonder prompt forceren.\r\n\
 /s\tSelecteer opgegeven syntaxisschema.\r\n\
 /d\tSelecteer standaardtekstschema.\r\n\
 /h\tSelecteer Web Source Code-schema.\r\n\
@@ -310,9 +310,9 @@ Opties:\r\n\
 /b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
 /n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
 /r\tHergebruik venster (/rs één bestand instantie).\r\n\
-/p\tStel vensterpositie en -grootte in (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tof /p <links>,<top>,<breedte>,<hoogte>,<max>    [alle gehele getallen].\r\n\
-/t\tStel de titel van het venster in.\r\n\
+/p\tVensterpositie en -grootte instellen (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tof /p <links>,<top>,<breedte>,<hoogte>,<max>    [gehele getallen].\r\n\
+/t\tVenstertitel instellen.\r\n\
 /i\tStart als systeemvakpictogram.\r\n\
 /o\tVenster bovenop houden.\r\n\
 /f\tGeef een ini-bestand op (/f0 geen ini-bestand).\r\n\
@@ -329,7 +329,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Bestandsextensies moeten gescheiden door ';'\r\n\
+Bestandsextensies moeten worden gescheiden door ';'\r\n\
 gebruik \\<regex>; om een overeenkomstig bestandsnaam patroon te definiëren:\r\n\
    \\xyz$;   => bestandsnamen(basename+ext) met 'xyz' als laatste tekens.\r\n\r\n\
 Stijl-formaat:\r\n\
