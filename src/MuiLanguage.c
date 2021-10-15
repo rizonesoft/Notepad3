@@ -20,6 +20,7 @@
 #include <commctrl.h>
 #include <muiload.h>
 
+#include "PathLib.h"
 #include "Dialogs.h"
 #include "Encoding.h"
 #include "Config/Config.h"
@@ -188,9 +189,9 @@ void SetMuiLanguage(const unsigned muiLngIndex) {
 
             if (Globals.bCanSaveIniFile) {
                 if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Default_PreferredLanguageLocaleName) != 0) {
-                    IniFileSetString(Paths.IniFile, Constants.Settings2_Section, SettingName, Settings2.PreferredLanguageLocaleName);
+                    IniFileSetString(Path_Get(Paths.IniFile), Constants.Settings2_Section, SettingName, Settings2.PreferredLanguageLocaleName);
                 } else {
-                    IniFileDelete(Paths.IniFile, Constants.Settings2_Section, SettingName, false);
+                    IniFileDelete(Path_Get(Paths.IniFile), Constants.Settings2_Section, SettingName, false);
                 }
             }
         }
@@ -267,10 +268,9 @@ unsigned GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName) {
 //
 static unsigned _CheckAvailableLanguageDLLs()
 {
-    WCHAR wchRelPath[MAX_PATH];
-    WCHAR wchAbsPath[MAX_PATH];
-
     unsigned count = 1; // internal instance always available
+
+    HPATHL hpth = Path_Allocate(NULL);
 
     for (unsigned lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
 
@@ -284,13 +284,16 @@ static unsigned _CheckAvailableLanguageDLLs()
             }
 #endif
             // check for DLL
+            WCHAR wchRelPath[SMALL_BUFFER] = { L'\0' };
             StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
-            PathAbsoluteFromApp(wchRelPath, wchAbsPath, COUNTOF(wchAbsPath), false);
-            bool const bAvail = PathIsExistingFile(wchAbsPath);
+            Path_Reset(hpth, wchRelPath);
+            Path_AbsoluteFromApp(hpth, false);
+            bool const bAvail = Path_IsExistingFile(hpth);
             MUI_LanguageDLLs[lng].bHasDLL = bAvail;
             count += bAvail ? 1 : 0;
         }
     }
+    Path_Release(hpth);
     return count;
 }
 
@@ -410,9 +413,9 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
 
         const WCHAR *const suprMsg = L"MsgPrefLanguageNotAvailable";
         InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, pLocaleName);
-        int const noMsg = IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
+        int const noMsg = IniFileGetInt(Path_Get(Paths.IniFile), Constants.SectionSuppressedMessages, suprMsg, 0);
         if (noMsg && Globals.bCanSaveIniFile) {
-            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[iInternalLngIndex].LocaleName);
+            IniFileSetString(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[iInternalLngIndex].LocaleName);
         }
     }
 
@@ -430,11 +433,11 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
     WCHAR tchDefaultStrg[MIDSZ_BUFFER] = { L'\0' };
 
     GetLngString(IDS_MUI_STATUSBAR_PREFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
-    IniFileGetString(Paths.IniFile, StatusBar_Section, L"SectionPrefixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
+    IniFileGetString(Path_Get(Paths.IniFile), StatusBar_Section, L"SectionPrefixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
     ReadStrgsFromCSV(tchStatusBar, g_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_PRFX_");
 
     GetLngString(IDS_MUI_STATUSBAR_POSTFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
-    IniFileGetString(Paths.IniFile, StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
+    IniFileGetString(Path_Get(Paths.IniFile), StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
     ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
 
     return iLngIndex;

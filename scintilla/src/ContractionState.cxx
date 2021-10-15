@@ -197,7 +197,7 @@ Sci::Line ContractionState<LINE>::DocFromDisplay(Sci::Line lineDisplay) const no
 	if (OneToOne()) {
 		return lineDisplay;
 	} else {
-		if (lineDisplay <= 0) {
+		if (lineDisplay < 0) {
 			return 0;
 		}
 		if (lineDisplay > LinesDisplayed()) {

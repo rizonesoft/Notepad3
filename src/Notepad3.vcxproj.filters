@@ -417,6 +417,12 @@
     <ClCompile Include="StyleLexers\styleLexKiX.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="DynStrg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathLib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">
@@ -591,6 +597,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\language\ColorDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynStrg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -69,7 +69,17 @@ inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 
 inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
 {
-    return HeapReAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
+    if (lpMem) {
+        size_t const memSize = HeapSize(Globals.hndlProcessHeap, 0, lpMem);
+        if (memSize >= numBytes) {
+            if (dwFlags & HEAP_ZERO_MEMORY) {
+                ZeroMemory(lpMem, memSize);
+            }
+            return lpMem;
+        }
+        return HeapReAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
+    }
+    return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
 inline bool FreeMem(LPVOID lpMemory)
@@ -367,9 +377,10 @@ typedef struct BackgroundWorker {
     HWND hwnd;
     HANDLE eventCancel;
     HANDLE workerThread;
+    HPATHL hFilePath; // PATHLONG_MAX_CCH
 } BackgroundWorker;
 
-void BackgroundWorker_Init(BackgroundWorker *worker, HWND hwnd);
+void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath);
 void BackgroundWorker_Cancel(BackgroundWorker *worker);
 void BackgroundWorker_Destroy(BackgroundWorker *worker);
 #define BackgroundWorker_Continue(worker) \
@@ -414,22 +425,7 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
 
 bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead);
 bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten);
-void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
-bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
-void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
-void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
 
-bool PathIsLnkFile(LPCWSTR pszPath);
-bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath);
-bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath);
-bool PathCreateDeskLnk(LPCWSTR pszDocument);
-bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir);
-
-void  ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc);
-bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath);
-DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
-void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
-DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
 bool  SplitFilePathLineNum(LPWSTR lpszPath, int *lineNum);
 
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
@@ -482,13 +478,13 @@ UINT CodePageFromCharSet(const UINT uCharSet);
 //==== UnSlash Functions ======================================================
 
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
-size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch);
+size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch);
 
 size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 size_t UnSlashCtrlW(LPWSTR pchInOut);
 
 void TransformBackslashes(char *pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
-void TransformMetaChars(char *pszInput, bool bRegEx, int iEOLMode);
+//void TransformMetaChars(char *pszInput, size_t cch, bool bRegEx, int iEOLMode);
 
 
 //==== Large Text Conversion ==================================================
@@ -502,7 +498,7 @@ ptrdiff_t WideCharToMultiByteEx(
     LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar);
 #else
 
-__inline ptrdiff_t WideCharToMultiByteEx(
+__forceinline ptrdiff_t WideCharToMultiByteEx(
     UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
     LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar)
 {
@@ -519,7 +515,7 @@ ptrdiff_t MultiByteToWideCharEx(
     LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
 #else
 
-__inline ptrdiff_t MultiByteToWideCharEx(
+__forceinline ptrdiff_t MultiByteToWideCharEx(
     UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
     LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
 {
@@ -795,7 +791,7 @@ inline int GetHexDigitW(const WCHAR ch)
 void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved);
 void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
 
-int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
+int    ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
 size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int iMin, int iMax, int iDefault, bool ordered);
 size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount);
 
@@ -807,42 +803,7 @@ void CloseApplication();
 
 // ----------------------------------------------------------------------------
 
-inline bool PathIsExistingFile(LPCWSTR pszPath)
-{
-    return (PathFileExists(pszPath) && !PathIsDirectory(pszPath));
-}
-
-// including <pathcch.h> and linking against pathcch.lib
-// api-ms-win-core-path-l1-1-0.dll  library : Minimum supported client is Windows 8 :-/
-// so switch back to previous (deprecated) methods:
-inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathAppend(p,a) ? S_OK : E_FAIL);
-}
-inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathCanonicalize(p,a) ? S_OK : E_FAIL);
-}
-inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathRenameExtension(p,a) ? S_OK : E_FAIL);
-}
-inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)
-{
-    UNREFERENCED_PARAMETER(l);
-    return (PathRemoveFileSpec(p) ? S_OK : E_FAIL);
-}
-
-inline bool IsReadOnly(const DWORD dwFileAttr)
-{
-    return ((dwFileAttr != INVALID_FILE_ATTRIBUTES) && (dwFileAttr & FILE_ATTRIBUTE_READONLY));
-}
-
-inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc)
-{
+inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
     return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
 }
 

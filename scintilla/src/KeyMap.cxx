@@ -32,10 +32,6 @@ KeyMap::KeyMap() {
 	}
 }
 
-KeyMap::~KeyMap() {
-	Clear();
-}
-
 void KeyMap::Clear() noexcept {
 	kmap.clear();
 }

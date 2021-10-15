@@ -1,5 +1,5 @@
-﻿/*
-Copyright (c) 2008-2021, Troy D. Hanson   http://troydhanson.github.io/uthash/
+/*
+Copyright (c) 2008-2021, Troy D. Hanson   http://troydhanson.github.com/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,11 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stringapiset.h>
 
 #ifdef __GNUC__
 #define UTSTRING_UNUSED __attribute__((__unused__))
 #else
-#define UTSTRING_UNUSED
+#define UTSTRING_UNUSED inline
 #endif
 
 #ifdef oom
@@ -67,17 +68,22 @@ do {                                                       \
   }                                                        \
 } while(0)
 
-#define utstring_init(s)                                   \
+#define utstring_sanitize(s)                               \
 do {                                                       \
-  (s)->n = 0; (s)->i = 0; (s)->d = NULL;                   \
-  utstring_reserve(s,100);                                 \
-  (s)->d[0] = '\0';                                        \
+  (s)->i = strlen((s)->d);                                 \
 } while(0)
 
 #define utstring_done(s)                                   \
 do {                                                       \
   if ((s)->d != NULL) free((s)->d);                        \
-  (s)->n = 0;                                              \
+  (s)->d = NULL; (s)->n = 0; (s)->i = 0;                   \
+} while(0)
+
+#define utstring_init(s)                                   \
+do {                                                       \
+  utstring_done(s);                                        \
+  utstring_reserve(s,128);                                 \
+  (s)->d[0] = '\0';                                        \
 } while(0)
 
 #define utstring_free(s)                                   \
@@ -92,7 +98,14 @@ do {                                                       \
   if (!(s)) {                                              \
     utstring_oom();                                        \
   }                                                        \
+  (s)->d = NULL;                                           \
   utstring_init(s);                                        \
+} while(0)
+
+#define utstring_clear(s)                                  \
+do {                                                       \
+  (s)->d[0] = '\0';                                        \
+  (s)->i = 0;                                              \
 } while(0)
 
 #define utstring_renew(s)                                  \
@@ -104,34 +117,33 @@ do {                                                       \
    }                                                       \
 } while(0)
 
-#define utstring_clear(s)                                  \
-do {                                                       \
-  (s)->i = 0;                                              \
-  (s)->d[0] = '\0';                                        \
-} while(0)
-
 #define utstring_bincpy(s,b,l)                             \
 do {                                                       \
   utstring_reserve((s),(l)+1);                             \
-  if (l) memcpy(&(s)->d[(s)->i], b, l);                    \
+  if (l) memcpy(&((s)->d[(s)->i]), b, l);                  \
   (s)->i += (l);                                           \
   (s)->d[(s)->i]='\0';                                     \
 } while(0)
 
-#define utstring_concat(dst,src)                                 \
-do {                                                             \
-  utstring_reserve((dst),((src)->i)+1);                          \
-  if ((src)->i) memcpy(&(dst)->d[(dst)->i], (src)->d, (src)->i); \
-  (dst)->i += (src)->i;                                          \
-  (dst)->d[(dst)->i]='\0';                                       \
+#define utstring_concat(dst,src)                                   \
+do {                                                               \
+  utstring_reserve((dst),((src)->i)+1);                            \
+  if ((src)->i) memcpy(&((dst)->d[(dst)->i]), (src)->d, (src)->i); \
+  (dst)->i += (src)->i;                                            \
+  (dst)->d[(dst)->i]='\0';                                         \
 } while(0)
+
+#define utstring_is_empty(s) (!((s)->d) || ((s)->d[0] == '\0'))
 
 #define utstring_len(s) ((s)->i)
 
 #define utstring_body(s) ((s)->d)
 
+#define utstring_alloc_len(s) ((s)->n)
+
+
 UTSTRING_UNUSED static void utstring_printf_va(UT_string *s, const char *fmt, va_list ap) {
-   int n;
+   ptrdiff_t n;
    va_list cp;
    for (;;) {
 #ifdef _WIN32
@@ -139,10 +151,10 @@ UTSTRING_UNUSED static void utstring_printf_va(UT_string *s, const char *fmt, va
 #else
       va_copy(cp, ap);
 #endif
-      n = vsnprintf (&s->d[s->i], s->n-s->i, fmt, cp);
+      n = (ptrdiff_t)vsnprintf(&s->d[s->i], s->n - s->i, fmt, cp);
       va_end(cp);
 
-      if ((n > -1) && ((size_t) n < (s->n-s->i))) {
+      if ((n > -1) && (n < (ptrdiff_t)(s->n - s->i))) {
         s->i += n;
         return;
       }
@@ -171,14 +183,14 @@ UTSTRING_UNUSED static void utstring_printf(UT_string *s, const char *fmt, ...) 
 UTSTRING_UNUSED static void _utstring_BuildTable(
     const char *P_Needle,
     size_t P_NeedleLen,
-    long *P_KMP_Table)
+    ptrdiff_t*  P_KMP_Table)
 {
-    long i, j;
+    ptrdiff_t i, j;
 
     i = 0;
     j = i - 1;
     P_KMP_Table[i] = j;
-    while (i < (long) P_NeedleLen)
+    while (i < (ptrdiff_t)P_NeedleLen)
     {
         while ( (j > -1) && (P_Needle[i] != P_Needle[j]) )
         {
@@ -186,7 +198,7 @@ UTSTRING_UNUSED static void _utstring_BuildTable(
         }
         i++;
         j++;
-        if (i < (long) P_NeedleLen)
+        if (i < (ptrdiff_t)P_NeedleLen)
         {
             if (P_Needle[i] == P_Needle[j])
             {
@@ -211,16 +223,16 @@ UTSTRING_UNUSED static void _utstring_BuildTable(
 UTSTRING_UNUSED static void _utstring_BuildTableR(
     const char *P_Needle,
     size_t P_NeedleLen,
-    long *P_KMP_Table)
+    ptrdiff_t*  P_KMP_Table)
 {
-    long i, j;
+    ptrdiff_t i, j;
 
     i = P_NeedleLen - 1;
     j = i + 1;
     P_KMP_Table[i + 1] = j;
     while (i >= 0)
     {
-        while ( (j < (long) P_NeedleLen) && (P_Needle[i] != P_Needle[j]) )
+        while ((j < (ptrdiff_t)P_NeedleLen) && (P_Needle[i] != P_Needle[j]))
         {
            j = P_KMP_Table[j + 1];
         }
@@ -248,19 +260,19 @@ UTSTRING_UNUSED static void _utstring_BuildTableR(
 
 
 /* Search data from left to right. ( Multiple search mode. ) */
-UTSTRING_UNUSED static long _utstring_find(
+UTSTRING_UNUSED static ptrdiff_t _utstring_find(
     const char *P_Haystack,
     size_t P_HaystackLen,
     const char *P_Needle,
     size_t P_NeedleLen,
-    long *P_KMP_Table)
+    ptrdiff_t*  P_KMP_Table)
 {
-    long i, j;
-    long V_FindPosition = -1;
+    ptrdiff_t i, j;
+    ptrdiff_t V_FindPosition = -1;
 
     /* Search from left to right. */
     i = j = 0;
-    while ( (j < (int)P_HaystackLen) && (((P_HaystackLen - j) + i) >= P_NeedleLen) )
+    while ((j < (ptrdiff_t)P_HaystackLen) && (((P_HaystackLen - j) + i) >= P_NeedleLen))
     {
         while ( (i > -1) && (P_Needle[i] != P_Haystack[j]) )
         {
@@ -268,7 +280,7 @@ UTSTRING_UNUSED static long _utstring_find(
         }
         i++;
         j++;
-        if (i >= (int)P_NeedleLen)
+        if (i >= (ptrdiff_t)P_NeedleLen)
         {
             /* Found. */
             V_FindPosition = j - i;
@@ -281,22 +293,22 @@ UTSTRING_UNUSED static long _utstring_find(
 
 
 /* Search data from right to left. ( Multiple search mode. ) */
-UTSTRING_UNUSED static long _utstring_findR(
+UTSTRING_UNUSED static ptrdiff_t _utstring_findR(
     const char *P_Haystack,
     size_t P_HaystackLen,
     const char *P_Needle,
     size_t P_NeedleLen,
-    long *P_KMP_Table)
+    ptrdiff_t*  P_KMP_Table)
 {
-    long i, j;
-    long V_FindPosition = -1;
+    ptrdiff_t i, j;
+    ptrdiff_t V_FindPosition = -1;
 
     /* Search from right to left. */
     j = (P_HaystackLen - 1);
     i = (P_NeedleLen - 1);
     while ( (j >= 0) && (j >= i) )
     {
-        while ( (i < (int)P_NeedleLen) && (P_Needle[i] != P_Haystack[j]) )
+        while ((i < (ptrdiff_t)P_NeedleLen) && (P_Needle[i] != P_Haystack[j]))
         {
             i = P_KMP_Table[i + 1];
         }
@@ -315,16 +327,16 @@ UTSTRING_UNUSED static long _utstring_findR(
 
 
 /* Search data from left to right. ( One time search mode. ) */
-UTSTRING_UNUSED static long utstring_find(
+UTSTRING_UNUSED static ptrdiff_t utstring_find(
     UT_string *s,
-    long P_StartPosition,   /* Start from 0. -1 means last position. */
+    ptrdiff_t P_StartPosition, /* Start from 0. -1 means last position. */
     const char *P_Needle,
     size_t P_NeedleLen)
 {
-    long V_StartPosition;
-    long V_HaystackLen;
-    long *V_KMP_Table;
-    long V_FindPosition = -1;
+    ptrdiff_t V_StartPosition;
+    ptrdiff_t V_HaystackLen;
+    ptrdiff_t* V_KMP_Table;
+    ptrdiff_t V_FindPosition = -1;
 
     if (P_StartPosition < 0)
     {
@@ -335,9 +347,9 @@ UTSTRING_UNUSED static long utstring_find(
         V_StartPosition = P_StartPosition;
     }
     V_HaystackLen = s->i - V_StartPosition;
-    if ( (V_HaystackLen >= (long) P_NeedleLen) && (P_NeedleLen > 0) )
+    if ((V_HaystackLen >= (ptrdiff_t)P_NeedleLen) && (P_NeedleLen > 0))
     {
-        V_KMP_Table = (long *)malloc(sizeof(long) * (P_NeedleLen + 1));
+        V_KMP_Table = (ptrdiff_t*)malloc(sizeof(ptrdiff_t) * (P_NeedleLen + 1));
         if (V_KMP_Table != NULL)
         {
             _utstring_BuildTable(P_Needle, P_NeedleLen, V_KMP_Table);
@@ -361,16 +373,16 @@ UTSTRING_UNUSED static long utstring_find(
 
 
 /* Search data from right to left. ( One time search mode. ) */
-UTSTRING_UNUSED static long utstring_findR(
+UTSTRING_UNUSED static ptrdiff_t utstring_findR(
     UT_string *s,
-    long P_StartPosition,   /* Start from 0. -1 means last position. */
+    ptrdiff_t P_StartPosition, /* Start from 0. -1 means last position. */
     const char *P_Needle,
     size_t P_NeedleLen)
 {
-    long V_StartPosition;
-    long V_HaystackLen;
-    long *V_KMP_Table;
-    long V_FindPosition = -1;
+    ptrdiff_t V_StartPosition;
+    ptrdiff_t V_HaystackLen;
+    ptrdiff_t* V_KMP_Table;
+    ptrdiff_t  V_FindPosition = -1;
 
     if (P_StartPosition < 0)
     {
@@ -381,9 +393,9 @@ UTSTRING_UNUSED static long utstring_findR(
         V_StartPosition = P_StartPosition;
     }
     V_HaystackLen = V_StartPosition + 1;
-    if ( (V_HaystackLen >= (long) P_NeedleLen) && (P_NeedleLen > 0) )
+    if ((V_HaystackLen >= (ptrdiff_t)P_NeedleLen) && (P_NeedleLen > 0))
     {
-        V_KMP_Table = (long *)malloc(sizeof(long) * (P_NeedleLen + 1));
+        V_KMP_Table = (ptrdiff_t*)malloc(sizeof(ptrdiff_t) * (P_NeedleLen + 1));
         if (V_KMP_Table != NULL)
         {
             _utstring_BuildTableR(P_Needle, P_NeedleLen, V_KMP_Table);
@@ -403,5 +415,22 @@ UTSTRING_UNUSED static long utstring_findR(
 /*******************************************************************************
  * end substring search functions                                              *
  ******************************************************************************/
+
+
+UTSTRING_UNUSED static void utstring_setw(UT_string* s, const wchar_t* wch)
+{
+    int const len = WideCharToMultiByte(CP_UTF8, 0, wch, -1, NULL, 0, NULL, NULL);
+    utstring_clear(s);
+    if ((s)->n < len) { utstring_reserve(s, len - (s)->n); }
+    WideCharToMultiByte(CP_UTF8, 0, wch, -1, (s)->d, len, NULL, NULL);
+    (s)->i = strlen((s)->d);
+}
+
+
+UTSTRING_UNUSED static size_t utstring_getw(UT_string* s, wchar_t* wch, size_t count)
+{
+    return (size_t) MultiByteToWideChar(CP_UTF8, 0, utstring_body(s), -1, wch, (int)count);
+}
+
 
 #endif /* UTSTRING_H */

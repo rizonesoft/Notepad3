@@ -200,6 +200,8 @@ public:
 	Scintilla::FontWeight StyleGetWeight(int style);
 	void StyleSetCharacterSet(int style, Scintilla::CharacterSet characterSet);
 	void StyleSetHotSpot(int style, bool hotspot);
+	void StyleSetCheckMonospaced(int style, bool checkMonospaced);
+	bool StyleGetCheckMonospaced(int style);
 	void SetElementColour(Scintilla::Element element, ColourAlpha colourElement);
 	ColourAlpha ElementColour(Scintilla::Element element);
 	void ResetElementColour(Scintilla::Element element);
@@ -216,6 +218,8 @@ public:
 	void SetSelectionLayer(Scintilla::Layer layer);
 	Scintilla::Layer CaretLineLayer();
 	void SetCaretLineLayer(Scintilla::Layer layer);
+	bool CaretLineHighlightSubLine();
+	void SetCaretLineHighlightSubLine(bool subLine);
 	void SetCaretFore(Colour fore);
 	void AssignCmdKey(int keyDefinition, int sciCommand);
 	void ClearCmdKey(int keyDefinition);

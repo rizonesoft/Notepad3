@@ -21,6 +21,7 @@
 #include <shlwapi.h>
 #include <string.h>
 
+#include "PathLib.h"
 #include "Dlapi.h"
 
 
@@ -38,8 +39,7 @@ typedef struct tagDLDATA { // dl
     int iDefIconFolder;        // Default Folder Icon
     int iDefIconFile;          // Default File Icon
     bool bNoFadeHidden;        // Flag passed from GetDispInfo()
-
-    WCHAR szPath[MAX_PATH];    // Pathname to Directory Id
+    HPATHL hDirectoryPath;     // Pathname to Directory Id
 
 } DLDATA, *LPDLDATA;
 
@@ -55,7 +55,7 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 //  Initializes the DLDATA structure and sets up the listview control
 //
-bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
+bool DirList_Init(HWND hwnd,LPCWSTR pszHeader, HPATHL hFilePath)
 {
     UNREFERENCED_PARAMETER(pszHeader);
 
@@ -63,13 +63,13 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
     LPDLDATA lpdl = (LPDLDATA)GlobalAlloc(GPTR, sizeof(DLDATA));
     if (lpdl) {
         SetProp(hwnd, pDirListProp, (HANDLE)lpdl);
-
         // Setup dl
-        BackgroundWorker_Init(&lpdl->worker, hwnd);
+        BackgroundWorker_Init(&lpdl->worker, hwnd, NULL);
         lpdl->cbidl = 0;
         lpdl->pidl = NULL;
         lpdl->lpsf = NULL;
-        StringCchCopy(lpdl->szPath, COUNTOF(lpdl->szPath), L"");
+        lpdl->hDirectoryPath = hFilePath;
+        Path_Empty(lpdl->hDirectoryPath, false);
 
         // Add Imagelists
         SHFILEINFO shfi = { 0 };
@@ -151,10 +151,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                  bool bExcludeFilter,bool bNoFadeHidden,
                  int iSortFlags,bool fSortRev)
 {
-
     LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd, pDirListProp);
-
-    WCHAR wszDir[MAX_PATH] = { L'\0' };
 
     // Initialize default icons
     SHFILEINFO shfi = { 0 };
@@ -173,7 +170,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     if (!lpszDir || !*lpszDir) {
         return(-1);
     }
-    StringCchCopyN(lpdl->szPath, COUNTOF(lpdl->szPath), lpszDir, MAX_PATH);
+    Path_Reset(lpdl->hDirectoryPath, lpszDir);
 
     // Init ListView
     SendMessage(hwnd,WM_SETREDRAW,0,0);
@@ -189,7 +186,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     lvi.iItem = 0;
     lvi.iSubItem = 0;
     lvi.pszText = LPSTR_TEXTCALLBACK;
-    lvi.cchTextMax = MAX_PATH;
+    lvi.cchTextMax = MAX_PATH_EXPLICIT;
     lvi.iImage = I_IMAGECALLBACK;
 
     // Convert Directory to a UNICODE string
@@ -198,8 +195,8 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                         lpszDir,
                         -1,
                         wszDir,
-                        MAX_PATH);*/
-    StringCchCopy(wszDir,COUNTOF(wszDir),lpszDir);
+                        MAX_PATH_EXPLICIT);*/
+    LPWSTR const wchDir = Path_WriteAccessBuf(lpdl->hDirectoryPath, 0);
 
     // Get Desktop Folder
     LPSHELLFOLDER lpsf = NULL;
@@ -214,7 +211,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                     lpsfDesktop,
                     hwnd,
                     NULL,
-                    wszDir,
+                    wchDir,
                     &chParsed,
                     &pidl,
                     &dwAttributes))
@@ -603,13 +600,13 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
     if (lpdli->mask & DLI_FILENAME)
 
         IL_GetDisplayName(lplvid->lpsf,lplvid->pidl,SHGDN_FORPARSING,
-                          lpdli->szFileName,MAX_PATH);
+            lpdli->pthFileName, PATHLONG_MAX_CCH);
 
     // Displayname
     if (lpdli->mask & DLI_DISPNAME)
 
         IL_GetDisplayName(lplvid->lpsf,lplvid->pidl,SHGDN_INFOLDER,
-                          lpdli->szDisplayName,MAX_PATH);
+            lpdli->strDisplayName, INTERNET_MAX_URL_LENGTH);
 
     // Type (File / Directory)
     if (lpdli->mask & DLI_TYPE) {
@@ -648,25 +645,18 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
 //
 int DirList_GetItemEx(HWND hwnd,int iItem,LPWIN32_FIND_DATA pfd)
 {
-
     LV_ITEM lvi;
     LPLV_ITEMDATA lplvid;
 
-
     if (iItem == -1) {
-
         if (ListView_GetSelectedCount(hwnd))
-
         {
             iItem = ListView_GetNextItem(hwnd,-1,LVNI_ALL | LVNI_SELECTED);
         }
-
         else
-
         {
             return(-1);
         }
-
     }
 
     lvi.mask = LVIF_PARAM;
@@ -697,7 +687,6 @@ int DirList_GetItemEx(HWND hwnd,int iItem,LPWIN32_FIND_DATA pfd)
 //
 bool DirList_PropertyDlg(HWND hwnd,int iItem)
 {
-
     LV_ITEM lvi;
     LPLV_ITEMDATA lplvid;
     LPCONTEXTMENU lpcm;
@@ -710,7 +699,6 @@ bool DirList_PropertyDlg(HWND hwnd,int iItem)
         if (ListView_GetSelectedCount(hwnd)) {
             iItem = ListView_GetNextItem(hwnd,-1,LVNI_ALL | LVNI_SELECTED);
         }
-
         else {
             return false;
         }
@@ -746,21 +734,16 @@ bool DirList_PropertyDlg(HWND hwnd,int iItem)
         if (NOERROR != lpcm->lpVtbl->InvokeCommand(lpcm,&cmi)) {
             bSuccess = false;
         }
-
         lpcm->lpVtbl->Release(lpcm);
-
     }
-
     else {
         bSuccess = false;
     }
-
     return(bSuccess);
-
 }
 
 
-
+#if 0
 //=============================================================================
 //
 //  DirList_GetLongPathName()
@@ -769,15 +752,20 @@ bool DirList_PropertyDlg(HWND hwnd,int iItem)
 //
 bool DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath,int length)
 {
-    WCHAR tch[MAX_PATH] = { L'\0' };
-    LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
-    if (SHGetPathFromIDList(lpdl->pidl,tch)) {
-        StringCchCopy(lpszLongPath,length,tch);
-        return true;
-    }
-    return false;
-}
+    HPATHL       hpth = Path_Allocate(NULL);
+    LPWSTR const pth_buf = Path_WriteAccessBuf(hpth, PATHLONG_MAX_CCH);
 
+    LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
+    bool     res = false;
+    if (SHGetPathFromIDListW(lpdl->pidl, pth_buf)) {
+        Path_Sanitize(hpth);
+        StringCchCopyW(lpszLongPath, length, pth_buf);
+        res = true;
+    }
+    Path_Release(hpth);
+    return res;
+}
+#endif
 
 
 //=============================================================================
@@ -795,14 +783,14 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
         return false;
     }
 
-    WCHAR szShortPath[MAX_PATH] = { L'\0' };
-    GetShortPathName(lpszFullPath, szShortPath, MAX_PATH);
+    HPATHL hshort_pth = Path_Allocate(lpszFullPath);
+    Path_ToShortPathName(hshort_pth);
 
     SHFILEINFO shfi = { 0 };
     if (StrIsEmpty(lpszDisplayName)) {
-        SHGetFileInfo(lpszFullPath, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
+        SHGetFileInfoW(lpszFullPath, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
     } else {
-        StringCchCopyN(shfi.szDisplayName, COUNTOF(shfi.szDisplayName), lpszDisplayName, MAX_PATH);
+        StringCchCopy(shfi.szDisplayName, COUNTOF(shfi.szDisplayName), lpszDisplayName);
     }
     LV_FINDINFO lvfi = { 0 };
     lvfi.flags = LVFI_STRING;
@@ -811,23 +799,32 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
     DLITEM dli = { 0 };
     dli.mask = DLI_ALL;
 
+    HPATHL hpthFileName = Path_Allocate(NULL);
+    dli.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
+
+    HSTRINGW hstrDisplayName = StrgCreate(NULL);
+    dli.strDisplayName = StrgWriteAccessBuf(hstrDisplayName, INTERNET_MAX_URL_LENGTH);
+
     int i = -1;
+    bool res = false;
     while ((i = ListView_FindItem(hwnd, i, &lvfi)) != -1) {
 
         DirList_GetItem(hwnd,i,&dli);
-        GetShortPathName(dli.szFileName,dli.szFileName,MAX_PATH);
+        GetShortPathNameW(dli.pthFileName, dli.pthFileName, (DWORD)Path_GetBufCount(hpthFileName));
 
-        if (!StringCchCompareNI(dli.szFileName,COUNTOF(dli.szFileName),szShortPath,COUNTOF(szShortPath))) {
+        if (StringCchCompareXI(dli.pthFileName, Path_Get(hshort_pth)) == 0) {
             ListView_SetItemState(hwnd,i,LVIS_FLAGS,LVIS_FLAGS);
             ListView_EnsureVisible(hwnd,i,false);
-
-            return true;
+            res = true;
+            break;
         }
 
     }
 
-    return false;
-
+    StrgDestroy(hstrDisplayName);
+    Path_Release(hpthFileName);
+    Path_Release(hshort_pth);
+    return res;
 }
 
 
@@ -915,7 +912,7 @@ bool DirList_MatchFilter(LPSHELLFOLDER lpsf,LPCITEMIDLIST pidl,PDL_FILTER pdlf)
 }
 
 
-
+#if 0
 //==== DriveBox ===============================================================
 
 //=============================================================================
@@ -975,7 +972,7 @@ int DriveBox_Fill(HWND hwnd)
     COMBOBOXEXITEM cbei = { 0 };
     cbei.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE | CBEIF_LPARAM;
     cbei.pszText = LPSTR_TEXTCALLBACK;
-    cbei.cchTextMax = MAX_PATH;
+    cbei.cchTextMax = MAX_PATH_EXPLICIT;
     cbei.iImage = I_IMAGECALLBACK;
     cbei.iSelectedImage = I_IMAGECALLBACK;
 
@@ -1267,14 +1264,12 @@ LRESULT DriveBox_DeleteItem(HWND hwnd,LPARAM lParam)
 
 }
 
-
 //=============================================================================
 //
 //  DriveBox_GetDispInfo
 //
 LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
 {
-
     NMCOMBOBOXEX *lpnmcbe;
     LPDC_ITEMDATA lpdcid;
     SHFILEINFO shfi = { 0 };
@@ -1304,12 +1299,15 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
             attr = FILE_ATTRIBUTE_NORMAL;
         }
 
-        WCHAR szTemp[MAX_PATH] = { L'\0' };
-        IL_GetDisplayName(lpdcid->lpsf,lpdcid->pidl,SHGDN_FORPARSING,szTemp,MAX_PATH);
-        SHGetFileInfo(szTemp,attr,&shfi,sizeof(SHFILEINFO),
-                      SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
+        HPATHL hFilePath = Path_Allocate(NULL);
+        LPWSTR const wchFileBuf = Path_WriteAccessBuf(hFilePath, PATHLONG_MAX_CCH);
+        IL_GetDisplayName(lpdcid->lpsf, lpdcid->pidl, SHGDN_FORPARSING, wchFileBuf, (int)Path_GetBufCount(hFilePath));
+        Path_Sanitize(hFilePath);
+        SHGetFileInfoW(wchFileBuf, attr, &shfi, sizeof(SHFILEINFO),
+                       SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
         lpnmcbe->ceItem.iImage = shfi.iIcon;
         lpnmcbe->ceItem.iSelectedImage = shfi.iIcon;
+        Path_Release(hFilePath);
     }
 
     // Set values
@@ -1320,6 +1318,7 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
     return true;
 }
 
+#endif
 
 
 //==== ItemID =================================================================

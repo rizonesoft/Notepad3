@@ -49,6 +49,23 @@
 // no Analyze warning "prefer: enum class"
 #pragma warning(disable : 26812)
 
+/**************************************************/
+/*             Declared in WINNT.H                */
+/*                                                */
+/*  Provides bottom line type safety in function  */
+/*  calls instead of using void* pointer          */
+/**************************************************/
+#ifndef DECLARE_HANDLE
+#define DECLARE_HANDLE(name) \
+    struct name##__ {        \
+        ptrdiff_t unused;    \
+    };                       \
+    typedef struct name##__* name
+#endif
+
+DECLARE_HANDLE(HSTRINGW);
+DECLARE_HANDLE(HPATHL);
+
 //
 // TODO:
 // SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
@@ -155,8 +172,11 @@ typedef enum
     XXXL_BUFFER = 4096,
 
     ANSI_CHAR_BUFFER = 258,
-    FNDRPL_BUFFER = 4096,
-    LONG_LINES_MARKER_LIMIT = 4096
+    STYLE_EXTENTIONS_BUFFER = 512,
+    EXTENTIONS_FILTER_BUFFER = (STYLE_EXTENTIONS_BUFFER << 1),
+    FNDRPL_BUFFER = 4096, // TODO: eliminate limit
+    LONG_LINES_MARKER_LIMIT = 8192,
+    CMDLN_LENGTH_LIMIT = 8192
 
 } BUFFER_SIZES;
 
@@ -224,26 +244,26 @@ typedef struct _editfindreplace
     bool bHideNonMatchedLines;
     bool bStateChanged;
     HWND hwnd;
-    char szFind[FNDRPL_BUFFER];
-    char szReplace[FNDRPL_BUFFER];
+    HSTRINGW chFindPattern;
+    HSTRINGW chReplaceTemplate;
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE;
 
-//typedef const EDITFINDREPLACE* CLPEDITFINDREPLACE;
 typedef const EDITFINDREPLACE* const CLPCEDITFINDREPLACE;
 
-#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, "", "" }
+#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, NULL, NULL }
+// USE: void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src);
+//      void ReleaseEFR(LPEDITFINDREPLACE efr);
+
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
-
-// --------------------------------------------------------------------------
 
 #define MRU_MAXITEMS    32
 #define MRU_ITEMSFILE   32
 #define MRU_ITEMSFNDRPL 16
-#define MRU_NOCASE    1
-#define MRU_UTF8      2
-#define MRU_BMRK_SIZE 512
+#define MRU_NOCASE       1
+#define MRU_UTF8         2
+#define MRU_BMRK_SIZE  512
 
 typedef struct _mrulist
 {
@@ -444,10 +464,11 @@ extern GLOBALS_T Globals;
 
 typedef struct _paths_t {
     
-    WCHAR  CurrentFile[MAX_PATH];
-    WCHAR  WorkingDirectory[MAX_PATH];
-    WCHAR  IniFile[MAX_PATH];
-    WCHAR  IniFileDefault[MAX_PATH];
+    HPATHL CurrentFile;
+    HPATHL ModuleDirectory;
+    HPATHL WorkingDirectory;
+    HPATHL IniFile;
+    HPATHL IniFileDefault;
 
 } PATHS_T, *PPATHS_T;
 
@@ -561,8 +582,8 @@ typedef struct _settings_t
 
     RECT PrintMargin;
     EDITFINDREPLACE EFR_Data;
-    WCHAR OpenWithDir[MAX_PATH];
-    WCHAR FavoritesDir[MAX_PATH];
+    HPATHL OpenWithDir;
+    HPATHL FavoritesDir;
     WCHAR ToolbarButtons[MIDSZ_BUFFER];
     WCHAR MultiEdgeLines[MIDSZ_BUFFER];
     WCHAR CurrentThemeName[MINI_BUFFER];
@@ -644,15 +665,22 @@ typedef struct _settings2_t
     COLORREF DarkModeTxtColor;
 #endif
 
+    HPATHL DefaultDirectory;
+    HPATHL FileBrowserPath;
+    HPATHL GrepWinPath;
+    HPATHL AdministrationTool;
+
+    HSTRINGW WebTemplate1;
+    HSTRINGW WebTemplate2;
+    HSTRINGW HyperlinkShellExURLWithApp;
+    HSTRINGW HyperlinkShellExURLCmdLnArgs;
+    HSTRINGW FileDlgFilters;
+
     WCHAR FileChangedIndicator[4];
     WCHAR FileDeletedIndicator[4];
 
     WCHAR DefaultExtension[MINI_BUFFER];
-    WCHAR DefaultDirectory[MAX_PATH];
-    WCHAR FileDlgFilters[XHUGE_BUFFER];
 
-    WCHAR FileBrowserPath[MAX_PATH];
-    WCHAR GrepWinPath[MAX_PATH];
     WCHAR AppUserModelID[SMALL_BUFFER];
     WCHAR AutoCompleteFillUpChars[MINI_BUFFER];
     WCHAR LineCommentPostfixStrg[MINI_BUFFER];
@@ -664,17 +692,12 @@ typedef struct _settings2_t
     WCHAR TimeStampRegEx[SMALL_BUFFER];
     WCHAR TimeStampFormat[SMALL_BUFFER];
 
-    WCHAR WebTemplate1[MAX_PATH];
     WCHAR WebTmpl1MenuName[MICRO_BUFFER];
-    WCHAR WebTemplate2[MAX_PATH];
     WCHAR WebTmpl2MenuName[MICRO_BUFFER];
-    WCHAR AdministrationTool[MAX_PATH];
     WCHAR DefaultWindowPosition[MINI_BUFFER];
 
     WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
 
-    WCHAR HyperlinkShellExURLWithApp[MAX_PATH];
-    WCHAR HyperlinkShellExURLCmdLnArgs[MAX_PATH];
     WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
 } SETTINGS2_T, *PSETTINGS2_T;
@@ -741,7 +764,7 @@ typedef struct _themeFiles
 {
     UINT    rid;
     WCHAR   szName[MINI_BUFFER];
-    WCHAR   szFilePath[MAX_PATH];
+    HPATHL  hStyleFilePath;
 
 } THEMEFILES, * PTHEMEFILES;
 
@@ -749,7 +772,7 @@ typedef struct _themeFiles
 
 // ---------   common defines   --------
 
-#define IS_VALID_HANDLE(HNDL) (((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE)) ? true : false)
+#define IS_VALID_HANDLE(HNDL) ((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE))
 
 #define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"
 
@@ -791,6 +814,18 @@ typedef struct _themeFiles
     { _fctguard = true;
 
 #define RESET_FCT_GUARD()  } _fctguard = false; }
+
+// ----------------------------------------------------------------------------
+
+inline void SetDialogIconNP3(HWND hwnd)
+{
+    if (Globals.hDlgIconSmall) {
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
+    }
+    if (Globals.hDlgIconBig) {
+        SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
+    }
+}
 
 // ----------------------------------------------------------------------------
 

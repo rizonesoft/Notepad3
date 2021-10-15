@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2018-2021, Troy D. Hanson   http://troydhanson.github.io/uthash/
+Copyright (c) 2018-2021, Troy D. Hanson   http://troydhanson.github.com/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * struct item {
  *      int id;
  *      struct item *next;
- * }
+ * };
  *
- * struct item *stack = NULL:
+ * struct item *stack = NULL;
  *
  * int main() {
  *      int count;

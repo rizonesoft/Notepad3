@@ -36,6 +36,7 @@
 
 extern "C" {
 #include "Helpers.h"
+#include "PathLib.h"
 #include "Encoding.h"
 #include "SciCall.h"
 }
@@ -54,7 +55,7 @@ extern "C" void Style_SetMultiEdgeLine(const int colVec[], const size_t count);
 
 //=============================================================================
 
-static WCHAR wchEncodingInfo[MAX_PATH] = { L'\0' };
+static WCHAR wchEncodingInfo[MIDSZ_BUFFER] = { L'\0' };
 
 static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo);
 
@@ -65,7 +66,7 @@ extern "C" const WCHAR* Encoding_GetTitleInfo()
 
 extern "C" const char* Encoding_GetTitleInfoA()
 {
-    static char chEncodingInfo[MAX_PATH] = { '\0' };
+    static char chEncodingInfo[MIDSZ_BUFFER] = { '\0' };
     ::WideCharToMultiByte(CP_ACP, 0, wchEncodingInfo, -1, chEncodingInfo, (int)COUNTOF(chEncodingInfo), NULL, NULL);
     return chEncodingInfo;
 }
@@ -1250,7 +1251,7 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //
 //  GetFileEncoding()
 //
-extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
         cpi_enc_t iAnalyzeHint,
         bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
@@ -1265,7 +1266,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
     // --- 1st check for force encodings ---
 
-    LPCWSTR lpszExt = PathFindExtension(pszFile);
+    LPCWSTR    lpszExt = Path_FindExtension(hpath);
     bool const bNfoDizDetected = (lpszExt && ((StringCchCompareXI(lpszExt, L".nfo") == 0) || (StringCchCompareXI(lpszExt, L".diz") == 0)));
 
     encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);

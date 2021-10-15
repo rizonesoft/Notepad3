@@ -30,16 +30,10 @@ public:
  */
 
 
-class FontRealised : public FontMeasurements {
+class FontRealised {
 public:
+	FontMeasurements measurements;
 	std::shared_ptr<Font> font;
-	FontRealised() noexcept;
-	// FontRealised objects can not be copied.
-	FontRealised(const FontRealised &) = delete;
-	FontRealised(FontRealised &&) = delete;
-	FontRealised &operator=(const FontRealised &) = delete;
-	FontRealised &operator=(FontRealised &&) = delete;
-	virtual ~FontRealised() noexcept;
 	void Realise(Surface &surface, int zoomLevel, Scintilla::Technology technology, const FontSpecification &fs, const char *localeName);
 };
 
@@ -65,6 +59,8 @@ struct CaretLineAppearance {
 	Scintilla::Layer layer;
 	// Also show when non-focused
 	bool alwaysShow;
+	// highlight sub line instead of whole line
+	bool subLine;
 	// Non-0: draw a rectangle around line instead of filling line. Value is pixel width of frame
 	int frame;
 };
@@ -78,7 +74,7 @@ constexpr int GetFontSizeZoomed(int size, int zoomLevel) noexcept {
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 struct CaretAppearance {
-	// Line, block, over-strike bar ... 
+	// Line, block, over-strike bar ...
 	Scintilla::CaretStyle style;
 	// Width in pixels
 	int width;
@@ -100,11 +96,8 @@ struct WrapAppearance {
 struct EdgeProperties {
 	int column = 0;
 	ColourRGBA colour;
-	EdgeProperties(int column_ = 0, ColourRGBA colour_ = ColourRGBA::FromRGB(0)) noexcept :
+	constexpr EdgeProperties(int column_ = 0, ColourRGBA colour_ = ColourRGBA::FromRGB(0)) noexcept :
 		column(column_), colour(colour_) {
-	}
-	EdgeProperties(Scintilla::uptr_t wParam, Scintilla::sptr_t lParam) noexcept :
-		column(static_cast<int>(wParam)), colour(ColourRGBA::FromIpRGB(lParam)) {
 	}
 };
 
@@ -136,8 +129,8 @@ public:
 	Scintilla::Technology technology;
 	int lineHeight;
 	int lineOverlap;
-	unsigned int maxAscent;
-	unsigned int maxDescent;
+	XYPOSITION maxAscent;
+	XYPOSITION maxDescent;
 	XYPOSITION aveCharWidth;
 	XYPOSITION spaceWidth;
 	XYPOSITION tabWidth;
@@ -203,7 +196,7 @@ public:
 
 	std::string localeName;
 
-	ViewStyle();
+	ViewStyle(size_t stylesSize_=256);
 	ViewStyle(const ViewStyle &source);
 	ViewStyle(ViewStyle &&) = delete;
 	// Can only be copied through copy constructor which ensures font names initialised correctly
@@ -211,7 +204,6 @@ public:
 	ViewStyle &operator=(ViewStyle &&) = delete;
 	~ViewStyle();
 	void CalculateMarginWidthAndMask() noexcept;
-	void Init(size_t stylesSize_=256);
 	void Refresh(Surface &surface, int tabInChars);
 	void ReleaseAllExtendedStyles() noexcept;
 	int AllocateExtendedStyles(int numberStyles);
@@ -233,7 +225,7 @@ public:
 	bool WhitespaceBackgroundDrawn() const;
 	ColourRGBA WrapColour() const;
 
-	void AddMultiEdge(Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
+	void AddMultiEdge(int column, ColourRGBA colour);
 
 	std::optional<ColourRGBA> ElementColour(Scintilla::Element element) const;
 	bool ElementAllowsTranslucent(Scintilla::Element element) const;
@@ -267,7 +259,7 @@ private:
 	void AllocStyles(size_t sizeNew);
 	void CreateAndAddFont(const FontSpecification &fs);
 	FontRealised *Find(const FontSpecification &fs) const;
-	void FindMaxAscentDescent();
+	void FindMaxAscentDescent() noexcept;
 };
 
 }

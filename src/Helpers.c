@@ -23,8 +23,7 @@
 #include <ctype.h>
 #include <wchar.h>
 
-//#include <pathcch.h>
-
+#include "PathLib.h"
 #include "Edit.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"
@@ -590,10 +589,12 @@ bool IsRunAsAdmin()
 //=============================================================================
 
 
-void BackgroundWorker_Init(BackgroundWorker *worker, HWND hwnd) {
+void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath)
+{
     worker->hwnd = hwnd;
     worker->eventCancel = CreateEvent(NULL, TRUE, FALSE, NULL);
     worker->workerThread = NULL;
+    worker->hFilePath = hFilePath;
 }
 
 void BackgroundWorker_Stop(BackgroundWorker *worker) {
@@ -820,365 +821,6 @@ bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberO
 
 //=============================================================================
 //
-//  GetKnownFolderPath()
-//
-bool GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount)
-{
-    //const DWORD dwFlags = (KF_FLAG_DEFAULT_PATH | KF_FLAG_NOT_PARENT_RELATIVE | KF_FLAG_NO_ALIAS);
-    const DWORD dwFlags = KF_FLAG_NO_ALIAS;
-
-    PWSTR pszPath = NULL;
-    HRESULT hr = SHGetKnownFolderPath(rfid, dwFlags, NULL, &pszPath);
-    if (SUCCEEDED(hr) && pszPath) {
-        StringCchCopy(lpOutPath, cchCount, pszPath);
-        CoTaskMemFree(pszPath);
-        return true;
-    }
-    return false;
-}
-
-
-//=============================================================================
-//
-//  PathGetModuleDirectory()
-//
-void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest)
-{
-    GetModuleFileName(NULL, lpszDest, cchDest);
-    PathCchRemoveFileSpec(lpszDest, (size_t)cchDest);
-    PathCanonicalizeEx(lpszDest, cchDest);
-}
-
-
-//=============================================================================
-//
-//  PathRelativeToApp()
-//
-void PathRelativeToApp(
-    LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bSrcIsFile,
-    bool bUnexpandEnv,bool bUnexpandMyDocs)
-{
-
-    WCHAR wchAppDir[MAX_PATH] = { L'\0' };
-    WCHAR wchWinDir[MAX_PATH] = { L'\0' };
-    WCHAR wchUserFiles[MAX_PATH] = { L'\0' };
-    WCHAR wchPath[MAX_PATH] = { L'\0' };
-    WCHAR wchResult[MAX_PATH] = { L'\0' };
-    DWORD dwAttrTo = (bSrcIsFile) ? FILE_ATTRIBUTE_NORMAL : FILE_ATTRIBUTE_DIRECTORY;
-
-    PathGetAppDirectory(wchAppDir, COUNTOF(wchAppDir));
-
-    (void)GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
-    GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
-
-    if (bUnexpandMyDocs &&
-            !PathIsRelative(lpszSrc) &&
-            !PathIsPrefix(wchUserFiles,wchAppDir) &&
-            PathIsPrefix(wchUserFiles,lpszSrc) &&
-            PathRelativePathTo(wchPath,wchUserFiles,FILE_ATTRIBUTE_DIRECTORY,lpszSrc,dwAttrTo)) {
-        StringCchCopy(wchUserFiles,COUNTOF(wchUserFiles),L"%CSIDL:MYDOCUMENTS%");
-        PathCchAppend(wchUserFiles,COUNTOF(wchUserFiles),wchPath);
-        StringCchCopy(wchPath,COUNTOF(wchPath),wchUserFiles);
-    } else if (PathIsRelative(lpszSrc) || PathCommonPrefix(wchAppDir, wchWinDir, NULL)) {
-        StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
-    } else {
-        if (!PathRelativePathTo(wchPath, wchAppDir, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo)) {
-            StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
-        }
-    }
-
-    if (bUnexpandEnv) {
-        if (!PathUnExpandEnvStrings(wchPath, wchResult, COUNTOF(wchResult))) {
-            StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
-        }
-    } else {
-        StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
-    }
-    int cchLen = (cchDest == 0) ? MAX_PATH : cchDest;
-    if (lpszDest == NULL || lpszSrc == lpszDest) {
-        StringCchCopyN(lpszSrc, cchLen, wchResult, cchLen);
-    } else {
-        StringCchCopyN(lpszDest, cchLen, wchResult, cchLen);
-    }
-}
-
-
-//=============================================================================
-//
-//  PathAbsoluteFromApp()
-//
-void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpandEnv)
-{
-
-    WCHAR wchPath[MAX_PATH] = { L'\0'};
-    WCHAR wchResult[MAX_PATH] = { L'\0'};
-
-    if (lpszSrc == NULL) {
-        ZeroMemory(lpszDest, (cchDest == 0) ? MAX_PATH : cchDest);
-        return;
-    }
-
-    if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CONSTSTRGLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
-        GetKnownFolderPath(&FOLDERID_Documents, wchPath, COUNTOF(wchPath));
-        PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CONSTSTRGLEN("%CSIDL:MYDOCUMENTS%"));
-    } else {
-        StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
-    }
-
-    if (bExpandEnv) {
-        ExpandEnvironmentStringsEx(wchPath, COUNTOF(wchPath));
-    }
-    if (PathIsRelative(wchPath)) {
-        PathGetAppDirectory(wchResult, COUNTOF(wchResult));
-        PathCchAppend(wchResult,COUNTOF(wchResult),wchPath);
-    } else {
-        StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchPath));
-    }
-    PathCanonicalizeEx(wchResult,MAX_PATH);
-    if (PathGetDriveNumber(wchResult) != -1) {
-        CharUpperBuff(wchResult, 1);
-    }
-    if (lpszDest == NULL || lpszSrc == lpszDest) {
-        StringCchCopyN(lpszSrc,((cchDest == 0) ? MAX_PATH : cchDest),wchResult,COUNTOF(wchResult));
-    } else {
-        StringCchCopyN(lpszDest,((cchDest == 0) ? MAX_PATH : cchDest),wchResult,COUNTOF(wchResult));
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-//  Name: PathIsLnkFile()
-//
-//  Purpose: Determine whether pszPath is a Windows Shell Link File by
-//           comparing the filename extension with L".lnk"
-//
-//  Manipulates:
-//
-bool PathIsLnkFile(LPCWSTR pszPath)
-{
-    WCHAR tchResPath[MAX_PATH] = { L'\0' };
-
-    if (!pszPath || !*pszPath) {
-        return false;
-    }
-
-    if (StringCchCompareXI(PathFindExtension(pszPath), L".lnk") != 0) {
-        return false;
-    }
-    return PathGetLnkPath(pszPath,tchResPath,COUNTOF(tchResPath));
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-//  Name: PathGetLnkPath()
-//
-//  Purpose: Try to get the path to which a lnk-file is linked
-//
-//
-//  Manipulates: pszResPath
-//
-bool PathGetLnkPath(LPCWSTR pszLnkFile, LPWSTR pszResPath, int cchResPath)
-{
-    IShellLink*      psl = NULL;
-    WIN32_FIND_DATA  fd = {0};
-    bool             bSucceeded = false;
-
-    if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
-                                   CLSCTX_INPROC_SERVER,
-                                   &IID_IShellLink,(void**)&psl))) {
-        IPersistFile *ppf = NULL;
-
-        if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,(void**)&ppf))) {
-            WORD wsz[MAX_PATH] = { L'\0' };
-
-            /*MultiByteToWideCharEx(CP_ACP,MB_PRECOMPOSED,pszLnkFile,-1,wsz,MAX_PATH);*/
-            StringCchCopy(wsz,COUNTOF(wsz),pszLnkFile);
-
-            if (SUCCEEDED(ppf->lpVtbl->Load(ppf,wsz,STGM_READ))) {
-                if (NOERROR == psl->lpVtbl->GetPath(psl,pszResPath,cchResPath,&fd,0)) {
-                    bSucceeded = true;
-                }
-            }
-            ppf->lpVtbl->Release(ppf);
-        }
-        psl->lpVtbl->Release(psl);
-    }
-
-    // This additional check seems reasonable
-    if (StrIsEmpty(pszResPath)) {
-        bSucceeded = false;
-    }
-
-    if (bSucceeded) {
-        PathCanonicalizeEx(pszResPath,cchResPath);
-    }
-
-    return(bSucceeded);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-//  Name: PathIsLnkToDirectory()
-//
-//  Purpose: Determine wheter pszPath is a Windows Shell Link File which
-//           refers to a directory
-//
-//  Manipulates: pszResPath
-//
-bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
-{
-    if (PathIsLnkFile(pszPath)) {
-        WCHAR tchResPath[MAX_PATH] = { L'\0' };
-        if (PathGetLnkPath(pszPath, tchResPath, sizeof(WCHAR)*COUNTOF(tchResPath))) {
-            if (PathIsDirectory(tchResPath)) {
-                StringCchCopyN(pszResPath, cchResPath, tchResPath, COUNTOF(tchResPath));
-                return (true);
-            }
-        }
-    }
-    return false;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-//  Name: PathCreateDeskLnk()
-//
-//  Purpose: Modified to create a desktop link to Notepad2
-//
-//  Manipulates:
-//
-bool PathCreateDeskLnk(LPCWSTR pszDocument)
-{
-    WCHAR tchExeFile[MAX_PATH] = { L'\0' };
-    WCHAR tchDocTemp[MAX_PATH] = { L'\0' };
-    WCHAR tchArguments[MAX_PATH+16] = { L'\0' };
-    WCHAR tchLinkDir[MAX_PATH] = { L'\0' };
-    WCHAR tchDescription[64] = { L'\0' };
-
-    WCHAR tchLnkFileName[MAX_PATH] = { L'\0' };
-
-    IShellLink *psl;
-    bool bSucceeded = false;
-    BOOL fMustCopy;
-
-    if (StrIsEmpty(pszDocument)) {
-        return true;
-    }
-
-    // init strings
-    GetModuleFileName(NULL,tchExeFile,COUNTOF(tchExeFile));
-    PathCanonicalizeEx(tchExeFile, COUNTOF(tchExeFile));
-
-    StringCchCopy(tchDocTemp,COUNTOF(tchDocTemp),pszDocument);
-    PathQuoteSpaces(tchDocTemp);
-
-    StringCchCopy(tchArguments,COUNTOF(tchArguments),L"-n ");
-    StringCchCat(tchArguments,COUNTOF(tchArguments),tchDocTemp);
-
-    GetKnownFolderPath(&FOLDERID_Desktop, tchLinkDir, COUNTOF(tchLinkDir));
-
-    GetLngString(IDS_MUI_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
-
-    // Try to construct a valid filename...
-    if (!SHGetNewLinkInfo(pszDocument,tchLinkDir,tchLnkFileName,&fMustCopy,SHGNLI_PREFIXNAME)) {
-        return false;
-    }
-
-    if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
-                                   CLSCTX_INPROC_SERVER,
-                                   &IID_IShellLink,(void**)&psl))) {
-        IPersistFile *ppf;
-
-        if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,(void**)&ppf))) {
-            WORD wsz[MAX_PATH] = { L'\0' };
-
-            /*MultiByteToWideCharEx(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
-            StringCchCopy(wsz,COUNTOF(wsz),tchLnkFileName);
-
-            psl->lpVtbl->SetPath(psl,tchExeFile);
-            psl->lpVtbl->SetArguments(psl,tchArguments);
-            psl->lpVtbl->SetDescription(psl,tchDescription);
-
-            if (SUCCEEDED(ppf->lpVtbl->Save(ppf,wsz,true))) {
-                bSucceeded = true;
-            }
-
-            ppf->lpVtbl->Release(ppf);
-        }
-        psl->lpVtbl->Release(psl);
-    }
-
-    return(bSucceeded);
-
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-//  Name: PathCreateFavLnk()
-//
-//  Purpose: Modified to create a Notepad2 favorites link
-//
-//  Manipulates:
-//
-bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
-{
-
-    WCHAR tchLnkFileName[MAX_PATH] = { L'\0' };
-
-    IShellLink *psl;
-    bool bSucceeded = false;
-
-    if (StrIsEmpty(pszName)) {
-        return true;
-    }
-
-    StringCchCopy(tchLnkFileName,COUNTOF(tchLnkFileName),pszDir);
-    PathCchAppend(tchLnkFileName,COUNTOF(tchLnkFileName),pszName);
-    StringCchCat(tchLnkFileName,COUNTOF(tchLnkFileName),L".lnk");
-
-    if (PathIsExistingFile(tchLnkFileName)) {
-        return false;
-    }
-
-    if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
-                                   CLSCTX_INPROC_SERVER,
-                                   &IID_IShellLink,(void**)&psl))) {
-        IPersistFile *ppf;
-
-        if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,(void**)&ppf))) {
-            WORD wsz[MAX_PATH] = { L'\0' };
-
-            /*MultiByteToWideCharEx(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
-            StringCchCopy(wsz,COUNTOF(wsz),tchLnkFileName);
-
-            psl->lpVtbl->SetPath(psl,pszTarget);
-
-            if (SUCCEEDED(ppf->lpVtbl->Save(ppf,wsz,true))) {
-                bSucceeded = true;
-            }
-
-            ppf->lpVtbl->Release(ppf);
-        }
-        psl->lpVtbl->Release(psl);
-    }
-
-    return(bSucceeded);
-
-}
-
-
-//=============================================================================
-//
 //  StrLTrimI()
 //
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars)
@@ -1196,6 +838,7 @@ bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars)
 
     return (psz != pszSource);
 }
+
 
 //=============================================================================
 //
@@ -1416,7 +1059,7 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
         }
     }
     TrimSpcW(lpArg1);
-    UnSlashChar(lpArg1, L'"');
+    UnSlashCharW(lpArg1, L'"');
 
     if (lpArg2) {
         TrimSpcW(lpArg2);
@@ -1467,7 +1110,6 @@ void PathFixBackslashes(LPWSTR lpsz)
         } else {
             *c = L'\\';
         }
-
         c = StrChr(c, L'/');  // next
     }
 }
@@ -1475,175 +1117,16 @@ void PathFixBackslashes(LPWSTR lpsz)
 
 //=============================================================================
 //
-//  ExpandEnvironmentStringsEx()
-//
-//  Adjusted for Windows 95
-//
-void ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc)
-{
-    WCHAR szBuf[XXXL_BUFFER];
-    if (ExpandEnvironmentStrings(lpSrc, szBuf, COUNTOF(szBuf))) {
-        StringCchCopyN(lpSrc, dwSrc, szBuf, COUNTOF(szBuf));
-    }
-}
-
-
-//=============================================================================
-//
-//  PathCanonicalizeEx()
-//
-bool PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath)
-{
-    WCHAR filePath[MAX_PATH] = { L'\0' };
-    StringCchCopyN(filePath, COUNTOF(filePath), lpszPath, cchPath);
-
-    ExpandEnvironmentStringsEx(filePath, COUNTOF(filePath));
-
-    if (PathIsRelative(filePath)) {
-        WCHAR tchModule[MAX_PATH] = { L'\0' };
-        GetModuleFileName(NULL, tchModule, COUNTOF(tchModule));
-        PathCchRemoveFileSpec(tchModule, COUNTOF(tchModule));
-        PathCchAppend(tchModule, COUNTOF(tchModule), lpszPath);
-        StringCchCopyN(filePath, COUNTOF(filePath), tchModule, COUNTOF(tchModule));
-    }
-    return (PathCchCanonicalize(lpszPath, cchPath, filePath) == S_OK);
-}
-
-
-//=============================================================================
-//
-//  GetLongPathNameEx()
-//
-DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer)
-{
-    DWORD const dwRet = GetLongPathName(lpszPath, lpszPath, cchBuffer);
-    if (dwRet) {
-        if (PathGetDriveNumber(lpszPath) != -1) {
-            CharUpperBuff(lpszPath, 1);
-        }
-    }
-    return dwRet;
-}
-
-
-//=============================================================================
-//
-//  _SHGetFileInfoEx()
-//
-//  Return a default name when the file has been removed, and always append
-//  a filename extension
-//
-static DWORD_PTR _SHGetFileInfoEx(LPCWSTR pszPath, DWORD dwFileAttributes,
-                                  SHFILEINFO* psfi, UINT cbFileInfo, UINT uFlags)
-{
-    if (PathIsExistingFile(pszPath)) {
-        DWORD_PTR dw = SHGetFileInfo(pszPath, dwFileAttributes, psfi, cbFileInfo, uFlags);
-        if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH)) {
-            StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
-        }
-        return(dw);
-    }
-
-    DWORD_PTR dw = SHGetFileInfo(pszPath, FILE_ATTRIBUTE_NORMAL, psfi, cbFileInfo, uFlags | SHGFI_USEFILEATTRIBUTES);
-    if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH)) {
-        StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
-    }
-    return(dw);
-}
-
-
-//=============================================================================
-//
-//  PathResolveDisplayName()
-//
-void PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath)
-{
-    SHFILEINFO shfi;
-    UINT const shfi_size = (UINT)sizeof(SHFILEINFO);
-    ZeroMemory(&shfi, shfi_size);
-    if (_SHGetFileInfoEx(lpszSourcePath, FILE_ATTRIBUTE_NORMAL, &shfi, shfi_size, SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES)) {
-        StringCchCopy(lpszDestPath, cchDestBuffer, shfi.szDisplayName);
-    } else {
-        StringCchCopy(lpszDestPath, cchDestBuffer, PathFindFileName(lpszSourcePath));
-    }
-}
-
-
-//=============================================================================
-//
-//  NormalizePathEx()
-//
-DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative)
-{
-    WCHAR tmpFilePath[MAX_PATH] = { L'\0' };
-    StringCchCopyN(tmpFilePath, COUNTOF(tmpFilePath), lpszPath, cchBuffer);
-    ExpandEnvironmentStringsEx(tmpFilePath, COUNTOF(tmpFilePath));
-
-    PathUnquoteSpaces(tmpFilePath);
-
-    if (PathIsRelative(tmpFilePath)) {
-        StringCchCopyN(lpszPath, cchBuffer, Paths.WorkingDirectory, COUNTOF(Paths.WorkingDirectory));
-        PathCchAppend(lpszPath, cchBuffer, tmpFilePath);
-        if (bSearchPathIfRelative) {
-            if (!PathIsExistingFile(lpszPath)) {
-                PathStripPath(tmpFilePath);
-                if (SearchPath(NULL, tmpFilePath, NULL, cchBuffer, lpszPath, NULL) == 0) {
-                    StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
-                }
-            }
-        }
-    } else {
-        StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
-    }
-
-    PathCanonicalizeEx(lpszPath, cchBuffer);
-    GetLongPathNameEx(lpszPath, cchBuffer);
-
-    if (PathIsLnkFile(lpszPath)) {
-        PathGetLnkPath(lpszPath, lpszPath, cchBuffer);
-    }
-
-    if (bRealPath) {
-        // get real path name (by zufuliu)
-        HANDLE hFile = CreateFile(lpszPath,   // file to open
-                                  GENERIC_READ,                       // open for reading
-                                  FILE_SHARE_READ | FILE_SHARE_WRITE, // share anyway
-                                  NULL,                               // default security
-                                  OPEN_EXISTING,                      // existing file only
-                                  FILE_ATTRIBUTE_NORMAL,              // normal file
-                                  NULL);                              // no attr. template
-
-        if (IS_VALID_HANDLE(hFile)) {
-            if (GetFinalPathNameByHandleW(hFile, tmpFilePath,
-                                          COUNTOF(tmpFilePath), FILE_NAME_OPENED) > 0) {
-                if (StrCmpN(tmpFilePath, L"\\\\?\\", 4) == 0) {
-                    WCHAR* p = tmpFilePath + 4;
-                    if (StrCmpN(p, L"UNC\\", 4) == 0) {
-                        p += 2;
-                        *p = L'\\';
-                    }
-                    StringCchCopy(lpszPath, cchBuffer, p);
-                }
-            }
-            CloseHandle(hFile);
-        }
-    }
-
-    return (DWORD)StringCchLen(lpszPath, cchBuffer);
-}
-
-
-//=============================================================================
-//
 //  SplitFilePathLineNum()
 //
-bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum) {
+bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum)
+{
 
     LPWSTR const lpszSplit = StrRChr(lpszPath, NULL, L':');
-    
+
     bool res = false;
     if (lpszSplit) {
-        char chLnNumber[128];
+        char       chLnNumber[128];
         char const defchar = (char)0x24;
         WideCharToMultiByte(CP_ACP, (WC_COMPOSITECHECK | WC_DISCARDNS), &lpszSplit[1], -1, chLnNumber, COUNTOF(chLnNumber), &defchar, NULL);
         te_xint_t iExprError = true;
@@ -2006,7 +1489,7 @@ size_t UnSlashCtrlW(LPWSTR pchInOut)
 //=============================================================================
 
 
-size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch)
+size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch)
 {
     LPCWSTR const sStart = pchInOut;
 
@@ -2076,47 +1559,47 @@ void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplac
 }
 
 
-void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
+#if 0
+void TransformMetaChars(char* pszInput, size_t cch, bool bRegEx, int iEOLMode)
 {
     if (!bRegEx) {
         return;
     }
-
-    char buffer[FNDRPL_BUFFER + 1] = { '\0' };
-    char* s = pszInput;
-    char* o = buffer;
-    while (*s) {
-        if ((s[0] != '\\') && (s[1] == '$')) {
-            *o = *s;
-            ++o;
-            ++s;
-            switch (iEOLMode) {
-            case SC_EOL_LF:
-                *o = '\n';
-                break;
-            case SC_EOL_CR:
-                *o = '\r';
-                break;
-            case SC_EOL_CRLF:
-            default:
-                *o = '\r';
-                ++o;
-                *o = '\n';
-                break;
+    char* buffer = AllocMem((cch << 1) * sizeof(char), HEAP_ZERO_MEMORY);
+    if (buffer) {
+        char* s = pszInput;
+        char* o = buffer;
+        while (*s) {
+            if ((s[0] != '\\') && (s[1] == '$')) {
+                *o++ = *s++;
+                switch (iEOLMode) {
+                case SC_EOL_LF:
+                    *o++ = '\n';
+                    break;
+                case SC_EOL_CR:
+                    *o++ = '\r';
+                    break;
+                case SC_EOL_CRLF:
+                default:
+                    *o++ = '\r';
+                    *o++ = '\n';
+                    break;
+                }
+                ++s; // skip $
             }
-            ++s; // skip $
-        } else {
-            *o = *s;
+            else {
+                *o++ = *s;
+            }
+            if (*s) {
+                ++s;
+            }
         }
-        ++o;
-        if (*s) {
-            ++s;
-        }
+        *o = '\0';
+        StringCchCopyA(pszInput, cch, buffer);
+        FreeMem(buffer);
     }
-    *o = '\0';
-    StringCchCopyA(pszInput, FNDRPL_BUFFER, buffer);
 }
-
+#endif
 
 //=============================================================================
 //
@@ -2126,7 +1609,7 @@ void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
 int Hex2Char(char* ch, int cnt)
 {
     int cch = 0;
-    WCHAR* wch = (WCHAR*)AllocMem(cnt * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR* const wch = AllocMem(cnt * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (wch) {
         int ci  = 0;
         char* p = ch;

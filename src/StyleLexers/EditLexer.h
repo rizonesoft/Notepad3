@@ -1,13 +1,11 @@
 #pragma once
 
-#include "typedefs.h"
+#include "TypeDefs.h"
 #include "Scintilla.h"
 
 // -----------------------------------------------------------------------------
 
-#define BUFZIZE_STYLE_EXTENTIONS 512
 #define BUFSIZE_STYLE_VALUE 256
-
 
 // -----------------------------------------------------------------------------
 
@@ -42,7 +40,7 @@ typedef struct _editlexer
     int          resID;        // language resource
     LPCWSTR      pszName;      // config/settings section
     LPCWSTR      pszDefExt;    // default file name ext (4 reset)
-    WCHAR        szExtensions[BUFZIZE_STYLE_EXTENTIONS];
+    WCHAR        szExtensions[STYLE_EXTENTIONS_BUFFER];
     PKEYWORDLIST pKeyWords;
     EDITSTYLE    Styles[];     // must be last
 

@@ -79,9 +79,6 @@ public:
 
 	std::unique_ptr<BidiData> bidiData;
 
-	// Hotspot support
-	Range hotspot;
-
 	// Wrapped line support
 	int widthLine;
 	int lines;
@@ -175,9 +172,9 @@ public:
 };
 
 class PositionCacheEntry {
-	unsigned int styleNumber:8;
-	unsigned int len:8;
-	unsigned int clock:16;
+	uint16_t styleNumber;
+	uint16_t len;
+	uint16_t clock;
 	std::unique_ptr<XYPOSITION []> positions;
 public:
 	PositionCacheEntry() noexcept;
@@ -188,7 +185,7 @@ public:
 	void operator=(const PositionCacheEntry &) = delete;
 	void operator=(PositionCacheEntry &&) = delete;
 	~PositionCacheEntry();
-	void Set(unsigned int styleNumber_, std::string_view sv, const XYPOSITION *positions_, unsigned int clock_);
+	void Set(unsigned int styleNumber_, std::string_view sv, const XYPOSITION *positions_, uint16_t clock_);
 	void Clear() noexcept;
 	bool Retrieve(unsigned int styleNumber_, std::string_view sv, XYPOSITION *positions_) const noexcept;
 	static size_t Hash(unsigned int styleNumber_, std::string_view sv) noexcept;
@@ -212,13 +209,21 @@ typedef std::map<unsigned int, Representation> MapRepresentation;
 class SpecialRepresentations {
 	MapRepresentation mapReprs;
 	short startByteHasReprs[0x100] {};
+	bool crlf = false;
 public:
 	void SetRepresentation(std::string_view charBytes, std::string_view value);
 	void SetRepresentationAppearance(std::string_view charBytes, RepresentationAppearance appearance);
 	void SetRepresentationColour(std::string_view charBytes, ColourRGBA colour);
 	void ClearRepresentation(std::string_view charBytes);
+	const Representation *GetRepresentation(std::string_view charBytes) const;
 	const Representation *RepresentationFromCharacter(std::string_view charBytes) const;
 	bool Contains(std::string_view charBytes) const;
+	bool ContainsCrLf() const noexcept {
+		return crlf;
+	}
+	bool MayContain(unsigned char ch) const noexcept {
+		return startByteHasReprs[ch] != 0;
+	}
 	void Clear();
 };
 
@@ -268,7 +273,7 @@ public:
 
 class PositionCache {
 	std::vector<PositionCacheEntry> pces;
-	unsigned int clock;
+	uint16_t clock;
 	bool allClear;
 public:
 	PositionCache();

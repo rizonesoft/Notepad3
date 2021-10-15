@@ -520,7 +520,7 @@ void UndoHistory::TentativeCommit() {
 }
 
 bool UndoHistory::TentativeActive() const noexcept {
-	return tentativePoint >= 0; 
+	return tentativePoint >= 0;
 }
 
 int UndoHistory::TentativeSteps() noexcept {

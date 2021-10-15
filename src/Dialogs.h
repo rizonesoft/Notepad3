@@ -42,13 +42,12 @@ void MinimizeWndToTray(HWND hWnd);
 void RestoreWndFromTray(HWND hWnd);
 
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
-bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool);
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam);
 INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault);
 bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile);
-bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile);
-bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget);
-bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile);
+bool FavoritesDlg(HWND hwnd, HPATHL hpath_in_out);
+bool AddToFavDlg(HWND hwnd, HPATHL hTargetPth);
+bool FileMRUDlg(HWND hwnd, HPATHL hFilePath_out);
 bool ChangeNotifyDlg(HWND hwnd);
 bool ColumnWrapDlg(HWND hwnd,UINT uidDlg,UINT * iNumber);
 bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int * iNumber);
@@ -70,7 +69,7 @@ bool            GetWindowRectEx(HWND hwnd, LPRECT pRect);
 void            FitIntoMonitorGeometry(LPRECT pRect, WININFO* pWinInfo, SCREEN_MODE mode, bool bTopLeft);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
-void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WININFO* wi);
+void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi);
 void DialogFileBrowse(HWND hwnd);
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);
@@ -82,7 +81,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 #define INFOBOX_ANSW(_R_) LOWORD(_R_)
 #define INFOBOX_MODE(_R_) HIWORD(_R_)
 
-void SetWindowTitle(HWND hwnd, LPCWSTR lpszFile, int iFormat,
+void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
     bool bPasteBoard, bool bIsElevated, bool bModified,
     bool bFileLocked, bool bFileChanged, bool bFileDeleted, bool bReadOnly, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
@@ -93,7 +92,9 @@ void SetWindowReadingRTL(HWND hwnd, bool bRTL);
 
 UINT ComboBox_GetTextLengthEx(HWND hDlg, int nIDDlgItem);
 UINT ComboBox_GetCurSelEx(HWND hDlg, int nIDDlgItem);
-UINT ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount);
+int  ComboBox_GetTextHW(HWND hDlg, int nIDDlgItem, HSTRINGW hstr);
+int  ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, size_t cch);
+void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr);
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 //void ComboBox_AddStringMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 
@@ -248,16 +249,6 @@ inline void AttentionBeep(UINT uType)
 inline bool IsDialogControlEnabled(HWND hdlg, int id)
 {
     return IsWindowEnabled(GetDlgItem(hdlg, id));
-}
-
-inline void SetDialogIconNP3(HWND hwnd)
-{
-    if (Globals.hDlgIconSmall) {
-        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
-    }
-    if (Globals.hDlgIconBig) {
-        SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
-    }
 }
 
 // --- Themed Dialogs ---------------------------------------------------------
