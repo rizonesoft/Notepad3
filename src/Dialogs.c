@@ -124,12 +124,12 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 
 int MessageBoxLng(UINT uType, UINT uidMsg, ...)
 {
-	WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
+	WCHAR szFormat[SMALL_BUFFER] = { L'\0' };
 	if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) {
 		return -1;
 	}
 
-	WCHAR szText[HUGE_BUFFER] = { L'\0' };
+	WCHAR szText[XXXL_BUFFER] = { L'\0' };
 	const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
 	if (argp && *argp) {
 		StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);

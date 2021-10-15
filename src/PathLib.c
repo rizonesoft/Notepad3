@@ -966,7 +966,7 @@ bool PTHAPI Path_StripPath(HPATHL hpth)  // get filename only
     LPCWSTR wbuf = StrgWriteAccessBuf(hstr, 0);
     LPCWSTR pfile = Path_FindFileName(hpth);
 
-    size_t const idx = (size_t)(wbuf - pfile);
+    size_t const idx = (size_t)(pfile - wbuf);
     if (idx != 0) {
         StrgDelete(hstr, 0, idx);
         return true;
