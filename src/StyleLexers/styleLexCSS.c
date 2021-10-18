@@ -86,7 +86,7 @@ EDITLEXER lexCSS =
         { {SCE_CSS_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
         { {SCE_CSS_IMPORTANT}, IDS_LEX_STR_63202, L"Important", L"bold; fore:#C80000", L"" },
         { {SCE_CSS_DIRECTIVE}, IDS_LEX_STR_63203, L"Directive", L"bold; fore:#000000; back:#FFF1A8", L"" },
-        { {SCE_CSS_MEDIA}, IDS_LEX_STR_63303, L"Media", L"bold; fore:#0A246A", L"" },
+        { {SCE_CSS_GROUP_RULE}, IDS_LEX_STR_63303, L"Media", L"bold; fore:#0A246A", L"" },
         { {SCE_CSS_VARIABLE}, IDS_LEX_STR_63249, L"Variable", L"bold; fore:#FF4000", L"" },
         { {SCE_CSS_UNKNOWN_PSEUDOCLASS}, IDS_LEX_STR_63198, L"Unknown Pseudo-Class", L"fore:#C80000; back:#FFFF80", L"" },
         { {SCE_CSS_UNKNOWN_IDENTIFIER}, IDS_LEX_STR_63200, L"Unknown Property", L"fore:#C80000; back:#FFFF80", L"" },

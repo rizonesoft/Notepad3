@@ -10,7 +10,7 @@ pushd %_THISDIR_%
 
 
 set _EXITCODE_=0
-set _PYTHON_EXE=C:\Program Files\Python38\python.exe
+set _PYTHON_EXE=C:\PortablePrograms\Python396_x64_emb\python.exe
 
 
 set _CMD_="%_PYTHON_EXE%" "%~dpn0.py"

@@ -568,15 +568,44 @@
       </tr><tr>
 	<td>Ivan Ustûžanin</td>
 	<td>Rainer Kottenhoff</td>
+	<td>feitoi</td>
+	<td>vsl7</td>
+      </tr><tr>
+	<td>Michael Heath</td>
     </tr>
     </table>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/lexilla513.zip">Release 5.1.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 23 September 2021.
+	</li>
+	<li>
+	Fix parsing of 128-bit integer literals in Rust.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/33">Issue #33</a>,
+	</li>
+	<li>
+	Fix different styles between \r and \n at end of line comments for Rust.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/34">Issue #34</a>,
+	</li>
+	<li>
+	For Rust, don't go past end when file ends with unterminated block comment.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/35">Issue #35</a>,
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/lexilla512.zip">Release 5.1.2</a>
     </h3>
     <ul>
 	<li>
-	Released 26 July 2021.
+	Released 23 September 2021.
+	</li>
+	<li>
+	Implement conditional group rules in CSS.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/25">Issue #25</a>,
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/28">Pull request #28</a>.
 	</li>
 	<li>
 	Allow F# triple-quoted strings to interpolate string literals.
@@ -585,6 +614,12 @@
 	<li>
 	Highlight F# printf specifiers in type-checked interpolated strings.
 	<a href="https://github.com/ScintillaOrg/lexilla/issues/24">Issue #24</a>.
+	</li>
+	<li>
+	Fix styling for Inno Setup scripts handling unterminated strings,
+	message sections, and avoid terminating comments between CR and LF.
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/29">Pull request #29</a>.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1415/">Feature #1415</a>.
 	</li>
 	<li>
 	Fix Markdown hang when document ends with "`", "*", "_",  or similar.
@@ -603,6 +638,10 @@
 	For PHP, recognize start of comment after numeric literal.
 	<a href="https://github.com/ScintillaOrg/lexilla/issues/20">Issue #20</a>.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2143/">Bug #2143</a>.
+	</li>
+	<li>
+	For PHP, recognize PHP code within JavaScript strings.
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/27">Pull request #27</a>.
 	</li>
     </ul>
     <h3>

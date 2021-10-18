@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klik hier om de map met koppelingen naar uw favoriete applicaties te specificeren.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klik hier om de map met koppelingen naar je favoriete applicaties te specificeren.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -176,7 +176,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,171,10
     CONTROL         "&Spoorselectie inschakelen.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
     CONTROL         "&Volledige rij-selectie inschakelen.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,125,10
-    CONTROL         "A&ctiveer altijd doelvenster wanneer een bestand wordt geopend.",IDC_FOCUSEDIT,
+    CONTROL         "Doelvenster a&ctiveren wanneer een bestand wordt geopend.",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "MiniPath-venster altijd bovenop &houden.",IDC_ALWAYSONTOP,
@@ -224,7 +224,7 @@ BEGIN
     GROUPBOX        "Kleuren",IDC_STATIC,10,41,205,134
     LTEXT           "Gebruik deze tekstkleur wanneer GEEN FILTER is ingesteld:",IDC_STATIC,20,54,195,8
     CONTROL         "Standaard &windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "Aan&gepaste:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
+    CONTROL         "Aan&gepast:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Kies kleur...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Gebruik deze tekstkleur bij een ACTIEF FILTER:",IDC_STATIC,20,105,195,8

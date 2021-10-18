@@ -1532,7 +1532,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     Globals.hwndMain = NULL;
 
     HWND const hwndMain = CreateWindowEx(
-        0,
+        WS_EX_ACCEPTFILES,
         s_wchWndClass,
         _W(SAPPNAME),
         WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
@@ -1865,7 +1865,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         return MsgDrawItem(hwnd, wParam, lParam);
 
     case WM_DROPFILES:
-        // see SCN_URIDROPP
+        // see SCN_URIDROPPED
         return MsgDropFiles(hwnd, wParam, lParam);
 
     case WM_COPYDATA:
@@ -3264,13 +3264,13 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     HPATHL hdrop_pth = Path_Allocate(NULL);
     wchar_t* const drop_buf = Path_WriteAccessBuf(hdrop_pth, STRINGW_MAX_URL_LENGTH);
-    UINT const cnt = DragQueryFile(hDrop, UINT_MAX, NULL, 0);
+    UINT const cnt = DragQueryFileW(hDrop, UINT_MAX, NULL, 0);
 
     int const offset = Settings2.LaunchInstanceWndPosOffset;
 
     for (UINT i = 0; i < cnt; ++i) {
         WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0));
-        DragQueryFile(hDrop, i, drop_buf, (UINT)Path_GetBufCount(hdrop_pth));
+        DragQueryFileW(hDrop, i, drop_buf, (UINT)Path_GetBufCount(hdrop_pth));
         _OnDropOneFile(hwnd, hdrop_pth, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
     }
 
@@ -8272,16 +8272,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         break;
 
 
-    case SCN_URIDROPPED: {
-        HPATHL hfile_pth = Path_Allocate(NULL);
-        wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, STRINGW_MAX_URL_LENGTH);
-        int const cnt = MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, file_buf, (int)Path_GetBufCount(hfile_pth));
-        LRESULT const result = (cnt > 0) ? _OnDropOneFile(hwnd, hfile_pth, NULL) : FALSE;
-        Path_Release(hfile_pth);
-        return result;
-    }
-
-
     default:
         return FALSE;
     }
@@ -10474,6 +10464,7 @@ bool FileLoad(const HPATHL hfile_pth, bool bDontSave, bool bNew, bool bReload,
     } else {
         Path_Reset(hopen_file, Path_Get(hfile_pth));
     }
+
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
     // change current directory to prevent directory lock on another path
@@ -10966,11 +10957,12 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
         if (bSaveCopy && Path_IsNotEmpty(_hpthLastSaveCopyDir)) {
             Path_Reset(hdir_pth, Path_Get(_hpthLastSaveCopyDir));
-            Path_Reset(hfile_pth, Path_Get(_hpthLastSaveCopyDir));
-            Path_Append(hfile_pth, Path_FindFileName(Paths.CurrentFile));
         } else {
-            Path_Reset(hfile_pth, Path_Get(Paths.CurrentFile));
+            Path_Reset(hdir_pth, Path_Get(Paths.CurrentFile));
+            Path_RemoveFileSpec(hdir_pth);
         }
+
+        Path_Reset(hfile_pth, Path_FindFileName(Paths.CurrentFile));
 
         bool const ok = SaveFileDlg(Globals.hwndMain, hfile_pth, Path_IsNotEmpty(hdir_pth) ? hdir_pth : NULL);
         if (ok) {
@@ -11131,8 +11123,6 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
 //
 bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
 {
-    UNREFERENCED_PARAMETER(hwnd);
-
     if (!hfile_pth_io) {
         return false;
     }
@@ -11144,34 +11134,20 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
     _CanonicalizeInitialDir(hpth_dir);
 
-    wchar_t* file_buf = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
-
-#if 1
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     ofn.hwndOwner = hwnd;
     ofn.hInstance = Globals.hInstance;
     ofn.lpstrFilter = szFilter;
     ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
     ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
-    ofn.lpstrFile = file_buf;
+    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
     ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
+    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
                 OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
                 OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
     ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
     bool const res = GetOpenFileNameW(&ofn);
-
-#else
-    bool             res = false;
-    PIDLIST_ABSOLUTE pidl;
-    if (SUCCEEDED(SHParseDisplayName(file_buf, 0, &pidl, 0, 0))) {
-        ITEMIDLIST    idNull = { 0 };
-        LPCITEMIDLIST pidlNull[1] = { &idNull };
-        res = SUCCEEDED(SHOpenFolderAndSelectItems(pidl, 1, pidlNull, 0));
-        ILFree(pidl);
-    }
-#endif
 
     Path_Sanitize(hfile_pth_io);
 
@@ -11198,10 +11174,8 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     WCHAR szFilter[EXTENTIONS_FILTER_BUFFER];
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
 
-    HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
+    HPATHL hpth_dir = Path_Copy(hinidir_pth);
     _CanonicalizeInitialDir(hpth_dir);
-
-    wchar_t* file_buf = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
 
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
     ofn.hwndOwner = hwnd;
@@ -11209,14 +11183,15 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     ofn.lpstrFilter = szFilter;
     ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
     ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
-    ofn.lpstrFile = file_buf;
+    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
     ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
-    ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
+    ofn.Flags = OFN_EXPLORER | OFN_HIDEREADONLY | /*| OFN_NOCHANGEDIR*/
                 /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
                 OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
 
     bool const res = GetSaveFileNameW(&ofn);
+
     Path_Sanitize(hfile_pth_io);
 
     Path_Release(hpth_dir);
