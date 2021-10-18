@@ -56,7 +56,7 @@ STRINGTABLE
 BEGIN
     IDT_HISTORY_BACK        "Terug"
     IDT_HISTORY_FORWARD     "Vooruit"
-    IDT_UPDIR               "Bovenste map"
+    IDT_UPDIR               "Map omhoog"
     IDT_ROOT                "Hoofdmap"
     IDT_VIEW_FAVORITES      "Favorieten"
     IDT_FILE_PREV           "Vorig bestand"

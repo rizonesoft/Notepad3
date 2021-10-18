@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.929.(build_#) (2021-09-29)
+Current BETA/RC Version 5.21.1015.(build_#) (2021-10-15)
 ========================================================
 
 --------------------------------------------------------
@@ -46,6 +46,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1015.1]- Remove the max win version check for undocumented DarkMode UxTheme methods.
+[1015.1]- DarkMode enable up to Win11 build 22471.
+[1015.1]- SQL Lexer bright and dark mode highlight color enhanced.
 [.924.1]- Disable actively file change polling - rely on directory change notification by default.
 [.924.1]- Allow [Settings2] "FileCheckInverval" to be zero(0), means no active file change polling.
 [.923.2]- Enable context menu for Statusbar.
@@ -65,6 +68,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1015.1]- SQL Lexer dark mode highlight default colors.
+[1015.1]- Disabled menu items if settings file itself is locked by file change notification.
 [.927.1]- Over paint annoying menu-bar bottom line.
 [.926.1]- Dark-mode system menu bar coloring (except bottom line).
 [.925.1]- Correction of some wrong keyboard shortcut (Alt+ Up, Alt+ Down).
