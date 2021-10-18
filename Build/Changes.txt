@@ -46,6 +46,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1015.2]- Xperm.: Some more DynStrg refactorings and LongPath handling.
 [1015.1]- Remove the max win version check for undocumented DarkMode UxTheme methods.
 [1015.1]- DarkMode enable up to Win11 build 22471.
 [1015.1]- SQL Lexer bright and dark mode highlight color enhanced.
@@ -59,8 +60,8 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[1015.2]- Xperm.: Update Scintilla Library (SCI) version 5.1.3 (2021-09-29).
 [.802.1]- Update Lexilla Library (LEX) version 5.1.2 (2021-07-26).
-[.726.1]- Update Scintilla Library (SCI) version 5.1.1 (2021-07-26).
 [.726.1]- Update grepWinNP3 (GRE) version 2.1.8.39 (2021-07-26).
 [.702.5]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-06-23).
 
@@ -68,6 +69,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1015.2]- Xperm.: Path_StripPath().
 [1015.1]- SQL Lexer dark mode highlight default colors.
 [1015.1]- Disabled menu items if settings file itself is locked by file change notification.
 [.927.1]- Over paint annoying menu-bar bottom line.
