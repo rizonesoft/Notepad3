@@ -146,6 +146,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 
+#include "Dialogs.h"
 #include "PathLib.h"
 
 
@@ -324,8 +325,18 @@ static void PrependLongPathPrefix(HPATHL hpth_in_out, bool bForce)
         }
     }
 }
-
 // ----------------------------------------------------------------------------
+
+static LPCWSTR _Path_SkipLPPrefix(const HSTRINGW hpth_str)
+{
+    LPCWSTR start = StrgGet(hpth_str);
+    if (wcsstr(start, PATHLONG_PREFIX) == start) {
+        start += wcslen(PATHLONG_PREFIX);
+    }
+    return start;
+}
+// ----------------------------------------------------------------------------
+
 
 static void _UnExpandEnvStrgs(HSTRINGW hstr_in_out)
 {
@@ -381,6 +392,8 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
         return false;
     }
 
+    LPCWSTR start = _Path_SkipLPPrefix(hstr_in_out);
+
     LPWSTR const path = StrgWriteAccessBuf(hstr_in_out, 0);
     size_t const   cch = StrgGetAllocLength(hstr_in_out);
 
@@ -388,9 +401,8 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
     _PathFixBackslashes(path);
 
     // Move back to the beginning of the string
-    size_t i = 0;
-    size_t j = 0;
-    size_t k = 0;
+    size_t i, j, k;
+    i = j = k = (start - path);
 
     // Parse the entire string
     do {
@@ -538,16 +550,6 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
 // ----------------------------------------------------------
 //
 
-static LPCWSTR _Path_SkipLPPrefix(const HPATHL hpth)
-{
-    LPCWSTR start = PathGet(hpth);
-    if (wcsstr(start, PATHLONG_PREFIX) == start) {
-        start += wcslen(PATHLONG_PREFIX) + 1;
-    }
-    return start;
-}
-
-
 static LPCWSTR _Path_IsValidUNC(const HPATHL hpth, bool* isUNC_out)
 {
     if (!hpth) {
@@ -658,7 +660,7 @@ static bool _Path_IsRelative(const HPATHL hpth)
     if (!hstr)
         return true; // empty is relative
 
-    LPCWSTR const skip = _Path_SkipLPPrefix(hpth);
+    LPCWSTR const skip = _Path_SkipLPPrefix(hstr);
 
     bool res = false;
     if (StrgGetLength(hstr) >= MAX_PATH_EXPLICIT) {
@@ -798,9 +800,6 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_in_out)
 
     HPATHL hpth_cpy = Path_Allocate(PathGet(hpth_in_out));
     HSTRINGW hstr_cpy = ToHStrgW(hpth_cpy);
-
-    LPWSTR const buf = StrgWriteAccessBuf(hstr_cpy, 0);
-    if (buf) {}
 
     //~ PathXCchCanonicalizeEx() does not convert forward slashes (/) into back slashes (\).
     //~StrgReplaceCh(hstr_cpy, L'/', L'\\');
@@ -1316,11 +1315,12 @@ size_t PTHAPI Path_ToShortPathName(HPATHL hpth_in_out)
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
         return 0;
-    
-    DWORD const _len = GetShortPathNameW(StrgGet(hstr_io), NULL, 0);
-    if (!_len)
-        return false;
 
+    DWORD const _len = GetShortPathNameW(StrgGet(hstr_io), NULL, 0);
+    if (!_len) {
+        MsgBoxLastError(L"Path_ToShortPathName()", 0);
+        return 0;
+    }
     LPWSTR const buf = StrgWriteAccessBuf(hstr_io, _len);
     
     DWORD const len = GetShortPathNameW(buf, buf, (DWORD)StrgGetAllocLength(hstr_io));
@@ -1339,10 +1339,13 @@ size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out)
 
     PrependLongPathPrefix(hpth_in_out, false); // TODO: check or true ?
 
-    DWORD const    len = GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
-    LPWSTR const buf = StrgWriteAccessBuf(hstr_io, len);
-
-    size_t const res = (size_t)GetLongPathNameW(buf, buf, len);
+    DWORD const _len = GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
+    if (!_len) {
+        MsgBoxLastError(L"Path_GetLongPathNameEx()", 0);
+        return 0;
+    }
+    LPWSTR const buf = StrgWriteAccessBuf(hstr_io, _len);
+    size_t const res = (size_t)GetLongPathNameW(buf, buf, _len);
     StrgSanitize(hstr_io);
 
     if (res > 2ULL) {
