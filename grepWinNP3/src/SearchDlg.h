@@ -96,11 +96,11 @@ public:
     DWORD EvaluationThread();
 
     void  SetSearchPath(const std::wstring& path);
-    void  SetFileMask(const std::wstring& mask, bool reg);
     void  SetPreset(const std::wstring& preset);
 
     inline void  SetSearchString(const std::wstring& search) { m_searchString = search; }
-    inline void  SetDirExcludeRegexMask(const std::wstring& mask) { m_excludeDirsPatternRegex = mask; }
+    inline void  SetFileMask(const std::wstring& mask, bool reg) { m_patternRegex = mask; m_bUseRegexForPaths = reg; m_patternRegexC = true; };
+    inline void  SetDirExcludeRegexMask(const std::wstring& mask) { m_excludeDirsPatternRegex = mask; m_excludeDirsPatternRegexC = true; }
     inline void  SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
     inline void  SetUseRegex(bool reg) { m_bUseRegex = reg; }
 
@@ -184,7 +184,9 @@ private:
     std::wstring                      m_replaceString;
     std::vector<std::wstring>         m_patterns;
     std::wstring                      m_patternRegex;
+    bool                              m_patternRegexC;
     std::wstring                      m_excludeDirsPatternRegex;
+    bool                              m_excludeDirsPatternRegexC;
     bool                              m_bUseRegex;
     bool                              m_bUseRegexForPaths;
     bool                              m_bAllSize;
