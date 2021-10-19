@@ -110,6 +110,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     //, m_dwThreadRunning(FALSE)
     //, m_cancelled(FALSE)
     , m_bookmarksDlg(nullptr)
+    , m_patternRegexC(false)
+    , m_excludeDirsPatternRegexC(false)
     , m_bUseRegex(false)
     , m_bUseRegexForPaths(false)
     , m_bAllSize(false)
@@ -289,7 +291,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 }
             }
 
-            if (m_patternRegex.empty())
+            if (m_patternRegex.empty() && !m_patternRegexC)
             {
                 if (bPortable)
                 {
@@ -302,7 +304,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     m_bUseRegexForPaths = !!static_cast<DWORD>(m_regUseRegexForPaths);
                 }
             }
-            if (m_excludeDirsPatternRegex.empty())
+            if (m_excludeDirsPatternRegex.empty() && !m_excludeDirsPatternRegexC)
             {
                 if (bPortable)
                     m_excludeDirsPatternRegex = g_iniFile.GetValue(L"global", L"ExcludeDirsPattern", L"");
@@ -767,7 +769,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case WM_SETCURSOR:
         {
-            if (IsEvaluationThreadRunning())
+            if (IsEvaluationThreadRunning() && LOWORD(lParam) == 1)
             {
                 SetCursor(LoadCursor(nullptr, IDC_APPSTARTING));
                 return TRUE;
@@ -3437,12 +3439,6 @@ void CSearchDlg::SetSearchPath(const std::wstring& path)
     SearchReplace(m_searchPath, L"/", L"\\");
 }
 
-void CSearchDlg::SetFileMask(const std::wstring& mask, bool reg)
-{
-    m_patternRegex      = mask;
-    m_bUseRegexForPaths = reg;
-}
-
 void CSearchDlg::SetPreset(const std::wstring& preset)
 {
     CBookmarks bookmarks;
@@ -3481,16 +3477,18 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         if (!bk.Path.empty())
             m_searchPath = bk.Path;
 
-        m_bIncludeSystemC         = true;
-        m_bIncludeHiddenC         = true;
-        m_bIncludeSubfoldersC     = true;
-        m_bIncludeBinaryC         = true;
-        m_bCreateBackupC          = true;
-        m_bCreateBackupInFoldersC = true;
-        m_bWholeWordsC            = true;
-        m_bUTF8C                  = true;
-        m_bCaseSensitiveC         = true;
-        m_bDotMatchesNewlineC     = true;
+        m_bIncludeSystemC          = true;
+        m_bIncludeHiddenC          = true;
+        m_bIncludeSubfoldersC      = true;
+        m_bIncludeBinaryC          = true;
+        m_bCreateBackupC           = true;
+        m_bCreateBackupInFoldersC  = true;
+        m_bWholeWordsC             = true;
+        m_bUTF8C                   = true;
+        m_bCaseSensitiveC          = true;
+        m_bDotMatchesNewlineC      = true;
+        m_patternRegexC            = true;
+        m_excludeDirsPatternRegexC = true;
 
         removeQuotes(m_searchString);
         removeQuotes(m_replaceString);
