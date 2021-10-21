@@ -15,6 +15,6 @@
 #define ONIGURUMA_REGEX_VER 7.0.0
 #define UCHARDET_VER 2018.09.27
 #define TINYEXPR_VER 2018.05.11
-#define UTHASH_VER 2.3.0
-#define VERSION_PATCH alpha
+#define UTHASH_VER 2.1.0
+#define VERSION_PATCH beta
 #define VERSION_COMMIT_ID dkt1-amr

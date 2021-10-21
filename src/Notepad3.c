@@ -570,17 +570,17 @@ static inline bool HasCurrentFileChanged() {
     }
     WIN32_FIND_DATA fdUpdated = { 0 };
     if (!GetFileAttributesExW(Path_Get(Paths.CurrentFile), GetFileExInfoStandard, &fdUpdated)) {
+        // The current file has been removed
         if (IsFileDeletedFlagSet()) {
             return false;
         } else {
             SetEvent(s_hEventFileChangedExt);
             SetEvent(s_hEventFileDeletedExt);
-            return true; // The current file has been removed
+            return true;
         }
     } else if (IsFileDeletedFlagSet()) {
-        SetEvent(s_hEventFileChangedExt);
+        // The current file has been restored
         ResetEvent(s_hEventFileDeletedExt);
-        return true; // The current file has been restored
     }
 
     bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
@@ -3259,23 +3259,53 @@ static LRESULT _OnDropOneFile(HWND hwnd, HPATHL hFilePath, WININFO* wi)
 LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
-    HDROP const hDrop = (HDROP)wParam;
-    bool const vkCtrlDown = IsKeyDown(VK_CONTROL);
 
-    HPATHL hdrop_pth = Path_Allocate(NULL);
-    wchar_t* const drop_buf = Path_WriteAccessBuf(hdrop_pth, STRINGW_MAX_URL_LENGTH);
-    UINT const cnt = DragQueryFileW(hDrop, UINT_MAX, NULL, 0);
-
-    int const offset = Settings2.LaunchInstanceWndPosOffset;
-
-    for (UINT i = 0; i < cnt; ++i) {
-        WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0));
-        DragQueryFileW(hDrop, i, drop_buf, (UINT)Path_GetBufCount(hdrop_pth));
-        _OnDropOneFile(hwnd, hdrop_pth, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
+    HDROP hDrop = NULL;
+    if (IsWindows10OrGreater()) {
+        hDrop = (HDROP)wParam;
+    }
+    else // Windows7 Bug drag&drop of files from 32bit app to 64bit app
+    {
+    #ifdef _WIN64
+        HANDLE hProcessHeap = GetProcessHeap();
+        if (NULL != hProcessHeap && HeapLock(hProcessHeap)) {
+            PROCESS_HEAP_ENTRY heapEntry = { 0 };
+            while (HeapWalk(hProcessHeap, &heapEntry) != FALSE) {
+                if ((heapEntry.wFlags & PROCESS_HEAP_ENTRY_BUSY) != 0) {
+                    HGLOBAL hGlobal = GlobalHandle(heapEntry.lpData);
+                    // Assuming wParam is the WM_DROPFILES WPARAM
+                    if ((((DWORD_PTR)hGlobal) & 0xFFFFFFFF) == (wParam & 0xFFFFFFFF)) {
+                        hDrop = (HDROP)hGlobal; // We got it !!
+                        break;
+                    }
+                }
+            }
+            HeapUnlock(hProcessHeap);
+        }
+    #else
+        hDrop = (HDROP)wParam;
+    #endif
     }
 
-    DragFinish(hDrop);
-    Path_Release(hdrop_pth);
+    if (hDrop) {
+
+        bool const vkCtrlDown = IsKeyDown(VK_CONTROL);
+
+        HPATHL         hdrop_pth = Path_Allocate(NULL);
+        wchar_t* const drop_buf = Path_WriteAccessBuf(hdrop_pth, STRINGW_MAX_URL_LENGTH);
+        UINT const     cnt = DragQueryFileW(hDrop, UINT_MAX, NULL, 0);
+
+        int const offset = Settings2.LaunchInstanceWndPosOffset;
+
+        for (UINT i = 0; i < cnt; ++i) {
+            WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0));
+            DragQueryFileW(hDrop, i, drop_buf, (UINT)Path_GetBufCount(hdrop_pth));
+            _OnDropOneFile(hwnd, hdrop_pth, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
+        }
+
+        DragFinish(hDrop);
+        Path_Release(hdrop_pth);
+    }
     return 0;
 }
 
@@ -8271,6 +8301,16 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         UpdateMarginWidth(true);
         break;
 
+#if 0
+    case SCN_URIDROPPED: {
+        HPATHL         hfile_pth = Path_Allocate(NULL);
+        wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, STRINGW_MAX_URL_LENGTH);
+        int const      cnt = MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, file_buf, (int)Path_GetBufCount(hfile_pth));
+        LRESULT const  result = (cnt > 0) ? _OnDropOneFile(hwnd, hfile_pth, NULL) : FALSE;
+        Path_Release(hfile_pth);
+        return result;
+    }
+#endif
 
     default:
         return FALSE;
