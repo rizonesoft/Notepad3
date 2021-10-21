@@ -570,17 +570,17 @@ static inline bool HasCurrentFileChanged() {
     }
     WIN32_FIND_DATA fdUpdated = { 0 };
     if (!GetFileAttributesExW(Path_Get(Paths.CurrentFile), GetFileExInfoStandard, &fdUpdated)) {
+        // The current file has been removed
         if (IsFileDeletedFlagSet()) {
             return false;
         } else {
             SetEvent(s_hEventFileChangedExt);
             SetEvent(s_hEventFileDeletedExt);
-            return true; // The current file has been removed
+            return true;
         }
     } else if (IsFileDeletedFlagSet()) {
-        SetEvent(s_hEventFileChangedExt);
+        // The current file has been restored
         ResetEvent(s_hEventFileDeletedExt);
-        return true; // The current file has been restored
     }
 
     bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
