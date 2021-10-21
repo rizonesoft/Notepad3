@@ -254,6 +254,7 @@ Filename: "{app}\Notepad3.ini"; Section: "Notepad3"; Key: "Notepad3.ini"; String
 Filename: "{app}\minipath.ini"; Section: "minipath"; Key: "minipath.ini"; String: "%APPDATA%\Rizonesoft\Notepad3\minipath.ini"
 
 [Registry]
+Root: "HKLM"; Subkey: "SYSTEM\CurrentControlSet\Control\FileSystem"; ValueType: dword; ValueName: "LongPathsEnabled"; ValueData: "1"
 ;The following "Keys/Values" are required to allow a "Notepad3 Replacement" in Windows 11.
 Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe"; ValueType: dword; ValueName: "UseFilter"; ValueData: "1"
 Root: "HKCR"; Subkey: ".inf"; ValueType: string; ValueData: "inffile"
