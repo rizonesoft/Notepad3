@@ -114,6 +114,7 @@ lhmouse                 https://github.com/lhmouse
 ltGuillaume             https://github.com/ltGuillaume
 maboroshin              https://github.com/maboroshin
 MadDogVachon            https://github.com/MadDogVachon
+MelchiorGaspar          https://github.com/MelchiorGaspar
 Mitezuss                https://github.com/Mitezuss
 RaffaeleBianc0          https://github.com/RaffaeleBianc0
 RaiKoHoff               https://github.com/RaiKoHoff
