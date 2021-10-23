@@ -188,6 +188,7 @@ Name: "{#quick_launch}\{#app_name}"; Filename: "{app}\Notepad3.exe"; WorkingDir:
 [INI]
 Filename: "{app}\Notepad3.ini"; Section: "Notepad3"; Key: "Notepad3.ini"; String: "%APPDATA%\Rizonesoft\Notepad3\Notepad3.ini"
 Filename: "{app}\minipath.ini"; Section: "minipath"; Key: "minipath.ini"; String: "%APPDATA%\Rizonesoft\Notepad3\minipath.ini"
+Filename: "{userappdata}\Rizonesoft\Notepad3\Notepad3.ini"; Section: "Settings"; Key: "Favorites"; String: "%APPDATA%\Rizonesoft\Notepad3\Favorites\"
 
 [Registry]
 Root: "HKLM"; Subkey: "SYSTEM\CurrentControlSet\Control\FileSystem"; ValueType: dword; ValueName: "LongPathsEnabled"; ValueData: "1"
