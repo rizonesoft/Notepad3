@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1021.(build_#) (2021-10-21)
+Current BETA/RC Version 5.21.1023.(build_#) (2021-10-23)
 ========================================================
 
 --------------------------------------------------------
@@ -69,6 +69,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1023.1]- Key "Favorites=(path)" not added in "Setup" version.
 [1021.1]- "grepWinNP3" not intended switching "AllSize" settings (GRE).
 [1021.1]- Don't save default values for Caret and Whitespace.
 [1015.1]- SQL Lexer dark mode highlight default colors.
