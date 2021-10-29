@@ -7333,7 +7333,10 @@ bool EditReplaceAllInSelection(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInf
 
         if (bShowInfo) {
             if (Globals.iReplacedOccurrences > 0) {
-                InfoBoxLng(MB_OK, L"MsgReplaceCount", IDS_MUI_REPLCOUNT, Globals.iReplacedOccurrences);
+                WCHAR wchOcc[64] = { L'\0' };
+                StringCchPrintf(wchOcc, COUNTOF(wchOcc), L"%i", Globals.iReplacedOccurrences);
+                FormatNumberStr(wchOcc, COUNTOF(wchOcc), 0);
+                InfoBoxLng(MB_OK, L"MsgReplaceCount", IDS_MUI_REPLCOUNT, wchOcc);
             } else {
                 InfoBoxLng(MB_OK, L"MsgNotFound", IDS_MUI_NOTFOUND);
             }

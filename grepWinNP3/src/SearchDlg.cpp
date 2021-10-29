@@ -436,6 +436,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, (bPortable ? g_iniFile.GetLongValue(L"global", L"UseRegex", 0) : static_cast<DWORD>(m_regUseRegex)) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
+            DialogEnableWindow(IDC_SIZEEDIT, !m_bAllSize);
+            DialogEnableWindow(IDC_SIZECOMBO, !m_bAllSize);
             CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
             SendDlgItemMessage(hwndDlg, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
             DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
@@ -1334,8 +1336,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
                 DialogEnableWindow(IDC_ALLSIZERADIO, bIsDir);
                 DialogEnableWindow(IDC_SIZERADIO, bIsDir);
-                DialogEnableWindow(IDC_SIZECOMBO, bIsDir);
-                DialogEnableWindow(IDC_SIZEEDIT, bIsDir);
+                DialogEnableWindow(IDC_SIZECOMBO, bIsDir && !m_bAllSize);
+                DialogEnableWindow(IDC_SIZEEDIT, bIsDir && !m_bAllSize);
                 DialogEnableWindow(IDC_INCLUDESYSTEM, bIsDir);
                 DialogEnableWindow(IDC_INCLUDEHIDDEN, bIsDir);
                 DialogEnableWindow(IDC_INCLUDESUBFOLDERS, bIsDir);
@@ -1379,28 +1381,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             }
         }
         break;
+        case IDC_ALLSIZERADIO:
+        case IDC_SIZERADIO:
+            m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+            DialogEnableWindow(IDC_SIZECOMBO, !m_bAllSize);
+            DialogEnableWindow(IDC_SIZEEDIT, !m_bAllSize);
+            break;
         case IDC_SIZEEDIT:
-        {
-            if (msg == EN_CHANGE)
-            {
-                wchar_t buf[20] = {0};
-                ::GetDlgItemText(*this, IDC_SIZEEDIT, buf, _countof(buf));
-                if (wcslen(buf))
-                {
-                    if (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED)
-                    {
-                        CheckRadioButton(*this, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
-                    }
-                }
-                else
-                {
-                    if (IsDlgButtonChecked(*this, IDC_SIZERADIO) == BST_CHECKED)
-                    {
-                        CheckRadioButton(*this, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_ALLSIZERADIO);
-                    }
-                }
-            }
-        }
         break;
         case IDC_REGEXRADIO:
         case IDC_TEXTRADIO:
@@ -2827,6 +2814,8 @@ bool CSearchDlg::SaveSettings()
     }
 
     m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+    DialogEnableWindow(IDC_SIZEEDIT, !m_bAllSize);
+    DialogEnableWindow(IDC_SIZECOMBO, !m_bAllSize);
 
     m_sizeCmp = 0;
     if (!m_bAllSize)
