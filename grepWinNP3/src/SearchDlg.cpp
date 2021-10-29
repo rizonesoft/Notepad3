@@ -113,7 +113,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bUseRegex(false)
     , m_bUseRegexForPaths(false)
     , m_bAllSize(false)
-    , m_lSize(0)
+    , m_lSize(2000 << 10)
     , m_sizeCmp(0)
     , m_bIncludeSystem(false)
     , m_bIncludeSystemC(false)
@@ -136,7 +136,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bCaseSensitiveC(false)
     , m_bDotMatchesNewline(false)
     , m_bDotMatchesNewlineC(false)
-    //, m_bNotSearch(false)
+    , m_bNotSearch(false)
     , m_bCaptureSearch(false)
     , m_bSizeC(false)
     , m_endDialog(false)
@@ -361,16 +361,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
 
             wchar_t buf[MAX_PATH] = {0};
-            if (m_bSizeC && (m_lSize != static_cast<uint64_t>(0)))
+            if (m_bSizeC && (m_lSize != MaxFileSize()))
             {
-                swprintf_s(buf, _countof(buf), L"%I64u", m_lSize);
+                swprintf_s(buf, _countof(buf), L"%I64u", m_lSize >> 10);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
             else
             {
-                uint64_t s = _wtoll(std::wstring(m_regSize).c_str());
-                if (bPortable)
-                    s = g_iniFile.GetLongValue(L"global", L"size", 2000);
+                uint64_t const s = bPortable ? g_iniFile.GetLongValue(L"global", L"Size", 2000) : _wtoll(std::wstring(m_regSize).c_str());
                 swprintf_s(buf, _countof(buf), L"%I64u", s);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
@@ -2292,7 +2290,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
             std::wstring matchString = inf.filePath + L"\n";
             std::wstring sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
-            for (size_t i = 0; i < min(inf.matchLines.size(), 5); ++i)
+            for (size_t i = 0; i < std::min<size_t>(inf.matchLines.size(), 5); ++i)
             {
                 std::wstring matchText = inf.matchLines[i];
                 CStringUtils::trim(matchText);
@@ -2830,7 +2828,6 @@ bool CSearchDlg::SaveSettings()
 
     m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
 
-    m_lSize   = 0;
     m_sizeCmp = 0;
     if (!m_bAllSize)
     {
@@ -2896,9 +2893,9 @@ bool CSearchDlg::SaveSettings()
         m_regAllSize = static_cast<DWORD>(m_bAllSize);
 
     if (bPortable)
-        g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize / 1024).c_str());
+        g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize >> 10).c_str());
     else
-        m_regSize = CStringUtils::Format(L"%I64u", m_lSize / 1024).c_str();
+        m_regSize = CStringUtils::Format(L"%I64u", m_lSize >> 10).c_str();
 
     if (bPortable)
         g_iniFile.SetValue(L"global", L"SizeCombo", CStringUtils::Format(L"%d", m_sizeCmp).c_str());
@@ -3077,7 +3074,7 @@ DWORD CSearchDlg::SearchThread()
     auto pathBuf = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
 
     DWORD const nMaxNumOfWorker = std::thread::hardware_concurrency() << 2;
-    DWORD const nOfWorker       = max(min(bPortable ? g_iniFile.GetLongValue(L"global", L"MaxNumOfWorker", nMaxNumOfWorker >> 1) : 
+    DWORD const nOfWorker       = std::max<long>(std::min<long>(bPortable ? g_iniFile.GetLongValue(L"global", L"MaxNumOfWorker", nMaxNumOfWorker >> 1) : 
                                                       static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWinNP3\\MaxNumOfWorker", nMaxNumOfWorker >> 1)), nMaxNumOfWorker), 1);
 
     s_SearchThreadMap.clear();
@@ -4204,7 +4201,7 @@ void CSearchDlg::AutoSizeAllColumns()
             Header_GetItem(headerCtrl, col, &hdi);
             int cx = ListView_GetStringWidth(hListControl, hdi.pszText) + 20; // 20 pixels for col separator and margin
 
-            int inc = max(1, nItemCount / 1000);
+            int inc = std::max<int>(1, nItemCount / 1000);
             for (int index = 0; index < nItemCount; index = index + inc)
             {
                 // get the width of the string and add 14 pixels for the column separator and margins
