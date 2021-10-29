@@ -125,7 +125,7 @@ public:
     inline void  SetWholeWords(bool bSet) { m_bWholeWordsC = true; m_bWholeWords = bSet; }
     inline void  SetUTF8(bool bSet) { m_bUTF8C = true; m_bUTF8 = bSet; m_bForceBinary = false; }
     inline void  SetBinary(bool bSet) { m_bUTF8C = true; m_bForceBinary = bSet; m_bUTF8 = false; }
-    inline void  SetSize(uint64_t size, int cmp) { m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == MaxFileSize()); }
+    inline void  SetSize(uint64_t size, int cmp) { m_bSizeC = true; m_lSize = size << 10; m_sizeCmp = cmp; m_bAllSize = (m_lSize == MaxFileSize()) ? true : m_bAllSize; }
     inline void  SetIncludeSystem(bool bSet) { m_bIncludeSystemC = true; m_bIncludeSystem = bSet; }
     inline void  SetIncludeHidden(bool bSet) { m_bIncludeHiddenC = true; m_bIncludeHidden = bSet; }
     inline void  SetIncludeSubfolders(bool bSet) { m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet; }
