@@ -4629,7 +4629,7 @@ grepWin_t;
 
 static grepWin_t grepWinIniSettings[13] = {
     { L"onlyone",           L"1" },
-    { L"AllSize",           L"1" },
+    { L"AllSize",           L"0" },
     { L"Size",           L"2000" },
     { L"CaseSensitive",     L"0" },
     { L"CreateBackup",      L"1" },
