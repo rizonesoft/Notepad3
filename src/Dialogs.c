@@ -4622,19 +4622,19 @@ typedef struct _grepwin_ini {
 grepWin_t;
 
 static grepWin_t grepWinIniSettings[13] = {
-	{ L"onlyone",           L"1" },
-	{ L"AllSize",           L"1" },
-	{ L"Size",              L"2000" },
-	{ L"CaseSensitive",     L"0" },
-	{ L"CreateBackup",      L"1" },
-	{ L"DateLimit",         L"0" },
-	{ L"IncludeBinary",     L"0" },
-	{ L"IncludeHidden",     L"1" },
-	{ L"IncludeSubfolders", L"1" },
-	{ L"IncludeSystem",     L"1" },
-	{ L"UseFileMatchRegex", L"0" },
-	{ L"UseRegex",          L"0" },
-	{ L"UTF8",              L"1" }
+    { L"onlyone",           L"1" },
+    { L"AllSize",           L"0" },
+    { L"Size",           L"2000" },
+    { L"CaseSensitive",     L"0" },
+    { L"CreateBackup",      L"1" },
+    { L"DateLimit",         L"0" },
+    { L"IncludeBinary",     L"0" },
+    { L"IncludeHidden",     L"1" },
+    { L"IncludeSubfolders", L"1" },
+    { L"IncludeSystem",     L"1" },
+    { L"UseFileMatchRegex", L"0" },
+    { L"UseRegex",          L"0" },
+    { L"UTF8",              L"1" }
 };
 
 //=============================================================================

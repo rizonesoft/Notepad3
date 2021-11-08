@@ -633,6 +633,7 @@
     <ClCompile Include="PathLib.c" />
     <ClCompile Include="StyleLexers\EditLexer.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
+    <ClCompile Include="StyleLexers\styleLexFortran.c" />
     <ClCompile Include="StyleLexers\styleLexJulia.c" />
     <ClCompile Include="StyleLexers\styleLexKiX.c" />
     <ClCompile Include="StyleLexers\styleLexKotlin.c" />

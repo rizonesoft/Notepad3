@@ -106,6 +106,8 @@ extern EDITLEXER lexCSV;           // CSV Prism Color Lexer
 extern EDITLEXER lexD;             // D Source Code
 extern EDITLEXER lexDart;          // Dart Source Code
 extern EDITLEXER lexDIFF;          // Diff Files
+extern EDITLEXER lexFortran;       // Fortran F90+
+//~extern EDITLEXER lexF77;           // Fortran F77
 extern EDITLEXER lexGo;            // Go Source Code
 extern EDITLEXER lexINNO;          // Inno Setup Script
 extern EDITLEXER lexJAVA;          // Java Source Code
