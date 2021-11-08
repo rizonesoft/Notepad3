@@ -4782,8 +4782,10 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 		// relative grepWinNP3.ini path (for shorter cmdline)
 		if (Path_RelativePathTo(hTemp, hGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, hGrepWinIniPath, FILE_ATTRIBUTE_NORMAL)) {
 			Path_Swap(hGrepWinIniPath, hTemp);
-		}
-        Path_ToShortPathName(hGrepWinIniPath);
+        }
+        else {
+            Path_ToShortPathName(hGrepWinIniPath);
+        }
         StrgFormat(hstrParams, L"/portable /content %s /inipath:\"%s\"", StrgGet(hstrOptions), Path_Get(hGrepWinIniPath));
     } else {
         StrgFormat(hstrParams, L"/portable /content %s", StrgGet(hstrOptions));
