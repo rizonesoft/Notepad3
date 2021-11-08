@@ -423,6 +423,9 @@
     <ClCompile Include="PathLib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexFortran.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">

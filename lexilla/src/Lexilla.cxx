@@ -45,6 +45,8 @@ extern LexerModule lmCSV;
 extern LexerModule lmD;
 extern LexerModule lmDart;
 extern LexerModule lmDiff;
+extern LexerModule lmF77;
+extern LexerModule lmFortran;
 extern LexerModule lmHTML;
 extern LexerModule lmInno;
 extern LexerModule lmJSON;
@@ -111,6 +113,8 @@ void AddEachLexer() {
 		&lmD,
 		&lmDart,
 		&lmDiff,
+		&lmF77,
+		&lmFortran,
 		&lmHTML,
 		&lmInno,
 		&lmJSON,

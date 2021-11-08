@@ -115,7 +115,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bUseRegex(false)
     , m_bUseRegexForPaths(false)
     , m_bAllSize(false)
-    , m_lSize(0)
+    , m_lSize(2000 << 10)
     , m_sizeCmp(0)
     , m_bIncludeSystem(false)
     , m_bIncludeSystemC(false)
@@ -138,7 +138,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bCaseSensitiveC(false)
     , m_bDotMatchesNewline(false)
     , m_bDotMatchesNewlineC(false)
-    //, m_bNotSearch(false)
+    , m_bNotSearch(false)
     , m_bCaptureSearch(false)
     , m_bSizeC(false)
     , m_endDialog(false)
@@ -363,16 +363,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
 
             wchar_t buf[MAX_PATH] = {0};
-            if (m_bSizeC && (m_lSize != static_cast<uint64_t>(0)))
+            if (m_bSizeC && (m_lSize != MaxFileSize()))
             {
-                swprintf_s(buf, _countof(buf), L"%I64u", m_lSize);
+                swprintf_s(buf, _countof(buf), L"%I64u", m_lSize >> 10);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
             else
             {
-                uint64_t s = _wtoll(std::wstring(m_regSize).c_str());
-                if (bPortable)
-                    s = g_iniFile.GetLongValue(L"global", L"size", 2000);
+                uint64_t const s = bPortable ? g_iniFile.GetLongValue(L"global", L"Size", 2000) : _wtoll(std::wstring(m_regSize).c_str());
                 swprintf_s(buf, _countof(buf), L"%I64u", s);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
@@ -440,6 +438,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, (bPortable ? g_iniFile.GetLongValue(L"global", L"UseRegex", 0) : static_cast<DWORD>(m_regUseRegex)) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
+            DialogEnableWindow(IDC_SIZEEDIT, !m_bAllSize);
+            DialogEnableWindow(IDC_SIZECOMBO, !m_bAllSize);
             CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
             SendDlgItemMessage(hwndDlg, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
             DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
@@ -1338,8 +1338,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
                 DialogEnableWindow(IDC_ALLSIZERADIO, bIsDir);
                 DialogEnableWindow(IDC_SIZERADIO, bIsDir);
-                DialogEnableWindow(IDC_SIZECOMBO, bIsDir);
-                DialogEnableWindow(IDC_SIZEEDIT, bIsDir);
+                DialogEnableWindow(IDC_SIZECOMBO, bIsDir && !m_bAllSize);
+                DialogEnableWindow(IDC_SIZEEDIT, bIsDir && !m_bAllSize);
                 DialogEnableWindow(IDC_INCLUDESYSTEM, bIsDir);
                 DialogEnableWindow(IDC_INCLUDEHIDDEN, bIsDir);
                 DialogEnableWindow(IDC_INCLUDESUBFOLDERS, bIsDir);
@@ -1383,28 +1383,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             }
         }
         break;
+        case IDC_ALLSIZERADIO:
+        case IDC_SIZERADIO:
+            m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+            DialogEnableWindow(IDC_SIZECOMBO, !m_bAllSize);
+            DialogEnableWindow(IDC_SIZEEDIT, !m_bAllSize);
+            break;
         case IDC_SIZEEDIT:
-        {
-            if (msg == EN_CHANGE)
-            {
-                wchar_t buf[20] = {0};
-                ::GetDlgItemText(*this, IDC_SIZEEDIT, buf, _countof(buf));
-                if (wcslen(buf))
-                {
-                    if (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED)
-                    {
-                        CheckRadioButton(*this, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
-                    }
-                }
-                else
-                {
-                    if (IsDlgButtonChecked(*this, IDC_SIZERADIO) == BST_CHECKED)
-                    {
-                        CheckRadioButton(*this, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_ALLSIZERADIO);
-                    }
-                }
-            }
-        }
         break;
         case IDC_REGEXRADIO:
         case IDC_TEXTRADIO:
@@ -2294,7 +2279,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
             std::wstring matchString = inf.filePath + L"\n";
             std::wstring sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
-            for (size_t i = 0; i < min(inf.matchLines.size(), 5); ++i)
+            for (size_t i = 0; i < std::min<size_t>(inf.matchLines.size(), 5); ++i)
             {
                 std::wstring matchText = inf.matchLines[i];
                 CStringUtils::trim(matchText);
@@ -2831,8 +2816,9 @@ bool CSearchDlg::SaveSettings()
     }
 
     m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+    DialogEnableWindow(IDC_SIZEEDIT, !m_bAllSize);
+    DialogEnableWindow(IDC_SIZECOMBO, !m_bAllSize);
 
-    m_lSize   = 0;
     m_sizeCmp = 0;
     if (!m_bAllSize)
     {
@@ -2898,9 +2884,9 @@ bool CSearchDlg::SaveSettings()
         m_regAllSize = static_cast<DWORD>(m_bAllSize);
 
     if (bPortable)
-        g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize / 1024).c_str());
+        g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize >> 10).c_str());
     else
-        m_regSize = CStringUtils::Format(L"%I64u", m_lSize / 1024).c_str();
+        m_regSize = CStringUtils::Format(L"%I64u", m_lSize >> 10).c_str();
 
     if (bPortable)
         g_iniFile.SetValue(L"global", L"SizeCombo", CStringUtils::Format(L"%d", m_sizeCmp).c_str());
@@ -3079,7 +3065,7 @@ DWORD CSearchDlg::SearchThread()
     auto pathBuf = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
 
     DWORD const nMaxNumOfWorker = std::thread::hardware_concurrency() << 2;
-    DWORD const nOfWorker       = max(min(bPortable ? g_iniFile.GetLongValue(L"global", L"MaxNumOfWorker", nMaxNumOfWorker >> 1) : 
+    DWORD const nOfWorker       = std::max<long>(std::min<long>(bPortable ? g_iniFile.GetLongValue(L"global", L"MaxNumOfWorker", nMaxNumOfWorker >> 1) : 
                                                       static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWinNP3\\MaxNumOfWorker", nMaxNumOfWorker >> 1)), nMaxNumOfWorker), 1);
 
     s_SearchThreadMap.clear();
@@ -4202,7 +4188,7 @@ void CSearchDlg::AutoSizeAllColumns()
             Header_GetItem(headerCtrl, col, &hdi);
             int cx = ListView_GetStringWidth(hListControl, hdi.pszText) + 20; // 20 pixels for col separator and margin
 
-            int inc = max(1, nItemCount / 1000);
+            int inc = std::max<int>(1, nItemCount / 1000);
             for (int index = 0; index < nItemCount; index = index + inc)
             {
                 // get the width of the string and add 14 pixels for the column separator and margins

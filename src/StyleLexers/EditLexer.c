@@ -139,6 +139,10 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_MATLAB:
             StringCchCopy(pre_out, maxlen, L"%");
             return true;
+        case SCLEX_FORTRAN:
+        case SCLEX_F77:
+            StringCchCopy(pre_out, maxlen, L"!");
+            return true;
         // ------------------
         case SCLEX_NULL:
         case SCLEX_CSS:

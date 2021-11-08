@@ -74,6 +74,8 @@ static PEDITLEXER g_pLexArray[] = {
     &lexD,             // D Source Code
     &lexDart,          // Dart Source Code
     &lexDIFF,          // Diff Files
+    &lexFortran,       // Fortran F90+
+    //&lexF77,           // Fortran F77
     &lexGo,            // Go Source Code
     &lexINNO,          // Inno Setup Script
     &lexJAVA,          // Java Source Code
