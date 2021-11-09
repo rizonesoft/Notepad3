@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 
 // https://en.wikibooks.org/wiki/Fortran
+// https://releases.llvm.org/11.0.0/tools/flang/docs/Intrinsics.html
 
 // ----------------------------------------------------------------------------
 
@@ -22,12 +23,20 @@ KEYWORDLIST KeyWords_Fortran =
     "sign size stat status stop stream subroutine target then to type unformatted unit use value volatile wait where while write",
 
     // Intrinsic functions
-    "achar adjustl adjustr aimag aint all alog alog10 amax0 amax1 amin0 amin1 amod anint any atan2 bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 "
-    "bessel_yn bge bgt ble blt btest cabs ccos ceiling cexp char clog conjg count csin csqrt ctan dabs dacos dasin datan datan2 dble dcos dcosh ddim dexp "
-    "dint dlog dlog10 dmax1 dmin1 dmod dnint dprod dsign dsin dsinh dsqrt dtan dtanh erf erfc erfc_scaled exponent findloc float floor fraction gamma "
-    "hypot iabs iachar iall iany ibclr ibits ibset ichar idim idint idnint ifix image_status index int iparity is_iostat_end is_iostat_eor ishft ishftc "
-    "isign leadz len len_trim lge lgt lle llt log_gamma log10 logical maskl maskr max0 max1 maxloc maxval merge min0 min1 minloc minval nearest nint "
-    "norm2 not parity popcnt poppar product real rrspacing scale scan set_exponent shifta shiftl shiftr sngl spacing sum trailz verify",
+    "achar adjustl adjustr aimag aint alog alog10 amax0 amax1 amin0 amin1 amod anint associated atan2 baddress "
+    "bessel_j0 bessel_j1 bessel_y0 bessel_y1 bge bgt bit_size ble blt btest cabs cachesize ccos ceiling cexp char "
+    "clog command_argument_count compl conjg coshape cotan cotand cshift csin csqrt ctan dabs dacos dasin datan "
+    "datan2 dble dcos dcosh ddim dexp dfloat digits dint dlog dlog10 dmax1 dmin1 dmod dnint dnum dprod dsign dsin "
+    "dsinh dsqrt dtan dtanh eof eoshift epsilon eqv erf erfc erfc_scaled exponent extends_type_of failed_images "
+    "float floor fp_class fraction gamma get_team hypot iabs iachar iaddr iarg iargc ibchng ibclr ibits ibset ichar "
+    "idim idint idnint ifix ilen image_status index int int_ptr_kind int8 inum is_contiguous is_iostat_end "
+    "is_iostat_eor isha ishc ishft ishftc ishl isign isnan ixor izext jint jnint jnum kind knint knum lbound "
+    "lcobound leadz len len_trim lge lgt lle llt log_gamma log10 logical malloc maskl maskr max0 max1 maxexponent "
+    "mclock merge min0 min1 minexponent nargs nearest neqv new_line nint not null numarg pack popcnt poppar "
+    "precision present qcmplx qext qfloat qnum qreal radix ran ranf range rank real reduce repeat reshape rnum "
+    "rrspacing same_type_as scale scan secnds selected_char_kind selected_int_kind selected_real_kind set_exponent "
+    "shape shift shifta shiftl shiftr size sizeof sngl spacing spread stopped_images storage_size team_number "
+    "this_image tiny trailz transpose trim ubound ucobound unpack verify",
 
     // Extended and user defined functions
     "",
