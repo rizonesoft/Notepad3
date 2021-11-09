@@ -67,7 +67,7 @@ const std::map<KeyModifiers, Message> &KeyMap::GetKeyMap() const noexcept {
 
 namespace {
 
-constexpr Keys Key(char ch) {
+constexpr Keys Key(char ch) noexcept {
     return static_cast<Keys>(ch);
 }
 

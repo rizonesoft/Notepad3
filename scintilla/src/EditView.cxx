@@ -370,12 +370,6 @@ inline char CaseForce(Style::CaseForce caseForce, char chDoc, char chPrevious) n
 	}
 }
 
-constexpr bool IsControlCharacter(int ch) noexcept {
-	// iscntrl returns true for lots of chars > 127 which are displayable,
-	// currently only check C0 control characters.
-	return (ch >= 0 && ch < ' ') || (ch == 127);
-}
-
 bool ViewIsASCII(std::string_view text) {
 	return std::all_of(text.cbegin(), text.cend(), IsASCII);
 }
@@ -472,7 +466,7 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 		ll->positions[0] = 0;
 		bool lastSegItalics = false;
 
-		BreakFinder bfLayout(ll, nullptr, Range(0, numCharsInLine), posLineStart, 0, false, model.pdoc, &model.reprs, nullptr);
+		BreakFinder bfLayout(ll, nullptr, Range(0, numCharsInLine), posLineStart, 0, BreakFinder::BreakFor::Text, model.pdoc, &model.reprs, nullptr);
 		while (bfLayout.More()) {
 
 			const TextSegment ts = bfLayout.Next();
@@ -572,46 +566,55 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 				ll->wrapIndent = vstyle.aveCharWidth; // Indent to show start visual
 			ll->lines = 0;
 			// Calculate line start positions based upon width.
-			Sci::Position lastGoodBreak = 0;
 			Sci::Position lastLineStart = 0;
-			XYACCUMULATOR startOffset = 0;
+			XYACCUMULATOR startOffset = width;
 			Sci::Position p = 0;
-			while (p < ll->numCharsInLine) {
-				if ((ll->positions[p + 1] - startOffset) >= width) {
+			const Wrap wrapState = vstyle.wrap.state;
+			const Sci::Position numCharsInLine = ll->numCharsInLine;
+			while (p < numCharsInLine) {
+				while (p < numCharsInLine && ll->positions[p + 1] < startOffset) {
+					p++;
+				}
+				if (p < numCharsInLine) {
+					// backtrack to find lastGoodBreak
+					Sci::Position lastGoodBreak = p;
+					if (p > 0) {
+						lastGoodBreak = model.pdoc->MovePositionOutsideChar(p + posLineStart, -1) - posLineStart;
+					}
+					if (wrapState != Wrap::Char) {
+						Sci::Position pos = lastGoodBreak;
+						while (pos > lastLineStart) {
+							// style boundary and space
+							if (wrapState != Wrap::WhiteSpace && (ll->styles[pos - 1] != ll->styles[pos])) {
+								break;
+							}
+							if (IsBreakSpace(ll->chars[pos - 1]) && !IsBreakSpace(ll->chars[pos])) {
+								break;
+							}
+							pos = model.pdoc->MovePositionOutsideChar(pos + posLineStart - 1, -1) - posLineStart;
+						}
+						if (pos > lastLineStart) {
+							lastGoodBreak = pos;
+						}
+					}
 					if (lastGoodBreak == lastLineStart) {
 						// Try moving to start of last character
 						if (p > 0) {
-							lastGoodBreak = model.pdoc->MovePositionOutsideChar(p + posLineStart, -1)
-								- posLineStart;
+							lastGoodBreak = model.pdoc->MovePositionOutsideChar(p + posLineStart, -1) - posLineStart;
 						}
 						if (lastGoodBreak == lastLineStart) {
 							// Ensure at least one character on line.
-							lastGoodBreak = model.pdoc->MovePositionOutsideChar(lastGoodBreak + posLineStart + 1, 1)
-								- posLineStart;
+							lastGoodBreak = model.pdoc->MovePositionOutsideChar(lastGoodBreak + posLineStart + 1, 1) - posLineStart;
 						}
 					}
 					lastLineStart = lastGoodBreak;
 					ll->lines++;
-					ll->SetLineStart(ll->lines, static_cast<int>(lastGoodBreak));
-					startOffset = ll->positions[lastGoodBreak];
+					ll->SetLineStart(ll->lines, static_cast<int>(lastLineStart));
+					startOffset = ll->positions[lastLineStart];
 					// take into account the space for start wrap mark and indent
-					startOffset -= ll->wrapIndent;
-					p = lastGoodBreak + 1;
-					continue;
+					startOffset += width - ll->wrapIndent;
+					p = lastLineStart + 1;
 				}
-				if (p > 0) {
-					if (vstyle.wrap.state == Wrap::Char) {
-						lastGoodBreak = model.pdoc->MovePositionOutsideChar(p + posLineStart, -1)
-							- posLineStart;
-						p = model.pdoc->MovePositionOutsideChar(p + 1 + posLineStart, 1) - posLineStart;
-						continue;
-					} else if ((vstyle.wrap.state == Wrap::Word) && (ll->styles[p] != ll->styles[p - 1])) {
-						lastGoodBreak = p;
-					} else if (IsSpaceOrTab(ll->chars[p - 1]) && !IsSpaceOrTab(ll->chars[p])) {
-						lastGoodBreak = p;
-					}
-				}
-				p++;
 			}
 			ll->lines++;
 		}
@@ -1638,7 +1641,7 @@ void EditView::DrawCarets(Surface *surface, const EditModel &model, const ViewSt
 			}
 			const bool caretBlinkState = (model.caret.active && model.caret.on) || (!additionalCaretsBlink && !mainCaret);
 			const bool caretVisibleState = additionalCaretsVisible || mainCaret;
-			if ((xposCaret >= 0) && vsDraw.IsCaretVisible() &&
+			if ((xposCaret >= 0) && vsDraw.IsCaretVisible(mainCaret) &&
 				(drawDrag || (caretBlinkState && caretVisibleState))) {
 				bool canDrawBlockCaret = true;
 				bool drawBlockCaret = false;
@@ -1662,7 +1665,8 @@ void EditView::DrawCarets(Surface *surface, const EditModel &model, const ViewSt
 				if (xposCaret > 0)
 					caretWidthOffset = 0.51f;	// Move back so overlaps both character cells.
 				xposCaret += xStart;
-				const ViewStyle::CaretShape caretShape = drawDrag ? ViewStyle::CaretShape::line : vsDraw.CaretShapeForMode(model.inOverstrike);
+				const ViewStyle::CaretShape caretShape = drawDrag ? ViewStyle::CaretShape::line :
+					vsDraw.CaretShapeForMode(model.inOverstrike, mainCaret);
 				if (drawDrag) {
 					/* Dragging text, use a line caret */
 					rcCaret.left = std::round(xposCaret - caretWidthOffset);
@@ -1675,7 +1679,7 @@ void EditView::DrawCarets(Surface *surface, const EditModel &model, const ViewSt
 				} else if ((caretShape == ViewStyle::CaretShape::block) || imeCaretBlockOverride) {
 					/* Block caret */
 					rcCaret.left = xposCaret;
-					if (canDrawBlockCaret && !(IsControlCharacter(ll->chars[offset]))) {
+					if (canDrawBlockCaret && !(IsControl(ll->chars[offset]))) {
 						drawBlockCaret = true;
 						rcCaret.right = xposCaret + widthOverstrikeCaret;
 					} else {
@@ -1735,6 +1739,21 @@ static void DrawWrapIndentAndMarker(Surface *surface, const ViewStyle &vsDraw, c
 	}
 }
 
+// On the curses platform, the terminal is drawing its own caret, so if the caret is within
+// the main selection, do not draw the selection at that position.
+// Use iDoc from DrawBackground and DrawForeground here because TextSegment has been adjusted
+// such that, if the caret is inside the main selection, the beginning or end of that selection
+// is at the end of a text segment.
+// This function should only be called if iDoc is within the main selection.
+static InSelection CharacterInCursesSelection(Sci::Position iDoc, const EditModel &model, const ViewStyle &vsDraw) {
+	const SelectionPosition &posCaret = model.sel.RangeMain().caret;
+	const bool caretAtStart = posCaret < model.sel.RangeMain().anchor && posCaret.Position() == iDoc;
+	const bool caretAtEnd = posCaret > model.sel.RangeMain().anchor &&
+		vsDraw.DrawCaretInsideSelection(false, false) &&
+		model.pdoc->MovePositionOutsideChar(posCaret.Position() - 1, -1) == iDoc;
+	return (caretAtStart || caretAtEnd) ? InSelection::inNone : InSelection::inMain;
+}
+
 void EditView::DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 	PRectangle rcLine, Range lineRange, Sci::Position posLineStart, int xStart,
 	int subLine, std::optional<ColourRGBA> background) const {
@@ -1745,7 +1764,8 @@ void EditView::DrawBackground(Surface *surface, const EditModel &model, const Vi
 	// Does not take margin into account but not significant
 	const XYPOSITION xStartVisible = static_cast<XYPOSITION>(subLineStart-xStart);
 
-	BreakFinder bfBack(ll, &model.sel, lineRange, posLineStart, xStartVisible, selBackDrawn, model.pdoc, &model.reprs, nullptr);
+	const BreakFinder::BreakFor breakFor = selBackDrawn ? BreakFinder::BreakFor::Selection : BreakFinder::BreakFor::Text;
+	BreakFinder bfBack(ll, &model.sel, lineRange, posLineStart, xStartVisible, breakFor, model.pdoc, &model.reprs, &vsDraw);
 
 	const bool drawWhitespaceBackground = vsDraw.WhitespaceBackgroundDrawn() && !background;
 
@@ -1768,7 +1788,9 @@ void EditView::DrawBackground(Surface *surface, const EditModel &model, const Vi
 			if (rcSegment.right > rcLine.right)
 				rcSegment.right = rcLine.right;
 
-			const InSelection inSelection = hideSelection ? InSelection::inNone : model.sel.CharacterInSelection(iDoc);
+			InSelection inSelection = hideSelection ? InSelection::inNone : model.sel.CharacterInSelection(iDoc);
+			if (FlagSet(vsDraw.caret.style, CaretStyle::Curses) && (inSelection == InSelection::inMain))
+				inSelection = CharacterInCursesSelection(iDoc, model, vsDraw);
 			const bool inHotspot = model.hotspot.Valid() && model.hotspot.ContainsCharacter(iDoc);
 			ColourRGBA textBack = TextBackground(model, vsDraw, ll, background, inSelection,
 				inHotspot, ll->styles[i], i);
@@ -1961,8 +1983,9 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 	const XYPOSITION xStartVisible = static_cast<XYPOSITION>(subLineStart-xStart);
 
 	// Foreground drawing loop
-	BreakFinder bfFore(ll, &model.sel, lineRange, posLineStart, xStartVisible,
-		(((phasesDraw == PhasesDraw::One) && selBackDrawn) || vsDraw.SelectionTextDrawn()), model.pdoc, &model.reprs, &vsDraw);
+	const BreakFinder::BreakFor breakFor = (((phasesDraw == PhasesDraw::One) && selBackDrawn) || vsDraw.SelectionTextDrawn())
+		? BreakFinder::BreakFor::ForegroundAndSelection : BreakFinder::BreakFor::Foreground;
+	BreakFinder bfFore(ll, &model.sel, lineRange, posLineStart, xStartVisible, breakFor, model.pdoc, &model.reprs, &vsDraw);
 
 	while (bfFore.More()) {
 
@@ -2012,7 +2035,9 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 					}
 				}
 			}
-			const InSelection inSelection = hideSelection ? InSelection::inNone : model.sel.CharacterInSelection(iDoc);
+			InSelection inSelection = hideSelection ? InSelection::inNone : model.sel.CharacterInSelection(iDoc);
+			if (FlagSet(vsDraw.caret.style, CaretStyle::Curses) && (inSelection == InSelection::inMain))
+				inSelection = CharacterInCursesSelection(iDoc, model, vsDraw);
 			const std::optional<ColourRGBA> selectionFore = SelectionForeground(model, vsDraw, inSelection);
 			if (selectionFore) {
 				textFore = *selectionFore;

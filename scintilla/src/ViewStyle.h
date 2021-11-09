@@ -49,20 +49,20 @@ inline std::optional<ColourRGBA> OptionalColour(Scintilla::uptr_t wParam, Scinti
 
 struct SelectionAppearance {
 	// Whether to draw on base layer or over text
-	Scintilla::Layer layer;
+	Scintilla::Layer layer = Layer::Base;
 	// Draw selection past line end characters up to right border
-	bool eolFilled;
+	bool eolFilled = false;
 };
 
 struct CaretLineAppearance {
 	// Whether to draw on base layer or over text
-	Scintilla::Layer layer;
+	Scintilla::Layer layer = Layer::Base;
 	// Also show when non-focused
-	bool alwaysShow;
+	bool alwaysShow = false;
 	// highlight sub line instead of whole line
-	bool subLine;
+	bool subLine = false;
 	// Non-0: draw a rectangle around line instead of filling line. Value is pixel width of frame
-	int frame;
+	int frame = 0;
 };
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
@@ -75,22 +75,22 @@ constexpr int GetFontSizeZoomed(int size, int zoomLevel) noexcept {
 
 struct CaretAppearance {
 	// Line, block, over-strike bar ...
-	Scintilla::CaretStyle style;
+	Scintilla::CaretStyle style = CaretStyle::Line;
 	// Width in pixels
-	int width;
+	int width = 1;
 };
 
 struct WrapAppearance {
 	// No wrapping, word, character, whitespace appearance
-	Scintilla::Wrap state;
+	Scintilla::Wrap state = Wrap::None;
 	// Show indication of wrap at line end, line start, or in margin
-	Scintilla::WrapVisualFlag visualFlags;
+	Scintilla::WrapVisualFlag visualFlags = WrapVisualFlag::None;
 	// Show indication near margin or near text
-	Scintilla::WrapVisualLocation visualFlagsLocation;
+	Scintilla::WrapVisualLocation visualFlagsLocation = WrapVisualLocation::Default;
 	// How much indentation to show wrapping
-	int visualStartIndent;
-	// WrapIndentMode::Fixed, _SAME, _INDENT, _DEEPINDENT
-	Scintilla::WrapIndentMode indentMode;
+	int visualStartIndent = 0;
+	// WrapIndentMode::Fixed, Same, Indent, DeepIndent
+	Scintilla::WrapIndentMode indentMode = WrapIndentMode::Fixed;
 };
 
 struct EdgeProperties {
@@ -147,10 +147,10 @@ public:
 	/// Margins are ordered: Line Numbers, Selection Margin, Spacing Margin
 	int leftMarginWidth;	///< Spacing margin on left of text
 	int rightMarginWidth;	///< Spacing margin on right of text
-	int maskInLine;	///< Mask for markers to be put into text because there is nowhere for them to go in margin
-	int maskDrawInText;	///< Mask for markers that always draw in text
+	int maskInLine = 0;	///< Mask for markers to be put into text because there is nowhere for them to go in margin
+	int maskDrawInText = 0;	///< Mask for markers that always draw in text
 	std::vector<MarginStyle> ms;
-	int fixedColumnWidth;	///< Total width of margins
+	int fixedColumnWidth = 0;	///< Total width of margins
 	bool marginInside;	///< true: margin included in text view, false: separate views
 	int textStart;	///< Starting x position of text within the view
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
@@ -247,9 +247,9 @@ public:
 
 	enum class CaretShape { invisible, line, block, bar };
 	bool IsBlockCaretStyle() const noexcept;
-	bool IsCaretVisible() const noexcept;
+	bool IsCaretVisible(bool isMainSelection) const noexcept;
 	bool DrawCaretInsideSelection(bool inOverstrike, bool imeCaretBlockOverride) const noexcept;
-	CaretShape CaretShapeForMode(bool inOverstrike) const noexcept;
+	CaretShape CaretShapeForMode(bool inOverstrike, bool isMainSelection) const noexcept;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	bool ViewStyle::ZoomIn() noexcept;
 	bool ViewStyle::ZoomOut() noexcept;

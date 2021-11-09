@@ -128,7 +128,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 12 September 2021 NH</p>
+    <p>Last edited 21 October 2021 ZL</p>
 
     <p style="background:#90F0C0">Scintilla 5 has moved the lexers from Scintilla into a new
     <a href="Lexilla.html">Lexilla</a> project.<br />
@@ -3797,8 +3797,8 @@ struct Sci_TextToFind {
     <p><b id="SCI_SETCARETSTYLE">SCI_SETCARETSTYLE(int caretStyle)</b><br />
      <b id="SCI_GETCARETSTYLE">SCI_GETCARETSTYLE &rarr; int</b><br />
      The style of the caret can be set with <code>SCI_SETCARETSTYLE</code>.
-     There are separate styles for insert mode (lower 4-bits, <code>CARETSTYLE_INS_MASK</code>) and
-     overtype mode (bit 4).
+     There are separate styles for insert mode (lower 4-bits, <code>CARETSTYLE_INS_MASK</code>),
+     overtype mode (bit 4), and curses mode (bit 5).
 
      <table class="standard" summary="Caret Styles">
        <tbody valign="top">
@@ -3826,6 +3826,13 @@ struct Sci_TextToFind {
            <th align="left"><code>CARETSTYLE_OVERSTRIKE_BLOCK</code></th>
            <td>16</td>
            <td>Draws an overstrike caret as a block. This should be ored with one of the first three styles.</td>
+         </tr>
+         <tr>
+           <th align="left"><code>CARETSTYLE_CURSES</code></th>
+           <td>32</td>
+           <td>Draws carets that cannot be drawn in a curses (terminal) environment (such as additional carets),
+           and draws them as blocks. The main caret is left to be drawn by the terminal itself. This setting is
+           typically a standalone setting.</td>
          </tr>
          <tr>
            <th align="left"><code>CARETSTYLE_BLOCK_AFTER</code></th>
@@ -3941,6 +3948,8 @@ struct Sci_TextToFind {
 
     <p>The NUL (0) character is a special case since the <code class="parameter">encodedCharacter</code> parameter is NUL terminated, the NUL
     character is specified as an empty string.</p>
+
+    <p>For UTF-8 and DBCS code pages, clear representation for single byte &ge; 128 may cause unexpected behaviour.</p>
 
     <p><b id="SCI_CLEARALLREPRESENTATIONS">SCI_CLEARALLREPRESENTATIONS</b><br />
     Reset representations to defaults with <code>SCI_CLEARALLREPRESENTATIONS</code>.</p>

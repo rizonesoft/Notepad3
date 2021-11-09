@@ -927,6 +927,7 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
 #define CARETSTYLE_BLOCK 2
 #define CARETSTYLE_OVERSTRIKE_BAR 0
 #define CARETSTYLE_OVERSTRIKE_BLOCK 0x10
+#define CARETSTYLE_CURSES 0x20
 #define CARETSTYLE_INS_MASK 0xF
 #define CARETSTYLE_BLOCK_AFTER 0x100
 #define SCI_SETCARETSTYLE 2512

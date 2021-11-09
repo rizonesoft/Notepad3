@@ -568,6 +568,36 @@
     </table>
     <h2>Releases</h2>
     <h3>
+       <a href="https://www.scintilla.org/scintilla514.zip">Release 5.1.4</a>
+    </h3>
+    <ul>
+	<li>
+	Released 8 November 2021.
+	</li>
+	<li>
+	Add DEL to standard set of space characters for word operations.
+	</li>
+	<li>
+	Add CARETSTYLE_CURSES to draw more than 1 caret on curses terminal.
+	</li>
+	<li>
+	On GTK, fix primary selection paste within same instance.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2287/">Bug #2287</a>.
+	</li>
+	<li>
+	On GTK, fix potential crash when closing Scintilla instances due to releasing global settings object.
+	</li>
+	<li>
+	On Win32, when window is wider than scroll width,
+	use correct values when checking whether to change horizontal scroll bar so
+	only update and notify dwell end when needed.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2288/">Bug #2288</a>.
+	</li>
+	<li>
+	GetLineEndTypesSupported returns LineEndType, not int.
+	</li>
+    </ul>
+    <h3>
        <a href="https://www.scintilla.org/scintilla513.zip">Release 5.1.3</a>
     </h3>
     <ul>

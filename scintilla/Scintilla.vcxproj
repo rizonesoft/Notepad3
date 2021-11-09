@@ -453,7 +453,6 @@
     <ClInclude Include="src\Editor.h" />
     <ClInclude Include="src\EditView.h" />
     <ClInclude Include="src\ElapsedPeriod.h" />
-    <ClInclude Include="src\FontQuality.h" />
     <ClInclude Include="src\Geometry.h" />
     <ClInclude Include="src\Indicator.h" />
     <ClInclude Include="src\KeyMap.h" />
