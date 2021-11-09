@@ -2516,6 +2516,7 @@ val CARETSTYLE_LINE=1
 val CARETSTYLE_BLOCK=2
 val CARETSTYLE_OVERSTRIKE_BAR=0
 val CARETSTYLE_OVERSTRIKE_BLOCK=0x10
+val CARETSTYLE_CURSES=0x20
 val CARETSTYLE_INS_MASK=0xF
 val CARETSTYLE_BLOCK_AFTER=0x100
 
@@ -3154,7 +3155,7 @@ fun int DescribeKeyWordSets=4017(, stringresult descriptions)
 
 # Bit set of LineEndType enumertion for which line ends beyond the standard
 # LF, CR, and CRLF are supported by the lexer.
-get int GetLineEndTypesSupported=4018(,)
+get LineEndType GetLineEndTypesSupported=4018(,)
 
 # Allocate a set of sub styles for a particular base style, returning start of range
 fun int AllocateSubStyles=4020(int styleBase, int numberStyles)

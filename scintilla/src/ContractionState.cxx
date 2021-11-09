@@ -95,9 +95,7 @@ ContractionState<LINE>::ContractionState() noexcept : linesInDocument(1) {
 }
 
 template <typename LINE>
-ContractionState<LINE>::~ContractionState() {
-	Clear();
-}
+ContractionState<LINE>::~ContractionState() = default;
 
 template <typename LINE>
 void ContractionState<LINE>::EnsureData() {

@@ -2752,7 +2752,7 @@ void Window::SetPosition(PRectangle rc) {
 
 namespace {
 
-static RECT RectFromMonitor(HMONITOR hMonitor) noexcept {
+RECT RectFromMonitor(HMONITOR hMonitor) noexcept {
 	MONITORINFO mi = {};
 	mi.cbSize = sizeof(mi);
 	if (GetMonitorInfo(hMonitor, &mi)) {
@@ -3650,9 +3650,8 @@ LRESULT PASCAL ListBoxX::ControlWndProc(HWND hWnd, UINT iMessage, WPARAM wParam,
 				// We must take control of selection to prevent the ListBox activating
 				// the popup
 				const LRESULT lResult = ::SendMessage(hWnd, LB_ITEMFROMPOINT, 0, lParam);
-				const int item = LOWORD(lResult);
-				if (HIWORD(lResult) == 0 && item >= 0) {
-					ListBox_SetCurSel(hWnd, item);
+				if (HIWORD(lResult) == 0) {
+					ListBox_SetCurSel(hWnd, LOWORD(lResult));
 					if (lbx) {
 						lbx->OnSelChange();
 					}
@@ -3790,13 +3789,7 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 		wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
 		if (std::abs(wheelDelta) >= WHEEL_DELTA) {
 			const int nRows = GetVisibleRows();
-			int linesToScroll = 1;
-			if (nRows > 1) {
-				linesToScroll = nRows - 1;
-			}
-			if (linesToScroll > 3) {
-				linesToScroll = 3;
-			}
+			int linesToScroll = std::clamp(nRows - 1, 1, 3);
 			linesToScroll *= (wheelDelta / WHEEL_DELTA);
 			int top = ListBox_GetTopIndex(lb) + linesToScroll;
 			if (top < 0) {

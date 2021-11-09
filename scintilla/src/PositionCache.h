@@ -10,14 +10,6 @@
 
 namespace Scintilla::Internal {
 
-inline constexpr bool IsEOLChar(int ch) noexcept {
-	return (ch == '\r') || (ch == '\n');
-}
-
-inline constexpr bool IsSpaceOrTab(int ch) noexcept {
-	return ch == ' ' || ch == '\t';
-}
-
 /**
 * A point in document space.
 * Uses double for sufficient resolution in large (>20,000,000 line) documents.
@@ -208,7 +200,8 @@ typedef std::map<unsigned int, Representation> MapRepresentation;
 
 class SpecialRepresentations {
 	MapRepresentation mapReprs;
-	short startByteHasReprs[0x100] {};
+	unsigned short startByteHasReprs[0x100] {};
+	unsigned int maxKey = 0;
 	bool crlf = false;
 public:
 	void SetRepresentation(std::string_view charBytes, std::string_view value);
@@ -217,7 +210,6 @@ public:
 	void ClearRepresentation(std::string_view charBytes);
 	const Representation *GetRepresentation(std::string_view charBytes) const;
 	const Representation *RepresentationFromCharacter(std::string_view charBytes) const;
-	bool Contains(std::string_view charBytes) const;
 	bool ContainsCrLf() const noexcept {
 		return crlf;
 	}
@@ -250,7 +242,7 @@ class BreakFinder {
 	int saeNext;
 	int subBreak;
 	const Document *pdoc;
-	EncodingFamily encodingFamily;
+	const EncodingFamily encodingFamily;
 	const SpecialRepresentations *preprs;
 	void Insert(Sci::Position val);
 public:
@@ -259,14 +251,20 @@ public:
 	enum { lengthStartSubdivision = 300 };
 	// Try to make each subdivided run lengthEachSubdivision or shorter.
 	enum { lengthEachSubdivision = 100 };
+	enum class BreakFor {
+		Text = 0,
+		Selection = 1,
+		Foreground = 2,
+		ForegroundAndSelection = 3,
+	};
 	BreakFinder(const LineLayout *ll_, const Selection *psel, Range lineRange_, Sci::Position posLineStart_,
-		XYPOSITION xStart, bool breakForSelection, const Document *pdoc_, const SpecialRepresentations *preprs_, const ViewStyle *pvsDraw);
+		XYPOSITION xStart, BreakFor breakFor, const Document *pdoc_, const SpecialRepresentations *preprs_, const ViewStyle *pvsDraw);
 	// Deleted so BreakFinder objects can not be copied.
 	BreakFinder(const BreakFinder &) = delete;
 	BreakFinder(BreakFinder &&) = delete;
 	void operator=(const BreakFinder &) = delete;
 	void operator=(BreakFinder &&) = delete;
-	~BreakFinder();
+	~BreakFinder() noexcept;
 	TextSegment Next();
 	bool More() const noexcept;
 };

@@ -772,9 +772,9 @@ void Editor::MultipleSelectAdd(AddNumber addNumber) {
 			searchRanges.push_back(rangeTarget);
 		}
 
-		for (const auto searchRange : searchRanges) {
-			Sci::Position searchStart = searchRange.start;
-			const Sci::Position searchEnd = searchRange.end;
+		for (const Range range : searchRanges) {
+			Sci::Position searchStart = range.start;
+			const Sci::Position searchEnd = range.end;
 			for (;;) {
 				Sci::Position lengthFound = selectedText.length();
 				const Sci::Position pos = pdoc->FindText(searchStart, searchEnd,
@@ -2197,10 +2197,10 @@ void Editor::PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Posit
 	sel.RangeMain().caret = RealizeVirtualSpace(sel.RangeMain().caret);
 	const int xInsert = XFromPosition(sel.RangeMain().caret);
 	bool prevCr = false;
-	while ((len > 0) && IsEOLChar(ptr[len-1]))
+	while ((len > 0) && IsEOLCharacter(ptr[len-1]))
 		len--;
 	for (Sci::Position i = 0; i < len; i++) {
-		if (IsEOLChar(ptr[i])) {
+		if (IsEOLCharacter(ptr[i])) {
 			if ((ptr[i] == '\r') || (!prevCr))
 				line++;
 			if (line >= pdoc->LinesTotal()) {
@@ -7643,7 +7643,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		return vs.ElementColour(Element::Caret)->OpaqueRGB();
 
 	case Message::SetCaretStyle:
-		if (static_cast<CaretStyle>(wParam) <= (CaretStyle::Block | CaretStyle::OverstrikeBlock | CaretStyle::BlockAfter))
+		if (static_cast<CaretStyle>(wParam) <= (CaretStyle::Block | CaretStyle::OverstrikeBlock | CaretStyle::Curses | CaretStyle::BlockAfter))
 			vs.caret.style = static_cast<CaretStyle>(wParam);
 		else
 			/* Default to the line caret */

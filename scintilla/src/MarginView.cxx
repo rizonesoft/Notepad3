@@ -87,7 +87,7 @@ void DrawWrapMarker(Surface *surface, PRectangle rcPlace,
 		XYPOSITION yBase;
 		int yDir;
 		XYPOSITION halfWidth;
-		Point At(XYPOSITION xRelative, XYPOSITION yRelative) noexcept {
+		Point At(XYPOSITION xRelative, XYPOSITION yRelative) const noexcept {
 			return Point(xBase + xDir * xRelative + halfWidth, yBase + yDir * yRelative + halfWidth);
 		}
 	};

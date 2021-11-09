@@ -356,7 +356,7 @@ public:
 	bool IsDBCSTrailByteNoExcept(char ch) const noexcept;
 	int DBCSDrawBytes(std::string_view text) const noexcept;
 	bool IsDBCSDualByteAt(Sci::Position pos) const noexcept;
-	int SafeSegment(const char *text, int length, int lengthSegment) const noexcept;
+	size_t SafeSegment(std::string_view text) const noexcept;
 	EncodingFamily CodePageFamily() const noexcept;
 
 	// Gateways to modifying document
