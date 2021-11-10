@@ -41,6 +41,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
     <EnableASAN>true</EnableASAN>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -48,6 +49,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -55,6 +57,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -62,6 +65,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -69,6 +73,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -76,6 +81,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -165,6 +171,30 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

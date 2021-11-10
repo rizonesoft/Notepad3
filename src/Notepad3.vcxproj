@@ -42,6 +42,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
     <EnableASAN>true</EnableASAN>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -52,6 +53,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
     <EnableASAN>false</EnableASAN>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -61,6 +63,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -71,6 +74,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
     <EnableASAN>false</EnableASAN>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -80,6 +84,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -89,6 +94,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
