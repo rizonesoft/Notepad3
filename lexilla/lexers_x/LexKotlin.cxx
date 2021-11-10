@@ -376,7 +376,7 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position lengthDoc,
                         kwType = SCE_KOTLIN_INTERFACE;
                     }
                     if (kwType != SCE_KOTLIN_DEFAULT) {
-                        const int chNext = GetDocNextChar(styler, sc);
+                        /*const int chNext =*/ GetDocNextChar(styler, sc);
                         if (!((kwType == SCE_KOTLIN_LABEL && sc.ch == '@') || (kwType != SCE_KOTLIN_LABEL && IsIdentifierStartEx(sc.ch)))) {
                             kwType = SCE_KOTLIN_DEFAULT;
                         }
@@ -400,7 +400,7 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position lengthDoc,
                         sc.ChangeState(kwType);
                     }
                     else {
-                        const int chNext = GetDocNextChar(styler, sc, (sc.ch == '?'));
+                        /*const int chNext =*/ GetDocNextChar(styler, sc, (sc.ch == '?'));
                         if (sc.ch == '(') {
                             sc.ChangeState(SCE_KOTLIN_FUNCTION);
                         }
@@ -658,7 +658,7 @@ void SCI_METHOD LexerKotlin::Fold(Sci_PositionU startPos, Sci_Position lengthDoc
 
     //const int foldComment = styler.GetPropertyInt("fold.comment", 1);
     //const int foldComment = props.GetInt("fold.comment", 1) != 0;
-    const int foldComment = options.foldComment;
+    //const int foldComment = options.foldComment;
 
     const Sci_PositionU endPos = startPos + lengthDoc;
     Sci_Position lineCurrent = styler.GetLine(startPos);
