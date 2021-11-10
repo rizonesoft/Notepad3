@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{b78c6486-26fc-4890-89c0-f7f3e301b79c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{9dbbd18e-d068-478e-82f3-5b03317a670d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="win32">
+      <UniqueIdentifier>{afe7e35e-cd81-406c-a770-df29d2b3fc95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma">
+      <UniqueIdentifier>{97da2683-9a5a-42f9-8ac6-0e8c54ce61e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma\scintilla">
+      <UniqueIdentifier>{32ffd4ad-2b04-4d07-acff-dad68cf258de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma\src">
+      <UniqueIdentifier>{02da00bc-9c25-4955-b7b3-bf9283a4256f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AutoComplete.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CallTip.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CaseConvert.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CaseFolder.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CellBuffer.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharClassify.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ContractionState.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Decoration.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Document.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditModel.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditView.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Indicator.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KeyMap.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LineMarker.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MarginView.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PerLine.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PositionCache.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RESearch.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RunStyles.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScintillaBase.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Selection.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Style.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UniConversion.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewStyle.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XPM.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\HanjaDic.cxx">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\PlatWin.cxx">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\ScintillaWin.cxx">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DBCS.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UniqueString.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\scintilla\OnigurumaRegExEngine.cxx">
+      <Filter>oniguruma\scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\ascii.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\mktable.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regcomp.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regenc.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regerror.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regexec.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\reggnu.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regparse.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regsyntax.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regtrav.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\regversion.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\st.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_fold1_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_fold2_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_fold3_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\unicode_unfold_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="oniguruma\src\utf8.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterCategoryMap.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterType.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ILexer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Platform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SciLexer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scintilla.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AutoComplete.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CallTip.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CaseConvert.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CaseFolder.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CellBuffer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharClassify.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ContractionState.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Decoration.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Document.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditModel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditView.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Indicator.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KeyMap.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LineMarker.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MarginView.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Partitioning.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PerLine.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Position.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PositionCache.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RESearch.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RunStyles.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScintillaBase.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Selection.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SplitVector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Style.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnicodeFromUTF8.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UniConversion.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewStyle.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XPM.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\PlatWin.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sci_Position.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SparseVector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UniqueString.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBCS.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ILoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\ScintillaWin.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ElapsedPeriod.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\config.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\oniggnu.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\oniguruma.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\regenc.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\regint.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\regparse.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="oniguruma\src\st.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debugging.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaMessages.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaStructures.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterCategoryMap.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterType.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScintillaCall.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Scintilla.iface">
+      <Filter>include</Filter>
+    </None>
+  </ItemGroup>
+</Project>
