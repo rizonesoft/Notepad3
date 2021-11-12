@@ -63,7 +63,7 @@ size_t STRAPI            StrgDelete(HSTRINGW hstr, const size_t index, size_t co
 
 int STRAPI               StrgGetAsUTF8(const HSTRINGW hstr, char* chStrg, int cch);
 int STRAPI               StrgResetFromUTF8(HSTRINGW hstr, const char* str);
-inline int STRAPI        StrgLengthAsUTF8(const HSTRINGW hstr) { return StrgGetAsUTF8(hstr, NULL, 0); };
+inline int STRAPI        StrgLengthAsUTF8(const HSTRINGW hstr) { return StrgGetAsUTF8(hstr, NULL, 0) - 1; };
 
 void STRAPI              StrgToUpper(HSTRINGW hstr);
 void STRAPI              StrgToLower(HSTRINGW hstr);

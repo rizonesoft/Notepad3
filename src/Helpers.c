@@ -1263,18 +1263,18 @@ UINT CharSetFromCodePage(const UINT uCodePage)
  * This is used to get control characters into the regular expresion engine
  * w/o interfering with group referencing ('\0').
  */
-ptrdiff_t UnSlashLowOctal(char* s)
+ptrdiff_t UnSlashLowOctalA(LPSTR s)
 {
-    char* sStart = s;
-    char* o = s;
+    LPSTR sStart = s;
+    LPSTR o = s;
     while (*s) {
         if ((s[0] == '\\') && (s[1] == '\\')) { // esc seq
             *o = *s;
             ++o;
             ++s;
             *o = *s;
-        } else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
-            *o = (char)(8 * (s[2] - '0') + (s[3] - '0'));
+        } else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigitA(s[2]) && IsOctalDigitA(s[3])) {
+            *o = (CHAR)(8 * (s[2] - '0') + (s[3] - '0'));
             s += 3;
         } else {
             *o = *s;
@@ -1285,6 +1285,32 @@ ptrdiff_t UnSlashLowOctal(char* s)
         }
     }
     *o = '\0';
+    return (ptrdiff_t)(o - sStart);
+}
+
+
+ptrdiff_t UnSlashLowOctalW(LPWSTR s)
+{
+    LPWSTR sStart = s;
+    LPWSTR o = s;
+    while (*s) {
+        if ((s[0] == L'\\') && (s[1] == L'\\')) { // esc seq
+            *o = *s;
+            ++o;
+            ++s;
+            *o = *s;
+        } else if ((s[0] == L'\\') && (s[1] == L'0') && IsOctalDigitW(s[2]) && IsOctalDigitW(s[3])) {
+            *o = (WCHAR)(8 * (s[2] - L'0') + (s[3] - L'0'));
+            s += 3;
+        } else {
+            *o = *s;
+        }
+        ++o;
+        if (*s) {
+            ++s;
+        }
+    }
+    *o = L'\0';
     return (ptrdiff_t)(o - sStart);
 }
 
@@ -1387,6 +1413,97 @@ size_t UnSlashA(LPSTR pchInOut, UINT cpEdit)
 }
 
 
+size_t UnSlashW(LPWSTR pchInOut, UINT cpEdit)
+{
+    LPWSTR s = pchInOut;
+    LPWSTR o = pchInOut;
+    LPCWSTR const sStart = pchInOut;
+
+    while (*s) {
+        if (*s == L'\\') {
+            ++s;
+            if (*s == L'a') {
+                *o = L'\a';
+            } else if (*s == L'b') {
+                *o = L'\b';
+            } else if (*s == L'e') {
+                *o = L'\x1B';
+            } else if (*s == L'f') {
+                *o = L'\f';
+            } else if (*s == L'n') {
+                *o = L'\n';
+            } else if (*s == L'r') {
+                *o = L'\r';
+            } else if (*s == L't') {
+                *o = L'\t';
+            } else if (*s == L'v') {
+                *o = L'\v';
+            } else if (*s == L'"') {
+                *o = L'"';
+            } else if (*s == L'\\') {
+                *o = L'\\';
+            } else if (*s == L'x' || *s == L'u') {
+                bool bShort = (*s == L'x');
+                char ch[8];
+                char* pch = ch;
+                WCHAR val[2] = { L'\0' };
+                int hex;
+                val[0] = L'\0';
+                hex = GetHexDigitW(*(s + 1));
+                if (hex >= 0) {
+                    ++s;
+                    val[0] = (WCHAR)hex;
+                    hex = GetHexDigitW(*(s + 1));
+                    if (hex >= 0) {
+                        ++s;
+                        val[0] *= 16;
+                        val[0] += (WCHAR)hex;
+                        if (!bShort) {
+                            hex = GetHexDigitW(*(s + 1));
+                            if (hex >= 0) {
+                                ++s;
+                                val[0] *= 16;
+                                val[0] += (WCHAR)hex;
+                                hex = GetHexDigitW(*(s + 1));
+                                if (hex >= 0) {
+                                    ++s;
+                                    val[0] *= 16;
+                                    val[0] += (WCHAR)hex;
+                                }
+                            }
+                        }
+                    }
+                    if (val[0]) {
+                        val[1] = L'\0';
+                        WideCharToMultiByte(cpEdit, 0, val, -1, ch, (int)COUNTOF(ch), NULL, NULL);
+                        *o = *pch++;
+                        while (*pch) {
+                            *++o = (WCHAR)*pch++;
+                        }
+                    } else {
+                        --o;
+                    }
+                } else {
+                    --o;
+                }
+            } else {
+                //~*o = L'\\';  *++o = *s;   // revert
+                *o = *s;   // swallow single L'\'
+            }
+        } else {
+            *o = *s;
+        }
+
+        ++o;
+        if (*s) {
+            ++s;
+        }
+    }
+    *o = L'\0';
+    return (size_t)((ptrdiff_t)(o - sStart));
+}
+
+
 //=============================================================================
 
 size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput)
@@ -1454,7 +1571,7 @@ size_t UnSlashCtrlW(LPWSTR pchInOut)
     LPCWSTR const sStart = pchInOut;
 
     while (*s) {
-        if (*s == '\\') {
+        if (*s == L'\\') {
             ++s;
             if (*s == L'n') {
                 *o = L'\n';
@@ -1473,7 +1590,7 @@ size_t UnSlashCtrlW(LPWSTR pchInOut)
             } else if (*s == L'e') {
                 *o = L'\x1B';
             } else {
-                *o = *s;    // swallow single '\'
+                *o = *s;    // swallow single L'\'
             }
         } else {
             *o = *s;
@@ -1483,7 +1600,7 @@ size_t UnSlashCtrlW(LPWSTR pchInOut)
             ++s;
         }
     }
-    *o = '\0';
+    *o = L'\0';
     return (size_t)((ptrdiff_t)(o - sStart));
 }
 //=============================================================================
@@ -1519,7 +1636,7 @@ size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch)
 /**
  *  check, if we have regex sub-group referencing
  */
-int CheckRegExReplTarget(char* pszInput)
+static int _CheckRegExReplTargetA(LPSTR pszInput)
 {
     while (*pszInput) {
         if (*pszInput == '$') {
@@ -1539,13 +1656,33 @@ int CheckRegExReplTarget(char* pszInput)
     return SCI_REPLACETARGET;
 }
 
+static int _CheckRegExReplTargetW(LPWSTR pszInput)
+{
+    while (*pszInput) {
+        if (*pszInput == L'$') {
+            ++pszInput;
+            if (((*pszInput >= L'0') && (*pszInput <= L'9')) || (*pszInput == L'+') || (*pszInput == L'{')) {
+                return SCI_REPLACETARGETRE;
+            }
+        } else if (*pszInput == L'\\') {
+            ++pszInput;
+            if ((*pszInput >= L'0') && (*pszInput <= L'9')) {
+                return SCI_REPLACETARGETRE;
+            }
+        } else {
+            ++pszInput;
+        }
+    }
+    return SCI_REPLACETARGET;
+}
 
-void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplaceMsg)
+
+void TransformBackslashesA(LPSTR pszInput, bool bRegEx, UINT cpEdit, int* iReplaceMsg)
 {
     if (iReplaceMsg) {
         if (bRegEx) {
-            UnSlashLowOctal(pszInput);
-            *iReplaceMsg = CheckRegExReplTarget(pszInput);
+            UnSlashLowOctalA(pszInput);
+            *iReplaceMsg = _CheckRegExReplTargetA(pszInput);
         } else {
             *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
         }
@@ -1555,6 +1692,24 @@ void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplac
     // regex handles backslashes itself
     if (!bRegEx || bStdReplace) {
         UnSlashA(pszInput, cpEdit);
+    }
+}
+
+void TransformBackslashesW(LPWSTR pszInput, bool bRegEx, UINT cpEdit, int* iReplaceMsg)
+{
+    if (iReplaceMsg) {
+        if (bRegEx) {
+            UnSlashLowOctalW(pszInput);
+            *iReplaceMsg = _CheckRegExReplTargetW(pszInput);
+        } else {
+            *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+        }
+    }
+    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg));
+
+    // regex handles backslashes itself
+    if (!bRegEx || bStdReplace) {
+        UnSlashW(pszInput, cpEdit);
     }
 }
 
@@ -1818,7 +1973,7 @@ void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscR
         // Now encode all other unsafe characters
         else {
             CHAR mb[4] = { '\0', '\0', '\0', '\0' };
-            int const n = WideCharToMultiByte(CP_UTF8, 0, &lpURL[posIn++], 1, mb, 4, 0, 0);
+            int const n = WideCharToMultiByte(Encoding_SciCP, 0, &lpURL[posIn++], 1, mb, 4, 0, 0);
             if (posOut < (*pcchEscaped - (n*3))) {
                 for (int i = 0; i < n; ++i) {
                     posOut += toHEX((BYTE)mb[i], &lpEscaped[posOut]);

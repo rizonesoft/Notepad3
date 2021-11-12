@@ -2323,7 +2323,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
                     }
                     ++f; // exclude '\'
                     char regexpat[HUGE_BUFFER] = { '\0' };
-                    WideCharToMultiByteEx(CP_UTF8, 0, f, (int)(e-f), regexpat, COUNTOF(regexpat), NULL, NULL);
+                    WideCharToMultiByte(CP_UTF8, 0, f, (int)(e-f), regexpat, (int)COUNTOF(regexpat), NULL, NULL);
 
                     if (OnigRegExFind(regexpat, chFilePath, false, SciCall_GetEOLMode(), NULL) >= 0) {
                         return g_pLexArray[iLex];
@@ -3782,14 +3782,14 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
         assert(lstrlen(wchFontName) < LF_FACESIZE);
         if (StrIsNotEmpty(wchFontName)) {
             char chFontName[LF_FACESIZE] = { '\0' };
-            WideCharToMultiByte(CP_UTF8, 0, wchFontName, -1, chFontName, (int)COUNTOF(chFontName), NULL, NULL);
+            WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, (int)COUNTOF(chFontName), NULL, NULL);
             SciCall_StyleSetFont(iStyle, chFontName);
         }
     } else if (bIsDefaultStyle) {
         Style_StrGetFontName(L"font:$Code", wchFontName, COUNTOF(wchFontName));
         assert(lstrlen(wchFontName) < LF_FACESIZE);
         char chFontName[LF_FACESIZE] = { '\0' };
-        WideCharToMultiByte(CP_UTF8, 0, wchFontName, -1, chFontName, (int)COUNTOF(chFontName), NULL, NULL);
+        WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, (int)COUNTOF(chFontName), NULL, NULL);
         SciCall_StyleSetFont(iStyle, chFontName);
     }
 
