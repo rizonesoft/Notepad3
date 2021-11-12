@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1109.(build_#) (2021-11-09)
+Current BETA/RC Version 5.21.1112.(build_#) (2021-11-12)
 ========================================================
 
 --------------------------------------------------------
@@ -69,6 +69,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1112.1]- Find/Repl dialog - empty search string should have no match (blue).
 [1030.1]- Wrong format for reporting number of replaced occurrences "In Selection".
 [1030.1]- "grepWinNP3" not intended switching file size search settings (GRE).
 [1023.1]- Key "Favorites=(path)" not added in "Setup" version.
