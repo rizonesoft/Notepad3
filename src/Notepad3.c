@@ -1726,12 +1726,12 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                 if (!s_flagJumpTo) {
                     SciCall_DocumentEnd();
                 }
-                EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
+                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
             } else {
                 if (!s_flagJumpTo) {
                     SciCall_DocumentStart();
                 }
-                EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
+                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
             }
         }
     }
@@ -3457,12 +3457,12 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
                     if (!s_flagJumpTo) {
                         SciCall_DocumentEnd();
                     }
-                    EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                    EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
                 } else {
                     if (!s_flagJumpTo) {
                         SciCall_DocumentStart();
                     }
-                    EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                    EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
                 }
             }
 
@@ -5448,11 +5448,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             switch (iLoWParam) {
 
             case IDM_EDIT_FINDNEXT:
-                EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
+                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
                 break;
 
             case IDM_EDIT_FINDPREV:
-                EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
+                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
                 break;
 
             case IDM_EDIT_REPLACENEXT:
@@ -5469,7 +5469,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                         break;
                     }
                 }
-                EditFindNext(Globals.hwndEdit,&s_FindReplaceData,true,false);
+                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, true, false, false);
                 break;
 
             case IDM_EDIT_SELTOPREV:
@@ -5478,7 +5478,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                         break;
                     }
                 }
-                EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,true,false);
+                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, true, false, false);
                 break;
             }
         }
@@ -5499,11 +5499,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 break;
 
             case CMD_FINDNEXTSEL:
-                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
                 break;
 
             case CMD_FINDPREVSEL:
-                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
+                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
                 break;
             }
         }

@@ -478,12 +478,15 @@ UINT CodePageFromCharSet(const UINT uCharSet);
 //==== UnSlash Functions ======================================================
 
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
+size_t UnSlashW(LPWSTR pchInOut, UINT cpEdit);
+
 size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch);
 
 size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 size_t UnSlashCtrlW(LPWSTR pchInOut);
 
-void TransformBackslashes(char *pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
+void TransformBackslashesA(LPSTR pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
+void TransformBackslashesW(LPWSTR pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
 //void TransformMetaChars(char *pszInput, size_t cch, bool bRegEx, int iEOLMode);
 
 
@@ -726,7 +729,8 @@ inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplac
 // ----------------------------------------------------------------------------
 
 // Is the character an octal digit?
-#define IsOctalDigit(ch) (((ch) >= '0') && ((ch) <= '7'))
+#define IsOctalDigitA(ch) (((ch) >= '0') && ((ch) <= '7'))
+#define IsOctalDigitW(wch) (((wch) >= L'0') && ((wch) <= L'7'))
 
 // Is the character an octal digit?
 inline bool IsDigitA(const char ch) {
