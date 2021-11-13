@@ -62,6 +62,7 @@
     <ProjectGuid>{0873b090-7ffd-4abd-9b42-619a06c5041f}</ProjectGuid>
     <RootNamespace>uxthemestub</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>uxtheme-stub</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -188,48 +189,48 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|ARM'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
@@ -237,19 +238,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
@@ -257,8 +258,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\uxtheme\</IntDir>
+    <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\lib\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
