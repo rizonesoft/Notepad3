@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28606.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D32CB10B-1891-471D-B780-5445BC67C1E2}"
 	ProjectSection(SolutionItems) = preProject
@@ -73,96 +73,96 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minipath", "minipath\minipa
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_de_de", "language\np3_de_de\np3_de_de_vs22.vcxproj", "{146D0122-33C6-4C1B-9E7A-178DEC80842E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_de_de_vs22", "language\np3_de_de\np3_de_de_vs22.vcxproj", "{146D0122-33C6-4C1B-9E7A-178DEC80842E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_fr_fr", "language\np3_fr_fr\np3_fr_fr_vs22.vcxproj", "{EC255B64-2C2F-4CB6-9D40-4542893FE5E6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_fr_fr_vs22", "language\np3_fr_fr\np3_fr_fr_vs22.vcxproj", "{EC255B64-2C2F-4CB6-9D40-4542893FE5E6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_es", "language\np3_es_es\np3_es_es_vs22.vcxproj", "{3B8C289D-FF47-4237-AD7B-0702230F41A3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_es_vs22", "language\np3_es_es\np3_es_es_vs22.vcxproj", "{3B8C289D-FF47-4237-AD7B-0702230F41A3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_us", "language\np3_en_us\np3_en_us_vs22.vcxproj", "{9DC82B0D-2484-4925-92AD-1237C64CCB78}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_us_vs22", "language\np3_en_us\np3_en_us_vs22.vcxproj", "{9DC82B0D-2484-4925-92AD-1237C64CCB78}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_af_za", "language\np3_af_za\np3_af_za_vs22.vcxproj", "{C8E80B4C-C0FD-4119-A05A-AB372A61007F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_af_za_vs22", "language\np3_af_za\np3_af_za_vs22.vcxproj", "{C8E80B4C-C0FD-4119-A05A-AB372A61007F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_nl_nl", "language\np3_nl_nl\np3_nl_nl_vs22.vcxproj", "{9B31015C-CB08-4B4B-A957-313A93F862F5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_nl_nl_vs22", "language\np3_nl_nl\np3_nl_nl_vs22.vcxproj", "{9B31015C-CB08-4B4B-A957-313A93F862F5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_gb", "language\np3_en_gb\np3_en_gb_vs22.vcxproj", "{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_gb_vs22", "language\np3_en_gb\np3_en_gb_vs22.vcxproj", "{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_en_us", "minipath\language\mp_en_us\mp_en_us_vs22.vcxproj", "{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_en_us_vs22", "minipath\language\mp_en_us\mp_en_us_vs22.vcxproj", "{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_en_gb", "minipath\language\mp_en_gb\mp_en_gb_vs22.vcxproj", "{BF3DEE96-735B-4A5E-95DD-3D3661B62EEF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_en_gb_vs22", "minipath\language\mp_en_gb\mp_en_gb_vs22.vcxproj", "{BF3DEE96-735B-4A5E-95DD-3D3661B62EEF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_de_de", "minipath\language\mp_de_de\mp_de_de_vs22.vcxproj", "{5996B101-46FE-48E4-8531-376140086DA4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_de_de_vs22", "minipath\language\mp_de_de\mp_de_de_vs22.vcxproj", "{5996B101-46FE-48E4-8531-376140086DA4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_af_za", "minipath\language\mp_af_za\mp_af_za_vs22.vcxproj", "{53DB2F85-DEEA-4FC0-A89F-1DF5B534A250}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_af_za_vs22", "minipath\language\mp_af_za\mp_af_za_vs22.vcxproj", "{53DB2F85-DEEA-4FC0-A89F-1DF5B534A250}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_fr_fr", "minipath\language\mp_fr_fr\mp_fr_fr_vs22.vcxproj", "{491C39D2-2E1D-4DF7-B6BF-9641B7757FC4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_fr_fr_vs22", "minipath\language\mp_fr_fr\mp_fr_fr_vs22.vcxproj", "{491C39D2-2E1D-4DF7-B6BF-9641B7757FC4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_nl_nl", "minipath\language\mp_nl_nl\mp_nl_nl_vs22.vcxproj", "{E0DEC59F-D155-46D8-8866-9F305CC75A2B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_nl_nl_vs22", "minipath\language\mp_nl_nl\mp_nl_nl_vs22.vcxproj", "{E0DEC59F-D155-46D8-8866-9F305CC75A2B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_es_es", "minipath\language\mp_es_es\mp_es_es_vs22.vcxproj", "{954B9D26-1735-4674-8279-FF2C44E4258B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_es_es_vs22", "minipath\language\mp_es_es\mp_es_es_vs22.vcxproj", "{954B9D26-1735-4674-8279-FF2C44E4258B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_zh_cn", "language\np3_zh_cn\np3_zh_cn_vs22.vcxproj", "{7E16647B-CA40-43E8-8ABB-E4C430C186CA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_zh_cn_vs22", "language\np3_zh_cn\np3_zh_cn_vs22.vcxproj", "{7E16647B-CA40-43E8-8ABB-E4C430C186CA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_zh_cn", "minipath\language\mp_zh_cn\mp_zh_cn_vs22.vcxproj", "{73B1A06D-F536-4F39-80AA-798A1E8023DE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_zh_cn_vs22", "minipath\language\mp_zh_cn\mp_zh_cn_vs22.vcxproj", "{73B1A06D-F536-4F39-80AA-798A1E8023DE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_be_by", "language\np3_be_by\np3_be_by_vs22.vcxproj", "{4484EA6C-AA9D-4DE4-BAA1-535FFFEFE49E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_be_by_vs22", "language\np3_be_by\np3_be_by_vs22.vcxproj", "{4484EA6C-AA9D-4DE4-BAA1-535FFFEFE49E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ru_ru", "language\np3_ru_ru\np3_ru_ru_vs22.vcxproj", "{AB02DFC9-B0C0-488C-9BF9-E90B0402F30E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ru_ru_vs22", "language\np3_ru_ru\np3_ru_ru_vs22.vcxproj", "{AB02DFC9-B0C0-488C-9BF9-E90B0402F30E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_be_by", "minipath\language\mp_be_by\mp_be_by_vs22.vcxproj", "{5F11951A-9DB3-454B-A90C-693387D4C85A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_be_by_vs22", "minipath\language\mp_be_by\mp_be_by_vs22.vcxproj", "{5F11951A-9DB3-454B-A90C-693387D4C85A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_ru_ru", "minipath\language\mp_ru_ru\mp_ru_ru_vs22.vcxproj", "{BA9900A1-6FB6-4A6E-A817-830CB6F3D009}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_ru_ru_vs22", "minipath\language\mp_ru_ru\mp_ru_ru_vs22.vcxproj", "{BA9900A1-6FB6-4A6E-A817-830CB6F3D009}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
@@ -173,32 +173,32 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Build\Changes.txt = Build\Changes.txt
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ko_kr", "language\np3_ko_kr\np3_ko_kr_vs22.vcxproj", "{0FA07345-601B-474E-99C0-7E61E70DA72E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ko_kr_vs22", "language\np3_ko_kr\np3_ko_kr_vs22.vcxproj", "{0FA07345-601B-474E-99C0-7E61E70DA72E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_ko_kr", "minipath\language\mp_ko_kr\mp_ko_kr_vs22.vcxproj", "{18CD506D-5596-4B58-B868-57FAAC657C6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_ko_kr_vs22", "minipath\language\mp_ko_kr\mp_ko_kr_vs22.vcxproj", "{18CD506D-5596-4B58-B868-57FAAC657C6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_hu_hu", "language\np3_hu_hu\np3_hu_hu_vs22.vcxproj", "{82BD93B4-0306-4DDC-87F6-84B906DBAA77}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_hu_hu_vs22", "language\np3_hu_hu\np3_hu_hu_vs22.vcxproj", "{82BD93B4-0306-4DDC-87F6-84B906DBAA77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_hu_hu", "minipath\language\mp_hu_hu\mp_hu_hu_vs22.vcxproj", "{C13B39D8-BE5B-4FD0-8BE2-D2A2DD1FD837}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_hu_hu_vs22", "minipath\language\mp_hu_hu\mp_hu_hu_vs22.vcxproj", "{C13B39D8-BE5B-4FD0-8BE2-D2A2DD1FD837}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_pt_br", "language\np3_pt_br\np3_pt_br_vs22.vcxproj", "{4B141102-3379-4F20-A9B0-F7418EFF3DAA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_pt_br_vs22", "language\np3_pt_br\np3_pt_br_vs22.vcxproj", "{4B141102-3379-4F20-A9B0-F7418EFF3DAA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pt_br", "minipath\language\mp_pt_br\mp_pt_br_vs22.vcxproj", "{83E5EEBE-9764-4C5B-9FDC-EB84A369C501}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pt_br_vs22", "minipath\language\mp_pt_br\mp_pt_br_vs22.vcxproj", "{83E5EEBE-9764-4C5B-9FDC-EB84A369C501}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
@@ -209,12 +209,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{490D
 		Version.ps1 = Version.ps1
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_it_it", "language\np3_it_it\np3_it_it_vs22.vcxproj", "{2EB07C98-0F3F-4CB6-B448-099770AF1989}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_it_it_vs22", "language\np3_it_it\np3_it_it_vs22.vcxproj", "{2EB07C98-0F3F-4CB6-B448-099770AF1989}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_it_it", "minipath\language\mp_it_it\mp_it_it_vs22.vcxproj", "{DA372A4B-7AE0-4C50-97B7-49D5FF953325}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_it_it_vs22", "minipath\language\mp_it_it\mp_it_it_vs22.vcxproj", "{DA372A4B-7AE0-4C50-97B7-49D5FF953325}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
@@ -233,132 +233,132 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "language", "language", "{8F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "language", "language", "{8C28F8E6-5B4E-4233-B5C7-5A903596AEB2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_pl_pl", "language\np3_pl_pl\np3_pl_pl_vs22.vcxproj", "{E99EA1C1-B4DE-454B-9500-C98F817C0D6A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_pl_pl_vs22", "language\np3_pl_pl\np3_pl_pl_vs22.vcxproj", "{E99EA1C1-B4DE-454B-9500-C98F817C0D6A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pl_pl", "minipath\language\mp_pl_pl\mp_pl_pl_vs22.vcxproj", "{7924E6DE-69F4-40C2-951A-44AD3A54152D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pl_pl_vs22", "minipath\language\mp_pl_pl\mp_pl_pl_vs22.vcxproj", "{7924E6DE-69F4-40C2-951A-44AD3A54152D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_tr_tr", "language\np3_tr_tr\np3_tr_tr_vs22.vcxproj", "{15428F5A-16F1-4DA5-9F12-0411183E3DC0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_tr_tr_vs22", "language\np3_tr_tr\np3_tr_tr_vs22.vcxproj", "{15428F5A-16F1-4DA5-9F12-0411183E3DC0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_tr_tr", "minipath\language\mp_tr_tr\mp_tr_tr_vs22.vcxproj", "{6503214A-CE25-45B5-84BB-61EEFB35D1A9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_tr_tr_vs22", "minipath\language\mp_tr_tr\mp_tr_tr_vs22.vcxproj", "{6503214A-CE25-45B5-84BB-61EEFB35D1A9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scintilla", "scintilla\Scintilla_vs22.vcxproj", "{5877B917-512B-49F5-B514-1B4159E7A9CA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_sv_se", "language\np3_sv_se\np3_sv_se_vs22.vcxproj", "{07C218D7-D510-4D63-95E8-F661F62ED418}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_sv_se_vs22", "language\np3_sv_se\np3_sv_se_vs22.vcxproj", "{07C218D7-D510-4D63-95E8-F661F62ED418}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_sv_se", "minipath\language\mp_sv_se\mp_sv_se_vs22.vcxproj", "{3E19AA6A-0935-4320-962A-C1E9378B387C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_sv_se_vs22", "minipath\language\mp_sv_se\mp_sv_se_vs22.vcxproj", "{3E19AA6A-0935-4320-962A-C1E9378B387C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_sk_sk", "minipath\language\mp_sk_sk\mp_sk_sk_vs22.vcxproj", "{8346318F-632A-4514-AAD7-A93593759823}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_sk_sk_vs22", "minipath\language\mp_sk_sk\mp_sk_sk_vs22.vcxproj", "{8346318F-632A-4514-AAD7-A93593759823}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_sk_sk", "language\np3_sk_sk\np3_sk_sk_vs22.vcxproj", "{8BB7B168-FC6D-463A-BBE4-FA595BDD5753}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_sk_sk_vs22", "language\np3_sk_sk\np3_sk_sk_vs22.vcxproj", "{8BB7B168-FC6D-463A-BBE4-FA595BDD5753}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_ja_jp", "minipath\language\mp_ja_jp\mp_ja_jp_vs22.vcxproj", "{4D474510-CD21-4EF7-974D-706775B1A83C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_ja_jp_vs22", "minipath\language\mp_ja_jp\mp_ja_jp_vs22.vcxproj", "{4D474510-CD21-4EF7-974D-706775B1A83C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ja_jp", "language\np3_ja_jp\np3_ja_jp_vs22.vcxproj", "{76A53B4D-3011-4AAB-8DE9-C0D080FA95CF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ja_jp_vs22", "language\np3_ja_jp\np3_ja_jp_vs22.vcxproj", "{76A53B4D-3011-4AAB-8DE9-C0D080FA95CF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "grepWinNP3", "grepWinNP3", "{0E679756-ECA4-4CAC-8799-1D2B9A294B3A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_pt_pt", "language\np3_pt_pt\np3_pt_pt_vs22.vcxproj", "{B7C9135A-C4AA-4A85-B361-B610B442B57C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_pt_pt_vs22", "language\np3_pt_pt\np3_pt_pt_vs22.vcxproj", "{B7C9135A-C4AA-4A85-B361-B610B442B57C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pt_pt", "minipath\language\mp_pt_pt\mp_pt_pt_vs22.vcxproj", "{8CA91C67-2C5E-4983-8EA1-AF4675211A2C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pt_pt_vs22", "minipath\language\mp_pt_pt\mp_pt_pt_vs22.vcxproj", "{8CA91C67-2C5E-4983-8EA1-AF4675211A2C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_id_id", "minipath\language\mp_id_id\mp_id_id_vs22.vcxproj", "{B3CF6147-AD32-4238-B6C5-9A88BA503567}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_id_id_vs22", "minipath\language\mp_id_id\mp_id_id_vs22.vcxproj", "{B3CF6147-AD32-4238-B6C5-9A88BA503567}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_vi_vn", "minipath\language\mp_vi_vn\mp_vi_vn_vs22.vcxproj", "{39D75486-E269-4640-97BF-04DAC9209AD8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_vi_vn_vs22", "minipath\language\mp_vi_vn\mp_vi_vn_vs22.vcxproj", "{39D75486-E269-4640-97BF-04DAC9209AD8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_zh_tw", "minipath\language\mp_zh_tw\mp_zh_tw_vs22.vcxproj", "{9794F3C3-74C5-4CE3-BF3C-B47E5F4BD0F7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_zh_tw_vs22", "minipath\language\mp_zh_tw\mp_zh_tw_vs22.vcxproj", "{9794F3C3-74C5-4CE3-BF3C-B47E5F4BD0F7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_id_id", "language\np3_id_id\np3_id_id_vs22.vcxproj", "{8876A80E-C4A6-423B-B279-427C039BDAC8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_id_id_vs22", "language\np3_id_id\np3_id_id_vs22.vcxproj", "{8876A80E-C4A6-423B-B279-427C039BDAC8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_vi_vn", "language\np3_vi_vn\np3_vi_vn_vs22.vcxproj", "{C8DF31BC-9280-4663-93DF-FDCFFC298269}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_vi_vn_vs22", "language\np3_vi_vn\np3_vi_vn_vs22.vcxproj", "{C8DF31BC-9280-4663-93DF-FDCFFC298269}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_zh_tw", "language\np3_zh_tw\np3_zh_tw_vs22.vcxproj", "{85333322-C153-4101-89BB-36B8EF86DFEF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_zh_tw_vs22", "language\np3_zh_tw\np3_zh_tw_vs22.vcxproj", "{85333322-C153-4101-89BB-36B8EF86DFEF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_hi_in", "language\np3_hi_in\np3_hi_in_vs22.vcxproj", "{55D166D9-9B48-4048-9EDC-856066F60C87}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_hi_in_vs22", "language\np3_hi_in\np3_hi_in_vs22.vcxproj", "{55D166D9-9B48-4048-9EDC-856066F60C87}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_hi_in", "minipath\language\mp_hi_in\mp_hi_in_vs22.vcxproj", "{CC891C3A-8A32-46EA-B80A-0D1DED2BCFB1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_hi_in_vs22", "minipath\language\mp_hi_in\mp_hi_in_vs22.vcxproj", "{CC891C3A-8A32-46EA-B80A-0D1DED2BCFB1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lexilla", "lexilla\Lexilla_vs22.vcxproj", "{6D470002-E04D-4BBB-8B57-D20C2721FECE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uxtheme-stub", "src\DarkMode\uxtheme-stub\uxtheme-stub_vs22.vcxproj", "{0873B090-7FFD-4ABD-9B42-619A06C5041F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uxtheme-stub_vs22", "src\DarkMode\uxtheme-stub\uxtheme-stub_vs22.vcxproj", "{0873B090-7FFD-4ABD-9B42-619A06C5041F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "user32-stub", "src\DarkMode\user32-stub\user32-stub_vs22.vcxproj", "{1F757558-0E57-4DE5-82D6-A14E9D81F05F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "user32-stub_vs22", "src\DarkMode\user32-stub\user32-stub_vs22.vcxproj", "{1F757558-0E57-4DE5-82D6-A14E9D81F05F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_es_419", "minipath\language\mp_es_419\mp_es_419_vs22.vcxproj", "{2AD33E48-FEC6-47B1-8FEF-A0CF1F23DD58}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_es_419_vs22", "minipath\language\mp_es_419\mp_es_419_vs22.vcxproj", "{2AD33E48-FEC6-47B1-8FEF-A0CF1F23DD58}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_419", "language\np3_es_419\np3_es_419_vs22.vcxproj", "{B6757299-D2DD-4103-834D-45227AC13CB7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_419_vs22", "language\np3_es_419\np3_es_419_vs22.vcxproj", "{B6757299-D2DD-4103-834D-45227AC13CB7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_el_gr", "minipath\language\mp_el_gr\mp_el_gr_vs22.vcxproj", "{FF993C51-06FB-461A-9780-FE57BF498155}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_el_gr_vs22", "minipath\language\mp_el_gr\mp_el_gr_vs22.vcxproj", "{FF993C51-06FB-461A-9780-FE57BF498155}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_el_gr", "language\np3_el_gr\np3_el_gr_vs22.vcxproj", "{740715FC-9F1A-4FA0-8876-D28A9CB11E67}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_el_gr_vs22", "language\np3_el_gr\np3_el_gr_vs22.vcxproj", "{740715FC-9F1A-4FA0-8876-D28A9CB11E67}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
