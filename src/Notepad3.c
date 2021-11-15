@@ -4674,7 +4674,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 EditSelectionMultiSelectAll();
             } else {
                 SetFindReplaceData();  // s_FindReplaceData
-                EditSelectionMultiSelectAllEx(&s_FindReplaceData);
+                EditSelectionMultiSelectAllEx(Globals.hwndEdit, &s_FindReplaceData);
             }
         }
     }
