@@ -189,63 +189,63 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|ARM'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\user32\</IntDir>
+    <IntDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
