@@ -101,8 +101,8 @@ void EditEnsureConsistentLineEndings(HWND hwnd);
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
 HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
-bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bGetSel);
-bool EditFindPrev(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bGetSel);
+bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
+bool EditFindPrev(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr);
 int  EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement);
 bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
@@ -139,7 +139,7 @@ void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines);
 void EditBookMarkLineRange(HWND hwnd);
 void EditDeleteMarkerInSelection();
 void EditSelectionMultiSelectAll();
-void EditSelectionMultiSelectAllEx(CLPCEDITFINDREPLACE edFndRpl);
+void EditSelectionMultiSelectAllEx(HWND hwnd, CLPCEDITFINDREPLACE edFndRpl);
 
 //
 //  Folding Functions
