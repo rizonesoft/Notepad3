@@ -1517,6 +1517,10 @@ size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput)
     size_t const maxcnt = cchOutLen - 2;
     while ((pchInput[k] != L'\0') && (i < maxcnt)) {
         switch (pchInput[k]) {
+        //~case L'\\':
+        //~    pchOutput[i++] = L'\\';
+        //~    pchOutput[i++] = L'\\';
+        //~    break;
         case L'\n':
             pchOutput[i++] = L'\\';
             pchOutput[i++] = L'n';
@@ -1573,6 +1577,9 @@ size_t UnSlashCtrlW(LPWSTR pchInOut)
     while (*s) {
         if (*s == L'\\') {
             ++s;
+            //~if (*s == L'\\') {
+            //~    *o = L'\\';
+            //~} else 
             if (*s == L'n') {
                 *o = L'\n';
             } else if (*s == L'r') {
