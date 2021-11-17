@@ -430,9 +430,9 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
     FileVars_Apply(&Globals.fvCurFile);
 
-    DocChangeTransactionBegin();
+    IgnoreNotifyDocChangedEvent(false);
     EditSetDocumentBuffer(lpstrText, lenText);
-    EndDocChangeTransaction();
+    ObserveNotifyDocChangedEvent();
 
     Sci_GotoPosChooseCaret(0);
 
@@ -8996,8 +8996,10 @@ bool EditInsertTagDlg(HWND hwnd, PENCLOSESELDATA pEnclData, UINT* pRepeat)
 static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
     static int* piSortFlags;
+
     switch(umsg) {
     case WM_INITDIALOG: {
+
         piSortFlags = (int*)lParam;
 
         if (*piSortFlags == 0) {
@@ -9215,15 +9217,12 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool EditSortDlg(HWND hwnd,int* piSortFlags)
 {
-
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCEW(IDD_MUI_SORT),
-                  hwnd,
-                  EditSortDlgProc,
-                  (LPARAM)piSortFlags);
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                                  Globals.hLngResContainer,
+                                  MAKEINTRESOURCEW(IDD_MUI_SORT),
+                                  hwnd,
+                                  EditSortDlgProc,
+                                  (LPARAM)piSortFlags);
 
     return (iResult == IDOK) ? true : false;
 

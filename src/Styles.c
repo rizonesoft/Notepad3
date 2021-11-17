@@ -4821,9 +4821,6 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
 //  Style_SelectLexerDlgProc()
 //
 
-static PEDITLEXER _s_selectedLexer = NULL;
-static int _s_idefaultLexer = -1;
-
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
     static int cxClient = 0;
@@ -4832,12 +4829,15 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     static HWND hwndLV = NULL;
 
     static int  iInternalDefault = 0;
+    static PEDITLEXER* pSelectedLexer = NULL;
+
 
     switch(umsg) {
     case WM_INITDIALOG: {
-        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        SetDialogIconNP3(hwnd);
 
+        pSelectedLexer = (PEDITLEXER*)lParam;
+
+        SetDialogIconNP3(hwnd);
         InitWindowCommon(hwnd, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -4889,15 +4889,15 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
             lvi.iItem = i;
             ListView_GetItem(hwndLV,&lvi);
 
-            if (((PEDITLEXER)lvi.lParam)->resID == _s_selectedLexer->resID) {
+            if (((PEDITLEXER)lvi.lParam)->resID == (*pSelectedLexer)->resID) {
                 ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
                 ListView_EnsureVisible(hwndLV,i,false);
-                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(_s_idefaultLexer == i));
+                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(s_iDefaultLexer == i));
                 break;
             }
         }
 
-        iInternalDefault = _s_idefaultLexer;
+        iInternalDefault = s_iDefaultLexer;
         CheckDlgButton(hwnd,IDC_AUTOSELECT, SetBtn(s_bAutoSelect));
 
         CenterDlgInParent(hwnd, NULL);
@@ -5004,9 +5004,10 @@ CASE_WM_CTLCOLOR_SET:
             lvi.mask = LVIF_PARAM;
             lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
             if (ListView_GetItem(hwndLV, &lvi)) {
-                _s_selectedLexer = (PEDITLEXER)lvi.lParam;
-                _s_idefaultLexer = iInternalDefault;
+                *pSelectedLexer = (PEDITLEXER)lvi.lParam;
+                s_iDefaultLexer = iInternalDefault;
                 s_bAutoSelect = IsButtonChecked(hwnd, IDC_AUTOSELECT);
+                //@@@??? Flags.bHugeFileLoadState = false;  // user choice
                 EndDialog(hwnd,IDOK);
             }
         }
@@ -5031,14 +5032,12 @@ CASE_WM_CTLCOLOR_SET:
 //
 void Style_SelectLexerDlg(HWND hwnd)
 {
-    _s_selectedLexer = s_pLexCurrent;
-    _s_idefaultLexer = s_iDefaultLexer;
+    PEDITLEXER selectedLexer = s_pLexCurrent;
 
     if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,
-                                     MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
-                                     GetParent(hwnd), Style_SelectLexerDlgProc, 0)) {
-        s_iDefaultLexer = _s_idefaultLexer;
-        Style_SetLexer(Globals.hwndEdit, _s_selectedLexer);
+                    MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
+                    GetParent(hwnd), Style_SelectLexerDlgProc, (LPARAM)&selectedLexer)) {
+        Style_SetLexer(Globals.hwndEdit, selectedLexer);
     }
 }
 
