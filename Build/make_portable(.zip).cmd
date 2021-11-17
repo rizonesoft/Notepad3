@@ -27,8 +27,8 @@ IF /I "%~1" == "-help"  GOTO SHOWHELP
 IF /I "%~1" == "--help" GOTO SHOWHELP
 IF /I "%~1" == "/?"     GOTO SHOWHELP
 
-SET INPUTDIRx86=bin\Release_x86_v142
-SET INPUTDIRx64=bin\Release_x64_v142
+SET INPUTDIRx86=bin\Release_x86_v143
+SET INPUTDIRx64=bin\Release_x64_v143
 SET "TEMP_NAME=make_portable_temp"
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
