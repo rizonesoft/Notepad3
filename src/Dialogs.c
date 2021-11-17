@@ -5069,12 +5069,12 @@ UINT ComboBox_GetCurSelEx(HWND hDlg, int nIDDlgItem) {
 
 int ComboBox_GetTextHW(HWND hDlg, int nIDDlgItem, HSTRINGW hstr)
 {
-    HWND const hwndCtl = GetDlgItem(hDlg, nIDDlgItem);
-    int const  len = ComboBox_GetTextLength(hwndCtl) + 1;
-    wchar_t* const buf = StrgWriteAccessBuf(hstr, len);
-    int const      idx = ComboBox_GetCurSel(hwndCtl);
+    HWND const   hwndCtl = GetDlgItem(hDlg, nIDDlgItem);
+    int const    idx = ComboBox_GetCurSel(hwndCtl);
+    int const    len = ((idx >= 0) ? ComboBox_GetLBTextLen(hwndCtl, idx) : ComboBox_GetTextLength(hwndCtl)) + 1;
+    LPWSTR const buf = StrgWriteAccessBuf(hstr, len);
     if (idx >= 0) {
-        ComboBox_GetLBText(hwndCtl, ComboBox_GetCurSel(hwndCtl), buf);
+        ComboBox_GetLBText(hwndCtl, idx, buf);
     }
     else {
         ComboBox_GetText(hwndCtl, buf, len);
@@ -5099,9 +5099,9 @@ void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr)
 
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 {
-    int const len = MultiByteToWideChar(CP_UTF8, 0, lpString, -1, NULL, 0) + 1;
-    wchar_t* const buf = AllocMem(len * sizeof(wchar_t), HEAP_ZERO_MEMORY);
-	MultiByteToWideChar(CP_UTF8, 0, lpString, -1, buf, len);
+    int const len = MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, NULL, 0) + 1;
+    LPWSTR const buf = AllocMem(len * sizeof(wchar_t), HEAP_ZERO_MEMORY);
+    MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, buf, len);
 	ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), buf);
     FreeMem(buf);
 }

@@ -5744,7 +5744,6 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
     }
 
     static HSTRINGW hfind = NULL;
-    static char*    chFind = NULL;
 
     if (!hfind) {
         hfind = StrgCreate(NULL);
@@ -5756,13 +5755,13 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
     }
     if (StrgIsEmpty(hfind) && bFillEmpty) {
         // get most recently used find pattern
-        wchar_t* const buf = StrgWriteAccessBuf(hfind, 0);
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
         MRU_Enum(Globals.pMRUfind, 0, buf, (int)StrgGetAllocLength(hfind));
         StrgSanitize(hfind);
     }
     if (StrgIsEmpty(hfind) && bFillEmpty) {
         // get clipboard content
-        wchar_t* const buf = StrgWriteAccessBuf(hfind, 0);
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
         EditGetClipboardW(buf, StrgGetAllocLength(hfind));
         StrgSanitize(hfind);
     }
@@ -5774,16 +5773,17 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
 
     // ensure to F/R-dialog data structure consistency
     StrgReset(lpefr->chFindPattern, StrgGet(hfind));
+    SetFindPattern(StrgGet(hfind));
 
     if (lpefr->bWildcardSearch) {
-        wchar_t* const buf = StrgWriteAccessBuf(hfind, 0);
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
         _EscapeWildcards(buf, StrgGetAllocLength(hfind), lpefr);
         StrgSanitize(hfind);
     }
 
     bool const bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
     if (lpefr->bTransformBS || bIsRegEx) {
-        wchar_t* const buf = StrgWriteAccessBuf(hfind, 0);
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
         TransformBackslashesW(buf, bIsRegEx, CP_UTF8, NULL);
         StrgSanitize(hfind);
     }
@@ -6017,8 +6017,8 @@ static bool _EnableFRDlgCtrls(HWND hwnd) {
 //
 extern int    g_flagMatchText;
 
-    // TODO: §§§ get rid of this buffer
-static WCHAR s_wchBufIn[FNDRPL_BUFFER] = { L'\0' };  // tmp working buffer
+// TODO: §§§ get rid of this buffer
+static WCHAR s_wchBufIn[FNDRPL_BUFFER] = { L'\0' }; // tmp working buffer
 static WCHAR s_wchBufOut[FNDRPL_BUFFER] = { L'\0' }; // tmp working buffer
 
 
@@ -6100,17 +6100,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         Settings.MarkOccurrencesMatchVisible = false;
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
 
-        // Load MRUs
-        for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
-            MRU_Enum(Globals.pMRUfind, i, s_wchBufIn, COUNTOF(s_wchBufIn));
-            if (SlashCtrlW(s_wchBufOut, COUNTOF(s_wchBufOut), s_wchBufIn) == StringCchLen(s_wchBufIn, 0)) {
-                //UnSlashCtrlW(s_wchBufOut);
-            }
-            SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
-        }
-
         SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_LIMITTEXT, FNDRPL_BUFFER, 0);
         SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_SETEXTENDEDUI, true, 0);
+
+        // Load MRUs
+        for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
+            MRU_Enum(Globals.pMRUfind, i, s_wchBufOut, COUNTOF(s_wchBufOut));
+            SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
+        }
 
         COMBOBOXINFO cbInfoF = { sizeof(COMBOBOXINFO) };
         GetComboBoxInfo(GetDlgItem(hwnd, IDC_FINDTEXT), &cbInfoF);
@@ -6125,17 +6122,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         if (s_bIsReplaceDlg) {
 
-            // Load MRUs
-            for (int i = 0; i < MRU_Count(Globals.pMRUreplace); i++) {
-                MRU_Enum(Globals.pMRUreplace, i, s_wchBufIn, COUNTOF(s_wchBufIn));
-                if (SlashCtrlW(s_wchBufOut, COUNTOF(s_wchBufOut), s_wchBufIn) == StringCchLen(s_wchBufIn, 0)) {
-                    //UnSlashCtrlW(s_wchBufOut);
-                }
-                SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
-            }
-
             SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_LIMITTEXT, FNDRPL_BUFFER, 0);
             SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_SETEXTENDEDUI, true, 0);
+
+            // Load MRUs
+            for (int i = 0; i < MRU_Count(Globals.pMRUreplace); i++) {
+                MRU_Enum(Globals.pMRUreplace, i, s_wchBufOut, COUNTOF(s_wchBufOut));
+                SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
+            }
 
             COMBOBOXINFO cbInfoR = { sizeof(COMBOBOXINFO) };
             GetComboBoxInfo(GetDlgItem(hwnd, IDC_REPLACETEXT), &cbInfoR);
@@ -6455,13 +6449,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             switch (HIWORD(wParam)) {
 
-            case CBN_CLOSEUP: {
-                LONG lSelEnd = 0;
-                SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETEDITSEL, 0, (LPARAM)&lSelEnd);
-                SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETEDITSEL, 0, MAKELPARAM(lSelEnd, lSelEnd));
-            }
-            break;
-
             case CBN_EDITUPDATE:
                 if (SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETDROPPEDSTATE, 0, 0)) {
                     //~SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETCURSEL, (WPARAM)-1, 0); // clear
@@ -6469,9 +6456,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 }
                 break;
 
-            case CBN_SELCHANGE: {
-                LRESULT const cursel = SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETCURSEL, 0, 0);
-                if (cursel != CB_ERR) {
+            //~case CBN_SELCHANGE:
+            case CBN_CLOSEUP: {
+                int const cursel = (int)SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETCURSEL, 0, 0);
+                if (cursel >= 0) {
                     SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETCURSEL, (WPARAM)cursel, 0);
                 }
             }
@@ -6703,17 +6691,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_RESETCONTENT, 0, 0);
 
                 for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
-                    MRU_Enum(Globals.pMRUfind, i, s_wchBufIn, COUNTOF(s_wchBufIn));
-                    if (SlashCtrlW(s_wchBufOut, COUNTOF(s_wchBufOut), s_wchBufIn) == StringCchLen(s_wchBufIn, 0)) {
-                        UnSlashCtrlW(s_wchBufOut);
-                    }
+                    MRU_Enum(Globals.pMRUfind, i, s_wchBufOut, COUNTOF(s_wchBufOut));
                     SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
                 }
                 for (int i = 0; i < MRU_Count(Globals.pMRUreplace); i++) {
-                    MRU_Enum(Globals.pMRUreplace, i, s_wchBufIn, COUNTOF(s_wchBufIn));
-                    if (SlashCtrlW(s_wchBufOut, COUNTOF(s_wchBufOut), s_wchBufIn) == StringCchLen(s_wchBufIn, 0)) {
-                        UnSlashCtrlW(s_wchBufOut);
-                    }
+                    MRU_Enum(Globals.pMRUreplace, i, s_wchBufOut, COUNTOF(s_wchBufOut));
                     SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
                 }
                 ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
@@ -6804,12 +6786,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         break;
 
         case IDC_SWAPSTRG: {
-            WCHAR* wszFind = s_wchBufOut;
-            WCHAR wszRepl[FNDRPL_BUFFER] = { L'\0' };
-            GetDlgItemTextW(hwnd, IDC_FINDTEXT, wszFind, COUNTOF(s_wchBufOut));
-            GetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszRepl, COUNTOF(wszRepl));
-            SetDlgItemTextW(hwnd, IDC_FINDTEXT, wszRepl);
-            SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
+            GetDlgItemTextW(hwnd, IDC_FINDTEXT, s_wchBufOut, COUNTOF(s_wchBufOut));
+            GetDlgItemTextW(hwnd, IDC_REPLACETEXT, s_wchBufIn, COUNTOF(s_wchBufIn));
+            SetDlgItemTextW(hwnd, IDC_FINDTEXT, s_wchBufIn);
+            SetDlgItemTextW(hwnd, IDC_REPLACETEXT, s_wchBufOut);
             Globals.FindReplaceMatchFoundState = FND_NOP;
             _SetSearchFlags(hwnd, s_pEfrData);
             _DelayMarkAll(_MQ_STD);
