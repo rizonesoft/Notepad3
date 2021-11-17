@@ -351,8 +351,7 @@ extern "C" BOOL IniSectionClear(LPCWSTR lpSectionName, BOOL bRemoveEmpty)
 
 extern "C" BOOL IniClearAllSections(LPCWSTR lpPrefix, BOOL bRemoveEmpty)
 {
-    auto const len = (size_t)lstrlen(lpPrefix);
-
+    //auto const len = (size_t)lstrlen(lpPrefix);
     CSimpleIni::TNamesDepend Sections;
     s_INI.GetAllSections(Sections);
     for (const auto& section : Sections) {

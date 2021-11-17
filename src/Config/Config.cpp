@@ -1687,7 +1687,7 @@ void LoadSettings()
     // ------------------------------------------------------------------------
 
     // define scintilla internal codepage
-    int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
+    //int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
 
     // set flag for encoding default
     Encoding_SetDefaultFlag(Settings.DefaultEncoding);
