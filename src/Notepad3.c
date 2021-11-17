@@ -2015,9 +2015,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetLayoutCache(SC_CACHE_PAGE);
 
     // Idle Styling (very large text)
-    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view
-    //~~~SciCall_SetIdleStyling(SC_IDLESTYLING_AFTERVISIBLE);
-    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view
 
     SciCall_SetModEventMask(SCI_MODEVENTMASK_FULL);
     SciCall_SetCommandEvents(false); // speedup folding
