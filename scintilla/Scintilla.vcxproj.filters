@@ -230,9 +230,6 @@
     <ClInclude Include="src\EditView.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\FontQuality.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\Indicator.h">
       <Filter>src</Filter>
     </ClInclude>

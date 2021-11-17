@@ -678,7 +678,7 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
 
     //const int foldComment = styler.GetPropertyInt("fold.comment", 1);
     //const int foldComment = props.GetInt("fold.comment", 1) != 0;
-    const int foldComment = options.foldComment;
+    //const int foldComment = options.foldComment;
 
     const Sci_PositionU endPos = startPos + lengthDoc;
     Sci_Position lineCurrent = styler.GetLine(startPos);

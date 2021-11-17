@@ -381,10 +381,9 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
     FileVars_Apply(&Globals.fvCurFile);
 
-    DocChangeTransactionBegin();
+    IgnoreNotifyDocChangedEvent(false);
     EditSetDocumentBuffer(lpstrText, lenText);
-    EndDocChangeTransaction();
-
+    ObserveNotifyDocChangedEvent();
     Sci_GotoPosChooseCaret(0);
 
     if (bClearUndoHistory) {
