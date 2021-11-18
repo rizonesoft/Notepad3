@@ -47,7 +47,8 @@ ctrlW := A_GuiWidth - horzMargin
 list = Title,MousePos,Ctrl,Pos,SBText,VisText,AllText,Freeze
 Loop, Parse, list, `,
 	GuiControl, Move, Ctrl_%A_LoopField%, w%ctrlW%
-return
+	Msgbox, Toolbar "%ToolbarName%" not found! Exiting.
+	return
 
 Update:
 Gui %hGui%:Default
@@ -90,12 +91,12 @@ if (curCtrl)
 {
 	ControlGetText, ctrlTxt, %curCtrl%
 	cText := "ClassNN:`t" curCtrl "`nText:`t" textMangle(ctrlTxt)
-    ControlGetPos cX, cY, cW, cH, %curCtrl%
-    cText .= "`n`tx: " cX "`ty: " cY "`tw: " cW "`th: " cH
-    WinToClient(curWin, cX, cY)
+	ControlGetPos cX, cY, cW, cH, %curCtrl%
+	cText .= "`n`tx: " cX "`ty: " cY "`tw: " cW "`th: " cH
+	WinToClient(curWin, cX, cY)
 	ControlGet, curCtrlHwnd, Hwnd,, % curCtrl
-    GetClientSize(curCtrlHwnd, cW, cH)
-    cText .= "`nClient:`tx: " cX "`ty: " cY "`tw: " cW "`th: " cH
+	GetClientSize(curCtrlHwnd, cW, cH)
+	cText .= "`nClient:`tx: " cX "`ty: " cY "`tw: " cW "`th: " cH
 }
 else
 	cText := ""
@@ -177,13 +178,13 @@ GetClientSize(hWnd, ByRef w := "", ByRef h := "")
 
 WinToClient(hWnd, ByRef x, ByRef y)
 {
-    WinGetPos wX, wY,,, ahk_id %hWnd%
-    x += wX, y += wY
-    VarSetCapacity(pt, 8), NumPut(y, NumPut(x, pt, "int"), "int")
-    if !DllCall("ScreenToClient", "ptr", hWnd, "ptr", &pt)
-        return false
-    x := NumGet(pt, 0, "int"), y := NumGet(pt, 4, "int")
-    return true
+	WinGetPos wX, wY,,, ahk_id %hWnd%
+	x += wX, y += wY
+	VarSetCapacity(pt, 8), NumPut(y, NumPut(x, pt, "int"), "int")
+	if !DllCall("ScreenToClient", "ptr", hWnd, "ptr", &pt)
+		return false
+	x := NumGet(pt, 0, "int"), y := NumGet(pt, 4, "int")
+	return true
 }
 
 textMangle(x)

@@ -427,6 +427,9 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
                 break;
             }
 
+        case SCE_AHKL_COMMAND:
+            break;
+
         case SCE_AHKL_COMMENTDOC:
             {
                 if (OnlySpaces && sc.Match('*','/'))

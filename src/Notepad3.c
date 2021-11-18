@@ -11522,46 +11522,54 @@ bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
 //
 bool RelaunchMultiInst()
 {
-
     if (Flags.MultiFileArg && (s_cFileList > 1)) {
 
-        LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
-        size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
-        LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
-        LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
+        LPWSTR lpCmdLine = StrDup(GetCommandLine());
+        size_t len = StringCchLen(lpCmdLine,0) + 1UL;
+        LPWSTR lpCmdLineNew = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
 
-        StrTab2Space(lpCmdLineNew);
-        StringCchCopy(lpCmdLineNew + s_cchiFileList,2,L"");
+        StrTab2Space(lpCmdLine);
+        StringCchCopy(lpCmdLine + s_cchiFileList, 2, L"");
 
-        WCHAR* pwch = CharPrev(lpCmdLineNew,StrEnd(lpCmdLineNew,len));
+        WCHAR* pwch = CharPrev(lpCmdLine, StrEnd(lpCmdLine, len));
         int k = 0;
         while (*pwch == L' ' || *pwch == L'-' || *pwch == L'+') {
             *pwch = L' ';
-            pwch = CharPrev(lpCmdLineNew,pwch);
+            pwch = CharPrev(lpCmdLine, pwch);
             if (k++ > 1) {
                 s_cchiFileList--;
             }
         }
 
+        int const offset = Settings2.LaunchInstanceWndPosOffset;
+
         for (int i = 0; i < s_cFileList; i++) {
-            StringCchCopy(lpCmdLineNew + s_cchiFileList,8,L" /n - ");
-            StringCchCat(lpCmdLineNew,len,s_lpFileList[i]);
+
+            WININFO wi = g_IniWinInfo;
+            wi.x += (i * offset);
+            wi.y += (i * offset);
+            WCHAR wchPos[80] = { L'\0' };
+            StringCchPrintf(wchPos, COUNTOF(wchPos), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+            size_t const pl = StringCchLen(wchPos, 80) + 1;
+
+            StringCchCopy(lpCmdLineNew, len, lpCmdLine);
+            StringCchCat(lpCmdLineNew, len, wchPos);
+
+            StringCchCopy(lpCmdLineNew + s_cchiFileList + pl, 8, L" /n - ");
+            StringCchCat(lpCmdLineNew, len, s_lpFileList[i]);
             LocalFree(s_lpFileList[i]); // StrDup()
 
             STARTUPINFO si = { sizeof(STARTUPINFO) };
             PROCESS_INFORMATION pi = { 0 };
             CreateProcessW(NULL, lpCmdLineNew, NULL, NULL, false, CREATE_NEW_PROCESS_GROUP, NULL, Path_Get(Paths.WorkingDirectory), &si, &pi);
-
-            // don't wait for it to finish.
-            //::WaitForSingleObject(pi.hProcess, INFINITE);
-            // free up resources...
+            //~WaitForSingleObject(pi.hProcess, INFINITE);
+            WaitForSingleObject(pi.hProcess, 125); // pause 125ms to start next
             CloseHandle(pi.hThread);
             CloseHandle(pi.hProcess);
         }
 
-        LocalFree(lpCmdLineNew); // StrDup()
-        FreeMem(lp1);
-        FreeMem(lp2);
+        LocalFree(lpCmdLine); // StrDup()
+        FreeMem(lpCmdLineNew);
         Path_Empty(s_pthArgFilePath, true);
 
         return true;
