@@ -4538,7 +4538,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath, WINI
     WININFO const _wi = (Flags.bStickyWindowPosition ? g_IniWinInfo : 
                          (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset)));
 
-    StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.max);
+    StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", _wi.x, _wi.y, _wi.cx, _wi.cy, (int)_wi.max);
     StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
     if (StrIsNotEmpty(lpcwFilePath)) {
