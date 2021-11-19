@@ -870,6 +870,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     _InitGlobals();
     InitDarkMode();
+    
+    // Windows Class name
+    StringCchCopy(s_wchWndClass, COUNTOF(s_wchWndClass), _W(SAPPNAME));
 
     // Set global variable Globals.hInstance
     Globals.hInstance = hInstance;
@@ -899,11 +902,22 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     s_bIsUserInAdminGroup = IsUserInAdminGroup();
     s_bIsRunAsAdmin = IsRunAsAdmin();
 
+    // Adapt window class name
+    if (s_bIsProcessElevated) {
+        StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
+    }
+
     // Default Encodings (may already be used for command line parsing)
     Encoding_InitDefaults();
 
     // Command Line, Ini File and Flags
     ParseCommandLine();
+
+    // Adapt window class name
+    if (s_flagPasteBoard) {
+        StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
+    }
+
     FindIniFile();
     TestIniFile();
     DWORD dwFileSize = 0UL;
@@ -917,15 +931,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     // set AppUserModelID
     PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
-
-    // Adapt window class name
-    StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), _W(SAPPNAME));
-    if (s_bIsProcessElevated) {
-        StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
-    }
-    if (s_flagPasteBoard) {
-        StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
-    }
 
     (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
     (void)OleInitialize(NULL);
@@ -10941,7 +10946,7 @@ static void _CanonicalizeInitialDir(LPWSTR lpstrInitialDir, int cchInitialDir)
 }
 
 
-//=============================================================================
+// ============================================================================
 //
 //  OpenFileDlg()
 //  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
@@ -10980,7 +10985,7 @@ bool OpenFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
 }
 
 
-//=============================================================================
+// ============================================================================
 //
 //  SaveFileDlg()
 //  lpstrInitialDir == NULL      : leave initial dir to Save File Explorer
@@ -11019,6 +11024,30 @@ bool SaveFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
 }
 
 
+// ============================================================================
+//
+// CountRunningInstances()
+//
+//
+static BOOL CALLBACK _EnumWndCountProc(HWND hwnd, LPARAM lParam)
+{
+    WCHAR szClassName[64] = { L'\0' };
+    if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
+        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
+            *(int*)lParam += 1;
+        }
+    }
+    return TRUE;
+}
+
+int CountRunningInstances() {
+
+    int count = 0;
+    EnumWindows(_EnumWndCountProc, (LPARAM)&count);
+    return count;
+}
+
+
 /******************************************************************************
 *
 * ActivatePrevInst()
@@ -11027,14 +11056,15 @@ bool SaveFileDlg(HWND hwnd, LPWSTR lpstrFile, int cchFile, LPCWSTR lpstrInitialD
 *
 *
 ******************************************************************************/
-BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
+
+static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
 {
-    BOOL bContinue = TRUE;
+    BOOL  bContinue = TRUE;
     WCHAR szClassName[64] = { L'\0' };
 
-    if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
+    if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
 
-        if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0) {
+        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
 
             DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
             if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
@@ -11046,20 +11076,23 @@ BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
                 }
             }
         }
+    }
     return bContinue;
 }
 
-BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
+
+static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
 {
-    BOOL bContinue = TRUE;
+    BOOL  bContinue = TRUE;
     WCHAR szClassName[64] = { L'\0' };
 
-    if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
+    if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
 
-        if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0) {
+        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
 
-            DWORD const dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL, FALSE);
+            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
             if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
+
                 if (IsWindowEnabled(hwnd)) {
                     bContinue = FALSE;
                 }
@@ -11069,11 +11102,13 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 
                 if (StringCchCompareXI(tchFileName, s_lpFileArg) == 0) {
                     *(HWND*)lParam = hwnd;
-                } else {
+                }
+                else {
                     bContinue = TRUE;
                 }
             }
         }
+    }
     return bContinue;
 }
 
@@ -11091,11 +11126,12 @@ bool ActivatePrevInst()
 
         NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, Flags.bSearchPathIfRelative);
 
-        EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
+        EnumWindows(_EnumWndProc2,(LPARAM)&hwnd);
 
         if (hwnd != NULL) {
             // Enabled
             if (IsWindowEnabled(hwnd)) {
+
                 // Make sure the previous window won't pop up a change notification message
                 //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
 
@@ -11165,12 +11201,13 @@ bool ActivatePrevInst()
     }
 
     hwnd = NULL;
-    EnumWindows(EnumWndProc,(LPARAM)&hwnd);
+    EnumWindows(_EnumWndProc,(LPARAM)&hwnd);
 
     // Found a window
     if (hwnd != NULL) {
         // Enabled
         if (IsWindowEnabled(hwnd)) {
+
             // Make sure the previous window won't pop up a change notification message
             //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
 
@@ -11265,8 +11302,17 @@ bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
         StringCchCopy(wchDir, COUNTOF(wchDir), lpszFilePath);
         PathCchRemoveFileSpec(wchDir, COUNTOF(wchDir));
     }
+
+    int const offset = Settings2.LaunchInstanceWndPosOffset;
+    int const instCnt = CountRunningInstances();
+    WININFO   wi = g_IniWinInfo;
+    wi.x += (instCnt * offset);
+    wi.y += (instCnt * offset);
+    WCHAR wchPos[80] = { L'\0' };
+    StringCchPrintf(wchPos, COUNTOF(wchPos), L"-pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+
     WCHAR wchParams[MAX_PATH * 2];
-    StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s \"%s\"", lpszParameter, lpszFilePath);
+    StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s %s \"%s\"", lpszParameter, wchPos, lpszFilePath);
 
     SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
     sei.fMask = SEE_MASK_DEFAULT;
@@ -11314,7 +11360,9 @@ bool RelaunchMultiInst()
             wi.x += (i * offset);
             wi.y += (i * offset);
             WCHAR wchPos[80] = { L'\0' };
-            StringCchPrintf(wchPos, COUNTOF(wchPos), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+            if (!Globals.CmdLnFlag_PosParam) {
+                StringCchPrintf(wchPos, COUNTOF(wchPos), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+            }
             size_t const pl = StringCchLen(wchPos, 80) + 1;
 
             StringCchCopy(lpCmdLineNew, len, lpCmdLine);
