@@ -11360,7 +11360,9 @@ bool RelaunchMultiInst()
             wi.x += (i * offset);
             wi.y += (i * offset);
             WCHAR wchPos[80] = { L'\0' };
-            StringCchPrintf(wchPos, COUNTOF(wchPos), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+            if (!Globals.CmdLnFlag_PosParam) {
+                StringCchPrintf(wchPos, COUNTOF(wchPos), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+            }
             size_t const pl = StringCchLen(wchPos, 80) + 1;
 
             StringCchCopy(lpCmdLineNew, len, lpCmdLine);
