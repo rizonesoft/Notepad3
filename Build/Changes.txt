@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1117.(build_#) (2021-11-17)
+Current BETA/RC Version 5.21.1119.(build_#) (2021-11-19)
 ========================================================
 
 --------------------------------------------------------
@@ -51,6 +51,7 @@ CHANGES:
 [.alpha]- Some more DynStrg refactorings and LongPath handling.
 --------------------------------------------------------
 [.###.#]- .
+[1119.1]- Migration of Solution/Projects/Src for VS2022.
 [1117.1]- Switch to Scintilla default idle styling mode (none).
 [1115.1]- Reverting changes to F/R behavior, correction for empty pattern.
 [1021.1]- On file restore, do not notify immediately, but check against stored file attributes.
@@ -81,11 +82,13 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.alpha]- Notification blocker on loading huge files.
 [.alpha]- Heap corruption on retrieving text from combo box.
 [.alpha]- Path_ToShortPathName() for grepWinNP3 startup.
 [.alpha]- Path_StripPath().
 --------------------------------------------------------
 [.###.#]- .
+[1119.1]- Positioning multi instance launch.
 [1115.1]- Don't clear occurrence markers for unchanged search pattern.
 [1115.1]- Correction to VS2019 project settings.
 [1115.1]- Find/Repl wildcard pattern handling.
