@@ -1718,6 +1718,11 @@ void LoadSettings()
         winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
         winInfo.dpi = IniSectionGetInt(IniSecWindow, tchDPI, g_IniWinInfo.dpi);
 
+        int const offset = Settings2.LaunchInstanceWndPosOffset;
+        int const instCnt = CountRunningInstances();
+        winInfo.x += (instCnt * offset);
+        winInfo.y += (instCnt * offset);
+
         if ((winInfo.x == CW_USEDEFAULT) || (winInfo.y == CW_USEDEFAULT) ||
                 (winInfo.cx == CW_USEDEFAULT) || (winInfo.cy == CW_USEDEFAULT)) {
             g_IniWinInfo = g_DefWinInfo;
