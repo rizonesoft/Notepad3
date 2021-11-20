@@ -112,6 +112,16 @@ __forceinline void RectFromWinInfo(const WININFO* const pWinInfo, LPRECT pRect)
 {
     SetRect(pRect, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy);
 }
+__forceinline void WinInfoFromRect(LPCRECT pRect, WININFO* pWinInfo)
+{
+    pWinInfo->x = pRect->left;
+    pWinInfo->y = pRect->top;
+    pWinInfo->cx = pRect->right - pRect->left;
+    pWinInfo->cy = pRect->bottom - pRect->top;
+    pWinInfo->max = false;
+    pWinInfo->zoom = 100;
+    pWinInfo->dpi = USER_DEFAULT_SCREEN_DPI;
+}
 
 extern WININFO g_IniWinInfo;
 extern WININFO g_DefWinInfo;

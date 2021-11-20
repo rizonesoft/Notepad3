@@ -11528,9 +11528,7 @@ bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
     else {
         int const offset = Settings2.LaunchInstanceWndPosOffset;
         int const instCnt = CountRunningInstances();
-        WININFO   wi = g_IniWinInfo;
-        wi.x += (instCnt * offset);
-        wi.y += (instCnt * offset);
+        WININFO wi = GetMyWindowPlacement(hwnd, NULL, offset * instCnt);
         WCHAR wchPos[80] = { L'\0' };
         StringCchPrintf(wchPos, COUNTOF(wchPos), L"-pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
 
