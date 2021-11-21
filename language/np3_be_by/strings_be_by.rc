@@ -170,8 +170,8 @@ BEGIN
     IDS_MUI_BUFFERTOOSMALL  "Дзеянне не можа быць выкананым (вельмі доўгія радкі)."
     IDS_MUI_FIND_WRAPFW     "Дасягнуты канец дакумента, пошук будзе працягнуты з пачатку."
     IDS_MUI_FIND_WRAPRE     "Дасягнуты пачатак дакумента, пошук будзе працягнуты з канцу."
-    IDS_MUI_NOTFOUND        "No match found for specified search pattern."
-    IDS_MUI_REPLCOUNT       "%s occurrence(s) of specified search pattern replaced."
+    IDS_MUI_NOTFOUND        "Не знойдзена супадзенняў з вызначаным шаблонам пошуку."
+    IDS_MUI_REPLCOUNT       "Заменена ўваходжанняў вызначанага шаблона пошуку: %s."
     IDS_MUI_ASK_ENCODING    "Пераключэнне кадоўкі файла з адной на другую можа замяніць непадтрымоўваны тэкст сімваламі-заменнікамі, а гісторыя адмены будзе прыбрана. Усё роўна працягнуць?"
     IDS_MUI_ASK_ENCODING2   "Вы збіраецеся змяніць кадоўку пустога файла. Звярніце ўвагу, што гэта прыбярэ гісторыю адмены, паколькі яна не можа быць скаардынаванай з новай кадоўкай. Усё роўна працягнуць?"
     IDS_MUI_READONLY_SAVE   "«%s» толькі для чытання. Захваць у іншы файл?"
@@ -265,7 +265,7 @@ BEGIN
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Ачысціць усё"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Ачысціць гісторыю пошука"
+                            "Ачысціць гісторыю пошуку"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Ачысціць гісторыю замен"
     IDS_MUI_WRAPSEARCH_FWD  "Супадзенне ў пачатку"
