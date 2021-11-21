@@ -1186,7 +1186,6 @@ void LoadSettings()
     }
 
     Settings2.LaunchInstanceWndPosOffset = clampi(IniSectionGetInt(IniSecSettings2, L"LaunchInstanceWndPosOffset", 0), -10000, 10000);
-
     Settings2.LaunchInstanceFullVisible = IniSectionGetBool(IniSecSettings2, L"LaunchInstanceFullVisible", false);
 
     Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", SC_EFF_QUALITY_LCD_OPTIMIZED), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);

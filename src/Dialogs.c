@@ -4477,24 +4477,30 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 
     WININFO winfo = INIT_WININFO;
     if (pWinInfo) {
-        RECT rc = { 0 };
-        RectFromWinInfo(pWinInfo, &rc);
-
         winfo = *pWinInfo;
-        FitIntoMonitorGeometry(&rc, &winfo, mode, false);
+        if (Settings2.LaunchInstanceFullVisible) {
+            RECT rc = { 0 };
+            RectFromWinInfo(pWinInfo, &rc);
+            FitIntoMonitorGeometry(&rc, &winfo, mode, false);
+        }
         if (pWinInfo->max) {
             wndpl.flags &= WPF_RESTORETOMAXIMIZED;
         }
         wndpl.showCmd = SW_RESTORE;
     } else {
-        RECT rc = {0};
+        RECT rc = { 0 };
         if (hwnd) {
             GetWindowRect(hwnd, &rc);
-        } else {
+        }
+        else {
             GetWindowRect(GetDesktopWindow(), &rc);
         }
-        FitIntoMonitorGeometry(&rc, &winfo, mode, false);
-
+        if (Settings2.LaunchInstanceFullVisible) {
+            FitIntoMonitorGeometry(&rc, &winfo, mode, false);
+        }
+        else {
+            WinInfoFromRect(&rc, &winfo);
+        }
         wndpl.showCmd = SW_SHOW;
     }
     RectFromWinInfo(&winfo, &(wndpl.rcNormalPosition));
