@@ -357,7 +357,7 @@ This items are managed by Notepad3.
 
 #### `LaunchInstanceWndPosOffset=0`
 
-#### `LaunchInstanceFullVisible=0`
+#### `LaunchInstanceFullVisible=false`
 
 #### `UseOldStyleBraceMatching=0`
 
