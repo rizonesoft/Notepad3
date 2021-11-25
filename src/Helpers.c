@@ -219,8 +219,11 @@ static void _GetTrueWindowsVersion()
 #endif
 
 // ----------------------------------------------------------------------------
-// https://docs.microsoft.com/en-US/windows/release-health/release-information
-// https://docs.microsoft.com/en-US/windows-insider/active-dev-branch
+// https://docs.microsoft.com/en-us/windows/release-health/  (Windows releases health)
+// https://docs.microsoft.com/en-us/windows/release-health/release-information  (Windows 10)
+// https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information  (Windows 11)
+// https://docs.microsoft.com/en-us/windows/release-health/windows-server-release-info  (Windows Server)
+// https://docs.microsoft.com/en-us/windows-insider/flight-hub/  (Windows Insider Preview Builds)
 // ----------------------------------------------------------------------------
 static LPCWSTR _Win10BuildToReleaseId() {
 
@@ -229,7 +232,7 @@ static LPCWSTR _Win10BuildToReleaseId() {
     DWORD const build = GetWindowsBuildNumber(NULL, NULL);
 
     if (build > 19043) {
-        _wchpReleaseID = L"21H2 [Insdr]";
+        _wchpReleaseID = L"21H2";
     } else if (build > 19042) {
         _wchpReleaseID = L"21H1";
     } else if (build > 19041) {
