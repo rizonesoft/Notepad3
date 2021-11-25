@@ -3249,27 +3249,34 @@ enum GetValue {
   GET_VALUE_FOUND  =  1
 };
 
+#define MAX_NEST_LEVEL_GET_TREE_TAIL_LITERAL  16
+
 static int
-get_tree_tail_literal(Node* node, Node** rnode, regex_t* reg)
+get_tree_tail_literal(Node* node, Node** rnode, regex_t* reg, int nest_level)
 {
   int r;
+
+  nest_level++;
+  if (nest_level >= MAX_NEST_LEVEL_GET_TREE_TAIL_LITERAL) {
+    return GET_VALUE_NONE;
+  }
 
   switch (NODE_TYPE(node)) {
   case NODE_LIST:
     if (IS_NULL(NODE_CDR(node))) {
-      r = get_tree_tail_literal(NODE_CAR(node), rnode, reg);
+      r = get_tree_tail_literal(NODE_CAR(node), rnode, reg, nest_level);
     }
     else {
-      r = get_tree_tail_literal(NODE_CDR(node), rnode, reg);
+      r = get_tree_tail_literal(NODE_CDR(node), rnode, reg, nest_level);
       if (r == GET_VALUE_IGNORE) {
-        r = get_tree_tail_literal(NODE_CAR(node), rnode, reg);
+        r = get_tree_tail_literal(NODE_CAR(node), rnode, reg, nest_level);
       }
     }
     break;
 
 #ifdef USE_CALL
   case NODE_CALL:
-    r = get_tree_tail_literal(NODE_BODY(node), rnode, reg);
+    r = get_tree_tail_literal(NODE_BODY(node), rnode, reg, nest_level);
     break;
 #endif
 
@@ -3307,7 +3314,7 @@ get_tree_tail_literal(Node* node, Node** rnode, regex_t* reg)
     {
       QuantNode* qn = QUANT_(node);
       if (qn->lower != 0) {
-        r = get_tree_tail_literal(NODE_BODY(node), rnode, reg);
+        r = get_tree_tail_literal(NODE_BODY(node), rnode, reg, nest_level);
       }
       else
         r = GET_VALUE_NONE;
@@ -3323,12 +3330,12 @@ get_tree_tail_literal(Node* node, Node** rnode, regex_t* reg)
           r = GET_VALUE_NONE;
         else {
           NODE_STATUS_ADD(node, MARK1);
-          r = get_tree_tail_literal(NODE_BODY(node), rnode, reg);
+          r = get_tree_tail_literal(NODE_BODY(node), rnode, reg, nest_level);
           NODE_STATUS_REMOVE(node, MARK1);
         }
       }
       else {
-        r = get_tree_tail_literal(NODE_BODY(node), rnode, reg);
+        r = get_tree_tail_literal(NODE_BODY(node), rnode, reg, nest_level);
       }
     }
     break;
@@ -4585,7 +4592,7 @@ tune_look_behind(Node* node, regex_t* reg, int state, ParseEnv* env)
           if (IS_NULL(an->lead_node)) {
             an->char_min_len = ci.min;
             an->char_max_len = ci.max;
-            r = get_tree_tail_literal(body, &tail, reg);
+            r = get_tree_tail_literal(body, &tail, reg, 0);
             if (r == GET_VALUE_FOUND) {
               r = onig_node_copy(&(an->lead_node), tail);
               if (r != 0) return r;
@@ -8079,8 +8086,12 @@ onig_detect_can_be_slow_pattern(const UChar* pattern,
     if (count.max_empty_check_nest_level > 2)
       n += count.max_empty_check_nest_level - 2;
 
-    if (count.heavy_element != 0)
-      n += count.heavy_element << 8;
+    if (count.heavy_element != 0) {
+      if (count.heavy_element < 0x10000)
+        n += count.heavy_element << 8;
+      else
+        n += count.heavy_element;
+    }
 
     r = n;
 

@@ -50,14 +50,9 @@ constexpr bool IsWordCharEx(int ch) noexcept {
     return Lexilla::iswordchar(ch) || ch >= 0x80;
 }
 
-constexpr bool IsABlankOrTab(const int ch) noexcept
-{
-    return ((ch == ' ') || (ch == '\t'));
-}
-
 constexpr bool IsWhiteSpace(const int ch) noexcept
 {
-    return ((ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d)));
+    return Lexilla::isspacechar(ch);
 }
 
 constexpr bool IsAHexDigit(int ch) noexcept

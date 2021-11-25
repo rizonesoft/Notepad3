@@ -12,6 +12,7 @@ import os, pathlib, sys, uuid
 
 thisPath = pathlib.Path(__file__).resolve()
 
+sys.path.append(str(thisPath.parent))
 sys.path.append(str(thisPath.parent.parent.parent / "scintilla" / "scripts"))
 
 from FileGenerator import Regenerate, UpdateLineInFile, \

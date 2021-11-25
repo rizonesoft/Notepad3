@@ -339,7 +339,7 @@ static bool IsLookAheadInList(StyleContext& sc, const CharacterSet& validCh, con
     {
         int const ch = sc.GetRelative(i);
 
-        if (IsABlankOrTab(ch))
+        if (IsASpaceOrTab(ch))
         {
             if (j == 0)
             {

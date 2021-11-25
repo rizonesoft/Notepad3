@@ -555,8 +555,8 @@ $(DIR_O)/LexYAML.obj: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-$(DIR_O)/LexAHKL.obj: \
-	../lexers_x/LexAHKL.cxx \
+$(DIR_O)/LexAHK.obj: \
+	../lexers_x/LexAHK.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
 	../../scintilla/include/Scintilla.h \

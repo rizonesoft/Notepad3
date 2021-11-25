@@ -198,9 +198,6 @@
     <ClCompile Include="StyleLexers\styleLexYAML.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
-    <ClCompile Include="StyleLexers\styleLexAHKL.c">
-      <Filter>Source Files\StyleLexers</Filter>
-    </ClCompile>
     <ClCompile Include="StyleLexers\styleLexNim.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
@@ -415,6 +412,9 @@
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexKiX.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexAHK.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
   </ItemGroup>
