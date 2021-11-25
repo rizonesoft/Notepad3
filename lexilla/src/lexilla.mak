@@ -110,7 +110,7 @@ LEX_OBJS=\
 	$(DIR_O)\LexVB.obj \
 	$(DIR_O)\LexVHDL.obj \
 	$(DIR_O)\LexYAML.obj \
-	$(DIR_O)\LexAHKL.obj \
+	$(DIR_O)\LexAHK.obj \
 	$(DIR_O)\LexCSV.obj \
 	$(DIR_O)\LexDart.obj \
 	$(DIR_O)\LexerUtils.obj \

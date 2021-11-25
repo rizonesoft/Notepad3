@@ -198,9 +198,6 @@
     <ClCompile Include="StyleLexers\styleLexYAML.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
-    <ClCompile Include="StyleLexers\styleLexAHKL.c">
-      <Filter>Source Files\StyleLexers</Filter>
-    </ClCompile>
     <ClCompile Include="StyleLexers\styleLexNim.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
@@ -417,14 +414,17 @@
     <ClCompile Include="StyleLexers\styleLexKiX.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexFortran.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexAHK.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
     <ClCompile Include="DynStrg.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PathLib.c">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StyleLexers\styleLexFortran.c">
-      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

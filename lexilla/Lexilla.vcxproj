@@ -88,7 +88,7 @@
     <ClCompile Include="lexers\LexVB.cxx" />
     <ClCompile Include="lexers\LexVHDL.cxx" />
     <ClCompile Include="lexers\LexYAML.cxx" />
-    <ClCompile Include="lexers_x\LexAHKL.cxx" />
+    <ClCompile Include="lexers_x\LexAHK.cxx" />
     <ClCompile Include="lexers_x\LexCSV.cxx" />
     <ClCompile Include="lexers_x\LexDart.cxx" />
     <ClCompile Include="lexers_x\LexerUtils.cxx" />

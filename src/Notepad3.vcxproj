@@ -638,6 +638,7 @@
     <ClCompile Include="DynStrg.c" />
     <ClCompile Include="PathLib.c" />
     <ClCompile Include="StyleLexers\EditLexer.c" />
+    <ClCompile Include="StyleLexers\styleLexAHK.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
     <ClCompile Include="StyleLexers\styleLexFortran.c" />
     <ClCompile Include="StyleLexers\styleLexJulia.c" />
@@ -729,7 +730,6 @@
     <ClCompile Include="Notepad3.c" />
     <ClCompile Include="Print.cpp" />
     <ClCompile Include="Resample.c" />
-    <ClCompile Include="StyleLexers\styleLexAHKL.c" />
     <ClCompile Include="StyleLexers\styleLexASM.c" />
     <ClCompile Include="StyleLexers\styleLexAU3.c" />
     <ClCompile Include="StyleLexers\styleLexAVS.c" />
