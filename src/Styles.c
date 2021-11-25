@@ -58,7 +58,7 @@ static PEDITLEXER g_pLexArray[] = {
     &lexANSI,          // ANSI Files (ASCII Art)
     &lexCONF,          // Apache Config Files
     &lexASM,           // Assembly Script
-    &lexAHKL,          // AutoHotkey L Script
+    &lexAHK,           // AutoHotkey Script
     &lexAU3,           // AutoIt3 Script
     &lexAVS,           // AviSynth Script
     &lexAwk,           // Awk Script
@@ -4431,7 +4431,7 @@ CASE_WM_CTLCOLOR_SET:
                             }
                             ++i;
                         }
-                        assert(iCurStyleIdx != -1);
+                        //assert(iCurStyleIdx != -1);
                     }
                     if (pCurrentStyle) {
                         bIsStyleSelected = true;
