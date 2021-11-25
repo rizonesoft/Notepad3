@@ -567,8 +567,8 @@ LexYAML.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexAHKL.o: \
-	../lexers_x/LexAHKL.cxx \
+LexAHK.o: \
+	../lexers_x/LexAHK.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
 	../../scintilla/include/Scintilla.h \

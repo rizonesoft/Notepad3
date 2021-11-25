@@ -203,9 +203,6 @@
     <ClCompile Include="lexers\LexYAML.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="lexers_x\LexAHKL.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
     <ClCompile Include="lexers_x\LexCSV.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
@@ -274,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="lexers\LexFortran.cxx">
       <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexAHK.cxx">
+      <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

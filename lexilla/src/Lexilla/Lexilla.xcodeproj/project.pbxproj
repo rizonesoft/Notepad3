@@ -160,6 +160,7 @@
 		08084D78A14ADD9A4E3BBF45 /* LexerUtils.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 214542D293B8229DF76865BF /* LexerUtils.cxx */; };
 		5CC5494D93A9A27918106106 /* LexKotlin.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 47A1492780FE119CF797F463 /* LexKotlin.cxx */; };
 		63104C2F805ED6F2623BA2DC /* LexTOML.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 55A340DFB663EDFC048C3842 /* LexTOML.cxx */; };
+		5FC44C1DAAB2A99B8BFF4FF2 /* LexAHK.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 09C9445A93AF2DE63F616464 /* LexAHK.cxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -318,6 +319,7 @@
 		214542D293B8229DF76865BF /* LexerUtils.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexerUtils.cxx; path = ../../lexers/LexerUtils.cxx; sourceTree = SOURCE_ROOT; };
 		47A1492780FE119CF797F463 /* LexKotlin.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexKotlin.cxx; path = ../../lexers/LexKotlin.cxx; sourceTree = SOURCE_ROOT; };
 		55A340DFB663EDFC048C3842 /* LexTOML.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexTOML.cxx; path = ../../lexers/LexTOML.cxx; sourceTree = SOURCE_ROOT; };
+		09C9445A93AF2DE63F616464 /* LexAHK.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexAHK.cxx; path = ../../lexers/LexAHK.cxx; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,6 +367,7 @@
 				28BA730624E34D9400272C2D /* LexA68k.cxx */,
 				28BA72EE24E34D9300272C2D /* LexAbaqus.cxx */,
 				28BA730024E34D9400272C2D /* LexAda.cxx */,
+				09C9445A93AF2DE63F616464 /* LexAHK.cxx */,
 				1BCB4EB388CAB8BC57C8E524 /* LexAHKL.cxx */,
 				28BA72DF24E34D9200272C2D /* LexAPDL.cxx */,
 				28BA72FF24E34D9400272C2D /* LexAsm.cxx */,
@@ -744,6 +747,7 @@
 				08084D78A14ADD9A4E3BBF45 /* LexerUtils.cxx in Sources */,
 				5CC5494D93A9A27918106106 /* LexKotlin.cxx in Sources */,
 				63104C2F805ED6F2623BA2DC /* LexTOML.cxx in Sources */,
+				5FC44C1DAAB2A99B8BFF4FF2 /* LexAHK.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

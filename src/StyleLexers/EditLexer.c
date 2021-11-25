@@ -49,7 +49,7 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
             break;
         // ------------------
         case SCLEX_NULL:
-        case SCLEX_AHKL:
+        case SCLEX_AHK:
         case SCLEX_ASM:
         case SCLEX_BASH:
         case SCLEX_BATCH:
@@ -118,7 +118,7 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_YAML:
             StringCchCopy(pre_out, maxlen, L"#");
             return true;
-        case SCLEX_AHKL:
+        case SCLEX_AHK:
         case SCLEX_ASM:
         case SCLEX_AU3:
         case SCLEX_INNOSETUP:
