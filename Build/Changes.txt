@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1119.(build_#) (2021-11-19)
+Current BETA/RC Version 5.21.1125.(build_#) (2021-11-25)
 ========================================================
 
 --------------------------------------------------------
@@ -47,10 +47,12 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.alpha]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
 [.alpha]- Lexer Fortran: add extended intrinsic functions.
 [.alpha]- Some more DynStrg refactorings and LongPath handling.
 --------------------------------------------------------
 [.###.#]- .
+[1125.1]- Switching to Philippe Lhoste's (PhiLho) AutoHotkey (AHK) Lexer.
 [1119.1]- Migration of Solution/Projects/Src for VS2022.
 [1117.1]- Switch to Scintilla default idle styling mode (none).
 [1115.1]- Reverting changes to F/R behavior, correction for empty pattern.
@@ -88,6 +90,8 @@ FIXES:
 [.alpha]- Path_StripPath().
 --------------------------------------------------------
 [.###.#]- .
+[1125.1]- Sync with current Oniguruma v7.0(ß) dev.
+[1125.1]- Some other findings on the positioning of multi-instance launch.
 [1119.2]- Relaunch multi instances: don't cascade if pos param already defined.
 [1119.2]- Positioning on separate instance launch.
 [1119.1]- Positioning multi instance launch.
