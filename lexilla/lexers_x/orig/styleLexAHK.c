@@ -15,7 +15,7 @@ KEYWORDLIST KeyWords_AHK = {
 "filecreateshortcut filedelete filegetattrib filegetshortcut filegetsize filegettime filegetversion "
 "fileinstall filemove filemovedir fileread filereadline filerecycle filerecycleempty fileremovedir "
 "fileselectfile fileselectfolder filesetattrib filesettime formattime getkeystate groupactivate "
-"groupadd groupclose groupdeactivategui guicontrol guicontrolget hideautoitwin hotkey imagesearch "
+"groupadd groupclose groupdeactivate gui guicontrol guicontrolget hideautoitwin hotkey imagesearch "
 "inidelete iniread iniwrite input inputbox keyhistory keywait listhotkeys listlines listvars menu "
 "mouseclick mouseclickdrag mousegetpos mousemove msgbox outputdebug pixelgetcolor pixelsearch "
 "postmessage process progress random regdelete regread regwrite reload run runas runwait send "
