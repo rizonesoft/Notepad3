@@ -919,6 +919,9 @@
       </ExcludedFromBuild>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="STRINGW.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

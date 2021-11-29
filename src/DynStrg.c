@@ -36,8 +36,8 @@
 typedef struct tagSTRINGW
 {
     LPWSTR  data;
-    size_t    data_length;
-    size_t    alloc_length;
+    size_t  data_length;
+    size_t  alloc_length;
 
 } STRINGW;
 
@@ -49,7 +49,7 @@ typedef struct tagSTRINGW
     {                           \
         return (x > y) ? y : x; \
     }
-__forceinline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
+    __forceinline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
 
 #define _max_(x, y) (((x) < (y)) ? (y) : (x))
 #define _RETCMPMAX_             \
