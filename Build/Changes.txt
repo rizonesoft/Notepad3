@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1125.(build_#) (2021-11-25)
+Current BETA/RC Version 5.21.1127.(build_#) (2021-11-27)
 ========================================================
 
 --------------------------------------------------------
@@ -90,6 +90,7 @@ FIXES:
 [.alpha]- Path_StripPath().
 --------------------------------------------------------
 [.###.#]- .
+[1127.1]- Correction of a typo for command "Gui" in AutoHotkey (AHK) Lexer.
 [1125.1]- Sync with current Oniguruma v7.0(ß) dev.
 [1125.1]- Some other findings on the positioning of multi-instance launch.
 [1119.2]- Relaunch multi instances: don't cascade if pos param already defined.
