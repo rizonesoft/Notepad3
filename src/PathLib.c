@@ -1011,13 +1011,13 @@ bool PTHAPI Path_RenameExtension(HPATHL hpth_in_out, LPCWSTR ext)
 // ----------------------------------------------------------------------------
 
 
-void PTHAPI Path_ExpandEnvStrings(HPATHL hpth)
+void PTHAPI Path_ExpandEnvStrings(HPATHL hpth_in_out)
 {
-    HSTRINGW hstr = ToHStrgW(hpth);
-    if (!hstr)
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
         return;
     
-    ExpandEnvironmentStrgs(hstr);
+    ExpandEnvironmentStrgs(hstr_io, true);
 }
 // ----------------------------------------------------------------------------
 
@@ -1343,7 +1343,7 @@ size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out)
 
     DWORD const _len = GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
     if (!_len) {
-        MsgBoxLastError(L"Path_GetLongPathNameEx()", 0);
+        //MsgBoxLastError(L"Path_GetLongPathNameEx()", 0);
         return 0;
     }
     LPWSTR const buf = StrgWriteAccessBuf(hstr_io, _len);
@@ -1694,7 +1694,7 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out)
     if (!hstr_io)
         return false;
 
-    ExpandEnvironmentStrgs(hstr_io);
+    ExpandEnvironmentStrgs(hstr_io, true);
 
     bool res = false;
     if (_Path_IsRelative(hpth_in_out)) {
@@ -1726,11 +1726,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     if (!hstr_io)
         return false;
 
-    ExpandEnvironmentStrgs(hstr_io);
-
-    // strg beg/end: clear spaces and quote s
-    StrgTrim(hstr_io, L'"');
-    StrgTrim(hstr_io, L'\'');
+    ExpandEnvironmentStrgs(hstr_io, true);
 
     if (_Path_IsRelative(hpth_in_out)) {
         HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_wrkdir));
@@ -1999,11 +1995,16 @@ bool PTHAPI Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out)
 //
 //  (Path_)ExpandEnvironmentStrings()
 //
-void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out)
+void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out, bool bStripQ)
 {
     if (!hstr_in_out) {
         return;
     }
+    if (bStripQ) {
+        StrgTrim(hstr_in_out, L'"');
+        StrgTrim(hstr_in_out, L'\'');
+    }
+
     size_t const min_len = ExpandEnvironmentStringsW(StrgGet(hstr_in_out), NULL, 0);
     LPWSTR       buf_io = StrgWriteAccessBuf(hstr_in_out, min_len);
     DWORD const  cch_io = (DWORD)StrgGetAllocLength(hstr_in_out);
@@ -2021,7 +2022,7 @@ void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out)
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
         return;
-    ExpandEnvironmentStrgs(hstr_io);
+    ExpandEnvironmentStrgs(hstr_io, true);
 }
 // ----------------------------------------------------------------------------
 

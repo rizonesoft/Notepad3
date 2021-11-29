@@ -165,7 +165,7 @@ static void ReAllocW(STRINGW* pstr, size_t len, bool bZeroMem)
         }
     }
     else if (pstr->alloc_length < alloc_len) {
-        pstr->data = ReAllocBuffer(pstr->data, alloc_len, bZeroMem, FALSE);
+        pstr->data = ReAllocBuffer(pstr->data, alloc_len, bZeroMem, false);
         pstr->alloc_length = LengthOfBuffer(pstr->data);
         assert(alloc_len != (pstr->alloc_length * sizeof(wchar_t)));
         /// original memory block is moved, so data_length is not touched
@@ -222,7 +222,7 @@ static void FreeUnusedData(STRINGW* pstr, size_t keep_length)
 {
     size_t const new_alloc_len = max_s(keep_length + 1, pstr->data_length + 1);
     if ((pstr->alloc_length > new_alloc_len) ) {
-        pstr->data = ReAllocBuffer(pstr->data, new_alloc_len, true, true);
+        pstr->data = ReAllocBuffer(pstr->data, new_alloc_len, true, false);
         pstr->alloc_length = LengthOfBuffer(pstr->data);
         pstr->data_length = StrlenW(pstr->data);
     }

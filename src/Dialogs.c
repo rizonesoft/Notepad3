@@ -1351,7 +1351,7 @@ CASE_WM_CTLCOLOR_SET:
 
 			GetDlgItemText(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str));
             StrgSanitize(hargs_str);
-            ExpandEnvironmentStrgs(hargs_str);
+            ExpandEnvironmentStrgs(hargs_str, false);
 
             ExtractFirstArgument(args_buf, file_buf, args2_buf, CMDLN_LENGTH_LIMIT);
             Path_Sanitize(hfile_pth);
