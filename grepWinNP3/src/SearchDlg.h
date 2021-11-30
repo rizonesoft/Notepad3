@@ -26,6 +26,7 @@
 #include "Registry.h"
 #include "EditDoubleClick.h"
 #include "StringUtils.h"
+#include "InfoRtfDialog.h"
 #include <string>
 #include <vector>
 #include <set>
@@ -43,6 +44,7 @@
 #endif
 
 #include <wrl.h>
+
 using namespace Microsoft::WRL;
 
 #define SEARCH_START         (WM_APP+1)
@@ -227,7 +229,6 @@ private:
     bool                              m_bCaseSensitiveC;
     bool                              m_bDotMatchesNewline;
     bool                              m_bDotMatchesNewlineC;
-    bool                              m_bNotSearch;
     bool                              m_bCaptureSearch;
     bool                              m_bSizeC;
     bool                              m_endDialog;
@@ -251,6 +252,7 @@ private:
     bool                              m_bAscending;
     std::wstring                      m_resultString;
     std::wstring                      m_toolTipReplaceString;
+    std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
 
     bool m_bStayOnTop;
     BYTE m_OpacityNoFocus;

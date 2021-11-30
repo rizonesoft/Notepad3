@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2013, 2017, 2020-2021 - Stefan Kueng
 
@@ -20,11 +20,11 @@
 #include "IniSettings.h"
 #include "StringUtils.h"
 
-CIniSettings::CIniSettings(void)
+CIniSettings::CIniSettings()
 {
 }
 
-CIniSettings::~CIniSettings(void)
+CIniSettings::~CIniSettings()
 {
     Save();
 }

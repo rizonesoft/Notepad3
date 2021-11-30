@@ -1,0 +1,124 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033\deflangfe1033{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri;}}
+{\colortbl ;\red0\green0\blue0;\red0\green0\blue255;\red0\green0\blue238;}
+{\*\generator Riched20 10.0.22000}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+\pard\widctlpar\fi-10\li-5\sa138\sl240\slmult1\cf1\f0\fs24 This help file shows only the basics of a regular expression search, and it's here only to show the flavor of the used regex.\par
+
+\pard\widctlpar\fi-10\li-5\sl240\slmult1 If you're not familiar with regular expressions, please consult a tutorial like {\cf0{\field{\*\fldinst{HYPERLINK https://www.regular-expressions.info/tutorial.html }}{\fldrslt{https://www.regular-expressions.info/tutorial.html\ul0\cf0}}}}\cf0\f0\fs24\par
+
+\pard\widctlpar\fi-10\li-5\sa138\sl240\slmult1\cf1\par
+
+\pard\widctlpar\sa160\sl252\slmult1\expndtw1\charscalex110 The\expndtw8  \expndtw1 Regex\expndtw8  \expndtw1 syntax\expndtw8  \expndtw1 is\expndtw8  \expndtw1 described\expndtw8  \expndtw1 in\expndtw8  \expndtw1 detail\expndtw7  \expndtw1 here:\line {\cf0\charscalex104{\field{\*\fldinst{HYPERLINK https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html }}{\fldrslt{https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html\ul0\cf0}}}}\expndtw0\charscalex0\f0\fs24\par
+\expndtw1\charscalex109 and\expndtw8  \expndtw1 all\expndtw7  \expndtw1 the\expndtw8  \expndtw1 possible\expndtw8  \expndtw1 character\expndtw8  \expndtw1 classes\expndtw8  \expndtw1 can\expndtw8  \expndtw1 be\expndtw8  \expndtw1 found\expndtw8  \expndtw1 here:\line {\cf0\charscalex105{\field{\*\fldinst{HYPERLINK https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/character_classes.html }}{\fldrslt{https://www.boost.org/doc/libs/release/libs/regex/doc/html/boost_regex/syntax/character_classes.html\ul0\cf0}}}}\expndtw0\charscalex0\f0\fs24\par
+\trowd\trgaph134\trleft12\trrh612\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5114 
+\pard\intbl\widctlpar\sl252\slmult1\b\fs36 Regular expression examples\b0\cell\row\trowd\trgaph134\trleft12\trrh396\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\fs24 .\cell Matches all characters\cell\row\trowd\trgaph134\trleft12\trrh588\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1 +\cell Matches the previous expression one or more times\cell\row\trowd\trgaph134\trleft12\trrh588\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1 *\cell Matches the previous expression zero or more times\cell\row\trowd\trgaph134\trleft12\trrh516\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\\cell Escapes special characters\cell\row\trowd\trgaph134\trleft12\trrh780\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\Q...\\E\cell 
+\pard\intbl\widctlpar\ri155\sl252\slmult1\qj Matches the characters between \\Q and \\E literally, suppressing the meaning of special characters.\cell\row\trowd\trgaph134\trleft12\trrh516\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1 [a-c]\cell Matches a, b and c\cell\row\trowd\trgaph134\trleft12\trrh516\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\d\cell Matches all digits\cell\row\trowd\trgaph134\trleft12\trrh516\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\w\cell Matches all word characters\cell\row\trowd\trgaph134\trleft12\trrh516\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\s\cell Matches all whitespace characters\cell\row\trowd\trgaph134\trleft12\trrh408\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1 ^\cell Matches the start of a line\cell\row\trowd\trgaph134\trleft12\trrh408\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1 $\cell Matches the end of a line\cell\row\trowd\trgaph134\trleft12\trrh588\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\b\cell Matches a word boundary. Use this to search for whole words, e.g. \\bword\\b.\cell\row\trowd\trgaph134\trleft12\trrh780\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\x\{FFFF\}\cell Matches the unicode character\par
+0xFFFF. Note: this only works for text\par
+files!\cell\row\trowd\trgaph134\trleft12\trrh408\trpaddl134\trpaddr134\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1704\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5116 
+\pard\intbl\widctlpar\sl252\slmult1\\xFF\cell Matches the character 0xFF\cell\row 
+\pard\widctlpar\fi-10\li-5\sa138\sl240\slmult1\par
+for replacing, the following placeholders can be used\par
+\trowd\trgaph105\trleft6\trrh408\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $&\cell Outputs what matched the whole expression\cell\row\trowd\trgaph105\trleft6\trrh780\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $` or\par
+$\{^PREMATCH\}\cell Outputs the text between the end of the last match found (or the start of the text if no previous match was found), and the start of the current match\cell\row\trowd\trgaph105\trleft6\trrh588\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $' or\par
+$\{^POSTMATCH\}\cell Outputs all the text following the end of the current\par
+match\cell\row\trowd\trgaph105\trleft6\trrh588\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $+\cell Outputs what matched the last marked subexpression in the regular expression\cell\row\trowd\trgaph105\trleft6\trrh408\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $n or $\{n\}\cell Outputs what matched the n'th sub-expression\cell\row\trowd\trgaph105\trleft6\trrh408\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $$\cell Outputs a literal '$'\cell\row\trowd\trgaph105\trleft6\trrh588\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $+\{NAME\}\cell Outputs whatever matched the sub-expression named "NAME"\cell\row\trowd\trgaph105\trleft6\trrh1356\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $\{count08\}\cell 
+\pard\intbl\widctlpar\ri4\sl252\slmult1 replaced with numbers starting from 1, incrementing by 1 for every match. The numbers after "count" are optional and indicate how many leading spaces the output should use, or if the number is preceded by a zero how many leading zeros.\cell\row\trowd\trgaph105\trleft6\trrh588\trpaddl105\trpaddr105\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $\{count08(start)\}\cell same as $\{count\}, but with "start" as the start value for counting\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\tx5207 $\{count08(start, increment)\}\cell 
+\pard\intbl\widctlpar\ri35\sl252\slmult1 same as $\{count(start)\}, but with "increment" as the increment value instead of the default 1\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $\{filepath\}\cell replaced with the path of the currently searched file\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $\{filename\}\cell replaced with the name of the currently searched file. The name does not include the file extension\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $\{fileext\}\cell replaced with the extension of the currently searched file\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $\{now\}\cell 
+\pard\intbl\widctlpar\ri28\sl252\slmult1 replaced with the current date and time in the locale system format\cell\row\trowd\trgaph102\trleft6\trrh1932\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1 $\{now\}\cell 
+\pard\intbl\widctlpar\sl240\slmult1 replaced with the current date and time with the specified format. The format string must be in the format of the strftime c++ function. See {{\field{\*\fldinst{HYPERLINK "https://www.cplusplus.com/reference/ctime/strftime/"}}{\fldrslt{\ul\cf2\cf3\ul https://www.cplusplus.com/reference/ctime/strftime/ }}}}\f0\fs24 for the specs.\par
+
+\pard\intbl\widctlpar\sl252\slmult1 Example: $\{now,%A, %B %d, %Y\} would print\par
+"Saturday, March 17, 2021"\par
+The tooltip on the replace text box shows the expanded string.\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\a\cell Outputs the bell character: '\\a'\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\e\cell Outputs the ANSI escape character (code point 27)\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\f\cell Outputs a form feed character: '\\f'\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\n\cell Outputs a newline character: '\\n'\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\r\cell Outputs a carriage return character: '\\r'\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\t\cell Outputs a tab character: '\\t'\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\v\cell Outputs a vertical tab character: '\\v'\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\xDD\cell Outputs the character whose hexadecimal code point is 0xDD\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\x\{DDDD\}\cell Outputs the character whose hexadecimal code point is 0xDDDDD\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\cX\cell Outputs the ANSI escape sequence "escape-X"\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\D\cell If D is a decimal digit in the range 1-9, then outputs the text that matched sub-expression D\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\l\cell Causes the next character to be outputted, to be output in lower case\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\u\cell Causes the next character to be outputted, to be output in upper case\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\L\cell Causes all subsequent characters to be output in lower case, until a \\E is found\cell\row\trowd\trgaph102\trleft6\trrh588\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\U\cell Causes all subsequent characters to be output in upper case, until a \\E is found\cell\row\trowd\trgaph102\trleft6\trrh408\trpaddl102\trpaddr102\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx1458\clvertalc\clbrdrl\brdrw12\brdrs\brdrcf1\clbrdrt\brdrw12\brdrs\brdrcf1\clbrdrr\brdrw12\brdrs\brdrcf1\clbrdrb\brdrw12\brdrs\brdrcf1 \cellx5124 
+\pard\intbl\widctlpar\sl252\slmult1\\E\cell Terminates a \\L or \\U sequence\cell\row 
+\pard\widctlpar\li-96\ri4713\sl252\slmult1\fs16\par
+}
+ 

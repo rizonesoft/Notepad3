@@ -391,6 +391,7 @@
     <ClCompile Include="sktoolslib_mod\FileDropTarget.cpp" />
     <ClCompile Include="sktoolslib_mod\Hash.cpp" />
     <ClCompile Include="sktoolslib_mod\hyperlink.cpp" />
+    <ClCompile Include="sktoolslib_mod\InfoRtfDialog.cpp" />
     <ClCompile Include="sktoolslib_mod\Language.cpp" />
     <ClCompile Include="sktoolslib_mod\Monitor.cpp" />
     <ClCompile Include="sktoolslib_mod\PathUtils.cpp" />
@@ -407,7 +408,6 @@
     <ClCompile Include="src\Bookmarks.cpp" />
     <ClCompile Include="src\BookmarksDlg.cpp" />
     <ClCompile Include="src\grepWin.cpp" />
-    <ClCompile Include="src\InfoDlg.cpp" />
     <ClCompile Include="src\MultiLineEditDlg.cpp" />
     <ClCompile Include="src\NameDlg.cpp" />
     <ClCompile Include="src\RegexReplaceFormatter.cpp" />
@@ -438,6 +438,7 @@
     <ClInclude Include="sktoolslib_mod\FileDropTarget.h" />
     <ClInclude Include="sktoolslib_mod\Hash.h" />
     <ClInclude Include="sktoolslib_mod\hyperlink.h" />
+    <ClInclude Include="sktoolslib_mod\InfoRtfDialog.h" />
     <ClInclude Include="sktoolslib_mod\Language.h" />
     <ClInclude Include="sktoolslib_mod\maxpath.h" />
     <ClInclude Include="sktoolslib_mod\Monitor.h" />
@@ -457,7 +458,6 @@
     <ClInclude Include="src\Bookmarks.h" />
     <ClInclude Include="src\BookmarksDlg.h" />
     <ClInclude Include="src\COMPtrs.h" />
-    <ClInclude Include="src\InfoDlg.h" />
     <ClInclude Include="src\last\version.h" />
     <ClInclude Include="src\LineData.h" />
     <ClInclude Include="src\MultiLineEditDlg.h" />

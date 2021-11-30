@@ -43,6 +43,8 @@ CCircularLog& CCircularLog::Instance()
 
 bool CCircularLog::Init(const std::wstring& path, int maxlines)
 {
+    std::unique_lock<std::mutex> lock(m_mutex);
+
     m_path     = path;
     m_maxLines = maxlines;
 
@@ -74,7 +76,8 @@ bool CCircularLog::Init(const std::wstring& path, int maxlines)
 
 bool CCircularLog::AddLine(const std::wstring& line)
 {
-    wchar_t tmpBuf1[128] = {0};
+    std::unique_lock<std::mutex> lock(m_mutex);
+    wchar_t                      tmpBuf1[128] = {0};
     _wstrtime_s(tmpBuf1, 128);
     wchar_t tmpBuf2[128] = {0};
     _wstrdate_s(tmpBuf2, 128);
@@ -87,6 +90,7 @@ bool CCircularLog::AddLine(const std::wstring& line)
 
 bool CCircularLog::Save()
 {
+    std::unique_lock<std::mutex> lock(m_mutex);
     if (m_path.empty())
         return false;
     try
