@@ -200,7 +200,7 @@ typedef struct _enc_det_t {
 #define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, "" }
 
 
-ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
                                   cpi_enc_t iAnalyzeHint,
                                   bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection);
 

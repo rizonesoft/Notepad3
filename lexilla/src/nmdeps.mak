@@ -257,6 +257,18 @@ $(DIR_O)/LexDiff.obj: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
+$(DIR_O)/LexFortran.obj: \
+	../lexers/LexFortran.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h
 $(DIR_O)/LexHTML.obj: \
 	../lexers/LexHTML.cxx \
 	../../scintilla/include/ILexer.h \

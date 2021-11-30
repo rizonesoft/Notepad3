@@ -414,8 +414,17 @@
     <ClCompile Include="StyleLexers\styleLexKiX.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexFortran.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
     <ClCompile Include="StyleLexers\styleLexAHK.c">
       <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="DynStrg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathLib.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -593,6 +602,12 @@
     <ClInclude Include="..\language\ColorDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DynStrg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">
@@ -697,5 +712,8 @@
     <Text Include="..\Versions\build.txt">
       <Filter>templates</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="STRINGW.natvis" />
   </ItemGroup>
 </Project>

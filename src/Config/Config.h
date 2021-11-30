@@ -22,14 +22,15 @@ extern "C" {
 #endif
 
 #include "TypeDefs.h"
+#include "PathLib.h"
 #include "Helpers.h"
 
 //==== Ini-File Handling =============================================
 
 bool FindIniFile();
 bool TestIniFile();
-bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights);
-bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out);
+bool CanAccessPath(const HPATHL hpth, DWORD genericAccessRights);
+bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out);
 void LoadSettings();
 bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);
@@ -139,7 +140,8 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);
 bool      MRU_Destroy(LPMRULIST pmru);
 bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks);
 bool      MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex);
-bool      MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks);
+bool      MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex);
+bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks);
 bool      MRU_Delete(LPMRULIST pmru, int iIndex);
 bool      MRU_Empty(LPMRULIST pmru, bool bExceptLeast);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);

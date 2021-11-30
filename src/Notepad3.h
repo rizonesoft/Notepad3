@@ -111,7 +111,7 @@ int  CountRunningInstances();
 bool ActivatePrevInst();
 bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath);
 bool RelaunchMultiInst();
-bool RelaunchElevated(LPWSTR lpNewCmdLnArgs);
+bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs);
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
 void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
@@ -145,25 +145,25 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
 void HandleColorDefClicked(HWND hwnd, const DocPos position);
 
-bool IsFindPatternEmpty();
-void SetFindPattern(LPCWSTR wchFindPattern);
-void SetFindPatternMB(LPCSTR chFindPattern);
-size_t LengthOfFindPattern();
+bool    IsFindPatternEmpty();
 LPCWSTR GetFindPattern();
-void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
-void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
+void    GetFindPatternMB(LPSTR chPattern, int cch);
+void    SetFindPattern(LPCWSTR wchFindPattern);
+void    SetFindPatternMB(LPCSTR chFindPattern);
+size_t  LengthOfFindPattern();
+size_t  LengthOfFindPatternMB();
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 
-bool FileIO(bool fLoad, LPWSTR pszFileName, EditFileIOStatus * status,
+bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
             bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
             bool bSaveCopy, bool bPreserveTimeStamp);
-bool FileLoad(LPCWSTR lpszFile, bool bDontSave, bool bNew, bool bReload,
+bool FileLoad(const HPATHL hfile_pth, bool bDontSave, bool bNew, bool bReload,
               bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection);
-bool FileRevert(LPCWSTR szFileName, bool);
+bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc);
 bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bPreserveTimeStamp);
-bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
-bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
+bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
+bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 
 void CreateBars(HWND hwnd, HINSTANCE hInstance);
 

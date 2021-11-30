@@ -1,13 +1,11 @@
 #pragma once
 
-#include "typedefs.h"
+#include "TypeDefs.h"
 #include "Scintilla.h"
 
 // -----------------------------------------------------------------------------
 
-#define BUFZIZE_STYLE_EXTENTIONS 512
 #define BUFSIZE_STYLE_VALUE 256
-
 
 // -----------------------------------------------------------------------------
 
@@ -42,7 +40,7 @@ typedef struct _editlexer
     int          resID;        // language resource
     LPCWSTR      pszName;      // config/settings section
     LPCWSTR      pszDefExt;    // default file name ext (4 reset)
-    WCHAR        szExtensions[BUFZIZE_STYLE_EXTENTIONS];
+    WCHAR        szExtensions[STYLE_EXTENTIONS_BUFFER];
     PKEYWORDLIST pKeyWords;
     EDITSTYLE    Styles[];     // must be last
 
@@ -108,6 +106,8 @@ extern EDITLEXER lexCSV;           // CSV Prism Color Lexer
 extern EDITLEXER lexD;             // D Source Code
 extern EDITLEXER lexDart;          // Dart Source Code
 extern EDITLEXER lexDIFF;          // Diff Files
+extern EDITLEXER lexFortran;       // Fortran F90+
+//~extern EDITLEXER lexF77;           // Fortran F77
 extern EDITLEXER lexGo;            // Go Source Code
 extern EDITLEXER lexINNO;          // Inno Setup Script
 extern EDITLEXER lexJAVA;          // Java Source Code

@@ -31,15 +31,15 @@ LexerBase::LexerBase(const LexicalClass *lexClasses_, size_t nClasses_) :
 	lexClasses(lexClasses_), nClasses(nClasses_) {
 	for (int wl = 0; wl < numWordLists; wl++)
 		keyWordLists[wl] = new WordList;
-	keyWordLists[numWordLists] = 0;
+	keyWordLists[numWordLists] = nullptr;
 }
 
 LexerBase::~LexerBase() {
 	for (int wl = 0; wl < numWordLists; wl++) {
 		delete keyWordLists[wl];
-		keyWordLists[wl] = 0;
+		keyWordLists[wl] = nullptr;
 	}
-	keyWordLists[numWordLists] = 0;
+	keyWordLists[numWordLists] = nullptr;
 }
 
 void SCI_METHOD LexerBase::Release() {

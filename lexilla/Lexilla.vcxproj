@@ -64,6 +64,7 @@
     <ClCompile Include="lexers\LexCSS.cxx" />
     <ClCompile Include="lexers\LexD.cxx" />
     <ClCompile Include="lexers\LexDiff.cxx" />
+    <ClCompile Include="lexers\LexFortran.cxx" />
     <ClCompile Include="lexers\LexHTML.cxx" />
     <ClCompile Include="lexers\LexInno.cxx" />
     <ClCompile Include="lexers\LexJulia.cxx" />

@@ -21,6 +21,9 @@
 #include "SciCall.h"
 #include "TypeDefs.h"
 
+void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src);
+void ReleaseEFR(LPEDITFINDREPLACE efr);
+
 void EditInitializeSciCtrl(HWND);
 void EditReplaceSelection(const char* text, bool bForceSel);
 void EditInitWordDelimiter(HWND hwnd);
@@ -37,9 +40,9 @@ bool EditSwapClipboard(HWND hwnd,bool);
 bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
 void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
 void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
-bool EditLoadFile(HWND hwnd, LPWSTR pszFile, EditFileIOStatus *const status,
+bool EditLoadFile(HWND hwnd, const HPATHL hfile_pth, EditFileIOStatus* const status,
                   bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection, bool bClearUndoHistory);
-bool EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus *status, bool bSaveCopy, bool bPreserveTimeStamp);
+bool EditSaveFile(HWND hwnd, const HPATHL hfile_pth, EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp);
 
 void EditInvertCase(HWND hwnd);
 void EditTitleCase(HWND hwnd);
@@ -98,8 +101,8 @@ void EditEnsureConsistentLineEndings(HWND hwnd);
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
 HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
-bool EditFindNext(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd);
-bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd);
+bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
+bool EditFindPrev(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr);
 int  EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement);
 bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
@@ -120,7 +123,7 @@ void EditClearAllBookMarks(HWND hwnd);
 void EditToggleView(HWND hwnd);
 void EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int  EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
-void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel);
+void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel);
 void EditUpdateVisibleIndicators();
 void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly);
 void EditSetAccelWordNav(HWND hwnd,bool);

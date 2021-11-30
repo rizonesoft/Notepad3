@@ -86,6 +86,7 @@ LEX_OBJS=\
 	$(DIR_O)\LexCSS.obj \
 	$(DIR_O)\LexD.obj \
 	$(DIR_O)\LexDiff.obj \
+	$(DIR_O)\LexFortran.obj \
 	$(DIR_O)\LexHTML.obj \
 	$(DIR_O)\LexInno.obj \
 	$(DIR_O)\LexJulia.obj \

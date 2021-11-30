@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdlib>
+#include <cstdint>
 #include <cassert>
 #include <cstring>
 #include <cstdio>
@@ -333,6 +334,7 @@ class ScintillaWin :
 	UINT dpi = USER_DEFAULT_SCREEN_DPI;
 	ReverseArrowCursor reverseArrowCursor;
 
+	PRectangle rectangleClient;
 	HRGN hRgnUpdate;
 
 	bool hasOKText;
@@ -465,6 +467,7 @@ class ScintillaWin :
 	bool IsVisible() const noexcept;
 	int SetScrollInfo(int nBar, LPCSCROLLINFO lpsi, BOOL bRedraw) noexcept;
 	bool GetScrollInfo(int nBar, LPSCROLLINFO lpsi) noexcept;
+	bool ChangeScrollRange(int nBar, int nMin, int nMax, UINT nPage) noexcept;
 	void ChangeScrollPos(int barType, Sci::Position pos);
 	sptr_t GetTextLength();
 	sptr_t GetText(uptr_t wParam, sptr_t lParam);
@@ -474,6 +477,7 @@ class ScintillaWin :
 	sptr_t ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 	#endif
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	PRectangle GetClientRectangle() const override;
 	void SizeWindow();
 	sptr_t MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 	sptr_t KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
@@ -1459,6 +1463,10 @@ sptr_t ScintillaWin::ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_
 #endif
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
+PRectangle ScintillaWin::GetClientRectangle() const {
+	return rectangleClient;
+}
+
 void ScintillaWin::SizeWindow() {
 #if defined(USE_D2D)
 	if (paintState == PaintState::notPainting) {
@@ -1468,6 +1476,7 @@ void ScintillaWin::SizeWindow() {
 	}
 #endif
 	//Platform::DebugPrintf("Scintilla WM_SIZE %d %d\n", LOWORD(lParam), HIWORD(lParam));
+	rectangleClient = wMain.GetClientPosition();
 	ChangeSize();
 }
 
@@ -2007,7 +2016,7 @@ sptr_t ScintillaWin::SciMessage(Message iMessage, uptr_t wParam, sptr_t lParam) 
 	case Message::EncodedFromUTF8:
 		return EncodedFromUTF8(ConstCharPtrFromUPtr(wParam),
 			CharPtrFromSPtr(lParam));
-	
+
 	default:
 		break;
 
@@ -2427,59 +2436,44 @@ void ScintillaWin::SetHorizontalScrollPos() {
 	ChangeScrollPos(SB_HORZ, xOffset);
 }
 
+bool ScintillaWin::ChangeScrollRange(int nBar, int nMin, int nMax, UINT nPage) noexcept {
+	SCROLLINFO sci = { sizeof(sci), SIF_PAGE | SIF_RANGE, 0, 0, 0, 0, 0 };
+	GetScrollInfo(nBar, &sci);
+	if ((sci.nMin != nMin) || (sci.nMax != nMax) ||	(sci.nPage != nPage)) {
+		sci.nMin = nMin;
+		sci.nMax = nMax;
+		sci.nPage = nPage;
+		SetScrollInfo(nBar, &sci, TRUE);
+		return true;
+	}
+	return false;
+}
+
 bool ScintillaWin::ModifyScrollBars(Sci::Line nMax, Sci::Line nPage) {
 	if (!IsVisible()) {
 		return false;
 	}
 
 	bool modified = false;
-	SCROLLINFO sci = {
-		sizeof(sci), 0, 0, 0, 0, 0, 0
-	};
-	sci.fMask = SIF_PAGE | SIF_RANGE;
-	GetScrollInfo(SB_VERT, &sci);
 	const Sci::Line vertEndPreferred = nMax;
 	if (!verticalScrollBarVisible)
 		nPage = vertEndPreferred + 1;
-	if ((sci.nMin != 0) ||
-		(sci.nMax != vertEndPreferred) ||
-	        (sci.nPage != static_cast<unsigned int>(nPage)) ||
-	        (sci.nPos != 0)) {
-		sci.fMask = SIF_PAGE | SIF_RANGE;
-		sci.nMin = 0;
-		sci.nMax = static_cast<int>(vertEndPreferred);
-		sci.nPage = static_cast<UINT>(nPage);
-		sci.nPos = 0;
-		sci.nTrackPos = 1;
-		SetScrollInfo(SB_VERT, &sci, TRUE);
+	if (ChangeScrollRange(SB_VERT, 0, static_cast<int>(vertEndPreferred), static_cast<unsigned int>(nPage))) {
 		modified = true;
 	}
 
 	const PRectangle rcText = GetTextRectangle();
-	int horizEndPreferred = scrollWidth;
-	if (horizEndPreferred < 0)
-		horizEndPreferred = 0;
 	int pageWidth = static_cast<int>(rcText.Width());
+	const int horizEndPreferred = std::max({scrollWidth, pageWidth - 1, 0});
 	if (!horizontalScrollBarVisible || Wrapping())
 		pageWidth = horizEndPreferred + 1;
-	sci.fMask = SIF_PAGE | SIF_RANGE;
-	GetScrollInfo(SB_HORZ, &sci);
-	if ((sci.nMin != 0) ||
-		(sci.nMax != horizEndPreferred) ||
-		(sci.nPage != static_cast<unsigned int>(pageWidth)) ||
-	        (sci.nPos != 0)) {
-		sci.fMask = SIF_PAGE | SIF_RANGE;
-		sci.nMin = 0;
-		sci.nMax = horizEndPreferred;
-		sci.nPage = pageWidth;
-		sci.nPos = 0;
-		sci.nTrackPos = 1;
-		SetScrollInfo(SB_HORZ, &sci, TRUE);
+	if (ChangeScrollRange(SB_HORZ, 0, horizEndPreferred, pageWidth)) {
 		modified = true;
 		if (scrollWidth < pageWidth) {
 			HorizontalScrollTo(0);
 		}
 	}
+
 	return modified;
 }
 

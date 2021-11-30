@@ -954,6 +954,8 @@
 #define IDS_LEX_KOTLIN_SRC              63052
 #define IDS_LEX_JULIA_SCR               63053
 #define IDS_LEX_KIX_SCR                 63054
+#define IDS_LEX_FORTRAN                 63055
+//#define IDS_LEX_F77                     63056
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101
@@ -1234,6 +1236,7 @@
 #define IDS_LEX_STR_63375               63375
 #define IDS_LEX_STR_63376               63376
 #define IDS_LEX_STR_63377               63377
+#define IDS_LEX_STR_63378               63378
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401
