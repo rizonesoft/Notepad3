@@ -865,6 +865,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         FreeLanguageResources();
     #endif
 
+    CleanupDlgResources();
+
     Scintilla_ReleaseResources();
 
     OleUninitialize();

@@ -419,12 +419,11 @@ static void _FillThemesMenuTable()
         HANDLE hFindFile = FindFirstFileW(Path_Get(hThemePath), &FindFileData);
         if (IS_VALID_HANDLE(hFindFile)) {
             // ---  fill table by directory entries  ---
-            WCHAR wchFileName[MINI_BUFFER] = { L'\0' };
+            WCHAR wchFileName[SMALL_BUFFER] = { L'\0' };
             for (iTheme = 1; iTheme < ThemeItems_CountOf(); ++iTheme) {
 
                 Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_STD_CFG);
 
-                // TODO: §§§ @@@ check for LongPath MAX_PATH §§§ @@@
                 StringCchCopy(wchFileName, COUNTOF(wchFileName), PathFindFileNameW(FindFileData.cFileName));
                 PathRemoveExtensionW(wchFileName);
                 StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), wchFileName);
