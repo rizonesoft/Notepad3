@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="STRINGW">
+        <DisplayString Condition="data == 0">Null</DisplayString>
+        <DisplayString>:  STRINGW</DisplayString>
+        <StringView>data,su</StringView>
+        <Expand>
+            <Item Name="[data]">data</Item>
+            <Item Name="[length]">data_length</Item>
+            <Item Name="[allocated]">alloc_length</Item>
+        </Expand>
+    </Type>
+    <Type Name="HSTRINGW__">
+        <AlternativeType Name="HPATHL__"/>
+        <DisplayString Condition="((STRINGW*)(&amp;unused))-&gt;data == 0">Null</DisplayString>
+        <DisplayString>:  STRINGW</DisplayString>
+        <StringView>((STRINGW*)(&amp;unused))-&gt;data,su</StringView>
+        <Expand>
+            <Item Name="[data]">((STRINGW*)(&amp;unused))-&gt;data</Item>
+            <Item Name="[length]">((STRINGW*)(&amp;unused))-&gt;data_length</Item>
+            <Item Name="[allocated]">((STRINGW*)(&amp;unused))-&gt;alloc_length</Item>
+        </Expand>
+    </Type>
+</AutoVisualizer>

@@ -86,7 +86,7 @@ __forceinline void PTHAPI Path_Sanitize(HPATHL hpth)
 /**************************************************/
 
 HPATHL PTHAPI          Path_Allocate(LPCWSTR path);
-void PTHAPI            Path_Release(HPATHL hstr);
+void PTHAPI            Path_Release(HPATHL hpth);
 void PTHAPI            Path_Empty(HPATHL hpth, bool truncate);
 int PTHAPI             Path_Reset(HPATHL hpth, LPCWSTR path);
 size_t PTHAPI          Path_GetLength(HPATHL hpth);
@@ -105,7 +105,7 @@ int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpt
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, LPCWSTR ext);
-void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth);
+void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth_in_out);
 void PTHAPI            Path_UnExpandEnvStrings(HPATHL hpth);
 void PTHAPI            Path_GetModuleFilePath(HPATHL hpth_out);
 void PTHAPI            Path_GetAppDirectory(HPATHL hpth_out);
@@ -137,7 +137,7 @@ bool PTHAPI            Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWO
 void PTHAPI            Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
 bool PTHAPI            Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
 
-void PTHAPI            ExpandEnvironmentStrgs(HSTRINGW hstr);
+void PTHAPI            ExpandEnvironmentStrgs(HSTRINGW hstr, bool bStripQ);
 void PTHAPI            Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
 
 

@@ -713,4 +713,7 @@
       <Filter>templates</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="STRINGW.natvis" />
+  </ItemGroup>
 </Project>
