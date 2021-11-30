@@ -33,52 +33,41 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1127.(build_#) (2021-11-27)
+Current BETA/RC Version 5.21.1130.(build_#) (2021-11-30)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.alpha]- Add a Fortran Lexer.
-[.alpha]- LongPath Support enhancements.
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
+[1130.1]- Add a Fortran Lexer.
+[1130.1]- LongPath Support enhancements.
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.alpha]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
-[.alpha]- Lexer Fortran: add extended intrinsic functions.
-[.alpha]- Some more DynStrg refactorings and LongPath handling.
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
+[1130.1]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
+[1130.1]- Lexer Fortran: add extended intrinsic functions.
+[1130.1]- Some more DynStrg refactorings and LongPath handling.
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.alpha]- Update Scintilla Library (SCI) version 5.1.4 (2021-11-08).
-[.alpha]- Update Lexilla Library (LEX) version 5.1.3 (2021-11-08).
-[.alpha]- Update grepWinNP3 (GRE) version 2.1.8.40 (2021-10-19).
-[.alpha]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-10-19).
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
+[1130.1]- Update Scintilla Library (SCI) version 5.1.4 (2021-11-08).
+[1130.1]- Update Lexilla Library (LEX) version 5.1.3 (2021-11-08).
+[1130.1]- Update grepWinNP3 (GRE) version 2.1.8.40 (2021-10-19).
+[1130.1]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-10-19).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.alpha]- Notification blocker on loading huge files.
-[.alpha]- Heap corruption on retrieving text from combo box.
-[.alpha]- Path_ToShortPathName() for grepWinNP3 startup.
-[.alpha]- Path_StripPath().
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
+[1130.1]- Small LongPath bugfixes.
+[1130.1]- Notification blocker on loading huge files.
+[1130.1]- Heap corruption on retrieving text from combo box.
+[1130.1]- Path_ToShortPathName() for grepWinNP3 startup.
+[1130.1]- Path_StripPath().
 
 --------------------------------------------------------
 REMOVED:
