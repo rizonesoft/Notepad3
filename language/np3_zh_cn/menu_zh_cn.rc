@@ -396,7 +396,7 @@ BEGIN
         END
         POPUP "显示(&D)"
         BEGIN
-            MENUITEM "切换聚焦(&F)\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "专注模式(&F)\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
             POPUP "查看模式"
             BEGIN
                 MENUITEM "折叠",                            IDM_VIEW_FV_FOLD
