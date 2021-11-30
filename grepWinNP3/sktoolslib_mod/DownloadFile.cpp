@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2014, 2017, 2020-2021 - Stefan Kueng
 
@@ -28,7 +28,7 @@ CDownloadFile::CDownloadFile(LPCWSTR useragent, CProgressDlg* pProgress)
     hOpenHandle = InternetOpen(useragent, INTERNET_OPEN_TYPE_PRECONFIG, nullptr, nullptr, 0);
 }
 
-CDownloadFile::~CDownloadFile(void)
+CDownloadFile::~CDownloadFile()
 {
     if (hOpenHandle)
         InternetCloseHandle(hOpenHandle);

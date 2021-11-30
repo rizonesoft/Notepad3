@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2012-2017, 2019-2021 - Stefan Kueng
 
@@ -186,7 +186,7 @@ static constexpr BYTE DecLookup[] = {
 std::string CStringUtils::ToHexString(BYTE* pSrc, int nSrcLen)
 {
     WORD* pwHex  = reinterpret_cast<WORD*>(const_cast<BYTE*>(HexLookup));
-    auto  dest   = std::make_unique<char[]>((nSrcLen * 2) + 1);
+    auto  dest   = std::make_unique<char[]>((nSrcLen * 2LL) + 1LL);
     WORD* pwDest = reinterpret_cast<WORD*>(dest.get());
     for (int j = 0; j < nSrcLen; j++)
     {
@@ -226,7 +226,7 @@ std::unique_ptr<char[]> CStringUtils::Decrypt(const char* text)
     if (CryptStringToBinaryA(text, static_cast<DWORD>(strlen(text)), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
-    auto strIn = std::make_unique<BYTE[]>(dwLen + 1);
+    auto strIn = std::make_unique<BYTE[]>(dwLen + 1LL);
     if (CryptStringToBinaryA(text, static_cast<DWORD>(strlen(text)), CRYPT_STRING_HEX, strIn.get(), &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
@@ -239,8 +239,8 @@ std::unique_ptr<char[]> CStringUtils::Decrypt(const char* text)
         return nullptr;
     SecureZeroMemory(blobIn.pbData, blobIn.cbData);
 
-    auto result = std::make_unique<char[]>(blobOut.cbData + 1);
-    strncpy_s(result.get(), blobOut.cbData + 1, reinterpret_cast<const char*>(blobOut.pbData), blobOut.cbData);
+    auto result = std::make_unique<char[]>(blobOut.cbData + 1LL);
+    strncpy_s(result.get(), blobOut.cbData + 1LL, reinterpret_cast<const char*>(blobOut.pbData), blobOut.cbData);
     SecureZeroMemory(blobOut.pbData, blobOut.cbData);
     LocalFree(blobOut.pbData);
     LocalFree(descr);
@@ -253,7 +253,7 @@ std::unique_ptr<wchar_t[]> CStringUtils::Decrypt(const wchar_t* text)
     if (CryptStringToBinaryW(text, static_cast<DWORD>(wcslen(text)), CRYPT_STRING_HEX, nullptr, &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
-    auto strIn = std::make_unique<BYTE[]>(dwLen + 1);
+    auto strIn = std::make_unique<BYTE[]>(dwLen + 1LL);
     if (CryptStringToBinaryW(text, static_cast<DWORD>(wcslen(text)), CRYPT_STRING_HEX, strIn.get(), &dwLen, nullptr, nullptr) == FALSE)
         return nullptr;
 
@@ -287,7 +287,7 @@ std::string CStringUtils::Encrypt(const char* text)
     DWORD dwLen = 0;
     if (CryptBinaryToStringA(blobout.pbData, blobout.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, nullptr, &dwLen) == FALSE)
         return result;
-    auto strOut = std::make_unique<char[]>(dwLen + 1);
+    auto strOut = std::make_unique<char[]>(dwLen + 1LL);
     if (CryptBinaryToStringA(blobout.pbData, blobout.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, strOut.get(), &dwLen) == FALSE)
         return result;
     LocalFree(blobout.pbData);
@@ -310,7 +310,7 @@ std::wstring CStringUtils::Encrypt(const wchar_t* text)
     DWORD dwLen = 0;
     if (CryptBinaryToStringW(blobOut.pbData, blobOut.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, nullptr, &dwLen) == FALSE)
         return result;
-    auto strOut = std::make_unique<wchar_t[]>(dwLen + 1);
+    auto strOut = std::make_unique<wchar_t[]>(dwLen + 1LL);
     if (CryptBinaryToStringW(blobOut.pbData, blobOut.cbData, CRYPT_STRING_HEX | CRYPT_STRING_NOCRLF, strOut.get(), &dwLen) == FALSE)
         return result;
     LocalFree(blobOut.pbData);
@@ -333,7 +333,7 @@ std::wstring CStringUtils::Format(const wchar_t* frmt, ...)
         auto len = _vscwprintf(frmt, marker);
         if (len > 0)
         {
-            buffer.resize(len + 1);
+            buffer.resize(len + 1LL);
             _vsnwprintf_s(&buffer[0], buffer.size(), len, frmt, marker);
             buffer.resize(len);
         }
@@ -356,7 +356,7 @@ std::string CStringUtils::Format(const char* frmt, ...)
         auto len = _vscprintf(frmt, marker);
         if (len > 0)
         {
-            buffer.resize(len + 1);
+            buffer.resize(len + 1LL);
             _vsnprintf_s(&buffer[0], buffer.size(), len, frmt, marker);
             buffer.resize(len);
         }
@@ -383,18 +383,16 @@ bool WriteAsciiStringToClipboard(const wchar_t* sClipdata, HWND hOwningWnd)
                 CloseClipboard(););
             EmptyClipboard();
             size_t  sLen           = wcslen(sClipdata);
-            HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, (sLen + 1) * sizeof(wchar_t));
+            HGLOBAL hClipboardData = GlobalAlloc(GMEM_MOVEABLE, (sLen + 1) * sizeof(wchar_t));
             if (hClipboardData)
             {
                 wchar_t* pchData = static_cast<wchar_t*>(GlobalLock(hClipboardData));
                 if (pchData)
                 {
                     wcscpy_s(pchData, sLen + 1, sClipdata);
-                    if (GlobalUnlock(hClipboardData))
-                    {
-                        if (SetClipboardData(CF_UNICODETEXT, hClipboardData) == nullptr)
-                            return true;
-                    }
+                    GlobalUnlock(hClipboardData);
+                    if (SetClipboardData(CF_UNICODETEXT, hClipboardData) == nullptr)
+                        return true;
                 }
             }
         }

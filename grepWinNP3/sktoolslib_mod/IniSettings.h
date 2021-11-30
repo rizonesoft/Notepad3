@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2013, 2020-2021 - Stefan Kueng
 
@@ -22,8 +22,8 @@
 class CIniSettings
 {
 private:
-    CIniSettings(void);
-    ~CIniSettings(void);
+    CIniSettings();
+    ~CIniSettings();
 
 public:
     static CIniSettings& Instance();

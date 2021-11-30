@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2014, 2020 - Stefan Kueng
+// Copyright (C) 2014, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ class CDownloadFile
 {
 public:
     CDownloadFile(LPCWSTR useragent, CProgressDlg* pProgress);
-    ~CDownloadFile(void);
+    ~CDownloadFile();
 
     bool DownloadFile(const std::wstring& url, const std::wstring& dest) const;
 

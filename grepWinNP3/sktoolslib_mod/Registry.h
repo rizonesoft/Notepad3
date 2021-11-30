@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2012, 2017-2018, 2020-2021 - Stefan Kueng
 
@@ -94,7 +94,7 @@ public:
 
     /// used in subclass templates to specify the correct string type
 
-    using StringT = S;
+    typedef S StringT;
 
 protected:
     //members
@@ -315,7 +315,7 @@ public:
      * Make the value type accessible to others.
      */
 
-    using ValueT = T;
+    typedef T ValueT;
 
     /**
      * Constructor.
@@ -1060,8 +1060,8 @@ typedef CKeyList<CRegString> CRegStringList;
 #    endif
 #endif
 
-using CRegStdDWORD = CRegDWORDCommon<CRegStdBase>;
-using CRegStdString = CRegStringCommon<CRegStdBase>;
+typedef CRegDWORDCommon<CRegStdBase>  CRegStdDWORD;
+typedef CRegStringCommon<CRegStdBase> CRegStdString;
 
 #ifdef _MAP_
 typedef CKeyList<CRegStdDWORD>  CRegStdDWORDList;

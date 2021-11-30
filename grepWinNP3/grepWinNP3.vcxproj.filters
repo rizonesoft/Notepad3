@@ -39,9 +39,6 @@
     <ClCompile Include="src\grepWin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\InfoDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\NameDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -156,6 +153,9 @@
     <ClCompile Include="sktoolslib_mod\AeroGlass.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
+    <ClCompile Include="sktoolslib_mod\InfoRtfDialog.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AboutDlg.h">
@@ -165,9 +165,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BookmarksDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\InfoDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\NameDlg.h">
@@ -306,6 +303,9 @@
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
     <ClInclude Include="sktoolslib_mod\AeroGlass.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\InfoRtfDialog.h">
       <Filter>sktoolslib_mod</Filter>
     </ClInclude>
   </ItemGroup>

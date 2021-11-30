@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2020-2021 - Stefan Kueng
 
@@ -20,6 +20,9 @@
 #include "InfoRtfDialog.h"
 #include "OnOutOfScope.h"
 #include <richedit.h>
+#include <shellapi.h>
+
+#pragma comment(lib, "Shell32.lib")
 
 CInfoRtfDialog::CInfoRtfDialog()
     : m_hParent(nullptr)
@@ -138,6 +141,7 @@ LRESULT CInfoRtfDialog::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
                         SetFocus(m_hwndRichEdit);
                         SendMessage(m_hwndRichEdit, EM_SETSEL, static_cast<WPARAM>(-1), static_cast<LPARAM>(0));
                         SendMessage(m_hwndRichEdit, EM_SETREADONLY, static_cast<WPARAM>(1), reinterpret_cast<LPARAM>(nullptr));
+                        SendMessage(m_hwndRichEdit, EM_SETEVENTMASK, NULL, ENM_LINK | ENM_SCROLL);
                     }
                 }
             }
@@ -151,17 +155,56 @@ LRESULT CInfoRtfDialog::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
             MoveWindow(m_hwndRichEdit, 0, 0, width, height, TRUE);
         }
         break;
+        case WM_DESTROY:
+            CloseWindow(m_hwndRichEdit);
+            DestroyWindow(m_hwndRichEdit);
+            break;
         case WM_COMMAND:
             switch (LOWORD(wParam))
             {
                 case IDOK:
                 case IDCANCEL:
-                    CloseWindow(m_hwndRichEdit);
-                    DestroyWindow(m_hwndRichEdit);
                     EndDialog(*this, LOWORD(wParam));
                     return static_cast<INT_PTR>(TRUE);
+                default:
+                    break;
             }
             break;
+        case WM_NOTIFY:
+        {
+            auto pHdr = reinterpret_cast<LPNMHDR>(lParam);
+            if (pHdr)
+            {
+                if (pHdr->hwndFrom == m_hwndRichEdit)
+                {
+                    switch (pHdr->code)
+                    {
+                        case EN_LINK:
+                        {
+                            auto pEnLink = reinterpret_cast<ENLINK*>(lParam);
+                            if ((pEnLink->msg != WM_LBUTTONUP) && (pEnLink->msg != WM_SETCURSOR))
+                                break;
+
+                            auto      buffer = std::make_unique<wchar_t[]>(pEnLink->chrg.cpMax - pEnLink->chrg.cpMin + 1);
+                            TEXTRANGE range{};
+                            range.chrg      = pEnLink->chrg;
+                            range.lpstrText = buffer.get();
+                            SendMessage(m_hwndRichEdit, EM_GETTEXTRANGE, 0, reinterpret_cast<LPARAM>(&range));
+                            auto url = std::wstring(buffer.get(), pEnLink->chrg.cpMax - pEnLink->chrg.cpMin);
+                            if (!url.empty())
+                            {
+                                if (pEnLink->msg == WM_SETCURSOR)
+                                    SetCursor(LoadCursor(nullptr, IDC_HAND));
+                                else
+                                    ShellExecute(hwndDlg, L"open", url.c_str(), nullptr, nullptr, SW_SHOWDEFAULT);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        break;
     }
     return static_cast<INT_PTR>(FALSE);
 }

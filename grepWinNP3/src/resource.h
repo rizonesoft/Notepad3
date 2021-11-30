@@ -39,7 +39,6 @@
 #define IDS_REGEXINVALID                132
 #define IDC_BKPOPUP                     133
 #define IDS_SIZE                        133
-#define IDR_INFODLG                     134
 #define IDS_LINE                        134
 #define IDD_ABOUT                       135
 #define IDS_MATCHES                     135
@@ -50,6 +49,8 @@
 #define IDD_SETTINGS                    138
 #define IDS_ENCODING                    138
 #define IDS_DATEMODIFIED                139
+#define IDR_RTF1                        139
+#define IDR_INFODLG                     139
 #define IDS_SELECTEDITOR                140
 #define IDS_OPENWITHEDITOR              141
 #define IDS_OPENCONTAININGFOLDER        142
@@ -201,7 +202,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        139
+#define _APS_NEXT_RESOURCE_VALUE        140
 #define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1092
 #define _APS_NEXT_SYMED_VALUE           110

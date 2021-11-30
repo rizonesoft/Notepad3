@@ -18,6 +18,7 @@
 //
 #pragma once
 #include <list>
+#include <mutex>
 #include <string>
 
 class CCircularLog
@@ -41,4 +42,5 @@ private:
     std::list<std::wstring> m_lines;
     std::wstring            m_path;
     int                     m_maxLines;
+    std::mutex              m_mutex;
 };
