@@ -32,13 +32,13 @@ int    Style_NumOfLexers();  // Number of Lexers in pLexArray
 void   Style_Prerequisites();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportTheme(const int iThemeIdx);  // -1 => Factory Reset
-bool   Style_ImportFromFile(const WCHAR* szFile);
+bool   Style_ImportFromFile(const HPATHL hpath);
 void   Style_SaveSettings(bool bForceSaveSettings);
 bool   Style_Export(HWND hwnd);
 void   Style_FileExtToIniSection(bool bForceAll);
 void   Style_CanonicalSectionToIniCache();
 bool   Style_ToIniSection(bool bForceAll);
-bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
+bool   Style_ExportToFile(const HPATHL hpath, bool bForceAll);
 
 unsigned ThemeItems_CountOf();
 void     ThemesItems_Init();

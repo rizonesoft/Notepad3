@@ -1019,7 +1019,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Globals.bIniFileFromScratch = (dwFileSize == 0UL);
     if (Globals.bIniFileFromScratch && Globals.bCanSaveIniFile) {
         // Set at least Application Name Section
-        IniFileSetString(Path_Get(Paths.IniFile), _W(SAPPNAME), NULL, NULL);
+        IniFileSetString(Paths.IniFile, _W(SAPPNAME), NULL, NULL);
     }
     LoadSettings();
 
@@ -2527,7 +2527,7 @@ bool SelectExternalToolBar(HWND hwnd)
         Path_Reset(g_tchToolbarBitmap, Path_Get(hfile_pth));
         Path_RelativeToApp(g_tchToolbarBitmap, true, true, true);
         if (Globals.bCanSaveIniFile) {
-            IniFileSetString(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDefault", Path_Get(g_tchToolbarBitmap));
+            IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapDefault", Path_Get(g_tchToolbarBitmap));
         }
     }
 
@@ -2546,10 +2546,10 @@ bool SelectExternalToolBar(HWND hwnd)
             if (Path_IsExistingFile(hfile_pth)) {
                 Path_Reset(g_tchToolbarBitmapHot, Path_Get(hfile_pth));
                 Path_RelativeToApp(g_tchToolbarBitmapHot, true, true, true);
-                IniFileSetString(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapHot", Path_Get(g_tchToolbarBitmapHot));
+                IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapHot", Path_Get(g_tchToolbarBitmapHot));
             } else {
                 Path_Reset(g_tchToolbarBitmapHot, L"");
-                IniFileDelete(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapHot", false);
+                IniFileDelete(Paths.IniFile, L"Toolbar Images", L"BitmapHot", false);
             }
         }
 
@@ -2561,10 +2561,10 @@ bool SelectExternalToolBar(HWND hwnd)
             if (Path_IsExistingFile(hfile_pth)) {
                 Path_Reset(g_tchToolbarBitmapDisabled, Path_Get(hfile_pth));
                 Path_RelativeToApp(g_tchToolbarBitmapDisabled, true, true, true);
-                IniFileSetString(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDisabled", Path_Get(g_tchToolbarBitmapDisabled));
+                IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapDisabled", Path_Get(g_tchToolbarBitmapDisabled));
             } else {
                 Path_Reset(g_tchToolbarBitmapDisabled, L"");
-                IniFileDelete(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDisabled", false);
+                IniFileDelete(Paths.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
             }
         }
 
@@ -2572,8 +2572,8 @@ bool SelectExternalToolBar(HWND hwnd)
         res = true;
 
     } else {
-        IniFileDelete(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapHot", false);
-        IniFileDelete(Path_Get(Paths.IniFile), L"Toolbar Images", L"BitmapDisabled", false);
+        IniFileDelete(Paths.IniFile, L"Toolbar Images", L"BitmapHot", false);
+        IniFileDelete(Paths.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
     }
 
     Path_Release(hfile_pth);
@@ -5992,9 +5992,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
             if (Globals.bCanSaveIniFile) {
                 if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
-                    IniFileSetBool(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
+                    IniFileSetBool(Paths.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
                 } else {
-                    IniFileDelete(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"ReuseWindow", false);
+                    IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
                 }
             }
         }
@@ -6006,9 +6006,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
             if (Globals.bCanSaveIniFile) {
                 if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
-                    IniFileSetInt(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
+                    IniFileSetInt(Paths.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
                 } else {
-                    IniFileDelete(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"SingleFileInstance", false);
+                    IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
                 }
             }
         }
@@ -6186,9 +6186,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Settings.SaveSettings = !Settings.SaveSettings;
             if (Globals.bCanSaveIniFile) {
                 if (Settings.SaveSettings == Defaults.SaveSettings) {
-                    IniFileDelete(Path_Get(Paths.IniFile), Constants.Settings_Section, L"SaveSettings", false);
+                    IniFileDelete(Paths.IniFile, Constants.Settings_Section, L"SaveSettings", false);
                 } else {
-                    IniFileSetBool(Path_Get(Paths.IniFile), Constants.Settings_Section, L"SaveSettings", Settings.SaveSettings);
+                    IniFileSetBool(Paths.IniFile, Constants.Settings_Section, L"SaveSettings", Settings.SaveSettings);
                 }
             }
         }
@@ -6490,9 +6490,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Flags.NoFileVariables = !Flags.NoFileVariables;
         if (Globals.bCanSaveIniFile) {
             if (Flags.NoFileVariables != DefaultFlags.NoFileVariables) {
-                IniFileSetInt(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"NoFileVariables", Flags.NoFileVariables);
+                IniFileSetInt(Paths.IniFile, Constants.Settings2_Section, L"NoFileVariables", Flags.NoFileVariables);
             } else {
-                IniFileDelete(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"NoFileVariables", false);
+                IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"NoFileVariables", false);
             }
         }
         break;
@@ -6747,7 +6747,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR tchDefWinPos[80];
         StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
         if (Globals.bCanSaveIniFile) {
-            IniFileSetString(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
+            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
         }
         g_DefWinInfo = wi; //GetWinInfoByFlag(-1); // use current win pos as new default
     }
@@ -6755,7 +6755,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CLEARSAVEDWINPOS:
         g_DefWinInfo = GetFactoryDefaultWndPos(2);
-        IniFileDelete(Path_Get(Paths.IniFile), Constants.Settings2_Section, L"DefaultWindowPosition", false);
+        IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", false);
         break;
 
     case CMD_OPENINIFILE:

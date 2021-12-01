@@ -270,9 +270,9 @@ extern "C" bool ResetIniFileCache()
 }
 
 
-extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
+extern "C" bool LoadIniFileCache(const HPATHL hpthIniFile)
 {
-    if (StrIsEmpty(lpIniFilePath) || !PathIsExistingFile(lpIniFilePath)) {
+    if (Path_IsEmpty(hpthIniFile) || !Path_IsExistingFile(hpthIniFile)) {
         return false;
     }
 
@@ -280,7 +280,7 @@ extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
     s_INI.SetMultiLine(s_bUseMultiLine);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hIniFile = AcquireReadFileLock(lpIniFilePath, ovrLpd);
+    HANDLE     hIniFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
 
     if (!IS_VALID_HANDLE(hIniFile)) {
         return false;
@@ -300,14 +300,14 @@ extern "C" bool IsIniFileCached()
 }
 
 
-extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
+extern "C" bool SaveIniFileCache(const HPATHL hpthIniFile)
 {
-    if (!s_bIniFileCacheLoaded || StrIsEmpty(lpIniFilePath)) {
+    if (!s_bIniFileCacheLoaded || Path_IsEmpty(hpthIniFile)) {
         return false;
     }
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hIniFile = AcquireWriteFileLock(lpIniFilePath, ovrLpd);
+    HANDLE hIniFile = AcquireWriteFileLock(Path_Get(hpthIniFile), ovrLpd);
 
     if (!IS_VALID_HANDLE(hIniFile)) {
         return false;
@@ -336,7 +336,7 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 
         if (!IsIniFileCached()) {
             ResetIniFileCache();
-            LoadIniFileCache(Path_Get(Paths.IniFile));
+            LoadIniFileCache(Paths.IniFile);
             if (keepCached != NULL) {
                 *keepCached = false;
             }
@@ -360,7 +360,7 @@ extern "C" bool CloseSettingsFile(bool bSaveChanges, bool keepCached)
         if (!IsIniFileCached()) {
             return false;
         }
-        bool const bSaved = bSaveChanges ? SaveIniFileCache(Path_Get(Paths.IniFile)) : false;
+        bool const bSaved = bSaveChanges ? SaveIniFileCache(Paths.IniFile) : false;
         if (!keepCached) {
             ResetIniFileCache();
         }
@@ -544,10 +544,10 @@ extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
 // ============================================================================
 
 
-extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
+extern "C" size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
                                    LPWSTR lpReturnedString, size_t cchReturnedString)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
         return StringCchLenW(lpReturnedString, cchReturnedString);
     }
@@ -555,7 +555,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
     CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
         return StringCchLenW(lpReturnedString, cchReturnedString);
@@ -576,9 +576,9 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 // ============================================================================
 
 
-extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
+extern "C" bool IniFileSetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return false;
     }
 
@@ -586,7 +586,7 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
     Ini.SetSpaces(s_bSetSpaces);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireWriteFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
@@ -606,16 +606,16 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 // ============================================================================
 
 
-extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
+extern "C" int IniFileGetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return iDefault;
     }
 
     CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         return iDefault;
     }
@@ -634,9 +634,9 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 // ============================================================================
 
 
-extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
+extern "C" bool IniFileSetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return false;
     }
 
@@ -644,7 +644,7 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
     Ini.SetSpaces(s_bSetSpaces);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireWriteFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
@@ -661,16 +661,16 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 // ============================================================================
 
 
-extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault)
+extern "C" bool IniFileGetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return bDefault;
     }
 
     CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         return bDefault;
     }
@@ -689,9 +689,9 @@ extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 // ============================================================================
 
 
-extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue)
+extern "C" bool IniFileSetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return false;
     }
 
@@ -699,7 +699,7 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
     Ini.SetSpaces(s_bSetSpaces);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireWriteFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
@@ -716,9 +716,9 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 // ============================================================================
 
 
-extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty)
+extern "C" bool IniFileDelete(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return false;
     }
 
@@ -726,7 +726,7 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
     Ini.SetSpaces(s_bSetSpaces);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireWriteFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireWriteFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
@@ -743,16 +743,16 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 // ============================================================================
 
 
-extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
+extern "C" bool IniFileIterateSection(const HPATHL hpthIniFile, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
 {
-    if (StrIsEmpty(lpFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return false;
     }
 
     CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
     OVERLAPPED ovrLpd = { 0 };
-    HANDLE hFile = AcquireReadFileLock(lpFilePath, ovrLpd);
+    HANDLE     hFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         return false;
     }
@@ -782,15 +782,15 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 //
 //  AddFilePathToRecentDocs()
 //
-extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
+extern "C" void AddFilePathToRecentDocs(const HPATHL hpthIniFile)
 {
-    if (StrIsEmpty(szFilePath)) {
+    if (Path_IsEmpty(hpthIniFile)) {
         return;
     }
 
     if (Flags.ShellUseSystemMRU) {
 #if TRUE
-        SHAddToRecentDocs(SHARD_PATHW, szFilePath);
+        SHAddToRecentDocs(SHARD_PATHW, Path_Get(hpthIniFile));
 #else
         (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
 
@@ -932,7 +932,7 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
     if (Path_IsExistingFile(hpth_in_out)) {
         HPATHL hredirect = Path_Allocate(NULL);
         LPWSTR const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
-        if (IniFileGetString(Path_Get(hpth_in_out), lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
+        if (IniFileGetString(hpth_in_out, lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
             Path_Sanitize(hredirect);
             Path_FreeExtra(hredirect, 0);
             if (_CheckAndSetIniFile(hredirect)) {
@@ -2437,23 +2437,23 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
             pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i - 1];
             pmru->pszBookMarks[i] = pmru->pszBookMarks[i - 1];
         }
-        if (bRelativePath) {
-            HPATHL const hpth = Path_Allocate(pszFile);
-            Path_RelativeToApp(hpth, true, true, bUnexpandMyDocs);
-            pmru->pszItems[0] = StrDupW(Path_Get(hpth));  // LocalAlloc()
-            Path_Release(hpth);
-        } else {
-            pmru->pszItems[0] = StrDupW(pszFile);  // LocalAlloc()
-        }
 
+        HPATHL const hpth = Path_Allocate(pszFile);
+        if (bRelativePath) {
+            Path_RelativeToApp(hpth, true, true, bUnexpandMyDocs);
+        }
+        pmru->pszItems[0] = StrDupW(Path_Get(hpth)); // LocalAlloc()
         pmru->iEncoding[0] = iEnc;
         pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
         pmru->iSelAnchPos[0] = (Settings.PreserveCaretPos ? iSelAnc : -1);
         pmru->pszBookMarks[0] = (pszBookMarks ? StrDupW(pszBookMarks) : NULL);  // LocalAlloc()
 
         if (!bAlreadyInList) {
-            AddFilePathToRecentDocs(pszFile);
+            AddFilePathToRecentDocs(hpth);
         }
+
+        Path_Release(hpth);
+
         return bAlreadyInList;
     }
     return false;

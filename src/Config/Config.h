@@ -49,9 +49,9 @@ bool ResetTmpCache();
 
 // ----------------------------------------------------------------------------
 
-bool LoadIniFileCache(LPCWSTR lpIniFilePath);
+bool LoadIniFileCache(const HPATHL hpthIniFile);
 bool IsIniFileCached();
-bool SaveIniFileCache(LPCWSTR lpIniFilePath);
+bool SaveIniFileCache(const HPATHL hpthIniFile);
 bool ResetIniFileCache();
 
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
@@ -105,15 +105,15 @@ bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty);
 // open file , get/set value, save(set) file
 // ==========================================
 
-size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
+size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
                         LPWSTR lpReturnedString, size_t cchReturnedString);
-bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
+bool   IniFileSetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
 
-int  IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
-bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
+int  IniFileGetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
+bool IniFileSetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
 
-bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault);
-bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue);
+bool IniFileGetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault);
+bool IniFileSetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue);
 
 //  IniFileDeleteValue():
 //
@@ -124,16 +124,16 @@ bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName
 //  bRemoveEmpty    If the section is empty after this key has
 //                  been deleted, should the empty section be removed ?
 //
-bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty);
+bool IniFileDelete(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty);
 
 //  IniFileIterateSection():
 //
 typedef void (CALLBACK* IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
-bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack);
+bool IniFileIterateSection(const HPATHL hpthIniFile, LPCWSTR lpSectionName, IterSectionFunc_t callBack);
 
 //==== MRU Functions ==========================================================
 
-void AddFilePathToRecentDocs(LPCWSTR szFilePath);
+void AddFilePathToRecentDocs(const HPATHL hpthIniFile);
 //void ClearDestinationsOnRecentDocs();
 
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);

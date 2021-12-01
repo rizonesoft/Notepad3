@@ -739,8 +739,8 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, LPCWSTR more)
         return true;
     }
 
-    LPWSTR const       wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + wcslen(PATHLONG_PREFIX) + 2);
-    size_t const         cch = StrgGetAllocLength(hstr_io);
+    LPWSTR const wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + wcslen(PATHLONG_PREFIX) + 2);
+    size_t const cch = StrgGetAllocLength(hstr_io);
 
     // append directory separator
     if (hstr_len > 0) {
@@ -895,19 +895,30 @@ bool PTHAPI Path_IsExistingDirectory(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2)
+int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir)
 {
-    HSTRINGW hstr1 = ToHStrgW(hpth1);
-    if (!hstr1 || !StrgGet(hstr1))
+    if (Path_IsEmpty(hpth1)) {
         return -1;
-    HSTRINGW hstr2 = ToHStrgW(hpth2);
-    if (!hstr2 || !StrgGet(hstr2))
-        return 1;
+    }
+    if (Path_IsEmpty(hpth2)) {
+        return +1;
+    }
 
-    size_t const max_len = min_s(StrgGetLength(hstr1), StrgGetLength(hstr2)) + 1;
+    HPATHL hpth1_tmp = Path_Copy(hpth1);
+    HPATHL hpth2_tmp = Path_Copy(hpth2);
 
-    //~return wcsncmp(StrgGet(hstr1), StrgGet(hstr2), max_len);
-    return _wcsnicmp(StrgGet(hstr1), StrgGet(hstr2), max_len);
+    Path_NormalizeEx(hpth1_tmp, hpth_wrkdir, true, false);
+    Path_NormalizeEx(hpth2_tmp, hpth_wrkdir, true, false);
+
+    size_t const max_len = min_s(Path_GetLength(hpth1_tmp), Path_GetLength(hpth2_tmp)) + 1;
+
+    //~int const cmp = wcsncmp(Path_Get(hpth1_tmp), Path_Get(hpth2_tmp), max_len);
+    int const cmp = _wcsnicmp(Path_Get(hpth1_tmp), Path_Get(hpth2_tmp), max_len);
+
+    Path_Release(hpth1_tmp);
+    Path_Release(hpth2_tmp);
+
+    return cmp;
 }
 // ----------------------------------------------------------------------------
 
@@ -1513,16 +1524,16 @@ bool PTHAPI Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out)
 //  Path_CreateFavLnk()
 //  Create a Notepad3 favorites link
 //
-bool PTHAPI Path_CreateFavLnk(LPCWSTR lpszDisplayName, const HPATHL hTargetPth, const HPATHL hDirPth)
+bool PTHAPI Path_CreateFavLnk(LPCWSTR lpszLinkName, const HPATHL hTargetPth, const HPATHL hDirPth)
 {
-    if (StrIsEmptyW(lpszDisplayName)) {
+    if (StrIsEmptyW(lpszLinkName)) {
         return true;
     }
 
     bool bSucceeded = false;
 
     HPATHL hlnk_pth = Path_Copy(hDirPth);
-    Path_Append(hlnk_pth, lpszDisplayName);
+    Path_Append(hlnk_pth, lpszLinkName);
     Path_RenameExtension(hlnk_pth, L".lnk");
 
     if (!Path_IsExistingFile(hlnk_pth)) {

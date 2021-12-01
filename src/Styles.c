@@ -535,11 +535,11 @@ bool Style_DynamicThemesMenuCmd(int cmd)
             if (!Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CreateIniFile(Paths.IniFile, NULL);
                 if (Globals.bCanSaveIniFile) {
-                    Style_ExportToFile(Path_Get(Paths.IniFile), false);
+                    Style_ExportToFile(Paths.IniFile, false);
                 }
             }
         } else if (Path_IsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath)) {
-            Style_ExportToFile(Path_Get(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath), false);
+            Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath, false);
         }
     }
 
@@ -701,7 +701,7 @@ bool Style_Import(HWND hwnd)
 
     if (GetOpenFileNameW(&ofn)) {
         Path_Sanitize(hfile_pth);
-        result = Style_ImportFromFile(file_buf);
+        result = Style_ImportFromFile(hfile_pth);
     }
 
     StrgDestroy(hflt_str);
@@ -770,7 +770,7 @@ void Style_Prerequisites() {
     _FillThemesMenuTable();
     _LoadLexerFileExtensions();
 
-    ///~ Style_ImportFromFile(Path_Get(Paths.IniFile)); ~ done later
+    ///~ Style_ImportFromFile(Paths.IniFile); ~ done later
 }
 
 
@@ -937,21 +937,13 @@ static void _ReadFromIniCache() {
 //
 //  Style_ImportFromFile()
 //
-bool Style_ImportFromFile(const WCHAR* szFile)
+bool Style_ImportFromFile(const HPATHL hpath)
 {
-    bool const bHaveFileResource = StrIsNotEmpty(szFile);
-    bool bIsStdIniFile = false;
-    if (bHaveFileResource) {
-        HPATHL hpth = Path_Allocate(szFile);
-        Path_NormalizeEx(hpth, Paths.ModuleDirectory, true, false);
-        if (StringCchCompareXI(Path_Get(hpth), Path_Get(Paths.IniFile)) == 0) {
-            bIsStdIniFile = true;
-        }
-        Path_Release(hpth);
-    }
+    bool const bHaveFileResource = Path_IsNotEmpty(hpath);
+    bool const bIsStdIniFile = bHaveFileResource ? (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory) == 0) : false;
 
     bool bOpendByMe = false;
-    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : (bHaveFileResource ? LoadIniFileCache(szFile) : true);
+    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
     if (result) {
         _ReadFromIniCache();
         CloseSettingsFile(false, bOpendByMe);
@@ -971,7 +963,7 @@ bool Style_ImportTheme(const int iThemeIdx) {
         return Style_ImportFromFile(NULL);
     default:
         if ((iThemeIdx >= 0) && (iThemeIdx < (int)ThemeItems_CountOf()) && Path_IsExistingFile(Theme_Files[iThemeIdx].hStyleFilePath)) {
-            return Style_ImportFromFile(Path_Get(Theme_Files[iThemeIdx].hStyleFilePath));
+            return Style_ImportFromFile(Theme_Files[iThemeIdx].hStyleFilePath);
         }
         break;
     }
@@ -986,7 +978,7 @@ bool Style_ImportTheme(const int iThemeIdx) {
 void Style_SaveSettings(bool bForceSaveSettings)
 {
     if (Settings.SaveSettings || bForceSaveSettings) {
-        Style_ExportToFile(Path_Get(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath), false);
+        Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath, false);
     }
 }
 
@@ -1021,7 +1013,7 @@ bool Style_Export(HWND hwnd)
 
     if (GetSaveFileNameW(&ofn)) {
         Path_Sanitize(hfile_pth);
-        result = Style_ExportToFile(file_buf, true);
+        result = Style_ExportToFile(hfile_pth, true);
         if (!result) {
             InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, Path_FindFileName(hfile_pth));
         }
@@ -1168,22 +1160,20 @@ bool Style_ToIniSection(bool bForceAll)
 //
 //  Style_ExportToFile()
 //
-bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
+bool Style_ExportToFile(const HPATHL hpath, bool bForceAll)
 {
-    if (StrIsEmpty(szFile)) {
+    if (Path_IsEmpty(hpath)) {
         if (Globals.uCurrentThemeIndex != 0) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
         }
         return false;
     }
 
-    HPATHL hpth = Path_Allocate(szFile);
-    Path_NormalizeEx(hpth, Paths.ModuleDirectory, true, false);
-
-    bool ok = false;
+    bool const bIsStdIniFile = (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory) == 0);
 
     // special handling of standard .ini-file
-    if (StringCchCompareXI(Path_Get(hpth), Path_Get(Paths.IniFile)) == 0) {
+    bool ok = false;
+    if (bIsStdIniFile) {
         bool bOpendByMe = false;
         if (OpenSettingsFile(&bOpendByMe)) {
             Style_ToIniSection(bForceAll);
@@ -1191,9 +1181,11 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
             ok = CloseSettingsFile(true, bOpendByMe);
         }
     } else {
-        if (Path_IsNotEmpty(hpth)) {
-            if (!Path_IsExistingFile(hpth)) {
-                HANDLE hFile = CreateFile(Path_Get(hpth),
+        HPATHL hpth_tmp = Path_Copy(hpath);
+        Path_NormalizeEx(hpth_tmp, Paths.WorkingDirectory, true, false);
+        if (Path_IsNotEmpty(hpth_tmp)) {
+            if (!Path_IsExistingFile(hpth_tmp)) {
+                HANDLE hFile = CreateFile(Path_Get(hpth_tmp),
                                           GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
                 if (IS_VALID_HANDLE(hFile)) {
@@ -1201,15 +1193,15 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
                 }
             }
             ResetIniFileCache();
-            if (LoadIniFileCache(Path_Get(hpth))) {
+            if (LoadIniFileCache(hpth_tmp)) {
                 Style_ToIniSection(bForceAll);
                 Style_FileExtToIniSection(bForceAll);
-                ok = SaveIniFileCache(Path_Get(hpth));
+                ok = SaveIniFileCache(hpth_tmp);
                 ResetIniFileCache();
             }
         }
+        Path_Release(hpth_tmp);
     }
-    Path_Release(hpth);
     return ok;
 }
 

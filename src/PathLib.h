@@ -97,7 +97,7 @@ inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
 bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 
-int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2);
+int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir);
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, LPCWSTR ext);
@@ -124,7 +124,7 @@ void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD c
 bool PTHAPI            Path_GetLnkPath(const HPATHL hLnkFilePth, HPATHL hResPath_out);
 bool PTHAPI            Path_IsLnkFile(const HPATHL hpth);
 bool PTHAPI            Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);
-bool PTHAPI            Path_CreateFavLnk(LPCWSTR lpszDisplayName, const HPATHL hTargetPth, const HPATHL hDirPth);
+bool PTHAPI            Path_CreateFavLnk(LPCWSTR lpszLinkName, const HPATHL hTargetPth, const HPATHL hDirPth);
 bool PTHAPI            Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescription);
 bool PTHAPI            Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle);
 bool PTHAPI            Path_CanonicalizeEx(HPATHL hpth_in_out);

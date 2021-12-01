@@ -344,7 +344,7 @@ CASE_WM_CTLCOLOR_SET:
 		case IDTRYAGAIN:
 		case IDCONTINUE:
 			if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
-				IniFileSetInt(Path_Get(Paths.IniFile), Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
+				IniFileSetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
 			}
 		case IDNO:
 		case IDABORT:
@@ -378,7 +378,7 @@ CASE_WM_CTLCOLOR_SET:
 
 LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-	int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Path_Get(Paths.IniFile), Constants.SectionSuppressedMessages, lpstrSetting, 0);
+	int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
 
 	if (Settings.DialogsLayoutRTL) {
 		uType |= MB_RTLREADING;
@@ -398,7 +398,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 
 	default:
 		if (Globals.bCanSaveIniFile) {
-			IniFileDelete(Path_Get(Paths.IniFile), Constants.SectionSuppressedMessages, lpstrSetting, false);
+			IniFileDelete(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
 		}
 		break;
 	}
@@ -2123,6 +2123,7 @@ bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
         AddToFavDlgProc, (LPARAM)szDisplayName);
 
 	if (iResult == IDOK) {
+        StringCchCat(szDisplayName, COUNTOF(szDisplayName), L".lnk");
         if (!Path_CreateFavLnk(szDisplayName, hTargetPth, Settings.FavoritesDir)) {
 			InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
 			return false;
@@ -4698,7 +4699,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 		}
 
 		ResetIniFileCache();
-		if (CreateIniFile(hGrepWinIniPath, NULL) && LoadIniFileCache(Path_Get(hGrepWinIniPath))) {
+		if (CreateIniFile(hGrepWinIniPath, NULL) && LoadIniFileCache(hGrepWinIniPath)) {
 			// preserve [global] user settings from last call
 			const WCHAR* const globalSection = L"global";
 
@@ -4774,7 +4775,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 			// search pattern
 			IniSectionSetString(globalSection, L"searchfor", searchPattern);
 
-			SaveIniFileCache(Path_Get(hGrepWinIniPath));
+			SaveIniFileCache(hGrepWinIniPath);
 			ResetIniFileCache();
 
 		}
@@ -4966,7 +4967,7 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 	else if (Path_IsNotEmpty(pthFilePath)) {
 
 		if (iFormat < 2) {
-			if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath) != 0) {
+			if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory) != 0) {
 				Path_Reset(s_pthCachedFilePath, Path_Get(pthFilePath));
 				Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled);
 			}
