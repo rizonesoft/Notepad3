@@ -97,7 +97,7 @@ inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
 bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 
-int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2);
+int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir);
 bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, LPCWSTR ext);

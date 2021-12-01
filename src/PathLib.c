@@ -895,19 +895,30 @@ bool PTHAPI Path_IsExistingDirectory(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2)
+int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir)
 {
-    HSTRINGW hstr1 = ToHStrgW(hpth1);
-    if (!hstr1 || !StrgGet(hstr1))
+    if (Path_IsEmpty(hpth1)) {
         return -1;
-    HSTRINGW hstr2 = ToHStrgW(hpth2);
-    if (!hstr2 || !StrgGet(hstr2))
-        return 1;
+    }
+    if (Path_IsEmpty(hpth2)) {
+        return +1;
+    }
 
-    size_t const max_len = min_s(StrgGetLength(hstr1), StrgGetLength(hstr2)) + 1;
+    HPATHL hpth1_tmp = Path_Copy(hpth1);
+    HPATHL hpth2_tmp = Path_Copy(hpth2);
 
-    //~return wcsncmp(StrgGet(hstr1), StrgGet(hstr2), max_len);
-    return _wcsnicmp(StrgGet(hstr1), StrgGet(hstr2), max_len);
+    Path_NormalizeEx(hpth1_tmp, hpth_wrkdir, true, false);
+    Path_NormalizeEx(hpth2_tmp, hpth_wrkdir, true, false);
+
+    size_t const max_len = min_s(Path_GetLength(hpth1_tmp), Path_GetLength(hpth2_tmp)) + 1;
+
+    //~int const cmp = wcsncmp(Path_Get(hpth1_tmp), Path_Get(hpth2_tmp), max_len);
+    int const cmp = _wcsnicmp(Path_Get(hpth1_tmp), Path_Get(hpth2_tmp), max_len);
+
+    Path_Release(hpth1_tmp);
+    Path_Release(hpth2_tmp);
+
+    return cmp;
 }
 // ----------------------------------------------------------------------------
 
