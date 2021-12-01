@@ -739,8 +739,8 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, LPCWSTR more)
         return true;
     }
 
-    LPWSTR const       wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + wcslen(PATHLONG_PREFIX) + 2);
-    size_t const         cch = StrgGetAllocLength(hstr_io);
+    LPWSTR const wbuf = StrgWriteAccessBuf(hstr_io, hstr_len + hmore_len + wcslen(PATHLONG_PREFIX) + 2);
+    size_t const cch = StrgGetAllocLength(hstr_io);
 
     // append directory separator
     if (hstr_len > 0) {
@@ -1524,16 +1524,16 @@ bool PTHAPI Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out)
 //  Path_CreateFavLnk()
 //  Create a Notepad3 favorites link
 //
-bool PTHAPI Path_CreateFavLnk(LPCWSTR lpszDisplayName, const HPATHL hTargetPth, const HPATHL hDirPth)
+bool PTHAPI Path_CreateFavLnk(LPCWSTR lpszLinkName, const HPATHL hTargetPth, const HPATHL hDirPth)
 {
-    if (StrIsEmptyW(lpszDisplayName)) {
+    if (StrIsEmptyW(lpszLinkName)) {
         return true;
     }
 
     bool bSucceeded = false;
 
     HPATHL hlnk_pth = Path_Copy(hDirPth);
-    Path_Append(hlnk_pth, lpszDisplayName);
+    Path_Append(hlnk_pth, lpszLinkName);
     Path_RenameExtension(hlnk_pth, L".lnk");
 
     if (!Path_IsExistingFile(hlnk_pth)) {

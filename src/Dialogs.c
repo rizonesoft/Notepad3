@@ -2123,6 +2123,7 @@ bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
         AddToFavDlgProc, (LPARAM)szDisplayName);
 
 	if (iResult == IDOK) {
+        StringCchCat(szDisplayName, COUNTOF(szDisplayName), L".lnk");
         if (!Path_CreateFavLnk(szDisplayName, hTargetPth, Settings.FavoritesDir)) {
 			InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
 			return false;
