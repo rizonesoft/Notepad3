@@ -1743,7 +1743,10 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
         HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_wrkdir));
         Path_Append(hsrch_pth, Path_Get(hpth_in_out));
         if (bSearchPathIfRelative) {
-            if (!Path_IsExistingFile(hsrch_pth)) {
+            if (Path_IsExistingFile(hsrch_pth)) {
+                Path_Swap(hpth_in_out, hsrch_pth);
+            }
+            else {
                 Path_StripPath(hsrch_pth);
                 HSTRINGW       hsrch_str = StrgCreate(NULL);
                 LPWSTR const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
