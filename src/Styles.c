@@ -476,7 +476,6 @@ static HMENU s_hmenuThemes = NULL;
 
 bool Style_InsertThemesMenu(HMENU hMenuBar)
 {
-
     if (s_hmenuThemes) {
         DestroyMenu(s_hmenuThemes);
     }
@@ -485,6 +484,7 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
 
     WCHAR tchThemeName[SMALL_BUFFER] = { L'\0' };
     GetLngString(IDM_THEMES_FACTORY_RESET, tchThemeName, COUNTOF(tchThemeName));
+    GetLngString(IDM_THEMES_STD_CFG, Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName));
     AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, IDM_THEMES_FACTORY_RESET, tchThemeName);
     AppendMenu(s_hmenuThemes, MF_SEPARATOR, 0, 0);
 
