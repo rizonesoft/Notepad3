@@ -1774,7 +1774,7 @@ void LoadSettings()
     // --------------------------------------------------------------------------
     IniSectionGetString(IniSecStyles, L"ThemeFileName", L"", Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName));
     
-    Style_Load(); // Scintilla Styles from .ini
+    Style_Prerequisites();
 
     CloseSettingsFile(true, bOpendByMe);
 
