@@ -1168,7 +1168,7 @@ LPCWSTR PTHAPI Path_FindExtension(const HPATHL hpth)
 
     ///PathXCchFindExtension(StrgGet(hstr), StrgGetAllocLength(hstr), &pext);
     LPCWSTR pfile = Path_FindFileName(hpth);
-    LPWSTR const pdot = pfile ? wcschr(pfile, L'.') : NULL;
+    LPWSTR const pdot = pfile ? wcsrchr(pfile, L'.') : NULL;
 
     StrgSanitize(hstr);
     return pdot ? pdot : &wbuf[StrgGetLength(hstr)];

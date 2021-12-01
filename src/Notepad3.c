@@ -865,6 +865,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         FreeLanguageResources();
     #endif
 
+    CleanupDlgResources();
+
     Scintilla_ReleaseResources();
 
     OleUninitialize();
@@ -11057,7 +11059,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
         // if current file is settings/config file: ask to start
         if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing) {
-            //~ LoadSettings(); NOT all settings will be applied ...
+            ///~ LoadSettings(); NOT all settings will be applied ...
             WORD answer = 0;
             if (Settings.SaveSettings) {
                 WCHAR tch[256] = { L'\0' };

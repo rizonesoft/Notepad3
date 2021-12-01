@@ -46,6 +46,9 @@
 #include "Sci_Position.h"
 #include "Scintilla.h"
 
+// - explicitly use MAX_PATH vs. PATHLONG_MAX_CCH
+#define MAX_PATH_EXPLICIT MAX_PATH
+
 // no Analyze warning "prefer: enum class"
 #pragma warning(disable : 26812)
 
@@ -596,7 +599,7 @@ typedef struct _settings_t
     HPATHL FavoritesDir;
     WCHAR ToolbarButtons[MIDSZ_BUFFER];
     WCHAR MultiEdgeLines[MIDSZ_BUFFER];
-    WCHAR CurrentThemeName[MINI_BUFFER];
+    WCHAR CurrentThemeName[SMALL_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 

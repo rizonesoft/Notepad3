@@ -4889,22 +4889,27 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 //
 bool s_bFreezeAppTitle = false; // extern visible
 
-static WCHAR s_wchAdditionalTitleInfo[MIDSZ_BUFFER] = { L'\0' };
+static HSTRINGW s_wchAdditionalTitleInfo = NULL;
 
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
-	StringCchCopy(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
+    if (!s_wchAdditionalTitleInfo) {
+        s_wchAdditionalTitleInfo = StrgCreate(lpszAddTitleInfo);
+    }
+    else {
+        StrgReset(s_wchAdditionalTitleInfo, lpszAddTitleInfo);
+    }
 }
 
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo) {
-	StringCchCat(s_wchAdditionalTitleInfo, COUNTOF(s_wchAdditionalTitleInfo), lpszAddTitleInfo);
+    StrgCat(s_wchAdditionalTitleInfo, lpszAddTitleInfo);
 }
 
-static const WCHAR *pszMod = DOCMODDIFYD;
-static const WCHAR *pszSep  = L" - ";
-static WCHAR s_szUntitled[SMALL_BUFFER] = { L'\0' };
+static WCHAR        s_szUntitled[80] = { L'\0' };
+static const WCHAR* pszMod = DOCMODDIFYD;
+static const WCHAR* pszSep = L" - ";
 
+static WCHAR  s_wchCachedDisplayName[80] = { L'\0' };
 static HPATHL s_pthCachedFilePath = NULL;
-static WCHAR s_wchCachedDisplayName[80] = { L'\0' };
 
 // ----------------------------------------------------------------------------
 
@@ -4917,7 +4922,6 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 	}
 	if (!s_pthCachedFilePath) {
 		s_pthCachedFilePath = Path_Allocate(L"");
-		// TODO: cleanup on exit §§§ @@@
 	}
 
 	WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
@@ -5002,9 +5006,9 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 	StringCchCat(szTitle, COUNTOF(szTitle), szAppName);
 
 	// UCHARDET
-	if (StrIsNotEmpty(s_wchAdditionalTitleInfo)) {
+	if (StrgIsNotEmpty(s_wchAdditionalTitleInfo)) {
 		StringCchCat(szTitle, COUNTOF(szTitle), pszSep);
-		StringCchCat(szTitle, COUNTOF(szTitle), s_wchAdditionalTitleInfo);
+        StringCchCat(szTitle, COUNTOF(szTitle), StrgGet(s_wchAdditionalTitleInfo));
 	}
 
 	SetWindowText(hwnd, szTitle);
@@ -6372,6 +6376,21 @@ INT_PTR CALLBACK ColorDialogHookProc(
 	return 0; // Allow the default handler a chance to process
 }
 
+
+
+//=============================================================================
+//
+//  CleanupDlgResources()
+//
+void CleanupDlgResources()
+{
+    if (s_wchAdditionalTitleInfo) {
+        StrgDestroy(s_wchAdditionalTitleInfo);
+    }
+    if (s_pthCachedFilePath) {
+        Path_Release(s_pthCachedFilePath);
+    }
+}
 
 
 #if FALSE

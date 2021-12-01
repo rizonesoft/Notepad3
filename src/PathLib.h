@@ -27,10 +27,6 @@
 // PATHCCH_MAX_CCH: (0x7FFF + 1 for NULL terminator)
 #define PATHLONG_MAX_CCH 0x8000 
 
-// TODO: §§§ @@@ check for LongPath MAX_PATH §§§ @@@
-// - explicitly use MAX_PATH vs. PATHLONG_MAX_CCH
-#define MAX_PATH_EXPLICIT  MAX_PATH
-
 // ----------------------------------------------------------------------------
 __forceinline size_t max_sz(const size_t x, const size_t y) { return (x < y) ? y : x; }
 // ----------------------------------------------------------------------------

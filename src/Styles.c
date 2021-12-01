@@ -361,16 +361,18 @@ unsigned ThemeItems_CountOf()
 
 void ThemesItems_Init()
 {
-    for (unsigned i = 1; i < ThemeItems_CountOf(); ++i) {
+    for (unsigned i = 0; i < ThemeItems_CountOf(); ++i) {
+        Theme_Files[i].rid = 0;
+        Theme_Files[i].szName[0] = L'\0';
         if (Theme_Files[i].hStyleFilePath == NULL) {
-            Theme_Files[i].hStyleFilePath = Path_Allocate(NULL);
+            Theme_Files[i].hStyleFilePath = Path_Allocate(L"");
         }
     }
 }
 
 void ThemesItems_Release()
 {
-    for (unsigned i = 1; i < ThemeItems_CountOf(); ++i) {
+    for (unsigned i = 0; i < ThemeItems_CountOf(); ++i) {
         if (Theme_Files[i].hStyleFilePath != NULL) {
             Path_Release(Theme_Files[i].hStyleFilePath);
         }
@@ -390,25 +392,29 @@ unsigned ThemesItems_MaxIndex()
 
 static void _FillThemesMenuTable()
 {
-    Globals.uCurrentThemeIndex = 0;
-    Theme_Files[Globals.uCurrentThemeIndex].rid = IDM_THEMES_STD_CFG; // NP3.ini settings
-
     HPATHL hThemesDir = Path_Copy(Paths.IniFile);
+
+    // NP3.ini settings
+
+    Theme_Files[0].rid = IDM_THEMES_STD_CFG;
+    GetLngString(IDM_THEMES_STD_CFG, Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName));
+    if (Path_IsNotEmpty(hThemesDir)) {
+        Path_Reset(Theme_Files[0].hStyleFilePath, Path_Get(hThemesDir));
+    }
+    Globals.uCurrentThemeIndex = 0;
+
+    unsigned iTheme = 1; // other themes
 
     if (Path_IsEmpty(hThemesDir)) {
         Path_Reset(hThemesDir, Path_Get(Paths.IniFileDefault));
     }
-
     if (Path_IsNotEmpty(hThemesDir)) {
-
-        // names are filled by Style_InsertThemesMenu()
-        Path_Reset(Theme_Files[0].hStyleFilePath, Path_Get(hThemesDir));
-    
         Path_RemoveFileSpec(hThemesDir);
         Path_Append(hThemesDir, L"themes");
     }
 
-    unsigned iTheme = 1;
+    /// names are filled by Style_InsertThemesMenu()
+
     if (Path_IsExistingDirectory(hThemesDir)) {
 
         HPATHL hThemePath = Path_Copy(hThemesDir);
@@ -417,14 +423,17 @@ static void _FillThemesMenuTable()
         WIN32_FIND_DATA FindFileData;
         ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
         HANDLE hFindFile = FindFirstFileW(Path_Get(hThemePath), &FindFileData);
+
+        // ---  fill table by directory entries  ---
+
         if (IS_VALID_HANDLE(hFindFile)) {
-            // ---  fill table by directory entries  ---
-            WCHAR wchFileName[MINI_BUFFER] = { L'\0' };
+            
+            WCHAR wchFileName[SMALL_BUFFER] = { L'\0' };
+
             for (iTheme = 1; iTheme < ThemeItems_CountOf(); ++iTheme) {
 
                 Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_STD_CFG);
 
-                // TODO: §§§ @@@ check for LongPath MAX_PATH §§§ @@@
                 StringCchCopy(wchFileName, COUNTOF(wchFileName), PathFindFileNameW(FindFileData.cFileName));
                 PathRemoveExtensionW(wchFileName);
                 StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), wchFileName);
@@ -444,12 +453,6 @@ static void _FillThemesMenuTable()
             FindClose(hFindFile);
         }
         Path_Release(hThemePath);
-    }
-
-    for (++iTheme; iTheme < ThemeItems_CountOf(); ++iTheme) {
-        Theme_Files[iTheme].rid = 0;   // no themes available
-        Theme_Files[iTheme].szName[0] = L'\0';
-        Path_Empty(Theme_Files[iTheme].hStyleFilePath, true);
     }
 
     Path_Release(hThemesDir);
@@ -753,9 +756,9 @@ static void _LoadLexerFileExtensions()
 
 //=============================================================================
 //
-//  Style_Load()
+//  Style_Prerequisites()
 //
-void Style_Load() {
+void Style_Prerequisites() {
 
     _SetBaseFontSize(GLOBAL_INITIAL_FONTSIZE);
     _SetCurrentFontSize(GLOBAL_INITIAL_FONTSIZE);
@@ -767,7 +770,7 @@ void Style_Load() {
     _FillThemesMenuTable();
     _LoadLexerFileExtensions();
 
-    Style_ImportFromFile(Path_Get(Paths.IniFile));
+    ///~ Style_ImportFromFile(Path_Get(Paths.IniFile)); ~ done later
 }
 
 
@@ -914,6 +917,7 @@ static void _ReadFromIniCache() {
 
         unsigned i = 0;
         while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+
             LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
 
             wchDefaultStyle[0] = L'\0';
