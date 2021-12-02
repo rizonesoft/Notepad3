@@ -1542,6 +1542,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK);
     }
 
+    // AutoCompletion List
+    SciCall_SetElementColour(SC_ELEMENT_LIST, RGBxA(GetModeTextColor(UseDarkMode()), SC_ALPHA_OPAQUE));
+    SciCall_SetElementColour(SC_ELEMENT_LIST_BACK, RGBxA(GetModeBkColor(UseDarkMode()), SC_ALPHA_OPAQUE));
+    //SciCall_SetElementColour(SC_ELEMENT_LIST_SELECTED, SciCall_GetElementBaseColour(SC_ELEMENT_LIST_SELECTED));
+    //SciCall_SetElementColour(SC_ELEMENT_LIST_SELECTED_BACK, SciCall_GetElementBaseColour(SC_ELEMENT_LIST_SELECTED_BACK));
+
+
     // selection eolfilled
     bFlag = Style_StrHasAttribute(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FontEffects[FE_EOLFILLED]);
     SciCall_SetSelEOLFilled(bFlag);

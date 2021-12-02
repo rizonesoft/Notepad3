@@ -379,6 +379,7 @@ void EditInitWordDelimiter(HWND hwnd)
             ++i;
         }
     }
+    SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
 
     if (StrIsNotEmpty(Settings2.AutoCompleteWordCharSet)) {
         WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteWordCharSet, -1, AutoCompleteWordCharSet, (int)COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
@@ -7669,16 +7670,13 @@ typedef struct WLIST {
 } WLIST, *PWLIST;
 
 
-static int  wordcmp(PWLIST a, PWLIST b)
-{
+static int  wordcmp(PWLIST a, PWLIST b) {
     return StringCchCompareXA(a->word, b->word);
 }
 
-/* unused yet
 static int  wordcmpi(PWLIST a, PWLIST b) {
   return StringCchCompareXIA(a->word, b->word);
 }
-*/
 
 // ----------------------------------------------
 
@@ -7764,6 +7762,8 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
     PWLIST pListHead = NULL;
 
+    bool const bDoSortOrder = (SciCall_AutoCGetOrder() == SC_ORDER_PRESORTED);
+
     // --------------------------------------------------------------------------
     if (Settings.AutoCompleteWords || (autoInsert && !Settings.AutoCLexerKeyWords)) {
     // --------------------------------------------------------------------------
@@ -7791,8 +7791,12 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
                         PWLIST pWLItem = NULL;
                         LL_SEARCH_ORDERED(pListHead, pPrev, pWLItem, pwlNewWord, wordcmp);
                         if (!pWLItem) { // not found
-                            //LL_INSERT_INORDER(pListHead, pwlNewWord, wordcmpi);
-                            LL_APPEND_ELEM(pListHead, pPrev, pwlNewWord);
+                            if (bDoSortOrder) {
+                                LL_INSERT_INORDER(pListHead, pwlNewWord, wordcmpi);
+                            }
+                            else {
+                                LL_APPEND_ELEM(pListHead, pPrev, pwlNewWord);
+                            }
                             ++iNumWords;
                             iWListSize += (wordLength + 1);
                             pwlNewWord = NULL; // alloc new
@@ -7832,8 +7836,12 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
                             PWLIST pWLItem = NULL;
                             LL_SEARCH_ORDERED(pListHead, pPrev, pWLItem, pwlNewWord, wordcmp);
                             if (!pWLItem) { // not found
-                                //LL_INSERT_INORDER(pListHead, pwlNewWord, wordcmpi);
-                                LL_APPEND_ELEM(pListHead, pPrev, pwlNewWord);
+                                if (bDoSortOrder) {
+                                    LL_INSERT_INORDER(pListHead, pwlNewWord, wordcmpi);
+                                }
+                                else {
+                                    LL_APPEND_ELEM(pListHead, pPrev, pwlNewWord);
+                                }
                                 ++iNumWords;
                                 iWListSize += ((size_t)wlen + 1LL);
                                 pwlNewWord = NULL; // alloc new
@@ -7852,20 +7860,11 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
     if (iNumWords > 0) {
 
-        const char* const sep = " ";
         SciCall_AutoCCancel();
-        SciCall_ClearRegisteredImages();
-        
-        SciCall_AutoCSetOptions(SC_AUTOCOMPLETE_FIXED_SIZE);
-        SciCall_AutoCSetSeperator(sep[0]);
-        SciCall_AutoCSetIgnoreCase(true);
-        //~SciCall_AutoCSetCaseInsensitiveBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
         SciCall_AutoCSetChooseSingle(autoInsert);
-        SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
-        SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
 
-        SciCall_SetElementColour(SC_ELEMENT_LIST, RGBxA(GetModeTextColor(UseDarkMode()), SC_ALPHA_OPAQUE));
-        SciCall_SetElementColour(SC_ELEMENT_LIST_BACK, RGBxA(GetModeBkColor(UseDarkMode()), SC_ALPHA_OPAQUE));
+        const char* const sep = " ";
+        SciCall_AutoCSetSeperator(sep[0]);
 
         ++iWListSize; // zero termination
         char* const pList = AllocMem(iWListSize + 1, HEAP_ZERO_MEMORY);

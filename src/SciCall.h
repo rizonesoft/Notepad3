@@ -444,6 +444,7 @@ DeclareSciCallV1(AutoCSetCaseInsensitiveBehaviour, AUTOCSETCASEINSENSITIVEBEHAVI
 DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator);
 DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text);
 DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag);
+DeclareSciCallR0(AutoCGetOrder, AUTOCGETORDER, int);
 DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options);
 DeclareSciCallV1(AutoCSetMulti, AUTOCSETMULTI, int, options);
 DeclareSciCallV2(AutoCShow, AUTOCSHOW, DocPos, len, const char*, list);

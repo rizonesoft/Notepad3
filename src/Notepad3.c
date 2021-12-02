@@ -2260,6 +2260,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     // word delimiter handling
     EditInitWordDelimiter(hwndEditCtrl);
     EditSetAccelWordNav(hwndEditCtrl, Settings.AccelWordNavigation);
+
+    SciCall_ClearRegisteredImages();
+    SciCall_AutoCSetOptions(SC_AUTOCOMPLETE_FIXED_SIZE);
+    SciCall_AutoCSetIgnoreCase(true);
+    //~SciCall_AutoCSetCaseInsensitiveBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
+    SciCall_AutoCSetOrder(SC_ORDER_PRESORTED);   // already sorted
+    //SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT);
 }
 
 
