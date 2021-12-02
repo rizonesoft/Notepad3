@@ -27,7 +27,7 @@ KEYWORDLIST KeyWords_Fortran =
     "quote rank re readwrite read real rec recl recursive result return rewind round "
     "save select selectcase selecttype selectrank sequence sequential sign size stat status stop stream subroutine submodule "
     "sync target team then to type unformatted unit unlock use "
-    "value volatile wait where while write ",
+    "value volatile wait where while write",
 
     // --- Intrinsic functions (Standard Function) - Fortran Standard 2018 ---
     "abs achar acos acosh adjustl adjustr aimag aint all allocated anint any asin asinh associated atan atan2 atanh "
