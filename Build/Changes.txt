@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1201.(build_#) (2021-12-01)
+Current BETA/RC Version 5.21.1202.(build_#) (2021-12-02)
 ========================================================
 
 --------------------------------------------------------
@@ -47,6 +47,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1202.1]- Merged Fortran Lexer keyword/functions suggestions from zoziha.
+[1202.1]- Fortran Lexer keyword/function enhancement.
 [1130.1]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
 [1130.1]- Lexer Fortran: add extended intrinsic functions.
 [1130.1]- Some more DynStrg refactorings and LongPath handling.
@@ -63,6 +65,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1202.1]- Parsing file arg: relative from working dir.
 [1201.1]- Locale settings dependent Themes Menu (Standard Config).
 [1201.1]- Add to Favorites: keep base-filename + extension.
 [1201.1]- Find file extension.
