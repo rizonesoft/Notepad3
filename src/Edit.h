@@ -40,9 +40,8 @@ bool EditSwapClipboard(HWND hwnd,bool);
 bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
 void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
 void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
-bool EditLoadFile(HWND hwnd, const HPATHL hfile_pth, EditFileIOStatus* const status,
-                  bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection, bool bClearUndoHistory);
-bool EditSaveFile(HWND hwnd, const HPATHL hfile_pth, EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp);
+bool EditLoadFile(HWND hwnd, const HPATHL hfile_pth, EditFileIOStatus* const status, FileLoadFlags fLoadFlags, bool bClearUndoHistory);
+bool EditSaveFile(HWND hwnd, const HPATHL hfile_pth, EditFileIOStatus* status, FileSaveFlags fSaveFlags, bool bPreserveTimeStamp);
 
 void EditInvertCase(HWND hwnd);
 void EditTitleCase(HWND hwnd);

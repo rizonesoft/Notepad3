@@ -1120,9 +1120,7 @@ bool EditLoadFile(
     HWND hwnd,
     const HPATHL hfile_pth,
     EditFileIOStatus* const status,
-    bool bSkipUTFDetection,
-    bool bSkipANSICPDetection,
-    bool bForceEncDetection,
+    FileLoadFlags fLoadFlags,
     bool bClearUndoHistory)
 {
     if (!status) {
@@ -1282,8 +1280,8 @@ bool EditLoadFile(
     // --------------------------------------------------------------------------
 
     ENC_DET_T const encDetection = Encoding_DetectEncoding(hfile_pth, lpData, cbData,
-                                   Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_PREFERRED_ENCODING,
-                                   bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
+        Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_PREFERRED_ENCODING,
+        (fLoadFlags & FLF_SkipUnicodeDetect), (fLoadFlags & FLF_SkipANSICPDetection), (fLoadFlags & FLF_ForceEncDetection));
 
     #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
     #define IS_ENC_PURE_ASCII() (encDetection.analyzedEncoding == CPI_ASCII_7BIT)
@@ -1357,7 +1355,7 @@ bool EditLoadFile(
         bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
         bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
 
-        bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && bSkipUTFDetection);
+        bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && (fLoadFlags & FLF_SkipUnicodeDetect));
 
         if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8))) {
             if (encDetection.bIsUTF8Sig) {
@@ -1429,7 +1427,7 @@ bool EditSaveFile(
     HWND hwnd,
     const HPATHL hfile_pth,
     EditFileIOStatus * const status,
-    bool bSaveCopy,
+    FileSaveFlags fSaveFlags,
     bool bPreserveTimeStamp)
 {
     if (!status) {
@@ -1645,7 +1643,7 @@ bool EditSaveFile(
 
     CloseHandle(hFile);
 
-    if (bWriteSuccess && !bSaveCopy) {
+    if (bWriteSuccess && !(fSaveFlags & FSF_SaveCopy)) {
         SetSavePoint();
     }
     return bWriteSuccess;

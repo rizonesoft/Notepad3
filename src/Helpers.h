@@ -298,7 +298,7 @@ inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
     return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_WINDOWTEXT));
 #else
     UNREFERENCED_PARAMETER(bDarkMode);
-    return SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+    return SetTextColor(hdc, GetSysColor(COLOR_WINDOWTEXT));
 #endif
 }
 
@@ -308,7 +308,7 @@ inline COLORREF GetModeTextColor(const bool bDarkMode)
     return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
 #else
     UNREFERENCED_PARAMETER(bDarkMode);
-    return (COLORREF)GetSysColor(COLOR_BTNTEXT);
+    return (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
 #endif
 }
 

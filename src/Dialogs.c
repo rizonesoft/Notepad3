@@ -4487,7 +4487,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi)
 {
-	if (bSaveOnRunTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
+    if (bSaveOnRunTools && !FileSave(FSF_Default | FSF_Ask)) {
 		return;
 	}
     WCHAR wch[80] = { L'\0' };
