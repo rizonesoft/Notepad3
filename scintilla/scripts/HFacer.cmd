@@ -9,7 +9,8 @@ pushd %_THISDIR_%
 ::cls
 
 
-set _PYTHON_EXE=c:\PortablePrograms\Python396_x64_emb\python.exe
+rem set _PYTHON_EXE=c:\PortablePrograms\Python396_x64_emb\python.exe
+call :RESOLVE_PATH _PYTHON_EXE "%_THISDIR_%..\..\..\..\_python_emb\python.exe"
 
 
 ::set _CMD_="%_PYTHON_EXE%" -I -S -m "%~dpn0"

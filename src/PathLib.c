@@ -330,13 +330,15 @@ static void PrependLongPathPrefix(HPATHL hpth_in_out, bool bForce)
 static LPCWSTR _Path_SkipLPPrefix(const HSTRINGW hpth_str)
 {
     LPCWSTR start = StrgGet(hpth_str);
-    if (wcsstr(start, PATHLONG_PREFIX) == start) {
+    if (wcsstr(start, PATHUNC_PREFIX1) == start) {
+        start += wcslen(PATHUNC_PREFIX1) - 1;
+    }
+    else if (wcsstr(start, PATHLONG_PREFIX) == start) {
         start += wcslen(PATHLONG_PREFIX);
     }
     return start;
 }
 // ----------------------------------------------------------------------------
-
 
 static void _UnExpandEnvStrgs(HSTRINGW hstr_in_out)
 {
@@ -403,6 +405,12 @@ static bool _PathCanonicalize(HSTRINGW hstr_in_out)
     // Move back to the beginning of the string
     size_t i, j, k;
     i = j = k = (start - path);
+
+    // Skip UNC Path
+    while ((path[i] == L'\\') && path[i + 1] == L'\\') {
+        i++;
+    }
+    j = k = i;
 
     // Parse the entire string
     do {
@@ -1795,7 +1803,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
                 if ((wcslen(buf) < MAX_PATH_EXPLICIT) || HasOptInToRemoveMaxPathLimit()) {
                     if ((wcsstr(ptr, PATHUNC_PREFIX1) == ptr) ||
                         (wcsstr(ptr, PATHUNC_PREFIX2) == ptr)) {
-                        ptr += (wcslen(PATHUNC_PREFIX1) - 1);
+                        ptr += (wcslen(PATHUNC_PREFIX1) - 2);
                         *ptr = L'\\';
                     }
                     else if (wcsstr(ptr, PATHLONG_PREFIX) == ptr) {

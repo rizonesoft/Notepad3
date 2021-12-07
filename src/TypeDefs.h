@@ -96,8 +96,8 @@ typedef DocPos         DocLn;   // Sci::Line
 //typedef intptr_t cpi_enc_t;
 typedef int cpi_enc_t;
 
-typedef struct _wi
-{
+typedef struct WININFO {
+
     int x;
     int y;
     int cx;
@@ -105,11 +105,12 @@ typedef struct _wi
     bool max;
     int zoom;
     UINT dpi;
+
 } WININFO;
 
 #define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, false, 100, USER_DEFAULT_SCREEN_DPI }
 
-typedef enum { SCR_NORMAL = 0, SCR_FULL_SCREEN = 1 } SCREEN_MODE;
+typedef enum SCREEN_MODE { SCR_NORMAL = 0, SCR_FULL_SCREEN = 1 } SCREEN_MODE;
 
 __forceinline void RectFromWinInfo(const WININFO* const pWinInfo, LPRECT pRect)
 {
@@ -150,16 +151,16 @@ typedef int COLORALPHAREF;
 
 // ----------------------------------------------------------------------------
 
-typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
-typedef enum { OPEN_WITH_BROWSER = 1, OPEN_IN_NOTEPAD3 = (1<<1), OPEN_NEW_NOTEPAD3 = (1<<2), COPY_HYPERLINK = (1<<3), SELECT_HYPERLINK = (1<<4) } HYPERLINK_OPS;  // Hyperlink Operations
-typedef enum { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_INDICATORSILENT = 1, FWM_MSGBOX = 2, FWM_AUTORELOAD = 3, FWM_EXCLUSIVELOCK = 4 } FILE_WATCHING_MODE;
-typedef enum { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
+typedef enum COLOR_LAYER { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
+typedef enum HYPERLINK_OPS { OPEN_WITH_BROWSER = 1, OPEN_IN_NOTEPAD3 = (1<<1), OPEN_NEW_NOTEPAD3 = (1<<2), COPY_HYPERLINK = (1<<3), SELECT_HYPERLINK = (1<<4) } HYPERLINK_OPS;  // Hyperlink Operations
+typedef enum FILE_WATCHING_MODE { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_INDICATORSILENT = 1, FWM_MSGBOX = 2, FWM_AUTORELOAD = 3, FWM_EXCLUSIVELOCK = 4 } FILE_WATCHING_MODE;
+typedef enum FOCUSVIEW_MARKER_MODE { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 
 // ----------------------------------------------------------------------------
 
 // keep backward compatible with older settings-file versions
-typedef enum
-{
+typedef enum CFG_VERSION {
+
     CFG_VER_NONE = 0,  /// old version
     CFG_VER_0001 = 1,  /// ZoomLevel and PrintZoom changed from relative font size in point to absolute percentage.
     CFG_VER_0002 = 2,  /// LongLine Marker Off by default
@@ -173,8 +174,8 @@ typedef enum
 
 // --------------------------------------------------------------------------
 
-typedef enum
-{
+typedef enum BUFFER_SIZES {
+
     MICRO_BUFFER = 32,
     MINI_BUFFER = 64,
     SMALL_BUFFER = 128,
@@ -194,15 +195,15 @@ typedef enum
 } BUFFER_SIZES;
 
 
-typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
-typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
+typedef enum FR_STATES { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
+typedef enum FR_UPD_MODES { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 
 //==== Statusbar ==============================================================
 
 typedef WCHAR prefix_t[MICRO_BUFFER];
 
-typedef enum
-{
+typedef enum STATUS_SECTOR_T {
+
     STATUS_DOCLINE = 0, STATUS_DOCCOLUMN, STATUS_SELECTION, STATUS_SELCTBYTES, STATUS_SELCTLINES,
     STATUS_OCCURRENCE, STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF,
     STATUS_LEXER, STATUS_DOCCHAR, STATUS_OCCREPLACE, STATUS_TINYEXPR,
@@ -226,8 +227,8 @@ typedef enum
 
 // --------------------------------------------------------------------------
 
-typedef struct _filevars
-{
+typedef struct FILEVARS {
+
     int        mask;
     bool       bTabsAsSpaces;
     bool       bTabIndents;
@@ -244,8 +245,8 @@ typedef struct _filevars
 
 // --------------------------------------------------------------------------
 
-typedef struct _editfindreplace
-{
+typedef struct EDITFINDREPLACE {
+
     UINT fuFlags;
     bool bTransformBS;
     bool bFindClose;
@@ -278,8 +279,8 @@ typedef const EDITFINDREPLACE* const CLPCEDITFINDREPLACE;
 #define MRU_UTF8         2
 #define MRU_BMRK_SIZE  512
 
-typedef struct _mrulist
-{
+typedef struct MRULIST {
+
     LPCWSTR   szRegKey;
     int       iFlags;
     int       iSize;
@@ -288,20 +289,20 @@ typedef struct _mrulist
     DocPos    iCaretPos[MRU_MAXITEMS];
     DocPos    iSelAnchPos[MRU_MAXITEMS];
     LPWSTR    pszBookMarks[MRU_MAXITEMS];
-}
-MRULIST, *PMRULIST, *LPMRULIST;
+
+} MRULIST, *PMRULIST, *LPMRULIST;
 
 // --------------------------------------------------------------------------
 
-typedef struct _cmq
-{
+typedef struct CmdMessageQueue_t {
+
     HWND hwnd;
     UINT  cmd;
     WPARAM wparam;
     LPARAM lparam;
     int delay;
-    struct _cmq* next;
-    struct _cmq* prev;
+    struct CmdMessageQueue_t* next;
+    struct CmdMessageQueue_t* prev;
 
 } CmdMessageQueue_t;
 
@@ -322,8 +323,8 @@ typedef struct _cmq
 
 // --------------------------------------------------------------------------
 
-typedef enum
-{
+typedef enum MARKER_ID {
+
     MARKER_NP3_OCCURRENCE = 0, // invisible
     MARKER_NP3_1,
     MARKER_NP3_2,
@@ -335,6 +336,7 @@ typedef enum
     MARKER_NP3_8,
     // std bookmark -> counter is last
     MARKER_NP3_BOOKMARK
+
 } MARKER_ID;
 
 // ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_FOLDEREND )
@@ -346,8 +348,8 @@ extern LPCWSTR WordBookMarks[];
 // --------------------------------------------------------------------------
 
 
-typedef enum
-{
+typedef enum INDIC_ID {
+
     INDIC_NP3_MARK_OCCURANCE = INDICATOR_CONTAINER,
     INDIC_NP3_MATCH_BRACE,
     INDIC_NP3_BAD_BRACE,
@@ -359,6 +361,7 @@ typedef enum
     INDIC_NP3_UNICODE_POINT,
     // counter is last
     INDIC_NP3_ID_CNT
+
 } INDIC_ID;
 
 // ASSERT( INDIC_NP3_ID_CNT < INDICATOR_IME )
@@ -366,9 +369,11 @@ typedef enum
 // --------------------------------------------------------------------------
 
 #define ENCLDATA_SIZE 256
-typedef struct _encloseselectiondata {
+typedef struct ENCLOSESELDATA {
+
     WCHAR pwsz1[ENCLDATA_SIZE];
     WCHAR pwsz2[ENCLDATA_SIZE];
+
 } ENCLOSESELDATA, *PENCLOSESELDATA;
 
 // --------------------------------------------------------------------------
@@ -378,8 +383,8 @@ typedef struct _encloseselectiondata {
 
 //=============================================================================
 
-typedef struct _constants_t
-{
+typedef struct CONSTANTS_T {
+
     int const          StdDefaultLexerID; // Pure Text Files
     const WCHAR* const FileBrowserMiniPath;
     const WCHAR* const FileSearchGrepWin;
@@ -395,8 +400,8 @@ extern CONSTANTS_T const Constants;
 
 // ------------------------------------
 
-typedef struct _globals_t
-{
+typedef struct GLOBALS_T {
+
     int       iCfgVersionRead;
     HINSTANCE hInstance;
     HINSTANCE hPrevInst;
@@ -475,7 +480,7 @@ extern GLOBALS_T Globals;
 
 // ------------------------------------
 
-typedef struct _paths_t {
+typedef struct PATHS_T {
     
     HPATHL CurrentFile;
     HPATHL ModuleDirectory;
@@ -489,8 +494,8 @@ extern PATHS_T Paths;
 
 // ------------------------------------
 
-typedef struct _settings_t
-{
+typedef struct SETTINGS_T {
+
     bool SaveSettings;
     bool SaveRecentFiles;
     bool PreserveCaretPos;
@@ -612,8 +617,8 @@ extern SETTINGS_T Settings;
 
 //=============================================================================
 
-typedef struct _flags_t
-{
+typedef struct FLAGS_T {
+
     int  ToolbarLook;
     int PrintFileAndLeave;
 
@@ -645,8 +650,8 @@ extern FLAGS_T DefaultFlags;
 
 //=============================================================================
 
-typedef struct _settings2_t
-{
+typedef struct SETTINGS2_T {
+
     int    FileLoadWarningMB;
     int    OpacityLevel;
     int    FindReplaceOpacityLevel;
@@ -723,8 +728,8 @@ extern WCHAR Default_PreferredLanguageLocaleName[];
 
 //=============================================================================
 
-typedef struct _focusedview_t
-{
+typedef struct FOCUSEDVIEW_T {
+
     bool HideNonMatchedLines;
     bool CodeFoldingAvailable;
     bool ShowCodeFolding;       // <-> Settings.ShowCodeFolding
@@ -735,8 +740,8 @@ extern FOCUSEDVIEW_T FocusedView;
 
 //=============================================================================
 
-typedef struct _filewatching_t
-{
+typedef struct FILEWATCHING_T {
+
     FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
     DWORD              FileCheckInverval; // <-> Settings2.FileCheckInverval;
@@ -748,10 +753,34 @@ extern FILEWATCHING_T FileWatching;
 
 //=============================================================================
 
-typedef enum { I_TAB_LN = 0, I_SPC_LN = 1, I_MIX_LN = 2, I_TAB_MOD_X = 3, I_SPC_MOD_X = 4 } INDENT_TYPE;
+typedef enum FileLoadFlags {
 
-typedef struct _editfileiostatus
-{
+    FLF_Default             = 0,
+    FLF_DontSave            = 1 << 0,
+    FLF_New                 = 1 << 1,
+    FLF_Reload              = 1 << 2,
+    FLF_SkipUnicodeDetect   = 1 << 3,
+    FLF_SkipANSICPDetection = 1 << 4,
+    FLF_ForceEncDetection   = 1 << 5
+
+} FileLoadFlags;
+
+typedef enum FileSaveFlags {
+
+    FSF_Default           = 0,
+    FSF_SaveAlways        = 1 << 0,
+    FSF_Ask               = 1 << 1,
+    FSF_SaveAs            = 1 << 2,
+    FSF_SaveCopy          = 1 << 3
+
+} FileSaveFlags;
+
+//=============================================================================
+
+typedef enum INDENT_TYPE { I_TAB_LN = 0, I_SPC_LN = 1, I_MIX_LN = 2, I_TAB_MOD_X = 3, I_SPC_MOD_X = 4 } INDENT_TYPE;
+
+typedef struct EditFileIOStatus {
+
     cpi_enc_t iEncoding;
     int iEOLMode;
     bool bUnicodeErr;
@@ -773,8 +802,8 @@ typedef struct _editfileiostatus
 
 //=============================================================================
 
-typedef struct _themeFiles
-{
+typedef struct THEMEFILES {
+
     UINT    rid;
     WCHAR   szName[MINI_BUFFER];
     HPATHL  hStyleFilePath;

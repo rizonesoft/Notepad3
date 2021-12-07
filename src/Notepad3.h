@@ -155,13 +155,11 @@ size_t  LengthOfFindPatternMB();
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 
-bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
-            bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
-            bool bSaveCopy, bool bPreserveTimeStamp);
-bool FileLoad(const HPATHL hfile_pth, bool bDontSave, bool bNew, bool bReload,
-              bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection);
+bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags);
+bool FileSave(FileSaveFlags fSaveFlags);
 bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc);
-bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bPreserveTimeStamp);
+bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
+            FileLoadFlags fLoadFlags, FileSaveFlags fSaveFlags, bool bSetSavePoint);
 bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 
