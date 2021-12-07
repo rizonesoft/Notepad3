@@ -266,14 +266,14 @@
     <ClCompile Include="lexlib\LexAccessor.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="lexers_x\LexKix.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexFortran.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="lexers_x\LexAHK.cxx">
       <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexKix.cxx">
+      <Filter>lexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -68,6 +68,7 @@
     <ClCompile Include="lexers\LexHTML.cxx" />
     <ClCompile Include="lexers\LexInno.cxx" />
     <ClCompile Include="lexers\LexJulia.cxx" />
+    <ClCompile Include="lexers\LexKix.cxx" />
     <ClCompile Include="lexers\LexLaTeX.cxx" />
     <ClCompile Include="lexers\LexLua.cxx" />
     <ClCompile Include="lexers\LexMake.cxx" />
@@ -93,7 +94,6 @@
     <ClCompile Include="lexers_x\LexDart.cxx" />
     <ClCompile Include="lexers_x\LexerUtils.cxx" />
     <ClCompile Include="lexers_x\LexJSON.cxx" />
-    <ClCompile Include="lexers_x\LexKix.cxx" />
     <ClCompile Include="lexers_x\LexKotlin.cxx" />
     <ClCompile Include="lexers_x\LexMarkdown.cxx" />
     <ClCompile Include="lexers_x\LexPython.cxx" />

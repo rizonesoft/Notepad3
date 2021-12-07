@@ -105,6 +105,7 @@ typedef struct WININFO {
     bool max;
     int zoom;
     UINT dpi;
+
 } WININFO;
 
 #define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, false, 100, USER_DEFAULT_SCREEN_DPI }
@@ -288,8 +289,8 @@ typedef struct MRULIST {
     DocPos    iCaretPos[MRU_MAXITEMS];
     DocPos    iSelAnchPos[MRU_MAXITEMS];
     LPWSTR    pszBookMarks[MRU_MAXITEMS];
-}
-MRULIST, *PMRULIST, *LPMRULIST;
+
+} MRULIST, *PMRULIST, *LPMRULIST;
 
 // --------------------------------------------------------------------------
 
@@ -335,6 +336,7 @@ typedef enum MARKER_ID {
     MARKER_NP3_8,
     // std bookmark -> counter is last
     MARKER_NP3_BOOKMARK
+
 } MARKER_ID;
 
 // ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_FOLDEREND )
@@ -359,6 +361,7 @@ typedef enum INDIC_ID {
     INDIC_NP3_UNICODE_POINT,
     // counter is last
     INDIC_NP3_ID_CNT
+
 } INDIC_ID;
 
 // ASSERT( INDIC_NP3_ID_CNT < INDICATOR_IME )
@@ -366,9 +369,11 @@ typedef enum INDIC_ID {
 // --------------------------------------------------------------------------
 
 #define ENCLDATA_SIZE 256
-typedef struct _encloseselectiondata {
+typedef struct ENCLOSESELDATA {
+
     WCHAR pwsz1[ENCLDATA_SIZE];
     WCHAR pwsz2[ENCLDATA_SIZE];
+
 } ENCLOSESELDATA, *PENCLOSESELDATA;
 
 // --------------------------------------------------------------------------
@@ -757,6 +762,7 @@ typedef enum FileLoadFlags {
     FLF_SkipUnicodeDetect   = 1 << 3,
     FLF_SkipANSICPDetection = 1 << 4,
     FLF_ForceEncDetection   = 1 << 5
+
 } FileLoadFlags;
 
 typedef enum FileSaveFlags {
@@ -766,6 +772,7 @@ typedef enum FileSaveFlags {
     FSF_Ask               = 1 << 1,
     FSF_SaveAs            = 1 << 2,
     FSF_SaveCopy          = 1 << 3
+
 } FileSaveFlags;
 
 //=============================================================================

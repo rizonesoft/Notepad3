@@ -27,9 +27,6 @@ unreadVariable:lexilla/lexers/LexBaan.cxx
 constParameter:lexilla/lexers/LexBash.cxx
 uninitMemberVar:lexilla/lexers/LexBash.cxx
 variableScope:lexilla/lexers/LexBash.cxx
-constParameter:lexilla/lexers/LexBatch.cxx
-variableScope:lexilla/lexers/LexBatch.cxx
-knownConditionTrueFalse:lexilla/lexers/LexBatch.cxx
 variableScope:lexilla/lexers/LexCmake.cxx
 knownConditionTrueFalse:lexilla/lexers/LexCmake.cxx
 constParameter:lexilla/lexers/LexCLW.cxx
@@ -44,6 +41,7 @@ knownConditionTrueFalse:lexilla/lexers/LexEScript.cxx
 constParameter:lexilla/lexers/LexFortran.cxx
 redundantCondition:lexilla/lexers/LexFSharp.cxx
 knownConditionTrueFalse:lexilla/lexers/LexFSharp.cxx
+constParameter:lexilla/lexers/LexGDScript.cxx
 variableScope:lexilla/lexers/LexGui4Cli.cxx
 constParameter:lexilla/lexers/LexHaskell.cxx
 constParameter:lexilla/lexers/LexHex.cxx
@@ -101,12 +99,14 @@ shadowVariable:lexilla/lexers/LexVHDL.cxx
 unreadVariable:lexilla/lexers/LexVHDL.cxx
 variableScope:lexilla/lexers/LexVHDL.cxx
 unreadVariable:lexilla/lexers/LexVisualProlog.cxx
+unreadVariable:lexilla/lexers/LexX12.cxx
 constParameter:lexilla/lexers/LexYAML.cxx
 knownConditionTrueFalse:lexilla/lexers/LexYAML.cxx
 
 // These are due to Accessor::IndentAmount not declaring the callback as taking a const.
 // Changing this could cause problems for downstream projects.
 constParameterCallback:lexilla/lexers/LexEiffel.cxx
+constParameterCallback:lexilla/lexers/LexGDScript.cxx
 constParameterCallback:lexilla/lexers/LexPython.cxx
 constParameterCallback:lexilla/lexers/LexScriptol.cxx
 constParameterCallback:lexilla/lexers/LexVB.cxx
