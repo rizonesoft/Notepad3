@@ -120,7 +120,7 @@ bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
 size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);
 size_t PTHAPI          Path_GetLongPathNameEx(HPATHL hpth_in_out);
 
-void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl);
+void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl, bool bStripPath);
 bool PTHAPI            Path_GetLnkPath(const HPATHL hLnkFilePth, HPATHL hResPath_out);
 bool PTHAPI            Path_IsLnkFile(const HPATHL hpth);
 bool PTHAPI            Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);

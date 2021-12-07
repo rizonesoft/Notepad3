@@ -1397,18 +1397,22 @@ size_t PTHAPI GetLongPathNameEx(LPWSTR lpszPath, const size_t cchBuffer)
 //
 //  Path_GetDisplayName()
 //
-void PTHAPI Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl)
+void PTHAPI Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl, bool bStripPath)
 {
     if (!lpszDisplayName || (cchDisplayName == 0)) {
         return;
     }
-    if (Path_GetLength(hpth) == 0) {
-        StringCchCopyW(lpszDisplayName, cchDisplayName, repl ? repl : L"");
+    if (Path_IsEmpty(hpth)) {
+        if (!StrIsEmptyW(repl)) {
+            StringCchCopyW(lpszDisplayName, cchDisplayName, repl);
+        }
         return;
     }
 
     HPATHL hfnam_pth = Path_Copy(hpth);
-    Path_StripPath(hfnam_pth);
+    if (bStripPath) {
+        Path_StripPath(hfnam_pth);
+    }
     size_t const fnam_len = Path_GetLength(hfnam_pth);
 
     if (fnam_len >= cchDisplayName) {

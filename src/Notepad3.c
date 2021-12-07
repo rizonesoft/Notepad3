@@ -1783,24 +1783,16 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // print file immediately and quit
     if (Globals.CmdLnFlag_PrintFileAndLeave) {
-        WCHAR *pszTitle;
         WCHAR tchPageFmt[32] = { L'\0' };
-        WCHAR szDisplayName[80];
+        WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1];
 
-        WCHAR tchUntitled[32] = { L'\0' };
-        GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
-
-        if (Path_IsNotEmpty(Paths.CurrentFile)) {
-            Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, tchUntitled);
-            pszTitle = szDisplayName;
-        } else {
-            pszTitle = tchUntitled;
-        }
+        GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
+        Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, true);
 
         GetLngString(IDS_MUI_PRINT_PAGENUM, tchPageFmt, COUNTOF(tchPageFmt));
 
-        if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt)) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
+        if (!EditPrint(Globals.hwndEdit, szDisplayName, tchPageFmt)) {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, szDisplayName);
         }
     }
 
@@ -4372,6 +4364,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_READONLY:
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
             DWORD dwFileAttributes = Path_GetFileAttributes(Paths.CurrentFile);
+            WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
             if (dwFileAttributes != INVALID_FILE_ATTRIBUTES) {
                 if (s_bFileReadOnly) {
                     dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
@@ -4379,13 +4372,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                     dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
                 }
                 if (!Path_SetFileAttributes(Paths.CurrentFile, dwFileAttributes)) {
-                    WCHAR szDisplayName[256] = { L'\0' };
-                    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL);
+                    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
                     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, szDisplayName);
                 }
             } else {
-                WCHAR szDisplayName[256] = { L'\0' };
-                Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL);
+                Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
                 InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, szDisplayName);
             }
 
@@ -4518,24 +4509,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDM_FILE_PRINT: {
-        WCHAR *pszTitle;
         WCHAR tchPageFmt[32] = { L'\0' };
-        WCHAR szDisplayName[80];
+        WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1];
 
-        WCHAR tchUntitled[32] = { L'\0' };
-        GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
-
-        if (Path_IsNotEmpty(Paths.CurrentFile)) {
-            Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, tchUntitled);
-            pszTitle = szDisplayName;
-        } else {
-            pszTitle = tchUntitled;
-        }
+        GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
+        Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
 
         GetLngString(IDS_MUI_PRINT_PAGENUM,tchPageFmt,COUNTOF(tchPageFmt));
 
-        if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt)) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
+        if (!EditPrint(Globals.hwndEdit, szDisplayName, tchPageFmt)) {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, szDisplayName);
         }
     }
     break;
@@ -10387,7 +10370,7 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
     bool fSuccess = false;
 
     WCHAR wchFName[64];
-    Path_GetDisplayName(wchFName, COUNTOF(wchFName), hfile_pth, L"...");
+    Path_GetDisplayName(wchFName, COUNTOF(wchFName), hfile_pth, L"...", true);
     WCHAR wchMsg[128];
     FormatLngStringW(wchMsg, COUNTOF(wchMsg), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, wchFName);
     
@@ -10566,7 +10549,12 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
     if (!(fLoadFlags & FLF_Reload) && !Path_IsExistingFile(hopen_file)) {
         bool bCreateFile = s_flagQuietCreate;
         if (!bCreateFile) {
-            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, Path_FindFileName(hopen_file)));
+            WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+
+            GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
+            Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hopen_file, NULL, false); //~Path_FindFileName(hopen_file)
+
+            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, szDisplayName));
             if ((IDOK == answer) || (IDYES == answer)) {
                 bCreateFile = true;
             }
@@ -10995,12 +10983,10 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
     if (fSaveFlags & FSF_Ask) {
         // File or "Untitled" ...
-        WCHAR wchFileName[128] = { L'\0' };
-        if (Path_IsNotEmpty(Paths.CurrentFile)) {
-            Path_GetDisplayName(wchFileName, COUNTOF(wchFileName), Paths.CurrentFile, L"...");
-        } else {
-            GetLngString(IDS_MUI_UNTITLED, wchFileName, COUNTOF(wchFileName));
-        }
+        WCHAR wchFileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+
+        GetLngString(IDS_MUI_UNTITLED, wchFileName, COUNTOF(wchFileName));
+        Path_GetDisplayName(wchFileName, COUNTOF(wchFileName), Paths.CurrentFile, NULL, false);
 
         INT_PTR const answer = (Settings.MuteMessageBeep) ?
                                InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, wchFileName) :
@@ -12190,10 +12176,14 @@ void InstallFileWatching(const bool bInstall) {
                 Globals.dwLastError = GetLastError();
 
                 if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
-                    //InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, Path_FindFileName(Paths.CurrentFile));
-                    WCHAR wchDisplayName[256];
-                    Path_GetDisplayName(wchDisplayName, COUNTOF(wchDisplayName), Paths.CurrentFile, L"");
+
+                    WCHAR wchDisplayName[MAX_PATH_EXPLICIT>>1];
+
+                    GetLngString(IDS_MUI_UNTITLED, wchDisplayName, COUNTOF(wchDisplayName));
+                    Path_GetDisplayName(wchDisplayName, COUNTOF(wchDisplayName), Paths.CurrentFile, NULL, false);
+
                     InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, wchDisplayName);
+
                     // need to chose another mode
                     FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
                     FileWatching.FileWatchingMode = (fwm != FWM_EXCLUSIVELOCK) ? fwm : FWM_MSGBOX;

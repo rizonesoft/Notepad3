@@ -1042,8 +1042,8 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
             if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile); // done
             } else {
-                WCHAR fileName[128];
-                Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, L"");
+                WCHAR fileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+                Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, NULL, true);
                 HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", fileName);
                 MsgBoxLastError(StrgGet(msg), 0);
@@ -1059,8 +1059,8 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
             } else {
-                WCHAR fileName[128];
-                Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, L"");
+                WCHAR fileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+                Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, NULL, true);
                 HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILED TO READ FILESIZE!", fileName);
                 MsgBoxLastError(StrgGet(msg), 0);

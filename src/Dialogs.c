@@ -1708,8 +1708,8 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
     HPATHL hpthFileName = Path_Allocate(lpstrFile);
     dliOpenWith.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
 
-    WCHAR chDispayName[128];
-    Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, L"");
+    WCHAR chDispayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+    Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, NULL, true);
     dliOpenWith.strDisplayName = chDispayName;
 
 	if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
@@ -2113,8 +2113,8 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
 {
-    WCHAR szDisplayName[INTERNET_MAX_URL_LENGTH];
-    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hTargetPth, L"");
+    WCHAR szDisplayName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
+    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hTargetPth, NULL, true);
 
 	INT_PTR const iResult = ThemedDialogBoxParam(
         Globals.hLngResContainer,
@@ -4969,7 +4969,7 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 		if (iFormat < 2) {
 			if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory) != 0) {
 				Path_Reset(s_pthCachedFilePath, Path_Get(pthFilePath));
-				Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled);
+                Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled, true);
 			}
 			StringCchCat(szTitle, COUNTOF(szTitle), Path_FindFileName(s_pthCachedFilePath));
 			if (iFormat == 1) {
@@ -4987,7 +4987,7 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 		}
 	} else {
 		Path_Empty(s_pthCachedFilePath, false);
-		StringCchCopy(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), L"");
+        s_wchCachedDisplayName[0] = L'\0';
 		StringCchCat(szTitle, COUNTOF(szTitle), s_szUntitled);
 	}
 
