@@ -449,7 +449,7 @@
 #define IDC_FINDESCCTRLCHR              18123
 #define IDC_REPLESCCTRLCHR              18124
 #define IDC_AUTOSAVE_ENABLE             18125
-#define IDC_AUTOSAVE_PERIOD             18126
+#define IDC_AUTOSAVE_INTERVAL           18126
 #define IDC_AUTOSAVE_SUSPEND            18127
 #define IDC_AUTOSAVE_SHUTDOWN           18128
 #define IDC_AS_BACKUP_ENABLE            18129

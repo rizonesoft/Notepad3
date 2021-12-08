@@ -2211,10 +2211,10 @@ size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
 
 //=============================================================================
 //
-//  Char2Float()
+//  StrToFloat()
 //  Locale indpendant simple character to float conversion
 //
-bool Char2Float(WCHAR* wnumber, float* fresult)
+bool StrToFloat(WCHAR* wnumber, float* fresult)
 {
     if (!wnumber || !fresult) {
         return false;
@@ -2259,7 +2259,7 @@ bool Char2Float(WCHAR* wnumber, float* fresult)
     if (wnumber[i] == L'e' || wnumber[i] == L'E') {
         ++i;
         float fexp = 0.0f;
-        if (Char2Float(&(wnumber[i]), &fexp)) {
+        if (StrToFloat(&(wnumber[i]), &fexp)) {
             exponent = powf(10, fexp);
         }
     }
@@ -2271,10 +2271,10 @@ bool Char2Float(WCHAR* wnumber, float* fresult)
 
 //=============================================================================
 //
-//  Float2String()
+//  FloatToStr()
 //
 //
-void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
+void FloatToStr(float fValue, LPWSTR lpszStrg, int cchSize)
 {
     if (!lpszStrg) {
         return;

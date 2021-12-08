@@ -190,8 +190,8 @@ inline bool Char2Int(LPCWSTR str, int *value) {
     *value = (int)wcstol(str, &end, 10);
     return (str != end);
 }
-bool Char2Float(WCHAR *wnumber, float *fresult);
-void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
+bool StrToFloat(WCHAR *wnumber, float *fresult);
+void FloatToStr(float fValue, LPWSTR lpszStrg, int cchSize);
 
 // ----------------------------------------------------------------------------
 

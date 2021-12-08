@@ -40,6 +40,7 @@
 #include "Notepad3.h"
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
+#include "tinyexpr/tinyexpr.h"
 #include "Resample.h"
 #include "PathLib.h"
 
@@ -4053,11 +4054,11 @@ bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 //
 //  WarnIndentationDlgProc()
 //
-//
 static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (umsg) {
 	case WM_INITDIALOG: {
+
 		SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
 
 		SetDialogIconNP3(hwnd);
@@ -4199,6 +4200,149 @@ bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 							WarnIndentationDlgProc,
 							(LPARAM)fioStatus);
 	return (iResult == IDOK);
+}
+
+
+
+//=============================================================================
+//
+//  AutoSaveBackupSettingsDlgProc()
+//
+static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+
+    switch (umsg) {
+    case WM_INITDIALOG: {
+
+		//SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+
+        SetDialogIconNP3(hwnd);
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+            SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+            SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+            SetExplorerTheme(GetDlgItem(hwnd, IDC_AS_BACKUP_OPENFOLDER));
+            //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+            int const ctl[] = { IDC_AUTOSAVE_ENABLE, IDC_AUTOSAVE_INTERVAL, IDC_AUTOSAVE_SUSPEND, IDC_AUTOSAVE_SHUTDOWN,
+                                IDC_STATIC, IDC_STATIC2 };
+            for (int i = 0; i < COUNTOF(ctl); ++i) {
+                SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+            }
+        }
+#endif
+
+        if (Settings.AutoSaveOptions & ASB_Periodic) {
+            CheckDlgButton(hwnd, IDC_AUTOSAVE_ENABLE, BST_CHECKED);
+        }
+        if (Settings.AutoSaveOptions & ASB_Suspend) {
+            CheckDlgButton(hwnd, IDC_AUTOSAVE_SUSPEND, BST_CHECKED);
+        }
+        if (Settings.AutoSaveOptions & ASB_Shutdown) {
+            CheckDlgButton(hwnd, IDC_AUTOSAVE_SHUTDOWN, BST_CHECKED);
+        }
+
+        WCHAR      wch[32];
+        const UINT seconds = Settings.AutoSaveInterval / 1000;
+        const UINT milliseconds = Settings.AutoSaveInterval % 1000;
+        if (milliseconds) {
+            StringCchPrintf(wch, COUNTOF(wch), L"%u.%03u", seconds, milliseconds);
+        }
+        else {
+            StringCchPrintf(wch, COUNTOF(wch), L"%u", seconds);
+        }
+        SetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch);
+
+		CenterDlgInParent(hwnd, NULL);
+    }
+    return TRUE;
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
+        return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
+        break;
+
+    case WM_SETTINGCHANGE:
+        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+            SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        }
+        break;
+
+    case WM_THEMECHANGED:
+        if (IsDarkModeSupported()) {
+            bool const darkModeEnabled = CheckDarkModeEnabled();
+            AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
+            RefreshTitleBarThemeColor(hwnd);
+
+            int const buttons[] = { IDOK, IDCANCEL, IDC_AS_BACKUP_OPENFOLDER };
+            for (int id = 0; id < COUNTOF(buttons); ++id) {
+                HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+                AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
+                SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+            }
+            UpdateWindowEx(hwnd);
+        }
+        break;
+
+#endif
+
+
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case IDOK: {
+            AutoSaveBackupOptions options = ASB_None;
+            if (IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE)) {
+                options |= ASB_Periodic;
+            }
+            if (IsButtonChecked(hwnd, IDC_AUTOSAVE_SUSPEND)) {
+                options |= ASB_Suspend;
+            }
+            if (IsButtonChecked(hwnd, IDC_AUTOSAVE_SHUTDOWN)) {
+                options |= ASB_Shutdown;
+            }
+            Settings.AutoSaveOptions = options;
+
+            char chInterval[32];
+            GetDlgItemTextA(hwnd, IDC_AUTOSAVE_INTERVAL, chInterval, COUNTOF(chInterval));
+            te_xint_t iExprErr = true;
+            float interval = (float)te_interp(chInterval, &iExprErr);
+            if (iExprErr) {
+                WCHAR wch[32];
+                GetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch, COUNTOF(wch));
+                StrToFloat(wch, &interval);
+            }
+            Settings.AutoSaveInterval = clampi(float2int(interval * 1000.0f), 2000, USER_TIMER_MAXIMUM);
+            EndDialog(hwnd, IDOK);
+        } break;
+
+        case IDC_AS_BACKUP_OPENFOLDER: {
+            //LPCWSTR szFolder = AutoSave_GetDefaultFolder();
+            //OpenContainingFolder(hwnd, szFolder, FALSE);
+        } break;
+
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+bool AutoSaveBackupSettingsDlg(HWND hwnd)
+{
+    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+        MAKEINTRESOURCE(IDD_MUI_AUTOSAVE_BACKUP),
+        hwnd, 
+        AutoSaveBackupSettingsDlgProc,
+        0);
+
+    return (iResult == IDOK);
 }
 
 
@@ -4487,7 +4631,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi)
 {
-    if (bSaveOnRunTools && !FileSave(FSF_Default | FSF_Ask)) {
+    if (bSaveOnRunTools && !FileSave(FSF_Ask)) {
 		return;
 	}
     WCHAR wch[80] = { L'\0' };

@@ -1478,16 +1478,20 @@ bool EditSaveFile(
         return false;
     }
 
-    // ensure consistent line endings
-    if (Settings.FixLineEndings) {
-        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
-        EditEnsureConsistentLineEndings(hwnd);
-        EndWaitCursor();
-    }
+    // maybe not enough time to do that (WM_POWERBROADCAST, WM_QUERYENDSESSION)
+    if (!(fSaveFlags & FSF_EndSession)) { 
 
-    // strip trailing blanks
-    if (Settings.FixTrailingBlanks) {
-        EditStripLastCharacter(hwnd, true, true);
+        // ensure consistent line endings
+        if (Settings.FixLineEndings) {
+            BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
+            EditEnsureConsistentLineEndings(hwnd);
+            EndWaitCursor();
+        }
+
+        // strip trailing blanks
+        if (Settings.FixTrailingBlanks) {
+            EditStripLastCharacter(hwnd, true, true);
+        }
     }
 
     // get text length in bytes

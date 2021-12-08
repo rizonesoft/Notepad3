@@ -2995,7 +2995,7 @@ bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
         TrimSpcW(tch);
 
         float fValue = 0.0;
-        if (Char2Float(tch, &fValue)) {
+        if (StrToFloat(tch, &fValue)) {
             if (fSign != 0) {
                 // relative size calculation
                 float const base = *f; // base is input
@@ -3027,11 +3027,11 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle, LPWSTR lpszSize, int cchSize)
         TrimSpcW(tch);
 
         float fValue = 0.0f;
-        if (Char2Float(tch, &fValue)) {
+        if (StrToFloat(tch, &fValue)) {
             WCHAR wchFloatVal[64];
             fValue = (float)fabs(fValue);
             bool const isZero = (fValue == 0.0f);
-            Float2String(fValue, wchFloatVal, COUNTOF(wchFloatVal));
+            FloatToStr(fValue, wchFloatVal, COUNTOF(wchFloatVal));
 
             if (tch[0] == L'+') {
                 if (!isZero) {
@@ -3069,16 +3069,16 @@ void Style_AppendSizeAttribute(LPWSTR lpszSize, int cchSize, const float fFontSi
         float const fRelSize = (fFontSize - fBaseFontSize);
 
         if (fRelSize >= 0.0f) {
-            Float2String(fRelSize, tch, COUNTOF(tch));
+            FloatToStr(fRelSize, tch, COUNTOF(tch));
             StringCchPrintf(newSize, COUNTOF(newSize), L"; size:+%s", tch);
         } else {
-            Float2String((0.0f - fRelSize), tch, COUNTOF(tch));
+            FloatToStr((0.0f - fRelSize), tch, COUNTOF(tch));
             StringCchPrintf(newSize, COUNTOF(newSize), L"; size:-%s", tch);
         }
 
     } else { // absolute size
 
-        Float2String(fFontSize, tch, COUNTOF(tch));
+        FloatToStr(fFontSize, tch, COUNTOF(tch));
         StringCchPrintf(newSize, COUNTOF(newSize), L"; size:%s", tch);
     }
 

@@ -59,6 +59,7 @@ bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding);
 bool SelectDefLineEndingDlg(HWND hwnd,LPARAM piOption);
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
+bool AutoSaveBackupSettingsDlg(HWND hwnd);
 
 void            RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI);
 void            MapRectClientToWndCoords(HWND hwnd, LPRECT rc);

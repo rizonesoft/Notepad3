@@ -1546,6 +1546,9 @@ void LoadSettings()
     }
     GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_MSGBOX, FWM_DONT_CARE, FWM_EXCLUSIVELOCK);
 
+    GET_INT_VALUE_FROM_INISECTION(AutoSaveInterval, 60000, 2000, 86400000); // 2s - 24h
+    GET_CAST_INT_VALUE_FROM_INISECTION(AutoSaveBackupOptions, AutoSaveOptions, ASB_Default, ASB_None, INT_MAX);
+
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
     GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);
@@ -1600,6 +1603,7 @@ void LoadSettings()
 
     GET_INT_VALUE_FROM_INISECTION(FocusViewMarkerMode, FVMM_FOLD, FVMM_MARGIN, (FVMM_LN_BACKGR | FVMM_FOLD));
     Settings.FocusViewMarkerMode = (Settings.FocusViewMarkerMode == (FVMM_MARGIN | FVMM_LN_BACKGR) ? FVMM_FOLD : Settings.FocusViewMarkerMode);
+
 
     // --------------------------------------------------------------------------
     const WCHAR *const StatusBar_Section = L"Statusbar Settings";
@@ -1995,6 +1999,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
     if (bForceSaveSettings) { Settings.FileWatchingMode = FileWatching.FileWatchingMode; }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AutoSaveInterval);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AutoSaveOptions);
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EvalTinyExprOnSelection);

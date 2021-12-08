@@ -383,6 +383,22 @@ typedef struct ENCLOSESELDATA {
 
 //=============================================================================
 
+typedef enum AutoSaveBackupOptions {
+
+    ASB_None = 0,
+    ASB_Periodic = 1 << 0,
+    ASB_Suspend = 1 << 1,
+    ASB_Shutdown = 1 << 2,
+
+    ASB_Backup = 1 << 3,
+    ASB_SideBySide = 1 << 4,
+
+    ASB_Default = ASB_Suspend | ASB_Shutdown,
+
+} AutoSaveBackupOptions;
+
+//=============================================================================
+
 typedef struct CONSTANTS_T {
 
     int const          StdDefaultLexerID; // Pure Text Files
@@ -593,6 +609,8 @@ typedef struct SETTINGS_T {
     bool DialogsLayoutRTL;
     int  FocusViewMarkerMode;
     bool PreferredLocale4DateFmt;
+    int  AutoSaveInterval;
+    AutoSaveBackupOptions AutoSaveOptions;
 
 #ifdef D_NP3_WIN10_DARK_MODE
     bool WinThemeDarkMode;
@@ -755,7 +773,7 @@ extern FILEWATCHING_T FileWatching;
 
 typedef enum FileLoadFlags {
 
-    FLF_Default             = 0,
+    FLF_None                = 0,
     FLF_DontSave            = 1 << 0,
     FLF_New                 = 1 << 1,
     FLF_Reload              = 1 << 2,
@@ -767,15 +785,17 @@ typedef enum FileLoadFlags {
 
 typedef enum FileSaveFlags {
 
-    FSF_Default           = 0,
+    FSF_None              = 0,
     FSF_SaveAlways        = 1 << 0,
     FSF_Ask               = 1 << 1,
     FSF_SaveAs            = 1 << 2,
-    FSF_SaveCopy          = 1 << 3
+    FSF_SaveCopy          = 1 << 3,
+    FSF_EndSession        = 1 << 4
 
 } FileSaveFlags;
 
 //=============================================================================
+
 
 typedef enum INDENT_TYPE { I_TAB_LN = 0, I_SPC_LN = 1, I_MIX_LN = 2, I_TAB_MOD_X = 3, I_SPC_MOD_X = 4 } INDENT_TYPE;
 
