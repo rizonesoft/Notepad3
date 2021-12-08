@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Paramètres"
     BEGIN
-        MENUITEM "Insérer Tabulations comme E&spaces",                  IDM_VIEW_TABSASSPACES
-        MENUITEM "Paramètres de &Tabulation...\tCtrl+T",                IDM_VIEW_TABSETTINGS
-        MENUITEM "&Paramètres de Retour à la Ligne Automatique...",     IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Paramètres de &Longue Ligne...",                      IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Retrait Automatique &du Texte",                       IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Fermeture Auto des Balises &HTML/XML\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "A&uto-complétion des Mots",                           IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Auto-complétion des &Mots-clés Lexer",                IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Navi&gation Accélérée par Mot\tCtrl+Alt+A",           IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Insérer Tabulations comme E&spaces",                  IDM_SET_TABSASSPACES
+        MENUITEM "Paramètres de &Tabulation...\tCtrl+T",                IDM_SET_TABSETTINGS
+        MENUITEM "&Paramètres de Retour à la Ligne Automatique...",     IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Paramètres de &Longue Ligne...",                      IDM_SET_LONGLINESETTINGS
+        MENUITEM "Retrait Automatique &du Texte",                       IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Fermeture Auto des Balises &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
+        MENUITEM "A&uto-complétion des Mots",                           IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Auto-complétion des &Mots-clés Lexer",                IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Navi&gation Accélérée par Mot\tCtrl+Alt+A",           IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Seulement une instance par &fichier",                 IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Notif&ication de Modification de Fichier...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Couper les &Bips de Messages",                        IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Seulement une instance par &fichier",                 IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Notif&ication de Modification de Fichier...\tAlt+F5", IDM_SET_CHANGENOTIFY
+        MENUITEM "Couper les &Bips de Messages",                        IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Fo&nction de la Touche %C3%A9chap"
         BEGIN
-            MENUITEM "&Aucune",                                         IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimiser Notepad3",                             IDM_VIEW_ESCMINIMIZE
-            MENUITEM "&Quitter Notepad3",                               IDM_VIEW_ESCEXIT
+            MENUITEM "&Aucune",                                         IDM_SET_NOESCFUNC
+            MENUITEM "&Minimiser Notepad3",                             IDM_SET_ESCMINIMIZE
+            MENUITEM "&Quitter Notepad3",                               IDM_SET_ESCEXIT
         END
-        MENUITEM "Enregistrer &Avant d'Exécuter les Outils",            IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculer des Mini-E&xpressions",                      IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Enregistrer &Avant d'Exécuter les Outils",            IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculer des Mini-E&xpressions",                      IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Se Sou&venir"
         BEGIN
-            MENUITEM "Se Souvenir des F&ichiers Récents",               IDM_VIEW_NOSAVERECENT
-            MENUITEM "Conser&ver la Position du Curseur",               IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Se Souvenir des Chaînes R&echerchées",            IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Se Souvenir des F&ichiers Récents",               IDM_SET_NOSAVERECENT
+            MENUITEM "Conser&ver la Position du Curseur",               IDM_SET_NOPRESERVECARET
+            MENUITEM "Se Souvenir des Chaînes R&echerchées",            IDM_SET_NOSAVEFINDREPL
         END
         POPUP "F&enêtre"
         BEGIN
             POPUP "Affichage du &Titre de la Fenêtre"
             BEGIN
-                MENUITEM "N&om du Fichier Seul",                        IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Nom du Fichier et &Dossier",                  IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "&chemin Com&plet",                            IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Extrait de Texte Sélectionné\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
+                MENUITEM "N&om du Fichier Seul",                        IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Nom du Fichier et &Dossier",                  IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "&chemin Com&plet",                            IDM_SET_SHOWFULLPATH
+                MENUITEM "&Extrait de Texte Sélectionné\tCtrl+9",       IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Réutiliser la Fenêtre\tCtrl+Shift+L",            IDM_VIEW_REUSEWINDOW
-            MENUITEM "Toujours &Visible\tAlt+T",                        IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&ser Dans la Zone de Notifications",        IDM_VIEW_MINTOTRAY
-            MENUITEM "&Mode Transparent\tAlt+G",                        IDM_VIEW_TRANSPARENT
+            MENUITEM "&Réutiliser la Fenêtre\tCtrl+Shift+L",            IDM_SET_REUSEWINDOW
+            MENUITEM "Toujours &Visible\tAlt+T",                        IDM_SET_ALWAYSONTOP
+            MENUITEM "Minimi&ser Dans la Zone de Notifications",        IDM_SET_MINTOTRAY
+            MENUITEM "&Mode Transparent\tAlt+G",                        IDM_SET_TRANSPARENT
         END
         POPUP "Tech&nologie"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "Configu&ration avancée"
         BEGIN
-            MENUITEM "Enregistrer la Configuration en Q&uittant",       IDM_VIEW_SAVESETTINGS
-            MENUITEM "Enregistrer la Configuration Mai&ntenant\tF7",    IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Enregistrer la Configuration en Q&uittant",       IDM_SET_SAVESETTINGS
+            MENUITEM "Enregistrer la Configuration Mai&ntenant\tF7",    IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Ouvrir le Fichier de Configuration\tCtrl+F7",    CMD_OPENINIFILE
         END
     END

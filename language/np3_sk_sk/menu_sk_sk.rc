@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Nastavenia"
     BEGIN
-        MENUITEM "Tabulátor ako &medzerník",                     IDM_VIEW_TABSASSPACES
-        MENUITEM "&Nastavenie tabulátora...\tCtrl+T",            IDM_VIEW_TABSETTINGS
-        MENUITEM "Na&stavenie zalomenia slov...",                IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Nastavenie &dĺžky riadkov...",                 IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Auto&matická identifikácia textu",             IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Auto-zakončovanie &HTML/XML\tCtrl+Shift+H",    IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "A&utomatické dokončovanie slov",               IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Zrýchlená navi&gácia slov\tCtrl+Alt+A",        IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Tabulátor ako &medzerník",                     IDM_SET_TABSASSPACES
+        MENUITEM "&Nastavenie tabulátora...\tCtrl+T",            IDM_SET_TABSETTINGS
+        MENUITEM "Na&stavenie zalomenia slov...",                IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Nastavenie &dĺžky riadkov...",                 IDM_SET_LONGLINESETTINGS
+        MENUITEM "Auto&matická identifikácia textu",             IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto-zakončovanie &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
+        MENUITEM "A&utomatické dokončovanie slov",               IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Zrýchlená navi&gácia slov\tCtrl+Alt+A",        IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "&Iba jedna inštancia na súbor",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_VIEW_CHANGENOTIFY
-        MENUITEM "&Stlmiť hlásenie pípnutím",                    IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "&Iba jedna inštancia na súbor",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_SET_CHANGENOTIFY
+        MENUITEM "&Stlmiť hlásenie pípnutím",                    IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Funkcia klávesy Esc"
         BEGIN
-            MENUITEM "Ž&iadna",                             IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimalizovať Notepad3",             IDM_VIEW_ESCMINIMIZE
-            MENUITEM "&Ukončiť Notepad3",                   IDM_VIEW_ESCEXIT
+            MENUITEM "Ž&iadna",                             IDM_SET_NOESCFUNC
+            MENUITEM "&Minimalizovať Notepad3",             IDM_SET_ESCMINIMIZE
+            MENUITEM "&Ukončiť Notepad3",                   IDM_SET_ESCEXIT
         END
-        MENUITEM "Uložiť pred spustením &nástrojov",        IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Výpočet drobných výrazov",                IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Uložiť pred spustením &nástrojov",        IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Výpočet drobných výrazov",                IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Pamätať si"
         BEGIN
-            MENUITEM "&Naposledy použité súbory",           IDM_VIEW_NOSAVERECENT
-            MENUITEM "Pozíciu &okna",                       IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Pozíciu &kurzora",                    IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "&Naposledy použité súbory",           IDM_SET_NOSAVERECENT
+            MENUITEM "Pozíciu &okna",                       IDM_SET_NOPRESERVECARET
+            MENUITEM "Pozíciu &kurzora",                    IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Okno"
         BEGIN
             POPUP "Zobraziť &titulok okna"
             BEGIN
-                MENUITEM "Len &názov súboru",               IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "&Adresár a názov súboru",         IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "&Celá cesta",                     IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Výňatok z textu\tCtrl+9",        IDM_VIEW_SHOWEXCERPT
+                MENUITEM "Len &názov súboru",               IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "&Adresár a názov súboru",         IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "&Celá cesta",                     IDM_SET_SHOWFULLPATH
+                MENUITEM "&Výňatok z textu\tCtrl+9",        IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "O&pätovné použitie okna\tCtrl+Shift+L",    IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Vždy na vrchu\tAlt+T",                    IDM_VIEW_ALWAYSONTOP
-            MENUITEM "&Minimalizovať na panel úloh",             IDM_VIEW_MINTOTRAY
-            MENUITEM "R&ežim priehľadného okna\tAlt+G",          IDM_VIEW_TRANSPARENT
+            MENUITEM "O&pätovné použitie okna\tCtrl+Shift+L",    IDM_SET_REUSEWINDOW
+            MENUITEM "&Vždy na vrchu\tAlt+T",                    IDM_SET_ALWAYSONTOP
+            MENUITEM "&Minimalizovať na panel úloh",             IDM_SET_MINTOTRAY
+            MENUITEM "R&ežim priehľadného okna\tAlt+G",          IDM_SET_TRANSPARENT
         END
         POPUP "Tech&nológia"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "&Uloženie nastavení"
         BEGIN
-            MENUITEM "Uložiť pri u&končení",                IDM_VIEW_SAVESETTINGS
-            MENUITEM "Uložiť &teraz...\tF7",                IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Uložiť pri u&končení",                IDM_SET_SAVESETTINGS
+            MENUITEM "Uložiť &teraz...\tF7",                IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Otvoriť súbor nastavení\tCtrl+F7",   CMD_OPENINIFILE
         END
     END

@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Einstellungen"
     BEGIN
-        MENUITEM "Tabs mittels &Leerzeichen einfügen",          IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tabulator Einstellungen...\tCtrl+T",         IDM_VIEW_TABSETTINGS
-        MENUITEM "&Wort Umbruch Einstellungen...",              IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Lang Zeilen Einstellungen...",               IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Auto Text &Einrückung",                       IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Auto Tagabschluss &HTML/XML\tCtrl+Shift+H",   IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Auto Wort &Vorschläge",                       IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "&Beschleunigte Wort Navigation\tCtrl+Alt+A",  IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Tabs mittels &Leerzeichen einfügen",          IDM_SET_TABSASSPACES
+        MENUITEM "&Tabulator Einstellungen...\tCtrl+T",         IDM_SET_TABSETTINGS
+        MENUITEM "&Wort Umbruch Einstellungen...",              IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "&Lang Zeilen Einstellungen...",               IDM_SET_LONGLINESETTINGS
+        MENUITEM "Auto Text &Einrückung",                       IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Tagabschluss &HTML/XML\tCtrl+Shift+H",   IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Auto Wort &Vorschläge",                       IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "&Beschleunigte Wort Navigation\tCtrl+Alt+A",  IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Nur eine &Instanz pro Datei",                 IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Keine Nachrichten &Beeps",                    IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Nur eine &Instanz pro Datei",                 IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_SET_CHANGENOTIFY
+        MENUITEM "Keine Nachrichten &Beeps",                    IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc-&Key Funktion"
         BEGIN
-            MENUITEM "&Keine",                                  IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimiere Notepad3",                     IDM_VIEW_ESCMINIMIZE
-            MENUITEM "&Verlasse Notepad3",                      IDM_VIEW_ESCEXIT
+            MENUITEM "&Keine",                                  IDM_SET_NOESCFUNC
+            MENUITEM "&Minimiere Notepad3",                     IDM_SET_ESCMINIMIZE
+            MENUITEM "&Verlasse Notepad3",                      IDM_SET_ESCEXIT
         END
-        MENUITEM "Speichern vor Werkzeug Start",                IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Berechne Tiny-Expressions",                   IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Speichern vor Werkzeug Start",                IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Berechne Tiny-Expressions",                   IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Erinnern an"
         BEGIN
-            MENUITEM "Letzte Dateien merken",                   IDM_VIEW_NOSAVERECENT
-            MENUITEM "Textposition speichern",                  IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Suchbegriffe speichern",                  IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Letzte Dateien merken",                   IDM_SET_NOSAVERECENT
+            MENUITEM "Textposition speichern",                  IDM_SET_NOPRESERVECARET
+            MENUITEM "Suchbegriffe speichern",                  IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Fenster"
         BEGIN
             POPUP "Fenstertitel Anzeige"
             BEGIN
-                MENUITEM "Nur Dateiname",                       IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Dateiname und &Verzeichnis",          IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Voller &Pfadname",                    IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Textauszug\tCtrl+9",                 IDM_VIEW_SHOWEXCERPT
+                MENUITEM "Nur Dateiname",                       IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Dateiname und &Verzeichnis",          IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Voller &Pfadname",                    IDM_SET_SHOWFULLPATH
+                MENUITEM "&Textauszug\tCtrl+9",                 IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Fenster wiederverwenden\tCtrl+Shift+L",  IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Immer als oberstes Fenster\tAlt+T",      IDM_VIEW_ALWAYSONTOP
-            MENUITEM "In den &Tray minimieren",                 IDM_VIEW_MINTOTRAY
-            MENUITEM "&Transparent Modus\tAlt+G",               IDM_VIEW_TRANSPARENT
+            MENUITEM "&Fenster wiederverwenden\tCtrl+Shift+L",  IDM_SET_REUSEWINDOW
+            MENUITEM "&Immer als oberstes Fenster\tAlt+T",      IDM_SET_ALWAYSONTOP
+            MENUITEM "In den &Tray minimieren",                 IDM_SET_MINTOTRAY
+            MENUITEM "&Transparent Modus\tAlt+G",               IDM_SET_TRANSPARENT
         END
         POPUP "Tech&nologie"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "&Experten Konfiguration"
         BEGIN
-            MENUITEM "&Speichern beim Beenden",                 IDM_VIEW_SAVESETTINGS
-            MENUITEM "Einstellungen &jetzt speichern\tF7",      IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "&Speichern beim Beenden",                 IDM_SET_SAVESETTINGS
+            MENUITEM "Einstellungen &jetzt speichern\tF7",      IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Einstellungsdatei bearbeiten\tCtrl+F7",  CMD_OPENINIFILE
         END
     END

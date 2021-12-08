@@ -453,47 +453,47 @@ BEGIN
         END
     POPUP "设置(&S)"
     BEGIN
-        MENUITEM "将制表符替换为空格(&S)",                       IDM_VIEW_TABSASSPACES
-        MENUITEM "制表符设置(&T)...\tCtrl+T",                   IDM_VIEW_TABSETTINGS
-        MENUITEM "自动换行设置(&W)...",                         IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "长行标记设置(&O)...",                         IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "自动缩进(&D)",                                IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",       IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "自动补全单词(&U)",                            IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "自动补全语法关键字(&K)",                      IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "加速单词导航(&G)\tCtrl+Alt+A",                IDM_VIEW_ACCELWORDNAV
+        MENUITEM "将制表符替换为空格(&S)",                       IDM_SET_TABSASSPACES
+        MENUITEM "制表符设置(&T)...\tCtrl+T",                   IDM_SET_TABSETTINGS
+        MENUITEM "自动换行设置(&W)...",                         IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "长行标记设置(&O)...",                         IDM_SET_LONGLINESETTINGS
+        MENUITEM "自动缩进(&D)",                                IDM_SET_AUTOINDENTTEXT
+        MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
+        MENUITEM "自动补全单词(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "自动补全语法关键字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "加速单词导航(&G)\tCtrl+Alt+A",                IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "对每个文件仅允许单个实例(&F)",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_VIEW_CHANGENOTIFY
-        MENUITEM "关闭消息提示音(&M)",                          IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "对每个文件仅允许单个实例(&F)",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
+        MENUITEM "关闭消息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc 键功能(&E)"
         BEGIN
-            MENUITEM "无(&N)",                                IDM_VIEW_NOESCFUNC
-            MENUITEM "最小化 Notepad3(&M)",                    IDM_VIEW_ESCMINIMIZE
-            MENUITEM "退出 Notepad3(&X)",                     IDM_VIEW_ESCEXIT
+            MENUITEM "无(&N)",                                IDM_SET_NOESCFUNC
+            MENUITEM "最小化 Notepad3(&M)",                    IDM_SET_ESCMINIMIZE
+            MENUITEM "退出 Notepad3(&X)",                     IDM_SET_ESCEXIT
         END
-        MENUITEM "运行工具前先保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "计算选定的表达式(&X)",               IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "运行工具前先保存(&B)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "计算选定的表达式(&X)",               IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "记忆(&R)"
         BEGIN
-            MENUITEM "记忆最近使用的文件(&R)",                 IDM_VIEW_NOSAVERECENT
-            MENUITEM "记忆插入光标位置(&C)",                   IDM_VIEW_NOPRESERVECARET
-            MENUITEM "记忆查找方式(&S)",                       IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "记忆最近使用的文件(&R)",                 IDM_SET_NOSAVERECENT
+            MENUITEM "记忆插入光标位置(&C)",                   IDM_SET_NOPRESERVECARET
+            MENUITEM "记忆查找方式(&S)",                       IDM_SET_NOSAVEFINDREPL
         END
         POPUP "窗口(&I)"
         BEGIN
             POPUP "标题栏显示(&W)"
             BEGIN
-                MENUITEM "仅文件名(&F)",                       IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "文件名和文件夹(&D)",                  IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "完整文件路径(&P)",                   IDM_VIEW_SHOWFULLPATH
-                MENUITEM "摘录选中内容(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
+                MENUITEM "仅文件名(&F)",                       IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "文件名和文件夹(&D)",                  IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "完整文件路径(&P)",                   IDM_SET_SHOWFULLPATH
+                MENUITEM "摘录选中内容(&T)\tCtrl+9",           IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "重用窗口(&R)\tCtrl+Shift+L",             IDM_VIEW_REUSEWINDOW
-            MENUITEM "总是置顶(&A)\tAlt+T",                    IDM_VIEW_ALWAYSONTOP
-            MENUITEM "最小化到托盘(&M)",                       IDM_VIEW_MINTOTRAY
-            MENUITEM "透明模式(&T)\tAlt+G",                    IDM_VIEW_TRANSPARENT
+            MENUITEM "重用窗口(&R)\tCtrl+Shift+L",             IDM_SET_REUSEWINDOW
+            MENUITEM "总是置顶(&A)\tAlt+T",                    IDM_SET_ALWAYSONTOP
+            MENUITEM "最小化到托盘(&M)",                       IDM_SET_MINTOTRAY
+            MENUITEM "透明模式(&T)\tAlt+G",                    IDM_SET_TRANSPARENT
         END
         POPUP "处理技术(&N)"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "高级设置(&A)"
         BEGIN
-            MENUITEM "退出时保存设置(&X)",                    IDM_VIEW_SAVESETTINGS
-            MENUITEM "立即保存设置(&N)\tF7",                  IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "退出时保存设置(&X)",                    IDM_SET_SAVESETTINGS
+            MENUITEM "立即保存设置(&N)\tF7",                  IDM_SET_SAVESETTINGSNOW
             MENUITEM "打开配置文件(&O)\tCtrl+F7",             CMD_OPENINIFILE
         END
     END

@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "Definiçõe&s"
     BEGIN
-        MENUITEM "Inserir tabulações como e&spaços",                   IDM_VIEW_TABSASSPACES
-        MENUITEM "Definições de &tabulação...\tCtrl+T",                IDM_VIEW_TABSETTINGS
-        MENUITEM "Definições de moldagem de texto...",                 IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Definições de linhas &longas...",                    IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "In&dentação automática do texto",                    IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Fechar automaticamente &HTML/XML\tCtrl+Shift+H",     IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Conclusão a&utomática das palavras",                 IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Conclusão automática palavras chave Lexer",          IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Nave&gação acelerada de palavras\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Inserir tabulações como e&spaços",                   IDM_SET_TABSASSPACES
+        MENUITEM "Definições de &tabulação...\tCtrl+T",                IDM_SET_TABSETTINGS
+        MENUITEM "Definições de moldagem de texto...",                 IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Definições de linhas &longas...",                    IDM_SET_LONGLINESETTINGS
+        MENUITEM "In&dentação automática do texto",                    IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Fechar automaticamente &HTML/XML\tCtrl+Shift+H",     IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Conclusão a&utomática das palavras",                 IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Conclusão automática palavras chave Lexer",          IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Nave&gação acelerada de palavras\tCtrl+Alt+A",       IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Só uma instância por &Ficheiro",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Notificação de alteração de fi&cheiro...\tAlt+F5",    IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Silenciar &beeps das mensagens",                      IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Só uma instância por &Ficheiro",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Notificação de alteração de fi&cheiro...\tAlt+F5",    IDM_SET_CHANGENOTIFY
+        MENUITEM "Silenciar &beeps das mensagens",                      IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Função da tecla Esc"
         BEGIN
-            MENUITEM "&Nenhuma",                       IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimizar o Notepad3",          IDM_VIEW_ESCMINIMIZE
-            MENUITEM "&Sair do Notepad3",              IDM_VIEW_ESCEXIT
+            MENUITEM "&Nenhuma",                       IDM_SET_NOESCFUNC
+            MENUITEM "&Minimizar o Notepad3",          IDM_SET_ESCMINIMIZE
+            MENUITEM "&Sair do Notepad3",              IDM_SET_ESCEXIT
         END
-        MENUITEM "Guardar &antes de executar ferramentas",      IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calcular E&xpressões-muito pequenas",         IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Guardar &antes de executar ferramentas",      IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calcular E&xpressões-muito pequenas",         IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Lemb&rar"
         BEGIN
-            MENUITEM "Lembrar f&icheiros recentes",      IDM_VIEW_NOSAVERECENT
-            MENUITEM "Preser&var posição do cursor",     IDM_VIEW_NOPRESERVECARET
-            MENUITEM "L&embrar padrão de procura",       IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Lembrar f&icheiros recentes",      IDM_SET_NOSAVERECENT
+            MENUITEM "Preser&var posição do cursor",     IDM_SET_NOPRESERVECARET
+            MENUITEM "L&embrar padrão de procura",       IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Janela"
         BEGIN
             POPUP "Exibir no título da janela"
             BEGIN
-                MENUITEM "Só o n&ome do ficheiro",              IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Nome do ficheiro e pasta",            IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Caminho com&pleto",                   IDM_VIEW_SHOWFULLPATH
-                MENUITEM "Excerto do &texto\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
+                MENUITEM "Só o n&ome do ficheiro",              IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Nome do ficheiro e pasta",            IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Caminho com&pleto",                   IDM_SET_SHOWFULLPATH
+                MENUITEM "Excerto do &texto\tCtrl+9",           IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Reutilizar janela\tCtrl+Shift+L",        IDM_VIEW_REUSEWINDOW
-            MENUITEM "Sempre visível\tAlt+T",                   IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&zar para a área de notificação",   IDM_VIEW_MINTOTRAY
-            MENUITEM "&Modo transparente\tAlt+G",               IDM_VIEW_TRANSPARENT
+            MENUITEM "&Reutilizar janela\tCtrl+Shift+L",        IDM_SET_REUSEWINDOW
+            MENUITEM "Sempre visível\tAlt+T",                   IDM_SET_ALWAYSONTOP
+            MENUITEM "Minimi&zar para a área de notificação",   IDM_SET_MINTOTRAY
+            MENUITEM "&Modo transparente\tAlt+G",               IDM_SET_TRANSPARENT
         END
         POPUP "Tec&nologia"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "Configuração &Avançada"
         BEGIN
-            MENUITEM "Guardar definições ao &Sair",               IDM_VIEW_SAVESETTINGS
-            MENUITEM "Guardar defi&nições agora\tF7",             IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Guardar definições ao &Sair",               IDM_SET_SAVESETTINGS
+            MENUITEM "Guardar defi&nições agora\tF7",             IDM_SET_SAVESETTINGSNOW
             MENUITEM "Abrir ficheir&o de definições\tCtrl+F7",    CMD_OPENINIFILE
         END
     END

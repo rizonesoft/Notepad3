@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Configuración"
     BEGIN
-        MENUITEM "&Insertar tabulación como espacios",                  IDM_VIEW_TABSASSPACES
-        MENUITEM "&Configuración de tabulación...\tCtrl+T",             IDM_VIEW_TABSETTINGS
-        MENUITEM "Configuración &ajuste de línea...",                   IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Configuración de &larga línea...",                    IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "&Sangría texto automático",                           IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Auto Cierre &HTML/XML\tCtrl+Shift+H",                 IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "A&uto completar palabras",                            IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "&Navegación por palabra acelerada\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
+        MENUITEM "&Insertar tabulación como espacios",                  IDM_SET_TABSASSPACES
+        MENUITEM "&Configuración de tabulación...\tCtrl+T",             IDM_SET_TABSETTINGS
+        MENUITEM "Configuración &ajuste de línea...",                   IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Configuración de &larga línea...",                    IDM_SET_LONGLINESETTINGS
+        MENUITEM "&Sangría texto automático",                           IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Cierre &HTML/XML\tCtrl+Shift+H",                 IDM_SET_AUTOCLOSETAGS
+        MENUITEM "A&uto completar palabras",                            IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "&Navegación por palabra acelerada\tCtrl+Alt+A",       IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Solo una instancia por &archivo",                     IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Silenciar sonidos de aviso",                          IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Solo una instancia por &archivo",                     IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_SET_CHANGENOTIFY
+        MENUITEM "Silenciar sonidos de aviso",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Función de la tecla 'Esc'"
         BEGIN
-            MENUITEM "&Ninguna",                            IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimizar Notepad3",                 IDM_VIEW_ESCMINIMIZE
-            MENUITEM "&Salir de Notepad3",                  IDM_VIEW_ESCEXIT
+            MENUITEM "&Ninguna",                            IDM_SET_NOESCFUNC
+            MENUITEM "&Minimizar Notepad3",                 IDM_SET_ESCMINIMIZE
+            MENUITEM "&Salir de Notepad3",                  IDM_SET_ESCEXIT
         END
-        MENUITEM "&Guardar antes de ejecutar",              IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calcular Mini-E&xpresiones",              IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "&Guardar antes de ejecutar",              IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calcular Mini-E&xpresiones",              IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Recordar"
         BEGIN
-            MENUITEM "&Recordar archivos recientes",         IDM_VIEW_NOSAVERECENT
-            MENUITEM "&Preservar la posición de caret",      IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Recordar los &argumentos de búsqueda", IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "&Recordar archivos recientes",         IDM_SET_NOSAVERECENT
+            MENUITEM "&Preservar la posición de caret",      IDM_SET_NOPRESERVECARET
+            MENUITEM "Recordar los &argumentos de búsqueda", IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Ventana"
         BEGIN
             POPUP "Mostrar en el &título de la ventana"
             BEGIN
-                MENUITEM "&Solo el nombre del archivo",      IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "&Nombre de archivo y carpeta",     IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Nombre de la &ruta completa",      IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Extracto de texto\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Solo el nombre del archivo",      IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "&Nombre de archivo y carpeta",     IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Nombre de la &ruta completa",      IDM_SET_SHOWFULLPATH
+                MENUITEM "&Extracto de texto\tCtrl+9",       IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Reutilizar la ventana\tCtrl+Shift+L", IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Siempre visible\tAlt+T",              IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&zar en la barra de tareas",     IDM_VIEW_MINTOTRAY
-            MENUITEM "&Modo transparente\tAlt+G",            IDM_VIEW_TRANSPARENT
+            MENUITEM "&Reutilizar la ventana\tCtrl+Shift+L", IDM_SET_REUSEWINDOW
+            MENUITEM "&Siempre visible\tAlt+T",              IDM_SET_ALWAYSONTOP
+            MENUITEM "Minimi&zar en la barra de tareas",     IDM_SET_MINTOTRAY
+            MENUITEM "&Modo transparente\tAlt+G",            IDM_SET_TRANSPARENT
         END
         POPUP "Tec&nología"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "Configuracion avan&zada"
         BEGIN
-            MENUITEM "Guardar la configuración al &salir",              IDM_VIEW_SAVESETTINGS
-            MENUITEM "&Guardar la configuración ahora\tF7",             IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Guardar la configuración al &salir",              IDM_SET_SAVESETTINGS
+            MENUITEM "&Guardar la configuración ahora\tF7",             IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Abrir el archivo de configuración\tCtrl+F7",     CMD_OPENINIFILE
         END
     END
