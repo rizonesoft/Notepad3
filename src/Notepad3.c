@@ -1457,8 +1457,8 @@ static bool SetCurrentSelAsFindReplaceData()
 
     size_t const cchSelection = SciCall_GetSelText(NULL);
 
-    if (1 < cchSelection) {
-        char* szSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
+    if (0 < cchSelection) {
+        char* const szSelection = AllocMem((cchSelection + 1), HEAP_ZERO_MEMORY);
         if (szSelection) {
             SciCall_GetSelText(szSelection);
             SetFindPatternMB(szSelection);
@@ -2301,20 +2301,20 @@ static bool _EvalTinyExpr(bool qmark)
     }
     if (chBefore == '=') { // got "=?" or ENTER : evaluate expression trigger
 
-        int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posSelStart)) + 1;
-        char *lineBuf = (char *)AllocMem(lineLen, HEAP_ZERO_MEMORY);
-        WCHAR *lineBufW = (WCHAR *)AllocMem(lineLen * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        int const lineLen = (int)SciCall_LineLength(SciCall_LineFromPosition(posSelStart));
+        char * const lineBuf = (char *)AllocMem((lineLen + 1), HEAP_ZERO_MEMORY);
+        WCHAR * const lineBufW = (WCHAR *)AllocMem((lineLen + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
         if (lineBuf && lineBufW) {
 
             if (posSelStart < SciCall_GetCurrentPos()) {
                 SciCall_SwapMainAnchorCaret();
             }
-            DocPos const iLnCaretPos = SciCall_GetCurLine((lineLen - 1), lineBuf);
+            DocPos const iLnCaretPos = SciCall_GetCurLine(lineLen, lineBuf);
             lineBuf[iLnCaretPos - (posSelStart - posBefore)] = '\0'; // exclude "=?"
 
             char const defchar = (char)te_invalid_chr();
-            MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, lineLen);
-            int const len = WideCharToMultiByte(te_cp(), (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, lineLen, &defchar, NULL);
+            MultiByteToWideChar(Encoding_SciCP, 0, lineBuf, -1, lineBufW, (lineLen + 1));
+            int const len = WideCharToMultiByte(te_cp(), (WC_COMPOSITECHECK | WC_DISCARDNS), lineBufW, -1, lineBuf, (lineLen + 1), &defchar, NULL);
             FreeMem(lineBufW);
             if (!len) {
                 return false;
@@ -3404,7 +3404,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetDlgItemInt(hwnd, IDC_REUSELOCK, GetTickCount(), false);
 
     if (pcds->dwData == DATA_NOTEPAD3_PARAMS) {
-        LPnp3params params = AllocMem(pcds->cbData, HEAP_ZERO_MEMORY);
+        LPnp3params const params = AllocMem(pcds->cbData, HEAP_ZERO_MEMORY);
         if (params) {
 
             CopyMemory(params, pcds->lpData, pcds->cbData);
@@ -7637,7 +7637,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
             if (cchTextW > 0) {
                 DWORD cchEscapedW = (DWORD)(length * 3 + 1);
-                LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+                LPWSTR const pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
                 if (pszEscapedW) {
                     //~UrlEscape(szTextW, pszEscapedW, &cchEscapedW, (URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8));
                     UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, false);
@@ -7902,7 +7902,7 @@ static void _HandleAutoIndent(int const charAdded)
             {
                 DocLn const  iPrevLine       = iCurLine - 1;
                 DocPos const iPrevLineLength = SciCall_LineLength(iPrevLine);
-                char*        pLineBuf        = (char*)AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
+                char * const pLineBuf        = (char*)AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
                 if (pLineBuf) {
                     SciCall_GetLine_Safe(iPrevLine, pLineBuf);
                     for (char* pPos = pLineBuf; *pPos; pPos++) {
@@ -8648,9 +8648,9 @@ void ParseCommandLine()
     StrTab2Space(lpCmdLine);
 
     DocPos const len = (DocPos)(StringCchLenW(lpCmdLine,0) + 2UL);
-    LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
-    LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
-    LPWSTR lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+    LPWSTR const lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+    LPWSTR const lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+    LPWSTR const lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
 
     if (lp1 && lp2 && lp3) {
         bool bIsNotepadReplacement = false;
@@ -9021,7 +9021,7 @@ void ParseCommandLine()
             }
             // pathname
             else {
-                LPWSTR lpFileBuf = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
+                LPWSTR const lpFileBuf = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
                 if (lpFileBuf) {
 
                     size_t const fileArgLen = StringCchLenW(lp3, len);
@@ -9029,7 +9029,7 @@ void ParseCommandLine()
 
                     if (s_lpOrigFileArg) {
                         FreeMem(s_lpOrigFileArg);
-                        //s_lpOrigFileArg = NULL;
+                        s_lpOrigFileArg = NULL;
                     }
                     s_lpOrigFileArg = AllocMem(sizeof(WCHAR)*(fileArgLen + 1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
                     StringCchCopy(s_lpOrigFileArg, fileArgLen + 1, lp3);
@@ -9055,7 +9055,6 @@ void ParseCommandLine()
                 StringCchCopy(lp3, len, lp2);
             }
         }
-
         FreeMem(lp1);
         FreeMem(lp2);
         FreeMem(lp3);
@@ -9347,8 +9346,8 @@ static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
 
     DocPosU const selCount = SciCall_GetSelections();
     int const calcBufSize = (int)(_tmpBufCnt * selCount + 1);
-    char* calcBuffer = (char*)AllocMem(calcBufSize, HEAP_ZERO_MEMORY);
-    WCHAR* calcBufferW = (WCHAR*)AllocMem(calcBufSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    char * const calcBuffer = (char*)AllocMem(calcBufSize, HEAP_ZERO_MEMORY);
+    WCHAR * const calcBufferW = (WCHAR*)AllocMem(calcBufSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     bool bLastCharWasDigit = false;
     for (DocPosU i = 0; i < selCount; ++i) {
@@ -9603,8 +9602,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             if (bIsSelCharCountable) {
                 static char chSeBuf[LARGE_BUFFER] = { '\0' };
                 static WCHAR wchSelBuf[LARGE_BUFFER] = { L'\0' };
-                DocPos const iSelSize = SciCall_GetSelText(NULL);
-                if (iSelSize < COUNTOF(chSeBuf)) { // should be fast !
+                DocPos const iSelLen = SciCall_GetSelText(NULL);
+                if (iSelLen < COUNTOF(chSeBuf)) { // should be fast !
                     SciCall_GetSelText(chSeBuf);
                     //~StrDelChrA(chExpression, " \r\n\t\v");
                     StrDelChrA(chSeBuf, "\r\n");
@@ -10701,7 +10700,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         // the .LOG feature ...
         if (SciCall_GetTextLength() >= 4) {
             char tchLog[5] = { '\0', '\0', '\0', '\0', '\0' };
-            SciCall_GetText(COUNTOF(tchLog), tchLog);
+            SciCall_GetText(COUNTOF(tchLog) - 1, tchLog);
             if (StringCchCompareXA(tchLog, ".LOG") == 0) {
                 SciCall_DocumentEnd();
                 UndoTransActionBegin();
@@ -10829,7 +10828,7 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
 
         if (SciCall_GetTextLength() >= 4) {
             char tch[5] = { '\0', '\0', '\0', '\0', '\0' };
-            SciCall_GetText(COUNTOF(tch), tch);
+            SciCall_GetText(COUNTOF(tch) - 1, tch);
             if (StringCchCompareXA(tch, ".LOG") == 0) {
                 SciCall_ClearSelections();
                 bPreserveView = false;
@@ -10868,8 +10867,8 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 
     LPWSTR lpCmdLine = GetCommandLine();
     size_t const wlen = StringCchLen(lpCmdLine, 0) + 2;
-    LPWSTR lpExe = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
-    LPWSTR lpArgs = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
+    LPWSTR const lpExe = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
+    LPWSTR const lpArgs = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
 
     // ~ don't use original argument list (try to reconstruct current state as close as possible
 #if 0
@@ -10986,7 +10985,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             bIsEmptyNewFile = true;
         } else if (cchText < 2048) {
             char chTextBuf[2048] = { '\0' };
-            SciCall_GetText(COUNTOF(chTextBuf), chTextBuf);
+            SciCall_GetText(COUNTOF(chTextBuf) - 1, chTextBuf);
             StrTrimA(chTextBuf, " \t\n\r");
             if (StrIsEmptyA(chTextBuf)) {
                 bIsEmptyNewFile = true;

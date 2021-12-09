@@ -93,6 +93,7 @@
 #include "AutoComplete.h"
 #include "ScintillaBase.h"
 
+#include "WinTypes.h"
 #include "PlatWin.h"
 #include "HanjaDic.h"
 #include "ScintillaWin.h"
@@ -769,8 +770,7 @@ int InputCodePage() noexcept {
 }
 
 /** Map the key codes to their equivalent Keys:: form. */
-Keys KeyTranslate(int keyIn) noexcept {
-//PLATFORM_ASSERT(!keyIn);
+Keys KeyTranslate(uptr_t keyIn) noexcept {
 	switch (keyIn) {
 	case VK_DOWN:		return Keys::Down;
 		case VK_UP:		return Keys::Up;
@@ -1068,10 +1068,10 @@ void ScintillaWin::SelectionToHangul() {
 		pdoc->GetCharRange(&documentStr[0], selStart, documentStrLen);
 
 		std::wstring uniStr = StringDecode(documentStr, CodePageOfDocument());
-		const int converted = HanjaDict::GetHangulOfHanja(&uniStr[0]);
-		documentStr = StringEncode(uniStr, CodePageOfDocument());
+		const bool converted = HanjaDict::GetHangulOfHanja(uniStr);
 
-		if (converted > 0) {
+		if (converted) {
+			documentStr = StringEncode(uniStr, CodePageOfDocument());
 			pdoc->BeginUndoAction();
 			ClearSelection();
 			InsertPaste(&documentStr[0], documentStr.size());
@@ -1691,7 +1691,7 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 				return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 			}
 			const int ret = KeyDownWithModifiers(
-								 static_cast<Keys>(KeyTranslate(static_cast<int>(wParam))),
+								 KeyTranslate(wParam),
 							     ModifierFlags(KeyboardIsKeyDown(VK_SHIFT),
 									     KeyboardIsKeyDown(VK_CONTROL),
 									     altDown),

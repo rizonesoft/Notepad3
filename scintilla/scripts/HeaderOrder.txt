@@ -151,6 +151,7 @@
 // Platform-specific headers
 
 // win32
+#include "WinTypes.h"
 #include "PlatWin.h"
 #include "HanjaDic.h"
 #include "ScintillaWin.h"

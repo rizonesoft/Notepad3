@@ -2387,7 +2387,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
         if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CONSTSTRGLEN(L"cgi")) == 0 ||
                                   StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CONSTSTRGLEN(L"fcgi")) == 0)) {
             char tchText[256] = { '\0' };
-            SciCall_GetText(COUNTOF(tchText), tchText);
+            SciCall_GetText(COUNTOF(tchText) - 1, tchText);
             StrTrimA(tchText," \t\n\r");
             pLexSniffed = Style_SniffShebang(tchText);
             if (pLexSniffed) {
@@ -2434,7 +2434,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
 
         if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
             char tchText[256] = { '\0' };
-            SciCall_GetText(COUNTOF(tchText), tchText);
+            SciCall_GetText(COUNTOF(tchText) - 1, tchText);
             StrTrimA(tchText," \t\n\r");
             pLexSniffed = Style_SniffShebang(tchText);
             if (pLexSniffed) {
@@ -2455,7 +2455,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
 
     if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
         char tchText[512] = { '\0' };
-        SciCall_GetText(COUNTOF(tchText), tchText);
+        SciCall_GetText(COUNTOF(tchText) - 1, tchText);
         StrTrimA(tchText," \t\n\r");
         if (!Flags.NoCGIGuess) {
             if (tchText[0] == '<') {
@@ -2500,7 +2500,7 @@ bool Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath)
     UNREFERENCED_PARAMETER(lpszFile);
 #else
     unsigned char buf[5] = { '\0' }; // magic
-    SciCall_GetText(COUNTOF(buf), (char*)buf);
+    SciCall_GetText(COUNTOF(buf) - 1, (char*)buf);
     UINT const magic2 = (buf[0] << 8) | buf[1];
     if (magic2 == 0x4D5AU ||  // PE: MZ
             magic2 == 0x504BU ||    // ZIP: PK

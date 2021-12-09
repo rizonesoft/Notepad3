@@ -55,6 +55,7 @@
 #include "UniConversion.h"
 #include "DBCS.h"
 
+#include "WinTypes.h"
 #include "PlatWin.h"
 
 #ifndef SPI_GETFONTSMOOTHINGCONTRAST
@@ -1980,7 +1981,7 @@ void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 	const HRESULT hr = surfOther.GetBitmap(&pBitmap);
 	if (SUCCEEDED(hr) && pBitmap) {
 		const D2D1_RECT_F rcDestination = RectangleFromPRectangle(rc);
-		D2D1_RECT_F rcSource = RectangleFromPRectangle(PRectangle(
+		const D2D1_RECT_F rcSource = RectangleFromPRectangle(PRectangle(
 			from.x, from.y, from.x + rc.Width(), from.y + rc.Height()));
 		pRenderTarget->DrawBitmap(pBitmap, rcDestination, 1.0f,
 			D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR, rcSource);
@@ -2411,7 +2412,7 @@ void SurfaceD2D::DrawTextCommon(PRectangle rc, const Font *font_, XYPOSITION yba
 				static_cast<FLOAT>(rc.Height()),
 				&pTextLayout);
 		if (SUCCEEDED(hr)) {
-			D2D1_POINT_2F origin = DPointFromPoint(Point(rc.left, ybase-yAscent));
+			const D2D1_POINT_2F origin = DPointFromPoint(Point(rc.left, ybase-yAscent));
 			pRenderTarget->DrawTextLayout(origin, pTextLayout, pBrush, d2dDrawTextOptions);
 			ReleaseUnknown(pTextLayout);
 		}

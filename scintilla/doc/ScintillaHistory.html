@@ -564,9 +564,59 @@
       </tr><tr>
 	<td>Michael Neuroth</td>
 	<td>Arne Scheffler</td>
+	<td>Jan Dolinár</td>
+	<td>Rowan Daniell</td>
     </tr>
     </table>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla515.zip">Release 5.1.5</a>
+    </h3>
+    <ul>
+	<li>
+	Released 7 December 2021.
+	</li>
+	<li>
+	ScintillaEditPy, Python bindings for Qt using PySide, has been removed.
+	Scintilla was never updated for PySide 2 which was released in 2018 and PySide 1
+	fell out of support making it difficult to use.
+	Tests that use ScintillaEditPy were removed.
+	</li>
+	<li>
+	When calling SCI_GETTEXT, SCI_GETSELTEXT, and SCI_GETCURLINE with a NULL buffer argument
+	to discover the length that should be allocated, do not include the terminating NUL in the returned value.
+	The value returned is 1 less than previous versions of Scintilla.
+	Applications should allocate a buffer 1 more than this to accommodate the NUL.
+	The wParam (length) argument to SCI_GETTEXT and SCI_GETCURLINE also omits the NUL.
+	This is more consistent with other APIs.
+	</li>
+	<li>
+	Fix assertion failure with autocompletion list when order is SC_ORDER_CUSTOM
+	or SC_ORDER_PERFORMSORT and the list is empty.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2294/">Bug #2294</a>.
+	</li>
+	<li>
+	On Win32 prevent potential memory leaks for Korean language input.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2295/">Bug #2295</a>.
+	</li>
+	<li>
+	On Cocoa set active state correctly at creation.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2299/">Bug #2299</a>.
+	</li>
+	<li>
+	On macOS 12, fix bug where margin would not draw when scrolled.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2292/">Bug #2292</a>.
+	</li>
+	<li>
+	On Cocoa, fix crash when drag image empty.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2300/">Bug #2300</a>.
+	</li>
+	<li>
+	On GTK using Wayland, display autocompletion with window on a secondary monitor.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2296/">Bug #2296</a>,
+	<a href="https://sourceforge.net/p/scintilla/bugs/2261/">Bug #2261</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla514.zip">Release 5.1.4</a>
     </h3>

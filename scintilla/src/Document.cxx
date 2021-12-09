@@ -2871,35 +2871,18 @@ public:
 
 class ByteIterator {
 public:
-	typedef std::bidirectional_iterator_tag iterator_category;
-	typedef char value_type;
-	typedef ptrdiff_t difference_type;
-	typedef char* pointer;
-	typedef char& reference;
+	using iterator_category = std::bidirectional_iterator_tag;
+	using value_type = char;
+	using difference_type = ptrdiff_t;
+	using pointer = char*;
+	using reference = char&;
 
 	const Document *doc;
 	Sci::Position position;
 
-	ByteIterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	explicit ByteIterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 	}
-	ByteIterator(const ByteIterator &other) noexcept {
-		doc = other.doc;
-		position = other.position;
-	}
-	ByteIterator(ByteIterator &&other) noexcept {
-		doc = other.doc;
-		position = other.position;
-	}
-	ByteIterator &operator=(const ByteIterator &other) noexcept {
-		if (this != &other) {
-			doc = other.doc;
-			position = other.position;
-		}
-		return *this;
-	}
-	ByteIterator &operator=(ByteIterator &&) noexcept = default;
-	~ByteIterator() = default;
 	char operator*() const noexcept {
 		return doc->CharAt(position);
 	}
@@ -2956,11 +2939,11 @@ class UTF8Iterator {
 	size_t lenCharacters;
 	wchar_t buffered[2];
 public:
-	typedef std::bidirectional_iterator_tag iterator_category;
-	typedef wchar_t value_type;
-	typedef ptrdiff_t difference_type;
-	typedef wchar_t* pointer;
-	typedef wchar_t& reference;
+	using iterator_category = std::bidirectional_iterator_tag;
+	using value_type = wchar_t;
+	using difference_type = ptrdiff_t;
+	using pointer = wchar_t*;
+	using reference = wchar_t&;
 
 	explicit UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_), characterIndex(0), lenBytes(0), lenCharacters(0), buffered{} {
@@ -2970,30 +2953,6 @@ public:
 			ReadCharacter();
 		}
 	}
-	UTF8Iterator(const UTF8Iterator &other) noexcept : buffered{} {
-		doc = other.doc;
-		position = other.position;
-		characterIndex = other.characterIndex;
-		lenBytes = other.lenBytes;
-		lenCharacters = other.lenCharacters;
-		buffered[0] = other.buffered[0];
-		buffered[1] = other.buffered[1];
-	}
-	UTF8Iterator(UTF8Iterator &&other) noexcept = default;
-	UTF8Iterator &operator=(const UTF8Iterator &other) noexcept {
-		if (this != &other) {
-			doc = other.doc;
-			position = other.position;
-			characterIndex = other.characterIndex;
-			lenBytes = other.lenBytes;
-			lenCharacters = other.lenCharacters;
-			buffered[0] = other.buffered[0];
-			buffered[1] = other.buffered[1];
-		}
-		return *this;
-	}
-	UTF8Iterator &operator=(UTF8Iterator &&) noexcept = default;
-	~UTF8Iterator() = default;
 	wchar_t operator*() const noexcept {
 		assert(lenCharacters != 0);
 		return buffered[characterIndex];
@@ -3071,29 +3030,15 @@ class UTF8Iterator {
 	const Document *doc;
 	Sci::Position position;
 public:
-	typedef std::bidirectional_iterator_tag iterator_category;
-	typedef wchar_t value_type;
-	typedef ptrdiff_t difference_type;
-	typedef wchar_t* pointer;
-	typedef wchar_t& reference;
+	using iterator_category = std::bidirectional_iterator_tag;
+	using value_type = wchar_t;
+	using difference_type = ptrdiff_t;
+	using pointer = wchar_t*;
+	using reference = wchar_t&;
 
-	UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	explicit UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 	}
-	UTF8Iterator(const UTF8Iterator &other) noexcept {
-		doc = other.doc;
-		position = other.position;
-	}
-	UTF8Iterator(UTF8Iterator &&other) noexcept = default;
-	UTF8Iterator &operator=(const UTF8Iterator &other) noexcept {
-		if (this != &other) {
-			doc = other.doc;
-			position = other.position;
-		}
-		return *this;
-	}
-	UTF8Iterator &operator=(UTF8Iterator &&) noexcept = default;
-	~UTF8Iterator() = default;
 	wchar_t operator*() const noexcept {
 		const Document::CharacterExtracted charExtracted = doc->ExtractCharacter(position);
 		return charExtracted.character;
