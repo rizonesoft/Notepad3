@@ -456,7 +456,7 @@ static LPCH EditReInterpretText(LPCCH pchSource, const int szSrc, cpi_enc_t from
     LPCH pchConvText = NULL;
 
     int cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, NULL, 0);
-    WCHAR *pwchText = (WCHAR *)AllocMem(((size_t)cwch + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR* const pwchText = (WCHAR*)AllocMem(((size_t)cwch + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pwchText) {
         cwch = MultiByteToWideChar(Encoding_GetCodePage(fromCP), 0, pchSource, szSrc, pwchText, cwch);
         cmbch = WideCharToMultiByte(Encoding_GetCodePage(asCP), 0, pwchText, cwch, NULL, 0, NULL, NULL);
@@ -494,10 +494,10 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
         return false;
     }
 
-    WCHAR *pwchText = AllocMem((length + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR* const pwchText = AllocMem((length + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     DocPos const chBufSize = length * 5 + 2;
-    char *pchText = AllocMem(chBufSize, HEAP_ZERO_MEMORY);
+    char* const pchText = AllocMem(chBufSize, HEAP_ZERO_MEMORY);
 
     // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
     const UINT cpDst = Encoding_GetCodePage(encDest);
@@ -625,7 +625,7 @@ size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength)
     }
     size_t const selSize = SciCall_GetSelText(NULL);
     if (1 < selSize) {
-        char* pszText = AllocMem(selSize, HEAP_ZERO_MEMORY);
+        char* const pszText = AllocMem(selSize, HEAP_ZERO_MEMORY);
         if (pszText) {
             SciCall_GetSelText(pszText);
             size_t const length = (size_t)MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, pwchBuffer, (int)wchLength);
@@ -730,6 +730,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
             if (pmch) {
                 StringCchCopyA(pmch, SizeOfMem(pmch), ptmp);
                 FreeMem(ptmp);
+                ptmp = NULL;
             }
         }
     } else {
@@ -809,6 +810,7 @@ bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText)
     if (pszTextW) {
         SetClipboardText(GetParent(hwnd), pszTextW, cchTextW);
         FreeMem(pszTextW);
+        pszTextW = NULL;
         return true;
     }
     return false;
@@ -861,6 +863,7 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
         SciCall_Clear();
     }
     FreeMem(pszText);
+    pszText = NULL;
 
     EndUndoTransAction();
 
@@ -916,6 +919,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
     if (!bAppend) {
         res = SetClipboardText(hwndParent, pszTextW, cchTextW);
         FreeMem(pszTextW);
+        pszTextW = NULL;
         return res;
     }
 
@@ -923,6 +927,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
 
     if (!OpenClipboard(hwndParent)) {
         FreeMem(pszTextW);
+        pszTextW = NULL;
         return res;
     }
 
@@ -938,7 +943,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
     }
 
     // Copy Clip & add line break
-    WCHAR* pszNewTextW = AllocMem((cchNewText + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR* const pszNewTextW = AllocMem((cchNewText + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszOld && *pszOld && pszNewTextW) {
         StringCchCopy(pszNewTextW, cchNewText + 1, pszOld);
         StringCchCat(pszNewTextW, cchNewText + 1, pszSep);
@@ -953,6 +958,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
     }
 
     FreeMem(pszTextW);
+    pszTextW = NULL;
     FreeMem(pszNewTextW);
     return res;
 }
@@ -1378,7 +1384,7 @@ bool EditLoadFile(
             UINT const uCodePage = Encoding_GetCodePage(encDetection.Encoding);
 
             if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) {
-                LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+                LPWSTR const lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
 
                 ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, lpData, cbData, lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
                 if (cbDataWide != 0) {
@@ -1674,7 +1680,7 @@ void EditInvertCase(HWND hwnd)
         const DocPos iSelEnd = SciCall_GetSelectionEnd();
         const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-        LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        LPWSTR const pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
         if (pszTextW) {
 
             size_t const cchTextW = EditGetSelectedText(pszTextW, iSelSize);
@@ -1691,7 +1697,7 @@ void EditInvertCase(HWND hwnd)
             }
 
             if (bChanged) {
-                char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+                char* const pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
                 WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, iSelSize, NULL, NULL);
                 UndoTransActionBegin();
                 SciCall_Clear();
@@ -1725,7 +1731,7 @@ void EditTitleCase(HWND hwnd)
         const DocPos iSelEnd = SciCall_GetSelectionEnd();
         const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-        LPWSTR pszTextW = AllocMem((iSelSize * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
+        LPWSTR const pszTextW = AllocMem((iSelSize * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
 
         if (pszTextW == NULL) {
             FreeMem(pszTextW);
@@ -1735,7 +1741,7 @@ void EditTitleCase(HWND hwnd)
         size_t const cchTextW = EditGetSelectedText(pszTextW, iSelSize);
 
         bool bChanged = false;
-        LPWSTR pszMappedW = AllocMem(SizeOfMem(pszTextW), HEAP_ZERO_MEMORY);
+        LPWSTR const pszMappedW = AllocMem(SizeOfMem(pszTextW), HEAP_ZERO_MEMORY);
         if (pszMappedW) {
             // first make lower case, before applying TitleCase
             if (LCMapString(LOCALE_SYSTEM_DEFAULT, (LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW, (int)cchTextW, pszMappedW, (int)iSelSize)) {
@@ -1779,7 +1785,7 @@ void EditSentenceCase(HWND hwnd)
         const DocPos iSelEnd = SciCall_GetSelectionEnd();
         const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-        LPWSTR pszTextW = AllocMem((iSelSize * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
+        LPWSTR const pszTextW = AllocMem((iSelSize * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
 
         if (pszTextW == NULL) {
             FreeMem(pszTextW);
@@ -1853,7 +1859,7 @@ void EditURLEncode(const bool isPathConvert)
     StrTrim(szTextW, L" \r\n\t");
 
     size_t const cchEscaped = iSelSize * 3 + 1;
-    char* pszEscaped = (char*)AllocMem(cchEscaped, HEAP_ZERO_MEMORY);
+    char* const pszEscaped = (char*)AllocMem(cchEscaped, HEAP_ZERO_MEMORY);
     if (pszEscaped == NULL) {
         return;
     }
@@ -1918,9 +1924,9 @@ void EditURLDecode(const bool isPathConvert)
     DocPos const iSelSize = SciCall_GetSelText(NULL) - 1; // w/o terminating zero
     bool const bStraightSel = (SciCall_GetAnchor() <= SciCall_GetCurrentPos());
 
-    const char *pszText = SciCall_GetRangePointer(iSelStart, iSelSize);
+    const char * const pszText = SciCall_GetRangePointer(iSelStart, iSelSize);
 
-    LPWSTR pszTextW = AllocMem((iSelSize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pszTextW = AllocMem((iSelSize + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszTextW == NULL) {
         return;
     }
@@ -1928,13 +1934,13 @@ void EditURLDecode(const bool isPathConvert)
     /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)iSelSize, pszTextW, (int)iSelSize);
 
     size_t const cchUnescaped = iSelSize * 3 + 1;
-    char* pszUnescaped = (char*)AllocMem(cchUnescaped, HEAP_ZERO_MEMORY);
+    char* const pszUnescaped = (char*)AllocMem(cchUnescaped, HEAP_ZERO_MEMORY);
     if (pszUnescaped == NULL) {
         FreeMem(pszTextW);
         return;
     }
 
-    LPWSTR pszUnescapedW = (LPWSTR)AllocMem(cchUnescaped * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pszUnescapedW = (LPWSTR)AllocMem(cchUnescaped * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszUnescapedW == NULL) {
         FreeMem(pszTextW);
         FreeMem(pszUnescaped);
@@ -2067,6 +2073,7 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     if (iSelSize == 0) {
         if (bAllocatedText) {
             FreeMem(pchText);
+            pchText = NULL;
         }
         return;
     }
@@ -2077,6 +2084,7 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
 
     if (bAllocatedText) {
         FreeMem(pchText);
+        pchText = NULL;
     }
 
     if (bDecode && (codePage != Encoding_SciCP)) {
@@ -2214,8 +2222,8 @@ void EditChar2Hex(HWND hwnd)
     //}
 
     size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT) + 1;
-    char* ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
-    WCHAR* wch = (WCHAR*)AllocMem(alloc * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    char* const ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
+    WCHAR* const wch = (WCHAR*)AllocMem(alloc * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     SciCall_GetSelText(ch);
     int const nchars = (DocPos)MultiByteToWideChar(Encoding_SciCP, 0, ch, -1, wch, (int)alloc) - 1; // '\0'
@@ -2277,7 +2285,7 @@ void EditHex2Char(HWND hwnd)
     }
 
     size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT) + 1;
-    char* ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
+    char* const ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
 
     SciCall_GetSelText(ch);
 
@@ -2579,14 +2587,14 @@ void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
 
     const char* pszText = SciCall_GetRangePointer(iSelStart, iSelCount);
 
-    LPWSTR pszTextW = AllocMem((iSelCount + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pszTextW = AllocMem((iSelCount + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszTextW == NULL) {
         return;
     }
 
     ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP,0,pszText,iSelCount,pszTextW,iSelCount+1);
 
-    LPWSTR pszConvW = AllocMem(cchTextW*sizeof(WCHAR)*nTabWidth+2, HEAP_ZERO_MEMORY);
+    LPWSTR const pszConvW = AllocMem(cchTextW*sizeof(WCHAR)*nTabWidth+2, HEAP_ZERO_MEMORY);
     if (pszConvW == NULL) {
         FreeMem(pszTextW);
         return;
@@ -2622,7 +2630,7 @@ void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
     FreeMem(pszTextW);
 
     if (bModified) {
-        char *pszText2 = AllocMem((size_t)cchConvW * 3, HEAP_ZERO_MEMORY);
+        char * const pszText2 = AllocMem((size_t)cchConvW * 3, HEAP_ZERO_MEMORY);
 
         ptrdiff_t cchConvM = WideCharToMultiByteEx(Encoding_SciCP,0,pszConvW,cchConvW,
                              pszText2,SizeOfMem(pszText2),NULL,NULL);
@@ -2672,7 +2680,7 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
 
     const char* pszText = SciCall_GetRangePointer(iSelStart, iSelCount);
 
-    LPWSTR pszTextW = AllocMem((iSelCount + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pszTextW = AllocMem((iSelCount + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszTextW == NULL) {
         return;
     }
@@ -3400,10 +3408,10 @@ void EditAlignText(int nMode)
     }
 
     size_t const iBufCount = (iMaxLength + 3) * 3;
-    char* chNewLineBuf = AllocMem(iBufCount, HEAP_ZERO_MEMORY);
-    WCHAR* wchLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-    WCHAR* wchNewLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-    PWCHAR* pWords = (PWCHAR*)AllocMem(iBufCount * sizeof(PWCHAR), HEAP_ZERO_MEMORY);
+    char* const chNewLineBuf = AllocMem(iBufCount, HEAP_ZERO_MEMORY);
+    WCHAR* const wchLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    WCHAR* const wchNewLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    PWCHAR* const pWords = (PWCHAR*)AllocMem(iBufCount * sizeof(PWCHAR), HEAP_ZERO_MEMORY);
 
     UndoTransActionBegin();
 
@@ -3558,6 +3566,7 @@ void EditAlignText(int nMode)
         FreeMem(wchNewLineBuf);
         FreeMem(wchLineBuf);
         FreeMem(chNewLineBuf);
+
     } else {
         InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_BUFFERTOOSMALL);
     }
@@ -3880,7 +3889,7 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
     UNREFERENCED_PARAMETER(hwnd);
 
     size_t size = (size_t)iMaxColumn;
-    char* pmszPadStr = AllocMem(size + 1, HEAP_ZERO_MEMORY);
+    char* const pmszPadStr = AllocMem(size + 1, HEAP_ZERO_MEMORY);
     FillMemory(pmszPadStr, size, ' ');
 
     DocPos spcCount = 0;
@@ -3939,11 +3948,11 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty) {
 
         // lots of spaces
         DocPos const spBufSize = max_p(iAnchorColumn, selCaretMainPos);
-        char *pSpaceBuffer = (char *)AllocMem((spBufSize + 1) * sizeof(char), HEAP_ZERO_MEMORY);
+        char * const pSpaceBuffer = (char *)AllocMem((spBufSize + 1) * sizeof(char), HEAP_ZERO_MEMORY);
         FillMemory(pSpaceBuffer, spBufSize * sizeof(char), ' ');
 
-        DocPos *pVspAVec = (DocPos *)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
-        DocPos *pVspCVec = (DocPos *)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
+        DocPos * const pVspAVec = (DocPos *)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
+        DocPos * const pVspCVec = (DocPos *)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
 
         for (DocLn i = 0; i < iLineCount; ++i) {
             pVspAVec[i] = SciCall_GetSelectionNAnchorVirtualSpace(i);
@@ -4049,7 +4058,7 @@ void EditStripFirstCharacter(HWND hwnd)
         const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
         DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
-        char* lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
+        char* const lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
         DocPos remCount = 0;
         if (lineBuffer) {
             DocPosU const selCount = SciCall_GetSelections();
@@ -4126,7 +4135,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
             const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
             DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
-            char* lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
+            char* const lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
             DocPos remCount = 0;
             if (lineBuffer) {
                 const DocPosU selCount = SciCall_GetSelections();
@@ -4303,19 +4312,17 @@ void EditCompressBlanks()
         bool bIsLineEnd = true;
 
         const char* pszIn = NULL;
-        char* pszOut = NULL;
         DocPos cch = 0;
         if (bIsSelEmpty) {
             pszIn = (const char*)SciCall_GetCharacterPointer();
             cch = SciCall_GetTextLength();
-            pszOut = AllocMem(cch + 1, HEAP_ZERO_MEMORY);
         } else {
             pszIn = (const char*)SciCall_GetRangePointer(iSelStartPos, iSelLength + 1);
             cch = SciCall_GetSelText(NULL) - 1;
-            pszOut = AllocMem(cch + 1, HEAP_ZERO_MEMORY);
             bIsLineStart = (iSelStartPos == SciCall_PositionFromLine(iLineStart));
             bIsLineEnd = (iSelEndPos == SciCall_GetLineEndPosition(iLineEnd));
         }
+        char* const pszOut = (char*)AllocMem(cch + 1, HEAP_ZERO_MEMORY);
 
         if (pszIn && pszOut) {
             bool bModified = false;
@@ -4566,7 +4573,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
         }
 
         if (copyBufSize > 0) {
-            char *const pchBuffer = (char *const)AllocMem(copyBufSize + 1, HEAP_ZERO_MEMORY);
+            char* const pchBuffer = (char*)AllocMem(copyBufSize + 1, HEAP_ZERO_MEMORY);
             if (pchBuffer) {
                 // --- collect marked lines ---
                 line = 0;
@@ -4664,7 +4671,7 @@ void EditWrapToColumn(DocPosU nColumn)
 
     char* pszText = SciCall_GetRangePointer(iSelStart, iSelCount);
 
-    LPWSTR pszTextW = AllocMem((iSelCount+1)*sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR const pszTextW = AllocMem((iSelCount+1)*sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pszTextW == NULL) {
         return;
     }
@@ -4676,7 +4683,7 @@ void EditWrapToColumn(DocPosU nColumn)
     int const cchEOL = Sci_GetCurrentEOL_W(wszEOL);
 
     DocPosU const convSize = (cchTextW * sizeof(WCHAR) * 3) + (cchEOL * (iSelCount/nColumn + 1)) + 1;
-    LPWSTR pszConvW = AllocMem(convSize, HEAP_ZERO_MEMORY);
+    LPWSTR const pszConvW = AllocMem(convSize, HEAP_ZERO_MEMORY);
     if (pszConvW == NULL) {
         FreeMem(pszTextW);
         return;
@@ -4763,6 +4770,7 @@ void EditWrapToColumn(DocPosU nColumn)
     FreeMem(pszTextW);
 
     if (bModified) {
+
         pszText = AllocMem(cchConvW * 3, HEAP_ZERO_MEMORY);
         if (pszText) {
             DocPosU const cchConvM = WideCharToMultiByteEx(Encoding_SciCP, 0, pszConvW, cchConvW,
@@ -4789,7 +4797,6 @@ void EditWrapToColumn(DocPosU nColumn)
         }
     }
     FreeMem(pszConvW);
-
 }
 
 
@@ -4874,7 +4881,7 @@ void EditJoinLinesEx(bool bPreserveParagraphs, bool bCRLF2Space)
 
     char* pszText = SciCall_GetRangePointer(iSelStart, iSelLength);
 
-    char* pszJoin = AllocMem(iSelLength + 1, HEAP_ZERO_MEMORY);
+    char* const pszJoin = AllocMem(iSelLength + 1, HEAP_ZERO_MEMORY);
     if (pszJoin == NULL) {
         return;
     }
@@ -5077,13 +5084,13 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         iAnchorPosVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
     }
 
-    SORTLINE* pLines = AllocMem(sizeof(SORTLINE) * iLineCount, HEAP_ZERO_MEMORY);
+    SORTLINE* const pLines = AllocMem(sizeof(SORTLINE) * iLineCount, HEAP_ZERO_MEMORY);
     if (!pLines) {
         return;
     }
 
     DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
-    char* pmsz = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
+    char* const pmsz = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
 
     int ichlMax = 3;
     DocPos cchTotal = 0;
@@ -5174,9 +5181,9 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     }
 
     DocLn const lenRes = cchTotal + (2 * iLineCount) + 1;
-    char* pmszResult = AllocMem(lenRes, HEAP_ZERO_MEMORY);
-    char* pmszResOffset = pmszResult;
-    char* pmszBuf = AllocMem((size_t)ichlMax + 1LL, HEAP_ZERO_MEMORY);
+    char* const pmszResult = AllocMem(lenRes, HEAP_ZERO_MEMORY);
+    char* const pmszResOffset = pmszResult;
+    char* const pmszBuf = AllocMem((size_t)ichlMax + 1LL, HEAP_ZERO_MEMORY);
 
     FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? ((iSortFlags & SORT_LEXICOGRAPH) ? _wcsicmp_s : _wcsicoll_s) :
                                 ((iSortFlags & SORT_LEXICOGRAPH) ? _wcscmp_s  : _wcscoll_s);
@@ -5225,6 +5232,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     for (DocLn i = 0; i < iLineCount; ++i) {
         FreeMem(pLines[i].pwszLine);
+        pLines[i].pwszLine = NULL;
     }
     FreeMem(pLines);
 
@@ -5418,7 +5426,7 @@ void EditFixPositions()
 //
 //  EditGetExcerpt()
 //
-void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
+void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
 {
     UNREFERENCED_PARAMETER(hwnd);
 
@@ -5444,8 +5452,8 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
     tr.chrg.cpMax = min_cr(tr.chrg.cpMax, (DocPosCR)Sci_GetDocEndPosition());
 
     size_t const len = ((size_t)tr.chrg.cpMax - (size_t)tr.chrg.cpMin);
-    char*  pszText  = AllocMem(len+1LL, HEAP_ZERO_MEMORY);
-    LPWSTR pszTextW = AllocMem((len+1LL) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    char*  const pszText  = AllocMem(len+1LL, HEAP_ZERO_MEMORY);
+    LPWSTR const pszTextW = AllocMem((len+1LL) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     DWORD cch = 0;
     if (pszText && pszTextW) {

@@ -1763,6 +1763,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         if (s_lpSchemeArg) {
             Style_SetLexerFromName(Globals.hwndEdit, Paths.CurrentFile, s_lpSchemeArg);
             LocalFree(s_lpSchemeArg);  // StrDup()
+            s_lpSchemeArg = NULL;
         } else if ((s_iInitialLexer >= 0) && (s_iInitialLexer < Style_NumOfLexers())) {
             Style_SetLexerFromID(Globals.hwndEdit, s_iInitialLexer);
         }
@@ -8949,6 +8950,7 @@ void ParseCommandLine()
                         if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
                             if (s_lpSchemeArg) {
                                 LocalFree(s_lpSchemeArg);    // StrDup()
+                                s_lpSchemeArg = NULL;
                             }
                             s_lpSchemeArg = StrDup(lp1);
                             s_flagLexerSpecified = true;
@@ -10418,6 +10420,7 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
             EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
             if (Globals.pFileMRU->pszBookMarks[idx]) {
                 LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
+                Globals.pFileMRU->pszBookMarks[idx] = NULL;
             }
             Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
@@ -11005,6 +11008,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
             if (Globals.pFileMRU->pszBookMarks[idx]) {
                 LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
+                Globals.pFileMRU->pszBookMarks[idx] = NULL;
             }
             Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
@@ -11673,6 +11677,7 @@ bool RelaunchMultiInst()
             StringCchCat(lpCmdLineNew, len, s_lpFileList[i]);
 
             LocalFree(s_lpFileList[i]); // StrDup()
+            s_lpFileList[i] = NULL;
 
             STARTUPINFO si = { sizeof(STARTUPINFO) };
             PROCESS_INFORMATION pi = { 0 };
@@ -11684,7 +11689,9 @@ bool RelaunchMultiInst()
         }
 
         LocalFree(lpCmdLine); // StrDup()
+        lpCmdLine = NULL;
         FreeMem(lpCmdLineNew);
+        lpCmdLineNew = NULL;
         Path_Empty(s_pthArgFilePath, true);
 
         return true;
@@ -11692,6 +11699,7 @@ bool RelaunchMultiInst()
 
     for (int i = 0; i < s_cFileList; i++) {
         LocalFree(s_lpFileList[i]); // StrDup()
+        s_lpFileList[i] = NULL;
     }
 
     return false;

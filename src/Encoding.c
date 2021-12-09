@@ -366,7 +366,7 @@ void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
     int iSelItem = -1;
     WCHAR wchBuf[256] = { L'\0' };
 
-    PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
+    PENCODINGENTRY const pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
     if (pEE) {
         for (cpi_enc_t i = 0; i < Encoding_CountOf(); i++) {
             pEE[i].id = i;
@@ -452,7 +452,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
     int iSelItem = -1;
     WCHAR wchBuf[256] = { L'\0' };
 
-    PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
+    PENCODINGENTRY const pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
     if (pEE) {
         for (cpi_enc_t i = 0; i < Encoding_CountOf(); i++) {
             pEE[i].id = i;

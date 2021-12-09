@@ -177,9 +177,10 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 	if (lpMsgBuf) {
 		// Display the error message and exit the process
 		size_t const len = StringCchLen((LPCWSTR)lpMsgBuf, 0) + StringCchLen(lpszMessage, 0) + 160;
-		LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+		LPWSTR const lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
 		if (lpDisplayBuf) {
+
 			WCHAR msgFormat[128] = { L'\0' };
 			GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
 			StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
@@ -194,6 +195,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 			FreeMem(lpDisplayBuf);
 		}
 		LocalFree(lpMsgBuf); // LocalAlloc()
+        lpMsgBuf = NULL;
 	}
 	return dwErrID;
 }
@@ -276,6 +278,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 		}
 
 		FreeMem(lpMsgBox->lpstrMessage);
+        lpMsgBox->lpstrMessage = NULL;
 
 		CenterDlgInParent(hwnd, NULL);
 		AttentionBeep(lpMsgBox->uType);
@@ -454,6 +457,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 			StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L"\n\n");
 			StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), lpMsgBuf);
 			LocalFree(lpMsgBuf);
+            lpMsgBuf = NULL;
 		}
 
 		WCHAR wcht = *CharPrev(msgBox.lpstrMessage, StrEnd(msgBox.lpstrMessage, COUNTOF(wchMessage)));
@@ -4227,7 +4231,7 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
             SetExplorerTheme(GetDlgItem(hwnd, IDC_AS_BACKUP_OPENFOLDER));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
             int const ctl[] = { IDC_AUTOSAVE_ENABLE, IDC_AUTOSAVE_INTERVAL, IDC_AUTOSAVE_SUSPEND, IDC_AUTOSAVE_SHUTDOWN,
-                                IDC_STATIC, IDC_STATIC2 };
+                                IDC_AS_BACKUP_ENABLE, IDC_STATIC, IDC_STATIC2, IDC_STATIC3 };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }

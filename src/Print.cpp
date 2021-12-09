@@ -659,7 +659,7 @@ CASE_WM_CTLCOLOR_SET:
 
 extern "C" void EditPrintSetup(HWND hwnd)
 {
-    DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_MUI_PAGESETUP),Globals.hLngResContainer);
+    DLGTEMPLATE* const pDlgTemplate = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_MUI_PAGESETUP),Globals.hLngResContainer);
 
     PAGESETUPDLG pdlg = { sizeof(PAGESETUPDLG) };
     pdlg.Flags = PSD_ENABLEPAGESETUPHOOK | PSD_ENABLEPAGESETUPTEMPLATEHANDLE;

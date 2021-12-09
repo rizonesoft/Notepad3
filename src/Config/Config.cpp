@@ -113,7 +113,7 @@ bool CanAccessPath(const HPATHL hpth, DWORD genericAccessRights)
     bool bRet = false;
     // check security tokens
     if (!::GetFileSecurityW(Path_Get(hpth), secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
-        PSECURITY_DESCRIPTOR security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
+        PSECURITY_DESCRIPTOR const security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
         if (security && ::GetFileSecurityW(Path_Get(hpth), secInfo, security, length, &length)) {
             HANDLE hToken = NULL;
             if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &hToken)) {
@@ -2315,9 +2315,11 @@ bool MRU_Destroy(LPMRULIST pmru)
         for (int i = 0; i < pmru->iSize; i++) {
             if (pmru->pszItems[i]) {
                 LocalFree(pmru->pszItems[i]);    // StrDup()
+                pmru->pszItems[i] = NULL;
             }
             if (pmru->pszBookMarks[i]) {
                 LocalFree(pmru->pszBookMarks[i]);    // StrDup()
+                pmru->pszBookMarks[i] = NULL;
             }
         }
         FreeMem(pmru);
@@ -2346,6 +2348,7 @@ bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos
         for (; i < pmru->iSize; ++i) {
             if (MRU_Compare(pmru, pmru->pszItems[i], pszNew) == 0) {
                 LocalFree(pmru->pszItems[i]); // StrDup()
+                pmru->pszItems[i] = NULL;
                 break;
             }
         }
@@ -2433,6 +2436,7 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
         bool const bAlreadyInList = MRU_FindFile(pmru, pszFile, &i);
         if (bAlreadyInList) {
             LocalFree(pmru->pszItems[i]);  // StrDup()
+            pmru->pszItems[i] = NULL;
         } else {
             i = (i < pmru->iSize) ? i : (pmru->iSize - 1);
         }
@@ -2475,9 +2479,11 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
         if (iIndex >= 0 && iIndex < pmru->iSize) {
             if (pmru->pszItems[iIndex]) {
                 LocalFree(pmru->pszItems[iIndex]);  // StrDup()
+                pmru->pszItems[iIndex] = NULL;
             }
             if (pmru->pszBookMarks[iIndex]) {
                 LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
+                pmru->pszBookMarks[iIndex] = NULL;
             }
             bool bZeroMoved = false;
             for (int i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; ++i) {
@@ -2517,8 +2523,8 @@ bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast)
                 pmru->iSelAnchPos[i] = -1;
                 if (pmru->pszBookMarks[i]) {
                     LocalFree(pmru->pszBookMarks[i]);  // StrDup()
+                    pmru->pszBookMarks[i] = NULL;
                 }
-                pmru->pszBookMarks[i] = NULL;
             }
         }
         return true;

@@ -125,7 +125,7 @@ inline static void * ReAllocBuffer(void* pdata, const size_t len, bool bZeroMem,
 
 // ----------------------------------------------------------------------------
 
-inline static void FreeBuffer(LPWSTR  pstr) {
+inline static void FreeBuffer(LPWSTR pstr) {
     if (!s_hndlProcessHeap) {
         s_hndlProcessHeap = GetProcessHeap();
     }

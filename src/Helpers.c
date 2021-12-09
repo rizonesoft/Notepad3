@@ -951,11 +951,11 @@ LPWSTR StrReplaceAll(LPCWSTR str, LPCWSTR from, LPCWSTR to)
     LPCWSTR pstr2;
     LPCWSTR pstr = str;
     size_t i, count = 0;
-    ptrdiff_t *pos_cache_tmp, *pos_cache = NULL;
+    ptrdiff_t *pos_cache_tmp = NULL;
     size_t cache_sz = 0;
     size_t cpylen, orglen, retlen, tolen = 0, fromlen = wcslen(from);
 
-    pos_cache = AllocMem(cache_sz_inc, HEAP_ZERO_MEMORY); // init for ReAllocMem()
+     ptrdiff_t* pos_cache = AllocMem(cache_sz_inc, HEAP_ZERO_MEMORY); // init for ReAllocMem()
 
     /* Find all matches and cache their positions. */
     while ((pstr2 = wcsstr(pstr, from)) != NULL) {
@@ -1730,7 +1730,7 @@ void TransformMetaChars(char* pszInput, size_t cch, bool bRegEx, int iEOLMode)
     if (!bRegEx) {
         return;
     }
-    char* buffer = AllocMem((cch << 1) * sizeof(char), HEAP_ZERO_MEMORY);
+    char* const buffer = AllocMem((cch << 1) * sizeof(char), HEAP_ZERO_MEMORY);
     if (buffer) {
         char* s = pszInput;
         char* o = buffer;
@@ -2006,7 +2006,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 #if (NTDDI_VERSION >= NTDDI_WIN8)
     UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
 #else
-    char *outBuffer = AllocMem((size_t)*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
+    char * const outBuffer = AllocMem((size_t)*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
     if (!outBuffer) {
         return;
     }
@@ -2192,7 +2192,7 @@ size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
     }
     StrTrim(wchStrg_out, L"\"'");
 
-    int* intVector = (int*)AllocMem(iCount * sizeof(int), HEAP_ZERO_MEMORY);
+    int* const intVector = (int*)AllocMem(iCount * sizeof(int), HEAP_ZERO_MEMORY);
     if (!intVector) {
         return 0;
     }
