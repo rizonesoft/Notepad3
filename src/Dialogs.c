@@ -2229,7 +2229,6 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 	return 0;
 }
 
-#define IDC_FILEMRU_UPDATE_VIEW (WM_USER+1)
 
 static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {

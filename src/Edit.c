@@ -431,7 +431,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
     FileVars_Apply(&Globals.fvCurFile);
 
-    IgnoreNotifyDocChangedEvent(false);
+    IgnoreNotifyDocChangedEvent(true);
     EditSetDocumentBuffer(lpstrText, lenText);
     ObserveNotifyDocChangedEvent();
 

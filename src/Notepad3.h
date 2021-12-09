@@ -88,9 +88,10 @@ typedef enum {
 
 
 //==== Notifications ==========================================================
-#define WM_TRAYMESSAGE         WM_USER          // Callback Message from System Tray
-#define WM_FILECHANGEDNOTIFY  (WM_USER+1)       // Change Notifications
-//#define WM_CHANGENOTIFYCLEAR (WM_USER+2)
+#define WM_TRAYMESSAGE           (WM_USER+1)       // Callback Message from System Tray
+#define WM_FILECHANGEDNOTIFY     (WM_USER+2)       // Change Notifications
+#define IDC_FILEMRU_UPDATE_VIEW  (WM_USER+3)
+//#define WM_CHANGENOTIFYCLEAR     (WM_USER+4)
 
 //==== Timer ==================================================================
 #define ID_WATCHTIMER       (0xA000)        // File Watching
@@ -203,29 +204,31 @@ void ObserveNotifyDocChangedEvent();
 
 // ----------------------------------------------------------------------------
 
+// lean msg change notify
 #define DocChangeTransactionBegin()  __try { SciCall_BeginUndoAction(); IgnoreNotifyDocChangedEvent(false);
 #define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); SciCall_EndUndoAction(); }
 
 // ----------------------------------------------------------------------------
 
+// none msg change notify
 #define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(true);
 #define EndUndoTransAction()    } __finally { ObserveNotifyDocChangedEvent(); EndUndoAction(_token_); } }
 
 // ----------------------------------------------------------------------------
 
-#define BeginWaitCursor(cond, text)           \
-    __try {                                   \
+#define BeginWaitCursor(cond, text)                            \
+    __try {                                                    \
         IgnoreNotifyDocChangedEvent(true);    \
-        if (cond) {                           \
-            SciCall_SetCursor(SC_CURSORWAIT); \
+        if (cond) {                                            \
+            SciCall_SetCursor(SC_CURSORWAIT);                  \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
         }
 
-#define BeginWaitCursorUID(cond, uid)         \
-    __try {                                   \
+#define BeginWaitCursorUID(cond, uid)                          \
+    __try {                                                    \
         IgnoreNotifyDocChangedEvent(true);    \
-        if (cond) {                           \
-            SciCall_SetCursor(SC_CURSORWAIT); \
+        if (cond) {                                            \
+            SciCall_SetCursor(SC_CURSORWAIT);                  \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
         }
 

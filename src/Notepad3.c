@@ -115,7 +115,6 @@ HPATHL    g_tchToolbarBitmapDisabled = NULL;
 
 WCHAR     Default_PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
 
-
 // ------------------------------------
 
 HPATHL s_hpthRelaunchElevatedFile = NULL;
@@ -658,6 +657,10 @@ static inline void SetSaveNeeded()
         s_DocNeedSaving = true;
         UpdateToolbar();
         UpdateTitleBar(Globals.hwndMain);
+        AutoSaveStart(true);
+    }
+    else {
+        AutoSaveStart(false);
     }
     if (IsWindow(Globals.hwndDlgFindReplace)) {
         PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
@@ -1973,10 +1976,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
             if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
                 s_bUndoRedoScroll = true;
+                IgnoreNotifyDocChangedEvent(false);
                 SciCall_Redo();
+                ObserveNotifyDocChangedEvent();
             } else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
                 s_bUndoRedoScroll = true;
+                IgnoreNotifyDocChangedEvent(false);
                 SciCall_Undo();
+                ObserveNotifyDocChangedEvent();
             }
         }
         break;
@@ -4741,18 +4748,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_UNDO:
         if (SciCall_CanUndo()) {
-            DocChangeTransactionBegin();
+            //~DocChangeTransactionBegin();
+            IgnoreNotifyDocChangedEvent(false);
             SciCall_Undo();
-            EndDocChangeTransaction();
+            ObserveNotifyDocChangedEvent();
+            //~EndDocChangeTransaction();
         }
         break;
 
 
     case IDM_EDIT_REDO:
         if (SciCall_CanRedo()) {
-            DocChangeTransactionBegin();
+            //~DocChangeTransactionBegin();
+            IgnoreNotifyDocChangedEvent(false);
             SciCall_Redo();
-            EndDocChangeTransaction();
+            ObserveNotifyDocChangedEvent();
+            //~EndDocChangeTransaction();
         }
         break;
 
@@ -8004,6 +8015,7 @@ static bool  _IsIMEOpenInNoNativeMode()
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
+
 inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bModified) {
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
@@ -8022,6 +8034,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             }
             *bModified = true;
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
+                *bModified = false; // not yet
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0)) {
                         bool const bIsSelEmpty = !SciCall_IsSelectionEmpty();
@@ -8039,7 +8052,6 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                         }
                     }
                 }
-                *bModified = false; // not yet
             } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
@@ -8062,7 +8074,6 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                     bool const bInUndoRedo = ((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO));
                     _DelaySplitUndoTransaction(bInUndoRedo ? max_dw(_MQ_FAST, timeout) : timeout);
                 }
-                AutoSaveStart(false);
             }
         } break;
 
@@ -10245,9 +10256,11 @@ bool RestoreAction(int token, DoAction doAct)
 
     UndoRedoSelection_t* pSel = NULL;
 
+    HWND const hwndedit = Globals.hwndEdit;
+
     if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL)) {
+
         // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-        HWND const hwndedit = Globals.hwndEdit;
 
         DocPos* pPosAnchor = NULL;
         DocPos* pPosCur = NULL;
@@ -10333,6 +10346,7 @@ bool RestoreAction(int token, DoAction doAct)
         }
         PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     }
+
     return true;
 }
 
