@@ -454,6 +454,7 @@
 #define IDC_AUTOSAVE_SHUTDOWN           18128
 #define IDC_AS_BACKUP_ENABLE            18129
 #define IDC_AS_BACKUP_OPENFOLDER        18130
+#define IDC_AS_BACKUP_SIDEBYSIDE        18131
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201

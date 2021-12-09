@@ -385,13 +385,14 @@ typedef struct ENCLOSESELDATA {
 
 typedef enum AutoSaveBackupOptions {
 
-    ASB_None = 0,
-    ASB_Periodic = 1 << 0,
-    ASB_Suspend = 1 << 1,
-    ASB_Shutdown = 1 << 2,
+    ASB_None       = 0,
+    ASB_Periodic   = 1 << 0,
+    ASB_Suspend    = 1 << 1,
+    ASB_Shutdown   = 1 << 2,
 
-    ASB_Backup = 1 << 3,
+    ASB_Backup     = 1 << 3,
     ASB_SideBySide = 1 << 4,
+
 
     ASB_Default = ASB_Suspend | ASB_Shutdown,
 

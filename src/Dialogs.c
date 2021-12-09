@@ -1920,7 +1920,7 @@ CASE_WM_CTLCOLOR_SET:
 		switch(LOWORD(wParam)) {
 
 		case IDC_GETFAVORITESDIR: {
-            WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
+            WCHAR szTitle[SMALL_BUFFER] = { L'\0' };
             GetLngString(IDS_MUI_FAVORITES, szTitle, COUNTOF(szTitle));
             if (Path_BrowseDirectory(hwnd, szTitle, Settings.FavoritesDir, Settings.FavoritesDir, true)) {
                 DirList_Fill(hwndLV,Path_Get(Settings.FavoritesDir),DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
@@ -4231,22 +4231,19 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
             SetExplorerTheme(GetDlgItem(hwnd, IDC_AS_BACKUP_OPENFOLDER));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
             int const ctl[] = { IDC_AUTOSAVE_ENABLE, IDC_AUTOSAVE_INTERVAL, IDC_AUTOSAVE_SUSPEND, IDC_AUTOSAVE_SHUTDOWN,
-                                IDC_AS_BACKUP_ENABLE, IDC_STATIC, IDC_STATIC2, IDC_STATIC3 };
+                IDC_AS_BACKUP_ENABLE, IDC_AS_BACKUP_SIDEBYSIDE, IDC_STATIC, IDC_STATIC2, IDC_STATIC3 };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
         }
 #endif
 
-        if (Settings.AutoSaveOptions & ASB_Periodic) {
-            CheckDlgButton(hwnd, IDC_AUTOSAVE_ENABLE, BST_CHECKED);
-        }
-        if (Settings.AutoSaveOptions & ASB_Suspend) {
-            CheckDlgButton(hwnd, IDC_AUTOSAVE_SUSPEND, BST_CHECKED);
-        }
-        if (Settings.AutoSaveOptions & ASB_Shutdown) {
-            CheckDlgButton(hwnd, IDC_AUTOSAVE_SHUTDOWN, BST_CHECKED);
-        }
+        CheckDlgButton(hwnd, IDC_AUTOSAVE_ENABLE, SetBtn(Settings.AutoSaveOptions & ASB_Periodic));
+        CheckDlgButton(hwnd, IDC_AUTOSAVE_SUSPEND, SetBtn(Settings.AutoSaveOptions & ASB_Suspend));
+        CheckDlgButton(hwnd, IDC_AUTOSAVE_SHUTDOWN, SetBtn(Settings.AutoSaveOptions & ASB_Shutdown));
+
+        CheckDlgButton(hwnd, IDC_AS_BACKUP_ENABLE, SetBtn(Settings.AutoSaveOptions & ASB_Backup));
+        CheckDlgButton(hwnd, IDC_AS_BACKUP_SIDEBYSIDE, SetBtn(Settings.AutoSaveOptions & ASB_SideBySide));
 
         WCHAR      wch[32];
         const UINT seconds = Settings.AutoSaveInterval / 1000;
@@ -4299,21 +4296,19 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
         switch (LOWORD(wParam)) {
         case IDOK: {
             AutoSaveBackupOptions options = ASB_None;
-            if (IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE)) {
-                options |= ASB_Periodic;
-            }
-            if (IsButtonChecked(hwnd, IDC_AUTOSAVE_SUSPEND)) {
-                options |= ASB_Suspend;
-            }
-            if (IsButtonChecked(hwnd, IDC_AUTOSAVE_SHUTDOWN)) {
-                options |= ASB_Shutdown;
-            }
+            options |= IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE) ? ASB_Periodic : ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AUTOSAVE_SUSPEND) ? ASB_Suspend : ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AUTOSAVE_SHUTDOWN) ? ASB_Shutdown : ASB_None;
+
+            options |= IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE) ? ASB_Backup : ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AS_BACKUP_SIDEBYSIDE) ? ASB_SideBySide : ASB_None;
+
             Settings.AutoSaveOptions = options;
 
             char chInterval[32];
             GetDlgItemTextA(hwnd, IDC_AUTOSAVE_INTERVAL, chInterval, COUNTOF(chInterval));
             te_xint_t iExprErr = true;
-            float interval = (float)te_interp(chInterval, &iExprErr);
+            float     interval = (float)te_interp(chInterval, &iExprErr);
             if (iExprErr) {
                 WCHAR wch[32];
                 GetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch, COUNTOF(wch));
@@ -4324,15 +4319,22 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
         } break;
 
         case IDC_AS_BACKUP_OPENFOLDER: {
-            //LPCWSTR szFolder = AutoSave_GetDefaultFolder();
-            //OpenContainingFolder(hwnd, szFolder, FALSE);
+            WCHAR szTitle[SMALL_BUFFER] = { L'\0' };
+            GetLngString(IDS_MUI_FAVORITES, szTitle, COUNTOF(szTitle));
+            if (Path_BrowseDirectory(hwnd, szTitle, Settings.FavoritesDir, Settings.FavoritesDir, true)) {
+                // change dir
+            }
         } break;
 
         case IDCANCEL:
             EndDialog(hwnd, IDCANCEL);
             break;
+
+        default:
+            return FALSE;
         }
         return TRUE;
+
     }
     return FALSE;
 }

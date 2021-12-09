@@ -4163,7 +4163,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_SET_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
 
     CheckCmd(hmenu, IDM_SET_ACCELWORDNAV, Settings.AccelWordNavigation);
-    CheckCmd(hmenu, IDM_SET_AUTOSAVE_BACKUP, (Settings.AutoSaveOptions & ASB_Periodic) && !ro);
+    CheckCmd(hmenu, IDM_SET_AUTOSAVE_BACKUP, (Settings.AutoSaveOptions & (ASB_Periodic | ASB_Backup)));
 
     bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
     //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);
@@ -8407,16 +8407,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     const SCNotification* const scn = (SCNotification*)lParam;
 
-    if (!CheckNotifyDocChangedEvent()) {
-        bool bModified = false;
-        result = _MsgNotifyLean(scn, &bModified);
-    }
-
     const LPNMHDR pnmh = (LPNMHDR)scn;
     switch (pnmh->idFrom) {
 
     case IDC_EDIT: {
-        result = _MsgNotifyFromEdit(hwnd, scn);
+        if (CheckNotifyDocChangedEvent()) {
+            result = _MsgNotifyFromEdit(hwnd, scn);
+        }
+        else {
+            bool bModified = false;
+            result = _MsgNotifyLean(scn, &bModified);
+        }
     } break;
 
     // ------------------------------------------------------------------------
@@ -10228,6 +10229,7 @@ void EndUndoAction(int token)
         InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
     }
 }
+
 
 
 //=============================================================================
