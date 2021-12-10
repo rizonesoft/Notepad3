@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "Inställningar"
     BEGIN
-        MENUITEM "Infoga tabbar som blanksteg",                     IDM_VIEW_TABSASSPACES
-        MENUITEM "Tabulatorinställningar...\tCtrl+T",               IDM_VIEW_TABSETTINGS
-        MENUITEM "Automatiskt radbyte...",                          IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Långa rader...",                                  IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Automatiskt indrag",                              IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Stäng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Kompletera ord automatiskt",                      IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Infoga tabbar som blanksteg",                     IDM_SET_TABSASSPACES
+        MENUITEM "Tabulatorinställningar...\tCtrl+T",               IDM_SET_TABSETTINGS
+        MENUITEM "Automatiskt radbyte...",                          IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Långa rader...",                                  IDM_SET_LONGLINESETTINGS
+        MENUITEM "Automatiskt indrag",                              IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Stäng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Kompletera ord automatiskt",                      IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Bara en instans per fil",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Stäng av ljud vid meddelande",                    IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Bara en instans per fil",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_SET_CHANGENOTIFY
+        MENUITEM "Stäng av ljud vid meddelande",                    IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc-tangentens funktion"
         BEGIN
-            MENUITEM "Ingen",                                       IDM_VIEW_NOESCFUNC
-            MENUITEM "Minimera Notepad3",                           IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Avsluta Notepad3",                            IDM_VIEW_ESCEXIT
+            MENUITEM "Ingen",                                       IDM_SET_NOESCFUNC
+            MENUITEM "Minimera Notepad3",                           IDM_SET_ESCMINIMIZE
+            MENUITEM "Avsluta Notepad3",                            IDM_SET_ESCEXIT
         END
-        MENUITEM "Spara innan verktyg används",                     IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Räkna ut Tiny-E&xpressions",                      IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Spara innan verktyg används",                     IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Räkna ut Tiny-E&xpressions",                      IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
         BEGIN
-            MENUITEM "Kom ihåg senaste filer",                      IDM_VIEW_NOSAVERECENT
-            MENUITEM "Bevara markörposition",                       IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Kom ihåg sökmönster",                         IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Kom ihåg senaste filer",                      IDM_SET_NOSAVERECENT
+            MENUITEM "Bevara markörposition",                       IDM_SET_NOPRESERVECARET
+            MENUITEM "Kom ihåg sökmönster",                         IDM_SET_NOSAVEFINDREPL
         END
         POPUP "Fönster"
         BEGIN
             POPUP "Fönstertitel"
             BEGIN
-                MENUITEM "Endast filnamn",                          IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Filnamn och mapp",                        IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Fullständig sökväg",                      IDM_VIEW_SHOWFULLPATH
-                MENUITEM "Urdrag ur text\tCtrl+9",                  IDM_VIEW_SHOWEXCERPT
+                MENUITEM "Endast filnamn",                          IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Filnamn och mapp",                        IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Fullständig sökväg",                      IDM_SET_SHOWFULLPATH
+                MENUITEM "Urdrag ur text\tCtrl+9",                  IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "Återanvänd fönster\tCtrl+Shift+L",            IDM_VIEW_REUSEWINDOW
-            MENUITEM "Alltid överst\tAlt+T",                        IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimera till dolda ikoner",                  IDM_VIEW_MINTOTRAY
-            MENUITEM "Genomskinlig\tAlt+G",                         IDM_VIEW_TRANSPARENT
+            MENUITEM "Återanvänd fönster\tCtrl+Shift+L",            IDM_SET_REUSEWINDOW
+            MENUITEM "Alltid överst\tAlt+T",                        IDM_SET_ALWAYSONTOP
+            MENUITEM "Minimera till dolda ikoner",                  IDM_SET_MINTOTRAY
+            MENUITEM "Genomskinlig\tAlt+G",                         IDM_SET_TRANSPARENT
         END
         POPUP "Tek&nik"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "Avancerade inställningar"
         BEGIN
-            MENUITEM "Spara vid avslut",                            IDM_VIEW_SAVESETTINGS
-            MENUITEM "Spara inställningar nu\tF7",                  IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Spara vid avslut",                            IDM_SET_SAVESETTINGS
+            MENUITEM "Spara inställningar nu\tF7",                  IDM_SET_SAVESETTINGSNOW
             MENUITEM "Öppna inställningsfilen\tCtrl+F7",            CMD_OPENINIFILE
         END
     END

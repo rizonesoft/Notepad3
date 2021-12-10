@@ -453,47 +453,47 @@ BEGIN
         END
     POPUP "&Настройки"
     BEGIN
-        MENUITEM "Заменять табуляцию &пробелами",               IDM_VIEW_TABSASSPACES
-        MENUITEM "Настройка &табуляции...\tCtrl+T",             IDM_VIEW_TABSETTINGS
-        MENUITEM "Настройка переноса &строк...",                IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Настро&йка длинных строк...",                 IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Авто&матический отступ текста",               IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Автозакрытие тегов &HTML/XML\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Авто&завершение слов",                        IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Автозавершение на основе &лексем",            IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Ускоренная нави&гация по словам\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Заменять табуляцию &пробелами",               IDM_SET_TABSASSPACES
+        MENUITEM "Настройка &табуляции...\tCtrl+T",             IDM_SET_TABSETTINGS
+        MENUITEM "Настройка переноса &строк...",                IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Настро&йка длинных строк...",                 IDM_SET_LONGLINESETTINGS
+        MENUITEM "Авто&матический отступ текста",               IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Автозакрытие тегов &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Авто&завершение слов",                        IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Автозавершение на основе &лексем",            IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Ускоренная нави&гация по словам\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Только один &экземпляр на файл",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Заглу&шить звук уведомлений",                 IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Только один &экземпляр на файл",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
+        MENUITEM "Заглу&шить звук уведомлений",                 IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Функция клавиши Esc"
         BEGIN
-            MENUITEM "&Нет",                                IDM_VIEW_NOESCFUNC
-            MENUITEM "&Свернуть Notepad3",                  IDM_VIEW_ESCMINIMIZE
-            MENUITEM "&Закрыть Notepad3",                   IDM_VIEW_ESCEXIT
+            MENUITEM "&Нет",                                IDM_SET_NOESCFUNC
+            MENUITEM "&Свернуть Notepad3",                  IDM_SET_ESCMINIMIZE
+            MENUITEM "&Закрыть Notepad3",                   IDM_SET_ESCEXIT
         END
-        MENUITEM "Сохранять перед запуском инструментов",   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Вычислять простые в&ыражения",            IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Сохранять перед запуском инструментов",   IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Вычислять простые в&ыражения",            IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&История"
         BEGIN
-            MENUITEM "Сохранять историю открытых &файлов",  IDM_VIEW_NOSAVERECENT
-            MENUITEM "Восстанавливать положение &каретки",  IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Запоминать поисковые &запросы",       IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Сохранять историю открытых &файлов",  IDM_SET_NOSAVERECENT
+            MENUITEM "Восстанавливать положение &каретки",  IDM_SET_NOPRESERVECARET
+            MENUITEM "Запоминать поисковые &запросы",       IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Окно"
         BEGIN
             POPUP "Отобра&жение заголовка окна"
             BEGIN
-                MENUITEM "&Только имя файла",                IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Имя файла и &папка",               IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Полный п&уть",                     IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Отрывок текста\tCtrl+9",          IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Только имя файла",                IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Имя файла и &папка",               IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Полный п&уть",                     IDM_SET_SHOWFULLPATH
+                MENUITEM "&Отрывок текста\tCtrl+9",          IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Переиспользовать окно\tCtrl+Shift+L", IDM_VIEW_REUSEWINDOW
-            MENUITEM "П&оверх других окон\tAlt+T",           IDM_VIEW_ALWAYSONTOP
-            MENUITEM "&Сворачивать в панель уведомлений",    IDM_VIEW_MINTOTRAY
-            MENUITEM "Полупрозрачный &режим\tAlt+G",         IDM_VIEW_TRANSPARENT
+            MENUITEM "&Переиспользовать окно\tCtrl+Shift+L", IDM_SET_REUSEWINDOW
+            MENUITEM "П&оверх других окон\tAlt+T",           IDM_SET_ALWAYSONTOP
+            MENUITEM "&Сворачивать в панель уведомлений",    IDM_SET_MINTOTRAY
+            MENUITEM "Полупрозрачный &режим\tAlt+G",         IDM_SET_TRANSPARENT
         END
         POPUP "Тех&нологии"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "&Расширенные настройки"
         BEGIN
-            MENUITEM "Сохранять настройки при &выходе",      IDM_VIEW_SAVESETTINGS
-            MENUITEM "Сохранить настройки &сейчас\tF7",      IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Сохранять настройки при &выходе",      IDM_SET_SAVESETTINGS
+            MENUITEM "Сохранить настройки &сейчас\tF7",      IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Открыть файл настроек\tCtrl+F7",      CMD_OPENINIFILE
         END
     END

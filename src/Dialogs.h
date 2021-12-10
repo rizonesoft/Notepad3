@@ -59,6 +59,7 @@ bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding);
 bool SelectDefLineEndingDlg(HWND hwnd,LPARAM piOption);
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
+bool AutoSaveBackupSettingsDlg(HWND hwnd);
 
 void            RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI);
 void            MapRectClientToWndCoords(HWND hwnd, LPRECT rc);
@@ -277,6 +278,10 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 HWND    CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 void    CleanupDlgResources();
+
+//bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth, bool bSelect);
+bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
+bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 
 
 // --- Hook Procedures for Std-System Dialogs ---------------------------------

@@ -40,6 +40,7 @@
 #include "Notepad3.h"
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
+#include "tinyexpr/tinyexpr.h"
 #include "Resample.h"
 #include "PathLib.h"
 
@@ -176,9 +177,10 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 	if (lpMsgBuf) {
 		// Display the error message and exit the process
 		size_t const len = StringCchLen((LPCWSTR)lpMsgBuf, 0) + StringCchLen(lpszMessage, 0) + 160;
-		LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+		LPWSTR const lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
 		if (lpDisplayBuf) {
+
 			WCHAR msgFormat[128] = { L'\0' };
 			GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
 			StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
@@ -193,6 +195,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 			FreeMem(lpDisplayBuf);
 		}
 		LocalFree(lpMsgBuf); // LocalAlloc()
+        lpMsgBuf = NULL;
 	}
 	return dwErrID;
 }
@@ -275,6 +278,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 		}
 
 		FreeMem(lpMsgBox->lpstrMessage);
+        lpMsgBox->lpstrMessage = NULL;
 
 		CenterDlgInParent(hwnd, NULL);
 		AttentionBeep(lpMsgBox->uType);
@@ -453,6 +457,7 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 			StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L"\n\n");
 			StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), lpMsgBuf);
 			LocalFree(lpMsgBuf);
+            lpMsgBuf = NULL;
 		}
 
 		WCHAR wcht = *CharPrev(msgBox.lpstrMessage, StrEnd(msgBox.lpstrMessage, COUNTOF(wchMessage)));
@@ -1708,8 +1713,8 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
     HPATHL hpthFileName = Path_Allocate(lpstrFile);
     dliOpenWith.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
 
-    WCHAR chDispayName[128];
-    Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, L"");
+    WCHAR chDispayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+    Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, NULL, true);
     dliOpenWith.strDisplayName = chDispayName;
 
 	if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
@@ -1915,7 +1920,7 @@ CASE_WM_CTLCOLOR_SET:
 		switch(LOWORD(wParam)) {
 
 		case IDC_GETFAVORITESDIR: {
-            WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
+            WCHAR szTitle[SMALL_BUFFER] = { L'\0' };
             GetLngString(IDS_MUI_FAVORITES, szTitle, COUNTOF(szTitle));
             if (Path_BrowseDirectory(hwnd, szTitle, Settings.FavoritesDir, Settings.FavoritesDir, true)) {
                 DirList_Fill(hwndLV,Path_Get(Settings.FavoritesDir),DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
@@ -2113,8 +2118,8 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
 {
-    WCHAR szDisplayName[INTERNET_MAX_URL_LENGTH];
-    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hTargetPth, L"");
+    WCHAR szDisplayName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
+    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hTargetPth, NULL, true);
 
 	INT_PTR const iResult = ThemedDialogBoxParam(
         Globals.hLngResContainer,
@@ -2224,7 +2229,6 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
 	return 0;
 }
 
-#define IDC_FILEMRU_UPDATE_VIEW (WM_USER+1)
 
 static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
@@ -4053,11 +4057,11 @@ bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 //
 //  WarnIndentationDlgProc()
 //
-//
 static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (umsg) {
 	case WM_INITDIALOG: {
+
 		SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
 
 		SetDialogIconNP3(hwnd);
@@ -4199,6 +4203,177 @@ bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 							WarnIndentationDlgProc,
 							(LPARAM)fioStatus);
 	return (iResult == IDOK);
+}
+
+
+
+//=============================================================================
+//
+//  AutoSaveBackupSettingsDlgProc()
+//
+static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+
+    switch (umsg) {
+    case WM_INITDIALOG: {
+
+		//SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+
+        SetDialogIconNP3(hwnd);
+        InitWindowCommon(hwnd, true);
+
+#ifdef D_NP3_WIN10_DARK_MODE
+        if (UseDarkMode()) {
+            SetExplorerTheme(GetDlgItem(hwnd, IDOK));
+            SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
+            SetExplorerTheme(GetDlgItem(hwnd, IDC_AS_BACKUP_OPENFOLDER));
+            //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
+            int const ctl[] = { IDC_AUTOSAVE_ENABLE, IDC_AUTOSAVE_INTERVAL, IDC_AUTOSAVE_SUSPEND, IDC_AUTOSAVE_SHUTDOWN,
+                IDC_AS_BACKUP_ENABLE, IDC_AS_BACKUP_AUTOSAVE, IDC_AS_BACKUP_SIDEBYSIDE, IDC_STATIC, IDC_STATIC2, IDC_STATIC3 };
+            for (int i = 0; i < COUNTOF(ctl); ++i) {
+                SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+            }
+        }
+#endif
+
+        CheckDlgButton(hwnd, IDC_AUTOSAVE_ENABLE, SetBtn(Settings.AutoSaveOptions & ASB_Periodic));
+        CheckDlgButton(hwnd, IDC_AUTOSAVE_SUSPEND, SetBtn(Settings.AutoSaveOptions & ASB_Suspend));
+        CheckDlgButton(hwnd, IDC_AUTOSAVE_SHUTDOWN, SetBtn(Settings.AutoSaveOptions & ASB_Shutdown));
+
+        DialogEnableControl(hwnd, IDC_STATIC2, IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE));
+        DialogEnableControl(hwnd, IDC_AUTOSAVE_INTERVAL, IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE));
+
+        CheckDlgButton(hwnd, IDC_AS_BACKUP_ENABLE, SetBtn(Settings.AutoSaveOptions & ASB_Backup));
+        CheckDlgButton(hwnd, IDC_AS_BACKUP_AUTOSAVE, SetBtn(Settings.AutoSaveOptions & ASB_OnAutoSave));
+        CheckDlgButton(hwnd, IDC_AS_BACKUP_SIDEBYSIDE, SetBtn(Settings.AutoSaveOptions & ASB_SideBySide));
+
+        DialogEnableControl(hwnd, IDC_AS_BACKUP_AUTOSAVE, IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE));
+        DialogEnableControl(hwnd, IDC_AS_BACKUP_SIDEBYSIDE, IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE));
+        DialogEnableControl(hwnd, IDC_AS_BACKUP_OPENFOLDER, IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE));
+
+        WCHAR      wch[32];
+        const UINT seconds = Settings.AutoSaveInterval / 1000;
+        const UINT milliseconds = Settings.AutoSaveInterval % 1000;
+        if (milliseconds) {
+            StringCchPrintf(wch, COUNTOF(wch), L"%u.%03u", seconds, milliseconds);
+        }
+        else {
+            StringCchPrintf(wch, COUNTOF(wch), L"%u", seconds);
+        }
+        SetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch);
+
+		CenterDlgInParent(hwnd, NULL);
+    }
+    return TRUE;
+
+
+#ifdef D_NP3_WIN10_DARK_MODE
+
+    CASE_WM_CTLCOLOR_SET:
+        return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
+        break;
+
+    case WM_SETTINGCHANGE:
+        if (IsDarkModeSupported() && IsColorSchemeChangeMessage(lParam)) {
+            SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        }
+        break;
+
+    case WM_THEMECHANGED:
+        if (IsDarkModeSupported()) {
+            bool const darkModeEnabled = CheckDarkModeEnabled();
+            AllowDarkModeForWindowEx(hwnd, darkModeEnabled);
+            RefreshTitleBarThemeColor(hwnd);
+
+            int const buttons[] = { IDOK, IDCANCEL, IDC_AS_BACKUP_OPENFOLDER };
+            for (int id = 0; id < COUNTOF(buttons); ++id) {
+                HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+                AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
+                SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
+            }
+            UpdateWindowEx(hwnd);
+        }
+        break;
+
+#endif
+
+
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case IDOK: {
+            AutoSaveBackupOptions options = ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE) ? ASB_Periodic : ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AUTOSAVE_SUSPEND) ? ASB_Suspend : ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AUTOSAVE_SHUTDOWN) ? ASB_Shutdown : ASB_None;
+
+            options |= IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE) ? ASB_Backup : ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AS_BACKUP_SIDEBYSIDE) ? ASB_OnAutoSave : ASB_None;
+            options |= IsButtonChecked(hwnd, IDC_AS_BACKUP_SIDEBYSIDE) ? ASB_SideBySide : ASB_None;
+
+            Settings.AutoSaveOptions = options;
+
+            char chInterval[32];
+            GetDlgItemTextA(hwnd, IDC_AUTOSAVE_INTERVAL, chInterval, COUNTOF(chInterval));
+            te_xint_t iExprErr = true;
+            float     interval = (float)te_interp(chInterval, &iExprErr);
+            if (iExprErr) {
+                WCHAR wch[32];
+                GetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch, COUNTOF(wch));
+                StrToFloat(wch, &interval);
+            }
+            Settings.AutoSaveInterval = clampi(float2int(interval * 1000.0f), 2000, USER_TIMER_MAXIMUM);
+            EndDialog(hwnd, IDOK);
+        } break;
+
+        case IDC_AS_BACKUP_OPENFOLDER: {
+            WCHAR szTitle[SMALL_BUFFER] = { L'\0' };
+            GetLngString(IDS_MUI_FAVORITES, szTitle, COUNTOF(szTitle));
+            HPATHL hdir_pth = Path_Allocate(NULL);
+            if (Path_BrowseDirectory(hwnd, szTitle, hdir_pth, Paths.WorkingDirectory, true)) {
+                InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_LOADFILE, Path_Get(hdir_pth));
+                // change dir
+            }
+            //if (GetFolderDlg(Globals.hwndMain, hdir_pth, Paths.WorkingDirectory, true)) {
+            //    InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_LOADFILE, Path_Get(hdir_pth));
+            //}
+            Path_Release(hdir_pth);
+        } break;
+
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+
+        case IDC_AUTOSAVE_ENABLE:
+            DialogEnableControl(hwnd, IDC_STATIC2, IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE));
+            DialogEnableControl(hwnd, IDC_AUTOSAVE_INTERVAL, IsButtonChecked(hwnd, IDC_AUTOSAVE_ENABLE));
+            break;
+
+        case IDC_AS_BACKUP_ENABLE:
+            DialogEnableControl(hwnd, IDC_AS_BACKUP_AUTOSAVE, IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE));
+            DialogEnableControl(hwnd, IDC_AS_BACKUP_SIDEBYSIDE, IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE));
+            DialogEnableControl(hwnd, IDC_AS_BACKUP_OPENFOLDER, IsButtonChecked(hwnd, IDC_AS_BACKUP_ENABLE));
+            break;
+
+        default:
+            return FALSE;
+        }
+        return TRUE;
+
+    }
+    return FALSE;
+}
+
+
+bool AutoSaveBackupSettingsDlg(HWND hwnd)
+{
+    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+        MAKEINTRESOURCE(IDD_MUI_AUTOSAVE_BACKUP),
+        hwnd, 
+        AutoSaveBackupSettingsDlgProc,
+        0);
+
+    return (iResult == IDOK);
 }
 
 
@@ -4487,7 +4662,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi)
 {
-    if (bSaveOnRunTools && !FileSave(FSF_Default | FSF_Ask)) {
+    if (bSaveOnRunTools && !FileSave(FSF_Ask)) {
 		return;
 	}
     WCHAR wch[80] = { L'\0' };
@@ -4969,7 +5144,7 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 		if (iFormat < 2) {
 			if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory) != 0) {
 				Path_Reset(s_pthCachedFilePath, Path_Get(pthFilePath));
-				Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled);
+                Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled, true);
 			}
 			StringCchCat(szTitle, COUNTOF(szTitle), Path_FindFileName(s_pthCachedFilePath));
 			if (iFormat == 1) {
@@ -4987,7 +5162,7 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 		}
 	} else {
 		Path_Empty(s_pthCachedFilePath, false);
-		StringCchCopy(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), L"");
+        s_wchCachedDisplayName[0] = L'\0';
 		StringCchCat(szTitle, COUNTOF(szTitle), s_szUntitled);
 	}
 
@@ -6378,7 +6553,6 @@ INT_PTR CALLBACK ColorDialogHookProc(
 }
 
 
-
 //=============================================================================
 //
 //  CleanupDlgResources()
@@ -6392,6 +6566,233 @@ void CleanupDlgResources()
         Path_Release(s_pthCachedFilePath);
     }
 }
+
+
+//=============================================================================
+//
+//  _CanonicalizeInitialDir()  TODO: use Path_NormalizeEx() here ?
+//
+static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
+{
+    if (Path_IsEmpty(hpth_in_out)) {
+
+        if (Path_IsNotEmpty(Paths.CurrentFile)) {
+            Path_Reset(hpth_in_out, Path_Get(Paths.CurrentFile));
+            Path_RemoveFileSpec(hpth_in_out);
+        }
+        else if (Path_IsNotEmpty(Settings2.DefaultDirectory)) {
+            Path_Reset(hpth_in_out, Path_Get(Settings2.DefaultDirectory));
+        }
+        else {
+            Path_Reset(hpth_in_out, Path_Get(Paths.WorkingDirectory));
+        }
+        Path_CanonicalizeEx(hpth_in_out);
+    }
+    else { // Path_IsNotEmpty(hpth_in_out)
+
+        if (Path_IsRelative(hpth_in_out)) {
+            Path_AbsoluteFromApp(hpth_in_out, true);
+            //~ already Path_CanonicalizeEx(hpth_in_out);
+        }
+        else {
+            Path_CanonicalizeEx(hpth_in_out);
+        }
+        if (!Path_IsExistingDirectory(hpth_in_out)) {
+            Path_RemoveFileSpec(hpth_in_out);
+        }
+    }
+    // finally: directory exists ?
+    if (!Path_IsExistingDirectory(hpth_in_out)) {
+        Path_Empty(hpth_in_out, false);
+    }
+}
+
+
+#if 0
+// ============================================================================
+//
+//  GetFolderDlg()
+//  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
+//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
+//
+bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth, bool bSelect)
+{
+    if (!hdir_pth_io) {
+        return false;
+    }
+
+    HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
+    _CanonicalizeInitialDir(hpth_dir);
+
+    LPCWSTR inidirBuf = NULL;
+    DWORD dwAttributes = Path_GetFileAttributes(hpth_dir);
+    if (bSelect || (dwAttributes == INVALID_FILE_ATTRIBUTES) || !(dwAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+        Path_RemoveFileSpec(hpth_dir);
+    }
+    if (bSelect && (dwAttributes != INVALID_FILE_ATTRIBUTES)) {
+        // if File is root, open the volume instead of open My Computer and select the volume
+        if ((dwAttributes & FILE_ATTRIBUTE_DIRECTORY) && Path_IsRoot(hpth_dir)) {
+            bSelect = false;
+        }
+        else {
+            inidirBuf = Path_Get(hinidir_pth);
+        }
+    }
+    dwAttributes = Path_GetFileAttributes(hpth_dir);
+    if ((dwAttributes == INVALID_FILE_ATTRIBUTES) || !(dwAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+        return false;
+    }
+
+    Path_Swap(hdir_pth_io, hpth_dir);
+    Path_Release(hpth_dir);
+
+    HRESULT hr = S_FALSE;
+    PIDLIST_ABSOLUTE pidl = ILCreateFromPath(Path_WriteAccessBuf(hdir_pth_io, PATHLONG_MAX_CCH));
+    if (pidl) {
+        PIDLIST_ABSOLUTE pidlEntry = inidirBuf ? ILCreateFromPath(inidirBuf) : NULL;
+        if (pidlEntry) {
+            hr = SHOpenFolderAndSelectItems(pidl, 1, (PCUITEMID_CHILD_ARRAY)(&pidlEntry), 0);
+            CoTaskMemFree((LPVOID)pidlEntry);
+        }
+        else if (!bSelect) {
+#if 0
+			// Use an invalid item to open the folder?
+			hr = SHOpenFolderAndSelectItems(pidl, 1, (LPCITEMIDLIST *)(&pidl), 0);
+#else
+            SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+            sei.fMask = SEE_MASK_IDLIST;
+            sei.hwnd = hwnd;
+            //~sei.lpVerb = L"explore";
+            sei.lpVerb = L"open";
+            sei.lpIDList = (void*)pidl;
+            sei.nShow = SW_SHOW;
+
+            const BOOL result = ShellExecuteEx(&sei);
+            hr = result ? S_OK : S_FALSE;
+#endif
+        }
+        else {
+            // open parent folder and select the folder
+            hr = SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
+        }
+        CoTaskMemFree((LPVOID)pidl);
+    }
+
+    Path_Sanitize(hdir_pth_io);
+    Path_FreeExtra(hdir_pth_io, MAX_PATH_EXPLICIT);
+
+    if (hr == S_OK) {
+        return true;
+    }
+
+#if 0
+	if (path == NULL) {
+		path = wchDirectory;
+	}
+
+	// open a new explorer window every time
+	LPWSTR szParameters = (LPWSTR)NP2HeapAlloc((lstrlen(path) + 64) * sizeof(WCHAR));
+	lstrcpy(szParameters, bSelect ? L"/select," : L"");
+	lstrcat(szParameters, L"\"");
+	lstrcat(szParameters, path);
+	lstrcat(szParameters, L"\"");
+	ShellExecute(hwnd, L"open", L"explorer", szParameters, NULL, SW_SHOW);
+	NP2HeapFree(szParameters);
+#endif
+    return false;
+}
+#endif
+
+
+// ============================================================================
+//
+//  OpenFileDlg()
+//  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
+//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
+//
+// TODO: Replace GetOpenFileNameW() by Common Item Dialog: IFileOpenDialog()
+//       https://docs.microsoft.com/en-us/windows/win32/shell/common-file-dialog
+//
+bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
+{
+    if (!hfile_pth_io) {
+        return false;
+    }
+
+    WCHAR szDefExt[64] = { L'\0' };
+    WCHAR szFilter[EXTENTIONS_FILTER_BUFFER];
+    Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
+
+    HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
+    _CanonicalizeInitialDir(hpth_dir);
+
+    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
+    ofn.hwndOwner = hwnd;
+    ofn.hInstance = Globals.hInstance;
+    ofn.lpstrFilter = szFilter;
+    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
+    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
+    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
+    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
+    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
+                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
+                OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
+    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+
+    bool const res = GetOpenFileNameW(&ofn);
+
+    Path_Sanitize(hfile_pth_io);
+
+    Path_Release(hpth_dir);
+    Path_FreeExtra(hfile_pth_io, MAX_PATH_EXPLICIT);
+
+    return res;
+}
+
+// ============================================================================
+//
+//  SaveFileDlg()
+//  lpstrInitialDir == NULL      : leave initial dir to Save File Explorer
+//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
+//
+bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
+{
+    if (!hfile_pth_io) {
+        return false;
+    }
+
+    WCHAR szDefExt[64] = { L'\0' };
+    WCHAR szFilter[EXTENTIONS_FILTER_BUFFER];
+    Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
+
+    HPATHL hpth_dir = Path_Copy(hinidir_pth);
+    _CanonicalizeInitialDir(hpth_dir);
+
+    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
+    ofn.hwndOwner = hwnd;
+    ofn.hInstance = Globals.hInstance;
+    ofn.lpstrFilter = szFilter;
+    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
+    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
+    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
+    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
+    ofn.Flags = OFN_EXPLORER | OFN_HIDEREADONLY | /*| OFN_NOCHANGEDIR*/
+                /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
+                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
+    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+
+    bool const res = GetSaveFileNameW(&ofn);
+
+    Path_Sanitize(hfile_pth_io);
+
+    Path_Release(hpth_dir);
+    Path_FreeExtra(hfile_pth_io, MAX_PATH_EXPLICIT);
+
+    return res;
+}
+
+
+
 
 
 #if FALSE

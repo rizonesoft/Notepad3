@@ -321,10 +321,12 @@ Cleanup:
 
     if (pbSource) {
         FreeMem(pbSource);
+        pbSource = NULL;
     }
 
     if (pbTarget) {
         FreeMem(pbTarget);
+        pbTarget = NULL;
     }
 
     if (fResult == FALSE) {
@@ -605,32 +607,41 @@ Cleanup: /* CLEANUP */
 
     if (tb) {
         FreeMem(tb);
+        tb = NULL;
     }
 
     if (h_weight) {
         FreeMem(h_weight);
+        h_weight = NULL;
     }
     if (h_pixel) {
         FreeMem(h_pixel);
+        h_pixel = NULL;
     }
     if (h_count) {
         FreeMem(h_count);
+        h_count = NULL;
     }
     if (h_wsum) {
         FreeMem(h_wsum);
+        h_wsum = NULL;
     }
 
     if (v_weight) {
         FreeMem(v_weight);
+        v_weight = NULL;
     }
     if (v_pixel) {
         FreeMem(v_pixel);
+        v_pixel = NULL;
     }
     if (v_count) {
         FreeMem(v_count);
+        v_count = NULL;
     }
     if (v_wsum) {
         FreeMem(v_wsum);
+        v_wsum = NULL;
     }
 
     return fSuccess;

@@ -453,47 +453,47 @@ BEGIN
         END
     POPUP "&Ustawienia"
     BEGIN
-        MENUITEM "Wstaw spację zamiast tabulacji",                  IDM_VIEW_TABSASSPACES
-        MENUITEM "&Ustawienia tabulatora...\tCtrl+T",               IDM_VIEW_TABSETTINGS
-        MENUITEM "&Ustawienia zawijania wierszy...",                IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Ustawienia długości wierszy...",                 IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Automatyczne wcięcie",                            IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Automatyczne zamykanie &HTML/XML\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "A&utouzupełnianie wyrazów",                       IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Autouzupełnianie Lekserem",                       IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Wstaw spację zamiast tabulacji",                  IDM_SET_TABSASSPACES
+        MENUITEM "&Ustawienia tabulatora...\tCtrl+T",               IDM_SET_TABSETTINGS
+        MENUITEM "&Ustawienia zawijania wierszy...",                IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "&Ustawienia długości wierszy...",                 IDM_SET_LONGLINESETTINGS
+        MENUITEM "Automatyczne wcięcie",                            IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Automatyczne zamykanie &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
+        MENUITEM "A&utouzupełnianie wyrazów",                       IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Autouzupełnianie Lekserem",                       IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Tylko jedna istancja pliku",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Tylko jedna istancja pliku",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Funkcja klawisza Esc"
         BEGIN
-            MENUITEM "Żadna",                                       IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimalizuj Notepad3",                       IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Zamknij Notepad3",                            IDM_VIEW_ESCEXIT
+            MENUITEM "Żadna",                                       IDM_SET_NOESCFUNC
+            MENUITEM "&Minimalizuj Notepad3",                       IDM_SET_ESCMINIMIZE
+            MENUITEM "Zamknij Notepad3",                            IDM_SET_ESCEXIT
         END
-        MENUITEM "Zapisz przed uruchomieniem narzędzi",             IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Przelicz niewielkie wyrażenia",                   IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Zapisz przed uruchomieniem narzędzi",             IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Przelicz niewielkie wyrażenia",                   IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Zapamiętaj"
         BEGIN
-            MENUITEM "Zapamiętaj ostatnie pliki",                   IDM_VIEW_NOSAVERECENT
-            MENUITEM "Zachowaj pozycję znaku wstawienia",           IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Zapamiętaj wzór wyszukiwania",                IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Zapamiętaj ostatnie pliki",                   IDM_SET_NOSAVERECENT
+            MENUITEM "Zachowaj pozycję znaku wstawienia",           IDM_SET_NOPRESERVECARET
+            MENUITEM "Zapamiętaj wzór wyszukiwania",                IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Okno"
         BEGIN
             POPUP "Wyświetlenie tytułu okna"
             BEGIN
-                MENUITEM "Tylko nazwa pliku",                       IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Nazwa pliku i katalog",                   IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Pełna ścieżka",                           IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Fragment tekstu\tCtrl+9",                IDM_VIEW_SHOWEXCERPT
+                MENUITEM "Tylko nazwa pliku",                       IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Nazwa pliku i katalog",                   IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Pełna ścieżka",                           IDM_SET_SHOWFULLPATH
+                MENUITEM "&Fragment tekstu\tCtrl+9",                IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Użyj ponownie okna\tCtrl+Shift+L",           IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Zawsze na wierzchu\tAlt+T",                  IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimalizuj do zasobnika systemowego",        IDM_VIEW_MINTOTRAY
-            MENUITEM "Tryb przeźroczystości\tAlt+G",                IDM_VIEW_TRANSPARENT
+            MENUITEM "&Użyj ponownie okna\tCtrl+Shift+L",           IDM_SET_REUSEWINDOW
+            MENUITEM "&Zawsze na wierzchu\tAlt+T",                  IDM_SET_ALWAYSONTOP
+            MENUITEM "Minimalizuj do zasobnika systemowego",        IDM_SET_MINTOTRAY
+            MENUITEM "Tryb przeźroczystości\tAlt+G",                IDM_SET_TRANSPARENT
         END
         POPUP "Tech&nologia"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "&Konfiguracja zaawansowana"
         BEGIN
-            MENUITEM "Zapisz ustawienia przed wyjściem",       IDM_VIEW_SAVESETTINGS
-            MENUITEM "Zapisz ustawienia teraz\tF7",            IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Zapisz ustawienia przed wyjściem",       IDM_SET_SAVESETTINGS
+            MENUITEM "Zapisz ustawienia teraz\tF7",            IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Otwórz plik ustawień\tCtrl+F7",         CMD_OPENINIFILE
         END
     END

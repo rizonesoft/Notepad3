@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "설정(&S)"
     BEGIN
-        MENUITEM "탭을 공백으로 삽입(&S)",                   IDM_VIEW_TABSASSPACES
-        MENUITEM "탭 설정(&T)...\tCtrl+T",                  IDM_VIEW_TABSETTINGS
-        MENUITEM "줄 바꿈 설정(&W)...",                     IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "긴 줄 설정(&O)...",                  IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "텍스트 자동 들여쓰기(&D)",                       IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "HTML/XML 자동 닫기(&H)\tCtrl+Shift+H",    IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "단어 자동 완성(&U)",                      IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "어휘 자동 완성(&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "가속화된 단어 탐색(&G)\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
+        MENUITEM "탭을 공백으로 삽입(&S)",                   IDM_SET_TABSASSPACES
+        MENUITEM "탭 설정(&T)...\tCtrl+T",                  IDM_SET_TABSETTINGS
+        MENUITEM "줄 바꿈 설정(&W)...",                     IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "긴 줄 설정(&O)...",                  IDM_SET_LONGLINESETTINGS
+        MENUITEM "텍스트 자동 들여쓰기(&D)",                       IDM_SET_AUTOINDENTTEXT
+        MENUITEM "HTML/XML 자동 닫기(&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
+        MENUITEM "단어 자동 완성(&U)",                      IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "어휘 자동 완성(&K)",           IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "가속화된 단어 탐색(&G)\tCtrl+Alt+A",          IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "파일당 하나의 인스턴스만(&F)",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "파일 변경 알림(&C)...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY
-        MENUITEM "메시지 경고음 음소거(&M)",                  IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "파일당 하나의 인스턴스만(&F)",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "파일 변경 알림(&C)...\tAlt+F5",           IDM_SET_CHANGENOTIFY
+        MENUITEM "메시지 경고음 음소거(&M)",                  IDM_SET_MUTE_MESSAGEBEEP
         POPUP "ESC 키 기능(&E)"
         BEGIN
-            MENUITEM "없음(&N)",                      IDM_VIEW_NOESCFUNC
-            MENUITEM "Notepad3 최소화(&M)",                IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Notepad3 종료(&X)",                  IDM_VIEW_ESCEXIT
+            MENUITEM "없음(&N)",                      IDM_SET_NOESCFUNC
+            MENUITEM "Notepad3 최소화(&M)",                IDM_SET_ESCMINIMIZE
+            MENUITEM "Notepad3 종료(&X)",                  IDM_SET_ESCEXIT
         END
-        MENUITEM "도구 실행 전에 저장(&B)",                 IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "작은 표현식 계산",           IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "도구 실행 전에 저장(&B)",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "작은 표현식 계산",           IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
         BEGIN
-            MENUITEM "최근 파일 기억(&R)",               IDM_VIEW_NOSAVERECENT
-            MENUITEM "탈자 기호 위치 유지(&C)",                 IDM_VIEW_NOPRESERVECARET
-            MENUITEM "검색 패턴 기억(&S)",               IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "최근 파일 기억(&R)",               IDM_SET_NOSAVERECENT
+            MENUITEM "탈자 기호 위치 유지(&C)",                 IDM_SET_NOPRESERVECARET
+            MENUITEM "검색 패턴 기억(&S)",               IDM_SET_NOSAVEFINDREPL
         END
         POPUP "창(&I)"
         BEGIN
             POPUP "창 제목 표시(&W)"
             BEGIN
-                MENUITEM "파일 이름만(&F)",                 IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "파일 이름 및 디렉터리(&D)",        IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "전체 경로(&P)",                   IDM_VIEW_SHOWFULLPATH
-                MENUITEM "텍스트 발췌(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
+                MENUITEM "파일 이름만(&F)",                 IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "파일 이름 및 디렉터리(&D)",        IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "전체 경로(&P)",                   IDM_SET_SHOWFULLPATH
+                MENUITEM "텍스트 발췌(&T)\tCtrl+9",           IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "창 재사용(&R)\tCtrl+Shift+L",      IDM_VIEW_REUSEWINDOW
-            MENUITEM "항상 맨 위에(&A)\tAlt+T",                IDM_VIEW_ALWAYSONTOP
-            MENUITEM "트레이로 최소화(&M)",                  IDM_VIEW_MINTOTRAY
-            MENUITEM "투명 모드(&T)\tAlt+G",                IDM_VIEW_TRANSPARENT
+            MENUITEM "창 재사용(&R)\tCtrl+Shift+L",      IDM_SET_REUSEWINDOW
+            MENUITEM "항상 맨 위에(&A)\tAlt+T",                IDM_SET_ALWAYSONTOP
+            MENUITEM "트레이로 최소화(&M)",                  IDM_SET_MINTOTRAY
+            MENUITEM "투명 모드(&T)\tAlt+G",                IDM_SET_TRANSPARENT
         END
         POPUP "기술(&N)"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "고급 구성(&A)"
         BEGIN
-            MENUITEM "종료시 설정 저장(&X)",              IDM_VIEW_SAVESETTINGS
-            MENUITEM "지금 설정 저장(&N)\tF7",             IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "종료시 설정 저장(&X)",              IDM_SET_SAVESETTINGS
+            MENUITEM "지금 설정 저장(&N)\tF7",             IDM_SET_SAVESETTINGSNOW
             MENUITEM "설정 파일 열기(&O)\tCtrl+F7",        CMD_OPENINIFILE
         END
     END

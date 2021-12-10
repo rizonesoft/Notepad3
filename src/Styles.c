@@ -1186,7 +1186,7 @@ bool Style_ExportToFile(const HPATHL hpath, bool bForceAll)
         if (Path_IsNotEmpty(hpth_tmp)) {
             if (!Path_IsExistingFile(hpth_tmp)) {
                 HANDLE hFile = CreateFile(Path_Get(hpth_tmp),
-                                          GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                                          GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
                 if (IS_VALID_HANDLE(hFile)) {
                     CloseHandle(hFile); // done
@@ -2387,7 +2387,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
         if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CONSTSTRGLEN(L"cgi")) == 0 ||
                                   StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CONSTSTRGLEN(L"fcgi")) == 0)) {
             char tchText[256] = { '\0' };
-            SciCall_GetText(COUNTOF(tchText), tchText);
+            SciCall_GetText(COUNTOF(tchText) - 1, tchText);
             StrTrimA(tchText," \t\n\r");
             pLexSniffed = Style_SniffShebang(tchText);
             if (pLexSniffed) {
@@ -2434,7 +2434,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
 
         if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
             char tchText[256] = { '\0' };
-            SciCall_GetText(COUNTOF(tchText), tchText);
+            SciCall_GetText(COUNTOF(tchText) - 1, tchText);
             StrTrimA(tchText," \t\n\r");
             pLexSniffed = Style_SniffShebang(tchText);
             if (pLexSniffed) {
@@ -2455,7 +2455,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
 
     if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
         char tchText[512] = { '\0' };
-        SciCall_GetText(COUNTOF(tchText), tchText);
+        SciCall_GetText(COUNTOF(tchText) - 1, tchText);
         StrTrimA(tchText," \t\n\r");
         if (!Flags.NoCGIGuess) {
             if (tchText[0] == '<') {
@@ -2500,7 +2500,7 @@ bool Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath)
     UNREFERENCED_PARAMETER(lpszFile);
 #else
     unsigned char buf[5] = { '\0' }; // magic
-    SciCall_GetText(COUNTOF(buf), (char*)buf);
+    SciCall_GetText(COUNTOF(buf) - 1, (char*)buf);
     UINT const magic2 = (buf[0] << 8) | buf[1];
     if (magic2 == 0x4D5AU ||  // PE: MZ
             magic2 == 0x504BU ||    // ZIP: PK
@@ -2995,7 +2995,7 @@ bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
         TrimSpcW(tch);
 
         float fValue = 0.0;
-        if (Char2Float(tch, &fValue)) {
+        if (StrToFloat(tch, &fValue)) {
             if (fSign != 0) {
                 // relative size calculation
                 float const base = *f; // base is input
@@ -3027,11 +3027,11 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle, LPWSTR lpszSize, int cchSize)
         TrimSpcW(tch);
 
         float fValue = 0.0f;
-        if (Char2Float(tch, &fValue)) {
+        if (StrToFloat(tch, &fValue)) {
             WCHAR wchFloatVal[64];
             fValue = (float)fabs(fValue);
             bool const isZero = (fValue == 0.0f);
-            Float2String(fValue, wchFloatVal, COUNTOF(wchFloatVal));
+            FloatToStr(fValue, wchFloatVal, COUNTOF(wchFloatVal));
 
             if (tch[0] == L'+') {
                 if (!isZero) {
@@ -3069,16 +3069,16 @@ void Style_AppendSizeAttribute(LPWSTR lpszSize, int cchSize, const float fFontSi
         float const fRelSize = (fFontSize - fBaseFontSize);
 
         if (fRelSize >= 0.0f) {
-            Float2String(fRelSize, tch, COUNTOF(tch));
+            FloatToStr(fRelSize, tch, COUNTOF(tch));
             StringCchPrintf(newSize, COUNTOF(newSize), L"; size:+%s", tch);
         } else {
-            Float2String((0.0f - fRelSize), tch, COUNTOF(tch));
+            FloatToStr((0.0f - fRelSize), tch, COUNTOF(tch));
             StringCchPrintf(newSize, COUNTOF(newSize), L"; size:-%s", tch);
         }
 
     } else { // absolute size
 
-        Float2String(fFontSize, tch, COUNTOF(tch));
+        FloatToStr(fFontSize, tch, COUNTOF(tch));
         StringCchPrintf(newSize, COUNTOF(newSize), L"; size:%s", tch);
     }
 

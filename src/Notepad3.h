@@ -88,13 +88,15 @@ typedef enum {
 
 
 //==== Notifications ==========================================================
-#define WM_TRAYMESSAGE         WM_USER          // Callback Message from System Tray
-#define WM_FILECHANGEDNOTIFY  (WM_USER+1)       // Change Notifications
-//#define WM_CHANGENOTIFYCLEAR (WM_USER+2)
+#define WM_TRAYMESSAGE           (WM_USER+1)       // Callback Message from System Tray
+#define WM_FILECHANGEDNOTIFY     (WM_USER+2)       // Change Notifications
+#define IDC_FILEMRU_UPDATE_VIEW  (WM_USER+3)
+//#define WM_CHANGENOTIFYCLEAR     (WM_USER+4)
 
 //==== Timer ==================================================================
 #define ID_WATCHTIMER       (0xA000)        // File Watching
 #define ID_PASTEBOARDTIMER  (0xA001)        // Paste Board
+#define ID_AUTOSAVETIMER    (0xA002)        // Paste Board
 
 
 //==== Reuse Window Lock Timeout ==============================================
@@ -105,6 +107,7 @@ typedef enum {
 bool InitApplication(const HINSTANCE hInstance);
 //~bool InitToolbarWndClass(const HINSTANCE hInstance);
 HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
+void CreateBars(HWND hwnd, HINSTANCE hInstance);
 WININFO GetFactoryDefaultWndPos(const int flagsPos);
 WININFO GetWinInfoByFlag(const int flagsPos);
 int  CountRunningInstances();
@@ -116,10 +119,8 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
 void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
-void InstallFileWatching(const bool bInstall);
-//bool GetDocModified();
+//bool IsDocumentModified(); -> inline static
 void SetSavePoint();
-void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 void ParseCommandLine();
 void ShowZoomCallTip();
@@ -160,10 +161,16 @@ bool FileSave(FileSaveFlags fSaveFlags);
 bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc);
 bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
             FileLoadFlags fLoadFlags, FileSaveFlags fSaveFlags, bool bSetSavePoint);
-bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
-bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 
-void CreateBars(HWND hwnd, HINSTANCE hInstance);
+void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+void          InstallFileWatching(const bool bInstall);
+
+void AutoSaveStart(bool bReset);
+void AutoSaveStop(bool bKeepBackup);
+void AutoSaveDoWork(bool bKeepBackup);
+void CALLBACK AutoSaveTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+
+//LPCWSTR BackupGetDefaultFolder(HPATHL hfile_pth_io);
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgCreate(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -190,34 +197,36 @@ LRESULT MsgNonClientAreaPaint(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
 // ----------------------------------------------------------------------------
 
-void IgnoreNotifyDocChangedEvent(const bool bStealthMode);
+void IgnoreNotifyDocChangedEvent(const SciEventMask evm);
 void ObserveNotifyDocChangedEvent();
 
 // ----------------------------------------------------------------------------
 
-#define DocChangeTransactionBegin()  __try { SciCall_BeginUndoAction(); IgnoreNotifyDocChangedEvent(false);
+// lean msg change notify
+#define DocChangeTransactionBegin()  __try { SciCall_BeginUndoAction(); IgnoreNotifyDocChangedEvent(EVM_Default);
 #define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); SciCall_EndUndoAction(); }
 
 // ----------------------------------------------------------------------------
 
-#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(true);
+// none msg change notify
+#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(EVM_None);
 #define EndUndoTransAction()    } __finally { ObserveNotifyDocChangedEvent(); EndUndoAction(_token_); } }
 
 // ----------------------------------------------------------------------------
 
-#define BeginWaitCursor(cond, text)           \
-    __try {                                   \
-        IgnoreNotifyDocChangedEvent(true);    \
-        if (cond) {                           \
-            SciCall_SetCursor(SC_CURSORWAIT); \
+#define BeginWaitCursor(cond, text)                                 \
+    __try {                                                         \
+        IgnoreNotifyDocChangedEvent(EVM_None);                      \
+        if (cond) {                                                 \
+            SciCall_SetCursor(SC_CURSORWAIT);                       \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
         }
 
-#define BeginWaitCursorUID(cond, uid)         \
-    __try {                                   \
-        IgnoreNotifyDocChangedEvent(true);    \
-        if (cond) {                           \
-            SciCall_SetCursor(SC_CURSORWAIT); \
+#define BeginWaitCursorUID(cond, uid)                          \
+    __try {                                                    \
+        IgnoreNotifyDocChangedEvent(EVM_None);    \
+        if (cond) {                                            \
+            SciCall_SetCursor(SC_CURSORWAIT);                  \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
         }
 

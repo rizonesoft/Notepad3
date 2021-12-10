@@ -383,6 +383,23 @@ typedef struct ENCLOSESELDATA {
 
 //=============================================================================
 
+typedef enum AutoSaveBackupOptions {
+
+    ASB_None       = 0,
+    ASB_Periodic   = 1 << 0,
+    ASB_Suspend    = 1 << 1,
+    ASB_Shutdown   = 1 << 2,
+
+    ASB_Backup     = 1 << 3,
+    ASB_OnAutoSave = 1 << 4,
+    ASB_SideBySide = 1 << 5,
+
+    ASB_Default = ASB_Suspend | ASB_Shutdown | ASB_SideBySide,
+
+} AutoSaveBackupOptions;
+
+//=============================================================================
+
 typedef struct CONSTANTS_T {
 
     int const          StdDefaultLexerID; // Pure Text Files
@@ -593,6 +610,8 @@ typedef struct SETTINGS_T {
     bool DialogsLayoutRTL;
     int  FocusViewMarkerMode;
     bool PreferredLocale4DateFmt;
+    int  AutoSaveInterval;
+    AutoSaveBackupOptions AutoSaveOptions;
 
 #ifdef D_NP3_WIN10_DARK_MODE
     bool WinThemeDarkMode;
@@ -755,7 +774,7 @@ extern FILEWATCHING_T FileWatching;
 
 typedef enum FileLoadFlags {
 
-    FLF_Default             = 0,
+    FLF_None                = 0,
     FLF_DontSave            = 1 << 0,
     FLF_New                 = 1 << 1,
     FLF_Reload              = 1 << 2,
@@ -767,15 +786,17 @@ typedef enum FileLoadFlags {
 
 typedef enum FileSaveFlags {
 
-    FSF_Default           = 0,
+    FSF_None              = 0,
     FSF_SaveAlways        = 1 << 0,
     FSF_Ask               = 1 << 1,
     FSF_SaveAs            = 1 << 2,
-    FSF_SaveCopy          = 1 << 3
+    FSF_SaveCopy          = 1 << 3,
+    FSF_EndSession        = 1 << 4
 
 } FileSaveFlags;
 
 //=============================================================================
+
 
 typedef enum INDENT_TYPE { I_TAB_LN = 0, I_SPC_LN = 1, I_MIX_LN = 2, I_TAB_MOD_X = 3, I_SPC_MOD_X = 4 } INDENT_TYPE;
 
@@ -829,16 +850,23 @@ typedef struct THEMEFILES {
 // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER,
 // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
 //
-///~ int const evtMask = SC_MODEVENTMASKALL; (!) - don't listen to all events (SC_MOD_CHANGESTYLE) => RECURSON!
+///~ int const evtMask = SC_MODEVENTMASKALL; (!) - don't listen to all events (SC_MOD_CHANGESTYLE) => RECURSION!
 ///~ SciCall_SetModEventMask(evtMask);
 ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE;
 /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
 //
-#define SCI_MODEVENTMASK_FULL (SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO \
-                               | SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE \
-                               | SC_MULTISTEPUNDOREDO | SC_LASTSTEPINUNDOREDO)
+typedef enum SciEventMask {
 
-#define SCI_MODEVENTMASK_NONE (SC_MOD_NONE)
+    EVM_None = SC_MOD_NONE,
+    //~EVM_All = SC_MODEVENTMASKALL ~ don't use
+    EVM_UndoRedo = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO \
+                   | SC_MULTILINEUNDOREDO | SC_MULTISTEPUNDOREDO | SC_LASTSTEPINUNDOREDO \
+                   | SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE,
+    EVM_Default = EVM_UndoRedo
+
+} SciEventMask;
+
+
 
 
 // from <wininet.h>

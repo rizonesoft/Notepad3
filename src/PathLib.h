@@ -94,6 +94,7 @@ void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length);
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
 inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty(hpth); };
+bool PTHAPI            Path_IsRoot(const HPATHL hpth);
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
 bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 
@@ -117,10 +118,10 @@ wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
-size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);
+size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);  // use only, if neccessary
 size_t PTHAPI          Path_GetLongPathNameEx(HPATHL hpth_in_out);
 
-void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl);
+void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl, bool bStripPath);
 bool PTHAPI            Path_GetLnkPath(const HPATHL hLnkFilePth, HPATHL hResPath_out);
 bool PTHAPI            Path_IsLnkFile(const HPATHL hpth);
 bool PTHAPI            Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);

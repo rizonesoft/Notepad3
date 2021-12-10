@@ -453,47 +453,47 @@ BEGIN
         END
     POPUP "&Instellingen"
     BEGIN
-        MENUITEM "Tabs als &spaties invoegen",                      IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tab-instellingen...\tCtrl+T",                    IDM_VIEW_TABSETTINGS
-        MENUITEM "&Instellingen voor regelterugloop...",            IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Lange regelinstellingen...",                     IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Te&kst automatisch inspringen",                   IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "&HTML/XML tags automatisch sluiten\tCtrl+Shift+H",	IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Sleutelwoorden &automatisch aanvullen",           IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "'Lexer' sleutelwoorden auto&matisch aanvullen",   IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Versnelde woordnavi&gatie\tCtrl+Alt+A",           IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Tabs als &spaties invoegen",                      IDM_SET_TABSASSPACES
+        MENUITEM "&Tab-instellingen...\tCtrl+T",                    IDM_SET_TABSETTINGS
+        MENUITEM "&Instellingen voor regelterugloop...",            IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "&Lange regelinstellingen...",                     IDM_SET_LONGLINESETTINGS
+        MENUITEM "Te&kst automatisch inspringen",                   IDM_SET_AUTOINDENTTEXT
+        MENUITEM "&HTML/XML tags automatisch sluiten\tCtrl+Shift+H",	IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Sleutelwoorden &automatisch aanvullen",           IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "'Lexer' sleutelwoorden auto&matisch aanvullen",   IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Versnelde woordnavi&gatie\tCtrl+Alt+A",           IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Slechts één instantie per &bestand",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Melding bij bestandswijziging...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Meldingen dempen",                               	IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Slechts één instantie per &bestand",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Melding bij bestandswijziging...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        MENUITEM "Meldingen dempen",                               	IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Functie Esc-&toets"
         BEGIN
-            MENUITEM "&Geen",                               		IDM_VIEW_NOESCFUNC
-            MENUITEM "Notepad3 &minimaliseren",                		IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Notepad3 a&fsluiten",                 		IDM_VIEW_ESCEXIT
+            MENUITEM "&Geen",                               		IDM_SET_NOESCFUNC
+            MENUITEM "Notepad3 &minimaliseren",                		IDM_SET_ESCMINIMIZE
+            MENUITEM "Notepad3 a&fsluiten",                 		IDM_SET_ESCEXIT
         END
-        MENUITEM "O&pslaan voor uitvoeren",                 		IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Tiny-E&xpressies berekenen",              		IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "O&pslaan voor uitvoeren",                 		IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Tiny-E&xpressies berekenen",              		IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Onthouden"
         BEGIN
-            MENUITEM "&Recente bestanden",          				IDM_VIEW_NOSAVERECENT
-            MENUITEM "Cursor&positie",             					IDM_VIEW_NOPRESERVECARET
-            MENUITEM "&Zoekpatroon",                				IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "&Recente bestanden",          				IDM_SET_NOSAVERECENT
+            MENUITEM "Cursor&positie",             					IDM_SET_NOPRESERVECARET
+            MENUITEM "&Zoekpatroon",                				IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Venster"
         BEGIN
             POPUP "Titelbalk"
             BEGIN
-                MENUITEM "&Alleen bestandsnaam",            		IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Bestandsnaam en map",             		IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Volledig &pad",              				IDM_VIEW_SHOWFULLPATH
-                MENUITEM "Tekst&fragment\tCtrl+9",      			IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Alleen bestandsnaam",            		IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Bestandsnaam en map",             		IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Volledig &pad",              				IDM_SET_SHOWFULLPATH
+                MENUITEM "Tekst&fragment\tCtrl+9",      			IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "Venster he&rgebruiken\tCtrl+Shift+L",   		IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Altijd bovenop\tAlt+T",              		IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimaliseren naar &taakbalk",         		IDM_VIEW_MINTOTRAY
-            MENUITEM "Transparante &modus\tAlt+G",          		IDM_VIEW_TRANSPARENT
+            MENUITEM "Venster he&rgebruiken\tCtrl+Shift+L",   		IDM_SET_REUSEWINDOW
+            MENUITEM "&Altijd bovenop\tAlt+T",              		IDM_SET_ALWAYSONTOP
+            MENUITEM "Minimaliseren naar &taakbalk",         		IDM_SET_MINTOTRAY
+            MENUITEM "Transparante &modus\tAlt+G",          		IDM_SET_TRANSPARENT
         END
         POPUP "Tech&nologie"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "&Geavanceerd"
         BEGIN
-            MENUITEM "Configuratie ops&laan bij afsluiten",        	IDM_VIEW_SAVESETTINGS
-            MENUITEM "Configuratie &nu opslaan\tF7",                IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Configuratie ops&laan bij afsluiten",        	IDM_SET_SAVESETTINGS
+            MENUITEM "Configuratie &nu opslaan\tF7",                IDM_SET_SAVESETTINGSNOW
             MENUITEM "Configuratiebestand &openen\tCtrl+F7",       	CMD_OPENINIFILE
         END
     END

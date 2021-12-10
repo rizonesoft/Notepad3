@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Beállítások"
     BEGIN
-        MENUITEM "Tabulátorok mint s&zóköz",                    IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tab beállítások...\tCtrl+T",                 IDM_VIEW_TABSETTINGS
-        MENUITEM "&Sortörés beállítások...",                    IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Hosszú sorok beállításai...",                IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "A&utomatikus behúzás",                        IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "HTML/&XML aut. lezárás\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Szó kie&gészítés",                            IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Lexer kul&csszavak kiegészítése",             IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "G&yorsított szó navigálás\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Tabulátorok mint s&zóköz",                    IDM_SET_TABSASSPACES
+        MENUITEM "&Tab beállítások...\tCtrl+T",                 IDM_SET_TABSETTINGS
+        MENUITEM "&Sortörés beállítások...",                    IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "&Hosszú sorok beállításai...",                IDM_SET_LONGLINESETTINGS
+        MENUITEM "A&utomatikus behúzás",                        IDM_SET_AUTOINDENTTEXT
+        MENUITEM "HTML/&XML aut. lezárás\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Szó kie&gészítés",                            IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Lexer kul&csszavak kiegészítése",             IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "G&yorsított szó navigálás\tCtrl+Alt+A",       IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Egy &példány fájlonként",                     IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
-        MENUITEM "&Üzenethang némítása",                        IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Egy &példány fájlonként",                     IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_SET_CHANGENOTIFY
+        MENUITEM "&Üzenethang némítása",                        IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc g&omb funkciója"
         BEGIN
-            MENUITEM "&Semmi",                       IDM_VIEW_NOESCFUNC
-            MENUITEM "Notepad&3 elrejtése",          IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Kilé&pés a Notepad3-ból",      IDM_VIEW_ESCEXIT
+            MENUITEM "&Semmi",                       IDM_SET_NOESCFUNC
+            MENUITEM "Notepad&3 elrejtése",          IDM_SET_ESCMINIMIZE
+            MENUITEM "Kilé&pés a Notepad3-ból",      IDM_SET_ESCEXIT
         END
-        MENUITEM "Eszközök &futtatása előtt mentés", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Mi&ni kifejezések kiszámítása",    IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Eszközök &futtatása előtt mentés", IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Mi&ni kifejezések kiszámítása",    IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Emlékezés"
         BEGIN
-            MENUITEM "&Legutóbbi fájlokra emlékezzen",  IDM_VIEW_NOSAVERECENT
-            MENUITEM "&Őrizze meg a kurzor pozícióját", IDM_VIEW_NOPRESERVECARET
-            MENUITEM "&Keresési mintákre emlékezzen",   IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "&Legutóbbi fájlokra emlékezzen",  IDM_SET_NOSAVERECENT
+            MENUITEM "&Őrizze meg a kurzor pozícióját", IDM_SET_NOPRESERVECARET
+            MENUITEM "&Keresési mintákre emlékezzen",   IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Ablak"
         BEGIN
             POPUP "Ablak &címsor megjelenítése"
             BEGIN
-                MENUITEM "C&sak a fájl neve",                 IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Fájlnév és kön&yvtár",              IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "&Teljes útvonal",                   IDM_VIEW_SHOWFULLPATH
-                MENUITEM "S&zöveg kivonat\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
+                MENUITEM "C&sak a fájl neve",                 IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Fájlnév és kön&yvtár",              IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "&Teljes útvonal",                   IDM_SET_SHOWFULLPATH
+                MENUITEM "S&zöveg kivonat\tCtrl+9",           IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Ablak újrahasznosítása\tCtrl+Shift+L", IDM_VIEW_REUSEWINDOW
-            MENUITEM "Mindig &felül\tAlt+T",                  IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Lekicsinyítés az &óra mellé",           IDM_VIEW_MINTOTRAY
-            MENUITEM "&Átlátszó mód\tAlt+G",                  IDM_VIEW_TRANSPARENT
+            MENUITEM "&Ablak újrahasznosítása\tCtrl+Shift+L", IDM_SET_REUSEWINDOW
+            MENUITEM "Mindig &felül\tAlt+T",                  IDM_SET_ALWAYSONTOP
+            MENUITEM "Lekicsinyítés az &óra mellé",           IDM_SET_MINTOTRAY
+            MENUITEM "&Átlátszó mód\tAlt+G",                  IDM_SET_TRANSPARENT
         END
         POPUP "Tech&nológia"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "&Haladó konfiguráció"
         BEGIN
-            MENUITEM "Beállítások mentése &kilépéskor",    IDM_VIEW_SAVESETTINGS
-            MENUITEM "Beállítások mentése &most\tF7",      IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Beállítások mentése &kilépéskor",    IDM_SET_SAVESETTINGS
+            MENUITEM "Beállítások mentése &most\tF7",      IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Beállításfájl megnyitása\tCtrl+F7", CMD_OPENINIFILE
         END
     END

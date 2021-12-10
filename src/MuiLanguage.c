@@ -499,10 +499,10 @@ bool InsertLanguageMenu(HMENU hMenuBar) {
     if (pos >= 0) {
         GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
         //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
-        bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
+        bool const res = InsertMenu(hMenuBar, IDM_SET_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
         GetLngString(IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
-        InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_STRING, (UINT_PTR)IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg);
-        InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
+        InsertMenu(hMenuBar, IDM_SET_TABSASSPACES, MF_BYCOMMAND | MF_STRING, (UINT_PTR)IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg);
+        InsertMenu(hMenuBar, IDM_SET_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
         return res;
     }
     return false;

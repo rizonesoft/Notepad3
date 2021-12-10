@@ -31,7 +31,7 @@ void EditSetNewText(HWND hwnd,const char* lpstrText, DocPosU lenText,bool);
 bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest);
 bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool bSupressWarning);
 bool EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
-size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength);
+size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchCount);
 char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
 void EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength);
 bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);

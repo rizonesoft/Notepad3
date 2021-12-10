@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Ρυθμίσεις"
     BEGIN
-        MENUITEM "Εισαγωγή στηλοθετών ως &κενά διαστήματα",         IDM_VIEW_TABSASSPACES
-        MENUITEM "Ρυθμίσεις &στηλοθέτη...\tCtrl+T",                 IDM_VIEW_TABSETTINGS
-        MENUITEM "Ρυθμίσεις αναδίπλωσης &λέξεων...",                IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Ρυθμίσεις &μεγάλης γραμμής...",                   IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Αυτόματη εσ&οχή κειμένου",                        IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Αυτόματο κλείσιμο Η&ΤΜL/XML\tCtrl+Shift+H",       IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Αυτόματη συμπλήρωση λέ&ξεων",                     IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Α&υτόμ. συμπλήρωση λέ&ξεων-κλειδιών του Lexer",   IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Ταχεία &περιήγηση λέξεων\tCtrl+Alt+A",            IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Εισαγωγή στηλοθετών ως &κενά διαστήματα",         IDM_SET_TABSASSPACES
+        MENUITEM "Ρυθμίσεις &στηλοθέτη...\tCtrl+T",                 IDM_SET_TABSETTINGS
+        MENUITEM "Ρυθμίσεις αναδίπλωσης &λέξεων...",                IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Ρυθμίσεις &μεγάλης γραμμής...",                   IDM_SET_LONGLINESETTINGS
+        MENUITEM "Αυτόματη εσ&οχή κειμένου",                        IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Αυτόματο κλείσιμο Η&ΤΜL/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Αυτόματη συμπλήρωση λέ&ξεων",                     IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Α&υτόμ. συμπλήρωση λέ&ξεων-κλειδιών του Lexer",   IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Ταχεία &περιήγηση λέξεων\tCtrl+Alt+A",            IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Μόνο μία παρουσία ανά &αρχείο",                   IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Ειδοποίηση μετα&βολής αρχείου...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Σίγαση ήχ&ων μηνύματος",                          IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Μόνο μία παρουσία ανά &αρχείο",                   IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Ειδοποίηση μετα&βολής αρχείου...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        MENUITEM "Σίγαση ήχ&ων μηνύματος",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Λειτουργία πλήκτρου &Εsc"
         BEGIN
-            MENUITEM "&Καμία",                                IDM_VIEW_NOESCFUNC
-            MENUITEM "&Ελαχιστοποίηση Notepad3",              IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Έ&ξοδος Notepad3",                      IDM_VIEW_ESCEXIT
+            MENUITEM "&Καμία",                                IDM_SET_NOESCFUNC
+            MENUITEM "&Ελαχιστοποίηση Notepad3",              IDM_SET_ESCMINIMIZE
+            MENUITEM "Έ&ξοδος Notepad3",                      IDM_SET_ESCEXIT
         END
-        MENUITEM "Αποθήκευση π&ριν την εκτέλεση εργαλείων",   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Υπολογισμός μικροσκοπικών εκ&φράσεων",      IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Αποθήκευση π&ριν την εκτέλεση εργαλείων",   IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Υπολογισμός μικροσκοπικών εκ&φράσεων",      IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Απομ&νημόνευση"
         BEGIN
-            MENUITEM "Απομνημόνευση &πρόσφατων αρχείων",     IDM_VIEW_NOSAVERECENT
-            MENUITEM "Απομνημόνευση θέσης &δρομέα",          IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Απομνημόνευση &μοτίβου αναζήτησης",    IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Απομνημόνευση &πρόσφατων αρχείων",     IDM_SET_NOSAVERECENT
+            MENUITEM "Απομνημόνευση θέσης &δρομέα",          IDM_SET_NOPRESERVECARET
+            MENUITEM "Απομνημόνευση &μοτίβου αναζήτησης",    IDM_SET_NOSAVEFINDREPL
         END
         POPUP "Παρά&θυρο"
         BEGIN
             POPUP "Ένδειξη τίτλου &παραθύρου"
             BEGIN
-                MENUITEM "Μόνο όν&ομα αρχείου",             IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Όνομα αρχείου και &κατάλογος",    IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Πλήρες όνομα &διαδρομής",         IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Απόσπασμα κειμένου\tCtrl+9",     IDM_VIEW_SHOWEXCERPT
+                MENUITEM "Μόνο όν&ομα αρχείου",             IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Όνομα αρχείου και &κατάλογος",    IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Πλήρες όνομα &διαδρομής",         IDM_SET_SHOWFULLPATH
+                MENUITEM "&Απόσπασμα κειμένου\tCtrl+9",     IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "Επα&ναχρησιμοποίηση παραθύρου\tCtrl+Shift+L",     IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Πάντα στην κορυφή\tAlt+T",                       IDM_VIEW_ALWAYSONTOP
-            MENUITEM "&Ελαχιστοποίηση στην περιοχή ειδοποιήσεων",       IDM_VIEW_MINTOTRAY
-            MENUITEM "Λειτουργία &διαφάνειας\tAlt+G",                   IDM_VIEW_TRANSPARENT
+            MENUITEM "Επα&ναχρησιμοποίηση παραθύρου\tCtrl+Shift+L",     IDM_SET_REUSEWINDOW
+            MENUITEM "&Πάντα στην κορυφή\tAlt+T",                       IDM_SET_ALWAYSONTOP
+            MENUITEM "&Ελαχιστοποίηση στην περιοχή ειδοποιήσεων",       IDM_SET_MINTOTRAY
+            MENUITEM "Λειτουργία &διαφάνειας\tAlt+G",                   IDM_SET_TRANSPARENT
         END
         POPUP "Τε&χνολογία"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "Προηγμένες ρυθμίσε&ις"
         BEGIN
-            MENUITEM "Αποθήκευση ρυθμίσεων στην έ&ξοδο",       IDM_VIEW_SAVESETTINGS
-            MENUITEM "Αποθήκευση ρυθμίσεων &τώρα\tF7",         IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Αποθήκευση ρυθμίσεων στην έ&ξοδο",       IDM_SET_SAVESETTINGS
+            MENUITEM "Αποθήκευση ρυθμίσεων &τώρα\tF7",         IDM_SET_SAVESETTINGSNOW
             MENUITEM "Άνοιγμα αρχείου &ρυθμίσεων\tCtrl+F7",    CMD_OPENINIFILE
         END
     END

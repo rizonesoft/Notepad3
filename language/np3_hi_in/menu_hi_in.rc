@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "सेटिंग (&S)"
     BEGIN
-        MENUITEM "टैब को खाली जगह के रूप में डालें (&S)",                   IDM_VIEW_TABSASSPACES
-        MENUITEM "टैब सेटिंग (&T)...\tCtrl+T",                 IDM_VIEW_TABSETTINGS
-        MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                   IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "लंबी रेखा की सेटिंग (&O)...",                   IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&D)",                        IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",       IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                     IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "शब्द यात्रा त्वरित गति (&G)\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
+        MENUITEM "टैब को खाली जगह के रूप में डालें (&S)",                   IDM_SET_TABSASSPACES
+        MENUITEM "टैब सेटिंग (&T)...\tCtrl+T",                 IDM_SET_TABSETTINGS
+        MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                   IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "लंबी रेखा की सेटिंग (&O)...",                   IDM_SET_LONGLINESETTINGS
+        MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&D)",                        IDM_SET_AUTOINDENTTEXT
+        MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
+        MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                     IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "शब्द यात्रा त्वरित गति (&G)\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
-        MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",     IDM_SET_CHANGENOTIFY
+        MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_SET_MUTE_MESSAGEBEEP
         POPUP "ESC कुंजी उपयोग (&E)"
         BEGIN
-            MENUITEM "कुछ न करें (&N)",                       IDM_VIEW_NOESCFUNC
-            MENUITEM "Notepad3 छोटा करें (&M)",          IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Notepad3 से बाहर निकलें (&X)",              IDM_VIEW_ESCEXIT
+            MENUITEM "कुछ न करें (&N)",                       IDM_SET_NOESCFUNC
+            MENUITEM "Notepad3 छोटा करें (&M)",          IDM_SET_ESCMINIMIZE
+            MENUITEM "Notepad3 से बाहर निकलें (&X)",              IDM_SET_ESCEXIT
         END
-        MENUITEM "टूल चलाने से पूर्व सहेजें (&B)",      IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "लघु व्यंजक की गणना करें (&X)",     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "टूल चलाने से पूर्व सहेजें (&B)",      IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "लघु व्यंजक की गणना करें (&X)",     IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "स्मरण (&R)"
         BEGIN
-            MENUITEM "हाल की फ़ाइल स्मरण रखें (&R)",      IDM_VIEW_NOSAVERECENT
-            MENUITEM "कैरट स्थान सुरक्षित करें (&C)",    IDM_VIEW_NOPRESERVECARET
-            MENUITEM "खोज स्वरूप याद रखें (&S)",    IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "हाल की फ़ाइल स्मरण रखें (&R)",      IDM_SET_NOSAVERECENT
+            MENUITEM "कैरट स्थान सुरक्षित करें (&C)",    IDM_SET_NOPRESERVECARET
+            MENUITEM "खोज स्वरूप याद रखें (&S)",    IDM_SET_NOSAVEFINDREPL
         END
         POPUP "विंडो (&I)"
         BEGIN
             POPUP "विंडो शीर्षक देखें (&W)"
             BEGIN
-                MENUITEM "सिर्फ़ फ़ाइल का नाम (&F)",              IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "फ़ाइल का नाम और उसकी निदेशिका (&D)",     IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "पूरा स्थान (&P)",              IDM_VIEW_SHOWFULLPATH
-                MENUITEM "टेक्स्ट उद्धरण (&T)\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
+                MENUITEM "सिर्फ़ फ़ाइल का नाम (&F)",              IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "फ़ाइल का नाम और उसकी निदेशिका (&D)",     IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "पूरा स्थान (&P)",              IDM_SET_SHOWFULLPATH
+                MENUITEM "टेक्स्ट उद्धरण (&T)\tCtrl+9",       IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "विंडो पुनर्प्रयोग करें (&R)\tCtrl+Shift+L",     IDM_VIEW_REUSEWINDOW
-            MENUITEM "सदैव शीर्ष पर रखें (&A)\tAlt+T",           IDM_VIEW_ALWAYSONTOP
-            MENUITEM "छोटा करें (&M)",               IDM_VIEW_MINTOTRAY
-            MENUITEM "पारदर्शी मोड (&T)\tAlt+G",        IDM_VIEW_TRANSPARENT
+            MENUITEM "विंडो पुनर्प्रयोग करें (&R)\tCtrl+Shift+L",     IDM_SET_REUSEWINDOW
+            MENUITEM "सदैव शीर्ष पर रखें (&A)\tAlt+T",           IDM_SET_ALWAYSONTOP
+            MENUITEM "छोटा करें (&M)",               IDM_SET_MINTOTRAY
+            MENUITEM "पारदर्शी मोड (&T)\tAlt+G",        IDM_SET_TRANSPARENT
         END
         POPUP "प्रोद्योगिकी (&N)"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "उन्नत कन्फ़िगरेशन (&A)"
         BEGIN
-            MENUITEM "बाहर निकलते समय सेटिंग्स सहेजें (&X)",          IDM_VIEW_SAVESETTINGS
-            MENUITEM "सेटिंग्स अभी सहेजें (&N)\tF7",          IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "बाहर निकलते समय सेटिंग्स सहेजें (&X)",          IDM_SET_SAVESETTINGS
+            MENUITEM "सेटिंग्स अभी सहेजें (&N)\tF7",          IDM_SET_SAVESETTINGSNOW
             MENUITEM "सेटिंग्स फ़ाइल खोलें (&O)\tCtrl+F7",    CMD_OPENINIFILE
         END
     END

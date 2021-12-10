@@ -340,7 +340,7 @@ DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end);
 DeclareSciCallV0(Cancel, CANCEL);
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE);
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text);
-DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text);
+DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text); // NULL: w/o terminating '\0' (SCI v515)
 DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange);
 DeclareSciCallV0(UpperCase, UPPERCASE);
 DeclareSciCallV0(LowerCase, LOWERCASE);
@@ -352,7 +352,7 @@ DeclareSciCallV2(ReplaceRectangular, REPLACERECTANGULAR, DocPos, length, const c
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos);
 DeclareSciCallV0(SelectAll, SELECTALL);
-DeclareSciCallR01(GetSelText, GETSELTEXT, size_t, const char*, text);
+DeclareSciCallR01(GetSelText, GETSELTEXT, size_t, const char*, text); // NULL: w/o terminating '\0' (SCI v515)
 DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text);
 DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text);
 DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text);
@@ -406,7 +406,7 @@ DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char *const);
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char *const, DocPos, start, DocPos, length);
 
 DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text);
-DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text);
+DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text); // NULL: w/o terminating '\0' (SCI v515)
 
 inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf)
 {
@@ -728,9 +728,6 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 #define Sci_IsPosInSelection(position) ((position >= SciCall_GetSelectionStart()) && (position <= SciCall_GetSelectionEnd()))
 
 #define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())
-
-// w/o terminating '\0'
-#define Sci_GetSelTextLength() (SciCall_GetSelText(NULL) - 1)
 
 #define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())
 

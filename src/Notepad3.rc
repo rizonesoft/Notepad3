@@ -228,7 +228,7 @@ BEGIN
     "A",            IDM_EDIT_SELECTALL,               VIRTKEY, CONTROL, NOINVERT
     "A",            IDM_VIEW_MARKOCCUR_ONOFF,         VIRTKEY, ALT, NOINVERT  /// NO Menu
     "A",            CMD_RECODEANSI,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "A",            IDM_VIEW_ACCELWORDNAV,            VIRTKEY, CONTROL, ALT, NOINVERT
+    "A",            IDM_SET_ACCELWORDNAV,            VIRTKEY, CONTROL, ALT, NOINVERT
     "B",            IDM_EDIT_FINDMATCHINGBRACE,       VIRTKEY, CONTROL, NOINVERT
     "B",            IDM_EDIT_PADWITHSPACES,           VIRTKEY, ALT, NOINVERT  /// NO Menu
     "B",            IDM_EDIT_SELTOMATCHINGBRACE,      VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -252,10 +252,10 @@ BEGIN
     //~"F",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(File)
     "G",            IDM_EDIT_GOTOLINE,                VIRTKEY, CONTROL, NOINVERT
     "G",            IDM_VIEW_SHOWINDENTGUIDES,        VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "G",            IDM_VIEW_TRANSPARENT,             VIRTKEY, ALT, NOINVERT  /// NO Menu
+    "G",            IDM_SET_TRANSPARENT,             VIRTKEY, ALT, NOINVERT  /// NO Menu
     "H",            IDM_EDIT_REPLACE,                 VIRTKEY, CONTROL, NOINVERT
     "H",            IDM_FILE_RECENT,                  VIRTKEY, CONTROL, ALT, NOINVERT
-    "H",            IDM_VIEW_AUTOCLOSETAGS,           VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "H",            IDM_SET_AUTOCLOSETAGS,           VIRTKEY, SHIFT, CONTROL, NOINVERT
     //~"H",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(Help)
     "I",            IDM_EDIT_SPLITLINES,              VIRTKEY, CONTROL, NOINVERT
     "I",            IDM_FILE_OPENFAV,                 VIRTKEY, ALT, NOINVERT
@@ -271,7 +271,7 @@ BEGIN
     //"K",            IDM_VIEW_COLORDEFHOTSPOTS,        VIRTKEY, CONTROL, ALT, NOINVERT
     "L",            IDM_FILE_LAUNCH,                  VIRTKEY, CONTROL, NOINVERT
     "L",            IDM_FILE_OPENWITH,                VIRTKEY, ALT, NOINVERT
-    "L",            IDM_VIEW_REUSEWINDOW,             VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "L",            IDM_SET_REUSEWINDOW,             VIRTKEY, SHIFT, CONTROL, NOINVERT
     "L",            IDM_VIEW_LONGLINEMARKER,          VIRTKEY, CONTROL, ALT, NOINVERT
     "M",            IDM_FILE_BROWSE,                  VIRTKEY, CONTROL, NOINVERT
     "M",            IDM_EDIT_MODIFYLINES,             VIRTKEY, ALT, NOINVERT  /// NO Menu
@@ -302,8 +302,8 @@ BEGIN
     "S",            IDM_EDIT_CONVERTTABS2,            VIRTKEY, CONTROL, ALT, NOINVERT
     "S",            IDM_EDIT_CONVERTTABS,             VIRTKEY, SHIFT, CONTROL, NOINVERT
     //~"S",            MMMMMMMMMMMMMMMMMM,               VIRTKEY, ALT, NOINVERT  /// Menu(Settings)
-    "T",            IDM_VIEW_TABSETTINGS,             VIRTKEY, CONTROL, NOINVERT
-    "T",            IDM_VIEW_ALWAYSONTOP,             VIRTKEY, ALT, NOINVERT  /// NO Menu
+    "T",            IDM_SET_TABSETTINGS,             VIRTKEY, CONTROL, NOINVERT
+    "T",            IDM_SET_ALWAYSONTOP,             VIRTKEY, ALT, NOINVERT  /// NO Menu
     "T",            IDM_EDIT_CONVERTSPACES2,          VIRTKEY, CONTROL, ALT, NOINVERT
     "T",            IDM_EDIT_CONVERTSPACES,           VIRTKEY, SHIFT, CONTROL, NOINVERT
     "U",            IDM_EDIT_CONVERTLOWERCASE,        VIRTKEY, CONTROL, NOINVERT
@@ -380,13 +380,13 @@ BEGIN
     VK_F4,          IDM_FILE_NEW,                     VIRTKEY, CONTROL, NOINVERT
     VK_F5,          IDM_FILE_REVERT,                  VIRTKEY, NOINVERT
     VK_F5,          IDM_EDIT_INSERT_SHORTDATE,        VIRTKEY, CONTROL, NOINVERT
-    VK_F5,          IDM_VIEW_CHANGENOTIFY,            VIRTKEY, ALT, NOINVERT
+    VK_F5,          IDM_SET_CHANGENOTIFY,            VIRTKEY, ALT, NOINVERT
     VK_F5,          CMD_UPDATE_TIMESTAMPS,            VIRTKEY, SHIFT, NOINVERT
     VK_F5,          IDM_EDIT_INSERT_LONGDATE,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_F6,          IDM_FILE_SAVEAS,                  VIRTKEY, NOINVERT
     VK_F6,          IDM_FILE_SAVECOPY,                VIRTKEY, CONTROL, NOINVERT
     VK_F6,          IDM_FILE_PRESERVE_FILEMODTIME,    VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_F7,          IDM_VIEW_SAVESETTINGSNOW,         VIRTKEY, NOINVERT
+    VK_F7,          IDM_SET_SAVESETTINGSNOW,         VIRTKEY, NOINVERT
     VK_F7,          CMD_OPENINIFILE,                  VIRTKEY, CONTROL, NOINVERT
     VK_F8,          IDM_ENCODING_RECODE,              VIRTKEY, NOINVERT
     VK_F8,          IDM_EDIT_INSERT_ENCODING,         VIRTKEY, CONTROL, NOINVERT

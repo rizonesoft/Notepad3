@@ -453,47 +453,47 @@ BEGIN
         END
     POPUP "設定(&S)"
     BEGIN
-        MENUITEM "將 TAB 替換為空格(&S)",                        IDM_VIEW_TABSASSPACES
-        MENUITEM "TAB 設定(&T)...\tCtrl+T",                     IDM_VIEW_TABSETTINGS
-        MENUITEM "自動換行設定(&W)...",                         IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "長行標記設定(&O)...",                         IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "自動縮排(&D)",                                IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",       IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "自動完成單詞(&U)",                            IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "自動完成語法關鍵字(&K)",                      IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "加速單詞導覽(&G)\tCtrl+Alt+A",                IDM_VIEW_ACCELWORDNAV
+        MENUITEM "將 TAB 替換為空格(&S)",                        IDM_SET_TABSASSPACES
+        MENUITEM "TAB 設定(&T)...\tCtrl+T",                     IDM_SET_TABSETTINGS
+        MENUITEM "自動換行設定(&W)...",                         IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "長行標記設定(&O)...",                         IDM_SET_LONGLINESETTINGS
+        MENUITEM "自動縮排(&D)",                                IDM_SET_AUTOINDENTTEXT
+        MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
+        MENUITEM "自動完成單詞(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "自動完成語法關鍵字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "加速單詞導覽(&G)\tCtrl+Alt+A",                IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "每個檔案只有一個執行個體(&F)",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "檔案修改通知(&C)...\tAlt+F5",                 IDM_VIEW_CHANGENOTIFY
-        MENUITEM "關閉訊息提示音(&M)",                          IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "每個檔案只有一個執行個體(&F)",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "檔案修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
+        MENUITEM "關閉訊息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc 鍵功能(&E)"
         BEGIN
-            MENUITEM "無(&N)",                                IDM_VIEW_NOESCFUNC
-            MENUITEM "最小化 Notepad3(&M)",                    IDM_VIEW_ESCMINIMIZE
-            MENUITEM "結束 Notepad3(&X)",                     IDM_VIEW_ESCEXIT
+            MENUITEM "無(&N)",                                IDM_SET_NOESCFUNC
+            MENUITEM "最小化 Notepad3(&M)",                    IDM_SET_ESCMINIMIZE
+            MENUITEM "結束 Notepad3(&X)",                     IDM_SET_ESCEXIT
         END
-        MENUITEM "執行工具前先儲存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "計算微小表達式(&x)",               IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "執行工具前先儲存(&B)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "計算微小表達式(&x)",               IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "記憶(&R)"
         BEGIN
-            MENUITEM "記憶最近使用的檔案(&R)",                 IDM_VIEW_NOSAVERECENT
-            MENUITEM "記憶插入游標位置(&C)",                   IDM_VIEW_NOPRESERVECARET
-            MENUITEM "記憶查詢方式(&S)",                       IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "記憶最近使用的檔案(&R)",                 IDM_SET_NOSAVERECENT
+            MENUITEM "記憶插入游標位置(&C)",                   IDM_SET_NOPRESERVECARET
+            MENUITEM "記憶查詢方式(&S)",                       IDM_SET_NOSAVEFINDREPL
         END
         POPUP "視窗(&I)"
         BEGIN
             POPUP "標題列顯示(&Y)"
             BEGIN
-                MENUITEM "僅檔名(&F)",                        IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "檔名和資料夾(&D)",                   IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "完整檔案路徑(&P)",                   IDM_VIEW_SHOWFULLPATH
-                MENUITEM "摘錄選中內容(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
+                MENUITEM "僅檔名(&F)",                        IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "檔名和資料夾(&D)",                   IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "完整檔案路徑(&P)",                   IDM_SET_SHOWFULLPATH
+                MENUITEM "摘錄選中內容(&T)\tCtrl+9",           IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "重複使用視窗(&R)\tCtrl+Shift+L",             IDM_VIEW_REUSEWINDOW
-            MENUITEM "最上層顯示(&A)\tAlt+T",                    IDM_VIEW_ALWAYSONTOP
-            MENUITEM "最小化到系統匣(&M)",                       IDM_VIEW_MINTOTRAY
-            MENUITEM "透明模式(&T)\tAlt+G",                    IDM_VIEW_TRANSPARENT
+            MENUITEM "重複使用視窗(&R)\tCtrl+Shift+L",             IDM_SET_REUSEWINDOW
+            MENUITEM "最上層顯示(&A)\tAlt+T",                    IDM_SET_ALWAYSONTOP
+            MENUITEM "最小化到系統匣(&M)",                       IDM_SET_MINTOTRAY
+            MENUITEM "透明模式(&T)\tAlt+G",                    IDM_SET_TRANSPARENT
         END
         POPUP "處理技術(&N)"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "進階設定(&A)"
         BEGIN
-            MENUITEM "結束時儲存設定(&X)",                    IDM_VIEW_SAVESETTINGS
-            MENUITEM "立即儲存設定(&N)\tF7",                  IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "結束時儲存設定(&X)",                    IDM_SET_SAVESETTINGS
+            MENUITEM "立即儲存設定(&N)\tF7",                  IDM_SET_SAVESETTINGSNOW
             MENUITEM "開啟設定檔案(&O)\tCtrl+F7",             CMD_OPENINIFILE
         END
     END

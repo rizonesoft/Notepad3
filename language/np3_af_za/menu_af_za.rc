@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Instellings"
     BEGIN
-        MENUITEM "Voeg Tabbladsye in as &Spasies",                  IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tab Instellings...\tCtrl+T",                     IDM_VIEW_TABSETTINGS
-        MENUITEM "&Woord Omslag Instellings...",                    IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "L&ang Lyn Instellings...",                        IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Outo-In&dent Teks",                               IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Outo-Sluit &HTML/XML\tCtrl+Shift+H",              IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "O&uto-Voltooi Woorde",                            IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Outo-Voltooi Le&xer-Sleutel-Woorde",              IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Versnelde Woord Navi&gasie\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Voeg Tabbladsye in as &Spasies",                  IDM_SET_TABSASSPACES
+        MENUITEM "&Tab Instellings...\tCtrl+T",                     IDM_SET_TABSETTINGS
+        MENUITEM "&Woord Omslag Instellings...",                    IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "L&ang Lyn Instellings...",                        IDM_SET_LONGLINESETTINGS
+        MENUITEM "Outo-In&dent Teks",                               IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Outo-Sluit &HTML/XML\tCtrl+Shift+H",              IDM_SET_AUTOCLOSETAGS
+        MENUITEM "O&uto-Voltooi Woorde",                            IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Outo-Voltooi Le&xer-Sleutel-Woorde",              IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Versnelde Woord Navi&gasie\tCtrl+Alt+A",          IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Slegs Een Keer per &Lêer",                        IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Lêerverandering-&Kennisgewing...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
-        MENUITEM "&Mute Message Beeps",                             IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Slegs Een Keer per &Lêer",                        IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Lêerverandering-&Kennisgewing...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        MENUITEM "&Mute Message Beeps",                             IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Esc Sleutel Funksie"
         BEGIN
-            MENUITEM "&Geen",                                   IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimaliseer Notepad3",                  IDM_VIEW_ESCMINIMIZE
-            MENUITEM "M&aak Notepad3 Toe",                      IDM_VIEW_ESCEXIT
+            MENUITEM "&Geen",                                   IDM_SET_NOESCFUNC
+            MENUITEM "&Minimaliseer Notepad3",                  IDM_SET_ESCMINIMIZE
+            MENUITEM "M&aak Notepad3 Toe",                      IDM_SET_ESCEXIT
         END
-        MENUITEM "Stoor Voor L&opende Tools",                   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Bereken Tiny-E&xpressions",                   IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Stoor Voor L&opende Tools",                   IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Bereken Tiny-E&xpressions",                   IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Ont&hou"
         BEGIN
-            MENUITEM "&Onthou Onlangse Lêers",              IDM_VIEW_NOSAVERECENT
-            MENUITEM "Bewaar &Caret Posisie",               IDM_VIEW_NOPRESERVECARET
-            MENUITEM "On&thou Soekpatroon",                 IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "&Onthou Onlangse Lêers",              IDM_SET_NOSAVERECENT
+            MENUITEM "Bewaar &Caret Posisie",               IDM_SET_NOPRESERVECARET
+            MENUITEM "On&thou Soekpatroon",                 IDM_SET_NOSAVEFINDREPL
         END
         POPUP "&Venster"
         BEGIN
             POPUP "Venster Titel &Vertoning"
             BEGIN
-                MENUITEM "Slegs &Lêernaam",                 IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Leêrnaam en &Gids",               IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Volle &Padnaam",                  IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Teks Uittreksel\tCtrl+9",        IDM_VIEW_SHOWEXCERPT
+                MENUITEM "Slegs &Lêernaam",                 IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Leêrnaam en &Gids",               IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Volle &Padnaam",                  IDM_SET_SHOWFULLPATH
+                MENUITEM "&Teks Uittreksel\tCtrl+9",        IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Hergebruik Venster\tCtrl+Shift+L",   IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Altyd Bo-op\tAlt+T",                 IDM_VIEW_ALWAYSONTOP
-            MENUITEM "&Minimeer Na Die Laai",               IDM_VIEW_MINTOTRAY
-            MENUITEM "&Deursigtige Modus\tAlt+G",           IDM_VIEW_TRANSPARENT
+            MENUITEM "&Hergebruik Venster\tCtrl+Shift+L",   IDM_SET_REUSEWINDOW
+            MENUITEM "&Altyd Bo-op\tAlt+T",                 IDM_SET_ALWAYSONTOP
+            MENUITEM "&Minimeer Na Die Laai",               IDM_SET_MINTOTRAY
+            MENUITEM "&Deursigtige Modus\tAlt+G",           IDM_SET_TRANSPARENT
         END
         POPUP "Teg&nologie"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "Gevorderde &Konfigurasie"
         BEGIN
-            MENUITEM "Stoor Instellings op &Uitgang",       IDM_VIEW_SAVESETTINGS
-            MENUITEM "Stoor Instellings &Nou\tF7",          IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Stoor Instellings op &Uitgang",       IDM_SET_SAVESETTINGS
+            MENUITEM "Stoor Instellings &Nou\tF7",          IDM_SET_SAVESETTINGSNOW
             MENUITEM "Maak Stellings Lêer &Oop\tCtrl+F7",   CMD_OPENINIFILE
         END
     END

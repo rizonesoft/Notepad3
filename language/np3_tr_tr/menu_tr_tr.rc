@@ -453,47 +453,47 @@ BEGIN
     END
     POPUP "&Ayarlar"
     BEGIN
-        MENUITEM "Sekmeleri Boşluk Olarak Ekle",                   IDM_VIEW_TABSASSPACES
-        MENUITEM "&Sekme Ayarları...\tCtrl+T",                 IDM_VIEW_TABSETTINGS
-        MENUITEM "&Sözcük Kaydır Seçenekleri...",                   IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Uzun Satır Ayarları...",                   IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Otomatik Girinti",                        IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "&HTML/XML Etiketlerini Otomatik Kapat\tCtrl+Shift+H",       IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Kelimeleri Otomatik Tamamla",                     IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Lexer-&Anahtar-Kelimelerini Otomatik Tamamla",           IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Accelerated Word Navi&gation\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Sekmeleri Boşluk Olarak Ekle",                   IDM_SET_TABSASSPACES
+        MENUITEM "&Sekme Ayarları...\tCtrl+T",                 IDM_SET_TABSETTINGS
+        MENUITEM "&Sözcük Kaydır Seçenekleri...",                   IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Uzun Satır Ayarları...",                   IDM_SET_LONGLINESETTINGS
+        MENUITEM "Otomatik Girinti",                        IDM_SET_AUTOINDENTTEXT
+        MENUITEM "&HTML/XML Etiketlerini Otomatik Kapat\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Kelimeleri Otomatik Tamamla",                     IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Lexer-&Anahtar-Kelimelerini Otomatik Tamamla",           IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Accelerated Word Navi&gation\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "&Her Dosya İçin Tek Pencere",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Dosya Değişimi Bildirimi...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
-        MENUITEM "&Bip Sesini Sustur",                      IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "&Her Dosya İçin Tek Pencere",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Dosya Değişimi Bildirimi...\tAlt+F5",     IDM_SET_CHANGENOTIFY
+        MENUITEM "&Bip Sesini Sustur",                      IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc &Tuşu Görevi"
         BEGIN
-            MENUITEM "&Etkisiz",                        IDM_VIEW_NOESCFUNC
-            MENUITEM "&Notepad3'ü Küçült",            IDM_VIEW_ESCMINIMIZE
-            MENUITEM "Notepad3'ü K&apat",             IDM_VIEW_ESCEXIT
+            MENUITEM "&Etkisiz",                        IDM_SET_NOESCFUNC
+            MENUITEM "&Notepad3'ü Küçült",            IDM_SET_ESCMINIMIZE
+            MENUITEM "Notepad3'ü K&apat",             IDM_SET_ESCEXIT
         END
-        MENUITEM "Save &Before Running Tools",      IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Küçük-İfadeleri Hesapla",     IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "Save &Before Running Tools",      IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Küçük-İfadeleri Hesapla",     IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Hatırla"
         BEGIN
-            MENUITEM "&Son Dosyaları Hatırla",      IDM_VIEW_NOSAVERECENT
-            MENUITEM "&İmleç Pozisyonunu Hatırla",    IDM_VIEW_NOPRESERVECARET
-            MENUITEM "&Arama Desenini Hatırla",    IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "&Son Dosyaları Hatırla",      IDM_SET_NOSAVERECENT
+            MENUITEM "&İmleç Pozisyonunu Hatırla",    IDM_SET_NOPRESERVECARET
+            MENUITEM "&Arama Desenini Hatırla",    IDM_SET_NOSAVEFINDREPL
         END
         POPUP "P&encere"
         BEGIN
             POPUP "&Pencere Başlığı"
             BEGIN
-                MENUITEM "&Sadece Dosya Adı",              IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Dosya Adı ve Yolu",     IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Tam Yol",              IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&İçerik Özeti\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Sadece Dosya Adı",              IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "Dosya Adı ve Yolu",     IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "Tam Yol",              IDM_SET_SHOWFULLPATH
+                MENUITEM "&İçerik Özeti\tCtrl+9",       IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Pencereyi Tekrar Kullan\tCtrl+Shift+L",     IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Her Zaman Üstte\tAlt+T",           IDM_VIEW_ALWAYSONTOP
-            MENUITEM "&Simge Durumuna Küçült",               IDM_VIEW_MINTOTRAY
-            MENUITEM "&Saydam Görünüm\tAlt+G",        IDM_VIEW_TRANSPARENT
+            MENUITEM "&Pencereyi Tekrar Kullan\tCtrl+Shift+L",     IDM_SET_REUSEWINDOW
+            MENUITEM "&Her Zaman Üstte\tAlt+T",           IDM_SET_ALWAYSONTOP
+            MENUITEM "&Simge Durumuna Küçült",               IDM_SET_MINTOTRAY
+            MENUITEM "&Saydam Görünüm\tAlt+G",        IDM_SET_TRANSPARENT
         END
         POPUP "&Teknolojiler"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "&Advanced Configuration"
         BEGIN
-            MENUITEM "Save Settings On E&xit",          IDM_VIEW_SAVESETTINGS
-            MENUITEM "Save Settings &Now\tF7",          IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Save Settings On E&xit",          IDM_SET_SAVESETTINGS
+            MENUITEM "Save Settings &Now\tF7",          IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Ayarlar Dosyasını Aç\tCtrl+F7",  CMD_OPENINIFILE
         END
     END

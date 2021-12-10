@@ -128,7 +128,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 21 October 2021 ZL</p>
+    <p>Last edited 12 November 2021 NH</p>
 
     <p style="background:#90F0C0">Scintilla 5 has moved the lexers from Scintilla into a new
     <a href="Lexilla.html">Lexilla</a> project.<br />
@@ -551,12 +551,12 @@
     </code>
 
     <p><b id="SCI_GETTEXT">SCI_GETTEXT(position length, char *text NUL-terminated) &rarr; position</b><br />
-     This returns at most <code class="parameter">length</code>-1 characters of text from the start of the document plus one
-    terminating 0 character. When <code class="parameter">length</code>-1 is beyond document length, it returns document length.
+     This returns at most <code class="parameter">length</code> characters of text from the start of the document plus one
+    terminating 0 character. When <code class="parameter">length</code> is beyond document length, it returns document length.
     To collect all the text in a document, use <code>SCI_GETLENGTH</code>
     to get the number of characters in the document (<code>nLen</code>), allocate a character
-    buffer of length <code>nLen+1</code> bytes, then call <code>SCI_GETTEXT(nLen+1, char
-    *text)</code>. If the text argument is 0 then the length that should be allocated to store the
+    buffer of length <code>nLen+1</code> bytes, then call <code>SCI_GETTEXT(nLen, char
+    *text)</code>. If the text argument is NULL(0) then the length that should be allocated to store the
     entire document is returned.
     If you then save the text, you should use <code>SCI_SETSAVEPOINT</code> to mark
     the text as unmodified.</p>
@@ -586,7 +586,7 @@
 
     <p><b id="SCI_GETLINE">SCI_GETLINE(line line, char *text) &rarr; position</b><br />
      This fills the buffer defined by text with the contents of the nominated line (lines start at
-    0). The buffer is not terminated by a 0 character. It is up to you to make sure that the buffer
+    0). The buffer is not terminated by a NUL(0) character. It is up to you to make sure that the buffer
     is long enough for the text, use <a class="message"
     href="#SCI_LINELENGTH"><code>SCI_LINELENGTH(line line)</code></a>. The returned value is the
     number of characters copied to the buffer. The returned text includes any end of line
@@ -1499,9 +1499,9 @@ struct Sci_TextToFind {
     href="#SCI_POSITIONFROMLINE"><code>SCI_POSITIONFROMLINE(line)</code></a>.</p>
 
     <p><b id="SCI_GETSELTEXT">SCI_GETSELTEXT(&lt;unused&gt;, char *text NUL-terminated) &rarr; position</b><br />
-     This copies the currently selected text and a terminating 0 byte to the <code class="parameter">text</code>
-    buffer. The buffer size should be determined by calling with a NULL pointer for the <code class="parameter">text</code> argument
-    <code>SCI_GETSELTEXT(0,0)</code>.
+     This copies the currently selected text and a terminating NUL(0) byte to the <code class="parameter">text</code>
+    buffer. The buffer size should be determined by calling with a NULL pointer for the <code class="parameter">text</code> argument:
+    <code>1 + SCI_GETSELTEXT(0, NULL)</code>.
     This allows for rectangular and discontiguous selections as well as simple selections.
     See <a class="toc" href="#MultipleSelectionAndVirtualSpace">Multiple Selection</a> for information on
     how multiple and rectangular selections and virtual space are copied.</p>
@@ -1516,10 +1516,10 @@ struct Sci_TextToFind {
     <p><b id="SCI_GETCURLINE">SCI_GETCURLINE(position length, char *text NUL-terminated) &rarr; position</b><br />
      This retrieves the text of the line containing the caret and returns the position within the
     line of the caret. Pass in <code>char* text</code> pointing at a buffer large enough to hold
-    the text you wish to retrieve and a terminating 0 character.
+    the text you wish to retrieve and a terminating NUL(0) character.
     Set <code class="parameter">length</code> to the
-    length of the buffer which must be at least 1 to hold the terminating 0 character.
-    If the text argument is 0 then the length that should be allocated
+    length of the buffer not including the terminating NUL character.
+    If the text argument is NULL(0) then the length that should be allocated
     to store the entire current line is returned.</p>
 
     <p>See also: <code><a class="seealso" href="#SCI_GETSELTEXT">SCI_GETSELTEXT</a>, <a

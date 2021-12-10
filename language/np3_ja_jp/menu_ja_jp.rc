@@ -453,47 +453,47 @@ BEGIN
         END
     POPUP "設定(&S)"
     BEGIN
-        MENUITEM "タブキーで空白を入力(&S)",                        IDM_VIEW_TABSASSPACES
-        MENUITEM "タブキーの設定(&T)...\tCtrl+T",                  IDM_VIEW_TABSETTINGS
-        MENUITEM "折り返し方の設定(&W)...",                        IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "行の長さガイドの設定(&O)...",                     IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "自動インデント(&D)",                             IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "単語補完(&U)",                                 IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "予約語を自動補完(&K)",                          IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
+        MENUITEM "タブキーで空白を入力(&S)",                        IDM_SET_TABSASSPACES
+        MENUITEM "タブキーの設定(&T)...\tCtrl+T",                  IDM_SET_TABSETTINGS
+        MENUITEM "折り返し方の設定(&W)...",                        IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "行の長さガイドの設定(&O)...",                     IDM_SET_LONGLINESETTINGS
+        MENUITEM "自動インデント(&D)",                             IDM_SET_AUTOINDENTTEXT
+        MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
+        MENUITEM "単語補完(&U)",                                 IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "予約語を自動補完(&K)",                          IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",               IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "ファイルごとに単一インスタンス(&F)",              IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
-        MENUITEM "メッセージの効果音をミュート(&M)",                  IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "ファイルごとに単一インスタンス(&F)",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_SET_CHANGENOTIFY
+        MENUITEM "メッセージの効果音をミュート(&M)",                  IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&E)"
         BEGIN
-            MENUITEM "なし(&N)",                              IDM_VIEW_NOESCFUNC
-            MENUITEM "最小化(&M)",                            IDM_VIEW_ESCMINIMIZE
-            MENUITEM "終了(&X)",                              IDM_VIEW_ESCEXIT
+            MENUITEM "なし(&N)",                              IDM_SET_NOESCFUNC
+            MENUITEM "最小化(&M)",                            IDM_SET_ESCMINIMIZE
+            MENUITEM "終了(&X)",                              IDM_SET_ESCEXIT
         END
-        MENUITEM "ツール実行前に保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "数式を計算(TinyExpr)(&X)",               IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "ツール実行前に保存(&B)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "数式を計算(TinyExpr)(&X)",               IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "履歴の保存(&R)"
         BEGIN
-            MENUITEM "保存/最近使ったファイルの履歴(&R)",         IDM_VIEW_NOSAVERECENT
-            MENUITEM "保存/カーソル位置(文書ごと)(&C)",          IDM_VIEW_NOPRESERVECARET
-            MENUITEM "保存/検索文字列(&S)",                  IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "保存/最近使ったファイルの履歴(&R)",         IDM_SET_NOSAVERECENT
+            MENUITEM "保存/カーソル位置(文書ごと)(&C)",          IDM_SET_NOPRESERVECARET
+            MENUITEM "保存/検索文字列(&S)",                  IDM_SET_NOSAVEFINDREPL
         END
         POPUP "ウィンドウ(&I)"
         BEGIN
             POPUP "タイトルバーの表示名(&W)"
             BEGIN
-                MENUITEM "ファイル名のみ(&F)",                     IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "ファイル名とフォルダパス(&D)",               IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "フルパス(&P)",                          IDM_VIEW_SHOWFULLPATH
-                MENUITEM "選択文字列を使用(&T)\tCtrl+9",         IDM_VIEW_SHOWEXCERPT
+                MENUITEM "ファイル名のみ(&F)",                     IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "ファイル名とフォルダパス(&D)",               IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "フルパス(&P)",                          IDM_SET_SHOWFULLPATH
+                MENUITEM "選択文字列を使用(&T)\tCtrl+9",         IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "新しいウィンドウを開かない(&R)\tCtrl+Shift+L",   IDM_VIEW_REUSEWINDOW
-            MENUITEM "常に手前に表示(&A)\tAlt+T",                 IDM_VIEW_ALWAYSONTOP
-            MENUITEM "システムトレイに最小化(&M)",                   IDM_VIEW_MINTOTRAY
-            MENUITEM "ウィンドウ透化(&T)\tAlt+G",                   IDM_VIEW_TRANSPARENT
+            MENUITEM "新しいウィンドウを開かない(&R)\tCtrl+Shift+L",   IDM_SET_REUSEWINDOW
+            MENUITEM "常に手前に表示(&A)\tAlt+T",                 IDM_SET_ALWAYSONTOP
+            MENUITEM "システムトレイに最小化(&M)",                   IDM_SET_MINTOTRAY
+            MENUITEM "ウィンドウ透化(&T)\tAlt+G",                   IDM_SET_TRANSPARENT
         END
         POPUP "文字の描画(&N)"
         BEGIN
@@ -518,8 +518,8 @@ BEGIN
         END
         POPUP "設定の保存(&A)"
         BEGIN
-            MENUITEM "設定を保存/終了時(&X)",                 IDM_VIEW_SAVESETTINGS
-            MENUITEM "設定を保存/今すぐ(&N)\tF7",              IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "設定を保存/終了時(&X)",                 IDM_SET_SAVESETTINGS
+            MENUITEM "設定を保存/今すぐ(&N)\tF7",              IDM_SET_SAVESETTINGSNOW
             MENUITEM "設定ファイルを開く(&O)\tCtrl+F7",          CMD_OPENINIFILE
         END
     END
