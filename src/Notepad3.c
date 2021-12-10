@@ -416,12 +416,10 @@ static __forceinline bool CheckNotifyDocChangedEvent()
     return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
 }
 
-void IgnoreNotifyDocChangedEvent(const bool bStealthMode)
+void IgnoreNotifyDocChangedEvent(SciEventMask evm)
 {
     InterlockedIncrement(&iNotifyChangeStackCounter);
-    if (bStealthMode) {
-        SciCall_SetModEventMask(SCI_MODEVENTMASK_NONE);
-    }
+    SciCall_SetModEventMask(evm);
 }
 
 void ObserveNotifyDocChangedEvent()
@@ -430,14 +428,11 @@ void ObserveNotifyDocChangedEvent()
         InterlockedDecrement(&iNotifyChangeStackCounter);
     }
     if (CheckNotifyDocChangedEvent()) {
-        SciCall_SetModEventMask(SCI_MODEVENTMASK_FULL);
+        SciCall_SetModEventMask(EVM_Default);
         EditUpdateVisibleIndicators();
         UpdateStatusbar(false);
     }
 }
-
-// SCN_UPDATEUI notification
-#define SC_UPDATE_NP3_INTERNAL_NOTIFY (SC_UPDATE_H_SCROLL << 1)
 
 
 //=============================================================================
@@ -1976,12 +1971,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
             if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
                 s_bUndoRedoScroll = true;
-                IgnoreNotifyDocChangedEvent(false);
+                IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
                 SciCall_Redo();
                 ObserveNotifyDocChangedEvent();
             } else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
                 s_bUndoRedoScroll = true;
-                IgnoreNotifyDocChangedEvent(false);
+                IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
                 SciCall_Undo();
                 ObserveNotifyDocChangedEvent();
             }
@@ -2128,13 +2123,12 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
     //~SciCall_SetPhasesDraw(SC_PHASES_TWO); // (= default)
     SciCall_SetPhasesDraw(SC_PHASES_MULTIPLE);
-    //~SciCall_SetLayoutCache(SC_CACHE_DOCUMENT); // memory consumption !
-    SciCall_SetLayoutCache(SC_CACHE_PAGE);
+    SciCall_SetLayoutCache(SC_CACHE_PAGE); //~ SC_CACHE_DOCUMENT ~ beware of memory consumption !
 
     // Idle Styling (very large text)
     SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view
 
-    SciCall_SetModEventMask(SCI_MODEVENTMASK_FULL);
+    SciCall_SetModEventMask(EVM_Default);
     SciCall_SetCommandEvents(false); // speedup folding
 
     SciCall_StyleSetCharacterSet(SC_CHARSET_DEFAULT);
@@ -4749,7 +4743,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_UNDO:
         if (SciCall_CanUndo()) {
             //~DocChangeTransactionBegin();
-            IgnoreNotifyDocChangedEvent(false);
+            IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
             SciCall_Undo();
             ObserveNotifyDocChangedEvent();
             //~EndDocChangeTransaction();
@@ -4760,7 +4754,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_REDO:
         if (SciCall_CanRedo()) {
             //~DocChangeTransactionBegin();
-            IgnoreNotifyDocChangedEvent(false);
+            IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
             SciCall_Redo();
             ObserveNotifyDocChangedEvent();
             //~EndDocChangeTransaction();
@@ -8028,13 +8022,13 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
         switch (pnmh->code) {
 
         case SCN_MODIFIED: {
+            *bModified = false; // init
             int const iModType = scn->modificationType;
             if ((iModType & SC_MULTISTEPUNDOREDO) && !(iModType & SC_LASTSTEPINUNDOREDO)) {
-                return TRUE;
+                return TRUE; // wait for last step in multi-step-undo/redo
             }
-            *bModified = true;
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
-                *bModified = false; // not yet
+                //*bModified = false; // not yet
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0)) {
                         bool const bIsSelEmpty = !SciCall_IsSelectionEmpty();
@@ -8059,6 +8053,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                         _mod_insdel_token = -1;
                     }
                 }
+                *bModified = true;
             }
             // check for ADDUNDOACTION step
             if (iModType & SC_MOD_CONTAINER) {
@@ -9981,7 +9976,7 @@ void UpdateUI() {
     scn.nmhdr.hwndFrom = Globals.hwndEdit;
     scn.nmhdr.idFrom = IDC_EDIT;
     scn.nmhdr.code = SCN_UPDATEUI;
-    scn.updated = (SC_UPDATE_CONTENT /* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
+    scn.updated = SC_UPDATE_CONTENT;
     SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
     SendWMSize(Globals.hwndMain, NULL);
     UpdateTitleBar(Globals.hwndMain);
@@ -10758,7 +10753,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
         if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
-                IgnoreNotifyDocChangedEvent(true);
+                IgnoreNotifyDocChangedEvent(EVM_None);
                 SciCall_ConvertEOLs(fioStatus.iEOLMode);
                 ObserveNotifyDocChangedEvent();
                 Globals.bDocHasInconsistentEOLs = false;

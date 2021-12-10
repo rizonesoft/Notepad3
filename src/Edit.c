@@ -431,7 +431,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
     FileVars_Apply(&Globals.fvCurFile);
 
-    IgnoreNotifyDocChangedEvent(true);
+    IgnoreNotifyDocChangedEvent(EVM_None);
     EditSetDocumentBuffer(lpstrText, lenText);
     ObserveNotifyDocChangedEvent();
 
@@ -1157,10 +1157,12 @@ bool EditLoadFile(
 
     LARGE_INTEGER liFileSize = { 0, 0 };
     bool const okay = GetFileSizeEx(hFile, &liFileSize);
-    //DWORD const fileSizeMB = (DWORD)liFileSize.HighPart * (DWORD_MAX >> 20) + (liFileSize.LowPart >> 20);
+    ///DWORD const fileSizeMB = (DWORD)liFileSize.HighPart * (DWORD_MAX >> 20) + (liFileSize.LowPart >> 20);
+
+    bool const bCacheWholeDocument = okay && ((liFileSize.HighPart == 0) && (liFileSize.LowPart <= (DWORD)(2 * (1<<20))));
+    SciCall_SetLayoutCache(bCacheWholeDocument ? SC_CACHE_DOCUMENT : SC_CACHE_PAGE); // beware of memory consumption !
 
     bool const bLargerThan2GB = okay && ((liFileSize.HighPart > 0) || (liFileSize.LowPart >= (DWORD)INT32_MAX)); // 'int'
-
     if (!okay || bLargerThan2GB) {
         if (!okay) {
             Globals.dwLastError = GetLastError();
@@ -5075,7 +5077,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     int const _iTabWidth = SciCall_GetTabWidth();
 
     if (bIsMultiSel) {
-        IgnoreNotifyDocChangedEvent(true);
+        IgnoreNotifyDocChangedEvent(EVM_None);
         EditPadWithSpaces(hwnd, !(iSortFlags & SORT_SHUFFLE));
         ObserveNotifyDocChangedEvent();
         // changed rectangular selection

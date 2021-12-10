@@ -199,34 +199,34 @@ LRESULT MsgNonClientAreaPaint(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
 // ----------------------------------------------------------------------------
 
-void IgnoreNotifyDocChangedEvent(const bool bStealthMode);
+void IgnoreNotifyDocChangedEvent(const SciEventMask evm);
 void ObserveNotifyDocChangedEvent();
 
 // ----------------------------------------------------------------------------
 
 // lean msg change notify
-#define DocChangeTransactionBegin()  __try { SciCall_BeginUndoAction(); IgnoreNotifyDocChangedEvent(false);
+#define DocChangeTransactionBegin()  __try { SciCall_BeginUndoAction(); IgnoreNotifyDocChangedEvent(EVM_Default);
 #define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); SciCall_EndUndoAction(); }
 
 // ----------------------------------------------------------------------------
 
 // none msg change notify
-#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(true);
+#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(EVM_None);
 #define EndUndoTransAction()    } __finally { ObserveNotifyDocChangedEvent(); EndUndoAction(_token_); } }
 
 // ----------------------------------------------------------------------------
 
-#define BeginWaitCursor(cond, text)                            \
-    __try {                                                    \
-        IgnoreNotifyDocChangedEvent(true);    \
-        if (cond) {                                            \
-            SciCall_SetCursor(SC_CURSORWAIT);                  \
+#define BeginWaitCursor(cond, text)                                 \
+    __try {                                                         \
+        IgnoreNotifyDocChangedEvent(EVM_None);                      \
+        if (cond) {                                                 \
+            SciCall_SetCursor(SC_CURSORWAIT);                       \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
         }
 
 #define BeginWaitCursorUID(cond, uid)                          \
     __try {                                                    \
-        IgnoreNotifyDocChangedEvent(true);    \
+        IgnoreNotifyDocChangedEvent(EVM_None);    \
         if (cond) {                                            \
             SciCall_SetCursor(SC_CURSORWAIT);                  \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
