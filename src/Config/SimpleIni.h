@@ -2643,7 +2643,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
   if (a_pwszFile && a_pwszFile[0]) 
   {
     HANDLE hFile = CreateFile(a_pwszFile,
-      GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+      GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
       nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
     SI_ASSERT(hFile != INVALID_HANDLE_VALUE);

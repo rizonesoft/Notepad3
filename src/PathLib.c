@@ -1344,7 +1344,7 @@ bool PTHAPI Path_GetCurrentDirectory(HPATHL hpth_out)
 }
 // ----------------------------------------------------------------------------
 
-
+// use only, if neccessary
 size_t PTHAPI Path_ToShortPathName(HPATHL hpth_in_out)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);

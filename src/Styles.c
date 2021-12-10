@@ -1186,7 +1186,7 @@ bool Style_ExportToFile(const HPATHL hpath, bool bForceAll)
         if (Path_IsNotEmpty(hpth_tmp)) {
             if (!Path_IsExistingFile(hpth_tmp)) {
                 HANDLE hFile = CreateFile(Path_Get(hpth_tmp),
-                                          GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                                          GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
                 if (IS_VALID_HANDLE(hFile)) {
                     CloseHandle(hFile); // done

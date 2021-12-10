@@ -1036,7 +1036,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
 
         if (!Path_IsExistingFile(hini_pth)) {
             HANDLE hFile = CreateFileW(Path_Get(hini_pth),
-                                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                                       GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
             if (IS_VALID_HANDLE(hFile)) {
@@ -1051,7 +1051,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
             }
         } else {
             HANDLE hFile = CreateFileW(Path_Get(hini_pth),
-                                       GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                                       GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
             if (IS_VALID_HANDLE(hFile)) {

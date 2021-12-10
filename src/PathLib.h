@@ -118,7 +118,7 @@ wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
-size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);
+size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);  // use only, if neccessary
 size_t PTHAPI          Path_GetLongPathNameEx(HPATHL hpth_in_out);
 
 void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayName, const HPATHL hpth, LPCWSTR repl, bool bStripPath);
