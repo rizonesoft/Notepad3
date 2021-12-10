@@ -852,6 +852,22 @@ bool PTHAPI Path_IsEmpty(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
+bool PTHAPI Path_IsRoot(const HPATHL hpth)
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr)
+        return false;
+
+    //PrependLongPathPrefix(hpth, false);
+
+    WCHAR wchPathBegin[MAX_PATH_EXPLICIT] = { L'\0' };
+    StringCchCopy(wchPathBegin, COUNTOF(wchPathBegin), StrgGet(hstr));
+
+    return PathIsRootW(wchPathBegin);
+}
+// ----------------------------------------------------------------------------
+
+
 bool PTHAPI Path_IsValidUNC(const HPATHL hpth)
 {
     HSTRINGW hstr = ToHStrgW(hpth);

@@ -391,10 +391,10 @@ typedef enum AutoSaveBackupOptions {
     ASB_Shutdown   = 1 << 2,
 
     ASB_Backup     = 1 << 3,
-    ASB_SideBySide = 1 << 4,
+    ASB_OnAutoSave = 1 << 4,
+    ASB_SideBySide = 1 << 5,
 
-
-    ASB_Default = ASB_Suspend | ASB_Shutdown,
+    ASB_Default = ASB_Suspend | ASB_Shutdown | ASB_SideBySide,
 
 } AutoSaveBackupOptions;
 

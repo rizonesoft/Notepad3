@@ -94,6 +94,7 @@ void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length);
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
 inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty(hpth); };
+bool PTHAPI            Path_IsRoot(const HPATHL hpth);
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
 bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 

@@ -161,8 +161,6 @@ bool FileSave(FileSaveFlags fSaveFlags);
 bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc);
 bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
             FileLoadFlags fLoadFlags, FileSaveFlags fSaveFlags, bool bSetSavePoint);
-bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
-bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 
 void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void          InstallFileWatching(const bool bInstall);
