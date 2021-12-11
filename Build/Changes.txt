@@ -40,6 +40,7 @@ Current BETA/RC Version 5.21.1207.(build_#) (2021-12-07)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[12xx.1]- Partial (incomplete - disabled) "Auto-Save and Backup" handling feature.
 [1130.1]- Add a Fortran Lexer.
 [1130.1]- LongPath Support enhancements.
 
@@ -47,6 +48,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[12xx.1]- Removing unnecessary "ToShortPath" operations.
+[12xx.1]- Small performance enhancement for large rectangle selection undo/redo del/ins.
+[12xx.1]- PathGetDisplayName(): strip path(dir) option, to enable to show full path in dialogs.
 [1202.1]- Merged Fortran Lexer keyword/functions suggestions from zoziha.
 [1202.1]- Fortran Lexer keyword/function enhancement.
 [1130.1]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
@@ -56,15 +60,16 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[12xx.1]- Update Scintilla Library (SCI) version 5.1.5 (2021-12-07).
 [1207.1]- Update Lexilla Library (LEX) version 5.1.4 (2021-12-07).
 [1201.1]- Update grepWinNP3 (GRE) version 2.1.9.41 (2021-11-30).
-[1130.1]- Update Scintilla Library (SCI) version 5.1.4 (2021-11-08).
 [1130.1]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-10-19).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[12xx.1]- "grepWinNP3" .ini Path issue in Notepad3 Setup version (GRE).
 [1207.1]- UNC path prefix handling issues.
 [1202.1]- Parsing file arg: relative from working dir.
 [1201.1]- Locale settings dependent Themes Menu (Standard Config).

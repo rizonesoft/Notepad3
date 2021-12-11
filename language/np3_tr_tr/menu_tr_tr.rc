@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Her Dosya İçin Tek Pencere",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Dosya Değişimi Bildirimi...\tAlt+F5",     IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Bip Sesini Sustur",                      IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc &Tuşu Görevi"
         BEGIN

@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Only One Instance per &File",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Muto Messaggio &Bips",                             IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Azione su tasto '&Esc'"
         BEGIN

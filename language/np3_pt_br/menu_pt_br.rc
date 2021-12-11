@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Somente Uma &Instância por Arquivo",                  IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notificação de &Mudança de Arquivo...\tAlt+F5",       IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Deixar Mudo Avisos &Sonoros de Mensagens",            IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Função da &Tecla Esc"
         BEGIN
