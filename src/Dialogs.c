@@ -4325,7 +4325,7 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
                 InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_LOADFILE, Path_Get(hdir_pth));
                 // change dir
             }
-            //if (GetFolderDlg(Globals.hwndMain, hdir_pth, Paths.WorkingDirectory, true)) {
+            //if (GetFolderDlg(Globals.hwndMain, hdir_pth, Paths.WorkingDirectory)) {
             //    InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_LOADFILE, Path_Get(hdir_pth));
             //}
             Path_Release(hdir_pth);
@@ -6582,7 +6582,7 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
 //  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
 //  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
 //
-bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth, bool bSelect)
+bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth)
 {
     if (!hdir_pth_io) {
         return false;
@@ -6591,20 +6591,19 @@ bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth, bool 
     HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
     _CanonicalizeInitialDir(hpth_dir);
 
-    LPCWSTR inidirBuf = NULL;
     DWORD dwAttributes = Path_GetFileAttributes(hpth_dir);
-    if (bSelect || (dwAttributes == INVALID_FILE_ATTRIBUTES) || !(dwAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+    if ((dwAttributes == INVALID_FILE_ATTRIBUTES) || !(dwAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
         Path_RemoveFileSpec(hpth_dir);
     }
-    if (bSelect && (dwAttributes != INVALID_FILE_ATTRIBUTES)) {
-        // if File is root, open the volume instead of open My Computer and select the volume
-        if ((dwAttributes & FILE_ATTRIBUTE_DIRECTORY) && Path_IsRoot(hpth_dir)) {
-            bSelect = false;
-        }
-        else {
-            inidirBuf = Path_Get(hinidir_pth);
-        }
-    }
+    //if (dwAttributes != INVALID_FILE_ATTRIBUTES) {
+    //    // if File is root, open the volume instead of open My Computer and select the volume
+    //    if ((dwAttributes & FILE_ATTRIBUTE_DIRECTORY) && Path_IsRoot(hpth_dir)) {
+    //        bSelect = false;
+    //    }
+    //    else {
+    //        inidirBuf = Path_Get(hinidir_pth);
+    //    }
+    //}
     dwAttributes = Path_GetFileAttributes(hpth_dir);
     if ((dwAttributes == INVALID_FILE_ATTRIBUTES) || !(dwAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
         return false;
@@ -6613,35 +6612,36 @@ bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth, bool 
     Path_Swap(hdir_pth_io, hpth_dir);
     Path_Release(hpth_dir);
 
+    LPCWSTR directory = Path_WriteAccessBuf(hdir_pth_io, PATHLONG_MAX_CCH);
+
     HRESULT hr = S_FALSE;
-    PIDLIST_ABSOLUTE pidl = ILCreateFromPath(Path_WriteAccessBuf(hdir_pth_io, PATHLONG_MAX_CCH));
+    PIDLIST_ABSOLUTE pidl = ILCreateFromPath(directory);
     if (pidl) {
-        PIDLIST_ABSOLUTE pidlEntry = inidirBuf ? ILCreateFromPath(inidirBuf) : NULL;
+        PIDLIST_ABSOLUTE pidlEntry = !Path_IsEmpty(hinidir_pth) ? ILCreateFromPath(Path_Get(hinidir_pth)) : NULL;
         if (pidlEntry) {
             hr = SHOpenFolderAndSelectItems(pidl, 1, (PCUITEMID_CHILD_ARRAY)(&pidlEntry), 0);
             CoTaskMemFree((LPVOID)pidlEntry);
         }
-        else if (!bSelect) {
-#if 0
-            // Use an invalid item to open the folder?
-            hr = SHOpenFolderAndSelectItems(pidl, 1, (LPCITEMIDLIST *)(&pidl), 0);
-#else
-            SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-            sei.fMask = SEE_MASK_IDLIST;
-            sei.hwnd = hwnd;
-            //~sei.lpVerb = L"explore";
-            sei.lpVerb = L"open";
-            sei.lpIDList = (void*)pidl;
-            sei.nShow = SW_SHOW;
+        SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+        sei.fMask = SEE_MASK_IDLIST | SEE_MASK_NOCLOSEPROCESS;
+        sei.hwnd = hwnd;
+        sei.lpVerb = L"explore";
+        //~sei.lpVerb = L"open";
+        sei.lpIDList = (void*)pidl;
+        sei.lpDirectory = NULL; //Path_Get(hinidir_pth);
+        sei.nShow = SW_SHOW;
+        sei.hInstApp = Globals.hInstance;
 
-            const BOOL result = ShellExecuteEx(&sei);
+        const BOOL result = ShellExecuteEx(&sei);
+        if (sei.hProcess) {
+            WaitForSingleObject(sei.hProcess, INFINITE);
+            CloseHandle(sei.hProcess);
             hr = result ? S_OK : S_FALSE;
-#endif
         }
         else {
-            // open parent folder and select the folder
-            hr = SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
+            hr = S_FALSE;
         }
+
         CoTaskMemFree((LPVOID)pidl);
     }
 
