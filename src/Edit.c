@@ -1448,7 +1448,7 @@ bool EditSaveFile(
     DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL | /*FILE_FLAG_NO_BUFFERING |*/ FILE_FLAG_WRITE_THROUGH;
 
     HANDLE hFile = CreateFileW(Path_Get(hfile_pth),
-                               GENERIC_WRITE,
+                               GENERIC_READ | GENERIC_WRITE,
                                FILE_SHARE_READ | FILE_SHARE_WRITE,
                                NULL,
                                OPEN_ALWAYS,
@@ -1463,7 +1463,7 @@ bool EditSaveFile(
         if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
             dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
             hFile = CreateFileW(Path_Get(hfile_pth),
-                                GENERIC_WRITE,
+                                GENERIC_READ | GENERIC_WRITE,
                                 FILE_SHARE_READ|FILE_SHARE_WRITE,
                                 NULL,
                                 OPEN_ALWAYS,
