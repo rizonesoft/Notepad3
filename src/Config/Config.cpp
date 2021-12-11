@@ -939,7 +939,7 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
                 Path_Swap(hpth_in_out, hredirect);
             }
             else {
-                Path_CanonicalizeEx(hpth_in_out);
+                Path_CanonicalizeEx(hpth_in_out, Paths.ModuleDirectory);
             }
             result = true;
         }
@@ -963,7 +963,7 @@ extern "C" bool FindIniFile()
         if (wcscmp(Path_Get(Paths.IniFile), L"*?") == 0) {
             return bFound;
         }
-        Path_CanonicalizeEx(Paths.IniFile);
+        Path_CanonicalizeEx(Paths.IniFile, Paths.ModuleDirectory);
         bFound = _CheckAndSetIniFile(Paths.IniFile);
     } else {
         // Notepad3.ini
@@ -1051,7 +1051,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
             }
         } else {
             HANDLE hFile = CreateFileW(Path_Get(hini_pth),
-                                       GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                                       GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
             if (IS_VALID_HANDLE(hFile)) {

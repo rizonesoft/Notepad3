@@ -1089,7 +1089,7 @@ void PTHAPI Path_GetModuleFilePath(HPATHL hpth_out)
         LPWSTR const buf = Path_WriteAccessBuf(mod_path, PATHLONG_MAX_CCH);
         GetModuleFileNameW(NULL, buf, PATHLONG_MAX_CCH);
         Path_Sanitize(mod_path);
-        Path_CanonicalizeEx(mod_path);
+        Path_Canonicalize(mod_path);
         Path_FreeExtra(mod_path, 0);
     }
 
@@ -1491,7 +1491,7 @@ bool PTHAPI Path_GetLnkPath(const HPATHL hLnkFilePth, HPATHL hResPath_out)
     }
 
     if (bSucceeded && hResPath_out) {
-        Path_CanonicalizeEx(hResPath_out);
+        Path_Canonicalize(hResPath_out);
     }
 
     return bSucceeded;
@@ -1727,7 +1727,7 @@ bool PTHAPI Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth
 //
 //  PathCanonicalizeEx()
 //
-bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out)
+bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
@@ -1737,8 +1737,7 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out)
 
     bool res = false;
     if (_Path_IsRelative(hpth_in_out)) {
-        HPATHL hmod_pth = Path_Allocate(NULL);
-        Path_GetAppDirectory(hmod_pth);
+        HPATHL hmod_pth = Path_Copy(hdir_rel_base);
         Path_Append(hmod_pth, Path_Get(hpth_in_out));
         res = Path_Canonicalize(hmod_pth);
         Path_Swap(hpth_in_out, hmod_pth);
@@ -1793,7 +1792,7 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
         Path_Release(hsrch_pth);
     }
 
-    Path_CanonicalizeEx(hpth_in_out);
+    Path_Canonicalize(hpth_in_out);
     Path_GetLongPathNameEx(hpth_in_out);
 
     if (Path_IsLnkFile(hpth_in_out)) {
@@ -1869,13 +1868,10 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     }
 #endif
 
-    HPATHL hfrom_cpy = Path_Allocate(PathGet(hfrom));
-    HPATHL hto_cpy = Path_Allocate(PathGet(hto));
-
     // ensure comparable paths (no relatives(..\)
-    //~Path_CanonicalizeEx(hfrom_cpy);
-    //~Path_CanonicalizeEx(hto_cpy);
+    HPATHL hfrom_cpy = Path_Allocate(PathGet(hfrom));
     Path_Canonicalize(hfrom_cpy);
+    HPATHL hto_cpy = Path_Allocate(PathGet(hto));
     Path_Canonicalize(hto_cpy);
 
     // get first diff
@@ -2152,7 +2148,7 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
     }
     Path_Release(htmp_pth);
 
-    Path_CanonicalizeEx(hpth_in_out);
+    Path_Canonicalize(hpth_in_out);
 
     // TODO:
     //if (PathGetDriveNumber(wchResult) != -1) {

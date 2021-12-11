@@ -128,7 +128,7 @@ bool PTHAPI            Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_
 bool PTHAPI            Path_CreateFavLnk(LPCWSTR lpszLinkName, const HPATHL hTargetPth, const HPATHL hDirPth);
 bool PTHAPI            Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescription);
 bool PTHAPI            Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle);
-bool PTHAPI            Path_CanonicalizeEx(HPATHL hpth_in_out);
+bool PTHAPI            Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base);
 size_t PTHAPI          Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, bool bRealPath, bool bSearchPathIfRelative);
 bool PTHAPI            Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_from, const HPATHL hto, DWORD attr_to);
 void PTHAPI            Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpandEnv, bool bUnexpandMyDocs);
