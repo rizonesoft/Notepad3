@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Tylko jedna istancja pliku",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Funkcja klawisza Esc"
         BEGIN

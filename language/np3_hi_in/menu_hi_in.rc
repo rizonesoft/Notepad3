@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",     IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_SET_MUTE_MESSAGEBEEP
         POPUP "ESC कुंजी उपयोग (&E)"
         BEGIN

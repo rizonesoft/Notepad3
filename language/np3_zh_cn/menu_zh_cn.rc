@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "对每个文件仅允许单个实例(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "关闭消息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc 键功能(&E)"
         BEGIN

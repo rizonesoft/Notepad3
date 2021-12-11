@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Egy &példány fájlonként",                     IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Üzenethang némítása",                        IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc g&omb funkciója"
         BEGIN

@@ -465,6 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Slechts één instantie per &bestand",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Melding bij bestandswijziging...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Meldingen dempen",                               	IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Functie Esc-&toets"
         BEGIN
