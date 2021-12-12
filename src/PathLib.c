@@ -852,6 +852,7 @@ bool PTHAPI Path_IsEmpty(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
+//  TODO: §§§ make LongPath version instead of slicing MAX_PATH
 bool PTHAPI Path_IsRoot(const HPATHL hpth)
 {
     HSTRINGW hstr = ToHStrgW(hpth);
@@ -860,10 +861,24 @@ bool PTHAPI Path_IsRoot(const HPATHL hpth)
 
     //PrependLongPathPrefix(hpth, false);
 
-    WCHAR wchPathBegin[MAX_PATH_EXPLICIT] = { L'\0' };
-    StringCchCopy(wchPathBegin, COUNTOF(wchPathBegin), StrgGet(hstr));
+    ///WCHAR wchPathBegin[MAX_PATH_EXPLICIT] = { L'\0' };
+    ///StringCchCopy(wchPathBegin, COUNTOF(wchPathBegin), StrgGet(hstr));
+    ///return PathIsRootW(wchPathBegin);
 
-    return PathIsRootW(wchPathBegin);
+    bool res = false;
+    if (StrgGetLength(hstr) >= MAX_PATH_EXPLICIT) {
+        // hack for MAX_PATH_EXPLICIT limit
+        wchar_t const wch = StrgGetAt(hstr, MAX_PATH_EXPLICIT);
+        StrgSetAt(hstr, MAX_PATH_EXPLICIT, L'\0');
+        res = PathIsRootW(StrgGet(hstr));
+        StrgSetAt(hstr, MAX_PATH_EXPLICIT, wch);
+    }
+    else {
+        res = PathIsRootW(StrgGet(hstr));
+    }
+
+    return res;
+
 }
 // ----------------------------------------------------------------------------
 
