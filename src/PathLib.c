@@ -660,7 +660,7 @@ static LPCWSTR _Path_SkipRoot(const HPATHL hpth)
 //=============================================================================
 //
 //  _Path_IsRelative()
-//  TODO: make LongPath version instead of slicing MAX_PATH
+//  TODO: §§§ make LongPath version instead of slicing MAX_PATH
 //
 static bool _Path_IsRelative(const HPATHL hpth)
 {
@@ -985,6 +985,9 @@ bool PTHAPI Path_RemoveFileSpec(HPATHL hpth_in_out)
         StrgDelete(hstr_io, (size_t)(pfile - wbuf), StrgGetLength(hstr_io));
     }
     StrgSanitize(hstr_io);
+
+    StrgTrimRight(hstr_io, L'\\');
+    StrgTrimRight(hstr_io, L'/');
 
     return true;
 }
@@ -1736,7 +1739,7 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     ExpandEnvironmentStrgs(hstr_io, true);
 
     bool res = false;
-    if (_Path_IsRelative(hpth_in_out)) {
+    if (!Path_IsEmpty(hdir_rel_base) && _Path_IsRelative(hpth_in_out)) {
         HPATHL hmod_pth = Path_Copy(hdir_rel_base);
         Path_Append(hmod_pth, Path_Get(hpth_in_out));
         res = Path_Canonicalize(hmod_pth);

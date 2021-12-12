@@ -782,15 +782,17 @@ extern "C" bool IniFileIterateSection(const HPATHL hpthIniFile, LPCWSTR lpSectio
 //
 //  AddFilePathToRecentDocs()
 //
-extern "C" void AddFilePathToRecentDocs(const HPATHL hpthIniFile)
+extern "C" void AddFilePathToRecentDocs(const HPATHL hpthFile)
 {
-    if (Path_IsEmpty(hpthIniFile)) {
+    if (Path_IsEmpty(hpthFile)) {
         return;
     }
+    HPATHL const hpth = Path_Copy(hpthFile);
+    Path_CanonicalizeEx(hpth, NULL);
 
     if (Flags.ShellUseSystemMRU) {
 #if TRUE
-        SHAddToRecentDocs(SHARD_PATHW, Path_Get(hpthIniFile));
+        SHAddToRecentDocs(SHARD_PATHW, Path_Get(hpth));
 #else
         (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
 
@@ -807,6 +809,7 @@ extern "C" void AddFilePathToRecentDocs(const HPATHL hpthIniFile)
         CoUninitialize();
 #endif
     }
+    Path_Release(hpth);
 }
 
 
@@ -2189,7 +2192,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
         if (Globals.bCanSaveIniFile) {
             if (!Settings.SaveRecentFiles) {
                 // Cleanup unwanted MRUs
-                MRU_Empty(Globals.pFileMRU, false);
+                MRU_Empty(Globals.pFileMRU, false, true);
                 MRU_Save(Globals.pFileMRU);
             } else {
                 //int const cnt = MRU_Count(Globals.pFileMRU);
@@ -2198,9 +2201,9 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
             if (!Settings.SaveFindReplace) {
                 // Cleanup unwanted MRUs
-                MRU_Empty(Globals.pMRUfind, false);
+                MRU_Empty(Globals.pMRUfind, false, true);
                 MRU_Save(Globals.pMRUfind);
-                MRU_Empty(Globals.pMRUreplace, false);
+                MRU_Empty(Globals.pMRUreplace, false, true);
                 MRU_Save(Globals.pMRUreplace);
             } else {
                 MRU_MergeSave(Globals.pMRUfind, false, false, false);
@@ -2473,16 +2476,55 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
 #pragma warning(push)
 #pragma warning(disable : 6385 6386)
 
+static void _MRU_DeleteItemInIniFile(LPCWSTR section, LPMRULIST pmru, const int iIndex)
+{
+    bool bOpendByMe = false;
+    OpenSettingsFile(&bOpendByMe);
+
+    if (IsIniFileCached()) {
+
+        WCHAR wchName[32] = { L'\0' };
+
+        if (pmru->pszItems[iIndex]) {
+
+            StringCchPrintf(wchName, COUNTOF(wchName), L"%.2i", iIndex + 1);
+            IniSectionDelete(section, wchName, false);
+
+            if (pmru->iEncoding[iIndex] > 0) {
+                StringCchPrintf(wchName, COUNTOF(wchName), L"ENC%.2i", iIndex + 1);
+                IniSectionDelete(section, wchName, false);
+            }
+            if (pmru->iCaretPos[iIndex] >= 0) {
+                StringCchPrintf(wchName, COUNTOF(wchName), L"POS%.2i", iIndex + 1);
+                IniSectionDelete(section, wchName, false);
+            }
+            if (pmru->iSelAnchPos[iIndex] >= 0) {
+                StringCchPrintf(wchName, COUNTOF(wchName), L"ANC%.2i", iIndex + 1);
+                IniSectionDelete(section, wchName, false);
+            }
+            if (StrIsNotEmpty(pmru->pszBookMarks[iIndex])) {
+                StringCchPrintf(wchName, COUNTOF(wchName), L"BMRK%.2i", iIndex + 1);
+                IniSectionDelete(section, wchName, false);
+            }
+        }
+        CloseSettingsFile(false, bOpendByMe);
+    }
+}
+
+
 bool MRU_Delete(LPMRULIST pmru, int iIndex)
 {
     if (pmru && iIndex < MRU_MAXITEMS) {
         if (iIndex >= 0 && iIndex < pmru->iSize) {
+            
+            _MRU_DeleteItemInIniFile(pmru->szRegKey, pmru, iIndex);
+
             if (pmru->pszItems[iIndex]) {
                 LocalFree(pmru->pszItems[iIndex]);  // StrDup()
                 pmru->pszItems[iIndex] = NULL;
             }
             if (pmru->pszBookMarks[iIndex]) {
-                LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
+                LocalFree(pmru->pszBookMarks[iIndex]); // StrDup()
                 pmru->pszBookMarks[iIndex] = NULL;
             }
             bool bZeroMoved = false;
@@ -2510,19 +2552,22 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
 #pragma warning(pop)
 
 
-bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast)
+bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast, bool bDelete)
 {
     if (pmru) {
         int const beg = bExceptLeast ? 1 : 0;
         for (int i = beg; i < pmru->iSize; ++i) {
             if (pmru->pszItems[i]) {
-                LocalFree(pmru->pszItems[i]);  // StrDup()
+                if (bDelete) {
+                    _MRU_DeleteItemInIniFile(pmru->szRegKey, pmru, i);
+                }
+                LocalFree(pmru->pszItems[i]); // StrDup()
                 pmru->pszItems[i] = NULL;
                 pmru->iEncoding[i] = 0;
                 pmru->iCaretPos[i] = -1;
                 pmru->iSelAnchPos[i] = -1;
                 if (pmru->pszBookMarks[i]) {
-                    LocalFree(pmru->pszBookMarks[i]);  // StrDup()
+                    LocalFree(pmru->pszBookMarks[i]); // StrDup()
                     pmru->pszBookMarks[i] = NULL;
                 }
             }
@@ -2562,7 +2607,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
         int n = 0;
         if (IsIniFileCached()) {
 
-            MRU_Empty(pmru, false);
+            MRU_Empty(pmru, false, false);
 
             const WCHAR* const RegKey_Section = pmru->szRegKey;
 

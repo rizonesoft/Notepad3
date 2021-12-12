@@ -2554,10 +2554,7 @@ CASE_WM_CTLCOLOR_SET:
 
         case IDC_CLEAR_LIST:
             ListView_DeleteAllItems(hwndLV);
-            MRU_Empty(Globals.pFileMRU, Path_IsNotEmpty(Paths.CurrentFile));
-            if (Globals.bCanSaveIniFile) {
-                MRU_Save(Globals.pFileMRU);
-            }
+            MRU_Empty(Globals.pFileMRU, Path_IsNotEmpty(Paths.CurrentFile), Globals.bCanSaveIniFile);
             SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
             break;
 
