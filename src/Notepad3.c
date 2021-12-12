@@ -4842,7 +4842,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             if (s_flagPasteBoard) {
                 s_bLastCopyFromMe = true;
             }
+            UndoTransActionBegin();
             SciCall_Paste();
+            EndUndoTransAction();
         }
         break;
 

@@ -203,8 +203,8 @@ void ObserveNotifyDocChangedEvent();
 // ----------------------------------------------------------------------------
 
 // lean msg change notify
-#define DocChangeTransactionBegin()  __try { SciCall_BeginUndoAction(); IgnoreNotifyDocChangedEvent(EVM_Default);
-#define EndDocChangeTransaction()    } __finally { ObserveNotifyDocChangedEvent(); SciCall_EndUndoAction(); }
+#define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent(EVM_Default); SciCall_BeginUndoAction(); 
+#define EndDocChangeTransaction()    } __finally { SciCall_EndUndoAction(); ObserveNotifyDocChangedEvent(); }
 
 // ----------------------------------------------------------------------------
 
