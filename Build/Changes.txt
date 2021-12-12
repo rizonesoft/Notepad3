@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1211.(build_#) (2021-12-11)
+Current BETA/RC Version 5.21.1212.(build_#) (2021-12-12)
 ========================================================
 
 --------------------------------------------------------
@@ -69,6 +69,9 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1212.1]- Performance issue on pasting clipboard.
+[1212.1]- Add to recent documents issue.
+[1212.1]- File History: delete file in list and .ini-file.
 [1211.1]- "grepWinNP3" .ini Path issue in Notepad3 Setup version (GRE).
 [1207.1]- UNC path prefix handling issues.
 [1202.1]- Parsing file arg: relative from working dir.
