@@ -6828,10 +6828,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             break;
 
         case IDACC_CLEAR_FIND_HISTORY:
-            MRU_Empty(Globals.pMRUfind, false);
-            if (Globals.bCanSaveIniFile) {
-                MRU_Save(Globals.pMRUfind);
-            }
+            MRU_Empty(Globals.pMRUfind, false, Globals.bCanSaveIniFile);
             if (s_pEfrData) {
                 StrgEmpty(s_pEfrData->chFindPattern, false);
             }
@@ -6841,10 +6838,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             break;
 
         case IDACC_CLEAR_REPL_HISTORY:
-            MRU_Empty(Globals.pMRUreplace, false);
-            if (Globals.bCanSaveIniFile) {
-                MRU_Save(Globals.pMRUreplace);
-            }
+            MRU_Empty(Globals.pMRUreplace, false, Globals.bCanSaveIniFile);
             if (s_pEfrData) {
                 StrgEmpty(s_pEfrData->chReplaceTemplate, false);
             }

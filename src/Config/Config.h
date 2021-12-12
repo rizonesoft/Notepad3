@@ -133,7 +133,7 @@ bool IniFileIterateSection(const HPATHL hpthIniFile, LPCWSTR lpSectionName, Iter
 
 //==== MRU Functions ==========================================================
 
-void AddFilePathToRecentDocs(const HPATHL hpthIniFile);
+void AddFilePathToRecentDocs(const HPATHL hpthFile);
 //void ClearDestinationsOnRecentDocs();
 
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);
@@ -143,7 +143,7 @@ bool      MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex);
 bool      MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex);
 bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks);
 bool      MRU_Delete(LPMRULIST pmru, int iIndex);
-bool      MRU_Empty(LPMRULIST pmru, bool bExceptLeast);
+bool      MRU_Empty(LPMRULIST pmru, bool bExceptLeast, bool bDelete);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);
 bool      MRU_Load(LPMRULIST pmru, bool bFileProps);
 void      MRU_Save(LPMRULIST pmru);
