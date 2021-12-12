@@ -1870,11 +1870,8 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     HSTRINGW hrecv_str = ToHStrgW(hrecv);
     StrgEmpty(hrecv_str, false); // init
 
-    //  TODO: consider attr_from/attr_to  ???
-    //bool from_is_dir = (attr_from & FILE_ATTRIBUTE_DIRECTORY);
-    //bool to_is_dir = (attr_to & FILE_ATTRIBUTE_DIRECTORY);
-    UNREFERENCED_PARAMETER(attr_from);
-    UNREFERENCED_PARAMETER(attr_to);
+    bool from_is_dir = (attr_from & FILE_ATTRIBUTE_DIRECTORY);
+    bool to_is_dir = (attr_to & FILE_ATTRIBUTE_DIRECTORY);
 
 #if 0
     // DEBUG
@@ -1891,6 +1888,18 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     Path_Canonicalize(hfrom_cpy);
     HPATHL hto_cpy = Path_Allocate(PathGet(hto));
     Path_Canonicalize(hto_cpy);
+
+    // dirs should en with backslash
+    if (from_is_dir) {
+        HSTRINGW hstr_from = ToHStrgW(hfrom_cpy);
+        StrgTrimRight(hstr_from, L'\\');
+        StrgCat(hstr_from, L"\\");
+    }
+    if (to_is_dir) {
+        HSTRINGW hstr_cpy = ToHStrgW(hto_cpy);
+        StrgTrimRight(hstr_cpy, L'\\');
+        StrgCat(hstr_cpy, L"\\");
+    }
 
     // get first diff
     LPCWSTR hfrom_buf = PathGet(hfrom_cpy);
@@ -1997,18 +2006,18 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
     //~HPATHL hwindows_pth = Path_Allocate(NULL);
     //~Path_GetKnownFolder(&FOLDERID_Windows, hwindows_pth); // deprecated
 
+    bool const bPathIsRelative = _Path_IsRelative(hpth_in_out);
+    bool const bAppPathIsUsrDoc = Path_IsPrefix(husrdoc_pth, happdir_pth);
+    bool const bPathIsPrefixUsrDoc = Path_IsPrefix(husrdoc_pth, hpth_in_out);
+    DWORD      dwAttrTo = (bSrcIsFile) ? FILE_ATTRIBUTE_NORMAL : FILE_ATTRIBUTE_DIRECTORY;
+    
     HPATHL htmp_pth = Path_Allocate(NULL);
-
-    DWORD dwAttrTo = (bSrcIsFile) ? FILE_ATTRIBUTE_NORMAL : FILE_ATTRIBUTE_DIRECTORY;
-    if (bUnexpandMyDocs &&
-        !_Path_IsRelative(hpth_in_out) &&
-        !Path_IsPrefix(husrdoc_pth, happdir_pth) &&
-        Path_IsPrefix(husrdoc_pth, hpth_in_out) &&
-        _Path_RelativePathTo(htmp_pth, husrdoc_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
+    if (bUnexpandMyDocs && !bPathIsRelative && !bAppPathIsUsrDoc && bPathIsPrefixUsrDoc
+        && _Path_RelativePathTo(htmp_pth, husrdoc_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
         Path_Reset(hpth_in_out, PATH_CSIDL_MYDOCUMENTS);
         Path_Append(hpth_in_out, Path_Get(htmp_pth));
     }
-    else if (!_Path_IsRelative(hpth_in_out) && !Path_CommonPrefix(happdir_pth, hprgs_pth, NULL)) {
+    else if (!bPathIsRelative && !Path_CommonPrefix(happdir_pth, hprgs_pth, NULL)) {
         if (_Path_RelativePathTo(htmp_pth, happdir_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
             Path_Swap(hpth_in_out, htmp_pth);
         }

@@ -2544,11 +2544,6 @@ CASE_WM_CTLCOLOR_SET:
                 // must use IDM_VIEW_REFRESH, index might change...
                 SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
             }
-
-            if (Settings.SaveRecentFiles && Globals.bCanSaveIniFile) {
-                MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
-            }
-
         }
         break;
 
