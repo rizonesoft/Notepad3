@@ -1830,9 +1830,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_QUERYENDSESSION:
         if (Settings.AutoSaveOptions & ASB_Shutdown) {
-            AutoSaveDoWork(true);
+            AutoSaveDoWork(FSF_EndSession);
         }
-        if (FileSave(FSF_Ask | FSF_EndSession)) {
+        else if (FileSave(FSF_Ask | FSF_EndSession)) {
             return TRUE;
         }
         break;
@@ -1841,7 +1841,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (wParam == PBT_APMSUSPEND) {
             // we only have 2 seconds to save current file
             if (Settings.AutoSaveOptions & ASB_Suspend) {
-                AutoSaveDoWork(true);
+                AutoSaveDoWork(FSF_None);
             }
         }
         break;
@@ -2998,7 +2998,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
 
         // Terminate AutoSave
-        AutoSaveStop(true);
+        AutoSaveStop();
 
         // Terminate file watching
         InstallFileWatching(false);
@@ -6210,7 +6210,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 AutoSaveStart(periodSav != Settings.AutoSaveInterval);
             }
             else {
-                AutoSaveStop(false);
+                AutoSaveStop();
             }
         }
     }
@@ -6320,7 +6320,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_SHIFTESC:
-        FileSave(FSF_None);
+        FileSave(FSF_EndSession);
     case IDT_FILE_EXIT:
         CloseApplication();
         break;
@@ -10397,7 +10397,7 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
         fSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status, fLoadFlags, bSetSavePoint);
     } else {
         int idx;
-        if (MRU_FindFile(Globals.pFileMRU, Path_Get(hfile_pth), &idx)) {
+        if (MRU_FindPath(Globals.pFileMRU, hfile_pth, &idx)) {
             Globals.pFileMRU->iEncoding[idx] = status->iEncoding;
             Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : -1);
             Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetAnchor() : -1);
@@ -10528,7 +10528,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         UpdateTitleBar(Globals.hwndMain);
 
         // Terminate file watching
-        AutoSaveStop(true);
+        AutoSaveStop();
         InstallFileWatching(false); // terminate
         if (Settings.ResetFileWatching) {
             _ResetFileWatchingMode();
@@ -10611,7 +10611,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
     }
     else {
         int idx;
-        if (!(fLoadFlags & FLF_Reload) && MRU_FindFile(Globals.pFileMRU, Path_Get(hopen_file), &idx)) {
+        if (!(fLoadFlags & FLF_Reload) && MRU_FindPath(Globals.pFileMRU, hopen_file, &idx)) {
             fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
             if (Encoding_IsValid(fioStatus.iEncoding)) {
                 Encoding_SrcWeak(fioStatus.iEncoding);
@@ -10660,13 +10660,14 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         DocPos  iCaretPos = -1;
         DocPos  iAnchorPos = -1;
         LPCWSTR pszBookMarks = L"";
-        if (!(fLoadFlags & FLF_Reload) && MRU_FindFile(Globals.pFileMRU, Path_Get(Paths.CurrentFile), &idx)) {
+        if (!(fLoadFlags & FLF_Reload) && MRU_FindPath(Globals.pFileMRU, Paths.CurrentFile, &idx)) {
             iCaretPos = Globals.pFileMRU->iCaretPos[idx];
             iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
             pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
         }
         if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
-            MRU_AddFile(Globals.pFileMRU, Path_Get(Paths.CurrentFile), Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
+            MRU_AddPath(Globals.pFileMRU, Paths.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
+            AddFilePathToRecentDocs(Paths.CurrentFile);
         }
 
         EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
@@ -10675,7 +10676,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         }
 
         // Install watching of the current file
-        AutoSaveStop(!(fLoadFlags & FLF_Reload));
+        AutoSaveStop();
         if (!(fLoadFlags & FLF_Reload)) {
             InstallFileWatching(false); // terminate previous
             if (Settings.ResetFileWatching) {
@@ -10998,7 +10999,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             }
             Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
-        AutoSaveStop(fSaveFlags & FSF_EndSession);
+        AutoSaveStop();
         ResetFileObservationData(true);
         return true;
     }
@@ -11018,7 +11019,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
         case IDCANCEL:
             return false;
         case IDNO:
-            AutoSaveStop(false);
+            AutoSaveStop();
             return true;
         default:
             // proceed
@@ -11106,7 +11107,8 @@ bool FileSave(FileSaveFlags fSaveFlags)
             const DocPos iAnchorPos = Sci_IsMultiOrRectangleSelection() ? -1 : SciCall_GetAnchor();
             WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
             EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-            MRU_AddFile(Globals.pFileMRU, Path_Get(Paths.CurrentFile), Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
+            MRU_AddPath(Globals.pFileMRU, Paths.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
+            AddFilePathToRecentDocs(Paths.CurrentFile);
 
             SetSavePoint();
 
@@ -11163,7 +11165,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
         }
     }
     if (fSuccess) {
-        AutoSaveStop(fSaveFlags & FSF_EndSession);
+        AutoSaveStop();
         ResetFileObservationData(true);
     }
 
@@ -12120,10 +12122,8 @@ void AutoSaveStart(bool bReset)
 //
 //  AutoSaveStop()
 //
-void AutoSaveStop(bool bKeepBackup)
+void AutoSaveStop()
 {
-    UNREFERENCED_PARAMETER(bKeepBackup);
-
     if (s_bAutoSaveTimerSet) {
         s_bAutoSaveTimerSet = false;
         KillTimer(Globals.hwndMain, ID_AUTOSAVETIMER);
@@ -12135,14 +12135,12 @@ void AutoSaveStop(bool bKeepBackup)
 //
 //  AutoSaveDoWork()
 //
-void AutoSaveDoWork(bool bKeepBackup)
+void AutoSaveDoWork(FileSaveFlags fSaveFlags)
 {
-    UNREFERENCED_PARAMETER(bKeepBackup);
-
 	if (!IsDocumentModified()) {
         return;
     }
-    FileSave(FSF_None);
+    FileSave(fSaveFlags | FSF_AutoSave);
 }
 
 //=============================================================================
@@ -12156,7 +12154,7 @@ void CALLBACK AutoSaveTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dw
     UNREFERENCED_PARAMETER(idEvent);
     UNREFERENCED_PARAMETER(dwTime);
 
-    AutoSaveDoWork(false);
+    AutoSaveDoWork(FSF_None);
 }
 
 

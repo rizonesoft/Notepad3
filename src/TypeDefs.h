@@ -791,7 +791,8 @@ typedef enum FileSaveFlags {
     FSF_Ask               = 1 << 1,
     FSF_SaveAs            = 1 << 2,
     FSF_SaveCopy          = 1 << 3,
-    FSF_EndSession        = 1 << 4
+    FSF_AutoSave          = 1 << 4,
+    FSF_EndSession        = 1 << 5
 
 } FileSaveFlags;
 
