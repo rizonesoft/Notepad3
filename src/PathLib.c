@@ -1751,6 +1751,13 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     if (!hstr_io)
         return false;
 
+    if (StrgFind(hstr_io, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
+
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth);
+        StrgReplace(hstr_io, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
     ExpandEnvironmentStrgs(hstr_io, true);
 
     bool res = false;
@@ -1991,19 +1998,19 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
         return;
     }
 
-    HPATHL happdir_pth = Path_Allocate(NULL);
+    HPATHL const happdir_pth = Path_Allocate(NULL);
     Path_GetAppDirectory(happdir_pth);
 
-    HPATHL husrdoc_pth = Path_Allocate(NULL);
+    HPATHL const husrdoc_pth = Path_Allocate(NULL);
     Path_GetKnownFolder(&FOLDERID_Documents, husrdoc_pth);
 
-    HPATHL hprgs_pth = Path_Allocate(NULL);
+    HPATHL const hprgs_pth = Path_Allocate(NULL);
 #ifdef _WIN64
     Path_GetKnownFolder(&FOLDERID_ProgramFiles, hprgs_pth);
 #else
     Path_GetKnownFolder(&FOLDERID_ProgramFilesX86, hprgs_pth);
 #endif
-    //~HPATHL hwindows_pth = Path_Allocate(NULL);
+    //~HPATHL const hwindows_pth = Path_Allocate(NULL);
     //~Path_GetKnownFolder(&FOLDERID_Windows, hwindows_pth); // deprecated
 
     bool const bPathIsRelative = _Path_IsRelative(hpth_in_out);
@@ -2023,14 +2030,15 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
         }
     }
 
-    if (bUnexpandEnv) {
-        Path_UnExpandEnvStrings(hpth_in_out);
-    }
-
     Path_Release(htmp_pth);
     Path_Release(hprgs_pth);
     Path_Release(husrdoc_pth);
     Path_Release(happdir_pth);
+
+    if (bUnexpandEnv) {
+        Path_UnExpandEnvStrings(hpth_in_out);
+    }
+
 }
 // ----------------------------------------------------------------------------
 
@@ -2156,6 +2164,7 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
     HSTRINGW htmp_str = ToHStrgW(htmp_pth); // inplace hpth_in_out
 
     if (StrgFind(hstr_in_out, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
+
         HPATHL hfld_pth = Path_Allocate(NULL);
         Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth);
         StrgReplace(htmp_str, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));

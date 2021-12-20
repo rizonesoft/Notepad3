@@ -1486,8 +1486,8 @@ bool EditSaveFile(
         return false;
     }
 
-    // maybe not enough time to do that (WM_POWERBROADCAST, WM_QUERYENDSESSION)
-    if (!(fSaveFlags & FSF_EndSession)) { 
+    // maybe not enough time to do that (WM_POWERBROADCAST)
+    if ((fSaveFlags & FSF_EndSession) || !(fSaveFlags & FSF_AutoSave)) { 
 
         // ensure consistent line endings
         if (Settings.FixLineEndings) {
@@ -1655,7 +1655,7 @@ bool EditSaveFile(
 
     CloseHandle(hFile);
 
-    if (bWriteSuccess && !(fSaveFlags & FSF_SaveCopy)) {
+    if (bWriteSuccess && (!(fSaveFlags & (FSF_SaveCopy | FSF_AutoSave)) || (fSaveFlags & FSF_EndSession))) {
         SetSavePoint();
     }
     return bWriteSuccess;

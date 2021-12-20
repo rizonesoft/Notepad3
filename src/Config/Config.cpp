@@ -2332,7 +2332,7 @@ bool MRU_Destroy(LPMRULIST pmru)
 }
 
 
-int MRU_Compare(LPMRULIST pmru, LPCWSTR psz1, LPCWSTR psz2)
+static int _MRU_Compare(LPMRULIST pmru, LPCWSTR psz1, LPCWSTR psz2)
 {
     if (pmru) {
         if (pmru->iFlags & MRU_NOCASE) {
@@ -2349,7 +2349,7 @@ bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos
     if (pmru) {
         int i = 0;
         for (; i < pmru->iSize; ++i) {
-            if (MRU_Compare(pmru, pmru->pszItems[i], pszNew) == 0) {
+            if (_MRU_Compare(pmru, pmru->pszItems[i], pszNew) == 0) {
                 LocalFree(pmru->pszItems[i]); // StrDup()
                 pmru->pszItems[i] = NULL;
                 break;
@@ -2374,48 +2374,19 @@ bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos
 }
 
 
-bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
-{
-    *iIndex = 0;
-    bool res = false;
-    if (pmru) {
-        HPATHL hpth = Path_Allocate(NULL);
-        int    i = 0;
-        for (i = 0; i < pmru->iSize; ++i) {
-            if (pmru->pszItems[i] == NULL) {
-                break;
-            }
-            if (StringCchCompareXI(pmru->pszItems[i], pszFile) == 0) {
-                res = true;
-                break;
-            }
-            Path_Reset(hpth, pmru->pszItems[i]);
-            Path_AbsoluteFromApp(hpth, true);
-            if (StringCchCompareXI(Path_Get(hpth), pszFile) == 0) {
-                res = true;
-                break;
-            }
-        }
-        *iIndex = i;
-        Path_Release(hpth);
-    }
-    return res;
-}
-
-
 bool MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex)
 {
     *iIndex = 0;
     bool res = false;
     if (pmru) {
+
+        HPATHL hcpy = Path_Copy(hpth);
+        Path_AbsoluteFromApp(hcpy, true);
+
         HPATHL hcmp = Path_Allocate(NULL);
         int    i = 0;
         for (i = 0; i < pmru->iSize; ++i) {
             if (pmru->pszItems[i] == NULL) {
-                break;
-            }
-            if (StringCchCompareXI(pmru->pszItems[i], Path_Get(hpth)) == 0) {
-                res = true;
                 break;
             }
             Path_Reset(hcmp, pmru->pszItems[i]);
@@ -2426,17 +2397,20 @@ bool MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex)
             }
         }
         *iIndex = i;
+
         Path_Release(hcmp);
+        Path_Release(hcpy);
     }
     return res;
 }
 
-bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
+
+bool MRU_AddPath(LPMRULIST pmru, const HPATHL hpth, bool bRelativePath, bool bUnexpandMyDocs,
                  cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
     if (pmru) {
         int i = 0;
-        bool const bAlreadyInList = MRU_FindFile(pmru, pszFile, &i);
+        bool const bAlreadyInList = MRU_FindPath(pmru, hpth, &i);
         if (bAlreadyInList) {
             LocalFree(pmru->pszItems[i]);  // StrDup()
             pmru->pszItems[i] = NULL;
@@ -2451,21 +2425,18 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
             pmru->pszBookMarks[i] = pmru->pszBookMarks[i - 1];
         }
 
-        HPATHL const hpth = Path_Allocate(pszFile);
+        HPATHL hpth_cpy = Path_Copy(hpth);
+
         if (bRelativePath) {
-            Path_RelativeToApp(hpth, true, true, bUnexpandMyDocs);
+            Path_RelativeToApp(hpth_cpy, true, true, bUnexpandMyDocs);
         }
-        pmru->pszItems[0] = StrDupW(Path_Get(hpth)); // LocalAlloc()
+        pmru->pszItems[0] = StrDupW(Path_Get(hpth_cpy)); // LocalAlloc()
         pmru->iEncoding[0] = iEnc;
         pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
         pmru->iSelAnchPos[0] = (Settings.PreserveCaretPos ? iSelAnc : -1);
         pmru->pszBookMarks[0] = (pszBookMarks ? StrDupW(pszBookMarks) : NULL);  // LocalAlloc()
 
-        if (!bAlreadyInList) {
-            AddFilePathToRecentDocs(hpth);
-        }
-
-        Path_Release(hpth);
+        Path_Release(hpth_cpy);
 
         return bAlreadyInList;
     }
@@ -2712,7 +2683,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
                     if (pmru->pszItems[i]) {
                         Path_Reset(hpth, pmru->pszItems[i]);
                         Path_AbsoluteFromApp(hpth, true);
-                        MRU_AddFile(pmruBase, Path_Get(hpth), bRelativePath, bUnexpandMyDocs,
+                        MRU_AddPath(pmruBase, hpth, bRelativePath, bUnexpandMyDocs,
                                     pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
                     }
                 }

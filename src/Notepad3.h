@@ -166,8 +166,8 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 void          InstallFileWatching(const bool bInstall);
 
 void AutoSaveStart(bool bReset);
-void AutoSaveStop(bool bKeepBackup);
-void AutoSaveDoWork(bool bKeepBackup);
+void AutoSaveStop();
+void AutoSaveDoWork(FileSaveFlags fSaveFlags);
 void CALLBACK AutoSaveTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 //LPCWSTR BackupGetDefaultFolder(HPATHL hfile_pth_io);
