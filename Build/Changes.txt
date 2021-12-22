@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1212.(build_#) (2021-12-12)
+Current BETA/RC Version 5.21.1222.(build_#) (2021-12-22)
 ========================================================
 
 --------------------------------------------------------
@@ -69,6 +69,9 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1222.1]- Support User-Doc on Recent Files Jump List.
+[1222.1]- Trim line endings on Save except AutoSave.
+[1222.1]- Find user docs special folder var.
 [1212.1]- Performance issue on pasting clipboard.
 [1212.1]- Add to recent documents issue.
 [1212.1]- File History: delete file in list and .ini-file.
