@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1222.(build_#) (2021-12-22)
+Current BETA/RC Version 5.21.1226.(build_#) (2021-12-26)
 ========================================================
 
 --------------------------------------------------------
@@ -48,6 +48,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1211.6]- In Windows 11, running "notepad" from "Run" (Win+R) launches "Notepad3".
 [1211.1]- Removing unnecessary "ToShortPath" operations.
 [1211.1]- Small performance enhancement for large rectangle selection undo/redo del/ins.
 [1211.1]- PathGetDisplayName(): strip path(dir) option, to enable to show full path in dialogs.
