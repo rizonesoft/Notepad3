@@ -465,7 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "파일당 하나의 인스턴스만(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "파일 변경 알림(&C)...\tAlt+F5",           IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "자동 저장 / 백업 설정...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "메시지 경고음 음소거(&M)",                  IDM_SET_MUTE_MESSAGEBEEP
         POPUP "ESC 키 기능(&E)"
         BEGIN
