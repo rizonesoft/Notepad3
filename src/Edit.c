@@ -101,13 +101,13 @@ static LPCWSTR const s_pUnicodeRegEx = L"(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([
 
 //#define HYPLNK_REGEX_VALID_CDPT L"a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$"
 
-#define HYPLNK_REGEX_VALID_CDPT "\\p{L}\\p{N}\\p{S}+&@#/%=~_|$"
+#define HYPLNK_REGEX_VALID_CDPT    "\\p{L}\\p{N}\\p{Sc}\\p{So}\\*\\[\\];^°+§&@#/%=~_|'\""
 
 static LPCSTR const s_pUrlRegExA = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-                                   "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"
-                                   "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[" HYPLNK_REGEX_VALID_CDPT "])";
+                                   "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-)" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"
+                                   "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[)" HYPLNK_REGEX_VALID_CDPT "])";
 
-#define HYPLNK_REGEX_VALID_CDPT_W    L"\\p{L}\\p{N}\\p{S}+&@#/%=~_|$"
+#define HYPLNK_REGEX_VALID_CDPT_W  L"\\p{L}\\p{N}\\p{Sc}\\p{So}\\*\\[\\];^°+§&@#/%=~_|'\""
 
 static LPCWSTR const s_pUrlRegEx = L"\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
                                    L"(?:\\([-" HYPLNK_REGEX_VALID_CDPT_W L"?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT_W L"?!:,.])*"
