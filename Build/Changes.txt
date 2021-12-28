@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1226.(build_#) (2021-12-26)
+Current BETA/RC Version 5.21.1228.(build_#) (2021-12-28)
 ========================================================
 
 --------------------------------------------------------
@@ -48,7 +48,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[1211.6]- In Windows 11, running "notepad" from "Run" (Win+R) launches "Notepad3".
+[1228.1]- AboutBox's RichEdit Ctrl: enable more options for EM_AUTOURLDETECT.
+[1228.1]- Hyperlink RegEx Scanner: don't allow XML tagging brackets as part of Hyperlink text.
+[1226.1]- In Windows 11, running "Notepad" from "Run" (Win+R) launches "Notepad3".
 [1211.1]- Removing unnecessary "ToShortPath" operations.
 [1211.1]- Small performance enhancement for large rectangle selection undo/redo del/ins.
 [1211.1]- PathGetDisplayName(): strip path(dir) option, to enable to show full path in dialogs.
@@ -70,6 +72,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1228.1]- Allow hyperlinks end in dashes.
 [1222.1]- Support User-Doc on Recent Files Jump List.
 [1222.1]- Trim line endings on Save except AutoSave.
 [1222.1]- Find user docs special folder var.
