@@ -110,8 +110,8 @@ IDS_MUI_ABOUT_LIBS  "\
 "
 
 //
-// Note for "craigo-", from the list of "Acknowledgments:", to access its right
-// site, a slash "/" must be added after its name (like this: "craigo-/") !
+// Note for "craigo-", in the "Acknowledgments:" list, to access the right site,
+// a slash "/" must be added after its name (like this: "craigo-/") !
 //
 
 IDS_MUI_ABOUT_ACKNOWLEDGES  "\
