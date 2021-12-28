@@ -71,7 +71,7 @@ IDC_COPY                CURSOR                  "Copy.cur"
 // =============================================================================
 // Following Text is streamed to RichEdit Control supporting ANSI CP-1252 only
 // Unicode characters have to be encoded using '\\uN<ch>' sequences.
-// Example: Kï¿½ng => K\\u252ï¿½ng
+// Example: Küng => K\\u252nng
 // =============================================================================
 
 STRINGTABLE
@@ -100,7 +100,7 @@ IDS_MUI_ABOUT_CONTRIBS  "\
 IDS_MUI_ABOUT_LIBS  "\
 \\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org\\par\
 \\cf0 K.Kosako (Oniguruma Regex)\\tab https://github.com/kkos/oniguruma\\par\
-\\cf0 Stefan K\\u252ï¿½ng (grepWin)\\tab https://github.com/stefankueng/grepWin\\par\
+\\cf0 Stefan K\\u252nng (grepWin)\\tab https://github.com/stefankueng/grepWin\\par\
 \\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
 \\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash\\par\
 \\cf0 Carbo Kuo (Mozilla's uchardet)\\tab https://www.freedesktop.org/wiki/Software/uchardet\\par\
