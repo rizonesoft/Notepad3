@@ -85,13 +85,13 @@ static LPCWSTR const s_pColorRegEx_Tr = L"#([0-9a-fA-F]){8}";                // 
 static LPCWSTR const s_pUnicodeRegEx = L"(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([0-9a-fA-F]){2})+";
 
 // https://mathiasbynens.be/demo/url-regex : @stephenhay
-//static const char* s_pUrlRegEx = L"\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
+//#define HYPLNK_REGEX_FULL   L"\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*"
 
 // using  Gruber's  Liberal Regex Pattern for All URLs (https://gist.github.com/gruber/249502)
 /// => unfortunately to slow to use as scanner
-//static LPCWSTR const s_pUrlRegEx = L"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)"
-//                                   L"(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+"
-//                                   L"(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))";
+//#define HYPLNK_REGEX_FULL   L"(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)"\
+//                            L"(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+"\
+//                            L"(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))"
 
 // --- pretty fast ---
 // https://www.regular-expressions.info/unicode.html
@@ -99,19 +99,16 @@ static LPCWSTR const s_pUnicodeRegEx = L"(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([
 // \p{N} :  any kind of numeric character in any script
 // \p{S} :  math symbols, currency signs, dingbats, box-drawing characters, etc.
 
-//#define HYPLNK_REGEX_VALID_CDPT L"a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$"
+//#define HYPLNK_REGEX_VALID_CDPT   L"a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$"
 
 #define HYPLNK_REGEX_VALID_CDPT    "\\p{L}\\p{N}\\p{Sc}\\p{So}\\*\\[\\];^°+§&@#/%=~_|'\""
 
-static LPCSTR const s_pUrlRegExA = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-                                   "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"
-                                   "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "])";
+#define HYPLNK_REGEX_FULL   "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"\
+                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"\
+                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "])"
 
-#define HYPLNK_REGEX_VALID_CDPT_W  L"\\p{L}\\p{N}\\p{Sc}\\p{So}\\*\\[\\];^°+§&@#/%=~_|'\""
-
-static LPCWSTR const s_pUrlRegEx = L"\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-                                   L"(?:\\([-" HYPLNK_REGEX_VALID_CDPT_W L"?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT_W L"?!:,.])*"
-                                   L"(?:\\([-" HYPLNK_REGEX_VALID_CDPT_W L"?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT_W L"])";
+static LPCSTR const s_pUrlRegExA = HYPLNK_REGEX_FULL;
+static LPCWSTR const s_pUrlRegEx = _W(HYPLNK_REGEX_FULL);
 
 // ----------------------------------------------------------------------------
 
