@@ -12,7 +12,7 @@ rem *   Batch file for creating "Portable (*.zip)" packages                     
 rem *                                                                            *
 rem * See License.txt for details about distribution and modification.           *
 rem *                                                                            *
-rem *                                                 (c) Rizonesoft 2008-2021   *
+rem *                                                 (c) Rizonesoft 2008-2022   *
 rem *                                                   https://rizonesoft.com   *
 rem *                                                                            *
 rem ******************************************************************************

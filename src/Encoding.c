@@ -10,7 +10,7 @@
 *                                                                             *
 *                                                                             *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2021   *
+*                                                  (c) Rizonesoft 2008-2022   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

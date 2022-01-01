@@ -1,6 +1,6 @@
-﻿;* Notepad3 - Installer script
+﻿;* Notepad3 - Installer script x86
 ;*
-;* (c) Rizonesoft 2008-2021
+;* (c) Rizonesoft 2008-2022
 
 ; Requirements:
 ; Inno Setup: https://www.jrsoftware.org/isdl.php
@@ -23,7 +23,7 @@
 #define app_name "Notepad3"
 #define app_publisher "Rizonesoft"
 #define app_version GetVersionNumbersString(bindir + "\Release_x86_v143\Notepad3.exe")
-#define app_copyright "Copyright © 2008-2021 Rizonesoft"
+#define app_copyright "Copyright © 2008-2022 Rizonesoft"
 #define quick_launch "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
 [Setup]
@@ -192,7 +192,8 @@ Filename: "{userappdata}\Rizonesoft\Notepad3\Notepad3.ini"; Section: "Settings";
 
 [Registry]
 Root: "HKLM"; Subkey: "SYSTEM\CurrentControlSet\Control\FileSystem"; ValueType: dword; ValueName: "LongPathsEnabled"; ValueData: "1"
-;The following "Keys/Values" are required to allow a "Notepad3 Replacement" in Windows 11.
+;The following "Keys/Values" are required to allow a "MS Notepad Replacement" in Windows 11.
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\notepad.exe"; Flags: deletekey
 Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe"; ValueType: dword; ValueName: "UseFilter"; ValueData: "1"
 Root: "HKCR"; Subkey: ".inf"; ValueType: string; ValueData: "inffile"
 Root: "HKCR"; Subkey: ".ini"; ValueType: string; ValueData: "inifile"

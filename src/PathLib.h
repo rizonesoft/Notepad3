@@ -8,7 +8,7 @@
 *   Definition for dynamic wide char Long Path handling                       *
 *   Based on DynStrg module                                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2021        *
+*                                                  (c) Rizonesoft 2008-2022   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
