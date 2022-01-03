@@ -716,41 +716,42 @@ bool Style_Import(HWND hwnd)
 //
 static void _LoadLexerFileExtensions()
 {
-    bool bOpendByMe;
-    OpenSettingsFile(&bOpendByMe);
+    bool bOpenedByMe = false;
+    if (OpenSettingsFile(&bOpenedByMe)) {
 
-    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
-        LPCWSTR Lexer_Section = g_pLexArray[iLexer]->pszName;
+            LPCWSTR Lexer_Section = g_pLexArray[iLexer]->pszName;
 
-        if ((Globals.iCfgVersionRead < CFG_VER_0004) && (iLexer < 2)) {
-            Lexer_Section = (iLexer == 0) ? L"Default Text" : L"2nd Default Text";
-        }
+            if ((Globals.iCfgVersionRead < CFG_VER_0004) && (iLexer < 2)) {
+                Lexer_Section = (iLexer == 0) ? L"Default Text" : L"2nd Default Text";
+            }
 
-        IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
-                            g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
+            IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
+                g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
 
-        // don't allow empty extensions settings => use default ext
-        if (StrIsEmpty(g_pLexArray[iLexer]->szExtensions)) {
-            StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[iLexer]->pszDefExt);
-        }
+            // don't allow empty extensions settings => use default ext
+            if (StrIsEmpty(g_pLexArray[iLexer]->szExtensions)) {
+                StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[iLexer]->pszDefExt);
+            }
 
-        if (Globals.iCfgVersionRead < CFG_VER_0004) {
-            // handling "Text Files" lexer
-            if (StringCchCompareXI(L"Text Files", g_pLexArray[iLexer]->pszName) == 0) {
-                if (StrIsNotEmpty(g_pLexArray[0]->szExtensions)) {
-                    StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[0]->szExtensions);
-                    StrTrim(g_pLexArray[iLexer]->szExtensions, L"; ");
+            if (Globals.iCfgVersionRead < CFG_VER_0004) {
+                // handling "Text Files" lexer
+                if (StringCchCompareXI(L"Text Files", g_pLexArray[iLexer]->pszName) == 0) {
+                    if (StrIsNotEmpty(g_pLexArray[0]->szExtensions)) {
+                        StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[0]->szExtensions);
+                        StrTrim(g_pLexArray[iLexer]->szExtensions, L"; ");
+                    }
+                    lexStandard.szExtensions[0] = L'\0';
+                    lexStandard2nd.szExtensions[0] = L'\0';
+                    // copy default style
+                    StringCchCopy(g_pLexArray[iLexer]->Styles[0].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[0].szValue), g_pLexArray[0]->Styles[0].szValue);
                 }
-                lexStandard.szExtensions[0] = L'\0';
-                lexStandard2nd.szExtensions[0] = L'\0';
-                // copy default style
-                StringCchCopy(g_pLexArray[iLexer]->Styles[0].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[0].szValue), g_pLexArray[0]->Styles[0].szValue);
             }
         }
-    }
 
-    CloseSettingsFile(false, bOpendByMe);
+        CloseSettingsFile(false, bOpenedByMe); // load only
+    }
 }
 
 
@@ -942,11 +943,11 @@ bool Style_ImportFromFile(const HPATHL hpath)
     bool const bHaveFileResource = Path_IsNotEmpty(hpath);
     bool const bIsStdIniFile = bHaveFileResource ? (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory) == 0) : false;
 
-    bool bOpendByMe = false;
-    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpendByMe) : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
+    bool bOpenedByMe = false;
+    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpenedByMe) : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
     if (result) {
         _ReadFromIniCache();
-        CloseSettingsFile(false, bOpendByMe);
+        CloseSettingsFile(false, bOpenedByMe); // import only
     }
     return result;
 }
@@ -1174,11 +1175,11 @@ bool Style_ExportToFile(const HPATHL hpath, bool bForceAll)
     // special handling of standard .ini-file
     bool ok = false;
     if (bIsStdIniFile) {
-        bool bOpendByMe = false;
-        if (OpenSettingsFile(&bOpendByMe)) {
+        bool bOpenedByMe = false;
+        if (OpenSettingsFile(&bOpenedByMe)) {
             Style_ToIniSection(bForceAll);
             Style_FileExtToIniSection(bForceAll);
-            ok = CloseSettingsFile(true, bOpendByMe);
+            ok = CloseSettingsFile(bOpenedByMe, bOpenedByMe);
         }
     } else {
         HPATHL hpth_tmp = Path_Copy(hpath);
