@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.21.1228.(build_#) (2021-12-28)
+Current BETA/RC Version 5.22.103.(build_#) (2022-01-03)
 ========================================================
 
 --------------------------------------------------------
@@ -72,6 +72,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.103.1]- Find/Replace pattern history: clear all not persisted to .ini file.
+[.103.1]- URL detector: double-quote should not be valid URL character.
 [1228.1]- Allow hyperlinks end in dashes.
 [1222.1]- Support User-Doc on Recent Files Jump List.
 [1222.1]- Trim line endings on Save except AutoSave.
