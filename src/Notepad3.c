@@ -2718,8 +2718,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         DestroyWindow(Globals.hwndToolbar);
     }
 
-    bool bOpendByMe;
-    OpenSettingsFile(&bOpendByMe);
+    bool bOpenedByMe = false;
+    OpenSettingsFile(&bOpenedByMe);
     bool bDirtyFlag = false;
 
     //InitToolbarWndClass(hInstance);
@@ -2882,7 +2882,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
     }
 
-    CloseSettingsFile(bDirtyFlag, bOpendByMe);
+    CloseSettingsFile(bDirtyFlag, bOpenedByMe);
 
     // ------------------------------
     // Create ReBar and add Toolbar
@@ -6001,18 +6001,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
             }
 
-            bool bOpendByMe;
-            OpenSettingsFile(&bOpendByMe);
+            bool bOpenedByMe = false;
+            if (OpenSettingsFile(&bOpenedByMe)) {
 
-            SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
+                SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
 
-            if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) {
-                IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
-            } else {
-                IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
+                if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) {
+                    IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
+                }
+                else {
+                    IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
+                }
+                CloseSettingsFile(true, bOpenedByMe);
             }
-
-            CloseSettingsFile(true, bOpendByMe);
         }
         break;
 
