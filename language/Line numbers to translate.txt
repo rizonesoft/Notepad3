@@ -3,32 +3,32 @@
 ==  This ".txt" file is intended for "Translators" to communicate to them the "Line numbers" of the   ==
 ==  "Added or Modified" items in the "Resource" files ("filename_xx_yy.rc" and "grepWinNP3.lang").    ==
 ==                                                                                                    ==
-==                                                                         Last update:  2021-11-10   ==
+==                                                                         Last update:  2022-01-17   ==
 ========================================================================================================
 
-January 2022:   Line numbers to translate_2022-01 - (2022-01-xx)
+January 2022:   Line numbers to translate_2022-01 - https://workupload.com/file/SqNYY7n36Aw (2022-01-17)
 
-February 2022:  Line numbers to translate_2022-02 - (2022-02-xx)
+February 2022:  Line numbers to translate_2022-02 -  (2022-02-xx)
 
-March 2021:     Line numbers to translate_2021-03 - https://workupload.com/file/MrtH6U2RhKC (2021-03-31)
+March 2022:     Line numbers to translate_2022-03 -  (2022-03-xx)
 
-April 2021:     Line numbers to translate_2021-04 - https://workupload.com/file/jcbdVpEBCfr (2021-04-29)
+April 2022:     Line numbers to translate_2022-04 -  (2022-04-xx)
 
-May 2021:       Line numbers to translate_2021-05 - https://workupload.com/file/9herVXcC9ED (2021-05-18)
+May 2022:       Line numbers to translate_2022-05 -  (2022-05-xx)
 
-June 2021:      Line numbers to translate_2021-06 - https://workupload.com/file/EFcQfYrKLB5 (2021-06-30)
+June 2022:      Line numbers to translate_2022-06 -  (2022-06-xx)
 
-July 2021:      Line numbers to translate_2021-07 - https://workupload.com/file/gGuZsvzs4Zv (2021-08-20)
+July 2022:      Line numbers to translate_2022-07 -  (2022-08-xx)
 
-August 2021:    Line numbers to translate_2021-08 - https://workupload.com/file/wN3RmtUEmDp (2021-08-07)
+August 2022:    Line numbers to translate_2022-08 -  (2022-08-xx)
 
-September 2021: Line numbers to translate_2021-09 - https://workupload.com/file/HauLYcASNRk (2021-09-03)
+September 2022: Line numbers to translate_2022-09 -  (2022-09-xx)
 
-October 2021:   Line numbers to translate_2021-10 -  (2021-10-xx)
+October 2022:   Line numbers to translate_2022-10 -  (2022-10-xx)
 
-November 2021:  Line numbers to translate_2021-11 - https://workupload.com/file/yuCbP4jWrap (2021-11-10)
+November 2022:  Line numbers to translate_2022-11 -  (2022-11-xx)
 
-December 2021:  Line numbers to translate_2021-12 -  (2021-12-xx)
+December 2022:  Line numbers to translate_2022-12 -  (2022-12-xx)
 
 
 Comments and suggestions are welcome... 😃
