@@ -465,7 +465,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Seulement une instance par &fichier",                 IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notif&ication de Modification de Fichier...\tAlt+F5", IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Auto-enregister / Paramètres de sauvegarde...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Couper les &Bips de Messages",                        IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Fo&nction de la Touche %C3%A9chap"
         BEGIN
