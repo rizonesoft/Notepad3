@@ -29,7 +29,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mp_es_419.cpp">
+    <ClCompile Include="mp_es_mx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
@@ -37,16 +37,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="mp_es_419.rc">
+    <ResourceCompile Include="mp_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="dialogs_es_419.rc">
+    <ResourceCompile Include="dialogs_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="menu_es_419.rc">
+    <ResourceCompile Include="menu_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="strings_es_419.rc">
+    <ResourceCompile Include="strings_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

@@ -32,27 +32,27 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="np3_es_419.cpp">
+    <ClCompile Include="np3_es_mx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="np3_es_419.rc">
+    <ResourceCompile Include="np3_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="encode_es_419.rc">
+    <ResourceCompile Include="encode_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="dialogs_es_419.rc">
+    <ResourceCompile Include="dialogs_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="menu_es_419.rc">
+    <ResourceCompile Include="menu_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="strings_es_419.rc">
+    <ResourceCompile Include="strings_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="lexer_es_419.rc">
+    <ResourceCompile Include="lexer_es_mx.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

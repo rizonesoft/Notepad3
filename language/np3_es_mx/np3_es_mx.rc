@@ -15,10 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Spanish (Latin America) resources
+// Spanish (Mexico) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
-LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_LATIN_AMERICA
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -43,11 +43,11 @@ END
 3 TEXTINCLUDE
 BEGIN
     "#include ""../common_res.rc""\r\n"
-    "#include ""menu_es_419.rc""\r\n"
-    "#include ""strings_es_419.rc""\r\n"
-    "#include ""encode_es_419.rc""\r\n"
-    "#include ""lexer_es_419.rc""\r\n"
-    "#include ""dialogs_es_419.rc""\r\n"
+    "#include ""menu_es_mx.rc""\r\n"
+    "#include ""strings_es_mx.rc""\r\n"
+    "#include ""encode_es_mx.rc""\r\n"
+    "#include ""lexer_es_mx.rc""\r\n"
+    "#include ""dialogs_es_mx.rc""\r\n"
     "\r\n"
     "\0"
 END
@@ -55,7 +55,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Spanish (Latin America) resources
+#endif    // Spanish (Mexico) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -65,11 +65,11 @@ END
 // Generated from the TEXTINCLUDE 3 resource.
 //
 #include "../common_res.rc"
-#include "menu_es_419.rc"
-#include "strings_es_419.rc"
-#include "encode_es_419.rc"
-#include "lexer_es_419.rc"
-#include "dialogs_es_419.rc"
+#include "menu_es_mx.rc"
+#include "strings_es_mx.rc"
+#include "encode_es_mx.rc"
+#include "lexer_es_mx.rc"
+#include "dialogs_es_mx.rc"
 
 
 /////////////////////////////////////////////////////////////////////////////

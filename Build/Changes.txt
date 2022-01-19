@@ -48,6 +48,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.xxx.1]- Renaming Spanish Latin America (es-419) to Spanish Mexican (es-MX) (MUI).
 [1228.1]- AboutBox's RichEdit Ctrl: enable more options for EM_AUTOURLDETECT.
 [1228.1]- Hyperlink RegEx Scanner: don't allow XML tagging brackets as part of Hyperlink text.
 [1226.1]- In Windows 11, running "Notepad" from "Run" (Win+R) launches "Notepad3".
@@ -117,7 +118,7 @@ with a priority to take over "(incomplete...)" translation projects:
 - Irish (ga-IE)
 - Norwegian (nb-NO)
 - Romanian (ro-RO)
-- Spanish Latin America (es-419) (incomplete...)
+- Spanish Mexican (es-MX) (incomplete...)
 - Turkish (tr-TR) (incomplete...)
 - Ukrainian (uk-UA)
 - Vietnamese (vi-VN) (incomplete...)
