@@ -15,10 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Spanish (Latin America) resources
+// Spanish (Mexico) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
-LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_LATIN_AMERICA
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -497,7 +497,7 @@ BEGIN
     IDS_LEX_CSV_COL_9       "Columna 9"
 END
 
-#endif    // Spanish (Latin America) resources
+#endif    // Spanish (Mexico) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

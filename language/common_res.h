@@ -7,9 +7,6 @@
 
 #include "ColorDlg.h"
 
-// undefined Sub-Language
-#define SUBLANG_SPANISH_LATIN_AMERICA 0x16
-
 #if defined(MUI_BASE_LNG_EN_US)
 #define MUI_BASE_LNG_ID L"en-US"
 #elif defined(MUI_BASE_LNG_AF_ZA)
@@ -22,10 +19,10 @@
 #define MUI_BASE_LNG_ID L"el-GR"
 #elif defined(MUI_BASE_LNG_EN_GB)
 #define MUI_BASE_LNG_ID L"en-GB"
-#elif defined(MUI_BASE_LNG_ES_419)
-#define MUI_BASE_LNG_ID L"es-419"
 #elif defined(MUI_BASE_LNG_ES_ES)
 #define MUI_BASE_LNG_ID L"es-ES"
+#elif defined(MUI_BASE_LNG_ES_MX)
+#define MUI_BASE_LNG_ID L"es-MX"
 #elif defined(MUI_BASE_LNG_FR_FR)
 #define MUI_BASE_LNG_ID L"fr-FR"
 #elif defined(MUI_BASE_LNG_HI_IN)
@@ -537,8 +534,8 @@
 #define IDS_MUI_LANG_DE_DE              34504
 #define IDS_MUI_LANG_EL_GR              34505
 #define IDS_MUI_LANG_EN_GB              34506
-#define IDS_MUI_LANG_ES_419             34507
-#define IDS_MUI_LANG_ES_ES              34508
+#define IDS_MUI_LANG_ES_ES              34507
+#define IDS_MUI_LANG_ES_MX              34508
 #define IDS_MUI_LANG_FR_FR              34509
 #define IDS_MUI_LANG_HI_IN              34510
 #define IDS_MUI_LANG_HU_HU              34511

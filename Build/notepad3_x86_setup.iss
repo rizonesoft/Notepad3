@@ -130,10 +130,10 @@ Source: "{#bindir}\Release_x86_v143\lng\el-GR\mplng.dll.mui"; DestDir: "{app}\ln
 Source: "{#bindir}\Release_x86_v143\lng\el-GR\np3lng.dll.mui"; DestDir: "{app}\lng\el-GR"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\en-GB\mplng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\en-GB\np3lng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
-Source: "{#bindir}\Release_x86_v143\lng\es-419\mplng.dll.mui"; DestDir: "{app}\lng\es-419"; Flags: ignoreversion
-Source: "{#bindir}\Release_x86_v143\lng\es-419\np3lng.dll.mui"; DestDir: "{app}\lng\es-419"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\es-ES\mplng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\es-ES\np3lng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
+Source: "{#bindir}\Release_x86_v143\lng\es-MX\mplng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
+Source: "{#bindir}\Release_x86_v143\lng\es-MX\np3lng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\fr-FR\mplng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\fr-FR\np3lng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\hi-IN\mplng.dll.mui"; DestDir: "{app}\lng\hi-IN"; Flags: ignoreversion

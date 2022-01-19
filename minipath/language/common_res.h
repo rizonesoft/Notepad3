@@ -5,9 +5,6 @@
 #ifndef _COMMON_RES_H_
 #define _COMMON_RES_H_
 
-// undefined Sub-Language
-#define SUBLANG_SPANISH_LATIN_AMERICA 0x16
-
 #if defined(MUI_BASE_LNG_EN_US)
 #define MUI_BASE_LNG_ID L"en-US"
 #elif defined(MUI_BASE_LNG_AF_ZA)
@@ -20,10 +17,10 @@
 #define MUI_BASE_LNG_ID L"el-GR"
 #elif defined(MUI_BASE_LNG_EN_GB)
 #define MUI_BASE_LNG_ID L"en-GB"
-#elif defined(MUI_BASE_LNG_ES_419)
-#define MUI_BASE_LNG_ID L"es-419"
 #elif defined(MUI_BASE_LNG_ES_ES)
 #define MUI_BASE_LNG_ID L"es-ES"
+#elif defined(MUI_BASE_LNG_ES_MX)
+#define MUI_BASE_LNG_ID L"es-MX"
 #elif defined(MUI_BASE_LNG_FR_FR)
 #define MUI_BASE_LNG_ID L"fr-FR"
 #elif defined(MUI_BASE_LNG_HI_IN)

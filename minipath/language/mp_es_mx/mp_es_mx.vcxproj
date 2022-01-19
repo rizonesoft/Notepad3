@@ -30,7 +30,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{2AD33E48-FEC6-47B1-8FEF-A0CF1F23DD58}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>mpes419</RootNamespace>
+    <RootNamespace>mpesmx</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -163,16 +163,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-419"
-         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-MX"
+         if exist "$(TargetDir)..\es-MX\mplng.dll.mui" del /f /q "$(TargetDir)..\es-MX\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x080a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-MX\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-MX\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x580a</Culture>
+      <Culture>0x080a</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -193,16 +193,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-419"
-         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-MX"
+         if exist "$(TargetDir)..\es-MX\mplng.dll.mui" del /f /q "$(TargetDir)..\es-MX\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x080a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-MX\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-MX\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x580a</Culture>
+      <Culture>0x080a</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -229,16 +229,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-419"
-         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-MX"
+         if exist "$(TargetDir)..\es-MX\mplng.dll.mui" del /f /q "$(TargetDir)..\es-MX\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x080a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-MX\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-MX\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x580a</Culture>
+      <Culture>0x080a</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -265,16 +265,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-419"
-         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-MX"
+         if exist "$(TargetDir)..\es-MX\mplng.dll.mui" del /f /q "$(TargetDir)..\es-MX\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x080a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-MX\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-MX\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x580a</Culture>
+      <Culture>0x080a</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -301,16 +301,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-419"
-         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-MX"
+         if exist "$(TargetDir)..\es-MX\mplng.dll.mui" del /f /q "$(TargetDir)..\es-MX\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x080a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-MX\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-MX\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x580a</Culture>
+      <Culture>0x080a</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -337,16 +337,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\es-419"
-         if exist "$(TargetDir)..\es-419\mplng.dll.mui" del /f /q "$(TargetDir)..\es-419\mplng.dll.mui"
+      <Command>mkdir "$(TargetDir)..\es-MX"
+         if exist "$(TargetDir)..\es-MX\mplng.dll.mui" del /f /q "$(TargetDir)..\es-MX\mplng.dll.mui"
          if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x580a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-419\mplng.dll.mui"
-        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-419\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x080a -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\es-MX\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(TargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\es-MX\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x580a</Culture>
+      <Culture>0x080a</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -357,7 +357,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="mp_es_419.cpp" />
+    <ClCompile Include="mp_es_mx.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -368,7 +368,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="dialogs_es_419.rc">
+    <ResourceCompile Include="dialogs_es_mx.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
@@ -376,7 +376,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">true</ExcludedFromBuild>
     </ResourceCompile>
-    <ResourceCompile Include="menu_es_419.rc">
+    <ResourceCompile Include="menu_es_mx.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
@@ -384,8 +384,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|x64'">true</ExcludedFromBuild>
     </ResourceCompile>
-    <ResourceCompile Include="mp_es_419.rc" />
-    <ResourceCompile Include="strings_es_419.rc">
+    <ResourceCompile Include="mp_es_mx.rc" />
+    <ResourceCompile Include="strings_es_mx.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Dbg|Win32'">true</ExcludedFromBuild>
