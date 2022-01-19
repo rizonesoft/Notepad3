@@ -242,7 +242,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(tr-TR) ghost tarafından Türkçe'ye çevirildi"
+    IDS_MUI_TRANSL_AUTHOR   "(tr-TR) kayazeren tarafından Türkçe'ye çevirildi"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
     IDS_MUI_TITLE_RELCUR    "+++ %s: %s Stil +++"
     IDS_MUI_TITLE_FIXCUR    "%s: %s Stil"
