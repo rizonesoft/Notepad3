@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.103.(build_#) (2022-01-03)
+Current BETA/RC Version 5.22.121.(build_#) (2022-01-21)
 ========================================================
 
 --------------------------------------------------------
@@ -48,7 +48,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.xxx.1]- Renaming Spanish Latin America (es-419) to Spanish Mexican (es-MX) (MUI).
+[.121.1]- Renaming Spanish Latin America (es-419) to Spanish Mexican (es-MX) (MUI).
 [1228.1]- AboutBox's RichEdit Ctrl: enable more options for EM_AUTOURLDETECT.
 [1228.1]- Hyperlink RegEx Scanner: don't allow XML tagging brackets as part of Hyperlink text.
 [1226.1]- In Windows 11, running "Notepad" from "Run" (Win+R) launches "Notepad3".
