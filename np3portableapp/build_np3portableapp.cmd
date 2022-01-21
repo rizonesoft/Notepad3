@@ -90,6 +90,10 @@ del /f /q "Notepad3Portable_*.paf.exe*"
 
 if exist "%NP3_PORTAPP_DIR%\Data" rmdir "%NP3_PORTAPP_DIR%\Data" /S /Q
 
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng" /S /Q
+
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" /S /Q
+
 if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
      mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
 ) else (
@@ -113,11 +117,6 @@ if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\" (
 ) else (
     del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\*.*"
 )
-
-:: Delete all files in "Notepad3\x86" and "Notepad3\x64" folders, except all .ini files.
-:: Because "blank" in filenames, the files in "gwLng" folder is NOT deleted (done below)!
-for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
-for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
 
 :: ---------------------------------------------------------------------------------------------------
 
@@ -160,20 +159,11 @@ copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\ln
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
 :: Copy all current "grepWinNP3" files
-:: Because "blank" in filenames, the files in "gwLng" folder was NOT deleted (above)!
-if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" (
-	del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\*.*"
-) else (
-	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
-)
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
 copy /B "%NP3_WIN32_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
 copy /B "%NP3_WIN32_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
-if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
-	del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\*.*"
-) else (
-	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
-)
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
 copy /B "%NP3_X64_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
