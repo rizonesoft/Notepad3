@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Kódovať URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Dekódovať URL\tCtrl+Shift+R",        IDM_EDIT_URLDECODE
-            MENUITEM "Systémová cesta súboru na URL",       IDM_EDIT_PATH2URL
-            MENUITEM "URL na systémovú cestu súboru",       IDM_EDIT_URL2PATH
+            MENUITEM "Systémová cesta súboru na URL\tCtrl+F10",      IDM_EDIT_PATH2URL
+            MENUITEM "URL na systémovú cestu súboru\tAlt+F10",       IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Invertovať opačné lomítko",           IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Invertovať lomítko",                  IDM_EDIT_INVERTSLASH

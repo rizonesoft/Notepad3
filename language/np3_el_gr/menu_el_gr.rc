@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Κ&ωδικοποίηση URL\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
             MENUITEM "&Αποκωδικοποίηση URL\tCtrl+Shift+R",      IDM_EDIT_URLDECODE
-            MENUITEM "Διαδρομή συστήματος αρχείων σε URL",      IDM_EDIT_PATH2URL
-            MENUITEM "URL σε διαδρομή συστήματος αρχείων",      IDM_EDIT_URL2PATH
+            MENUITEM "Διαδρομή συστήματος αρχείων σε URL\tCtrl+F10",     IDM_EDIT_PATH2URL
+            MENUITEM "URL σε διαδρομή συστήματος αρχείων\tAlt+F10",      IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Αντιστροφή ανάστροφων καθέτων",           IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Αντιστροφή καθέτων",                      IDM_EDIT_INVERTSLASH

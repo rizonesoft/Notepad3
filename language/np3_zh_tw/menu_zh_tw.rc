@@ -258,19 +258,19 @@ BEGIN
             MENUITEM "句首大寫(&S)\tCtrl+Alt+O",               IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
             MENUITEM "轉換全部空格為 TAB(&A)\tCtrl+Shift+T",    IDM_EDIT_CONVERTSPACES
-            MENUITEM "轉換全部 TAB 為空格(&N)\tCtrl+Shift+S",    IDM_EDIT_CONVERTTABS
+            MENUITEM "轉換全部 TAB 為空格(&N)\tCtrl+Shift+S",   IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
             MENUITEM "轉換行首空格為 TAB(&B)\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
-            MENUITEM "轉換行首 TAB 為空格(&F)\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
+            MENUITEM "轉換行首 TAB 為空格(&F)\tCtrl+Alt+S",     IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "Base64 編碼(&6)",                    IDM_EDIT_BASE64ENCODE
             MENUITEM "Base64 解碼(&4)",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 解碼為字碼頁...",             IDM_EDIT_B64DECODESEL
+            MENUITEM "Base64 解碼為字碼頁...",              IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL 編碼(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URL 解碼(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
-            MENUITEM "轉換檔案路徑為 URL",               IDM_EDIT_PATH2URL
-            MENUITEM "轉換 URL 為檔案路徑",              IDM_EDIT_URL2PATH
+            MENUITEM "轉換檔案路徑為 URL\tCtrl+F10",            IDM_EDIT_PATH2URL
+            MENUITEM "轉換 URL 為檔案路徑\tAlt+F10",            IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "反轉反斜線",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "反轉斜線",                         IDM_EDIT_INVERTSLASH

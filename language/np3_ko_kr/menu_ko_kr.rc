@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
-            MENUITEM "URL에 대한 파일 시스템 경로",                   IDM_EDIT_PATH2URL
-            MENUITEM "파일 시스템 경로에 대한 URL",                   IDM_EDIT_URL2PATH
+            MENUITEM "URL에 대한 파일 시스템 경로\tCtrl+F10",        IDM_EDIT_PATH2URL
+            MENUITEM "파일 시스템 경로에 대한 URL\tAlt+F10",         IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "백슬래시 반전",                        IDM_EDIT_INVERTBACKSLASH
             MENUITEM "슬래시 반전",                            IDM_EDIT_INVERTSLASH

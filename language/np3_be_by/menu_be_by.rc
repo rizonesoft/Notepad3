@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ка&даваць URL\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
             MENUITEM "Д&экадаваць URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
-            MENUITEM "Сістэмны шлях у URL",                             IDM_EDIT_PATH2URL
-            MENUITEM "URL у сістэмны шлях",                             IDM_EDIT_URL2PATH
+            MENUITEM "Сістэмны шлях у URL\tCtrl+F10",                   IDM_EDIT_PATH2URL
+            MENUITEM "URL у сістэмны шлях\tAlt+F10",                    IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Інвертаваць адваротныя косыя рыскі",              IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Інвертаваць прамыя косыя рыскі",                  IDM_EDIT_INVERTSLASH

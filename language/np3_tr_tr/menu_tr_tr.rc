@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "URL &Encode\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
             MENUITEM "URL &Decode\tCtrl+Shift+R",         IDM_EDIT_URLDECODE
-            MENUITEM "Dosya Yolunu URL'ye",           IDM_EDIT_PATH2URL
-            MENUITEM "URL'yi Dosya Yoluna",           IDM_EDIT_URL2PATH
+            MENUITEM "Dosya Yolunu URL'ye\tCtrl+F10",     IDM_EDIT_PATH2URL
+            MENUITEM "URL'yi Dosya Yoluna\tAlt+F10",      IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Invert Backslashes",                IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Invert Slashes",                    IDM_EDIT_INVERTSLASH

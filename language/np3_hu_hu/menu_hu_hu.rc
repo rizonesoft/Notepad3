@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&URL bekódolás\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "U&RL kikódolás\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
-            MENUITEM "Fájlrendszer útvonal URL-re",                IDM_EDIT_PATH2URL
-            MENUITEM "URL-t fájlrendszer útvonallá",               IDM_EDIT_URL2PATH
+            MENUITEM "Fájlrendszer útvonal URL-re\tCtrl+F10",      IDM_EDIT_PATH2URL
+            MENUITEM "URL-t fájlrendszer útvonallá\tAlt+F10",      IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Backslash-ek váltása",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Törtvonalak váltása",                        IDM_EDIT_INVERTSLASH
