@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&URL Codierung\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
             MENUITEM "URL Decodierung\tCtrl+Shift+R",                    IDM_EDIT_URLDECODE
-            MENUITEM "Datei-System Pfad als URL",                        IDM_EDIT_PATH2URL
-            MENUITEM "URL als Datei-System Pfad",                        IDM_EDIT_URL2PATH
+            MENUITEM "Datei-System Pfad als URL\tCtrl+F10",              IDM_EDIT_PATH2URL
+            MENUITEM "URL als Datei-System Pfad\tAlt+F10",               IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Invertiere Rückschrägstrich",                      IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Invertiere Schrägstrich",                          IDM_EDIT_INVERTSLASH
