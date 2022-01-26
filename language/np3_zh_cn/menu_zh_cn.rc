@@ -265,14 +265,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Base64 编码(&6)",                    IDM_EDIT_BASE64ENCODE
             MENUITEM "Base64 解码(&4)",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 解码为代码页...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base64 解码为代码页...",              IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URL 编码(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URL 解码(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
-            MENUITEM "转换文件路径为 URL",               IDM_EDIT_PATH2URL
-            MENUITEM "转换 URL 为文件路径",               IDM_EDIT_URL2PATH
+            MENUITEM "转换文件路径为 URL\tCtrl+F10",           IDM_EDIT_PATH2URL
+            MENUITEM "转换 URL 为文件路径\tAlt+F10",           IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "调转反斜线",                    IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "调转反斜线",                      IDM_EDIT_INVERTBACKSLASH
             MENUITEM "调转斜线",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "转换为十六进制(&H)\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX

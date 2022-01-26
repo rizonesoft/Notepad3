@@ -264,16 +264,16 @@ BEGIN
             MENUITEM "Remover tabulação da indentação\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "Codificação Base&64",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Descodificação Base6&4",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Descodificação Base6&4",                 IDM_EDIT_BASE64DECODE
             MENUITEM "Descodificação Base64 para página de código...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "Codificar &URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Descodificar URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
-            MENUITEM "Caminho do sistema de ficheiros para URL",               IDM_EDIT_PATH2URL
-            MENUITEM "URL para Caminho do sistema de ficheiros",               IDM_EDIT_URL2PATH
+            MENUITEM "Caminho do sistema de ficheiros para URL\tCtrl+F10",   IDM_EDIT_PATH2URL
+            MENUITEM "URL para Caminho do sistema de ficheiros\tAlt+F10",    IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Inverter barras invertidas",                    IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Inverter barras",                        IDM_EDIT_INVERTSLASH
+            MENUITEM "Inverter barras invertidas",            IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverter barras",                       IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Caractere para Hex\tCtrl+Alt+X",       IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex para Caractere\tCtrl+Alt+C",       IDM_EDIT_HEX2CHAR

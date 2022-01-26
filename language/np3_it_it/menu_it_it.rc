@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Codifica &URL\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "&Decodifica URL\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
-            MENUITEM "Da Percorso di File System a URL",          IDM_EDIT_PATH2URL
-            MENUITEM "Da URL a Percorso di File System",          IDM_EDIT_URL2PATH
+            MENUITEM "Da Percorso di File System a URL\tCtrl+F10",  IDM_EDIT_PATH2URL
+            MENUITEM "Da URL a Percorso di File System\tAlt+F10",   IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Inverti Backslashes",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Inverti Barre",                             IDM_EDIT_INVERTSLASH

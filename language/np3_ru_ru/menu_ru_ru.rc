@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
             MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
-            MENUITEM "Системный путь в URL",                            IDM_EDIT_PATH2URL
-            MENUITEM "URL в системный путь",                            IDM_EDIT_URL2PATH
+            MENUITEM "Системный путь в URL\tCtrl+F10",                  IDM_EDIT_PATH2URL
+            MENUITEM "URL в системный путь\tAlt+F10",                   IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Инвертировать обратные косые черты",              IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Инвертировать прямые косые черты",                IDM_EDIT_INVERTSLASH

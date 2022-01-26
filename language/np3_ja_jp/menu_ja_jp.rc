@@ -263,14 +263,14 @@ BEGIN
             MENUITEM "インデントをタブに\tCtrl+Alt+T",               IDM_EDIT_CONVERTSPACES2
             MENUITEM "インデントを空白に\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base64 エンコード(&6)",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base64 エンコード(&6)",                   IDM_EDIT_BASE64ENCODE
             MENUITEM "Base64 デコード(&4)",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 を文字コードへデコード...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base64 を文字コードへデコード...",           IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "URLエンコード(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URLデコード(&D)\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
-            MENUITEM "ファイルシステムのパスをURLへ",                IDM_EDIT_PATH2URL
-            MENUITEM "URLをファイルシステムのパスへ",                IDM_EDIT_URL2PATH
+            MENUITEM "ファイルシステムのパスをURLへ\tCtrl+F10",         IDM_EDIT_PATH2URL
+            MENUITEM "URLをファイルシステムのパスへ\tAlt+F10",          IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "バックスラッシュを反転",                     IDM_EDIT_INVERTBACKSLASH
             MENUITEM "スラッシュを反転",                         IDM_EDIT_INVERTSLASH

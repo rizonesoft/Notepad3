@@ -245,32 +245,32 @@ BEGIN
             MENUITEM "संरेखित करें (&A)...\tAlt+J",            IDM_EDIT_ALIGN
             MENUITEM "रेखा क्रमवार करें (&S)...\tAlt+O",             IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "चुनाव के आरंभ में जाएं (&C)\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "चुनाव के आरंभ में जाएं (&C)\tCtrl+,",   CMD_JUMP2SELSTART
             MENUITEM "चुनाव के अंत में जाएं (&N)\tCtrl+.",    CMD_JUMP2SELEND
         END
         POPUP "बदलें (&V)"
         BEGIN
-            MENUITEM "बड़ा अक्षर (&U)\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "बड़ा अक्षर (&U)\tCtrl+Shift+U",           IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "छोटा अक्षर (&L)\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "छोटे-बड़ा बदलें (&I)\tCtrl+Alt+U",          IDM_EDIT_INVERTCASE
+            MENUITEM "छोटे-बड़ा बदलें (&I)\tCtrl+Alt+U",         IDM_EDIT_INVERTCASE
             MENUITEM "टाइटल केस (&T)\tCtrl+Alt+I",           IDM_EDIT_TITLECASE
-            MENUITEM "वाक्य केस (&S)\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
+            MENUITEM "वाक्य केस (&S)\tCtrl+Alt+O",            IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
             MENUITEM "चुनाव Tabify करें T&abify Selection (&A)\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
-            MENUITEM "चुनाव Untabify करें Selection (&N)\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "चुनाव Untabify करें Selection (&N)\tCtrl+Shift+S",         IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
             MENUITEM "इंडेंट Tabify करें (&A)\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
             MENUITEM "इंडेंट Untabify करें (&F)\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "बेस-64 एनकोड (&64)",                    IDM_EDIT_BASE64ENCODE
             MENUITEM "बेस-64 डीकोड (6&4)",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "बेस-64 डीकोड टू कोडपेज...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "बेस-64 डीकोड टू कोडपेज...",               IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
-            MENUITEM "URL एन्कोड (&E)\tCtrl+Shift+E",           IDM_EDIT_URLENCODE
-            MENUITEM "URL डिकोड (&D)\tCtrl+Shift+R",           IDM_EDIT_URLDECODE
-            MENUITEM "फ़ाइल सिस्टम पथ टू URL",                IDM_EDIT_PATH2URL
-            MENUITEM "URL टू फ़ाइल सिस्टम पथ",                IDM_EDIT_URL2PATH
+            MENUITEM "URL एन्कोड (&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
+            MENUITEM "URL डिकोड (&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
+            MENUITEM "फ़ाइल सिस्टम पथ टू URL\tCtrl+F10",           IDM_EDIT_PATH2URL
+            MENUITEM "URL टू फ़ाइल सिस्टम पथ\tAlt+F10",            IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Backslashes इन्वर्ट करें",                     IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Slashes इन्वर्ट करें",                         IDM_EDIT_INVERTSLASH

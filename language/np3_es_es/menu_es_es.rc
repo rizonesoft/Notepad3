@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Codificar URL\tCtrl+Shift+E",                    IDM_EDIT_URLENCODE
             MENUITEM "D&ecodificar URL\tCtrl+Shift+R",                  IDM_EDIT_URLDECODE
-            MENUITEM "Ruta sistema-archivos como URL",                  IDM_EDIT_PATH2URL
-            MENUITEM "URL como ruta sistema-archivos",                  IDM_EDIT_URL2PATH
+            MENUITEM "Ruta sistema-archivos como URL\tCtrl+F10",        IDM_EDIT_PATH2URL
+            MENUITEM "URL como ruta sistema-archivos\tAlt+F10",         IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Invertir barras oblicuas invertidas",             IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Invertir barras oblicuas",                        IDM_EDIT_INVERTSLASH

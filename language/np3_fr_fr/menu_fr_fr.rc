@@ -269,8 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&URL Encodage\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
             MENUITEM "URL &Décodage\tCtrl+Shift+R",                     IDM_EDIT_URLDECODE
-            MENUITEM "Chemin système-fichiers comme URL",               IDM_EDIT_PATH2URL
-            MENUITEM "URL comme chemin système-fichiers",               IDM_EDIT_URL2PATH
+            MENUITEM "Chemin système-fichiers comme URL\tCtrl+F10",     IDM_EDIT_PATH2URL
+            MENUITEM "URL comme chemin système-fichiers\tAlt+F10",      IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Inverser les barres obliques inversées",          IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Inverser les barres obliques",                    IDM_EDIT_INVERTSLASH

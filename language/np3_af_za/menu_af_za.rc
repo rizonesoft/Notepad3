@@ -269,10 +269,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "URL Kod&eer\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL &Dekodeer\tCtrl+Shift+R",             IDM_EDIT_URLDECODE
-            MENUITEM "Lêerstelselpad na URL",                 	IDM_EDIT_PATH2URL
-            MENUITEM "URL na lêerstelselpad",                	IDM_EDIT_URL2PATH
+            MENUITEM "Lêerstelselpad na URL\tCtrl+F10",         IDM_EDIT_PATH2URL
+            MENUITEM "URL na lêerstelselpad\tAlt+F10",          IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Keer terugslae om",                      	IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Keer terugslae om",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Keer skuinsstrepe om",                    IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "Karakter na &Hex\tCtrl+Alt+X",            IDM_EDIT_CHAR2HEX
@@ -293,24 +293,24 @@ BEGIN
         END
         POPUP "&Diverse"
         BEGIN
-            MENUITEM "Kopieer &GUID na Die Knipbord\tCtrl+Shift+.",     	IDM_EDIT_INSERT_GUID
+            MENUITEM "Kopieer &GUID na Die Knipbord\tCtrl+Shift+.",         IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "&Ontsnap C Karakters\tCtrl+Alt+E",             		IDM_EDIT_ESCAPECCHARS
-            MENUITEM "On-ontsnap C Ka&rakters\tCtrl+Alt+R",          		IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "&Ontsnap C Karakters\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
+            MENUITEM "On-ontsnap C Ka&rakters\tCtrl+Alt+R",                 IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "Verhoog &Nommer\tCtrl+Alt+NK+",                		CMD_INCREASENUM
-            MENUITEM "V&erminder Nommer\tCtrl+Alt+NK-",              		CMD_DECREASENUM
+            MENUITEM "Verhoog &Nommer\tCtrl+Alt+NK+",                       CMD_INCREASENUM
+            MENUITEM "V&erminder Nommer\tCtrl+Alt+NK-",                     CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Vind Bypassende Hakie\tCtrl+B",               		IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Kies na &Bypassende Hakie\tCtrl+Shift+B",      		IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Vind Bypassende Hakie\tCtrl+B",                      IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Kies na &Bypassende Hakie\tCtrl+Shift+B",             IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Kies na &Volgende\tCtrl+Alt+F2",               		IDM_EDIT_SELTONEXT
-            MENUITEM "Kies na Vori&ge\tCtrl+Alt+Shift+F2",           		IDM_EDIT_SELTOPREV
+            MENUITEM "Kies na &Volgende\tCtrl+Alt+F2",                      IDM_EDIT_SELTONEXT
+            MENUITEM "Kies na Vori&ge\tCtrl+Alt+Shift+F2",                  IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Kies &Woord of Lyne\tCtrl+Spc",              			IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &Alles wat Pas\tCtrl+Shift+Spc",    		IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Kies &Woord of Lyne\tCtrl+Spc",                       IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &Alles wat Pas\tCtrl+Shift+Spc",         IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Verdeel en Onttrek &Transaksies by Lynbrekings",  	IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Verdeel en Onttrek &Transaksies by Lynbrekings",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Boe&kmerke"
@@ -356,7 +356,7 @@ BEGIN
             MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                                IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Merk &Unicode-punte",               		IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Merk &Unicode-punte",                     IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele Hakie Passing\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Merk Huidi&ge Lyn\tCtrl+Shift+I"
         BEGIN
@@ -399,11 +399,11 @@ BEGIN
             MENUITEM "Ge&fokusde Aansig\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
             POPUP "Kykmodus"
             BEGIN
-                MENUITEM "Vou",                            	IDM_VIEW_FV_FOLD
+                MENUITEM "Vou",                             IDM_VIEW_FV_FOLD
                 MENUITEM "Boekmerk",                        IDM_VIEW_FV_BOOKMARK
                 MENUITEM "Merk",                            IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Boekmerk && Vou",                	IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Merk && Vou",                 	IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Boekmerk && Vou",                 IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Merk && Vou",                     IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "&Monitering Log",                     IDM_VIEW_CHASING_DOCTAIL
@@ -420,7 +420,7 @@ BEGIN
             MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
             MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
             MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Skaal Balk",                  	IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI Skaal Balk",                     IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -500,9 +500,9 @@ BEGIN
         BEGIN
             POPUP "&Lewering"
             BEGIN
-                MENUITEM "DirectWrite (&Direct2D)",         	IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Behou",              	IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",             	IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "DirectWrite (&Direct2D)",             IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Behou",                  IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (Geen ligature nie)",            IDM_SET_RENDER_TECH_GDI
             END
             POPUP "R&TL Uitleg (GDI)"
@@ -573,9 +573,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Verwyder Merker",                         IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Sny Lyne van Merk-tipe",              	IDM_EDIT_CUT_MARKED
+        MENUITEM "Sny Lyne van Merk-tipe",                  IDM_EDIT_CUT_MARKED
         MENUITEM "Kopieer Lyne van Merk-tipe",              IDM_EDIT_COPY_MARKED
-        MENUITEM "Skrap Lyne van Merk-tipe",             	IDM_EDIT_DELETE_MARKED
+        MENUITEM "Skrap Lyne van Merk-tipe",                IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "Kode Vou",                                IDM_VIEW_FOLDING
         MENUITEM "Lyn Nommer",                              IDM_VIEW_LINENUMBERS
