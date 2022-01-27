@@ -381,7 +381,7 @@ void SCI_METHOD LexerAHK::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, in
                     // Hotkey F2:: or remapping a::b
                     bIsHotkey = true;
                     // Check if it is a known key
-                    sc.GetCurrentLowered(currentWord, sizeof(currentWord));
+                    sc.GetCurrent(currentWord, sizeof(currentWord));
                     if (keysButtons.InList(currentWord)) {
                         sc.ChangeState(SCE_AHK_WORD_KB);
                     }
@@ -463,7 +463,7 @@ void SCI_METHOD LexerAHK::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, in
         }
         else if (sc.state == SCE_AHK_IDENTIFIER) {
             if (!WordChar.Contains(sc.ch)) {
-                sc.GetCurrentLowered(currentWord, sizeof(currentWord));
+                sc.GetCurrent(currentWord, sizeof(currentWord));
                 HighlightKeyword(currentWord, sc);
                 if (strcmp(currentWord, "if") == 0) {
                     bInExpression = true;
@@ -474,7 +474,7 @@ void SCI_METHOD LexerAHK::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, in
         else if (sc.state == SCE_AHK_VARREF) {
             if (sc.ch == '%') {
                 // End of variable reference
-                sc.GetCurrentLowered(currentWord, sizeof(currentWord));
+                sc.GetCurrent(currentWord, sizeof(currentWord));
                 if (variables.InList(currentWord)) {
                     sc.ChangeState(SCE_AHK_VARREFKW);
                 }
@@ -576,7 +576,7 @@ void SCI_METHOD LexerAHK::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, in
     }
     // End of file: complete any pending changeState
     if (sc.state == SCE_AHK_IDENTIFIER) {
-        sc.GetCurrentLowered(currentWord, sizeof(currentWord));
+        sc.GetCurrent(currentWord, sizeof(currentWord));
         HighlightKeyword(currentWord, sc);
     }
     else if (sc.state == SCE_AHK_STRING && bInExprString) {
