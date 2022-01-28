@@ -537,7 +537,7 @@ void SCI_METHOD LexerJSON::Lex(Sci_PositionU startPos,
 						context.SetState(SCE_JSON_PROPERTYNAME);
 					}
 				}
-				else if (!IsASpace(context.ch)) {
+				else if (context.state == SCE_JSON_DEFAULT && !IsASpace(context.ch)) {
 					context.SetState(SCE_JSON_ERROR);
 				}
 			}

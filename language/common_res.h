@@ -1243,6 +1243,7 @@
 #define IDS_LEX_STR_63376               63376
 #define IDS_LEX_STR_63377               63377
 #define IDS_LEX_STR_63378               63378
+#define IDS_LEX_STR_63379               63379
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401
