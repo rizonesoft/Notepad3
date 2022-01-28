@@ -75,6 +75,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.128.3]- JSON Lexer: error coloring for unclosed strings.
 [.128.2]- XML/HTML Stream Comment.
 [.103.1]- Find/Replace pattern history: clear all not persisted to .ini file.
 [.103.1]- URL detector: double-quote should not be valid URL character.
