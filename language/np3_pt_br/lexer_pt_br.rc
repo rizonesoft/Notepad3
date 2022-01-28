@@ -481,6 +481,10 @@ BEGIN
     IDS_LEX_STR_63373       "Marcador de Tarefa"
     IDS_LEX_STR_63374       "Erro de Comentário de Documento"
     IDS_LEX_STR_63375       "Operador de Tipo"
+    IDS_LEX_STR_63376       "Continuation"
+    IDS_LEX_STR_63377       "Special"
+    IDS_LEX_STR_63378       "Syntax Operator"
+    IDS_LEX_STR_63379       "Unclosed String"
 END
 
 STRINGTABLE

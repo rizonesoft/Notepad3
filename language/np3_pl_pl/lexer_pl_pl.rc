@@ -481,6 +481,10 @@ BEGIN
     IDS_LEX_STR_63373       "Znacznik zadań"
     IDS_LEX_STR_63374       "Komentarz błędu Doc"
     IDS_LEX_STR_63375       "Type Operator"
+    IDS_LEX_STR_63376       "Continuation"
+    IDS_LEX_STR_63377       "Special"
+    IDS_LEX_STR_63378       "Syntax Operator"
+    IDS_LEX_STR_63379       "Unclosed String"
 END
 
 STRINGTABLE
