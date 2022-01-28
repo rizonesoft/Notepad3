@@ -19,16 +19,19 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
         case SCLEX_CSS:
         case SCLEX_D: // L"/+", L"+/" could also be used instead
         case SCLEX_DART:
-        case SCLEX_HTML:
         case SCLEX_JSON:
         case SCLEX_KOTLIN:
         case SCLEX_NSIS:
         case SCLEX_RUST:
         case SCLEX_SQL:
         case SCLEX_VHDL:
-        case SCLEX_XML:
             StringCchCopy(beg_out, maxlen, L"/*");
             StringCchCopy(end_out, maxlen, L"*/");
+            break;
+        case SCLEX_HTML:
+        case SCLEX_XML:
+            StringCchCopy(beg_out, maxlen, L"<!--");
+            StringCchCopy(end_out, maxlen, L"-->");
             break;
         case SCLEX_INNOSETUP:
         case SCLEX_PASCAL:
@@ -89,12 +92,10 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_CPP:
         case SCLEX_D:
         case SCLEX_DART:
-        case SCLEX_HTML:
         case SCLEX_JSON:
         case SCLEX_KOTLIN:
         case SCLEX_PASCAL:
         case SCLEX_RUST:
-        case SCLEX_XML:
             StringCchCopy(pre_out, maxlen, L"//");
             return false;
         case SCLEX_VB:
@@ -148,6 +149,8 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_CSS:
         case SCLEX_DIFF:
         case SCLEX_MARKDOWN:
+        case SCLEX_HTML:
+        case SCLEX_XML:
         default:
             StringCchCopy(pre_out, maxlen, L"");
             break;
