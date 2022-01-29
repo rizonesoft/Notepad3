@@ -486,7 +486,7 @@ BEGIN
     IDS_LEX_STR_63378       "Operador de síntaxe"
     IDS_LEX_STR_63379       "String não fechada"
     IDS_LEX_STR_63380       "URL/IRI"
-    IDS_LEX_STR_63381       "Compact IRI"
+    IDS_LEX_STR_63381       "IRI compacto"
 END
 
 STRINGTABLE
