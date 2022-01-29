@@ -33,13 +33,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.128.(build_#) (2022-01-28)
+Current BETA/RC Version 5.22.129.(build_#) (2022-01-29)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.129.1]- JSON Lexer: colorizing for URL/IRI and Compact IRI.
+[.128.3]- JSON Lexer: error coloring for unclosed strings.
 [1211.1]- Partial (incomplete - disabled) "Auto-Save and Backup" handling feature.
 [1130.1]- Add a Fortran Lexer.
 [1130.1]- LongPath Support enhancements.
@@ -75,7 +77,6 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.128.3]- JSON Lexer: error coloring for unclosed strings.
 [.128.2]- XML/HTML Stream Comment.
 [.103.1]- Find/Replace pattern history: clear all not persisted to .ini file.
 [.103.1]- URL detector: double-quote should not be valid URL character.
