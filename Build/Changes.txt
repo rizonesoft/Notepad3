@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.129.(build_#) (2022-01-29)
+Current BETA/RC Version 5.22.208.(build_#) (2022-02-08)
 ========================================================
 
 --------------------------------------------------------
@@ -110,7 +110,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.208.1]- Turkish (tr-TR).
 
 --------------------------------------------------------
 Hello everybody ! 😀
@@ -124,7 +124,6 @@ with a priority to take over "(incomplete...)" translation projects:
 - Norwegian (nb-NO)
 - Romanian (ro-RO)
 - Spanish Mexican (es-MX) (incomplete...)
-- Turkish (tr-TR) (incomplete...)
 - Ukrainian (uk-UA)
 - Vietnamese (vi-VN) (incomplete...)
 - etc...

@@ -107,6 +107,7 @@ Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
 igorruckert             https://github.com/igorruckert
 jupester                https://github.com/jupester
+kayazeren               https://github.com/kayazeren
 kofifus                 https://github.com/kofifus
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
@@ -142,7 +143,7 @@ uthash                          https://troydhanson.github.io/uthash/license.htm
 uchardet                        https://www.freedesktop.org/wiki/Software/uchardet/#license
 TinyExpr                        https://github.com/codeplea/tinyexpr/blob/master/LICENSE
 Notepad3 icon by Vexels.com     https://www.vexels.com
-  -  designed by                mailto:smanashova@gmail.com
+  -  designed by                smanashova@gmail.com
 
 --------------------------------------------------------------------------------
 Notepad3 Licence:
