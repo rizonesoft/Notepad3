@@ -57,72 +57,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Open",                       IDM_FILE_OPEN
-        MENUITEM "Open &w/ Alternate App...",   IDM_FILE_OPENWITH
-        MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
+        MENUITEM "&Aç",                       IDM_FILE_OPEN
+        MENUITEM "Başka bir &uygulama ile aç...",   IDM_FILE_OPENWITH
+        MENUITEM "&Hızlı görünüm",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copy Name",                  IDM_POP_COPYNAME
-        MENUITEM "Create Lin&k...",             IDM_FILE_CREATELINK
-        MENUITEM "&Save As...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copy/&Move...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&elete...",                  IDM_FILE_DELETE
-        MENUITEM "Re&name...",                  IDM_FILE_RENAME
+        MENUITEM "&Adı kopyala",                  IDM_POP_COPYNAME
+        MENUITEM "&Bağlantı oluştur...",             IDM_FILE_CREATELINK
+        MENUITEM "&Farklı kaydet...",                 IDM_FILE_SAVEAS
+        MENUITEM "Kopyala/&taşı...",               IDM_FILE_COPYMOVE
+        MENUITEM "&Sil...",                  IDM_FILE_DELETE
+        MENUITEM "&Yeniden adlandır...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Launch",                     IDM_FILE_LAUNCH
-        MENUITEM "&Run w/ Arguments...",        IDM_FILE_RUN
+        MENUITEM "Baş&lat",                     IDM_FILE_LAUNCH
+        MENUITEM "&Parametrelerle çalıştır...",        IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 IDM_FILE_PROPERTIES
+        MENUITEM "Ö&zellikler",                 IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&New File...",                IDM_FILE_NEW
-        MENUITEM "Ne&w Directory...",           IDM_FILE_NEWDIR
+        MENUITEM "&Yeni dosya...",                IDM_FILE_NEW
+        MENUITEM "Yeni &klasör...",           IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&File Filter...",             IDM_VIEW_FILTER
-        MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
-        POPUP "&Show"
+        MENUITEM "&Dosya süzgeci...",             IDM_VIEW_FILTER
+        MENUITEM "&Süzgeci sıfırla",               IDM_VIEW_FILTERALL
+        POPUP "&Görüntüle"
         BEGIN
-            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                  IDM_VIEW_FILES
-            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
+            MENUITEM "&Klasörler",            IDM_VIEW_FOLDERS
+            MENUITEM "&Dosyalar",                  IDM_VIEW_FILES
+            MENUITEM "&Sistem nesneler",         IDM_VIEW_HIDDEN
         END
-        POPUP "S&ort"
+        POPUP "Sı&rala"
         BEGIN
-            MENUITEM "by &Name",                IDM_SORT_NAME
-            MENUITEM "by &Size",                IDM_SORT_SIZE
-            MENUITEM "by &Type",                IDM_SORT_TYPE
-            MENUITEM "by &Date",                IDM_SORT_DATE
+            MENUITEM "&Ada göre",                IDM_SORT_NAME
+            MENUITEM "&Boyuta göre",                IDM_SORT_SIZE
+            MENUITEM "&Türe göre",                IDM_SORT_TYPE
+            MENUITEM "Tarihe &göre",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                IDM_SORT_REVERSE
+            MENUITEM "T&ersten",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Goto Favourites",             IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Sık k&ullanılanlara git",             IDM_VIEW_FAVORITES
+        MENUITEM "Sık kulla&nılanları düzenle",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Klasör...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Sürü&cüleri görüntüle",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "S&ave Settings",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Setup &Target...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "&Ayarları kaydet",              IDM_VIEW_SAVESETTINGS
+        MENUITEM "&Hedefi ayarla...",            IDM_VIEW_FINDTARGET
+        MENUITEM "&Seçenekler...",                 IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
-        MENUITEM "Drive &Properties",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Klasör...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Sürücü özellikleri",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Sürü&cüleri görüntüle",                IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Edit Toolbar...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "&Araç çubuğunu görüntüle",               IDM_VIEW_TOOLBAR
+        MENUITEM "Araç çubuğunu &düzenle...",            IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Durum çubuğunu &görüntüle",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Exit MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath uygulamasını aç",               IDM_TRAY_RESTORE
+        MENUITEM "MiniPath uygulamasından çık",               IDM_TRAY_EXIT
     END
 END
 
