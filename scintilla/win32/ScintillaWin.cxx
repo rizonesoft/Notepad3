@@ -631,7 +631,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 		DropRenderTarget();
 		renderTargetValid = true;
 	}
-	if (pD2DFactory && !pRenderTarget) {
+	if (!pRenderTarget) {
 		HWND hw = MainHWND();
 		RECT rc;
 		::GetClientRect(hw, &rc);
@@ -2517,6 +2517,8 @@ void ScintillaWin::NotifyDoubleClick(Point pt, KeyMod modifiers) {
 			  MAKELPARAM(pt.x, pt.y));
 }
 
+namespace {
+
 class CaseFolderDBCS : public CaseFolderTable {
 	// Allocate the expandable storage here so that it does not need to be reallocated
 	// for each call to Fold.
@@ -2575,6 +2577,8 @@ public:
 		}
 	}
 };
+
+}
 
 std::unique_ptr<CaseFolder> ScintillaWin::CaseFolderForEncoding() {
 	const UINT cpDest = CodePageOfDocument();
