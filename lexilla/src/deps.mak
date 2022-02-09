@@ -1,11 +1,11 @@
 # Created by DepGen.py. To recreate, run DepGen.py.
-Lexilla.o: \
+$(DIR_O)/Lexilla.o: \
 	../src/Lexilla.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
 	../lexlib/LexerModule.h \
 	../lexlib/CatalogueModules.h
-Accessor.o: \
+$(DIR_O)/Accessor.o: \
 	../lexlib/Accessor.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -15,13 +15,13 @@ Accessor.o: \
 	../lexlib/WordList.h \
 	../lexlib/LexAccessor.h \
 	../lexlib/Accessor.h
-CharacterCategory.o: \
+$(DIR_O)/CharacterCategory.o: \
 	../lexlib/CharacterCategory.cxx \
 	../lexlib/CharacterCategory.h
-CharacterSet.o: \
+$(DIR_O)/CharacterSet.o: \
 	../lexlib/CharacterSet.cxx \
 	../lexlib/CharacterSet.h
-DefaultLexer.o: \
+$(DIR_O)/DefaultLexer.o: \
 	../lexlib/DefaultLexer.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -33,13 +33,13 @@ DefaultLexer.o: \
 	../lexlib/Accessor.h \
 	../lexlib/LexerModule.h \
 	../lexlib/DefaultLexer.h
-LexAccessor.o: \
+$(DIR_O)/LexAccessor.o: \
 	../lexlib/LexAccessor.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
 	../lexlib/LexAccessor.h \
 	../lexlib/CharacterSet.h
-LexerBase.o: \
+$(DIR_O)/LexerBase.o: \
 	../lexlib/LexerBase.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -51,7 +51,7 @@ LexerBase.o: \
 	../lexlib/Accessor.h \
 	../lexlib/LexerModule.h \
 	../lexlib/LexerBase.h
-LexerModule.o: \
+$(DIR_O)/LexerModule.o: \
 	../lexlib/LexerModule.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -64,7 +64,7 @@ LexerModule.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/LexerBase.h \
 	../lexlib/LexerSimple.h
-LexerNoExceptions.o: \
+$(DIR_O)/LexerNoExceptions.o: \
 	../lexlib/LexerNoExceptions.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -77,7 +77,7 @@ LexerNoExceptions.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/LexerBase.h \
 	../lexlib/LexerNoExceptions.h
-LexerSimple.o: \
+$(DIR_O)/LexerSimple.o: \
 	../lexlib/LexerSimple.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -90,10 +90,10 @@ LexerSimple.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/LexerBase.h \
 	../lexlib/LexerSimple.h
-PropSetSimple.o: \
+$(DIR_O)/PropSetSimple.o: \
 	../lexlib/PropSetSimple.cxx \
 	../lexlib/PropSetSimple.h
-StyleContext.o: \
+$(DIR_O)/StyleContext.o: \
 	../lexlib/StyleContext.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -101,10 +101,10 @@ StyleContext.o: \
 	../lexlib/Accessor.h \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h
-WordList.o: \
+$(DIR_O)/WordList.o: \
 	../lexlib/WordList.cxx \
 	../lexlib/WordList.h
-LexAsm.o: \
+$(DIR_O)/LexAsm.o: \
 	../lexers/LexAsm.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -117,7 +117,7 @@ LexAsm.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexAU3.o: \
+$(DIR_O)/LexAU3.o: \
 	../lexers/LexAU3.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -129,7 +129,7 @@ LexAU3.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexAVS.o: \
+$(DIR_O)/LexAVS.o: \
 	../lexers/LexAVS.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -141,7 +141,7 @@ LexAVS.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexBash.o: \
+$(DIR_O)/LexBash.o: \
 	../lexers/LexBash.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -156,7 +156,7 @@ LexBash.o: \
 	../lexlib/OptionSet.h \
 	../lexlib/SubStyles.h \
 	../lexlib/DefaultLexer.h
-LexBatch.o: \
+$(DIR_O)/LexBatch.o: \
 	../lexers/LexBatch.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -168,7 +168,7 @@ LexBatch.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexCmake.o: \
+$(DIR_O)/LexCmake.o: \
 	../lexers/LexCmake.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -180,7 +180,7 @@ LexCmake.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexCoffeeScript.o: \
+$(DIR_O)/LexCoffeeScript.o: \
 	../lexers/LexCoffeeScript.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -192,7 +192,7 @@ LexCoffeeScript.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexConf.o: \
+$(DIR_O)/LexConf.o: \
 	../lexers/LexConf.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -204,7 +204,7 @@ LexConf.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexCPP.o: \
+$(DIR_O)/LexCPP.o: \
 	../lexers/LexCPP.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -220,7 +220,7 @@ LexCPP.o: \
 	../lexlib/OptionSet.h \
 	../lexlib/SparseState.h \
 	../lexlib/SubStyles.h
-LexCSS.o: \
+$(DIR_O)/LexCSS.o: \
 	../lexers/LexCSS.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -232,7 +232,7 @@ LexCSS.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexD.o: \
+$(DIR_O)/LexD.o: \
 	../lexers/LexD.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -245,7 +245,7 @@ LexD.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexDiff.o: \
+$(DIR_O)/LexDiff.o: \
 	../lexers/LexDiff.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -257,7 +257,7 @@ LexDiff.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexFortran.o: \
+$(DIR_O)/LexFortran.o: \
 	../lexers/LexFortran.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -269,7 +269,7 @@ LexFortran.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexHTML.o: \
+$(DIR_O)/LexHTML.o: \
 	../lexers/LexHTML.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -283,7 +283,7 @@ LexHTML.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexInno.o: \
+$(DIR_O)/LexInno.o: \
 	../lexers/LexInno.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -295,7 +295,7 @@ LexInno.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexJulia.o: \
+$(DIR_O)/LexJulia.o: \
 	../lexers/LexJulia.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -312,7 +312,7 @@ LexJulia.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexKix.o: \
+$(DIR_O)/LexKix.o: \
 	../lexers/LexKix.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -324,7 +324,7 @@ LexKix.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexLaTeX.o: \
+$(DIR_O)/LexLaTeX.o: \
 	../lexers/LexLaTeX.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -339,7 +339,7 @@ LexLaTeX.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/DefaultLexer.h \
 	../lexlib/LexerBase.h
-LexLua.o: \
+$(DIR_O)/LexLua.o: \
 	../lexers/LexLua.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -352,7 +352,7 @@ LexLua.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexMake.o: \
+$(DIR_O)/LexMake.o: \
 	../lexers/LexMake.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -364,7 +364,7 @@ LexMake.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexMatlab.o: \
+$(DIR_O)/LexMatlab.o: \
 	../lexers/LexMatlab.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -376,7 +376,7 @@ LexMatlab.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexNim.o: \
+$(DIR_O)/LexNim.o: \
 	../lexers/LexNim.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -391,7 +391,7 @@ LexNim.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexNsis.o: \
+$(DIR_O)/LexNsis.o: \
 	../lexers/LexNsis.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -403,7 +403,7 @@ LexNsis.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexNull.o: \
+$(DIR_O)/LexNull.o: \
 	../lexers/LexNull.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -415,7 +415,7 @@ LexNull.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexPascal.o: \
+$(DIR_O)/LexPascal.o: \
 	../lexers/LexPascal.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -427,7 +427,7 @@ LexPascal.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexPerl.o: \
+$(DIR_O)/LexPerl.o: \
 	../lexers/LexPerl.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -440,7 +440,7 @@ LexPerl.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexPowerShell.o: \
+$(DIR_O)/LexPowerShell.o: \
 	../lexers/LexPowerShell.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -452,7 +452,7 @@ LexPowerShell.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexProps.o: \
+$(DIR_O)/LexProps.o: \
 	../lexers/LexProps.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -464,7 +464,7 @@ LexProps.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexR.o: \
+$(DIR_O)/LexR.o: \
 	../lexers/LexR.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -476,7 +476,7 @@ LexR.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexRegistry.o: \
+$(DIR_O)/LexRegistry.o: \
 	../lexers/LexRegistry.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -489,7 +489,7 @@ LexRegistry.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexRuby.o: \
+$(DIR_O)/LexRuby.o: \
 	../lexers/LexRuby.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -501,7 +501,7 @@ LexRuby.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexRust.o: \
+$(DIR_O)/LexRust.o: \
 	../lexers/LexRust.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -516,7 +516,7 @@ LexRust.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
-LexSQL.o: \
+$(DIR_O)/LexSQL.o: \
 	../lexers/LexSQL.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -531,7 +531,7 @@ LexSQL.o: \
 	../lexlib/OptionSet.h \
 	../lexlib/SparseState.h \
 	../lexlib/DefaultLexer.h
-LexTCL.o: \
+$(DIR_O)/LexTCL.o: \
 	../lexers/LexTCL.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -543,7 +543,7 @@ LexTCL.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexVB.o: \
+$(DIR_O)/LexVB.o: \
 	../lexers/LexVB.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -555,7 +555,7 @@ LexVB.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexVHDL.o: \
+$(DIR_O)/LexVHDL.o: \
 	../lexers/LexVHDL.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -567,7 +567,7 @@ LexVHDL.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexYAML.o: \
+$(DIR_O)/LexYAML.o: \
 	../lexers/LexYAML.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -579,7 +579,7 @@ LexYAML.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexAHK.o: \
+$(DIR_O)/LexAHK.o: \
 	../lexers_x/LexAHK.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -597,7 +597,7 @@ LexAHK.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
-LexCSV.o: \
+$(DIR_O)/LexCSV.o: \
 	../lexers_x/LexCSV.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -615,7 +615,7 @@ LexCSV.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
-LexDart.o: \
+$(DIR_O)/LexDart.o: \
 	../lexers_x/LexDart.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -635,7 +635,7 @@ LexDart.o: \
 	../include/SciLexer.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
-LexerUtils.o: \
+$(DIR_O)/LexerUtils.o: \
 	../lexers_x/LexerUtils.cxx \
 	../../scintilla/include/Scintilla.h \
 	../../scintilla/include/Sci_Position.h \
@@ -646,7 +646,7 @@ LexerUtils.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
-LexJSON.o: \
+$(DIR_O)/LexJSON.o: \
 	../lexers_x/LexJSON.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -661,7 +661,7 @@ LexJSON.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
-LexKotlin.o: \
+$(DIR_O)/LexKotlin.o: \
 	../lexers_x/LexKotlin.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -681,7 +681,7 @@ LexKotlin.o: \
 	../include/SciLexer.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
-LexMarkdown.o: \
+$(DIR_O)/LexMarkdown.o: \
 	../lexers_x/LexMarkdown.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -693,7 +693,7 @@ LexMarkdown.o: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-LexPython.o: \
+$(DIR_O)/LexPython.o: \
 	../lexers_x/LexPython.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
@@ -710,7 +710,7 @@ LexPython.o: \
 	../lexlib/OptionSet.h \
 	../lexlib/SubStyles.h \
 	../lexlib/DefaultLexer.h
-LexTOML.o: \
+$(DIR_O)/LexTOML.o: \
 	../lexers_x/LexTOML.cxx \
 	../../scintilla/include/ILexer.h \
 	../../scintilla/include/Sci_Position.h \
