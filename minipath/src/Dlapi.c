@@ -156,7 +156,6 @@ BOOL DirList_StartIconThread(HWND hwnd)
     ResetEvent(lpdl->hTerminatedThread);
 
     _beginthread(DirList_IconThread, 0, (void*)lpdl);
-
     return TRUE;
 }
 
@@ -395,9 +394,8 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
 //
 //  Thread to extract file icons in the background
 //
-DWORD WINAPI DirList_IconThread(LPVOID lpParam)
+void WINAPIV DirList_IconThread(LPVOID lpParam)
 {
-
     HWND hwnd;
 
     LPDLDATA lpdl;
@@ -416,7 +414,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
     if (!lpdl->lpsf) {
         SetEvent(lpdl->hTerminatedThread);
         _endthread();
-        return(0);
+        return;
     }
 
     hwnd = lpdl->hwnd;
@@ -497,7 +495,6 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
 
     SetEvent(lpdl->hTerminatedThread);
     _endthread();
-    return(0);
 }
 
 

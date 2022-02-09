@@ -65,7 +65,7 @@ int DirList_Fill(HWND,LPCWSTR,DWORD,LPCWSTR,BOOL,BOOL,int,BOOL);
 
 //==== DlIconThread() =========================================================
 
-DWORD WINAPI DirList_IconThread(LPVOID);
+void WINAPIV DirList_IconThread(LPVOID);
 
 
 //==== DlGetDispInfo() ========================================================
