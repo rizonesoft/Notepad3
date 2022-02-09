@@ -600,9 +600,20 @@ void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath
     worker->hFilePath = hFilePath;
 }
 
-void BackgroundWorker_Stop(BackgroundWorker *worker) {
+void BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type routine, LPVOID property)
+{
+    //~worker->workerThread = CreateThread(NULL, 0, routine, property, 0, NULL);  // MD(d) dll
+    worker->workerThread = (HANDLE)_beginthreadex(NULL, 0, routine, property, 0, NULL);  // MT(d) static
+}
+
+void BackgroundWorker_End(unsigned int retcode)
+{
+    _endthreadex(retcode);
+}
+
+static void _BackgroundWorker_Stop(BackgroundWorker* worker) {
     SetEvent(worker->eventCancel);
-    HANDLE workerThread = worker->workerThread;
+    HANDLE const workerThread = worker->workerThread;
     if (workerThread) {
         worker->workerThread = NULL;
         while (WaitForSingleObject(workerThread, 0) != WAIT_OBJECT_0) {
@@ -616,13 +627,13 @@ void BackgroundWorker_Stop(BackgroundWorker *worker) {
     }
 }
 
-void BackgroundWorker_Cancel(BackgroundWorker *worker) {
-    BackgroundWorker_Stop(worker);
+void BackgroundWorker_Cancel(BackgroundWorker* worker) {
+    _BackgroundWorker_Stop(worker);
     ResetEvent(worker->eventCancel);
 }
 
-void BackgroundWorker_Destroy(BackgroundWorker *worker) {
-    BackgroundWorker_Stop(worker);
+void BackgroundWorker_Destroy(BackgroundWorker* worker) {
+    _BackgroundWorker_Stop(worker);
     CloseHandle(worker->eventCancel);
 }
 
@@ -1152,8 +1163,8 @@ bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum)
 //
 size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth)
 {
-    static WCHAR szSep[5] = { L'\0' };
-    static WCHAR szGrp[11] = { L'\0' };
+    static WCHAR szSep[SMALL_BUFFER] = { L'\0' };
+    static WCHAR szGrp[SMALL_BUFFER] = { L'\0' };
     static int iPlace[4] = {-1,-1,-1,-1};
 
     if (StrIsEmpty(lpNumberStr)) {

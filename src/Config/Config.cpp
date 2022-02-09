@@ -22,6 +22,14 @@
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#define DBG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
 //#define NOMINMAX 1
@@ -1530,8 +1538,8 @@ void LoadSettings()
     }
     Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
-    WCHAR localeInfo[3];
-    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+    WCHAR localeInfo[SMALL_BUFFER];
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, COUNTOF(localeInfo));
     LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
     Defaults.PrintMargin.left = _margin;
     Settings.PrintMargin.left = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginLeft", Defaults.PrintMargin.left), 0, 40000);
@@ -2660,7 +2668,6 @@ void MRU_Save(LPMRULIST pmru)
                     }
                 }
             }
-
             CloseSettingsFile(true, bOpenedByMe);
         }
     }
@@ -2698,7 +2705,6 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
             }
 
             MRU_Save(pmruBase);
-            MRU_Destroy(pmruBase);
             pmruBase = NULL;
 
             CloseSettingsFile(bOpenedByMe, bOpenedByMe);
@@ -2708,6 +2714,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
     }
     return false;
 }
+
 
 // ////////////////////////////////////////////////////////////////////////////
 // Some C++ Extentions for Notepad3

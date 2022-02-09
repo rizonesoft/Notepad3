@@ -255,8 +255,8 @@
 # include <iostream>
 #endif // SI_SUPPORT_IOSTREAMS
 
-#ifdef _DEBUG
-# ifndef assert
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#ifndef assert
 #  include <cassert>
 # endif
 # define SI_ASSERT(x)   assert(x)

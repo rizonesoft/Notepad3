@@ -1371,7 +1371,7 @@ size_t PTHAPI Path_ToShortPathName(HPATHL hpth_in_out)
 
     DWORD const _len = GetShortPathNameW(StrgGet(hstr_io), NULL, 0);
     if (!_len) {
-#ifdef DEBUG
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
         MsgBoxLastError(L"Path_ToShortPathName()", 0);
 #endif // DEBUG
         return 0;

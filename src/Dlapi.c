@@ -45,8 +45,8 @@ typedef struct tagDLDATA { // dl
 
 
 //==== Property Name ==========================================================
-static const WCHAR *pDirListProp = L"DirListData";
 
+static const WCHAR *pDirListProp = L"DirListData";
 
 
 //=============================================================================
@@ -137,7 +137,7 @@ void DirList_StartIconThread(HWND hwnd)
     LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd, pDirListProp);
 
     BackgroundWorker_Cancel(&lpdl->worker);
-    lpdl->worker.workerThread = CreateThread(NULL, 0, DirList_IconThread, (LPVOID)lpdl, 0, NULL);
+    BackgroundWorker_Start(&lpdl->worker, DirList_IconThread, lpdl);
 }
 
 
@@ -333,7 +333,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
 //
 //  Thread to extract file icons in the background
 //
-DWORD WINAPI DirList_IconThread(LPVOID lpParam)
+unsigned int WINAPI DirList_IconThread(LPVOID lpParam)
 {
     LPDLDATA lpdl = (LPDLDATA)lpParam;
     BackgroundWorker *worker = &lpdl->worker;
@@ -432,6 +432,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
     }
 
     CoUninitialize();
+    BackgroundWorker_End(0);
     return 0;
 }
 

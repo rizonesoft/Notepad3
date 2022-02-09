@@ -2223,10 +2223,13 @@ void EditChar2Hex(HWND hwnd)
     size_t const alloc = (count + 1) * (2 + MAX_ESCAPE_HEX_DIGIT) + 1;
     char* const ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
     WCHAR* const wch = (WCHAR*)AllocMem(alloc * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    if (!ch || !wch) {
+        return;
+    }
 
     SciCall_GetSelText(ch);
     int const nchars = (DocPos)MultiByteToWideChar(Encoding_SciCP, 0, ch, -1, wch, (int)alloc) - 1; // '\0'
-    memset(ch, 0, alloc);
+    SecureZeroMemory(ch, alloc);
 
     for (int i = 0, j = 0; i < nchars; ++i) {
         if (wch[i] <= 0xFF) {
@@ -5838,7 +5841,7 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
 {
     UNREFERENCED_PARAMETER(bForceNext);
 
-    static char* chFind = NULL;  // for speed (realloc())
+    static char chFind[8192] = { '\0' }; // max find buffer
 
     DocPos iPos = -1LL; // not found
 
@@ -5857,9 +5860,7 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
     SciCall_SetSearchFlags(sFlags);
     SciCall_SetTargetRange(start, stop);
 
-    int const len = WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, NULL, 0, NULL, NULL);
-    chFind = ReAllocMem(chFind, len * sizeof(char), HEAP_ZERO_MEMORY);
-    WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, len, NULL, NULL);
+    DocPos const len = (DocPos)WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, COUNTOF(chFind), NULL, NULL);
 
     iPos = SciCall_SearchInTarget(len - 1, chFind);
     //  handle next in case of zero-length-matches (regex) !
@@ -7543,14 +7544,12 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
     DocPos iFindLength = 0;
 
-    static LPWSTR pwchText = NULL;
+    char chText[2048] = { L'\0'};
+    WCHAR wchText[2048] = { L'\0'};
 
     if (StrIsEmpty(wchFind)) {
 
-        static char* pchText = NULL;
-        int const    len = max_i(WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, NULL, 0, NULL, NULL), 256);
-        pchText = ReAllocMem(pchText, len * sizeof(char), HEAP_ZERO_MEMORY);
-        WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, pchText, len, NULL, NULL);
+        WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chText, COUNTOF(chText), NULL, NULL);
 
         if (SciCall_IsSelectionEmpty()) {
             // nothing selected, get word under caret if flagged
@@ -7563,7 +7562,8 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
                 }
                 iFindLength = (iWordEnd - iWordStart);
 
-                StringCchCopyNA(pchText, SizeOfMem(pchText)/sizeof(char), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
+                StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
+
             } else {
                 __leave; // no pattern, no selection and no word mark chosen
             }
@@ -7576,21 +7576,27 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
             // get current selection
             DocPos const iSelStart = SciCall_GetSelectionStart();
             DocPos const iSelEnd = SciCall_GetSelectionEnd();
-            DocPos const iSelCount = (iSelEnd - iSelStart);
+            //DocPos const iSelCount = (iSelEnd - iSelStart);
 
             // if multiple lines are selected exit
             if (SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) {
                 __leave;
             }
 
-            iFindLength = SciCall_GetSelText(pchText);
+            DocPosU const iSelLen = SciCall_GetSelText(NULL);
+            if (iSelLen >= COUNTOF(chText)) {
+                __leave;
+            }
+
+            iFindLength = SciCall_GetSelText(chText);
+            chText[iFindLength] = '\0';
 
             // exit if selection is not a word and Match whole words only is enabled
             if (sFlags & SCFIND_WHOLEWORD) {
-                DocPos iSelStart2 = 0;
+                DocPosU iSelStart2 = 0;
                 const char* delims = (Settings.AccelWordNavigation ? DelimCharsAccel : DelimChars);
-                while ((iSelStart2 <= iSelCount) && pchText[iSelStart2]) {
-                    if (StrChrIA(delims, pchText[iSelStart2])) {
+                while ((iSelStart2 <= iSelLen) && chText[iSelStart2]) {
+                    if (StrChrIA(delims, chText[iSelStart2])) {
                         __leave;
                     }
                     ++iSelStart2;
@@ -7598,17 +7604,13 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
             }
         }
 
-        int const length = MultiByteToWideChar(Encoding_SciCP, 0, pchText, (int)iFindLength, NULL, 0);
-        pwchText = ReAllocMem(pwchText, max_i(length + 1, 256) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-        MultiByteToWideChar(Encoding_SciCP, 0, pchText, (int)iFindLength, pwchText, (int)(SizeOfMem(pwchText) / sizeof(WCHAR)));
+        MultiByteToWideChar(Encoding_SciCP, 0, chText, (int)iFindLength, wchText, (int)COUNTOF(wchText));
 
     } else {
-
-        pwchText = ReAllocMem(pwchText, max_s(StringCchLen(wchFind, 0) + 1, 256) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-        StringCchCopy(pwchText, SizeOfMem(pwchText) / sizeof(WCHAR), wchFind);
+        StringCchCopy(wchText, COUNTOF(wchText), wchFind);
     }
 
-    if (StrIsNotEmpty(pwchText)) {
+    if (StrIsNotEmpty(wchText)) {
 
         if (bMultiSel) {
             SciCall_ClearSelections();
@@ -7620,7 +7622,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
         DocPos start = rangeStart;
         DocPos end = rangeEnd;
-        DocPos iPos = _FindInTarget(pwchText, sFlags, &start, &end, false, FRMOD_NORM);
+        DocPos iPos = _FindInTarget(wchText, sFlags, &start, &end, false, FRMOD_NORM);
 
         DocPosU count = 0;
         while ((iPos >= 0LL) && (start <= rangeEnd)) {
@@ -7640,7 +7642,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
             ++count;
             start = end;
             end = rangeEnd;
-            iPos = _FindInTarget(pwchText, sFlags, &start, &end, true, FRMOD_NORM);
+            iPos = _FindInTarget(wchText, sFlags, &start, &end, true, FRMOD_NORM);
         };
 
         Globals.iMarkOccurrencesCount = count;

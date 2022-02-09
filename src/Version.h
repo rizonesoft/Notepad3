@@ -36,7 +36,7 @@
 #endif
 
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 #pragma message("Debug Build: " _STRG(VERSION_FILEVERSION_LONG))
 #else
 #pragma message("Release Build: " _STRG(VERSION_FILEVERSION_LONG))

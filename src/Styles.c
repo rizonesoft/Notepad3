@@ -467,6 +467,14 @@ static inline void AppendStyle(LPWSTR lpszStyleDest, size_t cchSizeDest, LPCWSTR
 
 //=============================================================================
 
+void Style_InitFileExtensions()
+{
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        if (StrIsEmpty(g_pLexArray[iLexer]->szExtensions)) {
+            StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[iLexer]->pszDefExt);
+        }
+    }
+}
 
 //=============================================================================
 //

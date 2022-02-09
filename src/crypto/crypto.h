@@ -3,8 +3,11 @@
 #define __CRYPTO_H__
 
 #include <stdbool.h>
-#ifdef _DEBUG
-#define BUG1(a,b) { perror("a"); }
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#define BUG1(a, b)   \
+    {                \
+        perror("a"); \
+    }
 #define BUG(a) { perror("a"); }
 #else
 #define BUG1(a,b) ((void)0);
