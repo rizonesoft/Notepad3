@@ -61,7 +61,7 @@ BEGIN
     IDT_FILE_SAVE           "Kaydet"
     IDT_FILE_RECENT         "Geçmiş"
     IDT_EDIT_UNDO           "Geri al"
-    IDT_EDIT_REDO           "Yenile"
+    IDT_EDIT_REDO           "Yinele"
     IDT_EDIT_CUT            "Kes"
     IDT_EDIT_COPY           "Kopyala"
 END
@@ -74,11 +74,11 @@ BEGIN
     IDT_VIEW_WORDWRAP       "Sözcük kaydır"
     IDT_VIEW_ZOOMIN         "Yakınlaştır"
     IDT_VIEW_ZOOMOUT        "Uzaklaştır"
-    IDT_VIEW_SCHEME         "Şema seçin"
+    IDT_VIEW_SCHEME         "Şema seç"
     IDT_VIEW_SCHEMECONFIG   "Şemaları özelleştir"
     IDT_FILE_EXIT           "Çık"
     IDT_FILE_SAVEAS         "Farklı kaydet"
-    IDT_FILE_SAVECOPY       "Kopya olarak kaydet"
+    IDT_FILE_SAVECOPY       "Kopyasını kaydet"
     IDT_EDIT_CLEAR          "Sil"
     IDT_FILE_PRINT          "Yazdır"
     IDT_FILE_OPENFAV        "Sık kullanılanlar"
@@ -91,7 +91,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Belgeyi yürüt"
     IDT_VIEW_TOGGLE_VIEW     "Odaklanmış görünüm"
     IDT_VIEW_CHASING_DOCTAIL "İzleme günlüğü"
-    IDT_VIEW_PIN_ON_TOP      "Her zaman üstte"
+    IDT_VIEW_PIN_ON_TOP      "Pencereyi üste sabitle"
     IDT_GREP_WIN_TOOL        "Dosyalarda ara"
 END
 
@@ -257,8 +257,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Dil"
-    IDS_USE_LOCALE_DATEFMT  "Dile uygun &tarih biçimi"
-    IDS_MUI_MENU_THEMES     "Şema &derlemesi"
+    IDS_USE_LOCALE_DATEFMT  "&Tarih biçimi dile uygun ayarlansın"
+    IDS_MUI_MENU_THEMES     "Şema &teması"
     IDM_THEMES_FACTORY_RESET "&Fabrika ayarları"
     IDM_THEMES_STD_CFG       "Standart yapılandırma"
     IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,"
@@ -294,38 +294,38 @@ dosya\tSon parametre olmalıdır. Varsayılan olarak tırnak içinde boşluk yok
 +\tBirden fazla parametre kabul eder (tırnak içinde boşluk ile).\r\n\
 -\tTek parametre kabul eder (tırnak içinde boşluk olmadan).\r\n\r\n\
 Seçenekler:\r\n\
-/?\tBu yardım iletisini görüntüle.\r\n\
-...\tKodlama (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tSatır sonu kipi (/crlf, /cr, /lf).\r\n\
-/e\tDosya kaynağı kodlaması.\r\n\
-/g\tBelirtilen konuma git (/g -1 dosya sonu).\r\n\
-/m\tBelirtilen metin ile eşleştir (/m- son, /mr kurallı ifade, /mb ters bölü).\r\n\
-/l\tDeğiştirilen dosyaları otomatik olarak yükle.\r\n\
-/q\tYeni dosyaları sormadan oluştur.\r\n\
-/s\tBelirtilen yazım şemasını seç.\r\n\
-/d\tVarsayılan metin şemasını seç.\r\n\
-/h\tWeb kaynak kodu şemasını seç.\r\n\
-/x\tXML belgesi şemasını seç.\r\n\
-/c\tYeni pencere aç ve pano içeriklerini yapıştır.\r\n\
-/b\tPano kayıtlarını derlemek için yeni yapıştırma panosu aç.\r\n\
-/n\tHer zaman yeni pencerede aç (/ns tek dosya kopyası).\r\n\
-/r\tPencereyi yeniden kullan (/rs tek dosya kopyası).\r\n\
-/p\tPencere konumunu ve boyutunu ayarla (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+/?\tBu yardım iletisini görüntüler.\r\n\
+...\tKodlamayı belirler (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tSatır sonu kipini belirler (/crlf, /cr, /lf).\r\n\
+/e\tDosya kaynağı kodlamasını belirler.\r\n\
+/g\tBelirtilen konuma gider (/g -1 dosya sonu).\r\n\
+/m\tBelirtilen metin ile eşleştirir (/m- son, /mr kurallı ifade, /mb ters bölü).\r\n\
+/l\tDeğiştirilen dosyaları otomatik olarak yükler.\r\n\
+/q\tYeni dosyaları sormadan oluşturur.\r\n\
+/s\tBelirtilen yazım şemasını seçer.\r\n\
+/d\tVarsayılan metin şemasını seçer.\r\n\
+/h\tWeb kaynak kodu şemasını seçer.\r\n\
+/x\tXML belgesi şemasını seçer.\r\n\
+/c\tYeni pencere aç ve pano içeriklerini yapıştırır.\r\n\
+/b\tPano kayıtlarını derlemek için yeni yapıştırma panosu açar.\r\n\
+/n\tHer zaman yeni pencerede açar (/ns tek dosya kopyası).\r\n\
+/r\tPencereyi yeniden kullanır (/rs tek dosya kopyası).\r\n\
+/p\tPencere konumunu ve boyutunu ayarlar (/p0, /ps, /pf,l,t,r,b,m)\r\n\
 \tor /p <left>,<top>,<width>,<height>,<max>    [tümü tam sayı].\r\n\
-/t\tPencere başlığını ayarla.\r\n\
-/i\tSistem tepsisinde başlat.\r\n\
-/o\tPencereyi üstte tut.\r\n\
-/f\tKullanılacak ini dosyasını belirt (/f0 ini dosyası yok).\r\n\
-/u\tYönetici yetkileri ile başlat.\r\n\
-/v\tDosyayı hemen yazdır ve çık.\r\n\
-/vd\tDosyayı yazdır (yazıcı penceresini aç).\r\n\
-/y\tGöreli dosya adı durumuna karşı PATH ortam değişkeninde ara.\r\n\
-/z\tSonrakine geç (kayıt defteri temelli Notepad değişikliği için kullanışlı).\r\n\r\n\
+/t\tPencere başlığını ayarlar.\r\n\
+/i\tSistem tepsisinde başlatır.\r\n\
+/o\tPencereyi üste sabitler.\r\n\
+/f\tKullanılacak ini dosyasını belirler (/f0 ini dosyası yok).\r\n\
+/u\tYönetici yetkileri ile başlatır.\r\n\
+/v\tDosyayı hemen yazdırır ve çıkar.\r\n\
+/vd\tDosyayı yazdırır (yazıcı penceresini açar).\r\n\
+/y\tGöreli dosya adı durumuna karşı PATH ortam değişkeninde arar.\r\n\
+/z\tSonrakine geçer (kayıt defteri temelli Notepad değişikliği için kullanışlı).\r\n\r\n\
 Örnekler:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Deneme.txt\r\n\
- \t... Yeni bir dosya aç: ""Deneme.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Yeni bir dosya açar: ""Deneme.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Deneme.txt\r\n\
- \t... Dosyayı hemen yazdır: ""Deneme.txt"".\
+ \t... Dosyayı hemen yazdırır: ""Deneme.txt"".\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
