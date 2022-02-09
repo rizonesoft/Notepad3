@@ -16,6 +16,14 @@
 *                                                                             *
 *******************************************************************************/
 
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#define DBG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 #if !defined(WINVER)
 #define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
 #endif
@@ -226,8 +234,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         // thousandths of inches (HiEnglish) margin values
         // from the Page Setup dialog to device units.
         // (There are 2540 hundredths of a mm in an inch.)
-        WCHAR localeInfo[3];
-        GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+        WCHAR localeInfo[SMALL_BUFFER];
+        GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, COUNTOF(localeInfo));
 
         RECT rectSetup;
         if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System

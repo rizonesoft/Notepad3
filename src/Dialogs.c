@@ -17,6 +17,7 @@
 
 #include <windowsx.h>
 #include <commctrl.h>
+#include <process.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
@@ -2137,15 +2138,7 @@ bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
 //  FileMRUDlgProc()
 //
 //
-typedef struct tagIconThreadInfo {
-    HWND hwnd;                 // HWND of ListView Control
-    HANDLE hThread;            // Thread Handle
-    HANDLE hExitThread;        // Flag is set when Icon Thread should terminate
-    HANDLE hTerminatedThread;  // Flag is set when Icon Thread has terminated
-
-} ICONTHREADINFO, *LPICONTHREADINFO;
-
-DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
+unsigned int WINAPI FileMRUIconThread(LPVOID lpParam)
 {
     BackgroundWorker *worker = (BackgroundWorker *)lpParam;
 
@@ -2218,6 +2211,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam)
     }
 
     CoUninitialize();
+    BackgroundWorker_End(0);
     return 0;
 }
 
@@ -2489,7 +2483,7 @@ CASE_WM_CTLCOLOR_SET:
             DialogEnableControl(hwnd, IDOK, (cnt > 0));
             DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
 
-            worker->workerThread = CreateThread(NULL, 0, FileMRUIconThread, (LPVOID)worker, 0, NULL);
+            BackgroundWorker_Start(worker, FileMRUIconThread, worker);
         }
         break;
 

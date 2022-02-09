@@ -29,6 +29,7 @@
 
 int    Style_NumOfLexers();  // Number of Lexers in pLexArray
 
+void   Style_InitFileExtensions();
 void   Style_Prerequisites();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportTheme(const int iThemeIdx);  // -1 => Factory Reset

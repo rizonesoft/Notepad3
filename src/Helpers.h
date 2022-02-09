@@ -19,9 +19,10 @@
 
 #include "TypeDefs.h"
 
+#include <heapapi.h>
+#include <process.h>
 #include <math.h>
 #include <shlwapi.h>
-#include <heapapi.h>
 #include <VersionHelpers.h>
 
 #include "Scintilla.h"
@@ -55,11 +56,26 @@
 
 // ============================================================================
 
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#ifndef _DEBUG
+#define _DEBUG 1
+#endif
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+inline void* reallocz(void* pMem, size_t numBytes) { void* pM = realloc(pMem, numBytes); if (pM) memset(pM, 0, numBytes); return pM; }
+#define AllocMem(B, F) (((F)&HEAP_ZERO_MEMORY) ? calloc(1, B) : malloc(B))
+#define ReAllocMem(M, B, F) ((M) ? ((_msize(M) >= (B)) ? (((F)&HEAP_ZERO_MEMORY) ? (memset(M, 0, B), (M)) : (M)) : (((F)&HEAP_ZERO_MEMORY) ? reallocz(M, B) : realloc(M, B))) : AllocMem(B, F))
+#define FreeMem(M) ((M ? (free(M)) : NOOP), true)
+#define SizeOfMem(M) ((M) ? _msize(M) : 0)
+
+#else  // RELASE VERSION
+
 // direct heap allocation
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-#define DEFAULT_ALLOC_FLAGS (HEAP_GENERATE_EXCEPTIONS)
+#define DEFAULT_ALLOC_FLAGS (HEAP_GENERATE_EXCEPTIONS | HEAP_TAIL_CHECKING_ENABLED | HEAP_FREE_CHECKING_ENABLED | HEAP_CREATE_HARDENED)
 #else
-#define DEFAULT_ALLOC_FLAGS (0)
+#define DEFAULT_ALLOC_FLAGS (HEAP_CREATE_HARDENED)
 #endif
 
 inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
@@ -73,7 +89,7 @@ inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
         size_t const memSize = HeapSize(Globals.hndlProcessHeap, 0, lpMem);
         if (memSize >= numBytes) {
             if (dwFlags & HEAP_ZERO_MEMORY) {
-                ZeroMemory(lpMem, memSize);
+                SecureZeroMemory(lpMem, memSize);
             }
             return lpMem;
         }
@@ -82,15 +98,17 @@ inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
     return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
-inline bool FreeMem(LPVOID lpMemory)
+inline bool FreeMem(LPVOID lpMem)
 {
-    return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
+    return (lpMem ? HeapFree(Globals.hndlProcessHeap, 0, lpMem) : true);
 }
 
-inline size_t SizeOfMem(LPCVOID lpMemory)
+inline size_t SizeOfMem(LPCVOID lpMem)
 {
-    return (lpMemory ? HeapSize(Globals.hndlProcessHeap, 0, lpMemory) : 0);
+    return (lpMem ? HeapSize(Globals.hndlProcessHeap, 0, lpMem) : 0);
 }
+
+#endif
 
 // ============================================================================
 
@@ -381,10 +399,11 @@ typedef struct BackgroundWorker {
 } BackgroundWorker;
 
 void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath);
+void BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type routine, LPVOID property);
+void BackgroundWorker_End(unsigned int retcode);
 void BackgroundWorker_Cancel(BackgroundWorker *worker);
 void BackgroundWorker_Destroy(BackgroundWorker *worker);
-#define BackgroundWorker_Continue(worker) \
-    (WaitForSingleObject((worker)->eventCancel, 0) != WAIT_OBJECT_0)
+__forceinline bool BackgroundWorker_Continue(BackgroundWorker* worker) { return (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0); }
 
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);

@@ -23,6 +23,9 @@
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#endif
+
 // Want to use std::min and std::max so don't want Windows.h version of min and max
 #if !defined(NOMINMAX)
 #define NOMINMAX

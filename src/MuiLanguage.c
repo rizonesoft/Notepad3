@@ -140,7 +140,7 @@ static void SetMuiLocaleAll(LPCWSTR pszLocaleStr) {
         if (pszLocaleCur && (StringCchCompareXI(pszLocaleStr, pszLocaleCur) != 0)) {
             //const _locale_t pCurLocale = _get_current_locale();
             _wsetlocale(LC_ALL, L""); // system standard
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
             WCHAR msg[128];
             StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
                 pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
@@ -276,7 +276,7 @@ static unsigned _CheckAvailableLanguageDLLs()
 
         if (IsValidLocaleName(MUI_LanguageDLLs[lng].LocaleName)) {
 
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
             WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
             if (ResolveLocaleName(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName, COUNTOF(wchLngLocalName))) {
                 //~StringCchCopy(MUI_LanguageDLLs[lng].LocaleName, COUNTOF(MUI_LanguageDLLs[lng].LocaleName), wchLngLocalName); // put back resolved name
@@ -378,7 +378,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
     // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
     SetProcessPreferredUILanguages(0, L"\0\0", &langCount); // clear
     if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
         MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
 #endif
     }

@@ -22,6 +22,15 @@
 #if !defined(NTDDI_VERSION)
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
+
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#define DBG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1

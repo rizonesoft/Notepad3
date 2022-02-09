@@ -61,7 +61,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,b
 
 //==== DlIconThread() =========================================================
 
-DWORD WINAPI DirList_IconThread(LPVOID lpParam);
+unsigned int WINAPI DirList_IconThread(LPVOID lpParam);
 
 
 //==== DlGetDispInfo() ========================================================

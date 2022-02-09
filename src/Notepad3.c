@@ -16,7 +16,12 @@
 
 #include "Helpers.h"
 
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
 #include <crtdbg.h>
+#endif
+
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <shlobj.h>
@@ -44,8 +49,8 @@
 #include "DarkMode/DarkMode.h"
 #include "StyleLexers/EditLexer.h"
 
-#if defined(DEBUG) || defined(_DEBUG)
-    #if defined(WIN32) && !defined(_WIN64)
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+#if defined(WIN32) && !defined(_WIN64)
         #pragma comment(linker, "/defaultlib:clang_rt.asan-i386.lib")
     #endif // _WIN64
 #endif // DEBUG
@@ -254,50 +259,45 @@ static void InitUndoRedoSelection(void* elt)
     }
 }
 
-
 static void DelUndoRedoSelection(void* elt)
 {
     UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
 
-    if (selection != NULL) {
+    if (selection != NULL)
+    {
+        selection->selMode_undo = SC_SEL_STREAM;
+        selection->selMode_redo = SC_SEL_STREAM;
+
         if (selection->anchorPos_undo != NULL) {
-            utarray_clear(selection->anchorPos_undo);
             utarray_free(selection->anchorPos_undo);
             selection->anchorPos_undo = NULL;
         }
         if (selection->curPos_undo != NULL) {
-            utarray_clear(selection->curPos_undo);
             utarray_free(selection->curPos_undo);
             selection->curPos_undo = NULL;
         }
         if (selection->anchorVS_undo != NULL) {
-            utarray_clear(selection->anchorVS_undo);
             utarray_free(selection->anchorVS_undo);
             selection->anchorVS_undo = NULL;
         }
         if (selection->curVS_undo != NULL) {
-            utarray_clear(selection->curVS_undo);
             utarray_free(selection->curVS_undo);
             selection->curVS_undo = NULL;
         }
 
         if (selection->anchorPos_redo != NULL) {
-            utarray_clear(selection->anchorPos_redo);
             utarray_free(selection->anchorPos_redo);
             selection->anchorPos_redo = NULL;
         }
         if (selection->curPos_redo != NULL) {
-            utarray_clear(selection->curPos_redo);
             utarray_free(selection->curPos_redo);
             selection->curPos_redo = NULL;
         }
         if (selection->anchorVS_redo != NULL) {
-            utarray_clear(selection->anchorVS_redo);
             utarray_free(selection->anchorVS_redo);
             selection->anchorVS_redo = NULL;
         }
         if (selection->curVS_redo != NULL) {
-            utarray_clear(selection->curVS_redo);
             utarray_free(selection->curVS_redo);
             selection->curVS_redo = NULL;
         }
@@ -810,6 +810,8 @@ static void _InitGlobals()
 
     s_pthArgFilePath = Path_Allocate(NULL);
     
+    // don't allow empty extensions settings => use default ext
+    Style_InitFileExtensions();
 }
 
 
@@ -836,8 +838,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         DL_DELETE(MessageQueue, pmqc);
         FreeMem(pmqc);
     }
+
     if (UndoRedoSelectionUTArray != NULL) {
-        utarray_clear(UndoRedoSelectionUTArray);
         utarray_free(UndoRedoSelectionUTArray);
         UndoRedoSelectionUTArray = NULL;
     }
@@ -851,9 +853,9 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
     }
 
-    // --------------------------------------
-    // Save Settings is done elsewhere before
-    // --------------------------------------
+    // ---------------------------------------------
+    // Save Settings should be done elsewhere before
+    // ---------------------------------------------
 
     if (Globals.hMainMenu) {
         DestroyMenu(Globals.hMainMenu);
@@ -867,9 +869,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     Scintilla_ReleaseResources();
 
-    OleUninitialize();
-    CoUninitialize();
-
     if (bIsInitialized) {
         //~UnregisterClass(s_ToolbarWndClassName, Globals.hInstance);
         UnregisterClass(s_wchWndClass, Globals.hInstance);
@@ -877,16 +876,19 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     ReleaseDarkMode();
 
+    OleUninitialize();
+    CoUninitialize();
+
+    // ---  free allocated memory  ---
+
     if (s_lpOrigFileArg) {
         FreeMem(s_lpOrigFileArg);
         s_lpOrigFileArg = NULL;
     }
 
-    if (_hOldInvalidParamHandler) {
-        _set_invalid_parameter_handler(_hOldInvalidParamHandler);
-    }
-
-    // ---  free allocated memory  ---
+    MRU_Destroy(Globals.pFileMRU);
+    MRU_Destroy(Globals.pMRUfind);
+    MRU_Destroy(Globals.pMRUreplace);
 
     StrgDestroy(Settings2.FileDlgFilters);
     StrgDestroy(Settings2.HyperlinkShellExURLCmdLnArgs);
@@ -923,6 +925,54 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     ThemesItems_Release();
 
     Path_Release(s_hpthRelaunchElevatedFile);
+
+    // ---------------------------------------------
+
+    if (Globals.hDlgIcon256) {
+        DestroyIcon(Globals.hDlgIcon256);
+    }
+    if (Globals.hDlgIcon128) {
+        DestroyIcon(Globals.hDlgIcon128);
+    }
+    if (Globals.hDlgIconBig) {
+        DestroyIcon(Globals.hDlgIconBig);
+    }
+    if (Globals.hDlgIconSmall) {
+        DestroyIcon(Globals.hDlgIconSmall);
+    }
+    if (Globals.hDlgIconPrefs256) {
+        DestroyIcon(Globals.hDlgIconPrefs256);
+    }
+    if (Globals.hDlgIconPrefs128) {
+        DestroyIcon(Globals.hDlgIconPrefs128);
+    }
+    if (Globals.hDlgIconPrefs64) {
+        DestroyIcon(Globals.hDlgIconPrefs64);
+    }
+    if (Globals.hIconMsgUser) {
+        DestroyIcon(Globals.hIconMsgUser);
+    }
+    if (Globals.hIconMsgInfo) {
+        DestroyIcon(Globals.hIconMsgInfo);
+    }
+    if (Globals.hIconMsgWarn) {
+        DestroyIcon(Globals.hIconMsgWarn);
+    }
+    if (Globals.hIconMsgError) {
+        DestroyIcon(Globals.hIconMsgError);
+    }
+    if (Globals.hIconMsgQuest) {
+        DestroyIcon(Globals.hIconMsgQuest);
+    }
+    if (Globals.hIconMsgShield) {
+        DestroyIcon(Globals.hIconMsgShield);
+    }
+
+
+    // install previous handler
+    if (_hOldInvalidParamHandler) {
+        _set_invalid_parameter_handler(_hOldInvalidParamHandler);
+    }
 }
 
 
@@ -942,7 +992,7 @@ void InvalidParameterHandler(const wchar_t* expression,
     UNREFERENCED_PARAMETER(file);
     UNREFERENCED_PARAMETER(line);
     UNREFERENCED_PARAMETER(pReserved);
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
     WCHAR msg[256];
     StringCchPrintf(msg, COUNTOF(msg),
                     L"Invalid Parameter in function '%s()' - File:'%s' Line:%i !",
@@ -960,7 +1010,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
     _invalid_parameter_handler const hNewInvalidParamHandler = InvalidParameterHandler;
     _hOldInvalidParamHandler= _set_invalid_parameter_handler(hNewInvalidParamHandler);
+
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_CHECK_CRT_DF | _CRTDBG_LEAK_CHECK_DF);
     _CrtSetReportMode(_CRT_ASSERT, 0); // Disable the message box for assertions.
+#endif
 
     _InitGlobals();
     InitDarkMode();
@@ -1039,16 +1093,19 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     HRSRC const hRes = FindResourceEx(hInstance, RT_RCDATA, MAKEINTRESOURCE(IDR_STD_DARKMODE_THEME), 
                                                             MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
-    HGLOBAL const hMem = LoadResource(hInstance, hRes);
-    DWORD const size = SizeofResource(hInstance, hRes);
-    const char * const resText = (const char *)LockResource(hMem);
-    Globals.pStdDarkModeIniStyles = (char *)AllocMem(((size_t)size + 1), 0);
-    if (Globals.pStdDarkModeIniStyles) {
-        memcpy_s(Globals.pStdDarkModeIniStyles, size + 1, resText, size);
-        Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
+    if (hRes) {
+        HGLOBAL const hMem = LoadResource(hInstance, hRes);
+        if (hMem) {
+            const char* const resText = (const char*)LockResource(hMem);
+            DWORD const       size = SizeofResource(hInstance, hRes);
+            Globals.pStdDarkModeIniStyles = (char*)AllocMem(((size_t)size + 1), 0);
+            if (Globals.pStdDarkModeIniStyles) {
+                CopyMemory(Globals.pStdDarkModeIniStyles, resText, size);
+                Globals.pStdDarkModeIniStyles[size] = '\0'; // zero termination
+            }
+            FreeResource(hMem);
+        }
     }
-    FreeResource(hMem);
-
     Style_ImportTheme(-1); // init (!)
     Style_ImportTheme(Globals.uCurrentThemeIndex);
 
@@ -1206,6 +1263,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     _CleanUpResources(hwnd, true);
 
+#ifdef _DEBUG
+    _CrtDumpMemoryLeaks();
+#endif
     return (int)(msg.wParam);
 }
 
@@ -1683,7 +1743,6 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // undo / redo selections
     if (UndoRedoSelectionUTArray != NULL) {
-        utarray_clear(UndoRedoSelectionUTArray);
         utarray_free(UndoRedoSelectionUTArray);
         UndoRedoSelectionUTArray = NULL;
     }
@@ -10021,8 +10080,8 @@ static int _SaveUndoSelection()
 {
     static DocPosU _s_iSelection = 0;           // index
 
-    UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
-    CopyUndoRedoSelection(&sel, NULL); // init
+    UndoRedoSelection_t sel = INIT_UNDOREDOSEL; // = InitUndoRedoSelection(&sel);
+    CopyUndoRedoSelection(&sel, NULL);          // utarray_new()
 
     DocPosU const numOfSel = SciCall_GetSelections();
 
@@ -10094,6 +10153,9 @@ static int _SaveUndoSelection()
         //~SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
         SciCall_AddUndoAction(token, UNDO_NONE);
     }
+
+    DelUndoRedoSelection(&sel); // utarray_free()
+
     _s_iSelection = 0; // reset
 
     return token;
@@ -10346,7 +10408,8 @@ static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
             EndUndoAction(curToken);
         }
         utarray_clear(UndoRedoSelectionUTArray);
-        utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
+        //utarray_free(UndoRedoSelectionUTArray);
+        //utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
         uiTokenCnt = 0U;
         InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
         return -1;

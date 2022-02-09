@@ -16,6 +16,7 @@
 #define _WIN32_WINNT 0x601
 #include <windows.h>
 #include <commctrl.h>
+#include <process.h>
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <strsafe.h>
@@ -147,19 +148,16 @@ BOOL DirList_Destroy(HWND hwnd)
 //
 BOOL DirList_StartIconThread(HWND hwnd)
 {
-
-    DWORD dwtid;
     LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
 
     DirList_TerminateIconThread(hwnd);
 
     ResetEvent(lpdl->hExitThread);
-    //ResetEvent(lpdl->hTerminatedThread);
+    ResetEvent(lpdl->hTerminatedThread);
 
-    CreateThread(NULL,0,DirList_IconThread,(LPVOID)lpdl,0,&dwtid);
+    _beginthread(DirList_IconThread, 0, (void*)lpdl);
 
     return TRUE;
-
 }
 
 
@@ -189,7 +187,6 @@ BOOL DirList_TerminateIconThread(HWND hwnd)
     SetEvent(lpdl->hTerminatedThread);
 
     return TRUE;
-
 }
 
 
@@ -418,8 +415,8 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
     // Exit immediately if DirList_Fill() hasn't been called
     if (!lpdl->lpsf) {
         SetEvent(lpdl->hTerminatedThread);
-        ExitThread(0);
-        //return(0);
+        _endthread();
+        return(0);
     }
 
     hwnd = lpdl->hwnd;
@@ -499,9 +496,8 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
     CoUninitialize();
 
     SetEvent(lpdl->hTerminatedThread);
-    ExitThread(0);
-    //return(0);
-
+    _endthread();
+    return(0);
 }
 
 
