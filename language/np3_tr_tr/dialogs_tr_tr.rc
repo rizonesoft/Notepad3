@@ -337,11 +337,11 @@ BEGIN
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "&Sekmeler boşluk olarak eklensin.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Sekme tuşu girintiyi yeniden biçimlendirsin.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "&Geriye silme tuşu girintiyi yeniden biçimlendirsin.",IDC_BACKTAB_INDENTS,
+    CONTROL         "&Geri sil tuşu girintiyi yeniden biçimlendirsin.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "&Tutarsız girintiler bildirilsin.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Sekme ya da boşluk girintileri otomatik olarak algılansın.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Sekme / boşluk girintileri otomatik algılansın.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "Tamam",IDOK,117,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,117,27,50,14
@@ -378,7 +378,7 @@ BEGIN
     LTEXT           "Ç&ok kenarlı satır konumu:",IDC_STATIC,7,10,80,8
     EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
     CONTROL         "&Kenar satırı görüntülensin.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
-    CONTROL         "&Arka plan rengini değiştir.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    CONTROL         "&Arka plan rengi değiştirilsin.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
     DEFPUSHBUTTON   "Tamam",IDOK,166,34,50,14
     PUSHBUTTON      "İptal",IDCANCEL,222,34,50,14
 END
@@ -395,9 +395,9 @@ BEGIN
     DEFPUSHBUTTON   "Tamam",IDOK,83,79,50,14
     PUSHBUTTON      "İptal",IDCANCEL,139,79,50,14
     LTEXT           "Satır kaydırmada girinti olmasın|Satır 1 karakter kaydırılsın|Satır 2 karakter kaydırılsın|Satır 1 düzey kaydırılsın|Satır 2 düzey kaydırılsın|Satır ilk alt satır kadar kaydırılsın|Satır ilk alt satırdan 1 düzey kaydırılsın",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "Satır kaydırmadan önce işaret görüntülenmesin|Satır kaydırmadan önce işaret görüntülensin (metin yanında)|Satır kaydırmadan önce işaret görüntülensin (kenarlık yanında)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "Satır kaydırmadan sonra işaret görüntülenmesin|Satır kaydırmadan sonra işaret görüntülensin (metin yanında)|Satır kaydırmadan sonra işaret görüntülensin (kenarlık yanında)",202,0,0,402,8,NOT WS_VISIBLE
-    LTEXT           "Metin sözcükler arasında kaydırılsın|Metin karakteler arasında kaydırılsın",203,0,0,187,8,NOT WS_VISIBLE
+    LTEXT           "Satır sonunda simge görüntülenmesin|Satır sonunda simge görüntülensin (metinde)|Satır sonunda simge görüntülensin (kenarlıkta)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "Satır başında simge görüntülenmesin|Satır başında simge görüntülensin (metinde)|Satır başında simge görüntülensin (kenarlıkta)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "Metin sözcükler arasında kaydırılsın|Metin karakterler arasında kaydırılsın",203,0,0,187,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
@@ -470,19 +470,19 @@ END
 
 IDD_MUI_PASSWORDS DIALOGEX 0, 0, 311, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "Kodlama"
+CAPTION "Şifrele"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Parola", IDC_STATIC, 7, 7, 297, 108
     DEFPUSHBUTTON   "Tamam",IDOK,245,98,50,14
     PUSHBUTTON      "İptal",IDCANCEL,184,98,50,14
-    CONTROL         "Yeni ana anahtarı ayarla",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
+    CONTROL         "Yeni anahtar ayarla",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "İsteğe bağlı ana anahtar:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
-    CONTROL         "Parola kullanarak şifrele",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "Ana anahtar yeniden kullanılsın",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
-    CONTROL         "show passphrases",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
+    LTEXT           "İsteğe bağlı anahtar:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
+    CONTROL         "Parola ile şifrele",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
+    CONTROL         "Anahtar yeniden kullanılsın",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    CONTROL         "Parolayı görüntüle",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -494,9 +494,9 @@ BEGIN
     DEFPUSHBUTTON   "Tamam",IDOK,233,58,50,14
     PUSHBUTTON      "İptal",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "Ana anahtarı kullanarak şifreyi çöz",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "Bu dosyanın bir ana anahtarı var",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
-    CONTROL         "show passphrase",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
+    CONTROL         "Anahtar ile şifreyi çöz",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
+    LTEXT           "Bu dosyanın bir anahtarı var",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    CONTROL         "Parolayı görüntüle",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
