@@ -60,71 +60,71 @@ BEGIN
         MENUITEM "&Yeni\tCtrl+N",                                     IDM_FILE_NEW
         MENUITEM "&Aç...\tCtrl+O",                                    IDM_FILE_OPEN
         MENUITEM "&Kaydet\tCtrl+S",                                   IDM_FILE_SAVE
-        MENUITEM "&Farklı Kaydet...\tF6",                             IDM_FILE_SAVEAS
-        MENUITEM "Kopya &Olarak Kaydet...\tCtrl+F6",                  IDM_FILE_SAVECOPY
-        MENUITEM "Orijinal Dosyanın &Tarih/Saati İle Kaydet\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "&Farklı kaydet...\tF6",                             IDM_FILE_SAVEAS
+        MENUITEM "Kopya &olarak kaydet...\tCtrl+F6",                  IDM_FILE_SAVECOPY
+        MENUITEM "Özgün dosyanın &tarih/saati ile kaydet\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Dosyayı Salt Okunur Yap",                  IDM_FILE_READONLY
-        MENUITEM "&Dosyayı Kilitle (Read-Shared)",                    IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "Dosyayı salt &okunur yap",                  IDM_FILE_READONLY
+        MENUITEM "Dosyayı &kilitle (okuma-paylaşılmış)",                    IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "Şifreleme &Parolasını Ayarla...",             IDM_SETPASS
+        MENUITEM "Şifreleme &parolasını ayarla...",             IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Panoya Kopyala"
+        POPUP "Panoya kopyala"
         BEGIN
-            MENUITEM "Yalnızca &Dosya Adını Kopyala\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Yalnızca D&izin Yolunu Kopyala",          IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Tam &Yolu Kopyala\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Yalnızca dosya &adını kopyala\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Yalnızca klasör &yolunu kopyala",          IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "&Tam yolu kopyala\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
         END
-        POPUP "&Çalıştır"
+        POPUP "Ç&alıştır"
         BEGIN
-            MENUITEM "&Dosyalarda Ara\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH
+            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Yeni Boş Pencere\tAlt+N",           IDM_FILE_NEWWINDOW
-            MENUITEM "&Duplicate Instance\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "&Yeni boş pencere\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Pencereyi kopyala\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Yönetici Yetkileriyle Yeniden Başlat",            IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Yönetici olarak yeniden başlat",            IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "Dosyayı Çalıştır\tCtrl+L",                 IDM_FILE_LAUNCH
+            MENUITEM "&Dosyayı çalıştır\tCtrl+L",                 IDM_FILE_LAUNCH
             MENUITEM "&Birlikte aç...\tAlt+L",                   IDM_FILE_OPENWITH
-            MENUITEM "&Çalıştır...\tCtrl+R",                    IDM_FILE_RUN
+            MENUITEM "&Komut...\tCtrl+R",                    IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web Şablonu &1\tCtrl+Shift+1",            CMD_WEBACTION1
-            MENUITEM "Web Şablonu &2\tCtrl+Shift+2",            CMD_WEBACTION2
+            MENUITEM "&1. web kalıbı \tCtrl+Shift+1",            CMD_WEBACTION1
+            MENUITEM "&2. web kalıbı\tCtrl+Shift+2",            CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Klasörü Dosya &Gezgini'nde Aç",           IDM_FILE_EXPLORE_DIR
+            MENUITEM "Dosya &gezgininde aç",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Değişiklikler &Geri Al\tF5",                                 IDM_FILE_REVERT
-        MENUITEM "&Ignore File-Vars",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "Dosyaya &geri dön\tF5",                                 IDM_FILE_REVERT
+        MENUITEM "Değişiklikler &yok sayılsın",                      CMD_IGNORE_FILE_VARS
         POPUP "&Kodlama"
         BEGIN
-            POPUP "&Revert from File as"
+            POPUP "&Dosyadan şuna çevir"
             BEGIN
-                MENUITEM "&Default (Setting)",             CMD_RECODEDEFAULT
+                MENUITEM "&Varsayılan (ayar)",             CMD_RECODEDEFAULT
                 MENUITEM "A&NSI\tCtrl+Shift+A",            CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
                 MENUITEM SEPARATOR
-                MENUITEM "ASCII as UT&F-8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
-                MENUITEM "Force U&CHARDET Analysis",       CMD_RELOADFORCEDETECTION
-                MENUITEM "&Ignore Encoding Tags\tAlt+F8",  CMD_RELOADNOENCODETAGS
+                MENUITEM "UT&F-8 olarak ASCII\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
+                MENUITEM "U&CHARDET incelemesini kullan",       CMD_RELOADFORCEDETECTION
+                MENUITEM "&Kodlama kod imlerini yok say\tAlt+F8",  CMD_RELOADNOENCODETAGS
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF8",         IDM_ENCODING_RECODE
+                MENUITEM "&Diğer kodlamalar...\tF8",         IDM_ENCODING_RECODE
             END
-            POPUP "&Set Document as"
+            POPUP "&Belgeyi şuna ayarla"
             BEGIN
                 MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
                 MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
                 MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
                 MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
-                MENUITEM "UTF-8 with &Signature",          IDM_ENCODING_UTF8SIGN
+                MENUITEM "UTF-8 İ&mzalı",          IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
-                MENUITEM "&More Encodings...\tF9",         IDM_ENCODING_SELECT
+                MENUITEM "&Diğer kodlamalar...\tF9",         IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Varsayılanları Düzenle...",         IDM_ENCODING_SETDEFAULT
+            MENUITEM "&Varsayılanları düzenle...",         IDM_ENCODING_SETDEFAULT
         END
-        POPUP "Satır Sonl&arı"
+        POPUP "Satır sonl&arı"
         BEGIN
             MENUITEM "&Windows (CR+LF)",            IDM_LINEENDINGS_CRLF
             MENUITEM "&Mac (CR)",                   IDM_LINEENDINGS_CR
@@ -133,294 +133,294 @@ BEGIN
             MENUITEM "&Varsayılan...",              IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Girintiyi K&ontrol Et...",        CMD_CHECK_INDENTATION
+        MENUITEM "&Girinti denetimi...",        CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Sayfa Dü&zeni...",                IDM_FILE_PAGESETUP
+        MENUITEM "Sayfa dü&zeni...",                IDM_FILE_PAGESETUP
         MENUITEM "&Yazdır...\tCtrl+P",              IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Özellik&ler...",                  IDM_FILE_PROPERTIES
-        MENUITEM "&Masaüstü'ne Kısayol Oluştur",    IDM_FILE_CREATELINK
+        MENUITEM "&Masaüstünde kısayol oluştur",    IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "&Klasör Gezgini...\tCtrl+M",      IDM_FILE_BROWSE
-        POPUP "&Favoriler"
+        MENUITEM "Göz a&t...\tCtrl+M",      IDM_FILE_BROWSE
+        POPUP "&Sık kullanılanlar"
         BEGIN
-            MENUITEM "&Favorileri Aç...\tAlt+I",         IDM_FILE_OPENFAV
-            MENUITEM "&Mevcut Dosyayı Ekle...\tAlt+K",   IDM_FILE_ADDTOFAV
-            MENUITEM "F&avoriler Klasörü...\tAlt+F9",   IDM_FILE_MANAGEFAV
+            MENUITEM "Sık kullanılanları &aç...\tAlt+I",         IDM_FILE_OPENFAV
+            MENUITEM "&Geçerli dosyayı ekle...\tAlt+K",   IDM_FILE_ADDTOFAV
+            MENUITEM "&Sık kullanılanlar klasörü...\tAlt+F9",   IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Son (&Geçmiş)...\tCtrl+Alt+H",         IDM_FILE_RECENT
+        MENUITEM "Son kullanılanlar (&Geçmiş)...\tCtrl+Alt+H",         IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "Ç&ıkış\tAlt+F4",                       IDM_FILE_EXIT
+        MENUITEM "Çı&k\tAlt+F4",                       IDM_FILE_EXIT
     END
     POPUP "&Düzenle"
     BEGIN
-        MENUITEM "&Geri Al\tCtrl+Z",                  IDM_EDIT_UNDO
+        MENUITEM "&Geri al\tCtrl+Z",                  IDM_EDIT_UNDO
         MENUITEM "&Yenile\tCtrl+Y",                   IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "Ke&s\tCtrl+X",                      IDM_EDIT_CUT
         MENUITEM "&Kopyala\tCtrl+C",                  IDM_EDIT_COPY
-        MENUITEM "Tümünü &Kopyala\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "Tümü&nü Yapıştır\tCtrl+E",          IDM_EDIT_COPYADD
+        MENUITEM "Tümünü k&opyala\tAlt+C",            IDM_EDIT_COPYALL
+        MENUITEM "Tümünü y&apıştır\tCtrl+E",          IDM_EDIT_COPYADD
         MENUITEM "&Yapıştır\tCtrl+V",                 IDM_EDIT_PASTE
-        MENUITEM "D&eğiştir\tCtrl+K",                 IDM_EDIT_SWAP
+        MENUITEM "&Değiştir\tCtrl+K",                 IDM_EDIT_SWAP
         MENUITEM "&Sil\tDel",                         IDM_EDIT_CLEAR
-        MENUITEM "&Panoyu Temizle",                   IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "&Tümünü Seç\tCtrl+A",               IDM_EDIT_SELECTALL
+        MENUITEM "&Panoyu temizle",                   IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Tü&münü seç\tCtrl+A",               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "&Kelimeler"
+        POPUP "&Sözcükler"
         BEGIN
-            MENUITEM "&Kelimeleri Tamamla\tCtrl+Alt+Enter",           IDM_EDIT_COMPLETEWORD
+            MENUITEM "Sözcükleri &tamamla\tCtrl+Alt+Enter",           IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "İmleci Kelimenin &Başına Taşı\tCtrl+ ←",        CMD_CTRLLEFT
-            MENUITEM "İmleci Kelimenin &Sonuna Taşı\tCtrl+ →",        CMD_CTRLRIGHT
-            MENUITEM "&Soldaki Kelimeyi Sil\tCtrl+Back",     CMD_CTRLBACK
-            MENUITEM "S&ağdaki Kelimeyi Sil\tCtrl+Del",      CMD_CTRLDEL
+            MENUITEM "İmleci sözcüğün &başına taşı\tCtrl+ ←",        CMD_CTRLLEFT
+            MENUITEM "İmleci sözcüğün &sonuna taşı\tCtrl+ →",        CMD_CTRLRIGHT
+            MENUITEM "S&oldaki sözcüğü sil\tCtrl+Back",     CMD_CTRLBACK
+            MENUITEM "S&ağdaki sözcüğü sil\tCtrl+Del",      CMD_CTRLDEL
         END
-        POPUP "&Satırlar"
+        POPUP "Satı&r işlemleri"
         BEGIN
-            MENUITEM "Yukarı &Taşı\tAlt+ ↑",                          IDM_EDIT_MOVELINEUP
-            MENUITEM "&Ağaşı Taşı\tAlt+ ↓",                           IDM_EDIT_MOVELINEDOWN
+            MENUITEM "&Yukarı taşı\tAlt+ ↑",                          IDM_EDIT_MOVELINEUP
+            MENUITEM "&Aşağı taşı\tAlt+ ↓",                           IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Seçimi yada Geçerli Satırı K&es\tCtrl+X",          IDM_EDIT_CUT
-            MENUITEM "T&üm Satır(ları) Kes\tCtrl+Shift+X",               IDM_EDIT_CUTLINE
-            MENUITEM "&Seçimi veya Geçerli Satırı Kopyala\tCtrl+C",      IDM_EDIT_COPY
-            MENUITEM "Seçili Olan Tüm Satırları &Kopyala\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "Seçilmiş/geçerli satırı k&es\tCtrl+X",          IDM_EDIT_CUT
+            MENUITEM "T&üm satır(lar)ı kes\tCtrl+Shift+X",               IDM_EDIT_CUTLINE
+            MENUITEM "&Seçilmiş/geçerli satırı kopyala\tCtrl+C",      IDM_EDIT_COPY
+            MENUITEM "Seçilmiş tüm satırları &kopyala\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "Seçimi/Satırı &Çoğalt\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "Satırları &Değiştir\tAlt+D",         IDM_EDIT_LINETRANSPOSE
-            MENUITEM "Satırı S&il\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
+            MENUITEM "Seçilmişi/satırı ç&oğalt\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Satırları &değiştir\tAlt+D",         IDM_EDIT_LINETRANSPOSE
+            MENUITEM "Satırı s&il\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "İmlecin Sol Tarafını Sil\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT
-            MENUITEM "İmlecin Sağ Tarafını Sil\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
+            MENUITEM "İmlecin s&ol tarafını sil\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT
+            MENUITEM "İmlecin s&ağ tarafını sil\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Sütun &Kaydır...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Satırları Birleştir\tCtrl+J",                 IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
+            MENUITEM "Sütun &kaydır...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
+            MENUITEM "Satırları &ayır\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "Satırları &birleştir\tCtrl+J",                 IDM_EDIT_JOINLINES
+            MENUITEM "Satırları &ekle\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Paragrafları koru\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Mer&ge Empty Lines\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Merge Blan&k Lines\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Empty Lines\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Remove &Blank Lines\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Boş satırları birleştir\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "&Yazı olmayan satırları birleştir\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "B&oş satırları sil\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Y&azı olmayan satırları sil\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Çi&ft satırları sil\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "Seç&im"
         BEGIN
-            MENUITEM "&Girintiyi Arttır",                              IDM_EDIT_INDENT
-            MENUITEM "G&irintiyi Azalt",                            IDM_EDIT_UNINDENT
+            MENUITEM "&Girintiyi artır",                              IDM_EDIT_INDENT
+            MENUITEM "G&irintiyi azalt",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "&Yorum Satırı"
+            POPUP "&Yorum satırı"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+                MENUITEM "&Değiştir\tCtrl+Q",               IDM_EDIT_LINECOMMENT
                 MENUITEM "&Ekle\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Kaldır\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Blok Olarak Düzenle\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "&Sil\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Blok olarak düzenle\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Çoklu Yorum Satırına Çevir\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Çoklu yoruma çevir\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            POPUP "&Seçimi Çevrele"
+            POPUP "&Seçimi çevrele"
             BEGIN
-                MENUITEM "&Tek Tırnak\tCtrl+1",        CMD_STRINGIFY
-                MENUITEM "&Çift Tırnak\tCtrl+2",        CMD_STRINGIFY2
+                MENUITEM "&Tek tırnak\tCtrl+1",        CMD_STRINGIFY
+                MENUITEM "&Çift tırnak\tCtrl+2",        CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                   CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                   CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Vurgu İmi\tCtrl+6",            CMD_EMBRACE4
+                MENUITEM "&Vurgu imi\tCtrl+6",            CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&Şununla...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "Ş&ununla...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Seçimi/Satırı Çoğalt\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Seçilmişi/satırı çoğalt\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Pad With Blanks\tAlt+B",           IDM_EDIT_PADWITHSPACES
-            MENUITEM "İlk Karakteri Sil\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Son Karakteri Sil\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Satır Sonu Boşluklarını Sil\tAlt+W",     IDM_EDIT_TRIMLINES
-            MENUITEM "Baştaki ve Sonraki Boşlukları Sil\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "&Boşlukla doldur\tAlt+B",           IDM_EDIT_PADWITHSPACES
+            MENUITEM "İlk karakteri sil\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Son karakteri sil\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Satır sonu boşluklarını sil\tAlt+W",     IDM_EDIT_TRIMLINES
+            MENUITEM "Baştaki ve sondaki boşlukları sil\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "Satırları &Düzenle...\tAlt+M",           IDM_EDIT_MODIFYLINES
-            MENUITEM "Satırları &Hizala...\tAlt+J",            IDM_EDIT_ALIGN
-            MENUITEM "Satırları &Sırala...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM "Satırları &düzenle...\tAlt+M",           IDM_EDIT_MODIFYLINES
+            MENUITEM "Satırları &hizala...\tAlt+J",            IDM_EDIT_ALIGN
+            MENUITEM "Satırları &sırala...\tAlt+O",             IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "Seçimin &Başına Atla\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Seçimin &Sonuna Atla\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "Seçim &başına git\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Seçim &sonuna git\tCtrl+.",    CMD_JUMP2SELEND
         END
-        POPUP "Çev&ir"
+        POPUP "&Dönüştür"
         BEGIN
-            MENUITEM "&Büyük Harf\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Küçük Harf\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "&Büyük harfe\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "&Küçük harfe\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "&Büyük/Küçük Harf Tersine Çevir\tCtrl+Alt+U",          IDM_EDIT_INVERTCASE
-            MENUITEM "&Kelimelerin İlk Harfini Büyüt\tCtrl+Alt+I",           IDM_EDIT_TITLECASE
-            MENUITEM "&Cümlenin İlk Harfini Büyüt\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
+            MENUITEM "&Büyük/küçük harfleri tersine çevir\tCtrl+Alt+U",          IDM_EDIT_INVERTCASE
+            MENUITEM "&Sözcüklerin ilk harfini büyüt\tCtrl+Alt+I",           IDM_EDIT_TITLECASE
+            MENUITEM "&Cümlenin ilk harfini büyüt\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "T&abify Selection\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntabify Selection\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "S&eçimi sekmelendir\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
+            MENUITEM "Seçimin sekmelerini &kaldır\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Ta&bify Indent\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Untabi&fy Indent\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
+            MENUITEM "&Girintiyi sekmelendir\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Giri&nti sekmelerini kaldır\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Base&64 Encode",                    IDM_EDIT_BASE64ENCODE
-            MENUITEM "Base6&4 Decode",                    IDM_EDIT_BASE64DECODE
-            MENUITEM "Base64 Decode to codepage...",      IDM_EDIT_B64DECODESEL
+            MENUITEM "Base&64 ile kodla",                    IDM_EDIT_BASE64ENCODE
+            MENUITEM "Base6&4 kodunu çöz",                    IDM_EDIT_BASE64DECODE
+            MENUITEM "Base64 çözme kod sayfası...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
-            MENUITEM "URL &Encode\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",         IDM_EDIT_URLDECODE
-            MENUITEM "Dosya Yolunu URL'ye\tCtrl+F10",     IDM_EDIT_PATH2URL
-            MENUITEM "URL'yi Dosya Yoluna\tAlt+F10",      IDM_EDIT_URL2PATH
+            MENUITEM "Adres &kodla\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
+            MENUITEM "Adres &kodunu çöz\tCtrl+Shift+R",         IDM_EDIT_URLDECODE
+            MENUITEM "Dosya yolunu adrese\tCtrl+F10",     IDM_EDIT_PATH2URL
+            MENUITEM "Adresi dosya yoluna\tAlt+F10",      IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Invert Backslashes",                IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Invert Slashes",                    IDM_EDIT_INVERTSLASH
+            MENUITEM "Ters bölüleri ters çevir",                IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Bölüleri ters çevir",                    IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "Char to &Hex\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
-            MENUITEM "Hex to &Char\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
+            MENUITEM "Karakter -> &onaltılık\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
+            MENUITEM "Onaltılık -> &karakter\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
         END
         POPUP "&Ekle"
         BEGIN
-            MENUITEM "&Üste Yeni Satır\tCtrl+Enter",           CMD_INSERTNEWLINE
+            MENUITEM "Üste &yeni satır\tCtrl+Enter",           CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
-            MENUITEM "HT&ML/XML Etiketi...\tAlt+X",               IDM_EDIT_INSERT_TAG
+            MENUITEM "HT&ML/XML kod imi...\tAlt+X",               IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Kodlama Tanımlayıcı\tCtrl+F8",         IDM_EDIT_INSERT_ENCODING
+            MENUITEM "&Kodlama belirteci\tCtrl+F8",         IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "Tarih/Saat (&Kısa Biçim)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Tarih/saat (&kısa biçim)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Tarih/Saat (&Uzun Biçim)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Zaman Damgası &Ekle",                    CMD_INSERT_TIMESTAMP
-            MENUITEM "Zaman Damgasını &Güncelle\tShift+F5",          CMD_UPDATE_TIMESTAMPS
+            MENUITEM "Zaman damgası &ekle",                    CMD_INSERT_TIMESTAMP
+            MENUITEM "Zaman damgasını &güncelle\tShift+F5",          CMD_UPDATE_TIMESTAMPS
         END
-        POPUP "&Çeşitli"
+        POPUP "&Diğer"
         BEGIN
-            MENUITEM "&GUID'yi Panoya Kopyala\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+            MENUITEM "&GUID değerini panoya kopyala\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "&C karakterlerinden kaç\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C &karakterlerinden kaçma\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "&Sayıyı Arttır\tCtrl+Alt+NK+",             CMD_INCREASENUM
-            MENUITEM "&Sayıyı Azalt\tCtrl+Alt+NK-",             CMD_DECREASENUM
+            MENUITEM "Sayıyı &artır\tCtrl+Alt+NK+",             CMD_INCREASENUM
+            MENUITEM "Sayıyı a&zalt\tCtrl+Alt+NK-",             CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Find Matching Brace\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Select To &Matching Brace\tCtrl+Shift+B",    IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Eşleşen parantezi &bul\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Eşleşen paranteze kadar &seç\tCtrl+Shift+B",    IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Sonrakine Kadar Seç\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
-            MENUITEM "Öncekine Kadar Seç\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
+            MENUITEM "S&onrakine kadar seç\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
+            MENUITEM "Ö&ncekine kadar seç\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Kelime yada Satır Seç\tCtrl+Spc",            IDM_EDIT_SELECTWORD
-            MENUITEM "Tüm Eşleşmeleri Seç\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Sözcük &ya da satır seç\tCtrl+Spc",            IDM_EDIT_SELECTWORD
+            MENUITEM "&Tüm eşleşmeleri seç\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Satır sonlarında &geri alma işlemini ayır",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
-        POPUP "Yer&imleri"
+        POPUP "&Yer imleri"
         BEGIN
-            MENUITEM "&Yer İmi Ekle/Kaldır\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "&Yer imi ekle/kaldır\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "&Sonrakine Git\tF2",              BME_EDIT_BOOKMARKNEXT
-            MENUITEM "&Öncekine Git\tShift+F2",    BME_EDIT_BOOKMARKPREV
+            MENUITEM "S&onrakine git\tF2",              BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Ö&ncekine git\tShift+F2",    BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
-            MENUITEM "&Hepsini Temizle\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
+            MENUITEM "&Tümünü temizle\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
-        POPUP "&Ara"
+        POPUP "&Arama"
         BEGIN
             MENUITEM "&Bul...\tCtrl+F",                        IDM_EDIT_FIND
-            MENUITEM "S&ave Find Text\tAlt+F3",                 IDM_EDIT_SAVEFIND
-            MENUITEM "&Sonrakini Bul\tF3",                          IDM_EDIT_FINDNEXT
-            MENUITEM "&Öncekini Bul\tShift+F3",                IDM_EDIT_FINDPREV
-            MENUITEM "Sonraki Seçiliyi Bul\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "Önceki Seçiliyi Bul\tCtrl+Shift+F3",  CMD_FINDPREVSEL
+            MENUITEM "&Aranacak ifadeyi kaydet\tAlt+F3",                 IDM_EDIT_SAVEFIND
+            MENUITEM "S&onrakini bul\tF3",                          IDM_EDIT_FINDNEXT
+            MENUITEM "Ö&ncekini bul\tShift+F3",                IDM_EDIT_FINDPREV
+            MENUITEM "Son&raki seçilmişi bul\tCtrl+F3",            CMD_FINDNEXTSEL
+            MENUITEM "Ön&ceki seçilmişi bul\tCtrl+Shift+F3",  CMD_FINDPREVSEL
             MENUITEM "&Değiştir...\tCtrl+H",                     IDM_EDIT_REPLACE
-            MENUITEM "Sonrakini Değiştir\tF4",                       IDM_EDIT_REPLACENEXT
+            MENUITEM "Sonra&kini değiştir\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Git...\tCtrl+G",                        IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Dosyalarda Ara\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
+            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Görünüm"
     BEGIN
-        MENUITEM "&Sözcük Kaydır\tCtrl+W",                   IDM_VIEW_WORDWRAP
-        MENUITEM "&Uzun Satır Hizası\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Girinti Hizaları\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "&Sözcük kaydırmalar görüntülensin\tCtrl+W",                   IDM_VIEW_WORDWRAP
+        MENUITEM "&Uzun satır işareti görüntülensin\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
+        MENUITEM "Sekme &konumları görüntülensin\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Satır Sonlarını Göster\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Boşlukları Göster\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
-        MENUITEM "Satır Sonlarını Göster\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
+        MENUITEM "Satır kaydırmaları görüntülensin\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Boşluklar görüntülensin\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
+        MENUITEM "Satır sonları görüntülensin\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "&Köprüleri Göster\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        POPUP "&Color Definition Hotspots"
+        MENUITEM "&Bağlantı noktaları görüntülensin\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        POPUP "&Renk tanımı noktaları görüntülensin"
         BEGIN
-            MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&Kapalı",                             IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Highlight &Unicode-Points",            IDM_VIEW_UNICODE_POINTS
-        MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
-        POPUP "Geçerli Satırı Vurgula\tCtrl+Shift+I"
+        MENUITEM "&Unikod noktaları vurgulansın",            IDM_VIEW_UNICODE_POINTS
+        MENUITEM "&Parantez eşleştirmeleri görüntülensin\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
+        POPUP "Geçerli satır &vurgulansın\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&Vurgu Yok",                   IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Arkaplan Rengi",               IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Dış Çerçeve",                  IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Vurgulanmasın",                   IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Arka plan rengi",               IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Kenarlık rengi",                  IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Benzerlerini İşaretle"
+        POPUP "Kopya işaretleme"
         BEGIN
-            MENUITEM "&Açık\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Use &Bookmarks too",              IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "&Etkin\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "&Yer imleri de kullanılsın",              IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
-            MENUITEM "Sadece Görünenleri Eşleştir",             IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "&Yalnızca görünenlerle eşleştir",             IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "Match &Case Sensitive",           IDM_VIEW_MARKOCCUR_CASE
-            POPUP "Match &Whole Word Only"
+            MENUITEM "Büyük-küçük harfe göre eşleştir",           IDM_VIEW_MARKOCCUR_CASE
+            POPUP "&Tam sözcüğe göre eşleştirilsin"
             BEGIN
-                MENUITEM "&OFF",                        IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "Match &Selected Word",        IDM_VIEW_MARKOCCUR_WORD
-                MENUITEM "Match &Current Word",         IDM_VIEW_MARKOCCUR_CURRENT
+                MENUITEM "&Kapalı",                        IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&Seçilmiş sözcükle eşleştir",        IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "&Geçerli sözcükle eşleştir",         IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
-        MENUITEM "Satır &Numaraları\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "Yer İmi &Boşluğu\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Satır &numaraları\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
+        MENUITEM "&Yer imi boşluğu\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Blok Kapatma"
+        POPUP "&Blok kapatma"
         BEGIN
-            MENUITEM "Blok Kapatma Açık/Kapalı",                   IDM_VIEW_FOLDING
-            MENUITEM "&Blokları Aç/Kapat\tCtrl+Alt+F",       IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "B&lok daraltma kullanılsın",                   IDM_VIEW_FOLDING
+            MENUITEM "&Tüm blokları aç/kapat\tCtrl+Alt+F",       IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Sonraki Bloğa Atla\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Önceki Bloğa Atla\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Sonraki bloğa git\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Önceki bloğa git\tAlt+ –",         CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Blok Daralt\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Blok Genişlet\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "Bloğu &daralt\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "Bloğu &genişlet\tAlt+ →",            CMD_FOLDEXPAND
         END
-        POPUP "&Display"
+        POPUP "&Göster"
         BEGIN
-            MENUITEM "&Focused View\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
-            POPUP "View Mode"
+            MENUITEM "&Odaklanmış görünüm\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
+            POPUP "Görünüm kipi"
             BEGIN
-                MENUITEM "Fold",                        IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                    IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Highlight",                   IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",            IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Highlight && Fold",           IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Daraltma",                        IDM_VIEW_FV_FOLD
+                MENUITEM "Yer imi",                    IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Vurgulama",                   IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Yer imi ve daraltma",            IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Vurgulama ve daraltma",           IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Monitoring Log",                 IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "&Scroll Past End of File",        IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "İ&zleme günlüğü kaydedilsin",                 IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "Geçmiş &dosya sonuna gidilsin",        IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "&Bağlantı ipucu görüntülensin",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
-        POPUP "Araç Çubukları"
+        POPUP "Araç çubukları"
         BEGIN
-            MENUITEM "&Menü Çubuğunu Göster",                   IDM_VIEW_MENUBAR
-            MENUITEM "&Araç Çubuğunu Göster",                   IDM_VIEW_TOOLBAR
-            MENUITEM "&Durum Çubuğunu Göster",                 IDM_VIEW_STATUSBAR
+            MENUITEM "&Menü çubuğu görüntülensin",                   IDM_VIEW_MENUBAR
+            MENUITEM "&Araç çubuğunu görüntülensin",                   IDM_VIEW_TOOLBAR
+            MENUITEM "&Durum çubuğu görüntülensin",                 IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
-            MENUITEM "Araç Çubuğu Teması &Yükle...",          IDM_VIEW_LOADTHEMETB
-            MENUITEM "&Özelleştir...",           IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Araç Çubuklarını Aç/Kapat",                IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Scale Toolbar",              IDM_VIEW_DPISCALETB
+            MENUITEM "Araç çubuğu teması &yükle...",          IDM_VIEW_LOADTHEMETB
+            MENUITEM "Ö&zelleştir...",           IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Araç çubuklarını aç/kapat",                IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI ölçekli araç çubuğu",              IDM_VIEW_DPISCALETB
         END
         POPUP "&Yakınlaştır"
         BEGIN
@@ -428,110 +428,110 @@ BEGIN
             MENUITEM "&Uzaklaştır\tCtrl+ –",              IDM_VIEW_ZOOMOUT
             MENUITEM "&Varsayılan\tCtrl+0",             IDM_VIEW_RESETZOOM
         END
-        POPUP "&Pencere"
+        POPUP "&Konum"
         BEGIN
-            MENUITEM "Copy Position &Args\tCtrl+Shift+K",           CMD_COPYWINPOS
-            MENUITEM "S&nap to Default Position\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
-            MENUITEM "&Varsayılan Pozisyon Olarak Kaydet",                   CMD_SAVEASDEFWINPOS
-            MENUITEM "&Clear saved Default Position",               CMD_CLEARSAVEDWINPOS
-            MENUITEM "Snap to &Initial Position\tCtrl+F11",         CMD_INITIALWINPOS
-            MENUITEM "Toggle &Full Area Position\tF11",             CMD_FULLSCRWINPOS
-            MENUITEM "S&ticky Window Position",                     IDM_VIEW_STICKYWINPOS
+            MENUITEM "&Konum değişkenlerini kopyala\tCtrl+Shift+K",           CMD_COPYWINPOS
+            MENUITEM "&Varsayılan konuma yerleştir\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
+            MENUITEM "Varsayılan konum &olarak kaydet",                   CMD_SAVEASDEFWINPOS
+            MENUITEM "Kaydedilmiş varsayılan konumu &temizle",               CMD_CLEARSAVEDWINPOS
+            MENUITEM "&Başlangıç konumuna yerleştir\tCtrl+F11",         CMD_INITIALWINPOS
+            MENUITEM "Tam alan konumunu aç/kapat\tF11",             CMD_FULLSCRWINPOS
+            MENUITEM "&Sabit pencere konumu",                     IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "T&ercihler"
+    POPUP "&Arayüz"
     BEGIN
-        MENUITEM "&Özelleştirme...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
+        MENUITEM "Ö&zelleştirme...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                      IDM_VIEW_SCHEME
-        MENUITEM "&2nd Common Base\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&Yazım şemasını seçin...\tF12",                      IDM_VIEW_SCHEME
+        MENUITEM "&2. ortak temel\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
-        MENUITEM "&Varsayılan Yazı Tipi...\tAlt+F12",                  IDM_VIEW_FONT
-        MENUITEM "Stil Yapılandırıcı Var. Yazı Tipi...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM "&Varsayılan yazı tipi...\tAlt+F12",                  IDM_VIEW_FONT
+        MENUITEM "Geçerli şemanın varsayılan yazı tipi...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Karanlık Modu",                                  IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Windows koyu kip",                                  IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Ayarlar"
     BEGIN
-        MENUITEM "Sekmeleri Boşluk Olarak Ekle",                   IDM_SET_TABSASSPACES
-        MENUITEM "&Sekme Ayarları...\tCtrl+T",                 IDM_SET_TABSETTINGS
-        MENUITEM "&Sözcük Kaydır Seçenekleri...",                   IDM_SET_WORDWRAPSETTINGS
-        MENUITEM "Uzun Satır Ayarları...",                   IDM_SET_LONGLINESETTINGS
-        MENUITEM "Otomatik Girinti",                        IDM_SET_AUTOINDENTTEXT
-        MENUITEM "&HTML/XML Etiketlerini Otomatik Kapat\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
-        MENUITEM "Kelimeleri Otomatik Tamamla",                     IDM_SET_AUTOCOMPLETEWORDS
-        MENUITEM "Lexer-&Anahtar-Kelimelerini Otomatik Tamamla",           IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Accelerated Word Navi&gation\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
+        MENUITEM "Sekmeler &boşluk olarak eklensin",                   IDM_SET_TABSASSPACES
+        MENUITEM "&Sekme ayarları...\tCtrl+T",                 IDM_SET_TABSETTINGS
+        MENUITEM "Sözcük &kaydırma ayarları...",                   IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "&Uzun satır ayarları...",                   IDM_SET_LONGLINESETTINGS
+        MENUITEM "Otomatik girinti kullanılsın",                        IDM_SET_AUTOINDENTTEXT
+        MENUITEM "HTML/&XML kod imleri otomatik kapatılsın\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Sözcükler &otomatik tamamlansın",                     IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "&Lexer-&anahtar sözcükleri otomatik tamamlansın",           IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "&Hızlandırılmış sözcük gezinmesi\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "&Her Dosya İçin Tek Pencere",              IDM_SET_SINGLEFILEINSTANCE
-        MENUITEM "Dosya Değişimi Bildirimi...\tAlt+F5",     IDM_SET_CHANGENOTIFY
+        MENUITEM "&Her dosya tek pencerede açılsın",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Dosyadaki değişiklikler bildirilsin...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
-        MENUITEM "&Bip Sesini Sustur",                      IDM_SET_MUTE_MESSAGEBEEP
-        POPUP "Esc &Tuşu Görevi"
+        MENUITEM "İleti &sesi kısılsın",                      IDM_SET_MUTE_MESSAGEBEEP
+        POPUP "Esc &tuşu görevi"
         BEGIN
             MENUITEM "&Etkisiz",                        IDM_SET_NOESCFUNC
-            MENUITEM "&Notepad3'ü Küçült",            IDM_SET_ESCMINIMIZE
-            MENUITEM "Notepad3'ü K&apat",             IDM_SET_ESCEXIT
+            MENUITEM "&Pencereyi küçült",            IDM_SET_ESCMINIMIZE
+            MENUITEM "Pencereyi k&apat",             IDM_SET_ESCEXIT
         END
-        MENUITEM "Save &Before Running Tools",      IDM_SET_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Küçük-İfadeleri Hesapla",     IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Araçlar çalıştırılmadan önce dosya kaydedilsin",      IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Küçük i&fadeler hesaplansın",     IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
-        POPUP "&Hatırla"
+        POPUP "&Hatırlanacaklar"
         BEGIN
-            MENUITEM "&Son Dosyaları Hatırla",      IDM_SET_NOSAVERECENT
-            MENUITEM "&İmleç Pozisyonunu Hatırla",    IDM_SET_NOPRESERVECARET
-            MENUITEM "&Arama Desenini Hatırla",    IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Son kullanılan dosyalar hatırlansın",      IDM_SET_NOSAVERECENT
+            MENUITEM "İ&mleç konumu hatırlansın",    IDM_SET_NOPRESERVECARET
+            MENUITEM "&Arama modeli hatırlansın",    IDM_SET_NOSAVEFINDREPL
         END
         POPUP "P&encere"
         BEGIN
-            POPUP "&Pencere Başlığı"
+            POPUP "&Pencere başlığı"
             BEGIN
-                MENUITEM "&Sadece Dosya Adı",              IDM_SET_SHOWFILENAMEONLY
-                MENUITEM "Dosya Adı ve Yolu",     IDM_SET_SHOWFILENAMEFIRST
-                MENUITEM "Tam Yol",              IDM_SET_SHOWFULLPATH
-                MENUITEM "&İçerik Özeti\tCtrl+9",       IDM_SET_SHOWEXCERPT
+                MENUITEM "&Yalnızca dosya adı",              IDM_SET_SHOWFILENAMEONLY
+                MENUITEM "&Dosya adı ve yolu",     IDM_SET_SHOWFILENAMEFIRST
+                MENUITEM "&Tam yol",              IDM_SET_SHOWFULLPATH
+                MENUITEM "İçerik ö&zeti\tCtrl+9",       IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "&Pencereyi Tekrar Kullan\tCtrl+Shift+L",     IDM_SET_REUSEWINDOW
-            MENUITEM "&Her Zaman Üstte\tAlt+T",           IDM_SET_ALWAYSONTOP
-            MENUITEM "&Simge Durumuna Küçült",               IDM_SET_MINTOTRAY
-            MENUITEM "&Saydam Görünüm\tAlt+G",        IDM_SET_TRANSPARENT
+            MENUITEM "Pencere &yeniden kullanılsın\tCtrl+Shift+L",     IDM_SET_REUSEWINDOW
+            MENUITEM "Pen&cere üstte kalsın\tAlt+T",           IDM_SET_ALWAYSONTOP
+            MENUITEM "Siste&m tepsisine küçültülsün",               IDM_SET_MINTOTRAY
+            MENUITEM "Saydam kip k&ullanılsın\tAlt+G",        IDM_SET_TRANSPARENT
         END
         POPUP "&Teknolojiler"
         BEGIN
-            POPUP "&Rendering"
+            POPUP "&Oluşturma"
             BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "DirectWrite &korunsun",         IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
-                MENUITEM "&GDI (no ligatures)",         IDM_SET_RENDER_TECH_GDI
+                MENUITEM "&GDI (bitişik harf yok)",         IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "R&TL Layout (GDI)"
+            POPUP "S&ağdan sola (GDI)"
             BEGIN
-                MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Düzenleme alanı",                  IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "Diğer &pencereler",              IDM_SET_RTL_LAYOUT_DLG
             END
-            POPUP "&Bidirectional"
+            POPUP "İ&ki yönlü"
             BEGIN
-                MENUITEM "&None",                        IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "&Left to Right",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "&Right to Left",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "&Yok",                        IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "S&oldan sağa",               IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "S&ağdan sola",               IDM_SET_BIDIRECTIONAL_R2L
             END
         END
-        POPUP "&Advanced Configuration"
+        POPUP "&Gelişmiş yapılandırma"
         BEGIN
-            MENUITEM "Save Settings On E&xit",          IDM_SET_SAVESETTINGS
-            MENUITEM "Save Settings &Now\tF7",          IDM_SET_SAVESETTINGSNOW
-            MENUITEM "&Ayarlar Dosyasını Aç\tCtrl+F7",  CMD_OPENINIFILE
+            MENUITEM "&Ayarlar çıkışta kaydedilsin",          IDM_SET_SAVESETTINGS
+            MENUITEM "Ayarları şimdi &kaydet\tF7",          IDM_SET_SAVESETTINGSNOW
+            MENUITEM "Ayarlar &dosyasını aç\tCtrl+F7",  CMD_OPENINIFILE
         END
     END
     POPUP "&Yardım"
     BEGIN
-        MENUITEM "&Çevrimiçi Bilgilendirme\tF1",          IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "&Çevrimiçi belgeler\tF1",          IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Launch Administration &Tool...",        IDM_HELP_ADMINEXE
-        MENUITEM "Günce&llemeleri Denetle",               IDM_HELP_UPDATEWEBSITE
+        MENUITEM "&Yönetim aracı...",        IDM_HELP_ADMINEXE
+        MENUITEM "Günce&lleme denetimi",               IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "&Komut Satırı Değişkenleri...",         IDM_HELP_CMD
+        MENUITEM "&Komut satırı değişkenleri...",         IDM_HELP_CMD
         MENUITEM "&Hakkında...\tShift+F1",                IDM_HELP_ABOUT
     END
 END
@@ -541,50 +541,50 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Köprüyü Aç",             CMD_OPEN_HYPERLINK
+        MENUITEM "Bağlantıyı aç",             CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "Geri Al",                    IDM_EDIT_UNDO
-        MENUITEM "Yenile",                     IDM_EDIT_REDO
+        MENUITEM "Geri al",                    IDM_EDIT_UNDO
+        MENUITEM "Yinele",                     IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "Kes",                        IDM_EDIT_CUT
         MENUITEM "kopyala",                    IDM_EDIT_COPY
         MENUITEM "Yapıştır",                   IDM_EDIT_PASTE
         MENUITEM "Sil",                        IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Tümünü Seç",                 IDM_EDIT_SELECTALL
+        MENUITEM "Tümünü seç",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Toggle Current Fold",        IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Geçerli daraltmayı aç/kapat",        IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action 1",          CMD_WEBACTION1
-        MENUITEM "Open Web Action 2",          CMD_WEBACTION2
-        MENUITEM "Open File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "1. web işlemini aç",          CMD_WEBACTION1
+        MENUITEM "2. web işlemini aç",          CMD_WEBACTION2
+        MENUITEM "Dosya gezginini aç",         IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Menü Çubuğunu Göster",               IDM_VIEW_MENUBAR
-        MENUITEM "Araç Kutusunu Göster",               IDM_VIEW_TOOLBAR
-        MENUITEM "Durum Çubuğunu Göster",             IDM_VIEW_STATUSBAR
+        MENUITEM "Menü çubuğu görüntülensin",               IDM_VIEW_MENUBAR
+        MENUITEM "Araç çubuğu görüntülensin",               IDM_VIEW_TOOLBAR
+        MENUITEM "Durum çubuğu görüntülensin",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "Araç Çubuğu Teması Yükle...",      IDM_VIEW_LOADTHEMETB
-        MENUITEM "Özelleştir...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Toggle Toolbars",            IDM_VIEW_TOGGLETB
-        MENUITEM "DPI Scale Toolbar",          IDM_VIEW_DPISCALETB
+        MENUITEM "Araç çubuğu teması yükle...",      IDM_VIEW_LOADTHEMETB
+        MENUITEM "Araç çubuğunu özelleştir...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Araç çubuklarını aç/kapat",            IDM_VIEW_TOGGLETB
+        MENUITEM "DPI ölçekli araç çubuğu",          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "İşaretçiyi Temizle",                IDM_EDIT_CLEAR_MARKER
-        MENUITEM "İşaretli Satırları Kes",    IDM_EDIT_CUT_MARKED
-        MENUITEM "İşaretli Satırları Kopyala",   IDM_EDIT_COPY_MARKED
-        MENUITEM "İşaretli Satırları Sil", IDM_EDIT_DELETE_MARKED
+        MENUITEM "İşareti temizle",                IDM_EDIT_CLEAR_MARKER
+        MENUITEM "İşaret türündeki satırları kes",    IDM_EDIT_CUT_MARKED
+        MENUITEM "İşaret türündeki satırları kopyala",   IDM_EDIT_COPY_MARKED
+        MENUITEM "İşaret türündeki satırları sil", IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "Blok Katlama",                     IDM_VIEW_FOLDING
-        MENUITEM "Satır Numaraları",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Yer imi Boşluğu",             IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Toplama",                     IDM_VIEW_FOLDING
+        MENUITEM "Satır numaraları",                IDM_VIEW_LINENUMBERS
+        MENUITEM "Yer imi kenar boşluğu",             IDM_VIEW_BOOKMARK_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Notepad3'ü Göster",               IDM_TRAY_RESTORE
-        MENUITEM "Notepad3'ten Çık",              IDM_TRAY_EXIT
+        MENUITEM "Notepad3 uygulamasını aç",               IDM_TRAY_RESTORE
+        MENUITEM "Notepad3 uygulamasından çık",              IDM_TRAY_EXIT
     END
 END
 

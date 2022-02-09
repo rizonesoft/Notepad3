@@ -71,271 +71,271 @@ BEGIN
     IDT_EDIT_PASTE          "Yapıştır"
     IDT_EDIT_FIND           "Bul"
     IDT_EDIT_REPLACE        "Değiştir"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Çıkış"
-    IDT_FILE_SAVEAS         "Farklı Kaydet"
-    IDT_FILE_SAVECOPY       "Kopya Olarak Kaydet"
+    IDT_VIEW_WORDWRAP       "Sözcük kaydır"
+    IDT_VIEW_ZOOMIN         "Yakınlaştır"
+    IDT_VIEW_ZOOMOUT        "Uzaklaştır"
+    IDT_VIEW_SCHEME         "Şema seçin"
+    IDT_VIEW_SCHEMECONFIG   "Şemaları özelleştir"
+    IDT_FILE_EXIT           "Çık"
+    IDT_FILE_SAVEAS         "Farklı kaydet"
+    IDT_FILE_SAVECOPY       "Kopya olarak kaydet"
     IDT_EDIT_CLEAR          "Sil"
     IDT_FILE_PRINT          "Yazdır"
-    IDT_FILE_OPENFAV        "Favoriler"
-    IDT_FILE_ADDTOFAV       "Mevcut Dosyayı Ekle"
-    IDT_VIEW_TOGGLEFOLDS    "Favoriler Klasörü"
+    IDT_FILE_OPENFAV        "Sık kullanılanlar"
+    IDT_FILE_ADDTOFAV       "Sık kullanılanlara ekle"
+    IDT_VIEW_TOGGLEFOLDS    "Sık kullanılanlar klasörü"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Belgeyi Yürütün"
-    IDT_VIEW_TOGGLE_VIEW     "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "İzleme Günlüğü"
+    IDT_FILE_LAUNCH          "Belgeyi yürüt"
+    IDT_VIEW_TOGGLE_VIEW     "Odaklanmış görünüm"
+    IDT_VIEW_CHASING_DOCTAIL "İzleme günlüğü"
     IDT_VIEW_PIN_ON_TOP      "Her zaman üstte"
-    IDT_GREP_WIN_TOOL        "Dosyalarda Ara"
+    IDT_GREP_WIN_TOOL        "Dosyalarda ara"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s : Elevated"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Yönetici"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Pano"
     IDS_MUI_UNTITLED        "Başlıksız"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Sadece oku)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_READONLY        "(Salt okunur)"
+    IDS_MUI_FILELOCKED      "<Ayrıcalıklı>"
     IDS_MUI_LOADFILE        "Yükleniyor ""%s""..."
     IDS_MUI_SAVEFILE        "Kaydediliyor ""%s""..."
-    IDS_MUI_PRINTFILE       "Sayfa yazdırılıyor %i..."
+    IDS_MUI_PRINTFILE       "%i. sayfa yazdırılıyor..."
     IDS_MUI_SAVINGSETTINGS  "Ayarları kaydet..."
     IDS_MUI_LINKDESCRIPTION "Notepad3 ile düzenle"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "Tüm Dosyalar (*.*)|*.*|"
+    IDS_MUI_FILTER_ALL      "Tüm dosyalar (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Yürütülebilir dosyalar (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Yapılandırma dosyaları (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap Dosyaları (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Favori uygulamalarınıza bağlantılar içeren dizini seçin."
-    IDS_MUI_FAVORITES       "Sık kullandığınız dosyalara bağlantılar içeren dizini seçin."
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDS_MUI_FILTER_BITMAP   "Bitmap dosyaları (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Sık kullandığınız uygulamalarınızın bağlantılarının bulunduğu klasörü seçin."
+    IDS_MUI_FAVORITES       "Sık kullandığınız dosyaların bağlantılarının bulunduğu klasörü seçin."
+    IDS_MUI_BACKSLASHHELP   "Ters bölü dönüşümleri\n\n\\a\tUyarı (BEL, Ascii 7)\n\\b\tGeriye silme (BS, Ascii 8)\n\\f\tForm besleme (FF, Ascii 12)\n\\n\tYeni satır (LF, Ascii 10)\n\\r\tSatır başı (CR, Ascii 13)\n\\t\tYatay sekme (HT, Ascii 9)\n\\v\tDikey sekme (VT, Ascii 11)\n\\0oo\tSekizlik değer\n\\u####\tOnaltılık değer\n\\xhh\tOnaltılık değer\n\\\\\tTers bölü"
+    IDS_MUI_REGEXPHELP      "Kurallı ifade eşleştirme yazımı (birden çok satır)\n\n.\tHerhangi bir karakter ile eşleşen\n^\tYeni satırdan hemen sonra boş dizge\n$\tSatır sonundan hemen önce boş dizge\n\\<\tBir sözcüğün başı\n\\>\tBir sözcüğün sonu\n\\b\tSözcük sınırları\n[...]\tBir karakter kümesi ([abc]) ya da aralığı ([a-z])\n[^...]\tKüme ya da aralıkta bulunmayan karakterler\n\\d\tTüm ondalık haneler\n\\D\tOndalık olmayan tüm karakterler\n\\s\tBeyaz boşluk karakterleri\n\\S\tBeyaz boşluk olmayan karakterler\n\\w\t""sözcükte olan"" tüm karakterler\n\\W\t""sözcükte olmayan"" tüm karakterler\n\\x\tBaşka bir özel anlamı olmayan kaçış karakterleri\n\\xHH\tHH onaltılık kodu ile karakterler\n?\t0 ya da 1 eşleşmeler\n*\t0 ya da daha fazla eşleşmeler\n+\t1 ya da daha fazla eşleşmeler\n*? ya da +?\tSınırlayıcıların açgözlü olmayan eşleşmesi ""?"" ve ""+""\n(\tBir bölge başı\n)\tBir bölge sonu\n\\n\tDeğiştirmede bir bölgeyi ifade eder (n 1 ile 9 arasında)\n"
+    IDS_MUI_WILDCARDHELP    "Genel arama\n\n*\tSıfır ya da daha çok eşleşme.\n?\tTam olarak bir karakter ile eşleşme. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Yükleme Hatası ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Kaydetme Hatası ""%s""."
-    IDS_MUI_ERR_DLG_FORMAT  "Hata '%s', cause:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Dosya tarayıcı eklentisi bulunamadı.\nMiniPath dosya tarayıcı eklentisi şu adresten indirebilirsiniz: https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "Dosya arama eklentisi bulunamadı.\ngrepWinNP3 dosya arama eklentisini şu adresten indirebilirsiniz: https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "Seçilen dosyaya erişim yok!\nWListeden kaldırmak ister misiniz?"
-    IDS_MUI_ERR_CREATELINK  "Masaüstü bağlantısı oluşturulurken hata oluştu."
+    IDS_MUI_ERR_LOADFILE    """%s"" yüklenirken sorun çıktı."
+    IDS_MUI_ERR_SAVEFILE    """%s"" kaydedilirken sorun çıktı."
+    IDS_MUI_ERR_DLG_FORMAT  "Hata '%s'. Nedeni:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "Dosya gezgini uygulama eki bulunamadı.\nMiniPath dosya tarayıcı uygulama ekini şuradan indirebilirsiniz: https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "Dosya arama uygulama eki bulunamadı.\ngrepWinNP3 dosya arama uygulama ekini şuradan indirebilirsiniz: https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "Seçilmiş dosyaya erişilemedi!\nWListeden kaldırmak ister misiniz?"
+    IDS_MUI_ERR_CREATELINK  "Masaüstü bağlantısı oluşturulurken sorun çıktı."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Mevcut Notepad3 penceresi meşgul veya etkin bir iletişim kutusuna sahip.\nBaşka bir Notepad3 penceresi açmak ister misiniz?"
-    IDS_MUI_ERR_ENCODINGNA  "Seçilen kodlama için kod sayfası dönüşüm tabloları sisteminizde mevcut değil."
-    IDS_MUI_ERR_UNICODE     "Bu Unicode dosyası dönüştürülürken hata oluştu.\nDosya kaydedilirse veriler kaybolur!"
-    IDS_MUI_ERR_BITMAP      "Bitmap yüklenirken hata oluştu ""%s"".\nBoyutlar gerekli: %i x %i (width >= %i x height)."
+                            "Var olan Notepad3 penceresi meşgul veya bir iletişim penceresi açık.\nBaşka bir Notepad3 penceresi açmak ister misiniz?"
+    IDS_MUI_ERR_ENCODINGNA  "Sisteminizde seçim kodlaması için kod sayfası dönüşüm tabloları bulunamadı."
+    IDS_MUI_ERR_UNICODE     "Bu unikod dosyası dönüştürülürken sorun çıktı.\nDosya kaydedilirse veriler kaybolur!"
+    IDS_MUI_ERR_BITMAP      """%s"" bitmap dosyası yüklenirken sorun çıktı.\nBoyutlar gerekli: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Kullanıcı hakları yükseltilirken hata oluştu!"
+                            "Kullanıcı yetkileri yükseltilirken sorun çıktı!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Geçerli metindeki belirli karakterler seçilen kodlama tarafından desteklenmez ve kaydederken varsayılan yer tutucularla değiştirilebilir. Başka bir dosya kodlaması seçmeniz önerilir. Devam et?"
+    IDS_MUI_ERR_UNICODE2    "Geçerli metindeki belirli karakterler seçilmiş kodlama tarafından desteklenmiyor ve kaydedilirken varsayılan yer belirticiler ile değiştirilebilir. Başka bir dosya kodlaması seçmeniz önerilir. Devam etmek istiyor musunuz?"
     IDS_MUI_ERR_DROP        "Aynı anda yalnızca bir dosya bırakılabilir!"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s "" dosyası kaydedilemiyor ve korunuyor olabilir.\n\n%s uygulamasını 'Yükseltilmiş' uygulama olarak başlatmak istiyor musunuz?"
-    IDS_MUI_ERR_ADMINEXE    "Yürütülebilir yönetici bulunamadı.\nWeb Adresimiz https://rizonesoft.com?"
+                            """%s "" dosyası kaydedilemedi ve korunuyor olabilir.\n\n%s uygulamasını 'Yönetici' olarak başlatmak istiyor musunuz?"
+    IDS_MUI_ERR_ADMINEXE    "Yöneticinin çalıştırabileceği bir dosya bulunamadı.\nhttps://rizonesoft.com web sitesine bakın."
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Bu büyük dosyayı açmak istediğinizden emin misiniz?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Bu büyük dosyayı açmak istediğinize emin misiniz?\n\t(Boyut: %s >= %s)!\n(Biçem ve yazım vurgulaması uygulanmayacak!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "(size: %s) boyutlu dosya işlenemiyor!"
+                            "Devasa (Boyut: %s) dosya işlenemedi!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Bilinmeyen dosya adı uzantısı (%s)!\nYine de veri yükleniyor mu?"
-    IDS_MUI_INDENT_CONSISTENT  "Dosya tutarlı bir girintiye sahiptir!"
+                            "Dosya adı uzantısı bilinmiyor (%s)!\nYine de veriler yüklensin mi?"
+    IDS_MUI_INDENT_CONSISTENT  "Dosya girintileri tutarlı!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_EOLMODENAME_CR     "Eski Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "Tüm satır sonlarını '%s' olacak şekilde standartlaştırmak ister misiniz?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
-    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
-    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
-    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
-    IDS_MUI_NOTFOUND        "No match found for specified search pattern."
-    IDS_MUI_REPLCOUNT       "%s occurrence(s) of specified search pattern replaced."
-    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
-    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
+    IDS_MUI_SELRECT         "Bir dikdörtgen seçimde bu işlem yapılamaz."
+    IDS_MUI_SELMULTI        "Bir çoklu seçimde bu işlem yapılamaz."
+    IDS_MUI_SELRECTORMULTI  "Bir dikdörtgen ya da çoklu seçimde bu işlem yapılamaz."
+    IDS_MUI_BUFFERTOOSMALL  "Bu işlem yapılamaz (satırlar çok uzun)."
+    IDS_MUI_FIND_WRAPFW     "Belgenin sonuna ulaşıldı. Arama belgenin başından sürdürülüyor."
+    IDS_MUI_FIND_WRAPRE     "Belgenin başına ulaşıldı. Arama belgenin sonundan sürdürülüyor."
+    IDS_MUI_NOTFOUND        "Belirtilen aramaya uygun bir eşleşme bulunamadı."
+    IDS_MUI_REPLCOUNT       "Belirtilen aramaya uygun %s eşleşme bulundu."
+    IDS_MUI_ASK_ENCODING    "Dosya kodlamasını değiştirmek desteklenmeyen karakterlerin varsayılanlar ile değiştirilmesine yol açar ve geri alma geçmişini temizler. Devam etmek istiyor musunuz?"
+    IDS_MUI_ASK_ENCODING2   "Boş bir dosyanın kodlamasını değiştirmek üzeresiniz. Yeni kodlama ile eşitlenemeyeceğinden bu işlemin geri alma geçmişini sileceğini unutmayın. Devam etmek istiyor musunuz?"
+    IDS_MUI_READONLY_SAVE   """%s"" salt okunur. Başka bir dosyaya kaydetmek ister misiniz?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program. Reload?"
-    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
+                            "Geçerli dosya başka bir uygulama tarafından değiştirilmiş Yeniden yüklemek ister misiniz?"
+    IDS_MUI_FILECHANGENOTIFY2 "Geçerli dosya silinmiş. Yeniden kaydetmek ister misiniz?"
+    IDS_MUI_FILELOCK_ERROR  """%s"" dosyası ayrıcalıklı olarak kilitlenemedi!"
+    IDS_MUI_STICKYWINPOS    "Sabit pencere konumu etkinleştirildi. Yeni Notepad3 pencereleri geçerli pencere konumu ayarlarını kullanacak."
+    IDS_MUI_SAVEDSETTINGS   "Geçerli uygulama ayarları kaydedildi."
+    IDS_MUI_CREATEINI_FAIL  "Yapılandırma dosyası oluşturulurken sorun çıktı."
+    IDS_MUI_WRITEINI_FAIL   "Ayarlar yapılandırma dosyasına kaydedilirken sorun çıktı."
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "Yapılandırma dosyası salt okunur. Yok sayıp ayarları değiştirmek istiyor musunuz?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+                            "Var olan bir yapılandırma dosyası bulunamadı.\nBiçem değişikliklerinizi korumak için şimdi ayarları kaydedin (F7) ya da şema yapılandırmasına geri dönüp (Ctrl+F12) biçemlerinizi dışa aktarın."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Program yeniden başlatarak kaydedilen ayarları etkinleştirsin mi?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
-    IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_RELOADSETTINGS   "Kaydedilmiş ayarların etkin olması için uygulama yeniden başlatılsın mı?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Uygulamayı yeniden başlatmazsanız, kaydedilmiş ayarlar etkin olmayacak uygulamadan çıkıldığında iç ayarlar ile değiştirilecek!"
+    IDS_MUI_EXPORT_FAIL      "Biçem ayarları ""%s"" dosyasına aktarılamadı."
+    IDS_MUI_REGEX_INVALID    "Kurallı ifade işlenirken sorun çıktı. Kurallı ifade geçersiz!"
+    IDS_MUI_DROP_NO_FILE     "Geçerli bir dosya adı alınamadı.\nBir 32-bit uygulamadan sürükleyerek bıraktıysanız,\nNotepad3 araç çubuğuna bırakın."
+    IDS_MUI_URL_DIR_EXISTS   "İnternet adresinde belirtilen klasör var!"
+    IDS_MUI_URL_FILE_EXISTS  "İnternet adresinde belirtilen dosya var!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
+                             "İnternet adresinde belirtilen yol bulunamadı!"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Dosyayı açmak için tıklayın."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Bağlantıyı tarayıcıda açmak için tıklayın."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
+                             "Özgün dosya değişiklik zamanının korunması seçeneği etkinleştirilmiş.\nBu seçenek bu oturum boyunca etkin olacak!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Yinelenme işaretleyicileri bitiyor (Yer imi/Vurgula)!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
-    IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
-    IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
-    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
-    IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
-    IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_ASK_SAVE        "Değişikler şuraya kaydedilsin mi:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "Dosya son kaydedildiği duruma döndürülsün mü?"
+    IDS_MUI_ASK_RECODE      "Yenide kodlama içindosyanın diskten yeniden yüklenmesi gerekir. Kaydedilmemiş değişiklikler kaybolacak!"
+    IDS_MUI_ASK_CREATE      """%s"" bulunamadı.\nBu dosyanın oluşturulmasını ister misiniz?"
+    IDS_MUI_PRINT_HEADER    "Dosya adı, Geçerli tarih ve saat|Dosya adı, Geçerli tarih|Dosya adı|Boş bırak"
+    IDS_MUI_PRINT_FOOTER    "Sayfa numarası|Boş bırak"
+    IDS_MUI_PRINT_COLOR     "Normal|Ters açık (koyu arka plan)|Beyaz üzerine siyah|Beyaz üzerine renkli|Beyaz üzerine renkli (satır numaraları dışında)|Ekran renkleri"
+    IDS_MUI_PRINT_PAGENUM   "%i. sayfa"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Bu işlem, biçemi istenilen renk kipinin fabrika varsayılanlarına sıfırlar ve etkin tema dosyasını standart config.ini ile değiştirir.!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed."
-    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "A shortcut to the current file has been created in the favourites directory."
-    IDS_MUI_FAV_FAILURE     "The shortcut to the current file could not be created.\nMake sure there's no other file with the same name."
-    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified."
-    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect.\nRetry another Passphrase?"
-    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
-    IDS_MUI_STY_BASESTD     "BASE (Varsayılan Stil):"
-    IDS_MUI_STY_BASE2ND     "BASE (2'inci Varsayılan Stil):"
-    IDS_MUI_STY_LEXDEF      "%s - Varsayılan Stil:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
-    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
+    IDS_MUI_PRINT_EMPTY     "Bu belgede yazdırılacak bir metin yok."
+    IDS_MUI_PRINT_ERROR     """%s"" yazdırılırken sorun çıktı!"
+    IDS_MUI_FAV_SUCCESS     "Geçerli dosyanın kısayolu sık kullanılanlar klasörüne eklendi."
+    IDS_MUI_FAV_FAILURE     "Geçerli dosyanın kısayolu oluşturulamadı.\nAynı adlı başka bir dosya olmadığından emin olun."
+    IDS_MUI_READONLY_MODIFY """%s"" öznitelikleri değiştirilemedi."
+    IDS_MUI_SAVEPOS         "&Konumu kaydet\tCtrl+S"
+    IDS_MUI_RESETPOS        "Konumu &sıfırla\tCtrl+R"
+    IDS_MUI_PREVIEW         "&Ayarları ön izle\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "Parola yanlış.\nBaşka bir parola denemek ister misiniz?"
+    IDS_MUI_NOPASS          "Şifre çözme iptal edildi!\nŞifrelenmiş ham veri okunsun mu?"
+    IDS_MUI_STY_BASESTD     "TEMEL (1. varsayılan biçem):"
+    IDS_MUI_STY_BASE2ND     "TEMEL (2. varsayılan biçem):"
+    IDS_MUI_STY_LEXDEF      "%s - varsayılan biçem:"
+    IDS_MUI_STY_LEXSTYLE    "%s biçemi:"
+    IDS_MUI_TITLE_RELBASE   "+++ TEMEL (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(tr-TR) kayazeren tarafından Türkçe'ye çevirildi"
-    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Stil +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s Stil"
-    IDS_MUI_TITLE_RELARB    "+++ Stil '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    "Stil '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Line (1 - %s):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %s):"
+    IDS_MUI_TITLE_FIXBASE   "TEMEL (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s biçem +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s biçem"
+    IDS_MUI_TITLE_RELARB    "+++ Biçem '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Biçem '%s' (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "İlişkilendirilmiş dosya uzantıları:"
+    IDS_MUI_ZERO_LEN_MATCH  "^ sıfır uzunlukta eşleşme"
+    IDS_MUI_GOTO_LINE       "Satır (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Sütun (1 - %s):"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Dil"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
-    IDM_THEMES_FACTORY_RESET "Fabrika Ayarları"
-    IDM_THEMES_STD_CFG       "Standart"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_USE_LOCALE_DATEFMT  "Dile uygun &tarih biçimi"
+    IDS_MUI_MENU_THEMES     "Şema &derlemesi"
+    IDM_THEMES_FACTORY_RESET "&Fabrika ayarları"
+    IDM_THEMES_STD_CFG       "Standart yapılandırma"
+    IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Tümünü temizle"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Arama geçmişini temizle"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
+                            "Değiştirme geçmişini temizle"
+    IDS_MUI_WRAPSEARCH_FWD  "Baştan aramayı sürdür"
+    IDS_MUI_WRAPSEARCH_BCK  "Sondan aramayı sürdür"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Tüm kopyaları işaretle..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Görünümü değiştir..."
+    IDS_MUI_SB_REPLACE_ALL    "Tümünü değiştir..."
+    IDS_MUI_SB_WRAP_LINES     "Satırları kaydır..."
+    IDS_MUI_SB_CONV_LNBRK     "Satır sonlarını dönüştür..."
+    IDS_MUI_SB_RECODING_DOC   "Belge yeniden kodlanıyor..."
+    IDS_MUI_SB_LEXER_STYLING  "Lexer biçemlerini uygula..."
 END
 
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
-Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Kullanım:\r\n\
+Notepad3 \t[/?] [...[Kodlama]] [...[Satır sonu kipi]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
-file\tMust be the last argument, no quoted spaces by default.\r\n\
-+\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\r\n\
-Options:\r\n\
-/?\tDispay this help message.\r\n\
-...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tFile source encoding.\r\n\
-/g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified files.\r\n\
-/q\tForce creation of new files without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
-/n\tAlways open a new window (/ns single file instance).\r\n\
-/r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>,<max>    [all integers].\r\n\
-/t\tSet window title.\r\n\
-/i\tStart as tray icon.\r\n\
-/o\tKeep window on top.\r\n\
-/f\tSpecify ini-file (/f0 no ini-file).\r\n\
-/u\tLaunch with elevated privileges.\r\n\
-/v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
-Examples:\r\n\
-Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
-Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print the file: ""Test.txt"" immediately.\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Sürücü:][Yol]DosyaAdı[...]]\r\n\r\n\
+dosya\tSon parametre olmalıdır. Varsayılan olarak tırnak içinde boşluk yoktur.\r\n\
++\tBirden fazla parametre kabul eder (tırnak içinde boşluk ile).\r\n\
+-\tTek parametre kabul eder (tırnak içinde boşluk olmadan).\r\n\r\n\
+Seçenekler:\r\n\
+/?\tBu yardım iletisini görüntüle.\r\n\
+...\tKodlama (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tSatır sonu kipi (/crlf, /cr, /lf).\r\n\
+/e\tDosya kaynağı kodlaması.\r\n\
+/g\tBelirtilen konuma git (/g -1 dosya sonu).\r\n\
+/m\tBelirtilen metin ile eşleştir (/m- son, /mr kurallı ifade, /mb ters bölü).\r\n\
+/l\tDeğiştirilen dosyaları otomatik olarak yükle.\r\n\
+/q\tYeni dosyaları sormadan oluştur.\r\n\
+/s\tBelirtilen yazım şemasını seç.\r\n\
+/d\tVarsayılan metin şemasını seç.\r\n\
+/h\tWeb kaynak kodu şemasını seç.\r\n\
+/x\tXML belgesi şemasını seç.\r\n\
+/c\tYeni pencere aç ve pano içeriklerini yapıştır.\r\n\
+/b\tPano kayıtlarını derlemek için yeni yapıştırma panosu aç.\r\n\
+/n\tHer zaman yeni pencerede aç (/ns tek dosya kopyası).\r\n\
+/r\tPencereyi yeniden kullan (/rs tek dosya kopyası).\r\n\
+/p\tPencere konumunu ve boyutunu ayarla (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>,<max>    [tümü tam sayı].\r\n\
+/t\tPencere başlığını ayarla.\r\n\
+/i\tSistem tepsisinde başlat.\r\n\
+/o\tPencereyi üstte tut.\r\n\
+/f\tKullanılacak ini dosyasını belirt (/f0 ini dosyası yok).\r\n\
+/u\tYönetici yetkileri ile başlat.\r\n\
+/v\tDosyayı hemen yazdır ve çık.\r\n\
+/vd\tDosyayı yazdır (yazıcı penceresini aç).\r\n\
+/y\tGöreli dosya adı durumuna karşı PATH ortam değişkeninde ara.\r\n\
+/z\tSonrakine geç (kayıt defteri temelli Notepad değişikliği için kullanışlı).\r\n\r\n\
+Örnekler:\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Deneme.txt\r\n\
+ \t... Yeni bir dosya aç: ""Deneme.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+Notepad3 /v d:\\temp\\Deneme.txt\r\n\
+ \t... Dosyayı hemen yazdır: ""Deneme.txt"".\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
-Style format:\r\n\
-font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+Dosya uzantıları ';' ile ayrılarak yazılmalıdır\r\n\
+bir dosya eşleştirme modeli için \\<regex>; kullanın:\r\n\
+   \\xyz$;   => DosyaAdları(TemelAd+Uzantı) 'xyz' son karakterler olmak üzere.\r\n\r\n\
+Biçem özellikleri:\r\n\
+font:Ad; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop.\
+Biçem özellikleri kopyala-yapıştır ya da sürükle-bırak ile kopyalanabilir.\
 "
 
 END
@@ -353,7 +353,7 @@ IDS_MUI_ABOUT_RTF_1  "\
 \\cf0 \\fs20\\b1\\ul1 \\f1Katk\\u305?da bulunanlar\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Kütühaneler:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / \\f1Kitapl\\u305?klar\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 \\f1Te\\'baekkürler\\f0 :\\ul0\\b0\\fs18\\par\

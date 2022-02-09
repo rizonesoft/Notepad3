@@ -55,13 +55,13 @@ END
 
 IDD_MUI_ABOUT DIALOGEX 0, 0, 400, 284
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Notepad3 Hakkında"
+CAPTION "Notepad3 hakkında"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "Tamam",IDOK,330,266,50,14
     EDITTEXT        IDC_VERSION,84,10,220,24, ES_CENTER | ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
-    LTEXT           "Scintilla Kütüphane Versiyonu:",IDC_SCI_VERSION,84,34,219,8
-    LTEXT           "Build with:",IDC_COMPILER,84,45,218,8
+    LTEXT           "Scintilla kitaplığı sürümü:",IDC_SCI_VERSION,84,34,219,8
+    LTEXT           "Derleyen:",IDC_COMPILER,84,45,218,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,84,62,218,8
     LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,84,74,218,8
     LTEXT           "",IDC_WEBPAGE2,190,65,100,8,NOT WS_VISIBLE | WS_DISABLED
@@ -70,13 +70,13 @@ BEGIN
     //~CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP|SS_NOTIFY|SS_REALSIZECONTROL,300,10,80,24,WS_EX_TRANSPARENT
     //~PUSHBUTTON      "", IDC_RIZONEBMP, 300, 10, 80, 24, BS_PUSHBUTTON | BS_BITMAP
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP|SS_NOTIFY,304,10,80,24,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Panoyu kopyala",IDC_COPYVERSTRG,304,45,76,14
+    PUSHBUTTON      "Sürüm bilgisini kopyala",IDC_COPYVERSTRG,304,45,76,14
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | RICHEDTCTRL_ADDSTYLE,20,90,360,170, ES_EX_ZOOMABLE
 END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Komut Satırı Yardımı"
+CAPTION "Komut satırı yardımı"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "Tamam",IDOK,239,187,55,16
@@ -88,68 +88,68 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Metin bul"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Search Strin&g:",IDC_STATIC,7,7,46,8
+    LTEXT           "Aranacak diz&ge:",IDC_STATIC,7,7,50,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Match &case",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
-    CONTROL         "Match &whole word only",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
-    CONTROL         "Match &beginning of word only",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
-    CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Regular &expression search",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Dot &matches all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
-    CONTROL         "&Don't wrap around",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "C&lose after find",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
-    CONTROL         "Mar&k Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "W&ildcard Search",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparent mode on losing focus",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
-    DEFPUSHBUTTON   "&Find Next",IDOK,211,7,55,14
-    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Close",IDCANCEL,211,99,55,14
-    CONTROL         "<a>Goto Replace (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,103,74,10
+    CONTROL         "Büyük-küçük &harfe uyulsun",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,100,10
+    CONTROL         "&Yalnızca tam sözcüklere uyulsun",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,110,10
+    CONTROL         "Yalnızca sözcük &başına &uyulsun",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
+    CONTROL         "&Ters bölü dönüştürülsün",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
+    CONTROL         "&Kurallı ifade arama",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
+    CONTROL         "&Nokta tümüne uysun",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
+    CONTROL         "Baştan/sondan &devam edilmesin",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,77,10
+    CONTROL         "B&ulunca kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
+    CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
+    CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "Odak kaybolduğunda saydam kipe geçilsin",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,140,10
+    DEFPUSHBUTTON   "S&onrakini bul",IDOK,211,7,55,14
+    PUSHBUTTON      "Ö&ncekini bul",IDC_FINDPREV,211,24,55,14
+    PUSHBUTTON      "Kapat",IDCANCEL,211,99,55,14
+    CONTROL         "<a>Değiştirmeye git (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,103,80,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Focused &View",IDC_TOGGLE_VISIBILITY,211,65,55,14
+    PUSHBUTTON      "&Odaklanılmış görünüm",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
 
 IDD_MUI_REPLACE DIALOGEX 0, 0, 273, 168
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Replace Text"
+CAPTION "Metin değiştir"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Search Strin&g:",IDC_STATIC,7,7,46,8
+    LTEXT           "Aranacak diz&ge:",IDC_STATIC,7,7,50,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Replace wit&h:",IDC_STATIC2,7,36,46,8
+    LTEXT           "Ş&ununla değiştir:",IDC_STATIC2,7,36,55,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Match &case",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
-    CONTROL         "Match &whole word only",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
-    CONTROL         "Match &beginning of word only",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
-    CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Regular &expression search",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Dot &matches all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
-    CONTROL         "&Don't wrap around",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "C&lose after replace",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Mar&k Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "W&ildcard Search",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparent mode on losing focus",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
-    DEFPUSHBUTTON   "&Find Next",IDOK,211,7,55,14
-    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,211,23,55,14
-    PUSHBUTTON      "&Replace",IDC_REPLACE,211,43,55,14
-    PUSHBUTTON      "In &Selection",IDC_REPLACEINSEL,211,59,55,14
-    PUSHBUTTON      "Replace &All",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "Swap Strings",IDC_SWAPSTRG,150,32,49,12
-    PUSHBUTTON      "Close",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Goto Find (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,130,74,10
+    CONTROL         "Büyük-küçük &harfe uyulsun",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,100,10
+    CONTROL         "&Yalnızca tam sözcüklere uyulsun",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,110,10
+    CONTROL         "Yalnızca sözcük &başına &uyulsun",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
+    CONTROL         "&Ters bölü dönüştürülsün",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
+    CONTROL         "&Kurallı ifade arama",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
+    CONTROL         "&Nokta tümüne uysun",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
+    CONTROL         "Baştan/sondan &devam edilmesin",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,77,10
+    CONTROL         "D&eğiştirince kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
+    CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
+    CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "Odak kaybolduğunda saydam kipe geçilsin",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,140,10
+    DEFPUSHBUTTON   "S&onrakini bul",IDOK,211,7,55,14
+    PUSHBUTTON      "Ö&ncekini bul",IDC_FINDPREV,211,23,55,14
+    PUSHBUTTON      "&Değiştir",IDC_REPLACE,211,43,55,14
+    PUSHBUTTON      "Seçi&m içinde",IDC_REPLACEINSEL,211,59,55,14
+    PUSHBUTTON      "&Tümünü değiştir",IDC_REPLACEALL,211,75,55,14
+    PUSHBUTTON      "Dizgeleri takas et",IDC_SWAPSTRG,140,32,59,12
+    PUSHBUTTON      "Kapat",IDCANCEL,211,126,55,14
+    CONTROL         "<a>Bulmaya git (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Focused &View",IDC_TOGGLE_VISIBILITY,211,94,55,14
+    PUSHBUTTON      "&Odaklanmış görünüm",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
 
 IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
@@ -158,21 +158,21 @@ CAPTION "Çalıştır"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Type the name of a program, folder, document, or internet resource, and Windows will open it for you.",IDC_STATIC,39,7,179,17
+    LTEXT           "Bir program, klasör, belge ya da internet kaynağı yazın ve Windows sizin için açsın.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_SEARCHEXE,163,69,55,16
+    PUSHBUTTON      "Göz at...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "Tamam",IDOK,47,69,55,16
     PUSHBUTTON      "İptal",IDCANCEL,105,69,55,16
 END
 
 IDD_MUI_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Open with..."
+CAPTION "Birlikte aç..."
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Click here to specify the directory with links to your favourite applications.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Sık kullandığınız uygulamalarının kısayollarının bulunduğu klasörü seçmek için buraya tıklayın.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "Tamam",IDOK,52,108,50,14
     PUSHBUTTON      "İptal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -183,22 +183,22 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Kodlama"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Default Encoding (new file):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Varsayılan kodlama (yeni dosya):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Use as &fallback on detection failure.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "&Algılanamadığında kullanılacak varsayılan.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Encoding Detection: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Open 7-bit &ASCII files in UTF-8 mode.",IDC_ASCIIASUTF8,
+    GROUPBOX        "Kodlama algılaması: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+    CONTROL         "7-bit &ASCII dosyaları UTF-8 kipinde açılsın.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Use &reliable detection results only.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Yalnızca &güvenilir algılama sonuçları kullanılsın.",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
-    CONTROL         "Open 8-bit *.&nfo/diz files in DOS-437 mode.",IDC_NFOASOEM,
+    CONTROL         "8-bit *.&nfo/diz dosyaları DOS-437 kipinde açılsın.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
-    CONTROL         "Parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "&Kodlama dosyası kod imleri işlensin.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
-    CONTROL         "Perform &ANSI Code Page analysis.",IDC_NOANSICPDETECTION,
+    CONTROL         "&ANSI kod sayfası incelensin.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "Enable &UNICODE detection.",IDC_NOUNICODEDETECTION,
+    CONTROL         "&UNICODE algılaması yapılsın.",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "Tamam",IDOK,87,151,50,14
     PUSHBUTTON      "İptal",IDCANCEL,140,151,50,14
@@ -206,16 +206,16 @@ END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Line Endings"
+CAPTION "Satır sonları"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Default line ending mode:",IDC_STATIC,7,7,116,8
+    LTEXT           "&Varsayılan satır sonu kipi:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Show inconsistent line-breaks warning.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Tutarsız satır sonu uyarısı görüntülensin.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "&Ensure consistent line-breaks when saving.",IDC_CONSISTENT_EOLS,
+    CONTROL         "Kaydedilirken &satır sonlarının tutarlı olması sağlansın.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
-    CONTROL         "&Strip trailing blanks when saving.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "Kaydedilirken sondaki &boşluklar silinsin.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "Tamam",IDOK,139,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,139,24,50,14
@@ -223,21 +223,21 @@ END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inconsistent Line Endings"
+CAPTION "Tutarsız satır sonları"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inconsistent line endings found in file:",IDC_STATIC,7,7,180,8
+    LTEXT           "Dosyada tutarsız satır sonları bulundu:",IDC_STATIC,7,7,180,8
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Do you want to normalise the line endings?",IDC_STATIC5,7,52,180,8
+    LTEXT           "%s satır.",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s satır.",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s satır.",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "Satır sonlarını &aynı yapmak istiyor musunuz?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Evet",IDOK,138,63,50,14
     PUSHBUTTON      "&Hayır",IDCANCEL,138,80,50,14
-    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Bu pencere her zaman görüntülensin.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -246,9 +246,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Git"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Satır:",IDC_LINE_TEXT,7,8,101,8
+    LTEXT           "S&atır:",IDC_LINE_TEXT,7,8,101,8
     EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
-    LTEXT           "&Sütün:",IDC_COLUMN_TEXT,7,40,101,8
+    LTEXT           "&Sütun:",IDC_COLUMN_TEXT,7,40,101,8
     EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Tamam",IDOK,58,74,50,14
     PUSHBUTTON      "İptal",IDCANCEL,7,74,50,14
@@ -256,15 +256,15 @@ END
 
 IDD_MUI_FILEMRU DIALOGEX 0, 0, 269, 160
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Open Recent File"
+CAPTION "Son kullanılan dosyayı aç"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Preserve caret position.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
-    CONTROL         "&Save recent file list on exit.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
-    CONTROL         "&Remember search pattern.",IDC_REMEMBERSEARCHPATTERN,
+    CONTROL         "Şapka &konumu korunsun.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
+    CONTROL         "Çıkışta &son kullanılan dosyalar listesi kaydedilsin.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
+    CONTROL         "&Arama modeli hatırlansın.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
-    CONTROL         "Discard", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
+    CONTROL         "Vazgeç", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "Tamam",IDOK,154,139,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,212,139,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
@@ -272,29 +272,29 @@ END
 
 IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 103
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "File Change Notification"
+CAPTION "Dosya değiştirilme bildirimi"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    CONTROL         "&None.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Indicator (silent).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
-    CONTROL         "&Display message.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Auto-reload.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
-    CONTROL         "&Exclusive File Lock.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
-    CONTROL         "&Reset if a new file is opened.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,120,10
-    CONTROL         "&Monitoring Log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,127,24,50,14
+    CONTROL         "&Yok.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
+    CONTROL         "&Gösterge (sessiz).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "İ&leri görüntülensin.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Otomatik yeniden yüklensin.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "Dosya &ayrıcalıklı olarak kilitlensin.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
+    CONTROL         "&Yeni bir dosya açılırsa sıfırlansın.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,120,10
+    CONTROL         "İ&zleme günlüğü.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
+    DEFPUSHBUTTON   "Tamam",IDOK,127,7,50,14
+    PUSHBUTTON      "İptal",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_STYLESELECT DIALOGEX 0, 0, 165, 194
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Select Syntax Scheme"
+CAPTION "Yazım şeması seçimi"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
-    CONTROL         "Set selected scheme as &default.",IDC_DEFAULTSCHEME,
+    CONTROL         "Seçilmiş şema &varsayılan olsun.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,118,10
-    CONTROL         "&Auto-select by filename extension.",IDC_AUTOSELECT,
+    CONTROL         "Dosya uzantısına göre &otomatik seçilsin.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,127,10
     DEFPUSHBUTTON   "Tamam",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,108,173,50,14
@@ -302,7 +302,7 @@ END
 
 IDD_MUI_STYLECONFIG DIALOGEX 0, 0, 467, 254
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Scheme"
+CAPTION "Şema"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
@@ -310,15 +310,15 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Ren&k...",IDC_STYLEFORE,181,201,46,14
+    PUSHBUTTON      "&Renk...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "&Geri...",IDC_STYLEBACK,232,201,46,14
-    PUSHBUTTON      "&Yazi T...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "&Önizleme",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "&Yazı tipi...",IDC_STYLEFONT,283,201,42,14
+    PUSHBUTTON      "Ö&n izleme",IDC_PREVIEW,330,201,42,14
     PUSHBUTTON      "&Sıfırla",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
-    PUSHBUTTON      "&İçe Aktar...",IDC_IMPORT,181,232,50,14
-    PUSHBUTTON      "Dı&şa Aktar...",IDC_EXPORT,237,232,50,14
+    PUSHBUTTON      "İç&e aktar...",IDC_IMPORT,181,232,50,14
+    PUSHBUTTON      "&Dışa aktar...",IDC_EXPORT,237,232,50,14
     DEFPUSHBUTTON   "Tamam",IDOK,355,232,50,14
     PUSHBUTTON      "İptal",IDCANCEL,410,232,50,14
     GROUPBOX        "Info",IDC_INFO_GROUPBOX,181,7,280,127
@@ -328,20 +328,20 @@ END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Tab Ayarları"
+CAPTION "Sekme ayarları"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Tabulator width:",IDC_STATIC,7,10,54,8
+    LTEXT           "&Sekme genişliği:",IDC_STATIC,7,10,54,8
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "&Indentation size:",IDC_STATIC2,7,30,55,8
+    LTEXT           "&Girinti boyutu:",IDC_STATIC2,7,30,55,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Insert tabs as &spaces.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab &key reformats indentation.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "&Backspace key reformats indentation.",IDC_BACKTAB_INDENTS,
+    CONTROL         "&Sekmeler boşluk olarak eklensin.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Sekme tuşu girintiyi yeniden biçimlendirsin.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "&Geriye silme tuşu girintiyi yeniden biçimlendirsin.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Tutarsız girintiler bildirilsin.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Autodetect Tab or Space Indentation.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Sekme ya da boşluk girintileri otomatik olarak algılansın.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "Tamam",IDOK,117,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,117,27,50,14
@@ -349,43 +349,43 @@ END
 
 IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inconsistent Indentation"
+CAPTION "Tutarsız girinti"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Statistics: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Blanks[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
-    LTEXT           "Mixed[x]:",IDC_STATIC3,54,42,30,8
-    RTEXT           "%s line(s)",IDC_INDENT_SUM_TAB,84,18,52,8
-    RTEXT           "%s line(s)",IDC_INDENT_SUM_SPC,84,30,52,8
-    RTEXT           "%s line(s)",IDC_INDENT_SUM_MIX,84,42,52,8
-    GROUPBOX        "Re-Indent All ? ",IDC_STATIC2,7,60,182,56,WS_GROUP
+    GROUPBOX        "İstatistikler: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    LTEXT           "Sekmeler[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Boşluklar[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "Karışık[x]:",IDC_STATIC3,54,42,30,8
+    RTEXT           "%s satır",IDC_INDENT_SUM_TAB,84,18,52,8
+    RTEXT           "%s satır",IDC_INDENT_SUM_SPC,84,30,52,8
+    RTEXT           "%s satır",IDC_INDENT_SUM_MIX,84,42,52,8
+    GROUPBOX        "Tüm girintiler yeniden ayarlansın mı? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
     CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    RTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_TAB_MODX,40,72,124,8
-    RTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,40,84,124,8
+    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_TAB_MODX,40,72,124,8
+    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_SPC_MODX,40,84,124,8
     PUSHBUTTON      "&Evet",IDOK,80,98,50,14
     PUSHBUTTON      "&Hayır",IDCANCEL,134,98,50,14
-    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Bu pencere her zaman görüntülensin.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 279, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Long Lines Settings"
+CAPTION "Uzun satır ayarları"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Multi edge-line pos:",IDC_STATIC,7,10,80,8
+    LTEXT           "Ç&ok kenarlı satır konumu:",IDC_STATIC,7,10,80,8
     EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
-    CONTROL         "Show &edge line.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
-    CONTROL         "Change &background colour.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    CONTROL         "&Kenar satırı görüntülensin.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "&Arka plan rengini değiştir.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
     DEFPUSHBUTTON   "Tamam",IDOK,166,34,50,14
     PUSHBUTTON      "İptal",IDCANCEL,222,34,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Word Wrap Settings"
+CAPTION "Sözcük kaydırma ayarları"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     COMBOBOX        100,7,7,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -394,50 +394,50 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "Tamam",IDOK,83,79,50,14
     PUSHBUTTON      "İptal",IDCANCEL,139,79,50,14
-    LTEXT           "No wrap indent|Wrap indent by 1 character|Wrap indent by 2 characters|Wrap indent by 1 level|Wrap indent by 2 levels|Wrap indent as first subline|Wrap indent 1 level more than first subline",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "No visual indicators before wrap|Show visual indicators before wrap (near text)|Show visual indicators before wrap (near borders)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "No visual indicators after wrap|Show visual indicators after wrap (near text)|Show visual indicators after wrap (near borders)",202,0,0,402,8,NOT WS_VISIBLE
-    LTEXT           "Wrap text between words|Wrap text between any glyphs",203,0,0,187,8,NOT WS_VISIBLE
+    LTEXT           "Satır kaydırmada girinti olmasın|Satır 1 karakter kaydırılsın|Satır 2 karakter kaydırılsın|Satır 1 düzey kaydırılsın|Satır 2 düzey kaydırılsın|Satır ilk alt satır kadar kaydırılsın|Satır ilk alt satırdan 1 düzey kaydırılsın",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Satır kaydırmadan önce işaret görüntülenmesin|Satır kaydırmadan önce işaret görüntülensin (metin yanında)|Satır kaydırmadan önce işaret görüntülensin (kenarlık yanında)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "Satır kaydırmadan sonra işaret görüntülenmesin|Satır kaydırmadan sonra işaret görüntülensin (metin yanında)|Satır kaydırmadan sonra işaret görüntülensin (kenarlık yanında)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "Metin sözcükler arasında kaydırılsın|Metin karakteler arasında kaydırılsın",203,0,0,187,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Page Setup"
+CAPTION "Sayfa ayarları"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Paper",1073,8,8,224,56,WS_GROUP
-    LTEXT           "Si&ze:",1089,16,24,36,8
+    GROUPBOX        "Sayfa",1073,8,8,224,56,WS_GROUP
+    LTEXT           "&Boyut:",1089,16,24,36,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Source:",1090,16,45,36,8
+    LTEXT           "&Kaynak:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Orientation",1072,8,69,64,56,WS_GROUP
-    CONTROL         "P&ortrait",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
+    GROUPBOX        "Doğrultu",1072,8,69,64,56,WS_GROUP
+    CONTROL         "&Yatay",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
     CONTROL         "L&andscape",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
-    GROUPBOX        "Margins",1075,80,69,152,56,WS_GROUP
-    LTEXT           "&Left:",1102,88,85,32,8
+    GROUPBOX        "Kenar boşlukları",1075,80,69,152,56,WS_GROUP
+    LTEXT           "S&ol:",1102,88,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
-    LTEXT           "&Right:",1103,164,85,32,8
+    LTEXT           "S&ağ:",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
-    LTEXT           "&Top:",1104,88,104,32,8
+    LTEXT           "Üs&t:",1104,88,104,32,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP
-    LTEXT           "&Bottom:",1105,164,104,32,8
+    LTEXT           "&Alt:",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
-    GROUPBOX        "Headers and Footers",1074,8,130,224,56,WS_GROUP
-    LTEXT           "&Header:",IDC_STATIC,16,146,36,8
+    GROUPBOX        "Üst bilgi ve alt bilgi",1074,8,130,224,56,WS_GROUP
+    LTEXT           "Üs&t bilgi:",IDC_STATIC,16,146,36,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Footer:",IDC_STATIC3,16,167,36,8
+    LTEXT           "&Alt bilgi:",IDC_STATIC3,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Print Colours",1076,8,191,224,37,WS_GROUP
-    LTEXT           "Mo&de:",IDC_STATIC4,16,207,36,8
+    GROUPBOX        "Renkli yazdır",1076,8,191,224,37,WS_GROUP
+    LTEXT           "&Kip:",IDC_STATIC4,16,207,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Scaling",IDC_STATIC5,240,170,108,58,WS_GROUP
-    LTEXT           "&Level (10% to 500%):",IDC_STATIC6,248,188,92,8
+    GROUPBOX        "Ölçek",IDC_STATIC5,240,170,108,58,WS_GROUP
+    LTEXT           "&Düzey (%10 - %500):",IDC_STATIC6,248,188,92,8
     EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
     CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
     DEFPUSHBUTTON   "Tamam",IDOK,190,237,50,14,WS_GROUP
     PUSHBUTTON      "İptal",IDCANCEL,244,237,50,14
-    PUSHBUTTON      "&Printer...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "Preview",IDC_STATIC2,240,8,108,157
+    PUSHBUTTON      "&Yazıcı...",IDC_PRINTER,298,237,50,14
+    GROUPBOX        "Ön izleme",IDC_STATIC2,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -445,12 +445,12 @@ END
 
 IDD_MUI_FAVORITES DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Favoriler"
+CAPTION "Sık kullanılanlar"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Click here to specify the directory with links to your favourite files.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Sık kullandığınız dosyaların kısayollarının bulunduğu klasörü belirtmek için buraya tıklayın.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "Tamam",IDOK,52,108,50,14
     PUSHBUTTON      "İptal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -458,10 +458,10 @@ END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Add to Favourites"
+CAPTION "Sık kullanılanlara ekle"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Enter the name for the new favourites item:",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "Yeni sık kullanılan ögesinin adını yazın:",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Tamam",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,115,45,50,14
@@ -473,38 +473,38 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | W
 CAPTION "Kodlama"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Passphrase", IDC_STATIC, 7, 7, 297, 108
+    GROUPBOX        "Parola", IDC_STATIC, 7, 7, 297, 108
     DEFPUSHBUTTON   "Tamam",IDOK,245,98,50,14
     PUSHBUTTON      "İptal",IDCANCEL,184,98,50,14
-    CONTROL         "Set New Master Key",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
+    CONTROL         "Yeni ana anahtarı ayarla",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Optional Master Key:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
-    CONTROL         "Encrypt using Passphrase",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "Reuse Master Key",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    LTEXT           "İsteğe bağlı ana anahtar:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
+    CONTROL         "Parola kullanarak şifrele",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
+    CONTROL         "Ana anahtar yeniden kullanılsın",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     CONTROL         "show passphrases",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "Decrypt File"
+CAPTION "Dosyanın şifresini çöz"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Passphrase", IDC_STATIC, 8, 6, 283, 69
+    GROUPBOX        "Parola", IDC_STATIC, 8, 6, 283, 69
     DEFPUSHBUTTON   "Tamam",IDOK,233,58,50,14
     PUSHBUTTON      "İptal",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "decrypt using the master key",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "This file has a master key",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    CONTROL         "Ana anahtarı kullanarak şifreyi çöz",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
+    LTEXT           "Bu dosyanın bir ana anahtarı var",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
     CONTROL         "show passphrase",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Column Wrap"
+CAPTION "Sütun kaydırma"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Boundary:",IDC_STATIC,7,7,34,8
+    LTEXT           "&Sınır:",IDC_STATIC,7,7,34,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Tamam",IDOK,73,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,73,24,50,14
@@ -512,49 +512,49 @@ END
 
 IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 182, 110
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Modify Lines"
+CAPTION "Satırları değiştir"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Prefix text to lines:",IDC_STATIC,7,7,62,8
+    LTEXT           "Satırlara &eklenecek ön ek:",IDC_STATIC,7,7,62,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Append text to lines:",IDC_STATIC2,7,37,68,8
+    LTEXT           "Satırlara eklenecek &metin:",IDC_STATIC2,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Tamam",IDOK,125,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Document line number.",IDC_STATIC3,57,72,74,8
+    LTEXT           "Belge satır numarası.",IDC_STATIC3,57,72,74,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Continuous number.",IDC_STATIC4,57,82,66,8
+    LTEXT           "Sürekli numara.",IDC_STATIC4,57,82,66,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Continuous number (zero-based).",IDC_STATIC5,57,92,109,8
+    LTEXT           "Sürekli numara (sıfırdan başlayan).",IDC_STATIC5,57,92,109,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Insert HTML/XML Tag"
+CAPTION "HTML/XML kod imi ekle"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Opening tag (with attributes):",IDC_STATIC,7,7,97,8
+    LTEXT           "Kod imi &açılışı (öznitelikler ile):",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Closing tag (can be edited):",IDC_STATIC2,7,37,90,8
+    LTEXT           "Kod imi &kapanışı (düzenlenebilir):",IDC_STATIC2,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X Times",IDC_STATIC3,148,50,24,8
+    LTEXT           "X kez",IDC_STATIC3,148,50,24,8
     DEFPUSHBUTTON   "Tamam",IDOK,125,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,125,24,50,14
 END
 
 IDD_MUI_ENCLOSESELECTION DIALOGEX 0, 0, 182, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Enclose Selection"
+CAPTION "Seçimi kapat"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Insert &before selection:",IDC_STATIC,7,7,76,8
+    LTEXT           "S&eçimden önce ekle:",IDC_STATIC,7,7,76,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Insert &after selection:",IDC_STATIC2,7,37,71,8
+    LTEXT           "Seçimden s&onra ekle:",IDC_STATIC2,7,37,71,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Tamam",IDOK,125,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,125,24,50,14
@@ -569,7 +569,7 @@ BEGIN
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&Tamam",IDOK,187,50,50,14
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Bu iletiyi bir daha gösterme.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -583,7 +583,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     PUSHBUTTON      "&Evet",IDYES,131,50,50,14
     PUSHBUTTON      "&Hayır",IDNO,187,50,50,14
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Bu iletiyi bir daha gösterme.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -597,7 +597,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&Tamam",IDOK,131,50,50,14
     PUSHBUTTON      "&İptal",IDCANCEL,187,50,50,14
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Bu iletiyi bir daha gösterme.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -612,7 +612,7 @@ BEGIN
     DEFPUSHBUTTON   "&Evet",IDOK,7,70,50,14
     PUSHBUTTON      "&Hayır",IDNO,61,70,50,14
     PUSHBUTTON      "&İptal",IDCANCEL,115,70,50,14
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Bu iletiyi bir daha gösterme.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,54,122,10
 END
 
@@ -624,40 +624,40 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    DEFPUSHBUTTON   "Retry",IDRETRY,131,50,50,14
-    PUSHBUTTON      "&İptal",IDCANCEL,187,50,50,14
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    DEFPUSHBUTTON   "Yeniden dene",IDRETRY,131,50,50,14
+    PUSHBUTTON      "İ&ptal",IDCANCEL,187,50,50,14
+    CONTROL         "&Bu iletiyi bir daha gösterme.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sort Lines"
+CAPTION "Satır sıralama"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    CONTROL         "Sort &ascending.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
-    CONTROL         "Sort &descending.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
-    CONTROL         "Shu&ffle lines.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Merge duplicate lines.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Remove duplicate lines.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Remove &unique lines.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Remove &empty lines.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Remove &white-space lines.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "&Case insensitive.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
-    CONTROL         "Logical &number comparison.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
-    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "Column &sort (rectangular selection).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
+    CONTROL         "A&rtan sıralama.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "Azala&n sıralama.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "Satırları &karıştır.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "Çift satırları &birleştir.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "Çift satırları &sil.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "&Tekil satırları sil.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "B&oş satırları sil.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "B&eyaz boşluk olan satırları sil.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "BÜyük-küçük harfe &duyarlı.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "Büyük-küçük &harfe duyarsız.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "&Mantıksal sayı karşılaştırması.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "Sö&z bilimsel karşılaştırma.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Sü&tun sıralama (dikdörtgen seçim).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "Tamam",IDOK,128,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,128,24,50,14
 END
 
 IDD_MUI_RECODE DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Revert as"
+CAPTION "Şuna döndür"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Select source &encoding to reload file:",IDC_STATIC,7,7,119,8
+    LTEXT           "&Dosyayı yeniden yüklemek için kaynak kodlamasını seçin:",IDC_STATIC,7,7,119,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "Tamam",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,108,114,50,14
@@ -666,10 +666,10 @@ END
 
 IDD_MUI_ENCODING DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Set Encoding"
+CAPTION "Kodlamayı ayarla"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Select current document &encoding:",IDC_STATIC,7,7,120,8
+    LTEXT           "&Geçerli belge kodlamasını seçin:",IDC_STATIC,7,7,120,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "Tamam",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,108,114,50,14
@@ -678,14 +678,14 @@ END
 
 IDD_MUI_ALIGN DIALOGEX 0, 0, 184, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Align Lines"
+CAPTION "Satır hizalama"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    CONTROL         "&Left.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
-    CONTROL         "&Right.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
-    CONTROL         "&Center.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
-    CONTROL         "&Justify.",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
-    CONTROL         "Justify (&Paragraph mode).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "S&ola.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
+    CONTROL         "S&ağa.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
+    CONTROL         "&Ortaya.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
+    CONTROL         "İki &yana.",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
+    CONTROL         "İki yana (&paragraf kipi).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "Tamam",IDOK,127,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,127,24,50,14
 END
@@ -696,53 +696,53 @@ END
 //
 IDD_MUI_SYSFONT_WITHLINK DIALOGEX 13, 54, 243, 234
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Font"
+CAPTION "Yazı tipi"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Font:", stc1, 7, 7, 98, 9
+    LTEXT           "&Yazı tipi:", stc1, 7, 7, 98, 9
     COMBOBOX        cmb1, 7, 16, 98, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "Font st&yle:", stc2, 114, 7, 74, 9
+    LTEXT           "Yazı &biçemi:", stc2, 114, 7, 74, 9
     COMBOBOX        cmb2, 114, 16, 74, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "&Size:", stc3, 198, 7, 36, 9
+    LTEXT           "&Boyut:", stc3, 198, 7, 36, 9
     COMBOBOX        cmb3, 198, 16, 36, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    GROUPBOX        "Effects", grp1, 7, 97, 98, 76, WS_GROUP
-    AUTOCHECKBOX    "Stri&keout", chx1, 13, 111, 90, 10, WS_TABSTOP
-    AUTOCHECKBOX    "&Underline", chx2, 13, 127, 90, 10
+    GROUPBOX        "Etkiler", grp1, 7, 97, 98, 76, WS_GROUP
+    AUTOCHECKBOX    "Ü&zeri çizili", chx1, 13, 111, 90, 10, WS_TABSTOP
+    AUTOCHECKBOX    "&Altı çizili", chx2, 13, 127, 90, 10
 
-    LTEXT           "&Color:", stc4, 13, 144, 89, 9
+    LTEXT           "&Renk:", stc4, 13, 144, 89, 9
     COMBOBOX        cmb4, 13, 155, 85, 100,
     CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL |
     CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    GROUPBOX        "Sample", grp2, 114, 97, 120, 43, WS_GROUP
+    GROUPBOX        "Örnek", grp2, 114, 97, 120, 43, WS_GROUP
     CTEXT           "AaBbYyZz", stc5, 116, 106, 117, 33,
     SS_NOPREFIX | NOT WS_VISIBLE
     LTEXT           "", stc6, 7, 178, 227, 20, SS_NOPREFIX | NOT WS_GROUP
 
-    LTEXT           "Sc&ript:", stc7, 114, 145, 118, 9
+    LTEXT           "&Betik:", stc7, 114, 145, 118, 9
     COMBOBOX        cmb5, 114, 155, 120, 30, CBS_DROPDOWNLIST |
     CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_HASSTRINGS |
     WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    CONTROL         "<A>Show more fonts</A>", IDC_MANAGE_LINK, "SysLink",
+    CONTROL         "<A>Diğer yazı tiplerini göster</A>", IDC_MANAGE_LINK, "SysLink",
     WS_TABSTOP, 7, 199, 227, 9
 
-    DEFPUSHBUTTON   "OK", IDOK, 141, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "Cancel", IDCANCEL, 190, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Apply", psh3, 92, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Help", pshHelp, 43, 215, 45, 14, WS_GROUP
+    DEFPUSHBUTTON   "Tamam", IDOK, 141, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "İptal", IDCANCEL, 190, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "&Uygula", psh3, 92, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "&Yardım", pshHelp, 43, 215, 45, 14, WS_GROUP
 END
 
 
@@ -752,25 +752,25 @@ END
 
 IDD_MUI_SYSCOLOR_DLG DIALOGEX LOADONCALL MOVEABLE DISCARDABLE 2, 0, 298, 184
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Choose Color"
+CAPTION "Renk seçimi"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Basic colors:", -1, 4, 4, 140, 9
+    LTEXT           "&Temel renkler:", -1, 4, 4, 140, 9
     CONTROL         "", COLOR_BOX1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 14, 140, 86
 
-    LTEXT           "&Custom colors:", -1, 4, 106, 140, 9
+    LTEXT           "Ö&zel renkler:", -1, 4, 106, 140, 9
     CONTROL         "", COLOR_CUSTOM1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "&Define Custom Colors >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "Özel renkleri &tanımla >>" COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
-    DEFPUSHBUTTON   "OK", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP
-    PUSHBUTTON      "Cancel", IDCANCEL, 52, 166, 44, 14, WS_GROUP | WS_TABSTOP
-    PUSHBUTTON      "&Help", pshHelp, 100, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    DEFPUSHBUTTON   "Tamam", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON      "İptal", IDCANCEL, 52, 166, 44, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON      "&Yardım", pshHelp, 100, 166, 44, 14, WS_GROUP | WS_TABSTOP
 
     CONTROL         "", COLOR_RAINBOW, "static",
     SS_SIMPLE | WS_CHILD, 152, 4, 118, 116
@@ -782,28 +782,28 @@ BEGIN
     SS_SIMPLE | WS_CHILD, 152, 124, 40, 26
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
-    RTEXT           "Color", COLOR_SOLID_LEFT, 152, 151, 20, 9
-    LTEXT           "|S&olid", COLOR_SOLID_RIGHT, 172, 151, 20, 9
+    RTEXT           "Renk", COLOR_SOLID_LEFT, 152, 151, 20, 9
+    LTEXT           "|&Katı", COLOR_SOLID_RIGHT, 172, 151, 20, 9
 
-    RTEXT           "Hu&e:", COLOR_HUEACCEL, 194, 126, 20, 9
+    RTEXT           "Renk &tonu:", COLOR_HUEACCEL, 194, 126, 20, 9
     EDITTEXT, COLOR_HUE, 216, 124, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Sat:", COLOR_SATACCEL, 194, 140, 20, 9
+    RTEXT           "&Doygunluk:", COLOR_SATACCEL, 194, 140, 20, 9
     EDITTEXT, COLOR_SAT, 216, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Lum:", COLOR_LUMACCEL, 194, 154, 20, 9
+    RTEXT           "&Parlaklık:", COLOR_LUMACCEL, 194, 154, 20, 9
     EDITTEXT, COLOR_LUM, 216, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Red:", COLOR_REDACCEL, 243, 126, 24, 9
+    RTEXT           "&Kırmızı:", COLOR_REDACCEL, 243, 126, 24, 9
     EDITTEXT, COLOR_RED, 269, 124, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Green:", COLOR_GREENACCEL, 243, 140, 24, 9
+    RTEXT           "&Yeşil:", COLOR_GREENACCEL, 243, 140, 24, 9
     EDITTEXT, COLOR_GREEN, 269, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "Bl&ue:", COLOR_BLUEACCEL, 243, 154, 24, 9
+    RTEXT           "&Mavi:", COLOR_BLUEACCEL, 243, 154, 24, 9
     EDITTEXT, COLOR_BLUE, 269, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
-    PUSHBUTTON      "&Add to Custom Colors", COLOR_ADD, 152, 166, 142, 14,
+    PUSHBUTTON      "Özel renklere &ekle", COLOR_ADD, 152, 166, 142, 14,
     WS_GROUP | WS_TABSTOP
 END
 
@@ -813,22 +813,22 @@ END
 //
 IDD_MUI_AUTOSAVE_BACKUP DIALOGEX 0, 0, 184, 166
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Auto-Save & Backup Settings"
+CAPTION "Otomatik kaydetme ve yedekleme ayarları"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-GROUPBOX        "Auto-Save: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Auto-Save.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
-LTEXT           "Auto-Save interval [sec]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
+GROUPBOX        "Otomatik kayıt: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Otomatik kayıt etkinleştirilsin.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+LTEXT           "Otomatik kaydetme sıklığı [saniye]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Auto-Save on system suspend.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Auto-Save on system shutdown.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Backup: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Backup.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Backup on Auto-Save.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Side-by-Side Backup.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
-PUSHBUTTON      "Open Folder", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
-DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
-PUSHBUTTON      "Cancel", IDCANCEL, 127, 146, 50, 14
+AUTOCHECKBOX    "Sistem uykuya daldığında otomatik kaydedilsin.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Sistem kapatıldığında otomatik kaydedilsin.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+GROUPBOX        "Yedekle: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Yedekleme etkinleştirilsin.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Otomatik kayıtta yedeklensin.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Yan yana yedekleme.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+PUSHBUTTON      "Klasörü aç", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
+DEFPUSHBUTTON   "Tamam", IDOK, 71, 146, 50, 14
+PUSHBUTTON      "İptal", IDCANCEL, 127, 146, 50, 14
 END
 
 
