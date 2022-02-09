@@ -156,11 +156,14 @@ DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction);
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value);
 DeclareSciCallV1(SetPhasesDraw, SETPHASESDRAW, int, phases);
 DeclareSciCallV1(SetCharacterCategoryOptimization, SETCHARACTERCATEGORYOPTIMIZATION, int, count);
-// Layout Cache
+// Layout, Position Cache and Layout Threads
 DeclareSciCallR0(GetLayoutCache, GETLAYOUTCACHE, int);
 DeclareSciCallV1(SetLayoutCache, SETLAYOUTCACHE, int, cache);
 DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int);
 DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache);
+DeclareSciCallR0(GetLayoutThreads, GETLAYOUTTHREADS, int);
+DeclareSciCallV1(SetLayoutThreads, SETLAYOUTTHREADS, int, threads);
+
 // Event Masks
 DeclareSciCallR0(GetModEventMask, GETMODEVENTMASK, int);
 DeclareSciCallV1(SetModEventMask, SETMODEVENTMASK, int, mask);

@@ -203,6 +203,15 @@ __forceinline bool IsAsyncKeyDown(int key) {
 
 // ----------------------------------------------------------------------------
 
+inline DWORD GetNumberOfProcessors()
+{
+    SYSTEM_INFO sysinfo;
+    GetSystemInfo(&sysinfo);
+    return sysinfo.dwNumberOfProcessors;
+}
+
+// ----------------------------------------------------------------------------
+
 inline bool Char2Int(LPCWSTR str, int *value) {
     LPWSTR end;
     *value = (int)wcstol(str, &end, 10);

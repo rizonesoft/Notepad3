@@ -508,6 +508,7 @@ enum class Supports {
 	FractionalStrokeWidth = 2,
 	TranslucentStroke = 3,
 	PixelModification = 4,
+	ThreadSafeMeasureWidths = 5,
 };
 
 enum class LineCharacterIndexType {
