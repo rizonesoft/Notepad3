@@ -422,7 +422,7 @@ BEGIN
             MENUITEM "Ενα&λλαγή γραμμών εργαλείων",        IDM_VIEW_TOGGLETB
             MENUITEM "Κλίμακα DP&Ι γραμμής εργαλείων",     IDM_VIEW_DPISCALETB
         END
-        POPUP "&Ζούμ"
+        POPUP "&Ζουμ"
         BEGIN
             MENUITEM "&Μεγέθυνση\tCtrl+ +",                IDM_VIEW_ZOOMIN
             MENUITEM "&Σμίκρυνση\tCtrl+ –",                IDM_VIEW_ZOOMOUT
