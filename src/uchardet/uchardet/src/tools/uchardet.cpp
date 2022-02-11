@@ -82,7 +82,7 @@ void show_version()
     printf("Version %s\n", VERSION);
     printf("\n");
     printf("Authors: %s\n", "BYVoid, Jehan");
-    printf("Bug Report: %s\n", "https://bugs.freedesktop.org/enter_bug.cgi?product=uchardet");
+    printf("Bug Report: %s\n", "https://gitlab.freedesktop.org/uchardet/uchardet/-/issues");
     printf("\n");
 }
 
@@ -106,6 +106,7 @@ int main(int argc, char ** argv)
         { "help", no_argument, NULL, 'h' },
         { 0, 0, 0, 0 },
     };
+    bool end_options = false;
 
     static int oc;
     while((oc = getopt_long(argc, argv, "vh", longopts, NULL)) != -1)
@@ -126,7 +127,8 @@ int main(int argc, char ** argv)
 
     FILE * f = stdin;
     int error_seen = 0;
-    if (argc < 2)
+    if (argc < 2 ||
+        (argc == 2 && strcmp(argv[1], "--") == 0))
     {
         // No file arg, use stdin by default
         detect(f);
@@ -134,6 +136,13 @@ int main(int argc, char ** argv)
     for (int i = 1; i < argc; i++)
     {
         const char *filename = argv[i];
+
+        if (! end_options && strcmp(filename, "--") == 0)
+        {
+            end_options = true;
+            continue;
+        }
+
         f = fopen(filename, "r");
         if (f == NULL)
         {

@@ -40,7 +40,7 @@
 
 from codepoints import *
 
-name = 'MacCentralEurope'
+name = 'MAC-CENTRALEUROPE'
 aliases = []
 
 language = \

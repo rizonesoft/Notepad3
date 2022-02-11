@@ -860,16 +860,15 @@
     <None Include="..\res\StdDarkModeScheme.ini" />
     <None Include="..\res\Styles.ico" />
     <None Include="..\res\Toolbar.bmp" />
-    <None Include="uchardet\uchardet\src\Big5Freq.tab" />
-    <None Include="uchardet\uchardet\src\EUCKRFreq.tab" />
-    <None Include="uchardet\uchardet\src\EUCTWFreq.tab" />
-    <None Include="uchardet\uchardet\src\GB18030Freq.tab" />
-    <None Include="uchardet\uchardet\src\GB2312Freq.tab" />
-    <None Include="uchardet\uchardet\src\JISFreq.tab" />
     <None Include="..\Versions\Notepad3.exe.manifest.tpl" />
     <None Include="..\Versions\VersionEx.h.tpl" />
     <None Include=".clang-format" />
     <None Include="Notepad3.ver" />
+    <None Include="uchardet\uchardet\src\tables\EUCKRFreq.tab" />
+    <None Include="uchardet\uchardet\src\tables\EUCTWFreq.tab" />
+    <None Include="uchardet\uchardet\src\tables\GB18030Freq.tab" />
+    <None Include="uchardet\uchardet\src\tables\GB2312Freq.tab" />
+    <None Include="uchardet\uchardet\src\tables\JISFreq.tab" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\language\common_res.rc">

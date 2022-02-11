@@ -1,6 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -39,12 +37,12 @@
 
 #include "CharDistribution.h"
 
-#include "LangModels/JISFreq.tab"
-#include "LangModels/Big5Freq.tab"
-#include "LangModels/EUCKRFreq.tab"
-#include "LangModels/EUCTWFreq.tab"
-//#include "LangModels/GB2312Freq.tab"
-#include "LangModels/GB18030Freq.tab"
+#include "tables/JISFreq.tab"
+#include "tables/Big5Freq.tab"
+#include "tables/EUCKRFreq.tab"
+#include "tables/EUCTWFreq.tab"
+//#include "tables/GB2312Freq.tab"
+#include "tables/GB18030Freq.tab"
 
 //return confidence base on received data
 float CharDistributionAnalysis::GetConfidence() const
@@ -55,8 +53,7 @@ float CharDistributionAnalysis::GetConfidence() const
   if ((mTotalChars <= 0) || (mFreqChars < mDataThreshold))
     return SURE_NO;
 
-  if (mTotalChars > mFreqChars) 
-  {
+  if (mTotalChars != mFreqChars) {
     float r = (float)mFreqChars / ((mTotalChars - mFreqChars) * mTypicalDistributionRatio);
 
     if (r < SURE_YES)

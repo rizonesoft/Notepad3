@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -66,8 +64,9 @@ nsProbingState nsUTF8Prober::HandleData(const char* aBuf, PRUint32 aLen)
   }
 
   if (mState == eDetecting)
-    if (GetConfidence() > SHORTCUT_THRESHOLD)
+    if (GetConfidence() >= SHORTCUT_THRESHOLD)
       mState = eFoundIt;
+
   return mState;
 }
 
@@ -78,11 +77,11 @@ float nsUTF8Prober::GetConfidence(void)
   if (mNumOfMBChar < 6)
   {
     float unlike = SURE_YES;
-    for (PRUint32 i = 0; i < mNumOfMBChar; i++)
+    for (PRUint32 i = 0; i < mNumOfMBChar; ++i)
       unlike *= ONE_CHAR_PROB;
-    return (1.0f - unlike);
+    return (NO_DOUBT - unlike);
   }
   else
-    return SURE_YES;
+      return SURE_YES + (NO_DOUBT - SURE_YES)/2.0f;
 }
 

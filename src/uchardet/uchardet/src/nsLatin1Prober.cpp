@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -52,7 +50,7 @@
 #define ASO    7        // accent small other
 #define CLASS_NUM   8    // total classes
 
-static const unsigned char Latin1_CharToClass[] = 
+constexpr unsigned char Latin1_CharToClass[] = 
 {
   OTH, OTH, OTH, OTH, OTH, OTH, OTH, OTH,   // 00 - 07
   OTH, OTH, OTH, OTH, OTH, OTH, OTH, OTH,   // 08 - 0F
@@ -94,7 +92,7 @@ static const unsigned char Latin1_CharToClass[] =
    2 : normal
    3 : very likely
 */
-static const unsigned char Latin1ClassModel[] = 
+constexpr unsigned char Latin1ClassModel[] = 
 {
 /*      UDF OTH ASC ASS ACV ACO ASV ASO  */
 /*UDF*/  0,  0,  0,  0,  0,  0,  0,  0,

@@ -42,7 +42,7 @@
 #define nsSBCSGroupProber_h__
 
 
-#define MAX_NUM_OF_SBCS_PROBERS 120
+#define MAX_NUM_OF_SBCS_PROBERS 160
 
 class nsCharSetProber;
 
@@ -52,10 +52,10 @@ public:
   virtual ~nsSBCSGroupProber();
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen) override;
   const char* GetCharSetName() override;
-  nsProbingState GetState(void) override { return mState; };
+  nsProbingState GetState(void) override { return mState; }
   void      Reset(void) override;
   float     GetConfidence(void) override;
-  void      SetOpion() override {};
+  void      SetOpion() override {}
 
 #ifdef DEBUG_chardet
   void  DumpStatus();

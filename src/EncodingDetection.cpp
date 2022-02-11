@@ -91,7 +91,7 @@ extern "C" const char* Encoding_GetTitleInfoA()
 /////////////                                                                     /////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-//static const EncodingInfo kEncodingInfoTable[] = {
+//constexpr EncodingInfo kEncodingInfoTable[] = {
 //  { "ASCII", "ISO-8859-1", ISO_8859_1},
 //  { "Latin2", "ISO-8859-2", ISO_8859_2},
 //  { "Latin3", "ISO-8859-3", UTF8},
@@ -147,17 +147,17 @@ extern "C" const char* Encoding_GetTitleInfoA()
 //        UTF8},  // UTF-8 is our default output encoding
 //  { "ASCII-7-bit", "US-ASCII", ASCII_7BIT},
 //  { "KOI8R", "KOI8-R", RUSSIAN_KOI8_R},
-//  { "CP1251", "windows-1251", RUSSIAN_CP1251},
-//  { "CP1252", "windows-1252", MSFT_CP1252},
+//  { "CP1251", "Windows-1251", RUSSIAN_CP1251},
+//  { "CP1252", "Windows-1252", MSFT_CP1252},
 //  { "KOI8U", "KOI8-U", ISO_8859_5},  // because koi8-u is not as common
-//  { "CP1250", "windows-1250", MSFT_CP1250},
+//  { "CP1250", "Windows-1250", MSFT_CP1250},
 //  { "ISO-8859-15", "ISO-8859-15", ISO_8859_15},
-//  { "CP1254", "windows-1254", MSFT_CP1254},
-//  { "CP1257", "windows-1257", MSFT_CP1257},
+//  { "CP1254", "Windows-1254", MSFT_CP1254},
+//  { "CP1257", "Windows-1257", MSFT_CP1257},
 //  { "ISO-8859-11", "ISO-8859-11", ISO_8859_11},
-//  { "CP874", "windows-874", MSFT_CP874},
-//  { "CP1256", "windows-1256", MSFT_CP1256},
-//  { "CP1255", "windows-1255", MSFT_CP1255},
+//  { "CP874", "Windows-874", MSFT_CP874},
+//  { "CP1256", "Windows-1256", MSFT_CP1256},
+//  { "CP1255", "Windows-1255", MSFT_CP1255},
 //  { "ISO-8859-8-I", "ISO-8859-8-I", MSFT_CP1255},
 //  // Java does not support iso-8859-8-i
 //  { "VISUAL", "ISO-8859-8", MSFT_CP1255},
@@ -166,7 +166,7 @@ extern "C" const char* Encoding_GetTitleInfoA()
 //  // because cp852 is not as common
 //  { "CSN_369103", "csn_369103", MSFT_CP1250},
 //  // MSIE does not recognize "csn_369103" (XSS issue)
-//  { "CP1253", "windows-1253", MSFT_CP1253},
+//  { "CP1253", "Windows-1253", MSFT_CP1253},
 //  { "CP866", "IBM866", RUSSIAN_CP1251},
 //  // because cp866 is not as common
 //  { "ISO-8859-13", "ISO-8859-13", UTF8},
@@ -339,7 +339,7 @@ extern "C" const char* Encoding_GetTitleInfoA()
 #define ENC_PARSE_NAM_X_CHINESE_CNS        ",X-CHINESE-CNS,xchinesecns,"
 #define ENC_PARSE_NAM_JOHAB                ",johab,"
 #define ENC_PARSE_NAM_BIG5_HKSCS           ",big5hkscs,cnbig5hkscs,xxbig5hkscs,"
-//#define ENC_PARSE_NAM_ISO_8859_10          "ISO-8859-10,iso885910,windows-28600,windows28600,CP-28600,cp28600,"
+//#define ENC_PARSE_NAM_ISO_8859_10          "ISO-8859-10,iso885910,Windows-28600,windows28600,CP-28600,cp28600,"
 //=============================================================================
 
 // Missing ICONV Strings:

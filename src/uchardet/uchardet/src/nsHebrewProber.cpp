@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -40,7 +38,7 @@
 #include "nsHebrewProber.h"
 #include <stdio.h>
 
-// windows-1255 / ISO-8859-8 code points of interest
+// Windows-1255 / ISO-8859-8 code points of interest
 #define FINAL_KAF ('\xea')
 #define NORMAL_KAF ('\xeb')
 #define FINAL_MEM ('\xed')

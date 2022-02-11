@@ -1,6 +1,4 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -69,24 +67,21 @@ void nsEscCharSetProber::Reset(void)
 {
   mState = eDetecting;
   for (PRUint32 i = 0; i < NUM_OF_ESC_CHARSETS; i++)
-    if (mCodingSM[i]) mCodingSM[i]->Reset();
+    if (mCodingSM[i]) 
+      mCodingSM[i]->Reset();
   mActiveSM = NUM_OF_ESC_CHARSETS;
   mDetectedCharset = nsnull;
 }
 
 nsProbingState nsEscCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  nsSMState codingState;
-  PRInt32 j;
-  PRUint32 i;
-
-  for ( i = 0; i < aLen && mState == eDetecting; i++)
+  for (PRUint32 i = 0; i < aLen && mState == eDetecting; i++)
   {
-    for (j = mActiveSM-1; j>= 0; j--)
+      for (PRInt32 j = mActiveSM - 1; j >= 0; j--)
     {
       if (mCodingSM[j])
       {
-        codingState = mCodingSM[j]->NextState(aBuf[i]);
+        nsSMState const codingState = mCodingSM[j]->NextState(aBuf[i]);
         if (codingState == eItsMe)
         {
           mState = eFoundIt;
@@ -96,7 +91,6 @@ nsProbingState nsEscCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
       }
     }
   }
-
   return mState;
 }
 

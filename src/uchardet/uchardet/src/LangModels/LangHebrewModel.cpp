@@ -50,7 +50,7 @@ NUM: 0 - 9
 
 //Windows-1255 language model
 //Character Mapping Table:
-static const unsigned char win1255_CharToOrderMap[] =
+constexpr unsigned char win1255_CharToOrderMap[] =
 {
 CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR,  //00
 CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,  //10
@@ -76,7 +76,7 @@ ILL, 83, 52, 47, 46, 72, 32, 94,216,113,ILL,109,ILL,ILL,ILL,ILL,
 //first 1024 sequences: 1.5981%
 //rest  sequences:      0.087%
 //negative sequences:   0.0015% 
-static const PRUint8 HebrewLangModel[] = 
+constexpr PRUint8 HebrewLangModel[] = 
 {
 0,3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,2,3,2,1,2,0,1,0,0,
 3,0,3,1,0,0,1,3,2,0,1,1,2,0,2,2,2,1,1,1,1,2,1,1,1,2,0,0,2,2,0,1,

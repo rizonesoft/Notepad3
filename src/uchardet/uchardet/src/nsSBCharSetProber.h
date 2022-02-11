@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -89,10 +87,10 @@ public:
 
   virtual const char* GetCharSetName();
   virtual nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  virtual nsProbingState GetState(void) {return mState;};
+  virtual nsProbingState GetState(void) {return mState;}
   virtual void      Reset(void);
   virtual float     GetConfidence(void);
-  virtual void      SetOpion() {};
+  virtual void      SetOpion() {}
 
   // This feature is not implemented yet. any current language model
   // contain this parameter as PR_FALSE. No one is looking at this
@@ -100,7 +98,7 @@ public:
   // Moreover, the nsSBCSGroupProber which calls the HandleData of this
   // prober has a hard-coded call to FilterWithoutEnglishLetters which gets rid
   // of the English letters.
-  PRBool KeepEnglishLetters() {return mModel->keepEnglishLetter;}; // (not implemented)
+  PRBool KeepEnglishLetters() {return mModel->keepEnglishLetter;} // (not implemented)
 
 #ifdef DEBUG_chardet
   virtual void  DumpStatus();
@@ -192,19 +190,19 @@ extern const SequenceModel Iso_8859_3MalteseModel;
 extern const SequenceModel Windows_1250CzechModel;
 extern const SequenceModel Iso_8859_2CzechModel;
 extern const SequenceModel Ibm852CzechModel;
-extern const SequenceModel MaccentraleuropeCzechModel;
+extern const SequenceModel Mac_CentraleuropeCzechModel;
 
 extern const SequenceModel Windows_1250SlovakModel;
 extern const SequenceModel Iso_8859_2SlovakModel;
 extern const SequenceModel Ibm852SlovakModel;
-extern const SequenceModel MaccentraleuropeSlovakModel;
+extern const SequenceModel Mac_CentraleuropeSlovakModel;
 
 extern const SequenceModel Windows_1250PolishModel;
 extern const SequenceModel Iso_8859_2PolishModel;
 extern const SequenceModel Iso_8859_13PolishModel;
 extern const SequenceModel Iso_8859_16PolishModel;
 extern const SequenceModel Ibm852PolishModel;
-extern const SequenceModel MaccentraleuropePolishModel;
+extern const SequenceModel Mac_CentraleuropePolishModel;
 
 extern const SequenceModel Iso_8859_1FinnishModel;
 extern const SequenceModel Iso_8859_4FinnishModel;
@@ -224,7 +222,7 @@ extern const SequenceModel Iso_8859_2CroatianModel;
 extern const SequenceModel Iso_8859_13CroatianModel;
 extern const SequenceModel Iso_8859_16CroatianModel;
 extern const SequenceModel Ibm852CroatianModel;
-extern const SequenceModel MaccentraleuropeCroatianModel;
+extern const SequenceModel Mac_CentraleuropeCroatianModel;
 
 extern const SequenceModel Windows_1252EstonianModel;
 extern const SequenceModel Windows_1257EstonianModel;
@@ -246,7 +244,7 @@ extern const SequenceModel Windows_1250SloveneModel;
 extern const SequenceModel Iso_8859_2SloveneModel;
 extern const SequenceModel Iso_8859_16SloveneModel;
 extern const SequenceModel Ibm852SloveneModel;
-extern const SequenceModel MaccentraleuropeSloveneModel;
+extern const SequenceModel Mac_CentraleuropeSloveneModel;
 
 extern const SequenceModel Windows_1252SwedishModel;
 extern const SequenceModel Iso_8859_1SwedishModel;

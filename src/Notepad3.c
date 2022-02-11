@@ -2184,7 +2184,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetPhasesDraw(SC_PHASES_MULTIPLE);
     SciCall_SetLayoutCache(SC_CACHE_PAGE);     //~ SC_CACHE_DOCUMENT ~ beware of memory consumption !
     DWORD const np = GetNumberOfProcessors();
-    SciCall_SetLayoutThreads(max_dw(1,np>>1)); // MultiThreading Layout (SCI v5.2.0)
+    SciCall_SetLayoutThreads(max_dw(2,np>>1)); // MultiThreading Layout (SCI v5.2.0)
 
     // Idle Styling (very large text)
     SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view

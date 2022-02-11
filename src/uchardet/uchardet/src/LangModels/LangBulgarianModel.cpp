@@ -48,7 +48,7 @@ NUM: 0 - 9
 //this talbe is modified base on win1251BulgarianCharToOrderMap, so 
 //only number <64 is sure valid
 
-static const unsigned char Latin5_BulgarianCharToOrderMap[] =
+constexpr unsigned char Latin5_BulgarianCharToOrderMap[] =
 {
 CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR,  //00
 CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,  //10
@@ -68,7 +68,7 @@ SYM, 65, 69, 70, 66, 63, 68,112,103, 92,194,104, 95, 86, 87, 71,  //60
  62,242,243,244, 58,245, 98,246,247,248,249,250,251, 91,NUM,SYM,  //f0
 };
 
-static const unsigned char win1251BulgarianCharToOrderMap[] =
+constexpr unsigned char win1251BulgarianCharToOrderMap[] =
 {
 CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR,  //00
 CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,  //10
@@ -94,7 +94,7 @@ SYM, 65, 69, 70, 66, 63, 68,112,103, 92,194,104, 95, 86, 87, 71,  //60
 //first 1024 sequences:3.0618%
 //rest  sequences:     0.2992%
 //negative sequences:  0.0020% 
-static const PRUint8 BulgarianLangModel[] = 
+constexpr PRUint8 BulgarianLangModel[] = 
 {
 0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,2,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,3,3,3,2,2,3,2,2,1,2,2,

@@ -50,7 +50,7 @@ code = 'cs'
 # ASCII characters are also used in French.
 use_ascii = True
 # The charsets we want to support and create data for.
-charsets = ['ISO-8859-2', 'Windows-1250', 'IBM852', 'MacCentralEurope']
+charsets = ['ISO-8859-2', 'Windows-1250', 'IBM852', 'MAC-CENTRALEUROPE']
 
 ## Optional Properties ##
 

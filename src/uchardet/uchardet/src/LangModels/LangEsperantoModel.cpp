@@ -61,7 +61,7 @@
  * ligature of 'o' and 'e' exists in ISO-8859-15 but not in ISO-8859-1
  * even though they are both used for French. Same for the euro sign.
  */
-static const unsigned char Iso_8859_3_CharToOrderMap[] =
+constexpr unsigned char Iso_8859_3_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -90,7 +90,7 @@ static const unsigned char Iso_8859_3_CharToOrderMap[] =
  * Rest: -5.0306980803327406e-17
  * Negative sequences: TODO
  */
-static const PRUint8 EsperantoLangModel[] =
+constexpr PRUint8 EsperantoLangModel[] =
 {
   3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,0,0,2,3,3,
   3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,3,3,2,3,2,0,0,0,2,2,2,

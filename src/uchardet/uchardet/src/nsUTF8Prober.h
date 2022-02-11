@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -47,14 +45,14 @@ class nsUTF8Prober: public nsCharSetProber {
 public:
   nsUTF8Prober(){mNumOfMBChar = 0;
                 mCodingSM = new nsCodingStateMachine(&UTF8SMModel);
-                Reset(); };
-  virtual ~nsUTF8Prober(){delete mCodingSM;};
+                Reset(); }
+  virtual ~nsUTF8Prober(){delete mCodingSM;}
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName() {return "UTF-8";};
-  nsProbingState GetState(void) {return mState;};
+  const char* GetCharSetName() {return "UTF-8";}
+  nsProbingState GetState(void) {return mState;}
   void      Reset(void);
   float     GetConfidence(void);
-  void      SetOpion() {};
+  void      SetOpion() {}
 
 protected:
   nsCodingStateMachine* mCodingSM;

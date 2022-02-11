@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -50,7 +48,7 @@
 #include "nsBig5Prober.h"
 #include "nsEUCTWProber.h"
 
-#define MAX_NUM_OF_MBCS_PROBERS    7
+#define MAX_NUM_OF_MBCS_PROBERS    10
 
 class nsMBCSGroupProber: public nsCharSetProber {
 public:
@@ -59,10 +57,10 @@ public:
   virtual ~nsMBCSGroupProber();
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
   const char* GetCharSetName();
-  nsProbingState GetState(void) {return mState;};
+  nsProbingState GetState(void) {return mState;}
   void      Reset(void);
   float     GetConfidence(void);
-  void      SetOpion() {};
+  void      SetOpion() {}
 
 #ifdef DEBUG_chardet
   void  DumpStatus();
