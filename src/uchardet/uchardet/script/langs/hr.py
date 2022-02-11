@@ -46,7 +46,7 @@ name = 'Croatian'
 code = 'hr'
 use_ascii = True
 charsets = ['ISO-8859-2', 'ISO-8859-13', 'ISO-8859-16',
-            'Windows-1250', 'IBM852', 'MacCentralEurope']
+            'Windows-1250', 'IBM852', 'MAC-CENTRALEUROPE']
 
 ## Optional Properties ##
 

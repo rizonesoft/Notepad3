@@ -21,6 +21,9 @@ indent_style = space
 indent_size = 4
 tab_width = 4
 
+[**.{ini}]
+charset = utf-8-sig
+
 [lexilla/**.{h,c,cpp,hpp,cxx}]
 # Set default charset
 #charset = utf-8
@@ -38,7 +41,4 @@ tab_width = 4
 
 [language/common_res.rc]
 charset = latin1
-
-[**.{ini}]
-charset = utf-8-sig
 

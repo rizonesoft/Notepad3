@@ -1,6 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -239,7 +237,7 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
   PRUint32 i;
   for (i = 0; i < aLen; i++)
   {
-    //other than 0xa0, if every other character is ascii, the page is ascii
+    //other than 0xa0, if every othe character is ascii, the page is ascii
     if (aBuf[i] & '\x80' && aBuf[i] != '\xA0')  //Since many Ascii only page contains NBSP
     {
       //we got a non-ascii byte (high-byte)
@@ -363,8 +361,8 @@ void nsUniversalDetector::DataEnd()
   {
   case eHighbyte:
     {
-      float maxProberConfidence = 0.0f;
-      PRInt32 maxProber = -1;
+      float maxProberConfidence = (float)0.0;
+      PRInt32 maxProber = 0;
 
       for (PRInt32 i = 0; i < NUM_OF_CHARSET_PROBERS; ++i)
       {
@@ -381,8 +379,9 @@ void nsUniversalDetector::DataEnd()
       mDetectedConfidence = maxProberConfidence;
 
       //do not report anything because we are not confident of it, that's in fact a negative answer
-      if ((maxProber >= 0) && (maxProberConfidence > MINIMUM_THRESHOLD)) {
+      if (maxProberConfidence > MINIMUM_THRESHOLD) {
         Report(mCharSetProbers[maxProber]->GetCharSetName(), maxProberConfidence);
+        mDetectedConfidence = mCharSetProbers[maxProber]->GetConfidence();
       }
     }
     break;

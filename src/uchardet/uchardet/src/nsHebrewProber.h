@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -57,7 +55,7 @@ public:
   virtual nsProbingState GetState(void);
 
   virtual float     GetConfidence(void) { return (float)0.0; }
-  virtual void      SetOpion() {};
+  virtual void      SetOpion() {}
 
   void SetModelProbers(nsCharSetProber *logicalPrb, nsCharSetProber *visualPrb)
   { mLogicalProb = logicalPrb; mVisualProb = visualPrb; }
@@ -84,13 +82,13 @@ protected:
  *
  * Four main charsets exist in Hebrew:
  * "ISO-8859-8" - Visual Hebrew
- * "windows-1255" - Logical Hebrew
+ * "Windows-1255" - Logical Hebrew
  * "ISO-8859-8-I" - Logical Hebrew
  * "x-mac-hebrew" - ?? Logical Hebrew ??
  *
  * Both "ISO" charsets use a completely identical set of code points, whereas
- * "windows-1255" and "x-mac-hebrew" are two different proper supersets of
- * these code points. windows-1255 defines additional characters in the range
+ * "Windows-1255" and "x-mac-hebrew" are two different proper supersets of
+ * these code points. Windows-1255 defines additional characters in the range
  * 0x80-0x9F as some misc punctuation marks as well as some Hebrew-specific
  * diacritics and additional 'Yiddish' ligature letters in the range 0xc0-0xd6.
  * x-mac-hebrew defines similar additional code points but with a different
@@ -127,11 +125,11 @@ protected:
  *    backwards while line order is natural. For charset recognition purposes
  *    the line order is unimportant (In fact, for this implementation, even
  *    word order is unimportant).
- * Logical Hebrew - "windows-1255" - normal, naturally ordered text.
+ * Logical Hebrew - "Windows-1255" - normal, naturally ordered text.
  *
- * "ISO-8859-8-I" is a subset of windows-1255 and doesn't need to be
+ * "ISO-8859-8-I" is a subset of Windows-1255 and doesn't need to be
  *    specifically identified.
- * "x-mac-hebrew" is also identified as windows-1255. A text in x-mac-hebrew
+ * "x-mac-hebrew" is also identified as Windows-1255. A text in x-mac-hebrew
  *    that contain special punctuation marks or diacritics is displayed with
  *    some unconverted characters showing as question marks. This problem might
  *    be corrected using another model prober for x-mac-hebrew. Due to the fact
@@ -155,10 +153,10 @@ protected:
  * The two nsSBCharSetProbers (model probers) share the same language model:
  * Win1255Model.
  * The first nsSBCharSetProber uses the model normally as any other
- * nsSBCharSetProber does, to recognize windows-1255, upon which this model was
+ * nsSBCharSetProber does, to recognize Windows-1255, upon which this model was
  * built. The second nsSBCharSetProber is told to make the pair-of-letter
  * lookup in the language model backwards. This in practice exactly simulates
- * a visual Hebrew model using the windows-1255 logical Hebrew model.
+ * a visual Hebrew model using the Windows-1255 logical Hebrew model.
  *
  * The nsHebrewProber is not using any language model. All it does is look for
  * final-letter evidence suggesting the text is either logical Hebrew or visual
@@ -172,7 +170,7 @@ protected:
  * nsHebrewProber to make the final decision. In the nsHebrewProber, the
  * decision is made according to the final-letters scores maintained and Both
  * model probers scores. The answer is returned in the form of the name of the
- * charset identified, either "windows-1255" or "ISO-8859-8".
+ * charset identified, either "Windows-1255" or "ISO-8859-8".
  *
  */
 #endif /* nsHebrewProber_h__ */

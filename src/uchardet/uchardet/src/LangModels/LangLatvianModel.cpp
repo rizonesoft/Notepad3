@@ -61,7 +61,7 @@
  * ligature of 'o' and 'e' exists in ISO-8859-15 but not in ISO-8859-1
  * even though they are both used for French. Same for the euro sign.
  */
-static const unsigned char Iso_8859_4_CharToOrderMap[] =
+constexpr unsigned char Iso_8859_4_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -82,7 +82,7 @@ static const unsigned char Iso_8859_4_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-static const unsigned char Iso_8859_10_CharToOrderMap[] =
+constexpr unsigned char Iso_8859_10_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -103,7 +103,7 @@ static const unsigned char Iso_8859_10_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-static const unsigned char Iso_8859_13_CharToOrderMap[] =
+constexpr unsigned char Iso_8859_13_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -132,7 +132,7 @@ static const unsigned char Iso_8859_13_CharToOrderMap[] =
  * Rest: -1.734723475976807e-17
  * Negative sequences: TODO
  */
-static const PRUint8 LatvianLangModel[] =
+constexpr PRUint8 LatvianLangModel[] =
 {
   2,3,3,3,3,3,3,3,2,3,2,3,3,3,3,3,3,3,2,3,3,2,3,3,3,3,3,0,3,3,2,2,3,2,2,2,0,0,0,
   3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,3,3,2,3,3,3,3,3,2,3,3,3,2,3,0,0,2,0,2,2,

@@ -518,6 +518,7 @@ for charset in charsets:
     SM_str += '\n};'
     c_code += SM_str
 
+c_code += '\n'
 
 lang_model_file = current_dir + '/../src/LangModels/Lang{}Model.cpp'.format(language_c)
 with open(lang_model_file, 'w') as cpp_fd:

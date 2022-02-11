@@ -52,7 +52,7 @@ public:
   { Reset(PR_FALSE); };
 
   //feed a block of data and do distribution analysis
-  static void HandleData(const char*, PRUint32) { };
+  static void HandleData(const char*, PRUint32) { }
 
   //Feed a character with known length
   void HandleOneChar(const char* aStr, PRUint32 aCharLen)
@@ -88,17 +88,17 @@ public:
 
   //This function is for future extension. Caller can use this function to control
   //analyser's behavior
-  static void SetOpion(){};
+  static void SetOpion(){}
 
   //It is not necessary to receive all data to draw conclusion. For charset detection,
   // certain amount of data is enough
-  PRBool GotEnoughData() const { return (mTotalChars >= ENOUGH_DATA_THRESHOLD); };
+  PRBool GotEnoughData() const { return (mTotalChars >= ENOUGH_DATA_THRESHOLD); }
 
 protected:
   //we do not handle character base on its original encoding string, but
   //convert this encoding string to a number, here called order.
   //This allow multiple encoding of a language to share one frequency table
-  virtual PRInt32 GetOrder(const char*) { return -1; };
+  virtual PRInt32 GetOrder(const char*) { return -1; }
 
   //If this flag is set to PR_TRUE, detection is done and conclusion has been made
   PRBool   mDone;

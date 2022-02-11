@@ -48,8 +48,12 @@ Cf. EXAMPLES section in `git help archive`.
   The archive and its checksum file should now be available from:
   https://www.freedesktop.org/software/uchardet/releases/
 
+* Make the git tag into a Gitlab release (not automatic).
+  It will be found at: https://gitlab.freedesktop.org/uchardet/uchardet/-/tags/vx.y.z
+  Just click the "Edit release notes" button, and copy paste the tag comment as "release notes".
+
 * Update the wiki page: https://www.freedesktop.org/wiki/Software/uchardet/
-  The release note will be the tag content:
-  https://cgit.freedesktop.org/uchardet/uchardet/tag/?h=vx.y.z
+  The release note link will be:
+  https://gitlab.freedesktop.org/uchardet/uchardet/-/releases/vx.y.z
 
 * Spread the good news!

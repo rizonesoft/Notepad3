@@ -72,18 +72,22 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions(
 		-O0
 		-g3
-		-fsanitize=address
 	)
-	set(CMAKE_CXX_FLAGS "-fsanitize=address")
-	set(CMAKE_C_FLAGS "-fsanitize=address")
-	set(CMAKE_EXE_LINKER_FLAGS "-fsanitize=address")
-	set(CMAKE_MODULE_LINKER_FLAGS "-fsanitize=address")
-	set(CMAKE_SHARED_LINKER_FLAGS "-fsanitize=address")
 endif (CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_library(
 	${UCHARDET_LIBRARY}
 	${UCHARDET_SOURCES}
+)
+target_compile_definitions("${UCHARDET_LIBRARY}" PRIVATE BUILDING_UCHARDET)
+if(BUILD_SHARED_LIBS)
+	target_compile_definitions("${UCHARDET_LIBRARY}" PUBLIC UCHARDET_SHARED)
+endif()
+
+target_include_directories(${UCHARDET_LIBRARY}
+	PUBLIC
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PACKAGE_NAME}>"
 )
 
 if (UCHARDET_STATIC_LIBRARY)
@@ -91,6 +95,13 @@ if (UCHARDET_STATIC_LIBRARY)
 		${UCHARDET_STATIC_LIBRARY}
 		STATIC
 		${UCHARDET_SOURCES}
+	)
+	target_compile_definitions("${UCHARDET_STATIC_LIBRARY}" PRIVATE BUILDING_UCHARDET)
+
+	target_include_directories(${UCHARDET_STATIC_LIBRARY}
+		PUBLIC
+			"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+			"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PACKAGE_NAME}>"
 	)
 endif (UCHARDET_STATIC_LIBRARY)
 
@@ -122,6 +133,8 @@ if (NOT WIN32)
 	install(
 		TARGETS
 			${UCHARDET_LIBRARY}
+		EXPORT
+			UchardetTargets
 		LIBRARY DESTINATION
 			${CMAKE_INSTALL_LIBDIR}
 		ARCHIVE DESTINATION
@@ -131,6 +144,8 @@ else (NOT WIN32)
 	install(
 		TARGETS
 			${UCHARDET_LIBRARY}
+		EXPORT
+			UchardetTargets
 		RUNTIME DESTINATION
 			${CMAKE_INSTALL_BINDIR}
 		ARCHIVE DESTINATION
@@ -142,6 +157,8 @@ if (UCHARDET_STATIC_LIBRARY)
 	install(
 		TARGETS
 			${UCHARDET_STATIC_LIBRARY}
+		EXPORT
+			UchardetTargets
 		ARCHIVE DESTINATION
 			${CMAKE_INSTALL_LIBDIR}
 	)
@@ -159,7 +176,3 @@ include(symbols.cmake)
 if (BUILD_BINARY)
 	add_subdirectory(tools)
 endif (BUILD_BINARY)
-
-if (BUILD_FUZZER)
-	add_subdirectory(fuzzing)
-endif (BUILD_FUZZER)

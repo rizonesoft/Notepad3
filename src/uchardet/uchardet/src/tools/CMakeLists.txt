@@ -3,18 +3,17 @@ set(
 	uchardet.cpp
 )
 
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-	add_definitions(
-		-O0
-		-g3
-		-fsanitize=address
-	)
-	set(CMAKE_CXX_FLAGS "-fsanitize=address")
-	set(CMAKE_C_FLAGS "-fsanitize=address")
-	set(CMAKE_EXE_LINKER_FLAGS "-fsanitize=address")
-	set(CMAKE_MODULE_LINKER_FLAGS "-fsanitize=address")
-	set(CMAKE_SHARED_LINKER_FLAGS "-fsanitize=address")
-endif (CMAKE_BUILD_TYPE MATCHES Debug)
+include(CheckSymbolExists)
+
+check_symbol_exists(getopt_long "getopt.h" HAVE_GETOPT_LONG)
+
+# On Windows with MSVC, `getopt_long` is not available by default.
+# But some third-party libraries can be used. For example, in `vcpkg`,
+# we can find a port named `getopt-win32`.
+if (NOT HAVE_GETOPT_LONG)
+    find_path(GETOPT_INCLUDE_DIR NAMES getopt.h)
+    find_library(GETOPT_LIBRARY NAMES getopt)
+endif (NOT HAVE_GETOPT_LONG)
 
 set(UCHARDET_BINARY uchardet)
 
@@ -22,6 +21,11 @@ add_executable(
 	${UCHARDET_BINARY}
 	${UCHARDET_SOURCES}
 )
+
+if (GETOPT_INCLUDE_DIR AND GETOPT_LIBRARY)
+    target_include_directories(${UCHARDET_BINARY} PRIVATE ${GETOPT_INCLUDE_DIR})
+    target_link_libraries(${UCHARDET_BINARY} PRIVATE ${GETOPT_LIBRARY})
+endif (GETOPT_INCLUDE_DIR AND GETOPT_LIBRARY)
 
 target_link_libraries(
 	${UCHARDET_BINARY}
@@ -31,6 +35,8 @@ target_link_libraries(
 install(
 	TARGETS
 		${UCHARDET_BINARY}
+	EXPORT
+		UchardetTargets
 	RUNTIME DESTINATION
 		${CMAKE_INSTALL_BINDIR}
 )

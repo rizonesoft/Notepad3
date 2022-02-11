@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -46,7 +44,7 @@ Modification from frank tang's original work:
 
 // BIG5
 
-static const PRUint32 BIG5_cls [ 256 / 8 ] = {
+constexpr PRUint32 BIG5_cls [ 256 / 8 ] = {
 //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
 PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07    //allow 0x00 as legal value
 PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
@@ -83,13 +81,13 @@ PCK4BITS(3,3,3,3,3,3,3,0)   // f8 - ff
 };
 
 
-static const PRUint32 BIG5_st [ 3] = {
+constexpr PRUint32 BIG5_st [ 3] = {
 PCK4BITS(eError,eStart,eStart,     3,eError,eError,eError,eError),//00-07
 PCK4BITS(eError,eError,eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eError),//08-0f
 PCK4BITS(eError,eStart,eStart,eStart,eStart,eStart,eStart,eStart) //10-17
 };
 
-static const PRUint32 Big5CharLenTable[] = {0, 1, 1, 2, 0};
+constexpr PRUint32 Big5CharLenTable[] = { 0, 1, 1, 2, 0 };
 
 SMModel const Big5SMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, BIG5_cls },
@@ -99,7 +97,7 @@ SMModel const Big5SMModel = {
   "BIG5",
 };
 
-static const PRUint32 EUCJP_cls [ 256 / 8 ] = {
+constexpr PRUint32 EUCJP_cls [ 256 / 8 ] = {
 //PCK4BITS(5,4,4,4,4,4,4,4),  // 00 - 07
 PCK4BITS(4,4,4,4,4,4,4,4),  // 00 - 07
 PCK4BITS(4,4,4,4,4,4,5,5),  // 08 - 0f
@@ -136,7 +134,7 @@ PCK4BITS(0,0,0,0,0,0,0,5)   // f8 - ff
 };
 
 
-static const PRUint32 EUCJP_st [ 5] = {
+constexpr PRUint32 EUCJP_st [ 5] = {
 PCK4BITS(     3,     4,     3,     5,eStart,eError,eError,eError),//00-07
 PCK4BITS(eError,eError,eError,eError,eItsMe,eItsMe,eItsMe,eItsMe),//08-0f
 PCK4BITS(eItsMe,eItsMe,eStart,eError,eStart,eError,eError,eError),//10-17
@@ -144,7 +142,7 @@ PCK4BITS(eError,eError,eStart,eError,eError,eError,     3,eError),//18-1f
 PCK4BITS(     3,eError,eError,eError,eStart,eStart,eStart,eStart) //20-27
 };
 
-static const PRUint32 EUCJPCharLenTable[] = {2, 2, 2, 3, 1, 0};
+constexpr PRUint32 EUCJPCharLenTable[] = { 2, 2, 2, 3, 1, 0 };
 
 const SMModel EUCJPSMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, EUCJP_cls },
@@ -154,7 +152,7 @@ const SMModel EUCJPSMModel = {
   "EUC-JP",
 };
 
-static const PRUint32 EUCKR_cls [ 256 / 8 ] = {
+constexpr PRUint32 EUCKR_cls [ 256 / 8 ] = {
 //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
 PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07
 PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
@@ -191,12 +189,12 @@ PCK4BITS(2,2,2,2,2,2,2,0)   // f8 - ff
 };
 
 
-static const PRUint32 EUCKR_st [ 2] = {
+constexpr PRUint32 EUCKR_st [ 2] = {
 PCK4BITS(eError,eStart,     3,eError,eError,eError,eError,eError),//00-07
 PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart,eStart) //08-0f
 };
 
-static const PRUint32 EUCKRCharLenTable[] = {0, 1, 2, 0};
+constexpr PRUint32 EUCKRCharLenTable[] = { 0, 1, 2, 0 };
 
 const SMModel EUCKRSMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, EUCKR_cls },
@@ -206,7 +204,7 @@ const SMModel EUCKRSMModel = {
   "EUC-KR",
 };
 
-static const PRUint32 EUCTW_cls [ 256 / 8 ] = {
+constexpr PRUint32 EUCTW_cls [ 256 / 8 ] = {
 //PCK4BITS(0,2,2,2,2,2,2,2),  // 00 - 07
 PCK4BITS(2,2,2,2,2,2,2,2),  // 00 - 07
 PCK4BITS(2,2,2,2,2,2,0,0),  // 08 - 0f
@@ -243,7 +241,7 @@ PCK4BITS(3,3,3,3,3,3,3,0)   // f8 - ff
 };
 
 
-static const PRUint32 EUCTW_st [ 6] = {
+constexpr PRUint32 EUCTW_st [ 6] = {
 PCK4BITS(eError,eError,eStart,     3,     3,     3,     4,eError),//00-07
 PCK4BITS(eError,eError,eError,eError,eError,eError,eItsMe,eItsMe),//08-0f
 PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eError,eStart,eError),//10-17
@@ -252,7 +250,7 @@ PCK4BITS(     5,eError,eError,eError,eStart,eError,eStart,eStart),//20-27
 PCK4BITS(eStart,eError,eStart,eStart,eStart,eStart,eStart,eStart) //28-2f
 };
 
-static const PRUint32 EUCTWCharLenTable[] = {0, 0, 1, 2, 2, 2, 3};
+constexpr PRUint32 EUCTWCharLenTable[] = {0, 0, 1, 2, 2, 2, 3};
 
 const SMModel EUCTWSMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, EUCTW_cls },
@@ -302,12 +300,12 @@ PCK4BITS(2,2,2,2,2,2,2,0)   // f8 - ff
 };
 
 
-static const PRUint32 GB2312_st [ 2] = {
+constexpr PRUint32 GB2312_st [ 2] = {
 PCK4BITS(eError,eStart,     3,eError,eError,eError,eError,eError),//00-07
 PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart,eStart) //08-0f
 };
 
-static const PRUint32 GB2312CharLenTable[] = {0, 1, 2, 0};
+constexpr PRUint32 GB2312CharLenTable[] = {0, 1, 2, 0};
 
 const SMModel GB2312SMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, GB2312_cls },
@@ -323,7 +321,7 @@ const SMModel GB2312SMModel = {
 
 // the following state machine data was created by perl script in 
 // intl/chardet/tools. It should be the same as in PSM detector.
-static const PRUint32 GB18030_cls [ 256 / 8 ] = {
+constexpr PRUint32 GB18030_cls [ 256 / 8 ] = {
 PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07
 PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
 PCK4BITS(1,1,1,1,1,1,1,1),  // 10 - 17
@@ -359,7 +357,7 @@ PCK4BITS(6,6,6,6,6,6,6,0)   // f8 - ff
 };
 
 
-static const PRUint32 GB18030_st [6] = {
+constexpr PRUint32 GB18030_st [6] = {
 PCK4BITS(eError,eStart,eStart,eStart,eStart,eStart,     3,eError),//00-07
 PCK4BITS(eError,eError,eError,eError,eError,eError,eItsMe,eItsMe),//08-0f
 PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart),//10-17
@@ -373,7 +371,7 @@ PCK4BITS(eError,eError,eStart,eStart,eStart,eStart,eStart,eStart) //28-2f
 // it is used for frequency analysis only, and we are validing
 // each code range there as well. So it is safe to set it to be
 // 2 here.
-static const PRUint32 GB18030CharLenTable[] = {0, 1, 1, 1, 1, 1, 2};
+constexpr PRUint32 GB18030CharLenTable[] = {0, 1, 1, 1, 1, 1, 2};
 
 const SMModel GB18030SMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, GB18030_cls },
@@ -385,7 +383,7 @@ const SMModel GB18030SMModel = {
 
 // sjis
 
-static const PRUint32 SJIS_cls [ 256 / 8 ] = {
+constexpr PRUint32 SJIS_cls [ 256 / 8 ] = {
 //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
 PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07
 PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
@@ -424,13 +422,13 @@ PCK4BITS(4,4,4,4,4,0,0,0)   // f8 - ff
 };
 
 
-static const PRUint32 SJIS_st [ 3] = {
+constexpr PRUint32 SJIS_st [ 3] = {
 PCK4BITS(eError,eStart,eStart,     3,eError,eError,eError,eError),//00-07
 PCK4BITS(eError,eError,eError,eError,eItsMe,eItsMe,eItsMe,eItsMe),//08-0f
 PCK4BITS(eItsMe,eItsMe,eError,eError,eStart,eStart,eStart,eStart) //10-17
 };
 
-static const PRUint32 SJISCharLenTable[] = {0, 1, 1, 2, 0, 0};
+constexpr PRUint32 SJISCharLenTable[] = {0, 1, 1, 2, 0, 0};
 
 const SMModel SJISSMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, SJIS_cls },
@@ -485,7 +483,7 @@ PCK4BITS(     5,     8,     6,     6,eError,     6,     6,     6),//28-2f
 PCK4BITS(     6,     6,     6,     6,eError,eError,eStart,eStart) //30-37
 };
 
-static const PRUint32 UCS2BECharLenTable[] = {2, 2, 2, 0, 2, 2};
+constexpr PRUint32 UCS2BECharLenTable[] = {2, 2, 2, 0, 2, 2};
 
 SMModel const UCS2BESMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, UCS2BE_cls },
@@ -530,7 +528,7 @@ PCK4BITS(0,0,0,0,0,0,0,0),  // f0 - f7
 PCK4BITS(0,0,0,0,0,0,4,5)   // f8 - ff
 };
 
-static const PRUint32 UCS2LE_st [ 7] = {
+constexpr PRUint32 UCS2LE_st [ 7] = {
 PCK4BITS(     6,     6,     7,     6,     4,     3,eError,eError),//00-07
 PCK4BITS(eError,eError,eError,eError,eItsMe,eItsMe,eItsMe,eItsMe),//08-0f
 PCK4BITS(eItsMe,eItsMe,     5,     5,     5,eError,eItsMe,eError),//10-17
@@ -540,7 +538,7 @@ PCK4BITS(     5,     5,     5,eError,eError,eError,     5,     5),//28-2f
 PCK4BITS(     5,     5,     5,eError,     5,eError,eStart,eStart) //30-37
 };
 
-static const PRUint32 UCS2LECharLenTable[] = {2, 2, 2, 2, 2, 2};
+constexpr PRUint32 UCS2LECharLenTable[] = {2, 2, 2, 2, 2, 2};
 
 SMModel UCS2LESMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, UCS2LE_cls },
@@ -551,7 +549,7 @@ SMModel UCS2LESMModel = {
 };
 
 
-static const PRUint32 UTF8_cls [ 256 / 8 ] = {
+constexpr PRUint32 UTF8_cls [ 256 / 8 ] = {
 //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
 PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07  //allow 0x00 as a legal value
 PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
@@ -588,7 +586,7 @@ PCK4BITS(12,13,13,13,14,15,0,0)   // f8 - ff
 };
 
 
-static const PRUint32 UTF8_st [ 26] = {
+constexpr PRUint32 UTF8_st [ 26] = {
 PCK4BITS(eError,eStart,eError,eError,eError,eError,     12,     10),//00-07
 PCK4BITS(     9,     11,     8,     7,     6,     5,     4,     3),//08-0f
 PCK4BITS(eError,eError,eError,eError,eError,eError,eError,eError),//10-17
@@ -617,7 +615,7 @@ PCK4BITS(eError,eError,eStart,eStart,eStart,eStart,eError,eError),//c0-c7
 PCK4BITS(eError,eError,eError,eError,eError,eError,eError,eError) //c8-cf
 };
 
-static const PRUint32 UTF8CharLenTable[] = {0, 1, 0, 0, 0, 0, 2, 3,
+constexpr PRUint32 UTF8CharLenTable[] = {0, 1, 0, 0, 0, 0, 2, 3,
                             3, 3, 4, 4, 5, 5, 6, 6 };
 
 const SMModel UTF8SMModel = {

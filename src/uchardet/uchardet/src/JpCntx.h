@@ -1,6 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -53,7 +51,7 @@ extern const PRUint8 jp2CharContext[83][83];
 class JapaneseContextAnalysis
 {
 public:
-  JapaneseContextAnalysis() {Reset(PR_FALSE);};
+  JapaneseContextAnalysis() {Reset(PR_FALSE);}
 
   void HandleData(const char* aBuf, PRUint32 aLen);
 
@@ -78,8 +76,8 @@ public:
 
   float GetConfidence(void) const;
   void      Reset(PRBool aIsPreferredLanguage);
-  static void SetOpion(){};
-  PRBool GotEnoughData() const {return mTotalRel > ENOUGH_REL_THRESHOLD;};
+  static void SetOpion(){}
+  PRBool GotEnoughData() const {return mTotalRel > ENOUGH_REL_THRESHOLD;}
 
 protected:
   virtual PRInt32 GetOrder(const char* str, PRUint32 *charLen) = 0;
@@ -135,7 +133,7 @@ protected:
           (unsigned char)*(str+1) <= (unsigned char)0xf3)
       return (unsigned char)*(str+1) - (unsigned char)0xa1;
     return -1;
-  };
+  }
 };
 
 #endif /* __JPCNTX_H__ */

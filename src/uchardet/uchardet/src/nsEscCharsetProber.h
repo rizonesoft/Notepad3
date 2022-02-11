@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -50,11 +48,11 @@ public:
   nsEscCharSetProber(PRUint32 aLanguageFilter);
   virtual ~nsEscCharSetProber(void);
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName() {return mDetectedCharset;};
-  nsProbingState GetState(void) {return mState;};
+  const char* GetCharSetName() {return mDetectedCharset;}
+  nsProbingState GetState(void) {return mState;}
   void      Reset(void);
-  float     GetConfidence(void){return SURE_YES;};
-  void      SetOpion() {};
+  float     GetConfidence(void) { return NO_DOUBT; }
+  void      SetOpion() {}
 
 protected:
   void      GetDistribution(PRUint32 aCharLen, const char* aStr);

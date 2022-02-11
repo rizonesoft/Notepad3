@@ -61,7 +61,7 @@
  * ligature of 'o' and 'e' exists in ISO-8859-15 but not in ISO-8859-1
  * even though they are both used for French. Same for the euro sign.
  */
-static const unsigned char Windows_1250_CharToOrderMap[] =
+constexpr unsigned char Windows_1250_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -82,7 +82,7 @@ static const unsigned char Windows_1250_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-static const unsigned char Maccentraleurope_CharToOrderMap[] =
+constexpr unsigned char Mac_Centraleurope_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -103,7 +103,7 @@ static const unsigned char Maccentraleurope_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-static const unsigned char Ibm852_CharToOrderMap[] =
+constexpr unsigned char Ibm852_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -124,7 +124,7 @@ static const unsigned char Ibm852_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-static const unsigned char Iso_8859_2_CharToOrderMap[] =
+constexpr unsigned char Iso_8859_2_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -153,7 +153,7 @@ static const unsigned char Iso_8859_2_CharToOrderMap[] =
  * Rest: 2.0246480655940202e-06
  * Negative sequences: TODO
  */
-static const PRUint8 CzechLangModel[] =
+constexpr PRUint8 CzechLangModel[] =
 {
   2,2,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,2,3,
    2,3,3,0,0,3,3,3,0,2,3,0,3,0,3,2,2,0,2,0,0,
@@ -250,14 +250,14 @@ const SequenceModel Windows_1250CzechModel =
   "WINDOWS-1250"
 };
 
-const SequenceModel MaccentraleuropeCzechModel =
+const SequenceModel Mac_CentraleuropeCzechModel =
 {
-  Maccentraleurope_CharToOrderMap,
+  Mac_Centraleurope_CharToOrderMap,
   CzechLangModel,
   41,
   (float)0.9786035192432675,
   PR_TRUE,
-  "MacCentralEurope"
+  "MAC-CENTRALEUROPE"
 };
 
 const SequenceModel Ibm852CzechModel =
